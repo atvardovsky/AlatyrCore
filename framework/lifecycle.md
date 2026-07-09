@@ -45,6 +45,8 @@ Framework lifecycle notes should record:
 - changed guarantees
 - changed adapter contract requirements
 - changed portability boundaries
+- changed logical integrity, blueprint-driven change, or skill-adaptation
+  guidance
 - changed approval, safety, testing, diagram, or validation expectations
 - bridge or supported-assistant compatibility changes
 - migration actions required by project adapters
@@ -69,4 +71,3 @@ Reject lifecycle changes that:
 - copy source project commands or business facts into framework core
 - omit migration notes for supported assistants or bridge files
 - claim upgrade success without validation or residual-risk evidence
-

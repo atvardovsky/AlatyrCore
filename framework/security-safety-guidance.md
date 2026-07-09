@@ -32,6 +32,8 @@ Before security-relevant work, inspect adapter facts for:
 - data classification, retention, and privacy rules
 - dependency approval and license/security-review process
 - destructive command policy
+- skill, prompt, wrapper, model, MCP, or third-party assistant infrastructure
+  provenance and permission rules
 - incident, rollback, or recovery expectations
 
 If those facts are missing, report the missing adapter fact instead of
@@ -49,6 +51,8 @@ Treat these as safety-sensitive:
   migrations, or background workers
 - dependency, plugin, model, tool, MCP, or third-party assistant integration
 - prompt or skill changes that grant broader tool access or weaken gates
+- third-party assistant infrastructure that can run tools, change files, call
+  services, or affect validation and approval behavior
 
 ## Required Evidence
 
@@ -73,4 +77,3 @@ Reject assistant output that:
 - adds dependencies without provenance and approval
 - weakens a gate, redaction rule, or approval requirement
 - claims safety without adapter policy or validation evidence
-

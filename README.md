@@ -17,7 +17,15 @@ If a programmer gives you this repository and asks you to install Alatyr Core
 into another project, do this:
 
 1. Read this `README.md`, `AGENTS.md`, `INSTALL.md`, `framework/README.md`,
-   `installer/assistant-installation.flow.md`,
+   `framework/contour.md`, `framework/guarantees.md`,
+   `framework/project-adapter-contract.md`, `framework/portability.md`,
+   `framework/context-discovery.md`, `framework/change-risk-model.md`,
+   `framework/logical-integrity.md`,
+   `framework/blueprint-driven-change.md`,
+   `framework/security-safety-guidance.md`,
+   `framework/diagram-guidance.md`, `framework/testing-guidance.md`,
+   `framework/skill-adaptation.md`, `framework/adapter-maturity.md`,
+   `framework/lifecycle.md`, `installer/assistant-installation.flow.md`,
    `installer/readiness-checklist.md`, and
    `installer/installation-plan-template.md`.
 2. Inspect the target repository before creating files.
@@ -53,20 +61,39 @@ use
 - `templates/target/`: starter files for a target repository adapter. These
   files contain placeholders and must be rewritten from target facts.
 - `docs/`: public explanation for maintainers and assistant compatibility.
+- `tools/`: source-repository maintenance checks for Alatyr Core itself.
 - `AGENTS.md`: canonical instructions for assistants working on Alatyr Core
   itself.
 - `AI_ASSISTANTS.md`: generic assistant entry point.
+
+## Self-Application Notes
+
+Alatyr Core can be used to review this source repository, but generated target
+adapter output from that exercise is scratch material.
+
+Use ignored local paths such as `tmp/` or root-local assistant adapter paths
+when drafting self-installation plans, trial `.ai` trees, or bridge files.
+Promote reusable findings by editing the canonical source files under
+`framework/`, `installer/`, `templates/target/`, `docs/`, or the root docs
+instead of committing generated self-installation output.
+
+For Alatyr Core source-repository maintenance, run
+`python3 tools/check_framework_consistency.py` when available. This helper is
+not a portable validation requirement for target projects.
 
 ## What Alatyr Core Provides
 
 - framework/project/repository-adapter contour separation
 - context discovery and source-of-truth decisions
-- semantic change and logical consistency review
+- semantic change decision
+- first-class logical integrity review
+- blueprint-driven product-change workflow
 - change-risk classification and approval triggers
 - documentation-sync and final-evidence patterns
 - stack-aware testing guidance without hard-coded commands
 - security/safety reasoning without hard-coded policies
 - diagram guidance without hard-coded diagram tooling
+- third-party skill and assistant-infrastructure adaptation guidance
 - adapter maturity and lifecycle guidance
 - bridge-file pattern for modern assistants
 

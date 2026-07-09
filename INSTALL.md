@@ -20,9 +20,12 @@ Read these Alatyr Core files before planning an installation:
 - `framework/portability.md`
 - `framework/context-discovery.md`
 - `framework/change-risk-model.md`
+- `framework/logical-integrity.md`
+- `framework/blueprint-driven-change.md`
 - `framework/security-safety-guidance.md`
 - `framework/diagram-guidance.md`
 - `framework/testing-guidance.md`
+- `framework/skill-adaptation.md`
 - `framework/adapter-maturity.md`
 - `framework/lifecycle.md`
 - `installer/assistant-installation.flow.md`
@@ -42,6 +45,7 @@ Before creating files in the target repository, inspect:
 - CI files and validation commands
 - security, live-service, credential, and destructive-operation policies
 - diagram sources, visual artifacts, and generated files
+- skills, prompts, third-party assistant infrastructure, and provenance notes
 - existing assistant bridge files, prompts, skills, gates, or checker rules
 
 If a target fact is missing, mark it as missing. Do not invent it.
@@ -94,7 +98,8 @@ In a typical target repository:
 5. Create `.ai/assistant/contour.md` and target assistant workflows/gates.
 6. Add bridge files only for assistants the target uses.
 7. Add skills, prompts, diagrams, and deterministic checks only when useful
-   for the target.
+   for the target, after adapting them to target rules and recording source or
+   provenance when applicable.
 8. Run target validation that exists.
 9. Report files changed, validation run, skipped checks, approvals, and
    residual risk.
@@ -112,4 +117,3 @@ Reject or stop when:
   installation is complete
 - existing target AI instructions would be overwritten without approval
 - target validation is claimed without evidence
-

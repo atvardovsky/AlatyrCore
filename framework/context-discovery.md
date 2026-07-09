@@ -18,13 +18,15 @@ Before acting, inspect the target adapter for:
 - canonical assistant entry points
 - framework, project, and repository adapter contours
 - project README and public docs
-- source-of-truth architecture, use-case, business-rule, data, and runtime-flow
-  documents
+- source-of-truth blueprint or equivalent project docs, architecture,
+  use-case, business-rule, data, and runtime-flow documents
 - package/build files that reveal language, framework, dependency manager, and
   commands
 - existing tests, fixtures, fakes, and CI jobs
 - generated files, diagram sources, and generated visual artifacts
 - security, live-service, credential, and destructive-operation policies
+- skill, prompt, third-party assistant infrastructure, provenance, and wrapper
+  policies
 - existing assistant bridge files, prompts, skills, flows, gates, and checker
   manifests
 
@@ -41,6 +43,8 @@ For each important fact, identify its owner:
   the project contour
 - repository adapter fact: local AI workflow, validation, bridge, prompt, gate,
   skill, checker, or command fact
+- skill or prompt fact: adapter-owned assistant infrastructure that may need
+  provenance, wrapper, permission, and evidence review
 - bridge fact: short assistant-specific pointer to canonical files
 - generated artifact: visual or built output whose source is elsewhere
 
@@ -55,6 +59,8 @@ If required context is missing:
 - state which adapter fact is missing
 - avoid inventing commands, APIs, business rules, security policy, diagrams, or
   test structure
+- avoid importing or adapting skills, prompts, wrappers, or third-party
+  assistant infrastructure without source and target-adapter context
 - continue only with a clearly bounded assumption when the task can remain safe
 - stop for programmer input when the missing fact affects architecture,
   business behavior, spend, live external calls, security, destructive changes,
@@ -82,4 +88,3 @@ Reject assistant work that:
 - changes project facts from framework files
 - changes framework guarantees from project-specific needs without updating
   framework docs and adapter sync targets
-

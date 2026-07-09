@@ -9,11 +9,13 @@ commands from another project.
 
 - Context loaded from `AGENTS.md`, `.ai/README.md`, framework docs, contours,
   and target source-of-truth docs.
-- Semantic/logical change decision made.
+- Semantic/logical change decision and logical integrity review made.
 - Documentation sync checked.
 - Tests or validation selected from target stack and risk.
 - Diagram sync checked when diagram-relevant facts changed.
 - Security/live-service policy checked when sensitive surfaces changed.
+- Skill/provenance/safety policy checked when prompts, skills, wrappers, or
+  third-party assistant infrastructure changed.
 - Human approvals verified when required.
 - Final evidence reports run checks, skipped checks, assumptions, and residual
   risk.
@@ -38,4 +40,3 @@ diagrams, prompts, skills, bridge files, or checker rules in the same change.
 
 If no semantic/logical fact changed, final evidence must explain why no
 companion update was needed.
-

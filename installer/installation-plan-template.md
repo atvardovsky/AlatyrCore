@@ -22,21 +22,27 @@ List what must not be changed.
 
 - Product purpose:
 - Architecture/module facts:
+- Blueprint or equivalent source-of-truth docs:
 - Business/domain rules:
 - Data model facts:
 - Runtime flows:
 - Test strategy and existing test surface:
 - Source-of-truth/context map:
+- Blueprint-driven change or equivalent product-change workflow:
 - Risk and approval model:
 - Security, privacy, live-service, destructive-operation, dependency, and
   credential/log-redaction policies:
 - Diagram sources, visual artifacts, render/manual-review process, and drift
   checks:
+- Skills, prompts, third-party assistant infrastructure, provenance, wrappers,
+  permissions, and output formats:
 - Target validation commands:
 - Source commands/scripts not copied:
 - Source test tools/fixtures/CI jobs not copied:
 - Source security policies, diagram tooling, lifecycle notes, and adapter owner
   facts not copied:
+- Source skill files, assistant-native formats, tool permissions, and
+  third-party assistant infrastructure not copied:
 - Missing facts:
 
 ## Framework Core Files
@@ -45,7 +51,9 @@ List reusable framework files to create or adapt in target `.ai/framework`.
 
 Do not include source-repository commands, scripts, generated-file tools,
 checker paths, test commands, fixtures, folder conventions, security policies,
-diagram tooling, lifecycle notes, or CI jobs as framework core.
+diagram tooling, lifecycle notes, skill sources, assistant-native formats,
+tool permissions, third-party assistant infrastructure, or CI jobs as framework
+core.
 
 ## Project Adapter Files
 
@@ -55,6 +63,7 @@ List target-specific files to rewrite from target facts.
 
 - Target context entry points:
 - Source-of-truth owners:
+- Blueprint or equivalent owner:
 - Generated artifacts and owning sources:
 - Missing-context escalation:
 - Risk classes and approval triggers:
@@ -63,6 +72,7 @@ List target-specific files to rewrite from target facts.
 - Credential, privacy, and log-redaction rules:
 - Recommended test levels:
 - Target validation commands or manual checks:
+- Skill adaptation, provenance, wrapper, and output-format rules:
 - Diagram source format:
 - Human visual format:
 - Render or manual-review policy:
@@ -114,5 +124,4 @@ APPROVE ALATYR INSTALLATION: ALATYR-YYYYMMDD-short-name
 ## Risks
 
 List drift, overwrite, unsupported-assistant, gate, security, diagram,
-maturity, lifecycle, and validation risks.
-
+maturity, lifecycle, skill-adaptation, and validation risks.

@@ -19,10 +19,13 @@ Framework core owns:
 - diagram reasoning and source/visual synchronization pattern
 - architecture discussion and approval pattern
 - semantic change decision pattern
-- logical consistency review pattern
+- logical integrity review pattern
+- blueprint-driven product-change workflow pattern
 - documentation-sync pattern
 - stack-aware testing analysis pattern
 - gate categories and final evidence pattern
+- skill, prompt, wrapper, and third-party assistant infrastructure adaptation
+  pattern
 - supported-assistant bridge pattern
 - project-adapter contract
 - framework installation and portability rules
@@ -39,6 +42,8 @@ Framework core must not own:
 - project-specific commands, scripts, hooks, CI jobs, generated-file tools, or
   checker paths
 - project-specific skill triggers or rejection criteria
+- project-specific skill sources, assistant-native formats, tool permissions,
+  or third-party assistant infrastructure
 - concrete test tools, commands, fixtures, CI jobs, or folder names from one
   project
 - credentials, environment assumptions, or production deployment choices

@@ -32,9 +32,12 @@ Read in this repository:
 - `framework/portability.md`
 - `framework/context-discovery.md`
 - `framework/change-risk-model.md`
+- `framework/logical-integrity.md`
+- `framework/blueprint-driven-change.md`
 - `framework/security-safety-guidance.md`
 - `framework/diagram-guidance.md`
 - `framework/testing-guidance.md`
+- `framework/skill-adaptation.md`
 - `framework/adapter-maturity.md`
 - `framework/lifecycle.md`
 - `installer/readiness-checklist.md`
@@ -53,7 +56,8 @@ Read in the target repository:
 - local validation commands or manual validation policy
 - security, live-service, credential, and destructive-operation policies
 - diagram sources, generated files, and visual artifacts
-- existing prompts, skills, gates, and checker rules
+- existing prompts, skills, third-party assistant infrastructure, provenance
+  notes, gates, and checker rules
 
 ## Ownership Classification
 
@@ -65,6 +69,8 @@ Classify every proposed target file:
 - repository adapter fact: local assistant workflow, prompt, gate, skill,
   bridge, validation, or final-evidence rule
 - bridge/wrapper: assistant-specific pointer to canonical target files
+- skill or prompt artifact: adapter-owned assistant infrastructure that must be
+  normalized to target facts before becoming canonical
 - generated/visual artifact: output whose source must be named
 - existing target-owned file: preserve unless approval permits overwrite
 
@@ -85,9 +91,9 @@ Classify every proposed target file:
     workflows/gates from target facts.
 11. Add bridge files only for assistants the target uses.
 12. Add prompts, skills, diagrams, or consistency checks only when they solve
-    target friction and can be maintained.
+    target friction, can be maintained, and have been adapted to target facts.
 13. Run target validation that exists. Do not invent commands.
-14. Apply logical consistency review: changed facts, affected contracts,
+14. Apply logical integrity review: changed facts, affected contracts,
     source of truth, repair direction, and residual risk.
 15. Report final evidence.
 
@@ -128,8 +134,8 @@ Report:
 - project adapter files rewritten from target facts
 - existing files preserved, skipped, or overwritten with approval
 - supported assistant bridges added or skipped
+- prompts, skills, or third-party assistant infrastructure adapted or skipped
 - target validation run and skipped
 - unresolved adapter facts
-- logical consistency review result
+- logical integrity review result
 - residual risk
-

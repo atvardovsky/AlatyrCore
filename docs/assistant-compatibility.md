@@ -35,6 +35,17 @@ as:
 
 Do not duplicate full framework or project policy into bridge files.
 
+## Skill Wrappers
+
+Assistant-native skills, prompts, and wrappers belong to the target repository
+adapter. Imported or third-party assistant infrastructure should be reviewed
+against `.ai/framework/skill-adaptation.md` and normalized to target facts
+before becoming canonical.
+
+Skill wrappers should follow the same rule as bridge files: keep them thin,
+point them to canonical target flows and gates, and do not let them become
+divergent policy.
+
 ## If An Assistant Cannot Run Commands
 
 The assistant should still install or review Markdown files when safe, but it
@@ -46,4 +57,3 @@ Assistant vendors may change supported instruction filenames or skill formats.
 The target project adapter owns its current bridge choices. Alatyr Core only
 defines the pattern: keep bridge files thin and canonical target files
 authoritative.
-

@@ -8,7 +8,7 @@ This directory is split by ownership.
 
 Framework files must not contain `{PROJECT_NAME}` business facts, target
 commands, target security policy, target diagram tooling, or target lifecycle
-facts.
+facts, or target skill infrastructure.
 
 ## Project Area
 
@@ -16,6 +16,7 @@ facts.
 
 - product purpose
 - architecture facts
+- blueprint or equivalent source-of-truth facts
 - use cases or workflows
 - business/domain rules
 - data model
@@ -32,10 +33,10 @@ Replace this section with the actual target project map.
 - gates
 - prompts
 - skills
+- skill adaptation and provenance rules
 - bridge-file policy
 - validation evidence expectations
 - documentation-sync rules
 
 Target commands and manual checks belong here or in linked target docs. They
 are not framework core.
-

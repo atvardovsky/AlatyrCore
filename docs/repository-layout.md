@@ -29,12 +29,24 @@ These files are intentionally incomplete. They contain placeholders and
 instructions. The installing assistant must rewrite them from target facts
 before claiming installation is complete.
 
+Hidden adapter templates under this directory, such as `.ai`, `.github`, or
+`.cursor` examples, are tracked source templates. Root-local directories with
+the same names are self-application scratch paths and are ignored.
+
 ## `docs/`
 
 Maintainer-facing explanation of Alatyr Core itself.
 
 Docs should explain how to work on this source repository without turning
 source repository details into framework requirements.
+
+## `tools/`
+
+Source-repository maintenance helpers for Alatyr Core itself.
+
+These tools may validate indexes, templates, and source-repository consistency.
+They are not portable framework requirements and must not be copied into target
+repositories as required validation.
 
 ## Root Files
 
@@ -56,4 +68,3 @@ If a fact describes an example target file shape, it may belong in
 `templates/target/`, but it must remain placeholder-based.
 
 If a fact describes one real project, it does not belong in Alatyr Core.
-

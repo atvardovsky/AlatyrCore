@@ -8,7 +8,9 @@ Before making changes:
 
 1. Read `AGENTS.md`.
 2. Read `.ai/README.md`.
-3. Read `.ai/framework/README.md`.
+3. Read `.ai/framework/README.md` and the task-relevant framework docs,
+   especially logical integrity, blueprint-driven change, and skill adaptation
+   guidance.
 4. Read `.ai/project/contour.md` and `.ai/assistant/contour.md`.
 5. Read `{TARGET_PROJECT_SOURCE_OF_TRUTH}`.
 6. Read the matching `.ai/assistant/flows/*.flow.md`.
@@ -16,4 +18,3 @@ Before making changes:
 
 Assistant-specific bridge files must stay short and point back to canonical
 target files.
-

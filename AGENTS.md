@@ -24,9 +24,12 @@ instructions, read:
 - `framework/portability.md`
 - `framework/context-discovery.md`
 - `framework/change-risk-model.md`
+- `framework/logical-integrity.md`
+- `framework/blueprint-driven-change.md`
 - `framework/security-safety-guidance.md`
 - `framework/diagram-guidance.md`
 - `framework/testing-guidance.md`
+- `framework/skill-adaptation.md`
 - `framework/adapter-maturity.md`
 - `framework/lifecycle.md`
 - `installer/assistant-installation.flow.md`
@@ -59,6 +62,7 @@ When framework behavior changes, check and update:
 - `installer/*.md`
 - `templates/target`
 - `docs/*.md`
+- `tools/`
 - `CHANGELOG.md`
 
 When only wording changes and no framework behavior changes, say that no
@@ -67,7 +71,16 @@ installation, template, or adapter-contract update was needed.
 ## Validation
 
 This repository intentionally has no universal runtime validation command.
-For Alatyr Core changes, perform a manual gate review:
+For Alatyr Core changes, run this source-repository helper when available:
+
+```sh
+python3 tools/check_framework_consistency.py
+```
+
+This helper validates the AlatyrCore repository itself. It is not a portable
+framework requirement for target projects.
+
+Also perform a manual gate review:
 
 - no source-project facts in `framework/`
 - no hard-coded project commands as framework requirements
@@ -78,4 +91,3 @@ For Alatyr Core changes, perform a manual gate review:
 
 If project-specific validation is later added to this repository, document it
 as this repository's adapter validation, not as a framework requirement.
-

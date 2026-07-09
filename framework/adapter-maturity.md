@@ -29,6 +29,7 @@ The adapter is minimal when it defines:
 - basic project facts
 - basic validation commands or manual checks
 - documentation-sync rule
+- basic source-of-truth or blueprint-equivalent owner
 - bridge files for the assistants in use
 
 The assistant can handle small tasks, but should report missing tests,
@@ -44,7 +45,10 @@ The adapter is usable when it also defines:
 - security and live-service boundaries
 - diagram policy when diagrams exist
 - approval triggers
-- logical consistency review path
+- logical integrity review path
+- blueprint-driven change or equivalent product-change workflow
+- skill adaptation and provenance rules when skills or third-party assistant
+  infrastructure exist
 
 The assistant can perform ordinary implementation and documentation tasks with
 focused validation.
@@ -58,6 +62,7 @@ The adapter is mature when it also defines:
 - deterministic consistency checks for maintainable invariants
 - generated-artifact drift checks or manual-review policy
 - framework upgrade/lifecycle notes
+- skill/wrapper compatibility notes for supported assistants
 - improvement advice path for reducing future friction
 
 The assistant can handle larger tasks with phased context loading and stronger
@@ -74,6 +79,8 @@ Ask:
 - Are security and live external side effects bounded?
 - Are approval-required changes named?
 - Are docs, diagrams, prompts, skills, bridges, and checker rules synchronized?
+- Are imported or custom skills adapted from target evidence with provenance
+  and safety review?
 - Is there a way to report missing or unresolved adapter facts?
 
 ## Rejection Criteria
@@ -85,4 +92,3 @@ Reject maturity claims that:
 - count bridge files as canonical policy
 - copy another project's adapter facts instead of writing target facts
 - hide unknowns instead of reporting residual risk
-

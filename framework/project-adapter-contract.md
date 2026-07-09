@@ -14,6 +14,7 @@ Every project using this framework must define:
 - repository adapter contour: what local assistant operating rules and
   validation own
 - canonical project blueprint or equivalent source-of-truth docs
+- blueprint-driven change or equivalent product-change workflow owners
 - use-case, business-rule, data-model, architecture, and runtime-flow sources
   when those concerns exist in the project
 - context discovery map: canonical entry points, source-of-truth owners,
@@ -32,6 +33,8 @@ Every project using this framework must define:
   process, and drift checks
 - supported assistant bridge files
 - project-specific skills or prompt wrappers when recurring work needs them
+- skill provenance, adaptation, output-format, safety, and wrapper rules when
+  skills or third-party assistant infrastructure are used
 - adapter maturity gaps, framework baseline/deviations, and lifecycle or
   upgrade notes
 - final evidence format for that project
@@ -43,6 +46,7 @@ An adapter may provide:
 - deterministic checker scripts
 - security/dependency/license scanners or manual review checklists
 - project-specific test-generation prompts or skills
+- skill import or normalization notes
 - generated visual artifacts
 - local pre-commit hooks
 - assistant-specific skill wrappers
@@ -63,6 +67,8 @@ The adapter must not:
 - copy another project's security policy, live-service boundaries,
   dependency-review tools, diagram tooling, or lifecycle format as framework
   requirements
+- import third-party assistant infrastructure into canonical files without
+  provenance, target adaptation, and required approval
 - hide architecture changes inside repository-adapter edits
 - weaken approval or validation requirements without explicit programmer
   confirmation

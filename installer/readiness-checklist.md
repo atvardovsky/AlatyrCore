@@ -17,12 +17,15 @@ changes.
 - Known validation commands:
 - Existing test tools, fixtures, helpers, and isolation rules:
 - Existing source-of-truth/context map:
+- Existing blueprint or equivalent source-of-truth docs:
 - Existing risk or approval policy:
 - Existing security, privacy, live-service, destructive-operation, dependency,
   and credential/log-redaction policies:
 - Existing diagram sources, visual artifacts, render/manual-review process, and
   drift checks:
 - Existing assistant instruction files:
+- Existing skills, prompts, third-party assistant infrastructure, provenance
+  notes, and wrappers:
 - Supported assistants needed:
 
 ## 2. Existing AI Surface
@@ -54,6 +57,7 @@ Classify every proposed file:
 - Project adapter:
 - Project fact:
 - Assistant bridge/wrapper:
+- Skill/prompt/third-party assistant infrastructure:
 - Generated/visual artifact:
 - Existing target-owned file:
 - Do not copy:
@@ -64,8 +68,9 @@ Project adapter files must be rewritten from target facts.
 Commands, scripts, generated-file tools, checker paths, hooks, test tools,
 fixture helpers, folder names, CI jobs, security policies, live-service
 allowlists, dependency scanners, diagram formats/tools, generated visual paths,
-framework version strings, lifecycle notes, and adapter owner names are target
-adapter details, not framework core.
+framework version strings, lifecycle notes, adapter owner names, skill sources,
+assistant-native formats, tool permissions, and third-party assistant
+infrastructure are target adapter details, not framework core.
 
 ## 4. Required Target Contours
 
@@ -86,6 +91,7 @@ Collect target-specific facts before writing project docs:
 - product purpose
 - architecture/module facts
 - use cases or main workflows
+- blueprint-driven change or equivalent product-change workflow
 - business/domain rules
 - data model
 - runtime flows
@@ -99,6 +105,8 @@ Collect target-specific facts before writing project docs:
 - deployment/operations facts
 - diagram needs, source format, visual format, render/manual-review policy, and
   drift checks
+- skills, prompts, wrappers, third-party assistant infrastructure, provenance,
+  output formats, permissions, and safety rules
 - adapter maturity gaps and lifecycle expectations
 
 ## 6. Assistant Compatibility
@@ -115,6 +123,8 @@ Choose only bridge files that the target needs:
 - Windsurf legacy
 
 Bridge files must stay short and point to canonical target files.
+Assistant-specific skill wrappers must also point to canonical target rules
+instead of duplicating full policy.
 
 ## 7. Approval And Risk
 
@@ -125,7 +135,9 @@ Approval is required before:
 - weakening target gates
 - changing accepted business behavior
 - adding production dependencies
-- importing third-party assistant infrastructure
+- importing third-party assistant infrastructure into canonical target files
+- broadening assistant tool permissions, live-service access, destructive
+  capabilities, or credential handling
 - enabling live, destructive, spend-affecting, or data-loss side effects
 
 ## 8. Validation Plan
@@ -138,6 +150,7 @@ List commands or manual checks:
 - target test isolation rules:
 - static analysis:
 - docs/diagram checks:
+- skill/provenance/safety review:
 - AI consistency checks, if installed:
 - source commands intentionally not copied:
 - source test tools/fixtures/CI jobs intentionally not copied:
@@ -153,7 +166,8 @@ Final evidence must say:
 - target adapter rewritten
 - contours created or updated
 - bridge files added or checked
+- skills, prompts, wrappers, or third-party assistant infrastructure adapted or
+  skipped
 - existing target instructions preserved or approved for overwrite
 - commands or manual checks run
 - skipped checks and residual risk
-

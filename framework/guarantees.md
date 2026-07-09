@@ -17,8 +17,11 @@ The framework guarantees that an assistant has a defined process for:
 - applying portable security and safety reasoning before secrets, live
   services, dependencies, destructive operations, or permissions are changed
 - detecting whether a semantic or logical fact changed
+- performing logical integrity review before claiming consistency
 - mapping changed facts to affected docs, diagrams, tests, gates, prompts, and
   skills
+- carrying accepted product changes through blueprint-equivalent docs, flows,
+  implementation, validation, diagrams, and final evidence
 - analyzing the target stack and risk profile before recommending test levels
   or structure
 - reasoning about diagram source/visual synchronization without hard-coding a
@@ -30,6 +33,8 @@ The framework guarantees that an assistant has a defined process for:
   remains
 - adapting the same process across supported assistants through thin bridge
   files and wrappers
+- adapting skills, prompts, wrappers, and third-party assistant infrastructure
+  without letting them bypass framework or target adapter rules
 - suggesting framework or documentation improvements when the process becomes
   hard to manage
 - assessing whether a project adapter is incomplete, minimal, usable, or
@@ -44,6 +49,7 @@ defines:
 
 - project source-of-truth files
 - project contours
+- blueprint-equivalent source-of-truth docs and product-change workflow owners
 - project-specific flows, prompts, gates, and skills
 - project validation commands or manual validation checks
 - project-specific test levels, tools, commands, fixtures, and isolation rules
@@ -56,6 +62,8 @@ defines:
 - project-specific framework baseline, local deviations, maturity gaps, and
   upgrade notes
 - supported assistant bridge files
+- skill provenance, adaptation, wrapper, and approval rules when skills or
+  third-party assistant infrastructure are used
 - consistency checks that are deterministic for the project
 - final evidence expected for that project
 
@@ -72,6 +80,8 @@ The framework does not guarantee:
   or user instruction
 - that missing security, live-service, or diagram policy can be inferred from
   another project
+- that imported skills or third-party assistant infrastructure are safe,
+  current, or compatible without target adapter review
 - that a project adapter is mature enough for broad work unless its local
   facts support that claim
 

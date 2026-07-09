@@ -1,8 +1,25 @@
 .DS_Store
 Thumbs.db
 *.log
+__pycache__/
+*.py[cod]
 tmp/
 temp/
 .idea/
 .vscode/
 
+# Local self-application artifacts for trying Alatyr Core on this source repo.
+# Keep these root-anchored so target templates under templates/target stay tracked.
+/.ai/
+/.agents/
+/.claude/
+/.cursor/
+/.devin/
+/.windsurf/
+/.github/copilot-instructions.md
+/.github/instructions/
+/.github/prompts/
+/CLAUDE.md
+/GEMINI.md
+/.cursorrules
+/.windsurfrules
