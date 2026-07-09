@@ -36,8 +36,10 @@ Before upgrading framework files in a target project:
    prompts, skills, lifecycle notes, and maturity gaps.
 9. Recheck operation help, operation-routing flows, and post-update chat
    message templates.
-10. Run or report target validation.
-11. Send a post-update assistant chat message that names updated surfaces,
+10. Recheck root assistant entry points and supported bridge files so future
+    sessions can find the installation note, operation help, and routing flow.
+11. Run or report target validation.
+12. Send a post-update assistant chat message that names updated surfaces,
     recommended recheck operation, validation, and unresolved gaps.
 
 Do not use an installer script as the framework mechanism. Do not overwrite

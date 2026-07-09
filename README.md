@@ -178,6 +178,7 @@ A mature target installation usually has:
 - `.ai/assistant/gates/checklist.md`
 - `.ai/assistant/policies/ai-infrastructure-source-access.md` when AI
   infrastructure can be inventoried or adapted
+- `.ai/assistant/templates/installation-note.md`
 - `.ai/assistant/templates/operation-request.md`
 - `.ai/assistant/templates/post-install-message.md`
 - `.ai/assistant/templates/post-update-message.md`

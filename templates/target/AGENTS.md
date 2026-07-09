@@ -30,11 +30,26 @@ read:
 - `.ai/framework/operation-help.md`
 - `.ai/project/contour.md`
 - `.ai/assistant/contour.md`
+- `.ai/assistant/templates/installation-note.md`
 - `.ai/assistant/help.md`
 - `.ai/assistant/policies/ai-infrastructure-source-access.md`
+- `.ai/assistant/templates/post-install-message.md`
+- `.ai/assistant/templates/post-update-message.md`
 - `{TARGET_PROJECT_SOURCE_OF_TRUTH}`
 - `.ai/assistant/gates/checklist.md`
 - the matching flow under `.ai/assistant/flows`
+
+## Session Bootstrap
+
+- Do not rely on previous chat messages for Alatyr state.
+- At the start of a new session after installation or framework update, or
+  when adapter state is unclear, read
+  `.ai/assistant/templates/installation-note.md`,
+  `.ai/assistant/templates/post-install-message.md`, and
+  `.ai/assistant/templates/post-update-message.md`.
+- If the installation note lists gaps or the update message recommends
+  migration, route through `.ai/assistant/help.md` and
+  `.ai/assistant/flows/operation-routing.flow.md` before editing files.
 
 ## Project Rules
 

@@ -108,6 +108,10 @@ third-party assistant infrastructure handling.
 
 List assistant-specific bridge files to create, update, skip, or preserve.
 
+Also state how root `AGENTS.md`, `AI_ASSISTANTS.md`, and supported bridge
+files will point future sessions to the installation note, operation help, and
+operation-routing flow.
+
 ## Existing File Preservation
 
 | File | Action | Approval needed |

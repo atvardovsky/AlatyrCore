@@ -183,6 +183,7 @@ Final evidence must say:
 - installed-operation, operation-help, operation-routing, blueprint-creation,
   adapter-recheck, or post-install/update chat-message templates added or
   skipped
+- root entry-point and bridge bootstrap references checked
 - AI infrastructure source-access policy added or skipped
 - skills, prompts, wrappers, or third-party assistant infrastructure adapted or
   skipped

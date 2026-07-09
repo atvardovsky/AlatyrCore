@@ -12,7 +12,13 @@ Entry points:
 - `AGENTS.md`
 - `AI_ASSISTANTS.md`
 - `.ai/README.md`
+- `.ai/assistant/templates/installation-note.md`
 - `.ai/assistant/help.md`
+
+Future assistant bootstrap:
+- Do not rely on this chat message alone.
+- Future sessions should start from `AGENTS.md`, `AI_ASSISTANTS.md`, `.ai/README.md`, and `.ai/assistant/templates/installation-note.md`.
+- If the adapter state is unclear, ask for "Alatyr help" or run `recheck-after-installation` before editing files.
 
 Installed operation help:
 - Ask for "Alatyr help" to see available operations.

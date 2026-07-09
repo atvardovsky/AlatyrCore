@@ -67,10 +67,30 @@ def main() -> int:
         target_path = f".ai/{relpath}"
         if target_path not in target_agents:
             failures.append(f"templates/target/AGENTS.md does not list {target_path}")
+    for required_target_agent_ref in [
+        "## Session Bootstrap",
+        ".ai/assistant/templates/installation-note.md",
+        ".ai/assistant/templates/post-install-message.md",
+        ".ai/assistant/templates/post-update-message.md",
+    ]:
+        if required_target_agent_ref not in target_agents:
+            failures.append(
+                f"templates/target/AGENTS.md missing {required_target_agent_ref}"
+            )
 
     ai_assistants = read_text("AI_ASSISTANTS.md")
     if "all files under `framework/`" not in ai_assistants:
         failures.append("AI_ASSISTANTS.md must tell assistants to read all framework files")
+
+    target_ai_assistants = read_text("templates/target/AI_ASSISTANTS.md")
+    for required_target_ai_ref in [
+        ".ai/assistant/templates/installation-note.md",
+        "post-install/update message templates",
+    ]:
+        if required_target_ai_ref not in target_ai_assistants:
+            failures.append(
+                f"templates/target/AI_ASSISTANTS.md missing {required_target_ai_ref}"
+            )
 
     required_target_templates = [
         "templates/target/.ai/assistant/help.md",
@@ -140,6 +160,17 @@ def main() -> int:
     ]:
         if "Allowed actions:" not in read_text(relpath):
             failures.append(f"{relpath} missing Allowed actions")
+
+    for relpath in [
+        "templates/target/.ai/assistant/templates/installation-note.md",
+        "templates/target/.ai/assistant/templates/post-install-message.md",
+        "templates/target/.ai/assistant/templates/post-update-message.md",
+    ]:
+        text = read_text(relpath)
+        if "AGENTS.md" not in text:
+            failures.append(f"{relpath} missing AGENTS.md bootstrap reference")
+        if "Do not rely" not in text and "Future assistants should not rely" not in text:
+            failures.append(f"{relpath} missing chat-history bootstrap warning")
 
     installed_operations = read_text("framework/installed-operations.md")
     for required_action in [

@@ -27,5 +27,8 @@
   request templates.
 - Added allowed-action surface mapping and an AI infrastructure source-access
   policy target template for installed adapters.
+- Added session bootstrap guidance so root entry points, bridge files, and
+  post-install/update messages route future assistants back to the installed
+  adapter.
 - Documented self-application reviews and ignored root-local trial adapter
   artifacts for this source repository.

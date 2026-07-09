@@ -90,19 +90,22 @@ dependency, and approval rules have been checked.
 For installed operations:
 
 1. Read the target assistant entry point and adapter context.
-2. Identify whether the request is framework-core, target-project, repository
+2. Read the installation note and post-install/update message templates when
+   the request follows an installation, framework update, or unclear adapter
+   state.
+3. Identify whether the request is framework-core, target-project, repository
    adapter, bridge, generated-artifact, or skill/prompt work.
-3. Use operation help and operation routing when the request is ambiguous.
-4. Apply logical integrity review before claiming consistency.
-5. Use blueprint-driven change when accepted project facts may change.
-6. Use skill adaptation when prompts, skills, wrappers, or third-party
+4. Use operation help and operation routing when the request is ambiguous.
+5. Apply logical integrity review before claiming consistency.
+6. Use blueprint-driven change when accepted project facts may change.
+7. Use skill adaptation when prompts, skills, wrappers, or third-party
    assistant infrastructure change.
-7. Use AI infrastructure inventory before adding, importing, replacing, or
+8. Use AI infrastructure inventory before adding, importing, replacing, or
    removing assistant infrastructure.
-8. Use adapter maturity review when the request is broad, post-install, or
+9. Use adapter maturity review when the request is broad, post-install, or
    post-upgrade.
-9. Run target validation that exists, or record unresolved checks.
-10. Report changed facts, files inspected, files changed, approvals, validation,
+10. Run target validation that exists, or record unresolved checks.
+11. Report changed facts, files inspected, files changed, approvals, validation,
    skipped checks, and residual risk.
 
 ## Blueprint Creation
@@ -129,6 +132,8 @@ After installation or framework upgrade, an assistant should recheck:
 - mandatory framework files and target adapter references
 - operation help, operation-routing flow, and post-install/update chat-message
   templates
+- root assistant entry points and supported bridge files point to the
+  installation note, operation help, and routing flow
 - source-of-truth and blueprint ownership
 - logical integrity and blueprint-driven change flows
 - gates, prompts, skills, bridge files, checker rules, and final evidence

@@ -98,13 +98,15 @@ Classify every proposed target file:
     adapter-recheck, and post-install/update chat-message templates when the
     target wants post-install operation requests or AI infrastructure
     adaptation.
-13. Add prompts, skills, diagrams, or consistency checks only when they solve
+13. Ensure root assistant entry points and supported bridge files point future
+    sessions to the installation note, operation help, and routing flow.
+14. Add prompts, skills, diagrams, or consistency checks only when they solve
     target friction, can be maintained, and have been adapted to target facts.
-14. Run target validation that exists. Do not invent commands.
-15. Apply logical integrity review: changed facts, affected contracts,
+15. Run target validation that exists. Do not invent commands.
+16. Apply logical integrity review: changed facts, affected contracts,
     source of truth, repair direction, and residual risk.
-16. Report final evidence.
-17. Send the appropriate post-install or post-update assistant chat message
+17. Report final evidence.
+18. Send the appropriate post-install or post-update assistant chat message
     using the target template when installed.
 
 ## Human Approval Gate
@@ -148,6 +150,7 @@ Report:
   AI-infrastructure-inventory, source-access policy, blueprint-creation,
   adapter-recheck, and post-install/update chat-message templates added or
   skipped
+- root entry-point and bridge bootstrap references checked
 - prompts, skills, or third-party assistant infrastructure adapted or skipped
 - target validation run and skipped
 - unresolved adapter facts

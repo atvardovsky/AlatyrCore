@@ -14,6 +14,11 @@ Framework baseline:
 Updated adapter surfaces:
 `{UPDATED_ADAPTER_SURFACES}`
 
+Future assistant bootstrap:
+- Do not rely on this chat message alone.
+- Future sessions should start from `AGENTS.md`, `AI_ASSISTANTS.md`, `.ai/README.md`, and `.ai/assistant/templates/installation-note.md`.
+- If the updated baseline or adapter state is unclear, ask for "Alatyr help" or run `recheck-after-framework-update` before editing files.
+
 Recommended follow-up:
 Use the installed Alatyr adapter in this repository.
 Operation type: recheck-after-framework-update
