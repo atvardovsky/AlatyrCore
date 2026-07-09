@@ -8,8 +8,8 @@ If you are installing Alatyr Core into a target project:
 1. Read `README.md`.
 2. Read `INSTALL.md`.
 3. Read all files under `framework/`, including logical integrity,
-   blueprint-driven change, skill adaptation, installed operations, and
-   operation help guidance.
+   blueprint-driven change, skill and AI infrastructure adaptation, installed
+   operations, and operation help guidance.
 4. Read `installer/assistant-installation.flow.md`.
 5. Read `installer/readiness-checklist.md`.
 6. Read `installer/installation-plan-template.md`.

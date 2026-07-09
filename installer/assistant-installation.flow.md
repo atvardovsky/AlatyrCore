@@ -94,8 +94,9 @@ Classify every proposed target file:
     workflows/gates from target facts.
 11. Add bridge files only for assistants the target uses.
 12. Add installed-operation, operation-help, operation-routing,
-    blueprint-creation, adapter-recheck, and post-install/update chat-message
-    templates when the target wants post-install operation requests.
+    AI-infrastructure-inventory, blueprint-creation, adapter-recheck, and
+    post-install/update chat-message templates when the target wants
+    post-install operation requests.
 13. Add prompts, skills, diagrams, or consistency checks only when they solve
     target friction, can be maintained, and have been adapted to target facts.
 14. Run target validation that exists. Do not invent commands.
@@ -142,9 +143,9 @@ Report:
 - project adapter files rewritten from target facts
 - existing files preserved, skipped, or overwritten with approval
 - supported assistant bridges added or skipped
-- installed-operation, operation-help, operation-routing, blueprint-creation,
-  adapter-recheck, and post-install/update chat-message templates added or
-  skipped
+- installed-operation, operation-help, operation-routing,
+  AI-infrastructure-inventory, blueprint-creation, adapter-recheck, and
+  post-install/update chat-message templates added or skipped
 - prompts, skills, or third-party assistant infrastructure adapted or skipped
 - target validation run and skipped
 - unresolved adapter facts

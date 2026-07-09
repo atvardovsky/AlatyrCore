@@ -62,8 +62,17 @@ read:
 - If the user asks for Alatyr help, commands, available actions, or gives an
   unclear request, read `.ai/assistant/help.md` and use
   `.ai/assistant/flows/operation-routing.flow.md` before editing files.
-- Adapt skills, prompts, wrappers, and third-party assistant infrastructure
-  from target evidence before making them canonical.
+- Use `alatyr-ai-inventory` or
+  `.ai/assistant/flows/ai-infrastructure-inventory.flow.md` before adding,
+  importing, replacing, or removing assistant infrastructure.
+- Adapt skills, prompts, wrappers, bridges, rules, MCP/tool configs, gates,
+  checkers, and third-party assistant infrastructure from target evidence
+  before making them canonical.
+- Treat `alatyr-adaptation {AI_INFRASTRUCTURE_SOURCE}` and
+  `alatyr-add-ai {AI_INFRASTRUCTURE_SOURCE}` as AI infrastructure adaptation
+  requests. Review existing infrastructure, source access, provenance,
+  permissions, safety, and approval before importing or normalizing the source
+  into canonical target files.
 - Use target validation only when it exists. Report unresolved checks.
 
 ## Approval Gates

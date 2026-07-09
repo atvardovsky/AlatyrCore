@@ -109,6 +109,9 @@ Collect target-specific facts before writing project docs:
   drift checks
 - skills, prompts, wrappers, third-party assistant infrastructure, provenance,
   output formats, permissions, and safety rules
+- AI infrastructure inventory expectations and existing item owners
+- AI infrastructure source access policy for local paths, Git URLs, HTTPS URLs,
+  assistant-native references, pasted content, packages, or plugins
 - adapter maturity gaps and lifecycle expectations
 - installed-operation request, blueprint-creation, adapter-recheck, and
   framework-update review expectations
@@ -159,6 +162,8 @@ List commands or manual checks:
 - installed-operation or adapter-recheck review:
 - operation-help or routing review:
 - skill/provenance/safety review:
+- AI infrastructure inventory review:
+- AI infrastructure source access review:
 - AI consistency checks, if installed:
 - source commands intentionally not copied:
 - source test tools/fixtures/CI jobs intentionally not copied:

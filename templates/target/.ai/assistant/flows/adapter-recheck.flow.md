@@ -14,6 +14,8 @@ Replace placeholders with target facts before accepting installation.
 - Supported assistants: `{SUPPORTED_ASSISTANTS}`
 - Operation help and routing: `.ai/assistant/help.md`,
   `.ai/assistant/flows/operation-routing.flow.md`
+- AI infrastructure inventory:
+  `.ai/assistant/flows/ai-infrastructure-inventory.flow.md`
 - Chat-message templates: `.ai/assistant/templates/post-install-message.md`,
   `.ai/assistant/templates/post-update-message.md`
 - Known adapter gaps: `{KNOWN_GAPS}`
@@ -27,8 +29,8 @@ Replace placeholders with target facts before accepting installation.
 3. Compare installed framework files against the recorded framework baseline or
    update source.
 4. Check target adapter references to framework files, operation help, routing
-   flows, gates, prompts, skills, bridge files, checker rules, chat-message
-   templates, and final-evidence expectations.
+   flows, AI infrastructure inventory, gates, prompts, skills, bridge files,
+   checker rules, chat-message templates, and final-evidence expectations.
 5. Check project blueprint/source-of-truth ownership, missing facts, and drift.
 6. Check security, live-service, destructive-operation, dependency, credential,
    diagram, generated-artifact, validation, and lifecycle policies.
@@ -47,8 +49,8 @@ Report:
 - files inspected
 - adapter references changed or still current
 - blueprint/source-of-truth status
-- help, routing, bridge, prompt, skill, gate, checker, diagram, chat-message,
-  and lifecycle status
+- help, routing, AI infrastructure inventory, bridge, prompt, skill, gate,
+  checker, diagram, chat-message, and lifecycle status
 - target validation run or unresolved
 - approvals needed
 - maturity level and gaps

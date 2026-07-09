@@ -18,8 +18,8 @@ Portable framework core may describe reusable assistant operating patterns:
 - stack-aware testing analysis concepts
 - gate and final-evidence categories
 - prompt, skill, and bridge-file wrapper patterns
-- skill provenance, adaptation, and third-party assistant infrastructure review
-  concepts
+- AI infrastructure inventory, skill provenance, adaptation, and third-party
+  assistant infrastructure review concepts
 - diagram-as-code and visual-artifact synchronization concepts
 - consistency-manifest concept
 - blueprint-driven product-change workflow concepts
@@ -77,7 +77,8 @@ A repository adapter owns the concrete facts for one project:
 - target diagram formats, visual artifacts, render or manual-review process,
   and drift checks
 - target assistant bridge files selected for the assistants the project uses
-- target skill provenance, adaptation, wrapper, permission, and evidence rules
+- target AI infrastructure inventory, source access, provenance, adaptation,
+  wrapper, permission, and evidence rules
 - target consistency checks that are deterministic and maintainable in that
   repository
 - target adapter maturity gaps, framework baseline, local deviations, and

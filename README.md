@@ -105,7 +105,8 @@ not a portable validation requirement for target projects.
 - stack-aware testing guidance without hard-coded commands
 - security/safety reasoning without hard-coded policies
 - diagram guidance without hard-coded diagram tooling
-- third-party skill and assistant-infrastructure adaptation guidance
+- AI infrastructure inventory and third-party skill/assistant-infrastructure
+  adaptation guidance
 - adapter maturity and lifecycle guidance
 - installed-adapter operation and recheck guidance
 - operation help and routing guidance for unclear requests
@@ -149,6 +150,14 @@ If the intended operation is unclear, ask for "Alatyr help". A complete target
 adapter should answer with the local operation menu, short descriptions,
 matching flows, required input, and approval or validation notes before making
 changes.
+
+For skills, prompts, wrappers, bridge files, rules, MCP/tool configs, gates,
+checkers, or other AI infrastructure, a target adapter may define request
+aliases such as `alatyr-ai-inventory`, `alatyr-adaptation <source>`, or
+`alatyr-add-ai <source>`. Sources can be local paths, Git URLs, HTTPS URLs,
+assistant-native references, packages/plugins, or pasted content, but existing
+infrastructure, provenance, permissions, safety, and approval are reviewed
+before anything becomes canonical.
 
 ## Suggested Target Shape
 

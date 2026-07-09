@@ -74,6 +74,7 @@ def main() -> int:
 
     required_target_templates = [
         "templates/target/.ai/assistant/help.md",
+        "templates/target/.ai/assistant/flows/ai-infrastructure-inventory.flow.md",
         "templates/target/.ai/assistant/flows/adapter-recheck.flow.md",
         "templates/target/.ai/assistant/flows/blueprint-driven-change.flow.md",
         "templates/target/.ai/assistant/flows/documentation-sync.flow.md",
@@ -97,6 +98,7 @@ def main() -> int:
         "templates/target/.ai/assistant/contour.md",
         "templates/target/.ai/assistant/help.md",
         "templates/target/.ai/assistant/gates/checklist.md",
+        "templates/target/.ai/assistant/flows/ai-infrastructure-inventory.flow.md",
         "templates/target/.ai/assistant/flows/adapter-recheck.flow.md",
         "templates/target/.ai/assistant/flows/blueprint-driven-change.flow.md",
         "templates/target/.ai/assistant/flows/documentation-sync.flow.md",

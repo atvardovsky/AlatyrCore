@@ -9,7 +9,8 @@ Replace placeholders with target facts before accepting installation.
 - assistant workflows under `.ai/assistant/flows`
 - gates under `.ai/assistant/gates`
 - prompts, skills, bridge files, and assistant-specific wrappers
-- skill provenance, adaptation, output-format, safety, and wrapper rules
+- AI infrastructure inventory, source access, provenance, adaptation,
+  output-format, safety, and wrapper rules
 - target validation commands or manual checks
 - blueprint-driven change or equivalent target product-change workflow
 - installed-operation request, blueprint-creation, adapter-recheck, and

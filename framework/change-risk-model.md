@@ -27,9 +27,9 @@ Classify each changed fact, not only each changed file:
   generated files, test framework, or assistant gate.
 - AI governance: framework, adapter, prompt, skill, bridge, flow, checker, or
   documentation-sync rule.
-- Skill adaptation: imported skill, prompt, wrapper, assistant-native format,
-  tool permission, output format, provenance, or third-party assistant
-  infrastructure.
+- AI infrastructure adaptation: imported skill, prompt, wrapper, bridge, rule,
+  assistant-native format, MCP/tool permission, output format, provenance, or
+  third-party assistant infrastructure.
 
 One change may belong to multiple classes. Use the highest-risk applicable
 class for approval and evidence.
@@ -77,9 +77,9 @@ Use the risk class to choose companion work:
 - security changes need redaction, permission, and secret-handling checks
 - AI governance changes need bridge, skill, prompt, gate, and consistency
   sync
-- skill adaptation needs provenance review, wrapper sync, safety review,
-  target validation, and approval when protected assistant infrastructure or
-  permissions change
+- AI infrastructure adaptation needs inventory, provenance review, wrapper
+  sync, safety review, target validation, and approval when protected assistant
+  infrastructure or permissions change
 
 If no companion update is needed, final evidence must explain why no semantic
 or logical fact changed.

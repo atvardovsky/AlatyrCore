@@ -15,7 +15,9 @@ Use this checklist before broad or risky changes.
 - Affected prompts/gates/skills/bridge files:
 - Affected installed-operation or adapter-recheck files:
 - Affected operation-help, routing, or assistant chat-message files:
+- AI infrastructure inventory impact:
 - Skill provenance or third-party assistant infrastructure impact:
+- AI infrastructure source access impact:
 - Approval required:
 - Validation to run:
 - Skipped checks and residual risk:

@@ -38,6 +38,9 @@ List what must not be changed.
   checks:
 - Skills, prompts, third-party assistant infrastructure, provenance, wrappers,
   permissions, and output formats:
+- AI infrastructure inventory and existing item owners:
+- AI infrastructure source access policy for local paths, Git URLs, HTTPS URLs,
+  assistant-native references, pasted content, packages, or plugins:
 - Target validation commands:
 - Source commands/scripts not copied:
 - Source test tools/fixtures/CI jobs not copied:
@@ -74,7 +77,9 @@ List target-specific files to rewrite from target facts.
 - Credential, privacy, and log-redaction rules:
 - Recommended test levels:
 - Target validation commands or manual checks:
-- Skill adaptation, provenance, wrapper, and output-format rules:
+- AI infrastructure adaptation, provenance, wrapper, and output-format rules:
+- AI infrastructure inventory rules:
+- AI infrastructure source access and approval rules:
 - Installed-operation request and adapter-recheck rules:
 - Operation help and routing rules:
 - Post-install/update assistant chat-message rules:

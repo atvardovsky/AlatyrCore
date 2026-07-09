@@ -29,7 +29,8 @@ Before acting, inspect the target adapter for:
   policies
 - existing assistant bridge files, prompts, skills, flows, gates,
   installed-operation requests, operation help, routing flows, adapter recheck
-  reports, chat-completion message templates, and checker manifests
+  reports, AI infrastructure inventory reports, chat-completion message
+  templates, and checker manifests
 
 Use the smallest context set that can answer the task, then expand only when
 changed facts cross module, data, runtime, security, or assistant-governance
@@ -50,6 +51,9 @@ For each important fact, identify its owner:
   command alias, or post-install/update chat-message fact
 - skill or prompt fact: adapter-owned assistant infrastructure that may need
   provenance, wrapper, permission, and evidence review
+- AI infrastructure inventory fact: adapter-owned record of existing skills,
+  prompts, wrappers, bridge files, rules, MCP/tool configs, gates, checkers,
+  and generated assistant artifacts
 - bridge fact: short assistant-specific pointer to canonical files
 - generated artifact: visual or built output whose source is elsewhere
 

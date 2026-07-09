@@ -59,6 +59,12 @@ When a request is unclear or asks for "Alatyr help", assistant-specific
 surfaces should route back to `.ai/assistant/help.md` and
 `.ai/assistant/flows/operation-routing.flow.md` instead of inventing a command.
 
+Targets may define request aliases such as `alatyr-ai-inventory`,
+`alatyr-adaptation <source>`, or `alatyr-add-ai <source>`. Assistant-specific
+surfaces should route those aliases to the canonical inventory and
+skill-adaptation flows, preserve source provenance, and avoid importing the
+source directly.
+
 ## If An Assistant Cannot Run Commands
 
 The assistant should still install or review Markdown files when safe, but it

@@ -33,8 +33,9 @@ Every project using this framework must define:
   process, and drift checks
 - supported assistant bridge files
 - project-specific skills or prompt wrappers when recurring work needs them
-- skill provenance, adaptation, output-format, safety, and wrapper rules when
-  skills or third-party assistant infrastructure are used
+- AI infrastructure inventory, source access, provenance, adaptation,
+  output-format, safety, and wrapper rules when skills or third-party assistant
+  infrastructure are used
 - adapter maturity gaps, framework baseline/deviations, and lifecycle or
   upgrade notes
 - installed-operation request, blueprint-creation, adapter-recheck, and
@@ -52,6 +53,10 @@ An adapter may provide:
 - security/dependency/license scanners or manual review checklists
 - project-specific test-generation prompts or skills
 - skill import or normalization notes
+- AI infrastructure source access allowlists, approval notes, or manual review
+  checklists
+- AI infrastructure inventories, compatibility reports, and add/adapt/remove
+  recommendations
 - installed-operation request templates or adapter audit reports
 - operation help menus, routing flows, or assistant chat-completion message
   templates

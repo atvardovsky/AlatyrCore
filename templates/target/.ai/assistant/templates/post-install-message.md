@@ -23,7 +23,8 @@ Available next actions:
 - `recheck-after-installation`: verify the installed adapter and report gaps.
 - `product-change`: run blueprint-driven change from intent through validation and evidence.
 - `logical-integrity-review`: check consistency across code, docs, tests, diagrams, prompts, skills, gates, and bridges.
-- `skill-adaptation`: adapt skills, prompts, wrappers, or third-party assistant infrastructure.
+- `ai-infrastructure-inventory`: check existing AI instructions, prompts, skills, wrappers, bridges, rules, MCP/tool configs, gates, and checkers. Alias: `alatyr-ai-inventory`.
+- `skill-adaptation`: adapt or add skills, prompts, wrappers, bridges, rules, MCP/tool configs, gates, checkers, or third-party assistant infrastructure. Aliases: `alatyr-adaptation <source>`, `alatyr-add-ai <source>`.
 
 Validation run:
 `{VALIDATION_RUN_OR_UNRESOLVED}`

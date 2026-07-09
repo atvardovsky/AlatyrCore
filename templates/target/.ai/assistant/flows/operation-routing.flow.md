@@ -4,6 +4,10 @@ Use this flow in `{PROJECT_NAME}` when the programmer asks for Alatyr help,
 asks for available actions, asks for commands, or gives a request that cannot
 be safely classified.
 
+Also use this flow when the programmer uses a target alias such as
+`alatyr-ai-inventory`, `alatyr-adaptation {AI_INFRASTRUCTURE_SOURCE}`, or
+`alatyr-add-ai {AI_INFRASTRUCTURE_SOURCE}`.
+
 Replace placeholders with target facts before accepting installation.
 
 ## Target Sources
@@ -14,6 +18,8 @@ Replace placeholders with target facts before accepting installation.
 - Project source of truth: `{TARGET_PROJECT_SOURCE_OF_TRUTH}`
 - Target validation: `{TARGET_VALIDATION}`
 - Approval constraints: `{TARGET_APPROVAL_CONSTRAINTS}`
+- AI infrastructure source/access policy:
+  `{TARGET_AI_INFRASTRUCTURE_SOURCE_ACCESS_POLICY}`
 
 ## Steps
 
@@ -25,10 +31,18 @@ Replace placeholders with target facts before accepting installation.
 4. Match the request to one target operation and flow when the intent is clear.
 5. If two or more operations could apply, show the closest options with short
    descriptions and ask for the smallest missing decision.
-6. If the user asks for commands, explain that Alatyr uses assistant requests
+6. If the request matches `alatyr-ai-inventory`, classify it as
+   `ai-infrastructure-inventory` and continue with
+   `.ai/assistant/flows/ai-infrastructure-inventory.flow.md`.
+7. If the request matches `alatyr-adaptation {AI_INFRASTRUCTURE_SOURCE}` or
+   `alatyr-add-ai {AI_INFRASTRUCTURE_SOURCE}`, classify it as
+   `skill-adaptation`, record `{AI_INFRASTRUCTURE_SOURCE}` as untrusted input,
+   and continue with `.ai/assistant/flows/skill-adaptation.flow.md` only after
+   checking inventory, source access, provenance, approval, and safety rules.
+8. If the user asks for commands, explain that Alatyr uses assistant requests
    over Markdown adapter files unless `{PROJECT_NAME}` defines a local command.
-7. Do not edit files while the operation is still ambiguous.
-8. When the operation is selected, continue with the matching flow and apply
+9. Do not edit files while the operation is still ambiguous.
+10. When the operation is selected, continue with the matching flow and apply
    approval, validation, and final-evidence rules.
 
 ## Final Evidence

@@ -58,12 +58,21 @@ Typical operation categories include:
 - target source-of-truth drift review
 - blueprint-driven product change
 - logical integrity review
+- AI infrastructure inventory
 - skill, prompt, wrapper, or third-party assistant infrastructure adaptation
 - documentation, diagram, gate, or bridge synchronization
 - adapter maturity review
 
 The target adapter may narrow, rename, or add operations when it records the
 local meaning and matching flow.
+
+Target adapters may also define short request aliases. For example,
+`alatyr-ai-inventory` may route to an inventory flow, while
+`alatyr-adaptation <source>` or `alatyr-add-ai <source>` may route to
+adaptation, where `<source>` is a local path, Git URL, HTTPS URL,
+assistant-native skill or prompt reference, pasted content, package/plugin
+reference, or other adapter-defined source. Aliases must be documented as
+assistant request syntax, not portable executable commands.
 
 ## Routing Rules
 
@@ -79,7 +88,11 @@ When routing a request:
 6. If the user asks for commands, explain that Alatyr is used through assistant
    requests over Markdown adapter files unless the target adapter defines local
    commands.
-7. Do not edit repository files while only presenting help or resolving
+7. If the request asks what already exists, route to AI infrastructure
+   inventory and do not import anything during inventory-only work.
+8. If the request supplies an external source, check target provenance,
+   network, dependency, and approval rules before fetching or importing it.
+9. Do not edit repository files while only presenting help or resolving
    operation ambiguity.
 
 ## Evidence Format

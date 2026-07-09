@@ -16,6 +16,11 @@ commands from another project.
 - Security/live-service policy checked when sensitive surfaces changed.
 - Skill/provenance/safety policy checked when prompts, skills, wrappers, or
   third-party assistant infrastructure changed.
+- AI infrastructure inventory checked before adding, importing, replacing, or
+  removing assistant infrastructure.
+- AI infrastructure source access checked when the request uses a local path,
+  Git URL, HTTPS URL, assistant-native reference, pasted content, package, or
+  plugin.
 - Installed-operation or adapter-recheck scope checked when the task asks for
   blueprint creation, framework update review, or adapter drift review.
 - Operation help and routing checked when the user asks for Alatyr help,

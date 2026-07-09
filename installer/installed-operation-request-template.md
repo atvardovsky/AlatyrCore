@@ -10,7 +10,10 @@ Target repository path:
 <path-or-repo-url-to-target-project>
 
 Operation type:
-<help/create-project-blueprint/recheck-after-installation/recheck-after-framework-update/product-change/logical-integrity-review/skill-adaptation/drift-review/documentation-sync/adapter-maturity-review/other>
+<help/create-project-blueprint/recheck-after-installation/recheck-after-framework-update/product-change/logical-integrity-review/ai-infrastructure-inventory/skill-adaptation/drift-review/documentation-sync/adapter-maturity-review/other>
+
+Operation alias, if used:
+<for example: alatyr-ai-inventory, alatyr-adaptation <source>, or alatyr-add-ai <source>>
 
 Goal:
 <what the assistant should accomplish>
@@ -21,6 +24,18 @@ Non-goals:
 Known context:
 <changed facts, framework update source, existing docs, or suspected drift>
 
+AI infrastructure source, when applicable:
+<local path/Git URL/HTTPS URL/assistant-native reference/package or plugin/pasted content>
+
+AI infrastructure item type, when applicable:
+<skill/prompt/wrapper/bridge/rule/MCP/tool/checker/flow/gate/template/other>
+
+AI infrastructure source type, when applicable:
+<local-path/git-url/https-url/native-reference/pasted/package-or-plugin/unknown>
+
+Integration mode, when applicable:
+<review-only/canonical-integration>
+
 Constraints:
 - Read the target `AGENTS.md`, `AI_ASSISTANTS.md`, `.ai/README.md`,
   `.ai/framework`, `.ai/project`, and `.ai/assistant` files before changing
@@ -29,6 +44,12 @@ Constraints:
   operation choices with descriptions, and ask for the smallest missing
   decision before editing files.
 - Use target source-of-truth docs and target evidence only.
+- For `alatyr-ai-inventory`, inspect existing AI infrastructure without
+  importing external items.
+- For `alatyr-adaptation <source>`, `alatyr-add-ai <source>`, or
+  `skill-adaptation`, treat the source as untrusted until existing
+  infrastructure, provenance, source access, permissions, safety, and target
+  normalization have been reviewed.
 - For blueprint creation or repair, keep missing target facts marked as
   missing instead of inventing business rules, architecture, security policy,
   validation commands, diagrams, or lifecycle notes.

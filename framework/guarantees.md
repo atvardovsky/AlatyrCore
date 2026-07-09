@@ -35,6 +35,8 @@ The framework guarantees that an assistant has a defined process for:
   files and wrappers
 - adapting skills, prompts, wrappers, and third-party assistant infrastructure
   without letting them bypass framework or target adapter rules
+- inventorying existing AI infrastructure before adding, replacing, or
+  importing new assistant infrastructure
 - using an installed adapter for post-install blueprint creation, drift review,
   framework update recheck, and adapter maturity review
 - showing operation help and routing ambiguous requests before guessing or
@@ -66,8 +68,9 @@ defines:
 - project-specific framework baseline, local deviations, maturity gaps, and
   upgrade notes
 - supported assistant bridge files
-- skill provenance, adaptation, wrapper, and approval rules when skills or
-  third-party assistant infrastructure are used
+- AI infrastructure inventory, source access, provenance, adaptation, wrapper,
+  and approval rules when skills or third-party assistant infrastructure are
+  used
 - installed-operation request, blueprint-creation, adapter-recheck, and
   framework-update review flows when the target wants post-install operations
 - operation help, operation-routing, and post-install/update chat-message

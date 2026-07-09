@@ -40,6 +40,8 @@ Replace this section with the actual target project map.
 - installed-operation requests and adapter rechecks
 - operation help, operation routing, and post-install/update assistant chat
   messages
+- AI infrastructure inventory, source access, adaptation, and compatibility
+  review
 
 Target commands and manual checks belong here or in linked target docs. They
 are not framework core.

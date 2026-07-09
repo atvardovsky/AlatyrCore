@@ -122,6 +122,15 @@ If the programmer asks for help, commands, or an unclear Alatyr action, the
 assistant should show the installed operation menu from the target adapter
 instead of guessing or inventing a CLI command.
 
+If the programmer asks for `alatyr-ai-inventory`, inspect existing AI
+infrastructure before adding anything. If the programmer asks for
+`alatyr-adaptation <source>`, `alatyr-add-ai <source>`, or a similar target
+alias, treat it as an adaptation request. The source may be a local path, Git
+URL, HTTPS URL, assistant-native reference, package/plugin reference, or pasted
+content, but it must be reviewed for existing conflicts, provenance,
+permissions, safety, approval, and target normalization before becoming
+canonical.
+
 Alatyr Core does not provide a universal command or service for this. The
 assistant must read the target adapter and use target evidence, approvals, and
 validation.

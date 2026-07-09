@@ -21,7 +21,8 @@ sync, logical integrity review, and final evidence.
 - blueprint-driven product-change workflow
 - portable security, safety, and live-service reasoning rules
 - diagram reasoning and source/visual synchronization guidance
-- skill, prompt, and third-party assistant infrastructure adaptation guidance
+- AI infrastructure inventory plus skill, prompt, wrapper, bridge, and
+  third-party assistant infrastructure adaptation guidance
 - installed-adapter operation and recheck guidance
 - operation help and routing guidance for unclear installed-adapter requests
 - reusable assistant workflow categories

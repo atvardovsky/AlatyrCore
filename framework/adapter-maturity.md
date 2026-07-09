@@ -49,8 +49,8 @@ The adapter is usable when it also defines:
 - blueprint-driven change or equivalent product-change workflow
 - installed-operation request and adapter-recheck path for post-install work
 - operation help or routing path for ambiguous requests
-- skill adaptation and provenance rules when skills or third-party assistant
-  infrastructure exist
+- AI infrastructure inventory, source access, adaptation, and provenance rules
+  when skills or third-party assistant infrastructure exist
 
 The assistant can perform ordinary implementation and documentation tasks with
 focused validation.
@@ -66,6 +66,7 @@ The adapter is mature when it also defines:
 - framework upgrade/lifecycle notes
 - post-install operation, blueprint repair, and framework-update recheck notes
 - maintained help menu and post-install/update chat-message templates
+- AI infrastructure inventory and add/adapt/remove recommendations
 - skill/wrapper compatibility notes for supported assistants
 - improvement advice path for reducing future friction
 
@@ -87,8 +88,9 @@ Ask:
   relying on user memory?
 - Can an assistant show useful Alatyr help when the user's requested operation
   is unclear?
-- Are imported or custom skills adapted from target evidence with provenance
-  and safety review?
+- Are existing AI infrastructure items inventoried before new items are added?
+- Are imported or custom AI infrastructure items adapted from target evidence
+  with provenance and safety review?
 - Is there a way to report missing or unresolved adapter facts?
 
 ## Rejection Criteria

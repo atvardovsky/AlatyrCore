@@ -14,5 +14,10 @@
   flows for blueprint creation and adapter rechecks.
 - Added operation help, ambiguous-request routing, and post-install/update
   assistant chat-message templates for installed adapters.
+- Documented `alatyr-adaptation <source>` as an optional installed adapter
+  alias for AI infrastructure adaptation from local, Git, HTTPS, native,
+  package/plugin, or pasted sources.
+- Added AI infrastructure inventory guidance and target flow with
+  `alatyr-ai-inventory` and `alatyr-add-ai <source>` request aliases.
 - Documented self-application reviews and ignored root-local trial adapter
   artifacts for this source repository.
