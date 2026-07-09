@@ -17,6 +17,20 @@ installed Alatyr Core adapter.
   `{READ_ONLY_DOCS_ONLY_ADAPTER_ONLY_CODE_AND_TESTS_OR_FULL_WITH_APPROVAL}`
 - Expected final evidence: `{EXPECTED_FINAL_EVIDENCE}`
 
+## Allowed Actions Guide
+
+- `read-only`: inspect target files and report only; no file changes.
+- `docs-only`: docs, blueprint-equivalent docs, and diagram sources only; no
+  code changes.
+- `adapter-only`: adapter-owned `.ai/*` surfaces, especially
+  `.ai/assistant`, bridge files, assistant templates, gates, flows, policies,
+  and checker rules only; no product code or accepted project facts.
+- `code-and-tests`: code, tests, and required docs/diagram sync; no live
+  external actions, destructive actions, production dependencies, or broader
+  permissions.
+- `full-with-approval`: protected changes require explicit programmer approval
+  before they are made.
+
 ## AI Infrastructure Source
 
 Fill this section when the operation is `skill-adaptation`, the operation is
@@ -44,6 +58,7 @@ Fill this section when the operation is `skill-adaptation`, the operation is
 - `.ai/assistant/contour.md`
 - `.ai/assistant/help.md`
 - `.ai/assistant/gates/checklist.md`
+- `.ai/assistant/policies/ai-infrastructure-source-access.md`
 - matching `.ai/assistant/flows/*.flow.md`
 - `{TARGET_PROJECT_SOURCE_OF_TRUTH}`
 

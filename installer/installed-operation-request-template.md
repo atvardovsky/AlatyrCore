@@ -27,6 +27,19 @@ Known context:
 Allowed actions:
 <read-only/docs-only/adapter-only/code-and-tests/full-with-approval>
 
+Allowed actions meaning:
+- read-only: inspect target files and report only; no file changes.
+- docs-only: docs, blueprint-equivalent docs, and diagram sources only; no
+  code changes.
+- adapter-only: adapter-owned `.ai/*` surfaces, especially `.ai/assistant`,
+  bridge files, assistant templates, gates, flows, policies, and checker rules
+  only; no product code or accepted project facts.
+- code-and-tests: code, tests, and required docs/diagram sync; no live external
+  actions, destructive actions, production dependencies, or broader
+  permissions.
+- full-with-approval: protected changes require explicit programmer approval
+  before they are made.
+
 AI infrastructure source, when applicable:
 <local path/Git URL/HTTPS URL/assistant-native reference/package or plugin/pasted content>
 
@@ -51,6 +64,8 @@ Constraints:
   explicit approval before protected changes.
 - For `alatyr-ai-inventory`, inspect existing AI infrastructure without
   importing external items.
+- For AI infrastructure sources, read the target source-access policy when it
+  exists, usually `.ai/assistant/policies/ai-infrastructure-source-access.md`.
 - For `alatyr-adaptation <source>`, `alatyr-add-ai <source>`, or
   `skill-adaptation`, treat the source as untrusted until existing
   infrastructure, provenance, source access, permissions, safety, and target

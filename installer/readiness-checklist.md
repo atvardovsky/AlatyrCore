@@ -47,6 +47,7 @@ Check whether the target already has:
 - `.devin/rules`
 - `.windsurf/rules` or `.windsurfrules`
 - `.ai`
+- `.ai/assistant/policies`
 - `.agents/skills`
 
 Do not overwrite existing target instructions without explicit approval.
@@ -182,6 +183,7 @@ Final evidence must say:
 - installed-operation, operation-help, operation-routing, blueprint-creation,
   adapter-recheck, or post-install/update chat-message templates added or
   skipped
+- AI infrastructure source-access policy added or skipped
 - skills, prompts, wrappers, or third-party assistant infrastructure adapted or
   skipped
 - existing target instructions preserved or approved for overwrite

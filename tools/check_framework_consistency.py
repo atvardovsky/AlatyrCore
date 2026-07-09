@@ -82,6 +82,7 @@ def main() -> int:
         "templates/target/.ai/assistant/flows/operation-routing.flow.md",
         "templates/target/.ai/assistant/flows/project-blueprint-creation.flow.md",
         "templates/target/.ai/assistant/flows/skill-adaptation.flow.md",
+        "templates/target/.ai/assistant/policies/ai-infrastructure-source-access.md",
         "templates/target/.ai/assistant/skills/example/SKILL.md",
         "templates/target/.ai/assistant/templates/operation-request.md",
         "templates/target/.ai/assistant/templates/post-install-message.md",
@@ -106,6 +107,7 @@ def main() -> int:
         "templates/target/.ai/assistant/flows/operation-routing.flow.md",
         "templates/target/.ai/assistant/flows/project-blueprint-creation.flow.md",
         "templates/target/.ai/assistant/flows/skill-adaptation.flow.md",
+        "templates/target/.ai/assistant/policies/ai-infrastructure-source-access.md",
         "templates/target/.ai/assistant/skills/example/SKILL.md",
         "templates/target/.ai/assistant/templates/installation-note.md",
         "templates/target/.ai/assistant/templates/operation-request.md",
@@ -124,6 +126,7 @@ def main() -> int:
     for required_help_text in [
         "Operation: `help`",
         "## Operation Type Aliases",
+        "These aliases are chat/request shortcuts, not shell commands.",
         "Allowed actions:",
     ]:
         if required_help_text not in help_template:
@@ -137,6 +140,37 @@ def main() -> int:
     ]:
         if "Allowed actions:" not in read_text(relpath):
             failures.append(f"{relpath} missing Allowed actions")
+
+    installed_operations = read_text("framework/installed-operations.md")
+    for required_action in [
+        "`read-only`",
+        "`docs-only`",
+        "`adapter-only`",
+        "`code-and-tests`",
+        "`full-with-approval`",
+    ]:
+        if required_action not in installed_operations:
+            failures.append(
+                f"framework/installed-operations.md missing {required_action}"
+            )
+
+    source_policy = read_text(
+        "templates/target/.ai/assistant/policies/ai-infrastructure-source-access.md"
+    )
+    for required_source_policy_text in [
+        "Local paths:",
+        "Git URLs:",
+        "HTTPS URLs:",
+        "Pasted content:",
+        "Package or plugin references:",
+        "Review-only work:",
+        "Canonical integration into repository files:",
+    ]:
+        if required_source_policy_text not in source_policy:
+            failures.append(
+                "templates/target/.ai/assistant/policies/"
+                f"ai-infrastructure-source-access.md missing {required_source_policy_text}"
+            )
 
     bridge_files = [
         "templates/target/AI_ASSISTANTS.md",

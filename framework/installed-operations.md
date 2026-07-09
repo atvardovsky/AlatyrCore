@@ -49,6 +49,29 @@ A post-install request should state:
   `code-and-tests`, or `full-with-approval`
 - expected final evidence
 
+## Allowed Actions
+
+Allowed actions bound the surfaces an assistant may change for one installed
+operation request:
+
+- `read-only`: inspect target files and report only; no file changes.
+- `docs-only`: change documentation, blueprint-equivalent docs, and diagram
+  sources only; do not change code, tests, runtime config, or assistant
+  infrastructure.
+- `adapter-only`: change adapter-owned `.ai/*` surfaces, especially
+  `.ai/assistant` files, bridge files, assistant templates, flows, gates,
+  policies, and checker rules only; do not change product code, tests, or
+  accepted project facts.
+- `code-and-tests`: change code, tests, and required documentation or diagram
+  sync; do not perform live external actions, destructive actions, production
+  dependency changes, or permission broadening.
+- `full-with-approval`: the request may include protected surfaces, but each
+  protected change still requires explicit programmer approval before it is
+  made.
+
+If the requested operation exceeds the allowed actions, the assistant should
+stop before editing and ask for a narrower operation or explicit approval.
+
 If a request says "ask Alatyr" or similar, interpret that as "ask an assistant
 to use the installed Alatyr Core adapter in this repository." Do not assume a
 runtime service, CLI, agent daemon, or universal command exists.

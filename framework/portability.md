@@ -84,7 +84,7 @@ A repository adapter owns the concrete facts for one project:
 - target adapter maturity gaps, framework baseline, local deviations, and
   lifecycle notes
 - target installed-operation requests, blueprint creation/recheck flows, audit
-  reports, and maintenance cadence
+  reports, allowed-action request bounds, and maintenance cadence
 - target operation help, routing flows, supported local command aliases, and
   post-install/update assistant chat-message templates
 - target final-evidence requirements for commands that actually exist there

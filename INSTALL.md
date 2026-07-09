@@ -49,7 +49,8 @@ Before creating files in the target repository, inspect:
 - diagram sources, visual artifacts, and generated files
 - skills, prompts, third-party assistant infrastructure, and provenance notes
 - existing assistant bridge files, prompts, skills, gates, checker rules,
-  operation help, routing, or chat-completion message templates
+  source-access policies, operation help, routing, or chat-completion message
+  templates
 
 If a target fact is missing, mark it as missing. Do not invent it.
 
@@ -101,8 +102,10 @@ In a typical target repository:
 5. Create `.ai/assistant/contour.md` and target assistant workflows/gates.
 6. Add bridge files only for assistants the target uses.
 7. Add installed-operation, operation-help, operation-routing,
-   blueprint-creation, adapter-recheck, and post-install/update chat-message
-   templates when the target wants post-install operation requests.
+   AI-infrastructure-inventory, source-access policy, blueprint-creation,
+   adapter-recheck, and post-install/update chat-message templates when the
+   target wants post-install operation requests or AI infrastructure
+   adaptation.
 8. Add skills, prompts, diagrams, and deterministic checks only when useful
    for the target, after adapting them to target rules and recording source or
    provenance when applicable.

@@ -77,6 +77,8 @@ to an inventory flow, or `alatyr-adaptation <source>` and
 `alatyr-add-ai <source>`, which route to adaptation. The `<source>` may be a
 local path, Git URL, HTTPS URL, assistant-native skill or prompt reference,
 pasted content, package/plugin reference, or other adapter-defined source.
+Target help should state near these aliases that they are chat/request
+shortcuts, not shell commands.
 
 ## Routing Rules
 

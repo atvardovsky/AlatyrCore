@@ -14,6 +14,8 @@ Replace placeholders with target facts before accepting installation.
   `.ai/framework/operation-help.md`
 - Target assistant contour: `.ai/assistant/contour.md`
 - Target gates: `.ai/assistant/gates/checklist.md`
+- AI infrastructure source-access policy:
+  `.ai/assistant/policies/ai-infrastructure-source-access.md`
 - Target validation: `{TARGET_VALIDATION}`
 - Target AI infrastructure source/access policy:
   `{TARGET_AI_INFRASTRUCTURE_SOURCE_ACCESS_POLICY}`
@@ -32,19 +34,21 @@ Replace placeholders with target facts before accepting installation.
 
 1. Load `AGENTS.md`, `AI_ASSISTANTS.md`, `.ai/README.md`, `.ai/framework`,
    `.ai/project`, and `.ai/assistant`.
-2. Inspect known assistant surfaces for `{SUPPORTED_ASSISTANTS}`.
-3. Classify each found item as framework, project, repository adapter, bridge,
+2. Read `.ai/assistant/policies/ai-infrastructure-source-access.md` when it
+   exists; otherwise record source-access policy as missing.
+3. Inspect known assistant surfaces for `{SUPPORTED_ASSISTANTS}`.
+4. Classify each found item as framework, project, repository adapter, bridge,
    generated artifact, external assistant infrastructure, or unknown.
-4. Record item type, path or reference, owner, source/provenance, permission
+5. Record item type, path or reference, owner, source/provenance, permission
    surface, supported assistants, and validation or manual review status.
-5. Identify overlaps, duplicate policy, stale bridge files, unsafe permissions,
+6. Identify overlaps, duplicate policy, stale bridge files, unsafe permissions,
    missing provenance, and missing adapter facts.
-6. Report which items are already usable, need adaptation, need approval, need
+7. Report which items are already usable, need adaptation, need approval, need
    removal, or should stay unresolved.
-7. If the programmer asks to add an item, route to
+8. If the programmer asks to add an item, route to
    `.ai/assistant/flows/skill-adaptation.flow.md` with the inventory result as
    context.
-8. Do not import or normalize external infrastructure during inventory-only
+9. Do not import or normalize external infrastructure during inventory-only
    work.
 
 ## Final Evidence

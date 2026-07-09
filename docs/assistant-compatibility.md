@@ -61,9 +61,9 @@ surfaces should route back to `.ai/assistant/help.md` and
 
 Targets may define request aliases such as `alatyr-ai-inventory`,
 `alatyr-adaptation <source>`, or `alatyr-add-ai <source>`. Assistant-specific
-surfaces should route those aliases to the canonical inventory and
-skill-adaptation flows, preserve source provenance, and avoid importing the
-source directly.
+surfaces should treat those aliases as chat/request shortcuts, not shell
+commands. Route them to the canonical inventory and skill-adaptation flows,
+preserve source provenance, and avoid importing the source directly.
 
 Every supported bridge template should include a short pointer to
 `.ai/assistant/help.md` and

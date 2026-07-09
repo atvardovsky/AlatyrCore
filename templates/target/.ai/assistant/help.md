@@ -11,6 +11,8 @@ local command in `{TARGET_VALIDATION_OR_LOCAL_COMMANDS}`.
 
 Supported request aliases:
 
+These aliases are chat/request shortcuts, not shell commands.
+
 - `alatyr-ai-inventory`: route to `ai-infrastructure-inventory` and report
   existing AI instructions, prompts, skills, rules, wrappers, bridges, MCP/tool
   configs, gates, checkers, and generated assistant artifacts.
@@ -135,6 +137,20 @@ Allowed actions: `{READ_ONLY_DOCS_ONLY_ADAPTER_ONLY_CODE_AND_TESTS_OR_FULL_WITH_
 Expected final evidence: `{EXPECTED_FINAL_EVIDENCE}`
 ```
 
+Allowed actions guide:
+
+- `read-only`: inspect target files and report only; no file changes.
+- `docs-only`: docs, blueprint-equivalent docs, and diagram sources only; no
+  code changes.
+- `adapter-only`: adapter-owned `.ai/*` surfaces, especially
+  `.ai/assistant`, bridge files, assistant templates, gates, flows, policies,
+  and checker rules only; no product code or accepted project facts.
+- `code-and-tests`: code, tests, and required docs/diagram sync; no live
+  external actions, destructive actions, production dependencies, or broader
+  permissions.
+- `full-with-approval`: protected changes require explicit programmer
+  approval before they are made.
+
 AI infrastructure inventory shorthand:
 
 ```text
@@ -185,6 +201,8 @@ If the assistant cannot safely choose an operation, it should:
 - Supported assistants: `{SUPPORTED_ASSISTANTS}`
 - Target validation or manual checks: `{TARGET_VALIDATION}`
 - Approval constraints: `{TARGET_APPROVAL_CONSTRAINTS}`
+- AI infrastructure source access policy:
+  `.ai/assistant/policies/ai-infrastructure-source-access.md`
 - Allowed AI infrastructure source access:
   `{TARGET_AI_INFRASTRUCTURE_SOURCE_ACCESS_POLICY}`
 - Known adapter gaps: `{KNOWN_GAPS}`

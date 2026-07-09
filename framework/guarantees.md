@@ -39,6 +39,7 @@ The framework guarantees that an assistant has a defined process for:
   importing new assistant infrastructure
 - using an installed adapter for post-install blueprint creation, drift review,
   framework update recheck, and adapter maturity review
+- bounding installed-operation requests by allowed actions before editing files
 - showing operation help and routing ambiguous requests before guessing or
   editing files
 - suggesting framework or documentation improvements when the process becomes
@@ -73,6 +74,7 @@ defines:
   used
 - installed-operation request, blueprint-creation, adapter-recheck, and
   framework-update review flows when the target wants post-install operations
+- allowed-action meanings for installed-operation requests
 - operation help, operation-routing, and post-install/update chat-message
   templates when the target wants discoverable assistant requests
 - consistency checks that are deterministic for the project

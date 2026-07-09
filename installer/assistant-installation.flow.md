@@ -59,8 +59,8 @@ Read in the target repository:
 - security, live-service, credential, and destructive-operation policies
 - diagram sources, generated files, and visual artifacts
 - existing prompts, skills, third-party assistant infrastructure, provenance
-  notes, gates, checker rules, operation help, routing flows, and assistant
-  chat-message templates
+  notes, source-access policies, gates, checker rules, operation help, routing
+  flows, and assistant chat-message templates
 
 ## Ownership Classification
 
@@ -94,9 +94,10 @@ Classify every proposed target file:
     workflows/gates from target facts.
 11. Add bridge files only for assistants the target uses.
 12. Add installed-operation, operation-help, operation-routing,
-    AI-infrastructure-inventory, blueprint-creation, adapter-recheck, and
-    post-install/update chat-message templates when the target wants
-    post-install operation requests.
+    AI-infrastructure-inventory, source-access policy, blueprint-creation,
+    adapter-recheck, and post-install/update chat-message templates when the
+    target wants post-install operation requests or AI infrastructure
+    adaptation.
 13. Add prompts, skills, diagrams, or consistency checks only when they solve
     target friction, can be maintained, and have been adapted to target facts.
 14. Run target validation that exists. Do not invent commands.
@@ -144,8 +145,9 @@ Report:
 - existing files preserved, skipped, or overwritten with approval
 - supported assistant bridges added or skipped
 - installed-operation, operation-help, operation-routing,
-  AI-infrastructure-inventory, blueprint-creation, adapter-recheck, and
-  post-install/update chat-message templates added or skipped
+  AI-infrastructure-inventory, source-access policy, blueprint-creation,
+  adapter-recheck, and post-install/update chat-message templates added or
+  skipped
 - prompts, skills, or third-party assistant infrastructure adapted or skipped
 - target validation run and skipped
 - unresolved adapter facts

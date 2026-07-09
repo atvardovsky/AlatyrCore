@@ -64,6 +64,10 @@ core.
 
 List target-specific files to rewrite from target facts.
 
+Include `.ai/assistant/policies/ai-infrastructure-source-access.md` when the
+target wants AI infrastructure inventory, adaptation, package/plugin review, or
+third-party assistant infrastructure handling.
+
 ## Context, Risk, Safety, Testing, And Diagram Adaptation
 
 - Target context entry points:
@@ -135,4 +139,4 @@ APPROVE ALATYR INSTALLATION: ALATYR-YYYYMMDD-short-name
 
 List drift, overwrite, unsupported-assistant, gate, security, diagram,
 maturity, lifecycle, installed-operation, operation-help, skill-adaptation,
-and validation risks.
+source-access, and validation risks.

@@ -41,6 +41,7 @@ Every project using this framework must define:
 - installed-operation request, blueprint-creation, adapter-recheck, and
   framework-update review flows when the repository wants post-install
   operations
+- allowed-action meanings for installed-operation requests
 - operation help, operation-routing, and post-install/update chat-message
   templates when the repository wants discoverable assistant requests
 - final evidence format for that project

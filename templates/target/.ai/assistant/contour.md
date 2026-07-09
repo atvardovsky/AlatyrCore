@@ -8,6 +8,7 @@ Replace placeholders with target facts before accepting installation.
 
 - assistant workflows under `.ai/assistant/flows`
 - gates under `.ai/assistant/gates`
+- policies under `.ai/assistant/policies`
 - prompts, skills, bridge files, and assistant-specific wrappers
 - AI infrastructure inventory, source access, provenance, adaptation,
   output-format, safety, and wrapper rules

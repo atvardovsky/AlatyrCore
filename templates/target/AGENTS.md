@@ -31,6 +31,7 @@ read:
 - `.ai/project/contour.md`
 - `.ai/assistant/contour.md`
 - `.ai/assistant/help.md`
+- `.ai/assistant/policies/ai-infrastructure-source-access.md`
 - `{TARGET_PROJECT_SOURCE_OF_TRUTH}`
 - `.ai/assistant/gates/checklist.md`
 - the matching flow under `.ai/assistant/flows`
@@ -44,6 +45,8 @@ read:
 - Security/live-service policy: `{TARGET_SECURITY_POLICY}`.
 - Diagram policy: `{TARGET_DIAGRAM_POLICY}`.
 - Skill/prompt policy: `{TARGET_SKILL_PROMPT_POLICY}`.
+- AI infrastructure source-access policy:
+  `.ai/assistant/policies/ai-infrastructure-source-access.md`.
 
 ## Alatyr Core Rules
 

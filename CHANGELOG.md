@@ -25,5 +25,7 @@
 - Reworked target Alatyr help from a table into operation blocks, added
   operation type aliases, and added Allowed actions to installed operation
   request templates.
+- Added allowed-action surface mapping and an AI infrastructure source-access
+  policy target template for installed adapters.
 - Documented self-application reviews and ignored root-local trial adapter
   artifacts for this source repository.

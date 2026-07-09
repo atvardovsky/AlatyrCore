@@ -156,10 +156,11 @@ changes.
 For skills, prompts, wrappers, bridge files, rules, MCP/tool configs, gates,
 checkers, or other AI infrastructure, a target adapter may define request
 aliases such as `alatyr-ai-inventory`, `alatyr-adaptation <source>`, or
-`alatyr-add-ai <source>`. Sources can be local paths, Git URLs, HTTPS URLs,
-assistant-native references, packages/plugins, or pasted content, but existing
-infrastructure, provenance, permissions, safety, and approval are reviewed
-before anything becomes canonical.
+`alatyr-add-ai <source>`. These aliases are chat/request shortcuts, not shell
+commands. Sources can be local paths, Git URLs, HTTPS URLs, assistant-native
+references, packages/plugins, or pasted content, but existing infrastructure,
+provenance, permissions, safety, and approval are reviewed before anything
+becomes canonical.
 
 ## Suggested Target Shape
 
@@ -175,6 +176,8 @@ A mature target installation usually has:
 - `.ai/assistant/help.md`
 - `.ai/assistant/flows`
 - `.ai/assistant/gates/checklist.md`
+- `.ai/assistant/policies/ai-infrastructure-source-access.md` when AI
+  infrastructure can be inventoried or adapted
 - `.ai/assistant/templates/operation-request.md`
 - `.ai/assistant/templates/post-install-message.md`
 - `.ai/assistant/templates/post-update-message.md`
