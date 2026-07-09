@@ -35,6 +35,10 @@ The framework guarantees that an assistant has a defined process for:
   files and wrappers
 - adapting skills, prompts, wrappers, and third-party assistant infrastructure
   without letting them bypass framework or target adapter rules
+- using an installed adapter for post-install blueprint creation, drift review,
+  framework update recheck, and adapter maturity review
+- showing operation help and routing ambiguous requests before guessing or
+  editing files
 - suggesting framework or documentation improvements when the process becomes
   hard to manage
 - assessing whether a project adapter is incomplete, minimal, usable, or
@@ -64,6 +68,10 @@ defines:
 - supported assistant bridge files
 - skill provenance, adaptation, wrapper, and approval rules when skills or
   third-party assistant infrastructure are used
+- installed-operation request, blueprint-creation, adapter-recheck, and
+  framework-update review flows when the target wants post-install operations
+- operation help, operation-routing, and post-install/update chat-message
+  templates when the target wants discoverable assistant requests
 - consistency checks that are deterministic for the project
 - final evidence expected for that project
 
@@ -82,6 +90,10 @@ The framework does not guarantee:
   another project
 - that imported skills or third-party assistant infrastructure are safe,
   current, or compatible without target adapter review
+- that "ask Alatyr" implies a runtime service, CLI, daemon, or universal
+  command instead of an assistant using installed Markdown instructions
+- that help wording or operation menus are current when the target adapter does
+  not maintain them
 - that a project adapter is mature enough for broad work unless its local
   facts support that claim
 

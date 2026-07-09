@@ -10,6 +10,9 @@ Use this guide when changing Alatyr Core itself.
   and assistant compatibility docs when affected.
 - Target template change: update `templates/target`, installer docs, and
   README when the installation contract changes.
+- Installed-operation help or chat-message change: update `framework/`,
+  `installer/`, `templates/target`, assistant compatibility docs, and
+  changelog when affected.
 - Source-repository validation change: update `tools/`, maintainer docs,
   `AGENTS.md`, README, and changelog when affected.
 - Wording-only change: update only the owning document when no behavior,

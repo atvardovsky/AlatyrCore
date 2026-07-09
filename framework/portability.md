@@ -23,6 +23,10 @@ Portable framework core may describe reusable assistant operating patterns:
 - diagram-as-code and visual-artifact synchronization concepts
 - consistency-manifest concept
 - blueprint-driven product-change workflow concepts
+- installed-adapter operation, blueprint creation, framework update recheck,
+  and adapter audit concepts
+- operation help, ambiguous-request routing, and assistant chat-completion
+  message concepts
 - framework core versus target project adapter installation planning
 - adapter maturity levels and framework lifecycle/upgrade concepts
 
@@ -54,6 +58,10 @@ including:
   visual artifact tooling as required mechanisms
 - source-repository framework versioning format, release notes, or local
   adapter owner names
+- source-repository post-install request templates, audit schedules, or adapter
+  reports as required mechanisms
+- source-repository operation names, command aliases, help wording, or chat
+  completion text as target facts
 
 Those facts are project or repository adapter details.
 
@@ -74,6 +82,10 @@ A repository adapter owns the concrete facts for one project:
   repository
 - target adapter maturity gaps, framework baseline, local deviations, and
   lifecycle notes
+- target installed-operation requests, blueprint creation/recheck flows, audit
+  reports, and maintenance cadence
+- target operation help, routing flows, supported local command aliases, and
+  post-install/update assistant chat-message templates
 - target final-evidence requirements for commands that actually exist there
 
 Each project using Alatyr Core has its own adapter and local gates. Those

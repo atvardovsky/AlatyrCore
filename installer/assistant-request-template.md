@@ -22,6 +22,8 @@ Constraints:
   facts.
 - Copy or adapt Alatyr Core framework files into target `.ai/framework`.
 - Rewrite target project and assistant adapter files from target facts.
+- Add operation help, routing, and post-install/update chat-message templates
+  when useful for the target adapter.
 - Adapt prompts, skills, wrappers, and third-party assistant infrastructure
   from target evidence before making them canonical.
 - Do not copy source commands, CI jobs, test folders, fixtures, security
@@ -40,3 +42,7 @@ programmer may add:
 If no protected overwrite or behavior change is needed, apply the installation
 after presenting the plan and state the assumptions in final evidence.
 ```
+
+For work after installation, use
+`installer/installed-operation-request-template.md` instead of this installation
+request.

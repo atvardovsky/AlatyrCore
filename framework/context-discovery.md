@@ -27,8 +27,9 @@ Before acting, inspect the target adapter for:
 - security, live-service, credential, and destructive-operation policies
 - skill, prompt, third-party assistant infrastructure, provenance, and wrapper
   policies
-- existing assistant bridge files, prompts, skills, flows, gates, and checker
-  manifests
+- existing assistant bridge files, prompts, skills, flows, gates,
+  installed-operation requests, operation help, routing flows, adapter recheck
+  reports, chat-completion message templates, and checker manifests
 
 Use the smallest context set that can answer the task, then expand only when
 changed facts cross module, data, runtime, security, or assistant-governance
@@ -43,6 +44,10 @@ For each important fact, identify its owner:
   the project contour
 - repository adapter fact: local AI workflow, validation, bridge, prompt, gate,
   skill, checker, or command fact
+- installed-operation fact: adapter-owned request, blueprint-creation,
+  adapter-recheck, framework-update review, or drift-review fact
+- operation-help fact: adapter-owned help menu, operation routing, local
+  command alias, or post-install/update chat-message fact
 - skill or prompt fact: adapter-owned assistant infrastructure that may need
   provenance, wrapper, permission, and evidence review
 - bridge fact: short assistant-specific pointer to canonical files

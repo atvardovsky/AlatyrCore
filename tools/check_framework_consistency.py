@@ -73,11 +73,18 @@ def main() -> int:
         failures.append("AI_ASSISTANTS.md must tell assistants to read all framework files")
 
     required_target_templates = [
+        "templates/target/.ai/assistant/help.md",
+        "templates/target/.ai/assistant/flows/adapter-recheck.flow.md",
         "templates/target/.ai/assistant/flows/blueprint-driven-change.flow.md",
         "templates/target/.ai/assistant/flows/documentation-sync.flow.md",
         "templates/target/.ai/assistant/flows/logical-integrity-review.flow.md",
+        "templates/target/.ai/assistant/flows/operation-routing.flow.md",
+        "templates/target/.ai/assistant/flows/project-blueprint-creation.flow.md",
         "templates/target/.ai/assistant/flows/skill-adaptation.flow.md",
         "templates/target/.ai/assistant/skills/example/SKILL.md",
+        "templates/target/.ai/assistant/templates/operation-request.md",
+        "templates/target/.ai/assistant/templates/post-install-message.md",
+        "templates/target/.ai/assistant/templates/post-update-message.md",
     ]
     for relpath in required_target_templates:
         if not (ROOT / relpath).is_file():
@@ -88,13 +95,20 @@ def main() -> int:
         "templates/target/.ai/README.md",
         "templates/target/.ai/project/contour.md",
         "templates/target/.ai/assistant/contour.md",
+        "templates/target/.ai/assistant/help.md",
         "templates/target/.ai/assistant/gates/checklist.md",
+        "templates/target/.ai/assistant/flows/adapter-recheck.flow.md",
         "templates/target/.ai/assistant/flows/blueprint-driven-change.flow.md",
         "templates/target/.ai/assistant/flows/documentation-sync.flow.md",
         "templates/target/.ai/assistant/flows/logical-integrity-review.flow.md",
+        "templates/target/.ai/assistant/flows/operation-routing.flow.md",
+        "templates/target/.ai/assistant/flows/project-blueprint-creation.flow.md",
         "templates/target/.ai/assistant/flows/skill-adaptation.flow.md",
         "templates/target/.ai/assistant/skills/example/SKILL.md",
         "templates/target/.ai/assistant/templates/installation-note.md",
+        "templates/target/.ai/assistant/templates/operation-request.md",
+        "templates/target/.ai/assistant/templates/post-install-message.md",
+        "templates/target/.ai/assistant/templates/post-update-message.md",
     ]
     for relpath in placeholder_templates:
         if "{" not in read_text(relpath):

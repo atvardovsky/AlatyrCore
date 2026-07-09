@@ -33,7 +33,8 @@ into another project, do this:
    `framework/security-safety-guidance.md`,
    `framework/diagram-guidance.md`, `framework/testing-guidance.md`,
    `framework/skill-adaptation.md`, `framework/adapter-maturity.md`,
-   `framework/lifecycle.md`, `installer/assistant-installation.flow.md`,
+   `framework/lifecycle.md`, `framework/installed-operations.md`,
+   `framework/operation-help.md`, `installer/assistant-installation.flow.md`,
    `installer/readiness-checklist.md`, and
    `installer/installation-plan-template.md`.
 2. Inspect the target repository before creating files.
@@ -56,16 +57,19 @@ into another project, do this:
     is unknown or unavailable, report it as unresolved instead of inventing a
     command.
 
-For details, use [INSTALL.md](INSTALL.md). For a copyable assistant prompt,
+For details, use [INSTALL.md](INSTALL.md). For a copyable installation prompt,
 use
 [installer/assistant-request-template.md](installer/assistant-request-template.md).
+For post-install work in a target repository that already has Alatyr Core, use
+[installer/installed-operation-request-template.md](installer/installed-operation-request-template.md).
 
 ## Repository Layout
 
 - `framework/`: portable Alatyr Core framework documents. These are the core
   files an assistant adapts into a target `.ai/framework` directory.
 - `installer/`: assistant-readable installation flow, readiness checklist,
-  installation plan template, and assistant request template.
+  installation plan template, assistant request template, and installed
+  operation request template.
 - `templates/target/`: starter files for a target repository adapter. These
   files contain placeholders and must be rewritten from target facts.
 - `docs/`: public explanation for maintainers and assistant compatibility.
@@ -103,6 +107,8 @@ not a portable validation requirement for target projects.
 - diagram guidance without hard-coded diagram tooling
 - third-party skill and assistant-infrastructure adaptation guidance
 - adapter maturity and lifecycle guidance
+- installed-adapter operation and recheck guidance
+- operation help and routing guidance for unclear requests
 - bridge-file pattern for modern assistants
 
 ## What Alatyr Core Does Not Provide
@@ -126,6 +132,24 @@ plan. Fresh installs can usually proceed after the plan when the programmer has
 asked for installation and no protected target files or behaviors are changed.
 Overwrites and protected changes require explicit programmer approval.
 
+## After Installation
+
+After Alatyr Core is installed in a target repository, programmers can ask an
+assistant to use the installed adapter for follow-up operations: creating or
+repairing project blueprints, rechecking the adapter after a framework update,
+reviewing drift, running blueprint-driven product changes, or adapting skills
+and prompts.
+
+Use
+[installer/installed-operation-request-template.md](installer/installed-operation-request-template.md)
+for a copyable post-install request. This is still assistant reasoning over
+Markdown files, not a universal Alatyr command or runtime service.
+
+If the intended operation is unclear, ask for "Alatyr help". A complete target
+adapter should answer with the local operation menu, short descriptions,
+matching flows, required input, and approval or validation notes before making
+changes.
+
 ## Suggested Target Shape
 
 A mature target installation usually has:
@@ -137,8 +161,12 @@ A mature target installation usually has:
 - `.ai/project/contour.md`
 - `.ai/project/context` or equivalent project source-of-truth docs
 - `.ai/assistant/contour.md`
+- `.ai/assistant/help.md`
 - `.ai/assistant/flows`
 - `.ai/assistant/gates/checklist.md`
+- `.ai/assistant/templates/operation-request.md`
+- `.ai/assistant/templates/post-install-message.md`
+- `.ai/assistant/templates/post-update-message.md`
 - optional skills, prompts, bridge files, diagrams, and consistency checks
 
 The target adapter decides actual validation commands and supported assistant

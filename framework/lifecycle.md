@@ -32,7 +32,13 @@ Before upgrading framework files in a target project:
 5. Identify new approval, testing, security, diagram, or validation guidance.
 6. Prepare a migration note or installation plan.
 7. Require approval before overwriting existing target AI instructions.
-8. Run or report target validation.
+8. Recheck the installed adapter for framework references, bridge files, gates,
+   prompts, skills, lifecycle notes, and maturity gaps.
+9. Recheck operation help, operation-routing flows, and post-update chat
+   message templates.
+10. Run or report target validation.
+11. Send a post-update assistant chat message that names updated surfaces,
+    recommended recheck operation, validation, and unresolved gaps.
 
 Do not use an installer script as the framework mechanism. Do not overwrite
 target-specific rules just because the source framework changed.
@@ -50,6 +56,8 @@ Framework lifecycle notes should record:
 - changed approval, safety, testing, diagram, or validation expectations
 - bridge or supported-assistant compatibility changes
 - migration actions required by project adapters
+- adapter recheck results for installed framework updates
+- help/routing and post-update chat-message migration needs
 
 ## Deprecation
 

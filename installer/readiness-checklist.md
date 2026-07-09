@@ -18,6 +18,8 @@ changes.
 - Existing test tools, fixtures, helpers, and isolation rules:
 - Existing source-of-truth/context map:
 - Existing blueprint or equivalent source-of-truth docs:
+- Existing installed-operation, operation-help, operation-routing,
+  blueprint-creation, adapter-recheck, or chat-message process:
 - Existing risk or approval policy:
 - Existing security, privacy, live-service, destructive-operation, dependency,
   and credential/log-redaction policies:
@@ -108,6 +110,10 @@ Collect target-specific facts before writing project docs:
 - skills, prompts, wrappers, third-party assistant infrastructure, provenance,
   output formats, permissions, and safety rules
 - adapter maturity gaps and lifecycle expectations
+- installed-operation request, blueprint-creation, adapter-recheck, and
+  framework-update review expectations
+- operation help, routing, and post-install/update assistant chat-message
+  expectations
 
 ## 6. Assistant Compatibility
 
@@ -150,6 +156,8 @@ List commands or manual checks:
 - target test isolation rules:
 - static analysis:
 - docs/diagram checks:
+- installed-operation or adapter-recheck review:
+- operation-help or routing review:
 - skill/provenance/safety review:
 - AI consistency checks, if installed:
 - source commands intentionally not copied:
@@ -166,6 +174,9 @@ Final evidence must say:
 - target adapter rewritten
 - contours created or updated
 - bridge files added or checked
+- installed-operation, operation-help, operation-routing, blueprint-creation,
+  adapter-recheck, or post-install/update chat-message templates added or
+  skipped
 - skills, prompts, wrappers, or third-party assistant infrastructure adapted or
   skipped
 - existing target instructions preserved or approved for overwrite

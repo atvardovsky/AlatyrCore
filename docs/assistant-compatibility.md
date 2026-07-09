@@ -30,6 +30,7 @@ as:
 - `.ai/framework/README.md`
 - `.ai/project/contour.md`
 - `.ai/assistant/contour.md`
+- `.ai/assistant/help.md`
 - `.ai/assistant/flows`
 - `.ai/assistant/gates/checklist.md`
 
@@ -45,6 +46,18 @@ before becoming canonical.
 Skill wrappers should follow the same rule as bridge files: keep them thin,
 point them to canonical target flows and gates, and do not let them become
 divergent policy.
+
+## Installed Operations
+
+After installation, assistant-specific surfaces should still point back to the
+target adapter. Requests such as blueprint creation, adapter recheck after a
+framework update, drift review, or skill adaptation should use canonical target
+flows under `.ai/assistant/flows` and the target
+`.ai/assistant/templates/operation-request.md` template.
+
+When a request is unclear or asks for "Alatyr help", assistant-specific
+surfaces should route back to `.ai/assistant/help.md` and
+`.ai/assistant/flows/operation-routing.flow.md` instead of inventing a command.
 
 ## If An Assistant Cannot Run Commands
 

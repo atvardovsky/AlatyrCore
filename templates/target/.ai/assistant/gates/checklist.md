@@ -16,6 +16,10 @@ commands from another project.
 - Security/live-service policy checked when sensitive surfaces changed.
 - Skill/provenance/safety policy checked when prompts, skills, wrappers, or
   third-party assistant infrastructure changed.
+- Installed-operation or adapter-recheck scope checked when the task asks for
+  blueprint creation, framework update review, or adapter drift review.
+- Operation help and routing checked when the user asks for Alatyr help,
+  commands, available actions, or the requested operation is unclear.
 - Human approvals verified when required.
 - Final evidence reports run checks, skipped checks, assumptions, and residual
   risk.

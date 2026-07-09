@@ -13,6 +13,8 @@ Use this checklist before broad or risky changes.
 - Affected tests:
 - Affected diagrams:
 - Affected prompts/gates/skills/bridge files:
+- Affected installed-operation or adapter-recheck files:
+- Affected operation-help, routing, or assistant chat-message files:
 - Skill provenance or third-party assistant infrastructure impact:
 - Approval required:
 - Validation to run:

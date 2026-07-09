@@ -40,6 +40,8 @@ Read in this repository:
 - `framework/skill-adaptation.md`
 - `framework/adapter-maturity.md`
 - `framework/lifecycle.md`
+- `framework/installed-operations.md`
+- `framework/operation-help.md`
 - `installer/readiness-checklist.md`
 - `installer/installation-plan-template.md`
 - `templates/target`
@@ -57,7 +59,8 @@ Read in the target repository:
 - security, live-service, credential, and destructive-operation policies
 - diagram sources, generated files, and visual artifacts
 - existing prompts, skills, third-party assistant infrastructure, provenance
-  notes, gates, and checker rules
+  notes, gates, checker rules, operation help, routing flows, and assistant
+  chat-message templates
 
 ## Ownership Classification
 
@@ -90,12 +93,17 @@ Classify every proposed target file:
 10. Create target `.ai/assistant/contour.md` and minimal target assistant
     workflows/gates from target facts.
 11. Add bridge files only for assistants the target uses.
-12. Add prompts, skills, diagrams, or consistency checks only when they solve
+12. Add installed-operation, operation-help, operation-routing,
+    blueprint-creation, adapter-recheck, and post-install/update chat-message
+    templates when the target wants post-install operation requests.
+13. Add prompts, skills, diagrams, or consistency checks only when they solve
     target friction, can be maintained, and have been adapted to target facts.
-13. Run target validation that exists. Do not invent commands.
-14. Apply logical integrity review: changed facts, affected contracts,
+14. Run target validation that exists. Do not invent commands.
+15. Apply logical integrity review: changed facts, affected contracts,
     source of truth, repair direction, and residual risk.
-15. Report final evidence.
+16. Report final evidence.
+17. Send the appropriate post-install or post-update assistant chat message
+    using the target template when installed.
 
 ## Human Approval Gate
 
@@ -134,8 +142,13 @@ Report:
 - project adapter files rewritten from target facts
 - existing files preserved, skipped, or overwritten with approval
 - supported assistant bridges added or skipped
+- installed-operation, operation-help, operation-routing, blueprint-creation,
+  adapter-recheck, and post-install/update chat-message templates added or
+  skipped
 - prompts, skills, or third-party assistant infrastructure adapted or skipped
 - target validation run and skipped
 - unresolved adapter facts
 - logical integrity review result
 - residual risk
+- post-install or post-update assistant chat message sent or skipped with
+  reason

@@ -47,6 +47,8 @@ The adapter is usable when it also defines:
 - approval triggers
 - logical integrity review path
 - blueprint-driven change or equivalent product-change workflow
+- installed-operation request and adapter-recheck path for post-install work
+- operation help or routing path for ambiguous requests
 - skill adaptation and provenance rules when skills or third-party assistant
   infrastructure exist
 
@@ -62,6 +64,8 @@ The adapter is mature when it also defines:
 - deterministic consistency checks for maintainable invariants
 - generated-artifact drift checks or manual-review policy
 - framework upgrade/lifecycle notes
+- post-install operation, blueprint repair, and framework-update recheck notes
+- maintained help menu and post-install/update chat-message templates
 - skill/wrapper compatibility notes for supported assistants
 - improvement advice path for reducing future friction
 
@@ -79,6 +83,10 @@ Ask:
 - Are security and live external side effects bounded?
 - Are approval-required changes named?
 - Are docs, diagrams, prompts, skills, bridges, and checker rules synchronized?
+- Can the adapter be rechecked after installation or framework update without
+  relying on user memory?
+- Can an assistant show useful Alatyr help when the user's requested operation
+  is unclear?
 - Are imported or custom skills adapted from target evidence with provenance
   and safety review?
 - Is there a way to report missing or unresolved adapter facts?

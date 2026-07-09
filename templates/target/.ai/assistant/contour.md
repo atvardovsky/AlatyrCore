@@ -12,6 +12,10 @@ Replace placeholders with target facts before accepting installation.
 - skill provenance, adaptation, output-format, safety, and wrapper rules
 - target validation commands or manual checks
 - blueprint-driven change or equivalent target product-change workflow
+- installed-operation request, blueprint-creation, adapter-recheck, and
+  framework-update review flows
+- operation help, operation-routing, and post-install/update assistant chat
+  message templates
 - documentation-sync rules
 - final evidence requirements
 - target adapter maturity and lifecycle notes

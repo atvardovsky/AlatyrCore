@@ -32,6 +32,8 @@ instructions, read:
 - `framework/skill-adaptation.md`
 - `framework/adapter-maturity.md`
 - `framework/lifecycle.md`
+- `framework/installed-operations.md`
+- `framework/operation-help.md`
 - `installer/assistant-installation.flow.md`
 - `installer/readiness-checklist.md`
 - `installer/installation-plan-template.md`

@@ -15,11 +15,13 @@ An assistant normally adapts these files into a target repository under
 
 ## `installer/`
 
-Assistant-readable installation process.
+Assistant-readable installation and post-install request process.
 
 These files tell an assistant how to inspect a target repository, prepare an
-installation plan, classify files by contour, request approval when needed, and
-report final evidence.
+installation plan, classify files by contour, request approval when needed,
+operate an installed adapter through request templates, and report final
+evidence. They also define how installation or update completion should be
+reported back in assistant chat.
 
 ## `templates/target/`
 
@@ -63,6 +65,15 @@ If a fact describes how assistants should generally work, it may belong in
 
 If a fact describes how to install Alatyr Core into a target project, it may
 belong in `installer/`.
+
+If a fact describes how to request work from an already installed target
+adapter, it may belong in `installer/` as a request template or in
+`templates/target/.ai/assistant` as a placeholder flow/template.
+
+If a fact describes how an installed adapter should show available operations,
+route unclear requests, or format post-install/update chat messages, it may
+belong in `templates/target/.ai/assistant` as placeholder adapter
+infrastructure.
 
 If a fact describes an example target file shape, it may belong in
 `templates/target/`, but it must remain placeholder-based.

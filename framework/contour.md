@@ -27,6 +27,8 @@ Framework core owns:
 - skill, prompt, wrapper, and third-party assistant infrastructure adaptation
   pattern
 - supported-assistant bridge pattern
+- installed-adapter operation, blueprint creation, and recheck pattern
+- operation help and ambiguous-request routing pattern
 - project-adapter contract
 - framework installation and portability rules
 - improvement-advice trigger pattern
@@ -53,6 +55,10 @@ Framework core must not own:
   generated-file drift tooling
 - project-specific framework version strings, release process, or adapter
   owner names
+- project-specific post-install request cadence, report owners, or adapter
+  maintenance schedule
+- project-specific operation names, help wording, local command aliases, or
+  chat-completion message text
 
 ## Adjacent Contours In A Target Repository
 

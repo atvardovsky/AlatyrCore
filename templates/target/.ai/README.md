@@ -37,6 +37,9 @@ Replace this section with the actual target project map.
 - bridge-file policy
 - validation evidence expectations
 - documentation-sync rules
+- installed-operation requests and adapter rechecks
+- operation help, operation routing, and post-install/update assistant chat
+  messages
 
 Target commands and manual checks belong here or in linked target docs. They
 are not framework core.

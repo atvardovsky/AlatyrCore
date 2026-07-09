@@ -22,6 +22,8 @@ sync, logical integrity review, and final evidence.
 - portable security, safety, and live-service reasoning rules
 - diagram reasoning and source/visual synchronization guidance
 - skill, prompt, and third-party assistant infrastructure adaptation guidance
+- installed-adapter operation and recheck guidance
+- operation help and routing guidance for unclear installed-adapter requests
 - reusable assistant workflow categories
 - reusable approval, documentation-sync, logical integrity, and evidence
   concepts
@@ -70,6 +72,10 @@ Those belong to a project contour or repository adapter.
   project adapter can support reliable assistant work.
 - `.ai/framework/lifecycle.md`: framework versioning, upgrade, deprecation,
   and migration guidance.
+- `.ai/framework/installed-operations.md`: portable guidance for post-install
+  requests, blueprint creation, adapter rechecks, and framework update reviews.
+- `.ai/framework/operation-help.md`: portable guidance for installed-adapter
+  help, operation menus, ambiguous-request routing, and next safe actions.
 
 ## Target Repository Adapter
 

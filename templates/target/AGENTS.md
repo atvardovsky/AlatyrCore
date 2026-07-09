@@ -26,8 +26,11 @@ read:
 - `.ai/framework/skill-adaptation.md`
 - `.ai/framework/adapter-maturity.md`
 - `.ai/framework/lifecycle.md`
+- `.ai/framework/installed-operations.md`
+- `.ai/framework/operation-help.md`
 - `.ai/project/contour.md`
 - `.ai/assistant/contour.md`
+- `.ai/assistant/help.md`
 - `{TARGET_PROJECT_SOURCE_OF_TRUTH}`
 - `.ai/assistant/gates/checklist.md`
 - the matching flow under `.ai/assistant/flows`
@@ -54,6 +57,11 @@ read:
   smallest coherent set of owning files.
 - Use blueprint-driven change or the target equivalent for accepted product
   behavior changes.
+- Use installed-operation flows for post-install blueprint creation, adapter
+  rechecks, framework update reviews, and drift reviews.
+- If the user asks for Alatyr help, commands, available actions, or gives an
+  unclear request, read `.ai/assistant/help.md` and use
+  `.ai/assistant/flows/operation-routing.flow.md` before editing files.
 - Adapt skills, prompts, wrappers, and third-party assistant infrastructure
   from target evidence before making them canonical.
 - Use target validation only when it exists. Report unresolved checks.

@@ -28,6 +28,8 @@ Read these Alatyr Core files before planning an installation:
 - `framework/skill-adaptation.md`
 - `framework/adapter-maturity.md`
 - `framework/lifecycle.md`
+- `framework/installed-operations.md`
+- `framework/operation-help.md`
 - `installer/assistant-installation.flow.md`
 - `installer/readiness-checklist.md`
 - `installer/installation-plan-template.md`
@@ -46,7 +48,8 @@ Before creating files in the target repository, inspect:
 - security, live-service, credential, and destructive-operation policies
 - diagram sources, visual artifacts, and generated files
 - skills, prompts, third-party assistant infrastructure, and provenance notes
-- existing assistant bridge files, prompts, skills, gates, or checker rules
+- existing assistant bridge files, prompts, skills, gates, checker rules,
+  operation help, routing, or chat-completion message templates
 
 If a target fact is missing, mark it as missing. Do not invent it.
 
@@ -97,12 +100,31 @@ In a typical target repository:
 4. Create `.ai/project/contour.md` and target project source-of-truth docs.
 5. Create `.ai/assistant/contour.md` and target assistant workflows/gates.
 6. Add bridge files only for assistants the target uses.
-7. Add skills, prompts, diagrams, and deterministic checks only when useful
+7. Add installed-operation, operation-help, operation-routing,
+   blueprint-creation, adapter-recheck, and post-install/update chat-message
+   templates when the target wants post-install operation requests.
+8. Add skills, prompts, diagrams, and deterministic checks only when useful
    for the target, after adapting them to target rules and recording source or
    provenance when applicable.
-8. Run target validation that exists.
-9. Report files changed, validation run, skipped checks, approvals, and
+9. Run target validation that exists.
+10. Report files changed, validation run, skipped checks, approvals, and
    residual risk.
+
+## Post-Install Operations
+
+After installation, use
+`installer/installed-operation-request-template.md` when asking an assistant to
+operate the installed target adapter. Typical requests include blueprint
+creation or repair, adapter recheck after framework updates, drift review,
+blueprint-driven product changes, and skill adaptation.
+
+If the programmer asks for help, commands, or an unclear Alatyr action, the
+assistant should show the installed operation menu from the target adapter
+instead of guessing or inventing a CLI command.
+
+Alatyr Core does not provide a universal command or service for this. The
+assistant must read the target adapter and use target evidence, approvals, and
+validation.
 
 ## Rejection Criteria
 

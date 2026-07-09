@@ -29,6 +29,8 @@ List what must not be changed.
 - Test strategy and existing test surface:
 - Source-of-truth/context map:
 - Blueprint-driven change or equivalent product-change workflow:
+- Installed-operation, operation-help, operation-routing, blueprint-creation,
+  adapter-recheck, framework-update review, or chat-message process:
 - Risk and approval model:
 - Security, privacy, live-service, destructive-operation, dependency, and
   credential/log-redaction policies:
@@ -73,6 +75,9 @@ List target-specific files to rewrite from target facts.
 - Recommended test levels:
 - Target validation commands or manual checks:
 - Skill adaptation, provenance, wrapper, and output-format rules:
+- Installed-operation request and adapter-recheck rules:
+- Operation help and routing rules:
+- Post-install/update assistant chat-message rules:
 - Diagram source format:
 - Human visual format:
 - Render or manual-review policy:
@@ -124,4 +129,5 @@ APPROVE ALATYR INSTALLATION: ALATYR-YYYYMMDD-short-name
 ## Risks
 
 List drift, overwrite, unsupported-assistant, gate, security, diagram,
-maturity, lifecycle, skill-adaptation, and validation risks.
+maturity, lifecycle, installed-operation, operation-help, skill-adaptation,
+and validation risks.

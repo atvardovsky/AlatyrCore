@@ -37,6 +37,11 @@ Every project using this framework must define:
   skills or third-party assistant infrastructure are used
 - adapter maturity gaps, framework baseline/deviations, and lifecycle or
   upgrade notes
+- installed-operation request, blueprint-creation, adapter-recheck, and
+  framework-update review flows when the repository wants post-install
+  operations
+- operation help, operation-routing, and post-install/update chat-message
+  templates when the repository wants discoverable assistant requests
 - final evidence format for that project
 
 ## Adapter May Provide
@@ -47,6 +52,9 @@ An adapter may provide:
 - security/dependency/license scanners or manual review checklists
 - project-specific test-generation prompts or skills
 - skill import or normalization notes
+- installed-operation request templates or adapter audit reports
+- operation help menus, routing flows, or assistant chat-completion message
+  templates
 - generated visual artifacts
 - local pre-commit hooks
 - assistant-specific skill wrappers
@@ -73,6 +81,8 @@ The adapter must not:
 - weaken approval or validation requirements without explicit programmer
   confirmation
 - let bridge files become divergent sources of truth
+- advertise operations, commands, or chat messages that the target adapter does
+  not define or cannot validate
 
 ## Typical Target Adapter
 

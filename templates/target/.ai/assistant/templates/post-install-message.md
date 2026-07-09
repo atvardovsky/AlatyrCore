@@ -1,0 +1,39 @@
+# Post-Install Assistant Chat Message
+
+Use this template for the assistant's chat response after Alatyr Core is
+installed in `{PROJECT_NAME}`.
+
+Replace placeholders with target facts before sending the message.
+
+```text
+Alatyr Core is installed for `{PROJECT_NAME}`.
+
+Entry points:
+- `AGENTS.md`
+- `AI_ASSISTANTS.md`
+- `.ai/README.md`
+- `.ai/assistant/help.md`
+
+Installed operation help:
+- Ask for "Alatyr help" to see available operations.
+- Use `.ai/assistant/templates/operation-request.md` for structured requests.
+
+Available next actions:
+- `create-project-blueprint`: create or repair project source-of-truth docs from target evidence.
+- `recheck-after-installation`: verify the installed adapter and report gaps.
+- `product-change`: run blueprint-driven change from intent through validation and evidence.
+- `logical-integrity-review`: check consistency across code, docs, tests, diagrams, prompts, skills, gates, and bridges.
+- `skill-adaptation`: adapt skills, prompts, wrappers, or third-party assistant infrastructure.
+
+Validation run:
+`{VALIDATION_RUN_OR_UNRESOLVED}`
+
+Known adapter gaps:
+`{KNOWN_GAPS_OR_NONE}`
+
+Suggested first request:
+Use the installed Alatyr adapter in this repository.
+Operation type: recheck-after-installation
+Goal: verify the installation and list remaining adapter gaps.
+Non-goals: do not change project behavior.
+```
