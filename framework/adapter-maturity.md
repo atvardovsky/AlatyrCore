@@ -1,0 +1,88 @@
+# AI Framework Adapter Maturity
+
+This file helps an assistant judge whether a project adapter is ready to
+support reliable AI work.
+
+It is not a scorecard for project quality. It is a readiness model for the
+framework.
+
+## Levels
+
+### Incomplete
+
+The adapter is incomplete when it lacks one or more of:
+
+- canonical assistant entry point
+- project, framework, and repository adapter contour separation
+- project source-of-truth docs
+- validation plan or explicit unresolved validation
+- final evidence expectations
+
+Assistant behavior is high-risk. The assistant should avoid broad changes and
+report missing adapter facts.
+
+### Minimal
+
+The adapter is minimal when it defines:
+
+- entry point and contours
+- basic project facts
+- basic validation commands or manual checks
+- documentation-sync rule
+- bridge files for the assistants in use
+
+The assistant can handle small tasks, but should report missing tests,
+diagrams, security, maturity, or checker coverage when relevant.
+
+### Usable
+
+The adapter is usable when it also defines:
+
+- architecture/source-of-truth docs
+- use cases or equivalent workflows when applicable
+- test strategy and validation gates
+- security and live-service boundaries
+- diagram policy when diagrams exist
+- approval triggers
+- logical consistency review path
+
+The assistant can perform ordinary implementation and documentation tasks with
+focused validation.
+
+### Mature
+
+The adapter is mature when it also defines:
+
+- context packs or navigation aids for broad work
+- module ownership, data dictionary, glossary, and decision log
+- deterministic consistency checks for maintainable invariants
+- generated-artifact drift checks or manual-review policy
+- framework upgrade/lifecycle notes
+- improvement advice path for reducing future friction
+
+The assistant can handle larger tasks with phased context loading and stronger
+evidence.
+
+## Adapter Audit Questions
+
+Ask:
+
+- Can an assistant find the mandatory context without user explanation?
+- Are framework rules, project facts, and adapter rules separated?
+- Are local commands and generated artifacts clearly adapter-owned?
+- Are tests and validation discoverable?
+- Are security and live external side effects bounded?
+- Are approval-required changes named?
+- Are docs, diagrams, prompts, skills, bridges, and checker rules synchronized?
+- Is there a way to report missing or unresolved adapter facts?
+
+## Rejection Criteria
+
+Reject maturity claims that:
+
+- ignore missing validation or source-of-truth docs
+- treat scripts as a substitute for assistant reasoning
+- count bridge files as canonical policy
+- copy another project's adapter facts instead of writing target facts
+- hide unknowns instead of reporting residual risk
+

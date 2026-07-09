@@ -1,0 +1,10 @@
+---
+description: Alatyr Core repository instructions
+alwaysApply: true
+---
+
+Read `AGENTS.md` first. Then read `AI_ASSISTANTS.md`, `.ai/README.md`, and the
+matching `.ai/assistant/flows/*.flow.md` for the task.
+
+This Cursor rule is a bridge, not the source of truth.
+
