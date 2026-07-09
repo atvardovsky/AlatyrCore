@@ -144,7 +144,9 @@ and prompts.
 Use
 [installer/installed-operation-request-template.md](installer/installed-operation-request-template.md)
 for a copyable post-install request. This is still assistant reasoning over
-Markdown files, not a universal Alatyr command or runtime service.
+Markdown files, not a universal Alatyr command or runtime service. The request
+can bound the assistant with `Allowed actions`, such as `read-only`,
+`docs-only`, `adapter-only`, `code-and-tests`, or `full-with-approval`.
 
 If the intended operation is unclear, ask for "Alatyr help". A complete target
 adapter should answer with the local operation menu, short descriptions,

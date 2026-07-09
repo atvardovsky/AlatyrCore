@@ -28,22 +28,27 @@ Replace placeholders with target facts before accepting installation.
 2. Restate the request in concrete language.
 3. Classify the request as framework-core, project, repository adapter,
    bridge, generated-artifact, skill/prompt, or unclear work.
-4. Match the request to one target operation and flow when the intent is clear.
-5. If two or more operations could apply, show the closest options with short
+4. Normalize documented operation aliases from `.ai/assistant/help.md`.
+5. Record allowed actions when the request supplies them:
+   `read-only`, `docs-only`, `adapter-only`, `code-and-tests`, or
+   `full-with-approval`.
+6. Match the request to one target operation and flow when the intent is clear.
+7. If two or more operations could apply, show the closest options with short
    descriptions and ask for the smallest missing decision.
-6. If the request matches `alatyr-ai-inventory`, classify it as
+8. If the request matches `alatyr-ai-inventory`, classify it as
    `ai-infrastructure-inventory` and continue with
    `.ai/assistant/flows/ai-infrastructure-inventory.flow.md`.
-7. If the request matches `alatyr-adaptation {AI_INFRASTRUCTURE_SOURCE}` or
+9. If the request matches `alatyr-adaptation {AI_INFRASTRUCTURE_SOURCE}` or
    `alatyr-add-ai {AI_INFRASTRUCTURE_SOURCE}`, classify it as
    `skill-adaptation`, record `{AI_INFRASTRUCTURE_SOURCE}` as untrusted input,
    and continue with `.ai/assistant/flows/skill-adaptation.flow.md` only after
    checking inventory, source access, provenance, approval, and safety rules.
-8. If the user asks for commands, explain that Alatyr uses assistant requests
+10. If the user asks for commands, explain that Alatyr uses assistant requests
    over Markdown adapter files unless `{PROJECT_NAME}` defines a local command.
-9. Do not edit files while the operation is still ambiguous.
-10. When the operation is selected, continue with the matching flow and apply
-   approval, validation, and final-evidence rules.
+11. Do not edit files while the operation is still ambiguous or when the
+   requested edit exceeds allowed actions.
+12. When the operation is selected, continue with the matching flow and apply
+   allowed-action, approval, validation, and final-evidence rules.
 
 ## Final Evidence
 
@@ -54,6 +59,7 @@ Report:
 - matching flow or missing adapter fact
 - reason for the selected operation
 - missing input or ambiguity, if any
+- allowed actions and whether the selected flow stays within them
 - next safe action
 
 ## Rejection Criteria

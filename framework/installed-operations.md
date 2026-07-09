@@ -45,6 +45,8 @@ A post-install request should state:
 - target source-of-truth docs to inspect
 - validation commands or manual checks known to the target
 - approval constraints
+- allowed actions: `read-only`, `docs-only`, `adapter-only`,
+  `code-and-tests`, or `full-with-approval`
 - expected final evidence
 
 If a request says "ask Alatyr" or similar, interpret that as "ask an assistant

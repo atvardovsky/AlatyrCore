@@ -116,6 +116,28 @@ def main() -> int:
         if "{" not in read_text(relpath):
             failures.append(f"{relpath} should remain placeholder-based")
 
+    help_template = read_text("templates/target/.ai/assistant/help.md")
+    if "| Operation |" in help_template:
+        failures.append(
+            "templates/target/.ai/assistant/help.md should use operation blocks, not a table"
+        )
+    for required_help_text in [
+        "Operation: `help`",
+        "## Operation Type Aliases",
+        "Allowed actions:",
+    ]:
+        if required_help_text not in help_template:
+            failures.append(
+                f"templates/target/.ai/assistant/help.md missing {required_help_text}"
+            )
+
+    for relpath in [
+        "installer/installed-operation-request-template.md",
+        "templates/target/.ai/assistant/templates/operation-request.md",
+    ]:
+        if "Allowed actions:" not in read_text(relpath):
+            failures.append(f"{relpath} missing Allowed actions")
+
     bridge_files = [
         "templates/target/AI_ASSISTANTS.md",
         "templates/target/CLAUDE.md",

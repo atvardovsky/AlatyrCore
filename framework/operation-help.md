@@ -66,13 +66,17 @@ Typical operation categories include:
 The target adapter may narrow, rename, or add operations when it records the
 local meaning and matching flow.
 
-Target adapters may also define short request aliases. For example,
-`alatyr-ai-inventory` may route to an inventory flow, while
-`alatyr-adaptation <source>` or `alatyr-add-ai <source>` may route to
-adaptation, where `<source>` is a local path, Git URL, HTTPS URL,
-assistant-native skill or prompt reference, pasted content, package/plugin
-reference, or other adapter-defined source. Aliases must be documented as
-assistant request syntax, not portable executable commands.
+Target adapters may also define operation type aliases. These aliases can map
+natural-language requests such as "Alatyr help", "update Alatyr", "check
+integrity", or target-language equivalents to canonical operation names.
+Aliases must be documented as assistant request syntax, not portable
+executable commands.
+
+For AI infrastructure, aliases may include `alatyr-ai-inventory`, which routes
+to an inventory flow, or `alatyr-adaptation <source>` and
+`alatyr-add-ai <source>`, which route to adaptation. The `<source>` may be a
+local path, Git URL, HTTPS URL, assistant-native skill or prompt reference,
+pasted content, package/plugin reference, or other adapter-defined source.
 
 ## Routing Rules
 
@@ -81,18 +85,19 @@ When routing a request:
 1. Read the target assistant entry point and adapter context.
 2. Read the target operation help file when it exists.
 3. Classify the request by contour and changed fact.
-4. Choose the matching flow only when the operation is clear enough to proceed
+4. Normalize documented operation aliases before selecting a flow.
+5. Choose the matching flow only when the operation is clear enough to proceed
    safely.
-5. If the operation is unclear, show the operation menu with short
+6. If the operation is unclear, show the operation menu with short
    descriptions and ask for the smallest missing decision.
-6. If the user asks for commands, explain that Alatyr is used through assistant
+7. If the user asks for commands, explain that Alatyr is used through assistant
    requests over Markdown adapter files unless the target adapter defines local
    commands.
-7. If the request asks what already exists, route to AI infrastructure
+8. If the request asks what already exists, route to AI infrastructure
    inventory and do not import anything during inventory-only work.
-8. If the request supplies an external source, check target provenance,
+9. If the request supplies an external source, check target provenance,
    network, dependency, and approval rules before fetching or importing it.
-9. Do not edit repository files while only presenting help or resolving
+10. Do not edit repository files while only presenting help or resolving
    operation ambiguity.
 
 ## Evidence Format

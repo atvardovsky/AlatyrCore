@@ -22,5 +22,8 @@
 - Added supported-assistant bridge routing for Alatyr help and AI
   infrastructure aliases across generic, AGENTS/Codex, Claude, Gemini, GitHub
   Copilot, Cursor, Devin/Cascade, and Windsurf surfaces.
+- Reworked target Alatyr help from a table into operation blocks, added
+  operation type aliases, and added Allowed actions to installed operation
+  request templates.
 - Documented self-application reviews and ignored root-local trial adapter
   artifacts for this source repository.

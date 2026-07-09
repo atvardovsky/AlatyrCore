@@ -116,7 +116,9 @@ After installation, use
 `installer/installed-operation-request-template.md` when asking an assistant to
 operate the installed target adapter. Typical requests include blueprint
 creation or repair, adapter recheck after framework updates, drift review,
-blueprint-driven product changes, and skill adaptation.
+blueprint-driven product changes, and skill adaptation. Include Allowed actions
+when the request should be limited to `read-only`, `docs-only`,
+`adapter-only`, `code-and-tests`, or `full-with-approval`.
 
 If the programmer asks for help, commands, or an unclear Alatyr action, the
 assistant should show the installed operation menu from the target adapter

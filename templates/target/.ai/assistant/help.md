@@ -23,19 +23,102 @@ Supported request aliases:
 
 ## Operation Menu
 
-| Operation | Use When | Flow | Minimum Input |
-| --- | --- | --- | --- |
-| `help` | The user asks what Alatyr can do or the request is unclear. | `.ai/assistant/flows/operation-routing.flow.md` | Goal or suspected task area. |
-| `create-project-blueprint` | Create, repair, or recheck blueprint-equivalent source-of-truth docs from target evidence. | `.ai/assistant/flows/project-blueprint-creation.flow.md` | Blueprint scope and non-goals. |
-| `recheck-after-installation` | Verify the installed adapter after initial installation. | `.ai/assistant/flows/adapter-recheck.flow.md` | Installation note or known gaps. |
-| `recheck-after-framework-update` | Check whether an Alatyr Core update requires target adapter migration. | `.ai/assistant/flows/adapter-recheck.flow.md` | Update source or changed framework baseline. |
-| `product-change` | Change accepted project behavior, architecture, data, runtime, or public contract. | `.ai/assistant/flows/blueprint-driven-change.flow.md` | Change intent, non-goals, and approval constraints. |
-| `logical-integrity-review` | Review whether code, docs, tests, diagrams, prompts, skills, gates, and bridges agree. | `.ai/assistant/flows/logical-integrity-review.flow.md` | Changed fact, suspected drift, or files to inspect. |
-| `ai-infrastructure-inventory` | Check what AI infrastructure already exists and what can be kept, adapted, added, removed, or left unresolved. Alias: `alatyr-ai-inventory`. | `.ai/assistant/flows/ai-infrastructure-inventory.flow.md` | Inventory scope and target assistant surfaces. |
-| `skill-adaptation` | Import, adapt, add, or review skills, prompts, wrappers, bridges, rules, MCP/tool configs, gates, checkers, or third-party assistant infrastructure. Aliases: `alatyr-adaptation {AI_INFRASTRUCTURE_SOURCE}`, `alatyr-add-ai {AI_INFRASTRUCTURE_SOURCE}`. | `.ai/assistant/flows/skill-adaptation.flow.md` | Source, item type, source type, intended use, target assistant surfaces, and permissions. |
-| `drift-review` | Find stale source-of-truth, docs, diagrams, gates, prompts, skills, or bridge files. | `.ai/assistant/flows/logical-integrity-review.flow.md` | Drift area or recently changed facts. |
-| `documentation-sync` | Sync docs, diagrams, prompts, gates, skills, or bridge files after a fact changed. | `.ai/assistant/flows/documentation-sync.flow.md` | Changed fact and owning source. |
-| `adapter-maturity-review` | Report whether the adapter is incomplete, minimal, usable, or mature for a requested task. | `.ai/assistant/flows/adapter-recheck.flow.md` | Task scope and maturity concern. |
+Operation: `help`
+Use when: the user asks what Alatyr can do or the request is unclear.
+Flow: `.ai/assistant/flows/operation-routing.flow.md`
+Minimum input: goal or suspected task area.
+
+Operation: `create-project-blueprint`
+Use when: creating, repairing, or rechecking blueprint-equivalent
+source-of-truth docs from target evidence.
+Flow: `.ai/assistant/flows/project-blueprint-creation.flow.md`
+Minimum input: blueprint scope and non-goals.
+
+Operation: `recheck-after-installation`
+Use when: verifying the installed adapter after initial installation.
+Flow: `.ai/assistant/flows/adapter-recheck.flow.md`
+Minimum input: installation note or known gaps.
+
+Operation: `recheck-after-framework-update`
+Use when: checking whether an Alatyr Core update requires target adapter
+migration.
+Flow: `.ai/assistant/flows/adapter-recheck.flow.md`
+Minimum input: update source or changed framework baseline.
+
+Operation: `product-change`
+Use when: changing accepted project behavior, architecture, data, runtime, or
+public contract.
+Flow: `.ai/assistant/flows/blueprint-driven-change.flow.md`
+Minimum input: change intent, non-goals, and approval constraints.
+
+Operation: `logical-integrity-review`
+Use when: reviewing whether code, docs, tests, diagrams, prompts, skills,
+gates, and bridges agree.
+Flow: `.ai/assistant/flows/logical-integrity-review.flow.md`
+Minimum input: changed fact, suspected drift, or files to inspect.
+
+Operation: `ai-infrastructure-inventory`
+Use when: checking what AI infrastructure already exists and what can be kept,
+adapted, added, removed, or left unresolved.
+Flow: `.ai/assistant/flows/ai-infrastructure-inventory.flow.md`
+Minimum input: inventory scope and target assistant surfaces.
+Alias: `alatyr-ai-inventory`.
+
+Operation: `skill-adaptation`
+Use when: importing, adapting, adding, or reviewing skills, prompts, wrappers,
+bridges, rules, MCP/tool configs, gates, checkers, or third-party assistant
+infrastructure.
+Flow: `.ai/assistant/flows/skill-adaptation.flow.md`
+Minimum input: source, item type, source type, intended use, target assistant
+surfaces, and permissions.
+Aliases: `alatyr-adaptation {AI_INFRASTRUCTURE_SOURCE}`,
+`alatyr-add-ai {AI_INFRASTRUCTURE_SOURCE}`.
+
+Operation: `drift-review`
+Use when: finding stale source-of-truth, docs, diagrams, gates, prompts,
+skills, or bridge files.
+Flow: `.ai/assistant/flows/logical-integrity-review.flow.md`
+Minimum input: drift area or recently changed facts.
+
+Operation: `documentation-sync`
+Use when: syncing docs, diagrams, prompts, gates, skills, or bridge files
+after a fact changed.
+Flow: `.ai/assistant/flows/documentation-sync.flow.md`
+Minimum input: changed fact and owning source.
+
+Operation: `adapter-maturity-review`
+Use when: reporting whether the adapter is incomplete, minimal, usable, or
+mature for a requested task.
+Flow: `.ai/assistant/flows/adapter-recheck.flow.md`
+Minimum input: task scope and maturity concern.
+
+## Operation Type Aliases
+
+Treat these as target request aliases, not executable commands. Replace,
+remove, or extend them with `{PROJECT_NAME}` terminology before accepting the
+adapter.
+
+Alias: `Alatyr help`
+Route to: `help`.
+
+Alias: `update Alatyr` or `обнови Alatyr`
+Route to: `recheck-after-framework-update` when a framework update source is
+known. If no update context is known, show `help` and ask for the update
+source or intended recheck scope.
+
+Alias: `check Alatyr` or `проверь Alatyr`
+Route to: `recheck-after-installation` after initial installation, or
+`adapter-maturity-review` when the request is a broader adapter readiness
+review.
+
+Alias: `create blueprint` or `создай blueprint`
+Route to: `create-project-blueprint`.
+
+Alias: `check integrity` or `проверь целостность`
+Route to: `logical-integrity-review`.
+
+Alias: `change business rule` or `измени бизнес-правило`
+Route to: `product-change`.
 
 ## Request Shape
 
@@ -48,6 +131,7 @@ Operation type: `{OPERATION_TYPE}`
 Goal: `{GOAL}`
 Non-goals: `{NON_GOALS}`
 Known context: `{KNOWN_CONTEXT}`
+Allowed actions: `{READ_ONLY_DOCS_ONLY_ADAPTER_ONLY_CODE_AND_TESTS_OR_FULL_WITH_APPROVAL}`
 Expected final evidence: `{EXPECTED_FINAL_EVIDENCE}`
 ```
 

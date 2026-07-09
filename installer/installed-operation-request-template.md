@@ -24,6 +24,9 @@ Non-goals:
 Known context:
 <changed facts, framework update source, existing docs, or suspected drift>
 
+Allowed actions:
+<read-only/docs-only/adapter-only/code-and-tests/full-with-approval>
+
 AI infrastructure source, when applicable:
 <local path/Git URL/HTTPS URL/assistant-native reference/package or plugin/pasted content>
 
@@ -44,6 +47,8 @@ Constraints:
   operation choices with descriptions, and ask for the smallest missing
   decision before editing files.
 - Use target source-of-truth docs and target evidence only.
+- Stay within Allowed actions. Treat `full-with-approval` as requiring
+  explicit approval before protected changes.
 - For `alatyr-ai-inventory`, inspect existing AI infrastructure without
   importing external items.
 - For `alatyr-adaptation <source>`, `alatyr-add-ai <source>`, or

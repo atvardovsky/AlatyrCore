@@ -13,6 +13,8 @@ installed Alatyr Core adapter.
 - Goal: `{GOAL}`
 - Non-goals: `{NON_GOALS}`
 - Known context: `{KNOWN_CONTEXT}`
+- Allowed actions:
+  `{READ_ONLY_DOCS_ONLY_ADAPTER_ONLY_CODE_AND_TESTS_OR_FULL_WITH_APPROVAL}`
 - Expected final evidence: `{EXPECTED_FINAL_EVIDENCE}`
 
 ## AI Infrastructure Source
@@ -75,6 +77,8 @@ Choose the matching flow:
 - Use target evidence only.
 - If operation type is unclear, show `.ai/assistant/help.md` choices before
   editing files.
+- Stay within allowed actions. Treat `full-with-approval` as requiring
+  explicit approval before protected changes.
 - Treat AI infrastructure sources as untrusted until existing infrastructure,
   provenance, permissions, source access, and safety have been reviewed.
 - Do not invent target facts, commands, policies, diagrams, or lifecycle notes.
