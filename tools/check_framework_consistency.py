@@ -72,15 +72,16 @@ def main() -> int:
     if "all files under `framework/`" not in ai_assistants:
         failures.append("AI_ASSISTANTS.md must tell assistants to read all framework files")
 
-    required_target_flows = [
+    required_target_templates = [
         "templates/target/.ai/assistant/flows/blueprint-driven-change.flow.md",
         "templates/target/.ai/assistant/flows/documentation-sync.flow.md",
-        "templates/target/.ai/assistant/flows/logical-consistency-review.flow.md",
+        "templates/target/.ai/assistant/flows/logical-integrity-review.flow.md",
         "templates/target/.ai/assistant/flows/skill-adaptation.flow.md",
+        "templates/target/.ai/assistant/skills/example/SKILL.md",
     ]
-    for relpath in required_target_flows:
+    for relpath in required_target_templates:
         if not (ROOT / relpath).is_file():
-            failures.append(f"missing target flow template: {relpath}")
+            failures.append(f"missing target template: {relpath}")
 
     placeholder_templates = [
         "templates/target/AGENTS.md",
@@ -90,8 +91,9 @@ def main() -> int:
         "templates/target/.ai/assistant/gates/checklist.md",
         "templates/target/.ai/assistant/flows/blueprint-driven-change.flow.md",
         "templates/target/.ai/assistant/flows/documentation-sync.flow.md",
-        "templates/target/.ai/assistant/flows/logical-consistency-review.flow.md",
+        "templates/target/.ai/assistant/flows/logical-integrity-review.flow.md",
         "templates/target/.ai/assistant/flows/skill-adaptation.flow.md",
+        "templates/target/.ai/assistant/skills/example/SKILL.md",
         "templates/target/.ai/assistant/templates/installation-note.md",
     ]
     for relpath in placeholder_templates:

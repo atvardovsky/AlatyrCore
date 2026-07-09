@@ -1,4 +1,4 @@
-# Logical Consistency Review Flow
+# Logical Integrity Review Flow
 
 ## Purpose
 

@@ -11,6 +11,14 @@ and report evidence.
 Alatyr Core is not tied to PHP, Symfony, Node, Python, Go, Java, a database,
 or a specific assistant vendor.
 
+## Why This Exists
+
+AI agents are good at producing local code changes, but weak at preserving
+system-wide consistency unless the repository gives them a process. Alatyr Core
+turns AI-assisted work into a controlled change pipeline: context discovery,
+risk classification, logical integrity review, blueprint-driven update,
+validation, and final evidence.
+
 ## If You Are An AI Assistant
 
 If a programmer gives you this repository and asks you to install Alatyr Core

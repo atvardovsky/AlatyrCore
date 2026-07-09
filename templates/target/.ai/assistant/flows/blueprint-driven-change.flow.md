@@ -20,7 +20,7 @@ Replace placeholders with target facts before accepting installation.
 1. State change intent and non-goals.
 2. Load `AGENTS.md`, `.ai/README.md`, framework docs, target contours, and the
    target source-of-truth docs.
-3. Apply `.ai/assistant/flows/logical-consistency-review.flow.md`.
+3. Apply `.ai/assistant/flows/logical-integrity-review.flow.md`.
 4. List changed facts and affected project areas.
 5. Update target blueprint or equivalent source-of-truth docs when accepted
    facts change.

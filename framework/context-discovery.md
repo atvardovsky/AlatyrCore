@@ -48,9 +48,9 @@ For each important fact, identify its owner:
 - bridge fact: short assistant-specific pointer to canonical files
 - generated artifact: visual or built output whose source is elsewhere
 
-When two sources disagree, do not choose by convenience. Use logical
-consistency review to name the conflict, choose the source of truth, and repair
-the smallest coherent set of files.
+When two sources disagree, do not choose by convenience. Use logical integrity
+review to name the conflict, choose the source of truth, and repair the
+smallest coherent set of files.
 
 ## Missing Context
 
