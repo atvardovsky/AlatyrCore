@@ -131,6 +131,17 @@ def main() -> int:
     for relpath in bridge_files:
         if line_count(relpath) > 25:
             failures.append(f"{relpath} is too long for a bridge/template wrapper")
+        text = read_text(relpath)
+        required_bridge_refs = [
+            ".ai/assistant/help.md",
+            ".ai/assistant/flows/operation-routing.flow.md",
+            "alatyr-ai-inventory",
+            "alatyr-adaptation",
+            "alatyr-add-ai",
+        ]
+        for required_ref in required_bridge_refs:
+            if required_ref not in text:
+                failures.append(f"{relpath} does not route {required_ref}")
 
     for path in (ROOT / "templates" / "target").rglob("*"):
         if not path.is_file():

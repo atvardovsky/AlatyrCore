@@ -10,8 +10,11 @@ Before making changes, read:
 - `.ai/framework/README.md`
 - `.ai/project/contour.md`
 - `.ai/assistant/contour.md`
+- `.ai/assistant/help.md`
 - the matching `.ai/assistant/flows/*.flow.md`
+
+For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-adaptation`,
+`alatyr-add-ai`), use `.ai/assistant/flows/operation-routing.flow.md`.
 
 Keep this file as a bridge. Do not duplicate full project or framework policy
 here.
-

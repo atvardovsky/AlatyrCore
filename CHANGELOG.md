@@ -19,5 +19,8 @@
   package/plugin, or pasted sources.
 - Added AI infrastructure inventory guidance and target flow with
   `alatyr-ai-inventory` and `alatyr-add-ai <source>` request aliases.
+- Added supported-assistant bridge routing for Alatyr help and AI
+  infrastructure aliases across generic, AGENTS/Codex, Claude, Gemini, GitHub
+  Copilot, Cursor, Devin/Cascade, and Windsurf surfaces.
 - Documented self-application reviews and ignored root-local trial adapter
   artifacts for this source repository.

@@ -65,6 +65,11 @@ surfaces should route those aliases to the canonical inventory and
 skill-adaptation flows, preserve source provenance, and avoid importing the
 source directly.
 
+Every supported bridge template should include a short pointer to
+`.ai/assistant/help.md` and
+`.ai/assistant/flows/operation-routing.flow.md` for those aliases. The bridge
+must stay a pointer and must not duplicate full operation policy.
+
 ## If An Assistant Cannot Run Commands
 
 The assistant should still install or review Markdown files when safe, but it
