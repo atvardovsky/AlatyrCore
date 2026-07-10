@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "templates": [
+    {
+      "path": "templates/target/AI_ASSISTANTS.md",
+      "lines": [
+        "# AI Assistant Entry Point",
+        "",
+        "This repository uses Alatyr Core.",
+        "",
+        "All assistants should treat `AGENTS.md` as the canonical instruction file.",
+        "",
+        "Before making changes:",
+        "",
+        "1. Read `AGENTS.md`, `.ai/alatyr.yaml`, `.ai/README.md`, and",
+        "   `.ai/assistant/context-profiles.md`, and",
+        "   `.ai/assistant/module-profile.md`.",
+        "2. Select the task profile, then read only profile-required framework,",
+        "   project, assistant, flow, gate, policy, and validation files.",
+        "3. Read `.ai/assistant/templates/installation-note.md`,",
+        "   `.ai/project/source-of-truth-registry.md`, `{TARGET_PROJECT_SOURCE_OF_TRUTH}`,",
+        "   and `.ai/assistant/gates/checklist.md` when required by the selected",
+        "   profile.",
+        "4. After installation/update, or when adapter state is unclear, read the",
+        "   post-install/update message templates before editing.",
+        "5. For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-adaptation`,",
+        "   `alatyr-add-ai`), read `.ai/assistant/help.md` and",
+        "   `.ai/assistant/flows/operation-routing.flow.md`.",
+        "",
+        "Assistant-specific bridge files must stay short and point back to canonical",
+        "target files."
+      ]
+    },
+    {
+      "path": "templates/target/CLAUDE.md",
+      "lines": [
+        "# Claude Instructions",
+        "",
+        "Read `AGENTS.md` first. Then read `AI_ASSISTANTS.md`, `.ai/README.md`, and",
+        "the matching `.ai/assistant/flows/*.flow.md` for the task.",
+        "",
+        "For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-adaptation`,",
+        "`alatyr-add-ai`), read `.ai/assistant/help.md` and",
+        "`.ai/assistant/flows/operation-routing.flow.md`.",
+        "",
+        "Do not treat this bridge file as the source of truth."
+      ]
+    },
+    {
+      "path": "templates/target/GEMINI.md",
+      "lines": [
+        "# Gemini Instructions",
+        "",
+        "Read `AGENTS.md` first. Then read `AI_ASSISTANTS.md`, `.ai/README.md`, and",
+        "the matching `.ai/assistant/flows/*.flow.md` for the task.",
+        "",
+        "For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-adaptation`,",
+        "`alatyr-add-ai`), read `.ai/assistant/help.md` and",
+        "`.ai/assistant/flows/operation-routing.flow.md`.",
+        "",
+        "Do not treat this bridge file as the source of truth."
+      ]
+    },
+    {
+      "path": "templates/target/.cursor/rules/alatyr-core.mdc",
+      "lines": [
+        "---",
+        "description: Alatyr Core repository instructions",
+        "alwaysApply: true",
+        "---",
+        "",
+        "Read `AGENTS.md` first. Then read `AI_ASSISTANTS.md`, `.ai/README.md`, and the",
+        "matching `.ai/assistant/flows/*.flow.md` for the task.",
+        "",
+        "For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-adaptation`,",
+        "`alatyr-add-ai`), read `.ai/assistant/help.md` and",
+        "`.ai/assistant/flows/operation-routing.flow.md`.",
+        "",
+        "This Cursor rule is a bridge, not the source of truth."
+      ]
+    },
+    {
+      "path": "templates/target/.cursorrules",
+      "lines": [
+        "Read AGENTS.md and .ai/README.md first. This file is a legacy bridge for Cursor-compatible tools.",
+        "For Alatyr help or aliases (alatyr-ai-inventory, alatyr-adaptation, alatyr-add-ai), read .ai/assistant/help.md and .ai/assistant/flows/operation-routing.flow.md."
+      ]
+    },
+    {
+      "path": "templates/target/.devin/rules/alatyr-core.md",
+      "lines": [
+        "# Devin / Cascade Instructions",
+        "",
+        "Read `AGENTS.md` first. Then read `AI_ASSISTANTS.md`, `.ai/README.md`, and the",
+        "matching `.ai/assistant/flows/*.flow.md` for the task.",
+        "",
+        "For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-adaptation`,",
+        "`alatyr-add-ai`), read `.ai/assistant/help.md` and",
+        "`.ai/assistant/flows/operation-routing.flow.md`.",
+        "",
+        "This file is a bridge, not the source of truth."
+      ]
+    },
+    {
+      "path": "templates/target/.github/copilot-instructions.md",
+      "lines": [
+        "# GitHub Copilot Instructions",
+        "",
+        "This repository uses Alatyr Core.",
+        "",
+        "Before making changes, read:",
+        "",
+        "- `AGENTS.md`",
+        "- `AI_ASSISTANTS.md`",
+        "- `.ai/README.md`",
+        "- `.ai/framework/README.md`",
+        "- `.ai/project/contour.md`",
+        "- `.ai/assistant/contour.md`",
+        "- `.ai/assistant/help.md`",
+        "- the matching `.ai/assistant/flows/*.flow.md`",
+        "",
+        "For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-adaptation`,",
+        "`alatyr-add-ai`), use `.ai/assistant/flows/operation-routing.flow.md`.",
+        "",
+        "Keep this file as a bridge. Do not duplicate full project or framework policy",
+        "here."
+      ]
+    },
+    {
+      "path": "templates/target/.github/prompts/gate-review.prompt.md",
+      "lines": [
+        "---",
+        "mode: agent",
+        "description: Review a change against the target repository's Alatyr Core gates.",
+        "---",
+        "",
+        "This prompt is a bridge, not the source of truth. Read `.ai/README.md`,",
+        "`.ai/assistant/gates/checklist.md`,",
+        "`.ai/assistant/flows/logical-integrity-review.flow.md`,",
+        "`.ai/framework/logical-integrity.md`, `AGENTS.md`, and the changed files.",
+        "For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-adaptation`,",
+        "`alatyr-add-ai`), read `.ai/assistant/help.md` and",
+        "`.ai/assistant/flows/operation-routing.flow.md`.",
+        "Return blockers first, then final evidence."
+      ]
+    },
+    {
+      "path": "templates/target/.windsurf/rules/alatyr-core.md",
+      "lines": [
+        "# Windsurf Legacy Instructions",
+        "",
+        "Read `AGENTS.md` first. Then read `AI_ASSISTANTS.md`, `.ai/README.md`, and the",
+        "matching `.ai/assistant/flows/*.flow.md` for the task.",
+        "",
+        "For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-adaptation`,",
+        "`alatyr-add-ai`), read `.ai/assistant/help.md` and",
+        "`.ai/assistant/flows/operation-routing.flow.md`.",
+        "",
+        "This file is a legacy bridge, not the source of truth."
+      ]
+    },
+    {
+      "path": "templates/target/.windsurfrules",
+      "lines": [
+        "Read AGENTS.md and .ai/README.md first. This file is a legacy bridge for Windsurf-compatible tools.",
+        "For Alatyr help or aliases (alatyr-ai-inventory, alatyr-adaptation, alatyr-add-ai), read .ai/assistant/help.md and .ai/assistant/flows/operation-routing.flow.md."
+      ]
+    }
+  ]
+}
