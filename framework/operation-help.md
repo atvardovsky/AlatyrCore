@@ -45,6 +45,7 @@ A target adapter help file should list each supported operation with:
 - when to use it
 - matching target flow
 - minimum input needed from the programmer
+- allowed-action modes and context profile when useful
 - approval triggers or safety notes
 - expected final evidence
 
@@ -66,6 +67,11 @@ Typical operation categories include:
 The target adapter may narrow, rename, or add operations when it records the
 local meaning and matching flow.
 
+When a target uses a module profile, operation help should list only operations
+whose required module is enabled or required. Deferred, disabled,
+not-applicable, or blocked modules should appear as gaps or unavailable
+options, not as ready actions.
+
 Target adapters may also define operation type aliases. These aliases can map
 natural-language requests such as "Alatyr help", "update Alatyr", "check
 integrity", or target-language equivalents to canonical operation names.
@@ -84,9 +90,10 @@ shortcuts, not shell commands.
 
 When routing a request:
 
-1. Read the target assistant entry point and adapter context.
+1. Read the target assistant entry point, adapter manifest, area map, and
+   context profiles.
 2. Read the target operation help file when it exists.
-3. Classify the request by contour and changed fact.
+3. Classify the request by contour, task profile, and changed fact.
 4. Normalize documented operation aliases before selecting a flow.
 5. Choose the matching flow only when the operation is clear enough to proceed
    safely.
@@ -98,7 +105,8 @@ When routing a request:
 8. If the request asks what already exists, route to AI infrastructure
    inventory and do not import anything during inventory-only work.
 9. If the request supplies an external source, check target provenance,
-   network, dependency, and approval rules before fetching or importing it.
+   network, dependency, prompt-injection, and approval rules before fetching or
+   importing it.
 10. Do not edit repository files while only presenting help or resolving
    operation ambiguity.
 

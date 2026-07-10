@@ -1,3 +1,15 @@
+---
+alatyr_doc:
+  id: framework.logical-integrity
+  type: framework-rule-owner
+  owns_rules:
+    - ALATYR-INTEGRITY-001
+  depends_on:
+    - ALATYR-SOURCE-001
+    - ALATYR-RISK-001
+  applies_to:
+    - all
+---
 # AI Framework Logical Integrity Review
 
 This file defines the portable logical integrity review used by Alatyr Core.
@@ -51,14 +63,16 @@ Use this sequence when a fact may have changed:
 2. List changed facts, not only changed files.
 3. Classify each changed fact by risk using the framework risk model and the
    target adapter.
-4. Identify the source of truth for each fact.
+4. Identify the source of truth for each fact, using the target
+   source-of-truth registry when it exists.
 5. Compare code, tests, docs, diagrams, prompts, skills, bridge files, gates,
    generated artifacts, and checker rules that mention the fact.
 6. Name conflicts and missing context explicitly.
-7. Choose the smallest coherent repair set.
-8. Apply required companion updates or explain why none are needed.
-9. Run target validation that exists, or record manual/unresolved checks.
-10. Report final evidence and residual risk.
+7. Decide synchronization direction from the registry or owning contour.
+8. Choose the smallest coherent repair set.
+9. Apply required companion updates or explain why none are needed.
+10. Run target validation that exists, or record manual/unresolved checks.
+11. Report final evidence and residual risk.
 
 ## Source-Of-Truth Decision
 
@@ -71,6 +85,9 @@ When files disagree, choose the owner by contour:
   skill, bridge, checker, or evidence rule
 - generated artifact: output whose source must be named by the adapter
 - bridge file: short pointer to canonical target files
+
+If the target adapter has a source-of-truth registry, use the registry to
+resolve fact type ownership before falling back to contour-level ownership.
 
 Do not choose the source of truth by convenience, recency, or file proximity.
 If the owner is missing or unclear, report the missing adapter fact before

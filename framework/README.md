@@ -14,12 +14,22 @@ sync, logical integrity review, and final evidence.
 
 - framework contour and portability rules
 - guarantees the framework provides to a project
+- rule category ownership and duplicate-policy boundaries
+- structured metadata on rule-owner documents
+- rule identifiers and canonical rule registry
 - project-adapter contract
+- adapter ownership and review-cadence expectations
+- required core profile and optional module profile
+- optional scaffolding boundaries
 - context-discovery and source-of-truth decision rules
+- context profiles for task-specific minimum reading sets
+- source-of-truth registry guidance for fact ownership and sync direction
 - change-risk classification and approval trigger model
 - first-class logical integrity review
 - blueprint-driven product-change workflow
 - portable security, safety, and live-service reasoning rules
+- prompt-injection handling for imported AI infrastructure
+- approval-record guidance for protected changes
 - diagram reasoning and source/visual synchronization guidance
 - AI infrastructure inventory plus skill, prompt, wrapper, bridge, and
   third-party assistant infrastructure adaptation guidance
@@ -30,7 +40,9 @@ sync, logical integrity review, and final evidence.
   concepts
 - stack-aware testing analysis guidance
 - supported-assistant bridge pattern
-- adapter maturity and framework lifecycle guidance
+- bridge capability matrix pattern
+- migration diff and effectiveness measurement patterns
+- task-specific adapter maturity and framework lifecycle guidance
 
 ## Does Not Own
 
@@ -49,14 +61,31 @@ Those belong to a project contour or repository adapter.
 - `.ai/framework/contour.md`: boundary for portable framework core.
 - `.ai/framework/guarantees.md`: what the framework guarantees and what it
   cannot guarantee without a project adapter.
+- `.ai/framework/rule-ownership.md`: canonical owner map for framework rule
+  categories and duplicate-policy boundaries.
+- Rule-owner framework documents carry `alatyr_doc` front matter so source
+  helpers can validate rule ownership, dependencies, and task-profile scope.
+- `.ai/framework/rule-registry.md`: stable rule identifiers and canonical
+  source references for migration, adapters, and checkers.
+- `.ai/framework/rule-registry.json`: machine-readable rule manifest used by
+  source-repository migration and consistency helpers.
 - `.ai/framework/project-adapter-contract.md`: what a project must provide so
   the framework can work on that project.
 - `.ai/framework/portability.md`: rules for separating framework core from
   repository adapter details.
+- `.ai/framework/module-profile.md`: required core and optional module model
+  for target installations.
+- `.ai/framework/scaffolding.md`: optional scaffolder boundaries and evidence
+  rules; scaffolding is not installation.
 - `.ai/framework/testing-guidance.md`: portable reasoning guidance for choosing
   test levels and structure from the target stack and risk profile.
 - `.ai/framework/context-discovery.md`: portable process for finding required
   context, owners, missing facts, and source-of-truth conflicts.
+- `.ai/framework/context-profiles.md`: portable task profiles that limit the
+  initial required reading set and define expansion triggers.
+- `.ai/framework/source-of-truth-registry.md`: portable registry model for
+  fact ownership, derived surfaces, sync direction, validation, and conflict
+  resolution.
 - `.ai/framework/change-risk-model.md`: portable risk classes used to decide
   approvals, tests, docs, diagrams, and final evidence.
 - `.ai/framework/logical-integrity.md`: portable semantic/logical review for
@@ -65,12 +94,22 @@ Those belong to a project contour or repository adapter.
   from intent through source-of-truth, implementation, sync, and evidence.
 - `.ai/framework/security-safety-guidance.md`: portable security and safety
   expectations for secrets, live services, dependencies, and destructive work.
+- `.ai/framework/prompt-injection.md`: policy for treating imported AI
+  infrastructure instructions as untrusted data until normalized.
 - `.ai/framework/diagram-guidance.md`: portable diagram reasoning and
   source/visual split rules.
 - `.ai/framework/skill-adaptation.md`: portable guidance for adapting skills,
   prompts, wrappers, and third-party assistant infrastructure.
+- `.ai/framework/approval-records.md`: durable evidence pattern for protected
+  changes that require scoped approval.
 - `.ai/framework/adapter-maturity.md`: readiness model for judging whether a
   project adapter can support reliable assistant work.
+- `.ai/framework/bridge-capability-matrix.md`: portable model for documenting
+  assistant bridge loading behavior, limitations, and conformance checks.
+- `.ai/framework/migration-diff.md`: portable process for comparing framework
+  baselines and deriving target migration actions.
+- `.ai/framework/effectiveness-metrics.md`: metrics for evaluating Alatyr's
+  impact across comparable tasks and adapter states.
 - `.ai/framework/lifecycle.md`: framework versioning, upgrade, deprecation,
   and migration guidance.
 - `.ai/framework/installed-operations.md`: portable guidance for post-install

@@ -1,0 +1,71 @@
+schema_version: "{ALATYR_ADAPTER_SCHEMA_VERSION}"
+framework:
+  name: "Alatyr Core"
+  version: "{ALATYR_CORE_VERSION}"
+  source: "{ALATYR_CORE_SOURCE}"
+  template_version: "{ALATYR_TEMPLATE_VERSION}"
+  rule_registry: ".ai/framework/rule-registry.json"
+installation:
+  id: "{INSTALLATION_ID}"
+  date: "{INSTALLATION_DATE}"
+  mode: "{NEW_INSTALL_OR_UPGRADE}"
+owner:
+  responsible_team: "{RESPONSIBLE_TEAM}"
+  technical_owner: "{TECHNICAL_OWNER}"
+  backup_owner: "{BACKUP_OWNER}"
+  last_review_date: "{LAST_REVIEW_DATE}"
+  review_cadence: "{TARGET_ADAPTER_REVIEW_CADENCE}"
+  codeowners: "{CODEOWNERS_OR_EQUIVALENT_OWNER_MAP}"
+  review_triggers:
+    - "{REVIEW_TRIGGER}"
+supported_assistants:
+  - "{SUPPORTED_ASSISTANT}"
+contours:
+  framework: ".ai/framework"
+  project: ".ai/project"
+  assistant: ".ai/assistant"
+source_of_truth:
+  project_contour: ".ai/project/contour.md"
+  registry: ".ai/project/source-of-truth-registry.md"
+  assistant_contour: ".ai/assistant/contour.md"
+  context_profiles: ".ai/assistant/context-profiles.md"
+  module_profile: ".ai/assistant/module-profile.md"
+  project_sources:
+    - "{TARGET_PROJECT_SOURCE_OF_TRUTH}"
+modules:
+  core_profile: "{COMPLETE_OR_MISSING_GAPS}"
+  enabled:
+    - "{ENABLED_MODULE}"
+  deferred:
+    - "{DEFERRED_MODULE_AND_REASON}"
+  blocked:
+    - "{BLOCKED_MODULE_AND_MISSING_FACT}"
+validation:
+  commands:
+    - name: "{VALIDATION_NAME}"
+      command: "{TARGET_VALIDATION_COMMAND_OR_MANUAL_REVIEW}"
+      required_for:
+        - "{TASK_PROFILE}"
+operations:
+  help: ".ai/assistant/help.md"
+  help_reference: ".ai/assistant/help-reference.md"
+  operation_request: ".ai/assistant/templates/operation-request.md"
+  installation_note: ".ai/assistant/templates/installation-note.md"
+  output_contracts: ".ai/assistant/templates/adapter-output-contracts.md"
+  ai_infrastructure_inventory: ".ai/assistant/templates/ai-infrastructure-inventory.md"
+  migration_note: ".ai/assistant/templates/migration-note.md"
+  effectiveness_report: ".ai/assistant/templates/effectiveness-report.md"
+maturity:
+  profile: ".ai/assistant/maturity-profile.md"
+bridges:
+  capability_matrix: ".ai/assistant/bridge-capability-matrix.md"
+approvals:
+  directory: ".ai/assistant/approvals"
+  template: ".ai/assistant/approvals/approval-template.md"
+policies:
+  source_access: ".ai/assistant/policies/ai-infrastructure-source-access.md"
+  prompt_injection: ".ai/assistant/policies/prompt-injection.md"
+known_gaps:
+  - "{KNOWN_GAP}"
+local_deviations:
+  - "{LOCAL_DEVIATION}"

@@ -1,0 +1,23 @@
+# Alatyr target adapter ownership.
+# Replace placeholders with target repository owners before accepting
+# installation. If the target does not use CODEOWNERS, keep equivalent
+# ownership in `.ai/alatyr.yaml` and the target adapter docs instead.
+
+/.ai/framework/ {ALATYR_FRAMEWORK_ADAPTER_OWNER}
+/.ai/project/ {TARGET_PROJECT_FACT_OWNER}
+/.ai/assistant/ {TARGET_ASSISTANT_ADAPTER_OWNER}
+
+/AGENTS.md {TARGET_ASSISTANT_ADAPTER_OWNER}
+/AI_ASSISTANTS.md {TARGET_ASSISTANT_ADAPTER_OWNER}
+
+/.github/copilot-instructions.md {TARGET_ASSISTANT_BRIDGE_OWNER}
+/.github/instructions/ {TARGET_ASSISTANT_BRIDGE_OWNER}
+/.github/prompts/ {TARGET_ASSISTANT_BRIDGE_OWNER}
+/.cursor/ {TARGET_ASSISTANT_BRIDGE_OWNER}
+/.cursorrules {TARGET_ASSISTANT_BRIDGE_OWNER}
+/.claude/ {TARGET_ASSISTANT_BRIDGE_OWNER}
+/CLAUDE.md {TARGET_ASSISTANT_BRIDGE_OWNER}
+/GEMINI.md {TARGET_ASSISTANT_BRIDGE_OWNER}
+/.devin/ {TARGET_ASSISTANT_BRIDGE_OWNER}
+/.windsurf/ {TARGET_ASSISTANT_BRIDGE_OWNER}
+/.windsurfrules {TARGET_ASSISTANT_BRIDGE_OWNER}

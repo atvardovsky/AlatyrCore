@@ -10,33 +10,78 @@ Agents working here must preserve the separation between:
 - target repository templates under `templates/target/`
 - explanatory maintainer docs under `docs/`
 
-## Mandatory Context
+## Bootstrap Context
 
-Before changing framework docs, installer docs, templates, or assistant
-instructions, read:
+At the start of an AlatyrCore source-repository task, read only the bootstrap
+context first:
 
 - `README.md`
-- `INSTALL.md`
+- `AGENTS.md`
 - `framework/README.md`
-- `framework/contour.md`
-- `framework/guarantees.md`
-- `framework/project-adapter-contract.md`
-- `framework/portability.md`
-- `framework/context-discovery.md`
-- `framework/change-risk-model.md`
-- `framework/logical-integrity.md`
-- `framework/blueprint-driven-change.md`
-- `framework/security-safety-guidance.md`
-- `framework/diagram-guidance.md`
-- `framework/testing-guidance.md`
-- `framework/skill-adaptation.md`
-- `framework/adapter-maturity.md`
-- `framework/lifecycle.md`
-- `framework/installed-operations.md`
-- `framework/operation-help.md`
-- `installer/assistant-installation.flow.md`
-- `installer/readiness-checklist.md`
-- `installer/installation-plan-template.md`
+- `framework/context-profiles.md`
+- `framework/rule-ownership.md`
+- `framework/rule-registry.md`
+- `docs/framework-maintenance.md`
+
+Then choose the smallest matching source task profile below and read the
+profile-required files before editing. Do not load every framework file by
+default.
+
+## Context Expansion Profiles
+
+Use `docs-local` for wording, index, changelog, or maintainer-doc changes
+that do not alter framework behavior. Read the edited file, its linked
+neighbors, and `docs/framework-maintenance.md`.
+
+Use `framework-rule` for portable rule, contour, risk, integrity, safety,
+approval, lifecycle, operation, module, or source-of-truth changes. Read the
+owning `framework/*.md` file, its `alatyr_doc` dependencies when present,
+`framework/rule-registry.md`, `framework/rule-registry.json`,
+`framework/rule-ownership.md`, and affected installer/template surfaces.
+
+Use `installer-template` for installation flow, readiness, request template,
+target adapter template, bridge template, or post-install/update behavior
+changes. Read `INSTALL.md`, `installer/assistant-installation.flow.md`,
+`installer/readiness-checklist.md`, `installer/installation-plan-template.md`,
+the affected `templates/target` files, and the owning framework rule files
+named by the changed behavior.
+
+Use `source-tooling` for source-repository helper or checker changes. Read the
+tool being changed, `tools/README.md`, `docs/framework-maintenance.md`, and
+the framework, installer, or template contracts the tool validates.
+
+Use `release-versioning` for version files, changelog, release process,
+migration diff, or release migration evidence changes. Read `VERSION`,
+`ADAPTER_SCHEMA_VERSION`, `TEMPLATE_VERSION`, `CHANGELOG.md`,
+`docs/release-process.md`, `docs/release-migration-report-template.md`,
+`framework/lifecycle.md`, and `framework/migration-diff.md`.
+
+Use `ai-infrastructure-bridge` for assistant compatibility, bridge, skill,
+prompt, MCP/tool, operation-help, or imported-source changes. Read
+`AI_ASSISTANTS.md`, `docs/assistant-compatibility.md`,
+`framework/bridge-capability-matrix.md`, `framework/skill-adaptation.md`,
+`framework/prompt-injection.md`, `framework/operation-help.md`, and affected
+bridge or target assistant files.
+
+Expand beyond the selected profile only when the change crosses framework,
+installer, template, tool, release, security, assistant-infrastructure, or
+governance boundaries, or when evidence conflicts. Full framework-corpus
+reading is required only for changes that intentionally compare, copy, or
+rebaseline the full framework set.
+
+## Rule References
+
+This file is a source-repository entry point, not the canonical owner for
+portable Alatyr rules. Use the rule registry and ownership map before changing
+policy wording.
+
+- Context routing: `ALATYR-CONTEXT-001`
+- Adapter separation: `ALATYR-ADAPTER-001`
+- Approval and protected changes: `ALATYR-APPROVAL-001`
+- Safety boundaries: `ALATYR-SAFETY-001`
+- Imported AI infrastructure: `ALATYR-SAFETY-002`
+- Logical integrity evidence: `ALATYR-INTEGRITY-001`
+- Lifecycle and versioning: `ALATYR-LIFECYCLE-001`
 
 ## Operating Rules
 
@@ -77,6 +122,27 @@ For Alatyr Core changes, run this source-repository helper when available:
 
 ```sh
 python3 tools/check_framework_consistency.py
+```
+
+When relevant to the change, also run the focused source helpers:
+
+```sh
+python3 tools/check_framework_metadata.py
+python3 tools/check_approval_template.py
+python3 tools/check_ai_infrastructure_inventory.py
+python3 tools/check_bridge_capability_matrix.py
+python3 tools/check_manifest_contract.py
+python3 tools/check_markdown_links.py
+python3 tools/check_maturity_profile.py
+python3 tools/check_module_profile.py
+python3 tools/check_migration_diff_report.py
+python3 tools/check_operation_contracts.py
+python3 tools/check_operation_help.py
+python3 tools/check_output_contracts.py
+python3 tools/check_release_migration_template.py
+python3 tools/check_rule_ownership.py
+python3 tools/check_source_of_truth_registry.py
+python3 tools/check_versioning.py
 ```
 
 This helper validates the AlatyrCore repository itself. It is not a portable

@@ -6,6 +6,10 @@ support reliable AI work.
 It is not a scorecard for project quality. It is a readiness model for the
 framework.
 
+Adapters should report maturity by task area when possible. A target can be
+mature for documentation work, usable for ordinary code changes, minimal for
+data work, and incomplete for security-sensitive work at the same time.
+
 ## Levels
 
 ### Incomplete
@@ -73,6 +77,64 @@ The adapter is mature when it also defines:
 The assistant can handle larger tasks with phased context loading and stronger
 evidence.
 
+## Task-Specific Maturity
+
+When judging a request, report maturity for the task area before relying on a
+single overall level.
+
+Common task areas:
+
+- documentation
+- code changes
+- architecture
+- data
+- security
+- AI infrastructure
+- framework upgrade
+
+Each task area should name:
+
+- maturity level
+- supported work
+- required context
+- required owners
+- required validation or manual review
+- approval needs
+- blocking criteria
+- residual risks
+- final evidence expectations
+
+The target maturity profile template should include baseline entries for:
+
+- documentation
+- code-changes
+- architecture
+- data
+- security
+- ai-infrastructure
+- framework-upgrade
+
+Do not use a numeric score as the main maturity result. Numbers can create
+false precision when the real issue is a missing owner, policy, or validation
+surface.
+
+## Blocking Criteria
+
+Use blocking criteria for high-risk task areas:
+
+- security-sensitive work is blocked without security owner, credential
+  policy, validation, and approval rules
+- data work is blocked without data owner, migration or rollback policy,
+  validation, and destructive-change approval rules when applicable
+- AI infrastructure integration is blocked without inventory, source access,
+  prompt-injection policy, provenance, permissions, and approval rules
+- framework upgrade work is blocked without manifest, installation note,
+  context profiles, module profile, bridge references, operation help, and
+  adapter-recheck flow
+
+If a task is blocked, report the missing adapter facts and suggest the smallest
+adapter repair before attempting broad product changes.
+
 ## Adapter Audit Questions
 
 Ask:
@@ -92,6 +154,11 @@ Ask:
 - Are imported or custom AI infrastructure items adapted from target evidence
   with provenance and safety review?
 - Is there a way to report missing or unresolved adapter facts?
+- Is maturity reported for the requested task area, not only overall?
+- Are blocking criteria defined for security, data, AI infrastructure, and
+  framework upgrade work?
+- Does the module profile distinguish required core gaps from optional modules
+  that are enabled, deferred, disabled, not applicable, or blocked?
 
 ## Rejection Criteria
 
@@ -102,3 +169,4 @@ Reject maturity claims that:
 - count bridge files as canonical policy
 - copy another project's adapter facts instead of writing target facts
 - hide unknowns instead of reporting residual risk
+- claim overall maturity while the requested task area is blocked

@@ -24,17 +24,12 @@ validation, and final evidence.
 If a programmer gives you this repository and asks you to install Alatyr Core
 into another project, do this:
 
-1. Read this `README.md`, `AGENTS.md`, `INSTALL.md`, `framework/README.md`,
-   `framework/contour.md`, `framework/guarantees.md`,
+1. Read the source bootstrap: this `README.md`, `AGENTS.md`, `INSTALL.md`,
+   `framework/README.md`, `framework/context-profiles.md`,
    `framework/project-adapter-contract.md`, `framework/portability.md`,
-   `framework/context-discovery.md`, `framework/change-risk-model.md`,
-   `framework/logical-integrity.md`,
-   `framework/blueprint-driven-change.md`,
-   `framework/security-safety-guidance.md`,
-   `framework/diagram-guidance.md`, `framework/testing-guidance.md`,
-   `framework/skill-adaptation.md`, `framework/adapter-maturity.md`,
-   `framework/lifecycle.md`, `framework/installed-operations.md`,
-   `framework/operation-help.md`, `installer/assistant-installation.flow.md`,
+   `framework/module-profile.md`, `framework/rule-ownership.md`,
+   `framework/rule-registry.md`, `framework/rule-registry.json`,
+   `installer/assistant-installation.flow.md`,
    `installer/readiness-checklist.md`, and
    `installer/installation-plan-template.md`.
 2. Inspect the target repository before creating files.
@@ -43,19 +38,18 @@ into another project, do this:
 4. Create an installation plan from
    `installer/installation-plan-template.md`.
 5. Separate portable framework core from target project adapter facts.
-6. Copy or adapt `framework/*.md` into the target repository's
-   `.ai/framework`.
+6. Read each framework file before copying or adapting it into the target
+   repository. Full installs that copy the whole core must read
+   `framework/*.md` and `framework/rule-registry.json` at that stage.
 7. Rewrite target adapter files from the target repository, using
    `templates/target` only as placeholders.
-8. Do not copy Alatyr Core source-repository commands, tool assumptions,
-   target facts from another project, security policies, diagram tooling, or
-   lifecycle notes as framework core.
-9. Ask for explicit programmer approval before overwriting existing target AI
-   instructions, changing target architecture or business behavior, weakening
-   gates, adding dependencies, or enabling live/destructive side effects.
-10. Run only target validation that exists in the target repository. If a check
-    is unknown or unavailable, report it as unresolved instead of inventing a
-    command.
+8. Apply the canonical rule references instead of copying policy text:
+   `ALATYR-ADAPTER-001`, `ALATYR-APPROVAL-001`,
+   `ALATYR-SAFETY-001`, `ALATYR-SAFETY-002`,
+   `ALATYR-INTEGRITY-001`, and `ALATYR-EVIDENCE-001`.
+9. Run only target validation that exists in the target repository. If a check
+   is unknown or unavailable, report it as unresolved instead of inventing a
+   command.
 
 For details, use [INSTALL.md](INSTALL.md). For a copyable installation prompt,
 use
@@ -73,7 +67,10 @@ For post-install work in a target repository that already has Alatyr Core, use
 - `templates/target/`: starter files for a target repository adapter. These
   files contain placeholders and must be rewritten from target facts.
 - `docs/`: public explanation for maintainers and assistant compatibility.
-- `tools/`: source-repository maintenance checks for Alatyr Core itself.
+- `conformance/`: fixture descriptions and golden expectations for future
+  conformance checks.
+- `tools/`: source-repository maintenance checks and optional scaffolding
+  helpers for Alatyr Core itself.
 - `AGENTS.md`: canonical instructions for assistants working on Alatyr Core
   itself.
 - `AI_ASSISTANTS.md`: generic assistant entry point.
@@ -93,21 +90,83 @@ For Alatyr Core source-repository maintenance, run
 `python3 tools/check_framework_consistency.py` when available. This helper is
 not a portable validation requirement for target projects.
 
+Additional source-repository helpers include:
+
+- `python3 tools/check_framework_metadata.py`
+- `python3 tools/check_approval_template.py`
+- `python3 tools/check_ai_infrastructure_inventory.py`
+- `python3 tools/check_bridge_capability_matrix.py`
+- `python3 tools/check_manifest_contract.py`
+- `python3 tools/check_markdown_links.py`
+- `python3 tools/check_maturity_profile.py`
+- `python3 tools/check_module_profile.py`
+- `python3 tools/check_migration_diff_report.py`
+- `python3 tools/check_operation_contracts.py`
+- `python3 tools/check_operation_help.py`
+- `python3 tools/check_output_contracts.py`
+- `python3 tools/check_release_migration_template.py`
+- `python3 tools/check_rule_ownership.py`
+- `python3 tools/check_source_of_truth_registry.py`
+- `python3 tools/check_versioning.py`
+- `python3 tools/report_migration_diff.py --from-rules <old-rule-registry.json>`
+- `python3 tools/report_migration_diff.py --from-rules <old-rule-registry.json> --from-framework-dir <old-framework-dir>`
+- `python3 tools/check_bridge_templates.py`
+- `python3 tools/render_bridge_templates.py`
+- `python3 tools/check_conformance_fixtures.py`
+- `python3 tools/materialize_conformance_fixtures.py --output tmp/conformance-targets`
+- `python3 tools/prepare_conformance_run.py --output tmp/conformance-run --assistant-surface codex`
+- `python3 tools/check_conformance_reports.py`
+- `python3 tools/summarize_conformance_reports.py --actual-dir conformance/runs/assistant-results --require-all-fixtures`
+- `python3 tools/run_conformance_scaffold.py`
+- `python3 tools/summarize_effectiveness_reports.py --input conformance/golden/effectiveness-sample.json`
+
 ## What Alatyr Core Provides
 
 - framework/project/repository-adapter contour separation
+- stable rule identifiers for migration and adapter references
+- rule category ownership map to keep repeated docs aligned with canonical
+  owners
+- structured metadata on rule-owner framework docs for deterministic owner,
+  dependency, and task-profile checks
+- machine-readable rule manifest for deterministic migration checks
+- adapter ownership, review cadence, and CODEOWNERS-equivalent guidance
+- required core and optional module profile guidance
+- adapter output contracts for installation, update, and recheck evidence
+- optional safe scaffolding guidance that does not replace installation review
 - context discovery and source-of-truth decisions
+- context profiles for smaller task-specific reading sets
+- source-of-truth registry guidance and source-template checks for fact
+  ownership, derived surfaces, sync direction, validation, and conflict
+  resolution
+- task-specific maturity profile guidance and source-template checks for
+  supported work, context, validation, approvals, blockers, residual risks,
+  and final evidence
 - semantic change decision
 - first-class logical integrity review
 - blueprint-driven product-change workflow
 - change-risk classification and approval triggers
+- approval-record guidance and source-template checks for protected changes
+  that need durable evidence
 - documentation-sync and final-evidence patterns
 - stack-aware testing guidance without hard-coded commands
 - security/safety reasoning without hard-coded policies
+- prompt-injection handling for imported AI infrastructure
 - diagram guidance without hard-coded diagram tooling
 - AI infrastructure inventory and third-party skill/assistant-infrastructure
   adaptation guidance
-- adapter maturity and lifecycle guidance
+- AI infrastructure inventory report template and source-template checks
+- task-specific adapter maturity and lifecycle guidance
+- bridge capability matrix guidance and source-template checks for supported
+  assistant surfaces
+- migration diff and effectiveness measurement guidance
+- source release/version workflow for framework, adapter schema, and template
+  version tracking
+- source release migration report template for framework update evidence
+- executable migration-diff output validation for adapter contract impact,
+  affected categories, task profiles, canonical sources, and action hints
+- source-repository migration diff, conformance fixture, scaffold snapshot,
+  seed materialization, run preparation, golden report, and captured-run
+  summary checks
 - installed-adapter operation and recheck guidance
 - operation help and routing guidance for unclear requests
 - bridge-file pattern for modern assistants
@@ -132,6 +191,11 @@ installation plan, and then creates or updates target files according to the
 plan. Fresh installs can usually proceed after the plan when the programmer has
 asked for installation and no protected target files or behaviors are changed.
 Overwrites and protected changes require explicit programmer approval.
+
+The source repository may provide optional helper tools for maintainers, such
+as a dry-run-first scaffolder. These helpers can copy placeholder structure,
+but they do not complete installation, inspect target facts, approve
+overwrites, or validate a target adapter.
 
 ## After Installation
 
@@ -168,18 +232,33 @@ A mature target installation usually has:
 
 - `AGENTS.md`
 - `AI_ASSISTANTS.md`
+- `CODEOWNERS` or equivalent owner map when the target uses file ownership
+- `.ai/alatyr.yaml`
 - `.ai/README.md`
 - `.ai/framework/*.md`
+- `.ai/framework/rule-registry.json`
 - `.ai/project/contour.md`
+- `.ai/project/source-of-truth-registry.md`
 - `.ai/project/context` or equivalent project source-of-truth docs
 - `.ai/assistant/contour.md`
+- `.ai/assistant/context-profiles.md`
+- `.ai/assistant/module-profile.md`
+- `.ai/assistant/maturity-profile.md`
+- `.ai/assistant/bridge-capability-matrix.md`
 - `.ai/assistant/help.md`
+- `.ai/assistant/help-reference.md`
 - `.ai/assistant/flows`
 - `.ai/assistant/gates/checklist.md`
 - `.ai/assistant/policies/ai-infrastructure-source-access.md` when AI
   infrastructure can be inventoried or adapted
+- `.ai/assistant/policies/prompt-injection.md` when third-party or remote AI
+  infrastructure can be reviewed or adapted
+- `.ai/assistant/approvals/approval-template.md` when protected-change
+  approvals need durable evidence
 - `.ai/assistant/templates/installation-note.md`
 - `.ai/assistant/templates/operation-request.md`
+- `.ai/assistant/templates/migration-note.md`
+- `.ai/assistant/templates/effectiveness-report.md`
 - `.ai/assistant/templates/post-install-message.md`
 - `.ai/assistant/templates/post-update-message.md`
 - optional skills, prompts, bridge files, diagrams, and consistency checks

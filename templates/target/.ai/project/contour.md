@@ -28,4 +28,4 @@ Replace placeholders with target facts before accepting installation.
 List target source-of-truth files:
 
 - `{TARGET_PROJECT_SOURCE_OF_TRUTH}`
-
+- `.ai/project/source-of-truth-registry.md`

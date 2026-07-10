@@ -11,13 +11,20 @@ Alatyr Core is installed for `{PROJECT_NAME}`.
 Entry points:
 - `AGENTS.md`
 - `AI_ASSISTANTS.md`
+- `.ai/alatyr.yaml`
 - `.ai/README.md`
 - `.ai/assistant/templates/installation-note.md`
 - `.ai/assistant/help.md`
+- `.ai/assistant/help-reference.md`
+- `.ai/assistant/context-profiles.md`
+- `.ai/assistant/module-profile.md`
+- `.ai/project/source-of-truth-registry.md`
+- `.ai/assistant/maturity-profile.md`
+- `.ai/assistant/bridge-capability-matrix.md`
 
 Future assistant bootstrap:
 - Do not rely on this chat message alone.
-- Future sessions should start from `AGENTS.md`, `AI_ASSISTANTS.md`, `.ai/README.md`, and `.ai/assistant/templates/installation-note.md`.
+- Future sessions should start from `AGENTS.md`, `AI_ASSISTANTS.md`, `.ai/alatyr.yaml`, `.ai/README.md`, `.ai/assistant/context-profiles.md`, `.ai/assistant/module-profile.md`, `.ai/project/source-of-truth-registry.md`, and `.ai/assistant/templates/installation-note.md`.
 - If the adapter state is unclear, ask for "Alatyr help" or run `recheck-after-installation` before editing files.
 
 Installed operation help:
@@ -43,4 +50,5 @@ Use the installed Alatyr adapter in this repository.
 Operation type: recheck-after-installation
 Goal: verify the installation and list remaining adapter gaps.
 Non-goals: do not change project behavior.
+Allowed actions: read-only
 ```

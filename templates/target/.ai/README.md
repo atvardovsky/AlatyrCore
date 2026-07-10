@@ -17,6 +17,7 @@ facts, or target skill infrastructure.
 - product purpose
 - architecture facts
 - blueprint or equivalent source-of-truth facts
+- source-of-truth registry entries
 - use cases or workflows
 - business/domain rules
 - data model
@@ -29,15 +30,22 @@ Replace this section with the actual target project map.
 
 `.ai/assistant` contains local assistant operating rules:
 
+- context profiles for task-specific context loading
+- module profile for required core and optional Alatyr capabilities
+- task-specific maturity profile
+- bridge capability matrix
 - flows
 - gates
 - prompts
 - skills
 - skill adaptation and provenance rules
+- prompt-injection rules for imported AI infrastructure
+- approval records and approval templates
 - bridge-file policy
 - validation evidence expectations
 - documentation-sync rules
 - installed-operation requests and adapter rechecks
+- migration notes for framework updates
 - operation help, operation routing, and post-install/update assistant chat
   messages
 - AI infrastructure inventory, source access, adaptation, and compatibility
@@ -45,3 +53,10 @@ Replace this section with the actual target project map.
 
 Target commands and manual checks belong here or in linked target docs. They
 are not framework core.
+
+## Adapter Manifest
+
+`.ai/alatyr.yaml` records target-owned installation metadata such as framework
+version, adapter schema version, template version, supported assistants,
+source-of-truth files, module state, validation entry points, known gaps, and
+local deviations.

@@ -57,6 +57,11 @@ For each important fact, identify its owner:
 - bridge fact: short assistant-specific pointer to canonical files
 - generated artifact: visual or built output whose source is elsewhere
 
+When the target adapter provides a source-of-truth registry, use it before
+choosing ownership. The registry should map fact types to canonical owners,
+derived surfaces, synchronization direction, validation, and conflict
+resolvers.
+
 When two sources disagree, do not choose by convenience. Use logical integrity
 review to name the conflict, choose the source of truth, and repair the
 smallest coherent set of files.

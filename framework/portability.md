@@ -8,6 +8,7 @@ which facts are repository adapter details.
 Portable framework core may describe reusable assistant operating patterns:
 
 - framework, project, and repository adapter contour separation
+- required core profile and optional module profile concepts
 - context discovery, source-of-truth decision, and missing-context handling
 - architecture discussion and approval workflow shape
 - documentation-sync workflow shape
@@ -29,6 +30,7 @@ Portable framework core may describe reusable assistant operating patterns:
   message concepts
 - framework core versus target project adapter installation planning
 - adapter maturity levels and framework lifecycle/upgrade concepts
+- module-profile concepts for target-specific capability selection
 
 Portable framework core must stay Markdown-first and assistant-neutral.
 

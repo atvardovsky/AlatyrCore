@@ -9,9 +9,16 @@ Replace placeholders with target facts before accepting installation.
 - assistant workflows under `.ai/assistant/flows`
 - gates under `.ai/assistant/gates`
 - policies under `.ai/assistant/policies`
+- context profiles under `.ai/assistant/context-profiles.md`
+- module profile under `.ai/assistant/module-profile.md`
+- adapter manifest facts under `.ai/alatyr.yaml`
+- task-specific maturity under `.ai/assistant/maturity-profile.md`
+- bridge capability matrix under `.ai/assistant/bridge-capability-matrix.md`
+- migration notes under `.ai/assistant/templates/migration-note.md`
+- approval records under `.ai/assistant/approvals`
 - prompts, skills, bridge files, and assistant-specific wrappers
 - AI infrastructure inventory, source access, provenance, adaptation,
-  output-format, safety, and wrapper rules
+  output-format, prompt-injection, safety, and wrapper rules
 - target validation commands or manual checks
 - blueprint-driven change or equivalent target product-change workflow
 - installed-operation request, blueprint-creation, adapter-recheck, and
@@ -21,6 +28,10 @@ Replace placeholders with target facts before accepting installation.
 - documentation-sync rules
 - final evidence requirements
 - target adapter maturity and lifecycle notes
+- required core profile, enabled optional modules, deferred modules, and
+  blocked module gaps
+- framework version, adapter schema version, template version, known gaps, and
+  local deviations
 
 ## Does Not Own
 

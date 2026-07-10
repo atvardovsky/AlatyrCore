@@ -1,3 +1,14 @@
+---
+alatyr_doc:
+  id: framework.change-risk-model
+  type: framework-rule-owner
+  owns_rules:
+    - ALATYR-RISK-001
+  depends_on:
+    - ALATYR-SOURCE-001
+  applies_to:
+    - all
+---
 # AI Framework Change Risk Model
 
 This file defines a portable way to classify change risk before deciding tests,

@@ -6,14 +6,15 @@ All assistants should treat `AGENTS.md` as the canonical instruction file.
 
 Before making changes:
 
-1. Read `AGENTS.md`, `.ai/README.md`, and `.ai/framework/README.md`.
-2. Read task-relevant framework docs, especially logical integrity,
-   blueprint-driven change, AI infrastructure adaptation, installed operations,
-   and operation help guidance.
-3. Read `.ai/project/contour.md`, `.ai/assistant/contour.md`,
-   `.ai/assistant/templates/installation-note.md`,
-   `{TARGET_PROJECT_SOURCE_OF_TRUTH}`, the matching `.ai/assistant/flows/*.flow.md`,
-   and `.ai/assistant/gates/checklist.md`.
+1. Read `AGENTS.md`, `.ai/alatyr.yaml`, `.ai/README.md`, and
+   `.ai/assistant/context-profiles.md`, and
+   `.ai/assistant/module-profile.md`.
+2. Select the task profile, then read only profile-required framework,
+   project, assistant, flow, gate, policy, and validation files.
+3. Read `.ai/assistant/templates/installation-note.md`,
+   `.ai/project/source-of-truth-registry.md`, `{TARGET_PROJECT_SOURCE_OF_TRUTH}`,
+   and `.ai/assistant/gates/checklist.md` when required by the selected
+   profile.
 4. After installation/update, or when adapter state is unclear, read the
    post-install/update message templates before editing.
 5. For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-adaptation`,

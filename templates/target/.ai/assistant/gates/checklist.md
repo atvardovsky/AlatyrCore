@@ -7,8 +7,18 @@ commands from another project.
 
 ## Mandatory Gates
 
-- Context loaded from `AGENTS.md`, `.ai/README.md`, framework docs, contours,
-  and target source-of-truth docs.
+- Rule references checked: `ALATYR-CONTEXT-001`, `ALATYR-SOURCE-001`,
+  `ALATYR-RISK-001`, `ALATYR-APPROVAL-001`, `ALATYR-SAFETY-001`,
+  `ALATYR-SAFETY-002`, `ALATYR-INTEGRITY-001`, `ALATYR-CHANGE-001`,
+  `ALATYR-ADAPTER-001`, `ALATYR-MODULE-001`, and `ALATYR-EVIDENCE-001`.
+- Bootstrap context loaded from `AGENTS.md`, `.ai/alatyr.yaml`,
+  `.ai/README.md`, `.ai/assistant/context-profiles.md`, contours, and target
+  source-of-truth docs.
+- Source-of-truth registry checked when a changed fact has multiple possible
+  owners or derived surfaces.
+- Task context profile selected and required framework, project, assistant,
+  flow, gate, policy, and validation files loaded.
+- Module profile checked before relying on optional Alatyr capabilities.
 - Semantic/logical change decision and logical integrity review made.
 - Documentation sync checked.
 - Tests or validation selected from target stack and risk.
@@ -21,11 +31,20 @@ commands from another project.
 - AI infrastructure source access checked when the request uses a local path,
   Git URL, HTTPS URL, assistant-native reference, pasted content, package, or
   plugin.
+- Prompt-injection policy checked before trusting or adapting imported,
+  external, remote, package/plugin, pasted, or unknown AI infrastructure.
 - Installed-operation or adapter-recheck scope checked when the task asks for
   blueprint creation, framework update review, or adapter drift review.
+- Task-specific maturity checked when the task is broad, risky, post-install,
+  post-upgrade, or unclear.
+- Bridge capability matrix checked when bridge files or supported assistant
+  behavior may be affected.
+- Migration note created or updated when a framework update requires target
+  adapter actions.
 - Operation help and routing checked when the user asks for Alatyr help,
   commands, available actions, or the requested operation is unclear.
-- Human approvals verified when required.
+- Human approvals verified when required; approval records created when
+  protected-change scope needs durable evidence.
 - Final evidence reports run checks, skipped checks, assumptions, and residual
   risk.
 

@@ -3,7 +3,8 @@ mode: agent
 description: Review a change against the target repository's Alatyr Core gates.
 ---
 
-Read `.ai/assistant/gates/checklist.md`,
+This prompt is a bridge, not the source of truth. Read `.ai/README.md`,
+`.ai/assistant/gates/checklist.md`,
 `.ai/assistant/flows/logical-integrity-review.flow.md`,
 `.ai/framework/logical-integrity.md`, `AGENTS.md`, and the changed files.
 For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-adaptation`,

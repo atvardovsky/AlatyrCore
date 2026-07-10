@@ -12,8 +12,13 @@ validation.
 Framework core owns:
 
 - context-loading contract
+- rule identifier and registry pattern
 - project/framework/adapter ownership separation
+- adapter owner, review cadence, and file-owner map pattern
+- required core profile and optional module profile pattern
+- optional scaffolding boundary
 - context discovery, missing-context, and source-of-truth decision pattern
+- source-of-truth registry pattern
 - change-risk classification and protected approval trigger pattern
 - security, safety, live-service, and destructive-operation reasoning pattern
 - diagram reasoning and source/visual synchronization pattern
@@ -27,12 +32,17 @@ Framework core owns:
 - skill, prompt, wrapper, and third-party assistant infrastructure adaptation
   pattern
 - supported-assistant bridge pattern
+- bridge capability matrix pattern
+- migration diff pattern
+- effectiveness measurement pattern
 - installed-adapter operation, blueprint creation, and recheck pattern
 - operation help and ambiguous-request routing pattern
 - project-adapter contract
 - framework installation and portability rules
 - improvement-advice trigger pattern
 - adapter maturity and framework lifecycle/upgrade pattern
+- module-profile pattern for enabling only the target-relevant framework
+  capabilities
 
 ## Does Not Own
 

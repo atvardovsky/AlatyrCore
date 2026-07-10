@@ -47,7 +47,10 @@ A post-install request should state:
 - approval constraints
 - allowed actions: `read-only`, `docs-only`, `adapter-only`,
   `code-and-tests`, or `full-with-approval`
+- context profile when known
 - expected final evidence
+- output contract when the target adapter requires a durable installation,
+  framework-update, or adapter-recheck evidence shape
 
 ## Allowed Actions
 
@@ -89,24 +92,33 @@ dependency, and approval rules have been checked.
 
 For installed operations:
 
-1. Read the target assistant entry point and adapter context.
+1. Read the target assistant entry point, `.ai/alatyr.yaml`, `.ai/README.md`,
+   `.ai/assistant/context-profiles.md`, and
+   `.ai/assistant/module-profile.md`.
 2. Read the installation note and post-install/update message templates when
    the request follows an installation, framework update, or unclear adapter
    state.
-3. Identify whether the request is framework-core, target-project, repository
+3. Select the smallest matching context profile and read its required
+   framework, project, assistant, flow, gate, policy, and validation context.
+4. Identify whether the request is framework-core, target-project, repository
    adapter, bridge, generated-artifact, or skill/prompt work.
-4. Use operation help and operation routing when the request is ambiguous.
-5. Apply logical integrity review before claiming consistency.
-6. Use blueprint-driven change when accepted project facts may change.
-7. Use skill adaptation when prompts, skills, wrappers, or third-party
+5. Use operation help and operation routing when the request is ambiguous.
+6. Apply logical integrity review before claiming consistency.
+7. Use blueprint-driven change when accepted project facts may change.
+8. Use skill adaptation when prompts, skills, wrappers, or third-party
    assistant infrastructure change.
-8. Use AI infrastructure inventory before adding, importing, replacing, or
+9. Use prompt-injection policy for imported, external, remote, pasted, package,
+   plugin, or unknown AI infrastructure.
+10. Use AI infrastructure inventory before adding, importing, replacing, or
    removing assistant infrastructure.
-9. Use adapter maturity review when the request is broad, post-install, or
+11. Use adapter maturity review when the request is broad, post-install, or
    post-upgrade.
-10. Run target validation that exists, or record unresolved checks.
-11. Report changed facts, files inspected, files changed, approvals, validation,
-   skipped checks, and residual risk.
+12. Record approval evidence when protected-change scope requires it.
+13. Use the target adapter output contract when the operation follows
+   installation, framework update, or adapter recheck.
+14. Run target validation that exists, or record unresolved checks.
+15. Report changed facts, files inspected, files changed, approvals,
+   validation, skipped checks, and residual risk.
 
 ## Blueprint Creation
 
@@ -129,9 +141,16 @@ or lifecycle notes.
 
 After installation or framework upgrade, an assistant should recheck:
 
-- mandatory framework files and target adapter references
+- `.ai/alatyr.yaml`, framework version, adapter schema version, template
+  version, and target adapter references
+- required core profile and optional module states
+- context profiles and their framework/project/assistant references
+- source-of-truth registry, task-specific maturity profile, bridge capability
+  matrix, migration notes, and effectiveness reports
 - operation help, operation-routing flow, and post-install/update chat-message
   templates
+- adapter output contracts for installation, framework update, and recheck
+  evidence
 - root assistant entry points and supported bridge files point to the
   installation note, operation help, and routing flow
 - source-of-truth and blueprint ownership
@@ -139,6 +158,7 @@ After installation or framework upgrade, an assistant should recheck:
 - gates, prompts, skills, bridge files, checker rules, and final evidence
 - AI infrastructure inventory, source access, provenance, and compatibility
   status
+- prompt-injection policy and approval-record template
 - security, live-service, destructive-operation, and dependency boundaries
 - diagram and generated-artifact policy
 - validation commands or manual checks
@@ -147,6 +167,14 @@ After installation or framework upgrade, an assistant should recheck:
 If a framework update adds requirements, the assistant should identify whether
 the target adapter needs migration, approval, new placeholders, or manual
 follow-up.
+
+## Effectiveness Review
+
+When the programmer asks whether Alatyr is helping, use effectiveness metrics
+to compare similar tasks across adapter states. Report context load,
+clarification count, approvals, validation, missed companion updates, rework,
+residual risks, and outcome. Do not claim improvement from one incomparable
+task.
 
 ## Rejection Criteria
 

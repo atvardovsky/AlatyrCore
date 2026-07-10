@@ -5,39 +5,26 @@ This repository uses Alatyr Core for AI-assisted development.
 Replace every `{PLACEHOLDER}` in this file from target repository facts before
 claiming installation is complete.
 
-## Mandatory Context
+## Bootstrap Context
 
-Before changing code, tests, docs, diagrams, prompts, gates, or architecture,
-read:
+At the start of a task, read only the bootstrap context first:
 
+- `.ai/alatyr.yaml`
 - `.ai/README.md`
-- `.ai/framework/README.md`
-- `.ai/framework/contour.md`
-- `.ai/framework/guarantees.md`
-- `.ai/framework/project-adapter-contract.md`
-- `.ai/framework/portability.md`
-- `.ai/framework/context-discovery.md`
-- `.ai/framework/change-risk-model.md`
-- `.ai/framework/logical-integrity.md`
-- `.ai/framework/blueprint-driven-change.md`
-- `.ai/framework/security-safety-guidance.md`
-- `.ai/framework/diagram-guidance.md`
-- `.ai/framework/testing-guidance.md`
-- `.ai/framework/skill-adaptation.md`
-- `.ai/framework/adapter-maturity.md`
-- `.ai/framework/lifecycle.md`
-- `.ai/framework/installed-operations.md`
-- `.ai/framework/operation-help.md`
+- `.ai/assistant/context-profiles.md`
+- `.ai/assistant/module-profile.md`
 - `.ai/project/contour.md`
+- `.ai/project/source-of-truth-registry.md`
 - `.ai/assistant/contour.md`
-- `.ai/assistant/templates/installation-note.md`
-- `.ai/assistant/help.md`
-- `.ai/assistant/policies/ai-infrastructure-source-access.md`
-- `.ai/assistant/templates/post-install-message.md`
-- `.ai/assistant/templates/post-update-message.md`
 - `{TARGET_PROJECT_SOURCE_OF_TRUTH}`
-- `.ai/assistant/gates/checklist.md`
-- the matching flow under `.ai/assistant/flows`
+
+Then select the matching profile in `.ai/assistant/context-profiles.md` and
+read the profile-required framework, project, assistant, flow, gate, policy,
+and validation files before expanding context.
+
+Expand beyond the selected profile only when the task crosses architecture,
+business, data, security, assistant-infrastructure, lifecycle, or governance
+boundaries, or when evidence conflicts.
 
 ## Session Bootstrap
 
@@ -62,8 +49,15 @@ read:
 - Skill/prompt policy: `{TARGET_SKILL_PROMPT_POLICY}`.
 - AI infrastructure source-access policy:
   `.ai/assistant/policies/ai-infrastructure-source-access.md`.
+- Prompt-injection policy:
+  `.ai/assistant/policies/prompt-injection.md`.
 
 ## Alatyr Core Rules
+
+Canonical rule references: `ALATYR-CONTEXT-001`, `ALATYR-SOURCE-001`,
+`ALATYR-RISK-001`, `ALATYR-APPROVAL-001`, `ALATYR-SAFETY-001`,
+`ALATYR-SAFETY-002`, `ALATYR-INTEGRITY-001`, `ALATYR-CHANGE-001`,
+`ALATYR-ADAPTER-001`, `ALATYR-MODULE-001`, and `ALATYR-EVIDENCE-001`.
 
 - Keep framework rules under `.ai/framework`.
 - Keep target project facts under `.ai/project` or target public docs.
@@ -77,6 +71,9 @@ read:
   behavior changes.
 - Use installed-operation flows for post-install blueprint creation, adapter
   rechecks, framework update reviews, and drift reviews.
+- Use `.ai/assistant/module-profile.md` to check whether optional modules are
+  enabled, deferred, disabled, not applicable, or blocked before relying on
+  them.
 - If the user asks for Alatyr help, commands, available actions, or gives an
   unclear request, read `.ai/assistant/help.md` and use
   `.ai/assistant/flows/operation-routing.flow.md` before editing files.
@@ -92,18 +89,15 @@ read:
   permissions, safety, and approval before importing or normalizing the source
   into canonical target files.
 - Use target validation only when it exists. Report unresolved checks.
+- Record protected-change approvals with
+  `.ai/assistant/approvals/approval-template.md` when approval scope affects
+  files, plan versions, imported infrastructure, or protected actions.
 
 ## Approval Gates
 
-Require explicit programmer approval before:
-
-- architecture changes
-- accepted business behavior changes
-- weakened tests, gates, documentation-sync rules, or approval requirements
-- new production dependencies or external services
-- live, destructive, spend-affecting, or data-loss side effects
-- importing third-party assistant infrastructure into canonical target files
-- overwriting existing AI instructions
+Apply `ALATYR-APPROVAL-001` before protected changes. Use
+`ALATYR-RISK-001`, `ALATYR-SAFETY-001`, and `ALATYR-SAFETY-002` to classify
+the protected scope, then apply `{TARGET_APPROVAL_POLICY}` when it is stricter.
 
 ## Final Evidence
 

@@ -1,3 +1,18 @@
+---
+alatyr_doc:
+  id: framework.blueprint-driven-change
+  type: framework-rule-owner
+  owns_rules:
+    - ALATYR-CHANGE-001
+  depends_on:
+    - ALATYR-SOURCE-001
+    - ALATYR-RISK-001
+    - ALATYR-INTEGRITY-001
+  applies_to:
+    - business-change
+    - architecture-change
+    - data-change
+---
 # AI Framework Blueprint-Driven Change
 
 This file defines a portable product-change workflow for projects that use
