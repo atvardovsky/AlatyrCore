@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "fixture": "monorepo-mixed",
+  "report_kind": "assistant-result-conformance",
+  "conformance_scope": "Source golden result contract; not an assistant installation test and not target validation.",
+  "claims_installation_complete": false,
+  "operation_type": "adapter-recheck-or-installation-plan",
+  "target_shape_confirmed": [
+    "multiple_packages",
+    "shared_docs",
+    "package_specific_validation",
+    "possible_existing_bridges"
+  ],
+  "target_facts_inspected": [
+    "multiple package directories",
+    "shared docs",
+    "package-specific tests or validation",
+    "possible existing bridge files"
+  ],
+  "files_created_preserved_or_skipped": {
+    "created": [
+      ".ai/alatyr.yaml",
+      ".ai/framework/*",
+      ".ai/assistant/context-profiles.md",
+      ".ai/assistant/module-profile.md",
+      ".ai/assistant/bridge-capability-matrix.md"
+    ],
+    "preserved": [
+      "multiple package directories",
+      "shared docs",
+      "package-specific tests or validation",
+      "possible existing bridge files"
+    ],
+    "skipped": [
+      "existing bridge overwrite until approval exists",
+      "package ownership registry until target owners are known"
+    ]
+  },
+  "approval_needs": [
+    "shared public docs",
+    "cross-package contracts",
+    "bridge files"
+  ],
+  "manifest_version_handling": "Record framework, adapter schema, and template versions once the target adapter owner accepts the manifest; do not infer package owners from fixture names.",
+  "context_profile": "architecture-change",
+  "context_profiles_considered": [
+    "docs-local",
+    "code-local",
+    "architecture-change",
+    "framework-upgrade"
+  ],
+  "module_profile_status": [
+    "multi-assistant-bridges enabled only for supported bridge surfaces",
+    "blueprint-change blocked until ownership is recorded",
+    "effectiveness-metrics useful for comparing package-specific work"
+  ],
+  "source_of_truth_registry_status": [
+    "package ownership registry missing",
+    "shared docs versus package code ownership unresolved",
+    "cross-package contract ownership unresolved"
+  ],
+  "task_specific_maturity": [
+    "documentation: minimal when shared docs owner is known",
+    "code changes: package-specific maturity required",
+    "framework upgrade: incomplete until bridge and ownership registry are accepted"
+  ],
+  "bridge_capability_status": [
+    "existing bridge files must be preserved unless explicit approval allows overwrite",
+    "bridge capability matrix required before claiming multi-assistant conformance"
+  ],
+  "operation_help_status": [
+    "operation help must route by package, task profile, and module state before edits"
+  ],
+  "output_contract_status": [
+    "adapter output contracts required for installation, framework update, and package-scoped recheck evidence"
+  ],
+  "ai_infrastructure_inventory_status": [
+    "AI infrastructure inventory required before preserving or replacing existing bridge and assistant surfaces"
+  ],
+  "validation_status": {
+    "target_validation_claimed": false,
+    "unresolved": [
+      "package-specific validation commands are not known",
+      "cross-package contract checks are unresolved"
+    ]
+  },
+  "residual_risk": [
+    "package ownership registry",
+    "public docs versus package code ownership",
+    "single adapter maturity result for all task areas"
+  ],
+  "behaviors_satisfied": [
+    "select_profiles_by_package_or_fact_type",
+    "require_source_of_truth_registry_before_broad_consistency_claim",
+    "record_package_specific_validation_gaps",
+    "use_bridge_capability_matrix",
+    "report_task_specific_maturity"
+  ],
+  "forbidden_claims_absent": [
+    "universal_installer_command",
+    "invented_validation_command",
+    "invented_project_fact",
+    "overwrite_without_approval"
+  ]
+}

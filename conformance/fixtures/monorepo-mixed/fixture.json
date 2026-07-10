@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "fixture": "monorepo-mixed",
+  "description": "Monorepo repository shape with package-specific ownership and validation.",
+  "source_surfaces": [
+    "multiple package directories",
+    "shared docs",
+    "package-specific tests or validation",
+    "possible existing bridge files"
+  ],
+  "existing_ai_surfaces": [
+    "possible bridge files"
+  ],
+  "missing_surfaces": [
+    "package ownership registry",
+    "public docs versus package code ownership",
+    "single adapter maturity result for all task areas"
+  ],
+  "protected_surfaces": [
+    "shared public docs",
+    "cross-package contracts",
+    "bridge files"
+  ],
+  "expected_profiles": [
+    "docs-local",
+    "code-local",
+    "architecture-change",
+    "framework-upgrade"
+  ],
+  "expected_module_states": [
+    "multi-assistant-bridges enabled only for supported bridge surfaces",
+    "blueprint-change blocked until ownership is recorded",
+    "effectiveness-metrics useful for comparing package-specific work"
+  ],
+  "seed_files": [
+    {
+      "path": "README.md",
+      "content": "# Mixed Monorepo Fixture\n\nMultiple package shape for source conformance.\n"
+    },
+    {
+      "path": "packages/api/README.md",
+      "content": "# API Package\n"
+    },
+    {
+      "path": "packages/web/README.md",
+      "content": "# Web Package\n"
+    },
+    {
+      "path": ".github/copilot-instructions.md",
+      "content": "# Existing Bridge\n\nPreserve unless approval allows overwrite.\n"
+    }
+  ]
+}

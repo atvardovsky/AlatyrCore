@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "fixture": "backend-api-minimal",
+  "target_shape": [
+    "readme",
+    "api_routes_or_controllers",
+    "tests",
+    "ambiguous_api_contract"
+  ],
+  "expected_behaviors": [
+    "do_not_invent_api_contract_owner",
+    "record_public_api_registry_gap",
+    "select_architecture_or_business_profile_for_contract_change",
+    "require_approval_for_public_contract_changes",
+    "keep_ai_infrastructure_review_only_until_policy_exists"
+  ],
+  "required_evidence": [
+    "operation_type",
+    "target_facts_inspected",
+    "source_of_truth_registry_status",
+    "approval_needs",
+    "context_profile",
+    "module_profile_status",
+    "task_specific_maturity",
+    "operation_help_status",
+    "output_contract_status",
+    "ai_infrastructure_inventory_status",
+    "validation_status",
+    "residual_risk"
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "fixture": "frontend-app-minimal",
+  "description": "Frontend application repository shape with missing visual validation policy.",
+  "source_surfaces": [
+    "README",
+    "UI source",
+    "build metadata"
+  ],
+  "existing_ai_surfaces": [],
+  "missing_surfaces": [
+    "visual validation policy",
+    "accessibility policy",
+    "diagram policy",
+    "root assistant entry points"
+  ],
+  "protected_surfaces": [
+    "UI behavior",
+    "public product behavior"
+  ],
+  "expected_profiles": [
+    "docs-local",
+    "business-change",
+    "code-local"
+  ],
+  "expected_module_states": [
+    "installed-operations enabled only after root assistant entry points exist",
+    "diagrams not-applicable or deferred until target diagram policy exists",
+    "effectiveness-metrics deferred unless the target wants measurement"
+  ],
+  "seed_files": [
+    {
+      "path": "README.md",
+      "content": "# Frontend App Fixture\n\nMinimal frontend app shape for source conformance.\n"
+    },
+    {
+      "path": "package.json",
+      "content": "{\"name\":\"fixture-frontend-app\",\"version\":\"0.0.0\"}\n"
+    },
+    {
+      "path": "src/App.txt",
+      "content": "UI source placeholder.\n"
+    }
+  ]
+}

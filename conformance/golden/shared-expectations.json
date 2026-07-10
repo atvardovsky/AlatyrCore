@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "required_evidence": [
+    "operation_type",
+    "target_facts_inspected",
+    "files_created_preserved_or_skipped",
+    "approval_needs",
+    "manifest_version_handling",
+    "context_profile",
+    "module_profile_status",
+    "source_of_truth_registry_status",
+    "task_specific_maturity",
+    "bridge_capability_status",
+    "operation_help_status",
+    "output_contract_status",
+    "ai_infrastructure_inventory_status",
+    "validation_status",
+    "residual_risk"
+  ],
+  "forbidden_claims": [
+    "universal_installer_command",
+    "invented_validation_command",
+    "invented_project_fact",
+    "overwrite_without_approval"
+  ]
+}

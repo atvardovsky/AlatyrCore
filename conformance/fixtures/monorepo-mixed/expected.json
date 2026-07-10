@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "fixture": "monorepo-mixed",
+  "target_shape": [
+    "multiple_packages",
+    "shared_docs",
+    "package_specific_validation",
+    "possible_existing_bridges"
+  ],
+  "expected_behaviors": [
+    "select_profiles_by_package_or_fact_type",
+    "require_source_of_truth_registry_before_broad_consistency_claim",
+    "record_package_specific_validation_gaps",
+    "use_bridge_capability_matrix",
+    "report_task_specific_maturity"
+  ],
+  "required_evidence": [
+    "operation_type",
+    "target_facts_inspected",
+    "context_profile",
+    "module_profile_status",
+    "source_of_truth_registry_status",
+    "task_specific_maturity",
+    "bridge_capability_status",
+    "operation_help_status",
+    "output_contract_status",
+    "ai_infrastructure_inventory_status",
+    "validation_status",
+    "residual_risk"
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "fixture": "python-cli-existing-ai",
+  "description": "Python CLI repository shape with existing assistant instructions.",
+  "source_surfaces": [
+    "existing AGENTS.md",
+    "Python package metadata",
+    "CLI source directory",
+    "basic tests"
+  ],
+  "existing_ai_surfaces": [
+    "AGENTS.md"
+  ],
+  "missing_surfaces": [
+    ".ai/alatyr.yaml",
+    ".ai/project/source-of-truth-registry.md",
+    ".ai/assistant/context-profiles.md",
+    ".ai/assistant/bridge-capability-matrix.md"
+  ],
+  "protected_surfaces": [
+    "existing AGENTS.md"
+  ],
+  "expected_profiles": [
+    "framework-upgrade",
+    "code-local",
+    "security-sensitive"
+  ],
+  "expected_module_states": [
+    "required core missing source-of-truth registry",
+    "multi-assistant-bridges blocked until supported assistants are known",
+    "ai-infrastructure deferred until inventory and policies exist"
+  ],
+  "seed_files": [
+    {
+      "path": "AGENTS.md",
+      "content": "# Existing Target Instructions\n\nPreserve this file unless approval allows overwrite.\n"
+    },
+    {
+      "path": "pyproject.toml",
+      "content": "[project]\nname = \"fixture-python-cli\"\nversion = \"0.0.0\"\n"
+    },
+    {
+      "path": "src/fixture_cli/main.py",
+      "content": "def main():\n    return 0\n"
+    },
+    {
+      "path": "tests/test_main.py",
+      "content": "def test_placeholder():\n    assert True\n"
+    }
+  ]
+}

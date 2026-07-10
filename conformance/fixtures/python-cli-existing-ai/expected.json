@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "fixture": "python-cli-existing-ai",
+  "target_shape": [
+    "existing_ai_instructions",
+    "package_metadata",
+    "cli_source",
+    "basic_tests"
+  ],
+  "expected_behaviors": [
+    "preserve_existing_agents_without_approval",
+    "propose_adapter_manifest",
+    "propose_framework_copy",
+    "propose_source_of_truth_registry",
+    "propose_context_profiles",
+    "block_security_and_data_until_policies_exist",
+    "use_only_discovered_validation"
+  ],
+  "required_evidence": [
+    "operation_type",
+    "target_facts_inspected",
+    "approval_needs",
+    "manifest_version_handling",
+    "context_profile",
+    "module_profile_status",
+    "source_of_truth_registry_status",
+    "task_specific_maturity",
+    "operation_help_status",
+    "output_contract_status",
+    "ai_infrastructure_inventory_status",
+    "validation_status",
+    "residual_risk"
+  ]
+}

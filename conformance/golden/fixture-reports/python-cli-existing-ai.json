@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "fixture": "python-cli-existing-ai",
+  "report_kind": "assistant-result-conformance",
+  "conformance_scope": "Source golden result contract; not an assistant installation test and not target validation.",
+  "claims_installation_complete": false,
+  "operation_type": "adapter-recheck-or-installation-plan",
+  "target_shape_confirmed": [
+    "existing_ai_instructions",
+    "package_metadata",
+    "cli_source",
+    "basic_tests"
+  ],
+  "target_facts_inspected": [
+    "existing AGENTS.md",
+    "Python package metadata",
+    "CLI source directory",
+    "basic tests"
+  ],
+  "files_created_preserved_or_skipped": {
+    "created": [
+      ".ai/alatyr.yaml",
+      ".ai/framework/*",
+      ".ai/assistant/context-profiles.md",
+      ".ai/assistant/module-profile.md",
+      ".ai/project/source-of-truth-registry.md"
+    ],
+    "preserved": [
+      "AGENTS.md",
+      "Python package metadata",
+      "CLI source directory",
+      "basic tests"
+    ],
+    "skipped": [
+      "existing AGENTS.md overwrite until approval exists",
+      "security-sensitive changes until target policies exist"
+    ]
+  },
+  "approval_needs": [
+    "existing AGENTS.md"
+  ],
+  "manifest_version_handling": "Create or propose the adapter manifest with framework version, adapter schema version, and template version; preserve existing assistant instructions without overwrite approval.",
+  "context_profile": "framework-upgrade",
+  "context_profiles_considered": [
+    "framework-upgrade",
+    "code-local",
+    "security-sensitive"
+  ],
+  "module_profile_status": [
+    "required core missing source-of-truth registry",
+    "multi-assistant-bridges blocked until supported assistants are known",
+    "ai-infrastructure deferred until inventory and policies exist"
+  ],
+  "source_of_truth_registry_status": [
+    "source-of-truth registry missing",
+    "CLI behavior owner unresolved until target adapter records it"
+  ],
+  "task_specific_maturity": [
+    "framework upgrade: incomplete until manifest and context profiles exist",
+    "code changes: minimal only after target validation is accepted",
+    "security: blocked until security and data policies exist"
+  ],
+  "bridge_capability_status": [
+    "existing AGENTS.md must remain target-owned until approval allows integration"
+  ],
+  "operation_help_status": [
+    "operation help proposed but existing AI instructions must be preserved until approval"
+  ],
+  "output_contract_status": [
+    "adapter output contracts proposed without claiming completed installation"
+  ],
+  "ai_infrastructure_inventory_status": [
+    "existing AI instructions require inventory before adaptation or replacement"
+  ],
+  "validation_status": {
+    "target_validation_claimed": false,
+    "unresolved": [
+      "target validation commands are not claimed from fixture files",
+      "security policy is missing"
+    ]
+  },
+  "residual_risk": [
+    ".ai/alatyr.yaml",
+    ".ai/project/source-of-truth-registry.md",
+    ".ai/assistant/context-profiles.md",
+    ".ai/assistant/bridge-capability-matrix.md"
+  ],
+  "behaviors_satisfied": [
+    "preserve_existing_agents_without_approval",
+    "propose_adapter_manifest",
+    "propose_framework_copy",
+    "propose_source_of_truth_registry",
+    "propose_context_profiles",
+    "block_security_and_data_until_policies_exist",
+    "use_only_discovered_validation"
+  ],
+  "forbidden_claims_absent": [
+    "universal_installer_command",
+    "invented_validation_command",
+    "invented_project_fact",
+    "overwrite_without_approval"
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "fixture": "backend-api-minimal",
+  "description": "Backend API repository shape with ambiguous API contract ownership.",
+  "source_surfaces": [
+    "README",
+    "API route or controller source",
+    "tests"
+  ],
+  "existing_ai_surfaces": [],
+  "missing_surfaces": [
+    "public API contract owner",
+    "source-of-truth registry entries for public API and data model",
+    "diagram policy",
+    "AI infrastructure inventory"
+  ],
+  "protected_surfaces": [
+    "public API contract",
+    "architecture",
+    "data model",
+    "security boundary",
+    "live external boundary"
+  ],
+  "expected_profiles": [
+    "architecture-change",
+    "business-change",
+    "data-change",
+    "security-sensitive",
+    "ai-infrastructure"
+  ],
+  "expected_module_states": [
+    "blueprint-change blocked until public API owner is known",
+    "diagrams deferred until diagram policy exists",
+    "ai-infrastructure review-only until inventory and source policy exist"
+  ],
+  "seed_files": [
+    {
+      "path": "README.md",
+      "content": "# Backend API Fixture\n\nMinimal backend API shape for source conformance.\n"
+    },
+    {
+      "path": "src/api/routes.txt",
+      "content": "GET /fixture\n"
+    },
+    {
+      "path": "tests/api_contract_notes.txt",
+      "content": "API contract owner is intentionally missing.\n"
+    }
+  ]
+}

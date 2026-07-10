@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "fixture": "{FIXTURE_NAME}",
+  "report_kind": "assistant-run-result",
+  "run_id": "{ASSISTANT_RUN_ID}",
+  "assistant_surface": "{ASSISTANT_SURFACE}",
+  "source_commit": "{ALATYR_CORE_SOURCE_COMMIT}",
+  "conformance_scope": "Actual assistant-run fixture report; not target validation and not a real target adapter.",
+  "claims_installation_complete": false,
+  "operation_type": "{INSTALLATION_OR_RECHECK_OPERATION}",
+  "target_shape_confirmed": [
+    "{TARGET_SHAPE_ITEM}"
+  ],
+  "target_facts_inspected": [
+    "{TARGET_FACT_SURFACE}"
+  ],
+  "files_created_preserved_or_skipped": {
+    "created": [
+      "{CREATED_PATH_OR_SUMMARY}"
+    ],
+    "preserved": [
+      "{PRESERVED_PATH_OR_SUMMARY}"
+    ],
+    "skipped": [
+      "{SKIPPED_PATH_OR_REASON}"
+    ]
+  },
+  "approval_needs": [
+    "{APPROVAL_NEED_OR_NONE}"
+  ],
+  "manifest_version_handling": "{VERSION_HANDLING_EVIDENCE}",
+  "context_profile": "{SELECTED_CONTEXT_PROFILE}",
+  "context_profiles_considered": [
+    "{CONTEXT_PROFILE}"
+  ],
+  "module_profile_status": [
+    "{MODULE_STATE_EVIDENCE}"
+  ],
+  "source_of_truth_registry_status": [
+    "{SOURCE_OF_TRUTH_STATUS}"
+  ],
+  "task_specific_maturity": [
+    "{TASK_SPECIFIC_MATURITY_RESULT}"
+  ],
+  "bridge_capability_status": [
+    "{BRIDGE_CAPABILITY_STATUS}"
+  ],
+  "operation_help_status": [
+    "{OPERATION_HELP_STATUS}"
+  ],
+  "output_contract_status": [
+    "{OUTPUT_CONTRACT_STATUS}"
+  ],
+  "ai_infrastructure_inventory_status": [
+    "{AI_INFRASTRUCTURE_INVENTORY_STATUS}"
+  ],
+  "validation_status": {
+    "target_validation_claimed": false,
+    "unresolved": [
+      "{UNRESOLVED_VALIDATION_OR_REASON}"
+    ]
+  },
+  "residual_risk": [
+    "{RESIDUAL_RISK}"
+  ],
+  "behaviors_satisfied": [
+    "{EXPECTED_BEHAVIOR_ID}"
+  ],
+  "forbidden_claims_absent": [
+    "universal_installer_command",
+    "invented_validation_command",
+    "invented_project_fact",
+    "overwrite_without_approval"
+  ]
+}

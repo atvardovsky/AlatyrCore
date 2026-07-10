@@ -1,0 +1,53 @@
+[
+  {
+    "task": "docs-local wording task",
+    "task_profile": "docs-local",
+    "adapter_mode": "none",
+    "operation_id": "sample-none-docs-local",
+    "context_files_loaded": 1,
+    "approximate_context_volume": "unknown",
+    "clarifications": 0,
+    "approvals_requested": 0,
+    "validation": "manual review",
+    "hallucinated_commands": "unknown",
+    "missed_companion_updates": "unknown",
+    "rework_count": 1,
+    "protected_changes_blocked": 0,
+    "residual_risks": "no adapter evidence",
+    "outcome": "rework"
+  },
+  {
+    "task": "docs-local wording task",
+    "task_profile": "docs-local",
+    "adapter_mode": "minimal",
+    "operation_id": "sample-minimal-docs-local",
+    "context_files_loaded": 4,
+    "approximate_context_volume": "unknown",
+    "clarifications": 0,
+    "approvals_requested": 0,
+    "validation": "manual review",
+    "hallucinated_commands": "none recorded",
+    "missed_companion_updates": 0,
+    "rework_count": 0,
+    "protected_changes_blocked": 0,
+    "residual_risks": "limited validation",
+    "outcome": "accepted"
+  },
+  {
+    "task": "docs-local wording task",
+    "task_profile": "docs-local",
+    "adapter_mode": "full",
+    "operation_id": "sample-full-docs-local",
+    "context_files_loaded": 5,
+    "approximate_context_volume": "unknown",
+    "clarifications": 0,
+    "approvals_requested": 0,
+    "validation": "manual review",
+    "hallucinated_commands": "none recorded",
+    "missed_companion_updates": 0,
+    "rework_count": 0,
+    "protected_changes_blocked": 0,
+    "residual_risks": "none recorded",
+    "outcome": "accepted"
+  }
+]

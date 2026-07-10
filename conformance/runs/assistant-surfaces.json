@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "surfaces": [
+    {
+      "id": "generic",
+      "label": "Generic assistant",
+      "aliases": ["ai-assistant"],
+      "bridge_paths": ["AI_ASSISTANTS.md"]
+    },
+    {
+      "id": "agents",
+      "label": "AGENTS-aware assistant",
+      "aliases": ["agents-aware"],
+      "bridge_paths": ["AGENTS.md"]
+    },
+    {
+      "id": "codex",
+      "label": "Codex",
+      "aliases": ["openai-codex"],
+      "bridge_paths": ["AGENTS.md", "AI_ASSISTANTS.md"]
+    },
+    {
+      "id": "claude",
+      "label": "Claude",
+      "aliases": ["anthropic-claude"],
+      "bridge_paths": ["CLAUDE.md"]
+    },
+    {
+      "id": "gemini",
+      "label": "Gemini",
+      "aliases": ["google-gemini"],
+      "bridge_paths": ["GEMINI.md"]
+    },
+    {
+      "id": "github-copilot",
+      "label": "GitHub Copilot",
+      "aliases": ["copilot"],
+      "bridge_paths": [
+        ".github/copilot-instructions.md",
+        ".github/prompts/gate-review.prompt.md"
+      ]
+    },
+    {
+      "id": "cursor",
+      "label": "Cursor",
+      "aliases": ["cursor-agent"],
+      "bridge_paths": [".cursor/rules/alatyr-core.mdc", ".cursorrules"]
+    },
+    {
+      "id": "devin-cascade",
+      "label": "Devin/Cascade",
+      "aliases": ["devin", "cascade"],
+      "bridge_paths": [".devin/rules/alatyr-core.md"]
+    },
+    {
+      "id": "windsurf",
+      "label": "Windsurf",
+      "aliases": ["windsurf-legacy"],
+      "bridge_paths": [".windsurf/rules/alatyr-core.md", ".windsurfrules"]
+    }
+  ]
+}

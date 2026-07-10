@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "fixture": "frontend-app-minimal",
+  "report_kind": "assistant-result-conformance",
+  "conformance_scope": "Source golden result contract; not an assistant installation test and not target validation.",
+  "claims_installation_complete": false,
+  "operation_type": "adapter-recheck-or-installation-plan",
+  "target_shape_confirmed": [
+    "readme",
+    "ui_source",
+    "build_metadata",
+    "missing_visual_validation_policy"
+  ],
+  "target_facts_inspected": [
+    "README",
+    "UI source",
+    "build metadata"
+  ],
+  "files_created_preserved_or_skipped": {
+    "created": [
+      ".ai/alatyr.yaml",
+      ".ai/framework/*",
+      ".ai/assistant/context-profiles.md",
+      ".ai/assistant/module-profile.md",
+      ".ai/assistant/help.md"
+    ],
+    "preserved": [
+      "README",
+      "UI source",
+      "build metadata"
+    ],
+    "skipped": [
+      "visual validation command until target evidence exists",
+      "root assistant bridge overwrite until approval exists"
+    ]
+  },
+  "approval_needs": [
+    "UI behavior",
+    "public product behavior"
+  ],
+  "manifest_version_handling": "Record framework version, adapter schema version, and template version in the adapter manifest; keep local validation and supported assistants unresolved until target evidence exists.",
+  "context_profile": "docs-local",
+  "context_profiles_considered": [
+    "docs-local",
+    "business-change",
+    "code-local"
+  ],
+  "module_profile_status": [
+    "installed-operations enabled only after root assistant entry points exist",
+    "diagrams not-applicable or deferred until target diagram policy exists",
+    "effectiveness-metrics deferred unless the target wants measurement"
+  ],
+  "source_of_truth_registry_status": [
+    "visual validation owner missing",
+    "UI behavior owner must be target-defined before behavior changes"
+  ],
+  "task_specific_maturity": [
+    "documentation: minimal after root entry points exist",
+    "code changes: incomplete until validation and visual review policy exist",
+    "architecture: not assessed from this fixture"
+  ],
+  "bridge_capability_status": [
+    "root assistant entry points are proposed but not overwritten without approval"
+  ],
+  "operation_help_status": [
+    "short help and help reference proposed after root assistant entry points are approved"
+  ],
+  "output_contract_status": [
+    "adapter output contracts proposed for installation evidence and later recheck"
+  ],
+  "ai_infrastructure_inventory_status": [
+    "AI infrastructure inventory skipped until target asks for assistant infrastructure review"
+  ],
+  "validation_status": {
+    "target_validation_claimed": false,
+    "unresolved": [
+      "build command is not claimed from fixture metadata",
+      "visual validation policy is missing"
+    ]
+  },
+  "residual_risk": [
+    "visual validation policy",
+    "accessibility policy",
+    "diagram policy",
+    "root assistant entry points"
+  ],
+  "behaviors_satisfied": [
+    "propose_root_assistant_entry_points",
+    "mark_visual_validation_missing",
+    "use_docs_local_for_wording_only_updates",
+    "use_business_change_for_ui_behavior_changes",
+    "do_not_invent_build_or_screenshot_commands"
+  ],
+  "forbidden_claims_absent": [
+    "universal_installer_command",
+    "invented_validation_command",
+    "invented_project_fact",
+    "overwrite_without_approval"
+  ]
+}

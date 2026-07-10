@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "fixture": "frontend-app-minimal",
+  "target_shape": [
+    "readme",
+    "ui_source",
+    "build_metadata",
+    "missing_visual_validation_policy"
+  ],
+  "expected_behaviors": [
+    "propose_root_assistant_entry_points",
+    "mark_visual_validation_missing",
+    "use_docs_local_for_wording_only_updates",
+    "use_business_change_for_ui_behavior_changes",
+    "do_not_invent_build_or_screenshot_commands"
+  ],
+  "required_evidence": [
+    "operation_type",
+    "target_facts_inspected",
+    "context_profile",
+    "module_profile_status",
+    "source_of_truth_registry_status",
+    "operation_help_status",
+    "output_contract_status",
+    "ai_infrastructure_inventory_status",
+    "validation_status",
+    "task_specific_maturity",
+    "residual_risk"
+  ]
+}

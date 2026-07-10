@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "fixture": "backend-api-minimal",
+  "report_kind": "assistant-result-conformance",
+  "conformance_scope": "Source golden result contract; not an assistant installation test and not target validation.",
+  "claims_installation_complete": false,
+  "operation_type": "adapter-recheck-or-installation-plan",
+  "target_shape_confirmed": [
+    "readme",
+    "api_routes_or_controllers",
+    "tests",
+    "ambiguous_api_contract"
+  ],
+  "target_facts_inspected": [
+    "README",
+    "API route or controller source",
+    "tests"
+  ],
+  "files_created_preserved_or_skipped": {
+    "created": [
+      ".ai/alatyr.yaml",
+      ".ai/framework/*",
+      ".ai/assistant/context-profiles.md",
+      ".ai/assistant/module-profile.md",
+      ".ai/project/source-of-truth-registry.md"
+    ],
+    "preserved": [
+      "README",
+      "API route or controller source",
+      "tests"
+    ],
+    "skipped": [
+      "public API contract owner until target evidence exists",
+      "AI infrastructure integration until policy exists"
+    ]
+  },
+  "approval_needs": [
+    "public API contract",
+    "architecture",
+    "data model",
+    "security boundary",
+    "live external boundary"
+  ],
+  "manifest_version_handling": "Record framework version, adapter schema version, and template version in the adapter manifest; leave target-owned values unresolved until installation evidence exists.",
+  "context_profile": "architecture-change",
+  "context_profiles_considered": [
+    "architecture-change",
+    "business-change",
+    "data-change",
+    "security-sensitive",
+    "ai-infrastructure"
+  ],
+  "module_profile_status": [
+    "blueprint-change blocked until public API owner is known",
+    "diagrams deferred until diagram policy exists",
+    "ai-infrastructure review-only until inventory and source policy exist"
+  ],
+  "source_of_truth_registry_status": [
+    "public API contract owner missing",
+    "data model owner missing",
+    "registry entries must be target-owned before broad consistency claims"
+  ],
+  "task_specific_maturity": [
+    "architecture: incomplete for public contract changes",
+    "data: incomplete until data ownership and validation exist",
+    "AI infrastructure: review-only until inventory and source-access policy exist"
+  ],
+  "bridge_capability_status": [
+    "supported assistant bridges unresolved until target chooses assistant surfaces"
+  ],
+  "operation_help_status": [
+    "operation help proposed but not claimed installed until root entry points and module profile support it"
+  ],
+  "output_contract_status": [
+    "adapter output contracts proposed for installation and recheck evidence"
+  ],
+  "ai_infrastructure_inventory_status": [
+    "inventory report required before AI infrastructure integration; current result is review-only because source-access policy is missing"
+  ],
+  "validation_status": {
+    "target_validation_claimed": false,
+    "unresolved": [
+      "target validation commands are not known",
+      "public API contract validation is unresolved"
+    ]
+  },
+  "residual_risk": [
+    "public API contract owner",
+    "source-of-truth registry entries for public API and data model",
+    "diagram policy",
+    "AI infrastructure inventory"
+  ],
+  "behaviors_satisfied": [
+    "do_not_invent_api_contract_owner",
+    "record_public_api_registry_gap",
+    "select_architecture_or_business_profile_for_contract_change",
+    "require_approval_for_public_contract_changes",
+    "keep_ai_infrastructure_review_only_until_policy_exists"
+  ],
+  "forbidden_claims_absent": [
+    "universal_installer_command",
+    "invented_validation_command",
+    "invented_project_fact",
+    "overwrite_without_approval"
+  ]
+}
