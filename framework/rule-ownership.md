@@ -32,7 +32,7 @@ Category: `CONTEXT`
 Owner: `.ai/framework/context-profiles.md`
 Rule IDs: `ALATYR-CONTEXT-001`
 Derived surfaces: README source context, installation source context, target
-context profiles, session bootstrap instructions.
+context profiles, target context router, session bootstrap instructions.
 
 Category: `SOURCE`
 Owner: `.ai/framework/source-of-truth-registry.md`

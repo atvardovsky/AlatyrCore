@@ -77,6 +77,8 @@ Machine checks can verify only deterministic repository facts, such as:
 - templates remain placeholder-based before installation
 - bridge files stay short and point to canonical target files
 - target profiles route every framework document somewhere
+- target context routers match the profile template and route known framework
+  documents somewhere
 - manifest, approval, prompt-injection, help, and policy templates contain
   required fields
 
@@ -90,6 +92,8 @@ defines:
 
 - source-of-truth registry entries for relevant fact types
 - task context profiles
+- context router or equivalent machine-readable profile map when cheaper
+  startup is expected
 - module profile for required core and optional capabilities
 - project validation or explicit manual review
 - approval rules and approval records when durable evidence is needed
@@ -112,6 +116,8 @@ defines:
 - project validation commands or manual validation checks
 - project-specific test levels, tools, commands, fixtures, and isolation rules
 - project-specific context map and source-of-truth documents
+- project-specific context router or equivalent profile map when the adapter
+  uses one for startup routing
 - source-of-truth registry or equivalent owner map when multiple project
   surfaces can claim ownership
 - project-specific risk/approval rules that extend the framework risk model

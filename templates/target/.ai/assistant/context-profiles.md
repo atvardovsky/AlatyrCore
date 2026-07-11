@@ -8,6 +8,7 @@ Bootstrap context for every task:
 - `AGENTS.md`
 - `.ai/alatyr.yaml`
 - `.ai/README.md`
+- `.ai/assistant/context-router.json`
 - `.ai/assistant/context-profiles.md`
 - `.ai/assistant/module-profile.md`
 - `.ai/project/contour.md`
@@ -16,8 +17,9 @@ Bootstrap context for every task:
 - `{TARGET_PROJECT_SOURCE_OF_TRUTH}`
 
 After bootstrap, choose one profile and read its required context before
-editing files. Expand only when boundaries, conflicts, or approval scope
-require it.
+editing files. `.ai/assistant/context-router.json` is the machine-readable
+companion to this file and must stay aligned with these profiles. Expand only
+when boundaries, conflicts, or approval scope require it.
 
 ## Profile: `docs-local`
 
@@ -195,6 +197,7 @@ Required context:
 - `.ai/framework/portability.md`
 - `.ai/framework/module-profile.md`
 - `.ai/framework/scaffolding.md`
+- `.ai/framework/context-router.md`
 - `.ai/framework/context-profiles.md`
 - `.ai/framework/source-of-truth-registry.md`
 - `.ai/framework/bridge-capability-matrix.md`

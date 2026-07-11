@@ -11,6 +11,7 @@ At the start of a task, read only the bootstrap context first:
 
 - `.ai/alatyr.yaml`
 - `.ai/README.md`
+- `.ai/assistant/context-router.json`
 - `.ai/assistant/context-profiles.md`
 - `.ai/assistant/module-profile.md`
 - `.ai/project/contour.md`
@@ -18,9 +19,10 @@ At the start of a task, read only the bootstrap context first:
 - `.ai/assistant/contour.md`
 - `{TARGET_PROJECT_SOURCE_OF_TRUTH}`
 
-Then select the matching profile in `.ai/assistant/context-profiles.md` and
-read the profile-required framework, project, assistant, flow, gate, policy,
-and validation files before expanding context.
+Then select the matching profile from `.ai/assistant/context-router.json`.
+Use `.ai/assistant/context-profiles.md` for the human rationale, conflicts, or
+missing router entries, then read the profile-required framework, project,
+assistant, flow, gate, policy, and validation files before expanding context.
 
 Expand beyond the selected profile only when the task crosses architecture,
 business, data, security, assistant-infrastructure, lifecycle, or governance

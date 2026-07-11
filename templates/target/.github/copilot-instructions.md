@@ -10,6 +10,7 @@ Before making changes, read:
 - `.ai/framework/README.md`
 - `.ai/project/contour.md`
 - `.ai/assistant/contour.md`
+- `.ai/assistant/context-router.json`
 - `.ai/assistant/help.md`
 - the matching `.ai/assistant/flows/*.flow.md`
 

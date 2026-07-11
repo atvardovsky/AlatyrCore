@@ -23,6 +23,7 @@ Installation id: `{INSTALLATION_ID}`
   `.ai/assistant/templates/adapter-output-contracts.md`
 - Operation help: `.ai/assistant/help.md`
 - Operation help reference: `.ai/assistant/help-reference.md`
+- Context router: `.ai/assistant/context-router.json`
 - Context profiles: `.ai/assistant/context-profiles.md`
 - Module profile: `.ai/assistant/module-profile.md`
 - Source-of-truth registry: `.ai/project/source-of-truth-registry.md`
@@ -48,6 +49,7 @@ being visible. At session start, read:
 - `AI_ASSISTANTS.md`
 - `.ai/alatyr.yaml`
 - `.ai/README.md`
+- `.ai/assistant/context-router.json`
 - `.ai/assistant/context-profiles.md`
 - `.ai/assistant/module-profile.md`
 - `.ai/project/source-of-truth-registry.md`

@@ -58,11 +58,12 @@ Constraints:
   ALATYR-SAFETY-002, ALATYR-INTEGRITY-001, ALATYR-CHANGE-001,
   ALATYR-ADAPTER-001, ALATYR-MODULE-001, ALATYR-EVIDENCE-001.
 - Read the target `AGENTS.md`, `AI_ASSISTANTS.md`, `.ai/alatyr.yaml`,
-  `.ai/README.md`, `.ai/assistant/context-profiles.md`, and
+  `.ai/README.md`, `.ai/assistant/context-router.json`,
+  `.ai/assistant/context-profiles.md`, and
   `.ai/project/source-of-truth-registry.md` first.
-- Select the smallest matching context profile and read only profile-required
-  framework, project, assistant, flow, gate, policy, and validation files
-  before expanding context.
+- Select the smallest matching context profile from the context router and
+  read only profile-required framework, project, assistant, flow, gate,
+  policy, and validation files before expanding context.
 - If the operation is unclear, read `.ai/assistant/help.md`, show the
   operation choices with descriptions, and ask for the smallest missing
   decision before editing files.

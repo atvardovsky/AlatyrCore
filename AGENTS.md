@@ -18,6 +18,7 @@ context first:
 - `README.md`
 - `AGENTS.md`
 - `framework/README.md`
+- `framework/context-router.md`
 - `framework/context-profiles.md`
 - `framework/rule-ownership.md`
 - `framework/rule-registry.md`
@@ -34,9 +35,9 @@ that do not alter framework behavior. Read the edited file, its linked
 neighbors, and `docs/framework-maintenance.md`.
 
 Use `framework-rule` for portable rule, contour, risk, integrity, safety,
-approval, lifecycle, operation, module, or source-of-truth changes. Read the
-owning `framework/*.md` file, its `alatyr_doc` dependencies when present,
-`framework/rule-registry.md`, `framework/rule-registry.json`,
+approval, lifecycle, operation, module, context-router, or source-of-truth
+changes. Read the owning `framework/*.md` file, its `alatyr_doc` dependencies
+when present, `framework/rule-registry.md`, `framework/rule-registry.json`,
 `framework/rule-ownership.md`, and affected installer/template surfaces.
 
 Use `installer-template` for installation flow, readiness, request template,
@@ -131,6 +132,7 @@ python3 tools/check_framework_metadata.py
 python3 tools/check_approval_template.py
 python3 tools/check_ai_infrastructure_inventory.py
 python3 tools/check_bridge_capability_matrix.py
+python3 tools/check_context_router.py
 python3 tools/check_manifest_contract.py
 python3 tools/check_markdown_links.py
 python3 tools/check_maturity_profile.py

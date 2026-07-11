@@ -87,6 +87,10 @@ module fields.
 `tools/check_framework_metadata.py` validates `alatyr_doc` front matter on
 framework rule-owner documents.
 
+`tools/check_context_router.py` validates the target
+`.ai/assistant/context-router.json` template against canonical context profile
+names and framework file coverage.
+
 `tools/check_manifest_contract.py` validates the target `.ai/alatyr.yaml`
 template contract, including required sections, placeholder fields, list
 shape, and path references.

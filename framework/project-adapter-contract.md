@@ -33,6 +33,8 @@ Every project using this framework must define:
   validation own
 - context profiles that map task types to required framework, project,
   assistant, flow, gate, policy, validation, approval, and evidence context
+- context router or equivalent machine-readable profile map when the target
+  wants cheaper startup and deterministic profile selection
 - module profile that records required core status, enabled optional modules,
   deferred modules, disabled or not-applicable modules, blocked modules, and
   reasons
@@ -102,6 +104,7 @@ An adapter may provide:
 - adapter output-contract reports for installation, framework update, or
   adapter-recheck work
 - source-of-truth registry reports or drift reports
+- context router drift reports or deterministic routing checks
 - task-specific maturity reports
 - bridge capability or conformance reports
 - migration notes for framework upgrades

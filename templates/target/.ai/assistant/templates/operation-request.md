@@ -53,6 +53,7 @@ Fill this section when the operation is `skill-adaptation`, the operation is
 - `AI_ASSISTANTS.md`
 - `.ai/alatyr.yaml`
 - `.ai/README.md`
+- `.ai/assistant/context-router.json`
 - `.ai/assistant/context-profiles.md`
 - `.ai/project/contour.md`
 - `.ai/project/source-of-truth-registry.md`

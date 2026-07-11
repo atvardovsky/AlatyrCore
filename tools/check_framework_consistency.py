@@ -52,6 +52,7 @@ def main() -> int:
             "## Bootstrap Context",
             "## Context Expansion Profiles",
             "Do not load every framework file by",
+            "framework/context-router.md",
             "framework/context-profiles.md",
             "framework/rule-ownership.md",
             "framework/rule-registry.md",
@@ -60,6 +61,7 @@ def main() -> int:
         "README.md": [
             "Read the source bootstrap",
             "framework/context-profiles.md",
+            "framework/context-router.md",
             "framework/project-adapter-contract.md",
             "framework/rule-registry.json",
             "Read each framework file before copying or adapting",
@@ -67,12 +69,14 @@ def main() -> int:
         "INSTALL.md": [
             "## Source Bootstrap",
             "framework/context-profiles.md",
+            "framework/context-router.md",
             "framework/project-adapter-contract.md",
             "framework/rule-registry.json",
             "not as a default bootstrap",
         ],
         "AI_ASSISTANTS.md": [
             "framework/context-profiles.md",
+            "framework/context-router.md",
             "framework/project-adapter-contract.md",
             "framework/rule-registry.json",
             "full-core installs read the full framework corpus",
@@ -80,6 +84,7 @@ def main() -> int:
         "installer/assistant-installation.flow.md": [
             "## Source Bootstrap",
             "framework/context-profiles.md",
+            "framework/context-router.md",
             "framework/project-adapter-contract.md",
             "framework/rule-registry.json",
             "not as a default bootstrap",
@@ -234,6 +239,7 @@ def main() -> int:
         "## Bootstrap Context",
         "## Session Bootstrap",
         ".ai/alatyr.yaml",
+        ".ai/assistant/context-router.json",
         ".ai/assistant/context-profiles.md",
         ".ai/assistant/module-profile.md",
         ".ai/assistant/templates/installation-note.md",
@@ -271,6 +277,7 @@ def main() -> int:
     target_ai_assistants = read_text("templates/target/AI_ASSISTANTS.md")
     for required_target_ai_ref in [
         ".ai/alatyr.yaml",
+        ".ai/assistant/context-router.json",
         ".ai/assistant/context-profiles.md",
         ".ai/assistant/module-profile.md",
         ".ai/assistant/templates/installation-note.md",
@@ -286,6 +293,7 @@ def main() -> int:
         "templates/target/.ai/alatyr.yaml",
         "templates/target/.ai/project/source-of-truth-registry.md",
         "templates/target/.ai/assistant/bridge-capability-matrix.md",
+        "templates/target/.ai/assistant/context-router.json",
         "templates/target/.ai/assistant/context-profiles.md",
         "templates/target/.ai/assistant/help.md",
         "templates/target/.ai/assistant/help-reference.md",
@@ -324,6 +332,7 @@ def main() -> int:
         "templates/target/.ai/project/source-of-truth-registry.md",
         "templates/target/.ai/assistant/bridge-capability-matrix.md",
         "templates/target/.ai/assistant/contour.md",
+        "templates/target/.ai/assistant/context-router.json",
         "templates/target/.ai/assistant/context-profiles.md",
         "templates/target/.ai/assistant/help.md",
         "templates/target/.ai/assistant/help-reference.md",
@@ -412,6 +421,11 @@ def main() -> int:
                 "templates/target/.ai/assistant/context-profiles.md does not "
                 f"route {target_path}"
             )
+    if ".ai/assistant/context-router.json" not in target_context_profiles:
+        failures.append(
+            "templates/target/.ai/assistant/context-profiles.md missing "
+            ".ai/assistant/context-router.json"
+        )
     if ".ai/framework/rule-registry.json" not in target_context_profiles:
         failures.append(
             "templates/target/.ai/assistant/context-profiles.md missing "
@@ -458,6 +472,7 @@ def main() -> int:
         "supported_assistants:",
         "contours:",
         "source_of_truth:",
+        "context_router:",
         "module_profile:",
         "modules:",
         "core_profile:",
@@ -846,6 +861,7 @@ def main() -> int:
             "check_bridge_capability_matrix.py",
             "check_framework_metadata.py",
             "check_ai_infrastructure_inventory.py",
+            "check_context_router.py",
             "check_manifest_contract.py",
             "check_markdown_links.py",
             "check_maturity_profile.py",
@@ -964,6 +980,33 @@ def main() -> int:
     ]:
         if "check_bridge_capability_matrix.py" not in read_text(relpath):
             failures.append(f"{relpath} missing check_bridge_capability_matrix.py")
+
+    context_router_tool = ROOT / "tools" / "check_context_router.py"
+    if not context_router_tool.is_file():
+        failures.append("missing tools/check_context_router.py")
+    else:
+        context_router_tool_text = read_text("tools/check_context_router.py")
+        for required_context_router_tool_text in [
+            "context router template",
+            "portable",
+            "CANONICAL_PROFILES",
+            "PROFILE_FIELDS",
+            "OK: checked",
+        ]:
+            if required_context_router_tool_text not in context_router_tool_text:
+                failures.append(
+                    "tools/check_context_router.py missing "
+                    f"{required_context_router_tool_text}"
+                )
+    for relpath in [
+        "AGENTS.md",
+        "README.md",
+        "tools/README.md",
+        "docs/framework-maintenance.md",
+        "docs/repository-layout.md",
+    ]:
+        if "check_context_router.py" not in read_text(relpath):
+            failures.append(f"{relpath} missing check_context_router.py")
 
     manifest_contract_tool = ROOT / "tools" / "check_manifest_contract.py"
     if not manifest_contract_tool.is_file():
@@ -1740,6 +1783,8 @@ def main() -> int:
         text = read_text(relpath)
         if "AGENTS.md" not in text:
             failures.append(f"{relpath} missing AGENTS.md bootstrap reference")
+        if ".ai/assistant/context-router.json" not in text:
+            failures.append(f"{relpath} missing context router bootstrap reference")
         if ".ai/assistant/module-profile.md" not in text:
             failures.append(f"{relpath} missing module profile bootstrap reference")
         if "Do not rely" not in text and "Future assistants should not rely" not in text:

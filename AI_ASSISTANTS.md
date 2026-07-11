@@ -12,10 +12,10 @@ If you are installing Alatyr Core into a target project:
 1. Read `README.md`.
 2. Read `INSTALL.md`.
 3. Read `AGENTS.md`, `framework/README.md`,
-   `framework/context-profiles.md`, `framework/project-adapter-contract.md`,
-   `framework/portability.md`, `framework/module-profile.md`,
-   `framework/rule-ownership.md`, `framework/rule-registry.md`, and
-   `framework/rule-registry.json`.
+   `framework/context-profiles.md`, `framework/context-router.md`,
+   `framework/project-adapter-contract.md`, `framework/portability.md`,
+   `framework/module-profile.md`, `framework/rule-ownership.md`,
+   `framework/rule-registry.md`, and `framework/rule-registry.json`.
 4. Read `installer/assistant-installation.flow.md`.
 5. Read `installer/readiness-checklist.md`.
 6. Read `installer/installation-plan-template.md`.

@@ -68,6 +68,26 @@ Windows PowerShell or Command Prompt:
 py -3 .\tools\check_bridge_capability_matrix.py
 ```
 
+## Context Router Check
+
+`check_context_router.py` validates the target
+`.ai/assistant/context-router.json` template in this source repository. It
+checks canonical profile names, bootstrap context, required fields, path
+references, and framework file routing coverage. It is not a portable
+framework requirement for target projects.
+
+Linux or macOS:
+
+```sh
+python3 tools/check_context_router.py
+```
+
+Windows PowerShell or Command Prompt:
+
+```powershell
+py -3 .\tools\check_context_router.py
+```
+
 ## Scaffold Target Structure
 
 `scaffold_target_structure.py` copies placeholder target templates and

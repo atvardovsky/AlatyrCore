@@ -12,6 +12,7 @@ Replace placeholders with target facts before accepting installation.
 - Installation or update note: `{INSTALLATION_OR_UPDATE_NOTE}`
 - Project source of truth: `{TARGET_PROJECT_SOURCE_OF_TRUTH}`
 - Source-of-truth registry: `.ai/project/source-of-truth-registry.md`
+- Context router: `.ai/assistant/context-router.json`
 - Context profiles: `.ai/assistant/context-profiles.md`
 - Module profile: `.ai/assistant/module-profile.md`
 - Maturity profile: `.ai/assistant/maturity-profile.md`
@@ -32,6 +33,7 @@ Replace placeholders with target facts before accepting installation.
 ## Steps
 
 1. Load `AGENTS.md`, `AI_ASSISTANTS.md`, `.ai/alatyr.yaml`, `.ai/README.md`,
+   `.ai/assistant/context-router.json`,
    `.ai/assistant/context-profiles.md`, `.ai/project`, and `.ai/assistant`.
 2. Identify whether this is a post-installation recheck, framework update
    recheck, bridge compatibility review, or maturity audit.
@@ -70,7 +72,7 @@ Report:
 - files inspected
 - adapter references changed or still current
 - blueprint/source-of-truth registry status
-- context profile status
+- context router and context profile status
 - module profile status
 - help, routing, AI infrastructure inventory, bridge, prompt, skill, gate,
   checker, diagram, chat-message, and lifecycle status

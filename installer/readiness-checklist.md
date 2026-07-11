@@ -65,6 +65,7 @@ Check whether the target already has:
 - `.ai`
 - `.ai/alatyr.yaml`
 - `.ai/assistant/policies`
+- `.ai/assistant/context-router.json`
 - `.ai/assistant/context-profiles.md`
 - `.ai/assistant/maturity-profile.md`
 - `.ai/assistant/bridge-capability-matrix.md`

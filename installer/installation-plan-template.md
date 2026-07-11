@@ -33,6 +33,7 @@ List what must not be changed.
 - Test strategy and existing test surface:
 - Source-of-truth/context map:
 - Source-of-truth registry:
+- Context router:
 - Context profiles:
 - Adapter owner metadata:
 - CODEOWNERS or equivalent owner map:
@@ -91,8 +92,11 @@ Include `CODEOWNERS` or an equivalent file-owner map when the target
 repository uses ownership metadata for `.ai/*`, root assistant entry points,
 or supported bridge files.
 
-Include `.ai/assistant/context-profiles.md` to map task profiles to required
-context, approvals, validation, and final evidence.
+Include `.ai/assistant/context-router.json` to map task profiles to required
+context, approvals, validation, and final evidence in machine-readable form.
+
+Include `.ai/assistant/context-profiles.md` to explain task profiles,
+expansion triggers, approvals, validation, and final evidence for humans.
 
 Include `.ai/assistant/module-profile.md` to record required core status,
 enabled optional modules, deferred modules, blocked modules, and reasons.
@@ -135,6 +139,7 @@ target wants durable AI infrastructure inventory reports.
 
 - Target context entry points:
 - Bootstrap context:
+- Context router:
 - Task context profiles:
 - Required core profile:
 - Adapter owner, backup owner, review cadence, and last review:

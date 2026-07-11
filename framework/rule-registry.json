@@ -5,7 +5,7 @@
       "category": "CONTEXT",
       "owner": "framework/context-profiles.md",
       "rule_ids": ["ALATYR-CONTEXT-001"],
-      "derived_surfaces": ["README source context", "installation source context", "target context profiles", "session bootstrap instructions"]
+      "derived_surfaces": ["README source context", "installation source context", "target context profiles", "target context router", "session bootstrap instructions"]
     },
     {
       "category": "SOURCE",
@@ -79,7 +79,7 @@
       "id": "ALATYR-CONTEXT-001",
       "category": "CONTEXT",
       "canonical_source": "framework/context-profiles.md",
-      "summary": "Start from bootstrap context, select the smallest task profile, and expand only when boundaries or conflicts require it.",
+      "summary": "Start from bootstrap context, select the smallest task profile directly or through an aligned context router, and expand only when boundaries or conflicts require it.",
       "applies_to": ["all installed adapter tasks"],
       "enforcement": "required"
     },

@@ -93,12 +93,14 @@ dependency, and approval rules have been checked.
 For installed operations:
 
 1. Read the target assistant entry point, `.ai/alatyr.yaml`, `.ai/README.md`,
+   `.ai/assistant/context-router.json`,
    `.ai/assistant/context-profiles.md`, and
    `.ai/assistant/module-profile.md`.
 2. Read the installation note and post-install/update message templates when
    the request follows an installation, framework update, or unclear adapter
    state.
-3. Select the smallest matching context profile and read its required
+3. Select the smallest matching context profile from the context router when
+   present, then read its required
    framework, project, assistant, flow, gate, policy, and validation context.
 4. Identify whether the request is framework-core, target-project, repository
    adapter, bridge, generated-artifact, or skill/prompt work.

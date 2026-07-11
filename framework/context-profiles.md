@@ -17,6 +17,11 @@ They preserve the minimum sufficient context rule: start from bootstrap files,
 choose the closest task profile, read that profile's required sources, and
 expand only when boundaries or conflicts require it.
 
+When an installed adapter includes a machine-readable context router, it must
+use the same canonical profile names and stay aligned with this Markdown
+contract. The router is an optimization for cheaper startup, not a replacement
+for the human-readable profile rationale or logical integrity review.
+
 ## Canonical Profiles
 
 Use these profile names unless a target adapter deliberately renames them:
@@ -54,6 +59,7 @@ Every installed adapter should keep a small bootstrap set:
 - target root assistant entry point
 - `.ai/alatyr.yaml`
 - `.ai/README.md`
+- `.ai/assistant/context-router.json` when present
 - `.ai/assistant/context-profiles.md`
 - `.ai/assistant/module-profile.md`
 - project contour

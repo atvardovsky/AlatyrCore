@@ -13,8 +13,9 @@ Use this guide when changing Alatyr Core itself.
 - Installed-operation help or chat-message change: update `framework/`,
   `installer/`, `templates/target`, assistant compatibility docs, and
   changelog when affected.
-- Manifest, ownership, context-profile, approval-record, output-contract,
-  AI-infrastructure inventory, or prompt-injection contract change: update
+- Manifest, ownership, context-router, context-profile, approval-record,
+  output-contract, AI-infrastructure inventory, or prompt-injection contract
+  change: update
   `framework/`, `installer/`, `templates/target`, checker rules, README, and
   changelog when affected.
 - Module-profile contract change: update `framework/`,
@@ -75,6 +76,9 @@ Before accepting a change, check:
   assistant surfaces, bridge paths, auto-load behavior, skill/prompt support,
   tool permissions, help alias routing, limitations, or conformance guidance
   changes.
+- `python3 tools/check_context_router.py` passes when target context-router
+  profile names, required context, approval gates, validation, final evidence,
+  or framework-routing coverage changes.
 - `python3 tools/check_manifest_contract.py` passes when the target manifest
   template, versioning fields, path references, or adapter metadata contract
   changes.
@@ -150,9 +154,9 @@ Before accepting a change, check:
   `installer/readiness-checklist.md`, and
   `installer/installation-plan-template.md` agree.
 - `templates/target` remains placeholder-based.
-- target manifest, context profiles, approval templates, source-access policy,
-  prompt-injection policy, help, help reference, output contracts, and AI
-  infrastructure inventory report agree.
+- target manifest, context router, context profiles, approval templates,
+  source-access policy, prompt-injection policy, help, help reference, output
+  contracts, and AI infrastructure inventory report agree.
 - target approval template includes plan identity, protected scope, allowed
   files, excluded actions, approval source, invalidation, use result,
   evidence, validation, and residual risk fields.

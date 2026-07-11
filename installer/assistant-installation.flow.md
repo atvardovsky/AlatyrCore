@@ -27,6 +27,7 @@ Read in this repository first:
 - `INSTALL.md`
 - `framework/README.md`
 - `framework/context-profiles.md`
+- `framework/context-router.md`
 - `framework/project-adapter-contract.md`
 - `framework/portability.md`
 - `framework/module-profile.md`
@@ -120,9 +121,10 @@ Classify every proposed target file:
     including `framework/*.md` and `framework/rule-registry.json`.
 12. Create target `.ai/project/contour.md` and target project
    source-of-truth docs from target facts.
-13. Create target `.ai/assistant/contour.md`, context profiles, module
-    profile, task-specific maturity profile, bridge capability matrix, and
-    minimal target assistant workflows/gates from target facts.
+13. Create target `.ai/assistant/contour.md`, context router, context
+    profiles, module profile, task-specific maturity profile, bridge
+    capability matrix, and minimal target assistant workflows/gates from
+    target facts.
 14. Add bridge files only for assistants the target uses.
 15. Add installed-operation, operation-help, operation-routing,
     AI-infrastructure-inventory, adapter output contract
@@ -184,12 +186,12 @@ Report:
 - existing files preserved, skipped, or overwritten with approval
 - supported assistant bridges added or skipped
 - installed-operation, operation-help, operation-routing,
-  AI-infrastructure-inventory, adapter output contract, context profiles,
-  module profile, source-of-truth registry, task-specific maturity profile,
-  bridge capability matrix, source-access policy, prompt-injection policy,
-  approval-record template, migration-note template, blueprint-creation,
-  adapter-recheck, and post-install/update chat-message templates added or
-  skipped
+  AI-infrastructure-inventory, adapter output contract, context router,
+  context profiles, module profile, source-of-truth registry, task-specific
+  maturity profile, bridge capability matrix, source-access policy,
+  prompt-injection policy, approval-record template, migration-note template,
+  blueprint-creation, adapter-recheck, and post-install/update chat-message
+  templates added or skipped
 - root entry-point and bridge bootstrap references checked
 - prompts, skills, or third-party assistant infrastructure adapted or skipped
 - target validation run and skipped

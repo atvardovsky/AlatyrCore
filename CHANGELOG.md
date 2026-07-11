@@ -36,6 +36,8 @@
   `.ai/alatyr.yaml` manifest template.
 - Added context-profile guidance and target context profiles to reduce
   mandatory context loading for installed adapters.
+- Added a target context router JSON template and source checks so assistants
+  can select task context from a machine-readable profile map.
 - Added approval-record and prompt-injection framework guidance with matching
   target templates and installed-operation routing.
 - Split target help into short default help and full help reference, and

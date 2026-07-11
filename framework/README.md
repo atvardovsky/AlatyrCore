@@ -22,6 +22,7 @@ sync, logical integrity review, and final evidence.
 - required core profile and optional module profile
 - optional scaffolding boundaries
 - context-discovery and source-of-truth decision rules
+- machine-readable context router guidance for cheaper task startup
 - context profiles for task-specific minimum reading sets
 - source-of-truth registry guidance for fact ownership and sync direction
 - change-risk classification and approval trigger model
@@ -81,6 +82,9 @@ Those belong to a project contour or repository adapter.
   test levels and structure from the target stack and risk profile.
 - `.ai/framework/context-discovery.md`: portable process for finding required
   context, owners, missing facts, and source-of-truth conflicts.
+- `.ai/framework/context-router.md`: portable machine-readable routing
+  contract that maps task profiles to bootstrap context, required files,
+  approvals, validation, and final evidence.
 - `.ai/framework/context-profiles.md`: portable task profiles that limit the
   initial required reading set and define expansion triggers.
 - `.ai/framework/source-of-truth-registry.md`: portable registry model for

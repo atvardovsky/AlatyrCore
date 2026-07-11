@@ -26,6 +26,7 @@ into another project, do this:
 
 1. Read the source bootstrap: this `README.md`, `AGENTS.md`, `INSTALL.md`,
    `framework/README.md`, `framework/context-profiles.md`,
+   `framework/context-router.md`,
    `framework/project-adapter-contract.md`, `framework/portability.md`,
    `framework/module-profile.md`, `framework/rule-ownership.md`,
    `framework/rule-registry.md`, `framework/rule-registry.json`,
@@ -96,6 +97,7 @@ Additional source-repository helpers include:
 - `python3 tools/check_approval_template.py`
 - `python3 tools/check_ai_infrastructure_inventory.py`
 - `python3 tools/check_bridge_capability_matrix.py`
+- `python3 tools/check_context_router.py`
 - `python3 tools/check_manifest_contract.py`
 - `python3 tools/check_markdown_links.py`
 - `python3 tools/check_maturity_profile.py`
@@ -128,6 +130,8 @@ Additional source-repository helpers include:
   owners
 - structured metadata on rule-owner framework docs for deterministic owner,
   dependency, and task-profile checks
+- a machine-readable context router template that maps tasks to the smallest
+  required startup context
 - machine-readable rule manifest for deterministic migration checks
 - adapter ownership, review cadence, and CODEOWNERS-equivalent guidance
 - required core and optional module profile guidance
@@ -241,6 +245,7 @@ A mature target installation usually has:
 - `.ai/project/source-of-truth-registry.md`
 - `.ai/project/context` or equivalent project source-of-truth docs
 - `.ai/assistant/contour.md`
+- `.ai/assistant/context-router.json`
 - `.ai/assistant/context-profiles.md`
 - `.ai/assistant/module-profile.md`
 - `.ai/assistant/maturity-profile.md`

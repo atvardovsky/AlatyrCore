@@ -19,8 +19,9 @@ Default routing:
   report the chosen route.
 - If the request is unclear, show only the two or three closest operations and
   ask for the smallest missing decision.
-- Use `.ai/assistant/context-profiles.md` to choose task context before
-  expanding the reading set.
+- Use `.ai/assistant/context-router.json` to choose task context before
+  expanding the reading set, and use `.ai/assistant/context-profiles.md` when
+  human rationale or conflict resolution is needed.
 - Use `.ai/assistant/module-profile.md` to avoid routing to blocked or
   disabled optional modules.
 

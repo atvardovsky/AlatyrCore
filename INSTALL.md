@@ -15,6 +15,7 @@ Before planning an installation, read the source bootstrap:
 - `AI_ASSISTANTS.md`
 - `framework/README.md`
 - `framework/context-profiles.md`
+- `framework/context-router.md`
 - `framework/project-adapter-contract.md`
 - `framework/portability.md`
 - `framework/module-profile.md`
@@ -78,7 +79,7 @@ The plan must identify:
 - adapter owner, backup owner, review cadence, and CODEOWNERS or equivalent
   owner map when the target supports file ownership metadata
 - supported assistants
-- context profiles needed for the target
+- context router and context profiles needed for the target
 - required core profile and optional modules needed for the target
 - source-of-truth registry needs
 - task-specific maturity and bridge capability needs
@@ -119,9 +120,9 @@ In a typical target repository:
 5. Copy or adapt portable framework files into `.ai/framework`, including
    `framework/*.md` and `framework/rule-registry.json`.
 6. Create `.ai/project/contour.md` and target project source-of-truth docs.
-7. Create `.ai/assistant/contour.md`, context profiles, module profile,
-   task-specific maturity profile, bridge capability matrix, and target
-   assistant workflows/gates.
+7. Create `.ai/assistant/contour.md`, context router, context profiles,
+   module profile, task-specific maturity profile, bridge capability matrix,
+   and target assistant workflows/gates.
 8. Add bridge files only for assistants the target uses.
 9. Add installed-operation, operation-help, operation-routing,
    AI-infrastructure-inventory, adapter output contracts, source-access

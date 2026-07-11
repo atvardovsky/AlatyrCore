@@ -1,0 +1,378 @@
+{
+  "schema_version": 1,
+  "router_kind": "target-context-router",
+  "human_reference": ".ai/assistant/context-profiles.md",
+  "bootstrap_context": [
+    "AGENTS.md",
+    ".ai/alatyr.yaml",
+    ".ai/README.md",
+    ".ai/assistant/context-router.json",
+    ".ai/assistant/context-profiles.md",
+    ".ai/assistant/module-profile.md",
+    ".ai/project/contour.md",
+    ".ai/project/source-of-truth-registry.md",
+    ".ai/assistant/contour.md",
+    "{TARGET_PROJECT_SOURCE_OF_TRUTH}"
+  ],
+  "routing_order": [
+    "docs-local",
+    "code-local",
+    "business-change",
+    "architecture-change",
+    "data-change",
+    "security-sensitive",
+    "ai-infrastructure",
+    "framework-upgrade"
+  ],
+  "profiles": {
+    "docs-local": {
+      "use_when": [
+        "local wording",
+        "README or documentation text",
+        "non-semantic documentation change"
+      ],
+      "required_context": [
+        ".ai/framework/context-discovery.md",
+        ".ai/framework/testing-guidance.md",
+        ".ai/framework/diagram-guidance.md",
+        ".ai/assistant/gates/checklist.md",
+        "{TARGET_DOC_SOURCE_OF_TRUTH}"
+      ],
+      "expand_when": [
+        "semantic_fact_changes",
+        "source_of_truth_conflict",
+        "approval_scope_unclear",
+        "diagram_or_public_contract_changes"
+      ],
+      "approval_gates": [
+        "accepted_behavior_change",
+        "security_posture_change",
+        "public_contract_change",
+        "approval_rule_change"
+      ],
+      "validation": [
+        "{TARGET_DOC_VALIDATION_OR_MANUAL_REVIEW}"
+      ],
+      "final_evidence": [
+        "changed_docs",
+        "source_of_truth",
+        "skipped_checks",
+        "why_no_logical_integrity_expansion"
+      ]
+    },
+    "code-local": {
+      "use_when": [
+        "implementation change",
+        "test change",
+        "no accepted behavior change"
+      ],
+      "required_context": [
+        ".ai/framework/context-discovery.md",
+        ".ai/framework/change-risk-model.md",
+        ".ai/framework/testing-guidance.md",
+        ".ai/framework/logical-integrity.md",
+        ".ai/assistant/gates/checklist.md",
+        "{TARGET_CODE_SOURCE_OF_TRUTH}"
+      ],
+      "expand_when": [
+        "accepted_behavior_changes",
+        "architecture_boundary_changes",
+        "data_model_changes",
+        "external_contract_changes",
+        "security_posture_changes",
+        "ai_infrastructure_changes"
+      ],
+      "approval_gates": [
+        "protected_category_crossed"
+      ],
+      "validation": [
+        "{TARGET_CODE_VALIDATION_OR_MANUAL_REVIEW}"
+      ],
+      "final_evidence": [
+        "changed_files",
+        "validation",
+        "doc_sync_result",
+        "residual_risk"
+      ]
+    },
+    "business-change": {
+      "use_when": [
+        "accepted behavior change",
+        "domain rule change",
+        "product policy change",
+        "workflow or public contract change"
+      ],
+      "required_context": [
+        ".ai/framework/context-discovery.md",
+        ".ai/framework/change-risk-model.md",
+        ".ai/framework/source-of-truth-registry.md",
+        ".ai/framework/logical-integrity.md",
+        ".ai/framework/blueprint-driven-change.md",
+        ".ai/framework/testing-guidance.md",
+        ".ai/assistant/flows/blueprint-driven-change.flow.md",
+        ".ai/assistant/gates/checklist.md",
+        "{TARGET_BLUEPRINT_OR_PRODUCT_SOURCE_OF_TRUTH}"
+      ],
+      "expand_when": [
+        "architecture_boundary_changes",
+        "data_contract_changes",
+        "security_or_privacy_changes",
+        "diagram_changes",
+        "prompt_gate_or_bridge_changes"
+      ],
+      "approval_gates": [
+        "accepted_business_behavior_change"
+      ],
+      "validation": [
+        "{TARGET_BUSINESS_VALIDATION_OR_MANUAL_REVIEW}"
+      ],
+      "final_evidence": [
+        "changed_fact",
+        "owning_blueprint_or_source_of_truth",
+        "implementation_test_doc_sync",
+        "approvals",
+        "logical_integrity_result"
+      ]
+    },
+    "architecture-change": {
+      "use_when": [
+        "module boundary change",
+        "dependency direction change",
+        "runtime topology change",
+        "public API or cross-component contract change"
+      ],
+      "required_context": [
+        ".ai/framework/context-discovery.md",
+        ".ai/framework/change-risk-model.md",
+        ".ai/framework/source-of-truth-registry.md",
+        ".ai/framework/logical-integrity.md",
+        ".ai/framework/blueprint-driven-change.md",
+        ".ai/framework/security-safety-guidance.md",
+        ".ai/framework/testing-guidance.md",
+        ".ai/framework/diagram-guidance.md",
+        ".ai/assistant/flows/blueprint-driven-change.flow.md",
+        ".ai/assistant/gates/checklist.md",
+        "{TARGET_ARCHITECTURE_SOURCE_OF_TRUTH}"
+      ],
+      "expand_when": [
+        "data_ownership_changes",
+        "external_boundary_changes",
+        "security_boundary_changes",
+        "new_dependency_or_service",
+        "bridge_or_gate_changes"
+      ],
+      "approval_gates": [
+        "architecture_change",
+        "new_production_dependency_or_service"
+      ],
+      "validation": [
+        "{TARGET_ARCHITECTURE_VALIDATION_OR_MANUAL_REVIEW}"
+      ],
+      "final_evidence": [
+        "architecture_owner_update",
+        "affected_areas",
+        "validation",
+        "diagram_result",
+        "residual_risk"
+      ]
+    },
+    "data-change": {
+      "use_when": [
+        "schema change",
+        "persistence change",
+        "migration or backfill",
+        "data ownership or retention change"
+      ],
+      "required_context": [
+        ".ai/framework/context-discovery.md",
+        ".ai/framework/change-risk-model.md",
+        ".ai/framework/source-of-truth-registry.md",
+        ".ai/framework/logical-integrity.md",
+        ".ai/framework/security-safety-guidance.md",
+        ".ai/framework/testing-guidance.md",
+        ".ai/assistant/gates/checklist.md",
+        "{TARGET_DATA_SOURCE_OF_TRUTH}"
+      ],
+      "expand_when": [
+        "destructive_or_data_loss_risk",
+        "privacy_or_security_changes",
+        "migration_rollback_needed",
+        "external_data_contract_changes"
+      ],
+      "approval_gates": [
+        "destructive_data_change",
+        "privacy_change",
+        "migration_risk_change",
+        "live_service_data_change"
+      ],
+      "validation": [
+        "{TARGET_DATA_VALIDATION_OR_MANUAL_REVIEW}"
+      ],
+      "final_evidence": [
+        "canonical_data_owner",
+        "derived_surfaces",
+        "migration_or_rollback_notes",
+        "validation",
+        "unresolved_risk"
+      ]
+    },
+    "security-sensitive": {
+      "use_when": [
+        "secrets or credentials",
+        "permissions or authentication",
+        "network or external services",
+        "destructive actions",
+        "production or spend boundary"
+      ],
+      "required_context": [
+        ".ai/framework/change-risk-model.md",
+        ".ai/framework/security-safety-guidance.md",
+        ".ai/framework/logical-integrity.md",
+        ".ai/framework/approval-records.md",
+        ".ai/assistant/policies/prompt-injection.md",
+        ".ai/assistant/gates/checklist.md",
+        "{TARGET_SECURITY_SOURCE_OF_TRUTH}"
+      ],
+      "expand_when": [
+        "live_external_action_possible",
+        "credential_or_private_data_surface",
+        "dependency_or_permission_change",
+        "imported_ai_infrastructure_involved"
+      ],
+      "approval_gates": [
+        "protected_security_change",
+        "destructive_action",
+        "live_service_access",
+        "permission_broadening"
+      ],
+      "validation": [
+        "{TARGET_SECURITY_VALIDATION_OR_MANUAL_REVIEW}"
+      ],
+      "final_evidence": [
+        "security_owner_evidence",
+        "actions_avoided",
+        "approvals",
+        "validation",
+        "residual_risk"
+      ]
+    },
+    "ai-infrastructure": {
+      "use_when": [
+        "prompt or skill change",
+        "assistant wrapper or bridge change",
+        "MCP or tool config change",
+        "checker gate flow or template change",
+        "third-party assistant infrastructure review"
+      ],
+      "required_context": [
+        ".ai/framework/project-adapter-contract.md",
+        ".ai/framework/portability.md",
+        ".ai/framework/skill-adaptation.md",
+        ".ai/framework/security-safety-guidance.md",
+        ".ai/framework/prompt-injection.md",
+        ".ai/framework/approval-records.md",
+        ".ai/assistant/flows/ai-infrastructure-inventory.flow.md",
+        ".ai/assistant/flows/skill-adaptation.flow.md",
+        ".ai/assistant/policies/ai-infrastructure-source-access.md",
+        ".ai/assistant/policies/prompt-injection.md",
+        ".ai/assistant/gates/checklist.md"
+      ],
+      "expand_when": [
+        "third_party_source_requested",
+        "tool_permission_changes",
+        "live_destructive_or_credential_surface",
+        "canonical_target_file_integration"
+      ],
+      "approval_gates": [
+        "third_party_infrastructure_import",
+        "tool_permission_change",
+        "live_or_destructive_capability",
+        "weakened_gate_or_approval_rule"
+      ],
+      "validation": [
+        "{TARGET_AI_INFRASTRUCTURE_VALIDATION_OR_MANUAL_REVIEW}"
+      ],
+      "final_evidence": [
+        "inventory",
+        "provenance",
+        "source_hash_or_commit",
+        "license_status",
+        "normalization",
+        "compatibility_review",
+        "approval_evidence"
+      ]
+    },
+    "framework-upgrade": {
+      "use_when": [
+        "installing Alatyr",
+        "updating Alatyr Core",
+        "adapter recheck",
+        "adapter maturity review",
+        "framework drift repair"
+      ],
+      "required_context": [
+        ".ai/framework/README.md",
+        ".ai/framework/contour.md",
+        ".ai/framework/guarantees.md",
+        ".ai/framework/rule-ownership.md",
+        ".ai/framework/rule-registry.md",
+        ".ai/framework/rule-registry.json",
+        ".ai/framework/project-adapter-contract.md",
+        ".ai/framework/portability.md",
+        ".ai/framework/module-profile.md",
+        ".ai/framework/scaffolding.md",
+        ".ai/framework/context-router.md",
+        ".ai/framework/context-profiles.md",
+        ".ai/framework/context-discovery.md",
+        ".ai/framework/source-of-truth-registry.md",
+        ".ai/framework/change-risk-model.md",
+        ".ai/framework/logical-integrity.md",
+        ".ai/framework/blueprint-driven-change.md",
+        ".ai/framework/security-safety-guidance.md",
+        ".ai/framework/prompt-injection.md",
+        ".ai/framework/approval-records.md",
+        ".ai/framework/diagram-guidance.md",
+        ".ai/framework/testing-guidance.md",
+        ".ai/framework/skill-adaptation.md",
+        ".ai/framework/adapter-maturity.md",
+        ".ai/framework/bridge-capability-matrix.md",
+        ".ai/framework/migration-diff.md",
+        ".ai/framework/effectiveness-metrics.md",
+        ".ai/framework/lifecycle.md",
+        ".ai/framework/installed-operations.md",
+        ".ai/framework/operation-help.md",
+        ".ai/assistant/flows/adapter-recheck.flow.md",
+        ".ai/assistant/flows/operation-routing.flow.md",
+        ".ai/assistant/templates/installation-note.md",
+        ".ai/assistant/templates/post-install-message.md",
+        ".ai/assistant/templates/post-update-message.md",
+        ".ai/assistant/gates/checklist.md"
+      ],
+      "expand_when": [
+        "protected_adapter_overwrite",
+        "new_framework_rule_or_template",
+        "bridge_capability_change",
+        "target_local_deviation_conflict",
+        "third_party_infrastructure_adoption"
+      ],
+      "approval_gates": [
+        "overwriting_existing_instructions",
+        "protected_adapter_behavior_change",
+        "third_party_assistant_infrastructure_adoption"
+      ],
+      "validation": [
+        "{TARGET_ADAPTER_RECHECK_OR_MANUAL_REVIEW}"
+      ],
+      "final_evidence": [
+        "adapter_version_schema_state",
+        "changed_framework_baseline",
+        "affected_target_files",
+        "gaps",
+        "local_deviations",
+        "validation",
+        "migration_actions"
+      ]
+    }
+  }
+}
+

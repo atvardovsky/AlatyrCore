@@ -19,7 +19,7 @@ Updated adapter surfaces:
 
 Future assistant bootstrap:
 - Do not rely on this chat message alone.
-- Future sessions should start from `AGENTS.md`, `AI_ASSISTANTS.md`, `.ai/alatyr.yaml`, `.ai/README.md`, `.ai/assistant/context-profiles.md`, `.ai/assistant/module-profile.md`, `.ai/project/source-of-truth-registry.md`, and `.ai/assistant/templates/installation-note.md`.
+- Future sessions should start from `AGENTS.md`, `AI_ASSISTANTS.md`, `.ai/alatyr.yaml`, `.ai/README.md`, `.ai/assistant/context-router.json`, `.ai/assistant/context-profiles.md`, `.ai/assistant/module-profile.md`, `.ai/project/source-of-truth-registry.md`, and `.ai/assistant/templates/installation-note.md`.
 - If the updated baseline or adapter state is unclear, ask for "Alatyr help" or run `recheck-after-framework-update` before editing files.
 
 Recommended follow-up:
