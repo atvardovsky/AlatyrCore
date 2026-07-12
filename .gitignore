@@ -17,6 +17,7 @@ temp/
 /.devin/
 /.windsurf/
 /.github/copilot-instructions.md
+/.github/workflows/source-validation.yml
 /.github/instructions/
 /.github/prompts/
 /CLAUDE.md

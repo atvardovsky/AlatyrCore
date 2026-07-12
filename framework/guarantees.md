@@ -85,6 +85,11 @@ Machine checks can verify only deterministic repository facts, such as:
 Machine checks do not prove the assistant understood the target project or
 that project facts are correct.
 
+Machine-readable validator output can make adapter evidence cheaper to reuse in
+CI, assistant rechecks, or final reports, but it remains structural evidence.
+It does not decide source-of-truth correctness or replace logical integrity
+review.
+
 ## Target-Dependent Guarantees
 
 An installed adapter can provide stronger guarantees only when the target

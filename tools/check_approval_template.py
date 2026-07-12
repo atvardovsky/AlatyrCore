@@ -29,6 +29,8 @@ REQUIRED_FIELDS = [
     "Operation type:",
     "Plan version:",
     "Plan hash:",
+    "Approved plan file:",
+    "Patch hash:",
     "Requested by:",
     "Approved by:",
     "Approved at:",

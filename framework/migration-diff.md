@@ -63,3 +63,8 @@ hashes against the next target template directory. The report also summarizes
 affected rule categories, task profiles, canonical sources, adapter contract
 impact, and migration action hints. The report is evidence only; it must not
 overwrite target adapter files without approval.
+
+`tools/validate_target_adapter.py` can consume a reviewed migration report via
+`--migration-diff <report.md>` while checking an installed adapter. That check
+does not apply an upgrade; it only reports whether framework drift has
+rule/category/action evidence attached to the recheck.

@@ -122,6 +122,13 @@ This repository intentionally has no universal runtime validation command.
 For Alatyr Core changes, run this source-repository helper when available:
 
 ```sh
+python3 tools/check_all.py
+```
+
+For focused validation or when the wrapper is unavailable, run the core
+source-repository helper:
+
+```sh
 python3 tools/check_framework_consistency.py
 ```
 

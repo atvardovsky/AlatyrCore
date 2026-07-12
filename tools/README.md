@@ -3,6 +3,26 @@
 These helpers belong to the AlatyrCore source repository.
 They are not portable framework requirements for target projects.
 
+## Source Validation Runner
+
+`check_all.py` runs the stable source-repository checks for AlatyrCore source
+maintenance. It validates this repository only; it is not a portable framework
+requirement for target projects.
+
+Linux or macOS:
+
+```sh
+python3 tools/check_all.py
+python3 tools/check_all.py --list
+```
+
+Windows PowerShell or Command Prompt:
+
+```powershell
+py -3 .\tools\check_all.py
+py -3 .\tools\check_all.py --list
+```
+
 ## Approval Template Check
 
 `check_approval_template.py` validates the target
@@ -134,12 +154,50 @@ It does not install Alatyr Core, inspect project business truth, approve
 protected changes, run target validation, or replace assistant logical
 integrity review.
 
+Use `--json` or `--output <file>` when a target CI job or assistant recheck
+needs machine-readable findings. The JSON output contains severity counts,
+exit status, and stable finding objects with `level`, `code`, `message`, and
+optional `path`.
+
+An installed adapter may optionally provide
+`.ai/assistant/validator-config.json`. The config can add allowed local path
+substrings, choose target-local checker coverage terms, promote or demote
+warning/info finding severities, and record accepted deviations with reasons.
+Config cannot silence hard structural errors.
+
+Example config:
+
+```json
+{
+  "schema_version": 1,
+  "allow_local_path_patterns": ["C:\\\\project-fixtures"],
+  "required_checker_coverage": [
+    "context-router",
+    "placeholder",
+    "local path",
+    "stale",
+    "manifest"
+  ],
+  "severity_overrides": {
+    "TARGET_CHECKER_MISSING": "info"
+  },
+  "accepted_deviations": [
+    {
+      "code": "TARGET_CHECKER_COVERAGE_GAP",
+      "reason": "Adapter records manual review instead of local checker coverage."
+    }
+  ]
+}
+```
+
 Linux or macOS:
 
 ```sh
 python3 tools/validate_target_adapter.py --target /path/to/target-repo
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --framework-source /path/to/AlatyrCore
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --diff-ref origin/main
+python3 tools/validate_target_adapter.py --target /path/to/target-repo --json --output tmp/alatyr-adapter-report.json
+python3 tools/validate_target_adapter.py --target /path/to/target-repo --framework-source /path/to/AlatyrCore --migration-diff /path/to/migration-report.md
 ```
 
 Windows PowerShell:
@@ -147,6 +205,7 @@ Windows PowerShell:
 ```powershell
 py -3 .\tools\validate_target_adapter.py --target C:\path\to\target-repo
 .\tools\validate_target_adapter.ps1 --target C:\path\to\target-repo
+py -3 .\tools\validate_target_adapter.py --target C:\path\to\target-repo --json --output tmp\alatyr-adapter-report.json
 ```
 
 Windows Command Prompt:

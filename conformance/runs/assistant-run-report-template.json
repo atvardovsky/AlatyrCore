@@ -45,6 +45,17 @@
   "bridge_capability_status": [
     "{BRIDGE_CAPABILITY_STATUS}"
   ],
+  "bridge_behavior_evidence": {
+    "entry_files_used": [
+      "{BRIDGE_OR_ROOT_ENTRY_FILE_USED}"
+    ],
+    "auto_load_observed": "{YES_NO_UNKNOWN_AND_REASON}",
+    "help_found": "{YES_NO_AND_EVIDENCE}",
+    "context_router_found": "{YES_NO_AND_EVIDENCE}",
+    "known_surface_limitations": [
+      "{ASSISTANT_SURFACE_LIMITATION_OR_NONE}"
+    ]
+  },
   "operation_help_status": [
     "{OPERATION_HELP_STATUS}"
   ],

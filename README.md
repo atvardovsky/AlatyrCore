@@ -88,11 +88,13 @@ Promote reusable findings by editing the canonical source files under
 instead of committing generated self-installation output.
 
 For Alatyr Core source-repository maintenance, run
-`python3 tools/check_framework_consistency.py` when available. This helper is
-not a portable validation requirement for target projects.
+`python3 tools/check_all.py` when available, or
+`python3 tools/check_framework_consistency.py` for the core consistency check.
+These helpers are not portable validation requirements for target projects.
 
 Additional source-repository helpers include:
 
+- `python3 tools/check_all.py`
 - `python3 tools/check_framework_metadata.py`
 - `python3 tools/check_approval_template.py`
 - `python3 tools/check_ai_infrastructure_inventory.py`
@@ -111,6 +113,7 @@ Additional source-repository helpers include:
 - `python3 tools/check_source_of_truth_registry.py`
 - `python3 tools/check_versioning.py`
 - `python3 tools/validate_target_adapter.py --target <target-repo>`
+- `python3 tools/validate_target_adapter.py --target <target-repo> --json --output <report.json>`
 - `python3 tools/report_migration_diff.py --from-rules <old-rule-registry.json>`
 - `python3 tools/report_migration_diff.py --from-rules <old-rule-registry.json> --from-framework-dir <old-framework-dir>`
 - `python3 tools/check_bridge_templates.py`
@@ -230,11 +233,14 @@ maintainer may run:
 
 ```sh
 python3 tools/validate_target_adapter.py --target /path/to/target-repo
+python3 tools/validate_target_adapter.py --target /path/to/target-repo --json --output tmp/alatyr-adapter-report.json
 ```
 
 This helper checks adapter structure, router/bootstrap references, local path
 leakage, stale checker claims, manifest fields, and optional framework
-baseline drift. It does not verify project business facts or approve changes.
+baseline drift. It can emit machine-readable JSON findings and compare
+approval scope or migration-diff evidence when the target provides those
+inputs. It does not verify project business facts or approve changes.
 
 For skills, prompts, wrappers, bridge files, rules, MCP/tool configs, gates,
 checkers, or other AI infrastructure, a target adapter may define request

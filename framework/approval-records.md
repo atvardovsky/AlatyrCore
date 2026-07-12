@@ -48,6 +48,9 @@ An approval record should include:
 - operation ID
 - plan version
 - plan hash or content hash when available
+- approved plan file or recorded reason when a file is unavailable
+- patch hash when an exact proposed diff is approved and deterministic hashing
+  is practical
 - allowed protected changes
 - allowed files or surfaces
 - excluded actions
@@ -79,6 +82,15 @@ stored outside the repository.
 When a deterministic hash is practical, hash the approved plan text or proposed
 patch. If hashing is not practical, record the exact plan version and the
 reason hash evidence is unavailable.
+
+When an installed adapter uses a validator, it may verify the recorded plan
+hash against an approved plan file and the patch hash against the current diff.
+If either hash cannot be verified, final evidence should say why rather than
+claiming cryptographic approval binding.
+
+Approved plan file references used for hash verification should be
+target-relative paths. Do not point approval records at arbitrary absolute
+local paths.
 
 Do not include secrets in approval records or hash inputs that must remain
 private.

@@ -132,3 +132,11 @@
   record local path leakage plus target-local checker status.
 - Added an optional target adapter validator helper with Linux, macOS, and
   Windows entry points for installed-adapter structural drift checks.
+- Added a source `check_all.py` validation runner for Linux, macOS, and
+  Windows-compatible source checks.
+- Extended the optional target adapter validator with JSON output, optional
+  validator config, approval plan/patch hash evidence checks, and migration
+  diff impact evidence.
+- Extended real assistant-run conformance report templates with bridge
+  behavior evidence for entry files, auto-load observations, help discovery,
+  context-router discovery, and assistant-surface limitations.

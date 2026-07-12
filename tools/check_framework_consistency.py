@@ -847,6 +847,24 @@ def main() -> int:
         elif "scaffold_target_structure.py" not in read_text(wrapper):
             failures.append(f"{wrapper} must delegate to scaffold_target_structure.py")
 
+    source_runner = ROOT / "tools" / "check_all.py"
+    if not source_runner.is_file():
+        failures.append("missing tools/check_all.py")
+    else:
+        source_runner_text = read_text("tools/check_all.py")
+        for required_source_runner_text in [
+            "source repository only",
+            "CHECKS",
+            "check_framework_consistency.py",
+            "run_conformance_scaffold.py",
+            "summarize_effectiveness_reports.py",
+        ]:
+            if required_source_runner_text not in source_runner_text:
+                failures.append(
+                    "tools/check_all.py missing "
+                    f"{required_source_runner_text}"
+                )
+
     target_validator = ROOT / "tools" / "validate_target_adapter.py"
     if not target_validator.is_file():
         failures.append("missing tools/validate_target_adapter.py")
@@ -859,6 +877,12 @@ def main() -> int:
             "--target",
             "--framework-source",
             "--diff-ref",
+            "--migration-diff",
+            "--json",
+            "--output",
+            "VALIDATOR_CONFIG_LOADED",
+            "APPROVAL_PATCH_HASH_MISMATCH",
+            "MIGRATION_DIFF_IMPACT",
             "--allow-local-path",
             "LOCAL_PATH_LEAKAGE",
             "STALE_CHECKER_MISSING_CLAIM",
@@ -889,6 +913,7 @@ def main() -> int:
             "Windows PowerShell:",
             "Windows Command Prompt:",
             "not portable framework requirements",
+            "check_all.py",
             "check_approval_template.py",
             "check_bridge_capability_matrix.py",
             "check_framework_metadata.py",
@@ -920,6 +945,8 @@ def main() -> int:
             "render_bridge_templates.py",
             "bridge_template_manifest.json",
             "summarize_effectiveness_reports.py",
+            "--json",
+            "--migration-diff",
         ]:
             if required_tools_readme_text not in tools_readme_text:
                 failures.append(
@@ -1560,6 +1587,8 @@ def main() -> int:
             "--require-actual-reports",
             "--require-all-fixtures",
             "source_commit",
+            "bridge_behavior_evidence",
+            "auto_load_observed",
             "assistant-result-conformance",
             "forbidden_claims_absent",
             "OK: checked golden conformance reports",

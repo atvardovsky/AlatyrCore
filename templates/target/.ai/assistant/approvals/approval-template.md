@@ -8,6 +8,8 @@ Operation ID: `{OPERATION_ID}`
 Operation type: `{OPERATION_TYPE}`
 Plan version: `{PLAN_VERSION}`
 Plan hash: `{PLAN_HASH_OR_NOT_AVAILABLE_WITH_REASON}`
+Approved plan file: `{APPROVED_PLAN_FILE_OR_NOT_AVAILABLE_WITH_REASON}`
+Patch hash: `{PATCH_HASH_OR_NOT_AVAILABLE_WITH_REASON}`
 Requested by: `{REQUESTED_BY}`
 Approved by: `{APPROVED_BY}`
 Approved at: `{APPROVED_AT}`

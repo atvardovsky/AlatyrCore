@@ -61,6 +61,9 @@ change tracked templates or docs.
 
 Before accepting a change, check:
 
+- `python3 tools/check_all.py` passes when the source validation wrapper is
+  available. This is the preferred AlatyrCore source-repository check set, not
+  a portable target-project requirement.
 - `python3 tools/check_framework_consistency.py` passes when the helper is
   available.
 - `python3 tools/check_framework_metadata.py` passes when rule-owner framework
@@ -149,7 +152,10 @@ Before accepting a change, check:
   passes when effectiveness report tooling or sample contracts change.
 - `python3 tools/validate_target_adapter.py --target <target-repo>` can check
   an installed target adapter for structural drift when a real target
-  repository is available. It is optional target-adapter validation, not a
+  repository is available. Use `--json --output <report.json>` when a target
+  CI job or assistant recheck needs machine-readable findings, and use
+  `--migration-diff <report.md>` when framework drift should be tied to rule
+  and action evidence. It is optional target-adapter validation, not a
   source-template check and not proof of project business truth.
 - `framework/` contains no target business facts.
 - `framework/` contains no required local commands, scripts, package managers,

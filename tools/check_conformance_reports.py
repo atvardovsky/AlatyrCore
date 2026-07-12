@@ -82,6 +82,28 @@ def validate_validation_status(report: dict[str, Any], path: Path) -> None:
         raise AssertionError(f"{path} validation_status.unresolved must be non-empty")
 
 
+def validate_bridge_behavior_evidence(report: dict[str, Any], path: Path) -> None:
+    value = require_non_empty(report, "bridge_behavior_evidence", path)
+    if not isinstance(value, dict):
+        raise AssertionError(f"{path} bridge_behavior_evidence must be object")
+    for key in [
+        "entry_files_used",
+        "auto_load_observed",
+        "help_found",
+        "context_router_found",
+        "known_surface_limitations",
+    ]:
+        require_non_empty(value, key, path)
+    for list_key in ["entry_files_used", "known_surface_limitations"]:
+        items = value.get(list_key)
+        if not isinstance(items, list) or not all(
+            isinstance(item, str) and item for item in items
+        ):
+            raise AssertionError(
+                f"{path} bridge_behavior_evidence.{list_key} must be a non-empty string list"
+            )
+
+
 def validate_report(
     fixture_dir: Path,
     shared: dict[str, Any],
@@ -119,6 +141,7 @@ def validate_report(
     if actual_run:
         for required_actual_key in ["run_id", "assistant_surface", "source_commit"]:
             require_non_empty(report, required_actual_key, report_path)
+        validate_bridge_behavior_evidence(report, report_path)
 
     shared_required = require_string_list(shared, "required_evidence", SHARED)
     fixture_required = require_string_list(expected, "required_evidence", fixture_dir / "expected.json")

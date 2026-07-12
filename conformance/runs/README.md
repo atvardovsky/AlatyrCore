@@ -6,8 +6,8 @@ Committed files here should be schemas, templates, and documentation only
 unless the project intentionally records a reviewed conformance run. Real run
 reports may include assistant surface, source commit, fixture name, evidence,
 adapter output contract status, operation help status, AI infrastructure
-inventory status, and residual-risk details, but must not contain secrets or
-real project facts.
+inventory status, bridge behavior evidence, and residual-risk details, but
+must not contain secrets or real project facts.
 
 Supported conformance assistant surface IDs are listed in
 `assistant-surfaces.json`. Use `--allow-custom-surface` only for an explicitly

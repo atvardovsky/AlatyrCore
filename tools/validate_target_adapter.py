@@ -160,6 +160,21 @@ CHECKER_REFERENCE_RE = re.compile(
     r"(?:alatyr:check|check-alatyr|check_alatyr|validate_target_adapter)",
     re.IGNORECASE,
 )
+SHA256_RE = re.compile(r"^[a-fA-F0-9]{64}$")
+UNAVAILABLE_HASH_MARKERS = {
+    "not available",
+    "not available with reason",
+    "unavailable",
+    "not recorded",
+    "none",
+}
+DEFAULT_CHECKER_COVERAGE = {
+    "context-router": "context-router coverage",
+    "placeholder": "placeholder coverage",
+    "local path": "local path leakage coverage",
+    "stale": "stale checker-claim coverage",
+    "manifest": "manifest coverage",
+}
 
 
 @dataclass(frozen=True)
@@ -174,6 +189,53 @@ class Finding:
         if self.path:
             return f"{prefix} {self.path}: {self.message}"
         return f"{prefix}: {self.message}"
+
+    def to_json(self) -> dict[str, str]:
+        payload = {
+            "level": self.level,
+            "code": self.code,
+            "message": self.message,
+        }
+        if self.path:
+            payload["path"] = self.path
+        return payload
+
+
+@dataclass(frozen=True)
+class AcceptedDeviation:
+    code: str
+    path: str | None = None
+    reason: str = ""
+
+
+@dataclass
+class AdapterValidatorConfig:
+    source: Path | None = None
+    allow_local_path_patterns: list[str] | None = None
+    severity_overrides: dict[str, str] | None = None
+    accepted_deviations: list[AcceptedDeviation] | None = None
+    required_checker_coverage: dict[str, str] | None = None
+
+    def local_path_patterns(self) -> list[str]:
+        return self.allow_local_path_patterns or []
+
+    def checker_coverage(self) -> dict[str, str]:
+        return self.required_checker_coverage or DEFAULT_CHECKER_COVERAGE
+
+    def deviations(self) -> list[AcceptedDeviation]:
+        return self.accepted_deviations or []
+
+    def severity_for(self, level: str, code: str) -> str | None:
+        overrides = self.severity_overrides or {}
+        override = overrides.get(code)
+        if not override:
+            return level
+        normalized = override.lower()
+        if normalized not in {"error", "warning", "info", "ignore"}:
+            return level
+        if level == "error" and normalized != "error":
+            return level
+        return normalized
 
 
 @dataclass(frozen=True)
@@ -202,24 +264,60 @@ class Validator:
         *,
         framework_source: Path | None,
         diff_ref: str | None,
+        migration_diff: Path | None,
         allow_placeholders: bool,
         allow_local_paths: list[str],
+        config: AdapterValidatorConfig,
+        initial_findings: list[Finding] | None = None,
     ) -> None:
         self.target = target.resolve()
         self.framework_source = framework_source.resolve() if framework_source else None
         self.diff_ref = diff_ref
+        self.migration_diff = migration_diff.resolve() if migration_diff else None
         self.allow_placeholders = allow_placeholders
-        self.allow_local_paths = allow_local_paths
-        self.findings: list[Finding] = []
+        self.config = config
+        self.allow_local_paths = allow_local_paths + config.local_path_patterns()
+        self.findings: list[Finding] = list(initial_findings or [])
+        self.framework_drift_detected = False
 
     def error(self, code: str, message: str, path: str | None = None) -> None:
-        self.findings.append(Finding("error", code, message, path))
+        self.add_finding("error", code, message, path)
 
     def warn(self, code: str, message: str, path: str | None = None) -> None:
-        self.findings.append(Finding("warning", code, message, path))
+        self.add_finding("warning", code, message, path)
 
     def info(self, code: str, message: str, path: str | None = None) -> None:
-        self.findings.append(Finding("info", code, message, path))
+        self.add_finding("info", code, message, path)
+
+    def add_finding(
+        self, level: str, code: str, message: str, path: str | None = None
+    ) -> None:
+        if self.deviation_accepts(level, code, path):
+            reason = self.deviation_reason(code, path)
+            suffix = f" Accepted deviation: {reason}" if reason else " Accepted deviation."
+            self.findings.append(Finding("info", code, message + suffix, path))
+            return
+        configured_level = self.config.severity_for(level, code)
+        if configured_level == "ignore":
+            return
+        self.findings.append(Finding(configured_level or level, code, message, path))
+
+    def deviation_accepts(self, level: str, code: str, path: str | None) -> bool:
+        if level == "error":
+            return False
+        for deviation in self.config.deviations():
+            if deviation.code != code:
+                continue
+            if deviation.path and deviation.path != path:
+                continue
+            return True
+        return False
+
+    def deviation_reason(self, code: str, path: str | None) -> str:
+        for deviation in self.config.deviations():
+            if deviation.code == code and (not deviation.path or deviation.path == path):
+                return deviation.reason
+        return ""
 
     def run(self) -> list[Finding]:
         if not self.target.exists():
@@ -239,6 +337,7 @@ class Validator:
         self.check_checker_claims(checker_files, checker_commands)
         self.check_approval_scope()
         self.check_framework_baseline()
+        self.check_migration_diff_evidence()
         return self.findings
 
     def target_path(self, relpath: str) -> Path:
@@ -742,13 +841,7 @@ class Validator:
             + ", ".join([self.rel(path) for path in checker_files] + checker_commands),
         )
         checker_text = "\n".join(self.read_text(path) for path in checker_files)
-        coverage_terms = {
-            "context-router": "context-router coverage",
-            "placeholder": "placeholder coverage",
-            "local path": "local path leakage coverage",
-            "stale": "stale checker-claim coverage",
-            "manifest": "manifest coverage",
-        }
+        coverage_terms = self.config.checker_coverage()
         for term, label in coverage_terms.items():
             if term not in checker_text.lower():
                 self.warn(
@@ -792,6 +885,7 @@ class Validator:
                     f"approval records do not include {required}",
                     ".ai/assistant/approvals",
                 )
+        self.check_approval_hash_evidence(approval_records)
         for changed in protected:
             if changed in approval_text or covers_with_wildcard(changed, approval_text):
                 continue
@@ -799,6 +893,110 @@ class Validator:
                 "APPROVAL_SCOPE_MISMATCH",
                 f"changed protected file not named in approval records: {changed}",
             )
+
+    def check_approval_hash_evidence(self, approval_records: list[Path]) -> None:
+        for record in approval_records:
+            text = self.read_text(record)
+            relpath = self.rel(record)
+            plan_hash = normalize_hash_field(extract_field(text, "Plan hash:"))
+            plan_file = extract_field(text, "Approved plan file:")
+            patch_hash = normalize_hash_field(extract_field(text, "Patch hash:"))
+
+            if "Patch changed after approval:" in text:
+                patch_changed = extract_field(text, "Patch changed after approval:").lower()
+                if patch_changed.startswith("yes"):
+                    self.warn(
+                        "APPROVAL_PATCH_CHANGED",
+                        "approval record says the patch changed after approval",
+                        relpath,
+                    )
+            if "Implementation stayed within approved scope:" in text:
+                within_scope = extract_field(
+                    text, "Implementation stayed within approved scope:"
+                ).lower()
+                if within_scope.startswith("no"):
+                    self.warn(
+                        "APPROVAL_SCOPE_DECLARED_BROKEN",
+                        "approval record says implementation did not stay within scope",
+                        relpath,
+                    )
+
+            if plan_hash:
+                if not plan_file:
+                    self.info(
+                        "APPROVAL_PLAN_HASH_UNVERIFIED",
+                        "plan hash is recorded but no Approved plan file is available for verification",
+                        relpath,
+                    )
+                elif not is_target_relative_path(plan_file):
+                    self.warn(
+                        "APPROVAL_PLAN_FILE_OUTSIDE_TARGET",
+                        f"approved plan file must be target-relative: {plan_file}",
+                        relpath,
+                    )
+                else:
+                    plan_path = self.target_path(plan_file)
+                    if not plan_path.is_file():
+                        self.warn(
+                            "APPROVAL_PLAN_FILE_MISSING",
+                            f"approved plan file is missing: {plan_file}",
+                            relpath,
+                        )
+                    elif sha256(plan_path).lower() != plan_hash:
+                        self.warn(
+                            "APPROVAL_PLAN_HASH_MISMATCH",
+                            f"approved plan file hash does not match Plan hash: {plan_file}",
+                            relpath,
+                        )
+                    else:
+                        self.info(
+                            "APPROVAL_PLAN_HASH_MATCH",
+                            f"approved plan file hash matches: {plan_file}",
+                            relpath,
+                        )
+            elif "Plan hash:" in text:
+                self.info(
+                    "APPROVAL_PLAN_HASH_NOT_VERIFIABLE",
+                    "plan hash is unavailable or non-deterministic",
+                    relpath,
+                )
+
+            if not patch_hash:
+                if "Patch hash:" in text:
+                    self.info(
+                        "APPROVAL_PATCH_HASH_NOT_VERIFIABLE",
+                        "patch hash is unavailable or non-deterministic",
+                        relpath,
+                    )
+                continue
+            if not self.diff_ref:
+                self.info(
+                    "APPROVAL_PATCH_HASH_SKIPPED",
+                    "patch hash recorded but --diff-ref was not provided",
+                    relpath,
+                )
+                continue
+            patch_text = git_diff_patch(self.target, self.diff_ref)
+            if patch_text is None:
+                self.warn(
+                    "APPROVAL_PATCH_HASH_UNAVAILABLE",
+                    f"could not compute git patch against {self.diff_ref}",
+                    relpath,
+                )
+                continue
+            actual_hash = hashlib.sha256(patch_text.encode("utf-8")).hexdigest()
+            if actual_hash.lower() != patch_hash:
+                self.warn(
+                    "APPROVAL_PATCH_HASH_MISMATCH",
+                    "current diff hash does not match approved Patch hash",
+                    relpath,
+                )
+            else:
+                self.info(
+                    "APPROVAL_PATCH_HASH_MATCH",
+                    "current diff hash matches approved Patch hash",
+                    relpath,
+                )
 
     def check_framework_baseline(self) -> None:
         if not self.framework_source:
@@ -829,12 +1027,14 @@ class Validator:
             if path.is_file() and path.suffix in {".md", ".json"}
         }
         for name in sorted(set(source_files) - set(target_files)):
+            self.framework_drift_detected = True
             self.warn(
                 "FRAMEWORK_FILE_MISSING",
                 f"installed framework is missing source file {name}",
                 f".ai/framework/{name}",
             )
         for name in sorted(set(target_files) - set(source_files)):
+            self.framework_drift_detected = True
             self.warn(
                 "FRAMEWORK_FILE_EXTRA",
                 f"installed framework has file not present in source baseline: {name}",
@@ -842,11 +1042,77 @@ class Validator:
             )
         for name in sorted(set(source_files) & set(target_files)):
             if sha256(source_files[name]) != sha256(target_files[name]):
+                self.framework_drift_detected = True
                 self.warn(
                     "FRAMEWORK_FILE_DRIFT",
                     f"installed framework file differs from source baseline: {name}",
                     f".ai/framework/{name}",
                 )
+
+    def check_migration_diff_evidence(self) -> None:
+        if not self.migration_diff:
+            if self.framework_drift_detected:
+                self.warn(
+                    "MIGRATION_DIFF_MISSING",
+                    "framework drift was detected but no --migration-diff evidence was provided",
+                )
+            else:
+                self.info(
+                    "MIGRATION_DIFF_SKIPPED",
+                    "migration diff evidence skipped because --migration-diff was not provided",
+                )
+            return
+        if not self.migration_diff.is_file():
+            self.error(
+                "MIGRATION_DIFF_FILE_MISSING",
+                f"migration diff file does not exist: {self.migration_diff}",
+            )
+            return
+
+        text = self.read_text(self.migration_diff)
+        sections = markdown_sections(text)
+        required_sections = [
+            "Affected Rule Categories",
+            "Affected Task Profiles",
+            "Migration Action Hints",
+            "Required Target Actions",
+        ]
+        for section in required_sections:
+            if section not in sections:
+                self.warn(
+                    "MIGRATION_DIFF_SECTION_MISSING",
+                    f"migration diff is missing section: {section}",
+                    str(self.migration_diff),
+                )
+
+        changed_rules = section_items(sections.get("Changed Rules", []))
+        added_rules = section_items(sections.get("Added Rules", []))
+        removed_rules = section_items(sections.get("Removed Rules", []))
+        categories = section_items(sections.get("Affected Rule Categories", []))
+        hints = section_items(sections.get("Migration Action Hints", []))
+        if changed_rules or added_rules or removed_rules or categories:
+            self.info(
+                "MIGRATION_DIFF_IMPACT",
+                "migration diff impact: "
+                f"added_rules={len(added_rules)} "
+                f"changed_rules={len(changed_rules)} "
+                f"removed_rules={len(removed_rules)} "
+                f"categories={len(categories)} "
+                f"action_hints={len(hints)}",
+                str(self.migration_diff),
+            )
+        elif self.framework_drift_detected:
+            self.warn(
+                "MIGRATION_DIFF_NO_RULE_IMPACT",
+                "framework drift exists but migration diff reports no rule/category impact",
+                str(self.migration_diff),
+            )
+        else:
+            self.info(
+                "MIGRATION_DIFF_NO_IMPACT",
+                "migration diff reports no rule/category impact",
+                str(self.migration_diff),
+            )
 
 
 def parse_manifest(path: Path) -> ManifestData:
@@ -963,6 +1229,39 @@ def should_skip_path(path: Path) -> bool:
     return any(part in skip_parts for part in path.parts)
 
 
+def is_target_relative_path(value: str) -> bool:
+    path = Path(value)
+    if path.is_absolute():
+        return False
+    return ".." not in path.parts
+
+
+def extract_field(text: str, label: str) -> str:
+    for line in text.splitlines():
+        if line.startswith(label):
+            return strip_backticks(line[len(label) :].strip())
+    return ""
+
+
+def strip_backticks(value: str) -> str:
+    stripped = strip_quotes(value)
+    if len(stripped) >= 2 and stripped[0] == stripped[-1] == "`":
+        return stripped[1:-1]
+    return stripped
+
+
+def normalize_hash_field(value: str) -> str:
+    normalized = strip_backticks(value).strip()
+    if not normalized or is_placeholder(normalized):
+        return ""
+    lowered = normalized.lower()
+    if any(marker in lowered for marker in UNAVAILABLE_HASH_MARKERS):
+        return ""
+    if SHA256_RE.match(normalized):
+        return normalized.lower()
+    return ""
+
+
 def git_changed_files(target: Path, diff_ref: str) -> list[str] | None:
     commands = [
         ["git", "diff", "--name-only", f"{diff_ref}...HEAD"],
@@ -979,6 +1278,25 @@ def git_changed_files(target: Path, diff_ref: str) -> list[str] | None:
         )
         if result.returncode == 0:
             return [line.strip() for line in result.stdout.splitlines() if line.strip()]
+    return None
+
+
+def git_diff_patch(target: Path, diff_ref: str) -> str | None:
+    commands = [
+        ["git", "diff", "--binary", f"{diff_ref}...HEAD"],
+        ["git", "diff", "--binary", diff_ref],
+    ]
+    for command in commands:
+        result = subprocess.run(
+            command,
+            cwd=target,
+            check=False,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+        )
+        if result.returncode == 0:
+            return result.stdout
     return None
 
 
@@ -1023,6 +1341,188 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def markdown_sections(text: str) -> dict[str, list[str]]:
+    sections: dict[str, list[str]] = {}
+    current: str | None = None
+    for line in text.splitlines():
+        heading = re.match(r"^##\s+(.+?)\s*$", line)
+        if heading:
+            current = heading.group(1).strip()
+            sections.setdefault(current, [])
+            continue
+        if current:
+            sections[current].append(line)
+    return sections
+
+
+def section_items(lines: list[str]) -> list[str]:
+    items: list[str] = []
+    for line in lines:
+        stripped = line.strip()
+        if not stripped.startswith("- "):
+            continue
+        value = stripped[2:].strip()
+        if value in {"none", "`none`"}:
+            continue
+        items.append(value.strip("`"))
+    return items
+
+
+def load_validator_config(
+    target: Path, config_path: Path | None
+) -> tuple[AdapterValidatorConfig, list[Finding]]:
+    findings: list[Finding] = []
+    if config_path:
+        path = config_path
+    else:
+        path = target / ".ai" / "assistant" / "validator-config.json"
+        if not path.is_file():
+            return AdapterValidatorConfig(), findings
+
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        findings.append(
+            Finding("warning", "VALIDATOR_CONFIG_MISSING", f"config file missing: {path}")
+        )
+        return AdapterValidatorConfig(source=path), findings
+    except json.JSONDecodeError as exc:
+        findings.append(
+            Finding(
+                "error",
+                "VALIDATOR_CONFIG_INVALID_JSON",
+                f"invalid validator config JSON: {exc}",
+                str(path),
+            )
+        )
+        return AdapterValidatorConfig(source=path), findings
+
+    if not isinstance(data, dict):
+        findings.append(
+            Finding(
+                "error",
+                "VALIDATOR_CONFIG_INVALID_SHAPE",
+                "validator config must be a JSON object",
+                str(path),
+            )
+        )
+        return AdapterValidatorConfig(source=path), findings
+
+    config = AdapterValidatorConfig(source=path)
+    schema_version = data.get("schema_version")
+    if schema_version not in (None, 1):
+        findings.append(
+            Finding(
+                "warning",
+                "VALIDATOR_CONFIG_SCHEMA_VERSION",
+                f"unsupported validator config schema_version: {schema_version}",
+                str(path),
+            )
+        )
+
+    config.allow_local_path_patterns = string_list_config(
+        data, "allow_local_path_patterns", path, findings
+    )
+    required_coverage = string_list_config(
+        data, "required_checker_coverage", path, findings
+    )
+    if required_coverage:
+        config.required_checker_coverage = {
+            term.lower(): f"{term} coverage" for term in required_coverage
+        }
+
+    severity_overrides = data.get("severity_overrides")
+    if severity_overrides is None:
+        config.severity_overrides = {}
+    elif isinstance(severity_overrides, dict):
+        parsed: dict[str, str] = {}
+        for code, level in severity_overrides.items():
+            if not isinstance(code, str) or not isinstance(level, str):
+                findings.append(
+                    Finding(
+                        "warning",
+                        "VALIDATOR_CONFIG_SEVERITY_OVERRIDE",
+                        "severity_overrides entries must map strings to strings",
+                        str(path),
+                    )
+                )
+                continue
+            parsed[code] = level
+        config.severity_overrides = parsed
+    else:
+        findings.append(
+            Finding(
+                "warning",
+                "VALIDATOR_CONFIG_SEVERITY_OVERRIDES",
+                "severity_overrides must be an object",
+                str(path),
+            )
+        )
+        config.severity_overrides = {}
+
+    deviations = data.get("accepted_deviations")
+    parsed_deviations: list[AcceptedDeviation] = []
+    if deviations is None:
+        pass
+    elif isinstance(deviations, list):
+        for item in deviations:
+            if not isinstance(item, dict) or not isinstance(item.get("code"), str):
+                findings.append(
+                    Finding(
+                        "warning",
+                        "VALIDATOR_CONFIG_ACCEPTED_DEVIATION",
+                        "accepted_deviations entries must be objects with code",
+                        str(path),
+                    )
+                )
+                continue
+            item_path = item.get("path")
+            reason = item.get("reason", "")
+            parsed_deviations.append(
+                AcceptedDeviation(
+                    code=item["code"],
+                    path=item_path if isinstance(item_path, str) else None,
+                    reason=reason if isinstance(reason, str) else "",
+                )
+            )
+    else:
+        findings.append(
+            Finding(
+                "warning",
+                "VALIDATOR_CONFIG_ACCEPTED_DEVIATIONS",
+                "accepted_deviations must be a list",
+                str(path),
+            )
+        )
+    config.accepted_deviations = parsed_deviations
+    findings.append(
+        Finding("info", "VALIDATOR_CONFIG_LOADED", f"loaded validator config: {path}")
+    )
+    return config, findings
+
+
+def string_list_config(
+    data: dict[str, Any],
+    key: str,
+    path: Path,
+    findings: list[Finding],
+) -> list[str]:
+    value = data.get(key)
+    if value is None:
+        return []
+    if not isinstance(value, list) or not all(isinstance(item, str) for item in value):
+        findings.append(
+            Finding(
+                "warning",
+                "VALIDATOR_CONFIG_LIST_FIELD",
+                f"{key} must be a list of strings",
+                str(path),
+            )
+        )
+        return []
+    return value
+
+
 def render_summary(findings: list[Finding], *, strict_warnings: bool) -> int:
     order = {"error": 0, "warning": 1, "info": 2}
     for finding in sorted(findings, key=lambda item: (order[item.level], item.code, item.path or "")):
@@ -1038,6 +1538,52 @@ def render_summary(findings: list[Finding], *, strict_warnings: bool) -> int:
     if strict_warnings and warnings:
         return 1
     return 0
+
+
+def result_code(findings: list[Finding], *, strict_warnings: bool) -> int:
+    errors = sum(1 for finding in findings if finding.level == "error")
+    warnings = sum(1 for finding in findings if finding.level == "warning")
+    if errors:
+        return 1
+    if strict_warnings and warnings:
+        return 1
+    return 0
+
+
+def findings_payload(
+    findings: list[Finding],
+    *,
+    target: Path,
+    strict_warnings: bool,
+) -> dict[str, Any]:
+    errors = sum(1 for finding in findings if finding.level == "error")
+    warnings = sum(1 for finding in findings if finding.level == "warning")
+    infos = sum(1 for finding in findings if finding.level == "info")
+    exit_code = result_code(findings, strict_warnings=strict_warnings)
+    return {
+        "schema_version": 1,
+        "tool": "validate_target_adapter",
+        "target": str(target),
+        "status": "failed" if exit_code else "passed",
+        "strict_warnings": strict_warnings,
+        "counts": {
+            "errors": errors,
+            "warnings": warnings,
+            "info": infos,
+        },
+        "exit_code": exit_code,
+        "findings": [
+            finding.to_json()
+            for finding in sorted(
+                findings,
+                key=lambda item: (
+                    {"error": 0, "warning": 1, "info": 2}[item.level],
+                    item.code,
+                    item.path or "",
+                ),
+            )
+        ],
+    }
 
 
 def main() -> int:
@@ -1068,6 +1614,22 @@ def main() -> int:
         ),
     )
     parser.add_argument(
+        "--migration-diff",
+        type=Path,
+        help=(
+            "Optional migration diff report used to classify framework drift "
+            "by changed rules, affected categories, profiles, and target actions."
+        ),
+    )
+    parser.add_argument(
+        "--config",
+        type=Path,
+        help=(
+            "Optional validator config JSON. Defaults to "
+            ".ai/assistant/validator-config.json when that file exists."
+        ),
+    )
+    parser.add_argument(
         "--allow-placeholders",
         action="store_true",
         help="Do not fail on unresolved placeholders in adapter surfaces.",
@@ -1083,16 +1645,44 @@ def main() -> int:
         action="store_true",
         help="Return non-zero when warnings are present.",
     )
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Print machine-readable JSON instead of text findings.",
+    )
+    parser.add_argument(
+        "--output",
+        type=Path,
+        help="Write machine-readable JSON findings to this file.",
+    )
     args = parser.parse_args()
 
+    config, config_findings = load_validator_config(args.target, args.config)
     validator = Validator(
         args.target,
         framework_source=args.framework_source,
         diff_ref=args.diff_ref,
+        migration_diff=args.migration_diff,
         allow_placeholders=args.allow_placeholders,
         allow_local_paths=args.allow_local_path,
+        config=config,
+        initial_findings=config_findings,
     )
     findings = validator.run()
+    payload = findings_payload(
+        findings,
+        target=args.target.resolve(),
+        strict_warnings=args.strict_warnings,
+    )
+    if args.output:
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_text(
+            json.dumps(payload, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+    if args.json:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return payload["exit_code"]
     return render_summary(findings, strict_warnings=args.strict_warnings)
 
 

@@ -188,6 +188,8 @@ machine-detectable structural drift:
 ```sh
 python3 tools/validate_target_adapter.py --target /path/to/target-repo
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --framework-source /path/to/AlatyrCore
+python3 tools/validate_target_adapter.py --target /path/to/target-repo --json --output tmp/alatyr-adapter-report.json
+python3 tools/validate_target_adapter.py --target /path/to/target-repo --framework-source /path/to/AlatyrCore --migration-diff /path/to/migration-report.md
 ```
 
 Windows users may run the same helper through `py -3` or the provided
@@ -196,9 +198,10 @@ Command Prompt and PowerShell wrappers under `tools/`.
 This validator can check router/bootstrap references, unresolved placeholders,
 absolute local path leakage, stale checker claims, manifest fields,
 target-local checker coverage, approval records against a supplied git diff,
-and optional framework baseline drift. It does not inspect target business
-truth, approve protected changes, replace target validation, or replace
-assistant logical integrity review.
+optional framework baseline drift, and migration-diff evidence when supplied.
+It can emit JSON findings for target CI or assistant recheck evidence. It does
+not inspect target business truth, approve protected changes, replace target
+validation, or replace assistant logical integrity review.
 
 ## Rejection Criteria
 
