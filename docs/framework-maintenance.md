@@ -157,6 +157,10 @@ Before accepting a change, check:
 - target manifest, context router, context profiles, approval templates,
   source-access policy, prompt-injection policy, help, help reference, output
   contracts, and AI infrastructure inventory report agree.
+- target gate, operation-routing, adapter-recheck, and output-contract
+  templates preserve context-router bootstrap references and adapter drift
+  evidence for local path leakage, stale checker statements, duplicate profile
+  references, unresolved owner placeholders, and target-local checker status.
 - target approval template includes plan identity, protected scope, allowed
   files, excluded actions, approval source, invalidation, use result,
   evidence, validation, and residual risk fields.

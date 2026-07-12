@@ -59,6 +59,9 @@ REQUIRED_FIELDS = [
     "Source-of-truth registry result:",
     "Task-specific maturity result:",
     "Bridge capability matrix result:",
+    "Adapter drift checks result:",
+    "Local path leakage result:",
+    "Target-local checker status:",
     "Validation run:",
     "Validation skipped or unresolved:",
     "Final evidence:",
@@ -145,4 +148,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

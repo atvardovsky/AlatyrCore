@@ -1796,6 +1796,72 @@ def main() -> int:
             "templates/target/.ai/assistant/gates/checklist.md missing module "
             "profile gate"
         )
+    for required_gate_text in [
+        ".ai/assistant/context-router.json",
+        "Adapter drift checks",
+        "hard-coded local machine paths",
+        "stale checker",
+        "duplicate context-profile references",
+        "target-local adapter checker evidence",
+    ]:
+        if required_gate_text not in gates:
+            failures.append(
+                "templates/target/.ai/assistant/gates/checklist.md missing "
+                f"{required_gate_text}"
+            )
+
+    operation_routing = read_text(
+        "templates/target/.ai/assistant/flows/operation-routing.flow.md"
+    )
+    for required_routing_text in [
+        "Context router: `.ai/assistant/context-router.json`",
+        "Load bootstrap context only:",
+        "Select the smallest matching context profile from",
+        "Do not load all",
+        ".ai/framework",
+        ".ai/project",
+    ]:
+        if required_routing_text not in operation_routing:
+            failures.append(
+                "templates/target/.ai/assistant/flows/"
+                f"operation-routing.flow.md missing {required_routing_text}"
+            )
+    if "Load `AGENTS.md`, `AI_ASSISTANTS.md`, `.ai/README.md`, `.ai/framework`" in operation_routing:
+        failures.append(
+            "templates/target/.ai/assistant/flows/operation-routing.flow.md "
+            "must not require broad framework/project loading before routing"
+        )
+
+    adapter_recheck = read_text(
+        "templates/target/.ai/assistant/flows/adapter-recheck.flow.md"
+    )
+    for required_recheck_text in [
+        "adapter drift hazards",
+        "hard-coded local machine paths",
+        "stale",
+        "required-context references",
+        ".ai/assistant/context-router.json",
+        "target-local adapter checker evidence",
+    ]:
+        if required_recheck_text not in adapter_recheck:
+            failures.append(
+                "templates/target/.ai/assistant/flows/"
+                f"adapter-recheck.flow.md missing {required_recheck_text}"
+            )
+
+    output_contracts = read_text(
+        "templates/target/.ai/assistant/templates/adapter-output-contracts.md"
+    )
+    for required_output_text in [
+        "Adapter drift checks result:",
+        "Local path leakage result:",
+        "Target-local checker status:",
+    ]:
+        if required_output_text not in output_contracts:
+            failures.append(
+                "templates/target/.ai/assistant/templates/"
+                f"adapter-output-contracts.md missing {required_output_text}"
+            )
 
     installed_operations = read_text("framework/installed-operations.md")
     for required_action in [
@@ -1821,6 +1887,7 @@ def main() -> int:
         "Package or plugin references:",
         "Review-only work:",
         "Canonical integration into repository files:",
+        "target-local adapter checker status",
     ]:
         if required_source_policy_text not in source_policy:
             failures.append(

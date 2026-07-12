@@ -88,6 +88,16 @@ def require_string_list(
     return result
 
 
+def duplicate_values(values: list[str]) -> list[str]:
+    seen: set[str] = set()
+    duplicates: set[str] = set()
+    for value in values:
+        if value in seen:
+            duplicates.add(value)
+        seen.add(value)
+    return sorted(duplicates)
+
+
 def target_reference_exists(value: str) -> bool:
     if value.startswith("{"):
         return True
@@ -123,6 +133,11 @@ def main() -> int:
         )
 
     bootstrap = require_string_list(router, "bootstrap_context", "router", failures)
+    duplicate_bootstrap = duplicate_values(bootstrap)
+    if duplicate_bootstrap:
+        failures.append(
+            f"bootstrap_context has duplicate path(s): {duplicate_bootstrap}"
+        )
     for required in REQUIRED_BOOTSTRAP:
         if required not in bootstrap:
             failures.append(f"bootstrap_context missing {required}")
@@ -146,6 +161,12 @@ def main() -> int:
             continue
         for field in PROFILE_FIELDS:
             values = require_string_list(profile_data, field, f"profiles.{profile}", failures)
+            duplicate_profile_values = duplicate_values(values)
+            if duplicate_profile_values:
+                failures.append(
+                    f"profiles.{profile}.{field} has duplicate value(s): "
+                    f"{duplicate_profile_values}"
+                )
             if field in {"required_context", "validation"}:
                 for value in values:
                     if not target_reference_exists(value):

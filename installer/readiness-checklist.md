@@ -210,6 +210,8 @@ List commands or manual checks:
 - installed-operation or adapter-recheck review:
 - adapter output contract review:
 - context-profile review:
+- context-router bootstrap reference review:
+- adapter drift/local leakage review:
 - module-profile review:
 - source-of-truth registry review:
 - task-specific maturity review:
@@ -223,6 +225,7 @@ List commands or manual checks:
 - prompt-injection review:
 - approval-record review:
 - AI consistency checks, if installed:
+- target-local adapter checker status and coverage:
 - source commands intentionally not copied:
 - source test tools/fixtures/CI jobs intentionally not copied:
 - source security policies, diagram tooling, lifecycle notes, and adapter owner
@@ -241,6 +244,11 @@ Final evidence must say:
 - contours created or updated
 - source-of-truth registry created or updated
 - context profiles created or updated
+- context router references checked in bootstrap, gates, operation routing,
+  root entry points, and bridge files
+- adapter drift checks run or recorded as manual/unresolved, including local
+  path leakage, stale checker statements, duplicate profile references,
+  unresolved owner placeholders, and target-local checker status
 - module profile created or updated
 - task-specific maturity profile created or updated
 - bridge capability matrix created or updated

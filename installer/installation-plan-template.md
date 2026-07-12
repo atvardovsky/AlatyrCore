@@ -35,6 +35,7 @@ List what must not be changed.
 - Source-of-truth registry:
 - Context router:
 - Context profiles:
+- Context-router bootstrap references:
 - Adapter owner metadata:
 - CODEOWNERS or equivalent owner map:
 - Module profile:
@@ -61,6 +62,8 @@ List what must not be changed.
 - Migration-note process:
 - Effectiveness measurement process:
 - Target validation commands:
+- Target-local adapter checker status and coverage:
+- Adapter drift/local leakage review:
 - Source commands/scripts not copied:
 - Source test tools/fixtures/CI jobs not copied:
 - Source security policies, diagram tooling, lifecycle notes, and adapter owner
@@ -141,6 +144,7 @@ target wants durable AI infrastructure inventory reports.
 - Bootstrap context:
 - Context router:
 - Task context profiles:
+- Context-router bootstrap references:
 - Required core profile:
 - Adapter owner, backup owner, review cadence, and last review:
 - CODEOWNERS or equivalent owner map:
@@ -167,6 +171,8 @@ target wants durable AI infrastructure inventory reports.
 - Installed-operation request and adapter-recheck rules:
 - Operation help and routing rules:
 - Adapter output contract rules:
+- Adapter drift/local leakage rules:
+- Target-local adapter checker rules:
 - AI infrastructure inventory report rules:
 - Post-install/update assistant chat-message rules:
 - Diagram source format:
@@ -239,5 +245,6 @@ APPROVE ALATYR INSTALLATION: ALATYR-YYYYMMDD-short-name
 
 List drift, overwrite, unsupported-assistant, gate, security, diagram,
 maturity, lifecycle, installed-operation, operation-help, context-profile,
-approval-record, prompt-injection, skill-adaptation, source-access,
-migration-diff, effectiveness-metrics, scaffolding, and validation risks.
+context-router, local-path leakage, target-local checker, approval-record,
+prompt-injection, skill-adaptation, source-access, migration-diff,
+effectiveness-metrics, scaffolding, and validation risks.

@@ -127,3 +127,6 @@
   adapter output contract status, AI infrastructure inventory status, task
   profile, operation id, context volume, command hallucination, and protected
   change metrics.
+- Tightened target adapter routing and recheck templates so installed
+  adapters preserve context-router bootstrap, report adapter drift checks, and
+  record local path leakage plus target-local checker status.

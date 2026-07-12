@@ -46,21 +46,29 @@ Replace placeholders with target facts before accepting installation.
 6. Check target adapter references to framework files, operation help, routing
    flows, AI infrastructure inventory, gates, prompts, skills, bridge files,
    checker rules, chat-message templates, and final-evidence expectations.
-7. Check project blueprint/source-of-truth ownership, registry entries,
+7. Check adapter drift hazards: hard-coded local machine paths in `.ai/*`,
+   root assistant entry points, bridge files, templates, and policies; stale
+   statements about whether local Alatyr or adapter checkers exist; duplicate
+   required-context references inside context profiles or router entries;
+   missing `.ai/assistant/context-router.json` references where bootstrap
+   routing is described; unresolved owner placeholders that are not recorded as
+   known gaps; and target-local adapter checker evidence that no longer matches
+   repository files.
+8. Check project blueprint/source-of-truth ownership, registry entries,
    missing facts, and drift.
-8. Check security, live-service, destructive-operation, dependency, credential,
+9. Check security, live-service, destructive-operation, dependency, credential,
    diagram, generated-artifact, validation, and lifecycle policies.
-9. Check task-specific maturity using `.ai/assistant/maturity-profile.md` when
+10. Check task-specific maturity using `.ai/assistant/maturity-profile.md` when
    it exists.
-10. Check bridge behavior using `.ai/assistant/bridge-capability-matrix.md`.
-11. Identify required migrations, approvals, unresolved facts, and skipped
+11. Check bridge behavior using `.ai/assistant/bridge-capability-matrix.md`.
+12. Identify required migrations, approvals, unresolved facts, and skipped
    checks.
-12. Use `.ai/assistant/templates/migration-note.md` when a framework update
+13. Use `.ai/assistant/templates/migration-note.md` when a framework update
     requires target migration evidence.
-13. Use `.ai/assistant/templates/effectiveness-report.md` only when comparing
+14. Use `.ai/assistant/templates/effectiveness-report.md` only when comparing
     adapter effectiveness across comparable tasks or adapter states.
-14. Run target validation that exists. Do not invent commands.
-15. Report final evidence and residual risk.
+15. Run target validation that exists. Do not invent commands.
+16. Report final evidence and residual risk.
 
 ## Final Evidence
 
@@ -71,6 +79,9 @@ Report:
 - framework version, adapter schema version, and template version
 - files inspected
 - adapter references changed or still current
+- adapter drift checks result, including local path leakage, stale checker
+  statements, duplicate profile references, context-router references, owner
+  placeholders, and target-local checker evidence
 - blueprint/source-of-truth registry status
 - context router and context profile status
 - module profile status

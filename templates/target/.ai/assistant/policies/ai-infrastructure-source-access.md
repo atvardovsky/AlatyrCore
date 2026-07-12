@@ -49,6 +49,10 @@ approval-required, or disallowed for `{PROJECT_NAME}`.
    output format, and final evidence.
 8. Keep assistant-specific wrappers short and pointing to canonical target
    files.
+9. When imported or adapted infrastructure creates, changes, or documents
+   checker rules, record the target-local adapter checker status from target
+   evidence. Do not claim that a checker exists or is missing unless the
+   repository evidence supports it.
 
 ## Evidence
 
@@ -61,6 +65,8 @@ Report:
 - whether the work stayed review-only or became canonical integration
 - approvals used or missing
 - files, permissions, tools, services, packages, or plugins affected
+- target-local adapter checker status when checker rules, flows, or gates are
+  affected
 - validation or manual review run
 - skipped checks and residual risk
 

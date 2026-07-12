@@ -73,8 +73,8 @@ py -3 .\tools\check_bridge_capability_matrix.py
 `check_context_router.py` validates the target
 `.ai/assistant/context-router.json` template in this source repository. It
 checks canonical profile names, bootstrap context, required fields, path
-references, and framework file routing coverage. It is not a portable
-framework requirement for target projects.
+references, duplicate route entries, and framework file routing coverage. It
+is not a portable framework requirement for target projects.
 
 Linux or macOS:
 
@@ -264,9 +264,10 @@ py -3 .\tools\check_operation_help.py
 
 `check_output_contracts.py` validates target adapter output contracts in this
 source repository. It checks installation, framework-update, and adapter
-recheck evidence fields and verifies the installation flow and installation
-note point to the contract template. It is not a portable framework
-requirement for target projects.
+recheck evidence fields, including adapter drift, local path leakage, and
+target-local checker status evidence, and verifies the installation flow and
+installation note point to the contract template. It is not a portable
+framework requirement for target projects.
 
 Linux or macOS:
 

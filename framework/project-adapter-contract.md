@@ -54,6 +54,10 @@ Every project using this framework must define:
   credential/log-redaction rules
 - local validation plan: commands, CI checks, manual reviews, or unresolved
   checks
+- target-local adapter checker status when deterministic checks exist,
+  including what they validate and which adapter surfaces they cover; if no
+  checker exists, the adapter should say so as an unresolved or manual-review
+  gap instead of letting stale claims persist
 - documentation-sync rules for project facts
 - diagram and generated-file policy when diagrams or generated docs exist,
   including source format, visual format, ownership, render/manual-review
@@ -93,6 +97,10 @@ Every project using this framework must define:
 An adapter may provide:
 
 - deterministic checker scripts
+- adapter drift checks for hard-coded local paths, stale checker-existence
+  statements, duplicate context profile references, missing context-router
+  bootstrap references, unresolved owner placeholders, and target-local
+  checker coverage
 - security/dependency/license scanners or manual review checklists
 - project-specific test-generation prompts or skills
 - skill import or normalization notes

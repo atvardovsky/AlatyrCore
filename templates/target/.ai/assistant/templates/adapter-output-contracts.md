@@ -34,6 +34,9 @@ Use after the initial Alatyr Core installation or a scoped adapter expansion.
 - Bridge capability matrix result: `{BRIDGE_CAPABILITY_MATRIX_RESULT}`
 - Root entry points checked: `{ROOT_ENTRY_POINTS_CHECKED}`
 - Supported bridge files checked: `{SUPPORTED_BRIDGE_FILES_CHECKED}`
+- Adapter drift checks result: `{ADAPTER_DRIFT_CHECKS_RESULT}`
+- Local path leakage result: `{LOCAL_PATH_LEAKAGE_RESULT}`
+- Target-local checker status: `{TARGET_LOCAL_CHECKER_STATUS_OR_UNRESOLVED}`
 - AI infrastructure inventory result:
   `{AI_INFRASTRUCTURE_INVENTORY_RESULT_OR_SKIPPED}`
 - Validation run: `{TARGET_VALIDATION_RUN_OR_MANUAL_REVIEW}`
@@ -78,6 +81,9 @@ Core baseline.
 - Task-specific maturity result: `{TASK_SPECIFIC_MATURITY_RESULT}`
 - Operation help and routing result: `{OPERATION_HELP_ROUTING_RESULT}`
 - Bridge capability matrix result: `{BRIDGE_CAPABILITY_MATRIX_RESULT}`
+- Adapter drift checks result: `{ADAPTER_DRIFT_CHECKS_RESULT}`
+- Local path leakage result: `{LOCAL_PATH_LEAKAGE_RESULT}`
+- Target-local checker status: `{TARGET_LOCAL_CHECKER_STATUS_OR_UNRESOLVED}`
 - Validation run: `{TARGET_VALIDATION_RUN_OR_MANUAL_REVIEW}`
 - Validation skipped or unresolved: `{VALIDATION_SKIPPED_OR_UNRESOLVED}`
 - Post-update message result: `{POST_UPDATE_MESSAGE_SENT_OR_SKIPPED}`
@@ -111,6 +117,9 @@ adapter.
 - Bridge capability matrix result: `{BRIDGE_CAPABILITY_MATRIX_RESULT}`
 - Operation help and routing result: `{OPERATION_HELP_ROUTING_RESULT}`
 - Approval-record policy result: `{APPROVAL_RECORD_POLICY_RESULT}`
+- Adapter drift checks result: `{ADAPTER_DRIFT_CHECKS_RESULT}`
+- Local path leakage result: `{LOCAL_PATH_LEAKAGE_RESULT}`
+- Target-local checker status: `{TARGET_LOCAL_CHECKER_STATUS_OR_UNRESOLVED}`
 - AI infrastructure inventory result:
   `{AI_INFRASTRUCTURE_INVENTORY_RESULT_OR_SKIPPED}`
 - Prompt-injection policy result: `{PROMPT_INJECTION_POLICY_RESULT}`

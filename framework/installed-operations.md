@@ -153,6 +153,10 @@ After installation or framework upgrade, an assistant should recheck:
   templates
 - adapter output contracts for installation, framework update, and recheck
   evidence
+- adapter drift hazards: hard-coded local machine paths, stale checker
+  existence statements, duplicate context-profile or router references,
+  missing context-router bootstrap references, unresolved owner placeholders,
+  and target-local checker coverage
 - root assistant entry points and supported bridge files point to the
   installation note, operation help, and routing flow
 - source-of-truth and blueprint ownership
