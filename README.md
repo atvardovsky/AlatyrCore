@@ -110,6 +110,7 @@ Additional source-repository helpers include:
 - `python3 tools/check_rule_ownership.py`
 - `python3 tools/check_source_of_truth_registry.py`
 - `python3 tools/check_versioning.py`
+- `python3 tools/validate_target_adapter.py --target <target-repo>`
 - `python3 tools/report_migration_diff.py --from-rules <old-rule-registry.json>`
 - `python3 tools/report_migration_diff.py --from-rules <old-rule-registry.json> --from-framework-dir <old-framework-dir>`
 - `python3 tools/check_bridge_templates.py`
@@ -137,6 +138,8 @@ Additional source-repository helpers include:
 - required core and optional module profile guidance
 - adapter output contracts for installation, update, and recheck evidence
 - optional safe scaffolding guidance that does not replace installation review
+- optional target adapter validator guidance for installed-adapter structural
+  checks
 - context discovery and source-of-truth decisions
 - context profiles for smaller task-specific reading sets
 - source-of-truth registry guidance and source-template checks for fact
@@ -197,9 +200,10 @@ asked for installation and no protected target files or behaviors are changed.
 Overwrites and protected changes require explicit programmer approval.
 
 The source repository may provide optional helper tools for maintainers, such
-as a dry-run-first scaffolder. These helpers can copy placeholder structure,
-but they do not complete installation, inspect target facts, approve
-overwrites, or validate a target adapter.
+as a dry-run-first scaffolder or an installed-adapter structural validator.
+These helpers can copy placeholder structure or check adapter files for
+machine-detectable drift, but they do not complete installation, inspect
+target business truth, approve overwrites, or replace logical integrity review.
 
 ## After Installation
 
@@ -220,6 +224,17 @@ If the intended operation is unclear, ask for "Alatyr help". A complete target
 adapter should answer with the local operation menu, short descriptions,
 matching flows, required input, and approval or validation notes before making
 changes.
+
+To check an installed adapter structurally from this source repository, a
+maintainer may run:
+
+```sh
+python3 tools/validate_target_adapter.py --target /path/to/target-repo
+```
+
+This helper checks adapter structure, router/bootstrap references, local path
+leakage, stale checker claims, manifest fields, and optional framework
+baseline drift. It does not verify project business facts or approve changes.
 
 For skills, prompts, wrappers, bridge files, rules, MCP/tool configs, gates,
 checkers, or other AI infrastructure, a target adapter may define request

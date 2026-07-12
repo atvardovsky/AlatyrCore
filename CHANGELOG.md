@@ -130,3 +130,5 @@
 - Tightened target adapter routing and recheck templates so installed
   adapters preserve context-router bootstrap, report adapter drift checks, and
   record local path leakage plus target-local checker status.
+- Added an optional target adapter validator helper with Linux, macOS, and
+  Windows entry points for installed-adapter structural drift checks.

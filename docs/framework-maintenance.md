@@ -147,6 +147,10 @@ Before accepting a change, check:
   can also compare target template surface names and content hashes.
 - `python3 tools/summarize_effectiveness_reports.py --input conformance/golden/effectiveness-sample.json`
   passes when effectiveness report tooling or sample contracts change.
+- `python3 tools/validate_target_adapter.py --target <target-repo>` can check
+  an installed target adapter for structural drift when a real target
+  repository is available. It is optional target-adapter validation, not a
+  source-template check and not proof of project business truth.
 - `framework/` contains no target business facts.
 - `framework/` contains no required local commands, scripts, package managers,
   CI jobs, test folders, fixture helpers, security policies, or diagram tools.

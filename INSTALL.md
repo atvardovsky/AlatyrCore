@@ -179,6 +179,27 @@ Scaffolding does not replace target inspection, installation planning,
 approval gates, adapter rewriting, validation, logical integrity review, or
 final evidence. Do not present a scaffolder run as a completed installation.
 
+## Optional Target Adapter Validation
+
+After installation or update, a maintainer may use the source helper
+`tools/validate_target_adapter.py` to check an installed target adapter for
+machine-detectable structural drift:
+
+```sh
+python3 tools/validate_target_adapter.py --target /path/to/target-repo
+python3 tools/validate_target_adapter.py --target /path/to/target-repo --framework-source /path/to/AlatyrCore
+```
+
+Windows users may run the same helper through `py -3` or the provided
+Command Prompt and PowerShell wrappers under `tools/`.
+
+This validator can check router/bootstrap references, unresolved placeholders,
+absolute local path leakage, stale checker claims, manifest fields,
+target-local checker coverage, approval records against a supplied git diff,
+and optional framework baseline drift. It does not inspect target business
+truth, approve protected changes, replace target validation, or replace
+assistant logical integrity review.
+
 ## Rejection Criteria
 
 Reject or stop when:

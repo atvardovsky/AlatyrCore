@@ -121,8 +121,14 @@ structure, and release-process documentation.
 copying placeholder structure. It is not the installation mechanism and does
 not fill target facts.
 
-Windows wrappers under `tools/` delegate to the Python helper. They should stay
-thin and must not duplicate installation logic.
+`tools/validate_target_adapter.py` is an optional installed-adapter structural
+validator. It checks target adapter files for router/bootstrap drift,
+unresolved placeholders, hard-coded local paths, stale checker claims,
+manifest issues, optional approval/diff scope, and optional framework baseline
+drift. It does not prove target project facts or replace assistant review.
+
+Windows wrappers under `tools/` delegate to the Python helpers. They should
+stay thin and must not duplicate installation or validation logic.
 
 `tools/report_migration_diff.py` compares machine-readable rule manifests and
 prints migration evidence. `tools/check_conformance_fixtures.py` validates

@@ -121,6 +121,40 @@ tools\scaffold_target_structure.cmd --target C:\path\to\target-repo --write
 Use `--overwrite-existing` only after explicit approval for the exact target
 path and protected surfaces.
 
+## Target Adapter Validator
+
+`validate_target_adapter.py` validates structural consistency of an installed
+Alatyr adapter in a target repository. It checks router/bootstrap references,
+unresolved placeholders, hard-coded local paths, stale checker claims,
+manifest fields, target-local checker coverage, optional approval scope
+against a supplied git diff, and optional `.ai/framework` drift against an
+AlatyrCore source checkout.
+
+It does not install Alatyr Core, inspect project business truth, approve
+protected changes, run target validation, or replace assistant logical
+integrity review.
+
+Linux or macOS:
+
+```sh
+python3 tools/validate_target_adapter.py --target /path/to/target-repo
+python3 tools/validate_target_adapter.py --target /path/to/target-repo --framework-source /path/to/AlatyrCore
+python3 tools/validate_target_adapter.py --target /path/to/target-repo --diff-ref origin/main
+```
+
+Windows PowerShell:
+
+```powershell
+py -3 .\tools\validate_target_adapter.py --target C:\path\to\target-repo
+.\tools\validate_target_adapter.ps1 --target C:\path\to\target-repo
+```
+
+Windows Command Prompt:
+
+```bat
+tools\validate_target_adapter.cmd --target C:\path\to\target-repo
+```
+
 ## Framework Metadata Check
 
 `check_framework_metadata.py` validates `alatyr_doc` front matter on

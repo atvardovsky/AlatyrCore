@@ -847,6 +847,38 @@ def main() -> int:
         elif "scaffold_target_structure.py" not in read_text(wrapper):
             failures.append(f"{wrapper} must delegate to scaffold_target_structure.py")
 
+    target_validator = ROOT / "tools" / "validate_target_adapter.py"
+    if not target_validator.is_file():
+        failures.append("missing tools/validate_target_adapter.py")
+    else:
+        target_validator_text = read_text("tools/validate_target_adapter.py")
+        for required_validator_text in [
+            "optional helper",
+            "does not install Alatyr Core",
+            "Linux, macOS, and Windows",
+            "--target",
+            "--framework-source",
+            "--diff-ref",
+            "--allow-local-path",
+            "LOCAL_PATH_LEAKAGE",
+            "STALE_CHECKER_MISSING_CLAIM",
+            "FRAMEWORK_FILE_DRIFT",
+        ]:
+            if required_validator_text not in target_validator_text:
+                failures.append(
+                    "tools/validate_target_adapter.py missing "
+                    f"{required_validator_text}"
+                )
+
+    for wrapper in [
+        "tools/validate_target_adapter.cmd",
+        "tools/validate_target_adapter.ps1",
+    ]:
+        if not (ROOT / wrapper).is_file():
+            failures.append(f"missing {wrapper}")
+        elif "validate_target_adapter.py" not in read_text(wrapper):
+            failures.append(f"{wrapper} must delegate to validate_target_adapter.py")
+
     tools_readme = "tools/README.md"
     if not (ROOT / tools_readme).is_file():
         failures.append("missing tools/README.md")
@@ -874,6 +906,7 @@ def main() -> int:
             "check_rule_ownership.py",
             "check_source_of_truth_registry.py",
             "check_versioning.py",
+            "validate_target_adapter.py",
             "report_migration_diff.py",
             "check_conformance_fixtures.py",
             "materialize_conformance_fixtures.py",
@@ -892,6 +925,16 @@ def main() -> int:
                 failures.append(
                     f"tools/README.md missing {required_tools_readme_text}"
                 )
+
+    for relpath in [
+        "README.md",
+        "INSTALL.md",
+        "tools/README.md",
+        "docs/framework-maintenance.md",
+        "docs/repository-layout.md",
+    ]:
+        if "validate_target_adapter.py" not in read_text(relpath):
+            failures.append(f"{relpath} missing validate_target_adapter.py")
 
     framework_metadata_tool = ROOT / "tools" / "check_framework_metadata.py"
     if not framework_metadata_tool.is_file():
