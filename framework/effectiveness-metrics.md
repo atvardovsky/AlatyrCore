@@ -22,6 +22,7 @@ Track:
 
 - context files loaded
 - approximate context volume
+- input/output tokens and monetary cost when host or billing evidence exists
 - context budget exceeded, expansion count, and context receipt reuse
 - clarification count
 - approvals requested
@@ -57,6 +58,10 @@ Consistency relationships reviewed: <count or unknown>
 Companion surfaces checked: <count or unknown>
 Unresolved consistency gaps: <count or unknown>
 Duration seconds: <count or unknown>
+Input tokens: <count or unknown>
+Output tokens: <count or unknown>
+Estimated cost and currency: <number/currency or unknown>
+Cost evidence: <billing export/host estimate/unknown>
 Residual risks: <summary>
 Outcome: <accepted/rework/blocked>
 ```
@@ -74,6 +79,13 @@ the target context-router template. It measures resolved file and whitespace
 word counts, not model tokens or real assistant usage. Compare those static
 costs with captured assistant-run context evidence before making runtime cost
 claims.
+
+For paired runtime pilots, `tools/prepare_effectiveness_benchmark.py` accepts
+explicit no/minimal/full repository snapshots and rejects differences outside
+declared adapter surfaces. Companion check and summary tools require matching
+task/run identities and independently reviewed acceptance criteria. They
+report negative or non-computable deltas directly and do not infer savings
+from missing measurements.
 
 ## Rejection Criteria
 

@@ -15,6 +15,10 @@ Date: `{DATE}`
 
 Context files loaded: `{CONTEXT_FILES_LOADED_OR_UNKNOWN}`
 Approximate context volume: `{CONTEXT_VOLUME_OR_UNKNOWN}`
+Input tokens: `{INPUT_TOKEN_COUNT_OR_UNKNOWN}`
+Output tokens: `{OUTPUT_TOKEN_COUNT_OR_UNKNOWN}`
+Estimated cost and currency: `{COST_AND_CURRENCY_OR_UNKNOWN}`
+Cost evidence: `{BILLING_EXPORT_HOST_ESTIMATE_OR_UNKNOWN}`
 Context expansions: `{CONTEXT_EXPANSION_COUNT_OR_UNKNOWN}`
 Context receipt reused: `{YES_NO_OR_UNKNOWN}`
 Context budget exceeded: `{YES_NO_OR_UNKNOWN}`
@@ -22,6 +26,8 @@ Clarifications: `{CLARIFICATION_COUNT}`
 Approvals requested: `{APPROVAL_COUNT}`
 Validation: `{VALIDATION_RUN_SKIPPED_OR_UNRESOLVED}`
 Hallucinated commands avoided or produced: `{COMMAND_HALLUCINATION_RESULT}`
+Hallucinated command count: `{COUNT_OR_UNKNOWN}`
+Validation error count: `{COUNT_OR_UNKNOWN}`
 Missed companion updates: `{MISSED_COMPANION_UPDATES_OR_UNKNOWN}`
 Rework count: `{REWORK_COUNT_OR_UNKNOWN}`
 Changed facts identified: `{CHANGED_FACT_COUNT_OR_UNKNOWN}`

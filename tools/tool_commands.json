@@ -48,6 +48,24 @@
       "script": "check_conformance_matrix.py",
       "purpose": "check prepared or externally executed conformance matrices",
       "write_scope": "none"
+    },
+    {
+      "name": "prepare-benchmark",
+      "script": "prepare_effectiveness_benchmark.py",
+      "purpose": "prepare paired no/minimal/full effectiveness workspaces",
+      "write_scope": "explicit-evidence-output-only"
+    },
+    {
+      "name": "check-benchmark",
+      "script": "check_effectiveness_benchmark.py",
+      "purpose": "validate paired benchmark isolation and reviewed evidence",
+      "write_scope": "none"
+    },
+    {
+      "name": "summarize-benchmark",
+      "script": "summarize_effectiveness_benchmark.py",
+      "purpose": "summarize reviewed benchmark measurements and deltas",
+      "write_scope": "none"
     }
   ]
 }

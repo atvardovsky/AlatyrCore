@@ -177,6 +177,10 @@ Before accepting a change, check:
   can prepare migration and structural evidence before target upgrade changes.
 - `python3 tools/summarize_effectiveness_reports.py --input conformance/golden/effectiveness-sample.json`
   passes when effectiveness report tooling or sample contracts change.
+- `python3 tools/check_effectiveness_benchmark.py` and
+  `python3 tools/summarize_effectiveness_benchmark.py` pass when paired mode
+  isolation, report provenance, independent review, or relative-delta
+  contracts change.
 - `python3 tools/validate_target_adapter.py --target <target-repo>` can check
   an installed target adapter for structural drift when a real target
   repository is available. Use `--json --output <report.json>` when a target

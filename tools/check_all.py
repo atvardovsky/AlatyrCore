@@ -46,6 +46,8 @@ CHECKS = [
     ["tools/check_conformance_reports.py"],
     ["tools/check_conformance_matrix.py"],
     ["tools/check_conformance_summary.py"],
+    ["tools/check_effectiveness_benchmark.py"],
+    ["tools/summarize_effectiveness_benchmark.py"],
     ["tools/run_conformance_scaffold.py"],
     [
         "tools/report_migration_diff.py",

@@ -150,6 +150,11 @@ effectiveness report data for pilots and conformance work, including task
 profile, operation id, context volume, command hallucination evidence,
 protected changes blocked, rework, and residual risk.
 
+`tools/prepare_effectiveness_benchmark.py` creates paired no/minimal/full
+workspaces from explicit snapshots after checking non-adapter project
+equivalence. The check and summary companions require reviewed evidence before
+presenting comparative deltas.
+
 `tools/materialize_conformance_fixtures.py` creates seed-only fixture
 repositories for actual assistant conformance runs.
 
@@ -179,6 +184,10 @@ snapshots under `conformance/golden/scaffolded-adapters` record deterministic
 source scaffolder output; they are not completed target installations.
 Captured assistant-run report templates and reviewed run outputs live under
 `conformance/runs`.
+
+Paired effectiveness plan and report templates live under
+`conformance/benchmarks`; generated snapshots, run workspaces, and real project
+facts do not.
 
 These files describe target shapes and expected Alatyr behavior. They are not
 real target adapters and must not contain project-specific business facts.

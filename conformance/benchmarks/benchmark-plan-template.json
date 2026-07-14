@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "benchmark_kind": "alatyr-effectiveness-benchmark-input",
+  "benchmark_id": "{BENCHMARK_ID}",
+  "repetitions": 1,
+  "mode_contracts": {
+    "none": {
+      "required_paths": [],
+      "forbidden_paths": [
+        ".ai/alatyr.yaml"
+      ]
+    },
+    "minimal": {
+      "required_paths": [
+        "AGENTS.md",
+        ".ai/alatyr.yaml",
+        ".ai/assistant/context-router.json"
+      ],
+      "forbidden_paths": []
+    },
+    "full": {
+      "required_paths": [
+        "AGENTS.md",
+        ".ai/alatyr.yaml",
+        ".ai/framework/README.md",
+        ".ai/project/source-of-truth-registry.md",
+        ".ai/assistant/context-router.json",
+        ".ai/assistant/gates/checklist.md"
+      ],
+      "forbidden_paths": []
+    }
+  },
+  "adapter_surface_patterns": [
+    ".ai/**",
+    "AGENTS.md",
+    "AI_ASSISTANTS.md",
+    "CODEOWNERS",
+    "CLAUDE.md",
+    "GEMINI.md",
+    ".cursorrules",
+    ".windsurfrules",
+    ".cursor/**",
+    ".agents/**",
+    ".claude/**",
+    ".devin/**",
+    ".gemini/**",
+    ".github/copilot-instructions.md",
+    ".github/instructions/**",
+    ".github/prompts/**",
+    ".github/skills/**",
+    ".windsurf/**"
+  ],
+  "tasks": [
+    {
+      "id": "{TASK_ID}",
+      "name": "{TASK_NAME}",
+      "task_profile": "{TASK_PROFILE}",
+      "request": "{IDENTICAL_TASK_REQUEST_FOR_EVERY_MODE}",
+      "allowed_actions": "{READ_ONLY_DOCS_ONLY_ADAPTER_ONLY_CODE_AND_TESTS_OR_FULL_WITH_APPROVAL}",
+      "acceptance_criteria": [
+        "{REVIEWABLE_ACCEPTANCE_CRITERION}"
+      ],
+      "sources": {
+        "none": "{PLAN_RELATIVE_NONE_SNAPSHOT}",
+        "minimal": "{PLAN_RELATIVE_MINIMAL_SNAPSHOT}",
+        "full": "{PLAN_RELATIVE_FULL_SNAPSHOT}"
+      }
+    }
+  ]
+}

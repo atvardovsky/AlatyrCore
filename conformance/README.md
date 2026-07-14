@@ -159,3 +159,17 @@ python3 tools/report_context_costs.py
 
 This baseline is not model token usage. Actual assistant-run reports remain the
 source for runtime context and logical-integrity evidence.
+
+## Effectiveness Benchmarks
+
+Paired no/minimal/full benchmark contracts live under
+`conformance/benchmarks`. The preparer accepts explicit mode snapshots, checks
+that their project content matches outside declared adapter surfaces, and
+creates isolated workspaces. Completed comparisons require report provenance
+and independent acceptance-criteria review:
+
+```sh
+python3 tools/prepare_effectiveness_benchmark.py --plan benchmark.json --output tmp/benchmark
+python3 tools/check_effectiveness_benchmark.py --benchmark tmp/benchmark/benchmark.json --require-reports --require-reviewed
+python3 tools/summarize_effectiveness_benchmark.py --benchmark tmp/benchmark/benchmark.json
+```

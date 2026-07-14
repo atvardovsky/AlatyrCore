@@ -135,6 +135,9 @@ Additional source-repository helpers include:
 - `python3 tools/alatyr.py check-conformance --matrix tmp/conformance-matrix/matrix.json`
 - `python3 tools/check_conformance_reports.py`
 - `python3 tools/check_conformance_summary.py`
+- `python3 tools/alatyr.py prepare-benchmark --plan <benchmark.json> --output tmp/benchmark`
+- `python3 tools/alatyr.py check-benchmark --benchmark tmp/benchmark/benchmark.json`
+- `python3 tools/alatyr.py summarize-benchmark --benchmark tmp/benchmark/benchmark.json`
 - `python3 tools/summarize_conformance_reports.py --actual-dir conformance/runs/assistant-results --require-all-fixtures`
 - `python3 tools/run_conformance_scaffold.py`
 - `python3 tools/summarize_effectiveness_reports.py --input conformance/golden/effectiveness-sample.json`
@@ -212,6 +215,9 @@ Additional source-repository helpers include:
   assistant ID
 - all-surface conformance matrix preparation with run provenance, expected
   report counts, and completeness checks for externally captured evidence
+- paired no/minimal/full benchmark preparation that checks project-snapshot
+  equivalence, independent review, comparable measurements, and explicit
+  relative deltas
 - installed-adapter operation and recheck guidance
 - operation help and routing guidance for unclear requests
 - bridge-file pattern for modern assistants

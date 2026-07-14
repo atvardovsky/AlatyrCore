@@ -73,7 +73,7 @@
         ".ai/framework/testing-guidance.md"
       ],
       "unresolved_references": [],
-      "words": 25043
+      "words": 25123
     },
     "initial": {
       "declared_files": 6,
@@ -90,7 +90,7 @@
       "unresolved_references": [],
       "words": 3194
     },
-    "initial_word_reduction_percent": 87.2
+    "initial_word_reduction_percent": 87.3
   },
   "profiles": {
     "ai-infrastructure": {

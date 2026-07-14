@@ -23,6 +23,9 @@ EXPECTED_COMMANDS = {
     "context-costs",
     "prepare-conformance",
     "check-conformance",
+    "prepare-benchmark",
+    "check-benchmark",
+    "summarize-benchmark",
 }
 ALLOWED_WRITE_SCOPES = {
     "none",

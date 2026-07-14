@@ -30,6 +30,9 @@
   compact bridge conformance checks.
 - Added cross-platform all-surface conformance matrix preparation, per-run
   provenance, and completeness validation for externally captured reports.
+- Added isolated no/minimal/full effectiveness benchmark preparation with
+  project-drift rejection, independent review gates, and conservative relative
+  cost and quality summaries.
 
 - Initial Alatyr Core standalone framework repository.
 - Added portable framework docs, assistant installation flow, readiness

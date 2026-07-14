@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "report_kind": "effectiveness-benchmark-result",
+  "benchmark_id": "{BENCHMARK_ID}",
+  "task": "{TASK_NAME}",
+  "task_id": "{TASK_ID}",
+  "task_profile": "{TASK_PROFILE}",
+  "adapter_mode": "{NONE_MINIMAL_OR_FULL}",
+  "operation_id": "{RUN_ID}",
+  "repetition": 1,
+  "source_commit": "{ALATYR_CORE_SOURCE_COMMIT}",
+  "target_baseline_hash": "{SHA256}",
+  "run_provenance": {
+    "provider": "{PROVIDER_OR_UNKNOWN}",
+    "product": "{PRODUCT_OR_UNKNOWN}",
+    "model": "{MODEL_OR_UNKNOWN}",
+    "version_or_date": "{VERSION_DATE_OR_UNKNOWN}",
+    "execution_mode": "{INTERACTIVE_AGENT_API_MANUAL_OR_UNKNOWN}",
+    "started_at": "{ISO_8601_OR_UNKNOWN}",
+    "completed_at": "{ISO_8601_OR_UNKNOWN}",
+    "operator": "{OPERATOR_OR_UNKNOWN}",
+    "report_origin": "{ASSISTANT_REPORTED_REVIEWER_TRANSCRIBED_OR_UNKNOWN}"
+  },
+  "context_measurement_kind": "{HOST_OBSERVED_TOKENS_ASSISTANT_REPORTED_WORDS_OR_UNKNOWN}",
+  "input_tokens": "{COUNT_OR_UNKNOWN}",
+  "output_tokens": "{COUNT_OR_UNKNOWN}",
+  "estimated_cost": "{NUMBER_OR_UNKNOWN}",
+  "cost_currency": "{ISO_CURRENCY_OR_UNKNOWN}",
+  "cost_evidence": "{BILLING_EXPORT_HOST_ESTIMATE_OR_UNKNOWN}",
+  "context_files_loaded": "{COUNT_OR_UNKNOWN}",
+  "approximate_context_volume": "{COUNT_OR_UNKNOWN}",
+  "context_expansions": "{COUNT_OR_UNKNOWN}",
+  "context_receipt_reused": "{YES_NO_OR_UNKNOWN}",
+  "context_budget_exceeded": "{YES_NO_OR_UNKNOWN}",
+  "clarifications": 0,
+  "approvals_requested": 0,
+  "validation": "{RUN_SKIPPED_OR_UNRESOLVED_WITH_EVIDENCE}",
+  "hallucinated_commands": "{COUNT_AND_EVIDENCE_OR_UNKNOWN}",
+  "hallucinated_command_count": "{COUNT_OR_UNKNOWN}",
+  "validation_error_count": "{COUNT_OR_UNKNOWN}",
+  "missed_companion_updates": "{COUNT_OR_UNKNOWN}",
+  "rework_count": "{COUNT_OR_UNKNOWN}",
+  "changed_fact_count": "{COUNT_OR_UNKNOWN}",
+  "relationships_reviewed": "{COUNT_OR_UNKNOWN}",
+  "companion_surfaces_checked": "{COUNT_OR_UNKNOWN}",
+  "unresolved_consistency_gaps": "{COUNT_OR_UNKNOWN}",
+  "duration_seconds": "{COUNT_OR_UNKNOWN}",
+  "protected_changes_blocked": 0,
+  "changed_files": [
+    "{TARGET_RELATIVE_CHANGED_FILE_OR_NONE}"
+  ],
+  "residual_risks": "{RESIDUAL_RISKS}",
+  "outcome": "{ACCEPTED_REWORK_OR_BLOCKED}",
+  "acceptance_criteria_results": [
+    {
+      "criterion": "{EXACT_PLAN_CRITERION}",
+      "status": "{PASS_FAIL_OR_UNRESOLVED}",
+      "evidence": "{REVIEW_EVIDENCE}"
+    }
+  ],
+  "review": {
+    "status": "pending",
+    "reviewer": "unknown",
+    "reviewed_at": "unknown",
+    "notes": "Independent review is required before comparative claims."
+  }
+}

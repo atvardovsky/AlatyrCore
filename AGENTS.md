@@ -147,6 +147,7 @@ python3 tools/check_context_costs.py
 python3 tools/check_consistency_map.py
 python3 tools/check_conformance_matrix.py
 python3 tools/check_conformance_summary.py
+python3 tools/check_effectiveness_benchmark.py
 python3 tools/check_cross_platform_tools.py
 python3 tools/check_large_task_orchestration.py
 python3 tools/check_manifest_contract.py
@@ -162,6 +163,7 @@ python3 tools/check_rule_ownership.py
 python3 tools/check_source_of_truth_registry.py
 python3 tools/check_target_adapter_validator.py
 python3 tools/check_versioning.py
+python3 tools/summarize_effectiveness_benchmark.py
 ```
 
 This helper validates the AlatyrCore repository itself. It is not a portable

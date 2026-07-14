@@ -44,6 +44,10 @@ The stable command set is:
 - `prepare-conformance`: explicit conformance workspace output only; no
   assistant execution
 - `check-conformance`: read-only prepared or captured matrix validation
+- `prepare-benchmark`: explicit paired benchmark workspace output only; no
+  assistant execution
+- `check-benchmark`: read-only isolation, report, and review validation
+- `summarize-benchmark`: read-only reviewed measurement comparison
 
 ## Source Validation Runner
 
@@ -741,16 +745,35 @@ framework quality by itself and is not a target validation requirement. The
 sample includes task profile, operation id, context volume, hallucinated
 command evidence, protected changes blocked, rework, and residual risk.
 
+For controlled comparisons, `prepare_effectiveness_benchmark.py`, also
+available as `alatyr.py prepare-benchmark`, copies user-supplied `none`,
+`minimal`, and `full` snapshots into isolated workspaces. It rejects project
+content drift outside declared adapter surfaces and writes
+`prepared-not-executed` run prompts.
+
+`check_effectiveness_benchmark.py` validates prepared isolation and, with
+`--require-reports --require-reviewed`, requires every paired run plus
+independent acceptance-criteria review. `summarize_effectiveness_benchmark.py`
+reports averages and relative deltas only from complete reviewed reports. It
+marks unknown or zero-reference comparisons as non-computable. Token and
+monetary-cost readiness requires comparable evidence across every paired run.
+
 Linux or macOS:
 
 ```sh
 python3 tools/summarize_effectiveness_reports.py --input conformance/golden/effectiveness-sample.json
+python3 tools/alatyr.py prepare-benchmark --plan benchmark.json --output tmp/benchmark
+python3 tools/alatyr.py check-benchmark --benchmark tmp/benchmark/benchmark.json --require-reports --require-reviewed
+python3 tools/alatyr.py summarize-benchmark --benchmark tmp/benchmark/benchmark.json
 ```
 
 Windows PowerShell or Command Prompt:
 
 ```powershell
 py -3 .\tools\summarize_effectiveness_reports.py --input conformance\golden\effectiveness-sample.json
+py -3 .\tools\alatyr.py prepare-benchmark --plan benchmark.json --output tmp\benchmark
+py -3 .\tools\alatyr.py check-benchmark --benchmark tmp\benchmark\benchmark.json --require-reports --require-reviewed
+py -3 .\tools\alatyr.py summarize-benchmark --benchmark tmp\benchmark\benchmark.json
 ```
 
 ## Bridge Templates
