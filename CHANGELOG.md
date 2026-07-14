@@ -2,7 +2,10 @@
 
 ## Unreleased
 
-- No changes yet.
+- Fixed Windows path separators in framework index checks and protected-file
+  scaffold evidence.
+- Fixed macOS scaffold snapshots when temporary paths traverse the `/var` to
+  `/private/var` filesystem alias.
 
 ## 0.1.0-alpha.1 - 2026-07-14
 

@@ -15,6 +15,8 @@ ROOT = Path(__file__).resolve().parents[1]
 TOOLS = ROOT / "tools"
 MANIFEST = TOOLS / "tool_commands.json"
 NATIVE_WORKFLOW = ROOT / ".github" / "workflows" / "cross-platform-source-checks.yml"
+FRAMEWORK_CHECKER = TOOLS / "check_framework_consistency.py"
+SCAFFOLD_CONFORMANCE = TOOLS / "run_conformance_scaffold.py"
 EXPECTED_COMMANDS = {
     "check-source",
     "scaffold",
@@ -100,6 +102,18 @@ def main() -> int:
     for required in ["alatyr.py", "@args", "py -3", "python"]:
         if required not in ps_text:
             failures.append(f"alatyr.ps1 missing {required}")
+
+    framework_checker = FRAMEWORK_CHECKER.read_text(encoding="utf-8")
+    if "path.relative_to(ROOT).as_posix()" not in framework_checker:
+        failures.append("framework checker does not normalize contract paths")
+
+    scaffold_conformance = SCAFFOLD_CONFORMANCE.read_text(encoding="utf-8")
+    for required in [
+        'Path(tempfile.mkdtemp(prefix="alatyr-conformance-")).resolve()',
+        "set(skipped_existing_paths(repo, write_blocked))",
+    ]:
+        if required not in scaffold_conformance:
+            failures.append(f"scaffold conformance missing portability guard: {required}")
 
     if not NATIVE_WORKFLOW.is_file():
         failures.append("native cross-platform source-check workflow is missing")

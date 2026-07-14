@@ -28,7 +28,7 @@ def line_count(relpath: str) -> int:
 
 def framework_files() -> list[str]:
     return sorted(
-        str(path.relative_to(ROOT))
+        path.relative_to(ROOT).as_posix()
         for path in (ROOT / "framework").glob("*.md")
         if path.is_file()
     )
@@ -2038,7 +2038,7 @@ def main() -> int:
     for path in (ROOT / "templates" / "target").rglob("*"):
         if not path.is_file():
             continue
-        relpath = str(path.relative_to(ROOT))
+        relpath = path.relative_to(ROOT).as_posix()
         if any(part.startswith(".") for part in path.relative_to(ROOT).parts):
             if git_check_ignore_no_index(relpath):
                 failures.append(f"{relpath} is hidden by .gitignore")

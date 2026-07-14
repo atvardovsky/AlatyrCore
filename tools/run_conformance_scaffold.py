@@ -209,9 +209,9 @@ def run_fixture(
         for seed in fixture["seed_files"]
         if seed["path"] in {"AGENTS.md", ".github/copilot-instructions.md"}
     }
-    blocked_text = "\n".join(write_blocked)
+    actual_existing = set(skipped_existing_paths(repo, write_blocked))
     for relpath in expected_existing:
-        if relpath not in blocked_text:
+        if relpath not in actual_existing:
             failures.append(f"expected existing protected surface to be skipped: {relpath}")
 
     snapshot = build_snapshot(fixture, repo, write_actions, write_blocked)
@@ -252,7 +252,7 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    work_root = Path(tempfile.mkdtemp(prefix="alatyr-conformance-"))
+    work_root = Path(tempfile.mkdtemp(prefix="alatyr-conformance-")).resolve()
     failures: list[str] = []
 
     try:
