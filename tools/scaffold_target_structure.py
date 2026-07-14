@@ -12,18 +12,72 @@ Linux, macOS, and Windows with Python 3.
 from __future__ import annotations
 
 import argparse
+import json
 import shutil
 import sys
 from pathlib import Path
+from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE_ROOT = ROOT / "templates" / "target"
 FRAMEWORK_ROOT = ROOT / "framework"
+PROFILE_MANIFEST = ROOT / "tools" / "scaffold_profiles.json"
 
 
-def iter_template_files() -> list[Path]:
-    return sorted(path for path in TEMPLATE_ROOT.rglob("*") if path.is_file())
+def load_profile_manifest() -> dict[str, Any]:
+    data = json.loads(PROFILE_MANIFEST.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise ValueError("scaffold profile manifest must be a JSON object")
+    return data
+
+
+def profile_names() -> list[str]:
+    profiles = load_profile_manifest().get("profiles")
+    if not isinstance(profiles, dict):
+        raise ValueError("scaffold profile manifest must define profiles")
+    return list(profiles)
+
+
+def resolve_profile_paths(profile: str) -> set[Path]:
+    manifest = load_profile_manifest()
+    profiles = manifest.get("profiles")
+    if not isinstance(profiles, dict) or profile not in profiles:
+        raise ValueError(f"unknown scaffold profile: {profile}")
+
+    resolving: set[str] = set()
+
+    def resolve(name: str) -> set[Path]:
+        if name in resolving:
+            raise ValueError(f"cyclic scaffold profile inheritance: {name}")
+        entry = profiles.get(name)
+        if not isinstance(entry, dict):
+            raise ValueError(f"invalid scaffold profile: {name}")
+        resolving.add(name)
+        paths: set[Path] = set()
+        parent = entry.get("extends")
+        if parent is not None:
+            if not isinstance(parent, str) or parent not in profiles:
+                raise ValueError(f"invalid parent for scaffold profile: {name}")
+            paths.update(resolve(parent))
+        items = entry.get("template_files", [])
+        if not isinstance(items, list) or not all(isinstance(item, str) for item in items):
+            raise ValueError(f"invalid template_files for scaffold profile: {name}")
+        paths.update(Path(item) for item in items)
+        if entry.get("include_remaining_template_files") is True:
+            paths.update(
+                path.relative_to(TEMPLATE_ROOT)
+                for path in TEMPLATE_ROOT.rglob("*")
+                if path.is_file()
+            )
+        resolving.remove(name)
+        return paths
+
+    return resolve(profile)
+
+
+def iter_template_files(profile: str = "full") -> list[Path]:
+    return sorted(TEMPLATE_ROOT / relpath for relpath in resolve_profile_paths(profile))
 
 
 def iter_framework_files() -> list[Path]:
@@ -42,6 +96,7 @@ def copy_file(src: Path, dst: Path, *, write: bool) -> None:
 
 def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
     target = args.target.resolve()
+    profile = getattr(args, "profile", "full")
     actions: list[str] = []
     blocked: list[str] = []
 
@@ -52,7 +107,7 @@ def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
         blocked.append(f"target is not a directory: {target}")
         return actions, blocked
 
-    for src in iter_template_files():
+    for src in iter_template_files(profile):
         rel = src.relative_to(TEMPLATE_ROOT)
         dst = target / rel
         if dst.exists() and not args.overwrite_existing:
@@ -101,6 +156,16 @@ def main() -> int:
         help="Write files. Without this flag the helper prints the plan only.",
     )
     parser.add_argument(
+        "--profile",
+        choices=profile_names(),
+        default="full",
+        help=(
+            "Target adapter support profile. core installs required adapter "
+            "surfaces, standard adds common lifecycle/product operations, and "
+            "full preserves the historical all-template behavior."
+        ),
+    )
+    parser.add_argument(
         "--overwrite-existing",
         action="store_true",
         help=(
@@ -114,6 +179,7 @@ def main() -> int:
 
     mode = "WRITE" if args.write else "DRY-RUN"
     print(f"Alatyr scaffold mode: {mode}")
+    print(f"Alatyr scaffold profile: {args.profile}")
     print("This helper does not complete installation or fill target facts.")
     print("Supported platforms: Linux, macOS, Windows.")
 

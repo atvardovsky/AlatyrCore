@@ -37,6 +37,7 @@ CHECKS = [
     ["tools/check_output_contracts.py"],
     ["tools/check_release_migration_template.py"],
     ["tools/check_rule_ownership.py"],
+    ["tools/check_scaffold_profiles.py"],
     ["tools/check_source_of_truth_registry.py"],
     ["tools/check_target_adapter_validator.py"],
     ["tools/check_versioning.py"],

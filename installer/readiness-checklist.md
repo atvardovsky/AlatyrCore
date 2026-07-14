@@ -37,6 +37,7 @@ changes.
   drift checks:
 - Existing assistant instruction files:
 - Scaffolding helper used or planned:
+- Scaffold profile (`core` / `standard` / `full` / not used):
 - Existing skills, prompts, third-party assistant infrastructure, provenance
   notes, and wrappers:
 - Existing AI infrastructure inventory reports:

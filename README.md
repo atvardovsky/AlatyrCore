@@ -158,6 +158,9 @@ Additional source-repository helpers include:
 - required core and optional module profile guidance
 - adapter output contracts for installation, update, and recheck evidence
 - optional safe scaffolding guidance that does not replace installation review
+- deterministic `core`, `standard`, and `full` scaffold support profiles that
+  reduce unused target-template files without changing the portable framework
+  baseline
 - optional target adapter validator guidance for installed-adapter structural
   checks
 - context discovery and source-of-truth decisions

@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Added deterministic `core`, `standard`, and `full` target scaffold profiles,
+  preserving the full portable framework baseline while reducing unused target
+  adapter support files.
+- Added scaffold-profile contract validation and installation evidence fields
+  for the selected profile.
+
 - Increased `TEMPLATE_VERSION` to 2 for compact migration-first upgrade routing,
   routed-context migration evidence, and updated target operation contracts.
 

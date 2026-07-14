@@ -214,7 +214,11 @@ py -3 .\tools\check_large_task_orchestration.py
 
 `scaffold_target_structure.py` copies placeholder target templates and
 framework files, including `framework/rule-registry.json`, into an existing
-target directory. It is dry-run by default.
+target directory. It is dry-run by default. The `full` profile preserves the
+historical all-template behavior. Use `core` for required adapter support
+surfaces or `standard` for core plus common product and lifecycle operations.
+Every profile copies the complete portable framework baseline; profile
+selection filters target adapter templates only.
 
 It does not inspect target facts, complete installation, approve overwrites, or
 validate an installed adapter.
@@ -223,25 +227,28 @@ Linux or macOS:
 
 ```sh
 python3 tools/scaffold_target_structure.py --target /path/to/target-repo
-python3 tools/scaffold_target_structure.py --target /path/to/target-repo --write
+python3 tools/scaffold_target_structure.py --target /path/to/target-repo --profile core --write
 ```
 
 Windows PowerShell:
 
 ```powershell
 py -3 .\tools\scaffold_target_structure.py --target C:\path\to\target-repo
-.\tools\scaffold_target_structure.ps1 --target C:\path\to\target-repo
+.\tools\scaffold_target_structure.ps1 --target C:\path\to\target-repo --profile standard
 ```
 
 Windows Command Prompt:
 
 ```bat
 tools\scaffold_target_structure.cmd --target C:\path\to\target-repo
-tools\scaffold_target_structure.cmd --target C:\path\to\target-repo --write
+tools\scaffold_target_structure.cmd --target C:\path\to\target-repo --profile full --write
 ```
 
 Use `--overwrite-existing` only after explicit approval for the exact target
 path and protected surfaces.
+
+`check_scaffold_profiles.py` verifies profile inheritance, required core
+surfaces, full-template coverage, and bridge isolation.
 
 ## Target Adapter Validator
 

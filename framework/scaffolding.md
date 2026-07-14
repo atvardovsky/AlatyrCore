@@ -51,11 +51,26 @@ scaffolder is Python standard-library code and may provide thin launch wrappers
 for Windows shells. Wrapper files must delegate to the canonical helper and
 must not duplicate installation logic.
 
+A source scaffolder may expose bounded support profiles when their contents are
+deterministic and machine-checked:
+
+- `core`: required adapter, routing, ownership, integrity, evidence, and
+  manifest-referenced support surfaces
+- `standard`: core plus common blueprint, recheck, help, and lifecycle
+  operation surfaces
+- `full`: all target templates, optional modules, and assistant bridges
+
+The selected scaffold profile limits placeholder files only. It does not
+enable modules, choose supported assistants, resolve target facts, or prove
+installation maturity. Keep the complete portable framework copy available so
+the target can enable modules later without changing the framework baseline.
+
 ## Final Evidence
 
 If scaffolding was used, installation evidence should report:
 
 - helper name and mode
+- selected scaffold profile
 - target path
 - files created
 - files skipped because they already existed

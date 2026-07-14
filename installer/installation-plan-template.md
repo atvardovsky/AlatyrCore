@@ -12,6 +12,7 @@ Installation id: `ALATYR-YYYYMMDD-short-name`
 - Existing CODEOWNERS or equivalent owner map:
 - Existing adapter owner, backup owner, review cadence, and last review:
 - Scaffolding helper used or planned:
+- Scaffold profile (`core` / `standard` / `full` / not used):
 - Supported assistants:
 
 ## Goal

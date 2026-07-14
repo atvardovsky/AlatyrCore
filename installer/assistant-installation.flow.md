@@ -110,7 +110,10 @@ Classify every proposed target file:
 
 1. Inspect the target repository before creating files.
 2. Optionally use source-repository scaffolding only to preview or create
-   placeholder structure. Do not treat scaffolding as installation.
+   placeholder structure. Select the smallest `core`, `standard`, or `full`
+   support profile justified by the installation plan, and record the
+   selection. Do not treat scaffolding or profile selection as installation or
+   module enablement.
 3. Fill `installer/readiness-checklist.md` for the target.
 4. Prepare an installation plan from
    `installer/installation-plan-template.md`.

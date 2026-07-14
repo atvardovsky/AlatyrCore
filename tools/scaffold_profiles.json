@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "profiles": {
+    "core": {
+      "description": "Required adapter, routing, ownership, integrity, and manifest-referenced support surfaces.",
+      "template_files": [
+        ".ai/README.md",
+        ".ai/alatyr.yaml",
+        ".ai/assistant/ai-infrastructure-router.json",
+        ".ai/assistant/approvals/approval-template.md",
+        ".ai/assistant/bridge-capability-matrix.md",
+        ".ai/assistant/checklists/change-impact.md",
+        ".ai/assistant/context-profiles.md",
+        ".ai/assistant/context-router.json",
+        ".ai/assistant/contour.md",
+        ".ai/assistant/flows/documentation-sync.flow.md",
+        ".ai/assistant/flows/logical-integrity-review.flow.md",
+        ".ai/assistant/gates/checklist.md",
+        ".ai/assistant/help.md",
+        ".ai/assistant/maturity-profile.md",
+        ".ai/assistant/module-profile.md",
+        ".ai/assistant/policies/ai-infrastructure-source-access.md",
+        ".ai/assistant/policies/prompt-injection.md",
+        ".ai/assistant/templates/adapter-output-contracts.md",
+        ".ai/assistant/templates/ai-infrastructure-adaptation-record.md",
+        ".ai/assistant/templates/ai-infrastructure-inventory.md",
+        ".ai/assistant/templates/installation-note.md",
+        ".ai/assistant/templates/operation-request.md",
+        ".ai/project/consistency-map.json",
+        ".ai/project/contour.md",
+        ".ai/project/source-of-truth-registry.md",
+        "AGENTS.md",
+        "CODEOWNERS"
+      ]
+    },
+    "standard": {
+      "description": "Core plus common blueprint, recheck, help, and lifecycle operation surfaces.",
+      "extends": "core",
+      "template_files": [
+        ".ai/assistant/flows/adapter-recheck.flow.md",
+        ".ai/assistant/flows/blueprint-driven-change.flow.md",
+        ".ai/assistant/flows/operation-routing.flow.md",
+        ".ai/assistant/flows/project-blueprint-creation.flow.md",
+        ".ai/assistant/help-reference.md",
+        ".ai/assistant/templates/migration-note.md",
+        ".ai/assistant/templates/post-install-message.md",
+        ".ai/assistant/templates/post-update-message.md",
+        "AI_ASSISTANTS.md"
+      ]
+    },
+    "full": {
+      "description": "Every target template, including all optional modules and assistant bridges.",
+      "extends": "standard",
+      "template_files": [],
+      "include_remaining_template_files": true
+    }
+  }
+}
