@@ -55,6 +55,10 @@ The stable command set is:
 maintenance. It validates this repository only; it is not a portable framework
 requirement for target projects.
 
+The workflow at `.github/workflows/cross-platform-source-checks.yml` runs this
+suite natively on current Ubuntu, macOS, and Windows GitHub-hosted runners. It
+does not run paid assistant conformance or effectiveness benchmarks.
+
 Linux or macOS:
 
 ```sh

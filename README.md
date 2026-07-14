@@ -212,6 +212,8 @@ Additional source-repository helpers include:
   evidence, kept outside stable source checks because it incurs model usage
 - one Python-based optional tool entry point with PowerShell and Command Prompt
   launchers for Linux, macOS, and Windows
+- native GitHub Actions source checks on Linux, macOS, and Windows without paid
+  assistant execution
 - migration-first target upgrade assessment that writes evidence without
   applying adapter changes
 - deterministic context file/word baselines plus captured-run context and

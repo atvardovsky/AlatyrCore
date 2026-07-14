@@ -14,6 +14,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 TOOLS = ROOT / "tools"
 MANIFEST = TOOLS / "tool_commands.json"
+NATIVE_WORKFLOW = ROOT / ".github" / "workflows" / "cross-platform-source-checks.yml"
 EXPECTED_COMMANDS = {
     "check-source",
     "scaffold",
@@ -99,6 +100,23 @@ def main() -> int:
     for required in ["alatyr.py", "@args", "py -3", "python"]:
         if required not in ps_text:
             failures.append(f"alatyr.ps1 missing {required}")
+
+    if not NATIVE_WORKFLOW.is_file():
+        failures.append("native cross-platform source-check workflow is missing")
+    else:
+        workflow = NATIVE_WORKFLOW.read_text(encoding="utf-8")
+        for required in [
+            "ubuntu-latest",
+            "macos-latest",
+            "windows-latest",
+            "actions/checkout@v7",
+            "actions/setup-python@v6",
+            "python tools/check_all.py",
+            "workflow_dispatch:",
+            "contents: read",
+        ]:
+            if required not in workflow:
+                failures.append(f"native cross-platform workflow missing {required}")
 
     with tempfile.TemporaryDirectory() as directory:
         base = Path(directory)

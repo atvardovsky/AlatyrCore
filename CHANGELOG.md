@@ -19,6 +19,8 @@
 - Captured and independently reviewed a no/minimal/full docs-local benchmark;
   all modes passed, minimal was 24.7% faster with 0.4% more total tokens, and
   full used 67.0% more tokens, so broad cost claims remain unsupported.
+- Added native Ubuntu, macOS, and Windows GitHub Actions coverage for the full
+  source check suite, including cross-platform tool and scaffold smoke tests.
 
 - Increased `TEMPLATE_VERSION` to 2 for compact migration-first upgrade routing,
   routed-context migration evidence, and updated target operation contracts.

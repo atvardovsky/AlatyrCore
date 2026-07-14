@@ -96,7 +96,8 @@ Before accepting a change, check:
   routing, or map placeholders change.
 - `python3 tools/check_cross_platform_tools.py` passes when the unified tool
   manifest, platform launchers, write scopes, or migration-first upgrade
-  assessment changes.
+  assessment changes. The source workflow must also run `check_all.py` on
+  native Linux, macOS, and Windows runners.
 - `python3 tools/check_large_task_orchestration.py` passes when large-task
   activation, task-scale routing, workstream, packet, checkpoint, resume, or
   convergence contracts change.
