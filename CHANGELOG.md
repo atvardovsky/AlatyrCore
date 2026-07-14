@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- No changes yet.
+
+## 0.1.0-alpha.1 - 2026-07-14
+
+- Released the first tagged AlatyrCore source baseline with framework version
+  `0.1.0-alpha.1`, adapter schema version `1`, and template version `2`.
+- Added migration evidence from source baseline commit `afbc9e0` and documented
+  required review actions for installed target adapters.
 - Added deterministic `core`, `standard`, and `full` target scaffold profiles,
   preserving the full portable framework baseline while reducing unused target
   adapter support files.

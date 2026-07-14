@@ -19,6 +19,7 @@ ADAPTER_SCHEMA_VERSION = ROOT / "ADAPTER_SCHEMA_VERSION"
 TEMPLATE_VERSION = ROOT / "TEMPLATE_VERSION"
 CHANGELOG = ROOT / "CHANGELOG.md"
 RELEASE_PROCESS = ROOT / "docs" / "release-process.md"
+RELEASES = ROOT / "docs" / "releases"
 
 SEMVER_RE = re.compile(
     r"^(0|[1-9]\d*)\."
@@ -80,6 +81,38 @@ def validate_changelog(changelog: str) -> List[str]:
     return failures
 
 
+def validate_current_release(version: str, changelog: str) -> List[str]:
+    failures: List[str] = []
+    heading = re.compile(
+        rf"^## v?{re.escape(version)}(?: - \d{{4}}-\d{{2}}-\d{{2}})?$",
+        re.MULTILINE,
+    )
+    if not heading.search(changelog):
+        failures.append(f"CHANGELOG.md missing release section for VERSION={version}")
+
+    report = RELEASES / f"{version}-migration.md"
+    if not report.is_file():
+        failures.append(
+            f"missing release migration evidence: {report.relative_to(ROOT)}"
+        )
+        return failures
+
+    text = report.read_text(encoding="utf-8")
+    if re.search(r"\{[A-Z][A-Z0-9_]*\}", text):
+        failures.append(f"{report.relative_to(ROOT)} contains unresolved placeholders")
+    for required in [
+        "# Alatyr Release Migration Report",
+        f"To framework version: `{version}`",
+        "## Required Target Actions",
+        "## Validation Run",
+        "## Residual Risks",
+        "recheck-after-framework-update",
+    ]:
+        if required not in text:
+            failures.append(f"{report.relative_to(ROOT)} missing {required}")
+    return failures
+
+
 def validate_release_process(text: str) -> List[str]:
     failures: List[str] = []
     required_text = [
@@ -126,6 +159,7 @@ def main() -> int:
         except AssertionError as exc:
             failures.append(str(exc))
         failures.extend(validate_changelog(changelog))
+        failures.extend(validate_current_release(version, changelog))
         failures.extend(validate_release_process(release_process))
 
     if failures:

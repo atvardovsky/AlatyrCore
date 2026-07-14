@@ -64,6 +64,12 @@ not update target repositories. It should include adapter contract impact,
 affected rule categories, affected task profiles, affected canonical sources,
 and migration action hints.
 
+Store the reviewed report for a tagged version at
+`docs/releases/<VERSION>-migration.md`. The report must name the compared
+source baseline, all three version values, required target actions, validation,
+and residual risks. Generated output is a starting point; replace temporary
+paths and unresolved version labels before accepting it as release evidence.
+
 ## Pre-Release Checklist
 
 Before tagging a source release:
@@ -72,6 +78,7 @@ Before tagging a source release:
 - update `ADAPTER_SCHEMA_VERSION` when installed adapter schema changes
 - update `TEMPLATE_VERSION` when target template contracts change
 - update `CHANGELOG.md`
+- add `docs/releases/<VERSION>-migration.md`
 - update `framework/rule-registry.md` and `framework/rule-registry.json` when
   rule IDs, rule summaries, owners, dependencies, or enforcement levels change
 - update `framework/rule-ownership.md` when category owners change
