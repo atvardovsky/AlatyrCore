@@ -44,6 +44,7 @@ CHECKS = [
     ["tools/render_bridge_templates.py"],
     ["tools/check_conformance_fixtures.py"],
     ["tools/check_conformance_reports.py"],
+    ["tools/check_conformance_matrix.py"],
     ["tools/check_conformance_summary.py"],
     ["tools/run_conformance_scaffold.py"],
     [

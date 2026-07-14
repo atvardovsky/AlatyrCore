@@ -145,6 +145,7 @@ python3 tools/check_bridge_capability_matrix.py
 python3 tools/check_context_router.py
 python3 tools/check_context_costs.py
 python3 tools/check_consistency_map.py
+python3 tools/check_conformance_matrix.py
 python3 tools/check_conformance_summary.py
 python3 tools/check_cross_platform_tools.py
 python3 tools/check_large_task_orchestration.py

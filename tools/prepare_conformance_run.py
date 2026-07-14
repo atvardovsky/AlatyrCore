@@ -29,7 +29,7 @@ SURFACES = ROOT / "conformance" / "runs" / "assistant-surfaces.json"
 
 def default_source_commit() -> str:
     result = subprocess.run(
-        ["git", "rev-parse", "--short", "HEAD"],
+        ["git", "rev-parse", "HEAD"],
         cwd=ROOT,
         check=False,
         stdout=subprocess.PIPE,
@@ -162,6 +162,8 @@ Write valid JSON to `{report_path}` with:
 - `run_id`: `{run_id}`
 - `assistant_surface`: `{assistant_surface}`
 - `source_commit`: `{source_commit}`
+- `run_provenance`: provider/product/model/version, execution mode, timestamps,
+  operator, and report origin; use explicit `unknown` values when unavailable
 - `conformance_scope`: include `not target validation`
 - `claims_installation_complete`: `false`
 - `validation_status.target_validation_claimed`: `false`
@@ -233,6 +235,8 @@ def prepare_run(args: argparse.Namespace) -> list[str]:
     )
     source_commit = args.source_commit or default_source_commit()
     run_id = args.run_id or f"manual-{safe_name(assistant_surface)}-{source_commit}"
+    selected_fixture_dirs = fixture_dirs(args.fixture)
+    prepared_fixtures: list[str] = []
 
     write_run_readme(
         output,
@@ -245,7 +249,7 @@ def prepare_run(args: argparse.Namespace) -> list[str]:
         encoding="utf-8",
     )
 
-    for fixture_dir in fixture_dirs(args.fixture):
+    for fixture_dir in selected_fixture_dirs:
         try:
             fixture = load_json(fixture_dir / "fixture.json")
             expected = load_json(fixture_dir / "expected.json")
@@ -275,8 +279,27 @@ def prepare_run(args: argparse.Namespace) -> list[str]:
                 f"OK: prepared {fixture_name} with {len(seed_files)} seed files "
                 f"and prompt {prompt_path}"
             )
+            prepared_fixtures.append(fixture_name)
         except (OSError, ValueError, json.JSONDecodeError) as exc:
             failures.append(str(exc))
+
+    if not failures:
+        run_manifest = {
+            "schema_version": 1,
+            "run_kind": "assistant-conformance-run-plan",
+            "status": "prepared-not-executed",
+            "run_id": run_id,
+            "assistant_surface": assistant_surface,
+            "source_commit": source_commit,
+            "fixtures": prepared_fixtures,
+            "expected_report_count": len(prepared_fixtures),
+            "reports_directory": "reports",
+            "execution_claimed": False,
+        }
+        (output / "run.json").write_text(
+            json.dumps(run_manifest, indent=2) + "\n",
+            encoding="utf-8",
+        )
 
     return failures
 

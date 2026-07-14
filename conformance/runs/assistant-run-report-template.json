@@ -5,6 +5,17 @@
   "run_id": "{ASSISTANT_RUN_ID}",
   "assistant_surface": "{ASSISTANT_SURFACE}",
   "source_commit": "{ALATYR_CORE_SOURCE_COMMIT}",
+  "run_provenance": {
+    "provider": "{ASSISTANT_PROVIDER_OR_UNKNOWN}",
+    "product": "{ASSISTANT_PRODUCT_OR_UNKNOWN}",
+    "model": "{MODEL_OR_UNKNOWN}",
+    "version_or_date": "{VERSION_DATE_OR_UNKNOWN}",
+    "execution_mode": "{INTERACTIVE_AGENT_API_MANUAL_OR_UNKNOWN}",
+    "started_at": "{ISO_8601_OR_UNKNOWN}",
+    "completed_at": "{ISO_8601_OR_UNKNOWN}",
+    "operator": "{OPERATOR_OR_UNKNOWN}",
+    "report_origin": "{ASSISTANT_REPORTED_REVIEWER_TRANSCRIBED_OR_UNKNOWN}"
+  },
   "conformance_scope": "Actual assistant-run fixture report; not target validation and not a real target adapter.",
   "claims_installation_complete": false,
   "operation_type": "{INSTALLATION_OR_RECHECK_OPERATION}",

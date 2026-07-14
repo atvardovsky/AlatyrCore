@@ -105,6 +105,30 @@ def validate_bridge_behavior_evidence(report: dict[str, Any], path: Path) -> Non
             )
 
 
+def validate_run_provenance(report: dict[str, Any], path: Path) -> None:
+    value = require_non_empty(report, "run_provenance", path)
+    if not isinstance(value, dict):
+        raise AssertionError(f"{path} run_provenance must be object")
+    for field in [
+        "provider",
+        "product",
+        "model",
+        "version_or_date",
+        "execution_mode",
+        "started_at",
+        "completed_at",
+        "operator",
+        "report_origin",
+    ]:
+        item = require_non_empty(value, field, path)
+        if not isinstance(item, str):
+            raise AssertionError(f"{path} run_provenance.{field} must be string")
+        if item.startswith("{") and item.endswith("}"):
+            raise AssertionError(
+                f"{path} run_provenance.{field} must replace its template value"
+            )
+
+
 def validate_context_cost_evidence(
     report: dict[str, Any], path: Path, *, actual_run: bool
 ) -> None:
@@ -194,6 +218,7 @@ def validate_report(
     if actual_run:
         for required_actual_key in ["run_id", "assistant_surface", "source_commit"]:
             require_non_empty(report, required_actual_key, report_path)
+        validate_run_provenance(report, report_path)
         validate_bridge_behavior_evidence(report, report_path)
 
     shared_required = require_string_list(shared, "required_evidence", SHARED)
@@ -308,6 +333,23 @@ def validate_run_template(shared: dict[str, Any]) -> list[str]:
     for key in required:
         if key not in template:
             failures.append(f"{RUN_TEMPLATE} missing shared evidence key {key}")
+    provenance = template.get("run_provenance")
+    if not isinstance(provenance, dict):
+        failures.append(f"{RUN_TEMPLATE} run_provenance must be object")
+    else:
+        for field in [
+            "provider",
+            "product",
+            "model",
+            "version_or_date",
+            "execution_mode",
+            "started_at",
+            "completed_at",
+            "operator",
+            "report_origin",
+        ]:
+            if field not in provenance:
+                failures.append(f"{RUN_TEMPLATE} run_provenance missing {field}")
     context = template.get("context_cost_evidence")
     if not isinstance(context, dict):
         failures.append(f"{RUN_TEMPLATE} context_cost_evidence must be object")
@@ -347,6 +389,7 @@ def validate_actual_reports(
     *,
     require_reports: bool,
     require_all_fixtures: bool,
+    expected_fixtures: set[str] | None = None,
 ) -> list[str]:
     failures: list[str] = []
     if not actual_dir.is_dir():
@@ -359,6 +402,10 @@ def validate_actual_reports(
         return []
 
     fixture_dirs = {path.name: path for path in FIXTURES.iterdir() if path.is_dir()}
+    expected = expected_fixtures or set(fixture_dirs)
+    unknown_expected = sorted(expected - set(fixture_dirs))
+    if unknown_expected:
+        return [f"unknown expected fixture(s): {unknown_expected}"]
     seen_fixtures: set[str] = set()
     for report_path in report_paths:
         try:
@@ -367,6 +414,14 @@ def validate_actual_reports(
             if not isinstance(fixture_name, str) or fixture_name not in fixture_dirs:
                 raise AssertionError(
                     f"{report_path} fixture must match a known fixture"
+                )
+            if fixture_name not in expected:
+                raise AssertionError(
+                    f"{report_path} fixture is outside the expected run scope"
+                )
+            if fixture_name in seen_fixtures:
+                raise AssertionError(
+                    f"{report_path} duplicates fixture report {fixture_name}"
                 )
             validate_report(
                 fixture_dirs[fixture_name],
@@ -380,7 +435,7 @@ def validate_actual_reports(
             failures.append(str(exc))
 
     if require_all_fixtures:
-        missing = sorted(set(fixture_dirs) - seen_fixtures)
+        missing = sorted(expected - seen_fixtures)
         if missing:
             failures.append(f"actual reports missing fixture(s): {missing}")
     return failures

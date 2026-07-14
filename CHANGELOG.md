@@ -28,6 +28,8 @@
 - Added deterministic bootstrap/profile context-cost baselines, expanded
   effectiveness and assistant-run logical-integrity evidence, and all-surface
   compact bridge conformance checks.
+- Added cross-platform all-surface conformance matrix preparation, per-run
+  provenance, and completeness validation for externally captured reports.
 
 - Initial Alatyr Core standalone framework repository.
 - Added portable framework docs, assistant installation flow, readiness

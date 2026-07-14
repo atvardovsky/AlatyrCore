@@ -21,6 +21,8 @@ EXPECTED_COMMANDS = {
     "migration-report",
     "assess-upgrade",
     "context-costs",
+    "prepare-conformance",
+    "check-conformance",
 }
 ALLOWED_WRITE_SCOPES = {
     "none",

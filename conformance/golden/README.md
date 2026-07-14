@@ -11,6 +11,11 @@ The report contracts and scaffold snapshots are source-repository conformance
 artifacts. They are not assistant transcripts, completed installations, or
 real target validation results.
 
+Actual assistant-run reports additionally require replaced run provenance for
+provider, product, model/version, execution mode, timestamps, operator, and
+report origin. `unknown` is acceptable when evidence is unavailable; untouched
+template placeholders are not.
+
 ## Shared Golden Requirements
 
 Every fixture result should include:

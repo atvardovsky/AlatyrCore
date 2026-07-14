@@ -25,6 +25,17 @@ def main() -> int:
                     "run_id": "synthetic-source-contract",
                     "assistant_surface": "codex",
                     "source_commit": "synthetic",
+                    "run_provenance": {
+                        "provider": "synthetic",
+                        "product": "source-contract-check",
+                        "model": "unknown",
+                        "version_or_date": "unknown",
+                        "execution_mode": "manual",
+                        "started_at": "unknown",
+                        "completed_at": "unknown",
+                        "operator": "source-check",
+                        "report_origin": "synthetic-source-contract",
+                    },
                     "conformance_scope": (
                         "Synthetic source contract exercise; not target validation."
                     ),

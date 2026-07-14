@@ -6,6 +6,9 @@ Each report should be named for the fixture, for example
 `backend-api-minimal.json`, and should use
 `conformance/runs/assistant-run-report-template.json` as its shape.
 
+Replace every `run_provenance` placeholder or use an explicit `unknown` value;
+do not infer provider, model, version, timing, or operator evidence.
+
 Actual reports should record which bridge or root entry file was used, whether
 auto-load behavior was observed, whether Alatyr help and the context router
 were found, and any assistant-surface limitations.

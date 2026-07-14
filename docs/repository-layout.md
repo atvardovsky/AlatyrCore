@@ -157,6 +157,12 @@ repositories for actual assistant conformance runs.
 targets, assistant prompts, and a reports directory for actual assistant-run
 conformance capture.
 
+`tools/prepare_conformance_matrix.py` composes those workspaces across selected
+assistant surfaces and fixtures while preserving `prepared-not-executed`
+status. `tools/check_conformance_matrix.py` checks planned coverage and can
+require externally captured reports without claiming that source preparation
+ran an assistant.
+
 `tools/summarize_conformance_reports.py` summarizes reviewed assistant-run
 reports by assistant surface, fixture coverage, residual risks, and unresolved
 validation, including adapter evidence status for operation help, output

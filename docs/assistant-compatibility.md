@@ -109,6 +109,12 @@ surface in the conformance list has compact-bootstrap, help, and operation
 routing bridges and that a fixture run can be prepared for that surface. This
 is deterministic source conformance, not proof of vendor auto-load behavior.
 
+Maintainers can prepare an explicit cross-surface execution plan with
+`python3 tools/prepare_conformance_matrix.py --output <directory>`. The matrix
+records preparation only. `python3 tools/check_conformance_matrix.py --matrix
+<directory>/matrix.json --require-reports` proves report coverage and
+provenance only after each external assistant run has supplied evidence.
+
 Maintainers can run `python3 tools/render_bridge_templates.py` to check that
 tracked bridge templates match `tools/bridge_template_manifest.json`, or add
 `--write` to intentionally refresh source templates.

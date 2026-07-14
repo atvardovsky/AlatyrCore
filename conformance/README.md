@@ -44,6 +44,22 @@ report directory can be prepared with:
 python3 tools/prepare_conformance_run.py --output tmp/conformance-run --assistant-surface codex
 ```
 
+Prepare one matrix covering every supported assistant surface and fixture:
+
+```sh
+python3 tools/prepare_conformance_matrix.py --output tmp/conformance-matrix
+python3 tools/check_conformance_matrix.py --matrix tmp/conformance-matrix/matrix.json
+```
+
+The matrix and per-surface run manifests remain `prepared-not-executed` after
+preparation. After external assistants produce reports, require every planned
+surface/fixture pair with:
+
+```sh
+python3 tools/check_conformance_matrix.py --matrix tmp/conformance-matrix/matrix.json --require-reports
+python3 tools/summarize_conformance_reports.py --matrix tmp/conformance-matrix/matrix.json
+```
+
 Supported assistant surface IDs for conformance runs live in
 `conformance/runs/assistant-surfaces.json`.
 
@@ -124,6 +140,8 @@ For each fixture, compare:
   behaviors, and forbidden claims
 - captured assistant-run reports when a fixture conformance run has been
   reviewed and recorded
+- matrix and per-run provenance matching the assistant surface, source commit,
+  fixture scope, and expected report count
 - loaded context, approximate volume, budget expansion, and context-receipt
   evidence from captured runs
 - changed fact IDs, selected and skipped consistency relationships, companion

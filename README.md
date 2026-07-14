@@ -131,6 +131,8 @@ Additional source-repository helpers include:
 - `python3 tools/check_conformance_fixtures.py`
 - `python3 tools/materialize_conformance_fixtures.py --output tmp/conformance-targets`
 - `python3 tools/prepare_conformance_run.py --output tmp/conformance-run --assistant-surface codex`
+- `python3 tools/alatyr.py prepare-conformance --output tmp/conformance-matrix`
+- `python3 tools/alatyr.py check-conformance --matrix tmp/conformance-matrix/matrix.json`
 - `python3 tools/check_conformance_reports.py`
 - `python3 tools/check_conformance_summary.py`
 - `python3 tools/summarize_conformance_reports.py --actual-dir conformance/runs/assistant-results --require-all-fixtures`
@@ -208,6 +210,8 @@ Additional source-repository helpers include:
   logical-integrity evidence contracts
 - all-surface bridge and conformance-prompt checks for every supported
   assistant ID
+- all-surface conformance matrix preparation with run provenance, expected
+  report counts, and completeness checks for externally captured evidence
 - installed-adapter operation and recheck guidance
 - operation help and routing guidance for unclear requests
 - bridge-file pattern for modern assistants

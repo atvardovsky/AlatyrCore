@@ -20,6 +20,7 @@ from check_conformance_reports import (
     load_json,
     validate_actual_reports,
 )
+from check_conformance_matrix import safe_relative_path, validate_matrix
 
 
 def fixture_names() -> list[str]:
@@ -202,9 +203,16 @@ def main() -> int:
     parser.add_argument(
         "--actual-dir",
         action="append",
-        required=True,
+        default=[],
         type=Path,
         help="Directory containing assistant-run JSON reports. May be repeated.",
+    )
+    parser.add_argument(
+        "--matrix",
+        action="append",
+        default=[],
+        type=Path,
+        help="Prepared matrix.json containing captured reports. May be repeated.",
     )
     parser.add_argument(
         "--require-all-fixtures",
@@ -215,6 +223,22 @@ def main() -> int:
 
     failures: list[str] = []
     try:
+        if not args.actual_dir and not args.matrix:
+            failures.append("provide --actual-dir or --matrix")
+        actual_dirs = list(args.actual_dir)
+        for matrix_path in args.matrix:
+            failures.extend(validate_matrix(matrix_path, require_reports=True))
+            matrix = load_json(matrix_path)
+            base = matrix_path.resolve().parent
+            for run in matrix.get("runs", []):
+                if isinstance(run, dict):
+                    actual_dirs.append(
+                        safe_relative_path(
+                            base,
+                            run.get("reports_directory"),
+                            "reports_directory",
+                        )
+                    )
         shared = load_json(SHARED)
         for actual_dir in args.actual_dir:
             failures.extend(
@@ -226,9 +250,9 @@ def main() -> int:
                 )
             )
         if not failures:
-            reports = load_reports(args.actual_dir)
+            reports = load_reports(actual_dirs)
             print(summarize_reports(reports), end="")
-    except (OSError, AssertionError) as exc:
+    except (OSError, ValueError, AssertionError) as exc:
         failures.append(str(exc))
 
     if failures:

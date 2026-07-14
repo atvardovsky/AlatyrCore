@@ -41,6 +41,9 @@ The stable command set is:
 - `migration-report`: optional explicit report output only
 - `assess-upgrade`: explicit assessment output only; no adapter changes
 - `context-costs`: optional static context-cost report output only
+- `prepare-conformance`: explicit conformance workspace output only; no
+  assistant execution
+- `check-conformance`: read-only prepared or captured matrix validation
 
 ## Source Validation Runner
 
@@ -652,6 +655,18 @@ It validates the surface against `conformance/runs/assistant-surfaces.json`
 unless `--allow-custom-surface` is provided. It does not run the assistant or
 claim installation success.
 
+`prepare_conformance_matrix.py`, also available as `alatyr.py
+prepare-conformance`, creates one run workspace for every selected assistant
+surface and fixture. It records expected report counts, source commit, run IDs,
+and `prepared-not-executed` status in matrix and run manifests. It never runs
+an assistant.
+
+`check_conformance_matrix.py`, also available as `alatyr.py
+check-conformance`, validates those manifests and prepared prompt/target
+coverage. Add `--require-reports` only after external assistants have produced
+reports; that mode requires every planned surface/fixture pair and verifies
+run ID, assistant surface, source commit, and report provenance.
+
 `check_conformance_reports.py` validates golden assistant-result report
 contracts for each fixture. It checks expected behaviors and required evidence
 fields, but it does not run an assistant or validate a real target adapter.
@@ -681,12 +696,16 @@ Linux or macOS:
 python3 tools/check_conformance_fixtures.py
 python3 tools/materialize_conformance_fixtures.py --output tmp/conformance-targets
 python3 tools/prepare_conformance_run.py --output tmp/conformance-run --assistant-surface codex
+python3 tools/alatyr.py prepare-conformance --output tmp/conformance-matrix
+python3 tools/alatyr.py check-conformance --matrix tmp/conformance-matrix/matrix.json
+python3 tools/alatyr.py check-conformance --matrix tmp/conformance-matrix/matrix.json --require-reports
 python3 tools/check_conformance_reports.py
 python3 tools/check_conformance_summary.py
 python3 tools/check_conformance_reports.py --actual-dir conformance/runs/assistant-results
 python3 tools/check_conformance_reports.py --actual-dir conformance/runs/assistant-results --require-actual-reports
 python3 tools/check_conformance_reports.py --actual-dir conformance/runs/assistant-results --require-actual-reports --require-all-fixtures
 python3 tools/summarize_conformance_reports.py --actual-dir conformance/runs/assistant-results --require-all-fixtures
+python3 tools/summarize_conformance_reports.py --matrix tmp/conformance-matrix/matrix.json
 python3 tools/run_conformance_scaffold.py
 python3 tools/run_conformance_scaffold.py --write-golden-snapshots
 ```
@@ -697,12 +716,16 @@ Windows PowerShell or Command Prompt:
 py -3 .\tools\check_conformance_fixtures.py
 py -3 .\tools\materialize_conformance_fixtures.py --output tmp\conformance-targets
 py -3 .\tools\prepare_conformance_run.py --output tmp\conformance-run --assistant-surface codex
+py -3 .\tools\alatyr.py prepare-conformance --output tmp\conformance-matrix
+py -3 .\tools\alatyr.py check-conformance --matrix tmp\conformance-matrix\matrix.json
+py -3 .\tools\alatyr.py check-conformance --matrix tmp\conformance-matrix\matrix.json --require-reports
 py -3 .\tools\check_conformance_reports.py
 py -3 .\tools\check_conformance_summary.py
 py -3 .\tools\check_conformance_reports.py --actual-dir conformance\runs\assistant-results
 py -3 .\tools\check_conformance_reports.py --actual-dir conformance\runs\assistant-results --require-actual-reports
 py -3 .\tools\check_conformance_reports.py --actual-dir conformance\runs\assistant-results --require-actual-reports --require-all-fixtures
 py -3 .\tools\summarize_conformance_reports.py --actual-dir conformance\runs\assistant-results --require-all-fixtures
+py -3 .\tools\summarize_conformance_reports.py --matrix tmp\conformance-matrix\matrix.json
 py -3 .\tools\run_conformance_scaffold.py
 py -3 .\tools\run_conformance_scaffold.py --write-golden-snapshots
 ```

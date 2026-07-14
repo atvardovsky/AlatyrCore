@@ -48,6 +48,20 @@ To prepare a full run workspace with targets, prompts, and report directory:
 python3 tools/prepare_conformance_run.py --output tmp/conformance-run --assistant-surface codex
 ```
 
+To prepare every supported assistant surface in one matrix:
+
+```sh
+python3 tools/prepare_conformance_matrix.py --output tmp/conformance-matrix
+```
+
+Preparation writes `matrix.json` plus one `run.json` per surface. Both retain
+the `prepared-not-executed` status; only externally captured reports are run
+evidence. Validate a completed matrix with:
+
+```sh
+python3 tools/check_conformance_matrix.py --matrix tmp/conformance-matrix/matrix.json --require-reports
+```
+
 Give each prompt under `tmp/conformance-run/prompts` to the selected assistant.
 The prompt tells the assistant where to inspect the fixture target and where to
 write the JSON report.

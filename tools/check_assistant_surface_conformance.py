@@ -135,6 +135,7 @@ def main() -> int:
                 f"Assistant surface: `{surface_id}`",
                 "assistant-run-report-template.json",
                 "not target validation",
+                "`run_provenance`",
                 "`context_cost_evidence`",
                 "`logical_integrity_evidence`",
             ]:

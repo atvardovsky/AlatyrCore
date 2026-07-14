@@ -146,6 +146,8 @@ Before accepting a change, check:
   an actual assistant-run conformance pass.
 - `python3 tools/check_conformance_reports.py` passes when fixture expected
   evidence contracts or golden assistant-result reports change.
+- `python3 tools/check_conformance_matrix.py` passes when matrix/run manifests,
+  all-surface preparation, report provenance, or matrix completeness changes.
 - `python3 tools/check_conformance_summary.py` passes when captured-run context
   cost, logical-integrity evidence, or summary output changes.
 - `python3 tools/check_conformance_reports.py --actual-dir conformance/runs/assistant-results`
