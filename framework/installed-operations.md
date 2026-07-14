@@ -118,6 +118,8 @@ For installed operations:
 8. Use blueprint-driven change when accepted project facts may change.
 9. Use skill adaptation when prompts, skills, wrappers, or third-party
    assistant infrastructure change.
+   Select the target AI infrastructure route and item IDs before loading item
+   content, permissions, gates, validation, or import policy.
 10. Use prompt-injection policy for imported, external, remote, pasted, package,
    plugin, or unknown AI infrastructure.
 11. Use AI infrastructure inventory before adding, importing, replacing, or

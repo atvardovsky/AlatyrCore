@@ -60,6 +60,11 @@ Replace this section with the actual target project map.
   messages
 - AI infrastructure inventory, source access, adaptation, and compatibility
   review
+- AI infrastructure router entries for selecting target skills, prompts,
+  gates, checkers, tools/MCP configs, bridges, wrappers, permissions,
+  validation, and output contracts
+- durable AI infrastructure adaptation records for imported or materially
+  changed items
 
 Target commands and manual checks belong here or in linked target docs. They
 are not framework core.

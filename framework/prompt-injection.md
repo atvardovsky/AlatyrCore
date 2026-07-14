@@ -59,6 +59,8 @@ Stage 2 is canonical integration:
 - requires target approval when the source is third-party or protected
 - rewrites content to target-owned facts, paths, validation, output format, and
   evidence expectations
+- creates or updates the target AI infrastructure item route and adaptation
+  record when the adapter uses them
 - records provenance and residual risk
 - updates target flows, gates, bridges, checkers, and operation help only when
   they are affected

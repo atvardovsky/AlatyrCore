@@ -34,7 +34,7 @@ Rule IDs: `ALATYR-CONTEXT-001`
 Derived surfaces: README source context, installation source context, target
 context profiles, target context router, task-scale overlays, operation packet
 context receipts, consistency relationship routing, session bootstrap
-instructions.
+instructions, AI infrastructure capability routing.
 
 Category: `SOURCE`
 Owner: `.ai/framework/source-of-truth-registry.md`
@@ -58,7 +58,7 @@ Category: `SAFETY`
 Owner: `.ai/framework/security-safety-guidance.md`
 Rule IDs: `ALATYR-SAFETY-001`, `ALATYR-SAFETY-002`
 Derived surfaces: prompt-injection guidance, skill adaptation, source-access
-policy, security-sensitive context profile.
+policy, adaptation records, security-sensitive context profile.
 
 Category: `INTEGRITY`
 Owner: `.ai/framework/logical-integrity.md`
@@ -76,7 +76,7 @@ Category: `ADAPTER`
 Owner: `.ai/framework/project-adapter-contract.md`
 Rule IDs: `ALATYR-ADAPTER-001`
 Derived surfaces: installation plan, readiness checklist, manifest template,
-adapter recheck flow.
+adapter recheck flow, AI infrastructure router and item contracts.
 
 Category: `MODULE`
 Owner: `.ai/framework/module-profile.md`
@@ -88,7 +88,7 @@ Category: `BRIDGE`
 Owner: `.ai/framework/bridge-capability-matrix.md`
 Rule IDs: `ALATYR-BRIDGE-001`
 Derived surfaces: assistant bridge templates, bridge renderer, bridge
-capability target template.
+capability target template, cross-assistant AI item routing.
 
 Category: `LIFECYCLE`
 Owner: `.ai/framework/lifecycle.md`

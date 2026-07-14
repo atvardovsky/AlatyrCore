@@ -38,6 +38,8 @@ REQUIRED_TEMPLATE_TEXT = [
     "## Item Record",
     "## Summary",
     "Item id:",
+    "Router route:",
+    "Router item status:",
     "Item type:",
     "Path or reference:",
     "Owner:",
@@ -52,6 +54,7 @@ REQUIRED_TEMPLATE_TEXT = [
     "Overlap or conflict:",
     "Validation or manual review:",
     "Approval status:",
+    "Required gates and output contract:",
     "Recommended action:",
     "Residual risk:",
     "Recommended next operation:",
@@ -64,6 +67,8 @@ PLACEHOLDER_FIELDS = [
     "- Target assistant surfaces:",
     "- Surfaces inspected:",
     "- Item id:",
+    "- Router route:",
+    "- Router item status:",
     "- Path or reference:",
     "- Source/provenance:",
     "- Source hash or commit:",
@@ -73,12 +78,14 @@ PLACEHOLDER_FIELDS = [
     "- Prompt-injection risk:",
     "- Validation or manual review:",
     "- Approval status:",
+    "- Required gates and output contract:",
     "- Recommended action:",
     "- Residual risk:",
 ]
 
 REQUIRED_FLOW_TEXT = [
     ".ai/assistant/templates/ai-infrastructure-inventory.md",
+    ".ai/assistant/ai-infrastructure-router.json",
     "source hash, commit, version, license",
     "prompt-injection risk notes",
     "Do not import or normalize external infrastructure during inventory-only",
@@ -133,4 +140,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

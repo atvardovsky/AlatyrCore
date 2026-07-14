@@ -193,17 +193,14 @@ flows, templates, or other AI infrastructure.
 
 Required context:
 
-- `.ai/framework/project-adapter-contract.md`
-- `.ai/framework/portability.md`
-- `.ai/framework/skill-adaptation.md`
-- `.ai/framework/security-safety-guidance.md`
-- `.ai/framework/prompt-injection.md`
-- `.ai/framework/approval-records.md`
+- `.ai/framework/ai-infrastructure-routing.md`
+- `.ai/assistant/ai-infrastructure-router.json`
 - `.ai/assistant/flows/ai-infrastructure-inventory.flow.md`
-- `.ai/assistant/flows/skill-adaptation.flow.md`
-- `.ai/assistant/policies/ai-infrastructure-source-access.md`
-- `.ai/assistant/policies/prompt-injection.md`
 - `.ai/assistant/gates/checklist.md`
+
+Select one AI infrastructure route and item ID before loading additional
+skill, prompt, gate, checker, tool/MCP, bridge, source-access,
+prompt-injection, approval, permission, validation, or output-contract context.
 
 Approval gates: explicit approval before importing third-party infrastructure
 into canonical target files or changing tool permissions.
@@ -242,10 +239,15 @@ Required context:
 - `.ai/framework/installed-operations.md`
 - `.ai/framework/operation-help.md`
 - `.ai/framework/approval-records.md`
+- `.ai/framework/ai-infrastructure-routing.md`
+- `.ai/framework/skill-adaptation.md`
+- `.ai/framework/prompt-injection.md`
+- `.ai/assistant/ai-infrastructure-router.json`
 - `.ai/assistant/flows/adapter-recheck.flow.md`
 - `.ai/assistant/flows/large-task-orchestration.flow.md`
 - `.ai/assistant/flows/operation-routing.flow.md`
 - `.ai/assistant/templates/large-task-operation-packet.md`
+- `.ai/assistant/templates/ai-infrastructure-adaptation-record.md`
 - `.ai/assistant/templates/installation-note.md`
 - `.ai/assistant/templates/post-install-message.md`
 - `.ai/assistant/templates/post-update-message.md`

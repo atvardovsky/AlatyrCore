@@ -19,6 +19,8 @@ Replace placeholders with target facts before accepting installation.
 - prompts, skills, bridge files, and assistant-specific wrappers
 - AI infrastructure inventory, source access, provenance, adaptation,
   output-format, prompt-injection, safety, and wrapper rules
+- AI infrastructure route/item contracts and adaptation records under
+  `.ai/assistant/ai-infrastructure-router.json` and target-owned record paths
 - target validation commands or manual checks
 - blueprint-driven change or equivalent target product-change workflow
 - installed-operation request, blueprint-creation, adapter-recheck, and

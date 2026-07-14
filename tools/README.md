@@ -65,6 +65,24 @@ Windows PowerShell or Command Prompt:
 py -3 .\tools\check_ai_infrastructure_inventory.py
 ```
 
+## AI Infrastructure Router Check
+
+`check_ai_infrastructure_router.py` validates the target capability router,
+lazy route-specific context, item contracts, permissions, gates, validation,
+output contracts, adaptation-record fields, and manifest paths.
+
+Linux or macOS:
+
+```sh
+python3 tools/check_ai_infrastructure_router.py
+```
+
+Windows PowerShell or Command Prompt:
+
+```powershell
+py -3 .\tools\check_ai_infrastructure_router.py
+```
+
 ## Bridge Capability Matrix Check
 
 `check_bridge_capability_matrix.py` validates the target

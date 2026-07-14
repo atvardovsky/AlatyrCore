@@ -27,6 +27,7 @@ Routes operation help: `{GENERIC_ROUTES_OPERATION_HELP}`
 Routes `alatyr-ai-inventory`: `{GENERIC_ROUTES_AI_INVENTORY}`
 Routes `alatyr-adaptation`: `{GENERIC_ROUTES_ADAPTATION}`
 Routes `alatyr-add-ai`: `{GENERIC_ROUTES_ADD_AI}`
+Routes AI infrastructure items: `{GENERIC_ROUTES_AI_INFRASTRUCTURE_ITEMS}`
 Known limitations: `{GENERIC_KNOWN_LIMITATIONS_OR_NONE}`
 Conformance check: `{GENERIC_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
 
@@ -46,6 +47,7 @@ Routes operation help: `{AGENTS_ROUTES_OPERATION_HELP}`
 Routes `alatyr-ai-inventory`: `{AGENTS_ROUTES_AI_INVENTORY}`
 Routes `alatyr-adaptation`: `{AGENTS_ROUTES_ADAPTATION}`
 Routes `alatyr-add-ai`: `{AGENTS_ROUTES_ADD_AI}`
+Routes AI infrastructure items: `{AGENTS_ROUTES_AI_INFRASTRUCTURE_ITEMS}`
 Known limitations: `{AGENTS_KNOWN_LIMITATIONS_OR_NONE}`
 Conformance check: `{AGENTS_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
 
@@ -66,6 +68,7 @@ Routes operation help: `{CODEX_ROUTES_OPERATION_HELP}`
 Routes `alatyr-ai-inventory`: `{CODEX_ROUTES_AI_INVENTORY}`
 Routes `alatyr-adaptation`: `{CODEX_ROUTES_ADAPTATION}`
 Routes `alatyr-add-ai`: `{CODEX_ROUTES_ADD_AI}`
+Routes AI infrastructure items: `{CODEX_ROUTES_AI_INFRASTRUCTURE_ITEMS}`
 Known limitations: `{CODEX_KNOWN_LIMITATIONS_OR_NONE}`
 Conformance check: `{CODEX_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
 
@@ -85,6 +88,7 @@ Routes operation help: `{CLAUDE_ROUTES_OPERATION_HELP}`
 Routes `alatyr-ai-inventory`: `{CLAUDE_ROUTES_AI_INVENTORY}`
 Routes `alatyr-adaptation`: `{CLAUDE_ROUTES_ADAPTATION}`
 Routes `alatyr-add-ai`: `{CLAUDE_ROUTES_ADD_AI}`
+Routes AI infrastructure items: `{CLAUDE_ROUTES_AI_INFRASTRUCTURE_ITEMS}`
 Known limitations: `{CLAUDE_KNOWN_LIMITATIONS_OR_NONE}`
 Conformance check: `{CLAUDE_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
 
@@ -104,6 +108,7 @@ Routes operation help: `{GEMINI_ROUTES_OPERATION_HELP}`
 Routes `alatyr-ai-inventory`: `{GEMINI_ROUTES_AI_INVENTORY}`
 Routes `alatyr-adaptation`: `{GEMINI_ROUTES_ADAPTATION}`
 Routes `alatyr-add-ai`: `{GEMINI_ROUTES_ADD_AI}`
+Routes AI infrastructure items: `{GEMINI_ROUTES_AI_INFRASTRUCTURE_ITEMS}`
 Known limitations: `{GEMINI_KNOWN_LIMITATIONS_OR_NONE}`
 Conformance check: `{GEMINI_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
 
@@ -124,6 +129,7 @@ Routes operation help: `{GITHUB_COPILOT_ROUTES_OPERATION_HELP}`
 Routes `alatyr-ai-inventory`: `{GITHUB_COPILOT_ROUTES_AI_INVENTORY}`
 Routes `alatyr-adaptation`: `{GITHUB_COPILOT_ROUTES_ADAPTATION}`
 Routes `alatyr-add-ai`: `{GITHUB_COPILOT_ROUTES_ADD_AI}`
+Routes AI infrastructure items: `{GITHUB_COPILOT_ROUTES_AI_INFRASTRUCTURE_ITEMS}`
 Known limitations: `{GITHUB_COPILOT_KNOWN_LIMITATIONS_OR_NONE}`
 Conformance check: `{GITHUB_COPILOT_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
 
@@ -144,6 +150,7 @@ Routes operation help: `{CURSOR_ROUTES_OPERATION_HELP}`
 Routes `alatyr-ai-inventory`: `{CURSOR_ROUTES_AI_INVENTORY}`
 Routes `alatyr-adaptation`: `{CURSOR_ROUTES_ADAPTATION}`
 Routes `alatyr-add-ai`: `{CURSOR_ROUTES_ADD_AI}`
+Routes AI infrastructure items: `{CURSOR_ROUTES_AI_INFRASTRUCTURE_ITEMS}`
 Known limitations: `{CURSOR_KNOWN_LIMITATIONS_OR_NONE}`
 Conformance check: `{CURSOR_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
 
@@ -163,6 +170,7 @@ Routes operation help: `{DEVIN_CASCADE_ROUTES_OPERATION_HELP}`
 Routes `alatyr-ai-inventory`: `{DEVIN_CASCADE_ROUTES_AI_INVENTORY}`
 Routes `alatyr-adaptation`: `{DEVIN_CASCADE_ROUTES_ADAPTATION}`
 Routes `alatyr-add-ai`: `{DEVIN_CASCADE_ROUTES_ADD_AI}`
+Routes AI infrastructure items: `{DEVIN_CASCADE_ROUTES_AI_INFRASTRUCTURE_ITEMS}`
 Known limitations: `{DEVIN_CASCADE_KNOWN_LIMITATIONS_OR_NONE}`
 Conformance check: `{DEVIN_CASCADE_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
 
@@ -183,6 +191,7 @@ Routes operation help: `{WINDSURF_ROUTES_OPERATION_HELP}`
 Routes `alatyr-ai-inventory`: `{WINDSURF_ROUTES_AI_INVENTORY}`
 Routes `alatyr-adaptation`: `{WINDSURF_ROUTES_ADAPTATION}`
 Routes `alatyr-add-ai`: `{WINDSURF_ROUTES_ADD_AI}`
+Routes AI infrastructure items: `{WINDSURF_ROUTES_AI_INFRASTRUCTURE_ITEMS}`
 Known limitations: `{WINDSURF_KNOWN_LIMITATIONS_OR_NONE}`
 Conformance check: `{WINDSURF_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
 

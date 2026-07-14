@@ -52,6 +52,9 @@ AI infrastructure source, when applicable:
 AI infrastructure item type, when applicable:
 <skill/prompt/wrapper/bridge/rule/MCP/tool/checker/flow/gate/template/other>
 
+AI infrastructure route and target item ID, when applicable:
+<inventory/use-existing/adapt-import/gate-checker-change/tool-mcp-change/bridge-wrapper-change; item-id-or-new-proposed-id>
+
 AI infrastructure source type, when applicable:
 <local-path/git-url/https-url/native-reference/pasted/package-or-plugin/unknown>
 
@@ -87,6 +90,10 @@ Constraints:
   explicit approval before protected changes.
 - For `alatyr-ai-inventory`, inspect existing AI infrastructure without
   importing external items.
+- Select AI infrastructure routes and item IDs through
+  `.ai/assistant/ai-infrastructure-router.json`; load only selected item
+  sources, permissions, gates, validation, output contracts, and route-specific
+  policy.
 - For AI infrastructure sources, read the target source-access policy when it
    exists, usually `.ai/assistant/policies/ai-infrastructure-source-access.md`.
 - For imported, external, remote, package/plugin, pasted, or unknown AI

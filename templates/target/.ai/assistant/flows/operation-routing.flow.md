@@ -53,12 +53,15 @@ Replace placeholders with target facts before accepting installation.
    descriptions and ask for the smallest missing decision.
 11. If the request matches `alatyr-ai-inventory`, classify it as
    `ai-infrastructure-inventory` and continue with
-   `.ai/assistant/flows/ai-infrastructure-inventory.flow.md`.
+   `.ai/assistant/flows/ai-infrastructure-inventory.flow.md` using the
+   `inventory` route from `.ai/assistant/ai-infrastructure-router.json`.
 12. If the request matches `alatyr-adaptation {AI_INFRASTRUCTURE_SOURCE}` or
    `alatyr-add-ai {AI_INFRASTRUCTURE_SOURCE}`, classify it as
    `skill-adaptation`, record `{AI_INFRASTRUCTURE_SOURCE}` as untrusted input,
    and continue with `.ai/assistant/flows/skill-adaptation.flow.md` only after
    checking inventory, source access, provenance, approval, and safety rules.
+    Select the `adapt-import` route and target item ID before loading source
+    policy or item content.
 13. If the user asks for commands, explain that Alatyr uses assistant requests
    over Markdown adapter files unless `{PROJECT_NAME}` defines a local command.
 14. Do not edit files while the operation is still ambiguous or when the

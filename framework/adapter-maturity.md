@@ -73,6 +73,8 @@ The adapter is mature when it also defines:
 - post-install operation, blueprint repair, and framework-update recheck notes
 - maintained help menu and post-install/update chat-message templates
 - AI infrastructure inventory and add/adapt/remove recommendations
+- AI infrastructure item routing, permission/gate/output contracts, and
+  adaptation records when multiple items exist
 - skill/wrapper compatibility notes for supported assistants
 - improvement advice path for reducing future friction
 
@@ -153,6 +155,8 @@ Ask:
 - Can an assistant show useful Alatyr help when the user's requested operation
   is unclear?
 - Are existing AI infrastructure items inventoried before new items are added?
+- Can an assistant select one AI infrastructure item without loading unrelated
+  skills, prompts, gates, or tools?
 - Are imported or custom AI infrastructure items adapted from target evidence
   with provenance and safety review?
 - Is there a way to report missing or unresolved adapter facts?

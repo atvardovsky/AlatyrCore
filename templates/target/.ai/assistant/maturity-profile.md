@@ -139,7 +139,9 @@ data changes are possible.
 
 AI infrastructure integration is blocked unless inventory, source access,
 prompt-injection policy, provenance, permissions, and approval rules are
-defined.
+defined. When multiple items exist, stable item IDs, canonical sources,
+activation triggers, gates, validation, output contracts, and adaptation
+records must also be discoverable through the AI infrastructure router.
 
 Framework upgrade work is blocked unless `.ai/alatyr.yaml`, installation note,
 context profiles, module profile, bridge files, operation help, and

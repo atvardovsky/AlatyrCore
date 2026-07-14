@@ -40,6 +40,7 @@ or genuinely unclear operations.
 - Security and live-service policy: `{TARGET_SECURITY_POLICY}`.
 - Diagram or generated-artifact policy: `{TARGET_DIAGRAM_POLICY}`.
 - Skill, prompt, tool, and imported-source policy:
+  `.ai/assistant/ai-infrastructure-router.json`,
   `.ai/assistant/policies/ai-infrastructure-source-access.md` and
   `.ai/assistant/policies/prompt-injection.md`.
 
@@ -59,6 +60,9 @@ Use logical integrity review for semantic changes. Use blueprint-driven change
 for accepted product behavior. Check the module profile before relying on an
 optional capability. When `consistency-map` is enabled, start from changed fact
 IDs and follow applicable relationship edges before loading affected surfaces.
+For AI infrastructure work, select one route and the smallest item-ID set from
+`.ai/assistant/ai-infrastructure-router.json`; load import, permission, bridge,
+gate, validation, and output context only when that route requires it.
 Run only target validation that exists and report missing checks.
 
 ## Protected Changes
@@ -73,4 +77,4 @@ approval evidence when plan or file scope matters.
 Report the selected profile and areas, changed facts and files, logical
 integrity result, synchronized surfaces, validation and skipped checks,
 approvals, context expansion, task-scale/checkpoint evidence when used, and
-residual risk.
+selected AI infrastructure route/item evidence when used, and residual risk.

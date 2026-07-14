@@ -37,7 +37,9 @@ installing, executing, enabling, or normalizing it.
 
 Stage 2 canonical integration may update target files only after required
 approval and must rewrite content to target facts, paths, validation, output
-format, and evidence expectations.
+format, and evidence expectations. It must also create or update the target AI
+infrastructure router item and adaptation record; rejected source instructions
+must not become active item context.
 
 ## Target Decisions
 

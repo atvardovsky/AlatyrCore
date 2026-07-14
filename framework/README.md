@@ -38,6 +38,8 @@ sync, logical integrity review, and final evidence.
 - diagram reasoning and source/visual synchronization guidance
 - AI infrastructure inventory plus skill, prompt, wrapper, bridge, and
   third-party assistant infrastructure adaptation guidance
+- compact AI infrastructure routing for selecting only relevant skills,
+  prompts, gates, checkers, tools, MCP configs, bridges, and wrappers
 - installed-adapter operation and recheck guidance
 - operation help and routing guidance for unclear installed-adapter requests
 - reusable assistant workflow categories
@@ -111,6 +113,9 @@ Those belong to a project contour or repository adapter.
   source/visual split rules.
 - `.ai/framework/skill-adaptation.md`: portable guidance for adapting skills,
   prompts, wrappers, and third-party assistant infrastructure.
+- `.ai/framework/ai-infrastructure-routing.md`: portable route and item
+  contract for loading one target AI capability and its required gates,
+  permissions, validation, and output.
 - `.ai/framework/approval-records.md`: durable evidence pattern for protected
   changes that require scoped approval.
 - `.ai/framework/adapter-maturity.md`: readiness model for judging whether a

@@ -1,0 +1,245 @@
+{
+  "schema_version": 1,
+  "router_kind": "target-ai-infrastructure-router",
+  "inventory_template": ".ai/assistant/templates/ai-infrastructure-inventory.md",
+  "adaptation_record_template": ".ai/assistant/templates/ai-infrastructure-adaptation-record.md",
+  "item_types": [
+    "skill",
+    "prompt",
+    "gate",
+    "checker",
+    "flow",
+    "tool",
+    "mcp",
+    "bridge",
+    "wrapper",
+    "rule",
+    "template",
+    "other"
+  ],
+  "routing_order": [
+    "inventory",
+    "use-existing",
+    "adapt-import",
+    "gate-checker-change",
+    "tool-mcp-change",
+    "bridge-wrapper-change"
+  ],
+  "routes": {
+    "inventory": {
+      "use_when": [
+        "list or inspect existing AI infrastructure",
+        "item owner path or status is unknown"
+      ],
+      "required_context": [
+        ".ai/assistant/flows/ai-infrastructure-inventory.flow.md",
+        ".ai/assistant/templates/ai-infrastructure-inventory.md"
+      ],
+      "expand_when": [
+        "declared item path is stale",
+        "ownership or permission scope conflicts",
+        "supported assistant surface is missing"
+      ],
+      "allowed_actions": [
+        "read-only",
+        "adapter-only"
+      ],
+      "approval_gates": [
+        "protected inspection requires target approval"
+      ],
+      "validation": [
+        "{TARGET_AI_INFRASTRUCTURE_INVENTORY_VALIDATION_OR_MANUAL_REVIEW}"
+      ],
+      "final_evidence": [
+        "items and owners found",
+        "stale or missing declarations",
+        "recommended route and item ids"
+      ]
+    },
+    "use-existing": {
+      "use_when": [
+        "one accepted target-owned item matches the task"
+      ],
+      "required_context": [
+        "{SELECTED_ITEM_CANONICAL_SOURCE}",
+        "{SELECTED_ITEM_REQUIRED_CONTEXT}",
+        "{SELECTED_ITEM_GATES_AND_OUTPUT_CONTRACT}"
+      ],
+      "expand_when": [
+        "item status provenance or permission scope is stale",
+        "item conflicts with current target rules"
+      ],
+      "allowed_actions": [
+        "{SELECTED_ITEM_ALLOWED_ACTIONS}"
+      ],
+      "approval_gates": [
+        "{SELECTED_ITEM_APPROVAL_TRIGGERS_OR_NONE}"
+      ],
+      "validation": [
+        "{SELECTED_ITEM_VALIDATION_OR_MANUAL_REVIEW}"
+      ],
+      "final_evidence": [
+        "selected item id and canonical source",
+        "loaded context permissions gates validation and output"
+      ]
+    },
+    "adapt-import": {
+      "use_when": [
+        "external remote pasted package plugin native or unknown item",
+        "existing item requires material normalization"
+      ],
+      "required_context": [
+        ".ai/framework/skill-adaptation.md",
+        ".ai/framework/prompt-injection.md",
+        ".ai/framework/approval-records.md",
+        ".ai/assistant/flows/skill-adaptation.flow.md",
+        ".ai/assistant/policies/ai-infrastructure-source-access.md",
+        ".ai/assistant/policies/prompt-injection.md",
+        ".ai/assistant/templates/ai-infrastructure-adaptation-record.md"
+      ],
+      "expand_when": [
+        "tool permission live service destructive credential dependency or privacy surface",
+        "canonical target integration is requested"
+      ],
+      "allowed_actions": [
+        "read-only",
+        "adapter-only",
+        "full-with-approval"
+      ],
+      "approval_gates": [
+        "third-party canonical integration",
+        "protected permission or behavior change"
+      ],
+      "validation": [
+        "{TARGET_AI_INFRASTRUCTURE_ADAPTATION_VALIDATION_OR_MANUAL_REVIEW}"
+      ],
+      "final_evidence": [
+        "source provenance hash license and rejected instructions",
+        "normalization wrappers permissions approval validation and residual risk"
+      ]
+    },
+    "gate-checker-change": {
+      "use_when": [
+        "gate checklist checker or recurring acceptance rule changes"
+      ],
+      "required_context": [
+        "{SELECTED_GATE_OR_CHECKER_CANONICAL_SOURCE}",
+        ".ai/assistant/gates/checklist.md",
+        ".ai/framework/logical-integrity.md",
+        ".ai/framework/change-risk-model.md"
+      ],
+      "expand_when": [
+        "validation approval documentation sync or evidence is weakened"
+      ],
+      "allowed_actions": [
+        "adapter-only",
+        "code-and-tests",
+        "full-with-approval"
+      ],
+      "approval_gates": [
+        "weakened gate approval validation or evidence"
+      ],
+      "validation": [
+        "{TARGET_GATE_OR_CHECKER_VALIDATION_OR_MANUAL_REVIEW}"
+      ],
+      "final_evidence": [
+        "changed invariant affected operations validation and approval"
+      ]
+    },
+    "tool-mcp-change": {
+      "use_when": [
+        "tool MCP connector model permission network or execution capability changes"
+      ],
+      "required_context": [
+        "{SELECTED_TOOL_OR_MCP_CANONICAL_SOURCE}",
+        ".ai/framework/security-safety-guidance.md",
+        ".ai/framework/approval-records.md",
+        ".ai/assistant/policies/ai-infrastructure-source-access.md"
+      ],
+      "expand_when": [
+        "live destructive spend credential dependency privacy or production surface"
+      ],
+      "allowed_actions": [
+        "read-only",
+        "adapter-only",
+        "full-with-approval"
+      ],
+      "approval_gates": [
+        "tool permission network execution dependency or protected capability change"
+      ],
+      "validation": [
+        "{TARGET_TOOL_OR_MCP_VALIDATION_OR_MANUAL_REVIEW}"
+      ],
+      "final_evidence": [
+        "capabilities permissions actions avoided approval and validation"
+      ]
+    },
+    "bridge-wrapper-change": {
+      "use_when": [
+        "assistant bridge wrapper native skill or prompt surface changes"
+      ],
+      "required_context": [
+        "{SELECTED_BRIDGE_OR_WRAPPER_CANONICAL_SOURCE}",
+        ".ai/framework/bridge-capability-matrix.md",
+        ".ai/assistant/bridge-capability-matrix.md"
+      ],
+      "expand_when": [
+        "instruction priority permission model or supported capability changes"
+      ],
+      "allowed_actions": [
+        "adapter-only",
+        "full-with-approval"
+      ],
+      "approval_gates": [
+        "overwriting existing instructions or broadening permissions"
+      ],
+      "validation": [
+        "{TARGET_BRIDGE_OR_WRAPPER_VALIDATION_OR_MANUAL_REVIEW}"
+      ],
+      "final_evidence": [
+        "canonical pointer capability matrix and assistant conformance result"
+      ]
+    }
+  },
+  "items": [
+    {
+      "id": "{AI_INFRASTRUCTURE_ITEM_ID}",
+      "type": "{SKILL_PROMPT_GATE_CHECKER_FLOW_TOOL_MCP_BRIDGE_WRAPPER_RULE_TEMPLATE_OR_OTHER}",
+      "purpose": "{TARGET_ITEM_PURPOSE}",
+      "status": "{ACTIVE_BLOCKED_DEPRECATED_OR_UNRESOLVED}",
+      "activation_triggers": [
+        "{TARGET_ITEM_TRIGGER}"
+      ],
+      "canonical_source": "{TARGET_ITEM_CANONICAL_SOURCE}",
+      "required_context": [
+        "{TARGET_ITEM_REQUIRED_CONTEXT}"
+      ],
+      "assistant_surfaces": [
+        "{SUPPORTED_ASSISTANT_SURFACE}"
+      ],
+      "wrappers": [
+        "{TARGET_ASSISTANT_WRAPPER_OR_NONE}"
+      ],
+      "allowed_actions": [
+        "{TARGET_ITEM_ALLOWED_ACTION}"
+      ],
+      "required_permissions": [
+        "{TARGET_ITEM_REQUIRED_PERMISSION_OR_NONE}"
+      ],
+      "approval_triggers": [
+        "{TARGET_ITEM_APPROVAL_TRIGGER_OR_NONE}"
+      ],
+      "gates": [
+        "{TARGET_ITEM_GATE}"
+      ],
+      "validation": [
+        "{TARGET_ITEM_VALIDATION_OR_MANUAL_REVIEW}"
+      ],
+      "output_contract": "{TARGET_ITEM_OUTPUT_CONTRACT}",
+      "conflicts_with": [
+        "{CONFLICTING_ITEM_ID_OR_NONE}"
+      ],
+      "adaptation_record": "{TARGET_ADAPTATION_RECORD_OR_NOT_APPLICABLE}"
+    }
+  ]
+}

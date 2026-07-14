@@ -21,6 +21,8 @@ AI infrastructure into canonical target files.
 - Surfaces inspected: `{SURFACES_INSPECTED}`
 - Surfaces skipped: `{SURFACES_SKIPPED_AND_REASON}`
 - Existing inventory source: `{EXISTING_INVENTORY_SOURCE_OR_NONE}`
+- AI infrastructure router: `.ai/assistant/ai-infrastructure-router.json`
+- Router status: `{CURRENT_STALE_MISSING_OR_CONFLICTING}`
 
 ## Item Record
 
@@ -29,6 +31,8 @@ MCP/tool config, checker, flow, gate, template, generated assistant artifact,
 or other target-defined AI infrastructure item.
 
 - Item id: `{AI_INFRASTRUCTURE_ITEM_ID}`
+- Router route: `{INVENTORY_USE_EXISTING_ADAPT_IMPORT_GATE_CHECKER_TOOL_MCP_OR_BRIDGE_WRAPPER}`
+- Router item status: `{ACTIVE_BLOCKED_DEPRECATED_UNRESOLVED_OR_MISSING}`
 - Item type:
   `{SKILL_PROMPT_WRAPPER_BRIDGE_RULE_MEMORY_MCP_TOOL_CHECKER_FLOW_GATE_TEMPLATE_GENERATED_ARTIFACT_OR_OTHER}`
 - Path or reference: `{PATH_OR_EXTERNAL_REFERENCE}`
@@ -47,6 +51,7 @@ or other target-defined AI infrastructure item.
 - Overlap or conflict: `{OVERLAP_DUPLICATE_POLICY_OR_CONFLICT}`
 - Validation or manual review: `{VALIDATION_OR_MANUAL_REVIEW}`
 - Approval status: `{APPROVAL_STATUS_OR_NOT_REQUIRED}`
+- Required gates and output contract: `{GATES_AND_OUTPUT_CONTRACT_OR_MISSING}`
 - Recommended action: `{KEEP_ADAPT_ADD_REPLACE_REMOVE_SKIP_OR_UNRESOLVED}`
 - Residual risk: `{RESIDUAL_RISK}`
 
@@ -63,4 +68,3 @@ or other target-defined AI infrastructure item.
 - Recommended next operation: `{RECOMMENDED_NEXT_OPERATION}`
 - Final evidence: `{FINAL_EVIDENCE}`
 - Residual risk: `{RESIDUAL_RISK}`
-

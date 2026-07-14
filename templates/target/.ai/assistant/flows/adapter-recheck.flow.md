@@ -24,6 +24,9 @@ Replace placeholders with target facts before accepting installation.
   `.ai/assistant/flows/operation-routing.flow.md`
 - AI infrastructure inventory:
   `.ai/assistant/flows/ai-infrastructure-inventory.flow.md`
+- AI infrastructure router and adaptation record:
+  `.ai/assistant/ai-infrastructure-router.json`,
+  `.ai/assistant/templates/ai-infrastructure-adaptation-record.md`
 - Chat-message templates: `.ai/assistant/templates/post-install-message.md`,
   `.ai/assistant/templates/post-update-message.md`
 - Migration note template: `.ai/assistant/templates/migration-note.md`
@@ -48,7 +51,8 @@ Replace placeholders with target facts before accepting installation.
 5. Check required core and optional module state in
    `.ai/assistant/module-profile.md`.
 6. Check target adapter references to framework files, operation help, routing
-   flows, AI infrastructure inventory, gates, prompts, skills, bridge files,
+   flows, AI infrastructure inventory and item router, gates, prompts, skills,
+   adaptation records, bridge files,
    checker rules, large-task flow and packet, chat-message templates, and
    final-evidence expectations.
 7. Check adapter drift hazards: hard-coded local machine paths in `.ai/*`,
@@ -93,8 +97,8 @@ Report:
 - context router and context profile status
 - module profile status
 - help, routing, AI infrastructure inventory, bridge, prompt, skill, gate,
-  checker, large-task orchestration, diagram, chat-message, and lifecycle
-  status
+  checker, item router, adaptation-record, large-task orchestration, diagram,
+  chat-message, and lifecycle status
 - bridge capability matrix status
 - target validation run or unresolved
 - approvals needed

@@ -36,6 +36,7 @@ REQUIRED_FIELDS = [
     "Routes `alatyr-ai-inventory`:",
     "Routes `alatyr-adaptation`:",
     "Routes `alatyr-add-ai`:",
+    "Routes AI infrastructure items:",
     "Known limitations:",
     "Conformance check:",
 ]
@@ -49,6 +50,7 @@ PLACEHOLDER_FIELDS = [
     "Routes `alatyr-ai-inventory`:",
     "Routes `alatyr-adaptation`:",
     "Routes `alatyr-add-ai`:",
+    "Routes AI infrastructure items:",
     "Known limitations:",
     "Conformance check:",
 ]

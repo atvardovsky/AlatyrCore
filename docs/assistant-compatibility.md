@@ -37,6 +37,8 @@ as:
 - `.ai/project/contour.md`
 - `.ai/project/source-of-truth-registry.md`
 - `.ai/assistant/contour.md`
+- `.ai/assistant/ai-infrastructure-router.json` when AI infrastructure work is
+  selected
 - `.ai/assistant/context-profiles.md`
 - `.ai/assistant/bridge-capability-matrix.md`
 - `.ai/assistant/help.md`
@@ -58,6 +60,11 @@ canonical integration.
 Skill wrappers should follow the same rule as bridge files: keep them thin,
 point them to canonical target flows and gates, and do not let them become
 divergent policy.
+
+All supported assistant surfaces should route selected AI infrastructure work
+through `.ai/assistant/ai-infrastructure-router.json`. The bridge chooses no
+item itself; the canonical router records item IDs, sources, allowed actions,
+permissions, gates, validation, output contracts, and adaptation records.
 
 ## Installed Operations
 

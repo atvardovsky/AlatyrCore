@@ -73,6 +73,7 @@ adapted, added, removed, or left unresolved.
 Flow: `.ai/assistant/flows/ai-infrastructure-inventory.flow.md`
 Minimum input: inventory scope and target assistant surfaces.
 Alias: `alatyr-ai-inventory`.
+Route: `inventory` in `.ai/assistant/ai-infrastructure-router.json`.
 
 Operation: `skill-adaptation`
 Use when: importing, adapting, adding, or reviewing skills, prompts, wrappers,
@@ -83,6 +84,7 @@ Minimum input: source, item type, source type, intended use, target assistant
 surfaces, and permissions.
 Aliases: `alatyr-adaptation {AI_INFRASTRUCTURE_SOURCE}`,
 `alatyr-add-ai {AI_INFRASTRUCTURE_SOURCE}`.
+Route: `adapt-import` in `.ai/assistant/ai-infrastructure-router.json`.
 
 Operation: `drift-review`
 Use when: finding stale source-of-truth, docs, diagrams, gates, prompts,
@@ -184,6 +186,7 @@ alatyr-adaptation {AI_INFRASTRUCTURE_SOURCE}
 Goal: `{GOAL}`
 Non-goals: `{NON_GOALS}`
 Item type: `{SKILL_PROMPT_WRAPPER_BRIDGE_RULE_MCP_TOOL_CHECKER_FLOW_GATE_TEMPLATE_OR_OTHER}`
+Target item ID: `{AI_INFRASTRUCTURE_ITEM_ID_OR_NEW_PROPOSED_ID}`
 Source type: `{LOCAL_PATH_OR_GIT_URL_OR_HTTPS_URL_OR_NATIVE_REFERENCE_OR_PASTED}`
 Target assistant surfaces: `{TARGET_ASSISTANT_SURFACES}`
 Integration mode: `{REVIEW_ONLY_OR_CANONICAL_INTEGRATION}`
@@ -197,6 +200,7 @@ alatyr-add-ai {AI_INFRASTRUCTURE_SOURCE}
 Goal: `{GOAL}`
 Non-goals: `{NON_GOALS}`
 Item type: `{SKILL_PROMPT_WRAPPER_BRIDGE_RULE_MCP_TOOL_CHECKER_FLOW_GATE_TEMPLATE_OR_OTHER}`
+Target item ID: `{AI_INFRASTRUCTURE_ITEM_ID_OR_NEW_PROPOSED_ID}`
 Source type: `{LOCAL_PATH_OR_GIT_URL_OR_HTTPS_URL_OR_NATIVE_REFERENCE_OR_PASTED}`
 Target assistant surfaces: `{TARGET_ASSISTANT_SURFACES}`
 Integration mode: `{CANONICAL_INTEGRATION}`
@@ -213,5 +217,6 @@ Integration mode: `{CANONICAL_INTEGRATION}`
 - Allowed AI infrastructure source access:
   `{TARGET_AI_INFRASTRUCTURE_SOURCE_ACCESS_POLICY}`
 - Known adapter gaps: `{KNOWN_GAPS}`
+- AI infrastructure router: `.ai/assistant/ai-infrastructure-router.json`
 - Consistency map: `.ai/project/consistency-map.json` when the optional module
   is enabled.

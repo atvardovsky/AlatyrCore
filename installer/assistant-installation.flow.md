@@ -79,6 +79,8 @@ Read in the target repository:
 - existing prompts, skills, third-party assistant infrastructure, provenance
   notes, source-access policies, gates, checker rules, operation help, routing
   flows, and assistant chat-message templates
+- existing AI infrastructure router entries, item IDs, permissions, gates,
+  output contracts, conflicts, wrappers, and adaptation records
 - existing manifests, version notes, context profiles, approval records, and
   prompt-injection or imported-source policies
 - existing source-of-truth registry, maturity profile, bridge capability
@@ -146,6 +148,10 @@ Classify every proposed target file:
     Add the large-task flow and operation-packet template when the target needs
     cross-boundary, multi-workstream, budget-exceeding, or resumable work, and
     record the target packet storage policy.
+    When the target uses multiple AI infrastructure items, add
+    `.ai/assistant/ai-infrastructure-router.json` and the adaptation-record
+    template. Populate item contracts from target evidence and keep unresolved
+    items blocked.
 16. Ensure root assistant entry points and supported bridge files point future
     sessions to the installation note, operation help, and routing flow.
 17. Add prompts, skills, diagrams, or consistency checks only when they solve
@@ -208,10 +214,14 @@ Report:
   templates added or skipped
 - large-task orchestration flow, operation packet, and target storage policy
   added or skipped
+- AI infrastructure router and adaptation-record template added or skipped
 - root entry-point and bridge compact-bootstrap references checked
 - context budgets, task-scale/project-area overlays, and receipt fields adapted or
   explicitly deferred
 - prompts, skills, or third-party assistant infrastructure adapted or skipped
+- AI infrastructure item IDs, canonical sources, permissions, gates,
+  validation, outputs, conflicts, and adaptation records resolved or reported
+  as gaps
 - target validation run and skipped
 - unresolved adapter facts
 - logical integrity review result

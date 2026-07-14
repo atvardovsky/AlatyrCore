@@ -69,6 +69,11 @@ Every project using this framework must define:
 - AI infrastructure inventory, source access, provenance, adaptation,
   output-format, safety, and wrapper rules when skills or third-party assistant
   infrastructure are used
+- AI infrastructure router with stable item IDs, canonical sources, activation
+  triggers, allowed actions, permissions, gates, validation, output contracts,
+  conflicts, and supported assistant surfaces when multiple items exist
+- durable adaptation records for imported or materially changed AI
+  infrastructure
 - prompt-injection policy for imported, external, remote, pasted, package, or
   unknown AI infrastructure
 - adapter maturity gaps, framework baseline/deviations, and lifecycle or
@@ -114,6 +119,7 @@ An adapter may provide:
 - approval records or redacted approval indexes
 - AI infrastructure inventories, compatibility reports, and add/adapt/remove
   recommendations
+- AI infrastructure route/item audits and adaptation records
 - adapter output-contract reports for installation, framework update, or
   adapter-recheck work
 - source-of-truth registry reports or drift reports

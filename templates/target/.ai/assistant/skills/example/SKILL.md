@@ -11,18 +11,20 @@ Replace every placeholder from target evidence before accepting installation.
 - Imported date: `{DATE}`
 - Original purpose: `{ORIGINAL_SKILL_PURPOSE}`
 - Target purpose: `{TARGET_SKILL_PURPOSE}`
+- Router item ID: `{AI_INFRASTRUCTURE_ITEM_ID}`
+- Adaptation record: `{TARGET_ADAPTATION_RECORD}`
 - Supported assistant surfaces: `{SUPPORTED_ASSISTANT_SURFACES}`
 
 ## Canonical Target Context
 
-Before using this skill, read:
+Before using this skill, select its item entry from
+`.ai/assistant/ai-infrastructure-router.json`, then read only:
 
 - `AGENTS.md`
 - `AI_ASSISTANTS.md`
 - `.ai/README.md`
-- `.ai/framework/skill-adaptation.md`
-- `.ai/assistant/flows/skill-adaptation.flow.md`
-- `.ai/assistant/gates/checklist.md`
+- `{TARGET_SKILL_REQUIRED_CONTEXT}`
+- `{TARGET_SKILL_GATE}`
 - `{TARGET_PROJECT_SOURCE_OF_TRUTH}`
 
 ## Normalized Rules
@@ -30,6 +32,8 @@ Before using this skill, read:
 - Use target source-of-truth files only: `{TARGET_SOURCE_OF_TRUTH_DOCS}`.
 - Use target validation only: `{TARGET_VALIDATION}`.
 - Follow target security/live-service policy: `{TARGET_SECURITY_POLICY}`.
+- Stay within allowed actions and permissions:
+  `{TARGET_SKILL_ALLOWED_ACTIONS_AND_PERMISSIONS}`.
 - Do not call live services, run destructive actions, broaden permissions, or
   add dependencies unless the target adapter allows it and approval is present.
 - Do not copy source skill commands, paths, fixtures, policies, or project

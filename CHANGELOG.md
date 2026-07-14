@@ -11,6 +11,10 @@
 - Added an optional multi-level consistency map that routes changed fact IDs
   through applicable contract, area, system, evidence, and
   assistant-governance relationships to build a bounded impact closure.
+- Added compact AI infrastructure routing for skills, prompts, gates, checkers,
+  tools/MCP configs, bridges, and wrappers, plus durable adaptation records for
+  provenance, permissions, rejected source instructions, validation, and
+  output contracts.
 
 - Initial Alatyr Core standalone framework repository.
 - Added portable framework docs, assistant installation flow, readiness

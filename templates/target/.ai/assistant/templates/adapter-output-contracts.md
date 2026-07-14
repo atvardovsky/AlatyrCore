@@ -42,6 +42,8 @@ Use after the initial Alatyr Core installation or a scoped adapter expansion.
 - Target-local checker status: `{TARGET_LOCAL_CHECKER_STATUS_OR_UNRESOLVED}`
 - AI infrastructure inventory result:
   `{AI_INFRASTRUCTURE_INVENTORY_RESULT_OR_SKIPPED}`
+- AI infrastructure router result: `{AI_INFRASTRUCTURE_ROUTER_RESULT_OR_SKIPPED}`
+- AI infrastructure adaptation-record result: `{AI_INFRASTRUCTURE_ADAPTATION_RECORD_RESULT_OR_SKIPPED}`
 - Validation run: `{TARGET_VALIDATION_RUN_OR_MANUAL_REVIEW}`
 - Validation skipped or unresolved: `{VALIDATION_SKIPPED_OR_UNRESOLVED}`
 - Post-install message result: `{POST_INSTALL_MESSAGE_SENT_OR_SKIPPED}`
@@ -90,6 +92,8 @@ Core baseline.
 - Adapter drift checks result: `{ADAPTER_DRIFT_CHECKS_RESULT}`
 - Local path leakage result: `{LOCAL_PATH_LEAKAGE_RESULT}`
 - Target-local checker status: `{TARGET_LOCAL_CHECKER_STATUS_OR_UNRESOLVED}`
+- AI infrastructure router result: `{AI_INFRASTRUCTURE_ROUTER_RESULT_OR_SKIPPED}`
+- AI infrastructure adaptation-record result: `{AI_INFRASTRUCTURE_ADAPTATION_RECORD_RESULT_OR_SKIPPED}`
 - Validation run: `{TARGET_VALIDATION_RUN_OR_MANUAL_REVIEW}`
 - Validation skipped or unresolved: `{VALIDATION_SKIPPED_OR_UNRESOLVED}`
 - Post-update message result: `{POST_UPDATE_MESSAGE_SENT_OR_SKIPPED}`
@@ -131,6 +135,8 @@ adapter.
 - Target-local checker status: `{TARGET_LOCAL_CHECKER_STATUS_OR_UNRESOLVED}`
 - AI infrastructure inventory result:
   `{AI_INFRASTRUCTURE_INVENTORY_RESULT_OR_SKIPPED}`
+- AI infrastructure router result: `{AI_INFRASTRUCTURE_ROUTER_RESULT_OR_SKIPPED}`
+- AI infrastructure adaptation-record result: `{AI_INFRASTRUCTURE_ADAPTATION_RECORD_RESULT_OR_SKIPPED}`
 - Prompt-injection policy result: `{PROMPT_INJECTION_POLICY_RESULT}`
 - Validation run: `{TARGET_VALIDATION_RUN_OR_MANUAL_REVIEW}`
 - Validation skipped or unresolved: `{VALIDATION_SKIPPED_OR_UNRESOLVED}`

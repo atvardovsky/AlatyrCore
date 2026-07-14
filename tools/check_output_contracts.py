@@ -65,6 +65,8 @@ REQUIRED_FIELDS = [
     "Adapter drift checks result:",
     "Local path leakage result:",
     "Target-local checker status:",
+    "AI infrastructure router result:",
+    "AI infrastructure adaptation-record result:",
     "Validation run:",
     "Validation skipped or unresolved:",
     "Final evidence:",

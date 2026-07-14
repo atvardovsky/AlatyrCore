@@ -88,6 +88,8 @@ Use the risk class to choose companion work:
 - security changes need redaction, permission, and secret-handling checks
 - AI governance changes need bridge, skill, prompt, gate, and consistency
   sync
+- routed AI infrastructure changes need item permission, gate, validation,
+  output-contract, provenance, and supported-assistant checks
 - AI infrastructure adaptation needs inventory, provenance review, wrapper
   sync, safety review, target validation, and approval when protected assistant
   infrastructure or permissions change

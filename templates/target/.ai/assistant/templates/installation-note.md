@@ -33,6 +33,10 @@ Installation id: `{INSTALLATION_ID}`
 - Bridge capability matrix: `.ai/assistant/bridge-capability-matrix.md`
 - AI infrastructure inventory template:
   `.ai/assistant/templates/ai-infrastructure-inventory.md`
+- AI infrastructure router:
+  `.ai/assistant/ai-infrastructure-router.json`
+- AI infrastructure adaptation record:
+  `.ai/assistant/templates/ai-infrastructure-adaptation-record.md`
 - Operation routing flow: `.ai/assistant/flows/operation-routing.flow.md`
 - Large-task orchestration flow:
   `.ai/assistant/flows/large-task-orchestration.flow.md`

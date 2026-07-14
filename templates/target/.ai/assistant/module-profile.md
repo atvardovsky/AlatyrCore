@@ -143,8 +143,10 @@ State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `{TARGET_AI_INFRASTRUCTURE_MODULE_OWNER_OR_FILE}`
 Required files:
 
+- `.ai/assistant/ai-infrastructure-router.json`
 - `.ai/assistant/flows/ai-infrastructure-inventory.flow.md`
 - `.ai/assistant/flows/skill-adaptation.flow.md`
+- `.ai/assistant/templates/ai-infrastructure-adaptation-record.md`
 
 Reason: `{REASON}`
 Validation or review: `{VALIDATION_OR_REVIEW}`

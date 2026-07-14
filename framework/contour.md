@@ -32,6 +32,7 @@ Framework core owns:
 - gate categories and final evidence pattern
 - skill, prompt, wrapper, and third-party assistant infrastructure adaptation
   pattern
+- AI infrastructure route/item and adaptation-record pattern
 - supported-assistant bridge pattern
 - bridge capability matrix pattern
 - migration diff pattern

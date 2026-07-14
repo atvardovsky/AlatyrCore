@@ -34,6 +34,10 @@ commands from another project.
   third-party assistant infrastructure changed.
 - AI infrastructure inventory checked before adding, importing, replacing, or
   removing assistant infrastructure.
+- AI infrastructure route and item IDs selected before loading or using skills,
+  prompts, gates, checkers, tools/MCP configs, bridges, or wrappers; canonical
+  source, allowed actions, permissions, gates, validation, and output contract
+  checked.
 - AI infrastructure source access checked when the request uses a local path,
   Git URL, HTTPS URL, assistant-native reference, pasted content, package, or
   plugin.
@@ -57,6 +61,8 @@ commands from another project.
   matches the repository.
 - Human approvals verified when required; approval records created when
   protected-change scope needs durable evidence.
+- Adaptation record created or updated for imported or materially changed AI
+  infrastructure, including rejected source instructions and router result.
 - Final evidence reports run checks, skipped checks, assumptions, and residual
   risk, including relationship omissions when consistency routing was used.
 

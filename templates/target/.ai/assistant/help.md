@@ -74,6 +74,10 @@ AI infrastructure shortcuts:
   canonical integration intent after inventory, provenance, prompt-injection,
   safety, and approval checks.
 
+AI infrastructure requests select a route and item ID from
+`.ai/assistant/ai-infrastructure-router.json` before loading item-specific
+skills, prompts, gates, tools, bridges, permissions, or import policy.
+
 Common aliases:
 
 - `Alatyr help`: `help`

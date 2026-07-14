@@ -89,6 +89,18 @@ def main() -> int:
         if f"Fact type: `{fact_type}`" not in block:
             failures.append(f"{fact_type} heading and Fact type field disagree")
 
+        if fact_type == "AI infrastructure item":
+            for field in [
+                "AI infrastructure router item:",
+                "Adaptation record:",
+            ]:
+                line = next(
+                    (line for line in block.splitlines() if line.startswith(field)),
+                    "",
+                )
+                if "{" not in line:
+                    failures.append(f"{fact_type} {field} should be placeholder-based")
+
         canonical_line = next(
             (line for line in block.splitlines() if line.startswith("Canonical owner:")),
             "",

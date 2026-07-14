@@ -58,6 +58,8 @@ The framework commits to giving an assistant a defined process for:
   without letting them bypass framework or target adapter rules
 - inventorying existing AI infrastructure before adding, replacing, or
   importing new assistant infrastructure
+- selecting target AI infrastructure by stable item ID and loading only its
+  canonical source, permissions, gates, validation, and output contract
 - using an installed adapter for post-install blueprint creation, drift review,
   framework update recheck, and adapter maturity review
 - separating required core from optional modules so targets do not carry
@@ -143,6 +145,8 @@ defines:
 - AI infrastructure inventory, source access, provenance, adaptation, wrapper,
   and approval rules when skills or third-party assistant infrastructure are
   used
+- AI infrastructure router and adaptation-record policy when multiple skills,
+  prompts, gates, checkers, tools, MCP configs, bridges, or wrappers are used
 - installed-operation request, blueprint-creation, adapter-recheck, and
   framework-update review flows when the target wants post-install operations
 - allowed-action meanings for installed-operation requests

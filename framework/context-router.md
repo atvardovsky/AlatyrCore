@@ -68,6 +68,11 @@ to its machine-readable map. Use it only after a semantic change or suspected
 drift: resolve changed fact IDs, select applicable direct edges, and expand to
 dependent contracts only when the map or conflicting evidence requires it.
 
+For AI infrastructure work, route first to the target AI infrastructure router
+instead of loading every skill, prompt, gate, tool, bridge, and import policy.
+The selected route decides whether inventory, ordinary target-owned item use,
+adaptation, protected tool policy, or bridge compatibility context is needed.
+
 ## Ownership
 
 The router is adapter-owned in a target repository. It must be rewritten from

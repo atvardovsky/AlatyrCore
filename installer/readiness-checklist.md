@@ -40,6 +40,8 @@ changes.
 - Existing skills, prompts, third-party assistant infrastructure, provenance
   notes, and wrappers:
 - Existing AI infrastructure inventory reports:
+- Existing AI infrastructure router, item IDs, permissions, gates, output
+  contracts, and adaptation records:
 - Existing approval records or approval evidence:
 - Existing migration notes:
 - Existing migration-diff process:
@@ -153,6 +155,9 @@ Collect target-specific facts before writing project docs:
 - skills, prompts, wrappers, third-party assistant infrastructure, provenance,
   output formats, permissions, and safety rules
 - AI infrastructure inventory expectations and existing item owners
+- AI infrastructure router/item expectations for canonical source, triggers,
+  status, required context, allowed actions, permissions, gates, validation,
+  output, conflicts, wrappers, and adaptation records
 - AI infrastructure source access policy for local paths, Git URLs, HTTPS URLs,
   assistant-native references, pasted content, packages, or plugins
 - prompt-injection policy for imported, remote, pasted, package/plugin, or
@@ -231,6 +236,7 @@ List commands or manual checks:
 - operation-help or routing review:
 - skill/provenance/safety review:
 - AI infrastructure inventory review:
+- AI infrastructure router/item and adaptation-record review:
 - AI infrastructure source access review:
 - prompt-injection review:
 - approval-record review:
@@ -277,6 +283,7 @@ Final evidence must say:
 - adapter output contracts added or skipped
 - large-task flow and operation-packet template added or skipped
 - AI infrastructure inventory report template added or skipped
+- AI infrastructure router and adaptation-record template added or skipped
 - root entry-point and bridge compact-bootstrap references checked
 - AI infrastructure source-access policy added or skipped
 - prompt-injection policy added or skipped
@@ -286,6 +293,8 @@ Final evidence must say:
 - scaffolding helper used or skipped
 - skills, prompts, wrappers, or third-party assistant infrastructure adapted or
   skipped
+- selected AI infrastructure routes/items, permission/gate/output contracts,
+  and adaptation-record results reported or skipped
 - existing target instructions preserved or approved for overwrite
 - commands or manual checks run
 - skipped checks and residual risk

@@ -75,6 +75,9 @@ Before accepting a change, check:
   infrastructure inventory fields, source/provenance, permission, license,
   prompt-injection risk, approval, recommendation, or residual-risk evidence
   changes.
+- `python3 tools/check_ai_infrastructure_router.py` passes when AI item types,
+  routes, lazy context, item contracts, permissions, gates, adaptation records,
+  validation, output contracts, or manifest routing change.
 - `python3 tools/check_bridge_capability_matrix.py` passes when supported
   assistant surfaces, bridge paths, auto-load behavior, skill/prompt support,
   tool permissions, help alias routing, limitations, or conformance guidance
@@ -173,6 +176,9 @@ Before accepting a change, check:
 - target manifest, context router, context profiles, approval templates,
   source-access policy, prompt-injection policy, help, help reference, output
   contracts, and AI infrastructure inventory report agree.
+- AI infrastructure router, inventory, adaptation record, selected profile,
+  bridge capability matrix, source access, prompt-injection, gates, manifest,
+  and output contracts agree.
 - target gate, operation-routing, adapter-recheck, and output-contract
   templates preserve context-router bootstrap references and adapter drift
   evidence for local path leakage, stale checker statements, duplicate profile

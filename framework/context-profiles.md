@@ -103,6 +103,14 @@ changed fact IDs, and follow only applicable relationship edges. Expand to
 dependent contracts for propagation, conflicts, failed validation, or approval
 boundaries. The human source-of-truth registry remains the owner explanation.
 
+## AI Infrastructure Item Routing
+
+For skill, prompt, gate, checker, tool/MCP, bridge, or wrapper work, load the
+target AI infrastructure router first. Select one route and the smallest item
+set, then load only the selected canonical sources, required context,
+permissions, gates, validation, and output contracts. Load import and protected
+tool policy only for routes that need them.
+
 ## Large Or Resumable Tasks
 
 Use a task-scale overlay when work has multiple independently verifiable

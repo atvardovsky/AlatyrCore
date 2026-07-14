@@ -62,6 +62,10 @@ List what must not be changed.
   permissions, and output formats:
 - AI infrastructure inventory and existing item owners:
 - AI infrastructure inventory reports:
+- AI infrastructure router, stable item IDs, activation triggers, and statuses:
+- Item canonical sources, required context, allowed actions, permissions,
+  gates, validation, output contracts, conflicts, and assistant wrappers:
+- AI infrastructure adaptation-record storage and retention:
 - AI infrastructure source access policy for local paths, Git URLs, HTTPS URLs,
   assistant-native references, pasted content, packages, or plugins:
 - Prompt-injection policy:
@@ -152,6 +156,12 @@ contracts.
 Include `.ai/assistant/templates/ai-infrastructure-inventory.md` when the
 target wants durable AI infrastructure inventory reports.
 
+Include `.ai/assistant/ai-infrastructure-router.json` and
+`.ai/assistant/templates/ai-infrastructure-adaptation-record.md` when the
+target uses multiple skills, prompts, gates, checkers, tools/MCP configs,
+bridges, wrappers, or imported items. Populate entries from target evidence;
+keep unresolved items blocked.
+
 Include `.ai/assistant/flows/large-task-orchestration.flow.md` and
 `.ai/assistant/templates/large-task-operation-packet.md` when the target needs
 cross-boundary, multi-workstream, budget-exceeding, or resumable operations.
@@ -191,6 +201,9 @@ Record where completed packets are stored, ignored, redacted, or removed.
 - Target validation commands or manual checks:
 - AI infrastructure adaptation, provenance, wrapper, and output-format rules:
 - AI infrastructure inventory rules:
+- AI infrastructure route/item selection and lazy context-loading rules:
+- AI infrastructure item permissions, gates, validation, output contracts,
+  conflicts, and adaptation-record rules:
 - AI infrastructure source access and approval rules:
 - Prompt-injection rules:
 - Approval-record rules:

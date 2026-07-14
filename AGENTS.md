@@ -61,6 +61,7 @@ Use `ai-infrastructure-bridge` for assistant compatibility, bridge, skill,
 prompt, MCP/tool, operation-help, or imported-source changes. Read
 `AI_ASSISTANTS.md`, `docs/assistant-compatibility.md`,
 `framework/bridge-capability-matrix.md`, `framework/skill-adaptation.md`,
+`framework/ai-infrastructure-routing.md`,
 `framework/prompt-injection.md`, `framework/operation-help.md`, and affected
 bridge or target assistant files.
 
@@ -138,6 +139,7 @@ When relevant to the change, also run the focused source helpers:
 python3 tools/check_framework_metadata.py
 python3 tools/check_approval_template.py
 python3 tools/check_ai_infrastructure_inventory.py
+python3 tools/check_ai_infrastructure_router.py
 python3 tools/check_bridge_capability_matrix.py
 python3 tools/check_context_router.py
 python3 tools/check_consistency_map.py

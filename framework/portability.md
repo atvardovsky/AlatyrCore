@@ -21,6 +21,7 @@ Portable framework core may describe reusable assistant operating patterns:
 - prompt, skill, and bridge-file wrapper patterns
 - AI infrastructure inventory, skill provenance, adaptation, and third-party
   assistant infrastructure review concepts
+- AI infrastructure router/item contract and adaptation-record shape
 - diagram-as-code and visual-artifact synchronization concepts
 - consistency-manifest concept
 - changed-fact relationship-map shape and impact-closure reasoning
@@ -82,6 +83,8 @@ A repository adapter owns the concrete facts for one project:
 - target assistant bridge files selected for the assistants the project uses
 - target AI infrastructure inventory, source access, provenance, adaptation,
   wrapper, permission, and evidence rules
+- target AI item IDs, triggers, canonical sources, permissions, gates,
+  validation, output contracts, conflicts, and adaptation records
 - target consistency checks that are deterministic and maintainable in that
   repository
 - target fact IDs, relationship edges, project-area mappings, and staleness

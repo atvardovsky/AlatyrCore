@@ -89,6 +89,7 @@ The plan must identify:
 - optional scaffolding plan, if any
 - migration diff, adapter output contract, AI infrastructure inventory report,
   and effectiveness report needs
+- AI infrastructure router/item and adaptation-record needs
 - files to create, adapt, preserve, or skip
 - framework core versus target adapter decisions
 - target validation plan
@@ -137,9 +138,13 @@ In a typical target repository:
    and
    post-install/update chat-message templates when the target wants
    post-install operation requests or AI infrastructure adaptation.
+   Add the AI infrastructure router and adaptation-record template when the
+   target needs routed item selection or imported-item provenance evidence.
 10. Add skills, prompts, diagrams, and deterministic checks only when useful
    for the target, after adapting them to target rules and recording source or
-   provenance when applicable.
+   provenance when applicable. Route AI infrastructure through target item IDs
+   and keep unresolved permissions, gates, validation, or output contracts
+   blocked.
 11. Run target validation that exists.
 12. Report files changed, validation run, skipped checks, approvals, and
    residual risk.

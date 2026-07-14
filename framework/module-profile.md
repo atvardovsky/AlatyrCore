@@ -52,7 +52,8 @@ maintain them:
 - `diagrams`: diagram source, visual artifact, render or manual-review, and
   drift policy.
 - `ai-infrastructure`: inventory, source access, prompt-injection handling,
-  skill or prompt adaptation, wrappers, and provenance.
+  routed skill/prompt/gate/checker/tool/MCP/bridge selection, adaptation
+  records, wrappers, permissions, output contracts, and provenance.
 - `multi-assistant-bridges`: bridge capability matrix and assistant-specific
   wrappers for multiple supported assistants.
 - `installed-operations`: post-install operation requests, operation help,

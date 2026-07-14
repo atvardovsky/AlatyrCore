@@ -98,6 +98,7 @@ Additional source-repository helpers include:
 - `python3 tools/check_framework_metadata.py`
 - `python3 tools/check_approval_template.py`
 - `python3 tools/check_ai_infrastructure_inventory.py`
+- `python3 tools/check_ai_infrastructure_router.py`
 - `python3 tools/check_bridge_capability_matrix.py`
 - `python3 tools/check_context_router.py`
 - `python3 tools/check_consistency_map.py`
@@ -157,6 +158,11 @@ Additional source-repository helpers include:
   resolution
 - optional consistency-map guidance and source checks for bounded fact,
   contract, area, system, and adapter impact traversal
+- compact AI infrastructure routing that selects one skill, prompt, gate,
+  checker, tool/MCP config, bridge, or wrapper plus its permissions, gates,
+  validation, and output contract
+- durable adaptation records for imported or materially changed assistant
+  infrastructure
 - task-specific maturity profile guidance and source-template checks for
   supported work, context, validation, approvals, blockers, residual risks,
   and final evidence
@@ -280,6 +286,7 @@ A mature target installation usually has:
 - `.ai/assistant/module-profile.md`
 - `.ai/assistant/maturity-profile.md`
 - `.ai/assistant/bridge-capability-matrix.md`
+- `.ai/assistant/ai-infrastructure-router.json` when AI infrastructure is used
 - `.ai/assistant/help.md`
 - `.ai/assistant/help-reference.md`
 - `.ai/assistant/flows`
@@ -292,6 +299,8 @@ A mature target installation usually has:
   approvals need durable evidence
 - `.ai/assistant/templates/installation-note.md`
 - `.ai/assistant/templates/operation-request.md`
+- `.ai/assistant/templates/ai-infrastructure-adaptation-record.md` when items
+  are imported or materially changed
 - `.ai/assistant/templates/large-task-operation-packet.md` when large or
   resumable operations are enabled
 - `.ai/assistant/templates/migration-note.md`

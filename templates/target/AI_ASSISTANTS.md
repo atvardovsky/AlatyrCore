@@ -18,6 +18,8 @@ Before making changes:
 5. For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-adaptation`,
    `alatyr-add-ai`), read `.ai/assistant/help.md` and
    `.ai/assistant/flows/operation-routing.flow.md`.
+6. For AI infrastructure work, use `.ai/assistant/ai-infrastructure-router.json`
+   to select a route and item ID before loading item-specific context.
 
 Assistant-specific bridge files must stay short and point back to canonical
 target files.

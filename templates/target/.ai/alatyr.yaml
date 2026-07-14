@@ -61,6 +61,10 @@ validation:
       command: "{TARGET_VALIDATION_COMMAND_OR_MANUAL_REVIEW}"
       required_for:
         - "{TASK_PROFILE}"
+ai_infrastructure:
+  router: ".ai/assistant/ai-infrastructure-router.json"
+  inventory: ".ai/assistant/templates/ai-infrastructure-inventory.md"
+  adaptation_record: ".ai/assistant/templates/ai-infrastructure-adaptation-record.md"
 operations:
   help: ".ai/assistant/help.md"
   help_reference: ".ai/assistant/help-reference.md"

@@ -37,6 +37,17 @@ AI infrastructure items include:
 
 The target adapter may define additional item types.
 
+## Capability Routing
+
+When a target provides an AI infrastructure router, use it before loading item
+content. Select one route and the smallest item-ID set, then load only each
+item's canonical source, required context, permission scope, gates, validation,
+and output contract.
+
+Inventory is discovery evidence, not activation permission. A target-owned
+item is routable only when its canonical source, status, allowed actions,
+permissions, gates, and validation are current.
+
 ## Source Inventory
 
 Before adding or importing AI infrastructure, inspect what already exists in
@@ -129,6 +140,10 @@ Before integrating an item into canonical target files:
 11. Add or update target validation and manual review expectations when the
     item changes recurring work.
 12. Record approvals, skipped checks, and residual risk.
+13. Create or update the target AI infrastructure router entry and durable
+    adaptation record. Keep the item blocked until canonical source,
+    permissions, gates, validation, output contract, and required approval are
+    resolved.
 
 ## Approval Triggers
 
@@ -180,6 +195,8 @@ Safety review: <prompt-injection/live/destructive/secrets/dependency/permission 
 Validation: <target checks or manual review>
 Approvals: <used or not required>
 Residual risk: <unresolved provenance, compatibility, or validation>
+Router result: <route, item ID, canonical source, triggers, permissions, gates>
+Adaptation record: <target path or unresolved>
 ```
 
 ## Rejection Criteria

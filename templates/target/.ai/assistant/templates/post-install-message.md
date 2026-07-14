@@ -23,6 +23,7 @@ Entry points:
 - `.ai/project/consistency-map.json` when the optional module is enabled
 - `.ai/assistant/maturity-profile.md`
 - `.ai/assistant/bridge-capability-matrix.md`
+- `.ai/assistant/ai-infrastructure-router.json` when AI infrastructure is enabled
 
 Future assistant bootstrap:
 - Do not rely on this chat message alone.
@@ -42,6 +43,7 @@ Available next actions:
 - `large-task`: coordinate cross-boundary or resumable work with bounded workstreams, checkpoints, and final convergence.
 - `ai-infrastructure-inventory`: check existing AI instructions, prompts, skills, wrappers, bridges, rules, MCP/tool configs, gates, and checkers. Alias: `alatyr-ai-inventory`.
 - `skill-adaptation`: adapt or add skills, prompts, wrappers, bridges, rules, MCP/tool configs, gates, checkers, or third-party assistant infrastructure. Aliases: `alatyr-adaptation <source>`, `alatyr-add-ai <source>`.
+- AI infrastructure operations select a route and item ID before loading item-specific context.
 - Use `continue large task <packet-path-or-operation-id>` to resume a target-approved operation packet without reloading completed workstream context.
 
 Validation run:

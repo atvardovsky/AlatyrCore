@@ -88,6 +88,11 @@ pasted content, package/plugin reference, or other adapter-defined source.
 Target help should state near these aliases that they are chat/request
 shortcuts, not shell commands.
 
+When the target provides an AI infrastructure router, help should route the
+request to `inventory`, `use-existing`, `adapt-import`,
+`gate-checker-change`, `tool-mcp-change`, or `bridge-wrapper-change`, then name
+the selected or proposed item ID. Help must not load or activate every item.
+
 ## Routing Rules
 
 When routing a request:
