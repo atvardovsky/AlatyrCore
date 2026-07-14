@@ -50,6 +50,7 @@ REQUIRED_FILES = [
     ".ai/assistant/module-profile.md",
     ".ai/assistant/maturity-profile.md",
     ".ai/assistant/gates/checklist.md",
+    ".ai/assistant/approvals/approval-record-template.json",
     ".ai/assistant/flows/adapter-recheck.flow.md",
     ".ai/assistant/flows/operation-routing.flow.md",
     ".ai/assistant/templates/adapter-output-contracts.md",
@@ -114,6 +115,7 @@ MANIFEST_REQUIRED_SCALARS: set[PathKey] = {
     ("bridges", "capability_matrix"),
     ("approvals", "directory"),
     ("approvals", "template"),
+    ("approvals", "machine_template"),
     ("policies", "source_access"),
     ("policies", "prompt_injection"),
 }
@@ -137,6 +139,7 @@ MANIFEST_PATH_SCALARS: set[PathKey] = {
     ("bridges", "capability_matrix"),
     ("approvals", "directory"),
     ("approvals", "template"),
+    ("approvals", "machine_template"),
     ("policies", "source_access"),
     ("policies", "prompt_injection"),
 }
@@ -310,6 +313,15 @@ class ManifestData:
     parse_failures: list[str]
 
 
+@dataclass(frozen=True)
+class ApprovalScope:
+    path: Path
+    allowed: list[str]
+    excluded: list[str]
+    diff_base: str
+    machine_readable: bool
+
+
 class Validator:
     def __init__(
         self,
@@ -318,6 +330,7 @@ class Validator:
         framework_source: Path | None,
         diff_ref: str | None,
         approval_records: list[Path],
+        enforce_approval_scope: bool,
         migration_diff: Path | None,
         allow_placeholders: bool,
         allow_local_paths: list[str],
@@ -327,6 +340,7 @@ class Validator:
         self.target = target.resolve()
         self.framework_source = framework_source.resolve() if framework_source else None
         self.diff_ref = diff_ref
+        self.enforce_approval_scope = enforce_approval_scope
         self.approval_records = [
             path.resolve() if path.is_absolute() else (self.target / path).resolve()
             for path in approval_records
@@ -1358,6 +1372,20 @@ class Validator:
         if approval_records:
             self.check_approval_record_shape(approval_records)
 
+        if self.enforce_approval_scope and not self.diff_ref:
+            self.error(
+                "APPROVAL_DIFF_REF_REQUIRED",
+                "--enforce-approval-scope requires --diff-ref",
+            )
+            return
+        if self.enforce_approval_scope and not self.approval_records:
+            self.error(
+                "APPROVAL_RECORD_SELECTION_REQUIRED",
+                "strict approval enforcement requires one or more explicit "
+                "--approval-record values; historical records are not auto-selected",
+            )
+            return
+
         if not self.diff_ref:
             if approval_records:
                 self.check_approval_hash_evidence(approval_records)
@@ -1374,46 +1402,73 @@ class Validator:
                 f"could not compute git diff against {self.diff_ref}",
             )
             return
-        protected = [path for path in changed_files if is_protected_surface(path)]
-        if not protected:
-            self.info("DIFF_SCOPE_CLEAN", "no protected adapter surfaces changed")
+        checked_files = (
+            changed_files
+            if self.enforce_approval_scope
+            else [path for path in changed_files if is_protected_surface(path)]
+        )
+        if not checked_files:
+            message = (
+                "no changed paths were found"
+                if self.enforce_approval_scope
+                else "no protected adapter surfaces changed"
+            )
+            self.info("DIFF_SCOPE_CLEAN", message)
             return
         if not approval_records:
-            self.warn(
+            finding = self.error if self.enforce_approval_scope else self.warn
+            finding(
                 "APPROVAL_RECORD_MISSING",
-                "protected adapter surfaces changed but no approval records were supplied or found",
+                "changed files require approval scope but no applicable approval records were supplied",
             )
             return
 
-        applicable: list[Path] = []
+        scopes: list[ApprovalScope] = []
         for record in approval_records:
-            text = self.read_text(record)
-            allowed = extract_list_field(text, "Allowed files or surfaces:")
-            excluded = extract_list_field(text, "Excluded files or surfaces:")
-            covered = [path for path in protected if scope_entries_cover(path, allowed)]
-            if covered:
-                applicable.append(record)
-            for changed in protected:
-                if scope_entries_cover(changed, excluded):
-                    self.warn(
+            scope = self.load_approval_scope(record)
+            if scope is None:
+                continue
+            scopes.append(scope)
+            if self.enforce_approval_scope:
+                if not scope.machine_readable:
+                    self.error(
+                        "APPROVAL_RECORD_MACHINE_READABLE_REQUIRED",
+                        "strict approval enforcement requires a JSON approval record",
+                        self.rel(record),
+                    )
+                if not refs_match(self.target, scope.diff_base, self.diff_ref):
+                    self.error(
+                        "APPROVAL_DIFF_BASE_MISMATCH",
+                        f"approval diff base {scope.diff_base or '<missing>'} does not "
+                        f"match --diff-ref {self.diff_ref}",
+                        self.rel(record),
+                    )
+            for changed in checked_files:
+                if scope_entries_cover(changed, scope.excluded):
+                    finding = self.error if self.enforce_approval_scope else self.warn
+                    finding(
                         "APPROVAL_SCOPE_EXCLUDED",
-                        f"changed protected file is explicitly excluded: {changed}",
+                        f"changed file is explicitly excluded: {changed}",
                         self.rel(record),
                     )
 
-        self.check_approval_hash_evidence(applicable)
-        for changed in protected:
+        self.check_approval_hash_evidence([scope.path for scope in scopes])
+        for changed in checked_files:
             if any(
-                scope_entries_cover(
-                    changed,
-                    extract_list_field(self.read_text(record), "Allowed files or surfaces:"),
-                )
-                for record in applicable
+                scope_entries_cover(changed, scope.allowed)
+                for scope in scopes
             ):
                 continue
-            self.warn(
+            finding = self.error if self.enforce_approval_scope else self.warn
+            finding(
                 "APPROVAL_SCOPE_MISMATCH",
-                f"changed protected file is not covered by an explicit approval scope: {changed}",
+                f"changed file is not covered by an explicit approval scope: {changed}",
+            )
+        if self.enforce_approval_scope and scopes:
+            self.info(
+                "APPROVAL_SCOPE_ENFORCED",
+                f"checked {len(checked_files)} changed path(s) against "
+                f"{len(scopes)} explicitly selected machine-readable approval record(s)",
             )
 
     def resolve_approval_records(self) -> list[Path]:
@@ -1423,14 +1478,16 @@ class Validator:
                 try:
                     record.relative_to(self.target)
                 except ValueError:
-                    self.warn(
+                    finding = self.error if self.enforce_approval_scope else self.warn
+                    finding(
                         "APPROVAL_RECORD_OUTSIDE_TARGET",
                         "supplied approval record must be inside the target repository",
                         str(record),
                     )
                     continue
                 if not record.is_file():
-                    self.warn(
+                    finding = self.error if self.enforce_approval_scope else self.warn
+                    finding(
                         "APPROVAL_RECORD_MISSING",
                         "supplied approval record does not exist",
                         self.rel(record),
@@ -1441,14 +1498,145 @@ class Validator:
         directory = self.target_path(".ai/assistant/approvals")
         return sorted(
             path
-            for path in directory.glob("*.md")
-            if path.name != "approval-template.md"
+            for pattern in ("*.md", "*.json")
+            for path in directory.glob(pattern)
+            if path.name not in {"approval-template.md", "approval-record-template.json"}
+        )
+
+    def load_approval_scope(self, record: Path) -> ApprovalScope | None:
+        if record.suffix.lower() == ".json":
+            try:
+                data = json.loads(self.read_text(record))
+            except json.JSONDecodeError as exc:
+                self.error(
+                    "APPROVAL_RECORD_INVALID_JSON",
+                    str(exc),
+                    self.rel(record),
+                )
+                return None
+            if not isinstance(data, dict):
+                self.error(
+                    "APPROVAL_RECORD_INVALID_SHAPE",
+                    "machine-readable approval record must be a JSON object",
+                    self.rel(record),
+                )
+                return None
+            scope = data.get("scope")
+            diff = data.get("diff")
+            if not isinstance(scope, dict) or not isinstance(diff, dict):
+                self.error(
+                    "APPROVAL_RECORD_INVALID_SHAPE",
+                    "machine-readable approval record requires scope and diff objects",
+                    self.rel(record),
+                )
+                return None
+            return ApprovalScope(
+                path=record,
+                allowed=json_string_list(scope.get("allowed_files_or_surfaces")),
+                excluded=json_string_list(scope.get("excluded_files_or_surfaces")),
+                diff_base=str(diff.get("base", "")).strip(),
+                machine_readable=True,
+            )
+
+        text = self.read_text(record)
+        return ApprovalScope(
+            path=record,
+            allowed=extract_list_field(text, "Allowed files or surfaces:"),
+            excluded=extract_list_field(text, "Excluded files or surfaces:"),
+            diff_base=extract_field(text, "Approved diff base:"),
+            machine_readable=False,
         )
 
     def check_approval_record_shape(self, approval_records: list[Path]) -> None:
         for record in approval_records:
-            text = self.read_text(record)
             relpath = self.rel(record)
+            finding = self.error if self.enforce_approval_scope else self.warn
+            if record.suffix.lower() == ".json":
+                try:
+                    data = json.loads(self.read_text(record))
+                except json.JSONDecodeError:
+                    continue
+                if not isinstance(data, dict):
+                    continue
+                required_scalars = [
+                    ("schema_version",),
+                    ("record_kind",),
+                    ("evidence_classification",),
+                    ("approval_id",),
+                    ("operation", "id"),
+                    ("operation", "type"),
+                    ("plan", "version"),
+                    ("diff", "base"),
+                    ("scope", "allowed_actions_mode"),
+                    ("scope", "invalidation_rule"),
+                    ("approval", "approved_by"),
+                    ("approval", "approved_at"),
+                ]
+                required_lists = [
+                    ("scope", "allowed_protected_changes"),
+                    ("scope", "allowed_files_or_surfaces"),
+                    ("scope", "excluded_files_or_surfaces"),
+                    ("scope", "excluded_actions"),
+                ]
+                for key_path in required_scalars:
+                    value = nested_json_value(data, key_path)
+                    if value is None or value == "":
+                        finding(
+                            "APPROVAL_RECORD_FIELD_MISSING",
+                            "machine-readable approval record is missing "
+                            + ".".join(key_path),
+                            relpath,
+                        )
+                for key_path in required_lists:
+                    value = nested_json_value(data, key_path)
+                    if not isinstance(value, list):
+                        finding(
+                            "APPROVAL_RECORD_FIELD_MISSING",
+                            "machine-readable approval record requires list "
+                            + ".".join(key_path),
+                            relpath,
+                        )
+                if data.get("record_kind") != "alatyr-approval-record":
+                    finding(
+                        "APPROVAL_RECORD_KIND",
+                        "record_kind must be alatyr-approval-record",
+                        relpath,
+                    )
+                if data.get("evidence_classification") != "historical-record":
+                    finding(
+                        "APPROVAL_RECORD_EVIDENCE_CLASS",
+                        "approval record must identify itself as historical-record evidence",
+                        relpath,
+                    )
+                allowed = json_string_list(
+                    nested_json_value(data, ("scope", "allowed_files_or_surfaces"))
+                )
+                if not allowed:
+                    finding(
+                        "APPROVAL_RECORD_SCOPE_EMPTY",
+                        "machine-readable approval record has no allowed files or surfaces",
+                        relpath,
+                    )
+                for value in allowed:
+                    if is_placeholder(value) or not is_target_scope_pattern(value):
+                        finding(
+                            "APPROVAL_RECORD_SCOPE_INVALID",
+                            f"allowed scope contains an unresolved or unsafe target pattern: {value}",
+                            relpath,
+                        )
+                excluded = json_string_list(
+                    nested_json_value(data, ("scope", "excluded_files_or_surfaces"))
+                )
+                for value in excluded:
+                    if is_placeholder(value) or not is_target_scope_pattern(value):
+                        finding(
+                            "APPROVAL_RECORD_SCOPE_INVALID",
+                            f"excluded scope contains an unresolved or unsafe target pattern: {value}",
+                            relpath,
+                        )
+                continue
+
+            text = self.read_text(record)
             for required in [
                 "Approval ID:",
                 "Operation ID:",
@@ -1464,13 +1652,13 @@ class Validator:
                 "Repository revision at approval:",
             ]:
                 if required not in text:
-                    self.warn(
+                    finding(
                         "APPROVAL_RECORD_FIELD_MISSING",
                         f"approval record does not include {required}",
                         relpath,
                     )
             if "Evidence classification: `historical-record`" not in text:
-                self.warn(
+                finding(
                     "APPROVAL_RECORD_EVIDENCE_CLASS",
                     "approval record must identify itself as historical-record evidence",
                     relpath,
@@ -1478,14 +1666,14 @@ class Validator:
             for field in ["Allowed files or surfaces:"]:
                 values = extract_list_field(text, field)
                 if not values:
-                    self.warn(
+                    finding(
                         "APPROVAL_RECORD_SCOPE_EMPTY",
                         f"approval record has no explicit entries under {field}",
                         relpath,
                     )
                 for value in values:
                     if is_placeholder(value) or not is_target_scope_pattern(value):
-                        self.warn(
+                        finding(
                             "APPROVAL_RECORD_SCOPE_INVALID",
                             f"{field} contains an unresolved or unsafe target pattern: {value}",
                             relpath,
@@ -1495,22 +1683,51 @@ class Validator:
         for record in approval_records:
             text = self.read_text(record)
             relpath = self.rel(record)
-            plan_hash = normalize_hash_field(extract_field(text, "Plan hash:"))
-            plan_file = extract_field(text, "Approved plan file:")
-            patch_hash = normalize_hash_field(extract_field(text, "Patch hash:"))
+            if record.suffix.lower() == ".json":
+                try:
+                    data = json.loads(text)
+                except json.JSONDecodeError:
+                    continue
+                plan_hash = normalize_hash_field(
+                    str(nested_json_value(data, ("plan", "sha256")) or "")
+                )
+                plan_file = str(nested_json_value(data, ("plan", "file")) or "")
+                patch_hash = normalize_hash_field(
+                    str(nested_json_value(data, ("diff", "patch_sha256")) or "")
+                )
+                patch_changed = str(
+                    nested_json_value(data, ("use_result", "patch_changed_after_approval"))
+                    or ""
+                ).lower()
+                within_scope = str(
+                    nested_json_value(data, ("use_result", "implementation_within_scope"))
+                    or ""
+                ).lower()
+                plan_hash_field_present = nested_json_value(data, ("plan", "sha256")) is not None
+                patch_hash_field_present = (
+                    nested_json_value(data, ("diff", "patch_sha256")) is not None
+                )
+            else:
+                plan_hash = normalize_hash_field(extract_field(text, "Plan hash:"))
+                plan_file = extract_field(text, "Approved plan file:")
+                patch_hash = normalize_hash_field(extract_field(text, "Patch hash:"))
+                patch_changed = extract_field(
+                    text, "Patch changed after approval:"
+                ).lower()
+                within_scope = extract_field(
+                    text, "Implementation stayed within approved scope:"
+                ).lower()
+                plan_hash_field_present = "Plan hash:" in text
+                patch_hash_field_present = "Patch hash:" in text
 
-            if "Patch changed after approval:" in text:
-                patch_changed = extract_field(text, "Patch changed after approval:").lower()
+            if patch_changed:
                 if patch_changed.startswith("yes"):
                     self.warn(
                         "APPROVAL_PATCH_CHANGED",
                         "approval record says the patch changed after approval",
                         relpath,
                     )
-            if "Implementation stayed within approved scope:" in text:
-                within_scope = extract_field(
-                    text, "Implementation stayed within approved scope:"
-                ).lower()
+            if within_scope:
                 if within_scope.startswith("no"):
                     self.warn(
                         "APPROVAL_SCOPE_DECLARED_BROKEN",
@@ -1551,7 +1768,7 @@ class Validator:
                             f"approved plan file hash matches: {plan_file}",
                             relpath,
                         )
-            elif "Plan hash:" in text:
+            elif plan_hash_field_present:
                 self.info(
                     "APPROVAL_PLAN_HASH_NOT_VERIFIABLE",
                     "plan hash is unavailable or non-deterministic",
@@ -1559,7 +1776,7 @@ class Validator:
                 )
 
             if not patch_hash:
-                if "Patch hash:" in text:
+                if patch_hash_field_present:
                     self.info(
                         "APPROVAL_PATCH_HASH_NOT_VERIFIABLE",
                         "patch hash is unavailable or non-deterministic",
@@ -1862,28 +2079,69 @@ def normalize_hash_field(value: str) -> str:
 
 
 def git_changed_files(target: Path, diff_ref: str) -> list[str] | None:
-    commands = [
-        ["git", "diff", "--name-only", f"{diff_ref}...HEAD"],
-        ["git", "diff", "--name-only", diff_ref],
-    ]
-    for command in commands:
-        result = subprocess.run(
-            command,
-            cwd=target,
-            check=False,
-            text=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.DEVNULL,
-        )
-        if result.returncode == 0:
-            return [line.strip() for line in result.stdout.splitlines() if line.strip()]
-    return None
+    changed: set[str] = set()
+    base_result: list[str] | None = None
+    for comparison in [f"{diff_ref}...HEAD", diff_ref]:
+        base_result = git_name_status_paths(target, comparison)
+        if base_result is not None:
+            changed.update(base_result)
+            break
+    if base_result is None:
+        return None
+
+    for arguments in [[], ["--cached"]]:
+        worktree_result = git_name_status_paths(target, *arguments)
+        if worktree_result is None:
+            return None
+        changed.update(worktree_result)
+
+    untracked = subprocess.run(
+        ["git", "ls-files", "--others", "--exclude-standard", "-z"],
+        cwd=target,
+        check=False,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+    )
+    if untracked.returncode != 0:
+        return None
+    changed.update(decode_git_path(value) for value in untracked.stdout.split(b"\0") if value)
+    return sorted(changed)
+
+
+def git_name_status_paths(target: Path, *comparison: str) -> list[str] | None:
+    result = subprocess.run(
+        ["git", "diff", "--name-status", "-z", "--find-renames", *comparison],
+        cwd=target,
+        check=False,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+    )
+    if result.returncode != 0:
+        return None
+    parts = result.stdout.split(b"\0")
+    paths: list[str] = []
+    index = 0
+    while index < len(parts) and parts[index]:
+        status = parts[index].decode("ascii", errors="replace")
+        index += 1
+        path_count = 2 if status[:1] in {"R", "C"} else 1
+        if index + path_count > len(parts):
+            return None
+        for value in parts[index : index + path_count]:
+            if value:
+                paths.append(decode_git_path(value))
+        index += path_count
+    return paths
+
+
+def decode_git_path(value: bytes) -> str:
+    return value.decode("utf-8", errors="surrogateescape").replace("\\", "/")
 
 
 def git_diff_patch(target: Path, diff_ref: str) -> str | None:
     commands = [
-        ["git", "diff", "--binary", f"{diff_ref}...HEAD"],
         ["git", "diff", "--binary", diff_ref],
+        ["git", "diff", "--binary", f"{diff_ref}...HEAD"],
     ]
     for command in commands:
         result = subprocess.run(
@@ -1960,6 +2218,47 @@ def scope_entries_cover(path: str, entries: list[str]) -> bool:
         if normalized == pattern or fnmatch.fnmatchcase(normalized, pattern):
             return True
     return False
+
+
+def nested_json_value(data: Any, path: tuple[str, ...]) -> Any:
+    current = data
+    for key in path:
+        if not isinstance(current, dict) or key not in current:
+            return None
+        current = current[key]
+    return current
+
+
+def json_string_list(value: Any) -> list[str]:
+    if not isinstance(value, list):
+        return []
+    return [str(item).strip() for item in value if isinstance(item, str) and item.strip()]
+
+
+def git_resolve_ref(target: Path, ref: str) -> str | None:
+    if not ref:
+        return None
+    result = subprocess.run(
+        ["git", "rev-parse", "--verify", f"{ref}^{{commit}}"],
+        cwd=target,
+        check=False,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+    )
+    if result.returncode != 0:
+        return None
+    return result.stdout.strip() or None
+
+
+def refs_match(target: Path, approved: str, selected: str) -> bool:
+    if not approved or not selected:
+        return False
+    approved_revision = git_resolve_ref(target, approved)
+    selected_revision = git_resolve_ref(target, selected)
+    if approved_revision and selected_revision:
+        return approved_revision == selected_revision
+    return approved == selected
 
 
 def sha256(path: Path) -> str:
@@ -2262,8 +2561,8 @@ def main() -> int:
     parser.add_argument(
         "--diff-ref",
         help=(
-            "Optional git ref used to compare protected changed files with "
-            "approval-record scope."
+            "Optional git ref used for approval-scope comparison. Strict mode "
+            "checks the complete committed and working-tree change set."
         ),
     )
     parser.add_argument(
@@ -2274,6 +2573,14 @@ def main() -> int:
         help=(
             "Approval record to bind to --diff-ref. Relative paths are resolved "
             "inside the target. May be provided multiple times."
+        ),
+    )
+    parser.add_argument(
+        "--enforce-approval-scope",
+        action="store_true",
+        help=(
+            "Fail unless every changed path is covered by explicitly selected "
+            "machine-readable JSON approval records bound to --diff-ref."
         ),
     )
     parser.add_argument(
@@ -2326,6 +2633,7 @@ def main() -> int:
         framework_source=args.framework_source,
         diff_ref=args.diff_ref,
         approval_records=args.approval_record,
+        enforce_approval_scope=args.enforce_approval_scope,
         migration_diff=args.migration_diff,
         allow_placeholders=args.allow_placeholders,
         allow_local_paths=args.allow_local_path,

@@ -11,19 +11,19 @@
       "category": "SOURCE",
       "owner": "framework/source-of-truth-registry.md",
       "rule_ids": ["ALATYR-SOURCE-001"],
-      "derived_surfaces": ["project adapter contract", "logical integrity", "blueprint change", "target source-of-truth registry template", "consistency map"]
+      "derived_surfaces": ["project adapter contract", "logical integrity", "blueprint change", "target source-of-truth registry template", "invariant constraints", "consistency map"]
     },
     {
       "category": "RISK",
       "owner": "framework/change-risk-model.md",
       "rule_ids": ["ALATYR-RISK-001"],
-      "derived_surfaces": ["installer approval planning", "target gates", "operation request templates", "final evidence"]
+      "derived_surfaces": ["installer approval planning", "target gates", "operation request templates", "external failure observability", "final evidence"]
     },
     {
       "category": "APPROVAL",
       "owner": "framework/approval-records.md",
       "rule_ids": ["ALATYR-APPROVAL-001"],
-      "derived_surfaces": ["installation approval gate", "installed-operation allowed actions", "approval template", "security-sensitive profiles"]
+      "derived_surfaces": ["installation approval gate", "installed-operation allowed actions", "human and machine-readable approval templates", "strict target diff scope validation", "security-sensitive profiles"]
     },
     {
       "category": "SAFETY",
@@ -35,7 +35,7 @@
       "category": "INTEGRITY",
       "owner": "framework/logical-integrity.md",
       "rule_ids": ["ALATYR-INTEGRITY-001"],
-      "derived_surfaces": ["target gates", "documentation sync", "adapter recheck", "relationship impact closure", "workstream convergence", "final evidence"]
+      "derived_surfaces": ["target gates", "documentation sync", "adapter recheck", "relationship or manual invariant impact closure", "review-item reconciliation", "workstream convergence", "final evidence"]
     },
     {
       "category": "CHANGE",
@@ -87,7 +87,7 @@
       "id": "ALATYR-SOURCE-001",
       "category": "SOURCE",
       "canonical_source": "framework/source-of-truth-registry.md",
-      "summary": "Choose fact owners from the target source-of-truth registry when it exists, use stable fact IDs for optional relationship routing, and otherwise use contour ownership while reporting missing owners or relationship coverage.",
+      "summary": "Choose fact owners from the target source-of-truth registry, record invariant and dependency constraints, use stable fact IDs for optional relationship routing, and otherwise use contour ownership plus a manual invariant closure while reporting missing coverage.",
       "applies_to": ["logical integrity", "documentation sync", "blueprint-driven changes"],
       "enforcement": "required"
     },
@@ -95,7 +95,7 @@
       "id": "ALATYR-RISK-001",
       "category": "RISK",
       "canonical_source": "framework/change-risk-model.md",
-      "summary": "Classify changed facts, not only changed files, before choosing approval, validation, documentation, diagram, and evidence scope.",
+      "summary": "Classify changed facts, not only changed files, before choosing approval, validation, documentation, diagram, observable external failure distinctions, and evidence scope.",
       "applies_to": ["all changes"],
       "enforcement": "required"
     },
@@ -103,7 +103,7 @@
       "id": "ALATYR-APPROVAL-001",
       "category": "APPROVAL",
       "canonical_source": "framework/approval-records.md",
-      "summary": "Require explicit approval for protected changes and create durable approval records when scope, files, or plan versions need evidence.",
+      "summary": "Require explicit approval for protected changes and use explicitly selected machine-readable records to enforce that the complete operation diff stays within approved path scope.",
       "applies_to": ["protected changes", "installed operations"],
       "enforcement": "required"
     },
@@ -127,7 +127,7 @@
       "id": "ALATYR-INTEGRITY-001",
       "category": "INTEGRITY",
       "canonical_source": "framework/logical-integrity.md",
-      "summary": "Name changed semantic or logical facts, affected surfaces, source of truth, repair set, validation, and residual risk before claiming consistency, use a bounded relationship impact closure when available, and reconcile the combined repair set for multi-workstream operations.",
+      "summary": "Name changed facts, re-derive testable invariants, reconcile related review items, identify owners and repair sets, validate, and report residual risk, using mapped or manual impact closure and global multi-workstream convergence as applicable.",
       "applies_to": ["semantic fact changes", "drift reviews"],
       "enforcement": "required"
     },
@@ -135,7 +135,7 @@
       "id": "ALATYR-CHANGE-001",
       "category": "CHANGE",
       "canonical_source": "framework/blueprint-driven-change.md",
-      "summary": "Carry accepted product changes through source-of-truth update, flow update, implementation plan, code and test change, docs and diagram sync, and final evidence, using bounded workstreams and final convergence when the change is large or resumable.",
+      "summary": "Carry accepted product changes through invariant re-derivation, source-of-truth and flow updates, implementation planning, code and tests, companion sync, and final evidence, reconciling related review items and large workstreams globally.",
       "applies_to": ["business changes", "architecture changes", "data changes", "runtime changes", "public contract changes"],
       "enforcement": "required"
     },

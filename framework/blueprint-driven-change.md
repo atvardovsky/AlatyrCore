@@ -46,8 +46,9 @@ Apply this sequence before claiming the change is complete:
 1. Record change intent and non-goals.
 2. Load target context from the adapter and project source-of-truth docs.
 3. Run logical integrity review for the proposed or discovered change.
-4. Identify affected project areas, contracts, tests, diagrams, and assistant
-   governance surfaces.
+4. Re-derive testable scope, identity, ownership, lifecycle, dependency, and
+   external-boundary invariants, then identify affected project areas,
+   contracts, tests, diagrams, and assistant governance surfaces.
 5. Update the owning blueprint or source-of-truth docs when accepted facts
    change.
 6. Update project flow, use-case, data, runtime, or architecture docs when
@@ -63,6 +64,11 @@ When the adapter provides a consistency map, derive step 4 from the changed
 fact relationship closure. This limits initial context while preserving
 cross-area contract, validation, generated-artifact, and assistant-governance
 effects.
+
+When a request originates from multiple review comments or defect reports,
+cluster them by fact and contract before step 4 and reconcile one combined
+repair set. Passing each local review item independently is not final
+consistency evidence.
 
 For small documentation-only changes, some steps may be a short explicit
 decision rather than a separate artifact.
@@ -109,6 +115,7 @@ A blueprint-driven change should leave evidence for:
 
 - change intent and non-goals
 - changed facts and risk classification
+- re-derived invariants and review-item reconciliation
 - source-of-truth or blueprint updates
 - flow, implementation, test, diagram, prompt, skill, gate, bridge, or checker
   updates

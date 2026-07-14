@@ -47,6 +47,9 @@ A post-install request should state:
 - target source-of-truth docs to inspect
 - validation commands or manual checks known to the target
 - approval constraints
+- related review comments or defect reports
+- approved Git diff base and explicitly selected machine-readable approval
+  records when scoped approval applies
 - allowed actions: `read-only`, `docs-only`, `adapter-only`,
   `code-and-tests`, or `full-with-approval`
 - context profile when known
@@ -109,7 +112,8 @@ For installed operations:
 4. Identify whether the request is framework-core, target-project, repository
    adapter, bridge, generated-artifact, or skill/prompt work.
 5. Use operation help and operation routing when the request is ambiguous.
-6. Apply logical integrity review before claiming consistency.
+6. Apply logical integrity review before claiming consistency. Re-derive
+   invariants and reconcile related review items over the combined repair set.
    When the optional consistency map is enabled, build a bounded impact closure
    from changed fact IDs before loading related surfaces.
 7. Activate the large-task scale overlay only when work is cross-boundary,
@@ -126,12 +130,16 @@ For installed operations:
    removing assistant infrastructure.
 12. Use adapter maturity review when the request is broad, post-install, or
    post-upgrade.
-13. Record approval evidence when protected-change scope requires it.
+13. Record approval evidence when protected-change scope requires it. When
+    scoped approval is used, enforce the complete changed path set against
+    explicitly selected machine-readable records bound to the approved diff
+    base.
 14. Use the target adapter output contract when the operation follows
    installation, framework update, or adapter recheck.
 15. Run target validation that exists, or record unresolved checks.
-16. Report changed facts, files inspected, files changed, approvals,
-   validation, skipped checks, and residual risk.
+16. Report changed facts, re-derived invariants, review-item reconciliation,
+   files inspected, files changed, approval-scope enforcement, validation,
+   skipped checks, and residual risk.
 
 ## Blueprint Creation
 

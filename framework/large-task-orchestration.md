@@ -99,8 +99,11 @@ Local workstream success is not final operation success. Before completion:
    contracts, ordering, and generated artifacts.
 3. Confirm approvals still cover the applied scope.
 4. Run target validation or record unresolved checks.
-5. Perform one global logical integrity review over the combined repair set.
-6. Report residual risk and close or preserve the packet according to target
+5. Perform one global logical integrity review over the combined repair set,
+   re-derived invariants, and related review-item clusters.
+6. When scoped approval applies, enforce the combined changed path set against
+   explicitly selected machine-readable approval records and their diff base.
+7. Report residual risk and close or preserve the packet according to target
    policy.
 
 ## Storage And Privacy

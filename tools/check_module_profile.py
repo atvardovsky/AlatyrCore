@@ -156,6 +156,14 @@ def main() -> int:
             },
         )
 
+    durable = module_blocks.get("durable-approvals", "")
+    for required in [
+        ".ai/assistant/approvals/approval-template.md",
+        ".ai/assistant/approvals/approval-record-template.json",
+    ]:
+        if required not in durable:
+            failures.append(f"module durable-approvals missing required file {required}")
+
     duplicate_core = [
         item
         for item in CORE_HEADING.findall(text)

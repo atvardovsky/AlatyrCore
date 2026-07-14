@@ -54,6 +54,7 @@ REQUIRED_FIELDS = [
     "Template version:",
     "Manifest path:",
     "Approval records used:",
+    "Approval scope enforcement:",
     "Surfaces created:",
     "Surfaces updated:",
     "Surfaces skipped:",

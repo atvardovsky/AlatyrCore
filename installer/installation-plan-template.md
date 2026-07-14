@@ -141,7 +141,9 @@ pasted, package/plugin, or unknown AI infrastructure can be reviewed or
 adapted.
 
 Include `.ai/assistant/approvals/approval-template.md` when protected-change
-approvals need durable evidence.
+approvals need durable human evidence. Include
+`.ai/assistant/approvals/approval-record-template.json` when approval scope
+must be enforced against a Git diff.
 
 Include `.ai/assistant/templates/migration-note.md` when framework upgrades
 need durable migration evidence.
@@ -280,6 +282,10 @@ State whether approval is required and why.
 If approval scope spans protected categories, multiple files, or a plan that
 may be reused, state the approval record path and approved plan hash or why a
 hash is unavailable.
+
+Also state the approved Git diff base, explicit machine-readable approval
+record paths, and the command or target-local equivalent that will fail when
+the complete changed path set exceeds allowed scope or enters excluded scope.
 
 Preferred approval:
 

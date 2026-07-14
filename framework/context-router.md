@@ -68,6 +68,12 @@ to its machine-readable map. Use it only after a semantic change or suspected
 drift: resolve changed fact IDs, select applicable direct edges, and expand to
 dependent contracts only when the map or conflicting evidence requires it.
 
+When the map is disabled or incomplete, route logical review to canonical fact
+owners and the smallest target surfaces needed to re-derive scope, identity,
+ownership, lifecycle, persistence, caller, and dependency invariants. Multiple
+review comments that share a fact or contract are one expansion trigger, not
+independent local tasks.
+
 For AI infrastructure work, route first to the target AI infrastructure router
 instead of loading every skill, prompt, gate, tool, bridge, and import policy.
 The selected route decides whether inventory, ordinary target-owned item use,

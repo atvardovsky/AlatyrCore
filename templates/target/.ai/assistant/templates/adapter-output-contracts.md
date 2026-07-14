@@ -25,6 +25,7 @@ Use after the initial Alatyr Core installation or a scoped adapter expansion.
 - Manifest path: `.ai/alatyr.yaml`
 - Installation plan path or summary: `{INSTALLATION_PLAN_PATH_OR_SUMMARY}`
 - Approval records used: `{APPROVAL_RECORDS_USED_OR_NOT_REQUIRED}`
+- Approval scope enforcement: `{DIFF_BASE_RECORDS_CHANGED_PATHS_AND_RESULT_OR_NOT_REQUIRED}`
 - Surfaces created: `{SURFACES_CREATED}`
 - Surfaces updated: `{SURFACES_UPDATED}`
 - Surfaces skipped: `{SURFACES_SKIPPED_AND_REASON}`
@@ -92,6 +93,7 @@ Core baseline.
 - Surfaces skipped: `{SURFACES_SKIPPED_AND_REASON}`
 - Existing files preserved: `{EXISTING_FILES_PRESERVED}`
 - Approval records used: `{APPROVAL_RECORDS_USED_OR_NOT_REQUIRED}`
+- Approval scope enforcement: `{DIFF_BASE_RECORDS_CHANGED_PATHS_AND_RESULT_OR_NOT_REQUIRED}`
 - Required core profile result: `{REQUIRED_CORE_PROFILE_RESULT}`
 - Optional module profile result: `{OPTIONAL_MODULE_PROFILE_RESULT}`
 - Context profiles result: `{CONTEXT_PROFILES_RESULT}`
@@ -136,6 +138,7 @@ adapter.
 - Adapter schema version: `{ALATYR_ADAPTER_SCHEMA_VERSION}`
 - Template version: `{ALATYR_TEMPLATE_VERSION}`
 - Approval records used: `{APPROVAL_RECORDS_USED_OR_NOT_REQUIRED}`
+- Approval scope enforcement: `{DIFF_BASE_RECORDS_CHANGED_PATHS_AND_RESULT_OR_NOT_REQUIRED}`
 - Surfaces created: `{SURFACES_CREATED_OR_NONE}`
 - Surfaces updated: `{SURFACES_UPDATED_OR_NONE}`
 - Surfaces skipped: `{SURFACES_SKIPPED_AND_REASON}`

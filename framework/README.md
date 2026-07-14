@@ -35,6 +35,7 @@ sync, logical integrity review, and final evidence.
 - portable security, safety, and live-service reasoning rules
 - prompt-injection handling for imported AI infrastructure
 - approval-record guidance for protected changes
+- machine-readable changed-path approval scope enforcement
 - diagram reasoning and source/visual synchronization guidance
 - AI infrastructure inventory plus skill, prompt, wrapper, bridge, and
   third-party assistant infrastructure adaptation guidance

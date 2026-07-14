@@ -40,19 +40,21 @@ Category: `SOURCE`
 Owner: `.ai/framework/source-of-truth-registry.md`
 Rule IDs: `ALATYR-SOURCE-001`
 Derived surfaces: project adapter contract, logical integrity, blueprint
-change, target source-of-truth registry template, consistency map.
+change, target source-of-truth registry template, invariant constraints,
+consistency map.
 
 Category: `RISK`
 Owner: `.ai/framework/change-risk-model.md`
 Rule IDs: `ALATYR-RISK-001`
 Derived surfaces: installer approval planning, target gates, operation request
-templates, final evidence.
+templates, external failure observability, final evidence.
 
 Category: `APPROVAL`
 Owner: `.ai/framework/approval-records.md`
 Rule IDs: `ALATYR-APPROVAL-001`
 Derived surfaces: installation approval gate, installed-operation allowed
-actions, approval template, security-sensitive profiles.
+actions, human and machine-readable approval templates, strict target diff
+scope validation, security-sensitive profiles.
 
 Category: `SAFETY`
 Owner: `.ai/framework/security-safety-guidance.md`
@@ -64,7 +66,8 @@ Category: `INTEGRITY`
 Owner: `.ai/framework/logical-integrity.md`
 Rule IDs: `ALATYR-INTEGRITY-001`
 Derived surfaces: target gates, documentation sync, adapter recheck,
-relationship impact closure, workstream convergence, final evidence.
+relationship or manual invariant impact closure, review-item reconciliation,
+workstream convergence, final evidence.
 
 Category: `CHANGE`
 Owner: `.ai/framework/blueprint-driven-change.md`

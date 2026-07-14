@@ -33,6 +33,8 @@ The framework commits to giving an assistant a defined process for:
   services, dependencies, destructive operations, or permissions are changed
 - detecting whether a semantic or logical fact changed
 - performing logical integrity review before claiming consistency
+- re-deriving testable invariants and reconciling related review items before
+  accepting a combined repair set
 - mapping changed facts to affected docs, diagrams, tests, gates, prompts, and
   skills
 - traversing adapted fact relationships to bound multi-level impact review in
@@ -91,6 +93,9 @@ Machine checks can verify only deterministic repository facts, such as:
   operation-routing entry points
 - manifest, approval, prompt-injection, help, and policy templates contain
   required fields
+- explicitly selected machine-readable approvals can be checked so the
+  complete Git changed-path set is allowed, not excluded, and bound to the
+  selected diff base
 
 Machine checks do not prove the assistant understood the target project or
 that project facts are correct. Prepared prompts and static bridge checks also

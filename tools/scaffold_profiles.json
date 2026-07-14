@@ -8,6 +8,7 @@
         ".ai/alatyr.yaml",
         ".ai/assistant/ai-infrastructure-router.json",
         ".ai/assistant/approvals/approval-template.md",
+        ".ai/assistant/approvals/approval-record-template.json",
         ".ai/assistant/bridge-capability-matrix.md",
         ".ai/assistant/checklists/change-impact.md",
         ".ai/assistant/context-profiles.md",

@@ -58,7 +58,9 @@ They are not portable framework requirements and must not be copied into target
 repositories as required validation.
 
 `tools/check_approval_template.py` validates the target
-`.ai/assistant/approvals/approval-template.md` template required approval,
+`.ai/assistant/approvals/approval-template.md` provides human approval
+evidence; `.ai/assistant/approvals/approval-record-template.json` provides
+machine-readable diff-base and path-scope enforcement. The source check covers
 scope, plan, invalidation, use-result, evidence, validation, and residual-risk
 fields.
 

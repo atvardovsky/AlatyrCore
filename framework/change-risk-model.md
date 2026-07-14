@@ -84,7 +84,10 @@ Use the risk class to choose companion work:
 - architecture needs level or boundary documentation and approval evidence
 - data changes need schema/data-contract docs and persistence validation
 - external boundaries need contract fixtures, retry/failure/idempotency
-  reasoning, and no-live-call policy
+  reasoning, no-live-call policy, and explicit failure-class observability when
+  callers, operators, retries, or user-visible behavior must distinguish one
+  failure reason from another; the target may use typed errors, result values,
+  status codes, or another project-owned contract
 - security changes need redaction, permission, and secret-handling checks
 - AI governance changes need bridge, skill, prompt, gate, and consistency
   sync

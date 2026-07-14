@@ -39,7 +39,8 @@ Operation: `product-change`
 Use when: accepted behavior, architecture, data, runtime, or public contract
 may change.
 Flow: `.ai/assistant/flows/blueprint-driven-change.flow.md`
-Minimum input: change intent, non-goals, and approval constraints.
+Minimum input: change intent, non-goals, related review items, and approval
+constraints including diff base and explicit JSON records when scoped.
 
 Operation: `logical-integrity-review`
 Use when: code, docs, tests, diagrams, prompts, skills, gates, or bridges may

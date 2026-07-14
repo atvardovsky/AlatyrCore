@@ -69,10 +69,25 @@ Use this sequence when a fact may have changed:
    generated artifacts, and checker rules that mention the fact.
 6. Name conflicts and missing context explicitly.
 7. Decide synchronization direction from the registry or owning contour.
-8. Choose the smallest coherent repair set.
-9. Apply required companion updates or explain why none are needed.
-10. Run target validation that exists, or record manual/unresolved checks.
-11. Report final evidence and residual risk.
+8. Re-derive the invariants that connect the changed fact to its scope,
+   identity, ownership, lifecycle, and dependent contracts. State each
+   invariant in testable language before choosing a repair.
+9. Choose the smallest coherent repair set that preserves those invariants.
+10. Apply required companion updates or explain why none are needed.
+11. Run target validation that exists, or record manual/unresolved checks.
+12. Report final evidence and residual risk.
+
+When work begins from review comments, defect reports, or a list of requested
+fixes, do not process each item as an isolated file edit. Cluster items by
+changed fact and contract, identify shared invariants and boundaries, and run
+one combined impact review over the proposed repair set. A local edit that
+satisfies one comment but leaves the shared invariant false must be revised.
+
+When no consistency map is enabled, invariant re-derivation remains mandatory.
+Use canonical owners, data and identity scope, architecture boundaries,
+callers, persistence behavior, and tests to construct a compact manual impact
+closure. Record missing relationship knowledge as residual risk instead of
+claiming that the optional map was unnecessary.
 
 When a target consistency map exists, replace broad surface comparison with a
 bounded impact closure: start from changed fact IDs, select applicable
@@ -127,6 +142,8 @@ A logical integrity review should be reportable as:
 ```text
 Change intent: <requested or inferred change>
 Changed facts: <concrete facts>
+Re-derived invariants: <testable scope, identity, ownership, lifecycle, and dependency statements>
+Review-item reconciliation: <clusters, shared contracts, and combined repair decision>
 Risk class: <framework and adapter risk>
 Source of truth: <owning file or missing adapter fact>
 Conflicts found: <what disagreed, if anything>
@@ -144,6 +161,8 @@ The project adapter may require a stricter format.
 Reject or revise work that:
 
 - changes a logical fact without naming it
+- handles related review items independently without re-deriving their shared
+  invariant or reviewing the combined repair set
 - treats generated, bridge, or copied text as canonical without checking its
   owner
 - updates only one surface when code, docs, tests, diagrams, prompts, skills,

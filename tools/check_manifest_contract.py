@@ -115,6 +115,7 @@ REQUIRED_SCALARS: set[PathKey] = {
     ("bridges", "capability_matrix"),
     ("approvals", "directory"),
     ("approvals", "template"),
+    ("approvals", "machine_template"),
     ("policies", "source_access"),
     ("policies", "prompt_injection"),
 }
@@ -178,6 +179,7 @@ PATH_SCALARS: set[PathKey] = {
     ("bridges", "capability_matrix"),
     ("approvals", "directory"),
     ("approvals", "template"),
+    ("approvals", "machine_template"),
     ("policies", "source_access"),
     ("policies", "prompt_injection"),
 }

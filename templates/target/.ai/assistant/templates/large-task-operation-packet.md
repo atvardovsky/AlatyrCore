@@ -43,6 +43,7 @@ Repeat this block for each changed or disputed fact.
 - Risk class: `{RISK_CLASS}`
 - Affected surfaces: `{AFFECTED_SURFACES}`
 - Approval state: `{APPROVAL_RECORD_OR_NOT_REQUIRED_OR_MISSING}`
+- Approved diff base and explicit machine records: `{DIFF_BASE_AND_APPROVAL_JSON_PATHS_OR_NOT_REQUIRED}`
 - Owning workstream: `{WORKSTREAM_ID}`
 - Reconciliation state: `{PENDING_CONSISTENT_CONFLICT_OR_UNRESOLVED}`
 
@@ -55,6 +56,8 @@ Repeat this block for each coherent workstream.
 - Goal: `{WORKSTREAM_GOAL}`
 - Project area: `{PROJECT_AREA}`
 - Changed facts: `{FACT_IDS}`
+- Re-derived invariants: `{INVARIANT_STATEMENTS}`
+- Related review-item clusters: `{REVIEW_ITEM_CLUSTERS_OR_NONE}`
 - Dependencies: `{WORKSTREAM_DEPENDENCIES_OR_NONE}`
 - Blocking decisions: `{BLOCKING_DECISIONS_OR_NONE}`
 - Required context: `{MINIMUM_REQUIRED_CONTEXT}`
@@ -94,6 +97,7 @@ context reset.
 - Source-of-truth synchronization: `{SOURCE_OF_TRUTH_SYNC_RESULT}`
 - Cross-workstream conflicts: `{CONFLICTS_AND_REPAIRS_OR_NONE}`
 - Approval scope versus applied changes: `{APPROVAL_COVERAGE_RESULT}`
+- Complete changed-path scope enforcement: `{COMMITTED_STAGED_UNSTAGED_RENAMED_DELETED_UNTRACKED_RESULT}`
 - Combined validation: `{TARGET_VALIDATION_RESULT_OR_UNRESOLVED}`
 - Global logical integrity review: `{GLOBAL_LOGICAL_INTEGRITY_RESULT}`
 - Skipped checks: `{SKIPPED_CHECKS}`

@@ -6,6 +6,8 @@ Use this checklist before broad or risky changes.
 - Non-goal:
 - Changed facts:
 - Changed fact IDs and canonical owners:
+- Re-derived scope, identity, ownership, lifecycle, and dependency invariants:
+- Review-item clusters and shared contracts:
 - Selected relationship edges and reasons:
 - Skipped or missing relationship edges and reasons:
 - Consistency levels and project areas reached:
@@ -14,6 +16,7 @@ Use this checklist before broad or risky changes.
 - Affected architecture/module boundaries:
 - Affected data structures:
 - Affected runtime flows:
+- External failure distinctions and observability impact:
 - Affected tests:
 - Affected diagrams:
 - Affected prompts/gates/skills/bridge files:
@@ -23,5 +26,7 @@ Use this checklist before broad or risky changes.
 - Skill provenance or third-party assistant infrastructure impact:
 - AI infrastructure source access impact:
 - Approval required:
+- Approved diff base and machine-readable approval records:
+- Changed-path approval scope enforcement:
 - Validation to run:
 - Skipped checks and residual risk:

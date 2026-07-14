@@ -15,7 +15,8 @@ Replace placeholders with target facts before accepting installation.
 - task-specific maturity under `.ai/assistant/maturity-profile.md`
 - bridge capability matrix under `.ai/assistant/bridge-capability-matrix.md`
 - migration notes under `.ai/assistant/templates/migration-note.md`
-- approval records under `.ai/assistant/approvals`
+- human and machine-readable approval records plus target-local strict diff
+  scope checks under `.ai/assistant/approvals`
 - prompts, skills, bridge files, and assistant-specific wrappers
 - AI infrastructure inventory, source access, provenance, adaptation,
   output-format, prompt-injection, safety, and wrapper rules

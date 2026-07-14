@@ -52,14 +52,16 @@ Operation: `product-change`
 Use when: changing accepted project behavior, architecture, data, runtime, or
 public contract.
 Flow: `.ai/assistant/flows/blueprint-driven-change.flow.md`
-Minimum input: change intent, non-goals, and approval constraints.
+Minimum input: change intent, non-goals, related review items, and approval
+constraints including diff base and explicit JSON records when scoped.
 
 Operation: `large-task`
 Use when: coordinating large, cross-boundary, multi-workstream, or resumable
 work while keeping context bounded per workstream.
 Flow: `.ai/assistant/flows/large-task-orchestration.flow.md`
 Minimum input: goal, non-goals, affected project areas, allowed actions, and
-known approval or validation checkpoints.
+known approval or validation checkpoints, including diff base and explicit
+JSON approval records when scoped.
 
 Operation: `logical-integrity-review`
 Use when: reviewing whether code, docs, tests, diagrams, prompts, skills,

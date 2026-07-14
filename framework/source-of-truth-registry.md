@@ -30,6 +30,8 @@ The registry should answer:
 - which direction synchronization should flow
 - which stable fact ID, consistency level, and project area identify the owner
 - which machine-map node routes to related contracts and surfaces
+- which invariants constrain scope, identity, ownership, lifecycle, and
+  dependent behavior when the fact changes
 - which validation or manual review confirms consistency
 - who decides when two canonical-looking sources disagree
 
@@ -46,6 +48,7 @@ Each entry should define:
 - stable fact ID, consistency level, and project area
 - consistency-map node or an explicit missing relationship record
 - relationship coverage and known gaps
+- invariant and dependency constraints that must be re-derived during change
 - derived surfaces
 - sync direction
 - validation or manual review
@@ -117,10 +120,13 @@ When sources disagree:
 3. Name the canonical owner and derived surfaces.
 4. When a consistency map is enabled, build the applicable relationship impact
    closure from the changed fact ID.
-5. If the owner or relationship coverage is missing or ambiguous, report the
+5. Re-derive the entry's invariant and dependency constraints. When the map is
+   unavailable, use those constraints to build a compact manual closure.
+6. If the owner or relationship coverage is missing or ambiguous, report the
    missing adapter fact.
-6. Repair the smallest coherent set of selected relationship surfaces.
-7. Record selected and skipped edges, validation, and residual risk.
+7. Repair the smallest coherent set of selected relationship surfaces.
+8. Record invariant results, selected and skipped edges, validation, and
+   residual risk.
 
 If the registry itself is wrong or stale, treat that as an adapter change. Do
 not silently repair product facts by changing the registry unless approval is

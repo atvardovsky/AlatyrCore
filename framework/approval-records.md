@@ -73,6 +73,27 @@ files in explicit list fields so a checker can compare them with an actual
 diff. A path mentioned only in narrative text does not place it inside the
 approved scope.
 
+For deterministic enforcement, use a machine-readable approval record with a
+schema version, record kind, approved diff base, target-relative allowed and
+excluded path lists, invalidation rule, and approval identity. Markdown may
+remain the human explanation surface, but it must not be the only source used
+for a strict `changed paths subset of approved scope` check.
+
+Strict scope validation should:
+
+- use only approval records explicitly selected for the operation, not every
+  historical record in the approval directory
+- verify that each selected record is bound to the requested Git diff base
+- include committed, staged, unstaged, renamed, deleted, and untracked paths
+- fail when any changed path is outside the union of allowed scopes
+- fail when any changed path matches an excluded scope
+- report unavailable Git or record evidence instead of treating it as a pass
+
+The strict comparison covers the complete operation diff, including code,
+tests, docs, diagrams, adapter files, and approval evidence. Protected-change
+classification decides whether approval is required; once a scoped approval is
+used, companion files do not silently fall outside that scope.
+
 ## Repository Storage
 
 Installed adapters should reserve a target-owned approval directory, commonly:
@@ -102,6 +123,11 @@ local paths.
 
 Do not include secrets in approval records or hash inputs that must remain
 private.
+
+Patch hashes and path-scope validation are different controls. A scope check
+does not prove content approval, and a patch hash that omits untracked content
+does not prove the complete working tree. Report which control was actually
+verified.
 
 ## Final Evidence
 

@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "record_kind": "alatyr-approval-record",
+  "evidence_classification": "historical-record",
+  "approval_id": "{APPROVAL_ID}",
+  "operation": {
+    "id": "{OPERATION_ID}",
+    "type": "{OPERATION_TYPE}"
+  },
+  "plan": {
+    "version": "{PLAN_VERSION}",
+    "sha256": "{PLAN_SHA256_OR_NOT_AVAILABLE_WITH_REASON}",
+    "file": "{TARGET_RELATIVE_PLAN_FILE_OR_NOT_AVAILABLE_WITH_REASON}"
+  },
+  "diff": {
+    "base": "{APPROVED_GIT_DIFF_BASE}",
+    "patch_sha256": "{PATCH_SHA256_OR_NOT_AVAILABLE_WITH_REASON}",
+    "repository_revision_at_approval": "{REPOSITORY_REVISION_AT_APPROVAL}"
+  },
+  "scope": {
+    "allowed_protected_changes": [
+      "{ALLOWED_PROTECTED_CHANGE}"
+    ],
+    "allowed_files_or_surfaces": [
+      "{TARGET_RELATIVE_FILE_OR_GLOB}"
+    ],
+    "excluded_files_or_surfaces": [
+      "{TARGET_RELATIVE_FILE_OR_GLOB_OR_NONE}"
+    ],
+    "excluded_actions": [
+      "{EXCLUDED_ACTION}"
+    ],
+    "allowed_actions_mode": "{READ_ONLY_DOCS_ONLY_ADAPTER_ONLY_CODE_AND_TESTS_OR_FULL_WITH_APPROVAL}",
+    "invalidation_rule": "{APPROVAL_INVALIDATION_RULE}"
+  },
+  "approval": {
+    "requested_by": "{REQUESTED_BY}",
+    "approved_by": "{APPROVED_BY}",
+    "approved_at": "{APPROVED_AT}",
+    "source_or_message": "{APPROVAL_SOURCE_OR_MESSAGE_REFERENCE}",
+    "expires_at_or_reuse_policy": "{EXPIRATION_OR_REUSE_POLICY}"
+  },
+  "use_result": {
+    "used_by": "{TASK_OPERATION_OR_CHANGE_REFERENCE}",
+    "patch_changed_after_approval": "{YES_NO_AND_REASON}",
+    "implementation_within_scope": "{YES_NO_AND_REASON}",
+    "validation": "{VALIDATION_RUN_OR_SKIPPED_WITH_REASON}",
+    "result_evidence": "{RESULT_OR_EVIDENCE_REFERENCE}",
+    "residual_risk": "{RESIDUAL_RISK}"
+  }
+}

@@ -188,6 +188,8 @@ Additional source-repository helpers include:
 - change-risk classification and approval triggers
 - approval-record guidance and source-template checks for protected changes
   that need durable evidence
+- machine-readable approval records and strict complete changed-path scope
+  enforcement against an explicitly selected Git diff base
 - documentation-sync and final-evidence patterns
 - stack-aware testing guidance without hard-coded commands
 - security/safety reasoning without hard-coded policies
@@ -334,6 +336,8 @@ A mature target installation usually has:
   infrastructure can be reviewed or adapted
 - `.ai/assistant/approvals/approval-template.md` when protected-change
   approvals need durable evidence
+- `.ai/assistant/approvals/approval-record-template.json` when approval scope
+  must be enforced against the complete Git change set
 - `.ai/assistant/templates/installation-note.md`
 - `.ai/assistant/templates/operation-request.md`
 - `.ai/assistant/templates/ai-infrastructure-adaptation-record.md` when items

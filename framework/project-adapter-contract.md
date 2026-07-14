@@ -40,7 +40,8 @@ Every project using this framework must define:
   reasons
 - canonical project blueprint or equivalent source-of-truth docs
 - source-of-truth registry or equivalent fact-owner registry when multiple
-  surfaces can describe the same fact
+  surfaces can describe the same fact, including invariant and dependency
+  constraints used when relationship mapping is unavailable
 - machine-readable consistency map when the target needs bounded fact-to-
   contract, area, system, and adapter impact traversal
 - blueprint-driven change or equivalent product-change workflow owners
@@ -87,7 +88,8 @@ Every project using this framework must define:
 - effectiveness measurement process when the target wants to evaluate AI work
   quality over time
 - approval-record location or policy when protected-change approvals require
-  durable evidence
+  durable evidence, plus a machine-readable record and strict complete-diff
+  scope check when path-bounded approval must be enforced
 - adapter output contracts for installation, framework update, and
   adapter-recheck evidence when the repository wants repeatable post-install
   operations

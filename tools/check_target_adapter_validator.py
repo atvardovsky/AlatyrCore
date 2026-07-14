@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 import sys
 import tempfile
 from pathlib import Path
@@ -13,6 +14,7 @@ from validate_target_adapter import (
     Validator,
     extract_list_field,
     findings_payload,
+    git_changed_files,
     scope_entries_cover,
 )
 
@@ -23,6 +25,7 @@ def validator(target: Path) -> Validator:
         framework_source=None,
         diff_ref=None,
         approval_records=[],
+        enforce_approval_scope=False,
         migration_diff=None,
         allow_placeholders=True,
         allow_local_paths=[],
@@ -190,6 +193,126 @@ Excluded files or surfaces:
             failures.append("approval scope must not match path substrings")
         if not scope_entries_cover(".ai/assistant/private/item.md", excluded):
             failures.append("approval scope glob should cover nested target files")
+
+        git_target = target / "approval-diff"
+        git_target.mkdir()
+        subprocess.run(["git", "init", "-q"], cwd=git_target, check=True)
+        subprocess.run(
+            ["git", "config", "user.email", "alatyr@example.invalid"],
+            cwd=git_target,
+            check=True,
+        )
+        subprocess.run(
+            ["git", "config", "user.name", "Alatyr Check"],
+            cwd=git_target,
+            check=True,
+        )
+        source = git_target / "src"
+        source.mkdir()
+        (source / "allowed.txt").write_text("before\n", encoding="utf-8")
+        (source / "outside.txt").write_text("before\n", encoding="utf-8")
+        subprocess.run(["git", "add", "."], cwd=git_target, check=True)
+        subprocess.run(
+            ["git", "commit", "-q", "-m", "fixture"],
+            cwd=git_target,
+            check=True,
+        )
+        (source / "allowed.txt").write_text("after\n", encoding="utf-8")
+        (source / "outside.txt").write_text("after\n", encoding="utf-8")
+        (source / "untracked.txt").write_text("new\n", encoding="utf-8")
+        approval_path = (
+            git_target
+            / ".ai"
+            / "assistant"
+            / "approvals"
+            / "approval.json"
+        )
+        approval_data = {
+            "schema_version": 1,
+            "record_kind": "alatyr-approval-record",
+            "evidence_classification": "historical-record",
+            "approval_id": "approval-test",
+            "operation": {"id": "operation-test", "type": "code-change"},
+            "plan": {"version": "1", "sha256": "none", "file": "none"},
+            "diff": {
+                "base": "HEAD",
+                "patch_sha256": "none",
+                "repository_revision_at_approval": "HEAD",
+            },
+            "scope": {
+                "allowed_protected_changes": ["test change"],
+                "allowed_files_or_surfaces": [
+                    "src/allowed.txt",
+                    ".ai/assistant/approvals/approval.json",
+                ],
+                "excluded_files_or_surfaces": [],
+                "excluded_actions": ["live actions"],
+                "allowed_actions_mode": "code-and-tests",
+                "invalidation_rule": "any scope change invalidates approval",
+            },
+            "approval": {
+                "approved_by": "tester",
+                "approved_at": "2026-07-14",
+            },
+            "use_result": {},
+        }
+        write_json(approval_path, approval_data)
+        changed = git_changed_files(git_target, "HEAD")
+        expected_changed = {
+            ".ai/assistant/approvals/approval.json",
+            "src/allowed.txt",
+            "src/outside.txt",
+            "src/untracked.txt",
+        }
+        if changed is None or set(changed) != expected_changed:
+            failures.append(
+                "approval diff collection must include tracked and untracked paths"
+            )
+
+        strict = Validator(
+            git_target,
+            framework_source=None,
+            diff_ref="HEAD",
+            approval_records=[approval_path],
+            enforce_approval_scope=True,
+            migration_diff=None,
+            allow_placeholders=True,
+            allow_local_paths=[],
+            config=AdapterValidatorConfig(),
+        )
+        strict.check_approval_scope()
+        mismatch_messages = [
+            finding.message
+            for finding in strict.findings
+            if finding.code == "APPROVAL_SCOPE_MISMATCH" and finding.level == "error"
+        ]
+        if not any("src/outside.txt" in message for message in mismatch_messages):
+            failures.append("strict approval scope must reject tracked out-of-scope files")
+        if not any("src/untracked.txt" in message for message in mismatch_messages):
+            failures.append("strict approval scope must reject untracked out-of-scope files")
+
+        approval_data["scope"]["allowed_files_or_surfaces"] = [
+            "src/*",
+            ".ai/assistant/approvals/approval.json",
+        ]
+        write_json(approval_path, approval_data)
+        covered = Validator(
+            git_target,
+            framework_source=None,
+            diff_ref="HEAD",
+            approval_records=[approval_path],
+            enforce_approval_scope=True,
+            migration_diff=None,
+            allow_placeholders=True,
+            allow_local_paths=[],
+            config=AdapterValidatorConfig(),
+        )
+        covered.check_approval_scope()
+        if any(
+            finding.level == "error" and finding.code.startswith("APPROVAL_")
+            for finding in covered.findings
+        ):
+            failures.append("covered strict approval scope should pass")
 
         payload = findings_payload([], target=target, strict_warnings=False)
         evidence = payload.get("evidence", {})

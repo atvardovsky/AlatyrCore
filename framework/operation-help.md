@@ -45,6 +45,8 @@ A target adapter help file should list each supported operation with:
 - when to use it
 - matching target flow
 - minimum input needed from the programmer
+- related review items plus approved diff base and explicit machine-readable
+  approval records when scoped approval applies
 - allowed-action modes and context profile when useful
 - approval triggers or safety notes
 - expected final evidence

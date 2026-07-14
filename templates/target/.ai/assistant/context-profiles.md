@@ -74,9 +74,9 @@ no logical integrity expansion was needed.
 
 ## Profile: `code-local`
 
-Use when: implementation or tests change without changing accepted behavior,
-architecture, data model, external contract, security posture, or AI
-infrastructure.
+Use when: implementation, tests, review comments, or defect fixes change
+without changing accepted behavior, architecture, data model, external
+contract, security posture, or AI infrastructure.
 
 Required context:
 
@@ -89,8 +89,9 @@ Required context:
 
 Approval gates: only if the task crosses a protected category.
 
-Validation/evidence: run or report `{TARGET_CODE_VALIDATION}` and explain doc
-sync or why none was needed.
+Validation/evidence: run or report `{TARGET_CODE_VALIDATION}`, re-derive
+invariants, reconcile related review items, and explain doc sync or why none
+was needed.
 
 ## Profile: `business-change`
 
@@ -104,6 +105,7 @@ Required context:
 - `.ai/framework/source-of-truth-registry.md`
 - `.ai/framework/logical-integrity.md`
 - `.ai/framework/blueprint-driven-change.md`
+- `.ai/framework/approval-records.md`
 - `.ai/framework/testing-guidance.md`
 - `.ai/assistant/flows/blueprint-driven-change.flow.md`
 - `.ai/assistant/gates/checklist.md`
@@ -113,8 +115,9 @@ Approval gates: explicit programmer approval before changing accepted business
 behavior.
 
 Validation/evidence: changed fact, owning blueprint or source of truth,
-implementation/test/doc sync, diagram sync if applicable, approvals, and final
-logical integrity result.
+re-derived invariants, review-item reconciliation, implementation/test/doc
+sync, diagram sync if applicable, machine-readable approval-scope result, and
+final logical integrity result.
 
 ## Profile: `architecture-change`
 
@@ -128,6 +131,7 @@ Required context:
 - `.ai/framework/source-of-truth-registry.md`
 - `.ai/framework/logical-integrity.md`
 - `.ai/framework/blueprint-driven-change.md`
+- `.ai/framework/approval-records.md`
 - `.ai/framework/security-safety-guidance.md`
 - `.ai/framework/testing-guidance.md`
 - `.ai/framework/diagram-guidance.md`
@@ -138,8 +142,9 @@ Required context:
 Approval gates: explicit programmer approval for architecture changes and new
 production dependencies or services.
 
-Validation/evidence: architecture owner update, affected areas, validation,
-diagrams or why none changed, and residual risk.
+Validation/evidence: architecture owner update, affected areas, re-derived
+invariants, review-item reconciliation, validation, diagrams or why none
+changed, machine-readable approval-scope result, and residual risk.
 
 ## Profile: `data-change`
 
@@ -161,7 +166,8 @@ Approval gates: explicit approval for destructive, data-loss, live-service,
 privacy, or migration-risk changes.
 
 Validation/evidence: canonical data owner, derived surfaces, migration or
-rollback notes where applicable, validation, and unresolved risk.
+rollback notes where applicable, scope/identity/persistence invariants,
+observable external failure distinctions, validation, and unresolved risk.
 
 ## Profile: `security-sensitive`
 

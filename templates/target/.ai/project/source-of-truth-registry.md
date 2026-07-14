@@ -18,6 +18,7 @@ Consistency level: `{PRODUCT_BEHAVIOR_CONSISTENCY_LEVEL}`
 Project area: `{PRODUCT_BEHAVIOR_PROJECT_AREA}`
 Consistency map node: `{PRODUCT_BEHAVIOR_FACT_ID_OR_MISSING}`
 Relationship coverage: `{PRODUCT_BEHAVIOR_RELATIONSHIP_COVERAGE_OR_GAP}`
+Invariant and dependency constraints: `{PRODUCT_BEHAVIOR_INVARIANTS_AND_DEPENDENCIES}`
 Derived surfaces:
 
 - `{PRODUCT_BEHAVIOR_DERIVED_SURFACE}`
@@ -36,6 +37,7 @@ Consistency level: `{BUSINESS_RULE_CONSISTENCY_LEVEL}`
 Project area: `{BUSINESS_RULE_PROJECT_AREA}`
 Consistency map node: `{BUSINESS_RULE_FACT_ID_OR_MISSING}`
 Relationship coverage: `{BUSINESS_RULE_RELATIONSHIP_COVERAGE_OR_GAP}`
+Invariant and dependency constraints: `{BUSINESS_RULE_INVARIANTS_AND_DEPENDENCIES}`
 Derived surfaces:
 
 - `{BUSINESS_RULE_DERIVED_SURFACE}`
@@ -54,6 +56,7 @@ Consistency level: `{ARCHITECTURE_DECISION_CONSISTENCY_LEVEL}`
 Project area: `{ARCHITECTURE_DECISION_PROJECT_AREA}`
 Consistency map node: `{ARCHITECTURE_DECISION_FACT_ID_OR_MISSING}`
 Relationship coverage: `{ARCHITECTURE_DECISION_RELATIONSHIP_COVERAGE_OR_GAP}`
+Invariant and dependency constraints: `{ARCHITECTURE_DECISION_INVARIANTS_AND_DEPENDENCIES}`
 Derived surfaces:
 
 - `{ARCHITECTURE_DECISION_DERIVED_SURFACE}`
@@ -72,6 +75,7 @@ Consistency level: `{DATA_MODEL_CONSISTENCY_LEVEL}`
 Project area: `{DATA_MODEL_PROJECT_AREA}`
 Consistency map node: `{DATA_MODEL_FACT_ID_OR_MISSING}`
 Relationship coverage: `{DATA_MODEL_RELATIONSHIP_COVERAGE_OR_GAP}`
+Invariant and dependency constraints: `{DATA_MODEL_INVARIANTS_AND_DEPENDENCIES}`
 Derived surfaces:
 
 - `{DATA_MODEL_DERIVED_SURFACE}`
@@ -90,6 +94,7 @@ Consistency level: `{VALIDATION_COMMAND_CONSISTENCY_LEVEL}`
 Project area: `{VALIDATION_COMMAND_PROJECT_AREA}`
 Consistency map node: `{VALIDATION_COMMAND_FACT_ID_OR_MISSING}`
 Relationship coverage: `{VALIDATION_COMMAND_RELATIONSHIP_COVERAGE_OR_GAP}`
+Invariant and dependency constraints: `{VALIDATION_COMMAND_INVARIANTS_AND_DEPENDENCIES}`
 Derived surfaces:
 
 - `{VALIDATION_COMMAND_DERIVED_SURFACE}`
@@ -108,6 +113,7 @@ Consistency level: `{SECURITY_POLICY_CONSISTENCY_LEVEL}`
 Project area: `{SECURITY_POLICY_PROJECT_AREA}`
 Consistency map node: `{SECURITY_POLICY_FACT_ID_OR_MISSING}`
 Relationship coverage: `{SECURITY_POLICY_RELATIONSHIP_COVERAGE_OR_GAP}`
+Invariant and dependency constraints: `{SECURITY_POLICY_INVARIANTS_AND_DEPENDENCIES}`
 Derived surfaces:
 
 - `{SECURITY_POLICY_DERIVED_SURFACE}`
@@ -126,6 +132,7 @@ Consistency level: `{ASSISTANT_OPERATION_CONSISTENCY_LEVEL}`
 Project area: `{ASSISTANT_OPERATION_PROJECT_AREA}`
 Consistency map node: `{ASSISTANT_OPERATION_FACT_ID_OR_MISSING}`
 Relationship coverage: `{ASSISTANT_OPERATION_RELATIONSHIP_COVERAGE_OR_GAP}`
+Invariant and dependency constraints: `{ASSISTANT_OPERATION_INVARIANTS_AND_DEPENDENCIES}`
 Derived surfaces:
 
 - `{ASSISTANT_OPERATION_DERIVED_SURFACE}`
@@ -146,6 +153,7 @@ Consistency level: `{AI_INFRASTRUCTURE_ITEM_CONSISTENCY_LEVEL}`
 Project area: `{AI_INFRASTRUCTURE_ITEM_PROJECT_AREA}`
 Consistency map node: `{AI_INFRASTRUCTURE_ITEM_FACT_ID_OR_MISSING}`
 Relationship coverage: `{AI_INFRASTRUCTURE_ITEM_RELATIONSHIP_COVERAGE_OR_GAP}`
+Invariant and dependency constraints: `{AI_INFRASTRUCTURE_ITEM_INVARIANTS_AND_DEPENDENCIES}`
 Derived surfaces:
 
 - `{AI_INFRASTRUCTURE_ITEM_DERIVED_SURFACE}`
@@ -164,7 +172,10 @@ When sources disagree:
 2. Use this registry to find the canonical owner and derived surfaces.
 3. Use `.ai/project/consistency-map.json` to build the applicable relationship
    closure when that optional module is enabled.
-4. If ownership or relationship coverage is missing, report
+4. Re-derive the invariant and dependency constraints. If the optional map is
+   disabled or incomplete, use those constraints for a compact manual closure.
+5. If ownership or relationship coverage is missing, report
    `{MISSING_SOURCE_OF_TRUTH_OR_RELATIONSHIP_POLICY}`.
-5. Repair only the smallest coherent set of selected relationship surfaces.
-6. Report selected and skipped edges, validation, approvals, and residual risk.
+6. Repair only the smallest coherent set of selected relationship surfaces.
+7. Report invariant results, selected and skipped edges, validation,
+   approvals, and residual risk.

@@ -7,6 +7,7 @@ validation requirement for target projects.
 
 from __future__ import annotations
 
+import json
 import re
 import sys
 from pathlib import Path
@@ -22,6 +23,7 @@ TEMPLATE = (
     / "approvals"
     / "approval-template.md"
 )
+MACHINE_TEMPLATE = TEMPLATE.with_name("approval-record-template.json")
 
 REQUIRED_FIELDS = [
     "Approval ID:",
@@ -39,6 +41,7 @@ REQUIRED_FIELDS = [
     "Approval source/message:",
     "Expires at or reuse policy:",
     "Scope invalidation rule:",
+    "Machine-readable record:",
     "Allowed actions mode:",
     "Used by operation/change:",
     "Patch changed after approval:",
@@ -120,6 +123,48 @@ def main() -> int:
         failures.append("plan hash requires a scope invalidation rule")
     if "Evidence classification: `historical-record`" not in text:
         failures.append("approval template must classify itself as historical evidence")
+    if "approval-record-template.json" not in text:
+        failures.append("approval template must route to its machine-readable record")
+
+    if not MACHINE_TEMPLATE.is_file():
+        failures.append("missing machine-readable approval record template")
+    else:
+        try:
+            data = json.loads(MACHINE_TEMPLATE.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            failures.append(f"invalid machine-readable approval template: {exc}")
+            data = {}
+        if data.get("schema_version") != 1:
+            failures.append("machine approval template schema_version must be 1")
+        if data.get("record_kind") != "alatyr-approval-record":
+            failures.append("machine approval template record_kind is invalid")
+        if data.get("evidence_classification") != "historical-record":
+            failures.append("machine approval template evidence class is invalid")
+        for container in ["operation", "plan", "diff", "scope", "approval", "use_result"]:
+            if not isinstance(data.get(container), dict):
+                failures.append(f"machine approval template missing object {container}")
+        scope = data.get("scope", {})
+        if isinstance(scope, dict):
+            for field in [
+                "allowed_protected_changes",
+                "allowed_files_or_surfaces",
+                "excluded_files_or_surfaces",
+                "excluded_actions",
+            ]:
+                values = scope.get(field)
+                if not isinstance(values, list) or not values:
+                    failures.append(f"machine approval template missing list scope.{field}")
+                elif not all(isinstance(value, str) and "{" in value for value in values):
+                    failures.append(f"machine approval template scope.{field} must use placeholders")
+        serialized = json.dumps(data)
+        for placeholder in [
+            "{APPROVAL_ID}",
+            "{APPROVED_GIT_DIFF_BASE}",
+            "{TARGET_RELATIVE_FILE_OR_GLOB}",
+            "{APPROVAL_INVALIDATION_RULE}",
+        ]:
+            if placeholder not in serialized:
+                failures.append(f"machine approval template missing {placeholder}")
 
     if failures:
         for failure in failures:
@@ -128,7 +173,7 @@ def main() -> int:
 
     print(
         "OK: checked approval template with "
-        f"{len(REQUIRED_FIELDS)} scalar fields"
+        f"{len(REQUIRED_FIELDS)} scalar fields and machine-readable scope"
     )
     return 0
 

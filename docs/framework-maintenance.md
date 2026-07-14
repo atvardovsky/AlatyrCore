@@ -69,8 +69,9 @@ Before accepting a change, check:
 - `python3 tools/check_framework_metadata.py` passes when rule-owner framework
   docs, owned rule IDs, rule dependencies, or task-profile scope changes.
 - `python3 tools/check_approval_template.py` passes when approval-record
-  fields, protected scope, plan hash, invalidation, usage result, evidence, or
-  residual-risk guidance changes.
+  fields, machine-readable scope, diff-base binding, protected scope, plan
+  hash, invalidation, usage result, evidence, or residual-risk guidance
+  changes.
 - `python3 tools/check_ai_infrastructure_inventory.py` passes when AI
   infrastructure inventory fields, source/provenance, permission, license,
   prompt-injection risk, approval, recommendation, or residual-risk evidence
@@ -132,8 +133,8 @@ Before accepting a change, check:
   source-of-truth registry fact types, fields, placeholders, or conflict
   resolution guidance changes.
 - `python3 tools/check_target_adapter_validator.py` passes when portable target
-  validator routing, route-map schemas, approval scope matching, or evidence
-  classification changes.
+  validator routing, route-map schemas, strict complete changed-path approval
+  scope matching, Git diff collection, or evidence classification changes.
 - `python3 tools/check_versioning.py` passes when source versions, changelog,
   release process, migration evidence, adapter schema version, or template
   version changes.
@@ -209,9 +210,10 @@ Before accepting a change, check:
 - large-task routing, flow, packet, manifest, module profile, request shape,
   and installation evidence agree; small tasks are not required to create
   packets.
-- target approval template includes plan identity, protected scope, allowed
-  files, excluded actions, approval source, invalidation, use result,
-  evidence, validation, and residual risk fields.
+- target approval templates include human evidence plus machine-readable plan
+  identity, diff base, protected scope, allowed and excluded files, excluded
+  actions, approval source, invalidation, use result, evidence, validation,
+  and residual risk fields.
 - module profile agrees with manifest, installer docs, context profiles, and
   checker rules.
 - source-of-truth registry, maturity profile, bridge capability matrix, and

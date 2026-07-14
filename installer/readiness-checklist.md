@@ -43,7 +43,8 @@ changes.
 - Existing AI infrastructure inventory reports:
 - Existing AI infrastructure router, item IDs, permissions, gates, output
   contracts, and adaptation records:
-- Existing approval records or approval evidence:
+- Existing approval records, machine-readable scopes, diff-base binding, or
+  approval evidence:
 - Existing migration notes:
 - Existing migration-diff process:
 - Existing migration assessment or reviewed baseline comparison:
@@ -117,8 +118,8 @@ The target installation must define or adapt:
   review cadence, last review date, and CODEOWNERS or equivalent owner map
 - module profile: required core status, enabled optional modules, deferred
   modules, blocked modules, and reasons
-- source-of-truth registry: fact owners, derived surfaces, sync direction,
-  validation, and conflict resolvers
+- source-of-truth registry: fact owners, invariant/dependency constraints,
+  derived surfaces, sync direction, validation, and conflict resolvers
 - optional consistency map: stable fact IDs, levels, project areas,
   relationships, impact traversal, staleness handling, and missing coverage
 - context profiles: task-specific required context, approval, validation, and
@@ -165,6 +166,8 @@ Collect target-specific facts before writing project docs:
 - prompt-injection policy for imported, remote, pasted, package/plugin, or
   unknown AI infrastructure
 - approval-record policy or storage location for protected changes
+- approved diff-base policy, machine-readable record format, and complete
+  changed-path scope enforcement
 - adapter maturity gaps and lifecycle expectations
 - task-specific maturity expectations and blockers
 - module profile expectations and blockers
@@ -243,6 +246,7 @@ List commands or manual checks:
 - AI infrastructure source access review:
 - prompt-injection review:
 - approval-record review:
+- changed paths subset of approved scope review:
 - AI consistency checks, if installed:
 - target-local adapter checker status and coverage:
 - source commands intentionally not copied:
@@ -290,7 +294,7 @@ Final evidence must say:
 - root entry-point and bridge compact-bootstrap references checked
 - AI infrastructure source-access policy added or skipped
 - prompt-injection policy added or skipped
-- approval-record template added or skipped
+- human and machine-readable approval-record templates added or skipped
 - migration-note template added or skipped
 - effectiveness-report template added or skipped
 - scaffolding helper used or skipped

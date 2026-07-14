@@ -16,7 +16,7 @@
     {
       "name": "validate-adapter",
       "script": "validate_target_adapter.py",
-      "purpose": "validate current structural state of an installed adapter",
+      "purpose": "validate adapter structure and optionally enforce machine-readable approval scope",
       "write_scope": "explicit-report-output-only"
     },
     {

@@ -147,7 +147,8 @@ Classify every proposed target file:
 15. Add installed-operation, operation-help, operation-routing,
     AI-infrastructure-inventory, adapter output contract
     `.ai/assistant/templates/adapter-output-contracts.md`, source-access
-    policy, prompt-injection policy, approval-record template, migration-note
+    policy, prompt-injection policy, human and machine-readable approval-record
+    templates, migration-note
     template, blueprint-creation, adapter-recheck, and post-install/update
     chat-message templates when the target wants
     post-install operation requests or AI infrastructure adaptation.
@@ -163,8 +164,9 @@ Classify every proposed target file:
 17. Add prompts, skills, diagrams, or consistency checks only when they solve
     target friction, can be maintained, and have been adapted to target facts.
 18. Run target validation that exists. Do not invent commands.
-19. Apply logical integrity review: changed facts, affected contracts,
-    source of truth, repair direction, and residual risk.
+19. Apply logical integrity review: changed facts, re-derived invariants,
+    reconciled review-item clusters, affected contracts, source of truth,
+    repair direction, and residual risk.
 20. Classify final evidence as `current-state`, `historical-record`, or `mixed`.
     Do not infer past installation, approval, or validation actions only from
     files that exist in the current tree.
@@ -188,7 +190,10 @@ APPROVE ALATYR INSTALLATION: <installation-id>
 ```
 
 When protected-change scope spans multiple files or plan versions, record the
-approval using the target approval-record template.
+approval using the target human and machine-readable approval-record
+templates. Bind the machine record to the approved diff base, explicitly
+select it for enforcement, and require every changed path to be allowed and no
+changed path to be excluded.
 
 ## Validation Rule
 
@@ -220,7 +225,8 @@ Report:
   AI-infrastructure-inventory, adapter output contract, context router,
   context profiles, module profile, source-of-truth registry, task-specific
   maturity profile, bridge capability matrix, source-access policy,
-  prompt-injection policy, approval-record template, migration-note template,
+  prompt-injection policy, human and machine-readable approval-record
+  templates, migration-note template,
   blueprint-creation, adapter-recheck, and post-install/update chat-message
   templates added or skipped
 - large-task orchestration flow, operation packet, and target storage policy

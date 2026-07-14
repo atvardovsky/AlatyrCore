@@ -82,6 +82,7 @@ bridges:
 approvals:
   directory: ".ai/assistant/approvals"
   template: ".ai/assistant/approvals/approval-template.md"
+  machine_template: ".ai/assistant/approvals/approval-record-template.json"
 policies:
   source_access: ".ai/assistant/policies/ai-infrastructure-source-access.md"
   prompt_injection: ".ai/assistant/policies/prompt-injection.md"

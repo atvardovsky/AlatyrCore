@@ -149,6 +149,10 @@ Ask:
 - Are tests and validation discoverable?
 - Are security and live external side effects bounded?
 - Are approval-required changes named?
+- Can scoped approvals be bound to a diff base and checked against every
+  changed path through explicitly selected machine-readable records?
+- Do logical reviews re-derive invariants and reconcile related review items
+  when no consistency map supplies the relationship closure?
 - Are docs, diagrams, prompts, skills, bridges, and checker rules synchronized?
 - Can the adapter be rechecked after installation or framework update without
   relying on user memory?

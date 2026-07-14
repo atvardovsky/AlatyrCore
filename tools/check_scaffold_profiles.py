@@ -22,6 +22,7 @@ CORE_REQUIRED = {
     Path(".ai/assistant/context-router.json"),
     Path(".ai/assistant/context-profiles.md"),
     Path(".ai/assistant/module-profile.md"),
+    Path(".ai/assistant/approvals/approval-record-template.json"),
     Path(".ai/project/source-of-truth-registry.md"),
     Path("AGENTS.md"),
 }

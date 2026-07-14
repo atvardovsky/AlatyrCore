@@ -48,7 +48,8 @@ Replace this section with the actual target project map.
 - skills
 - skill adaptation and provenance rules
 - prompt-injection rules for imported AI infrastructure
-- approval records and approval templates
+- human and machine-readable approval records, diff-base binding, and strict
+  changed-path scope enforcement
 - bridge-file policy
 - validation evidence expectations
 - documentation-sync rules

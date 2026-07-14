@@ -61,6 +61,8 @@ Use logical integrity review for semantic changes. Use blueprint-driven change
 for accepted product behavior. Check the module profile before relying on an
 optional capability. When `consistency-map` is enabled, start from changed fact
 IDs and follow applicable relationship edges before loading affected surfaces.
+Otherwise, re-derive target invariants and reconcile related review items by
+shared fact or contract; isolated fixes are not consistency evidence.
 For AI infrastructure work, select one route and the smallest item-ID set from
 `.ai/assistant/ai-infrastructure-router.json`; load import, permission, bridge,
 gate, validation, and output context only when that route requires it.
@@ -71,11 +73,14 @@ Run only target validation that exists and report missing checks.
 Apply the target approval policy before architecture, accepted behavior,
 security, permission, dependency, destructive, live, spend-affecting,
 production, imported-infrastructure, or weakened-gate changes. Record durable
-approval evidence when plan or file scope matters.
+approval evidence when plan or file scope matters. For path scope, use an
+explicit JSON record bound to the approved Git diff base; reject paths outside
+the allowed scope or inside its exclusions.
 
 ## Final Evidence
 
 Report the selected profile and areas, changed facts and files, logical
-integrity result, synchronized surfaces, validation and skipped checks,
-approvals, context expansion, task-scale/checkpoint evidence when used, and
-selected AI infrastructure route/item evidence when used, and residual risk.
+integrity and invariant result, review-item reconciliation, synchronized
+surfaces, validation and skipped checks, approvals and path-scope result,
+context expansion, task-scale/checkpoint evidence when used, selected AI
+infrastructure route/item evidence when used, and residual risk.

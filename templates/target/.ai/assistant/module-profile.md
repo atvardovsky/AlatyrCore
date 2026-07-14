@@ -201,6 +201,7 @@ Owner or file: `.ai/assistant/approvals/approval-template.md`
 Required files:
 
 - `.ai/assistant/approvals/approval-template.md`
+- `.ai/assistant/approvals/approval-record-template.json`
 
 Reason: `{REASON}`
 Validation or review: `{VALIDATION_OR_REVIEW}`

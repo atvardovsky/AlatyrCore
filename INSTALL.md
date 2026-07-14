@@ -112,6 +112,12 @@ Fresh installations that do not overwrite existing target instructions and do
 not touch protected target behavior may be applied after the plan when the
 programmer explicitly asked for installation.
 
+When approval is scoped to files or a reusable plan, create an explicitly
+selected machine-readable record from
+`.ai/assistant/approvals/approval-record-template.json`. Bind it to the
+approved Git diff base and verify the complete changed path set before final
+evidence.
+
 ## Installation Shape
 
 In a typical target repository:
@@ -132,7 +138,8 @@ In a typical target repository:
 8. Add bridge files only for assistants the target uses.
 9. Add installed-operation, operation-help, operation-routing,
    AI-infrastructure-inventory, adapter output contracts, source-access
-   policy, prompt-injection policy, approval-record template,
+   policy, prompt-injection policy, human and machine-readable approval-record
+   templates,
    migration-note template, effectiveness-report template, blueprint-creation,
    adapter-recheck, large-task orchestration and operation-packet templates,
    and
@@ -216,7 +223,7 @@ machine-detectable structural drift:
 python3 tools/validate_target_adapter.py --target /path/to/target-repo
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --framework-source /path/to/AlatyrCore
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --json --output tmp/alatyr-adapter-report.json
-python3 tools/validate_target_adapter.py --target /path/to/target-repo --diff-ref origin/main --approval-record .ai/assistant/approvals/change-approval.md
+python3 tools/validate_target_adapter.py --target /path/to/target-repo --diff-ref origin/main --approval-record .ai/assistant/approvals/change-approval.json --enforce-approval-scope
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --framework-source /path/to/AlatyrCore --migration-diff /path/to/migration-report.md
 ```
 
@@ -226,9 +233,10 @@ Command Prompt and PowerShell wrappers under `tools/`.
 This validator can check router/bootstrap references, consistency-map and AI
 infrastructure router contracts when present, unresolved placeholders,
 absolute local path leakage, stale checker claims, manifest fields,
-target-local checker coverage, explicit approval-record scope against a
-supplied git diff, optional framework baseline drift, and migration-diff
-evidence when supplied. Its JSON is current-state structural evidence, not
+target-local checker coverage, advisory legacy approval scope, and strict
+complete changed-path enforcement through explicitly selected JSON records
+bound to a supplied Git diff. It also checks optional framework baseline drift
+and migration-diff evidence when supplied. Its JSON is current-state structural evidence, not
 proof of historical actions. It does not inspect target business truth,
 approve protected changes, replace target validation, or replace assistant
 logical integrity review.

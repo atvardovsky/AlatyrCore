@@ -93,6 +93,20 @@ Expand beyond direct edges when evidence conflicts, an owner is missing, a
 cross-area contract changes, validation disproves the assumed boundary, or an
 approval trigger is reached. Do not expand merely because another area exists.
 
+## Manual Invariant Closure
+
+The consistency map is optional; invariant review is not. When the map is
+disabled, deferred, or missing an applicable edge, derive a compact manual
+closure from the canonical owner and target evidence. Check identity and data
+scope, ownership boundaries, persistence and lifecycle behavior, callers and
+external contracts, tests, and observable failure distinctions that can
+propagate the fact.
+
+Record the invariant statements, surfaces inspected, relationships inferred
+from evidence, and relationships still unknown. This fallback is more
+expensive and less deterministic than an adapted map, so unresolved coverage
+must remain residual risk.
+
 ## Multi-Level Review
 
 For each applicable level, answer:

@@ -225,7 +225,8 @@
       "use_when": [
         "implementation change",
         "test change",
-        "no accepted behavior change"
+        "no accepted behavior change",
+        "review comments or defect fixes"
       ],
       "required_context": [
         ".ai/framework/context-discovery.md",
@@ -241,7 +242,8 @@
         "data_model_changes",
         "external_contract_changes",
         "security_posture_changes",
-        "ai_infrastructure_changes"
+        "ai_infrastructure_changes",
+        "shared_invariant_or_review_item_cluster_detected"
       ],
       "approval_gates": [
         "protected_category_crossed"
@@ -251,6 +253,8 @@
       ],
       "final_evidence": [
         "changed_files",
+        "re_derived_invariants",
+        "review_item_reconciliation",
         "validation",
         "doc_sync_result",
         "residual_risk"
@@ -269,6 +273,7 @@
         ".ai/framework/source-of-truth-registry.md",
         ".ai/framework/logical-integrity.md",
         ".ai/framework/blueprint-driven-change.md",
+        ".ai/framework/approval-records.md",
         ".ai/framework/testing-guidance.md",
         ".ai/assistant/flows/blueprint-driven-change.flow.md",
         ".ai/assistant/gates/checklist.md",
@@ -289,6 +294,8 @@
       ],
       "final_evidence": [
         "changed_fact",
+        "re_derived_invariants",
+        "review_item_reconciliation",
         "owning_blueprint_or_source_of_truth",
         "implementation_test_doc_sync",
         "approvals",
@@ -308,6 +315,7 @@
         ".ai/framework/source-of-truth-registry.md",
         ".ai/framework/logical-integrity.md",
         ".ai/framework/blueprint-driven-change.md",
+        ".ai/framework/approval-records.md",
         ".ai/framework/security-safety-guidance.md",
         ".ai/framework/testing-guidance.md",
         ".ai/framework/diagram-guidance.md",
@@ -331,6 +339,8 @@
       ],
       "final_evidence": [
         "architecture_owner_update",
+        "re_derived_invariants",
+        "review_item_reconciliation",
         "affected_areas",
         "validation",
         "diagram_result",
@@ -371,6 +381,8 @@
       ],
       "final_evidence": [
         "canonical_data_owner",
+        "re_derived_invariants",
+        "external_failure_distinction",
         "derived_surfaces",
         "migration_or_rollback_notes",
         "validation",

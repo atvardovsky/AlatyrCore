@@ -22,7 +22,8 @@ Replace placeholders with target facts before accepting installation.
    profile and project-area overlays plus the target source-of-truth docs.
    Activate the `large-or-resumable` scale overlay when its conditions apply.
 3. Apply `.ai/assistant/flows/logical-integrity-review.flow.md`.
-4. List changed fact IDs and canonical owners. When the `consistency-map`
+4. List changed fact IDs and canonical owners, re-derive testable invariants,
+   and cluster related review items by shared fact or contract. When the `consistency-map`
    module is enabled, derive affected contracts, areas, and surfaces from
    `.ai/project/consistency-map.json` and record selected/skipped edges.
 5. Update target blueprint or equivalent source-of-truth docs when accepted
@@ -30,12 +31,16 @@ Replace placeholders with target facts before accepting installation.
 6. Update project flow, use-case, data, runtime, architecture, or public docs
    when those facts change.
 7. Prepare an implementation plan that names affected boundaries, tests,
-   diagrams, approvals, and validation.
+   diagrams, approvals, machine-readable scope records, and validation.
 8. Change code, tests, diagrams, prompts, skills, bridge files, gates, or
    checker rules as required by the accepted fact change.
 9. Run target validation that exists. Do not invent commands.
-10. Perform a final consistency check across changed surfaces.
-11. Report final evidence, skipped checks, approvals, and residual risk.
+10. When approval was used, compare the complete Git change set with the
+    explicitly selected machine-readable approval scope and fail on uncovered
+    or excluded paths.
+11. Perform a final consistency check across changed surfaces and related
+    review-item clusters.
+12. Report final evidence, skipped checks, approvals, and residual risk.
 
 For large or resumable changes, use
 `.ai/assistant/flows/large-task-orchestration.flow.md` and maintain one packet
@@ -59,10 +64,12 @@ Require explicit programmer approval before:
 Report:
 
 - changed facts
+- re-derived invariants and reconciled review-item clusters
 - relationship impact closure, missing links, and areas reached
 - source-of-truth or blueprint updates
 - implementation, test, diagram, prompt, skill, gate, bridge, or checker updates
 - validation run or unresolved
 - approvals used
+- changed-path approval scope enforcement result
 - skipped checks and residual risk
 - for large tasks, workstream convergence, context receipts, and checkpoints

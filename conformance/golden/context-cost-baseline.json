@@ -10,7 +10,7 @@
       ".ai/assistant/context-router.json"
     ],
     "unresolved_references": [],
-    "words": 1844
+    "words": 1920
   },
   "budgets": {
     "bootstrap": {
@@ -73,7 +73,7 @@
         ".ai/framework/testing-guidance.md"
       ],
       "unresolved_references": [],
-      "words": 25218
+      "words": 26201
     },
     "initial": {
       "declared_files": 6,
@@ -88,9 +88,9 @@
         ".ai/assistant/templates/migration-note.md"
       ],
       "unresolved_references": [],
-      "words": 3194
+      "words": 3214
     },
-    "initial_word_reduction_percent": 87.3
+    "initial_word_reduction_percent": 87.7
   },
   "profiles": {
     "ai-infrastructure": {
@@ -104,18 +104,19 @@
         ".ai/assistant/gates/checklist.md"
       ],
       "unresolved_references": [],
-      "words": 2320
+      "words": 2405
     },
     "architecture-change": {
-      "declared_files": 11,
+      "declared_files": 12,
       "missing_paths": [],
-      "resolved_files": 10,
+      "resolved_files": 11,
       "resolved_paths": [
         ".ai/framework/context-discovery.md",
         ".ai/framework/change-risk-model.md",
         ".ai/framework/source-of-truth-registry.md",
         ".ai/framework/logical-integrity.md",
         ".ai/framework/blueprint-driven-change.md",
+        ".ai/framework/approval-records.md",
         ".ai/framework/security-safety-guidance.md",
         ".ai/framework/testing-guidance.md",
         ".ai/framework/diagram-guidance.md",
@@ -125,18 +126,19 @@
       "unresolved_references": [
         "{TARGET_ARCHITECTURE_SOURCE_OF_TRUTH}"
       ],
-      "words": 6009
+      "words": 7248
     },
     "business-change": {
-      "declared_files": 9,
+      "declared_files": 10,
       "missing_paths": [],
-      "resolved_files": 8,
+      "resolved_files": 9,
       "resolved_paths": [
         ".ai/framework/context-discovery.md",
         ".ai/framework/change-risk-model.md",
         ".ai/framework/source-of-truth-registry.md",
         ".ai/framework/logical-integrity.md",
         ".ai/framework/blueprint-driven-change.md",
+        ".ai/framework/approval-records.md",
         ".ai/framework/testing-guidance.md",
         ".ai/assistant/flows/blueprint-driven-change.flow.md",
         ".ai/assistant/gates/checklist.md"
@@ -144,7 +146,7 @@
       "unresolved_references": [
         "{TARGET_BLUEPRINT_OR_PRODUCT_SOURCE_OF_TRUTH}"
       ],
-      "words": 5155
+      "words": 6394
     },
     "code-local": {
       "declared_files": 6,
@@ -160,7 +162,7 @@
       "unresolved_references": [
         "{TARGET_CODE_SOURCE_OF_TRUTH}"
       ],
-      "words": 3576
+      "words": 3870
     },
     "data-change": {
       "declared_files": 8,
@@ -178,7 +180,7 @@
       "unresolved_references": [
         "{TARGET_DATA_SOURCE_OF_TRUTH}"
       ],
-      "words": 4616
+      "words": 4960
     },
     "docs-local": {
       "declared_files": 5,
@@ -193,7 +195,7 @@
       "unresolved_references": [
         "{TARGET_DOC_SOURCE_OF_TRUTH}"
       ],
-      "words": 2571
+      "words": 2656
     },
     "framework-upgrade": {
       "declared_files": 6,
@@ -208,7 +210,7 @@
         ".ai/assistant/templates/migration-note.md"
       ],
       "unresolved_references": [],
-      "words": 3194
+      "words": 3214
     },
     "security-sensitive": {
       "declared_files": 7,
@@ -225,7 +227,7 @@
       "unresolved_references": [
         "{TARGET_SECURITY_SOURCE_OF_TRUTH}"
       ],
-      "words": 3332
+      "words": 3840
     }
   },
   "report_kind": "static-target-context-cost",

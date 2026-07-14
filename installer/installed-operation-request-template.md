@@ -24,6 +24,9 @@ Non-goals:
 Known context:
 <changed facts, framework update source, existing docs, or suspected drift>
 
+Review comments or defect reports to reconcile:
+<items or none>
+
 Task scale:
 <normal/large/resumable>
 
@@ -32,6 +35,12 @@ Existing operation packet, when resuming:
 
 Allowed actions:
 <read-only/docs-only/adapter-only/code-and-tests/full-with-approval>
+
+Approved Git diff base, when scoped approval applies:
+<commit-or-ref or none>
+
+Explicit machine-readable approval records:
+<target-relative JSON paths or none>
 
 Allowed actions meaning:
 - read-only: inspect target files and report only; no file changes.
@@ -113,7 +122,14 @@ Constraints:
 - Apply ALATYR-APPROVAL-001 before protected changes. Classify risk with
   ALATYR-RISK-001, ALATYR-SAFETY-001, and ALATYR-SAFETY-002.
 - Record approval evidence when protected-change scope needs a durable
-  approval record.
+  approval record. Use the target machine-readable approval record for strict
+  changed-path scope enforcement.
+- When scoped approval is used, fail unless all committed, staged, unstaged,
+  renamed, deleted, and untracked paths are covered by the explicitly selected
+  approval records and no changed path is excluded.
+- Re-derive scope, identity, ownership, lifecycle, persistence, caller, and
+  dependency invariants before implementing. Cluster related review items by
+  fact and contract, then review the combined repair set.
 - Run only target validation that exists; report unresolved checks.
 - Report final evidence: files inspected, changed facts, files changed,
   approvals, validation, skipped checks, adapter gaps, and residual risk.

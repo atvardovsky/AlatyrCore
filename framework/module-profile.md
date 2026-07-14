@@ -61,8 +61,9 @@ maintain them:
 - `large-task-orchestration`: task-scale routing, operation packets,
   workstreams, resumable checkpoints, and final convergence evidence for
   repositories that need large or multi-session changes.
-- `durable-approvals`: approval-record storage for protected changes that need
-  plan, scope, or file evidence.
+- `durable-approvals`: human and machine-readable approval-record storage plus
+  strict diff-base/path-scope enforcement for protected changes that need plan,
+  scope, or file evidence.
 - `migration-diff`: migration notes and framework baseline comparisons for
   upgrades.
 - `effectiveness-metrics`: comparable task reporting for measuring framework

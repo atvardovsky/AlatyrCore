@@ -63,20 +63,25 @@ Applies to: all installed adapter tasks.
 Rule ID: `ALATYR-SOURCE-001`
 Canonical source: `.ai/framework/source-of-truth-registry.md`
 Commitment: choose fact owners from the target source-of-truth registry when
-it exists, use stable fact IDs for optional relationship routing, and otherwise
-use contour ownership while reporting missing owners or relationship coverage.
+it exists, record invariant and dependency constraints, use stable fact IDs
+for optional relationship routing, and otherwise use contour ownership plus a
+manual invariant closure while reporting missing owners or relationship
+coverage.
 Applies to: logical integrity, documentation sync, blueprint-driven changes.
 
 Rule ID: `ALATYR-RISK-001`
 Canonical source: `.ai/framework/change-risk-model.md`
 Commitment: classify changed facts, not only changed files, before choosing
-approval, validation, documentation, diagram, and evidence scope.
+approval, validation, documentation, diagram, observable external failure
+distinctions, and evidence scope.
 Applies to: all changes.
 
 Rule ID: `ALATYR-APPROVAL-001`
 Canonical source: `.ai/framework/approval-records.md`
 Commitment: require explicit approval for protected changes and create durable
-approval records when scope, files, or plan versions need evidence.
+approval records when scope, files, or plan versions need evidence. Strict
+scope checks use explicitly selected machine-readable records and require the
+complete operation diff to remain inside approved path scope.
 Applies to: protected changes and installed operations.
 
 Rule ID: `ALATYR-SAFETY-001`
@@ -96,17 +101,18 @@ Applies to: imported, remote, package/plugin, pasted, or unknown AI sources.
 Rule ID: `ALATYR-INTEGRITY-001`
 Canonical source: `.ai/framework/logical-integrity.md`
 Commitment: name changed semantic/logical facts, affected surfaces, source of
-truth, repair set, validation, and residual risk before claiming consistency;
-use a bounded relationship impact closure when available, and reconcile the
-combined repair set for multi-workstream operations.
+truth, re-derived invariants, reconciled review-item clusters, repair set,
+validation, and residual risk before claiming consistency; use a bounded map
+or manual invariant closure and reconcile combined multi-workstream repairs.
 Applies to: semantic fact changes and drift reviews.
 
 Rule ID: `ALATYR-CHANGE-001`
 Canonical source: `.ai/framework/blueprint-driven-change.md`
 Commitment: carry accepted product changes through source-of-truth update,
-flow update, implementation plan, code/test change, docs/diagram sync, and
-final evidence, using bounded workstreams and final convergence when the change
-is large or resumable.
+invariant re-derivation, flow update, implementation plan, code/test change,
+docs/diagram sync, and final evidence, reconciling related review items and
+using bounded workstreams plus final convergence when the change is large or
+resumable.
 Applies to: business, architecture, data, runtime, and public-contract changes.
 
 Rule ID: `ALATYR-ADAPTER-001`

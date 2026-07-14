@@ -134,6 +134,7 @@ dependencies. Do not create a packet for a small task that fits one profile.
 Expand context when:
 
 - a semantic or logical fact changes
+- multiple review items share a fact, invariant, or contract
 - source-of-truth evidence conflicts
 - a change crosses architecture, business, data, security, lifecycle, or
   assistant-infrastructure boundaries

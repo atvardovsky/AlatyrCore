@@ -19,6 +19,11 @@ Repository revision at approval: `{REPOSITORY_REVISION_OR_NOT_AVAILABLE_WITH_REA
 Approval source/message: `{APPROVAL_SOURCE_OR_MESSAGE_REFERENCE}`
 Expires at or reuse policy: `{EXPIRATION_OR_REUSE_POLICY}`
 Scope invalidation rule: `{APPROVAL_INVALIDATION_RULE}`
+Machine-readable record: `{TARGET_RELATIVE_APPROVAL_RECORD_JSON}`
+
+Use `approval-record-template.json` for deterministic diff enforcement. This
+Markdown record remains the human review and evidence surface; narrative path
+mentions do not expand the machine-readable scope.
 
 ## Approved Scope
 

@@ -46,7 +46,10 @@ create a packet.
 8. On resume, compare checkpoint claims with current repository evidence and
    invalidate stale assumptions before continuing.
 9. After local workstreams finish, reconcile cross-workstream contracts and
-   run one global logical integrity review over the combined repair set.
+   run one global logical integrity review over the combined repair set,
+   re-derived invariants, and related review-item clusters. When scoped
+   approval applies, enforce the complete combined Git change set against the
+   explicitly selected machine-readable approval records.
 10. Confirm approval coverage, run target validation, and report final
     convergence, skipped checks, and residual risk.
 

@@ -76,11 +76,22 @@ py -3 .\tools\check_all.py --list
 ## Approval Template Check
 
 `check_approval_template.py` validates the target
-`.ai/assistant/approvals/approval-template.md` template in this source
-repository. It checks approval identity, operation identity, plan version and
-hash, protected scope, allowed files or surfaces, excluded actions, approval
-source, invalidation rule, use result, validation, evidence, and residual-risk
-fields. It is not a portable framework requirement for target projects.
+`.ai/assistant/approvals/approval-template.md` and
+`.ai/assistant/approvals/approval-record-template.json` templates in this
+source repository. It checks approval identity, operation identity, plan and
+diff binding, machine-readable allowed and excluded path scope, invalidation,
+use result, validation, evidence, and residual risk. It is not a portable
+framework requirement for target projects.
+
+The optional target validator can enforce an actual operation diff:
+
+```sh
+python3 tools/validate_target_adapter.py --target /path/to/target --diff-ref origin/main --approval-record .ai/assistant/approvals/change.json --enforce-approval-scope
+```
+
+Strict mode requires explicit JSON records and checks committed, staged,
+unstaged, renamed, deleted, and untracked paths. Without strict mode, legacy
+Markdown approval checks remain advisory for compatibility.
 
 Linux or macOS:
 

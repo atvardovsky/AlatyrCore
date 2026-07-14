@@ -61,6 +61,11 @@ commands from another project.
   matches the repository.
 - Human approvals verified when required; approval records created when
   protected-change scope needs durable evidence.
+- When scoped approval is used, explicitly selected machine-readable approval
+  records are bound to the approved diff base and the complete changed path
+  set, including committed, staged, unstaged, renamed, deleted, and untracked
+  paths, is verified as a subset of allowed scope and disjoint from excluded
+  scope.
 - Adaptation record created or updated for imported or materially changed AI
   infrastructure, including rejected source instructions and router result.
 - Final evidence reports run checks, skipped checks, assumptions, and residual
@@ -85,6 +90,11 @@ checker invariant changed.
 
 If a semantic/logical fact changed, update the owning code, docs, tests,
 diagrams, prompts, skills, bridge files, or checker rules in the same change.
+
+Re-derive testable scope, identity, ownership, lifecycle, persistence, caller,
+and dependency invariants before choosing the repair set. For multiple review
+comments or defects, cluster them by changed fact and verify one combined
+repair set instead of accepting isolated local fixes.
 
 If no semantic/logical fact changed, final evidence must explain why no
 companion update was needed.
