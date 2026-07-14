@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "result_kind": "captured-effectiveness-benchmark",
+  "benchmark_id": "codex-docs-local-0619871",
+  "source_commit": "061987108d8e7ecd15625953d7c41683ee7fe497",
+  "input_plan_hash": "8fb20cd62f73502e4c2729c4cc84b6ca6f593518aed59dd9085b06f0cbbaf378",
+  "task": {
+    "id": "readme-wording",
+    "name": "README wording-only change",
+    "task_profile": "docs-local",
+    "allowed_actions": "docs-only",
+    "repetition": 1,
+    "project_baseline_hash": "26c707933367a36b39e4f6cc198fb54623483fbd84b6dec1439045f9c86522c9",
+    "acceptance_criteria": [
+      "README.md contains exactly the requested replacement sentence",
+      "package.json and src/App.txt remain unchanged",
+      "no validation command or project fact is invented",
+      "the report identifies the documentation-only scope and residual limitations"
+    ]
+  },
+  "reports": {
+    "none": "reports/none.json",
+    "minimal": "reports/minimal.json",
+    "full": "reports/full.json"
+  },
+  "execution_summary": "evidence/execution-summary.json",
+  "review_evidence": "evidence/review.json",
+  "summary": "summary.md",
+  "claims": {
+    "all_modes_accepted": true,
+    "minimal_total_token_reduction_percent": -0.4,
+    "minimal_duration_reduction_percent": 24.7,
+    "full_total_token_reduction_percent": -67.0,
+    "full_duration_reduction_percent": -11.0,
+    "monetary_cost_comparable": false,
+    "broad_cost_claim_supported": false
+  }
+}

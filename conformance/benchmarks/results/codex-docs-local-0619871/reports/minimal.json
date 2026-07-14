@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "report_kind": "effectiveness-benchmark-result",
+  "benchmark_id": "codex-docs-local-0619871",
+  "task": "README wording-only change",
+  "task_id": "readme-wording",
+  "task_profile": "docs-local",
+  "adapter_mode": "minimal",
+  "operation_id": "codex-docs-local-0619871-readme-wording-minimal-r1",
+  "repetition": 1,
+  "source_commit": "061987108d8e7ecd15625953d7c41683ee7fe497",
+  "target_baseline_hash": "26c707933367a36b39e4f6cc198fb54623483fbd84b6dec1439045f9c86522c9",
+  "run_provenance": {
+    "provider": "OpenAI",
+    "product": "Codex",
+    "model": "unknown",
+    "version_or_date": "2026-07-14",
+    "execution_mode": "isolated Codex CLI benchmark",
+    "started_at": "2026-07-14T16:12:42.700206Z",
+    "completed_at": "2026-07-14T16:13:37.702896Z",
+    "operator": "Codex CLI process 019f6166-f07d-7052-a6cf-6e544af35a5b",
+    "report_origin": "assistant-reported with executor-observed usage"
+  },
+  "context_measurement_kind": "Codex CLI completion-event tokens with assistant-reported file context",
+  "input_tokens": 102040,
+  "output_tokens": 2375,
+  "estimated_cost": "unknown",
+  "cost_currency": "unknown",
+  "cost_evidence": "unavailable; no comparable billing export",
+  "context_files_loaded": 9,
+  "approximate_context_volume": "unknown",
+  "context_expansions": 0,
+  "context_receipt_reused": "no",
+  "context_budget_exceeded": "no",
+  "clarifications": 0,
+  "approvals_requested": 0,
+  "validation": "Manual review only: exact requested README sentence occurrence and protected-file SHA-256 comparisons; no target validation command was available because adapter validation entries remain placeholders",
+  "hallucinated_commands": "0; no project validation command was claimed or run",
+  "hallucinated_command_count": 0,
+  "validation_error_count": 0,
+  "missed_companion_updates": 0,
+  "rework_count": 0,
+  "changed_fact_count": 0,
+  "relationships_reviewed": 0,
+  "companion_surfaces_checked": 2,
+  "unresolved_consistency_gaps": 0,
+  "duration_seconds": 55,
+  "protected_changes_blocked": 0,
+  "changed_files": [
+    "README.md"
+  ],
+  "residual_risks": "Documentation-only wording was manually reviewed. Automated validation is unavailable because the minimal adapter contains unresolved validation and source-of-truth placeholders; Git status evidence is unavailable because the target is not a usable Git worktree. The benchmark report is an external required artifact and is not counted as a target documentation change.",
+  "outcome": "accepted",
+  "acceptance_criteria_results": [
+    {
+      "criterion": "README.md contains exactly the requested replacement sentence",
+      "status": "pass",
+      "evidence": "Manual literal-text review; final occurrence count checked after editing"
+    },
+    {
+      "criterion": "package.json and src/App.txt remain unchanged",
+      "status": "pass",
+      "evidence": "Pre-change SHA-256 values recorded and compared after editing"
+    },
+    {
+      "criterion": "no validation command or project fact is invented",
+      "status": "pass",
+      "evidence": "Adapter entries are placeholders, so validation was limited to explicit manual review"
+    },
+    {
+      "criterion": "the report identifies the documentation-only scope and residual limitations",
+      "status": "pass",
+      "evidence": "changed_files and residual_risks explicitly record scope and limitations"
+    }
+  ],
+  "review": {
+    "status": "reviewed",
+    "reviewer": "AlatyrCore orchestrator acceptance review",
+    "reviewed_at": "2026-07-14T18:18:00+02:00",
+    "notes": "Verified the exact README diff and matching package.json and src/App.txt SHA-256 values across the baseline and result. No target validation command was claimed."
+  }
+}

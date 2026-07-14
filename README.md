@@ -216,6 +216,8 @@ Additional source-repository helpers include:
   applying adapter changes
 - deterministic context file/word baselines plus captured-run context and
   logical-integrity evidence contracts
+- reviewed no/minimal/full effectiveness evidence with exact Codex token and
+  duration measurements and an explicit no-broad-cost-claim boundary
 - all-surface bridge and conformance-prompt checks for every supported
   assistant ID
 - all-surface conformance matrix preparation with run provenance, expected

@@ -13,6 +13,12 @@
 - Captured source-bootstrap and optimized staged-core Codex evidence; the
   comparable backend run reduced loaded words by 79.6% and cumulative input
   tokens by 41.5% while preserving the required conformance behaviors.
+- Added an isolated Codex paired-benchmark executor that records exact runtime
+  token and duration evidence while preserving independent review as a
+  separate required step.
+- Captured and independently reviewed a no/minimal/full docs-local benchmark;
+  all modes passed, minimal was 24.7% faster with 0.4% more total tokens, and
+  full used 67.0% more tokens, so broad cost claims remain unsupported.
 
 - Increased `TEMPLATE_VERSION` to 2 for compact migration-first upgrade routing,
   routed-context migration evidence, and updated target operation contracts.

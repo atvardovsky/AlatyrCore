@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "evidence_kind": "independent-benchmark-review",
+  "reviewer": "AlatyrCore orchestrator acceptance review",
+  "reviewed_at": "2026-07-14T18:18:00+02:00",
+  "readme_result_sha256": "fccb545b77413fde0a99e8a3c0449cf357432a9d3cbe186104063a990ba510e4",
+  "package_baseline_and_result_sha256": "f3fa0f87ae0d6471a6640c8134527cea5c3a7d7ca7e5b905c7312b3ae15ff342",
+  "ui_source_baseline_and_result_sha256": "e723227ca11953091fa935f385c6d63dd5a5e9b2ae2ad1deb3b50a5dd4a7c35a",
+  "verified_modes": [
+    "none",
+    "minimal",
+    "full"
+  ],
+  "criteria_passed_per_mode": 4,
+  "limitations": [
+    "review evidence is historical because complete target workspaces are not committed",
+    "reviewer is the orchestrating assistant session, not a human reviewer",
+    "no billing export was available"
+  ]
+}

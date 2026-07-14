@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "run_kind": "codex-effectiveness-benchmark-execution",
+  "benchmark_id": "codex-docs-local-0619871",
+  "source_commit": "061987108d8e7ecd15625953d7c41683ee7fe497",
+  "codex_version": "codex-cli 0.144.4",
+  "isolation": {
+    "fresh_process_per_run": true,
+    "ephemeral_session": true,
+    "user_config_loaded": false,
+    "working_root": "mode target"
+  },
+  "executions": [
+    {
+      "run_id": "codex-docs-local-0619871-readme-wording-none-r1",
+      "task_id": "readme-wording",
+      "adapter_mode": "none",
+      "repetition": 1,
+      "thread_id": "019f6165-da73-7a41-af36-e0b8aedc35ee",
+      "started_at": "2026-07-14T16:11:29.843932Z",
+      "completed_at": "2026-07-14T16:12:42.696520Z",
+      "duration_seconds": 72.852,
+      "exit_code": 0,
+      "report_exists": true,
+      "usage": {
+        "input_tokens": 101313,
+        "cached_input_tokens": 87296,
+        "output_tokens": 2736,
+        "reasoning_output_tokens": 355
+      }
+    },
+    {
+      "run_id": "codex-docs-local-0619871-readme-wording-minimal-r1",
+      "task_id": "readme-wording",
+      "adapter_mode": "minimal",
+      "repetition": 1,
+      "thread_id": "019f6166-f07d-7052-a6cf-6e544af35a5b",
+      "started_at": "2026-07-14T16:12:42.700206Z",
+      "completed_at": "2026-07-14T16:13:37.702896Z",
+      "duration_seconds": 55.003,
+      "exit_code": 0,
+      "report_exists": true,
+      "usage": {
+        "input_tokens": 102040,
+        "cached_input_tokens": 84736,
+        "output_tokens": 2375,
+        "reasoning_output_tokens": 245
+      }
+    },
+    {
+      "run_id": "codex-docs-local-0619871-readme-wording-full-r1",
+      "task_id": "readme-wording",
+      "adapter_mode": "full",
+      "repetition": 1,
+      "thread_id": "019f6167-c77a-7522-80a4-606c9383caaa",
+      "started_at": "2026-07-14T16:13:37.705965Z",
+      "completed_at": "2026-07-14T16:14:58.328903Z",
+      "duration_seconds": 80.623,
+      "exit_code": 0,
+      "report_exists": true,
+      "usage": {
+        "input_tokens": 170433,
+        "cached_input_tokens": 139264,
+        "output_tokens": 3371,
+        "reasoning_output_tokens": 378
+      }
+    }
+  ],
+  "total_usage": {
+    "input_tokens": 373786,
+    "cached_input_tokens": 311296,
+    "output_tokens": 8482,
+    "reasoning_output_tokens": 978
+  }
+}

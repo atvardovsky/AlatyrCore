@@ -781,11 +781,25 @@ reports averages and relative deltas only from complete reviewed reports. It
 marks unknown or zero-reference comparisons as non-computable. Token and
 monetary-cost readiness requires comparable evidence across every paired run.
 
+`run_codex_effectiveness_benchmark.py` executes a prepared benchmark with one
+fresh Codex process per mode/repetition. It disables user configuration,
+captures local JSONL, writes completion-event token and duration evidence into
+assistant reports, and leaves independent acceptance review pending. It incurs
+real model usage and is not part of `check_all.py`.
+
+`check_captured_effectiveness_results.py` validates compact committed benchmark
+evidence under `conformance/benchmarks/results`: reviewed mode reports,
+execution-summary token alignment, review hashes, and the narrow claim
+boundary. Complete temporary targets and raw logs remain outside the source
+repository.
+
 Linux or macOS:
 
 ```sh
 python3 tools/summarize_effectiveness_reports.py --input conformance/golden/effectiveness-sample.json
 python3 tools/alatyr.py prepare-benchmark --plan benchmark.json --output tmp/benchmark
+python3 tools/run_codex_effectiveness_benchmark.py --benchmark /tmp/benchmark/benchmark.json
+python3 tools/check_captured_effectiveness_results.py
 python3 tools/alatyr.py check-benchmark --benchmark tmp/benchmark/benchmark.json --require-reports --require-reviewed
 python3 tools/alatyr.py summarize-benchmark --benchmark tmp/benchmark/benchmark.json
 ```
@@ -795,6 +809,8 @@ Windows PowerShell or Command Prompt:
 ```powershell
 py -3 .\tools\summarize_effectiveness_reports.py --input conformance\golden\effectiveness-sample.json
 py -3 .\tools\alatyr.py prepare-benchmark --plan benchmark.json --output tmp\benchmark
+py -3 .\tools\run_codex_effectiveness_benchmark.py --benchmark C:\Temp\benchmark\benchmark.json
+py -3 .\tools\check_captured_effectiveness_results.py
 py -3 .\tools\alatyr.py check-benchmark --benchmark tmp\benchmark\benchmark.json --require-reports --require-reviewed
 py -3 .\tools\alatyr.py summarize-benchmark --benchmark tmp\benchmark\benchmark.json
 ```

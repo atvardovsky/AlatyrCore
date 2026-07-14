@@ -194,6 +194,11 @@ Paired effectiveness plan and report templates live under
 `conformance/benchmarks`; generated snapshots, run workspaces, and real project
 facts do not.
 
+`conformance/benchmarks/results` stores compact reviewed effectiveness
+evidence. `tools/check_captured_effectiveness_results.py` ties each committed
+report to execution usage and historical review hashes without treating the
+omitted temporary workspaces as current-state evidence.
+
 These files describe target shapes and expected Alatyr behavior. They are not
 real target adapters and must not contain project-specific business facts.
 

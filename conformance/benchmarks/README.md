@@ -21,6 +21,21 @@ python3 tools/check_effectiveness_benchmark.py --benchmark tmp/benchmark/benchma
 python3 tools/summarize_effectiveness_benchmark.py --benchmark tmp/benchmark/benchmark.json
 ```
 
+For an isolated Codex execution with completion-event token and duration
+capture:
+
+```sh
+python3 tools/run_codex_effectiveness_benchmark.py --benchmark /tmp/benchmark/benchmark.json
+```
+
+The executor leaves `review.status` pending. A different operator or process
+must inspect target diffs and apply the same acceptance criteria to every mode
+before `--require-reviewed` comparisons are valid.
+
+Reviewed compact historical results may be promoted under `results/` without
+committing complete target snapshots or raw model logs. Validate those records
+with `python3 tools/check_captured_effectiveness_results.py`.
+
 Use `benchmark-plan-template.json` for the input shape and
 `effectiveness-run-report-template.json` for captured reports. Keep real
 repository facts and generated workspaces outside this source directory.
