@@ -24,6 +24,9 @@ This flow adapts `.ai/framework/logical-integrity.md` to `{PROJECT_NAME}`.
 5. Choose the source of truth.
 6. Repair the smallest coherent set of files.
 7. Run target validation that exists.
+8. For multi-workstream operations, reconcile the combined repair set in one
+   global review after local workstream checks. Confirm shared fact owners,
+   dependency order, approval scope, and generated artifacts agree.
 
 ## Explanation Format
 
@@ -35,4 +38,5 @@ Conflict: <what disagrees with what>
 Source of truth: <code/docs/proposal/manifest and why>
 Repair: <files or behavior to change>
 Gate: <target validation or manual review>
+Workstream convergence: <global result or not applicable>
 ```

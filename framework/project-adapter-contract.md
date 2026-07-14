@@ -87,6 +87,9 @@ Every project using this framework must define:
 - installed-operation request, blueprint-creation, adapter-recheck, and
   framework-update review flows when the repository wants post-install
   operations
+- large-task flow, task-scale routing, operation-packet policy, and resumable
+  checkpoint evidence when the repository needs cross-boundary or multi-session
+  operations
 - allowed-action meanings for installed-operation requests
 - operation help, operation-routing, and post-install/update chat-message
   templates when the repository wants discoverable assistant requests
@@ -120,6 +123,8 @@ An adapter may provide:
   entry points, and supported bridge files
 - effectiveness reports for comparable task runs
 - installed-operation request templates or adapter audit reports
+- large-task operation packets stored, ignored, redacted, or retained under a
+  target-owned policy
 - operation help menus, routing flows, or assistant chat-completion message
   templates
 - generated visual artifacts

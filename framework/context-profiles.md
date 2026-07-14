@@ -78,7 +78,7 @@ budgets. A target may tune them from measured repository evidence.
 
 If sufficient context exceeds a budget, continue safely and record:
 
-- selected profile and project areas
+- selected profile, task-scale overlay, and project areas
 - files loaded and why
 - boundary or conflict that required expansion
 - approximate context volume
@@ -94,6 +94,18 @@ Large repositories should route module or domain context through compact area
 overlays. Each overlay names its trigger, required context, and expansion
 conditions. Compose one base task profile with only the overlays that own the
 changed facts.
+
+## Large Or Resumable Tasks
+
+Use a task-scale overlay when work has multiple independently verifiable
+workstreams, crosses profiles or project areas, exceeds the profile budget,
+needs separate approval or validation checkpoints, or must survive a context
+reset. Route that overlay to `large-task-orchestration.md` and a target-owned
+operation packet.
+
+The overlay does not authorize loading every profile. Resume from the compact
+bootstrap, packet, active workstream context, changed-fact owners, and
+dependencies. Do not create a packet for a small task that fits one profile.
 
 ## Expansion Rules
 

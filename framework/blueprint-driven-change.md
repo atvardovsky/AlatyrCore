@@ -62,6 +62,11 @@ Apply this sequence before claiming the change is complete:
 For small documentation-only changes, some steps may be a short explicit
 decision rather than a separate artifact.
 
+For large, cross-boundary, or resumable changes, apply
+`large-task-orchestration.md`. Use one operation packet to track changed facts,
+workstreams, context receipts, approvals, checkpoints, and final convergence.
+Do not treat workstream-local validation as completion of the combined change.
+
 ## Approval And Sequencing
 
 Approval is required before protected changes, including:

@@ -5,6 +5,9 @@
 - Reworked target context routing around host-preloaded instructions, a
   compact schema-v2 bootstrap, explicit file/word budgets, project-area
   overlays, and context receipts for measured expansion.
+- Added optional large-task orchestration with a task-scale router overlay,
+  bounded workstreams, resumable operation packets, checkpoints, and global
+  logical-integrity convergence evidence.
 
 - Initial Alatyr Core standalone framework repository.
 - Added portable framework docs, assistant installation flow, readiness

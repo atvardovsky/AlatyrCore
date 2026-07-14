@@ -38,6 +38,7 @@ OPTIONAL_MODULES = [
     "ai-infrastructure",
     "multi-assistant-bridges",
     "installed-operations",
+    "large-task-orchestration",
     "durable-approvals",
     "migration-diff",
     "effectiveness-metrics",

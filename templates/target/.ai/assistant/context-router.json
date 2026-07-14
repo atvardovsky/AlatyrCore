@@ -29,6 +29,7 @@
     ],
     "fields": [
       "selected profiles",
+      "selected task scale overlay",
       "selected project areas",
       "loaded files and reasons",
       "approximate context volume",
@@ -36,6 +37,36 @@
       "intentionally omitted context",
       "residual risk"
     ]
+  },
+  "task_scale_overlays": {
+    "large-or-resumable": {
+      "use_when": [
+        "explicitly large phased or resumable work",
+        "multiple independently verifiable workstreams",
+        "multiple project areas or task profiles",
+        "profile context budget exceeded",
+        "separate approval or validation checkpoints"
+      ],
+      "required_context": [
+        ".ai/framework/large-task-orchestration.md",
+        ".ai/assistant/flows/large-task-orchestration.flow.md",
+        ".ai/assistant/templates/large-task-operation-packet.md"
+      ],
+      "expand_when": [
+        "workstream dependency changes",
+        "checkpoint evidence is stale",
+        "cross-workstream contract conflict",
+        "approval scope no longer covers applied changes"
+      ],
+      "budget_behavior": "load only the active workstream context and its fact owners and dependencies",
+      "final_evidence": [
+        "activation reason",
+        "workstream and dependency state",
+        "context receipts and checkpoints",
+        "global logical integrity result",
+        "final convergence and residual risk"
+      ]
+    }
   },
   "area_overlays": {
     "{TARGET_AREA_ID}": {
@@ -374,11 +405,14 @@
         ".ai/framework/bridge-capability-matrix.md",
         ".ai/framework/migration-diff.md",
         ".ai/framework/effectiveness-metrics.md",
+        ".ai/framework/large-task-orchestration.md",
         ".ai/framework/lifecycle.md",
         ".ai/framework/installed-operations.md",
         ".ai/framework/operation-help.md",
         ".ai/assistant/flows/adapter-recheck.flow.md",
+        ".ai/assistant/flows/large-task-orchestration.flow.md",
         ".ai/assistant/flows/operation-routing.flow.md",
+        ".ai/assistant/templates/large-task-operation-packet.md",
         ".ai/assistant/templates/installation-note.md",
         ".ai/assistant/templates/post-install-message.md",
         ".ai/assistant/templates/post-update-message.md",

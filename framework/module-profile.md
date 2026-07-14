@@ -55,6 +55,9 @@ maintain them:
   wrappers for multiple supported assistants.
 - `installed-operations`: post-install operation requests, operation help,
   routing, adapter recheck, and chat-message templates.
+- `large-task-orchestration`: task-scale routing, operation packets,
+  workstreams, resumable checkpoints, and final convergence evidence for
+  repositories that need large or multi-session changes.
 - `durable-approvals`: approval-record storage for protected changes that need
   plan, scope, or file evidence.
 - `migration-diff`: migration notes and framework baseline comparisons for

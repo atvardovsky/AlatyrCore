@@ -5,7 +5,7 @@
       "category": "CONTEXT",
       "owner": "framework/context-profiles.md",
       "rule_ids": ["ALATYR-CONTEXT-001"],
-      "derived_surfaces": ["README source context", "installation source context", "target context profiles", "target context router", "session bootstrap instructions"]
+      "derived_surfaces": ["README source context", "installation source context", "target context profiles", "target context router", "task-scale overlays", "operation packet context receipts", "session bootstrap instructions"]
     },
     {
       "category": "SOURCE",
@@ -35,13 +35,13 @@
       "category": "INTEGRITY",
       "owner": "framework/logical-integrity.md",
       "rule_ids": ["ALATYR-INTEGRITY-001"],
-      "derived_surfaces": ["target gates", "documentation sync", "adapter recheck", "final evidence"]
+      "derived_surfaces": ["target gates", "documentation sync", "adapter recheck", "workstream convergence", "final evidence"]
     },
     {
       "category": "CHANGE",
       "owner": "framework/blueprint-driven-change.md",
       "rule_ids": ["ALATYR-CHANGE-001"],
-      "derived_surfaces": ["product-change operation", "blueprint-driven target flow", "documentation and diagram sync"]
+      "derived_surfaces": ["product-change operation", "blueprint-driven target flow", "large-task orchestration", "documentation and diagram sync"]
     },
     {
       "category": "ADAPTER",
@@ -71,7 +71,7 @@
       "category": "EVIDENCE",
       "owner": "framework/guarantees.md",
       "rule_ids": ["ALATYR-EVIDENCE-001"],
-      "derived_surfaces": ["final evidence", "process commitments", "conformance reports", "effectiveness reports"]
+      "derived_surfaces": ["final evidence", "process commitments", "conformance reports", "effectiveness reports", "operation packets"]
     }
   ],
   "rules": [
@@ -79,7 +79,7 @@
       "id": "ALATYR-CONTEXT-001",
       "category": "CONTEXT",
       "canonical_source": "framework/context-profiles.md",
-      "summary": "Use a compact budgeted bootstrap, select the smallest task profile and project-area overlays through an aligned context router, and record expansion only when boundaries or conflicts require it.",
+      "summary": "Use a compact budgeted bootstrap, select the smallest task profile, project-area overlays, and optional task-scale overlay through an aligned context router, and record expansion only when boundaries or conflicts require it.",
       "applies_to": ["all installed adapter tasks"],
       "enforcement": "required"
     },
@@ -127,7 +127,7 @@
       "id": "ALATYR-INTEGRITY-001",
       "category": "INTEGRITY",
       "canonical_source": "framework/logical-integrity.md",
-      "summary": "Name changed semantic or logical facts, affected surfaces, source of truth, repair set, validation, and residual risk before claiming consistency.",
+      "summary": "Name changed semantic or logical facts, affected surfaces, source of truth, repair set, validation, and residual risk before claiming consistency, and reconcile the combined repair set for multi-workstream operations.",
       "applies_to": ["semantic fact changes", "drift reviews"],
       "enforcement": "required"
     },
@@ -135,7 +135,7 @@
       "id": "ALATYR-CHANGE-001",
       "category": "CHANGE",
       "canonical_source": "framework/blueprint-driven-change.md",
-      "summary": "Carry accepted product changes through source-of-truth update, flow update, implementation plan, code and test change, docs and diagram sync, and final evidence.",
+      "summary": "Carry accepted product changes through source-of-truth update, flow update, implementation plan, code and test change, docs and diagram sync, and final evidence, using bounded workstreams and final convergence when the change is large or resumable.",
       "applies_to": ["business changes", "architecture changes", "data changes", "runtime changes", "public contract changes"],
       "enforcement": "required"
     },

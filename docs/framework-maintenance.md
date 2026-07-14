@@ -82,6 +82,9 @@ Before accepting a change, check:
 - `python3 tools/check_context_router.py` passes when target context-router
   profile names, required context, approval gates, validation, final evidence,
   or framework-routing coverage changes.
+- `python3 tools/check_large_task_orchestration.py` passes when large-task
+  activation, task-scale routing, workstream, packet, checkpoint, resume, or
+  convergence contracts change.
 - `python3 tools/check_manifest_contract.py` passes when the target manifest
   template, versioning fields, path references, or adapter metadata contract
   changes.
@@ -171,6 +174,9 @@ Before accepting a change, check:
   templates preserve context-router bootstrap references and adapter drift
   evidence for local path leakage, stale checker statements, duplicate profile
   references, unresolved owner placeholders, and target-local checker status.
+- large-task routing, flow, packet, manifest, module profile, request shape,
+  and installation evidence agree; small tasks are not required to create
+  packets.
 - target approval template includes plan identity, protected scope, allowed
   files, excluded actions, approval source, invalidation, use result,
   evidence, validation, and residual risk fields.

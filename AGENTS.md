@@ -140,6 +140,7 @@ python3 tools/check_approval_template.py
 python3 tools/check_ai_infrastructure_inventory.py
 python3 tools/check_bridge_capability_matrix.py
 python3 tools/check_context_router.py
+python3 tools/check_large_task_orchestration.py
 python3 tools/check_manifest_contract.py
 python3 tools/check_markdown_links.py
 python3 tools/check_maturity_profile.py

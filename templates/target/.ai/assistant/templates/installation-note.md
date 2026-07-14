@@ -32,6 +32,11 @@ Installation id: `{INSTALLATION_ID}`
 - AI infrastructure inventory template:
   `.ai/assistant/templates/ai-infrastructure-inventory.md`
 - Operation routing flow: `.ai/assistant/flows/operation-routing.flow.md`
+- Large-task orchestration flow:
+  `.ai/assistant/flows/large-task-orchestration.flow.md`
+- Large-task operation packet:
+  `.ai/assistant/templates/large-task-operation-packet.md`
+- Operation packet storage policy: `{TARGET_OPERATION_PACKET_POLICY}`
 - Approval record template: `.ai/assistant/approvals/approval-template.md`
 - Prompt-injection policy: `.ai/assistant/policies/prompt-injection.md`
 - Migration note template: `.ai/assistant/templates/migration-note.md`

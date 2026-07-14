@@ -18,8 +18,9 @@ Replace placeholders with target facts before accepting installation.
 ## Steps
 
 1. State change intent and non-goals.
-2. Load `AGENTS.md`, `.ai/README.md`, framework docs, target contours, and the
-   target source-of-truth docs.
+2. Use `.ai/assistant/context-router.json` to load the smallest matching
+   profile and project-area overlays plus the target source-of-truth docs.
+   Activate the `large-or-resumable` scale overlay when its conditions apply.
 3. Apply `.ai/assistant/flows/logical-integrity-review.flow.md`.
 4. List changed facts and affected project areas.
 5. Update target blueprint or equivalent source-of-truth docs when accepted
@@ -33,6 +34,11 @@ Replace placeholders with target facts before accepting installation.
 9. Run target validation that exists. Do not invent commands.
 10. Perform a final consistency check across changed surfaces.
 11. Report final evidence, skipped checks, approvals, and residual risk.
+
+For large or resumable changes, use
+`.ai/assistant/flows/large-task-orchestration.flow.md` and maintain one packet
+from `.ai/assistant/templates/large-task-operation-packet.md`. Complete one
+global logical integrity review after workstream-local validation.
 
 ## Approval Gate
 
@@ -56,3 +62,4 @@ Report:
 - validation run or unresolved
 - approvals used
 - skipped checks and residual risk
+- for large tasks, workstream convergence, context receipts, and checkpoints

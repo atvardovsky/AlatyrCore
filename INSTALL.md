@@ -80,6 +80,7 @@ The plan must identify:
   owner map when the target supports file ownership metadata
 - supported assistants
 - context router and context profiles needed for the target
+- large-task task-scale routing, packet, checkpoint, and storage needs
 - required core profile and optional modules needed for the target
 - source-of-truth registry needs
 - task-specific maturity and bridge capability needs
@@ -128,7 +129,8 @@ In a typical target repository:
    AI-infrastructure-inventory, adapter output contracts, source-access
    policy, prompt-injection policy, approval-record template,
    migration-note template, effectiveness-report template, blueprint-creation,
-   adapter-recheck, and
+   adapter-recheck, large-task orchestration and operation-packet templates,
+   and
    post-install/update chat-message templates when the target wants
    post-install operation requests or AI infrastructure adaptation.
 10. Add skills, prompts, diagrams, and deterministic checks only when useful

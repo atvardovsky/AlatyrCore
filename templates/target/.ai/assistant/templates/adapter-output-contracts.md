@@ -29,6 +29,8 @@ Use after the initial Alatyr Core installation or a scoped adapter expansion.
 - Required core profile result: `{REQUIRED_CORE_PROFILE_RESULT}`
 - Optional module profile result: `{OPTIONAL_MODULE_PROFILE_RESULT}`
 - Context profiles result: `{CONTEXT_PROFILES_RESULT}`
+- Large-task orchestration result: `{LARGE_TASK_ORCHESTRATION_RESULT_OR_SKIPPED}`
+- Operation packet template result: `{OPERATION_PACKET_TEMPLATE_RESULT_OR_SKIPPED}`
 - Source-of-truth registry result: `{SOURCE_OF_TRUTH_REGISTRY_RESULT}`
 - Task-specific maturity result: `{TASK_SPECIFIC_MATURITY_RESULT}`
 - Bridge capability matrix result: `{BRIDGE_CAPABILITY_MATRIX_RESULT}`
@@ -77,6 +79,8 @@ Core baseline.
 - Required core profile result: `{REQUIRED_CORE_PROFILE_RESULT}`
 - Optional module profile result: `{OPTIONAL_MODULE_PROFILE_RESULT}`
 - Context profiles result: `{CONTEXT_PROFILES_RESULT}`
+- Large-task orchestration result: `{LARGE_TASK_ORCHESTRATION_RESULT_OR_SKIPPED}`
+- Operation packet template result: `{OPERATION_PACKET_TEMPLATE_RESULT_OR_SKIPPED}`
 - Source-of-truth registry result: `{SOURCE_OF_TRUTH_REGISTRY_RESULT}`
 - Task-specific maturity result: `{TASK_SPECIFIC_MATURITY_RESULT}`
 - Operation help and routing result: `{OPERATION_HELP_ROUTING_RESULT}`
@@ -112,6 +116,8 @@ adapter.
 - Required core profile result: `{REQUIRED_CORE_PROFILE_RESULT}`
 - Optional module profile result: `{OPTIONAL_MODULE_PROFILE_RESULT}`
 - Context profiles result: `{CONTEXT_PROFILES_RESULT}`
+- Large-task orchestration result: `{LARGE_TASK_ORCHESTRATION_RESULT_OR_SKIPPED}`
+- Operation packet template result: `{OPERATION_PACKET_TEMPLATE_RESULT_OR_SKIPPED}`
 - Source-of-truth registry result: `{SOURCE_OF_TRUTH_REGISTRY_RESULT}`
 - Task-specific maturity result: `{TASK_SPECIFIC_MATURITY_RESULT}`
 - Bridge capability matrix result: `{BRIDGE_CAPABILITY_MATRIX_RESULT}`

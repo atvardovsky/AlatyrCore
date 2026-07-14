@@ -29,6 +29,7 @@ REQUIRED_OPERATIONS = {
     "recheck-after-installation",
     "recheck-after-framework-update",
     "product-change",
+    "large-task",
     "logical-integrity-review",
     "ai-infrastructure-inventory",
     "skill-adaptation",
@@ -44,6 +45,7 @@ REQUIRED_ALIAS_TARGETS = {
     "create-project-blueprint",
     "logical-integrity-review",
     "product-change",
+    "large-task",
     "ai-infrastructure-inventory",
     "skill-adaptation",
 }

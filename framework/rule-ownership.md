@@ -32,7 +32,8 @@ Category: `CONTEXT`
 Owner: `.ai/framework/context-profiles.md`
 Rule IDs: `ALATYR-CONTEXT-001`
 Derived surfaces: README source context, installation source context, target
-context profiles, target context router, session bootstrap instructions.
+context profiles, target context router, task-scale overlays, operation packet
+context receipts, session bootstrap instructions.
 
 Category: `SOURCE`
 Owner: `.ai/framework/source-of-truth-registry.md`
@@ -61,14 +62,14 @@ policy, security-sensitive context profile.
 Category: `INTEGRITY`
 Owner: `.ai/framework/logical-integrity.md`
 Rule IDs: `ALATYR-INTEGRITY-001`
-Derived surfaces: target gates, documentation sync, adapter recheck, final
-evidence.
+Derived surfaces: target gates, documentation sync, adapter recheck,
+workstream convergence, final evidence.
 
 Category: `CHANGE`
 Owner: `.ai/framework/blueprint-driven-change.md`
 Rule IDs: `ALATYR-CHANGE-001`
 Derived surfaces: product-change operation, blueprint-driven target flow,
-documentation and diagram sync.
+large-task orchestration, documentation and diagram sync.
 
 Category: `ADAPTER`
 Owner: `.ai/framework/project-adapter-contract.md`
@@ -98,7 +99,7 @@ Category: `EVIDENCE`
 Owner: `.ai/framework/guarantees.md`
 Rule IDs: `ALATYR-EVIDENCE-001`
 Derived surfaces: final evidence, process commitments, conformance reports,
-effectiveness reports.
+effectiveness reports, operation packets.
 
 ## Change Protocol
 

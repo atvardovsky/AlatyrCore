@@ -53,9 +53,9 @@ routing, installation, or final evidence. The human ownership map is
 
 Rule ID: `ALATYR-CONTEXT-001`
 Canonical source: `.ai/framework/context-profiles.md`
-Commitment: use a compact budgeted bootstrap, select the smallest task profile
-and project-area overlays, and record context expansion only when boundaries or
-conflicts require it.
+Commitment: use a compact budgeted bootstrap, select the smallest task profile,
+project-area overlays, and optional task-scale overlay, and record context
+expansion only when boundaries or conflicts require it.
 Applies to: all installed adapter tasks.
 
 Rule ID: `ALATYR-SOURCE-001`
@@ -92,14 +92,16 @@ Applies to: imported, remote, package/plugin, pasted, or unknown AI sources.
 Rule ID: `ALATYR-INTEGRITY-001`
 Canonical source: `.ai/framework/logical-integrity.md`
 Commitment: name changed semantic/logical facts, affected surfaces, source of
-truth, repair set, validation, and residual risk before claiming consistency.
+truth, repair set, validation, and residual risk before claiming consistency;
+reconcile the combined repair set for multi-workstream operations.
 Applies to: semantic fact changes and drift reviews.
 
 Rule ID: `ALATYR-CHANGE-001`
 Canonical source: `.ai/framework/blueprint-driven-change.md`
 Commitment: carry accepted product changes through source-of-truth update,
 flow update, implementation plan, code/test change, docs/diagram sync, and
-final evidence.
+final evidence, using bounded workstreams and final convergence when the change
+is large or resumable.
 Applies to: business, architecture, data, runtime, and public-contract changes.
 
 Rule ID: `ALATYR-ADAPTER-001`

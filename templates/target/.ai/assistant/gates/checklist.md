@@ -11,14 +11,16 @@ commands from another project.
   `ALATYR-RISK-001`, `ALATYR-APPROVAL-001`, `ALATYR-SAFETY-001`,
   `ALATYR-SAFETY-002`, `ALATYR-INTEGRITY-001`, `ALATYR-CHANGE-001`,
   `ALATYR-ADAPTER-001`, `ALATYR-MODULE-001`, and `ALATYR-EVIDENCE-001`.
-- Bootstrap context loaded from `AGENTS.md`, `.ai/alatyr.yaml`,
-  `.ai/README.md`, `.ai/assistant/context-router.json`,
-  `.ai/assistant/context-profiles.md`, contours, and target source-of-truth
-  docs.
+- `AGENTS.md` treated as preloaded; compact bootstrap loaded from
+  `.ai/alatyr.yaml`, `.ai/README.md`, and
+  `.ai/assistant/context-router.json`.
 - Source-of-truth registry checked when a changed fact has multiple possible
   owners or derived surfaces.
 - Task context profile selected and required framework, project, assistant,
   flow, gate, policy, and validation files loaded.
+- Large-task scale overlay and operation packet used only when activation
+  conditions apply; active workstream context, checkpoints, dependencies, and
+  global convergence checked when used.
 - Module profile checked before relying on optional Alatyr capabilities.
 - Semantic/logical change decision and logical integrity review made.
 - Documentation sync checked.

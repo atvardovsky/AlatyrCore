@@ -127,7 +127,9 @@ Classify every proposed target file:
     target facts.
     The router must distinguish host-preloaded instructions from compact
     bootstrap, define context budgets and receipts, and route project-area
-    overlays without putting full project sources in mandatory bootstrap.
+    overlays without putting full project sources in mandatory bootstrap. Add
+    the `large-or-resumable` task-scale overlay only when the target enables
+    large-task orchestration.
 14. Add bridge files only for assistants the target uses.
 15. Add installed-operation, operation-help, operation-routing,
     AI-infrastructure-inventory, adapter output contract
@@ -136,6 +138,9 @@ Classify every proposed target file:
     template, blueprint-creation, adapter-recheck, and post-install/update
     chat-message templates when the target wants
     post-install operation requests or AI infrastructure adaptation.
+    Add the large-task flow and operation-packet template when the target needs
+    cross-boundary, multi-workstream, budget-exceeding, or resumable work, and
+    record the target packet storage policy.
 16. Ensure root assistant entry points and supported bridge files point future
     sessions to the installation note, operation help, and routing flow.
 17. Add prompts, skills, diagrams, or consistency checks only when they solve
@@ -195,8 +200,10 @@ Report:
   prompt-injection policy, approval-record template, migration-note template,
   blueprint-creation, adapter-recheck, and post-install/update chat-message
   templates added or skipped
+- large-task orchestration flow, operation packet, and target storage policy
+  added or skipped
 - root entry-point and bridge compact-bootstrap references checked
-- context budgets, project-area overlays, and receipt fields adapted or
+- context budgets, task-scale/project-area overlays, and receipt fields adapted or
   explicitly deferred
 - prompts, skills, or third-party assistant infrastructure adapted or skipped
 - target validation run and skipped

@@ -53,6 +53,13 @@ public contract.
 Flow: `.ai/assistant/flows/blueprint-driven-change.flow.md`
 Minimum input: change intent, non-goals, and approval constraints.
 
+Operation: `large-task`
+Use when: coordinating large, cross-boundary, multi-workstream, or resumable
+work while keeping context bounded per workstream.
+Flow: `.ai/assistant/flows/large-task-orchestration.flow.md`
+Minimum input: goal, non-goals, affected project areas, allowed actions, and
+known approval or validation checkpoints.
+
 Operation: `logical-integrity-review`
 Use when: reviewing whether code, docs, tests, diagrams, prompts, skills,
 gates, and bridges agree.
@@ -122,6 +129,11 @@ Route to: `logical-integrity-review`.
 Alias: `change business rule` or `измени бизнес-правило`
 Route to: `product-change`.
 
+Alias: `plan large task`, `continue large task`, or `resume Alatyr task`
+Route to: `large-task`. Continue from an existing operation packet when its
+path or operation ID is known; otherwise create a packet only after the
+large-task activation gate passes.
+
 ## Request Shape
 
 Use this shape when asking for an operation:
@@ -133,6 +145,8 @@ Operation type: `{OPERATION_TYPE}`
 Goal: `{GOAL}`
 Non-goals: `{NON_GOALS}`
 Known context: `{KNOWN_CONTEXT}`
+Task scale: `{NORMAL_OR_LARGE_OR_RESUMABLE}`
+Existing operation packet: `{PACKET_PATH_OR_NONE}`
 Allowed actions: `{READ_ONLY_DOCS_ONLY_ADAPTER_ONLY_CODE_AND_TESTS_OR_FULL_WITH_APPROVAL}`
 Expected final evidence: `{EXPECTED_FINAL_EVIDENCE}`
 ```

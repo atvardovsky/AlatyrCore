@@ -58,6 +58,8 @@ Typical operation categories include:
 - framework upgrade impact review
 - target source-of-truth drift review
 - blueprint-driven product change
+- large-task orchestration for cross-boundary, multi-workstream, or resumable
+  work
 - logical integrity review
 - AI infrastructure inventory
 - skill, prompt, wrapper, or third-party assistant infrastructure adaptation
@@ -90,8 +92,8 @@ shortcuts, not shell commands.
 
 When routing a request:
 
-1. Read the target assistant entry point, adapter manifest, area map, and
-   context profiles.
+1. Treat the target assistant entry point as preloaded, read the compact
+   manifest/router bootstrap, and select the smallest profile and area overlays.
 2. Read the target operation help file when it exists.
 3. Classify the request by contour, task profile, and changed fact.
 4. Normalize documented operation aliases before selecting a flow.
@@ -109,6 +111,9 @@ When routing a request:
    importing it.
 10. Do not edit repository files while only presenting help or resolving
    operation ambiguity.
+11. Add a large-task scale overlay only when the work is cross-boundary,
+    multi-workstream, budget-exceeding, or resumable. Keep small tasks on their
+    normal flow without an operation packet.
 
 ## Evidence Format
 

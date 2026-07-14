@@ -66,6 +66,7 @@ operations:
   operation_request: ".ai/assistant/templates/operation-request.md"
   installation_note: ".ai/assistant/templates/installation-note.md"
   output_contracts: ".ai/assistant/templates/adapter-output-contracts.md"
+  large_task_packet: ".ai/assistant/templates/large-task-operation-packet.md"
   ai_infrastructure_inventory: ".ai/assistant/templates/ai-infrastructure-inventory.md"
   migration_note: ".ai/assistant/templates/migration-note.md"
   effectiveness_report: ".ai/assistant/templates/effectiveness-report.md"

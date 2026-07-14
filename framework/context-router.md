@@ -17,6 +17,7 @@ A target adapter can load:
 2. the compact bootstrap, including `.ai/assistant/context-router.json`
 3. the selected profile's required context
 4. one or more project-area overlays when the task names affected areas
+5. a task-scale overlay only when the task is large or resumable
 
 Then it expands only when the router or human profile names a boundary,
 conflict, approval trigger, or missing source-of-truth fact.
@@ -34,6 +35,7 @@ A target context router should define:
 - routing order
 - canonical profile entries
 - optional project-area overlays
+- optional task-scale overlays for large or resumable work
 - use-when signals
 - required context paths
 - expansion triggers
@@ -53,6 +55,11 @@ renaming.
 Budgets are routing controls, not safety limits. When sufficient work requires
 more context, the assistant records the reason, changed boundary, and added
 files in the context receipt before expanding.
+
+A large-task overlay should route to the orchestration flow and operation
+packet without adding those files to every normal task profile. While a packet
+is active, load only the active workstream's required context, fact owners, and
+dependencies. The packet remains coordination evidence, not a source of truth.
 
 ## Ownership
 

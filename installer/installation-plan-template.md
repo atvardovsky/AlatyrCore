@@ -40,6 +40,8 @@ List what must not be changed.
 - Bootstrap and profile context budgets:
 - Context receipt fields and storage policy:
 - Project-area overlays:
+- Task-scale overlays and large-task activation rules:
+- Large-task packet storage, retention, or ignore policy:
 - Adapter owner metadata:
 - CODEOWNERS or equivalent owner map:
 - Module profile:
@@ -143,6 +145,11 @@ contracts.
 Include `.ai/assistant/templates/ai-infrastructure-inventory.md` when the
 target wants durable AI infrastructure inventory reports.
 
+Include `.ai/assistant/flows/large-task-orchestration.flow.md` and
+`.ai/assistant/templates/large-task-operation-packet.md` when the target needs
+cross-boundary, multi-workstream, budget-exceeding, or resumable operations.
+Record where completed packets are stored, ignored, redacted, or removed.
+
 ## Context, Risk, Safety, Testing, And Diagram Adaptation
 
 - Target context entry points:
@@ -154,6 +161,8 @@ target wants durable AI infrastructure inventory reports.
 - Context budgets and exception behavior:
 - Context receipt fields:
 - Project-area overlays:
+- Task-scale overlays:
+- Large-task activation, packet storage, and resume rules:
 - Required core profile:
 - Adapter owner, backup owner, review cadence, and last review:
 - CODEOWNERS or equivalent owner map:
@@ -179,6 +188,7 @@ target wants durable AI infrastructure inventory reports.
 - Effectiveness measurement rules:
 - Installed-operation request and adapter-recheck rules:
 - Operation help and routing rules:
+- Large-task workstream, checkpoint, and final-convergence rules:
 - Adapter output contract rules:
 - Adapter drift/local leakage rules:
 - Target-local adapter checker rules:

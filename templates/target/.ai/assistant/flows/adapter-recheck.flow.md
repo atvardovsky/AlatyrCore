@@ -28,13 +28,16 @@ Replace placeholders with target facts before accepting installation.
 - Migration note template: `.ai/assistant/templates/migration-note.md`
 - Effectiveness report template:
   `.ai/assistant/templates/effectiveness-report.md`
+- Large-task flow and packet: `.ai/assistant/flows/large-task-orchestration.flow.md`,
+  `.ai/assistant/templates/large-task-operation-packet.md`
 - Known adapter gaps: `{KNOWN_GAPS}`
 
 ## Steps
 
-1. Load `AGENTS.md`, `AI_ASSISTANTS.md`, `.ai/alatyr.yaml`, `.ai/README.md`,
-   `.ai/assistant/context-router.json`,
-   `.ai/assistant/context-profiles.md`, `.ai/project`, and `.ai/assistant`.
+1. Treat `AGENTS.md` as preloaded, load the compact bootstrap, and select the
+   `framework-upgrade` profile plus only affected adapter areas. Do not load
+   all `.ai/project` or `.ai/assistant` files before identifying the recheck
+   scope.
 2. Identify whether this is a post-installation recheck, framework update
    recheck, bridge compatibility review, or maturity audit.
 3. Compare installed framework files against the recorded framework baseline or
@@ -45,7 +48,8 @@ Replace placeholders with target facts before accepting installation.
    `.ai/assistant/module-profile.md`.
 6. Check target adapter references to framework files, operation help, routing
    flows, AI infrastructure inventory, gates, prompts, skills, bridge files,
-   checker rules, chat-message templates, and final-evidence expectations.
+   checker rules, large-task flow and packet, chat-message templates, and
+   final-evidence expectations.
 7. Check adapter drift hazards: hard-coded local machine paths in `.ai/*`,
    root assistant entry points, bridge files, templates, and policies; stale
    statements about whether local Alatyr or adapter checkers exist; duplicate
@@ -86,7 +90,8 @@ Report:
 - context router and context profile status
 - module profile status
 - help, routing, AI infrastructure inventory, bridge, prompt, skill, gate,
-  checker, diagram, chat-message, and lifecycle status
+  checker, large-task orchestration, diagram, chat-message, and lifecycle
+  status
 - bridge capability matrix status
 - target validation run or unresolved
 - approvals needed

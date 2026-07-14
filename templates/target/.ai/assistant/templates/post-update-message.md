@@ -33,6 +33,7 @@ Allowed actions: read-only
 Operation help:
 - Ask for "Alatyr help" to see available operations and matching flows.
 - Use `.ai/assistant/help.md`, `.ai/assistant/help-reference.md`, and `.ai/assistant/templates/operation-request.md` for structured requests.
+- Use `large-task` only for cross-boundary or resumable work, and resume an existing packet when one is named.
 
 Validation run:
 `{VALIDATION_RUN_OR_UNRESOLVED}`

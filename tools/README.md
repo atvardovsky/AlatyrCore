@@ -109,6 +109,25 @@ Windows PowerShell or Command Prompt:
 py -3 .\tools\check_context_router.py
 ```
 
+## Large-Task Orchestration Check
+
+`check_large_task_orchestration.py` validates the optional large-task
+framework guidance, target task-scale route, orchestration flow, resumable
+packet fields, and manifest path. It does not validate target project facts or
+workstream completion.
+
+Linux or macOS:
+
+```sh
+python3 tools/check_large_task_orchestration.py
+```
+
+Windows PowerShell or Command Prompt:
+
+```powershell
+py -3 .\tools\check_large_task_orchestration.py
+```
+
 ## Scaffold Target Structure
 
 `scaffold_target_structure.py` copies placeholder target templates and

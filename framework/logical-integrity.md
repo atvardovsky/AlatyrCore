@@ -74,6 +74,11 @@ Use this sequence when a fact may have changed:
 10. Run target validation that exists, or record manual/unresolved checks.
 11. Report final evidence and residual risk.
 
+For multi-workstream operations, perform local review within each workstream
+and one global review over the combined repair set before completion. The
+global review reconciles shared facts, canonical owners, approvals,
+cross-workstream contracts, and generated artifacts.
+
 ## Source-Of-Truth Decision
 
 When files disagree, choose the owner by contour:

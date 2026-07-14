@@ -28,6 +28,19 @@ documentation domains in `.ai/assistant/context-router.json`. Each area should
 name its trigger, required context, and expansion conditions. Compose the base
 task profile with only areas that own changed facts.
 
+## Task-Scale Overlay: `large-or-resumable`
+
+Activate only for large, cross-boundary, multi-workstream,
+budget-exceeding, or resumable work. Required context:
+
+- `.ai/framework/large-task-orchestration.md`
+- `.ai/assistant/flows/large-task-orchestration.flow.md`
+- `.ai/assistant/templates/large-task-operation-packet.md`
+
+Load only the active workstream context, changed-fact owners, and
+dependencies. Record checkpoints and one global convergence review. Do not
+create a packet for a small task.
+
 ## Profile: `docs-local`
 
 Use when: local wording, README, diagram text, or non-semantic documentation
@@ -210,13 +223,16 @@ Required context:
 - `.ai/framework/bridge-capability-matrix.md`
 - `.ai/framework/migration-diff.md`
 - `.ai/framework/effectiveness-metrics.md`
+- `.ai/framework/large-task-orchestration.md`
 - `.ai/framework/adapter-maturity.md`
 - `.ai/framework/lifecycle.md`
 - `.ai/framework/installed-operations.md`
 - `.ai/framework/operation-help.md`
 - `.ai/framework/approval-records.md`
 - `.ai/assistant/flows/adapter-recheck.flow.md`
+- `.ai/assistant/flows/large-task-orchestration.flow.md`
 - `.ai/assistant/flows/operation-routing.flow.md`
+- `.ai/assistant/templates/large-task-operation-packet.md`
 - `.ai/assistant/templates/installation-note.md`
 - `.ai/assistant/templates/post-install-message.md`
 - `.ai/assistant/templates/post-update-message.md`

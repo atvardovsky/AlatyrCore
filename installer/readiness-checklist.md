@@ -162,6 +162,8 @@ Collect target-specific facts before writing project docs:
 - effectiveness measurement expectations
 - installed-operation request, blueprint-creation, adapter-recheck, and
   framework-update review expectations
+- large-task activation, task-scale overlay, operation packet, workstream,
+  checkpoint, storage, resume, and final-convergence expectations when needed
 - operation help, routing, and post-install/update assistant chat-message
   expectations
 
@@ -253,6 +255,9 @@ Final evidence must say:
 - blueprint, registries, contours, module profile, and human profile rationale
   are routed after task selection instead of loaded for every task
 - context budgets and receipt fields are adapted from target evidence
+- large-task orchestration is enabled or skipped from target evidence; enabled
+  adapters define activation, packet storage, bounded resume context,
+  checkpoints, and global convergence
 - adapter drift checks run or recorded as manual/unresolved, including local
   path leakage, stale checker statements, duplicate profile references,
   unresolved owner placeholders, and target-local checker status
@@ -264,6 +269,7 @@ Final evidence must say:
   adapter-recheck, or post-install/update chat-message templates added or
   skipped
 - adapter output contracts added or skipped
+- large-task flow and operation-packet template added or skipped
 - AI infrastructure inventory report template added or skipped
 - root entry-point and bridge compact-bootstrap references checked
 - AI infrastructure source-access policy added or skipped

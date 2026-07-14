@@ -5,7 +5,8 @@ This directory is split by ownership.
 For routine routing, treat root `AGENTS.md` as preloaded and read only this
 file, `.ai/alatyr.yaml`, and `.ai/assistant/context-router.json`. Load the
 blueprint, registries, contours, module profile, and human context profiles
-only when the selected task profile or project-area overlay requires them.
+only when the selected task profile, task-scale overlay, or project-area
+overlay requires them.
 
 ## Framework Area
 
@@ -50,6 +51,8 @@ Replace this section with the actual target project map.
 - validation evidence expectations
 - documentation-sync rules
 - installed-operation requests and adapter rechecks
+- optional large-task operation packets, bounded workstreams, checkpoints,
+  and resume evidence under a target-owned storage policy
 - migration notes for framework updates
 - operation help, operation routing, and post-install/update assistant chat
   messages

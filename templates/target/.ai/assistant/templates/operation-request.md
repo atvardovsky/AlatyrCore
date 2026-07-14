@@ -13,6 +13,8 @@ installed Alatyr Core adapter.
 - Goal: `{GOAL}`
 - Non-goals: `{NON_GOALS}`
 - Known context: `{KNOWN_CONTEXT}`
+- Task scale: `{NORMAL_OR_LARGE_OR_RESUMABLE}`
+- Existing operation packet: `{PACKET_PATH_OR_NONE}`
 - Allowed actions:
   `{READ_ONLY_DOCS_ONLY_ADAPTER_ONLY_CODE_AND_TESTS_OR_FULL_WITH_APPROVAL}`
 - Expected final evidence: `{EXPECTED_FINAL_EVIDENCE}`
@@ -66,6 +68,11 @@ Then select the smallest matching context profile and read the
 profile-required framework, project, assistant, flow, gate, policy, and
 validation files.
 
+For large, multi-workstream, cross-boundary, budget-exceeding, or resumable
+work, add the `large-or-resumable` task-scale overlay and use
+`.ai/assistant/flows/large-task-orchestration.flow.md`. Do not create an
+operation packet for a small task.
+
 ## Operation Choices
 
 Choose the matching flow:
@@ -78,6 +85,8 @@ Choose the matching flow:
   `.ai/assistant/flows/adapter-recheck.flow.md`
 - Change accepted product behavior:
   `.ai/assistant/flows/blueprint-driven-change.flow.md`
+- Coordinate large or resumable work:
+  `.ai/assistant/flows/large-task-orchestration.flow.md`
 - Review consistency:
   `.ai/assistant/flows/logical-integrity-review.flow.md`
 - Inventory existing AI infrastructure:
@@ -104,6 +113,8 @@ Choose the matching flow:
   remote, package/plugin, pasted, or unknown AI infrastructure.
 - Record approval evidence with `.ai/assistant/approvals/approval-template.md`
   when protected-change scope needs a durable approval record.
+- Treat `.ai/assistant/templates/large-task-operation-packet.md` as
+  coordination evidence, not as a canonical owner of project facts.
 - Use `.ai/project/source-of-truth-registry.md` to choose canonical fact
   owners when surfaces disagree.
 - Use `.ai/assistant/maturity-profile.md` for broad, risky, or unclear task

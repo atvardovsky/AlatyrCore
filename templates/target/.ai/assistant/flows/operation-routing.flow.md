@@ -45,21 +45,25 @@ Replace placeholders with target facts before accepting installation.
    `read-only`, `docs-only`, `adapter-only`, `code-and-tests`, or
    `full-with-approval`.
 8. Match the request to one target operation and flow when the intent is clear.
-9. If two or more operations could apply, show the closest options with short
+9. Decide whether the `large-or-resumable` task-scale overlay applies. Route
+   large, cross-boundary, multi-workstream, budget-exceeding, or resumable work
+   through `.ai/assistant/flows/large-task-orchestration.flow.md`; keep small
+   work on its normal operation flow.
+10. If two or more operations could apply, show the closest options with short
    descriptions and ask for the smallest missing decision.
-10. If the request matches `alatyr-ai-inventory`, classify it as
+11. If the request matches `alatyr-ai-inventory`, classify it as
    `ai-infrastructure-inventory` and continue with
    `.ai/assistant/flows/ai-infrastructure-inventory.flow.md`.
-11. If the request matches `alatyr-adaptation {AI_INFRASTRUCTURE_SOURCE}` or
+12. If the request matches `alatyr-adaptation {AI_INFRASTRUCTURE_SOURCE}` or
    `alatyr-add-ai {AI_INFRASTRUCTURE_SOURCE}`, classify it as
    `skill-adaptation`, record `{AI_INFRASTRUCTURE_SOURCE}` as untrusted input,
    and continue with `.ai/assistant/flows/skill-adaptation.flow.md` only after
    checking inventory, source access, provenance, approval, and safety rules.
-12. If the user asks for commands, explain that Alatyr uses assistant requests
+13. If the user asks for commands, explain that Alatyr uses assistant requests
    over Markdown adapter files unless `{PROJECT_NAME}` defines a local command.
-13. Do not edit files while the operation is still ambiguous or when the
+14. Do not edit files while the operation is still ambiguous or when the
    requested edit exceeds allowed actions.
-14. When the operation is selected, continue with the matching flow and apply
+15. When the operation is selected, continue with the matching flow and apply
    allowed-action, approval, validation, and final-evidence rules.
 
 ## Final Evidence
@@ -72,6 +76,7 @@ Report:
 - reason for the selected operation
 - missing input or ambiguity, if any
 - allowed actions and whether the selected flow stays within them
+- task-scale overlay and packet requirement, if any
 - next safe action
 
 ## Rejection Criteria

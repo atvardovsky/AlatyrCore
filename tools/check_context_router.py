@@ -185,6 +185,7 @@ def main() -> int:
         receipt_fields = require_string_list(receipt, "fields", "context_receipt", failures)
         for required in [
             "selected profiles",
+            "selected task scale overlay",
             "selected project areas",
             "loaded files and reasons",
             "approximate context volume",
@@ -193,6 +194,37 @@ def main() -> int:
         ]:
             if required not in receipt_fields:
                 failures.append(f"context_receipt.fields missing {required}")
+
+    scale_overlays = router.get("task_scale_overlays")
+    if not isinstance(scale_overlays, dict):
+        failures.append("task_scale_overlays must be an object")
+    else:
+        large_task = scale_overlays.get("large-or-resumable")
+        if not isinstance(large_task, dict):
+            failures.append(
+                "task_scale_overlays.large-or-resumable must be an object"
+            )
+        else:
+            for field in ["use_when", "required_context", "expand_when", "final_evidence"]:
+                values = require_string_list(
+                    large_task,
+                    field,
+                    "task_scale_overlays.large-or-resumable",
+                    failures,
+                )
+                if field == "required_context":
+                    for value in values:
+                        if not target_reference_exists(value):
+                            failures.append(
+                                "task_scale_overlays.large-or-resumable."
+                                f"required_context points to missing path: {value}"
+                            )
+            budget_behavior = large_task.get("budget_behavior")
+            if not isinstance(budget_behavior, str) or not budget_behavior:
+                failures.append(
+                    "task_scale_overlays.large-or-resumable.budget_behavior "
+                    "must be a non-empty string"
+                )
 
     overlays = router.get("area_overlays")
     if not isinstance(overlays, dict) or not overlays:
@@ -253,6 +285,15 @@ def main() -> int:
         for value in profile_data.get("required_context", [])
         if isinstance(value, str) and value.startswith(".ai/framework/")
     }
+    if isinstance(scale_overlays, dict):
+        for overlay in scale_overlays.values():
+            if not isinstance(overlay, dict):
+                continue
+            routed_framework_paths.update(
+                value
+                for value in overlay.get("required_context", [])
+                if isinstance(value, str) and value.startswith(".ai/framework/")
+            )
     missing_framework_paths = sorted(framework_paths - routed_framework_paths)
     if missing_framework_paths:
         failures.append(

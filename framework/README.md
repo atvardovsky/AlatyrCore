@@ -28,6 +28,8 @@ sync, logical integrity review, and final evidence.
 - change-risk classification and approval trigger model
 - first-class logical integrity review
 - blueprint-driven product-change workflow
+- optional large-task orchestration with bounded workstreams, context receipts,
+  resumable checkpoints, and final convergence
 - portable security, safety, and live-service reasoning rules
 - prompt-injection handling for imported AI infrastructure
 - approval-record guidance for protected changes
@@ -114,6 +116,8 @@ Those belong to a project contour or repository adapter.
   baselines and deriving target migration actions.
 - `.ai/framework/effectiveness-metrics.md`: metrics for evaluating Alatyr's
   impact across comparable tasks and adapter states.
+- `.ai/framework/large-task-orchestration.md`: optional coordination contract
+  for large, cross-boundary, multi-workstream, or resumable changes.
 - `.ai/framework/lifecycle.md`: framework versioning, upgrade, deprecation,
   and migration guidance.
 - `.ai/framework/installed-operations.md`: portable guidance for post-install

@@ -165,6 +165,20 @@ Approval needs: `{INSTALLED_OPERATIONS_APPROVAL_NEEDS}`
 Residual risk: `{INSTALLED_OPERATIONS_RESIDUAL_RISK}`
 Next action: `{INSTALLED_OPERATIONS_NEXT_ACTION}`
 
+Module: `large-task-orchestration`
+State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+Owner or file: `.ai/assistant/flows/large-task-orchestration.flow.md`
+Required files:
+
+- `.ai/assistant/flows/large-task-orchestration.flow.md`
+- `.ai/assistant/templates/large-task-operation-packet.md`
+
+Reason: `{REASON}`
+Validation or review: `{VALIDATION_OR_REVIEW}`
+Approval needs: `{LARGE_TASK_ORCHESTRATION_APPROVAL_NEEDS}`
+Residual risk: `{LARGE_TASK_ORCHESTRATION_RESIDUAL_RISK}`
+Next action: `{LARGE_TASK_ORCHESTRATION_NEXT_ACTION}`
+
 Module: `durable-approvals`
 State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `.ai/assistant/approvals/approval-template.md`

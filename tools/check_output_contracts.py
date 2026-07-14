@@ -56,6 +56,8 @@ REQUIRED_FIELDS = [
     "Required core profile result:",
     "Optional module profile result:",
     "Context profiles result:",
+    "Large-task orchestration result:",
+    "Operation packet template result:",
     "Source-of-truth registry result:",
     "Task-specific maturity result:",
     "Bridge capability matrix result:",

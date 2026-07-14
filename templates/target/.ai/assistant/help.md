@@ -24,6 +24,9 @@ Default routing:
   human rationale or conflict resolution is needed.
 - Use `.ai/assistant/module-profile.md` to avoid routing to blocked or
   disabled optional modules.
+- Add the `large-or-resumable` task-scale overlay only for multi-workstream,
+  cross-boundary, budget-exceeding, or resumable work. Small tasks should not
+  create operation packets.
 
 ## Quick Operations
 
@@ -56,6 +59,12 @@ migration.
 Flow: `.ai/assistant/flows/adapter-recheck.flow.md`
 Minimum input: update source or changed framework baseline.
 
+Operation: `large-task`
+Use when: work needs multiple workstreams, crosses project areas or profiles,
+exceeds the context budget, or must resume after a context reset.
+Flow: `.ai/assistant/flows/large-task-orchestration.flow.md`
+Minimum input: goal, non-goals, affected areas, and allowed actions.
+
 AI infrastructure shortcuts:
 
 - `alatyr-ai-inventory`: route to `ai-infrastructure-inventory`.
@@ -74,6 +83,8 @@ Common aliases:
 - `create blueprint` or `создай blueprint`: `create-project-blueprint`
 - `check integrity` or `проверь целостность`: `logical-integrity-review`
 - `change business rule` or `измени бизнес-правило`: `product-change`
+- `plan large task`, `continue large task`, or `resume Alatyr task`:
+  `large-task`
 
 ## Minimal Request Shape
 

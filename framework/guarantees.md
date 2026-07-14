@@ -37,6 +37,8 @@ The framework commits to giving an assistant a defined process for:
   skills
 - carrying accepted product changes through blueprint-equivalent docs, flows,
   implementation, validation, diagrams, and final evidence
+- coordinating large or resumable changes through bounded workstreams,
+  context receipts, checkpoints, and final convergence evidence
 - analyzing the target stack and risk profile before recommending test levels
   or structure
 - reasoning about diagram source/visual synchronization without hard-coding a
@@ -142,6 +144,8 @@ defines:
 - allowed-action meanings for installed-operation requests
 - adapter output contract templates for installation, framework update, and
   recheck evidence when durable operation records are expected
+- operation packet, storage policy, workstream boundaries, and checkpoint
+  evidence when large or resumable operations are expected
 - operation help, operation-routing, and post-install/update chat-message
   templates when the target wants discoverable assistant requests
 - task-specific maturity profile and blocking criteria

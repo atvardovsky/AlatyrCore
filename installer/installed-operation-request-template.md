@@ -24,6 +24,12 @@ Non-goals:
 Known context:
 <changed facts, framework update source, existing docs, or suspected drift>
 
+Task scale:
+<normal/large/resumable>
+
+Existing operation packet, when resuming:
+<target-approved packet path or none>
+
 Allowed actions:
 <read-only/docs-only/adapter-only/code-and-tests/full-with-approval>
 
@@ -65,6 +71,11 @@ Constraints:
   conflicting evidence.
 - Record context budget exceptions and expansion reasons in the operation
   context receipt.
+- For large, cross-boundary, multi-workstream, budget-exceeding, or resumable
+  work, activate the `large-or-resumable` task-scale overlay and use
+  `.ai/assistant/flows/large-task-orchestration.flow.md` with
+  `.ai/assistant/templates/large-task-operation-packet.md`. Do not create a
+  packet for a small task.
 - If the operation is unclear, read `.ai/assistant/help.md`, show the
   operation choices with descriptions, and ask for the smallest missing
   decision before editing files.
@@ -96,6 +107,8 @@ Constraints:
 - Run only target validation that exists; report unresolved checks.
 - Report final evidence: files inspected, changed facts, files changed,
   approvals, validation, skipped checks, adapter gaps, and residual risk.
+- For packet-based work, report workstream dependencies, checkpoints, context
+  receipts, and one global logical integrity result over the combined change.
 ```
 
 This template does not define a universal command. It gives an assistant a

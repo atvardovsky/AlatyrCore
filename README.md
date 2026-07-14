@@ -100,6 +100,7 @@ Additional source-repository helpers include:
 - `python3 tools/check_ai_infrastructure_inventory.py`
 - `python3 tools/check_bridge_capability_matrix.py`
 - `python3 tools/check_context_router.py`
+- `python3 tools/check_large_task_orchestration.py`
 - `python3 tools/check_manifest_contract.py`
 - `python3 tools/check_markdown_links.py`
 - `python3 tools/check_maturity_profile.py`
@@ -148,6 +149,8 @@ Additional source-repository helpers include:
 - context profiles for smaller task-specific reading sets
 - compact bootstrap routing that keeps blueprints, registries, module profiles,
   contours, and human profile rationale out of routine startup
+- optional large-task orchestration that loads only the active workstream's
+  context and preserves resumable checkpoints plus final convergence evidence
 - source-of-truth registry guidance and source-template checks for fact
   ownership, derived surfaces, sync direction, validation, and conflict
   resolution
@@ -286,6 +289,8 @@ A mature target installation usually has:
   approvals need durable evidence
 - `.ai/assistant/templates/installation-note.md`
 - `.ai/assistant/templates/operation-request.md`
+- `.ai/assistant/templates/large-task-operation-packet.md` when large or
+  resumable operations are enabled
 - `.ai/assistant/templates/migration-note.md`
 - `.ai/assistant/templates/effectiveness-report.md`
 - `.ai/assistant/templates/post-install-message.md`

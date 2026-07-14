@@ -17,6 +17,10 @@ conflicting evidence, or router repair. Expand context only for a named changed
 fact, boundary, owner, approval trigger, or validation conflict, and record
 budget exceptions in the context receipt.
 
+Activate the `large-or-resumable` task-scale overlay only for cross-boundary,
+multi-workstream, budget-exceeding, or resumable work. Use its operation packet
+and load only active-workstream context. Do not create packets for small tasks.
+
 ## Session Recovery
 
 Do not rely on previous chat messages for Alatyr state. After installation or
@@ -65,4 +69,5 @@ approval evidence when plan or file scope matters.
 
 Report the selected profile and areas, changed facts and files, logical
 integrity result, synchronized surfaces, validation and skipped checks,
-approvals, context expansion, and residual risk.
+approvals, context expansion, task-scale/checkpoint evidence when used, and
+residual risk.
