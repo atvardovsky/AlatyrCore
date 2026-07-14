@@ -4,6 +4,30 @@
 
 - No changes yet.
 
+## 0.1.0-alpha.3 - 2026-07-14
+
+- Increased the framework version to `0.1.0-alpha.3`, adapter schema version
+  to `2`, and target template version to `3`.
+- Added a canonical machine-readable approval record and strict target-adapter
+  validation that binds approval to an explicit Git base and enforces the
+  approved scope across committed, staged, unstaged, renamed, deleted, and
+  untracked paths.
+- Required logical integrity review to re-derive project invariants and
+  reconcile related review items by shared facts and contracts instead of
+  accepting isolated local fixes as combined evidence.
+- Added manual invariant closure when the optional consistency map is disabled
+  or incomplete, plus external-boundary evidence for distinguishable failure
+  classes when target contracts require it.
+- Changed `ALATYR-APPROVAL-001`, `ALATYR-INTEGRITY-001`,
+  `ALATYR-RISK-001`, `ALATYR-SOURCE-001`, and `ALATYR-CHANGE-001`; no rule IDs
+  were added or removed.
+- Updated target manifests, context profiles, source-of-truth registry fields,
+  operations, flows, gates, output contracts, installer evidence, scaffold
+  profiles, conformance snapshots, and static context-cost baselines.
+- Existing adapters must add the JSON approval template and manifest path
+  before claiming deterministic approval-scope enforcement. Protected target
+  adapter updates still require target-owned approval.
+
 ## 0.1.0-alpha.2 - 2026-07-14
 
 - Fixed Windows path separators in framework index checks and protected-file
