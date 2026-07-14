@@ -111,6 +111,20 @@ Approval needs: `{BLUEPRINT_CHANGE_APPROVAL_NEEDS}`
 Residual risk: `{BLUEPRINT_CHANGE_RESIDUAL_RISK}`
 Next action: `{BLUEPRINT_CHANGE_NEXT_ACTION}`
 
+Module: `consistency-map`
+State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+Owner or file: `.ai/project/consistency-map.json`
+Required files:
+
+- `.ai/project/source-of-truth-registry.md`
+- `.ai/project/consistency-map.json`
+
+Reason: `{REASON}`
+Validation or review: `{VALIDATION_OR_REVIEW}`
+Approval needs: `{CONSISTENCY_MAP_APPROVAL_NEEDS}`
+Residual risk: `{CONSISTENCY_MAP_RESIDUAL_RISK}`
+Next action: `{CONSISTENCY_MAP_NEXT_ACTION}`
+
 Module: `diagrams`
 State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `{TARGET_DIAGRAM_MODULE_OWNER_OR_FILE}`

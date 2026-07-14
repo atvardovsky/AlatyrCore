@@ -14,6 +14,10 @@ have competing owners or derived surfaces.
 
 Fact type: `product behavior`
 Canonical owner: `{PRODUCT_BEHAVIOR_CANONICAL_OWNER}`
+Consistency level: `{PRODUCT_BEHAVIOR_CONSISTENCY_LEVEL}`
+Project area: `{PRODUCT_BEHAVIOR_PROJECT_AREA}`
+Consistency map node: `{PRODUCT_BEHAVIOR_FACT_ID_OR_MISSING}`
+Relationship coverage: `{PRODUCT_BEHAVIOR_RELATIONSHIP_COVERAGE_OR_GAP}`
 Derived surfaces:
 
 - `{PRODUCT_BEHAVIOR_DERIVED_SURFACE}`
@@ -28,6 +32,10 @@ Final evidence: `{PRODUCT_BEHAVIOR_FINAL_EVIDENCE}`
 
 Fact type: `business rule`
 Canonical owner: `{BUSINESS_RULE_CANONICAL_OWNER}`
+Consistency level: `{BUSINESS_RULE_CONSISTENCY_LEVEL}`
+Project area: `{BUSINESS_RULE_PROJECT_AREA}`
+Consistency map node: `{BUSINESS_RULE_FACT_ID_OR_MISSING}`
+Relationship coverage: `{BUSINESS_RULE_RELATIONSHIP_COVERAGE_OR_GAP}`
 Derived surfaces:
 
 - `{BUSINESS_RULE_DERIVED_SURFACE}`
@@ -42,6 +50,10 @@ Final evidence: `{BUSINESS_RULE_FINAL_EVIDENCE}`
 
 Fact type: `architecture decision`
 Canonical owner: `{ARCHITECTURE_DECISION_CANONICAL_OWNER}`
+Consistency level: `{ARCHITECTURE_DECISION_CONSISTENCY_LEVEL}`
+Project area: `{ARCHITECTURE_DECISION_PROJECT_AREA}`
+Consistency map node: `{ARCHITECTURE_DECISION_FACT_ID_OR_MISSING}`
+Relationship coverage: `{ARCHITECTURE_DECISION_RELATIONSHIP_COVERAGE_OR_GAP}`
 Derived surfaces:
 
 - `{ARCHITECTURE_DECISION_DERIVED_SURFACE}`
@@ -56,6 +68,10 @@ Final evidence: `{ARCHITECTURE_DECISION_FINAL_EVIDENCE}`
 
 Fact type: `data model`
 Canonical owner: `{DATA_MODEL_CANONICAL_OWNER}`
+Consistency level: `{DATA_MODEL_CONSISTENCY_LEVEL}`
+Project area: `{DATA_MODEL_PROJECT_AREA}`
+Consistency map node: `{DATA_MODEL_FACT_ID_OR_MISSING}`
+Relationship coverage: `{DATA_MODEL_RELATIONSHIP_COVERAGE_OR_GAP}`
 Derived surfaces:
 
 - `{DATA_MODEL_DERIVED_SURFACE}`
@@ -70,6 +86,10 @@ Final evidence: `{DATA_MODEL_FINAL_EVIDENCE}`
 
 Fact type: `validation command`
 Canonical owner: `{VALIDATION_COMMAND_CANONICAL_OWNER}`
+Consistency level: `{VALIDATION_COMMAND_CONSISTENCY_LEVEL}`
+Project area: `{VALIDATION_COMMAND_PROJECT_AREA}`
+Consistency map node: `{VALIDATION_COMMAND_FACT_ID_OR_MISSING}`
+Relationship coverage: `{VALIDATION_COMMAND_RELATIONSHIP_COVERAGE_OR_GAP}`
 Derived surfaces:
 
 - `{VALIDATION_COMMAND_DERIVED_SURFACE}`
@@ -84,6 +104,10 @@ Final evidence: `{VALIDATION_COMMAND_FINAL_EVIDENCE}`
 
 Fact type: `security policy`
 Canonical owner: `{SECURITY_POLICY_CANONICAL_OWNER}`
+Consistency level: `{SECURITY_POLICY_CONSISTENCY_LEVEL}`
+Project area: `{SECURITY_POLICY_PROJECT_AREA}`
+Consistency map node: `{SECURITY_POLICY_FACT_ID_OR_MISSING}`
+Relationship coverage: `{SECURITY_POLICY_RELATIONSHIP_COVERAGE_OR_GAP}`
 Derived surfaces:
 
 - `{SECURITY_POLICY_DERIVED_SURFACE}`
@@ -98,6 +122,10 @@ Final evidence: `{SECURITY_POLICY_FINAL_EVIDENCE}`
 
 Fact type: `assistant operation`
 Canonical owner: `{ASSISTANT_OPERATION_CANONICAL_OWNER}`
+Consistency level: `{ASSISTANT_OPERATION_CONSISTENCY_LEVEL}`
+Project area: `{ASSISTANT_OPERATION_PROJECT_AREA}`
+Consistency map node: `{ASSISTANT_OPERATION_FACT_ID_OR_MISSING}`
+Relationship coverage: `{ASSISTANT_OPERATION_RELATIONSHIP_COVERAGE_OR_GAP}`
 Derived surfaces:
 
 - `{ASSISTANT_OPERATION_DERIVED_SURFACE}`
@@ -112,6 +140,10 @@ Final evidence: `{ASSISTANT_OPERATION_FINAL_EVIDENCE}`
 
 Fact type: `AI infrastructure item`
 Canonical owner: `{AI_INFRASTRUCTURE_ITEM_CANONICAL_OWNER}`
+Consistency level: `{AI_INFRASTRUCTURE_ITEM_CONSISTENCY_LEVEL}`
+Project area: `{AI_INFRASTRUCTURE_ITEM_PROJECT_AREA}`
+Consistency map node: `{AI_INFRASTRUCTURE_ITEM_FACT_ID_OR_MISSING}`
+Relationship coverage: `{AI_INFRASTRUCTURE_ITEM_RELATIONSHIP_COVERAGE_OR_GAP}`
 Derived surfaces:
 
 - `{AI_INFRASTRUCTURE_ITEM_DERIVED_SURFACE}`
@@ -128,6 +160,9 @@ When sources disagree:
 
 1. Identify the fact type.
 2. Use this registry to find the canonical owner and derived surfaces.
-3. If ownership is missing, report `{MISSING_SOURCE_OF_TRUTH_POLICY}`.
-4. Repair only the smallest coherent set of derived surfaces.
-5. Report validation, skipped checks, approvals, and residual risk.
+3. Use `.ai/project/consistency-map.json` to build the applicable relationship
+   closure when that optional module is enabled.
+4. If ownership or relationship coverage is missing, report
+   `{MISSING_SOURCE_OF_TRUTH_OR_RELATIONSHIP_POLICY}`.
+5. Repair only the smallest coherent set of selected relationship surfaces.
+6. Report selected and skipped edges, validation, approvals, and residual risk.

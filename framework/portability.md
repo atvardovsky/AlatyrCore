@@ -23,6 +23,7 @@ Portable framework core may describe reusable assistant operating patterns:
   assistant infrastructure review concepts
 - diagram-as-code and visual-artifact synchronization concepts
 - consistency-manifest concept
+- changed-fact relationship-map shape and impact-closure reasoning
 - blueprint-driven product-change workflow concepts
 - installed-adapter operation, blueprint creation, framework update recheck,
   and adapter audit concepts
@@ -83,6 +84,8 @@ A repository adapter owns the concrete facts for one project:
   wrapper, permission, and evidence rules
 - target consistency checks that are deterministic and maintainable in that
   repository
+- target fact IDs, relationship edges, project-area mappings, and staleness
+  checks
 - target adapter maturity gaps, framework baseline, local deviations, and
   lifecycle notes
 - target installed-operation requests, blueprint creation/recheck flows, audit

@@ -34,6 +34,8 @@ or genuinely unclear operations.
 - Project: `{PROJECT_NAME}`.
 - Stack and project areas: `{TARGET_STACK_AND_AREA_MAP}`.
 - Source-of-truth registry: `{TARGET_SOURCE_OF_TRUTH_REGISTRY}`.
+- Consistency relationship map: `.ai/project/consistency-map.json` when the
+  optional module is enabled.
 - Validation or manual review: `{TARGET_VALIDATION}`.
 - Security and live-service policy: `{TARGET_SECURITY_POLICY}`.
 - Diagram or generated-artifact policy: `{TARGET_DIAGRAM_POLICY}`.
@@ -55,8 +57,9 @@ Use `ALATYR-CONTEXT-001`, `ALATYR-SOURCE-001`, `ALATYR-RISK-001`,
 
 Use logical integrity review for semantic changes. Use blueprint-driven change
 for accepted product behavior. Check the module profile before relying on an
-optional capability. Run only target validation that exists and report missing
-checks.
+optional capability. When `consistency-map` is enabled, start from changed fact
+IDs and follow applicable relationship edges before loading affected surfaces.
+Run only target validation that exists and report missing checks.
 
 ## Protected Changes
 

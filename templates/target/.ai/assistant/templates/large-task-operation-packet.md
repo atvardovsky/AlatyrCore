@@ -37,6 +37,9 @@ Repeat this block for each changed or disputed fact.
 
 - Statement: `{CHANGED_FACT}`
 - Canonical owner: `{CANONICAL_SOURCE_OF_TRUTH_OR_MISSING}`
+- Consistency map node: `{CONSISTENCY_MAP_NODE_OR_NOT_ENABLED_OR_MISSING}`
+- Selected relationship edges: `{SELECTED_EDGES_AND_REASONS}`
+- Skipped or missing edges: `{SKIPPED_OR_MISSING_EDGES_AND_REASONS}`
 - Risk class: `{RISK_CLASS}`
 - Affected surfaces: `{AFFECTED_SURFACES}`
 - Approval state: `{APPROVAL_RECORD_OR_NOT_REQUIRED_OR_MISSING}`
@@ -87,6 +90,7 @@ context reset.
 - Completed workstreams: `{COMPLETED_WORKSTREAMS}`
 - Unresolved workstreams: `{UNRESOLVED_WORKSTREAMS_OR_NONE}`
 - Changed-fact reconciliation: `{FACT_RECONCILIATION_RESULT}`
+- Relationship impact closure: `{LEVELS_AREAS_EDGES_AND_MISSING_LINKS}`
 - Source-of-truth synchronization: `{SOURCE_OF_TRUTH_SYNC_RESULT}`
 - Cross-workstream conflicts: `{CONFLICTS_AND_REPAIRS_OR_NONE}`
 - Approval scope versus applied changes: `{APPROVAL_COVERAGE_RESULT}`

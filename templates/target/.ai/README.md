@@ -24,6 +24,8 @@ facts, or target skill infrastructure.
 - architecture facts
 - blueprint or equivalent source-of-truth facts
 - source-of-truth registry entries
+- optional machine-readable consistency relationships for bounded impact
+  traversal
 - use cases or workflows
 - business/domain rules
 - data model

@@ -95,6 +95,14 @@ overlays. Each overlay names its trigger, required context, and expansion
 conditions. Compose one base task profile with only the overlays that own the
 changed facts.
 
+## Consistency Relationship Routing
+
+Targets with many project areas or competing surfaces may enable a compact
+consistency map. Load it after a semantic change or suspected drift, resolve
+changed fact IDs, and follow only applicable relationship edges. Expand to
+dependent contracts for propagation, conflicts, failed validation, or approval
+boundaries. The human source-of-truth registry remains the owner explanation.
+
 ## Large Or Resumable Tasks
 
 Use a task-scale overlay when work has multiple independently verifiable

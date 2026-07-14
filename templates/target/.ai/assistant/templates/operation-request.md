@@ -117,6 +117,9 @@ Choose the matching flow:
   coordination evidence, not as a canonical owner of project facts.
 - Use `.ai/project/source-of-truth-registry.md` to choose canonical fact
   owners when surfaces disagree.
+- When enabled, use `.ai/project/consistency-map.json` to route changed fact
+  IDs to applicable relationships; report selected, skipped, stale, or missing
+  edges.
 - Use `.ai/assistant/maturity-profile.md` for broad, risky, or unclear task
   readiness.
 - Use `.ai/assistant/bridge-capability-matrix.md` during bridge or

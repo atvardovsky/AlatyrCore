@@ -46,6 +46,8 @@ PACKET_REQUIRED = [
     "Task-scale overlay: `large-or-resumable`",
     "Loaded files and reasons:",
     "Canonical owner:",
+    "Selected relationship edges:",
+    "Skipped or missing edges:",
     "### Workstream `{WORKSTREAM_ID}`",
     "Dependencies:",
     "Required context:",
@@ -56,6 +58,7 @@ PACKET_REQUIRED = [
     "## Final Convergence",
     "Approval scope versus applied changes:",
     "Global logical integrity review:",
+    "Relationship impact closure:",
     "Final residual risk:",
     "## Resume Rule",
 ]

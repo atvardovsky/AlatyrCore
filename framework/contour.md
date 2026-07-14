@@ -19,6 +19,7 @@ Framework core owns:
 - optional scaffolding boundary
 - context discovery, missing-context, and source-of-truth decision pattern
 - source-of-truth registry pattern
+- multi-level consistency relationship and bounded impact-closure pattern
 - change-risk classification and protected approval trigger pattern
 - security, safety, live-service, and destructive-operation reasoning pattern
 - diagram reasoning and source/visual synchronization pattern

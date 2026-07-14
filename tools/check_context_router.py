@@ -195,6 +195,31 @@ def main() -> int:
             if required not in receipt_fields:
                 failures.append(f"context_receipt.fields missing {required}")
 
+    consistency_routing = router.get("consistency_routing")
+    if not isinstance(consistency_routing, dict):
+        failures.append("consistency_routing must be an object")
+    else:
+        for field in [
+            "enabled_when",
+            "required_context",
+            "lookup_order",
+            "expand_when",
+            "final_evidence",
+        ]:
+            values = require_string_list(
+                consistency_routing,
+                field,
+                "consistency_routing",
+                failures,
+            )
+            if field == "required_context":
+                for value in values:
+                    if not target_reference_exists(value):
+                        failures.append(
+                            "consistency_routing.required_context points to "
+                            f"missing path: {value}"
+                        )
+
     scale_overlays = router.get("task_scale_overlays")
     if not isinstance(scale_overlays, dict):
         failures.append("task_scale_overlays must be an object")
@@ -294,6 +319,12 @@ def main() -> int:
                 for value in overlay.get("required_context", [])
                 if isinstance(value, str) and value.startswith(".ai/framework/")
             )
+    if isinstance(consistency_routing, dict):
+        routed_framework_paths.update(
+            value
+            for value in consistency_routing.get("required_context", [])
+            if isinstance(value, str) and value.startswith(".ai/framework/")
+        )
     missing_framework_paths = sorted(framework_paths - routed_framework_paths)
     if missing_framework_paths:
         failures.append(

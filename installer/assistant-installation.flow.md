@@ -83,6 +83,8 @@ Read in the target repository:
   prompt-injection or imported-source policies
 - existing source-of-truth registry, maturity profile, bridge capability
   matrix, and migration notes
+- existing fact IDs, consistency maps, relationship coverage, and staleness
+  evidence
 
 ## Ownership Classification
 
@@ -121,6 +123,9 @@ Classify every proposed target file:
     including `framework/*.md` and `framework/rule-registry.json`.
 12. Create target `.ai/project/contour.md` and target project
    source-of-truth docs from target facts.
+    Add `.ai/project/consistency-map.json` only when the target enables bounded
+    relationship routing; populate fact IDs and edges from target evidence or
+    record the module as blocked or deferred.
 13. Create target `.ai/assistant/contour.md`, context router, context
     profiles, module profile, task-specific maturity profile, bridge
     capability matrix, and minimal target assistant workflows/gates from
@@ -191,6 +196,7 @@ Report:
 - target repository inspected
 - framework core files installed or adapted
 - project adapter files rewritten from target facts
+- consistency map enabled, skipped, or blocked with relationship gaps recorded
 - existing files preserved, skipped, or overwritten with approval
 - supported assistant bridges added or skipped
 - installed-operation, operation-help, operation-routing,

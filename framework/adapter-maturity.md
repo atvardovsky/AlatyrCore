@@ -64,6 +64,8 @@ focused validation.
 The adapter is mature when it also defines:
 
 - context packs or navigation aids for broad work
+- target-owned fact IDs and relationship coverage for bounded impact traversal
+  when the repository has many project areas or competing surfaces
 - module ownership, data dictionary, glossary, and decision log
 - deterministic consistency checks for maintainable invariants
 - generated-artifact drift checks or manual-review policy
@@ -159,6 +161,8 @@ Ask:
   framework upgrade work?
 - Does the module profile distinguish required core gaps from optional modules
   that are enabled, deferred, disabled, not applicable, or blocked?
+- For broad work, can changed facts be routed to affected contracts and areas
+  without scanning the entire repository, or is that limitation reported?
 
 ## Rejection Criteria
 

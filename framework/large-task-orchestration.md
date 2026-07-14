@@ -34,6 +34,8 @@ packet coordinates one operation and records:
 - operation identity, goal, non-goals, allowed actions, and current phase
 - selected task profiles, task-scale overlay, and project-area overlays
 - changed facts, canonical owners, risk, approval state, and affected surfaces
+- selected and skipped consistency relationships when the optional target map
+  is enabled
 - workstreams, dependencies, required context, outputs, and validation
 - context receipts and reasons for budget expansion
 - resumable checkpoints, unresolved decisions, and the next ready action
@@ -93,7 +95,8 @@ missing. Use `blocked` or `unresolved` and name the missing evidence.
 Local workstream success is not final operation success. Before completion:
 
 1. Reconcile all changed facts with canonical owners.
-2. Check cross-workstream contracts, ordering, and generated artifacts.
+2. Reconcile selected relationship closures and check cross-workstream
+   contracts, ordering, and generated artifacts.
 3. Confirm approvals still cover the applied scope.
 4. Run target validation or record unresolved checks.
 5. Perform one global logical integrity review over the combined repair set.

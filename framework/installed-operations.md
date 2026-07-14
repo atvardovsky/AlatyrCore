@@ -110,6 +110,8 @@ For installed operations:
    adapter, bridge, generated-artifact, or skill/prompt work.
 5. Use operation help and operation routing when the request is ambiguous.
 6. Apply logical integrity review before claiming consistency.
+   When the optional consistency map is enabled, build a bounded impact closure
+   from changed fact IDs before loading related surfaces.
 7. Activate the large-task scale overlay only when work is cross-boundary,
    multi-workstream, budget-exceeding, or resumable. Use a target operation
    packet and bounded active-workstream context when activated.
@@ -171,6 +173,7 @@ After installation or framework upgrade, an assistant should recheck:
 - context profiles and their framework/project/assistant references
 - source-of-truth registry, task-specific maturity profile, bridge capability
   matrix, migration notes, and effectiveness reports
+- consistency-map module state, relationship coverage, and stale edge evidence
 - operation help, operation-routing flow, and post-install/update chat-message
   templates
 - adapter output contracts for installation, framework update, and recheck

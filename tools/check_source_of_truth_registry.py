@@ -36,6 +36,10 @@ REQUIRED_FACT_TYPES = [
 REQUIRED_FIELDS = [
     "Fact type:",
     "Canonical owner:",
+    "Consistency level:",
+    "Project area:",
+    "Consistency map node:",
+    "Relationship coverage:",
     "Derived surfaces:",
     "Sync direction:",
     "Validation or manual review:",
@@ -96,6 +100,10 @@ def main() -> int:
             failures.append(f"{fact_type} derived surfaces must include a placeholder bullet")
 
         for field in [
+            "Consistency level:",
+            "Project area:",
+            "Consistency map node:",
+            "Relationship coverage:",
             "Sync direction:",
             "Validation or manual review:",
             "Conflict resolver:",

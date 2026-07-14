@@ -38,6 +38,35 @@
       "residual risk"
     ]
   },
+  "consistency_routing": {
+    "enabled_when": [
+      "consistency-map module is enabled",
+      "semantic fact changed or drift is suspected"
+    ],
+    "required_context": [
+      ".ai/framework/consistency-model.md",
+      ".ai/project/consistency-map.json"
+    ],
+    "lookup_order": [
+      "changed fact ids",
+      "canonical owners",
+      "applicable direct relationships",
+      "dependent contracts when propagation is possible",
+      "selected target surfaces and validation"
+    ],
+    "expand_when": [
+      "cross-area contract changes",
+      "owner or relationship evidence conflicts",
+      "validation disproves the current boundary",
+      "approval trigger is reached"
+    ],
+    "final_evidence": [
+      "selected and skipped edges with reasons",
+      "levels and project areas reached",
+      "missing or stale relationships",
+      "candidate and applied repair sets"
+    ]
+  },
   "task_scale_overlays": {
     "large-or-resumable": {
       "use_when": [
@@ -391,6 +420,7 @@
         ".ai/framework/context-router.md",
         ".ai/framework/context-profiles.md",
         ".ai/framework/context-discovery.md",
+        ".ai/framework/consistency-model.md",
         ".ai/framework/source-of-truth-registry.md",
         ".ai/framework/change-risk-model.md",
         ".ai/framework/logical-integrity.md",

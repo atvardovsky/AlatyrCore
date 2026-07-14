@@ -47,6 +47,8 @@ maintain them:
 
 - `blueprint-change`: blueprint-driven product-change workflow and project
   blueprint creation or repair.
+- `consistency-map`: machine-readable changed-fact relationships and bounded
+  impact closure for targets with many project areas or competing surfaces.
 - `diagrams`: diagram source, visual artifact, render or manual-review, and
   drift policy.
 - `ai-infrastructure`: inventory, source access, prompt-injection handling,
@@ -119,6 +121,8 @@ Reject module-profile work that:
 
 - treats optional modules as mandatory for every target
 - claims a module is enabled without owner, context, validation, and evidence
+- enables a consistency map without target-owned fact IDs, relationship
+  coverage, or staleness handling
 - copies source-repository helper behavior into target requirements
 - installs bridge, diagram, skill, or operation-help surfaces the target does
   not use

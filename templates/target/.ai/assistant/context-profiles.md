@@ -41,6 +41,18 @@ Load only the active workstream context, changed-fact owners, and
 dependencies. Record checkpoints and one global convergence review. Do not
 create a packet for a small task.
 
+## Optional Consistency Relationship Routing
+
+When the `consistency-map` module is enabled and a semantic fact changes or
+drift is suspected, load:
+
+- `.ai/framework/consistency-model.md`
+- `.ai/project/consistency-map.json`
+
+Resolve changed fact IDs, follow applicable direct edges, and expand to
+dependent contracts only for propagation, conflicts, failed validation, or
+approval boundaries. Record selected and skipped edges with reasons.
+
 ## Profile: `docs-local`
 
 Use when: local wording, README, diagram text, or non-semantic documentation
@@ -219,6 +231,7 @@ Required context:
 - `.ai/framework/scaffolding.md`
 - `.ai/framework/context-router.md`
 - `.ai/framework/context-profiles.md`
+- `.ai/framework/consistency-model.md`
 - `.ai/framework/source-of-truth-registry.md`
 - `.ai/framework/bridge-capability-matrix.md`
 - `.ai/framework/migration-diff.md`

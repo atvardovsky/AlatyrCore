@@ -32,6 +32,7 @@ Use after the initial Alatyr Core installation or a scoped adapter expansion.
 - Large-task orchestration result: `{LARGE_TASK_ORCHESTRATION_RESULT_OR_SKIPPED}`
 - Operation packet template result: `{OPERATION_PACKET_TEMPLATE_RESULT_OR_SKIPPED}`
 - Source-of-truth registry result: `{SOURCE_OF_TRUTH_REGISTRY_RESULT}`
+- Consistency-map result: `{CONSISTENCY_MAP_RESULT_OR_SKIPPED}`
 - Task-specific maturity result: `{TASK_SPECIFIC_MATURITY_RESULT}`
 - Bridge capability matrix result: `{BRIDGE_CAPABILITY_MATRIX_RESULT}`
 - Root entry points checked: `{ROOT_ENTRY_POINTS_CHECKED}`
@@ -82,6 +83,7 @@ Core baseline.
 - Large-task orchestration result: `{LARGE_TASK_ORCHESTRATION_RESULT_OR_SKIPPED}`
 - Operation packet template result: `{OPERATION_PACKET_TEMPLATE_RESULT_OR_SKIPPED}`
 - Source-of-truth registry result: `{SOURCE_OF_TRUTH_REGISTRY_RESULT}`
+- Consistency-map result: `{CONSISTENCY_MAP_RESULT_OR_SKIPPED}`
 - Task-specific maturity result: `{TASK_SPECIFIC_MATURITY_RESULT}`
 - Operation help and routing result: `{OPERATION_HELP_ROUTING_RESULT}`
 - Bridge capability matrix result: `{BRIDGE_CAPABILITY_MATRIX_RESULT}`
@@ -119,6 +121,7 @@ adapter.
 - Large-task orchestration result: `{LARGE_TASK_ORCHESTRATION_RESULT_OR_SKIPPED}`
 - Operation packet template result: `{OPERATION_PACKET_TEMPLATE_RESULT_OR_SKIPPED}`
 - Source-of-truth registry result: `{SOURCE_OF_TRUTH_REGISTRY_RESULT}`
+- Consistency-map result: `{CONSISTENCY_MAP_RESULT_OR_SKIPPED}`
 - Task-specific maturity result: `{TASK_SPECIFIC_MATURITY_RESULT}`
 - Bridge capability matrix result: `{BRIDGE_CAPABILITY_MATRIX_RESULT}`
 - Operation help and routing result: `{OPERATION_HELP_ROUTING_RESULT}`

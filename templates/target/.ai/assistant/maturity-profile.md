@@ -145,6 +145,11 @@ Framework upgrade work is blocked unless `.ai/alatyr.yaml`, installation note,
 context profiles, module profile, bridge files, operation help, and
 adapter-recheck flow are discoverable.
 
+Broad cross-area consistency claims must report whether the optional
+`consistency-map` module is enabled. If it is enabled, stale or missing fact
+IDs and relationships are blockers for the affected closure; if it is not
+enabled, report the additional discovery cost and residual coverage risk.
+
 ## Evidence
 
 Report task area, maturity, blockers, missing facts, validation, approval

@@ -109,6 +109,24 @@ Windows PowerShell or Command Prompt:
 py -3 .\tools\check_context_router.py
 ```
 
+## Consistency Map Check
+
+`check_consistency_map.py` validates the optional target consistency-map JSON,
+portable levels and relationship types, impact policy, human registry linkage,
+manifest path, and placeholder node/edge contract.
+
+Linux or macOS:
+
+```sh
+python3 tools/check_consistency_map.py
+```
+
+Windows PowerShell or Command Prompt:
+
+```powershell
+py -3 .\tools\check_consistency_map.py
+```
+
 ## Large-Task Orchestration Check
 
 `check_large_task_orchestration.py` validates the optional large-task

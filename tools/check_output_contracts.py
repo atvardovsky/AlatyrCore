@@ -59,6 +59,7 @@ REQUIRED_FIELDS = [
     "Large-task orchestration result:",
     "Operation packet template result:",
     "Source-of-truth registry result:",
+    "Consistency-map result:",
     "Task-specific maturity result:",
     "Bridge capability matrix result:",
     "Adapter drift checks result:",

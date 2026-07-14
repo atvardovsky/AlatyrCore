@@ -5,13 +5,13 @@
       "category": "CONTEXT",
       "owner": "framework/context-profiles.md",
       "rule_ids": ["ALATYR-CONTEXT-001"],
-      "derived_surfaces": ["README source context", "installation source context", "target context profiles", "target context router", "task-scale overlays", "operation packet context receipts", "session bootstrap instructions"]
+      "derived_surfaces": ["README source context", "installation source context", "target context profiles", "target context router", "task-scale overlays", "operation packet context receipts", "consistency relationship routing", "session bootstrap instructions"]
     },
     {
       "category": "SOURCE",
       "owner": "framework/source-of-truth-registry.md",
       "rule_ids": ["ALATYR-SOURCE-001"],
-      "derived_surfaces": ["project adapter contract", "logical integrity", "blueprint change", "target source-of-truth registry template"]
+      "derived_surfaces": ["project adapter contract", "logical integrity", "blueprint change", "target source-of-truth registry template", "consistency map"]
     },
     {
       "category": "RISK",
@@ -35,7 +35,7 @@
       "category": "INTEGRITY",
       "owner": "framework/logical-integrity.md",
       "rule_ids": ["ALATYR-INTEGRITY-001"],
-      "derived_surfaces": ["target gates", "documentation sync", "adapter recheck", "workstream convergence", "final evidence"]
+      "derived_surfaces": ["target gates", "documentation sync", "adapter recheck", "relationship impact closure", "workstream convergence", "final evidence"]
     },
     {
       "category": "CHANGE",
@@ -79,7 +79,7 @@
       "id": "ALATYR-CONTEXT-001",
       "category": "CONTEXT",
       "canonical_source": "framework/context-profiles.md",
-      "summary": "Use a compact budgeted bootstrap, select the smallest task profile, project-area overlays, and optional task-scale overlay through an aligned context router, and record expansion only when boundaries or conflicts require it.",
+      "summary": "Use a compact budgeted bootstrap, select the smallest task profile, project-area overlays, and optional task-scale overlay through an aligned context router, record expansion only when boundaries or conflicts require it, and prefer changed-fact relationship routing when an adapted consistency map exists.",
       "applies_to": ["all installed adapter tasks"],
       "enforcement": "required"
     },
@@ -87,7 +87,7 @@
       "id": "ALATYR-SOURCE-001",
       "category": "SOURCE",
       "canonical_source": "framework/source-of-truth-registry.md",
-      "summary": "Choose fact owners from the target source-of-truth registry when it exists; otherwise use contour ownership and report missing owners.",
+      "summary": "Choose fact owners from the target source-of-truth registry when it exists, use stable fact IDs for optional relationship routing, and otherwise use contour ownership while reporting missing owners or relationship coverage.",
       "applies_to": ["logical integrity", "documentation sync", "blueprint-driven changes"],
       "enforcement": "required"
     },
@@ -127,7 +127,7 @@
       "id": "ALATYR-INTEGRITY-001",
       "category": "INTEGRITY",
       "canonical_source": "framework/logical-integrity.md",
-      "summary": "Name changed semantic or logical facts, affected surfaces, source of truth, repair set, validation, and residual risk before claiming consistency, and reconcile the combined repair set for multi-workstream operations.",
+      "summary": "Name changed semantic or logical facts, affected surfaces, source of truth, repair set, validation, and residual risk before claiming consistency, use a bounded relationship impact closure when available, and reconcile the combined repair set for multi-workstream operations.",
       "applies_to": ["semantic fact changes", "drift reviews"],
       "enforcement": "required"
     },

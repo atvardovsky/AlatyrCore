@@ -27,6 +27,8 @@ Installation id: `{INSTALLATION_ID}`
 - Context profiles: `.ai/assistant/context-profiles.md`
 - Module profile: `.ai/assistant/module-profile.md`
 - Source-of-truth registry: `.ai/project/source-of-truth-registry.md`
+- Consistency map: `.ai/project/consistency-map.json`
+- Consistency-map module state: `{ENABLED_DEFERRED_DISABLED_OR_BLOCKED}`
 - Maturity profile: `.ai/assistant/maturity-profile.md`
 - Bridge capability matrix: `.ai/assistant/bridge-capability-matrix.md`
 - AI infrastructure inventory template:

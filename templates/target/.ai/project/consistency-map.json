@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "map_kind": "target-consistency-map",
+  "human_registry": ".ai/project/source-of-truth-registry.md",
+  "levels": [
+    "fact",
+    "contract",
+    "area",
+    "system",
+    "adapter"
+  ],
+  "relationship_types": [
+    "implements",
+    "verifies",
+    "documents",
+    "visualizes",
+    "generates",
+    "constrains",
+    "depends-on",
+    "routes"
+  ],
+  "impact_policy": {
+    "default_mode": "owner-and-applicable-direct-relationships",
+    "transitive_expand_when": [
+      "dependent fact or contract can change",
+      "cross-area contract changes",
+      "owner or relationship evidence conflicts",
+      "validation disproves the current boundary",
+      "approval trigger is reached"
+    ],
+    "required_evidence": [
+      "changed fact ids and canonical owners",
+      "selected edges and reasons",
+      "skipped edges and reasons",
+      "levels and project areas reached",
+      "missing or stale relationships",
+      "validation approvals and residual risk"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "{FACT_ID}",
+      "fact_type": "{FACT_TYPE}",
+      "level": "{FACT_CONTRACT_AREA_SYSTEM_OR_ADAPTER}",
+      "project_area": "{TARGET_PROJECT_AREA}",
+      "canonical_owner": "{CANONICAL_OWNER_OR_MISSING}",
+      "relationships": [
+        {
+          "id": "{RELATIONSHIP_ID}",
+          "type": "{IMPLEMENTS_VERIFIES_DOCUMENTS_VISUALIZES_GENERATES_CONSTRAINS_DEPENDS_ON_OR_ROUTES}",
+          "target": "{TARGET_FACT_ID_OR_SURFACE}",
+          "target_level": "{FACT_CONTRACT_AREA_SYSTEM_OR_ADAPTER}",
+          "target_area": "{TARGET_PROJECT_AREA}",
+          "direction": "outbound",
+          "required_when": [
+            "{RELATIONSHIP_CHANGE_TRIGGER}"
+          ],
+          "validation": [
+            "{TARGET_VALIDATION_OR_MANUAL_REVIEW}"
+          ],
+          "approval_trigger": "{APPROVAL_TRIGGER_OR_NONE}"
+        }
+      ]
+    }
+  ]
+}

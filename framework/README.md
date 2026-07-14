@@ -25,6 +25,8 @@ sync, logical integrity review, and final evidence.
 - machine-readable context router guidance for cheaper task startup
 - context profiles for task-specific minimum reading sets
 - source-of-truth registry guidance for fact ownership and sync direction
+- optional multi-level consistency mapping for bounded changed-fact impact
+  traversal
 - change-risk classification and approval trigger model
 - first-class logical integrity review
 - blueprint-driven product-change workflow
@@ -92,6 +94,9 @@ Those belong to a project contour or repository adapter.
 - `.ai/framework/source-of-truth-registry.md`: portable registry model for
   fact ownership, derived surfaces, sync direction, validation, and conflict
   resolution.
+- `.ai/framework/consistency-model.md`: portable relationship model for
+  bounded impact closure across fact, contract, area, system, and adapter
+  levels.
 - `.ai/framework/change-risk-model.md`: portable risk classes used to decide
   approvals, tests, docs, diagrams, and final evidence.
 - `.ai/framework/logical-integrity.md`: portable semantic/logical review for

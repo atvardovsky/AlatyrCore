@@ -35,6 +35,8 @@ The framework commits to giving an assistant a defined process for:
 - performing logical integrity review before claiming consistency
 - mapping changed facts to affected docs, diagrams, tests, gates, prompts, and
   skills
+- traversing adapted fact relationships to bound multi-level impact review in
+  large repositories
 - carrying accepted product changes through blueprint-equivalent docs, flows,
   implementation, validation, diagrams, and final evidence
 - coordinating large or resumable changes through bounded workstreams,
@@ -98,6 +100,8 @@ An installed adapter can provide stronger guarantees only when the target
 defines:
 
 - source-of-truth registry entries for relevant fact types
+- consistency-map nodes and relationship coverage when the target uses bounded
+  impact traversal
 - task context profiles
 - context router or equivalent machine-readable profile map when cheaper
   startup is expected

@@ -64,7 +64,8 @@ Operation: `logical-integrity-review`
 Use when: reviewing whether code, docs, tests, diagrams, prompts, skills,
 gates, and bridges agree.
 Flow: `.ai/assistant/flows/logical-integrity-review.flow.md`
-Minimum input: changed fact, suspected drift, or files to inspect.
+Minimum input: changed fact or fact ID, suspected drift, or files to inspect.
+When enabled, the consistency map bounds the first impact traversal.
 
 Operation: `ai-infrastructure-inventory`
 Use when: checking what AI infrastructure already exists and what can be kept,
@@ -212,3 +213,5 @@ Integration mode: `{CANONICAL_INTEGRATION}`
 - Allowed AI infrastructure source access:
   `{TARGET_AI_INFRASTRUCTURE_SOURCE_ACCESS_POLICY}`
 - Known adapter gaps: `{KNOWN_GAPS}`
+- Consistency map: `.ai/project/consistency-map.json` when the optional module
+  is enabled.

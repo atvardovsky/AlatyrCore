@@ -18,6 +18,7 @@ changes.
 - Existing test tools, fixtures, helpers, and isolation rules:
 - Existing source-of-truth/context map:
 - Existing source-of-truth registry:
+- Existing fact IDs, relationship maps, or consistency manifests:
 - Existing adapter manifest or version record:
 - Existing CODEOWNERS or equivalent owner map:
 - Existing adapter owner, backup owner, review cadence, and last review:
@@ -114,6 +115,8 @@ The target installation must define or adapt:
   modules, blocked modules, and reasons
 - source-of-truth registry: fact owners, derived surfaces, sync direction,
   validation, and conflict resolvers
+- optional consistency map: stable fact IDs, levels, project areas,
+  relationships, impact traversal, staleness handling, and missing coverage
 - context profiles: task-specific required context, approval, validation, and
   evidence rules
 - task-specific maturity profile and blocking criteria
@@ -138,6 +141,8 @@ Collect target-specific facts before writing project docs:
 - validation commands and manual checks
 - context/source-of-truth owners and generated artifacts
 - source-of-truth registry entries for important fact types
+- consistency-map need, owner, fact-ID strategy, relationship coverage, and
+  staleness checks
 - adapter owner, backup owner, review cadence, and file-owner map expectations
 - risk classes and approval triggers
 - security, privacy, live-service, destructive-operation, dependency, and
@@ -248,6 +253,7 @@ Final evidence must say:
 - target adapter rewritten
 - contours created or updated
 - source-of-truth registry created or updated
+- consistency-map module enabled, deferred, disabled, or blocked with reason
 - context profiles created or updated
 - context router references checked in compact bootstrap, gates, operation routing,
   root entry points, and bridge files

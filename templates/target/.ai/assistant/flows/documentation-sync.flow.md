@@ -13,11 +13,15 @@ assistant workflows synchronized after relevant changes.
 3. Apply `.ai/framework/logical-integrity.md` for changed facts, source of
    truth, repair direction, and evidence.
 4. Identify changed facts, not only changed files.
-5. Map changed facts to target source-of-truth docs.
-6. Update companion code, docs, tests, diagrams, prompts, gates, skills,
+5. Resolve changed fact IDs and canonical owners. When the optional
+   `consistency-map` module is enabled, follow applicable `documents`,
+   `visualizes`, `generates`, `verifies`, and dependent-contract edges.
+6. Record selected and skipped relationships instead of scanning unrelated
+   project areas.
+7. Update companion code, docs, tests, diagrams, prompts, gates, skills,
    bridge files, or checker rules when affected.
-7. Run target validation that exists.
-8. Report skipped checks and residual risk.
+8. Run target validation that exists.
+9. Report skipped edges, skipped checks, and residual risk.
 
 ## Target Sources
 
@@ -26,3 +30,4 @@ assistant workflows synchronized after relevant changes.
 - `{TARGET_BLUEPRINT_OR_EQUIVALENT}`
 - `{TARGET_TEST_STRATEGY}`
 - `{TARGET_DIAGRAM_POLICY}`
+- `.ai/project/consistency-map.json` when the optional module is enabled

@@ -41,6 +41,8 @@ Every project using this framework must define:
 - canonical project blueprint or equivalent source-of-truth docs
 - source-of-truth registry or equivalent fact-owner registry when multiple
   surfaces can describe the same fact
+- machine-readable consistency map when the target needs bounded fact-to-
+  contract, area, system, and adapter impact traversal
 - blueprint-driven change or equivalent product-change workflow owners
 - use-case, business-rule, data-model, architecture, and runtime-flow sources
   when those concerns exist in the project
@@ -115,6 +117,7 @@ An adapter may provide:
 - adapter output-contract reports for installation, framework update, or
   adapter-recheck work
 - source-of-truth registry reports or drift reports
+- consistency-map relationship coverage, impact-closure, or staleness reports
 - context router drift reports or deterministic routing checks
 - task-specific maturity reports
 - bridge capability or conformance reports

@@ -22,7 +22,9 @@ Replace placeholders with target facts before accepting installation.
    profile and project-area overlays plus the target source-of-truth docs.
    Activate the `large-or-resumable` scale overlay when its conditions apply.
 3. Apply `.ai/assistant/flows/logical-integrity-review.flow.md`.
-4. List changed facts and affected project areas.
+4. List changed fact IDs and canonical owners. When the `consistency-map`
+   module is enabled, derive affected contracts, areas, and surfaces from
+   `.ai/project/consistency-map.json` and record selected/skipped edges.
 5. Update target blueprint or equivalent source-of-truth docs when accepted
    facts change.
 6. Update project flow, use-case, data, runtime, architecture, or public docs
@@ -57,6 +59,7 @@ Require explicit programmer approval before:
 Report:
 
 - changed facts
+- relationship impact closure, missing links, and areas reached
 - source-of-truth or blueprint updates
 - implementation, test, diagram, prompt, skill, gate, bridge, or checker updates
 - validation run or unresolved

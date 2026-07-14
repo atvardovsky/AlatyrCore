@@ -33,6 +33,8 @@ List what must not be changed.
 - Test strategy and existing test surface:
 - Source-of-truth/context map:
 - Source-of-truth registry:
+- Consistency-map need, fact-ID strategy, and relationship coverage:
+- Consistency-map staleness owner and validation:
 - Context router:
 - Context profiles:
 - Context-router bootstrap references:
@@ -114,6 +116,11 @@ enabled optional modules, deferred modules, blocked modules, and reasons.
 Include `.ai/project/source-of-truth-registry.md` when multiple files or
 surfaces can describe the same project fact.
 
+Include `.ai/project/consistency-map.json` when the target has enough project
+areas or competing surfaces to benefit from bounded changed-fact relationship
+traversal. Populate it from target evidence or leave the module blocked; do not
+infer complete relationships from filenames.
+
 Include `.ai/assistant/maturity-profile.md` to report readiness by task area
 and blocking criteria.
 
@@ -170,6 +177,9 @@ Record where completed packets are stored, ignored, redacted, or removed.
 - Deferred, disabled, not-applicable, or blocked modules:
 - Source-of-truth owners:
 - Source-of-truth registry entries:
+- Consistency-map fact IDs, levels, areas, relationship edges, and missing
+  coverage:
+- Impact-closure and map-staleness evidence:
 - Blueprint or equivalent owner:
 - Generated artifacts and owning sources:
 - Missing-context escalation:

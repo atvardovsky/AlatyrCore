@@ -100,6 +100,7 @@ Additional source-repository helpers include:
 - `python3 tools/check_ai_infrastructure_inventory.py`
 - `python3 tools/check_bridge_capability_matrix.py`
 - `python3 tools/check_context_router.py`
+- `python3 tools/check_consistency_map.py`
 - `python3 tools/check_large_task_orchestration.py`
 - `python3 tools/check_manifest_contract.py`
 - `python3 tools/check_markdown_links.py`
@@ -154,6 +155,8 @@ Additional source-repository helpers include:
 - source-of-truth registry guidance and source-template checks for fact
   ownership, derived surfaces, sync direction, validation, and conflict
   resolution
+- optional consistency-map guidance and source checks for bounded fact,
+  contract, area, system, and adapter impact traversal
 - task-specific maturity profile guidance and source-template checks for
   supported work, context, validation, approvals, blockers, residual risks,
   and final evidence
@@ -296,6 +299,8 @@ A mature target installation usually has:
 - `.ai/assistant/templates/post-install-message.md`
 - `.ai/assistant/templates/post-update-message.md`
 - optional skills, prompts, bridge files, diagrams, and consistency checks
+- `.ai/project/consistency-map.json` when bounded relationship routing is
+  enabled
 
 The target adapter decides actual validation commands and supported assistant
 bridges.

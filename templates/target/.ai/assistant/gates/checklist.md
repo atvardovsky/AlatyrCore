@@ -16,6 +16,9 @@ commands from another project.
   `.ai/assistant/context-router.json`.
 - Source-of-truth registry checked when a changed fact has multiple possible
   owners or derived surfaces.
+- When enabled, consistency map checked from changed fact IDs through
+  applicable relationship edges; selected/skipped edges, reached levels and
+  areas, stale links, and missing coverage recorded.
 - Task context profile selected and required framework, project, assistant,
   flow, gate, policy, and validation files loaded.
 - Large-task scale overlay and operation packet used only when activation
@@ -55,7 +58,7 @@ commands from another project.
 - Human approvals verified when required; approval records created when
   protected-change scope needs durable evidence.
 - Final evidence reports run checks, skipped checks, assumptions, and residual
-  risk.
+  risk, including relationship omissions when consistency routing was used.
 
 ## Target Validation
 

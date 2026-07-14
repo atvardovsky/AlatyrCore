@@ -28,6 +28,8 @@ The registry should answer:
 - which file or surface owns a fact type
 - which files are derived from that owner
 - which direction synchronization should flow
+- which stable fact ID, consistency level, and project area identify the owner
+- which machine-map node routes to related contracts and surfaces
 - which validation or manual review confirms consistency
 - who decides when two canonical-looking sources disagree
 
@@ -41,6 +43,9 @@ Each entry should define:
 
 - fact type
 - canonical owner
+- stable fact ID, consistency level, and project area
+- consistency-map node or an explicit missing relationship record
+- relationship coverage and known gaps
 - derived surfaces
 - sync direction
 - validation or manual review
@@ -50,6 +55,18 @@ Each entry should define:
 
 If a target does not know the owner for a fact type, mark it as missing instead
 of inferring ownership from the nearest file.
+
+## Machine-Readable Relationship Companion
+
+Large repositories may enable a machine-readable consistency map. The human
+registry remains canonical for ownership and conflict explanation. The map
+provides compact changed-fact routing to contracts, project areas,
+implementations, tests, docs, diagrams, generated artifacts, and assistant
+governance.
+
+Use stable fact IDs to connect registry entries to map nodes. A missing or
+stale relationship remains an adapter gap; it does not justify scanning every
+project surface or inventing an edge.
 
 ## Common Fact Types
 
@@ -98,9 +115,12 @@ When sources disagree:
 1. Identify the fact type.
 2. Read the registry entry for that fact type.
 3. Name the canonical owner and derived surfaces.
-4. If the owner is missing or ambiguous, report the missing adapter fact.
-5. Repair the smallest coherent set of derived surfaces.
-6. Record validation, skipped checks, and residual risk.
+4. When a consistency map is enabled, build the applicable relationship impact
+   closure from the changed fact ID.
+5. If the owner or relationship coverage is missing or ambiguous, report the
+   missing adapter fact.
+6. Repair the smallest coherent set of selected relationship surfaces.
+7. Record selected and skipped edges, validation, and residual risk.
 
 If the registry itself is wrong or stale, treat that as an adapter change. Do
 not silently repair product facts by changing the registry unless approval is

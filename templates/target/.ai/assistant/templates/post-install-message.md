@@ -20,6 +20,7 @@ Entry points:
 - `.ai/assistant/context-profiles.md`
 - `.ai/assistant/module-profile.md`
 - `.ai/project/source-of-truth-registry.md`
+- `.ai/project/consistency-map.json` when the optional module is enabled
 - `.ai/assistant/maturity-profile.md`
 - `.ai/assistant/bridge-capability-matrix.md`
 

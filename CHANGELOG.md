@@ -8,6 +8,9 @@
 - Added optional large-task orchestration with a task-scale router overlay,
   bounded workstreams, resumable operation packets, checkpoints, and global
   logical-integrity convergence evidence.
+- Added an optional multi-level consistency map that routes changed fact IDs
+  through applicable contract, area, system, evidence, and
+  assistant-governance relationships to build a bounded impact closure.
 
 - Initial Alatyr Core standalone framework repository.
 - Added portable framework docs, assistant installation flow, readiness

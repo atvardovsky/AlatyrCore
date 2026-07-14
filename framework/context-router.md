@@ -36,6 +36,8 @@ A target context router should define:
 - canonical profile entries
 - optional project-area overlays
 - optional task-scale overlays for large or resumable work
+- optional consistency routing from changed fact IDs to applicable
+  relationships
 - use-when signals
 - required context paths
 - expansion triggers
@@ -60,6 +62,11 @@ A large-task overlay should route to the orchestration flow and operation
 packet without adding those files to every normal task profile. While a packet
 is active, load only the active workstream's required context, fact owners, and
 dependencies. The packet remains coordination evidence, not a source of truth.
+
+When the optional consistency-map module is enabled, the router should point
+to its machine-readable map. Use it only after a semantic change or suspected
+drift: resolve changed fact IDs, select applicable direct edges, and expand to
+dependent contracts only when the map or conflicting evidence requires it.
 
 ## Ownership
 

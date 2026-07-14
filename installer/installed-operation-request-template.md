@@ -80,6 +80,9 @@ Constraints:
   operation choices with descriptions, and ask for the smallest missing
   decision before editing files.
 - Use target source-of-truth docs and target evidence only.
+- When the optional `consistency-map` module is enabled, identify changed fact
+  IDs and use `.ai/project/consistency-map.json` to select applicable impact
+  edges before loading related surfaces.
 - Stay within Allowed actions. Treat `full-with-approval` as requiring
   explicit approval before protected changes.
 - For `alatyr-ai-inventory`, inspect existing AI infrastructure without
@@ -107,6 +110,8 @@ Constraints:
 - Run only target validation that exists; report unresolved checks.
 - Report final evidence: files inspected, changed facts, files changed,
   approvals, validation, skipped checks, adapter gaps, and residual risk.
+- Report selected/skipped relationship edges and missing coverage when the
+  consistency map was used.
 - For packet-based work, report workstream dependencies, checkpoints, context
   receipts, and one global logical integrity result over the combined change.
 ```

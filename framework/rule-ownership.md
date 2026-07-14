@@ -33,13 +33,14 @@ Owner: `.ai/framework/context-profiles.md`
 Rule IDs: `ALATYR-CONTEXT-001`
 Derived surfaces: README source context, installation source context, target
 context profiles, target context router, task-scale overlays, operation packet
-context receipts, session bootstrap instructions.
+context receipts, consistency relationship routing, session bootstrap
+instructions.
 
 Category: `SOURCE`
 Owner: `.ai/framework/source-of-truth-registry.md`
 Rule IDs: `ALATYR-SOURCE-001`
 Derived surfaces: project adapter contract, logical integrity, blueprint
-change, target source-of-truth registry template.
+change, target source-of-truth registry template, consistency map.
 
 Category: `RISK`
 Owner: `.ai/framework/change-risk-model.md`
@@ -63,7 +64,7 @@ Category: `INTEGRITY`
 Owner: `.ai/framework/logical-integrity.md`
 Rule IDs: `ALATYR-INTEGRITY-001`
 Derived surfaces: target gates, documentation sync, adapter recheck,
-workstream convergence, final evidence.
+relationship impact closure, workstream convergence, final evidence.
 
 Category: `CHANGE`
 Owner: `.ai/framework/blueprint-driven-change.md`

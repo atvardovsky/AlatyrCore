@@ -23,6 +23,7 @@ Before acting, inspect the target adapter for:
 - package/build files that reveal language, framework, dependency manager, and
   commands
 - existing tests, fixtures, fakes, and CI jobs
+- source-of-truth relationship map when the target provides one
 - generated files, diagram sources, and generated visual artifacts
 - security, live-service, credential, and destructive-operation policies
 - skill, prompt, third-party assistant infrastructure, provenance, and wrapper
@@ -62,6 +63,11 @@ choosing ownership. The registry should map fact types to canonical owners,
 derived surfaces, synchronization direction, validation, and conflict
 resolvers.
 
+When the target also provides a consistency map, start from changed fact IDs
+and load only applicable relationship targets. Expand transitively for
+dependent contracts, cross-area effects, conflicts, failed validation, or
+approval boundaries. Record skipped edges instead of scanning all surfaces.
+
 When two sources disagree, do not choose by convenience. Use logical integrity
 review to name the conflict, choose the source of truth, and repair the
 smallest coherent set of files.
@@ -93,6 +99,8 @@ For large projects:
 - treat host-loaded entry instructions as preloaded instead of rereading them
 - use the machine router before loading human profile explanations
 - compose a task profile with only affected project-area overlays
+- prefer changed-fact relationship traversal over broad repository search when
+  an adapted consistency map exists
 - record loaded paths, expansion reasons, approximate volume, and omissions in
   a context receipt for large or cross-boundary work
 

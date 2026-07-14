@@ -83,6 +83,8 @@ The plan must identify:
 - large-task task-scale routing, packet, checkpoint, and storage needs
 - required core profile and optional modules needed for the target
 - source-of-truth registry needs
+- optional consistency-map need, fact-ID strategy, relationship coverage, and
+  staleness owner
 - task-specific maturity and bridge capability needs
 - optional scaffolding plan, if any
 - migration diff, adapter output contract, AI infrastructure inventory report,
@@ -121,6 +123,8 @@ In a typical target repository:
 5. Copy or adapt portable framework files into `.ai/framework`, including
    `framework/*.md` and `framework/rule-registry.json`.
 6. Create `.ai/project/contour.md` and target project source-of-truth docs.
+   Add `.ai/project/consistency-map.json` only when bounded relationship
+   routing is enabled and target evidence can support it.
 7. Create `.ai/assistant/contour.md`, context router, context profiles,
    module profile, task-specific maturity profile, bridge capability matrix,
    and target assistant workflows/gates.

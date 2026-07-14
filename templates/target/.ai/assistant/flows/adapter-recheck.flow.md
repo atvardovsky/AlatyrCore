@@ -12,6 +12,7 @@ Replace placeholders with target facts before accepting installation.
 - Installation or update note: `{INSTALLATION_OR_UPDATE_NOTE}`
 - Project source of truth: `{TARGET_PROJECT_SOURCE_OF_TRUTH}`
 - Source-of-truth registry: `.ai/project/source-of-truth-registry.md`
+- Consistency map: `.ai/project/consistency-map.json`
 - Context router: `.ai/assistant/context-router.json`
 - Context profiles: `.ai/assistant/context-profiles.md`
 - Module profile: `.ai/assistant/module-profile.md`
@@ -59,7 +60,8 @@ Replace placeholders with target facts before accepting installation.
    known gaps; and target-local adapter checker evidence that no longer matches
    repository files.
 8. Check project blueprint/source-of-truth ownership, registry entries,
-   missing facts, and drift.
+   consistency-map nodes and edges when enabled, missing facts, stale
+   relationships, and drift.
 9. Check security, live-service, destructive-operation, dependency, credential,
    diagram, generated-artifact, validation, and lifecycle policies.
 10. Check task-specific maturity using `.ai/assistant/maturity-profile.md` when
@@ -87,6 +89,7 @@ Report:
   statements, duplicate profile references, context-router references, owner
   placeholders, and target-local checker evidence
 - blueprint/source-of-truth registry status
+- consistency-map relationship coverage and staleness status
 - context router and context profile status
 - module profile status
 - help, routing, AI infrastructure inventory, bridge, prompt, skill, gate,

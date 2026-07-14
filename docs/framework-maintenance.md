@@ -82,6 +82,9 @@ Before accepting a change, check:
 - `python3 tools/check_context_router.py` passes when target context-router
   profile names, required context, approval gates, validation, final evidence,
   or framework-routing coverage changes.
+- `python3 tools/check_consistency_map.py` passes when consistency levels,
+  relationship types, impact traversal, source registry linkage, manifest
+  routing, or map placeholders change.
 - `python3 tools/check_large_task_orchestration.py` passes when large-task
   activation, task-scale routing, workstream, packet, checkpoint, resume, or
   convergence contracts change.
@@ -184,7 +187,10 @@ Before accepting a change, check:
   checker rules.
 - source-of-truth registry, maturity profile, bridge capability matrix, and
   migration-note template agree with installer docs and checker rules.
+- optional consistency-map schema, human registry fact IDs, relationship
+  routing, module state, impact evidence, and checker rules agree.
 - target source-of-truth registry baseline entries include canonical owner,
+  stable fact ID, consistency level, project area, relationship coverage,
   derived surfaces, sync direction, validation, conflict resolver, approval,
   and final evidence fields.
 - target maturity profile baseline entries include maturity level, supported

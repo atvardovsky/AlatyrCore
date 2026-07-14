@@ -55,13 +55,15 @@ Rule ID: `ALATYR-CONTEXT-001`
 Canonical source: `.ai/framework/context-profiles.md`
 Commitment: use a compact budgeted bootstrap, select the smallest task profile,
 project-area overlays, and optional task-scale overlay, and record context
-expansion only when boundaries or conflicts require it.
+expansion only when boundaries or conflicts require it; prefer changed-fact
+relationship routing when an adapted consistency map exists.
 Applies to: all installed adapter tasks.
 
 Rule ID: `ALATYR-SOURCE-001`
 Canonical source: `.ai/framework/source-of-truth-registry.md`
 Commitment: choose fact owners from the target source-of-truth registry when
-it exists; otherwise use contour ownership and report missing owners.
+it exists, use stable fact IDs for optional relationship routing, and otherwise
+use contour ownership while reporting missing owners or relationship coverage.
 Applies to: logical integrity, documentation sync, blueprint-driven changes.
 
 Rule ID: `ALATYR-RISK-001`
@@ -93,7 +95,8 @@ Rule ID: `ALATYR-INTEGRITY-001`
 Canonical source: `.ai/framework/logical-integrity.md`
 Commitment: name changed semantic/logical facts, affected surfaces, source of
 truth, repair set, validation, and residual risk before claiming consistency;
-reconcile the combined repair set for multi-workstream operations.
+use a bounded relationship impact closure when available, and reconcile the
+combined repair set for multi-workstream operations.
 Applies to: semantic fact changes and drift reviews.
 
 Rule ID: `ALATYR-CHANGE-001`

@@ -27,6 +27,7 @@ contours:
 source_of_truth:
   project_contour: ".ai/project/contour.md"
   registry: ".ai/project/source-of-truth-registry.md"
+  consistency_map: ".ai/project/consistency-map.json"
   assistant_contour: ".ai/assistant/contour.md"
   context_router: ".ai/assistant/context-router.json"
   context_profiles: ".ai/assistant/context-profiles.md"

@@ -74,6 +74,12 @@ Use this sequence when a fact may have changed:
 10. Run target validation that exists, or record manual/unresolved checks.
 11. Report final evidence and residual risk.
 
+When a target consistency map exists, replace broad surface comparison with a
+bounded impact closure: start from changed fact IDs, select applicable
+relationship edges, traverse dependent contracts only when they can propagate
+the change, and record skipped or missing edges. The map routes review; the
+human source-of-truth registry still owns ownership decisions.
+
 For multi-workstream operations, perform local review within each workstream
 and one global review over the combined repair set before completion. The
 global review reconciles shared facts, canonical owners, approvals,
@@ -125,6 +131,7 @@ Risk class: <framework and adapter risk>
 Source of truth: <owning file or missing adapter fact>
 Conflicts found: <what disagreed, if anything>
 Repair set: <files or artifacts updated>
+Impact closure: <selected/skipped edges, levels, areas, and missing links>
 Validation: <target commands or manual checks>
 Approvals: <used or not required>
 Residual risk: <skipped or unresolved checks>

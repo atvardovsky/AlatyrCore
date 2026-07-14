@@ -34,6 +34,7 @@ CORE_ITEMS = [
 
 OPTIONAL_MODULES = [
     "blueprint-change",
+    "consistency-map",
     "diagrams",
     "ai-infrastructure",
     "multi-assistant-bridges",
