@@ -1,0 +1,182 @@
+{
+  "schema_version": 1,
+  "fixture": "frontend-app-minimal",
+  "report_kind": "assistant-run-result",
+  "run_id": "codex-staged-core-6ee985d",
+  "assistant_surface": "codex",
+  "source_commit": "6ee985df3e6e65507cda175944b2b3ea4be630ae",
+  "run_provenance": {
+    "provider": "OpenAI",
+    "product": "Codex",
+    "model": "GPT-5",
+    "version_or_date": "2026-07-14",
+    "execution_mode": "interactive agent",
+    "started_at": "unknown",
+    "completed_at": "2026-07-14T17:53:03+02:00",
+    "operator": "unknown",
+    "report_origin": "assistant-reported"
+  },
+  "conformance_scope": "Controlled assistant-run fixture review of staged installed surfaces; not target validation, not installation, and not a real or accepted target adapter.",
+  "claims_installation_complete": false,
+  "operation_type": "read-only adapter recheck",
+  "target_shape_confirmed": [
+    "readme",
+    "ui_source",
+    "build_metadata",
+    "missing_visual_validation_policy"
+  ],
+  "target_facts_inspected": [
+    "README",
+    "UI source",
+    "build metadata"
+  ],
+  "files_created_preserved_or_skipped": {
+    "created": [
+      "/tmp/alatyr-codex-staged-core-6ee985d/reports/frontend-app-minimal.json"
+    ],
+    "preserved": [
+      "All files in the fixture target repository were left unchanged"
+    ],
+    "skipped": [
+      "Staged adapter completion or rewrite was out of scope",
+      "Target validation was not run",
+      "Build and screenshot commands were not inferred or invented"
+    ]
+  },
+  "approval_needs": [
+    "None for this read-only review and external report write; target-owner approval would be needed before accepting project facts or completing the adapter"
+  ],
+  "manifest_version_handling": "All manifest version fields are unresolved placeholders; no installed or accepted version was claimed.",
+  "context_profile": "docs-local",
+  "context_profiles_considered": [
+    "docs-local",
+    "code-local",
+    "business-change"
+  ],
+  "context_cost_evidence": {
+    "measurement_kind": "actual word-count observation",
+    "loaded_files": [
+      "AGENTS.md (host-preloaded)",
+      ".ai/alatyr.yaml",
+      ".ai/README.md",
+      ".ai/assistant/context-router.json",
+      "README.md",
+      "src/App.txt",
+      "package.json",
+      ".ai/assistant/module-profile.md",
+      ".ai/project/source-of-truth-registry.md",
+      ".ai/assistant/help.md",
+      ".ai/assistant/templates/adapter-output-contracts.md",
+      ".ai/assistant/templates/ai-infrastructure-inventory.md",
+      "/tmp/alatyr-codex-staged-core-6ee985d/report-template.json"
+    ],
+    "loaded_file_count": 13,
+    "approximate_words": 4700,
+    "budget_exceeded": false,
+    "expansion_reasons": [
+      "Inspected the three named target fact surfaces",
+      "Loaded only the specific adapter owners needed for required report keys: module profile, source registry, operation help, output contract, and AI infrastructure inventory"
+    ],
+    "receipt_reused": false
+  },
+  "logical_integrity_evidence": {
+    "changed_fact_ids": [
+      "none: the review was read-only and no target or adapter fact changed"
+    ],
+    "selected_relationships": [
+      "none: no changed fact and no evidence that the optional consistency-map module is enabled"
+    ],
+    "skipped_relationships": [
+      "consistency-map traversal skipped because its module state and target relationship facts remain placeholders"
+    ],
+    "companion_surfaces_checked": [
+      "README.md",
+      "src/App.txt",
+      "package.json",
+      "module profile",
+      "source-of-truth registry",
+      "operation help",
+      "adapter output contracts",
+      "AI infrastructure inventory template",
+      "root file inventory for assistant entry points"
+    ],
+    "unresolved_gaps": [
+      "visual validation policy missing",
+      "accessibility policy missing",
+      "diagram policy missing",
+      "accepted target-specific root assistant entry points missing; host-loaded AGENTS.md is a staged placeholder entry",
+      "canonical source-of-truth owners and relationship coverage unresolved",
+      "target validation and manual-review policy unresolved"
+    ]
+  },
+  "module_profile_status": [
+    "Required core profile is unresolved because all state and evidence fields are placeholders",
+    "installed-operations enabled only after root assistant entry points exist",
+    "diagrams not-applicable or deferred until target diagram policy exists",
+    "effectiveness-metrics deferred unless the target wants measurement",
+    "consistency-map and other optional modules remain unresolved and were not treated as enabled"
+  ],
+  "source_of_truth_registry_status": [
+    "Registry file exists but every canonical owner, relationship, validation, and approval field inspected is unresolved placeholder evidence",
+    "README.md, src/App.txt, and package.json were observed as surfaces but were not promoted to canonical owners"
+  ],
+  "task_specific_maturity": [
+    "Discovery maturity only: minimal source surfaces are identifiable",
+    "Adapter maturity is incomplete because ownership, policies, modules, validation, and root entry points are unresolved"
+  ],
+  "bridge_capability_status": [
+    "Codex used the host-loaded AGENTS.md entry, but no accepted target-specific root assistant bridge capability was established"
+  ],
+  "bridge_behavior_evidence": {
+    "entry_files_used": [
+      "AGENTS.md (host-preloaded staged entry file)"
+    ],
+    "auto_load_observed": "yes for host-provided AGENTS.md; this does not prove an accepted target installation",
+    "help_found": "yes, .ai/assistant/help.md exists, but its target facts are placeholders",
+    "context_router_found": "yes, .ai/assistant/context-router.json was loaded and used for compact routing",
+    "known_surface_limitations": [
+      "No accepted target-specific root assistant entry points",
+      "Supported assistants and bridge ownership remain unresolved placeholders"
+    ]
+  },
+  "operation_help_status": [
+    "Help surface exists and describes request routing, but placeholder target facts prevent treating installed operations or local commands as enabled"
+  ],
+  "output_contract_status": [
+    "Adapter output-contract template exists; its installation, update, and recheck evidence fields remain unresolved placeholders and no accepted contract completion is claimed"
+  ],
+  "ai_infrastructure_inventory_status": [
+    "Inventory template exists but contains no resolved target items, provenance, permissions, or validation evidence; no AI infrastructure was imported or executed"
+  ],
+  "validation_status": {
+    "target_validation_claimed": false,
+    "unresolved": [
+      "No target validation command or manual-review procedure is resolved in the staged adapter",
+      "No build, visual, screenshot, or accessibility validation was run or invented",
+      "Only the external conformance report checker is eligible to run after report creation"
+    ]
+  },
+  "residual_risk": [
+    "visual validation policy",
+    "accessibility policy",
+    "diagram policy",
+    "root assistant entry points",
+    "The staged adapter cannot safely guide real target work until placeholders are replaced from target evidence",
+    "UI behavior intent cannot be distinguished from placeholder content",
+    "Visual and accessibility regressions cannot be assessed without target-owned policies and checks",
+    "Installed operations must remain disabled until accepted root entry points and ownership exist"
+  ],
+  "behaviors_satisfied": [
+    "propose_root_assistant_entry_points",
+    "mark_visual_validation_missing",
+    "use_docs_local_for_wording_only_updates",
+    "use_business_change_for_ui_behavior_changes",
+    "do_not_invent_build_or_screenshot_commands"
+  ],
+  "forbidden_claims_absent": [
+    "universal_installer_command",
+    "invented_validation_command",
+    "invented_project_fact",
+    "overwrite_without_approval"
+  ]
+}

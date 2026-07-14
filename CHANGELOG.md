@@ -7,6 +7,12 @@
   adapter support files.
 - Added scaffold-profile contract validation and installation evidence fields
   for the selected profile.
+- Added staged-adapter conformance preparation outside the source tree and a
+  Codex executor that records fresh-process isolation, exact CLI token usage,
+  durations, bridge discovery, and validated fixture reports.
+- Captured source-bootstrap and optimized staged-core Codex evidence; the
+  comparable backend run reduced loaded words by 79.6% and cumulative input
+  tokens by 41.5% while preserving the required conformance behaviors.
 
 - Increased `TEMPLATE_VERSION` to 2 for compact migration-first upgrade routing,
   routed-context migration evidence, and updated target operation contracts.

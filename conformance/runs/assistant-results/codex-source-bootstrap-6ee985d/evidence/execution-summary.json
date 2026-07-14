@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "run_kind": "codex-conformance-execution",
+  "run_id": "codex-isolated-6ee985d",
+  "source_commit": "6ee985df3e6e65507cda175944b2b3ea4be630ae",
+  "assistant_surface": "codex",
+  "codex_version": "codex-cli 0.144.4",
+  "raw_logs_committed": false,
+  "isolation": {
+    "fresh_process_per_fixture": true,
+    "ephemeral_session": true,
+    "user_config_loaded": true,
+    "working_root": "fixture target",
+    "staged_adapter_profile": "none"
+  },
+  "executions": [
+    {
+      "fixture": "backend-api-minimal",
+      "duration_seconds": "unknown",
+      "exit_code": 0,
+      "thread_id": "019f614b-1be0-7210-aa43-2dcdac42b953",
+      "usage": {
+        "input_tokens": 1076542,
+        "cached_input_tokens": 999680,
+        "output_tokens": 10236,
+        "reasoning_output_tokens": 3802
+      },
+      "report_exists": true
+    }
+  ],
+  "total_usage": {
+    "input_tokens": 1076542,
+    "cached_input_tokens": 999680,
+    "output_tokens": 10236,
+    "reasoning_output_tokens": 3802
+  }
+}

@@ -660,11 +660,23 @@ install Alatyr Core into a target repository.
 under a chosen output directory. Use those repositories as the starting point
 for real assistant conformance runs.
 
-`prepare_conformance_run.py` creates seed-only fixture repositories, per-fixture
-assistant prompts, and a reports directory for a selected assistant surface.
+`prepare_conformance_run.py` creates fixture repositories, per-fixture
+assistant prompts, a local report template, and a reports directory for a
+selected assistant surface. By default targets are seed-only. Use
+`--staged-adapter-profile core` to test target bridge and compact-router
+discovery against placeholder adapter structure without claiming installation.
+Staged runs must use an output directory outside the AlatyrCore checkout so a
+parent source `AGENTS.md` cannot contaminate target auto-load evidence.
 It validates the surface against `conformance/runs/assistant-surfaces.json`
 unless `--allow-custom-surface` is provided. It does not run the assistant or
 claim installation success.
+
+`run_codex_conformance.py` prepares staged targets and runs one fresh,
+ephemeral Codex CLI process per fixture. It disables user configuration, roots
+each process in the fixture target, captures JSONL locally, records exact CLI
+token usage and duration in `execution-summary.json`, and validates all reports.
+This is an explicit cost-incurring source conformance operation, not a stable
+check run by `check_all.py`.
 
 `prepare_conformance_matrix.py`, also available as `alatyr.py
 prepare-conformance`, creates one run workspace for every selected assistant
@@ -707,6 +719,8 @@ Linux or macOS:
 python3 tools/check_conformance_fixtures.py
 python3 tools/materialize_conformance_fixtures.py --output tmp/conformance-targets
 python3 tools/prepare_conformance_run.py --output tmp/conformance-run --assistant-surface codex
+python3 tools/prepare_conformance_run.py --output /tmp/conformance-run --assistant-surface codex --staged-adapter-profile core
+python3 tools/run_codex_conformance.py --output /tmp/codex-conformance
 python3 tools/alatyr.py prepare-conformance --output tmp/conformance-matrix
 python3 tools/alatyr.py check-conformance --matrix tmp/conformance-matrix/matrix.json
 python3 tools/alatyr.py check-conformance --matrix tmp/conformance-matrix/matrix.json --require-reports
@@ -727,6 +741,8 @@ Windows PowerShell or Command Prompt:
 py -3 .\tools\check_conformance_fixtures.py
 py -3 .\tools\materialize_conformance_fixtures.py --output tmp\conformance-targets
 py -3 .\tools\prepare_conformance_run.py --output tmp\conformance-run --assistant-surface codex
+py -3 .\tools\prepare_conformance_run.py --output C:\Temp\conformance-run --assistant-surface codex --staged-adapter-profile core
+py -3 .\tools\run_codex_conformance.py --output C:\Temp\codex-conformance
 py -3 .\tools\alatyr.py prepare-conformance --output tmp\conformance-matrix
 py -3 .\tools\alatyr.py check-conformance --matrix tmp\conformance-matrix\matrix.json
 py -3 .\tools\alatyr.py check-conformance --matrix tmp\conformance-matrix\matrix.json --require-reports

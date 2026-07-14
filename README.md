@@ -208,6 +208,8 @@ Additional source-repository helpers include:
 - source-repository migration diff, conformance fixture, scaffold snapshot,
   seed materialization, run preparation, golden report, and captured-run
   summary checks
+- isolated staged-adapter Codex conformance with exact CLI token and duration
+  evidence, kept outside stable source checks because it incurs model usage
 - one Python-based optional tool entry point with PowerShell and Command Prompt
   launchers for Linux, macOS, and Windows
 - migration-first target upgrade assessment that writes evidence without

@@ -56,7 +56,16 @@ python3 tools/prepare_conformance_matrix.py --output tmp/conformance-matrix
 
 Preparation writes `matrix.json` plus one `run.json` per surface. Both retain
 the `prepared-not-executed` status; only externally captured reports are run
-evidence. Validate a completed matrix with:
+evidence.
+
+For bridge and context-router evidence, stage fixture targets outside the
+AlatyrCore checkout. A target nested under this repository can inherit the
+source `AGENTS.md`, invalidating target auto-load and context-cost conclusions.
+Codex runs may use `tools/run_codex_conformance.py` to enforce fresh processes,
+target-root execution, disabled user configuration, and exact CLI usage
+capture.
+
+Validate a completed matrix with:
 
 ```sh
 python3 tools/check_conformance_matrix.py --matrix tmp/conformance-matrix/matrix.json --require-reports

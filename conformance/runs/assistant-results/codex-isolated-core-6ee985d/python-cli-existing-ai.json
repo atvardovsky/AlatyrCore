@@ -1,0 +1,191 @@
+{
+  "schema_version": 1,
+  "fixture": "python-cli-existing-ai",
+  "report_kind": "assistant-run-result",
+  "run_id": "codex-staged-core-6ee985d",
+  "assistant_surface": "codex",
+  "source_commit": "6ee985df3e6e65507cda175944b2b3ea4be630ae",
+  "run_provenance": {
+    "provider": "OpenAI",
+    "product": "Codex",
+    "model": "GPT-5",
+    "version_or_date": "unknown",
+    "execution_mode": "interactive agent",
+    "started_at": "unknown",
+    "completed_at": "2026-07-14T15:58:40Z",
+    "operator": "unknown",
+    "report_origin": "assistant-reported"
+  },
+  "conformance_scope": "Actual assistant-run controlled fixture review; not target validation and not a real target adapter installation.",
+  "claims_installation_complete": false,
+  "operation_type": "read-only adapter recheck and maturity review",
+  "target_shape_confirmed": [
+    "existing_ai_instructions",
+    "package_metadata",
+    "cli_source",
+    "basic_tests"
+  ],
+  "target_facts_inspected": [
+    "existing AGENTS.md",
+    "Python package metadata",
+    "CLI source directory",
+    "basic tests"
+  ],
+  "files_created_preserved_or_skipped": {
+    "created": [
+      "/tmp/alatyr-codex-staged-core-6ee985d/reports/python-cli-existing-ai.json"
+    ],
+    "preserved": [
+      "AGENTS.md and every file in the fixture target repository"
+    ],
+    "skipped": [
+      "No staged adapter file was installed, rewritten, completed, or accepted",
+      "Framework source documentation was intentionally not loaded"
+    ]
+  },
+  "approval_needs": [
+    "Approval is required before overwriting or replacing the existing AGENTS.md",
+    "Approval and discovered target policy are required before security-sensitive, destructive, data, live-service, permission, or spend actions",
+    "Target ownership and supported-assistant facts must be established before accepting adapter or bridge changes"
+  ],
+  "manifest_version_handling": "The staged .ai/alatyr.yaml contains unresolved placeholders for schema, framework, and template versions. No version was inferred from the supplied source commit or fixture name; a populated adapter manifest is proposed, not claimed present.",
+  "context_profile": "framework-upgrade (read-only adapter recheck/maturity review)",
+  "context_profiles_considered": [
+    "framework-upgrade",
+    "code-local",
+    "security-sensitive"
+  ],
+  "context_cost_evidence": {
+    "measurement_kind": "actual observation using wc -w",
+    "loaded_files": [
+      "AGENTS.md",
+      ".ai/README.md",
+      ".ai/alatyr.yaml",
+      ".ai/assistant/context-router.json",
+      "pyproject.toml",
+      "src/fixture_cli/main.py",
+      "tests/test_main.py",
+      ".ai/project/source-of-truth-registry.md",
+      ".ai/assistant/context-profiles.md",
+      ".ai/assistant/bridge-capability-matrix.md",
+      ".ai/assistant/module-profile.md",
+      ".ai/assistant/maturity-profile.md",
+      ".ai/assistant/help.md",
+      ".ai/assistant/templates/adapter-output-contracts.md",
+      ".ai/assistant/ai-infrastructure-router.json"
+    ],
+    "loaded_file_count": 15,
+    "approximate_words": 6317,
+    "budget_exceeded": false,
+    "expansion_reasons": [
+      "Compact bootstrap was 1412 words across 4 files, within its 2000-word/4-file budget; total selected review context remained within the 8000-word profile budget",
+      "Inspected the four requested target evidence surfaces",
+      "Opened only the named placeholder companion surfaces needed to assess required report keys and expected module states"
+    ],
+    "receipt_reused": false
+  },
+  "logical_integrity_evidence": {
+    "changed_fact_ids": [
+      "none: the target repository was read-only and no accepted fact changed"
+    ],
+    "selected_relationships": [
+      "AGENTS.md preservation instruction -> approval need for any overwrite",
+      "package metadata -> CLI source -> basic placeholder test as bounded fixture evidence",
+      "manifest placeholders -> unresolved registry, profiles, bridges, modules, operations, and validation"
+    ],
+    "skipped_relationships": [
+      "No consistency-map traversal: the manifest does not establish that module as enabled and no semantic fact changed",
+      "No framework-source comparison: this run forbids loading AlatyrCore source documentation"
+    ],
+    "companion_surfaces_checked": [
+      "AGENTS.md",
+      "pyproject.toml",
+      "src/fixture_cli/main.py",
+      "tests/test_main.py",
+      ".ai/project/source-of-truth-registry.md",
+      ".ai/assistant/context-profiles.md",
+      ".ai/assistant/bridge-capability-matrix.md",
+      ".ai/assistant/module-profile.md",
+      ".ai/assistant/maturity-profile.md",
+      ".ai/assistant/help.md",
+      ".ai/assistant/templates/adapter-output-contracts.md",
+      ".ai/assistant/ai-infrastructure-router.json"
+    ],
+    "unresolved_gaps": [
+      ".ai/alatyr.yaml exists only as unresolved placeholder scaffolding",
+      ".ai/project/source-of-truth-registry.md exists only as unresolved placeholder scaffolding",
+      ".ai/assistant/context-profiles.md exists only as unresolved placeholder scaffolding",
+      ".ai/assistant/bridge-capability-matrix.md exists only as unresolved placeholder scaffolding",
+      "No accepted target validation owner or command was discovered"
+    ]
+  },
+  "module_profile_status": [
+    "required core missing source-of-truth registry",
+    "multi-assistant-bridges blocked until supported assistants are known",
+    "ai-infrastructure deferred until inventory and policies exist"
+  ],
+  "source_of_truth_registry_status": [
+    "missing as an accepted target surface: the staged file contains replacement instructions and unresolved canonical-owner placeholders",
+    "propose_source_of_truth_registry; do not accept the placeholder registry as project fact"
+  ],
+  "task_specific_maturity": [
+    "inspected: staged maturity profile is placeholder scaffolding and cannot establish task-specific maturity",
+    "framework-upgrade remains evidence-limited; code-local facts are minimally discoverable; security-sensitive and data work are blocked pending target policies"
+  ],
+  "bridge_capability_status": [
+    "blocked: supported assistants are unknown and the matrix entries are unresolved placeholders",
+    "Codex host loading of AGENTS.md was observed for this run only and does not establish an accepted multi-assistant bridge"
+  ],
+  "bridge_behavior_evidence": {
+    "entry_files_used": [
+      "AGENTS.md"
+    ],
+    "auto_load_observed": "yes: the host supplied the root AGENTS.md instructions in the task context",
+    "help_found": "yes, but .ai/assistant/help.md is unresolved placeholder scaffolding",
+    "context_router_found": "yes, .ai/assistant/context-router.json was used for compact bootstrap and profile consideration; target selectors remain placeholders",
+    "known_surface_limitations": [
+      "Supported assistants, instruction priority, permissions, help routing, and conformance checks are unresolved",
+      "Existing AGENTS.md must be preserved without overwrite approval"
+    ]
+  },
+  "operation_help_status": [
+    "present only as unresolved placeholder scaffolding; no accepted target operation help or help-reference routing is established"
+  ],
+  "output_contract_status": [
+    "adapter output contract templates are present but contain unresolved placeholders and are not accepted target contracts"
+  ],
+  "ai_infrastructure_inventory_status": [
+    "deferred: the router and inventory template are scaffolding, no accepted inventory or target policies exist, and no item was adopted or modified"
+  ],
+  "validation_status": {
+    "target_validation_claimed": false,
+    "unresolved": [
+      "The manifest and routed profiles contain placeholder validation commands, so no target validation command was discovered or run",
+      "The supplied conformance report checker validates only the report shape and must not be represented as target validation"
+    ]
+  },
+  "residual_risk": [
+    ".ai/alatyr.yaml",
+    ".ai/project/source-of-truth-registry.md",
+    ".ai/assistant/context-profiles.md",
+    ".ai/assistant/bridge-capability-matrix.md",
+    "The staged adapter may resemble a complete installation by path count, but its target facts remain placeholders",
+    "Project fact ownership, supported assistants, security/data policies, AI infrastructure, module enablement, and target validation remain unknown",
+    "A real adapter requires approved inventory and target-evidence-driven manifest, framework copy, registry, profiles, bridges, policies, and validation"
+  ],
+  "behaviors_satisfied": [
+    "preserve_existing_agents_without_approval",
+    "propose_adapter_manifest",
+    "propose_framework_copy",
+    "propose_source_of_truth_registry",
+    "propose_context_profiles",
+    "block_security_and_data_until_policies_exist",
+    "use_only_discovered_validation"
+  ],
+  "forbidden_claims_absent": [
+    "universal_installer_command",
+    "invented_validation_command",
+    "invented_project_fact",
+    "overwrite_without_approval"
+  ]
+}

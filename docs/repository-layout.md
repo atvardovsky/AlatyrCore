@@ -182,6 +182,11 @@ Fixture descriptions, seed files, expected behavior contracts, and golden
 assistant-result reports for future conformance checks. Scaffolded-adapter
 snapshots under `conformance/golden/scaffolded-adapters` record deterministic
 source scaffolder output; they are not completed target installations.
+
+`tools/run_codex_conformance.py` is an explicit, cost-incurring conformance
+executor. It runs fresh Codex processes against staged fixture adapters outside
+the source tree and records runtime usage separately from static scaffold or
+golden contracts.
 Captured assistant-run report templates and reviewed run outputs live under
 `conformance/runs`.
 

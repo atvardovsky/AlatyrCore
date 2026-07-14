@@ -22,6 +22,12 @@ assistant conformance run is captured.
 
 Captured runs:
 
+- `codex-isolated-core-6ee985d/` records four fresh Codex CLI processes rooted
+  in staged core-profile fixture targets, with host bridge discovery, context
+  evidence, duration, and exact CLI token usage.
+- `codex-source-bootstrap-6ee985d/` records the backend fixture source-guided
+  baseline that exposed excessive installation-context cost before staged
+  target routing was used.
 - `codex-current-session-8dab3d1/` records a constrained Codex pilot against
   all four fixtures. It is useful assistant-produced evidence, but it did not
   run in fresh sessions rooted in each fixture and did not observe target

@@ -44,6 +44,20 @@ report directory can be prepared with:
 python3 tools/prepare_conformance_run.py --output tmp/conformance-run --assistant-surface codex
 ```
 
+For installed-surface routing evidence, stage the smallest adapter profile in
+an output directory outside this source checkout. Keeping the target outside
+the checkout prevents the source `AGENTS.md` from being inherited as a parent
+instruction file:
+
+```sh
+python3 tools/prepare_conformance_run.py --output /tmp/conformance-run --assistant-surface codex --staged-adapter-profile core
+python3 tools/run_codex_conformance.py --output /tmp/codex-conformance
+```
+
+The Codex executor starts a fresh ephemeral process per fixture, disables user
+configuration, captures exact CLI usage and duration, and validates the four
+reports. It incurs real model usage and is not part of `check_all.py`.
+
 Prepare one matrix covering every supported assistant surface and fixture:
 
 ```sh

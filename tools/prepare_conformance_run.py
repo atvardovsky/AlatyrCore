@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Prepare fixture targets and prompts for an assistant conformance run.
 
-This source-repository helper creates seed-only fixture repositories plus
-per-fixture prompt files. It does not run an assistant, scaffold Alatyr,
-install an adapter, or validate a target project.
+This source-repository helper creates fixture repositories plus per-fixture prompt files.
+By default targets are seed-only. An explicit staged-adapter
+profile may add placeholder adapter structure for bridge and context-routing
+tests. It does not run an assistant, install an accepted adapter, or validate a
+target project.
 """
 
 from __future__ import annotations
@@ -21,10 +23,12 @@ from materialize_conformance_fixtures import (
     load_json,
     materialize_fixture,
 )
+from scaffold_target_structure import plan as scaffold_plan
 
 
 ROOT = Path(__file__).resolve().parents[1]
 SURFACES = ROOT / "conformance" / "runs" / "assistant-surfaces.json"
+REPORT_TEMPLATE = ROOT / "conformance" / "runs" / "assistant-run-report-template.json"
 
 
 def default_source_commit() -> str:
@@ -94,8 +98,30 @@ def render_prompt(
     run_id: str,
     assistant_surface: str,
     source_commit: str,
+    staged_adapter_profile: str | None,
+    report_template_path: Path,
 ) -> str:
     fixture_name = fixture["fixture"]
+    if staged_adapter_profile:
+        context_instruction = f"""Use the staged `{staged_adapter_profile}` target adapter as the only Alatyr
+guidance for this review. Start from any target entry file the host actually
+loaded, then use the compact target bootstrap and context router. Do not load
+AlatyrCore source documentation. Treat every target adapter placeholder as
+unresolved evidence, not as an accepted project fact.
+
+This mode tests installed-surface discovery and routing. Do not install,
+rewrite, or complete the staged adapter. Inspect the fixture evidence and
+write only the requested report outside the target repository."""
+        target_state = (
+            f"staged placeholder adapter profile `{staged_adapter_profile}`; "
+            "not an accepted installation"
+        )
+    else:
+        context_instruction = """Use the Alatyr Core source repository as installation guidance and inspect the
+fixture target repository. You may create or update files inside the fixture
+target repository if your assistant-run procedure is meant to test installation
+behavior, but do not claim that a real target adapter is complete."""
+        target_state = "seed-only fixture; no staged adapter"
     return f"""# Alatyr Conformance Run: {fixture_name}
 
 You are running a conformance fixture for Alatyr Core.
@@ -112,17 +138,15 @@ adapter. Do not invent validation commands.
 - Run id: `{run_id}`
 - Assistant surface: `{assistant_surface}`
 - Source commit: `{source_commit}`
+- Target state: {target_state}
 
 ## Task
 
-Use the Alatyr Core source repository as installation guidance and inspect the
-fixture target repository. Produce an assistant-run conformance report at the
-report path above.
+{context_instruction}
 
-You may create or update files inside the fixture target repository if your
-assistant-run procedure is meant to test installation behavior, but the final
-report must not claim that a real target adapter is complete. Treat unresolved
-fixture facts as unresolved.
+Produce an assistant-run conformance report at the report path above. The
+final report must not claim that a real target adapter is complete. Treat
+unresolved fixture facts as unresolved.
 
 ## Expected Target Shape
 
@@ -172,11 +196,11 @@ Write valid JSON to `{report_path}` with:
 - all expected behavior IDs in `behaviors_satisfied`
 - all forbidden claim IDs in `forbidden_claims_absent`
 
-Use `conformance/runs/assistant-run-report-template.json` as the field shape.
+Use `{report_template_path}` as the field shape.
 After writing the report, it should pass:
 
 ```sh
-python3 tools/check_conformance_reports.py --actual-dir {report_path.parent} --require-actual-reports
+python3 {ROOT / "tools" / "check_conformance_reports.py"} --actual-dir {report_path.parent} --require-actual-reports
 ```
 """
 
@@ -187,6 +211,7 @@ def write_run_readme(
     run_id: str,
     assistant_surface: str,
     source_commit: str,
+    staged_adapter_profile: str | None,
 ) -> None:
     readme = f"""# Alatyr Assistant Conformance Run
 
@@ -199,10 +224,14 @@ Source commit: `{source_commit}`
 - `targets/`: seed-only fixture repositories.
 - `prompts/`: per-fixture prompts to give an assistant.
 - `reports/`: assistant-run JSON reports to validate.
+- `report-template.json`: local report shape; assistants do not need to load
+  the source repository for it.
+
+Target state: `{f"staged-{staged_adapter_profile}" if staged_adapter_profile else "seed-only"}`
 
 ## Workflow
 
-1. Give each prompt under `prompts/` to the selected assistant.
+1. Give each prompt under `prompts/` to a fresh selected-assistant process.
 2. Let the assistant inspect the matching fixture under `targets/`.
 3. Require the assistant to write JSON into `reports/`.
 4. Validate captured reports from the Alatyr Core source repository:
@@ -220,6 +249,17 @@ installations and do not prove real target validation.
 def prepare_run(args: argparse.Namespace) -> list[str]:
     failures: list[str] = []
     output = args.output.resolve()
+    staged_adapter_profile = getattr(args, "staged_adapter_profile", None)
+    if staged_adapter_profile:
+        try:
+            output.relative_to(ROOT)
+        except ValueError:
+            pass
+        else:
+            raise ValueError(
+                "staged adapter conformance output must be outside the "
+                "AlatyrCore source tree to prevent parent AGENTS.md auto-load"
+            )
     targets = output / "targets"
     prompts = output / "prompts"
     reports = output / "reports"
@@ -243,6 +283,11 @@ def prepare_run(args: argparse.Namespace) -> list[str]:
         run_id=run_id,
         assistant_surface=assistant_surface,
         source_commit=source_commit,
+        staged_adapter_profile=staged_adapter_profile,
+    )
+    (output / "report-template.json").write_text(
+        REPORT_TEMPLATE.read_text(encoding="utf-8"),
+        encoding="utf-8",
     )
     (reports / "README.md").write_text(
         "# Assistant Reports\n\nWrite assistant-run JSON reports here.\n",
@@ -258,6 +303,17 @@ def prepare_run(args: argparse.Namespace) -> list[str]:
                 targets,
                 overwrite=args.overwrite,
             )
+            scaffold_actions: list[str] = []
+            scaffold_skipped: list[str] = []
+            if staged_adapter_profile:
+                scaffold_actions, scaffold_skipped = scaffold_plan(
+                    argparse.Namespace(
+                        target=targets / fixture_name,
+                        write=True,
+                        overwrite_existing=False,
+                        profile=staged_adapter_profile,
+                    )
+                )
             prompt_path = prompts / f"{fixture_name}.md"
             if prompt_path.exists() and not args.overwrite:
                 raise ValueError(
@@ -272,12 +328,15 @@ def prepare_run(args: argparse.Namespace) -> list[str]:
                     run_id=run_id,
                     assistant_surface=assistant_surface,
                     source_commit=source_commit,
+                    staged_adapter_profile=staged_adapter_profile,
+                    report_template_path=output / "report-template.json",
                 ),
                 encoding="utf-8",
             )
             print(
-                f"OK: prepared {fixture_name} with {len(seed_files)} seed files "
-                f"and prompt {prompt_path}"
+                f"OK: prepared {fixture_name} with {len(seed_files)} seed files, "
+                f"{len(scaffold_actions)} scaffold actions, "
+                f"{len(scaffold_skipped)} preserved paths, and prompt {prompt_path}"
             )
             prepared_fixtures.append(fixture_name)
         except (OSError, ValueError, json.JSONDecodeError) as exc:
@@ -295,6 +354,11 @@ def prepare_run(args: argparse.Namespace) -> list[str]:
             "expected_report_count": len(prepared_fixtures),
             "reports_directory": "reports",
             "execution_claimed": False,
+            "target_state": (
+                f"staged-{staged_adapter_profile}"
+                if staged_adapter_profile
+                else "seed-only"
+            ),
         }
         (output / "run.json").write_text(
             json.dumps(run_manifest, indent=2) + "\n",
@@ -340,6 +404,15 @@ def main() -> int:
         action="append",
         default=[],
         help="Fixture name to prepare. May be provided more than once.",
+    )
+    parser.add_argument(
+        "--staged-adapter-profile",
+        choices=["core", "standard", "full"],
+        help=(
+            "Scaffold placeholder adapter support into each fixture before "
+            "preparing prompts. This tests target bridge and router discovery; "
+            "it is not an accepted installation."
+        ),
     )
     parser.add_argument(
         "--overwrite",

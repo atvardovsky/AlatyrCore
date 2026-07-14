@@ -1,0 +1,201 @@
+{
+  "schema_version": 1,
+  "fixture": "backend-api-minimal",
+  "report_kind": "assistant-run-result",
+  "run_id": "codex-staged-core-6ee985d",
+  "assistant_surface": "codex",
+  "source_commit": "6ee985df3e6e65507cda175944b2b3ea4be630ae",
+  "run_provenance": {
+    "provider": "OpenAI",
+    "product": "Codex",
+    "model": "GPT-5",
+    "version_or_date": "2026-07-14",
+    "execution_mode": "interactive agent",
+    "started_at": "unknown",
+    "completed_at": "2026-07-14T15:50:32Z",
+    "operator": "unknown",
+    "report_origin": "assistant-reported"
+  },
+  "conformance_scope": "Controlled assistant-run fixture review of staged installed surfaces; not target validation and not a real target adapter.",
+  "claims_installation_complete": false,
+  "operation_type": "read-only conformance review of a staged placeholder adapter",
+  "target_shape_confirmed": [
+    "readme",
+    "api_routes_or_controllers",
+    "tests",
+    "ambiguous_api_contract"
+  ],
+  "target_facts_inspected": [
+    "README",
+    "API route or controller source",
+    "tests",
+    "README.md: minimal backend API fixture description",
+    "src/api/routes.txt: GET /fixture route declaration",
+    "tests/api_contract_notes.txt: API contract owner intentionally missing",
+    "CODEOWNERS: adapter ownership entries remain placeholders",
+    ".ai/project/source-of-truth-registry.md: public API and data-model ownership entries are unresolved placeholders"
+  ],
+  "files_created_preserved_or_skipped": {
+    "created": [
+      "/tmp/alatyr-codex-staged-core-6ee985d/reports/backend-api-minimal.json"
+    ],
+    "preserved": [
+      "all files in the fixture target repository"
+    ],
+    "skipped": [
+      "adapter installation, rewrite, or placeholder completion was outside conformance scope",
+      "target validation was not run or claimed"
+    ]
+  },
+  "approval_needs": [
+    "Any change to the public API contract requires approval under the public-contract/accepted-behavior gate after its canonical owner and approval scope are identified.",
+    "No approval was required for this read-only review and external report write."
+  ],
+  "manifest_version_handling": "Adapter schema, framework version, template version, installation identity, and source remain placeholders in .ai/alatyr.yaml; they were treated as unresolved rather than accepted or inferred from the supplied source commit.",
+  "context_profile": "business-change (review-only; public contract change routing), with architecture-change considered because the route may be a public API boundary",
+  "context_profiles_considered": [
+    "architecture-change",
+    "business-change",
+    "data-change",
+    "security-sensitive",
+    "ai-infrastructure"
+  ],
+  "context_cost_evidence": {
+    "measurement_kind": "actual word-count observation for loaded target files",
+    "loaded_files": [
+      "AGENTS.md (host-preloaded)",
+      ".ai/alatyr.yaml",
+      ".ai/README.md",
+      ".ai/assistant/context-router.json",
+      "README.md",
+      "src/api/routes.txt",
+      "tests/api_contract_notes.txt",
+      "CODEOWNERS",
+      ".ai/project/source-of-truth-registry.md",
+      ".ai/project/consistency-map.json",
+      ".ai/assistant/module-profile.md",
+      ".ai/assistant/maturity-profile.md",
+      ".ai/assistant/help.md",
+      ".ai/assistant/templates/adapter-output-contracts.md",
+      ".ai/assistant/ai-infrastructure-router.json"
+    ],
+    "loaded_file_count": 15,
+    "approximate_words": 5423,
+    "budget_exceeded": true,
+    "expansion_reasons": [
+      "The required report evidence keys required direct inspection of registry, relationship, module, maturity, help, output-contract, and AI-infrastructure status owners.",
+      "The target route/controller, tests, README, and ownership map were loaded to verify the expected fixture surfaces and missing public API owner.",
+      "Large-or-resumable packet context was not expanded because this was a read-only single-output fixture review and the staged packet/flow capability was not established; the budget exception is recorded here."
+    ],
+    "receipt_reused": false
+  },
+  "logical_integrity_evidence": {
+    "changed_fact_ids": [
+      "none: the run was read-only and the placeholder consistency map supplies no accepted fact ID"
+    ],
+    "selected_relationships": [
+      "none: no accepted canonical public API fact or relationship edge exists"
+    ],
+    "skipped_relationships": [
+      "placeholder consistency-map edge was not traversed because it is unresolved evidence",
+      "diagram propagation was deferred because no diagram policy exists",
+      "data-model propagation could not be selected because its registry owner and relationship entries are placeholders"
+    ],
+    "companion_surfaces_checked": [
+      "README.md",
+      "src/api/routes.txt",
+      "tests/api_contract_notes.txt",
+      ".ai/project/source-of-truth-registry.md",
+      ".ai/project/consistency-map.json",
+      ".ai/assistant/module-profile.md",
+      ".ai/assistant/ai-infrastructure-router.json"
+    ],
+    "unresolved_gaps": [
+      "public API contract owner is missing",
+      "source-of-truth registry entries for public API and data model are unresolved",
+      "consistency-map fact IDs and relationships are placeholders",
+      "diagram policy is missing",
+      "AI infrastructure inventory and accepted item declarations are missing",
+      "no target validation command or manual-review owner is established"
+    ]
+  },
+  "module_profile_status": [
+    "blueprint-change blocked until public API owner is known",
+    "diagrams deferred until diagram policy exists",
+    "ai-infrastructure review-only until inventory and source policy exist",
+    "Required core profile remains unresolved because .ai/assistant/module-profile.md contains placeholders.",
+    "blueprint-change is blocked until the public API canonical owner is known.",
+    "consistency-map cannot be treated as enabled because its module state and all relationship evidence are placeholders.",
+    "diagrams are deferred until a target diagram policy exists.",
+    "AI infrastructure is review-only until an inventory, item ownership, and target source policy are accepted."
+  ],
+  "source_of_truth_registry_status": [
+    "Registry file exists but its entries are placeholder-only and are not accepted target facts.",
+    "No public API contract entry or canonical owner is established.",
+    "The data model entry has no established canonical owner, derived surfaces, validation, or approval trigger."
+  ],
+  "task_specific_maturity": [
+    "Public API contract change maturity is incomplete: owner, registry, approval scope, and validation are unresolved.",
+    "Read-only discovery is supported by the compact bootstrap, but no implementation or contract change is authorized.",
+    "AI infrastructure maturity is review-only because inventory and source-policy facts are unresolved."
+  ],
+  "bridge_capability_status": [
+    "Codex used the host-loaded AGENTS.md entry file and found the compact router.",
+    "No claim is made that the placeholder supported-assistant manifest or bridge ownership establishes an accepted Codex installation."
+  ],
+  "bridge_behavior_evidence": {
+    "entry_files_used": [
+      "AGENTS.md"
+    ],
+    "auto_load_observed": "yes: AGENTS.md was supplied as host-preloaded context; no other bridge auto-load was assumed",
+    "help_found": "yes: .ai/assistant/help.md exists, but its target-specific inputs remain placeholders",
+    "context_router_found": "yes: .ai/assistant/context-router.json exists and routed public contract review to business-change or architecture-change",
+    "known_surface_limitations": [
+      "Supported assistant and bridge ownership values remain placeholders.",
+      "This run demonstrates discovery and routing only, not an accepted installation."
+    ]
+  },
+  "operation_help_status": [
+    "Operation help exists and describes read-only/recheck routing, but target-specific operation evidence remains unresolved.",
+    "No help flow expansion was needed because the user explicitly specified a controlled conformance review."
+  ],
+  "output_contract_status": [
+    "The adapter-recheck output contract template exists and informed evidence categories.",
+    "Its placeholders are unresolved; this fixture report follows the external report-template.json shape and does not claim an accepted target contract."
+  ],
+  "ai_infrastructure_inventory_status": [
+    "AI infrastructure router exists but its sole item and target validation fields are placeholders.",
+    "No accepted AI infrastructure inventory, canonical item ID, owner, permissions, validation, or target source policy was found.",
+    "AI infrastructure activity therefore remains review-only; no use, import, adaptation, or integration route was activated."
+  ],
+  "validation_status": {
+    "target_validation_claimed": false,
+    "unresolved": [
+      "No target validation command or accepted manual-review procedure was found; placeholder commands were not run.",
+      "The specified conformance report checker is report validation only, not target validation."
+    ]
+  },
+  "residual_risk": [
+    "public API contract owner",
+    "source-of-truth registry entries for public API and data model",
+    "diagram policy",
+    "AI infrastructure inventory",
+    "The meaning, stability, and ownership of GET /fixture cannot be established from fixture evidence.",
+    "A public contract change could drift from undocumented consumers, data semantics, tests, or diagrams because registry relationships are absent.",
+    "Security implications cannot be ruled in or out without a target security owner/policy; select security-sensitive if a future contract change affects authentication, permissions, network, privacy, or live-service boundaries.",
+    "The staged adapter remains incomplete and must not be represented as a real accepted installation."
+  ],
+  "behaviors_satisfied": [
+    "do_not_invent_api_contract_owner",
+    "record_public_api_registry_gap",
+    "select_architecture_or_business_profile_for_contract_change",
+    "require_approval_for_public_contract_changes",
+    "keep_ai_infrastructure_review_only_until_policy_exists"
+  ],
+  "forbidden_claims_absent": [
+    "universal_installer_command",
+    "invented_validation_command",
+    "invented_project_fact",
+    "overwrite_without_approval"
+  ]
+}

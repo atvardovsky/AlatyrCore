@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "run_kind": "codex-conformance-execution",
+  "run_id": "codex-staged-core-6ee985d",
+  "source_commit": "6ee985df3e6e65507cda175944b2b3ea4be630ae",
+  "assistant_surface": "codex",
+  "codex_version": "codex-cli 0.144.4",
+  "raw_logs_committed": false,
+  "isolation": {
+    "fresh_process_per_fixture": true,
+    "ephemeral_session": true,
+    "user_config_loaded": false,
+    "working_root": "fixture target",
+    "staged_adapter_profile": "core"
+  },
+  "executions": [
+    {
+      "fixture": "backend-api-minimal",
+      "started_at": "2026-07-14T15:49:55.043679Z",
+      "completed_at": "2026-07-14T15:52:40.642652Z",
+      "duration_seconds": 165.594,
+      "exit_code": 0,
+      "thread_id": "019f6152-1288-7f63-92b2-2770eeb9922a",
+      "usage": {
+        "input_tokens": 630105,
+        "cached_input_tokens": 591104,
+        "output_tokens": 6097,
+        "reasoning_output_tokens": 519
+      },
+      "report_exists": true
+    },
+    {
+      "fixture": "frontend-app-minimal",
+      "started_at": "2026-07-14T15:52:40.643667Z",
+      "completed_at": "2026-07-14T15:54:58.083294Z",
+      "duration_seconds": 137.431,
+      "exit_code": 0,
+      "thread_id": "019f6154-9b10-7a50-9cbe-1b0c19d795f2",
+      "usage": {
+        "input_tokens": 488443,
+        "cached_input_tokens": 454400,
+        "output_tokens": 5236,
+        "reasoning_output_tokens": 462
+      },
+      "report_exists": true
+    },
+    {
+      "fixture": "monorepo-mixed",
+      "started_at": "2026-07-14T15:54:58.083912Z",
+      "completed_at": "2026-07-14T15:58:07.266788Z",
+      "duration_seconds": 189.162,
+      "exit_code": 0,
+      "thread_id": "019f6156-b731-7590-8c85-c9cbe713b7ea",
+      "usage": {
+        "input_tokens": 858639,
+        "cached_input_tokens": 800256,
+        "output_tokens": 6757,
+        "reasoning_output_tokens": 335
+      },
+      "report_exists": true
+    },
+    {
+      "fixture": "python-cli-existing-ai",
+      "started_at": "2026-07-14T15:58:07.268879Z",
+      "completed_at": "2026-07-14T16:00:29.869679Z",
+      "duration_seconds": 142.595,
+      "exit_code": 0,
+      "thread_id": "019f6159-983f-7832-beaf-0d69aa9028ef",
+      "usage": {
+        "input_tokens": 424066,
+        "cached_input_tokens": 393472,
+        "output_tokens": 5022,
+        "reasoning_output_tokens": 351
+      },
+      "report_exists": true
+    }
+  ],
+  "total_usage": {
+    "input_tokens": 2401253,
+    "cached_input_tokens": 2239232,
+    "output_tokens": 23112,
+    "reasoning_output_tokens": 1667
+  }
+}

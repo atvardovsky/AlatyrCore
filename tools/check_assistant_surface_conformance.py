@@ -119,6 +119,8 @@ def main() -> int:
                     "surface-contract",
                     "--fixture",
                     "frontend-app-minimal",
+                    "--staged-adapter-profile",
+                    "core",
                 ],
                 cwd=ROOT,
                 check=False,
@@ -133,7 +135,7 @@ def main() -> int:
             prompt_text = prompt.read_text(encoding="utf-8")
             for required in [
                 f"Assistant surface: `{surface_id}`",
-                "assistant-run-report-template.json",
+                "report-template.json",
                 "not target validation",
                 "`run_provenance`",
                 "`context_cost_evidence`",
@@ -146,6 +148,15 @@ def main() -> int:
             if "do not invent validation commands" not in prompt_text.lower():
                 failures.append(
                     f"prepared prompt for {surface_id} missing validation safety rule"
+                )
+            lowered_prompt = " ".join(prompt_text.lower().split())
+            if "do not load alatyrcore source documentation" not in lowered_prompt:
+                failures.append(
+                    f"prepared prompt for {surface_id} does not enforce staged context"
+                )
+            if not (output / "targets" / "frontend-app-minimal" / "AGENTS.md").is_file():
+                failures.append(
+                    f"prepared staged target for {surface_id} has no root bridge"
                 )
 
     if failures:

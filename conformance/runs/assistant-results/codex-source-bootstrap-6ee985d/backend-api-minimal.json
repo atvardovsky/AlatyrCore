@@ -1,0 +1,211 @@
+{
+  "schema_version": 1,
+  "fixture": "backend-api-minimal",
+  "report_kind": "assistant-run-result",
+  "run_id": "codex-isolated-6ee985d",
+  "assistant_surface": "codex",
+  "source_commit": "6ee985df3e6e65507cda175944b2b3ea4be630ae",
+  "run_provenance": {
+    "provider": "OpenAI",
+    "product": "Codex",
+    "model": "GPT-5",
+    "version_or_date": "unknown",
+    "execution_mode": "interactive agent API",
+    "started_at": "unknown",
+    "completed_at": "2026-07-14T15:45:05Z",
+    "operator": "unknown",
+    "report_origin": "assistant-reported"
+  },
+  "conformance_scope": "Actual assistant-run fixture report; not target validation and not a real target adapter.",
+  "claims_installation_complete": false,
+  "operation_type": "installation-readiness assessment for a conformance fixture",
+  "target_shape_confirmed": [
+    "readme",
+    "api_routes_or_controllers",
+    "tests",
+    "ambiguous_api_contract"
+  ],
+  "target_facts_inspected": [
+    "README",
+    "API route or controller source",
+    "tests",
+    "README.md: identifies only a minimal backend API conformance fixture",
+    "src/api/routes.txt: declares GET /fixture",
+    "tests/api_contract_notes.txt: states that the API contract owner is intentionally missing"
+  ],
+  "files_created_preserved_or_skipped": {
+    "created": [
+      "/tmp/alatyr-conformance-codex-isolated-6ee985d/reports/backend-api-minimal.json (assistant-run conformance report only)"
+    ],
+    "preserved": [
+      "README.md",
+      "src/api/routes.txt",
+      "tests/api_contract_notes.txt"
+    ],
+    "skipped": [
+      "Target adapter files were not created because this is a conformance fixture run, not a real target installation.",
+      "Public API blueprint or registry entries were not created because the public API contract owner is unresolved.",
+      "Diagram and AI infrastructure surfaces were not created because target-owned policies and inventory are absent."
+    ]
+  },
+  "approval_needs": [
+    "Explicit approval is required before changing the public API contract because a public interface is an architecture and external-boundary fact.",
+    "If the contract change alters accepted business behavior, business-change approval is also required.",
+    "No protected target change was attempted during this read-only assessment."
+  ],
+  "manifest_version_handling": "No target adapter manifest exists. The supplied Alatyr Core source commit is recorded as run provenance; framework, adapter-schema, and template versions were not inferred or copied into the fixture.",
+  "context_profile": "architecture-change",
+  "context_profiles_considered": [
+    "architecture-change",
+    "business-change",
+    "data-change",
+    "security-sensitive",
+    "ai-infrastructure"
+  ],
+  "context_cost_evidence": {
+    "measurement_kind": "actual assistant-observed file list with shell word counts",
+    "loaded_files": [
+      "/home/atvardovsky/projects/AlatyrCore/AGENTS.md",
+      "/home/atvardovsky/projects/AlatyrCore/README.md",
+      "/home/atvardovsky/projects/AlatyrCore/AI_ASSISTANTS.md",
+      "/home/atvardovsky/projects/AlatyrCore/INSTALL.md",
+      "/home/atvardovsky/projects/AlatyrCore/framework/README.md",
+      "/home/atvardovsky/projects/AlatyrCore/framework/context-router.md",
+      "/home/atvardovsky/projects/AlatyrCore/framework/context-profiles.md",
+      "/home/atvardovsky/projects/AlatyrCore/framework/project-adapter-contract.md",
+      "/home/atvardovsky/projects/AlatyrCore/framework/portability.md",
+      "/home/atvardovsky/projects/AlatyrCore/framework/module-profile.md",
+      "/home/atvardovsky/projects/AlatyrCore/framework/rule-ownership.md",
+      "/home/atvardovsky/projects/AlatyrCore/framework/rule-registry.md",
+      "/home/atvardovsky/projects/AlatyrCore/framework/rule-registry.json",
+      "/home/atvardovsky/projects/AlatyrCore/framework/source-of-truth-registry.md",
+      "/home/atvardovsky/projects/AlatyrCore/framework/change-risk-model.md",
+      "/home/atvardovsky/projects/AlatyrCore/framework/approval-records.md",
+      "/home/atvardovsky/projects/AlatyrCore/framework/logical-integrity.md",
+      "/home/atvardovsky/projects/AlatyrCore/framework/blueprint-driven-change.md",
+      "/home/atvardovsky/projects/AlatyrCore/framework/diagram-guidance.md",
+      "/home/atvardovsky/projects/AlatyrCore/framework/ai-infrastructure-routing.md",
+      "/home/atvardovsky/projects/AlatyrCore/framework/adapter-maturity.md",
+      "/home/atvardovsky/projects/AlatyrCore/framework/operation-help.md",
+      "/home/atvardovsky/projects/AlatyrCore/framework/guarantees.md",
+      "/home/atvardovsky/projects/AlatyrCore/docs/framework-maintenance.md",
+      "/home/atvardovsky/projects/AlatyrCore/installer/assistant-installation.flow.md",
+      "/home/atvardovsky/projects/AlatyrCore/installer/readiness-checklist.md",
+      "/home/atvardovsky/projects/AlatyrCore/installer/installation-plan-template.md",
+      "/home/atvardovsky/projects/AlatyrCore/conformance/runs/README.md",
+      "/home/atvardovsky/projects/AlatyrCore/conformance/runs/assistant-run-report-template.json",
+      "/home/atvardovsky/projects/AlatyrCore/tools/check_conformance_reports.py",
+      "/tmp/alatyr-conformance-codex-isolated-6ee985d/targets/backend-api-minimal/README.md",
+      "/tmp/alatyr-conformance-codex-isolated-6ee985d/targets/backend-api-minimal/src/api/routes.txt",
+      "/tmp/alatyr-conformance-codex-isolated-6ee985d/targets/backend-api-minimal/tests/api_contract_notes.txt"
+    ],
+    "loaded_file_count": 33,
+    "approximate_words": 26631,
+    "budget_exceeded": "unknown",
+    "expansion_reasons": [
+      "Expanded beyond the installation bootstrap to canonical SOURCE, RISK, APPROVAL, INTEGRITY, and CHANGE rule owners because the report must classify the ownerless public contract and its approval boundary.",
+      "Loaded diagram, AI infrastructure, maturity, operation-help, evidence, conformance-template, and checker guidance because the required report fields cross those adapter surfaces.",
+      "No target context router or declared context budget exists, so budget compliance cannot be measured."
+    ],
+    "receipt_reused": false
+  },
+  "logical_integrity_evidence": {
+    "changed_fact_ids": [
+      "none — the fixture target was inspected read-only and supplies no registry-backed fact IDs"
+    ],
+    "selected_relationships": [
+      "Observed public-route evidence: src/api/routes.txt declares GET /fixture and tests/api_contract_notes.txt records that its contract owner is missing.",
+      "Observed repository-purpose evidence: README.md describes a minimal conformance fixture but does not own the public API contract."
+    ],
+    "skipped_relationships": [
+      "Public API contract owner to blueprint/implementation/tests sync was not traversed because no owner or source-of-truth registry entry exists.",
+      "Public API contract to data-model impact was not inferred because no data-model registry entry or data-model surface exists.",
+      "Diagram synchronization was deferred because no target diagram policy or diagram source exists.",
+      "AI infrastructure routing was kept review-only because no inventory, canonical item source, or source policy exists."
+    ],
+    "companion_surfaces_checked": [
+      "README.md documentation",
+      "src/api/routes.txt API route source",
+      "tests/api_contract_notes.txt test note",
+      "Repository file inventory for adapter, registry, diagram, bridge, help, output-contract, and AI infrastructure surfaces"
+    ],
+    "unresolved_gaps": [
+      "public API contract owner",
+      "source-of-truth registry entries for public API and data model",
+      "diagram policy",
+      "AI infrastructure inventory"
+    ]
+  },
+  "module_profile_status": [
+    "blueprint-change blocked until public API owner is known",
+    "diagrams deferred until diagram policy exists",
+    "ai-infrastructure review-only until inventory and source policy exist",
+    "required core profile is incomplete because target contours, manifest, ownership, validation, and final-evidence policy are absent"
+  ],
+  "source_of_truth_registry_status": [
+    "No target source-of-truth registry was found.",
+    "The public API contract owner remains explicitly unresolved; neither the route declaration nor the test note was promoted to canonical owner by proximity.",
+    "Source-of-truth registry entries for public API and data model are missing and must be recorded as gaps before contract work."
+  ],
+  "task_specific_maturity": [
+    "architecture: incomplete and blocked for public-contract mutation until the public API owner, registry entry, validation, and approval path are defined",
+    "business-change: review-only; use this profile with architecture-change if accepted behavior would change, and require approval",
+    "data-change: incomplete because no data-model owner, registry entry, migration or rollback policy, or validation is present",
+    "security-sensitive: review-only because no target security owner, policy, validation, or approval rules are present",
+    "ai-infrastructure: review-only because inventory, source-access policy, prompt-injection policy, permissions, and canonical item contracts are absent"
+  ],
+  "bridge_capability_status": [
+    "No target assistant entry point, Codex bridge, or bridge capability matrix was found; assistant-surface behavior is therefore unverified."
+  ],
+  "bridge_behavior_evidence": {
+    "entry_files_used": [
+      "none — the target has no assistant entry or bridge file; the user-supplied conformance prompt and Alatyr Core source guidance drove this run"
+    ],
+    "auto_load_observed": "unknown — no target bridge exists and host auto-load behavior cannot be inferred from the fixture",
+    "help_found": "no — no target operation-help surface was found",
+    "context_router_found": "no — no target context router was found",
+    "known_surface_limitations": [
+      "Codex bridge loading, target operation aliases, permissions, and conformance behavior cannot be verified without target adapter surfaces."
+    ]
+  },
+  "operation_help_status": [
+    "No target operation-help or operation-routing surface exists.",
+    "This conformance request was explicit enough to perform a read-only installation-readiness assessment, but no local Alatyr operation menu or executable command was invented."
+  ],
+  "output_contract_status": [
+    "No target adapter output contract exists.",
+    "This artifact follows the Alatyr Core assistant-run conformance report template only and does not establish a real target adapter output contract."
+  ],
+  "ai_infrastructure_inventory_status": [
+    "No target AI infrastructure inventory or inventory policy was found.",
+    "AI infrastructure remains review-only until an inventory, source-access and prompt-injection policy, ownership, permissions, validation, and canonical item contracts exist."
+  ],
+  "validation_status": {
+    "target_validation_claimed": false,
+    "unresolved": [
+      "The fixture target documents no validation command, CI check, or manual validation policy; none was invented.",
+      "The supplied conformance report checker validates report structure and fixture expectations only; it is not target validation."
+    ]
+  },
+  "residual_risk": [
+    "public API contract owner",
+    "source-of-truth registry entries for public API and data model",
+    "diagram policy",
+    "AI infrastructure inventory",
+    "Public contract consistency cannot be established or changed safely until ownership, approval, and target validation are defined.",
+    "No real target adapter completeness, bridge behavior, operation support, or target validation can be claimed from this fixture."
+  ],
+  "behaviors_satisfied": [
+    "do_not_invent_api_contract_owner",
+    "record_public_api_registry_gap",
+    "select_architecture_or_business_profile_for_contract_change",
+    "require_approval_for_public_contract_changes",
+    "keep_ai_infrastructure_review_only_until_policy_exists"
+  ],
+  "forbidden_claims_absent": [
+    "universal_installer_command",
+    "invented_validation_command",
+    "invented_project_fact",
+    "overwrite_without_approval"
+  ]
+}

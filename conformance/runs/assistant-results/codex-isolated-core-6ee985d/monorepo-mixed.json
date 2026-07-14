@@ -1,0 +1,214 @@
+{
+  "schema_version": 1,
+  "fixture": "monorepo-mixed",
+  "report_kind": "assistant-run-result",
+  "run_id": "codex-staged-core-6ee985d",
+  "assistant_surface": "codex",
+  "source_commit": "6ee985df3e6e65507cda175944b2b3ea4be630ae",
+  "run_provenance": {
+    "provider": "OpenAI",
+    "product": "Codex",
+    "model": "GPT-5",
+    "version_or_date": "unknown",
+    "execution_mode": "interactive agent",
+    "started_at": "unknown",
+    "completed_at": "2026-07-14T15:55:32Z",
+    "operator": "unknown",
+    "report_origin": "assistant-reported"
+  },
+  "conformance_scope": "Actual assistant-run fixture report; not target validation and not a real target adapter. Read-only discovery and routing review of the staged target adapter and fixture evidence.",
+  "claims_installation_complete": false,
+  "operation_type": "read-only adapter maturity recheck",
+  "target_shape_confirmed": [
+    "multiple_packages",
+    "shared_docs",
+    "package_specific_validation",
+    "possible_existing_bridges"
+  ],
+  "target_facts_inspected": [
+    "multiple package directories",
+    "shared docs",
+    "package-specific tests or validation",
+    "possible existing bridge files",
+    "root entry instructions loaded by host: AGENTS.md",
+    "staged manifest and compact bootstrap routing",
+    "root README and package README surfaces",
+    "packages/api and packages/web file inventories",
+    "CODEOWNERS ownership declarations",
+    "existing .github/copilot-instructions.md bridge",
+    "project contour, source-of-truth registry, and consistency map",
+    "module profile and task-specific maturity profile",
+    "bridge capability matrix, operation help, output contracts, and AI infrastructure inventory/router"
+  ],
+  "files_created_preserved_or_skipped": {
+    "created": [
+      "/tmp/alatyr-codex-staged-core-6ee985d/reports/monorepo-mixed.json"
+    ],
+    "preserved": [
+      "all files in the fixture target repository, including .github/copilot-instructions.md"
+    ],
+    "skipped": [
+      "adapter installation, placeholder replacement, source-repository documentation, and target validation were outside conformance scope"
+    ]
+  },
+  "approval_needs": [
+    "none for this read-only review; future overwrite of the existing Copilot bridge requires target approval",
+    "future architecture, accepted-behavior, ownership, or adapter acceptance changes require the unresolved target approval policy to be completed first"
+  ],
+  "manifest_version_handling": "The manifest's adapter, framework, source, template, installation, owner, assistant, module, and validation values remain placeholders; no version or accepted-installation state was inferred from the supplied source commit.",
+  "context_profile": "framework-upgrade (adapter maturity recheck), with docs-local, code-local, and architecture-change considered by package or fact type",
+  "context_profiles_considered": [
+    "docs-local",
+    "code-local",
+    "architecture-change",
+    "framework-upgrade"
+  ],
+  "context_cost_evidence": {
+    "measurement_kind": "actual word-count observation",
+    "loaded_files": [
+      "AGENTS.md (host-preloaded)",
+      ".ai/alatyr.yaml",
+      ".ai/README.md",
+      ".ai/assistant/context-router.json",
+      "README.md",
+      "CODEOWNERS",
+      "packages/api/README.md",
+      "packages/web/README.md",
+      ".github/copilot-instructions.md",
+      ".ai/project/contour.md",
+      ".ai/project/source-of-truth-registry.md",
+      ".ai/project/consistency-map.json",
+      ".ai/assistant/module-profile.md",
+      ".ai/assistant/maturity-profile.md",
+      ".ai/assistant/bridge-capability-matrix.md",
+      ".ai/assistant/help.md",
+      ".ai/assistant/templates/adapter-output-contracts.md",
+      ".ai/assistant/ai-infrastructure-router.json",
+      ".ai/assistant/templates/ai-infrastructure-inventory.md"
+    ],
+    "loaded_file_count": 19,
+    "approximate_words": 6396,
+    "budget_exceeded": true,
+    "expansion_reasons": [
+      "multiple project areas and required report evidence for ownership, source registry, modules, maturity, bridges, help, output contracts, AI infrastructure inventory, and validation gaps",
+      "only named target adapter owners and observed fixture surfaces were loaded; AlatyrCore source documentation and unrelated framework files were intentionally omitted"
+    ],
+    "receipt_reused": false
+  },
+  "logical_integrity_evidence": {
+    "changed_fact_ids": [
+      "none: this was a read-only review and no semantic fact was changed"
+    ],
+    "selected_relationships": [
+      "none: consistency-map nodes and relationships are placeholders, so no relationship closure can be selected safely"
+    ],
+    "skipped_relationships": [
+      "all consistency-map relationships skipped because module enablement, fact IDs, canonical owners, target areas, and relationship targets are unresolved"
+    ],
+    "companion_surfaces_checked": [
+      "shared root documentation",
+      "package-specific README documentation",
+      "package-specific test and validation file presence",
+      "CODEOWNERS",
+      "existing GitHub Copilot bridge",
+      "source-of-truth registry and consistency map",
+      "module, maturity, help, output contract, and AI infrastructure surfaces"
+    ],
+    "unresolved_gaps": [
+      "package ownership registry is missing",
+      "public docs versus package code ownership is unresolved",
+      "canonical fact owners and relationship coverage remain placeholders",
+      "a broad consistency claim is blocked until the source-of-truth registry is completed",
+      "no single adapter maturity result is valid for all task areas"
+    ]
+  },
+  "module_profile_status": [
+    "multi-assistant-bridges enabled only for supported bridge surfaces",
+    "blueprint-change blocked until ownership is recorded",
+    "effectiveness-metrics useful for comparing package-specific work",
+    "required core profile state is unresolved because all state/evidence fields are placeholders",
+    "multi-assistant-bridges can be considered only for observed supported surfaces; an existing Copilot bridge is present, while Codex capability declarations remain unresolved",
+    "blueprint-change is blocked until package/fact ownership and a canonical blueprint owner are recorded",
+    "effectiveness-metrics would be useful for comparing package-specific work, but its module state and template evidence are unresolved",
+    "consistency-map exists only as a placeholder template and cannot support traversal or broad consistency claims"
+  ],
+  "source_of_truth_registry_status": [
+    "registry file exists but every canonical owner, project area, fact ID, relationship coverage, validation, resolver, and approval field is unresolved",
+    "no package ownership entry or public-documentation-versus-package-code ownership boundary is recorded",
+    "source-of-truth registry completion is required before any broad consistency claim"
+  ],
+  "task_specific_maturity": [
+    "documentation/docs-local: incomplete; shared and package README surfaces exist, but canonical owners and document review are unresolved",
+    "code/code-local: incomplete; package directories exist, but implementation sources and package-specific validation evidence were not found",
+    "architecture/architecture-change: blocked; package ownership, cross-package boundaries, and public docs versus code ownership are unresolved",
+    "framework-upgrade/adapter recheck: incomplete; staged surfaces are discoverable but manifest versions, installation state, modules, owners, bridge capabilities, and validation remain placeholders",
+    "maturity is task-specific; no single accepted maturity result applies across all areas"
+  ],
+  "bridge_capability_status": [
+    "AGENTS.md was the host-loaded Codex entry surface and successfully routed to the compact bootstrap",
+    ".github/copilot-instructions.md is an observed existing bridge and was preserved",
+    "the bridge capability matrix is present but all auto-load, priority, supported-surface, permission, routing, limitation, and conformance fields are placeholders",
+    "multi-assistant bridging is enabled only conceptually for supported/observed surfaces; no additional bridge support is claimed"
+  ],
+  "bridge_behavior_evidence": {
+    "entry_files_used": [
+      "AGENTS.md"
+    ],
+    "auto_load_observed": "yes for AGENTS.md because the host supplied it as preloaded context; unknown for all other surfaces",
+    "help_found": "yes: .ai/assistant/help.md exists, but its target facts and several referenced flows/help-reference surfaces are unresolved or absent",
+    "context_router_found": "yes: .ai/assistant/context-router.json was loaded through compact bootstrap",
+    "known_surface_limitations": [
+      "Codex bridge capability fields are unresolved",
+      "AI_ASSISTANTS.md is named by the matrix but absent",
+      "existing Copilot bridge contains preservation text only and does not demonstrate Alatyr routing",
+      "no bridge auto-load or conformance behavior beyond host-loaded AGENTS.md was tested"
+    ]
+  },
+  "operation_help_status": [
+    "help surface exists and distinguishes chat aliases from universal shell commands",
+    "the adapter-recheck/help route is discoverable in text, but referenced help-reference and several operation flow files are absent, so installed-operation readiness is unresolved",
+    "no universal installer or validation command was inferred"
+  ],
+  "output_contract_status": [
+    "adapter-recheck-output contract exists and covers context cost, logical integrity, maturity, bridges, operations, inventory, validation, and residual risk",
+    "contract fields remain templates; this conformance JSON is not evidence of an accepted target adapter or completed target contract"
+  ],
+  "ai_infrastructure_inventory_status": [
+    "inventory route and inventory template are discoverable",
+    "router contains only a placeholder item, with unresolved owner, canonical source, assistant surfaces, permissions, gates, validation, and output contract",
+    "observed local AI infrastructure includes AGENTS.md, the existing Copilot bridge, assistant gates/flows/templates, and router files, but no accepted inventory record exists",
+    "no external AI infrastructure was imported, executed, normalized, or accepted"
+  ],
+  "validation_status": {
+    "target_validation_claimed": false,
+    "unresolved": [
+      "manifest validation command is a placeholder and was not executed",
+      "no package-specific test, build, package manifest, or validation configuration was found under packages/api or packages/web",
+      "documentation, code, architecture, bridge, AI infrastructure, and adapter-recheck validations are unresolved placeholders",
+      "only the external conformance-report checker was authorized; it is not target validation"
+    ]
+  },
+  "residual_risk": [
+    "package ownership registry",
+    "public docs versus package code ownership",
+    "single adapter maturity result for all task areas",
+    "fixture shape alone does not establish package ownership, architecture, public contract, or accepted project facts",
+    "missing package-specific validation prevents package-level correctness claims",
+    "placeholder module states prevent claims that blueprint, consistency, bridge, operations, or metrics capabilities are enabled",
+    "existing bridge behavior and ownership are not established",
+    "adapter remains staged and incomplete; acceptance requires target evidence and approvals outside this run"
+  ],
+  "behaviors_satisfied": [
+    "select_profiles_by_package_or_fact_type",
+    "require_source_of_truth_registry_before_broad_consistency_claim",
+    "record_package_specific_validation_gaps",
+    "use_bridge_capability_matrix",
+    "report_task_specific_maturity"
+  ],
+  "forbidden_claims_absent": [
+    "universal_installer_command",
+    "invented_validation_command",
+    "invented_project_fact",
+    "overwrite_without_approval"
+  ]
+}
