@@ -57,7 +57,8 @@ Operation: `recheck-after-framework-update`
 Use when: checking whether an Alatyr Core update requires target adapter
 migration.
 Flow: `.ai/assistant/flows/adapter-recheck.flow.md`
-Minimum input: update source or changed framework baseline.
+Minimum input: update source, changed framework baseline, or migration
+assessment path.
 
 Operation: `large-task`
 Use when: work needs multiple workstreams, crosses project areas or profiles,

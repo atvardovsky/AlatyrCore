@@ -597,6 +597,37 @@ class Validator:
                     "schema 2 router must define context_receipt",
                     ".ai/assistant/context-router.json",
                 )
+            migration = router.get("migration_routing")
+            if not isinstance(migration, dict):
+                self.error(
+                    "ROUTER_MIGRATION_MISSING",
+                    "schema 2 router must define migration-first routing",
+                    ".ai/assistant/context-router.json",
+                )
+            else:
+                if migration.get("assessment_required_before_changes") is not True:
+                    self.error(
+                        "ROUTER_MIGRATION_ASSESSMENT",
+                        "migration assessment must be required before upgrade changes",
+                        ".ai/assistant/context-router.json",
+                    )
+                for field in [
+                    "required_context",
+                    "impact_selectors",
+                    "candidate_context",
+                    "expand_when",
+                    "final_evidence",
+                ]:
+                    values = expect_string_list(
+                        migration.get(field),
+                        self,
+                        "ROUTER_MIGRATION_FIELD",
+                        ".ai/assistant/context-router.json",
+                        label=f"migration_routing.{field}",
+                    )
+                    if field in {"required_context", "candidate_context"}:
+                        for value in values:
+                            self.check_router_path(value, "migration_routing", field)
 
         routing_order = expect_string_list(
             router.get("routing_order"),
@@ -660,6 +691,16 @@ class Validator:
                 if field in {"required_context", "validation"}:
                     for value in values:
                         self.check_router_path(value, profile, field)
+
+        upgrade = profiles.get("framework-upgrade")
+        if isinstance(upgrade, dict):
+            upgrade_context = upgrade.get("required_context")
+            if isinstance(upgrade_context, list) and len(upgrade_context) > 8:
+                self.warn(
+                    "ROUTER_UPGRADE_CONTEXT_BROAD",
+                    "framework-upgrade should assess migration impact before broad context loading",
+                    ".ai/assistant/context-router.json",
+                )
 
         if profiles_path.is_file():
             markdown_profiles = set(

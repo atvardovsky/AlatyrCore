@@ -45,6 +45,7 @@ changes.
 - Existing approval records or approval evidence:
 - Existing migration notes:
 - Existing migration-diff process:
+- Existing migration assessment or reviewed baseline comparison:
 - Existing effectiveness metrics or reports:
 - Existing prompt-injection or imported-source policy:
 - Supported assistants needed:
@@ -232,6 +233,7 @@ List commands or manual checks:
 - task-specific maturity review:
 - bridge capability matrix review:
 - migration-diff review:
+- migration assessment completed before target upgrade changes:
 - effectiveness metrics review:
 - operation-help or routing review:
 - skill/provenance/safety review:

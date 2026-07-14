@@ -69,6 +69,30 @@ def main() -> int:
                     f"schema-1 router must not receive schema-2 finding {forbidden}"
                 )
 
+        write_json(
+            router_path,
+            {
+                "schema_version": 2,
+                "router_kind": "target-context-router",
+                "human_reference": ".ai/assistant/context-profiles.md",
+                "preloaded_context": ["AGENTS.md"],
+                "bootstrap_context": [
+                    ".ai/alatyr.yaml",
+                    ".ai/README.md",
+                    ".ai/assistant/context-router.json",
+                ],
+                "context_budgets": {},
+                "context_receipt": {},
+                "routing_order": ["docs-local"],
+                "profiles": {},
+            },
+        )
+        migration = validator(target)
+        migration.check_router()
+        migration_codes = {finding.code for finding in migration.findings}
+        if "ROUTER_MIGRATION_MISSING" not in migration_codes:
+            failures.append("schema-2 router must require migration-first routing")
+
         map_path = target / ".ai" / "project" / "consistency-map.json"
         write_json(
             map_path,

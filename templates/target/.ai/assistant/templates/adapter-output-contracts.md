@@ -79,6 +79,7 @@ Core baseline.
 - Template version: `{NEW_TEMPLATE_VERSION}`
 - Manifest path: `.ai/alatyr.yaml`
 - Migration note path: `.ai/assistant/templates/migration-note.md`
+- Migration assessment result/path: `{MIGRATION_ASSESSMENT_RESULT_OR_PATH}`
 - Migration diff result: `{MIGRATION_DIFF_RESULT}`
 - Changed rule ids: `{CHANGED_RULE_IDS_OR_NONE}`
 - Added or removed framework files: `{ADDED_OR_REMOVED_FRAMEWORK_FILES}`
@@ -126,6 +127,7 @@ adapter.
 - Allowed actions: `{READ_ONLY_DOCS_ONLY_ADAPTER_ONLY_CODE_AND_TESTS_OR_FULL_WITH_APPROVAL}`
 - Manifest path: `.ai/alatyr.yaml`
 - Installation note status: `{INSTALLATION_NOTE_STATUS}`
+- Migration assessment result/path: `{MIGRATION_ASSESSMENT_RESULT_PATH_OR_NOT_APPLICABLE}`
 - Framework version: `{ALATYR_CORE_VERSION}`
 - Adapter schema version: `{ALATYR_ADAPTER_SCHEMA_VERSION}`
 - Template version: `{ALATYR_TEMPLATE_VERSION}`

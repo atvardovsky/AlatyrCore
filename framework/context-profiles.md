@@ -40,6 +40,12 @@ Use these profile names unless a target adapter deliberately renames them:
 Target adapters may add local profiles, but they should not remove the
 canonical names unless the target documents the replacement.
 
+The `framework-upgrade` profile should be migration-first. Its initial context
+contains lifecycle, migration-diff, installed baseline, and recheck evidence;
+changed rule IDs, categories, profiles, canonical sources, template surfaces,
+and local deviations select later context. A framework file may be listed as
+candidate context without being loaded for every upgrade.
+
 ## Profile Contract
 
 Each target profile should define:

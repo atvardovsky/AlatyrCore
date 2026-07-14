@@ -23,6 +23,7 @@ CHECKS = [
     ["tools/check_bridge_capability_matrix.py"],
     ["tools/check_context_router.py"],
     ["tools/check_consistency_map.py"],
+    ["tools/check_cross_platform_tools.py"],
     ["tools/check_large_task_orchestration.py"],
     ["tools/check_manifest_contract.py"],
     ["tools/check_markdown_links.py"],

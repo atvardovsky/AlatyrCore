@@ -94,6 +94,7 @@ These helpers are not portable validation requirements for target projects.
 
 Additional source-repository helpers include:
 
+- `python3 tools/alatyr.py --help`
 - `python3 tools/check_all.py`
 - `python3 tools/check_framework_metadata.py`
 - `python3 tools/check_approval_template.py`
@@ -102,6 +103,7 @@ Additional source-repository helpers include:
 - `python3 tools/check_bridge_capability_matrix.py`
 - `python3 tools/check_context_router.py`
 - `python3 tools/check_consistency_map.py`
+- `python3 tools/check_cross_platform_tools.py`
 - `python3 tools/check_large_task_orchestration.py`
 - `python3 tools/check_manifest_contract.py`
 - `python3 tools/check_markdown_links.py`
@@ -120,6 +122,7 @@ Additional source-repository helpers include:
 - `python3 tools/validate_target_adapter.py --target <target-repo> --json --output <report.json>`
 - `python3 tools/report_migration_diff.py --from-rules <old-rule-registry.json>`
 - `python3 tools/report_migration_diff.py --from-rules <old-rule-registry.json> --from-framework-dir <old-framework-dir>`
+- `python3 tools/alatyr.py assess-upgrade --target <target-repo> --framework-source . --output-dir <assessment-dir>`
 - `python3 tools/check_bridge_templates.py`
 - `python3 tools/render_bridge_templates.py`
 - `python3 tools/check_conformance_fixtures.py`
@@ -193,6 +196,10 @@ Additional source-repository helpers include:
 - source-repository migration diff, conformance fixture, scaffold snapshot,
   seed materialization, run preparation, golden report, and captured-run
   summary checks
+- one Python-based optional tool entry point with PowerShell and Command Prompt
+  launchers for Linux, macOS, and Windows
+- migration-first target upgrade assessment that writes evidence without
+  applying adapter changes
 - installed-adapter operation and recheck guidance
 - operation help and routing guidance for unclear requests
 - bridge-file pattern for modern assistants

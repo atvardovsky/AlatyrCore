@@ -216,42 +216,39 @@ reviewing maturity, or repairing drift after framework changes.
 
 Required context:
 
+- `.ai/framework/lifecycle.md`
+- `.ai/framework/migration-diff.md`
+- `.ai/framework/rule-registry.json`
+- `.ai/assistant/flows/adapter-recheck.flow.md`
+- `.ai/assistant/templates/installation-note.md`
+- `.ai/assistant/templates/migration-note.md`
+
+Run or review the migration assessment before loading more framework files.
+Then load only canonical framework sources and target adapter surfaces named by
+changed rule IDs, affected categories/profiles, template changes, bridge
+capability changes, or local-deviation conflicts. Record intentionally omitted
+candidate context in the context receipt.
+
+Candidate framework context, loaded only when selected by migration impact:
+
 - `.ai/framework/README.md`
+- `.ai/framework/adapter-maturity.md`
+- `.ai/framework/bridge-capability-matrix.md`
+- `.ai/framework/context-profiles.md`
+- `.ai/framework/context-router.md`
 - `.ai/framework/contour.md`
+- `.ai/framework/effectiveness-metrics.md`
 - `.ai/framework/guarantees.md`
+- `.ai/framework/installed-operations.md`
+- `.ai/framework/module-profile.md`
+- `.ai/framework/operation-help.md`
+- `.ai/framework/portability.md`
+- `.ai/framework/project-adapter-contract.md`
+- `.ai/framework/prompt-injection.md`
 - `.ai/framework/rule-ownership.md`
 - `.ai/framework/rule-registry.md`
-- `.ai/framework/rule-registry.json`
-- `.ai/framework/project-adapter-contract.md`
-- `.ai/framework/portability.md`
-- `.ai/framework/module-profile.md`
 - `.ai/framework/scaffolding.md`
-- `.ai/framework/context-router.md`
-- `.ai/framework/context-profiles.md`
-- `.ai/framework/consistency-model.md`
-- `.ai/framework/source-of-truth-registry.md`
-- `.ai/framework/bridge-capability-matrix.md`
-- `.ai/framework/migration-diff.md`
-- `.ai/framework/effectiveness-metrics.md`
-- `.ai/framework/large-task-orchestration.md`
-- `.ai/framework/adapter-maturity.md`
-- `.ai/framework/lifecycle.md`
-- `.ai/framework/installed-operations.md`
-- `.ai/framework/operation-help.md`
-- `.ai/framework/approval-records.md`
-- `.ai/framework/ai-infrastructure-routing.md`
 - `.ai/framework/skill-adaptation.md`
-- `.ai/framework/prompt-injection.md`
-- `.ai/assistant/ai-infrastructure-router.json`
-- `.ai/assistant/flows/adapter-recheck.flow.md`
-- `.ai/assistant/flows/large-task-orchestration.flow.md`
-- `.ai/assistant/flows/operation-routing.flow.md`
-- `.ai/assistant/templates/large-task-operation-packet.md`
-- `.ai/assistant/templates/ai-infrastructure-adaptation-record.md`
-- `.ai/assistant/templates/installation-note.md`
-- `.ai/assistant/templates/post-install-message.md`
-- `.ai/assistant/templates/post-update-message.md`
-- `.ai/assistant/gates/checklist.md`
 
 Approval gates: approval before overwriting existing instructions, changing
 protected adapter behavior, or adopting third-party assistant infrastructure.

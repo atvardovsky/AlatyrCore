@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Increased `TEMPLATE_VERSION` to 2 for compact migration-first upgrade routing,
+  routed-context migration evidence, and updated target operation contracts.
+
 - Reworked target context routing around host-preloaded instructions, a
   compact schema-v2 bootstrap, explicit file/word budgets, project-area
   overlays, and context receipts for measured expansion.
@@ -19,6 +22,9 @@
   infrastructure router checks, schema-1 router compatibility, explicit
   approval-scope matching, plan and diff evidence binding, and current-state
   versus historical evidence classification.
+- Added a cross-platform optional tool entry point and a read-only target
+  upgrade assessment that composes migration diff and structural validation
+  before any target adapter changes.
 
 - Initial Alatyr Core standalone framework repository.
 - Added portable framework docs, assistant installation flow, readiness

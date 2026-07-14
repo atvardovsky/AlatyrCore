@@ -3,6 +3,44 @@
 These helpers belong to the AlatyrCore source repository.
 They are not portable framework requirements for target projects.
 
+## Cross-Platform Entry Point
+
+`alatyr.py` exposes the stable optional source tools through one command
+manifest. It does not turn Alatyr into a runtime service or replace the
+assistant-led installation process. Each command reports its write scope in
+help.
+
+Linux or macOS:
+
+```sh
+python3 tools/alatyr.py --help
+python3 tools/alatyr.py validate-adapter --target /path/to/target-repo
+python3 tools/alatyr.py assess-upgrade --target /path/to/target-repo --framework-source . --output-dir tmp/upgrade-assessment
+```
+
+Windows PowerShell:
+
+```powershell
+.\tools\alatyr.ps1 --help
+.\tools\alatyr.ps1 validate-adapter --target C:\path\to\target-repo
+.\tools\alatyr.ps1 assess-upgrade --target C:\path\to\target-repo --framework-source . --output-dir tmp\upgrade-assessment
+```
+
+Windows Command Prompt:
+
+```bat
+tools\alatyr.cmd --help
+tools\alatyr.cmd validate-adapter --target C:\path\to\target-repo
+```
+
+The stable command set is:
+
+- `check-source`: no writes
+- `scaffold`: target structure writes only with `--write`
+- `validate-adapter`: optional explicit report output only
+- `migration-report`: optional explicit report output only
+- `assess-upgrade`: explicit assessment output only; no adapter changes
+
 ## Source Validation Runner
 
 `check_all.py` runs the stable source-repository checks for AlatyrCore source
@@ -551,6 +589,14 @@ py -3 .\tools\report_migration_diff.py --from-rules old-rule-registry.json
 py -3 .\tools\report_migration_diff.py --from-rules old-rule-registry.json --from-framework-dir C:\path\to\old\.ai\framework
 py -3 .\tools\report_migration_diff.py --from-rules old-rule-registry.json --from-template-dir C:\path\to\old\templates\target
 ```
+
+`plan_target_upgrade.py`, also available as `alatyr.py assess-upgrade`, creates
+`migration-report.md`, `adapter-validation.json`, and
+`upgrade-assessment.md` in an explicit output directory. It compares the
+installed framework baseline with the selected AlatyrCore source and runs the
+structural validator before any upgrade edits. A non-zero result means the
+assessment contains findings that require review; generated evidence remains
+available. Use `--overwrite` only to replace an existing assessment directory.
 
 `check_migration_diff_report.py` executes the reporter against the current
 source baseline and validates the generated report shape. It is not a

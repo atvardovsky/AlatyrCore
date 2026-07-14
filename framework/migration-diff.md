@@ -43,6 +43,19 @@ A migration diff should report:
 
 Target adapters may store the result in a migration note.
 
+## Migration-First Context Routing
+
+Generate or review migration evidence before loading broad upgrade context.
+Start with lifecycle guidance, this migration contract, the installed rule
+registry and manifest, the adapter recheck flow, and existing migration or
+installation notes. Then use the report's changed rule IDs, categories, task
+profiles, canonical sources, framework files, target template surfaces, and
+local deviations to select additional files.
+
+Record selected and intentionally omitted canonical sources in the context
+receipt. A migration report that identifies no impact does not prove target
+compatibility; structural and target validation still apply.
+
 ## Safety Rules
 
 Do not apply target changes directly from a diff.
@@ -68,3 +81,9 @@ overwrite target adapter files without approval.
 `--migration-diff <report.md>` while checking an installed adapter. That check
 does not apply an upgrade; it only reports whether framework drift has
 rule/category/action evidence attached to the recheck.
+
+`tools/plan_target_upgrade.py` composes the migration report and structural
+validator into an assessment directory before target changes. The
+cross-platform `tools/alatyr.py assess-upgrade` entry point exposes the same
+source helper on Linux, macOS, and Windows. These helpers write evidence only;
+they are not the installation mechanism and do not apply an upgrade.

@@ -44,18 +44,25 @@ Replace placeholders with target facts before accepting installation.
    scope.
 2. Identify whether this is a post-installation recheck, framework update
    recheck, bridge compatibility review, or maturity audit.
-3. Compare installed framework files against the recorded framework baseline or
+3. Prepare or review migration assessment evidence before target changes.
+   Compare rule registries, installed and next framework files, framework
+   version, adapter schema version, template version, and current structural
+   validator findings.
+4. Use affected canonical sources, rule categories, task profiles, template
+   surfaces, bridge capabilities, and local deviations from that assessment to
+   select additional context. Do not load the full framework corpus by default.
+5. Compare installed framework files against the recorded framework baseline or
    update source.
-4. Compare framework version, adapter schema version, template version, module
+6. Compare framework version, adapter schema version, template version, module
    states, known gaps, local deviations, and owner facts in `.ai/alatyr.yaml`.
-5. Check required core and optional module state in
+7. Check required core and optional module state in
    `.ai/assistant/module-profile.md`.
-6. Check target adapter references to framework files, operation help, routing
+8. Check target adapter references to framework files, operation help, routing
    flows, AI infrastructure inventory and item router, gates, prompts, skills,
    adaptation records, bridge files,
    checker rules, large-task flow and packet, chat-message templates, and
    final-evidence expectations.
-7. Check adapter drift hazards: hard-coded local machine paths in `.ai/*`,
+9. Check adapter drift hazards: hard-coded local machine paths in `.ai/*`,
    root assistant entry points, bridge files, templates, and policies; stale
    statements about whether local Alatyr or adapter checkers exist; duplicate
    required-context references inside context profiles or router entries;
@@ -63,25 +70,25 @@ Replace placeholders with target facts before accepting installation.
    routing is described; unresolved owner placeholders that are not recorded as
    known gaps; and target-local adapter checker evidence that no longer matches
    repository files.
-8. Check project blueprint/source-of-truth ownership, registry entries,
+10. Check project blueprint/source-of-truth ownership, registry entries,
    consistency-map nodes and edges when enabled, missing facts, stale
    relationships, and drift.
-9. Check security, live-service, destructive-operation, dependency, credential,
+11. Check security, live-service, destructive-operation, dependency, credential,
    diagram, generated-artifact, validation, and lifecycle policies.
-10. Check task-specific maturity using `.ai/assistant/maturity-profile.md` when
+12. Check task-specific maturity using `.ai/assistant/maturity-profile.md` when
    it exists.
-11. Check bridge behavior using `.ai/assistant/bridge-capability-matrix.md`.
-12. Identify required migrations, approvals, unresolved facts, and skipped
+13. Check bridge behavior using `.ai/assistant/bridge-capability-matrix.md`.
+14. Identify required migrations, approvals, unresolved facts, and skipped
    checks.
-13. Use `.ai/assistant/templates/migration-note.md` when a framework update
+15. Use `.ai/assistant/templates/migration-note.md` when a framework update
     requires target migration evidence.
-14. Use `.ai/assistant/templates/effectiveness-report.md` only when comparing
+16. Use `.ai/assistant/templates/effectiveness-report.md` only when comparing
     adapter effectiveness across comparable tasks or adapter states.
-15. Run target validation that exists. Do not invent commands.
-16. Classify final evidence as `current-state`, `historical-record`, or `mixed`.
+17. Run target validation that exists. Do not invent commands.
+18. Classify final evidence as `current-state`, `historical-record`, or `mixed`.
     Current files prove current structure only; name dated operation, approval,
     validation, or migration records before making historical claims.
-17. Report final evidence and residual risk.
+19. Report final evidence and residual risk.
 
 ## Final Evidence
 
@@ -89,6 +96,8 @@ Report:
 
 - recheck type
 - framework baseline or update source
+- migration assessment and affected canonical sources selected from it
+- candidate context intentionally omitted with reasons
 - framework version, adapter schema version, and template version
 - files inspected
 - evidence basis, observation time, and repository revision when available

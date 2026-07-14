@@ -46,25 +46,32 @@ target-owned equivalent.
 
 Before upgrading framework files in a target project:
 
-1. Inspect the current target adapter.
-2. Identify framework-core changes versus target-adapter changes.
-3. Preserve target project facts.
-4. Compare supported assistant bridge needs.
-5. Compare framework version, adapter schema version, and template version.
-6. Compare bridge capability matrix and supported assistant limitations.
-7. Identify new approval, testing, security, diagram, or validation guidance.
-8. Compare required core profile and optional module states.
-9. Prepare a migration diff, migration note, or installation plan.
-10. Require approval before overwriting existing target AI instructions.
-11. Recheck the installed adapter for framework references, bridge files, gates,
+1. Load the compact bootstrap and migration-first context only.
+2. Inspect the current target manifest, installed framework baseline, local
+   deviations, and adapter owner evidence.
+3. Prepare or review a migration assessment before changing target files. It
+   should compare rule registries, framework files, versions, and structural
+   adapter state.
+4. Use changed rule IDs, categories, task profiles, canonical sources, template
+   surfaces, and bridge capabilities to select additional context. Do not load
+   the full framework corpus by default.
+5. Identify framework-core changes versus target-adapter changes.
+6. Preserve target project facts.
+7. Compare supported assistant bridge needs and limitations.
+8. Identify new approval, testing, security, diagram, or validation guidance.
+9. Compare required core profile and optional module states.
+10. Prepare a target migration note or installation plan from reviewed
+    assessment evidence.
+11. Require approval before overwriting existing target AI instructions.
+12. Recheck the installed adapter for framework references, bridge files, gates,
    prompts, skills, lifecycle notes, and maturity gaps.
-12. Recheck adapter owners, review cadence, CODEOWNERS or equivalent owner
+13. Recheck adapter owners, review cadence, CODEOWNERS or equivalent owner
    map, operation help, operation-routing flows, and post-update chat message
    templates.
-13. Recheck root assistant entry points and supported bridge files so future
+14. Recheck root assistant entry points and supported bridge files so future
     sessions can find the installation note, operation help, and routing flow.
-14. Run or report target validation.
-15. Send a post-update assistant chat message that names updated surfaces,
+15. Run or report target validation.
+16. Send a post-update assistant chat message that names updated surfaces,
     recommended recheck operation, validation, and unresolved gaps.
 
 Do not use an installer script as the framework mechanism. Do not overwrite
@@ -87,6 +94,7 @@ Framework lifecycle notes should record:
 - migration actions required by project adapters
 - migration-note requirements for installed adapters
 - migration-diff requirements for framework baseline comparisons
+- migration-assessment evidence and intentionally omitted context
 - adapter recheck results for installed framework updates
 - help/routing and post-update chat-message migration needs
 

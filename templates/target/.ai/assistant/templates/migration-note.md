@@ -15,6 +15,23 @@ From template version: `{FROM_TEMPLATE_VERSION}`
 To template version: `{TO_TEMPLATE_VERSION}`
 Prepared by: `{PREPARED_BY}`
 Prepared at: `{PREPARED_AT}`
+Evidence basis: `{CURRENT_STATE_HISTORICAL_RECORD_OR_MIXED}`
+Observed target revision: `{TARGET_REVISION_OR_NOT_AVAILABLE}`
+Migration assessment: `{MIGRATION_ASSESSMENT_PATH_OR_MANUAL_REVIEW}`
+
+## Routed Context
+
+Affected canonical framework sources:
+
+- `{AFFECTED_CANONICAL_SOURCE_OR_NONE}`
+
+Affected task profiles or rule categories:
+
+- `{AFFECTED_PROFILE_OR_RULE_CATEGORY_OR_NONE}`
+
+Candidate context intentionally omitted:
+
+- `{OMITTED_CANDIDATE_CONTEXT_AND_REASON_OR_NONE}`
 
 ## Changed Framework Rules
 
@@ -56,6 +73,7 @@ Removed or deprecated rules:
 
 Approval needed: `{YES_NO_REASON}`
 Approval record: `{APPROVAL_RECORD_OR_NOT_REQUIRED}`
+Assessment completed before target changes: `{YES_NO_AND_REASON}`
 Validation run: `{VALIDATION_RUN_OR_SKIPPED_WITH_REASON}`
 
 ## Final Evidence

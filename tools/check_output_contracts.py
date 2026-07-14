@@ -133,6 +133,10 @@ def main() -> int:
                     f"{contract} field {field} must remain placeholder-based"
                 )
 
+    for contract in ["framework-update-output", "adapter-recheck-output"]:
+        if "Migration assessment result/path:" not in blocks.get(contract, ""):
+            failures.append(f"{contract} missing migration assessment evidence")
+
     installation_note_text = read(INSTALL_NOTE)
     for required_text in REQUIRED_INSTALLATION_TEXT:
         if required_text not in installation_note_text:

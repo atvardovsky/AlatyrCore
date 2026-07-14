@@ -30,6 +30,12 @@ Goal: compare the installed adapter against the updated Alatyr Core baseline and
 Non-goals: do not change project behavior without approval.
 Allowed actions: read-only
 
+Migration assessment:
+`{MIGRATION_ASSESSMENT_PATH_OR_MANUAL_REVIEW}`
+
+Load only canonical sources and target surfaces selected by the migration
+assessment. Record candidate context intentionally omitted.
+
 Operation help:
 - Ask for "Alatyr help" to see available operations and matching flows.
 - Use `.ai/assistant/help.md`, `.ai/assistant/help-reference.md`, and `.ai/assistant/templates/operation-request.md` for structured requests.

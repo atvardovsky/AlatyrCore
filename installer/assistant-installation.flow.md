@@ -38,10 +38,13 @@ Read in this repository first:
 - `installer/installation-plan-template.md`
 
 Then inspect the target repository and load additional source files from the
-smallest matching installation scope. Read each `framework/*.md` file before
-copying or adapting it into the target `.ai/framework`. A full-core
-installation or upgrade therefore reads the full framework corpus at the
-copy/adaptation stage, not as a default bootstrap.
+smallest matching installation scope. For a new full-core installation, use a
+deterministic framework file list and inspect rule owners as needed without
+loading all prose into one context. For an upgrade, compare file hashes and
+rule registries first, then read changed or added canonical sources and their
+affected target surfaces. Unchanged framework files do not need to be loaded
+again merely to preserve or copy them, and the full framework remains outside
+the compact startup set, not as a default bootstrap.
 
 Load target templates from `templates/target` only for surfaces the plan will
 create or compare, and keep them as placeholders until rewritten from target

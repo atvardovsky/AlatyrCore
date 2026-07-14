@@ -601,11 +601,17 @@ def main() -> int:
         "To framework version:",
         "From adapter schema version:",
         "To adapter schema version:",
+        "Evidence basis:",
+        "Migration assessment:",
+        "## Routed Context",
+        "Affected canonical framework sources:",
+        "Candidate context intentionally omitted:",
         "## Changed Framework Rules",
         "## Required Target Actions",
         "## Optional Target Actions",
         ".ai/assistant/module-profile.md",
         "Approval needed:",
+        "Assessment completed before target changes:",
         "Migration result:",
     ]:
         if required_migration_text not in migration_note:

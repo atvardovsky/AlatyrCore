@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "commands": [
+    {
+      "name": "check-source",
+      "script": "check_all.py",
+      "purpose": "run AlatyrCore source-repository checks",
+      "write_scope": "none"
+    },
+    {
+      "name": "scaffold",
+      "script": "scaffold_target_structure.py",
+      "purpose": "plan or write placeholder target adapter structure",
+      "write_scope": "target-structure-with-explicit-write"
+    },
+    {
+      "name": "validate-adapter",
+      "script": "validate_target_adapter.py",
+      "purpose": "validate current structural state of an installed adapter",
+      "write_scope": "explicit-report-output-only"
+    },
+    {
+      "name": "migration-report",
+      "script": "report_migration_diff.py",
+      "purpose": "compare framework baselines without applying an upgrade",
+      "write_scope": "explicit-report-output-only"
+    },
+    {
+      "name": "assess-upgrade",
+      "script": "plan_target_upgrade.py",
+      "purpose": "prepare migration-first target upgrade evidence",
+      "write_scope": "explicit-evidence-output-only"
+    }
+  ]
+}

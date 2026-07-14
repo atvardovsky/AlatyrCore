@@ -67,6 +67,71 @@
       "candidate and applied repair sets"
     ]
   },
+  "migration_routing": {
+    "assessment_required_before_changes": true,
+    "required_context": [
+      ".ai/framework/lifecycle.md",
+      ".ai/framework/migration-diff.md",
+      ".ai/framework/rule-registry.json",
+      ".ai/assistant/flows/adapter-recheck.flow.md",
+      ".ai/assistant/templates/installation-note.md",
+      ".ai/assistant/templates/migration-note.md"
+    ],
+    "impact_selectors": [
+      "changed rule ids",
+      "affected rule categories",
+      "affected task profiles",
+      "affected canonical framework sources",
+      "changed target template surfaces",
+      "local deviations and bridge capability changes"
+    ],
+    "candidate_context": [
+      ".ai/framework/README.md",
+      ".ai/framework/adapter-maturity.md",
+      ".ai/framework/ai-infrastructure-routing.md",
+      ".ai/framework/approval-records.md",
+      ".ai/framework/blueprint-driven-change.md",
+      ".ai/framework/bridge-capability-matrix.md",
+      ".ai/framework/change-risk-model.md",
+      ".ai/framework/consistency-model.md",
+      ".ai/framework/context-discovery.md",
+      ".ai/framework/context-profiles.md",
+      ".ai/framework/context-router.md",
+      ".ai/framework/contour.md",
+      ".ai/framework/diagram-guidance.md",
+      ".ai/framework/effectiveness-metrics.md",
+      ".ai/framework/guarantees.md",
+      ".ai/framework/installed-operations.md",
+      ".ai/framework/large-task-orchestration.md",
+      ".ai/framework/lifecycle.md",
+      ".ai/framework/logical-integrity.md",
+      ".ai/framework/migration-diff.md",
+      ".ai/framework/module-profile.md",
+      ".ai/framework/operation-help.md",
+      ".ai/framework/portability.md",
+      ".ai/framework/project-adapter-contract.md",
+      ".ai/framework/prompt-injection.md",
+      ".ai/framework/rule-ownership.md",
+      ".ai/framework/rule-registry.md",
+      ".ai/framework/scaffolding.md",
+      ".ai/framework/security-safety-guidance.md",
+      ".ai/framework/skill-adaptation.md",
+      ".ai/framework/source-of-truth-registry.md",
+      ".ai/framework/testing-guidance.md"
+    ],
+    "expand_when": [
+      "migration assessment identifies an affected canonical source",
+      "target adapter claim conflicts with the new baseline",
+      "protected change or approval boundary is reached",
+      "validation disproves the current impact boundary"
+    ],
+    "final_evidence": [
+      "migration assessment and compared baselines",
+      "selected and intentionally omitted canonical sources",
+      "affected target surfaces and local deviations",
+      "approval validation and residual risk"
+    ]
+  },
   "task_scale_overlays": {
     "large-or-resumable": {
       "use_when": [
@@ -402,56 +467,20 @@
         "framework drift repair"
       ],
       "required_context": [
-        ".ai/framework/README.md",
-        ".ai/framework/contour.md",
-        ".ai/framework/guarantees.md",
-        ".ai/framework/rule-ownership.md",
-        ".ai/framework/rule-registry.md",
-        ".ai/framework/rule-registry.json",
-        ".ai/framework/project-adapter-contract.md",
-        ".ai/framework/portability.md",
-        ".ai/framework/module-profile.md",
-        ".ai/framework/scaffolding.md",
-        ".ai/framework/context-router.md",
-        ".ai/framework/context-profiles.md",
-        ".ai/framework/context-discovery.md",
-        ".ai/framework/consistency-model.md",
-        ".ai/framework/source-of-truth-registry.md",
-        ".ai/framework/change-risk-model.md",
-        ".ai/framework/logical-integrity.md",
-        ".ai/framework/blueprint-driven-change.md",
-        ".ai/framework/security-safety-guidance.md",
-        ".ai/framework/prompt-injection.md",
-        ".ai/framework/approval-records.md",
-        ".ai/framework/diagram-guidance.md",
-        ".ai/framework/testing-guidance.md",
-        ".ai/framework/ai-infrastructure-routing.md",
-        ".ai/framework/skill-adaptation.md",
-        ".ai/framework/adapter-maturity.md",
-        ".ai/framework/bridge-capability-matrix.md",
-        ".ai/framework/migration-diff.md",
-        ".ai/framework/effectiveness-metrics.md",
-        ".ai/framework/large-task-orchestration.md",
         ".ai/framework/lifecycle.md",
-        ".ai/framework/installed-operations.md",
-        ".ai/framework/operation-help.md",
-        ".ai/assistant/ai-infrastructure-router.json",
+        ".ai/framework/migration-diff.md",
+        ".ai/framework/rule-registry.json",
         ".ai/assistant/flows/adapter-recheck.flow.md",
-        ".ai/assistant/flows/large-task-orchestration.flow.md",
-        ".ai/assistant/flows/operation-routing.flow.md",
-        ".ai/assistant/templates/large-task-operation-packet.md",
-        ".ai/assistant/templates/ai-infrastructure-adaptation-record.md",
         ".ai/assistant/templates/installation-note.md",
-        ".ai/assistant/templates/post-install-message.md",
-        ".ai/assistant/templates/post-update-message.md",
-        ".ai/assistant/gates/checklist.md"
+        ".ai/assistant/templates/migration-note.md"
       ],
       "expand_when": [
+        "migration_assessment_identifies_affected_canonical_source",
+        "changed_target_template_surface",
         "protected_adapter_overwrite",
-        "new_framework_rule_or_template",
         "bridge_capability_change",
         "target_local_deviation_conflict",
-        "third_party_infrastructure_adoption"
+        "validation_disproves_impact_boundary"
       ],
       "approval_gates": [
         "overwriting_existing_instructions",
@@ -464,6 +493,8 @@
       "final_evidence": [
         "adapter_version_schema_state",
         "changed_framework_baseline",
+        "migration_assessment",
+        "selected_and_omitted_canonical_sources",
         "affected_target_files",
         "gaps",
         "local_deviations",

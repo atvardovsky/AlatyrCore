@@ -232,6 +232,9 @@ Record where completed packets are stored, ignored, redacted, or removed.
 - Template version:
 - Local deviations:
 - Upgrade or migration notes:
+- Migration assessment path or manual baseline comparison:
+- Canonical sources selected from migration impact:
+- Candidate upgrade context intentionally omitted:
 - Effectiveness metrics:
 
 ## Contour Plan

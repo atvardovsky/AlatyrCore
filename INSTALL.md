@@ -190,6 +190,22 @@ Scaffolding does not replace target inspection, installation planning,
 approval gates, adapter rewriting, validation, logical integrity review, or
 final evidence. Do not present a scaffolder run as a completed installation.
 
+## Optional Migration-First Upgrade Assessment
+
+Before changing an installed adapter, a maintainer may generate source
+migration and current-state structural evidence into an explicit scratch
+directory:
+
+```sh
+python3 tools/alatyr.py assess-upgrade --target /path/to/target-repo --framework-source . --output-dir tmp/upgrade-assessment
+```
+
+On Windows use `tools\alatyr.cmd` or `tools\alatyr.ps1` with the same command
+arguments. The assessment does not install or update Alatyr. Review its changed
+rules, canonical sources, target surfaces, local deviations, and validation
+findings first; then prepare a target migration note and approval scope. Load
+only the affected context before applying approved changes separately.
+
 ## Optional Target Adapter Validation
 
 After installation or update, a maintainer may use the source helper

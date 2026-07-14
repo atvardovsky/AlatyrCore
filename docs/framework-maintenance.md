@@ -88,6 +88,9 @@ Before accepting a change, check:
 - `python3 tools/check_consistency_map.py` passes when consistency levels,
   relationship types, impact traversal, source registry linkage, manifest
   routing, or map placeholders change.
+- `python3 tools/check_cross_platform_tools.py` passes when the unified tool
+  manifest, platform launchers, write scopes, or migration-first upgrade
+  assessment changes.
 - `python3 tools/check_large_task_orchestration.py` passes when large-task
   activation, task-scale routing, workstream, packet, checkpoint, resume, or
   convergence contracts change.
@@ -160,6 +163,8 @@ Before accepting a change, check:
   can also compare framework file names and content hashes.
 - `python3 tools/report_migration_diff.py --from-rules <old-rule-registry.json> --from-template-dir <old-template-dir>`
   can also compare target template surface names and content hashes.
+- `python3 tools/alatyr.py assess-upgrade --target <target-repo> --framework-source . --output-dir <assessment-dir>`
+  can prepare migration and structural evidence before target upgrade changes.
 - `python3 tools/summarize_effectiveness_reports.py --input conformance/golden/effectiveness-sample.json`
   passes when effectiveness report tooling or sample contracts change.
 - `python3 tools/validate_target_adapter.py --target <target-repo>` can check

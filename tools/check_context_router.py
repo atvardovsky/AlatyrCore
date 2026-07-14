@@ -220,6 +220,34 @@ def main() -> int:
                             f"missing path: {value}"
                         )
 
+    migration_routing = router.get("migration_routing")
+    if not isinstance(migration_routing, dict):
+        failures.append("migration_routing must be an object")
+    else:
+        if migration_routing.get("assessment_required_before_changes") is not True:
+            failures.append(
+                "migration_routing.assessment_required_before_changes must be true"
+            )
+        for field in [
+            "required_context",
+            "impact_selectors",
+            "candidate_context",
+            "expand_when",
+            "final_evidence",
+        ]:
+            values = require_string_list(
+                migration_routing,
+                field,
+                "migration_routing",
+                failures,
+            )
+            if field in {"required_context", "candidate_context"}:
+                for value in values:
+                    if not target_reference_exists(value):
+                        failures.append(
+                            f"migration_routing.{field} points to missing path: {value}"
+                        )
+
     scale_overlays = router.get("task_scale_overlays")
     if not isinstance(scale_overlays, dict):
         failures.append("task_scale_overlays must be an object")
@@ -298,6 +326,23 @@ def main() -> int:
     if extra_profiles:
         failures.append(f"context-router.json has unexpected profile(s): {extra_profiles}")
 
+    upgrade_context = profiles.get("framework-upgrade", {}).get("required_context", [])
+    if len(upgrade_context) > 8:
+        failures.append(
+            "profiles.framework-upgrade required_context must remain migration-first"
+        )
+    for required in [
+        ".ai/framework/lifecycle.md",
+        ".ai/framework/migration-diff.md",
+        ".ai/framework/rule-registry.json",
+        ".ai/assistant/flows/adapter-recheck.flow.md",
+        ".ai/assistant/templates/migration-note.md",
+    ]:
+        if required not in upgrade_context:
+            failures.append(
+                f"profiles.framework-upgrade required_context missing {required}"
+            )
+
     framework_paths = {
         f".ai/framework/{path.name}"
         for path in (ROOT / "framework").glob("*.md")
@@ -323,6 +368,12 @@ def main() -> int:
         routed_framework_paths.update(
             value
             for value in consistency_routing.get("required_context", [])
+            if isinstance(value, str) and value.startswith(".ai/framework/")
+        )
+    if isinstance(migration_routing, dict):
+        routed_framework_paths.update(
+            value
+            for value in migration_routing.get("candidate_context", [])
             if isinstance(value, str) and value.startswith(".ai/framework/")
         )
     missing_framework_paths = sorted(framework_paths - routed_framework_paths)
