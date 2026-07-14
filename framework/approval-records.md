@@ -49,14 +49,17 @@ An approval record should include:
 - plan version
 - plan hash or content hash when available
 - approved plan file or recorded reason when a file is unavailable
+- approved diff base when approval is bound to a repository comparison
 - patch hash when an exact proposed diff is approved and deterministic hashing
   is practical
 - allowed protected changes
 - allowed files or surfaces
+- excluded files or surfaces, including an explicit `none` when applicable
 - excluded actions
 - approval source or message reference
 - approved by
 - approved at
+- repository revision at approval when available
 - whether reuse is allowed
 - scope invalidation rule
 - evidence of whether the final patch still matches the approved scope
@@ -64,6 +67,11 @@ An approval record should include:
 
 If the plan changes after approval, the assistant must treat the approval as
 stale for any changed protected scope.
+
+An approval record is `historical-record` evidence. Keep allowed and excluded
+files in explicit list fields so a checker can compare them with an actual
+diff. A path mentioned only in narrative text does not place it inside the
+approved scope.
 
 ## Repository Storage
 

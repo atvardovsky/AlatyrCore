@@ -121,6 +121,9 @@ Before accepting a change, check:
 - `python3 tools/check_source_of_truth_registry.py` passes when target
   source-of-truth registry fact types, fields, placeholders, or conflict
   resolution guidance changes.
+- `python3 tools/check_target_adapter_validator.py` passes when portable target
+  validator routing, route-map schemas, approval scope matching, or evidence
+  classification changes.
 - `python3 tools/check_versioning.py` passes when source versions, changelog,
   release process, migration evidence, adapter schema version, or template
   version changes.

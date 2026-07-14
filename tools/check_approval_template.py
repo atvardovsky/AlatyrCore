@@ -30,10 +30,12 @@ REQUIRED_FIELDS = [
     "Plan version:",
     "Plan hash:",
     "Approved plan file:",
+    "Approved diff base:",
     "Patch hash:",
     "Requested by:",
     "Approved by:",
     "Approved at:",
+    "Repository revision at approval:",
     "Approval source/message:",
     "Expires at or reuse policy:",
     "Scope invalidation rule:",
@@ -55,6 +57,7 @@ REQUIRED_SECTIONS = [
 REQUIRED_LIST_FIELDS = [
     "Allowed protected changes:",
     "Allowed files or surfaces:",
+    "Excluded files or surfaces:",
     "Excluded actions:",
     "Approved validation or manual review:",
 ]
@@ -115,6 +118,8 @@ def main() -> int:
 
     if "Plan hash:" in text and "Scope invalidation rule:" not in text:
         failures.append("plan hash requires a scope invalidation rule")
+    if "Evidence classification: `historical-record`" not in text:
+        failures.append("approval template must classify itself as historical evidence")
 
     if failures:
         for failure in failures:

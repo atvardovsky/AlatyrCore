@@ -159,8 +159,11 @@ Classify every proposed target file:
 18. Run target validation that exists. Do not invent commands.
 19. Apply logical integrity review: changed facts, affected contracts,
     source of truth, repair direction, and residual risk.
-20. Report final evidence.
-21. Send the appropriate post-install or post-update assistant chat message
+20. Classify final evidence as `current-state`, `historical-record`, or `mixed`.
+    Do not infer past installation, approval, or validation actions only from
+    files that exist in the current tree.
+21. Report final evidence.
+22. Send the appropriate post-install or post-update assistant chat message
     using the target template when installed.
 
 ## Human Approval Gate
@@ -193,6 +196,8 @@ check and residual risk.
 
 Report:
 
+- evidence basis, observation time, and repository revision when available
+- dated historical records used and historical claims that remain unverifiable
 - installation id and approval used, if any
 - framework version, adapter schema version, template version, and manifest
   path

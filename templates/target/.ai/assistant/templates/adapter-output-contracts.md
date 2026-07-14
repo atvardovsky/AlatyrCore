@@ -11,6 +11,11 @@ Use after the initial Alatyr Core installation or a scoped adapter expansion.
 
 - Operation id: `{OPERATION_ID}`
 - Operation type: `{INSTALLATION_OR_ADAPTER_EXPANSION}`
+- Evidence basis: `{CURRENT_STATE_HISTORICAL_RECORD_OR_MIXED}`
+- Observed at: `{OBSERVATION_DATE_TIME}`
+- Observed repository revision: `{REPOSITORY_REVISION_OR_NOT_AVAILABLE}`
+- Historical records used: `{DATED_OPERATION_APPROVAL_OR_MIGRATION_RECORDS_OR_NONE}`
+- Unverifiable historical claims: `{UNVERIFIABLE_HISTORICAL_CLAIMS_OR_NONE}`
 - Installation id: `{INSTALLATION_ID}`
 - Requested by: `{REQUESTER_OR_ROLE}`
 - Framework source or baseline: `{ALATYR_CORE_SOURCE_OR_BASELINE}`
@@ -57,6 +62,11 @@ Core baseline.
 
 - Operation id: `{OPERATION_ID}`
 - Operation type: `{FRAMEWORK_UPDATE_OR_IMPACT_REVIEW}`
+- Evidence basis: `{CURRENT_STATE_HISTORICAL_RECORD_OR_MIXED}`
+- Observed at: `{OBSERVATION_DATE_TIME}`
+- Observed repository revision: `{REPOSITORY_REVISION_OR_NOT_AVAILABLE}`
+- Historical records used: `{DATED_OPERATION_APPROVAL_OR_MIGRATION_RECORDS_OR_NONE}`
+- Unverifiable historical claims: `{UNVERIFIABLE_HISTORICAL_CLAIMS_OR_NONE}`
 - Update source or baseline: `{ALATYR_UPDATE_SOURCE_OR_BASELINE}`
 - Previous framework version: `{PREVIOUS_ALATYR_CORE_VERSION}`
 - New framework version: `{NEW_ALATYR_CORE_VERSION}`
@@ -107,6 +117,11 @@ adapter.
 
 - Operation id: `{OPERATION_ID}`
 - Operation type: `{ADAPTER_RECHECK_OR_MATURITY_REVIEW}`
+- Evidence basis: `{CURRENT_STATE_HISTORICAL_RECORD_OR_MIXED}`
+- Observed at: `{OBSERVATION_DATE_TIME}`
+- Observed repository revision: `{REPOSITORY_REVISION_OR_NOT_AVAILABLE}`
+- Historical records used: `{DATED_OPERATION_APPROVAL_OR_MIGRATION_RECORDS_OR_NONE}`
+- Unverifiable historical claims: `{UNVERIFIABLE_HISTORICAL_CLAIMS_OR_NONE}`
 - Recheck trigger: `{RECHECK_TRIGGER}`
 - Allowed actions: `{READ_ONLY_DOCS_ONLY_ADAPTER_ONLY_CODE_AND_TESTS_OR_FULL_WITH_APPROVAL}`
 - Manifest path: `.ai/alatyr.yaml`

@@ -155,6 +155,7 @@ python3 tools/check_output_contracts.py
 python3 tools/check_release_migration_template.py
 python3 tools/check_rule_ownership.py
 python3 tools/check_source_of_truth_registry.py
+python3 tools/check_target_adapter_validator.py
 python3 tools/check_versioning.py
 ```
 

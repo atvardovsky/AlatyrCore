@@ -114,6 +114,7 @@ Additional source-repository helpers include:
 - `python3 tools/check_release_migration_template.py`
 - `python3 tools/check_rule_ownership.py`
 - `python3 tools/check_source_of_truth_registry.py`
+- `python3 tools/check_target_adapter_validator.py`
 - `python3 tools/check_versioning.py`
 - `python3 tools/validate_target_adapter.py --target <target-repo>`
 - `python3 tools/validate_target_adapter.py --target <target-repo> --json --output <report.json>`
@@ -252,10 +253,12 @@ python3 tools/validate_target_adapter.py --target /path/to/target-repo --json --
 ```
 
 This helper checks adapter structure, router/bootstrap references, local path
-leakage, stale checker claims, manifest fields, and optional framework
-baseline drift. It can emit machine-readable JSON findings and compare
-approval scope or migration-diff evidence when the target provides those
-inputs. It does not verify project business facts or approve changes.
+leakage, stale checker claims, manifest fields, optional consistency and AI
+infrastructure route maps, and optional framework baseline drift. It can emit
+machine-readable current-state evidence and compare explicitly listed approval
+scope or migration-diff evidence when the target provides those inputs. It
+does not verify project business facts, prove historical actions, or approve
+changes.
 
 For skills, prompts, wrappers, bridge files, rules, MCP/tool configs, gates,
 checkers, or other AI infrastructure, a target adapter may define request

@@ -12,6 +12,7 @@ Linux, macOS, and Windows with Python 3.
 from __future__ import annotations
 
 import argparse
+import fnmatch
 import hashlib
 import json
 import re
@@ -121,6 +122,7 @@ MANIFEST_PATH_SCALARS: set[PathKey] = {
     ("framework", "rule_registry"),
     ("source_of_truth", "project_contour"),
     ("source_of_truth", "registry"),
+    ("source_of_truth", "consistency_map"),
     ("source_of_truth", "assistant_contour"),
     ("source_of_truth", "context_router"),
     ("source_of_truth", "context_profiles"),
@@ -128,6 +130,9 @@ MANIFEST_PATH_SCALARS: set[PathKey] = {
     ("operations", "help"),
     ("operations", "operation_request"),
     ("operations", "output_contracts"),
+    ("ai_infrastructure", "router"),
+    ("ai_infrastructure", "inventory"),
+    ("ai_infrastructure", "adaptation_record"),
     ("maturity", "profile"),
     ("bridges", "capability_matrix"),
     ("approvals", "directory"),
@@ -181,6 +186,47 @@ DEFAULT_CHECKER_COVERAGE = {
     "local path": "local path leakage coverage",
     "stale": "stale checker-claim coverage",
     "manifest": "manifest coverage",
+}
+
+CONSISTENCY_LEVELS = ["fact", "contract", "area", "system", "adapter"]
+CONSISTENCY_RELATIONSHIPS = {
+    "implements",
+    "verifies",
+    "documents",
+    "visualizes",
+    "generates",
+    "constrains",
+    "depends-on",
+    "routes",
+}
+AI_INFRASTRUCTURE_ROUTES = {
+    "inventory",
+    "use-existing",
+    "adapt-import",
+    "gate-checker-change",
+    "tool-mcp-change",
+    "bridge-wrapper-change",
+}
+AI_INFRASTRUCTURE_ITEM_TYPES = {
+    "skill",
+    "prompt",
+    "gate",
+    "checker",
+    "flow",
+    "tool",
+    "mcp",
+    "bridge",
+    "wrapper",
+    "rule",
+    "template",
+    "other",
+}
+ALLOWED_ACTION_MODES = {
+    "read-only",
+    "docs-only",
+    "adapter-only",
+    "code-and-tests",
+    "full-with-approval",
 }
 
 
@@ -271,6 +317,7 @@ class Validator:
         *,
         framework_source: Path | None,
         diff_ref: str | None,
+        approval_records: list[Path],
         migration_diff: Path | None,
         allow_placeholders: bool,
         allow_local_paths: list[str],
@@ -280,6 +327,10 @@ class Validator:
         self.target = target.resolve()
         self.framework_source = framework_source.resolve() if framework_source else None
         self.diff_ref = diff_ref
+        self.approval_records = [
+            path.resolve() if path.is_absolute() else (self.target / path).resolve()
+            for path in approval_records
+        ]
         self.migration_diff = migration_diff.resolve() if migration_diff else None
         self.allow_placeholders = allow_placeholders
         self.config = config
@@ -337,6 +388,8 @@ class Validator:
         self.check_required_files()
         manifest = self.check_manifest()
         self.check_router()
+        self.check_consistency_map()
+        self.check_ai_infrastructure_router()
         self.check_bootstrap_references()
         self.check_placeholders()
         self.check_local_paths()
@@ -345,6 +398,11 @@ class Validator:
         self.check_approval_scope()
         self.check_framework_baseline()
         self.check_migration_diff_evidence()
+        self.info(
+            "EVIDENCE_SCOPE_CURRENT_STATE",
+            "validator findings describe current structural state; historical actions "
+            "require dated operation, approval, or migration records",
+        )
         return self.findings
 
     def target_path(self, relpath: str) -> Path:
@@ -484,62 +542,61 @@ class Validator:
                 ".ai/assistant/context-router.json",
             )
 
-        preloaded = expect_string_list(
-            router.get("preloaded_context"),
-            self,
-            "ROUTER_PRELOADED",
-            ".ai/assistant/context-router.json",
-        )
-        for required in REQUIRED_PRELOADED:
-            if required not in preloaded:
-                self.warn(
-                    "ROUTER_PRELOADED_MISSING",
-                    f"preloaded_context missing {required}",
-                    ".ai/assistant/context-router.json",
-                )
-
-        bootstrap = expect_string_list(
-            router.get("bootstrap_context"),
-            self,
-            "ROUTER_BOOTSTRAP",
-            ".ai/assistant/context-router.json",
-        )
-        for duplicate in duplicates(bootstrap):
-            self.error(
-                "ROUTER_DUPLICATE_BOOTSTRAP",
-                f"duplicate bootstrap entry {duplicate}",
+        if schema_version == 2:
+            preloaded = expect_string_list(
+                router.get("preloaded_context"),
+                self,
+                "ROUTER_PRELOADED",
                 ".ai/assistant/context-router.json",
             )
-        for required in REQUIRED_BOOTSTRAP:
-            if required not in bootstrap:
+            for required in REQUIRED_PRELOADED:
+                if required not in preloaded:
+                    self.warn(
+                        "ROUTER_PRELOADED_MISSING",
+                        f"preloaded_context missing {required}",
+                        ".ai/assistant/context-router.json",
+                    )
+
+            bootstrap = expect_string_list(
+                router.get("bootstrap_context"),
+                self,
+                "ROUTER_BOOTSTRAP",
+                ".ai/assistant/context-router.json",
+            )
+            for duplicate in duplicates(bootstrap):
                 self.error(
-                    "ROUTER_BOOTSTRAP_MISSING",
-                    f"bootstrap_context missing {required}",
+                    "ROUTER_DUPLICATE_BOOTSTRAP",
+                    f"duplicate bootstrap entry {duplicate}",
                     ".ai/assistant/context-router.json",
                 )
-        deferred = sorted(set(bootstrap) & DEFERRED_BOOTSTRAP)
-        if deferred:
-            self.warn(
-                "ROUTER_BOOTSTRAP_BROAD",
-                "bootstrap contains context that schema 2 routes after task selection: "
-                + ", ".join(deferred),
-                ".ai/assistant/context-router.json",
-            )
+            for required in REQUIRED_BOOTSTRAP:
+                if required not in bootstrap:
+                    self.error(
+                        "ROUTER_BOOTSTRAP_MISSING",
+                        f"bootstrap_context missing {required}",
+                        ".ai/assistant/context-router.json",
+                    )
+            deferred = sorted(set(bootstrap) & DEFERRED_BOOTSTRAP)
+            if deferred:
+                self.warn(
+                    "ROUTER_BOOTSTRAP_BROAD",
+                    "bootstrap contains context routed after task selection: "
+                    + ", ".join(deferred),
+                    ".ai/assistant/context-router.json",
+                )
 
-        budgets = router.get("context_budgets")
-        if schema_version == 2 and not isinstance(budgets, dict):
-            self.error(
-                "ROUTER_BUDGETS_MISSING",
-                "schema 2 router must define context_budgets",
-                ".ai/assistant/context-router.json",
-            )
-        receipt = router.get("context_receipt")
-        if schema_version == 2 and not isinstance(receipt, dict):
-            self.error(
-                "ROUTER_RECEIPT_MISSING",
-                "schema 2 router must define context_receipt",
-                ".ai/assistant/context-router.json",
-            )
+            if not isinstance(router.get("context_budgets"), dict):
+                self.error(
+                    "ROUTER_BUDGETS_MISSING",
+                    "schema 2 router must define context_budgets",
+                    ".ai/assistant/context-router.json",
+                )
+            if not isinstance(router.get("context_receipt"), dict):
+                self.error(
+                    "ROUTER_RECEIPT_MISSING",
+                    "schema 2 router must define context_receipt",
+                    ".ai/assistant/context-router.json",
+                )
 
         routing_order = expect_string_list(
             router.get("routing_order"),
@@ -620,6 +677,337 @@ class Validator:
                         ".ai/assistant/context-profiles.md",
                     )
             self.check_markdown_required_context_duplicates(profiles_path)
+
+    def check_consistency_map(self) -> None:
+        relpath = ".ai/project/consistency-map.json"
+        path = self.target_path(relpath)
+        data = self.load_json_object(path, "CONSISTENCY_MAP")
+        if data is None:
+            return
+        if data.get("schema_version") != 1:
+            self.error("CONSISTENCY_MAP_SCHEMA", "schema_version should be 1", relpath)
+        if data.get("map_kind") != "target-consistency-map":
+            self.error(
+                "CONSISTENCY_MAP_KIND",
+                "map_kind should be target-consistency-map",
+                relpath,
+            )
+        if data.get("human_registry") != ".ai/project/source-of-truth-registry.md":
+            self.error(
+                "CONSISTENCY_MAP_REGISTRY",
+                "human_registry should point to the target source-of-truth registry",
+                relpath,
+            )
+        if data.get("levels") != CONSISTENCY_LEVELS:
+            self.error(
+                "CONSISTENCY_MAP_LEVELS",
+                "levels must match the portable consistency level order",
+                relpath,
+            )
+        relationships = data.get("relationship_types")
+        if (
+            not isinstance(relationships, list)
+            or not all(isinstance(value, str) for value in relationships)
+            or set(relationships) != CONSISTENCY_RELATIONSHIPS
+        ):
+            self.error(
+                "CONSISTENCY_MAP_RELATIONSHIPS",
+                "relationship_types must match the portable relationship set",
+                relpath,
+            )
+        policy = data.get("impact_policy")
+        if not isinstance(policy, dict):
+            self.error(
+                "CONSISTENCY_MAP_IMPACT_POLICY",
+                "impact_policy must be an object",
+                relpath,
+            )
+        else:
+            for field in ["transitive_expand_when", "required_evidence"]:
+                expect_string_list(
+                    policy.get(field),
+                    self,
+                    "CONSISTENCY_MAP_IMPACT_POLICY",
+                    relpath,
+                    label=f"impact_policy.{field}",
+                )
+
+        nodes = data.get("nodes")
+        if not isinstance(nodes, list) or not nodes:
+            self.error("CONSISTENCY_MAP_NODES", "nodes must be a non-empty list", relpath)
+            return
+        node_ids: set[str] = set()
+        edge_ids: set[str] = set()
+        for index, node in enumerate(nodes):
+            label = f"nodes[{index}]"
+            if not isinstance(node, dict):
+                self.error("CONSISTENCY_MAP_NODE_SHAPE", f"{label} must be an object", relpath)
+                continue
+            node_id = node.get("id")
+            if not isinstance(node_id, str) or not node_id:
+                self.error("CONSISTENCY_MAP_NODE_ID", f"{label}.id must be a string", relpath)
+            elif not is_placeholder(node_id):
+                if node_id in node_ids:
+                    self.error(
+                        "CONSISTENCY_MAP_NODE_DUPLICATE",
+                        f"duplicate node id {node_id}",
+                        relpath,
+                    )
+                node_ids.add(node_id)
+            level = node.get("level")
+            if not is_placeholder(level) and level not in CONSISTENCY_LEVELS:
+                self.error(
+                    "CONSISTENCY_MAP_NODE_LEVEL",
+                    f"{label}.level is invalid: {level}",
+                    relpath,
+                )
+            owner = node.get("canonical_owner")
+            if (
+                isinstance(owner, str)
+                and not is_placeholder(owner)
+                and not is_unresolved_value(owner)
+            ):
+                if not is_target_relative_path(owner):
+                    self.error(
+                        "CONSISTENCY_MAP_OWNER_PATH",
+                        f"{label}.canonical_owner must be target-relative",
+                        relpath,
+                    )
+                elif not self.target_path(owner).exists():
+                    self.warn(
+                        "CONSISTENCY_MAP_OWNER_MISSING",
+                        f"{label}.canonical_owner is missing: {owner}",
+                        relpath,
+                    )
+            edges = node.get("relationships")
+            if not isinstance(edges, list) or not edges:
+                self.error(
+                    "CONSISTENCY_MAP_EDGES",
+                    f"{label}.relationships must be non-empty",
+                    relpath,
+                )
+                continue
+            for edge_index, edge in enumerate(edges):
+                edge_label = f"{label}.relationships[{edge_index}]"
+                if not isinstance(edge, dict):
+                    self.error(
+                        "CONSISTENCY_MAP_EDGE_SHAPE",
+                        f"{edge_label} must be an object",
+                        relpath,
+                    )
+                    continue
+                edge_id = edge.get("id")
+                if not isinstance(edge_id, str) or not edge_id:
+                    self.error(
+                        "CONSISTENCY_MAP_EDGE_ID",
+                        f"{edge_label}.id must be a string",
+                        relpath,
+                    )
+                elif not is_placeholder(edge_id):
+                    if edge_id in edge_ids:
+                        self.error(
+                            "CONSISTENCY_MAP_EDGE_DUPLICATE",
+                            f"duplicate relationship id {edge_id}",
+                            relpath,
+                        )
+                    edge_ids.add(edge_id)
+                edge_type = edge.get("type")
+                if not is_placeholder(edge_type) and edge_type not in CONSISTENCY_RELATIONSHIPS:
+                    self.error(
+                        "CONSISTENCY_MAP_EDGE_TYPE",
+                        f"{edge_label}.type is invalid: {edge_type}",
+                        relpath,
+                    )
+                target_level = edge.get("target_level")
+                if not is_placeholder(target_level) and target_level not in CONSISTENCY_LEVELS:
+                    self.error(
+                        "CONSISTENCY_MAP_TARGET_LEVEL",
+                        f"{edge_label}.target_level is invalid: {target_level}",
+                        relpath,
+                    )
+                if edge.get("direction") != "outbound":
+                    self.error(
+                        "CONSISTENCY_MAP_DIRECTION",
+                        f"{edge_label}.direction must be outbound",
+                        relpath,
+                    )
+                for field in ["required_when", "validation"]:
+                    expect_string_list(
+                        edge.get(field),
+                        self,
+                        "CONSISTENCY_MAP_EDGE_FIELD",
+                        relpath,
+                        label=f"{edge_label}.{field}",
+                    )
+
+    def check_ai_infrastructure_router(self) -> None:
+        relpath = ".ai/assistant/ai-infrastructure-router.json"
+        path = self.target_path(relpath)
+        data = self.load_json_object(path, "AI_ROUTER")
+        if data is None:
+            return
+        if data.get("schema_version") != 1:
+            self.error("AI_ROUTER_SCHEMA", "schema_version should be 1", relpath)
+        if data.get("router_kind") != "target-ai-infrastructure-router":
+            self.error(
+                "AI_ROUTER_KIND",
+                "router_kind should be target-ai-infrastructure-router",
+                relpath,
+            )
+        routing_order = expect_string_list(
+            data.get("routing_order"), self, "AI_ROUTER_ORDER", relpath
+        )
+        if set(routing_order) != AI_INFRASTRUCTURE_ROUTES:
+            self.error(
+                "AI_ROUTER_ROUTES",
+                "routing_order must contain each portable AI infrastructure route",
+                relpath,
+            )
+        item_types = expect_string_list(
+            data.get("item_types"), self, "AI_ROUTER_ITEM_TYPES", relpath
+        )
+        if set(item_types) != AI_INFRASTRUCTURE_ITEM_TYPES:
+            self.error(
+                "AI_ROUTER_ITEM_TYPES",
+                "item_types must match the portable item type set",
+                relpath,
+            )
+
+        routes = data.get("routes")
+        if not isinstance(routes, dict):
+            self.error("AI_ROUTER_ROUTE_SHAPE", "routes must be an object", relpath)
+            routes = {}
+        for route_name in AI_INFRASTRUCTURE_ROUTES:
+            route = routes.get(route_name)
+            if not isinstance(route, dict):
+                self.error("AI_ROUTER_ROUTE_MISSING", f"route is missing: {route_name}", relpath)
+                continue
+            for field in [
+                "use_when",
+                "required_context",
+                "expand_when",
+                "allowed_actions",
+                "approval_gates",
+                "validation",
+                "final_evidence",
+            ]:
+                values = expect_string_list(
+                    route.get(field),
+                    self,
+                    "AI_ROUTER_ROUTE_FIELD",
+                    relpath,
+                    label=f"routes.{route_name}.{field}",
+                )
+                if field == "required_context":
+                    for value in values:
+                        self.check_optional_target_reference(
+                            value, relpath, f"routes.{route_name}.{field}"
+                        )
+                if field == "allowed_actions":
+                    self.check_allowed_actions(
+                        values, relpath, f"routes.{route_name}.{field}"
+                    )
+
+        items = data.get("items")
+        if not isinstance(items, list) or not items:
+            self.error("AI_ROUTER_ITEMS", "items must be a non-empty list", relpath)
+            return
+        item_ids: set[str] = set()
+        for index, item in enumerate(items):
+            label = f"items[{index}]"
+            if not isinstance(item, dict):
+                self.error("AI_ROUTER_ITEM_SHAPE", f"{label} must be an object", relpath)
+                continue
+            item_id = item.get("id")
+            if not isinstance(item_id, str) or not item_id:
+                self.error("AI_ROUTER_ITEM_ID", f"{label}.id must be a string", relpath)
+            elif not is_placeholder(item_id):
+                if item_id in item_ids:
+                    self.error("AI_ROUTER_ITEM_DUPLICATE", f"duplicate item id {item_id}", relpath)
+                item_ids.add(item_id)
+            item_type = item.get("type")
+            if not is_placeholder(item_type) and item_type not in AI_INFRASTRUCTURE_ITEM_TYPES:
+                self.error("AI_ROUTER_ITEM_TYPE", f"{label}.type is invalid: {item_type}", relpath)
+            status = item.get("status")
+            if not is_placeholder(status) and status not in {
+                "active",
+                "blocked",
+                "deprecated",
+                "unresolved",
+            }:
+                self.error(
+                    "AI_ROUTER_ITEM_STATUS",
+                    f"{label}.status is invalid: {status}",
+                    relpath,
+                )
+            for field in [
+                "activation_triggers",
+                "required_context",
+                "assistant_surfaces",
+                "wrappers",
+                "allowed_actions",
+                "required_permissions",
+                "approval_triggers",
+                "gates",
+                "validation",
+                "conflicts_with",
+            ]:
+                values = expect_string_list(
+                    item.get(field),
+                    self,
+                    "AI_ROUTER_ITEM_FIELD",
+                    relpath,
+                    label=f"{label}.{field}",
+                )
+                if field in {"required_context", "wrappers", "gates"}:
+                    for value in values:
+                        self.check_optional_target_reference(value, relpath, f"{label}.{field}")
+                if field == "allowed_actions":
+                    self.check_allowed_actions(values, relpath, f"{label}.{field}")
+            for field in ["canonical_source", "output_contract", "adaptation_record"]:
+                value = item.get(field)
+                if not isinstance(value, str) or not value:
+                    self.error("AI_ROUTER_ITEM_FIELD", f"{label}.{field} must be a string", relpath)
+                elif field != "output_contract":
+                    self.check_optional_target_reference(value, relpath, f"{label}.{field}")
+
+    def load_json_object(self, path: Path, code_prefix: str) -> dict[str, Any] | None:
+        if not path.is_file():
+            return None
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            self.error(f"{code_prefix}_INVALID_JSON", str(exc), self.rel(path))
+            return None
+        if not isinstance(data, dict):
+            self.error(
+                f"{code_prefix}_INVALID_SHAPE",
+                "document must be a JSON object",
+                self.rel(path),
+            )
+            return None
+        return data
+
+    def check_optional_target_reference(self, value: str, source: str, label: str) -> None:
+        if is_placeholder(value) or value in {"none", "not-applicable", "not applicable"}:
+            return
+        if value.startswith(".ai/framework/"):
+            if not self.target_path(value).is_file():
+                self.warn("ROUTED_PATH_MISSING", f"{label} points to missing {value}", source)
+            return
+        if value.startswith(".ai/") and not self.target_path(value).exists():
+            self.warn("ROUTED_PATH_MISSING", f"{label} points to missing {value}", source)
+
+    def check_allowed_actions(self, values: list[str], source: str, label: str) -> None:
+        for value in values:
+            if is_placeholder(value):
+                continue
+            if value not in ALLOWED_ACTION_MODES:
+                self.error(
+                    "AI_ROUTER_ALLOWED_ACTION",
+                    f"{label} contains unsupported allowed-action mode: {value}",
+                    source,
+                )
 
     def check_router_path(self, value: str, profile: str, field: str) -> None:
         if is_placeholder(value):
@@ -907,7 +1295,13 @@ class Validator:
                 )
 
     def check_approval_scope(self) -> None:
+        approval_records = self.resolve_approval_records()
+        if approval_records:
+            self.check_approval_record_shape(approval_records)
+
         if not self.diff_ref:
+            if approval_records:
+                self.check_approval_hash_evidence(approval_records)
             self.info(
                 "DIFF_SCOPE_SKIPPED",
                 "approval scope versus diff check skipped because --diff-ref was not provided",
@@ -925,31 +1319,118 @@ class Validator:
         if not protected:
             self.info("DIFF_SCOPE_CLEAN", "no protected adapter surfaces changed")
             return
-
-        approval_records = sorted(self.target_path(".ai/assistant/approvals").glob("*.md"))
         if not approval_records:
             self.warn(
                 "APPROVAL_RECORD_MISSING",
-                "protected adapter surfaces changed but no approval records exist",
+                "protected adapter surfaces changed but no approval records were supplied or found",
             )
             return
 
-        approval_text = "\n".join(self.read_text(path) for path in approval_records)
-        for required in ["Plan hash:", "Allowed files or surfaces:"]:
-            if required not in approval_text:
-                self.warn(
-                    "APPROVAL_RECORD_FIELD_MISSING",
-                    f"approval records do not include {required}",
-                    ".ai/assistant/approvals",
-                )
-        self.check_approval_hash_evidence(approval_records)
+        applicable: list[Path] = []
+        for record in approval_records:
+            text = self.read_text(record)
+            allowed = extract_list_field(text, "Allowed files or surfaces:")
+            excluded = extract_list_field(text, "Excluded files or surfaces:")
+            covered = [path for path in protected if scope_entries_cover(path, allowed)]
+            if covered:
+                applicable.append(record)
+            for changed in protected:
+                if scope_entries_cover(changed, excluded):
+                    self.warn(
+                        "APPROVAL_SCOPE_EXCLUDED",
+                        f"changed protected file is explicitly excluded: {changed}",
+                        self.rel(record),
+                    )
+
+        self.check_approval_hash_evidence(applicable)
         for changed in protected:
-            if changed in approval_text or covers_with_wildcard(changed, approval_text):
+            if any(
+                scope_entries_cover(
+                    changed,
+                    extract_list_field(self.read_text(record), "Allowed files or surfaces:"),
+                )
+                for record in applicable
+            ):
                 continue
             self.warn(
                 "APPROVAL_SCOPE_MISMATCH",
-                f"changed protected file not named in approval records: {changed}",
+                f"changed protected file is not covered by an explicit approval scope: {changed}",
             )
+
+    def resolve_approval_records(self) -> list[Path]:
+        if self.approval_records:
+            records: list[Path] = []
+            for record in self.approval_records:
+                try:
+                    record.relative_to(self.target)
+                except ValueError:
+                    self.warn(
+                        "APPROVAL_RECORD_OUTSIDE_TARGET",
+                        "supplied approval record must be inside the target repository",
+                        str(record),
+                    )
+                    continue
+                if not record.is_file():
+                    self.warn(
+                        "APPROVAL_RECORD_MISSING",
+                        "supplied approval record does not exist",
+                        self.rel(record),
+                    )
+                    continue
+                records.append(record)
+            return records
+        directory = self.target_path(".ai/assistant/approvals")
+        return sorted(
+            path
+            for path in directory.glob("*.md")
+            if path.name != "approval-template.md"
+        )
+
+    def check_approval_record_shape(self, approval_records: list[Path]) -> None:
+        for record in approval_records:
+            text = self.read_text(record)
+            relpath = self.rel(record)
+            for required in [
+                "Approval ID:",
+                "Operation ID:",
+                "Plan version:",
+                "Plan hash:",
+                "Approved diff base:",
+                "Allowed actions mode:",
+                "Allowed files or surfaces:",
+                "Excluded files or surfaces:",
+                "Scope invalidation rule:",
+                "Approved by:",
+                "Approved at:",
+                "Repository revision at approval:",
+            ]:
+                if required not in text:
+                    self.warn(
+                        "APPROVAL_RECORD_FIELD_MISSING",
+                        f"approval record does not include {required}",
+                        relpath,
+                    )
+            if "Evidence classification: `historical-record`" not in text:
+                self.warn(
+                    "APPROVAL_RECORD_EVIDENCE_CLASS",
+                    "approval record must identify itself as historical-record evidence",
+                    relpath,
+                )
+            for field in ["Allowed files or surfaces:"]:
+                values = extract_list_field(text, field)
+                if not values:
+                    self.warn(
+                        "APPROVAL_RECORD_SCOPE_EMPTY",
+                        f"approval record has no explicit entries under {field}",
+                        relpath,
+                    )
+                for value in values:
+                    if is_placeholder(value) or not is_target_scope_pattern(value):
+                        self.warn(
+                            "APPROVAL_RECORD_SCOPE_INVALID",
+                            f"{field} contains an unresolved or unsafe target pattern: {value}",
+                            relpath,
+                        )
 
     def check_approval_hash_evidence(self, approval_records: list[Path]) -> None:
         for record in approval_records:
@@ -1246,7 +1727,9 @@ def is_unresolved_value(value: str) -> bool:
     return normalized in UNRESOLVED_WORDS or is_placeholder(value)
 
 
-def is_placeholder(value: str) -> bool:
+def is_placeholder(value: Any) -> bool:
+    if not isinstance(value, str):
+        return False
     stripped = value.strip()
     return stripped.startswith("{") and stripped.endswith("}")
 
@@ -1379,13 +1862,43 @@ def is_protected_surface(path: str) -> bool:
     return path in protected_files or any(path.startswith(prefix) for prefix in protected_prefixes)
 
 
-def covers_with_wildcard(path: str, approval_text: str) -> bool:
-    if ".ai/*" in approval_text and path.startswith(".ai/"):
-        return True
-    parts = path.split("/")
-    for index in range(1, len(parts)):
-        prefix = "/".join(parts[:index])
-        if f"{prefix}/*" in approval_text:
+def extract_list_field(text: str, label: str) -> list[str]:
+    lines = text.splitlines()
+    for index, line in enumerate(lines):
+        if line.strip() != label:
+            continue
+        values: list[str] = []
+        for candidate in lines[index + 1 :]:
+            stripped = candidate.strip()
+            if not stripped:
+                if values:
+                    break
+                continue
+            if not stripped.startswith("- "):
+                break
+            value = strip_backticks(stripped[2:].strip())
+            if value.lower() not in {"none", "not applicable", "not-applicable"}:
+                values.append(value)
+        return values
+    return []
+
+
+def is_target_scope_pattern(value: str) -> bool:
+    if not value or value.startswith(("/", "\\")):
+        return False
+    if re.match(r"^[A-Za-z]:[\\/]", value):
+        return False
+    normalized = value.replace("\\", "/")
+    return ".." not in normalized.split("/")
+
+
+def scope_entries_cover(path: str, entries: list[str]) -> bool:
+    normalized = path.replace("\\", "/")
+    for entry in entries:
+        if is_placeholder(entry) or not is_target_scope_pattern(entry):
+            continue
+        pattern = entry.replace("\\", "/")
+        if normalized == pattern or fnmatch.fnmatchcase(normalized, pattern):
             return True
     return False
 
@@ -1396,6 +1909,21 @@ def sha256(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(chunk)
     return digest.hexdigest()
+
+
+def git_head_revision(target: Path) -> str | None:
+    result = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=target,
+        check=False,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+    )
+    if result.returncode != 0:
+        return None
+    revision = result.stdout.strip()
+    return revision or None
 
 
 def markdown_sections(text: str) -> dict[str, list[str]]:
@@ -1618,9 +2146,18 @@ def findings_payload(
     infos = sum(1 for finding in findings if finding.level == "info")
     exit_code = result_code(findings, strict_warnings=strict_warnings)
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "tool": "validate_target_adapter",
         "target": str(target),
+        "evidence": {
+            "basis": "current-state-structural",
+            "observed_revision": git_head_revision(target),
+            "historical_actions_verified": False,
+            "limitation": (
+                "Current files do not prove historical installation, update, "
+                "approval, or validation actions without dated records."
+            ),
+        },
         "status": "failed" if exit_code else "passed",
         "strict_warnings": strict_warnings,
         "counts": {
@@ -1668,6 +2205,16 @@ def main() -> int:
         help=(
             "Optional git ref used to compare protected changed files with "
             "approval-record scope."
+        ),
+    )
+    parser.add_argument(
+        "--approval-record",
+        type=Path,
+        action="append",
+        default=[],
+        help=(
+            "Approval record to bind to --diff-ref. Relative paths are resolved "
+            "inside the target. May be provided multiple times."
         ),
     )
     parser.add_argument(
@@ -1719,6 +2266,7 @@ def main() -> int:
         args.target,
         framework_source=args.framework_source,
         diff_ref=args.diff_ref,
+        approval_records=args.approval_record,
         migration_diff=args.migration_diff,
         allow_placeholders=args.allow_placeholders,
         allow_local_paths=args.allow_local_path,

@@ -201,10 +201,10 @@ path and protected surfaces.
 
 `validate_target_adapter.py` validates structural consistency of an installed
 Alatyr adapter in a target repository. It checks router/bootstrap references,
-unresolved placeholders, hard-coded local paths, stale checker claims,
-manifest fields, target-local checker coverage, optional approval scope
-against a supplied git diff, and optional `.ai/framework` drift against an
-AlatyrCore source checkout.
+consistency-map and AI-infrastructure-router schemas when present, unresolved
+placeholders, hard-coded local paths, stale checker claims, manifest fields,
+target-local checker coverage, optional approval scope against a supplied git
+diff, and optional `.ai/framework` drift against an AlatyrCore source checkout.
 
 It does not install Alatyr Core, inspect project business truth, approve
 protected changes, run target validation, or replace assistant logical
@@ -214,6 +214,11 @@ Use `--json` or `--output <file>` when a target CI job or assistant recheck
 needs machine-readable findings. The JSON output contains severity counts,
 exit status, and stable finding objects with `level`, `code`, `message`, and
 optional `path`.
+
+Validator JSON classifies its findings as `current-state-structural` evidence.
+It does not treat current files as proof that historical installation,
+approval, update, or validation actions occurred. Supply dated repository
+records separately when historical evidence is required.
 
 An installed adapter may optionally provide
 `.ai/assistant/validator-config.json`. The config can add allowed local path
@@ -252,6 +257,7 @@ Linux or macOS:
 python3 tools/validate_target_adapter.py --target /path/to/target-repo
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --framework-source /path/to/AlatyrCore
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --diff-ref origin/main
+python3 tools/validate_target_adapter.py --target /path/to/target-repo --diff-ref origin/main --approval-record .ai/assistant/approvals/change-approval.md
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --json --output tmp/alatyr-adapter-report.json
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --framework-source /path/to/AlatyrCore --migration-diff /path/to/migration-report.md
 ```
@@ -268,6 +274,21 @@ Windows Command Prompt:
 
 ```bat
 tools\validate_target_adapter.cmd --target C:\path\to\target-repo
+```
+
+## Target Adapter Validator Contract Check
+
+`check_target_adapter_validator.py` exercises the source validator's schema
+compatibility, consistency-map and AI-router findings, explicit approval-scope
+matching, and current-state evidence classification. It validates AlatyrCore
+source tooling only.
+
+```sh
+python3 tools/check_target_adapter_validator.py
+```
+
+```powershell
+py -3 .\tools\check_target_adapter_validator.py
 ```
 
 ## Framework Metadata Check

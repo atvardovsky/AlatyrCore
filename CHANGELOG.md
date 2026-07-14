@@ -15,6 +15,10 @@
   tools/MCP configs, bridges, and wrappers, plus durable adaptation records for
   provenance, permissions, rejected source instructions, validation, and
   output contracts.
+- Hardened the portable target adapter validator with consistency-map and AI
+  infrastructure router checks, schema-1 router compatibility, explicit
+  approval-scope matching, plan and diff evidence binding, and current-state
+  versus historical evidence classification.
 
 - Initial Alatyr Core standalone framework repository.
 - Added portable framework docs, assistant installation flow, readiness

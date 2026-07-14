@@ -6,13 +6,16 @@ record.
 Approval ID: `{APPROVAL_ID}`
 Operation ID: `{OPERATION_ID}`
 Operation type: `{OPERATION_TYPE}`
+Evidence classification: `historical-record`
 Plan version: `{PLAN_VERSION}`
 Plan hash: `{PLAN_HASH_OR_NOT_AVAILABLE_WITH_REASON}`
 Approved plan file: `{APPROVED_PLAN_FILE_OR_NOT_AVAILABLE_WITH_REASON}`
+Approved diff base: `{APPROVED_DIFF_BASE_OR_NOT_AVAILABLE_WITH_REASON}`
 Patch hash: `{PATCH_HASH_OR_NOT_AVAILABLE_WITH_REASON}`
 Requested by: `{REQUESTED_BY}`
 Approved by: `{APPROVED_BY}`
 Approved at: `{APPROVED_AT}`
+Repository revision at approval: `{REPOSITORY_REVISION_OR_NOT_AVAILABLE_WITH_REASON}`
 Approval source/message: `{APPROVAL_SOURCE_OR_MESSAGE_REFERENCE}`
 Expires at or reuse policy: `{EXPIRATION_OR_REUSE_POLICY}`
 Scope invalidation rule: `{APPROVAL_INVALIDATION_RULE}`
@@ -26,6 +29,10 @@ Allowed protected changes:
 Allowed files or surfaces:
 
 - `{ALLOWED_FILE_OR_SURFACE}`
+
+Excluded files or surfaces:
+
+- `{EXCLUDED_FILE_OR_SURFACE_OR_NONE}`
 
 Excluded actions:
 

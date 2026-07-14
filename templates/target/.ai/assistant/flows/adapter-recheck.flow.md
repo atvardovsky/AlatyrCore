@@ -78,7 +78,10 @@ Replace placeholders with target facts before accepting installation.
 14. Use `.ai/assistant/templates/effectiveness-report.md` only when comparing
     adapter effectiveness across comparable tasks or adapter states.
 15. Run target validation that exists. Do not invent commands.
-16. Report final evidence and residual risk.
+16. Classify final evidence as `current-state`, `historical-record`, or `mixed`.
+    Current files prove current structure only; name dated operation, approval,
+    validation, or migration records before making historical claims.
+17. Report final evidence and residual risk.
 
 ## Final Evidence
 
@@ -88,6 +91,8 @@ Report:
 - framework baseline or update source
 - framework version, adapter schema version, and template version
 - files inspected
+- evidence basis, observation time, and repository revision when available
+- historical records used and historical claims that remain unverifiable
 - adapter references changed or still current
 - adapter drift checks result, including local path leakage, stale checker
   statements, duplicate profile references, context-router references, owner

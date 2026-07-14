@@ -200,19 +200,22 @@ machine-detectable structural drift:
 python3 tools/validate_target_adapter.py --target /path/to/target-repo
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --framework-source /path/to/AlatyrCore
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --json --output tmp/alatyr-adapter-report.json
+python3 tools/validate_target_adapter.py --target /path/to/target-repo --diff-ref origin/main --approval-record .ai/assistant/approvals/change-approval.md
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --framework-source /path/to/AlatyrCore --migration-diff /path/to/migration-report.md
 ```
 
 Windows users may run the same helper through `py -3` or the provided
 Command Prompt and PowerShell wrappers under `tools/`.
 
-This validator can check router/bootstrap references, unresolved placeholders,
+This validator can check router/bootstrap references, consistency-map and AI
+infrastructure router contracts when present, unresolved placeholders,
 absolute local path leakage, stale checker claims, manifest fields,
-target-local checker coverage, approval records against a supplied git diff,
-optional framework baseline drift, and migration-diff evidence when supplied.
-It can emit JSON findings for target CI or assistant recheck evidence. It does
-not inspect target business truth, approve protected changes, replace target
-validation, or replace assistant logical integrity review.
+target-local checker coverage, explicit approval-record scope against a
+supplied git diff, optional framework baseline drift, and migration-diff
+evidence when supplied. Its JSON is current-state structural evidence, not
+proof of historical actions. It does not inspect target business truth,
+approve protected changes, replace target validation, or replace assistant
+logical integrity review.
 
 ## Rejection Criteria
 

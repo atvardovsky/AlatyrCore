@@ -96,6 +96,18 @@ CI, assistant rechecks, or final reports, but it remains structural evidence.
 It does not decide source-of-truth correctness or replace logical integrity
 review.
 
+Classify evidence before making a claim:
+
+- `current-state` records what can be observed in the repository now
+- `historical-record` records a dated operation, approval, validation run, or
+  migration event with its source and repository revision when available
+- `mixed` combines current-state observations with named historical records
+
+The presence of a file in the current tree does not prove who created it,
+which installer or assistant action ran, whether approval preceded the change,
+or whether historical validation passed. Mark those claims unverifiable unless
+dated records provide the evidence.
+
 ## Target-Dependent Guarantees
 
 An installed adapter can provide stronger guarantees only when the target
