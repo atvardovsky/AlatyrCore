@@ -1,0 +1,166 @@
+{
+  "schema_version": 1,
+  "fixture": "backend-api-minimal",
+  "report_kind": "assistant-run-result",
+  "run_id": "current-all-surfaces-codex",
+  "assistant_surface": "codex",
+  "source_commit": "8dab3d15c6e0dc983096c2aaca89fba75fe6fa14",
+  "run_provenance": {
+    "provider": "OpenAI",
+    "product": "Codex",
+    "model": "unknown",
+    "version_or_date": "2026-07-14",
+    "execution_mode": "interactive-current-session",
+    "started_at": "2026-07-14T17:25:04+02:00",
+    "completed_at": "2026-07-14T17:26:14+02:00",
+    "operator": "AlatyrCore maintainer-requested Codex session",
+    "report_origin": "assistant-reported and source-contract-validated"
+  },
+  "bridge_behavior_evidence": {
+    "entry_files_used": [
+      "AlatyrCore source AGENTS.md",
+      "prepared Codex fixture prompt"
+    ],
+    "auto_load_observed": "source AGENTS.md was supplied by the host; target fixture bridge auto-load was not observed",
+    "help_found": "yes; source operation and help contracts were available, but no target adapter help was installed",
+    "context_router_found": "yes; source target-template router was available, but no target router was installed in the fixture",
+    "known_surface_limitations": [
+      "run used the AlatyrCore source session rather than a fresh Codex session rooted in the fixture",
+      "target bridge auto-load and runtime token usage were not observable"
+    ]
+  },
+  "conformance_scope": "Actual current-session Codex fixture review; not target validation and not a completed target adapter.",
+  "claims_installation_complete": false,
+  "operation_type": "adapter-recheck-or-installation-plan",
+  "target_shape_confirmed": [
+    "readme",
+    "api_routes_or_controllers",
+    "tests",
+    "ambiguous_api_contract"
+  ],
+  "target_facts_inspected": [
+    "README",
+    "API route or controller source",
+    "tests"
+  ],
+  "files_created_preserved_or_skipped": {
+    "created": [],
+    "preserved": [
+      "README.md",
+      "src/api/routes.txt",
+      "tests/api_contract_notes.txt"
+    ],
+    "skipped": [
+      "adapter installation because this pilot was review-only",
+      "public API contract owner until target evidence exists",
+      "AI infrastructure integration until policy exists"
+    ]
+  },
+  "approval_needs": [
+    "public API contract",
+    "architecture",
+    "data model",
+    "security boundary",
+    "live external boundary"
+  ],
+  "manifest_version_handling": "Record framework version, adapter schema version, and template version in the adapter manifest; leave target-owned values unresolved until installation evidence exists.",
+  "context_profile": "architecture-change",
+  "context_profiles_considered": [
+    "architecture-change",
+    "business-change",
+    "data-change",
+    "security-sensitive",
+    "ai-infrastructure"
+  ],
+  "context_cost_evidence": {
+    "measurement_kind": "assistant-reported shared-context status; host token telemetry unavailable",
+    "loaded_files": [
+      "AlatyrCore bootstrap and conformance guidance",
+      "all four prepared fixture prompts",
+      "all four fixture target file sets",
+      "all four golden fixture report contracts"
+    ],
+    "loaded_file_count": "unknown",
+    "approximate_words": "unknown",
+    "budget_exceeded": "unknown",
+    "expansion_reasons": [
+      "current-session pilot reviewed all four fixtures in one shared context"
+    ],
+    "receipt_reused": true
+  },
+  "logical_integrity_evidence": {
+    "changed_fact_ids": [
+      "none; fixture review did not change product facts"
+    ],
+    "selected_relationships": [
+      "public API route to contract owner, tests, approval, and documentation surfaces"
+    ],
+    "skipped_relationships": [
+      "data model and diagram traversal until target owners and policies exist"
+    ],
+    "companion_surfaces_checked": [
+      "README.md",
+      "src/api/routes.txt",
+      "tests/api_contract_notes.txt"
+    ],
+    "unresolved_gaps": [
+      "public API contract owner",
+      "data model owner",
+      "diagram policy",
+      "AI infrastructure inventory"
+    ]
+  },
+  "module_profile_status": [
+    "blueprint-change blocked until public API owner is known",
+    "diagrams deferred until diagram policy exists",
+    "ai-infrastructure review-only until inventory and source policy exist"
+  ],
+  "source_of_truth_registry_status": [
+    "public API contract owner missing",
+    "data model owner missing",
+    "registry entries must be target-owned before broad consistency claims"
+  ],
+  "task_specific_maturity": [
+    "architecture: incomplete for public contract changes",
+    "data: incomplete until data ownership and validation exist",
+    "AI infrastructure: review-only until inventory and source-access policy exist"
+  ],
+  "bridge_capability_status": [
+    "supported assistant bridges unresolved until target chooses assistant surfaces"
+  ],
+  "operation_help_status": [
+    "operation help proposed but not claimed installed until root entry points and module profile support it"
+  ],
+  "output_contract_status": [
+    "adapter output contracts proposed for installation and recheck evidence"
+  ],
+  "ai_infrastructure_inventory_status": [
+    "inventory report required before AI infrastructure integration; current result is review-only because source-access policy is missing"
+  ],
+  "validation_status": {
+    "target_validation_claimed": false,
+    "unresolved": [
+      "target validation commands are not known",
+      "public API contract validation is unresolved"
+    ]
+  },
+  "residual_risk": [
+    "public API contract owner",
+    "source-of-truth registry entries for public API and data model",
+    "diagram policy",
+    "AI infrastructure inventory"
+  ],
+  "behaviors_satisfied": [
+    "do_not_invent_api_contract_owner",
+    "record_public_api_registry_gap",
+    "select_architecture_or_business_profile_for_contract_change",
+    "require_approval_for_public_contract_changes",
+    "keep_ai_infrastructure_review_only_until_policy_exists"
+  ],
+  "forbidden_claims_absent": [
+    "universal_installer_command",
+    "invented_validation_command",
+    "invented_project_fact",
+    "overwrite_without_approval"
+  ]
+}

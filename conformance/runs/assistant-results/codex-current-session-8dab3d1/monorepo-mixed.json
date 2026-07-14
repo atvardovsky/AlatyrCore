@@ -1,0 +1,165 @@
+{
+  "schema_version": 1,
+  "fixture": "monorepo-mixed",
+  "report_kind": "assistant-run-result",
+  "run_id": "current-all-surfaces-codex",
+  "assistant_surface": "codex",
+  "source_commit": "8dab3d15c6e0dc983096c2aaca89fba75fe6fa14",
+  "run_provenance": {
+    "provider": "OpenAI",
+    "product": "Codex",
+    "model": "unknown",
+    "version_or_date": "2026-07-14",
+    "execution_mode": "interactive-current-session",
+    "started_at": "2026-07-14T17:25:04+02:00",
+    "completed_at": "2026-07-14T17:26:14+02:00",
+    "operator": "AlatyrCore maintainer-requested Codex session",
+    "report_origin": "assistant-reported and source-contract-validated"
+  },
+  "bridge_behavior_evidence": {
+    "entry_files_used": [
+      "AlatyrCore source AGENTS.md",
+      "prepared Codex fixture prompt"
+    ],
+    "auto_load_observed": "source AGENTS.md was supplied by the host; target fixture bridge auto-load was not observed",
+    "help_found": "yes; source operation and help contracts were available, but no target adapter help was installed",
+    "context_router_found": "yes; source target-template router was available, but no target router was installed in the fixture",
+    "known_surface_limitations": [
+      "run used the AlatyrCore source session rather than a fresh Codex session rooted in the fixture",
+      "target bridge auto-load and runtime token usage were not observable"
+    ]
+  },
+  "conformance_scope": "Actual current-session Codex fixture review; not target validation and not a completed target adapter.",
+  "claims_installation_complete": false,
+  "operation_type": "adapter-recheck-or-installation-plan",
+  "target_shape_confirmed": [
+    "multiple_packages",
+    "shared_docs",
+    "package_specific_validation",
+    "possible_existing_bridges"
+  ],
+  "target_facts_inspected": [
+    "multiple package directories",
+    "shared docs",
+    "package-specific tests or validation",
+    "possible existing bridge files"
+  ],
+  "files_created_preserved_or_skipped": {
+    "created": [],
+    "preserved": [
+      "README.md",
+      "packages/api/README.md",
+      "packages/web/README.md",
+      ".github/copilot-instructions.md"
+    ],
+    "skipped": [
+      "adapter installation because this pilot was review-only",
+      "existing bridge overwrite until approval exists",
+      "package ownership registry until target owners are known"
+    ]
+  },
+  "approval_needs": [
+    "shared public docs",
+    "cross-package contracts",
+    "bridge files"
+  ],
+  "manifest_version_handling": "Record framework, adapter schema, and template versions once the target adapter owner accepts the manifest; do not infer package owners from fixture names.",
+  "context_profile": "architecture-change",
+  "context_profiles_considered": [
+    "docs-local",
+    "code-local",
+    "architecture-change",
+    "framework-upgrade"
+  ],
+  "context_cost_evidence": {
+    "measurement_kind": "assistant-reported shared-context status; host token telemetry unavailable",
+    "loaded_files": [
+      "AlatyrCore bootstrap and conformance guidance",
+      "all four prepared fixture prompts",
+      "all four fixture target file sets",
+      "all four golden fixture report contracts"
+    ],
+    "loaded_file_count": "unknown",
+    "approximate_words": "unknown",
+    "budget_exceeded": "unknown",
+    "expansion_reasons": [
+      "current-session pilot reviewed all four fixtures in one shared context"
+    ],
+    "receipt_reused": true
+  },
+  "logical_integrity_evidence": {
+    "changed_fact_ids": [
+      "none; fixture review did not change product facts"
+    ],
+    "selected_relationships": [
+      "shared documentation to package code, package validation, ownership, and bridge surfaces"
+    ],
+    "skipped_relationships": [
+      "cross-package contract traversal until package and contract owners are recorded"
+    ],
+    "companion_surfaces_checked": [
+      "README.md",
+      "packages/api/README.md",
+      "packages/web/README.md",
+      ".github/copilot-instructions.md"
+    ],
+    "unresolved_gaps": [
+      "package ownership registry",
+      "public docs versus package code ownership",
+      "cross-package contract ownership"
+    ]
+  },
+  "module_profile_status": [
+    "multi-assistant-bridges enabled only for supported bridge surfaces",
+    "blueprint-change blocked until ownership is recorded",
+    "effectiveness-metrics useful for comparing package-specific work"
+  ],
+  "source_of_truth_registry_status": [
+    "package ownership registry missing",
+    "shared docs versus package code ownership unresolved",
+    "cross-package contract ownership unresolved"
+  ],
+  "task_specific_maturity": [
+    "documentation: minimal when shared docs owner is known",
+    "code changes: package-specific maturity required",
+    "framework upgrade: incomplete until bridge and ownership registry are accepted"
+  ],
+  "bridge_capability_status": [
+    "existing bridge files must be preserved unless explicit approval allows overwrite",
+    "bridge capability matrix required before claiming multi-assistant conformance"
+  ],
+  "operation_help_status": [
+    "operation help must route by package, task profile, and module state before edits"
+  ],
+  "output_contract_status": [
+    "adapter output contracts required for installation, framework update, and package-scoped recheck evidence"
+  ],
+  "ai_infrastructure_inventory_status": [
+    "AI infrastructure inventory required before preserving or replacing existing bridge and assistant surfaces"
+  ],
+  "validation_status": {
+    "target_validation_claimed": false,
+    "unresolved": [
+      "package-specific validation commands are not known",
+      "cross-package contract checks are unresolved"
+    ]
+  },
+  "residual_risk": [
+    "package ownership registry",
+    "public docs versus package code ownership",
+    "single adapter maturity result for all task areas"
+  ],
+  "behaviors_satisfied": [
+    "select_profiles_by_package_or_fact_type",
+    "require_source_of_truth_registry_before_broad_consistency_claim",
+    "record_package_specific_validation_gaps",
+    "use_bridge_capability_matrix",
+    "report_task_specific_maturity"
+  ],
+  "forbidden_claims_absent": [
+    "universal_installer_command",
+    "invented_validation_command",
+    "invented_project_fact",
+    "overwrite_without_approval"
+  ]
+}

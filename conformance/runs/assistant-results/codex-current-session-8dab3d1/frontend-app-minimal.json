@@ -1,0 +1,160 @@
+{
+  "schema_version": 1,
+  "fixture": "frontend-app-minimal",
+  "report_kind": "assistant-run-result",
+  "run_id": "current-all-surfaces-codex",
+  "assistant_surface": "codex",
+  "source_commit": "8dab3d15c6e0dc983096c2aaca89fba75fe6fa14",
+  "run_provenance": {
+    "provider": "OpenAI",
+    "product": "Codex",
+    "model": "unknown",
+    "version_or_date": "2026-07-14",
+    "execution_mode": "interactive-current-session",
+    "started_at": "2026-07-14T17:25:04+02:00",
+    "completed_at": "2026-07-14T17:26:14+02:00",
+    "operator": "AlatyrCore maintainer-requested Codex session",
+    "report_origin": "assistant-reported and source-contract-validated"
+  },
+  "bridge_behavior_evidence": {
+    "entry_files_used": [
+      "AlatyrCore source AGENTS.md",
+      "prepared Codex fixture prompt"
+    ],
+    "auto_load_observed": "source AGENTS.md was supplied by the host; target fixture bridge auto-load was not observed",
+    "help_found": "yes; source operation and help contracts were available, but no target adapter help was installed",
+    "context_router_found": "yes; source target-template router was available, but no target router was installed in the fixture",
+    "known_surface_limitations": [
+      "run used the AlatyrCore source session rather than a fresh Codex session rooted in the fixture",
+      "target bridge auto-load and runtime token usage were not observable"
+    ]
+  },
+  "conformance_scope": "Actual current-session Codex fixture review; not target validation and not a completed target adapter.",
+  "claims_installation_complete": false,
+  "operation_type": "adapter-recheck-or-installation-plan",
+  "target_shape_confirmed": [
+    "readme",
+    "ui_source",
+    "build_metadata",
+    "missing_visual_validation_policy"
+  ],
+  "target_facts_inspected": [
+    "README",
+    "UI source",
+    "build metadata"
+  ],
+  "files_created_preserved_or_skipped": {
+    "created": [],
+    "preserved": [
+      "README.md",
+      "package.json",
+      "src/App.txt"
+    ],
+    "skipped": [
+      "adapter installation because this pilot was review-only",
+      "visual validation command until target evidence exists",
+      "root assistant bridge overwrite until approval exists"
+    ]
+  },
+  "approval_needs": [
+    "UI behavior",
+    "public product behavior"
+  ],
+  "manifest_version_handling": "Record framework version, adapter schema version, and template version in the adapter manifest; keep local validation and supported assistants unresolved until target evidence exists.",
+  "context_profile": "docs-local",
+  "context_profiles_considered": [
+    "docs-local",
+    "business-change",
+    "code-local"
+  ],
+  "context_cost_evidence": {
+    "measurement_kind": "assistant-reported shared-context status; host token telemetry unavailable",
+    "loaded_files": [
+      "AlatyrCore bootstrap and conformance guidance",
+      "all four prepared fixture prompts",
+      "all four fixture target file sets",
+      "all four golden fixture report contracts"
+    ],
+    "loaded_file_count": "unknown",
+    "approximate_words": "unknown",
+    "budget_exceeded": "unknown",
+    "expansion_reasons": [
+      "current-session pilot reviewed all four fixtures in one shared context"
+    ],
+    "receipt_reused": true
+  },
+  "logical_integrity_evidence": {
+    "changed_fact_ids": [
+      "none; fixture review did not change product facts"
+    ],
+    "selected_relationships": [
+      "UI behavior to source, visual validation, accessibility, and public behavior surfaces"
+    ],
+    "skipped_relationships": [
+      "diagram traversal until the target defines a diagram policy"
+    ],
+    "companion_surfaces_checked": [
+      "README.md",
+      "package.json",
+      "src/App.txt"
+    ],
+    "unresolved_gaps": [
+      "visual validation policy",
+      "accessibility policy",
+      "diagram policy",
+      "root assistant entry points"
+    ]
+  },
+  "module_profile_status": [
+    "installed-operations enabled only after root assistant entry points exist",
+    "diagrams not-applicable or deferred until target diagram policy exists",
+    "effectiveness-metrics deferred unless the target wants measurement"
+  ],
+  "source_of_truth_registry_status": [
+    "visual validation owner missing",
+    "UI behavior owner must be target-defined before behavior changes"
+  ],
+  "task_specific_maturity": [
+    "documentation: minimal after root entry points exist",
+    "code changes: incomplete until validation and visual review policy exist",
+    "architecture: not assessed from this fixture"
+  ],
+  "bridge_capability_status": [
+    "root assistant entry points are proposed but not overwritten without approval"
+  ],
+  "operation_help_status": [
+    "short help and help reference proposed after root assistant entry points are approved"
+  ],
+  "output_contract_status": [
+    "adapter output contracts proposed for installation evidence and later recheck"
+  ],
+  "ai_infrastructure_inventory_status": [
+    "AI infrastructure inventory skipped until target asks for assistant infrastructure review"
+  ],
+  "validation_status": {
+    "target_validation_claimed": false,
+    "unresolved": [
+      "build command is not claimed from fixture metadata",
+      "visual validation policy is missing"
+    ]
+  },
+  "residual_risk": [
+    "visual validation policy",
+    "accessibility policy",
+    "diagram policy",
+    "root assistant entry points"
+  ],
+  "behaviors_satisfied": [
+    "propose_root_assistant_entry_points",
+    "mark_visual_validation_missing",
+    "use_docs_local_for_wording_only_updates",
+    "use_business_change_for_ui_behavior_changes",
+    "do_not_invent_build_or_screenshot_commands"
+  ],
+  "forbidden_claims_absent": [
+    "universal_installer_command",
+    "invented_validation_command",
+    "invented_project_fact",
+    "overwrite_without_approval"
+  ]
+}

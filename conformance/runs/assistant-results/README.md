@@ -19,3 +19,10 @@ consistency gaps. Use `unknown` with a reason instead of inventing measurements.
 
 This directory may stay empty except for this README until a reviewed
 assistant conformance run is captured.
+
+Captured runs:
+
+- `codex-current-session-8dab3d1/` records a constrained Codex pilot against
+  all four fixtures. It is useful assistant-produced evidence, but it did not
+  run in fresh sessions rooted in each fixture and did not observe target
+  bridge auto-loading or host token telemetry.
