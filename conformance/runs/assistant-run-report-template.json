@@ -33,6 +33,36 @@
   "context_profiles_considered": [
     "{CONTEXT_PROFILE}"
   ],
+  "context_cost_evidence": {
+    "measurement_kind": "{ACTUAL_OBSERVATION_ASSISTANT_REPORTED_OR_UNKNOWN}",
+    "loaded_files": [
+      "{LOADED_CONTEXT_FILE_OR_UNKNOWN}"
+    ],
+    "loaded_file_count": "{COUNT_OR_UNKNOWN}",
+    "approximate_words": "{COUNT_OR_UNKNOWN}",
+    "budget_exceeded": "{YES_NO_OR_UNKNOWN}",
+    "expansion_reasons": [
+      "{CONTEXT_EXPANSION_REASON_OR_NONE}"
+    ],
+    "receipt_reused": "{YES_NO_OR_UNKNOWN}"
+  },
+  "logical_integrity_evidence": {
+    "changed_fact_ids": [
+      "{CHANGED_FACT_ID_OR_NONE_WITH_REASON}"
+    ],
+    "selected_relationships": [
+      "{SELECTED_RELATIONSHIP_OR_NONE_WITH_REASON}"
+    ],
+    "skipped_relationships": [
+      "{SKIPPED_RELATIONSHIP_AND_REASON_OR_NONE}"
+    ],
+    "companion_surfaces_checked": [
+      "{DOC_TEST_DIAGRAM_PROMPT_SKILL_GATE_BRIDGE_OR_OTHER_SURFACE}"
+    ],
+    "unresolved_gaps": [
+      "{UNRESOLVED_CONSISTENCY_GAP_OR_NONE}"
+    ]
+  },
   "module_profile_status": [
     "{MODULE_STATE_EVIDENCE}"
   ],

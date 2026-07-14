@@ -124,5 +124,20 @@ For each fixture, compare:
   behaviors, and forbidden claims
 - captured assistant-run reports when a fixture conformance run has been
   reviewed and recorded
+- loaded context, approximate volume, budget expansion, and context-receipt
+  evidence from captured runs
+- changed fact IDs, selected and skipped consistency relationships, companion
+  surfaces, and unresolved logical-integrity gaps
 - assistant-run summaries comparing surface coverage, fixture coverage,
-  residual risks, and unresolved validation
+  context cost, consistency evidence, residual risks, and unresolved validation
+
+The deterministic static router baseline is stored at
+`conformance/golden/context-cost-baseline.json`. Refresh it only after reviewing
+the changed file and word costs reported by:
+
+```sh
+python3 tools/report_context_costs.py
+```
+
+This baseline is not model token usage. Actual assistant-run reports remain the
+source for runtime context and logical-integrity evidence.

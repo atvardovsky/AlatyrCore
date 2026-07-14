@@ -20,6 +20,8 @@
     "source_of_truth_registry_status",
     "approval_needs",
     "context_profile",
+    "context_cost_evidence",
+    "logical_integrity_evidence",
     "module_profile_status",
     "task_specific_maturity",
     "operation_help_status",

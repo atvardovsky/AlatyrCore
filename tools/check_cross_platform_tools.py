@@ -20,6 +20,7 @@ EXPECTED_COMMANDS = {
     "validate-adapter",
     "migration-report",
     "assess-upgrade",
+    "context-costs",
 }
 ALLOWED_WRITE_SCOPES = {
     "none",
@@ -113,8 +114,8 @@ def main() -> int:
             str(output),
             "--allow-placeholders",
         )
-        if assessment.returncode not in {0, 1}:
-            failures.append("upgrade assessment did not complete deterministically")
+        if assessment.returncode != 0:
+            failures.append("fresh scaffold upgrade assessment reported structural errors")
         after = tree_hashes(target)
         if before != after:
             failures.append("upgrade assessment modified target repository files")
@@ -136,6 +137,8 @@ def main() -> int:
         payload = json.loads((output / "adapter-validation.json").read_text(encoding="utf-8"))
         if payload.get("evidence", {}).get("basis") != "current-state-structural":
             failures.append("upgrade assessment validator evidence is not current-state")
+        if payload.get("counts", {}).get("errors") != 0:
+            failures.append("fresh scaffold validator evidence contains errors")
 
     if failures:
         for failure in failures:

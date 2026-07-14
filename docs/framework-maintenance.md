@@ -82,9 +82,15 @@ Before accepting a change, check:
   assistant surfaces, bridge paths, auto-load behavior, skill/prompt support,
   tool permissions, help alias routing, limitations, or conformance guidance
   changes.
+- `python3 tools/check_assistant_surface_conformance.py` passes when supported
+  surface IDs, bridge paths, compact bootstrap, help routing, or prepared
+  conformance prompts change.
 - `python3 tools/check_context_router.py` passes when target context-router
   profile names, required context, approval gates, validation, final evidence,
   or framework-routing coverage changes.
+- `python3 tools/check_context_costs.py` passes when bootstrap/profile paths,
+  context budgets, or routed source word counts change; refresh the golden
+  baseline only after reviewing the cost difference.
 - `python3 tools/check_consistency_map.py` passes when consistency levels,
   relationship types, impact traversal, source registry linkage, manifest
   routing, or map placeholders change.
@@ -140,6 +146,8 @@ Before accepting a change, check:
   an actual assistant-run conformance pass.
 - `python3 tools/check_conformance_reports.py` passes when fixture expected
   evidence contracts or golden assistant-result reports change.
+- `python3 tools/check_conformance_summary.py` passes when captured-run context
+  cost, logical-integrity evidence, or summary output changes.
 - `python3 tools/check_conformance_reports.py --actual-dir conformance/runs/assistant-results`
   can validate captured assistant-run reports when reviewed run JSON exists.
 - Add `--require-actual-reports` when the maintenance task expects captured

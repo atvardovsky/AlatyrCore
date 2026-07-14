@@ -20,8 +20,10 @@ CHECKS = [
     ["tools/check_approval_template.py"],
     ["tools/check_ai_infrastructure_inventory.py"],
     ["tools/check_ai_infrastructure_router.py"],
+    ["tools/check_assistant_surface_conformance.py"],
     ["tools/check_bridge_capability_matrix.py"],
     ["tools/check_context_router.py"],
+    ["tools/check_context_costs.py"],
     ["tools/check_consistency_map.py"],
     ["tools/check_cross_platform_tools.py"],
     ["tools/check_large_task_orchestration.py"],
@@ -42,6 +44,7 @@ CHECKS = [
     ["tools/render_bridge_templates.py"],
     ["tools/check_conformance_fixtures.py"],
     ["tools/check_conformance_reports.py"],
+    ["tools/check_conformance_summary.py"],
     ["tools/run_conformance_scaffold.py"],
     [
         "tools/report_migration_diff.py",

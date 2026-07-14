@@ -40,6 +40,7 @@ The stable command set is:
 - `validate-adapter`: optional explicit report output only
 - `migration-report`: optional explicit report output only
 - `assess-upgrade`: explicit assessment output only; no adapter changes
+- `context-costs`: optional static context-cost report output only
 
 ## Source Validation Runner
 
@@ -327,6 +328,27 @@ python3 tools/check_target_adapter_validator.py
 
 ```powershell
 py -3 .\tools\check_target_adapter_validator.py
+```
+
+## Context Cost And Assistant Surface Checks
+
+`report_context_costs.py` resolves target router paths to source templates and
+reports declared files plus whitespace word counts for bootstrap, profiles,
+and migration-first routing. It is a deterministic static estimate, not model
+token usage.
+
+```sh
+python3 tools/alatyr.py context-costs
+python3 tools/report_context_costs.py --output tmp/context-costs.json
+python3 tools/check_context_costs.py
+```
+
+`check_assistant_surface_conformance.py` checks compact bridge routing and
+prepares one fixture prompt for every supported assistant surface without
+running an assistant:
+
+```sh
+python3 tools/check_assistant_surface_conformance.py
 ```
 
 ## Framework Metadata Check
@@ -640,8 +662,12 @@ when a full run should cover every fixture.
 
 `summarize_conformance_reports.py` summarizes captured assistant-run reports by
 assistant surface and fixture after validating the report contracts. It is for
-comparing reviewed run outputs, adapter evidence status, residual risks, and
-unresolved validation, not for running assistants.
+comparing reviewed run outputs, context cost, logical-integrity evidence,
+adapter evidence status, residual risks, and unresolved validation, not for
+running assistants.
+
+`check_conformance_summary.py` exercises that validator and summary using
+synthetic source-only records. It does not represent an actual assistant run.
 
 `run_conformance_scaffold.py` materializes temporary fixture repositories and
 checks that the source scaffolder preserves seed files while creating
@@ -656,6 +682,7 @@ python3 tools/check_conformance_fixtures.py
 python3 tools/materialize_conformance_fixtures.py --output tmp/conformance-targets
 python3 tools/prepare_conformance_run.py --output tmp/conformance-run --assistant-surface codex
 python3 tools/check_conformance_reports.py
+python3 tools/check_conformance_summary.py
 python3 tools/check_conformance_reports.py --actual-dir conformance/runs/assistant-results
 python3 tools/check_conformance_reports.py --actual-dir conformance/runs/assistant-results --require-actual-reports
 python3 tools/check_conformance_reports.py --actual-dir conformance/runs/assistant-results --require-actual-reports --require-all-fixtures
@@ -671,6 +698,7 @@ py -3 .\tools\check_conformance_fixtures.py
 py -3 .\tools\materialize_conformance_fixtures.py --output tmp\conformance-targets
 py -3 .\tools\prepare_conformance_run.py --output tmp\conformance-run --assistant-surface codex
 py -3 .\tools\check_conformance_reports.py
+py -3 .\tools\check_conformance_summary.py
 py -3 .\tools\check_conformance_reports.py --actual-dir conformance\runs\assistant-results
 py -3 .\tools\check_conformance_reports.py --actual-dir conformance\runs\assistant-results --require-actual-reports
 py -3 .\tools\check_conformance_reports.py --actual-dir conformance\runs\assistant-results --require-actual-reports --require-all-fixtures

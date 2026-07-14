@@ -85,11 +85,17 @@ Machine checks can verify only deterministic repository facts, such as:
 - target profiles route every framework document somewhere
 - target context routers match the profile template and route known framework
   documents somewhere
+- static bootstrap/profile file and word costs remain within declared template
+  budgets
+- supported bridge templates expose the same compact bootstrap, help, and
+  operation-routing entry points
 - manifest, approval, prompt-injection, help, and policy templates contain
   required fields
 
 Machine checks do not prove the assistant understood the target project or
-that project facts are correct.
+that project facts are correct. Prepared prompts and static bridge checks also
+do not prove a vendor actually auto-loaded instructions or stayed within a
+runtime context budget.
 
 Machine-readable validator output can make adapter evidence cheaper to reuse in
 CI, assistant rechecks, or final reports, but it remains structural evidence.

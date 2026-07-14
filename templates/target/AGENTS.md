@@ -27,7 +27,8 @@ Do not rely on previous chat messages for Alatyr state. After installation or
 framework update, or when adapter state is unclear, read the installation note
 and matching post-install/update message named by `.ai/README.md`. Use
 `.ai/assistant/help.md` and the operation-routing flow only for help, aliases,
-or genuinely unclear operations.
+or genuinely unclear operations. The canonical routing flow is
+`.ai/assistant/flows/operation-routing.flow.md`.
 
 ## Target Facts
 

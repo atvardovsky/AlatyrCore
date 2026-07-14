@@ -19,6 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "conformance" / "fixtures"
 SHARED = ROOT / "conformance" / "golden" / "shared-expectations.json"
 REPORTS = ROOT / "conformance" / "golden" / "fixture-reports"
+RUN_TEMPLATE = ROOT / "conformance" / "runs" / "assistant-run-report-template.json"
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -104,6 +105,58 @@ def validate_bridge_behavior_evidence(report: dict[str, Any], path: Path) -> Non
             )
 
 
+def validate_context_cost_evidence(
+    report: dict[str, Any], path: Path, *, actual_run: bool
+) -> None:
+    value = require_non_empty(report, "context_cost_evidence", path)
+    if not isinstance(value, dict):
+        raise AssertionError(f"{path} context_cost_evidence must be object")
+    measurement = require_non_empty(value, "measurement_kind", path)
+    if not isinstance(measurement, str):
+        raise AssertionError(f"{path} context_cost_evidence.measurement_kind must be string")
+    if actual_run and measurement == "golden-contract-only":
+        raise AssertionError(f"{path} actual run must record actual context measurement status")
+    loaded = require_non_empty(value, "loaded_files", path)
+    expansions = require_non_empty(value, "expansion_reasons", path)
+    for field, items in [("loaded_files", loaded), ("expansion_reasons", expansions)]:
+        if not isinstance(items, list) or not all(
+            isinstance(item, str) and item for item in items
+        ):
+            raise AssertionError(f"{path} context_cost_evidence.{field} must be string list")
+    for field in ["loaded_file_count", "approximate_words"]:
+        count = require_non_empty(value, field, path)
+        if count != "unknown" and (not isinstance(count, int) or count < 0):
+            raise AssertionError(
+                f"{path} context_cost_evidence.{field} must be non-negative int or unknown"
+            )
+    for field in ["budget_exceeded", "receipt_reused"]:
+        state = require_non_empty(value, field, path)
+        if state not in {True, False, "unknown"}:
+            raise AssertionError(
+                f"{path} context_cost_evidence.{field} must be boolean or unknown"
+            )
+
+
+def validate_logical_integrity_evidence(report: dict[str, Any], path: Path) -> None:
+    value = require_non_empty(report, "logical_integrity_evidence", path)
+    if not isinstance(value, dict):
+        raise AssertionError(f"{path} logical_integrity_evidence must be object")
+    for field in [
+        "changed_fact_ids",
+        "selected_relationships",
+        "skipped_relationships",
+        "companion_surfaces_checked",
+        "unresolved_gaps",
+    ]:
+        items = require_non_empty(value, field, path)
+        if not isinstance(items, list) or not all(
+            isinstance(item, str) and item for item in items
+        ):
+            raise AssertionError(
+                f"{path} logical_integrity_evidence.{field} must be string list"
+            )
+
+
 def validate_report(
     fixture_dir: Path,
     shared: dict[str, Any],
@@ -150,6 +203,8 @@ def validate_report(
 
     validate_files_evidence(report, report_path)
     validate_validation_status(report, report_path)
+    validate_context_cost_evidence(report, report_path, actual_run=actual_run)
+    validate_logical_integrity_evidence(report, report_path)
 
     target_shape = require_string_list(expected, "target_shape", fixture_dir / "expected.json")
     target_shape_confirmed = require_string_list(
@@ -246,6 +301,46 @@ def validate_golden_reports(shared: dict[str, Any]) -> list[str]:
     return failures
 
 
+def validate_run_template(shared: dict[str, Any]) -> list[str]:
+    failures: list[str] = []
+    template = load_json(RUN_TEMPLATE)
+    required = require_string_list(shared, "required_evidence", SHARED)
+    for key in required:
+        if key not in template:
+            failures.append(f"{RUN_TEMPLATE} missing shared evidence key {key}")
+    context = template.get("context_cost_evidence")
+    if not isinstance(context, dict):
+        failures.append(f"{RUN_TEMPLATE} context_cost_evidence must be object")
+    else:
+        for field in [
+            "measurement_kind",
+            "loaded_files",
+            "loaded_file_count",
+            "approximate_words",
+            "budget_exceeded",
+            "expansion_reasons",
+            "receipt_reused",
+        ]:
+            if field not in context:
+                failures.append(f"{RUN_TEMPLATE} context_cost_evidence missing {field}")
+    integrity = template.get("logical_integrity_evidence")
+    if not isinstance(integrity, dict):
+        failures.append(f"{RUN_TEMPLATE} logical_integrity_evidence must be object")
+    else:
+        for field in [
+            "changed_fact_ids",
+            "selected_relationships",
+            "skipped_relationships",
+            "companion_surfaces_checked",
+            "unresolved_gaps",
+        ]:
+            if field not in integrity:
+                failures.append(
+                    f"{RUN_TEMPLATE} logical_integrity_evidence missing {field}"
+                )
+    return failures
+
+
 def validate_actual_reports(
     actual_dir: Path,
     shared: dict[str, Any],
@@ -321,6 +416,7 @@ def main() -> int:
     failures: list[str] = []
     try:
         shared = load_json(SHARED)
+        failures.extend(validate_run_template(shared))
         failures.extend(validate_golden_reports(shared))
         if args.require_all_fixtures and args.actual_dir is None:
             failures.append("--require-all-fixtures requires --actual-dir")

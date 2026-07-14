@@ -7,6 +7,8 @@
     "approval_needs",
     "manifest_version_handling",
     "context_profile",
+    "context_cost_evidence",
+    "logical_integrity_evidence",
     "module_profile_status",
     "source_of_truth_registry_status",
     "task_specific_maturity",

@@ -9,6 +9,11 @@ adapter output contract status, operation help status, AI infrastructure
 inventory status, bridge behavior evidence, and residual-risk details, but
 must not contain secrets or real project facts.
 
+Captured reports should also distinguish measured or assistant-reported
+context cost from unknown values and record logical-integrity evidence:
+changed fact IDs, selected/skipped relationships, companion surfaces, and
+unresolved gaps.
+
 Supported conformance assistant surface IDs are listed in
 `assistant-surfaces.json`. Use `--allow-custom-surface` only for an explicitly
 reviewed assistant outside that list.

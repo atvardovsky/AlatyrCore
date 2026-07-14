@@ -46,6 +46,36 @@
     "code-local",
     "security-sensitive"
   ],
+  "context_cost_evidence": {
+    "measurement_kind": "golden-contract-only",
+    "loaded_files": [
+      "not measured by source golden contract"
+    ],
+    "loaded_file_count": "unknown",
+    "approximate_words": "unknown",
+    "budget_exceeded": "unknown",
+    "expansion_reasons": [
+      "not measured by source golden contract"
+    ],
+    "receipt_reused": "unknown"
+  },
+  "logical_integrity_evidence": {
+    "changed_fact_ids": [
+      "not asserted by source golden contract"
+    ],
+    "selected_relationships": [
+      "not measured by source golden contract"
+    ],
+    "skipped_relationships": [
+      "not measured by source golden contract"
+    ],
+    "companion_surfaces_checked": [
+      "expected behavior and evidence contract only"
+    ],
+    "unresolved_gaps": [
+      "see residual_risk"
+    ]
+  },
   "module_profile_status": [
     "required core missing source-of-truth registry",
     "multi-assistant-bridges blocked until supported assistants are known",

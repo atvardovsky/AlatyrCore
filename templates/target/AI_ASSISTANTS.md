@@ -5,8 +5,8 @@ the canonical instruction file.
 
 Before making changes:
 
-1. Treat `AGENTS.md` as preloaded; then read `.ai/alatyr.yaml`,
-   `.ai/README.md`, and `.ai/assistant/context-router.json`.
+1. Ensure `AGENTS.md` is loaded once; if it was not preloaded by the host,
+   read it now. Then read `.ai/alatyr.yaml`, `.ai/README.md`, and `.ai/assistant/context-router.json`.
 2. Select the smallest task profile and project-area overlays, then read only
    their required framework, project, assistant, flow, gate, policy, and
    validation files.

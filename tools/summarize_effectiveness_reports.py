@@ -22,12 +22,20 @@ REQUIRED_FIELDS = [
     "operation_id",
     "context_files_loaded",
     "approximate_context_volume",
+    "context_expansions",
+    "context_receipt_reused",
+    "context_budget_exceeded",
     "clarifications",
     "approvals_requested",
     "validation",
     "hallucinated_commands",
     "missed_companion_updates",
     "rework_count",
+    "changed_fact_count",
+    "relationships_reviewed",
+    "companion_surfaces_checked",
+    "unresolved_consistency_gaps",
+    "duration_seconds",
     "protected_changes_blocked",
     "residual_risks",
     "outcome",
@@ -38,10 +46,16 @@ OUTCOMES = {"accepted", "rework", "blocked"}
 COUNT_FIELDS = [
     "context_files_loaded",
     "approximate_context_volume",
+    "context_expansions",
     "clarifications",
     "approvals_requested",
     "missed_companion_updates",
     "rework_count",
+    "changed_fact_count",
+    "relationships_reviewed",
+    "companion_surfaces_checked",
+    "unresolved_consistency_gaps",
+    "duration_seconds",
     "protected_changes_blocked",
 ]
 
@@ -106,10 +120,16 @@ def validate_report(report: dict[str, Any], index: int) -> list[str]:
         "validation",
         "hallucinated_commands",
         "residual_risks",
+        "context_receipt_reused",
+        "context_budget_exceeded",
     ]:
         value = report.get(field)
         if not isinstance(value, str) or not value:
             failures.append(f"report {index} {field} must be a non-empty string")
+
+    for field in ["context_receipt_reused", "context_budget_exceeded"]:
+        if report.get(field) not in {"yes", "no", "unknown"}:
+            failures.append(f"report {index} {field} must be yes, no, or unknown")
 
     return failures
 

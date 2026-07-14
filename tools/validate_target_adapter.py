@@ -1151,8 +1151,20 @@ class Validator:
                     "operation routing should load bootstrap context before profile context",
                     ".ai/assistant/flows/operation-routing.flow.md",
                 )
-            broad_marker = "`.ai/framework`,\n   `.ai/project`"
-            if broad_marker in text or "all `.ai/framework`" in text:
+            positive_broad_load = any(
+                re.search(r"\b(?:load|read)\s+(?:all\s+)?`\.ai/framework`", line, re.IGNORECASE)
+                and not re.search(
+                    r"\b(?:do not|don't|never|avoid)\b.*\b(?:load|read)\b",
+                    line,
+                    re.IGNORECASE,
+                )
+                for line in text.splitlines()
+            )
+            legacy_broad_load = (
+                "Load `AGENTS.md`, `AI_ASSISTANTS.md`, `.ai/README.md`, "
+                "`.ai/framework`"
+            ) in text
+            if positive_broad_load or legacy_broad_load:
                 self.error(
                     "ROUTING_LOADS_BROAD_CONTEXT",
                     "operation routing appears to load broad framework/project context before routing",
@@ -1293,7 +1305,13 @@ class Validator:
         checker_commands: list[str],
     ) -> None:
         checker_exists = bool(checker_files or checker_commands)
-        adapter_text_files = self.scan_text_files()
+        # Portable framework guidance may name the optional source validator.
+        # Only target-owned adapter surfaces can make target-local checker claims.
+        adapter_text_files = [
+            path
+            for path in self.scan_text_files()
+            if not self.rel(path).startswith(".ai/framework/")
+        ]
         for path in adapter_text_files:
             text = self.read_text(path)
             if checker_exists and CHECKER_MISSING_RE.search(text):

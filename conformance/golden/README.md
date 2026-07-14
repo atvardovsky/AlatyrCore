@@ -21,6 +21,9 @@ Every fixture result should include:
 - protected changes and approval needs
 - manifest/version handling
 - context profile used
+- context files, approximate volume, budget expansion, and receipt reuse
+- changed facts, relationship traversal, companion surfaces, and unresolved
+  consistency gaps
 - source-of-truth registry status
 - task-specific maturity result
 - bridge capability status
@@ -34,6 +37,12 @@ Validate report contracts with:
 
 ```sh
 python3 tools/check_conformance_reports.py
+```
+
+Validate the deterministic static router cost baseline with:
+
+```sh
+python3 tools/check_context_costs.py
 ```
 
 Validate captured assistant-run reports against the same fixture contracts

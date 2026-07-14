@@ -226,6 +226,8 @@ Report:
 - root entry-point and bridge compact-bootstrap references checked
 - context budgets, task-scale/project-area overlays, and receipt fields adapted or
   explicitly deferred
+- static context-cost baseline reviewed and runtime context evidence requested
+  or explicitly unavailable
 - prompts, skills, or third-party assistant infrastructure adapted or skipped
 - AI infrastructure item IDs, canonical sources, permissions, gates,
   validation, outputs, conflicts, and adaptation records resolved or reported
@@ -233,6 +235,8 @@ Report:
 - target validation run and skipped
 - unresolved adapter facts
 - logical integrity review result
+- changed facts, selected/skipped relationships, companion surfaces checked,
+  and unresolved consistency gaps
 - residual risk
 - post-install or post-update assistant chat message sent or skipped with
   reason

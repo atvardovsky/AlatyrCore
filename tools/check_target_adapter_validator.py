@@ -93,6 +93,46 @@ def main() -> int:
         if "ROUTER_MIGRATION_MISSING" not in migration_codes:
             failures.append("schema-2 router must require migration-first routing")
 
+        routing_path = (
+            target / ".ai" / "assistant" / "flows" / "operation-routing.flow.md"
+        )
+        routing_path.parent.mkdir(parents=True, exist_ok=True)
+        routing_path.write_text(
+            "Load bootstrap context only. Do not load all `.ai/framework` files.\n",
+            encoding="utf-8",
+        )
+        bounded_routing = validator(target)
+        bounded_routing.check_bootstrap_references()
+        if "ROUTING_LOADS_BROAD_CONTEXT" in {
+            finding.code for finding in bounded_routing.findings
+        }:
+            failures.append("negative broad-load guidance must not fail routing checks")
+        routing_path.write_text(
+            "Load bootstrap context only. Load all `.ai/framework` files.\n",
+            encoding="utf-8",
+        )
+        broad_routing = validator(target)
+        broad_routing.check_bootstrap_references()
+        if "ROUTING_LOADS_BROAD_CONTEXT" not in {
+            finding.code for finding in broad_routing.findings
+        }:
+            failures.append("positive broad-load guidance must fail routing checks")
+
+        framework_tool_reference = target / ".ai" / "framework" / "migration-diff.md"
+        framework_tool_reference.parent.mkdir(parents=True, exist_ok=True)
+        framework_tool_reference.write_text(
+            "The source may provide `tools/validate_target_adapter.py`.\n",
+            encoding="utf-8",
+        )
+        checker_claims = validator(target)
+        checker_claims.check_checker_claims([], [])
+        if "STALE_CHECKER_REFERENCE" in {
+            finding.code for finding in checker_claims.findings
+        }:
+            failures.append(
+                "portable source-tool guidance must not become a target-local checker claim"
+            )
+
         map_path = target / ".ai" / "project" / "consistency-map.json"
         write_json(
             map_path,

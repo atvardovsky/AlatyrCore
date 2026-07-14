@@ -63,6 +63,9 @@ to work.
 
 Each bridge should:
 
+- preserve the compact bootstrap directly: load `AGENTS.md` exactly once
+  (host-preloaded when supported), then load the manifest, compact project map,
+  and context router
 - point to the canonical root entry point
 - point to operation help and operation routing
 - route `alatyr-ai-inventory`, `alatyr-adaptation`, and `alatyr-add-ai` when
@@ -76,6 +79,11 @@ Each bridge should:
 
 If an assistant surface cannot auto-load a bridge, record the manual loading
 step or unsupported status.
+
+Source conformance may prepare the same fixture prompt for every supported
+surface and verify bridge discovery deterministically. This proves source
+contract coverage only; actual assistant runs are still required to measure
+vendor loading behavior, context use, and logical-integrity evidence.
 
 ## Upgrade Use
 

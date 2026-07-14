@@ -44,7 +44,9 @@ REQUIRED_BRIDGE_REFS = [
 
 REQUIRED_CANONICAL_REFS = [
     "AGENTS.md",
+    ".ai/alatyr.yaml",
     ".ai/README.md",
+    ".ai/assistant/context-router.json",
 ]
 
 
@@ -96,6 +98,9 @@ def main() -> int:
         for required_ref in REQUIRED_CANONICAL_REFS:
             if required_ref not in text:
                 failures.append(f"{relpath} does not point to {required_ref}")
+
+        if "preloaded" not in text.lower():
+            failures.append(f"{relpath} does not preserve host-preloaded bootstrap")
 
         if relpath != "templates/target/AI_ASSISTANTS.md":
             lower_text = text.lower()

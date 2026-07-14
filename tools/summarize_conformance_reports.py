@@ -42,6 +42,12 @@ def load_reports(actual_dirs: list[Path]) -> list[dict[str, Any]]:
     return reports
 
 
+def average(values: list[int]) -> str:
+    if not values:
+        return "unknown"
+    return f"{sum(values) / len(values):.2f}"
+
+
 def summarize_reports(reports: list[dict[str, Any]]) -> str:
     all_fixtures = set(fixture_names())
     by_surface: dict[str, list[dict[str, Any]]] = defaultdict(list)
@@ -86,6 +92,45 @@ def summarize_reports(reports: list[dict[str, Any]]) -> str:
         missing = sorted(all_fixtures - set(covered))
         run_ids = sorted({str(report["run_id"]) for report in surface_reports})
         commits = sorted({str(report["source_commit"]) for report in surface_reports})
+        loaded_counts = [
+            evidence["loaded_file_count"]
+            for report in surface_reports
+            for evidence in [report.get("context_cost_evidence", {})]
+            if isinstance(evidence, dict)
+            and isinstance(evidence.get("loaded_file_count"), int)
+        ]
+        word_counts = [
+            evidence["approximate_words"]
+            for report in surface_reports
+            for evidence in [report.get("context_cost_evidence", {})]
+            if isinstance(evidence, dict)
+            and isinstance(evidence.get("approximate_words"), int)
+        ]
+        budget_exceeded = sum(
+            1
+            for report in surface_reports
+            if report.get("context_cost_evidence", {}).get("budget_exceeded") is True
+        )
+        changed_facts = sum(
+            len(report.get("logical_integrity_evidence", {}).get("changed_fact_ids", []))
+            for report in surface_reports
+        )
+        selected_relationships = sum(
+            len(
+                report.get("logical_integrity_evidence", {}).get(
+                    "selected_relationships", []
+                )
+            )
+            for report in surface_reports
+        )
+        companion_surfaces = sum(
+            len(
+                report.get("logical_integrity_evidence", {}).get(
+                    "companion_surfaces_checked", []
+                )
+            )
+            for report in surface_reports
+        )
         lines.extend(
             [
                 f"- Surface: `{surface}`",
@@ -94,6 +139,12 @@ def summarize_reports(reports: list[dict[str, Any]]) -> str:
                 f"  Missing fixtures: {', '.join(f'`{item}`' for item in missing) or 'none'}",
                 f"  Run ids: {', '.join(f'`{item}`' for item in run_ids)}",
                 f"  Source commits: {', '.join(f'`{item}`' for item in commits)}",
+                f"  Average loaded files: {average(loaded_counts)}",
+                f"  Average approximate words: {average(word_counts)}",
+                f"  Context budget exceeded: {budget_exceeded}",
+                f"  Changed fact evidence items: {changed_facts}",
+                f"  Selected relationship evidence items: {selected_relationships}",
+                f"  Companion surface evidence items: {companion_surfaces}",
             ]
         )
 

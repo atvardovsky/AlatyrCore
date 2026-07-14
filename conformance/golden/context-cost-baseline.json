@@ -1,0 +1,234 @@
+{
+  "bootstrap": {
+    "declared_files": 4,
+    "missing_paths": [],
+    "resolved_files": 4,
+    "resolved_paths": [
+      "AGENTS.md",
+      ".ai/alatyr.yaml",
+      ".ai/README.md",
+      ".ai/assistant/context-router.json"
+    ],
+    "unresolved_references": [],
+    "words": 1844
+  },
+  "budgets": {
+    "bootstrap": {
+      "max_files": 4,
+      "max_words": 2000
+    },
+    "on_exceed": "record expansion reason and load only required owners",
+    "profile_default": {
+      "max_files": 12,
+      "max_words": 8000
+    }
+  },
+  "limitations": [
+    "static template measurement is not model token usage",
+    "placeholder target-owned context is unresolved",
+    "runtime expansion depends on task evidence"
+  ],
+  "measurement": "whitespace-delimited words in resolved source templates",
+  "migration_routing": {
+    "full_candidate_union": {
+      "declared_files": 36,
+      "missing_paths": [],
+      "resolved_files": 36,
+      "resolved_paths": [
+        ".ai/framework/lifecycle.md",
+        ".ai/framework/migration-diff.md",
+        ".ai/framework/rule-registry.json",
+        ".ai/assistant/flows/adapter-recheck.flow.md",
+        ".ai/assistant/templates/installation-note.md",
+        ".ai/assistant/templates/migration-note.md",
+        ".ai/framework/README.md",
+        ".ai/framework/adapter-maturity.md",
+        ".ai/framework/ai-infrastructure-routing.md",
+        ".ai/framework/approval-records.md",
+        ".ai/framework/blueprint-driven-change.md",
+        ".ai/framework/bridge-capability-matrix.md",
+        ".ai/framework/change-risk-model.md",
+        ".ai/framework/consistency-model.md",
+        ".ai/framework/context-discovery.md",
+        ".ai/framework/context-profiles.md",
+        ".ai/framework/context-router.md",
+        ".ai/framework/contour.md",
+        ".ai/framework/diagram-guidance.md",
+        ".ai/framework/effectiveness-metrics.md",
+        ".ai/framework/guarantees.md",
+        ".ai/framework/installed-operations.md",
+        ".ai/framework/large-task-orchestration.md",
+        ".ai/framework/logical-integrity.md",
+        ".ai/framework/module-profile.md",
+        ".ai/framework/operation-help.md",
+        ".ai/framework/portability.md",
+        ".ai/framework/project-adapter-contract.md",
+        ".ai/framework/prompt-injection.md",
+        ".ai/framework/rule-ownership.md",
+        ".ai/framework/rule-registry.md",
+        ".ai/framework/scaffolding.md",
+        ".ai/framework/security-safety-guidance.md",
+        ".ai/framework/skill-adaptation.md",
+        ".ai/framework/source-of-truth-registry.md",
+        ".ai/framework/testing-guidance.md"
+      ],
+      "unresolved_references": [],
+      "words": 25043
+    },
+    "initial": {
+      "declared_files": 6,
+      "missing_paths": [],
+      "resolved_files": 6,
+      "resolved_paths": [
+        ".ai/framework/lifecycle.md",
+        ".ai/framework/migration-diff.md",
+        ".ai/framework/rule-registry.json",
+        ".ai/assistant/flows/adapter-recheck.flow.md",
+        ".ai/assistant/templates/installation-note.md",
+        ".ai/assistant/templates/migration-note.md"
+      ],
+      "unresolved_references": [],
+      "words": 3194
+    },
+    "initial_word_reduction_percent": 87.2
+  },
+  "profiles": {
+    "ai-infrastructure": {
+      "declared_files": 4,
+      "missing_paths": [],
+      "resolved_files": 4,
+      "resolved_paths": [
+        ".ai/framework/ai-infrastructure-routing.md",
+        ".ai/assistant/ai-infrastructure-router.json",
+        ".ai/assistant/flows/ai-infrastructure-inventory.flow.md",
+        ".ai/assistant/gates/checklist.md"
+      ],
+      "unresolved_references": [],
+      "words": 2320
+    },
+    "architecture-change": {
+      "declared_files": 11,
+      "missing_paths": [],
+      "resolved_files": 10,
+      "resolved_paths": [
+        ".ai/framework/context-discovery.md",
+        ".ai/framework/change-risk-model.md",
+        ".ai/framework/source-of-truth-registry.md",
+        ".ai/framework/logical-integrity.md",
+        ".ai/framework/blueprint-driven-change.md",
+        ".ai/framework/security-safety-guidance.md",
+        ".ai/framework/testing-guidance.md",
+        ".ai/framework/diagram-guidance.md",
+        ".ai/assistant/flows/blueprint-driven-change.flow.md",
+        ".ai/assistant/gates/checklist.md"
+      ],
+      "unresolved_references": [
+        "{TARGET_ARCHITECTURE_SOURCE_OF_TRUTH}"
+      ],
+      "words": 6009
+    },
+    "business-change": {
+      "declared_files": 9,
+      "missing_paths": [],
+      "resolved_files": 8,
+      "resolved_paths": [
+        ".ai/framework/context-discovery.md",
+        ".ai/framework/change-risk-model.md",
+        ".ai/framework/source-of-truth-registry.md",
+        ".ai/framework/logical-integrity.md",
+        ".ai/framework/blueprint-driven-change.md",
+        ".ai/framework/testing-guidance.md",
+        ".ai/assistant/flows/blueprint-driven-change.flow.md",
+        ".ai/assistant/gates/checklist.md"
+      ],
+      "unresolved_references": [
+        "{TARGET_BLUEPRINT_OR_PRODUCT_SOURCE_OF_TRUTH}"
+      ],
+      "words": 5155
+    },
+    "code-local": {
+      "declared_files": 6,
+      "missing_paths": [],
+      "resolved_files": 5,
+      "resolved_paths": [
+        ".ai/framework/context-discovery.md",
+        ".ai/framework/change-risk-model.md",
+        ".ai/framework/testing-guidance.md",
+        ".ai/framework/logical-integrity.md",
+        ".ai/assistant/gates/checklist.md"
+      ],
+      "unresolved_references": [
+        "{TARGET_CODE_SOURCE_OF_TRUTH}"
+      ],
+      "words": 3576
+    },
+    "data-change": {
+      "declared_files": 8,
+      "missing_paths": [],
+      "resolved_files": 7,
+      "resolved_paths": [
+        ".ai/framework/context-discovery.md",
+        ".ai/framework/change-risk-model.md",
+        ".ai/framework/source-of-truth-registry.md",
+        ".ai/framework/logical-integrity.md",
+        ".ai/framework/security-safety-guidance.md",
+        ".ai/framework/testing-guidance.md",
+        ".ai/assistant/gates/checklist.md"
+      ],
+      "unresolved_references": [
+        "{TARGET_DATA_SOURCE_OF_TRUTH}"
+      ],
+      "words": 4616
+    },
+    "docs-local": {
+      "declared_files": 5,
+      "missing_paths": [],
+      "resolved_files": 4,
+      "resolved_paths": [
+        ".ai/framework/context-discovery.md",
+        ".ai/framework/testing-guidance.md",
+        ".ai/framework/diagram-guidance.md",
+        ".ai/assistant/gates/checklist.md"
+      ],
+      "unresolved_references": [
+        "{TARGET_DOC_SOURCE_OF_TRUTH}"
+      ],
+      "words": 2571
+    },
+    "framework-upgrade": {
+      "declared_files": 6,
+      "missing_paths": [],
+      "resolved_files": 6,
+      "resolved_paths": [
+        ".ai/framework/lifecycle.md",
+        ".ai/framework/migration-diff.md",
+        ".ai/framework/rule-registry.json",
+        ".ai/assistant/flows/adapter-recheck.flow.md",
+        ".ai/assistant/templates/installation-note.md",
+        ".ai/assistant/templates/migration-note.md"
+      ],
+      "unresolved_references": [],
+      "words": 3194
+    },
+    "security-sensitive": {
+      "declared_files": 7,
+      "missing_paths": [],
+      "resolved_files": 6,
+      "resolved_paths": [
+        ".ai/framework/change-risk-model.md",
+        ".ai/framework/security-safety-guidance.md",
+        ".ai/framework/logical-integrity.md",
+        ".ai/framework/approval-records.md",
+        ".ai/assistant/policies/prompt-injection.md",
+        ".ai/assistant/gates/checklist.md"
+      ],
+      "unresolved_references": [
+        "{TARGET_SECURITY_SOURCE_OF_TRUTH}"
+      ],
+      "words": 3332
+    }
+  },
+  "report_kind": "static-target-context-cost",
+  "schema_version": 1,
+  "source": "templates/target/.ai/assistant/context-router.json"
+}

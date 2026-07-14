@@ -100,8 +100,10 @@ Additional source-repository helpers include:
 - `python3 tools/check_approval_template.py`
 - `python3 tools/check_ai_infrastructure_inventory.py`
 - `python3 tools/check_ai_infrastructure_router.py`
+- `python3 tools/check_assistant_surface_conformance.py`
 - `python3 tools/check_bridge_capability_matrix.py`
 - `python3 tools/check_context_router.py`
+- `python3 tools/check_context_costs.py`
 - `python3 tools/check_consistency_map.py`
 - `python3 tools/check_cross_platform_tools.py`
 - `python3 tools/check_large_task_orchestration.py`
@@ -123,12 +125,14 @@ Additional source-repository helpers include:
 - `python3 tools/report_migration_diff.py --from-rules <old-rule-registry.json>`
 - `python3 tools/report_migration_diff.py --from-rules <old-rule-registry.json> --from-framework-dir <old-framework-dir>`
 - `python3 tools/alatyr.py assess-upgrade --target <target-repo> --framework-source . --output-dir <assessment-dir>`
+- `python3 tools/alatyr.py context-costs`
 - `python3 tools/check_bridge_templates.py`
 - `python3 tools/render_bridge_templates.py`
 - `python3 tools/check_conformance_fixtures.py`
 - `python3 tools/materialize_conformance_fixtures.py --output tmp/conformance-targets`
 - `python3 tools/prepare_conformance_run.py --output tmp/conformance-run --assistant-surface codex`
 - `python3 tools/check_conformance_reports.py`
+- `python3 tools/check_conformance_summary.py`
 - `python3 tools/summarize_conformance_reports.py --actual-dir conformance/runs/assistant-results --require-all-fixtures`
 - `python3 tools/run_conformance_scaffold.py`
 - `python3 tools/summarize_effectiveness_reports.py --input conformance/golden/effectiveness-sample.json`
@@ -200,6 +204,10 @@ Additional source-repository helpers include:
   launchers for Linux, macOS, and Windows
 - migration-first target upgrade assessment that writes evidence without
   applying adapter changes
+- deterministic context file/word baselines plus captured-run context and
+  logical-integrity evidence contracts
+- all-surface bridge and conformance-prompt checks for every supported
+  assistant ID
 - installed-adapter operation and recheck guidance
 - operation help and routing guidance for unclear requests
 - bridge-file pattern for modern assistants

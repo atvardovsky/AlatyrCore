@@ -25,6 +25,9 @@
 - Added a cross-platform optional tool entry point and a read-only target
   upgrade assessment that composes migration diff and structural validation
   before any target adapter changes.
+- Added deterministic bootstrap/profile context-cost baselines, expanded
+  effectiveness and assistant-run logical-integrity evidence, and all-surface
+  compact bridge conformance checks.
 
 - Initial Alatyr Core standalone framework repository.
 - Added portable framework docs, assistant installation flow, readiness

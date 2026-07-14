@@ -30,6 +30,12 @@
       "script": "plan_target_upgrade.py",
       "purpose": "prepare migration-first target upgrade evidence",
       "write_scope": "explicit-evidence-output-only"
+    },
+    {
+      "name": "context-costs",
+      "script": "report_context_costs.py",
+      "purpose": "measure static target context routing cost",
+      "write_scope": "explicit-report-output-only"
     }
   ]
 }

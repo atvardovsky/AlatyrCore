@@ -64,7 +64,9 @@ commands from another project.
 - Adaptation record created or updated for imported or materially changed AI
   infrastructure, including rejected source instructions and router result.
 - Final evidence reports run checks, skipped checks, assumptions, and residual
-  risk, including relationship omissions when consistency routing was used.
+  risk, including loaded context and budget expansion when measured, changed
+  fact IDs, selected/skipped relationships, companion surfaces, and unresolved
+  consistency gaps.
 
 ## Target Validation
 

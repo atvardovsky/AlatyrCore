@@ -165,6 +165,8 @@ Write valid JSON to `{report_path}` with:
 - `conformance_scope`: include `not target validation`
 - `claims_installation_complete`: `false`
 - `validation_status.target_validation_claimed`: `false`
+- `context_cost_evidence`: loaded files, volume, budget, expansion, and receipt evidence
+- `logical_integrity_evidence`: changed facts, relationships, companion surfaces, and gaps
 - all expected behavior IDs in `behaviors_satisfied`
 - all forbidden claim IDs in `forbidden_claims_absent`
 
