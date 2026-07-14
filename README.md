@@ -135,7 +135,8 @@ Additional source-repository helpers include:
 - structured metadata on rule-owner framework docs for deterministic owner,
   dependency, and task-profile checks
 - a machine-readable context router template that maps tasks to the smallest
-  required startup context
+  required startup context, project-area overlays, budgets, and context
+  receipts
 - machine-readable rule manifest for deterministic migration checks
 - adapter ownership, review cadence, and CODEOWNERS-equivalent guidance
 - required core and optional module profile guidance
@@ -145,6 +146,8 @@ Additional source-repository helpers include:
   checks
 - context discovery and source-of-truth decisions
 - context profiles for smaller task-specific reading sets
+- compact bootstrap routing that keeps blueprints, registries, module profiles,
+  contours, and human profile rationale out of routine startup
 - source-of-truth registry guidance and source-template checks for fact
   ownership, derived surfaces, sync direction, validation, and conflict
   resolution

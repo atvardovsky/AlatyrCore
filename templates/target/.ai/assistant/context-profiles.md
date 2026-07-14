@@ -3,23 +3,30 @@
 Use this file to choose the smallest sufficient context for `{PROJECT_NAME}`.
 Replace placeholders with target evidence before accepting installation.
 
-Bootstrap context for every task:
+`AGENTS.md` is host-preloaded context and should not be reread. Compact
+bootstrap context for every task is:
 
-- `AGENTS.md`
 - `.ai/alatyr.yaml`
 - `.ai/README.md`
 - `.ai/assistant/context-router.json`
-- `.ai/assistant/context-profiles.md`
-- `.ai/assistant/module-profile.md`
-- `.ai/project/contour.md`
-- `.ai/project/source-of-truth-registry.md`
-- `.ai/assistant/contour.md`
-- `{TARGET_PROJECT_SOURCE_OF_TRUTH}`
 
-After bootstrap, choose one profile and read its required context before
-editing files. `.ai/assistant/context-router.json` is the machine-readable
-companion to this file and must stay aligned with these profiles. Expand only
-when boundaries, conflicts, or approval scope require it.
+After bootstrap, choose one profile and affected project-area overlays before
+editing files. This file is the human rationale surface; load it only when
+routing is ambiguous, the router conflicts with evidence, or an entry must be
+repaired. Expand only when boundaries, conflicts, approval scope, or changed
+fact ownership require it.
+
+Use the router's context budgets. When sufficient context exceeds a budget,
+record selected profiles and areas, loaded files and reasons, approximate
+volume, expansion triggers, intentional omissions, and residual risk in the
+context receipt.
+
+## Project-Area Overlays
+
+Define target areas such as modules, services, packages, bounded contexts, or
+documentation domains in `.ai/assistant/context-router.json`. Each area should
+name its trigger, required context, and expansion conditions. Compose the base
+task profile with only areas that own changed facts.
 
 ## Profile: `docs-local`
 

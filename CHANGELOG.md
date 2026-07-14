@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Reworked target context routing around host-preloaded instructions, a
+  compact schema-v2 bootstrap, explicit file/word budgets, project-area
+  overlays, and context receipts for measured expansion.
+
 - Initial Alatyr Core standalone framework repository.
 - Added portable framework docs, assistant installation flow, readiness
   checklist, installation plan template, and target adapter templates.

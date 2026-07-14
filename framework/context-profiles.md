@@ -13,14 +13,16 @@ alatyr_doc:
 
 Context profiles limit the required reading set for an Alatyr task.
 
-They preserve the minimum sufficient context rule: start from bootstrap files,
-choose the closest task profile, read that profile's required sources, and
-expand only when boundaries or conflicts require it.
+They preserve the minimum sufficient context rule: use host-preloaded
+instructions, read the compact routing bootstrap, choose the closest task
+profile, read that profile's required sources, and expand only when boundaries
+or conflicts require it.
 
 When an installed adapter includes a machine-readable context router, it must
 use the same canonical profile names and stay aligned with this Markdown
-contract. The router is an optimization for cheaper startup, not a replacement
-for the human-readable profile rationale or logical integrity review.
+contract. The router is the default cheap routing surface. This human-readable
+file is loaded when rationale, conflicts, missing entries, or adapter repair
+require it; it is not mandatory bootstrap context.
 
 ## Canonical Profiles
 
@@ -48,26 +50,50 @@ Each target profile should define:
 - approval gates
 - validation or manual review
 - expected final evidence
+- a context budget or the router's default budget
 
 The profile should list concrete target paths after installation. Placeholder
 paths are acceptable only before the adapter is accepted.
 
 ## Bootstrap Context
 
-Every installed adapter should keep a small bootstrap set:
+Every installed adapter should keep a compact bootstrap set:
 
-- target root assistant entry point
+- target root assistant entry point as host-preloaded context
 - `.ai/alatyr.yaml`
-- `.ai/README.md`
-- `.ai/assistant/context-router.json` when present
-- `.ai/assistant/context-profiles.md`
-- `.ai/assistant/module-profile.md`
-- project contour
-- assistant contour
-- task-owned source of truth when known
+- `.ai/README.md` or an equivalent compact project/context map
+- `.ai/assistant/context-router.json`
+
+Do not put the full blueprint, source-of-truth registry, module profile,
+project contour, assistant contour, human context profiles, or task-owned
+source files in mandatory bootstrap. Route them after task classification.
 
 Framework documents, flows, gates, and policies should be loaded through the
 selected task profile instead of being mandatory for every task.
+
+## Context Budgets And Receipts
+
+The router should define maximum bootstrap and default profile file/word
+budgets. A target may tune them from measured repository evidence.
+
+If sufficient context exceeds a budget, continue safely and record:
+
+- selected profile and project areas
+- files loaded and why
+- boundary or conflict that required expansion
+- approximate context volume
+- context intentionally not loaded
+- residual risk
+
+Budgets reduce accidental overloading; they never justify skipping an owner,
+approval rule, safety policy, or validation fact required by changed behavior.
+
+## Project-Area Overlays
+
+Large repositories should route module or domain context through compact area
+overlays. Each overlay names its trigger, required context, and expansion
+conditions. Compose one base task profile with only the overlays that own the
+changed facts.
 
 ## Expansion Rules
 
@@ -80,6 +106,8 @@ Expand context when:
 - approval scope is unclear
 - validation evidence contradicts the proposed change
 - a bridge, prompt, skill, checker, or gate may be affected
+- the selected profile exceeds its budget and an owner must be chosen more
+  precisely
 
 If the profile is ambiguous, use the smallest likely profile, report the
 assumption, and ask only for the missing decision that blocks safe routing.

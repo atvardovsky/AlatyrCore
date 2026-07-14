@@ -2,6 +2,11 @@
 
 This directory is split by ownership.
 
+For routine routing, treat root `AGENTS.md` as preloaded and read only this
+file, `.ai/alatyr.yaml`, and `.ai/assistant/context-router.json`. Load the
+blueprint, registries, contours, module profile, and human context profiles
+only when the selected task profile or project-area overlay requires them.
+
 ## Framework Area
 
 `.ai/framework` contains Alatyr Core portable framework rules.

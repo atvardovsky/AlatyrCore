@@ -125,6 +125,9 @@ Classify every proposed target file:
     profiles, module profile, task-specific maturity profile, bridge
     capability matrix, and minimal target assistant workflows/gates from
     target facts.
+    The router must distinguish host-preloaded instructions from compact
+    bootstrap, define context budgets and receipts, and route project-area
+    overlays without putting full project sources in mandatory bootstrap.
 14. Add bridge files only for assistants the target uses.
 15. Add installed-operation, operation-help, operation-routing,
     AI-infrastructure-inventory, adapter output contract
@@ -192,7 +195,9 @@ Report:
   prompt-injection policy, approval-record template, migration-note template,
   blueprint-creation, adapter-recheck, and post-install/update chat-message
   templates added or skipped
-- root entry-point and bridge bootstrap references checked
+- root entry-point and bridge compact-bootstrap references checked
+- context budgets, project-area overlays, and receipt fields adapted or
+  explicitly deferred
 - prompts, skills, or third-party assistant infrastructure adapted or skipped
 - target validation run and skipped
 - unresolved adapter facts

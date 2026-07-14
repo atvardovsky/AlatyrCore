@@ -1,19 +1,55 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "router_kind": "target-context-router",
   "human_reference": ".ai/assistant/context-profiles.md",
+  "preloaded_context": [
+    "AGENTS.md"
+  ],
   "bootstrap_context": [
-    "AGENTS.md",
     ".ai/alatyr.yaml",
     ".ai/README.md",
-    ".ai/assistant/context-router.json",
-    ".ai/assistant/context-profiles.md",
-    ".ai/assistant/module-profile.md",
-    ".ai/project/contour.md",
-    ".ai/project/source-of-truth-registry.md",
-    ".ai/assistant/contour.md",
-    "{TARGET_PROJECT_SOURCE_OF_TRUTH}"
+    ".ai/assistant/context-router.json"
   ],
+  "context_budgets": {
+    "bootstrap": {
+      "max_files": 4,
+      "max_words": 2000
+    },
+    "profile_default": {
+      "max_files": 12,
+      "max_words": 8000
+    },
+    "on_exceed": "record expansion reason and load only required owners"
+  },
+  "context_receipt": {
+    "required_for": [
+      "budget exceeded",
+      "multiple project areas",
+      "cross-boundary work"
+    ],
+    "fields": [
+      "selected profiles",
+      "selected project areas",
+      "loaded files and reasons",
+      "approximate context volume",
+      "expansion triggers",
+      "intentionally omitted context",
+      "residual risk"
+    ]
+  },
+  "area_overlays": {
+    "{TARGET_AREA_ID}": {
+      "use_when": [
+        "{TARGET_AREA_TRIGGER}"
+      ],
+      "required_context": [
+        "{TARGET_AREA_CONTEXT}"
+      ],
+      "expand_when": [
+        "{TARGET_AREA_EXPANSION_TRIGGER}"
+      ]
+    }
+  },
   "routing_order": [
     "docs-local",
     "code-local",
@@ -375,4 +411,3 @@
     }
   }
 }
-

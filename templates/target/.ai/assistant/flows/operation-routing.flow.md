@@ -25,19 +25,18 @@ Replace placeholders with target facts before accepting installation.
 
 ## Steps
 
-1. Load bootstrap context only: `AGENTS.md`, `AI_ASSISTANTS.md`,
-   `.ai/alatyr.yaml`, `.ai/README.md`,
-   `.ai/assistant/context-router.json`,
-   `.ai/assistant/context-profiles.md`, `.ai/assistant/module-profile.md`,
-   `.ai/project/contour.md`, `.ai/project/source-of-truth-registry.md`,
-   `.ai/assistant/contour.md`, and `.ai/assistant/help.md`.
+1. Treat `AGENTS.md` as preloaded. Load bootstrap context only:
+   `.ai/alatyr.yaml`, `.ai/README.md`, and
+   `.ai/assistant/context-router.json`. Load `.ai/assistant/help.md` because
+   this flow handles help or ambiguity.
 2. Select the smallest matching context profile from
    `.ai/assistant/context-router.json`; use
    `.ai/assistant/context-profiles.md` for the human rationale or when router
    and Markdown evidence conflict.
-3. Load only the selected profile's required framework, project, assistant,
-   flow, gate, policy, and validation context before editing. Do not load all
-   `.ai/framework` or `.ai/project` files just to route an operation.
+3. Load only the selected profile and project-area overlays' required
+   framework, project, assistant, flow, gate, policy, and validation context
+   before editing. Do not load all `.ai/framework` or `.ai/project` files just
+   to route an operation. Record budget exceptions in the context receipt.
 4. Restate the request in concrete language.
 5. Classify the request as framework-core, project, repository adapter,
    bridge, generated-artifact, skill/prompt, or unclear work.

@@ -43,19 +43,11 @@ Installation id: `{INSTALLATION_ID}`
 ## Future Session Bootstrap
 
 Future assistants should not rely on the installation or update chat message
-being visible. At session start, read:
-
-- `AGENTS.md`
-- `AI_ASSISTANTS.md`
-- `.ai/alatyr.yaml`
-- `.ai/README.md`
-- `.ai/assistant/context-router.json`
-- `.ai/assistant/context-profiles.md`
-- `.ai/assistant/module-profile.md`
-- `.ai/project/source-of-truth-registry.md`
-- this installation note
-- `.ai/assistant/help.md`
-- `.ai/assistant/flows/operation-routing.flow.md` when the request is unclear
+being visible. Treat `AGENTS.md` as preloaded, then read `.ai/alatyr.yaml`,
+`.ai/README.md`, and `.ai/assistant/context-router.json`. Load this note after
+installation/update or when adapter state is unclear. Load human profiles,
+module state, registries, help, and operation routing only when selected by the
+router or required by ambiguity or drift.
 
 If this note lists gaps or bridge-file uncertainty, run
 `recheck-after-installation` or `recheck-after-framework-update` before broad

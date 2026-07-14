@@ -79,7 +79,7 @@
       "id": "ALATYR-CONTEXT-001",
       "category": "CONTEXT",
       "canonical_source": "framework/context-profiles.md",
-      "summary": "Start from bootstrap context, select the smallest task profile directly or through an aligned context router, and expand only when boundaries or conflicts require it.",
+      "summary": "Use a compact budgeted bootstrap, select the smallest task profile and project-area overlays through an aligned context router, and record expansion only when boundaries or conflicts require it.",
       "applies_to": ["all installed adapter tasks"],
       "enforcement": "required"
     },

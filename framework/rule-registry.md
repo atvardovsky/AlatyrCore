@@ -53,8 +53,9 @@ routing, installation, or final evidence. The human ownership map is
 
 Rule ID: `ALATYR-CONTEXT-001`
 Canonical source: `.ai/framework/context-profiles.md`
-Commitment: start from bootstrap context, select the smallest task profile,
-and expand only when boundaries or conflicts require it.
+Commitment: use a compact budgeted bootstrap, select the smallest task profile
+and project-area overlays, and record context expansion only when boundaries or
+conflicts require it.
 Applies to: all installed adapter tasks.
 
 Rule ID: `ALATYR-SOURCE-001`

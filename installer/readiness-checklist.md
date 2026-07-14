@@ -211,6 +211,9 @@ List commands or manual checks:
 - adapter output contract review:
 - context-profile review:
 - context-router bootstrap reference review:
+- preloaded versus compact-bootstrap review:
+- context budget and receipt review:
+- project-area overlay review:
 - adapter drift/local leakage review:
 - module-profile review:
 - source-of-truth registry review:
@@ -244,8 +247,12 @@ Final evidence must say:
 - contours created or updated
 - source-of-truth registry created or updated
 - context profiles created or updated
-- context router references checked in bootstrap, gates, operation routing,
+- context router references checked in compact bootstrap, gates, operation routing,
   root entry points, and bridge files
+- preloaded context is not duplicated in bootstrap
+- blueprint, registries, contours, module profile, and human profile rationale
+  are routed after task selection instead of loaded for every task
+- context budgets and receipt fields are adapted from target evidence
 - adapter drift checks run or recorded as manual/unresolved, including local
   path leakage, stale checker statements, duplicate profile references,
   unresolved owner placeholders, and target-local checker status
@@ -258,7 +265,7 @@ Final evidence must say:
   skipped
 - adapter output contracts added or skipped
 - AI infrastructure inventory report template added or skipped
-- root entry-point and bridge bootstrap references checked
+- root entry-point and bridge compact-bootstrap references checked
 - AI infrastructure source-access policy added or skipped
 - prompt-injection policy added or skipped
 - approval-record template added or skipped

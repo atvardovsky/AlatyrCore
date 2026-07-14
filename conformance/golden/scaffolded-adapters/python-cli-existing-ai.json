@@ -127,7 +127,6 @@
     ".ai/assistant/templates/post-update-message.md",
     ".ai/project/contour.md",
     ".ai/project/source-of-truth-registry.md",
-    "AI_ASSISTANTS.md",
     "CODEOWNERS"
   ],
   "target_validation_claimed": false

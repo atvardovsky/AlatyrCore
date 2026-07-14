@@ -236,15 +236,14 @@ def main() -> int:
 
     target_agents = read_text("templates/target/AGENTS.md")
     for required_target_agent_ref in [
-        "## Bootstrap Context",
-        "## Session Bootstrap",
+        "## Compact Bootstrap",
+        "## Session Recovery",
         ".ai/alatyr.yaml",
+        ".ai/README.md",
         ".ai/assistant/context-router.json",
         ".ai/assistant/context-profiles.md",
-        ".ai/assistant/module-profile.md",
-        ".ai/assistant/templates/installation-note.md",
-        ".ai/assistant/templates/post-install-message.md",
-        ".ai/assistant/templates/post-update-message.md",
+        "Treat this file as host-preloaded context",
+        "context receipt",
     ]:
         if required_target_agent_ref not in target_agents:
             failures.append(
@@ -277,10 +276,10 @@ def main() -> int:
     target_ai_assistants = read_text("templates/target/AI_ASSISTANTS.md")
     for required_target_ai_ref in [
         ".ai/alatyr.yaml",
+        ".ai/README.md",
         ".ai/assistant/context-router.json",
         ".ai/assistant/context-profiles.md",
-        ".ai/assistant/module-profile.md",
-        ".ai/assistant/templates/installation-note.md",
+        "Treat `AGENTS.md` as preloaded",
         "post-install/update message templates",
     ]:
         if required_target_ai_ref not in target_ai_assistants:
@@ -1857,8 +1856,10 @@ def main() -> int:
             failures.append(f"{relpath} missing AGENTS.md bootstrap reference")
         if ".ai/assistant/context-router.json" not in text:
             failures.append(f"{relpath} missing context router bootstrap reference")
-        if ".ai/assistant/module-profile.md" not in text:
-            failures.append(f"{relpath} missing module profile bootstrap reference")
+        if "preloaded" not in text.lower():
+            failures.append(f"{relpath} missing preloaded-context guidance")
+        if ".ai/assistant/context-profiles.md" in text and "only when" not in text:
+            failures.append(f"{relpath} makes human profiles unconditional")
         if "Do not rely" not in text and "Future assistants should not rely" not in text:
             failures.append(f"{relpath} missing chat-history bootstrap warning")
 

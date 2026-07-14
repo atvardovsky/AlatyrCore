@@ -5,16 +5,14 @@ the canonical instruction file.
 
 Before making changes:
 
-1. Read `AGENTS.md`, `.ai/alatyr.yaml`, `.ai/README.md`,
-   `.ai/assistant/context-router.json`,
-   `.ai/assistant/context-profiles.md`, and
-   `.ai/assistant/module-profile.md`.
-2. Select the task profile, then read only profile-required framework,
-   project, assistant, flow, gate, policy, and validation files.
-3. Read `.ai/assistant/templates/installation-note.md`,
-   `.ai/project/source-of-truth-registry.md`, `{TARGET_PROJECT_SOURCE_OF_TRUTH}`,
-   and `.ai/assistant/gates/checklist.md` when required by the selected
-   profile.
+1. Treat `AGENTS.md` as preloaded; then read `.ai/alatyr.yaml`,
+   `.ai/README.md`, and `.ai/assistant/context-router.json`.
+2. Select the smallest task profile and project-area overlays, then read only
+   their required framework, project, assistant, flow, gate, policy, and
+   validation files.
+3. Read `.ai/assistant/context-profiles.md`, the module profile, source-of-truth
+   registry, blueprint, and gates only when selected context or conflicting
+   evidence requires them.
 4. After installation/update, or when adapter state is unclear, read the
    post-install/update message templates before editing.
 5. For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-adaptation`,

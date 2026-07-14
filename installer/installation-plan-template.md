@@ -36,6 +36,10 @@ List what must not be changed.
 - Context router:
 - Context profiles:
 - Context-router bootstrap references:
+- Preloaded versus compact-bootstrap context:
+- Bootstrap and profile context budgets:
+- Context receipt fields and storage policy:
+- Project-area overlays:
 - Adapter owner metadata:
 - CODEOWNERS or equivalent owner map:
 - Module profile:
@@ -96,7 +100,8 @@ repository uses ownership metadata for `.ai/*`, root assistant entry points,
 or supported bridge files.
 
 Include `.ai/assistant/context-router.json` to map task profiles to required
-context, approvals, validation, and final evidence in machine-readable form.
+context, project-area overlays, budgets, receipts, approvals, validation, and
+final evidence in machine-readable form.
 
 Include `.ai/assistant/context-profiles.md` to explain task profiles,
 expansion triggers, approvals, validation, and final evidence for humans.
@@ -141,10 +146,14 @@ target wants durable AI infrastructure inventory reports.
 ## Context, Risk, Safety, Testing, And Diagram Adaptation
 
 - Target context entry points:
-- Bootstrap context:
+- Host-preloaded context:
+- Compact bootstrap context:
 - Context router:
 - Task context profiles:
 - Context-router bootstrap references:
+- Context budgets and exception behavior:
+- Context receipt fields:
+- Project-area overlays:
 - Required core profile:
 - Adapter owner, backup owner, review cadence, and last review:
 - CODEOWNERS or equivalent owner map:

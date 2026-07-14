@@ -92,9 +92,10 @@ py -3 .\tools\check_bridge_capability_matrix.py
 
 `check_context_router.py` validates the target
 `.ai/assistant/context-router.json` template in this source repository. It
-checks canonical profile names, bootstrap context, required fields, path
-references, duplicate route entries, and framework file routing coverage. It
-is not a portable framework requirement for target projects.
+checks canonical profile names, preloaded versus compact bootstrap context,
+budgets, receipt fields, area overlays, path references, duplicate route
+entries, and framework file routing coverage. It is not a portable framework
+requirement for target projects.
 
 Linux or macOS:
 

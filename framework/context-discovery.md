@@ -90,6 +90,11 @@ For large projects:
 - read full canonical policy files before acting on them
 - avoid loading unrelated modules just because they exist
 - document any context intentionally not inspected when it leaves residual risk
+- treat host-loaded entry instructions as preloaded instead of rereading them
+- use the machine router before loading human profile explanations
+- compose a task profile with only affected project-area overlays
+- record loaded paths, expansion reasons, approximate volume, and omissions in
+  a context receipt for large or cross-boundary work
 
 ## Rejection Criteria
 

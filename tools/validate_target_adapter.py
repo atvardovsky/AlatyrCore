@@ -54,17 +54,24 @@ REQUIRED_FILES = [
     ".ai/assistant/templates/adapter-output-contracts.md",
 ]
 
-REQUIRED_BOOTSTRAP = [
+REQUIRED_PRELOADED = [
     "AGENTS.md",
+]
+
+REQUIRED_BOOTSTRAP = [
     ".ai/alatyr.yaml",
     ".ai/README.md",
     ".ai/assistant/context-router.json",
+]
+
+DEFERRED_BOOTSTRAP = {
+    "AGENTS.md",
     ".ai/assistant/context-profiles.md",
     ".ai/assistant/module-profile.md",
     ".ai/project/contour.md",
     ".ai/project/source-of-truth-registry.md",
     ".ai/assistant/contour.md",
-]
+}
 
 BRIDGE_FILES = [
     "AI_ASSISTANTS.md",
@@ -457,12 +464,39 @@ class Validator:
                 "router_kind should be target-context-router",
                 ".ai/assistant/context-router.json",
             )
+        schema_version = router.get("schema_version")
+        if schema_version == 1:
+            self.warn(
+                "ROUTER_SCHEMA_LEGACY",
+                "context router schema 1 should migrate to compact routing schema 2",
+                ".ai/assistant/context-router.json",
+            )
+        elif schema_version != 2:
+            self.error(
+                "ROUTER_SCHEMA",
+                "context router schema_version should be 2",
+                ".ai/assistant/context-router.json",
+            )
         if router.get("human_reference") != ".ai/assistant/context-profiles.md":
             self.error(
                 "ROUTER_HUMAN_REFERENCE",
                 "human_reference should be .ai/assistant/context-profiles.md",
                 ".ai/assistant/context-router.json",
             )
+
+        preloaded = expect_string_list(
+            router.get("preloaded_context"),
+            self,
+            "ROUTER_PRELOADED",
+            ".ai/assistant/context-router.json",
+        )
+        for required in REQUIRED_PRELOADED:
+            if required not in preloaded:
+                self.warn(
+                    "ROUTER_PRELOADED_MISSING",
+                    f"preloaded_context missing {required}",
+                    ".ai/assistant/context-router.json",
+                )
 
         bootstrap = expect_string_list(
             router.get("bootstrap_context"),
@@ -483,6 +517,29 @@ class Validator:
                     f"bootstrap_context missing {required}",
                     ".ai/assistant/context-router.json",
                 )
+        deferred = sorted(set(bootstrap) & DEFERRED_BOOTSTRAP)
+        if deferred:
+            self.warn(
+                "ROUTER_BOOTSTRAP_BROAD",
+                "bootstrap contains context that schema 2 routes after task selection: "
+                + ", ".join(deferred),
+                ".ai/assistant/context-router.json",
+            )
+
+        budgets = router.get("context_budgets")
+        if schema_version == 2 and not isinstance(budgets, dict):
+            self.error(
+                "ROUTER_BUDGETS_MISSING",
+                "schema 2 router must define context_budgets",
+                ".ai/assistant/context-router.json",
+            )
+        receipt = router.get("context_receipt")
+        if schema_version == 2 and not isinstance(receipt, dict):
+            self.error(
+                "ROUTER_RECEIPT_MISSING",
+                "schema 2 router must define context_receipt",
+                ".ai/assistant/context-router.json",
+            )
 
         routing_order = expect_string_list(
             router.get("routing_order"),
@@ -640,11 +697,11 @@ class Validator:
                     "bootstrap references do not include .ai/assistant/context-router.json",
                     relpath,
                 )
-            if ".ai/assistant/context-profiles.md" not in text:
+            if ".ai/README.md" not in text:
                 level = self.error if relpath == "AGENTS.md" else self.warn
                 level(
-                    "BOOTSTRAP_CONTEXT_PROFILES_MISSING",
-                    "bootstrap references do not include .ai/assistant/context-profiles.md",
+                    "BOOTSTRAP_AREA_MAP_MISSING",
+                    "bootstrap references do not include .ai/README.md",
                     relpath,
                 )
 

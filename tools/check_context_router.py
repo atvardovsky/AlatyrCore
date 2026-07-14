@@ -30,17 +30,24 @@ CANONICAL_PROFILES = [
     "framework-upgrade",
 ]
 
-REQUIRED_BOOTSTRAP = [
+REQUIRED_PRELOADED = [
     "AGENTS.md",
+]
+
+REQUIRED_BOOTSTRAP = [
     ".ai/alatyr.yaml",
     ".ai/README.md",
     ".ai/assistant/context-router.json",
+]
+
+FORBIDDEN_BOOTSTRAP = {
+    "AGENTS.md",
     ".ai/assistant/context-profiles.md",
     ".ai/assistant/module-profile.md",
     ".ai/project/contour.md",
     ".ai/project/source-of-truth-registry.md",
     ".ai/assistant/contour.md",
-]
+}
 
 PROFILE_FIELDS = [
     "use_when",
@@ -123,14 +130,19 @@ def main() -> int:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
 
-    if router.get("schema_version") != 1:
-        failures.append("context-router.json schema_version must be 1")
+    if router.get("schema_version") != 2:
+        failures.append("context-router.json schema_version must be 2")
     if router.get("router_kind") != "target-context-router":
         failures.append("context-router.json router_kind must be target-context-router")
     if router.get("human_reference") != ".ai/assistant/context-profiles.md":
         failures.append(
             "context-router.json human_reference must be .ai/assistant/context-profiles.md"
         )
+
+    preloaded = require_string_list(router, "preloaded_context", "router", failures)
+    for required in REQUIRED_PRELOADED:
+        if required not in preloaded:
+            failures.append(f"preloaded_context missing {required}")
 
     bootstrap = require_string_list(router, "bootstrap_context", "router", failures)
     duplicate_bootstrap = duplicate_values(bootstrap)
@@ -141,6 +153,57 @@ def main() -> int:
     for required in REQUIRED_BOOTSTRAP:
         if required not in bootstrap:
             failures.append(f"bootstrap_context missing {required}")
+    forbidden = sorted(set(bootstrap) & FORBIDDEN_BOOTSTRAP)
+    if forbidden:
+        failures.append(f"bootstrap_context contains deferred context: {forbidden}")
+    if len(bootstrap) > 4:
+        failures.append("bootstrap_context must contain at most 4 files")
+
+    budgets = router.get("context_budgets")
+    if not isinstance(budgets, dict):
+        failures.append("context_budgets must be an object")
+    else:
+        for name in ["bootstrap", "profile_default"]:
+            budget = budgets.get(name)
+            if not isinstance(budget, dict):
+                failures.append(f"context_budgets.{name} must be an object")
+                continue
+            for field in ["max_files", "max_words"]:
+                value = budget.get(field)
+                if not isinstance(value, int) or value <= 0:
+                    failures.append(
+                        f"context_budgets.{name}.{field} must be a positive integer"
+                    )
+        if not isinstance(budgets.get("on_exceed"), str) or not budgets.get("on_exceed"):
+            failures.append("context_budgets.on_exceed must be a non-empty string")
+
+    receipt = router.get("context_receipt")
+    if not isinstance(receipt, dict):
+        failures.append("context_receipt must be an object")
+    else:
+        require_string_list(receipt, "required_for", "context_receipt", failures)
+        receipt_fields = require_string_list(receipt, "fields", "context_receipt", failures)
+        for required in [
+            "selected profiles",
+            "selected project areas",
+            "loaded files and reasons",
+            "approximate context volume",
+            "expansion triggers",
+            "residual risk",
+        ]:
+            if required not in receipt_fields:
+                failures.append(f"context_receipt.fields missing {required}")
+
+    overlays = router.get("area_overlays")
+    if not isinstance(overlays, dict) or not overlays:
+        failures.append("area_overlays must be a non-empty object")
+    else:
+        for area, data in overlays.items():
+            if not isinstance(data, dict):
+                failures.append(f"area_overlays.{area} must be an object")
+                continue
+            for field in ["use_when", "required_context", "expand_when"]:
+                require_string_list(data, field, f"area_overlays.{area}", failures)
 
     routing_order = require_string_list(router, "routing_order", "router", failures)
     if routing_order != CANONICAL_PROFILES:
