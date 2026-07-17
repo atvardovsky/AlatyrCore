@@ -21,6 +21,19 @@ Recommendations are read-only decision evidence by default. They do not grant
 permission to fetch remote sources, install packages, execute tools, change
 permissions, edit canonical files, or activate an item.
 
+## Target Optimization Boundary
+
+This process optimizes development work in the installed target repository.
+Target requests, corrections, review findings, rework, and cost evidence may
+justify changes to target-owned skills, prompts, gates, checkers, flows,
+routers, bridges, wrappers, tools, or templates.
+
+Target evidence must not directly recommend or edit the installed
+`.ai/framework` baseline, AlatyrCore source, or portable rule IDs. A suspected
+framework defect is a separate unresolved escalation that requires an explicit
+framework-maintenance operation. Do not generalize one target's observations
+into portable framework policy.
+
 ## Recommendation Triggers
 
 Run recommendation when the programmer asks for suggestions, or when bounded
@@ -57,6 +70,38 @@ may include:
 Project evidence describes the need, constraints, and expected outcome. It
 does not move assistant workflow mechanics or item ownership into the project
 contour. Missing or anecdotal evidence must be identified as such.
+
+## Development Pattern Evidence
+
+A target may keep a compact project-contour development evidence index so
+recommendations can compare recurring work across tasks without loading chat
+history or every historical record. The target manifest should identify the
+index, its owner, review date, and retention policy.
+
+Each pattern should record:
+
+- stable pattern ID and normalized category
+- bounded project area and canonical owner
+- normalized problem statement, not raw chat or prompt content
+- occurrence count, first/last observation, and evidence quality
+- bounded references to operations, commits, issues, reviews, incidents,
+  validation, rework, or effectiveness evidence
+- observed outcome signals and affected existing AI infrastructure item IDs
+- active, resolved, deferred, or unresolved status
+
+Never store secrets, credentials, personal data, or complete conversation
+transcripts in the index. Keep only the minimum normalized signal and target-
+permitted evidence references. Apply the target retention policy and keep the
+reference set bounded.
+
+Routine successful one-off work should not create an entry. Capture a signal
+only when the same friction has independent evidence, when a current task
+confirms an existing pattern, or when one high-impact failure justifies review.
+A read-only task may report a capture candidate but must not update the index.
+
+Load the compact index only for pattern capture, recommendation, adapter
+recheck, or explicit effectiveness review. During recommendation, inspect the
+index first and load only evidence referenced by candidate patterns.
 
 ## Recommendation Kinds
 
@@ -129,17 +174,19 @@ For `improve-existing`, `consolidate`, `replace`, `retire`, or `keep`:
 ## Recommendation Process
 
 1. Select the `recommend` AI infrastructure route and bounded project area.
-2. Load a current inventory or inspect only relevant router-declared items.
-3. Read the project-contour owner for the observed need and record missing
+2. Inspect the compact development evidence index when the target provides it,
+   then load only candidate pattern references.
+3. Load a current inventory or inspect only relevant router-declared items.
+4. Read the project-contour owner for the observed need and record missing
    owner evidence.
-4. Cluster evidence by recurring problem or target outcome.
-5. Evaluate current items before proposing new ones.
-6. Select the narrowest recommendation kind and item type.
-7. Apply the cost and quality gate and reject speculative candidates.
-8. Record ranked, independent candidates without changing target files.
-9. Route an accepted candidate to the existing adaptation,
+5. Cluster evidence by recurring problem or target outcome.
+6. Evaluate current items before proposing new ones.
+7. Select the narrowest recommendation kind and item type.
+8. Apply the cost and quality gate and reject speculative candidates.
+9. Record ranked, independent candidates without changing target files.
+10. Route an accepted candidate to the existing adaptation,
    gate/checker-change, tool/MCP-change, or bridge/wrapper-change flow.
-10. Require normal source-access, prompt-injection, permission, approval, and
+11. Require normal source-access, prompt-injection, permission, approval, and
     validation handling during that later operation.
 
 ## Evidence
@@ -151,6 +198,7 @@ Recommendation ID: <stable target-owned ID>
 Kind: <add-new/improve-existing/consolidate/replace/retire/keep/unresolved>
 Project area and owner: <bounded contour evidence>
 Problem and evidence: <observed need, recurrence, and evidence quality>
+Development pattern IDs: <target pattern IDs or none>
 Existing item IDs: <IDs or none>
 Proposed item type: <skill/prompt/gate/checker/flow/tool/MCP/bridge/wrapper/template>
 Proposed contract change: <purpose, triggers, context, permissions, gates, validation, output>
@@ -173,5 +221,9 @@ Reject, defer, or mark unresolved a recommendation that:
   without identifying the protected follow-up route
 - fetches, installs, edits, removes, or activates infrastructure during a
   read-only recommendation
+- changes `.ai/framework`, AlatyrCore source, or portable rules from target
+  development evidence
+- records raw conversations, secrets, credentials, or personal data as pattern
+  evidence
 - moves assistant workflow ownership into the project contour
 - cannot name acceptance criteria, maintenance ownership, or residual risk

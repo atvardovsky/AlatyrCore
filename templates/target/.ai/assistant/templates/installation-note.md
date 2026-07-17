@@ -36,6 +36,11 @@ Installation id: `{INSTALLATION_ID}`
 - AI infrastructure recommendation flow and template:
   `.ai/assistant/flows/ai-infrastructure-recommendation.flow.md`,
   `.ai/assistant/templates/ai-infrastructure-recommendation.md`
+- Development evidence index and lazy capture flow:
+  `.ai/project/development-evidence.json`,
+  `.ai/assistant/flows/development-evidence-capture.flow.md`
+- Development evidence owner and retention/privacy policy:
+  `{TARGET_DEVELOPMENT_EVIDENCE_OWNER_AND_POLICY}`
 - AI infrastructure router:
   `.ai/assistant/ai-infrastructure-router.json`
 - AI infrastructure adaptation record:

@@ -27,6 +27,9 @@ Replace placeholders with target facts before accepting installation.
 - AI infrastructure recommendation:
   `.ai/assistant/flows/ai-infrastructure-recommendation.flow.md`,
   `.ai/assistant/templates/ai-infrastructure-recommendation.md`
+- Development pattern evidence:
+  `.ai/project/development-evidence.json`,
+  `.ai/assistant/flows/development-evidence-capture.flow.md`
 - AI infrastructure router, recommendation, and adaptation record:
   `.ai/assistant/ai-infrastructure-router.json`,
   `.ai/assistant/templates/ai-infrastructure-adaptation-record.md`
@@ -116,6 +119,8 @@ Report:
 - help, routing, AI infrastructure inventory/recommendation, bridge, prompt,
   skill, gate, checker, item router, recommendation/adaptation records,
   large-task orchestration, diagram, chat-message, and lifecycle status
+- development-pattern index schema, owner, retention/privacy policy, evidence
+  references, and target-only optimization boundary
 - bridge capability matrix status
 - target validation run or unresolved
 - approvals needed

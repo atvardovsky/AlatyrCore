@@ -145,6 +145,9 @@ records must also be discoverable through the AI infrastructure router.
 Recommendation maturity additionally requires bounded project-contour evidence,
 existing-item-first comparison, labeled quality/context/maintenance estimates,
 acceptance criteria, and a read-only handoff to protected change routes.
+When recommendations claim cross-task patterns, maturity also requires the
+target development-evidence index, owner, retention/privacy policy, bounded
+references, lazy capture flow, and framework non-mutation boundary.
 
 Framework upgrade work is blocked unless `.ai/alatyr.yaml`, installation note,
 context profiles, module profile, bridge files, operation help, and

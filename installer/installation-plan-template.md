@@ -64,6 +64,8 @@ List what must not be changed.
 - AI infrastructure inventory and existing item owners:
 - AI infrastructure inventory reports:
 - AI infrastructure recommendation records and evidence owners:
+- Development-pattern index, owner, retention/privacy policy, and historical
+  evidence sources allowed for bounded backfill:
 - AI infrastructure router, stable item IDs, activation triggers, and statuses:
 - Item canonical sources, required context, allowed actions, permissions,
   gates, validation, output contracts, conflicts, and assistant wrappers:
@@ -166,6 +168,13 @@ wants Alatyr to suggest new items or changes to existing items. Recommendation
 must be read-only, use bounded project-contour evidence, evaluate current items
 first, and record quality, context, maintenance cost, and acceptance criteria.
 
+Include `.ai/project/development-evidence.json` and
+`.ai/assistant/flows/development-evidence-capture.flow.md` when recommendation
+should learn from repeated target requests, corrections, reviews, rework,
+validation failures, or context expansion. Define owner, retention/privacy,
+capture threshold, and historical evidence sources. Start empty unless history
+is explicitly reviewed, and never store raw conversations or sensitive data.
+
 Include `.ai/assistant/ai-infrastructure-router.json` and
 `.ai/assistant/templates/ai-infrastructure-adaptation-record.md` when the
 target uses multiple skills, prompts, gates, checkers, tools/MCP configs,
@@ -213,6 +222,8 @@ Record where completed packets are stored, ignored, redacted, or removed.
 - AI infrastructure inventory rules:
 - AI infrastructure recommendation, existing-item review, project-contour
   evidence, quality/context/maintenance cost, and acceptance-criteria rules:
+- Development-pattern capture, deduplication, retention/privacy, bounded
+  evidence-reference, and target-only optimization rules:
 - AI infrastructure route/item selection and lazy context-loading rules:
 - AI infrastructure item permissions, gates, validation, output contracts,
   conflicts, and adaptation-record rules:

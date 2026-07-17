@@ -17,6 +17,9 @@ Replace placeholders with target facts before accepting installation.
 - project terminology and decisions
 - project needs, constraints, recurring outcomes, and measured quality or cost
   evidence that may justify assistant-infrastructure recommendations
+- normalized target development-request, correction, review, rework,
+  validation, and context-expansion patterns under
+  `.ai/project/development-evidence.json`
 
 ## Does Not Own
 
@@ -40,3 +43,7 @@ Project-contour sources may justify why an assistant capability is needed and
 which project outcome it must improve. The assistant contour owns how a skill,
 prompt, gate, checker, flow, tool, bridge, or wrapper is recommended,
 implemented, routed, validated, and maintained.
+
+Target development evidence must not directly change `.ai/framework`,
+AlatyrCore source, or portable rules. Keep raw conversations, secrets,
+credentials, and personal data out of the development evidence index.

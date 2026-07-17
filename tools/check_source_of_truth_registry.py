@@ -30,6 +30,7 @@ REQUIRED_FACT_TYPES = [
     "validation command",
     "security policy",
     "assistant operation",
+    "development process pattern",
     "AI infrastructure item",
 ]
 
@@ -108,7 +109,12 @@ def main() -> int:
             (line for line in block.splitlines() if line.startswith("Canonical owner:")),
             "",
         )
-        if "{" not in canonical_line:
+        if fact_type == "development process pattern":
+            if ".ai/project/development-evidence.json" not in canonical_line:
+                failures.append(
+                    "development process pattern canonical owner must be the compact index"
+                )
+        elif "{" not in canonical_line:
             failures.append(f"{fact_type} canonical owner should remain placeholder-based")
 
         if not re.search(r"Derived surfaces:\s*\n\s*-\s*`?\{[^}]+\}`?", block):

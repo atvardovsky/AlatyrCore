@@ -76,6 +76,8 @@ The adapter is mature when it also defines:
 - AI infrastructure inventory and add/adapt/remove recommendations
 - project-contour and outcome evidence for recommendations that add new items
   or improve, consolidate, replace, retire, or keep existing items
+- target-owned development-pattern evidence with bounded references,
+  retention/privacy policy, and no direct framework mutation
 - AI infrastructure item routing, permission/gate/output contracts, and
   adaptation records when multiple items exist
 - skill/wrapper compatibility notes for supported assistants
@@ -164,6 +166,8 @@ Ask:
 - Are existing AI infrastructure items inventoried before new items are added?
 - Can recommendations distinguish project needs from assistant-contour item
   ownership, evaluate existing items first, and state quality and cost evidence?
+- Can repeated development friction be retained without raw conversations and
+  loaded only during capture, recommendation, recheck, or effectiveness review?
 - Can an assistant select one AI infrastructure item without loading unrelated
   skills, prompts, gates, or tools?
 - Are imported or custom AI infrastructure items adapted from target evidence

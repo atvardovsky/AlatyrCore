@@ -34,6 +34,8 @@ commands from another project.
   third-party assistant infrastructure changed.
 - AI infrastructure inventory checked before adding, importing, replacing, or
   removing assistant infrastructure.
+- Repeated/high-impact development friction routed through the manifest capture
+  flow.
 - AI infrastructure route and item IDs selected before loading or using skills,
   prompts, gates, checkers, tools/MCP configs, bridges, or wrappers; canonical
   source, allowed actions, permissions, gates, validation, and output contract

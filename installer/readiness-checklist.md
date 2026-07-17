@@ -161,6 +161,8 @@ Collect target-specific facts before writing project docs:
 - AI infrastructure recommendation expectations: bounded project-contour need
   and outcome evidence, existing-item-first review, labeled quality/context/
   maintenance estimates, acceptance criteria, and read-only behavior
+- Target development-pattern index, owner, retention/privacy policy, capture
+  threshold, bounded evidence references, and allowed historical sources
 - AI infrastructure router/item expectations for canonical source, triggers,
   status, required context, allowed actions, permissions, gates, validation,
   output, conflicts, wrappers, and adaptation records
@@ -246,6 +248,8 @@ List commands or manual checks:
 - skill/provenance/safety review:
 - AI infrastructure inventory review:
 - AI infrastructure recommendation and existing-item improvement review:
+- Development-pattern evidence ownership, privacy, retention, and framework
+  non-mutation review:
 - AI infrastructure router/item and adaptation-record review:
 - AI infrastructure source access review:
 - prompt-injection review:
@@ -295,6 +299,7 @@ Final evidence must say:
 - large-task flow and operation-packet template added or skipped
 - AI infrastructure inventory report template added or skipped
 - AI infrastructure recommendation flow and report template added or skipped
+- development-evidence index and lazy capture flow added or skipped
 - AI infrastructure router and adaptation-record template added or skipped
 - root entry-point and bridge compact-bootstrap references checked
 - AI infrastructure source-access policy added or skipped
@@ -310,6 +315,8 @@ Final evidence must say:
 - recommendation results report project-contour evidence, existing-item
   comparison, cost/quality gate, acceptance criteria, actions avoided, and next
   route, or are explicitly skipped
+- pattern-based recommendations name selected pattern IDs and references;
+  target evidence did not directly change framework files or portable rules
 - existing target instructions preserved or approved for overwrite
 - commands or manual checks run
 - skipped checks and residual risk

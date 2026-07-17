@@ -53,8 +53,8 @@ maintain them:
   drift policy.
 - `ai-infrastructure`: inventory, source access, prompt-injection handling,
   evidence-based recommendations, routed skill/prompt/gate/checker/tool/MCP/
-  bridge selection, adaptation records, wrappers, permissions, output
-  contracts, and provenance.
+  bridge selection, target development-pattern evidence and lazy capture,
+  adaptation records, wrappers, permissions, output contracts, and provenance.
 - `multi-assistant-bridges`: bridge capability matrix and assistant-specific
   wrappers for multiple supported assistants.
 - `installed-operations`: post-install operation requests, operation help,

@@ -208,9 +208,10 @@ Select one AI infrastructure route and item ID before loading additional
 skill, prompt, gate, checker, tool/MCP, bridge, source-access,
 prompt-injection, approval, permission, validation, or output-contract context.
 For `recommend`, load only the bounded project area, its owner, relevant
-inventory/items, and `.ai/framework/ai-infrastructure-recommendations.md`.
-Project facts justify the need; recommendation and item mechanics remain
-assistant-contour owned.
+inventory/items, `.ai/project/development-evidence.json`, and
+`.ai/framework/ai-infrastructure-recommendations.md`. Inspect only evidence
+referenced by selected patterns. Project facts justify the need;
+recommendation and item mechanics remain assistant-contour owned.
 
 Approval gates: explicit approval before importing third-party infrastructure
 into canonical target files or changing tool permissions.

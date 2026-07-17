@@ -131,7 +131,9 @@ For installed operations:
 8. Use blueprint-driven change when accepted project facts may change.
 9. Use AI infrastructure recommendation when the user asks what should be
    added or improved, or when bounded evidence shows a recurring capability
-   gap. Evaluate existing items before proposing a new one.
+   gap. Use selected target development-pattern evidence, evaluate existing
+   items before proposing a new one, and do not promote target observations
+   directly into portable framework changes.
 10. Use skill adaptation when prompts, skills, wrappers, or third-party
    assistant infrastructure change.
    Select the target AI infrastructure route and item IDs before loading item

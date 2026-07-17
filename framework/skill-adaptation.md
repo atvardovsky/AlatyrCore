@@ -134,7 +134,8 @@ Before integrating an item into canonical target files:
 2. Inventory existing target AI infrastructure or use a current inventory
    result.
 3. When adaptation follows a recommendation, verify its project-contour
-   evidence, acceptance criteria, expected cost, and proposed next route.
+   evidence, selected development pattern IDs when present, acceptance
+   criteria, expected cost, and proposed next route.
 4. Parse the requested source, source type, item type, intended task, target
    assistant surfaces, and whether the request is review-only or canonical
    integration.

@@ -181,6 +181,9 @@ Additional source-repository helpers include:
 - evidence-based, read-only AI infrastructure recommendations that compare
   bounded project-contour needs with existing items before proposing additions
   or improvements
+- target-owned development-pattern evidence that learns from repeated requests,
+  corrections, reviews, rework, validation failures, and context expansion
+  without storing raw chat or changing portable framework rules
 - durable adaptation records for imported or materially changed assistant
   infrastructure
 - task-specific maturity profile guidance and source-template checks for
@@ -325,6 +328,8 @@ A mature target installation usually has:
 - `.ai/framework/rule-registry.json`
 - `.ai/project/contour.md`
 - `.ai/project/source-of-truth-registry.md`
+- `.ai/project/development-evidence.json` when pattern-based recommendations are
+  enabled
 - `.ai/project/context` or equivalent project source-of-truth docs
 - `.ai/assistant/contour.md`
 - `.ai/assistant/context-router.json`

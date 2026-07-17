@@ -11,6 +11,9 @@ shortcuts, not shell commands.
 Recommendation is read-only. Do not fetch, install, execute, edit, remove,
 activate, or change permissions during this flow.
 
+Optimize the target project's development process only. Do not recommend or
+edit `.ai/framework`, AlatyrCore source, or portable rules from target evidence.
+
 ## Base Target Sources
 
 - Compact bootstrap, with `AGENTS.md` treated as preloaded
@@ -20,6 +23,7 @@ activate, or change permissions during this flow.
 - AI infrastructure router: `.ai/assistant/ai-infrastructure-router.json`
 - Project contour: `.ai/project/contour.md`
 - Source-of-truth registry: `.ai/project/source-of-truth-registry.md`
+- Compact development evidence index: `.ai/project/development-evidence.json`
 - Target assistant contour: `.ai/assistant/contour.md`
 - Target gates: `.ai/assistant/gates/checklist.md`
 - Recommendation report template:
@@ -31,6 +35,8 @@ activate, or change permissions during this flow.
 - Current inventory report or
   `.ai/assistant/flows/ai-infrastructure-inventory.flow.md` when relevant item
   coverage is unknown
+- Evidence references for selected development pattern IDs; do not load
+  unrelated historical sources or raw conversation history
 - Selected project-area source of truth: `{SELECTED_PROJECT_AREA_OWNER}`
 - Selected existing item source: `{SELECTED_AI_ITEM_CANONICAL_SOURCE}`
 - Existing adaptation record: `{SELECTED_AI_ITEM_ADAPTATION_RECORD}`
@@ -49,35 +55,41 @@ review or canonical integration.
 
 1. Select the `recommend` route and the smallest project area, problem scope,
    and existing item-ID set.
-2. Load a current bounded inventory or inspect only relevant router-declared
+2. Inspect `.ai/project/development-evidence.json` first. Select only matching
+   active or unresolved pattern IDs, then load their bounded evidence references
+   when required to verify recurrence or impact.
+3. Load a current bounded inventory or inspect only relevant router-declared
    items. Do not scan all item content when router evidence is sufficient.
-3. Identify the project-contour owner for the need, constraint, or expected
+4. Identify the project-contour owner for the need, constraint, or expected
    outcome. Record missing or anecdotal evidence explicitly.
-4. Cluster repeated tasks, review failures, incidents, skipped checks,
+5. Cluster repeated tasks, review failures, incidents, skipped checks,
    consistency gaps, context expansions, or unsupported assistant behavior by
    the outcome they affect.
-5. Compare existing item purpose, triggers, context, permissions, gates,
+6. Compare existing item purpose, triggers, context, permissions, gates,
    validation, output contract, assistant surfaces, and observed results with
    that project evidence.
-6. Classify each candidate as `add-new`, `improve-existing`, `consolidate`,
+7. Classify each candidate as `add-new`, `improve-existing`, `consolidate`,
    `replace`, `retire`, `keep`, or `unresolved`. Evaluate existing-item changes
    before `add-new`.
-7. Choose the narrowest item type: skill for recurring specialized reasoning,
+8. Choose the narrowest item type: skill for recurring specialized reasoning,
    prompt/template for stable I/O, gate for human decisions, checker for
    deterministic invariants, flow/checklist for ordered work, tool/MCP only for
    missing execution capability, or bridge/wrapper for assistant compatibility.
-8. Record expected quality effect, acceptance criteria, context-load effect,
+9. Record expected quality effect, acceptance criteria, context-load effect,
    implementation and maintenance cost, permissions, safety, compatibility,
    validation, rollback or retirement path, and residual risk. Label estimates
    and do not invent measurements.
-9. Reject speculative, duplicate, one-off, ownerless, or untestable candidates.
+10. Reject speculative, duplicate, one-off, ownerless, or untestable candidates.
    Keep unresolved evidence unresolved.
-10. Write or report a bounded recommendation using
+11. Write or report a bounded recommendation using
     `.ai/assistant/templates/ai-infrastructure-recommendation.md` only when the
     requested allowed actions permit adapter evidence changes.
-11. Do not change project contour facts. They justify the need and expected
+12. Do not change project contour facts. They justify the need and expected
     outcome; recommendation and item mechanics remain assistant-contour owned.
-12. For an accepted candidate, name but do not start the next route:
+13. Do not recommend changes to `.ai/framework`, AlatyrCore source, or portable
+    rules. Report suspected framework defects as a separate unresolved
+    framework-maintenance escalation.
+14. For an accepted candidate, name but do not start the next route:
     `adapt-import`, `gate-checker-change`, `tool-mcp-change`, or
     `bridge-wrapper-change`. That later operation performs normal approval,
     source-access, prompt-injection, permission, and validation checks.
@@ -87,6 +99,7 @@ review or canonical integration.
 Report:
 
 - recommendation scope, project area, and canonical owner
+- development pattern IDs, occurrence evidence, and references inspected
 - selected route, inventory source, existing item IDs, and surfaces inspected
 - observed problem, recurrence or high-impact exception, and evidence quality
 - recommendation kind and proposed item type
@@ -109,5 +122,8 @@ Reject or revise recommendation work that:
   repository workflow is sufficient
 - fetches, installs, edits, removes, activates, or broadens permissions during
   recommendation
+- changes `.ai/framework`, AlatyrCore source, or portable rules from target
+  development evidence
+- stores raw conversations, secrets, credentials, or personal data
 - moves assistant workflow mechanics into the project contour
 - cannot name acceptance criteria, maintenance ownership, or residual risk

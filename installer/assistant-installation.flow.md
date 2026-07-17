@@ -85,6 +85,9 @@ Read in the target repository:
 - existing AI infrastructure router entries, item IDs, permissions, gates,
   output contracts, conflicts, wrappers, recommendation records, and adaptation
   records
+- existing target development-pattern index, evidence owner, retention/privacy
+  policy, and references to recurring requests, corrections, reviews, rework,
+  validation failures, or context expansion
 - existing manifests, version notes, context profiles, approval records, and
   prompt-injection or imported-source policies
 - existing source-of-truth registry, maturity profile, bridge capability
@@ -132,6 +135,10 @@ Classify every proposed target file:
     including `framework/*.md` and `framework/rule-registry.json`.
 12. Create target `.ai/project/contour.md` and target project
    source-of-truth docs from target facts.
+    Add `.ai/project/development-evidence.json` only when the target enables
+    pattern-based AI infrastructure recommendations. Start with an empty index
+    unless bounded historical evidence is explicitly reviewed; never copy raw
+    conversations, secrets, credentials, or personal data.
     Add `.ai/project/consistency-map.json` only when the target enables bounded
     relationship routing; populate fact IDs and edges from target evidence or
     record the module as blocked or deferred.
@@ -158,8 +165,11 @@ Classify every proposed target file:
     record the target packet storage policy.
     When the target uses multiple AI infrastructure items, add
     `.ai/assistant/ai-infrastructure-router.json`, the recommendation flow and
-    report template, and the adaptation-record template. Populate item
-    contracts from target evidence and keep unresolved items blocked.
+    report template, lazy development-evidence capture flow, and the
+    adaptation-record template. Populate item contracts from target evidence
+    and keep unresolved items blocked. Target evidence may improve target-owned
+    AI infrastructure but must not directly change `.ai/framework`, AlatyrCore
+    source, or portable rules.
 16. Ensure root assistant entry points and supported bridge files point future
     sessions to the installation note, operation help, and routing flow.
 17. Add prompts, skills, diagrams, or consistency checks only when they solve
@@ -235,6 +245,8 @@ Report:
   added or skipped
 - AI infrastructure router, recommendation flow/report, and adaptation-record
   template added or skipped
+- development-evidence index, owner, retention/privacy policy, and lazy capture
+  flow added or skipped without claiming unavailable history
 - root entry-point and bridge compact-bootstrap references checked
 - context budgets, task-scale/project-area overlays, and receipt fields adapted or
   explicitly deferred
@@ -246,6 +258,8 @@ Report:
   as gaps
 - recommendation policy separates project-contour need/outcome evidence from
   assistant-contour item mechanics and evaluates existing items before new ones
+- pattern-based recommendation evidence names selected target pattern IDs and
+  does not turn target observations into portable framework changes
 - target validation run and skipped
 - unresolved adapter facts
 - logical integrity review result

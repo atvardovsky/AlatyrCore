@@ -90,6 +90,8 @@ The plan must identify:
 - migration diff, adapter output contract, AI infrastructure inventory and
   recommendation reports, and effectiveness report needs
 - AI infrastructure router/item, recommendation, and adaptation-record needs
+- target development-evidence index, owner, retention/privacy policy, and lazy
+  capture needs when recommendations should learn from recurring project work
 - files to create, adapt, preserve, or skip
 - framework core versus target adapter decisions
 - target validation plan
@@ -130,6 +132,9 @@ In a typical target repository:
 5. Copy or adapt portable framework files into `.ai/framework`, including
    `framework/*.md` and `framework/rule-registry.json`.
 6. Create `.ai/project/contour.md` and target project source-of-truth docs.
+   When AI recommendations should use cross-task patterns, add the compact
+   `.ai/project/development-evidence.json` index with target owner and retention
+   policy. Do not seed it with guessed history or raw conversations.
    Add `.ai/project/consistency-map.json` only when bounded relationship
    routing is enabled and target evidence can support it.
 7. Create `.ai/assistant/contour.md`, context router, context profiles,
@@ -147,7 +152,9 @@ In a typical target repository:
    post-install operation requests or AI infrastructure adaptation.
    Add the AI infrastructure router, recommendation flow/report, and
    adaptation-record template when the target needs routed item selection,
-   evidence-based suggestions, or imported-item provenance evidence.
+   evidence-based suggestions, or imported-item provenance evidence. Add the
+   lazy development-evidence capture flow with the pattern index; target
+   evidence must not directly change `.ai/framework` or portable rules.
 10. Add skills, prompts, diagrams, and deterministic checks only when useful
    for the target, after adapting them to target rules and recording source or
    provenance when applicable. Route AI infrastructure through target item IDs

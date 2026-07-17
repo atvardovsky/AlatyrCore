@@ -47,7 +47,7 @@
       "category": "ADAPTER",
       "owner": "framework/project-adapter-contract.md",
       "rule_ids": ["ALATYR-ADAPTER-001"],
-      "derived_surfaces": ["installation plan", "readiness checklist", "manifest template", "adapter recheck flow", "AI infrastructure router", "AI infrastructure recommendation contract", "AI infrastructure item contracts"]
+      "derived_surfaces": ["installation plan", "readiness checklist", "manifest template", "adapter recheck flow", "target development-pattern evidence", "AI infrastructure router", "AI infrastructure recommendation contract", "AI infrastructure item contracts"]
     },
     {
       "category": "MODULE",
@@ -143,7 +143,7 @@
       "id": "ALATYR-ADAPTER-001",
       "category": "ADAPTER",
       "canonical_source": "framework/project-adapter-contract.md",
-      "summary": "Keep framework core, project facts, and repository adapter facts separated and rewritten from target evidence, including routed AI infrastructure items, project-evidenced recommendation records, and adaptation records.",
+      "summary": "Keep framework core, project facts, and repository adapter facts separated and rewritten from target evidence, including target development-pattern evidence, routed AI infrastructure items, project-evidenced recommendation records, and adaptation records.",
       "applies_to": ["installation", "framework update", "adapter maintenance"],
       "enforcement": "required"
     },

@@ -51,6 +51,7 @@ Use after the initial Alatyr Core installation or a scoped adapter expansion.
 - AI infrastructure inventory result:
   `{AI_INFRASTRUCTURE_INVENTORY_RESULT_OR_SKIPPED}`
 - AI infrastructure recommendation result: `{PROJECT_EVIDENCE_EXISTING_ITEM_COMPARISON_COST_QUALITY_ACCEPTANCE_AND_NEXT_ROUTE_OR_SKIPPED}`
+- Development-pattern evidence result: `{INDEX_OWNER_RETENTION_CAPTURE_AND_FRAMEWORK_BOUNDARY_OR_SKIPPED}`
 - AI infrastructure router result: `{AI_INFRASTRUCTURE_ROUTER_RESULT_OR_SKIPPED}`
 - AI infrastructure adaptation-record result: `{AI_INFRASTRUCTURE_ADAPTATION_RECORD_RESULT_OR_SKIPPED}`
 - Validation run: `{TARGET_VALIDATION_RUN_OR_MANUAL_REVIEW}`
@@ -112,6 +113,7 @@ Core baseline.
 - Target-local checker status: `{TARGET_LOCAL_CHECKER_STATUS_OR_UNRESOLVED}`
 - AI infrastructure router result: `{AI_INFRASTRUCTURE_ROUTER_RESULT_OR_SKIPPED}`
 - AI infrastructure recommendation result: `{PROJECT_EVIDENCE_EXISTING_ITEM_COMPARISON_COST_QUALITY_ACCEPTANCE_AND_NEXT_ROUTE_OR_SKIPPED}`
+- Development-pattern evidence result: `{INDEX_OWNER_RETENTION_CAPTURE_AND_FRAMEWORK_BOUNDARY_OR_SKIPPED}`
 - AI infrastructure adaptation-record result: `{AI_INFRASTRUCTURE_ADAPTATION_RECORD_RESULT_OR_SKIPPED}`
 - Validation run: `{TARGET_VALIDATION_RUN_OR_MANUAL_REVIEW}`
 - Validation skipped or unresolved: `{VALIDATION_SKIPPED_OR_UNRESOLVED}`
@@ -164,6 +166,7 @@ adapter.
 - AI infrastructure inventory result:
   `{AI_INFRASTRUCTURE_INVENTORY_RESULT_OR_SKIPPED}`
 - AI infrastructure recommendation result: `{PROJECT_EVIDENCE_EXISTING_ITEM_COMPARISON_COST_QUALITY_ACCEPTANCE_AND_NEXT_ROUTE_OR_SKIPPED}`
+- Development-pattern evidence result: `{INDEX_OWNER_RETENTION_CAPTURE_AND_FRAMEWORK_BOUNDARY_OR_SKIPPED}`
 - AI infrastructure router result: `{AI_INFRASTRUCTURE_ROUTER_RESULT_OR_SKIPPED}`
 - AI infrastructure adaptation-record result: `{AI_INFRASTRUCTURE_ADAPTATION_RECORD_RESULT_OR_SKIPPED}`
 - Prompt-injection policy result: `{PROMPT_INJECTION_POLICY_RESULT}`

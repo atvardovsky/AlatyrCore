@@ -76,6 +76,9 @@ Every project using this framework must define:
 - AI infrastructure recommendation policy and records when the adapter should
   propose new items or improvements to existing items from project-contour,
   quality, context-cost, and maintenance evidence
+- compact target development evidence index, owner, retention policy, and lazy
+  capture flow when recommendations should learn from repeated requests,
+  corrections, review findings, rework, or context-expansion patterns
 - durable adaptation records for imported or materially changed AI
   infrastructure
 - prompt-injection policy for imported, external, remote, pasted, package, or

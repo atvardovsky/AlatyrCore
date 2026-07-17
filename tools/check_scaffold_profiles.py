@@ -24,10 +24,12 @@ CORE_REQUIRED = {
     Path(".ai/assistant/module-profile.md"),
     Path(".ai/assistant/flows/ai-infrastructure-inventory.flow.md"),
     Path(".ai/assistant/flows/ai-infrastructure-recommendation.flow.md"),
+    Path(".ai/assistant/flows/development-evidence-capture.flow.md"),
     Path(".ai/assistant/flows/skill-adaptation.flow.md"),
     Path(".ai/assistant/templates/ai-infrastructure-recommendation.md"),
     Path(".ai/assistant/approvals/approval-record-template.json"),
     Path(".ai/project/source-of-truth-registry.md"),
+    Path(".ai/project/development-evidence.json"),
     Path("AGENTS.md"),
 }
 FULL_ONLY_BRIDGES = {

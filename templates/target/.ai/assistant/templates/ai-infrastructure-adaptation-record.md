@@ -20,6 +20,7 @@ for later use.
 - Review date: `{REVIEW_DATE}`
 - Reviewed by: `{REVIEWER_OR_ROLE}`
 - Recommendation record or ID: `{RECOMMENDATION_RECORD_ID_OR_NOT_APPLICABLE}`
+- Development pattern IDs: `{DEVELOPMENT_PATTERN_IDS_OR_NOT_APPLICABLE}`
 - Project-contour basis: `{PROJECT_AREA_OWNER_NEED_AND_EXPECTED_OUTCOME}`
 
 ## Target Contract

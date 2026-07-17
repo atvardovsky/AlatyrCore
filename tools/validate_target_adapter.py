@@ -124,6 +124,7 @@ MANIFEST_PATH_SCALARS: set[PathKey] = {
     ("framework", "rule_registry"),
     ("source_of_truth", "project_contour"),
     ("source_of_truth", "registry"),
+    ("source_of_truth", "development_evidence"),
     ("source_of_truth", "consistency_map"),
     ("source_of_truth", "assistant_contour"),
     ("source_of_truth", "context_router"),
@@ -132,6 +133,7 @@ MANIFEST_PATH_SCALARS: set[PathKey] = {
     ("operations", "help"),
     ("operations", "operation_request"),
     ("operations", "output_contracts"),
+    ("operations", "development_evidence_capture"),
     ("ai_infrastructure", "router"),
     ("ai_infrastructure", "inventory"),
     ("ai_infrastructure", "recommendation"),
@@ -406,6 +408,7 @@ class Validator:
         self.check_router()
         self.check_consistency_map()
         self.check_ai_infrastructure_router()
+        self.check_development_evidence(manifest)
         self.check_bootstrap_references()
         self.check_placeholders()
         self.check_local_paths()
@@ -1054,6 +1057,155 @@ class Validator:
                     self.error("AI_ROUTER_ITEM_FIELD", f"{label}.{field} must be a string", relpath)
                 elif field != "output_contract":
                     self.check_optional_target_reference(value, relpath, f"{label}.{field}")
+
+    def check_development_evidence(self, manifest: ManifestData | None) -> None:
+        key = ("source_of_truth", "development_evidence")
+        scalar = manifest.scalars.get(key) if manifest else None
+        relpath = scalar.value if scalar else ".ai/project/development-evidence.json"
+        path = self.target_path(relpath)
+        if not path.is_file():
+            self.warn(
+                "DEVELOPMENT_EVIDENCE_MISSING",
+                "target has no compact development evidence index; recurring request "
+                "and process-pattern recommendations remain conversation-local",
+                relpath,
+            )
+            return
+
+        data = self.load_json_object(path, "DEVELOPMENT_EVIDENCE")
+        if data is None:
+            return
+        if data.get("schema_version") != 1:
+            self.error(
+                "DEVELOPMENT_EVIDENCE_SCHEMA",
+                "schema_version should be 1",
+                relpath,
+            )
+        if data.get("register_kind") != "target-development-evidence":
+            self.error(
+                "DEVELOPMENT_EVIDENCE_KIND",
+                "register_kind should be target-development-evidence",
+                relpath,
+            )
+
+        for field in ["project", "owner", "retention_policy", "last_reviewed"]:
+            value = data.get(field)
+            if not isinstance(value, str) or not value.strip():
+                self.error(
+                    "DEVELOPMENT_EVIDENCE_METADATA",
+                    f"{field} must be a non-empty string",
+                    relpath,
+                )
+            elif is_unresolved_value(value):
+                report = self.warn if self.allow_placeholders else self.error
+                report(
+                    "DEVELOPMENT_EVIDENCE_METADATA_UNRESOLVED",
+                    f"{field} is unresolved",
+                    relpath,
+                )
+
+        content_policy = data.get("content_policy")
+        if not isinstance(content_policy, str) or not all(
+            term in content_policy.lower()
+            for term in ["raw chat", "secrets", "credentials", "personal data"]
+        ):
+            self.error(
+                "DEVELOPMENT_EVIDENCE_CONTENT_POLICY",
+                "content_policy must exclude raw chat, secrets, credentials, and personal data",
+                relpath,
+            )
+
+        patterns = data.get("patterns")
+        if not isinstance(patterns, list):
+            self.error(
+                "DEVELOPMENT_EVIDENCE_PATTERNS",
+                "patterns must be a list",
+                relpath,
+            )
+            return
+
+        required_strings = [
+            "id",
+            "category",
+            "project_area",
+            "source_owner",
+            "normalized_problem",
+            "first_observed",
+            "last_observed",
+            "evidence_quality",
+            "status",
+        ]
+        list_fields = ["evidence_refs", "outcome_signals", "existing_ai_item_ids"]
+        evidence_qualities = {
+            "measured",
+            "observed",
+            "anecdotal",
+            "conflicting",
+            "unresolved",
+        }
+        statuses = {"active", "resolved", "deferred", "unresolved"}
+        pattern_ids: set[str] = set()
+        for index, pattern in enumerate(patterns):
+            label = f"patterns[{index}]"
+            if not isinstance(pattern, dict):
+                self.error(
+                    "DEVELOPMENT_EVIDENCE_PATTERN_SHAPE",
+                    f"{label} must be an object",
+                    relpath,
+                )
+                continue
+            for field in required_strings:
+                value = pattern.get(field)
+                if not isinstance(value, str) or not value.strip():
+                    self.error(
+                        "DEVELOPMENT_EVIDENCE_PATTERN_FIELD",
+                        f"{label}.{field} must be a non-empty string",
+                        relpath,
+                    )
+            pattern_id = pattern.get("id")
+            if isinstance(pattern_id, str) and pattern_id:
+                if pattern_id in pattern_ids:
+                    self.error(
+                        "DEVELOPMENT_EVIDENCE_PATTERN_DUPLICATE",
+                        f"duplicate pattern id {pattern_id}",
+                        relpath,
+                    )
+                pattern_ids.add(pattern_id)
+            occurrence_count = pattern.get("occurrence_count")
+            if not isinstance(occurrence_count, int) or occurrence_count < 1:
+                self.error(
+                    "DEVELOPMENT_EVIDENCE_OCCURRENCE_COUNT",
+                    f"{label}.occurrence_count must be a positive integer",
+                    relpath,
+                )
+            for field in list_fields:
+                values = pattern.get(field)
+                if not isinstance(values, list) or not all(
+                    isinstance(value, str) and value for value in values
+                ):
+                    self.error(
+                        "DEVELOPMENT_EVIDENCE_PATTERN_LIST",
+                        f"{label}.{field} must be a string list",
+                        relpath,
+                    )
+            if not pattern.get("evidence_refs"):
+                self.error(
+                    "DEVELOPMENT_EVIDENCE_REFERENCE_MISSING",
+                    f"{label}.evidence_refs must identify at least one occurrence",
+                    relpath,
+                )
+            if pattern.get("evidence_quality") not in evidence_qualities:
+                self.error(
+                    "DEVELOPMENT_EVIDENCE_QUALITY",
+                    f"{label}.evidence_quality is invalid",
+                    relpath,
+                )
+            if pattern.get("status") not in statuses:
+                self.error(
+                    "DEVELOPMENT_EVIDENCE_STATUS",
+                    f"{label}.status is invalid",
+                    relpath,
+                )
 
     def load_json_object(self, path: Path, code_prefix: str) -> dict[str, Any] | None:
         if not path.is_file():

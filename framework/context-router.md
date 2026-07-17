@@ -80,6 +80,9 @@ The selected route decides whether inventory, ordinary target-owned item use,
 read-only recommendation, adaptation, protected tool policy, or bridge
 compatibility context is needed. Recommendation loads one bounded project area
 and relevant existing-item evidence rather than broad project or import policy.
+Load target development-pattern evidence only for lazy capture,
+recommendation, adapter recheck, or explicit effectiveness review, then inspect
+only selected pattern references.
 
 ## Ownership
 

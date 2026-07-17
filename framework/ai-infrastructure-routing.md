@@ -99,9 +99,10 @@ surfaces before broad directory search. Expand only for missing inventory,
 unknown ownership, stale paths, or conflicting declarations.
 
 For `recommend`, load only the selected project area, its canonical owner,
-current inventory, and relevant item contracts. Do not load unrelated project
-areas or all item content. Recommendation does not permit source fetching or
-canonical changes.
+the compact target development evidence index when present, current inventory,
+and relevant item contracts. Inspect only evidence references for candidate
+patterns. Do not load unrelated project areas or all item content.
+Recommendation does not permit source fetching or canonical changes.
 
 For protected routes, cost savings never bypass source access,
 prompt-injection, permission, approval, or validation rules.

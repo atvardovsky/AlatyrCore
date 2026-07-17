@@ -118,9 +118,10 @@ permissions, gates, validation, and output contracts. Load import and protected
 tool policy only for routes that need them.
 
 For recommendation, load only the bounded project area and owner, relevant
-inventory and existing item contracts, and recommendation evidence. Do not
-load external-source policy or unrelated project areas until an accepted
-candidate enters a later adaptation or protected change route.
+inventory and existing item contracts, the compact target development evidence
+index when present, and recommendation evidence. Inspect only references for
+selected patterns. Do not load the index for unrelated tasks or load external-
+source policy until an accepted candidate enters a later adaptation route.
 
 ## Large Or Resumable Tasks
 

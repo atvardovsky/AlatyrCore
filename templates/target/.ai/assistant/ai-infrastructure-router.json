@@ -69,10 +69,12 @@
         ".ai/assistant/flows/ai-infrastructure-recommendation.flow.md",
         ".ai/assistant/templates/ai-infrastructure-recommendation.md",
         ".ai/project/contour.md",
-        ".ai/project/source-of-truth-registry.md"
+        ".ai/project/source-of-truth-registry.md",
+        ".ai/project/development-evidence.json"
       ],
       "expand_when": [
         "selected project-area owner evidence is required",
+        "selected development pattern evidence references require inspection",
         "existing item source adaptation record validation or output evidence is required",
         "relevant inventory is missing stale or conflicting"
       ],
@@ -87,7 +89,7 @@
         "{TARGET_AI_INFRASTRUCTURE_RECOMMENDATION_VALIDATION_OR_MANUAL_REVIEW}"
       ],
       "final_evidence": [
-        "project-contour evidence recommendation kind and existing item comparison",
+        "project-contour evidence development pattern ids recommendation kind and existing item comparison",
         "quality context maintenance permissions acceptance criteria next route and residual risk",
         "fetch install execute edit remove permission and activation actions not taken"
       ]

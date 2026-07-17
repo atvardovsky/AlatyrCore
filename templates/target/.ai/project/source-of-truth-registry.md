@@ -143,6 +143,25 @@ Conflict resolver: `{ASSISTANT_OPERATION_CONFLICT_RESOLVER}`
 Approval trigger: `{ASSISTANT_OPERATION_APPROVAL_TRIGGER}`
 Final evidence: `{ASSISTANT_OPERATION_FINAL_EVIDENCE}`
 
+### Fact Type: `development process pattern`
+
+Fact type: `development process pattern`
+Canonical owner: `.ai/project/development-evidence.json`
+Consistency level: `{DEVELOPMENT_PATTERN_CONSISTENCY_LEVEL}`
+Project area: `{DEVELOPMENT_PATTERN_PROJECT_AREA}`
+Consistency map node: `{DEVELOPMENT_PATTERN_CONSISTENCY_MAP_NODE_OR_NONE}`
+Relationship coverage: `{DEVELOPMENT_PATTERN_RELATIONSHIP_COVERAGE}`
+Invariant and dependency constraints: `{DEVELOPMENT_PATTERN_CONSTRAINTS}`
+Derived surfaces:
+
+- `{DEVELOPMENT_PATTERN_RECOMMENDATIONS_OR_NONE}`
+
+Sync direction: `{DEVELOPMENT_EVIDENCE_TO_RECOMMENDATION_REVIEW}`
+Validation or manual review: `{DEVELOPMENT_EVIDENCE_VALIDATION_OR_REVIEW}`
+Conflict resolver: `{DEVELOPMENT_EVIDENCE_CONFLICT_RESOLVER}`
+Approval trigger: `{DEVELOPMENT_EVIDENCE_APPROVAL_TRIGGER}`
+Final evidence: `{DEVELOPMENT_EVIDENCE_FINAL_EVIDENCE}`
+
 ### Fact Type: `AI infrastructure item`
 
 Fact type: `AI infrastructure item`

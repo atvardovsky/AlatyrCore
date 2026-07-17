@@ -17,6 +17,7 @@
         ".ai/assistant/flows/documentation-sync.flow.md",
         ".ai/assistant/flows/ai-infrastructure-inventory.flow.md",
         ".ai/assistant/flows/ai-infrastructure-recommendation.flow.md",
+        ".ai/assistant/flows/development-evidence-capture.flow.md",
         ".ai/assistant/flows/logical-integrity-review.flow.md",
         ".ai/assistant/flows/skill-adaptation.flow.md",
         ".ai/assistant/gates/checklist.md",
@@ -33,6 +34,7 @@
         ".ai/assistant/templates/operation-request.md",
         ".ai/project/consistency-map.json",
         ".ai/project/contour.md",
+        ".ai/project/development-evidence.json",
         ".ai/project/source-of-truth-registry.md",
         "AGENTS.md",
         "CODEOWNERS"

@@ -169,9 +169,11 @@ def main() -> int:
         ".ai/assistant/ai-infrastructure-router.json",
         ".ai/assistant/flows/ai-infrastructure-inventory.flow.md",
         ".ai/assistant/flows/ai-infrastructure-recommendation.flow.md",
+        ".ai/assistant/flows/development-evidence-capture.flow.md",
         ".ai/assistant/flows/skill-adaptation.flow.md",
         ".ai/assistant/templates/ai-infrastructure-recommendation.md",
         ".ai/assistant/templates/ai-infrastructure-adaptation-record.md",
+        ".ai/project/development-evidence.json",
     ]:
         if required not in ai_infrastructure:
             failures.append(f"module ai-infrastructure missing required file {required}")

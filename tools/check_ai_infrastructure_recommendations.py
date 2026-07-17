@@ -27,6 +27,14 @@ TEMPLATE = (
     / "templates"
     / "ai-infrastructure-recommendation.md"
 )
+CAPTURE_FLOW = (
+    TARGET
+    / ".ai"
+    / "assistant"
+    / "flows"
+    / "development-evidence-capture.flow.md"
+)
+DEVELOPMENT_EVIDENCE = TARGET / ".ai" / "project" / "development-evidence.json"
 PROJECT_CONTOUR = TARGET / ".ai" / "project" / "contour.md"
 ASSISTANT_CONTOUR = TARGET / ".ai" / "assistant" / "contour.md"
 HELP = TARGET / ".ai" / "assistant" / "help.md"
@@ -37,6 +45,10 @@ FRAMEWORK_TEXT = [
     "# AI Infrastructure Recommendations",
     "Recommendations are read-only decision evidence by default.",
     "Project evidence describes the need, constraints, and expected outcome.",
+    "## Target Optimization Boundary",
+    "Target evidence must not directly recommend or edit the installed",
+    "## Development Pattern Evidence",
+    "Never store secrets, credentials, personal data, or complete conversation",
     "Review existing items before recommending `add-new`.",
     "## Cost And Quality Gate",
     "Do not invent",
@@ -52,6 +64,7 @@ FLOW_TEXT = [
     ".ai/assistant/templates/ai-infrastructure-recommendation.md",
     ".ai/project/contour.md",
     ".ai/project/source-of-truth-registry.md",
+    ".ai/project/development-evidence.json",
     "Select the `recommend` route",
     "Evaluate existing-item changes",
     "before `add-new`.",
@@ -59,6 +72,20 @@ FLOW_TEXT = [
     "Do not change project contour facts.",
     "Do not fetch, install, execute, edit, remove,",
     "activate, or change permissions during this flow.",
+    "Do not recommend changes to `.ai/framework`, AlatyrCore source, or portable",
+]
+
+CAPTURE_FLOW_TEXT = [
+    "# Development Evidence Capture Flow",
+    ".ai/project/development-evidence.json",
+    "Do not assume prior assistant conversations are available.",
+    "## Capture Gate",
+    "Do not record routine successful one-off work",
+    "Under `read-only`, report a capture candidate",
+    "Do not copy raw request,",
+    "Do not recommend an AI item during capture.",
+    "Do not modify `.ai/framework`, AlatyrCore source, portable rules",
+    "## Pattern Contract",
 ]
 
 TEMPLATE_TEXT = [
@@ -70,6 +97,8 @@ TEMPLATE_TEXT = [
     "Project area and canonical owner:",
     "Recommendation record path:",
     "Project-contour evidence:",
+    "Selected development pattern IDs:",
+    "Pattern occurrence and evidence references:",
     "Evidence quality:",
     "Recommendation ID:",
     "Recommendation kind:",
@@ -94,6 +123,7 @@ PLACEHOLDER_FIELDS = [
     "- Recommendation scope:",
     "- Project area and canonical owner:",
     "- Project-contour evidence:",
+    "- Selected development pattern IDs:",
     "- Evidence quality:",
     "- Recommendation ID:",
     "- Recommendation kind:",
@@ -136,6 +166,8 @@ def main() -> int:
         ROUTER,
         FLOW,
         TEMPLATE,
+        CAPTURE_FLOW,
+        DEVELOPMENT_EVIDENCE,
         PROJECT_CONTOUR,
         ASSISTANT_CONTOUR,
         HELP,
@@ -151,10 +183,12 @@ def main() -> int:
     framework_text = read(FRAMEWORK)
     flow_text = read(FLOW)
     template_text = read(TEMPLATE)
+    capture_flow_text = read(CAPTURE_FLOW)
     for label, text, required_values in [
         (FRAMEWORK.relative_to(ROOT), framework_text, FRAMEWORK_TEXT),
         (FLOW.relative_to(ROOT), flow_text, FLOW_TEXT),
         (TEMPLATE.relative_to(ROOT), template_text, TEMPLATE_TEXT),
+        (CAPTURE_FLOW.relative_to(ROOT), capture_flow_text, CAPTURE_FLOW_TEXT),
     ]:
         for required in required_values:
             if required not in text:
@@ -174,6 +208,26 @@ def main() -> int:
     except json.JSONDecodeError as exc:
         failures.append(f"invalid {ROUTER.relative_to(ROOT)}: {exc}")
         router = {}
+
+    try:
+        development_evidence = json.loads(read(DEVELOPMENT_EVIDENCE))
+    except json.JSONDecodeError as exc:
+        failures.append(f"invalid {DEVELOPMENT_EVIDENCE.relative_to(ROOT)}: {exc}")
+        development_evidence = {}
+    if development_evidence.get("schema_version") != 1:
+        failures.append("development evidence schema_version must be 1")
+    if development_evidence.get("register_kind") != "target-development-evidence":
+        failures.append("development evidence register_kind is incorrect")
+    for field in ["project", "owner", "retention_policy", "last_reviewed"]:
+        value = development_evidence.get(field)
+        if not isinstance(value, str) or "{" not in value:
+            failures.append(f"development evidence {field} must use a placeholder")
+    content_policy = development_evidence.get("content_policy", "")
+    for required in ["no raw chat", "secrets", "credentials", "personal data"]:
+        if required not in content_policy:
+            failures.append(f"development evidence content_policy missing {required}")
+    if development_evidence.get("patterns") != []:
+        failures.append("development evidence target template patterns must start empty")
 
     if router.get("schema_version") != 2:
         failures.append("AI infrastructure router schema_version must be 2")
@@ -213,6 +267,7 @@ def main() -> int:
         ".ai/assistant/templates/ai-infrastructure-recommendation.md",
         ".ai/project/contour.md",
         ".ai/project/source-of-truth-registry.md",
+        ".ai/project/development-evidence.json",
     ]:
         if required not in route.get("required_context", []):
             failures.append(f"recommend route required_context missing {required}")
@@ -222,11 +277,16 @@ def main() -> int:
     for required in [
         "## AI Infrastructure Evidence Boundary",
         "assistant contour owns",
+        ".ai/project/development-evidence.json",
     ]:
         if required not in project_text:
             failures.append(f"project contour missing ownership boundary: {required}")
-    if "project-evidenced recommendation" not in assistant_text:
-        failures.append("assistant contour must own project-evidenced recommendation")
+    for required in [
+        "project-evidenced recommendation",
+        "lazy development-evidence capture mechanics",
+    ]:
+        if required not in assistant_text:
+            failures.append(f"assistant contour missing ownership boundary: {required}")
 
     for path in [HELP, HELP_REFERENCE]:
         text = read(path)
@@ -243,6 +303,8 @@ def main() -> int:
     for required in [
         'recommendation: ".ai/assistant/templates/ai-infrastructure-recommendation.md"',
         'ai_infrastructure_recommendation: ".ai/assistant/templates/ai-infrastructure-recommendation.md"',
+        'development_evidence: ".ai/project/development-evidence.json"',
+        'development_evidence_capture: ".ai/assistant/flows/development-evidence-capture.flow.md"',
     ]:
         if required not in manifest_text:
             failures.append(f"target manifest missing {required}")

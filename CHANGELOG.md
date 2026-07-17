@@ -14,6 +14,13 @@
 - Added existing-item-first review, quality/context/maintenance cost evidence,
   acceptance criteria, safe adaptation handoff, all-surface bridge routing, and
   deterministic source checks for recommendation contracts.
+- Added a compact target-owned development-pattern index and lazy capture flow
+  for recurring requests, corrections, review findings, rework, validation
+  failures, and context expansion, with bounded references and retention/privacy
+  controls.
+- Prohibited target recommendation evidence from directly changing installed
+  framework files, AlatyrCore source, or portable rules, and extended the target
+  validator to check populated development-pattern contracts.
 - Changed the derived commitment for `ALATYR-ADAPTER-001`; no rule ID was added
   or removed.
 

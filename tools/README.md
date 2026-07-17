@@ -130,8 +130,9 @@ py -3 .\tools\check_ai_infrastructure_inventory.py
 
 `check_ai_infrastructure_recommendations.py` validates the portable
 recommendation policy and target recommendation route, flow, report template,
-project/assistant contour boundary, existing-item-first rule, cost and quality
-evidence, acceptance criteria, read-only behavior, aliases, and manifest paths.
+project/assistant contour boundary, development-pattern index and lazy capture
+flow, existing-item-first rule, cost and quality evidence, acceptance criteria,
+read-only behavior, aliases, and manifest paths.
 It is a source-template check, not a target recommendation engine or permission
 to modify AI infrastructure.
 

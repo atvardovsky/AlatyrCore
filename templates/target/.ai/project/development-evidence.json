@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "register_kind": "target-development-evidence",
+  "project": "{PROJECT_NAME}",
+  "owner": "{TARGET_DEVELOPMENT_EVIDENCE_OWNER}",
+  "retention_policy": "{TARGET_DEVELOPMENT_EVIDENCE_RETENTION_POLICY}",
+  "last_reviewed": "{LAST_REVIEW_DATE_OR_UNRESOLVED}",
+  "content_policy": "normalized signals and target-permitted evidence references only; no raw chat, secrets, credentials, or personal data",
+  "patterns": []
+}

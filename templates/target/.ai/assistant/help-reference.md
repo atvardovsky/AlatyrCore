@@ -88,6 +88,7 @@ Operation: `ai-infrastructure-recommendation`
 Use when: recommending new AI infrastructure or improvements, consolidation,
 replacement, retirement, or retention of existing items.
 Flow: `.ai/assistant/flows/ai-infrastructure-recommendation.flow.md`
+Companion flow: `.ai/assistant/flows/development-evidence-capture.flow.md`.
 Minimum input: bounded project area or problem, or an existing item ID, plus
 available outcome evidence.
 Aliases: `alatyr-suggest-ai {RECOMMENDATION_SCOPE}`,

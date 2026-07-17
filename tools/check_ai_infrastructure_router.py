@@ -68,6 +68,7 @@ RECORD_FIELDS = [
     "Source hash, commit, or version:",
     "License status:",
     "Recommendation record or ID:",
+    "Development pattern IDs:",
     "Project-contour basis:",
     "Target purpose:",
     "Non-goals:",
@@ -214,6 +215,7 @@ def main() -> int:
         'router: ".ai/assistant/ai-infrastructure-router.json"',
         'recommendation: ".ai/assistant/templates/ai-infrastructure-recommendation.md"',
         'adaptation_record: ".ai/assistant/templates/ai-infrastructure-adaptation-record.md"',
+        'development_evidence: ".ai/project/development-evidence.json"',
     ]:
         if value not in manifest_text:
             failures.append(f"target manifest missing AI infrastructure {value}")
@@ -236,6 +238,8 @@ def main() -> int:
             ".ai/framework/prompt-injection.md",
             ".ai/assistant/policies/ai-infrastructure-source-access.md",
             ".ai/assistant/policies/prompt-injection.md",
+            ".ai/project/development-evidence.json",
+            ".ai/assistant/flows/development-evidence-capture.flow.md",
         ]:
             if eager_path in profile_context:
                 failures.append(

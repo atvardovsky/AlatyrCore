@@ -54,6 +54,8 @@ an AI infrastructure alias is used.
 - Source type: `{LOCAL_PATH_OR_GIT_URL_OR_HTTPS_URL_OR_NATIVE_REFERENCE_OR_PASTED}`
 - Inventory scope: `{AI_INFRASTRUCTURE_INVENTORY_SCOPE}`
 - Recommendation scope: `{PROJECT_AREA_PROBLEM_OR_ITEM_SCOPE}`
+- Development pattern IDs: `{DEVELOPMENT_PATTERN_IDS_OR_NONE}`
+- Historical evidence scope: `{BOUNDED_TARGET_EVIDENCE_SOURCES_OR_NONE}`
 - Project-contour need and owner: `{PROJECT_NEED_OUTCOME_AND_CANONICAL_OWNER}`
 - Existing item outcome evidence:
   `{QUALITY_COST_REWORK_OR_VALIDATION_EVIDENCE_OR_NONE}`

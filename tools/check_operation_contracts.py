@@ -19,7 +19,7 @@ HELP_REFERENCE = TARGET / ".ai" / "assistant" / "help-reference.md"
 FLOWS = TARGET / ".ai" / "assistant" / "flows"
 
 OPERATION_RE = re.compile(r"^Operation: `([^`]+)`", re.MULTILINE)
-FLOW_RE = re.compile(r"^Flow: `([^`]+)`", re.MULTILINE)
+FLOW_RE = re.compile(r"^(?:Flow|Companion flow):\s*`([^`]+)`", re.MULTILINE)
 ROUTE_RE = re.compile(r"(?:route to|Route to:)\s+`([^`]+)`")
 BACKTICK_RE = re.compile(r"`([^`]+)`")
 

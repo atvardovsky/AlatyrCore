@@ -79,8 +79,8 @@ Category: `ADAPTER`
 Owner: `.ai/framework/project-adapter-contract.md`
 Rule IDs: `ALATYR-ADAPTER-001`
 Derived surfaces: installation plan, readiness checklist, manifest template,
-adapter recheck flow, AI infrastructure router, recommendation, and item
-contracts.
+adapter recheck flow, target development-pattern evidence, AI infrastructure
+router, recommendation, and item contracts.
 
 Category: `MODULE`
 Owner: `.ai/framework/module-profile.md`

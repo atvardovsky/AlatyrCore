@@ -177,6 +177,56 @@ def main() -> int:
             if required not in ai_codes:
                 failures.append(f"broken AI router missing finding {required}")
 
+        development_evidence_path = (
+            target / ".ai" / "project" / "development-evidence.json"
+        )
+        write_json(
+            development_evidence_path,
+            {
+                "schema_version": 1,
+                "register_kind": "target-development-evidence",
+                "project": "fixture",
+                "owner": "fixture-owner",
+                "retention_policy": "keep bounded references",
+                "last_reviewed": "2026-07-17",
+                "content_policy": (
+                    "no raw chat, secrets, credentials, or personal data"
+                ),
+                "patterns": [
+                    {
+                        "id": "pattern-1",
+                        "category": "review-rework",
+                        "project_area": "api",
+                        "source_owner": "api-contract",
+                        "normalized_problem": "companion contract updates are missed",
+                        "occurrence_count": 0,
+                        "first_observed": "operation-1",
+                        "last_observed": "operation-1",
+                        "evidence_quality": "invented",
+                        "evidence_refs": [],
+                        "outcome_signals": ["rework"],
+                        "existing_ai_item_ids": [],
+                        "status": "unknown",
+                    }
+                ],
+            },
+        )
+        development_evidence = validator(target)
+        development_evidence.check_development_evidence(None)
+        development_codes = {
+            finding.code for finding in development_evidence.findings
+        }
+        for required in [
+            "DEVELOPMENT_EVIDENCE_OCCURRENCE_COUNT",
+            "DEVELOPMENT_EVIDENCE_REFERENCE_MISSING",
+            "DEVELOPMENT_EVIDENCE_QUALITY",
+            "DEVELOPMENT_EVIDENCE_STATUS",
+        ]:
+            if required not in development_codes:
+                failures.append(
+                    f"broken development evidence missing finding {required}"
+                )
+
         approval = """Allowed files or surfaces:
 
 - `.ai/assistant/help.md`

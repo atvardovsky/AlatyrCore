@@ -45,8 +45,9 @@ Replace placeholders with target facts before accepting installation.
 1. Run `.ai/assistant/flows/ai-infrastructure-inventory.flow.md` or load a
    current inventory result for the affected assistant surfaces.
 2. When adaptation follows a recommendation, verify its project-contour owner,
-   evidence quality, existing-item comparison, acceptance criteria, expected
-   quality/context cost, and next route. Keep unsupported proposals unresolved.
+   selected development pattern IDs when present, evidence quality,
+   existing-item comparison, acceptance criteria, expected quality/context
+   cost, and next route. Keep unsupported proposals unresolved.
 3. Select the `adapt-import` route and target item ID in
    `.ai/assistant/ai-infrastructure-router.json`. Keep unknown or conflicting
    items unresolved.
@@ -107,7 +108,8 @@ Report:
 
 - inventory result used
 - recommendation record/ID or why recommendation was not applicable
-- project-contour basis and acceptance criteria when recommendation was used
+- project-contour basis, development pattern IDs, and acceptance criteria when
+  recommendation was used
 - selected route, target item ID, and router result
 - item source and provenance
 - source hash, commit, version, or unresolved hash evidence

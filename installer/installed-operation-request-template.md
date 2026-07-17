@@ -67,6 +67,9 @@ AI infrastructure route and target item ID, when applicable:
 AI infrastructure recommendation scope, when applicable:
 <project area/problem/existing item IDs>
 
+Development pattern IDs or bounded historical evidence scope, when applicable:
+<target pattern IDs/issue-review-commit-operation sources/none>
+
 Project-contour need, owner, and observed outcome evidence, when applicable:
 <target facts and source-of-truth references, or unresolved>
 

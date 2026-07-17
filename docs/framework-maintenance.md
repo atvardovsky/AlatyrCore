@@ -78,6 +78,7 @@ Before accepting a change, check:
   changes.
 - `python3 tools/check_ai_infrastructure_recommendations.py` passes when
   recommendation triggers, project-contour evidence, existing-item review,
+  development-pattern capture/retention/privacy, framework scope boundaries,
   quality/context/maintenance cost, acceptance criteria, read-only behavior,
   aliases, routes, flows, templates, or manifest paths change.
 - `python3 tools/check_ai_infrastructure_router.py` passes when AI item types,
@@ -207,6 +208,8 @@ Before accepting a change, check:
 - AI infrastructure router, inventory, adaptation record, selected profile,
   bridge capability matrix, source access, prompt-injection, gates, manifest,
   and output contracts agree.
+- development-pattern index, capture flow, project/assistant ownership,
+  recommendation route, manifest, module profile, and target validator agree.
 - target gate, operation-routing, adapter-recheck, and output-contract
   templates preserve context-router bootstrap references and adapter drift
   evidence for local path leakage, stale checker statements, duplicate profile

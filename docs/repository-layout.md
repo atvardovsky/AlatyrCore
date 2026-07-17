@@ -72,6 +72,7 @@ risk, validation, approval, recommendations, and residual risk.
 `tools/check_ai_infrastructure_recommendations.py` validates the portable
 recommendation policy plus target recommendation route, flow, report,
 project-contour evidence boundary, cost/quality gate, existing-item review,
+development-pattern index and lazy capture flow, privacy/framework boundaries,
 help aliases, and manifest paths.
 
 `tools/check_bridge_capability_matrix.py` validates the target

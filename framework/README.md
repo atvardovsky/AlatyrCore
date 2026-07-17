@@ -43,6 +43,8 @@ sync, logical integrity review, and final evidence.
   prompts, gates, checkers, tools, MCP configs, bridges, and wrappers
 - evidence-based AI infrastructure recommendations for adding new items or
   improving, consolidating, replacing, retiring, and keeping existing items
+- compact target-owned development-pattern evidence with lazy capture,
+  retention/privacy boundaries, and no target-to-framework policy promotion
 - installed-adapter operation and recheck guidance
 - operation help and routing guidance for unclear installed-adapter requests
 - reusable assistant workflow categories
@@ -121,7 +123,7 @@ Those belong to a project contour or repository adapter.
   permissions, validation, and output.
 - `.ai/framework/ai-infrastructure-recommendations.md`: portable read-only
   decision contract for recommending new AI items or changes to existing items
-  from bounded project-contour, quality, and cost evidence.
+  from bounded project-contour, development-pattern, quality, and cost evidence.
 - `.ai/framework/approval-records.md`: durable evidence pattern for protected
   changes that require scoped approval.
 - `.ai/framework/adapter-maturity.md`: readiness model for judging whether a

@@ -62,6 +62,9 @@ The framework commits to giving an assistant a defined process for:
   importing new assistant infrastructure
 - recommending new AI infrastructure or changes to existing items only from
   bounded project-contour, quality, cost, overlap, and validation evidence
+- retaining recurring target development friction in a compact, privacy-
+  bounded project evidence index without promoting it directly into framework
+  policy
 - selecting target AI infrastructure by stable item ID and loading only its
   canonical source, permissions, gates, validation, and output contract
 - using an installed adapter for post-install blueprint creation, drift review,
@@ -170,6 +173,8 @@ defines:
 - AI infrastructure inventory, recommendation, source access, provenance,
   adaptation, wrapper, and approval rules when skills or third-party assistant
   infrastructure are used
+- target development-evidence owner, retention/privacy policy, and lazy capture
+  flow when recommendations should learn across project tasks
 - AI infrastructure router and adaptation-record policy when multiple skills,
   prompts, gates, checkers, tools, MCP configs, bridges, or wrappers are used
 - installed-operation request, blueprint-creation, adapter-recheck, and

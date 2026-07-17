@@ -75,6 +75,7 @@ REQUIRED_FIELDS = [
     "Target-local checker status:",
     "AI infrastructure router result:",
     "AI infrastructure recommendation result:",
+    "Development-pattern evidence result:",
     "AI infrastructure adaptation-record result:",
     "Validation run:",
     "Validation skipped or unresolved:",

@@ -119,8 +119,8 @@ Rule ID: `ALATYR-ADAPTER-001`
 Canonical source: `.ai/framework/project-adapter-contract.md`
 Commitment: keep framework core, project facts, and repository adapter facts
 separated and rewritten from target evidence, including routed AI
-infrastructure items, project-evidenced recommendation records, and adaptation
-records.
+infrastructure items, target development-pattern evidence, project-evidenced
+recommendation records, and adaptation records.
 Applies to: installation, update, and adapter maintenance.
 
 Rule ID: `ALATYR-MODULE-001`

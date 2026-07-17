@@ -17,8 +17,12 @@ activation.
 - Recommendation scope: `{PROJECT_AREA_PROBLEM_OR_ITEM_SCOPE}`
 - Target assistant surfaces: `{TARGET_ASSISTANT_SURFACES}`
 - Project contour: `.ai/project/contour.md`
+- Development evidence index: `.ai/project/development-evidence.json`
 - Project area and canonical owner: `{PROJECT_AREA_AND_CANONICAL_OWNER}`
 - Project-contour evidence: `{PROJECT_FACTS_CONSTRAINTS_OR_OUTCOMES}`
+- Selected development pattern IDs: `{DEVELOPMENT_PATTERN_IDS_OR_NONE}`
+- Pattern occurrence and evidence references:
+  `{PATTERN_OCCURRENCE_COUNTS_AND_BOUNDED_EVIDENCE_REFS_OR_NONE}`
 - Evidence sources inspected: `{TASK_REVIEW_INCIDENT_VALIDATION_REWORK_COST_OR_MATURITY_EVIDENCE}`
 - Evidence quality: `{MEASURED_OBSERVED_ANECDOTAL_MISSING_OR_CONFLICTING}`
 - Inventory source and freshness: `{INVENTORY_PATH_DATE_OR_BOUNDED_INSPECTION}`
@@ -34,6 +38,7 @@ Repeat this block for each bounded candidate.
 - Status: `{PROPOSED_DEFERRED_REJECTED_OR_UNRESOLVED}`
 - Priority: `{TARGET_DEFINED_PRIORITY_OR_NOT_RANKED}`
 - Existing item IDs: `{AI_INFRASTRUCTURE_ITEM_IDS_OR_NONE}`
+- Development pattern IDs: `{DEVELOPMENT_PATTERN_IDS_OR_NONE}`
 - Proposed item type:
   `{SKILL_PROMPT_GATE_CHECKER_FLOW_TOOL_MCP_BRIDGE_WRAPPER_TEMPLATE_OR_OTHER}`
 - Observed problem: `{OBSERVED_PROBLEM}`
