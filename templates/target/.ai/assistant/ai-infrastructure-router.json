@@ -1,7 +1,8 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "router_kind": "target-ai-infrastructure-router",
   "inventory_template": ".ai/assistant/templates/ai-infrastructure-inventory.md",
+  "recommendation_template": ".ai/assistant/templates/ai-infrastructure-recommendation.md",
   "adaptation_record_template": ".ai/assistant/templates/ai-infrastructure-adaptation-record.md",
   "item_types": [
     "skill",
@@ -19,6 +20,7 @@
   ],
   "routing_order": [
     "inventory",
+    "recommend",
     "use-existing",
     "adapt-import",
     "gate-checker-change",
@@ -54,6 +56,40 @@
         "items and owners found",
         "stale or missing declarations",
         "recommended route and item ids"
+      ]
+    },
+    "recommend": {
+      "use_when": [
+        "suggest new AI infrastructure for a bounded project need",
+        "review how an existing AI infrastructure item should change",
+        "recurring quality consistency validation context-cost or assistant-coverage gap"
+      ],
+      "required_context": [
+        ".ai/framework/ai-infrastructure-recommendations.md",
+        ".ai/assistant/flows/ai-infrastructure-recommendation.flow.md",
+        ".ai/assistant/templates/ai-infrastructure-recommendation.md",
+        ".ai/project/contour.md",
+        ".ai/project/source-of-truth-registry.md"
+      ],
+      "expand_when": [
+        "selected project-area owner evidence is required",
+        "existing item source adaptation record validation or output evidence is required",
+        "relevant inventory is missing stale or conflicting"
+      ],
+      "allowed_actions": [
+        "read-only",
+        "adapter-only"
+      ],
+      "approval_gates": [
+        "no approval for read-only recommendation; later protected implementation uses its target route"
+      ],
+      "validation": [
+        "{TARGET_AI_INFRASTRUCTURE_RECOMMENDATION_VALIDATION_OR_MANUAL_REVIEW}"
+      ],
+      "final_evidence": [
+        "project-contour evidence recommendation kind and existing item comparison",
+        "quality context maintenance permissions acceptance criteria next route and residual risk",
+        "fetch install execute edit remove permission and activation actions not taken"
       ]
     },
     "use-existing": {

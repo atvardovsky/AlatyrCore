@@ -69,6 +69,11 @@ fields.
 inventory flow fields for provenance, license, permissions, prompt-injection
 risk, validation, approval, recommendations, and residual risk.
 
+`tools/check_ai_infrastructure_recommendations.py` validates the portable
+recommendation policy plus target recommendation route, flow, report,
+project-contour evidence boundary, cost/quality gate, existing-item review,
+help aliases, and manifest paths.
+
 `tools/check_bridge_capability_matrix.py` validates the target
 `.ai/assistant/bridge-capability-matrix.md` template baseline assistant
 surfaces and required bridge path, loading, priority, skill/prompt,

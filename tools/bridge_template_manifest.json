@@ -21,8 +21,8 @@
         "   evidence requires them.",
         "4. After installation/update, or when adapter state is unclear, read the",
         "   post-install/update message templates before editing.",
-        "5. For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-adaptation`,",
-        "   `alatyr-add-ai`), read `.ai/assistant/help.md` and",
+        "5. For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,",
+        "   `alatyr-improve-ai`, `alatyr-adaptation`, and `alatyr-add-ai`), read `.ai/assistant/help.md` and",
         "   `.ai/assistant/flows/operation-routing.flow.md`.",
         "6. For AI infrastructure work, use `.ai/assistant/ai-infrastructure-router.json`",
         "   to select a route and item ID before loading item-specific context.",
@@ -41,8 +41,8 @@
         "`.ai/alatyr.yaml`, `.ai/README.md`, and `.ai/assistant/context-router.json`.",
         "Select the smallest profile before reading the matching task flow.",
         "",
-        "For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-adaptation`,",
-        "`alatyr-add-ai`), read `.ai/assistant/help.md` and",
+        "For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,",
+        "`alatyr-improve-ai`, `alatyr-adaptation`, and `alatyr-add-ai`), read `.ai/assistant/help.md` and",
         "`.ai/assistant/flows/operation-routing.flow.md`.",
         "",
         "Do not treat this bridge file as the source of truth."
@@ -58,8 +58,8 @@
         "`.ai/alatyr.yaml`, `.ai/README.md`, and `.ai/assistant/context-router.json`.",
         "Select the smallest profile before reading the matching task flow.",
         "",
-        "For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-adaptation`,",
-        "`alatyr-add-ai`), read `.ai/assistant/help.md` and",
+        "For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,",
+        "`alatyr-improve-ai`, `alatyr-adaptation`, and `alatyr-add-ai`), read `.ai/assistant/help.md` and",
         "`.ai/assistant/flows/operation-routing.flow.md`.",
         "",
         "Do not treat this bridge file as the source of truth."
@@ -78,8 +78,8 @@
         "`.ai/README.md`, and `.ai/assistant/context-router.json`. Select the smallest",
         "profile before reading the matching task flow.",
         "",
-        "For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-adaptation`,",
-        "`alatyr-add-ai`), read `.ai/assistant/help.md` and",
+        "For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,",
+        "`alatyr-improve-ai`, `alatyr-adaptation`, and `alatyr-add-ai`), read `.ai/assistant/help.md` and",
         "`.ai/assistant/flows/operation-routing.flow.md`.",
         "",
         "This Cursor rule is a bridge, not the source of truth."
@@ -89,7 +89,7 @@
       "path": "templates/target/.cursorrules",
       "lines": [
         "Ensure AGENTS.md is loaded once; if it was not preloaded by the host, read it now. Then read AI_ASSISTANTS.md, .ai/alatyr.yaml, .ai/README.md, and .ai/assistant/context-router.json. This file is a legacy bridge for Cursor-compatible tools.",
-        "For Alatyr help or aliases (alatyr-ai-inventory, alatyr-adaptation, alatyr-add-ai), read .ai/assistant/help.md and .ai/assistant/flows/operation-routing.flow.md."
+        "For Alatyr help or aliases (alatyr-ai-inventory, alatyr-suggest-ai, alatyr-improve-ai, alatyr-adaptation, and alatyr-add-ai), read .ai/assistant/help.md and .ai/assistant/flows/operation-routing.flow.md."
       ]
     },
     {
@@ -102,8 +102,8 @@
         "`.ai/README.md`, and `.ai/assistant/context-router.json`. Select the smallest",
         "profile before reading the matching task flow.",
         "",
-        "For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-adaptation`,",
-        "`alatyr-add-ai`), read `.ai/assistant/help.md` and",
+        "For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,",
+        "`alatyr-improve-ai`, `alatyr-adaptation`, and `alatyr-add-ai`), read `.ai/assistant/help.md` and",
         "`.ai/assistant/flows/operation-routing.flow.md`.",
         "",
         "This file is a bridge, not the source of truth."
@@ -121,8 +121,8 @@
         "`.ai/alatyr.yaml`, `.ai/README.md`, and `.ai/assistant/context-router.json`.",
         "Select the smallest profile before reading task-owned context or flows.",
         "",
-        "For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-adaptation`,",
-        "`alatyr-add-ai`), read `.ai/assistant/help.md` and",
+        "For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,",
+        "`alatyr-improve-ai`, `alatyr-adaptation`, and `alatyr-add-ai`), read `.ai/assistant/help.md` and",
         "`.ai/assistant/flows/operation-routing.flow.md`.",
         "",
         "Keep this file as a bridge. Do not duplicate full project or framework policy",
@@ -144,8 +144,8 @@
         "Then read `.ai/assistant/gates/checklist.md`,",
         "`.ai/assistant/flows/logical-integrity-review.flow.md`,",
         "`.ai/framework/logical-integrity.md`, and the changed files.",
-        "For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-adaptation`,",
-        "`alatyr-add-ai`), read `.ai/assistant/help.md` and",
+        "For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,",
+        "`alatyr-improve-ai`, `alatyr-adaptation`, and `alatyr-add-ai`), read `.ai/assistant/help.md` and",
         "`.ai/assistant/flows/operation-routing.flow.md`.",
         "Return blockers first, then final evidence."
       ]
@@ -160,8 +160,8 @@
         "`.ai/README.md`, and `.ai/assistant/context-router.json`. Select the smallest",
         "profile before reading the matching task flow.",
         "",
-        "For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-adaptation`,",
-        "`alatyr-add-ai`), read `.ai/assistant/help.md` and",
+        "For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,",
+        "`alatyr-improve-ai`, `alatyr-adaptation`, and `alatyr-add-ai`), read `.ai/assistant/help.md` and",
         "`.ai/assistant/flows/operation-routing.flow.md`.",
         "",
         "This file is a legacy bridge, not the source of truth."
@@ -171,7 +171,7 @@
       "path": "templates/target/.windsurfrules",
       "lines": [
         "Ensure AGENTS.md is loaded once; if it was not preloaded by the host, read it now. Then read AI_ASSISTANTS.md, .ai/alatyr.yaml, .ai/README.md, and .ai/assistant/context-router.json. This file is a legacy bridge for Windsurf-compatible tools.",
-        "For Alatyr help or aliases (alatyr-ai-inventory, alatyr-adaptation, alatyr-add-ai), read .ai/assistant/help.md and .ai/assistant/flows/operation-routing.flow.md."
+        "For Alatyr help or aliases (alatyr-ai-inventory, alatyr-suggest-ai, alatyr-improve-ai, alatyr-adaptation, and alatyr-add-ai), read .ai/assistant/help.md and .ai/assistant/flows/operation-routing.flow.md."
       ]
     }
   ]

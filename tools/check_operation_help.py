@@ -41,6 +41,8 @@ REFERENCE_REQUIRED = [
     "Allowed actions guide:",
     "## Target Notes",
     "alatyr-ai-inventory",
+    "alatyr-suggest-ai {RECOMMENDATION_SCOPE}",
+    "alatyr-improve-ai {AI_INFRASTRUCTURE_ITEM_ID}",
     "alatyr-adaptation {AI_INFRASTRUCTURE_SOURCE}",
     "alatyr-add-ai {AI_INFRASTRUCTURE_SOURCE}",
 ]
@@ -121,4 +123,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

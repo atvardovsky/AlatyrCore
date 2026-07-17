@@ -59,8 +59,8 @@ Replace this section with the actual target project map.
 - migration notes for framework updates
 - operation help, operation routing, and post-install/update assistant chat
   messages
-- AI infrastructure inventory, source access, adaptation, and compatibility
-  review
+- AI infrastructure inventory, project-evidenced recommendation, source access,
+  adaptation, and compatibility review
 - AI infrastructure router entries for selecting target skills, prompts,
   gates, checkers, tools/MCP configs, bridges, wrappers, permissions,
   validation, and output contracts

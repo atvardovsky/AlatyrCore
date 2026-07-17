@@ -164,6 +164,18 @@ def main() -> int:
         if required not in durable:
             failures.append(f"module durable-approvals missing required file {required}")
 
+    ai_infrastructure = module_blocks.get("ai-infrastructure", "")
+    for required in [
+        ".ai/assistant/ai-infrastructure-router.json",
+        ".ai/assistant/flows/ai-infrastructure-inventory.flow.md",
+        ".ai/assistant/flows/ai-infrastructure-recommendation.flow.md",
+        ".ai/assistant/flows/skill-adaptation.flow.md",
+        ".ai/assistant/templates/ai-infrastructure-recommendation.md",
+        ".ai/assistant/templates/ai-infrastructure-adaptation-record.md",
+    ]:
+        if required not in ai_infrastructure:
+            failures.append(f"module ai-infrastructure missing required file {required}")
+
     duplicate_core = [
         item
         for item in CORE_HEADING.findall(text)

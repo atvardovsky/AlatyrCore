@@ -142,6 +142,9 @@ prompt-injection policy, provenance, permissions, and approval rules are
 defined. When multiple items exist, stable item IDs, canonical sources,
 activation triggers, gates, validation, output contracts, and adaptation
 records must also be discoverable through the AI infrastructure router.
+Recommendation maturity additionally requires bounded project-contour evidence,
+existing-item-first comparison, labeled quality/context/maintenance estimates,
+acceptance criteria, and a read-only handoff to protected change routes.
 
 Framework upgrade work is blocked unless `.ai/alatyr.yaml`, installation note,
 context profiles, module profile, bridge files, operation help, and

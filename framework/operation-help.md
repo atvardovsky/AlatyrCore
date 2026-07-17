@@ -64,6 +64,8 @@ Typical operation categories include:
   work
 - logical integrity review
 - AI infrastructure inventory
+- AI infrastructure recommendation for new items or improvements to existing
+  items
 - skill, prompt, wrapper, or third-party assistant infrastructure adaptation
 - documentation, diagram, gate, or bridge synchronization
 - adapter maturity review
@@ -90,8 +92,13 @@ pasted content, package/plugin reference, or other adapter-defined source.
 Target help should state near these aliases that they are chat/request
 shortcuts, not shell commands.
 
+Targets may also expose `alatyr-suggest-ai <scope>` for bounded new-item and
+existing-item recommendations and `alatyr-improve-ai <item-id>` for a focused
+existing-item review. Both route to read-only recommendation before any
+adaptation, import, removal, or permission change.
+
 When the target provides an AI infrastructure router, help should route the
-request to `inventory`, `use-existing`, `adapt-import`,
+request to `inventory`, `recommend`, `use-existing`, `adapt-import`,
 `gate-checker-change`, `tool-mcp-change`, or `bridge-wrapper-change`, then name
 the selected or proposed item ID. Help must not load or activate every item.
 

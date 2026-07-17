@@ -431,6 +431,7 @@
     },
     "ai-infrastructure": {
       "use_when": [
+        "AI infrastructure inventory, recommendation, or item improvement",
         "prompt or skill change",
         "assistant wrapper or bridge change",
         "MCP or tool config change",
@@ -440,7 +441,6 @@
       "required_context": [
         ".ai/framework/ai-infrastructure-routing.md",
         ".ai/assistant/ai-infrastructure-router.json",
-        ".ai/assistant/flows/ai-infrastructure-inventory.flow.md",
         ".ai/assistant/gates/checklist.md"
       ],
       "expand_when": [

@@ -1,8 +1,9 @@
 # AI Infrastructure Inventory Flow
 
 Use this flow in `{PROJECT_NAME}` when the programmer asks what AI assistant
-infrastructure already exists, asks what can be added, or uses an alias such as
-`alatyr-ai-inventory`.
+infrastructure already exists or uses `alatyr-ai-inventory`. Requests for
+evidence-based additions or existing-item improvements continue with the
+recommendation flow after inventory.
 
 Replace placeholders with target facts before accepting installation.
 
@@ -22,6 +23,9 @@ Replace placeholders with target facts before accepting installation.
 - Operation help: `.ai/framework/operation-help.md` only for ambiguous routing
 - Framework adaptation guidance: `.ai/framework/skill-adaptation.md` only when
   handing off to adaptation
+- Framework recommendation guidance:
+  `.ai/framework/ai-infrastructure-recommendations.md` only when handing off to
+  recommendation
 - AI infrastructure source-access policy:
   `.ai/assistant/policies/ai-infrastructure-source-access.md` only when an
   external source is inspected
@@ -55,18 +59,26 @@ Replace placeholders with target facts before accepting installation.
 5. Record item ID, router status, type, path or reference, owner,
    source/provenance, license or
    unknown-license status, source hash or commit when known, permission
-   surface, supported assistants, and validation or manual review status.
+   surface, supported assistants, declared purpose, bounded project-contour
+   relevance, observed outcome evidence, and validation or manual review
+   status.
 6. Identify overlaps, duplicate policy, stale bridge files, unsafe permissions,
    missing provenance, and missing adapter facts.
-7. Report which items are routable, blocked, stale, need adaptation, need approval, need
-   removal, or should stay unresolved.
+7. Report a preliminary disposition: routable, blocked, stale, possible
+   adaptation candidate, possible recommendation candidate, needs approval,
+   removal candidate, or unresolved. Inventory alone does not accept the
+   recommendation.
 8. Record reusable inventory evidence with
    `.ai/assistant/templates/ai-infrastructure-inventory.md` when the target
    adapter wants durable inventory records.
-9. If the programmer asks to add an item, route to
+9. If the programmer asks what should be added or how an existing item should
+   change, route to
+   `.ai/assistant/flows/ai-infrastructure-recommendation.flow.md` using the
+   `recommend` route and this inventory evidence.
+10. If the programmer supplies a source and asks to add or adapt it, route to
    `.ai/assistant/flows/skill-adaptation.flow.md` with the inventory result as
    context.
-10. Do not import or normalize external infrastructure during inventory-only
+11. Do not import or normalize external infrastructure during inventory-only
    work.
 
 ## Final Evidence
@@ -83,7 +95,9 @@ Report:
 - permission, live-service, destructive-operation, dependency, or credential
   surface
 - conflicts, duplicates, or stale items
-- recommended add/adapt/remove/skip actions
+- preliminary keep/review/adapt/remove/unresolved disposition
+- recommendation handoff when project evidence and cost/quality comparison are
+  requested
 - validation or manual checks run
 - approvals needed
 - residual risk

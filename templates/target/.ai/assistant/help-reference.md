@@ -16,6 +16,12 @@ These aliases are chat/request shortcuts, not shell commands.
 - `alatyr-ai-inventory`: route to `ai-infrastructure-inventory` and report
   existing AI instructions, prompts, skills, rules, wrappers, bridges, MCP/tool
   configs, gates, checkers, and generated assistant artifacts.
+- `alatyr-suggest-ai {RECOMMENDATION_SCOPE}`: route to read-only
+  `ai-infrastructure-recommendation` for bounded new-item and existing-item
+  suggestions based on project-contour, quality, context-cost, and maintenance
+  evidence.
+- `alatyr-improve-ai {AI_INFRASTRUCTURE_ITEM_ID}`: route to read-only
+  `ai-infrastructure-recommendation` for one current router item.
 - `alatyr-adaptation {AI_INFRASTRUCTURE_SOURCE}`: route to
   `skill-adaptation` using `{AI_INFRASTRUCTURE_SOURCE}` as a local path, Git
   URL, HTTPS URL, assistant-native skill or prompt reference, pasted content,
@@ -77,6 +83,18 @@ Flow: `.ai/assistant/flows/ai-infrastructure-inventory.flow.md`
 Minimum input: inventory scope and target assistant surfaces.
 Alias: `alatyr-ai-inventory`.
 Route: `inventory` in `.ai/assistant/ai-infrastructure-router.json`.
+
+Operation: `ai-infrastructure-recommendation`
+Use when: recommending new AI infrastructure or improvements, consolidation,
+replacement, retirement, or retention of existing items.
+Flow: `.ai/assistant/flows/ai-infrastructure-recommendation.flow.md`
+Minimum input: bounded project area or problem, or an existing item ID, plus
+available outcome evidence.
+Aliases: `alatyr-suggest-ai {RECOMMENDATION_SCOPE}`,
+`alatyr-improve-ai {AI_INFRASTRUCTURE_ITEM_ID}`.
+Route: `recommend` in `.ai/assistant/ai-infrastructure-router.json`.
+Default allowed actions: `read-only`; recommendation does not fetch, install,
+execute, edit, remove, activate, or change permissions.
 
 Operation: `skill-adaptation`
 Use when: importing, adapting, adding, or reviewing skills, prompts, wrappers,
@@ -179,6 +197,29 @@ alatyr-ai-inventory
 Goal: `{GOAL}`
 Inventory scope: `{AI_INFRASTRUCTURE_INVENTORY_SCOPE}`
 Target assistant surfaces: `{TARGET_ASSISTANT_SURFACES}`
+```
+
+AI infrastructure recommendation shorthand:
+
+```text
+alatyr-suggest-ai {RECOMMENDATION_SCOPE}
+
+Goal: `{GOAL}`
+Project area or problem: `{PROJECT_AREA_PROBLEM_OR_ITEM_SCOPE}`
+Existing item IDs: `{AI_INFRASTRUCTURE_ITEM_IDS_OR_NONE}`
+Evidence sources: `{TASK_REVIEW_INCIDENT_VALIDATION_REWORK_COST_OR_MATURITY_EVIDENCE}`
+Allowed actions: `read-only`
+```
+
+Existing-item improvement shorthand:
+
+```text
+alatyr-improve-ai {AI_INFRASTRUCTURE_ITEM_ID}
+
+Goal: `{GOAL}`
+Project-contour outcome: `{PROJECT_NEED_OR_EXPECTED_OUTCOME}`
+Observed item result: `{QUALITY_COST_REWORK_OR_VALIDATION_EVIDENCE}`
+Allowed actions: `read-only`
 ```
 
 AI infrastructure adaptation shorthand:

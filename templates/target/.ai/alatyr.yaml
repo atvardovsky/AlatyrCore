@@ -64,6 +64,7 @@ validation:
 ai_infrastructure:
   router: ".ai/assistant/ai-infrastructure-router.json"
   inventory: ".ai/assistant/templates/ai-infrastructure-inventory.md"
+  recommendation: ".ai/assistant/templates/ai-infrastructure-recommendation.md"
   adaptation_record: ".ai/assistant/templates/ai-infrastructure-adaptation-record.md"
 operations:
   help: ".ai/assistant/help.md"
@@ -73,6 +74,7 @@ operations:
   output_contracts: ".ai/assistant/templates/adapter-output-contracts.md"
   large_task_packet: ".ai/assistant/templates/large-task-operation-packet.md"
   ai_infrastructure_inventory: ".ai/assistant/templates/ai-infrastructure-inventory.md"
+  ai_infrastructure_recommendation: ".ai/assistant/templates/ai-infrastructure-recommendation.md"
   migration_note: ".ai/assistant/templates/migration-note.md"
   effectiveness_report: ".ai/assistant/templates/effectiveness-report.md"
 maturity:

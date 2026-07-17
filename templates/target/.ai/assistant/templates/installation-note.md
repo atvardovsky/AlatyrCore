@@ -33,6 +33,9 @@ Installation id: `{INSTALLATION_ID}`
 - Bridge capability matrix: `.ai/assistant/bridge-capability-matrix.md`
 - AI infrastructure inventory template:
   `.ai/assistant/templates/ai-infrastructure-inventory.md`
+- AI infrastructure recommendation flow and template:
+  `.ai/assistant/flows/ai-infrastructure-recommendation.flow.md`,
+  `.ai/assistant/templates/ai-infrastructure-recommendation.md`
 - AI infrastructure router:
   `.ai/assistant/ai-infrastructure-router.json`
 - AI infrastructure adaptation record:

@@ -355,6 +355,23 @@ def main() -> int:
         for value in profile_data.get("required_context", [])
         if isinstance(value, str) and value.startswith(".ai/framework/")
     }
+    ai_router_path = (
+        TARGET / ".ai" / "assistant" / "ai-infrastructure-router.json"
+    )
+    try:
+        ai_router = load_json(ai_router_path)
+        ai_routes = ai_router.get("routes", {})
+        if not isinstance(ai_routes, dict):
+            raise AssertionError("AI infrastructure routes must be an object")
+        routed_framework_paths.update(
+            value
+            for route in ai_routes.values()
+            if isinstance(route, dict)
+            for value in route.get("required_context", [])
+            if isinstance(value, str) and value.startswith(".ai/framework/")
+        )
+    except AssertionError as exc:
+        failures.append(f"invalid nested AI infrastructure routing: {exc}")
     if isinstance(scale_overlays, dict):
         for overlay in scale_overlays.values():
             if not isinstance(overlay, dict):

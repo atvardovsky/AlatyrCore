@@ -70,13 +70,18 @@ Minimum input: goal, non-goals, affected areas, and allowed actions.
 AI infrastructure shortcuts:
 
 - `alatyr-ai-inventory`: route to `ai-infrastructure-inventory`.
+- `alatyr-suggest-ai {RECOMMENDATION_SCOPE}`: route to read-only
+  `ai-infrastructure-recommendation` for new-item or existing-item suggestions.
+- `alatyr-improve-ai {AI_INFRASTRUCTURE_ITEM_ID}`: route to focused read-only
+  `ai-infrastructure-recommendation` for an existing item.
 - `alatyr-adaptation {AI_INFRASTRUCTURE_SOURCE}`: route to
   `skill-adaptation` in review or adaptation mode.
 - `alatyr-add-ai {AI_INFRASTRUCTURE_SOURCE}`: route to `skill-adaptation` with
   canonical integration intent after inventory, provenance, prompt-injection,
   safety, and approval checks.
 
-AI infrastructure requests select a route and item ID from
+AI infrastructure requests select `inventory`, `recommend`, or another route
+and the smallest item-ID set from
 `.ai/assistant/ai-infrastructure-router.json` before loading item-specific
 skills, prompts, gates, tools, bridges, permissions, or import policy.
 

@@ -60,6 +60,8 @@ The framework commits to giving an assistant a defined process for:
   without letting them bypass framework or target adapter rules
 - inventorying existing AI infrastructure before adding, replacing, or
   importing new assistant infrastructure
+- recommending new AI infrastructure or changes to existing items only from
+  bounded project-contour, quality, cost, overlap, and validation evidence
 - selecting target AI infrastructure by stable item ID and loading only its
   canonical source, permissions, gates, validation, and output contract
 - using an installed adapter for post-install blueprint creation, drift review,
@@ -165,9 +167,9 @@ defines:
   upgrade notes
 - supported assistant bridge files and bridge capability matrix when multiple
   assistant surfaces are supported
-- AI infrastructure inventory, source access, provenance, adaptation, wrapper,
-  and approval rules when skills or third-party assistant infrastructure are
-  used
+- AI infrastructure inventory, recommendation, source access, provenance,
+  adaptation, wrapper, and approval rules when skills or third-party assistant
+  infrastructure are used
 - AI infrastructure router and adaptation-record policy when multiple skills,
   prompts, gates, checkers, tools, MCP configs, bridges, or wrappers are used
 - installed-operation request, blueprint-creation, adapter-recheck, and

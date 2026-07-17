@@ -10,7 +10,7 @@
       ".ai/assistant/context-router.json"
     ],
     "unresolved_references": [],
-    "words": 1920
+    "words": 1932
   },
   "budgets": {
     "bootstrap": {
@@ -73,7 +73,7 @@
         ".ai/framework/testing-guidance.md"
       ],
       "unresolved_references": [],
-      "words": 26201
+      "words": 26826
     },
     "initial": {
       "declared_files": 6,
@@ -88,23 +88,22 @@
         ".ai/assistant/templates/migration-note.md"
       ],
       "unresolved_references": [],
-      "words": 3214
+      "words": 3242
     },
-    "initial_word_reduction_percent": 87.7
+    "initial_word_reduction_percent": 87.9
   },
   "profiles": {
     "ai-infrastructure": {
-      "declared_files": 4,
+      "declared_files": 3,
       "missing_paths": [],
-      "resolved_files": 4,
+      "resolved_files": 3,
       "resolved_paths": [
         ".ai/framework/ai-infrastructure-routing.md",
         ".ai/assistant/ai-infrastructure-router.json",
-        ".ai/assistant/flows/ai-infrastructure-inventory.flow.md",
         ".ai/assistant/gates/checklist.md"
       ],
       "unresolved_references": [],
-      "words": 2405
+      "words": 2137
     },
     "architecture-change": {
       "declared_files": 12,
@@ -210,7 +209,7 @@
         ".ai/assistant/templates/migration-note.md"
       ],
       "unresolved_references": [],
-      "words": 3214
+      "words": 3242
     },
     "security-sensitive": {
       "declared_files": 7,

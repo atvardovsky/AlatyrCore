@@ -83,7 +83,8 @@ Read in the target repository:
   notes, source-access policies, gates, checker rules, operation help, routing
   flows, and assistant chat-message templates
 - existing AI infrastructure router entries, item IDs, permissions, gates,
-  output contracts, conflicts, wrappers, and adaptation records
+  output contracts, conflicts, wrappers, recommendation records, and adaptation
+  records
 - existing manifests, version notes, context profiles, approval records, and
   prompt-injection or imported-source policies
 - existing source-of-truth registry, maturity profile, bridge capability
@@ -145,7 +146,7 @@ Classify every proposed target file:
     large-task orchestration.
 14. Add bridge files only for assistants the target uses.
 15. Add installed-operation, operation-help, operation-routing,
-    AI-infrastructure-inventory, adapter output contract
+    AI-infrastructure-inventory, AI-infrastructure-recommendation, adapter output contract
     `.ai/assistant/templates/adapter-output-contracts.md`, source-access
     policy, prompt-injection policy, human and machine-readable approval-record
     templates, migration-note
@@ -156,9 +157,9 @@ Classify every proposed target file:
     cross-boundary, multi-workstream, budget-exceeding, or resumable work, and
     record the target packet storage policy.
     When the target uses multiple AI infrastructure items, add
-    `.ai/assistant/ai-infrastructure-router.json` and the adaptation-record
-    template. Populate item contracts from target evidence and keep unresolved
-    items blocked.
+    `.ai/assistant/ai-infrastructure-router.json`, the recommendation flow and
+    report template, and the adaptation-record template. Populate item
+    contracts from target evidence and keep unresolved items blocked.
 16. Ensure root assistant entry points and supported bridge files point future
     sessions to the installation note, operation help, and routing flow.
 17. Add prompts, skills, diagrams, or consistency checks only when they solve
@@ -222,7 +223,8 @@ Report:
 - existing files preserved, skipped, or overwritten with approval
 - supported assistant bridges added or skipped
 - installed-operation, operation-help, operation-routing,
-  AI-infrastructure-inventory, adapter output contract, context router,
+  AI-infrastructure-inventory, AI-infrastructure-recommendation, adapter output
+  contract, context router,
   context profiles, module profile, source-of-truth registry, task-specific
   maturity profile, bridge capability matrix, source-access policy,
   prompt-injection policy, human and machine-readable approval-record
@@ -231,7 +233,8 @@ Report:
   templates added or skipped
 - large-task orchestration flow, operation packet, and target storage policy
   added or skipped
-- AI infrastructure router and adaptation-record template added or skipped
+- AI infrastructure router, recommendation flow/report, and adaptation-record
+  template added or skipped
 - root entry-point and bridge compact-bootstrap references checked
 - context budgets, task-scale/project-area overlays, and receipt fields adapted or
   explicitly deferred
@@ -241,6 +244,8 @@ Report:
 - AI infrastructure item IDs, canonical sources, permissions, gates,
   validation, outputs, conflicts, and adaptation records resolved or reported
   as gaps
+- recommendation policy separates project-contour need/outcome evidence from
+  assistant-contour item mechanics and evaluates existing items before new ones
 - target validation run and skipped
 - unresolved adapter facts
 - logical integrity review result

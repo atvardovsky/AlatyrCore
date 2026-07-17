@@ -74,6 +74,7 @@ REQUIRED_FIELDS = [
     "Local path leakage result:",
     "Target-local checker status:",
     "AI infrastructure router result:",
+    "AI infrastructure recommendation result:",
     "AI infrastructure adaptation-record result:",
     "Validation run:",
     "Validation skipped or unresolved:",

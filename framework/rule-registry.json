@@ -5,7 +5,7 @@
       "category": "CONTEXT",
       "owner": "framework/context-profiles.md",
       "rule_ids": ["ALATYR-CONTEXT-001"],
-      "derived_surfaces": ["README source context", "installation source context", "target context profiles", "target context router", "task-scale overlays", "operation packet context receipts", "consistency relationship routing", "session bootstrap instructions", "AI infrastructure capability routing"]
+      "derived_surfaces": ["README source context", "installation source context", "target context profiles", "target context router", "task-scale overlays", "operation packet context receipts", "consistency relationship routing", "session bootstrap instructions", "AI infrastructure capability and recommendation routing"]
     },
     {
       "category": "SOURCE",
@@ -47,7 +47,7 @@
       "category": "ADAPTER",
       "owner": "framework/project-adapter-contract.md",
       "rule_ids": ["ALATYR-ADAPTER-001"],
-      "derived_surfaces": ["installation plan", "readiness checklist", "manifest template", "adapter recheck flow", "AI infrastructure router and item contracts"]
+      "derived_surfaces": ["installation plan", "readiness checklist", "manifest template", "adapter recheck flow", "AI infrastructure router", "AI infrastructure recommendation contract", "AI infrastructure item contracts"]
     },
     {
       "category": "MODULE",
@@ -143,7 +143,7 @@
       "id": "ALATYR-ADAPTER-001",
       "category": "ADAPTER",
       "canonical_source": "framework/project-adapter-contract.md",
-      "summary": "Keep framework core, project facts, and repository adapter facts separated and rewritten from target evidence, including routed AI infrastructure items and adaptation records.",
+      "summary": "Keep framework core, project facts, and repository adapter facts separated and rewritten from target evidence, including routed AI infrastructure items, project-evidenced recommendation records, and adaptation records.",
       "applies_to": ["installation", "framework update", "adapter maintenance"],
       "enforcement": "required"
     },

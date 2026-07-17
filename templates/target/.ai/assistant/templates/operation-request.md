@@ -38,18 +38,25 @@ installed Alatyr Core adapter.
 
 ## AI Infrastructure Source
 
-Fill this section when the operation is `skill-adaptation`, the operation is
-`ai-infrastructure-inventory`, or the alias is
+Fill this section when the operation is `skill-adaptation`,
+`ai-infrastructure-inventory`, or `ai-infrastructure-recommendation`, or when
+an AI infrastructure alias is used.
 `alatyr-adaptation {AI_INFRASTRUCTURE_SOURCE}`, `alatyr-add-ai
-{AI_INFRASTRUCTURE_SOURCE}`, or `alatyr-ai-inventory`.
+{AI_INFRASTRUCTURE_SOURCE}`, `alatyr-ai-inventory`,
+`alatyr-suggest-ai {RECOMMENDATION_SCOPE}`, or
+`alatyr-improve-ai {AI_INFRASTRUCTURE_ITEM_ID}`.
 
 - AI infrastructure source: `{AI_INFRASTRUCTURE_SOURCE}`
 - AI infrastructure route:
-  `{INVENTORY_USE_EXISTING_ADAPT_IMPORT_GATE_CHECKER_TOOL_MCP_OR_BRIDGE_WRAPPER}`
+  `{INVENTORY_RECOMMEND_USE_EXISTING_ADAPT_IMPORT_GATE_CHECKER_TOOL_MCP_OR_BRIDGE_WRAPPER}`
 - Target item ID: `{AI_INFRASTRUCTURE_ITEM_ID_OR_NEW_PROPOSED_ID}`
 - Item type: `{SKILL_PROMPT_WRAPPER_BRIDGE_RULE_MCP_TOOL_CHECKER_FLOW_GATE_TEMPLATE_OR_OTHER}`
 - Source type: `{LOCAL_PATH_OR_GIT_URL_OR_HTTPS_URL_OR_NATIVE_REFERENCE_OR_PASTED}`
 - Inventory scope: `{AI_INFRASTRUCTURE_INVENTORY_SCOPE}`
+- Recommendation scope: `{PROJECT_AREA_PROBLEM_OR_ITEM_SCOPE}`
+- Project-contour need and owner: `{PROJECT_NEED_OUTCOME_AND_CANONICAL_OWNER}`
+- Existing item outcome evidence:
+  `{QUALITY_COST_REWORK_OR_VALIDATION_EVIDENCE_OR_NONE}`
 - Target assistant surfaces: `{TARGET_ASSISTANT_SURFACES}`
 - Integration mode: `{REVIEW_ONLY_OR_CANONICAL_INTEGRATION}`
 - Permission or source-access notes:
@@ -98,6 +105,10 @@ Choose the matching flow:
 - Inventory existing AI infrastructure:
   `.ai/assistant/flows/ai-infrastructure-inventory.flow.md`
   Alias: `alatyr-ai-inventory`
+- Recommend new AI infrastructure or changes to existing items:
+  `.ai/assistant/flows/ai-infrastructure-recommendation.flow.md`
+  Aliases: `alatyr-suggest-ai {RECOMMENDATION_SCOPE}`,
+  `alatyr-improve-ai {AI_INFRASTRUCTURE_ITEM_ID}`
 - Adapt skills, prompts, wrappers, bridges, rules, MCP/tool configs, gates,
   checkers, or third-party assistant infrastructure:
   `.ai/assistant/flows/skill-adaptation.flow.md`
@@ -118,6 +129,11 @@ Choose the matching flow:
 - Select one route and the smallest item-ID set from
   `.ai/assistant/ai-infrastructure-router.json` before loading item content,
   permissions, gates, validation, or import policy.
+- Keep AI infrastructure recommendation read-only by default. Use bounded
+  project-contour evidence, evaluate existing items before `add-new`, label
+  estimates, and name quality/context/maintenance impact and acceptance
+  criteria. Do not fetch, install, execute, edit, remove, activate, or broaden
+  permissions during recommendation.
 - Apply `.ai/assistant/policies/prompt-injection.md` for imported, external,
   remote, package/plugin, pasted, or unknown AI infrastructure.
 - Record approval evidence with `.ai/assistant/approvals/approval-template.md`

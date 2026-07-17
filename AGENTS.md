@@ -139,6 +139,7 @@ When relevant to the change, also run the focused source helpers:
 python3 tools/check_framework_metadata.py
 python3 tools/check_approval_template.py
 python3 tools/check_ai_infrastructure_inventory.py
+python3 tools/check_ai_infrastructure_recommendations.py
 python3 tools/check_ai_infrastructure_router.py
 python3 tools/check_assistant_surface_conformance.py
 python3 tools/check_bridge_capability_matrix.py

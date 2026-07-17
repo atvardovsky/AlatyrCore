@@ -5,7 +5,9 @@ asks for available actions, asks for commands, or gives a request that cannot
 be safely classified.
 
 Also use this flow when the programmer uses a target alias such as
-`alatyr-ai-inventory`, `alatyr-adaptation {AI_INFRASTRUCTURE_SOURCE}`, or
+`alatyr-ai-inventory`, `alatyr-suggest-ai {RECOMMENDATION_SCOPE}`,
+`alatyr-improve-ai {AI_INFRASTRUCTURE_ITEM_ID}`,
+`alatyr-adaptation {AI_INFRASTRUCTURE_SOURCE}`, or
 `alatyr-add-ai {AI_INFRASTRUCTURE_SOURCE}`.
 
 Replace placeholders with target facts before accepting installation.
@@ -55,18 +57,24 @@ Replace placeholders with target facts before accepting installation.
    `ai-infrastructure-inventory` and continue with
    `.ai/assistant/flows/ai-infrastructure-inventory.flow.md` using the
    `inventory` route from `.ai/assistant/ai-infrastructure-router.json`.
-12. If the request matches `alatyr-adaptation {AI_INFRASTRUCTURE_SOURCE}` or
+12. If the request matches `alatyr-suggest-ai {RECOMMENDATION_SCOPE}` or
+   `alatyr-improve-ai {AI_INFRASTRUCTURE_ITEM_ID}`, classify it as
+   `ai-infrastructure-recommendation` and continue with
+   `.ai/assistant/flows/ai-infrastructure-recommendation.flow.md` using the
+   read-only `recommend` route. Do not fetch, install, edit, remove, activate,
+   or change permissions.
+13. If the request matches `alatyr-adaptation {AI_INFRASTRUCTURE_SOURCE}` or
    `alatyr-add-ai {AI_INFRASTRUCTURE_SOURCE}`, classify it as
    `skill-adaptation`, record `{AI_INFRASTRUCTURE_SOURCE}` as untrusted input,
    and continue with `.ai/assistant/flows/skill-adaptation.flow.md` only after
    checking inventory, source access, provenance, approval, and safety rules.
     Select the `adapt-import` route and target item ID before loading source
     policy or item content.
-13. If the user asks for commands, explain that Alatyr uses assistant requests
+14. If the user asks for commands, explain that Alatyr uses assistant requests
    over Markdown adapter files unless `{PROJECT_NAME}` defines a local command.
-14. Do not edit files while the operation is still ambiguous or when the
+15. Do not edit files while the operation is still ambiguous or when the
    requested edit exceeds allowed actions.
-15. When the operation is selected, continue with the matching flow and apply
+16. When the operation is selected, continue with the matching flow and apply
    allowed-action, approval, validation, and final-evidence rules.
 
 ## Final Evidence

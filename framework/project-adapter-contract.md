@@ -73,6 +73,9 @@ Every project using this framework must define:
 - AI infrastructure router with stable item IDs, canonical sources, activation
   triggers, allowed actions, permissions, gates, validation, output contracts,
   conflicts, and supported assistant surfaces when multiple items exist
+- AI infrastructure recommendation policy and records when the adapter should
+  propose new items or improvements to existing items from project-contour,
+  quality, context-cost, and maintenance evidence
 - durable adaptation records for imported or materially changed AI
   infrastructure
 - prompt-injection policy for imported, external, remote, pasted, package, or
@@ -109,6 +112,8 @@ Every project using this framework must define:
 An adapter may provide:
 
 - deterministic checker scripts
+- read-only AI infrastructure recommendation reports whose needs and outcomes
+  reference project-contour owners while item mechanics remain assistant-owned
 - adapter drift checks for hard-coded local paths, stale checker-existence
   statements, duplicate context profile references, missing context-router
   bootstrap references, unresolved owner placeholders, and target-local

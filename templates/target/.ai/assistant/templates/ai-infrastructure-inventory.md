@@ -44,6 +44,11 @@ or other target-defined AI infrastructure item.
 - Source hash or commit: `{SOURCE_HASH_COMMIT_VERSION_OR_UNAVAILABLE}`
 - License: `{LICENSE_UNKNOWN_NOT_APPLICABLE}`
 - Supported assistants: `{SUPPORTED_ASSISTANTS}`
+- Declared purpose: `{DECLARED_ITEM_PURPOSE_OR_UNKNOWN}`
+- Project-contour relevance: `{PROJECT_AREA_FACT_OWNER_OR_NOT_ESTABLISHED}`
+- Observed usage or outcome evidence:
+  `{USAGE_QUALITY_REWORK_COST_OR_VALIDATION_EVIDENCE_OR_UNKNOWN}`
+- Staleness or maintenance signal: `{STALE_UNUSED_DUPLICATED_CURRENT_OR_UNKNOWN}`
 - Permission surface: `{FILES_TOOLS_COMMANDS_SERVICES_MODELS_OR_PERMISSIONS}`
 - Prompt-injection risk: `{PROMPT_INJECTION_RISK_NOTES}`
 - Safety surface:
@@ -52,7 +57,7 @@ or other target-defined AI infrastructure item.
 - Validation or manual review: `{VALIDATION_OR_MANUAL_REVIEW}`
 - Approval status: `{APPROVAL_STATUS_OR_NOT_REQUIRED}`
 - Required gates and output contract: `{GATES_AND_OUTPUT_CONTRACT_OR_MISSING}`
-- Recommended action: `{KEEP_ADAPT_ADD_REPLACE_REMOVE_SKIP_OR_UNRESOLVED}`
+- Preliminary disposition: `{KEEP_REVIEW_ADAPT_REPLACE_REMOVE_SKIP_OR_UNRESOLVED}`
 - Residual risk: `{RESIDUAL_RISK}`
 
 ## Summary
@@ -62,6 +67,8 @@ or other target-defined AI infrastructure item.
 - Need adaptation: `{NEED_ADAPTATION}`
 - Need approval: `{NEED_APPROVAL}`
 - Need removal or replacement: `{NEED_REMOVAL_OR_REPLACEMENT}`
+- Need evidence-based recommendation review:
+  `{NEED_RECOMMENDATION_REVIEW}`
 - Left unresolved: `{LEFT_UNRESOLVED}`
 - Validation run: `{TARGET_VALIDATION_RUN_OR_MANUAL_REVIEW}`
 - Approvals needed: `{APPROVALS_NEEDED}`

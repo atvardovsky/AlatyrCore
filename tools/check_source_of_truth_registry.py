@@ -94,6 +94,8 @@ def main() -> int:
             for field in [
                 "AI infrastructure router item:",
                 "Adaptation record:",
+                "Project-contour need and outcome owner:",
+                "Recommendation record:",
             ]:
                 line = next(
                     (line for line in block.splitlines() if line.startswith(field)),

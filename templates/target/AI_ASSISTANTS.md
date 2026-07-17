@@ -15,8 +15,8 @@ Before making changes:
    evidence requires them.
 4. After installation/update, or when adapter state is unclear, read the
    post-install/update message templates before editing.
-5. For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-adaptation`,
-   `alatyr-add-ai`), read `.ai/assistant/help.md` and
+5. For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,
+   `alatyr-improve-ai`, `alatyr-adaptation`, and `alatyr-add-ai`), read `.ai/assistant/help.md` and
    `.ai/assistant/flows/operation-routing.flow.md`.
 6. For AI infrastructure work, use `.ai/assistant/ai-infrastructure-router.json`
    to select a route and item ID before loading item-specific context.

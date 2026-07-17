@@ -24,6 +24,7 @@ CONTEXT_ROUTER = TARGET / ".ai" / "assistant" / "context-router.json"
 
 ROUTES = [
     "inventory",
+    "recommend",
     "use-existing",
     "adapt-import",
     "gate-checker-change",
@@ -66,6 +67,8 @@ RECORD_FIELDS = [
     "Source type:",
     "Source hash, commit, or version:",
     "License status:",
+    "Recommendation record or ID:",
+    "Project-contour basis:",
     "Target purpose:",
     "Non-goals:",
     "Canonical normalized source:",
@@ -77,6 +80,9 @@ RECORD_FIELDS = [
     "Gates:",
     "Validation or manual review:",
     "Output contract:",
+    "Existing item baseline and observed outcome:",
+    "Expected quality and context-cost effect:",
+    "Recommendation acceptance criteria:",
     "Source instructions rejected or not carried forward:",
     "Prompt-injection review:",
     "Permission and tool review:",
@@ -121,10 +127,14 @@ def main() -> int:
         print(f"FAIL: invalid {ROUTER.relative_to(ROOT)}: {exc}", file=sys.stderr)
         return 1
 
-    if router.get("schema_version") != 1:
-        failures.append("AI infrastructure router schema_version must be 1")
+    if router.get("schema_version") != 2:
+        failures.append("AI infrastructure router schema_version must be 2")
     if router.get("router_kind") != "target-ai-infrastructure-router":
         failures.append("AI infrastructure router router_kind is incorrect")
+    if router.get("recommendation_template") != (
+        ".ai/assistant/templates/ai-infrastructure-recommendation.md"
+    ):
+        failures.append("AI infrastructure router recommendation_template is incorrect")
     if router.get("routing_order") != ROUTES:
         failures.append("AI infrastructure router routing_order is incorrect")
     if not non_empty_string_list(router.get("item_types")):
@@ -202,6 +212,7 @@ def main() -> int:
     manifest_text = MANIFEST.read_text(encoding="utf-8")
     for value in [
         'router: ".ai/assistant/ai-infrastructure-router.json"',
+        'recommendation: ".ai/assistant/templates/ai-infrastructure-recommendation.md"',
         'adaptation_record: ".ai/assistant/templates/ai-infrastructure-adaptation-record.md"',
     ]:
         if value not in manifest_text:

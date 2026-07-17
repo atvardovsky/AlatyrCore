@@ -10,10 +10,10 @@ Target repository path:
 <path-or-repo-url-to-target-project>
 
 Operation type:
-<help/create-project-blueprint/recheck-after-installation/recheck-after-framework-update/product-change/logical-integrity-review/ai-infrastructure-inventory/skill-adaptation/drift-review/documentation-sync/adapter-maturity-review/other>
+<help/create-project-blueprint/recheck-after-installation/recheck-after-framework-update/product-change/logical-integrity-review/ai-infrastructure-inventory/ai-infrastructure-recommendation/skill-adaptation/drift-review/documentation-sync/adapter-maturity-review/other>
 
 Operation alias, if used:
-<for example: alatyr-ai-inventory, alatyr-adaptation <source>, or alatyr-add-ai <source>>
+<for example: alatyr-ai-inventory, alatyr-suggest-ai <scope>, alatyr-improve-ai <item-id>, alatyr-adaptation <source>, or alatyr-add-ai <source>>
 
 Goal:
 <what the assistant should accomplish>
@@ -62,7 +62,13 @@ AI infrastructure item type, when applicable:
 <skill/prompt/wrapper/bridge/rule/MCP/tool/checker/flow/gate/template/other>
 
 AI infrastructure route and target item ID, when applicable:
-<inventory/use-existing/adapt-import/gate-checker-change/tool-mcp-change/bridge-wrapper-change; item-id-or-new-proposed-id>
+<inventory/recommend/use-existing/adapt-import/gate-checker-change/tool-mcp-change/bridge-wrapper-change; item-id-or-new-proposed-id>
+
+AI infrastructure recommendation scope, when applicable:
+<project area/problem/existing item IDs>
+
+Project-contour need, owner, and observed outcome evidence, when applicable:
+<target facts and source-of-truth references, or unresolved>
 
 AI infrastructure source type, when applicable:
 <local-path/git-url/https-url/native-reference/pasted/package-or-plugin/unknown>
@@ -99,6 +105,12 @@ Constraints:
   explicit approval before protected changes.
 - For `alatyr-ai-inventory`, inspect existing AI infrastructure without
   importing external items.
+- For `alatyr-suggest-ai <scope>`, `alatyr-improve-ai <item-id>`, or
+  `ai-infrastructure-recommendation`, use the read-only `recommend` route.
+  Bound project evidence, evaluate existing items first, label unmeasured
+  estimates, and report quality/context/maintenance impact plus acceptance
+  criteria. Do not fetch, install, execute, edit, remove, activate, or broaden
+  permissions.
 - Select AI infrastructure routes and item IDs through
   `.ai/assistant/ai-infrastructure-router.json`; load only selected item
   sources, permissions, gates, validation, output contracts, and route-specific

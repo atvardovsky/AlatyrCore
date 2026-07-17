@@ -32,6 +32,7 @@ REQUIRED_OPERATIONS = {
     "large-task",
     "logical-integrity-review",
     "ai-infrastructure-inventory",
+    "ai-infrastructure-recommendation",
     "skill-adaptation",
     "drift-review",
     "documentation-sync",
@@ -47,6 +48,7 @@ REQUIRED_ALIAS_TARGETS = {
     "product-change",
     "large-task",
     "ai-infrastructure-inventory",
+    "ai-infrastructure-recommendation",
     "skill-adaptation",
 }
 

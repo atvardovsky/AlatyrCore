@@ -99,6 +99,7 @@ Additional source-repository helpers include:
 - `python3 tools/check_framework_metadata.py`
 - `python3 tools/check_approval_template.py`
 - `python3 tools/check_ai_infrastructure_inventory.py`
+- `python3 tools/check_ai_infrastructure_recommendations.py`
 - `python3 tools/check_ai_infrastructure_router.py`
 - `python3 tools/check_assistant_surface_conformance.py`
 - `python3 tools/check_bridge_capability_matrix.py`
@@ -177,6 +178,9 @@ Additional source-repository helpers include:
 - compact AI infrastructure routing that selects one skill, prompt, gate,
   checker, tool/MCP config, bridge, or wrapper plus its permissions, gates,
   validation, and output contract
+- evidence-based, read-only AI infrastructure recommendations that compare
+  bounded project-contour needs with existing items before proposing additions
+  or improvements
 - durable adaptation records for imported or materially changed assistant
   infrastructure
 - task-specific maturity profile guidance and source-template checks for
@@ -197,7 +201,8 @@ Additional source-repository helpers include:
 - diagram guidance without hard-coded diagram tooling
 - AI infrastructure inventory and third-party skill/assistant-infrastructure
   adaptation guidance
-- AI infrastructure inventory report template and source-template checks
+- AI infrastructure inventory and recommendation report templates plus
+  source-template checks
 - task-specific adapter maturity and lifecycle guidance
 - bridge capability matrix guidance and source-template checks for supported
   assistant surfaces
@@ -299,7 +304,9 @@ changes.
 For skills, prompts, wrappers, bridge files, rules, MCP/tool configs, gates,
 checkers, or other AI infrastructure, a target adapter may define request
 aliases such as `alatyr-ai-inventory`, `alatyr-adaptation <source>`, or
-`alatyr-add-ai <source>`. These aliases are chat/request shortcuts, not shell
+`alatyr-add-ai <source>`. For read-only suggestions, adapters may expose
+`alatyr-suggest-ai <scope>` and `alatyr-improve-ai <item-id>`. These aliases
+are chat/request shortcuts, not shell
 commands. Sources can be local paths, Git URLs, HTTPS URLs, assistant-native
 references, packages/plugins, or pasted content, but existing infrastructure,
 provenance, permissions, safety, and approval are reviewed before anything

@@ -38,6 +38,8 @@ REQUIRED_BRIDGE_REFS = [
     ".ai/assistant/help.md",
     ".ai/assistant/flows/operation-routing.flow.md",
     "alatyr-ai-inventory",
+    "alatyr-suggest-ai",
+    "alatyr-improve-ai",
     "alatyr-adaptation",
     "alatyr-add-ai",
 ]
@@ -110,6 +112,8 @@ def main() -> int:
     matrix = read_text("templates/target/.ai/assistant/bridge-capability-matrix.md")
     for required_matrix_ref in [
         "Routes `alatyr-ai-inventory`:",
+        "Routes `alatyr-suggest-ai`:",
+        "Routes `alatyr-improve-ai`:",
         "Routes `alatyr-adaptation`:",
         "Routes `alatyr-add-ai`:",
         ".ai/assistant/help.md",

@@ -117,6 +117,11 @@ set, then load only the selected canonical sources, required context,
 permissions, gates, validation, and output contracts. Load import and protected
 tool policy only for routes that need them.
 
+For recommendation, load only the bounded project area and owner, relevant
+inventory and existing item contracts, and recommendation evidence. Do not
+load external-source policy or unrelated project areas until an accepted
+candidate enters a later adaptation or protected change route.
+
 ## Large Or Resumable Tasks
 
 Use a task-scale overlay when work has multiple independently verifiable

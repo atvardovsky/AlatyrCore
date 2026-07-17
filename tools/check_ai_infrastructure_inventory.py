@@ -48,6 +48,10 @@ REQUIRED_TEMPLATE_TEXT = [
     "Source hash or commit:",
     "License:",
     "Supported assistants:",
+    "Declared purpose:",
+    "Project-contour relevance:",
+    "Observed usage or outcome evidence:",
+    "Staleness or maintenance signal:",
     "Permission surface:",
     "Prompt-injection risk:",
     "Safety surface:",
@@ -55,9 +59,10 @@ REQUIRED_TEMPLATE_TEXT = [
     "Validation or manual review:",
     "Approval status:",
     "Required gates and output contract:",
-    "Recommended action:",
+    "Preliminary disposition:",
     "Residual risk:",
     "Recommended next operation:",
+    "Need evidence-based recommendation review:",
 ]
 
 PLACEHOLDER_FIELDS = [
@@ -74,12 +79,15 @@ PLACEHOLDER_FIELDS = [
     "- Source hash or commit:",
     "- License:",
     "- Supported assistants:",
+    "- Declared purpose:",
+    "- Project-contour relevance:",
+    "- Staleness or maintenance signal:",
     "- Permission surface:",
     "- Prompt-injection risk:",
     "- Validation or manual review:",
     "- Approval status:",
     "- Required gates and output contract:",
-    "- Recommended action:",
+    "- Preliminary disposition:",
     "- Residual risk:",
 ]
 
@@ -89,6 +97,8 @@ REQUIRED_FLOW_TEXT = [
     "source hash, commit, version, license",
     "prompt-injection risk notes",
     "Do not import or normalize external infrastructure during inventory-only",
+    ".ai/assistant/flows/ai-infrastructure-recommendation.flow.md",
+    "`recommend` route",
 ]
 
 

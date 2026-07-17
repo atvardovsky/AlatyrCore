@@ -193,27 +193,32 @@ validation, skipped checks, and residual risk.
 
 ## Profile: `ai-infrastructure`
 
-Use when: adding, importing, adapting, replacing, or reviewing prompts, skills,
-assistant rules, wrappers, bridge files, MCP/tool configs, checkers, gates,
-flows, templates, or other AI infrastructure.
+Use when: inventorying or recommending additions and existing-item
+improvements, or adding, importing, adapting, replacing, or reviewing prompts,
+skills, assistant rules, wrappers, bridge files, MCP/tool configs, checkers,
+gates, flows, templates, or other AI infrastructure.
 
 Required context:
 
 - `.ai/framework/ai-infrastructure-routing.md`
 - `.ai/assistant/ai-infrastructure-router.json`
-- `.ai/assistant/flows/ai-infrastructure-inventory.flow.md`
 - `.ai/assistant/gates/checklist.md`
 
 Select one AI infrastructure route and item ID before loading additional
 skill, prompt, gate, checker, tool/MCP, bridge, source-access,
 prompt-injection, approval, permission, validation, or output-contract context.
+For `recommend`, load only the bounded project area, its owner, relevant
+inventory/items, and `.ai/framework/ai-infrastructure-recommendations.md`.
+Project facts justify the need; recommendation and item mechanics remain
+assistant-contour owned.
 
 Approval gates: explicit approval before importing third-party infrastructure
 into canonical target files or changing tool permissions.
 
-Validation/evidence: inventory, provenance, source hash or commit, license or
-unknown-license note, normalized target surfaces, compatibility review, and
-approval evidence.
+Validation/evidence: selected route; inventory; project-contour basis,
+existing-item comparison, quality/context/maintenance cost and acceptance
+criteria for recommendation; or provenance, normalized target surfaces,
+compatibility review, and approval evidence for adaptation.
 
 ## Profile: `framework-upgrade`
 

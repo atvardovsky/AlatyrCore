@@ -34,7 +34,7 @@ Rule IDs: `ALATYR-CONTEXT-001`
 Derived surfaces: README source context, installation source context, target
 context profiles, target context router, task-scale overlays, operation packet
 context receipts, consistency relationship routing, session bootstrap
-instructions, AI infrastructure capability routing.
+instructions, AI infrastructure capability and recommendation routing.
 
 Category: `SOURCE`
 Owner: `.ai/framework/source-of-truth-registry.md`
@@ -79,7 +79,8 @@ Category: `ADAPTER`
 Owner: `.ai/framework/project-adapter-contract.md`
 Rule IDs: `ALATYR-ADAPTER-001`
 Derived surfaces: installation plan, readiness checklist, manifest template,
-adapter recheck flow, AI infrastructure router and item contracts.
+adapter recheck flow, AI infrastructure router, recommendation, and item
+contracts.
 
 Category: `MODULE`
 Owner: `.ai/framework/module-profile.md`

@@ -63,6 +63,7 @@ List what must not be changed.
   permissions, and output formats:
 - AI infrastructure inventory and existing item owners:
 - AI infrastructure inventory reports:
+- AI infrastructure recommendation records and evidence owners:
 - AI infrastructure router, stable item IDs, activation triggers, and statuses:
 - Item canonical sources, required context, allowed actions, permissions,
   gates, validation, output contracts, conflicts, and assistant wrappers:
@@ -159,6 +160,12 @@ contracts.
 Include `.ai/assistant/templates/ai-infrastructure-inventory.md` when the
 target wants durable AI infrastructure inventory reports.
 
+Include `.ai/assistant/flows/ai-infrastructure-recommendation.flow.md` and
+`.ai/assistant/templates/ai-infrastructure-recommendation.md` when the target
+wants Alatyr to suggest new items or changes to existing items. Recommendation
+must be read-only, use bounded project-contour evidence, evaluate current items
+first, and record quality, context, maintenance cost, and acceptance criteria.
+
 Include `.ai/assistant/ai-infrastructure-router.json` and
 `.ai/assistant/templates/ai-infrastructure-adaptation-record.md` when the
 target uses multiple skills, prompts, gates, checkers, tools/MCP configs,
@@ -204,6 +211,8 @@ Record where completed packets are stored, ignored, redacted, or removed.
 - Target validation commands or manual checks:
 - AI infrastructure adaptation, provenance, wrapper, and output-format rules:
 - AI infrastructure inventory rules:
+- AI infrastructure recommendation, existing-item review, project-contour
+  evidence, quality/context/maintenance cost, and acceptance-criteria rules:
 - AI infrastructure route/item selection and lazy context-loading rules:
 - AI infrastructure item permissions, gates, validation, output contracts,
   conflicts, and adaptation-record rules:
@@ -219,6 +228,7 @@ Record where completed packets are stored, ignored, redacted, or removed.
 - Adapter drift/local leakage rules:
 - Target-local adapter checker rules:
 - AI infrastructure inventory report rules:
+- AI infrastructure recommendation report rules:
 - Post-install/update assistant chat-message rules:
 - Diagram source format:
 - Human visual format:

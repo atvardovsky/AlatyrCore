@@ -2,7 +2,20 @@
 
 ## Unreleased
 
-- No changes yet.
+- Added an evidence-based `ai-infrastructure-recommendation` operation with
+  `alatyr-suggest-ai <scope>` and `alatyr-improve-ai <item-id>` request aliases.
+- Added read-only recommendation routing and report contracts for new items and
+  improvement, consolidation, replacement, retirement, or retention of
+  existing skills, prompts, gates, checkers, flows, tools/MCP configs, bridges,
+  wrappers, and templates.
+- Required recommendations to use bounded project-contour need and outcome
+  evidence while keeping recommendation records and item mechanics in the
+  assistant contour.
+- Added existing-item-first review, quality/context/maintenance cost evidence,
+  acceptance criteria, safe adaptation handoff, all-surface bridge routing, and
+  deterministic source checks for recommendation contracts.
+- Changed the derived commitment for `ALATYR-ADAPTER-001`; no rule ID was added
+  or removed.
 
 ## 0.1.0-alpha.3 - 2026-07-14
 

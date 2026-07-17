@@ -53,8 +53,9 @@ The adapter is usable when it also defines:
 - blueprint-driven change or equivalent product-change workflow
 - installed-operation request and adapter-recheck path for post-install work
 - operation help or routing path for ambiguous requests
-- AI infrastructure inventory, source access, adaptation, and provenance rules
-  when skills or third-party assistant infrastructure exist
+- AI infrastructure inventory, evidence-based recommendation, source access,
+  adaptation, and provenance rules when skills or third-party assistant
+  infrastructure exist
 
 The assistant can perform ordinary implementation and documentation tasks with
 focused validation.
@@ -73,6 +74,8 @@ The adapter is mature when it also defines:
 - post-install operation, blueprint repair, and framework-update recheck notes
 - maintained help menu and post-install/update chat-message templates
 - AI infrastructure inventory and add/adapt/remove recommendations
+- project-contour and outcome evidence for recommendations that add new items
+  or improve, consolidate, replace, retire, or keep existing items
 - AI infrastructure item routing, permission/gate/output contracts, and
   adaptation records when multiple items exist
 - skill/wrapper compatibility notes for supported assistants
@@ -159,6 +162,8 @@ Ask:
 - Can an assistant show useful Alatyr help when the user's requested operation
   is unclear?
 - Are existing AI infrastructure items inventoried before new items are added?
+- Can recommendations distinguish project needs from assistant-contour item
+  ownership, evaluate existing items first, and state quality and cost evidence?
 - Can an assistant select one AI infrastructure item without loading unrelated
   skills, prompts, gates, or tools?
 - Are imported or custom AI infrastructure items adapted from target evidence

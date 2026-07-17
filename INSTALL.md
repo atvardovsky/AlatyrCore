@@ -87,9 +87,9 @@ The plan must identify:
   staleness owner
 - task-specific maturity and bridge capability needs
 - optional scaffolding plan, if any
-- migration diff, adapter output contract, AI infrastructure inventory report,
-  and effectiveness report needs
-- AI infrastructure router/item and adaptation-record needs
+- migration diff, adapter output contract, AI infrastructure inventory and
+  recommendation reports, and effectiveness report needs
+- AI infrastructure router/item, recommendation, and adaptation-record needs
 - files to create, adapt, preserve, or skip
 - framework core versus target adapter decisions
 - target validation plan
@@ -137,7 +137,7 @@ In a typical target repository:
    and target assistant workflows/gates.
 8. Add bridge files only for assistants the target uses.
 9. Add installed-operation, operation-help, operation-routing,
-   AI-infrastructure-inventory, adapter output contracts, source-access
+   AI-infrastructure-inventory, AI-infrastructure-recommendation, adapter output contracts, source-access
    policy, prompt-injection policy, human and machine-readable approval-record
    templates,
    migration-note template, effectiveness-report template, blueprint-creation,
@@ -145,8 +145,9 @@ In a typical target repository:
    and
    post-install/update chat-message templates when the target wants
    post-install operation requests or AI infrastructure adaptation.
-   Add the AI infrastructure router and adaptation-record template when the
-   target needs routed item selection or imported-item provenance evidence.
+   Add the AI infrastructure router, recommendation flow/report, and
+   adaptation-record template when the target needs routed item selection,
+   evidence-based suggestions, or imported-item provenance evidence.
 10. Add skills, prompts, diagrams, and deterministic checks only when useful
    for the target, after adapting them to target rules and recording source or
    provenance when applicable. Route AI infrastructure through target item IDs
@@ -162,7 +163,8 @@ After installation, use
 `installer/installed-operation-request-template.md` when asking an assistant to
 operate the installed target adapter. Typical requests include blueprint
 creation or repair, adapter recheck after framework updates, drift review,
-blueprint-driven product changes, and skill adaptation. Include Allowed actions
+blueprint-driven product changes, AI infrastructure recommendation, and skill
+adaptation. Include Allowed actions
 when the request should be limited to `read-only`, `docs-only`,
 `adapter-only`, `code-and-tests`, or `full-with-approval`.
 
@@ -172,6 +174,9 @@ instead of guessing or inventing a CLI command.
 
 If the programmer asks for `alatyr-ai-inventory`, inspect existing AI
 infrastructure before adding anything. If the programmer asks for
+`alatyr-suggest-ai <scope>` or `alatyr-improve-ai <item-id>`, compare bounded
+project-contour evidence with relevant existing items in read-only mode before
+proposing additions or changes. If the programmer asks for
 `alatyr-adaptation <source>`, `alatyr-add-ai <source>`, or a similar target
 alias, treat it as an adaptation request. The source may be a local path, Git
 URL, HTTPS URL, assistant-native reference, package/plugin reference, or pasted

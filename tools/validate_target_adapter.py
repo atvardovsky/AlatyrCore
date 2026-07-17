@@ -134,6 +134,7 @@ MANIFEST_PATH_SCALARS: set[PathKey] = {
     ("operations", "output_contracts"),
     ("ai_infrastructure", "router"),
     ("ai_infrastructure", "inventory"),
+    ("ai_infrastructure", "recommendation"),
     ("ai_infrastructure", "adaptation_record"),
     ("maturity", "profile"),
     ("bridges", "capability_matrix"),
@@ -202,7 +203,7 @@ CONSISTENCY_RELATIONSHIPS = {
     "depends-on",
     "routes",
 }
-AI_INFRASTRUCTURE_ROUTES = {
+AI_INFRASTRUCTURE_ROUTES_V1 = {
     "inventory",
     "use-existing",
     "adapt-import",
@@ -210,6 +211,7 @@ AI_INFRASTRUCTURE_ROUTES = {
     "tool-mcp-change",
     "bridge-wrapper-change",
 }
+AI_INFRASTRUCTURE_ROUTES = AI_INFRASTRUCTURE_ROUTES_V1 | {"recommend"}
 AI_INFRASTRUCTURE_ITEM_TYPES = {
     "skill",
     "prompt",
@@ -901,8 +903,15 @@ class Validator:
         data = self.load_json_object(path, "AI_ROUTER")
         if data is None:
             return
-        if data.get("schema_version") != 1:
-            self.error("AI_ROUTER_SCHEMA", "schema_version should be 1", relpath)
+        schema_version = data.get("schema_version")
+        if schema_version not in {1, 2}:
+            self.error("AI_ROUTER_SCHEMA", "schema_version should be 1 or 2", relpath)
+        elif schema_version == 1:
+            self.warn(
+                "AI_ROUTER_LEGACY_SCHEMA",
+                "schema_version 1 has no evidence-based recommendation route",
+                relpath,
+            )
         if data.get("router_kind") != "target-ai-infrastructure-router":
             self.error(
                 "AI_ROUTER_KIND",
@@ -912,7 +921,12 @@ class Validator:
         routing_order = expect_string_list(
             data.get("routing_order"), self, "AI_ROUTER_ORDER", relpath
         )
-        if set(routing_order) != AI_INFRASTRUCTURE_ROUTES:
+        expected_routes = (
+            AI_INFRASTRUCTURE_ROUTES
+            if schema_version == 2
+            else AI_INFRASTRUCTURE_ROUTES_V1
+        )
+        if set(routing_order) != expected_routes:
             self.error(
                 "AI_ROUTER_ROUTES",
                 "routing_order must contain each portable AI infrastructure route",
@@ -928,11 +942,26 @@ class Validator:
                 relpath,
             )
 
+        if schema_version == 2:
+            recommendation_template = data.get("recommendation_template")
+            if not isinstance(recommendation_template, str) or not recommendation_template:
+                self.error(
+                    "AI_ROUTER_RECOMMENDATION_TEMPLATE",
+                    "schema_version 2 requires recommendation_template",
+                    relpath,
+                )
+            else:
+                self.check_optional_target_reference(
+                    recommendation_template,
+                    relpath,
+                    "recommendation_template",
+                )
+
         routes = data.get("routes")
         if not isinstance(routes, dict):
             self.error("AI_ROUTER_ROUTE_SHAPE", "routes must be an object", relpath)
             routes = {}
-        for route_name in AI_INFRASTRUCTURE_ROUTES:
+        for route_name in expected_routes:
             route = routes.get(route_name)
             if not isinstance(route, dict):
                 self.error("AI_ROUTER_ROUTE_MISSING", f"route is missing: {route_name}", relpath)

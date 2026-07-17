@@ -63,8 +63,9 @@ divergent policy.
 
 All supported assistant surfaces should route selected AI infrastructure work
 through `.ai/assistant/ai-infrastructure-router.json`. The bridge chooses no
-item itself; the canonical router records item IDs, sources, allowed actions,
-permissions, gates, validation, output contracts, and adaptation records.
+item itself; the canonical router records inventory, recommendation, use, and
+change routes plus item IDs, sources, allowed actions, permissions, gates,
+validation, output contracts, and adaptation records.
 
 ## Installed Operations
 
@@ -81,9 +82,11 @@ The short help file may point to `.ai/assistant/help-reference.md` for the
 full operation menu.
 
 Targets may define request aliases such as `alatyr-ai-inventory`,
+`alatyr-suggest-ai <scope>`, `alatyr-improve-ai <item-id>`,
 `alatyr-adaptation <source>`, or `alatyr-add-ai <source>`. Assistant-specific
 surfaces should treat those aliases as chat/request shortcuts, not shell
-commands. Route them to the canonical inventory and skill-adaptation flows,
+commands. Route them to canonical inventory, read-only recommendation, or
+skill-adaptation flows,
 preserve source provenance, source hash or commit evidence when available,
 and avoid importing the source directly.
 

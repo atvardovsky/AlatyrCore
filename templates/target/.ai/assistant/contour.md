@@ -18,8 +18,9 @@ Replace placeholders with target facts before accepting installation.
 - human and machine-readable approval records plus target-local strict diff
   scope checks under `.ai/assistant/approvals`
 - prompts, skills, bridge files, and assistant-specific wrappers
-- AI infrastructure inventory, source access, provenance, adaptation,
-  output-format, prompt-injection, safety, and wrapper rules
+- AI infrastructure inventory, project-evidenced recommendation, source access,
+  provenance, adaptation, output-format, prompt-injection, safety, and wrapper
+  rules
 - AI infrastructure route/item contracts and adaptation records under
   `.ai/assistant/ai-infrastructure-router.json` and target-owned record paths
 - target validation commands or manual checks

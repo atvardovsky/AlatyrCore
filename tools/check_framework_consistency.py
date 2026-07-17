@@ -300,6 +300,7 @@ def main() -> int:
         "templates/target/.ai/assistant/module-profile.md",
         "templates/target/.ai/assistant/maturity-profile.md",
         "templates/target/.ai/assistant/flows/ai-infrastructure-inventory.flow.md",
+        "templates/target/.ai/assistant/flows/ai-infrastructure-recommendation.flow.md",
         "templates/target/.ai/assistant/flows/adapter-recheck.flow.md",
         "templates/target/.ai/assistant/flows/blueprint-driven-change.flow.md",
         "templates/target/.ai/assistant/flows/documentation-sync.flow.md",
@@ -314,6 +315,7 @@ def main() -> int:
         "templates/target/.ai/assistant/skills/example/SKILL.md",
         "templates/target/.ai/assistant/templates/adapter-output-contracts.md",
         "templates/target/.ai/assistant/templates/ai-infrastructure-inventory.md",
+        "templates/target/.ai/assistant/templates/ai-infrastructure-recommendation.md",
         "templates/target/.ai/assistant/templates/operation-request.md",
         "templates/target/.ai/assistant/templates/migration-note.md",
         "templates/target/.ai/assistant/templates/effectiveness-report.md",
@@ -341,6 +343,7 @@ def main() -> int:
         "templates/target/.ai/assistant/maturity-profile.md",
         "templates/target/.ai/assistant/gates/checklist.md",
         "templates/target/.ai/assistant/flows/ai-infrastructure-inventory.flow.md",
+        "templates/target/.ai/assistant/flows/ai-infrastructure-recommendation.flow.md",
         "templates/target/.ai/assistant/flows/adapter-recheck.flow.md",
         "templates/target/.ai/assistant/flows/blueprint-driven-change.flow.md",
         "templates/target/.ai/assistant/flows/documentation-sync.flow.md",
@@ -355,6 +358,7 @@ def main() -> int:
         "templates/target/.ai/assistant/skills/example/SKILL.md",
         "templates/target/.ai/assistant/templates/adapter-output-contracts.md",
         "templates/target/.ai/assistant/templates/ai-infrastructure-inventory.md",
+        "templates/target/.ai/assistant/templates/ai-infrastructure-recommendation.md",
         "templates/target/.ai/assistant/templates/installation-note.md",
         "templates/target/.ai/assistant/templates/operation-request.md",
         "templates/target/.ai/assistant/templates/migration-note.md",
@@ -935,6 +939,7 @@ def main() -> int:
             "check_bridge_capability_matrix.py",
             "check_framework_metadata.py",
             "check_ai_infrastructure_inventory.py",
+            "check_ai_infrastructure_recommendations.py",
             "check_context_router.py",
             "check_manifest_contract.py",
             "check_markdown_links.py",
@@ -1309,6 +1314,39 @@ def main() -> int:
         if "check_ai_infrastructure_inventory.py" not in read_text(relpath):
             failures.append(
                 f"{relpath} missing check_ai_infrastructure_inventory.py"
+            )
+
+    ai_recommendation_tool = (
+        ROOT / "tools" / "check_ai_infrastructure_recommendations.py"
+    )
+    if not ai_recommendation_tool.is_file():
+        failures.append("missing tools/check_ai_infrastructure_recommendations.py")
+    else:
+        ai_recommendation_text = read_text(
+            "tools/check_ai_infrastructure_recommendations.py"
+        )
+        for required_ai_recommendation_text in [
+            "AI infrastructure recommendation source and target contracts",
+            "FRAMEWORK_TEXT",
+            "PLACEHOLDER_FIELDS",
+            "recommend route",
+            "OK: checked",
+        ]:
+            if required_ai_recommendation_text not in ai_recommendation_text:
+                failures.append(
+                    "tools/check_ai_infrastructure_recommendations.py missing "
+                    f"{required_ai_recommendation_text}"
+                )
+    for relpath in [
+        "AGENTS.md",
+        "README.md",
+        "tools/README.md",
+        "docs/framework-maintenance.md",
+        "docs/repository-layout.md",
+    ]:
+        if "check_ai_infrastructure_recommendations.py" not in read_text(relpath):
+            failures.append(
+                f"{relpath} missing check_ai_infrastructure_recommendations.py"
             )
 
     rule_ownership_tool = ROOT / "tools" / "check_rule_ownership.py"

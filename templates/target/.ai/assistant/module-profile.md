@@ -145,7 +145,9 @@ Required files:
 
 - `.ai/assistant/ai-infrastructure-router.json`
 - `.ai/assistant/flows/ai-infrastructure-inventory.flow.md`
+- `.ai/assistant/flows/ai-infrastructure-recommendation.flow.md`
 - `.ai/assistant/flows/skill-adaptation.flow.md`
+- `.ai/assistant/templates/ai-infrastructure-recommendation.md`
 - `.ai/assistant/templates/ai-infrastructure-adaptation-record.md`
 
 Reason: `{REASON}`

@@ -30,7 +30,8 @@ For each supported assistant, record:
 - AI infrastructure router and item-ID support
 - tool permission model
 - whether operation help aliases are routed
-- whether AI infrastructure inventory and adaptation aliases are routed
+- whether AI infrastructure inventory, recommendation, and adaptation aliases
+  are routed
 - whether selected AI infrastructure items route through canonical target
   permissions, gates, validation, and output contracts
 - known limitations
@@ -68,8 +69,9 @@ Each bridge should:
   and context router
 - point to the canonical root entry point
 - point to operation help and operation routing
-- route `alatyr-ai-inventory`, `alatyr-adaptation`, and `alatyr-add-ai` when
-  those aliases are supported by the target
+- route `alatyr-ai-inventory`, `alatyr-suggest-ai`, `alatyr-improve-ai`,
+  `alatyr-adaptation`, and `alatyr-add-ai` when those aliases are supported by
+  the target
 - route selected AI infrastructure work through the canonical target router
   instead of choosing item content from a bridge
 - avoid duplicating full framework, project, or adapter policy

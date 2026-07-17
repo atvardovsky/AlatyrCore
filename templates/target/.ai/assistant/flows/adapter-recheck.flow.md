@@ -24,7 +24,10 @@ Replace placeholders with target facts before accepting installation.
   `.ai/assistant/flows/operation-routing.flow.md`
 - AI infrastructure inventory:
   `.ai/assistant/flows/ai-infrastructure-inventory.flow.md`
-- AI infrastructure router and adaptation record:
+- AI infrastructure recommendation:
+  `.ai/assistant/flows/ai-infrastructure-recommendation.flow.md`,
+  `.ai/assistant/templates/ai-infrastructure-recommendation.md`
+- AI infrastructure router, recommendation, and adaptation record:
   `.ai/assistant/ai-infrastructure-router.json`,
   `.ai/assistant/templates/ai-infrastructure-adaptation-record.md`
 - Chat-message templates: `.ai/assistant/templates/post-install-message.md`,
@@ -58,8 +61,8 @@ Replace placeholders with target facts before accepting installation.
 7. Check required core and optional module state in
    `.ai/assistant/module-profile.md`.
 8. Check target adapter references to framework files, operation help, routing
-   flows, AI infrastructure inventory and item router, gates, prompts, skills,
-   adaptation records, bridge files,
+   flows, AI infrastructure inventory, recommendation and item router, gates,
+   prompts, skills, recommendation/adaptation records, bridge files,
    checker rules, large-task flow and packet, chat-message templates, and
    final-evidence expectations.
 9. Check adapter drift hazards: hard-coded local machine paths in `.ai/*`,
@@ -110,9 +113,9 @@ Report:
 - consistency-map relationship coverage and staleness status
 - context router and context profile status
 - module profile status
-- help, routing, AI infrastructure inventory, bridge, prompt, skill, gate,
-  checker, item router, adaptation-record, large-task orchestration, diagram,
-  chat-message, and lifecycle status
+- help, routing, AI infrastructure inventory/recommendation, bridge, prompt,
+  skill, gate, checker, item router, recommendation/adaptation records,
+  large-task orchestration, diagram, chat-message, and lifecycle status
 - bridge capability matrix status
 - target validation run or unresolved
 - approvals needed

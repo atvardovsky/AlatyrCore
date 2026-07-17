@@ -19,6 +19,7 @@ CHECKS = [
     ["tools/check_framework_metadata.py"],
     ["tools/check_approval_template.py"],
     ["tools/check_ai_infrastructure_inventory.py"],
+    ["tools/check_ai_infrastructure_recommendations.py"],
     ["tools/check_ai_infrastructure_router.py"],
     ["tools/check_assistant_surface_conformance.py"],
     ["tools/check_bridge_capability_matrix.py"],

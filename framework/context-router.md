@@ -77,7 +77,9 @@ independent local tasks.
 For AI infrastructure work, route first to the target AI infrastructure router
 instead of loading every skill, prompt, gate, tool, bridge, and import policy.
 The selected route decides whether inventory, ordinary target-owned item use,
-adaptation, protected tool policy, or bridge compatibility context is needed.
+read-only recommendation, adaptation, protected tool policy, or bridge
+compatibility context is needed. Recommendation loads one bounded project area
+and relevant existing-item evidence rather than broad project or import policy.
 
 ## Ownership
 

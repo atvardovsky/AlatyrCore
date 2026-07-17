@@ -19,6 +19,8 @@ for later use.
 - License status: `{LICENSE_STATUS_OR_UNRESOLVED}`
 - Review date: `{REVIEW_DATE}`
 - Reviewed by: `{REVIEWER_OR_ROLE}`
+- Recommendation record or ID: `{RECOMMENDATION_RECORD_ID_OR_NOT_APPLICABLE}`
+- Project-contour basis: `{PROJECT_AREA_OWNER_NEED_AND_EXPECTED_OUTCOME}`
 
 ## Target Contract
 
@@ -39,6 +41,12 @@ for later use.
 ## Normalization And Safety
 
 - Existing inventory result: `{INVENTORY_RESULT}`
+- Existing item baseline and observed outcome:
+  `{EXISTING_ITEM_BASELINE_OUTCOME_OR_NOT_APPLICABLE}`
+- Expected quality and context-cost effect:
+  `{MEASURED_EFFECT_OR_LABELED_ESTIMATE_OR_NOT_APPLICABLE}`
+- Recommendation acceptance criteria:
+  `{ACCEPTANCE_CRITERIA_OR_NOT_APPLICABLE}`
 - Conflicts or duplicates: `{CONFLICTS_DUPLICATES_OR_NONE}`
 - Source instructions rejected or not carried forward:
   `{REJECTED_SOURCE_INSTRUCTIONS_AND_REASON_OR_NONE}`
