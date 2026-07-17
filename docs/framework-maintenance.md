@@ -119,7 +119,8 @@ Before accepting a change, check:
   optional module fields, required files, approvals, next actions, or module
   residual-risk guidance changes.
 - `python3 tools/check_operation_contracts.py` passes when installed-operation
-  help, aliases, or flow routing changes.
+  help, aliases, flow routing, allowed-action boundaries, or ordered pipeline
+  steps change.
 - `python3 tools/check_operation_help.py` passes when short help,
   help-reference sections, allowed-action text, alias wording, or operation
   block shape changes.

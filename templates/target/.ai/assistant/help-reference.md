@@ -181,9 +181,11 @@ Allowed actions guide:
 - `read-only`: inspect target files and report only; no file changes.
 - `docs-only`: docs, blueprint-equivalent docs, and diagram sources only; no
   code changes.
-- `adapter-only`: adapter-owned `.ai/*` surfaces, especially
-  `.ai/assistant`, bridge files, assistant templates, gates, flows, policies,
-  and checker rules only; no product code or accepted project facts.
+- `adapter-only`: adapter-owned `.ai/*` surfaces and bridge files, including
+  assistant templates, gates, flows, policies, checker rules, and normalized
+  project-process or adapter-effectiveness evidence; no product code, tests,
+  or accepted business, domain, architecture, data, runtime, or product-
+  behavior facts.
 - `code-and-tests`: code, tests, and required docs/diagram sync; no live
   external actions, destructive actions, production dependencies, or broader
   permissions.

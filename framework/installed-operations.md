@@ -71,10 +71,11 @@ operation request:
 - `docs-only`: change documentation, blueprint-equivalent docs, and diagram
   sources only; do not change code, tests, runtime config, or assistant
   infrastructure.
-- `adapter-only`: change adapter-owned `.ai/*` surfaces, especially
-  `.ai/assistant` files, bridge files, assistant templates, flows, gates,
-  policies, and checker rules only; do not change product code, tests, or
-  accepted project facts.
+- `adapter-only`: change adapter-owned `.ai/*` surfaces and bridge files,
+  including assistant templates, flows, gates, policies, checker rules, and
+  normalized project-process or adapter-effectiveness evidence; do not change
+  product code, tests, or accepted business, domain, architecture, data,
+  runtime, or product-behavior facts.
 - `code-and-tests`: change code, tests, and required documentation or diagram
   sync; do not perform live external actions, destructive actions, production
   dependency changes, or permission broadening.
@@ -148,10 +149,10 @@ For installed operations:
     scoped approval is used, enforce the complete changed path set against
     explicitly selected machine-readable records bound to the approved diff
     base.
-14. Use the target adapter output contract when the operation follows
+15. Use the target adapter output contract when the operation follows
    installation, framework update, or adapter recheck.
-15. Run target validation that exists, or record unresolved checks.
-16. Report changed facts, re-derived invariants, review-item reconciliation,
+16. Run target validation that exists, or record unresolved checks.
+17. Report changed facts, re-derived invariants, review-item reconciliation,
    files inspected, files changed, approval-scope enforcement, validation,
    skipped checks, and residual risk.
 

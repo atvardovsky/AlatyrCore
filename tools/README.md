@@ -506,8 +506,10 @@ py -3 .\tools\check_module_profile.py
 
 `check_operation_contracts.py` validates installed-operation template
 contracts in this source repository. It checks operation names, alias route
-targets, and flow references in the target help templates. It is not a
-portable framework requirement for target projects.
+targets, flow references, sequential installed-operation steps, and the
+`adapter-only` project-process evidence boundary across framework, installer,
+and target request surfaces. It is not a portable framework requirement for
+target projects.
 
 Linux or macOS:
 

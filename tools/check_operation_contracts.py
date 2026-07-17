@@ -17,11 +17,25 @@ TARGET = ROOT / "templates" / "target"
 HELP = TARGET / ".ai" / "assistant" / "help.md"
 HELP_REFERENCE = TARGET / ".ai" / "assistant" / "help-reference.md"
 FLOWS = TARGET / ".ai" / "assistant" / "flows"
+INSTALLED_OPERATIONS = ROOT / "framework" / "installed-operations.md"
+OPERATION_REQUEST_SURFACES = [
+    INSTALLED_OPERATIONS,
+    ROOT / "installer" / "installed-operation-request-template.md",
+    TARGET / ".ai" / "assistant" / "templates" / "operation-request.md",
+    HELP_REFERENCE,
+]
 
 OPERATION_RE = re.compile(r"^Operation: `([^`]+)`", re.MULTILINE)
 FLOW_RE = re.compile(r"^(?:Flow|Companion flow):\s*`([^`]+)`", re.MULTILINE)
 ROUTE_RE = re.compile(r"(?:route to|Route to:)\s+`([^`]+)`")
 BACKTICK_RE = re.compile(r"`([^`]+)`")
+ORDERED_STEP_RE = re.compile(r"^(\d+)\.\s", re.MULTILINE)
+
+ADAPTER_ONLY_REQUIRED_TEXT = [
+    "normalized project-process or adapter-effectiveness evidence",
+    "accepted business, domain, architecture, data, runtime, or "
+    "product-behavior facts",
+]
 
 REQUIRED_OPERATIONS = {
     "help",
@@ -104,6 +118,21 @@ def alias_route_targets(text: str, known_operations: set[str]) -> set[str]:
     return targets
 
 
+def section(text: str, heading: str) -> str:
+    start_marker = f"## {heading}\n"
+    start = text.find(start_marker)
+    if start == -1:
+        return ""
+    start += len(start_marker)
+    end = text.find("\n## ", start)
+    return text[start:] if end == -1 else text[start:end]
+
+
+def normalized_markdown(text: str) -> str:
+    joined_words = re.sub(r"(?<=\w)-\s*\n\s*(?=\w)", "-", text)
+    return " ".join(joined_words.split())
+
+
 def main() -> int:
     failures: list[str] = []
     help_text = read(HELP)
@@ -174,14 +203,36 @@ def main() -> int:
             f"{missing_alias_targets}"
         )
 
+    installed_operations_text = read(INSTALLED_OPERATIONS)
+    required_flow = section(installed_operations_text, "Required Flow")
+    step_numbers = [int(value) for value in ORDERED_STEP_RE.findall(required_flow)]
+    expected_step_numbers = list(range(1, len(step_numbers) + 1))
+    if not step_numbers:
+        failures.append("framework/installed-operations.md has no Required Flow steps")
+    elif step_numbers != expected_step_numbers:
+        failures.append(
+            "framework/installed-operations.md Required Flow steps are not "
+            f"sequential: {step_numbers}"
+        )
+
+    for source in OPERATION_REQUEST_SURFACES:
+        text = normalized_markdown(read(source))
+        for required_text in ADAPTER_ONLY_REQUIRED_TEXT:
+            if required_text not in text:
+                failures.append(
+                    f"{source.relative_to(ROOT)} adapter-only contract missing: "
+                    f"{required_text}"
+                )
+
     if failures:
         for failure in failures:
             print(f"FAIL: {failure}", file=sys.stderr)
         return 1
 
     print(
-        "OK: checked operation contracts for "
-        f"{len(reference_operations)} operations and {len(referenced_flows)} flows"
+        "OK: checked operation contracts, allowed-action boundaries, and "
+        f"sequential routing for {len(reference_operations)} operations and "
+        f"{len(referenced_flows)} flows"
     )
     return 0
 

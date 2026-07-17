@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Clarified that `adapter-only` may update normalized project-process and
+  adapter-effectiveness evidence without permitting accepted product,
+  business, architecture, data, or runtime fact changes, and added source
+  checks for allowed-action drift and installed-operation step sequencing.
 - Added an evidence-based `ai-infrastructure-recommendation` operation with
   `alatyr-suggest-ai <scope>` and `alatyr-improve-ai <item-id>` request aliases.
 - Added read-only recommendation routing and report contracts for new items and
