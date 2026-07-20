@@ -32,6 +32,12 @@ CORE_REQUIRED = {
     Path(".ai/project/development-evidence.json"),
     Path("AGENTS.md"),
 }
+STANDARD_REQUIRED = {
+    Path(".ai/assistant/operation-catalog.json"),
+    Path(".ai/assistant/flows/operation-routing.flow.md"),
+    Path(".ai/assistant/flows/adapter-health.flow.md"),
+    Path(".ai/assistant/templates/pre-change-preview.md"),
+}
 FULL_ONLY_BRIDGES = {
     Path("CLAUDE.md"),
     Path("GEMINI.md"),
@@ -64,6 +70,11 @@ def main() -> int:
         missing_core = sorted(CORE_REQUIRED - core)
         if missing_core:
             failures.append(f"core profile missing required paths: {missing_core}")
+        missing_standard = sorted(STANDARD_REQUIRED - standard)
+        if missing_standard:
+            failures.append(
+                f"standard profile missing operation surfaces: {missing_standard}"
+            )
         if not core < standard:
             failures.append("core profile must be a strict subset of standard")
         if not standard < full:

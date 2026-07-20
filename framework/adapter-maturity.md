@@ -52,7 +52,8 @@ The adapter is usable when it also defines:
 - logical integrity review path
 - blueprint-driven change or equivalent product-change workflow
 - installed-operation request and adapter-recheck path for post-install work
-- operation help or routing path for ambiguous requests
+- operation catalog, automatic routing, read-only health, risk-gated preview,
+  and bounded help for ambiguous requests
 - AI infrastructure inventory, evidence-based recommendation, source access,
   adaptation, and provenance rules when skills or third-party assistant
   infrastructure exist
@@ -138,8 +139,8 @@ Use blocking criteria for high-risk task areas:
 - AI infrastructure integration is blocked without inventory, source access,
   prompt-injection policy, provenance, permissions, and approval rules
 - framework upgrade work is blocked without manifest, installation note,
-  context profiles, module profile, bridge references, operation help, and
-  adapter-recheck flow
+  context profiles, module profile, bridge references, operation catalog,
+  health/recheck flows, and operation help
 
 If a task is blocked, report the missing adapter facts and suggest the smallest
 adapter repair before attempting broad product changes.

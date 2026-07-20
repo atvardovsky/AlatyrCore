@@ -63,6 +63,7 @@ in the owning framework documents and use these IDs for installation routing:
 - `ALATYR-SAFETY-002`
 - `ALATYR-ADAPTER-001`
 - `ALATYR-MODULE-001`
+- `ALATYR-OPERATION-001`
 - `ALATYR-LIFECYCLE-001`
 - `ALATYR-EVIDENCE-001`
 
@@ -142,17 +143,21 @@ Classify every proposed target file:
     Add `.ai/project/consistency-map.json` only when the target enables bounded
     relationship routing; populate fact IDs and edges from target evidence or
     record the module as blocked or deferred.
-13. Create target `.ai/assistant/contour.md`, context router, context
-    profiles, module profile, task-specific maturity profile, bridge
+13. Create target `.ai/assistant/contour.md`, context router, operation
+    catalog, context profiles, module profile, task-specific maturity profile, bridge
     capability matrix, and minimal target assistant workflows/gates from
     target facts.
     The router must distinguish host-preloaded instructions from compact
     bootstrap, define context budgets and receipts, and route project-area
-    overlays without putting full project sources in mandatory bootstrap. Add
+    overlays without putting full project sources or the operation catalog in
+    mandatory bootstrap. Add compact per-profile operation candidates and load
+    the full catalog only for explicit Alatyr routing, health, ambiguity, or
+    operation handoff. Add
     the `large-or-resumable` task-scale overlay only when the target enables
     large-task orchestration.
 14. Add bridge files only for assistants the target uses.
-15. Add installed-operation, operation-help, operation-routing,
+15. Add installed-operation, operation-help, automatic operation-routing,
+    read-only adapter-health, risk-gated pre-change preview,
     AI-infrastructure-inventory, AI-infrastructure-recommendation, adapter output contract
     `.ai/assistant/templates/adapter-output-contracts.md`, source-access
     policy, prompt-injection policy, human and machine-readable approval-record
@@ -171,7 +176,10 @@ Classify every proposed target file:
     AI infrastructure but must not directly change `.ai/framework`, AlatyrCore
     source, or portable rules.
 16. Ensure root assistant entry points and supported bridge files point future
-    sessions to the installation note, operation help, and routing flow.
+    sessions to the installation note, compact help, operation catalog, and
+    routing flow. Expose `Alatyr` as the single conversational entry and
+    `Alatyr status` or `Alatyr doctor` as read-only health aliases on every
+    supported surface.
 17. Add prompts, skills, diagrams, or consistency checks only when they solve
     target friction, can be maintained, and have been adapted to target facts.
 18. Run target validation that exists. Do not invent commands.
@@ -183,7 +191,8 @@ Classify every proposed target file:
     files that exist in the current tree.
 21. Report final evidence.
 22. Send the appropriate post-install or post-update assistant chat message
-    using the target template when installed.
+    using the target template when installed. Name the single `Alatyr` entry,
+    read-only health aliases, automatic routing, and risk-gated preview.
 
 ## Human Approval Gate
 
@@ -232,7 +241,8 @@ Report:
 - consistency map enabled, skipped, or blocked with relationship gaps recorded
 - existing files preserved, skipped, or overwritten with approval
 - supported assistant bridges added or skipped
-- installed-operation, operation-help, operation-routing,
+- operation catalog, installed-operation, operation-help, automatic routing,
+  read-only health, risk-gated preview,
   AI-infrastructure-inventory, AI-infrastructure-recommendation, adapter output
   contract, context router,
   context profiles, module profile, source-of-truth registry, task-specific

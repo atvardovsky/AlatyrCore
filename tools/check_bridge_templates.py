@@ -35,6 +35,7 @@ BRIDGE_FILES = [
 ]
 
 REQUIRED_BRIDGE_REFS = [
+    ".ai/assistant/operation-catalog.json",
     ".ai/assistant/help.md",
     ".ai/assistant/flows/operation-routing.flow.md",
     "alatyr-ai-inventory",
@@ -42,6 +43,7 @@ REQUIRED_BRIDGE_REFS = [
     "alatyr-improve-ai",
     "alatyr-adaptation",
     "alatyr-add-ai",
+    "status/doctor",
 ]
 
 REQUIRED_CANONICAL_REFS = [
@@ -116,6 +118,10 @@ def main() -> int:
         "Routes `alatyr-improve-ai`:",
         "Routes `alatyr-adaptation`:",
         "Routes `alatyr-add-ai`:",
+        "Routes single `Alatyr` entry:",
+        "Routes adapter health:",
+        "Routes pre-change preview:",
+        ".ai/assistant/operation-catalog.json",
         ".ai/assistant/help.md",
         ".ai/assistant/flows/operation-routing.flow.md",
         "Conformance check:",

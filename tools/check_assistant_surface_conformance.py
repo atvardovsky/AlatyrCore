@@ -90,6 +90,7 @@ def main() -> int:
                     ".ai/alatyr.yaml",
                     ".ai/README.md",
                     ".ai/assistant/context-router.json",
+                    ".ai/assistant/operation-catalog.json",
                     ".ai/assistant/help.md",
                     ".ai/assistant/flows/operation-routing.flow.md",
                 ]:
@@ -104,6 +105,14 @@ def main() -> int:
                     failures.append(
                         f"assistant surface {surface_id} bridge {relpath} "
                         "does not preserve preloaded bootstrap"
+                    )
+                health_aliases_routed = "status/doctor" in text or (
+                    "Alatyr status" in text and "Alatyr doctor" in text
+                )
+                if not health_aliases_routed:
+                    failures.append(
+                        f"assistant surface {surface_id} bridge {relpath} "
+                        "does not route adapter health aliases"
                     )
 
             output = base / surface_id

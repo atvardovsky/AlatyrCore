@@ -21,6 +21,7 @@ EXPECTED_COMMANDS = {
     "check-source",
     "scaffold",
     "validate-adapter",
+    "doctor",
     "migration-report",
     "assess-upgrade",
     "context-costs",
@@ -93,6 +94,10 @@ def main() -> int:
         result = run(command, "--help")
         if result.returncode != 0:
             failures.append(f"tool command help failed: {command}")
+
+    doctor_output = run("doctor", "--output", "should-not-exist.json")
+    if doctor_output.returncode != 2 or "does not permit" not in doctor_output.stderr:
+        failures.append("doctor must reject report-file output and remain read-only")
 
     cmd_text = (TOOLS / "alatyr.cmd").read_text(encoding="utf-8")
     ps_text = (TOOLS / "alatyr.ps1").read_text(encoding="utf-8")

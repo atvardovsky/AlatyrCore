@@ -51,8 +51,9 @@ List what must not be changed.
 - Task-specific maturity profile:
 - Bridge capability matrix:
 - Blueprint-driven change or equivalent product-change workflow:
-- Installed-operation, operation-help, operation-routing, blueprint-creation,
-  adapter-recheck, framework-update review, or chat-message process:
+- Operation catalog, installed-operation, operation-help, automatic routing,
+  adapter-health, pre-change preview, blueprint-creation, adapter-recheck,
+  framework-update review, or chat-message process:
 - Adapter output contracts:
 - Risk and approval model:
 - Security, privacy, live-service, destructive-operation, dependency, and
@@ -114,6 +115,10 @@ or supported bridge files.
 Include `.ai/assistant/context-router.json` to map task profiles to required
 context, project-area overlays, budgets, receipts, approvals, validation, and
 final evidence in machine-readable form.
+
+Include `.ai/assistant/operation-catalog.json` as the canonical operation
+registry. Keep it outside routine bootstrap; add bounded operation candidates
+to context profiles for cheap automatic routing.
 
 Include `.ai/assistant/context-profiles.md` to explain task profiles,
 expansion triggers, approvals, validation, and final evidence for humans.
@@ -233,7 +238,8 @@ Record where completed packets are stored, ignored, redacted, or removed.
 - Migration-diff rules:
 - Effectiveness measurement rules:
 - Installed-operation request and adapter-recheck rules:
-- Operation help and routing rules:
+- Operation catalog, single entry, automatic routing, health, and preview
+  rules:
 - Large-task workstream, checkpoint, and final-convergence rules:
 - Adapter output contract rules:
 - Adapter drift/local leakage rules:
@@ -273,8 +279,9 @@ Record where completed packets are stored, ignored, redacted, or removed.
 List assistant-specific bridge files to create, update, skip, or preserve.
 
 Also state how root `AGENTS.md`, `AI_ASSISTANTS.md`, and supported bridge
-files will point future sessions to the installation note, operation help, and
-operation-routing flow.
+files will point future sessions to the installation note, compact help,
+operation catalog, and operation-routing flow, including `Alatyr`, read-only
+status/doctor aliases, and risk-gated preview behavior.
 
 State whether CODEOWNERS or an equivalent owner map exists for root assistant
 entry points and supported bridge files.

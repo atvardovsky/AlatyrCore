@@ -31,6 +31,13 @@ def load_commands() -> list[dict[str, Any]]:
                 raise SystemExit(f"tool command entry has invalid {field}")
         if command["name"] in names:
             raise SystemExit(f"duplicate tool command: {command['name']}")
+        forbidden = command.get("forbidden_arguments", [])
+        if not isinstance(forbidden, list) or not all(
+            isinstance(argument, str) and argument for argument in forbidden
+        ):
+            raise SystemExit(
+                f"tool command entry has invalid forbidden_arguments: {command['name']}"
+            )
         names.add(command["name"])
     return commands
 
@@ -69,6 +76,21 @@ def main() -> int:
     script = TOOLS / script_name
     if not script.is_file():
         print(f"Missing command script: {script_name}", file=sys.stderr)
+        return 2
+
+    forbidden_arguments = set(command.get("forbidden_arguments", []))
+    supplied_forbidden = sorted(
+        argument
+        for argument in forbidden_arguments
+        if argument in sys.argv[2:]
+        or any(value.startswith(argument + "=") for value in sys.argv[2:])
+    )
+    if supplied_forbidden:
+        print(
+            f"Command {command_name} does not permit: "
+            + ", ".join(supplied_forbidden),
+            file=sys.stderr,
+        )
         return 2
 
     result = subprocess.run([sys.executable, str(script), *sys.argv[2:]], check=False)

@@ -106,8 +106,9 @@ Every project using this framework must define:
   checkpoint evidence when the repository needs cross-boundary or multi-session
   operations
 - allowed-action meanings for installed-operation requests
-- operation help, operation-routing, and post-install/update chat-message
-  templates when the repository wants discoverable assistant requests
+- operation catalog, single entry, automatic routing, read-only health,
+  risk-gated preview, help, and post-install/update chat-message templates when
+  the repository wants discoverable assistant requests
 - final evidence format for that project
 
 ## Adapter May Provide

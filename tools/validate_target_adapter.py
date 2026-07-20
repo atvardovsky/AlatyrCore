@@ -19,6 +19,7 @@ import re
 import subprocess
 import sys
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Tuple
 
@@ -109,6 +110,10 @@ MANIFEST_REQUIRED_SCALARS: set[PathKey] = {
     ("source_of_truth", "context_profiles"),
     ("source_of_truth", "module_profile"),
     ("operations", "help"),
+    ("operations", "catalog"),
+    ("operations", "routing"),
+    ("operations", "health"),
+    ("operations", "pre_change_preview"),
     ("operations", "operation_request"),
     ("operations", "output_contracts"),
     ("maturity", "profile"),
@@ -131,6 +136,10 @@ MANIFEST_PATH_SCALARS: set[PathKey] = {
     ("source_of_truth", "context_profiles"),
     ("source_of_truth", "module_profile"),
     ("operations", "help"),
+    ("operations", "catalog"),
+    ("operations", "routing"),
+    ("operations", "health"),
+    ("operations", "pre_change_preview"),
     ("operations", "operation_request"),
     ("operations", "output_contracts"),
     ("operations", "development_evidence_capture"),
@@ -236,6 +245,52 @@ ALLOWED_ACTION_MODES = {
     "full-with-approval",
 }
 
+OPERATION_REQUIRED_FIELDS = {
+    "id",
+    "title",
+    "summary",
+    "required_module",
+    "flow",
+    "preview",
+}
+OPERATION_LIST_FIELDS = {
+    "use_when",
+    "context_profiles",
+    "minimum_inputs",
+    "allowed_actions",
+    "aliases",
+    "final_evidence",
+}
+
+
+def repair_operation_for(code: str) -> str:
+    routes = [
+        (("FRAMEWORK_", "MIGRATION_"), "recheck-after-framework-update"),
+        (("AI_", "PROMPT_", "DEVELOPMENT_EVIDENCE_"), "ai-infrastructure-recommendation"),
+        (("CONSISTENCY_", "SOURCE_"), "logical-integrity-review"),
+        (("BRIDGE_",), "drift-review"),
+        (("APPROVAL_",), "logical-integrity-review"),
+        (
+            (
+                "OPERATION_",
+                "ROUTER_",
+                "PROFILE_",
+                "BOOTSTRAP_",
+                "MANIFEST_",
+                "REQUIRED_",
+                "CHECKER_",
+                "STALE_",
+                "LOCAL_",
+                "PLACEHOLDER_",
+            ),
+            "recheck-after-installation",
+        ),
+    ]
+    for prefixes, operation in routes:
+        if code.startswith(prefixes):
+            return operation
+    return "recheck-after-installation"
+
 
 @dataclass(frozen=True)
 class Finding:
@@ -250,14 +305,19 @@ class Finding:
             return f"{prefix} {self.path}: {self.message}"
         return f"{prefix}: {self.message}"
 
-    def to_json(self) -> dict[str, str]:
-        payload = {
+    def to_json(self) -> dict[str, Any]:
+        payload: dict[str, Any] = {
             "level": self.level,
             "code": self.code,
             "message": self.message,
         }
         if self.path:
             payload["path"] = self.path
+        if self.level in {"error", "warning"}:
+            payload["owner_surface"] = self.path or "target adapter"
+            payload["repair_operation"] = repair_operation_for(self.code)
+            payload["approval_required"] = "evaluate target approval policy"
+            payload["automatic_repair"] = False
         return payload
 
 
@@ -406,6 +466,7 @@ class Validator:
         self.check_required_files()
         manifest = self.check_manifest()
         self.check_router()
+        self.check_operation_catalog()
         self.check_consistency_map()
         self.check_ai_infrastructure_router()
         self.check_development_evidence(manifest)
@@ -737,6 +798,214 @@ class Validator:
                         ".ai/assistant/context-profiles.md",
                     )
             self.check_markdown_required_context_duplicates(profiles_path)
+
+    def check_operation_catalog(self) -> None:
+        relpath = ".ai/assistant/operation-catalog.json"
+        path = self.target_path(relpath)
+        if not path.is_file():
+            self.error(
+                "OPERATION_CATALOG_MISSING",
+                "machine-readable operation catalog is missing",
+                relpath,
+            )
+            return
+
+        catalog = self.load_json_object(path, "OPERATION_CATALOG")
+        if catalog is None:
+            return
+        if catalog.get("schema_version") != 1:
+            self.error(
+                "OPERATION_CATALOG_SCHEMA",
+                "schema_version should be 1",
+                relpath,
+            )
+        if catalog.get("catalog_kind") != "target-operation-catalog":
+            self.error(
+                "OPERATION_CATALOG_KIND",
+                "catalog_kind should be target-operation-catalog",
+                relpath,
+            )
+
+        operations = catalog.get("operations")
+        if not isinstance(operations, list) or not operations:
+            self.error(
+                "OPERATION_CATALOG_OPERATIONS",
+                "operations must be a non-empty list",
+                relpath,
+            )
+            return
+
+        operation_ids: set[str] = set()
+        aliases: dict[str, str] = {}
+        for index, operation in enumerate(operations):
+            label = f"operations[{index}]"
+            if not isinstance(operation, dict):
+                self.error(
+                    "OPERATION_CATALOG_ITEM",
+                    f"{label} must be an object",
+                    relpath,
+                )
+                continue
+            for field in OPERATION_REQUIRED_FIELDS:
+                value = operation.get(field)
+                if not isinstance(value, str) or not value:
+                    self.error(
+                        "OPERATION_CATALOG_FIELD",
+                        f"{label}.{field} must be a non-empty string",
+                        relpath,
+                    )
+
+            operation_id = operation.get("id")
+            if isinstance(operation_id, str) and operation_id:
+                if operation_id in operation_ids:
+                    self.error(
+                        "OPERATION_CATALOG_DUPLICATE_ID",
+                        f"duplicate operation id {operation_id}",
+                        relpath,
+                    )
+                operation_ids.add(operation_id)
+
+            for field in OPERATION_LIST_FIELDS:
+                values = operation.get(field)
+                if not isinstance(values, list) or not all(
+                    isinstance(value, str) and value for value in values
+                ):
+                    self.error(
+                        "OPERATION_CATALOG_LIST",
+                        f"{label}.{field} must be a string list",
+                        relpath,
+                    )
+                    continue
+                if field == "allowed_actions":
+                    self.check_allowed_actions(values, relpath, f"{label}.{field}")
+                if field == "context_profiles":
+                    for profile in values:
+                        if profile not in CANONICAL_PROFILES:
+                            self.warn(
+                                "OPERATION_CATALOG_PROFILE",
+                                f"{label}.{field} references non-canonical profile {profile}",
+                                relpath,
+                            )
+                if field == "aliases":
+                    for alias in values:
+                        normalized = alias.casefold()
+                        previous = aliases.get(normalized)
+                        if previous and previous != operation_id:
+                            self.error(
+                                "OPERATION_CATALOG_DUPLICATE_ALIAS",
+                                f"alias {alias!r} maps to {previous} and {operation_id}",
+                                relpath,
+                            )
+                        aliases[normalized] = str(operation_id)
+
+            if operation.get("preview") not in {"never", "risk-gated"}:
+                self.error(
+                    "OPERATION_CATALOG_PREVIEW",
+                    f"{label}.preview must be never or risk-gated",
+                    relpath,
+                )
+            flow = operation.get("flow")
+            if isinstance(flow, str):
+                self.check_optional_target_reference(flow, relpath, f"{label}.flow")
+
+        fallback = catalog.get("fallback_operation")
+        if not isinstance(fallback, str) or fallback not in operation_ids:
+            self.error(
+                "OPERATION_CATALOG_FALLBACK",
+                "fallback_operation must identify a catalog operation",
+                relpath,
+            )
+        for required in ["help", "adapter-health"]:
+            if required not in operation_ids:
+                self.error(
+                    "OPERATION_CATALOG_REQUIRED_OPERATION",
+                    f"catalog is missing required operation {required}",
+                    relpath,
+                )
+
+        for field in [
+            "compact_help",
+            "human_reference",
+            "routing_flow",
+            "health_flow",
+            "pre_change_preview",
+            "module_profile",
+        ]:
+            value = catalog.get(field)
+            if not isinstance(value, str) or not value:
+                self.error(
+                    "OPERATION_CATALOG_PATH",
+                    f"{field} must be a non-empty target path",
+                    relpath,
+                )
+            else:
+                self.check_optional_target_reference(value, relpath, field)
+
+        router_path = self.target_path(".ai/assistant/context-router.json")
+        router = self.load_json_object(router_path, "ROUTER")
+        if router is None:
+            return
+        operation_routing = router.get("operation_routing")
+        if not isinstance(operation_routing, dict):
+            self.error(
+                "OPERATION_ROUTING_MISSING",
+                "context router must define operation_routing",
+                ".ai/assistant/context-router.json",
+            )
+        else:
+            if operation_routing.get("catalog") != relpath:
+                self.error(
+                    "OPERATION_ROUTING_CATALOG",
+                    f"operation_routing.catalog should be {relpath}",
+                    ".ai/assistant/context-router.json",
+                )
+            if operation_routing.get("health_operation") != "adapter-health":
+                self.error(
+                    "OPERATION_ROUTING_HEALTH",
+                    "health_operation should be adapter-health",
+                    ".ai/assistant/context-router.json",
+                )
+
+        bootstrap = router.get("bootstrap_context")
+        if isinstance(bootstrap, list) and relpath in bootstrap:
+            self.warn(
+                "OPERATION_CATALOG_IN_BOOTSTRAP",
+                "operation catalog should load on routing demand, not for every task",
+                ".ai/assistant/context-router.json",
+            )
+
+        profiles = router.get("profiles")
+        routed_ids: set[str] = set()
+        if isinstance(profiles, dict):
+            for profile, profile_data in profiles.items():
+                if not isinstance(profile_data, dict):
+                    continue
+                candidates = profile_data.get("operation_candidates")
+                if not isinstance(candidates, list) or not candidates:
+                    self.warn(
+                        "OPERATION_CANDIDATES_MISSING",
+                        f"profile {profile} has no bounded operation_candidates",
+                        ".ai/assistant/context-router.json",
+                    )
+                    continue
+                for candidate in candidates:
+                    if not isinstance(candidate, str) or candidate not in operation_ids:
+                        self.error(
+                            "OPERATION_CANDIDATE_UNKNOWN",
+                            f"profile {profile} references unknown operation {candidate}",
+                            ".ai/assistant/context-router.json",
+                        )
+                    else:
+                        routed_ids.add(candidate)
+
+        unrouted = sorted(operation_ids - routed_ids - {"help", "large-task"})
+        if unrouted:
+            self.warn(
+                "OPERATION_CANDIDATE_COVERAGE",
+                "catalog operations have no compact profile candidate: "
+                + ", ".join(unrouted),
+                ".ai/assistant/context-router.json",
+            )
 
     def check_consistency_map(self) -> None:
         relpath = ".ai/project/consistency-map.json"
@@ -1381,6 +1650,7 @@ class Validator:
             self.target_path(".ai/assistant/module-profile.md"),
             self.target_path(".ai/assistant/maturity-profile.md"),
             self.target_path(".ai/assistant/gates/checklist.md"),
+            self.target_path(".ai/assistant/operation-catalog.json"),
         ]
         flows = self.target_path(".ai/assistant/flows")
         if flows.is_dir():
@@ -2647,6 +2917,30 @@ def string_list_config(
     return value
 
 
+def adapter_health_state(findings: list[Finding]) -> str:
+    if any(finding.code in {"TARGET_MISSING", "TARGET_NOT_DIRECTORY"} for finding in findings):
+        return "unverified"
+    if any(finding.level == "error" for finding in findings):
+        return "blocked"
+    if any(finding.level == "warning" for finding in findings):
+        return "attention"
+    return "ready"
+
+
+def prioritized_repair_operations(findings: list[Finding]) -> list[str]:
+    order = {"error": 0, "warning": 1, "info": 2}
+    operations: list[str] = []
+    for finding in sorted(findings, key=lambda item: (order[item.level], item.code)):
+        if finding.level not in {"error", "warning"}:
+            continue
+        operation = repair_operation_for(finding.code)
+        if operation not in operations:
+            operations.append(operation)
+        if len(operations) == 3:
+            break
+    return operations
+
+
 def render_summary(findings: list[Finding], *, strict_warnings: bool) -> int:
     order = {"error": 0, "warning": 1, "info": 2}
     for finding in sorted(findings, key=lambda item: (order[item.level], item.code, item.path or "")):
@@ -2655,7 +2949,12 @@ def render_summary(findings: list[Finding], *, strict_warnings: bool) -> int:
     errors = sum(1 for finding in findings if finding.level == "error")
     warnings = sum(1 for finding in findings if finding.level == "warning")
     infos = sum(1 for finding in findings if finding.level == "info")
+    health = adapter_health_state(findings)
     print(f"\nSummary: errors={errors} warnings={warnings} info={infos}")
+    print(f"Alatyr adapter health: {health}")
+    repairs = prioritized_repair_operations(findings)
+    if repairs:
+        print("Suggested repair operations: " + ", ".join(repairs))
 
     if errors:
         return 1
@@ -2684,13 +2983,16 @@ def findings_payload(
     warnings = sum(1 for finding in findings if finding.level == "warning")
     infos = sum(1 for finding in findings if finding.level == "info")
     exit_code = result_code(findings, strict_warnings=strict_warnings)
+    observed_revision = git_head_revision(target)
+    observed_at = datetime.now(timezone.utc).isoformat()
     return {
         "schema_version": 2,
         "tool": "validate_target_adapter",
         "target": str(target),
         "evidence": {
             "basis": "current-state-structural",
-            "observed_revision": git_head_revision(target),
+            "observed_at": observed_at,
+            "observed_revision": observed_revision,
             "historical_actions_verified": False,
             "limitation": (
                 "Current files do not prove historical installation, update, "
@@ -2698,6 +3000,13 @@ def findings_payload(
             ),
         },
         "status": "failed" if exit_code else "passed",
+        "adapter_health": {
+            "state": adapter_health_state(findings),
+            "observed_at": observed_at,
+            "observed_revision": observed_revision,
+            "repair_operations": prioritized_repair_operations(findings),
+            "automatic_repair_performed": False,
+        },
         "strict_warnings": strict_warnings,
         "counts": {
             "errors": errors,

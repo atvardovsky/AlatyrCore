@@ -68,6 +68,10 @@ ai_infrastructure:
   recommendation: ".ai/assistant/templates/ai-infrastructure-recommendation.md"
   adaptation_record: ".ai/assistant/templates/ai-infrastructure-adaptation-record.md"
 operations:
+  catalog: ".ai/assistant/operation-catalog.json"
+  routing: ".ai/assistant/flows/operation-routing.flow.md"
+  health: ".ai/assistant/flows/adapter-health.flow.md"
+  pre_change_preview: ".ai/assistant/templates/pre-change-preview.md"
   help: ".ai/assistant/help.md"
   help_reference: ".ai/assistant/help-reference.md"
   operation_request: ".ai/assistant/templates/operation-request.md"

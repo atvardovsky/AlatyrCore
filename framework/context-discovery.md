@@ -29,7 +29,8 @@ Before acting, inspect the target adapter for:
 - skill, prompt, third-party assistant infrastructure, provenance, and wrapper
   policies
 - existing assistant bridge files, prompts, skills, flows, gates,
-  installed-operation requests, operation help, routing flows, adapter recheck
+  installed-operation requests, operation catalog, help, routing flows,
+  adapter health/recheck
   reports, AI infrastructure inventory reports, chat-completion message
   templates, and checker manifests
 
@@ -48,7 +49,8 @@ For each important fact, identify its owner:
   skill, checker, or command fact
 - installed-operation fact: adapter-owned request, blueprint-creation,
   adapter-recheck, framework-update review, or drift-review fact
-- operation-help fact: adapter-owned help menu, operation routing, local
+- operation-help fact: adapter-owned operation catalog, help menu, automatic
+  routing, read-only health, pre-change preview, local
   command alias, or post-install/update chat-message fact
 - skill or prompt fact: adapter-owned assistant infrastructure that may need
   provenance, wrapper, permission, and evidence review

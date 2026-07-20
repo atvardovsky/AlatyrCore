@@ -10,7 +10,7 @@ Target repository path:
 <path-or-repo-url-to-target-project>
 
 Operation type:
-<help/create-project-blueprint/recheck-after-installation/recheck-after-framework-update/product-change/logical-integrity-review/ai-infrastructure-inventory/ai-infrastructure-recommendation/skill-adaptation/drift-review/documentation-sync/adapter-maturity-review/other>
+<optional; help/adapter-health/create-project-blueprint/recheck-after-installation/recheck-after-framework-update/product-change/logical-integrity-review/ai-infrastructure-inventory/ai-infrastructure-recommendation/skill-adaptation/drift-review/documentation-sync/adapter-maturity-review/other>
 
 Operation alias, if used:
 <for example: alatyr-ai-inventory, alatyr-suggest-ai <scope>, alatyr-improve-ai <item-id>, alatyr-adaptation <source>, or alatyr-add-ai <source>>
@@ -41,6 +41,9 @@ Approved Git diff base, when scoped approval applies:
 
 Explicit machine-readable approval records:
 <target-relative JSON paths or none>
+
+Pre-change preview:
+<shown/skipped/pending with reason>
 
 Allowed actions meaning:
 - read-only: inspect target files and report only; no file changes.
@@ -85,7 +88,8 @@ Constraints:
 - Rule references: ALATYR-CONTEXT-001, ALATYR-SOURCE-001,
   ALATYR-RISK-001, ALATYR-APPROVAL-001, ALATYR-SAFETY-001,
   ALATYR-SAFETY-002, ALATYR-INTEGRITY-001, ALATYR-CHANGE-001,
-  ALATYR-ADAPTER-001, ALATYR-MODULE-001, ALATYR-EVIDENCE-001.
+  ALATYR-ADAPTER-001, ALATYR-MODULE-001, ALATYR-OPERATION-001,
+  ALATYR-EVIDENCE-001.
 - Treat the target `AGENTS.md` as preloaded, then read `.ai/alatyr.yaml`,
   `.ai/README.md`, and `.ai/assistant/context-router.json` first.
 - Select the smallest matching context profile and project-area overlays from
@@ -99,9 +103,13 @@ Constraints:
   `.ai/assistant/flows/large-task-orchestration.flow.md` with
   `.ai/assistant/templates/large-task-operation-packet.md`. Do not create a
   packet for a small task.
-- If the operation is unclear, read `.ai/assistant/help.md`, show the
-  operation choices with descriptions, and ask for the smallest missing
-  decision before editing files.
+- Use bounded router candidates for clear requests and route automatically.
+  Load `.ai/assistant/operation-catalog.json` for explicit Alatyr routing,
+  health, ambiguity, or operation handoff. Ask for the smallest missing
+  decision only when material ambiguity remains.
+- Keep `Alatyr status` and `Alatyr doctor` read-only. Apply
+  `.ai/assistant/templates/pre-change-preview.md` before edits when changed-fact
+  risk or scope triggers it; preview does not grant approval.
 - Use target source-of-truth docs and target evidence only.
 - When the optional `consistency-map` module is enabled, identify changed fact
   IDs and use `.ai/project/consistency-map.json` to select applicable impact

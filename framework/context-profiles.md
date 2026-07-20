@@ -51,6 +51,7 @@ candidate context without being loaded for every upgrade.
 Each target profile should define:
 
 - use when
+- bounded operation candidates for cheap automatic routing
 - required context
 - optional context triggers
 - approval gates
@@ -70,9 +71,10 @@ Every installed adapter should keep a compact bootstrap set:
 - `.ai/README.md` or an equivalent compact project/context map
 - `.ai/assistant/context-router.json`
 
-Do not put the full blueprint, source-of-truth registry, module profile,
-project contour, assistant contour, human context profiles, or task-owned
-source files in mandatory bootstrap. Route them after task classification.
+Do not put the full blueprint, source-of-truth registry, operation catalog,
+module profile, project contour, assistant contour, human context profiles, or
+task-owned source files in mandatory bootstrap. Route them after task
+classification.
 
 Framework documents, flows, gates, and policies should be loaded through the
 selected task profile instead of being mandatory for every task.

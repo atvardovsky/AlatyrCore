@@ -38,7 +38,8 @@ Framework core owns:
 - migration diff pattern
 - effectiveness measurement pattern
 - installed-adapter operation, blueprint creation, and recheck pattern
-- operation help and ambiguous-request routing pattern
+- operation catalog, single-entry, automatic-routing, read-only-health,
+  pre-change-preview, and bounded-help pattern
 - project-adapter contract
 - framework installation and portability rules
 - improvement-advice trigger pattern

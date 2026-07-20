@@ -17,7 +17,7 @@ Supported assistants needed:
 Constraints:
 - Rule references: ALATYR-CONTEXT-001, ALATYR-ADAPTER-001,
   ALATYR-APPROVAL-001, ALATYR-SAFETY-001, ALATYR-SAFETY-002,
-  ALATYR-EVIDENCE-001.
+  ALATYR-OPERATION-001, ALATYR-EVIDENCE-001.
 - Do not use an installer script.
 - Inspect the target repository before creating files.
 - Prepare an installation plan from Alatyr Core's installer template.
@@ -26,7 +26,8 @@ Constraints:
 - Copy or adapt Alatyr Core framework files into target `.ai/framework`,
   including the Markdown framework docs and `framework/rule-registry.json`.
 - Rewrite target project and assistant adapter files from target facts.
-- Add operation help, routing, and post-install/update chat-message templates
+- Add an operation catalog, single entry, automatic routing, read-only health,
+  risk-gated preview, help, and post-install/update chat-message templates
   when useful for the target adapter.
 - Adapt prompts, skills, wrappers, and third-party assistant infrastructure
   from target evidence before making them canonical.

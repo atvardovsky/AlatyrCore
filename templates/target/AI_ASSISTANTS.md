@@ -13,11 +13,10 @@ Before making changes:
 3. Read `.ai/assistant/context-profiles.md`, the module profile, source-of-truth
    registry, blueprint, and gates only when selected context or conflicting
    evidence requires them.
-4. After installation/update, or when adapter state is unclear, read the
-   post-install/update message templates before editing.
-5. For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,
-   `alatyr-improve-ai`, `alatyr-adaptation`, and `alatyr-add-ai`), read `.ai/assistant/help.md` and
-   `.ai/assistant/flows/operation-routing.flow.md`.
+4. After installation/update or unclear state, read post-install/update message templates.
+5. For `Alatyr`, status/doctor, or aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,
+   `alatyr-improve-ai`, `alatyr-adaptation`, `alatyr-add-ai`), read
+   `.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.
 6. For AI infrastructure work, use `.ai/assistant/ai-infrastructure-router.json`
    to select a route and item ID before loading item-specific context.
 

@@ -20,8 +20,11 @@ Replace placeholders with target facts before accepting installation.
 - Bridge capability matrix: `.ai/assistant/bridge-capability-matrix.md`
 - Target validation: `{TARGET_VALIDATION}`
 - Supported assistants: `{SUPPORTED_ASSISTANTS}`
-- Operation help and routing: `.ai/assistant/help.md`,
-  `.ai/assistant/flows/operation-routing.flow.md`
+- Operation catalog, help, routing, health, and preview:
+  `.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`,
+  `.ai/assistant/flows/operation-routing.flow.md`,
+  `.ai/assistant/flows/adapter-health.flow.md`,
+  `.ai/assistant/templates/pre-change-preview.md`
 - AI infrastructure inventory:
   `.ai/assistant/flows/ai-infrastructure-inventory.flow.md`
 - AI infrastructure recommendation:
@@ -66,8 +69,8 @@ Replace placeholders with target facts before accepting installation.
 8. Check target adapter references to framework files, operation help, routing
    flows, AI infrastructure inventory, recommendation and item router, gates,
    prompts, skills, recommendation/adaptation records, bridge files,
-   checker rules, large-task flow and packet, chat-message templates, and
-   final-evidence expectations.
+   checker rules, operation catalog and health/preview contracts, large-task
+   flow and packet, chat-message templates, and final-evidence expectations.
 9. Check adapter drift hazards: hard-coded local machine paths in `.ai/*`,
    root assistant entry points, bridge files, templates, and policies; stale
    statements about whether local Alatyr or adapter checkers exist; duplicate
@@ -116,7 +119,8 @@ Report:
 - consistency-map relationship coverage and staleness status
 - context router and context profile status
 - module profile status
-- help, routing, AI infrastructure inventory/recommendation, bridge, prompt,
+- catalog, automatic routing, health, preview, help, AI infrastructure
+  inventory/recommendation, bridge, prompt,
   skill, gate, checker, item router, recommendation/adaptation records,
   large-task orchestration, diagram, chat-message, and lifecycle status
 - development-pattern index schema, owner, retention/privacy policy, evidence

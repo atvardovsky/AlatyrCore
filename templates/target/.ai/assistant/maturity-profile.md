@@ -150,8 +150,8 @@ target development-evidence index, owner, retention/privacy policy, bounded
 references, lazy capture flow, and framework non-mutation boundary.
 
 Framework upgrade work is blocked unless `.ai/alatyr.yaml`, installation note,
-context profiles, module profile, bridge files, operation help, and
-adapter-recheck flow are discoverable.
+context profiles, module profile, bridge files, operation catalog, read-only
+health, operation help, and adapter-recheck flow are discoverable.
 
 Broad cross-area consistency claims must report whether the optional
 `consistency-map` module is enabled. If it is enabled, stale or missing fact

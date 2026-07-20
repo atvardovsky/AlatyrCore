@@ -34,6 +34,9 @@ A target context router should define:
 - context receipt fields
 - routing order
 - canonical profile entries
+- bounded operation candidates per profile
+- operation-catalog path, single entry alias, health operation, and preview
+  policy without embedding the full catalog
 - optional project-area overlays
 - optional task-scale overlays for large or resumable work
 - optional consistency routing from changed fact IDs to applicable
@@ -47,8 +50,14 @@ A target context router should define:
 
 The bootstrap should contain only enough target-owned context to select a
 profile and find project areas. Full blueprints, source-of-truth registries,
-module profiles, policy files, and human profile explanations belong in
+operation catalogs, module profiles, policy files, and human profile explanations belong in
 selected profile or overlay context.
+
+Profile operation candidates make common routing cheap. Load the full target
+operation catalog only for the explicit `Alatyr` entry, adapter health,
+ambiguity resolution, operation handoff, or adapter repair. A clear request may
+route automatically when one enabled operation matches and its allowed-action
+scope is sufficient.
 
 The router should use the same canonical profile names as
 `context-profiles.md` unless the target adapter records a deliberate local

@@ -59,6 +59,8 @@ Replace this section with the actual target project map.
 - migration notes for framework updates
 - operation help, operation routing, and post-install/update assistant chat
   messages
+- machine-readable operation catalog, single `Alatyr` entry point, read-only
+  adapter health, and risk-gated pre-change preview
 - AI infrastructure inventory, project-evidenced recommendation, source access,
   adaptation, and compatibility review
 - AI infrastructure router entries for selecting target skills, prompts,

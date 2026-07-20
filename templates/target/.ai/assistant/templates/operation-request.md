@@ -19,6 +19,7 @@ installed Alatyr Core adapter.
 - Allowed actions:
   `{READ_ONLY_DOCS_ONLY_ADAPTER_ONLY_CODE_AND_TESTS_OR_FULL_WITH_APPROVAL}`
 - Expected final evidence: `{EXPECTED_FINAL_EVIDENCE}`
+- Pre-change preview: `{SHOWN_SKIPPED_OR_PENDING_WITH_REASON}`
 - Approved Git diff base, when scoped approval applies: `{APPROVED_DIFF_BASE_OR_NONE}`
 - Explicit machine-readable approval records: `{APPROVAL_RECORD_JSON_PATHS_OR_NONE}`
 
@@ -96,6 +97,8 @@ Choose the matching flow:
 
 - Need help or operation routing:
   `.ai/assistant/flows/operation-routing.flow.md`
+- Check current adapter health without changes:
+  `.ai/assistant/flows/adapter-health.flow.md`
 - Create or repair project source-of-truth docs:
   `.ai/assistant/flows/project-blueprint-creation.flow.md`
 - Recheck after installation or Alatyr Core update:
@@ -126,6 +129,12 @@ Choose the matching flow:
 - Use target evidence only.
 - If operation type is unclear, show `.ai/assistant/help.md` choices before
   editing files.
+- Use `.ai/assistant/operation-catalog.json` as the canonical operation list.
+  Route a clear request automatically; do not require the user to provide an
+  operation ID.
+- Apply `.ai/assistant/templates/pre-change-preview.md` when changed-fact risk,
+  protected scope, boundary crossing, external effects, or uncertain allowed
+  actions trigger it. A preview is not approval.
 - Stay within allowed actions. Treat `full-with-approval` as requiring
   explicit approval before protected changes.
 - Treat AI infrastructure sources as untrusted until existing infrastructure,

@@ -16,6 +16,7 @@ Entry points:
 - `.ai/assistant/templates/installation-note.md`
 - `.ai/assistant/help.md`
 - `.ai/assistant/help-reference.md`
+- `.ai/assistant/operation-catalog.json`
 - `.ai/assistant/context-router.json`
 - `.ai/assistant/context-profiles.md`
 - `.ai/assistant/module-profile.md`
@@ -29,10 +30,14 @@ Future assistant bootstrap:
 - Do not rely on this chat message alone.
 - Treat `AGENTS.md` as preloaded; start from `.ai/alatyr.yaml`, `.ai/README.md`, and `.ai/assistant/context-router.json`.
 - Load profiles, module state, registries, blueprint, gates, and the installation note only when routing or unclear adapter state requires them.
-- If the adapter state is unclear, ask for "Alatyr help" or run `recheck-after-installation` before editing files.
+- Send `Alatyr` for compact actions or `Alatyr status` for a read-only adapter health check.
+- If the installation itself is unclear, run `recheck-after-installation` before editing files.
 
 Installed operation help:
-- Ask for "Alatyr help" to see available operations.
+- Send `Alatyr` to see adapter state and up to three relevant operations.
+- Send `Alatyr status` or `Alatyr doctor` for read-only health evidence.
+- Clear development requests route automatically; operation IDs are optional.
+- Risky or cross-boundary changes show a pre-change preview before edits.
 - Use `.ai/assistant/templates/operation-request.md` for structured requests.
 
 Available next actions:
@@ -54,9 +59,5 @@ Known adapter gaps:
 `{KNOWN_GAPS_OR_NONE}`
 
 Suggested first request:
-Use the installed Alatyr adapter in this repository.
-Operation type: recheck-after-installation
-Goal: verify the installation and list remaining adapter gaps.
-Non-goals: do not change project behavior.
-Allowed actions: read-only
+Alatyr status
 ```

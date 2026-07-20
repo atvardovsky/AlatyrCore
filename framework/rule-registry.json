@@ -56,6 +56,12 @@
       "derived_surfaces": ["target module profile", "manifest modules", "operation help routing", "maturity review"]
     },
     {
+      "category": "OPERATION",
+      "owner": "framework/operation-help.md",
+      "rule_ids": ["ALATYR-OPERATION-001"],
+      "derived_surfaces": ["target operation catalog", "automatic routing flow", "compact help", "adapter health flow", "pre-change preview", "manifest operation paths", "assistant bridges"]
+    },
+    {
       "category": "BRIDGE",
       "owner": "framework/bridge-capability-matrix.md",
       "rule_ids": ["ALATYR-BRIDGE-001"],
@@ -153,6 +159,14 @@
       "canonical_source": "framework/module-profile.md",
       "summary": "Establish the required core profile first, then enable optional modules only when the target needs and can maintain them.",
       "applies_to": ["installation", "framework update", "adapter maturity", "framework upgrades"],
+      "enforcement": "required"
+    },
+    {
+      "id": "ALATYR-OPERATION-001",
+      "category": "OPERATION",
+      "canonical_source": "framework/operation-help.md",
+      "summary": "Expose one conversational Alatyr entry point, route clear requests automatically through a machine-readable target operation catalog, provide a read-only evidence-based adapter health operation, and show a bounded pre-change preview only when changed-fact risk, approval, or scope uncertainty requires it.",
+      "applies_to": ["installed operation routing", "adapter health", "changes requiring preview"],
       "enforcement": "required"
     },
     {

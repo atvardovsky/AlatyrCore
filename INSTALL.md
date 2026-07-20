@@ -45,6 +45,7 @@ in `framework/rule-registry.*` and `framework/rule-ownership.md`.
   `ALATYR-SAFETY-002`
 - Adapter separation: `ALATYR-ADAPTER-001`
 - Module selection: `ALATYR-MODULE-001`
+- Installed operation control surface: `ALATYR-OPERATION-001`
 - Lifecycle and migration evidence: `ALATYR-LIFECYCLE-001`
 
 ## Target Repository Inspection
@@ -137,11 +138,14 @@ In a typical target repository:
    policy. Do not seed it with guessed history or raw conversations.
    Add `.ai/project/consistency-map.json` only when bounded relationship
    routing is enabled and target evidence can support it.
-7. Create `.ai/assistant/contour.md`, context router, context profiles,
-   module profile, task-specific maturity profile, bridge capability matrix,
-   and target assistant workflows/gates.
+7. Create `.ai/assistant/contour.md`, context router, operation catalog,
+   context profiles, module profile, task-specific maturity profile, bridge
+   capability matrix, and target assistant workflows/gates. Keep the catalog
+   outside routine bootstrap and expose compact operation candidates through
+   the router.
 8. Add bridge files only for assistants the target uses.
-9. Add installed-operation, operation-help, operation-routing,
+9. Add installed-operation, operation-help, automatic operation-routing,
+   read-only adapter-health, risk-gated pre-change preview,
    AI-infrastructure-inventory, AI-infrastructure-recommendation, adapter output contracts, source-access
    policy, prompt-injection policy, human and machine-readable approval-record
    templates,
@@ -178,6 +182,14 @@ when the request should be limited to `read-only`, `docs-only`,
 If the programmer asks for help, commands, or an unclear Alatyr action, the
 assistant should show the installed operation menu from the target adapter
 instead of guessing or inventing a CLI command.
+
+The target should accept `Alatyr` as one conversational entry point,
+`Alatyr status` or `Alatyr doctor` as a read-only health request, and ordinary
+clear development requests without requiring an operation ID. Route from the
+machine-readable operation catalog and enabled module profile. Show a bounded
+pre-change preview only when changed-fact risk, protected scope, boundary
+crossing, external effects, or unclear allowed actions require it; a preview
+does not grant approval.
 
 If the programmer asks for `alatyr-ai-inventory`, inspect existing AI
 infrastructure before adding anything. If the programmer asks for

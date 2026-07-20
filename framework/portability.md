@@ -28,7 +28,8 @@ Portable framework core may describe reusable assistant operating patterns:
 - blueprint-driven product-change workflow concepts
 - installed-adapter operation, blueprint creation, framework update recheck,
   and adapter audit concepts
-- operation help, ambiguous-request routing, and assistant chat-completion
+- operation catalog, single-entry routing, read-only health, pre-change
+  preview, bounded help, and assistant chat-completion
   message concepts
 - framework core versus target project adapter installation planning
 - adapter maturity levels and framework lifecycle/upgrade concepts
@@ -93,7 +94,8 @@ A repository adapter owns the concrete facts for one project:
   lifecycle notes
 - target installed-operation requests, blueprint creation/recheck flows, audit
   reports, allowed-action request bounds, and maintenance cadence
-- target operation help, routing flows, supported local command aliases, and
+- target operation catalog, help, routing/health/preview flows, supported local
+  request aliases, and
   post-install/update assistant chat-message templates
 - target final-evidence requirements for commands that actually exist there
 

@@ -66,10 +66,12 @@ Before upgrading framework files in a target project:
 12. Recheck the installed adapter for framework references, bridge files, gates,
    prompts, skills, lifecycle notes, and maturity gaps.
 13. Recheck adapter owners, review cadence, CODEOWNERS or equivalent owner
-   map, operation help, operation-routing flows, and post-update chat message
+   map, operation catalog, help, routing/health/preview flows, and post-update
+   chat message
    templates.
 14. Recheck root assistant entry points and supported bridge files so future
-    sessions can find the installation note, operation help, and routing flow.
+    sessions can find the installation note, operation catalog, health, help,
+    and routing flow.
 15. Run or report target validation.
 16. Send a post-update assistant chat message that names updated surfaces,
     recommended recheck operation, validation, and unresolved gaps.

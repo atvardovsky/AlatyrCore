@@ -20,6 +20,13 @@
       "write_scope": "explicit-report-output-only"
     },
     {
+      "name": "doctor",
+      "script": "validate_target_adapter.py",
+      "purpose": "report read-only installed adapter health and prioritized repair operations",
+      "write_scope": "none",
+      "forbidden_arguments": ["--output"]
+    },
+    {
       "name": "migration-report",
       "script": "report_migration_diff.py",
       "purpose": "compare framework baselines without applying an upgrade",

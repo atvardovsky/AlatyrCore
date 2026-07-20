@@ -45,11 +45,14 @@
       "extends": "core",
       "template_files": [
         ".ai/assistant/flows/adapter-recheck.flow.md",
+        ".ai/assistant/flows/adapter-health.flow.md",
         ".ai/assistant/flows/blueprint-driven-change.flow.md",
         ".ai/assistant/flows/operation-routing.flow.md",
         ".ai/assistant/flows/project-blueprint-creation.flow.md",
         ".ai/assistant/help-reference.md",
+        ".ai/assistant/operation-catalog.json",
         ".ai/assistant/templates/migration-note.md",
+        ".ai/assistant/templates/pre-change-preview.md",
         ".ai/assistant/templates/post-install-message.md",
         ".ai/assistant/templates/post-update-message.md",
         "AI_ASSISTANTS.md"

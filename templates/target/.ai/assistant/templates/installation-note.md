@@ -23,6 +23,7 @@ Installation id: `{INSTALLATION_ID}`
   `.ai/assistant/templates/adapter-output-contracts.md`
 - Operation help: `.ai/assistant/help.md`
 - Operation help reference: `.ai/assistant/help-reference.md`
+- Operation catalog: `.ai/assistant/operation-catalog.json`
 - Context router: `.ai/assistant/context-router.json`
 - Context profiles: `.ai/assistant/context-profiles.md`
 - Module profile: `.ai/assistant/module-profile.md`
@@ -46,6 +47,8 @@ Installation id: `{INSTALLATION_ID}`
 - AI infrastructure adaptation record:
   `.ai/assistant/templates/ai-infrastructure-adaptation-record.md`
 - Operation routing flow: `.ai/assistant/flows/operation-routing.flow.md`
+- Adapter health flow: `.ai/assistant/flows/adapter-health.flow.md`
+- Pre-change preview: `.ai/assistant/templates/pre-change-preview.md`
 - Large-task orchestration flow:
   `.ai/assistant/flows/large-task-orchestration.flow.md`
 - Large-task operation packet:
@@ -67,6 +70,10 @@ being visible. Treat `AGENTS.md` as preloaded, then read `.ai/alatyr.yaml`,
 installation/update or when adapter state is unclear. Load human profiles,
 module state, registries, help, and operation routing only when selected by the
 router or required by ambiguity or drift.
+
+Use `Alatyr` as the single conversational entry, `Alatyr status` for read-only
+health, automatic routing for clear requests, and the risk-gated pre-change
+preview before applicable edits.
 
 If this note lists gaps or bridge-file uncertainty, run
 `recheck-after-installation` or `recheck-after-framework-update` before broad

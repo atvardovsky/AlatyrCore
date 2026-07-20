@@ -30,6 +30,10 @@ For each supported assistant, record:
 - AI infrastructure router and item-ID support
 - tool permission model
 - whether operation help aliases are routed
+- whether the single `Alatyr` entry and read-only status/doctor aliases route
+  through the operation catalog
+- whether automatic routing and risk-gated pre-change preview reach the same
+  canonical flow on every supported surface
 - whether AI infrastructure inventory, recommendation, and adaptation aliases
   are routed
 - whether selected AI infrastructure items route through canonical target
@@ -68,7 +72,9 @@ Each bridge should:
   (host-preloaded when supported), then load the manifest, compact project map,
   and context router
 - point to the canonical root entry point
-- point to operation help and operation routing
+- point to the operation catalog, compact help, and operation routing
+- route `Alatyr`, `Alatyr status`, and `Alatyr doctor` without presenting them
+  as executable shell commands
 - route `alatyr-ai-inventory`, `alatyr-suggest-ai`, `alatyr-improve-ai`,
   `alatyr-adaptation`, and `alatyr-add-ai` when those aliases are supported by
   the target

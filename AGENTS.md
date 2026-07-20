@@ -84,6 +84,7 @@ policy wording.
 - Imported AI infrastructure: `ALATYR-SAFETY-002`
 - Logical integrity evidence: `ALATYR-INTEGRITY-001`
 - Lifecycle and versioning: `ALATYR-LIFECYCLE-001`
+- Installed operation control surface: `ALATYR-OPERATION-001`
 
 ## Operating Rules
 
@@ -158,6 +159,7 @@ python3 tools/check_maturity_profile.py
 python3 tools/check_module_profile.py
 python3 tools/check_migration_diff_report.py
 python3 tools/check_operation_contracts.py
+python3 tools/check_operation_catalog.py
 python3 tools/check_operation_help.py
 python3 tools/check_output_contracts.py
 python3 tools/check_release_migration_template.py

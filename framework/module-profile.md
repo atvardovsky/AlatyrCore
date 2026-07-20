@@ -57,8 +57,9 @@ maintain them:
   adaptation records, wrappers, permissions, output contracts, and provenance.
 - `multi-assistant-bridges`: bridge capability matrix and assistant-specific
   wrappers for multiple supported assistants.
-- `installed-operations`: post-install operation requests, operation help,
-  routing, adapter recheck, and chat-message templates.
+- `installed-operations`: post-install operation requests, machine-readable
+  catalog, single entry, automatic routing, read-only health, risk-gated
+  preview, adapter recheck, help, and chat-message templates.
 - `large-task-orchestration`: task-scale routing, operation packets,
   workstreams, resumable checkpoints, and final convergence evidence for
   repositories that need large or multi-session changes.

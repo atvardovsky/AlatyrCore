@@ -39,6 +39,7 @@ ADAPTER_ONLY_REQUIRED_TEXT = [
 
 REQUIRED_OPERATIONS = {
     "help",
+    "adapter-health",
     "create-project-blueprint",
     "recheck-after-installation",
     "recheck-after-framework-update",
@@ -54,6 +55,7 @@ REQUIRED_OPERATIONS = {
 }
 REQUIRED_ALIAS_TARGETS = {
     "help",
+    "adapter-health",
     "recheck-after-framework-update",
     "recheck-after-installation",
     "adapter-maturity-review",

@@ -46,7 +46,9 @@ sync, logical integrity review, and final evidence.
 - compact target-owned development-pattern evidence with lazy capture,
   retention/privacy boundaries, and no target-to-framework policy promotion
 - installed-adapter operation and recheck guidance
-- operation help and routing guidance for unclear installed-adapter requests
+- one conversational operation entry, machine-readable operation catalog,
+  automatic routing, read-only adapter health, and risk-gated pre-change
+  preview
 - reusable assistant workflow categories
 - reusable approval, documentation-sync, logical integrity, and evidence
   concepts

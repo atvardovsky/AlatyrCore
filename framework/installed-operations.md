@@ -16,7 +16,8 @@ cadence belong to the target repository adapter.
 
 An installed adapter should support these operation categories:
 
-- operation help or routing when the request is unclear
+- single conversational entry, automatic routing, and compact help
+- read-only current adapter health
 - project blueprint creation or repair
 - adapter recheck after Alatyr Core installation or upgrade
 - framework upgrade impact review
@@ -58,6 +59,7 @@ A post-install request should state:
   `code-and-tests`, or `full-with-approval`
 - context profile when known
 - task scale and existing operation packet when known
+- pre-change preview state when risk-gated preview applies
 - expected final evidence
 - output contract when the target adapter requires a durable installation,
   framework-update, or adapter-recheck evidence shape
@@ -86,12 +88,17 @@ operation request:
 If the requested operation exceeds the allowed actions, the assistant should
 stop before editing and ask for a narrower operation or explicit approval.
 
-If a request says "ask Alatyr" or similar, interpret that as "ask an assistant
-to use the installed Alatyr Core adapter in this repository." Do not assume a
-runtime service, CLI, agent daemon, or universal command exists.
+If a request says `Alatyr`, "ask Alatyr", or similar, interpret that as "ask an
+assistant to use the installed Alatyr Core adapter in this repository." A bare
+`Alatyr` request returns compact adapter state and up to three relevant
+operations. `Alatyr status` and `Alatyr doctor` route to read-only adapter
+health. Do not assume a runtime service, CLI, agent daemon, or universal
+command exists.
 
-If the requested operation is unclear, route the request through the target
-operation help file and show the operation menu before changing files.
+Route a clear request automatically through the target operation catalog and
+enabled module profile; do not require the user to provide an operation ID. If
+the requested operation is materially unclear, show only the closest two or
+three choices before changing files.
 
 If the request uses an alias such as `alatyr-ai-inventory`, interpret it as an
 AI infrastructure inventory request. If it uses `alatyr-adaptation <source>` or
@@ -119,40 +126,51 @@ For installed operations:
    flow, gate, policy, and validation context. Load human profile rationale
    only for ambiguity or drift and record budget exceptions in the context
    receipt.
-4. Identify whether the request is framework-core, target-project, repository
+4. Use bounded profile operation candidates for routine routing. Load the full
+   target operation catalog only for explicit Alatyr routing, health,
+   ambiguity, operation handoff, or adapter repair.
+5. Normalize an explicit operation or alias, or match request intent against
+   catalog signals and enabled module state. Route one clear match
+   automatically; ask one bounded question when multiple plausible operations
+   remain.
+6. Identify whether the request is framework-core, target-project, repository
    adapter, bridge, generated-artifact, or skill/prompt work.
-5. Use operation help and operation routing when the request is ambiguous.
-6. Apply logical integrity review before claiming consistency. Re-derive
+7. Classify changed facts, risk, approval triggers, and allowed-action scope.
+   Before edits, show a bounded pre-change preview when semantic or protected
+   risk, boundary crossing, external effects, or unclear scope triggers it.
+   Record why preview was skipped for routine read-only or local non-semantic
+   work. A preview is not approval.
+8. Apply logical integrity review before claiming consistency. Re-derive
    invariants and reconcile related review items over the combined repair set.
    When the optional consistency map is enabled, build a bounded impact closure
    from changed fact IDs before loading related surfaces.
-7. Activate the large-task scale overlay only when work is cross-boundary,
+9. Activate the large-task scale overlay only when work is cross-boundary,
    multi-workstream, budget-exceeding, or resumable. Use a target operation
    packet and bounded active-workstream context when activated.
-8. Use blueprint-driven change when accepted project facts may change.
-9. Use AI infrastructure recommendation when the user asks what should be
+10. Use blueprint-driven change when accepted project facts may change.
+11. Use AI infrastructure recommendation when the user asks what should be
    added or improved, or when bounded evidence shows a recurring capability
    gap. Use selected target development-pattern evidence, evaluate existing
    items before proposing a new one, and do not promote target observations
    directly into portable framework changes.
-10. Use skill adaptation when prompts, skills, wrappers, or third-party
+12. Use skill adaptation when prompts, skills, wrappers, or third-party
    assistant infrastructure change.
    Select the target AI infrastructure route and item IDs before loading item
    content, permissions, gates, validation, or import policy.
-11. Use prompt-injection policy for imported, external, remote, pasted, package,
+13. Use prompt-injection policy for imported, external, remote, pasted, package,
    plugin, or unknown AI infrastructure.
-12. Use AI infrastructure inventory before adding, importing, replacing, or
+14. Use AI infrastructure inventory before adding, importing, replacing, or
    removing assistant infrastructure.
-13. Use adapter maturity review when the request is broad, post-install, or
+15. Use adapter maturity review when the request is broad, post-install, or
    post-upgrade.
-14. Record approval evidence when protected-change scope requires it. When
+16. Record approval evidence when protected-change scope requires it. When
     scoped approval is used, enforce the complete changed path set against
     explicitly selected machine-readable records bound to the approved diff
     base.
-15. Use the target adapter output contract when the operation follows
+17. Use the target adapter output contract when the operation follows
    installation, framework update, or adapter recheck.
-16. Run target validation that exists, or record unresolved checks.
-17. Report changed facts, re-derived invariants, review-item reconciliation,
+18. Run target validation that exists, or record unresolved checks.
+19. Report changed facts, re-derived invariants, review-item reconciliation,
    files inspected, files changed, approval-scope enforcement, validation,
    skipped checks, and residual risk.
 
@@ -199,8 +217,9 @@ After installation or framework upgrade, an assistant should recheck:
 - source-of-truth registry, task-specific maturity profile, bridge capability
   matrix, migration notes, and effectiveness reports
 - consistency-map module state, relationship coverage, and stale edge evidence
-- operation help, operation-routing flow, and post-install/update chat-message
-  templates
+- operation catalog, single entry, automatic routing, read-only health,
+  pre-change preview, compact help, operation-routing flow, and
+  post-install/update chat-message templates
 - adapter output contracts for installation, framework update, and recheck
   evidence
 - adapter drift hazards: hard-coded local machine paths, stale checker
@@ -208,7 +227,7 @@ After installation or framework upgrade, an assistant should recheck:
   missing context-router bootstrap references, unresolved owner placeholders,
   and target-local checker coverage
 - root assistant entry points and supported bridge files point to the
-  installation note, operation help, and routing flow
+  installation note, operation catalog, health, help, and routing flow
 - source-of-truth and blueprint ownership
 - logical integrity and blueprint-driven change flows
 - gates, prompts, skills, bridge files, checker rules, and final evidence
@@ -237,7 +256,10 @@ task.
 Reject or revise installed-operation work that:
 
 - treats Alatyr Core as a universal executable command or service
-- guesses an operation instead of showing help when the request is ambiguous
+- guesses an operation instead of showing bounded help when material ambiguity
+  remains
+- requires a formal operation ID for a clear routine request
+- edits during adapter health or treats a pre-change preview as approval
 - updates target blueprints from guesses instead of target evidence
 - copies source-repository facts into target project docs
 - overwrites existing target instructions without approval

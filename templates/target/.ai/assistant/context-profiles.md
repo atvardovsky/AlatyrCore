@@ -16,6 +16,11 @@ routing is ambiguous, the router conflicts with evidence, or an entry must be
 repaired. Expand only when boundaries, conflicts, approval scope, or changed
 fact ownership require it.
 
+Use each profile's operation candidates from the machine-readable router for
+cheap automatic routing. Load `.ai/assistant/operation-catalog.json` only for
+the explicit `Alatyr` entry, status, ambiguity, operation handoff, or adapter
+repair.
+
 Use the router's context budgets. When sufficient context exceeds a budget,
 record selected profiles and areas, loaded files and reasons, approximate
 volume, expansion triggers, intentional omissions, and residual risk in the
@@ -58,6 +63,9 @@ approval boundaries. Record selected and skipped edges with reasons.
 Use when: local wording, README, diagram text, or non-semantic documentation
 changes do not alter accepted project behavior.
 
+Operation candidates: `documentation-sync`, `drift-review`,
+`logical-integrity-review`.
+
 Required context:
 
 - `.ai/framework/context-discovery.md`
@@ -78,6 +86,9 @@ Use when: implementation, tests, review comments, or defect fixes change
 without changing accepted behavior, architecture, data model, external
 contract, security posture, or AI infrastructure.
 
+Operation candidates: `logical-integrity-review`, `drift-review`,
+`product-change`.
+
 Required context:
 
 - `.ai/framework/context-discovery.md`
@@ -97,6 +108,9 @@ was needed.
 
 Use when: accepted behavior, domain rules, product policy, workflows, or public
 contract change.
+
+Operation candidates: `product-change`, `create-project-blueprint`,
+`logical-integrity-review`.
 
 Required context:
 
@@ -123,6 +137,9 @@ final logical integrity result.
 
 Use when: modules, dependencies, boundaries, runtime topology, public APIs, or
 cross-component contracts change.
+
+Operation candidates: `product-change`, `create-project-blueprint`,
+`logical-integrity-review`.
 
 Required context:
 
@@ -151,6 +168,9 @@ changed, machine-readable approval-scope result, and residual risk.
 Use when: schema, persistence, migrations, data contracts, retention,
 backfills, imports, exports, or data ownership change.
 
+Operation candidates: `product-change`, `logical-integrity-review`,
+`drift-review`.
+
 Required context:
 
 - `.ai/framework/context-discovery.md`
@@ -175,6 +195,9 @@ Use when: secrets, credentials, permissions, authentication, authorization,
 network access, external services, destructive actions, spend, production, or
 third-party trust boundaries are involved.
 
+Operation candidates: `product-change`, `logical-integrity-review`,
+`skill-adaptation`.
+
 Required context:
 
 - `.ai/framework/change-risk-model.md`
@@ -197,6 +220,9 @@ Use when: inventorying or recommending additions and existing-item
 improvements, or adding, importing, adapting, replacing, or reviewing prompts,
 skills, assistant rules, wrappers, bridge files, MCP/tool configs, checkers,
 gates, flows, templates, or other AI infrastructure.
+
+Operation candidates: `ai-infrastructure-inventory`,
+`ai-infrastructure-recommendation`, `skill-adaptation`.
 
 Required context:
 
@@ -225,6 +251,9 @@ compatibility review, and approval evidence for adaptation.
 
 Use when: installing Alatyr, updating Alatyr Core, rechecking the adapter,
 reviewing maturity, or repairing drift after framework changes.
+
+Operation candidates: `adapter-health`, `recheck-after-framework-update`,
+`recheck-after-installation`, `adapter-maturity-review`.
 
 Required context:
 

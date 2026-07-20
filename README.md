@@ -28,7 +28,8 @@ into another project, do this:
    `framework/README.md`, `framework/context-profiles.md`,
    `framework/context-router.md`,
    `framework/project-adapter-contract.md`, `framework/portability.md`,
-   `framework/module-profile.md`, `framework/rule-ownership.md`,
+   `framework/module-profile.md`, `framework/operation-help.md`,
+   `framework/rule-ownership.md`,
    `framework/rule-registry.md`, `framework/rule-registry.json`,
    `installer/assistant-installation.flow.md`,
    `installer/readiness-checklist.md`, and
@@ -47,7 +48,8 @@ into another project, do this:
 8. Apply the canonical rule references instead of copying policy text:
    `ALATYR-ADAPTER-001`, `ALATYR-APPROVAL-001`,
    `ALATYR-SAFETY-001`, `ALATYR-SAFETY-002`,
-   `ALATYR-INTEGRITY-001`, and `ALATYR-EVIDENCE-001`.
+   `ALATYR-INTEGRITY-001`, `ALATYR-OPERATION-001`, and
+   `ALATYR-EVIDENCE-001`.
 9. Run only target validation that exists in the target repository. If a check
    is unknown or unavailable, report it as unresolved instead of inventing a
    command.
@@ -95,6 +97,7 @@ These helpers are not portable validation requirements for target projects.
 Additional source-repository helpers include:
 
 - `python3 tools/alatyr.py --help`
+- `python3 tools/alatyr.py doctor --target <target-repo>`
 - `python3 tools/check_all.py`
 - `python3 tools/check_framework_metadata.py`
 - `python3 tools/check_approval_template.py`
@@ -114,6 +117,7 @@ Additional source-repository helpers include:
 - `python3 tools/check_module_profile.py`
 - `python3 tools/check_migration_diff_report.py`
 - `python3 tools/check_operation_contracts.py`
+- `python3 tools/check_operation_catalog.py`
 - `python3 tools/check_operation_help.py`
 - `python3 tools/check_output_contracts.py`
 - `python3 tools/check_release_migration_template.py`
@@ -154,6 +158,9 @@ Additional source-repository helpers include:
 - a machine-readable context router template that maps tasks to the smallest
   required startup context, project-area overlays, budgets, and context
   receipts
+- a machine-readable operation catalog with one conversational `Alatyr` entry,
+  automatic routing, read-only adapter health, and risk-gated pre-change
+  preview
 - machine-readable rule manifest for deterministic migration checks
 - adapter ownership, review cadence, and CODEOWNERS-equivalent guidance
 - required core and optional module profile guidance
@@ -238,7 +245,7 @@ Additional source-repository helpers include:
   equivalence, independent review, comparable measurements, and explicit
   relative deltas
 - installed-adapter operation and recheck guidance
-- operation help and routing guidance for unclear requests
+- compact progressive help and automatic operation routing for clear requests
 - bridge-file pattern for modern assistants
 
 ## What Alatyr Core Does Not Provide
@@ -283,10 +290,13 @@ Markdown files, not a universal Alatyr command or runtime service. The request
 can bound the assistant with `Allowed actions`, such as `read-only`,
 `docs-only`, `adapter-only`, `code-and-tests`, or `full-with-approval`.
 
-If the intended operation is unclear, ask for "Alatyr help". A complete target
-adapter should answer with the local operation menu, short descriptions,
-matching flows, required input, and approval or validation notes before making
-changes.
+Send `Alatyr` as the single conversational entry. A complete target adapter
+returns current evidence status and no more than three relevant actions. Send
+`Alatyr status` or `Alatyr doctor` for a read-only health check. Clear ordinary
+requests route automatically without requiring an operation ID; genuine
+ambiguity uses compact help. Semantic, protected, cross-boundary, external, or
+unclear-scope changes receive a bounded pre-change preview before edits. The
+preview is not approval.
 
 To check an installed adapter structurally from this source repository, a
 maintainer may run:
@@ -294,9 +304,11 @@ maintainer may run:
 ```sh
 python3 tools/validate_target_adapter.py --target /path/to/target-repo
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --json --output tmp/alatyr-adapter-report.json
+python3 tools/alatyr.py doctor --target /path/to/target-repo
 ```
 
-This helper checks adapter structure, router/bootstrap references, local path
+This helper reports adapter health and checks structure, operation catalog,
+router/bootstrap references, local path
 leakage, stale checker claims, manifest fields, optional consistency and AI
 infrastructure route maps, and optional framework baseline drift. It can emit
 machine-readable current-state evidence and compare explicitly listed approval
@@ -340,6 +352,7 @@ A mature target installation usually has:
 - `.ai/assistant/ai-infrastructure-router.json` when AI infrastructure is used
 - `.ai/assistant/help.md`
 - `.ai/assistant/help-reference.md`
+- `.ai/assistant/operation-catalog.json`
 - `.ai/assistant/flows`
 - `.ai/assistant/gates/checklist.md`
 - `.ai/assistant/policies/ai-infrastructure-source-access.md` when AI
@@ -352,6 +365,7 @@ A mature target installation usually has:
   must be enforced against the complete Git change set
 - `.ai/assistant/templates/installation-note.md`
 - `.ai/assistant/templates/operation-request.md`
+- `.ai/assistant/templates/pre-change-preview.md`
 - `.ai/assistant/templates/ai-infrastructure-adaptation-record.md` when items
   are imported or materially changed
 - `.ai/assistant/templates/large-task-operation-packet.md` when large or

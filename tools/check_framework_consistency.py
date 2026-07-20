@@ -115,6 +115,7 @@ def main() -> int:
             "ALATYR-SAFETY-002",
             "ALATYR-INTEGRITY-001",
             "ALATYR-LIFECYCLE-001",
+            "ALATYR-OPERATION-001",
         ],
         "README.md": [
             "ALATYR-ADAPTER-001",
@@ -123,6 +124,7 @@ def main() -> int:
             "ALATYR-SAFETY-002",
             "ALATYR-INTEGRITY-001",
             "ALATYR-EVIDENCE-001",
+            "ALATYR-OPERATION-001",
         ],
         "INSTALL.md": [
             "ALATYR-CONTEXT-001",
@@ -134,6 +136,7 @@ def main() -> int:
             "ALATYR-ADAPTER-001",
             "ALATYR-MODULE-001",
             "ALATYR-LIFECYCLE-001",
+            "ALATYR-OPERATION-001",
         ],
         "AI_ASSISTANTS.md": [
             "ALATYR-CONTEXT-001",
@@ -142,6 +145,7 @@ def main() -> int:
             "ALATYR-SAFETY-001",
             "ALATYR-SAFETY-002",
             "ALATYR-EVIDENCE-001",
+            "ALATYR-OPERATION-001",
         ],
         "installer/assistant-installation.flow.md": [
             "ALATYR-CONTEXT-001",
@@ -154,6 +158,7 @@ def main() -> int:
             "ALATYR-MODULE-001",
             "ALATYR-LIFECYCLE-001",
             "ALATYR-EVIDENCE-001",
+            "ALATYR-OPERATION-001",
         ],
         "installer/assistant-request-template.md": [
             "ALATYR-CONTEXT-001",
@@ -162,6 +167,7 @@ def main() -> int:
             "ALATYR-SAFETY-001",
             "ALATYR-SAFETY-002",
             "ALATYR-EVIDENCE-001",
+            "ALATYR-OPERATION-001",
         ],
         "installer/installed-operation-request-template.md": [
             "ALATYR-CONTEXT-001",
@@ -175,6 +181,8 @@ def main() -> int:
             "ALATYR-ADAPTER-001",
             "ALATYR-MODULE-001",
             "ALATYR-EVIDENCE-001",
+            "ALATYR-OPERATION-001",
+            "ALATYR-OPERATION-001",
         ],
         "templates/target/AGENTS.md": [
             "ALATYR-CONTEXT-001",
@@ -188,6 +196,7 @@ def main() -> int:
             "ALATYR-ADAPTER-001",
             "ALATYR-MODULE-001",
             "ALATYR-EVIDENCE-001",
+            "ALATYR-OPERATION-001",
         ],
         "templates/target/.ai/assistant/gates/checklist.md": [
             "ALATYR-CONTEXT-001",
@@ -201,6 +210,7 @@ def main() -> int:
             "ALATYR-ADAPTER-001",
             "ALATYR-MODULE-001",
             "ALATYR-EVIDENCE-001",
+            "ALATYR-OPERATION-001",
         ],
     }
     for doc, rule_ids in derived_rule_reference_docs.items():
@@ -298,6 +308,7 @@ def main() -> int:
         "templates/target/.ai/assistant/context-profiles.md",
         "templates/target/.ai/assistant/help.md",
         "templates/target/.ai/assistant/help-reference.md",
+        "templates/target/.ai/assistant/operation-catalog.json",
         "templates/target/.ai/assistant/module-profile.md",
         "templates/target/.ai/assistant/maturity-profile.md",
         "templates/target/.ai/assistant/flows/ai-infrastructure-inventory.flow.md",
@@ -308,6 +319,7 @@ def main() -> int:
         "templates/target/.ai/assistant/flows/documentation-sync.flow.md",
         "templates/target/.ai/assistant/flows/logical-integrity-review.flow.md",
         "templates/target/.ai/assistant/flows/operation-routing.flow.md",
+        "templates/target/.ai/assistant/flows/adapter-health.flow.md",
         "templates/target/.ai/assistant/flows/project-blueprint-creation.flow.md",
         "templates/target/.ai/assistant/flows/skill-adaptation.flow.md",
         "templates/target/.ai/assistant/approvals/approval-template.md",
@@ -319,6 +331,7 @@ def main() -> int:
         "templates/target/.ai/assistant/templates/ai-infrastructure-inventory.md",
         "templates/target/.ai/assistant/templates/ai-infrastructure-recommendation.md",
         "templates/target/.ai/assistant/templates/operation-request.md",
+        "templates/target/.ai/assistant/templates/pre-change-preview.md",
         "templates/target/.ai/assistant/templates/migration-note.md",
         "templates/target/.ai/assistant/templates/effectiveness-report.md",
         "templates/target/.ai/assistant/templates/post-install-message.md",
@@ -342,6 +355,7 @@ def main() -> int:
         "templates/target/.ai/assistant/context-profiles.md",
         "templates/target/.ai/assistant/help.md",
         "templates/target/.ai/assistant/help-reference.md",
+        "templates/target/.ai/assistant/operation-catalog.json",
         "templates/target/.ai/assistant/module-profile.md",
         "templates/target/.ai/assistant/maturity-profile.md",
         "templates/target/.ai/assistant/gates/checklist.md",
@@ -353,6 +367,7 @@ def main() -> int:
         "templates/target/.ai/assistant/flows/documentation-sync.flow.md",
         "templates/target/.ai/assistant/flows/logical-integrity-review.flow.md",
         "templates/target/.ai/assistant/flows/operation-routing.flow.md",
+        "templates/target/.ai/assistant/flows/adapter-health.flow.md",
         "templates/target/.ai/assistant/flows/project-blueprint-creation.flow.md",
         "templates/target/.ai/assistant/flows/skill-adaptation.flow.md",
         "templates/target/.ai/assistant/approvals/approval-template.md",
@@ -365,6 +380,7 @@ def main() -> int:
         "templates/target/.ai/assistant/templates/ai-infrastructure-recommendation.md",
         "templates/target/.ai/assistant/templates/installation-note.md",
         "templates/target/.ai/assistant/templates/operation-request.md",
+        "templates/target/.ai/assistant/templates/pre-change-preview.md",
         "templates/target/.ai/assistant/templates/migration-note.md",
         "templates/target/.ai/assistant/templates/effectiveness-report.md",
         "templates/target/.ai/assistant/templates/post-install-message.md",
@@ -674,6 +690,7 @@ def main() -> int:
         "ALATYR-CHANGE-001",
         "ALATYR-ADAPTER-001",
         "ALATYR-MODULE-001",
+        "ALATYR-OPERATION-001",
         "ALATYR-BRIDGE-001",
         "ALATYR-LIFECYCLE-001",
         "ALATYR-EVIDENCE-001",
@@ -697,6 +714,7 @@ def main() -> int:
         "Category: `CHANGE`",
         "Category: `ADAPTER`",
         "Category: `MODULE`",
+        "Category: `OPERATION`",
         "Category: `BRIDGE`",
         "Category: `LIFECYCLE`",
         "Category: `EVIDENCE`",

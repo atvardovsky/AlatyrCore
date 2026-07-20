@@ -43,6 +43,7 @@ as:
 - `.ai/assistant/bridge-capability-matrix.md`
 - `.ai/assistant/help.md`
 - `.ai/assistant/help-reference.md`
+- `.ai/assistant/operation-catalog.json`
 - `.ai/assistant/flows`
 - `.ai/assistant/gates/checklist.md`
 
@@ -75,8 +76,12 @@ framework update, drift review, or skill adaptation should use canonical target
 flows under `.ai/assistant/flows` and the target
 `.ai/assistant/templates/operation-request.md` template.
 
-When a request is unclear or asks for "Alatyr help", assistant-specific
-surfaces should route back to `.ai/assistant/help.md` and
+`Alatyr` is the single conversational entry across supported surfaces. A bare
+entry returns compact adapter state and relevant actions; `Alatyr status` and
+`Alatyr doctor` route to read-only health. Clear ordinary requests route
+automatically without requiring an operation ID. When a request is unclear or
+asks for help, assistant-specific surfaces should route through
+`.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and
 `.ai/assistant/flows/operation-routing.flow.md` instead of inventing a command.
 The short help file may point to `.ai/assistant/help-reference.md` for the
 full operation menu.
@@ -90,8 +95,8 @@ skill-adaptation flows,
 preserve source provenance, source hash or commit evidence when available,
 and avoid importing the source directly.
 
-Every supported bridge template should include a short pointer to
-`.ai/assistant/help.md` and
+Every supported bridge template should include a short pointer to the
+operation catalog, `.ai/assistant/help.md`, and
 `.ai/assistant/flows/operation-routing.flow.md` for those aliases. The bridge
 must stay a pointer and must not duplicate full operation policy.
 

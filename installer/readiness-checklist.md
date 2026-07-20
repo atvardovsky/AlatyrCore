@@ -27,8 +27,9 @@ changes.
 - Existing task-specific maturity profile:
 - Existing bridge capability matrix:
 - Existing blueprint or equivalent source-of-truth docs:
-- Existing installed-operation, operation-help, operation-routing,
-  blueprint-creation, adapter-recheck, or chat-message process:
+- Existing operation catalog, installed-operation, operation-help, automatic
+  routing, adapter-health, pre-change preview, blueprint-creation,
+  adapter-recheck, or chat-message process:
 - Existing adapter output contracts:
 - Existing risk or approval policy:
 - Existing security, privacy, live-service, destructive-operation, dependency,
@@ -184,7 +185,8 @@ Collect target-specific facts before writing project docs:
   framework-update review expectations
 - large-task activation, task-scale overlay, operation packet, workstream,
   checkpoint, storage, resume, and final-convergence expectations when needed
-- operation help, routing, and post-install/update assistant chat-message
+- operation catalog, single entry, automatic routing, read-only health,
+  risk-gated preview, and post-install/update assistant chat-message
   expectations
 
 ## 6. Assistant Compatibility
@@ -244,7 +246,7 @@ List commands or manual checks:
 - migration-diff review:
 - migration assessment completed before target upgrade changes:
 - effectiveness metrics review:
-- operation-help or routing review:
+- operation-catalog, automatic-routing, health, or preview review:
 - skill/provenance/safety review:
 - AI infrastructure inventory review:
 - AI infrastructure recommendation and existing-item improvement review:
@@ -278,6 +280,8 @@ Final evidence must say:
 - context profiles created or updated
 - context router references checked in compact bootstrap, gates, operation routing,
   root entry points, and bridge files
+- operation catalog stays outside routine bootstrap; context profiles expose
+  bounded operation candidates
 - preloaded context is not duplicated in bootstrap
 - blueprint, registries, contours, module profile, and human profile rationale
   are routed after task selection instead of loaded for every task
@@ -292,7 +296,8 @@ Final evidence must say:
 - task-specific maturity profile created or updated
 - bridge capability matrix created or updated
 - bridge files added or checked
-- installed-operation, operation-help, operation-routing, blueprint-creation,
+- operation catalog, installed-operation, operation-help, automatic routing,
+  read-only adapter-health, risk-gated preview, blueprint-creation,
   adapter-recheck, or post-install/update chat-message templates added or
   skipped
 - adapter output contracts added or skipped

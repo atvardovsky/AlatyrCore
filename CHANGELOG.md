@@ -2,6 +2,19 @@
 
 ## Unreleased
 
+- Added a machine-readable target operation catalog and one conversational
+  `Alatyr` entry that routes clear requests automatically while keeping the
+  full catalog outside routine bootstrap context.
+- Added read-only `Alatyr status` and `Alatyr doctor` adapter-health routing
+  with current evidence state, actionable finding owners, and at most three
+  prioritized repair operations.
+- Added risk-gated pre-change preview for semantic, protected, cross-boundary,
+  external-effect, or unclear-scope work without treating preview as approval.
+- Extended target templates, installer contracts, generated bridges,
+  cross-platform tools, scaffold profiles, portable validation, and source
+  checks for the operation control surface across every supported assistant.
+- Added `ALATYR-OPERATION-001` with `framework/operation-help.md` as its
+  canonical owner.
 - Clarified that `adapter-only` may update normalized project-process and
   adapter-effectiveness evidence without permitting accepted product,
   business, architecture, data, or runtime fact changes, and added source

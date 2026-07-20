@@ -10,7 +10,7 @@
       ".ai/assistant/context-router.json"
     ],
     "unresolved_references": [],
-    "words": 1936
+    "words": 1934
   },
   "budgets": {
     "bootstrap": {
@@ -73,7 +73,7 @@
         ".ai/framework/testing-guidance.md"
       ],
       "unresolved_references": [],
-      "words": 27078
+      "words": 28642
     },
     "initial": {
       "declared_files": 6,
@@ -88,9 +88,9 @@
         ".ai/assistant/templates/migration-note.md"
       ],
       "unresolved_references": [],
-      "words": 3285
+      "words": 3427
     },
-    "initial_word_reduction_percent": 87.9
+    "initial_word_reduction_percent": 88.0
   },
   "profiles": {
     "ai-infrastructure": {
@@ -103,7 +103,7 @@
         ".ai/assistant/gates/checklist.md"
       ],
       "unresolved_references": [],
-      "words": 2173
+      "words": 2170
     },
     "architecture-change": {
       "declared_files": 12,
@@ -125,7 +125,7 @@
       "unresolved_references": [
         "{TARGET_ARCHITECTURE_SOURCE_OF_TRUTH}"
       ],
-      "words": 7258
+      "words": 7262
     },
     "business-change": {
       "declared_files": 10,
@@ -145,7 +145,7 @@
       "unresolved_references": [
         "{TARGET_BLUEPRINT_OR_PRODUCT_SOURCE_OF_TRUTH}"
       ],
-      "words": 6404
+      "words": 6408
     },
     "code-local": {
       "declared_files": 6,
@@ -161,7 +161,7 @@
       "unresolved_references": [
         "{TARGET_CODE_SOURCE_OF_TRUTH}"
       ],
-      "words": 3880
+      "words": 3884
     },
     "data-change": {
       "declared_files": 8,
@@ -179,7 +179,7 @@
       "unresolved_references": [
         "{TARGET_DATA_SOURCE_OF_TRUTH}"
       ],
-      "words": 4970
+      "words": 4974
     },
     "docs-local": {
       "declared_files": 5,
@@ -194,7 +194,7 @@
       "unresolved_references": [
         "{TARGET_DOC_SOURCE_OF_TRUTH}"
       ],
-      "words": 2666
+      "words": 2670
     },
     "framework-upgrade": {
       "declared_files": 6,
@@ -209,7 +209,7 @@
         ".ai/assistant/templates/migration-note.md"
       ],
       "unresolved_references": [],
-      "words": 3285
+      "words": 3427
     },
     "security-sensitive": {
       "declared_files": 7,
@@ -226,7 +226,7 @@
       "unresolved_references": [
         "{TARGET_SECURITY_SOURCE_OF_TRUTH}"
       ],
-      "words": 3850
+      "words": 3847
     }
   },
   "report_kind": "static-target-context-cost",

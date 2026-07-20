@@ -29,7 +29,8 @@ Replace placeholders with target facts before accepting installation.
 - blueprint-driven change or equivalent target product-change workflow
 - installed-operation request, blueprint-creation, adapter-recheck, and
   framework-update review flows
-- operation help, operation-routing, and post-install/update assistant chat
+- operation catalog, single `Alatyr` entry, automatic routing, read-only
+  health, risk-gated preview, help, and post-install/update assistant chat
   message templates
 - documentation-sync rules
 - final evidence requirements

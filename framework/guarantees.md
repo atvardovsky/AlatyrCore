@@ -72,8 +72,9 @@ The framework commits to giving an assistant a defined process for:
 - separating required core from optional modules so targets do not carry
   unused Alatyr surfaces as mandatory process
 - bounding installed-operation requests by allowed actions before editing files
-- showing operation help and routing ambiguous requests before guessing or
-  editing files
+- routing clear requests automatically through a target operation catalog,
+  showing bounded help before guessing on ambiguity, keeping adapter health
+  read-only, and previewing risk-gated changes before edits
 - suggesting framework or documentation improvements when the process becomes
   hard to manage
 - assessing whether a project adapter is incomplete, minimal, usable, or mature
@@ -94,10 +95,10 @@ Machine checks can verify only deterministic repository facts, such as:
   documents somewhere
 - static bootstrap/profile file and word costs remain within declared template
   budgets
-- supported bridge templates expose the same compact bootstrap, help, and
-  operation-routing entry points
-- manifest, approval, prompt-injection, help, and policy templates contain
-  required fields
+- supported bridge templates expose the same compact bootstrap, operation
+  catalog, single entry, health, help, and operation-routing entry points
+- manifest, operation catalog, approval, prompt-injection, help, and policy
+  templates contain required fields
 - explicitly selected machine-readable approvals can be checked so the
   complete Git changed-path set is allowed, not excluded, and bound to the
   selected diff base
@@ -184,8 +185,9 @@ defines:
   recheck evidence when durable operation records are expected
 - operation packet, storage policy, workstream boundaries, and checkpoint
   evidence when large or resumable operations are expected
-- operation help, operation-routing, and post-install/update chat-message
-  templates when the target wants discoverable assistant requests
+- operation catalog, single entry, automatic routing, read-only health,
+  risk-gated preview, help, and post-install/update chat-message templates when
+  the target wants discoverable assistant requests
 - task-specific maturity profile and blocking criteria
 - module profile for required core gaps and optional module states
 - migration-note template or equivalent upgrade evidence when framework

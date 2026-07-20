@@ -21,7 +21,8 @@ Future assistant bootstrap:
 - Do not rely on this chat message alone.
 - Treat `AGENTS.md` as preloaded; start from `.ai/alatyr.yaml`, `.ai/README.md`, and `.ai/assistant/context-router.json`.
 - Load profiles, module state, registries, blueprint, gates, and the installation note only when routing or unclear adapter state requires them.
-- If the updated baseline or adapter state is unclear, ask for "Alatyr help" or run `recheck-after-framework-update` before editing files.
+- Send `Alatyr` for compact actions or `Alatyr status` for a read-only adapter health check.
+- If migration impact is unclear, run `recheck-after-framework-update` before editing files.
 
 Recommended follow-up:
 Use the installed Alatyr adapter in this repository.
@@ -37,7 +38,11 @@ Load only canonical sources and target surfaces selected by the migration
 assessment. Record candidate context intentionally omitted.
 
 Operation help:
-- Ask for "Alatyr help" to see available operations and matching flows.
+- Send `Alatyr` for compact relevant operations; use `Alatyr status` or
+  `Alatyr doctor` for read-only health evidence.
+- Clear requests route automatically through
+  `.ai/assistant/operation-catalog.json`; operation IDs are optional.
+- Risky or cross-boundary changes show a pre-change preview before edits.
 - Use `.ai/assistant/help.md`, `.ai/assistant/help-reference.md`, and `.ai/assistant/templates/operation-request.md` for structured requests.
 - Use `large-task` only for cross-boundary or resumable work, and resume an existing packet when one is named.
 - Recheck AI infrastructure router entries and adaptation records when skills, prompts, gates, tools, or bridge contracts changed.

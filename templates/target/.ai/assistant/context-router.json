@@ -38,6 +38,19 @@
       "residual risk"
     ]
   },
+  "operation_routing": {
+    "catalog": ".ai/assistant/operation-catalog.json",
+    "fallback_operation": "help",
+    "health_operation": "adapter-health",
+    "single_entry_alias": "Alatyr",
+    "load_catalog_when": [
+      "Alatyr entry or status",
+      "ambiguity",
+      "handoff or repair"
+    ],
+    "automatic_when": "single enabled sufficient match",
+    "preview_policy": "risk-gated"
+  },
   "consistency_routing": {
     "enabled_when": [
       "consistency-map module is enabled",
@@ -192,6 +205,11 @@
         "README or documentation text",
         "non-semantic documentation change"
       ],
+      "operation_candidates": [
+        "documentation-sync",
+        "drift-review",
+        "logical-integrity-review"
+      ],
       "required_context": [
         ".ai/framework/context-discovery.md",
         ".ai/framework/testing-guidance.md",
@@ -227,6 +245,11 @@
         "test change",
         "no accepted behavior change",
         "review comments or defect fixes"
+      ],
+      "operation_candidates": [
+        "logical-integrity-review",
+        "drift-review",
+        "product-change"
       ],
       "required_context": [
         ".ai/framework/context-discovery.md",
@@ -266,6 +289,11 @@
         "domain rule change",
         "product policy change",
         "workflow or public contract change"
+      ],
+      "operation_candidates": [
+        "product-change",
+        "create-project-blueprint",
+        "logical-integrity-review"
       ],
       "required_context": [
         ".ai/framework/context-discovery.md",
@@ -308,6 +336,11 @@
         "dependency direction change",
         "runtime topology change",
         "public API or cross-component contract change"
+      ],
+      "operation_candidates": [
+        "product-change",
+        "create-project-blueprint",
+        "logical-integrity-review"
       ],
       "required_context": [
         ".ai/framework/context-discovery.md",
@@ -354,6 +387,11 @@
         "migration or backfill",
         "data ownership or retention change"
       ],
+      "operation_candidates": [
+        "product-change",
+        "logical-integrity-review",
+        "drift-review"
+      ],
       "required_context": [
         ".ai/framework/context-discovery.md",
         ".ai/framework/change-risk-model.md",
@@ -397,6 +435,11 @@
         "destructive actions",
         "production or spend boundary"
       ],
+      "operation_candidates": [
+        "product-change",
+        "logical-integrity-review",
+        "skill-adaptation"
+      ],
       "required_context": [
         ".ai/framework/change-risk-model.md",
         ".ai/framework/security-safety-guidance.md",
@@ -438,6 +481,11 @@
         "checker gate flow or template change",
         "third-party assistant infrastructure review"
       ],
+      "operation_candidates": [
+        "ai-infrastructure-inventory",
+        "ai-infrastructure-recommendation",
+        "skill-adaptation"
+      ],
       "required_context": [
         ".ai/framework/ai-infrastructure-routing.md",
         ".ai/assistant/ai-infrastructure-router.json",
@@ -477,6 +525,12 @@
         "adapter recheck",
         "adapter maturity review",
         "framework drift repair"
+      ],
+      "operation_candidates": [
+        "adapter-health",
+        "recheck-after-framework-update",
+        "recheck-after-installation",
+        "adapter-maturity-review"
       ],
       "required_context": [
         ".ai/framework/lifecycle.md",

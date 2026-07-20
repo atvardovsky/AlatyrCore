@@ -14,6 +14,7 @@ Linux or macOS:
 
 ```sh
 python3 tools/alatyr.py --help
+python3 tools/alatyr.py doctor --target /path/to/target-repo
 python3 tools/alatyr.py validate-adapter --target /path/to/target-repo
 python3 tools/alatyr.py assess-upgrade --target /path/to/target-repo --framework-source . --output-dir tmp/upgrade-assessment
 ```
@@ -22,6 +23,7 @@ Windows PowerShell:
 
 ```powershell
 .\tools\alatyr.ps1 --help
+.\tools\alatyr.ps1 doctor --target C:\path\to\target-repo
 .\tools\alatyr.ps1 validate-adapter --target C:\path\to\target-repo
 .\tools\alatyr.ps1 assess-upgrade --target C:\path\to\target-repo --framework-source . --output-dir tmp\upgrade-assessment
 ```
@@ -30,6 +32,7 @@ Windows Command Prompt:
 
 ```bat
 tools\alatyr.cmd --help
+tools\alatyr.cmd doctor --target C:\path\to\target-repo
 tools\alatyr.cmd validate-adapter --target C:\path\to\target-repo
 ```
 
@@ -38,6 +41,8 @@ The stable command set is:
 - `check-source`: no writes
 - `scaffold`: target structure writes only with `--write`
 - `validate-adapter`: optional explicit report output only
+- `doctor`: read-only adapter health with at most three repair operation routes;
+  no file output (use `validate-adapter` for an explicit report file)
 - `migration-report`: optional explicit report output only
 - `assess-upgrade`: explicit assessment output only; no adapter changes
 - `context-costs`: optional static context-cost report output only
@@ -194,9 +199,9 @@ py -3 .\tools\check_bridge_capability_matrix.py
 `check_context_router.py` validates the target
 `.ai/assistant/context-router.json` template in this source repository. It
 checks canonical profile names, preloaded versus compact bootstrap context,
-budgets, receipt fields, area overlays, path references, duplicate route
-entries, and framework file routing coverage. It is not a portable framework
-requirement for target projects.
+budgets, receipt fields, bounded operation candidates, area overlays, path
+references, duplicate route entries, and framework file routing coverage. It
+is not a portable framework requirement for target projects.
 
 Linux or macOS:
 
@@ -208,6 +213,25 @@ Windows PowerShell or Command Prompt:
 
 ```powershell
 py -3 .\tools\check_context_router.py
+```
+
+## Operation Catalog Check
+
+`check_operation_catalog.py` validates the target operation catalog, compact
+router candidates, single `Alatyr` entry, automatic routing, read-only adapter
+health, risk-gated preview, and manifest/help alignment. It checks source
+templates only.
+
+Linux or macOS:
+
+```sh
+python3 tools/check_operation_catalog.py
+```
+
+Windows PowerShell or Command Prompt:
+
+```powershell
+py -3 .\tools\check_operation_catalog.py
 ```
 
 ## Consistency Map Check

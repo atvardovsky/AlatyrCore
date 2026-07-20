@@ -12,11 +12,21 @@ local command in `{TARGET_VALIDATION_OR_LOCAL_COMMANDS}`.
 These aliases are chat/request shortcuts, not shell commands.
 
 Full operation reference: `.ai/assistant/help-reference.md`.
+Canonical operation catalog: `.ai/assistant/operation-catalog.json`.
+
+Send `Alatyr` by itself for a compact adapter state and up to three relevant
+actions. Send `Alatyr status` or `Alatyr doctor` for a read-only adapter health
+check. A clear ordinary task is routed automatically; an operation ID is not
+required.
 
 Default routing:
 
 - If the operation is clear and low risk, choose the matching operation and
   report the chosen route.
+- If the request is `Alatyr` alone, do not edit files. Report whether health
+  evidence is fresh or unchecked and show at most three available actions.
+- If the request asks for status or doctor, route to `adapter-health` and keep
+  allowed actions `read-only`.
 - If the request is unclear, show only the two or three closest operations and
   ask for the smallest missing decision.
 - Use `.ai/assistant/context-router.json` to choose task context before
@@ -24,6 +34,12 @@ Default routing:
   human rationale or conflict resolution is needed.
 - Use `.ai/assistant/module-profile.md` to avoid routing to blocked or
   disabled optional modules.
+- Load `.ai/assistant/operation-catalog.json` for explicit Alatyr routing,
+  status, ambiguity resolution, or operation handoff. Do not add it to every
+  routine task's context.
+- Show `.ai/assistant/templates/pre-change-preview.md` before edits only when
+  semantic or protected risk, boundary crossing, external effects, or unclear
+  allowed-action scope triggers it.
 - Add the `large-or-resumable` task-scale overlay only for multi-workstream,
   cross-boundary, budget-exceeding, or resumable work. Small tasks should not
   create operation packets.
@@ -34,6 +50,11 @@ Operation: `help`
 Use when: the user asks what Alatyr can do or the request is unclear.
 Flow: `.ai/assistant/flows/operation-routing.flow.md`
 Minimum input: goal or suspected task area.
+
+Operation: `adapter-health`
+Use when: the user asks for Alatyr status, doctor, or current adapter health.
+Flow: `.ai/assistant/flows/adapter-health.flow.md`
+Minimum input: optional health scope. Allowed actions are `read-only`.
 
 Operation: `product-change`
 Use when: accepted behavior, architecture, data, runtime, or public contract
@@ -87,7 +108,9 @@ skills, prompts, gates, tools, bridges, permissions, or import policy.
 
 Common aliases:
 
+- `Alatyr`: `help` with compact state and relevant actions
 - `Alatyr help`: `help`
+- `Alatyr status` or `Alatyr doctor`: `adapter-health`
 - `update Alatyr` or `обнови Alatyr`: `recheck-after-framework-update`
 - `check Alatyr` or `проверь Alatyr`: `recheck-after-installation` or
   `adapter-maturity-review`

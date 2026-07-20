@@ -5,7 +5,7 @@ working on Alatyr Core.
 
 Rule references for installation routing: `ALATYR-CONTEXT-001`,
 `ALATYR-ADAPTER-001`, `ALATYR-APPROVAL-001`, `ALATYR-SAFETY-001`,
-`ALATYR-SAFETY-002`, and `ALATYR-EVIDENCE-001`.
+`ALATYR-SAFETY-002`, `ALATYR-OPERATION-001`, and `ALATYR-EVIDENCE-001`.
 
 If you are installing Alatyr Core into a target project:
 
@@ -16,7 +16,8 @@ If you are installing Alatyr Core into a target project:
    `framework/ai-infrastructure-routing.md`,
    `framework/project-adapter-contract.md`, `framework/portability.md`,
    `framework/module-profile.md`, `framework/rule-ownership.md`,
-   `framework/rule-registry.md`, and `framework/rule-registry.json`.
+   `framework/operation-help.md`, `framework/rule-registry.md`, and
+   `framework/rule-registry.json`.
 4. Read `installer/assistant-installation.flow.md`.
 5. Read `installer/readiness-checklist.md`.
 6. Read `installer/installation-plan-template.md`.

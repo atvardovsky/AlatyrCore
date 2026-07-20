@@ -11,6 +11,11 @@ local command in `{TARGET_VALIDATION_OR_LOCAL_COMMANDS}`.
 
 These aliases are chat/request shortcuts, not shell commands.
 
+Canonical operation metadata lives in
+`.ai/assistant/operation-catalog.json`. This file is its human explanation,
+not a competing operation registry. A clear request routes automatically and
+does not require a formal operation ID.
+
 ## Supported Request Aliases
 
 - `alatyr-ai-inventory`: route to `ai-infrastructure-inventory` and report
@@ -35,6 +40,13 @@ Operation: `help`
 Use when: the user asks what Alatyr can do or the request is unclear.
 Flow: `.ai/assistant/flows/operation-routing.flow.md`
 Minimum input: goal or suspected task area.
+
+Operation: `adapter-health`
+Use when: reporting current adapter structure for `Alatyr status` or `Alatyr
+doctor` without making changes.
+Flow: `.ai/assistant/flows/adapter-health.flow.md`
+Minimum input: optional health scope.
+Default allowed actions: `read-only`.
 
 Operation: `create-project-blueprint`
 Use when: creating, repairing, or rechecking blueprint-equivalent
@@ -134,6 +146,14 @@ adapter.
 
 Alias: `Alatyr help`
 Route to: `help`.
+
+Alias: `Alatyr`
+Route to: `help` with compact adapter state and no more than three relevant
+available actions. Do not claim health was checked unless fresh evidence
+exists.
+
+Alias: `Alatyr status` or `Alatyr doctor`
+Route to: `adapter-health` with `read-only` allowed actions.
 
 Alias: `update Alatyr` or `обнови Alatyr`
 Route to: `recheck-after-framework-update` when a framework update source is
@@ -263,6 +283,8 @@ Integration mode: `{CANONICAL_INTEGRATION}`
 - Prompt-injection policy: `.ai/assistant/policies/prompt-injection.md`
 - Allowed AI infrastructure source access:
   `{TARGET_AI_INFRASTRUCTURE_SOURCE_ACCESS_POLICY}`
+- Pre-change preview template:
+  `.ai/assistant/templates/pre-change-preview.md`
 - Known adapter gaps: `{KNOWN_GAPS}`
 - AI infrastructure router: `.ai/assistant/ai-infrastructure-router.json`
 - Consistency map: `.ai/project/consistency-map.json` when the optional module

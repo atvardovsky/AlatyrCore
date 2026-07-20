@@ -35,6 +35,7 @@ CHECKS = [
     ["tools/check_module_profile.py"],
     ["tools/check_migration_diff_report.py"],
     ["tools/check_operation_contracts.py"],
+    ["tools/check_operation_catalog.py"],
     ["tools/check_operation_help.py"],
     ["tools/check_output_contracts.py"],
     ["tools/check_release_migration_template.py"],

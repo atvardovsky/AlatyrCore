@@ -88,6 +88,13 @@ Rule IDs: `ALATYR-MODULE-001`
 Derived surfaces: target module profile, manifest modules, operation help
 routing, maturity review.
 
+Category: `OPERATION`
+Owner: `.ai/framework/operation-help.md`
+Rule IDs: `ALATYR-OPERATION-001`
+Derived surfaces: target operation catalog, automatic routing flow, compact
+help, adapter health flow, pre-change preview, manifest operation paths,
+assistant bridges.
+
 Category: `BRIDGE`
 Owner: `.ai/framework/bridge-capability-matrix.md`
 Rule IDs: `ALATYR-BRIDGE-001`

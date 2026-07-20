@@ -173,11 +173,15 @@ Next action: `{MULTI_ASSISTANT_BRIDGES_NEXT_ACTION}`
 
 Module: `installed-operations`
 State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
-Owner or file: `.ai/assistant/help.md`
+Owner or file: `.ai/assistant/operation-catalog.json`
 Required files:
 
+- `.ai/assistant/operation-catalog.json`
 - `.ai/assistant/help.md`
 - `.ai/assistant/help-reference.md`
+- `.ai/assistant/flows/operation-routing.flow.md`
+- `.ai/assistant/flows/adapter-health.flow.md`
+- `.ai/assistant/templates/pre-change-preview.md`
 
 Reason: `{REASON}`
 Validation or review: `{VALIDATION_OR_REVIEW}`

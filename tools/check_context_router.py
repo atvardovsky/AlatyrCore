@@ -51,6 +51,7 @@ FORBIDDEN_BOOTSTRAP = {
 
 PROFILE_FIELDS = [
     "use_when",
+    "operation_candidates",
     "required_context",
     "expand_when",
     "approval_gates",
@@ -194,6 +195,30 @@ def main() -> int:
         ]:
             if required not in receipt_fields:
                 failures.append(f"context_receipt.fields missing {required}")
+
+    operation_routing = router.get("operation_routing")
+    if not isinstance(operation_routing, dict):
+        failures.append("operation_routing must be an object")
+    else:
+        expected_operation_routing = {
+            "catalog": ".ai/assistant/operation-catalog.json",
+            "fallback_operation": "help",
+            "health_operation": "adapter-health",
+            "single_entry_alias": "Alatyr",
+            "preview_policy": "risk-gated",
+        }
+        for field, expected in expected_operation_routing.items():
+            if operation_routing.get(field) != expected:
+                failures.append(f"operation_routing.{field} must be {expected}")
+        require_string_list(
+            operation_routing,
+            "load_catalog_when",
+            "operation_routing",
+            failures,
+        )
+        automatic = operation_routing.get("automatic_when")
+        if not isinstance(automatic, str) or not automatic:
+            failures.append("operation_routing.automatic_when must be a string")
 
     consistency_routing = router.get("consistency_routing")
     if not isinstance(consistency_routing, dict):

@@ -35,6 +35,9 @@ Use after the initial Alatyr Core installation or a scoped adapter expansion.
 - Required core profile result: `{REQUIRED_CORE_PROFILE_RESULT}`
 - Optional module profile result: `{OPTIONAL_MODULE_PROFILE_RESULT}`
 - Context profiles result: `{CONTEXT_PROFILES_RESULT}`
+- Operation catalog and automatic routing result: `{OPERATION_CATALOG_ROUTING_RESULT}`
+- Adapter health and evidence freshness: `{HEALTH_STATE_TIME_REVISION_OR_UNVERIFIED}`
+- Pre-change preview result: `{SHOWN_SKIPPED_OR_NOT_APPLICABLE_WITH_REASON}`
 - Context receipt and cost evidence: `{LOADED_FILES_VOLUME_EXPANSIONS_OR_NOT_REQUIRED}`
 - Large-task orchestration result: `{LARGE_TASK_ORCHESTRATION_RESULT_OR_SKIPPED}`
 - Operation packet template result: `{OPERATION_PACKET_TEMPLATE_RESULT_OR_SKIPPED}`
@@ -106,7 +109,8 @@ Core baseline.
 - Consistency-map result: `{CONSISTENCY_MAP_RESULT_OR_SKIPPED}`
 - Logical integrity evidence: `{CHANGED_FACTS_RELATIONSHIPS_COMPANION_SURFACES_AND_GAPS}`
 - Task-specific maturity result: `{TASK_SPECIFIC_MATURITY_RESULT}`
-- Operation help and routing result: `{OPERATION_HELP_ROUTING_RESULT}`
+- Operation catalog, health, preview, help, and routing result:
+  `{OPERATION_CONTROL_SURFACE_RESULT}`
 - Bridge capability matrix result: `{BRIDGE_CAPABILITY_MATRIX_RESULT}`
 - Adapter drift checks result: `{ADAPTER_DRIFT_CHECKS_RESULT}`
 - Local path leakage result: `{LOCAL_PATH_LEAKAGE_RESULT}`
@@ -158,7 +162,8 @@ adapter.
 - Logical integrity evidence: `{CHANGED_FACTS_RELATIONSHIPS_COMPANION_SURFACES_AND_GAPS}`
 - Task-specific maturity result: `{TASK_SPECIFIC_MATURITY_RESULT}`
 - Bridge capability matrix result: `{BRIDGE_CAPABILITY_MATRIX_RESULT}`
-- Operation help and routing result: `{OPERATION_HELP_ROUTING_RESULT}`
+- Operation catalog, health, preview, help, and routing result:
+  `{OPERATION_CONTROL_SURFACE_RESULT}`
 - Approval-record policy result: `{APPROVAL_RECORD_POLICY_RESULT}`
 - Adapter drift checks result: `{ADAPTER_DRIFT_CHECKS_RESULT}`
 - Local path leakage result: `{LOCAL_PATH_LEAKAGE_RESULT}`

@@ -10,7 +10,8 @@ Use this guide when changing Alatyr Core itself.
   and assistant compatibility docs when affected.
 - Target template change: update `templates/target`, installer docs, and
   README when the installation contract changes.
-- Installed-operation help or chat-message change: update `framework/`,
+- Installed-operation catalog, routing, health, preview, help, or chat-message
+  change: update `framework/`,
   `installer/`, `templates/target`, assistant compatibility docs, and
   changelog when affected.
 - Manifest, ownership, context-router, context-profile, approval-record,
@@ -121,6 +122,9 @@ Before accepting a change, check:
 - `python3 tools/check_operation_contracts.py` passes when installed-operation
   help, aliases, flow routing, allowed-action boundaries, or ordered pipeline
   steps change.
+- `python3 tools/check_operation_catalog.py` passes when operation IDs,
+  automatic routing, single-entry behavior, adapter health, preview triggers,
+  or catalog/manifest/router alignment changes.
 - `python3 tools/check_operation_help.py` passes when short help,
   help-reference sections, allowed-action text, alias wording, or operation
   block shape changes.
@@ -190,12 +194,15 @@ Before accepting a change, check:
   isolation, report provenance, independent review, or relative-delta
   contracts change.
 - `python3 tools/validate_target_adapter.py --target <target-repo>` can check
-  an installed target adapter for structural drift when a real target
+  an installed target adapter for structural drift and operation-catalog health
+  when a real target
   repository is available. Use `--json --output <report.json>` when a target
   CI job or assistant recheck needs machine-readable findings, and use
   `--migration-diff <report.md>` when framework drift should be tied to rule
   and action evidence. It is optional target-adapter validation, not a
   source-template check and not proof of project business truth.
+  The equivalent `python3 tools/alatyr.py doctor --target <target-repo>` alias
+  remains read-only and returns prioritized repair operation IDs.
 - `framework/` contains no target business facts.
 - `framework/` contains no required local commands, scripts, package managers,
   CI jobs, test folders, fixture helpers, security policies, or diagram tools.
@@ -211,7 +218,8 @@ Before accepting a change, check:
   and output contracts agree.
 - development-pattern index, capture flow, project/assistant ownership,
   recommendation route, manifest, module profile, and target validator agree.
-- target gate, operation-routing, adapter-recheck, and output-contract
+- target gate, operation-catalog, operation-routing, adapter-health,
+  pre-change-preview, adapter-recheck, and output-contract
   templates preserve context-router bootstrap references and adapter drift
   evidence for local path leakage, stale checker statements, duplicate profile
   references, unresolved owner placeholders, and target-local checker status.

@@ -35,6 +35,7 @@ Categories should be short uppercase labels such as:
 - `CHANGE`
 - `ADAPTER`
 - `MODULE`
+- `OPERATION`
 - `BRIDGE`
 - `LIFECYCLE`
 - `EVIDENCE`
@@ -128,6 +129,16 @@ Canonical source: `.ai/framework/module-profile.md`
 Commitment: establish the required core profile first, then enable optional
 modules only when the target needs and can maintain them.
 Applies to: installation, update, adapter maturity, and framework upgrades.
+
+Rule ID: `ALATYR-OPERATION-001`
+Canonical source: `.ai/framework/operation-help.md`
+Commitment: expose one conversational Alatyr entry point, route clear requests
+automatically through a machine-readable target operation catalog, provide a
+read-only evidence-based adapter health operation, and show a bounded
+pre-change preview only when changed-fact risk, approval, or scope uncertainty
+requires it.
+Applies to: installed operation routing, adapter health, and changes requiring
+preview.
 
 Rule ID: `ALATYR-BRIDGE-001`
 Canonical source: `.ai/framework/bridge-capability-matrix.md`

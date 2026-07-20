@@ -5,8 +5,8 @@ Then read `AI_ASSISTANTS.md`,
 `.ai/alatyr.yaml`, `.ai/README.md`, and `.ai/assistant/context-router.json`.
 Select the smallest profile before reading the matching task flow.
 
-For Alatyr help or aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,
-`alatyr-improve-ai`, `alatyr-adaptation`, and `alatyr-add-ai`), read `.ai/assistant/help.md` and
-`.ai/assistant/flows/operation-routing.flow.md`.
+For `Alatyr`, status/doctor, or aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,
+`alatyr-improve-ai`, `alatyr-adaptation`, `alatyr-add-ai`), read
+`.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.
 
 Do not treat this bridge file as the source of truth.

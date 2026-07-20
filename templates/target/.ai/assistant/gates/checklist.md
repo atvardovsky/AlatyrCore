@@ -10,7 +10,8 @@ commands from another project.
 - Rule references checked: `ALATYR-CONTEXT-001`, `ALATYR-SOURCE-001`,
   `ALATYR-RISK-001`, `ALATYR-APPROVAL-001`, `ALATYR-SAFETY-001`,
   `ALATYR-SAFETY-002`, `ALATYR-INTEGRITY-001`, `ALATYR-CHANGE-001`,
-  `ALATYR-ADAPTER-001`, `ALATYR-MODULE-001`, and `ALATYR-EVIDENCE-001`.
+  `ALATYR-ADAPTER-001`, `ALATYR-MODULE-001`, `ALATYR-OPERATION-001`, and
+  `ALATYR-EVIDENCE-001`.
 - `AGENTS.md` treated as preloaded; compact bootstrap loaded from
   `.ai/alatyr.yaml`, `.ai/README.md`, and
   `.ai/assistant/context-router.json`.
@@ -53,8 +54,8 @@ commands from another project.
   behavior may be affected.
 - Migration note created or updated when a framework update requires target
   adapter actions.
-- Operation help and routing checked when the user asks for Alatyr help,
-  commands, available actions, or the requested operation is unclear.
+- Operation catalog/module checked when routed; status/doctor remains
+  read-only, and risk-gated preview is shown, refreshed, or explicitly skipped.
 - Adapter drift checks performed during installation, framework update, or
   adapter recheck: no hard-coded local machine paths, no stale checker
   existence claims, no duplicate context-profile references, context router

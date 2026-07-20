@@ -1,2 +1,2 @@
 Ensure AGENTS.md is loaded once; if it was not preloaded by the host, read it now. Then read AI_ASSISTANTS.md, .ai/alatyr.yaml, .ai/README.md, and .ai/assistant/context-router.json. This file is a legacy bridge for Windsurf-compatible tools.
-For Alatyr help or aliases (alatyr-ai-inventory, alatyr-suggest-ai, alatyr-improve-ai, alatyr-adaptation, and alatyr-add-ai), read .ai/assistant/help.md and .ai/assistant/flows/operation-routing.flow.md.
+For Alatyr, status/doctor, or aliases (alatyr-ai-inventory, alatyr-suggest-ai, alatyr-improve-ai, alatyr-adaptation, alatyr-add-ai), read .ai/assistant/operation-catalog.json, .ai/assistant/help.md, and .ai/assistant/flows/operation-routing.flow.md.
