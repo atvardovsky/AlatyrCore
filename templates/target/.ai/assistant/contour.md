@@ -32,6 +32,11 @@ Replace placeholders with target facts before accepting installation.
 - operation catalog, single `Alatyr` entry, automatic routing, read-only
   health, risk-gated preview, help, and post-install/update assistant chat
   message templates
+- team operation mechanics, work registry projection, claims, conflict checks,
+  checkpoints, handoffs, decision capture, team review, and revision-bound
+  merge-readiness evidence when the optional module is enabled; project-owned
+  actors, authority, priorities, and accepted decisions remain in the project
+  contour
 - documentation-sync rules
 - final evidence requirements
 - target adapter maturity and lifecycle notes
@@ -44,6 +49,8 @@ Replace placeholders with target facts before accepting installation.
 
 - portable Alatyr Core framework rules
 - target product/business facts
+- target team identity, authority, priority, review, coordination-backend,
+  retention, privacy, and accepted decision facts
 - target blueprint or equivalent source-of-truth content
 - generated visual artifacts unless the target adapter says they are source
 

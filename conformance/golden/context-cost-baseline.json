@@ -10,7 +10,7 @@
       ".ai/assistant/context-router.json"
     ],
     "unresolved_references": [],
-    "words": 1934
+    "words": 1974
   },
   "budgets": {
     "bootstrap": {
@@ -31,9 +31,9 @@
   "measurement": "whitespace-delimited words in resolved source templates",
   "migration_routing": {
     "full_candidate_union": {
-      "declared_files": 36,
+      "declared_files": 37,
       "missing_paths": [],
-      "resolved_files": 36,
+      "resolved_files": 37,
       "resolved_paths": [
         ".ai/framework/lifecycle.md",
         ".ai/framework/migration-diff.md",
@@ -70,10 +70,11 @@
         ".ai/framework/security-safety-guidance.md",
         ".ai/framework/skill-adaptation.md",
         ".ai/framework/source-of-truth-registry.md",
+        ".ai/framework/team-collaboration.md",
         ".ai/framework/testing-guidance.md"
       ],
       "unresolved_references": [],
-      "words": 28642
+      "words": 31709
     },
     "initial": {
       "declared_files": 6,
@@ -88,7 +89,7 @@
         ".ai/assistant/templates/migration-note.md"
       ],
       "unresolved_references": [],
-      "words": 3427
+      "words": 3808
     },
     "initial_word_reduction_percent": 88.0
   },
@@ -103,7 +104,7 @@
         ".ai/assistant/gates/checklist.md"
       ],
       "unresolved_references": [],
-      "words": 2170
+      "words": 2228
     },
     "architecture-change": {
       "declared_files": 12,
@@ -125,7 +126,7 @@
       "unresolved_references": [
         "{TARGET_ARCHITECTURE_SOURCE_OF_TRUTH}"
       ],
-      "words": 7262
+      "words": 7337
     },
     "business-change": {
       "declared_files": 10,
@@ -145,7 +146,7 @@
       "unresolved_references": [
         "{TARGET_BLUEPRINT_OR_PRODUCT_SOURCE_OF_TRUTH}"
       ],
-      "words": 6408
+      "words": 6483
     },
     "code-local": {
       "declared_files": 6,
@@ -161,7 +162,7 @@
       "unresolved_references": [
         "{TARGET_CODE_SOURCE_OF_TRUTH}"
       ],
-      "words": 3884
+      "words": 3942
     },
     "data-change": {
       "declared_files": 8,
@@ -179,7 +180,7 @@
       "unresolved_references": [
         "{TARGET_DATA_SOURCE_OF_TRUTH}"
       ],
-      "words": 4974
+      "words": 5049
     },
     "docs-local": {
       "declared_files": 5,
@@ -194,7 +195,7 @@
       "unresolved_references": [
         "{TARGET_DOC_SOURCE_OF_TRUTH}"
       ],
-      "words": 2670
+      "words": 2728
     },
     "framework-upgrade": {
       "declared_files": 6,
@@ -209,7 +210,7 @@
         ".ai/assistant/templates/migration-note.md"
       ],
       "unresolved_references": [],
-      "words": 3427
+      "words": 3808
     },
     "security-sensitive": {
       "declared_files": 7,
@@ -226,7 +227,7 @@
       "unresolved_references": [
         "{TARGET_SECURITY_SOURCE_OF_TRUTH}"
       ],
-      "words": 3847
+      "words": 3905
     }
   },
   "report_kind": "static-target-context-cost",

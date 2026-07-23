@@ -16,6 +16,10 @@ installed Alatyr Core adapter.
 - Review comments or defect reports to reconcile: `{REVIEW_ITEMS_OR_NONE}`
 - Task scale: `{NORMAL_OR_LARGE_OR_RESUMABLE}`
 - Existing operation packet: `{PACKET_PATH_OR_NONE}`
+- Team task id: `{TEAM_TASK_ID_OR_NONE}`
+- Actor ids or roles: `{SOURCE_DESTINATION_REVIEWER_OR_DECISION_ACTOR_IDS_OR_NONE}`
+- Team evidence revision and backend reference:
+  `{REPOSITORY_REVISION_AND_TRACKER_OR_REGISTRY_REFERENCE_OR_NONE}`
 - Allowed actions:
   `{READ_ONLY_DOCS_ONLY_ADAPTER_ONLY_CODE_AND_TESTS_OR_FULL_WITH_APPROVAL}`
 - Expected final evidence: `{EXPECTED_FINAL_EVIDENCE}`
@@ -91,6 +95,10 @@ work, add the `large-or-resumable` task-scale overlay and use
 `.ai/assistant/flows/large-task-orchestration.flow.md`. Do not create an
 operation packet for a small task.
 
+For enabled team coordination, add the `team-active` overlay and load only the
+selected task, relevant active overlaps, actor/authority evidence, changed-fact
+owners, dependencies, and selected team flow/gate.
+
 ## Operation Choices
 
 Choose the matching flow:
@@ -107,6 +115,14 @@ Choose the matching flow:
   `.ai/assistant/flows/blueprint-driven-change.flow.md`
 - Coordinate large or resumable work:
   `.ai/assistant/flows/large-task-orchestration.flow.md`
+- Report, start, claim, checkpoint, conflict-check, or release team work:
+  `.ai/assistant/flows/team-task-coordination.flow.md`
+- Handoff a team task:
+  `.ai/assistant/flows/team-handoff.flow.md`
+- Structure a team decision:
+  `.ai/assistant/flows/team-decision.flow.md`
+- Review team work or check merge readiness:
+  `.ai/assistant/flows/team-review.flow.md`
 - Review consistency:
   `.ai/assistant/flows/logical-integrity-review.flow.md`
 - Inventory existing AI infrastructure:
@@ -156,6 +172,11 @@ Choose the matching flow:
   explicitly selected JSON records and fail on uncovered or excluded paths.
 - Treat `.ai/assistant/templates/large-task-operation-packet.md` as
   coordination evidence, not as a canonical owner of project facts.
+- Treat team assignment, claim, priority, review, handoff, and merge readiness
+  as coordination evidence, not approval or project source of truth.
+- Compare concurrent tasks by changed facts and owners before contracts,
+  dependencies, migrations, generated artifacts, approvals, and secondary
+  file/surface overlap. Bind merge readiness to current head/base revisions.
 - Use `.ai/project/source-of-truth-registry.md` to choose canonical fact
   owners when surfaces disagree.
 - Re-derive target invariants before implementing. Cluster related review

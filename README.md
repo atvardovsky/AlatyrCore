@@ -48,7 +48,8 @@ into another project, do this:
 8. Apply the canonical rule references instead of copying policy text:
    `ALATYR-ADAPTER-001`, `ALATYR-APPROVAL-001`,
    `ALATYR-SAFETY-001`, `ALATYR-SAFETY-002`,
-   `ALATYR-INTEGRITY-001`, `ALATYR-OPERATION-001`, and
+   `ALATYR-INTEGRITY-001`, `ALATYR-OPERATION-001`,
+   `ALATYR-TEAM-001`, and
    `ALATYR-EVIDENCE-001`.
 9. Run only target validation that exists in the target repository. If a check
    is unknown or unavailable, report it as unresolved instead of inventing a
@@ -124,6 +125,7 @@ Additional source-repository helpers include:
 - `python3 tools/check_rule_ownership.py`
 - `python3 tools/check_source_of_truth_registry.py`
 - `python3 tools/check_target_adapter_validator.py`
+- `python3 tools/check_team_collaboration.py`
 - `python3 tools/check_versioning.py`
 - `python3 tools/validate_target_adapter.py --target <target-repo>`
 - `python3 tools/validate_target_adapter.py --target <target-repo> --json --output <report.json>`
@@ -177,6 +179,9 @@ Additional source-repository helpers include:
   contours, and human profile rationale out of routine startup
 - optional large-task orchestration that loads only the active workstream's
   context and preserves resumable checkpoints plus final convergence evidence
+- optional team collaboration with target-owned actors, authority, priority,
+  review, and coordination policy plus lazy task, claim, conflict, checkpoint,
+  handoff, decision, and revision-bound merge-readiness evidence
 - source-of-truth registry guidance and source-template checks for fact
   ownership, derived surfaces, sync direction, validation, and conflict
   resolution
@@ -281,7 +286,9 @@ After Alatyr Core is installed in a target repository, programmers can ask an
 assistant to use the installed adapter for follow-up operations: creating or
 repairing project blueprints, rechecking the adapter after a framework update,
 reviewing drift, running blueprint-driven product changes, or adapting skills
-and prompts.
+and prompts. When the optional team module is enabled, the same entry point can
+report team state, coordinate tasks and claims, detect changed-fact overlap,
+capture handoffs and decisions, and perform revision-bound review checks.
 
 Use
 [installer/installed-operation-request-template.md](installer/installed-operation-request-template.md)
@@ -310,7 +317,8 @@ python3 tools/alatyr.py doctor --target /path/to/target-repo
 This helper reports adapter health and checks structure, operation catalog,
 router/bootstrap references, local path
 leakage, stale checker claims, manifest fields, optional consistency and AI
-infrastructure route maps, and optional framework baseline drift. It can emit
+infrastructure route maps, optional team registry and merge-readiness state,
+and optional framework baseline drift. It can emit
 machine-readable current-state evidence and compare explicitly listed approval
 scope or migration-diff evidence when the target provides those inputs. It
 does not verify project business facts, prove historical actions, or approve
@@ -342,6 +350,7 @@ A mature target installation usually has:
 - `.ai/project/source-of-truth-registry.md`
 - `.ai/project/development-evidence.json` when pattern-based recommendations are
   enabled
+- `.ai/project/team-operating-model.md` when team collaboration is enabled
 - `.ai/project/context` or equivalent project source-of-truth docs
 - `.ai/assistant/contour.md`
 - `.ai/assistant/context-router.json`
@@ -350,6 +359,8 @@ A mature target installation usually has:
 - `.ai/assistant/maturity-profile.md`
 - `.ai/assistant/bridge-capability-matrix.md`
 - `.ai/assistant/ai-infrastructure-router.json` when AI infrastructure is used
+- `.ai/assistant/team/context-overlay.json` and
+  `.ai/assistant/team/work-registry.json` when team collaboration is enabled
 - `.ai/assistant/help.md`
 - `.ai/assistant/help-reference.md`
 - `.ai/assistant/operation-catalog.json`

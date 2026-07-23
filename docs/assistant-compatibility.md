@@ -44,6 +44,7 @@ as:
 - `.ai/assistant/help.md`
 - `.ai/assistant/help-reference.md`
 - `.ai/assistant/operation-catalog.json`
+- `.ai/assistant/team/context-overlay.json` when team collaboration is selected
 - `.ai/assistant/flows`
 - `.ai/assistant/gates/checklist.md`
 
@@ -85,6 +86,11 @@ asks for help, assistant-specific surfaces should route through
 `.ai/assistant/flows/operation-routing.flow.md` instead of inventing a command.
 The short help file may point to `.ai/assistant/help-reference.md` for the
 full operation menu.
+
+When `team-collaboration` is enabled, every supported surface uses the same
+catalog aliases for team status, tasks, conflicts, handoffs, decisions,
+reviews, and merge checks. The bridge loads the lazy team overlay only for
+those requests; it does not copy actor, priority, task, or review policy.
 
 Targets may define request aliases such as `alatyr-ai-inventory`,
 `alatyr-suggest-ai <scope>`, `alatyr-improve-ai <item-id>`,

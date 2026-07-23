@@ -178,9 +178,9 @@ py -3 .\tools\check_ai_infrastructure_router.py
 repository. It checks assistant surfaces from
 `conformance/runs/assistant-surfaces.json` plus bridge paths, auto-load
 behavior, instruction priority, supported rule/prompt/skill surfaces, tool
-permission model, help and AI-infrastructure alias routing, known limitations,
-and conformance checks. It is not a portable framework requirement for target
-projects.
+permission model, help, team-operation, and AI-infrastructure alias routing,
+known limitations, and conformance checks. It is not a portable framework
+requirement for target projects.
 
 Linux or macOS:
 
@@ -259,6 +259,26 @@ framework guidance, target task-scale route, orchestration flow, resumable
 packet fields, and manifest path. It does not validate target project facts or
 workstream completion.
 
+## Team Collaboration Check
+
+`check_team_collaboration.py` validates the optional portable team rule,
+target operating model, lazy context overlay, work registry, coordination
+flows, records, gate, operation catalog routes, help aliases, and manifest
+wiring. It checks source templates, not current people, task truth, external
+trackers, approvals, or business decisions.
+
+Linux or macOS:
+
+```sh
+python3 tools/check_team_collaboration.py
+```
+
+Windows PowerShell or Command Prompt:
+
+```powershell
+py -3 .\tools\check_team_collaboration.py
+```
+
 Linux or macOS:
 
 ```sh
@@ -317,8 +337,10 @@ surfaces, full-template coverage, and bridge isolation.
 Alatyr adapter in a target repository. It checks router/bootstrap references,
 consistency-map and AI-infrastructure-router schemas when present, unresolved
 placeholders, hard-coded local paths, stale checker claims, manifest fields,
-target-local checker coverage, optional approval scope against a supplied git
-diff, and optional `.ai/framework` drift against an AlatyrCore source checkout.
+target-local checker coverage, optional team actor/registry/claim/overlap and
+revision-bound merge-readiness structure, optional approval scope against a
+supplied git diff, and optional `.ai/framework` drift against an AlatyrCore
+source checkout.
 
 It does not install Alatyr Core, inspect project business truth, approve
 protected changes, run target validation, or replace assistant logical
@@ -394,8 +416,8 @@ tools\validate_target_adapter.cmd --target C:\path\to\target-repo
 
 `check_target_adapter_validator.py` exercises the source validator's schema
 compatibility, consistency-map and AI-router findings, explicit approval-scope
-matching, and current-state evidence classification. It validates AlatyrCore
-source tooling only.
+matching, broken team merge-readiness findings, and current-state evidence
+classification. It validates AlatyrCore source tooling only.
 
 ```sh
 python3 tools/check_target_adapter_validator.py

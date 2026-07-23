@@ -101,6 +101,7 @@ Common task areas:
 - security
 - AI infrastructure
 - framework upgrade
+- team collaboration
 
 Each task area should name:
 
@@ -141,6 +142,10 @@ Use blocking criteria for high-risk task areas:
 - framework upgrade work is blocked without manifest, installation note,
   context profiles, module profile, bridge references, operation catalog,
   health/recheck flows, and operation help
+- team coordination is blocked when the optional module is enabled without a
+  target operating-model owner, actor and authority evidence, canonical task
+  source, synchronization direction, storage/privacy policy, maintained
+  registry or projection, overlap policy, and review validation
 
 If a task is blocked, report the missing adapter facts and suggest the smallest
 adapter repair before attempting broad product changes.
@@ -181,6 +186,9 @@ Ask:
   that are enabled, deferred, disabled, not applicable, or blocked?
 - For broad work, can changed facts be routed to affected contracts and areas
   without scanning the entire repository, or is that limitation reported?
+- For team work, can the adapter identify current actors, claims, changed-fact
+  overlap, handoffs, reviewers, and revision-bound evidence without loading
+  unrelated history?
 
 ## Rejection Criteria
 

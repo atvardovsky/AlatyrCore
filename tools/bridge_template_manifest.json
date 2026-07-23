@@ -20,7 +20,7 @@
         "   registry, blueprint, and gates only when selected context or conflicting",
         "   evidence requires them.",
         "4. After installation/update or unclear state, read post-install/update message templates.",
-        "5. For `Alatyr`, status/doctor, or aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,",
+        "5. For `Alatyr`, status/doctor, enabled team aliases, or AI aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,",
         "   `alatyr-improve-ai`, `alatyr-adaptation`, `alatyr-add-ai`), read",
         "   `.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.",
         "6. For AI infrastructure work, use `.ai/assistant/ai-infrastructure-router.json`",
@@ -40,7 +40,7 @@
         "`.ai/alatyr.yaml`, `.ai/README.md`, and `.ai/assistant/context-router.json`.",
         "Select the smallest profile before reading the matching task flow.",
         "",
-        "For `Alatyr`, status/doctor, or aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,",
+        "For `Alatyr`, status/doctor, enabled team aliases, or AI aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,",
         "`alatyr-improve-ai`, `alatyr-adaptation`, `alatyr-add-ai`), read",
         "`.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.",
         "",
@@ -57,7 +57,7 @@
         "`.ai/alatyr.yaml`, `.ai/README.md`, and `.ai/assistant/context-router.json`.",
         "Select the smallest profile before reading the matching task flow.",
         "",
-        "For `Alatyr`, status/doctor, or aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,",
+        "For `Alatyr`, status/doctor, enabled team aliases, or AI aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,",
         "`alatyr-improve-ai`, `alatyr-adaptation`, `alatyr-add-ai`), read",
         "`.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.",
         "",
@@ -77,7 +77,7 @@
         "`.ai/README.md`, and `.ai/assistant/context-router.json`. Select the smallest",
         "profile before reading the matching task flow.",
         "",
-        "For `Alatyr`, status/doctor, or aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,",
+        "For `Alatyr`, status/doctor, enabled team aliases, or AI aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,",
         "`alatyr-improve-ai`, `alatyr-adaptation`, `alatyr-add-ai`), read",
         "`.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.",
         "",
@@ -88,7 +88,7 @@
       "path": "templates/target/.cursorrules",
       "lines": [
         "Ensure AGENTS.md is loaded once; if it was not preloaded by the host, read it now. Then read AI_ASSISTANTS.md, .ai/alatyr.yaml, .ai/README.md, and .ai/assistant/context-router.json. This file is a legacy bridge for Cursor-compatible tools.",
-        "For Alatyr, status/doctor, or aliases (alatyr-ai-inventory, alatyr-suggest-ai, alatyr-improve-ai, alatyr-adaptation, alatyr-add-ai), read .ai/assistant/operation-catalog.json, .ai/assistant/help.md, and .ai/assistant/flows/operation-routing.flow.md."
+        "For Alatyr, status/doctor, enabled team aliases, or AI aliases (alatyr-ai-inventory, alatyr-suggest-ai, alatyr-improve-ai, alatyr-adaptation, alatyr-add-ai), read .ai/assistant/operation-catalog.json, .ai/assistant/help.md, and .ai/assistant/flows/operation-routing.flow.md."
       ]
     },
     {
@@ -101,7 +101,7 @@
         "`.ai/README.md`, and `.ai/assistant/context-router.json`. Select the smallest",
         "profile before reading the matching task flow.",
         "",
-        "For `Alatyr`, status/doctor, or aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,",
+        "For `Alatyr`, status/doctor, enabled team aliases, or AI aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,",
         "`alatyr-improve-ai`, `alatyr-adaptation`, `alatyr-add-ai`), read",
         "`.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.",
         "",
@@ -120,7 +120,7 @@
         "`.ai/alatyr.yaml`, `.ai/README.md`, and `.ai/assistant/context-router.json`.",
         "Select the smallest profile before reading task-owned context or flows.",
         "",
-        "For `Alatyr`, status/doctor, or aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,",
+        "For `Alatyr`, status/doctor, enabled team aliases, or AI aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,",
         "`alatyr-improve-ai`, `alatyr-adaptation`, `alatyr-add-ai`), read",
         "`.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.",
         "",
@@ -143,7 +143,7 @@
         "Then read `.ai/assistant/gates/checklist.md`,",
         "`.ai/assistant/flows/logical-integrity-review.flow.md`,",
         "`.ai/framework/logical-integrity.md`, and the changed files.",
-        "For `Alatyr`, status/doctor, or aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,",
+        "For `Alatyr`, status/doctor, enabled team aliases, or AI aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,",
         "`alatyr-improve-ai`, `alatyr-adaptation`, `alatyr-add-ai`), read",
         "`.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.",
         "Return blockers first, then final evidence."
@@ -159,7 +159,7 @@
         "`.ai/README.md`, and `.ai/assistant/context-router.json`. Select the smallest",
         "profile before reading the matching task flow.",
         "",
-        "For `Alatyr`, status/doctor, or aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,",
+        "For `Alatyr`, status/doctor, enabled team aliases, or AI aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,",
         "`alatyr-improve-ai`, `alatyr-adaptation`, `alatyr-add-ai`), read",
         "`.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.",
         "",
@@ -170,7 +170,7 @@
       "path": "templates/target/.windsurfrules",
       "lines": [
         "Ensure AGENTS.md is loaded once; if it was not preloaded by the host, read it now. Then read AI_ASSISTANTS.md, .ai/alatyr.yaml, .ai/README.md, and .ai/assistant/context-router.json. This file is a legacy bridge for Windsurf-compatible tools.",
-        "For Alatyr, status/doctor, or aliases (alatyr-ai-inventory, alatyr-suggest-ai, alatyr-improve-ai, alatyr-adaptation, alatyr-add-ai), read .ai/assistant/operation-catalog.json, .ai/assistant/help.md, and .ai/assistant/flows/operation-routing.flow.md."
+        "For Alatyr, status/doctor, enabled team aliases, or AI aliases (alatyr-ai-inventory, alatyr-suggest-ai, alatyr-improve-ai, alatyr-adaptation, alatyr-add-ai), read .ai/assistant/operation-catalog.json, .ai/assistant/help.md, and .ai/assistant/flows/operation-routing.flow.md."
       ]
     }
   ]

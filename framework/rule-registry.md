@@ -36,6 +36,7 @@ Categories should be short uppercase labels such as:
 - `ADAPTER`
 - `MODULE`
 - `OPERATION`
+- `TEAM`
 - `BRIDGE`
 - `LIFECYCLE`
 - `EVIDENCE`
@@ -139,6 +140,15 @@ pre-change preview only when changed-fact risk, approval, or scope uncertainty
 requires it.
 Applies to: installed operation routing, adapter health, and changes requiring
 preview.
+
+Rule ID: `ALATYR-TEAM-001`
+Canonical source: `.ai/framework/team-collaboration.md`
+Commitment: when the optional team module is enabled, coordinate stable actor
+and task identities, priorities, changed-fact overlap, advisory claims,
+checkpoints, handoffs, decisions, reviews, and revision-bound merge readiness
+without replacing project source of truth, approvals, trackers, or target
+validation.
+Applies to: concurrent work, team handoffs, team review, and merge readiness.
 
 Rule ID: `ALATYR-BRIDGE-001`
 Canonical source: `.ai/framework/bridge-capability-matrix.md`

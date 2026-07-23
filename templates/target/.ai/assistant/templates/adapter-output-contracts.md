@@ -41,6 +41,7 @@ Use after the initial Alatyr Core installation or a scoped adapter expansion.
 - Context receipt and cost evidence: `{LOADED_FILES_VOLUME_EXPANSIONS_OR_NOT_REQUIRED}`
 - Large-task orchestration result: `{LARGE_TASK_ORCHESTRATION_RESULT_OR_SKIPPED}`
 - Operation packet template result: `{OPERATION_PACKET_TEMPLATE_RESULT_OR_SKIPPED}`
+- Team-collaboration result: `{MODULE_OWNER_BACKEND_REGISTRY_OVERLAP_HANDOFF_REVIEW_AND_GAPS_OR_SKIPPED}`
 - Source-of-truth registry result: `{SOURCE_OF_TRUTH_REGISTRY_RESULT}`
 - Consistency-map result: `{CONSISTENCY_MAP_RESULT_OR_SKIPPED}`
 - Logical integrity evidence: `{CHANGED_FACTS_RELATIONSHIPS_COMPANION_SURFACES_AND_GAPS}`
@@ -105,6 +106,7 @@ Core baseline.
 - Context receipt and cost evidence: `{LOADED_FILES_VOLUME_EXPANSIONS_OR_NOT_REQUIRED}`
 - Large-task orchestration result: `{LARGE_TASK_ORCHESTRATION_RESULT_OR_SKIPPED}`
 - Operation packet template result: `{OPERATION_PACKET_TEMPLATE_RESULT_OR_SKIPPED}`
+- Team-collaboration migration result: `{SCHEMA_ACTIVE_RECORD_PRESERVATION_STALE_CLAIMS_ROUTES_AND_GAPS_OR_SKIPPED}`
 - Source-of-truth registry result: `{SOURCE_OF_TRUTH_REGISTRY_RESULT}`
 - Consistency-map result: `{CONSISTENCY_MAP_RESULT_OR_SKIPPED}`
 - Logical integrity evidence: `{CHANGED_FACTS_RELATIONSHIPS_COMPANION_SURFACES_AND_GAPS}`
@@ -157,6 +159,7 @@ adapter.
 - Context receipt and cost evidence: `{LOADED_FILES_VOLUME_EXPANSIONS_OR_NOT_REQUIRED}`
 - Large-task orchestration result: `{LARGE_TASK_ORCHESTRATION_RESULT_OR_SKIPPED}`
 - Operation packet template result: `{OPERATION_PACKET_TEMPLATE_RESULT_OR_SKIPPED}`
+- Team-collaboration recheck result: `{MODULE_BACKEND_REGISTRY_ACTIVE_OVERLAPS_STALE_CLAIMS_HANDOFFS_REVIEWS_AND_GAPS_OR_SKIPPED}`
 - Source-of-truth registry result: `{SOURCE_OF_TRUTH_REGISTRY_RESULT}`
 - Consistency-map result: `{CONSISTENCY_MAP_RESULT_OR_SKIPPED}`
 - Logical integrity evidence: `{CHANGED_FACTS_RELATIONSHIPS_COMPANION_SURFACES_AND_GAPS}`

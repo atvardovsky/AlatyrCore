@@ -30,6 +30,10 @@ changes.
 - Existing operation catalog, installed-operation, operation-help, automatic
   routing, adapter-health, pre-change preview, blueprint-creation,
   adapter-recheck, or chat-message process:
+- Existing team operating model, stable actors, decision authority, priority
+  policy, task tracker, active tasks, claims, branch/worktree conventions,
+  reviews, checkpoints, handoffs, decisions, merge rules, storage, retention,
+  and privacy:
 - Existing adapter output contracts:
 - Existing risk or approval policy:
 - Existing security, privacy, live-service, destructive-operation, dependency,
@@ -185,6 +189,10 @@ Collect target-specific facts before writing project docs:
   framework-update review expectations
 - large-task activation, task-scale overlay, operation packet, workstream,
   checkpoint, storage, resume, and final-convergence expectations when needed
+- team-collaboration owner, backend, synchronization direction, actor and
+  authority model, priority policy, registry, claim/staleness, changed-fact
+  conflict, checkpoint, handoff, decision, review, merge-readiness, storage,
+  retention, and privacy expectations when needed
 - operation catalog, single entry, automatic routing, read-only health,
   risk-gated preview, and post-install/update assistant chat-message
   expectations
@@ -247,6 +255,9 @@ List commands or manual checks:
 - migration assessment completed before target upgrade changes:
 - effectiveness metrics review:
 - operation-catalog, automatic-routing, health, or preview review:
+- team operating model, registry schema, backend synchronization, active-record
+  preservation, overlap, claim, handoff, decision, review, merge-readiness,
+  retention, and privacy review:
 - skill/provenance/safety review:
 - AI infrastructure inventory review:
 - AI infrastructure recommendation and existing-item improvement review:
@@ -289,6 +300,10 @@ Final evidence must say:
 - large-task orchestration is enabled or skipped from target evidence; enabled
   adapters define activation, packet storage, bounded resume context,
   checkpoints, and global convergence
+- team collaboration is enabled or skipped from target evidence; enabled
+  adapters define an operating-model owner, backend and synchronization
+  direction, stable actor/authority/priority evidence, registry, conflict
+  policy, record storage, retention/privacy, and revision-bound review evidence
 - adapter drift checks run or recorded as manual/unresolved, including local
   path leakage, stale checker statements, duplicate profile references,
   unresolved owner placeholders, and target-local checker status
@@ -302,6 +317,9 @@ Final evidence must say:
   skipped
 - adapter output contracts added or skipped
 - large-task flow and operation-packet template added or skipped
+- team operating model, work registry, team-active overlay, task/handoff/
+  decision/review flows, team gate, and checkpoint/handoff/decision templates
+  added, migrated, skipped, or blocked without overwriting active target state
 - AI infrastructure inventory report template added or skipped
 - AI infrastructure recommendation flow and report template added or skipped
 - development-evidence index and lazy capture flow added or skipped

@@ -46,6 +46,24 @@ Load only the active workstream context, changed-fact owners, and
 dependencies. Record checkpoints and one global convergence review. Do not
 create a packet for a small task.
 
+## Task-Scale Overlay: `team-active`
+
+Activate only for team status, task start/claim/release, concurrent-work
+conflict review, checkpoint, handoff, team decision, review, or merge
+readiness. Load `.ai/assistant/team/context-overlay.json`, then its required
+context:
+
+- `.ai/framework/team-collaboration.md`
+- `.ai/project/team-operating-model.md`
+- `.ai/assistant/team/work-registry.json`
+- `.ai/assistant/gates/team-collaboration.md`
+- only the selected team flow
+
+Load only the selected task projection, possibly overlapping active tasks,
+changed-fact owners, dependencies, current checkpoint, and handoff. Do not load
+all team history. Compose with `large-or-resumable` only when both activation
+gates apply.
+
 ## Optional Consistency Relationship Routing
 
 When the `consistency-map` module is enabled and a semantic fact changes or

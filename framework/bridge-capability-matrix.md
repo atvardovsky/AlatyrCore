@@ -36,6 +36,9 @@ For each supported assistant, record:
   canonical flow on every supported surface
 - whether AI infrastructure inventory, recommendation, and adaptation aliases
   are routed
+- whether enabled team status, task, conflict, handoff, decision, review, and
+  merge-check requests route through the canonical catalog and lazy team
+  overlay
 - whether selected AI infrastructure items route through canonical target
   permissions, gates, validation, and output contracts
 - known limitations
@@ -80,6 +83,8 @@ Each bridge should:
   the target
 - route selected AI infrastructure work through the canonical target router
   instead of choosing item content from a bridge
+- route enabled team operations through the canonical catalog and
+  `.ai/assistant/team/context-overlay.json` instead of embedding team policy
 - avoid duplicating full framework, project, or adapter policy
 - avoid becoming a source of truth for project facts
 - state assistant-specific limitations only when target evidence supports

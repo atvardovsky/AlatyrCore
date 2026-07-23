@@ -40,6 +40,7 @@ OPTIONAL_MODULES = [
     "multi-assistant-bridges",
     "installed-operations",
     "large-task-orchestration",
+    "team-collaboration",
     "durable-approvals",
     "migration-diff",
     "effectiveness-metrics",
@@ -177,6 +178,16 @@ def main() -> int:
     ]:
         if required not in ai_infrastructure:
             failures.append(f"module ai-infrastructure missing required file {required}")
+
+    team_collaboration = module_blocks.get("team-collaboration", "")
+    for required in [
+        ".ai/project/team-operating-model.md",
+        ".ai/assistant/team/context-overlay.json",
+        ".ai/assistant/team/work-registry.json",
+        ".ai/assistant/gates/team-collaboration.md",
+    ]:
+        if required not in team_collaboration:
+            failures.append(f"module team-collaboration missing required file {required}")
 
     duplicate_core = [
         item

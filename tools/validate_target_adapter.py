@@ -131,6 +131,7 @@ MANIFEST_PATH_SCALARS: set[PathKey] = {
     ("source_of_truth", "registry"),
     ("source_of_truth", "development_evidence"),
     ("source_of_truth", "consistency_map"),
+    ("source_of_truth", "team_operating_model"),
     ("source_of_truth", "assistant_contour"),
     ("source_of_truth", "context_router"),
     ("source_of_truth", "context_profiles"),
@@ -154,6 +155,10 @@ MANIFEST_PATH_SCALARS: set[PathKey] = {
     ("approvals", "machine_template"),
     ("policies", "source_access"),
     ("policies", "prompt_injection"),
+    ("team_collaboration", "operating_model"),
+    ("team_collaboration", "context_overlay"),
+    ("team_collaboration", "work_registry"),
+    ("team_collaboration", "gate"),
 }
 
 UNRESOLVED_WORDS = {
@@ -265,6 +270,19 @@ OPERATION_LIST_FIELDS = {
 
 def repair_operation_for(code: str) -> str:
     routes = [
+        (("TEAM_MERGE_",), "team-merge-check"),
+        (("TEAM_REVIEW_",), "team-review"),
+        (("TEAM_OVERLAP_", "TEAM_ACTIVE_OVERLAP_"), "team-conflict-review"),
+        (
+            (
+                "TEAM_TASK_",
+                "TEAM_CLAIM_",
+                "TEAM_ACTIVE_CLAIM_",
+                "TEAM_TERMINAL_TASK_",
+            ),
+            "team-task",
+        ),
+        (("TEAM_",), "team-status"),
         (("FRAMEWORK_", "MIGRATION_"), "recheck-after-framework-update"),
         (("AI_", "PROMPT_", "DEVELOPMENT_EVIDENCE_"), "ai-infrastructure-recommendation"),
         (("CONSISTENCY_", "SOURCE_"), "logical-integrity-review"),
@@ -470,6 +488,7 @@ class Validator:
         self.check_consistency_map()
         self.check_ai_infrastructure_router()
         self.check_development_evidence(manifest)
+        self.check_team_collaboration(manifest)
         self.check_bootstrap_references()
         self.check_placeholders()
         self.check_local_paths()
@@ -998,6 +1017,40 @@ class Validator:
                     else:
                         routed_ids.add(candidate)
 
+        overlays = router.get("task_scale_overlays")
+        if isinstance(overlays, dict):
+            for overlay_name, overlay_data in overlays.items():
+                if not isinstance(overlay_data, dict):
+                    continue
+                candidate_source = overlay_data
+                descriptor = overlay_data.get("descriptor")
+                if isinstance(descriptor, str):
+                    loaded = self.load_json_object(
+                        self.target_path(descriptor),
+                        "CONTEXT_OVERLAY",
+                    )
+                    if loaded is not None:
+                        candidate_source = loaded
+                candidates = candidate_source.get("operation_candidates")
+                if candidates is None:
+                    continue
+                if not isinstance(candidates, list):
+                    self.error(
+                        "OPERATION_CANDIDATE_SHAPE",
+                        f"task-scale overlay {overlay_name} operation_candidates must be a list",
+                        ".ai/assistant/context-router.json",
+                    )
+                    continue
+                for candidate in candidates:
+                    if not isinstance(candidate, str) or candidate not in operation_ids:
+                        self.error(
+                            "OPERATION_CANDIDATE_UNKNOWN",
+                            f"task-scale overlay {overlay_name} references unknown operation {candidate}",
+                            ".ai/assistant/context-router.json",
+                        )
+                    else:
+                        routed_ids.add(candidate)
+
         unrouted = sorted(operation_ids - routed_ids - {"help", "large-task"})
         if unrouted:
             self.warn(
@@ -1476,6 +1529,584 @@ class Validator:
                     relpath,
                 )
 
+    def check_team_collaboration(self, manifest: ManifestData | None) -> None:
+        model_key = ("team_collaboration", "operating_model")
+        source_model_key = ("source_of_truth", "team_operating_model")
+        registry_key = ("team_collaboration", "work_registry")
+        model_scalar = manifest.scalars.get(model_key) if manifest else None
+        if not model_scalar and manifest:
+            model_scalar = manifest.scalars.get(source_model_key)
+        registry_scalar = manifest.scalars.get(registry_key) if manifest else None
+        model_relpath = (
+            model_scalar.value
+            if model_scalar
+            else ".ai/project/team-operating-model.md"
+        )
+        registry_relpath = (
+            registry_scalar.value
+            if registry_scalar
+            else ".ai/assistant/team/work-registry.json"
+        )
+        model_path = self.target_path(model_relpath)
+        registry_path = self.target_path(registry_relpath)
+
+        if not model_path.exists() and not registry_path.exists():
+            return
+        if not model_path.is_file():
+            self.error(
+                "TEAM_OPERATING_MODEL_MISSING",
+                "team work registry exists without its target-owned operating model",
+                model_relpath,
+            )
+            return
+        if not registry_path.is_file():
+            self.error(
+                "TEAM_REGISTRY_MISSING",
+                "team operating model exists without its machine-readable work registry",
+                registry_relpath,
+            )
+            return
+
+        registry = self.load_json_object(registry_path, "TEAM_REGISTRY")
+        if registry is None:
+            return
+        if registry.get("schema_version") != 1:
+            self.error(
+                "TEAM_REGISTRY_SCHEMA",
+                "schema_version should be 1",
+                registry_relpath,
+            )
+        if registry.get("registry_kind") != "target-team-work-registry":
+            self.error(
+                "TEAM_REGISTRY_KIND",
+                "registry_kind should be target-team-work-registry",
+                registry_relpath,
+            )
+
+        metadata_fields = [
+            "project",
+            "module_state",
+            "coordination_backend",
+            "canonical_task_source",
+            "synchronization_direction",
+            "operating_model",
+            "updated_at",
+            "evidence_revision",
+            "storage_policy",
+            "retention_policy",
+            "privacy_policy",
+        ]
+        for field in metadata_fields:
+            value = registry.get(field)
+            if not isinstance(value, str) or not value.strip():
+                self.error(
+                    "TEAM_REGISTRY_METADATA",
+                    f"{field} must be a non-empty string",
+                    registry_relpath,
+                )
+        module_state = registry.get("module_state")
+        if concrete_state := (
+            isinstance(module_state, str)
+            and not is_placeholder(module_state)
+            and not is_unresolved_value(module_state)
+        ):
+            if module_state not in {
+                "enabled",
+                "deferred",
+                "disabled",
+                "not-applicable",
+                "blocked",
+            }:
+                self.error(
+                    "TEAM_MODULE_STATE",
+                    f"module_state is invalid: {module_state}",
+                    registry_relpath,
+                )
+        if concrete_state and module_state == "enabled":
+            for field in [
+                "project",
+                "coordination_backend",
+                "canonical_task_source",
+                "synchronization_direction",
+                "storage_policy",
+                "retention_policy",
+                "privacy_policy",
+            ]:
+                value = registry.get(field)
+                if not isinstance(value, str) or is_unresolved_value(value):
+                    self.error(
+                        "TEAM_ENABLED_METADATA_UNRESOLVED",
+                        f"enabled team module requires resolved {field}",
+                        registry_relpath,
+                    )
+        if registry.get("operating_model") != model_relpath:
+            self.error(
+                "TEAM_REGISTRY_OPERATING_MODEL",
+                f"operating_model should point to {model_relpath}",
+                registry_relpath,
+            )
+
+        model_text = self.read_text(model_path)
+        actor_ids = {
+            match.group(1)
+            for match in re.finditer(r"^### Actor `([^`]+)`$", model_text, re.MULTILINE)
+            if not is_placeholder(match.group(1))
+        }
+        priority_ids = {
+            match.group(1)
+            for match in re.finditer(
+                r"^### Priority `([^`]+)`$",
+                model_text,
+                re.MULTILINE,
+            )
+            if not is_placeholder(match.group(1))
+        }
+
+        tasks = registry.get("tasks")
+        if not isinstance(tasks, list):
+            self.error(
+                "TEAM_REGISTRY_TASKS",
+                "tasks must be a list",
+                registry_relpath,
+            )
+            return
+
+        task_statuses = {
+            "proposed",
+            "ready",
+            "claimed",
+            "active",
+            "blocked",
+            "review",
+            "merge-ready",
+            "complete",
+            "cancelled",
+            "stale",
+        }
+        overlap_states = {
+            "none",
+            "compatible",
+            "sequencing-required",
+            "conflicting",
+            "unresolved",
+        }
+        claim_states = {
+            "unclaimed",
+            "active",
+            "released",
+            "expired",
+            "invalidated",
+            "unverified",
+        }
+        validation_states = {"not-run", "passed", "failed", "partial", "unresolved"}
+        review_states = {
+            "not-required",
+            "pending",
+            "changes-requested",
+            "approved",
+            "unresolved",
+        }
+        handoff_states = {"none", "pending", "accepted", "rejected", "stale"}
+        required_strings = [
+            "id",
+            "goal",
+            "priority",
+            "priority_rationale",
+            "priority_decided_by",
+            "status",
+            "owner_actor_id",
+            "parent_request",
+            "coordination_backend_ref",
+            "branch_or_worktree",
+            "base_revision",
+            "evidence_revision",
+            "review_state",
+            "validation_state",
+            "latest_checkpoint",
+            "handoff_state",
+            "next_action",
+            "updated_at",
+        ]
+        list_fields = [
+            "non_goals",
+            "reviewer_actor_ids",
+            "allowed_actions",
+            "context_profiles",
+            "project_areas",
+            "changed_fact_ids",
+            "canonical_owner_refs",
+            "expected_surfaces",
+            "dependencies",
+            "blockers",
+            "related_task_ids",
+            "approval_records",
+            "review_evidence_refs",
+            "decision_records",
+            "residual_risks",
+        ]
+        task_ids: set[str] = set()
+        current_head = git_head_revision(self.target)
+
+        def concrete(value: Any) -> bool:
+            return (
+                isinstance(value, str)
+                and bool(value.strip())
+                and not is_placeholder(value)
+                and value.strip().lower()
+                not in {"none", "unavailable", "not available", "not recorded"}
+            )
+
+        def check_actor(value: Any, label: str) -> None:
+            if not concrete(value):
+                return
+            if value not in actor_ids:
+                self.error(
+                    "TEAM_ACTOR_UNKNOWN",
+                    f"{label} references actor {value!r} absent from the operating model",
+                    registry_relpath,
+                )
+
+        for index, task in enumerate(tasks):
+            label = f"tasks[{index}]"
+            if not isinstance(task, dict):
+                self.error(
+                    "TEAM_TASK_SHAPE",
+                    f"{label} must be an object",
+                    registry_relpath,
+                )
+                continue
+            for field in required_strings:
+                value = task.get(field)
+                if not isinstance(value, str) or not value.strip():
+                    self.error(
+                        "TEAM_TASK_FIELD",
+                        f"{label}.{field} must be a non-empty string",
+                        registry_relpath,
+                    )
+            for field in list_fields:
+                values = task.get(field)
+                if not isinstance(values, list) or not all(
+                    isinstance(value, str) and value for value in values
+                ):
+                    self.error(
+                        "TEAM_TASK_LIST",
+                        f"{label}.{field} must be a string list",
+                        registry_relpath,
+                    )
+                    continue
+                if field == "allowed_actions":
+                    self.check_allowed_actions(
+                        values,
+                        registry_relpath,
+                        f"{label}.{field}",
+                    )
+
+            task_id = task.get("id")
+            if concrete(task_id):
+                if task_id in task_ids:
+                    self.error(
+                        "TEAM_TASK_DUPLICATE",
+                        f"duplicate task id {task_id}",
+                        registry_relpath,
+                    )
+                task_ids.add(task_id)
+
+            status = task.get("status")
+            if concrete(status) and status not in task_statuses:
+                self.error(
+                    "TEAM_TASK_STATUS",
+                    f"{label}.status is invalid: {status}",
+                    registry_relpath,
+                )
+            priority = task.get("priority")
+            if concrete(priority) and priority not in priority_ids:
+                self.error(
+                    "TEAM_PRIORITY_UNKNOWN",
+                    f"{label}.priority references {priority!r} absent from the operating model",
+                    registry_relpath,
+                )
+            review_state = task.get("review_state")
+            if concrete(review_state) and review_state not in review_states:
+                self.error(
+                    "TEAM_REVIEW_STATE",
+                    f"{label}.review_state is invalid: {review_state}",
+                    registry_relpath,
+                )
+            validation_state = task.get("validation_state")
+            if concrete(validation_state) and validation_state not in validation_states:
+                self.error(
+                    "TEAM_VALIDATION_STATE",
+                    f"{label}.validation_state is invalid: {validation_state}",
+                    registry_relpath,
+                )
+            handoff_state = task.get("handoff_state")
+            if concrete(handoff_state) and handoff_state not in handoff_states:
+                self.error(
+                    "TEAM_HANDOFF_STATE",
+                    f"{label}.handoff_state is invalid: {handoff_state}",
+                    registry_relpath,
+                )
+
+            check_actor(task.get("owner_actor_id"), f"{label}.owner_actor_id")
+            check_actor(task.get("priority_decided_by"), f"{label}.priority_decided_by")
+            reviewers = task.get("reviewer_actor_ids")
+            if isinstance(reviewers, list):
+                for reviewer_index, reviewer in enumerate(reviewers):
+                    check_actor(
+                        reviewer,
+                        f"{label}.reviewer_actor_ids[{reviewer_index}]",
+                    )
+
+            overlap = task.get("overlap")
+            overlap_state: Any = None
+            if not isinstance(overlap, dict):
+                self.error(
+                    "TEAM_OVERLAP_SHAPE",
+                    f"{label}.overlap must be an object",
+                    registry_relpath,
+                )
+            else:
+                overlap_state = overlap.get("state")
+                for field in ["state", "checked_at", "checked_revision", "resolution"]:
+                    value = overlap.get(field)
+                    if not isinstance(value, str) or not value.strip():
+                        self.error(
+                            "TEAM_OVERLAP_FIELD",
+                            f"{label}.overlap.{field} must be a non-empty string",
+                            registry_relpath,
+                        )
+                for field in [
+                    "fact_ids",
+                    "contract_or_dependency_refs",
+                    "file_or_surface_refs",
+                ]:
+                    values = overlap.get(field)
+                    if not isinstance(values, list) or not all(
+                        isinstance(value, str) and value for value in values
+                    ):
+                        self.error(
+                            "TEAM_OVERLAP_LIST",
+                            f"{label}.overlap.{field} must be a string list",
+                            registry_relpath,
+                        )
+                if concrete(overlap_state) and overlap_state not in overlap_states:
+                    self.error(
+                        "TEAM_OVERLAP_STATE",
+                        f"{label}.overlap.state is invalid: {overlap_state}",
+                        registry_relpath,
+                    )
+
+            claim = task.get("claim")
+            claim_state: Any = None
+            if not isinstance(claim, dict):
+                self.error(
+                    "TEAM_CLAIM_SHAPE",
+                    f"{label}.claim must be an object",
+                    registry_relpath,
+                )
+            else:
+                claim_state = claim.get("state")
+                for field in [
+                    "mode",
+                    "actor_id",
+                    "claimed_at",
+                    "expires_at",
+                    "base_revision",
+                    "state",
+                ]:
+                    value = claim.get(field)
+                    if not isinstance(value, str) or not value.strip():
+                        self.error(
+                            "TEAM_CLAIM_FIELD",
+                            f"{label}.claim.{field} must be a non-empty string",
+                            registry_relpath,
+                        )
+                if concrete(claim_state) and claim_state not in claim_states:
+                    self.error(
+                        "TEAM_CLAIM_STATE",
+                        f"{label}.claim.state is invalid: {claim_state}",
+                        registry_relpath,
+                    )
+                claim_mode = claim.get("mode")
+                if concrete(claim_mode) and claim_mode not in {
+                    "advisory",
+                    "target-enforced",
+                }:
+                    self.error(
+                        "TEAM_CLAIM_MODE",
+                        f"{label}.claim.mode is invalid: {claim_mode}",
+                        registry_relpath,
+                    )
+                check_actor(claim.get("actor_id"), f"{label}.claim.actor_id")
+                if claim_state == "active":
+                    for field in ["actor_id", "claimed_at", "base_revision"]:
+                        if not concrete(claim.get(field)):
+                            self.error(
+                                "TEAM_ACTIVE_CLAIM_INCOMPLETE",
+                                f"{label}.claim.{field} is required for an active claim",
+                                registry_relpath,
+                            )
+
+            if status in {"claimed", "active"} and claim_state != "active":
+                self.warn(
+                    "TEAM_ACTIVE_TASK_WITHOUT_CLAIM",
+                    f"{label} is {status} without an active claim",
+                    registry_relpath,
+                )
+            if status in {"complete", "cancelled"} and claim_state == "active":
+                self.warn(
+                    "TEAM_TERMINAL_TASK_ACTIVE_CLAIM",
+                    f"{label} is {status} but still has an active claim",
+                    registry_relpath,
+                )
+            if status in {"claimed", "active", "review", "merge-ready"} and overlap_state in {
+                "conflicting",
+                "unresolved",
+            }:
+                report = self.error if status == "merge-ready" else self.warn
+                report(
+                    "TEAM_ACTIVE_OVERLAP_BLOCKED",
+                    f"{label} is {status} with {overlap_state} overlap",
+                    registry_relpath,
+                )
+
+            task_revision = task.get("evidence_revision")
+            if status == "merge-ready":
+                if review_state not in {"approved", "not-required"}:
+                    self.error(
+                        "TEAM_MERGE_READY_REVIEW",
+                        f"{label} is merge-ready without approved or explicitly "
+                        "not-required review state",
+                        registry_relpath,
+                    )
+                review_evidence = task.get("review_evidence_refs")
+                if not isinstance(review_evidence, list) or not any(
+                    concrete(reference) for reference in review_evidence
+                ):
+                    self.error(
+                        "TEAM_MERGE_READY_REVIEW_EVIDENCE",
+                        f"{label} is merge-ready without review evidence",
+                        registry_relpath,
+                    )
+                if validation_state != "passed":
+                    self.error(
+                        "TEAM_MERGE_READY_VALIDATION",
+                        f"{label} is merge-ready without passed validation",
+                        registry_relpath,
+                    )
+                if overlap_state not in {"none", "compatible"}:
+                    self.error(
+                        "TEAM_MERGE_READY_OVERLAP",
+                        f"{label} is merge-ready without resolved overlap",
+                        registry_relpath,
+                    )
+                if review_state == "approved" and (
+                    not isinstance(reviewers, list)
+                    or not any(concrete(reviewer) for reviewer in reviewers)
+                ):
+                    self.error(
+                        "TEAM_MERGE_READY_REVIEWERS",
+                        f"{label} has approved review state without a recorded reviewer",
+                        registry_relpath,
+                    )
+                for field in ["base_revision", "evidence_revision"]:
+                    if not concrete(task.get(field)):
+                        self.error(
+                            "TEAM_MERGE_READY_REVISION",
+                            f"{label}.{field} is required for merge-ready evidence",
+                            registry_relpath,
+                        )
+                if (
+                    current_head
+                    and concrete(task_revision)
+                    and not refs_match(self.target, str(task_revision), current_head)
+                ):
+                    self.warn(
+                        "TEAM_MERGE_READY_STALE",
+                        f"{label} evidence revision does not match this checkout's "
+                        "HEAD; confirm its selected branch or worktree before merge",
+                        registry_relpath,
+                    )
+
+        registry_revision = registry.get("evidence_revision")
+        if (
+            current_head
+            and concrete(registry_revision)
+            and not refs_match(self.target, str(registry_revision), current_head)
+        ):
+            self.warn(
+                "TEAM_REGISTRY_REVISION_STALE",
+                "team work registry evidence revision does not match current HEAD",
+                registry_relpath,
+            )
+
+        router_path = self.target_path(".ai/assistant/context-router.json")
+        router = self.load_json_object(router_path, "ROUTER")
+        overlay_route = (
+            router.get("task_scale_overlays", {}).get("team-active")
+            if isinstance(router, dict)
+            and isinstance(router.get("task_scale_overlays"), dict)
+            else None
+        )
+        if not isinstance(overlay_route, dict):
+            self.error(
+                "TEAM_CONTEXT_OVERLAY_MISSING",
+                "enabled team artifacts require the team-active context overlay",
+                ".ai/assistant/context-router.json",
+            )
+            return
+        descriptor = overlay_route.get("descriptor")
+        if not isinstance(descriptor, str) or not descriptor:
+            self.error(
+                "TEAM_CONTEXT_OVERLAY_DESCRIPTOR",
+                "team-active must identify its lazy descriptor",
+                ".ai/assistant/context-router.json",
+            )
+            return
+        overlay = self.load_json_object(
+            self.target_path(descriptor),
+            "TEAM_CONTEXT_OVERLAY",
+        )
+        if overlay is not None:
+            if overlay.get("schema_version") != 1:
+                self.error(
+                    "TEAM_CONTEXT_OVERLAY_SCHEMA",
+                    "schema_version should be 1",
+                    descriptor,
+                )
+            if overlay.get("overlay_kind") != "target-team-context-overlay":
+                self.error(
+                    "TEAM_CONTEXT_OVERLAY_KIND",
+                    "overlay_kind should be target-team-context-overlay",
+                    descriptor,
+                )
+            if overlay.get("overlay_id") != "team-active":
+                self.error(
+                    "TEAM_CONTEXT_OVERLAY_ID",
+                    "overlay_id should be team-active",
+                    descriptor,
+                )
+            required_context = overlay.get("required_context")
+            if not isinstance(required_context, list):
+                self.error(
+                    "TEAM_CONTEXT_OVERLAY_SHAPE",
+                    "team-active required_context must be a list",
+                    descriptor,
+                )
+            else:
+                for required_path in [
+                    ".ai/framework/team-collaboration.md",
+                    model_relpath,
+                    registry_relpath,
+                    ".ai/assistant/gates/team-collaboration.md",
+                ]:
+                    if required_path not in required_context:
+                        self.error(
+                            "TEAM_CONTEXT_OVERLAY_PATH",
+                            f"team-active required_context is missing {required_path}",
+                            descriptor,
+                        )
+
     def load_json_object(self, path: Path, code_prefix: str) -> dict[str, Any] | None:
         if not path.is_file():
             return None
@@ -1651,6 +2282,13 @@ class Validator:
             self.target_path(".ai/assistant/maturity-profile.md"),
             self.target_path(".ai/assistant/gates/checklist.md"),
             self.target_path(".ai/assistant/operation-catalog.json"),
+            self.target_path(".ai/project/team-operating-model.md"),
+            self.target_path(".ai/assistant/team/context-overlay.json"),
+            self.target_path(".ai/assistant/team/work-registry.json"),
+            self.target_path(".ai/assistant/gates/team-collaboration.md"),
+            self.target_path(".ai/assistant/templates/team-checkpoint.md"),
+            self.target_path(".ai/assistant/templates/team-handoff.md"),
+            self.target_path(".ai/assistant/templates/team-decision-record.md"),
         ]
         flows = self.target_path(".ai/assistant/flows")
         if flows.is_dir():

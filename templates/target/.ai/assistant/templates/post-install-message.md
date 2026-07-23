@@ -22,6 +22,7 @@ Entry points:
 - `.ai/assistant/module-profile.md`
 - `.ai/project/source-of-truth-registry.md`
 - `.ai/project/consistency-map.json` when the optional module is enabled
+- `.ai/project/team-operating-model.md` and `.ai/assistant/team/work-registry.json` when team collaboration is enabled
 - `.ai/assistant/maturity-profile.md`
 - `.ai/assistant/bridge-capability-matrix.md`
 - `.ai/assistant/ai-infrastructure-router.json` when AI infrastructure is enabled
@@ -39,6 +40,7 @@ Installed operation help:
 - Clear development requests route automatically; operation IDs are optional.
 - Risky or cross-boundary changes show a pre-change preview before edits.
 - Use `.ai/assistant/templates/operation-request.md` for structured requests.
+- When team collaboration is enabled, use `Alatyr team status`, `Alatyr start`, `Alatyr claim`, `Alatyr conflicts`, `Alatyr checkpoint`, `Alatyr handoff`, `Alatyr decision`, `Alatyr review`, `Alatyr merge check`, or `Alatyr release`.
 
 Available next actions:
 - `create-project-blueprint`: create or repair project source-of-truth docs from target evidence.
@@ -46,6 +48,7 @@ Available next actions:
 - `product-change`: run blueprint-driven change from intent through validation and evidence.
 - `logical-integrity-review`: check consistency across code, docs, tests, diagrams, prompts, skills, gates, and bridges.
 - `large-task`: coordinate cross-boundary or resumable work with bounded workstreams, checkpoints, and final convergence.
+- `team-status` and related team operations: coordinate target-owned actors, tasks, changed-fact conflicts, handoffs, decisions, reviews, and revision-bound merge readiness when the optional module is enabled.
 - `ai-infrastructure-inventory`: check existing AI instructions, prompts, skills, wrappers, bridges, rules, MCP/tool configs, gates, and checkers. Alias: `alatyr-ai-inventory`.
 - `ai-infrastructure-recommendation`: suggest new items or improvements to existing items from bounded project evidence in read-only mode. Aliases: `alatyr-suggest-ai <scope>`, `alatyr-improve-ai <item-id>`.
 - `skill-adaptation`: adapt or add skills, prompts, wrappers, bridges, rules, MCP/tool configs, gates, checkers, or third-party assistant infrastructure. Aliases: `alatyr-adaptation <source>`, `alatyr-add-ai <source>`.

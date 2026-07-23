@@ -45,6 +45,10 @@ List what must not be changed.
 - Project-area overlays:
 - Task-scale overlays and large-task activation rules:
 - Large-task packet storage, retention, or ignore policy:
+- Team-collaboration need and team-active activation rules:
+- Team operating-model owner, coordination backend, and synchronization:
+- Stable actors, decision authority, priority, review, and escalation policy:
+- Work registry, active task/claim migration, storage, retention, and privacy:
 - Adapter owner metadata:
 - CODEOWNERS or equivalent owner map:
 - Module profile:
@@ -191,6 +195,16 @@ Include `.ai/assistant/flows/large-task-orchestration.flow.md` and
 cross-boundary, multi-workstream, budget-exceeding, or resumable operations.
 Record where completed packets are stored, ignored, redacted, or removed.
 
+Include `.ai/project/team-operating-model.md`,
+`.ai/assistant/team/context-overlay.json`,
+`.ai/assistant/team/work-registry.json`, the team task/handoff/decision/review
+flows, `.ai/assistant/gates/team-collaboration.md`, and checkpoint/handoff/
+decision templates only when the target enables team collaboration. Derive
+actors, authority, priority, backend, review, retention, and privacy from
+target evidence. Start with an empty registry unless active tasks are
+explicitly reviewed. For upgrades, preserve task IDs, claims, handoffs,
+decisions, and external references before schema changes.
+
 ## Context, Risk, Safety, Testing, And Diagram Adaptation
 
 - Target context entry points:
@@ -204,6 +218,9 @@ Record where completed packets are stored, ignored, redacted, or removed.
 - Project-area overlays:
 - Task-scale overlays:
 - Large-task activation, packet storage, and resume rules:
+- Team-active routing, backend synchronization, active-task projection,
+  changed-fact conflict, claim/staleness, checkpoint, handoff, decision,
+  review, merge-readiness, storage, retention, and privacy rules:
 - Required core profile:
 - Adapter owner, backup owner, review cadence, and last review:
 - CODEOWNERS or equivalent owner map:
@@ -281,7 +298,8 @@ List assistant-specific bridge files to create, update, skip, or preserve.
 Also state how root `AGENTS.md`, `AI_ASSISTANTS.md`, and supported bridge
 files will point future sessions to the installation note, compact help,
 operation catalog, and operation-routing flow, including `Alatyr`, read-only
-status/doctor aliases, and risk-gated preview behavior.
+status/doctor aliases, risk-gated preview behavior, and optional team aliases
+through the canonical catalog.
 
 State whether CODEOWNERS or an equivalent owner map exists for root assistant
 entry points and supported bridge files.
@@ -327,4 +345,6 @@ List drift, overwrite, unsupported-assistant, gate, security, diagram,
 maturity, lifecycle, installed-operation, operation-help, context-profile,
 context-router, local-path leakage, target-local checker, approval-record,
 prompt-injection, skill-adaptation, source-access, migration-diff,
-effectiveness-metrics, scaffolding, and validation risks.
+effectiveness-metrics, team identity/authority, active-record overwrite,
+concurrent overlap, stale claim/handoff/review evidence, privacy, scaffolding,
+and validation risks.

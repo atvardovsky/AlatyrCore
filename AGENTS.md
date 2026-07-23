@@ -85,6 +85,7 @@ policy wording.
 - Logical integrity evidence: `ALATYR-INTEGRITY-001`
 - Lifecycle and versioning: `ALATYR-LIFECYCLE-001`
 - Installed operation control surface: `ALATYR-OPERATION-001`
+- Optional team collaboration: `ALATYR-TEAM-001`
 
 ## Operating Rules
 
@@ -167,6 +168,7 @@ python3 tools/check_rule_ownership.py
 python3 tools/check_scaffold_profiles.py
 python3 tools/check_source_of_truth_registry.py
 python3 tools/check_target_adapter_validator.py
+python3 tools/check_team_collaboration.py
 python3 tools/check_versioning.py
 python3 tools/summarize_effectiveness_benchmark.py
 ```

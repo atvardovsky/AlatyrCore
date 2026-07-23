@@ -43,10 +43,11 @@
     "fallback_operation": "help",
     "health_operation": "adapter-health",
     "single_entry_alias": "Alatyr",
-    "load_catalog_when": [
-      "Alatyr entry or status",
-      "ambiguity",
-      "handoff or repair"
+      "load_catalog_when": [
+        "Alatyr entry or status",
+        "ambiguity",
+        "handoff or repair",
+        "team coordination request"
     ],
     "automatic_when": "single enabled sufficient match",
     "preview_policy": "risk-gated"
@@ -130,6 +131,7 @@
       ".ai/framework/security-safety-guidance.md",
       ".ai/framework/skill-adaptation.md",
       ".ai/framework/source-of-truth-registry.md",
+      ".ai/framework/team-collaboration.md",
       ".ai/framework/testing-guidance.md"
     ],
     "expand_when": [
@@ -173,6 +175,12 @@
         "global logical integrity result",
         "final convergence and residual risk"
       ]
+    },
+    "team-active": {
+      "use_when": [
+        "team coordination request"
+      ],
+      "descriptor": ".ai/assistant/team/context-overlay.json"
     }
   },
   "area_overlays": {

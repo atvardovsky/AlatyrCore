@@ -145,6 +145,9 @@ Before accepting a change, check:
 - `python3 tools/check_target_adapter_validator.py` passes when portable target
   validator routing, route-map schemas, strict complete changed-path approval
   scope matching, Git diff collection, or evidence classification changes.
+- `python3 tools/check_team_collaboration.py` passes when the optional team
+  rule, operating model, lazy overlay, registry, flows, records, gate,
+  operation routes, help aliases, or manifest wiring changes.
 - `python3 tools/check_versioning.py` passes when source versions, changelog,
   release process, migration evidence, adapter schema version, or template
   version changes.
@@ -245,8 +248,11 @@ Before accepting a change, check:
   residual risks, and final evidence fields.
 - target bridge capability matrix baseline entries include assistant surface,
   bridge paths, auto-load behavior, instruction priority, supported surfaces,
-  tool permission model, help and AI-infrastructure alias routing, known
-  limitations, and conformance check fields.
+  tool permission model, help, team-operation, and AI-infrastructure alias
+  routing, known limitations, and conformance check fields.
+- optional team rule, operating model, lazy overlay, registry, flows, records,
+  gate, catalog, module profile, installation/update migration, and validator
+  contracts agree without adding team state to routine bootstrap.
 - rule registry, scaffolding helper, conformance fixtures, conformance report
   contracts, migration-diff guidance, and effectiveness metrics agree with
   checker rules.

@@ -137,6 +137,19 @@ The overlay does not authorize loading every profile. Resume from the compact
 bootstrap, packet, active workstream context, changed-fact owners, and
 dependencies. Do not create a packet for a small task that fits one profile.
 
+## Team-Active Tasks
+
+When the optional team module is enabled, use a `team-active` task-scale
+overlay for team status, claims, concurrent-work checks, checkpoints, handoffs,
+team review, or merge readiness. Load the target team operating model, compact
+work registry or selected task projection, relevant team flow and gate, and
+only the selected task's changed-fact owners and dependencies.
+
+Compose `team-active` with `large-or-resumable` only when the task satisfies
+both activation gates. Do not load the full team history or all active tasks
+when registry metadata proves they cannot overlap the selected facts,
+contracts, dependencies, or surfaces.
+
 ## Expansion Rules
 
 Expand context when:

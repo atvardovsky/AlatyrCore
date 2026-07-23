@@ -95,6 +95,13 @@ Derived surfaces: target operation catalog, automatic routing flow, compact
 help, adapter health flow, pre-change preview, manifest operation paths,
 assistant bridges.
 
+Category: `TEAM`
+Owner: `.ai/framework/team-collaboration.md`
+Rule IDs: `ALATYR-TEAM-001`
+Derived surfaces: target team operating model, work registry, task claims,
+conflict review, checkpoints, handoffs, decision records, team review,
+merge-readiness evidence, operation routes, and team-active context overlay.
+
 Category: `BRIDGE`
 Owner: `.ai/framework/bridge-capability-matrix.md`
 Rule IDs: `ALATYR-BRIDGE-001`

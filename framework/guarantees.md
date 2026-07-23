@@ -43,6 +43,9 @@ The framework commits to giving an assistant a defined process for:
   implementation, validation, diagrams, and final evidence
 - coordinating large or resumable changes through bounded workstreams,
   context receipts, checkpoints, and final convergence evidence
+- coordinating enabled team work through target-owned actors and authority,
+  changed-fact-first overlap checks, bounded handoffs, and revision-bound
+  review evidence
 - analyzing the target stack and risk profile before recommending test levels
   or structure
 - reasoning about diagram source/visual synchronization without hard-coding a
@@ -145,6 +148,8 @@ defines:
 - task-specific maturity and blocking criteria
 - migration notes for framework upgrades
 - prompt-injection and source-access policies for imported AI infrastructure
+- team operating model, coordination backend, lazy overlay, maintained
+  registry or projection, and review policy when team collaboration is enabled
 
 ## Required Project Adapter
 
@@ -185,6 +190,8 @@ defines:
   recheck evidence when durable operation records are expected
 - operation packet, storage policy, workstream boundaries, and checkpoint
   evidence when large or resumable operations are expected
+- target actors, authority, priorities, task source, synchronization, storage,
+  privacy, conflict, and review rules when team collaboration is enabled
 - operation catalog, single entry, automatic routing, read-only health,
   risk-gated preview, help, and post-install/update chat-message templates when
   the target wants discoverable assistant requests
@@ -216,6 +223,8 @@ The framework does not guarantee:
   not maintain them
 - that a project adapter is mature enough for broad work unless its local
   facts support that claim
+- that repository task records represent current external tracker state, or
+  that task assignment, review, or a claim grants protected-change approval
 
 ## Failure Rule
 

@@ -10,10 +10,10 @@ Target repository path:
 <path-or-repo-url-to-target-project>
 
 Operation type:
-<optional; help/adapter-health/create-project-blueprint/recheck-after-installation/recheck-after-framework-update/product-change/logical-integrity-review/ai-infrastructure-inventory/ai-infrastructure-recommendation/skill-adaptation/drift-review/documentation-sync/adapter-maturity-review/other>
+<optional; help/adapter-health/create-project-blueprint/recheck-after-installation/recheck-after-framework-update/product-change/large-task/team-status/team-task/team-conflict-review/team-handoff/team-decision/team-review/team-merge-check/logical-integrity-review/ai-infrastructure-inventory/ai-infrastructure-recommendation/skill-adaptation/drift-review/documentation-sync/adapter-maturity-review/other>
 
 Operation alias, if used:
-<for example: alatyr-ai-inventory, alatyr-suggest-ai <scope>, alatyr-improve-ai <item-id>, alatyr-adaptation <source>, or alatyr-add-ai <source>>
+<for example: Alatyr team status, Alatyr claim <task-id>, Alatyr handoff <task-id>, Alatyr review <task-id>, alatyr-ai-inventory, alatyr-suggest-ai <scope>, alatyr-improve-ai <item-id>, alatyr-adaptation <source>, or alatyr-add-ai <source>>
 
 Goal:
 <what the assistant should accomplish>
@@ -32,6 +32,12 @@ Task scale:
 
 Existing operation packet, when resuming:
 <target-approved packet path or none>
+
+Team task and actor IDs, when applicable:
+<task-id; source/destination/reviewer actor IDs or none>
+
+Team evidence revision and coordination backend reference, when applicable:
+<repository revision; tracker/registry reference or none>
 
 Allowed actions:
 <read-only/docs-only/adapter-only/code-and-tests/full-with-approval>
@@ -89,7 +95,7 @@ Constraints:
   ALATYR-RISK-001, ALATYR-APPROVAL-001, ALATYR-SAFETY-001,
   ALATYR-SAFETY-002, ALATYR-INTEGRITY-001, ALATYR-CHANGE-001,
   ALATYR-ADAPTER-001, ALATYR-MODULE-001, ALATYR-OPERATION-001,
-  ALATYR-EVIDENCE-001.
+  ALATYR-TEAM-001, ALATYR-EVIDENCE-001.
 - Treat the target `AGENTS.md` as preloaded, then read `.ai/alatyr.yaml`,
   `.ai/README.md`, and `.ai/assistant/context-router.json` first.
 - Select the smallest matching context profile and project-area overlays from
@@ -103,6 +109,17 @@ Constraints:
   `.ai/assistant/flows/large-task-orchestration.flow.md` with
   `.ai/assistant/templates/large-task-operation-packet.md`. Do not create a
   packet for a small task.
+- For enabled team coordination, activate the `team-active` overlay and load
+  only the selected task, relevant active overlaps, actor/authority evidence,
+  changed-fact owners, dependencies, and selected team flow/gate. Do not load
+  unrelated team history.
+- Team status, conflict review, review, and merge check are read-only.
+  Start/claim/checkpoint/handoff/release may update adapter-owned coordination
+  records only. Assignment, priority, review, and handoff never grant approval.
+- Detect concurrent overlap by changed facts and canonical owners first, then
+  contracts, dependencies, migrations, generated artifacts, approvals, and
+  secondary file/surface overlap. Bind merge readiness to current head/base
+  revisions.
 - Use bounded router candidates for clear requests and route automatically.
   Load `.ai/assistant/operation-catalog.json` for explicit Alatyr routing,
   health, ambiguity, or operation handoff. Ask for the smallest missing

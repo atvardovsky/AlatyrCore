@@ -32,6 +32,9 @@ sync, logical integrity review, and final evidence.
 - blueprint-driven product-change workflow
 - optional large-task orchestration with bounded workstreams, context receipts,
   resumable checkpoints, and final convergence
+- optional team collaboration with target-owned actors, priorities, shared
+  work registry, changed-fact overlap, claims, handoffs, decisions, review, and
+  revision-bound merge readiness
 - portable security, safety, and live-service reasoning rules
 - prompt-injection handling for imported AI infrastructure
 - approval-record guidance for protected changes
@@ -138,6 +141,9 @@ Those belong to a project contour or repository adapter.
   impact across comparable tasks and adapter states.
 - `.ai/framework/large-task-orchestration.md`: optional coordination contract
   for large, cross-boundary, multi-workstream, or resumable changes.
+- `.ai/framework/team-collaboration.md`: optional multi-actor coordination
+  contract for team tasks, claims, conflicts, checkpoints, handoffs,
+  decisions, review, and merge readiness.
 - `.ai/framework/lifecycle.md`: framework versioning, upgrade, deprecation,
   and migration guidance.
 - `.ai/framework/installed-operations.md`: portable guidance for post-install

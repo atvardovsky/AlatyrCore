@@ -105,6 +105,10 @@ Every project using this framework must define:
 - large-task flow, task-scale routing, operation-packet policy, and resumable
   checkpoint evidence when the repository needs cross-boundary or multi-session
   operations
+- target team operating model, lazy team context overlay, compact work
+  registry or external projection, coordination backend, synchronization,
+  privacy, retention, conflict, handoff, review, and merge-readiness evidence
+  when the optional team module is enabled
 - allowed-action meanings for installed-operation requests
 - operation catalog, single entry, automatic routing, read-only health,
   risk-gated preview, help, and post-install/update chat-message templates when
@@ -145,6 +149,9 @@ An adapter may provide:
 - installed-operation request templates or adapter audit reports
 - large-task operation packets stored, ignored, redacted, or retained under a
   target-owned policy
+- team checkpoints, handoffs, decision captures, work-registry projections, or
+  external tracker integrations under target-owned storage and synchronization
+  policy
 - operation help menus, routing flows, or assistant chat-completion message
   templates
 - generated visual artifacts

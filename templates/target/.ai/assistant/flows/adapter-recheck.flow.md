@@ -43,6 +43,14 @@ Replace placeholders with target facts before accepting installation.
   `.ai/assistant/templates/effectiveness-report.md`
 - Large-task flow and packet: `.ai/assistant/flows/large-task-orchestration.flow.md`,
   `.ai/assistant/templates/large-task-operation-packet.md`
+- Team collaboration: `.ai/project/team-operating-model.md`,
+  `.ai/assistant/team/context-overlay.json`,
+  `.ai/assistant/team/work-registry.json`,
+  `.ai/assistant/flows/team-task-coordination.flow.md`,
+  `.ai/assistant/flows/team-handoff.flow.md`,
+  `.ai/assistant/flows/team-decision.flow.md`,
+  `.ai/assistant/flows/team-review.flow.md`,
+  `.ai/assistant/gates/team-collaboration.md`
 - Known adapter gaps: `{KNOWN_GAPS}`
 
 ## Steps
@@ -70,7 +78,8 @@ Replace placeholders with target facts before accepting installation.
    flows, AI infrastructure inventory, recommendation and item router, gates,
    prompts, skills, recommendation/adaptation records, bridge files,
    checker rules, operation catalog and health/preview contracts, large-task
-   flow and packet, chat-message templates, and final-evidence expectations.
+   flow and packet, team operating model/registry/flows/gate/templates,
+   chat-message templates, and final-evidence expectations.
 9. Check adapter drift hazards: hard-coded local machine paths in `.ai/*`,
    root assistant entry points, bridge files, templates, and policies; stale
    statements about whether local Alatyr or adapter checkers exist; duplicate
@@ -87,17 +96,22 @@ Replace placeholders with target facts before accepting installation.
 12. Check task-specific maturity using `.ai/assistant/maturity-profile.md` when
    it exists.
 13. Check bridge behavior using `.ai/assistant/bridge-capability-matrix.md`.
-14. Identify required migrations, approvals, unresolved facts, and skipped
+14. When team collaboration is enabled, preserve active task IDs and external
+    references; check coordination backend direction, actors and authority,
+    stale claims, evidence revisions, concurrent changed-fact overlaps,
+    checkpoints, handoffs, decisions, review state, and merge-readiness
+    invalidation.
+15. Identify required migrations, approvals, unresolved facts, and skipped
    checks.
-15. Use `.ai/assistant/templates/migration-note.md` when a framework update
+16. Use `.ai/assistant/templates/migration-note.md` when a framework update
     requires target migration evidence.
-16. Use `.ai/assistant/templates/effectiveness-report.md` only when comparing
+17. Use `.ai/assistant/templates/effectiveness-report.md` only when comparing
     adapter effectiveness across comparable tasks or adapter states.
-17. Run target validation that exists. Do not invent commands.
-18. Classify final evidence as `current-state`, `historical-record`, or `mixed`.
+18. Run target validation that exists. Do not invent commands.
+19. Classify final evidence as `current-state`, `historical-record`, or `mixed`.
     Current files prove current structure only; name dated operation, approval,
     validation, or migration records before making historical claims.
-19. Report final evidence and residual risk.
+20. Report final evidence and residual risk.
 
 ## Final Evidence
 
@@ -123,6 +137,9 @@ Report:
   inventory/recommendation, bridge, prompt,
   skill, gate, checker, item router, recommendation/adaptation records,
   large-task orchestration, diagram, chat-message, and lifecycle status
+- team module owner/backend, active registry schema and references, stale
+  claims, overlaps, handoffs, decision destinations, review evidence, and
+  revision-bound merge readiness
 - development-pattern index schema, owner, retention/privacy policy, evidence
   references, and target-only optimization boundary
 - bridge capability matrix status

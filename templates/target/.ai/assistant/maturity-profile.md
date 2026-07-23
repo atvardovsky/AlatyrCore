@@ -127,6 +127,22 @@ Blocking criteria: `{FRAMEWORK_UPGRADE_BLOCKERS_OR_NONE}`
 Residual risks: `{FRAMEWORK_UPGRADE_RESIDUAL_RISKS}`
 Final evidence: `{FRAMEWORK_UPGRADE_FINAL_EVIDENCE}`
 
+### Task Area: `team-collaboration`
+
+Task area: `team-collaboration`
+Maturity: `{INCOMPLETE_MINIMAL_USABLE_OR_MATURE}`
+Supported work: `{TEAM_COLLABORATION_SUPPORTED_WORK}`
+Required context:
+
+- `{TEAM_COLLABORATION_REQUIRED_CONTEXT}`
+
+Required owners present: `{YES_NO_DETAILS}`
+Validation or manual review: `{TEAM_COLLABORATION_VALIDATION_OR_REVIEW}`
+Approval needs: `{TEAM_COLLABORATION_APPROVAL_NEEDS}`
+Blocking criteria: `{TEAM_COLLABORATION_BLOCKERS_OR_NONE}`
+Residual risks: `{TEAM_COLLABORATION_RESIDUAL_RISKS}`
+Final evidence: `{TEAM_COLLABORATION_FINAL_EVIDENCE}`
+
 ## Blocking Criteria
 
 Security-sensitive work is blocked unless `{TARGET_SECURITY_OWNER}`,
@@ -152,6 +168,11 @@ references, lazy capture flow, and framework non-mutation boundary.
 Framework upgrade work is blocked unless `.ai/alatyr.yaml`, installation note,
 context profiles, module profile, bridge files, operation catalog, read-only
 health, operation help, and adapter-recheck flow are discoverable.
+
+Team coordination is blocked when the optional module is enabled without a
+target operating-model owner, stable actor and authority evidence, a canonical
+task source, synchronization direction, storage/privacy policy, a maintained
+registry or projection, changed-fact overlap policy, and review validation.
 
 Broad cross-area consistency claims must report whether the optional
 `consistency-map` module is enabled. If it is enabled, stale or missing fact

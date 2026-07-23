@@ -43,6 +43,7 @@ CHECKS = [
     ["tools/check_scaffold_profiles.py"],
     ["tools/check_source_of_truth_registry.py"],
     ["tools/check_target_adapter_validator.py"],
+    ["tools/check_team_collaboration.py"],
     ["tools/check_versioning.py"],
     ["tools/check_bridge_templates.py"],
     ["tools/render_bridge_templates.py"],

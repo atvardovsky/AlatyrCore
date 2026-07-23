@@ -62,6 +62,12 @@
       "derived_surfaces": ["target operation catalog", "automatic routing flow", "compact help", "adapter health flow", "pre-change preview", "manifest operation paths", "assistant bridges"]
     },
     {
+      "category": "TEAM",
+      "owner": "framework/team-collaboration.md",
+      "rule_ids": ["ALATYR-TEAM-001"],
+      "derived_surfaces": ["target team operating model", "work registry", "task claims", "conflict review", "checkpoints", "handoffs", "decision records", "team review", "merge-readiness evidence", "operation routes", "team-active context overlay"]
+    },
+    {
       "category": "BRIDGE",
       "owner": "framework/bridge-capability-matrix.md",
       "rule_ids": ["ALATYR-BRIDGE-001"],
@@ -168,6 +174,14 @@
       "summary": "Expose one conversational Alatyr entry point, route clear requests automatically through a machine-readable target operation catalog, provide a read-only evidence-based adapter health operation, and show a bounded pre-change preview only when changed-fact risk, approval, or scope uncertainty requires it.",
       "applies_to": ["installed operation routing", "adapter health", "changes requiring preview"],
       "enforcement": "required"
+    },
+    {
+      "id": "ALATYR-TEAM-001",
+      "category": "TEAM",
+      "canonical_source": "framework/team-collaboration.md",
+      "summary": "When the optional team module is enabled, coordinate stable actor and task identities, priorities, changed-fact overlap, advisory claims, checkpoints, handoffs, decisions, reviews, and revision-bound merge readiness without replacing project source of truth, approvals, trackers, or target validation.",
+      "applies_to": ["concurrent work", "team handoffs", "team review", "merge readiness"],
+      "enforcement": "required when module enabled"
     },
     {
       "id": "ALATYR-BRIDGE-001",

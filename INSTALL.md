@@ -46,6 +46,7 @@ in `framework/rule-registry.*` and `framework/rule-ownership.md`.
 - Adapter separation: `ALATYR-ADAPTER-001`
 - Module selection: `ALATYR-MODULE-001`
 - Installed operation control surface: `ALATYR-OPERATION-001`
+- Optional team collaboration: `ALATYR-TEAM-001`
 - Lifecycle and migration evidence: `ALATYR-LIFECYCLE-001`
 
 ## Target Repository Inspection
@@ -65,6 +66,9 @@ Before creating files in the target repository, inspect:
 - existing assistant bridge files, prompts, skills, gates, checker rules,
   source-access policies, operation help, routing, or chat-completion message
   templates
+- existing team roles and decision authority, priority policy, task tracker,
+  active work, claims, branch/worktree conventions, review requirements,
+  handoffs, decision records, merge policy, retention, and privacy rules
 
 If a target fact is missing, mark it as missing. Do not invent it.
 
@@ -82,6 +86,9 @@ The plan must identify:
 - supported assistants
 - context router and context profiles needed for the target
 - large-task task-scale routing, packet, checkpoint, and storage needs
+- optional team-collaboration owner, coordination backend, synchronization
+  direction, actor/authority/priority evidence, registry, conflict, handoff,
+  decision, review, storage, retention, and privacy needs
 - required core profile and optional modules needed for the target
 - source-of-truth registry needs
 - optional consistency-map need, fact-ID strategy, relationship coverage, and
@@ -138,11 +145,17 @@ In a typical target repository:
    policy. Do not seed it with guessed history or raw conversations.
    Add `.ai/project/consistency-map.json` only when bounded relationship
    routing is enabled and target evidence can support it.
+   Add `.ai/project/team-operating-model.md` only when team collaboration is
+   enabled, and derive actors, authority, priorities, review, backend,
+   retention, and privacy from target evidence.
 7. Create `.ai/assistant/contour.md`, context router, operation catalog,
    context profiles, module profile, task-specific maturity profile, bridge
    capability matrix, and target assistant workflows/gates. Keep the catalog
    outside routine bootstrap and expose compact operation candidates through
    the router.
+   When team collaboration is enabled, route `team-active` through
+   `.ai/assistant/team/context-overlay.json` and keep team state outside
+   routine bootstrap.
 8. Add bridge files only for assistants the target uses.
 9. Add installed-operation, operation-help, automatic operation-routing,
    read-only adapter-health, risk-gated pre-change preview,
@@ -159,6 +172,10 @@ In a typical target repository:
    evidence-based suggestions, or imported-item provenance evidence. Add the
    lazy development-evidence capture flow with the pattern index; target
    evidence must not directly change `.ai/framework` or portable rules.
+   When team collaboration is enabled, add the work registry, task/handoff/
+   decision/review flows, team gate, and checkpoint/handoff/decision
+   templates. Initialize the registry empty unless active target tasks are
+   explicitly reviewed; never overwrite active records from source templates.
 10. Add skills, prompts, diagrams, and deterministic checks only when useful
    for the target, after adapting them to target rules and recording source or
    provenance when applicable. Route AI infrastructure through target item IDs
@@ -174,8 +191,8 @@ After installation, use
 `installer/installed-operation-request-template.md` when asking an assistant to
 operate the installed target adapter. Typical requests include blueprint
 creation or repair, adapter recheck after framework updates, drift review,
-blueprint-driven product changes, AI infrastructure recommendation, and skill
-adaptation. Include Allowed actions
+blueprint-driven product changes, team coordination, AI infrastructure
+recommendation, and skill adaptation. Include Allowed actions
 when the request should be limited to `read-only`, `docs-only`,
 `adapter-only`, `code-and-tests`, or `full-with-approval`.
 
@@ -190,6 +207,14 @@ machine-readable operation catalog and enabled module profile. Show a bounded
 pre-change preview only when changed-fact risk, protected scope, boundary
 crossing, external effects, or unclear allowed actions require it; a preview
 does not grant approval.
+
+When the target enables team collaboration, aliases such as `Alatyr team
+status`, `Alatyr start`, `Alatyr claim`, `Alatyr conflicts`, `Alatyr
+checkpoint`, `Alatyr handoff`, `Alatyr decision`, `Alatyr discuss`, `Alatyr
+review`, `Alatyr merge check`, and `Alatyr release` route through target-owned
+team evidence. Team status, conflicts, review, and merge check remain
+read-only. Installation or update must preserve active task IDs, claims,
+handoffs, decisions, and external tracker references.
 
 If the programmer asks for `alatyr-ai-inventory`, inspect existing AI
 infrastructure before adding anything. If the programmer asks for

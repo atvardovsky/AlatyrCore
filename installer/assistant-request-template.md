@@ -17,7 +17,7 @@ Supported assistants needed:
 Constraints:
 - Rule references: ALATYR-CONTEXT-001, ALATYR-ADAPTER-001,
   ALATYR-APPROVAL-001, ALATYR-SAFETY-001, ALATYR-SAFETY-002,
-  ALATYR-OPERATION-001, ALATYR-EVIDENCE-001.
+  ALATYR-OPERATION-001, ALATYR-TEAM-001, ALATYR-EVIDENCE-001.
 - Do not use an installer script.
 - Inspect the target repository before creating files.
 - Prepare an installation plan from Alatyr Core's installer template.
@@ -29,6 +29,10 @@ Constraints:
 - Add an operation catalog, single entry, automatic routing, read-only health,
   risk-gated preview, help, and post-install/update chat-message templates
   when useful for the target adapter.
+- Enable team collaboration only from target evidence. When enabled, add the
+  target operating model, compact work registry, team-active routing, team
+  flows/gate/templates, and preserve active task IDs, claims, decisions,
+  handoffs, and external references during upgrades.
 - Adapt prompts, skills, wrappers, and third-party assistant infrastructure
   from target evidence before making them canonical.
 - Do not copy source commands, CI jobs, test folders, fixtures, security

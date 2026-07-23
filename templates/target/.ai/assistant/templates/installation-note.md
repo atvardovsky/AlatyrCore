@@ -54,6 +54,23 @@ Installation id: `{INSTALLATION_ID}`
 - Large-task operation packet:
   `.ai/assistant/templates/large-task-operation-packet.md`
 - Operation packet storage policy: `{TARGET_OPERATION_PACKET_POLICY}`
+- Team-collaboration module state:
+  `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+- Team operating model: `.ai/project/team-operating-model.md`
+- Lazy team context: `.ai/assistant/team/context-overlay.json`
+- Team work registry: `.ai/assistant/team/work-registry.json`
+- Team coordination backend and synchronization:
+  `{TARGET_BACKEND_AND_SYNCHRONIZATION_DIRECTION}`
+- Team record storage, retention, and privacy:
+  `{TARGET_TEAM_RECORD_STORAGE_RETENTION_AND_PRIVACY_POLICY}`
+- Team flows and gate:
+  `.ai/assistant/flows/team-task-coordination.flow.md`,
+  `.ai/assistant/flows/team-handoff.flow.md`,
+  `.ai/assistant/flows/team-decision.flow.md`,
+  `.ai/assistant/flows/team-review.flow.md`,
+  `.ai/assistant/gates/team-collaboration.md`
+- Active team records created, migrated, preserved, or skipped:
+  `{TEAM_ACTIVE_RECORD_RESULT}`
 - Approval record template: `.ai/assistant/approvals/approval-template.md`
 - Prompt-injection policy: `.ai/assistant/policies/prompt-injection.md`
 - Migration note template: `.ai/assistant/templates/migration-note.md`
@@ -74,6 +91,11 @@ router or required by ambiguity or drift.
 Use `Alatyr` as the single conversational entry, `Alatyr status` for read-only
 health, automatic routing for clear requests, and the risk-gated pre-change
 preview before applicable edits.
+
+When team collaboration is enabled, use `Alatyr team status` and the target
+team aliases through the canonical operation catalog. Keep team-active context
+lazy and do not treat assignment, priority, claim, review, or handoff as
+approval.
 
 If this note lists gaps or bridge-file uncertainty, run
 `recheck-after-installation` or `recheck-after-framework-update` before broad

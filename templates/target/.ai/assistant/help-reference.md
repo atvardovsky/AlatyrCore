@@ -33,6 +33,17 @@ does not require a formal operation ID.
   package/plugin reference, or other target-approved source form.
 - `alatyr-add-ai {AI_INFRASTRUCTURE_SOURCE}`: route to `skill-adaptation` with
   integration intent after inventory, provenance, safety, and approval checks.
+- `Alatyr team status`: route to read-only `team-status`.
+- `Alatyr start {TASK}`, `Alatyr claim {TASK_ID}`,
+  `Alatyr checkpoint {TASK_ID}`, or `Alatyr release {TASK_ID}`: route to
+  `team-task`.
+- `Alatyr conflicts {TASK_ID}`: route to read-only
+  `team-conflict-review`.
+- `Alatyr handoff {TASK_ID}`: route to `team-handoff`.
+- `Alatyr decision {TASK_ID_OR_QUESTION}` or
+  `Alatyr discuss {QUESTION}`: route to `team-decision`.
+- `Alatyr review {TASK_ID}`: route to read-only `team-review`.
+- `Alatyr merge check {TASK_ID}`: route to read-only `team-merge-check`.
 
 ## Operation Menu
 
@@ -80,6 +91,54 @@ Flow: `.ai/assistant/flows/large-task-orchestration.flow.md`
 Minimum input: goal, non-goals, affected project areas, allowed actions, and
 known approval or validation checkpoints, including diff base and explicit
 JSON approval records when scoped.
+
+Operation: `team-status`
+Use when: reporting active, blocked, stale, handed-off, review, or merge-ready
+team work without making changes.
+Flow: `.ai/assistant/flows/team-task-coordination.flow.md`
+Minimum input: optional team, area, actor, or task scope.
+Default allowed actions: `read-only`.
+
+Operation: `team-task`
+Use when: starting, claiming, checkpointing, or releasing a team task.
+Flow: `.ai/assistant/flows/team-task-coordination.flow.md`
+Minimum input: action, task ID or goal, actor ID, and allowed actions.
+Default allowed actions: `adapter-only` for record changes.
+
+Operation: `team-conflict-review`
+Use when: checking active task overlap by changed facts, canonical owners,
+contracts, dependencies, migrations, generated artifacts, and secondary file
+evidence.
+Flow: `.ai/assistant/flows/team-task-coordination.flow.md`
+Minimum input: task ID or proposed task scope.
+Default allowed actions: `read-only`.
+
+Operation: `team-handoff`
+Use when: checkpointing and handing a task to another actor or role.
+Flow: `.ai/assistant/flows/team-handoff.flow.md`
+Minimum input: task ID, source actor, destination actor or role, and reason.
+Default allowed actions: `adapter-only` for checkpoint and handoff records.
+
+Operation: `team-decision`
+Use when: structuring a priority, business, architecture, data, security, or
+adapter decision and routing an accepted fact to its canonical owner.
+Flow: `.ai/assistant/flows/team-decision.flow.md`
+Minimum input: decision question, decision type, and affected facts or tasks.
+Preview: risk-gated when accepted semantic or protected facts may change.
+
+Operation: `team-review`
+Use when: reviewing a task against current scope, concurrent work, required
+reviewers, validation, and logical integrity.
+Flow: `.ai/assistant/flows/team-review.flow.md`
+Minimum input: task ID, review scope, and current head/base revisions.
+Default allowed actions: `read-only`.
+
+Operation: `team-merge-check`
+Use when: classifying revision-bound merge readiness without performing a
+merge.
+Flow: `.ai/assistant/flows/team-review.flow.md`
+Minimum input: task ID and current head/base revisions.
+Default allowed actions: `read-only`.
 
 Operation: `logical-integrity-review`
 Use when: reviewing whether code, docs, tests, diagrams, prompts, skills,
@@ -179,6 +238,29 @@ Route to: `large-task`. Continue from an existing operation packet when its
 path or operation ID is known; otherwise create a packet only after the
 large-task activation gate passes.
 
+Alias: `Alatyr team status`
+Route to: `team-status`.
+
+Alias: `Alatyr start {TASK}`, `Alatyr claim {TASK_ID}`,
+`Alatyr checkpoint {TASK_ID}`, or `Alatyr release {TASK_ID}`
+Route to: `team-task`.
+
+Alias: `Alatyr conflicts {TASK_ID}`
+Route to: `team-conflict-review`.
+
+Alias: `Alatyr handoff {TASK_ID}`
+Route to: `team-handoff`.
+
+Alias: `Alatyr decision {TASK_ID_OR_QUESTION}` or
+`Alatyr discuss {QUESTION}`
+Route to: `team-decision`.
+
+Alias: `Alatyr review {TASK_ID}`
+Route to: `team-review`.
+
+Alias: `Alatyr merge check {TASK_ID}`
+Route to: `team-merge-check`.
+
 ## Request Shape
 
 Use this shape when asking for an operation:
@@ -192,6 +274,8 @@ Non-goals: `{NON_GOALS}`
 Known context: `{KNOWN_CONTEXT}`
 Task scale: `{NORMAL_OR_LARGE_OR_RESUMABLE}`
 Existing operation packet: `{PACKET_PATH_OR_NONE}`
+Team task id: `{TEAM_TASK_ID_OR_NONE}`
+Actor id: `{ACTOR_ID_OR_NONE}`
 Allowed actions: `{READ_ONLY_DOCS_ONLY_ADAPTER_ONLY_CODE_AND_TESTS_OR_FULL_WITH_APPROVAL}`
 Expected final evidence: `{EXPECTED_FINAL_EVIDENCE}`
 ```
@@ -289,3 +373,7 @@ Integration mode: `{CANONICAL_INTEGRATION}`
 - AI infrastructure router: `.ai/assistant/ai-infrastructure-router.json`
 - Consistency map: `.ai/project/consistency-map.json` when the optional module
   is enabled.
+- Team operating model: `.ai/project/team-operating-model.md` when the optional
+  module is enabled.
+- Team work registry: `.ai/assistant/team/work-registry.json` when the optional
+  module is enabled.

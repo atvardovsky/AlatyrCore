@@ -45,6 +45,11 @@ Operation help:
 - Risky or cross-boundary changes show a pre-change preview before edits.
 - Use `.ai/assistant/help.md`, `.ai/assistant/help-reference.md`, and `.ai/assistant/templates/operation-request.md` for structured requests.
 - Use `large-task` only for cross-boundary or resumable work, and resume an existing packet when one is named.
+- When team collaboration is enabled, recheck the operating model, registry
+  schema, active task IDs, claims, handoffs, decisions, external references,
+  stale overlaps, and revision-bound reviews before changing active records.
+- Use `Alatyr team status` for current coordination evidence and the specific
+  team aliases for task, conflict, handoff, decision, review, or merge work.
 - Recheck AI infrastructure router entries and adaptation records when skills, prompts, gates, tools, or bridge contracts changed.
 - Use `alatyr-suggest-ai <scope>` or `alatyr-improve-ai <item-id>` for a read-only recommendation when project needs or existing item outcomes changed.
 

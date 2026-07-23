@@ -10,8 +10,8 @@ commands from another project.
 - Rule references checked: `ALATYR-CONTEXT-001`, `ALATYR-SOURCE-001`,
   `ALATYR-RISK-001`, `ALATYR-APPROVAL-001`, `ALATYR-SAFETY-001`,
   `ALATYR-SAFETY-002`, `ALATYR-INTEGRITY-001`, `ALATYR-CHANGE-001`,
-  `ALATYR-ADAPTER-001`, `ALATYR-MODULE-001`, `ALATYR-OPERATION-001`, and
-  `ALATYR-EVIDENCE-001`.
+  `ALATYR-ADAPTER-001`, `ALATYR-MODULE-001`, `ALATYR-OPERATION-001`,
+  `ALATYR-TEAM-001`, and `ALATYR-EVIDENCE-001`.
 - `AGENTS.md` treated as preloaded; compact bootstrap loaded from
   `.ai/alatyr.yaml`, `.ai/README.md`, and
   `.ai/assistant/context-router.json`.
@@ -25,6 +25,9 @@ commands from another project.
 - Large-task scale overlay and operation packet used only when activation
   conditions apply; active workstream context, checkpoints, dependencies, and
   global convergence checked when used.
+- Team-active overlay and `.ai/assistant/gates/team-collaboration.md` used only
+  when the optional module is enabled and a team coordination operation
+  applies; changed-fact overlap is checked before secondary file overlap.
 - Module profile checked before relying on optional Alatyr capabilities.
 - Semantic/logical change decision and logical integrity review made.
 - Documentation sync checked.
@@ -56,6 +59,9 @@ commands from another project.
   adapter actions.
 - Operation catalog/module checked when routed; status/doctor remains
   read-only, and risk-gated preview is shown, refreshed, or explicitly skipped.
+- Team status, conflict review, review, and merge check remain read-only;
+  record-changing team operations stay adapter-only, assignment or priority
+  never grants approval, and merge readiness is bound to current revisions.
 - Adapter drift checks performed during installation, framework update, or
   adapter recheck: no hard-coded local machine paths, no stale checker
   existence claims, no duplicate context-profile references, context router

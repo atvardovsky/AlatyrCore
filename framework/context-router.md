@@ -17,7 +17,7 @@ A target adapter can load:
 2. the compact bootstrap, including `.ai/assistant/context-router.json`
 3. the selected profile's required context
 4. one or more project-area overlays when the task names affected areas
-5. a task-scale overlay only when the task is large or resumable
+5. task-scale overlays only when the task is large, resumable, or team-active
 
 Then it expands only when the router or human profile names a boundary,
 conflict, approval trigger, or missing source-of-truth fact.
@@ -38,7 +38,7 @@ A target context router should define:
 - operation-catalog path, single entry alias, health operation, and preview
   policy without embedding the full catalog
 - optional project-area overlays
-- optional task-scale overlays for large or resumable work
+- optional task-scale overlays for large, resumable, or team-active work
 - optional consistency routing from changed fact IDs to applicable
   relationships
 - use-when signals
@@ -71,6 +71,12 @@ A large-task overlay should route to the orchestration flow and operation
 packet without adding those files to every normal task profile. While a packet
 is active, load only the active workstream's required context, fact owners, and
 dependencies. The packet remains coordination evidence, not a source of truth.
+
+A team-active route should point to a lazy target overlay descriptor outside
+bootstrap. That descriptor selects the optional team contract, target
+operating model, compact work registry or selected task, and relevant team
+flow and gate. Compare changed-fact IDs and canonical owners before file paths,
+and keep unrelated tasks and team history outside the selected context.
 
 When the optional consistency-map module is enabled, the router should point
 to its machine-readable map. Use it only after a semantic change or suspected

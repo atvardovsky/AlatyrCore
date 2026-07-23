@@ -7,7 +7,8 @@ Installed operations are requests to an assistant working inside a target
 repository that already has Alatyr Core files and adapter facts. They include
 creating or repairing project blueprints, rechecking adapter maturity after a
 framework update, reviewing drift, inventorying, recommending, or adapting AI
-infrastructure, or running a guided product-change workflow.
+infrastructure, coordinating team tasks, or running a guided product-change
+workflow.
 
 Concrete project facts, validation commands, reports, prompts, and update
 cadence belong to the target repository adapter.
@@ -25,6 +26,8 @@ An installed adapter should support these operation categories:
 - blueprint-driven product change
 - large-task orchestration for cross-boundary, multi-workstream, or resumable
   work
+- optional team status, task start/claim/checkpoint/release, concurrent-work
+  conflict review, handoff, decision, team review, and merge readiness
 - logical integrity review
 - AI infrastructure inventory for existing skills, prompts, wrappers, bridge
   files, rules, MCP/tool configs, gates, checkers, and prompts
@@ -59,6 +62,8 @@ A post-install request should state:
   `code-and-tests`, or `full-with-approval`
 - context profile when known
 - task scale and existing operation packet when known
+- team task, actor, coordination backend, and current evidence revision when
+  team collaboration applies
 - pre-change preview state when risk-gated preview applies
 - expected final evidence
 - output contract when the target adapter requires a durable installation,
@@ -111,6 +116,12 @@ If the request uses `alatyr-suggest-ai <scope>` or
 recommendation. Use project-contour facts as need and outcome evidence, but
 keep recommendation records and item mechanics in the assistant contour.
 
+If the request uses `Alatyr team status`, `Alatyr start`, `Alatyr claim`,
+`Alatyr conflicts`, `Alatyr checkpoint`, `Alatyr handoff`, `Alatyr decision`,
+`Alatyr discuss`, `Alatyr review`, `Alatyr merge check`, or `Alatyr release`,
+route through the optional target team module. These remain assistant request
+aliases, not shell commands.
+
 ## Required Flow
 
 For installed operations:
@@ -147,30 +158,33 @@ For installed operations:
 9. Activate the large-task scale overlay only when work is cross-boundary,
    multi-workstream, budget-exceeding, or resumable. Use a target operation
    packet and bounded active-workstream context when activated.
-10. Use blueprint-driven change when accepted project facts may change.
-11. Use AI infrastructure recommendation when the user asks what should be
+10. Activate the team-active overlay only for enabled team coordination.
+    Compare active tasks by changed facts and owners before secondary file
+    overlap; keep unrelated tasks and history outside context.
+11. Use blueprint-driven change when accepted project facts may change.
+12. Use AI infrastructure recommendation when the user asks what should be
    added or improved, or when bounded evidence shows a recurring capability
    gap. Use selected target development-pattern evidence, evaluate existing
    items before proposing a new one, and do not promote target observations
    directly into portable framework changes.
-12. Use skill adaptation when prompts, skills, wrappers, or third-party
+13. Use skill adaptation when prompts, skills, wrappers, or third-party
    assistant infrastructure change.
    Select the target AI infrastructure route and item IDs before loading item
    content, permissions, gates, validation, or import policy.
-13. Use prompt-injection policy for imported, external, remote, pasted, package,
+14. Use prompt-injection policy for imported, external, remote, pasted, package,
    plugin, or unknown AI infrastructure.
-14. Use AI infrastructure inventory before adding, importing, replacing, or
+15. Use AI infrastructure inventory before adding, importing, replacing, or
    removing assistant infrastructure.
-15. Use adapter maturity review when the request is broad, post-install, or
+16. Use adapter maturity review when the request is broad, post-install, or
    post-upgrade.
-16. Record approval evidence when protected-change scope requires it. When
+17. Record approval evidence when protected-change scope requires it. When
     scoped approval is used, enforce the complete changed path set against
     explicitly selected machine-readable records bound to the approved diff
     base.
-17. Use the target adapter output contract when the operation follows
+18. Use the target adapter output contract when the operation follows
    installation, framework update, or adapter recheck.
-18. Run target validation that exists, or record unresolved checks.
-19. Report changed facts, re-derived invariants, review-item reconciliation,
+19. Run target validation that exists, or record unresolved checks.
+20. Report changed facts, re-derived invariants, review-item reconciliation,
    files inspected, files changed, approval-scope enforcement, validation,
    skipped checks, and residual risk.
 
@@ -206,6 +220,22 @@ evidence.
 
 Small tasks should stay on their normal operation flow without a packet.
 
+## Team Operations
+
+Use `team-collaboration.md` only when the target enables the optional module.
+The target operating model owns actors, decision authority, priorities,
+reviewers, backend, retention, and privacy. The adapter owns work registry,
+claim, conflict, checkpoint, handoff, and review mechanics.
+
+Team status, conflict review, team review, and merge check are read-only.
+Starting, claiming, checkpointing, handing off, or releasing a task may update
+adapter-owned coordination records, but must not change accepted project facts
+or grant approval. Team decision work routes accepted facts to their canonical
+project owners and routes implementation separately.
+
+Merge readiness must be bound to current head/base revisions and invalidated
+by material diff, approval, dependency, or concurrent-task changes.
+
 ## Adapter Recheck
 
 After installation or framework upgrade, an assistant should recheck:
@@ -220,6 +250,9 @@ After installation or framework upgrade, an assistant should recheck:
 - operation catalog, single entry, automatic routing, read-only health,
   pre-change preview, compact help, operation-routing flow, and
   post-install/update chat-message templates
+- team module operating model, work registry schema, coordination backend,
+  operation routes, stale claims, active overlaps, checkpoints, handoffs,
+  decisions, reviews, and revision-bound merge readiness when enabled
 - adapter output contracts for installation, framework update, and recheck
   evidence
 - adapter drift hazards: hard-coded local machine paths, stale checker

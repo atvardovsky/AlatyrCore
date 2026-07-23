@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "overlay_kind": "target-team-context-overlay",
+  "overlay_id": "team-active",
+  "use_when": [
+    "team status claim conflict checkpoint handoff decision review merge or release request",
+    "multiple actors or active tasks may share changed facts",
+    "task state must move across an assistant session branch or worktree"
+  ],
+  "operation_candidates": [
+    "team-status",
+    "team-task",
+    "team-conflict-review",
+    "team-handoff",
+    "team-decision",
+    "team-review",
+    "team-merge-check"
+  ],
+  "required_context": [
+    ".ai/framework/team-collaboration.md",
+    ".ai/project/team-operating-model.md",
+    ".ai/assistant/team/work-registry.json",
+    ".ai/assistant/gates/team-collaboration.md"
+  ],
+  "expand_when": [
+    "selected task changed facts or canonical owners are unresolved",
+    "active tasks share facts contracts dependencies migrations or generated artifacts",
+    "claim checkpoint handoff approval validation or revision evidence is stale",
+    "accepted decision changes project facts",
+    "review or merge readiness requires target specialist evidence"
+  ],
+  "budget_behavior": "load only the selected task projection relevant active overlaps owner references dependencies and selected team flow",
+  "final_evidence": [
+    "task actor priority and evidence revision",
+    "changed fact and concurrent overlap result",
+    "claim checkpoint handoff decision review or merge state",
+    "approvals validation residual risk and next responsible actor"
+  ]
+}

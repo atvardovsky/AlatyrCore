@@ -63,6 +63,10 @@ maintain them:
 - `large-task-orchestration`: task-scale routing, operation packets,
   workstreams, resumable checkpoints, and final convergence evidence for
   repositories that need large or multi-session changes.
+- `team-collaboration`: target-owned actor and priority model, shared work
+  registry, advisory claims, changed-fact overlap review, checkpoints,
+  handoffs, decisions, team review, and revision-bound merge readiness for
+  concurrent human and assistant work.
 - `durable-approvals`: human and machine-readable approval-record storage plus
   strict diff-base/path-scope enforcement for protected changes that need plan,
   scope, or file evidence.
@@ -125,6 +129,8 @@ Reject module-profile work that:
 
 - treats optional modules as mandatory for every target
 - claims a module is enabled without owner, context, validation, and evidence
+- enables team collaboration without a coordination backend, actor and
+  decision-owner evidence, storage/privacy policy, or conflict review
 - enables a consistency map without target-owned fact IDs, relationship
   coverage, or staleness handling
 - copies source-repository helper behavior into target requirements

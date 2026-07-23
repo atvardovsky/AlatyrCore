@@ -11,6 +11,12 @@ It composes `ALATYR-CONTEXT-001`, `ALATYR-SOURCE-001`,
 Concrete project areas, owners, commands, packet storage policy, and
 validation belong to the target adapter.
 
+When `team-collaboration` is also enabled, compose the
+`large-or-resumable` and `team-active` overlays. The operation packet owns
+workstream decomposition; the team registry owns current actor assignment,
+claim, overlap, handoff, and review evidence. Cross-reference stable IDs
+instead of copying either record.
+
 ## Activation
 
 Use large-task orchestration when at least one condition is true:
@@ -51,6 +57,7 @@ Split work only where each workstream has a coherent boundary and a local
 completion test. Every workstream should define:
 
 - stable workstream ID and goal
+- owner actor or team-task reference when team collaboration is enabled
 - project area and changed-fact IDs
 - dependencies and blocking decisions
 - minimum required context and explicitly deferred context
@@ -70,6 +77,8 @@ To resume an operation:
 1. Load the compact adapter bootstrap.
 2. Load the operation packet and only the active workstream's required
    context, changed-fact owners, and dependencies.
+   When team collaboration is enabled, also load only the selected team task,
+   current claim, relevant overlap, and latest checkpoint or handoff.
 3. Compare the packet checkpoint with current repository evidence. Treat stale
    paths, changed owners, invalidated approvals, or modified dependencies as
    drift.
@@ -105,6 +114,8 @@ Local workstream success is not final operation success. Before completion:
    explicitly selected machine-readable approval records and their diff base.
 7. Report residual risk and close or preserve the packet according to target
    policy.
+8. Reconcile team task, claim, checkpoint, handoff, review, and next-actor
+   evidence when the team module is enabled.
 
 ## Storage And Privacy
 

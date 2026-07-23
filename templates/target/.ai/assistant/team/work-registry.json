@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "registry_kind": "target-team-work-registry",
+  "project": "{PROJECT_NAME}",
+  "module_state": "{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}",
+  "coordination_backend": "{REPOSITORY_EXTERNAL_TRACKER_BOTH_OR_OTHER}",
+  "canonical_task_source": "{TARGET_TASK_SOURCE_OF_TRUTH}",
+  "synchronization_direction": "{BACKEND_TO_REGISTRY_REGISTRY_TO_BACKEND_BIDIRECTIONAL_OR_MANUAL}",
+  "operating_model": ".ai/project/team-operating-model.md",
+  "updated_at": "{OBSERVATION_TIME}",
+  "evidence_revision": "{REPOSITORY_REVISION_OR_UNAVAILABLE}",
+  "storage_policy": "{TARGET_TEAM_RECORD_STORAGE_POLICY}",
+  "retention_policy": "{TARGET_TEAM_RECORD_RETENTION_POLICY}",
+  "privacy_policy": "{TARGET_TEAM_RECORD_PRIVACY_POLICY}",
+  "tasks": [
+    {
+      "id": "{TASK_ID}",
+      "goal": "{TASK_GOAL}",
+      "non_goals": [
+        "{TASK_NON_GOAL}"
+      ],
+      "priority": "{TARGET_PRIORITY_ID}",
+      "priority_rationale": "{PRIORITY_RATIONALE}",
+      "priority_decided_by": "{ACTOR_ID}",
+      "status": "{PROPOSED_READY_CLAIMED_ACTIVE_BLOCKED_REVIEW_MERGE_READY_COMPLETE_CANCELLED_OR_STALE}",
+      "owner_actor_id": "{ACTOR_ID}",
+      "reviewer_actor_ids": [
+        "{REVIEWER_ACTOR_ID}"
+      ],
+      "parent_request": "{ISSUE_REQUEST_OR_OPERATION_REFERENCE}",
+      "coordination_backend_ref": "{TARGET_TRACKER_OR_REGISTRY_REFERENCE}",
+      "branch_or_worktree": "{TARGET_BRANCH_WORKTREE_OR_NONE}",
+      "base_revision": "{TASK_BASE_REVISION_OR_UNAVAILABLE}",
+      "evidence_revision": "{CURRENT_TASK_EVIDENCE_REVISION_OR_UNAVAILABLE}",
+      "allowed_actions": [
+        "{READ_ONLY_DOCS_ONLY_ADAPTER_ONLY_CODE_AND_TESTS_OR_FULL_WITH_APPROVAL}"
+      ],
+      "context_profiles": [
+        "{TASK_PROFILE}"
+      ],
+      "project_areas": [
+        "{TARGET_PROJECT_AREA}"
+      ],
+      "changed_fact_ids": [
+        "{FACT_ID}"
+      ],
+      "canonical_owner_refs": [
+        "{TARGET_CANONICAL_OWNER_REFERENCE}"
+      ],
+      "expected_surfaces": [
+        "{EXPECTED_FILE_CONTRACT_SYSTEM_OR_ARTIFACT}"
+      ],
+      "dependencies": [
+        "{DEPENDENCY_TASK_OR_FACT_ID}"
+      ],
+      "blockers": [
+        "{BLOCKER_OR_NONE}"
+      ],
+      "related_task_ids": [
+        "{RELATED_TASK_ID_OR_NONE}"
+      ],
+      "overlap": {
+        "state": "{NONE_COMPATIBLE_SEQUENCING_REQUIRED_CONFLICTING_OR_UNRESOLVED}",
+        "checked_at": "{OVERLAP_CHECK_TIME}",
+        "checked_revision": "{OVERLAP_CHECK_REVISION}",
+        "fact_ids": [
+          "{OVERLAPPING_FACT_ID_OR_NONE}"
+        ],
+        "contract_or_dependency_refs": [
+          "{OVERLAPPING_CONTRACT_DEPENDENCY_OR_NONE}"
+        ],
+        "file_or_surface_refs": [
+          "{OVERLAPPING_FILE_OR_SURFACE_OR_NONE}"
+        ],
+        "resolution": "{COORDINATION_SEQUENCE_TASK_MERGE_BLOCK_OR_NONE}"
+      },
+      "claim": {
+        "mode": "{ADVISORY_OR_TARGET_ENFORCED}",
+        "actor_id": "{CLAIM_ACTOR_ID_OR_NONE}",
+        "claimed_at": "{CLAIM_TIME_OR_NONE}",
+        "expires_at": "{CLAIM_EXPIRY_OR_TARGET_STALENESS_RULE}",
+        "base_revision": "{CLAIM_BASE_REVISION_OR_NONE}",
+        "state": "{UNCLAIMED_ACTIVE_RELEASED_EXPIRED_INVALIDATED_OR_UNVERIFIED}"
+      },
+      "approval_records": [
+        "{APPROVAL_RECORD_PATH_OR_NONE}"
+      ],
+      "review_state": "{NOT_REQUIRED_PENDING_CHANGES_REQUESTED_APPROVED_OR_UNRESOLVED}",
+      "review_evidence_refs": [
+        "{REVIEW_EVIDENCE_REFERENCE_OR_NONE}"
+      ],
+      "validation_state": "{NOT_RUN_PASSED_FAILED_PARTIAL_OR_UNRESOLVED}",
+      "latest_checkpoint": "{CHECKPOINT_RECORD_PATH_OR_NONE}",
+      "handoff_state": "{NONE_PENDING_ACCEPTED_REJECTED_OR_STALE}",
+      "decision_records": [
+        "{DECISION_RECORD_REFERENCE_OR_NONE}"
+      ],
+      "residual_risks": [
+        "{RESIDUAL_RISK_OR_NONE}"
+      ],
+      "next_action": "{NEXT_RESPONSIBLE_ACTION}",
+      "updated_at": "{TASK_UPDATE_TIME}"
+    }
+  ]
+}

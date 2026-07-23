@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+- Added optional `team-collaboration` under canonical rule
+  `ALATYR-TEAM-001`, separating target-owned actors, authority, priority,
+  review, backend, storage, and privacy facts from assistant-owned task,
+  claim, conflict, checkpoint, handoff, decision, and merge-readiness records.
+- Added a lazy `team-active` context overlay and seven catalog operations for
+  team status, task coordination, conflict review, handoff, decision, review,
+  and revision-bound merge checks across every supported assistant bridge.
+- Added installation and framework-update contracts that initialize empty
+  team state from target evidence, preserve active records during migration,
+  and never overwrite target state with source placeholders.
+- Extended the portable target validator and source checks for actor
+  references, lifecycle values, allowed actions, overlap and claim state,
+  stale registry revisions, and merge-ready validation/reviewer/revision
+  evidence without replacing project logical review.
 - Added a machine-readable target operation catalog and one conversational
   `Alatyr` entry that routes clear requests automatically while keeping the
   full catalog outside routine bootstrap context.

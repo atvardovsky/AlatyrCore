@@ -42,6 +42,8 @@ Operation help exists to:
 - make routing deterministic enough to validate without forcing formal user
   syntax
 - show a bounded pre-change preview when risk or scope warrants it
+- route optional team status, task, conflict, handoff, decision, review, and
+  merge-check requests without loading team state for unrelated work
 
 ## Canonical Operation Catalog
 
@@ -197,6 +199,8 @@ Typical operation categories include:
 - blueprint-driven product change
 - large-task orchestration for cross-boundary, multi-workstream, or resumable
   work
+- team coordination for status, start/claim/checkpoint/release, changed-fact
+  conflicts, handoffs, decisions, review, and revision-bound merge readiness
 - logical integrity review
 - AI infrastructure inventory
 - AI infrastructure recommendation for new items or improvements to existing
@@ -231,6 +235,15 @@ Targets may also expose `alatyr-suggest-ai <scope>` for bounded new-item and
 existing-item recommendations and `alatyr-improve-ai <item-id>` for a focused
 existing-item review. Both route to read-only recommendation before any
 adaptation, import, removal, or permission change.
+
+When the optional team module is enabled, target help may expose `Alatyr team
+status`, `Alatyr start`, `Alatyr claim`, `Alatyr conflicts`, `Alatyr
+checkpoint`, `Alatyr handoff`, `Alatyr decision`, `Alatyr discuss`, `Alatyr
+review`, `Alatyr merge check`, and `Alatyr release`. These are request aliases,
+not portable commands. Read-only status, conflict, review, and merge-check
+operations must not mutate team records. Record-changing team operations stay
+bounded to adapter coordination surfaces unless a separate project-change
+operation is selected.
 
 When the target provides an AI infrastructure router, help should route the
 request to `inventory`, `recommend`, `use-existing`, `adapt-import`,
@@ -267,6 +280,8 @@ When routing a request:
 13. Add a large-task scale overlay only when the work is cross-boundary,
     multi-workstream, budget-exceeding, or resumable. Keep small tasks on their
     normal flow without an operation packet.
+14. Add a team-active overlay only for enabled team coordination. Load the
+    selected task and relevant active overlaps, not all team history.
 
 ## Evidence Format
 

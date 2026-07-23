@@ -88,6 +88,7 @@ Target adapters may include fact types such as:
 - diagram source
 - generated documentation
 - assistant operation
+- team operating model, authority, or priority policy
 - skill, prompt, wrapper, or bridge behavior
 - approval rule
 
@@ -106,6 +107,7 @@ that commonly create drift when left ownerless:
 - security policy
 - assistant operation
 - AI infrastructure item
+- team operating model when team collaboration is enabled
 
 Each baseline entry may remain placeholder-based during installation planning,
 but before an adapter claims maturity the owner should be resolved from target

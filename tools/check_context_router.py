@@ -303,6 +303,17 @@ def main() -> int:
                     "task_scale_overlays.large-or-resumable.budget_behavior "
                     "must be a non-empty string"
                 )
+        team_active = scale_overlays.get("team-active")
+        if not isinstance(team_active, dict):
+            failures.append("task_scale_overlays.team-active must be an object")
+        elif team_active.get("descriptor") != (
+            ".ai/assistant/team/context-overlay.json"
+        ):
+            failures.append(
+                "task_scale_overlays.team-active must point to its lazy descriptor"
+            )
+        elif not target_reference_exists(team_active["descriptor"]):
+            failures.append("task_scale_overlays.team-active descriptor is missing")
 
     overlays = router.get("area_overlays")
     if not isinstance(overlays, dict) or not overlays:

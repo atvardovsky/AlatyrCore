@@ -40,6 +40,8 @@ Framework core owns:
 - installed-adapter operation, blueprint creation, and recheck pattern
 - operation catalog, single-entry, automatic-routing, read-only-health,
   pre-change-preview, and bounded-help pattern
+- optional team actor, priority, task, claim, conflict, checkpoint, handoff,
+  decision, review, and merge-readiness coordination pattern
 - project-adapter contract
 - framework installation and portability rules
 - improvement-advice trigger pattern
@@ -70,6 +72,8 @@ Framework core must not own:
   owner names
 - project-specific post-install request cadence, report owners, or adapter
   maintenance schedule
+- project-specific people, team authority, priorities, task state, tracker,
+  branch, review, storage, retention, or privacy facts
 - project-specific operation names, help wording, local command aliases, or
   chat-completion message text
 

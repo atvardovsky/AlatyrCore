@@ -20,6 +20,10 @@ Replace placeholders with target facts before accepting installation.
 - normalized target development-request, correction, review, rework,
   validation, and context-expansion patterns under
   `.ai/project/development-evidence.json`
+- target team actors and roles, decision authority, priority policy, required
+  review, escalation, coordination backend, synchronization, retention,
+  privacy, and accepted business or architecture decisions when team
+  collaboration is enabled
 
 ## Does Not Own
 
@@ -28,6 +32,7 @@ Replace placeholders with target facts before accepting installation.
 - AI infrastructure item definitions, recommendation records, router entries,
   skills, prompts, gates, and assistant-specific implementation
 - assistant bridge-file mechanics
+- team task, claim, checkpoint, handoff, and operation-routing mechanics
 - local validation command policy outside project facts
 
 ## Source Of Truth
@@ -47,3 +52,8 @@ implemented, routed, validated, and maintained.
 Target development evidence must not directly change `.ai/framework`,
 AlatyrCore source, or portable rules. Keep raw conversations, secrets,
 credentials, and personal data out of the development evidence index.
+
+When team collaboration is enabled,
+`.ai/project/team-operating-model.md` owns actor, authority, priority, review,
+backend, storage, and privacy facts. The assistant work registry references
+those facts; it does not replace them.

@@ -30,6 +30,7 @@ REQUIRED_TASK_AREAS = [
     "security",
     "ai-infrastructure",
     "framework-upgrade",
+    "team-collaboration",
 ]
 
 REQUIRED_FIELDS = [

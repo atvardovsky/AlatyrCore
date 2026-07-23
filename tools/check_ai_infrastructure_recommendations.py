@@ -288,14 +288,15 @@ def main() -> int:
         if required not in assistant_text:
             failures.append(f"assistant contour missing ownership boundary: {required}")
 
-    for path in [HELP, HELP_REFERENCE]:
-        text = read(path)
-        for alias in [
-            "alatyr-suggest-ai {RECOMMENDATION_SCOPE}",
-            "alatyr-improve-ai {AI_INFRASTRUCTURE_ITEM_ID}",
-        ]:
-            if alias not in text:
-                failures.append(f"{path.relative_to(ROOT)} missing {alias}")
+    reference_text = read(HELP_REFERENCE)
+    for alias in [
+        "alatyr-suggest-ai {RECOMMENDATION_SCOPE}",
+        "alatyr-improve-ai {AI_INFRASTRUCTURE_ITEM_ID}",
+    ]:
+        if alias not in reference_text:
+            failures.append(f"{HELP_REFERENCE.relative_to(ROOT)} missing {alias}")
+    if ".ai/assistant/help-reference.md" not in read(HELP):
+        failures.append("compact help must route detailed AI aliases to help reference")
     if "Operation: `ai-infrastructure-recommendation`" not in read(HELP_REFERENCE):
         failures.append("help reference missing recommendation operation")
 

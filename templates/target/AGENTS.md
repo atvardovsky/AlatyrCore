@@ -18,12 +18,12 @@ or validation conflict, and record budget exceptions in the context receipt.
 
 Route clear requests from profile operation candidates. Load
 `.ai/assistant/operation-catalog.json` only for `Alatyr`, status, ambiguity,
-handoff, or repair. status/doctor is read-only; apply risk-gated preview when
-selected.
+handoff, team coordination, or repair. status/doctor is read-only; apply
+risk-gated preview when selected.
 
-Activate the `large-or-resumable` overlay only for cross-boundary,
-multi-workstream, budget-exceeding, or resumable work. Load only the active
-workstream context and do not create packets for small tasks.
+Activate task-scale overlays only when their router trigger applies. For large
+or team work, load only selected workstream/task evidence, never unrelated
+packets, tasks, or history.
 
 ## Session Recovery
 
@@ -48,8 +48,9 @@ Alatyr routing, health, aliases, handoff, or ambiguity, use
 Use canonical owners for `ALATYR-CONTEXT-001`, `ALATYR-SOURCE-001`,
 `ALATYR-RISK-001`, `ALATYR-APPROVAL-001`, `ALATYR-SAFETY-001`,
 `ALATYR-SAFETY-002`, `ALATYR-INTEGRITY-001`, `ALATYR-CHANGE-001`,
-`ALATYR-ADAPTER-001`, `ALATYR-MODULE-001`, `ALATYR-OPERATION-001`, and
-`ALATYR-EVIDENCE-001`. Project facts belong under the project contour; local
+`ALATYR-ADAPTER-001`, `ALATYR-MODULE-001`, `ALATYR-OPERATION-001`,
+`ALATYR-TEAM-001`, and `ALATYR-EVIDENCE-001`. Project facts belong under the
+project contour; local
 flows, gates, prompts, skills, bridges, checkers, and commands belong under the
 assistant contour. Do not invent facts or copy policy into bridges.
 

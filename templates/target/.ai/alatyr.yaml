@@ -29,6 +29,7 @@ source_of_truth:
   registry: ".ai/project/source-of-truth-registry.md"
   development_evidence: ".ai/project/development-evidence.json"
   consistency_map: ".ai/project/consistency-map.json"
+  team_operating_model: ".ai/project/team-operating-model.md"
   assistant_contour: ".ai/assistant/contour.md"
   context_router: ".ai/assistant/context-router.json"
   context_profiles: ".ai/assistant/context-profiles.md"
@@ -83,6 +84,17 @@ operations:
   development_evidence_capture: ".ai/assistant/flows/development-evidence-capture.flow.md"
   migration_note: ".ai/assistant/templates/migration-note.md"
   effectiveness_report: ".ai/assistant/templates/effectiveness-report.md"
+team_collaboration:
+  operating_model: ".ai/project/team-operating-model.md"
+  context_overlay: ".ai/assistant/team/context-overlay.json"
+  work_registry: ".ai/assistant/team/work-registry.json"
+  gate: ".ai/assistant/gates/team-collaboration.md"
+  coordination_backend: "{REPOSITORY_EXTERNAL_TRACKER_BOTH_OR_OTHER}"
+  canonical_task_source: "{TARGET_TASK_SOURCE_OF_TRUTH}"
+  synchronization_direction: "{BACKEND_TO_REGISTRY_REGISTRY_TO_BACKEND_BIDIRECTIONAL_OR_MANUAL}"
+  record_storage: "{TARGET_TEAM_RECORD_STORAGE_POLICY}"
+  retention_policy: "{TARGET_TEAM_RECORD_RETENTION_POLICY}"
+  privacy_policy: "{TARGET_TEAM_RECORD_PRIVACY_POLICY}"
 maturity:
   profile: ".ai/assistant/maturity-profile.md"
 bridges:

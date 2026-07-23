@@ -32,6 +32,13 @@ EXPECTED_OPERATIONS = {
     "recheck-after-framework-update",
     "product-change",
     "large-task",
+    "team-status",
+    "team-task",
+    "team-conflict-review",
+    "team-handoff",
+    "team-decision",
+    "team-review",
+    "team-merge-check",
     "logical-integrity-review",
     "ai-infrastructure-inventory",
     "ai-infrastructure-recommendation",
@@ -71,6 +78,7 @@ ALLOWED_MODULES = {
     "blueprint-change",
     "ai-infrastructure",
     "large-task-orchestration",
+    "team-collaboration",
 }
 ALLOWED_PREVIEW = {"never", "risk-gated"}
 ALLOWED_PROFILES = {
@@ -236,6 +244,29 @@ def main() -> int:
             if unknown:
                 failures.append(f"profiles.{profile} has unknown operation candidates {unknown}")
             routed_ids.update(candidates)
+        scale_overlays = router.get("task_scale_overlays")
+        if isinstance(scale_overlays, dict):
+            for overlay_name, overlay_route in scale_overlays.items():
+                if not isinstance(overlay_route, dict):
+                    continue
+                overlay = overlay_route
+                descriptor = overlay_route.get("descriptor")
+                if isinstance(descriptor, str) and target_path_exists(descriptor):
+                    overlay = load_json(TARGET / descriptor)
+                if "operation_candidates" not in overlay:
+                    continue
+                candidates = string_list(
+                    overlay.get("operation_candidates"),
+                    f"task_scale_overlays.{overlay_name}.operation_candidates",
+                    failures,
+                )
+                unknown = sorted(set(candidates) - operation_ids)
+                if unknown:
+                    failures.append(
+                        f"task_scale_overlays.{overlay_name} has unknown "
+                        f"operation candidates {unknown}"
+                    )
+                routed_ids.update(candidates)
         expected_routed = operation_ids - {"help", "large-task"}
         missing_routed = sorted(expected_routed - routed_ids)
         if missing_routed:

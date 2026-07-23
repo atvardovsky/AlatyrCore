@@ -60,6 +60,8 @@ Before upgrading framework files in a target project:
 7. Compare supported assistant bridge needs and limitations.
 8. Identify new approval, testing, security, diagram, or validation guidance.
 9. Compare required core profile and optional module states.
+   When `team-collaboration` is enabled, compare its rule, registry schema,
+   lazy overlay, operation routes, and target operating model.
 10. Prepare a target migration note or installation plan from reviewed
     assessment evidence.
 11. Require approval before overwriting existing target AI instructions.
@@ -69,6 +71,9 @@ Before upgrading framework files in a target project:
    map, operation catalog, help, routing/health/preview flows, and post-update
    chat message
    templates.
+    Preserve active team task IDs, actor references, claims, checkpoints,
+    handoffs, decisions, and external references. Never replace current team
+    state with the source placeholder registry.
 14. Recheck root assistant entry points and supported bridge files so future
     sessions can find the installation note, operation catalog, health, help,
     and routing flow.
@@ -99,6 +104,8 @@ Framework lifecycle notes should record:
 - migration-assessment evidence and intentionally omitted context
 - adapter recheck results for installed framework updates
 - help/routing and post-update chat-message migration needs
+- team-collaboration rule, registry schema, lazy route, active-record
+  preservation, and post-update stale-state review when that module is enabled
 
 ## Deprecation
 
@@ -120,4 +127,6 @@ Reject lifecycle changes that:
 - copy source project commands or business facts into framework core
 - omit migration notes for supported assistants or bridge files
 - omit bridge capability changes from upgrade evidence
+- overwrite active team records from a source template or omit enabled-team
+  migration evidence
 - claim upgrade success without validation or residual-risk evidence

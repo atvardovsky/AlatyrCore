@@ -203,6 +203,30 @@ Approval needs: `{LARGE_TASK_ORCHESTRATION_APPROVAL_NEEDS}`
 Residual risk: `{LARGE_TASK_ORCHESTRATION_RESIDUAL_RISK}`
 Next action: `{LARGE_TASK_ORCHESTRATION_NEXT_ACTION}`
 
+Module: `team-collaboration`
+State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+Owner or file: `.ai/project/team-operating-model.md`
+Required files:
+
+- `.ai/framework/team-collaboration.md`
+- `.ai/project/team-operating-model.md`
+- `.ai/assistant/team/context-overlay.json`
+- `.ai/assistant/team/work-registry.json`
+- `.ai/assistant/flows/team-task-coordination.flow.md`
+- `.ai/assistant/flows/team-handoff.flow.md`
+- `.ai/assistant/flows/team-decision.flow.md`
+- `.ai/assistant/flows/team-review.flow.md`
+- `.ai/assistant/gates/team-collaboration.md`
+- `.ai/assistant/templates/team-checkpoint.md`
+- `.ai/assistant/templates/team-handoff.md`
+- `.ai/assistant/templates/team-decision-record.md`
+
+Reason: `{REASON}`
+Validation or review: `{VALIDATION_OR_REVIEW}`
+Approval needs: `{TEAM_COLLABORATION_APPROVAL_NEEDS}`
+Residual risk: `{TEAM_COLLABORATION_RESIDUAL_RISK}`
+Next action: `{TEAM_COLLABORATION_NEXT_ACTION}`
+
 Module: `durable-approvals`
 State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `.ai/assistant/approvals/approval-template.md`

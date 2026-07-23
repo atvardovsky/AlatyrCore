@@ -37,6 +37,8 @@ A migration diff should report:
 - affected canonical framework sources
 - migration action hints
 - bridge capability impact
+- enabled optional-module impact, including stateful record schemas and lazy
+  routing surfaces
 - approval requirements
 - validation or manual review
 - residual risk
@@ -64,6 +66,11 @@ If the diff affects protected categories, existing AI instructions, imported
 assistant infrastructure, bridge loading behavior, validation gates, approval
 rules, or source-of-truth ownership, require explicit approval before changing
 target files.
+
+If an enabled module contains target state, such as the team work registry,
+the migration assessment must distinguish source template changes from target
+records. Preserve current IDs and evidence, plan schema conversion from a copy,
+and never apply the source placeholder as an update.
 
 ## Source-Repository Tooling
 

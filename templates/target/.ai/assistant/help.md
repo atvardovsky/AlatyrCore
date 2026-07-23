@@ -43,6 +43,9 @@ Default routing:
 - Add the `large-or-resumable` task-scale overlay only for multi-workstream,
   cross-boundary, budget-exceeding, or resumable work. Small tasks should not
   create operation packets.
+- Add the `team-active` overlay only for team task, claim, conflict,
+  checkpoint, handoff, decision, review, merge-check, or release work. Keep
+  unrelated active tasks and team history out of context.
 
 ## Quick Operations
 
@@ -60,27 +63,7 @@ Operation: `product-change`
 Use when: accepted behavior, architecture, data, runtime, or public contract
 may change.
 Flow: `.ai/assistant/flows/blueprint-driven-change.flow.md`
-Minimum input: change intent, non-goals, related review items, and approval
-constraints including diff base and explicit JSON records when scoped.
-
-Operation: `logical-integrity-review`
-Use when: code, docs, tests, diagrams, prompts, skills, gates, or bridges may
-disagree.
-Flow: `.ai/assistant/flows/logical-integrity-review.flow.md`
-Minimum input: changed fact, suspected drift, or files to inspect.
-
-Operation: `create-project-blueprint`
-Use when: creating, repairing, or rechecking blueprint-equivalent
-source-of-truth docs from target evidence.
-Flow: `.ai/assistant/flows/project-blueprint-creation.flow.md`
-Minimum input: blueprint scope and non-goals.
-
-Operation: `recheck-after-framework-update`
-Use when: checking whether an Alatyr Core update requires target adapter
-migration.
-Flow: `.ai/assistant/flows/adapter-recheck.flow.md`
-Minimum input: update source, changed framework baseline, or migration
-assessment path.
+Minimum input: change intent, non-goals, and approval constraints.
 
 Operation: `large-task`
 Use when: work needs multiple workstreams, crosses project areas or profiles,
@@ -88,37 +71,15 @@ exceeds the context budget, or must resume after a context reset.
 Flow: `.ai/assistant/flows/large-task-orchestration.flow.md`
 Minimum input: goal, non-goals, affected areas, and allowed actions.
 
-AI infrastructure shortcuts:
+Operation: `team-status`
+Use when: reporting active work, stale claims, conflicts, handoffs, and review
+state without editing.
+Flow: `.ai/assistant/flows/team-task-coordination.flow.md`
+Minimum input: optional team, area, actor, or task scope.
 
-- `alatyr-ai-inventory`: route to `ai-infrastructure-inventory`.
-- `alatyr-suggest-ai {RECOMMENDATION_SCOPE}`: route to read-only
-  `ai-infrastructure-recommendation` for new-item or existing-item suggestions.
-- `alatyr-improve-ai {AI_INFRASTRUCTURE_ITEM_ID}`: route to focused read-only
-  `ai-infrastructure-recommendation` for an existing item.
-- `alatyr-adaptation {AI_INFRASTRUCTURE_SOURCE}`: route to
-  `skill-adaptation` in review or adaptation mode.
-- `alatyr-add-ai {AI_INFRASTRUCTURE_SOURCE}`: route to `skill-adaptation` with
-  canonical integration intent after inventory, provenance, prompt-injection,
-  safety, and approval checks.
-
-AI infrastructure requests select `inventory`, `recommend`, or another route
-and the smallest item-ID set from
-`.ai/assistant/ai-infrastructure-router.json` before loading item-specific
-skills, prompts, gates, tools, bridges, permissions, or import policy.
-
-Common aliases:
-
-- `Alatyr`: `help` with compact state and relevant actions
-- `Alatyr help`: `help`
-- `Alatyr status` or `Alatyr doctor`: `adapter-health`
-- `update Alatyr` or `обнови Alatyr`: `recheck-after-framework-update`
-- `check Alatyr` or `проверь Alatyr`: `recheck-after-installation` or
-  `adapter-maturity-review`
-- `create blueprint` or `создай blueprint`: `create-project-blueprint`
-- `check integrity` or `проверь целостность`: `logical-integrity-review`
-- `change business rule` or `измени бизнес-правило`: `product-change`
-- `plan large task`, `continue large task`, or `resume Alatyr task`:
-  `large-task`
+Use `Alatyr team status` for the compact team view. Detailed team, blueprint,
+integrity, update, documentation, and AI-infrastructure operations and aliases
+are in `.ai/assistant/help-reference.md`.
 
 ## Minimal Request Shape
 
