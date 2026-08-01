@@ -125,6 +125,7 @@ def validate_release_process(text: str) -> List[str]:
         "framework/rule-registry.json",
         "framework/rule-ownership.md",
         "tools/report_migration_diff.py",
+        "tools/check_release_drift.py",
         "tools/check_release_migration_template.py",
         "tools/check_versioning.py",
         "docs/framework-maintenance.md",

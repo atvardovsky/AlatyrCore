@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "descriptor_kind": "target-context-profile",
+  "profile": "data-change",
+  "use_when": [
+    "schema change",
+    "persistence change",
+    "migration or backfill",
+    "data ownership or retention change"
+  ],
+  "operation_candidates": [
+    "product-change",
+    "logical-integrity-review",
+    "drift-review"
+  ],
+  "required_context": [
+    ".ai/framework/context-discovery.md",
+    ".ai/framework/change-risk-model.md",
+    ".ai/framework/source-of-truth-registry.md",
+    ".ai/framework/logical-integrity.md",
+    ".ai/framework/security-safety-guidance.md",
+    ".ai/framework/testing-guidance.md",
+    ".ai/assistant/gates/checklist.md",
+    "{TARGET_DATA_SOURCE_OF_TRUTH}"
+  ],
+  "expand_when": [
+    "destructive_or_data_loss_risk",
+    "privacy_or_security_changes",
+    "migration_rollback_needed",
+    "external_data_contract_changes",
+    "diagram_changes"
+  ],
+  "approval_gates": [
+    "destructive_data_change",
+    "privacy_change",
+    "migration_risk_change",
+    "live_service_data_change"
+  ],
+  "validation": [
+    "{TARGET_DATA_VALIDATION_OR_MANUAL_REVIEW}"
+  ],
+  "final_evidence": [
+    "canonical_data_owner",
+    "re_derived_invariants",
+    "external_failure_distinction",
+    "derived_surfaces",
+    "migration_or_rollback_notes",
+    "validation",
+    "unresolved_risk"
+  ]
+}

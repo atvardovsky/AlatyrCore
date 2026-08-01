@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import math
 import json
 import re
 from pathlib import Path
@@ -27,10 +28,6 @@ def source_path(reference: str) -> Path | None:
     return None
 
 
-def word_count(path: Path) -> int:
-    return len(re.findall(r"\S+", path.read_text(encoding="utf-8")))
-
-
 def measure(references: list[str]) -> dict[str, Any]:
     unique = list(dict.fromkeys(references))
     resolved: list[tuple[str, Path]] = []
@@ -44,10 +41,15 @@ def measure(references: list[str]) -> dict[str, Any]:
             missing.append(reference)
         else:
             resolved.append((reference, path))
+    texts = [path.read_text(encoding="utf-8") for _, path in resolved]
+    characters = sum(len(value) for value in texts)
     return {
         "declared_files": len(unique),
         "resolved_files": len(resolved),
-        "words": sum(word_count(path) for _, path in resolved),
+        "words": sum(len(re.findall(r"\S+", value)) for value in texts),
+        "characters": characters,
+        "bytes": sum(len(value.encode("utf-8")) for value in texts),
+        "estimated_tokens_4_chars": math.ceil(characters / 4),
         "resolved_paths": [reference for reference, _ in resolved],
         "unresolved_references": unresolved,
         "missing_paths": missing,
@@ -67,19 +69,54 @@ def build_report() -> dict[str, Any]:
         *router.get("bootstrap_context", []),
     ]
     bootstrap = measure(bootstrap_refs)
+    def descriptor(entry: Any) -> tuple[str | None, dict[str, Any]]:
+        reference = entry.get("descriptor") if isinstance(entry, dict) else None
+        path = source_path(reference) if isinstance(reference, str) else None
+        if path is None or not path.is_file():
+            return reference, {}
+        data = json.loads(path.read_text(encoding="utf-8"))
+        return reference, data if isinstance(data, dict) else {}
+
     profiles: dict[str, dict[str, Any]] = {}
-    for name, profile in router.get("profiles", {}).items():
-        profiles[name] = measure(profile.get("required_context", []))
+    for name, entry in router.get("profile_index", {}).items():
+        reference, profile = descriptor(entry)
+        profiles[name] = measure(
+            [value for value in [reference, *profile.get("required_context", [])] if value]
+        )
 
     intent_overlays: dict[str, dict[str, Any]] = {}
+    intent_contracts: dict[str, tuple[str | None, dict[str, Any]]] = {}
+    capability_index = json.loads(
+        (TARGET / ".ai/assistant/assistant-capabilities.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    default_surface = capability_index.get("default_surface")
+    default_capability = capability_index.get("surfaces", {}).get(default_surface)
     for name, overlay in router.get("intent_overlays", {}).items():
-        intent_overlays[name] = measure(overlay.get("required_context", []))
+        reference, contract = descriptor(overlay)
+        intent_contracts[name] = (reference, contract)
+        intent_overlays[name] = measure(
+            [
+                value
+                for value in [
+                    reference,
+                    *contract.get("required_context", []),
+                    default_capability,
+                ]
+                if value
+            ]
+        )
 
     operation_routing = router.get("operation_routing", {})
-    diagram_overlay = router.get("intent_overlays", {}).get("diagram-request", {})
+    diagram_reference, diagram_overlay = intent_contracts.get(
+        "diagram-request", (None, {})
+    )
     diagram_compact_refs = [
         operation_routing.get("index", ""),
+        diagram_reference,
         *diagram_overlay.get("required_context", []),
+        default_capability,
     ]
     diagram_full_reference_refs = [
         operation_routing.get("catalog", ""),
@@ -87,15 +124,21 @@ def build_report() -> dict[str, Any]:
         ".ai/assistant/flows/operation-routing.flow.md",
         ".ai/assistant/module-profile.md",
         ".ai/assistant/bridge-capability-matrix.md",
+        diagram_reference,
         *diagram_overlay.get("required_context", []),
+        default_capability,
     ]
     diagram_compact = measure([value for value in diagram_compact_refs if value])
     diagram_full_reference = measure(
         [value for value in diagram_full_reference_refs if value]
     )
 
-    migration = router.get("migration_routing", {})
-    migration_initial_refs = migration.get("required_context", [])
+    migration_reference, migration = descriptor(router.get("migration_routing", {}))
+    migration_initial_refs = [
+        value
+        for value in [migration_reference, *migration.get("required_context", [])]
+        if value
+    ]
     migration_full_refs = list(
         dict.fromkeys(
             [
@@ -133,7 +176,8 @@ def build_report() -> dict[str, Any]:
             ),
         },
         "limitations": [
-            "static template measurement is not model token usage",
+            "token count uses a four-characters-per-token estimate, not model billing",
+            "runtime clients may preload hidden context not represented by repository paths",
             "placeholder target-owned context is unresolved",
             "runtime expansion depends on task evidence",
         ],

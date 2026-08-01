@@ -200,26 +200,35 @@ def main() -> int:
         matrix_path.write_text(
             "### Assistant Surface: `generic`\n\n"
             "Diagram capability record: "
-            "`.ai/assistant/assistant-capabilities.json#generic`\n",
+            "`.ai/assistant/assistant-capabilities/generic.json`\n",
             encoding="utf-8",
         )
         write_json(
             target / ".ai" / "assistant" / "assistant-capabilities.json",
             {
-                "schema_version": 1,
-                "capability_kind": "target-assistant-capabilities",
+                "schema_version": 2,
+                "capability_kind": "target-assistant-capability-index",
                 "surfaces": {
-                    "generic": {
-                        "diagram_discussion": {
-                            "route": "maybe",
-                            "native_inline_syntaxes": ["unknown"],
-                            "artifact_presentation": "maybe",
-                            "readable_fallback": "text",
-                            "verified_at": "unknown",
-                            "client_version": "unknown",
-                            "evidence": "manual review",
-                        }
-                    }
+                    "generic": ".ai/assistant/assistant-capabilities/generic.json"
+                },
+            },
+        )
+        write_json(
+            target / ".ai" / "assistant" / "assistant-capabilities" / "generic.json",
+            {
+                "schema_version": 1,
+                "capability_kind": "target-assistant-surface-capabilities",
+                "assistant_surface": "generic",
+                "diagram_discussion": {
+                    "route": "maybe",
+                    "native_inline_syntaxes": ["unknown"],
+                    "artifact_presentation": "maybe",
+                    "readable_fallback": "text",
+                    "verified_at": "unknown",
+                    "expires_at": "unknown",
+                    "review_triggers": [],
+                    "client_version": "unknown",
+                    "evidence": "manual review",
                 },
             },
         )

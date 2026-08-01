@@ -48,27 +48,146 @@
     "review adapter readiness": "adapter-maturity-review"
   },
   "operations": {
-    "help": ["core-profile", ".ai/assistant/flows/operation-routing.flow.md", "read-only"],
-    "adapter-health": ["core-profile", ".ai/assistant/flows/adapter-health.flow.md", "read-only"],
-    "create-project-blueprint": ["blueprint-change", ".ai/assistant/flows/project-blueprint-creation.flow.md", "read-only", "docs-only", "full-with-approval"],
-    "recheck-after-installation": ["core-profile", ".ai/assistant/flows/adapter-recheck.flow.md", "read-only", "adapter-only", "full-with-approval"],
-    "recheck-after-framework-update": ["core-profile", ".ai/assistant/flows/adapter-recheck.flow.md", "read-only", "adapter-only", "full-with-approval"],
-    "product-change": ["blueprint-change", ".ai/assistant/flows/blueprint-driven-change.flow.md", "read-only", "docs-only", "code-and-tests", "full-with-approval"],
-    "large-task": ["large-task-orchestration", ".ai/assistant/flows/large-task-orchestration.flow.md", "read-only", "docs-only", "adapter-only", "code-and-tests", "full-with-approval"],
-    "team-status": ["team-collaboration", ".ai/assistant/flows/team-task-coordination.flow.md", "read-only"],
-    "team-task": ["team-collaboration", ".ai/assistant/flows/team-task-coordination.flow.md", "read-only", "adapter-only"],
-    "team-conflict-review": ["team-collaboration", ".ai/assistant/flows/team-task-coordination.flow.md", "read-only"],
-    "team-handoff": ["team-collaboration", ".ai/assistant/flows/team-handoff.flow.md", "read-only", "adapter-only"],
-    "team-decision": ["team-collaboration", ".ai/assistant/flows/team-decision.flow.md", "read-only", "docs-only", "full-with-approval"],
-    "team-review": ["team-collaboration", ".ai/assistant/flows/team-review.flow.md", "read-only"],
-    "team-merge-check": ["team-collaboration", ".ai/assistant/flows/team-review.flow.md", "read-only"],
-    "logical-integrity-review": ["core-profile", ".ai/assistant/flows/logical-integrity-review.flow.md", "read-only", "docs-only", "adapter-only", "code-and-tests", "full-with-approval"],
-    "diagram-discussion": ["diagrams", ".ai/assistant/flows/diagram-discussion.flow.md", "read-only", "docs-only"],
-    "ai-infrastructure-inventory": ["ai-infrastructure", ".ai/assistant/flows/ai-infrastructure-inventory.flow.md", "read-only"],
-    "ai-infrastructure-recommendation": ["ai-infrastructure", ".ai/assistant/flows/ai-infrastructure-recommendation.flow.md", "read-only"],
-    "skill-adaptation": ["ai-infrastructure", ".ai/assistant/flows/skill-adaptation.flow.md", "read-only", "adapter-only", "full-with-approval"],
-    "drift-review": ["core-profile", ".ai/assistant/flows/logical-integrity-review.flow.md", "read-only", "docs-only", "adapter-only", "code-and-tests", "full-with-approval"],
-    "documentation-sync": ["core-profile", ".ai/assistant/flows/documentation-sync.flow.md", "read-only", "docs-only", "adapter-only", "full-with-approval"],
-    "adapter-maturity-review": ["core-profile", ".ai/assistant/flows/adapter-recheck.flow.md", "read-only"]
+    "help": [
+      "core-profile",
+      ".ai/assistant/flows/operation-routing.flow.md",
+      "read-only"
+    ],
+    "adapter-health": [
+      "core-profile",
+      ".ai/assistant/flows/adapter-health.flow.md",
+      "read-only"
+    ],
+    "create-project-blueprint": [
+      "blueprint-change",
+      ".ai/assistant/flows/project-blueprint-creation.flow.md",
+      "read-only",
+      "docs-only",
+      "full-with-approval"
+    ],
+    "recheck-after-installation": [
+      "core-profile",
+      ".ai/assistant/flows/adapter-recheck.flow.md",
+      "read-only",
+      "adapter-only",
+      "full-with-approval"
+    ],
+    "recheck-after-framework-update": [
+      "core-profile",
+      ".ai/assistant/flows/adapter-recheck.flow.md",
+      "read-only",
+      "adapter-only",
+      "full-with-approval"
+    ],
+    "product-change": [
+      "blueprint-change",
+      ".ai/assistant/flows/blueprint-driven-change.flow.md",
+      "read-only",
+      "docs-only",
+      "code-and-tests",
+      "full-with-approval"
+    ],
+    "large-task": [
+      "large-task-orchestration",
+      ".ai/assistant/flows/large-task-orchestration.flow.md",
+      "read-only",
+      "docs-only",
+      "adapter-only",
+      "code-and-tests",
+      "full-with-approval"
+    ],
+    "team-status": [
+      "team-collaboration",
+      ".ai/assistant/flows/team-task-coordination.flow.md",
+      "read-only"
+    ],
+    "team-task": [
+      "team-collaboration",
+      ".ai/assistant/flows/team-task-coordination.flow.md",
+      "read-only",
+      "adapter-only"
+    ],
+    "team-conflict-review": [
+      "team-collaboration",
+      ".ai/assistant/flows/team-task-coordination.flow.md",
+      "read-only"
+    ],
+    "team-handoff": [
+      "team-collaboration",
+      ".ai/assistant/flows/team-handoff.flow.md",
+      "read-only",
+      "adapter-only"
+    ],
+    "team-decision": [
+      "team-collaboration",
+      ".ai/assistant/flows/team-decision.flow.md",
+      "read-only",
+      "docs-only",
+      "full-with-approval"
+    ],
+    "team-review": [
+      "team-collaboration",
+      ".ai/assistant/flows/team-review.flow.md",
+      "read-only"
+    ],
+    "team-merge-check": [
+      "team-collaboration",
+      ".ai/assistant/flows/team-review.flow.md",
+      "read-only"
+    ],
+    "logical-integrity-review": [
+      "core-profile",
+      ".ai/assistant/flows/logical-integrity-review.flow.md",
+      "read-only",
+      "docs-only",
+      "adapter-only",
+      "code-and-tests",
+      "full-with-approval"
+    ],
+    "diagram-discussion": [
+      "diagrams",
+      ".ai/assistant/flows/diagram-discussion.flow.md",
+      "read-only",
+      "docs-only"
+    ],
+    "ai-infrastructure-inventory": [
+      "ai-infrastructure",
+      ".ai/assistant/flows/ai-infrastructure-inventory.flow.md",
+      "read-only"
+    ],
+    "ai-infrastructure-recommendation": [
+      "ai-infrastructure",
+      ".ai/assistant/flows/ai-infrastructure-recommendation.flow.md",
+      "read-only"
+    ],
+    "skill-adaptation": [
+      "ai-infrastructure",
+      ".ai/assistant/flows/skill-adaptation.flow.md",
+      "read-only",
+      "adapter-only",
+      "full-with-approval"
+    ],
+    "drift-review": [
+      "core-profile",
+      ".ai/assistant/flows/logical-integrity-review.flow.md",
+      "read-only",
+      "docs-only",
+      "adapter-only",
+      "code-and-tests",
+      "full-with-approval"
+    ],
+    "documentation-sync": [
+      "core-profile",
+      ".ai/assistant/flows/documentation-sync.flow.md",
+      "read-only",
+      "docs-only",
+      "adapter-only",
+      "full-with-approval"
+    ],
+    "adapter-maturity-review": [
+      "core-profile",
+      ".ai/assistant/flows/adapter-recheck.flow.md",
+      "read-only"
+    ]
   }
 }

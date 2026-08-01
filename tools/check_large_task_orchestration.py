@@ -82,7 +82,9 @@ def main() -> int:
 
     try:
         router = json.loads(ROUTER.read_text(encoding="utf-8"))
-        scale = router["task_scale_overlays"]["large-or-resumable"]
+        scale_route = router["task_scale_overlays"]["large-or-resumable"]
+        descriptor = scale_route["descriptor"]
+        scale = json.loads((TARGET / descriptor).read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError, KeyError, TypeError) as exc:
         failures.append(f"invalid large task router overlay: {exc}")
     else:

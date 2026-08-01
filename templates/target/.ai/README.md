@@ -41,7 +41,7 @@ Replace this section with the actual target project map.
 - context profiles for task-specific context loading
 - module profile for required core and optional Alatyr capabilities
 - task-specific maturity profile
-- bridge capability matrix and compact assistant-capability projection
+- bridge matrix and indexed per-assistant capability evidence
 - flows
 - gates
 - prompts
@@ -75,6 +75,6 @@ are not framework core.
 ## Adapter Manifest
 
 `.ai/alatyr.yaml` records target-owned installation metadata such as framework
-version, adapter schema version, template version, supported assistants,
-source-of-truth files, module state, validation entry points, known gaps, and
-local deviations.
+version, adapter schema version, template version, selected support profile,
+supported assistants, source-of-truth files, module state, validation entry
+points, known gaps, and local deviations.

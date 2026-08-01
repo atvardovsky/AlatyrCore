@@ -18,6 +18,16 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from scaffold_projection import (
+    build_operation_index,
+    load_object,
+    project_catalog,
+    project_context_descriptor,
+    project_manifest,
+    project_router,
+    render_json,
+)
+
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE_ROOT = ROOT / "templates" / "target"
@@ -88,15 +98,62 @@ def iter_framework_files() -> list[Path]:
     )
 
 
-def copy_file(src: Path, dst: Path, *, write: bool) -> None:
+def copy_file(src: Path, dst: Path, *, write: bool, content: str | None = None) -> None:
     if write:
         dst.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(src, dst)
+        if content is None:
+            shutil.copyfile(src, dst)
+        else:
+            dst.write_text(content, encoding="utf-8")
+
+
+def projected_template_content(
+    rel: Path,
+    profile: str,
+    selected: set[Path],
+) -> str | None:
+    src = TEMPLATE_ROOT / rel
+    if rel == Path(".ai/alatyr.yaml"):
+        return project_manifest(src.read_text(encoding="utf-8"), profile, selected)
+
+    catalog_rel = Path(".ai/assistant/operation-catalog.json")
+    index_rel = Path(".ai/assistant/operation-index.json")
+    router_rel = Path(".ai/assistant/context-router.json")
+    catalog = None
+    if catalog_rel in selected:
+        catalog = project_catalog(load_object(TEMPLATE_ROOT / catalog_rel), selected)
+    if rel == catalog_rel and catalog is not None:
+        return render_json(catalog)
+    if rel == index_rel and catalog is not None:
+        return render_json(build_operation_index(catalog))
+    if rel == router_rel:
+        operation_ids = {
+            operation["id"]
+            for operation in (catalog or {}).get("operations", [])
+            if isinstance(operation, dict) and isinstance(operation.get("id"), str)
+        }
+        return render_json(project_router(load_object(src), selected, operation_ids))
+    if rel.parts[:4] == (".ai", "assistant", "context", "profiles") or rel in {
+        Path(".ai/assistant/context/migration-routing.json"),
+        Path(".ai/assistant/context/consistency-routing.json"),
+        Path(".ai/assistant/context/intents/diagram-request.json"),
+        Path(".ai/assistant/context/task-scales/large-or-resumable.json"),
+    }:
+        operation_ids = {
+            operation["id"]
+            for operation in (catalog or {}).get("operations", [])
+            if isinstance(operation, dict) and isinstance(operation.get("id"), str)
+        }
+        return render_json(
+            project_context_descriptor(load_object(src), selected, operation_ids)
+        )
+    return None
 
 
 def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
     target = args.target.resolve()
     profile = getattr(args, "profile", "full")
+    selected = resolve_profile_paths(profile)
     actions: list[str] = []
     blocked: list[str] = []
 
@@ -113,7 +170,12 @@ def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
         if dst.exists() and not args.overwrite_existing:
             blocked.append(f"exists, would not overwrite: {dst}")
             continue
-        copy_file(src, dst, write=args.write)
+        copy_file(
+            src,
+            dst,
+            write=args.write,
+            content=projected_template_content(rel, profile, selected),
+        )
         actions.append(f"template: {rel} -> {dst}")
 
     for src in iter_framework_files():

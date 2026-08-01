@@ -2,6 +2,27 @@
 
 ## Unreleased
 
+- No unreleased changes.
+
+## 0.1.0-alpha.4 - 2026-08-02
+
+- Increased the framework version to `0.1.0-alpha.4`, adapter schema version
+  to `3`, and target template version to `4`, with migration evidence bound to
+  the previous Git release tag.
+- Replaced inline context-profile contracts with a compact schema-3 router and
+  lazy profile, intent, migration, consistency, and task-scale descriptors;
+  reduced the static bootstrap from 1,997 to 1,363 words.
+- Made `core`, `standard`, and `full` scaffolds project manifest, router,
+  operation, and capability claims to files actually present in each support
+  profile, and validate all three projected adapters.
+- Made operation and assistant-capability indexes generated derivatives of
+  canonical records, with separate freshness-aware capability evidence per
+  supported assistant surface.
+- Added captured diagram-result validation for selected capability evidence,
+  loaded context, readable fallback, read-only behavior, and residual risk.
+- Added release drift enforcement against the latest reachable Git tag and
+  extracted reusable target-validator parsing, Git, hashing, and approval-scope
+  helpers from the validator orchestration module.
 - Added `ALATYR-DIAGRAM-001` and an optional `diagram-discussion` operation for
   showing, comparing, and revising diagrams during assistant conversations.
 - Added target flow and presentation contracts that distinguish drafts,

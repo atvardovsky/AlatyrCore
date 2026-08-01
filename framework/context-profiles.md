@@ -24,6 +24,11 @@ contract. The router is the default cheap routing surface. This human-readable
 file is loaded when rationale, conflicts, missing entries, or adapter repair
 require it; it is not mandatory bootstrap context.
 
+The compact router should index one lazy descriptor per canonical profile.
+Load only the selected descriptor. Intent, migration, consistency, and
+task-scale descriptors compose with that profile when their trigger applies;
+they do not belong inline in every profile or in mandatory bootstrap.
+
 ## Canonical Profiles
 
 Use these profile names unless a target adapter deliberately renames them:
@@ -83,6 +88,12 @@ selected task profile instead of being mandatory for every task.
 
 The router should define maximum bootstrap and default profile file/word
 budgets. A target may tune them from measured repository evidence.
+
+Record both a soft bootstrap threshold and a hard maximum. Rebaseline the
+static estimate when bootstrap files change. For an actual assistant run,
+record loaded paths or sections and distinguish observed, assistant-reported,
+estimated, and unavailable context rather than presenting source byte counts
+as exact model-token usage.
 
 If sufficient context exceeds a budget, continue safely and record:
 

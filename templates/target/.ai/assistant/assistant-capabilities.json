@@ -1,16 +1,17 @@
 {
-  "schema_version": 1,
-  "capability_kind": "target-assistant-capabilities",
+  "schema_version": 2,
+  "capability_kind": "target-assistant-capability-index",
   "human_reference": ".ai/assistant/bridge-capability-matrix.md",
+  "default_surface": "generic",
   "surfaces": {
-    "generic": {"diagram_discussion": {"route": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}", "native_inline_syntaxes": ["{SYNTAX_NONE_OR_UNKNOWN}"], "artifact_presentation": "{LINK_ATTACHMENT_BOTH_UNSUPPORTED_OR_UNKNOWN}", "readable_fallback": "{TEXT_OR_ACCESSIBLE_EQUIVALENT}", "verified_at": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}", "client_version": "{CLIENT_VERSION_OR_UNKNOWN_WITH_REASON}", "evidence": "{TARGET_EVIDENCE_OR_MANUAL_REVIEW}"}},
-    "agents": {"diagram_discussion": {"route": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}", "native_inline_syntaxes": ["{SYNTAX_NONE_OR_UNKNOWN}"], "artifact_presentation": "{LINK_ATTACHMENT_BOTH_UNSUPPORTED_OR_UNKNOWN}", "readable_fallback": "{TEXT_OR_ACCESSIBLE_EQUIVALENT}", "verified_at": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}", "client_version": "{CLIENT_VERSION_OR_UNKNOWN_WITH_REASON}", "evidence": "{TARGET_EVIDENCE_OR_MANUAL_REVIEW}"}},
-    "codex": {"diagram_discussion": {"route": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}", "native_inline_syntaxes": ["{SYNTAX_NONE_OR_UNKNOWN}"], "artifact_presentation": "{LINK_ATTACHMENT_BOTH_UNSUPPORTED_OR_UNKNOWN}", "readable_fallback": "{TEXT_OR_ACCESSIBLE_EQUIVALENT}", "verified_at": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}", "client_version": "{CLIENT_VERSION_OR_UNKNOWN_WITH_REASON}", "evidence": "{TARGET_EVIDENCE_OR_MANUAL_REVIEW}"}},
-    "claude": {"diagram_discussion": {"route": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}", "native_inline_syntaxes": ["{SYNTAX_NONE_OR_UNKNOWN}"], "artifact_presentation": "{LINK_ATTACHMENT_BOTH_UNSUPPORTED_OR_UNKNOWN}", "readable_fallback": "{TEXT_OR_ACCESSIBLE_EQUIVALENT}", "verified_at": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}", "client_version": "{CLIENT_VERSION_OR_UNKNOWN_WITH_REASON}", "evidence": "{TARGET_EVIDENCE_OR_MANUAL_REVIEW}"}},
-    "gemini": {"diagram_discussion": {"route": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}", "native_inline_syntaxes": ["{SYNTAX_NONE_OR_UNKNOWN}"], "artifact_presentation": "{LINK_ATTACHMENT_BOTH_UNSUPPORTED_OR_UNKNOWN}", "readable_fallback": "{TEXT_OR_ACCESSIBLE_EQUIVALENT}", "verified_at": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}", "client_version": "{CLIENT_VERSION_OR_UNKNOWN_WITH_REASON}", "evidence": "{TARGET_EVIDENCE_OR_MANUAL_REVIEW}"}},
-    "github-copilot": {"diagram_discussion": {"route": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}", "native_inline_syntaxes": ["{SYNTAX_NONE_OR_UNKNOWN}"], "artifact_presentation": "{LINK_ATTACHMENT_BOTH_UNSUPPORTED_OR_UNKNOWN}", "readable_fallback": "{TEXT_OR_ACCESSIBLE_EQUIVALENT}", "verified_at": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}", "client_version": "{CLIENT_VERSION_OR_UNKNOWN_WITH_REASON}", "evidence": "{TARGET_EVIDENCE_OR_MANUAL_REVIEW}"}},
-    "cursor": {"diagram_discussion": {"route": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}", "native_inline_syntaxes": ["{SYNTAX_NONE_OR_UNKNOWN}"], "artifact_presentation": "{LINK_ATTACHMENT_BOTH_UNSUPPORTED_OR_UNKNOWN}", "readable_fallback": "{TEXT_OR_ACCESSIBLE_EQUIVALENT}", "verified_at": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}", "client_version": "{CLIENT_VERSION_OR_UNKNOWN_WITH_REASON}", "evidence": "{TARGET_EVIDENCE_OR_MANUAL_REVIEW}"}},
-    "devin-cascade": {"diagram_discussion": {"route": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}", "native_inline_syntaxes": ["{SYNTAX_NONE_OR_UNKNOWN}"], "artifact_presentation": "{LINK_ATTACHMENT_BOTH_UNSUPPORTED_OR_UNKNOWN}", "readable_fallback": "{TEXT_OR_ACCESSIBLE_EQUIVALENT}", "verified_at": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}", "client_version": "{CLIENT_VERSION_OR_UNKNOWN_WITH_REASON}", "evidence": "{TARGET_EVIDENCE_OR_MANUAL_REVIEW}"}},
-    "windsurf": {"diagram_discussion": {"route": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}", "native_inline_syntaxes": ["{SYNTAX_NONE_OR_UNKNOWN}"], "artifact_presentation": "{LINK_ATTACHMENT_BOTH_UNSUPPORTED_OR_UNKNOWN}", "readable_fallback": "{TEXT_OR_ACCESSIBLE_EQUIVALENT}", "verified_at": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}", "client_version": "{CLIENT_VERSION_OR_UNKNOWN_WITH_REASON}", "evidence": "{TARGET_EVIDENCE_OR_MANUAL_REVIEW}"}}
+    "generic": ".ai/assistant/assistant-capabilities/generic.json",
+    "agents": ".ai/assistant/assistant-capabilities/agents.json",
+    "codex": ".ai/assistant/assistant-capabilities/codex.json",
+    "claude": ".ai/assistant/assistant-capabilities/claude.json",
+    "gemini": ".ai/assistant/assistant-capabilities/gemini.json",
+    "github-copilot": ".ai/assistant/assistant-capabilities/github-copilot.json",
+    "cursor": ".ai/assistant/assistant-capabilities/cursor.json",
+    "devin-cascade": ".ai/assistant/assistant-capabilities/devin-cascade.json",
+    "windsurf": ".ai/assistant/assistant-capabilities/windsurf.json"
   }
 }

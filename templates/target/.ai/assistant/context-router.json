@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "router_kind": "target-context-router",
   "human_reference": ".ai/assistant/context-profiles.md",
   "preloaded_context": [
@@ -13,7 +13,8 @@
   "context_budgets": {
     "bootstrap": {
       "max_files": 4,
-      "max_words": 2000
+      "max_words": 2000,
+      "soft_max_words": 1700
     },
     "profile_default": {
       "max_files": 12,
@@ -62,119 +63,19 @@
       "use_when": [
         "diagram view explanation comparison or revision request"
       ],
+      "descriptor": ".ai/assistant/context/intents/diagram-request.json",
       "operation_candidates": [
         "diagram-discussion"
       ],
-      "required_module": "diagrams",
-      "required_context": [
-        ".ai/framework/diagram-guidance.md",
-        ".ai/assistant/flows/diagram-discussion.flow.md",
-        ".ai/assistant/templates/diagram-presentation.md",
-        ".ai/assistant/assistant-capabilities.json"
-      ],
-      "expand_when": [
-        "fact conflict or accepted change",
-        "sensitive data",
-        "external or network renderer",
-        "artifact persistence"
-      ],
-      "budget_behavior": "load selected capability and fact owners only"
+      "required_module": "diagrams"
     }
   },
   "consistency_routing": {
-    "enabled_when": [
-      "consistency-map module is enabled",
-      "semantic fact changed or drift is suspected"
-    ],
-    "required_context": [
-      ".ai/framework/consistency-model.md",
-      ".ai/project/consistency-map.json"
-    ],
-    "lookup_order": [
-      "changed fact ids",
-      "canonical owners",
-      "applicable direct relationships",
-      "dependent contracts when propagation is possible",
-      "selected target surfaces and validation"
-    ],
-    "expand_when": [
-      "cross-area contract changes",
-      "owner or relationship evidence conflicts",
-      "validation disproves the current boundary",
-      "approval trigger is reached"
-    ],
-    "final_evidence": [
-      "selected and skipped edges with reasons",
-      "levels and project areas reached",
-      "missing or stale relationships",
-      "candidate and applied repair sets"
-    ]
+    "descriptor": ".ai/assistant/context/consistency-routing.json"
   },
   "migration_routing": {
     "assessment_required_before_changes": true,
-    "required_context": [
-      ".ai/framework/lifecycle.md",
-      ".ai/framework/migration-diff.md",
-      ".ai/framework/rule-registry.json",
-      ".ai/assistant/flows/adapter-recheck.flow.md",
-      ".ai/assistant/templates/installation-note.md",
-      ".ai/assistant/templates/migration-note.md"
-    ],
-    "impact_selectors": [
-      "changed rule ids",
-      "affected rule categories",
-      "affected task profiles",
-      "affected canonical framework sources",
-      "changed target template surfaces",
-      "local deviations and bridge capability changes"
-    ],
-    "candidate_context": [
-      ".ai/framework/README.md",
-      ".ai/framework/adapter-maturity.md",
-      ".ai/framework/ai-infrastructure-routing.md",
-      ".ai/framework/approval-records.md",
-      ".ai/framework/blueprint-driven-change.md",
-      ".ai/framework/bridge-capability-matrix.md",
-      ".ai/framework/change-risk-model.md",
-      ".ai/framework/consistency-model.md",
-      ".ai/framework/context-discovery.md",
-      ".ai/framework/context-profiles.md",
-      ".ai/framework/context-router.md",
-      ".ai/framework/contour.md",
-      ".ai/framework/diagram-guidance.md",
-      ".ai/framework/effectiveness-metrics.md",
-      ".ai/framework/guarantees.md",
-      ".ai/framework/installed-operations.md",
-      ".ai/framework/large-task-orchestration.md",
-      ".ai/framework/lifecycle.md",
-      ".ai/framework/logical-integrity.md",
-      ".ai/framework/migration-diff.md",
-      ".ai/framework/module-profile.md",
-      ".ai/framework/operation-help.md",
-      ".ai/framework/portability.md",
-      ".ai/framework/project-adapter-contract.md",
-      ".ai/framework/prompt-injection.md",
-      ".ai/framework/rule-ownership.md",
-      ".ai/framework/rule-registry.md",
-      ".ai/framework/scaffolding.md",
-      ".ai/framework/security-safety-guidance.md",
-      ".ai/framework/skill-adaptation.md",
-      ".ai/framework/source-of-truth-registry.md",
-      ".ai/framework/team-collaboration.md",
-      ".ai/framework/testing-guidance.md"
-    ],
-    "expand_when": [
-      "migration assessment identifies an affected canonical source",
-      "target adapter claim conflicts with the new baseline",
-      "protected change or approval boundary is reached",
-      "validation disproves the current impact boundary"
-    ],
-    "final_evidence": [
-      "migration assessment and compared baselines",
-      "selected and intentionally omitted canonical sources",
-      "affected target surfaces and local deviations",
-      "approval validation and residual risk"
-    ]
+    "descriptor": ".ai/assistant/context/migration-routing.json"
   },
   "task_scale_overlays": {
     "large-or-resumable": {
@@ -185,25 +86,7 @@
         "profile context budget exceeded",
         "separate approval or validation checkpoints"
       ],
-      "required_context": [
-        ".ai/framework/large-task-orchestration.md",
-        ".ai/assistant/flows/large-task-orchestration.flow.md",
-        ".ai/assistant/templates/large-task-operation-packet.md"
-      ],
-      "expand_when": [
-        "workstream dependency changes",
-        "checkpoint evidence is stale",
-        "cross-workstream contract conflict",
-        "approval scope no longer covers applied changes"
-      ],
-      "budget_behavior": "load only the active workstream context and its fact owners and dependencies",
-      "final_evidence": [
-        "activation reason",
-        "workstream and dependency state",
-        "context receipts and checkpoints",
-        "global logical integrity result",
-        "final convergence and residual risk"
-      ]
+      "descriptor": ".ai/assistant/context/task-scales/large-or-resumable.json"
     },
     "team-active": {
       "use_when": [
@@ -235,45 +118,14 @@
     "ai-infrastructure",
     "framework-upgrade"
   ],
-  "profiles": {
+  "profile_index": {
     "docs-local": {
       "use_when": [
         "local wording",
         "README or documentation text",
         "non-semantic documentation change"
       ],
-      "operation_candidates": [
-        "documentation-sync",
-        "drift-review",
-        "logical-integrity-review"
-      ],
-      "required_context": [
-        ".ai/framework/context-discovery.md",
-        ".ai/framework/testing-guidance.md",
-        ".ai/assistant/gates/checklist.md",
-        "{TARGET_DOC_SOURCE_OF_TRUTH}"
-      ],
-      "expand_when": [
-        "semantic_fact_changes",
-        "source_of_truth_conflict",
-        "approval_scope_unclear",
-        "diagram_or_public_contract_changes"
-      ],
-      "approval_gates": [
-        "accepted_behavior_change",
-        "security_posture_change",
-        "public_contract_change",
-        "approval_rule_change"
-      ],
-      "validation": [
-        "{TARGET_DOC_VALIDATION_OR_MANUAL_REVIEW}"
-      ],
-      "final_evidence": [
-        "changed_docs",
-        "source_of_truth",
-        "skipped_checks",
-        "why_no_logical_integrity_expansion"
-      ]
+      "descriptor": ".ai/assistant/context/profiles/docs-local.json"
     },
     "code-local": {
       "use_when": [
@@ -282,42 +134,7 @@
         "no accepted behavior change",
         "review comments or defect fixes"
       ],
-      "operation_candidates": [
-        "logical-integrity-review",
-        "drift-review",
-        "product-change"
-      ],
-      "required_context": [
-        ".ai/framework/context-discovery.md",
-        ".ai/framework/change-risk-model.md",
-        ".ai/framework/testing-guidance.md",
-        ".ai/framework/logical-integrity.md",
-        ".ai/assistant/gates/checklist.md",
-        "{TARGET_CODE_SOURCE_OF_TRUTH}"
-      ],
-      "expand_when": [
-        "accepted_behavior_changes",
-        "architecture_boundary_changes",
-        "data_model_changes",
-        "external_contract_changes",
-        "security_posture_changes",
-        "ai_infrastructure_changes",
-        "shared_invariant_or_review_item_cluster_detected"
-      ],
-      "approval_gates": [
-        "protected_category_crossed"
-      ],
-      "validation": [
-        "{TARGET_CODE_VALIDATION_OR_MANUAL_REVIEW}"
-      ],
-      "final_evidence": [
-        "changed_files",
-        "re_derived_invariants",
-        "review_item_reconciliation",
-        "validation",
-        "doc_sync_result",
-        "residual_risk"
-      ]
+      "descriptor": ".ai/assistant/context/profiles/code-local.json"
     },
     "business-change": {
       "use_when": [
@@ -326,45 +143,7 @@
         "product policy change",
         "workflow or public contract change"
       ],
-      "operation_candidates": [
-        "product-change",
-        "create-project-blueprint",
-        "logical-integrity-review"
-      ],
-      "required_context": [
-        ".ai/framework/context-discovery.md",
-        ".ai/framework/change-risk-model.md",
-        ".ai/framework/source-of-truth-registry.md",
-        ".ai/framework/logical-integrity.md",
-        ".ai/framework/blueprint-driven-change.md",
-        ".ai/framework/approval-records.md",
-        ".ai/framework/testing-guidance.md",
-        ".ai/assistant/flows/blueprint-driven-change.flow.md",
-        ".ai/assistant/gates/checklist.md",
-        "{TARGET_BLUEPRINT_OR_PRODUCT_SOURCE_OF_TRUTH}"
-      ],
-      "expand_when": [
-        "architecture_boundary_changes",
-        "data_contract_changes",
-        "security_or_privacy_changes",
-        "diagram_changes",
-        "prompt_gate_or_bridge_changes"
-      ],
-      "approval_gates": [
-        "accepted_business_behavior_change"
-      ],
-      "validation": [
-        "{TARGET_BUSINESS_VALIDATION_OR_MANUAL_REVIEW}"
-      ],
-      "final_evidence": [
-        "changed_fact",
-        "re_derived_invariants",
-        "review_item_reconciliation",
-        "owning_blueprint_or_source_of_truth",
-        "implementation_test_doc_sync",
-        "approvals",
-        "logical_integrity_result"
-      ]
+      "descriptor": ".ai/assistant/context/profiles/business-change.json"
     },
     "architecture-change": {
       "use_when": [
@@ -373,48 +152,7 @@
         "runtime topology change",
         "public API or cross-component contract change"
       ],
-      "operation_candidates": [
-        "product-change",
-        "create-project-blueprint",
-        "logical-integrity-review"
-      ],
-      "required_context": [
-        ".ai/framework/context-discovery.md",
-        ".ai/framework/change-risk-model.md",
-        ".ai/framework/source-of-truth-registry.md",
-        ".ai/framework/logical-integrity.md",
-        ".ai/framework/blueprint-driven-change.md",
-        ".ai/framework/approval-records.md",
-        ".ai/framework/security-safety-guidance.md",
-        ".ai/framework/testing-guidance.md",
-        ".ai/assistant/flows/blueprint-driven-change.flow.md",
-        ".ai/assistant/gates/checklist.md",
-        "{TARGET_ARCHITECTURE_SOURCE_OF_TRUTH}"
-      ],
-      "expand_when": [
-        "data_ownership_changes",
-        "external_boundary_changes",
-        "security_boundary_changes",
-        "new_dependency_or_service",
-        "diagram_changes",
-        "bridge_or_gate_changes"
-      ],
-      "approval_gates": [
-        "architecture_change",
-        "new_production_dependency_or_service"
-      ],
-      "validation": [
-        "{TARGET_ARCHITECTURE_VALIDATION_OR_MANUAL_REVIEW}"
-      ],
-      "final_evidence": [
-        "architecture_owner_update",
-        "re_derived_invariants",
-        "review_item_reconciliation",
-        "affected_areas",
-        "validation",
-        "diagram_result",
-        "residual_risk"
-      ]
+      "descriptor": ".ai/assistant/context/profiles/architecture-change.json"
     },
     "data-change": {
       "use_when": [
@@ -423,46 +161,7 @@
         "migration or backfill",
         "data ownership or retention change"
       ],
-      "operation_candidates": [
-        "product-change",
-        "logical-integrity-review",
-        "drift-review"
-      ],
-      "required_context": [
-        ".ai/framework/context-discovery.md",
-        ".ai/framework/change-risk-model.md",
-        ".ai/framework/source-of-truth-registry.md",
-        ".ai/framework/logical-integrity.md",
-        ".ai/framework/security-safety-guidance.md",
-        ".ai/framework/testing-guidance.md",
-        ".ai/assistant/gates/checklist.md",
-        "{TARGET_DATA_SOURCE_OF_TRUTH}"
-      ],
-      "expand_when": [
-        "destructive_or_data_loss_risk",
-        "privacy_or_security_changes",
-        "migration_rollback_needed",
-        "external_data_contract_changes",
-        "diagram_changes"
-      ],
-      "approval_gates": [
-        "destructive_data_change",
-        "privacy_change",
-        "migration_risk_change",
-        "live_service_data_change"
-      ],
-      "validation": [
-        "{TARGET_DATA_VALIDATION_OR_MANUAL_REVIEW}"
-      ],
-      "final_evidence": [
-        "canonical_data_owner",
-        "re_derived_invariants",
-        "external_failure_distinction",
-        "derived_surfaces",
-        "migration_or_rollback_notes",
-        "validation",
-        "unresolved_risk"
-      ]
+      "descriptor": ".ai/assistant/context/profiles/data-change.json"
     },
     "security-sensitive": {
       "use_when": [
@@ -472,42 +171,7 @@
         "destructive actions",
         "production or spend boundary"
       ],
-      "operation_candidates": [
-        "product-change",
-        "logical-integrity-review",
-        "skill-adaptation"
-      ],
-      "required_context": [
-        ".ai/framework/change-risk-model.md",
-        ".ai/framework/security-safety-guidance.md",
-        ".ai/framework/logical-integrity.md",
-        ".ai/framework/approval-records.md",
-        ".ai/assistant/policies/prompt-injection.md",
-        ".ai/assistant/gates/checklist.md",
-        "{TARGET_SECURITY_SOURCE_OF_TRUTH}"
-      ],
-      "expand_when": [
-        "live_external_action_possible",
-        "credential_or_private_data_surface",
-        "dependency_or_permission_change",
-        "imported_ai_infrastructure_involved"
-      ],
-      "approval_gates": [
-        "protected_security_change",
-        "destructive_action",
-        "live_service_access",
-        "permission_broadening"
-      ],
-      "validation": [
-        "{TARGET_SECURITY_VALIDATION_OR_MANUAL_REVIEW}"
-      ],
-      "final_evidence": [
-        "security_owner_evidence",
-        "actions_avoided",
-        "approvals",
-        "validation",
-        "residual_risk"
-      ]
+      "descriptor": ".ai/assistant/context/profiles/security-sensitive.json"
     },
     "ai-infrastructure": {
       "use_when": [
@@ -518,42 +182,7 @@
         "checker gate flow or template change",
         "third-party assistant infrastructure review"
       ],
-      "operation_candidates": [
-        "ai-infrastructure-inventory",
-        "ai-infrastructure-recommendation",
-        "skill-adaptation"
-      ],
-      "required_context": [
-        ".ai/framework/ai-infrastructure-routing.md",
-        ".ai/assistant/ai-infrastructure-router.json",
-        ".ai/assistant/gates/checklist.md"
-      ],
-      "expand_when": [
-        "selected item route requires additional context",
-        "item owner path status or permission is unknown",
-        "third_party_source_requested",
-        "tool_permission_changes",
-        "live_destructive_or_credential_surface",
-        "canonical_target_file_integration"
-      ],
-      "approval_gates": [
-        "third_party_infrastructure_import",
-        "tool_permission_change",
-        "live_or_destructive_capability",
-        "weakened_gate_or_approval_rule"
-      ],
-      "validation": [
-        "{TARGET_AI_INFRASTRUCTURE_VALIDATION_OR_MANUAL_REVIEW}"
-      ],
-      "final_evidence": [
-        "inventory",
-        "provenance",
-        "source_hash_or_commit",
-        "license_status",
-        "normalization",
-        "compatibility_review",
-        "approval_evidence"
-      ]
+      "descriptor": ".ai/assistant/context/profiles/ai-infrastructure.json"
     },
     "framework-upgrade": {
       "use_when": [
@@ -563,47 +192,7 @@
         "adapter maturity review",
         "framework drift repair"
       ],
-      "operation_candidates": [
-        "adapter-health",
-        "recheck-after-framework-update",
-        "recheck-after-installation",
-        "adapter-maturity-review"
-      ],
-      "required_context": [
-        ".ai/framework/lifecycle.md",
-        ".ai/framework/migration-diff.md",
-        ".ai/framework/rule-registry.json",
-        ".ai/assistant/flows/adapter-recheck.flow.md",
-        ".ai/assistant/templates/installation-note.md",
-        ".ai/assistant/templates/migration-note.md"
-      ],
-      "expand_when": [
-        "migration_assessment_identifies_affected_canonical_source",
-        "changed_target_template_surface",
-        "protected_adapter_overwrite",
-        "bridge_capability_change",
-        "target_local_deviation_conflict",
-        "validation_disproves_impact_boundary"
-      ],
-      "approval_gates": [
-        "overwriting_existing_instructions",
-        "protected_adapter_behavior_change",
-        "third_party_assistant_infrastructure_adoption"
-      ],
-      "validation": [
-        "{TARGET_ADAPTER_RECHECK_OR_MANUAL_REVIEW}"
-      ],
-      "final_evidence": [
-        "adapter_version_schema_state",
-        "changed_framework_baseline",
-        "migration_assessment",
-        "selected_and_omitted_canonical_sources",
-        "affected_target_files",
-        "gaps",
-        "local_deviations",
-        "validation",
-        "migration_actions"
-      ]
+      "descriptor": ".ai/assistant/context/profiles/framework-upgrade.json"
     }
   }
 }

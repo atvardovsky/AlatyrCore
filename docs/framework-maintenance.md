@@ -93,14 +93,17 @@ Before accepting a change, check:
   draft/source status, inline or artifact presentation, readable fallback,
   source-revision evidence, security/privacy, stable lineage, compact routing,
   conformance fixture, or assistant capability fields change.
+- `python3 tools/check_diagram_conformance_results.py` passes when captured
+  diagram result, selected capability, loaded-context, read-only, fallback, or
+  residual-risk evidence changes.
 - `python3 tools/prepare_diagram_conformance_run.py --check` passes when the
   cross-assistant diagram operation fixture or prompt contract changes.
 - `python3 tools/check_assistant_surface_conformance.py` passes when supported
   surface IDs, bridge paths, compact bootstrap, help routing, or prepared
   conformance prompts change.
 - `python3 tools/check_context_router.py` passes when target context-router
-  profile names, required context, approval gates, validation, final evidence,
-  or framework-routing coverage changes.
+  schema, lazy descriptors, profile names, required context, approval gates,
+  validation, final evidence, or framework-routing coverage changes.
 - `python3 tools/check_context_costs.py` passes when bootstrap/profile paths,
   context budgets, or routed source word counts change; refresh the golden
   baseline only after reviewing the cost difference.
@@ -131,6 +134,9 @@ Before accepting a change, check:
 - `python3 tools/check_operation_catalog.py` passes when operation IDs,
   automatic routing, single-entry behavior, adapter health, preview triggers,
   or catalog/manifest/router alignment changes.
+- `python3 tools/render_operation_index.py` and
+  `python3 tools/render_assistant_capability_index.py` pass when tracked compact
+  indexes still derive from canonical catalog or per-surface records.
 - `python3 tools/check_operation_help.py` passes when short help,
   help-reference sections, allowed-action text, alias wording, or operation
   block shape changes.
@@ -157,6 +163,8 @@ Before accepting a change, check:
 - `python3 tools/check_versioning.py` passes when source versions, changelog,
   release process, migration evidence, adapter schema version, or template
   version changes.
+- `python3 tools/check_release_drift.py` passes when source versions and
+  migration evidence are correctly bound to the latest reachable release tag.
 - `python3 tools/check_conformance_fixtures.py` passes when conformance fixture
   metadata changes.
 - `python3 tools/materialize_conformance_fixtures.py --output tmp/conformance-targets`

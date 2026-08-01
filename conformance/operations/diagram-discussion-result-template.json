@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "report_kind": "assistant-operation-result",
+  "operation": "diagram-discussion",
+  "run_id": "{RUN_ID}",
+  "assistant_surface": "{ASSISTANT_SURFACE}",
+  "target_revision": "{TARGET_GIT_REVISION_OR_UNKNOWN_WITH_REASON}",
+  "client_version": "{CLIENT_VERSION_OR_UNKNOWN_WITH_REASON}",
+  "captured_at": "{ISO_DATE_TIME}",
+  "allowed_actions": ["read-only"],
+  "loaded_context": {
+    "measurement_kind": "{OBSERVED_ASSISTANT_REPORTED_OR_UNKNOWN_WITH_REASON}",
+    "loaded_paths": ["{LOADED_PATH}"],
+    "loaded_sections": ["{PATH_AND_JSON_POINTER_OR_LINE_RANGE}"],
+    "observed_bytes": "{NON_NEGATIVE_INTEGER_OR_UNKNOWN_WITH_REASON}",
+    "estimated_tokens": "{NON_NEGATIVE_INTEGER_OR_UNKNOWN_WITH_REASON}",
+    "hidden_client_context": "{KNOWN_UNKNOWN_OR_NOT_APPLICABLE_WITH_REASON}",
+    "soft_budget_exceeded": "{TRUE_FALSE_OR_UNKNOWN_WITH_REASON}",
+    "hard_budget_exceeded": "{TRUE_FALSE_OR_UNKNOWN_WITH_REASON}"
+  },
+  "diagram_id": "{STABLE_DIAGRAM_ID}",
+  "draft_revision": "{DRAFT_REVISION}",
+  "status": "draft",
+  "presentation_mode": "{NATIVE_INLINE_RENDERED_ARTIFACT_OR_TEXT_FALLBACK}",
+  "capability_evidence": "{CAPABILITY_RECORD_AND_FRESHNESS_EVIDENCE}",
+  "data_classification": "{TARGET_CLASSIFICATION}",
+  "text_fallback": "{READABLE_TEXT_OR_ACCESSIBLE_EQUIVALENT}",
+  "validation": ["{VALIDATION_EVIDENCE}"],
+  "stale_view_risk": "{RISK_OR_NONE_WITH_EVIDENCE}",
+  "repository_changes": [],
+  "residual_risk": ["{RESIDUAL_RISK_OR_NONE}"]
+}

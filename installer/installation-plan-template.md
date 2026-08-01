@@ -36,7 +36,7 @@ List what must not be changed.
 - Source-of-truth registry:
 - Consistency-map need, fact-ID strategy, and relationship coverage:
 - Consistency-map staleness owner and validation:
-- Context router:
+- Context router schema and lazy descriptors:
 - Context profiles:
 - Context-router bootstrap references:
 - Preloaded versus compact-bootstrap context:
@@ -54,7 +54,8 @@ List what must not be changed.
 - Module profile:
 - Task-specific maturity profile:
 - Bridge capability matrix:
-- Compact operation index and assistant-capability projection:
+- Compact operation index, generated assistant-capability index, and selected
+  per-surface records:
 - Blueprint-driven change or equivalent product-change workflow:
 - Operation catalog, installed-operation, operation-help, automatic routing,
   adapter-health, pre-change preview, blueprint-creation, adapter-recheck,
@@ -124,6 +125,10 @@ Include `.ai/assistant/context-router.json` to map task profiles to required
 context, project-area overlays, budgets, receipts, approvals, validation, and
 final evidence in machine-readable form.
 
+Keep the router compact. Put full canonical profile, intent, migration,
+consistency, and task-scale instructions in referenced lazy descriptors, and
+include only descriptors present in the selected support profile.
+
 Include `.ai/assistant/operation-catalog.json` as the canonical operation
 registry and `.ai/assistant/operation-index.json` as its checked compact
 derivative for exact IDs and aliases. Keep the full catalog outside routine
@@ -150,8 +155,9 @@ and blocking criteria.
 Include `.ai/assistant/bridge-capability-matrix.md` when more than one
 assistant surface is supported or bridge behavior may differ.
 Include `.ai/assistant/assistant-capabilities.json` as the compact runtime
-projection for per-surface diagram enums, readable fallback, client version,
-verification time, and evidence.
+index. Store diagram enums, readable fallback, client version, verification,
+expiry or review triggers, and evidence in one referenced record per installed
+assistant surface. Generate or check the index from those records.
 
 Include `.ai/assistant/policies/ai-infrastructure-source-access.md` when the
 target wants AI infrastructure inventory, adaptation, package/plugin review, or
@@ -315,7 +321,8 @@ operation index, operation catalog, and routing flow, including `Alatyr`, read-o
 status/doctor aliases, risk-gated preview behavior, and optional team aliases
 through the canonical catalog. When diagrams are enabled, include
 `diagram-discussion` routing and record presentation limitations in the
-compact assistant-capability projection rather than bridge policy text.
+selected assistant-capability record rather than bridge policy text. Capture
+actual result evidence separately from the prepared conformance prompt.
 
 State whether CODEOWNERS or an equivalent owner map exists for root assistant
 entry points and supported bridge files.

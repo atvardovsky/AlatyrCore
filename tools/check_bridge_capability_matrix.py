@@ -160,7 +160,7 @@ def main() -> int:
 
         capability_line = field_line(block, "Diagram capability record:")
         expected_capability = (
-            ".ai/assistant/assistant-capabilities.json#" + surface_id
+            f".ai/assistant/assistant-capabilities/{surface_id}.json"
         )
         if capability_line != f"Diagram capability record: `{expected_capability}`":
             failures.append(

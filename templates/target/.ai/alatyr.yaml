@@ -9,6 +9,7 @@ installation:
   id: "{INSTALLATION_ID}"
   date: "{INSTALLATION_DATE}"
   mode: "{NEW_INSTALL_OR_UPGRADE}"
+  support_profile: "{CORE_STANDARD_OR_FULL}"
 owner:
   responsible_team: "{RESPONSIBLE_TEAM}"
   technical_owner: "{TECHNICAL_OWNER}"
@@ -37,7 +38,7 @@ source_of_truth:
   project_sources:
     - "{TARGET_PROJECT_SOURCE_OF_TRUTH}"
 context_routing:
-  router_schema_version: 2
+  router_schema_version: 3
   preloaded_context:
     - "AGENTS.md"
   compact_bootstrap:

@@ -261,7 +261,17 @@ def main() -> int:
     if isinstance(bootstrap, list) and ".ai/assistant/operation-catalog.json" in bootstrap:
         failures.append("operation catalog must stay outside routine bootstrap")
 
-    profiles = router.get("profiles")
+    profiles: dict[str, Any] = {}
+    profile_index = router.get("profile_index")
+    if isinstance(profile_index, dict):
+        for profile, entry in profile_index.items():
+            descriptor = entry.get("descriptor") if isinstance(entry, dict) else None
+            if isinstance(descriptor, str) and target_path_exists(descriptor):
+                profiles[profile] = load_json(TARGET / descriptor)
+    else:
+        inline_profiles = router.get("profiles")
+        if isinstance(inline_profiles, dict):
+            profiles = inline_profiles
     if not isinstance(profiles, dict):
         failures.append("context router profiles must be an object")
     else:
@@ -303,9 +313,13 @@ def main() -> int:
                 routed_ids.update(candidates)
         intent_overlays = router.get("intent_overlays")
         if isinstance(intent_overlays, dict):
-            for overlay_name, overlay in intent_overlays.items():
-                if not isinstance(overlay, dict):
+            for overlay_name, overlay_route in intent_overlays.items():
+                if not isinstance(overlay_route, dict):
                     continue
+                overlay = overlay_route
+                descriptor = overlay_route.get("descriptor")
+                if isinstance(descriptor, str) and target_path_exists(descriptor):
+                    overlay = load_json(TARGET / descriptor)
                 candidates = string_list(
                     overlay.get("operation_candidates"),
                     f"intent_overlays.{overlay_name}.operation_candidates",

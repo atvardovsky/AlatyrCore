@@ -149,6 +149,7 @@ python3 tools/check_bridge_capability_matrix.py
 python3 tools/check_captured_effectiveness_results.py
 python3 tools/check_context_router.py
 python3 tools/check_context_costs.py
+python3 tools/check_diagram_conformance_results.py
 python3 tools/check_discussion_diagrams.py
 python3 tools/prepare_diagram_conformance_run.py --check
 python3 tools/check_consistency_map.py
@@ -167,12 +168,15 @@ python3 tools/check_operation_catalog.py
 python3 tools/check_operation_help.py
 python3 tools/check_output_contracts.py
 python3 tools/check_release_migration_template.py
+python3 tools/check_release_drift.py
 python3 tools/check_rule_ownership.py
 python3 tools/check_scaffold_profiles.py
 python3 tools/check_source_of_truth_registry.py
 python3 tools/check_target_adapter_validator.py
 python3 tools/check_team_collaboration.py
 python3 tools/check_versioning.py
+python3 tools/render_assistant_capability_index.py
+python3 tools/render_operation_index.py
 python3 tools/summarize_effectiveness_benchmark.py
 ```
 

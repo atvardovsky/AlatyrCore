@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "descriptor_kind": "target-context-profile",
+  "profile": "code-local",
+  "use_when": [
+    "implementation change",
+    "test change",
+    "no accepted behavior change",
+    "review comments or defect fixes"
+  ],
+  "operation_candidates": [
+    "logical-integrity-review",
+    "drift-review",
+    "product-change"
+  ],
+  "required_context": [
+    ".ai/framework/context-discovery.md",
+    ".ai/framework/change-risk-model.md",
+    ".ai/framework/testing-guidance.md",
+    ".ai/framework/logical-integrity.md",
+    ".ai/assistant/gates/checklist.md",
+    "{TARGET_CODE_SOURCE_OF_TRUTH}"
+  ],
+  "expand_when": [
+    "accepted_behavior_changes",
+    "architecture_boundary_changes",
+    "data_model_changes",
+    "external_contract_changes",
+    "security_posture_changes",
+    "ai_infrastructure_changes",
+    "shared_invariant_or_review_item_cluster_detected"
+  ],
+  "approval_gates": [
+    "protected_category_crossed"
+  ],
+  "validation": [
+    "{TARGET_CODE_VALIDATION_OR_MANUAL_REVIEW}"
+  ],
+  "final_evidence": [
+    "changed_files",
+    "re_derived_invariants",
+    "review_item_reconciliation",
+    "validation",
+    "doc_sync_result",
+    "residual_risk"
+  ]
+}

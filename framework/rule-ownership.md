@@ -113,7 +113,7 @@ Category: `BRIDGE`
 Owner: `.ai/framework/bridge-capability-matrix.md`
 Rule IDs: `ALATYR-BRIDGE-001`
 Derived surfaces: assistant bridge templates, bridge renderer, bridge
-capability target template, compact assistant-capability projection,
+capability target records, generated assistant-capability index,
 cross-assistant AI item routing.
 
 Category: `LIFECYCLE`

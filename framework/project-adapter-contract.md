@@ -21,9 +21,9 @@ project. Without an adapter, the framework only describes process concepts.
 Every project using this framework must define:
 
 - adapter manifest or equivalent discoverable record of framework version,
-  adapter schema version, template version, owner, source-of-truth files,
-  supported assistants, validation entry points, known gaps, and local
-  deviations
+  adapter schema version, template version, selected support profile, owner,
+  source-of-truth files, supported assistants, validation entry points, known
+  gaps, and local deviations
 - adapter ownership metadata: responsible team, technical owner, backup owner,
   last review date, review cadence or triggers, and CODEOWNERS or equivalent
   file-owner map when the target repository supports it
@@ -33,8 +33,9 @@ Every project using this framework must define:
   validation own
 - context profiles that map task types to required framework, project,
   assistant, flow, gate, policy, validation, approval, and evidence context
-- context router or equivalent machine-readable profile map when the target
-  wants cheaper startup and deterministic profile selection
+- compact context router plus profile-specific lazy descriptors, or equivalent
+  machine-readable profile map, when the target wants cheaper startup and
+  deterministic profile selection
 - module profile that records required core status, enabled optional modules,
   deferred modules, disabled or not-applicable modules, blocked modules, and
   reasons
@@ -89,8 +90,9 @@ Every project using this framework must define:
 - task-specific maturity profile and blocking criteria for high-risk task
   areas
 - module-profile review for installation, update, and adapter maturity
-- bridge capability matrix and compact runtime capability projection when
-  multiple assistant surfaces are supported
+- bridge capability matrix, compact generated capability index, and separate
+  freshness-aware records for installed assistant surfaces when multiple
+  assistant surfaces are supported
 - migration-note process when framework upgrades are expected
 - migration-diff process when comparing framework baselines
 - effectiveness measurement process when the target wants to evaluate AI work

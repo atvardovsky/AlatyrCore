@@ -224,6 +224,12 @@ python3 tools/prepare_diagram_conformance_run.py --output tmp/diagram-conformanc
 Use `--assistant-surface <id>` for one surface. This prepares prompts but does
 not run external clients or claim rendering conformance.
 
+`check_diagram_conformance_results.py` validates the separate captured-result
+contract. Pass `--results-dir <dir>` for reviewed assistant outputs and
+`--require-all-surfaces` only when the run is expected to cover every declared
+surface. It checks selected capability evidence, loaded context, fallback,
+read-only repository behavior, and residual risk; it does not run a client.
+
 Windows PowerShell or Command Prompt:
 
 ```powershell
@@ -235,9 +241,10 @@ py -3 .\tools\prepare_diagram_conformance_run.py --output tmp\diagram-conformanc
 `check_context_router.py` validates the target
 `.ai/assistant/context-router.json` template in this source repository. It
 checks canonical profile names, preloaded versus compact bootstrap context,
-budgets, receipt fields, bounded candidates, intent/area overlays, path
-references, duplicate route entries, and framework file routing coverage. It
-is not a portable framework requirement for target projects.
+schema-3 lazy profile and overlay descriptors, budgets, receipt fields,
+bounded candidates, intent/area overlays, path references, duplicate route
+entries, and framework file routing coverage. It is not a portable framework
+requirement for target projects.
 
 Linux or macOS:
 
@@ -257,6 +264,11 @@ py -3 .\tools\check_context_router.py
 compact index derivative, bounded router candidates, single `Alatyr` entry,
 automatic routing, read-only adapter health, risk-gated preview, and
 manifest/help alignment. It checks source templates only.
+
+`render_operation_index.py` checks that the tracked compact index is generated
+from the canonical catalog. Use `--write` only after reviewing catalog changes.
+`render_assistant_capability_index.py` does the same for separate per-surface
+assistant capability records.
 
 Linux or macOS:
 
@@ -335,7 +347,11 @@ target directory. It is dry-run by default. The `full` profile preserves the
 historical all-template behavior. Use `core` for required adapter support
 surfaces or `standard` for core plus common product and lifecycle operations.
 Every profile copies the complete portable framework baseline; profile
-selection filters target adapter templates only.
+selection filters target adapter templates only. The projection layer records
+the selected profile in `.ai/alatyr.yaml`, removes path claims for omitted
+surfaces, filters operation routes to installed flows, derives the compact
+operation index, and removes optional router/capability references that the
+profile does not provide.
 
 It does not inspect target facts, complete installation, approve overwrites, or
 validate an installed adapter.
@@ -377,6 +393,10 @@ target-local checker coverage, optional team actor/registry/claim/overlap and
 revision-bound merge-readiness structure, optional approval scope against a
 supplied git diff, and optional `.ai/framework` drift against an AlatyrCore
 source checkout.
+
+Reusable manifest parsing, Git diff, hashing, and approval-scope primitives
+live in `target_validation_support.py`; the validator remains the reporting and
+contract orchestration surface.
 
 It does not install Alatyr Core, inspect project business truth, approve
 protected changes, run target validation, or replace assistant logical
@@ -710,6 +730,13 @@ py -3 .\tools\check_versioning.py
 report template and checks that `report_migration_diff.py` emits the same
 evidence shape. It is not a portable framework requirement for target
 projects.
+
+`check_release_drift.py` compares framework and target-template changes with
+the latest reachable release tag. It requires the corresponding source version
+files to advance and runs the migration reporter against the materialized tag
+baseline. Use `--from-ref` for an explicit baseline or `--report-output` to
+write generated evidence for review. The check requires Git tags to be
+available in CI.
 
 Linux or macOS:
 

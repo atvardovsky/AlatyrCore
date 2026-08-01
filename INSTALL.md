@@ -85,7 +85,8 @@ The plan must identify:
 - adapter owner, backup owner, review cadence, and CODEOWNERS or equivalent
   owner map when the target supports file ownership metadata
 - supported assistants
-- context router and context profiles needed for the target
+- compact context router, selected lazy profile descriptors, and human context
+  profiles needed for the target
 - large-task task-scale routing, packet, checkpoint, and storage needs
 - optional team-collaboration owner, coordination backend, synchronization
   direction, actor/authority/priority evidence, registry, conflict, handoff,
@@ -96,8 +97,10 @@ The plan must identify:
   staleness owner
 - task-specific maturity and bridge capability needs
 - diagram discussion, source/visual ownership, per-assistant presentation,
-  readable fallback, and stale-view evidence needs
-- optional scaffolding plan, if any
+  readable fallback, capability expiry/review triggers, captured-result
+  evidence, and stale-view evidence needs
+- optional scaffolding plan and selected `core`, `standard`, or `full` support
+  profile, if any
 - migration diff, adapter output contract, AI infrastructure inventory and
   recommendation reports, and effectiveness report needs
 - AI infrastructure router/item, recommendation, and adaptation-record needs
@@ -151,10 +154,11 @@ In a typical target repository:
    Add `.ai/project/team-operating-model.md` only when team collaboration is
    enabled, and derive actors, authority, priorities, review, backend,
    retention, and privacy from target evidence.
-7. Create `.ai/assistant/contour.md`, context router, operation catalog and its
-   checked compact index, context profiles, module profile, task-specific
-   maturity profile, bridge capability matrix, compact assistant-capability
-   projection, and target workflows/gates. Keep the catalog outside routine
+7. Create `.ai/assistant/contour.md`, compact context router and selected lazy
+   profile descriptors, operation catalog and its checked compact index,
+   context profiles, module profile, task-specific maturity profile, bridge
+   capability matrix, generated assistant-capability index and installed-
+   surface records, and target workflows/gates. Keep the catalog outside routine
    routing and resolve exact aliases through the compact index.
    When team collaboration is enabled, route `team-active` through
    `.ai/assistant/team/context-overlay.json` and keep team state outside
@@ -217,8 +221,9 @@ does not grant approval.
 When the target enables diagrams, `Alatyr diagram`, `show as a diagram`, and
 equivalent target-language requests route to `diagram-discussion`. Installation
 must record each supported assistant's native inline, rendered-artifact, and
-readable-fallback capability, client version, verification time, and evidence
-in the compact capability projection. It must also define classification,
+readable-fallback capability, client version, verification time, expiry or
+review triggers, and evidence in its indexed surface record. It must also
+define classification,
 redaction, external-renderer, artifact storage/retention, stable diagram ID,
 and revision-lineage behavior rather than assuming one client behavior for all
 surfaces.
@@ -256,6 +261,11 @@ for placeholder files.
 The scaffolder is Python-based and can be run on Linux, macOS, and Windows.
 Windows users may use the provided Command Prompt or PowerShell wrappers under
 `tools/`.
+
+The selected profile must be recorded in `.ai/alatyr.yaml`. Scaffold
+projection must remove manifest, router, operation, and capability claims for
+omitted optional surfaces; a smaller profile is not a full template copy with
+missing files.
 
 Scaffolding does not replace target inspection, installation planning,
 approval gates, adapter rewriting, validation, logical integrity review, or

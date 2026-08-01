@@ -39,7 +39,7 @@ For each supported assistant, record:
 - whether enabled team status, task, conflict, handoff, decision, review, and
   merge-check requests route through the canonical catalog and lazy team
   overlay
-- the selected entry in the compact target assistant-capability projection
+- the selected path in the compact generated assistant-capability index
 - whether diagram discussion routes through the canonical operation index
 - supported native inline diagram syntaxes, artifact presentation mode, and
   readable fallback in that projection
@@ -55,9 +55,13 @@ files.
 
 The human bridge matrix owns explanatory precedence and limitation notes.
 `.ai/assistant/assistant-capabilities.json` is its compact runtime projection
-for selecting one assistant surface without loading the whole matrix. The
-projection must use constrained values, retain freshness evidence, and be
-checked against the surface list and matrix references.
+for selecting one assistant surface without loading the whole matrix. It maps
+surface IDs to separate target-owned records under
+`.ai/assistant/assistant-capabilities/`. Each record must use constrained
+values, retain client version, verification, expiry or review-trigger
+freshness evidence, and be checked against the surface list and matrix
+references. Derive the index from those records; do not maintain duplicate
+capability claims in the index.
 
 ## Baseline Template Surfaces
 
@@ -99,7 +103,7 @@ Each bridge should:
   `.ai/assistant/team/context-overlay.json` instead of embedding team policy
 - route enabled `Alatyr diagram` and equivalent requests through the compact
   operation index, diagram discussion flow, presentation template, and only
-  the selected assistant-capability entry
+  the selected assistant-capability record
 - avoid duplicating full framework, project, or adapter policy
 - avoid becoming a source of truth for project facts
 - state assistant-specific limitations only when target evidence supports
@@ -110,8 +114,10 @@ step or unsupported status.
 
 Source conformance may prepare the same fixture prompt for every supported
 surface and verify bridge discovery deterministically. This proves source
-contract coverage only; actual assistant runs are still required to measure
-vendor loading behavior, context use, and logical-integrity evidence.
+contract coverage only. Actual assistant runs should capture the selected
+capability record, loaded paths or sections, context measurement kind,
+presentation result, fallback, repository changes, and residual risk. Hidden
+client context must remain `unknown` unless the client exposes evidence.
 
 ## Upgrade Use
 
@@ -123,6 +129,7 @@ During framework update or adapter recheck:
 4. Check the compact operation index still derives exactly from the catalog.
 5. Check operation aliases still route to the canonical flows.
 6. Check diagram presentation claims, enums, client version, verification
-   time, and evidence against current surface capability; retain a readable
-   fallback for unknown or unsupported rendering.
+   time, expiry or review triggers, and evidence against current surface
+   capability; retain a readable fallback for unknown, stale, or unsupported
+   rendering.
 7. Report bridge-specific limitations and residual risk.

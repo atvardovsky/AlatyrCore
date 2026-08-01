@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "descriptor_kind": "target-intent-overlay",
+  "intent": "diagram-request",
+  "use_when": [
+    "diagram view explanation comparison or revision request"
+  ],
+  "operation_candidates": [
+    "diagram-discussion"
+  ],
+  "required_module": "diagrams",
+  "required_context": [
+    ".ai/framework/diagram-guidance.md",
+    ".ai/assistant/flows/diagram-discussion.flow.md",
+    ".ai/assistant/templates/diagram-presentation.md",
+    ".ai/assistant/assistant-capabilities.json"
+  ],
+  "expand_when": [
+    "fact conflict or accepted change",
+    "sensitive data",
+    "external or network renderer",
+    "artifact persistence"
+  ],
+  "budget_behavior": "load selected capability and fact owners only"
+}

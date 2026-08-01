@@ -134,6 +134,7 @@ Required files:
 - `.ai/assistant/flows/diagram-discussion.flow.md`
 - `.ai/assistant/templates/diagram-presentation.md`
 - `.ai/assistant/assistant-capabilities.json`
+- `.ai/assistant/assistant-capabilities/{SUPPORTED_ASSISTANT}.json`
 - `.ai/assistant/bridge-capability-matrix.md`
 
 Reason: `{REASON}`
@@ -169,6 +170,7 @@ Required files:
 
 - `.ai/assistant/bridge-capability-matrix.md`
 - `.ai/assistant/assistant-capabilities.json`
+- `.ai/assistant/assistant-capabilities/{SUPPORTED_ASSISTANT}.json`
 
 Reason: `{REASON}`
 Validation or review: `{VALIDATION_OR_REVIEW}`

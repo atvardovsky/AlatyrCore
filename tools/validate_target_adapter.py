@@ -12,21 +12,46 @@ Linux, macOS, and Windows with Python 3.
 from __future__ import annotations
 
 import argparse
-import fnmatch
 import hashlib
 import json
 import re
-import subprocess
 import sys
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Tuple
+from typing import Any
+
+from target_validation_support import (
+    ManifestData,
+    PathKey,
+    UNRESOLVED_WORDS,
+    dotted,
+    duplicates,
+    expect_string_list,
+    extract_field,
+    extract_list_field,
+    git_changed_files,
+    git_diff_patch,
+    git_head_revision,
+    is_placeholder,
+    is_protected_surface,
+    is_target_relative_path,
+    is_target_scope_pattern,
+    is_unresolved_value,
+    json_string_list,
+    markdown_sections,
+    nested_json_value,
+    normalize_hash_field,
+    parse_manifest,
+    refs_match,
+    scope_entries_cover,
+    section_items,
+    sha256,
+    should_skip_path,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
-
-PathKey = Tuple[str, ...]
 
 CANONICAL_PROFILES = [
     "docs-local",
@@ -39,7 +64,7 @@ CANONICAL_PROFILES = [
     "framework-upgrade",
 ]
 
-REQUIRED_FILES = [
+CORE_REQUIRED_FILES = [
     "AGENTS.md",
     ".ai/alatyr.yaml",
     ".ai/README.md",
@@ -52,10 +77,19 @@ REQUIRED_FILES = [
     ".ai/assistant/maturity-profile.md",
     ".ai/assistant/gates/checklist.md",
     ".ai/assistant/approvals/approval-record-template.json",
-    ".ai/assistant/flows/adapter-recheck.flow.md",
-    ".ai/assistant/flows/operation-routing.flow.md",
     ".ai/assistant/templates/adapter-output-contracts.md",
 ]
+
+STANDARD_REQUIRED_FILES = [
+    ".ai/assistant/operation-index.json",
+    ".ai/assistant/operation-catalog.json",
+    ".ai/assistant/flows/adapter-recheck.flow.md",
+    ".ai/assistant/flows/adapter-health.flow.md",
+    ".ai/assistant/flows/operation-routing.flow.md",
+    ".ai/assistant/templates/pre-change-preview.md",
+]
+
+SUPPORT_PROFILES = {"core", "standard", "full"}
 
 REQUIRED_PRELOADED = [
     "AGENTS.md",
@@ -98,6 +132,7 @@ MANIFEST_REQUIRED_SCALARS: set[PathKey] = {
     ("installation", "id"),
     ("installation", "date"),
     ("installation", "mode"),
+    ("installation", "support_profile"),
     ("owner", "responsible_team"),
     ("owner", "technical_owner"),
     ("owner", "backup_owner"),
@@ -110,23 +145,29 @@ MANIFEST_REQUIRED_SCALARS: set[PathKey] = {
     ("source_of_truth", "context_profiles"),
     ("source_of_truth", "module_profile"),
     ("operations", "help"),
-    ("operations", "index"),
-    ("operations", "catalog"),
-    ("operations", "routing"),
-    ("operations", "health"),
-    ("operations", "pre_change_preview"),
-    ("operations", "diagram_discussion"),
-    ("operations", "diagram_presentation"),
     ("operations", "operation_request"),
     ("operations", "output_contracts"),
     ("maturity", "profile"),
-    ("bridges", "capability_matrix"),
-    ("bridges", "capabilities"),
     ("approvals", "directory"),
     ("approvals", "template"),
     ("approvals", "machine_template"),
     ("policies", "source_access"),
     ("policies", "prompt_injection"),
+}
+
+MANIFEST_STANDARD_REQUIRED_SCALARS: set[PathKey] = {
+    ("operations", "index"),
+    ("operations", "catalog"),
+    ("operations", "routing"),
+    ("operations", "health"),
+    ("operations", "pre_change_preview"),
+}
+
+MANIFEST_FULL_REQUIRED_SCALARS: set[PathKey] = {
+    ("operations", "diagram_discussion"),
+    ("operations", "diagram_presentation"),
+    ("bridges", "capability_matrix"),
+    ("bridges", "capabilities"),
 }
 
 MANIFEST_PATH_SCALARS: set[PathKey] = {
@@ -167,16 +208,6 @@ MANIFEST_PATH_SCALARS: set[PathKey] = {
     ("team_collaboration", "gate"),
 }
 
-UNRESOLVED_WORDS = {
-    "",
-    "not defined",
-    "undefined",
-    "unknown",
-    "todo",
-    "tbd",
-    "n/a",
-}
-
 PLACEHOLDER_RE = re.compile(r"\{[A-Z0-9_][A-Z0-9_ -]*\}")
 UNIX_LOCAL_PATH_RE = re.compile(
     r"(?<![A-Za-z0-9_])/(?:home|Users|tmp|var/folders|private/tmp)/[^\s)`>\"']+"
@@ -198,14 +229,6 @@ CHECKER_REFERENCE_RE = re.compile(
     r"(?:alatyr:check|check-alatyr|check_alatyr|validate_target_adapter)",
     re.IGNORECASE,
 )
-SHA256_RE = re.compile(r"^[a-fA-F0-9]{64}$")
-UNAVAILABLE_HASH_MARKERS = {
-    "not available",
-    "not available with reason",
-    "unavailable",
-    "not recorded",
-    "none",
-}
 DEFAULT_CHECKER_COVERAGE = {
     "context-router": "context-router coverage",
     "placeholder": "placeholder coverage",
@@ -384,25 +407,6 @@ class AdapterValidatorConfig:
 
 
 @dataclass(frozen=True)
-class Frame:
-    indent: int
-    key: str
-
-
-@dataclass(frozen=True)
-class Scalar:
-    value: str
-    line: int
-
-
-@dataclass
-class ManifestData:
-    scalars: dict[PathKey, Scalar]
-    lists: dict[PathKey, list[Scalar]]
-    parse_failures: list[str]
-
-
-@dataclass(frozen=True)
 class ApprovalScope:
     path: Path
     allowed: list[str]
@@ -488,10 +492,14 @@ class Validator:
             self.error("TARGET_NOT_DIRECTORY", f"target is not a directory: {self.target}")
             return self.findings
 
-        self.check_required_files()
         manifest = self.check_manifest()
+        support_profile = self.manifest_support_profile(manifest)
+        self.check_required_files(support_profile)
         self.check_router()
-        self.check_operation_catalog()
+        if support_profile in {"standard", "full"} or self.target_path(
+            ".ai/assistant/operation-catalog.json"
+        ).is_file():
+            self.check_operation_catalog()
         self.check_discussion_diagrams(manifest)
         self.check_consistency_map()
         self.check_ai_infrastructure_router()
@@ -529,8 +537,19 @@ class Validator:
         except OSError:
             return ""
 
-    def check_required_files(self) -> None:
-        for relpath in REQUIRED_FILES:
+    def manifest_support_profile(self, manifest: ManifestData | None) -> str:
+        if manifest is None:
+            return "full"
+        scalar = manifest.scalars.get(("installation", "support_profile"))
+        if scalar and scalar.value in SUPPORT_PROFILES:
+            return scalar.value
+        return "full"
+
+    def check_required_files(self, support_profile: str) -> None:
+        required = list(CORE_REQUIRED_FILES)
+        if support_profile in {"standard", "full"}:
+            required.extend(STANDARD_REQUIRED_FILES)
+        for relpath in required:
             if not self.target_path(relpath).exists():
                 self.error("REQUIRED_FILE_MISSING", "required adapter file is missing", relpath)
 
@@ -557,7 +576,15 @@ class Validator:
         for failure in manifest.parse_failures:
             self.error("MANIFEST_PARSE", failure, ".ai/alatyr.yaml")
 
-        for key in sorted(MANIFEST_REQUIRED_SCALARS):
+        support_scalar = manifest.scalars.get(("installation", "support_profile"))
+        support_profile = support_scalar.value if support_scalar else "full"
+        required_scalars = set(MANIFEST_REQUIRED_SCALARS)
+        if support_profile in {"standard", "full"}:
+            required_scalars.update(MANIFEST_STANDARD_REQUIRED_SCALARS)
+        if support_profile == "full":
+            required_scalars.update(MANIFEST_FULL_REQUIRED_SCALARS)
+
+        for key in sorted(required_scalars):
             scalar = manifest.scalars.get(key)
             if not scalar:
                 self.error(
@@ -572,6 +599,14 @@ class Validator:
                     "MANIFEST_FIELD_UNRESOLVED",
                     f"{dotted(key)} is unresolved",
                     f".ai/alatyr.yaml:{scalar.line}",
+                )
+
+        if support_scalar and not is_unresolved_value(support_scalar.value):
+            if support_scalar.value not in SUPPORT_PROFILES:
+                self.error(
+                    "MANIFEST_SUPPORT_PROFILE",
+                    "installation.support_profile must be core, standard, or full",
+                    f".ai/alatyr.yaml:{support_scalar.line}",
                 )
 
         for key in sorted(MANIFEST_PATH_SCALARS):
@@ -633,13 +668,13 @@ class Validator:
         if schema_version == 1:
             self.warn(
                 "ROUTER_SCHEMA_LEGACY",
-                "context router schema 1 should migrate to compact routing schema 2",
+                "context router schema 1 should migrate to lazy routing schema 3",
                 ".ai/assistant/context-router.json",
             )
-        elif schema_version != 2:
+        elif schema_version not in {2, 3}:
             self.error(
                 "ROUTER_SCHEMA",
-                "context router schema_version should be 2",
+                "context router schema_version should be 2 or 3",
                 ".ai/assistant/context-router.json",
             )
         if router.get("human_reference") != ".ai/assistant/context-profiles.md":
@@ -649,7 +684,7 @@ class Validator:
                 ".ai/assistant/context-router.json",
             )
 
-        if schema_version == 2:
+        if schema_version in {2, 3}:
             preloaded = expect_string_list(
                 router.get("preloaded_context"),
                 self,
@@ -695,24 +730,34 @@ class Validator:
             if not isinstance(router.get("context_budgets"), dict):
                 self.error(
                     "ROUTER_BUDGETS_MISSING",
-                    "schema 2 router must define context_budgets",
+                    "schema 2 or 3 router must define context_budgets",
                     ".ai/assistant/context-router.json",
                 )
             if not isinstance(router.get("context_receipt"), dict):
                 self.error(
                     "ROUTER_RECEIPT_MISSING",
-                    "schema 2 router must define context_receipt",
+                    "schema 2 or 3 router must define context_receipt",
                     ".ai/assistant/context-router.json",
                 )
-            migration = router.get("migration_routing")
+            migration_entry = router.get("migration_routing")
+            migration = migration_entry
+            if schema_version == 3 and isinstance(migration_entry, dict):
+                migration = self.load_context_descriptor(
+                    migration_entry,
+                    "target-migration-routing",
+                    "migration_routing",
+                )
             if not isinstance(migration, dict):
                 self.error(
                     "ROUTER_MIGRATION_MISSING",
-                    "schema 2 router must define migration-first routing",
+                    "schema 2 or 3 router must define migration-first routing",
                     ".ai/assistant/context-router.json",
                 )
             else:
-                if migration.get("assessment_required_before_changes") is not True:
+                assessment_source = (
+                    migration_entry if isinstance(migration_entry, dict) else migration
+                )
+                if assessment_source.get("assessment_required_before_changes") is not True:
                     self.error(
                         "ROUTER_MIGRATION_ASSESSMENT",
                         "migration assessment must be required before upgrade changes",
@@ -749,7 +794,7 @@ class Validator:
                 ".ai/assistant/context-router.json",
             )
 
-        profiles = router.get("profiles")
+        profiles = self.router_profiles(router)
         if not isinstance(profiles, dict):
             self.error(
                 "ROUTER_PROFILES_SHAPE",
@@ -825,6 +870,71 @@ class Validator:
                         ".ai/assistant/context-profiles.md",
                     )
             self.check_markdown_required_context_duplicates(profiles_path)
+
+    def load_context_descriptor(
+        self,
+        entry: dict[str, Any],
+        expected_kind: str,
+        label: str,
+    ) -> dict[str, Any] | None:
+        reference = entry.get("descriptor")
+        if not isinstance(reference, str) or not reference.startswith(".ai/"):
+            self.error(
+                "ROUTER_DESCRIPTOR",
+                f"{label}.descriptor must be a target path",
+                ".ai/assistant/context-router.json",
+            )
+            return None
+        data = self.load_json_object(self.target_path(reference), "CONTEXT_DESCRIPTOR")
+        if data is None:
+            return None
+        if data.get("schema_version") != 1:
+            self.error(
+                "ROUTER_DESCRIPTOR_SCHEMA",
+                f"{label} descriptor schema_version should be 1",
+                reference,
+            )
+        if data.get("descriptor_kind") != expected_kind:
+            self.error(
+                "ROUTER_DESCRIPTOR_KIND",
+                f"{label} descriptor_kind should be {expected_kind}",
+                reference,
+            )
+        return data
+
+    def router_profiles(self, router: dict[str, Any]) -> dict[str, Any]:
+        if router.get("schema_version") != 3:
+            profiles = router.get("profiles")
+            return profiles if isinstance(profiles, dict) else {}
+        index = router.get("profile_index")
+        if not isinstance(index, dict):
+            self.error(
+                "ROUTER_PROFILE_INDEX",
+                "schema 3 router must define profile_index",
+                ".ai/assistant/context-router.json",
+            )
+            return {}
+        profiles: dict[str, Any] = {}
+        for name, entry in index.items():
+            if not isinstance(entry, dict):
+                self.error(
+                    "ROUTER_PROFILE_INDEX_ITEM",
+                    f"profile_index.{name} must be an object",
+                    ".ai/assistant/context-router.json",
+                )
+                continue
+            profile = self.load_context_descriptor(
+                entry, "target-context-profile", f"profile_index.{name}"
+            )
+            if profile is not None:
+                if profile.get("profile") != name:
+                    self.error(
+                        "ROUTER_PROFILE_IDENTITY",
+                        f"profile descriptor identity differs for {name}",
+                        str(entry.get("descriptor")),
+                    )
+                profiles[name] = profile
+        return profiles
 
     def check_operation_catalog(self) -> None:
         relpath = ".ai/assistant/operation-catalog.json"
@@ -1056,7 +1166,7 @@ class Validator:
                 ".ai/assistant/context-router.json",
             )
 
-        profiles = router.get("profiles")
+        profiles = self.router_profiles(router)
         routed_ids: set[str] = set()
         if isinstance(profiles, dict):
             for profile, profile_data in profiles.items():
@@ -1304,16 +1414,18 @@ class Validator:
             capabilities.get("surfaces") if isinstance(capabilities, dict) else None
         )
         if isinstance(capabilities, dict):
-            if capabilities.get("schema_version") != 1:
+            if capabilities.get("schema_version") != 2:
                 self.error(
                     "DIAGRAM_CAPABILITY_SCHEMA",
-                    "schema_version should be 1",
+                    "capability index schema_version should be 2",
                     capability_relpath,
                 )
-            if capabilities.get("capability_kind") != "target-assistant-capabilities":
+            if capabilities.get("capability_kind") != (
+                "target-assistant-capability-index"
+            ):
                 self.error(
                     "DIAGRAM_CAPABILITY_KIND",
-                    "capability_kind should be target-assistant-capabilities",
+                    "capability_kind should be target-assistant-capability-index",
                     capability_relpath,
                 )
         if not isinstance(capability_surfaces, dict) or not capability_surfaces:
@@ -1330,6 +1442,8 @@ class Validator:
             "artifact_presentation",
             "readable_fallback",
             "verified_at",
+            "expires_at",
+            "review_triggers",
             "client_version",
             "evidence",
         }
@@ -1343,7 +1457,7 @@ class Validator:
             surface_id = match.group(1)
             expected_reference = (
                 "Diagram capability record: "
-                f"`.ai/assistant/assistant-capabilities.json#{surface_id}`"
+                f"`.ai/assistant/assistant-capabilities/{surface_id}.json`"
             )
             if expected_reference not in block:
                 self.error(
@@ -1351,13 +1465,47 @@ class Validator:
                     f"assistant surface {surface_id} has no compact capability reference",
                     matrix_relpath,
                 )
-            surface = capability_surfaces.get(surface_id)
-            diagram = surface.get("diagram_discussion") if isinstance(surface, dict) else None
+            surface_relpath = (
+                f".ai/assistant/assistant-capabilities/{surface_id}.json"
+            )
+            if capability_surfaces.get(surface_id) != surface_relpath:
+                self.error(
+                    "DIAGRAM_CAPABILITY_INDEX_PATH",
+                    f"assistant surface {surface_id} must route to {surface_relpath}",
+                    capability_relpath,
+                )
+                continue
+            surface = self.load_json_object(
+                self.target_path(surface_relpath), "ASSISTANT_SURFACE_CAPABILITIES"
+            )
+            if surface is None:
+                continue
+            if surface.get("schema_version") != 1:
+                self.error(
+                    "DIAGRAM_SURFACE_CAPABILITY_SCHEMA",
+                    "surface capability schema_version should be 1",
+                    surface_relpath,
+                )
+            if surface.get("capability_kind") != (
+                "target-assistant-surface-capabilities"
+            ):
+                self.error(
+                    "DIAGRAM_SURFACE_CAPABILITY_KIND",
+                    "surface capability kind is invalid",
+                    surface_relpath,
+                )
+            if surface.get("assistant_surface") != surface_id:
+                self.error(
+                    "DIAGRAM_SURFACE_CAPABILITY_ID",
+                    f"surface capability identity should be {surface_id}",
+                    surface_relpath,
+                )
+            diagram = surface.get("diagram_discussion")
             if not isinstance(diagram, dict):
                 self.error(
                     "DIAGRAM_CAPABILITY_MISSING",
                     f"assistant surface {surface_id} has no diagram_discussion capability",
-                    capability_relpath,
+                    surface_relpath,
                 )
                 continue
             missing_fields = sorted(required_capability_fields - set(diagram))
@@ -1365,13 +1513,13 @@ class Validator:
                 self.error(
                     "DIAGRAM_CAPABILITY_FIELDS",
                     f"assistant surface {surface_id} is missing {missing_fields}",
-                    capability_relpath,
+                    surface_relpath,
                 )
             if diagram.get("route") not in {"supported", "unsupported", "unknown"}:
                 self.error(
                     "DIAGRAM_CAPABILITY_ROUTE",
                     f"assistant surface {surface_id} route must be supported, unsupported, or unknown",
-                    capability_relpath,
+                    surface_relpath,
                 )
             if diagram.get("artifact_presentation") not in {
                 "link",
@@ -1383,7 +1531,7 @@ class Validator:
                 self.error(
                     "DIAGRAM_CAPABILITY_ARTIFACT",
                     f"assistant surface {surface_id} artifact_presentation has an invalid enum",
-                    capability_relpath,
+                    surface_relpath,
                 )
             syntaxes = diagram.get("native_inline_syntaxes")
             if not isinstance(syntaxes, list) or not syntaxes or not all(
@@ -1392,15 +1540,21 @@ class Validator:
                 self.error(
                     "DIAGRAM_CAPABILITY_SYNTAXES",
                     f"assistant surface {surface_id} native_inline_syntaxes must be a string list",
-                    capability_relpath,
+                    surface_relpath,
                 )
-            for field in ["readable_fallback", "verified_at", "client_version", "evidence"]:
+            for field in [
+                "readable_fallback",
+                "verified_at",
+                "expires_at",
+                "client_version",
+                "evidence",
+            ]:
                 value = diagram.get(field)
                 if not isinstance(value, str) or not value.strip():
                     self.error(
                         "DIAGRAM_CAPABILITY_EVIDENCE",
                         f"assistant surface {surface_id} {field} must be recorded",
-                        capability_relpath,
+                        surface_relpath,
                     )
             for field in ["readable_fallback", "evidence"]:
                 value = diagram.get(field)
@@ -1408,7 +1562,7 @@ class Validator:
                     self.error(
                         "DIAGRAM_CAPABILITY_EVIDENCE",
                         f"assistant surface {surface_id} {field} is unresolved",
-                        capability_relpath,
+                        surface_relpath,
                     )
             verified_at = diagram.get("verified_at")
             if isinstance(verified_at, str) and not (
@@ -1418,7 +1572,38 @@ class Validator:
                 self.error(
                     "DIAGRAM_CAPABILITY_FRESHNESS",
                     f"assistant surface {surface_id} verified_at must be an ISO date/time or unknown: reason",
-                    capability_relpath,
+                    surface_relpath,
+                )
+            expires_at = diagram.get("expires_at")
+            if isinstance(expires_at, str):
+                expiry_is_date = re.fullmatch(
+                    r"\d{4}-\d{2}-\d{2}(?:T[^\s]+)?", expires_at
+                )
+                expiry_is_trigger = expires_at.casefold().startswith(
+                    ("review-trigger:", "unknown:")
+                )
+                if not expiry_is_date and not expiry_is_trigger:
+                    self.error(
+                        "DIAGRAM_CAPABILITY_EXPIRY",
+                        f"assistant surface {surface_id} expires_at needs an ISO date or review-trigger: reason",
+                        surface_relpath,
+                    )
+                elif expiry_is_date:
+                    expiry = datetime.strptime(expires_at[:10], "%Y-%m-%d").date()
+                    if expiry < datetime.now(timezone.utc).date():
+                        self.warn(
+                            "DIAGRAM_CAPABILITY_EXPIRED",
+                            f"assistant surface {surface_id} capability evidence expired",
+                            surface_relpath,
+                        )
+            review_triggers = diagram.get("review_triggers")
+            if not isinstance(review_triggers, list) or not review_triggers or not all(
+                isinstance(value, str) and value for value in review_triggers
+            ):
+                self.error(
+                    "DIAGRAM_CAPABILITY_REVIEW_TRIGGERS",
+                    f"assistant surface {surface_id} review_triggers must be a string list",
+                    surface_relpath,
                 )
             client_version = diagram.get("client_version")
             if isinstance(client_version, str) and client_version.casefold() in {
@@ -1428,7 +1613,7 @@ class Validator:
                 self.error(
                     "DIAGRAM_CAPABILITY_CLIENT_VERSION",
                     f"assistant surface {surface_id} client_version needs a value or unknown: reason",
-                    capability_relpath,
+                    surface_relpath,
                 )
 
         matrix_surface_ids = {match.group(1) for match in matches}
@@ -3431,388 +3616,6 @@ class Validator:
                 "migration diff reports no rule/category impact",
                 str(self.migration_diff),
             )
-
-
-def parse_manifest(path: Path) -> ManifestData:
-    scalars: dict[PathKey, Scalar] = {}
-    lists: dict[PathKey, list[Scalar]] = {}
-    failures: list[str] = []
-    stack: list[Frame] = []
-
-    for line_number, raw_line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
-        if not raw_line.strip() or raw_line.lstrip().startswith("#"):
-            continue
-        if "\t" in raw_line:
-            failures.append(f"line {line_number}: tabs are not allowed")
-            continue
-        indent = len(raw_line) - len(raw_line.lstrip(" "))
-        if indent % 2:
-            failures.append(f"line {line_number}: indentation should use two spaces")
-            continue
-
-        content = raw_line[indent:]
-        stack = [frame for frame in stack if frame.indent < indent]
-        parent = tuple(frame.key for frame in stack)
-        try:
-            if content.startswith("- "):
-                item = content[2:].strip()
-                lists.setdefault(parent, [])
-                if ":" in item:
-                    key, value = parse_key_value(item, line_number)
-                    lists[parent].append(Scalar("<mapping>", line_number))
-                    stack.append(Frame(indent, "[]"))
-                    child_path = parent + ("[]", key)
-                    if value:
-                        scalars[child_path] = Scalar(value, line_number)
-                    else:
-                        stack.append(Frame(indent, key))
-                else:
-                    lists[parent].append(Scalar(strip_quotes(item), line_number))
-                continue
-            key, value = parse_key_value(content, line_number)
-            current_path = parent + (key,)
-            if value:
-                scalars[current_path] = Scalar(value, line_number)
-            else:
-                stack.append(Frame(indent, key))
-        except AssertionError as exc:
-            failures.append(str(exc))
-
-    return ManifestData(scalars=scalars, lists=lists, parse_failures=failures)
-
-
-def parse_key_value(content: str, line_number: int) -> tuple[str, str]:
-    if ":" not in content:
-        raise AssertionError(f"line {line_number}: expected key/value syntax")
-    key, value = content.split(":", 1)
-    key = key.strip()
-    if not key:
-        raise AssertionError(f"line {line_number}: empty key")
-    return key, strip_quotes(value)
-
-
-def strip_quotes(value: str) -> str:
-    stripped = value.strip()
-    if len(stripped) >= 2 and stripped[0] == stripped[-1] and stripped[0] in "'\"":
-        return stripped[1:-1]
-    return stripped
-
-
-def dotted(path: PathKey) -> str:
-    return ".".join(path)
-
-
-def is_unresolved_value(value: str) -> bool:
-    normalized = value.strip().strip("\"'").lower()
-    return normalized in UNRESOLVED_WORDS or is_placeholder(value)
-
-
-def is_placeholder(value: Any) -> bool:
-    if not isinstance(value, str):
-        return False
-    stripped = value.strip()
-    return stripped.startswith("{") and stripped.endswith("}")
-
-
-def expect_string_list(
-    value: Any,
-    validator: Validator,
-    code: str,
-    path: str,
-    *,
-    label: str = "value",
-) -> list[str]:
-    if not isinstance(value, list) or not value:
-        validator.error(code, f"{label} must be a non-empty list", path)
-        return []
-    result: list[str] = []
-    for index, item in enumerate(value):
-        if not isinstance(item, str) or not item:
-            validator.error(code, f"{label}[{index}] must be a non-empty string", path)
-            continue
-        result.append(item)
-    return result
-
-
-def duplicates(values: list[str]) -> list[str]:
-    seen: set[str] = set()
-    repeated: set[str] = set()
-    for value in values:
-        if value in seen:
-            repeated.add(value)
-        seen.add(value)
-    return sorted(repeated)
-
-
-def should_skip_path(path: Path) -> bool:
-    skip_parts = {".git", "node_modules", "__pycache__", "dist", "build"}
-    return any(part in skip_parts for part in path.parts)
-
-
-def is_target_relative_path(value: str) -> bool:
-    path = Path(value)
-    if path.is_absolute():
-        return False
-    return ".." not in path.parts
-
-
-def extract_field(text: str, label: str) -> str:
-    for line in text.splitlines():
-        if line.startswith(label):
-            return strip_backticks(line[len(label) :].strip())
-    return ""
-
-
-def strip_backticks(value: str) -> str:
-    stripped = strip_quotes(value)
-    if len(stripped) >= 2 and stripped[0] == stripped[-1] == "`":
-        return stripped[1:-1]
-    return stripped
-
-
-def normalize_hash_field(value: str) -> str:
-    normalized = strip_backticks(value).strip()
-    if not normalized or is_placeholder(normalized):
-        return ""
-    lowered = normalized.lower()
-    if any(marker in lowered for marker in UNAVAILABLE_HASH_MARKERS):
-        return ""
-    if SHA256_RE.match(normalized):
-        return normalized.lower()
-    return ""
-
-
-def git_changed_files(target: Path, diff_ref: str) -> list[str] | None:
-    changed: set[str] = set()
-    base_result: list[str] | None = None
-    for comparison in [f"{diff_ref}...HEAD", diff_ref]:
-        base_result = git_name_status_paths(target, comparison)
-        if base_result is not None:
-            changed.update(base_result)
-            break
-    if base_result is None:
-        return None
-
-    for arguments in [[], ["--cached"]]:
-        worktree_result = git_name_status_paths(target, *arguments)
-        if worktree_result is None:
-            return None
-        changed.update(worktree_result)
-
-    untracked = subprocess.run(
-        ["git", "ls-files", "--others", "--exclude-standard", "-z"],
-        cwd=target,
-        check=False,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.DEVNULL,
-    )
-    if untracked.returncode != 0:
-        return None
-    changed.update(decode_git_path(value) for value in untracked.stdout.split(b"\0") if value)
-    return sorted(changed)
-
-
-def git_name_status_paths(target: Path, *comparison: str) -> list[str] | None:
-    result = subprocess.run(
-        ["git", "diff", "--name-status", "-z", "--find-renames", *comparison],
-        cwd=target,
-        check=False,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.DEVNULL,
-    )
-    if result.returncode != 0:
-        return None
-    parts = result.stdout.split(b"\0")
-    paths: list[str] = []
-    index = 0
-    while index < len(parts) and parts[index]:
-        status = parts[index].decode("ascii", errors="replace")
-        index += 1
-        path_count = 2 if status[:1] in {"R", "C"} else 1
-        if index + path_count > len(parts):
-            return None
-        for value in parts[index : index + path_count]:
-            if value:
-                paths.append(decode_git_path(value))
-        index += path_count
-    return paths
-
-
-def decode_git_path(value: bytes) -> str:
-    return value.decode("utf-8", errors="surrogateescape").replace("\\", "/")
-
-
-def git_diff_patch(target: Path, diff_ref: str) -> str | None:
-    commands = [
-        ["git", "diff", "--binary", diff_ref],
-        ["git", "diff", "--binary", f"{diff_ref}...HEAD"],
-    ]
-    for command in commands:
-        result = subprocess.run(
-            command,
-            cwd=target,
-            check=False,
-            text=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.DEVNULL,
-        )
-        if result.returncode == 0:
-            return result.stdout
-    return None
-
-
-def is_protected_surface(path: str) -> bool:
-    protected_prefixes = [
-        ".ai/",
-        ".github/copilot-instructions.md",
-        ".github/prompts/",
-        ".cursor/",
-        ".devin/",
-        ".windsurf/",
-        ".agents/",
-    ]
-    protected_files = {
-        "AGENTS.md",
-        "AI_ASSISTANTS.md",
-        "CLAUDE.md",
-        "GEMINI.md",
-        "CODEOWNERS",
-        ".cursorrules",
-        ".windsurfrules",
-    }
-    return path in protected_files or any(path.startswith(prefix) for prefix in protected_prefixes)
-
-
-def extract_list_field(text: str, label: str) -> list[str]:
-    lines = text.splitlines()
-    for index, line in enumerate(lines):
-        if line.strip() != label:
-            continue
-        values: list[str] = []
-        for candidate in lines[index + 1 :]:
-            stripped = candidate.strip()
-            if not stripped:
-                if values:
-                    break
-                continue
-            if not stripped.startswith("- "):
-                break
-            value = strip_backticks(stripped[2:].strip())
-            if value.lower() not in {"none", "not applicable", "not-applicable"}:
-                values.append(value)
-        return values
-    return []
-
-
-def is_target_scope_pattern(value: str) -> bool:
-    if not value or value.startswith(("/", "\\")):
-        return False
-    if re.match(r"^[A-Za-z]:[\\/]", value):
-        return False
-    normalized = value.replace("\\", "/")
-    return ".." not in normalized.split("/")
-
-
-def scope_entries_cover(path: str, entries: list[str]) -> bool:
-    normalized = path.replace("\\", "/")
-    for entry in entries:
-        if is_placeholder(entry) or not is_target_scope_pattern(entry):
-            continue
-        pattern = entry.replace("\\", "/")
-        if normalized == pattern or fnmatch.fnmatchcase(normalized, pattern):
-            return True
-    return False
-
-
-def nested_json_value(data: Any, path: tuple[str, ...]) -> Any:
-    current = data
-    for key in path:
-        if not isinstance(current, dict) or key not in current:
-            return None
-        current = current[key]
-    return current
-
-
-def json_string_list(value: Any) -> list[str]:
-    if not isinstance(value, list):
-        return []
-    return [str(item).strip() for item in value if isinstance(item, str) and item.strip()]
-
-
-def git_resolve_ref(target: Path, ref: str) -> str | None:
-    if not ref:
-        return None
-    result = subprocess.run(
-        ["git", "rev-parse", "--verify", f"{ref}^{{commit}}"],
-        cwd=target,
-        check=False,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.DEVNULL,
-    )
-    if result.returncode != 0:
-        return None
-    return result.stdout.strip() or None
-
-
-def refs_match(target: Path, approved: str, selected: str) -> bool:
-    if not approved or not selected:
-        return False
-    approved_revision = git_resolve_ref(target, approved)
-    selected_revision = git_resolve_ref(target, selected)
-    if approved_revision and selected_revision:
-        return approved_revision == selected_revision
-    return approved == selected
-
-
-def sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
-
-
-def git_head_revision(target: Path) -> str | None:
-    result = subprocess.run(
-        ["git", "rev-parse", "HEAD"],
-        cwd=target,
-        check=False,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.DEVNULL,
-    )
-    if result.returncode != 0:
-        return None
-    revision = result.stdout.strip()
-    return revision or None
-
-
-def markdown_sections(text: str) -> dict[str, list[str]]:
-    sections: dict[str, list[str]] = {}
-    current: str | None = None
-    for line in text.splitlines():
-        heading = re.match(r"^##\s+(.+?)\s*$", line)
-        if heading:
-            current = heading.group(1).strip()
-            sections.setdefault(current, [])
-            continue
-        if current:
-            sections[current].append(line)
-    return sections
-
-
-def section_items(lines: list[str]) -> list[str]:
-    items: list[str] = []
-    for line in lines:
-        stripped = line.strip()
-        if not stripped.startswith("- "):
-            continue
-        value = stripped[2:].strip()
-        if value in {"none", "`none`"}:
-            continue
-        items.append(value.strip("`"))
-    return items
 
 
 def load_validator_config(

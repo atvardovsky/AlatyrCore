@@ -22,6 +22,11 @@ A target adapter can load:
 Then it expands only when the router or human profile names a boundary,
 conflict, approval trigger, or missing source-of-truth fact.
 
+The compact router should be an index, not a second policy corpus. Keep full
+profile, intent, migration, consistency, and task-scale instructions in lazy
+descriptor files. The router may retain short `use_when` signals needed to
+choose a descriptor without opening every profile.
+
 ## Router Contract
 
 A target context router should define:
@@ -49,6 +54,11 @@ A target context router should define:
 - validation or manual review
 - final evidence
 
+Schema changes that move owned fields between the index and descriptors must
+advance the target adapter schema and template version. Every indexed
+descriptor must exist in the selected support profile; disabled optional
+modules must not remain advertised through paths that scaffolding omitted.
+
 The bootstrap should contain only enough target-owned context to select a
 profile and find project areas. Full blueprints, source-of-truth registries,
 operation catalogs, module profiles, policy files, and human profile explanations belong in
@@ -65,9 +75,13 @@ The router should use the same canonical profile names as
 `context-profiles.md` unless the target adapter records a deliberate local
 renaming.
 
-Budgets are routing controls, not safety limits. When sufficient work requires
-more context, the assistant records the reason, changed boundary, and added
-files in the context receipt before expanding.
+Budgets are routing controls, not safety limits. A target should keep a soft
+bootstrap threshold below its hard maximum so growth becomes visible before
+the router fails its contract. When sufficient work requires more context,
+the assistant records the reason, changed boundary, added files, and measured
+or explicitly estimated context volume in the context receipt before
+expanding. Static source estimates are benchmark evidence; they are not a
+claim about hidden client context or an actual assistant run.
 
 A large-task overlay should route to the orchestration flow and operation
 packet without adding those files to every normal task profile. While a packet

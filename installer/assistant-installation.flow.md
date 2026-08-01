@@ -123,7 +123,9 @@ Classify every proposed target file:
 2. Optionally use source-repository scaffolding only to preview or create
    placeholder structure. Select the smallest `core`, `standard`, or `full`
    support profile justified by the installation plan, and record the
-   selection. Do not treat scaffolding or profile selection as installation or
+   selection in the target manifest. Verify that projected manifest, router,
+   operation, and capability claims reference only files present in that
+   profile. Do not treat scaffolding or profile selection as installation or
    module enablement.
 3. Fill `installer/readiness-checklist.md` for the target.
 4. Prepare an installation plan from
@@ -153,11 +155,11 @@ Classify every proposed target file:
     collaboration. Derive actor IDs, authority, priorities, review,
     coordination backend, synchronization, storage, retention, and privacy
     from target evidence.
-13. Create target `.ai/assistant/contour.md`, context router, operation catalog
-    and checked compact operation index, context profiles, module profile,
-    task-specific maturity profile, bridge capability matrix, compact
-    assistant-capability projection, and minimal workflows/gates from target
-    facts.
+13. Create target `.ai/assistant/contour.md`, compact context router and
+    selected lazy descriptors, operation catalog and checked compact operation
+    index, context profiles, module profile, task-specific maturity profile,
+    bridge capability matrix, generated assistant-capability index, installed-
+    surface capability records, and minimal workflows/gates from target facts.
     Route enabled team operations through the lazy
     `.ai/assistant/team/context-overlay.json`, not routine bootstrap.
     The router must distinguish host-preloaded instructions from compact
@@ -318,4 +320,5 @@ Report:
 - post-install or post-update assistant chat message sent or skipped with
   reason
 - diagram discussion module state, per-assistant presentation capability,
-  readable fallback, and source-revision policy when enabled
+  freshness or expiry, readable fallback, captured-result evidence, and
+  source-revision policy when enabled

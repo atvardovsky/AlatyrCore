@@ -222,9 +222,11 @@ def main() -> int:
 
     try:
         context_router = json.loads(CONTEXT_ROUTER.read_text(encoding="utf-8"))
-        profile_context = context_router["profiles"]["ai-infrastructure"][
-            "required_context"
+        profile_path = context_router["profile_index"]["ai-infrastructure"][
+            "descriptor"
         ]
+        profile = json.loads((TARGET / profile_path).read_text(encoding="utf-8"))
+        profile_context = profile["required_context"]
     except (OSError, json.JSONDecodeError, KeyError, TypeError) as exc:
         failures.append(f"invalid context-router AI infrastructure route: {exc}")
     else:

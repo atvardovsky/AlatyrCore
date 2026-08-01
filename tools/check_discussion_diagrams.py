@@ -194,9 +194,9 @@ def main() -> int:
     )
     entries = matrix_entries(read(MATRIX))
     capability_surfaces = capabilities.get("surfaces")
-    if capabilities.get("schema_version") != 1:
-        failures.append("assistant capabilities schema_version must be 1")
-    if capabilities.get("capability_kind") != "target-assistant-capabilities":
+    if capabilities.get("schema_version") != 2:
+        failures.append("assistant capability index schema_version must be 2")
+    if capabilities.get("capability_kind") != "target-assistant-capability-index":
         failures.append("assistant capabilities kind is invalid")
     if not isinstance(capability_surfaces, dict):
         failures.append("assistant capabilities surfaces must be an object")
@@ -207,6 +207,8 @@ def main() -> int:
         "artifact_presentation",
         "readable_fallback",
         "verified_at",
+        "expires_at",
+        "review_triggers",
         "client_version",
         "evidence",
     }
@@ -217,12 +219,25 @@ def main() -> int:
             continue
         expected_reference = (
             "Diagram capability record: "
-            f"`.ai/assistant/assistant-capabilities.json#{surface_id}`"
+            f"`.ai/assistant/assistant-capabilities/{surface_id}.json`"
         )
         if expected_reference not in block:
             failures.append(f"{surface_id} bridge matrix capability reference is invalid")
         entry = capability_surfaces.get(surface_id)
-        diagram = entry.get("diagram_discussion") if isinstance(entry, dict) else None
+        expected_path = f".ai/assistant/assistant-capabilities/{surface_id}.json"
+        if entry != expected_path:
+            failures.append(f"assistant capability index path is invalid for {surface_id}")
+            continue
+        try:
+            record = load_json(TARGET / expected_path)
+        except AssertionError as exc:
+            failures.append(str(exc))
+            continue
+        if record.get("capability_kind") != "target-assistant-surface-capabilities":
+            failures.append(f"{surface_id} capability record kind is invalid")
+        if record.get("assistant_surface") != surface_id:
+            failures.append(f"{surface_id} capability record identity is invalid")
+        diagram = record.get("diagram_discussion")
         if not isinstance(diagram, dict):
             failures.append(f"assistant capabilities missing {surface_id}")
             continue
@@ -234,6 +249,12 @@ def main() -> int:
             "artifact_presentation": "{LINK_ATTACHMENT_BOTH_UNSUPPORTED_OR_UNKNOWN}",
             "readable_fallback": "{TEXT_OR_ACCESSIBLE_EQUIVALENT}",
             "verified_at": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}",
+            "expires_at": "{ISO_DATE_OR_REVIEW_TRIGGER_WITH_REASON}",
+            "review_triggers": [
+                "client version changed",
+                "assistant bridge changed",
+                "{TARGET_CAPABILITY_REVIEW_TRIGGER}",
+            ],
             "client_version": "{CLIENT_VERSION_OR_UNKNOWN_WITH_REASON}",
             "evidence": "{TARGET_EVIDENCE_OR_MANUAL_REVIEW}",
         }

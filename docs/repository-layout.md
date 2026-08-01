@@ -105,8 +105,8 @@ module fields.
 framework rule-owner documents.
 
 `tools/check_context_router.py` validates the target
-`.ai/assistant/context-router.json` template against canonical context profile
-names and framework file coverage.
+`.ai/assistant/context-router.json` compact index, lazy descriptors, canonical
+context profile names, and framework file coverage.
 
 `tools/check_manifest_contract.py` validates the target `.ai/alatyr.yaml`
 template contract, including required sections, placeholder fields, list
@@ -134,15 +134,21 @@ required owner, sync, validation, conflict, approval, and evidence fields.
 `tools/check_versioning.py` validates source version files, changelog
 structure, and release-process documentation.
 
+`tools/check_release_drift.py` compares the working release with the latest
+reachable Git tag and runs real migration evidence against that baseline.
+
 `tools/scaffold_target_structure.py` is an optional dry-run-first helper for
-copying placeholder structure. It is not the installation mechanism and does
-not fill target facts.
+copying profile-projected placeholder structure. `tools/scaffold_projection.py`
+keeps manifest, router, operation, and capability claims aligned with selected
+files. Neither tool is the installation mechanism or fills target facts.
 
 `tools/validate_target_adapter.py` is an optional installed-adapter structural
 validator. It checks target adapter files for router/bootstrap drift,
 unresolved placeholders, hard-coded local paths, stale checker claims,
 manifest issues, optional approval/diff scope, and optional framework baseline
 drift. It does not prove target project facts or replace assistant review.
+Reusable parsing, Git, hashing, and approval-scope helpers live in
+`tools/target_validation_support.py`.
 
 Windows wrappers under `tools/` delegate to the Python helpers. They should
 stay thin and must not duplicate installation or validation logic.

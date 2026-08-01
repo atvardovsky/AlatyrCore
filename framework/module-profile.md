@@ -29,7 +29,7 @@ Every accepted installation should provide:
   cadence, last review date, and CODEOWNERS or equivalent file-owner map when
   supported
 - context profiles with a small bootstrap context and task-specific expansion
-  rules
+  rules, a compact router, and selected lazy profile descriptors
 - source-of-truth registry or explicit missing owner records for important
   fact types
 - change-risk classification and approval triggers
@@ -50,8 +50,9 @@ maintain them:
 - `consistency-map`: machine-readable changed-fact relationships and bounded
   impact closure for targets with many project areas or competing surfaces.
 - `diagrams`: diagram source, visual artifact, render or manual-review, drift,
-  discussion presentation, compact per-assistant capability/freshness,
-  security/privacy, stable revision lineage, and readable fallback policy.
+  discussion presentation, generated capability index, per-assistant
+  capability/freshness records, captured result conformance, security/privacy,
+  stable revision lineage, and readable fallback policy.
 - `ai-infrastructure`: inventory, source access, prompt-injection handling,
   evidence-based recommendations, routed skill/prompt/gate/checker/tool/MCP/
   bridge selection, target development-pattern evidence and lazy capture,
@@ -102,7 +103,8 @@ During installation or update:
 2. Select optional modules from target needs, not from source-repository
    availability.
 3. Record module states in the target adapter manifest and module profile.
-4. Create only the target templates needed for enabled or required modules.
+4. Select and record the `core`, `standard`, or `full` support profile, then
+   create only the target templates needed for enabled or required modules.
 5. Leave deferred, disabled, not-applicable, or blocked modules in evidence
    with the reason and next safe action.
 

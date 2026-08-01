@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "descriptor_kind": "target-context-profile",
+  "profile": "business-change",
+  "use_when": [
+    "accepted behavior change",
+    "domain rule change",
+    "product policy change",
+    "workflow or public contract change"
+  ],
+  "operation_candidates": [
+    "product-change",
+    "create-project-blueprint",
+    "logical-integrity-review"
+  ],
+  "required_context": [
+    ".ai/framework/context-discovery.md",
+    ".ai/framework/change-risk-model.md",
+    ".ai/framework/source-of-truth-registry.md",
+    ".ai/framework/logical-integrity.md",
+    ".ai/framework/blueprint-driven-change.md",
+    ".ai/framework/approval-records.md",
+    ".ai/framework/testing-guidance.md",
+    ".ai/assistant/flows/blueprint-driven-change.flow.md",
+    ".ai/assistant/gates/checklist.md",
+    "{TARGET_BLUEPRINT_OR_PRODUCT_SOURCE_OF_TRUTH}"
+  ],
+  "expand_when": [
+    "architecture_boundary_changes",
+    "data_contract_changes",
+    "security_or_privacy_changes",
+    "diagram_changes",
+    "prompt_gate_or_bridge_changes"
+  ],
+  "approval_gates": [
+    "accepted_business_behavior_change"
+  ],
+  "validation": [
+    "{TARGET_BUSINESS_VALIDATION_OR_MANUAL_REVIEW}"
+  ],
+  "final_evidence": [
+    "changed_fact",
+    "re_derived_invariants",
+    "review_item_reconciliation",
+    "owning_blueprint_or_source_of_truth",
+    "implementation_test_doc_sync",
+    "approvals",
+    "logical_integrity_result"
+  ]
+}

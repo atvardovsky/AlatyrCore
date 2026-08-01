@@ -5,6 +5,7 @@
   "request": "Alatyr diagram: show the current architecture boundary without changing files.",
   "allowed_actions": ["read-only"],
   "surface_source": "conformance/runs/assistant-surfaces.json",
+  "result_template": "conformance/operations/diagram-discussion-result-template.json",
   "required_for_every_surface": [
     "route through operation-index.json to diagram-discussion",
     "read only the selected assistant-capabilities.json entry",
@@ -28,5 +29,14 @@
     "text_fallback",
     "validation",
     "stale_view_risk"
+  ],
+  "required_context_evidence": [
+    "loaded_paths",
+    "loaded_sections",
+    "observed_bytes",
+    "estimated_tokens",
+    "hidden_client_context",
+    "soft_budget_exceeded",
+    "hard_budget_exceeded"
   ]
 }

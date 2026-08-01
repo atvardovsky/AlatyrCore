@@ -76,7 +76,10 @@ Return a JSON object with these fields:
 {fields}
 
 Also report the target repository revision, loaded adapter paths, client
-version/freshness evidence, validation, and residual risk. This prompt tests
+sections, observed bytes, estimated tokens, hidden client context, soft and
+hard budget state, client version/freshness evidence, validation, and residual
+risk. Shape the result from
+`conformance/operations/diagram-discussion-result-template.json`. This prompt tests
 runtime assistant behavior; source fixture validation alone does not prove
 that the client rendered or attached anything.
 """

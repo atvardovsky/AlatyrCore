@@ -151,6 +151,19 @@ Unknown client rendering support must be recorded as unknown and routed to the
 portable text fallback. Installation and update work must not infer support
 from another assistant, repository, or client version.
 
+Keep the compact capability index derivable from one record per supported
+assistant surface. Each record should include a target review trigger or
+expiry condition in addition to verification time and client version. A stale
+or expired record falls back to unknown until reverified; it must not silently
+authorize a stronger presentation mode.
+
+For conformance runs, separate prepared input from captured result evidence.
+The result should bind to the assistant surface, target revision, client
+version, selected capability record, loaded paths or sections, context
+measurement kind, presentation mode, readable fallback, validation, file
+changes, and residual risk. A prepared prompt alone does not prove rendering,
+context economy, or read-only behavior.
+
 ## Readability Rules
 
 Diagrams should:

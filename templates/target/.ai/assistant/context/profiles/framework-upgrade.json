@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "descriptor_kind": "target-context-profile",
+  "profile": "framework-upgrade",
+  "use_when": [
+    "installing Alatyr",
+    "updating Alatyr Core",
+    "adapter recheck",
+    "adapter maturity review",
+    "framework drift repair"
+  ],
+  "operation_candidates": [
+    "adapter-health",
+    "recheck-after-framework-update",
+    "recheck-after-installation",
+    "adapter-maturity-review"
+  ],
+  "required_context": [
+    ".ai/framework/lifecycle.md",
+    ".ai/framework/migration-diff.md",
+    ".ai/framework/rule-registry.json",
+    ".ai/assistant/flows/adapter-recheck.flow.md",
+    ".ai/assistant/templates/installation-note.md",
+    ".ai/assistant/templates/migration-note.md"
+  ],
+  "expand_when": [
+    "migration_assessment_identifies_affected_canonical_source",
+    "changed_target_template_surface",
+    "protected_adapter_overwrite",
+    "bridge_capability_change",
+    "target_local_deviation_conflict",
+    "validation_disproves_impact_boundary"
+  ],
+  "approval_gates": [
+    "overwriting_existing_instructions",
+    "protected_adapter_behavior_change",
+    "third_party_assistant_infrastructure_adoption"
+  ],
+  "validation": [
+    "{TARGET_ADAPTER_RECHECK_OR_MANUAL_REVIEW}"
+  ],
+  "final_evidence": [
+    "adapter_version_schema_state",
+    "changed_framework_baseline",
+    "migration_assessment",
+    "selected_and_omitted_canonical_sources",
+    "affected_target_files",
+    "gaps",
+    "local_deviations",
+    "validation",
+    "migration_actions"
+  ]
+}

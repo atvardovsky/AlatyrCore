@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "capability_kind": "target-assistant-surface-capabilities",
+  "assistant_surface": "codex",
+  "diagram_discussion": {
+    "route": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "native_inline_syntaxes": [
+      "{SYNTAX_NONE_OR_UNKNOWN}"
+    ],
+    "artifact_presentation": "{LINK_ATTACHMENT_BOTH_UNSUPPORTED_OR_UNKNOWN}",
+    "readable_fallback": "{TEXT_OR_ACCESSIBLE_EQUIVALENT}",
+    "verified_at": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}",
+    "client_version": "{CLIENT_VERSION_OR_UNKNOWN_WITH_REASON}",
+    "evidence": "{TARGET_EVIDENCE_OR_MANUAL_REVIEW}",
+    "expires_at": "{ISO_DATE_OR_REVIEW_TRIGGER_WITH_REASON}",
+    "review_triggers": [
+      "client version changed",
+      "assistant bridge changed",
+      "{TARGET_CAPABILITY_REVIEW_TRIGGER}"
+    ]
+  }
+}

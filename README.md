@@ -111,6 +111,10 @@ Additional source-repository helpers include:
 - `python3 tools/prepare_diagram_conformance_run.py --check`
 - `python3 tools/check_context_router.py`
 - `python3 tools/check_context_costs.py`
+- `python3 tools/render_operation_index.py`
+- `python3 tools/render_assistant_capability_index.py`
+- `python3 tools/check_diagram_conformance_results.py`
+- `python3 tools/check_release_drift.py`
 - `python3 tools/check_consistency_map.py`
 - `python3 tools/check_cross_platform_tools.py`
 - `python3 tools/check_large_task_orchestration.py`
@@ -159,9 +163,9 @@ Additional source-repository helpers include:
   owners
 - structured metadata on rule-owner framework docs for deterministic owner,
   dependency, and task-profile checks
-- a machine-readable context router template that maps tasks to the smallest
-  required startup context, project-area overlays, budgets, and context
-  receipts
+- a compact machine-readable context router index with lazy profile, intent,
+  migration, consistency, and task-scale descriptors, project-area overlays,
+  budgets, and context receipts
 - a machine-readable operation catalog with one conversational `Alatyr` entry,
   automatic routing, read-only adapter health, and risk-gated pre-change
   preview
@@ -172,7 +176,8 @@ Additional source-repository helpers include:
 - optional safe scaffolding guidance that does not replace installation review
 - deterministic `core`, `standard`, and `full` scaffold support profiles that
   reduce unused target-template files without changing the portable framework
-  baseline
+  baseline, while projecting manifest and route claims to files that actually
+  exist in the selected profile
 - optional target adapter validator guidance for installed-adapter structural
   checks
 - context discovery and source-of-truth decisions
@@ -218,6 +223,8 @@ Additional source-repository helpers include:
 - diagram guidance without hard-coded diagram tooling
 - optional diagram discussion that selects a recorded native inline view,
   target-rendered artifact, or readable text fallback per assistant surface
+- generated assistant-capability index, separate freshness-aware surface
+  records, and captured diagram-result conformance contracts
 - AI infrastructure inventory and third-party skill/assistant-infrastructure
   adaptation guidance
 - AI infrastructure inventory and recommendation report templates plus
@@ -229,6 +236,8 @@ Additional source-repository helpers include:
 - source release/version workflow for framework, adapter schema, and template
   version tracking
 - source release migration report template for framework update evidence
+- release drift enforcement against the latest Git tag with required framework,
+  adapter-schema, and template version movement
 - executable migration-diff output validation for adapter contract impact,
   affected categories, task profiles, canonical sources, and action hints
 - source-repository migration diff, conformance fixture, scaffold snapshot,
@@ -358,11 +367,14 @@ A mature target installation usually has:
 - `.ai/project/context` or equivalent project source-of-truth docs
 - `.ai/assistant/contour.md`
 - `.ai/assistant/context-router.json`
+- `.ai/assistant/context/profiles/*.json`
 - `.ai/assistant/context-profiles.md`
 - `.ai/assistant/module-profile.md`
 - `.ai/assistant/maturity-profile.md`
 - `.ai/assistant/bridge-capability-matrix.md`
 - `.ai/assistant/assistant-capabilities.json`
+- `.ai/assistant/assistant-capabilities/<assistant>.json` when diagrams or
+  client-specific presentation behavior is enabled
 - `.ai/assistant/ai-infrastructure-router.json` when AI infrastructure is used
 - `.ai/assistant/team/context-overlay.json` and
   `.ai/assistant/team/work-registry.json` when team collaboration is enabled

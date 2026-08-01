@@ -135,7 +135,8 @@ Constraints:
   `.ai/assistant/templates/pre-change-preview.md` before edits when changed-fact
   risk or scope triggers it; preview does not grant approval.
 - For `Alatyr diagram` or `diagram-discussion`, read only the current entry in
-  `.ai/assistant/assistant-capabilities.json`, default to a non-canonical
+  `.ai/assistant/assistant-capabilities.json` and its selected surface record,
+  reject stale or expired capability evidence, default to a non-canonical
   `read-only` draft, and
   provide native inline, rendered artifact, or readable text fallback without
   claiming unsupported rendering. Preserve stable ID/revision lineage,

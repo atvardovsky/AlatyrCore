@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "descriptor_kind": "target-context-profile",
+  "profile": "architecture-change",
+  "use_when": [
+    "module boundary change",
+    "dependency direction change",
+    "runtime topology change",
+    "public API or cross-component contract change"
+  ],
+  "operation_candidates": [
+    "product-change",
+    "create-project-blueprint",
+    "logical-integrity-review"
+  ],
+  "required_context": [
+    ".ai/framework/context-discovery.md",
+    ".ai/framework/change-risk-model.md",
+    ".ai/framework/source-of-truth-registry.md",
+    ".ai/framework/logical-integrity.md",
+    ".ai/framework/blueprint-driven-change.md",
+    ".ai/framework/approval-records.md",
+    ".ai/framework/security-safety-guidance.md",
+    ".ai/framework/testing-guidance.md",
+    ".ai/assistant/flows/blueprint-driven-change.flow.md",
+    ".ai/assistant/gates/checklist.md",
+    "{TARGET_ARCHITECTURE_SOURCE_OF_TRUTH}"
+  ],
+  "expand_when": [
+    "data_ownership_changes",
+    "external_boundary_changes",
+    "security_boundary_changes",
+    "new_dependency_or_service",
+    "diagram_changes",
+    "bridge_or_gate_changes"
+  ],
+  "approval_gates": [
+    "architecture_change",
+    "new_production_dependency_or_service"
+  ],
+  "validation": [
+    "{TARGET_ARCHITECTURE_VALIDATION_OR_MANUAL_REVIEW}"
+  ],
+  "final_evidence": [
+    "architecture_owner_update",
+    "re_derived_invariants",
+    "review_item_reconciliation",
+    "affected_areas",
+    "validation",
+    "diagram_result",
+    "residual_risk"
+  ]
+}

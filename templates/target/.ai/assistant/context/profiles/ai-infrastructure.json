@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "descriptor_kind": "target-context-profile",
+  "profile": "ai-infrastructure",
+  "use_when": [
+    "AI infrastructure inventory, recommendation, or item improvement",
+    "prompt or skill change",
+    "assistant wrapper or bridge change",
+    "MCP or tool config change",
+    "checker gate flow or template change",
+    "third-party assistant infrastructure review"
+  ],
+  "operation_candidates": [
+    "ai-infrastructure-inventory",
+    "ai-infrastructure-recommendation",
+    "skill-adaptation"
+  ],
+  "required_context": [
+    ".ai/framework/ai-infrastructure-routing.md",
+    ".ai/assistant/ai-infrastructure-router.json",
+    ".ai/assistant/gates/checklist.md"
+  ],
+  "expand_when": [
+    "selected item route requires additional context",
+    "item owner path status or permission is unknown",
+    "third_party_source_requested",
+    "tool_permission_changes",
+    "live_destructive_or_credential_surface",
+    "canonical_target_file_integration"
+  ],
+  "approval_gates": [
+    "third_party_infrastructure_import",
+    "tool_permission_change",
+    "live_or_destructive_capability",
+    "weakened_gate_or_approval_rule"
+  ],
+  "validation": [
+    "{TARGET_AI_INFRASTRUCTURE_VALIDATION_OR_MANUAL_REVIEW}"
+  ],
+  "final_evidence": [
+    "inventory",
+    "provenance",
+    "source_hash_or_commit",
+    "license_status",
+    "normalization",
+    "compatibility_review",
+    "approval_evidence"
+  ]
+}

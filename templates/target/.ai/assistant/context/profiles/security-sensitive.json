@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "descriptor_kind": "target-context-profile",
+  "profile": "security-sensitive",
+  "use_when": [
+    "secrets or credentials",
+    "permissions or authentication",
+    "network or external services",
+    "destructive actions",
+    "production or spend boundary"
+  ],
+  "operation_candidates": [
+    "product-change",
+    "logical-integrity-review",
+    "skill-adaptation"
+  ],
+  "required_context": [
+    ".ai/framework/change-risk-model.md",
+    ".ai/framework/security-safety-guidance.md",
+    ".ai/framework/logical-integrity.md",
+    ".ai/framework/approval-records.md",
+    ".ai/assistant/policies/prompt-injection.md",
+    ".ai/assistant/gates/checklist.md",
+    "{TARGET_SECURITY_SOURCE_OF_TRUTH}"
+  ],
+  "expand_when": [
+    "live_external_action_possible",
+    "credential_or_private_data_surface",
+    "dependency_or_permission_change",
+    "imported_ai_infrastructure_involved"
+  ],
+  "approval_gates": [
+    "protected_security_change",
+    "destructive_action",
+    "live_service_access",
+    "permission_broadening"
+  ],
+  "validation": [
+    "{TARGET_SECURITY_VALIDATION_OR_MANUAL_REVIEW}"
+  ],
+  "final_evidence": [
+    "security_owner_evidence",
+    "actions_avoided",
+    "approvals",
+    "validation",
+    "residual_risk"
+  ]
+}

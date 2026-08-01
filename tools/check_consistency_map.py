@@ -155,7 +155,9 @@ def main() -> int:
 
     try:
         router = json.loads(ROUTER.read_text(encoding="utf-8"))
-        routing_context = router["consistency_routing"]["required_context"]
+        descriptor = router["consistency_routing"]["descriptor"]
+        routing = json.loads((TARGET / descriptor).read_text(encoding="utf-8"))
+        routing_context = routing["required_context"]
     except (OSError, json.JSONDecodeError, KeyError, TypeError) as exc:
         failures.append(f"invalid context-router consistency routing: {exc}")
     else:

@@ -28,7 +28,6 @@ CORE_REQUIRED = {
     Path(".ai/assistant/flows/skill-adaptation.flow.md"),
     Path(".ai/assistant/templates/ai-infrastructure-recommendation.md"),
     Path(".ai/assistant/approvals/approval-record-template.json"),
-    Path(".ai/assistant/assistant-capabilities.json"),
     Path(".ai/project/source-of-truth-registry.md"),
     Path(".ai/project/development-evidence.json"),
     Path("AGENTS.md"),
@@ -54,8 +53,8 @@ def main() -> int:
     failures: list[str] = []
     try:
         manifest = json.loads(PROFILE_MANIFEST.read_text(encoding="utf-8"))
-        if manifest.get("schema_version") != 1:
-            failures.append("scaffold profile schema_version must be 1")
+        if manifest.get("schema_version") != 2:
+            failures.append("scaffold profile schema_version must be 2")
         names = profile_names()
         if names != EXPECTED_PROFILES:
             failures.append(f"scaffold profiles must be {EXPECTED_PROFILES}, got {names}")

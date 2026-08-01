@@ -64,6 +64,13 @@ not update target repositories. It should include adapter contract impact,
 affected rule categories, affected task profiles, affected canonical sources,
 and migration action hints.
 
+Use `tools/check_release_drift.py` to compare the working release with the
+latest `v<VERSION>` Git tag. The check materializes the tagged framework and
+target templates, runs the migration reporter against that real baseline, and
+requires the corresponding framework, adapter-schema, or template version to
+advance when its owned surfaces change. CI checkout must include tag history;
+a shallow checkout cannot establish this release baseline reliably.
+
 Store the reviewed report for a tagged version at
 `docs/releases/<VERSION>-migration.md`. The report must name the compared
 source baseline, all three version values, required target actions, validation,
@@ -87,6 +94,7 @@ Before tagging a source release:
 - run source-repository checks listed in `docs/framework-maintenance.md`
 - run `tools/check_release_migration_template.py`
 - run `tools/check_migration_diff_report.py`
+- run `tools/check_release_drift.py`
 - run `tools/check_versioning.py`
 - review `git diff --check`
 

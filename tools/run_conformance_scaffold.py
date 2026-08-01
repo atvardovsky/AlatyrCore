@@ -23,7 +23,8 @@ from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
 
-from scaffold_target_structure import plan as scaffold_plan
+from scaffold_target_structure import plan as scaffold_plan, profile_names
+from validate_target_adapter import AdapterValidatorConfig, Validator
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -237,6 +238,48 @@ def fixture_dirs(selected: list[str]) -> list[Path]:
     return result
 
 
+def validate_support_profiles(work_root: Path) -> list[str]:
+    failures: list[str] = []
+    for profile in profile_names():
+        repo = work_root / f"support-profile-{profile}"
+        repo.mkdir(parents=True, exist_ok=False)
+        actions, blocked = scaffold_plan(
+            SimpleNamespace(
+                target=repo,
+                write=True,
+                overwrite_existing=False,
+                profile=profile,
+            )
+        )
+        if not actions or blocked:
+            failures.append(
+                f"{profile} support profile did not scaffold cleanly: {blocked}"
+            )
+            continue
+        validator = Validator(
+            repo,
+            framework_source=None,
+            diff_ref=None,
+            approval_records=[],
+            enforce_approval_scope=False,
+            migration_diff=None,
+            allow_placeholders=True,
+            allow_local_paths=[],
+            config=AdapterValidatorConfig(),
+        )
+        errors = [finding for finding in validator.run() if finding.level == "error"]
+        if errors:
+            details = "; ".join(
+                f"{finding.code} {finding.path or ''}".strip() for finding in errors
+            )
+            failures.append(f"{profile} support profile failed validation: {details}")
+        else:
+            print(
+                f"OK: {profile} support profile scaffolded and passed structural validation"
+            )
+    return failures
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Run source scaffold conformance against generated fixtures."
@@ -263,6 +306,7 @@ def main() -> int:
     failures: list[str] = []
 
     try:
+        failures.extend(validate_support_profiles(work_root))
         for fixture_dir in fixture_dirs(args.fixture):
             name, actions, blocked, fixture_failures, snapshot = run_fixture(
                 fixture_dir, work_root

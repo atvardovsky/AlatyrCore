@@ -27,7 +27,8 @@ changes.
 - Existing module profile:
 - Existing task-specific maturity profile:
 - Existing bridge capability matrix:
-- Existing compact assistant-capability projection and freshness evidence:
+- Existing generated assistant-capability index, per-surface records, and
+  freshness or expiry evidence:
 - Existing blueprint or equivalent source-of-truth docs:
 - Existing operation catalog, installed-operation, operation-help, automatic
   routing, adapter-health, pre-change preview, blueprint-creation,
@@ -83,10 +84,12 @@ Check whether the target already has:
 - `.ai/alatyr.yaml`
 - `.ai/assistant/policies`
 - `.ai/assistant/context-router.json`
+- `.ai/assistant/context/profiles`
 - `.ai/assistant/context-profiles.md`
 - `.ai/assistant/maturity-profile.md`
 - `.ai/assistant/bridge-capability-matrix.md`
 - `.ai/assistant/assistant-capabilities.json`
+- `.ai/assistant/assistant-capabilities`
 - `.ai/assistant/operation-index.json`
 - `.ai/assistant/approvals`
 - `.agents/skills`
@@ -169,7 +172,8 @@ Collect target-specific facts before writing project docs:
 - diagram needs, source format, visual format, render/manual-review policy, and
   drift checks
 - diagram discussion need, draft/source status policy, per-assistant native
-  inline syntaxes, rendered-artifact presentation, readable fallback, and
+  inline syntaxes, rendered-artifact presentation, readable fallback,
+  capability expiry or review triggers, captured-result evidence, and
   stale-view evidence
 - skills, prompts, wrappers, third-party assistant infrastructure, provenance,
   output formats, permissions, and safety rules
@@ -252,8 +256,8 @@ List commands or manual checks:
 - target test isolation rules:
 - static analysis:
 - docs/diagram checks:
-- diagram discussion routing, presentation, fallback, read-only behavior, and
-  stale-view review:
+- diagram discussion routing, presentation, fallback, capability freshness,
+  captured-result, read-only behavior, and stale-view review:
 - installed-operation or adapter-recheck review:
 - adapter output contract review:
 - context-profile review:
@@ -304,8 +308,9 @@ Final evidence must say:
 - source-of-truth registry created or updated
 - consistency-map module enabled, deferred, disabled, or blocked with reason
 - context profiles created or updated
-- context router references checked in compact bootstrap, gates, operation routing,
-  root entry points, and bridge files
+- context router index and lazy descriptor references checked against the
+  selected support profile, compact bootstrap, gates, operation routing, root
+  entry points, and bridge files
 - operation catalog stays outside routine routing; exact aliases use the
   checked compact index and context profiles/intent overlays expose bounded
   candidates

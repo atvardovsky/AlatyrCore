@@ -16,6 +16,11 @@ routing is ambiguous, the router conflicts with evidence, or an entry must be
 repaired. Expand only when boundaries, conflicts, approval scope, or changed
 fact ownership require it.
 
+Load the selected profile descriptor from
+`.ai/assistant/context/profiles/`. Intent, migration, consistency, and
+task-scale descriptors under `.ai/assistant/context/` compose only when their
+trigger applies. Do not load all descriptors to classify one task.
+
 Use each profile's operation candidates from the machine-readable router for
 cheap automatic routing. Resolve an exact operation ID or alias through
 `.ai/assistant/operation-index.json`. Load the full
@@ -25,7 +30,9 @@ ambiguity, or operation/adapter repair.
 Use the router's context budgets. When sufficient context exceeds a budget,
 record selected profiles and areas, loaded files and reasons, approximate
 volume, expansion triggers, intentional omissions, and residual risk in the
-context receipt.
+context receipt. Treat source byte/token estimates as static benchmark
+evidence; actual runs should name loaded paths or sections and distinguish
+observed, assistant-reported, estimated, and unavailable context.
 
 ## Project-Area Overlays
 
@@ -39,7 +46,8 @@ task profile with only areas that own changed facts.
 Apply this overlay to any profile, including `code-local` and
 `security-sensitive`, when the user asks to see, sketch, compare, explain, or
 revise a diagram. Route to `diagram-discussion`, load only the selected entry
-from `.ai/assistant/assistant-capabilities.json`, and expand to security,
+path from `.ai/assistant/assistant-capabilities.json`, verify that surface
+record's freshness, and expand to security,
 approval, or changed-fact owners only when the request contains sensitive
 content, uses an external renderer, persists an artifact, or proposes an
 accepted fact change.

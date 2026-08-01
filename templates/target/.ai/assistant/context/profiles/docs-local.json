@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "descriptor_kind": "target-context-profile",
+  "profile": "docs-local",
+  "use_when": [
+    "local wording",
+    "README or documentation text",
+    "non-semantic documentation change"
+  ],
+  "operation_candidates": [
+    "documentation-sync",
+    "drift-review",
+    "logical-integrity-review"
+  ],
+  "required_context": [
+    ".ai/framework/context-discovery.md",
+    ".ai/framework/testing-guidance.md",
+    ".ai/assistant/gates/checklist.md",
+    "{TARGET_DOC_SOURCE_OF_TRUTH}"
+  ],
+  "expand_when": [
+    "semantic_fact_changes",
+    "source_of_truth_conflict",
+    "approval_scope_unclear",
+    "diagram_or_public_contract_changes"
+  ],
+  "approval_gates": [
+    "accepted_behavior_change",
+    "security_posture_change",
+    "public_contract_change",
+    "approval_rule_change"
+  ],
+  "validation": [
+    "{TARGET_DOC_VALIDATION_OR_MANUAL_REVIEW}"
+  ],
+  "final_evidence": [
+    "changed_docs",
+    "source_of_truth",
+    "skipped_checks",
+    "why_no_logical_integrity_expansion"
+  ]
+}

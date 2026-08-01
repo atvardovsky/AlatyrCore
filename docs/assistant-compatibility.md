@@ -99,10 +99,12 @@ those requests; it does not copy actor, priority, task, or review policy.
 When `diagrams` is enabled, every supported surface routes `Alatyr diagram`
 and equivalent clear requests to the canonical diagram discussion flow. The
 bridge matrix points to `.ai/assistant/assistant-capabilities.json`, whose
-selected surface entry records native inline syntaxes, rendered-artifact link
-or attachment support, readable fallback, client version, verification time,
-and evidence. An assistant must not infer rendering support from another
-client, use stale evidence silently, or claim that a source block was rendered.
+selected path identifies a separate surface record. That record owns native
+inline syntaxes, rendered-artifact link or attachment support, readable
+fallback, client version, verification time, expiry or review triggers, and
+evidence. The index is generated from those records. An assistant must not
+infer rendering support from another client, use stale evidence silently, or
+claim that a source block was rendered.
 
 Targets may define request aliases such as `alatyr-ai-inventory`,
 `alatyr-suggest-ai <scope>`, `alatyr-improve-ai <item-id>`,

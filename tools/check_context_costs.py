@@ -33,6 +33,8 @@ def main() -> int:
         failures.append("bootstrap declared file count exceeds its budget")
     if bootstrap["words"] > bootstrap_budget["max_words"]:
         failures.append("bootstrap word count exceeds its budget")
+    if bootstrap["words"] > bootstrap_budget["soft_max_words"]:
+        failures.append("bootstrap word count exceeds its soft headroom budget")
 
     profile_budget = report["budgets"]["profile_default"]
     for name, profile in report["profiles"].items():
