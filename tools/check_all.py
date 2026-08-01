@@ -26,6 +26,8 @@ CHECKS = [
     ["tools/check_captured_effectiveness_results.py"],
     ["tools/check_context_router.py"],
     ["tools/check_context_costs.py"],
+    ["tools/check_discussion_diagrams.py"],
+    ["tools/prepare_diagram_conformance_run.py", "--check"],
     ["tools/check_consistency_map.py"],
     ["tools/check_cross_platform_tools.py"],
     ["tools/check_large_task_orchestration.py"],

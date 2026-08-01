@@ -71,6 +71,29 @@ def build_report() -> dict[str, Any]:
     for name, profile in router.get("profiles", {}).items():
         profiles[name] = measure(profile.get("required_context", []))
 
+    intent_overlays: dict[str, dict[str, Any]] = {}
+    for name, overlay in router.get("intent_overlays", {}).items():
+        intent_overlays[name] = measure(overlay.get("required_context", []))
+
+    operation_routing = router.get("operation_routing", {})
+    diagram_overlay = router.get("intent_overlays", {}).get("diagram-request", {})
+    diagram_compact_refs = [
+        operation_routing.get("index", ""),
+        *diagram_overlay.get("required_context", []),
+    ]
+    diagram_full_reference_refs = [
+        operation_routing.get("catalog", ""),
+        ".ai/assistant/help.md",
+        ".ai/assistant/flows/operation-routing.flow.md",
+        ".ai/assistant/module-profile.md",
+        ".ai/assistant/bridge-capability-matrix.md",
+        *diagram_overlay.get("required_context", []),
+    ]
+    diagram_compact = measure([value for value in diagram_compact_refs if value])
+    diagram_full_reference = measure(
+        [value for value in diagram_full_reference_refs if value]
+    )
+
     migration = router.get("migration_routing", {})
     migration_initial_refs = migration.get("required_context", [])
     migration_full_refs = list(
@@ -92,6 +115,16 @@ def build_report() -> dict[str, Any]:
         "budgets": router.get("context_budgets", {}),
         "bootstrap": bootstrap,
         "profiles": profiles,
+        "intent_overlays": intent_overlays,
+        "operation_routes": {
+            "diagram-discussion": {
+                "compact": diagram_compact,
+                "full_reference_union": diagram_full_reference,
+                "word_reduction_percent": reduction_percent(
+                    diagram_compact["words"], diagram_full_reference["words"]
+                ),
+            }
+        },
         "migration_routing": {
             "initial": migration_initial,
             "full_candidate_union": migration_full,

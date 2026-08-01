@@ -179,6 +179,26 @@ def main() -> int:
         if required not in ai_infrastructure:
             failures.append(f"module ai-infrastructure missing required file {required}")
 
+    diagrams = module_blocks.get("diagrams", "")
+    for required in [
+        ".ai/assistant/flows/diagram-discussion.flow.md",
+        ".ai/assistant/templates/diagram-presentation.md",
+        ".ai/assistant/assistant-capabilities.json",
+        ".ai/assistant/bridge-capability-matrix.md",
+    ]:
+        if required not in diagrams:
+            failures.append(f"module diagrams missing required file {required}")
+
+    installed_operations = module_blocks.get("installed-operations", "")
+    for required in [
+        ".ai/assistant/operation-index.json",
+        ".ai/assistant/operation-catalog.json",
+    ]:
+        if required not in installed_operations:
+            failures.append(
+                f"module installed-operations missing required file {required}"
+            )
+
     team_collaboration = module_blocks.get("team-collaboration", "")
     for required in [
         ".ai/project/team-operating-model.md",

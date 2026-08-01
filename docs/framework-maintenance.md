@@ -89,6 +89,12 @@ Before accepting a change, check:
   assistant surfaces, bridge paths, auto-load behavior, skill/prompt support,
   tool permissions, help alias routing, limitations, or conformance guidance
   changes.
+- `python3 tools/check_discussion_diagrams.py` passes when diagram discussion,
+  draft/source status, inline or artifact presentation, readable fallback,
+  source-revision evidence, security/privacy, stable lineage, compact routing,
+  conformance fixture, or assistant capability fields change.
+- `python3 tools/prepare_diagram_conformance_run.py --check` passes when the
+  cross-assistant diagram operation fixture or prompt contract changes.
 - `python3 tools/check_assistant_surface_conformance.py` passes when supported
   surface IDs, bridge paths, compact bootstrap, help routing, or prepared
   conformance prompts change.

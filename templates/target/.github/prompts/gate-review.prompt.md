@@ -10,7 +10,7 @@ once; if it was not preloaded by the host, read it now. Then read
 Then read `.ai/assistant/gates/checklist.md`,
 `.ai/assistant/flows/logical-integrity-review.flow.md`,
 `.ai/framework/logical-integrity.md`, and the changed files.
-For `Alatyr`, status/doctor, enabled team aliases, or AI aliases (`alatyr-ai-inventory`, `alatyr-suggest-ai`,
-`alatyr-improve-ai`, `alatyr-adaptation`, `alatyr-add-ai`), read
+For an exact operation ID or alias, including diagram, team, or AI aliases, read
+`.ai/assistant/operation-index.json`; for bare `Alatyr`, ambiguity, or repair, read
 `.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.
 Return blockers first, then final evidence.

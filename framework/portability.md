@@ -22,14 +22,15 @@ Portable framework core may describe reusable assistant operating patterns:
 - AI infrastructure inventory, skill provenance, adaptation, and third-party
   assistant infrastructure review concepts
 - AI infrastructure router/item contract and adaptation-record shape
-- diagram-as-code and visual-artifact synchronization concepts
+- diagram-as-code, visual-artifact synchronization, capability-checked
+  discussion presentation, and readable fallback concepts
 - consistency-manifest concept
 - changed-fact relationship-map shape and impact-closure reasoning
 - blueprint-driven product-change workflow concepts
 - installed-adapter operation, blueprint creation, framework update recheck,
   and adapter audit concepts
-- operation catalog, single-entry routing, read-only health, pre-change
-  preview, bounded help, and assistant chat-completion
+- operation catalog, checked compact alias index, single-entry routing,
+  read-only health, pre-change preview, bounded help, and assistant chat-completion
   message concepts
 - framework core versus target project adapter installation planning
 - adapter maturity levels and framework lifecycle/upgrade concepts
@@ -61,6 +62,8 @@ including:
   scanners, secret names, incident procedures, or destructive-command rules
 - source-repository diagram formats, render commands, generated-file paths, or
   visual artifact tooling as required mechanisms
+- source-repository assistant client rendering or attachment behavior as a
+  portable capability claim
 - source-repository framework versioning format, release notes, or local
   adapter owner names
 - source-repository post-install request templates, audit schedules, or adapter
@@ -80,7 +83,7 @@ A repository adapter owns the concrete facts for one project:
 - target context discovery map, source-of-truth map, risk model, approvals,
   and security/live-service policies
 - target diagram formats, visual artifacts, render or manual-review process,
-  and drift checks
+  drift checks, per-assistant presentation capability, and readable fallback
 - target assistant bridge files selected for the assistants the project uses
 - target AI infrastructure inventory, source access, provenance, adaptation,
   wrapper, permission, and evidence rules
@@ -94,7 +97,7 @@ A repository adapter owns the concrete facts for one project:
   lifecycle notes
 - target installed-operation requests, blueprint creation/recheck flows, audit
   reports, allowed-action request bounds, and maintenance cadence
-- target operation catalog, help, routing/health/preview flows, supported local
+- target operation catalog/index, help, routing/health/preview flows, supported local
   request aliases, and
   post-install/update assistant chat-message templates
 - target final-evidence requirements for commands that actually exist there

@@ -17,6 +17,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "templates" / "target"
 CATALOG = TARGET / ".ai" / "assistant" / "operation-catalog.json"
+INDEX = TARGET / ".ai" / "assistant" / "operation-index.json"
 ROUTER = TARGET / ".ai" / "assistant" / "context-router.json"
 HELP_REFERENCE = TARGET / ".ai" / "assistant" / "help-reference.md"
 MANIFEST = TARGET / ".ai" / "alatyr.yaml"
@@ -40,6 +41,7 @@ EXPECTED_OPERATIONS = {
     "team-review",
     "team-merge-check",
     "logical-integrity-review",
+    "diagram-discussion",
     "ai-infrastructure-inventory",
     "ai-infrastructure-recommendation",
     "skill-adaptation",
@@ -79,6 +81,7 @@ ALLOWED_MODULES = {
     "ai-infrastructure",
     "large-task-orchestration",
     "team-collaboration",
+    "diagrams",
 }
 ALLOWED_PREVIEW = {"never", "risk-gated"}
 ALLOWED_PROFILES = {
@@ -126,6 +129,7 @@ def main() -> int:
     failures: list[str] = []
     try:
         catalog = load_json(CATALOG)
+        operation_index = load_json(INDEX)
         router = load_json(ROUTER)
     except AssertionError as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
@@ -198,6 +202,35 @@ def main() -> int:
             f"extra={sorted(operation_ids - EXPECTED_OPERATIONS)}"
         )
 
+    expected_alias_index: dict[str, str] = {}
+    expected_operation_index: dict[str, list[str]] = {}
+    for operation in operations:
+        if not isinstance(operation, dict) or not isinstance(operation.get("id"), str):
+            continue
+        operation_id = operation["id"]
+        for alias in operation.get("aliases", []):
+            if isinstance(alias, str):
+                expected_alias_index[alias] = operation_id
+        module = operation.get("required_module")
+        flow = operation.get("flow")
+        actions = operation.get("allowed_actions")
+        if isinstance(module, str) and isinstance(flow, str) and isinstance(actions, list):
+            expected_operation_index[operation_id] = [module, flow, *actions]
+
+    if operation_index.get("schema_version") != 1:
+        failures.append("operation index schema_version must be 1")
+    if operation_index.get("index_kind") != "target-operation-index":
+        failures.append("operation index index_kind must be target-operation-index")
+    if operation_index.get("catalog") != ".ai/assistant/operation-catalog.json":
+        failures.append("operation index must point to the canonical catalog")
+    if operation_index.get("aliases") != expected_alias_index:
+        failures.append("operation index aliases must exactly derive from catalog aliases")
+    if operation_index.get("operations") != expected_operation_index:
+        failures.append(
+            "operation index modules, flows, and allowed actions must exactly derive "
+            "from the catalog"
+        )
+
     reference_operations = set(
         re.findall(
             r"^Operation: `([^`]+)`",
@@ -213,6 +246,7 @@ def main() -> int:
         failures.append("context router must define operation_routing")
     else:
         expected_routing = {
+            "index": ".ai/assistant/operation-index.json",
             "catalog": ".ai/assistant/operation-catalog.json",
             "fallback_operation": "help",
             "health_operation": "adapter-health",
@@ -267,6 +301,23 @@ def main() -> int:
                         f"operation candidates {unknown}"
                     )
                 routed_ids.update(candidates)
+        intent_overlays = router.get("intent_overlays")
+        if isinstance(intent_overlays, dict):
+            for overlay_name, overlay in intent_overlays.items():
+                if not isinstance(overlay, dict):
+                    continue
+                candidates = string_list(
+                    overlay.get("operation_candidates"),
+                    f"intent_overlays.{overlay_name}.operation_candidates",
+                    failures,
+                )
+                unknown = sorted(set(candidates) - operation_ids)
+                if unknown:
+                    failures.append(
+                        f"intent_overlays.{overlay_name} has unknown operation "
+                        f"candidates {unknown}"
+                    )
+                routed_ids.update(candidates)
         expected_routed = operation_ids - {"help", "large-task"}
         missing_routed = sorted(expected_routed - routed_ids)
         if missing_routed:
@@ -274,10 +325,13 @@ def main() -> int:
 
     manifest_text = MANIFEST.read_text(encoding="utf-8")
     for key, value in {
+        "index": ".ai/assistant/operation-index.json",
         "catalog": ".ai/assistant/operation-catalog.json",
         "routing": ".ai/assistant/flows/operation-routing.flow.md",
         "health": ".ai/assistant/flows/adapter-health.flow.md",
         "pre_change_preview": ".ai/assistant/templates/pre-change-preview.md",
+        "diagram_discussion": ".ai/assistant/flows/diagram-discussion.flow.md",
+        "diagram_presentation": ".ai/assistant/templates/diagram-presentation.md",
     }.items():
         if f'{key}: "{value}"' not in manifest_text:
             failures.append(f"manifest operations missing {key}: {value}")

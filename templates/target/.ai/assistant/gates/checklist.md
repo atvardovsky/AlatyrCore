@@ -11,7 +11,7 @@ commands from another project.
   `ALATYR-RISK-001`, `ALATYR-APPROVAL-001`, `ALATYR-SAFETY-001`,
   `ALATYR-SAFETY-002`, `ALATYR-INTEGRITY-001`, `ALATYR-CHANGE-001`,
   `ALATYR-ADAPTER-001`, `ALATYR-MODULE-001`, `ALATYR-OPERATION-001`,
-  `ALATYR-TEAM-001`, and `ALATYR-EVIDENCE-001`.
+  `ALATYR-DIAGRAM-001`, `ALATYR-TEAM-001`, and `ALATYR-EVIDENCE-001`.
 - `AGENTS.md` treated as preloaded; compact bootstrap loaded from
   `.ai/alatyr.yaml`, `.ai/README.md`, and
   `.ai/assistant/context-router.json`.
@@ -33,6 +33,11 @@ commands from another project.
 - Documentation sync checked.
 - Tests or validation selected from target stack and risk.
 - Diagram sync checked when diagram-relevant facts changed.
+- Diagram discussion uses the current compact assistant capability with fresh
+  evidence, preserves stable ID/revision lineage, labels draft/source status,
+  requires revision evidence for accepted/derived views, classifies/redacts
+  sensitive content, gates external rendering and artifact policy, provides a
+  readable fallback, and creates no files under `read-only`.
 - Security/live-service policy checked when sensitive surfaces changed.
 - Skill/provenance/safety policy checked when prompts, skills, wrappers, or
   third-party assistant infrastructure changed.

@@ -41,7 +41,7 @@ Replace this section with the actual target project map.
 - context profiles for task-specific context loading
 - module profile for required core and optional Alatyr capabilities
 - task-specific maturity profile
-- bridge capability matrix
+- bridge capability matrix and compact assistant-capability projection
 - flows
 - gates
 - prompts
@@ -59,8 +59,8 @@ Replace this section with the actual target project map.
 - migration notes for framework updates
 - operation help, operation routing, and post-install/update assistant chat
   messages
-- machine-readable operation catalog, single `Alatyr` entry point, read-only
-  adapter health, and risk-gated pre-change preview
+- canonical operation catalog, checked compact alias index, single `Alatyr`
+  entry point, read-only adapter health, and risk-gated pre-change preview
 - AI infrastructure inventory, project-evidenced recommendation, source access,
   adaptation, and compatibility review
 - AI infrastructure router entries for selecting target skills, prompts,

@@ -64,6 +64,7 @@ in the owning framework documents and use these IDs for installation routing:
 - `ALATYR-ADAPTER-001`
 - `ALATYR-MODULE-001`
 - `ALATYR-OPERATION-001`
+- `ALATYR-DIAGRAM-001`
 - `ALATYR-TEAM-001`
 - `ALATYR-LIFECYCLE-001`
 - `ALATYR-EVIDENCE-001`
@@ -152,18 +153,19 @@ Classify every proposed target file:
     collaboration. Derive actor IDs, authority, priorities, review,
     coordination backend, synchronization, storage, retention, and privacy
     from target evidence.
-13. Create target `.ai/assistant/contour.md`, context router, operation
-    catalog, context profiles, module profile, task-specific maturity profile, bridge
-    capability matrix, and minimal target assistant workflows/gates from
-    target facts.
+13. Create target `.ai/assistant/contour.md`, context router, operation catalog
+    and checked compact operation index, context profiles, module profile,
+    task-specific maturity profile, bridge capability matrix, compact
+    assistant-capability projection, and minimal workflows/gates from target
+    facts.
     Route enabled team operations through the lazy
     `.ai/assistant/team/context-overlay.json`, not routine bootstrap.
     The router must distinguish host-preloaded instructions from compact
     bootstrap, define context budgets and receipts, and route project-area
     overlays without putting full project sources or the operation catalog in
-    mandatory bootstrap. Add compact per-profile operation candidates and load
-    the full catalog only for explicit Alatyr routing, health, ambiguity, or
-    operation handoff. Add
+    mandatory bootstrap. Add compact per-profile candidates and intent
+    overlays, resolve exact IDs/aliases through the index, and load the full
+    catalog only for the bare Alatyr entry, ambiguity, or repair. Add
     the `large-or-resumable` task-scale overlay only when the target enables
     large-task orchestration.
     Add the `team-active` overlay only when team collaboration is enabled. Keep
@@ -172,6 +174,8 @@ Classify every proposed target file:
 14. Add bridge files only for assistants the target uses.
 15. Add installed-operation, operation-help, automatic operation-routing,
     read-only adapter-health, risk-gated pre-change preview,
+    diagram-discussion flow and presentation template when the diagrams module
+    is enabled,
     AI-infrastructure-inventory, AI-infrastructure-recommendation, adapter output contract
     `.ai/assistant/templates/adapter-output-contracts.md`, source-access
     policy, prompt-injection policy, human and machine-readable approval-record
@@ -202,6 +206,11 @@ Classify every proposed target file:
     supported surface.
     Team aliases route through the same canonical catalog when the optional
     module is enabled; bridge files do not duplicate the team policy.
+    When diagrams are enabled, route `Alatyr diagram` through the canonical
+    flow and record native inline, rendered-artifact, readable-fallback,
+    client-version, freshness, and evidence fields separately for every
+    supported surface. Record diagram classification/redaction, external
+    renderer approval, artifact retention/sharing, and stable revision lineage.
 17. Add prompts, skills, diagrams, or consistency checks only when they solve
     target friction, can be maintained, and have been adapted to target facts.
 18. Run target validation that exists. Do not invent commands.
@@ -264,12 +273,15 @@ Report:
 - consistency map enabled, skipped, or blocked with relationship gaps recorded
 - existing files preserved, skipped, or overwritten with approval
 - supported assistant bridges added or skipped
-- operation catalog, installed-operation, operation-help, automatic routing,
+- operation catalog and checked compact index, installed-operation,
+  operation-help, automatic routing,
   read-only health, risk-gated preview,
+  diagram-discussion flow and presentation template when enabled,
   AI-infrastructure-inventory, AI-infrastructure-recommendation, adapter output
   contract, context router,
   context profiles, module profile, source-of-truth registry, task-specific
-  maturity profile, bridge capability matrix, source-access policy,
+  maturity profile, bridge capability matrix, compact assistant-capability
+  projection, source-access policy,
   prompt-injection policy, human and machine-readable approval-record
   templates, migration-note template,
   blueprint-creation, adapter-recheck, and post-install/update chat-message
@@ -305,3 +317,5 @@ Report:
 - residual risk
 - post-install or post-update assistant chat message sent or skipped with
   reason
+- diagram discussion module state, per-assistant presentation capability,
+  readable fallback, and source-revision policy when enabled

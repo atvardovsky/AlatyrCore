@@ -19,17 +19,19 @@ Replace placeholders with target facts before accepting installation.
 
 - Adapter manifest: `.ai/alatyr.yaml`
 - Context router: `.ai/assistant/context-router.json`
+- Operation index: `.ai/assistant/operation-index.json`
 - Operation catalog: `.ai/assistant/operation-catalog.json`
 - Module profile: `.ai/assistant/module-profile.md`
 - Maturity profile: `.ai/assistant/maturity-profile.md`
 - Bridge matrix: `.ai/assistant/bridge-capability-matrix.md`
+- Assistant capabilities: `.ai/assistant/assistant-capabilities.json`
 - Adapter recheck flow: `.ai/assistant/flows/adapter-recheck.flow.md`
 - Target validation: `{TARGET_VALIDATION_OR_MANUAL_REVIEW}`
 
 ## Steps
 
-1. Treat `AGENTS.md` as preloaded and load only the compact bootstrap plus the
-   operation catalog and module profile.
+1. Treat `AGENTS.md` as preloaded and route status through the compact index,
+   then load only this flow's named health sources.
 2. Record observation time and repository revision when available. If neither
    is available, mark freshness as unknown.
 3. Check bootstrap agreement between the manifest, context router, root entry
@@ -39,7 +41,7 @@ Replace placeholders with target facts before accepting installation.
 5. Check unresolved placeholders, hard-coded absolute local paths, stale
    checker claims, and missing referenced files.
 6. Check that supported assistant bridges route to the same compact help,
-   operation catalog, context router, and health operation.
+   operation index/catalog, context router, and health operation.
 7. Run a recorded target-local adapter validator when it exists and read-only
    execution is permitted. Otherwise record the check as unavailable; do not
    invent a command.

@@ -16,6 +16,10 @@ Canonical operation metadata lives in
 not a competing operation registry. A clear request routes automatically and
 does not require a formal operation ID.
 
+Exact aliases route through `.ai/assistant/operation-index.json`, which is a
+checked compact derivative of the catalog. Do not edit the index without
+updating the canonical catalog.
+
 ## Supported Request Aliases
 
 - `alatyr-ai-inventory`: route to `ai-infrastructure-inventory` and report
@@ -147,6 +151,19 @@ Flow: `.ai/assistant/flows/logical-integrity-review.flow.md`
 Minimum input: changed fact or fact ID, suspected drift, or files to inspect.
 When enabled, the consistency map bounds the first impact traversal.
 
+Operation: `diagram-discussion`
+Use when: showing, sketching, comparing, explaining, or revising a diagram in
+the current assistant discussion.
+Flow: `.ai/assistant/flows/diagram-discussion.flow.md`
+Minimum input: diagram purpose or question, scope, and persistence intent when
+known.
+Aliases: `Alatyr diagram`, `show as a diagram`, `visualize architecture`.
+Default allowed actions: `read-only`; use `docs-only` only when persisting
+target-owned source or an allowed derived visual artifact.
+Presentation: use the current compact assistant capability, then native inline,
+local rendered artifact, or readable text fallback. Preserve stable revision
+lineage; classify/redact sensitive content; hand off external rendering.
+
 Operation: `ai-infrastructure-inventory`
 Use when: checking what AI infrastructure already exists and what can be kept,
 adapted, added, removed, or left unresolved.
@@ -226,6 +243,11 @@ review.
 
 Alias: `create blueprint` or `создай blueprint`
 Route to: `create-project-blueprint`.
+
+Alias: `Alatyr diagram`, `show as a diagram`, or `visualize architecture`
+Route to: `diagram-discussion`. These are chat/request shortcuts, not shell
+commands. Default to a non-canonical read-only draft and use the current
+assistant surface's recorded presentation capability.
 
 Alias: `check integrity` or `проверь целостность`
 Route to: `logical-integrity-review`.

@@ -160,6 +160,85 @@ def main() -> int:
         if "OPERATION_CANDIDATE_UNKNOWN" not in catalog_codes:
             failures.append("operation catalog must reject unknown profile candidates")
 
+        module_profile_path = target / ".ai" / "assistant" / "module-profile.md"
+        module_profile_path.write_text(
+            "# Module Profile\n\nModule: `diagrams`\nState: `enabled`\n",
+            encoding="utf-8",
+        )
+        diagrams = validator(target)
+        diagrams.check_discussion_diagrams(None)
+        diagram_codes = {finding.code for finding in diagrams.findings}
+        for required in [
+            "DIAGRAM_REQUIRED_FILE_MISSING",
+            "DIAGRAM_OPERATION_MISSING",
+            "DIAGRAM_OPERATION_UNROUTED",
+            "DIAGRAM_BRIDGE_CAPABILITY_MISSING",
+        ]:
+            if required not in diagram_codes:
+                failures.append(f"broken diagram module missing finding {required}")
+
+        diagram_flow = (
+            target / ".ai" / "assistant" / "flows" / "diagram-discussion.flow.md"
+        )
+        diagram_flow.parent.mkdir(parents=True, exist_ok=True)
+        diagram_flow.write_text(
+            "`read-only` current assistant surface entry readable text fallback "
+            "stable diagram ID Classify data sensitivity\n",
+            encoding="utf-8",
+        )
+        diagram_presentation = (
+            target / ".ai" / "assistant" / "templates" / "diagram-presentation.md"
+        )
+        diagram_presentation.parent.mkdir(parents=True, exist_ok=True)
+        diagram_presentation.write_text(
+            "Presentation mode:\nReadable text fallback:\nDiagram ID:\n"
+            "Data classification:\nExternal renderer or network action:\n"
+            "is not project source of truth\n",
+            encoding="utf-8",
+        )
+        matrix_path = target / ".ai" / "assistant" / "bridge-capability-matrix.md"
+        matrix_path.write_text(
+            "### Assistant Surface: `generic`\n\n"
+            "Diagram capability record: "
+            "`.ai/assistant/assistant-capabilities.json#generic`\n",
+            encoding="utf-8",
+        )
+        write_json(
+            target / ".ai" / "assistant" / "assistant-capabilities.json",
+            {
+                "schema_version": 1,
+                "capability_kind": "target-assistant-capabilities",
+                "surfaces": {
+                    "generic": {
+                        "diagram_discussion": {
+                            "route": "maybe",
+                            "native_inline_syntaxes": ["unknown"],
+                            "artifact_presentation": "maybe",
+                            "readable_fallback": "text",
+                            "verified_at": "unknown",
+                            "client_version": "unknown",
+                            "evidence": "manual review",
+                        }
+                    }
+                },
+            },
+        )
+        capability_validator = validator(target)
+        capability_validator.check_discussion_diagrams(None)
+        capability_codes = {
+            finding.code for finding in capability_validator.findings
+        }
+        for required in [
+            "DIAGRAM_CAPABILITY_ROUTE",
+            "DIAGRAM_CAPABILITY_ARTIFACT",
+            "DIAGRAM_CAPABILITY_FRESHNESS",
+            "DIAGRAM_CAPABILITY_CLIENT_VERSION",
+        ]:
+            if required not in capability_codes:
+                failures.append(
+                    f"invalid diagram capability missing finding {required}"
+                )
+
         routing_path = (
             target / ".ai" / "assistant" / "flows" / "operation-routing.flow.md"
         )

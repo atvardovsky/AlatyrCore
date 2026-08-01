@@ -23,9 +23,11 @@ changes.
 - Existing CODEOWNERS or equivalent owner map:
 - Existing adapter owner, backup owner, review cadence, and last review:
 - Existing context profiles:
+- Existing intent overlays:
 - Existing module profile:
 - Existing task-specific maturity profile:
 - Existing bridge capability matrix:
+- Existing compact assistant-capability projection and freshness evidence:
 - Existing blueprint or equivalent source-of-truth docs:
 - Existing operation catalog, installed-operation, operation-help, automatic
   routing, adapter-health, pre-change preview, blueprint-creation,
@@ -40,6 +42,10 @@ changes.
   and credential/log-redaction policies:
 - Existing diagram sources, visual artifacts, render/manual-review process, and
   drift checks:
+- Existing diagram discussion flow, presentation template, stable IDs/revision
+  lineage, sensitivity/redaction policy, external-renderer policy, assistant
+  inline or artifact capabilities, readable fallback, and source-revision
+  evidence:
 - Existing assistant instruction files:
 - Scaffolding helper used or planned:
 - Scaffold profile (`core` / `standard` / `full` / not used):
@@ -80,6 +86,8 @@ Check whether the target already has:
 - `.ai/assistant/context-profiles.md`
 - `.ai/assistant/maturity-profile.md`
 - `.ai/assistant/bridge-capability-matrix.md`
+- `.ai/assistant/assistant-capabilities.json`
+- `.ai/assistant/operation-index.json`
 - `.ai/assistant/approvals`
 - `.agents/skills`
 
@@ -160,6 +168,9 @@ Collect target-specific facts before writing project docs:
 - deployment/operations facts
 - diagram needs, source format, visual format, render/manual-review policy, and
   drift checks
+- diagram discussion need, draft/source status policy, per-assistant native
+  inline syntaxes, rendered-artifact presentation, readable fallback, and
+  stale-view evidence
 - skills, prompts, wrappers, third-party assistant infrastructure, provenance,
   output formats, permissions, and safety rules
 - AI infrastructure inventory expectations and existing item owners
@@ -196,6 +207,8 @@ Collect target-specific facts before writing project docs:
 - operation catalog, single entry, automatic routing, read-only health,
   risk-gated preview, and post-install/update assistant chat-message
   expectations
+- diagram-discussion operation, presentation template, and bridge capability
+  expectations when the diagrams module is enabled
 
 ## 6. Assistant Compatibility
 
@@ -239,6 +252,8 @@ List commands or manual checks:
 - target test isolation rules:
 - static analysis:
 - docs/diagram checks:
+- diagram discussion routing, presentation, fallback, read-only behavior, and
+  stale-view review:
 - installed-operation or adapter-recheck review:
 - adapter output contract review:
 - context-profile review:
@@ -291,8 +306,9 @@ Final evidence must say:
 - context profiles created or updated
 - context router references checked in compact bootstrap, gates, operation routing,
   root entry points, and bridge files
-- operation catalog stays outside routine bootstrap; context profiles expose
-  bounded operation candidates
+- operation catalog stays outside routine routing; exact aliases use the
+  checked compact index and context profiles/intent overlays expose bounded
+  candidates
 - preloaded context is not duplicated in bootstrap
 - blueprint, registries, contours, module profile, and human profile rationale
   are routed after task selection instead of loaded for every task
@@ -310,11 +326,16 @@ Final evidence must say:
 - module profile created or updated
 - task-specific maturity profile created or updated
 - bridge capability matrix created or updated
+- per-assistant diagram inline/artifact/fallback capabilities, client version,
+  verification time, and evidence resolved or explicitly unknown with reason
 - bridge files added or checked
 - operation catalog, installed-operation, operation-help, automatic routing,
   read-only adapter-health, risk-gated preview, blueprint-creation,
   adapter-recheck, or post-install/update chat-message templates added or
   skipped
+- diagram-discussion flow, presentation template, stable lineage,
+  security/privacy/external-renderer policy, and operation conformance fixture
+  added, skipped, or blocked from target evidence
 - adapter output contracts added or skipped
 - large-task flow and operation-packet template added or skipped
 - team operating model, work registry, team-active overlay, task/handoff/

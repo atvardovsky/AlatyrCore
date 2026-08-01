@@ -69,10 +69,13 @@ ai_infrastructure:
   recommendation: ".ai/assistant/templates/ai-infrastructure-recommendation.md"
   adaptation_record: ".ai/assistant/templates/ai-infrastructure-adaptation-record.md"
 operations:
+  index: ".ai/assistant/operation-index.json"
   catalog: ".ai/assistant/operation-catalog.json"
   routing: ".ai/assistant/flows/operation-routing.flow.md"
   health: ".ai/assistant/flows/adapter-health.flow.md"
   pre_change_preview: ".ai/assistant/templates/pre-change-preview.md"
+  diagram_discussion: ".ai/assistant/flows/diagram-discussion.flow.md"
+  diagram_presentation: ".ai/assistant/templates/diagram-presentation.md"
   help: ".ai/assistant/help.md"
   help_reference: ".ai/assistant/help-reference.md"
   operation_request: ".ai/assistant/templates/operation-request.md"
@@ -99,6 +102,7 @@ maturity:
   profile: ".ai/assistant/maturity-profile.md"
 bridges:
   capability_matrix: ".ai/assistant/bridge-capability-matrix.md"
+  capabilities: ".ai/assistant/assistant-capabilities.json"
 approvals:
   directory: ".ai/assistant/approvals"
   template: ".ai/assistant/approvals/approval-template.md"

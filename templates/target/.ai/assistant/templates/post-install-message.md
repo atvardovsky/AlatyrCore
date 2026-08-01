@@ -16,6 +16,7 @@ Entry points:
 - `.ai/assistant/templates/installation-note.md`
 - `.ai/assistant/help.md`
 - `.ai/assistant/help-reference.md`
+- `.ai/assistant/operation-index.json`
 - `.ai/assistant/operation-catalog.json`
 - `.ai/assistant/context-router.json`
 - `.ai/assistant/context-profiles.md`
@@ -25,6 +26,7 @@ Entry points:
 - `.ai/project/team-operating-model.md` and `.ai/assistant/team/work-registry.json` when team collaboration is enabled
 - `.ai/assistant/maturity-profile.md`
 - `.ai/assistant/bridge-capability-matrix.md`
+- `.ai/assistant/assistant-capabilities.json`
 - `.ai/assistant/ai-infrastructure-router.json` when AI infrastructure is enabled
 
 Future assistant bootstrap:
@@ -47,6 +49,10 @@ Available next actions:
 - `recheck-after-installation`: verify the installed adapter and report gaps.
 - `product-change`: run blueprint-driven change from intent through validation and evidence.
 - `logical-integrity-review`: check consistency across code, docs, tests, diagrams, prompts, skills, gates, and bridges.
+- `diagram-discussion`: show, compare, or revise a diagram using `Alatyr
+  diagram`; the adapter uses compact current-surface evidence, stable draft
+  lineage, security/privacy policy, and a readable fallback. Accepted/derived
+  views require project-owner and source-revision evidence.
 - `large-task`: coordinate cross-boundary or resumable work with bounded workstreams, checkpoints, and final convergence.
 - `team-status` and related team operations: coordinate target-owned actors, tasks, changed-fact conflicts, handoffs, decisions, reviews, and revision-bound merge readiness when the optional module is enabled.
 - `ai-infrastructure-inventory`: check existing AI instructions, prompts, skills, wrappers, bridges, rules, MCP/tool configs, gates, and checkers. Alias: `alatyr-ai-inventory`.

@@ -85,6 +85,7 @@ policy wording.
 - Logical integrity evidence: `ALATYR-INTEGRITY-001`
 - Lifecycle and versioning: `ALATYR-LIFECYCLE-001`
 - Installed operation control surface: `ALATYR-OPERATION-001`
+- Discussion diagram presentation: `ALATYR-DIAGRAM-001`
 - Optional team collaboration: `ALATYR-TEAM-001`
 
 ## Operating Rules
@@ -148,6 +149,8 @@ python3 tools/check_bridge_capability_matrix.py
 python3 tools/check_captured_effectiveness_results.py
 python3 tools/check_context_router.py
 python3 tools/check_context_costs.py
+python3 tools/check_discussion_diagrams.py
+python3 tools/prepare_diagram_conformance_run.py --check
 python3 tools/check_consistency_map.py
 python3 tools/check_conformance_matrix.py
 python3 tools/check_conformance_summary.py

@@ -50,6 +50,9 @@ The framework commits to giving an assistant a defined process for:
   or structure
 - reasoning about diagram source/visual synchronization without hard-coding a
   universal diagram tool
+- routing diagram discussion through a target-owned presentation contract with
+  security/privacy handling, stable revision lineage, compact current-surface
+  capability evidence, and a readable fallback
 - requiring explicit programmer approval for protected changes
 - keeping architecture discussion separate from architecture mutation
 - keeping documentation and diagrams synchronized with code and project facts
@@ -75,7 +78,8 @@ The framework commits to giving an assistant a defined process for:
 - separating required core from optional modules so targets do not carry
   unused Alatyr surfaces as mandatory process
 - bounding installed-operation requests by allowed actions before editing files
-- routing clear requests automatically through a target operation catalog,
+- routing clear requests automatically through a target operation catalog and
+  checked compact exact-alias index,
   showing bounded help before guessing on ambiguity, keeping adapter health
   read-only, and previewing risk-gated changes before edits
 - suggesting framework or documentation improvements when the process becomes
@@ -171,7 +175,8 @@ defines:
 - project-specific security, live-service, dependency, destructive-operation,
   privacy, and credential-handling policies
 - project-specific diagram source format, visual artifact format, render or
-  manual-review policy, and drift checks when diagrams exist
+  manual-review policy, discussion presentation capability, readable fallback,
+  and drift checks when diagrams exist
 - project-specific framework baseline, local deviations, maturity gaps, and
   upgrade notes
 - supported assistant bridge files and bridge capability matrix when multiple

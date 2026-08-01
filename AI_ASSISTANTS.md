@@ -5,7 +5,8 @@ working on Alatyr Core.
 
 Rule references for installation routing: `ALATYR-CONTEXT-001`,
 `ALATYR-ADAPTER-001`, `ALATYR-APPROVAL-001`, `ALATYR-SAFETY-001`,
-`ALATYR-SAFETY-002`, `ALATYR-OPERATION-001`, and `ALATYR-EVIDENCE-001`.
+`ALATYR-SAFETY-002`, `ALATYR-OPERATION-001`, `ALATYR-DIAGRAM-001`, and
+`ALATYR-EVIDENCE-001`.
 When the optional team module is selected, also apply `ALATYR-TEAM-001`.
 
 If you are installing Alatyr Core into a target project:

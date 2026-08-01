@@ -12,6 +12,7 @@ local command in `{TARGET_VALIDATION_OR_LOCAL_COMMANDS}`.
 These aliases are chat/request shortcuts, not shell commands.
 
 Full operation reference: `.ai/assistant/help-reference.md`.
+Compact operation index: `.ai/assistant/operation-index.json`.
 Canonical operation catalog: `.ai/assistant/operation-catalog.json`.
 
 Send `Alatyr` by itself for a compact adapter state and up to three relevant
@@ -34,9 +35,9 @@ Default routing:
   human rationale or conflict resolution is needed.
 - Use `.ai/assistant/module-profile.md` to avoid routing to blocked or
   disabled optional modules.
-- Load `.ai/assistant/operation-catalog.json` for explicit Alatyr routing,
-  status, ambiguity resolution, or operation handoff. Do not add it to every
-  routine task's context.
+- Load `.ai/assistant/operation-index.json` for an exact operation ID or alias.
+  Load the full catalog only for the bare `Alatyr` entry, ambiguity, or
+  operation/adapter repair.
 - Show `.ai/assistant/templates/pre-change-preview.md` before edits only when
   semantic or protected risk, boundary crossing, external effects, or unclear
   allowed-action scope triggers it.
@@ -65,6 +66,12 @@ may change.
 Flow: `.ai/assistant/flows/blueprint-driven-change.flow.md`
 Minimum input: change intent, non-goals, and approval constraints.
 
+Operation: `diagram-discussion`
+Use when: the user asks to see, sketch, compare, or revise a diagram during the
+discussion.
+Flow: `.ai/assistant/flows/diagram-discussion.flow.md`
+Minimum input: diagram purpose or question and scope. Defaults to `read-only`.
+
 Operation: `large-task`
 Use when: work needs multiple workstreams, crosses project areas or profiles,
 exceeds the context budget, or must resume after a context reset.
@@ -77,9 +84,10 @@ state without editing.
 Flow: `.ai/assistant/flows/team-task-coordination.flow.md`
 Minimum input: optional team, area, actor, or task scope.
 
-Use `Alatyr team status` for the compact team view. Detailed team, blueprint,
-integrity, update, documentation, and AI-infrastructure operations and aliases
-are in `.ai/assistant/help-reference.md`.
+Use `Alatyr diagram` for a capability-checked diagram view. Use
+`Alatyr team status` for the compact team view. Detailed team, blueprint, integrity,
+update, documentation, and AI-infrastructure operations and aliases are in
+`.ai/assistant/help-reference.md`.
 
 ## Minimal Request Shape
 

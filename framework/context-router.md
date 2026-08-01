@@ -35,8 +35,9 @@ A target context router should define:
 - routing order
 - canonical profile entries
 - bounded operation candidates per profile
-- operation-catalog path, single entry alias, health operation, and preview
-  policy without embedding the full catalog
+- compact operation-index and canonical operation-catalog paths, single entry
+  alias, health operation, and preview policy without embedding either source
+- optional intent overlays that compose with every base profile
 - optional project-area overlays
 - optional task-scale overlays for large, resumable, or team-active work
 - optional consistency routing from changed fact IDs to applicable
@@ -53,11 +54,12 @@ profile and find project areas. Full blueprints, source-of-truth registries,
 operation catalogs, module profiles, policy files, and human profile explanations belong in
 selected profile or overlay context.
 
-Profile operation candidates make common routing cheap. Load the full target
-operation catalog only for the explicit `Alatyr` entry, adapter health,
-ambiguity resolution, operation handoff, or adapter repair. A clear request may
-route automatically when one enabled operation matches and its allowed-action
-scope is sufficient.
+Profile operation candidates make common routing cheap. Resolve exact IDs and
+aliases through a checked compact derivative of the operation catalog. Load
+the full target catalog only for the bare `Alatyr` entry, ambiguity, or
+operation/adapter repair. Intent overlays such as diagram requests may compose
+with code, security, or other base profiles without duplicating the operation
+candidate in every profile.
 
 The router should use the same canonical profile names as
 `context-profiles.md` unless the target adapter records a deliberate local

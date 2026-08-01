@@ -38,7 +38,9 @@ REQUIRED_SCAFFOLD_FILES = [
     ".ai/assistant/context-profiles.md",
     ".ai/assistant/module-profile.md",
     ".ai/assistant/help.md",
+    ".ai/assistant/operation-index.json",
     ".ai/assistant/operation-catalog.json",
+    ".ai/assistant/assistant-capabilities.json",
     ".ai/assistant/flows/adapter-health.flow.md",
     ".ai/assistant/templates/pre-change-preview.md",
     ".ai/project/source-of-truth-registry.md",
@@ -49,6 +51,7 @@ PLACEHOLDER_FILES = [
     ".ai/assistant/context-profiles.md",
     ".ai/assistant/module-profile.md",
     ".ai/assistant/help.md",
+    ".ai/assistant/assistant-capabilities.json",
     ".ai/assistant/operation-catalog.json",
     ".ai/project/source-of-truth-registry.md",
 ]

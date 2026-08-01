@@ -10,7 +10,7 @@
       ".ai/assistant/context-router.json"
     ],
     "unresolved_references": [],
-    "words": 1974
+    "words": 1997
   },
   "budgets": {
     "bootstrap": {
@@ -21,6 +21,21 @@
     "profile_default": {
       "max_files": 12,
       "max_words": 8000
+    }
+  },
+  "intent_overlays": {
+    "diagram-request": {
+      "declared_files": 4,
+      "missing_paths": [],
+      "resolved_files": 4,
+      "resolved_paths": [
+        ".ai/framework/diagram-guidance.md",
+        ".ai/assistant/flows/diagram-discussion.flow.md",
+        ".ai/assistant/templates/diagram-presentation.md",
+        ".ai/assistant/assistant-capabilities.json"
+      ],
+      "unresolved_references": [],
+      "words": 2316
     }
   },
   "limitations": [
@@ -74,7 +89,7 @@
         ".ai/framework/testing-guidance.md"
       ],
       "unresolved_references": [],
-      "words": 31709
+      "words": 33537
     },
     "initial": {
       "declared_files": 6,
@@ -89,9 +104,46 @@
         ".ai/assistant/templates/migration-note.md"
       ],
       "unresolved_references": [],
-      "words": 3808
+      "words": 3976
     },
-    "initial_word_reduction_percent": 88.0
+    "initial_word_reduction_percent": 88.1
+  },
+  "operation_routes": {
+    "diagram-discussion": {
+      "compact": {
+        "declared_files": 5,
+        "missing_paths": [],
+        "resolved_files": 5,
+        "resolved_paths": [
+          ".ai/assistant/operation-index.json",
+          ".ai/framework/diagram-guidance.md",
+          ".ai/assistant/flows/diagram-discussion.flow.md",
+          ".ai/assistant/templates/diagram-presentation.md",
+          ".ai/assistant/assistant-capabilities.json"
+        ],
+        "unresolved_references": [],
+        "words": 2588
+      },
+      "full_reference_union": {
+        "declared_files": 9,
+        "missing_paths": [],
+        "resolved_files": 9,
+        "resolved_paths": [
+          ".ai/assistant/operation-catalog.json",
+          ".ai/assistant/help.md",
+          ".ai/assistant/flows/operation-routing.flow.md",
+          ".ai/assistant/module-profile.md",
+          ".ai/assistant/bridge-capability-matrix.md",
+          ".ai/framework/diagram-guidance.md",
+          ".ai/assistant/flows/diagram-discussion.flow.md",
+          ".ai/assistant/templates/diagram-presentation.md",
+          ".ai/assistant/assistant-capabilities.json"
+        ],
+        "unresolved_references": [],
+        "words": 6887
+      },
+      "word_reduction_percent": 62.4
+    }
   },
   "profiles": {
     "ai-infrastructure": {
@@ -104,12 +156,12 @@
         ".ai/assistant/gates/checklist.md"
       ],
       "unresolved_references": [],
-      "words": 2228
+      "words": 2273
     },
     "architecture-change": {
-      "declared_files": 12,
+      "declared_files": 11,
       "missing_paths": [],
-      "resolved_files": 11,
+      "resolved_files": 10,
       "resolved_paths": [
         ".ai/framework/context-discovery.md",
         ".ai/framework/change-risk-model.md",
@@ -119,14 +171,13 @@
         ".ai/framework/approval-records.md",
         ".ai/framework/security-safety-guidance.md",
         ".ai/framework/testing-guidance.md",
-        ".ai/framework/diagram-guidance.md",
         ".ai/assistant/flows/blueprint-driven-change.flow.md",
         ".ai/assistant/gates/checklist.md"
       ],
       "unresolved_references": [
         "{TARGET_ARCHITECTURE_SOURCE_OF_TRUTH}"
       ],
-      "words": 7337
+      "words": 6994
     },
     "business-change": {
       "declared_files": 10,
@@ -146,7 +197,7 @@
       "unresolved_references": [
         "{TARGET_BLUEPRINT_OR_PRODUCT_SOURCE_OF_TRUTH}"
       ],
-      "words": 6483
+      "words": 6528
     },
     "code-local": {
       "declared_files": 6,
@@ -162,7 +213,7 @@
       "unresolved_references": [
         "{TARGET_CODE_SOURCE_OF_TRUTH}"
       ],
-      "words": 3942
+      "words": 3987
     },
     "data-change": {
       "declared_files": 8,
@@ -180,22 +231,21 @@
       "unresolved_references": [
         "{TARGET_DATA_SOURCE_OF_TRUTH}"
       ],
-      "words": 5049
+      "words": 5094
     },
     "docs-local": {
-      "declared_files": 5,
+      "declared_files": 4,
       "missing_paths": [],
-      "resolved_files": 4,
+      "resolved_files": 3,
       "resolved_paths": [
         ".ai/framework/context-discovery.md",
         ".ai/framework/testing-guidance.md",
-        ".ai/framework/diagram-guidance.md",
         ".ai/assistant/gates/checklist.md"
       ],
       "unresolved_references": [
         "{TARGET_DOC_SOURCE_OF_TRUTH}"
       ],
-      "words": 2728
+      "words": 2385
     },
     "framework-upgrade": {
       "declared_files": 6,
@@ -210,7 +260,7 @@
         ".ai/assistant/templates/migration-note.md"
       ],
       "unresolved_references": [],
-      "words": 3808
+      "words": 3976
     },
     "security-sensitive": {
       "declared_files": 7,
@@ -227,7 +277,7 @@
       "unresolved_references": [
         "{TARGET_SECURITY_SOURCE_OF_TRUTH}"
       ],
-      "words": 3905
+      "words": 3950
     }
   },
   "report_kind": "static-target-context-cost",

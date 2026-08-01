@@ -46,6 +46,7 @@ in `framework/rule-registry.*` and `framework/rule-ownership.md`.
 - Adapter separation: `ALATYR-ADAPTER-001`
 - Module selection: `ALATYR-MODULE-001`
 - Installed operation control surface: `ALATYR-OPERATION-001`
+- Discussion diagram presentation: `ALATYR-DIAGRAM-001`
 - Optional team collaboration: `ALATYR-TEAM-001`
 - Lifecycle and migration evidence: `ALATYR-LIFECYCLE-001`
 
@@ -94,6 +95,8 @@ The plan must identify:
 - optional consistency-map need, fact-ID strategy, relationship coverage, and
   staleness owner
 - task-specific maturity and bridge capability needs
+- diagram discussion, source/visual ownership, per-assistant presentation,
+  readable fallback, and stale-view evidence needs
 - optional scaffolding plan, if any
 - migration diff, adapter output contract, AI infrastructure inventory and
   recommendation reports, and effectiveness report needs
@@ -148,17 +151,19 @@ In a typical target repository:
    Add `.ai/project/team-operating-model.md` only when team collaboration is
    enabled, and derive actors, authority, priorities, review, backend,
    retention, and privacy from target evidence.
-7. Create `.ai/assistant/contour.md`, context router, operation catalog,
-   context profiles, module profile, task-specific maturity profile, bridge
-   capability matrix, and target assistant workflows/gates. Keep the catalog
-   outside routine bootstrap and expose compact operation candidates through
-   the router.
+7. Create `.ai/assistant/contour.md`, context router, operation catalog and its
+   checked compact index, context profiles, module profile, task-specific
+   maturity profile, bridge capability matrix, compact assistant-capability
+   projection, and target workflows/gates. Keep the catalog outside routine
+   routing and resolve exact aliases through the compact index.
    When team collaboration is enabled, route `team-active` through
    `.ai/assistant/team/context-overlay.json` and keep team state outside
    routine bootstrap.
 8. Add bridge files only for assistants the target uses.
 9. Add installed-operation, operation-help, automatic operation-routing,
    read-only adapter-health, risk-gated pre-change preview,
+   diagram-discussion flow and presentation template when the diagrams module
+   is enabled,
    AI-infrastructure-inventory, AI-infrastructure-recommendation, adapter output contracts, source-access
    policy, prompt-injection policy, human and machine-readable approval-record
    templates,
@@ -191,7 +196,7 @@ After installation, use
 `installer/installed-operation-request-template.md` when asking an assistant to
 operate the installed target adapter. Typical requests include blueprint
 creation or repair, adapter recheck after framework updates, drift review,
-blueprint-driven product changes, team coordination, AI infrastructure
+blueprint-driven product changes, diagram discussion, team coordination, AI infrastructure
 recommendation, and skill adaptation. Include Allowed actions
 when the request should be limited to `read-only`, `docs-only`,
 `adapter-only`, `code-and-tests`, or `full-with-approval`.
@@ -202,11 +207,21 @@ instead of guessing or inventing a CLI command.
 
 The target should accept `Alatyr` as one conversational entry point,
 `Alatyr status` or `Alatyr doctor` as a read-only health request, and ordinary
-clear development requests without requiring an operation ID. Route from the
-machine-readable operation catalog and enabled module profile. Show a bounded
+clear development requests without requiring an operation ID. Route exact IDs
+and aliases from the compact operation index; use the full machine-readable
+catalog and module profile only for ambiguity or repair. Show a bounded
 pre-change preview only when changed-fact risk, protected scope, boundary
 crossing, external effects, or unclear allowed actions require it; a preview
 does not grant approval.
+
+When the target enables diagrams, `Alatyr diagram`, `show as a diagram`, and
+equivalent target-language requests route to `diagram-discussion`. Installation
+must record each supported assistant's native inline, rendered-artifact, and
+readable-fallback capability, client version, verification time, and evidence
+in the compact capability projection. It must also define classification,
+redaction, external-renderer, artifact storage/retention, stable diagram ID,
+and revision-lineage behavior rather than assuming one client behavior for all
+surfaces.
 
 When the target enables team collaboration, aliases such as `Alatyr team
 status`, `Alatyr start`, `Alatyr claim`, `Alatyr conflicts`, `Alatyr

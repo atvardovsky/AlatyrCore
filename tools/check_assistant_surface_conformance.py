@@ -90,11 +90,17 @@ def main() -> int:
                     ".ai/alatyr.yaml",
                     ".ai/README.md",
                     ".ai/assistant/context-router.json",
+                    ".ai/assistant/operation-index.json",
                     ".ai/assistant/operation-catalog.json",
                     ".ai/assistant/help.md",
                     ".ai/assistant/flows/operation-routing.flow.md",
                 ]:
                     if relpath == "AGENTS.md" and required == "AGENTS.md":
+                        continue
+                    if relpath == "AGENTS.md" and required in {
+                        ".ai/assistant/help.md",
+                        ".ai/assistant/flows/operation-routing.flow.md",
+                    }:
                         continue
                     if required not in text:
                         failures.append(
@@ -106,7 +112,7 @@ def main() -> int:
                         f"assistant surface {surface_id} bridge {relpath} "
                         "does not preserve preloaded bootstrap"
                     )
-                health_aliases_routed = "status/doctor" in text or (
+                health_aliases_routed = ".ai/assistant/operation-index.json" in text or "status/doctor" in text or (
                     "Alatyr status" in text and "Alatyr doctor" in text
                 )
                 if not health_aliases_routed:

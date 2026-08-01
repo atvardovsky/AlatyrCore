@@ -5,6 +5,11 @@ aligned.
 
 Replace placeholders with target facts before accepting installation.
 
+This matrix owns human precedence and limitation notes. Runtime diagram
+selection reads only the current entry in
+`.ai/assistant/assistant-capabilities.json`; keep that checked projection
+aligned with the references below.
+
 ## Supported Assistant Surfaces
 
 Resolve these entries from target evidence before claiming a bridge is
@@ -28,6 +33,7 @@ Routes single `Alatyr` entry: `{GENERIC_ROUTES_ALATYR_ENTRY}`
 Routes adapter health: `{GENERIC_ROUTES_ADAPTER_HEALTH}`
 Routes pre-change preview: `{GENERIC_ROUTES_PRE_CHANGE_PREVIEW}`
 Routes enabled team operations: `{GENERIC_ROUTES_TEAM_OPERATIONS}`
+Diagram capability record: `.ai/assistant/assistant-capabilities.json#generic`
 Routes `alatyr-ai-inventory`: `{GENERIC_ROUTES_AI_INVENTORY}`
 Routes `alatyr-suggest-ai`: `{GENERIC_ROUTES_AI_RECOMMENDATION}`
 Routes `alatyr-improve-ai`: `{GENERIC_ROUTES_AI_IMPROVEMENT}`
@@ -54,6 +60,7 @@ Routes single `Alatyr` entry: `{AGENTS_ROUTES_ALATYR_ENTRY}`
 Routes adapter health: `{AGENTS_ROUTES_ADAPTER_HEALTH}`
 Routes pre-change preview: `{AGENTS_ROUTES_PRE_CHANGE_PREVIEW}`
 Routes enabled team operations: `{AGENTS_ROUTES_TEAM_OPERATIONS}`
+Diagram capability record: `.ai/assistant/assistant-capabilities.json#agents`
 Routes `alatyr-ai-inventory`: `{AGENTS_ROUTES_AI_INVENTORY}`
 Routes `alatyr-suggest-ai`: `{AGENTS_ROUTES_AI_RECOMMENDATION}`
 Routes `alatyr-improve-ai`: `{AGENTS_ROUTES_AI_IMPROVEMENT}`
@@ -81,6 +88,7 @@ Routes single `Alatyr` entry: `{CODEX_ROUTES_ALATYR_ENTRY}`
 Routes adapter health: `{CODEX_ROUTES_ADAPTER_HEALTH}`
 Routes pre-change preview: `{CODEX_ROUTES_PRE_CHANGE_PREVIEW}`
 Routes enabled team operations: `{CODEX_ROUTES_TEAM_OPERATIONS}`
+Diagram capability record: `.ai/assistant/assistant-capabilities.json#codex`
 Routes `alatyr-ai-inventory`: `{CODEX_ROUTES_AI_INVENTORY}`
 Routes `alatyr-suggest-ai`: `{CODEX_ROUTES_AI_RECOMMENDATION}`
 Routes `alatyr-improve-ai`: `{CODEX_ROUTES_AI_IMPROVEMENT}`
@@ -107,6 +115,7 @@ Routes single `Alatyr` entry: `{CLAUDE_ROUTES_ALATYR_ENTRY}`
 Routes adapter health: `{CLAUDE_ROUTES_ADAPTER_HEALTH}`
 Routes pre-change preview: `{CLAUDE_ROUTES_PRE_CHANGE_PREVIEW}`
 Routes enabled team operations: `{CLAUDE_ROUTES_TEAM_OPERATIONS}`
+Diagram capability record: `.ai/assistant/assistant-capabilities.json#claude`
 Routes `alatyr-ai-inventory`: `{CLAUDE_ROUTES_AI_INVENTORY}`
 Routes `alatyr-suggest-ai`: `{CLAUDE_ROUTES_AI_RECOMMENDATION}`
 Routes `alatyr-improve-ai`: `{CLAUDE_ROUTES_AI_IMPROVEMENT}`
@@ -133,6 +142,7 @@ Routes single `Alatyr` entry: `{GEMINI_ROUTES_ALATYR_ENTRY}`
 Routes adapter health: `{GEMINI_ROUTES_ADAPTER_HEALTH}`
 Routes pre-change preview: `{GEMINI_ROUTES_PRE_CHANGE_PREVIEW}`
 Routes enabled team operations: `{GEMINI_ROUTES_TEAM_OPERATIONS}`
+Diagram capability record: `.ai/assistant/assistant-capabilities.json#gemini`
 Routes `alatyr-ai-inventory`: `{GEMINI_ROUTES_AI_INVENTORY}`
 Routes `alatyr-suggest-ai`: `{GEMINI_ROUTES_AI_RECOMMENDATION}`
 Routes `alatyr-improve-ai`: `{GEMINI_ROUTES_AI_IMPROVEMENT}`
@@ -160,6 +170,7 @@ Routes single `Alatyr` entry: `{GITHUB_COPILOT_ROUTES_ALATYR_ENTRY}`
 Routes adapter health: `{GITHUB_COPILOT_ROUTES_ADAPTER_HEALTH}`
 Routes pre-change preview: `{GITHUB_COPILOT_ROUTES_PRE_CHANGE_PREVIEW}`
 Routes enabled team operations: `{GITHUB_COPILOT_ROUTES_TEAM_OPERATIONS}`
+Diagram capability record: `.ai/assistant/assistant-capabilities.json#github-copilot`
 Routes `alatyr-ai-inventory`: `{GITHUB_COPILOT_ROUTES_AI_INVENTORY}`
 Routes `alatyr-suggest-ai`: `{GITHUB_COPILOT_ROUTES_AI_RECOMMENDATION}`
 Routes `alatyr-improve-ai`: `{GITHUB_COPILOT_ROUTES_AI_IMPROVEMENT}`
@@ -187,6 +198,7 @@ Routes single `Alatyr` entry: `{CURSOR_ROUTES_ALATYR_ENTRY}`
 Routes adapter health: `{CURSOR_ROUTES_ADAPTER_HEALTH}`
 Routes pre-change preview: `{CURSOR_ROUTES_PRE_CHANGE_PREVIEW}`
 Routes enabled team operations: `{CURSOR_ROUTES_TEAM_OPERATIONS}`
+Diagram capability record: `.ai/assistant/assistant-capabilities.json#cursor`
 Routes `alatyr-ai-inventory`: `{CURSOR_ROUTES_AI_INVENTORY}`
 Routes `alatyr-suggest-ai`: `{CURSOR_ROUTES_AI_RECOMMENDATION}`
 Routes `alatyr-improve-ai`: `{CURSOR_ROUTES_AI_IMPROVEMENT}`
@@ -213,6 +225,7 @@ Routes single `Alatyr` entry: `{DEVIN_CASCADE_ROUTES_ALATYR_ENTRY}`
 Routes adapter health: `{DEVIN_CASCADE_ROUTES_ADAPTER_HEALTH}`
 Routes pre-change preview: `{DEVIN_CASCADE_ROUTES_PRE_CHANGE_PREVIEW}`
 Routes enabled team operations: `{DEVIN_CASCADE_ROUTES_TEAM_OPERATIONS}`
+Diagram capability record: `.ai/assistant/assistant-capabilities.json#devin-cascade`
 Routes `alatyr-ai-inventory`: `{DEVIN_CASCADE_ROUTES_AI_INVENTORY}`
 Routes `alatyr-suggest-ai`: `{DEVIN_CASCADE_ROUTES_AI_RECOMMENDATION}`
 Routes `alatyr-improve-ai`: `{DEVIN_CASCADE_ROUTES_AI_IMPROVEMENT}`
@@ -240,6 +253,7 @@ Routes single `Alatyr` entry: `{WINDSURF_ROUTES_ALATYR_ENTRY}`
 Routes adapter health: `{WINDSURF_ROUTES_ADAPTER_HEALTH}`
 Routes pre-change preview: `{WINDSURF_ROUTES_PRE_CHANGE_PREVIEW}`
 Routes enabled team operations: `{WINDSURF_ROUTES_TEAM_OPERATIONS}`
+Diagram capability record: `.ai/assistant/assistant-capabilities.json#windsurf`
 Routes `alatyr-ai-inventory`: `{WINDSURF_ROUTES_AI_INVENTORY}`
 Routes `alatyr-suggest-ai`: `{WINDSURF_ROUTES_AI_RECOMMENDATION}`
 Routes `alatyr-improve-ai`: `{WINDSURF_ROUTES_AI_IMPROVEMENT}`
@@ -260,14 +274,22 @@ Every supported bridge should point back to:
 - `.ai/assistant/context-profiles.md`
 - `.ai/assistant/help.md`
 - `.ai/assistant/help-reference.md`
+- `.ai/assistant/operation-index.json`
 - `.ai/assistant/operation-catalog.json`
 - `.ai/assistant/flows/operation-routing.flow.md`
+- `.ai/assistant/flows/diagram-discussion.flow.md`
+- `.ai/assistant/templates/diagram-presentation.md`
+- `.ai/assistant/assistant-capabilities.json`
 
 ## Recheck Steps
 
 1. Verify each supported bridge file exists or is intentionally skipped.
 2. Verify each bridge stays short and points to canonical target files.
-3. Verify `Alatyr`, status/doctor, automatic routing, preview, and other aliases
+3. Verify the operation index exactly derives aliases, modules, flows, and
+   allowed actions from the canonical operation catalog.
+4. Verify `Alatyr`, status/doctor, automatic routing, preview, and other aliases
    route to canonical operation catalog and flows.
-4. Verify assistant-specific limitations are recorded.
-5. Report unsupported or manual-load-only surfaces as residual risk.
+5. Verify diagram discussion uses the current surface's compact capability
+   entry, allowed enum values, client version, verification time, and evidence.
+6. Verify assistant-specific limitations are recorded.
+7. Report unsupported, stale, or manual-load-only surfaces as residual risk.

@@ -20,11 +20,16 @@ Replace placeholders with target facts before accepting installation.
 - Bridge capability matrix: `.ai/assistant/bridge-capability-matrix.md`
 - Target validation: `{TARGET_VALIDATION}`
 - Supported assistants: `{SUPPORTED_ASSISTANTS}`
-- Operation catalog, help, routing, health, and preview:
+- Operation index, catalog, help, routing, health, and preview:
+  `.ai/assistant/operation-index.json`,
   `.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`,
   `.ai/assistant/flows/operation-routing.flow.md`,
   `.ai/assistant/flows/adapter-health.flow.md`,
   `.ai/assistant/templates/pre-change-preview.md`
+- Diagram discussion: `.ai/assistant/flows/diagram-discussion.flow.md`,
+  `.ai/assistant/templates/diagram-presentation.md`,
+  `.ai/assistant/assistant-capabilities.json`, and its human bridge-matrix
+  reference
 - AI infrastructure inventory:
   `.ai/assistant/flows/ai-infrastructure-inventory.flow.md`
 - AI infrastructure recommendation:
@@ -96,6 +101,9 @@ Replace placeholders with target facts before accepting installation.
 12. Check task-specific maturity using `.ai/assistant/maturity-profile.md` when
    it exists.
 13. Check bridge behavior using `.ai/assistant/bridge-capability-matrix.md`.
+    When diagrams are enabled, verify discussion routing, source/visual
+    ownership, inline or artifact capability claims, readable fallback, and
+    stale-view evidence for every supported assistant.
 14. When team collaboration is enabled, preserve active task IDs and external
     references; check coordination backend direction, actors and authority,
     stale claims, evidence revisions, concurrent changed-fact overlaps,
@@ -143,6 +151,7 @@ Report:
 - development-pattern index schema, owner, retention/privacy policy, evidence
   references, and target-only optimization boundary
 - bridge capability matrix status
+- diagram discussion presentation, fallback, and source-revision status
 - target validation run or unresolved
 - approvals needed
 - task-specific maturity level and gaps

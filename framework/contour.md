@@ -22,7 +22,8 @@ Framework core owns:
 - multi-level consistency relationship and bounded impact-closure pattern
 - change-risk classification and protected approval trigger pattern
 - security, safety, live-service, and destructive-operation reasoning pattern
-- diagram reasoning and source/visual synchronization pattern
+- diagram reasoning, source/visual synchronization, discussion presentation,
+  and readable fallback pattern
 - architecture discussion and approval pattern
 - semantic change decision pattern
 - logical integrity review pattern
@@ -68,6 +69,8 @@ Framework core must not own:
   scanners, incident procedures, or destructive-command policies
 - project-specific diagram source formats, visual formats, render commands, or
   generated-file drift tooling
+- project-specific assistant inline-render, artifact-link, attachment, or
+  diagram fallback capabilities
 - project-specific framework version strings, release process, or adapter
   owner names
 - project-specific post-install request cadence, report owners, or adapter

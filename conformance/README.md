@@ -4,6 +4,10 @@ This directory contains small target-repository fixture descriptions and
 golden expectations for testing Alatyr installation and adapter recheck
 behavior.
 
+Operation-level fixtures under `conformance/operations` prepare equivalent
+runtime requests for supported assistant surfaces after an adapter is already
+installed. They are separate from installation-shape fixtures.
+
 Fixtures are not production adapters. They are deterministic evidence for how
 Alatyr Core should behave when a target repository has common shapes such as a
 CLI, backend API, frontend, monorepo, or pre-existing AI instructions.
@@ -163,7 +167,8 @@ For each fixture, compare:
 - assistant-run summaries comparing surface coverage, fixture coverage,
   context cost, consistency evidence, residual risks, and unresolved validation
 
-The deterministic static router baseline is stored at
+The deterministic static router baseline, including intent-overlay and compact
+diagram-route reduction evidence, is stored at
 `conformance/golden/context-cost-baseline.json`. Refresh it only after reviewing
 the changed file and word costs reported by:
 

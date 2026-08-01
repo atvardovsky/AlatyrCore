@@ -194,12 +194,48 @@ Windows PowerShell or Command Prompt:
 py -3 .\tools\check_bridge_capability_matrix.py
 ```
 
+## Discussion Diagram Check
+
+`check_discussion_diagrams.py` validates the portable diagram rule, target
+diagram-discussion operation, flow, presentation template, manifest and module
+paths, stable lineage, security/privacy, compact routing and capability
+projections, operation conformance fixture, and presentation fields for every
+supported assistant surface. It validates declared contracts, not actual
+external client rendering.
+
+Linux or macOS:
+
+```sh
+python3 tools/check_discussion_diagrams.py
+```
+
+Windows PowerShell or Command Prompt:
+
+```powershell
+py -3 .\tools\check_discussion_diagrams.py
+```
+
+Prepare the same runtime fixture prompt for every supported assistant surface:
+
+```sh
+python3 tools/prepare_diagram_conformance_run.py --output tmp/diagram-conformance
+```
+
+Use `--assistant-surface <id>` for one surface. This prepares prompts but does
+not run external clients or claim rendering conformance.
+
+Windows PowerShell or Command Prompt:
+
+```powershell
+py -3 .\tools\prepare_diagram_conformance_run.py --output tmp\diagram-conformance
+```
+
 ## Context Router Check
 
 `check_context_router.py` validates the target
 `.ai/assistant/context-router.json` template in this source repository. It
 checks canonical profile names, preloaded versus compact bootstrap context,
-budgets, receipt fields, bounded operation candidates, area overlays, path
+budgets, receipt fields, bounded candidates, intent/area overlays, path
 references, duplicate route entries, and framework file routing coverage. It
 is not a portable framework requirement for target projects.
 
@@ -217,10 +253,10 @@ py -3 .\tools\check_context_router.py
 
 ## Operation Catalog Check
 
-`check_operation_catalog.py` validates the target operation catalog, compact
-router candidates, single `Alatyr` entry, automatic routing, read-only adapter
-health, risk-gated preview, and manifest/help alignment. It checks source
-templates only.
+`check_operation_catalog.py` validates the target operation catalog, its exact
+compact index derivative, bounded router candidates, single `Alatyr` entry,
+automatic routing, read-only adapter health, risk-gated preview, and
+manifest/help alignment. It checks source templates only.
 
 Linux or macOS:
 
@@ -431,7 +467,8 @@ py -3 .\tools\check_target_adapter_validator.py
 
 `report_context_costs.py` resolves target router paths to source templates and
 reports declared files plus whitespace word counts for bootstrap, profiles,
-and migration-first routing. It is a deterministic static estimate, not model
+intent overlays, migration-first routing, and compact versus full-reference
+diagram operation routing. It is a deterministic static estimate, not model
 token usage.
 
 ```sh

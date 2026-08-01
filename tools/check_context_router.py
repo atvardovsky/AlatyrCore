@@ -186,6 +186,7 @@ def main() -> int:
         receipt_fields = require_string_list(receipt, "fields", "context_receipt", failures)
         for required in [
             "selected profiles",
+            "selected intent overlays",
             "selected task scale overlay",
             "selected project areas",
             "loaded files and reasons",
@@ -201,6 +202,7 @@ def main() -> int:
         failures.append("operation_routing must be an object")
     else:
         expected_operation_routing = {
+            "index": ".ai/assistant/operation-index.json",
             "catalog": ".ai/assistant/operation-catalog.json",
             "fallback_operation": "help",
             "health_operation": "adapter-health",
@@ -212,6 +214,12 @@ def main() -> int:
                 failures.append(f"operation_routing.{field} must be {expected}")
         require_string_list(
             operation_routing,
+            "load_index_when",
+            "operation_routing",
+            failures,
+        )
+        require_string_list(
+            operation_routing,
             "load_catalog_when",
             "operation_routing",
             failures,
@@ -219,6 +227,42 @@ def main() -> int:
         automatic = operation_routing.get("automatic_when")
         if not isinstance(automatic, str) or not automatic:
             failures.append("operation_routing.automatic_when must be a string")
+
+    intent_overlays = router.get("intent_overlays")
+    if not isinstance(intent_overlays, dict):
+        failures.append("intent_overlays must be an object")
+    else:
+        diagram = intent_overlays.get("diagram-request")
+        if not isinstance(diagram, dict):
+            failures.append("intent_overlays.diagram-request must be an object")
+        else:
+            for field in [
+                "use_when",
+                "operation_candidates",
+                "required_context",
+                "expand_when",
+            ]:
+                values = require_string_list(
+                    diagram,
+                    field,
+                    "intent_overlays.diagram-request",
+                    failures,
+                )
+                if field == "required_context":
+                    for value in values:
+                        if not target_reference_exists(value):
+                            failures.append(
+                                "intent_overlays.diagram-request.required_context "
+                                f"points to missing path: {value}"
+                            )
+            if diagram.get("required_module") != "diagrams":
+                failures.append(
+                    "intent_overlays.diagram-request.required_module must be diagrams"
+                )
+            if diagram.get("operation_candidates") != ["diagram-discussion"]:
+                failures.append(
+                    "intent_overlays.diagram-request must route diagram-discussion"
+                )
 
     consistency_routing = router.get("consistency_routing")
     if not isinstance(consistency_routing, dict):

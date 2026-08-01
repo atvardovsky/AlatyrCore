@@ -43,6 +43,23 @@ def main() -> int:
         if profile["missing_paths"]:
             failures.append(f"profile {name} contains missing paths")
 
+    for name, overlay in report["intent_overlays"].items():
+        if overlay["declared_files"] > profile_budget["max_files"]:
+            failures.append(f"intent overlay {name} exceeds the default file budget")
+        if overlay["words"] > profile_budget["max_words"]:
+            failures.append(f"intent overlay {name} exceeds the default word budget")
+        if overlay["missing_paths"]:
+            failures.append(f"intent overlay {name} contains missing paths")
+
+    diagram_route = report["operation_routes"]["diagram-discussion"]
+    if diagram_route["compact"]["missing_paths"]:
+        failures.append("diagram compact route contains missing paths")
+    diagram_reduction = diagram_route["word_reduction_percent"]
+    if not isinstance(diagram_reduction, (int, float)) or diagram_reduction < 40:
+        failures.append(
+            "diagram compact route should reduce reference words by at least 40%"
+        )
+
     migration = report["migration_routing"]
     reduction = migration["initial_word_reduction_percent"]
     if not isinstance(reduction, (int, float)) or reduction < 70:
@@ -56,7 +73,7 @@ def main() -> int:
         return 1
     print(
         "OK: checked context-cost baseline; migration initial word reduction "
-        f"is {reduction}%"
+        f"is {reduction}%; diagram route reduction is {diagram_reduction}%"
     )
     return 0
 

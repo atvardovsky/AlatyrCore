@@ -54,10 +54,14 @@ List what must not be changed.
 - Module profile:
 - Task-specific maturity profile:
 - Bridge capability matrix:
+- Compact operation index and assistant-capability projection:
 - Blueprint-driven change or equivalent product-change workflow:
 - Operation catalog, installed-operation, operation-help, automatic routing,
   adapter-health, pre-change preview, blueprint-creation, adapter-recheck,
   framework-update review, or chat-message process:
+- Diagram discussion operation, presentation template, source status, stable
+  identity/lineage, sensitivity/redaction, external-renderer, and artifact
+  retention/sharing policy:
 - Adapter output contracts:
 - Risk and approval model:
 - Security, privacy, live-service, destructive-operation, dependency, and
@@ -121,8 +125,10 @@ context, project-area overlays, budgets, receipts, approvals, validation, and
 final evidence in machine-readable form.
 
 Include `.ai/assistant/operation-catalog.json` as the canonical operation
-registry. Keep it outside routine bootstrap; add bounded operation candidates
-to context profiles for cheap automatic routing.
+registry and `.ai/assistant/operation-index.json` as its checked compact
+derivative for exact IDs and aliases. Keep the full catalog outside routine
+routing; add bounded profile candidates and intent overlays for automatic
+routing.
 
 Include `.ai/assistant/context-profiles.md` to explain task profiles,
 expansion triggers, approvals, validation, and final evidence for humans.
@@ -143,6 +149,9 @@ and blocking criteria.
 
 Include `.ai/assistant/bridge-capability-matrix.md` when more than one
 assistant surface is supported or bridge behavior may differ.
+Include `.ai/assistant/assistant-capabilities.json` as the compact runtime
+projection for per-surface diagram enums, readable fallback, client version,
+verification time, and evidence.
 
 Include `.ai/assistant/policies/ai-infrastructure-source-access.md` when the
 target wants AI infrastructure inventory, adaptation, package/plugin review, or
@@ -268,6 +277,11 @@ decisions, and external references before schema changes.
 - Human visual format:
 - Render or manual-review policy:
 - Drift checks:
+- Discussion presentation modes:
+- Per-assistant native inline syntaxes:
+- Rendered artifact link or attachment capability:
+- Required readable fallback:
+- Source revision, content hash, or stale-view evidence:
 - Adapter maturity level:
 - Task-specific maturity:
 - Blocking criteria:
@@ -297,9 +311,11 @@ List assistant-specific bridge files to create, update, skip, or preserve.
 
 Also state how root `AGENTS.md`, `AI_ASSISTANTS.md`, and supported bridge
 files will point future sessions to the installation note, compact help,
-operation catalog, and operation-routing flow, including `Alatyr`, read-only
+operation index, operation catalog, and routing flow, including `Alatyr`, read-only
 status/doctor aliases, risk-gated preview behavior, and optional team aliases
-through the canonical catalog.
+through the canonical catalog. When diagrams are enabled, include
+`diagram-discussion` routing and record presentation limitations in the
+compact assistant-capability projection rather than bridge policy text.
 
 State whether CODEOWNERS or an equivalent owner map exists for root assistant
 entry points and supported bridge files.

@@ -17,9 +17,10 @@ repaired. Expand only when boundaries, conflicts, approval scope, or changed
 fact ownership require it.
 
 Use each profile's operation candidates from the machine-readable router for
-cheap automatic routing. Load `.ai/assistant/operation-catalog.json` only for
-the explicit `Alatyr` entry, status, ambiguity, operation handoff, or adapter
-repair.
+cheap automatic routing. Resolve an exact operation ID or alias through
+`.ai/assistant/operation-index.json`. Load the full
+`.ai/assistant/operation-catalog.json` only for the bare `Alatyr` entry,
+ambiguity, or operation/adapter repair.
 
 Use the router's context budgets. When sufficient context exceeds a budget,
 record selected profiles and areas, loaded files and reasons, approximate
@@ -32,6 +33,16 @@ Define target areas such as modules, services, packages, bounded contexts, or
 documentation domains in `.ai/assistant/context-router.json`. Each area should
 name its trigger, required context, and expansion conditions. Compose the base
 task profile with only areas that own changed facts.
+
+## Intent Overlay: `diagram-request`
+
+Apply this overlay to any profile, including `code-local` and
+`security-sensitive`, when the user asks to see, sketch, compare, explain, or
+revise a diagram. Route to `diagram-discussion`, load only the selected entry
+from `.ai/assistant/assistant-capabilities.json`, and expand to security,
+approval, or changed-fact owners only when the request contains sensitive
+content, uses an external renderer, persists an artifact, or proposes an
+accepted fact change.
 
 ## Task-Scale Overlay: `large-or-resumable`
 
@@ -78,8 +89,8 @@ approval boundaries. Record selected and skipped edges with reasons.
 
 ## Profile: `docs-local`
 
-Use when: local wording, README, diagram text, or non-semantic documentation
-changes do not alter accepted project behavior.
+Use when: local wording, README, or non-semantic documentation changes do not
+alter accepted project behavior.
 
 Operation candidates: `documentation-sync`, `drift-review`,
 `logical-integrity-review`.
@@ -88,9 +99,12 @@ Required context:
 
 - `.ai/framework/context-discovery.md`
 - `.ai/framework/testing-guidance.md`
-- `.ai/framework/diagram-guidance.md`
 - `.ai/assistant/gates/checklist.md`
 - `{TARGET_DOC_SOURCE_OF_TRUTH}`
+
+For a diagram request or diagram-relevant change, load
+`.ai/framework/diagram-guidance.md` through the selected diagram flow rather
+than for every documentation task.
 
 Approval gates: only if docs change accepted behavior, security posture,
 public contract, or approval rules.
@@ -169,10 +183,12 @@ Required context:
 - `.ai/framework/approval-records.md`
 - `.ai/framework/security-safety-guidance.md`
 - `.ai/framework/testing-guidance.md`
-- `.ai/framework/diagram-guidance.md`
 - `.ai/assistant/flows/blueprint-driven-change.flow.md`
 - `.ai/assistant/gates/checklist.md`
 - `{TARGET_ARCHITECTURE_SOURCE_OF_TRUTH}`
+
+Load `.ai/framework/diagram-guidance.md` when diagram discussion or a
+diagram-relevant architecture change is selected.
 
 Approval gates: explicit programmer approval for architecture changes and new
 production dependencies or services.

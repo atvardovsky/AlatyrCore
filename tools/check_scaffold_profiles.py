@@ -28,11 +28,13 @@ CORE_REQUIRED = {
     Path(".ai/assistant/flows/skill-adaptation.flow.md"),
     Path(".ai/assistant/templates/ai-infrastructure-recommendation.md"),
     Path(".ai/assistant/approvals/approval-record-template.json"),
+    Path(".ai/assistant/assistant-capabilities.json"),
     Path(".ai/project/source-of-truth-registry.md"),
     Path(".ai/project/development-evidence.json"),
     Path("AGENTS.md"),
 }
 STANDARD_REQUIRED = {
+    Path(".ai/assistant/operation-index.json"),
     Path(".ai/assistant/operation-catalog.json"),
     Path(".ai/assistant/flows/operation-routing.flow.md"),
     Path(".ai/assistant/flows/adapter-health.flow.md"),

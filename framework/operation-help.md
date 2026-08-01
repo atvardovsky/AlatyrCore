@@ -44,6 +44,8 @@ Operation help exists to:
 - show a bounded pre-change preview when risk or scope warrants it
 - route optional team status, task, conflict, handoff, decision, review, and
   merge-check requests without loading team state for unrelated work
+- route diagram discussion to a capability-checked visible presentation without
+  assuming that every assistant client renders the same syntax
 
 ## Canonical Operation Catalog
 
@@ -202,6 +204,8 @@ Typical operation categories include:
 - team coordination for status, start/claim/checkpoint/release, changed-fact
   conflicts, handoffs, decisions, review, and revision-bound merge readiness
 - logical integrity review
+- discussion diagram creation, comparison, or revision with inline, artifact,
+  or readable text fallback
 - AI infrastructure inventory
 - AI infrastructure recommendation for new items or improvements to existing
   items
@@ -222,6 +226,14 @@ natural-language requests such as "Alatyr help", "update Alatyr", "check
 integrity", or target-language equivalents to canonical operation names.
 Aliases must be documented as assistant request syntax, not portable
 executable commands.
+
+For an enabled diagrams module, aliases may include `Alatyr diagram`, `show as
+a diagram`, `visualize architecture`, or target-language equivalents. These
+route to `diagram-discussion`, not directly to documentation sync. The
+assistant must use the current surface's compact recorded presentation
+capability and must not claim native rendering when it used an artifact link
+or text fallback. Exact aliases should resolve through the checked compact
+operation index rather than loading the full catalog.
 
 For AI infrastructure, aliases may include `alatyr-ai-inventory`, which routes
 to an inventory flow, or `alatyr-adaptation <source>` and
@@ -256,8 +268,8 @@ When routing a request:
 
 1. Treat the target assistant entry point as preloaded, read the compact
    manifest/router bootstrap, and select the smallest profile and area overlays.
-2. Read the machine-readable operation catalog when explicit Alatyr routing,
-   health, ambiguity resolution, or operation handoff requires it.
+2. Resolve exact IDs and aliases through the checked compact operation index.
+   Read the full catalog only for bare Alatyr, ambiguity, or repair.
 3. Read the full target help reference only when human explanation is needed.
 4. Classify the request by contour, task profile, and changed fact.
 5. Normalize documented operation aliases before selecting a flow.
@@ -282,6 +294,9 @@ When routing a request:
     normal flow without an operation packet.
 14. Add a team-active overlay only for enabled team coordination. Load the
     selected task and relevant active overlaps, not all team history.
+15. For diagram discussion, load the diagram policy and current compact
+    assistant-capability entry, then choose native inline, rendered artifact,
+    or readable text fallback without loading the full bridge matrix.
 
 ## Evidence Format
 
@@ -295,6 +310,7 @@ Reason: <why this operation was selected>
 Routing mode: <explicit, automatic, or ambiguity resolution>
 Context profile: <profile plus area and scale overlays>
 Pre-change preview: <shown, refreshed, or skipped with reason>
+Presentation mode: <native-inline, rendered-artifact, text-fallback, or not applicable>
 Missing input: <facts needed before work can proceed>
 Next safe action: <help shown, question asked, or flow started>
 ```
@@ -314,3 +330,4 @@ Reject or revise operation routing that:
 - claims adapter health without fresh evidence
 - treats a preview as approval or continues after its scope becomes stale
 - requires a formal operation name for an otherwise clear low-risk request
+- claims a diagram was rendered without current assistant capability evidence

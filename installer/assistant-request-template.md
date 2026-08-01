@@ -26,8 +26,10 @@ Constraints:
 - Copy or adapt Alatyr Core framework files into target `.ai/framework`,
   including the Markdown framework docs and `framework/rule-registry.json`.
 - Rewrite target project and assistant adapter files from target facts.
-- Add an operation catalog, single entry, automatic routing, read-only health,
-  risk-gated preview, help, and post-install/update chat-message templates
+- Add an operation catalog and checked compact index, single entry, automatic
+  routing, read-only health, risk-gated preview, diagram
+  discussion/presentation and compact per-assistant capability projection when
+  enabled, help, and post-install/update chat-message templates
   when useful for the target adapter.
 - Enable team collaboration only from target evidence. When enabled, add the
   target operating model, compact work registry, team-active routing, team

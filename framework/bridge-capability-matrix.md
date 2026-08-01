@@ -31,7 +31,7 @@ For each supported assistant, record:
 - tool permission model
 - whether operation help aliases are routed
 - whether the single `Alatyr` entry and read-only status/doctor aliases route
-  through the operation catalog
+  through the compact index and canonical catalog
 - whether automatic routing and risk-gated pre-change preview reach the same
   canonical flow on every supported surface
 - whether AI infrastructure inventory, recommendation, and adaptation aliases
@@ -39,6 +39,11 @@ For each supported assistant, record:
 - whether enabled team status, task, conflict, handoff, decision, review, and
   merge-check requests route through the canonical catalog and lazy team
   overlay
+- the selected entry in the compact target assistant-capability projection
+- whether diagram discussion routes through the canonical operation index
+- supported native inline diagram syntaxes, artifact presentation mode, and
+  readable fallback in that projection
+- client version, verification time, and evidence for capability freshness
 - whether selected AI infrastructure items route through canonical target
   permissions, gates, validation, and output contracts
 - known limitations
@@ -47,6 +52,12 @@ For each supported assistant, record:
 The target adapter owns exact assistant behavior. The framework only requires
 the behavior to be discoverable and kept consistent with canonical target
 files.
+
+The human bridge matrix owns explanatory precedence and limitation notes.
+`.ai/assistant/assistant-capabilities.json` is its compact runtime projection
+for selecting one assistant surface without loading the whole matrix. The
+projection must use constrained values, retain freshness evidence, and be
+checked against the surface list and matrix references.
 
 ## Baseline Template Surfaces
 
@@ -75,7 +86,8 @@ Each bridge should:
   (host-preloaded when supported), then load the manifest, compact project map,
   and context router
 - point to the canonical root entry point
-- point to the operation catalog, compact help, and operation routing
+- point to the compact operation index, canonical catalog, compact help, and
+  operation routing
 - route `Alatyr`, `Alatyr status`, and `Alatyr doctor` without presenting them
   as executable shell commands
 - route `alatyr-ai-inventory`, `alatyr-suggest-ai`, `alatyr-improve-ai`,
@@ -85,6 +97,9 @@ Each bridge should:
   instead of choosing item content from a bridge
 - route enabled team operations through the canonical catalog and
   `.ai/assistant/team/context-overlay.json` instead of embedding team policy
+- route enabled `Alatyr diagram` and equivalent requests through the compact
+  operation index, diagram discussion flow, presentation template, and only
+  the selected assistant-capability entry
 - avoid duplicating full framework, project, or adapter policy
 - avoid becoming a source of truth for project facts
 - state assistant-specific limitations only when target evidence supports
@@ -105,5 +120,9 @@ During framework update or adapter recheck:
 1. Read the matrix.
 2. Check every listed bridge file still exists.
 3. Check each bridge points to the same canonical entry points.
-4. Check operation aliases still route to the canonical flows.
-5. Report bridge-specific limitations and residual risk.
+4. Check the compact operation index still derives exactly from the catalog.
+5. Check operation aliases still route to the canonical flows.
+6. Check diagram presentation claims, enums, client version, verification
+   time, and evidence against current surface capability; retain a readable
+   fallback for unknown or unsupported rendering.
+7. Report bridge-specific limitations and residual risk.

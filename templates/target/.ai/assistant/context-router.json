@@ -29,6 +29,7 @@
     ],
     "fields": [
       "selected profiles",
+      "selected intent overlays",
       "selected task scale overlay",
       "selected project areas",
       "loaded files and reasons",
@@ -39,18 +40,46 @@
     ]
   },
   "operation_routing": {
+    "index": ".ai/assistant/operation-index.json",
     "catalog": ".ai/assistant/operation-catalog.json",
     "fallback_operation": "help",
     "health_operation": "adapter-health",
     "single_entry_alias": "Alatyr",
-      "load_catalog_when": [
-        "Alatyr entry or status",
-        "ambiguity",
-        "handoff or repair",
-        "team coordination request"
+    "load_index_when": [
+      "exact operation ID or request alias",
+      "clear operation handoff"
+    ],
+    "load_catalog_when": [
+      "bare Alatyr entry",
+      "ambiguity",
+      "operation or adapter repair"
     ],
     "automatic_when": "single enabled sufficient match",
     "preview_policy": "risk-gated"
+  },
+  "intent_overlays": {
+    "diagram-request": {
+      "use_when": [
+        "diagram view explanation comparison or revision request"
+      ],
+      "operation_candidates": [
+        "diagram-discussion"
+      ],
+      "required_module": "diagrams",
+      "required_context": [
+        ".ai/framework/diagram-guidance.md",
+        ".ai/assistant/flows/diagram-discussion.flow.md",
+        ".ai/assistant/templates/diagram-presentation.md",
+        ".ai/assistant/assistant-capabilities.json"
+      ],
+      "expand_when": [
+        "fact conflict or accepted change",
+        "sensitive data",
+        "external or network renderer",
+        "artifact persistence"
+      ],
+      "budget_behavior": "load selected capability and fact owners only"
+    }
   },
   "consistency_routing": {
     "enabled_when": [
@@ -221,7 +250,6 @@
       "required_context": [
         ".ai/framework/context-discovery.md",
         ".ai/framework/testing-guidance.md",
-        ".ai/framework/diagram-guidance.md",
         ".ai/assistant/gates/checklist.md",
         "{TARGET_DOC_SOURCE_OF_TRUTH}"
       ],
@@ -359,7 +387,6 @@
         ".ai/framework/approval-records.md",
         ".ai/framework/security-safety-guidance.md",
         ".ai/framework/testing-guidance.md",
-        ".ai/framework/diagram-guidance.md",
         ".ai/assistant/flows/blueprint-driven-change.flow.md",
         ".ai/assistant/gates/checklist.md",
         "{TARGET_ARCHITECTURE_SOURCE_OF_TRUTH}"
@@ -369,6 +396,7 @@
         "external_boundary_changes",
         "security_boundary_changes",
         "new_dependency_or_service",
+        "diagram_changes",
         "bridge_or_gate_changes"
       ],
       "approval_gates": [
@@ -414,7 +442,8 @@
         "destructive_or_data_loss_risk",
         "privacy_or_security_changes",
         "migration_rollback_needed",
-        "external_data_contract_changes"
+        "external_data_contract_changes",
+        "diagram_changes"
       ],
       "approval_gates": [
         "destructive_data_change",

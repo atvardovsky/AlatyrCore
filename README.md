@@ -49,7 +49,7 @@ into another project, do this:
    `ALATYR-ADAPTER-001`, `ALATYR-APPROVAL-001`,
    `ALATYR-SAFETY-001`, `ALATYR-SAFETY-002`,
    `ALATYR-INTEGRITY-001`, `ALATYR-OPERATION-001`,
-   `ALATYR-TEAM-001`, and
+   `ALATYR-DIAGRAM-001`, `ALATYR-TEAM-001`, and
    `ALATYR-EVIDENCE-001`.
 9. Run only target validation that exists in the target repository. If a check
    is unknown or unavailable, report it as unresolved instead of inventing a
@@ -107,6 +107,8 @@ Additional source-repository helpers include:
 - `python3 tools/check_ai_infrastructure_router.py`
 - `python3 tools/check_assistant_surface_conformance.py`
 - `python3 tools/check_bridge_capability_matrix.py`
+- `python3 tools/check_discussion_diagrams.py`
+- `python3 tools/prepare_diagram_conformance_run.py --check`
 - `python3 tools/check_context_router.py`
 - `python3 tools/check_context_costs.py`
 - `python3 tools/check_consistency_map.py`
@@ -214,6 +216,8 @@ Additional source-repository helpers include:
 - security/safety reasoning without hard-coded policies
 - prompt-injection handling for imported AI infrastructure
 - diagram guidance without hard-coded diagram tooling
+- optional diagram discussion that selects a recorded native inline view,
+  target-rendered artifact, or readable text fallback per assistant surface
 - AI infrastructure inventory and third-party skill/assistant-infrastructure
   adaptation guidance
 - AI infrastructure inventory and recommendation report templates plus
@@ -358,11 +362,13 @@ A mature target installation usually has:
 - `.ai/assistant/module-profile.md`
 - `.ai/assistant/maturity-profile.md`
 - `.ai/assistant/bridge-capability-matrix.md`
+- `.ai/assistant/assistant-capabilities.json`
 - `.ai/assistant/ai-infrastructure-router.json` when AI infrastructure is used
 - `.ai/assistant/team/context-overlay.json` and
   `.ai/assistant/team/work-registry.json` when team collaboration is enabled
 - `.ai/assistant/help.md`
 - `.ai/assistant/help-reference.md`
+- `.ai/assistant/operation-index.json`
 - `.ai/assistant/operation-catalog.json`
 - `.ai/assistant/flows`
 - `.ai/assistant/gates/checklist.md`

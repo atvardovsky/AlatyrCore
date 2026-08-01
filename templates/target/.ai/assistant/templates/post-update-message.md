@@ -40,8 +40,9 @@ assessment. Record candidate context intentionally omitted.
 Operation help:
 - Send `Alatyr` for compact relevant operations; use `Alatyr status` or
   `Alatyr doctor` for read-only health evidence.
-- Clear requests route automatically through
-  `.ai/assistant/operation-catalog.json`; operation IDs are optional.
+- Exact IDs and aliases route through `.ai/assistant/operation-index.json`;
+  bounded natural-language requests route automatically and operation IDs are
+  optional. Load the full catalog only for ambiguity or repair.
 - Risky or cross-boundary changes show a pre-change preview before edits.
 - Use `.ai/assistant/help.md`, `.ai/assistant/help-reference.md`, and `.ai/assistant/templates/operation-request.md` for structured requests.
 - Use `large-task` only for cross-boundary or resumable work, and resume an existing packet when one is named.
@@ -51,6 +52,10 @@ Operation help:
 - Use `Alatyr team status` for current coordination evidence and the specific
   team aliases for task, conflict, handoff, decision, review, or merge work.
 - Recheck AI infrastructure router entries and adaptation records when skills, prompts, gates, tools, or bridge contracts changed.
+- Recheck `diagram-discussion`, stable diagram lineage, security/privacy and
+  external-renderer policy, and each selected compact assistant capability's
+  enums, client version, verification time, and evidence when diagram or
+  bridge contracts changed.
 - Use `alatyr-suggest-ai <scope>` or `alatyr-improve-ai <item-id>` for a read-only recommendation when project needs or existing item outcomes changed.
 
 Validation run:

@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "fixture_kind": "assistant-operation-conformance",
+  "operation": "diagram-discussion",
+  "request": "Alatyr diagram: show the current architecture boundary without changing files.",
+  "allowed_actions": ["read-only"],
+  "surface_source": "conformance/runs/assistant-surfaces.json",
+  "required_for_every_surface": [
+    "route through operation-index.json to diagram-discussion",
+    "read only the selected assistant-capabilities.json entry",
+    "default the discussion result to draft",
+    "include stable diagram ID and draft revision lineage",
+    "choose native-inline, rendered-artifact, or text-fallback from recorded capability",
+    "include a readable text fallback or recorded accessible equivalent",
+    "report capability freshness and evidence",
+    "classify sensitive content and external renderer use",
+    "make no repository file changes under read-only",
+    "never claim unsupported rendering or accepted project truth"
+  ],
+  "required_result_fields": [
+    "diagram_id",
+    "draft_revision",
+    "status",
+    "assistant_surface",
+    "presentation_mode",
+    "capability_evidence",
+    "data_classification",
+    "text_fallback",
+    "validation",
+    "stale_view_risk"
+  ]
+}

@@ -9,6 +9,7 @@ placeholders with target facts before accepting installation.
 ## Target Sources
 
 - Context router: `.ai/assistant/context-router.json`
+- Compact operation index: `.ai/assistant/operation-index.json`
 - Operation catalog: `.ai/assistant/operation-catalog.json`
 - Compact help: `.ai/assistant/help.md`
 - Full help reference: `.ai/assistant/help-reference.md`
@@ -29,7 +30,8 @@ For `Alatyr` without a task:
 1. Load bootstrap context only: treat `AGENTS.md` as preloaded and read
    `.ai/alatyr.yaml`,
    `.ai/README.md`, `.ai/assistant/context-router.json`, the operation catalog,
-   and module profile.
+   and module profile. The bare entry needs the catalog; routine exact aliases
+   do not.
 2. Report health as unchecked unless fresh health evidence identifies its
    observation time or repository revision.
 3. Show no more than three operations that are available under the current
@@ -45,11 +47,12 @@ For `Alatyr status` or `Alatyr doctor`, route directly to `adapter-health` with
 1. Restate the request in concrete language and record supplied allowed
    actions. When absent, infer only the minimum actions needed for an
    unambiguous routine request; ask before broadening the surface.
-2. Apply an explicit operation ID or exact alias first. Otherwise match request
-   intent against catalog `use_when` and `aliases` fields.
-3. Check `required_module` against `.ai/assistant/module-profile.md`. Route a
-   disabled, deferred, not-applicable, or blocked operation to compact help and
-   name the missing capability.
+2. Apply an explicit operation ID or exact alias through the compact operation
+   index first. Otherwise use bounded router candidates; load catalog
+   `use_when` fields only when ambiguity remains.
+3. Check the indexed `required_module` against manifest module state. Load the
+   full module profile only when state is unknown, conflicting, or under
+   repair. Route an unavailable operation to compact help and name the gap.
 4. Use profile `operation_candidates` in the compact context router to select
    the smallest likely operation without loading the full catalog for every
    routine task.
@@ -101,6 +104,10 @@ record that preview was skipped and why.
   source access, provenance, prompt-injection, approval, and safety rules
   before fetching or integration.
 - `Alatyr team status` routes to read-only `team-status`.
+- `Alatyr diagram`, `show as a diagram`, and `visualize architecture` route to
+  `diagram-discussion`. Default to `read-only`, check only the current entry in
+  `.ai/assistant/assistant-capabilities.json`, and retain a readable text
+  fallback.
 - `Alatyr start`, `Alatyr claim`, `Alatyr checkpoint`, and `Alatyr release`
   route to `team-task`.
 - `Alatyr conflicts`, `Alatyr handoff`, `Alatyr decision` or
@@ -120,6 +127,7 @@ Report:
 - allowed actions and approval needs
 - pre-change preview shown, refreshed, or skipped with reason
 - team overlay, task/actor IDs, and registry evidence revision when applicable
+- diagram presentation mode, source status, and fallback when applicable
 - missing input, if any
 - next safe action
 
@@ -130,8 +138,10 @@ Reject or revise routing that:
 - invents a portable `alatyr` executable command
 - requires an operation ID for a clear routine request
 - loads the full operation catalog or help reference for every task
+- loads the full bridge matrix or module profile for a clear indexed route
 - routes through a disabled, deferred, not-applicable, or blocked module
 - starts edits while material routing or allowed-action ambiguity remains
 - treats the pre-change preview as approval
 - claims adapter health without fresh evidence
 - claims target validation exists without target evidence
+- claims a diagram was rendered without current surface capability evidence

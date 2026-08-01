@@ -33,6 +33,7 @@ Categories should be short uppercase labels such as:
 - `SAFETY`
 - `INTEGRITY`
 - `CHANGE`
+- `DIAGRAM`
 - `ADAPTER`
 - `MODULE`
 - `OPERATION`
@@ -117,6 +118,16 @@ using bounded workstreams plus final convergence when the change is large or
 resumable.
 Applies to: business, architecture, data, runtime, and public-contract changes.
 
+Rule ID: `ALATYR-DIAGRAM-001`
+Canonical source: `.ai/framework/diagram-guidance.md`
+Commitment: present discussion diagrams through a capability-checked inline,
+artifact, or readable text fallback; preserve stable draft lineage and
+accepted-source revision evidence; enforce target security, privacy, external
+rendering, artifact policy, validation, and drift rules; and never claim
+unsupported client rendering or project truth.
+Applies to: diagram discussion, diagram synchronization, and diagram-relevant
+product or architecture work.
+
 Rule ID: `ALATYR-ADAPTER-001`
 Canonical source: `.ai/framework/project-adapter-contract.md`
 Commitment: keep framework core, project facts, and repository adapter facts
@@ -134,10 +145,10 @@ Applies to: installation, update, adapter maturity, and framework upgrades.
 Rule ID: `ALATYR-OPERATION-001`
 Canonical source: `.ai/framework/operation-help.md`
 Commitment: expose one conversational Alatyr entry point, route clear requests
-automatically through a machine-readable target operation catalog, provide a
-read-only evidence-based adapter health operation, and show a bounded
-pre-change preview only when changed-fact risk, approval, or scope uncertainty
-requires it.
+automatically through a canonical target operation catalog and checked compact
+exact-alias index, provide a read-only evidence-based adapter health operation,
+and show a bounded pre-change preview only when changed-fact risk, approval, or
+scope uncertainty requires it.
 Applies to: installed operation routing, adapter health, and changes requiring
 preview.
 

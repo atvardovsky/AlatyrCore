@@ -23,6 +23,7 @@ Installation id: `{INSTALLATION_ID}`
   `.ai/assistant/templates/adapter-output-contracts.md`
 - Operation help: `.ai/assistant/help.md`
 - Operation help reference: `.ai/assistant/help-reference.md`
+- Compact operation index: `.ai/assistant/operation-index.json`
 - Operation catalog: `.ai/assistant/operation-catalog.json`
 - Context router: `.ai/assistant/context-router.json`
 - Context profiles: `.ai/assistant/context-profiles.md`
@@ -32,6 +33,7 @@ Installation id: `{INSTALLATION_ID}`
 - Consistency-map module state: `{ENABLED_DEFERRED_DISABLED_OR_BLOCKED}`
 - Maturity profile: `.ai/assistant/maturity-profile.md`
 - Bridge capability matrix: `.ai/assistant/bridge-capability-matrix.md`
+- Compact assistant capabilities: `.ai/assistant/assistant-capabilities.json`
 - AI infrastructure inventory template:
   `.ai/assistant/templates/ai-infrastructure-inventory.md`
 - AI infrastructure recommendation flow and template:

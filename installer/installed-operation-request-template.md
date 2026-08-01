@@ -10,10 +10,10 @@ Target repository path:
 <path-or-repo-url-to-target-project>
 
 Operation type:
-<optional; help/adapter-health/create-project-blueprint/recheck-after-installation/recheck-after-framework-update/product-change/large-task/team-status/team-task/team-conflict-review/team-handoff/team-decision/team-review/team-merge-check/logical-integrity-review/ai-infrastructure-inventory/ai-infrastructure-recommendation/skill-adaptation/drift-review/documentation-sync/adapter-maturity-review/other>
+<optional; help/adapter-health/create-project-blueprint/recheck-after-installation/recheck-after-framework-update/product-change/large-task/team-status/team-task/team-conflict-review/team-handoff/team-decision/team-review/team-merge-check/logical-integrity-review/diagram-discussion/ai-infrastructure-inventory/ai-infrastructure-recommendation/skill-adaptation/drift-review/documentation-sync/adapter-maturity-review/other>
 
 Operation alias, if used:
-<for example: Alatyr team status, Alatyr claim <task-id>, Alatyr handoff <task-id>, Alatyr review <task-id>, alatyr-ai-inventory, alatyr-suggest-ai <scope>, alatyr-improve-ai <item-id>, alatyr-adaptation <source>, or alatyr-add-ai <source>>
+<for example: Alatyr diagram, Alatyr team status, Alatyr claim <task-id>, Alatyr handoff <task-id>, Alatyr review <task-id>, alatyr-ai-inventory, alatyr-suggest-ai <scope>, alatyr-improve-ai <item-id>, alatyr-adaptation <source>, or alatyr-add-ai <source>>
 
 Goal:
 <what the assistant should accomplish>
@@ -50,6 +50,12 @@ Explicit machine-readable approval records:
 
 Pre-change preview:
 <shown/skipped/pending with reason>
+
+Diagram purpose, scope, and persistence intent, when applicable:
+<question or view; bounded scope; response-only or persisted>
+
+Current assistant surface and preferred presentation, when applicable:
+<surface-id; native-inline/rendered-artifact/text-fallback/no preference>
 
 Allowed actions meaning:
 - read-only: inspect target files and report only; no file changes.
@@ -95,7 +101,7 @@ Constraints:
   ALATYR-RISK-001, ALATYR-APPROVAL-001, ALATYR-SAFETY-001,
   ALATYR-SAFETY-002, ALATYR-INTEGRITY-001, ALATYR-CHANGE-001,
   ALATYR-ADAPTER-001, ALATYR-MODULE-001, ALATYR-OPERATION-001,
-  ALATYR-TEAM-001, ALATYR-EVIDENCE-001.
+  ALATYR-DIAGRAM-001, ALATYR-TEAM-001, ALATYR-EVIDENCE-001.
 - Treat the target `AGENTS.md` as preloaded, then read `.ai/alatyr.yaml`,
   `.ai/README.md`, and `.ai/assistant/context-router.json` first.
 - Select the smallest matching context profile and project-area overlays from
@@ -121,12 +127,21 @@ Constraints:
   secondary file/surface overlap. Bind merge readiness to current head/base
   revisions.
 - Use bounded router candidates for clear requests and route automatically.
-  Load `.ai/assistant/operation-catalog.json` for explicit Alatyr routing,
-  health, ambiguity, or operation handoff. Ask for the smallest missing
-  decision only when material ambiguity remains.
+  Resolve exact IDs and aliases through `.ai/assistant/operation-index.json`.
+  Load the full operation catalog only for the bare `Alatyr` entry, ambiguity,
+  or operation/adapter repair. Ask for the smallest missing decision only when
+  material ambiguity remains.
 - Keep `Alatyr status` and `Alatyr doctor` read-only. Apply
   `.ai/assistant/templates/pre-change-preview.md` before edits when changed-fact
   risk or scope triggers it; preview does not grant approval.
+- For `Alatyr diagram` or `diagram-discussion`, read only the current entry in
+  `.ai/assistant/assistant-capabilities.json`, default to a non-canonical
+  `read-only` draft, and
+  provide native inline, rendered artifact, or readable text fallback without
+  claiming unsupported rendering. Preserve stable ID/revision lineage,
+  classify and redact sensitive content, require revision evidence before
+  accepted/derived status, and do not use an external renderer without target
+  policy and required approval.
 - Use target source-of-truth docs and target evidence only.
 - When the optional `consistency-map` module is enabled, identify changed fact
   IDs and use `.ai/project/consistency-map.json` to select applicable impact

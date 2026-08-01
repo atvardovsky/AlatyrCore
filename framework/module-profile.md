@@ -49,8 +49,9 @@ maintain them:
   blueprint creation or repair.
 - `consistency-map`: machine-readable changed-fact relationships and bounded
   impact closure for targets with many project areas or competing surfaces.
-- `diagrams`: diagram source, visual artifact, render or manual-review, and
-  drift policy.
+- `diagrams`: diagram source, visual artifact, render or manual-review, drift,
+  discussion presentation, compact per-assistant capability/freshness,
+  security/privacy, stable revision lineage, and readable fallback policy.
 - `ai-infrastructure`: inventory, source access, prompt-injection handling,
   evidence-based recommendations, routed skill/prompt/gate/checker/tool/MCP/
   bridge selection, target development-pattern evidence and lazy capture,
@@ -133,6 +134,9 @@ Reject module-profile work that:
   decision-owner evidence, storage/privacy policy, or conflict review
 - enables a consistency map without target-owned fact IDs, relationship
   coverage, or staleness handling
+- enables diagrams without a discussion presentation fallback, source/visual
+  ownership, compact assistant capability evidence, security/privacy policy,
+  revision lineage, and render or manual-review evidence
 - copies source-repository helper behavior into target requirements
 - installs bridge, diagram, skill, or operation-help surfaces the target does
   not use

@@ -44,6 +44,12 @@
       "derived_surfaces": ["product-change operation", "blueprint-driven target flow", "large-task orchestration", "documentation and diagram sync"]
     },
     {
+      "category": "DIAGRAM",
+      "owner": "framework/diagram-guidance.md",
+      "rule_ids": ["ALATYR-DIAGRAM-001"],
+      "derived_surfaces": ["target diagram discussion flow", "diagram presentation template", "operation catalog and compact index", "context intent routing", "bridge capability matrix", "compact assistant capabilities", "operation conformance fixture", "installation planning", "adapter recheck", "diagram validation evidence"]
+    },
+    {
       "category": "ADAPTER",
       "owner": "framework/project-adapter-contract.md",
       "rule_ids": ["ALATYR-ADAPTER-001"],
@@ -59,7 +65,7 @@
       "category": "OPERATION",
       "owner": "framework/operation-help.md",
       "rule_ids": ["ALATYR-OPERATION-001"],
-      "derived_surfaces": ["target operation catalog", "automatic routing flow", "compact help", "adapter health flow", "pre-change preview", "manifest operation paths", "assistant bridges"]
+      "derived_surfaces": ["target operation catalog", "checked compact operation index", "automatic routing flow", "compact help", "adapter health flow", "pre-change preview", "manifest operation paths", "assistant bridges"]
     },
     {
       "category": "TEAM",
@@ -152,6 +158,14 @@
       "enforcement": "required"
     },
     {
+      "id": "ALATYR-DIAGRAM-001",
+      "category": "DIAGRAM",
+      "canonical_source": "framework/diagram-guidance.md",
+      "summary": "Present discussion diagrams through a capability-checked inline, artifact, or readable text fallback; preserve stable draft lineage and accepted-source revision evidence; enforce target security, privacy, external rendering, artifact policy, validation, and drift rules; and never claim unsupported client rendering or project truth.",
+      "applies_to": ["diagram discussion", "diagram synchronization", "diagram-relevant product or architecture work"],
+      "enforcement": "required when module enabled"
+    },
+    {
       "id": "ALATYR-ADAPTER-001",
       "category": "ADAPTER",
       "canonical_source": "framework/project-adapter-contract.md",
@@ -171,7 +185,7 @@
       "id": "ALATYR-OPERATION-001",
       "category": "OPERATION",
       "canonical_source": "framework/operation-help.md",
-      "summary": "Expose one conversational Alatyr entry point, route clear requests automatically through a machine-readable target operation catalog, provide a read-only evidence-based adapter health operation, and show a bounded pre-change preview only when changed-fact risk, approval, or scope uncertainty requires it.",
+      "summary": "Expose one conversational Alatyr entry point, route clear requests automatically through a canonical target operation catalog and checked compact exact-alias index, provide a read-only evidence-based adapter health operation, and show a bounded pre-change preview only when changed-fact risk, approval, or scope uncertainty requires it.",
       "applies_to": ["installed operation routing", "adapter health", "changes requiring preview"],
       "enforcement": "required"
     },

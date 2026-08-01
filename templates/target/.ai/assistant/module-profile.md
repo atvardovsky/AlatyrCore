@@ -130,7 +130,11 @@ State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `{TARGET_DIAGRAM_MODULE_OWNER_OR_FILE}`
 Required files:
 
-- `{DIAGRAM_MODULE_REQUIRED_FILE}`
+- `{TARGET_DIAGRAM_POLICY_OR_SOURCE_OWNER}`
+- `.ai/assistant/flows/diagram-discussion.flow.md`
+- `.ai/assistant/templates/diagram-presentation.md`
+- `.ai/assistant/assistant-capabilities.json`
+- `.ai/assistant/bridge-capability-matrix.md`
 
 Reason: `{REASON}`
 Validation or review: `{VALIDATION_OR_REVIEW}`
@@ -164,6 +168,7 @@ Owner or file: `.ai/assistant/bridge-capability-matrix.md`
 Required files:
 
 - `.ai/assistant/bridge-capability-matrix.md`
+- `.ai/assistant/assistant-capabilities.json`
 
 Reason: `{REASON}`
 Validation or review: `{VALIDATION_OR_REVIEW}`
@@ -176,6 +181,7 @@ State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `.ai/assistant/operation-catalog.json`
 Required files:
 
+- `.ai/assistant/operation-index.json`
 - `.ai/assistant/operation-catalog.json`
 - `.ai/assistant/help.md`
 - `.ai/assistant/help-reference.md`

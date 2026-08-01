@@ -110,14 +110,18 @@ MANIFEST_REQUIRED_SCALARS: set[PathKey] = {
     ("source_of_truth", "context_profiles"),
     ("source_of_truth", "module_profile"),
     ("operations", "help"),
+    ("operations", "index"),
     ("operations", "catalog"),
     ("operations", "routing"),
     ("operations", "health"),
     ("operations", "pre_change_preview"),
+    ("operations", "diagram_discussion"),
+    ("operations", "diagram_presentation"),
     ("operations", "operation_request"),
     ("operations", "output_contracts"),
     ("maturity", "profile"),
     ("bridges", "capability_matrix"),
+    ("bridges", "capabilities"),
     ("approvals", "directory"),
     ("approvals", "template"),
     ("approvals", "machine_template"),
@@ -137,6 +141,7 @@ MANIFEST_PATH_SCALARS: set[PathKey] = {
     ("source_of_truth", "context_profiles"),
     ("source_of_truth", "module_profile"),
     ("operations", "help"),
+    ("operations", "index"),
     ("operations", "catalog"),
     ("operations", "routing"),
     ("operations", "health"),
@@ -150,6 +155,7 @@ MANIFEST_PATH_SCALARS: set[PathKey] = {
     ("ai_infrastructure", "adaptation_record"),
     ("maturity", "profile"),
     ("bridges", "capability_matrix"),
+    ("bridges", "capabilities"),
     ("approvals", "directory"),
     ("approvals", "template"),
     ("approvals", "machine_template"),
@@ -287,6 +293,7 @@ def repair_operation_for(code: str) -> str:
         (("AI_", "PROMPT_", "DEVELOPMENT_EVIDENCE_"), "ai-infrastructure-recommendation"),
         (("CONSISTENCY_", "SOURCE_"), "logical-integrity-review"),
         (("BRIDGE_",), "drift-review"),
+        (("DIAGRAM_",), "diagram-discussion"),
         (("APPROVAL_",), "logical-integrity-review"),
         (
             (
@@ -485,6 +492,7 @@ class Validator:
         manifest = self.check_manifest()
         self.check_router()
         self.check_operation_catalog()
+        self.check_discussion_diagrams(manifest)
         self.check_consistency_map()
         self.check_ai_infrastructure_router()
         self.check_development_evidence(manifest)
@@ -856,6 +864,8 @@ class Validator:
 
         operation_ids: set[str] = set()
         aliases: dict[str, str] = {}
+        exact_aliases: dict[str, str] = {}
+        expected_index_operations: dict[str, list[str]] = {}
         for index, operation in enumerate(operations):
             label = f"operations[{index}]"
             if not isinstance(operation, dict):
@@ -916,6 +926,7 @@ class Validator:
                                 relpath,
                             )
                         aliases[normalized] = str(operation_id)
+                        exact_aliases[alias] = str(operation_id)
 
             if operation.get("preview") not in {"never", "risk-gated"}:
                 self.error(
@@ -926,6 +937,16 @@ class Validator:
             flow = operation.get("flow")
             if isinstance(flow, str):
                 self.check_optional_target_reference(flow, relpath, f"{label}.flow")
+            module = operation.get("required_module")
+            actions = operation.get("allowed_actions")
+            if (
+                isinstance(operation_id, str)
+                and isinstance(module, str)
+                and isinstance(flow, str)
+                and isinstance(actions, list)
+                and all(isinstance(action, str) for action in actions)
+            ):
+                expected_index_operations[operation_id] = [module, flow, *actions]
 
         fallback = catalog.get("fallback_operation")
         if not isinstance(fallback, str) or fallback not in operation_ids:
@@ -960,6 +981,42 @@ class Validator:
             else:
                 self.check_optional_target_reference(value, relpath, field)
 
+        index_relpath = ".ai/assistant/operation-index.json"
+        index = self.load_json_object(self.target_path(index_relpath), "OPERATION_INDEX")
+        if index is None:
+            self.error(
+                "OPERATION_INDEX_MISSING",
+                "checked compact operation index is missing",
+                index_relpath,
+            )
+        else:
+            if index.get("schema_version") != 1:
+                self.error("OPERATION_INDEX_SCHEMA", "schema_version should be 1", index_relpath)
+            if index.get("index_kind") != "target-operation-index":
+                self.error(
+                    "OPERATION_INDEX_KIND",
+                    "index_kind should be target-operation-index",
+                    index_relpath,
+                )
+            if index.get("catalog") != relpath:
+                self.error(
+                    "OPERATION_INDEX_CATALOG",
+                    f"catalog should be {relpath}",
+                    index_relpath,
+                )
+            if index.get("aliases") != exact_aliases:
+                self.error(
+                    "OPERATION_INDEX_ALIAS_DRIFT",
+                    "aliases do not exactly derive from the operation catalog",
+                    index_relpath,
+                )
+            if index.get("operations") != expected_index_operations:
+                self.error(
+                    "OPERATION_INDEX_CONTRACT_DRIFT",
+                    "module, flow, or allowed-action projection differs from the catalog",
+                    index_relpath,
+                )
+
         router_path = self.target_path(".ai/assistant/context-router.json")
         router = self.load_json_object(router_path, "ROUTER")
         if router is None:
@@ -972,6 +1029,12 @@ class Validator:
                 ".ai/assistant/context-router.json",
             )
         else:
+            if operation_routing.get("index") != index_relpath:
+                self.error(
+                    "OPERATION_ROUTING_INDEX",
+                    f"operation_routing.index should be {index_relpath}",
+                    ".ai/assistant/context-router.json",
+                )
             if operation_routing.get("catalog") != relpath:
                 self.error(
                     "OPERATION_ROUTING_CATALOG",
@@ -1051,6 +1114,29 @@ class Validator:
                     else:
                         routed_ids.add(candidate)
 
+        intent_overlays = router.get("intent_overlays")
+        if isinstance(intent_overlays, dict):
+            for overlay_name, overlay_data in intent_overlays.items():
+                if not isinstance(overlay_data, dict):
+                    continue
+                candidates = overlay_data.get("operation_candidates")
+                if not isinstance(candidates, list):
+                    self.error(
+                        "OPERATION_CANDIDATE_SHAPE",
+                        f"intent overlay {overlay_name} operation_candidates must be a list",
+                        ".ai/assistant/context-router.json",
+                    )
+                    continue
+                for candidate in candidates:
+                    if not isinstance(candidate, str) or candidate not in operation_ids:
+                        self.error(
+                            "OPERATION_CANDIDATE_UNKNOWN",
+                            f"intent overlay {overlay_name} references unknown operation {candidate}",
+                            ".ai/assistant/context-router.json",
+                        )
+                    else:
+                        routed_ids.add(candidate)
+
         unrouted = sorted(operation_ids - routed_ids - {"help", "large-task"})
         if unrouted:
             self.warn(
@@ -1059,6 +1145,335 @@ class Validator:
                 + ", ".join(unrouted),
                 ".ai/assistant/context-router.json",
             )
+
+    def check_discussion_diagrams(self, manifest: ManifestData | None) -> None:
+        module_relpath = ".ai/assistant/module-profile.md"
+        module_path = self.target_path(module_relpath)
+        if not module_path.is_file():
+            return
+        module_text = self.read_text(module_path)
+        module_match = re.search(
+            r"^Module: `diagrams`\s*$([\s\S]*?)(?=^Module: `|\Z)",
+            module_text,
+            flags=re.MULTILINE,
+        )
+        if module_match is None:
+            self.warn(
+                "DIAGRAM_MODULE_UNDECLARED",
+                "module profile does not declare diagrams state",
+                module_relpath,
+            )
+            return
+        state_match = re.search(
+            r"^State:\s*`?([^`\n]+)`?\s*$",
+            module_match.group(1),
+            flags=re.MULTILINE,
+        )
+        if state_match is None:
+            self.warn(
+                "DIAGRAM_MODULE_STATE_MISSING",
+                "diagrams module has no parseable State field",
+                module_relpath,
+            )
+            return
+        state = state_match.group(1).strip().casefold()
+        if state not in {"enabled", "required"}:
+            return
+
+        required_paths = [
+            ".ai/assistant/flows/diagram-discussion.flow.md",
+            ".ai/assistant/templates/diagram-presentation.md",
+            ".ai/assistant/assistant-capabilities.json",
+            ".ai/assistant/bridge-capability-matrix.md",
+        ]
+        for relpath in required_paths:
+            if not self.target_path(relpath).is_file():
+                self.error(
+                    "DIAGRAM_REQUIRED_FILE_MISSING",
+                    "enabled diagrams module is missing a discussion contract",
+                    relpath,
+                )
+
+        if manifest is not None:
+            expected_manifest = {
+                (
+                    "operations",
+                    "diagram_discussion",
+                ): ".ai/assistant/flows/diagram-discussion.flow.md",
+                (
+                    "operations",
+                    "diagram_presentation",
+                ): ".ai/assistant/templates/diagram-presentation.md",
+                (
+                    "bridges",
+                    "capabilities",
+                ): ".ai/assistant/assistant-capabilities.json",
+            }
+            for key, expected in expected_manifest.items():
+                scalar = manifest.scalars.get(key)
+                if scalar is None or scalar.value != expected:
+                    self.error(
+                        "DIAGRAM_MANIFEST_PATH",
+                        f"{dotted(key)} must be {expected} when diagrams are enabled",
+                        ".ai/alatyr.yaml",
+                    )
+
+        catalog = self.load_json_object(
+            self.target_path(".ai/assistant/operation-catalog.json"),
+            "OPERATION_CATALOG",
+        )
+        operations = catalog.get("operations") if isinstance(catalog, dict) else None
+        operation = None
+        if isinstance(operations, list):
+            operation = next(
+                (
+                    item
+                    for item in operations
+                    if isinstance(item, dict)
+                    and item.get("id") == "diagram-discussion"
+                ),
+                None,
+            )
+        if not isinstance(operation, dict):
+            self.error(
+                "DIAGRAM_OPERATION_MISSING",
+                "enabled diagrams module requires diagram-discussion operation",
+                ".ai/assistant/operation-catalog.json",
+            )
+        else:
+            if operation.get("required_module") != "diagrams":
+                self.error(
+                    "DIAGRAM_OPERATION_MODULE",
+                    "diagram-discussion must require the diagrams module",
+                    ".ai/assistant/operation-catalog.json",
+                )
+            if operation.get("flow") != required_paths[0]:
+                self.error(
+                    "DIAGRAM_OPERATION_FLOW",
+                    f"diagram-discussion must route to {required_paths[0]}",
+                    ".ai/assistant/operation-catalog.json",
+                )
+            if operation.get("allowed_actions") != ["read-only", "docs-only"]:
+                self.error(
+                    "DIAGRAM_OPERATION_ACTIONS",
+                    "diagram-discussion must allow only read-only and docs-only",
+                    ".ai/assistant/operation-catalog.json",
+                )
+
+        router = self.load_json_object(
+            self.target_path(".ai/assistant/context-router.json"), "ROUTER"
+        )
+        intent_overlays = (
+            router.get("intent_overlays") if isinstance(router, dict) else None
+        )
+        diagram_overlay = (
+            intent_overlays.get("diagram-request")
+            if isinstance(intent_overlays, dict)
+            else None
+        )
+        routed = isinstance(diagram_overlay, dict) and diagram_overlay.get(
+            "operation_candidates"
+        ) == ["diagram-discussion"]
+        if not routed:
+            self.error(
+                "DIAGRAM_OPERATION_UNROUTED",
+                "enabled diagram-discussion has no diagram-request intent overlay",
+                ".ai/assistant/context-router.json",
+            )
+
+        matrix_relpath = ".ai/assistant/bridge-capability-matrix.md"
+        matrix_text = self.read_text(self.target_path(matrix_relpath))
+        matches = list(
+            re.finditer(
+                r"^### Assistant Surface: `([^`]+)`\s*$",
+                matrix_text,
+                flags=re.MULTILINE,
+            )
+        )
+        if not matches:
+            self.error(
+                "DIAGRAM_BRIDGE_CAPABILITY_MISSING",
+                "enabled diagrams module has no assistant capability entries",
+                matrix_relpath,
+            )
+        capability_relpath = ".ai/assistant/assistant-capabilities.json"
+        capabilities = self.load_json_object(
+            self.target_path(capability_relpath), "ASSISTANT_CAPABILITIES"
+        )
+        capability_surfaces = (
+            capabilities.get("surfaces") if isinstance(capabilities, dict) else None
+        )
+        if isinstance(capabilities, dict):
+            if capabilities.get("schema_version") != 1:
+                self.error(
+                    "DIAGRAM_CAPABILITY_SCHEMA",
+                    "schema_version should be 1",
+                    capability_relpath,
+                )
+            if capabilities.get("capability_kind") != "target-assistant-capabilities":
+                self.error(
+                    "DIAGRAM_CAPABILITY_KIND",
+                    "capability_kind should be target-assistant-capabilities",
+                    capability_relpath,
+                )
+        if not isinstance(capability_surfaces, dict) or not capability_surfaces:
+            self.error(
+                "DIAGRAM_CAPABILITY_SURFACES",
+                "enabled diagrams require assistant capability surface entries",
+                capability_relpath,
+            )
+            capability_surfaces = {}
+
+        required_capability_fields = {
+            "route",
+            "native_inline_syntaxes",
+            "artifact_presentation",
+            "readable_fallback",
+            "verified_at",
+            "client_version",
+            "evidence",
+        }
+        for index, match in enumerate(matches):
+            end = (
+                matches[index + 1].start()
+                if index + 1 < len(matches)
+                else len(matrix_text)
+            )
+            block = matrix_text[match.end():end]
+            surface_id = match.group(1)
+            expected_reference = (
+                "Diagram capability record: "
+                f"`.ai/assistant/assistant-capabilities.json#{surface_id}`"
+            )
+            if expected_reference not in block:
+                self.error(
+                    "DIAGRAM_BRIDGE_CAPABILITY_FIELD",
+                    f"assistant surface {surface_id} has no compact capability reference",
+                    matrix_relpath,
+                )
+            surface = capability_surfaces.get(surface_id)
+            diagram = surface.get("diagram_discussion") if isinstance(surface, dict) else None
+            if not isinstance(diagram, dict):
+                self.error(
+                    "DIAGRAM_CAPABILITY_MISSING",
+                    f"assistant surface {surface_id} has no diagram_discussion capability",
+                    capability_relpath,
+                )
+                continue
+            missing_fields = sorted(required_capability_fields - set(diagram))
+            if missing_fields:
+                self.error(
+                    "DIAGRAM_CAPABILITY_FIELDS",
+                    f"assistant surface {surface_id} is missing {missing_fields}",
+                    capability_relpath,
+                )
+            if diagram.get("route") not in {"supported", "unsupported", "unknown"}:
+                self.error(
+                    "DIAGRAM_CAPABILITY_ROUTE",
+                    f"assistant surface {surface_id} route must be supported, unsupported, or unknown",
+                    capability_relpath,
+                )
+            if diagram.get("artifact_presentation") not in {
+                "link",
+                "attachment",
+                "both",
+                "unsupported",
+                "unknown",
+            }:
+                self.error(
+                    "DIAGRAM_CAPABILITY_ARTIFACT",
+                    f"assistant surface {surface_id} artifact_presentation has an invalid enum",
+                    capability_relpath,
+                )
+            syntaxes = diagram.get("native_inline_syntaxes")
+            if not isinstance(syntaxes, list) or not syntaxes or not all(
+                isinstance(value, str) and value for value in syntaxes
+            ):
+                self.error(
+                    "DIAGRAM_CAPABILITY_SYNTAXES",
+                    f"assistant surface {surface_id} native_inline_syntaxes must be a string list",
+                    capability_relpath,
+                )
+            for field in ["readable_fallback", "verified_at", "client_version", "evidence"]:
+                value = diagram.get(field)
+                if not isinstance(value, str) or not value.strip():
+                    self.error(
+                        "DIAGRAM_CAPABILITY_EVIDENCE",
+                        f"assistant surface {surface_id} {field} must be recorded",
+                        capability_relpath,
+                    )
+            for field in ["readable_fallback", "evidence"]:
+                value = diagram.get(field)
+                if isinstance(value, str) and value.strip().casefold() in UNRESOLVED_WORDS:
+                    self.error(
+                        "DIAGRAM_CAPABILITY_EVIDENCE",
+                        f"assistant surface {surface_id} {field} is unresolved",
+                        capability_relpath,
+                    )
+            verified_at = diagram.get("verified_at")
+            if isinstance(verified_at, str) and not (
+                re.fullmatch(r"\d{4}-\d{2}-\d{2}(?:T[^\s]+)?", verified_at)
+                or verified_at.casefold().startswith("unknown:")
+            ):
+                self.error(
+                    "DIAGRAM_CAPABILITY_FRESHNESS",
+                    f"assistant surface {surface_id} verified_at must be an ISO date/time or unknown: reason",
+                    capability_relpath,
+                )
+            client_version = diagram.get("client_version")
+            if isinstance(client_version, str) and client_version.casefold() in {
+                "unknown",
+                "n/a",
+            }:
+                self.error(
+                    "DIAGRAM_CAPABILITY_CLIENT_VERSION",
+                    f"assistant surface {surface_id} client_version needs a value or unknown: reason",
+                    capability_relpath,
+                )
+
+        matrix_surface_ids = {match.group(1) for match in matches}
+        extra_capabilities = sorted(set(capability_surfaces) - matrix_surface_ids)
+        if extra_capabilities:
+            self.error(
+                "DIAGRAM_CAPABILITY_SURFACE_DRIFT",
+                f"capability projection has surfaces absent from bridge matrix: {extra_capabilities}",
+                capability_relpath,
+            )
+
+        flow_text = self.read_text(self.target_path(required_paths[0]))
+        presentation_text = self.read_text(self.target_path(required_paths[1]))
+        for relpath, text, snippets in [
+            (
+                required_paths[0],
+                flow_text,
+                [
+                    "`read-only`",
+                    "current assistant surface entry",
+                    "readable text fallback",
+                    "stable diagram ID",
+                    "Classify data sensitivity",
+                ],
+            ),
+            (
+                required_paths[1],
+                presentation_text,
+                [
+                    "Presentation mode:",
+                    "Readable text fallback:",
+                    "Diagram ID:",
+                    "Data classification:",
+                    "External renderer or network action:",
+                    "is not project source of truth",
+                ],
+            ),
+        ]:
+            for snippet in snippets:
+                if snippet not in text:
+                    self.error(
+                        "DIAGRAM_CONTRACT_INCOMPLETE",
+                        f"discussion contract is missing {snippet}",
+                        relpath,
+                    )
 
     def check_consistency_map(self) -> None:
         relpath = ".ai/project/consistency-map.json"

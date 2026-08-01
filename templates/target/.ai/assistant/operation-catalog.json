@@ -221,6 +221,20 @@
       "final_evidence": ["invariants", "repair set", "validation and residual risk"]
     },
     {
+      "id": "diagram-discussion",
+      "title": "Diagram discussion",
+      "summary": "Present, compare, or revise a diagram using compact current-surface evidence, stable lineage, security policy, and a readable fallback.",
+      "use_when": ["show a diagram", "visual explanation", "architecture sketch", "compare diagram alternatives"],
+      "context_profiles": ["docs-local", "code-local", "business-change", "architecture-change", "data-change", "security-sensitive"],
+      "required_module": "diagrams",
+      "flow": ".ai/assistant/flows/diagram-discussion.flow.md",
+      "minimum_inputs": ["diagram purpose or question", "scope", "persistence intent when known"],
+      "allowed_actions": ["read-only", "docs-only"],
+      "preview": "never",
+      "aliases": ["Alatyr diagram", "show as a diagram", "visualize architecture"],
+      "final_evidence": ["stable diagram ID revision and source status", "presentation mode fallback capability freshness and evidence", "classification redaction external action source revision validation and stale risk"]
+    },
+    {
       "id": "ai-infrastructure-inventory",
       "title": "AI infrastructure inventory",
       "summary": "Report existing target-owned AI infrastructure and unresolved inventory gaps.",

@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+- Added `ALATYR-DIAGRAM-001` and an optional `diagram-discussion` operation for
+  showing, comparing, and revising diagrams during assistant conversations.
+- Added target flow and presentation contracts that distinguish drafts,
+  accepted sources, and derived views; bind views to source revision evidence;
+  and prevent read-only discussion from changing repository files or accepted
+  project facts.
+- Added a compact per-assistant capability projection with constrained route
+  and artifact enums, readable fallback, client version, verification time,
+  and evidence for every supported surface.
+- Added stable diagram IDs and draft lineage, mandatory revision evidence for
+  accepted/derived views, security/privacy/redaction and external-renderer
+  policy, plus a cross-assistant operation conformance fixture.
+- Added a checked compact operation index derived exactly from the canonical
+  catalog, and a profile-independent diagram intent overlay so exact aliases
+  avoid full catalog, help, module-profile, and bridge-matrix loading.
 - Added optional `team-collaboration` under canonical rule
   `ALATYR-TEAM-001`, separating target-owned actors, authority, priority,
   review, backend, storage, and privacy facts from assistant-owned task,

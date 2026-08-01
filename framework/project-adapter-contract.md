@@ -64,7 +64,8 @@ Every project using this framework must define:
 - documentation-sync rules for project facts
 - diagram and generated-file policy when diagrams or generated docs exist,
   including source format, visual format, ownership, render/manual-review
-  process, and drift checks
+  process, drift checks, discussion presentation modes, per-assistant
+  capability, and readable fallback
 - supported assistant bridge files
 - project-specific skills or prompt wrappers when recurring work needs them
 - AI infrastructure inventory, source access, provenance, adaptation,
@@ -88,7 +89,8 @@ Every project using this framework must define:
 - task-specific maturity profile and blocking criteria for high-risk task
   areas
 - module-profile review for installation, update, and adapter maturity
-- bridge capability matrix when multiple assistant surfaces are supported
+- bridge capability matrix and compact runtime capability projection when
+  multiple assistant surfaces are supported
 - migration-note process when framework upgrades are expected
 - migration-diff process when comparing framework baselines
 - effectiveness measurement process when the target wants to evaluate AI work
@@ -110,7 +112,7 @@ Every project using this framework must define:
   privacy, retention, conflict, handoff, review, and merge-readiness evidence
   when the optional team module is enabled
 - allowed-action meanings for installed-operation requests
-- operation catalog, single entry, automatic routing, read-only health,
+- operation catalog and checked compact index, single entry, automatic routing, read-only health,
   risk-gated preview, help, and post-install/update chat-message templates when
   the repository wants discoverable assistant requests
 - final evidence format for that project

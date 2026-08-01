@@ -39,7 +39,8 @@ sync, logical integrity review, and final evidence.
 - prompt-injection handling for imported AI infrastructure
 - approval-record guidance for protected changes
 - machine-readable changed-path approval scope enforcement
-- diagram reasoning and source/visual synchronization guidance
+- diagram reasoning, source/visual synchronization, and capability-checked
+  discussion presentation guidance
 - AI infrastructure inventory plus skill, prompt, wrapper, bridge, and
   third-party assistant infrastructure adaptation guidance
 - compact AI infrastructure routing for selecting only relevant skills,
@@ -49,15 +50,15 @@ sync, logical integrity review, and final evidence.
 - compact target-owned development-pattern evidence with lazy capture,
   retention/privacy boundaries, and no target-to-framework policy promotion
 - installed-adapter operation and recheck guidance
-- one conversational operation entry, machine-readable operation catalog,
-  automatic routing, read-only adapter health, and risk-gated pre-change
-  preview
+- one conversational operation entry, canonical operation catalog, checked
+  compact alias index, automatic routing, read-only adapter health, and
+  risk-gated pre-change preview
 - reusable assistant workflow categories
 - reusable approval, documentation-sync, logical integrity, and evidence
   concepts
 - stack-aware testing analysis guidance
 - supported-assistant bridge pattern
-- bridge capability matrix pattern
+- bridge capability matrix plus compact per-surface capability projection
 - migration diff and effectiveness measurement patterns
 - task-specific adapter maturity and framework lifecycle guidance
 
@@ -120,7 +121,7 @@ Those belong to a project contour or repository adapter.
 - `.ai/framework/prompt-injection.md`: policy for treating imported AI
   infrastructure instructions as untrusted data until normalized.
 - `.ai/framework/diagram-guidance.md`: portable diagram reasoning and
-  source/visual split rules.
+  source/visual split, discussion presentation, fallback, and stale-view rules.
 - `.ai/framework/skill-adaptation.md`: portable guidance for adapting skills,
   prompts, wrappers, and third-party assistant infrastructure.
 - `.ai/framework/ai-infrastructure-routing.md`: portable route and item

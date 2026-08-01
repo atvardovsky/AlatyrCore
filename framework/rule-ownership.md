@@ -75,6 +75,13 @@ Rule IDs: `ALATYR-CHANGE-001`
 Derived surfaces: product-change operation, blueprint-driven target flow,
 large-task orchestration, documentation and diagram sync.
 
+Category: `DIAGRAM`
+Owner: `.ai/framework/diagram-guidance.md`
+Rule IDs: `ALATYR-DIAGRAM-001`
+Derived surfaces: target diagram discussion flow, presentation template,
+operation catalog/index, intent routing, bridge matrix, compact capabilities,
+operation fixture, installation planning, adapter recheck, and validation.
+
 Category: `ADAPTER`
 Owner: `.ai/framework/project-adapter-contract.md`
 Rule IDs: `ALATYR-ADAPTER-001`
@@ -91,9 +98,9 @@ routing, maturity review.
 Category: `OPERATION`
 Owner: `.ai/framework/operation-help.md`
 Rule IDs: `ALATYR-OPERATION-001`
-Derived surfaces: target operation catalog, automatic routing flow, compact
-help, adapter health flow, pre-change preview, manifest operation paths,
-assistant bridges.
+Derived surfaces: target operation catalog, checked compact operation index,
+automatic routing flow, compact help, adapter health flow, pre-change preview,
+manifest operation paths, assistant bridges.
 
 Category: `TEAM`
 Owner: `.ai/framework/team-collaboration.md`
@@ -106,7 +113,8 @@ Category: `BRIDGE`
 Owner: `.ai/framework/bridge-capability-matrix.md`
 Rule IDs: `ALATYR-BRIDGE-001`
 Derived surfaces: assistant bridge templates, bridge renderer, bridge
-capability target template, cross-assistant AI item routing.
+capability target template, compact assistant-capability projection,
+cross-assistant AI item routing.
 
 Category: `LIFECYCLE`
 Owner: `.ai/framework/lifecycle.md`

@@ -41,8 +41,10 @@ as:
   selected
 - `.ai/assistant/context-profiles.md`
 - `.ai/assistant/bridge-capability-matrix.md`
+- `.ai/assistant/assistant-capabilities.json`
 - `.ai/assistant/help.md`
 - `.ai/assistant/help-reference.md`
+- `.ai/assistant/operation-index.json`
 - `.ai/assistant/operation-catalog.json`
 - `.ai/assistant/team/context-overlay.json` when team collaboration is selected
 - `.ai/assistant/flows`
@@ -84,6 +86,8 @@ automatically without requiring an operation ID. When a request is unclear or
 asks for help, assistant-specific surfaces should route through
 `.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and
 `.ai/assistant/flows/operation-routing.flow.md` instead of inventing a command.
+Exact operation IDs and aliases should route through the checked compact
+`.ai/assistant/operation-index.json` instead of loading the full catalog.
 The short help file may point to `.ai/assistant/help-reference.md` for the
 full operation menu.
 
@@ -91,6 +95,14 @@ When `team-collaboration` is enabled, every supported surface uses the same
 catalog aliases for team status, tasks, conflicts, handoffs, decisions,
 reviews, and merge checks. The bridge loads the lazy team overlay only for
 those requests; it does not copy actor, priority, task, or review policy.
+
+When `diagrams` is enabled, every supported surface routes `Alatyr diagram`
+and equivalent clear requests to the canonical diagram discussion flow. The
+bridge matrix points to `.ai/assistant/assistant-capabilities.json`, whose
+selected surface entry records native inline syntaxes, rendered-artifact link
+or attachment support, readable fallback, client version, verification time,
+and evidence. An assistant must not infer rendering support from another
+client, use stale evidence silently, or claim that a source block was rendered.
 
 Targets may define request aliases such as `alatyr-ai-inventory`,
 `alatyr-suggest-ai <scope>`, `alatyr-improve-ai <item-id>`,
@@ -116,6 +128,10 @@ that the target bridge capability matrix template covers every supported
 assistant surface from `conformance/runs/assistant-surfaces.json` with bridge
 paths, loading behavior, permission model, help alias routing, limitations,
 and conformance evidence fields.
+
+Maintainers can run `python3 tools/check_discussion_diagrams.py` to validate
+the source rule, target operation, flow, presentation template, manifest,
+module profile, help, routing, and all supported bridge capability entries.
 
 Maintainers can run
 `python3 tools/check_assistant_surface_conformance.py` to verify that every

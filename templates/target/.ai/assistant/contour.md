@@ -14,6 +14,8 @@ Replace placeholders with target facts before accepting installation.
 - adapter manifest facts under `.ai/alatyr.yaml`
 - task-specific maturity under `.ai/assistant/maturity-profile.md`
 - bridge capability matrix under `.ai/assistant/bridge-capability-matrix.md`
+- compact assistant capability projection under
+  `.ai/assistant/assistant-capabilities.json`
 - migration notes under `.ai/assistant/templates/migration-note.md`
 - human and machine-readable approval records plus target-local strict diff
   scope checks under `.ai/assistant/approvals`
@@ -29,9 +31,12 @@ Replace placeholders with target facts before accepting installation.
 - blueprint-driven change or equivalent target product-change workflow
 - installed-operation request, blueprint-creation, adapter-recheck, and
   framework-update review flows
-- operation catalog, single `Alatyr` entry, automatic routing, read-only
-  health, risk-gated preview, help, and post-install/update assistant chat
-  message templates
+- operation catalog, checked compact operation index, single `Alatyr` entry,
+  automatic routing, read-only health, risk-gated preview, help, and
+  post-install/update assistant chat message templates
+- diagram discussion routing and presentation mechanics when the diagrams
+  module is enabled; project diagram facts and accepted source ownership remain
+  in the project contour
 - team operation mechanics, work registry projection, claims, conflict checks,
   checkpoints, handoffs, decision capture, team review, and revision-bound
   merge-readiness evidence when the optional module is enabled; project-owned

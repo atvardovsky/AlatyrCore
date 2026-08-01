@@ -37,6 +37,7 @@ REQUIRED_FIELDS = [
     "Routes adapter health:",
     "Routes pre-change preview:",
     "Routes enabled team operations:",
+    "Diagram capability record:",
     "Routes `alatyr-ai-inventory`:",
     "Routes `alatyr-suggest-ai`:",
     "Routes `alatyr-improve-ai`:",
@@ -156,6 +157,15 @@ def main() -> int:
             line = field_line(block, field)
             if "{" not in line:
                 failures.append(f"{surface_id} {field} should remain placeholder-based")
+
+        capability_line = field_line(block, "Diagram capability record:")
+        expected_capability = (
+            ".ai/assistant/assistant-capabilities.json#" + surface_id
+        )
+        if capability_line != f"Diagram capability record: `{expected_capability}`":
+            failures.append(
+                f"{surface_id} diagram capability record must be {expected_capability}"
+            )
 
     duplicate_surface_ids = [
         surface_id

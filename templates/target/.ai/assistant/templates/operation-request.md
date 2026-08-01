@@ -146,8 +146,9 @@ Choose the matching flow:
 - If operation type is unclear, show `.ai/assistant/help.md` choices before
   editing files.
 - Use `.ai/assistant/operation-catalog.json` as the canonical operation list.
-  Route a clear request automatically; do not require the user to provide an
-  operation ID.
+  Resolve exact IDs/aliases through its checked
+  `.ai/assistant/operation-index.json` projection. Route a clear request
+  automatically; do not require an operation ID.
 - Apply `.ai/assistant/templates/pre-change-preview.md` when changed-fact risk,
   protected scope, boundary crossing, external effects, or uncertain allowed
   actions trigger it. A preview is not approval.
@@ -188,7 +189,8 @@ Choose the matching flow:
 - Use `.ai/assistant/maturity-profile.md` for broad, risky, or unclear task
   readiness.
 - Use `.ai/assistant/bridge-capability-matrix.md` during bridge or
-  supported-assistant reviews.
+  supported-assistant reviews and the selected
+  `.ai/assistant/assistant-capabilities.json` entry during diagram discussion.
 - Do not invent target facts, commands, policies, diagrams, or lifecycle notes.
 - Require approval for protected changes.
 - Run target validation only when it exists.

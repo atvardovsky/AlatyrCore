@@ -308,7 +308,9 @@ def main() -> int:
         "templates/target/.ai/assistant/context-profiles.md",
         "templates/target/.ai/assistant/help.md",
         "templates/target/.ai/assistant/help-reference.md",
+        "templates/target/.ai/assistant/operation-index.json",
         "templates/target/.ai/assistant/operation-catalog.json",
+        "templates/target/.ai/assistant/assistant-capabilities.json",
         "templates/target/.ai/assistant/module-profile.md",
         "templates/target/.ai/assistant/maturity-profile.md",
         "templates/target/.ai/assistant/flows/ai-infrastructure-inventory.flow.md",
@@ -317,6 +319,7 @@ def main() -> int:
         "templates/target/.ai/assistant/flows/adapter-recheck.flow.md",
         "templates/target/.ai/assistant/flows/blueprint-driven-change.flow.md",
         "templates/target/.ai/assistant/flows/documentation-sync.flow.md",
+        "templates/target/.ai/assistant/flows/diagram-discussion.flow.md",
         "templates/target/.ai/assistant/flows/logical-integrity-review.flow.md",
         "templates/target/.ai/assistant/flows/operation-routing.flow.md",
         "templates/target/.ai/assistant/flows/adapter-health.flow.md",
@@ -328,6 +331,7 @@ def main() -> int:
         "templates/target/.ai/assistant/policies/prompt-injection.md",
         "templates/target/.ai/assistant/skills/example/SKILL.md",
         "templates/target/.ai/assistant/templates/adapter-output-contracts.md",
+        "templates/target/.ai/assistant/templates/diagram-presentation.md",
         "templates/target/.ai/assistant/templates/ai-infrastructure-inventory.md",
         "templates/target/.ai/assistant/templates/ai-infrastructure-recommendation.md",
         "templates/target/.ai/assistant/templates/operation-request.md",
@@ -356,6 +360,7 @@ def main() -> int:
         "templates/target/.ai/assistant/help.md",
         "templates/target/.ai/assistant/help-reference.md",
         "templates/target/.ai/assistant/operation-catalog.json",
+        "templates/target/.ai/assistant/assistant-capabilities.json",
         "templates/target/.ai/assistant/module-profile.md",
         "templates/target/.ai/assistant/maturity-profile.md",
         "templates/target/.ai/assistant/gates/checklist.md",
@@ -365,6 +370,7 @@ def main() -> int:
         "templates/target/.ai/assistant/flows/adapter-recheck.flow.md",
         "templates/target/.ai/assistant/flows/blueprint-driven-change.flow.md",
         "templates/target/.ai/assistant/flows/documentation-sync.flow.md",
+        "templates/target/.ai/assistant/flows/diagram-discussion.flow.md",
         "templates/target/.ai/assistant/flows/logical-integrity-review.flow.md",
         "templates/target/.ai/assistant/flows/operation-routing.flow.md",
         "templates/target/.ai/assistant/flows/adapter-health.flow.md",
@@ -376,6 +382,7 @@ def main() -> int:
         "templates/target/.ai/assistant/policies/prompt-injection.md",
         "templates/target/.ai/assistant/skills/example/SKILL.md",
         "templates/target/.ai/assistant/templates/adapter-output-contracts.md",
+        "templates/target/.ai/assistant/templates/diagram-presentation.md",
         "templates/target/.ai/assistant/templates/ai-infrastructure-inventory.md",
         "templates/target/.ai/assistant/templates/ai-infrastructure-recommendation.md",
         "templates/target/.ai/assistant/templates/installation-note.md",
@@ -959,6 +966,7 @@ def main() -> int:
             "check_all.py",
             "check_approval_template.py",
             "check_bridge_capability_matrix.py",
+            "check_discussion_diagrams.py",
             "check_framework_metadata.py",
             "check_ai_infrastructure_inventory.py",
             "check_ai_infrastructure_recommendations.py",
@@ -1094,6 +1102,35 @@ def main() -> int:
     ]:
         if "check_bridge_capability_matrix.py" not in read_text(relpath):
             failures.append(f"{relpath} missing check_bridge_capability_matrix.py")
+
+    discussion_diagram_tool = ROOT / "tools" / "check_discussion_diagrams.py"
+    if not discussion_diagram_tool.is_file():
+        failures.append("missing tools/check_discussion_diagrams.py")
+    else:
+        discussion_diagram_text = read_text("tools/check_discussion_diagrams.py")
+        for required_discussion_diagram_text in [
+            "discussion-diagram source and target template contracts",
+            "diagram-discussion",
+            "assistant-capabilities.json",
+            "diagram-discussion.json",
+            "assistant-surfaces.json",
+            "OK: checked",
+        ]:
+            if required_discussion_diagram_text not in discussion_diagram_text:
+                failures.append(
+                    "tools/check_discussion_diagrams.py missing "
+                    f"{required_discussion_diagram_text}"
+                )
+    for relpath in [
+        "AGENTS.md",
+        "README.md",
+        "tools/README.md",
+        "docs/framework-maintenance.md",
+        "docs/repository-layout.md",
+        "docs/assistant-compatibility.md",
+    ]:
+        if "check_discussion_diagrams.py" not in read_text(relpath):
+            failures.append(f"{relpath} missing check_discussion_diagrams.py")
 
     context_router_tool = ROOT / "tools" / "check_context_router.py"
     if not context_router_tool.is_file():

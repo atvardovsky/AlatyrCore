@@ -29,6 +29,8 @@ An installed adapter should support these operation categories:
 - optional team status, task start/claim/checkpoint/release, concurrent-work
   conflict review, handoff, decision, team review, and merge readiness
 - logical integrity review
+- discussion diagram creation, comparison, or revision with a portable visible
+  fallback
 - AI infrastructure inventory for existing skills, prompts, wrappers, bridge
   files, rules, MCP/tool configs, gates, checkers, and prompts
 - AI infrastructure recommendation for adding new items or improving,
@@ -65,6 +67,8 @@ A post-install request should state:
 - team task, actor, coordination backend, and current evidence revision when
   team collaboration applies
 - pre-change preview state when risk-gated preview applies
+- diagram purpose, target assistant surface, persistence intent, and preferred
+  presentation mode when diagram discussion applies
 - expected final evidence
 - output contract when the target adapter requires a durable installation,
   framework-update, or adapter-recheck evidence shape
@@ -122,6 +126,12 @@ If the request uses `Alatyr team status`, `Alatyr start`, `Alatyr claim`,
 route through the optional target team module. These remain assistant request
 aliases, not shell commands.
 
+If the request uses `Alatyr diagram`, `show as a diagram`, `visualize
+architecture`, or an adapted target-language alias, route to
+`diagram-discussion` when the diagrams module is available. Keep exploratory
+discussion read-only unless the user asks to persist the source or visual
+artifact and the allowed actions permit it.
+
 ## Required Flow
 
 For installed operations:
@@ -137,9 +147,10 @@ For installed operations:
    flow, gate, policy, and validation context. Load human profile rationale
    only for ambiguity or drift and record budget exceptions in the context
    receipt.
-4. Use bounded profile operation candidates for routine routing. Load the full
-   target operation catalog only for explicit Alatyr routing, health,
-   ambiguity, operation handoff, or adapter repair.
+4. Resolve exact IDs and aliases through the checked compact operation index.
+   Use bounded profile candidates and intent overlays for routine routing.
+   Load the full catalog only for the bare `Alatyr` entry, ambiguity, or
+   operation/adapter repair.
 5. Normalize an explicit operation or alias, or match request intent against
    catalog signals and enabled module state. Route one clear match
    automatically; ask one bounded question when multiple plausible operations
@@ -176,15 +187,20 @@ For installed operations:
 15. Use AI infrastructure inventory before adding, importing, replacing, or
    removing assistant infrastructure.
 16. Use adapter maturity review when the request is broad, post-install, or
-   post-upgrade.
-17. Record approval evidence when protected-change scope requires it. When
+    post-upgrade.
+17. Use diagram discussion when the user asks to see or iteratively revise a
+    visual model. Select presentation mode from the target diagram policy and
+    current compact assistant-capability entry, keep drafts non-canonical,
+    preserve stable ID/revision lineage, classify sensitive content and
+    external rendering, and retain a readable text fallback.
+18. Record approval evidence when protected-change scope requires it. When
     scoped approval is used, enforce the complete changed path set against
     explicitly selected machine-readable records bound to the approved diff
     base.
-18. Use the target adapter output contract when the operation follows
-   installation, framework update, or adapter recheck.
-19. Run target validation that exists, or record unresolved checks.
-20. Report changed facts, re-derived invariants, review-item reconciliation,
+19. Use the target adapter output contract when the operation follows
+    installation, framework update, or adapter recheck.
+20. Run target validation that exists, or record unresolved checks.
+21. Report changed facts, re-derived invariants, review-item reconciliation,
    files inspected, files changed, approval-scope enforcement, validation,
    skipped checks, and residual risk.
 
@@ -204,6 +220,24 @@ repair blueprint-equivalent docs only from target evidence:
 Missing facts must stay marked as missing. The assistant must not invent
 business rules, architecture, security policy, validation commands, diagrams,
 or lifecycle notes.
+
+## Diagram Discussion
+
+Diagram discussion is an optional target operation. It may explain current
+facts, compare proposed alternatives, or revise a draft interactively. It must
+use the target's diagram source and presentation policy and the current
+assistant surface's recorded capabilities.
+
+Read-only diagram discussion returns the presentation in chat without creating
+files. A persisted source or generated visual requires `docs-only` or broader
+allowed actions. A proposal that changes accepted project facts must hand off
+to the applicable decision or product-change operation before those facts are
+treated as accepted.
+
+The result reports draft/source-of-truth status, source revision, presentation
+mode, source or artifact path when present, assumptions, validation, and a text
+fallback. Native inline rendering and file attachment remain client
+capabilities, not framework guarantees.
 
 ## Large Or Resumable Operations
 
@@ -269,6 +303,9 @@ After installation or framework upgrade, an assistant should recheck:
 - prompt-injection policy and approval-record template
 - security, live-service, destructive-operation, and dependency boundaries
 - diagram and generated-artifact policy
+- diagram discussion flow, presentation template, per-assistant presentation
+  capability, fallback, and stale-view evidence when the diagrams module is
+  enabled
 - validation commands or manual checks
 - adapter maturity gaps, local deviations, and lifecycle notes
 
@@ -300,3 +337,5 @@ Reject or revise installed-operation work that:
   adapter
 - claims validation without target commands or manual-review evidence
 - hides missing project facts, approvals, or residual risk
+- claims a visible diagram without providing a supported presentation mode or
+  readable fallback
