@@ -42,6 +42,7 @@ Replace this section with the actual target project map.
 - module profile for required core and optional Alatyr capabilities
 - task-specific maturity profile
 - bridge matrix and indexed per-assistant capability evidence
+- portable ASCII diagram layout and readability rules
 - flows
 - gates
 - prompts

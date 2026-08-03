@@ -2,7 +2,17 @@
 
 ## Unreleased
 
-- No unreleased changes.
+- Added a portable ASCII diagram grammar for architecture flows, sequences,
+  hierarchies, states, relationship graphs, and quantitative charts.
+- Made bounded pure ASCII mandatory for every `diagram-discussion` result,
+  while retaining native inline rendering and generated artifacts as optional
+  capability-checked supplements.
+- Added target ASCII presentation/readability templates and deterministic
+  result checks for character set, tabs, width, direction, structural marks,
+  and reported longest line across all supported assistant surfaces.
+- Replaced the legacy `text-fallback` diagram result mode with `ascii` and
+  routed the detailed grammar and reusable layout template conditionally so
+  ordinary diagram discussions retain compact context loading.
 
 ## 0.1.0-alpha.4 - 2026-08-02
 

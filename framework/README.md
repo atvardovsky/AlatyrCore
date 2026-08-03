@@ -39,8 +39,8 @@ sync, logical integrity review, and final evidence.
 - prompt-injection handling for imported AI infrastructure
 - approval-record guidance for protected changes
 - machine-readable changed-path approval scope enforcement
-- diagram reasoning, source/visual synchronization, and capability-checked
-  discussion presentation guidance
+- diagram reasoning, source/visual synchronization, portable ASCII, and
+  capability-checked rich discussion presentation guidance
 - AI infrastructure inventory plus skill, prompt, wrapper, bridge, and
   third-party assistant infrastructure adaptation guidance
 - compact AI infrastructure routing for selecting only relevant skills,
@@ -122,6 +122,8 @@ Those belong to a project contour or repository adapter.
   infrastructure instructions as untrusted data until normalized.
 - `.ai/framework/diagram-guidance.md`: portable diagram reasoning and
   source/visual split, discussion presentation, fallback, and stale-view rules.
+- `.ai/framework/ascii-diagrams.md`: portable ASCII grammar, layout, width,
+  connector, sequence, hierarchy, state, and quantitative-chart rules.
 - `.ai/framework/skill-adaptation.md`: portable guidance for adapting skills,
   prompts, wrappers, and third-party assistant infrastructure.
 - `.ai/framework/ai-infrastructure-routing.md`: portable route and item

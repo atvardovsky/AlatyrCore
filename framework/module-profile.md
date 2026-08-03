@@ -52,7 +52,8 @@ maintain them:
 - `diagrams`: diagram source, visual artifact, render or manual-review, drift,
   discussion presentation, generated capability index, per-assistant
   capability/freshness records, captured result conformance, security/privacy,
-  stable revision lineage, and readable fallback policy.
+  stable revision lineage, portable ASCII layout/width, and optional rich
+  presentation policy.
 - `ai-infrastructure`: inventory, source access, prompt-injection handling,
   evidence-based recommendations, routed skill/prompt/gate/checker/tool/MCP/
   bridge selection, target development-pattern evidence and lazy capture,
@@ -136,7 +137,7 @@ Reject module-profile work that:
   decision-owner evidence, storage/privacy policy, or conflict review
 - enables a consistency map without target-owned fact IDs, relationship
   coverage, or staleness handling
-- enables diagrams without a discussion presentation fallback, source/visual
+- enables diagrams without portable ASCII presentation, source/visual
   ownership, compact assistant capability evidence, security/privacy policy,
   revision lineage, and render or manual-review evidence
 - copies source-repository helper behavior into target requirements

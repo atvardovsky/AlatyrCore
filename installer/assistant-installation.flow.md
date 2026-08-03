@@ -176,8 +176,8 @@ Classify every proposed target file:
 14. Add bridge files only for assistants the target uses.
 15. Add installed-operation, operation-help, automatic operation-routing,
     read-only adapter-health, risk-gated pre-change preview,
-    diagram-discussion flow and presentation template when the diagrams module
-    is enabled,
+    diagram-discussion flow, ASCII layout template, and presentation template
+    when the diagrams module is enabled,
     AI-infrastructure-inventory, AI-infrastructure-recommendation, adapter output contract
     `.ai/assistant/templates/adapter-output-contracts.md`, source-access
     policy, prompt-injection policy, human and machine-readable approval-record
@@ -278,7 +278,7 @@ Report:
 - operation catalog and checked compact index, installed-operation,
   operation-help, automatic routing,
   read-only health, risk-gated preview,
-  diagram-discussion flow and presentation template when enabled,
+  diagram-discussion flow, ASCII template, and presentation template when enabled,
   AI-infrastructure-inventory, AI-infrastructure-recommendation, adapter output
   contract, context router,
   context profiles, module profile, source-of-truth registry, task-specific
@@ -319,6 +319,6 @@ Report:
 - residual risk
 - post-install or post-update assistant chat message sent or skipped with
   reason
-- diagram discussion module state, per-assistant presentation capability,
-  freshness or expiry, readable fallback, captured-result evidence, and
+- diagram discussion module state, portable ASCII layout/width, per-assistant
+  rich-presentation capability, freshness or expiry, captured-result evidence, and
   source-revision policy when enabled

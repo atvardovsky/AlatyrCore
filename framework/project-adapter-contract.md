@@ -65,8 +65,8 @@ Every project using this framework must define:
 - documentation-sync rules for project facts
 - diagram and generated-file policy when diagrams or generated docs exist,
   including source format, visual format, ownership, render/manual-review
-  process, drift checks, discussion presentation modes, per-assistant
-  capability, and readable fallback
+  process, drift checks, ASCII layout and width, discussion presentation modes,
+  and per-assistant rich-presentation capability
 - supported assistant bridge files
 - project-specific skills or prompt wrappers when recurring work needs them
 - AI infrastructure inventory, source access, provenance, adaptation,

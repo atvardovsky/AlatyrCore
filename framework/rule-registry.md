@@ -120,8 +120,9 @@ Applies to: business, architecture, data, runtime, and public-contract changes.
 
 Rule ID: `ALATYR-DIAGRAM-001`
 Canonical source: `.ai/framework/diagram-guidance.md`
-Commitment: present discussion diagrams through a capability-checked inline,
-artifact, or readable text fallback; preserve stable draft lineage and
+Commitment: present every discussion diagram through a bounded portable ASCII
+baseline, with capability-checked inline or artifact views as optional
+supplements; preserve stable draft lineage and
 accepted-source revision evidence; enforce target security, privacy, external
 rendering, artifact policy, validation, and drift rules; and never claim
 unsupported client rendering or project truth.

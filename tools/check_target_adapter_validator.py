@@ -182,8 +182,9 @@ def main() -> int:
         )
         diagram_flow.parent.mkdir(parents=True, exist_ok=True)
         diagram_flow.write_text(
-            "`read-only` current assistant surface entry readable text fallback "
-            "stable diagram ID Classify data sensitivity\n",
+            "`read-only` current assistant surface record portable ASCII view "
+            "hard maximum of 100 columns stable diagram ID "
+            "Classify data sensitivity\n",
             encoding="utf-8",
         )
         diagram_presentation = (
@@ -191,9 +192,19 @@ def main() -> int:
         )
         diagram_presentation.parent.mkdir(parents=True, exist_ok=True)
         diagram_presentation.write_text(
-            "Presentation mode:\nReadable text fallback:\nDiagram ID:\n"
+            "Presentation mode:\nPortable ASCII presentation:\n"
+            "ASCII readability check:\nDiagram ID:\n"
             "Data classification:\nExternal renderer or network action:\n"
             "is not project source of truth\n",
+            encoding="utf-8",
+        )
+        ascii_presentation = (
+            target / ".ai" / "assistant" / "templates" / "ascii-diagram.md"
+        )
+        ascii_presentation.write_text(
+            "Hard maximum width: `100`\n"
+            "printable 7-bit ASCII plus line feeds\n"
+            "Longest line at most 100 columns\n",
             encoding="utf-8",
         )
         matrix_path = target / ".ai" / "assistant" / "bridge-capability-matrix.md"
@@ -242,6 +253,7 @@ def main() -> int:
             "DIAGRAM_CAPABILITY_ARTIFACT",
             "DIAGRAM_CAPABILITY_FRESHNESS",
             "DIAGRAM_CAPABILITY_CLIENT_VERSION",
+            "DIAGRAM_CAPABILITY_ASCII_FALLBACK",
         ]:
             if required not in capability_codes:
                 failures.append(

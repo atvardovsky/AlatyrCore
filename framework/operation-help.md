@@ -44,8 +44,8 @@ Operation help exists to:
 - show a bounded pre-change preview when risk or scope warrants it
 - route optional team status, task, conflict, handoff, decision, review, and
   merge-check requests without loading team state for unrelated work
-- route diagram discussion to a capability-checked visible presentation without
-  assuming that every assistant client renders the same syntax
+- route diagram discussion to a portable ASCII baseline, with
+  capability-checked richer presentation when available
 
 ## Canonical Operation Catalog
 
@@ -205,7 +205,7 @@ Typical operation categories include:
   conflicts, handoffs, decisions, review, and revision-bound merge readiness
 - logical integrity review
 - discussion diagram creation, comparison, or revision with inline, artifact,
-  or readable text fallback
+  plus a portable ASCII view
 - AI infrastructure inventory
 - AI infrastructure recommendation for new items or improvements to existing
   items
@@ -232,7 +232,7 @@ a diagram`, `visualize architecture`, or target-language equivalents. These
 route to `diagram-discussion`, not directly to documentation sync. The
 assistant must use the current surface's compact recorded presentation
 capability and must not claim native rendering when it used an artifact link
-or text fallback. Exact aliases should resolve through the checked compact
+or ASCII only. Exact aliases should resolve through the checked compact
 operation index rather than loading the full catalog.
 
 For AI infrastructure, aliases may include `alatyr-ai-inventory`, which routes
@@ -296,7 +296,7 @@ When routing a request:
     selected task and relevant active overlaps, not all team history.
 15. For diagram discussion, load the diagram policy and current compact
     assistant-capability entry, then choose native inline, rendered artifact,
-    or readable text fallback without loading the full bridge matrix.
+    plus a portable ASCII view without loading the full bridge matrix.
 
 ## Evidence Format
 
@@ -310,7 +310,7 @@ Reason: <why this operation was selected>
 Routing mode: <explicit, automatic, or ambiguity resolution>
 Context profile: <profile plus area and scale overlays>
 Pre-change preview: <shown, refreshed, or skipped with reason>
-Presentation mode: <native-inline, rendered-artifact, text-fallback, or not applicable>
+Presentation mode: <ascii, native-inline, rendered-artifact, or not applicable>
 Missing input: <facts needed before work can proceed>
 Next safe action: <help shown, question asked, or flow started>
 ```

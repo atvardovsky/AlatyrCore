@@ -47,7 +47,7 @@
       "category": "DIAGRAM",
       "owner": "framework/diagram-guidance.md",
       "rule_ids": ["ALATYR-DIAGRAM-001"],
-      "derived_surfaces": ["target diagram discussion flow", "diagram presentation template", "operation catalog and compact index", "context intent routing", "bridge capability matrix", "compact assistant capabilities", "operation conformance fixture", "installation planning", "adapter recheck", "diagram validation evidence"]
+      "derived_surfaces": ["portable ASCII diagram grammar", "target diagram discussion flow", "ASCII and diagram presentation templates", "operation catalog and compact index", "context intent routing", "bridge capability matrix", "compact assistant capabilities", "operation conformance fixture", "installation planning", "adapter recheck", "diagram validation evidence"]
     },
     {
       "category": "ADAPTER",
@@ -161,7 +161,7 @@
       "id": "ALATYR-DIAGRAM-001",
       "category": "DIAGRAM",
       "canonical_source": "framework/diagram-guidance.md",
-      "summary": "Present discussion diagrams through a capability-checked inline, artifact, or readable text fallback; preserve stable draft lineage and accepted-source revision evidence; enforce target security, privacy, external rendering, artifact policy, validation, and drift rules; and never claim unsupported client rendering or project truth.",
+      "summary": "Present every discussion diagram through a bounded portable ASCII baseline, with capability-checked inline or artifact views as optional supplements; preserve stable draft lineage and accepted-source revision evidence; enforce target security, privacy, external rendering, artifact policy, validation, and drift rules; and never claim unsupported client rendering or project truth.",
       "applies_to": ["diagram discussion", "diagram synchronization", "diagram-relevant product or architecture work"],
       "enforcement": "required when module enabled"
     },

@@ -61,8 +61,8 @@ List what must not be changed.
   adapter-health, pre-change preview, blueprint-creation, adapter-recheck,
   framework-update review, or chat-message process:
 - Diagram discussion operation, presentation template, source status, stable
-  identity/lineage, sensitivity/redaction, external-renderer, and artifact
-  retention/sharing policy:
+  identity/lineage, portable ASCII layout/width, sensitivity/redaction,
+  external-renderer, and artifact retention/sharing policy:
 - Adapter output contracts:
 - Risk and approval model:
 - Security, privacy, live-service, destructive-operation, dependency, and
@@ -155,9 +155,13 @@ and blocking criteria.
 Include `.ai/assistant/bridge-capability-matrix.md` when more than one
 assistant surface is supported or bridge behavior may differ.
 Include `.ai/assistant/assistant-capabilities.json` as the compact runtime
-index. Store diagram enums, readable fallback, client version, verification,
+index. Store rich diagram enums, ASCII baseline, client version, verification,
 expiry or review triggers, and evidence in one referenced record per installed
 assistant surface. Generate or check the index from those records.
+
+Include `.ai/assistant/templates/ascii-diagram.md` for the required portable
+view. Record preferred and hard width limits, connector meanings, chart scale
+rules, and readability review independently of client rendering capability.
 
 Include `.ai/assistant/policies/ai-infrastructure-source-access.md` when the
 target wants AI infrastructure inventory, adaptation, package/plugin review, or
@@ -286,7 +290,7 @@ decisions, and external references before schema changes.
 - Discussion presentation modes:
 - Per-assistant native inline syntaxes:
 - Rendered artifact link or attachment capability:
-- Required readable fallback:
+- Required ASCII baseline and width policy:
 - Source revision, content hash, or stale-view evidence:
 - Adapter maturity level:
 - Task-specific maturity:

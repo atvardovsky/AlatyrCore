@@ -16,7 +16,9 @@ TEMPLATE = ROOT / "conformance/operations/diagram-discussion-result-template.jso
 SURFACES = ROOT / "conformance/runs/assistant-surfaces.json"
 DEFAULT_RESULTS = ROOT / "conformance/runs/diagram-results"
 PLACEHOLDER = re.compile(r"\{[A-Z0-9_]+\}")
-PRESENTATION_MODES = {"native-inline", "rendered-artifact", "text-fallback"}
+PRESENTATION_MODES = {"ascii", "native-inline", "rendered-artifact"}
+READING_DIRECTIONS = {"left-to-right", "top-to-bottom"}
+ASCII_STRUCTURE = ("-->", "==>", "<->", "..>", "+-", "|", "#")
 
 
 def load_object(path: Path) -> dict[str, Any]:
@@ -64,10 +66,52 @@ def measured_value(value: Any, field: str, path: Path) -> None:
     raise ValueError(f"{path} {field} must be non-negative or unknown: reason")
 
 
+def validate_ascii_diagram(data: dict[str, Any], path: Path, *, template: bool) -> None:
+    diagram = require_string(data, "ascii_diagram", path)
+    readability = data.get("ascii_readability")
+    if not isinstance(readability, dict):
+        raise ValueError(f"{path} ascii_readability must be an object")
+    if readability.get("character_set") != "ascii":
+        raise ValueError(f"{path} ASCII character_set must be ascii")
+    if readability.get("preferred_max_columns") != 88:
+        raise ValueError(f"{path} preferred ASCII width must be 88")
+    if readability.get("hard_max_columns") != 100:
+        raise ValueError(f"{path} hard ASCII width must be 100")
+    require_string(readability, "reading_direction", path)
+    require_string(readability, "connector_legend", path)
+    require_string(readability, "validation", path)
+    if template:
+        return
+
+    invalid = sorted(
+        {
+            character
+            for character in diagram
+            if character != "\n" and not 32 <= ord(character) <= 126
+        }
+    )
+    if invalid:
+        rendered = ", ".join(f"U+{ord(value):04X}" for value in invalid)
+        raise ValueError(f"{path} ascii_diagram contains non-ASCII characters: {rendered}")
+    if "\t" in diagram or "\r" in diagram or "\x1b" in diagram:
+        raise ValueError(f"{path} ascii_diagram contains tabs, CR, or ANSI escapes")
+    longest = max((len(line) for line in diagram.split("\n")), default=0)
+    if longest > 100:
+        raise ValueError(f"{path} ascii_diagram exceeds 100 columns: {longest}")
+    if not any(token in diagram for token in ASCII_STRUCTURE):
+        raise ValueError(f"{path} ascii_diagram has no structural connector or chart mark")
+    if readability.get("longest_line") != longest:
+        raise ValueError(f"{path} ascii_readability.longest_line must be {longest}")
+    if readability.get("reading_direction") not in READING_DIRECTIONS:
+        raise ValueError(f"{path} ASCII reading_direction is invalid")
+    if readability.get("validation") != "pass":
+        raise ValueError(f"{path} ASCII readability validation must be pass")
+
+
 def validate_result(path: Path, known_surfaces: set[str], *, template: bool) -> str:
     data = load_object(path)
-    if data.get("schema_version") != 1:
-        raise ValueError(f"{path} schema_version must be 1")
+    if data.get("schema_version") != 2:
+        raise ValueError(f"{path} schema_version must be 2")
     if data.get("report_kind") != "assistant-operation-result":
         raise ValueError(f"{path} report_kind is invalid")
     if data.get("operation") != "diagram-discussion":
@@ -84,7 +128,6 @@ def validate_result(path: Path, known_surfaces: set[str], *, template: bool) -> 
         "draft_revision",
         "capability_evidence",
         "data_classification",
-        "text_fallback",
         "stale_view_risk",
     ]:
         require_string(data, field, path)
@@ -97,6 +140,7 @@ def validate_result(path: Path, known_surfaces: set[str], *, template: bool) -> 
         raise ValueError(f"{path} allowed_actions must be read-only")
     if data.get("repository_changes") != []:
         raise ValueError(f"{path} read-only result must have no repository changes")
+    validate_ascii_diagram(data, path, template=template)
     require_string_list(data, "validation", path)
     require_string_list(data, "residual_risk", path)
 
@@ -111,6 +155,9 @@ def validate_result(path: Path, known_surfaces: set[str], *, template: bool) -> 
         required_paths = {
             ".ai/assistant/operation-index.json",
             ".ai/assistant/context/intents/diagram-request.json",
+            ".ai/framework/diagram-guidance.md",
+            ".ai/assistant/flows/diagram-discussion.flow.md",
+            ".ai/assistant/templates/diagram-presentation.md",
             ".ai/assistant/assistant-capabilities.json",
             f".ai/assistant/assistant-capabilities/{surface}.json",
         }

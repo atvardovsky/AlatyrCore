@@ -33,6 +33,10 @@ actually use. Native rendering, repository-hosted visual artifacts, and local
 preview links are target or client capabilities, not portable framework
 guarantees.
 
+`ascii-diagrams.md` defines the portable presentation grammar. ASCII is the
+required baseline because it remains visible across chat, terminal, log, code
+review, and plain Markdown surfaces without a renderer.
+
 ## When Diagrams Help
 
 Use diagrams when a change affects:
@@ -75,7 +79,8 @@ A discussion diagram must report:
 - fact owners and repository revision used
 - assumptions, unresolved facts, and intentionally omitted detail
 - editable source format and source path when persisted
-- presentation mode used and the fallback that remains available
+- presentation mode used and any rich supplement provided
+- portable ASCII diagram and readability evidence
 - rendered artifact path or attachment when one was created
 - validation, manual review, and stale-view risk
 
@@ -84,18 +89,26 @@ become an accepted architecture, data, business, or runtime fact merely because
 it appeared in chat. Promotion into project source of truth requires the normal
 owner, approval, allowed-action, logical-integrity, and validation rules.
 
-Use the smallest supported presentation mode in this order:
+Every discussion result must first provide the portable ASCII diagram in a
+fenced `text` block. Pure ASCII does not require client capability evidence.
+It must follow `ascii-diagrams.md`, including the preferred 88-column and hard
+100-column width limits, deterministic reading direction, connector legend,
+and split-view rule for dense content.
 
-1. Native inline rendering when the current assistant surface is recorded as
-   supporting the selected source syntax.
+After the ASCII baseline, the assistant may add one richer presentation mode:
+
+1. Native inline rendering when the current assistant surface has fresh
+   evidence for the selected source syntax.
 2. A rendered visual artifact or attachment produced by target-owned tooling
-   when the operation permits file generation and the artifact can be linked or
-   attached in the current client.
-3. A readable text diagram plus the editable source block or source path.
+   when the operation permits file generation and the artifact can be linked
+   or attached in the current client.
 
-The third mode is the portable fallback. Do not claim that a client rendered a
-diagram when only source text was returned. If no mode can preserve the needed
-meaning, explain the limitation and provide a focused textual model instead.
+Use `ascii`, `native-inline`, or `rendered-artifact` as the reported
+presentation mode. Native and artifact modes supplement the ASCII view; they
+do not replace it. Do not claim that a client rendered a diagram when only an
+ASCII or source block was returned. If ASCII cannot preserve the needed
+meaning within bounded focused views, explain the limitation and provide a
+fact list instead of an unreadable diagram.
 
 For a read-only discussion, keep the diagram in the response and do not create
 repository files. Under `docs-only`, persist only diagram source and allowed
@@ -130,7 +143,7 @@ Keep review separate from execution. `read-only` and `docs-only` diagram
 discussion never invokes a network renderer; `docs-only` may use target-owned
 local rendering. A requested external action must hand off to an operation
 that permits it and pass policy and approval gates. When classification or
-redaction is unresolved, use a bounded local text fallback or stop.
+redaction is unresolved, use a bounded local ASCII view or stop.
 
 ## Target Presentation Policy
 
@@ -141,14 +154,15 @@ An enabled diagrams module should record:
 - per-assistant native inline rendering capability
 - visual render command or manual-render process
 - generated artifact paths and whether assistants can link or attach them
-- required text fallback
+- required ASCII baseline
+- ASCII layout policy, preferred width, and hard width limit
 - validation or manual readability review
 - source revision, content hash, or other stale-view evidence
 - data classification, redaction, external-renderer, artifact storage,
   retention, and sharing policy
 
 Unknown client rendering support must be recorded as unknown and routed to the
-portable text fallback. Installation and update work must not infer support
+portable ASCII baseline. Installation and update work must not infer support
 from another assistant, repository, or client version.
 
 Keep the compact capability index derivable from one record per supported
@@ -160,7 +174,7 @@ authorize a stronger presentation mode.
 For conformance runs, separate prepared input from captured result evidence.
 The result should bind to the assistant surface, target revision, client
 version, selected capability record, loaded paths or sections, context
-measurement kind, presentation mode, readable fallback, validation, file
+measurement kind, presentation mode, ASCII readability, validation, file
 changes, and residual risk. A prepared prompt alone does not prove rendering,
 context economy, or read-only behavior.
 
@@ -176,6 +190,8 @@ Diagrams should:
   part of the contract
 - remain readable in the target visual tool
 - prefer multiple focused diagrams over one dense diagram
+- keep ASCII presentation at or below 100 columns, without tabs, Unicode
+  drawing characters, ANSI color, crossing connectors, or unlabeled scales
 
 ## Sync Rules
 
@@ -204,3 +220,5 @@ Reject diagram work that:
 - presents a discussion draft as accepted project truth
 - writes files during a read-only diagram discussion
 - returns source syntax alone while claiming the user received a rendered view
+- omits the portable ASCII view or returns ASCII wider than 100 columns
+- uses Unicode box drawing, tabs, color, or font-specific alignment as ASCII

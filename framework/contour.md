@@ -23,7 +23,7 @@ Framework core owns:
 - change-risk classification and protected approval trigger pattern
 - security, safety, live-service, and destructive-operation reasoning pattern
 - diagram reasoning, source/visual synchronization, discussion presentation,
-  and readable fallback pattern
+  and portable ASCII baseline pattern
 - architecture discussion and approval pattern
 - semantic change decision pattern
 - logical integrity review pattern
@@ -70,7 +70,7 @@ Framework core must not own:
 - project-specific diagram source formats, visual formats, render commands, or
   generated-file drift tooling
 - project-specific assistant inline-render, artifact-link, attachment, or
-  diagram fallback capabilities
+  rich diagram capability evidence
 - project-specific framework version strings, release process, or adapter
   owner names
 - project-specific post-install request cadence, report owners, or adapter

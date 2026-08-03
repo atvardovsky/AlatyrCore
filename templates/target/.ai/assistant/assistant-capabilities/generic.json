@@ -8,7 +8,7 @@
       "{SYNTAX_NONE_OR_UNKNOWN}"
     ],
     "artifact_presentation": "{LINK_ATTACHMENT_BOTH_UNSUPPORTED_OR_UNKNOWN}",
-    "readable_fallback": "{TEXT_OR_ACCESSIBLE_EQUIVALENT}",
+    "readable_fallback": "ascii",
     "verified_at": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}",
     "client_version": "{CLIENT_VERSION_OR_UNKNOWN_WITH_REASON}",
     "evidence": "{TARGET_EVIDENCE_OR_MANUAL_REVIEW}",

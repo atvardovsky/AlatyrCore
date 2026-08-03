@@ -160,9 +160,10 @@ known.
 Aliases: `Alatyr diagram`, `show as a diagram`, `visualize architecture`.
 Default allowed actions: `read-only`; use `docs-only` only when persisting
 target-owned source or an allowed derived visual artifact.
-Presentation: use the current compact assistant capability, then native inline,
-local rendered artifact, or readable text fallback. Preserve stable revision
-lineage; classify/redact sensitive content; hand off external rendering.
+Presentation: always provide bounded pure ASCII; use the current compact
+assistant capability only to add native inline or a local rendered artifact.
+Preserve stable revision lineage, classify or redact sensitive content, and
+hand off external rendering.
 
 Operation: `ai-infrastructure-inventory`
 Use when: checking what AI infrastructure already exists and what can be kept,

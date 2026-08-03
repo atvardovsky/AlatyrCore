@@ -41,8 +41,8 @@ For each supported assistant, record:
   overlay
 - the selected path in the compact generated assistant-capability index
 - whether diagram discussion routes through the canonical operation index
-- supported native inline diagram syntaxes, artifact presentation mode, and
-  readable fallback in that projection
+- supported native inline diagram syntaxes and artifact presentation mode;
+  portable ASCII remains required without client capability evidence
 - client version, verification time, and evidence for capability freshness
 - whether selected AI infrastructure items route through canonical target
   permissions, gates, validation, and output contracts
@@ -104,6 +104,8 @@ Each bridge should:
 - route enabled `Alatyr diagram` and equivalent requests through the compact
   operation index, diagram discussion flow, presentation template, and only
   the selected assistant-capability record
+- provide the same bounded pure-ASCII baseline on every supported surface,
+  with native or artifact output only as a capability-checked supplement
 - avoid duplicating full framework, project, or adapter policy
 - avoid becoming a source of truth for project facts
 - state assistant-specific limitations only when target evidence supports
@@ -130,6 +132,6 @@ During framework update or adapter recheck:
 5. Check operation aliases still route to the canonical flows.
 6. Check diagram presentation claims, enums, client version, verification
    time, expiry or review triggers, and evidence against current surface
-   capability; retain a readable fallback for unknown, stale, or unsupported
-   rendering.
+   capability; retain the ASCII baseline for unknown, stale, or unsupported
+   rich rendering.
 7. Report bridge-specific limitations and residual risk.

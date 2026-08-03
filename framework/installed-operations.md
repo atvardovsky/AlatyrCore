@@ -192,7 +192,7 @@ For installed operations:
     visual model. Select presentation mode from the target diagram policy and
     current compact assistant-capability entry, keep drafts non-canonical,
     preserve stable ID/revision lineage, classify sensitive content and
-    external rendering, and retain a readable text fallback.
+    external rendering, and always retain a bounded portable ASCII view.
 18. Record approval evidence when protected-change scope requires it. When
     scoped approval is used, enforce the complete changed path set against
     explicitly selected machine-readable records bound to the approved diff
@@ -304,8 +304,8 @@ After installation or framework upgrade, an assistant should recheck:
 - security, live-service, destructive-operation, and dependency boundaries
 - diagram and generated-artifact policy
 - diagram discussion flow, presentation template, per-assistant presentation
-  capability, fallback, and stale-view evidence when the diagrams module is
-  enabled
+  capability, ASCII readability, and stale-view evidence when the diagrams
+  module is enabled
 - validation commands or manual checks
 - adapter maturity gaps, local deviations, and lifecycle notes
 
@@ -338,4 +338,4 @@ Reject or revise installed-operation work that:
 - claims validation without target commands or manual-review evidence
 - hides missing project facts, approvals, or residual risk
 - claims a visible diagram without providing a supported presentation mode or
-  readable fallback
+  portable ASCII baseline

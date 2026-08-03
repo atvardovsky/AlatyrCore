@@ -52,7 +52,7 @@ The framework commits to giving an assistant a defined process for:
   universal diagram tool
 - routing diagram discussion through a target-owned presentation contract with
   security/privacy handling, stable revision lineage, compact current-surface
-  capability evidence, and a readable fallback
+  capability evidence, and a portable ASCII baseline
 - requiring explicit programmer approval for protected changes
 - keeping architecture discussion separate from architecture mutation
 - keeping documentation and diagrams synchronized with code and project facts
@@ -175,7 +175,7 @@ defines:
 - project-specific security, live-service, dependency, destructive-operation,
   privacy, and credential-handling policies
 - project-specific diagram source format, visual artifact format, render or
-  manual-review policy, discussion presentation capability, readable fallback,
+  manual-review policy, discussion presentation capability, ASCII baseline,
   and drift checks when diagrams exist
 - project-specific framework baseline, local deviations, maturity gaps, and
   upgrade notes

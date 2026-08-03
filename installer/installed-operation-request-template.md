@@ -55,7 +55,7 @@ Diagram purpose, scope, and persistence intent, when applicable:
 <question or view; bounded scope; response-only or persisted>
 
 Current assistant surface and preferred presentation, when applicable:
-<surface-id; native-inline/rendered-artifact/text-fallback/no preference>
+<surface-id; ascii/native-inline/rendered-artifact/no preference>
 
 Allowed actions meaning:
 - read-only: inspect target files and report only; no file changes.
@@ -137,9 +137,8 @@ Constraints:
 - For `Alatyr diagram` or `diagram-discussion`, read only the current entry in
   `.ai/assistant/assistant-capabilities.json` and its selected surface record,
   reject stale or expired capability evidence, default to a non-canonical
-  `read-only` draft, and
-  provide native inline, rendered artifact, or readable text fallback without
-  claiming unsupported rendering. Preserve stable ID/revision lineage,
+  `read-only` draft, always provide bounded pure ASCII, and add native inline
+  or rendered artifact output only as a supported supplement. Preserve stable ID/revision lineage,
   classify and redact sensitive content, require revision evidence before
   accepted/derived status, and do not use an external renderer without target
   policy and required approval.

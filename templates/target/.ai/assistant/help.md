@@ -71,6 +71,8 @@ Use when: the user asks to see, sketch, compare, or revise a diagram during the
 discussion.
 Flow: `.ai/assistant/flows/diagram-discussion.flow.md`
 Minimum input: diagram purpose or question and scope. Defaults to `read-only`.
+Presentation: bounded pure ASCII by default; native or artifact output is an
+optional supported supplement.
 
 Operation: `large-task`
 Use when: work needs multiple workstreams, crosses project areas or profiles,

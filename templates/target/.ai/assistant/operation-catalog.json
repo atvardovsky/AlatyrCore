@@ -223,7 +223,7 @@
     {
       "id": "diagram-discussion",
       "title": "Diagram discussion",
-      "summary": "Present, compare, or revise a diagram using compact current-surface evidence, stable lineage, security policy, and a readable fallback.",
+      "summary": "Present, compare, or revise a diagram with a bounded portable ASCII view plus optional capability-checked rich presentation.",
       "use_when": ["show a diagram", "visual explanation", "architecture sketch", "compare diagram alternatives"],
       "context_profiles": ["docs-local", "code-local", "business-change", "architecture-change", "data-change", "security-sensitive"],
       "required_module": "diagrams",
@@ -232,7 +232,7 @@
       "allowed_actions": ["read-only", "docs-only"],
       "preview": "never",
       "aliases": ["Alatyr diagram", "show as a diagram", "visualize architecture"],
-      "final_evidence": ["stable diagram ID revision and source status", "presentation mode fallback capability freshness and evidence", "classification redaction external action source revision validation and stale risk"]
+      "final_evidence": ["stable diagram ID revision and source status", "ASCII width direction readability and optional rich-presentation evidence", "classification redaction external action source revision validation and stale risk"]
     },
     {
       "id": "ai-infrastructure-inventory",

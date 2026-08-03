@@ -66,6 +66,9 @@ Run this request against an already installed target adapter:
 Do not install, update, or repair the adapter during this fixture. Do not
 change repository files. Treat rendering support as unknown unless the
 selected target capability entry has current evidence.
+Always return a pure ASCII diagram that follows the target width and
+readability contract. Native rendering or an artifact may supplement it but
+must not replace it.
 
 Required behavior:
 

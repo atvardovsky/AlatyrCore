@@ -58,7 +58,8 @@ Each target profile should define:
 - use when
 - bounded operation candidates for cheap automatic routing
 - required context
-- optional context triggers
+- conditional context paths with explicit load conditions
+- expansion triggers
 - approval gates
 - validation or manual review
 - expected final evidence

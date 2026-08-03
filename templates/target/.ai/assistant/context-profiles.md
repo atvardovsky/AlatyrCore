@@ -52,6 +52,11 @@ approval, or changed-fact owners only when the request contains sensitive
 content, uses an external renderer, persists an artifact, or proposes an
 accepted fact change.
 
+Always provide the compact ASCII view required by the diagram flow. Load
+`.ai/framework/ascii-diagrams.md` only for dense, quantitative, or ambiguous
+layouts, and load the target ASCII layout template only when the diagram will
+be persisted or reused. Richer presentation remains optional.
+
 ## Task-Scale Overlay: `large-or-resumable`
 
 Activate only for large, cross-boundary, multi-workstream,

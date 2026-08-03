@@ -96,8 +96,8 @@ The plan must identify:
 - optional consistency-map need, fact-ID strategy, relationship coverage, and
   staleness owner
 - task-specific maturity and bridge capability needs
-- diagram discussion, source/visual ownership, per-assistant presentation,
-  readable fallback, capability expiry/review triggers, captured-result
+- diagram discussion, source/visual ownership, portable ASCII layout/width,
+  per-assistant rich presentation, capability expiry/review triggers, captured-result
   evidence, and stale-view evidence needs
 - optional scaffolding plan and selected `core`, `standard`, or `full` support
   profile, if any
@@ -166,8 +166,8 @@ In a typical target repository:
 8. Add bridge files only for assistants the target uses.
 9. Add installed-operation, operation-help, automatic operation-routing,
    read-only adapter-health, risk-gated pre-change preview,
-   diagram-discussion flow and presentation template when the diagrams module
-   is enabled,
+   diagram-discussion flow, ASCII layout template, and presentation template
+   when the diagrams module is enabled,
    AI-infrastructure-inventory, AI-infrastructure-recommendation, adapter output contracts, source-access
    policy, prompt-injection policy, human and machine-readable approval-record
    templates,
@@ -220,10 +220,10 @@ does not grant approval.
 
 When the target enables diagrams, `Alatyr diagram`, `show as a diagram`, and
 equivalent target-language requests route to `diagram-discussion`. Installation
-must record each supported assistant's native inline, rendered-artifact, and
-readable-fallback capability, client version, verification time, expiry or
-review triggers, and evidence in its indexed surface record. It must also
-define classification,
+must always provide the portable ASCII baseline and record each supported
+assistant's native-inline syntax and artifact-presentation capability, client
+version, verification time, expiry or review triggers, and evidence in its
+indexed surface record. It must also define classification,
 redaction, external-renderer, artifact storage/retention, stable diagram ID,
 and revision-lineage behavior rather than assuming one client behavior for all
 surfaces.

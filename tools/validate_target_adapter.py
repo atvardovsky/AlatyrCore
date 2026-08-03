@@ -1293,8 +1293,10 @@ class Validator:
         required_paths = [
             ".ai/assistant/flows/diagram-discussion.flow.md",
             ".ai/assistant/templates/diagram-presentation.md",
+            ".ai/assistant/templates/ascii-diagram.md",
             ".ai/assistant/assistant-capabilities.json",
             ".ai/assistant/bridge-capability-matrix.md",
+            ".ai/framework/ascii-diagrams.md",
         ]
         for relpath in required_paths:
             if not self.target_path(relpath).is_file():
@@ -1564,6 +1566,12 @@ class Validator:
                         f"assistant surface {surface_id} {field} is unresolved",
                         surface_relpath,
                     )
+            if diagram.get("readable_fallback") != "ascii":
+                self.error(
+                    "DIAGRAM_CAPABILITY_ASCII_FALLBACK",
+                    f"assistant surface {surface_id} readable_fallback must be ascii",
+                    surface_relpath,
+                )
             verified_at = diagram.get("verified_at")
             if isinstance(verified_at, str) and not (
                 re.fullmatch(r"\d{4}-\d{2}-\d{2}(?:T[^\s]+)?", verified_at)
@@ -1633,8 +1641,9 @@ class Validator:
                 flow_text,
                 [
                     "`read-only`",
-                    "current assistant surface entry",
-                    "readable text fallback",
+                    "current assistant surface record",
+                    "portable ASCII view",
+                    "hard maximum of 100 columns",
                     "stable diagram ID",
                     "Classify data sensitivity",
                 ],
@@ -1644,11 +1653,21 @@ class Validator:
                 presentation_text,
                 [
                     "Presentation mode:",
-                    "Readable text fallback:",
+                    "Portable ASCII presentation:",
+                    "ASCII readability check:",
                     "Diagram ID:",
                     "Data classification:",
                     "External renderer or network action:",
                     "is not project source of truth",
+                ],
+            ),
+            (
+                required_paths[2],
+                self.read_text(self.target_path(required_paths[2])),
+                [
+                    "Hard maximum width: `100`",
+                    "printable 7-bit ASCII plus line feeds",
+                    "Longest line at most 100 columns",
                 ],
             ),
         ]:

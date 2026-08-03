@@ -15,11 +15,22 @@
     ".ai/assistant/templates/diagram-presentation.md",
     ".ai/assistant/assistant-capabilities.json"
   ],
+  "conditional_context": [
+    {
+      "path": ".ai/framework/ascii-diagrams.md",
+      "when": "dense quantitative or ambiguous ASCII layout"
+    },
+    {
+      "path": ".ai/assistant/templates/ascii-diagram.md",
+      "when": "persisted or reusable ASCII diagram"
+    }
+  ],
   "expand_when": [
+    "dense quantitative or reusable ASCII layout",
     "fact conflict or accepted change",
     "sensitive data",
     "external or network renderer",
     "artifact persistence"
   ],
-  "budget_behavior": "load selected capability and fact owners only"
+  "budget_behavior": "use the compact ASCII rules first; load the full grammar, reusable layout template, selected capability, and fact owners only when needed"
 }

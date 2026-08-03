@@ -132,6 +132,35 @@ def check_contract(
                     failures.append(f"{label}.{field} points to missing path: {value}")
 
 
+def check_conditional_context(
+    data: dict[str, Any], label: str, failures: list[str]
+) -> list[str]:
+    entries = data.get("conditional_context")
+    if not isinstance(entries, list) or not entries:
+        failures.append(f"{label}.conditional_context must be a non-empty list")
+        return []
+    paths: list[str] = []
+    for index, entry in enumerate(entries):
+        entry_label = f"{label}.conditional_context[{index}]"
+        if not isinstance(entry, dict):
+            failures.append(f"{entry_label} must be an object")
+            continue
+        path = entry.get("path")
+        when = entry.get("when")
+        if not isinstance(path, str) or not path:
+            failures.append(f"{entry_label}.path must be a non-empty string")
+            continue
+        if not isinstance(when, str) or not when:
+            failures.append(f"{entry_label}.when must be a non-empty string")
+        if not target_reference_exists(path):
+            failures.append(f"{entry_label}.path points to missing path: {path}")
+        paths.append(path)
+    duplicates = sorted({path for path in paths if paths.count(path) > 1})
+    if duplicates:
+        failures.append(f"{label}.conditional_context has duplicate paths: {duplicates}")
+    return paths
+
+
 def main() -> int:
     failures: list[str] = []
     try:
@@ -263,6 +292,7 @@ def main() -> int:
 
     intent_index = router.get("intent_overlays")
     diagram: dict[str, Any] = {}
+    diagram_conditional_context: list[str] = []
     if not isinstance(intent_index, dict) or not isinstance(
         intent_index.get("diagram-request"), dict
     ):
@@ -286,6 +316,9 @@ def main() -> int:
             failures.append("diagram intent must require diagrams")
         if diagram.get("operation_candidates") != ["diagram-discussion"]:
             failures.append("diagram intent must route diagram-discussion")
+        diagram_conditional_context = check_conditional_context(
+            diagram, "intent_overlays.diagram-request", failures
+        )
 
     consistency_entry = router.get("consistency_routing")
     consistency = descriptor(
@@ -387,6 +420,11 @@ def main() -> int:
             for value in contract.get(field, [])
             if isinstance(value, str) and value.startswith(".ai/framework/")
         )
+    routed_framework_paths.update(
+        value
+        for value in diagram_conditional_context
+        if value.startswith(".ai/framework/")
+    )
     try:
         ai_router = load_json(TARGET / ".ai/assistant/ai-infrastructure-router.json")
         for route in ai_router.get("routes", {}).values():

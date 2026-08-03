@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "report_kind": "assistant-operation-result",
   "operation": "diagram-discussion",
   "run_id": "{RUN_ID}",
@@ -21,10 +21,19 @@
   "diagram_id": "{STABLE_DIAGRAM_ID}",
   "draft_revision": "{DRAFT_REVISION}",
   "status": "draft",
-  "presentation_mode": "{NATIVE_INLINE_RENDERED_ARTIFACT_OR_TEXT_FALLBACK}",
+  "presentation_mode": "{ASCII_NATIVE_INLINE_OR_RENDERED_ARTIFACT}",
   "capability_evidence": "{CAPABILITY_RECORD_AND_FRESHNESS_EVIDENCE}",
   "data_classification": "{TARGET_CLASSIFICATION}",
-  "text_fallback": "{READABLE_TEXT_OR_ACCESSIBLE_EQUIVALENT}",
+  "ascii_diagram": "{ASCII_DIAGRAM}",
+  "ascii_readability": {
+    "character_set": "ascii",
+    "preferred_max_columns": 88,
+    "hard_max_columns": 100,
+    "reading_direction": "{LEFT_TO_RIGHT_OR_TOP_TO_BOTTOM}",
+    "longest_line": "{NON_NEGATIVE_INTEGER}",
+    "connector_legend": "{LEGEND_OR_SINGLE_CONNECTOR_NOT_REQUIRED}",
+    "validation": "{PASS_OR_REVISE}"
+  },
   "validation": ["{VALIDATION_EVIDENCE}"],
   "stale_view_risk": "{RISK_OR_NONE_WITH_EVIDENCE}",
   "repository_changes": [],

@@ -221,8 +221,8 @@ Additional source-repository helpers include:
 - security/safety reasoning without hard-coded policies
 - prompt-injection handling for imported AI infrastructure
 - diagram guidance without hard-coded diagram tooling
-- optional diagram discussion that selects a recorded native inline view,
-  target-rendered artifact, or readable text fallback per assistant surface
+- optional ASCII-first diagram discussion that works across every assistant
+  surface, with recorded native inline or target-rendered views as supplements
 - generated assistant-capability index, separate freshness-aware surface
   records, and captured diagram-result conformance contracts
 - AI infrastructure inventory and third-party skill/assistant-infrastructure
@@ -375,6 +375,7 @@ A mature target installation usually has:
 - `.ai/assistant/assistant-capabilities.json`
 - `.ai/assistant/assistant-capabilities/<assistant>.json` when diagrams or
   client-specific presentation behavior is enabled
+- `.ai/assistant/templates/ascii-diagram.md` when diagram discussion is enabled
 - `.ai/assistant/ai-infrastructure-router.json` when AI infrastructure is used
 - `.ai/assistant/team/context-overlay.json` and
   `.ai/assistant/team/work-registry.json` when team collaboration is enabled

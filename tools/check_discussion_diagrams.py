@@ -17,6 +17,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "templates" / "target"
 RULE = ROOT / "framework" / "diagram-guidance.md"
+ASCII_RULE = ROOT / "framework" / "ascii-diagrams.md"
 CATALOG = TARGET / ".ai" / "assistant" / "operation-catalog.json"
 INDEX = TARGET / ".ai" / "assistant" / "operation-index.json"
 ROUTER = TARGET / ".ai" / "assistant" / "context-router.json"
@@ -24,10 +25,16 @@ FLOW = TARGET / ".ai" / "assistant" / "flows" / "diagram-discussion.flow.md"
 PRESENTATION = (
     TARGET / ".ai" / "assistant" / "templates" / "diagram-presentation.md"
 )
+ASCII_PRESENTATION = (
+    TARGET / ".ai" / "assistant" / "templates" / "ascii-diagram.md"
+)
 MATRIX = TARGET / ".ai" / "assistant" / "bridge-capability-matrix.md"
 CAPABILITIES = TARGET / ".ai" / "assistant" / "assistant-capabilities.json"
 SURFACES = ROOT / "conformance" / "runs" / "assistant-surfaces.json"
 FIXTURE = ROOT / "conformance" / "operations" / "diagram-discussion.json"
+RESULT_TEMPLATE = (
+    ROOT / "conformance" / "operations" / "diagram-discussion-result-template.json"
+)
 MANIFEST = TARGET / ".ai" / "alatyr.yaml"
 MODULE_PROFILE = TARGET / ".ai" / "assistant" / "module-profile.md"
 HELP = TARGET / ".ai" / "assistant" / "help.md"
@@ -57,19 +64,40 @@ def matrix_entries(text: str) -> dict[str, str]:
     return entries
 
 
+def check_ascii_contract(path: Path, failures: list[str]) -> None:
+    text = read(path)
+    invalid = sorted({character for character in text if ord(character) > 127})
+    if invalid:
+        failures.append(f"{path.relative_to(ROOT)} contains non-ASCII characters")
+    if "\t" in text:
+        failures.append(f"{path.relative_to(ROOT)} contains tabs")
+    blocks = re.findall(r"```text\n(.*?)```", text, flags=re.DOTALL)
+    if not blocks:
+        failures.append(f"{path.relative_to(ROOT)} has no fenced text example")
+    for block in blocks:
+        longest = max((len(line) for line in block.splitlines()), default=0)
+        if longest > 100:
+            failures.append(
+                f"{path.relative_to(ROOT)} ASCII example exceeds 100 columns: {longest}"
+            )
+
+
 def main() -> int:
     failures: list[str] = []
     required_files = [
         RULE,
+        ASCII_RULE,
         CATALOG,
         INDEX,
         ROUTER,
         FLOW,
         PRESENTATION,
+        ASCII_PRESENTATION,
         MATRIX,
         CAPABILITIES,
         SURFACES,
         FIXTURE,
+        RESULT_TEMPLATE,
         MANIFEST,
         MODULE_PROFILE,
         HELP,
@@ -88,7 +116,9 @@ def main() -> int:
         "## Discussion Diagram Contract",
         "Native inline rendering",
         "rendered visual artifact",
-        "portable text fallback",
+        "portable ASCII baseline",
+        "`ascii-diagrams.md`",
+        "Every discussion result must first provide the portable ASCII diagram",
         "Discussion diagrams are `draft` by default.",
         "## Security, Privacy, And External Rendering",
         "stable diagram ID",
@@ -97,6 +127,18 @@ def main() -> int:
         if snippet not in read(RULE):
             failures.append(f"framework/diagram-guidance.md missing {snippet}")
 
+    for path in [ASCII_RULE, ASCII_PRESENTATION]:
+        check_ascii_contract(path, failures)
+    for snippet in [
+        "printable 7-bit ASCII",
+        "at most 88 columns",
+        "never exceeds 100 columns",
+        "## Quantitative Graphs",
+        "## Rejection Criteria",
+    ]:
+        if snippet not in read(ASCII_RULE):
+            failures.append(f"framework/ascii-diagrams.md missing {snippet}")
+
     try:
         catalog = load_json(CATALOG)
         operation_index = load_json(INDEX)
@@ -104,6 +146,7 @@ def main() -> int:
         capabilities = load_json(CAPABILITIES)
         surfaces_data = load_json(SURFACES)
         fixture = load_json(FIXTURE)
+        result_template = load_json(RESULT_TEMPLATE)
     except (json.JSONDecodeError, ValueError) as exc:
         failures.append(str(exc))
         catalog = {}
@@ -112,6 +155,7 @@ def main() -> int:
         capabilities = {}
         surfaces_data = {}
         fixture = {}
+        result_template = {}
 
     operations = catalog.get("operations")
     operation = None
@@ -157,8 +201,9 @@ def main() -> int:
             "Allowed Actions",
             "`read-only`",
             "`docs-only`",
-            "current assistant surface entry",
-            "`text-fallback`",
+            "current assistant surface record",
+            "`ascii`",
+            "hard maximum of 100 columns",
             "Route the accepted fact",
             "stable diagram ID",
             "Classify data sensitivity",
@@ -168,7 +213,8 @@ def main() -> int:
             "Status: `{DRAFT_ACCEPTED_SOURCE_OR_DERIVED_VIEW}`",
             "Presentation mode:",
             "Capability evidence:",
-            "Readable text fallback:",
+            "Portable ASCII presentation:",
+            "ASCII readability check:",
             "Source revision or content hash:",
             "Diagram ID:",
             "Draft revision:",
@@ -247,7 +293,7 @@ def main() -> int:
             "route": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
             "native_inline_syntaxes": ["{SYNTAX_NONE_OR_UNKNOWN}"],
             "artifact_presentation": "{LINK_ATTACHMENT_BOTH_UNSUPPORTED_OR_UNKNOWN}",
-            "readable_fallback": "{TEXT_OR_ACCESSIBLE_EQUIVALENT}",
+            "readable_fallback": "ascii",
             "verified_at": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}",
             "expires_at": "{ISO_DATE_OR_REVIEW_TRIGGER_WITH_REASON}",
             "review_triggers": [
@@ -273,6 +319,15 @@ def main() -> int:
     fixture_expectations = fixture.get("required_for_every_surface")
     if not isinstance(fixture_expectations, list) or len(fixture_expectations) < 8:
         failures.append("diagram operation fixture has insufficient surface expectations")
+    if not isinstance(fixture_expectations, list) or not any(
+        "pure ASCII diagram" in value for value in fixture_expectations
+    ):
+        failures.append("diagram operation fixture must require pure ASCII output")
+    if result_template.get("schema_version") != 2:
+        failures.append("diagram result template schema_version must be 2")
+    for field in ["ascii_diagram", "ascii_readability"]:
+        if field not in result_template:
+            failures.append(f"diagram result template missing {field}")
 
     manifest_text = read(MANIFEST)
     for value in [
@@ -288,6 +343,7 @@ def main() -> int:
         "Module: `diagrams`",
         ".ai/assistant/flows/diagram-discussion.flow.md",
         ".ai/assistant/templates/diagram-presentation.md",
+        ".ai/assistant/templates/ascii-diagram.md",
         ".ai/assistant/assistant-capabilities.json",
         ".ai/assistant/bridge-capability-matrix.md",
     ]:

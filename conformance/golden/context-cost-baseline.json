@@ -1,9 +1,9 @@
 {
   "bootstrap": {
-    "bytes": 16471,
-    "characters": 16471,
+    "bytes": 16525,
+    "characters": 16525,
     "declared_files": 4,
-    "estimated_tokens_4_chars": 4118,
+    "estimated_tokens_4_chars": 4132,
     "missing_paths": [],
     "resolved_files": 4,
     "resolved_paths": [
@@ -13,7 +13,7 @@
       ".ai/assistant/context-router.json"
     ],
     "unresolved_references": [],
-    "words": 1363
+    "words": 1371
   },
   "budgets": {
     "bootstrap": {
@@ -29,10 +29,10 @@
   },
   "intent_overlays": {
     "diagram-request": {
-      "bytes": 19701,
-      "characters": 19701,
+      "bytes": 22230,
+      "characters": 22230,
       "declared_files": 6,
-      "estimated_tokens_4_chars": 4926,
+      "estimated_tokens_4_chars": 5558,
       "missing_paths": [],
       "resolved_files": 6,
       "resolved_paths": [
@@ -44,7 +44,7 @@
         ".ai/assistant/assistant-capabilities/generic.json"
       ],
       "unresolved_references": [],
-      "words": 2393
+      "words": 2729
     }
   },
   "limitations": [
@@ -56,10 +56,10 @@
   "measurement": "whitespace-delimited words in resolved source templates",
   "migration_routing": {
     "full_candidate_union": {
-      "bytes": 265534,
-      "characters": 265534,
+      "bytes": 267635,
+      "characters": 267635,
       "declared_files": 38,
-      "estimated_tokens_4_chars": 66384,
+      "estimated_tokens_4_chars": 66909,
       "missing_paths": [],
       "resolved_files": 38,
       "resolved_paths": [
@@ -103,13 +103,13 @@
         ".ai/framework/testing-guidance.md"
       ],
       "unresolved_references": [],
-      "words": 34093
+      "words": 34388
     },
     "initial": {
-      "bytes": 41530,
-      "characters": 41530,
+      "bytes": 41623,
+      "characters": 41623,
       "declared_files": 7,
-      "estimated_tokens_4_chars": 10383,
+      "estimated_tokens_4_chars": 10406,
       "missing_paths": [],
       "resolved_files": 7,
       "resolved_paths": [
@@ -122,17 +122,17 @@
         ".ai/assistant/templates/migration-note.md"
       ],
       "unresolved_references": [],
-      "words": 4111
+      "words": 4124
     },
-    "initial_word_reduction_percent": 87.9
+    "initial_word_reduction_percent": 88.0
   },
   "operation_routes": {
     "diagram-discussion": {
       "compact": {
-        "bytes": 25526,
-        "characters": 25526,
+        "bytes": 28055,
+        "characters": 28055,
         "declared_files": 7,
-        "estimated_tokens_4_chars": 6382,
+        "estimated_tokens_4_chars": 7014,
         "missing_paths": [],
         "resolved_files": 7,
         "resolved_paths": [
@@ -145,13 +145,13 @@
           ".ai/assistant/assistant-capabilities/generic.json"
         ],
         "unresolved_references": [],
-        "words": 2709
+        "words": 3045
       },
       "full_reference_union": {
-        "bytes": 73428,
-        "characters": 73428,
+        "bytes": 76112,
+        "characters": 76112,
         "declared_files": 11,
-        "estimated_tokens_4_chars": 18357,
+        "estimated_tokens_4_chars": 19028,
         "missing_paths": [],
         "resolved_files": 11,
         "resolved_paths": [
@@ -168,9 +168,9 @@
           ".ai/assistant/assistant-capabilities/generic.json"
         ],
         "unresolved_references": [],
-        "words": 6968
+        "words": 7321
       },
-      "word_reduction_percent": 61.1
+      "word_reduction_percent": 58.4
     }
   },
   "profiles": {
@@ -300,10 +300,10 @@
       "words": 2443
     },
     "framework-upgrade": {
-      "bytes": 40469,
-      "characters": 40469,
+      "bytes": 40562,
+      "characters": 40562,
       "declared_files": 7,
-      "estimated_tokens_4_chars": 10118,
+      "estimated_tokens_4_chars": 10141,
       "missing_paths": [],
       "resolved_files": 7,
       "resolved_paths": [
@@ -316,7 +316,7 @@
         ".ai/assistant/templates/migration-note.md"
       ],
       "unresolved_references": [],
-      "words": 4047
+      "words": 4060
     },
     "security-sensitive": {
       "bytes": 30423,

@@ -197,11 +197,12 @@ py -3 .\tools\check_bridge_capability_matrix.py
 ## Discussion Diagram Check
 
 `check_discussion_diagrams.py` validates the portable diagram rule, target
-diagram-discussion operation, flow, presentation template, manifest and module
-paths, stable lineage, security/privacy, compact routing and capability
-projections, operation conformance fixture, and presentation fields for every
-supported assistant surface. It validates declared contracts, not actual
-external client rendering.
+diagram-discussion operation, flow, ASCII grammar and width limits,
+presentation template, manifest and module paths, stable lineage,
+security/privacy, compact routing and capability projections, operation
+conformance fixture, and presentation fields for every supported assistant
+surface. It validates declared contracts, not actual external client
+rendering.
 
 Linux or macOS:
 
@@ -227,8 +228,9 @@ not run external clients or claim rendering conformance.
 `check_diagram_conformance_results.py` validates the separate captured-result
 contract. Pass `--results-dir <dir>` for reviewed assistant outputs and
 `--require-all-surfaces` only when the run is expected to cover every declared
-surface. It checks selected capability evidence, loaded context, fallback,
-read-only repository behavior, and residual risk; it does not run a client.
+surface. It checks selected capability evidence, loaded context, pure-ASCII
+characters, width, structural connectors, read-only repository behavior, and
+residual risk; it does not run a client.
 
 Windows PowerShell or Command Prompt:
 

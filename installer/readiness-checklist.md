@@ -45,7 +45,7 @@ changes.
   drift checks:
 - Existing diagram discussion flow, presentation template, stable IDs/revision
   lineage, sensitivity/redaction policy, external-renderer policy, assistant
-  inline or artifact capabilities, readable fallback, and source-revision
+  inline or artifact capabilities, portable ASCII baseline, and source-revision
   evidence:
 - Existing assistant instruction files:
 - Scaffolding helper used or planned:
@@ -172,7 +172,7 @@ Collect target-specific facts before writing project docs:
 - diagram needs, source format, visual format, render/manual-review policy, and
   drift checks
 - diagram discussion need, draft/source status policy, per-assistant native
-  inline syntaxes, rendered-artifact presentation, readable fallback,
+  inline syntaxes, rendered-artifact presentation, ASCII layout/width,
   capability expiry or review triggers, captured-result evidence, and
   stale-view evidence
 - skills, prompts, wrappers, third-party assistant infrastructure, provenance,
@@ -211,8 +211,8 @@ Collect target-specific facts before writing project docs:
 - operation catalog, single entry, automatic routing, read-only health,
   risk-gated preview, and post-install/update assistant chat-message
   expectations
-- diagram-discussion operation, presentation template, and bridge capability
-  expectations when the diagrams module is enabled
+- diagram-discussion operation, ASCII template, presentation template, and
+  bridge capability expectations when the diagrams module is enabled
 
 ## 6. Assistant Compatibility
 
@@ -256,8 +256,8 @@ List commands or manual checks:
 - target test isolation rules:
 - static analysis:
 - docs/diagram checks:
-- diagram discussion routing, presentation, fallback, capability freshness,
-  captured-result, read-only behavior, and stale-view review:
+- diagram discussion routing, ASCII presentation/readability, rich capability
+  freshness, captured-result, read-only behavior, and stale-view review:
 - installed-operation or adapter-recheck review:
 - adapter output contract review:
 - context-profile review:
@@ -331,14 +331,15 @@ Final evidence must say:
 - module profile created or updated
 - task-specific maturity profile created or updated
 - bridge capability matrix created or updated
-- per-assistant diagram inline/artifact/fallback capabilities, client version,
-  verification time, and evidence resolved or explicitly unknown with reason
+- portable ASCII baseline plus per-assistant inline/artifact capabilities,
+  client version, verification time, and evidence resolved or explicitly
+  unknown with reason
 - bridge files added or checked
 - operation catalog, installed-operation, operation-help, automatic routing,
   read-only adapter-health, risk-gated preview, blueprint-creation,
   adapter-recheck, or post-install/update chat-message templates added or
   skipped
-- diagram-discussion flow, presentation template, stable lineage,
+- diagram-discussion flow, ASCII template, presentation template, stable lineage,
   security/privacy/external-renderer policy, and operation conformance fixture
   added, skipped, or blocked from target evidence
 - adapter output contracts added or skipped

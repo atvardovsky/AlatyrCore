@@ -90,12 +90,12 @@ Before accepting a change, check:
   tool permissions, help alias routing, limitations, or conformance guidance
   changes.
 - `python3 tools/check_discussion_diagrams.py` passes when diagram discussion,
-  draft/source status, inline or artifact presentation, readable fallback,
+  draft/source status, ASCII grammar/width, inline or artifact presentation,
   source-revision evidence, security/privacy, stable lineage, compact routing,
   conformance fixture, or assistant capability fields change.
 - `python3 tools/check_diagram_conformance_results.py` passes when captured
-  diagram result, selected capability, loaded-context, read-only, fallback, or
-  residual-risk evidence changes.
+  diagram result, selected capability, loaded-context, read-only, ASCII
+  readability, or residual-risk evidence changes.
 - `python3 tools/prepare_diagram_conformance_run.py --check` passes when the
   cross-assistant diagram operation fixture or prompt contract changes.
 - `python3 tools/check_assistant_surface_conformance.py` passes when supported

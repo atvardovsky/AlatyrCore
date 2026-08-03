@@ -183,6 +183,7 @@ def main() -> int:
     for required in [
         ".ai/assistant/flows/diagram-discussion.flow.md",
         ".ai/assistant/templates/diagram-presentation.md",
+        ".ai/assistant/templates/ascii-diagram.md",
         ".ai/assistant/assistant-capabilities.json",
         ".ai/assistant/bridge-capability-matrix.md",
     ]:

@@ -133,6 +133,7 @@ Required files:
 - `{TARGET_DIAGRAM_POLICY_OR_SOURCE_OWNER}`
 - `.ai/assistant/flows/diagram-discussion.flow.md`
 - `.ai/assistant/templates/diagram-presentation.md`
+- `.ai/assistant/templates/ascii-diagram.md`
 - `.ai/assistant/assistant-capabilities.json`
 - `.ai/assistant/assistant-capabilities/{SUPPORTED_ASSISTANT}.json`
 - `.ai/assistant/bridge-capability-matrix.md`

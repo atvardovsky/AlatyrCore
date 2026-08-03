@@ -78,9 +78,10 @@ large-task orchestration, documentation and diagram sync.
 Category: `DIAGRAM`
 Owner: `.ai/framework/diagram-guidance.md`
 Rule IDs: `ALATYR-DIAGRAM-001`
-Derived surfaces: target diagram discussion flow, presentation template,
-operation catalog/index, intent routing, bridge matrix, compact capabilities,
-operation fixture, installation planning, adapter recheck, and validation.
+Derived surfaces: portable ASCII grammar, target diagram discussion flow,
+ASCII and diagram presentation templates, operation catalog/index, intent
+routing, bridge matrix, compact capabilities, operation fixture, installation
+planning, adapter recheck, and validation.
 
 Category: `ADAPTER`
 Owner: `.ai/framework/project-adapter-contract.md`

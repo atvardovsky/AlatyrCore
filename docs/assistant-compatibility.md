@@ -100,11 +100,15 @@ When `diagrams` is enabled, every supported surface routes `Alatyr diagram`
 and equivalent clear requests to the canonical diagram discussion flow. The
 bridge matrix points to `.ai/assistant/assistant-capabilities.json`, whose
 selected path identifies a separate surface record. That record owns native
-inline syntaxes, rendered-artifact link or attachment support, readable
-fallback, client version, verification time, expiry or review triggers, and
+inline syntaxes, rendered-artifact link or attachment support, client version,
+verification time, expiry or review triggers, and
 evidence. The index is generated from those records. An assistant must not
 infer rendering support from another client, use stale evidence silently, or
 claim that a source block was rendered.
+
+Every surface also provides the same pure-ASCII diagram baseline in a fenced
+`text` block. ASCII presentation does not depend on capability evidence;
+native inline rendering and artifacts are optional supplements.
 
 Targets may define request aliases such as `alatyr-ai-inventory`,
 `alatyr-suggest-ai <scope>`, `alatyr-improve-ai <item-id>`,
@@ -133,7 +137,8 @@ and conformance evidence fields.
 
 Maintainers can run `python3 tools/check_discussion_diagrams.py` to validate
 the source rule, target operation, flow, presentation template, manifest,
-module profile, help, routing, and all supported bridge capability entries.
+ASCII grammar and width limits, module profile, help, routing, and all
+supported bridge capability entries.
 
 Maintainers can run
 `python3 tools/check_assistant_surface_conformance.py` to verify that every

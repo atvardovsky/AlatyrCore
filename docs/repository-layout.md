@@ -81,9 +81,10 @@ surfaces and required bridge path, loading, priority, skill/prompt,
 permission, routing, limitation, and conformance fields.
 
 `tools/check_discussion_diagrams.py` validates the portable discussion-diagram
-rule and target operation, compact routing/capability projections, security,
-revision lineage, operation fixture, module, manifest, help, and per-assistant
-presentation contracts. It does not prove client rendering behavior.
+rule and ASCII grammar, target operation, compact routing/capability
+projections, security, revision lineage, operation fixture, module, manifest,
+help, and per-assistant presentation contracts. It does not prove client
+rendering behavior.
 
 `tools/prepare_diagram_conformance_run.py` renders the same operation fixture
 prompt for one or all supported assistant surfaces on Linux, macOS, and

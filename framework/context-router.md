@@ -49,6 +49,7 @@ A target context router should define:
   relationships
 - use-when signals
 - required context paths
+- conditional context paths paired with explicit load conditions
 - expansion triggers
 - approval gates
 - validation or manual review
@@ -70,6 +71,11 @@ the full target catalog only for the bare `Alatyr` entry, ambiguity, or
 operation/adapter repair. Intent overlays such as diagram requests may compose
 with code, security, or other base profiles without duplicating the operation
 candidate in every profile.
+
+When an overlay needs a detailed reference only for a subset of requests, put
+the path and its load condition in `conditional_context` instead of the default
+`required_context`. Conditional paths must remain machine-visible to routing
+checks, but they do not count as loaded until their named condition is true.
 
 The router should use the same canonical profile names as
 `context-profiles.md` unless the target adapter records a deliberate local
