@@ -96,13 +96,14 @@ def build_report() -> dict[str, Any]:
     for name, overlay in router.get("intent_overlays", {}).items():
         reference, contract = descriptor(overlay)
         intent_contracts[name] = (reference, contract)
+        surface_context = [default_capability] if name == "diagram-request" else []
         intent_overlays[name] = measure(
             [
                 value
                 for value in [
                     reference,
                     *contract.get("required_context", []),
-                    default_capability,
+                    *surface_context,
                 ]
                 if value
             ]
@@ -131,6 +132,35 @@ def build_report() -> dict[str, Any]:
     diagram_compact = measure([value for value in diagram_compact_refs if value])
     diagram_full_reference = measure(
         [value for value in diagram_full_reference_refs if value]
+    )
+
+    architecture_reference, architecture_overlay = intent_contracts.get(
+        "architecture-request", (None, {})
+    )
+    architecture_conditional_refs = [
+        entry.get("path")
+        for entry in architecture_overlay.get("conditional_context", [])
+        if isinstance(entry, dict) and isinstance(entry.get("path"), str)
+    ]
+    architecture_compact_refs = [
+        operation_routing.get("index", ""),
+        architecture_reference,
+        *architecture_overlay.get("required_context", []),
+    ]
+    architecture_full_reference_refs = [
+        operation_routing.get("catalog", ""),
+        ".ai/assistant/help.md",
+        ".ai/assistant/flows/operation-routing.flow.md",
+        ".ai/assistant/module-profile.md",
+        architecture_reference,
+        *architecture_overlay.get("required_context", []),
+        *architecture_conditional_refs,
+    ]
+    architecture_compact = measure(
+        [value for value in architecture_compact_refs if value]
+    )
+    architecture_full_reference = measure(
+        [value for value in architecture_full_reference_refs if value]
     )
 
     migration_reference, migration = descriptor(router.get("migration_routing", {}))
@@ -165,6 +195,14 @@ def build_report() -> dict[str, Any]:
                 "full_reference_union": diagram_full_reference,
                 "word_reduction_percent": reduction_percent(
                     diagram_compact["words"], diagram_full_reference["words"]
+                ),
+            },
+            "architecture-assistance": {
+                "compact": architecture_compact,
+                "full_reference_union": architecture_full_reference,
+                "word_reduction_percent": reduction_percent(
+                    architecture_compact["words"],
+                    architecture_full_reference["words"],
                 ),
             }
         },

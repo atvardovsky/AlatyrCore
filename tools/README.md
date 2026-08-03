@@ -78,6 +78,27 @@ py -3 .\tools\check_all.py
 py -3 .\tools\check_all.py --list
 ```
 
+## Architecture Knowledge Check
+
+`check_architecture_knowledge.py` validates the portable architecture
+knowledge rule and the target architecture index, machine-readable catalog,
+architecture-assistance operation, lazy context route, discussion and record
+templates, gates, source-of-truth entry, manifest paths, and optional module.
+It validates framework and template contracts; it cannot establish whether a
+target project's architecture claims are true.
+
+Linux or macOS:
+
+```sh
+python3 tools/check_architecture_knowledge.py
+```
+
+Windows PowerShell or Command Prompt:
+
+```powershell
+py -3 .\tools\check_architecture_knowledge.py
+```
+
 ## Approval Template Check
 
 `check_approval_template.py` validates the target

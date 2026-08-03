@@ -46,6 +46,8 @@ Operation help exists to:
   merge-check requests without loading team state for unrelated work
 - route diagram discussion to a portable ASCII baseline, with
   capability-checked richer presentation when available
+- route architecture inventory, explanation, pattern discussion, comparison,
+  review, and documentation through a compact project-owned catalog
 
 ## Canonical Operation Catalog
 
@@ -198,6 +200,8 @@ Typical operation categories include:
 - adapter recheck after framework update
 - framework upgrade impact review
 - target source-of-truth drift review
+- project architecture inventory, explanation, pattern discussion,
+  alternative comparison, review, and supporting-documentation maintenance
 - blueprint-driven product change
 - large-task orchestration for cross-boundary, multi-workstream, or resumable
   work
@@ -234,6 +238,14 @@ assistant must use the current surface's compact recorded presentation
 capability and must not claim native rendering when it used an artifact link
 or ASCII only. Exact aliases should resolve through the checked compact
 operation index rather than loading the full catalog.
+
+For an enabled architecture-knowledge module, aliases may include `Alatyr
+architecture`, `Alatyr architecture inventory`, `explain architecture`,
+`discuss architecture pattern`, `compare architecture options`, `review
+architecture`, or `document architecture`. Route all of them to one
+architecture-assistance operation, infer the mode from a clear request, and
+start from the compact project catalog. Discussion remains read-only unless
+documentation or accepted-decision intent and allowed actions are explicit.
 
 For AI infrastructure, aliases may include `alatyr-ai-inventory`, which routes
 to an inventory flow, or `alatyr-adaptation <source>` and

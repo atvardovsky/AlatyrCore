@@ -26,6 +26,13 @@ installed Alatyr Core adapter.
 - Pre-change preview: `{SHOWN_SKIPPED_OR_PENDING_WITH_REASON}`
 - Approved Git diff base, when scoped approval applies: `{APPROVED_DIFF_BASE_OR_NONE}`
 - Explicit machine-readable approval records: `{APPROVAL_RECORD_JSON_PATHS_OR_NONE}`
+- Architecture scope: `{ARCHITECTURE_AREA_OR_PATTERN_IDS_OR_NONE}`
+- Architecture mode:
+  `{INVENTORY_EXPLAIN_DISCUSS_COMPARE_REVIEW_DOCUMENT_OR_NONE}`
+- Architecture persistence intent:
+  `{RESPONSE_ONLY_PERSIST_PROJECT_DOCS_OR_ACCEPT_WITH_APPROVAL_OR_NONE}`
+- Architecture decision intent:
+  `{EXPLORATION_PROPOSE_REUSE_ADAPT_INTRODUCE_DEPRECATE_ACCEPT_OR_NONE}`
 
 ## Allowed Actions Guide
 

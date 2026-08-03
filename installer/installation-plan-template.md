@@ -36,6 +36,9 @@ List what must not be changed.
 - Source-of-truth registry:
 - Consistency-map need, fact-ID strategy, and relationship coverage:
 - Consistency-map staleness owner and validation:
+- Architecture-knowledge owner, decision authority, canonical sources, compact
+  catalog, evidence revision, and validation:
+- Architecture areas, patterns/items, states, contradictions, and known gaps:
 - Context router schema and lazy descriptors:
 - Context profiles:
 - Context-router bootstrap references:
@@ -63,6 +66,8 @@ List what must not be changed.
 - Diagram discussion operation, presentation template, source status, stable
   identity/lineage, portable ASCII layout/width, sensitivity/redaction,
   external-renderer, and artifact retention/sharing policy:
+- Architecture-assistance operation, intent route, pattern/area/result
+  templates, documentation owner, and accepted-decision handoff:
 - Adapter output contracts:
 - Risk and approval model:
 - Security, privacy, live-service, destructive-operation, dependency, and
@@ -148,6 +153,17 @@ Include `.ai/project/consistency-map.json` when the target has enough project
 areas or competing surfaces to benefit from bounded changed-fact relationship
 traversal. Populate it from target evidence or leave the module blocked; do not
 infer complete relationships from filenames.
+
+Include `.ai/project/architecture/README.md` and
+`.ai/project/architecture/catalog.json` when architecture knowledge is
+enabled. Record project owners, decision authority, selected evidence, item
+states, validation, revision, contradictions, and known gaps. Reference
+existing canonical architecture docs and decisions instead of duplicating
+them.
+
+Include the architecture-assistance flow, lazy intent descriptor, and
+pattern/area/result templates only when the module is enabled. `docs-only`
+must not promote observed or proposed items to accepted architecture.
 
 Include `.ai/assistant/maturity-profile.md` to report readiness by task area
 and blocking criteria.
@@ -283,6 +299,8 @@ decisions, and external references before schema changes.
 - AI infrastructure inventory report rules:
 - AI infrastructure recommendation report rules:
 - Post-install/update assistant chat-message rules:
+- Architecture knowledge catalog, item-state, evidence-revision, and
+  documentation-maintenance rules:
 - Diagram source format:
 - Human visual format:
 - Render or manual-review policy:

@@ -49,6 +49,10 @@ maintain them:
   blueprint creation or repair.
 - `consistency-map`: machine-readable changed-fact relationships and bounded
   impact closure for targets with many project areas or competing surfaces.
+- `architecture-knowledge`: project-owned architecture index and compact
+  catalog, pattern and area records, evidence-based architecture discussion,
+  alternative comparison, review, documentation maintenance, and accepted
+  decision handoff.
 - `diagrams`: diagram source, visual artifact, render or manual-review, drift,
   discussion presentation, generated capability index, per-assistant
   capability/freshness records, captured result conformance, security/privacy,
@@ -137,6 +141,9 @@ Reject module-profile work that:
   decision-owner evidence, storage/privacy policy, or conflict review
 - enables a consistency map without target-owned fact IDs, relationship
   coverage, or staleness handling
+- enables architecture knowledge without a project owner, compact catalog,
+  evidence revision, status separation, selected-source routing, and
+  validation or manual review
 - enables diagrams without portable ASCII presentation, source/visual
   ownership, compact assistant capability evidence, security/privacy policy,
   revision lineage, and render or manual-review evidence

@@ -30,6 +30,11 @@ Replace placeholders with target facts before accepting installation.
   `.ai/assistant/templates/diagram-presentation.md`,
   `.ai/assistant/assistant-capabilities.json`, and its human bridge-matrix
   reference
+- Architecture knowledge: `.ai/project/architecture/README.md`,
+  `.ai/project/architecture/catalog.json`,
+  `.ai/assistant/context/intents/architecture-request.json`,
+  `.ai/assistant/flows/architecture-assistance.flow.md`, and architecture
+  pattern/area/result templates
 - AI infrastructure inventory:
   `.ai/assistant/flows/ai-infrastructure-inventory.flow.md`
 - AI infrastructure recommendation:
@@ -96,13 +101,16 @@ Replace placeholders with target facts before accepting installation.
 10. Check project blueprint/source-of-truth ownership, registry entries,
    consistency-map nodes and edges when enabled, missing facts, stale
    relationships, and drift.
+    When architecture knowledge is enabled, check catalog ownership, decision
+    authority, item states, selected evidence, revision freshness,
+    documentation routes, contradictions, and accepted-decision handoff.
 11. Check security, live-service, destructive-operation, dependency, credential,
    diagram, generated-artifact, validation, and lifecycle policies.
 12. Check task-specific maturity using `.ai/assistant/maturity-profile.md` when
    it exists.
 13. Check bridge behavior using `.ai/assistant/bridge-capability-matrix.md`.
     When diagrams are enabled, verify discussion routing, source/visual
-    ownership, inline or artifact capability claims, readable fallback, and
+    ownership, inline or artifact capability claims, portable ASCII, and
     stale-view evidence for every supported assistant.
 14. When team collaboration is enabled, preserve active task IDs and external
     references; check coordination backend direction, actors and authority,
@@ -139,6 +147,8 @@ Report:
   placeholders, and target-local checker evidence
 - blueprint/source-of-truth registry status
 - consistency-map relationship coverage and staleness status
+- architecture catalog owner, decision authority, states, selected evidence,
+  validation, contradictions, and revision status
 - context router and context profile status
 - module profile status
 - catalog, automatic routing, health, preview, help, AI infrastructure
@@ -151,7 +161,7 @@ Report:
 - development-pattern index schema, owner, retention/privacy policy, evidence
   references, and target-only optimization boundary
 - bridge capability matrix status
-- diagram discussion presentation, fallback, and source-revision status
+- diagram discussion presentation, ASCII readability, and source-revision status
 - target validation run or unresolved
 - approvals needed
 - task-specific maturity level and gaps

@@ -47,6 +47,8 @@ changes.
   lineage, sensitivity/redaction policy, external-renderer policy, assistant
   inline or artifact capabilities, portable ASCII baseline, and source-revision
   evidence:
+- Existing architecture index/catalog, pattern and area docs, owners, decision
+  authority, states, evidence revisions, validation, and contradictions:
 - Existing assistant instruction files:
 - Scaffolding helper used or planned:
 - Scaffold profile (`core` / `standard` / `full` / not used):
@@ -152,6 +154,8 @@ Collect target-specific facts before writing project docs:
 
 - product purpose
 - architecture/module facts
+- architecture patterns and other items, including observed versus intended
+  status, scope, owners, decisions, constraints, and validation
 - use cases or main workflows
 - blueprint-driven change or equivalent product-change workflow
 - business/domain rules
@@ -213,6 +217,9 @@ Collect target-specific facts before writing project docs:
   expectations
 - diagram-discussion operation, ASCII template, presentation template, and
   bridge capability expectations when the diagrams module is enabled
+- architecture-assistance operation, compact catalog, lazy intent route,
+  pattern/area/result templates, and acceptance boundaries when the
+  architecture-knowledge module is enabled
 
 ## 6. Assistant Compatibility
 
@@ -329,6 +336,9 @@ Final evidence must say:
   path leakage, stale checker statements, duplicate profile references,
   unresolved owner placeholders, and target-local checker status
 - module profile created or updated
+- architecture knowledge is enabled, skipped, deferred, or blocked from
+  target evidence; enabled adapters define owner, decision authority, compact
+  catalog, states, selected-source routing, validation, and known gaps
 - task-specific maturity profile created or updated
 - bridge capability matrix created or updated
 - portable ASCII baseline plus per-assistant inline/artifact capabilities,
@@ -342,6 +352,9 @@ Final evidence must say:
 - diagram-discussion flow, ASCII template, presentation template, stable lineage,
   security/privacy/external-renderer policy, and operation conformance fixture
   added, skipped, or blocked from target evidence
+- architecture index/catalog, assistance flow, intent route, and
+  pattern/area/result templates added, migrated, skipped, or blocked without
+  promoting observed implementation to accepted architecture
 - adapter output contracts added or skipped
 - large-task flow and operation-packet template added or skipped
 - team operating model, work registry, team-active overlay, task/handoff/

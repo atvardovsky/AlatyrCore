@@ -22,6 +22,8 @@ facts, or target skill infrastructure.
 
 - product purpose
 - architecture facts
+- optional architecture knowledge index and compact catalog for selected
+  patterns, areas, states, owners, evidence revisions, and documentation routes
 - blueprint or equivalent source-of-truth facts
 - source-of-truth registry entries
 - optional machine-readable consistency relationships for bounded impact
@@ -44,6 +46,8 @@ Replace this section with the actual target project map.
 - bridge matrix and indexed per-assistant capability evidence
 - portable ASCII diagram layout and readability rules
 - flows
+- architecture-assistance flow and pattern/area/result record templates when
+  the project architecture-knowledge module is enabled
 - gates
 - prompts
 - skills

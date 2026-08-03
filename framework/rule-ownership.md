@@ -75,6 +75,13 @@ Rule IDs: `ALATYR-CHANGE-001`
 Derived surfaces: product-change operation, blueprint-driven target flow,
 large-task orchestration, documentation and diagram sync.
 
+Category: `ARCHITECTURE`
+Owner: `.ai/framework/architecture-knowledge.md`
+Rule IDs: `ALATYR-ARCHITECTURE-001`
+Derived surfaces: target architecture index and catalog, pattern and area
+templates, architecture-assistance operation and intent route, architecture
+discussion result, installation and update planning, gates, and validation.
+
 Category: `DIAGRAM`
 Owner: `.ai/framework/diagram-guidance.md`
 Rule IDs: `ALATYR-DIAGRAM-001`

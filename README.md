@@ -194,6 +194,10 @@ Additional source-repository helpers include:
   resolution
 - optional consistency-map guidance and source checks for bounded fact,
   contract, area, system, and adapter impact traversal
+- optional project-owned architecture knowledge with a compact catalog,
+  evidence-backed pattern and area records, discussion and comparison,
+  architecture review, documentation maintenance, and accepted-decision
+  handoff
 - compact AI infrastructure routing that selects one skill, prompt, gate,
   checker, tool/MCP config, bridge, or wrapper plus its permissions, gates,
   validation, and output contract
@@ -363,6 +367,8 @@ A mature target installation usually has:
 - `.ai/project/source-of-truth-registry.md`
 - `.ai/project/development-evidence.json` when pattern-based recommendations are
   enabled
+- `.ai/project/architecture/README.md` and
+  `.ai/project/architecture/catalog.json` when architecture knowledge is enabled
 - `.ai/project/team-operating-model.md` when team collaboration is enabled
 - `.ai/project/context` or equivalent project source-of-truth docs
 - `.ai/assistant/contour.md`
@@ -376,6 +382,9 @@ A mature target installation usually has:
 - `.ai/assistant/assistant-capabilities/<assistant>.json` when diagrams or
   client-specific presentation behavior is enabled
 - `.ai/assistant/templates/ascii-diagram.md` when diagram discussion is enabled
+- `.ai/assistant/context/intents/architecture-request.json`,
+  `.ai/assistant/flows/architecture-assistance.flow.md`, and architecture
+  pattern/area/result templates when architecture knowledge is enabled
 - `.ai/assistant/ai-infrastructure-router.json` when AI infrastructure is used
 - `.ai/assistant/team/context-overlay.json` and
   `.ai/assistant/team/work-registry.json` when team collaboration is enabled

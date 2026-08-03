@@ -10,10 +10,10 @@ Target repository path:
 <path-or-repo-url-to-target-project>
 
 Operation type:
-<optional; help/adapter-health/create-project-blueprint/recheck-after-installation/recheck-after-framework-update/product-change/large-task/team-status/team-task/team-conflict-review/team-handoff/team-decision/team-review/team-merge-check/logical-integrity-review/diagram-discussion/ai-infrastructure-inventory/ai-infrastructure-recommendation/skill-adaptation/drift-review/documentation-sync/adapter-maturity-review/other>
+<optional; help/adapter-health/create-project-blueprint/recheck-after-installation/recheck-after-framework-update/product-change/large-task/team-status/team-task/team-conflict-review/team-handoff/team-decision/team-review/team-merge-check/logical-integrity-review/architecture-assistance/diagram-discussion/ai-infrastructure-inventory/ai-infrastructure-recommendation/skill-adaptation/drift-review/documentation-sync/adapter-maturity-review/other>
 
 Operation alias, if used:
-<for example: Alatyr diagram, Alatyr team status, Alatyr claim <task-id>, Alatyr handoff <task-id>, Alatyr review <task-id>, alatyr-ai-inventory, alatyr-suggest-ai <scope>, alatyr-improve-ai <item-id>, alatyr-adaptation <source>, or alatyr-add-ai <source>>
+<for example: Alatyr architecture, Alatyr diagram, Alatyr team status, Alatyr claim <task-id>, Alatyr handoff <task-id>, Alatyr review <task-id>, alatyr-ai-inventory, alatyr-suggest-ai <scope>, alatyr-improve-ai <item-id>, alatyr-adaptation <source>, or alatyr-add-ai <source>>
 
 Goal:
 <what the assistant should accomplish>
@@ -56,6 +56,12 @@ Diagram purpose, scope, and persistence intent, when applicable:
 
 Current assistant surface and preferred presentation, when applicable:
 <surface-id; ascii/native-inline/rendered-artifact/no preference>
+
+Architecture scope, mode, and persistence intent, when applicable:
+<area-or-pattern IDs; inventory/explain/discuss/compare/review/document; response-only or persisted>
+
+Architecture decision intent, when applicable:
+<exploration only/propose/reuse/adapt/introduce/deprecate/accept with approval>
 
 Allowed actions meaning:
 - read-only: inspect target files and report only; no file changes.

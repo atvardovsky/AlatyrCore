@@ -53,6 +53,20 @@
       "final_evidence": ["sources inspected", "facts recorded", "gaps and approvals"]
     },
     {
+      "id": "architecture-assistance",
+      "title": "Architecture assistance",
+      "summary": "Inventory, explain, discuss, compare, review, or document project architecture and patterns from target evidence.",
+      "use_when": ["architecture inventory", "architecture explanation", "pattern discussion", "architecture alternative comparison", "architecture review", "architecture documentation"],
+      "context_profiles": ["docs-local", "architecture-change", "data-change", "security-sensitive"],
+      "required_module": "architecture-knowledge",
+      "flow": ".ai/assistant/flows/architecture-assistance.flow.md",
+      "minimum_inputs": ["architecture question or scope", "non-goals when known", "decision intent when known"],
+      "allowed_actions": ["read-only", "docs-only", "full-with-approval"],
+      "preview": "risk-gated",
+      "aliases": ["Alatyr architecture", "Alatyr architecture inventory", "explain architecture", "discuss architecture pattern", "compare architecture options", "review architecture", "document architecture"],
+      "final_evidence": ["selected architecture evidence and states", "drivers options and pattern-proliferation result", "documentation or change handoff", "validation and residual risk"]
+    },
+    {
       "id": "recheck-after-installation",
       "title": "Recheck installation",
       "summary": "Verify a newly installed target adapter against repository evidence.",

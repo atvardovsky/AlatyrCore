@@ -68,6 +68,16 @@
         "diagram-discussion"
       ],
       "required_module": "diagrams"
+    },
+    "architecture-request": {
+      "use_when": [
+        "architecture inventory explanation pattern discussion comparison review or documentation request"
+      ],
+      "descriptor": ".ai/assistant/context/intents/architecture-request.json",
+      "operation_candidates": [
+        "architecture-assistance"
+      ],
+      "required_module": "architecture-knowledge"
     }
   },
   "consistency_routing": {

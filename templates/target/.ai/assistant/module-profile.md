@@ -125,6 +125,24 @@ Approval needs: `{CONSISTENCY_MAP_APPROVAL_NEEDS}`
 Residual risk: `{CONSISTENCY_MAP_RESIDUAL_RISK}`
 Next action: `{CONSISTENCY_MAP_NEXT_ACTION}`
 
+Module: `architecture-knowledge`
+State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+Owner or file: `.ai/project/architecture/README.md`
+Required files:
+
+- `.ai/project/architecture/README.md`
+- `.ai/project/architecture/catalog.json`
+- `.ai/assistant/flows/architecture-assistance.flow.md`
+- `.ai/assistant/templates/architecture-pattern.md`
+- `.ai/assistant/templates/architecture-area.md`
+- `.ai/assistant/templates/architecture-discussion-result.md`
+
+Reason: `{REASON}`
+Validation or review: `{VALIDATION_OR_REVIEW}`
+Approval needs: `{ARCHITECTURE_KNOWLEDGE_APPROVAL_NEEDS}`
+Residual risk: `{ARCHITECTURE_KNOWLEDGE_RESIDUAL_RISK}`
+Next action: `{ARCHITECTURE_KNOWLEDGE_NEXT_ACTION}`
+
 Module: `diagrams`
 State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `{TARGET_DIAGRAM_MODULE_OWNER_OR_FILE}`

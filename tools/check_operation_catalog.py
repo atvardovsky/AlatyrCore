@@ -29,6 +29,7 @@ EXPECTED_OPERATIONS = {
     "help",
     "adapter-health",
     "create-project-blueprint",
+    "architecture-assistance",
     "recheck-after-installation",
     "recheck-after-framework-update",
     "product-change",
@@ -82,6 +83,7 @@ ALLOWED_MODULES = {
     "large-task-orchestration",
     "team-collaboration",
     "diagrams",
+    "architecture-knowledge",
 }
 ALLOWED_PREVIEW = {"never", "risk-gated"}
 ALLOWED_PROFILES = {

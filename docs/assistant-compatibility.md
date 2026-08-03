@@ -110,6 +110,14 @@ Every surface also provides the same pure-ASCII diagram baseline in a fenced
 `text` block. ASCII presentation does not depend on capability evidence;
 native inline rendering and artifacts are optional supplements.
 
+When `architecture-knowledge` is enabled, every supported surface routes
+`Alatyr architecture` and equivalent requests to the canonical architecture
+assistance flow. The bridge loads the compact project architecture catalog
+first and expands to area records, pattern records, decisions, diagrams, and
+implementation evidence only when the discussion needs them. Bridges must not
+copy project architecture facts or collapse `observed`, `proposed`, and
+`accepted` statuses into one claim.
+
 Targets may define request aliases such as `alatyr-ai-inventory`,
 `alatyr-suggest-ai <scope>`, `alatyr-improve-ai <item-id>`,
 `alatyr-adaptation <source>`, or `alatyr-add-ai <source>`. Assistant-specific
@@ -139,6 +147,11 @@ Maintainers can run `python3 tools/check_discussion_diagrams.py` to validate
 the source rule, target operation, flow, presentation template, manifest,
 ASCII grammar and width limits, module profile, help, routing, and all
 supported bridge capability entries.
+
+Maintainers can run `python3 tools/check_architecture_knowledge.py` to validate
+the portable architecture rule, target catalog, operation, lazy route,
+templates, gates, manifest paths, and module contract shared by all supported
+assistant surfaces.
 
 Maintainers can run
 `python3 tools/check_assistant_surface_conformance.py` to verify that every

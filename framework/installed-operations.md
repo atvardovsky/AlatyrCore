@@ -7,8 +7,8 @@ Installed operations are requests to an assistant working inside a target
 repository that already has Alatyr Core files and adapter facts. They include
 creating or repairing project blueprints, rechecking adapter maturity after a
 framework update, reviewing drift, inventorying, recommending, or adapting AI
-infrastructure, coordinating team tasks, or running a guided product-change
-workflow.
+infrastructure, discussing project architecture and patterns, coordinating
+team tasks, or running a guided product-change workflow.
 
 Concrete project facts, validation commands, reports, prompts, and update
 cadence belong to the target repository adapter.
@@ -23,14 +23,16 @@ An installed adapter should support these operation categories:
 - adapter recheck after Alatyr Core installation or upgrade
 - framework upgrade impact review
 - target source-of-truth drift review
+- optional architecture inventory, explanation, pattern discussion,
+  alternative comparison, review, and supporting-documentation maintenance
 - blueprint-driven product change
 - large-task orchestration for cross-boundary, multi-workstream, or resumable
   work
 - optional team status, task start/claim/checkpoint/release, concurrent-work
   conflict review, handoff, decision, team review, and merge readiness
 - logical integrity review
-- discussion diagram creation, comparison, or revision with a portable visible
-  fallback
+- discussion diagram creation, comparison, or revision with a portable ASCII
+  baseline
 - AI infrastructure inventory for existing skills, prompts, wrappers, bridge
   files, rules, MCP/tool configs, gates, checkers, and prompts
 - AI infrastructure recommendation for adding new items or improving,
@@ -69,6 +71,8 @@ A post-install request should state:
 - pre-change preview state when risk-gated preview applies
 - diagram purpose, target assistant surface, persistence intent, and preferred
   presentation mode when diagram discussion applies
+- architecture question, scope, non-goals, decision intent, and selected
+  catalog items when architecture assistance applies
 - expected final evidence
 - output contract when the target adapter requires a durable installation,
   framework-update, or adapter-recheck evidence shape
@@ -132,6 +136,13 @@ architecture`, or an adapted target-language alias, route to
 discussion read-only unless the user asks to persist the source or visual
 artifact and the allowed actions permit it.
 
+If the request uses `Alatyr architecture`, `Alatyr architecture inventory`,
+`explain architecture`, `discuss architecture pattern`, `compare architecture
+options`, `review architecture`, `document architecture`, or an adapted
+target-language alias, route to `architecture-assistance` when the project
+architecture knowledge module is available. Start from the compact catalog
+and infer inventory, explain, discuss, compare, review, or document mode.
+
 ## Required Flow
 
 For installed operations:
@@ -172,35 +183,39 @@ For installed operations:
 10. Activate the team-active overlay only for enabled team coordination.
     Compare active tasks by changed facts and owners before secondary file
     overlap; keep unrelated tasks and history outside context.
-11. Use blueprint-driven change when accepted project facts may change.
-12. Use AI infrastructure recommendation when the user asks what should be
+11. Use architecture assistance for architecture inventory, explanation,
+    pattern discussion, alternative comparison, review, or supporting docs.
+    Start from the compact catalog, keep observed and intended architecture
+    distinct, and route accepted decisions separately.
+12. Use blueprint-driven change when accepted project facts may change.
+13. Use AI infrastructure recommendation when the user asks what should be
    added or improved, or when bounded evidence shows a recurring capability
    gap. Use selected target development-pattern evidence, evaluate existing
    items before proposing a new one, and do not promote target observations
    directly into portable framework changes.
-13. Use skill adaptation when prompts, skills, wrappers, or third-party
+14. Use skill adaptation when prompts, skills, wrappers, or third-party
    assistant infrastructure change.
    Select the target AI infrastructure route and item IDs before loading item
    content, permissions, gates, validation, or import policy.
-14. Use prompt-injection policy for imported, external, remote, pasted, package,
+15. Use prompt-injection policy for imported, external, remote, pasted, package,
    plugin, or unknown AI infrastructure.
-15. Use AI infrastructure inventory before adding, importing, replacing, or
+16. Use AI infrastructure inventory before adding, importing, replacing, or
    removing assistant infrastructure.
-16. Use adapter maturity review when the request is broad, post-install, or
+17. Use adapter maturity review when the request is broad, post-install, or
     post-upgrade.
-17. Use diagram discussion when the user asks to see or iteratively revise a
+18. Use diagram discussion when the user asks to see or iteratively revise a
     visual model. Select presentation mode from the target diagram policy and
     current compact assistant-capability entry, keep drafts non-canonical,
     preserve stable ID/revision lineage, classify sensitive content and
     external rendering, and always retain a bounded portable ASCII view.
-18. Record approval evidence when protected-change scope requires it. When
+19. Record approval evidence when protected-change scope requires it. When
     scoped approval is used, enforce the complete changed path set against
     explicitly selected machine-readable records bound to the approved diff
     base.
-19. Use the target adapter output contract when the operation follows
+20. Use the target adapter output contract when the operation follows
     installation, framework update, or adapter recheck.
-20. Run target validation that exists, or record unresolved checks.
-21. Report changed facts, re-derived invariants, review-item reconciliation,
+21. Run target validation that exists, or record unresolved checks.
+22. Report changed facts, re-derived invariants, review-item reconciliation,
    files inspected, files changed, approval-scope enforcement, validation,
    skipped checks, and residual risk.
 
@@ -235,9 +250,31 @@ to the applicable decision or product-change operation before those facts are
 treated as accepted.
 
 The result reports draft/source-of-truth status, source revision, presentation
-mode, source or artifact path when present, assumptions, validation, and a text
-fallback. Native inline rendering and file attachment remain client
+mode, source or artifact path when present, assumptions, validation, and the
+portable ASCII view. Native inline rendering and file attachment remain client
 capabilities, not framework guarantees.
+
+## Architecture Assistance
+
+Architecture assistance is an optional target operation. It inventories,
+explains, discusses, compares, reviews, or documents selected project
+architecture items from a compact project-owned catalog and repository
+evidence.
+
+Read-only work may recommend reuse, adaptation, introduction, restriction, or
+retirement of a pattern, but the recommendation remains proposed. Under
+`docs-only`, supporting docs may record observed, proposed, contradicted, or
+unknown items; they must not accept architecture. Accepted, preferred,
+restricted, or deprecated status requires the target decision owner and
+approval policy, then handoff to blueprint-driven change and logical integrity
+review.
+
+Architecture discussion should identify the problem and common drivers,
+separate observed from intended architecture, and evaluate no-change, reuse,
+adaptation, and new-pattern options before adding another approach. The result
+reports selected evidence, catalog revision, states, alternatives, pattern-
+proliferation result, documentation or change handoff, validation, and residual
+risk.
 
 ## Large Or Resumable Operations
 

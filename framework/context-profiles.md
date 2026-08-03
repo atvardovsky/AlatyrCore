@@ -29,6 +29,12 @@ Load only the selected descriptor. Intent, migration, consistency, and
 task-scale descriptors compose with that profile when their trigger applies;
 they do not belong inline in every profile or in mandatory bootstrap.
 
+Architecture inventory, explanation, pattern discussion, comparison, review,
+and documentation use an intent overlay over the smallest base profile. Start
+with the compact project architecture catalog and selected item evidence. Do
+not load the full `architecture-change` profile until an accepted decision or
+crossed boundary requires change execution context.
+
 ## Canonical Profiles
 
 Use these profile names unless a target adapter deliberately renames them:

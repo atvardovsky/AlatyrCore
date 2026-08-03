@@ -45,6 +45,11 @@ Every project using this framework must define:
   constraints used when relationship mapping is unavailable
 - machine-readable consistency map when the target needs bounded fact-to-
   contract, area, system, and adapter impact traversal
+- project architecture index and compact catalog when the target enables
+  architecture inventory, explanation, pattern discussion, comparison,
+  review, or supporting-documentation maintenance; entries distinguish
+  observed, proposed, accepted, preferred, restricted, deprecated,
+  contradicted, and unknown states with evidence revision
 - blueprint-driven change or equivalent product-change workflow owners
 - use-case, business-rule, data-model, architecture, and runtime-flow sources
   when those concerns exist in the project
@@ -143,6 +148,8 @@ An adapter may provide:
   adapter-recheck work
 - source-of-truth registry reports or drift reports
 - consistency-map relationship coverage, impact-closure, or staleness reports
+- architecture catalog, pattern/area documentation, selected evidence,
+  decision-state, comparison, and review reports
 - context router drift reports or deterministic routing checks
 - task-specific maturity reports
 - bridge capability or conformance reports

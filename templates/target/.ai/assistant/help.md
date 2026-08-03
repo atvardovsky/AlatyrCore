@@ -60,6 +60,13 @@ Use when: the user asks for Alatyr status, doctor, or current adapter health.
 Flow: `.ai/assistant/flows/adapter-health.flow.md`
 Minimum input: optional health scope. Allowed actions are `read-only`.
 
+Operation: `architecture-assistance`
+Use when: the user asks to inventory, explain, discuss, compare, review, or
+document project architecture, patterns, boundaries, or constraints.
+Flow: `.ai/assistant/flows/architecture-assistance.flow.md`
+Minimum input: architecture question or scope. Starts `read-only` unless
+documentation or accepted-decision intent is explicit.
+
 Operation: `product-change`
 Use when: accepted behavior, architecture, data, runtime, or public contract
 may change.
@@ -86,9 +93,10 @@ state without editing.
 Flow: `.ai/assistant/flows/team-task-coordination.flow.md`
 Minimum input: optional team, area, actor, or task scope.
 
-Use `Alatyr diagram` for a capability-checked diagram view. Use
-`Alatyr team status` for the compact team view. Detailed team, blueprint, integrity,
-update, documentation, and AI-infrastructure operations and aliases are in
+Use `Alatyr architecture` for project pattern and architecture discussion. Use
+`Alatyr diagram` for a capability-checked diagram view and `Alatyr team status`
+for the compact team view. Detailed team, blueprint, integrity, update,
+documentation, and AI-infrastructure operations and aliases are in
 `.ai/assistant/help-reference.md`.
 
 ## Minimal Request Shape

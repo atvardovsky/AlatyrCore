@@ -33,6 +33,7 @@ Categories should be short uppercase labels such as:
 - `SAFETY`
 - `INTEGRITY`
 - `CHANGE`
+- `ARCHITECTURE`
 - `DIAGRAM`
 - `ADAPTER`
 - `MODULE`
@@ -117,6 +118,17 @@ docs/diagram sync, and final evidence, reconciling related review items and
 using bounded workstreams plus final convergence when the change is large or
 resumable.
 Applies to: business, architecture, data, runtime, and public-contract changes.
+
+Rule ID: `ALATYR-ARCHITECTURE-001`
+Canonical source: `.ai/framework/architecture-knowledge.md`
+Commitment: keep a project-owned architecture catalog that distinguishes
+observed, proposed, accepted, preferred, restricted, deprecated,
+contradicted, and unknown items; discuss patterns from target evidence and
+common drivers; prefer existing-pattern reuse before proliferation; and route
+accepted decisions through normal ownership, approval, integrity, blueprint,
+implementation, documentation, diagram, and validation surfaces.
+Applies to: architecture inventory, explanation, pattern discussion,
+alternative comparison, architecture review, and documentation maintenance.
 
 Rule ID: `ALATYR-DIAGRAM-001`
 Canonical source: `.ai/framework/diagram-guidance.md`

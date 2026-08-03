@@ -67,6 +67,26 @@ Conflict resolver: `{ARCHITECTURE_DECISION_CONFLICT_RESOLVER}`
 Approval trigger: `{ARCHITECTURE_DECISION_APPROVAL_TRIGGER}`
 Final evidence: `{ARCHITECTURE_DECISION_FINAL_EVIDENCE}`
 
+### Fact Type: `architecture pattern`
+
+Fact type: `architecture pattern`
+Canonical owner: `{ARCHITECTURE_PATTERN_CANONICAL_OWNER}`
+Consistency level: `{ARCHITECTURE_PATTERN_CONSISTENCY_LEVEL}`
+Project area: `{ARCHITECTURE_PATTERN_PROJECT_AREA}`
+Consistency map node: `{ARCHITECTURE_PATTERN_FACT_ID_OR_MISSING}`
+Relationship coverage: `{ARCHITECTURE_PATTERN_RELATIONSHIP_COVERAGE_OR_GAP}`
+Invariant and dependency constraints: `{ARCHITECTURE_PATTERN_INVARIANTS_AND_DEPENDENCIES}`
+Derived surfaces:
+
+- `{ARCHITECTURE_PATTERN_DERIVED_SURFACE}`
+- `.ai/project/architecture/catalog.json`
+
+Sync direction: `{ARCHITECTURE_PATTERN_SYNC_DIRECTION}`
+Validation or manual review: `{ARCHITECTURE_PATTERN_VALIDATION_OR_REVIEW}`
+Conflict resolver: `{ARCHITECTURE_PATTERN_CONFLICT_RESOLVER}`
+Approval trigger: `{ARCHITECTURE_PATTERN_APPROVAL_TRIGGER}`
+Final evidence: `{ARCHITECTURE_PATTERN_FINAL_EVIDENCE}`
+
 ### Fact Type: `data model`
 
 Fact type: `data model`

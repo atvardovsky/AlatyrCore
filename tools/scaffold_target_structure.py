@@ -137,6 +137,7 @@ def projected_template_content(
         Path(".ai/assistant/context/migration-routing.json"),
         Path(".ai/assistant/context/consistency-routing.json"),
         Path(".ai/assistant/context/intents/diagram-request.json"),
+        Path(".ai/assistant/context/intents/architecture-request.json"),
         Path(".ai/assistant/context/task-scales/large-or-resumable.json"),
     }:
         operation_ids = {

@@ -46,6 +46,8 @@ in `framework/rule-registry.*` and `framework/rule-ownership.md`.
 - Adapter separation: `ALATYR-ADAPTER-001`
 - Module selection: `ALATYR-MODULE-001`
 - Installed operation control surface: `ALATYR-OPERATION-001`
+- Optional architecture knowledge and pattern discussion:
+  `ALATYR-ARCHITECTURE-001`
 - Discussion diagram presentation: `ALATYR-DIAGRAM-001`
 - Optional team collaboration: `ALATYR-TEAM-001`
 - Lifecycle and migration evidence: `ALATYR-LIFECYCLE-001`
@@ -57,7 +59,8 @@ Before creating files in the target repository, inspect:
 - existing AI instruction files
 - existing CODEOWNERS or equivalent file-owner metadata
 - README and public docs
-- architecture or design docs
+- architecture or design docs, decision records, documented patterns,
+  boundaries, constraints, quality attributes, and architecture validation
 - package/build files
 - test folders and test conventions
 - CI files and validation commands
@@ -95,6 +98,8 @@ The plan must identify:
 - source-of-truth registry needs
 - optional consistency-map need, fact-ID strategy, relationship coverage, and
   staleness owner
+- optional architecture-knowledge owner, compact catalog, pattern/area docs,
+  evidence revision, decision authority, and validation needs
 - task-specific maturity and bridge capability needs
 - diagram discussion, source/visual ownership, portable ASCII layout/width,
   per-assistant rich presentation, capability expiry/review triggers, captured-result
@@ -151,6 +156,10 @@ In a typical target repository:
    policy. Do not seed it with guessed history or raw conversations.
    Add `.ai/project/consistency-map.json` only when bounded relationship
    routing is enabled and target evidence can support it.
+   Add `.ai/project/architecture/README.md` and
+   `.ai/project/architecture/catalog.json` only when architecture knowledge is
+   enabled. Derive states and evidence from the target; do not infer accepted
+   architecture from implementation frequency.
    Add `.ai/project/team-operating-model.md` only when team collaboration is
    enabled, and derive actors, authority, priorities, review, backend,
    retention, and privacy from target evidence.
@@ -168,6 +177,8 @@ In a typical target repository:
    read-only adapter-health, risk-gated pre-change preview,
    diagram-discussion flow, ASCII layout template, and presentation template
    when the diagrams module is enabled,
+   architecture-assistance flow, pattern/area/result templates, and lazy
+   architecture intent routing when architecture knowledge is enabled,
    AI-infrastructure-inventory, AI-infrastructure-recommendation, adapter output contracts, source-access
    policy, prompt-injection policy, human and machine-readable approval-record
    templates,
@@ -200,8 +211,9 @@ After installation, use
 `installer/installed-operation-request-template.md` when asking an assistant to
 operate the installed target adapter. Typical requests include blueprint
 creation or repair, adapter recheck after framework updates, drift review,
-blueprint-driven product changes, diagram discussion, team coordination, AI infrastructure
-recommendation, and skill adaptation. Include Allowed actions
+blueprint-driven product changes, architecture and pattern discussion, diagram
+discussion, team coordination, AI infrastructure recommendation, and skill
+adaptation. Include Allowed actions
 when the request should be limited to `read-only`, `docs-only`,
 `adapter-only`, `code-and-tests`, or `full-with-approval`.
 
@@ -227,6 +239,13 @@ indexed surface record. It must also define classification,
 redaction, external-renderer, artifact storage/retention, stable diagram ID,
 and revision-lineage behavior rather than assuming one client behavior for all
 surfaces.
+
+When the target enables architecture knowledge, `Alatyr architecture` and
+equivalent inventory, explain, discuss, compare, review, or document requests
+route to `architecture-assistance`. Installation must record the architecture
+owner, decision authority, canonical sources, compact catalog, item states,
+evidence revision, validation, and known gaps. Observed code is not accepted
+architecture without target decision evidence.
 
 When the target enables team collaboration, aliases such as `Alatyr team
 status`, `Alatyr start`, `Alatyr claim`, `Alatyr conflicts`, `Alatyr

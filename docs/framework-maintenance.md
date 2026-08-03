@@ -69,6 +69,9 @@ Before accepting a change, check:
   available.
 - `python3 tools/check_framework_metadata.py` passes when rule-owner framework
   docs, owned rule IDs, rule dependencies, or task-profile scope changes.
+- `python3 tools/check_architecture_knowledge.py` passes when architecture
+  knowledge statuses, catalog records, pattern discussion, documentation
+  maintenance, lazy routing, operation output, gates, or module paths change.
 - `python3 tools/check_approval_template.py` passes when approval-record
   fields, machine-readable scope, diff-base binding, protected scope, plan
   hash, invalidation, usage result, evidence, or residual-risk guidance

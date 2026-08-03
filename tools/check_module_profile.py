@@ -35,6 +35,7 @@ CORE_ITEMS = [
 OPTIONAL_MODULES = [
     "blueprint-change",
     "consistency-map",
+    "architecture-knowledge",
     "diagrams",
     "ai-infrastructure",
     "multi-assistant-bridges",
@@ -189,6 +190,20 @@ def main() -> int:
     ]:
         if required not in diagrams:
             failures.append(f"module diagrams missing required file {required}")
+
+    architecture = module_blocks.get("architecture-knowledge", "")
+    for required in [
+        ".ai/project/architecture/README.md",
+        ".ai/project/architecture/catalog.json",
+        ".ai/assistant/flows/architecture-assistance.flow.md",
+        ".ai/assistant/templates/architecture-pattern.md",
+        ".ai/assistant/templates/architecture-area.md",
+        ".ai/assistant/templates/architecture-discussion-result.md",
+    ]:
+        if required not in architecture:
+            failures.append(
+                f"module architecture-knowledge missing required file {required}"
+            )
 
     installed_operations = module_blocks.get("installed-operations", "")
     for required in [

@@ -30,6 +30,8 @@ sync, logical integrity review, and final evidence.
 - change-risk classification and approval trigger model
 - first-class logical integrity review
 - blueprint-driven product-change workflow
+- optional project-owned architecture knowledge, pattern discussion, review,
+  and supporting-documentation maintenance
 - optional large-task orchestration with bounded workstreams, context receipts,
   resumable checkpoints, and final convergence
 - optional team collaboration with target-owned actors, priorities, shared
@@ -116,12 +118,16 @@ Those belong to a project contour or repository adapter.
   changed facts, source-of-truth decisions, repair sets, and evidence.
 - `.ai/framework/blueprint-driven-change.md`: portable product-change workflow
   from intent through source-of-truth, implementation, sync, and evidence.
+- `.ai/framework/architecture-knowledge.md`: portable project architecture
+  catalog, pattern discussion, alternative comparison, review, and
+  documentation-maintenance contract.
 - `.ai/framework/security-safety-guidance.md`: portable security and safety
   expectations for secrets, live services, dependencies, and destructive work.
 - `.ai/framework/prompt-injection.md`: policy for treating imported AI
   infrastructure instructions as untrusted data until normalized.
 - `.ai/framework/diagram-guidance.md`: portable diagram reasoning and
-  source/visual split, discussion presentation, fallback, and stale-view rules.
+  source/visual split, ASCII-first discussion presentation, and stale-view
+  rules.
 - `.ai/framework/ascii-diagrams.md`: portable ASCII grammar, layout, width,
   connector, sequence, hierarchy, state, and quantitative-chart rules.
 - `.ai/framework/skill-adaptation.md`: portable guidance for adapting skills,

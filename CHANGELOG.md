@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- Added optional project-owned architecture knowledge with canonical area and
+  pattern records, explicit observed/proposed/accepted lifecycle statuses,
+  source evidence, decision authority, and maintenance triggers.
+- Added one `architecture-assistance` operation for architecture inventory,
+  explanation, discussion, comparison, review, and documentation across every
+  supported assistant surface, with problem-first alternatives and an
+  approval-bound handoff into product changes.
+- Added a compact architecture intent route, target catalog and record
+  templates, installation/update integration, source and target validation,
+  and deterministic context-cost evidence for lazy architecture discussions.
 - Added a portable ASCII diagram grammar for architecture flows, sequences,
   hierarchies, states, relationship graphs, and quantitative charts.
 - Made bounded pure ASCII mandatory for every `diagram-discussion` result,

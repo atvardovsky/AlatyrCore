@@ -24,7 +24,8 @@ Framework core owns:
 - security, safety, live-service, and destructive-operation reasoning pattern
 - diagram reasoning, source/visual synchronization, discussion presentation,
   and portable ASCII baseline pattern
-- architecture discussion and approval pattern
+- project-owned architecture knowledge, pattern discussion, documentation,
+  accepted-decision handoff, and approval pattern
 - semantic change decision pattern
 - logical integrity review pattern
 - blueprint-driven product-change workflow pattern

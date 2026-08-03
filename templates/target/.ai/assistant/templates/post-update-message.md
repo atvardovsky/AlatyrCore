@@ -56,6 +56,11 @@ Operation help:
   external-renderer policy, and each selected compact assistant capability's
   enums, client version, verification time, and evidence when diagram or
   bridge contracts changed.
+- Recheck the architecture catalog owner, decision authority, item states,
+  selected evidence paths, validation, and evidence revision when
+  `architecture-knowledge` or project architecture contracts changed. Use
+  `Alatyr architecture` for a bounded inventory, explanation, comparison, or
+  review.
 - Use `alatyr-suggest-ai <scope>` or `alatyr-improve-ai <item-id>` for a read-only recommendation when project needs or existing item outcomes changed.
 
 Validation run:

@@ -31,6 +31,7 @@ Read in this repository first:
 - `framework/project-adapter-contract.md`
 - `framework/portability.md`
 - `framework/module-profile.md`
+- `framework/architecture-knowledge.md`
 - `framework/rule-ownership.md`
 - `framework/rule-registry.md`
 - `framework/rule-registry.json`
@@ -64,6 +65,7 @@ in the owning framework documents and use these IDs for installation routing:
 - `ALATYR-ADAPTER-001`
 - `ALATYR-MODULE-001`
 - `ALATYR-OPERATION-001`
+- `ALATYR-ARCHITECTURE-001`
 - `ALATYR-DIAGRAM-001`
 - `ALATYR-TEAM-001`
 - `ALATYR-LIFECYCLE-001`
@@ -76,7 +78,8 @@ Read in the target repository:
 - existing AI instructions and bridge files
 - existing CODEOWNERS or equivalent file-owner metadata
 - README and public docs
-- architecture/design docs
+- architecture/design docs, decision records, documented patterns,
+  boundaries, constraints, quality attributes, and architecture validation
 - package/build/dependency files
 - tests, fixtures, test helpers, and CI
 - local validation commands or manual validation policy
@@ -151,6 +154,11 @@ Classify every proposed target file:
     Add `.ai/project/consistency-map.json` only when the target enables bounded
     relationship routing; populate fact IDs and edges from target evidence or
     record the module as blocked or deferred.
+    Add `.ai/project/architecture/README.md` and
+    `.ai/project/architecture/catalog.json` only when architecture knowledge is
+    enabled. Derive owner, decision authority, item states, selected evidence,
+    validation, and evidence revision from the target; never promote observed
+    implementation to accepted architecture by inference.
     Add `.ai/project/team-operating-model.md` only when the target enables team
     collaboration. Derive actor IDs, authority, priorities, review,
     coordination backend, synchronization, storage, retention, and privacy
@@ -178,6 +186,8 @@ Classify every proposed target file:
     read-only adapter-health, risk-gated pre-change preview,
     diagram-discussion flow, ASCII layout template, and presentation template
     when the diagrams module is enabled,
+    architecture-assistance flow, architecture pattern/area/result templates,
+    and lazy intent routing when architecture knowledge is enabled,
     AI-infrastructure-inventory, AI-infrastructure-recommendation, adapter output contract
     `.ai/assistant/templates/adapter-output-contracts.md`, source-access
     policy, prompt-injection policy, human and machine-readable approval-record
@@ -209,10 +219,13 @@ Classify every proposed target file:
     Team aliases route through the same canonical catalog when the optional
     module is enabled; bridge files do not duplicate the team policy.
     When diagrams are enabled, route `Alatyr diagram` through the canonical
-    flow and record native inline, rendered-artifact, readable-fallback,
+    flow and record native inline, rendered-artifact, ASCII-baseline,
     client-version, freshness, and evidence fields separately for every
     supported surface. Record diagram classification/redaction, external
     renderer approval, artifact retention/sharing, and stable revision lineage.
+    When architecture knowledge is enabled, route `Alatyr architecture` and
+    inventory/explain/discuss/compare/review/document aliases through the
+    canonical catalog and compact architecture index.
 17. Add prompts, skills, diagrams, or consistency checks only when they solve
     target friction, can be maintained, and have been adapted to target facts.
 18. Run target validation that exists. Do not invent commands.
@@ -279,6 +292,8 @@ Report:
   operation-help, automatic routing,
   read-only health, risk-gated preview,
   diagram-discussion flow, ASCII template, and presentation template when enabled,
+  architecture index/catalog, discussion flow, pattern/area/result templates,
+  and intent routing when enabled,
   AI-infrastructure-inventory, AI-infrastructure-recommendation, adapter output
   contract, context router,
   context profiles, module profile, source-of-truth registry, task-specific
@@ -322,3 +337,5 @@ Report:
 - diagram discussion module state, portable ASCII layout/width, per-assistant
   rich-presentation capability, freshness or expiry, captured-result evidence, and
   source-revision policy when enabled
+- architecture knowledge module state, owner, decision authority, catalog
+  revision, item-state coverage, validation, and known gaps when enabled

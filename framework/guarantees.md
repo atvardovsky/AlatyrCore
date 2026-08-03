@@ -53,6 +53,9 @@ The framework commits to giving an assistant a defined process for:
 - routing diagram discussion through a target-owned presentation contract with
   security/privacy handling, stable revision lineage, compact current-surface
   capability evidence, and a portable ASCII baseline
+- routing architecture inventory, explanation, pattern discussion, comparison,
+  review, and documentation through a compact project-owned catalog while
+  separating observed, intended, proposed, and contradicted architecture
 - requiring explicit programmer approval for protected changes
 - keeping architecture discussion separate from architecture mutation
 - keeping documentation and diagrams synchronized with code and project facts
@@ -138,6 +141,8 @@ An installed adapter can provide stronger guarantees only when the target
 defines:
 
 - source-of-truth registry entries for relevant fact types
+- architecture owner, decision authority, compact catalog, item-state evidence,
+  validation, and revision policy when architecture knowledge is enabled
 - consistency-map nodes and relationship coverage when the target uses bounded
   impact traversal
 - task context profiles
@@ -216,6 +221,7 @@ The framework does not guarantee:
 - that local commands exist in another project
 - that generated files can be produced without the target repository tooling
 - that architecture changes are safe without explicit approval and validation
+- that observed implementation is an accepted or preferred architecture pattern
 - that unsupported assistants will auto-load the right files without a bridge
   or user instruction
 - that missing security, live-service, or diagram policy can be inferred from

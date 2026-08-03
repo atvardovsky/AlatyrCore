@@ -9,6 +9,9 @@ Replace placeholders with target facts before accepting installation.
 - product purpose
 - business/domain rules
 - architecture facts
+- project-owned architecture areas, patterns, constraints, intended states,
+  decision authority, supporting documentation, and evidence revisions under
+  `.ai/project/architecture` when architecture knowledge is enabled
 - use cases and workflows
 - data model and persistence facts
 - runtime flows and state machines
@@ -41,6 +44,9 @@ List target source-of-truth files:
 
 - `{TARGET_PROJECT_SOURCE_OF_TRUTH}`
 - `.ai/project/source-of-truth-registry.md`
+- `.ai/project/architecture/README.md` and
+  `.ai/project/architecture/catalog.json` when the architecture-knowledge
+  module is enabled
 
 ## AI Infrastructure Evidence Boundary
 

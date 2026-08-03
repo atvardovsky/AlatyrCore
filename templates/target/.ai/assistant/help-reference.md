@@ -22,6 +22,12 @@ updating the canonical catalog.
 
 ## Supported Request Aliases
 
+- `Alatyr architecture`, `Alatyr architecture inventory`,
+  `explain architecture`, `discuss architecture pattern`,
+  `compare architecture options`, `review architecture`, or
+  `document architecture`: route to `architecture-assistance`; infer the
+  inventory, explain, discuss, compare, review, or document mode from the
+  request.
 - `alatyr-ai-inventory`: route to `ai-infrastructure-inventory` and report
   existing AI instructions, prompts, skills, rules, wrappers, bridges, MCP/tool
   configs, gates, checkers, and generated assistant artifacts.
@@ -68,6 +74,22 @@ Use when: creating, repairing, or rechecking blueprint-equivalent
 source-of-truth docs from target evidence.
 Flow: `.ai/assistant/flows/project-blueprint-creation.flow.md`
 Minimum input: blueprint scope and non-goals.
+
+Operation: `architecture-assistance`
+Use when: inventorying, explaining, discussing, comparing, reviewing, or
+documenting project architecture, patterns, boundaries, constraints,
+technologies, or other architectural items.
+Flow: `.ai/assistant/flows/architecture-assistance.flow.md`
+Minimum input: architecture question or scope, plus non-goals and decision
+intent when known.
+Aliases: `Alatyr architecture`, `Alatyr architecture inventory`,
+`explain architecture`, `discuss architecture pattern`,
+`compare architecture options`, `review architecture`,
+`document architecture`.
+Default allowed actions: `read-only`. Under `docs-only`, record observed,
+proposed, contradicted, or unknown evidence only. Accepted architecture needs
+the target decision owner and `full-with-approval`, then hands off to
+`product-change`.
 
 Operation: `recheck-after-installation`
 Use when: verifying the installed adapter after initial installation.
@@ -245,6 +267,14 @@ review.
 Alias: `create blueprint` or `создай blueprint`
 Route to: `create-project-blueprint`.
 
+Alias: `Alatyr architecture`, `Alatyr architecture inventory`,
+`explain architecture`, `discuss architecture pattern`,
+`compare architecture options`, `review architecture`, or
+`document architecture`
+Route to: `architecture-assistance`. These are chat/request shortcuts, not
+shell commands. Start from the compact project architecture catalog and infer
+the discussion mode from the request.
+
 Alias: `Alatyr diagram`, `show as a diagram`, or `visualize architecture`
 Route to: `diagram-discussion`. These are chat/request shortcuts, not shell
 commands. Default to a non-canonical read-only draft and use the current
@@ -318,6 +348,18 @@ Allowed actions guide:
   permissions.
 - `full-with-approval`: protected changes require explicit programmer
   approval before they are made.
+
+Architecture assistance shorthand:
+
+```text
+Alatyr architecture: {QUESTION_OR_SCOPE}
+
+Goal: `{GOAL}`
+Non-goals: `{NON_GOALS}`
+Mode when known: `{INVENTORY_EXPLAIN_DISCUSS_COMPARE_REVIEW_DOCUMENT_OR_AUTO}`
+Decision intent: `{EXPLORE_PROPOSE_ACCEPT_OR_UNKNOWN}`
+Allowed actions: `{READ_ONLY_DOCS_ONLY_OR_FULL_WITH_APPROVAL}`
+```
 
 AI infrastructure inventory shorthand:
 
@@ -396,6 +438,9 @@ Integration mode: `{CANONICAL_INTEGRATION}`
 - AI infrastructure router: `.ai/assistant/ai-infrastructure-router.json`
 - Consistency map: `.ai/project/consistency-map.json` when the optional module
   is enabled.
+- Architecture knowledge index and compact catalog:
+  `.ai/project/architecture/README.md` and
+  `.ai/project/architecture/catalog.json` when the optional module is enabled.
 - Team operating model: `.ai/project/team-operating-model.md` when the optional
   module is enabled.
 - Team work registry: `.ai/assistant/team/work-registry.json` when the optional

@@ -10,6 +10,13 @@
     "create blueprint": "create-project-blueprint",
     "repair blueprint": "create-project-blueprint",
     "recheck blueprint": "create-project-blueprint",
+    "Alatyr architecture": "architecture-assistance",
+    "Alatyr architecture inventory": "architecture-assistance",
+    "explain architecture": "architecture-assistance",
+    "discuss architecture pattern": "architecture-assistance",
+    "compare architecture options": "architecture-assistance",
+    "review architecture": "architecture-assistance",
+    "document architecture": "architecture-assistance",
     "check Alatyr after installation": "recheck-after-installation",
     "recheck installation": "recheck-after-installation",
     "update Alatyr": "recheck-after-framework-update",
@@ -61,6 +68,13 @@
     "create-project-blueprint": [
       "blueprint-change",
       ".ai/assistant/flows/project-blueprint-creation.flow.md",
+      "read-only",
+      "docs-only",
+      "full-with-approval"
+    ],
+    "architecture-assistance": [
+      "architecture-knowledge",
+      ".ai/assistant/flows/architecture-assistance.flow.md",
       "read-only",
       "docs-only",
       "full-with-approval"

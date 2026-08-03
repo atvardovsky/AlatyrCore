@@ -80,6 +80,7 @@ Target adapters may include fact types such as:
 - public API contract
 - internal service contract
 - architecture decision
+- architecture pattern or architectural item
 - data model
 - migration
 - runtime configuration

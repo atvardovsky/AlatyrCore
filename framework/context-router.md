@@ -72,6 +72,11 @@ operation/adapter repair. Intent overlays such as diagram requests may compose
 with code, security, or other base profiles without duplicating the operation
 candidate in every profile.
 
+Architecture intent should route first to a compact project-owned architecture
+catalog. Selected area, pattern, decision, and repository evidence load after
+catalog selection; full architecture-change, data, security, diagram, or
+blueprint context remains conditional on the question and decision state.
+
 When an overlay needs a detailed reference only for a subset of requests, put
 the path and its load condition in `conditional_context` instead of the default
 `required_context`. Conditional paths must remain machine-visible to routing

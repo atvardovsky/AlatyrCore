@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "descriptor_kind": "target-intent-overlay",
+  "intent": "architecture-request",
+  "use_when": [
+    "architecture inventory explanation pattern discussion comparison review or documentation request"
+  ],
+  "operation_candidates": ["architecture-assistance"],
+  "required_module": "architecture-knowledge",
+  "required_context": [
+    ".ai/framework/architecture-knowledge.md",
+    ".ai/project/architecture/catalog.json",
+    ".ai/assistant/flows/architecture-assistance.flow.md",
+    ".ai/assistant/templates/architecture-discussion-result.md"
+  ],
+  "conditional_context": [
+    {
+      "path": ".ai/project/architecture/README.md",
+      "when": "human rationale broad overview status explanation or catalog repair"
+    },
+    {
+      "path": ".ai/assistant/templates/architecture-pattern.md",
+      "when": "drafting a selected pattern record"
+    },
+    {
+      "path": ".ai/assistant/templates/architecture-area.md",
+      "when": "drafting a selected architecture area record"
+    },
+    {
+      "path": ".ai/framework/diagram-guidance.md",
+      "when": "visual relationships materially improve the discussion"
+    },
+    {
+      "path": ".ai/framework/blueprint-driven-change.md",
+      "when": "an architecture decision is accepted for implementation"
+    }
+  ],
+  "expand_when": [
+    "selected catalog evidence is stale missing or contradictory",
+    "accepted architecture decision",
+    "data security runtime or external boundary crossed",
+    "multiple project areas or workstreams",
+    "architecture validation disproves the assumed boundary"
+  ],
+  "budget_behavior": "load the compact catalog first, then selected area pattern owner decision and evidence records only"
+}

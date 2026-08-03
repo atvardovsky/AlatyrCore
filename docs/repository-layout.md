@@ -64,6 +64,11 @@ machine-readable diff-base and path-scope enforcement. The source check covers
 scope, plan, invalidation, use-result, evidence, validation, and residual-risk
 fields.
 
+`tools/check_architecture_knowledge.py` validates the portable architecture
+knowledge rule and target architecture catalog, operation, lazy route,
+templates, gates, source-of-truth entry, manifest paths, and optional module.
+It checks source contracts, not the truth of a target project's architecture.
+
 `tools/check_ai_infrastructure_inventory.py` validates the target
 `.ai/assistant/templates/ai-infrastructure-inventory.md` template and
 inventory flow fields for provenance, license, permissions, prompt-injection

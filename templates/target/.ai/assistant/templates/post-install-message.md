@@ -23,6 +23,7 @@ Entry points:
 - `.ai/assistant/module-profile.md`
 - `.ai/project/source-of-truth-registry.md`
 - `.ai/project/consistency-map.json` when the optional module is enabled
+- `.ai/project/architecture/README.md` and `.ai/project/architecture/catalog.json` when architecture knowledge is enabled
 - `.ai/project/team-operating-model.md` and `.ai/assistant/team/work-registry.json` when team collaboration is enabled
 - `.ai/assistant/maturity-profile.md`
 - `.ai/assistant/bridge-capability-matrix.md`
@@ -43,15 +44,17 @@ Installed operation help:
 - Risky or cross-boundary changes show a pre-change preview before edits.
 - Use `.ai/assistant/templates/operation-request.md` for structured requests.
 - When team collaboration is enabled, use `Alatyr team status`, `Alatyr start`, `Alatyr claim`, `Alatyr conflicts`, `Alatyr checkpoint`, `Alatyr handoff`, `Alatyr decision`, `Alatyr review`, `Alatyr merge check`, or `Alatyr release`.
+- When architecture knowledge is enabled, use `Alatyr architecture` to inventory, explain, discuss, compare, review, or document project architecture and patterns.
 
 Available next actions:
 - `create-project-blueprint`: create or repair project source-of-truth docs from target evidence.
 - `recheck-after-installation`: verify the installed adapter and report gaps.
 - `product-change`: run blueprint-driven change from intent through validation and evidence.
 - `logical-integrity-review`: check consistency across code, docs, tests, diagrams, prompts, skills, gates, and bridges.
+- `architecture-assistance`: discuss project architecture and patterns from a compact evidence-backed catalog; observed or proposed items are not accepted architecture.
 - `diagram-discussion`: show, compare, or revise a diagram using `Alatyr
   diagram`; the adapter uses compact current-surface evidence, stable draft
-  lineage, security/privacy policy, and a readable fallback. Accepted/derived
+  lineage, security/privacy policy, and a portable ASCII view. Accepted/derived
   views require project-owner and source-revision evidence.
 - `large-task`: coordinate cross-boundary or resumable work with bounded workstreams, checkpoints, and final convergence.
 - `team-status` and related team operations: coordinate target-owned actors, tasks, changed-fact conflicts, handoffs, decisions, reviews, and revision-bound merge readiness when the optional module is enabled.

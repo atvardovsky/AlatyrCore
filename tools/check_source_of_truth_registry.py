@@ -26,6 +26,7 @@ REQUIRED_FACT_TYPES = [
     "product behavior",
     "business rule",
     "architecture decision",
+    "architecture pattern",
     "data model",
     "validation command",
     "security policy",

@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CHECKS = [
     ["tools/check_framework_metadata.py"],
     ["tools/check_approval_template.py"],
+    ["tools/check_architecture_knowledge.py"],
     ["tools/check_ai_infrastructure_inventory.py"],
     ["tools/check_ai_infrastructure_recommendations.py"],
     ["tools/check_ai_infrastructure_router.py"],

@@ -293,6 +293,8 @@ def main() -> int:
     intent_index = router.get("intent_overlays")
     diagram: dict[str, Any] = {}
     diagram_conditional_context: list[str] = []
+    architecture: dict[str, Any] = {}
+    architecture_conditional_context: list[str] = []
     if not isinstance(intent_index, dict) or not isinstance(
         intent_index.get("diagram-request"), dict
     ):
@@ -318,6 +320,37 @@ def main() -> int:
             failures.append("diagram intent must route diagram-discussion")
         diagram_conditional_context = check_conditional_context(
             diagram, "intent_overlays.diagram-request", failures
+        )
+
+    if not isinstance(intent_index, dict) or not isinstance(
+        intent_index.get("architecture-request"), dict
+    ):
+        failures.append("intent_overlays.architecture-request must be indexed")
+    else:
+        entry = intent_index["architecture-request"]
+        architecture = descriptor(
+            entry.get("descriptor"),
+            "target-intent-overlay",
+            "intent_overlays.architecture-request",
+            failures,
+        )
+        check_contract(
+            architecture,
+            ["use_when", "operation_candidates", "required_context", "expand_when"],
+            "intent_overlays.architecture-request",
+            failures,
+            {"required_context"},
+        )
+        if architecture.get("required_module") != "architecture-knowledge":
+            failures.append(
+                "architecture intent must require architecture-knowledge"
+            )
+        if architecture.get("operation_candidates") != ["architecture-assistance"]:
+            failures.append(
+                "architecture intent must route architecture-assistance"
+            )
+        architecture_conditional_context = check_conditional_context(
+            architecture, "intent_overlays.architecture-request", failures
         )
 
     consistency_entry = router.get("consistency_routing")
@@ -414,6 +447,7 @@ def main() -> int:
         (migration, "candidate_context"),
         (large_task, "required_context"),
         (diagram, "required_context"),
+        (architecture, "required_context"),
     ]:
         routed_framework_paths.update(
             value
@@ -423,6 +457,11 @@ def main() -> int:
     routed_framework_paths.update(
         value
         for value in diagram_conditional_context
+        if value.startswith(".ai/framework/")
+    )
+    routed_framework_paths.update(
+        value
+        for value in architecture_conditional_context
         if value.startswith(".ai/framework/")
     )
     try:

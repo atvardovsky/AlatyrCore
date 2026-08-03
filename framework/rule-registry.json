@@ -44,6 +44,12 @@
       "derived_surfaces": ["product-change operation", "blueprint-driven target flow", "large-task orchestration", "documentation and diagram sync"]
     },
     {
+      "category": "ARCHITECTURE",
+      "owner": "framework/architecture-knowledge.md",
+      "rule_ids": ["ALATYR-ARCHITECTURE-001"],
+      "derived_surfaces": ["target architecture index and catalog", "pattern and area templates", "architecture-assistance operation", "architecture intent routing", "architecture discussion result", "installation and update planning", "target gates", "architecture validation"]
+    },
+    {
       "category": "DIAGRAM",
       "owner": "framework/diagram-guidance.md",
       "rule_ids": ["ALATYR-DIAGRAM-001"],
@@ -156,6 +162,14 @@
       "summary": "Carry accepted product changes through invariant re-derivation, source-of-truth and flow updates, implementation planning, code and tests, companion sync, and final evidence, reconciling related review items and large workstreams globally.",
       "applies_to": ["business changes", "architecture changes", "data changes", "runtime changes", "public contract changes"],
       "enforcement": "required"
+    },
+    {
+      "id": "ALATYR-ARCHITECTURE-001",
+      "category": "ARCHITECTURE",
+      "canonical_source": "framework/architecture-knowledge.md",
+      "summary": "Keep a project-owned architecture catalog that distinguishes observed, proposed, accepted, preferred, restricted, deprecated, contradicted, and unknown items; discuss patterns from target evidence and common drivers; prefer existing-pattern reuse before proliferation; and route accepted decisions through normal ownership, approval, integrity, blueprint, implementation, documentation, diagram, and validation surfaces.",
+      "applies_to": ["architecture inventory", "architecture explanation", "pattern discussion", "alternative comparison", "architecture review", "architecture documentation maintenance"],
+      "enforcement": "required when module enabled"
     },
     {
       "id": "ALATYR-DIAGRAM-001",

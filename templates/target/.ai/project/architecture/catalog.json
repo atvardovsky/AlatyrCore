@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "catalog_kind": "target-architecture-knowledge-catalog",
+  "project": "{PROJECT_NAME}",
+  "module_state": "{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}",
+  "human_index": ".ai/project/architecture/README.md",
+  "architecture_owner": "{TARGET_ARCHITECTURE_OWNER}",
+  "decision_authority": "{TARGET_ARCHITECTURE_DECISION_AUTHORITY}",
+  "canonical_sources": ["{TARGET_ARCHITECTURE_SOURCE}"],
+  "decision_sources": ["{TARGET_ARCHITECTURE_DECISION_SOURCE}"],
+  "last_reviewed": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}",
+  "evidence_revision": "{TARGET_REVISION_OR_UNKNOWN_WITH_REASON}",
+  "areas": [
+    {
+      "id": "{ARCHITECTURE_AREA_ID}",
+      "name": "{ARCHITECTURE_AREA_NAME}",
+      "status": "{OBSERVED_PROPOSED_ACCEPTED_CONTRADICTED_OR_UNKNOWN}",
+      "owner": "{ARCHITECTURE_AREA_OWNER}",
+      "detail": "{TARGET_ARCHITECTURE_AREA_DOC_OR_NONE}",
+      "evidence": ["{TARGET_ARCHITECTURE_AREA_EVIDENCE}"],
+      "pattern_ids": ["{ARCHITECTURE_PATTERN_ID}"]
+    }
+  ],
+  "patterns": [
+    {
+      "id": "{ARCHITECTURE_PATTERN_ID}",
+      "name": "{ARCHITECTURE_PATTERN_NAME}",
+      "kind": "{STYLE_BOUNDARY_INTEGRATION_DATA_SECURITY_RUNTIME_OPERATIONAL_OR_OTHER}",
+      "status": "{OBSERVED_PROPOSED_ACCEPTED_PREFERRED_RESTRICTED_DEPRECATED_CONTRADICTED_OR_UNKNOWN}",
+      "scope": ["{TARGET_PATTERN_SCOPE}"],
+      "problem": "{TARGET_PROBLEM_THE_PATTERN_ADDRESSES}",
+      "decision_owner": "{TARGET_PATTERN_DECISION_OWNER}",
+      "decision_record": "{TARGET_PATTERN_DECISION_RECORD_OR_NONE}",
+      "detail": "{TARGET_PATTERN_DETAIL_DOC_OR_NONE}",
+      "evidence": ["{TARGET_PATTERN_EVIDENCE}"],
+      "validation": ["{TARGET_PATTERN_VALIDATION_OR_MANUAL_REVIEW}"],
+      "related_pattern_ids": ["{RELATED_ARCHITECTURE_PATTERN_ID_OR_NONE}"],
+      "last_verified_revision": "{TARGET_REVISION_OR_UNKNOWN_WITH_REASON}"
+    }
+  ],
+  "known_gaps": ["{ARCHITECTURE_KNOWLEDGE_GAP_OR_NONE}"]
+}

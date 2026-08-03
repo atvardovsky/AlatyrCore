@@ -260,6 +260,125 @@ def main() -> int:
                     f"invalid diagram capability missing finding {required}"
                 )
 
+        module_profile_path.write_text(
+            "# Module Profile\n\n"
+            "Module: `architecture-knowledge`\nState: `enabled`\n",
+            encoding="utf-8",
+        )
+        architecture = validator(target)
+        architecture.check_architecture_knowledge(None)
+        if "ARCHITECTURE_REQUIRED_FILE_MISSING" not in {
+            finding.code for finding in architecture.findings
+        }:
+            failures.append(
+                "enabled architecture knowledge must report missing contracts"
+            )
+
+        architecture_text_files = {
+            ".ai/project/architecture/README.md": (
+                "## Status Meanings\n## Architecture Patterns And Items\n"
+                "Evidence revision:\n"
+            ),
+            ".ai/assistant/context/intents/architecture-request.json": "{}\n",
+            ".ai/assistant/flows/architecture-assistance.flow.md": (
+                "## Routing Modes\nno-change baseline\n"
+                "reuse of an accepted project pattern\n"
+                "adaptation of an existing pattern\nnew pattern\n"
+                "`docs-only`\n`full-with-approval`\n"
+            ),
+            ".ai/assistant/templates/architecture-pattern.md": (
+                "Pattern ID:\nProblem addressed:\nRules and invariants:\n"
+                "Do not use when:\nLast verified revision:\n"
+            ),
+            ".ai/assistant/templates/architecture-area.md": (
+                "Area ID:\nResponsibilities:\nPattern IDs:\n"
+                "Validation or fitness checks:\n"
+            ),
+            ".ai/assistant/templates/architecture-discussion-result.md": (
+                "No-change baseline:\nReuse accepted project pattern:\n"
+                "Adapt existing project pattern:\nIntroduce new pattern:\n"
+                "Pattern-proliferation result:\n"
+            ),
+            ".ai/framework/architecture-knowledge.md": (
+                "# Architecture Knowledge\n"
+            ),
+        }
+        for relpath, content in architecture_text_files.items():
+            path = target / relpath
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(content, encoding="utf-8")
+        write_json(
+            target / ".ai" / "project" / "architecture" / "catalog.json",
+            {
+                "schema_version": 1,
+                "catalog_kind": "target-architecture-knowledge-catalog",
+                "project": "fixture",
+                "module_state": "enabled",
+                "human_index": ".ai/project/architecture/README.md",
+                "architecture_owner": "architecture-team",
+                "decision_authority": "architecture-board",
+                "canonical_sources": ["docs/architecture.md"],
+                "decision_sources": ["docs/decisions"],
+                "last_reviewed": "2026-08-03",
+                "evidence_revision": "fixture-revision",
+                "areas": [
+                    {
+                        "id": "area-core",
+                        "name": "Core",
+                        "status": "accepted",
+                        "owner": "core-team",
+                        "detail": "docs/core.md",
+                        "evidence": ["src/core"],
+                        "pattern_ids": ["missing-pattern"],
+                    },
+                    {
+                        "id": "area-core",
+                        "name": "Duplicate",
+                        "status": "observed",
+                        "owner": "core-team",
+                        "detail": "docs/core.md",
+                        "evidence": ["src/core"],
+                        "pattern_ids": [],
+                    },
+                ],
+                "patterns": [
+                    {
+                        "id": "pattern-layered",
+                        "name": "Layered",
+                        "kind": "invalid-kind",
+                        "status": "accepted",
+                        "scope": ["area-core"],
+                        "problem": "dependency direction",
+                        "decision_owner": "architecture-board",
+                        "decision_record": "{UNRESOLVED_DECISION_RECORD}",
+                        "detail": "docs/patterns/layered.md",
+                        "evidence": ["src/core"],
+                        "validation": ["architecture check"],
+                        "related_pattern_ids": ["missing-pattern"],
+                        "last_verified_revision": "fixture-revision",
+                    }
+                ],
+                "known_gaps": [],
+            },
+        )
+        invalid_architecture = validator(target)
+        invalid_architecture.check_architecture_knowledge(None)
+        invalid_architecture_codes = {
+            finding.code for finding in invalid_architecture.findings
+        }
+        for required in [
+            "ARCHITECTURE_AREA_ID_DUPLICATE",
+            "ARCHITECTURE_PATTERN_KIND",
+            "ARCHITECTURE_PATTERN_REFERENCE",
+            "ARCHITECTURE_ACCEPTED_EVIDENCE",
+            "ARCHITECTURE_OPERATION_MISSING",
+            "ARCHITECTURE_OPERATION_UNROUTED",
+        ]:
+            if required not in invalid_architecture_codes:
+                failures.append(
+                    f"invalid architecture catalog missing finding {required}"
+                )
+
         routing_path = (
             target / ".ai" / "assistant" / "flows" / "operation-routing.flow.md"
         )

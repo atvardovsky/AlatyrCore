@@ -57,6 +57,20 @@ Always provide the compact ASCII view required by the diagram flow. Load
 layouts, and load the target ASCII layout template only when the diagram will
 be persisted or reused. Richer presentation remains optional.
 
+## Intent Overlay: `architecture-request`
+
+Apply this overlay when the user asks to inventory, explain, discuss, compare,
+review, or document architecture patterns, boundaries, constraints,
+technologies, or other architectural items. Route through the compact
+architecture catalog and `.ai/framework/architecture-knowledge.md` before
+loading selected area, pattern, decision, or repository evidence.
+
+Start read-only unless documentation or decision intent is explicit. Load the
+human architecture index for broad explanation or catalog repair, pattern and
+area templates only when drafting selected records, diagram context only when
+visual relationships help, and blueprint/integrity/approval context only when
+an architecture decision is accepted or a protected boundary is crossed.
+
 ## Task-Scale Overlay: `large-or-resumable`
 
 Activate only for large, cross-boundary, multi-workstream,
@@ -154,8 +168,8 @@ was needed.
 Use when: accepted behavior, domain rules, product policy, workflows, or public
 contract change.
 
-Operation candidates: `product-change`, `create-project-blueprint`,
-`logical-integrity-review`.
+Operation candidates: `architecture-assistance`, `product-change`,
+`create-project-blueprint`, `logical-integrity-review`.
 
 Required context:
 
