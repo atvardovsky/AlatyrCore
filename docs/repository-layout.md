@@ -37,9 +37,15 @@ the same names are self-application scratch paths and are ignored.
 
 ## `docs/`
 
-Maintainer-facing explanation of Alatyr Core itself.
+Human-oriented product explanation and maintainer-facing guidance for
+AlatyrCore itself.
 
-Docs should explain how to work on this source repository without turning
+`docs/human/` explains the project guardian concept, intended team use,
+documentation-only demonstration path, and public limitations. These guides
+must link to canonical framework owners and must not become a second source of
+rule or target-project truth.
+
+Other docs explain how to work on this source repository without turning
 source repository details into framework requirements.
 
 `docs/release-process.md` defines the source repository release and versioning
@@ -233,7 +239,8 @@ real target adapters and must not contain project-specific business facts.
 
 ## Root Files
 
-- `README.md`: main assistant and maintainer entry point.
+- `README.md`: public product entry point plus assistant and maintainer
+  reference.
 - `AGENTS.md`: canonical instructions for assistants working on Alatyr Core.
 - `AI_ASSISTANTS.md`: generic assistant entry point.
 - `INSTALL.md`: human-readable installation guide.
@@ -241,6 +248,8 @@ real target adapters and must not contain project-specific business facts.
 - `ADAPTER_SCHEMA_VERSION`: current installed-adapter schema version.
 - `TEMPLATE_VERSION`: current target-template version.
 - `CHANGELOG.md`: framework lifecycle notes.
+- `LICENSE`: official Apache License, Version 2.0 terms for this repository
+  unless a file explicitly states otherwise.
 - `docs/release-process.md`: source release and versioning process.
 
 ## Ownership Rule

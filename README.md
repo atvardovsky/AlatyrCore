@@ -1,25 +1,257 @@
-# Alatyr Core
+# AlatyrCore
 
-Alatyr Core is a Markdown-first AI assistant framework for software
-repositories.
+**Your project should remember why it was built this way.**
 
-It gives an assistant a portable way to work on a project without guessing:
-load the right context, separate framework rules from project facts, classify
-risk, request approval for protected changes, keep documentation synchronized,
-and report evidence.
+AlatyrCore is a vendor-neutral project guardian for software teams and AI
+coding agents. It keeps project knowledge, architectural intent, decision
+boundaries, and validation guidance with the repository so they can survive
+changes in people, tools, agents, and time.
 
-Alatyr Core is not tied to PHP, Symfony, Node, Python, Go, Java, a database,
-or a specific assistant vendor.
+- Persistent project memory owned by the project
+- Architectural continuity without treating code as the whole design record
+- Conversational project reference for developers and maintainers
+- Onboarding support designed to reduce project discovery time
+- Safer AI-assisted change through project-specific boundaries and validation
+- Interchangeable assistant support without vendor-owned project memory
 
-## Why This Exists
+Other systems add AI to a project. AlatyrCore gives the project memory, a
+voice, and continuity.
 
-AI agents are good at producing local code changes, but weak at preserving
-system-wide consistency unless the repository gives them a process. Alatyr Core
-turns AI-assisted work into a controlled change pipeline: context discovery,
-risk classification, logical integrity review, blueprint-driven update,
-validation, and final evidence.
+## What AlatyrCore Is
 
-## If You Are An AI Assistant
+AlatyrCore is not another coding agent. It is a repository-owned framework and
+project adapter that gives compatible AI assistants a shared way to discover
+what the project knows, distinguish evidence from decisions, route questions,
+and prepare changes with the right context, approvals, validation, and final
+evidence.
+
+The project remains the owner. AI assistants are replaceable execution and
+interaction surfaces over project-owned sources of truth. The canonical
+boundaries for this model are the
+[project adapter contract](framework/project-adapter-contract.md),
+[source-of-truth registry](framework/source-of-truth-registry.md), and
+[framework guarantees and limits](framework/guarantees.md).
+
+The same project memory is intended to support onboarding, daily reference,
+architecture discussion, implementation planning, validation, review, and
+knowledge transfer. Developers can ask how the project works, why a decision
+was recorded, and what a safe change requires without learning AlatyrCore's
+internal rule structure first.
+
+## The Problem It Solves
+
+Project knowledge is usually fragmented across code, architecture decisions,
+runbooks, tests, CI, diagrams, review history, and the memories of individual
+people. AI coding agents can produce useful local changes, but they do not
+automatically preserve the intent and constraints distributed across those
+surfaces.
+
+AlatyrCore is designed to give each supported assistant the same project-owned
+starting point. It routes a request to the smallest relevant context, identifies
+fact owners, separates observed implementation from accepted intent, and
+requires validation and residual-risk evidence before consistency is claimed.
+The canonical process is defined by
+[context profiles](framework/context-profiles.md),
+[architecture knowledge](framework/architecture-knowledge.md), and
+[logical integrity](framework/logical-integrity.md).
+
+## See It In Action
+
+The following conversations are illustrative. Angle-bracketed sources describe
+target-project evidence; they are not paths or facts from this repository.
+
+```text
+Developer:
+Why can the billing module not write directly to the order database?
+
+Alatyr:
+The accepted ownership rule assigns order lifecycle state to the Order Service.
+Direct writes are restricted because they bypass validation and event
+publication.
+
+Sources:
+- <canonical architecture source>
+- <relevant ownership or decision record>
+```
+
+```text
+Developer:
+Add retry handling to payment processing.
+
+Alatyr:
+This change may affect the payment state invariant, idempotency contract,
+failure classification, observability requirements, and related tests.
+
+Before implementation, I need to inspect:
+- <relevant source>
+- <relevant contract>
+- <relevant validation>
+```
+
+AlatyrCore does not contain those example business rules. An installed project
+adapter must resolve answers from that target repository or report that the
+required fact is missing. See the
+[documentation-only quick demo](docs/human/quick-demo.md).
+
+## Who It Is For
+
+- Developers who need a reliable explanation of an unfamiliar project before
+  making a change
+- Maintainers who need project decisions, validation, and known gaps to remain
+  discoverable
+- Architects who want intended architecture distinguished from implementation
+  that merely happens to exist
+- Teams using one or more AI coding assistants across onboarding, daily work,
+  review, and knowledge transfer
+- Platform and developer-experience teams that need repository-owned AI
+  operating boundaries rather than vendor-specific memory
+
+The intended team outcomes require validation in real projects. AlatyrCore does
+not claim to eliminate onboarding time, prevent every AI mistake, or make
+project facts correct by itself.
+
+## How It Works
+
+1. The target repository identifies canonical project sources, owners,
+   architecture states, validation, and known gaps.
+2. A repository-aware project adapter connects those facts to portable
+   AlatyrCore rules and supported assistant surfaces.
+3. A compact router selects the smallest task and project-area context for a
+   question or change.
+4. The assistant explains the project or follows the matching project workflow,
+   including approvals for protected changes.
+5. Deterministic checks validate structural contracts where possible; human and
+   assistant reasoning still decide semantic correctness.
+
+### Core Differentiators
+
+1. **Agent memory belongs to the project.** Knowledge is recorded in
+   repository-owned sources rather than entrusted to one agent session or
+   vendor.
+2. **The framework adapts to the target repository.** AlatyrCore supplies the
+   process; each project supplies its own facts, commands, policies, and
+   validation.
+3. **The assistant performs repository-aware installation.** It inspects the
+   target, prepares a plan, and rewrites adapter placeholders from target
+   evidence.
+4. **Architecture is not inferred solely from code.** Observed implementation,
+   proposals, accepted decisions, restrictions, deprecations, contradictions,
+   and unknowns remain distinct.
+5. **Project knowledge is versioned with the repository.** Sources, adapter
+   metadata, decisions, and gaps can evolve through normal repository review.
+6. **Humans interact through natural language.** `Alatyr` and related phrases
+   are assistant request shortcuts backed by target files, not a universal
+   daemon or shell command.
+7. **Checks complement reasoning.** Source and optional target validators can
+   detect structural drift, but they do not prove business truth or replace
+   logical integrity review.
+
+## Agent-Driven Installation
+
+AlatyrCore is installed through assistant reasoning, not blind application of
+a universal installer. The assistant reads this repository, inspects the
+target repository, creates an installation plan, and adapts only the framework
+and project-adapter surfaces the target can support. Existing instructions and
+protected changes remain subject to approval.
+
+To our knowledge, AlatyrCore is among the first publicly documented AI
+engineering frameworks whose primary installation model is repository-aware
+adaptation performed by an AI assistant rather than blind application of a
+universal installer.
+
+Start with [INSTALL.md](INSTALL.md). Assistants should also use the
+[installation flow](installer/assistant-installation.flow.md) and
+[readiness checklist](installer/readiness-checklist.md). Optional scaffolding
+creates placeholder structure only; it does not complete installation.
+
+## Start With The Smallest Profile
+
+Do not install every optional capability by default. Establish the required
+core profile first, then enable optional modules only when the target needs and
+can maintain them. The source scaffolder exposes `core`, `standard`, and `full`
+support profiles, but each remains a starting structure that requires target
+inspection and adaptation.
+
+The [module profile](framework/module-profile.md) defines required and optional
+capabilities. The [context router](framework/context-router.md) keeps routine
+tasks from loading the complete framework or project corpus.
+
+## Current Maturity And Limitations
+
+The source [VERSION](VERSION) currently records `0.1.0-alpha.4`. Implemented
+repository assets include portable framework contracts, target templates,
+assistant-driven installation guidance, source consistency checks, conformance fixtures,
+optional scaffolding, and an optional installed-adapter structural validator.
+
+Important limits:
+
+- There is no complete runnable demonstration target in this repository; the
+  current quick demo is a documentation-only walkthrough.
+- AlatyrCore is not a hosted service, universal runtime, autonomous coding
+  agent, or portable shell command.
+- Source checks prove selected repository structures and references, not the
+  correctness of target business facts or architecture.
+- Static bridge and prompt checks do not prove that every external assistant
+  client auto-loads or follows instructions identically.
+- Onboarding, quality, rework, and cost benefits require broader validation in
+  real teams and projects.
+- Optional modules are useful only when a target provides owners, evidence,
+  maintenance, and validation.
+
+The authoritative claim boundaries are documented in
+[framework guarantees and limits](framework/guarantees.md).
+
+## Documentation
+
+Human-oriented guides:
+
+- [What is AlatyrCore?](docs/human/what-is-alatyr.md)
+- [The project guardian concept](docs/human/project-guardian-concept.md)
+- [Quick demonstration](docs/human/quick-demo.md)
+- [Team use cases](docs/human/team-use-cases.md)
+- [Frequently asked questions](docs/human/faq.md)
+
+Installation and technical reference:
+
+- [Installation guide](INSTALL.md)
+- [Assistant entry point](AI_ASSISTANTS.md)
+- [Framework index](framework/README.md)
+- [Project adapter contract](framework/project-adapter-contract.md)
+- [Architecture knowledge](framework/architecture-knowledge.md)
+- [Installed operation help](framework/operation-help.md)
+- [Repository layout](docs/repository-layout.md)
+- [Source tooling reference](tools/README.md)
+
+Human guides explain the product; they do not own framework policy. Canonical
+rules remain in the referenced framework documents and
+[rule registry](framework/rule-registry.md).
+
+## Contributing
+
+Before changing AlatyrCore, read [AGENTS.md](AGENTS.md) and the
+[framework maintenance guide](docs/framework-maintenance.md). Keep portable
+framework rules, installation material, target templates, and explanatory docs
+separate. Run the documented source checks and report residual risk. A separate
+`CONTRIBUTING.md` guide does not currently exist.
+
+## License
+
+AlatyrCore is licensed under the Apache License, Version 2.0.
+See [`LICENSE`](LICENSE) for the complete terms.
+
+Unless a file explicitly states otherwise, the license covers this
+repository's framework documents, source tools, templates, schemas, and public
+documentation. It does not change the ownership or licensing of target-project
+source code, architecture, business rules, project-specific documentation, or
+project-specific adapter content generated during installation. Those remain
+subject to the target repository's ownership and licensing rules.
+
+The Apache License 2.0 covers the AlatyrCore source, framework documents,
+templates, and tools. It does not grant rights to use the AlatyrCore name or
+visual identity to imply that a derived product is an official AlatyrCore
+release.
+
+## Assistant Installation Reference
 
 If a programmer gives you this repository and asks you to install Alatyr Core
 into another project, do this:
