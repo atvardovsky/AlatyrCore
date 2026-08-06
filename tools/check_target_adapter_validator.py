@@ -276,6 +276,26 @@ def main() -> int:
                 "enabled architecture knowledge must report missing contracts"
             )
 
+        module_profile_path.write_text(
+            "# Module Profile\n\n"
+            "Module: `code-documentation`\nState: `enabled`\n",
+            encoding="utf-8",
+        )
+        code_documentation = validator(target)
+        code_documentation.check_code_documentation(None)
+        if "CODEDOC_REQUIRED_FILE_MISSING" not in {
+            finding.code for finding in code_documentation.findings
+        }:
+            failures.append(
+                "enabled code documentation must report missing contracts"
+            )
+
+        module_profile_path.write_text(
+            "# Module Profile\n\n"
+            "Module: `architecture-knowledge`\nState: `enabled`\n",
+            encoding="utf-8",
+        )
+
         architecture_text_files = {
             ".ai/project/architecture/README.md": (
                 "## Status Meanings\n## Architecture Patterns And Items\n"

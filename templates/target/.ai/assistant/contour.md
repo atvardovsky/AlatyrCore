@@ -43,6 +43,10 @@ Replace placeholders with target facts before accepting installation.
   actors, authority, priorities, and accepted decisions remain in the project
   contour
 - documentation-sync rules
+- code-documentation intent routing, accepted-profile selection, adapted skill,
+  generator execution, and derived-output evidence when the optional module is
+  enabled; profile policy and documentation-area facts remain in the project
+  contour
 - final evidence requirements
 - target adapter maturity and lifecycle notes
 - required core profile, enabled optional modules, deferred modules, and

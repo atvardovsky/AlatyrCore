@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "descriptor_kind": "target-intent-overlay",
+  "intent": "code-documentation",
+  "use_when": [
+    "code comment style proposal documentation profile review generated code reference or documentation synchronization request"
+  ],
+  "operation_candidates": ["documentation-sync"],
+  "required_module": "code-documentation",
+  "required_context": [
+    ".ai/framework/code-documentation.md",
+    ".ai/project/documentation/catalog.json",
+    ".ai/project/documentation/profiles.json",
+    ".ai/assistant/flows/documentation-sync.flow.md"
+  ],
+  "conditional_context": [
+    {
+      "path": ".ai/project/documentation/README.md",
+      "when": "broad inventory ownership status explanation or catalog repair"
+    },
+    {
+      "path": ".ai/assistant/templates/code-documentation-profile-review.md",
+      "when": "proposing reviewing or revising a documentation profile"
+    },
+    {
+      "path": ".ai/assistant/skills/code-documentation/SKILL.md",
+      "when": "an accepted target skill is enabled for comment or generation work"
+    },
+    {
+      "path": ".ai/framework/skill-adaptation.md",
+      "when": "creating or materially revising the target documentation skill"
+    },
+    {
+      "path": ".ai/framework/blueprint-driven-change.md",
+      "when": "documentation work accompanies an accepted semantic change"
+    }
+  ],
+  "expand_when": [
+    "profile match is missing ambiguous stale or contradicted",
+    "canonical fact ownership is missing or conflicting",
+    "business architecture data security or external behavior is referenced",
+    "dependency CI publication permission or broad rewrite approval is needed",
+    "generation or validation disproves the selected profile"
+  ],
+  "budget_behavior": "load the compact catalog and profile selector first, then only the selected profile affected sources owners generator config and validation"
+}

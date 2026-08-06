@@ -295,6 +295,8 @@ def main() -> int:
     diagram_conditional_context: list[str] = []
     architecture: dict[str, Any] = {}
     architecture_conditional_context: list[str] = []
+    code_documentation: dict[str, Any] = {}
+    code_documentation_conditional_context: list[str] = []
     if not isinstance(intent_index, dict) or not isinstance(
         intent_index.get("diagram-request"), dict
     ):
@@ -351,6 +353,37 @@ def main() -> int:
             )
         architecture_conditional_context = check_conditional_context(
             architecture, "intent_overlays.architecture-request", failures
+        )
+
+    if not isinstance(intent_index, dict) or not isinstance(
+        intent_index.get("code-documentation"), dict
+    ):
+        failures.append("intent_overlays.code-documentation must be indexed")
+    else:
+        entry = intent_index["code-documentation"]
+        code_documentation = descriptor(
+            entry.get("descriptor"),
+            "target-intent-overlay",
+            "intent_overlays.code-documentation",
+            failures,
+        )
+        check_contract(
+            code_documentation,
+            ["use_when", "operation_candidates", "required_context", "expand_when"],
+            "intent_overlays.code-documentation",
+            failures,
+            {"required_context"},
+        )
+        if code_documentation.get("required_module") != "code-documentation":
+            failures.append(
+                "code-documentation intent must require code-documentation"
+            )
+        if code_documentation.get("operation_candidates") != ["documentation-sync"]:
+            failures.append(
+                "code-documentation intent must route documentation-sync"
+            )
+        code_documentation_conditional_context = check_conditional_context(
+            code_documentation, "intent_overlays.code-documentation", failures
         )
 
     consistency_entry = router.get("consistency_routing")
@@ -468,6 +501,7 @@ def main() -> int:
         (change_package, "required_context"),
         (diagram, "required_context"),
         (architecture, "required_context"),
+        (code_documentation, "required_context"),
     ]:
         routed_framework_paths.update(
             value
@@ -487,6 +521,11 @@ def main() -> int:
     routed_framework_paths.update(
         value
         for value in architecture_conditional_context
+        if value.startswith(".ai/framework/")
+    )
+    routed_framework_paths.update(
+        value
+        for value in code_documentation_conditional_context
         if value.startswith(".ai/framework/")
     )
     try:

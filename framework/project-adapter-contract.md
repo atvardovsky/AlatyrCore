@@ -68,6 +68,9 @@ Every project using this framework must define:
   checker exists, the adapter should say so as an unresolved or manual-review
   gap instead of letting stale claims persist
 - documentation-sync rules for project facts
+- code-documentation catalog, multiple source-set profiles, style proposal
+  evidence, source-of-truth boundaries, selected generators, output policy,
+  validation, and project-adapted skill when the optional module is enabled
 - diagram and generated-file policy when diagrams or generated docs exist,
   including source format, visual format, ownership, render/manual-review
   process, drift checks, ASCII layout and width, discussion presentation modes,
@@ -170,6 +173,8 @@ An adapter may provide:
 - assistant-specific skill wrappers
 - project-specific rejection criteria
 - public docs that mirror AI-facing docs
+- generated code-reference artifacts under a target-owned retention and
+  publication policy
 
 These are adapter details. They are not portable framework core.
 

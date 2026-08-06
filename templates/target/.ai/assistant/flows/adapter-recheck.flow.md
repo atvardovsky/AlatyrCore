@@ -35,6 +35,11 @@ Replace placeholders with target facts before accepting installation.
   `.ai/assistant/context/intents/architecture-request.json`,
   `.ai/assistant/flows/architecture-assistance.flow.md`, and architecture
   pattern/area/result templates
+- Code documentation: `.ai/project/documentation/README.md`,
+  `.ai/project/documentation/catalog.json`,
+  `.ai/project/documentation/profiles.json`,
+  `.ai/assistant/context/intents/code-documentation.json`, documentation flow,
+  profile-review template, and adapted skill
 - AI infrastructure inventory:
   `.ai/assistant/flows/ai-infrastructure-inventory.flow.md`
 - AI infrastructure recommendation:
@@ -159,6 +164,9 @@ Report:
   validation, contradictions, and revision status
 - context router and context profile status
 - module profile status
+- code-documentation profile ownership, source-set match ambiguity, accepted
+  state, canonical fact boundaries, generator/output policy, direct-edit rule,
+  adapted skill, validation, and evidence revision
 - catalog, automatic routing, health, preview, help, AI infrastructure
   inventory/recommendation, bridge, prompt,
   skill, gate, checker, item router, recommendation/adaptation records,

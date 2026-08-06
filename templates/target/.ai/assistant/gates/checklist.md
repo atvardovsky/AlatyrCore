@@ -11,7 +11,7 @@ commands from another project.
   `ALATYR-RISK-001`, `ALATYR-APPROVAL-001`, `ALATYR-SAFETY-001`,
   `ALATYR-SAFETY-002`, `ALATYR-INTEGRITY-001`, `ALATYR-CHANGE-001`,
   `ALATYR-PACKAGE-001`,
-  `ALATYR-ARCHITECTURE-001`, `ALATYR-ADAPTER-001`, `ALATYR-MODULE-001`,
+  `ALATYR-ARCHITECTURE-001`, `ALATYR-CODEDOC-001`, `ALATYR-ADAPTER-001`, `ALATYR-MODULE-001`,
   `ALATYR-OPERATION-001`,
   `ALATYR-DIAGRAM-001`, `ALATYR-TEAM-001`, and `ALATYR-EVIDENCE-001`.
 - `AGENTS.md` treated as preloaded; compact bootstrap loaded from
@@ -40,6 +40,11 @@ commands from another project.
   contradicted, and unknown items, names the problem and common comparison
   criteria, evaluates no-change/reuse/adaptation before pattern proliferation,
   and does not accept architecture under `read-only` or `docs-only`.
+- Code documentation checks the compact catalog and source-set profiles,
+  permits different frontend, backend, shared, and infrastructure styles,
+  requires one unambiguous accepted profile before routine source-comment or
+  generation work, preserves canonical fact owners, and never edits generated
+  output directly or treats generator success as semantic proof.
 - Semantic/logical change decision and logical integrity review made.
 - Documentation sync checked.
 - Tests or validation selected from target stack and risk.

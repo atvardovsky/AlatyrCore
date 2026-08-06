@@ -62,15 +62,17 @@ Commitment: use a compact budgeted bootstrap, select the smallest task profile,
 project-area overlays, and optional task-scale overlay, and record context
 expansion only when boundaries or conflicts require it; prefer changed-fact
 relationship routing when an adapted consistency map exists and item routing
-for AI infrastructure work; keep optional change-package records lazy.
+for AI infrastructure work; keep optional change-package and code-
+documentation detail lazy.
 Applies to: all installed adapter tasks.
 
 Rule ID: `ALATYR-SOURCE-001`
 Canonical source: `.ai/framework/source-of-truth-registry.md`
 Commitment: choose fact owners from the target source-of-truth registry when
 it exists, record invariant and dependency constraints, use stable fact IDs
-for optional relationship routing, and otherwise use contour ownership plus a
-manual invariant closure while reporting missing owners or relationship
+for optional relationship routing, preserve bounded code-comment ownership and
+derived generated-output boundaries, and otherwise use contour ownership plus
+a manual invariant closure while reporting missing owners or relationship
 coverage.
 Applies to: logical integrity, documentation sync, blueprint-driven changes.
 
@@ -111,7 +113,8 @@ Commitment: name changed semantic/logical facts, affected surfaces, source of
 truth, re-derived invariants, reconciled review-item clusters, repair set,
 validation, and residual risk before claiming consistency; use a bounded map
 or manual invariant closure, reconcile combined multi-workstream repairs, and
-reconcile active package scope, companion decisions, and corrections.
+reconcile active package scope, companion decisions, corrections, and selected
+code-documentation profiles, generators, and output policies.
 Applies to: semantic fact changes and drift reviews.
 
 Rule ID: `ALATYR-CHANGE-001`
@@ -144,6 +147,17 @@ implementation, documentation, diagram, and validation surfaces.
 Applies to: architecture inventory, explanation, pattern discussion,
 alternative comparison, architecture review, and documentation maintenance.
 
+Rule ID: `ALATYR-CODEDOC-001`
+Canonical source: `.ai/framework/code-documentation.md`
+Commitment: when the optional code-documentation module is enabled, select
+evidence-backed documentation profiles by bounded source set, permit different
+frontend, backend, shared, and infrastructure conventions, generate reference
+documentation through target-recorded language or ecosystem tooling, keep
+generated output derived, and preserve canonical business, architecture,
+security, API, data, and operational owners.
+Applies to: code-comment style proposals, structured comment maintenance,
+generated code reference, and documentation synchronization.
+
 Rule ID: `ALATYR-DIAGRAM-001`
 Canonical source: `.ai/framework/diagram-guidance.md`
 Commitment: present every discussion diagram through a bounded portable ASCII
@@ -160,23 +174,25 @@ Canonical source: `.ai/framework/project-adapter-contract.md`
 Commitment: keep framework core, project facts, and repository adapter facts
 separated and rewritten from target evidence, including routed AI
 infrastructure items, target development-pattern evidence, project-evidenced
-recommendation records, and adaptation records.
+recommendation records, adaptation records, and optional project-owned code-
+documentation profiles and generators.
 Applies to: installation, update, and adapter maintenance.
 
 Rule ID: `ALATYR-MODULE-001`
 Canonical source: `.ai/framework/module-profile.md`
 Commitment: establish the required core profile first, then enable optional
-modules, including change packages, only when the target needs and can maintain
-them.
+modules, including change packages and source-set code documentation, only when
+the target needs and can maintain them.
 Applies to: installation, update, adapter maturity, and framework upgrades.
 
 Rule ID: `ALATYR-OPERATION-001`
 Canonical source: `.ai/framework/operation-help.md`
 Commitment: expose one conversational Alatyr entry point, route clear requests
 automatically through a canonical target operation catalog and checked compact
-exact-alias index, provide a read-only evidence-based adapter health operation,
-and show a bounded pre-change preview only when changed-fact risk, approval, or
-scope uncertainty requires it.
+exact-alias index, including optional code-documentation profile and generation
+requests, provide a read-only evidence-based adapter health operation, and show
+a bounded pre-change preview only when changed-fact risk, approval, or scope
+uncertainty requires it.
 Applies to: installed operation routing, adapter health, and changes requiring
 preview.
 
@@ -201,14 +217,16 @@ Rule ID: `ALATYR-LIFECYCLE-001`
 Canonical source: `.ai/framework/lifecycle.md`
 Commitment: record framework version, adapter schema version, template version,
 baseline, local deviations, migration notes, upgrade evidence, and preservation
-of enabled target package records.
+of enabled target package records and enabled target code-documentation
+profiles.
 Applies to: installation and framework upgrades.
 
 Rule ID: `ALATYR-EVIDENCE-001`
 Canonical source: `.ai/framework/guarantees.md`
 Commitment: distinguish declarative process commitments, machine-checkable
 expectations, target-dependent guarantees, and non-guarantees in final claims,
-including strong versus bounded package provenance.
+including strong versus bounded package provenance and the semantic limits of
+comments and generated reference output.
 Applies to: final evidence and framework positioning.
 
 ## Use In Target Adapters

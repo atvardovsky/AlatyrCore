@@ -215,6 +215,8 @@ Typical operation categories include:
   items
 - skill, prompt, wrapper, or third-party assistant infrastructure adaptation
 - documentation, diagram, gate, or bridge synchronization
+- source-set code-comment style proposal, structured-comment maintenance, and
+  generated-reference documentation when the optional module is enabled
 - adapter maturity review
 
 The target adapter may narrow, rename, or add operations when it records the
@@ -246,6 +248,14 @@ architecture`, or `document architecture`. Route all of them to one
 architecture-assistance operation, infer the mode from a clear request, and
 start from the compact project catalog. Discussion remains read-only unless
 documentation or accepted-decision intent and allowed actions are explicit.
+
+For an enabled code-documentation module, aliases may include `document code`,
+`propose comment style`, `generate code docs`, or
+`review code documentation`. Route them to `documentation-sync` with the
+code-documentation intent overlay, then select one bounded accepted source-set
+profile. A missing or ambiguous accepted profile routes to read-only proposal
+or repair instead of mass source edits. The operation must not edit generated
+output directly or present generator success as semantic proof.
 
 For AI infrastructure, aliases may include `alatyr-ai-inventory`, which routes
 to an inventory flow, or `alatyr-adaptation <source>` and

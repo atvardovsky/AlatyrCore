@@ -226,6 +226,11 @@ Collect target-specific facts before writing project docs:
 - architecture-assistance operation, compact catalog, lazy intent route,
   pattern/area/result templates, and acceptance boundaries when the
   architecture-knowledge module is enabled
+- code-documentation owner, profile decision authority, bounded frontend,
+  backend, shared, or infrastructure source sets, existing comment styles,
+  canonical fact-owner boundaries, generators, output/publication policy,
+  validation, lazy intent route, and adapted skill when the optional module is
+  enabled
 
 ## 6. Assistant Compatibility
 

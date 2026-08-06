@@ -14,7 +14,8 @@ Before making changes:
    registry, blueprint, and gates only when selected context or conflicting
    evidence requires them.
 4. After installation/update or unclear state, read post-install/update message templates.
-5. For an exact operation ID or alias, including diagram, team, or AI aliases, read
+5. For an exact operation ID or alias, including diagram, code-documentation,
+   team, or AI aliases, read
    `.ai/assistant/operation-index.json`; for bare `Alatyr`, ambiguity, or repair, read
    `.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.
 6. For AI infrastructure work, use `.ai/assistant/ai-infrastructure-router.json`

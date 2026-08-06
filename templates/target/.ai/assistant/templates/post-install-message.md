@@ -24,6 +24,7 @@ Entry points:
 - `.ai/project/source-of-truth-registry.md`
 - `.ai/project/consistency-map.json` when the optional module is enabled
 - `.ai/project/architecture/README.md` and `.ai/project/architecture/catalog.json` when architecture knowledge is enabled
+- `.ai/project/documentation/catalog.json` and `.ai/project/documentation/profiles.json` when code documentation is enabled
 - `.ai/project/team-operating-model.md` and `.ai/assistant/team/work-registry.json` when team collaboration is enabled
 - `.ai/assistant/maturity-profile.md`
 - `.ai/assistant/bridge-capability-matrix.md`
@@ -53,6 +54,10 @@ Available next actions:
 - `product-change`: run blueprint-driven change from intent through validation and evidence.
 - `logical-integrity-review`: check consistency across code, docs, tests, diagrams, prompts, skills, gates, and bridges.
 - `architecture-assistance`: discuss project architecture and patterns from a compact evidence-backed catalog; observed or proposed items are not accepted architecture.
+- `documentation-sync`: propose project-area comment styles, document selected
+  symbols, or generate derived reference documentation through one accepted
+  frontend, backend, shared, or infrastructure profile when the optional
+  module is enabled.
 - `diagram-discussion`: show, compare, or revise a diagram using `Alatyr
   diagram`; the adapter uses compact current-surface evidence, stable draft
   lineage, security/privacy policy, and a portable ASCII view. Accepted/derived

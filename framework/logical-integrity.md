@@ -49,6 +49,8 @@ Facts include:
   or dependency behavior
 - test expectation, validation gate, checker invariant, prompt rule, skill
   instruction, bridge rule, or documentation-sync rule
+- code-documentation profile, structured comment contract, generator,
+  generated-output policy, or publication boundary
 - diagram edge, actor, state, container, object relation, sequence, or generated
   artifact ownership rule
 

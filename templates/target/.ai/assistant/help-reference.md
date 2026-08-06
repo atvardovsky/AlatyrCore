@@ -227,10 +227,15 @@ Flow: `.ai/assistant/flows/logical-integrity-review.flow.md`
 Minimum input: drift area or recently changed facts.
 
 Operation: `documentation-sync`
-Use when: syncing docs, diagrams, prompts, gates, skills, or bridge files
-after a fact changed.
+Use when: inventorying, proposing, reviewing, writing, synchronizing, or
+generating code documentation, or syncing docs, diagrams, prompts, gates,
+skills, or bridge files after a fact changed. Code-comment and generated
+reference work requires the optional `code-documentation` module.
 Flow: `.ai/assistant/flows/documentation-sync.flow.md`
-Minimum input: changed fact and owning source.
+Minimum input: changed fact and owning source, or bounded source area and
+documentation goal.
+Aliases: `document code`, `propose comment style`, `generate code docs`,
+`review code documentation`.
 
 Operation: `adapter-maturity-review`
 Use when: reporting whether the adapter is incomplete, minimal, usable, or

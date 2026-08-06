@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "catalog_kind": "target-code-documentation-catalog",
+  "project": "{PROJECT_NAME}",
+  "module_state": "{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}",
+  "human_index": ".ai/project/documentation/README.md",
+  "profiles": ".ai/project/documentation/profiles.json",
+  "documentation_owner": "{TARGET_CODE_DOCUMENTATION_OWNER}",
+  "profile_decision_authority": "{TARGET_DOCUMENTATION_PROFILE_DECISION_AUTHORITY}",
+  "generation_owner": "{TARGET_DOCUMENTATION_GENERATION_OWNER}",
+  "last_reviewed": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}",
+  "evidence_revision": "{TARGET_REVISION_OR_UNKNOWN_WITH_REASON}",
+  "areas": [
+    {
+      "id": "{DOCUMENTATION_AREA_ID}",
+      "name": "{DOCUMENTATION_AREA_NAME}",
+      "owner": "{DOCUMENTATION_AREA_OWNER}",
+      "source_scope": ["{DOCUMENTATION_AREA_SOURCE_GLOB}"],
+      "profile_ids": ["{DOCUMENTATION_PROFILE_ID}"],
+      "audiences": ["{DOCUMENTATION_AUDIENCE}"],
+      "public_boundary": "{TARGET_PUBLIC_BOUNDARY_OR_INTERNAL}",
+      "generated_outputs": ["{GENERATED_OUTPUT_PATH_OR_NONE}"],
+      "status": "{MISSING_PARTIAL_USABLE_STALE_CONTRADICTED_OR_UNKNOWN}",
+      "evidence": ["{DOCUMENTATION_AREA_EVIDENCE_OR_GAP}"]
+    }
+  ],
+  "known_gaps": ["{CODE_DOCUMENTATION_GAP_OR_NONE}"]
+}

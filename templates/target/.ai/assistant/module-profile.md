@@ -143,6 +143,26 @@ Approval needs: `{ARCHITECTURE_KNOWLEDGE_APPROVAL_NEEDS}`
 Residual risk: `{ARCHITECTURE_KNOWLEDGE_RESIDUAL_RISK}`
 Next action: `{ARCHITECTURE_KNOWLEDGE_NEXT_ACTION}`
 
+Module: `code-documentation`
+State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+Owner or file: `.ai/project/documentation/README.md`
+Required files:
+
+- `.ai/framework/code-documentation.md`
+- `.ai/project/documentation/README.md`
+- `.ai/project/documentation/catalog.json`
+- `.ai/project/documentation/profiles.json`
+- `.ai/assistant/context/intents/code-documentation.json`
+- `.ai/assistant/flows/documentation-sync.flow.md`
+- `.ai/assistant/templates/code-documentation-profile-review.md`
+- `.ai/assistant/skills/code-documentation/SKILL.md`
+
+Reason: `{REASON}`
+Validation or review: `{VALIDATION_OR_REVIEW}`
+Approval needs: `{CODE_DOCUMENTATION_APPROVAL_NEEDS}`
+Residual risk: `{CODE_DOCUMENTATION_RESIDUAL_RISK}`
+Next action: `{CODE_DOCUMENTATION_NEXT_ACTION}`
+
 Module: `diagrams`
 State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `{TARGET_DIAGRAM_MODULE_OWNER_OR_FILE}`

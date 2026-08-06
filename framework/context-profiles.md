@@ -35,6 +35,12 @@ with the compact project architecture catalog and selected item evidence. Do
 not load the full `architecture-change` profile until an accepted decision or
 crossed boundary requires change execution context.
 
+Code-comment style proposals, documentation review, structured-comment work,
+and generated-reference requests use a separate optional intent overlay. Start
+with the compact code-documentation catalog and profile selector, then compose
+with `docs-local`, `code-local`, or a higher-risk base profile according to the
+changed fact. Different source sets may select different accepted profiles.
+
 ## Canonical Profiles
 
 Use these profile names unless a target adapter deliberately renames them:

@@ -89,6 +89,14 @@ Derived surfaces: target architecture index and catalog, pattern and area
 templates, architecture-assistance operation and intent route, architecture
 discussion result, installation and update planning, gates, and validation.
 
+Category: `CODEDOC`
+Owner: `.ai/framework/code-documentation.md`
+Rule IDs: `ALATYR-CODEDOC-001`
+Derived surfaces: target code-documentation catalog and profiles,
+documentation intent route and synchronization flow, project-adapted comment
+skill, profile review template, generated-output policy, installation and
+update planning, gates, and structural validation.
+
 Category: `DIAGRAM`
 Owner: `.ai/framework/diagram-guidance.md`
 Rule IDs: `ALATYR-DIAGRAM-001`

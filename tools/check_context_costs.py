@@ -71,6 +71,18 @@ def main() -> int:
             "architecture compact route should reduce reference words by at least 35%"
         )
 
+    code_documentation_route = report["operation_routes"]["code-documentation"]
+    if code_documentation_route["compact"]["missing_paths"]:
+        failures.append("code-documentation compact route contains missing paths")
+    code_documentation_reduction = code_documentation_route["word_reduction_percent"]
+    if (
+        not isinstance(code_documentation_reduction, (int, float))
+        or code_documentation_reduction < 25
+    ):
+        failures.append(
+            "code-documentation compact route should reduce reference words by at least 25%"
+        )
+
     migration = report["migration_routing"]
     reduction = migration["initial_word_reduction_percent"]
     if not isinstance(reduction, (int, float)) or reduction < 70:
@@ -86,6 +98,7 @@ def main() -> int:
         "OK: checked context-cost baseline; migration initial word reduction "
         f"is {reduction}%; diagram route reduction is {diagram_reduction}%; "
         f"architecture route reduction is {architecture_reduction}%"
+        f"; code-documentation route reduction is {code_documentation_reduction}%"
     )
     return 0
 

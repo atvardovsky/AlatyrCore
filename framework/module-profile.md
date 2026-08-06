@@ -53,6 +53,10 @@ maintain them:
   catalog, pattern and area records, evidence-based architecture discussion,
   alternative comparison, review, documentation maintenance, and accepted
   decision handoff.
+- `code-documentation`: project-owned documentation catalog and multiple
+  source-set profiles for evidence-backed comment-style proposals, structured
+  comment maintenance, target-specific deterministic generation, and derived
+  output validation without loading all code documentation by default.
 - `diagrams`: diagram source, visual artifact, render or manual-review, drift,
   discussion presentation, generated capability index, per-assistant
   capability/freshness records, captured result conformance, security/privacy,

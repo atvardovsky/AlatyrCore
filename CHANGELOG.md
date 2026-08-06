@@ -4,6 +4,45 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.6 - 2026-08-07
+
+- Increased the framework version to `0.1.0-alpha.6`, adapter schema version
+  to `5`, and target template version to `6`, with migration evidence from the
+  committed `0.1.0-alpha.5` source state.
+- Added optional project code documentation under new rule
+  `ALATYR-CODEDOC-001`, with bounded source-set profiles so frontend, backend,
+  shared-library, infrastructure, and other project areas may use different
+  evidence-backed comment styles and semantic content contracts.
+- Added a compact project documentation index and catalog, machine-readable
+  profile selection, profile-review report, lazy intent route, adapted target
+  skill, documentation-sync modes, operation aliases, installation/update
+  guidance, and target structural validation.
+- Defined deterministic reference generation through target-recorded language
+  or ecosystem tools, with `ci-artifact`, `committed-generated`, `local-only`,
+  `external-publish`, and unresolved output policies. Generated output is
+  derived and must not be edited directly.
+- Required assistants to inspect existing target comments, generators,
+  compiler/linter/IDE/CI support, canonical specifications, ownership, and
+  maintenance evidence before proposing a style. Only one unambiguous accepted
+  profile may direct routine source-comment or generation work.
+- Preserved source-of-truth boundaries: comments may own bounded symbol-level
+  explanations only when the target registry assigns them ownership, while
+  business, architecture, security, API, data, and operational owners remain
+  canonical.
+- Added source checks and optional target validation for module files, manifest
+  paths, profile states, required fields, duplicate IDs, exact accepted-profile
+  ambiguity, generated-output direct-edit policy, lazy routing, and contract
+  completeness. Structural checks do not prove comment truth or generated-
+  reference quality.
+- Added deterministic context-cost evidence: the code-documentation compact
+  route loads 6 files and about 2,938 words versus 14 files and about 9,288
+  words for the full reference union, a 68.4% static word reduction; routine
+  bootstrap remains below its soft budget.
+- Changed `ALATYR-CONTEXT-001`, `ALATYR-SOURCE-001`,
+  `ALATYR-INTEGRITY-001`, `ALATYR-ADAPTER-001`, `ALATYR-MODULE-001`,
+  `ALATYR-OPERATION-001`, `ALATYR-LIFECYCLE-001`, and
+  `ALATYR-EVIDENCE-001`; added `ALATYR-CODEDOC-001`; no rule IDs were removed.
+
 ## 0.1.0-alpha.5 - 2026-08-06
 
 - Increased the framework version to `0.1.0-alpha.5`, adapter schema version

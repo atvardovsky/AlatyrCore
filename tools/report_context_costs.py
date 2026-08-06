@@ -163,6 +163,35 @@ def build_report() -> dict[str, Any]:
         [value for value in architecture_full_reference_refs if value]
     )
 
+    code_documentation_reference, code_documentation_overlay = intent_contracts.get(
+        "code-documentation", (None, {})
+    )
+    code_documentation_conditional_refs = [
+        entry.get("path")
+        for entry in code_documentation_overlay.get("conditional_context", [])
+        if isinstance(entry, dict) and isinstance(entry.get("path"), str)
+    ]
+    code_documentation_compact_refs = [
+        operation_routing.get("index", ""),
+        code_documentation_reference,
+        *code_documentation_overlay.get("required_context", []),
+    ]
+    code_documentation_full_reference_refs = [
+        operation_routing.get("catalog", ""),
+        ".ai/assistant/help.md",
+        ".ai/assistant/flows/operation-routing.flow.md",
+        ".ai/assistant/module-profile.md",
+        code_documentation_reference,
+        *code_documentation_overlay.get("required_context", []),
+        *code_documentation_conditional_refs,
+    ]
+    code_documentation_compact = measure(
+        [value for value in code_documentation_compact_refs if value]
+    )
+    code_documentation_full_reference = measure(
+        [value for value in code_documentation_full_reference_refs if value]
+    )
+
     migration_reference, migration = descriptor(router.get("migration_routing", {}))
     migration_initial_refs = [
         value
@@ -204,7 +233,15 @@ def build_report() -> dict[str, Any]:
                     architecture_compact["words"],
                     architecture_full_reference["words"],
                 ),
-            }
+            },
+            "code-documentation": {
+                "compact": code_documentation_compact,
+                "full_reference_union": code_documentation_full_reference,
+                "word_reduction_percent": reduction_percent(
+                    code_documentation_compact["words"],
+                    code_documentation_full_reference["words"],
+                ),
+            },
         },
         "migration_routing": {
             "initial": migration_initial,

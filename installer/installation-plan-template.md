@@ -39,6 +39,13 @@ List what must not be changed.
 - Architecture-knowledge owner, decision authority, canonical sources, compact
   catalog, evidence revision, and validation:
 - Architecture areas, patterns/items, states, contradictions, and known gaps:
+- Code-documentation need, owner, profile decision authority, and module state:
+- Bounded source sets, languages, frameworks, audiences, visibility, existing
+  comment conventions, and frontend/backend/shared/infrastructure differences:
+- Proposed or accepted profile states, style evidence, required semantic
+  sections, canonical owners, and migration scope:
+- Generator/configuration, generation entry points, output/publication policy,
+  validation, dependency/CI approval needs, and adapted skill:
 - Context router schema and lazy descriptors:
 - Context profiles:
 - Context-router bootstrap references:
@@ -312,6 +319,8 @@ decisions, and external references before schema changes.
 - Post-install/update assistant chat-message rules:
 - Architecture knowledge catalog, item-state, evidence-revision, and
   documentation-maintenance rules:
+- Code-documentation profile selection, style proposal, structured-comment,
+  generator, derived-output, direct-edit, and source-of-truth boundary rules:
 - Diagram source format:
 - Human visual format:
 - Render or manual-review policy:

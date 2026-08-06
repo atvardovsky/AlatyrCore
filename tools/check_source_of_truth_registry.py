@@ -33,6 +33,7 @@ REQUIRED_FACT_TYPES = [
     "assistant operation",
     "development process pattern",
     "AI infrastructure item",
+    "code documentation profile",
 ]
 
 REQUIRED_FIELDS = [
@@ -110,10 +111,14 @@ def main() -> int:
             (line for line in block.splitlines() if line.startswith("Canonical owner:")),
             "",
         )
-        if fact_type == "development process pattern":
-            if ".ai/project/development-evidence.json" not in canonical_line:
+        fixed_owners = {
+            "development process pattern": ".ai/project/development-evidence.json",
+            "code documentation profile": ".ai/project/documentation/profiles.json",
+        }
+        if fact_type in fixed_owners:
+            if fixed_owners[fact_type] not in canonical_line:
                 failures.append(
-                    "development process pattern canonical owner must be the compact index"
+                    f"{fact_type} canonical owner must be {fixed_owners[fact_type]}"
                 )
         elif "{" not in canonical_line:
             failures.append(f"{fact_type} canonical owner should remain placeholder-based")

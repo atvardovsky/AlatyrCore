@@ -19,6 +19,7 @@ If you are installing Alatyr Core into a target project:
    `framework/project-adapter-contract.md`, `framework/portability.md`,
    `framework/module-profile.md`, `framework/rule-ownership.md`,
    `framework/operation-help.md`, `framework/architecture-knowledge.md`,
+   `framework/code-documentation.md`,
    `framework/rule-registry.md`, and
    `framework/rule-registry.json`.
 4. Read `installer/assistant-installation.flow.md`.

@@ -92,6 +92,9 @@ Good assistant-generated tests should:
 - prove error handling and idempotency for side-effecting code
 - verify documentation-relevant behavior when docs, diagrams, or blueprints
   describe a rule, flow, state, relation, or external contract
+- validate code-documentation examples, links, generator execution, and
+  committed-output drift when the selected target profile requires them,
+  without treating successful generation as proof of semantic truth
 - update or add adapter validation when a new test level becomes required
 
 ## Rejection Criteria

@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "profile_kind": "target-code-documentation-profiles",
+  "project": "{PROJECT_NAME}",
+  "selection_policy": {
+    "order": ["accepted state", "path or source-set match", "language and framework compatibility", "most specific match", "explicit priority"],
+    "on_equal_conflict": "stop automatic generation and report ambiguity",
+    "on_no_accepted_match": "prepare a read-only evidence-backed proposal"
+  },
+  "profiles": [
+    {
+      "id": "{DOCUMENTATION_PROFILE_ID}",
+      "state": "{PROPOSED_ACCEPTED_DEPRECATED_CONTRADICTED_OR_UNKNOWN}",
+      "owner": "{DOCUMENTATION_PROFILE_OWNER}",
+      "priority": 100,
+      "match": {
+        "include": ["{SOURCE_GLOB}"],
+        "exclude": ["{GENERATED_VENDOR_OR_TEST_GLOB_OR_NONE}"],
+        "languages": ["{LANGUAGE}"],
+        "frameworks": ["{FRAMEWORK_OR_NONE}"]
+      },
+      "audiences": ["{DOCUMENTATION_AUDIENCE}"],
+      "visibility": "{PUBLIC_SUPPORTED_INTERNAL_OR_MIXED}",
+      "purpose": "{DOCUMENTATION_PURPOSE}",
+      "evidence": {
+        "existing_comments": ["{EXISTING_COMMENT_EVIDENCE_OR_NONE}"],
+        "existing_tooling": ["{EXISTING_GENERATOR_LINTER_CI_OR_NONE}"],
+        "decision_source": "{PROFILE_DECISION_SOURCE_OR_PROPOSED_RECORD}",
+        "last_verified_revision": "{TARGET_REVISION_OR_UNKNOWN_WITH_REASON}"
+      },
+      "comment_contract": {
+        "syntax": "{TSDOC_JSDOC_GOOGLE_NUMPY_SPHINX_JAVADOC_XML_RUSTDOC_GODOC_DOXYGEN_OR_TARGET_STYLE}",
+        "required_for": ["{PUBLIC_OR_SELECTED_SYMBOL_KIND}"],
+        "required_sections": ["{PURPOSE_PARAMETERS_RESULTS_FAILURES_SIDE_EFFECTS_INVARIANTS_EXAMPLE_OR_TARGET_SECTION}"],
+        "content_focus": ["{PROJECT_AREA_SPECIFIC_DOCUMENTATION_FOCUS}"],
+        "avoid": ["repeating identifiers or types", "narrating obvious implementation", "duplicating canonical policy"],
+        "canonical_fact_owners": ["{SOURCE_OF_TRUTH_REGISTRY_FACT_TYPE_OR_OWNER}"],
+        "uncertainty_policy": "record observed behavior and unresolved intent; do not invent accepted facts"
+      },
+      "generation": {
+        "generator": "{TARGET_LANGUAGE_NATIVE_OR_EXISTING_GENERATOR}",
+        "config": "{TARGET_GENERATOR_CONFIG_PATH_OR_NONE}",
+        "entry_point": "{TARGET_GENERATION_COMMAND_OR_MANUAL_ENTRY_POINT}",
+        "output": "{TARGET_GENERATED_OUTPUT_PATH_OR_ARTIFACT}",
+        "output_policy": "{CI_ARTIFACT_COMMITTED_GENERATED_LOCAL_ONLY_EXTERNAL_PUBLISH_OR_UNRESOLVED}",
+        "direct_edit": "forbidden",
+        "publication_boundary": "{TARGET_PUBLICATION_BOUNDARY_OR_NONE}"
+      },
+      "validation": ["{TARGET_COMMENT_LINT_GENERATION_LINK_EXAMPLE_OR_MANUAL_REVIEW}"],
+      "assistant_skill": "{TARGET_ACCEPTED_SKILL_PATH_OR_NONE}",
+      "migration_scope": ["{EXISTING_SOURCE_SCOPE_TO_MIGRATE_OR_NONE}"],
+      "approval_needs": ["{DEPENDENCY_CI_PUBLICATION_BROAD_REWRITE_OR_NONE}"],
+      "known_gaps": ["{DOCUMENTATION_PROFILE_GAP_OR_NONE}"]
+    }
+  ]
+}

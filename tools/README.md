@@ -148,6 +148,19 @@ python3 tools/check_change_packages.py
 python3 tools/validate_target_adapter.py --target /path/to/target --change-package .ai/assistant/change-packages/change.json --enforce-change-package
 ```
 
+## Code Documentation Check
+
+`check_code_documentation.py` validates the optional portable rule, bounded
+target source-set profiles, style-proposal and generator contracts,
+source-of-truth boundaries, derived-output policy, lazy routing, adapted skill,
+installer wiring, and target validation support. It does not prove that
+comments are semantically correct or that generated reference documentation is
+complete.
+
+```sh
+python3 tools/check_code_documentation.py
+```
+
 ## AI Infrastructure Inventory Check
 
 `check_ai_infrastructure_inventory.py` validates the target

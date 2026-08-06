@@ -307,16 +307,16 @@
     {
       "id": "documentation-sync",
       "title": "Documentation sync",
-      "summary": "Synchronize documentation and other derived explanatory surfaces after a fact changes.",
-      "use_when": ["documentation drift", "diagram sync", "companion assistant artifact sync"],
-      "context_profiles": ["docs-local", "ai-infrastructure"],
+      "summary": "Propose project-area comment styles, maintain structured comments, generate derived code reference, or synchronize other explanatory surfaces.",
+      "use_when": ["code comment style proposal", "documentation profile review", "structured comment maintenance", "generated code reference", "documentation drift", "diagram sync", "companion assistant artifact sync"],
+      "context_profiles": ["docs-local", "code-local", "ai-infrastructure"],
       "required_module": "core-profile",
       "flow": ".ai/assistant/flows/documentation-sync.flow.md",
-      "minimum_inputs": ["changed fact", "canonical owner"],
-      "allowed_actions": ["read-only", "docs-only", "adapter-only", "full-with-approval"],
+      "minimum_inputs": ["changed fact and canonical owner, or bounded source area and documentation goal"],
+      "allowed_actions": ["read-only", "docs-only", "adapter-only", "code-and-tests", "full-with-approval"],
       "preview": "risk-gated",
-      "aliases": ["sync documentation", "sync diagrams"],
-      "final_evidence": ["owners and derived surfaces", "updated artifacts", "validation"]
+      "aliases": ["sync documentation", "sync diagrams", "document code", "propose comment style", "generate code docs", "review code documentation"],
+      "final_evidence": ["selected documentation profile and canonical owners", "comments and derived surfaces", "generator and output policy", "validation and residual risk"]
     },
     {
       "id": "adapter-maturity-review",

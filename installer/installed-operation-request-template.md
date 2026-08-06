@@ -10,10 +10,10 @@ Target repository path:
 <path-or-repo-url-to-target-project>
 
 Operation type:
-<optional; help/adapter-health/create-project-blueprint/recheck-after-installation/recheck-after-framework-update/product-change/large-task/team-status/team-task/team-conflict-review/team-handoff/team-decision/team-review/team-merge-check/logical-integrity-review/architecture-assistance/diagram-discussion/ai-infrastructure-inventory/ai-infrastructure-recommendation/skill-adaptation/drift-review/documentation-sync/adapter-maturity-review/other>
+<optional; help/adapter-health/create-project-blueprint/recheck-after-installation/recheck-after-framework-update/product-change/large-task/team-status/team-task/team-conflict-review/team-handoff/team-decision/team-review/team-merge-check/logical-integrity-review/architecture-assistance/diagram-discussion/ai-infrastructure-inventory/ai-infrastructure-recommendation/skill-adaptation/drift-review/documentation-sync/adapter-maturity-review/other; documentation-sync also routes code-comment profile proposals and generated-reference work when the optional module is enabled>
 
 Operation alias, if used:
-<for example: Alatyr architecture, Alatyr diagram, Alatyr team status, Alatyr claim <task-id>, Alatyr handoff <task-id>, Alatyr review <task-id>, alatyr-ai-inventory, alatyr-suggest-ai <scope>, alatyr-improve-ai <item-id>, alatyr-adaptation <source>, or alatyr-add-ai <source>>
+<for example: Alatyr architecture, Alatyr diagram, document code, propose comment style, generate code docs, Alatyr team status, Alatyr claim <task-id>, Alatyr handoff <task-id>, Alatyr review <task-id>, alatyr-ai-inventory, alatyr-suggest-ai <scope>, alatyr-improve-ai <item-id>, alatyr-adaptation <source>, or alatyr-add-ai <source>>
 
 Goal:
 <what the assistant should accomplish>

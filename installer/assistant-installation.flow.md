@@ -32,6 +32,7 @@ Read in this repository first:
 - `framework/portability.md`
 - `framework/module-profile.md`
 - `framework/architecture-knowledge.md`
+- `framework/code-documentation.md`
 - `framework/rule-ownership.md`
 - `framework/rule-registry.md`
 - `framework/rule-registry.json`
@@ -66,6 +67,7 @@ in the owning framework documents and use these IDs for installation routing:
 - `ALATYR-MODULE-001`
 - `ALATYR-OPERATION-001`
 - `ALATYR-ARCHITECTURE-001`
+- `ALATYR-CODEDOC-001`
 - `ALATYR-DIAGRAM-001`
 - `ALATYR-TEAM-001`
 - `ALATYR-LIFECYCLE-001`
@@ -80,6 +82,9 @@ Read in the target repository:
 - README and public docs
 - architecture/design docs, decision records, documented patterns,
   boundaries, constraints, quality attributes, and architecture validation
+- source roots, languages, frameworks, existing structured comments,
+  docstring conventions, public symbol boundaries, generators, documentation
+  sites, generated-reference outputs, and documentation lint/publication rules
 - package/build/dependency files
 - tests, fixtures, test helpers, and CI
 - local validation commands or manual validation policy
@@ -159,6 +164,12 @@ Classify every proposed target file:
     enabled. Derive owner, decision authority, item states, selected evidence,
     validation, and evidence revision from the target; never promote observed
     implementation to accepted architecture by inference.
+    Add `.ai/project/documentation/README.md`, `catalog.json`, and
+    `profiles.json` only when code documentation is enabled. Derive separate
+    source-set profiles from target language, framework, existing comment,
+    generator, ownership, output, and validation evidence. Record profiles as
+    proposed until target decision authority accepts them; never seed one
+    repository-wide style by assumption.
     Add `.ai/project/team-operating-model.md` only when the target enables team
     collaboration. Derive actor IDs, authority, priorities, review,
     coordination backend, synchronization, storage, retention, and privacy
@@ -183,6 +194,9 @@ Classify every proposed target file:
     Add the `team-active` overlay only when team collaboration is enabled. Keep
     the full work registry and unrelated active tasks outside routine
     bootstrap.
+    Add the `code-documentation` intent overlay only when the optional module
+    is enabled. Keep its full profiles, selected source, generator
+    configuration, and generated output outside routine bootstrap.
 14. Add bridge files only for assistants the target uses.
 15. Add installed-operation, operation-help, automatic operation-routing,
     read-only adapter-health, risk-gated pre-change preview,
@@ -190,6 +204,9 @@ Classify every proposed target file:
     when the diagrams module is enabled,
     architecture-assistance flow, architecture pattern/area/result templates,
     and lazy intent routing when architecture knowledge is enabled,
+    code-documentation catalog/profiles, profile-review template, adapted
+    skill, documentation flow, and lazy intent routing when code documentation
+    is enabled,
     AI-infrastructure-inventory, AI-infrastructure-recommendation, adapter output contract
     `.ai/assistant/templates/adapter-output-contracts.md`, source-access
     policy, prompt-injection policy, human and machine-readable approval-record

@@ -77,6 +77,12 @@ catalog. Selected area, pattern, decision, and repository evidence load after
 catalog selection; full architecture-change, data, security, diagram, or
 blueprint context remains conditional on the question and decision state.
 
+Code-comment style proposals, documentation review, and generated-reference
+work should use a separate optional intent overlay. Start from the compact
+code-documentation catalog and profile selector, then load only the selected
+source-set profile, affected symbols, canonical owners, generator
+configuration, and validation. Do not load every profile or generated output.
+
 When an overlay needs a detailed reference only for a subset of requests, put
 the path and its load condition in `conditional_context` instead of the default
 `required_context`. Conditional paths must remain machine-visible to routing

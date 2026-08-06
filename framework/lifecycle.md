@@ -64,6 +64,10 @@ Before upgrading framework files in a target project:
    lazy overlay, operation routes, and target operating model.
    When `change-packages` is enabled, compare its record schema, semantic
    approval fields, provenance policy, lazy route, and validator support.
+   When `code-documentation` is enabled, compare its catalog/profile schemas,
+   source-set selectors, accepted states, canonical-owner boundaries,
+   generators, output/publication policies, adapted skill, lazy route, and
+   validator support.
 10. Prepare a target migration note or installation plan from reviewed
     assessment evidence.
 11. Require approval before overwriting existing target AI instructions.
@@ -78,6 +82,9 @@ Before upgrading framework files in a target project:
     state with the source placeholder registry.
     Preserve target change-package records. Never replace historical package
     evidence with the source placeholder templates.
+    Preserve target code-documentation profiles and decisions. Never replace
+    accepted frontend, backend, shared, or infrastructure conventions with
+    source placeholders or a universal style.
 14. Recheck root assistant entry points and supported bridge files so future
     sessions can find the installation note, operation catalog, health, help,
     and routing flow.
@@ -112,6 +119,9 @@ Framework lifecycle notes should record:
   preservation, and post-update stale-state review when that module is enabled
 - change-package rule, record schema, lazy route, target retention policy,
   provenance grades, and validator migration when that module is enabled
+- code-documentation rule, catalog/profile schemas, source-set selection,
+  accepted style decisions, generator/output policy, adapted skill, lazy
+  route, and validator migration when that module is enabled
 
 ## Deprecation
 

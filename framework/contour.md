@@ -30,6 +30,8 @@ Framework core owns:
 - logical integrity review pattern
 - blueprint-driven product-change workflow pattern
 - documentation-sync pattern
+- optional code-documentation profile selection, structured-comment, and
+  deterministic generated-reference process
 - stack-aware testing analysis pattern
 - gate categories and final evidence pattern
 - skill, prompt, wrapper, and third-party assistant infrastructure adaptation

@@ -39,6 +39,9 @@ For each supported assistant, record:
 - whether enabled team status, task, conflict, handoff, decision, review, and
   merge-check requests route through the canonical catalog and lazy team
   overlay
+- whether enabled code-documentation aliases route through the canonical
+  operation index, documentation intent, selected target profile, and shared
+  flow regardless of assistant-native skill support
 - the selected path in the compact generated assistant-capability index
 - whether diagram discussion routes through the canonical operation index
 - supported native inline diagram syntaxes and artifact presentation mode;
@@ -101,6 +104,9 @@ Each bridge should:
   instead of choosing item content from a bridge
 - route enabled team operations through the canonical catalog and
   `.ai/assistant/team/context-overlay.json` instead of embedding team policy
+- route enabled code-documentation requests through the canonical operation
+  index and intent descriptor; assistant-native wrappers point to the shared
+  target profile and do not duplicate comment policy
 - route enabled `Alatyr diagram` and equivalent requests through the compact
   operation index, diagram discussion flow, presentation template, and only
   the selected assistant-capability record

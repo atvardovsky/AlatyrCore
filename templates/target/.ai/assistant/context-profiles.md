@@ -71,6 +71,26 @@ area templates only when drafting selected records, diagram context only when
 visual relationships help, and blueprint/integrity/approval context only when
 an architecture decision is accepted or a protected boundary is crossed.
 
+## Intent Overlay: `code-documentation`
+
+Apply this overlay when the user asks to propose or review code-comment style,
+document selected symbols, synchronize comments, or generate code reference.
+Route through the compact catalog and profile selector before loading selected
+source files, canonical owners, generator configuration, or generated output.
+
+Required compact context:
+
+- `.ai/framework/code-documentation.md`
+- `.ai/project/documentation/catalog.json`
+- `.ai/project/documentation/profiles.json`
+- `.ai/assistant/flows/documentation-sync.flow.md`
+
+An accepted frontend, backend, shared-library, or infrastructure profile may
+use different syntax and semantic sections. If no accepted profile matches,
+prepare a read-only proposal from repository evidence. Stop automatic
+generation when accepted profiles conflict at equal specificity. Generated
+output is derived and must not be edited directly.
+
 ## Task-Scale Overlay: `large-or-resumable`
 
 Activate only for large, cross-boundary, multi-workstream,

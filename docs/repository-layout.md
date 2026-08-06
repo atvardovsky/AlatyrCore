@@ -80,6 +80,12 @@ knowledge rule and target architecture catalog, operation, lazy route,
 templates, gates, source-of-truth entry, manifest paths, and optional module.
 It checks source contracts, not the truth of a target project's architecture.
 
+`tools/check_code_documentation.py` validates the optional portable
+code-documentation rule, target source-set profiles, style proposal,
+generator/output contracts, lazy route, adapted skill, gates, source-of-truth
+entry, manifest paths, and target-validator support. It does not prove comment
+truth or generated-reference quality.
+
 `tools/check_ai_infrastructure_inventory.py` validates the target
 `.ai/assistant/templates/ai-infrastructure-inventory.md` template and
 inventory flow fields for provenance, license, permissions, prompt-injection

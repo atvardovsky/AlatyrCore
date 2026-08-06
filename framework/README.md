@@ -58,6 +58,8 @@ sync, logical integrity review, and final evidence.
 - reusable assistant workflow categories
 - reusable approval, documentation-sync, logical integrity, and evidence
   concepts
+- optional project-specific code-comment profiles and deterministic
+  generated-reference documentation
 - stack-aware testing analysis guidance
 - supported-assistant bridge pattern
 - bridge capability matrix plus compact per-surface capability projection
@@ -124,6 +126,9 @@ Those belong to a project contour or repository adapter.
 - `.ai/framework/architecture-knowledge.md`: portable project architecture
   catalog, pattern discussion, alternative comparison, review, and
   documentation-maintenance contract.
+- `.ai/framework/code-documentation.md`: optional source-set documentation
+  profiles, comment-style proposal, generator, derived-output, and evidence
+  contract.
 - `.ai/framework/security-safety-guidance.md`: portable security and safety
   expectations for secrets, live services, dependencies, and destructive work.
 - `.ai/framework/prompt-injection.md`: policy for treating imported AI

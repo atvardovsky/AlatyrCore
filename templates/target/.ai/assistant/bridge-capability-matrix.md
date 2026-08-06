@@ -33,6 +33,7 @@ Routes single `Alatyr` entry: `{GENERIC_ROUTES_ALATYR_ENTRY}`
 Routes adapter health: `{GENERIC_ROUTES_ADAPTER_HEALTH}`
 Routes pre-change preview: `{GENERIC_ROUTES_PRE_CHANGE_PREVIEW}`
 Routes enabled team operations: `{GENERIC_ROUTES_TEAM_OPERATIONS}`
+Routes code-documentation aliases: `{GENERIC_ROUTES_CODE_DOCUMENTATION}`
 Diagram capability record: `.ai/assistant/assistant-capabilities/generic.json`
 Routes `alatyr-ai-inventory`: `{GENERIC_ROUTES_AI_INVENTORY}`
 Routes `alatyr-suggest-ai`: `{GENERIC_ROUTES_AI_RECOMMENDATION}`
@@ -60,6 +61,7 @@ Routes single `Alatyr` entry: `{AGENTS_ROUTES_ALATYR_ENTRY}`
 Routes adapter health: `{AGENTS_ROUTES_ADAPTER_HEALTH}`
 Routes pre-change preview: `{AGENTS_ROUTES_PRE_CHANGE_PREVIEW}`
 Routes enabled team operations: `{AGENTS_ROUTES_TEAM_OPERATIONS}`
+Routes code-documentation aliases: `{AGENTS_ROUTES_CODE_DOCUMENTATION}`
 Diagram capability record: `.ai/assistant/assistant-capabilities/agents.json`
 Routes `alatyr-ai-inventory`: `{AGENTS_ROUTES_AI_INVENTORY}`
 Routes `alatyr-suggest-ai`: `{AGENTS_ROUTES_AI_RECOMMENDATION}`
@@ -88,6 +90,7 @@ Routes single `Alatyr` entry: `{CODEX_ROUTES_ALATYR_ENTRY}`
 Routes adapter health: `{CODEX_ROUTES_ADAPTER_HEALTH}`
 Routes pre-change preview: `{CODEX_ROUTES_PRE_CHANGE_PREVIEW}`
 Routes enabled team operations: `{CODEX_ROUTES_TEAM_OPERATIONS}`
+Routes code-documentation aliases: `{CODEX_ROUTES_CODE_DOCUMENTATION}`
 Diagram capability record: `.ai/assistant/assistant-capabilities/codex.json`
 Routes `alatyr-ai-inventory`: `{CODEX_ROUTES_AI_INVENTORY}`
 Routes `alatyr-suggest-ai`: `{CODEX_ROUTES_AI_RECOMMENDATION}`
@@ -115,6 +118,7 @@ Routes single `Alatyr` entry: `{CLAUDE_ROUTES_ALATYR_ENTRY}`
 Routes adapter health: `{CLAUDE_ROUTES_ADAPTER_HEALTH}`
 Routes pre-change preview: `{CLAUDE_ROUTES_PRE_CHANGE_PREVIEW}`
 Routes enabled team operations: `{CLAUDE_ROUTES_TEAM_OPERATIONS}`
+Routes code-documentation aliases: `{CLAUDE_ROUTES_CODE_DOCUMENTATION}`
 Diagram capability record: `.ai/assistant/assistant-capabilities/claude.json`
 Routes `alatyr-ai-inventory`: `{CLAUDE_ROUTES_AI_INVENTORY}`
 Routes `alatyr-suggest-ai`: `{CLAUDE_ROUTES_AI_RECOMMENDATION}`
@@ -142,6 +146,7 @@ Routes single `Alatyr` entry: `{GEMINI_ROUTES_ALATYR_ENTRY}`
 Routes adapter health: `{GEMINI_ROUTES_ADAPTER_HEALTH}`
 Routes pre-change preview: `{GEMINI_ROUTES_PRE_CHANGE_PREVIEW}`
 Routes enabled team operations: `{GEMINI_ROUTES_TEAM_OPERATIONS}`
+Routes code-documentation aliases: `{GEMINI_ROUTES_CODE_DOCUMENTATION}`
 Diagram capability record: `.ai/assistant/assistant-capabilities/gemini.json`
 Routes `alatyr-ai-inventory`: `{GEMINI_ROUTES_AI_INVENTORY}`
 Routes `alatyr-suggest-ai`: `{GEMINI_ROUTES_AI_RECOMMENDATION}`
@@ -170,6 +175,7 @@ Routes single `Alatyr` entry: `{GITHUB_COPILOT_ROUTES_ALATYR_ENTRY}`
 Routes adapter health: `{GITHUB_COPILOT_ROUTES_ADAPTER_HEALTH}`
 Routes pre-change preview: `{GITHUB_COPILOT_ROUTES_PRE_CHANGE_PREVIEW}`
 Routes enabled team operations: `{GITHUB_COPILOT_ROUTES_TEAM_OPERATIONS}`
+Routes code-documentation aliases: `{GITHUB_COPILOT_ROUTES_CODE_DOCUMENTATION}`
 Diagram capability record: `.ai/assistant/assistant-capabilities/github-copilot.json`
 Routes `alatyr-ai-inventory`: `{GITHUB_COPILOT_ROUTES_AI_INVENTORY}`
 Routes `alatyr-suggest-ai`: `{GITHUB_COPILOT_ROUTES_AI_RECOMMENDATION}`
@@ -198,6 +204,7 @@ Routes single `Alatyr` entry: `{CURSOR_ROUTES_ALATYR_ENTRY}`
 Routes adapter health: `{CURSOR_ROUTES_ADAPTER_HEALTH}`
 Routes pre-change preview: `{CURSOR_ROUTES_PRE_CHANGE_PREVIEW}`
 Routes enabled team operations: `{CURSOR_ROUTES_TEAM_OPERATIONS}`
+Routes code-documentation aliases: `{CURSOR_ROUTES_CODE_DOCUMENTATION}`
 Diagram capability record: `.ai/assistant/assistant-capabilities/cursor.json`
 Routes `alatyr-ai-inventory`: `{CURSOR_ROUTES_AI_INVENTORY}`
 Routes `alatyr-suggest-ai`: `{CURSOR_ROUTES_AI_RECOMMENDATION}`
@@ -225,6 +232,7 @@ Routes single `Alatyr` entry: `{DEVIN_CASCADE_ROUTES_ALATYR_ENTRY}`
 Routes adapter health: `{DEVIN_CASCADE_ROUTES_ADAPTER_HEALTH}`
 Routes pre-change preview: `{DEVIN_CASCADE_ROUTES_PRE_CHANGE_PREVIEW}`
 Routes enabled team operations: `{DEVIN_CASCADE_ROUTES_TEAM_OPERATIONS}`
+Routes code-documentation aliases: `{DEVIN_CASCADE_ROUTES_CODE_DOCUMENTATION}`
 Diagram capability record: `.ai/assistant/assistant-capabilities/devin-cascade.json`
 Routes `alatyr-ai-inventory`: `{DEVIN_CASCADE_ROUTES_AI_INVENTORY}`
 Routes `alatyr-suggest-ai`: `{DEVIN_CASCADE_ROUTES_AI_RECOMMENDATION}`
@@ -253,6 +261,7 @@ Routes single `Alatyr` entry: `{WINDSURF_ROUTES_ALATYR_ENTRY}`
 Routes adapter health: `{WINDSURF_ROUTES_ADAPTER_HEALTH}`
 Routes pre-change preview: `{WINDSURF_ROUTES_PRE_CHANGE_PREVIEW}`
 Routes enabled team operations: `{WINDSURF_ROUTES_TEAM_OPERATIONS}`
+Routes code-documentation aliases: `{WINDSURF_ROUTES_CODE_DOCUMENTATION}`
 Diagram capability record: `.ai/assistant/assistant-capabilities/windsurf.json`
 Routes `alatyr-ai-inventory`: `{WINDSURF_ROUTES_AI_INVENTORY}`
 Routes `alatyr-suggest-ai`: `{WINDSURF_ROUTES_AI_RECOMMENDATION}`

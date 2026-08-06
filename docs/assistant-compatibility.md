@@ -118,6 +118,15 @@ implementation evidence only when the discussion needs them. Bridges must not
 copy project architecture facts or collapse `observed`, `proposed`, and
 `accepted` statuses into one claim.
 
+When `code-documentation` is enabled, every supported surface routes comment-
+style proposals, selected comment work, and generated-reference requests
+through the canonical operation index, code-documentation intent descriptor,
+and documentation-sync flow. The shared skill is a target-owned canonical
+surface, not proof that every client auto-loads the same native skill format;
+assistant-specific wrappers remain thin pointers. All surfaces must select the
+same unambiguous accepted source-set profile and preserve generated-output and
+source-of-truth boundaries.
+
 Targets may define request aliases such as `alatyr-ai-inventory`,
 `alatyr-suggest-ai <scope>`, `alatyr-improve-ai <item-id>`,
 `alatyr-adaptation <source>`, or `alatyr-add-ai <source>`. Assistant-specific
@@ -152,6 +161,11 @@ Maintainers can run `python3 tools/check_architecture_knowledge.py` to validate
 the portable architecture rule, target catalog, operation, lazy route,
 templates, gates, manifest paths, and module contract shared by all supported
 assistant surfaces.
+
+Maintainers can run `python3 tools/check_code_documentation.py` to validate the
+portable rule, target profiles, operation aliases, lazy route, adapted skill,
+gates, manifest paths, module contract, and structural validator support shared
+by all supported assistant surfaces.
 
 Maintainers can run
 `python3 tools/check_assistant_surface_conformance.py` to verify that every

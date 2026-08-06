@@ -36,6 +36,7 @@ OPTIONAL_MODULES = [
     "blueprint-change",
     "consistency-map",
     "architecture-knowledge",
+    "code-documentation",
     "diagrams",
     "ai-infrastructure",
     "multi-assistant-bridges",
@@ -216,6 +217,22 @@ def main() -> int:
         if required not in architecture:
             failures.append(
                 f"module architecture-knowledge missing required file {required}"
+            )
+
+    code_documentation = module_blocks.get("code-documentation", "")
+    for required in [
+        ".ai/framework/code-documentation.md",
+        ".ai/project/documentation/README.md",
+        ".ai/project/documentation/catalog.json",
+        ".ai/project/documentation/profiles.json",
+        ".ai/assistant/context/intents/code-documentation.json",
+        ".ai/assistant/flows/documentation-sync.flow.md",
+        ".ai/assistant/templates/code-documentation-profile-review.md",
+        ".ai/assistant/skills/code-documentation/SKILL.md",
+    ]:
+        if required not in code_documentation:
+            failures.append(
+                f"module code-documentation missing required file {required}"
             )
 
     installed_operations = module_blocks.get("installed-operations", "")

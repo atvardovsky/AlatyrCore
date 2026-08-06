@@ -95,8 +95,11 @@ Minimum input: optional team, area, actor, or task scope.
 
 Use `Alatyr architecture` for project pattern and architecture discussion. Use
 `Alatyr diagram` for a capability-checked diagram view and `Alatyr team status`
-for the compact team view. Detailed team, blueprint, integrity, update,
-documentation, and AI-infrastructure operations and aliases are in
+for the compact team view. When `code-documentation` is enabled, use
+`propose comment style`, `document code`, `generate code docs`, or
+`review code documentation`; the assistant selects a bounded accepted profile.
+Detailed team, blueprint, integrity, update, documentation, and AI-
+infrastructure operations and aliases are in
 `.ai/assistant/help-reference.md`.
 
 ## Minimal Request Shape

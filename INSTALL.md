@@ -100,6 +100,10 @@ The plan must identify:
   staleness owner
 - optional architecture-knowledge owner, compact catalog, pattern/area docs,
   evidence revision, decision authority, and validation needs
+- optional code-documentation owner, bounded source-set profiles, existing
+  frontend/backend/shared/infrastructure conventions, style proposal and
+  acceptance evidence, canonical fact-owner boundaries, generator,
+  output/publication policy, validation, and adapted skill needs
 - task-specific maturity and bridge capability needs
 - diagram discussion, source/visual ownership, portable ASCII layout/width,
   per-assistant rich presentation, capability expiry/review triggers, captured-result

@@ -205,6 +205,27 @@ Conflict resolver: `{AI_INFRASTRUCTURE_ITEM_CONFLICT_RESOLVER}`
 Approval trigger: `{AI_INFRASTRUCTURE_ITEM_APPROVAL_TRIGGER}`
 Final evidence: `{AI_INFRASTRUCTURE_ITEM_FINAL_EVIDENCE}`
 
+### Fact Type: `code documentation profile`
+
+Fact type: `code documentation profile`
+Canonical owner: `.ai/project/documentation/profiles.json`
+Consistency level: `{CODE_DOCUMENTATION_PROFILE_CONSISTENCY_LEVEL}`
+Project area: `{CODE_DOCUMENTATION_PROJECT_AREA}`
+Consistency map node: `{CODE_DOCUMENTATION_PROFILE_FACT_ID_OR_MISSING}`
+Relationship coverage: `{CODE_DOCUMENTATION_RELATIONSHIP_COVERAGE_OR_GAP}`
+Invariant and dependency constraints: `{CODE_DOCUMENTATION_PROFILE_SELECTION_SOURCE_OWNER_AND_GENERATION_CONSTRAINTS}`
+Derived surfaces:
+
+- `{TARGET_GENERATED_CODE_REFERENCE_OR_NONE}`
+- `.ai/project/documentation/catalog.json`
+- `.ai/project/documentation/README.md`
+
+Sync direction: `{ACCEPTED_PROFILE_AND_SOURCE_COMMENTS_TO_GENERATED_OUTPUT}`
+Validation or manual review: `{TARGET_COMMENT_GENERATION_AND_OUTPUT_VALIDATION}`
+Conflict resolver: `{TARGET_DOCUMENTATION_PROFILE_DECISION_AUTHORITY}`
+Approval trigger: `{DEPENDENCY_CI_PUBLICATION_BROAD_REWRITE_OR_PROFILE_ACCEPTANCE_TRIGGER}`
+Final evidence: `{SELECTED_PROFILE_COMMENTS_GENERATION_OUTPUT_AND_RESIDUAL_RISK}`
+
 ## Conflict Handling
 
 When sources disagree:

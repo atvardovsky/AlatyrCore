@@ -84,16 +84,18 @@ operation request:
 
 - `read-only`: inspect target files and report only; no file changes.
 - `docs-only`: change documentation, blueprint-equivalent docs, and diagram
-  sources only; do not change code, tests, runtime config, or assistant
-  infrastructure.
+  sources, including proposed code-documentation profile records, only; do not
+  change source comments, code, tests, runtime config, or assistant
+  infrastructure, and do not mark a profile accepted.
 - `adapter-only`: change adapter-owned `.ai/*` surfaces and bridge files,
   including assistant templates, flows, gates, policies, checker rules, and
   normalized project-process or adapter-effectiveness evidence; do not change
   product code, tests, or accepted business, domain, architecture, data,
   runtime, or product-behavior facts.
 - `code-and-tests`: change code, tests, and required documentation or diagram
-  sync; do not perform live external actions, destructive actions, production
-  dependency changes, or permission broadening.
+  sync, including source comments and target-recorded local generation under
+  one accepted profile; do not install dependencies, change CI, publish
+  externally, perform live or destructive actions, or broaden permissions.
 - `full-with-approval`: the request may include protected surfaces, but each
   protected change still requires explicit programmer approval before it is
   made.
@@ -275,6 +277,20 @@ adaptation, and new-pattern options before adding another approach. The result
 reports selected evidence, catalog revision, states, alternatives, pattern-
 proliferation result, documentation or change handoff, validation, and residual
 risk.
+
+## Code Documentation
+
+Code documentation is an optional project-contour capability routed through
+the existing documentation-sync operation. The assistant inventories or
+proposes source-set profiles from target evidence, permits different frontend,
+backend, shared-library, and infrastructure conventions, and uses only one
+unambiguous accepted profile for routine comment or generation work.
+
+Structured comments may explain bounded symbol behavior under the target
+source-of-truth registry. Generated reference documentation remains derived
+and is never edited directly. Dependencies, CI changes, external publication,
+profile acceptance, and broad source migrations require the target's normal
+risk and approval handling.
 
 ## Large Or Resumable Operations
 

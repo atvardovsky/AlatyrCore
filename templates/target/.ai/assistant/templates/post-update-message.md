@@ -49,6 +49,9 @@ Operation help:
 - Recheck change-package records, semantic approval fields, provenance grades,
   and validator support when the optional module or schema changed. Preserve
   historical target records.
+- When code documentation is enabled, preserve target profiles and recheck
+  source-set matching, accepted state, canonical owners, generator/output
+  policy, adapted skill, and validation before generation.
 - When team collaboration is enabled, recheck the operating model, registry
   schema, active task IDs, claims, handoffs, decisions, external references,
   stale overlaps, and revision-bound reviews before changing active records.

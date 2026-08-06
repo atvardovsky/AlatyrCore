@@ -88,6 +88,8 @@ Target adapters may include fact types such as:
 - validation command
 - diagram source
 - generated documentation
+- structured code-comment contract
+- code-documentation profile and generator policy
 - assistant operation
 - team operating model, authority, or priority policy
 - skill, prompt, wrapper, or bridge behavior
@@ -109,10 +111,17 @@ that commonly create drift when left ownerless:
 - assistant operation
 - AI infrastructure item
 - team operating model when team collaboration is enabled
+- code documentation profile when code-documentation generation is enabled
 
 Each baseline entry may remain placeholder-based during installation planning,
 but before an adapter claims maturity the owner should be resolved from target
 evidence or explicitly marked missing.
+
+Generated reference documentation is a derived surface. A target may assign
+bounded symbol-level explanation to structured comments, but declarations,
+registered API specifications, business blueprints, architecture decisions,
+security policy, data owners, and operational sources retain the fact types
+assigned to them. A generator cannot change that ownership direction.
 
 ## Conflict Handling
 

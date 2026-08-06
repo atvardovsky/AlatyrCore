@@ -62,6 +62,8 @@ The framework commits to giving an assistant a defined process for:
 - requiring explicit programmer approval for protected changes
 - keeping architecture discussion separate from architecture mutation
 - keeping documentation and diagrams synchronized with code and project facts
+- selecting bounded target-owned code-documentation profiles and generating
+  derived reference output when the optional module is enabled
 - recording what was checked, what changed, what was skipped, and what risk
   remains
 - adapting the same process across supported assistants through thin bridge
@@ -234,6 +236,9 @@ The framework does not guarantee:
 - that generated files can be produced without the target repository tooling
 - that architecture changes are safe without explicit approval and validation
 - that observed implementation is an accepted or preferred architecture pattern
+- that generated reference documentation, a successful generator run, or an
+  assistant-written comment proves semantic correctness or supersedes a
+  canonical project fact owner
 - that unsupported assistants will auto-load the right files without a bridge
   or user instruction
 - that missing security, live-service, or diagram policy can be inferred from

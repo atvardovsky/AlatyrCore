@@ -146,6 +146,9 @@ Choose the matching flow:
   `alatyr-add-ai {AI_INFRASTRUCTURE_SOURCE}`
 - Sync docs, diagrams, prompts, gates, skills, or bridge files:
   `.ai/assistant/flows/documentation-sync.flow.md`
+  When `code-documentation` is enabled, this also routes `document code`,
+  `propose comment style`, `generate code docs`, and
+  `review code documentation` through the selected source-set profile.
 
 ## Constraints
 

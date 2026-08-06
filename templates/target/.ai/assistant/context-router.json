@@ -78,6 +78,16 @@
         "architecture-assistance"
       ],
       "required_module": "architecture-knowledge"
+    },
+    "code-documentation": {
+      "use_when": [
+        "code comment style proposal documentation profile review generated code reference or documentation synchronization request"
+      ],
+      "descriptor": ".ai/assistant/context/intents/code-documentation.json",
+      "operation_candidates": [
+        "documentation-sync"
+      ],
+      "required_module": "code-documentation"
     }
   },
   "consistency_routing": {

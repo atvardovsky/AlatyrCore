@@ -51,6 +51,10 @@
     "find stale Alatyr facts": "drift-review",
     "sync documentation": "documentation-sync",
     "sync diagrams": "documentation-sync",
+    "document code": "documentation-sync",
+    "propose comment style": "documentation-sync",
+    "generate code docs": "documentation-sync",
+    "review code documentation": "documentation-sync",
     "check Alatyr maturity": "adapter-maturity-review",
     "review adapter readiness": "adapter-maturity-review"
   },
@@ -196,6 +200,7 @@
       "read-only",
       "docs-only",
       "adapter-only",
+      "code-and-tests",
       "full-with-approval"
     ],
     "adapter-maturity-review": [
