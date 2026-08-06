@@ -107,6 +107,7 @@ Operation: `product-change`
 Use when: changing accepted project behavior, architecture, data, runtime, or
 public contract.
 Flow: `.ai/assistant/flows/blueprint-driven-change.flow.md`
+Companion flow: `.ai/assistant/flows/change-package.flow.md`
 Minimum input: change intent, non-goals, related review items, and approval
 constraints including diff base and explicit JSON records when scoped.
 
@@ -445,3 +446,7 @@ Integration mode: `{CANONICAL_INTEGRATION}`
   module is enabled.
 - Team work registry: `.ai/assistant/team/work-registry.json` when the optional
   module is enabled.
+- Companion flow: `.ai/assistant/flows/change-package.flow.md` when the
+  optional module is enabled. It is an automatic evidence overlay for
+  applicable operations, not a separate shell command or required operation
+  type for local tasks.

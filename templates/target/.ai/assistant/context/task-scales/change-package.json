@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "descriptor_kind": "target-task-scale-overlay",
+  "overlay": "change-package",
+  "use_when": [
+    "coherent material outcome across multiple project surfaces",
+    "semantic multi-surface approval",
+    "architecture segment capability migration or public contract package",
+    "audit pilot or publishable before-to-after provenance"
+  ],
+  "required_context": [
+    ".ai/framework/change-packages.md",
+    ".ai/assistant/change-packages/index.json",
+    ".ai/assistant/flows/change-package.flow.md"
+  ],
+  "conditional_context": [
+    {
+      "path": ".ai/assistant/templates/change-package-record.json",
+      "when": "creating or repairing a package record"
+    },
+    {
+      "path": ".ai/assistant/templates/change-package-report.md",
+      "when": "human audit pilot or publishable report requested"
+    }
+  ],
+  "expand_when": [
+    "semantic or path approval scope changes",
+    "implementation discovery affects an invariant",
+    "companion decision is missing",
+    "provenance cannot establish the claimed evidence quality"
+  ],
+  "budget_behavior": "load compact package identity and active workstream first; expand only selected evidence sections",
+  "final_evidence": [
+    "package activation and identity",
+    "semantic and path scope reconciliation",
+    "companion decisions and material corrections",
+    "repository provenance and claim strength",
+    "validation and residual risk"
+  ]
+}

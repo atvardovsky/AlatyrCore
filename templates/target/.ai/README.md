@@ -61,6 +61,9 @@ Replace this section with the actual target project map.
 - installed-operation requests and adapter rechecks
 - optional large-task operation packets, bounded workstreams, checkpoints,
   and resume evidence under a target-owned storage policy
+- optional change packages for coherent material outcomes, semantic approval
+  scope, companion decisions, implementation corrections, and before-to-after
+  repository provenance
 - migration notes for framework updates
 - operation help, operation routing, and post-install/update assistant chat
   messages

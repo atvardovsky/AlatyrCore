@@ -408,6 +408,25 @@ def main() -> int:
     )
     if not isinstance(large_task.get("budget_behavior"), str):
         failures.append("large task overlay needs budget_behavior")
+    package_entry = scale_index.get("change-package")
+    change_package = descriptor(
+        package_entry.get("descriptor") if isinstance(package_entry, dict) else None,
+        "target-task-scale-overlay",
+        "task_scale_overlays.change-package",
+        failures,
+    )
+    check_contract(
+        change_package,
+        ["use_when", "required_context", "expand_when", "final_evidence"],
+        "task_scale_overlays.change-package",
+        failures,
+        {"required_context"},
+    )
+    if not isinstance(change_package.get("budget_behavior"), str):
+        failures.append("change package overlay needs budget_behavior")
+    change_package_conditional_context = check_conditional_context(
+        change_package, "task_scale_overlays.change-package", failures
+    )
     team_entry = scale_index.get("team-active")
     if not isinstance(team_entry, dict) or team_entry.get("descriptor") != (
         ".ai/assistant/team/context-overlay.json"
@@ -446,6 +465,7 @@ def main() -> int:
         (consistency, "required_context"),
         (migration, "candidate_context"),
         (large_task, "required_context"),
+        (change_package, "required_context"),
         (diagram, "required_context"),
         (architecture, "required_context"),
     ]:
@@ -457,6 +477,11 @@ def main() -> int:
     routed_framework_paths.update(
         value
         for value in diagram_conditional_context
+        if value.startswith(".ai/framework/")
+    )
+    routed_framework_paths.update(
+        value
+        for value in change_package_conditional_context
         if value.startswith(".ai/framework/")
     )
     routed_framework_paths.update(

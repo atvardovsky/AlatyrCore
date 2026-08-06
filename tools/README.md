@@ -119,6 +119,10 @@ Strict mode requires explicit JSON records and checks committed, staged,
 unstaged, renamed, deleted, and untracked paths. Without strict mode, legacy
 Markdown approval checks remain advisory for compatibility.
 
+Approval schema 2 also records changed-fact IDs, architecture areas, behavior
+categories, excluded semantic effects, and permitted external effects for
+change-package reconciliation.
+
 Linux or macOS:
 
 ```sh
@@ -129,6 +133,19 @@ Windows PowerShell or Command Prompt:
 
 ```powershell
 py -3 .\tools\check_approval_template.py
+```
+
+## Change Package Check
+
+`check_change_packages.py` validates the optional framework rule, lazy target
+overlay, compact index, machine record, redacted report, semantic approval
+fields, and explicit target-validator enforcement. It also exercises a real
+temporary Git range. Structural validation does not prove domain invariants or
+architecture correctness.
+
+```sh
+python3 tools/check_change_packages.py
+python3 tools/validate_target_adapter.py --target /path/to/target --change-package .ai/assistant/change-packages/change.json --enforce-change-package
 ```
 
 ## AI Infrastructure Inventory Check

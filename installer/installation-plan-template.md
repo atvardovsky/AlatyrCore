@@ -230,6 +230,14 @@ Include `.ai/assistant/flows/large-task-orchestration.flow.md` and
 cross-boundary, multi-workstream, budget-exceeding, or resumable operations.
 Record where completed packets are stored, ignored, redacted, or removed.
 
+Include `.ai/assistant/change-packages/index.json`, the lazy change-package
+overlay, `.ai/assistant/flows/change-package.flow.md`, and machine/human report
+templates only when the target needs coherent material-change evidence,
+semantic multi-surface approval, architecture segment/capability evidence,
+audit, pilot, or publishable provenance. Define record ownership, retention,
+redaction, Git/PR evidence policy, and target validator use. Start with an
+empty index and do not infer historical packages.
+
 Include `.ai/project/team-operating-model.md`,
 `.ai/assistant/team/context-overlay.json`,
 `.ai/assistant/team/work-registry.json`, the team task/handoff/decision/review
@@ -253,6 +261,9 @@ decisions, and external references before schema changes.
 - Project-area overlays:
 - Task-scale overlays:
 - Large-task activation, packet storage, and resume rules:
+- Change-package activation, owner, record storage, semantic approval scope,
+  companion decisions, correction handling, provenance, retention/redaction,
+  and validator rules:
 - Team-active routing, backend synchronization, active-task projection,
   changed-fact conflict, claim/staleness, checkpoint, handoff, decision,
   review, merge-readiness, storage, retention, and privacy rules:
@@ -377,6 +388,10 @@ hash is unavailable.
 Also state the approved Git diff base, explicit machine-readable approval
 record paths, and the command or target-local equivalent that will fail when
 the complete changed path set exceeds allowed scope or enters excluded scope.
+
+When change packages are enabled, state how approvals bind changed-fact IDs,
+architecture areas, behavior categories, excluded semantic effects, permitted
+external effects, and reapproval triggers in addition to paths.
 
 Preferred approval:
 

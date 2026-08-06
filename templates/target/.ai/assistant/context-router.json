@@ -98,6 +98,15 @@
       ],
       "descriptor": ".ai/assistant/context/task-scales/large-or-resumable.json"
     },
+    "change-package": {
+      "use_when": [
+        "coherent material outcome across multiple project surfaces",
+        "semantic multi-surface approval",
+        "architecture segment capability migration or public contract package",
+        "audit pilot or publishable before-to-after provenance"
+      ],
+      "descriptor": ".ai/assistant/context/task-scales/change-package.json"
+    },
     "team-active": {
       "use_when": [
         "team coordination request"

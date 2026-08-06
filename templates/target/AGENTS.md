@@ -41,6 +41,7 @@ unclear state, use the note/message named by `.ai/README.md`.
 Use canonical owners for `ALATYR-CONTEXT-001`, `ALATYR-SOURCE-001`,
 `ALATYR-RISK-001`, `ALATYR-APPROVAL-001`, `ALATYR-SAFETY-001`,
 `ALATYR-SAFETY-002`, `ALATYR-INTEGRITY-001`, `ALATYR-CHANGE-001`,
+`ALATYR-PACKAGE-001`,
 `ALATYR-ADAPTER-001`, `ALATYR-MODULE-001`, `ALATYR-OPERATION-001`,
 `ALATYR-DIAGRAM-001`, `ALATYR-TEAM-001`, and `ALATYR-EVIDENCE-001`. Project
 facts belong under the project contour; local
@@ -62,7 +63,9 @@ Apply target approval policy before architecture, accepted behavior, security,
 permission, dependency, destructive, live, spend, production, imported-
 infrastructure, or weakened-gate changes. When path scope matters, use an
 explicit JSON approval record bound to the Git diff base and reject uncovered
-or excluded paths.
+or excluded paths. When a change package is active, also reject declared fact,
+architecture-area, behavior-category, or external-effect scope outside the
+approval and require reapproval for protected semantic expansion.
 
 ## Final Evidence
 

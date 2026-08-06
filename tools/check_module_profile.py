@@ -41,6 +41,7 @@ OPTIONAL_MODULES = [
     "multi-assistant-bridges",
     "installed-operations",
     "large-task-orchestration",
+    "change-packages",
     "team-collaboration",
     "durable-approvals",
     "migration-diff",
@@ -165,6 +166,18 @@ def main() -> int:
     ]:
         if required not in durable:
             failures.append(f"module durable-approvals missing required file {required}")
+
+    packages = module_blocks.get("change-packages", "")
+    for required in [
+        ".ai/framework/change-packages.md",
+        ".ai/assistant/change-packages/index.json",
+        ".ai/assistant/context/task-scales/change-package.json",
+        ".ai/assistant/flows/change-package.flow.md",
+        ".ai/assistant/templates/change-package-record.json",
+        ".ai/assistant/templates/change-package-report.md",
+    ]:
+        if required not in packages:
+            failures.append(f"module change-packages missing required file {required}")
 
     ai_infrastructure = module_blocks.get("ai-infrastructure", "")
     for required in [

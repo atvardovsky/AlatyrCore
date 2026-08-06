@@ -53,6 +53,10 @@ Replace placeholders with target facts before accepting installation.
   `.ai/assistant/templates/effectiveness-report.md`
 - Large-task flow and packet: `.ai/assistant/flows/large-task-orchestration.flow.md`,
   `.ai/assistant/templates/large-task-operation-packet.md`
+- Change-package index, flow, and record:
+  `.ai/assistant/change-packages/index.json`,
+  `.ai/assistant/flows/change-package.flow.md`,
+  `.ai/assistant/templates/change-package-record.json`
 - Team collaboration: `.ai/project/team-operating-model.md`,
   `.ai/assistant/team/context-overlay.json`,
   `.ai/assistant/team/work-registry.json`,
@@ -88,7 +92,8 @@ Replace placeholders with target facts before accepting installation.
    flows, AI infrastructure inventory, recommendation and item router, gates,
    prompts, skills, recommendation/adaptation records, bridge files,
    checker rules, operation catalog and health/preview contracts, large-task
-   flow and packet, team operating model/registry/flows/gate/templates,
+   flow and packet, change-package index/flow/schema, team operating
+   model/registry/flows/gate/templates,
    chat-message templates, and final-evidence expectations.
 9. Check adapter drift hazards: hard-coded local machine paths in `.ai/*`,
    root assistant entry points, bridge files, templates, and policies; stale
@@ -117,6 +122,9 @@ Replace placeholders with target facts before accepting installation.
     stale claims, evidence revisions, concurrent changed-fact overlaps,
     checkpoints, handoffs, decisions, review state, and merge-readiness
     invalidation.
+    When change packages are enabled, preserve historical target records and
+    check semantic approval fields, companion decisions, correction impact,
+    provenance quality, and target validator support.
 15. Identify required migrations, approvals, unresolved facts, and skipped
    checks.
 16. Use `.ai/assistant/templates/migration-note.md` when a framework update
@@ -158,6 +166,8 @@ Report:
 - team module owner/backend, active registry schema and references, stale
   claims, overlaps, handoffs, decision destinations, review evidence, and
   revision-bound merge readiness
+- change-package index, record schema, target record preservation, semantic
+  approval scope, provenance policy, and validator support
 - development-pattern index schema, owner, retention/privacy policy, evidence
   references, and target-only optimization boundary
 - bridge capability matrix status

@@ -31,6 +31,26 @@ Allowed protected changes:
 
 - `{ALLOWED_PROTECTED_CHANGE}`
 
+Allowed changed-fact IDs:
+
+- `{ALLOWED_CHANGED_FACT_ID}`
+
+Allowed architecture areas:
+
+- `{ALLOWED_ARCHITECTURE_AREA_OR_NONE}`
+
+Allowed behavior categories:
+
+- `{ALLOWED_BEHAVIOR_CATEGORY}`
+
+Excluded semantic effects:
+
+- `{EXCLUDED_SEMANTIC_EFFECT_OR_NONE}`
+
+Permitted external effects:
+
+- `{PERMITTED_EXTERNAL_EFFECT_OR_NONE}`
+
 Allowed files or surfaces:
 
 - `{ALLOWED_FILE_OR_SURFACE}`
@@ -62,6 +82,7 @@ Approved validation or manual review:
 Used by operation/change: `{TASK_OPERATION_OR_CHANGE_REFERENCE}`
 Patch changed after approval: `{YES_NO_AND_REASON}`
 Implementation stayed within approved scope: `{YES_NO_AND_REASON}`
+Declared semantic scope stayed within approval: `{YES_NO_AND_REASON}`
 Validation run: `{VALIDATION_RUN_OR_SKIPPED_WITH_REASON}`
 Result/evidence: `{RESULT_OR_EVIDENCE_REFERENCE}`
 Residual risk: `{RESIDUAL_RISK}`

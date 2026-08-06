@@ -32,6 +32,9 @@ Replace placeholders with target facts before accepting installation.
    when those facts change.
 7. Prepare an implementation plan that names affected boundaries, tests,
    diagrams, approvals, machine-readable scope records, and validation.
+   Apply `.ai/assistant/flows/change-package.flow.md` when coherent material
+   outcome, semantic multi-surface approval, audit, or publishable provenance
+   needs pass its activation gate.
 8. Change code, tests, diagrams, prompts, skills, bridge files, gates, or
    checker rules as required by the accepted fact change.
 9. Run target validation that exists. Do not invent commands.
@@ -73,3 +76,5 @@ Report:
 - changed-path approval scope enforcement result
 - skipped checks and residual risk
 - for large tasks, workstream convergence, context receipts, and checkpoints
+- for activated change packages, semantic and path scope, companion decisions,
+  material corrections, provenance quality, and public claim strength

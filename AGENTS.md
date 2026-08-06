@@ -83,6 +83,7 @@ policy wording.
 - Safety boundaries: `ALATYR-SAFETY-001`
 - Imported AI infrastructure: `ALATYR-SAFETY-002`
 - Logical integrity evidence: `ALATYR-INTEGRITY-001`
+- Coherent material change packages: `ALATYR-PACKAGE-001`
 - Lifecycle and versioning: `ALATYR-LIFECYCLE-001`
 - Installed operation control surface: `ALATYR-OPERATION-001`
 - Project architecture knowledge: `ALATYR-ARCHITECTURE-001`
@@ -143,6 +144,7 @@ When relevant to the change, also run the focused source helpers:
 python3 tools/check_framework_metadata.py
 python3 tools/check_architecture_knowledge.py
 python3 tools/check_approval_template.py
+python3 tools/check_change_packages.py
 python3 tools/check_ai_infrastructure_inventory.py
 python3 tools/check_ai_infrastructure_recommendations.py
 python3 tools/check_ai_infrastructure_router.py

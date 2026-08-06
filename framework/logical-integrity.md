@@ -100,6 +100,11 @@ and one global review over the combined repair set before completion. The
 global review reconciles shared facts, canonical owners, approvals,
 cross-workstream contracts, and generated artifacts.
 
+When a change package is active, reconcile its declared actual fact IDs,
+areas, behavior categories, companion decisions, and implementation
+corrections with this review. The package organizes evidence; it does not
+replace invariant derivation or impact closure.
+
 ## Source-Of-Truth Decision
 
 When files disagree, choose the owner by contour:

@@ -70,6 +70,11 @@ machine-readable diff-base and path-scope enforcement. The source check covers
 scope, plan, invalidation, use-result, evidence, validation, and residual-risk
 fields.
 
+`tools/check_change_packages.py` validates the optional coherent-change
+package rule, target index/flow/records, semantic approval fields, provenance
+grades, and explicit target-validator enforcement. It does not prove target
+domain or architecture correctness.
+
 `tools/check_architecture_knowledge.py` validates the portable architecture
 knowledge rule and target architecture catalog, operation, lazy route,
 templates, gates, source-of-truth entry, manifest paths, and optional module.

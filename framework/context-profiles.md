@@ -155,6 +155,18 @@ The overlay does not authorize loading every profile. Resume from the compact
 bootstrap, packet, active workstream context, changed-fact owners, and
 dependencies. Do not create a packet for a small task that fits one profile.
 
+## Change-Package Tasks
+
+Use the optional `change-package` overlay only for a coherent material outcome,
+semantic multi-surface approval, architecture segment or capability, audit, or
+publishable provenance need. It composes with the smallest base profile and is
+independent from `large-or-resumable`.
+
+Load the compact package index and active package identity first. Load the
+machine template, discussion summary, companion decisions, corrections, plan,
+or validation evidence only when the current phase needs them. Do not create
+or load a package for an ordinary local task.
+
 ## Team-Active Tasks
 
 When the optional team module is enabled, use a `team-active` task-scale

@@ -197,6 +197,9 @@ Collect target-specific facts before writing project docs:
 - approval-record policy or storage location for protected changes
 - approved diff-base policy, machine-readable record format, and complete
   changed-path scope enforcement
+- approved changed-fact IDs, architecture areas, behavior categories,
+  excluded semantic effects, permitted external effects, and reapproval
+  triggers when change packages are enabled
 - adapter maturity gaps and lifecycle expectations
 - task-specific maturity expectations and blockers
 - module profile expectations and blockers
@@ -208,6 +211,9 @@ Collect target-specific facts before writing project docs:
   framework-update review expectations
 - large-task activation, task-scale overlay, operation packet, workstream,
   checkpoint, storage, resume, and final-convergence expectations when needed
+- change-package activation, compact index, semantic and path approval scope,
+  companion decisions, implementation corrections, provenance quality,
+  retention/redaction, and validator expectations when needed
 - team-collaboration owner, backend, synchronization direction, actor and
   authority model, priority policy, registry, claim/staleness, changed-fact
   conflict, checkpoint, handoff, decision, review, merge-readiness, storage,
@@ -328,6 +334,10 @@ Final evidence must say:
 - large-task orchestration is enabled or skipped from target evidence; enabled
   adapters define activation, packet storage, bounded resume context,
   checkpoints, and global convergence
+- change packages are enabled or skipped from target evidence; enabled
+  adapters define activation, owner, empty initial index, semantic/path scope,
+  companion decisions, correction handling, provenance grades, record
+  retention/redaction, and validator support
 - team collaboration is enabled or skipped from target evidence; enabled
   adapters define an operating-model owner, backend and synchronization
   direction, stable actor/authority/priority evidence, registry, conflict
@@ -357,6 +367,8 @@ Final evidence must say:
   promoting observed implementation to accepted architecture
 - adapter output contracts added or skipped
 - large-task flow and operation-packet template added or skipped
+- change-package index, lazy overlay, flow, machine record, redacted report,
+  and retention/redaction policy added, migrated, skipped, or blocked
 - team operating model, work registry, team-active overlay, task/handoff/
   decision/review flows, team gate, and checkpoint/handoff/decision templates
   added, migrated, skipped, or blocked without overwriting active target state

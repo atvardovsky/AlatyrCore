@@ -75,6 +75,13 @@ Rule IDs: `ALATYR-CHANGE-001`
 Derived surfaces: product-change operation, blueprint-driven target flow,
 large-task orchestration, documentation and diagram sync.
 
+Category: `PACKAGE`
+Owner: `.ai/framework/change-packages.md`
+Rule IDs: `ALATYR-PACKAGE-001`
+Derived surfaces: change-package target flow and records, semantic approval
+scope, large-task convergence, blueprint change, target validation, installer
+module selection, migration evidence.
+
 Category: `ARCHITECTURE`
 Owner: `.ai/framework/architecture-knowledge.md`
 Rule IDs: `ALATYR-ARCHITECTURE-001`

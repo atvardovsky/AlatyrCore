@@ -24,6 +24,7 @@ CHECKS = [
     ["tools/check_ai_infrastructure_router.py"],
     ["tools/check_assistant_surface_conformance.py"],
     ["tools/check_bridge_capability_matrix.py"],
+    ["tools/check_change_packages.py"],
     ["tools/render_assistant_capability_index.py"],
     ["tools/check_captured_effectiveness_results.py"],
     ["tools/check_context_router.py"],

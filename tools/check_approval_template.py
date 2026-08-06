@@ -46,6 +46,7 @@ REQUIRED_FIELDS = [
     "Used by operation/change:",
     "Patch changed after approval:",
     "Implementation stayed within approved scope:",
+    "Declared semantic scope stayed within approval:",
     "Validation run:",
     "Result/evidence:",
     "Residual risk:",
@@ -59,6 +60,11 @@ REQUIRED_SECTIONS = [
 
 REQUIRED_LIST_FIELDS = [
     "Allowed protected changes:",
+    "Allowed changed-fact IDs:",
+    "Allowed architecture areas:",
+    "Allowed behavior categories:",
+    "Excluded semantic effects:",
+    "Permitted external effects:",
     "Allowed files or surfaces:",
     "Excluded files or surfaces:",
     "Excluded actions:",
@@ -134,8 +140,8 @@ def main() -> int:
         except json.JSONDecodeError as exc:
             failures.append(f"invalid machine-readable approval template: {exc}")
             data = {}
-        if data.get("schema_version") != 1:
-            failures.append("machine approval template schema_version must be 1")
+        if data.get("schema_version") != 2:
+            failures.append("machine approval template schema_version must be 2")
         if data.get("record_kind") != "alatyr-approval-record":
             failures.append("machine approval template record_kind is invalid")
         if data.get("evidence_classification") != "historical-record":
@@ -147,6 +153,11 @@ def main() -> int:
         if isinstance(scope, dict):
             for field in [
                 "allowed_protected_changes",
+                "allowed_changed_fact_ids",
+                "allowed_architecture_areas",
+                "allowed_behavior_categories",
+                "excluded_semantic_effects",
+                "permitted_external_effects",
                 "allowed_files_or_surfaces",
                 "excluded_files_or_surfaces",
                 "excluded_actions",
@@ -161,6 +172,7 @@ def main() -> int:
             "{APPROVAL_ID}",
             "{APPROVED_GIT_DIFF_BASE}",
             "{TARGET_RELATIVE_FILE_OR_GLOB}",
+            "{ALLOWED_CHANGED_FACT_ID}",
             "{APPROVAL_INVALIDATION_RULE}",
         ]:
             if placeholder not in serialized:

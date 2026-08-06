@@ -15,6 +15,7 @@ Use this guide when changing Alatyr Core itself.
   `installer/`, `templates/target`, assistant compatibility docs, and
   changelog when affected.
 - Manifest, ownership, context-router, context-profile, approval-record,
+  change-package,
   output-contract, AI-infrastructure inventory or recommendation, or
   prompt-injection contract change: update
   `framework/`, `installer/`, `templates/target`, checker rules, README, and
@@ -76,6 +77,10 @@ Before accepting a change, check:
   fields, machine-readable scope, diff-base binding, protected scope, plan
   hash, invalidation, usage result, evidence, or residual-risk guidance
   changes.
+- `python3 tools/check_change_packages.py` passes when package activation,
+  semantic scope, companion decisions, implementation corrections, compact
+  discussion evidence, provenance grades, target records, or validator
+  enforcement changes.
 - `python3 tools/check_ai_infrastructure_inventory.py` passes when AI
   infrastructure inventory fields, source/provenance, permission, license,
   prompt-injection risk, approval, recommendation, or residual-risk evidence

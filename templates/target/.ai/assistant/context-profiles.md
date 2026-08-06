@@ -84,6 +84,21 @@ Load only the active workstream context, changed-fact owners, and
 dependencies. Record checkpoints and one global convergence review. Do not
 create a packet for a small task.
 
+## Task-Scale Overlay: `change-package`
+
+Activate only for a coherent material outcome, semantic multi-surface
+approval, architecture segment or capability, audit, pilot, or publishable
+before-to-after evidence. Required context:
+
+- `.ai/framework/change-packages.md`
+- `.ai/assistant/change-packages/index.json`
+- `.ai/assistant/flows/change-package.flow.md`
+
+Load the package record template, human report, plan, discussion, companion,
+correction, or validation detail only when the current phase needs it. Compose
+with `large-or-resumable` only when both gates pass. Do not create a package
+for an ordinary local task.
+
 ## Task-Scale Overlay: `team-active`
 
 Activate only for team status, task start/claim/release, concurrent-work

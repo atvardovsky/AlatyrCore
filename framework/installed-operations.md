@@ -291,6 +291,20 @@ evidence.
 
 Small tasks should stay on their normal operation flow without a packet.
 
+## Change Packages
+
+Use `change-packages.md` only when the optional target module is enabled and
+the operation passes its coherent-outcome, semantic multi-surface approval,
+audit, or provenance activation gate. A package is not a new user command; it
+is an evidence overlay used by product-change, architecture, migration,
+security, or other applicable operations.
+
+Load the compact package index first. The active package binds changed facts,
+plan and approvals, semantic and path scope, companion decisions, material
+implementation corrections, validation, and before-to-after provenance.
+Ordinary local work should retain the normal operation result without this
+overhead.
+
 ## Team Operations
 
 Use `team-collaboration.md` only when the target enables the optional module.
@@ -318,6 +332,8 @@ After installation or framework upgrade, an assistant should recheck:
 - source-of-truth registry, task-specific maturity profile, bridge capability
   matrix, migration notes, and effectiveness reports
 - consistency-map module state, relationship coverage, and stale edge evidence
+- change-package module, index, record schema, semantic approval scope,
+  provenance policy, and target validator support
 - operation catalog, single entry, automatic routing, read-only health,
   pre-change preview, compact help, operation-routing flow, and
   post-install/update chat-message templates

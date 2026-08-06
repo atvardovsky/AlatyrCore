@@ -33,6 +33,8 @@ from target_validation_support import (
     git_changed_files,
     git_diff_patch,
     git_head_revision,
+    git_range_changed_files,
+    git_resolve_ref,
     is_placeholder,
     is_protected_surface,
     is_target_relative_path,
@@ -168,6 +170,13 @@ MANIFEST_FULL_REQUIRED_SCALARS: set[PathKey] = {
     ("operations", "diagram_presentation"),
     ("bridges", "capability_matrix"),
     ("bridges", "capabilities"),
+    ("operations", "change_package_flow"),
+    ("operations", "change_package_index"),
+    ("operations", "change_package_record"),
+    ("operations", "change_package_report"),
+    ("change_packages", "index"),
+    ("change_packages", "machine_template"),
+    ("change_packages", "human_report_template"),
 }
 
 MANIFEST_PATH_SCALARS: set[PathKey] = {
@@ -190,6 +199,10 @@ MANIFEST_PATH_SCALARS: set[PathKey] = {
     ("operations", "operation_request"),
     ("operations", "output_contracts"),
     ("operations", "development_evidence_capture"),
+    ("operations", "change_package_flow"),
+    ("operations", "change_package_index"),
+    ("operations", "change_package_record"),
+    ("operations", "change_package_report"),
     ("ai_infrastructure", "router"),
     ("ai_infrastructure", "inventory"),
     ("ai_infrastructure", "recommendation"),
@@ -200,6 +213,10 @@ MANIFEST_PATH_SCALARS: set[PathKey] = {
     ("approvals", "directory"),
     ("approvals", "template"),
     ("approvals", "machine_template"),
+    ("change_packages", "directory"),
+    ("change_packages", "index"),
+    ("change_packages", "machine_template"),
+    ("change_packages", "human_report_template"),
     ("policies", "source_access"),
     ("policies", "prompt_injection"),
     ("team_collaboration", "operating_model"),
@@ -315,6 +332,7 @@ def repair_operation_for(code: str) -> str:
         (("FRAMEWORK_", "MIGRATION_"), "recheck-after-framework-update"),
         (("AI_", "PROMPT_", "DEVELOPMENT_EVIDENCE_"), "ai-infrastructure-recommendation"),
         (("CONSISTENCY_", "SOURCE_"), "logical-integrity-review"),
+        (("PACKAGE_",), "logical-integrity-review"),
         (("BRIDGE_",), "drift-review"),
         (("DIAGRAM_",), "diagram-discussion"),
         (("APPROVAL_",), "logical-integrity-review"),
@@ -424,6 +442,8 @@ class Validator:
         diff_ref: str | None,
         approval_records: list[Path],
         enforce_approval_scope: bool,
+        change_packages: list[Path],
+        enforce_change_package: bool,
         migration_diff: Path | None,
         allow_placeholders: bool,
         allow_local_paths: list[str],
@@ -438,6 +458,11 @@ class Validator:
             path.resolve() if path.is_absolute() else (self.target / path).resolve()
             for path in approval_records
         ]
+        self.change_packages = [
+            path.resolve() if path.is_absolute() else (self.target / path).resolve()
+            for path in change_packages
+        ]
+        self.enforce_change_package = enforce_change_package
         self.migration_diff = migration_diff.resolve() if migration_diff else None
         self.allow_placeholders = allow_placeholders
         self.config = config
@@ -512,6 +537,8 @@ class Validator:
         checker_files, checker_commands = self.discover_checkers(manifest)
         self.check_checker_claims(checker_files, checker_commands)
         self.check_approval_scope()
+        self.check_change_package_index()
+        self.check_change_packages()
         self.check_framework_baseline()
         self.check_migration_diff_evidence()
         self.info(
@@ -3725,6 +3752,22 @@ class Validator:
                     ("scope", "excluded_files_or_surfaces"),
                     ("scope", "excluded_actions"),
                 ]
+                if data.get("schema_version") == 2:
+                    required_lists.extend(
+                        [
+                            ("scope", "allowed_changed_fact_ids"),
+                            ("scope", "allowed_architecture_areas"),
+                            ("scope", "allowed_behavior_categories"),
+                            ("scope", "excluded_semantic_effects"),
+                            ("scope", "permitted_external_effects"),
+                        ]
+                    )
+                elif data.get("schema_version") != 1:
+                    finding(
+                        "APPROVAL_RECORD_SCHEMA",
+                        "approval record schema_version must be 1 or 2",
+                        relpath,
+                    )
                 for key_path in required_scalars:
                     value = nested_json_value(data, key_path)
                     if value is None or value == "":
@@ -3958,6 +4001,738 @@ class Validator:
                     "current diff hash matches approved Patch hash",
                     relpath,
                 )
+
+    def change_package_finding(
+        self, code: str, message: str, path: str | None = None
+    ) -> None:
+        finding = self.error if self.enforce_change_package else self.warn
+        finding(code, message, path)
+
+    def check_change_package_index(self) -> None:
+        relpath = ".ai/assistant/change-packages/index.json"
+        path = self.target_path(relpath)
+        if not path.exists():
+            return
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            self.error("PACKAGE_INDEX_JSON", f"invalid change-package index: {exc}", relpath)
+            return
+        if not isinstance(data, dict):
+            self.error("PACKAGE_INDEX_ROOT", "change-package index must be an object", relpath)
+            return
+        if data.get("schema_version") != 1:
+            self.error("PACKAGE_INDEX_SCHEMA", "schema_version must be 1", relpath)
+        if data.get("index_kind") != "target-change-package-index":
+            self.error(
+                "PACKAGE_INDEX_KIND",
+                "index_kind must be target-change-package-index",
+                relpath,
+            )
+        records = data.get("records")
+        if not isinstance(records, list):
+            self.error("PACKAGE_INDEX_RECORDS", "records must be a list", relpath)
+            return
+        seen: set[str] = set()
+        for index, entry in enumerate(records):
+            if not isinstance(entry, dict):
+                self.error(
+                    "PACKAGE_INDEX_ENTRY",
+                    f"records[{index}] must be an object",
+                    relpath,
+                )
+                continue
+            for field in [
+                "package_id",
+                "status",
+                "record",
+                "changed_fact_ids",
+                "canonical_owners",
+                "project_areas",
+                "evidence_quality",
+                "approval_records",
+                "active_workstream",
+                "residual_risk",
+            ]:
+                if field not in entry:
+                    self.error(
+                        "PACKAGE_INDEX_FIELD",
+                        f"records[{index}] missing {field}",
+                        relpath,
+                    )
+            package_id = entry.get("package_id")
+            if isinstance(package_id, str):
+                if package_id in seen:
+                    self.error(
+                        "PACKAGE_INDEX_DUPLICATE",
+                        f"duplicate package_id: {package_id}",
+                        relpath,
+                    )
+                seen.add(package_id)
+            record = entry.get("record")
+            if isinstance(record, str) and not is_placeholder(record):
+                if not is_target_relative_path(record) or not self.target_path(record).is_file():
+                    self.error(
+                        "PACKAGE_INDEX_RECORD_PATH",
+                        f"records[{index}].record does not resolve inside target: {record}",
+                        relpath,
+                    )
+
+    def resolve_change_packages(self) -> list[Path]:
+        resolved: list[Path] = []
+        for package in self.change_packages:
+            try:
+                package.relative_to(self.target)
+            except ValueError:
+                self.change_package_finding(
+                    "PACKAGE_OUTSIDE_TARGET",
+                    "selected change package must be inside the target repository",
+                    str(package),
+                )
+                continue
+            if not package.is_file():
+                self.change_package_finding(
+                    "PACKAGE_MISSING",
+                    "selected change package does not exist",
+                    self.rel(package),
+                )
+                continue
+            resolved.append(package)
+        return resolved
+
+    def package_string(
+        self,
+        data: dict[str, Any],
+        path: tuple[str, ...],
+        source: str,
+        *,
+        allow_unavailable: bool = False,
+    ) -> str:
+        value = nested_json_value(data, path)
+        if not isinstance(value, str) or not value.strip() or is_placeholder(value):
+            self.change_package_finding(
+                "PACKAGE_FIELD_MISSING",
+                f"change package requires {'.'.join(path)}",
+                source,
+            )
+            return ""
+        if not allow_unavailable and "not available" in value.lower():
+            self.change_package_finding(
+                "PACKAGE_FIELD_UNAVAILABLE",
+                f"change package requires available {'.'.join(path)}",
+                source,
+            )
+            return ""
+        return value.strip()
+
+    def package_list(
+        self,
+        data: dict[str, Any],
+        path: tuple[str, ...],
+        source: str,
+        *,
+        required: bool = True,
+    ) -> list[str]:
+        value = nested_json_value(data, path)
+        if not isinstance(value, list) or (required and not value):
+            self.change_package_finding(
+                "PACKAGE_LIST_MISSING",
+                f"change package requires list {'.'.join(path)}",
+                source,
+            )
+            return []
+        result: list[str] = []
+        for index, item in enumerate(value):
+            if not isinstance(item, str) or not item.strip() or is_placeholder(item):
+                self.change_package_finding(
+                    "PACKAGE_LIST_VALUE",
+                    f"{'.'.join(path)}[{index}] must be a resolved string",
+                    source,
+                )
+                continue
+            result.append(item.strip())
+        return result
+
+    def package_snapshot_digest(self, paths: list[str], source: str) -> str | None:
+        digest = hashlib.sha256()
+        for relpath in sorted(set(paths)):
+            if not is_target_relative_path(relpath):
+                self.change_package_finding(
+                    "PACKAGE_SNAPSHOT_PATH",
+                    f"snapshot path must be target-relative: {relpath}",
+                    source,
+                )
+                return None
+            path = self.target_path(relpath)
+            if not path.is_file():
+                self.change_package_finding(
+                    "PACKAGE_SNAPSHOT_FILE",
+                    f"snapshot path is not a file: {relpath}",
+                    source,
+                )
+                return None
+            digest.update(relpath.replace("\\", "/").encode("utf-8"))
+            digest.update(b"\0")
+            try:
+                digest.update(path.read_bytes())
+            except OSError as exc:
+                self.change_package_finding(
+                    "PACKAGE_SNAPSHOT_READ",
+                    f"cannot read snapshot path {relpath}: {exc}",
+                    source,
+                )
+                return None
+            digest.update(b"\0")
+        return digest.hexdigest()
+
+    def check_change_packages(self) -> None:
+        if self.enforce_change_package and not self.change_packages:
+            self.error(
+                "PACKAGE_SELECTION_REQUIRED",
+                "--enforce-change-package requires one or more explicit "
+                "--change-package values; historical records are not auto-selected",
+            )
+            return
+        if not self.change_packages:
+            self.info(
+                "PACKAGE_CHECK_SKIPPED",
+                "change-package validation skipped because no explicit record was selected",
+            )
+            return
+
+        index_path = self.target_path(".ai/assistant/change-packages/index.json")
+        indexed_records: set[str] = set()
+        if index_path.is_file():
+            try:
+                index_data = json.loads(index_path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                index_data = {}
+            if isinstance(index_data, dict):
+                for entry in index_data.get("records", []):
+                    if isinstance(entry, dict) and isinstance(entry.get("record"), str):
+                        indexed_records.add(entry["record"])
+        elif self.enforce_change_package:
+            self.error(
+                "PACKAGE_INDEX_REQUIRED",
+                "strict change-package validation requires the target package index",
+                ".ai/assistant/change-packages/index.json",
+            )
+
+        packages = self.resolve_change_packages()
+        for package in packages:
+            source = self.rel(package)
+            if self.enforce_change_package and source not in indexed_records:
+                self.error(
+                    "PACKAGE_NOT_INDEXED",
+                    "strictly selected change package is not present in the compact index",
+                    source,
+                )
+            try:
+                data = json.loads(package.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError) as exc:
+                self.change_package_finding(
+                    "PACKAGE_INVALID_JSON", f"invalid change package: {exc}", source
+                )
+                continue
+            if not isinstance(data, dict):
+                self.change_package_finding(
+                    "PACKAGE_INVALID_ROOT",
+                    "change package must be a JSON object",
+                    source,
+                )
+                continue
+            if data.get("schema_version") != 1:
+                self.change_package_finding(
+                    "PACKAGE_SCHEMA", "schema_version must be 1", source
+                )
+            if data.get("record_kind") != "alatyr-change-package":
+                self.change_package_finding(
+                    "PACKAGE_KIND", "record_kind must be alatyr-change-package", source
+                )
+            if data.get("evidence_classification") != "historical-record":
+                self.change_package_finding(
+                    "PACKAGE_EVIDENCE_CLASS",
+                    "change package must identify historical-record evidence",
+                    source,
+                )
+
+            package_id = self.package_string(data, ("package_id",), source)
+            package_type = self.package_string(data, ("package_type",), source)
+            if package_type and package_type not in {
+                "architecture-segment",
+                "business-capability",
+                "cross-cutting-change",
+                "migration",
+                "public-contract",
+                "other",
+            }:
+                self.change_package_finding(
+                    "PACKAGE_TYPE", f"unsupported package_type: {package_type}", source
+                )
+            status = self.package_string(data, ("status",), source)
+            if status and status not in {
+                "proposed",
+                "approved",
+                "implementing",
+                "validated",
+                "complete",
+                "blocked",
+            }:
+                self.change_package_finding(
+                    "PACKAGE_STATUS", f"unsupported package status: {status}", source
+                )
+            self.package_string(data, ("activation_reason",), source)
+
+            changed_facts = data.get("changed_facts")
+            declared_fact_ids: list[str] = []
+            if not isinstance(changed_facts, list) or not changed_facts:
+                self.change_package_finding(
+                    "PACKAGE_CHANGED_FACTS",
+                    "change package requires changed_facts",
+                    source,
+                )
+            else:
+                for index, fact in enumerate(changed_facts):
+                    if not isinstance(fact, dict):
+                        self.change_package_finding(
+                            "PACKAGE_CHANGED_FACT",
+                            f"changed_facts[{index}] must be an object",
+                            source,
+                        )
+                        continue
+                    for field in ["id", "statement", "canonical_owner"]:
+                        value = fact.get(field)
+                        if not isinstance(value, str) or not value or is_placeholder(value):
+                            self.change_package_finding(
+                                "PACKAGE_CHANGED_FACT_FIELD",
+                                f"changed_facts[{index}].{field} must be resolved",
+                                source,
+                            )
+                    if isinstance(fact.get("id"), str):
+                        declared_fact_ids.append(fact["id"])
+                    invariants = fact.get("invariants")
+                    if not isinstance(invariants, list) or not invariants:
+                        self.change_package_finding(
+                            "PACKAGE_INVARIANTS",
+                            f"changed_facts[{index}] requires re-derived invariants",
+                            source,
+                        )
+
+            approved_facts = self.package_list(
+                data, ("approved_scope", "changed_fact_ids"), source
+            )
+            approved_areas = self.package_list(
+                data, ("approved_scope", "architecture_areas"), source, required=False
+            )
+            approved_behaviors = self.package_list(
+                data, ("approved_scope", "behavior_categories"), source
+            )
+            permitted_effects = self.package_list(
+                data, ("approved_scope", "permitted_external_effects"), source, required=False
+            )
+            self.package_list(
+                data, ("approved_scope", "excluded_semantic_effects"), source, required=False
+            )
+            allowed_paths = self.package_list(
+                data, ("approved_scope", "allowed_files_or_surfaces"), source
+            )
+            excluded_paths = self.package_list(
+                data, ("approved_scope", "excluded_files_or_surfaces"), source, required=False
+            )
+            actual_facts = self.package_list(
+                data, ("actual_scope", "changed_fact_ids"), source
+            )
+            actual_areas = self.package_list(
+                data, ("actual_scope", "architecture_areas"), source, required=False
+            )
+            actual_behaviors = self.package_list(
+                data, ("actual_scope", "behavior_categories"), source
+            )
+            actual_effects = self.package_list(
+                data, ("actual_scope", "external_effects"), source, required=False
+            )
+            actual_paths = self.package_list(
+                data, ("actual_scope", "changed_paths"), source
+            )
+
+            for label, actual, approved in [
+                ("changed fact", actual_facts, approved_facts),
+                ("architecture area", actual_areas, approved_areas),
+                ("behavior category", actual_behaviors, approved_behaviors),
+                ("external effect", actual_effects, permitted_effects),
+            ]:
+                for value in sorted(set(actual) - set(approved)):
+                    self.change_package_finding(
+                        "PACKAGE_SEMANTIC_SCOPE",
+                        f"actual {label} is outside approved scope: {value}",
+                        source,
+                    )
+            for fact_id in sorted(set(actual_facts) - set(declared_fact_ids)):
+                self.change_package_finding(
+                    "PACKAGE_FACT_DECLARATION",
+                    f"actual changed fact has no changed_facts record: {fact_id}",
+                    source,
+                )
+            for path in actual_paths:
+                if not is_target_scope_pattern(path):
+                    self.change_package_finding(
+                        "PACKAGE_ACTUAL_PATH", f"invalid target-relative path: {path}", source
+                    )
+                if not scope_entries_cover(path, allowed_paths):
+                    self.change_package_finding(
+                        "PACKAGE_PATH_SCOPE",
+                        f"actual path is outside package allowed scope: {path}",
+                        source,
+                    )
+                if scope_entries_cover(path, excluded_paths):
+                    self.change_package_finding(
+                        "PACKAGE_EXCLUDED_PATH",
+                        f"actual path matches package excluded scope: {path}",
+                        source,
+                    )
+
+            plan_file = self.package_string(
+                data, ("plan", "file"), source, allow_unavailable=True
+            )
+            plan_hash_value = nested_json_value(data, ("plan", "sha256"))
+            plan_hash = normalize_hash_field(plan_hash_value if isinstance(plan_hash_value, str) else "")
+            if (
+                isinstance(plan_hash_value, str)
+                and plan_hash_value
+                and not is_placeholder(plan_hash_value)
+                and "not available" not in plan_hash_value.lower()
+                and not plan_hash
+            ):
+                self.change_package_finding(
+                    "PACKAGE_PLAN_HASH_FORMAT",
+                    "plan.sha256 must be a SHA-256 digest or an unavailable value with reason",
+                    source,
+                )
+            if plan_file and "not available" not in plan_file.lower():
+                if not is_target_relative_path(plan_file):
+                    self.change_package_finding(
+                        "PACKAGE_PLAN_PATH", "plan file must be target-relative", source
+                    )
+                else:
+                    plan_path = self.target_path(plan_file)
+                    if not plan_path.is_file():
+                        self.change_package_finding(
+                            "PACKAGE_PLAN_MISSING", f"plan file does not exist: {plan_file}", source
+                        )
+                    elif plan_hash and sha256(plan_path) != plan_hash:
+                        self.change_package_finding(
+                            "PACKAGE_PLAN_HASH", "plan SHA-256 does not match plan file", source
+                        )
+
+            approval_refs = self.package_list(
+                data, ("approved_scope", "approval_records"), source, required=False
+            )
+            approval_semantic: dict[str, set[str]] = {
+                "allowed_changed_fact_ids": set(),
+                "allowed_architecture_areas": set(),
+                "allowed_behavior_categories": set(),
+                "permitted_external_effects": set(),
+            }
+            linked_approvals = 0
+            for relpath in approval_refs:
+                if not is_target_relative_path(relpath):
+                    self.change_package_finding(
+                        "PACKAGE_APPROVAL_PATH", f"approval path must be target-relative: {relpath}", source
+                    )
+                    continue
+                approval_path = self.target_path(relpath)
+                try:
+                    approval = json.loads(approval_path.read_text(encoding="utf-8"))
+                except (OSError, json.JSONDecodeError) as exc:
+                    self.change_package_finding(
+                        "PACKAGE_APPROVAL_RECORD", f"cannot load approval {relpath}: {exc}", source
+                    )
+                    continue
+                if not isinstance(approval, dict):
+                    self.change_package_finding(
+                        "PACKAGE_APPROVAL_RECORD", f"approval is not an object: {relpath}", source
+                    )
+                    continue
+                linked_approvals += 1
+                scope = approval.get("scope")
+                if not isinstance(scope, dict):
+                    self.change_package_finding(
+                        "PACKAGE_APPROVAL_SCOPE", f"approval has no scope object: {relpath}", source
+                    )
+                    continue
+                for key in approval_semantic:
+                    approval_semantic[key].update(json_string_list(scope.get(key)))
+            if linked_approvals:
+                comparisons = [
+                    ("changed fact", actual_facts, approval_semantic["allowed_changed_fact_ids"]),
+                    ("architecture area", actual_areas, approval_semantic["allowed_architecture_areas"]),
+                    ("behavior category", actual_behaviors, approval_semantic["allowed_behavior_categories"]),
+                    ("external effect", actual_effects, approval_semantic["permitted_external_effects"]),
+                ]
+                for label, actual, approved in comparisons:
+                    for value in sorted(set(actual) - approved):
+                        self.change_package_finding(
+                            "PACKAGE_APPROVAL_SEMANTIC_SCOPE",
+                            f"actual {label} is not covered by linked approval records: {value}",
+                            source,
+                        )
+
+            companion = data.get("companion_decisions")
+            missing_companion = False
+            if not isinstance(companion, list) or not companion:
+                self.change_package_finding(
+                    "PACKAGE_COMPANION_DECISIONS",
+                    "change package requires companion_decisions",
+                    source,
+                )
+            else:
+                for index, decision in enumerate(companion):
+                    if not isinstance(decision, dict):
+                        self.change_package_finding(
+                            "PACKAGE_COMPANION_DECISION",
+                            f"companion_decisions[{index}] must be an object",
+                            source,
+                        )
+                        continue
+                    state = decision.get("decision")
+                    if state not in {"updated", "not-required", "missing"}:
+                        self.change_package_finding(
+                            "PACKAGE_COMPANION_STATE",
+                            f"companion_decisions[{index}].decision is invalid",
+                            source,
+                        )
+                    if state == "missing":
+                        missing_companion = True
+                    for field in ["surface_type", "owner_or_path", "reason", "evidence"]:
+                        value = decision.get(field)
+                        if not isinstance(value, str) or not value or is_placeholder(value):
+                            self.change_package_finding(
+                                "PACKAGE_COMPANION_FIELD",
+                                f"companion_decisions[{index}].{field} must be resolved",
+                                source,
+                            )
+
+            corrections = data.get("discoveries_and_corrections")
+            if not isinstance(corrections, list):
+                self.change_package_finding(
+                    "PACKAGE_CORRECTIONS", "discoveries_and_corrections must be a list", source
+                )
+            else:
+                for index, correction in enumerate(corrections):
+                    if not isinstance(correction, dict):
+                        self.change_package_finding(
+                            "PACKAGE_CORRECTION", f"correction[{index}] must be an object", source
+                        )
+                        continue
+                    for field in ["id", "statement", "approval_action", "evidence"]:
+                        value = correction.get(field)
+                        if not isinstance(value, str) or not value or is_placeholder(value):
+                            self.change_package_finding(
+                                "PACKAGE_CORRECTION_FIELD",
+                                f"correction[{index}].{field} must be resolved",
+                                source,
+                            )
+                    correction_facts = correction.get("changed_fact_ids")
+                    if not isinstance(correction_facts, list):
+                        self.change_package_finding(
+                            "PACKAGE_CORRECTION_FACTS",
+                            f"correction[{index}].changed_fact_ids must be a list",
+                            source,
+                        )
+                    else:
+                        for fact_id in correction_facts:
+                            if fact_id not in declared_fact_ids:
+                                self.change_package_finding(
+                                    "PACKAGE_CORRECTION_FACT",
+                                    f"correction[{index}] references undeclared fact: {fact_id}",
+                                    source,
+                                )
+                    if correction.get("kind") not in {"discovery", "correction"}:
+                        self.change_package_finding(
+                            "PACKAGE_CORRECTION_KIND", f"correction[{index}].kind is invalid", source
+                        )
+                    impact = correction.get("scope_impact")
+                    if impact not in {"none", "within-approved-scope", "reapproval-required"}:
+                        self.change_package_finding(
+                            "PACKAGE_CORRECTION_SCOPE", f"correction[{index}].scope_impact is invalid", source
+                        )
+                    action = correction.get("approval_action")
+                    if impact == "reapproval-required" and (
+                        not isinstance(action, str)
+                        or not action
+                        or "not required" in action.lower()
+                    ):
+                        self.change_package_finding(
+                            "PACKAGE_REAPPROVAL_MISSING",
+                            f"correction[{index}] requires a reapproval action",
+                            source,
+                        )
+
+            residual_risks = self.package_list(
+                data, ("validation", "residual_risks"), source, required=False
+            )
+            if missing_companion and not residual_risks and status != "blocked":
+                self.change_package_finding(
+                    "PACKAGE_MISSING_COMPANION_RISK",
+                    "missing companion decisions require blocked status or residual risk",
+                    source,
+                )
+
+            quality = self.package_string(data, ("provenance", "evidence_quality"), source)
+            claim = self.package_string(data, ("provenance", "public_claim_strength"), source)
+            before = self.package_string(
+                data, ("provenance", "before_revision"), source, allow_unavailable=True
+            )
+            after = self.package_string(
+                data, ("provenance", "after_revision"), source, allow_unavailable=True
+            )
+            for field in ["working_tree_at_start", "working_tree_at_validation"]:
+                state = self.package_string(
+                    data, ("provenance", field), source, allow_unavailable=True
+                )
+                normalized_state = state.split(" ", 1)[0].lower()
+                if normalized_state not in {"clean", "dirty", "unavailable"}:
+                    self.change_package_finding(
+                        "PACKAGE_WORKTREE_STATE",
+                        f"provenance.{field} must start with clean, dirty, or unavailable",
+                        source,
+                    )
+            self.package_string(
+                data,
+                ("provenance", "unrelated_changes_handling"),
+                source,
+                allow_unavailable=True,
+            )
+            if quality in {"git-range", "pull-request"}:
+                if git_resolve_ref(self.target, before) is None:
+                    self.change_package_finding(
+                        "PACKAGE_BEFORE_REF", f"before revision does not resolve: {before}", source
+                    )
+                if git_resolve_ref(self.target, after) is None:
+                    self.change_package_finding(
+                        "PACKAGE_AFTER_REF", f"after revision does not resolve: {after}", source
+                    )
+                range_paths = git_range_changed_files(self.target, before, after)
+                if range_paths is None:
+                    self.change_package_finding(
+                        "PACKAGE_GIT_RANGE", "cannot compute declared Git range", source
+                    )
+                elif set(range_paths) != set(actual_paths):
+                    missing = sorted(set(range_paths) - set(actual_paths))
+                    extra = sorted(set(actual_paths) - set(range_paths))
+                    self.change_package_finding(
+                        "PACKAGE_RANGE_PATHS",
+                        f"actual paths do not match Git range; missing={missing}, extra={extra}",
+                        source,
+                    )
+                if quality == "pull-request":
+                    pull_request = self.package_string(
+                        data, ("provenance", "pull_request"), source
+                    )
+                    if pull_request.lower() in {"none", "not applicable", "n/a"}:
+                        self.change_package_finding(
+                            "PACKAGE_PULL_REQUEST",
+                            "pull-request evidence requires a stable pull-request reference",
+                            source,
+                        )
+                if claim not in {"strong", "limited", "unsupported"}:
+                    self.change_package_finding(
+                        "PACKAGE_PUBLIC_CLAIM",
+                        f"{quality} evidence has invalid public claim strength: {claim}",
+                        source,
+                    )
+            elif quality == "selected-file-snapshot":
+                snapshot_paths = self.package_list(
+                    data, ("provenance", "selected_file_snapshot", "paths"), source
+                )
+                recorded_digest = self.package_string(
+                    data, ("provenance", "selected_file_snapshot", "digest"), source
+                ).lower()
+                computed_digest = self.package_snapshot_digest(snapshot_paths, source)
+                if computed_digest and recorded_digest != computed_digest:
+                    self.change_package_finding(
+                        "PACKAGE_SNAPSHOT_HASH",
+                        "selected-file snapshot SHA-256 does not match current files",
+                        source,
+                    )
+                if claim not in {"limited", "unsupported"}:
+                    self.change_package_finding(
+                        "PACKAGE_PUBLIC_CLAIM",
+                        "selected-file-snapshot cannot support a strong public claim",
+                        source,
+                    )
+            elif quality == "unverified":
+                if claim != "unsupported":
+                    self.change_package_finding(
+                        "PACKAGE_PUBLIC_CLAIM",
+                        "unverified evidence must declare unsupported public claim strength",
+                        source,
+                    )
+            else:
+                self.change_package_finding(
+                    "PACKAGE_EVIDENCE_QUALITY",
+                    f"unsupported evidence quality: {quality}",
+                    source,
+                )
+
+            architecture = data.get("architecture_discussion")
+            if not isinstance(architecture, dict):
+                self.change_package_finding(
+                    "PACKAGE_ARCHITECTURE_DISCUSSION",
+                    "architecture_discussion must be an object",
+                    source,
+                )
+            else:
+                applies_value = architecture.get("applies")
+                applies = applies_value is True or (
+                    isinstance(applies_value, str) and applies_value.lower() == "yes"
+                )
+                if applies_value not in {True, False, "yes", "no"}:
+                    self.change_package_finding(
+                        "PACKAGE_ARCHITECTURE_APPLIES",
+                        "architecture_discussion.applies must be a boolean or yes/no",
+                        source,
+                    )
+                if package_type == "architecture-segment" and not applies:
+                    self.change_package_finding(
+                        "PACKAGE_ARCHITECTURE_REQUIRED",
+                        "architecture-segment package requires architecture discussion evidence",
+                        source,
+                    )
+                if applies:
+                    for field in ["problem_and_boundary", "selected_direction", "decision_status"]:
+                        value = architecture.get(field)
+                        if not isinstance(value, str) or not value or is_placeholder(value):
+                            self.change_package_finding(
+                                "PACKAGE_ARCHITECTURE_FIELD",
+                                f"architecture_discussion.{field} must be resolved",
+                                source,
+                            )
+                    for field in ["alternatives", "sources", "assumptions_or_disagreement"]:
+                        if not isinstance(architecture.get(field), list):
+                            self.change_package_finding(
+                                "PACKAGE_ARCHITECTURE_LIST",
+                                f"architecture_discussion.{field} must be a list",
+                                source,
+                            )
+                if not isinstance(architecture.get("raw_chat_retained"), bool):
+                    self.change_package_finding(
+                        "PACKAGE_RAW_CHAT",
+                        "raw_chat_retained must be a boolean",
+                        source,
+                    )
+                elif architecture.get("raw_chat_retained") is True:
+                    self.warn(
+                        "PACKAGE_RAW_CHAT_REVIEW",
+                        "raw chat retention requires target privacy, retention, and redaction review",
+                        source,
+                    )
+
+            self.info(
+                "PACKAGE_CHECKED",
+                f"checked change package {package_id or source}; structural checks do not prove semantic completeness or architecture correctness",
+                source,
+            )
 
     def check_framework_baseline(self) -> None:
         if not self.framework_source:
@@ -4388,6 +5163,24 @@ def main() -> int:
         ),
     )
     parser.add_argument(
+        "--change-package",
+        type=Path,
+        action="append",
+        default=[],
+        help=(
+            "Explicit target-relative change-package JSON record to validate. "
+            "May be provided multiple times; historical records are not auto-selected."
+        ),
+    )
+    parser.add_argument(
+        "--enforce-change-package",
+        action="store_true",
+        help=(
+            "Fail on invalid selected package shape, hashes, refs, declared "
+            "semantic/path scope, companion decisions, corrections, or provenance."
+        ),
+    )
+    parser.add_argument(
         "--migration-diff",
         type=Path,
         help=(
@@ -4438,6 +5231,8 @@ def main() -> int:
         diff_ref=args.diff_ref,
         approval_records=args.approval_record,
         enforce_approval_scope=args.enforce_approval_scope,
+        change_packages=args.change_package,
+        enforce_change_package=args.enforce_change_package,
         migration_diff=args.migration_diff,
         allow_placeholders=args.allow_placeholders,
         allow_local_paths=args.allow_local_path,

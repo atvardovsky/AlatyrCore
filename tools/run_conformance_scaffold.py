@@ -262,6 +262,8 @@ def validate_support_profiles(work_root: Path) -> list[str]:
             diff_ref=None,
             approval_records=[],
             enforce_approval_scope=False,
+            change_packages=[],
+            enforce_change_package=False,
             migration_diff=None,
             allow_placeholders=True,
             allow_local_paths=[],

@@ -78,6 +78,12 @@ For large, cross-boundary, or resumable changes, apply
 workstreams, context receipts, approvals, checkpoints, and final convergence.
 Do not treat workstream-local validation as completion of the combined change.
 
+When the change-package activation gate passes, create or update one package
+under `ALATYR-PACKAGE-001`. Use it to bind the plan, semantic and path approval
+scope, implementation discoveries, companion-surface decisions, validation,
+and before-to-after provenance. Do not create a package for ordinary local
+changes that can use the normal final evidence contract.
+
 ## Approval And Sequencing
 
 Approval is required before protected changes, including:
@@ -122,6 +128,7 @@ A blueprint-driven change should leave evidence for:
 - validations or manual checks run
 - approvals used
 - skipped checks and residual risk
+- change-package ID and provenance quality when package activation applies
 
 ## Rejection Criteria
 

@@ -16,6 +16,7 @@ evidence, not a source of truth for project facts.
 - Packet status: `{ACTIVE_BLOCKED_COMPLETE_OR_ARCHIVED}`
 - Packet owner: `{TARGET_OPERATION_OWNER}`
 - Storage and retention policy: `{TARGET_OPERATION_PACKET_POLICY}`
+- Change package: `{CHANGE_PACKAGE_ID_OR_NOT_ACTIVE}`
 
 ## Routed Context
 
@@ -103,6 +104,7 @@ context reset.
 - Skipped checks: `{SKIPPED_CHECKS}`
 - Final residual risk: `{FINAL_RESIDUAL_RISK}`
 - Packet disposition: `{CLOSE_ARCHIVE_RETAIN_OR_DELETE_PER_TARGET_POLICY}`
+- Change-package convergence: `{SEMANTIC_SCOPE_COMPANION_CORRECTION_AND_PROVENANCE_RESULT_OR_NOT_ACTIVE}`
 
 ## Resume Rule
 

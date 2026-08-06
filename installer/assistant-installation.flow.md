@@ -178,6 +178,8 @@ Classify every proposed target file:
     catalog only for the bare Alatyr entry, ambiguity, or repair. Add
     the `large-or-resumable` task-scale overlay only when the target enables
     large-task orchestration.
+    Add the `change-package` overlay only when the target enables coherent
+    material-change evidence. Keep package records outside routine bootstrap.
     Add the `team-active` overlay only when team collaboration is enabled. Keep
     the full work registry and unrelated active tasks outside routine
     bootstrap.
@@ -198,6 +200,10 @@ Classify every proposed target file:
     Add the large-task flow and operation-packet template when the target needs
     cross-boundary, multi-workstream, budget-exceeding, or resumable work, and
     record the target packet storage policy.
+    Add the change-package index, flow, machine record, and redacted report
+    template when the target needs semantic multi-surface approval, architecture
+    segment/capability evidence, audit, pilot, or publishable provenance. Record
+    retention and redaction policy; do not seed historical records.
     When the target uses multiple AI infrastructure items, add
     `.ai/assistant/ai-infrastructure-router.json`, the recommendation flow and
     report template, lazy development-evidence capture flow, and the
@@ -261,6 +267,9 @@ approval using the target human and machine-readable approval-record
 templates. Bind the machine record to the approved diff base, explicitly
 select it for enforcement, and require every changed path to be allowed and no
 changed path to be excluded.
+For an activated change package, also bind allowed changed-fact IDs,
+architecture areas, behavior categories, excluded semantic effects, and
+permitted external effects. A path match does not authorize semantic drift.
 
 ## Validation Rule
 
@@ -305,6 +314,8 @@ Report:
   templates added or skipped
 - large-task orchestration flow, operation packet, and target storage policy
   added or skipped
+- change-package index, lazy overlay, flow, schema, redacted report, retention
+  policy, and validator support added, migrated, skipped, or blocked
 - team collaboration operating model, coordination backend and synchronization
   direction, work registry, team-active overlay, task/handoff/decision/review
   flows, team gate, templates, active-record preservation, and privacy policy

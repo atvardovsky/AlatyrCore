@@ -53,6 +53,9 @@ An approval record should include:
 - patch hash when an exact proposed diff is approved and deterministic hashing
   is practical
 - allowed protected changes
+- allowed changed-fact IDs, architecture areas, and behavior categories when
+  semantic scope is material
+- excluded semantic effects and permitted external effects when applicable
 - allowed files or surfaces
 - excluded files or surfaces, including an explicit `none` when applicable
 - excluded actions
@@ -67,6 +70,11 @@ An approval record should include:
 
 If the plan changes after approval, the assistant must treat the approval as
 stale for any changed protected scope.
+
+For a change package, approval is stale when implementation introduces a
+protected changed fact, architecture area, behavior category, external effect,
+or path outside the approved scope. Path approval never grants undeclared
+semantic scope.
 
 An approval record is `historical-record` evidence. Keep allowed and excluded
 files in explicit list fields so a checker can compare them with an actual
@@ -88,6 +96,11 @@ Strict scope validation should:
 - fail when any changed path is outside the union of allowed scopes
 - fail when any changed path matches an excluded scope
 - report unavailable Git or record evidence instead of treating it as a pass
+
+When semantic scope fields are present, deterministic validation should also
+compare declared actual fact IDs, areas, behavior categories, and external
+effects with the approved lists. This detects declared scope drift; it does
+not infer undeclared effects or replace logical integrity review.
 
 The strict comparison covers the complete operation diff, including code,
 tests, docs, diagrams, adapter files, and approval evidence. Protected-change
@@ -137,6 +150,8 @@ When an approval record was used, final evidence should name:
 - protected categories covered
 - files or surfaces changed under approval
 - whether the implementation stayed within scope
+- whether declared semantic scope stayed within the approved fact, area,
+  behavior, and external-effect boundaries
 - whether the approval remained valid after plan, patch, or scope changes
 - validation run or skipped
 - result or evidence reference

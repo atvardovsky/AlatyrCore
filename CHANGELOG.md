@@ -2,6 +2,38 @@
 
 ## Unreleased
 
+- No unreleased changes.
+
+## 0.1.0-alpha.5 - 2026-08-06
+
+- Increased the framework version to `0.1.0-alpha.5`, adapter schema version
+  to `4`, and target template version to `5`, with migration evidence from the
+  last committed `0.1.0-alpha.4` source state.
+- Added optional change packages under new rule `ALATYR-PACKAGE-001` for
+  coherent material outcomes that need semantic multi-surface approval,
+  companion-surface decisions, implementation correction evidence, compact
+  architecture discussion, validation, and reproducible before-to-after
+  provenance.
+- Added a lazy change-package context overlay, compact empty target index,
+  machine record, redacted human report, target flow, manifest/module wiring,
+  installation/update guidance, scaffold projection, and conformance evidence
+  without adding package cost to ordinary local tasks.
+- Advanced the machine approval record template to schema 2 with allowed
+  changed-fact IDs, architecture areas, behavior categories, excluded semantic
+  effects, permitted external effects, and declared semantic-scope result.
+- Extended the portable target validator with explicit `--change-package` and
+  `--enforce-change-package` checks for plan hashes, Git ranges, snapshot
+  digests, declared semantic/path scope, linked approvals, companion decisions,
+  correction/reapproval impact, and public evidence strength. These checks do
+  not replace project invariant derivation or logical integrity review.
+- Installed adapters that enable `change-packages` must add the package index,
+  lazy overlay, flow, record/report templates, retention/redaction policy, and
+  validator support. Existing historical target records must be preserved.
+- Changed `ALATYR-APPROVAL-001`, `ALATYR-CHANGE-001`,
+  `ALATYR-INTEGRITY-001`, `ALATYR-CONTEXT-001`, `ALATYR-MODULE-001`,
+  `ALATYR-LIFECYCLE-001`, and `ALATYR-EVIDENCE-001`; added
+  `ALATYR-PACKAGE-001`; no rule IDs were removed.
+
 - Added optional project-owned architecture knowledge with canonical area and
   pattern records, explicit observed/proposed/accepted lifecycle statuses,
   source evidence, decision authority, and maintenance triggers.

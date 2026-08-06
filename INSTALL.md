@@ -138,6 +138,9 @@ selected machine-readable record from
 `.ai/assistant/approvals/approval-record-template.json`. Bind it to the
 approved Git diff base and verify the complete changed path set before final
 evidence.
+For an activated change package, also record allowed fact IDs, architecture
+areas, behavior categories, excluded semantic effects, and permitted external
+effects. Reapproval is required for protected semantic or path expansion.
 
 ## Installation Shape
 
@@ -172,6 +175,8 @@ In a typical target repository:
    When team collaboration is enabled, route `team-active` through
    `.ai/assistant/team/context-overlay.json` and keep team state outside
    routine bootstrap.
+   When change packages are enabled, add the lazy `change-package` overlay and
+   compact index; do not load package records for ordinary tasks.
 8. Add bridge files only for assistants the target uses.
 9. Add installed-operation, operation-help, automatic operation-routing,
    read-only adapter-health, risk-gated pre-change preview,
@@ -184,6 +189,8 @@ In a typical target repository:
    templates,
    migration-note template, effectiveness-report template, blueprint-creation,
    adapter-recheck, large-task orchestration and operation-packet templates,
+   change-package flow, machine record, redacted report, and index when coherent
+   material-change evidence is needed,
    and
    post-install/update chat-message templates when the target wants
    post-install operation requests or AI infrastructure adaptation.
@@ -317,6 +324,7 @@ python3 tools/validate_target_adapter.py --target /path/to/target-repo
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --framework-source /path/to/AlatyrCore
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --json --output tmp/alatyr-adapter-report.json
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --diff-ref origin/main --approval-record .ai/assistant/approvals/change-approval.json --enforce-approval-scope
+python3 tools/validate_target_adapter.py --target /path/to/target-repo --change-package .ai/assistant/change-packages/change-package.json --enforce-change-package
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --framework-source /path/to/AlatyrCore --migration-diff /path/to/migration-report.md
 ```
 
@@ -329,6 +337,8 @@ absolute local path leakage, stale checker claims, manifest fields,
 target-local checker coverage, advisory legacy approval scope, and strict
 complete changed-path enforcement through explicitly selected JSON records
 bound to a supplied Git diff. It also checks optional framework baseline drift
+and explicitly selected change-package refs, hashes, declared semantic/path
+scope, companion decisions, correction impact, and provenance strength.
 and migration-diff evidence when supplied. Its JSON is current-state structural evidence, not
 proof of historical actions. It does not inspect target business truth,
 approve protected changes, replace target validation, or replace assistant

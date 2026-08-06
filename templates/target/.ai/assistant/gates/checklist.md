@@ -10,6 +10,7 @@ commands from another project.
 - Rule references checked: `ALATYR-CONTEXT-001`, `ALATYR-SOURCE-001`,
   `ALATYR-RISK-001`, `ALATYR-APPROVAL-001`, `ALATYR-SAFETY-001`,
   `ALATYR-SAFETY-002`, `ALATYR-INTEGRITY-001`, `ALATYR-CHANGE-001`,
+  `ALATYR-PACKAGE-001`,
   `ALATYR-ARCHITECTURE-001`, `ALATYR-ADAPTER-001`, `ALATYR-MODULE-001`,
   `ALATYR-OPERATION-001`,
   `ALATYR-DIAGRAM-001`, `ALATYR-TEAM-001`, and `ALATYR-EVIDENCE-001`.
@@ -26,6 +27,10 @@ commands from another project.
 - Large-task scale overlay and operation packet used only when activation
   conditions apply; active workstream context, checkpoints, dependencies, and
   global convergence checked when used.
+- Change package used only when coherent material outcome, semantic
+  multi-surface approval, audit, or publishable provenance conditions apply;
+  semantic scope, companion decisions, corrections, and repository provenance
+  reconciled when used.
 - Team-active overlay and `.ai/assistant/gates/team-collaboration.md` used only
   when the optional module is enabled and a team coordination operation
   applies; changed-fact overlap is checked before secondary file overlap.

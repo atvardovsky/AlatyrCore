@@ -28,5 +28,13 @@ Use this checklist before broad or risky changes.
 - Approval required:
 - Approved diff base and machine-readable approval records:
 - Changed-path approval scope enforcement:
+- Change-package activation reason or explicit skip:
+- Approved versus actual changed facts, architecture areas, behavior
+  categories, external effects, and paths:
+- Implementation discoveries/corrections and approval impact:
+- Companion decisions for source/blueprint, ADR, registry, contracts, tests,
+  configuration, public docs, diagrams, changelog, prompts, skills, gates,
+  bridges, and checkers:
+- Before/after provenance and evidence quality:
 - Validation to run:
 - Skipped checks and residual risk:

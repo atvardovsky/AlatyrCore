@@ -44,6 +44,12 @@
       "derived_surfaces": ["product-change operation", "blueprint-driven target flow", "large-task orchestration", "documentation and diagram sync"]
     },
     {
+      "category": "PACKAGE",
+      "owner": "framework/change-packages.md",
+      "rule_ids": ["ALATYR-PACKAGE-001"],
+      "derived_surfaces": ["change-package target flow and records", "semantic approval scope", "large-task convergence", "blueprint change", "target validation", "installer module selection", "migration evidence"]
+    },
+    {
       "category": "ARCHITECTURE",
       "owner": "framework/architecture-knowledge.md",
       "rule_ids": ["ALATYR-ARCHITECTURE-001"],
@@ -103,7 +109,7 @@
       "id": "ALATYR-CONTEXT-001",
       "category": "CONTEXT",
       "canonical_source": "framework/context-profiles.md",
-      "summary": "Use a compact budgeted bootstrap, select the smallest task profile, project-area overlays, and optional task-scale overlay through an aligned context router, record expansion only when boundaries or conflicts require it, prefer changed-fact relationship routing when an adapted consistency map exists, and use item routing for AI infrastructure work.",
+      "summary": "Use a compact budgeted bootstrap, select the smallest task profile, project-area overlays, and optional task-scale overlay through an aligned context router, record expansion only when boundaries or conflicts require it, prefer changed-fact relationship routing when an adapted consistency map exists, use item routing for AI infrastructure work, and keep optional change-package records lazy.",
       "applies_to": ["all installed adapter tasks"],
       "enforcement": "required"
     },
@@ -127,7 +133,7 @@
       "id": "ALATYR-APPROVAL-001",
       "category": "APPROVAL",
       "canonical_source": "framework/approval-records.md",
-      "summary": "Require explicit approval for protected changes and use explicitly selected machine-readable records to enforce that the complete operation diff stays within approved path scope.",
+      "summary": "Require explicit approval for protected changes, use explicitly selected machine-readable records to enforce that the complete operation diff stays within approved path scope, and reconcile activated package facts, architecture areas, behavior categories, external effects, and paths with declared semantic scope.",
       "applies_to": ["protected changes", "installed operations"],
       "enforcement": "required"
     },
@@ -151,7 +157,7 @@
       "id": "ALATYR-INTEGRITY-001",
       "category": "INTEGRITY",
       "canonical_source": "framework/logical-integrity.md",
-      "summary": "Name changed facts, re-derive testable invariants, reconcile related review items, identify owners and repair sets, validate, and report residual risk, using mapped or manual impact closure and global multi-workstream convergence as applicable.",
+      "summary": "Name changed facts, re-derive testable invariants, reconcile related review items, identify owners and repair sets, validate, and report residual risk, using mapped or manual impact closure, global multi-workstream convergence, and active package scope, companion, and correction reconciliation as applicable.",
       "applies_to": ["semantic fact changes", "drift reviews"],
       "enforcement": "required"
     },
@@ -159,9 +165,17 @@
       "id": "ALATYR-CHANGE-001",
       "category": "CHANGE",
       "canonical_source": "framework/blueprint-driven-change.md",
-      "summary": "Carry accepted product changes through invariant re-derivation, source-of-truth and flow updates, implementation planning, code and tests, companion sync, and final evidence, reconciling related review items and large workstreams globally.",
+      "summary": "Carry accepted product changes through invariant re-derivation, source-of-truth and flow updates, implementation planning, code and tests, companion sync, and final evidence, reconciling related review items and large workstreams globally and activating a change package only when its separate gate passes.",
       "applies_to": ["business changes", "architecture changes", "data changes", "runtime changes", "public contract changes"],
       "enforcement": "required"
+    },
+    {
+      "id": "ALATYR-PACKAGE-001",
+      "category": "PACKAGE",
+      "canonical_source": "framework/change-packages.md",
+      "summary": "Activate a change package only for a coherent material outcome, semantic multi-surface approval, audit, or publishable provenance need; bind changed facts, semantic and path scope, plan, approvals, companion decisions, implementation corrections, validation, and before-to-after evidence without replacing canonical project owners or burdening ordinary local tasks.",
+      "applies_to": ["activated business changes", "activated architecture changes", "activated data changes", "activated security changes", "migrations", "public contract changes"],
+      "enforcement": "required when activated"
     },
     {
       "id": "ALATYR-ARCHITECTURE-001",
@@ -191,7 +205,7 @@
       "id": "ALATYR-MODULE-001",
       "category": "MODULE",
       "canonical_source": "framework/module-profile.md",
-      "summary": "Establish the required core profile first, then enable optional modules only when the target needs and can maintain them.",
+      "summary": "Establish the required core profile first, then enable optional modules, including change packages, only when the target needs and can maintain them.",
       "applies_to": ["installation", "framework update", "adapter maturity", "framework upgrades"],
       "enforcement": "required"
     },
@@ -223,7 +237,7 @@
       "id": "ALATYR-LIFECYCLE-001",
       "category": "LIFECYCLE",
       "canonical_source": "framework/lifecycle.md",
-      "summary": "Record framework version, adapter schema version, template version, baseline, local deviations, migration notes, and upgrade evidence.",
+      "summary": "Record framework version, adapter schema version, template version, baseline, local deviations, migration notes, upgrade evidence, and preservation of enabled target package records.",
       "applies_to": ["installation", "framework upgrades"],
       "enforcement": "required"
     },
@@ -231,7 +245,7 @@
       "id": "ALATYR-EVIDENCE-001",
       "category": "EVIDENCE",
       "canonical_source": "framework/guarantees.md",
-      "summary": "Distinguish declarative process commitments, machine-checkable expectations, target-dependent guarantees, and non-guarantees in final claims.",
+      "summary": "Distinguish declarative process commitments, machine-checkable expectations, target-dependent guarantees, and non-guarantees in final claims, including strong versus bounded change-package provenance.",
       "applies_to": ["final evidence", "framework positioning"],
       "enforcement": "required"
     }

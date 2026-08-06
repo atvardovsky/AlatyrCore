@@ -87,6 +87,10 @@ operations:
   installation_note: ".ai/assistant/templates/installation-note.md"
   output_contracts: ".ai/assistant/templates/adapter-output-contracts.md"
   large_task_packet: ".ai/assistant/templates/large-task-operation-packet.md"
+  change_package_flow: ".ai/assistant/flows/change-package.flow.md"
+  change_package_index: ".ai/assistant/change-packages/index.json"
+  change_package_record: ".ai/assistant/templates/change-package-record.json"
+  change_package_report: ".ai/assistant/templates/change-package-report.md"
   ai_infrastructure_inventory: ".ai/assistant/templates/ai-infrastructure-inventory.md"
   ai_infrastructure_recommendation: ".ai/assistant/templates/ai-infrastructure-recommendation.md"
   development_evidence_capture: ".ai/assistant/flows/development-evidence-capture.flow.md"
@@ -112,6 +116,12 @@ approvals:
   directory: ".ai/assistant/approvals"
   template: ".ai/assistant/approvals/approval-template.md"
   machine_template: ".ai/assistant/approvals/approval-record-template.json"
+change_packages:
+  directory: ".ai/assistant/change-packages"
+  index: ".ai/assistant/change-packages/index.json"
+  machine_template: ".ai/assistant/templates/change-package-record.json"
+  human_report_template: ".ai/assistant/templates/change-package-report.md"
+  retention_policy: "{TARGET_CHANGE_PACKAGE_RETENTION_AND_REDACTION_POLICY}"
 policies:
   source_access: ".ai/assistant/policies/ai-infrastructure-source-access.md"
   prompt_injection: ".ai/assistant/policies/prompt-injection.md"

@@ -35,6 +35,9 @@ create a packet.
 3. Create one packet from
    `.ai/assistant/templates/large-task-operation-packet.md` at the
    target-approved path.
+   Activate `.ai/assistant/flows/change-package.flow.md` separately only when
+   coherent outcome, semantic approval, audit, or provenance needs pass its
+   gate; large-task activation alone does not require a package.
 4. Record operation scope, allowed actions, changed facts, canonical owners,
    relationship impact closure when enabled, approvals, and the initial
    context receipt.
@@ -52,6 +55,9 @@ create a packet.
    explicitly selected machine-readable approval records.
 10. Confirm approval coverage, run target validation, and report final
     convergence, skipped checks, and residual risk.
+11. When a change package is active, finalize its semantic scope, companion
+    decisions, material corrections, and repository provenance after global
+    convergence.
 
 ## Final Evidence
 
@@ -66,6 +72,7 @@ Report:
 - checkpoints and resumed assumptions
 - approval coverage and target validation
 - global logical integrity result
+- active change-package result and evidence quality when applicable
 - unresolved work and residual risk
 
 ## Rejection Criteria

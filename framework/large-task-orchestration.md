@@ -32,6 +32,12 @@ Do not create an operation packet for a small task that fits one profile and
 can be completed as one coherent change. A packet adds coordination cost and
 must earn that cost by reducing repeated discovery or missed companion work.
 
+Large-task activation does not automatically require a change package. Compose
+the operation packet with `ALATYR-PACKAGE-001` only when coherent outcome,
+semantic approval, audit, or publishable provenance needs also pass the package
+activation gate. Cross-reference IDs instead of duplicating plan, approval,
+discussion, or validation detail.
+
 ## Operation Packet
 
 The target adapter should provide a Markdown operation-packet template. One
@@ -46,6 +52,7 @@ packet coordinates one operation and records:
 - context receipts and reasons for budget expansion
 - resumable checkpoints, unresolved decisions, and the next ready action
 - final convergence across workstreams, owners, approvals, and validation
+- active change-package ID when package evidence is also required
 
 The packet is coordination evidence, not a canonical owner of project facts.
 Link to source-of-truth entries instead of copying full business, architecture,
@@ -116,6 +123,9 @@ Local workstream success is not final operation success. Before completion:
    policy.
 8. Reconcile team task, claim, checkpoint, handoff, review, and next-actor
    evidence when the team module is enabled.
+9. When a change package is active, finalize companion decisions,
+   implementation corrections, semantic-scope reconciliation, and repository
+   provenance after the combined workstream result is known.
 
 ## Storage And Privacy
 

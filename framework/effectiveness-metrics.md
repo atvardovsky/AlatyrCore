@@ -36,6 +36,8 @@ Track:
 - residual risks reported
 - time to usable result
 - protected changes blocked before approval
+- activated change packages, evidence quality, and reapproval events
+- implementation discoveries or corrections that invalidated scope
 - duration to usable result when comparable timing is available
 
 ## Reporting Shape

@@ -62,6 +62,8 @@ Before upgrading framework files in a target project:
 9. Compare required core profile and optional module states.
    When `team-collaboration` is enabled, compare its rule, registry schema,
    lazy overlay, operation routes, and target operating model.
+   When `change-packages` is enabled, compare its record schema, semantic
+   approval fields, provenance policy, lazy route, and validator support.
 10. Prepare a target migration note or installation plan from reviewed
     assessment evidence.
 11. Require approval before overwriting existing target AI instructions.
@@ -74,6 +76,8 @@ Before upgrading framework files in a target project:
     Preserve active team task IDs, actor references, claims, checkpoints,
     handoffs, decisions, and external references. Never replace current team
     state with the source placeholder registry.
+    Preserve target change-package records. Never replace historical package
+    evidence with the source placeholder templates.
 14. Recheck root assistant entry points and supported bridge files so future
     sessions can find the installation note, operation catalog, health, help,
     and routing flow.
@@ -106,6 +110,8 @@ Framework lifecycle notes should record:
 - help/routing and post-update chat-message migration needs
 - team-collaboration rule, registry schema, lazy route, active-record
   preservation, and post-update stale-state review when that module is enabled
+- change-package rule, record schema, lazy route, target retention policy,
+  provenance grades, and validator migration when that module is enabled
 
 ## Deprecation
 

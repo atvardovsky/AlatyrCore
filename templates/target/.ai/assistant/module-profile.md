@@ -230,6 +230,24 @@ Approval needs: `{LARGE_TASK_ORCHESTRATION_APPROVAL_NEEDS}`
 Residual risk: `{LARGE_TASK_ORCHESTRATION_RESIDUAL_RISK}`
 Next action: `{LARGE_TASK_ORCHESTRATION_NEXT_ACTION}`
 
+Module: `change-packages`
+State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+Owner or file: `.ai/assistant/change-packages/index.json`
+Required files:
+
+- `.ai/framework/change-packages.md`
+- `.ai/assistant/change-packages/index.json`
+- `.ai/assistant/context/task-scales/change-package.json`
+- `.ai/assistant/flows/change-package.flow.md`
+- `.ai/assistant/templates/change-package-record.json`
+- `.ai/assistant/templates/change-package-report.md`
+
+Reason: `{REASON}`
+Validation or review: `{VALIDATION_OR_REVIEW}`
+Approval needs: `{CHANGE_PACKAGES_APPROVAL_NEEDS}`
+Residual risk: `{CHANGE_PACKAGES_RESIDUAL_RISK}`
+Next action: `{CHANGE_PACKAGES_NEXT_ACTION}`
+
 Module: `team-collaboration`
 State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `.ai/project/team-operating-model.md`

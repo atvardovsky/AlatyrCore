@@ -258,6 +258,15 @@ def git_name_status_paths(target: Path, *comparison: str) -> list[str] | None:
     return paths
 
 
+def git_range_changed_files(target: Path, before: str, after: str) -> list[str] | None:
+    """Return every old/new path changed between two explicit commit refs."""
+
+    if git_resolve_ref(target, before) is None or git_resolve_ref(target, after) is None:
+        return None
+    paths = git_name_status_paths(target, before, after)
+    return sorted(set(paths)) if paths is not None else None
+
+
 def decode_git_path(value: bytes) -> str:
     return value.decode("utf-8", errors="surrogateescape").replace("\\", "/")
 
@@ -433,5 +442,4 @@ def section_items(lines: list[str]) -> list[str]:
             continue
         items.append(value.strip("`"))
     return items
-
 

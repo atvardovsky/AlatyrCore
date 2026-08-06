@@ -70,6 +70,9 @@ maintain them:
 - `large-task-orchestration`: task-scale routing, operation packets,
   workstreams, resumable checkpoints, and final convergence evidence for
   repositories that need large or multi-session changes.
+- `change-packages`: coherent material-change evidence with semantic approval
+  scope, companion-surface decisions, implementation corrections, compact
+  architecture discussion, and before-to-after repository provenance.
 - `team-collaboration`: target-owned actor and priority model, shared work
   registry, advisory claims, changed-fact overlap review, checkpoints,
   handoffs, decisions, team review, and revision-bound merge readiness for

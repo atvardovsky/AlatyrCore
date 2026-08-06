@@ -43,6 +43,9 @@ The framework commits to giving an assistant a defined process for:
   implementation, validation, diagrams, and final evidence
 - coordinating large or resumable changes through bounded workstreams,
   context receipts, checkpoints, and final convergence evidence
+- binding activated material changes into optional change packages with
+  semantic scope, companion decisions, implementation corrections, and
+  repository provenance
 - coordinating enabled team work through target-owned actors and authority,
   changed-fact-first overlap checks, bounded handoffs, and revision-bound
   review evidence
@@ -112,6 +115,9 @@ Machine checks can verify only deterministic repository facts, such as:
 - explicitly selected machine-readable approvals can be checked so the
   complete Git changed-path set is allowed, not excluded, and bound to the
   selected diff base
+- explicitly selected change packages can be checked for record shape,
+  resolvable revisions, plan hashes, declared semantic and path scope,
+  companion decisions, correction impact, and evidence-quality prerequisites
 
 Machine checks do not prove the assistant understood the target project or
 that project facts are correct. Prepared prompts and static bridge checks also
@@ -122,6 +128,10 @@ Machine-readable validator output can make adapter evidence cheaper to reuse in
 CI, assistant rechecks, or final reports, but it remains structural evidence.
 It does not decide source-of-truth correctness or replace logical integrity
 review.
+
+`git-range` and `pull-request` package evidence can support a strong historical
+claim about a complete reviewable change set. `selected-file-snapshot` is
+bounded evidence only, and `unverified` supports no completeness claim.
 
 Classify evidence before making a claim:
 
@@ -200,6 +210,8 @@ defines:
   recheck evidence when durable operation records are expected
 - operation packet, storage policy, workstream boundaries, and checkpoint
   evidence when large or resumable operations are expected
+- change-package record, retention policy, semantic scope, companion decisions,
+  and provenance policy when coherent material-change evidence is expected
 - target actors, authority, priorities, task source, synchronization, storage,
   privacy, conflict, and review rules when team collaboration is enabled
 - operation catalog, single entry, automatic routing, read-only health,
@@ -236,6 +248,8 @@ The framework does not guarantee:
   facts support that claim
 - that repository task records represent current external tracker state, or
   that task assignment, review, or a claim grants protected-change approval
+- that a package validator can infer missing domain invariants, undeclared
+  semantic effects, or accepted architecture from record structure
 
 ## Failure Rule
 

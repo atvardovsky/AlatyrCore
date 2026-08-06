@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "record_kind": "alatyr-approval-record",
   "evidence_classification": "historical-record",
   "approval_id": "{APPROVAL_ID}",
@@ -20,6 +20,21 @@
   "scope": {
     "allowed_protected_changes": [
       "{ALLOWED_PROTECTED_CHANGE}"
+    ],
+    "allowed_changed_fact_ids": [
+      "{ALLOWED_CHANGED_FACT_ID}"
+    ],
+    "allowed_architecture_areas": [
+      "{ALLOWED_ARCHITECTURE_AREA_OR_NONE}"
+    ],
+    "allowed_behavior_categories": [
+      "{ALLOWED_BEHAVIOR_CATEGORY}"
+    ],
+    "excluded_semantic_effects": [
+      "{EXCLUDED_SEMANTIC_EFFECT_OR_NONE}"
+    ],
+    "permitted_external_effects": [
+      "{PERMITTED_EXTERNAL_EFFECT_OR_NONE}"
     ],
     "allowed_files_or_surfaces": [
       "{TARGET_RELATIVE_FILE_OR_GLOB}"
@@ -44,6 +59,7 @@
     "used_by": "{TASK_OPERATION_OR_CHANGE_REFERENCE}",
     "patch_changed_after_approval": "{YES_NO_AND_REASON}",
     "implementation_within_scope": "{YES_NO_AND_REASON}",
+    "declared_semantic_scope_within_approval": "{YES_NO_AND_REASON}",
     "validation": "{VALIDATION_RUN_OR_SKIPPED_WITH_REASON}",
     "result_evidence": "{RESULT_OR_EVIDENCE_REFERENCE}",
     "residual_risk": "{RESIDUAL_RISK}"

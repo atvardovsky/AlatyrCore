@@ -46,6 +46,9 @@ Operation help:
 - Risky or cross-boundary changes show a pre-change preview before edits.
 - Use `.ai/assistant/help.md`, `.ai/assistant/help-reference.md`, and `.ai/assistant/templates/operation-request.md` for structured requests.
 - Use `large-task` only for cross-boundary or resumable work, and resume an existing packet when one is named.
+- Recheck change-package records, semantic approval fields, provenance grades,
+  and validator support when the optional module or schema changed. Preserve
+  historical target records.
 - When team collaboration is enabled, recheck the operating model, registry
   schema, active task IDs, claims, handoffs, decisions, external references,
   stale overlaps, and revision-bound reviews before changing active records.

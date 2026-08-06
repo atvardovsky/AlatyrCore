@@ -118,6 +118,9 @@ Those belong to a project contour or repository adapter.
   changed facts, source-of-truth decisions, repair sets, and evidence.
 - `.ai/framework/blueprint-driven-change.md`: portable product-change workflow
   from intent through source-of-truth, implementation, sync, and evidence.
+- `.ai/framework/change-packages.md`: optional coherent material-change
+  evidence with semantic scope, companion decisions, corrections, and
+  repository provenance.
 - `.ai/framework/architecture-knowledge.md`: portable project architecture
   catalog, pattern discussion, alternative comparison, review, and
   documentation-maintenance contract.

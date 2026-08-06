@@ -99,6 +99,13 @@ packet without adding those files to every normal task profile. While a packet
 is active, load only the active workstream's required context, fact owners, and
 dependencies. The packet remains coordination evidence, not a source of truth.
 
+A change-package overlay should be equally lazy. Activate it only for a
+coherent material outcome, semantic multi-surface approval, audit, or
+publishable provenance need. Bootstrap and ordinary local profiles should not
+load package templates. During execution, load the compact package index and
+active workstream references first; expand to plan, discussion, companion,
+correction, or validation evidence only when needed.
+
 A team-active route should point to a lazy target overlay descriptor outside
 bootstrap. That descriptor selects the optional team contract, target
 operating model, compact work registry or selected task, and relevant team

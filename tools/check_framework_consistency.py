@@ -481,6 +481,7 @@ def main() -> int:
         "Module: `multi-assistant-bridges`",
         "Module: `installed-operations`",
         "Module: `durable-approvals`",
+        "Module: `change-packages`",
         "Module: `migration-diff`",
         "Module: `effectiveness-metrics`",
         "Module: `scaffolding`",
@@ -521,6 +522,7 @@ def main() -> int:
         "maturity:",
         "bridges:",
         "approvals:",
+        "change_packages:",
         "policies:",
         "known_gaps:",
         "local_deviations:",
@@ -695,6 +697,7 @@ def main() -> int:
         "ALATYR-SAFETY-002",
         "ALATYR-INTEGRITY-001",
         "ALATYR-CHANGE-001",
+        "ALATYR-PACKAGE-001",
         "ALATYR-ADAPTER-001",
         "ALATYR-MODULE-001",
         "ALATYR-OPERATION-001",
@@ -719,6 +722,7 @@ def main() -> int:
         "Category: `SAFETY`",
         "Category: `INTEGRITY`",
         "Category: `CHANGE`",
+        "Category: `PACKAGE`",
         "Category: `ADAPTER`",
         "Category: `MODULE`",
         "Category: `OPERATION`",
@@ -965,6 +969,7 @@ def main() -> int:
             "not portable framework requirements",
             "check_all.py",
             "check_approval_template.py",
+            "check_change_packages.py",
             "check_bridge_capability_matrix.py",
             "check_discussion_diagrams.py",
             "check_framework_metadata.py",
@@ -1071,6 +1076,16 @@ def main() -> int:
     ]:
         if "check_approval_template.py" not in read_text(relpath):
             failures.append(f"{relpath} missing check_approval_template.py")
+
+    for relpath in [
+        "AGENTS.md",
+        "README.md",
+        "tools/README.md",
+        "docs/framework-maintenance.md",
+        "docs/repository-layout.md",
+    ]:
+        if "check_change_packages.py" not in read_text(relpath):
+            failures.append(f"{relpath} missing check_change_packages.py")
 
     bridge_capability_tool = ROOT / "tools" / "check_bridge_capability_matrix.py"
     if not bridge_capability_tool.is_file():

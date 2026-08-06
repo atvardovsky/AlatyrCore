@@ -29,6 +29,7 @@ Entry points:
 - `.ai/assistant/bridge-capability-matrix.md`
 - `.ai/assistant/assistant-capabilities.json`
 - `.ai/assistant/ai-infrastructure-router.json` when AI infrastructure is enabled
+- `.ai/assistant/change-packages/index.json` when change packages are enabled
 
 Future assistant bootstrap:
 - Do not rely on this chat message alone.
@@ -57,6 +58,9 @@ Available next actions:
   lineage, security/privacy policy, and a portable ASCII view. Accepted/derived
   views require project-owner and source-revision evidence.
 - `large-task`: coordinate cross-boundary or resumable work with bounded workstreams, checkpoints, and final convergence.
+- Change packages activate automatically for coherent material outcomes,
+  semantic multi-surface approval, audit, or publishable provenance when the
+  optional module is enabled; ordinary local tasks do not create one.
 - `team-status` and related team operations: coordinate target-owned actors, tasks, changed-fact conflicts, handoffs, decisions, reviews, and revision-bound merge readiness when the optional module is enabled.
 - `ai-infrastructure-inventory`: check existing AI instructions, prompts, skills, wrappers, bridges, rules, MCP/tool configs, gates, and checkers. Alias: `alatyr-ai-inventory`.
 - `ai-infrastructure-recommendation`: suggest new items or improvements to existing items from bounded project evidence in read-only mode. Aliases: `alatyr-suggest-ai <scope>`, `alatyr-improve-ai <item-id>`.

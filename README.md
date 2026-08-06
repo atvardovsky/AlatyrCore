@@ -178,7 +178,7 @@ tasks from loading the complete framework or project corpus.
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.4`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.5`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance fixtures,
 optional scaffolding, and an optional installed-adapter structural validator.
@@ -334,6 +334,7 @@ Additional source-repository helpers include:
 - `python3 tools/check_all.py`
 - `python3 tools/check_framework_metadata.py`
 - `python3 tools/check_approval_template.py`
+- `python3 tools/check_change_packages.py`
 - `python3 tools/check_ai_infrastructure_inventory.py`
 - `python3 tools/check_ai_infrastructure_recommendations.py`
 - `python3 tools/check_ai_infrastructure_router.py`
@@ -418,6 +419,9 @@ Additional source-repository helpers include:
   contours, and human profile rationale out of routine startup
 - optional large-task orchestration that loads only the active workstream's
   context and preserves resumable checkpoints plus final convergence evidence
+- optional change packages that bind coherent material outcomes to semantic
+  approval scope, companion decisions, implementation corrections,
+  validation, and reproducible repository provenance
 - optional team collaboration with target-owned actors, authority, priority,
   review, and coordination policy plus lazy task, claim, conflict, checkpoint,
   handoff, decision, and revision-bound merge-readiness evidence
@@ -641,6 +645,9 @@ A mature target installation usually has:
   are imported or materially changed
 - `.ai/assistant/templates/large-task-operation-packet.md` when large or
   resumable operations are enabled
+- `.ai/assistant/change-packages/index.json`, change-package flow, machine
+  record, and redacted report templates when coherent material-change evidence
+  is enabled
 - `.ai/assistant/templates/migration-note.md`
 - `.ai/assistant/templates/effectiveness-report.md`
 - `.ai/assistant/templates/post-install-message.md`

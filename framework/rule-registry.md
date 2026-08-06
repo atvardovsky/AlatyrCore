@@ -33,6 +33,7 @@ Categories should be short uppercase labels such as:
 - `SAFETY`
 - `INTEGRITY`
 - `CHANGE`
+- `PACKAGE`
 - `ARCHITECTURE`
 - `DIAGRAM`
 - `ADAPTER`
@@ -61,7 +62,7 @@ Commitment: use a compact budgeted bootstrap, select the smallest task profile,
 project-area overlays, and optional task-scale overlay, and record context
 expansion only when boundaries or conflicts require it; prefer changed-fact
 relationship routing when an adapted consistency map exists and item routing
-for AI infrastructure work.
+for AI infrastructure work; keep optional change-package records lazy.
 Applies to: all installed adapter tasks.
 
 Rule ID: `ALATYR-SOURCE-001`
@@ -85,7 +86,9 @@ Canonical source: `.ai/framework/approval-records.md`
 Commitment: require explicit approval for protected changes and create durable
 approval records when scope, files, or plan versions need evidence. Strict
 scope checks use explicitly selected machine-readable records and require the
-complete operation diff to remain inside approved path scope.
+complete operation diff to remain inside approved path scope. Activated change
+packages also reconcile declared fact, architecture-area, behavior-category,
+external-effect, and path scope.
 Applies to: protected changes and installed operations.
 
 Rule ID: `ALATYR-SAFETY-001`
@@ -107,7 +110,8 @@ Canonical source: `.ai/framework/logical-integrity.md`
 Commitment: name changed semantic/logical facts, affected surfaces, source of
 truth, re-derived invariants, reconciled review-item clusters, repair set,
 validation, and residual risk before claiming consistency; use a bounded map
-or manual invariant closure and reconcile combined multi-workstream repairs.
+or manual invariant closure, reconcile combined multi-workstream repairs, and
+reconcile active package scope, companion decisions, and corrections.
 Applies to: semantic fact changes and drift reviews.
 
 Rule ID: `ALATYR-CHANGE-001`
@@ -116,8 +120,18 @@ Commitment: carry accepted product changes through source-of-truth update,
 invariant re-derivation, flow update, implementation plan, code/test change,
 docs/diagram sync, and final evidence, reconciling related review items and
 using bounded workstreams plus final convergence when the change is large or
-resumable.
+resumable; activate a change package only when its separate gate passes.
 Applies to: business, architecture, data, runtime, and public-contract changes.
+
+Rule ID: `ALATYR-PACKAGE-001`
+Canonical source: `.ai/framework/change-packages.md`
+Commitment: activate a change package only for a coherent material outcome,
+semantic multi-surface approval, audit, or publishable provenance need; bind
+changed facts, semantic and path scope, plan, approvals, companion decisions,
+implementation corrections, validation, and before-to-after evidence without
+replacing canonical project owners or burdening ordinary local tasks.
+Applies to: activated business, architecture, data, security, migration, and
+public-contract packages.
 
 Rule ID: `ALATYR-ARCHITECTURE-001`
 Canonical source: `.ai/framework/architecture-knowledge.md`
@@ -152,7 +166,8 @@ Applies to: installation, update, and adapter maintenance.
 Rule ID: `ALATYR-MODULE-001`
 Canonical source: `.ai/framework/module-profile.md`
 Commitment: establish the required core profile first, then enable optional
-modules only when the target needs and can maintain them.
+modules, including change packages, only when the target needs and can maintain
+them.
 Applies to: installation, update, adapter maturity, and framework upgrades.
 
 Rule ID: `ALATYR-OPERATION-001`
@@ -185,13 +200,15 @@ Applies to: supported assistant surfaces.
 Rule ID: `ALATYR-LIFECYCLE-001`
 Canonical source: `.ai/framework/lifecycle.md`
 Commitment: record framework version, adapter schema version, template version,
-baseline, local deviations, migration notes, and upgrade evidence.
+baseline, local deviations, migration notes, upgrade evidence, and preservation
+of enabled target package records.
 Applies to: installation and framework upgrades.
 
 Rule ID: `ALATYR-EVIDENCE-001`
 Canonical source: `.ai/framework/guarantees.md`
 Commitment: distinguish declarative process commitments, machine-checkable
-expectations, target-dependent guarantees, and non-guarantees in final claims.
+expectations, target-dependent guarantees, and non-guarantees in final claims,
+including strong versus bounded package provenance.
 Applies to: final evidence and framework positioning.
 
 ## Use In Target Adapters
