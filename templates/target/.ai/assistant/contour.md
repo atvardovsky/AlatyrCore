@@ -47,6 +47,10 @@ Replace placeholders with target facts before accepting installation.
   generator execution, and derived-output evidence when the optional module is
   enabled; profile policy and documentation-area facts remain in the project
   contour
+- project-vocabulary intent routing, compact lookup, proposal, terminology
+  checks, adapted skill, and synchronization evidence when the optional module
+  is enabled; term meanings, states, owners, and links remain in the project
+  contour
 - final evidence requirements
 - target adapter maturity and lifecycle notes
 - required core profile, enabled optional modules, deferred modules, and

@@ -231,6 +231,10 @@ Collect target-specific facts before writing project docs:
   canonical fact-owner boundaries, generators, output/publication policy,
   validation, lazy intent route, and adapted skill when the optional module is
   enabled
+- project-vocabulary owner, term decision authority, scoped meanings, aliases,
+  acronyms, term states, normalization policy, canonical sources, data-
+  dictionary links, terminology validation, lazy route, and adapted skill when
+  the optional module is enabled
 
 ## 6. Assistant Compatibility
 

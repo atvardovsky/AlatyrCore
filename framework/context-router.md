@@ -83,6 +83,12 @@ code-documentation catalog and profile selector, then load only the selected
 source-set profile, affected symbols, canonical owners, generator
 configuration, and validation. Do not load every profile or generated output.
 
+Project vocabulary lookup, proposal, review, and terminology checks should use
+a separate optional intent overlay. Start from the compact term/alias/acronym
+catalog, then load only selected term records, applicable data-dictionary
+links, and named canonical sources. Do not load the full vocabulary for one
+term or an unrelated task.
+
 When an overlay needs a detailed reference only for a subset of requests, put
 the path and its load condition in `conditional_context` instead of the default
 `required_context`. Conditional paths must remain machine-visible to routing

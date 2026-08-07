@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "catalog_kind": "target-project-vocabulary-catalog",
+  "project": "{PROJECT_NAME}",
+  "module_state": "{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}",
+  "human_index": ".ai/project/vocabulary/README.md",
+  "terms": ".ai/project/vocabulary/terms.json",
+  "data_dictionary_links": ".ai/project/vocabulary/data-dictionary-links.json",
+  "vocabulary_owner": "{TARGET_VOCABULARY_OWNER}",
+  "term_decision_authority": "{TARGET_TERM_DECISION_AUTHORITY}",
+  "normalization_policy": "{TARGET_TERM_NORMALIZATION_POLICY}",
+  "last_reviewed": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}",
+  "evidence_revision": "{TARGET_REVISION_OR_UNKNOWN_WITH_REASON}",
+  "entries": [
+    {
+      "term_id": "{TERM_ID}",
+      "canonical_term": "{CANONICAL_TERM}",
+      "normalized_term": "{NORMALIZED_TERM}",
+      "aliases": ["{TERM_ALIAS_OR_NONE}"],
+      "acronyms": ["{TERM_ACRONYM_OR_NONE}"],
+      "domains": ["{TERM_DOMAIN}"],
+      "state": "{OBSERVED_PROPOSED_ACCEPTED_DEPRECATED_CONTRADICTED_OR_UNKNOWN}",
+      "record": ".ai/project/vocabulary/terms.json#{TERM_ID}",
+      "replacement_term_id": "{REPLACEMENT_TERM_ID_OR_NONE}",
+      "last_verified_revision": "{TARGET_REVISION_OR_UNKNOWN_WITH_REASON}"
+    }
+  ],
+  "known_gaps": ["{VOCABULARY_GAP_OR_NONE}"]
+}

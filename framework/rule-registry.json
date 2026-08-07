@@ -62,6 +62,12 @@
       "derived_surfaces": ["target code-documentation catalog and profiles", "documentation intent routing", "documentation synchronization flow", "project-adapted comment skill", "profile review template", "generated-output policy", "installation and update planning", "target gates", "structural validation"]
     },
     {
+      "category": "VOCABULARY",
+      "owner": "framework/project-vocabulary.md",
+      "rule_ids": ["ALATYR-VOCABULARY-001"],
+      "derived_surfaces": ["target vocabulary catalog", "term records", "data-dictionary link records", "vocabulary intent routing", "project-vocabulary operation flow", "project-adapted vocabulary skill", "term review template", "installation and update planning", "target gates", "structural validation"]
+    },
+    {
       "category": "DIAGRAM",
       "owner": "framework/diagram-guidance.md",
       "rule_ids": ["ALATYR-DIAGRAM-001"],
@@ -115,7 +121,7 @@
       "id": "ALATYR-CONTEXT-001",
       "category": "CONTEXT",
       "canonical_source": "framework/context-profiles.md",
-      "summary": "Use a compact budgeted bootstrap, select the smallest task profile, project-area overlays, and optional task-scale overlay through an aligned context router, record expansion only when boundaries or conflicts require it, prefer changed-fact relationship routing when an adapted consistency map exists, use item routing for AI infrastructure work, and keep optional change-package and code-documentation detail lazy.",
+      "summary": "Use a compact budgeted bootstrap, select the smallest task profile, project-area overlays, and optional task-scale overlay through an aligned context router, record expansion only when boundaries or conflicts require it, prefer changed-fact relationship routing when an adapted consistency map exists, use item routing for AI infrastructure work, and keep optional change-package, code-documentation, and project-vocabulary detail lazy.",
       "applies_to": ["all installed adapter tasks"],
       "enforcement": "required"
     },
@@ -123,7 +129,7 @@
       "id": "ALATYR-SOURCE-001",
       "category": "SOURCE",
       "canonical_source": "framework/source-of-truth-registry.md",
-      "summary": "Choose fact owners from the target source-of-truth registry, record invariant and dependency constraints, use stable fact IDs for optional relationship routing, preserve bounded code-comment ownership and derived generated-output boundaries, and otherwise use contour ownership plus a manual invariant closure while reporting missing coverage.",
+      "summary": "Choose fact owners from the target source-of-truth registry, record invariant and dependency constraints, use stable fact IDs for optional relationship routing, preserve bounded code-comment ownership, derived generated-output boundaries, and vocabulary links to canonical fact owners, and otherwise use contour ownership plus a manual invariant closure while reporting missing coverage.",
       "applies_to": ["logical integrity", "documentation sync", "blueprint-driven changes"],
       "enforcement": "required"
     },
@@ -163,7 +169,7 @@
       "id": "ALATYR-INTEGRITY-001",
       "category": "INTEGRITY",
       "canonical_source": "framework/logical-integrity.md",
-      "summary": "Name changed facts, re-derive testable invariants, reconcile related review items, identify owners and repair sets, validate, and report residual risk, using mapped or manual impact closure, global multi-workstream convergence, active package scope, and selected code-documentation profile, generator, and output-policy reconciliation as applicable.",
+      "summary": "Name changed facts, re-derive testable invariants, reconcile related review items, identify owners and repair sets, validate, and report residual risk, using mapped or manual impact closure, global multi-workstream convergence, active package scope, selected code-documentation profile and generator reconciliation, and changed project term IDs, aliases, meanings, and data links as applicable.",
       "applies_to": ["semantic fact changes", "drift reviews"],
       "enforcement": "required"
     },
@@ -187,7 +193,7 @@
       "id": "ALATYR-ARCHITECTURE-001",
       "category": "ARCHITECTURE",
       "canonical_source": "framework/architecture-knowledge.md",
-      "summary": "Keep a project-owned architecture catalog that distinguishes observed, proposed, accepted, preferred, restricted, deprecated, contradicted, and unknown items; discuss patterns from target evidence and common drivers; prefer existing-pattern reuse before proliferation; and route accepted decisions through normal ownership, approval, integrity, blueprint, implementation, documentation, diagram, and validation surfaces.",
+      "summary": "Keep a project-owned architecture catalog that distinguishes observed, proposed, accepted, preferred, restricted, deprecated, contradicted, and unknown items; discuss patterns from target evidence and common drivers; prefer existing-pattern reuse before proliferation; and route accepted decisions through normal ownership, approval, integrity, blueprint, implementation, documentation, diagram, vocabulary, and validation surfaces.",
       "applies_to": ["architecture inventory", "architecture explanation", "pattern discussion", "alternative comparison", "architecture review", "architecture documentation maintenance"],
       "enforcement": "required when module enabled"
     },
@@ -195,8 +201,16 @@
       "id": "ALATYR-CODEDOC-001",
       "category": "CODEDOC",
       "canonical_source": "framework/code-documentation.md",
-      "summary": "When the optional code-documentation module is enabled, select evidence-backed documentation profiles by bounded source set, permit different frontend, backend, shared, and infrastructure conventions, generate reference documentation through target-recorded language or ecosystem tooling, keep generated output derived, and preserve canonical business, architecture, security, API, data, and operational owners.",
+      "summary": "When the optional code-documentation module is enabled, select evidence-backed documentation profiles by bounded source set, permit different frontend, backend, shared, and infrastructure conventions, generate reference documentation through target-recorded language or ecosystem tooling, keep generated output derived, use accepted scoped project terminology when the vocabulary module is enabled, and preserve canonical business, architecture, security, API, data, and operational owners.",
       "applies_to": ["code-comment style proposals", "structured comment maintenance", "generated code reference", "documentation synchronization"],
+      "enforcement": "required when module enabled"
+    },
+    {
+      "id": "ALATYR-VOCABULARY-001",
+      "category": "VOCABULARY",
+      "canonical_source": "framework/project-vocabulary.md",
+      "summary": "When the optional project-vocabulary module is enabled, keep a compact project-owned catalog and scoped term records that distinguish observed, proposed, accepted, deprecated, contradicted, and unknown meanings; resolve aliases and acronyms lazily; link rather than replace canonical data and project fact owners; and require target authority before normalization.",
+      "applies_to": ["project term lookup", "acronym and alias resolution", "vocabulary proposal and review", "terminology checks", "accepted terminology changes"],
       "enforcement": "required when module enabled"
     },
     {
@@ -211,7 +225,7 @@
       "id": "ALATYR-ADAPTER-001",
       "category": "ADAPTER",
       "canonical_source": "framework/project-adapter-contract.md",
-      "summary": "Keep framework core, project facts, and repository adapter facts separated and rewritten from target evidence, including target development-pattern evidence, routed AI infrastructure items, project-evidenced recommendation records, adaptation records, and optional project-owned code-documentation profiles and generators.",
+      "summary": "Keep framework core, project facts, and repository adapter facts separated and rewritten from target evidence, including target development-pattern evidence, routed AI infrastructure items, project-evidenced recommendation records, adaptation records, optional project-owned code-documentation profiles and generators, and optional project vocabulary and data-dictionary links.",
       "applies_to": ["installation", "framework update", "adapter maintenance"],
       "enforcement": "required"
     },
@@ -219,7 +233,7 @@
       "id": "ALATYR-MODULE-001",
       "category": "MODULE",
       "canonical_source": "framework/module-profile.md",
-      "summary": "Establish the required core profile first, then enable optional modules, including change packages and source-set code documentation, only when the target needs and can maintain them.",
+      "summary": "Establish the required core profile first, then enable optional modules, including change packages, source-set code documentation, and project vocabulary, only when the target needs and can maintain them.",
       "applies_to": ["installation", "framework update", "adapter maturity", "framework upgrades"],
       "enforcement": "required"
     },
@@ -227,7 +241,7 @@
       "id": "ALATYR-OPERATION-001",
       "category": "OPERATION",
       "canonical_source": "framework/operation-help.md",
-      "summary": "Expose one conversational Alatyr entry point, route clear requests automatically through a canonical target operation catalog and checked compact exact-alias index, including optional code-documentation profile and generation requests, provide a read-only evidence-based adapter health operation, and show a bounded pre-change preview only when changed-fact risk, approval, or scope uncertainty requires it.",
+      "summary": "Expose one conversational Alatyr entry point, route clear requests automatically through a canonical target operation catalog and checked compact exact-alias index, including optional code-documentation and project-vocabulary requests, provide a read-only evidence-based adapter health operation, and show a bounded pre-change preview only when changed-fact risk, approval, or scope uncertainty requires it.",
       "applies_to": ["installed operation routing", "adapter health", "changes requiring preview"],
       "enforcement": "required"
     },
@@ -243,7 +257,7 @@
       "id": "ALATYR-BRIDGE-001",
       "category": "BRIDGE",
       "canonical_source": "framework/bridge-capability-matrix.md",
-      "summary": "Keep bridge files thin, record assistant loading behavior, permission model, alias routing, limitations, and conformance checks, and route selected AI infrastructure items through the canonical target router across supported assistant surfaces.",
+      "summary": "Keep bridge files thin, record assistant loading behavior, permission model, alias routing, limitations, and conformance checks, and route selected AI infrastructure items and enabled project-vocabulary requests through canonical target routing across supported assistant surfaces.",
       "applies_to": ["supported assistant surfaces"],
       "enforcement": "required"
     },
@@ -251,7 +265,7 @@
       "id": "ALATYR-LIFECYCLE-001",
       "category": "LIFECYCLE",
       "canonical_source": "framework/lifecycle.md",
-      "summary": "Record framework version, adapter schema version, template version, baseline, local deviations, migration notes, upgrade evidence, preservation of enabled target package records, and preservation and recheck of enabled target code-documentation profiles.",
+      "summary": "Record framework version, adapter schema version, template version, baseline, local deviations, migration notes, upgrade evidence, preservation of enabled target package records, preservation and recheck of enabled target code-documentation profiles, and preservation of target vocabulary records and acceptance states.",
       "applies_to": ["installation", "framework upgrades"],
       "enforcement": "required"
     },
@@ -259,7 +273,7 @@
       "id": "ALATYR-EVIDENCE-001",
       "category": "EVIDENCE",
       "canonical_source": "framework/guarantees.md",
-      "summary": "Distinguish declarative process commitments, machine-checkable expectations, target-dependent guarantees, and non-guarantees in final claims, including strong versus bounded change-package provenance and the semantic limits of comments and generated reference output.",
+      "summary": "Distinguish declarative process commitments, machine-checkable expectations, target-dependent guarantees, and non-guarantees in final claims, including strong versus bounded change-package provenance and the semantic limits of comments, generated reference output, and structurally valid vocabulary records.",
       "applies_to": ["final evidence", "framework positioning"],
       "enforcement": "required"
     }

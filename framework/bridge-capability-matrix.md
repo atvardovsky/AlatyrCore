@@ -42,6 +42,9 @@ For each supported assistant, record:
 - whether enabled code-documentation aliases route through the canonical
   operation index, documentation intent, selected target profile, and shared
   flow regardless of assistant-native skill support
+- whether enabled project-vocabulary aliases route through the canonical
+  operation index, vocabulary intent, compact catalog, selected term records,
+  and shared flow regardless of assistant-native skill support
 - the selected path in the compact generated assistant-capability index
 - whether diagram discussion routes through the canonical operation index
 - supported native inline diagram syntaxes and artifact presentation mode;
@@ -107,6 +110,9 @@ Each bridge should:
 - route enabled code-documentation requests through the canonical operation
   index and intent descriptor; assistant-native wrappers point to the shared
   target profile and do not duplicate comment policy
+- route enabled project-vocabulary requests through the canonical operation
+  index and intent descriptor; assistant-native wrappers point to the shared
+  target records and do not duplicate term definitions
 - route enabled `Alatyr diagram` and equivalent requests through the compact
   operation index, diagram discussion flow, presentation template, and only
   the selected assistant-capability record

@@ -25,6 +25,8 @@ An installed adapter should support these operation categories:
 - target source-of-truth drift review
 - optional architecture inventory, explanation, pattern discussion,
   alternative comparison, review, and supporting-documentation maintenance
+- optional project term lookup, acronym and alias resolution, vocabulary
+  proposal and review, and terminology consistency checks
 - blueprint-driven product change
 - large-task orchestration for cross-boundary, multi-workstream, or resumable
   work
@@ -73,6 +75,8 @@ A post-install request should state:
   presentation mode when diagram discussion applies
 - architecture question, scope, non-goals, decision intent, and selected
   catalog items when architecture assistance applies
+- requested term, acronym, alias, domain, or bounded terminology-check scope
+  when project vocabulary applies
 - expected final evidence
 - output contract when the target adapter requires a durable installation,
   framework-update, or adapter-recheck evidence shape
@@ -84,9 +88,10 @@ operation request:
 
 - `read-only`: inspect target files and report only; no file changes.
 - `docs-only`: change documentation, blueprint-equivalent docs, and diagram
-  sources, including proposed code-documentation profile records, only; do not
+  sources, including proposed code-documentation profiles and vocabulary term
+  records, only; do not
   change source comments, code, tests, runtime config, or assistant
-  infrastructure, and do not mark a profile accepted.
+  infrastructure, and do not mark a profile or semantic term accepted.
 - `adapter-only`: change adapter-owned `.ai/*` surfaces and bridge files,
   including assistant templates, flows, gates, policies, checker rules, and
   normalized project-process or adapter-effectiveness evidence; do not change

@@ -163,6 +163,27 @@ Approval needs: `{CODE_DOCUMENTATION_APPROVAL_NEEDS}`
 Residual risk: `{CODE_DOCUMENTATION_RESIDUAL_RISK}`
 Next action: `{CODE_DOCUMENTATION_NEXT_ACTION}`
 
+Module: `project-vocabulary`
+State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+Owner or file: `.ai/project/vocabulary/README.md`
+Required files:
+
+- `.ai/framework/project-vocabulary.md`
+- `.ai/project/vocabulary/README.md`
+- `.ai/project/vocabulary/catalog.json`
+- `.ai/project/vocabulary/terms.json`
+- `.ai/project/vocabulary/data-dictionary-links.json`
+- `.ai/assistant/context/intents/vocabulary-request.json`
+- `.ai/assistant/flows/project-vocabulary.flow.md`
+- `.ai/assistant/templates/vocabulary-term-review.md`
+- `.ai/assistant/skills/project-vocabulary/SKILL.md`
+
+Reason: `{REASON}`
+Validation or review: `{VALIDATION_OR_REVIEW}`
+Approval needs: `{PROJECT_VOCABULARY_APPROVAL_NEEDS}`
+Residual risk: `{PROJECT_VOCABULARY_RESIDUAL_RISK}`
+Next action: `{PROJECT_VOCABULARY_NEXT_ACTION}`
+
 Module: `diagrams`
 State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `{TARGET_DIAGRAM_MODULE_OWNER_OR_FILE}`

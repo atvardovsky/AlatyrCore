@@ -35,6 +35,8 @@ Categories should be short uppercase labels such as:
 - `CHANGE`
 - `PACKAGE`
 - `ARCHITECTURE`
+- `CODEDOC`
+- `VOCABULARY`
 - `DIAGRAM`
 - `ADAPTER`
 - `MODULE`
@@ -62,18 +64,18 @@ Commitment: use a compact budgeted bootstrap, select the smallest task profile,
 project-area overlays, and optional task-scale overlay, and record context
 expansion only when boundaries or conflicts require it; prefer changed-fact
 relationship routing when an adapted consistency map exists and item routing
-for AI infrastructure work; keep optional change-package and code-
-documentation detail lazy.
+for AI infrastructure work; keep optional change-package, code-documentation,
+and project-vocabulary detail lazy.
 Applies to: all installed adapter tasks.
 
 Rule ID: `ALATYR-SOURCE-001`
 Canonical source: `.ai/framework/source-of-truth-registry.md`
 Commitment: choose fact owners from the target source-of-truth registry when
 it exists, record invariant and dependency constraints, use stable fact IDs
-for optional relationship routing, preserve bounded code-comment ownership and
-derived generated-output boundaries, and otherwise use contour ownership plus
-a manual invariant closure while reporting missing owners or relationship
-coverage.
+for optional relationship routing, preserve bounded code-comment ownership,
+derived generated-output boundaries, and vocabulary links to canonical fact
+owners, and otherwise use contour ownership plus a manual invariant closure
+while reporting missing owners or relationship coverage.
 Applies to: logical integrity, documentation sync, blueprint-driven changes.
 
 Rule ID: `ALATYR-RISK-001`
@@ -113,8 +115,9 @@ Commitment: name changed semantic/logical facts, affected surfaces, source of
 truth, re-derived invariants, reconciled review-item clusters, repair set,
 validation, and residual risk before claiming consistency; use a bounded map
 or manual invariant closure, reconcile combined multi-workstream repairs, and
-reconcile active package scope, companion decisions, corrections, and selected
-code-documentation profiles, generators, and output policies.
+reconcile active package scope, companion decisions, corrections, selected
+code-documentation profiles, generators, output policies, and changed project
+term IDs, aliases, meanings, and data links.
 Applies to: semantic fact changes and drift reviews.
 
 Rule ID: `ALATYR-CHANGE-001`
@@ -143,7 +146,7 @@ observed, proposed, accepted, preferred, restricted, deprecated,
 contradicted, and unknown items; discuss patterns from target evidence and
 common drivers; prefer existing-pattern reuse before proliferation; and route
 accepted decisions through normal ownership, approval, integrity, blueprint,
-implementation, documentation, diagram, and validation surfaces.
+implementation, documentation, diagram, vocabulary, and validation surfaces.
 Applies to: architecture inventory, explanation, pattern discussion,
 alternative comparison, architecture review, and documentation maintenance.
 
@@ -153,10 +156,21 @@ Commitment: when the optional code-documentation module is enabled, select
 evidence-backed documentation profiles by bounded source set, permit different
 frontend, backend, shared, and infrastructure conventions, generate reference
 documentation through target-recorded language or ecosystem tooling, keep
-generated output derived, and preserve canonical business, architecture,
+generated output derived, use accepted scoped project terminology when the
+vocabulary module is enabled, and preserve canonical business, architecture,
 security, API, data, and operational owners.
 Applies to: code-comment style proposals, structured comment maintenance,
 generated code reference, and documentation synchronization.
+
+Rule ID: `ALATYR-VOCABULARY-001`
+Canonical source: `.ai/framework/project-vocabulary.md`
+Commitment: when the optional project-vocabulary module is enabled, keep a
+compact project-owned catalog and scoped term records that distinguish
+observed, proposed, accepted, deprecated, contradicted, and unknown meanings;
+resolve aliases and acronyms lazily; link rather than replace canonical data
+and project fact owners; and require target authority before normalization.
+Applies to: project term lookup, acronym and alias resolution, vocabulary
+proposal and review, terminology checks, and accepted terminology changes.
 
 Rule ID: `ALATYR-DIAGRAM-001`
 Canonical source: `.ai/framework/diagram-guidance.md`
@@ -174,22 +188,23 @@ Canonical source: `.ai/framework/project-adapter-contract.md`
 Commitment: keep framework core, project facts, and repository adapter facts
 separated and rewritten from target evidence, including routed AI
 infrastructure items, target development-pattern evidence, project-evidenced
-recommendation records, adaptation records, and optional project-owned code-
-documentation profiles and generators.
+recommendation records, adaptation records, optional project-owned code-
+documentation profiles and generators, and optional project vocabulary and
+data-dictionary links.
 Applies to: installation, update, and adapter maintenance.
 
 Rule ID: `ALATYR-MODULE-001`
 Canonical source: `.ai/framework/module-profile.md`
 Commitment: establish the required core profile first, then enable optional
-modules, including change packages and source-set code documentation, only when
-the target needs and can maintain them.
+modules, including change packages, source-set code documentation, and project
+vocabulary, only when the target needs and can maintain them.
 Applies to: installation, update, adapter maturity, and framework upgrades.
 
 Rule ID: `ALATYR-OPERATION-001`
 Canonical source: `.ai/framework/operation-help.md`
 Commitment: expose one conversational Alatyr entry point, route clear requests
 automatically through a canonical target operation catalog and checked compact
-exact-alias index, including optional code-documentation profile and generation
+exact-alias index, including optional code-documentation and project-vocabulary
 requests, provide a read-only evidence-based adapter health operation, and show
 a bounded pre-change preview only when changed-fact risk, approval, or scope
 uncertainty requires it.
@@ -209,16 +224,16 @@ Rule ID: `ALATYR-BRIDGE-001`
 Canonical source: `.ai/framework/bridge-capability-matrix.md`
 Commitment: keep bridge files thin and record assistant loading behavior,
 permission model, alias routing, limitations, and conformance checks.
-Selected AI infrastructure items must route through the canonical target
-router across supported assistant surfaces.
+Selected AI infrastructure items and enabled project-vocabulary requests must
+route through canonical target routing across supported assistant surfaces.
 Applies to: supported assistant surfaces.
 
 Rule ID: `ALATYR-LIFECYCLE-001`
 Canonical source: `.ai/framework/lifecycle.md`
 Commitment: record framework version, adapter schema version, template version,
 baseline, local deviations, migration notes, upgrade evidence, and preservation
-of enabled target package records and enabled target code-documentation
-profiles.
+of enabled target package records, code-documentation profiles, and vocabulary
+records.
 Applies to: installation and framework upgrades.
 
 Rule ID: `ALATYR-EVIDENCE-001`
@@ -226,7 +241,7 @@ Canonical source: `.ai/framework/guarantees.md`
 Commitment: distinguish declarative process commitments, machine-checkable
 expectations, target-dependent guarantees, and non-guarantees in final claims,
 including strong versus bounded package provenance and the semantic limits of
-comments and generated reference output.
+comments, generated reference output, and structurally valid vocabulary.
 Applies to: final evidence and framework positioning.
 
 ## Use In Target Adapters

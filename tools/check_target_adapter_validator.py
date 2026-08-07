@@ -292,6 +292,20 @@ def main() -> int:
 
         module_profile_path.write_text(
             "# Module Profile\n\n"
+            "Module: `project-vocabulary`\nState: `enabled`\n",
+            encoding="utf-8",
+        )
+        project_vocabulary = validator(target)
+        project_vocabulary.check_project_vocabulary(None)
+        if "VOCABULARY_REQUIRED_FILE_MISSING" not in {
+            finding.code for finding in project_vocabulary.findings
+        }:
+            failures.append(
+                "enabled project vocabulary must report missing contracts"
+            )
+
+        module_profile_path.write_text(
+            "# Module Profile\n\n"
             "Module: `architecture-knowledge`\nState: `enabled`\n",
             encoding="utf-8",
         )

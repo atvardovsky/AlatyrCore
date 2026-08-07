@@ -71,6 +71,9 @@ Every project using this framework must define:
 - code-documentation catalog, multiple source-set profiles, style proposal
   evidence, source-of-truth boundaries, selected generators, output policy,
   validation, and project-adapted skill when the optional module is enabled
+- project-vocabulary catalog, scoped term records, aliases, acronyms, term
+  states, decision authority, data-dictionary links, validation, and adapted
+  lookup skill when the optional module is enabled
 - diagram and generated-file policy when diagrams or generated docs exist,
   including source format, visual format, ownership, render/manual-review
   process, drift checks, ASCII layout and width, discussion presentation modes,

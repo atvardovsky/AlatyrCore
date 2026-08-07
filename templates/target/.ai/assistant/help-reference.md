@@ -237,6 +237,16 @@ documentation goal.
 Aliases: `document code`, `propose comment style`, `generate code docs`,
 `review code documentation`.
 
+Operation: `project-vocabulary`
+Use when: explaining a project term, resolving an alias or acronym, proposing
+or reviewing vocabulary, or checking terminology consistency in a bounded
+scope. Requires the optional `project-vocabulary` module.
+Flow: `.ai/assistant/flows/project-vocabulary.flow.md`
+Minimum input: term, alias, acronym, or bounded terminology scope; domain when
+known.
+Aliases: `Alatyr glossary`, `Alatyr define term`, `propose glossary entry`,
+`check terminology`, `review project vocabulary`.
+
 Operation: `adapter-maturity-review`
 Use when: reporting whether the adapter is incomplete, minimal, usable, or
 mature for a requested task.
@@ -280,6 +290,12 @@ Alias: `Alatyr architecture`, `Alatyr architecture inventory`,
 Route to: `architecture-assistance`. These are chat/request shortcuts, not
 shell commands. Start from the compact project architecture catalog and infer
 the discussion mode from the request.
+
+Alias: `Alatyr glossary`, `Alatyr define term`, `propose glossary entry`,
+`check terminology`, or `review project vocabulary`
+Route to: `project-vocabulary`. These are chat/request shortcuts, not shell
+commands. Start from the compact vocabulary catalog and preserve scoped term
+states, ambiguity, owners, and canonical links.
 
 Alias: `Alatyr diagram`, `show as a diagram`, or `visualize architecture`
 Route to: `diagram-discussion`. These are chat/request shortcuts, not shell

@@ -68,6 +68,9 @@ Before upgrading framework files in a target project:
    source-set selectors, accepted states, canonical-owner boundaries,
    generators, output/publication policies, adapted skill, lazy route, and
    validator support.
+   When `project-vocabulary` is enabled, compare its catalog, term, and data-
+   link schemas, state and acceptance model, normalization policy, canonical-
+   owner boundaries, adapted skill, lazy route, and validator support.
 10. Prepare a target migration note or installation plan from reviewed
     assessment evidence.
 11. Require approval before overwriting existing target AI instructions.
@@ -85,6 +88,9 @@ Before upgrading framework files in a target project:
     Preserve target code-documentation profiles and decisions. Never replace
     accepted frontend, backend, shared, or infrastructure conventions with
     source placeholders or a universal style.
+    Preserve target vocabulary term IDs, definitions, states, owners, aliases,
+    acronyms, links, and decisions. Never replace accepted project language
+    with source placeholders or inferred definitions.
 14. Recheck root assistant entry points and supported bridge files so future
     sessions can find the installation note, operation catalog, health, help,
     and routing flow.
@@ -122,6 +128,9 @@ Framework lifecycle notes should record:
 - code-documentation rule, catalog/profile schemas, source-set selection,
   accepted style decisions, generator/output policy, adapted skill, lazy
   route, and validator migration when that module is enabled
+- project-vocabulary rule, catalog/term/data-link schemas, scoped meanings,
+  acceptance decisions, normalization policy, adapted skill, lazy route, and
+  validator migration when that module is enabled
 
 ## Deprecation
 

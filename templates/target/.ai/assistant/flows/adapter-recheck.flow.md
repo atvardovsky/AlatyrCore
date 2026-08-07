@@ -40,6 +40,9 @@ Replace placeholders with target facts before accepting installation.
   `.ai/project/documentation/profiles.json`,
   `.ai/assistant/context/intents/code-documentation.json`, documentation flow,
   profile-review template, and adapted skill
+- Project vocabulary: `.ai/project/vocabulary/README.md`, catalog, full term
+  records, data-dictionary links, vocabulary intent, flow, term-review
+  template, and adapted skill
 - AI infrastructure inventory:
   `.ai/assistant/flows/ai-infrastructure-inventory.flow.md`
 - AI infrastructure recommendation:
@@ -167,6 +170,9 @@ Report:
 - code-documentation profile ownership, source-set match ambiguity, accepted
   state, canonical fact boundaries, generator/output policy, direct-edit rule,
   adapted skill, validation, and evidence revision
+- project-vocabulary ownership, term decision authority, scoped state and
+  ambiguity, alias/acronym lookup, canonical sources, data links,
+  normalization boundaries, adapted skill, validation, and evidence revision
 - catalog, automatic routing, health, preview, help, AI infrastructure
   inventory/recommendation, bridge, prompt,
   skill, gate, checker, item router, recommendation/adaptation records,

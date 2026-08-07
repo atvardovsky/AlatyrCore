@@ -33,6 +33,7 @@ Read in this repository first:
 - `framework/module-profile.md`
 - `framework/architecture-knowledge.md`
 - `framework/code-documentation.md`
+- `framework/project-vocabulary.md`
 - `framework/rule-ownership.md`
 - `framework/rule-registry.md`
 - `framework/rule-registry.json`
@@ -68,6 +69,7 @@ in the owning framework documents and use these IDs for installation routing:
 - `ALATYR-OPERATION-001`
 - `ALATYR-ARCHITECTURE-001`
 - `ALATYR-CODEDOC-001`
+- `ALATYR-VOCABULARY-001`
 - `ALATYR-DIAGRAM-001`
 - `ALATYR-TEAM-001`
 - `ALATYR-LIFECYCLE-001`
@@ -85,6 +87,9 @@ Read in the target repository:
 - source roots, languages, frameworks, existing structured comments,
   docstring conventions, public symbol boundaries, generators, documentation
   sites, generated-reference outputs, and documentation lint/publication rules
+- existing glossaries, terminology docs, acronym lists, domain language,
+  naming rules, data dictionaries, schemas, APIs, ambiguous terms, deprecated
+  wording, and terminology validation
 - package/build/dependency files
 - tests, fixtures, test helpers, and CI
 - local validation commands or manual validation policy
@@ -170,6 +175,10 @@ Classify every proposed target file:
     generator, ownership, output, and validation evidence. Record profiles as
     proposed until target decision authority accepts them; never seed one
     repository-wide style by assumption.
+    Add `.ai/project/vocabulary/README.md`, `catalog.json`, `terms.json`, and
+    `data-dictionary-links.json` only when project vocabulary is enabled.
+    Derive scoped terms, aliases, acronyms, owners, states, canonical sources,
+    and links from target evidence; never infer acceptance from frequency.
     Add `.ai/project/team-operating-model.md` only when the target enables team
     collaboration. Derive actor IDs, authority, priorities, review,
     coordination backend, synchronization, storage, retention, and privacy
@@ -197,6 +206,8 @@ Classify every proposed target file:
     Add the `code-documentation` intent overlay only when the optional module
     is enabled. Keep its full profiles, selected source, generator
     configuration, and generated output outside routine bootstrap.
+    Add the `vocabulary-request` intent overlay only when project vocabulary is
+    enabled. Keep full term records and data links outside routine bootstrap.
 14. Add bridge files only for assistants the target uses.
 15. Add installed-operation, operation-help, automatic operation-routing,
     read-only adapter-health, risk-gated pre-change preview,
@@ -207,6 +218,9 @@ Classify every proposed target file:
     code-documentation catalog/profiles, profile-review template, adapted
     skill, documentation flow, and lazy intent routing when code documentation
     is enabled,
+    vocabulary catalog/records/data links, term-review template, adapted
+    skill, vocabulary flow, and lazy intent routing when project vocabulary is
+    enabled,
     AI-infrastructure-inventory, AI-infrastructure-recommendation, adapter output contract
     `.ai/assistant/templates/adapter-output-contracts.md`, source-access
     policy, prompt-injection policy, human and machine-readable approval-record

@@ -98,7 +98,9 @@ Use `Alatyr architecture` for project pattern and architecture discussion. Use
 for the compact team view. When `code-documentation` is enabled, use
 `propose comment style`, `document code`, `generate code docs`, or
 `review code documentation`; the assistant selects a bounded accepted profile.
-Detailed team, blueprint, integrity, update, documentation, and AI-
+When `project-vocabulary` is enabled, use `Alatyr glossary`, `Alatyr define
+term`, or `check terminology`; the assistant starts from the compact catalog.
+Detailed team, blueprint, integrity, update, documentation, vocabulary, and AI-
 infrastructure operations and aliases are in
 `.ai/assistant/help-reference.md`.
 

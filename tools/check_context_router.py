@@ -297,6 +297,8 @@ def main() -> int:
     architecture_conditional_context: list[str] = []
     code_documentation: dict[str, Any] = {}
     code_documentation_conditional_context: list[str] = []
+    vocabulary: dict[str, Any] = {}
+    vocabulary_conditional_context: list[str] = []
     if not isinstance(intent_index, dict) or not isinstance(
         intent_index.get("diagram-request"), dict
     ):
@@ -384,6 +386,37 @@ def main() -> int:
             )
         code_documentation_conditional_context = check_conditional_context(
             code_documentation, "intent_overlays.code-documentation", failures
+        )
+
+    if not isinstance(intent_index, dict) or not isinstance(
+        intent_index.get("vocabulary-request"), dict
+    ):
+        failures.append("intent_overlays.vocabulary-request must be indexed")
+    else:
+        entry = intent_index["vocabulary-request"]
+        vocabulary = descriptor(
+            entry.get("descriptor"),
+            "target-intent-overlay",
+            "intent_overlays.vocabulary-request",
+            failures,
+        )
+        check_contract(
+            vocabulary,
+            ["use_when", "operation_candidates", "required_context", "expand_when"],
+            "intent_overlays.vocabulary-request",
+            failures,
+            {"required_context"},
+        )
+        if vocabulary.get("required_module") != "project-vocabulary":
+            failures.append(
+                "vocabulary intent must require project-vocabulary"
+            )
+        if vocabulary.get("operation_candidates") != ["project-vocabulary"]:
+            failures.append(
+                "vocabulary intent must route project-vocabulary"
+            )
+        vocabulary_conditional_context = check_conditional_context(
+            vocabulary, "intent_overlays.vocabulary-request", failures
         )
 
     consistency_entry = router.get("consistency_routing")
@@ -502,6 +535,7 @@ def main() -> int:
         (diagram, "required_context"),
         (architecture, "required_context"),
         (code_documentation, "required_context"),
+        (vocabulary, "required_context"),
     ]:
         routed_framework_paths.update(
             value
@@ -526,6 +560,11 @@ def main() -> int:
     routed_framework_paths.update(
         value
         for value in code_documentation_conditional_context
+        if value.startswith(".ai/framework/")
+    )
+    routed_framework_paths.update(
+        value
+        for value in vocabulary_conditional_context
         if value.startswith(".ai/framework/")
     )
     try:

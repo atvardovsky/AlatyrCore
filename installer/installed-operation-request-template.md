@@ -63,6 +63,9 @@ Architecture scope, mode, and persistence intent, when applicable:
 Architecture decision intent, when applicable:
 <exploration only/propose/reuse/adapt/introduce/deprecate/accept with approval>
 
+Vocabulary term, alias, acronym, domain, or terminology-check scope, when applicable:
+<term-or-bounded-scope; domain-or-unknown>
+
 Allowed actions meaning:
 - read-only: inspect target files and report only; no file changes.
 - docs-only: docs, blueprint-equivalent docs, and diagram sources only; no

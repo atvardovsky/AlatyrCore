@@ -127,6 +127,13 @@ assistant-specific wrappers remain thin pointers. All surfaces must select the
 same unambiguous accepted source-set profile and preserve generated-output and
 source-of-truth boundaries.
 
+When `project-vocabulary` is enabled, every supported surface routes term,
+alias, acronym, glossary, and terminology-check requests through the canonical
+operation index, vocabulary intent descriptor, and project-vocabulary flow.
+All surfaces start from the same compact target catalog, preserve scoped term
+states and ambiguity, and load only selected full records and canonical links.
+The shared target skill does not imply identical native skill-loading behavior.
+
 Targets may define request aliases such as `alatyr-ai-inventory`,
 `alatyr-suggest-ai <scope>`, `alatyr-improve-ai <item-id>`,
 `alatyr-adaptation <source>`, or `alatyr-add-ai <source>`. Assistant-specific
@@ -166,6 +173,11 @@ Maintainers can run `python3 tools/check_code_documentation.py` to validate the
 portable rule, target profiles, operation aliases, lazy route, adapted skill,
 gates, manifest paths, module contract, and structural validator support shared
 by all supported assistant surfaces.
+
+Maintainers can run `python3 tools/check_project_vocabulary.py` to validate the
+portable rule, target vocabulary records, operation aliases, lazy route,
+adapted skill, gates, manifest paths, bridge coverage, and structural validator
+support shared across supported assistant surfaces.
 
 Maintainers can run
 `python3 tools/check_assistant_surface_conformance.py` to verify that every

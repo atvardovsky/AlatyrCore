@@ -46,6 +46,8 @@ REFERENCE_REQUIRED = [
     ".ai/assistant/operation-catalog.json",
     ".ai/assistant/operation-index.json",
     "Operation: `adapter-health`",
+    "Operation: `project-vocabulary`",
+    "Alatyr glossary",
     "alatyr-ai-inventory",
     "alatyr-suggest-ai {RECOMMENDATION_SCOPE}",
     "alatyr-improve-ai {AI_INFRASTRUCTURE_ITEM_ID}",

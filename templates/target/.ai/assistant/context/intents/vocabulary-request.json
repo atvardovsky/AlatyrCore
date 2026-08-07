@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "descriptor_kind": "target-intent-overlay",
+  "intent": "vocabulary-request",
+  "use_when": [
+    "project term definition acronym alias ambiguity glossary vocabulary or terminology consistency request"
+  ],
+  "operation_candidates": ["project-vocabulary"],
+  "required_module": "project-vocabulary",
+  "required_context": [
+    ".ai/framework/project-vocabulary.md",
+    ".ai/project/vocabulary/catalog.json",
+    ".ai/assistant/flows/project-vocabulary.flow.md"
+  ],
+  "conditional_context": [
+    {
+      "path": ".ai/project/vocabulary/terms.json",
+      "when": "catalog lookup selects one or more candidate term IDs"
+    },
+    {
+      "path": ".ai/project/vocabulary/data-dictionary-links.json",
+      "when": "selected terms reference data entities fields events APIs units enums or schemas"
+    },
+    {
+      "path": ".ai/project/vocabulary/README.md",
+      "when": "broad vocabulary status ownership or maintenance explanation is requested"
+    },
+    {
+      "path": ".ai/assistant/templates/vocabulary-term-review.md",
+      "when": "proposing reviewing accepting deprecating or contradicting a term"
+    },
+    {
+      "path": ".ai/assistant/skills/project-vocabulary/SKILL.md",
+      "when": "an accepted target skill is enabled for vocabulary work"
+    }
+  ],
+  "expand_when": [
+    "multiple accepted scoped meanings remain",
+    "term owner source state or domain is missing or conflicting",
+    "a linked business architecture data API security or operational fact must be inspected",
+    "terminology normalization changes accepted project meaning",
+    "validation contradicts a vocabulary or data link"
+  ],
+  "budget_behavior": "load the compact catalog first, then only selected term records data links and named canonical owners"
+}

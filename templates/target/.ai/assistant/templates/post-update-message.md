@@ -52,6 +52,9 @@ Operation help:
 - When code documentation is enabled, preserve target profiles and recheck
   source-set matching, accepted state, canonical owners, generator/output
   policy, adapted skill, and validation before generation.
+- When project vocabulary is enabled, preserve term IDs, definitions, states,
+  aliases, acronyms, owners, canonical sources, and data links; recheck lookup,
+  ambiguity, normalization, adapted skill, and validation before use.
 - When team collaboration is enabled, recheck the operating model, registry
   schema, active task IDs, claims, handoffs, decisions, external references,
   stale overlaps, and revision-bound reviews before changing active records.

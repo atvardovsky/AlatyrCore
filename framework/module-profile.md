@@ -57,6 +57,9 @@ maintain them:
   source-set profiles for evidence-backed comment-style proposals, structured
   comment maintenance, target-specific deterministic generation, and derived
   output validation without loading all code documentation by default.
+- `project-vocabulary`: project-owned compact terminology catalog, scoped term
+  records, aliases, acronyms, ambiguity states, and links to canonical data or
+  project facts without loading the complete vocabulary by default.
 - `diagrams`: diagram source, visual artifact, render or manual-review, drift,
   discussion presentation, generated capability index, per-assistant
   capability/freshness records, captured result conformance, security/privacy,

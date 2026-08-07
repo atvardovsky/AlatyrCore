@@ -101,6 +101,10 @@ Each documented pattern should record:
 Pattern detail may live in existing target documentation. The catalog should
 point to that owner rather than duplicate the full explanation.
 
+When project vocabulary is enabled, architecture explanations and records
+should resolve selected terms through accepted scoped vocabulary entries and
+report ambiguity or contradiction instead of silently normalizing it.
+
 ## Discussion Modes
 
 One architecture-assistance operation may route these modes:

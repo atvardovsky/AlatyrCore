@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "record_kind": "target-project-vocabulary-terms",
+  "project": "{PROJECT_NAME}",
+  "terms": [
+    {
+      "id": "{TERM_ID}",
+      "canonical_term": "{CANONICAL_TERM}",
+      "normalized_term": "{NORMALIZED_TERM}",
+      "kind": "{DOMAIN_PRODUCT_ARCHITECTURE_OPERATIONAL_TECHNICAL_ACRONYM_OR_TARGET_KIND}",
+      "state": "{OBSERVED_PROPOSED_ACCEPTED_DEPRECATED_CONTRADICTED_OR_UNKNOWN}",
+      "domains": ["{TERM_DOMAIN}"],
+      "usage_scopes": ["{TERM_USAGE_SCOPE}"],
+      "audiences": ["{TERM_AUDIENCE}"],
+      "definition": "{SCOPED_TERM_DEFINITION}",
+      "non_meanings": ["{COMMON_NON_MEANING_OR_NONE}"],
+      "aliases": ["{TERM_ALIAS_OR_NONE}"],
+      "acronyms": ["{TERM_ACRONYM_OR_NONE}"],
+      "acronym_expansions": ["{ACRONYM_EXPANSION_OR_NONE}"],
+      "discouraged_synonyms": ["{DISCOURAGED_SYNONYM_OR_NONE}"],
+      "replacement_term_id": "{REPLACEMENT_TERM_ID_OR_NONE}",
+      "owner": "{TERM_OWNER}",
+      "decision_authority": "{TERM_DECISION_AUTHORITY}",
+      "canonical_sources": ["{TERM_CANONICAL_SOURCE}"],
+      "evidence": ["{TERM_EVIDENCE_OR_GAP}"],
+      "related_term_ids": ["{RELATED_TERM_ID_OR_NONE}"],
+      "data_dictionary_refs": ["{DATA_DICTIONARY_LINK_ID_OR_NONE}"],
+      "examples": ["{VALIDATED_TERM_EXAMPLE_OR_NONE}"],
+      "sensitivity": "{PUBLIC_INTERNAL_CONFIDENTIAL_OR_TARGET_CLASSIFICATION}",
+      "validation": ["{TERM_VALIDATION_OR_MANUAL_REVIEW}"],
+      "last_verified_revision": "{TARGET_REVISION_OR_UNKNOWN_WITH_REASON}",
+      "contradictions": ["{TERM_CONTRADICTION_OR_NONE}"],
+      "known_gaps": ["{TERM_GAP_OR_NONE}"]
+    }
+  ]
+}

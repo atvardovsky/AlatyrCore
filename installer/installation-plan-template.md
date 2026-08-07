@@ -46,6 +46,13 @@ List what must not be changed.
   sections, canonical owners, and migration scope:
 - Generator/configuration, generation entry points, output/publication policy,
   validation, dependency/CI approval needs, and adapted skill:
+- Project-vocabulary need, owner, term decision authority, and module state:
+- Existing glossary, acronym, terminology, naming, schema, API, and data-
+  dictionary evidence:
+- Scoped meanings, domains, aliases, acronyms, deprecated wording,
+  contradictions, and normalization policy:
+- Canonical term sources, data-dictionary links, validation, lazy route, and
+  adapted skill:
 - Context router schema and lazy descriptors:
 - Context profiles:
 - Context-router bootstrap references:
@@ -321,6 +328,8 @@ decisions, and external references before schema changes.
   documentation-maintenance rules:
 - Code-documentation profile selection, style proposal, structured-comment,
   generator, derived-output, direct-edit, and source-of-truth boundary rules:
+- Project-vocabulary lookup, term-state, domain-scope, alias/acronym,
+  normalization, data-link, acceptance, and source-of-truth boundary rules:
 - Diagram source format:
 - Human visual format:
 - Render or manual-review policy:

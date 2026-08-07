@@ -64,6 +64,8 @@ The framework commits to giving an assistant a defined process for:
 - keeping documentation and diagrams synchronized with code and project facts
 - selecting bounded target-owned code-documentation profiles and generating
   derived reference output when the optional module is enabled
+- resolving project terms, aliases, acronyms, and scoped meanings from compact
+  target-owned vocabulary records when the optional module is enabled
 - recording what was checked, what changed, what was skipped, and what risk
   remains
 - adapting the same process across supported assistants through thin bridge
@@ -239,6 +241,8 @@ The framework does not guarantee:
 - that generated reference documentation, a successful generator run, or an
   assistant-written comment proves semantic correctness or supersedes a
   canonical project fact owner
+- that a structurally valid vocabulary entry proves its definition, ownership,
+  relationships, or acceptance are semantically correct
 - that unsupported assistants will auto-load the right files without a bridge
   or user instruction
 - that missing security, live-service, or diagram policy can be inferred from

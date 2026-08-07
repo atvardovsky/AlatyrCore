@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "record_kind": "target-vocabulary-data-dictionary-links",
+  "project": "{PROJECT_NAME}",
+  "links": [
+    {
+      "id": "{VOCABULARY_DATA_LINK_ID}",
+      "term_id": "{TERM_ID}",
+      "fact_type": "{DATA_MODEL_API_EVENT_UNIT_ENUM_OR_TARGET_FACT_TYPE}",
+      "canonical_owner": "{DATA_DICTIONARY_SCHEMA_API_OR_MODEL_OWNER}",
+      "target_identifier": "{ENTITY_FIELD_EVENT_API_UNIT_ENUM_OR_SCHEMA_IDENTIFIER}",
+      "relationship": "{REPRESENTS_MEASURED_BY_STORED_AS_EMITTED_AS_NOT_EQUIVALENT_TO_OR_TARGET_RELATION}",
+      "direction": "{TERM_TO_FACT_FACT_TO_TERM_OR_BIDIRECTIONAL}",
+      "evidence": ["{LINK_EVIDENCE_OR_GAP}"],
+      "validation": ["{LINK_VALIDATION_OR_MANUAL_REVIEW}"],
+      "last_verified_revision": "{TARGET_REVISION_OR_UNKNOWN_WITH_REASON}",
+      "known_gaps": ["{LINK_GAP_OR_NONE}"]
+    }
+  ]
+}

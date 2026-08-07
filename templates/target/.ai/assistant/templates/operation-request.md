@@ -33,6 +33,8 @@ installed Alatyr Core adapter.
   `{RESPONSE_ONLY_PERSIST_PROJECT_DOCS_OR_ACCEPT_WITH_APPROVAL_OR_NONE}`
 - Architecture decision intent:
   `{EXPLORATION_PROPOSE_REUSE_ADAPT_INTRODUCE_DEPRECATE_ACCEPT_OR_NONE}`
+- Vocabulary term, alias, acronym, domain, or terminology-check scope:
+  `{VOCABULARY_REQUEST_OR_NONE}`
 
 ## Allowed Actions Guide
 

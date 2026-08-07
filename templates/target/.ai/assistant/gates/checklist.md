@@ -11,7 +11,8 @@ commands from another project.
   `ALATYR-RISK-001`, `ALATYR-APPROVAL-001`, `ALATYR-SAFETY-001`,
   `ALATYR-SAFETY-002`, `ALATYR-INTEGRITY-001`, `ALATYR-CHANGE-001`,
   `ALATYR-PACKAGE-001`,
-  `ALATYR-ARCHITECTURE-001`, `ALATYR-CODEDOC-001`, `ALATYR-ADAPTER-001`, `ALATYR-MODULE-001`,
+  `ALATYR-ARCHITECTURE-001`, `ALATYR-CODEDOC-001`,
+  `ALATYR-VOCABULARY-001`, `ALATYR-ADAPTER-001`, `ALATYR-MODULE-001`,
   `ALATYR-OPERATION-001`,
   `ALATYR-DIAGRAM-001`, `ALATYR-TEAM-001`, and `ALATYR-EVIDENCE-001`.
 - `AGENTS.md` treated as preloaded; compact bootstrap loaded from
@@ -45,6 +46,10 @@ commands from another project.
   requires one unambiguous accepted profile before routine source-comment or
   generation work, preserves canonical fact owners, and never edits generated
   output directly or treats generator success as semantic proof.
+- Project vocabulary starts from the compact catalog, preserves scoped term
+  states, does not silently resolve multiple accepted meanings, links rather
+  than replaces canonical data and project fact owners, and does not normalize
+  project surfaces from observed, proposed, contradicted, or unknown records.
 - Semantic/logical change decision and logical integrity review made.
 - Documentation sync checked.
 - Tests or validation selected from target stack and risk.

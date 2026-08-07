@@ -15,7 +15,7 @@ Use this guide when changing Alatyr Core itself.
   `installer/`, `templates/target`, assistant compatibility docs, and
   changelog when affected.
 - Manifest, ownership, context-router, context-profile, approval-record,
-  change-package, code-documentation profile/generator,
+  change-package, code-documentation profile/generator, project-vocabulary,
   output-contract, AI-infrastructure inventory or recommendation, or
   prompt-injection contract change: update
   `framework/`, `installer/`, `templates/target`, checker rules, README, and
@@ -85,6 +85,10 @@ Before accepting a change, check:
   selection, comment-style proposals, canonical fact boundaries, generators,
   output policy, documentation intent routing, adapted skill, gates, installer
   wiring, or target structural validation changes.
+- `python3 tools/check_project_vocabulary.py` passes when vocabulary term
+  states, compact lookup, aliases, acronyms, scoped ambiguity, data-dictionary
+  links, canonical-owner boundaries, operation routing, adapted skill, gates,
+  installer wiring, or target structural validation changes.
 - `python3 tools/check_ai_infrastructure_inventory.py` passes when AI
   infrastructure inventory fields, source/provenance, permission, license,
   prompt-injection risk, approval, recommendation, or residual-risk evidence

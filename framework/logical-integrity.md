@@ -51,6 +51,8 @@ Facts include:
   instruction, bridge rule, or documentation-sync rule
 - code-documentation profile, structured comment contract, generator,
   generated-output policy, or publication boundary
+- project vocabulary term ID, scoped meaning, alias, acronym, deprecated
+  wording, related term, or data-dictionary link
 - diagram edge, actor, state, container, object relation, sequence, or generated
   artifact ownership rule
 

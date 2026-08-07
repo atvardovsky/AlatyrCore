@@ -48,6 +48,8 @@ in `framework/rule-registry.*` and `framework/rule-ownership.md`.
 - Installed operation control surface: `ALATYR-OPERATION-001`
 - Optional architecture knowledge and pattern discussion:
   `ALATYR-ARCHITECTURE-001`
+- Optional project vocabulary and terminology lookup:
+  `ALATYR-VOCABULARY-001`
 - Discussion diagram presentation: `ALATYR-DIAGRAM-001`
 - Optional team collaboration: `ALATYR-TEAM-001`
 - Lifecycle and migration evidence: `ALATYR-LIFECYCLE-001`
@@ -61,6 +63,8 @@ Before creating files in the target repository, inspect:
 - README and public docs
 - architecture or design docs, decision records, documented patterns,
   boundaries, constraints, quality attributes, and architecture validation
+- glossaries, terminology docs, acronym lists, data dictionaries, schemas,
+  APIs, naming rules, ambiguous terms, and terminology validation
 - package/build files
 - test folders and test conventions
 - CI files and validation commands
@@ -104,6 +108,9 @@ The plan must identify:
   frontend/backend/shared/infrastructure conventions, style proposal and
   acceptance evidence, canonical fact-owner boundaries, generator,
   output/publication policy, validation, and adapted skill needs
+- optional project-vocabulary owner, decision authority, compact catalog,
+  scoped term records, aliases, acronyms, ambiguity, normalization policy,
+  data-dictionary links, validation, and adapted skill needs
 - task-specific maturity and bridge capability needs
 - diagram discussion, source/visual ownership, portable ASCII layout/width,
   per-assistant rich presentation, capability expiry/review triggers, captured-result
@@ -167,6 +174,10 @@ In a typical target repository:
    `.ai/project/architecture/catalog.json` only when architecture knowledge is
    enabled. Derive states and evidence from the target; do not infer accepted
    architecture from implementation frequency.
+   Add `.ai/project/vocabulary/README.md`, `catalog.json`, `terms.json`, and
+   `data-dictionary-links.json` only when project vocabulary is enabled.
+   Derive records from target evidence, preserve scoped meanings, and keep
+   observed or proposed terms unaccepted until target authority decides.
    Add `.ai/project/team-operating-model.md` only when team collaboration is
    enabled, and derive actors, authority, priorities, review, backend,
    retention, and privacy from target evidence.

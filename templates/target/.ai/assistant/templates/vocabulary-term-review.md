@@ -1,0 +1,42 @@
+# Vocabulary Term Review
+
+Review ID: `{VOCABULARY_REVIEW_ID}`
+Mode: `{LOOKUP_INVENTORY_PROPOSE_REVIEW_SYNCHRONIZE_OR_TERMINOLOGY_CHECK}`
+Requested text or scope: `{REQUESTED_TERM_ALIAS_ACRONYM_OR_SCOPE}`
+Selected term IDs: `{SELECTED_TERM_IDS_OR_NONE}`
+Match reason: `{CANONICAL_ALIAS_ACRONYM_DOMAIN_SCOPE_FUZZY_OR_NONE}`
+
+## Meaning And State
+
+Canonical term: `{CANONICAL_TERM}`
+State: `{OBSERVED_PROPOSED_ACCEPTED_DEPRECATED_CONTRADICTED_OR_UNKNOWN}`
+Domains and usage scopes: `{TERM_DOMAINS_AND_USAGE_SCOPES}`
+Definition: `{SCOPED_DEFINITION_OR_UNRESOLVED}`
+Non-meanings: `{EXPLICIT_NON_MEANINGS_OR_NONE}`
+Aliases and acronym expansions: `{ALIASES_AND_ACRONYMS_OR_NONE}`
+Deprecated or discouraged wording: `{DEPRECATED_OR_DISCOURAGED_WORDING_OR_NONE}`
+Replacement term: `{REPLACEMENT_TERM_ID_OR_NONE}`
+
+## Ownership And Evidence
+
+Term owner: `{TERM_OWNER_OR_MISSING}`
+Decision authority: `{TERM_DECISION_AUTHORITY_OR_MISSING}`
+Canonical sources: `{TERM_CANONICAL_SOURCES_OR_MISSING}`
+Evidence revision: `{TARGET_REVISION_OR_UNKNOWN_WITH_REASON}`
+Observed contradictions: `{CONTRADICTIONS_OR_NONE}`
+Rejected interpretations: `{REJECTED_INTERPRETATIONS_OR_NONE}`
+
+## Relationships
+
+Related term IDs: `{RELATED_TERM_IDS_OR_NONE}`
+Data dictionary links: `{SELECTED_DATA_DICTIONARY_LINKS_OR_NONE}`
+Companion surfaces: `{CODE_DOCS_DIAGRAMS_TESTS_PROMPTS_SKILLS_GATES_OR_NONE}`
+
+## Decision And Evidence
+
+Proposed change: `{PROPOSED_TERM_OR_COMPANION_CHANGE_OR_NONE}`
+Acceptance state: `{NOT_REQUESTED_PENDING_ACCEPTED_REJECTED_OR_BLOCKED}`
+Approval needs: `{APPROVAL_NEEDS_OR_NONE}`
+Validation run: `{VALIDATION_RUN_OR_NONE_WITH_REASON}`
+Skipped checks: `{SKIPPED_CHECKS_AND_REASONS_OR_NONE}`
+Residual ambiguity or risk: `{RESIDUAL_AMBIGUITY_OR_RISK}`

@@ -32,6 +32,8 @@ Framework core owns:
 - documentation-sync pattern
 - optional code-documentation profile selection, structured-comment, and
   deterministic generated-reference process
+- optional project vocabulary, acronym, alias, ambiguity, and data-link
+  process
 - stack-aware testing analysis pattern
 - gate categories and final evidence pattern
 - skill, prompt, wrapper, and third-party assistant infrastructure adaptation

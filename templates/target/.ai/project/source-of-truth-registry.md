@@ -226,6 +226,27 @@ Conflict resolver: `{TARGET_DOCUMENTATION_PROFILE_DECISION_AUTHORITY}`
 Approval trigger: `{DEPENDENCY_CI_PUBLICATION_BROAD_REWRITE_OR_PROFILE_ACCEPTANCE_TRIGGER}`
 Final evidence: `{SELECTED_PROFILE_COMMENTS_GENERATION_OUTPUT_AND_RESIDUAL_RISK}`
 
+### Fact Type: `project vocabulary`
+
+Fact type: `project vocabulary`
+Canonical owner: `.ai/project/vocabulary/terms.json`
+Compact lookup catalog: `.ai/project/vocabulary/catalog.json`
+Data dictionary links: `.ai/project/vocabulary/data-dictionary-links.json`
+Consistency level: `{PROJECT_VOCABULARY_CONSISTENCY_LEVEL}`
+Project area: `{PROJECT_VOCABULARY_PROJECT_AREA}`
+Consistency map node: `{PROJECT_VOCABULARY_FACT_ID_OR_MISSING}`
+Relationship coverage: `{PROJECT_VOCABULARY_RELATIONSHIP_COVERAGE_OR_GAP}`
+Invariant and dependency constraints: `{TERM_SCOPE_STATE_OWNER_ALIAS_AMBIGUITY_AND_CANONICAL_LINK_CONSTRAINTS}`
+Derived surfaces:
+
+- `{TARGET_DOCS_CODE_DIAGRAMS_PROMPTS_SKILLS_TESTS_OR_NONE}`
+
+Sync direction: `{ACCEPTED_TERM_TO_DERIVED_SURFACES_AND_LINKED_OWNER_REVIEW}`
+Validation or manual review: `{TARGET_VOCABULARY_LINK_AND_TERMINOLOGY_VALIDATION}`
+Conflict resolver: `{TARGET_TERM_DECISION_AUTHORITY}`
+Approval trigger: `{TERM_ACCEPTANCE_DEPRECATION_SEMANTIC_NORMALIZATION_OR_BROAD_REWRITE_TRIGGER}`
+Final evidence: `{SELECTED_TERM_IDS_STATES_OWNERS_SOURCES_LINKS_VALIDATION_AND_RESIDUAL_AMBIGUITY}`
+
 ## Conflict Handling
 
 When sources disagree:

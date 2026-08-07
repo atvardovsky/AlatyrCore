@@ -60,6 +60,8 @@ sync, logical integrity review, and final evidence.
   concepts
 - optional project-specific code-comment profiles and deterministic
   generated-reference documentation
+- optional project-owned vocabulary with scoped terms, aliases, acronyms,
+  ambiguity states, and canonical data links
 - stack-aware testing analysis guidance
 - supported-assistant bridge pattern
 - bridge capability matrix plus compact per-surface capability projection
@@ -128,6 +130,9 @@ Those belong to a project contour or repository adapter.
   documentation-maintenance contract.
 - `.ai/framework/code-documentation.md`: optional source-set documentation
   profiles, comment-style proposal, generator, derived-output, and evidence
+  contract.
+- `.ai/framework/project-vocabulary.md`: optional compact terminology lookup,
+  scoped term-state, alias/acronym, data-link, proposal, and synchronization
   contract.
 - `.ai/framework/security-safety-guidance.md`: portable security and safety
   expectations for secrets, live services, dependencies, and destructive work.

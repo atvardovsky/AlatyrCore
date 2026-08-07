@@ -15,6 +15,9 @@ Replace placeholders with target facts before accepting installation.
 - project-owned code-documentation areas, source-set profiles, comment content
   conventions, generator selection, output policy, owners, and evidence under
   `.ai/project/documentation` when code documentation is enabled
+- project-owned vocabulary terms, aliases, acronyms, scoped meanings,
+  acceptance states, owners, and canonical data links under
+  `.ai/project/vocabulary` when project vocabulary is enabled
 - use cases and workflows
 - data model and persistence facts
 - runtime flows and state machines
@@ -53,6 +56,10 @@ List target source-of-truth files:
 - `.ai/project/documentation/README.md`,
   `.ai/project/documentation/catalog.json`, and
   `.ai/project/documentation/profiles.json` when code documentation is enabled
+- `.ai/project/vocabulary/README.md`, `.ai/project/vocabulary/catalog.json`,
+  `.ai/project/vocabulary/terms.json`, and
+  `.ai/project/vocabulary/data-dictionary-links.json` when project vocabulary
+  is enabled
 
 ## AI Infrastructure Evidence Boundary
 

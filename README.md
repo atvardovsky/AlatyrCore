@@ -178,7 +178,7 @@ tasks from loading the complete framework or project corpus.
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.6`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.7`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance fixtures,
 optional scaffolding, and an optional installed-adapter structural validator.
@@ -437,6 +437,8 @@ Additional source-repository helpers include:
 - optional project-owned code documentation with bounded frontend, backend,
   shared-library, or infrastructure profiles, evidence-backed comment-style
   proposals, target-specific generators, and derived-output validation
+- optional project-owned vocabulary with scoped term definitions, aliases,
+  acronyms, ambiguity states, and links to canonical project and data sources
 - compact AI infrastructure routing that selects one skill, prompt, gate,
   checker, tool/MCP config, bridge, or wrapper plus its permissions, gates,
   validation, and output contract
@@ -613,6 +615,8 @@ A mature target installation usually has:
 - `.ai/project/documentation/README.md`,
   `.ai/project/documentation/catalog.json`, and
   `.ai/project/documentation/profiles.json` when code documentation is enabled
+- `.ai/project/vocabulary/README.md`, catalog, scoped term records, and data-
+  dictionary links when project vocabulary is enabled
 - `.ai/project/team-operating-model.md` when team collaboration is enabled
 - `.ai/project/context` or equivalent project source-of-truth docs
 - `.ai/assistant/contour.md`
@@ -631,6 +635,9 @@ A mature target installation usually has:
   pattern/area/result templates when architecture knowledge is enabled
 - `.ai/assistant/context/intents/code-documentation.json`, the documentation
   flow, profile-review template, and adapted code-documentation skill when the
+  optional module is enabled
+- `.ai/assistant/context/intents/vocabulary-request.json`, the project-
+  vocabulary flow, term-review template, and adapted vocabulary skill when the
   optional module is enabled
 - `.ai/assistant/ai-infrastructure-router.json` when AI infrastructure is used
 - `.ai/assistant/team/context-overlay.json` and

@@ -319,6 +319,20 @@
       "final_evidence": ["selected documentation profile and canonical owners", "comments and derived surfaces", "generator and output policy", "validation and residual risk"]
     },
     {
+      "id": "project-vocabulary",
+      "title": "Project vocabulary",
+      "summary": "Explain, propose, review, or synchronize scoped project terms, aliases, acronyms, and terminology links.",
+      "use_when": ["project term definition", "acronym or alias resolution", "glossary proposal", "vocabulary review", "terminology consistency check"],
+      "context_profiles": ["docs-local", "code-local", "business-change", "architecture-change", "data-change"],
+      "required_module": "project-vocabulary",
+      "flow": ".ai/assistant/flows/project-vocabulary.flow.md",
+      "minimum_inputs": ["term alias acronym or bounded terminology scope", "domain when known"],
+      "allowed_actions": ["read-only", "docs-only", "full-with-approval"],
+      "preview": "risk-gated",
+      "aliases": ["Alatyr glossary", "Alatyr define term", "propose glossary entry", "check terminology", "review project vocabulary"],
+      "final_evidence": ["selected term IDs states and match reasons", "owners sources and scoped meanings", "ambiguity data links validation and residual risk"]
+    },
+    {
       "id": "adapter-maturity-review",
       "title": "Adapter maturity review",
       "summary": "Assess task-specific adapter capability, blockers, and evidence gaps.",

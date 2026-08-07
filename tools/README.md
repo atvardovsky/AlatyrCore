@@ -161,6 +161,18 @@ complete.
 python3 tools/check_code_documentation.py
 ```
 
+## Project Vocabulary Check
+
+`check_project_vocabulary.py` validates the optional portable vocabulary rule,
+compact target catalog, scoped term records, data-dictionary links, aliases,
+acronyms, term states, lazy routing, operation aliases, adapted skill, gates,
+manifest paths, bridge coverage, and target-validator support. It checks
+structure, not whether a project definition or relationship is true.
+
+```sh
+python3 tools/check_project_vocabulary.py
+```
+
 ## AI Infrastructure Inventory Check
 
 `check_ai_infrastructure_inventory.py` validates the target

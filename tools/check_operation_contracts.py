@@ -52,6 +52,7 @@ REQUIRED_OPERATIONS = {
     "skill-adaptation",
     "drift-review",
     "documentation-sync",
+    "project-vocabulary",
     "adapter-maturity-review",
 }
 REQUIRED_ALIAS_TARGETS = {
@@ -62,6 +63,7 @@ REQUIRED_ALIAS_TARGETS = {
     "adapter-maturity-review",
     "create-project-blueprint",
     "architecture-assistance",
+    "project-vocabulary",
     "logical-integrity-review",
     "product-change",
     "large-task",

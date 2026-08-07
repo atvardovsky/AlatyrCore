@@ -168,6 +168,11 @@ Reject comments that merely narrate implementation steps, repeat identifiers or
 types, speculate about intent, expose secrets, copy large policy blocks, or
 become a second owner for facts held elsewhere.
 
+When project vocabulary is enabled, comments should use accepted scoped terms
+or link to unresolved terminology. A vocabulary record helps normalize wording;
+it does not make a comment the owner of the term's linked business, data,
+architecture, API, security, or operational fact.
+
 ## Generation And Output Policy
 
 The target chooses one output policy per profile:

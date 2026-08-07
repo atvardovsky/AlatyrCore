@@ -37,6 +37,7 @@ OPTIONAL_MODULES = [
     "consistency-map",
     "architecture-knowledge",
     "code-documentation",
+    "project-vocabulary",
     "diagrams",
     "ai-infrastructure",
     "multi-assistant-bridges",
@@ -233,6 +234,23 @@ def main() -> int:
         if required not in code_documentation:
             failures.append(
                 f"module code-documentation missing required file {required}"
+            )
+
+    project_vocabulary = module_blocks.get("project-vocabulary", "")
+    for required in [
+        ".ai/framework/project-vocabulary.md",
+        ".ai/project/vocabulary/README.md",
+        ".ai/project/vocabulary/catalog.json",
+        ".ai/project/vocabulary/terms.json",
+        ".ai/project/vocabulary/data-dictionary-links.json",
+        ".ai/assistant/context/intents/vocabulary-request.json",
+        ".ai/assistant/flows/project-vocabulary.flow.md",
+        ".ai/assistant/templates/vocabulary-term-review.md",
+        ".ai/assistant/skills/project-vocabulary/SKILL.md",
+    ]:
+        if required not in project_vocabulary:
+            failures.append(
+                f"module project-vocabulary missing required file {required}"
             )
 
     installed_operations = module_blocks.get("installed-operations", "")

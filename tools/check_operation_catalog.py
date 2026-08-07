@@ -48,6 +48,7 @@ EXPECTED_OPERATIONS = {
     "skill-adaptation",
     "drift-review",
     "documentation-sync",
+    "project-vocabulary",
     "adapter-maturity-review",
 }
 
@@ -84,6 +85,7 @@ ALLOWED_MODULES = {
     "team-collaboration",
     "diagrams",
     "architecture-knowledge",
+    "project-vocabulary",
 }
 ALLOWED_PREVIEW = {"never", "risk-gated"}
 ALLOWED_PROFILES = {

@@ -97,6 +97,14 @@ documentation intent route and synchronization flow, project-adapted comment
 skill, profile review template, generated-output policy, installation and
 update planning, gates, and structural validation.
 
+Category: `VOCABULARY`
+Owner: `.ai/framework/project-vocabulary.md`
+Rule IDs: `ALATYR-VOCABULARY-001`
+Derived surfaces: target vocabulary catalog, term and data-link records,
+vocabulary intent route and operation flow, project-adapted vocabulary skill,
+term review template, installation and update planning, gates, and structural
+validation.
+
 Category: `DIAGRAM`
 Owner: `.ai/framework/diagram-guidance.md`
 Rule IDs: `ALATYR-DIAGRAM-001`

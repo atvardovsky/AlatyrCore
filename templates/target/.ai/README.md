@@ -26,6 +26,7 @@ facts, or target skill infrastructure.
   patterns, areas, states, owners, evidence revisions, and documentation routes
 - optional code-documentation index, compact catalog, and source-set profiles
   for selected comment styles, generators, outputs, owners, and evidence
+- optional project-vocabulary catalog, scoped terms, and canonical data links
 - blueprint or equivalent source-of-truth facts
 - source-of-truth registry entries
 - optional machine-readable consistency relationships for bounded impact
@@ -53,6 +54,7 @@ Replace this section with the actual target project map.
 - code-documentation intent, profile-review template, adapted skill, and
   generated-reference flow when the project code-documentation module is
   enabled
+- vocabulary route, review template, flow, and skill when enabled
 - gates
 - prompts
 - skills

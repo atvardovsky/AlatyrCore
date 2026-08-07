@@ -88,6 +88,16 @@
         "documentation-sync"
       ],
       "required_module": "code-documentation"
+    },
+    "vocabulary-request": {
+      "use_when": [
+        "project term definition acronym alias ambiguity glossary vocabulary or terminology consistency request"
+      ],
+      "descriptor": ".ai/assistant/context/intents/vocabulary-request.json",
+      "operation_candidates": [
+        "project-vocabulary"
+      ],
+      "required_module": "project-vocabulary"
     }
   },
   "consistency_routing": {

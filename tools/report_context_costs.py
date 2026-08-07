@@ -192,6 +192,35 @@ def build_report() -> dict[str, Any]:
         [value for value in code_documentation_full_reference_refs if value]
     )
 
+    vocabulary_reference, vocabulary_overlay = intent_contracts.get(
+        "vocabulary-request", (None, {})
+    )
+    vocabulary_conditional_refs = [
+        entry.get("path")
+        for entry in vocabulary_overlay.get("conditional_context", [])
+        if isinstance(entry, dict) and isinstance(entry.get("path"), str)
+    ]
+    vocabulary_compact_refs = [
+        operation_routing.get("index", ""),
+        vocabulary_reference,
+        *vocabulary_overlay.get("required_context", []),
+    ]
+    vocabulary_full_reference_refs = [
+        operation_routing.get("catalog", ""),
+        ".ai/assistant/help.md",
+        ".ai/assistant/flows/operation-routing.flow.md",
+        ".ai/assistant/module-profile.md",
+        vocabulary_reference,
+        *vocabulary_overlay.get("required_context", []),
+        *vocabulary_conditional_refs,
+    ]
+    vocabulary_compact = measure(
+        [value for value in vocabulary_compact_refs if value]
+    )
+    vocabulary_full_reference = measure(
+        [value for value in vocabulary_full_reference_refs if value]
+    )
+
     migration_reference, migration = descriptor(router.get("migration_routing", {}))
     migration_initial_refs = [
         value
@@ -240,6 +269,14 @@ def build_report() -> dict[str, Any]:
                 "word_reduction_percent": reduction_percent(
                     code_documentation_compact["words"],
                     code_documentation_full_reference["words"],
+                ),
+            },
+            "project-vocabulary": {
+                "compact": vocabulary_compact,
+                "full_reference_union": vocabulary_full_reference,
+                "word_reduction_percent": reduction_percent(
+                    vocabulary_compact["words"],
+                    vocabulary_full_reference["words"],
                 ),
             },
         },

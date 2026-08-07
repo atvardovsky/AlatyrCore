@@ -91,6 +91,24 @@ prepare a read-only proposal from repository evidence. Stop automatic
 generation when accepted profiles conflict at equal specificity. Generated
 output is derived and must not be edited directly.
 
+## Intent Overlay: `vocabulary-request`
+
+Apply this overlay when the user asks about a project term, alias, acronym,
+glossary, vocabulary proposal, or terminology consistency. Load the compact
+catalog before selected term records or canonical sources.
+
+Required compact context:
+
+- `.ai/framework/project-vocabulary.md`
+- `.ai/project/vocabulary/catalog.json`
+- `.ai/assistant/flows/project-vocabulary.flow.md`
+
+Load `.ai/project/vocabulary/terms.json` only for selected term IDs and load
+`.ai/project/vocabulary/data-dictionary-links.json` only when selected terms
+reference data, API, event, unit, enum, or schema concepts. Preserve term
+states and ask for bounded domain clarification when accepted meanings remain
+ambiguous.
+
 ## Task-Scale Overlay: `large-or-resumable`
 
 Activate only for large, cross-boundary, multi-workstream,

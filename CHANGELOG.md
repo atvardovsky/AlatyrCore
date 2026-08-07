@@ -4,6 +4,46 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.7 - 2026-08-07
+
+- Increased the framework version to `0.1.0-alpha.7`, adapter schema version
+  to `6`, and target template version to `7`, with migration evidence from the
+  committed `0.1.0-alpha.6` source state.
+- Added optional project vocabulary under new rule
+  `ALATYR-VOCABULARY-001`, with explicit `observed`, `proposed`, `accepted`,
+  `deprecated`, `contradicted`, and `unknown` term states.
+- Added a compact project-owned term, alias, and acronym catalog; full scoped
+  term records; data-dictionary links; a lazy vocabulary intent; term-review
+  evidence; an adapted target skill; and a dedicated conversational operation.
+- Kept glossary meaning separate from schemas, APIs, data dictionaries, code,
+  business rules, architecture decisions, security policy, and operational
+  facts. Vocabulary records link to those canonical owners rather than
+  replacing them.
+- Required target authority before accepted terminology can drive
+  normalization. Multiple accepted meanings remain scoped by domain and must
+  not be resolved silently; observed frequency does not prove accepted meaning.
+- Added aliases for `Alatyr glossary`, `Alatyr define term`, `propose glossary
+  entry`, `check terminology`, and `review project vocabulary`, routed through
+  the same canonical operation index and bridge capability contract for all
+  nine supported assistant surfaces.
+- Added installation, upgrade, post-install/update, source-of-truth, logical-
+  integrity, code-documentation, architecture, lifecycle, and help integration
+  while preserving target vocabulary records across framework updates.
+- Added source checks and optional target validation for required files,
+  manifest paths, term and link schemas, duplicate IDs, catalog references,
+  accepted-term evidence, same-domain accepted lookup ambiguity, lazy routing,
+  operation contracts, and structural evidence limitations.
+- Added deterministic context-cost evidence: the project-vocabulary compact
+  route loads 5 files and about 2,421 words versus 13 files and about 6,908
+  words for the full reference union, a 65.0% static word reduction; routine
+  bootstrap remains 1,693 words and below its soft budget.
+- Changed `ALATYR-CONTEXT-001`, `ALATYR-SOURCE-001`,
+  `ALATYR-INTEGRITY-001`, `ALATYR-ARCHITECTURE-001`,
+  `ALATYR-CODEDOC-001`, `ALATYR-ADAPTER-001`, `ALATYR-MODULE-001`,
+  `ALATYR-OPERATION-001`, `ALATYR-BRIDGE-001`,
+  `ALATYR-LIFECYCLE-001`, and `ALATYR-EVIDENCE-001`; added
+  `ALATYR-VOCABULARY-001`; no rule IDs were removed.
+
 ## 0.1.0-alpha.6 - 2026-08-07
 
 - Increased the framework version to `0.1.0-alpha.6`, adapter schema version

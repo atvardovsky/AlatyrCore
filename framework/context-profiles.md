@@ -41,6 +41,11 @@ with the compact code-documentation catalog and profile selector, then compose
 with `docs-local`, `code-local`, or a higher-risk base profile according to the
 changed fact. Different source sets may select different accepted profiles.
 
+Project term, alias, acronym, glossary, and terminology-consistency requests
+use a separate optional intent overlay. Start with the compact vocabulary
+catalog, then load only selected full term records, data-dictionary links, and
+named canonical owners. Ordinary tasks should not load the full vocabulary.
+
 ## Canonical Profiles
 
 Use these profile names unless a target adapter deliberately renames them:

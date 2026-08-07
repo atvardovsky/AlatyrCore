@@ -55,6 +55,11 @@
     "propose comment style": "documentation-sync",
     "generate code docs": "documentation-sync",
     "review code documentation": "documentation-sync",
+    "Alatyr glossary": "project-vocabulary",
+    "Alatyr define term": "project-vocabulary",
+    "propose glossary entry": "project-vocabulary",
+    "check terminology": "project-vocabulary",
+    "review project vocabulary": "project-vocabulary",
     "check Alatyr maturity": "adapter-maturity-review",
     "review adapter readiness": "adapter-maturity-review"
   },
@@ -201,6 +206,13 @@
       "docs-only",
       "adapter-only",
       "code-and-tests",
+      "full-with-approval"
+    ],
+    "project-vocabulary": [
+      "project-vocabulary",
+      ".ai/assistant/flows/project-vocabulary.flow.md",
+      "read-only",
+      "docs-only",
       "full-with-approval"
     ],
     "adapter-maturity-review": [

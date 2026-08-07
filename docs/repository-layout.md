@@ -86,6 +86,12 @@ generator/output contracts, lazy route, adapted skill, gates, source-of-truth
 entry, manifest paths, and target-validator support. It does not prove comment
 truth or generated-reference quality.
 
+`tools/check_project_vocabulary.py` validates the optional portable vocabulary
+rule, compact catalog, scoped term and data-link records, aliases, operations,
+lazy route, adapted skill, gates, manifest paths, bridge coverage, and target-
+validator support. It does not prove a definition, relationship, owner, or
+acceptance decision is semantically correct.
+
 `tools/check_ai_infrastructure_inventory.py` validates the target
 `.ai/assistant/templates/ai-infrastructure-inventory.md` template and
 inventory flow fields for provenance, license, permissions, prompt-injection

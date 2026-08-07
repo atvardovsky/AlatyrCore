@@ -90,6 +90,8 @@ Target adapters may include fact types such as:
 - generated documentation
 - structured code-comment contract
 - code-documentation profile and generator policy
+- project vocabulary term, alias, acronym, and acceptance state
+- vocabulary-to-data-dictionary link
 - assistant operation
 - team operating model, authority, or priority policy
 - skill, prompt, wrapper, or bridge behavior
@@ -112,6 +114,7 @@ that commonly create drift when left ownerless:
 - AI infrastructure item
 - team operating model when team collaboration is enabled
 - code documentation profile when code-documentation generation is enabled
+- project vocabulary when terminology support is enabled
 
 Each baseline entry may remain placeholder-based during installation planning,
 but before an adapter claims maturity the owner should be resolved from target
@@ -122,6 +125,12 @@ bounded symbol-level explanation to structured comments, but declarations,
 registered API specifications, business blueprints, architecture decisions,
 security policy, data owners, and operational sources retain the fact types
 assigned to them. A generator cannot change that ownership direction.
+
+Accepted vocabulary records may own a scoped project term's meaning, aliases,
+acronym expansion, and discouraged synonyms when the target assigns that fact
+type to them. They remain links or derived explanations for business rules,
+schemas, APIs, data fields, architecture decisions, security policy, code, and
+operational facts owned elsewhere.
 
 ## Conflict Handling
 
