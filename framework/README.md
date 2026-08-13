@@ -63,6 +63,10 @@ sync, logical integrity review, and final evidence.
 - optional project-owned vocabulary with scoped terms, aliases, acronyms,
   ambiguity states, and canonical data links
 - stack-aware testing analysis guidance
+- optional target-adapted test-first development with explicit enablement,
+  bounded recommendation, RED/GREEN/refactor evidence, and justified exceptions
+- optional declarative extension packages with immutable provenance, target
+  bindings, permission review, installed-file ownership, and lifecycle locks
 - supported-assistant bridge pattern
 - bridge capability matrix plus compact per-surface capability projection
 - migration diff and effectiveness measurement patterns
@@ -134,6 +138,10 @@ Those belong to a project contour or repository adapter.
 - `.ai/framework/project-vocabulary.md`: optional compact terminology lookup,
   scoped term-state, alias/acronym, data-link, proposal, and synchronization
   contract.
+- `.ai/framework/test-first-development.md`: optional target-adapted test-first
+  enablement, recommendation, execution, exception, and evidence contract.
+- `.ai/framework/extensions.md`: declarative external extension package,
+  inspection, normalization, lock, update, removal, and recommendation contract.
 - `.ai/framework/security-safety-guidance.md`: portable security and safety
   expectations for secrets, live services, dependencies, and destructive work.
 - `.ai/framework/prompt-injection.md`: policy for treating imported AI

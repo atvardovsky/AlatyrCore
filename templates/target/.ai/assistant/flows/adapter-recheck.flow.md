@@ -43,6 +43,11 @@ Replace placeholders with target facts before accepting installation.
 - Project vocabulary: `.ai/project/vocabulary/README.md`, catalog, full term
   records, data-dictionary links, vocabulary intent, flow, term-review
   template, and adapted skill
+- Test-first development: `.ai/project/testing/README.md`, accepted policy,
+  intent, configuration/change flows, gate, evidence template, and adapted skill
+- Extensions: `.ai/assistant/extensions/README.md`, catalog, lock, intent,
+  lifecycle flow, gate, review/lifecycle records, bindings, normalized items,
+  installed-file ownership, and adaptation evidence
 - AI infrastructure inventory:
   `.ai/assistant/flows/ai-infrastructure-inventory.flow.md`
 - AI infrastructure recommendation:
@@ -133,6 +138,14 @@ Replace placeholders with target facts before accepting installation.
     When change packages are enabled, preserve historical target records and
     check semantic approval fields, companion decisions, correction impact,
     provenance quality, and target validator support.
+    When test-first development is enabled, preserve target commands, trigger
+    severity, modes, levels, isolation, exceptions, policy revision, and
+    historical evidence; recheck recommendation and RED/GREEN routing without
+    silently enabling new CI or merge requirements.
+    When extensions are enabled, preserve catalog and lock IDs, immutable
+    source revisions/digests, target bindings, permissions, approvals, local
+    deviations, installed-file ownership, and historical lifecycle evidence;
+    recheck compatibility and drift without automatic updates.
 15. Identify required migrations, approvals, unresolved facts, and skipped
    checks.
 16. Use `.ai/assistant/templates/migration-note.md` when a framework update
@@ -173,6 +186,13 @@ Report:
 - project-vocabulary ownership, term decision authority, scoped state and
   ambiguity, alias/acronym lookup, canonical sources, data links,
   normalization boundaries, adapted skill, validation, and evidence revision
+- test-first policy owner, authority, state, trigger severity, modes, levels,
+  commands, isolation, exceptions, recommendation behavior, adapted skill,
+  RED/GREEN evidence contract, validation, and evidence revision
+- extension state owner, catalog/lock consistency, source revision/digest,
+  license and compatibility, target bindings, permissions, approval,
+  installed-file hashes/ownership, dependents, update/removal safety, and
+  lifecycle evidence
 - catalog, automatic routing, health, preview, help, AI infrastructure
   inventory/recommendation, bridge, prompt,
   skill, gate, checker, item router, recommendation/adaptation records,

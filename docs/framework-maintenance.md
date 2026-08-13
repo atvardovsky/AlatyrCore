@@ -16,6 +16,8 @@ Use this guide when changing Alatyr Core itself.
   changelog when affected.
 - Manifest, ownership, context-router, context-profile, approval-record,
   change-package, code-documentation profile/generator, project-vocabulary,
+  test-first policy/recommendation/enablement/evidence,
+  extension package/catalog/lock/lifecycle,
   output-contract, AI-infrastructure inventory or recommendation, or
   prompt-injection contract change: update
   `framework/`, `installer/`, `templates/target`, checker rules, README, and
@@ -89,6 +91,14 @@ Before accepting a change, check:
   states, compact lookup, aliases, acronyms, scoped ambiguity, data-dictionary
   links, canonical-owner boundaries, operation routing, adapted skill, gates,
   installer wiring, or target structural validation changes.
+- `python3 tools/check_test_first_development.py` passes when test-first policy
+  state, bounded recommendation, enablement, trigger/mode/command/isolation,
+  RED/GREEN/refactor evidence, operation routing, skill/gate, installer wiring,
+  or target structural validation changes.
+- `python3 tools/check_extensions.py` passes when extension package format,
+  compatibility, catalog/lock, target bindings, lifecycle, ownership,
+  inspection tooling, routing, bridges, installer wiring, or target structural
+  validation changes.
 - `python3 tools/check_ai_infrastructure_inventory.py` passes when AI
   infrastructure inventory fields, source/provenance, permission, license,
   prompt-injection risk, approval, recommendation, or residual-risk evidence

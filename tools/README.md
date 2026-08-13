@@ -17,6 +17,8 @@ python3 tools/alatyr.py --help
 python3 tools/alatyr.py doctor --target /path/to/target-repo
 python3 tools/alatyr.py validate-adapter --target /path/to/target-repo
 python3 tools/alatyr.py assess-upgrade --target /path/to/target-repo --framework-source . --output-dir tmp/upgrade-assessment
+python3 tools/alatyr.py inspect-extension --package /path/to/local-extension-checkout
+python3 tools/alatyr.py inspect-extension --package /path/to/local-extension-checkout --target /path/to/target-repo
 ```
 
 Windows PowerShell:
@@ -26,6 +28,8 @@ Windows PowerShell:
 .\tools\alatyr.ps1 doctor --target C:\path\to\target-repo
 .\tools\alatyr.ps1 validate-adapter --target C:\path\to\target-repo
 .\tools\alatyr.ps1 assess-upgrade --target C:\path\to\target-repo --framework-source . --output-dir tmp\upgrade-assessment
+.\tools\alatyr.ps1 inspect-extension --package C:\path\to\local-extension-checkout
+.\tools\alatyr.ps1 inspect-extension --package C:\path\to\local-extension-checkout --target C:\path\to\target-repo
 ```
 
 Windows Command Prompt:
@@ -34,6 +38,8 @@ Windows Command Prompt:
 tools\alatyr.cmd --help
 tools\alatyr.cmd doctor --target C:\path\to\target-repo
 tools\alatyr.cmd validate-adapter --target C:\path\to\target-repo
+tools\alatyr.cmd inspect-extension --package C:\path\to\local-extension-checkout
+tools\alatyr.cmd inspect-extension --package C:\path\to\local-extension-checkout --target C:\path\to\target-repo
 ```
 
 The stable command set is:
@@ -46,6 +52,8 @@ The stable command set is:
 - `migration-report`: optional explicit report output only
 - `assess-upgrade`: explicit assessment output only; no adapter changes
 - `context-costs`: optional static context-cost report output only
+- `inspect-extension`: read-only validation and digest calculation for a local
+  extension checkout; no network access, execution, or target writes
 - `prepare-conformance`: explicit conformance workspace output only; no
   assistant execution
 - `check-conformance`: read-only prepared or captured matrix validation
@@ -171,6 +179,49 @@ structure, not whether a project definition or relationship is true.
 
 ```sh
 python3 tools/check_project_vocabulary.py
+```
+
+## Test-First Development Check
+
+`check_test_first_development.py` validates the optional target-adapted
+test-first rule, explicit configuration switch, bounded recommendation gate,
+policy schema, RED/GREEN/refactor flow and evidence, operation routing, bridge
+coverage, installer wiring, and structural-validation limitations.
+
+```sh
+python3 tools/check_test_first_development.py
+```
+
+## Extension Checks
+
+`validate_extension_package.py` inspects a local extension package as
+untrusted data. It validates `alatyr-extension.json`, declared item paths,
+compatibility fields, allowed actions, and the v1 no-hooks/no-transitive-
+dependencies boundary, then reports a deterministic package digest. It does
+not clone repositories, execute package content, install dependencies, or
+write target files.
+
+With `--target`, the command reads the installed target manifest and rule
+registry and compares framework, adapter schema, template, and required-rule
+compatibility. This remains structural evidence, not semantic or runtime
+compatibility proof.
+
+`check_extensions.py` validates the portable extension rule, author template,
+target catalog and lock templates, lazy operation route, gates, installer
+wiring, bridge coverage, and positive and rejected package fixtures.
+
+Linux or macOS:
+
+```sh
+python3 tools/alatyr.py inspect-extension --package /path/to/local-extension-checkout
+python3 tools/check_extensions.py
+```
+
+Windows PowerShell or Command Prompt:
+
+```powershell
+.\tools\alatyr.ps1 inspect-extension --package C:\path\to\local-extension-checkout
+py -3 .\tools\check_extensions.py
 ```
 
 ## AI Infrastructure Inventory Check

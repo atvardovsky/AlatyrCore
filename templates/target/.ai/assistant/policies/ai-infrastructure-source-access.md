@@ -3,7 +3,7 @@
 Use this policy in `{PROJECT_NAME}` before reading, importing, installing, or
 normalizing assistant skills, prompts, wrappers, bridge files, rules, MCP/tool
 configs, gates, checkers, packages, plugins, or third-party assistant
-infrastructure.
+infrastructure, including an Alatyr extension package.
 
 Replace placeholders with target facts before accepting installation.
 
@@ -56,7 +56,11 @@ approval-required, or disallowed for `{PROJECT_NAME}`.
 11. When imported or adapted infrastructure creates, changes, or documents
    checker rules, record the target-local adapter checker status from target
    evidence. Do not claim that a checker exists or is missing unless the
-   repository evidence supports it.
+    repository evidence supports it.
+12. For an extension package, inspect only a local checkout or an explicitly
+    policy-approved source snapshot. Record an immutable revision and package
+    digest before integration. Never execute package content or lifecycle
+    hooks during inspection.
 
 ## Evidence
 

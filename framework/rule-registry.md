@@ -37,6 +37,8 @@ Categories should be short uppercase labels such as:
 - `ARCHITECTURE`
 - `CODEDOC`
 - `VOCABULARY`
+- `TDD`
+- `EXTENSION`
 - `DIAGRAM`
 - `ADAPTER`
 - `MODULE`
@@ -65,7 +67,7 @@ project-area overlays, and optional task-scale overlay, and record context
 expansion only when boundaries or conflicts require it; prefer changed-fact
 relationship routing when an adapted consistency map exists and item routing
 for AI infrastructure work; keep optional change-package, code-documentation,
-and project-vocabulary detail lazy.
+project-vocabulary, test-first, and extension detail lazy.
 Applies to: all installed adapter tasks.
 
 Rule ID: `ALATYR-SOURCE-001`
@@ -74,15 +76,16 @@ Commitment: choose fact owners from the target source-of-truth registry when
 it exists, record invariant and dependency constraints, use stable fact IDs
 for optional relationship routing, preserve bounded code-comment ownership,
 derived generated-output boundaries, and vocabulary links to canonical fact
-owners, and otherwise use contour ownership plus a manual invariant closure
-while reporting missing owners or relationship coverage.
+owners, preserve target test-strategy and accepted test-first-policy ownership,
+and otherwise use contour ownership plus a manual invariant closure while
+reporting missing owners or relationship coverage.
 Applies to: logical integrity, documentation sync, blueprint-driven changes.
 
 Rule ID: `ALATYR-RISK-001`
 Canonical source: `.ai/framework/change-risk-model.md`
 Commitment: classify changed facts, not only changed files, before choosing
 approval, validation, documentation, diagram, observable external failure
-distinctions, and evidence scope.
+distinctions, test-first recommendation, and evidence scope.
 Applies to: all changes.
 
 Rule ID: `ALATYR-APPROVAL-001`
@@ -117,7 +120,8 @@ validation, and residual risk before claiming consistency; use a bounded map
 or manual invariant closure, reconcile combined multi-workstream repairs, and
 reconcile active package scope, companion decisions, corrections, selected
 code-documentation profiles, generators, output policies, and changed project
-term IDs, aliases, meanings, and data links.
+term IDs, aliases, meanings, data links, and activated test-first trigger and
+RED/GREEN/refactor evidence.
 Applies to: semantic fact changes and drift reviews.
 
 Rule ID: `ALATYR-CHANGE-001`
@@ -126,7 +130,8 @@ Commitment: carry accepted product changes through source-of-truth update,
 invariant re-derivation, flow update, implementation plan, code/test change,
 docs/diagram sync, and final evidence, reconciling related review items and
 using bounded workstreams plus final convergence when the change is large or
-resumable; activate a change package only when its separate gate passes.
+resumable; compose an enabled target test-first flow when its trigger applies;
+activate a change package only when its separate gate passes.
 Applies to: business, architecture, data, runtime, and public-contract changes.
 
 Rule ID: `ALATYR-PACKAGE-001`
@@ -172,6 +177,27 @@ and project fact owners; and require target authority before normalization.
 Applies to: project term lookup, acronym and alias resolution, vocabulary
 proposal and review, terminology checks, and accepted terminology changes.
 
+Rule ID: `ALATYR-TDD-001`
+Canonical source: `.ai/framework/test-first-development.md`
+Commitment: when the optional test-first-development module is enabled, apply
+an accepted target policy with project-specific triggers, modes, commands,
+isolation, exceptions, and RED/GREEN/refactor evidence; when it is not enabled,
+recommend bounded assessment only from supported changed-fact and risk evidence
+without silently imposing TDD or blocking ordinary work.
+Applies to: test-first policy configuration, regression fixes, invariant and
+contract changes, risky refactoring, and other target-activated code changes.
+
+Rule ID: `ALATYR-EXTENSION-001`
+Canonical source: `.ai/framework/extensions.md`
+Commitment: treat an external Alatyr extension as a declarative untrusted
+package until read-only inspection, immutable provenance, compatibility,
+license, permissions, target bindings, conflicts, approval, normalization,
+installed-file ownership, lock evidence, and validation are resolved; prohibit
+arbitrary lifecycle hooks, framework replacement, project-fact ownership,
+automatic updates, and transitive extension installation.
+Applies to: extension inspection, planning, installation, update, disablement,
+removal, recommendation, drift review, and cross-assistant routing.
+
 Rule ID: `ALATYR-DIAGRAM-001`
 Canonical source: `.ai/framework/diagram-guidance.md`
 Commitment: present every discussion diagram through a bounded portable ASCII
@@ -190,22 +216,25 @@ separated and rewritten from target evidence, including routed AI
 infrastructure items, target development-pattern evidence, project-evidenced
 recommendation records, adaptation records, optional project-owned code-
 documentation profiles and generators, and optional project vocabulary and
-data-dictionary links.
+data-dictionary links, optional target test-first policy and evidence, and
+optional normalized extension catalogs, locks, bindings, and lifecycle records.
 Applies to: installation, update, and adapter maintenance.
 
 Rule ID: `ALATYR-MODULE-001`
 Canonical source: `.ai/framework/module-profile.md`
 Commitment: establish the required core profile first, then enable optional
-modules, including change packages, source-set code documentation, and project
-vocabulary, only when the target needs and can maintain them.
+modules, including change packages, source-set code documentation, project
+vocabulary, test-first development, and extensions, only when the target needs
+and can maintain them.
 Applies to: installation, update, adapter maturity, and framework upgrades.
 
 Rule ID: `ALATYR-OPERATION-001`
 Canonical source: `.ai/framework/operation-help.md`
 Commitment: expose one conversational Alatyr entry point, route clear requests
 automatically through a canonical target operation catalog and checked compact
-exact-alias index, including optional code-documentation and project-vocabulary
-requests, provide a read-only evidence-based adapter health operation, and show
+exact-alias index, including optional code-documentation, project-vocabulary,
+test-first, and extension lifecycle requests, provide a read-only evidence-
+based adapter health operation, and show
 a bounded pre-change preview only when changed-fact risk, approval, or scope
 uncertainty requires it.
 Applies to: installed operation routing, adapter health, and changes requiring
@@ -224,16 +253,18 @@ Rule ID: `ALATYR-BRIDGE-001`
 Canonical source: `.ai/framework/bridge-capability-matrix.md`
 Commitment: keep bridge files thin and record assistant loading behavior,
 permission model, alias routing, limitations, and conformance checks.
-Selected AI infrastructure items and enabled project-vocabulary requests must
-route through canonical target routing across supported assistant surfaces.
+Selected AI infrastructure items and enabled project-vocabulary, test-first,
+and extension requests must route through canonical target routing across
+supported assistant surfaces.
 Applies to: supported assistant surfaces.
 
 Rule ID: `ALATYR-LIFECYCLE-001`
 Canonical source: `.ai/framework/lifecycle.md`
 Commitment: record framework version, adapter schema version, template version,
 baseline, local deviations, migration notes, upgrade evidence, and preservation
-of enabled target package records, code-documentation profiles, and vocabulary
-records.
+of enabled target package records, code-documentation profiles, vocabulary
+records, accepted test-first policies and evidence, and installed extension
+catalog, lock, bindings, ownership, and historical lifecycle evidence.
 Applies to: installation and framework upgrades.
 
 Rule ID: `ALATYR-EVIDENCE-001`
@@ -241,7 +272,9 @@ Canonical source: `.ai/framework/guarantees.md`
 Commitment: distinguish declarative process commitments, machine-checkable
 expectations, target-dependent guarantees, and non-guarantees in final claims,
 including strong versus bounded package provenance and the semantic limits of
-comments, generated reference output, and structurally valid vocabulary.
+comments, generated reference output, structurally valid vocabulary, and
+structurally complete RED/GREEN records, and structurally valid extension
+packages and locks.
 Applies to: final evidence and framework positioning.
 
 ## Use In Target Adapters

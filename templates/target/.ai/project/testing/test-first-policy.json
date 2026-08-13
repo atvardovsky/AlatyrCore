@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "policy_kind": "target-test-first-development-policy",
+  "project": "{PROJECT_NAME}",
+  "state": "{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}",
+  "owner": "{TARGET_TEST_STRATEGY_OWNER}",
+  "decision_authority": "{TARGET_TEST_FIRST_DECISION_AUTHORITY}",
+  "last_reviewed": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}",
+  "evidence_revision": "{TARGET_REVISION_OR_UNKNOWN_WITH_REASON}",
+  "suggestion": {
+    "mode": "{OFF_OR_ADVISORY}",
+    "minimum_result": "{RECOMMENDED_OR_REQUIRED}",
+    "max_per_task": 1,
+    "suppress_after_decline": true,
+    "cost_statement_required": true
+  },
+  "available_modes": [
+    "{STRICT_TDD_REGRESSION_FIRST_CHARACTERIZATION_FIRST_CONTRACT_FIRST_OR_TEST_AFTER_WITH_REASON}"
+  ],
+  "activation_triggers": [
+    {
+      "id": "{TARGET_TRIGGER_ID}",
+      "state": "{REQUIRED_RECOMMENDED_OR_DISABLED}",
+      "changed_fact_classes": ["{TARGET_CHANGED_FACT_CLASS}"],
+      "conditions": ["{TARGET_EVIDENCE_BACKED_CONDITION}"],
+      "mode": "{TARGET_TEST_FIRST_MODE}",
+      "test_level_ids": ["{TARGET_TEST_LEVEL_ID}"],
+      "exceptions": []
+    }
+  ],
+  "test_levels": [
+    {
+      "id": "{TARGET_TEST_LEVEL_ID}",
+      "purpose": "{TARGET_OBSERVABLE_CONTRACT}",
+      "paths": ["{TARGET_TEST_PATH_OR_PATTERN}"],
+      "command_ids": ["{TARGET_TEST_COMMAND_ID}"],
+      "feedback_time": "{TARGET_EXPECTED_FEEDBACK_TIME_OR_UNKNOWN}",
+      "fixtures_and_helpers": ["{TARGET_FIXTURE_FAKE_BUILDER_OR_HELPER}"]
+    }
+  ],
+  "commands": [
+    {
+      "id": "{TARGET_TEST_COMMAND_ID}",
+      "command": "{TARGET_TEST_COMMAND_OR_MANUAL_REVIEW}",
+      "scope": "{TARGET_COMMAND_SCOPE}",
+      "live_external_actions": "{FORBIDDEN_ALLOWED_WITH_APPROVAL_OR_NOT_APPLICABLE}"
+    }
+  ],
+  "isolation": {
+    "clock": "{TARGET_CLOCK_ISOLATION}",
+    "randomness": "{TARGET_RANDOMNESS_ISOLATION}",
+    "database": "{TARGET_DATABASE_ISOLATION}",
+    "queue": "{TARGET_QUEUE_ISOLATION}",
+    "filesystem": "{TARGET_FILESYSTEM_ISOLATION}",
+    "network": "{TARGET_NETWORK_ISOLATION}",
+    "secrets": "{TARGET_SECRET_POLICY}"
+  },
+  "exceptions": [],
+  "evidence_requirements": [
+    "changed fact and owner",
+    "trigger result and selected mode",
+    "observable acceptance examples",
+    "RED command result and expected failure reason",
+    "GREEN command result for the same focused contract",
+    "refactor result or skip reason",
+    "broader validation and residual risk"
+  ],
+  "known_gaps": ["{TARGET_TEST_FIRST_KNOWN_GAP_OR_NONE}"]
+}

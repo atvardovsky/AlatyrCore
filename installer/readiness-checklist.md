@@ -54,6 +54,9 @@ changes.
 - Scaffold profile (`core` / `standard` / `full` / not used):
 - Existing skills, prompts, third-party assistant infrastructure, provenance
   notes, and wrappers:
+- Existing extension package manifests, extension catalog and lock, immutable
+  source revisions and digests, target bindings, installed-file ownership,
+  local modifications, dependents, and lifecycle evidence:
 - Existing AI infrastructure inventory reports:
 - Existing AI infrastructure router, item IDs, permissions, gates, output
   contracts, recommendation records, and adaptation records:
@@ -163,6 +166,8 @@ Collect target-specific facts before writing project docs:
 - runtime flows
 - test strategy
 - existing test levels, folders, fixtures, fakes, and isolation rules
+- existing test-first/TDD policy, regression patterns, activation triggers,
+  commands, feedback time, exceptions, CI, merge gates, and decision authority
 - validation commands and manual checks
 - context/source-of-truth owners and generated artifacts
 - source-of-truth registry entries for important fact types
@@ -235,6 +240,14 @@ Collect target-specific facts before writing project docs:
   acronyms, term states, normalization policy, canonical sources, data-
   dictionary links, terminology validation, lazy route, and adapted skill when
   the optional module is enabled
+- test-first owner, decision authority, accepted policy state, bounded
+  recommendation behavior, triggers, modes, test levels, commands, isolation,
+  exceptions, RED/GREEN/refactor evidence, lazy route, gate, and adapted skill
+  when the optional module is enabled
+- extension owner, source-access and prompt-injection policy, extension package
+  manifest, immutable source and digest, compatibility, catalog/lock, bindings,
+  permissions, approval, installed-file ownership, update/removal policy, lazy
+  route, and cross-assistant exposure when optional extensions are supported
 
 ## 6. Assistant Compatibility
 

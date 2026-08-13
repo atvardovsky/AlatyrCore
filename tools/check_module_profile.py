@@ -38,6 +38,8 @@ OPTIONAL_MODULES = [
     "architecture-knowledge",
     "code-documentation",
     "project-vocabulary",
+    "test-first-development",
+    "extensions",
     "diagrams",
     "ai-infrastructure",
     "multi-assistant-bridges",
@@ -252,6 +254,38 @@ def main() -> int:
             failures.append(
                 f"module project-vocabulary missing required file {required}"
             )
+
+    test_first = module_blocks.get("test-first-development", "")
+    for required in [
+        ".ai/framework/test-first-development.md",
+        ".ai/project/testing/README.md",
+        ".ai/project/testing/test-first-policy.json",
+        ".ai/assistant/context/intents/test-first-request.json",
+        ".ai/assistant/flows/test-first-configuration.flow.md",
+        ".ai/assistant/flows/test-first-change.flow.md",
+        ".ai/assistant/gates/test-first-development.md",
+        ".ai/assistant/templates/test-first-evidence.md",
+        ".ai/assistant/skills/test-first-development/SKILL.md",
+    ]:
+        if required not in test_first:
+            failures.append(
+                f"module test-first-development missing required file {required}"
+            )
+
+    extensions = module_blocks.get("extensions", "")
+    for required in [
+        ".ai/framework/extensions.md",
+        ".ai/assistant/extensions/README.md",
+        ".ai/assistant/extensions/catalog.json",
+        ".ai/assistant/extensions/lock.json",
+        ".ai/assistant/context/intents/extension-request.json",
+        ".ai/assistant/flows/extension-lifecycle.flow.md",
+        ".ai/assistant/gates/extensions.md",
+        ".ai/assistant/templates/extension-review.md",
+        ".ai/assistant/templates/extension-lifecycle-record.md",
+    ]:
+        if required not in extensions:
+            failures.append(f"module extensions missing required file {required}")
 
     installed_operations = module_blocks.get("installed-operations", "")
     for required in [

@@ -4,6 +4,67 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.8 - 2026-08-12
+
+- Increased the framework version to `0.1.0-alpha.8`, adapter schema version
+  to `7`, and target template version to `8`, with migration evidence from the
+  committed `0.1.0-alpha.7` source state.
+- Added optional project-owned test-first development under new rule
+  `ALATYR-TDD-001`, with explicit policy assessment, enablement, revision,
+  disablement, and review instead of a universal TDD mandate.
+- Added target-configurable strict TDD, regression-first,
+  characterization-first, contract-first, and justified test-after modes,
+  while preserving target ownership of commands, test levels, fixtures,
+  isolation, exceptions, CI, and merge policy.
+- Added a bounded recommendation gate that classifies test-first work as
+  `required`, `recommended`, `not-indicated`, or `blocked` from changed-fact
+  and risk evidence. Suggestions are limited to once per task, suppressed
+  after decline, and do not block ordinary work when the module is disabled.
+- Added a lazy test-first intent, separate configuration and execution
+  operations, target policy and index, RED/GREEN/refactor gate, evidence
+  record, adapted skill, help aliases, installation and update guidance, and
+  routing across all nine supported assistant surfaces.
+- Required RED to fail for the expected behavior reason, GREEN to prove the
+  same focused contract, useful tests not to be weakened for a pass, and
+  broader validation to follow changed risk and boundary crossings.
+- Extended the portable target validator with enabled-module file, manifest,
+  policy metadata, mode, trigger, test-level, command, exception-reference,
+  isolation, operation, and router checks. Structural checks explicitly do
+  not prove assertion semantics or expected-failure causality.
+- Added deterministic source checking and scaffold conformance for the new
+  module. The compact test-first route loads 4 files and about 2,756 words
+  versus 14 files and about 8,445 words for the full reference union, a 67.4%
+  static word reduction.
+- Added optional declarative extensions under new rule
+  `ALATYR-EXTENSION-001`, including an external repository package manifest,
+  authoring template, read-only local inspection, compatibility and permission
+  review, target-owned bindings, compact catalog, immutable source and
+  installed-file lock, explicit lifecycle, and ownership-aware removal.
+- Kept extension packages non-executable: version 1 rejects arbitrary
+  lifecycle hooks, transitive extension dependencies, path escapes, symlinks,
+  framework replacement, project-fact ownership, automatic updates, and
+  unapproved permission expansion.
+- Added `extension-management` and read-only extension recommendation aliases
+  across all nine assistant surfaces, while keeping package items outside
+  routine bootstrap and routing normalized items lazily through existing AI
+  infrastructure contracts.
+- Extended source tooling with the cross-platform `inspect-extension` command
+  and installed-target checks for enabled module files, catalog/lock identity,
+  immutable provenance, compatibility, bindings, approval evidence, exact
+  installed-file ownership and hashes, operation routing, and drift.
+- The compact extension route loads 6 files and about 3,067 words versus 14
+  resolved files and about 8,691 words for the full reference union, a 64.7%
+  static word reduction.
+- Kept the routine bootstrap at 1,835 words, below the unchanged 2,000-word
+  hard limit. The bootstrap soft headroom increased from 1,700 to 1,900 words
+  for the test-first and extension manifest and lazy-router declarations.
+- Changed `ALATYR-CONTEXT-001`, `ALATYR-SOURCE-001`, `ALATYR-RISK-001`,
+  `ALATYR-INTEGRITY-001`, `ALATYR-CHANGE-001`, `ALATYR-ADAPTER-001`,
+  `ALATYR-MODULE-001`, `ALATYR-OPERATION-001`, `ALATYR-BRIDGE-001`,
+  `ALATYR-SAFETY-002`, `ALATYR-LIFECYCLE-001`, and `ALATYR-EVIDENCE-001`;
+  added `ALATYR-TDD-001` and
+  `ALATYR-EXTENSION-001`; no rule IDs were removed.
+
 ## 0.1.0-alpha.7 - 2026-08-07
 
 - Increased the framework version to `0.1.0-alpha.7`, adapter schema version

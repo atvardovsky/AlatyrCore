@@ -53,6 +53,8 @@ REQUIRED_OPERATIONS = {
     "drift-review",
     "documentation-sync",
     "project-vocabulary",
+    "test-first-configuration",
+    "test-first-change",
     "adapter-maturity-review",
 }
 REQUIRED_ALIAS_TARGETS = {
@@ -64,6 +66,8 @@ REQUIRED_ALIAS_TARGETS = {
     "create-project-blueprint",
     "architecture-assistance",
     "project-vocabulary",
+    "test-first-configuration",
+    "test-first-change",
     "logical-integrity-review",
     "product-change",
     "large-task",

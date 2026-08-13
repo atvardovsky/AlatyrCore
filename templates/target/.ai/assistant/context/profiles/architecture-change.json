@@ -11,7 +11,8 @@
   "operation_candidates": [
     "product-change",
     "create-project-blueprint",
-    "logical-integrity-review"
+    "logical-integrity-review",
+    "test-first-change"
   ],
   "required_context": [
     ".ai/framework/context-discovery.md",

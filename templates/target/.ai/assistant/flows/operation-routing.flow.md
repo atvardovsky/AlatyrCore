@@ -63,6 +63,10 @@ For `Alatyr status` or `Alatyr doctor`, route directly to `adapter-health` with
    context and record budget exceptions.
 6. Classify contour, changed facts, risk, source-of-truth owners, and approval
    triggers. Operation selection does not grant approval.
+   For implementation, defect, invariant, contract, or risky-refactor work,
+   evaluate the compact test-first recommendation gate. Load the target policy
+   and test-first intent only when the result is required/recommended or the
+   request is explicit; do not suggest it for every code edit.
 7. When exactly one operation fits and its allowed-action scope is sufficient,
    state the operation and reason briefly, then continue without asking the
    user to confirm routing.
@@ -104,6 +108,19 @@ record that preview was skipped and why.
   source access, provenance, prompt-injection, approval, and safety rules
   before fetching or integration.
 - `Alatyr team status` routes to read-only `team-status`.
+- `Alatyr enable test-first`, `Alatyr configure TDD`, `Alatyr review
+  test-first`, and `Alatyr disable test-first` route to
+  `test-first-configuration`, which may assess a disabled module.
+- `Alatyr test first`, `Alatyr TDD`, `fix regression test first`,
+  `characterize before refactor`, and `define contract first` route to
+  `test-first-change` only when the target policy is enabled; otherwise route
+  to a read-only configuration assessment.
+- `Alatyr extensions`, `Alatyr inspect extension`, `Alatyr add extension`,
+  `Alatyr update extension`, `Alatyr disable extension`, `Alatyr remove
+  extension`, and `Alatyr review extension` route to `extension-management`.
+  List and inspection remain read-only until an approved lifecycle mode.
+- `Alatyr suggest extensions` routes to read-only
+  `ai-infrastructure-recommendation`; it does not fetch or install source.
 - `Alatyr diagram`, `show as a diagram`, and `visualize architecture` route to
   `diagram-discussion`. Default to `read-only`, check only the current entry in
   `.ai/assistant/assistant-capabilities.json`, and retain a readable text
@@ -128,6 +145,11 @@ Report:
 - pre-change preview shown, refreshed, or skipped with reason
 - team overlay, task/actor IDs, and registry evidence revision when applicable
 - diagram presentation mode, source status, and fallback when applicable
+- test-first recommendation result, policy state, trigger, mode, likely level,
+  cost, and selected configuration or execution route when applicable
+- extension lifecycle mode, selected ID/source, source-access state, immutable
+  revision/digest, compatibility, permissions, ownership, and next safe action
+  when applicable
 - missing input, if any
 - next safe action
 

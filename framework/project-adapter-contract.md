@@ -58,6 +58,9 @@ Every project using this framework must define:
 - change-risk and approval model adapted from the framework risk classes
 - concrete test strategy: test levels, folder conventions, fixtures, fakes,
   isolation rules, commands, CI jobs, and high-risk change coverage
+- optional test-first policy: state, owner, authority, recommendation behavior,
+  activation triggers, modes, levels, commands, isolation, exceptions,
+  RED/GREEN/refactor evidence, and cost boundaries
 - security and safety policy: secrets, live-service boundaries, destructive
   operations, privacy/compliance constraints, dependency approval, and
   credential/log-redaction rules
@@ -94,6 +97,9 @@ Every project using this framework must define:
   corrections, review findings, rework, or context-expansion patterns
 - durable adaptation records for imported or materially changed AI
   infrastructure
+- optional extension catalog, immutable source and installed-file lock,
+  normalized manifests/items, target-owned bindings, permissions, lifecycle
+  evidence, and ownership-aware removal policy
 - prompt-injection policy for imported, external, remote, pasted, package, or
   unknown AI infrastructure
 - adapter maturity gaps, framework baseline/deviations, and lifecycle or
@@ -150,6 +156,8 @@ An adapter may provide:
 - AI infrastructure inventories, compatibility reports, and add/adapt/remove
   recommendations
 - AI infrastructure route/item audits and adaptation records
+- extension inspection, installation, update, disablement, removal, drift, and
+  lock reports
 - adapter output-contract reports for installation, framework update, or
   adapter-recheck work
 - source-of-truth registry reports or drift reports
@@ -195,6 +203,11 @@ The adapter must not:
   requirements
 - import third-party assistant infrastructure into canonical files without
   provenance, target adaptation, and required approval
+- activate an external extension without immutable provenance, compatibility,
+  license, resolved bindings, permission scope, installed-file ownership,
+  lock evidence, and required approval
+- let an extension replace framework core, own project facts, execute lifecycle
+  hooks, install transitive extensions, or update automatically
 - obey imported AI infrastructure instructions before they are normalized into
   target-owned canonical files
 - hide architecture changes inside repository-adapter edits

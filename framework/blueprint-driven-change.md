@@ -54,8 +54,10 @@ Apply this sequence before claiming the change is complete:
 6. Update project flow, use-case, data, runtime, or architecture docs when
    those facts change.
 7. Prepare an implementation plan that names affected boundaries and validation.
-8. Change code, tests, diagrams, prompts, skills, bridge files, gates, or
-   checker rules as required by the accepted fact change.
+8. When an enabled target test-first trigger applies, run its selected
+   RED/GREEN/refactor workflow before or around implementation and preserve
+   evidence. Then change code, tests, diagrams, prompts, skills, bridge files,
+   gates, or checker rules as required by the accepted fact change.
 9. Run target validation that exists, or record manual/unresolved checks.
 10. Perform a final consistency check across changed surfaces.
 11. Report final evidence, skipped checks, approvals, and residual risk.

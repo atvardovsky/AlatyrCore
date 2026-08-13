@@ -46,6 +46,18 @@ use a separate optional intent overlay. Start with the compact vocabulary
 catalog, then load only selected full term records, data-dictionary links, and
 named canonical owners. Ordinary tasks should not load the full vocabulary.
 
+Explicit test-first configuration or execution and bounded recommendation
+triggers use a separate optional intent overlay. Evaluate recommendation from
+already selected changed-fact and risk context first; load target policy,
+selected flow, gate, skill, and evidence only when the result is required or
+recommended, or the user explicitly requests test-first work.
+
+Extension list, inspection, installation, update, disablement, removal, or
+review uses a separate optional intent overlay. Load the compact extension
+catalog first, then only the selected lock entry, normalized manifest, target
+bindings, items, lifecycle flow, gates, and evidence. Do not load all installed
+extensions or search remote sources during ordinary tasks.
+
 ## Canonical Profiles
 
 Use these profile names unless a target adapter deliberately renames them:

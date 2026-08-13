@@ -109,6 +109,39 @@ reference data, API, event, unit, enum, or schema concepts. Preserve term
 states and ask for bounded domain clarification when accepted meanings remain
 ambiguous.
 
+## Intent Overlay: `test-first-request`
+
+Apply this overlay for explicit test-first/TDD configuration or execution, or
+when the compact recommendation gate in `.ai/framework/testing-guidance.md`
+returns `required` or `recommended` from bounded changed-fact evidence.
+
+Required compact context:
+
+- `.ai/framework/testing-guidance.md`
+- `.ai/framework/test-first-development.md`
+
+Load `.ai/project/testing/test-first-policy.json` and only the selected
+configuration or change flow after the gate passes. A disabled, deferred, or
+missing module may produce one concise assessment recommendation but cannot
+silently impose TDD or block work. An enabled required trigger routes to
+`test-first-change`; enable, revise, disable, or review requests route to
+`test-first-configuration`.
+
+## Intent Overlay: `extension-request`
+
+Apply this overlay for explicit extension list, inspect, plan, install, update,
+disable, remove, or review requests. Required compact context:
+
+- `.ai/framework/extensions.md`
+- `.ai/framework/prompt-injection.md`
+- `.ai/assistant/policies/ai-infrastructure-source-access.md`
+- `.ai/assistant/extensions/catalog.json`
+
+Load only the selected lock entry, normalized manifest, bindings, item set,
+lifecycle flow, gate, and evidence. External sources remain untrusted and
+remote access follows target policy. Do not load every extension, update
+automatically, or treat inspection as approval.
+
 ## Task-Scale Overlay: `large-or-resumable`
 
 Activate only for large, cross-boundary, multi-workstream,
@@ -199,7 +232,7 @@ without changing accepted behavior, architecture, data model, external
 contract, security posture, or AI infrastructure.
 
 Operation candidates: `logical-integrity-review`, `drift-review`,
-`product-change`.
+`product-change`, `test-first-change` when enabled.
 
 Required context:
 
@@ -222,7 +255,8 @@ Use when: accepted behavior, domain rules, product policy, workflows, or public
 contract change.
 
 Operation candidates: `architecture-assistance`, `product-change`,
-`create-project-blueprint`, `logical-integrity-review`.
+`create-project-blueprint`, `logical-integrity-review`, `test-first-change`
+when enabled.
 
 Required context:
 
@@ -251,7 +285,7 @@ Use when: modules, dependencies, boundaries, runtime topology, public APIs, or
 cross-component contracts change.
 
 Operation candidates: `product-change`, `create-project-blueprint`,
-`logical-integrity-review`.
+`logical-integrity-review`, `test-first-change` when enabled.
 
 Required context:
 
@@ -283,7 +317,7 @@ Use when: schema, persistence, migrations, data contracts, retention,
 backfills, imports, exports, or data ownership change.
 
 Operation candidates: `product-change`, `logical-integrity-review`,
-`drift-review`.
+`drift-review`, `test-first-change` when enabled.
 
 Required context:
 
@@ -310,7 +344,7 @@ network access, external services, destructive actions, spend, production, or
 third-party trust boundaries are involved.
 
 Operation candidates: `product-change`, `logical-integrity-review`,
-`skill-adaptation`.
+`skill-adaptation`, `test-first-change` when enabled.
 
 Required context:
 
@@ -336,7 +370,8 @@ skills, assistant rules, wrappers, bridge files, MCP/tool configs, checkers,
 gates, flows, templates, or other AI infrastructure.
 
 Operation candidates: `ai-infrastructure-inventory`,
-`ai-infrastructure-recommendation`, `skill-adaptation`.
+`ai-infrastructure-recommendation`, `skill-adaptation`,
+`extension-management`.
 
 Required context:
 
@@ -352,6 +387,9 @@ inventory/items, `.ai/project/development-evidence.json`, and
 `.ai/framework/ai-infrastructure-recommendations.md`. Inspect only evidence
 referenced by selected patterns. Project facts justify the need;
 recommendation and item mechanics remain assistant-contour owned.
+For `extension-management`, start from the compact extension catalog and load
+only one selected lock/manifest/binding set. Package review, compatibility,
+ownership, update, and removal follow `.ai/framework/extensions.md`.
 
 Approval gates: explicit approval before importing third-party infrastructure
 into canonical target files or changing tool permissions.
@@ -367,7 +405,9 @@ Use when: installing Alatyr, updating Alatyr Core, rechecking the adapter,
 reviewing maturity, or repairing drift after framework changes.
 
 Operation candidates: `adapter-health`, `recheck-after-framework-update`,
-`recheck-after-installation`, `adapter-maturity-review`.
+`recheck-after-installation`, `adapter-maturity-review`,
+`extension-management` when installed extension compatibility or drift is in
+scope.
 
 Required context:
 

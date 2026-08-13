@@ -89,6 +89,8 @@ policy wording.
 - Project architecture knowledge: `ALATYR-ARCHITECTURE-001`
 - Project code documentation: `ALATYR-CODEDOC-001`
 - Project vocabulary: `ALATYR-VOCABULARY-001`
+- Optional test-first development: `ALATYR-TDD-001`
+- External extension packages: `ALATYR-EXTENSION-001`
 - Discussion diagram presentation: `ALATYR-DIAGRAM-001`
 - Optional team collaboration: `ALATYR-TEAM-001`
 
@@ -149,6 +151,8 @@ python3 tools/check_approval_template.py
 python3 tools/check_change_packages.py
 python3 tools/check_code_documentation.py
 python3 tools/check_project_vocabulary.py
+python3 tools/check_test_first_development.py
+python3 tools/check_extensions.py
 python3 tools/check_ai_infrastructure_inventory.py
 python3 tools/check_ai_infrastructure_recommendations.py
 python3 tools/check_ai_infrastructure_router.py

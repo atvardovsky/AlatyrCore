@@ -66,6 +66,10 @@ The framework commits to giving an assistant a defined process for:
   derived reference output when the optional module is enabled
 - resolving project terms, aliases, acronyms, and scoped meanings from compact
   target-owned vocabulary records when the optional module is enabled
+- recommending, configuring, and applying target-owned test-first policy when
+  bounded triggers activate the optional module
+- inspecting, normalizing, locking, updating, disabling, and removing
+  declarative external extensions when the optional target module is enabled
 - recording what was checked, what changed, what was skipped, and what risk
   remains
 - adapting the same process across supported assistants through thin bridge
@@ -243,6 +247,11 @@ The framework does not guarantee:
   canonical project fact owner
 - that a structurally valid vocabulary entry proves its definition, ownership,
   relationships, or acceptance are semantically correct
+- that structurally complete RED/GREEN records prove a test was executed,
+  failed for the intended reason, or semantically proves the changed contract
+- that a structurally valid extension package, catalog, lock, digest, path, or
+  compatibility result proves source trustworthiness, license interpretation,
+  semantic usefulness, runtime safety, or item correctness
 - that unsupported assistants will auto-load the right files without a bridge
   or user instruction
 - that missing security, live-service, or diagram policy can be inferred from

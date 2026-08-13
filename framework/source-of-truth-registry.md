@@ -92,6 +92,7 @@ Target adapters may include fact types such as:
 - code-documentation profile and generator policy
 - project vocabulary term, alias, acronym, and acceptance state
 - vocabulary-to-data-dictionary link
+- test strategy and accepted test-first policy
 - assistant operation
 - team operating model, authority, or priority policy
 - skill, prompt, wrapper, or bridge behavior
@@ -115,6 +116,7 @@ that commonly create drift when left ownerless:
 - team operating model when team collaboration is enabled
 - code documentation profile when code-documentation generation is enabled
 - project vocabulary when terminology support is enabled
+- test strategy and test-first policy when that optional module is enabled
 
 Each baseline entry may remain placeholder-based during installation planning,
 but before an adapter claims maturity the owner should be resolved from target

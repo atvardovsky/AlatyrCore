@@ -1,0 +1,39 @@
+# Test-First Evidence
+
+Operation ID: `{OPERATION_ID}`
+Policy revision: `{TARGET_POLICY_REVISION}`
+Policy state: `{ENABLED_OR_BLOCKED}`
+Recommendation result: `{REQUIRED_RECOMMENDED_NOT_INDICATED_OR_BLOCKED}`
+Trigger ID and evidence: `{TARGET_TRIGGER_AND_EVIDENCE}`
+Selected mode: `{STRICT_TDD_REGRESSION_FIRST_CHARACTERIZATION_FIRST_CONTRACT_FIRST_OR_TEST_AFTER_WITH_REASON}`
+Changed fact or defect: `{CHANGED_FACT_DEFECT_INVARIANT_OR_CONTRACT}`
+Canonical owner: `{TARGET_FACT_OWNER}`
+Test level: `{TARGET_TEST_LEVEL_ID}`
+Acceptance examples: `{OBSERVABLE_EXAMPLES_AND_BOUNDARIES}`
+
+## RED
+
+Test reference: `{TARGET_TEST_PATH_AND_CASE}`
+Command ID: `{TARGET_COMMAND_ID}`
+Command: `{TARGET_COMMAND_OR_REDACTED_REFERENCE}`
+Result: `{FAILED_AS_EXPECTED_OR_INVALID_RED}`
+Expected failure reason: `{EXPECTED_BEHAVIOR_FAILURE}`
+Observed failure reason: `{OBSERVED_FAILURE}`
+Evidence revision or artifact: `{RED_EVIDENCE_REFERENCE}`
+
+## GREEN
+
+Command ID: `{TARGET_COMMAND_ID}`
+Command: `{TARGET_COMMAND_OR_REDACTED_REFERENCE}`
+Result: `{PASSED_FAILED_OR_UNRESOLVED}`
+Evidence revision or artifact: `{GREEN_EVIDENCE_REFERENCE}`
+
+## Refactor And Validation
+
+Refactor: `{PERFORMED_OR_SKIPPED_WITH_REASON}`
+Focused test after refactor: `{PASSED_FAILED_OR_NOT_RUN_WITH_REASON}`
+Broader validation: `{COMMANDS_RESULTS_SKIPS_AND_REASONS}`
+Companion updates: `{DOCS_DIAGRAMS_CONTRACTS_PROMPTS_SKILLS_GATES_OR_NONE_WITH_REASON}`
+Exception ID and authority: `{EXCEPTION_APPROVAL_OR_NONE}`
+Approvals: `{APPROVAL_REFERENCES_OR_NONE}`
+Residual risk: `{RESIDUAL_RISK}`

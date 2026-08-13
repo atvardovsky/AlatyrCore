@@ -34,6 +34,8 @@ Read in this repository first:
 - `framework/architecture-knowledge.md`
 - `framework/code-documentation.md`
 - `framework/project-vocabulary.md`
+- `framework/test-first-development.md`
+- `framework/extensions.md`
 - `framework/rule-ownership.md`
 - `framework/rule-registry.md`
 - `framework/rule-registry.json`
@@ -70,6 +72,8 @@ in the owning framework documents and use these IDs for installation routing:
 - `ALATYR-ARCHITECTURE-001`
 - `ALATYR-CODEDOC-001`
 - `ALATYR-VOCABULARY-001`
+- `ALATYR-TDD-001`
+- `ALATYR-EXTENSION-001`
 - `ALATYR-DIAGRAM-001`
 - `ALATYR-TEAM-001`
 - `ALATYR-LIFECYCLE-001`
@@ -91,7 +95,8 @@ Read in the target repository:
   naming rules, data dictionaries, schemas, APIs, ambiguous terms, deprecated
   wording, and terminology validation
 - package/build/dependency files
-- tests, fixtures, test helpers, and CI
+- tests, fixtures, test helpers, test-first/TDD policy, regression history,
+  levels, commands, isolation, exceptions, feedback time, CI, and merge gates
 - local validation commands or manual validation policy
 - security, live-service, credential, and destructive-operation policies
 - diagram sources, generated files, and visual artifacts
@@ -101,6 +106,9 @@ Read in the target repository:
 - existing AI infrastructure router entries, item IDs, permissions, gates,
   output contracts, conflicts, wrappers, recommendation records, and adaptation
   records
+- existing `alatyr-extension.json` packages, extension catalog and lock,
+  immutable source revisions, digests, bindings, installed-file ownership,
+  conflicts, local modifications, dependents, and lifecycle evidence
 - existing target development-pattern index, evidence owner, retention/privacy
   policy, and references to recurring requests, corrections, reviews, rework,
   validation failures, or context expansion
@@ -179,6 +187,10 @@ Classify every proposed target file:
     `data-dictionary-links.json` only when project vocabulary is enabled.
     Derive scoped terms, aliases, acronyms, owners, states, canonical sources,
     and links from target evidence; never infer acceptance from frequency.
+    Add `.ai/project/testing/README.md` and `test-first-policy.json` only when
+    test-first development is assessed or enabled. Derive owners, trigger
+    severity, modes, levels, commands, isolation, exceptions, and evidence from
+    the target; never infer strict TDD from the presence of tests.
     Add `.ai/project/team-operating-model.md` only when the target enables team
     collaboration. Derive actor IDs, authority, priorities, review,
     coordination backend, synchronization, storage, retention, and privacy
@@ -208,6 +220,13 @@ Classify every proposed target file:
     configuration, and generated output outside routine bootstrap.
     Add the `vocabulary-request` intent overlay only when project vocabulary is
     enabled. Keep full term records and data links outside routine bootstrap.
+    Add the `test-first-request` intent overlay when configuration is supported
+    or the module is enabled. Keep policy, flows, skill, and evidence outside
+    routine bootstrap; use existing testing guidance for the compact suggestion
+    gate.
+    Add the `extension-request` intent overlay when extension inspection or
+    lifecycle management is supported. Keep package items, unrelated lock
+    entries, and installed extension records outside routine bootstrap.
 14. Add bridge files only for assistants the target uses.
 15. Add installed-operation, operation-help, automatic operation-routing,
     read-only adapter-health, risk-gated pre-change preview,
@@ -221,6 +240,12 @@ Classify every proposed target file:
     vocabulary catalog/records/data links, term-review template, adapted
     skill, vocabulary flow, and lazy intent routing when project vocabulary is
     enabled,
+    test-first configuration/change flows, target policy, recommendation gate,
+    RED/GREEN evidence template, adapted skill, and lazy intent routing when
+    test-first development is assessed or enabled,
+    extension catalog and lock, lifecycle flow, gate, package-review template,
+    lifecycle-record template, and lazy intent routing when extensions are
+    supported,
     AI-infrastructure-inventory, AI-infrastructure-recommendation, adapter output contract
     `.ai/assistant/templates/adapter-output-contracts.md`, source-access
     policy, prompt-injection policy, human and machine-readable approval-record
@@ -263,6 +288,9 @@ Classify every proposed target file:
     When architecture knowledge is enabled, route `Alatyr architecture` and
     inventory/explain/discuss/compare/review/document aliases through the
     canonical catalog and compact architecture index.
+    Route extension aliases through the same canonical operation catalog on
+    every supported surface. Package inspection remains read-only; install,
+    update, disable, and remove require target-owned lifecycle evidence.
 17. Add prompts, skills, diagrams, or consistency checks only when they solve
     target friction, can be maintained, and have been adapted to target facts.
 18. Run target validation that exists. Do not invent commands.

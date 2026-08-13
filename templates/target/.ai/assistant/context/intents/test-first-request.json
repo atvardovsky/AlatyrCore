@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "descriptor_kind": "target-intent-overlay",
+  "intent": "test-first-request",
+  "use_when": [
+    "explicit test-first TDD regression-first characterization-first or contract-first request",
+    "bounded test-first recommendation gate returns required or recommended",
+    "test-first policy enable disable revise or review request"
+  ],
+  "operation_candidates": ["test-first-configuration", "test-first-change"],
+  "required_module": "core-profile",
+  "required_context": [
+    ".ai/framework/testing-guidance.md",
+    ".ai/framework/test-first-development.md"
+  ],
+  "conditional_context": [
+    {
+      "path": ".ai/project/testing/test-first-policy.json",
+      "when": "assessing configuring or applying target test-first policy"
+    },
+    {
+      "path": ".ai/project/testing/README.md",
+      "when": "ownership status or broad testing strategy explanation is needed"
+    },
+    {
+      "path": ".ai/assistant/flows/test-first-configuration.flow.md",
+      "when": "assessing enabling revising disabling or reviewing the module"
+    },
+    {
+      "path": ".ai/assistant/flows/test-first-change.flow.md",
+      "when": "an enabled policy activates test-first execution"
+    },
+    {
+      "path": ".ai/assistant/gates/test-first-development.md",
+      "when": "classifying recommendation result or validating RED GREEN refactor evidence"
+    },
+    {
+      "path": ".ai/assistant/skills/test-first-development/SKILL.md",
+      "when": "an accepted target test-first skill is enabled"
+    },
+    {
+      "path": ".ai/assistant/templates/test-first-evidence.md",
+      "when": "recording an activated test-first cycle or exception"
+    }
+  ],
+  "expand_when": [
+    "target policy state owner command trigger or isolation evidence is missing or conflicting",
+    "the selected test level cannot prove the changed contract",
+    "RED fails for setup syntax infrastructure or an unrelated reason",
+    "the change crosses persistence network UI security or process boundaries",
+    "a dependency CI merge-gate permission or protected-policy change is proposed"
+  ],
+  "budget_behavior": "evaluate the compact recommendation gate from selected risk context first, then load only the target policy selected flow test level command owners and evidence template"
+}

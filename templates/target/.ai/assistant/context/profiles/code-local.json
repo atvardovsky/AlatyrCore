@@ -11,7 +11,8 @@
   "operation_candidates": [
     "logical-integrity-review",
     "drift-review",
-    "product-change"
+    "product-change",
+    "test-first-change"
   ],
   "required_context": [
     ".ai/framework/context-discovery.md",

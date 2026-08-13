@@ -27,6 +27,8 @@ CHECKS = [
     ["tools/check_change_packages.py"],
     ["tools/check_code_documentation.py"],
     ["tools/check_project_vocabulary.py"],
+    ["tools/check_test_first_development.py"],
+    ["tools/check_extensions.py"],
     ["tools/render_assistant_capability_index.py"],
     ["tools/check_captured_effectiveness_results.py"],
     ["tools/check_context_router.py"],

@@ -26,11 +26,13 @@ Entry points:
 - `.ai/project/architecture/README.md` and `.ai/project/architecture/catalog.json` when architecture knowledge is enabled
 - `.ai/project/documentation/catalog.json` and `.ai/project/documentation/profiles.json` when code documentation is enabled
 - `.ai/project/vocabulary/catalog.json`, `.ai/project/vocabulary/terms.json`, and `.ai/project/vocabulary/data-dictionary-links.json` when project vocabulary is enabled
+- `.ai/project/testing/test-first-policy.json` when test-first development is enabled
 - `.ai/project/team-operating-model.md` and `.ai/assistant/team/work-registry.json` when team collaboration is enabled
 - `.ai/assistant/maturity-profile.md`
 - `.ai/assistant/bridge-capability-matrix.md`
 - `.ai/assistant/assistant-capabilities.json`
 - `.ai/assistant/ai-infrastructure-router.json` when AI infrastructure is enabled
+- `.ai/assistant/extensions/catalog.json` and `.ai/assistant/extensions/lock.json` when extensions are enabled
 - `.ai/assistant/change-packages/index.json` when change packages are enabled
 
 Future assistant bootstrap:
@@ -62,6 +64,10 @@ Available next actions:
 - `project-vocabulary`: explain project terms, resolve aliases or acronyms,
   propose glossary entries, or check terminology through scoped target-owned
   records when the optional module is enabled.
+- `test-first-configuration`: use `Alatyr enable test-first` to assess and
+  configure project-adapted triggers, commands, isolation, exceptions, and
+  evidence. Use `Alatyr test first` for an enabled policy; suggestions remain
+  non-blocking unless the accepted target trigger is required.
 - `diagram-discussion`: show, compare, or revise a diagram using `Alatyr
   diagram`; the adapter uses compact current-surface evidence, stable draft
   lineage, security/privacy policy, and a portable ASCII view. Accepted/derived
@@ -74,6 +80,8 @@ Available next actions:
 - `ai-infrastructure-inventory`: check existing AI instructions, prompts, skills, wrappers, bridges, rules, MCP/tool configs, gates, and checkers. Alias: `alatyr-ai-inventory`.
 - `ai-infrastructure-recommendation`: suggest new items or improvements to existing items from bounded project evidence in read-only mode. Aliases: `alatyr-suggest-ai <scope>`, `alatyr-improve-ai <item-id>`.
 - `skill-adaptation`: adapt or add skills, prompts, wrappers, bridges, rules, MCP/tool configs, gates, checkers, or third-party assistant infrastructure. Aliases: `alatyr-adaptation <source>`, `alatyr-add-ai <source>`.
+- `extension-management`: list, inspect, plan, install, update, disable, remove, or review declarative extension packages. Aliases: `Alatyr extensions`, `Alatyr inspect extension <source>`, `Alatyr add extension <source>`, `Alatyr update extension <id>`, `Alatyr disable extension <id>`, `Alatyr remove extension <id>`, `Alatyr review extension <id>`.
+- `Alatyr suggest extensions <scope>` routes to read-only AI infrastructure recommendation and does not fetch or install source.
 - AI infrastructure operations select a route and item ID before loading item-specific context.
 - Use `continue large task <packet-path-or-operation-id>` to resume a target-approved operation packet without reloading completed workstream context.
 

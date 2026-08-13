@@ -35,6 +35,10 @@ Framework core owns:
 - optional project vocabulary, acronym, alias, ambiguity, and data-link
   process
 - stack-aware testing analysis pattern
+- optional target-owned test-first policy, bounded recommendation,
+  RED/GREEN/refactor evidence, and exception pattern
+- optional declarative external extension package, immutable provenance,
+  target binding, normalization, ownership lock, and lifecycle pattern
 - gate categories and final evidence pattern
 - skill, prompt, wrapper, and third-party assistant infrastructure adaptation
   pattern
@@ -67,8 +71,10 @@ Framework core must not own:
 - project-specific skill triggers or rejection criteria
 - project-specific skill sources, assistant-native formats, tool permissions,
   or third-party assistant infrastructure
-- concrete test tools, commands, fixtures, CI jobs, or folder names from one
-  project
+- specific external extension repositories, package contents, publishers,
+  runtime dependencies, source credentials, or target binding values
+- concrete test tools, commands, fixtures, test-first triggers, exceptions,
+  CI jobs, merge rules, or folder names from one project
 - credentials, environment assumptions, or production deployment choices
 - project-specific security policy, live-service allowlists, dependency
   scanners, incident procedures, or destructive-command policies

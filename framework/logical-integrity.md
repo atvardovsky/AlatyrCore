@@ -53,6 +53,8 @@ Facts include:
   generated-output policy, or publication boundary
 - project vocabulary term ID, scoped meaning, alias, acronym, deprecated
   wording, related term, or data-dictionary link
+- test-first policy state, trigger, mode, command, isolation, exception, or
+  RED/GREEN/refactor evidence contract
 - diagram edge, actor, state, container, object relation, sequence, or generated
   artifact ownership rule
 
@@ -80,6 +82,11 @@ Use this sequence when a fact may have changed:
 10. Apply required companion updates or explain why none are needed.
 11. Run target validation that exists, or record manual/unresolved checks.
 12. Report final evidence and residual risk.
+
+When test-first development is activated, the repair set must include the
+selected policy trigger, changed fact or invariant, valid expected RED,
+same-contract GREEN, refactor state, broader validation, and any accepted
+exception. These records support but do not replace semantic review.
 
 When work begins from review comments, defect reports, or a list of requested
 fixes, do not process each item as an isolated file edit. Cluster items by

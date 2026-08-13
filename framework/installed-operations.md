@@ -27,6 +27,10 @@ An installed adapter should support these operation categories:
   alternative comparison, review, and supporting-documentation maintenance
 - optional project term lookup, acronym and alias resolution, vocabulary
   proposal and review, and terminology consistency checks
+- optional test-first policy assessment, enablement, review, and bounded
+  RED/GREEN/refactor execution
+- optional extension listing, inspection, planning, installation, update,
+  disablement, ownership-aware removal, and review
 - blueprint-driven product change
 - large-task orchestration for cross-boundary, multi-workstream, or resumable
   work
@@ -77,6 +81,10 @@ A post-install request should state:
   catalog items when architecture assistance applies
 - requested term, acronym, alias, domain, or bounded terminology-check scope
   when project vocabulary applies
+- test-first configuration mode, changed fact or defect, policy trigger,
+  preferred mode, and exception context when test-first work applies
+- extension lifecycle mode, source or extension ID, immutable revision when
+  known, allowed actions, and source-access boundary when extension work applies
 - expected final evidence
 - output contract when the target adapter requires a durable installation,
   framework-update, or adapter-recheck evidence shape
@@ -195,34 +203,42 @@ For installed operations:
     Start from the compact catalog, keep observed and intended architecture
     distinct, and route accepted decisions separately.
 12. Use blueprint-driven change when accepted project facts may change.
-13. Use AI infrastructure recommendation when the user asks what should be
+13. Evaluate the compact test-first recommendation gate for implementation,
+    defect, invariant, contract, and risky-refactor work. Route configuration
+    or enablement separately from execution; do not impose TDD from a disabled
+    module or repeat a declined recommendation without new evidence.
+14. Use extension management for explicit extension list, inspect, plan,
+    install, update, disable, remove, or review requests. Keep source review
+    read-only until immutable provenance, compatibility, bindings, permissions,
+    approval, ownership, and validation are resolved.
+15. Use AI infrastructure recommendation when the user asks what should be
    added or improved, or when bounded evidence shows a recurring capability
    gap. Use selected target development-pattern evidence, evaluate existing
    items before proposing a new one, and do not promote target observations
    directly into portable framework changes.
-14. Use skill adaptation when prompts, skills, wrappers, or third-party
+16. Use skill adaptation when prompts, skills, wrappers, or third-party
    assistant infrastructure change.
    Select the target AI infrastructure route and item IDs before loading item
    content, permissions, gates, validation, or import policy.
-15. Use prompt-injection policy for imported, external, remote, pasted, package,
+17. Use prompt-injection policy for imported, external, remote, pasted, package,
    plugin, or unknown AI infrastructure.
-16. Use AI infrastructure inventory before adding, importing, replacing, or
+18. Use AI infrastructure inventory before adding, importing, replacing, or
    removing assistant infrastructure.
-17. Use adapter maturity review when the request is broad, post-install, or
+19. Use adapter maturity review when the request is broad, post-install, or
     post-upgrade.
-18. Use diagram discussion when the user asks to see or iteratively revise a
+20. Use diagram discussion when the user asks to see or iteratively revise a
     visual model. Select presentation mode from the target diagram policy and
     current compact assistant-capability entry, keep drafts non-canonical,
     preserve stable ID/revision lineage, classify sensitive content and
     external rendering, and always retain a bounded portable ASCII view.
-19. Record approval evidence when protected-change scope requires it. When
+21. Record approval evidence when protected-change scope requires it. When
     scoped approval is used, enforce the complete changed path set against
     explicitly selected machine-readable records bound to the approved diff
     base.
-20. Use the target adapter output contract when the operation follows
+22. Use the target adapter output contract when the operation follows
     installation, framework update, or adapter recheck.
-21. Run target validation that exists, or record unresolved checks.
-22. Report changed facts, re-derived invariants, review-item reconciliation,
+23. Run target validation that exists, or record unresolved checks.
+24. Report changed facts, re-derived invariants, review-item reconciliation,
    files inspected, files changed, approval-scope enforcement, validation,
    skipped checks, and residual risk.
 

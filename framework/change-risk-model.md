@@ -56,6 +56,8 @@ For each risk class, decide:
 - approval requirement
 - rollback or repair direction
 - final evidence needed
+- whether target policy makes test-first work required, recommended, not
+  indicated, or blocked
 
 High-risk changes require explicit reasoning before relying on scripts.
 Scripts are evidence for known contracts; they do not decide what changed.
@@ -96,6 +98,12 @@ Use the risk class to choose companion work:
 - AI infrastructure adaptation needs inventory, provenance review, wrapper
   sync, safety review, target validation, and approval when protected assistant
   infrastructure or permissions change
+
+When test-first development is enabled, use its target policy to select the
+trigger and mode. When disabled or deferred, a reproducible defect, changed
+invariant or contract, risky refactor, concurrency behavior, or recurring
+regression may justify one concise enablement assessment; changed code alone
+does not.
 
 If no companion update is needed, final evidence must explain why no semantic
 or logical fact changed.

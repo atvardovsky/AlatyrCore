@@ -21,7 +21,7 @@
         "   evidence requires them.",
         "4. After installation/update or unclear state, read post-install/update message templates.",
         "5. For an exact operation ID or alias, including diagram, code-documentation,",
-        "   project-vocabulary, team, or AI aliases, read",
+        "   project-vocabulary, test-first, extension, team, or AI aliases, read",
         "   `.ai/assistant/operation-index.json`; for bare `Alatyr`, ambiguity, or repair, read",
         "   `.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.",
         "6. For AI infrastructure work, use `.ai/assistant/ai-infrastructure-router.json`",

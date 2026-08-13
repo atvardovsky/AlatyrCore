@@ -273,7 +273,7 @@
       "minimum_inputs": ["bounded project problem or item ID", "available outcome evidence"],
       "allowed_actions": ["read-only"],
       "preview": "never",
-      "aliases": ["alatyr-suggest-ai", "alatyr-improve-ai"],
+      "aliases": ["alatyr-suggest-ai", "alatyr-improve-ai", "Alatyr suggest extensions"],
       "final_evidence": ["recommendation", "quality cost and maintenance impact", "acceptance criteria"]
     },
     {
@@ -289,6 +289,20 @@
       "preview": "risk-gated",
       "aliases": ["alatyr-adaptation", "alatyr-add-ai"],
       "final_evidence": ["provenance", "rejected source instructions", "adaptation and validation"]
+    },
+    {
+      "id": "extension-management",
+      "title": "Extension management",
+      "summary": "List, inspect, plan, install, update, disable, remove, or review declarative external extension packages through target-owned locks and bindings.",
+      "use_when": ["list installed extensions", "inspect extension source", "plan or install extension", "update disable remove or review extension"],
+      "context_profiles": ["ai-infrastructure", "security-sensitive", "framework-upgrade"],
+      "required_module": "core-profile",
+      "flow": ".ai/assistant/flows/extension-lifecycle.flow.md",
+      "minimum_inputs": ["lifecycle mode", "source or extension ID", "allowed actions"],
+      "allowed_actions": ["read-only", "adapter-only", "full-with-approval"],
+      "preview": "risk-gated",
+      "aliases": ["Alatyr extensions", "Alatyr inspect extension", "Alatyr add extension", "Alatyr update extension", "Alatyr disable extension", "Alatyr remove extension", "Alatyr review extension"],
+      "final_evidence": ["source revision digest license and compatibility", "target bindings permissions files and ownership", "catalog lock approval validation cost and residual risk"]
     },
     {
       "id": "drift-review",
@@ -331,6 +345,34 @@
       "preview": "risk-gated",
       "aliases": ["Alatyr glossary", "Alatyr define term", "propose glossary entry", "check terminology", "review project vocabulary"],
       "final_evidence": ["selected term IDs states and match reasons", "owners sources and scoped meanings", "ambiguity data links validation and residual risk"]
+    },
+    {
+      "id": "test-first-configuration",
+      "title": "Test-first configuration",
+      "summary": "Assess, enable, revise, disable, or review target-adapted test-first development without silently changing project tooling or gates.",
+      "use_when": ["assess test-first value", "enable or disable TDD", "review test-first policy", "test-first module recommendation"],
+      "context_profiles": ["code-local", "business-change", "architecture-change", "data-change", "security-sensitive", "framework-upgrade"],
+      "required_module": "core-profile",
+      "flow": ".ai/assistant/flows/test-first-configuration.flow.md",
+      "minimum_inputs": ["configuration mode or project area", "known test strategy evidence when available"],
+      "allowed_actions": ["read-only", "adapter-only", "full-with-approval"],
+      "preview": "risk-gated",
+      "aliases": ["Alatyr enable test-first", "Alatyr configure TDD", "Alatyr review test-first", "Alatyr disable test-first"],
+      "final_evidence": ["policy assessment and state", "target triggers modes commands isolation and exceptions", "approvals cost gaps and next action"]
+    },
+    {
+      "id": "test-first-change",
+      "title": "Test-first change",
+      "summary": "Apply an enabled target policy through recommendation, RED, GREEN, refactor, broader validation, and logical integrity evidence.",
+      "use_when": ["explicit TDD or test-first request", "regression-first defect fix", "characterization before refactor", "contract-first change", "enabled test-first trigger"],
+      "context_profiles": ["code-local", "business-change", "architecture-change", "data-change", "security-sensitive"],
+      "required_module": "test-first-development",
+      "flow": ".ai/assistant/flows/test-first-change.flow.md",
+      "minimum_inputs": ["changed fact defect invariant contract or refactor scope", "allowed actions"],
+      "allowed_actions": ["read-only", "code-and-tests", "full-with-approval"],
+      "preview": "risk-gated",
+      "aliases": ["Alatyr test first", "Alatyr TDD", "fix regression test first", "characterize before refactor", "define contract first"],
+      "final_evidence": ["policy trigger mode and test level", "valid RED and GREEN evidence", "refactor broader validation exceptions and residual risk"]
     },
     {
       "id": "adapter-maturity-review",

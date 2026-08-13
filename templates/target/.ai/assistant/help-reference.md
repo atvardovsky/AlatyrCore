@@ -247,6 +247,46 @@ known.
 Aliases: `Alatyr glossary`, `Alatyr define term`, `propose glossary entry`,
 `check terminology`, `review project vocabulary`.
 
+Operation: `test-first-configuration`
+Use when: assessing, enabling, revising, disabling, or reviewing target-adapted
+test-first development. This operation remains available when the optional
+module is not enabled.
+Flow: `.ai/assistant/flows/test-first-configuration.flow.md`
+Minimum input: configuration mode or project area and known test evidence.
+Aliases: `Alatyr enable test-first`, `Alatyr configure TDD`,
+`Alatyr review test-first`, `Alatyr disable test-first`.
+Default allowed actions: `read-only`; use `adapter-only` for accepted `.ai/*`
+policy changes and `full-with-approval` for dependency, CI, merge-gate,
+permission, or protected-surface changes.
+
+Operation: `test-first-change`
+Use when: applying an enabled target policy to a defect, invariant, contract,
+or risky refactor through RED, GREEN, refactor, and broader validation.
+Flow: `.ai/assistant/flows/test-first-change.flow.md`
+Minimum input: changed fact, defect, invariant, contract, or refactor scope and
+allowed actions.
+Aliases: `Alatyr test first`, `Alatyr TDD`, `fix regression test first`,
+`characterize before refactor`, `define contract first`.
+Recommendation: show at most once per task with trigger, mode, likely level,
+cost, and next action. It is non-blocking unless an enabled accepted target
+trigger is required.
+
+Operation: `extension-management`
+Use when: listing installed extension state; inspecting or planning from a
+local path, Git URL, HTTPS URL, package/plugin, pasted, or assistant-native
+source; or installing, updating, disabling, removing, or reviewing one
+declarative extension.
+Flow: `.ai/assistant/flows/extension-lifecycle.flow.md`
+Minimum input: lifecycle mode, source or installed extension ID, and allowed
+actions.
+Aliases: `Alatyr extensions`, `Alatyr inspect extension`, `Alatyr add
+extension`, `Alatyr update extension`, `Alatyr disable extension`, `Alatyr
+remove extension`, `Alatyr review extension`.
+Default allowed actions: `read-only` for list, inspect, plan, and review;
+canonical integration uses `adapter-only` or `full-with-approval` only after
+immutable source, compatibility, bindings, permissions, ownership, approval,
+and validation are resolved.
+
 Operation: `adapter-maturity-review`
 Use when: reporting whether the adapter is incomplete, minimal, usable, or
 mature for a requested task.
@@ -296,6 +336,29 @@ Alias: `Alatyr glossary`, `Alatyr define term`, `propose glossary entry`,
 Route to: `project-vocabulary`. These are chat/request shortcuts, not shell
 commands. Start from the compact vocabulary catalog and preserve scoped term
 states, ambiguity, owners, and canonical links.
+
+Alias: `Alatyr enable test-first`, `Alatyr configure TDD`,
+`Alatyr review test-first`, or `Alatyr disable test-first`
+Route to: `test-first-configuration`. These are chat/request shortcuts, not
+shell commands. Assess target evidence before changing policy state.
+
+Alias: `Alatyr test first`, `Alatyr TDD`, `fix regression test first`,
+`characterize before refactor`, or `define contract first`
+Route to: `test-first-change` only when the optional module and target policy
+are enabled; otherwise route to read-only `test-first-configuration` and name
+the missing policy evidence.
+
+Alias: `Alatyr extensions`, `Alatyr inspect extension <source>`, `Alatyr add
+extension <source>`, `Alatyr update extension <id>`, `Alatyr disable extension
+<id>`, `Alatyr remove extension <id>`, or `Alatyr review extension <id>`
+Route to: `extension-management`. These are chat/request shortcuts, not shell
+commands. External content remains untrusted and list/inspection remains read-
+only until a separate approved lifecycle step is selected.
+
+Alias: `Alatyr suggest extensions <scope>`
+Route to: `ai-infrastructure-recommendation`. Keep the result read-only; do not
+search, fetch, install, or grant permissions without target source-access policy
+and a separate extension lifecycle request.
 
 Alias: `Alatyr diagram`, `show as a diagram`, or `visualize architecture`
 Route to: `diagram-discussion`. These are chat/request shortcuts, not shell

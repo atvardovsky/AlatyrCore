@@ -136,10 +136,17 @@ Choose the narrowest mechanism that addresses the evidenced problem:
 - tool or MCP configuration: a capability unavailable through repository
   context, only after permission and execution review
 - bridge or wrapper: assistant-specific discovery or compatibility routing
+- extension: a reusable, versioned bundle of related declarative items that
+  already has cross-project evidence and can satisfy `extensions.md`
 
 Do not use a prompt for a deterministic rule that should be a checker. Do not
 use a tool when a bounded repository workflow is sufficient. Do not create a
 skill for a one-off task.
+Do not recommend an extension for target-specific facts or one isolated item.
+Do not search remote catalogs during routine recommendation. A recommendation
+may name an already known source or propose packaging target-owned items, but
+inspection and integration remain a separate `extension-management`
+operation.
 
 ## Cost And Quality Gate
 

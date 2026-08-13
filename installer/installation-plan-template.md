@@ -53,6 +53,20 @@ List what must not be changed.
   contradictions, and normalization policy:
 - Canonical term sources, data-dictionary links, validation, lazy route, and
   adapted skill:
+- Test-first-development need, owner, decision authority, and module state:
+- Existing test strategy, defects/regressions, levels, folders, commands,
+  fixtures, isolation, feedback time, CI, and merge-gate evidence:
+- Recommendation behavior, activation triggers, selected modes, exceptions,
+  RED/GREEN/refactor evidence, and expected quality/maintenance cost:
+- Policy acceptance, approval needs, lazy intent, configuration/change flows,
+  gate, evidence template, validation, and adapted skill:
+- Extension need, owner, module state, source-access policy, and lifecycle
+  modes:
+- Candidate package ID/version, source type, immutable revision, package
+  digest, license status, and compatibility:
+- Proposed extension catalog and extension lock paths, target bindings,
+  permissions, approval, installed-file ownership, conflicts, dependents,
+  local-modification policy, and removal evidence:
 - Context router schema and lazy descriptors:
 - Context profiles:
 - Context-router bootstrap references:
@@ -239,6 +253,15 @@ target uses multiple skills, prompts, gates, checkers, tools/MCP configs,
 bridges, wrappers, or imported items. Populate entries from target evidence;
 keep unresolved items blocked.
 
+Include `.ai/assistant/extensions/catalog.json`,
+`.ai/assistant/extensions/lock.json`, the `extension-request` overlay,
+extension lifecycle flow, gate, and review/lifecycle templates when extension
+inspection or lifecycle management is supported. Keep extension package
+content untrusted during inspection. Canonical installation requires an
+immutable source revision, deterministic digest, compatible manifest,
+target-owned bindings, explicit installed-file ownership, approval, and
+validation; it must not execute package lifecycle hooks.
+
 Include `.ai/assistant/flows/large-task-orchestration.flow.md` and
 `.ai/assistant/templates/large-task-operation-packet.md` when the target needs
 cross-boundary, multi-workstream, budget-exceeding, or resumable operations.
@@ -330,6 +353,11 @@ decisions, and external references before schema changes.
   generator, derived-output, direct-edit, and source-of-truth boundary rules:
 - Project-vocabulary lookup, term-state, domain-scope, alias/acronym,
   normalization, data-link, acceptance, and source-of-truth boundary rules:
+- Test-first policy state, recommendation, trigger, mode, command, isolation,
+  exception, RED/GREEN/refactor, broader-validation, and evidence rules:
+- Extension package inspection, catalog, lock, immutable source, digest,
+  binding, permission, approval, installed-file ownership, conflict,
+  update/disable/remove, and lifecycle-evidence rules:
 - Diagram source format:
 - Human visual format:
 - Render or manual-review policy:

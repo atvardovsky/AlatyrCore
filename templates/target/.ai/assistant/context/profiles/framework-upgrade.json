@@ -13,7 +13,8 @@
     "adapter-health",
     "recheck-after-framework-update",
     "recheck-after-installation",
-    "adapter-maturity-review"
+    "adapter-maturity-review",
+    "extension-management"
   ],
   "required_context": [
     ".ai/framework/lifecycle.md",

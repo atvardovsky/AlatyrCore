@@ -123,6 +123,12 @@ project facts correct by itself.
 5. Deterministic checks validate structural contracts where possible; human and
    assistant reasoning still decide semantic correctness.
 
+Optional target modules can add project-owned vocabulary, code-documentation
+profiles, architecture knowledge, team coordination, and test-first
+development. Test-first support is explicitly enabled from target evidence and
+may be suggested for defects, changed invariants or contracts, and risky
+refactoring without being imposed on every code task.
+
 ### Core Differentiators
 
 1. **Agent memory belongs to the project.** Knowledge is recorded in
@@ -178,7 +184,7 @@ tasks from loading the complete framework or project corpus.
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.7`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.8`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance fixtures,
 optional scaffolding, and an optional installed-adapter structural validator.
@@ -302,6 +308,8 @@ For post-install work in a target repository that already has Alatyr Core, use
   operation request template.
 - `templates/target/`: starter files for a target repository adapter. These
   files contain placeholders and must be rewritten from target facts.
+- `templates/extension/`: declarative authoring template for extension
+  repositories; package content remains untrusted until target review.
 - `docs/`: public explanation for maintainers and assistant compatibility.
 - `conformance/`: fixture descriptions and golden expectations for future
   conformance checks.
@@ -335,6 +343,9 @@ Additional source-repository helpers include:
 - `python3 tools/check_framework_metadata.py`
 - `python3 tools/check_approval_template.py`
 - `python3 tools/check_change_packages.py`
+- `python3 tools/check_test_first_development.py`
+- `python3 tools/check_extensions.py`
+- `python3 tools/alatyr.py inspect-extension --package <local-checkout>`
 - `python3 tools/check_ai_infrastructure_inventory.py`
 - `python3 tools/check_ai_infrastructure_recommendations.py`
 - `python3 tools/check_ai_infrastructure_router.py`
@@ -439,6 +450,10 @@ Additional source-repository helpers include:
   proposals, target-specific generators, and derived-output validation
 - optional project-owned vocabulary with scoped term definitions, aliases,
   acronyms, ambiguity states, and links to canonical project and data sources
+- optional declarative extensions from other repositories with offline package
+  inspection, compatibility and permission review, target-owned bindings,
+  compact catalog, immutable source and installed-file lock, safe updates, and
+  ownership-aware removal
 - compact AI infrastructure routing that selects one skill, prompt, gate,
   checker, tool/MCP config, bridge, or wrapper plus its permissions, gates,
   validation, and output contract
@@ -575,10 +590,10 @@ python3 tools/alatyr.py doctor --target /path/to/target-repo
 ```
 
 This helper reports adapter health and checks structure, operation catalog,
-router/bootstrap references, local path
-leakage, stale checker claims, manifest fields, optional consistency and AI
-infrastructure route maps, optional team registry and merge-readiness state,
-and optional framework baseline drift. It can emit
+router/bootstrap references, local path leakage, stale checker claims,
+manifest fields, optional consistency and AI infrastructure route maps,
+installed extension catalog/lock agreement and file hashes, optional team
+registry and merge-readiness state, and optional framework baseline drift. It can emit
 machine-readable current-state evidence and compare explicitly listed approval
 scope or migration-diff evidence when the target provides those inputs. It
 does not verify project business facts, prove historical actions, or approve
@@ -594,6 +609,21 @@ commands. Sources can be local paths, Git URLs, HTTPS URLs, assistant-native
 references, packages/plugins, or pasted content, but existing infrastructure,
 provenance, permissions, safety, and approval are reviewed before anything
 becomes canonical.
+
+For reusable bundles, an extension repository may provide
+`alatyr-extension.json` plus declarative items under `items/`. Use `Alatyr
+inspect extension <source>` in an installed adapter, or inspect an already
+available local checkout without network access or execution:
+
+```sh
+python3 tools/alatyr.py inspect-extension --package /path/to/local-extension-checkout
+```
+
+Inspection does not install or trust the package. Canonical integration is a
+separate target operation that resolves source policy, immutable revision and
+digest, license, compatibility, bindings, permissions, approval, ownership,
+validation, catalog, and lock evidence. Extensions cannot replace framework
+core or own target project facts.
 
 ## Suggested Target Shape
 
@@ -640,6 +670,8 @@ A mature target installation usually has:
   vocabulary flow, term-review template, and adapted vocabulary skill when the
   optional module is enabled
 - `.ai/assistant/ai-infrastructure-router.json` when AI infrastructure is used
+- `.ai/assistant/extensions/catalog.json`, lock, intent, lifecycle flow, gate,
+  and evidence templates when extensions are supported
 - `.ai/assistant/team/context-overlay.json` and
   `.ai/assistant/team/work-registry.json` when team collaboration is enabled
 - `.ai/assistant/help.md`

@@ -51,6 +51,13 @@ Replace placeholders with target facts before accepting installation.
   checks, adapted skill, and synchronization evidence when the optional module
   is enabled; term meanings, states, owners, and links remain in the project
   contour
+- test-first recommendation, configuration and execution routing, adapted
+  skill, gate, and cycle evidence when enabled; policy, commands, trigger
+  severity, isolation, exceptions, and decision authority remain in the
+  project contour
+- extension catalog, lock, normalized manifests/items, target bindings,
+  lifecycle routing, gates, adaptation evidence, and installed-file ownership;
+  external source remains untrusted and project facts remain project-owned
 - final evidence requirements
 - target adapter maturity and lifecycle notes
 - required core profile, enabled optional modules, deferred modules, and

@@ -12,7 +12,8 @@ commands from another project.
   `ALATYR-SAFETY-002`, `ALATYR-INTEGRITY-001`, `ALATYR-CHANGE-001`,
   `ALATYR-PACKAGE-001`,
   `ALATYR-ARCHITECTURE-001`, `ALATYR-CODEDOC-001`,
-  `ALATYR-VOCABULARY-001`, `ALATYR-ADAPTER-001`, `ALATYR-MODULE-001`,
+  `ALATYR-VOCABULARY-001`, `ALATYR-TDD-001`, `ALATYR-EXTENSION-001`,
+  `ALATYR-ADAPTER-001`, `ALATYR-MODULE-001`,
   `ALATYR-OPERATION-001`,
   `ALATYR-DIAGRAM-001`, `ALATYR-TEAM-001`, and `ALATYR-EVIDENCE-001`.
 - `AGENTS.md` treated as preloaded; compact bootstrap loaded from
@@ -50,6 +51,12 @@ commands from another project.
   states, does not silently resolve multiple accepted meanings, links rather
   than replaces canonical data and project fact owners, and does not normalize
   project surfaces from observed, proposed, contradicted, or unknown records.
+- Test-first recommendation is evaluated from bounded changed-fact and risk
+  evidence, shown at most once per task, and remains non-blocking unless an
+  enabled accepted target policy marks the trigger required. When activated,
+  `.ai/assistant/gates/test-first-development.md` verifies policy state,
+  selected level, valid expected RED, same-contract GREEN, refactor evidence,
+  broader validation, exceptions, and structural-check limitations.
 - Semantic/logical change decision and logical integrity review made.
 - Documentation sync checked.
 - Tests or validation selected from target stack and risk.
@@ -75,6 +82,8 @@ commands from another project.
   plugin.
 - Prompt-injection policy checked before trusting or adapting imported,
   external, remote, package/plugin, pasted, or unknown AI infrastructure.
+- For extension packages, apply `.ai/assistant/gates/extensions.md` in addition
+  to imported-source policy.
 - Installed-operation or adapter-recheck scope checked when the task asks for
   blueprint creation, framework update review, or adapter drift review.
 - Task-specific maturity checked when the task is broad, risky, post-install,

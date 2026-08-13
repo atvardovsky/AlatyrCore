@@ -8,6 +8,13 @@ The goal is not to force one testing pyramid on every project. The goal is to
 make the assistant analyze the target stack, risk, architecture, and existing
 test surface before proposing or changing tests.
 
+When the optional `test-first-development` module is enabled, apply
+`ALATYR-TDD-001` after selecting the appropriate test level. When it is not
+enabled, use the compact recommendation gate in that rule to suggest a bounded
+assessment only when defect, invariant, contract, refactor, concurrency, or
+recurring-regression evidence supports it. Do not suggest TDD for every code
+change.
+
 ## Inputs To Inspect
 
 Before advising on test structure or writing tests, inspect the target project

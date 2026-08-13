@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "lock_kind": "target-alatyr-extension-lock",
+  "extension_api": 1,
+  "target_baseline": {
+    "framework_version": "{ALATYR_CORE_VERSION}",
+    "adapter_schema_version": "{ALATYR_ADAPTER_SCHEMA_VERSION}",
+    "template_version": "{ALATYR_TEMPLATE_VERSION}",
+    "rule_registry": ".ai/framework/rule-registry.json"
+  },
+  "extensions": []
+}

@@ -27,6 +27,10 @@ facts, or target skill infrastructure.
 - optional code-documentation index, compact catalog, and source-set profiles
   for selected comment styles, generators, outputs, owners, and evidence
 - optional project-vocabulary catalog, scoped terms, and canonical data links
+- optional project-owned test-first policy with bounded recommendation,
+  explicit enablement, target commands, and RED/GREEN/refactor evidence
+- optional declarative external extensions with compact catalog, immutable
+  source and installed-file lock, target bindings, permissions, and lifecycle
 - blueprint or equivalent source-of-truth facts
 - source-of-truth registry entries
 - optional machine-readable consistency relationships for bounded impact

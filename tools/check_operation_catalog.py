@@ -49,6 +49,9 @@ EXPECTED_OPERATIONS = {
     "drift-review",
     "documentation-sync",
     "project-vocabulary",
+    "test-first-configuration",
+    "test-first-change",
+    "extension-management",
     "adapter-maturity-review",
 }
 
@@ -86,6 +89,7 @@ ALLOWED_MODULES = {
     "diagrams",
     "architecture-knowledge",
     "project-vocabulary",
+    "test-first-development",
 }
 ALLOWED_PREVIEW = {"never", "risk-gated"}
 ALLOWED_PROFILES = {

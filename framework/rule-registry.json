@@ -68,6 +68,18 @@
       "derived_surfaces": ["target vocabulary catalog", "term records", "data-dictionary link records", "vocabulary intent routing", "project-vocabulary operation flow", "project-adapted vocabulary skill", "term review template", "installation and update planning", "target gates", "structural validation"]
     },
     {
+      "category": "TDD",
+      "owner": "framework/test-first-development.md",
+      "rule_ids": ["ALATYR-TDD-001"],
+      "derived_surfaces": ["target test-first policy", "recommendation gate", "configuration and change operations", "test-first intent routing", "project-adapted test-first skill", "test-first gate", "RED GREEN refactor evidence template", "installation and update planning", "structural validation"]
+    },
+    {
+      "category": "EXTENSION",
+      "owner": "framework/extensions.md",
+      "rule_ids": ["ALATYR-EXTENSION-001"],
+      "derived_surfaces": ["external extension package template", "extension inspection tool", "target extension catalog and lock", "extension lifecycle flow", "extension intent routing", "extension review and lifecycle evidence", "module profile", "target gates", "installation and update planning", "bridge routing", "structural validation"]
+    },
+    {
       "category": "DIAGRAM",
       "owner": "framework/diagram-guidance.md",
       "rule_ids": ["ALATYR-DIAGRAM-001"],
@@ -121,7 +133,7 @@
       "id": "ALATYR-CONTEXT-001",
       "category": "CONTEXT",
       "canonical_source": "framework/context-profiles.md",
-      "summary": "Use a compact budgeted bootstrap, select the smallest task profile, project-area overlays, and optional task-scale overlay through an aligned context router, record expansion only when boundaries or conflicts require it, prefer changed-fact relationship routing when an adapted consistency map exists, use item routing for AI infrastructure work, and keep optional change-package, code-documentation, and project-vocabulary detail lazy.",
+      "summary": "Use a compact budgeted bootstrap, select the smallest task profile, project-area overlays, and optional task-scale overlay through an aligned context router, record expansion only when boundaries or conflicts require it, prefer changed-fact relationship routing when an adapted consistency map exists, use item routing for AI infrastructure work, and keep optional change-package, code-documentation, project-vocabulary, test-first, and extension detail lazy.",
       "applies_to": ["all installed adapter tasks"],
       "enforcement": "required"
     },
@@ -129,7 +141,7 @@
       "id": "ALATYR-SOURCE-001",
       "category": "SOURCE",
       "canonical_source": "framework/source-of-truth-registry.md",
-      "summary": "Choose fact owners from the target source-of-truth registry, record invariant and dependency constraints, use stable fact IDs for optional relationship routing, preserve bounded code-comment ownership, derived generated-output boundaries, and vocabulary links to canonical fact owners, and otherwise use contour ownership plus a manual invariant closure while reporting missing coverage.",
+      "summary": "Choose fact owners from the target source-of-truth registry, record invariant and dependency constraints, use stable fact IDs for optional relationship routing, preserve bounded code-comment ownership, derived generated-output boundaries, vocabulary links to canonical fact owners, and target test-strategy and accepted test-first-policy ownership, and otherwise use contour ownership plus a manual invariant closure while reporting missing coverage.",
       "applies_to": ["logical integrity", "documentation sync", "blueprint-driven changes"],
       "enforcement": "required"
     },
@@ -137,7 +149,7 @@
       "id": "ALATYR-RISK-001",
       "category": "RISK",
       "canonical_source": "framework/change-risk-model.md",
-      "summary": "Classify changed facts, not only changed files, before choosing approval, validation, documentation, diagram, observable external failure distinctions, and evidence scope.",
+      "summary": "Classify changed facts, not only changed files, before choosing approval, validation, documentation, diagram, observable external failure distinctions, test-first recommendation, and evidence scope.",
       "applies_to": ["all changes"],
       "enforcement": "required"
     },
@@ -169,7 +181,7 @@
       "id": "ALATYR-INTEGRITY-001",
       "category": "INTEGRITY",
       "canonical_source": "framework/logical-integrity.md",
-      "summary": "Name changed facts, re-derive testable invariants, reconcile related review items, identify owners and repair sets, validate, and report residual risk, using mapped or manual impact closure, global multi-workstream convergence, active package scope, selected code-documentation profile and generator reconciliation, and changed project term IDs, aliases, meanings, and data links as applicable.",
+      "summary": "Name changed facts, re-derive testable invariants, reconcile related review items, identify owners and repair sets, validate, and report residual risk, using mapped or manual impact closure, global multi-workstream convergence, active package scope, selected code-documentation profile and generator reconciliation, changed project term IDs, aliases, meanings and data links, and activated test-first trigger and RED GREEN refactor evidence as applicable.",
       "applies_to": ["semantic fact changes", "drift reviews"],
       "enforcement": "required"
     },
@@ -177,7 +189,7 @@
       "id": "ALATYR-CHANGE-001",
       "category": "CHANGE",
       "canonical_source": "framework/blueprint-driven-change.md",
-      "summary": "Carry accepted product changes through invariant re-derivation, source-of-truth and flow updates, implementation planning, code and tests, companion sync, and final evidence, reconciling related review items and large workstreams globally and activating a change package only when its separate gate passes.",
+      "summary": "Carry accepted product changes through invariant re-derivation, source-of-truth and flow updates, implementation planning, code and tests, companion sync, and final evidence, reconciling related review items and large workstreams globally, composing an enabled target test-first flow when its trigger applies, and activating a change package only when its separate gate passes.",
       "applies_to": ["business changes", "architecture changes", "data changes", "runtime changes", "public contract changes"],
       "enforcement": "required"
     },
@@ -214,6 +226,22 @@
       "enforcement": "required when module enabled"
     },
     {
+      "id": "ALATYR-TDD-001",
+      "category": "TDD",
+      "canonical_source": "framework/test-first-development.md",
+      "summary": "When the optional test-first-development module is enabled, apply an accepted target policy with project-specific triggers, modes, commands, isolation, exceptions, and RED GREEN refactor evidence; when it is not enabled, recommend bounded assessment only from supported changed-fact and risk evidence without silently imposing TDD or blocking ordinary work.",
+      "applies_to": ["test-first policy configuration", "regression fixes", "invariant and contract changes", "risky refactoring", "target-activated code changes"],
+      "enforcement": "required when module enabled or target policy trigger requires it"
+    },
+    {
+      "id": "ALATYR-EXTENSION-001",
+      "category": "EXTENSION",
+      "canonical_source": "framework/extensions.md",
+      "summary": "Treat an external Alatyr extension as a declarative untrusted package until read-only inspection, immutable provenance, compatibility, license, permissions, target bindings, conflicts, approval, normalization, installed-file ownership, lock evidence, and validation are resolved; prohibit arbitrary lifecycle hooks, framework replacement, project-fact ownership, automatic updates, and transitive extension installation.",
+      "applies_to": ["extension inspection", "extension planning", "extension installation", "extension update", "extension disablement and removal", "extension recommendation", "extension drift review", "cross-assistant extension routing"],
+      "enforcement": "required when extension sources or installed extensions are involved"
+    },
+    {
       "id": "ALATYR-DIAGRAM-001",
       "category": "DIAGRAM",
       "canonical_source": "framework/diagram-guidance.md",
@@ -225,7 +253,7 @@
       "id": "ALATYR-ADAPTER-001",
       "category": "ADAPTER",
       "canonical_source": "framework/project-adapter-contract.md",
-      "summary": "Keep framework core, project facts, and repository adapter facts separated and rewritten from target evidence, including target development-pattern evidence, routed AI infrastructure items, project-evidenced recommendation records, adaptation records, optional project-owned code-documentation profiles and generators, and optional project vocabulary and data-dictionary links.",
+      "summary": "Keep framework core, project facts, and repository adapter facts separated and rewritten from target evidence, including target development-pattern evidence, routed AI infrastructure items, project-evidenced recommendation records, adaptation records, optional project-owned code-documentation profiles and generators, optional project vocabulary and data-dictionary links, optional target test-first policy and evidence, and optional normalized extension catalogs, locks, bindings, and lifecycle records.",
       "applies_to": ["installation", "framework update", "adapter maintenance"],
       "enforcement": "required"
     },
@@ -233,7 +261,7 @@
       "id": "ALATYR-MODULE-001",
       "category": "MODULE",
       "canonical_source": "framework/module-profile.md",
-      "summary": "Establish the required core profile first, then enable optional modules, including change packages, source-set code documentation, and project vocabulary, only when the target needs and can maintain them.",
+      "summary": "Establish the required core profile first, then enable optional modules, including change packages, source-set code documentation, project vocabulary, test-first development, and extensions, only when the target needs and can maintain them.",
       "applies_to": ["installation", "framework update", "adapter maturity", "framework upgrades"],
       "enforcement": "required"
     },
@@ -241,7 +269,7 @@
       "id": "ALATYR-OPERATION-001",
       "category": "OPERATION",
       "canonical_source": "framework/operation-help.md",
-      "summary": "Expose one conversational Alatyr entry point, route clear requests automatically through a canonical target operation catalog and checked compact exact-alias index, including optional code-documentation and project-vocabulary requests, provide a read-only evidence-based adapter health operation, and show a bounded pre-change preview only when changed-fact risk, approval, or scope uncertainty requires it.",
+      "summary": "Expose one conversational Alatyr entry point, route clear requests automatically through a canonical target operation catalog and checked compact exact-alias index, including optional code-documentation, project-vocabulary, test-first, and extension lifecycle requests, provide a read-only evidence-based adapter health operation, and show a bounded pre-change preview only when changed-fact risk, approval, or scope uncertainty requires it.",
       "applies_to": ["installed operation routing", "adapter health", "changes requiring preview"],
       "enforcement": "required"
     },
@@ -257,7 +285,7 @@
       "id": "ALATYR-BRIDGE-001",
       "category": "BRIDGE",
       "canonical_source": "framework/bridge-capability-matrix.md",
-      "summary": "Keep bridge files thin, record assistant loading behavior, permission model, alias routing, limitations, and conformance checks, and route selected AI infrastructure items and enabled project-vocabulary requests through canonical target routing across supported assistant surfaces.",
+      "summary": "Keep bridge files thin, record assistant loading behavior, permission model, alias routing, limitations, and conformance checks, and route selected AI infrastructure items and enabled project-vocabulary, test-first, and extension requests through canonical target routing across supported assistant surfaces.",
       "applies_to": ["supported assistant surfaces"],
       "enforcement": "required"
     },
@@ -265,7 +293,7 @@
       "id": "ALATYR-LIFECYCLE-001",
       "category": "LIFECYCLE",
       "canonical_source": "framework/lifecycle.md",
-      "summary": "Record framework version, adapter schema version, template version, baseline, local deviations, migration notes, upgrade evidence, preservation of enabled target package records, preservation and recheck of enabled target code-documentation profiles, and preservation of target vocabulary records and acceptance states.",
+      "summary": "Record framework version, adapter schema version, template version, baseline, local deviations, migration notes, upgrade evidence, preservation of enabled target package records, preservation and recheck of enabled target code-documentation profiles, preservation of target vocabulary records and acceptance states, preservation and recheck of accepted target test-first policy and evidence, and preservation of installed extension catalogs, locks, bindings, ownership, and historical lifecycle evidence.",
       "applies_to": ["installation", "framework upgrades"],
       "enforcement": "required"
     },
@@ -273,7 +301,7 @@
       "id": "ALATYR-EVIDENCE-001",
       "category": "EVIDENCE",
       "canonical_source": "framework/guarantees.md",
-      "summary": "Distinguish declarative process commitments, machine-checkable expectations, target-dependent guarantees, and non-guarantees in final claims, including strong versus bounded change-package provenance and the semantic limits of comments, generated reference output, and structurally valid vocabulary records.",
+      "summary": "Distinguish declarative process commitments, machine-checkable expectations, target-dependent guarantees, and non-guarantees in final claims, including strong versus bounded change-package provenance and the semantic limits of comments, generated reference output, structurally valid vocabulary records, structurally complete RED GREEN refactor records, and structurally valid extension packages and locks.",
       "applies_to": ["final evidence", "framework positioning"],
       "enforcement": "required"
     }

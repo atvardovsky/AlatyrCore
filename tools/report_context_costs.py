@@ -17,7 +17,7 @@ ROUTER = TARGET / ".ai" / "assistant" / "context-router.json"
 
 
 def source_path(reference: str) -> Path | None:
-    if reference.startswith("{"):
+    if "{" in reference:
         return None
     if reference.startswith(".ai/framework/"):
         return ROOT / "framework" / reference[len(".ai/framework/") :]
@@ -221,6 +221,64 @@ def build_report() -> dict[str, Any]:
         [value for value in vocabulary_full_reference_refs if value]
     )
 
+    test_first_reference, test_first_overlay = intent_contracts.get(
+        "test-first-request", (None, {})
+    )
+    test_first_conditional_refs = [
+        entry.get("path")
+        for entry in test_first_overlay.get("conditional_context", [])
+        if isinstance(entry, dict) and isinstance(entry.get("path"), str)
+    ]
+    test_first_compact_refs = [
+        operation_routing.get("index", ""),
+        test_first_reference,
+        *test_first_overlay.get("required_context", []),
+    ]
+    test_first_full_reference_refs = [
+        operation_routing.get("catalog", ""),
+        ".ai/assistant/help.md",
+        ".ai/assistant/flows/operation-routing.flow.md",
+        ".ai/assistant/module-profile.md",
+        test_first_reference,
+        *test_first_overlay.get("required_context", []),
+        *test_first_conditional_refs,
+    ]
+    test_first_compact = measure(
+        [value for value in test_first_compact_refs if value]
+    )
+    test_first_full_reference = measure(
+        [value for value in test_first_full_reference_refs if value]
+    )
+
+    extension_reference, extension_overlay = intent_contracts.get(
+        "extension-request", (None, {})
+    )
+    extension_conditional_refs = [
+        entry.get("path")
+        for entry in extension_overlay.get("conditional_context", [])
+        if isinstance(entry, dict) and isinstance(entry.get("path"), str)
+    ]
+    extension_compact_refs = [
+        operation_routing.get("index", ""),
+        extension_reference,
+        *extension_overlay.get("required_context", []),
+    ]
+    extension_full_reference_refs = [
+        operation_routing.get("catalog", ""),
+        ".ai/assistant/help.md",
+        ".ai/assistant/flows/operation-routing.flow.md",
+        ".ai/assistant/module-profile.md",
+        extension_reference,
+        *extension_overlay.get("required_context", []),
+        *extension_conditional_refs,
+    ]
+    extension_compact = measure(
+        [value for value in extension_compact_refs if value]
+    )
+    extension_full_reference = measure(
+        [value for value in extension_full_reference_refs if value]
+    )
+
     migration_reference, migration = descriptor(router.get("migration_routing", {}))
     migration_initial_refs = [
         value
@@ -277,6 +335,22 @@ def build_report() -> dict[str, Any]:
                 "word_reduction_percent": reduction_percent(
                     vocabulary_compact["words"],
                     vocabulary_full_reference["words"],
+                ),
+            },
+            "test-first-development": {
+                "compact": test_first_compact,
+                "full_reference_union": test_first_full_reference,
+                "word_reduction_percent": reduction_percent(
+                    test_first_compact["words"],
+                    test_first_full_reference["words"],
+                ),
+            },
+            "extension-management": {
+                "compact": extension_compact,
+                "full_reference_union": extension_full_reference,
+                "word_reduction_percent": reduction_percent(
+                    extension_compact["words"],
+                    extension_full_reference["words"],
                 ),
             },
         },

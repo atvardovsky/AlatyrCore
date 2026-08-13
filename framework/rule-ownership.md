@@ -105,6 +105,21 @@ vocabulary intent route and operation flow, project-adapted vocabulary skill,
 term review template, installation and update planning, gates, and structural
 validation.
 
+Category: `TDD`
+Owner: `.ai/framework/test-first-development.md`
+Rule IDs: `ALATYR-TDD-001`
+Derived surfaces: target test-first policy, recommendation gate, configuration
+and change operations, intent route, project-adapted skill, gate, evidence
+template, installation and update planning, and structural validation.
+
+Category: `EXTENSION`
+Owner: `.ai/framework/extensions.md`
+Rule IDs: `ALATYR-EXTENSION-001`
+Derived surfaces: external extension package template and inspection tool,
+target extension catalog and lock, lifecycle flow, intent routing, review and
+lifecycle evidence, module profile, gates, installer/update planning, bridge
+routing, and structural validation.
+
 Category: `DIAGRAM`
 Owner: `.ai/framework/diagram-guidance.md`
 Rule IDs: `ALATYR-DIAGRAM-001`

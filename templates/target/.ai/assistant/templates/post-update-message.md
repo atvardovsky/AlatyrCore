@@ -55,6 +55,13 @@ Operation help:
 - When project vocabulary is enabled, preserve term IDs, definitions, states,
   aliases, acronyms, owners, canonical sources, and data links; recheck lookup,
   ambiguity, normalization, adapted skill, and validation before use.
+- When test-first development is enabled, preserve target policy ownership,
+  triggers, modes, commands, isolation, exceptions, adapted skill, and
+  historical evidence; recheck recommendation and RED/GREEN routing before use.
+- When extensions are enabled, preserve catalog/lock entries, immutable source
+  provenance, target bindings, permissions, approvals, file ownership, local
+  deviations, and lifecycle history; recheck compatibility and drift without
+  automatically updating, activating, or removing any extension.
 - When team collaboration is enabled, recheck the operating model, registry
   schema, active task IDs, claims, handoffs, decisions, external references,
   stale overlaps, and revision-bound reviews before changing active records.

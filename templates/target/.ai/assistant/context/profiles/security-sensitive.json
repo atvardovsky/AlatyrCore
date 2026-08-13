@@ -12,7 +12,8 @@
   "operation_candidates": [
     "product-change",
     "logical-integrity-review",
-    "skill-adaptation"
+    "skill-adaptation",
+    "test-first-change"
   ],
   "required_context": [
     ".ai/framework/change-risk-model.md",

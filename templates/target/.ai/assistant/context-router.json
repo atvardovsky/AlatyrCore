@@ -14,7 +14,7 @@
     "bootstrap": {
       "max_files": 4,
       "max_words": 2000,
-      "soft_max_words": 1700
+      "soft_max_words": 1900
     },
     "profile_default": {
       "max_files": 12,
@@ -98,6 +98,24 @@
         "project-vocabulary"
       ],
       "required_module": "project-vocabulary"
+    },
+    "test-first-request": {
+      "use_when": [
+        "explicit test-first TDD regression-first characterization-first or contract-first request",
+        "bounded recommendation trigger or test-first configuration request"
+      ],
+      "descriptor": ".ai/assistant/context/intents/test-first-request.json",
+      "operation_candidates": ["test-first-configuration", "test-first-change"],
+      "required_module": "core-profile"
+    },
+    "extension-request": {
+      "use_when": [
+        "extension list inspect plan install update disable remove or review request",
+        "explicit external extension source or installed extension ID"
+      ],
+      "descriptor": ".ai/assistant/context/intents/extension-request.json",
+      "operation_candidates": ["extension-management"],
+      "required_module": "core-profile"
     }
   },
   "consistency_routing": {

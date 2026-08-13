@@ -35,6 +35,7 @@ REQUIRED_FACT_TYPES = [
     "AI infrastructure item",
     "code documentation profile",
     "project vocabulary",
+    "test strategy and test-first policy",
 ]
 
 REQUIRED_FIELDS = [
@@ -116,6 +117,7 @@ def main() -> int:
             "development process pattern": ".ai/project/development-evidence.json",
             "code documentation profile": ".ai/project/documentation/profiles.json",
             "project vocabulary": ".ai/project/vocabulary/terms.json",
+            "test strategy and test-first policy": ".ai/project/testing/test-first-policy.json",
         }
         if fact_type in fixed_owners:
             if fixed_owners[fact_type] not in canonical_line:

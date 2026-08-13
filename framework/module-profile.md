@@ -60,6 +60,13 @@ maintain them:
 - `project-vocabulary`: project-owned compact terminology catalog, scoped term
   records, aliases, acronyms, ambiguity states, and links to canonical data or
   project facts without loading the complete vocabulary by default.
+- `test-first-development`: target-owned test-first policy, bounded
+  recommendation triggers, explicit enablement, RED/GREEN/refactor evidence,
+  justified exceptions, and a project-adapted execution skill.
+- `extensions`: declarative external assistant-infrastructure packages with
+  read-only inspection, target normalization, compact catalog, immutable
+  source and installed-file lock, permissions, lifecycle evidence, safe update,
+  and ownership-aware removal.
 - `diagrams`: diagram source, visual artifact, render or manual-review, drift,
   discussion presentation, generated capability index, per-assistant
   capability/freshness records, captured result conformance, security/privacy,
@@ -147,6 +154,12 @@ Reject module-profile work that:
 
 - treats optional modules as mandatory for every target
 - claims a module is enabled without owner, context, validation, and evidence
+- enables test-first development without an accepted target policy, concrete
+  commands, isolation rules, trigger modes, exception handling, and RED/GREEN
+  evidence requirements
+- enables extensions without immutable provenance, license and compatibility
+  review, resolved target bindings, permission and approval evidence, exact
+  installed-file ownership, lock validation, and safe removal behavior
 - enables team collaboration without a coordination backend, actor and
   decision-owner evidence, storage/privacy policy, or conflict review
 - enables a consistency map without target-owned fact IDs, relationship

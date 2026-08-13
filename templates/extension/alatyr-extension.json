@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "package_kind": "alatyr-extension",
+  "id": "{NAMESPACED_EXTENSION_ID}",
+  "name": "{EXTENSION_DISPLAY_NAME}",
+  "version": "{SEMVER_VERSION}",
+  "description": "{EXTENSION_PURPOSE}",
+  "license": "{SPDX_LICENSE_OR_UNRESOLVED}",
+  "source_repository": "{SOURCE_REPOSITORY_URL}",
+  "compatibility": {
+    "extension_api": 1,
+    "framework": {
+      "minimum": "0.1.0-alpha.8",
+      "maximum_exclusive": "0.2.0"
+    },
+    "adapter_schema": {
+      "minimum": 7,
+      "maximum": 7
+    },
+    "template": {
+      "minimum": 8,
+      "maximum": 8
+    },
+    "required_rule_ids": [
+      "{REQUIRED_ALATYR_RULE_ID}"
+    ]
+  },
+  "provides": [
+    {
+      "id": "{EXTENSION_ITEM_ID}",
+      "type": "{SKILL_PROMPT_GATE_FLOW_TEMPLATE_CHECKER_TOOL_MCP_BRIDGE_WRAPPER_RULE_OR_DOC}",
+      "path": "items/{RELATIVE_ITEM_PATH}",
+      "purpose": "{ITEM_PURPOSE}",
+      "activation_triggers": [
+        "{TARGET_ADAPTED_TRIGGER}"
+      ],
+      "required_context": [
+        "{TARGET_BINDING_OR_PORTABLE_CONTEXT_REFERENCE}"
+      ],
+      "supported_assistants": [
+        "{SUPPORTED_ASSISTANT_SURFACE}"
+      ],
+      "allowed_actions": [
+        "{READ_ONLY_DOCS_ONLY_ADAPTER_ONLY_CODE_AND_TESTS_OR_FULL_WITH_APPROVAL}"
+      ],
+      "requested_permissions": [
+        "{REQUESTED_PERMISSION_OR_NONE}"
+      ],
+      "gates": [
+        "{REQUIRED_GATE_OR_MANUAL_REVIEW}"
+      ],
+      "validation": [
+        "{PACKAGE_OR_TARGET_VALIDATION_OR_MANUAL_REVIEW}"
+      ],
+      "output_contract": "{ITEM_OUTPUT_CONTRACT}"
+    }
+  ],
+  "project_bindings": [
+    {
+      "id": "{BINDING_ID}",
+      "description": "{TARGET_FACT_REQUIRED_BY_EXTENSION}",
+      "value_type": "{PATH_COMMAND_OWNER_POLICY_GATE_VALIDATION_OR_OTHER}",
+      "required": true
+    }
+  ],
+  "conflicts": [],
+  "extension_dependencies": [],
+  "lifecycle": {
+    "installation": "declarative-only",
+    "updates": "review-diff-and-reapprove",
+    "removal": "ownership-aware",
+    "arbitrary_hooks": false
+  },
+  "validation": [
+    "{PACKAGE_LEVEL_VALIDATION_OR_MANUAL_REVIEW}"
+  ]
+}

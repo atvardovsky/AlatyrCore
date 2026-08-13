@@ -45,6 +45,12 @@
       "write_scope": "explicit-report-output-only"
     },
     {
+      "name": "inspect-extension",
+      "script": "validate_extension_package.py",
+      "purpose": "inspect a local extension checkout without network access or execution",
+      "write_scope": "none"
+    },
+    {
       "name": "prepare-conformance",
       "script": "prepare_conformance_matrix.py",
       "purpose": "prepare all-surface assistant conformance workspaces",

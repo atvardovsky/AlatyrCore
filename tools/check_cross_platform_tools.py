@@ -25,6 +25,7 @@ EXPECTED_COMMANDS = {
     "migration-report",
     "assess-upgrade",
     "context-costs",
+    "inspect-extension",
     "prepare-conformance",
     "check-conformance",
     "prepare-benchmark",
@@ -98,6 +99,15 @@ def main() -> int:
     doctor_output = run("doctor", "--output", "should-not-exist.json")
     if doctor_output.returncode != 2 or "does not permit" not in doctor_output.stderr:
         failures.append("doctor must reject report-file output and remain read-only")
+
+    extension_output = run(
+        "inspect-extension",
+        "--package",
+        str(ROOT / "templates" / "extension"),
+        "--allow-placeholders",
+    )
+    if extension_output.returncode != 0:
+        failures.append("cross-platform extension inspection failed")
 
     cmd_text = (TOOLS / "alatyr.cmd").read_text(encoding="utf-8")
     ps_text = (TOOLS / "alatyr.ps1").read_text(encoding="utf-8")

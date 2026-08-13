@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "descriptor_kind": "target-intent-overlay",
+  "intent": "extension-request",
+  "use_when": [
+    "list inspect install update remove disable or review an Alatyr extension",
+    "explicit extension source repository path Git URL HTTPS URL package plugin or assistant-native reference"
+  ],
+  "operation_candidates": ["extension-management"],
+  "required_module": "core-profile",
+  "required_context": [
+    ".ai/framework/extensions.md",
+    ".ai/framework/prompt-injection.md",
+    ".ai/assistant/policies/ai-infrastructure-source-access.md",
+    ".ai/assistant/extensions/catalog.json"
+  ],
+  "conditional_context": [
+    {
+      "path": ".ai/assistant/extensions/lock.json",
+      "when": "an installed extension is inspected updated disabled removed or drift-checked"
+    },
+    {
+      "path": ".ai/assistant/flows/extension-lifecycle.flow.md",
+      "when": "a lifecycle mode is selected"
+    },
+    {
+      "path": ".ai/assistant/gates/extensions.md",
+      "when": "compatibility permissions approval ownership or activation is evaluated"
+    },
+    {
+      "path": ".ai/assistant/templates/extension-review.md",
+      "when": "read-only package inspection evidence is recorded"
+    },
+    {
+      "path": ".ai/assistant/templates/extension-lifecycle-record.md",
+      "when": "install update disable remove or final lifecycle evidence is recorded"
+    },
+    {
+      "path": ".ai/assistant/extensions/{EXTENSION_ID}/manifest.json",
+      "when": "one normalized installed extension is selected"
+    },
+    {
+      "path": ".ai/assistant/extensions/{EXTENSION_ID}/bindings.json",
+      "when": "selected target bindings are required"
+    }
+  ],
+  "expand_when": [
+    "source provenance immutable revision digest license or compatibility is unresolved",
+    "requested permissions protected effects or target bindings are unclear",
+    "installed file ownership local modifications conflicts or dependencies are detected",
+    "router operation gate bridge or assistant wrapper synchronization is required"
+  ],
+  "budget_behavior": "load only the selected catalog and lock entry manifest bindings items lifecycle evidence and affected integration surfaces"
+}

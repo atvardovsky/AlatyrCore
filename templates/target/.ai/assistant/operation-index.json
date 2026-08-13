@@ -45,8 +45,16 @@
     "alatyr-ai-inventory": "ai-infrastructure-inventory",
     "alatyr-suggest-ai": "ai-infrastructure-recommendation",
     "alatyr-improve-ai": "ai-infrastructure-recommendation",
+    "Alatyr suggest extensions": "ai-infrastructure-recommendation",
     "alatyr-adaptation": "skill-adaptation",
     "alatyr-add-ai": "skill-adaptation",
+    "Alatyr extensions": "extension-management",
+    "Alatyr inspect extension": "extension-management",
+    "Alatyr add extension": "extension-management",
+    "Alatyr update extension": "extension-management",
+    "Alatyr disable extension": "extension-management",
+    "Alatyr remove extension": "extension-management",
+    "Alatyr review extension": "extension-management",
     "review drift": "drift-review",
     "find stale Alatyr facts": "drift-review",
     "sync documentation": "documentation-sync",
@@ -60,6 +68,15 @@
     "propose glossary entry": "project-vocabulary",
     "check terminology": "project-vocabulary",
     "review project vocabulary": "project-vocabulary",
+    "Alatyr enable test-first": "test-first-configuration",
+    "Alatyr configure TDD": "test-first-configuration",
+    "Alatyr review test-first": "test-first-configuration",
+    "Alatyr disable test-first": "test-first-configuration",
+    "Alatyr test first": "test-first-change",
+    "Alatyr TDD": "test-first-change",
+    "fix regression test first": "test-first-change",
+    "characterize before refactor": "test-first-change",
+    "define contract first": "test-first-change",
     "check Alatyr maturity": "adapter-maturity-review",
     "review adapter readiness": "adapter-maturity-review"
   },
@@ -190,6 +207,13 @@
       "adapter-only",
       "full-with-approval"
     ],
+    "extension-management": [
+      "core-profile",
+      ".ai/assistant/flows/extension-lifecycle.flow.md",
+      "read-only",
+      "adapter-only",
+      "full-with-approval"
+    ],
     "drift-review": [
       "core-profile",
       ".ai/assistant/flows/logical-integrity-review.flow.md",
@@ -213,6 +237,20 @@
       ".ai/assistant/flows/project-vocabulary.flow.md",
       "read-only",
       "docs-only",
+      "full-with-approval"
+    ],
+    "test-first-configuration": [
+      "core-profile",
+      ".ai/assistant/flows/test-first-configuration.flow.md",
+      "read-only",
+      "adapter-only",
+      "full-with-approval"
+    ],
+    "test-first-change": [
+      "test-first-development",
+      ".ai/assistant/flows/test-first-change.flow.md",
+      "read-only",
+      "code-and-tests",
       "full-with-approval"
     ],
     "adapter-maturity-review": [

@@ -100,8 +100,17 @@ for the compact team view. When `code-documentation` is enabled, use
 `review code documentation`; the assistant selects a bounded accepted profile.
 When `project-vocabulary` is enabled, use `Alatyr glossary`, `Alatyr define
 term`, or `check terminology`; the assistant starts from the compact catalog.
-Detailed team, blueprint, integrity, update, documentation, vocabulary, and AI-
-infrastructure operations and aliases are in
+Use `Alatyr enable test-first` to assess and configure the optional policy, or
+`Alatyr test first` for an enabled policy. The assistant may suggest this once
+when defect, invariant, contract, refactor, or recurring-regression evidence
+supports it; a suggestion is not mandatory unless target policy says so.
+Use `Alatyr extensions` to list compact state, `Alatyr inspect extension
+<source>` for read-only source review, and `Alatyr add/update/disable/remove
+extension <source-or-id>` for an approval-aware lifecycle request. These are
+chat shortcuts, not shell commands. `Alatyr suggest extensions <scope>` remains
+read-only and does not fetch or install a package.
+Detailed team, blueprint, integrity, update, documentation, vocabulary,
+test-first, extension, and AI-infrastructure operations and aliases are in
 `.ai/assistant/help-reference.md`.
 
 ## Minimal Request Shape

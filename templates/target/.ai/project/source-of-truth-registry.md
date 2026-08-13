@@ -247,6 +247,25 @@ Conflict resolver: `{TARGET_TERM_DECISION_AUTHORITY}`
 Approval trigger: `{TERM_ACCEPTANCE_DEPRECATION_SEMANTIC_NORMALIZATION_OR_BROAD_REWRITE_TRIGGER}`
 Final evidence: `{SELECTED_TERM_IDS_STATES_OWNERS_SOURCES_LINKS_VALIDATION_AND_RESIDUAL_AMBIGUITY}`
 
+### Fact Type: `test strategy and test-first policy`
+
+Fact type: `test strategy and test-first policy`
+Canonical owner: `.ai/project/testing/test-first-policy.json`
+Consistency level: `{TEST_FIRST_POLICY_CONSISTENCY_LEVEL}`
+Project area: `{TEST_FIRST_POLICY_PROJECT_AREA}`
+Consistency map node: `{TEST_FIRST_POLICY_FACT_ID_OR_MISSING}`
+Relationship coverage: `{TEST_FIRST_POLICY_RELATIONSHIP_COVERAGE_OR_GAP}`
+Invariant and dependency constraints: `{TEST_LEVEL_COMMAND_TRIGGER_ISOLATION_EXCEPTION_AND_EVIDENCE_CONSTRAINTS}`
+Derived surfaces:
+
+- `{TARGET_TEST_FLOWS_GATES_SKILLS_CI_OR_NONE}`
+
+Sync direction: `{ACCEPTED_TEST_POLICY_TO_ADAPTER_AND_VALIDATION_SURFACES}`
+Validation or manual review: `{TARGET_TEST_POLICY_AND_ROUTE_VALIDATION}`
+Conflict resolver: `{TARGET_TEST_FIRST_DECISION_AUTHORITY}`
+Approval trigger: `{POLICY_ACCEPTANCE_DEPENDENCY_CI_MERGE_GATE_PERMISSION_OR_VALIDATION_CHANGE}`
+Final evidence: `{POLICY_STATE_TRIGGER_MODES_COMMANDS_ISOLATION_EXCEPTIONS_VALIDATION_AND_RESIDUAL_RISK}`
+
 ## Conflict Handling
 
 When sources disagree:

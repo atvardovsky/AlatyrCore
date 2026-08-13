@@ -184,6 +184,48 @@ Approval needs: `{PROJECT_VOCABULARY_APPROVAL_NEEDS}`
 Residual risk: `{PROJECT_VOCABULARY_RESIDUAL_RISK}`
 Next action: `{PROJECT_VOCABULARY_NEXT_ACTION}`
 
+Module: `test-first-development`
+State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+Owner or file: `.ai/project/testing/test-first-policy.json`
+Required files:
+
+- `.ai/framework/test-first-development.md`
+- `.ai/project/testing/README.md`
+- `.ai/project/testing/test-first-policy.json`
+- `.ai/assistant/context/intents/test-first-request.json`
+- `.ai/assistant/flows/test-first-configuration.flow.md`
+- `.ai/assistant/flows/test-first-change.flow.md`
+- `.ai/assistant/gates/test-first-development.md`
+- `.ai/assistant/templates/test-first-evidence.md`
+- `.ai/assistant/skills/test-first-development/SKILL.md`
+
+Reason: `{REASON}`
+Validation or review: `{VALIDATION_OR_REVIEW}`
+Approval needs: `{TEST_FIRST_DEVELOPMENT_APPROVAL_NEEDS}`
+Residual risk: `{TEST_FIRST_DEVELOPMENT_RESIDUAL_RISK}`
+Next action: `{TEST_FIRST_DEVELOPMENT_NEXT_ACTION}`
+
+Module: `extensions`
+State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+Owner or file: `.ai/assistant/extensions/README.md`
+Required files:
+
+- `.ai/framework/extensions.md`
+- `.ai/assistant/extensions/README.md`
+- `.ai/assistant/extensions/catalog.json`
+- `.ai/assistant/extensions/lock.json`
+- `.ai/assistant/context/intents/extension-request.json`
+- `.ai/assistant/flows/extension-lifecycle.flow.md`
+- `.ai/assistant/gates/extensions.md`
+- `.ai/assistant/templates/extension-review.md`
+- `.ai/assistant/templates/extension-lifecycle-record.md`
+
+Reason: `{REASON}`
+Validation or review: `{VALIDATION_OR_REVIEW}`
+Approval needs: `{EXTENSIONS_APPROVAL_NEEDS}`
+Residual risk: `{EXTENSIONS_RESIDUAL_RISK}`
+Next action: `{EXTENSIONS_NEXT_ACTION}`
+
 Module: `diagrams`
 State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `{TARGET_DIAGRAM_MODULE_OWNER_OR_FILE}`

@@ -25,6 +25,13 @@ contract.
 Recommendation is a separate read-only route. It compares bounded project-
 contour needs with existing item contracts before any adaptation or import.
 
+When a selected source is a multi-item Alatyr extension with
+`alatyr-extension.json`, route package inspection, compatibility, locking,
+bindings, update, and removal through `ALATYR-EXTENSION-001`. After target
+normalization, each extension-provided item still receives a stable AI
+infrastructure item ID and uses this router lazily. Do not activate every item
+merely because its extension is installed.
+
 ## Route Categories
 
 An adapted router should distinguish at least:

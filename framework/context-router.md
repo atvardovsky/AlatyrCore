@@ -89,6 +89,18 @@ catalog, then load only selected term records, applicable data-dictionary
 links, and named canonical sources. Do not load the full vocabulary for one
 term or an unrelated task.
 
+Test-first configuration, execution, or a bounded recommendation should use a
+separate optional intent overlay. Evaluate its compact trigger from the
+selected testing/risk context, then load only the target policy and selected
+configuration or change flow. Do not load test-first detail or repeat a
+recommendation for every code edit.
+
+Extension lifecycle work should use a separate optional intent overlay. Start
+with the extension rule, source-access and prompt-injection policy, and compact
+target catalog. Load only one selected lock entry, normalized manifest,
+bindings, item set, lifecycle flow, gate, and evidence record. Do not scan or
+load every extension, and do not access remote sources outside target policy.
+
 When an overlay needs a detailed reference only for a subset of requests, put
 the path and its load condition in `conditional_context` instead of the default
 `required_context`. Conditional paths must remain machine-visible to routing

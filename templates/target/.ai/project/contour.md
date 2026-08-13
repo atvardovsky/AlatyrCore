@@ -18,6 +18,9 @@ Replace placeholders with target facts before accepting installation.
 - project-owned vocabulary terms, aliases, acronyms, scoped meanings,
   acceptance states, owners, and canonical data links under
   `.ai/project/vocabulary` when project vocabulary is enabled
+- project-owned test-first policy, trigger severity, modes, levels, commands,
+  isolation, exceptions, CI/merge requirements, and decision authority under
+  `.ai/project/testing` when test-first development is enabled
 - use cases and workflows
 - data model and persistence facts
 - runtime flows and state machines
@@ -60,6 +63,9 @@ List target source-of-truth files:
   `.ai/project/vocabulary/terms.json`, and
   `.ai/project/vocabulary/data-dictionary-links.json` when project vocabulary
   is enabled
+- `.ai/project/testing/README.md` and
+  `.ai/project/testing/test-first-policy.json` when test-first development is
+  enabled
 
 ## AI Infrastructure Evidence Boundary
 

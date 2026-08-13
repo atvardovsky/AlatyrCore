@@ -45,6 +45,12 @@ For each supported assistant, record:
 - whether enabled project-vocabulary aliases route through the canonical
   operation index, vocabulary intent, compact catalog, selected term records,
   and shared flow regardless of assistant-native skill support
+- whether test-first configuration and enabled execution aliases route through
+  the canonical operation index, intent, target policy, selected flow, and
+  shared gate regardless of assistant-native skill support
+- whether extension list, inspection, installation, update, disablement,
+  removal, and review aliases route through the canonical operation index,
+  selected catalog/lock entry, lifecycle flow, and shared gate
 - the selected path in the compact generated assistant-capability index
 - whether diagram discussion routes through the canonical operation index
 - supported native inline diagram syntaxes and artifact presentation mode;
@@ -113,6 +119,12 @@ Each bridge should:
 - route enabled project-vocabulary requests through the canonical operation
   index and intent descriptor; assistant-native wrappers point to the shared
   target records and do not duplicate term definitions
+- route test-first configuration while the module is disabled and route
+  execution only when enabled, without duplicating target triggers, commands,
+  isolation, or exceptions in bridge files
+- route extension lifecycle requests through the canonical target catalog,
+  lock, intent, and flow; never let a bridge fetch, trust, activate, update, or
+  remove an extension independently
 - route enabled `Alatyr diagram` and equivalent requests through the compact
   operation index, diagram discussion flow, presentation template, and only
   the selected assistant-capability record

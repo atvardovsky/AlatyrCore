@@ -35,15 +35,20 @@ Replace placeholders with target facts before accepting installation.
    Apply `.ai/assistant/flows/change-package.flow.md` when coherent material
    outcome, semantic multi-surface approval, audit, or publishable provenance
    needs pass its activation gate.
-8. Change code, tests, diagrams, prompts, skills, bridge files, gates, or
-   checker rules as required by the accepted fact change.
-9. Run target validation that exists. Do not invent commands.
-10. When approval was used, compare the complete Git change set with the
+8. Evaluate the target test-first recommendation gate. When an enabled required
+   trigger applies, or a recommendation is accepted, run
+   `.ai/assistant/flows/test-first-change.flow.md` and preserve valid
+   RED/GREEN/refactor evidence before completing implementation. Otherwise
+   record why test-first was not indicated or was declined when material.
+9. Change remaining code, tests, diagrams, prompts, skills, bridge files,
+   gates, or checker rules as required by the accepted fact change.
+10. Run target validation that exists. Do not invent commands.
+11. When approval was used, compare the complete Git change set with the
     explicitly selected machine-readable approval scope and fail on uncovered
     or excluded paths.
-11. Perform a final consistency check across changed surfaces and related
+12. Perform a final consistency check across changed surfaces and related
     review-item clusters.
-12. Report final evidence, skipped checks, approvals, and residual risk.
+13. Report final evidence, skipped checks, approvals, and residual risk.
 
 For large or resumable changes, use
 `.ai/assistant/flows/large-task-orchestration.flow.md` and maintain one packet
@@ -72,6 +77,8 @@ Report:
 - source-of-truth or blueprint updates
 - implementation, test, diagram, prompt, skill, gate, bridge, or checker updates
 - validation run or unresolved
+- test-first policy result, RED/GREEN/refactor evidence, accepted exception, or
+  reason not indicated when the recommendation gate was materially evaluated
 - approvals used
 - changed-path approval scope enforcement result
 - skipped checks and residual risk

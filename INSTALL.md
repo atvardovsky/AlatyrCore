@@ -50,6 +50,8 @@ in `framework/rule-registry.*` and `framework/rule-ownership.md`.
   `ALATYR-ARCHITECTURE-001`
 - Optional project vocabulary and terminology lookup:
   `ALATYR-VOCABULARY-001`
+- Optional target-adapted test-first development: `ALATYR-TDD-001`
+- Optional externally sourced extensions: `ALATYR-EXTENSION-001`
 - Discussion diagram presentation: `ALATYR-DIAGRAM-001`
 - Optional team collaboration: `ALATYR-TEAM-001`
 - Lifecycle and migration evidence: `ALATYR-LIFECYCLE-001`
@@ -67,10 +69,15 @@ Before creating files in the target repository, inspect:
   APIs, naming rules, ambiguous terms, and terminology validation
 - package/build files
 - test folders and test conventions
+- test-first/TDD policy, defect and regression patterns, test levels, commands,
+  fixtures, isolation, exceptions, feedback time, CI, and merge requirements
 - CI files and validation commands
 - security, live-service, credential, and destructive-operation policies
 - diagram sources, visual artifacts, and generated files
 - skills, prompts, third-party assistant infrastructure, and provenance notes
+- existing extension package manifests, extension catalog and lock records,
+  installed-file ownership, source revisions, digests, bindings, and lifecycle
+  evidence
 - existing assistant bridge files, prompts, skills, gates, checker rules,
   source-access policies, operation help, routing, or chat-completion message
   templates
@@ -111,6 +118,12 @@ The plan must identify:
 - optional project-vocabulary owner, decision authority, compact catalog,
   scoped term records, aliases, acronyms, ambiguity, normalization policy,
   data-dictionary links, validation, and adapted skill needs
+- optional test-first owner, authority, module state, recommendation behavior,
+  activation triggers, modes, levels, commands, isolation, exceptions,
+  RED/GREEN/refactor evidence, validation, and adapted skill needs
+- optional extensions need, owner, source-access policy, catalog and lock,
+  immutable source and digest evidence, compatibility, target bindings,
+  permissions, approval, installed-file ownership, update, and removal needs
 - task-specific maturity and bridge capability needs
 - diagram discussion, source/visual ownership, portable ASCII layout/width,
   per-assistant rich presentation, capability expiry/review triggers, captured-result
@@ -178,6 +191,10 @@ In a typical target repository:
    `data-dictionary-links.json` only when project vocabulary is enabled.
    Derive records from target evidence, preserve scoped meanings, and keep
    observed or proposed terms unaccepted until target authority decides.
+   Add `.ai/project/testing/README.md` and `test-first-policy.json` only when
+   test-first development is assessed or enabled. Enabling requires accepted
+   target commands, triggers, modes, isolation, exceptions, and evidence; do
+   not infer strict TDD from the existence of tests.
    Add `.ai/project/team-operating-model.md` only when team collaboration is
    enabled, and derive actors, authority, priorities, review, backend,
    retention, and privacy from target evidence.
@@ -192,6 +209,9 @@ In a typical target repository:
    routine bootstrap.
    When change packages are enabled, add the lazy `change-package` overlay and
    compact index; do not load package records for ordinary tasks.
+   Add the `extension-request` intent overlay when extension inspection or
+   lifecycle management is supported. Keep extension items and unrelated lock
+   entries outside routine bootstrap.
 8. Add bridge files only for assistants the target uses.
 9. Add installed-operation, operation-help, automatic operation-routing,
    read-only adapter-health, risk-gated pre-change preview,
@@ -199,6 +219,11 @@ In a typical target repository:
    when the diagrams module is enabled,
    architecture-assistance flow, pattern/area/result templates, and lazy
    architecture intent routing when architecture knowledge is enabled,
+   test-first configuration/change flows, policy intent, gate, evidence
+   template, and adapted skill when test-first development is enabled or under
+   explicit configuration review,
+   extension catalog and lock, lifecycle flow, gate, review and lifecycle
+   templates when optional extensions are supported,
    AI-infrastructure-inventory, AI-infrastructure-recommendation, adapter output contracts, source-access
    policy, prompt-injection policy, human and machine-readable approval-record
    templates,
@@ -235,7 +260,7 @@ operate the installed target adapter. Typical requests include blueprint
 creation or repair, adapter recheck after framework updates, drift review,
 blueprint-driven product changes, architecture and pattern discussion, diagram
 discussion, team coordination, AI infrastructure recommendation, and skill
-adaptation. Include Allowed actions
+adaptation, or extension inspection and lifecycle management. Include Allowed actions
 when the request should be limited to `read-only`, `docs-only`,
 `adapter-only`, `code-and-tests`, or `full-with-approval`.
 

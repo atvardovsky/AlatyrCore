@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import subprocess
 import sys
@@ -303,6 +304,326 @@ def main() -> int:
             failures.append(
                 "enabled project vocabulary must report missing contracts"
             )
+
+        module_profile_path.write_text(
+            "# Module Profile\n\n"
+            "Module: `test-first-development`\nState: `enabled`\n",
+            encoding="utf-8",
+        )
+        test_first = validator(target)
+        test_first.check_test_first_development(None)
+        if "TDD_REQUIRED_FILE_MISSING" not in {
+            finding.code for finding in test_first.findings
+        }:
+            failures.append(
+                "enabled test-first development must report missing contracts"
+            )
+
+        test_first_paths = [
+            ".ai/project/testing/README.md",
+            ".ai/project/testing/test-first-policy.json",
+            ".ai/assistant/context/intents/test-first-request.json",
+            ".ai/assistant/flows/test-first-configuration.flow.md",
+            ".ai/assistant/flows/test-first-change.flow.md",
+            ".ai/assistant/gates/test-first-development.md",
+            ".ai/assistant/templates/test-first-evidence.md",
+            ".ai/assistant/skills/test-first-development/SKILL.md",
+            ".ai/framework/test-first-development.md",
+        ]
+        for relpath in test_first_paths:
+            path = target / relpath
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("test-first contract fixture\n", encoding="utf-8")
+        write_json(
+            target / ".ai/project/testing/test-first-policy.json",
+            {
+                "schema_version": 1,
+                "policy_kind": "target-test-first-development-policy",
+                "project": "fixture",
+                "state": "enabled",
+                "owner": "test-owner",
+                "decision_authority": "test-authority",
+                "last_reviewed": "2026-08-12",
+                "evidence_revision": "fixture-revision",
+                "suggestion": {
+                    "mode": "advisory",
+                    "minimum_result": "recommended",
+                    "max_per_task": 1,
+                    "suppress_after_decline": True,
+                    "cost_statement_required": True,
+                },
+                "available_modes": ["regression-first"],
+                "activation_triggers": [
+                    {
+                        "id": "defect",
+                        "state": "recommended",
+                        "changed_fact_classes": ["behavior"],
+                        "conditions": ["reproducible defect"],
+                        "mode": "regression-first",
+                        "test_level_ids": ["missing-level"],
+                        "exceptions": ["missing-exception"],
+                    }
+                ],
+                "test_levels": [
+                    {
+                        "id": "unit",
+                        "purpose": "observable behavior",
+                        "paths": ["tests"],
+                        "command_ids": ["missing-command"],
+                        "feedback_time": "fast",
+                        "fixtures_and_helpers": ["fixture builder"],
+                    }
+                ],
+                "commands": [
+                    {
+                        "id": "unit-test",
+                        "command": "fixture test command",
+                        "scope": "unit",
+                        "live_external_actions": "forbidden",
+                    }
+                ],
+                "isolation": {
+                    "clock": "fake",
+                    "randomness": "seeded",
+                    "database": "isolated",
+                    "queue": "fake",
+                    "filesystem": "temporary",
+                    "network": "forbidden",
+                    "secrets": "not available",
+                },
+                "exceptions": [],
+                "evidence_requirements": ["RED and GREEN"],
+                "known_gaps": [],
+            },
+        )
+        bad_references = validator(target)
+        bad_references.check_test_first_development(None)
+        bad_reference_codes = {
+            finding.code for finding in bad_references.findings
+        }
+        for required in [
+            "TDD_COMMAND_REFERENCE",
+            "TDD_TEST_LEVEL_REFERENCE",
+            "TDD_EXCEPTION_REFERENCE",
+        ]:
+            if required not in bad_reference_codes:
+                failures.append(
+                    f"test-first policy must reject invalid references with {required}"
+                )
+
+        valid_policy_path = target / ".ai/project/testing/test-first-policy.json"
+        valid_policy = json.loads(valid_policy_path.read_text(encoding="utf-8"))
+        valid_policy["activation_triggers"][0]["test_level_ids"] = ["unit"]
+        valid_policy["activation_triggers"][0]["exceptions"] = []
+        valid_policy["test_levels"][0]["command_ids"] = ["unit-test"]
+        write_json(valid_policy_path, valid_policy)
+        write_json(
+            catalog_path,
+            {
+                "operations": [
+                    {
+                        "id": "test-first-configuration",
+                        "required_module": "core-profile",
+                    },
+                    {
+                        "id": "test-first-change",
+                        "required_module": "test-first-development",
+                    },
+                ]
+            },
+        )
+        write_json(
+            router_path,
+            {
+                "intent_overlays": {
+                    "test-first-request": {
+                        "operation_candidates": [
+                            "test-first-configuration",
+                            "test-first-change",
+                        ]
+                    }
+                }
+            },
+        )
+        enabled_policy = validator(target)
+        enabled_policy.check_test_first_development(None)
+        enabled_errors = [
+            finding.code
+            for finding in enabled_policy.findings
+            if finding.level == "error" and finding.code.startswith("TDD_")
+        ]
+        if enabled_errors:
+            failures.append(
+                "resolved enabled test-first policy produced errors: "
+                + ", ".join(enabled_errors)
+            )
+
+        module_profile_path.write_text(
+            "# Module Profile\n\nModule: `extensions`\nState: `enabled`\n",
+            encoding="utf-8",
+        )
+        missing_extensions = validator(target)
+        missing_extensions.check_extensions(None)
+        if "EXTENSION_REQUIRED_FILE_MISSING" not in {
+            finding.code for finding in missing_extensions.findings
+        }:
+            failures.append("enabled extensions must report missing contracts")
+
+        extension_contract_paths = [
+            ".ai/assistant/extensions/README.md",
+            ".ai/assistant/extensions/catalog.json",
+            ".ai/assistant/extensions/lock.json",
+            ".ai/assistant/context/intents/extension-request.json",
+            ".ai/assistant/flows/extension-lifecycle.flow.md",
+            ".ai/assistant/gates/extensions.md",
+            ".ai/assistant/templates/extension-review.md",
+            ".ai/assistant/templates/extension-lifecycle-record.md",
+            ".ai/framework/extensions.md",
+        ]
+        for relpath in extension_contract_paths:
+            path = target / relpath
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("extension contract fixture\n", encoding="utf-8")
+
+        extension_id = "example.review"
+        extension_root = target / ".ai/assistant/extensions" / extension_id
+        extension_root.mkdir(parents=True, exist_ok=True)
+        manifest_path = extension_root / "manifest.json"
+        bindings_path = extension_root / "bindings.json"
+        item_path = extension_root / "items" / "review.md"
+        adaptation_path = extension_root / "adaptation-record.md"
+        approval_path = target / ".ai/assistant/approvals/extension.json"
+        rule_registry_path = target / ".ai/framework/rule-registry.json"
+        write_json(
+            manifest_path,
+            {
+                "schema_version": 1,
+                "package_kind": "alatyr-extension",
+                "id": extension_id,
+                "version": "1.0.0",
+                "provides": [{"id": "review", "type": "skill", "path": "items/review.md"}],
+            },
+        )
+        write_json(
+            bindings_path,
+            {
+                "schema_version": 1,
+                "binding_kind": "target-alatyr-extension-bindings",
+                "extension_id": extension_id,
+                "bindings": [
+                    {
+                        "id": "project-owner",
+                        "value": "fixture-owner",
+                        "owner": "fixture-owner",
+                        "source": ".ai/project/contour.md",
+                    }
+                ],
+            },
+        )
+        item_path.parent.mkdir(parents=True, exist_ok=True)
+        item_path.write_text("normalized review item\n", encoding="utf-8")
+        adaptation_path.write_text("review and approval evidence\n", encoding="utf-8")
+        write_json(approval_path, {"approval_id": "extension-fixture"})
+        write_json(rule_registry_path, {"schema_version": 1, "rules": []})
+
+        def extension_hash(path: Path) -> str:
+            return hashlib.sha256(path.read_bytes()).hexdigest()
+
+        installed_files = [
+            {
+                "path": path.relative_to(target).as_posix(),
+                "sha256": extension_hash(path),
+                "owner": extension_id,
+            }
+            for path in [manifest_path, bindings_path, item_path, adaptation_path]
+        ]
+        catalog_entry = {
+            "id": extension_id,
+            "version": "1.0.0",
+            "state": "active",
+            "owner": "fixture-owner",
+            "lock_id": "extension-fixture-lock",
+            "manifest": manifest_path.relative_to(target).as_posix(),
+            "bindings": bindings_path.relative_to(target).as_posix(),
+            "item_ids": ["review"],
+            "supported_assistants": ["generic"],
+            "last_reviewed": "2026-08-12",
+            "evidence_revision": "fixture-revision",
+            "known_gaps": [],
+        }
+        lock_entry = {
+            "id": extension_id,
+            "lock_id": "extension-fixture-lock",
+            "version": "1.0.0",
+            "state": "active",
+            "source_type": "git-url",
+            "source": "https://example.invalid/review.git",
+            "source_revision": "0123456789abcdef0123456789abcdef01234567",
+            "package_digest_sha256": "a" * 64,
+            "license_status": "accepted",
+            "compatibility": {"result": "compatible"},
+            "manifest": manifest_path.relative_to(target).as_posix(),
+            "bindings": bindings_path.relative_to(target).as_posix(),
+            "adaptation_record": adaptation_path.relative_to(target).as_posix(),
+            "installed_files": installed_files,
+            "integration_surfaces": [".ai/assistant/operation-catalog.json"],
+            "approval_record": approval_path.relative_to(target).as_posix(),
+            "validation": ["fixture structural validation passed"],
+            "installed_at": "2026-08-12T00:00:00Z",
+        }
+        write_json(
+            target / ".ai/assistant/extensions/catalog.json",
+            {
+                "schema_version": 1,
+                "catalog_kind": "target-alatyr-extension-catalog",
+                "extension_api": 1,
+                "owner": "fixture-owner",
+                "last_reviewed": "2026-08-12",
+                "extensions": [catalog_entry],
+            },
+        )
+        write_json(
+            target / ".ai/assistant/extensions/lock.json",
+            {
+                "schema_version": 1,
+                "lock_kind": "target-alatyr-extension-lock",
+                "extension_api": 1,
+                "target_baseline": {
+                    "framework_version": "0.1.0-alpha.8",
+                    "adapter_schema_version": 7,
+                    "template_version": 8,
+                    "rule_registry": ".ai/framework/rule-registry.json",
+                },
+                "extensions": [lock_entry],
+            },
+        )
+        write_json(
+            catalog_path,
+            {
+                "operations": [
+                    {"id": "extension-management", "required_module": "core-profile"}
+                ]
+            },
+        )
+        installed_extension = validator(target)
+        installed_extension.check_extensions(None)
+        extension_errors = [
+            finding.code
+            for finding in installed_extension.findings
+            if finding.level == "error" and finding.code.startswith("EXTENSION_")
+        ]
+        if extension_errors:
+            failures.append(
+                "resolved installed extension produced errors: "
+                + ", ".join(extension_errors)
+            )
+        item_path.write_text("locally modified review item\n", encoding="utf-8")
+        drifted_extension = validator(target)
+        drifted_extension.check_extensions(None)
+        if "EXTENSION_FILE_DRIFT" not in {
+            finding.code for finding in drifted_extension.findings
+        }:
+            failures.append("extension lock must detect installed-file drift")
 
         module_profile_path.write_text(
             "# Module Profile\n\n"
@@ -845,6 +1166,22 @@ Excluded files or surfaces:
         health_finding = health_payload.get("findings", [{}])[0]
         if health_finding.get("automatic_repair") is not False:
             failures.append("validator findings must not imply automatic repair")
+        extension_health = findings_payload(
+            [
+                Finding(
+                    "warning",
+                    "EXTENSION_FILE_DRIFT",
+                    "extension item changed",
+                    ".ai/assistant/extensions/example/items/review.md",
+                )
+            ],
+            target=target,
+            strict_warnings=False,
+        )
+        if extension_health.get("adapter_health", {}).get("repair_operations") != [
+            "extension-management"
+        ]:
+            failures.append("extension findings must route to extension-management")
 
     if failures:
         for failure in failures:

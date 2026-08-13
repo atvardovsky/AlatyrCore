@@ -50,6 +50,12 @@ Operation help exists to:
   review, and documentation through a compact project-owned catalog
 - route project terminology lookup, acronym and alias resolution, proposal,
   review, and consistency checks through a compact vocabulary catalog
+- route test-first policy assessment and explicit enablement separately from
+  enabled RED/GREEN/refactor execution, and suggest assessment only from
+  bounded risk evidence
+- route extension list, inspection, planning, installation, update,
+  disablement, removal, and review through one lifecycle operation while
+  keeping source access, approval, and activation separate
 
 ## Canonical Operation Catalog
 
@@ -268,6 +274,28 @@ vocabulary intent overlay. Start from the compact term, alias, and acronym
 catalog; load only selected records and canonical owners. Preserve term state,
 ask for bounded domain clarification on ambiguous accepted meanings, and do
 not normalize project surfaces from unaccepted records.
+
+For test-first development, aliases may include `Alatyr enable test-first`,
+`Alatyr review test-first`, `Alatyr test first`, or `Alatyr TDD`. Configuration
+routes through `test-first-configuration`, which remains available while the
+optional module is disabled. Execution routes through `test-first-change` only
+when the module and target policy are enabled. An automatic recommendation
+must name the trigger, mode, likely level, cost, and next action, appear at most
+once per task, and remain non-blocking unless an accepted target trigger is
+required.
+
+For extensions, aliases may include `Alatyr extensions`, `Alatyr inspect
+extension <source>`, `Alatyr add extension <source>`, `Alatyr update extension
+<id>`, `Alatyr disable extension <id>`, `Alatyr remove extension <id>`, and
+`Alatyr review extension <id>`. These are request shortcuts, not shell
+commands. List and inspection default to read-only. Installation and updates
+require reviewed immutable source plus target approval; removal follows lock
+ownership and stops for local modifications or active dependents.
+
+`Alatyr suggest extensions <scope>` routes to the existing read-only AI
+infrastructure recommendation operation. It does not search remote registries,
+fetch source, or approve installation unless target source-access policy and a
+separate lifecycle request permit those actions.
 
 For AI infrastructure, aliases may include `alatyr-ai-inventory`, which routes
 to an inventory flow, or `alatyr-adaptation <source>` and

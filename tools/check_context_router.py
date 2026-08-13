@@ -82,6 +82,8 @@ def require_string_list(
 def target_reference_exists(value: str) -> bool:
     if value.startswith("{"):
         return True
+    if "{EXTENSION_ID}" in value:
+        return value.startswith(".ai/assistant/extensions/{EXTENSION_ID}/") and ".." not in value
     if value == ".ai/framework":
         return (ROOT / "framework").is_dir()
     if value.startswith(".ai/framework/"):
@@ -299,6 +301,10 @@ def main() -> int:
     code_documentation_conditional_context: list[str] = []
     vocabulary: dict[str, Any] = {}
     vocabulary_conditional_context: list[str] = []
+    test_first: dict[str, Any] = {}
+    test_first_conditional_context: list[str] = []
+    extension: dict[str, Any] = {}
+    extension_conditional_context: list[str] = []
     if not isinstance(intent_index, dict) or not isinstance(
         intent_index.get("diagram-request"), dict
     ):
@@ -419,6 +425,65 @@ def main() -> int:
             vocabulary, "intent_overlays.vocabulary-request", failures
         )
 
+    if not isinstance(intent_index, dict) or not isinstance(
+        intent_index.get("test-first-request"), dict
+    ):
+        failures.append("intent_overlays.test-first-request must be indexed")
+    else:
+        entry = intent_index["test-first-request"]
+        test_first = descriptor(
+            entry.get("descriptor"),
+            "target-intent-overlay",
+            "intent_overlays.test-first-request",
+            failures,
+        )
+        check_contract(
+            test_first,
+            ["use_when", "operation_candidates", "required_context", "expand_when"],
+            "intent_overlays.test-first-request",
+            failures,
+            {"required_context"},
+        )
+        if test_first.get("required_module") != "core-profile":
+            failures.append("test-first intent must permit core-profile configuration")
+        if test_first.get("operation_candidates") != [
+            "test-first-configuration",
+            "test-first-change",
+        ]:
+            failures.append(
+                "test-first intent must route configuration before enabled execution"
+            )
+        test_first_conditional_context = check_conditional_context(
+            test_first, "intent_overlays.test-first-request", failures
+        )
+
+    if not isinstance(intent_index, dict) or not isinstance(
+        intent_index.get("extension-request"), dict
+    ):
+        failures.append("intent_overlays.extension-request must be indexed")
+    else:
+        entry = intent_index["extension-request"]
+        extension = descriptor(
+            entry.get("descriptor"),
+            "target-intent-overlay",
+            "intent_overlays.extension-request",
+            failures,
+        )
+        check_contract(
+            extension,
+            ["use_when", "operation_candidates", "required_context", "expand_when"],
+            "intent_overlays.extension-request",
+            failures,
+            {"required_context"},
+        )
+        if extension.get("required_module") != "core-profile":
+            failures.append("extension intent must permit core-profile inspection")
+        if extension.get("operation_candidates") != ["extension-management"]:
+            failures.append("extension intent must route extension-management")
+        extension_conditional_context = check_conditional_context(
+            extension, "intent_overlays.extension-request", failures
+        )
+
     consistency_entry = router.get("consistency_routing")
     consistency = descriptor(
         consistency_entry.get("descriptor") if isinstance(consistency_entry, dict) else None,
@@ -536,6 +601,8 @@ def main() -> int:
         (architecture, "required_context"),
         (code_documentation, "required_context"),
         (vocabulary, "required_context"),
+        (test_first, "required_context"),
+        (extension, "required_context"),
     ]:
         routed_framework_paths.update(
             value
@@ -565,6 +632,16 @@ def main() -> int:
     routed_framework_paths.update(
         value
         for value in vocabulary_conditional_context
+        if value.startswith(".ai/framework/")
+    )
+    routed_framework_paths.update(
+        value
+        for value in test_first_conditional_context
+        if value.startswith(".ai/framework/")
+    )
+    routed_framework_paths.update(
+        value
+        for value in extension_conditional_context
         if value.startswith(".ai/framework/")
     )
     try:

@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "catalog_kind": "target-alatyr-extension-catalog",
+  "extension_api": 1,
+  "owner": "{TARGET_EXTENSION_STATE_OWNER}",
+  "last_reviewed": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}",
+  "extensions": []
+}

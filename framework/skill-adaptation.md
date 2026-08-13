@@ -9,6 +9,13 @@ permissions, and validation belong to the project adapter.
 
 ## Purpose
 
+This contract applies to one item or a bounded related set. When an external
+repository declares an `alatyr-extension.json` package with multiple lifecycle-
+managed items, apply `ALATYR-EXTENSION-001` first. The extension lifecycle owns
+package compatibility, source locking, target bindings, installed-file
+ownership, update, and removal; this document still owns normalization of each
+selected skill, prompt, gate, flow, checker, tool, bridge, wrapper, or template.
+
 AI infrastructure can make recurring assistant work more reliable, but it can
 also duplicate policy, bypass gates, broaden tool access, or import assumptions
 from another repository.

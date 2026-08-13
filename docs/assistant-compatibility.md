@@ -134,6 +134,20 @@ All surfaces start from the same compact target catalog, preserve scoped term
 states and ambiguity, and load only selected full records and canonical links.
 The shared target skill does not imply identical native skill-loading behavior.
 
+For test-first development, every supported surface routes configuration
+aliases through `test-first-configuration` even before the optional module is
+enabled, and routes RED/GREEN/refactor execution through `test-first-change`
+only after target policy enablement. All surfaces use the same target triggers,
+commands, isolation, exceptions, gate, and evidence contract. A bridge must not
+make an advisory recommendation mandatory or duplicate project test policy.
+
+For extensions, every supported surface routes list, inspect, plan, install,
+update, disable, remove, and review aliases through `extension-management` and
+the same target catalog, lock, intent, lifecycle flow, and gate. Bridges never
+fetch, trust, activate, update, or remove packages independently. Unsupported
+assistant claims remain unsupported until target bridge/capability evidence
+confirms them.
+
 Targets may define request aliases such as `alatyr-ai-inventory`,
 `alatyr-suggest-ai <scope>`, `alatyr-improve-ai <item-id>`,
 `alatyr-adaptation <source>`, or `alatyr-add-ai <source>`. Assistant-specific
@@ -142,6 +156,13 @@ commands. Route them to canonical inventory, read-only recommendation, or
 skill-adaptation flows,
 preserve source provenance, source hash or commit evidence when available,
 and avoid importing the source directly.
+
+Targets may also expose `Alatyr extensions`, `Alatyr inspect extension
+<source>`, `Alatyr add extension <source>`, `Alatyr update extension <id>`,
+`Alatyr disable extension <id>`, `Alatyr remove extension <id>`, and `Alatyr
+review extension <id>`. `Alatyr suggest extensions <scope>` remains a
+read-only AI infrastructure recommendation alias. All are request shortcuts,
+not shell commands.
 
 Every supported bridge template should include a short pointer to the
 operation catalog, `.ai/assistant/help.md`, and

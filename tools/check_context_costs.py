@@ -92,6 +92,24 @@ def main() -> int:
             "project-vocabulary compact route should reduce reference words by at least 25%"
         )
 
+    test_first_route = report["operation_routes"]["test-first-development"]
+    if test_first_route["compact"]["missing_paths"]:
+        failures.append("test-first compact route contains missing paths")
+    test_first_reduction = test_first_route["word_reduction_percent"]
+    if not isinstance(test_first_reduction, (int, float)) or test_first_reduction < 25:
+        failures.append(
+            "test-first compact route should reduce reference words by at least 25%"
+        )
+
+    extension_route = report["operation_routes"]["extension-management"]
+    if extension_route["compact"]["missing_paths"]:
+        failures.append("extension compact route contains missing paths")
+    extension_reduction = extension_route["word_reduction_percent"]
+    if not isinstance(extension_reduction, (int, float)) or extension_reduction < 25:
+        failures.append(
+            "extension compact route should reduce reference words by at least 25%"
+        )
+
     migration = report["migration_routing"]
     reduction = migration["initial_word_reduction_percent"]
     if not isinstance(reduction, (int, float)) or reduction < 70:
@@ -109,6 +127,8 @@ def main() -> int:
         f"architecture route reduction is {architecture_reduction}%"
         f"; code-documentation route reduction is {code_documentation_reduction}%"
         f"; project-vocabulary route reduction is {vocabulary_reduction}%"
+        f"; test-first route reduction is {test_first_reduction}%"
+        f"; extension route reduction is {extension_reduction}%"
     )
     return 0
 

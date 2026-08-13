@@ -8,12 +8,14 @@
     "assistant wrapper or bridge change",
     "MCP or tool config change",
     "checker gate flow or template change",
-    "third-party assistant infrastructure review"
+    "third-party assistant infrastructure review",
+    "external extension package lifecycle"
   ],
   "operation_candidates": [
     "ai-infrastructure-inventory",
     "ai-infrastructure-recommendation",
-    "skill-adaptation"
+    "skill-adaptation",
+    "extension-management"
   ],
   "required_context": [
     ".ai/framework/ai-infrastructure-routing.md",

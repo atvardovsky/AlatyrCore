@@ -35,6 +35,12 @@ Hidden adapter templates under this directory, such as `.ai`, `.github`, or
 `.cursor` examples, are tracked source templates. Root-local directories with
 the same names are self-application scratch paths and are ignored.
 
+## `templates/extension/`
+
+Starter package contract for an independently versioned declarative Alatyr
+extension repository. The package manifest and item examples are authoring
+surfaces, not trusted or installed target content.
+
 ## `docs/`
 
 Human-oriented product explanation and maintainer-facing guidance for
@@ -91,6 +97,20 @@ rule, compact catalog, scoped term and data-link records, aliases, operations,
 lazy route, adapted skill, gates, manifest paths, bridge coverage, and target-
 validator support. It does not prove a definition, relationship, owner, or
 acceptance decision is semantically correct.
+
+`tools/check_test_first_development.py` validates the optional test-first rule,
+target policy switch, bounded suggestion behavior, configuration and execution
+routes, gate, adapted skill, RED/GREEN/refactor evidence, bridge coverage, and
+target-validator support. It does not prove command execution, expected RED
+causality, assertion quality, or contract correctness.
+
+`tools/validate_extension_package.py` performs offline, non-executing
+structural inspection and deterministic digest calculation for a local
+extension checkout. `tools/check_extensions.py` validates the framework,
+authoring, target lifecycle, routing, bridge, installer, and checker contracts.
+The installed target validator additionally checks enabled catalog/lock state,
+target bindings, file ownership, and locked hashes. These checks do not prove
+source trust, legal compatibility, semantic quality, or runtime safety.
 
 `tools/check_ai_infrastructure_inventory.py` validates the target
 `.ai/assistant/templates/ai-infrastructure-inventory.md` template and
