@@ -205,7 +205,16 @@ unresolved placeholders, hard-coded local paths, stale checker claims,
 manifest issues, optional approval/diff scope, and optional framework baseline
 drift. It does not prove target project facts or replace assistant review.
 Reusable parsing, Git, hashing, and approval-scope helpers live in
-`tools/target_validation_support.py`.
+`tools/target_validation_support.py`. Cached and domain-specific validator
+components live under `tools/target_adapter_validation`; its generated finding
+catalog is documented in `docs/target-adapter-validator-findings.md`.
+
+`tools/check_manifest.json` is the dependency-aware source-check catalog used
+by `tools/check_all.py` for fast, full, change, and release profiles.
+`tools/source_context_router.json` and `installer/context-router.json` keep
+source maintenance and installation bootstrap bounded. The generated
+`framework/file-inventory.json` and `framework/framework-packs.json` define the
+complete source baseline and dependency-closed selective installation packs.
 
 Windows wrappers under `tools/` delegate to the Python helpers. They should
 stay thin and must not duplicate installation or validation logic.

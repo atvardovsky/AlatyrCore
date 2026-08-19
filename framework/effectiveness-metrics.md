@@ -16,6 +16,13 @@ Compare similar tasks across:
 
 Use the same target repository shape and task intent when possible.
 
+Do not generalize a narrow-task result to broad project work. A representative
+pilot should cover the task classes defined by the source repository's
+`conformance/benchmarks/benchmark-task-suite.json`, use repeated runs where
+assistant variability matters, and preserve independent review for every
+adapter mode. The suite definition is planning evidence, not execution
+evidence.
+
 ## Suggested Metrics
 
 Track:

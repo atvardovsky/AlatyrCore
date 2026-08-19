@@ -7,6 +7,7 @@ import argparse
 import json
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 from validate_target_adapter import git_head_revision, parse_manifest
@@ -51,6 +52,7 @@ def render_plan(
     validation_counts: dict[str, object],
     from_versions: tuple[str, str, str],
     to_versions: tuple[str, str, str],
+    framework_pack: str,
 ) -> str:
     target_revision = git_head_revision(target) or "not available"
     return f"""# Alatyr Target Upgrade Assessment
@@ -64,6 +66,7 @@ Target repository label: `{target.name}`
 - Framework: `{from_versions[0]}` -> `{to_versions[0]}`
 - Adapter schema: `{from_versions[1]}` -> `{to_versions[1]}`
 - Template: `{from_versions[2]}` -> `{to_versions[2]}`
+- Framework pack: `{framework_pack}` -> `{framework_pack}`
 
 ## Assessment Outputs
 
@@ -80,7 +83,8 @@ prepare a target migration note, and obtain approval before protected changes.
 
 ## Next Actions
 
-1. Review changed rules, categories, canonical sources, and framework files.
+1. Review changed rules, categories, canonical sources, framework files, and
+   pack compatibility.
 2. Resolve structural validator errors or record accepted target deviations.
 3. Map affected source changes to installed adapter surfaces and local owners.
 4. Prepare the target migration note and explicit approval scope.
@@ -138,6 +142,15 @@ def main() -> int:
         manifest_value(target, ("schema_version",)),
         manifest_value(target, ("framework", "template_version")),
     )
+    framework_pack = manifest_value(target, ("framework", "pack"))
+    if framework_pack == "unknown":
+        framework_pack = "complete"
+    if framework_pack not in {"core", "standard", "complete"}:
+        print(
+            f"Unsupported target framework.pack: {framework_pack}",
+            file=sys.stderr,
+        )
+        return 2
     to_versions = (
         source_version(source, "VERSION"),
         source_version(source, "ADAPTER_SCHEMA_VERSION"),
@@ -147,33 +160,64 @@ def main() -> int:
     old_rules = target / ".ai" / "framework" / "rule-registry.json"
     old_framework = target / ".ai" / "framework"
     reporter = source / "tools" / "report_migration_diff.py"
-    migration_command = [
-        sys.executable,
-        str(reporter),
-        "--from-rules",
-        str(old_rules),
-        "--to-rules",
-        str(source / "framework" / "rule-registry.json"),
-        "--from-version",
-        from_versions[0],
-        "--to-version",
-        to_versions[0],
-        "--from-adapter-schema-version",
-        from_versions[1],
-        "--to-adapter-schema-version",
-        to_versions[1],
-        "--from-template-version",
-        from_versions[2],
-        "--to-template-version",
-        to_versions[2],
-        "--from-framework-dir",
-        str(old_framework),
-        "--to-framework-dir",
-        str(source / "framework"),
-        "--output",
-        str(migration_report),
-    ]
-    migration = run(migration_command, source)
+    with tempfile.TemporaryDirectory(prefix="alatyr-upgrade-pack-") as directory:
+        to_framework = source / "framework"
+        if framework_pack != "complete":
+            projection_target = Path(directory)
+            support_profile = {"core": "core", "standard": "standard"}[
+                framework_pack
+            ]
+            projection = run(
+                [
+                    sys.executable,
+                    str(source / "tools" / "scaffold_target_structure.py"),
+                    "--target",
+                    str(projection_target),
+                    "--write",
+                    "--profile",
+                    support_profile,
+                    "--framework-pack",
+                    framework_pack,
+                ],
+                source,
+            )
+            if projection.returncode != 0:
+                print(
+                    projection.stderr.strip()
+                    or projection.stdout.strip()
+                    or "framework pack projection failed",
+                    file=sys.stderr,
+                )
+                return 2
+            to_framework = projection_target / ".ai" / "framework"
+
+        migration_command = [
+            sys.executable,
+            str(reporter),
+            "--from-rules",
+            str(old_rules),
+            "--to-rules",
+            str(to_framework / "rule-registry.json"),
+            "--from-version",
+            from_versions[0],
+            "--to-version",
+            to_versions[0],
+            "--from-adapter-schema-version",
+            from_versions[1],
+            "--to-adapter-schema-version",
+            to_versions[1],
+            "--from-template-version",
+            from_versions[2],
+            "--to-template-version",
+            to_versions[2],
+            "--from-framework-dir",
+            str(old_framework),
+            "--to-framework-dir",
+            str(to_framework),
+            "--output",
+            str(migration_report),
+        ]
+        migration = run(migration_command, source)
     migration_status = "generated" if migration.returncode == 0 else "failed"
 
     validation_status = "not run"
@@ -217,6 +261,7 @@ def main() -> int:
             validation_counts=validation_counts,
             from_versions=from_versions,
             to_versions=to_versions,
+            framework_pack=framework_pack,
         ),
         encoding="utf-8",
     )

@@ -4,6 +4,49 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.10 - 2026-08-19
+
+- Increased the framework version to `0.1.0-alpha.10`, adapter schema version
+  to `9`, and target template version to `10`, with migration evidence from
+  committed source state `f62354c` (`0.1.0-alpha.9`).
+- Replaced broad source and installation bootstrap lists with compact
+  machine-readable routers and a generated framework file inventory. Target
+  context routing now uses schema 4 with separate total, portable, and reserved
+  target-word budgets plus checked cost scenarios and expansion receipts.
+- Added installed-target context-cost enforcement and target reporting while
+  keeping logical integrity, source-of-truth selection, and semantic review as
+  reasoning responsibilities rather than pretending that word-count checks
+  prove correctness.
+- Added a dependency-aware source check manifest with `fast`, `full`, `change`,
+  and `release` profiles, bounded parallel execution, changed-path selection,
+  and conservative full-suite fallback for unmatched paths. Full source checks
+  now complete in roughly four seconds on the recorded development host rather
+  than roughly sixteen seconds before this change; host timings are not a
+  cross-platform guarantee.
+- Split cached target validation support from the monolithic entry point and
+  generated a catalog of 634 stable finding codes from validator source.
+- Made rule-registry and rule-ownership Markdown generated derivatives of the
+  machine-readable registry and added framework rule-dependency cycle checks.
+- Added a seven-class effectiveness benchmark coverage contract spanning
+  narrow docs, local regression, business, architecture, data, security, and
+  large resumable work. The contract explicitly contains no execution results
+  and supports no effectiveness or cost claim by itself.
+- Added dependency-closed `core`, `standard`, and `complete` framework packs.
+  Scaffolding matches them to support profiles, projects registry/ownership/
+  inventory surfaces for selective packs, and validates selective baselines
+  without treating intentional optional-file omission as drift.
+- Strengthened release drift checks with explicit change and release modes,
+  prior-release tag requirements, public version checks, and dedicated release
+  CI entry points with complete Git history.
+- Kept the routine target bootstrap at 1,899 words under its unchanged
+  1,900-word soft and 2,000-word hard limits. Static compact-route reductions
+  remain between about 63% and 93% for the checked optional operation routes;
+  these measurements are whitespace-word proxies, not model-token or billing
+  evidence.
+- Changed `ALATYR-CONTEXT-001`, `ALATYR-ADAPTER-001`,
+  `ALATYR-MODULE-001`, and `ALATYR-LIFECYCLE-001`; no rule IDs were added or
+  removed.
+
 ## 0.1.0-alpha.9 - 2026-08-19
 
 - Increased the framework version to `0.1.0-alpha.9`, adapter schema version

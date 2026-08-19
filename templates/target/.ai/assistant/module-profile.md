@@ -4,10 +4,15 @@ Use this file in `{PROJECT_NAME}` to record which Alatyr Core capabilities are
 required, enabled, deferred, disabled, not applicable, or blocked.
 
 Replace placeholders with target facts before accepting installation.
+An optional module owner may be absent from a selective framework pack; install
+it through reviewed pack expansion before enabling that module.
 
 ## Required Core Profile
 
 Core profile state: `{COMPLETE_OR_MISSING_GAPS}`
+Framework pack: `{CORE_STANDARD_OR_COMPLETE}`
+Pack inventory: `.ai/framework/file-inventory.json`
+Required pack expansion: `{NONE_OR_MODULE_OWNERS_TO_ADD}`
 Last reviewed: `{LAST_REVIEW_DATE}`
 Reviewed by: `{REVIEWER_OR_ROLE}`
 

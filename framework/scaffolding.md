@@ -60,10 +60,19 @@ deterministic and machine-checked:
   operation surfaces
 - `full`: all target templates, optional modules, and assistant bridges
 
-The selected scaffold profile limits placeholder files only. It does not
-enable modules, choose supported assistants, resolve target facts, or prove
-installation maturity. Keep the complete portable framework copy available so
-the target can enable modules later without changing the framework baseline.
+The selected scaffold support profile limits target placeholder files. A
+matching portable framework pack may also limit the copied framework corpus:
+
+- `core` support maps to the `core` framework pack
+- `standard` support maps to the `standard` framework pack
+- `full` support maps to the `complete` framework pack
+
+A broader framework pack is allowed; a smaller pack than the support profile
+is not. Selective packs must preserve rule dependency closure and carry
+projected rule-registry, ownership, and file-inventory surfaces. Pack selection
+does not enable modules, choose supported assistants, resolve target facts, or
+prove installation maturity. Enabling a module whose rule owner is absent
+requires an explicit pack expansion and normal framework-update evidence.
 
 ## Final Evidence
 
@@ -71,6 +80,7 @@ If scaffolding was used, installation evidence should report:
 
 - helper name and mode
 - selected scaffold profile
+- selected framework pack and projected inventory
 - target path
 - files created
 - files skipped because they already existed

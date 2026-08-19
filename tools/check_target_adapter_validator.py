@@ -10,6 +10,7 @@ import sys
 import tempfile
 from pathlib import Path
 
+from framework_packaging import FRAMEWORK_ROOT, projected_framework_contents
 from validate_target_adapter import (
     AdapterValidatorConfig,
     Finding,
@@ -20,11 +21,13 @@ from validate_target_adapter import (
     scope_entries_cover,
 )
 
+ROOT = Path(__file__).resolve().parents[1]
 
-def validator(target: Path) -> Validator:
+
+def validator(target: Path, framework_source: Path | None = None) -> Validator:
     return Validator(
         target,
-        framework_source=None,
+        framework_source=framework_source,
         diff_ref=None,
         approval_records=[],
         enforce_approval_scope=False,
@@ -75,6 +78,83 @@ def main() -> int:
                 failures.append(
                     f"schema-1 router must not receive schema-2 finding {forbidden}"
                 )
+
+        large_context_path = target / ".ai" / "assistant" / "large-context.md"
+        large_context_path.write_text("one two three four five\n", encoding="utf-8")
+        budget_validator = validator(target)
+        budget_validator.check_installed_context_costs(
+            {"preloaded_context": [], "bootstrap_context": [], "profile_index": {}},
+            {
+                "docs-local": {
+                    "required_context": [".ai/assistant/large-context.md"]
+                }
+            },
+            {
+                "bootstrap": {"max_files": 4, "max_words": 100},
+                "profile_default": {
+                    "max_files": 4,
+                    "max_total_words": 100,
+                    "max_portable_words": 1,
+                },
+            },
+        )
+        if "ROUTER_PROFILE_COST" not in {
+            finding.code for finding in budget_validator.findings
+        }:
+            failures.append("portable context over-budget must produce ROUTER_PROFILE_COST")
+
+        pack_target = target / "pack-target"
+        framework_target = pack_target / ".ai" / "framework"
+        framework_target.mkdir(parents=True)
+        manifest_path = pack_target / ".ai" / "alatyr.yaml"
+        manifest_path.write_text("framework:\n  pack: core\n", encoding="utf-8")
+        for name, content in projected_framework_contents("core").items():
+            destination = framework_target / name
+            if content is None:
+                destination.write_bytes((FRAMEWORK_ROOT / name).read_bytes())
+            else:
+                destination.write_text(content, encoding="utf-8")
+        pack_validator = validator(pack_target, ROOT)
+        pack_validator.check_framework_baseline()
+        pack_drift = [
+            finding
+            for finding in pack_validator.findings
+            if finding.code.startswith("FRAMEWORK_")
+        ]
+        if pack_drift:
+            failures.append(
+                "fresh selective framework pack must match its projected baseline: "
+                + ", ".join(finding.code for finding in pack_drift)
+            )
+
+        inventory_path = framework_target / "file-inventory.json"
+        original_inventory = inventory_path.read_text(encoding="utf-8")
+        inventory = json.loads(original_inventory)
+        inventory["files"][0]["sha256"] = "0" * 64
+        write_json(inventory_path, inventory)
+        tampered_inventory_validator = validator(pack_target, ROOT)
+        tampered_inventory_validator.check_framework_baseline()
+        tampered_inventory_codes = {
+            finding.code for finding in tampered_inventory_validator.findings
+        }
+        if "FRAMEWORK_PACK_INVENTORY_DIGEST_DRIFT" not in tampered_inventory_codes:
+            failures.append("selective pack must detect a self-declared digest change")
+        if "FRAMEWORK_PACK_INVENTORY_CONTENT_DRIFT" not in tampered_inventory_codes:
+            failures.append("selective pack must detect projected inventory tampering")
+        inventory_path.write_text(original_inventory, encoding="utf-8")
+
+        registry_path = framework_target / "rule-registry.json"
+        original_registry = registry_path.read_text(encoding="utf-8")
+        registry = json.loads(original_registry)
+        registry["rules"] = registry["rules"][1:]
+        write_json(registry_path, registry)
+        tampered_registry_validator = validator(pack_target, ROOT)
+        tampered_registry_validator.check_framework_baseline()
+        if "FRAMEWORK_PACK_REGISTRY_DRIFT" not in {
+            finding.code for finding in tampered_registry_validator.findings
+        }:
+            failures.append("selective pack must detect projected registry tampering")
+        registry_path.write_text(original_registry, encoding="utf-8")
 
         write_json(
             router_path,

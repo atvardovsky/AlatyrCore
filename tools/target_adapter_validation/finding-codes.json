@@ -1,0 +1,5720 @@
+{
+  "schema_version": 1,
+  "catalog_kind": "target-adapter-validator-findings",
+  "generated_from": [
+    "tools/validate_target_adapter.py",
+    "tools/target_adapter_validation/__init__.py",
+    "tools/target_adapter_validation/context.py",
+    "tools/target_adapter_validation/framework_baseline.py",
+    "tools/target_adapter_validation/router_costs.py"
+  ],
+  "finding_codes": [
+    {
+      "code": "AI_ROUTER_ALLOWED_ACTION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "AI_ROUTER_ITEMS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "AI_ROUTER_ITEM_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "AI_ROUTER_ITEM_FIELD",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "AI_ROUTER_ITEM_ID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "AI_ROUTER_ITEM_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "AI_ROUTER_ITEM_STATUS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "AI_ROUTER_ITEM_TYPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "AI_ROUTER_ITEM_TYPES",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "AI_ROUTER_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "AI_ROUTER_LEGACY_SCHEMA",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "AI_ROUTER_RECOMMENDATION_TEMPLATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "AI_ROUTER_ROUTES",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "AI_ROUTER_ROUTE_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "AI_ROUTER_ROUTE_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "AI_ROUTER_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_DIFF_BASE_MISMATCH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_DIFF_REF_REQUIRED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_PATCH_CHANGED",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_PATCH_HASH_MATCH",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_PATCH_HASH_MISMATCH",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_PATCH_HASH_NOT_VERIFIABLE",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_PATCH_HASH_SKIPPED",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_PATCH_HASH_UNAVAILABLE",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_PLAN_FILE_MISSING",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_PLAN_FILE_OUTSIDE_TARGET",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_PLAN_HASH_MATCH",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_PLAN_HASH_MISMATCH",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_PLAN_HASH_NOT_VERIFIABLE",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_PLAN_HASH_UNVERIFIED",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_RECORD_EVIDENCE_CLASS",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_RECORD_FIELD_MISSING",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_RECORD_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_RECORD_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_RECORD_KIND",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_RECORD_MACHINE_READABLE_REQUIRED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_RECORD_MISSING",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_RECORD_OUTSIDE_TARGET",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_RECORD_SCHEMA",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_RECORD_SCOPE_EMPTY",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_RECORD_SCOPE_INVALID",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_RECORD_SELECTION_REQUIRED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_SCOPE_DECLARED_BROKEN",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_SCOPE_ENFORCED",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_SCOPE_EXCLUDED",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "APPROVAL_SCOPE_MISMATCH",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_ACCEPTED_EVIDENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_AREAS_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_AREA_FIELDS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_AREA_ID_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_AREA_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_CATALOG_INDEX",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_CATALOG_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_CATALOG_LIST",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_CATALOG_METADATA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_CATALOG_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_CONTRACT_INCOMPLETE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_ENABLED_METADATA_UNRESOLVED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_ITEM_EVIDENCE_UNRESOLVED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_ITEM_FIELD_UNRESOLVED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_ITEM_IDENTITY_UNRESOLVED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_ITEM_STATUS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_KNOWN_GAP_UNRESOLVED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_MANIFEST_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_MODULE_STATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_MODULE_STATE_MISSING",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_MODULE_UNDECLARED",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_OPERATION_ACTIONS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_OPERATION_FLOW",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_OPERATION_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_OPERATION_MODULE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_OPERATION_UNROUTED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_PATTERNS_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_PATTERN_FIELDS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_PATTERN_ID_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_PATTERN_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_PATTERN_REFERENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_PATTERN_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_REQUIRED_FILE_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "BACKUP_OWNER_UNRESOLVED",
+      "levels": [
+        "configured"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "BOOTSTRAP_AREA_MAP_MISSING",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "BOOTSTRAP_CONTEXT_ROUTER_MISSING",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_ACCEPTED_AMBIGUITY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_ACCEPTED_UNRESOLVED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_AREAS_EMPTY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_AREA_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_CATALOG_INDEX",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_CATALOG_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_CATALOG_PROFILES",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_CATALOG_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_COMMENT_CONTRACT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_CONTRACT_INCOMPLETE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_DIRECT_EDIT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_ENABLED_METADATA_UNRESOLVED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_EVIDENCE_LIMIT",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_GENERATION_CONTRACT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_LIST_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_MANIFEST_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_MODULE_STATE_MISSING",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_MODULE_UNDECLARED",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_NO_ACCEPTED_PROFILE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_OPERATION_UNROUTED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_OUTPUT_POLICY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_PROFILES_EMPTY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_PROFILE_FIELDS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_PROFILE_ID_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_PROFILE_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_PROFILE_MATCH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_PROFILE_REFERENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_PROFILE_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_PROFILE_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_PROFILE_STATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_REQUIRED_FILE_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_SELECTION_POLICY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_MAP_DIRECTION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_MAP_EDGES",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_MAP_EDGE_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_MAP_EDGE_ID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_MAP_EDGE_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_MAP_EDGE_TYPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_MAP_IMPACT_POLICY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_MAP_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_MAP_LEVELS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_MAP_NODES",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_MAP_NODE_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_MAP_NODE_ID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_MAP_NODE_LEVEL",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_MAP_NODE_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_MAP_OWNER_MISSING",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_MAP_OWNER_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_MAP_REGISTRY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_MAP_RELATIONSHIPS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_MAP_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_MAP_TARGET_LEVEL",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEVELOPMENT_EVIDENCE_CONTENT_POLICY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEVELOPMENT_EVIDENCE_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEVELOPMENT_EVIDENCE_METADATA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEVELOPMENT_EVIDENCE_METADATA_UNRESOLVED",
+      "levels": [
+        "configured"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEVELOPMENT_EVIDENCE_MISSING",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEVELOPMENT_EVIDENCE_OCCURRENCE_COUNT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEVELOPMENT_EVIDENCE_PATTERNS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEVELOPMENT_EVIDENCE_PATTERN_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEVELOPMENT_EVIDENCE_PATTERN_FIELD",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEVELOPMENT_EVIDENCE_PATTERN_LIST",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEVELOPMENT_EVIDENCE_PATTERN_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEVELOPMENT_EVIDENCE_QUALITY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEVELOPMENT_EVIDENCE_REFERENCE_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEVELOPMENT_EVIDENCE_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEVELOPMENT_EVIDENCE_STATUS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_BRIDGE_CAPABILITY_FIELD",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_BRIDGE_CAPABILITY_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_CAPABILITY_ARTIFACT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_CAPABILITY_ASCII_FALLBACK",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_CAPABILITY_CLIENT_VERSION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_CAPABILITY_EVIDENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_CAPABILITY_EXPIRED",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_CAPABILITY_EXPIRY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_CAPABILITY_FIELDS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_CAPABILITY_FRESHNESS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_CAPABILITY_INDEX_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_CAPABILITY_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_CAPABILITY_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_CAPABILITY_REVIEW_TRIGGERS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_CAPABILITY_ROUTE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_CAPABILITY_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_CAPABILITY_SURFACES",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_CAPABILITY_SURFACE_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_CAPABILITY_SYNTAXES",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_CONTRACT_INCOMPLETE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_MANIFEST_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_MODULE_STATE_MISSING",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_MODULE_UNDECLARED",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_OPERATION_ACTIONS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_OPERATION_FLOW",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_OPERATION_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_OPERATION_MODULE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_OPERATION_UNROUTED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_REQUIRED_FILE_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_SURFACE_CAPABILITY_ID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_SURFACE_CAPABILITY_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIAGRAM_SURFACE_CAPABILITY_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIFF_SCOPE_CLEAN",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIFF_SCOPE_SKIPPED",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DIFF_SCOPE_UNAVAILABLE",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EVIDENCE_SCOPE_CURRENT_STATE",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_APPROVAL_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_APPROVAL_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_BINDING_CONTRACT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_BINDING_ENTRIES",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_BINDING_ENTRY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_BINDING_ID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_BINDING_IDENTITY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_BINDING_UNRESOLVED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_CATALOG_API",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_CATALOG_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_CATALOG_ENTRIES",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_CATALOG_ENTRY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_CATALOG_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_CATALOG_LIST",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_CATALOG_LOCK_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_CATALOG_METADATA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_CATALOG_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_CATALOG_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_CATALOG_STATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_CATALOG_UNRESOLVED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_COMPATIBILITY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_EVIDENCE_LIMIT",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_FILE_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_FILE_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_FILE_HASH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_FILE_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_FILE_OWNER",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_FILE_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_FILE_RECORD",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_FILE_SYMLINK",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_ID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_INSTALLED_DEPENDENCIES",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_INSTALLED_FILES",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_INSTALLED_HOOK",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_INSTALLED_ITEM",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_INSTALLED_ITEMS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_INSTALLED_ITEM_ID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_INSTALLED_ITEM_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_INSTALLED_MANIFEST_IDENTITY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_INSTALLED_MANIFEST_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_INTEGRATION_SURFACES",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_ITEM_INDEX_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_ITEM_UNLOCKED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_LOCK_API",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_LOCK_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_LOCK_ENTRIES",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_LOCK_ENTRY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_LOCK_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_LOCK_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_LOCK_PATH_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_LOCK_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_LOCK_STATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_LOCK_UNRESOLVED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_MANIFEST_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_MODULE_STATE_MISSING",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_MODULE_UNDECLARED",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_NAMESPACE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_OPERATION_UNROUTED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_PACKAGE_DIGEST",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_REQUIRED_BINDING_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_REQUIRED_FILE_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_SOURCE_TYPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_TARGET_BASELINE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_TARGET_BASELINE_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_VALIDATION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "FRAMEWORK_COMPARE_SKIPPED",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "FRAMEWORK_DIR_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "FRAMEWORK_FILE_DRIFT",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "FRAMEWORK_FILE_EXTRA",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "FRAMEWORK_FILE_MISSING",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "FRAMEWORK_PACK_INVENTORY_CONTENT_DRIFT",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "FRAMEWORK_PACK_INVENTORY_DIGEST_DRIFT",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "FRAMEWORK_PACK_INVENTORY_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "FRAMEWORK_PACK_INVENTORY_ENTRY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "FRAMEWORK_PACK_INVENTORY_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "FRAMEWORK_PACK_INVENTORY_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "FRAMEWORK_PACK_REGISTRY_DRIFT",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "FRAMEWORK_PACK_REGISTRY_INVALID",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "FRAMEWORK_PACK_SELECTION_DRIFT",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "FRAMEWORK_SOURCE_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "FRAMEWORK_SOURCE_PACK_INVALID",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "GATE_CONTEXT_ROUTER_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "LOCAL_PATH_LEAKAGE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "MANIFEST_CONTEXT_BUDGET",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "MANIFEST_CONTEXT_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "MANIFEST_FIELD_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "MANIFEST_FIELD_UNRESOLVED",
+      "levels": [
+        "configured"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "MANIFEST_FRAMEWORK_PACK",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "MANIFEST_PARSE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "MANIFEST_PATH_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "MANIFEST_PATH_NOT_AI",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "MANIFEST_SUPPORT_PROFILE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "MIGRATION_DIFF_FILE_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "MIGRATION_DIFF_IMPACT",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "MIGRATION_DIFF_MISSING",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "MIGRATION_DIFF_NO_IMPACT",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "MIGRATION_DIFF_NO_RULE_IMPACT",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "MIGRATION_DIFF_SECTION_MISSING",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "MIGRATION_DIFF_SKIPPED",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_CANDIDATES_MISSING",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_CANDIDATE_COVERAGE",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_CANDIDATE_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_CANDIDATE_UNKNOWN",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_CATALOG_DUPLICATE_ALIAS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_CATALOG_DUPLICATE_ID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_CATALOG_FALLBACK",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_CATALOG_FIELD",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_CATALOG_IN_BOOTSTRAP",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_CATALOG_ITEM",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_CATALOG_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_CATALOG_LIST",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_CATALOG_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_CATALOG_OPERATIONS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_CATALOG_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_CATALOG_PREVIEW",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_CATALOG_PROFILE",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_CATALOG_REQUIRED_OPERATION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_CATALOG_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_INDEX_ALIAS_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_INDEX_CATALOG",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_INDEX_CONTRACT_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_INDEX_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_INDEX_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_INDEX_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_ROUTING_CATALOG",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_ROUTING_HEALTH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_ROUTING_INDEX",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_ROUTING_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_ACTUAL_PATH",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_AFTER_REF",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_APPROVAL_PATH",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_APPROVAL_RECORD",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_APPROVAL_SCOPE",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_APPROVAL_SEMANTIC_SCOPE",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_ARCHITECTURE_APPLIES",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_ARCHITECTURE_DISCUSSION",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_ARCHITECTURE_FIELD",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_ARCHITECTURE_LIST",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_ARCHITECTURE_REQUIRED",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_BEFORE_REF",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_CHANGED_FACT",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_CHANGED_FACTS",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_CHANGED_FACT_FIELD",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_CHECKED",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_CHECK_SKIPPED",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_COMPANION_DECISION",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_COMPANION_DECISIONS",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_COMPANION_FIELD",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_COMPANION_STATE",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_CORRECTION",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_CORRECTIONS",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_CORRECTION_FACT",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_CORRECTION_FACTS",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_CORRECTION_FIELD",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_CORRECTION_KIND",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_CORRECTION_SCOPE",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_EVIDENCE_CLASS",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_EVIDENCE_QUALITY",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_EXCLUDED_PATH",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_FACT_DECLARATION",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_FIELD_MISSING",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_FIELD_UNAVAILABLE",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_GIT_RANGE",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INDEX_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INDEX_ENTRY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INDEX_FIELD",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INDEX_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INDEX_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INDEX_RECORDS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INDEX_RECORD_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INDEX_REQUIRED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INDEX_ROOT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INDEX_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INVALID_JSON",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INVALID_ROOT",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_INVARIANTS",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_KIND",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_LIST_MISSING",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_LIST_VALUE",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_MISSING",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_MISSING_COMPANION_RISK",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_NOT_INDEXED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_OUTSIDE_TARGET",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_PATH_SCOPE",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_PLAN_HASH",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_PLAN_HASH_FORMAT",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_PLAN_MISSING",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_PLAN_PATH",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_PUBLIC_CLAIM",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_PULL_REQUEST",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_RANGE_PATHS",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_RAW_CHAT",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_RAW_CHAT_REVIEW",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_REAPPROVAL_MISSING",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_SCHEMA",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_SELECTION_REQUIRED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_SEMANTIC_SCOPE",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_SNAPSHOT_FILE",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_SNAPSHOT_HASH",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_SNAPSHOT_PATH",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_SNAPSHOT_READ",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_STATUS",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_TYPE",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PACKAGE_WORKTREE_STATE",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PLACEHOLDERS_ALLOWED",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PLACEHOLDER_UNRESOLVED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PROFILE_DUPLICATE_CONTEXT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PROFILE_MARKDOWN_MISSING",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "REQUIRED_FILE_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTED_PATH_MISSING",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_BOOTSTRAP_BROAD",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_BOOTSTRAP_COST",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/router_costs.py"
+      ]
+    },
+    {
+      "code": "ROUTER_BOOTSTRAP_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_BUDGETS_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_BUDGET_BOOTSTRAP",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/router_costs.py"
+      ]
+    },
+    {
+      "code": "ROUTER_BUDGET_ON_EXCEED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/router_costs.py"
+      ]
+    },
+    {
+      "code": "ROUTER_BUDGET_ORDER",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/router_costs.py"
+      ]
+    },
+    {
+      "code": "ROUTER_BUDGET_PROFILE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/router_costs.py"
+      ]
+    },
+    {
+      "code": "ROUTER_BUDGET_VALUE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/router_costs.py"
+      ]
+    },
+    {
+      "code": "ROUTER_CONDITIONAL_CONTEXT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_CONTEXT_COST_UNREADABLE",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/router_costs.py"
+      ]
+    },
+    {
+      "code": "ROUTER_CONTEXT_COST_UNRESOLVED",
+      "levels": [
+        "configured"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/router_costs.py"
+      ]
+    },
+    {
+      "code": "ROUTER_CONTEXT_PATH_MISSING",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/router_costs.py"
+      ]
+    },
+    {
+      "code": "ROUTER_CONTEXT_PATH_UNSAFE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/router_costs.py"
+      ]
+    },
+    {
+      "code": "ROUTER_DESCRIPTOR",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_DESCRIPTOR_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_DESCRIPTOR_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_DUPLICATE_BOOTSTRAP",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_DUPLICATE_ENTRY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_DUPLICATE_PROFILE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_HUMAN_REFERENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_MANIFEST_SCHEMA_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_MIGRATION_ASSESSMENT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_MIGRATION_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_PATH_MISSING",
+      "levels": [
+        "error",
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_PRELOADED_MISSING",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_PROFILES_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_PROFILE_COST",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/router_costs.py"
+      ]
+    },
+    {
+      "code": "ROUTER_PROFILE_COST_EMPTY",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/router_costs.py"
+      ]
+    },
+    {
+      "code": "ROUTER_PROFILE_IDENTITY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_PROFILE_INDEX",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_PROFILE_INDEX_ITEM",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_PROFILE_MISSING",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_PROFILE_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_RECEIPT_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_SCHEMA_LEGACY",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_UPGRADE_CONTEXT_BROAD",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTING_BROAD_CONTEXT",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTING_LOADS_BROAD_CONTEXT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "RULE_REGISTRY_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "STALE_CHECKER_MISSING_CLAIM",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "STALE_CHECKER_REFERENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TARGET_CHECKER_COVERAGE_GAP",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TARGET_CHECKER_FOUND",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TARGET_CHECKER_MISSING",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TARGET_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TARGET_NOT_DIRECTORY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_COMMAND_EXTERNAL_ACTIONS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_COMMAND_REFERENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_COMMAND_UNRESOLVED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_CONFIGURATION_UNROUTED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_EVIDENCE_LIMIT",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_EVIDENCE_REQUIREMENTS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_EXCEPTIONS_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_EXCEPTION_REASON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_EXCEPTION_REFERENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_EXCEPTION_UNRESOLVED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_EXECUTION_UNROUTED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_INTENT_UNROUTED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_ISOLATION_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_ISOLATION_UNRESOLVED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_KNOWN_GAPS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_MANIFEST_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_MODES_INVALID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_MODULE_STATE_MISSING",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_MODULE_UNDECLARED",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_POLICY_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_POLICY_LIST_EMPTY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_POLICY_METADATA_UNRESOLVED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_POLICY_NOT_ENABLED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_POLICY_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_RECORD_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_RECORD_ID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_REQUIRED_FILE_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_SUGGESTION_BOUNDS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_SUGGESTION_COST",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_SUGGESTION_MODE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_SUGGESTION_RESULT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_SUGGESTION_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_TEST_LEVEL_LIST",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_TEST_LEVEL_REFERENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_TEST_LEVEL_UNRESOLVED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_TRIGGERS_EMPTY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_TRIGGER_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_TRIGGER_EXCEPTIONS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_TRIGGER_LIST",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_TRIGGER_MODE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_TRIGGER_MODE_UNAVAILABLE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_TRIGGER_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_TRIGGER_STATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TDD_TRIGGER_UNRESOLVED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_ACTIVE_CLAIM_INCOMPLETE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_ACTIVE_INDEX_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_ACTIVE_INDEX_ENTRIES",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_ACTIVE_INDEX_ENTRY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_ACTIVE_INDEX_FIELD",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_ACTIVE_INDEX_INCOMPLETE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_ACTIVE_INDEX_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_ACTIVE_INDEX_LIST",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_ACTIVE_INDEX_REGISTRY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_ACTIVE_INDEX_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_ACTIVE_INDEX_STALE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_ACTIVE_INDEX_TASK_ID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_ACTIVE_OVERLAP_BLOCKED",
+      "levels": [
+        "configured"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_ACTIVE_TASK_WITHOUT_CLAIM",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_ACTORS_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_ACTOR_ALIAS_AMBIGUOUS",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_ACTOR_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_ACTOR_ID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_ACTOR_LIST",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_ACTOR_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_ACTOR_UNKNOWN",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_BACKEND_CAPABILITIES",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_BACKEND_FIELD",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_BACKEND_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_BACKEND_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_CLAIM_FIELD",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_CLAIM_MODE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_CLAIM_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_CLAIM_STATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_CONTEXT_OVERLAY_CONDITIONAL",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_CONTEXT_OVERLAY_DESCRIPTOR",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_CONTEXT_OVERLAY_ID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_CONTEXT_OVERLAY_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_CONTEXT_OVERLAY_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_CONTEXT_OVERLAY_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_CONTEXT_OVERLAY_PREFLIGHT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_CONTEXT_OVERLAY_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_CONTEXT_OVERLAY_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_ENABLED_METADATA_UNRESOLVED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_GIT_IDENTITY_AUTHORITY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_HANDOFF_STATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_IDENTITY_POLICY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_LOCAL_IDENTITY_INACTIVE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_LOCAL_IDENTITY_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_LOCAL_IDENTITY_NOT_IGNORED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_LOCAL_IDENTITY_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_LOCAL_IDENTITY_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_LOCAL_IDENTITY_SELECTION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_LOCAL_IDENTITY_STALE",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_LOCAL_IDENTITY_UNKNOWN",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_MERGE_READY_OVERLAP",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_MERGE_READY_REVIEW",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_MERGE_READY_REVIEWERS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_MERGE_READY_REVIEW_EVIDENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_MERGE_READY_REVIEW_REVISIONS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_MERGE_READY_REVIEW_STALE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_MERGE_READY_REVISION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_MERGE_READY_STALE",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_MERGE_READY_VALIDATION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_MODULE_STATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_OPERATING_MODEL_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_OVERLAP_FIELD",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_OVERLAP_LIST",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_OVERLAP_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_OVERLAP_STATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_POLICY_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_POLICY_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_POLICY_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_PRIORITIES_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_PRIORITY_AUTHORITY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_PRIORITY_UNKNOWN",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_REGISTRY_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_REGISTRY_METADATA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_REGISTRY_MIGRATION_REQUIRED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_REGISTRY_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_REGISTRY_MONOLITHIC_TASKS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_REGISTRY_OPERATING_MODEL",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_REGISTRY_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_REGISTRY_REVISION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_REGISTRY_REVISION_STALE",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_REGISTRY_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_REVIEWER_SEPARATION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_REVIEW_STATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_TASK_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_TASK_EXPECTED_REVISION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_TASK_FIELD",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_TASK_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_TASK_LIST",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_TASK_RECORD_REVISION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_TASK_REVISION_CONFLICT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_TASK_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_TASK_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_TASK_STATUS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_TERMINAL_TASK_ACTIVE_CLAIM",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_TRANSITION_NOT_ALLOWED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_TRANSITION_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_TRANSITION_STATUS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TEAM_VALIDATION_STATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "UNRESOLVED_NOT_DEFINED",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_ACCEPTED_AMBIGUITY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_ACCEPTED_UNRESOLVED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_CATALOG_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_CATALOG_EMPTY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_CATALOG_ENTRY_FIELDS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_CATALOG_ENTRY_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_CATALOG_ID_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_CATALOG_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_CATALOG_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_CATALOG_RECORD",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_CATALOG_REFERENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_CATALOG_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_CONTRACT_INCOMPLETE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_DATA_REFERENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_ENABLED_METADATA_UNRESOLVED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_EVIDENCE_LIMIT",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_LINKS_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_LINK_FIELDS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_LINK_ID_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_LINK_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_LINK_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_LINK_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_LINK_TERM_REFERENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_LINK_UNRESOLVED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_MANIFEST_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_MODULE_STATE_MISSING",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_MODULE_UNDECLARED",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_NO_ACCEPTED_TERM",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_OPERATION_ACTIONS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_OPERATION_FLOW",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_OPERATION_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_OPERATION_MODULE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_OPERATION_UNROUTED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_REQUIRED_FILE_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_STRING_LIST",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_TERMS_EMPTY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_TERM_FIELDS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_TERM_ID_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_TERM_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_TERM_REFERENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_TERM_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_TERM_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_TERM_STATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_TERM_UNINDEXED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "{prefix}_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "router_kind": "alatyr-installation-context-router",
+  "canonical_rule": "ALATYR-CONTEXT-001",
+  "human_reference": "installer/assistant-installation.flow.md",
+  "preloaded_context": ["AGENTS.md"],
+  "bootstrap_context": [
+    "installer/context-router.json",
+    "VERSION",
+    "ADAPTER_SCHEMA_VERSION",
+    "TEMPLATE_VERSION"
+  ],
+  "budgets": {
+    "bootstrap_max_words": 4000,
+    "on_exceed": "record the required boundary and load only its owner"
+  },
+  "routing_order": [
+    "discovery",
+    "scope-selection",
+    "plan-and-approval",
+    "adaptation",
+    "validation",
+    "handoff"
+  ],
+  "stages": {
+    "discovery": {
+      "required_context": ["INSTALL.md"],
+      "target_context": ["root assistant instructions", "repository structure", "existing project validation and ownership evidence"],
+      "prohibited_actions": ["create files", "overwrite instructions", "invent target facts or commands"]
+    },
+    "scope-selection": {
+      "required_context": [
+        "framework/module-profile.md",
+        "framework/rule-registry.json",
+        "tools/scaffold_profiles.json"
+      ],
+      "conditional_context": ["rule owners for selected core and optional modules"],
+      "prohibited_actions": ["enable an optional module without target need owner and validation"]
+    },
+    "plan-and-approval": {
+      "required_context": [
+        "installer/installation-plan-template.md",
+        "framework/change-risk-model.md",
+        "framework/approval-records.md"
+      ],
+      "conditional_context": ["security owner when a safety boundary is crossed", "import policy for external AI infrastructure"],
+      "prohibited_actions": ["apply protected changes before scoped approval"]
+    },
+    "adaptation": {
+      "required_context": ["framework/file-inventory.json"],
+      "conditional_context": ["selected canonical rule owners", "selected target templates", "changed framework files during upgrade"],
+      "copy_policy": "compare deterministic paths and hashes; do not load unchanged prose merely to copy it",
+      "prohibited_actions": ["copy target facts from another project", "replace target state with placeholders"]
+    },
+    "validation": {
+      "required_context": ["installer/readiness-checklist.md"],
+      "conditional_context": ["target validation discovered during inspection", "focused validator for each enabled module"],
+      "prohibited_actions": ["invent validation commands", "claim semantic correctness from structural checks"]
+    },
+    "handoff": {
+      "required_context": ["templates/target/.ai/assistant/templates/post-install-message.md"],
+      "conditional_context": ["post-update message for upgrades", "unresolved gaps and residual risk"],
+      "prohibited_actions": ["claim installation success without evidence"]
+    }
+  }
+}

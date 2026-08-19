@@ -71,7 +71,7 @@ List what must not be changed.
 - Context profiles:
 - Context-router bootstrap references:
 - Preloaded versus compact-bootstrap context:
-- Bootstrap and profile context budgets:
+- Bootstrap and profile total/portable/reserved-target context budgets:
 - Context receipt fields and storage policy:
 - Project-area overlays:
 - Task-scale overlays and large-task activation rules:
@@ -139,6 +139,11 @@ List what must not be changed.
 
 List reusable framework files to create or adapt in target `.ai/framework`,
 including Markdown framework docs and `framework/rule-registry.json`.
+
+Record the selected framework pack: `core`, `standard`, or `complete`. Explain
+any expansion required by enabled modules. A selective pack must include a
+projected rule registry, ownership map, and file inventory and must not claim
+rules whose canonical owner is absent.
 
 Do not include source-repository commands, scripts, generated-file tools,
 checker paths, test commands, fixtures, folder conventions, security policies,

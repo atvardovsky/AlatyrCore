@@ -3,6 +3,13 @@
 These contracts support paired comparisons of the same task under `none`,
 `minimal`, and `full` adapter modes.
 
+`benchmark-task-suite.json` defines the minimum task-class coverage expected
+before broad effectiveness or cost claims: narrow documentation, local code
+repair, business invariants, architecture boundaries, data contracts,
+protected security work, and large resumable changes. It is a coverage
+contract, not evidence that those runs have occurred. Use at least three
+repetitions per task class when model variability matters.
+
 Each task supplies three repository snapshots. Their project files must match;
 only paths covered by `adapter_surface_patterns` may differ. Preparation copies
 each snapshot into an isolated run workspace so one run cannot mutate another.

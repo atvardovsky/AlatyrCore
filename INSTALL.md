@@ -8,29 +8,16 @@ then adapts the framework into the target.
 
 ## Source Bootstrap
 
-Before planning an installation, read the source bootstrap:
+Treat root `AGENTS.md` as preloaded, then read
+`installer/context-router.json` and the three source version files. Use the
+router to select the current installation stage before opening installer,
+framework, or template prose. Inspect the target repository before selecting
+optional modules or creating files.
 
-- `README.md`
-- `AGENTS.md`
-- `AI_ASSISTANTS.md`
-- `framework/README.md`
-- `framework/context-profiles.md`
-- `framework/context-router.md`
-- `framework/project-adapter-contract.md`
-- `framework/portability.md`
-- `framework/module-profile.md`
-- `framework/rule-ownership.md`
-- `framework/rule-registry.md`
-- `framework/rule-registry.json`
-- `installer/assistant-installation.flow.md`
-- `installer/readiness-checklist.md`
-- `installer/installation-plan-template.md`
-
-Then inspect the target repository and choose the smallest installation scope.
-Read additional framework, installer, and target template files only when that
-scope needs them. Read every framework file before copying or adapting it into
-the target `.ai/framework`; full-core installations therefore read the full
-`framework/*.md` set at the copy/adaptation stage, not as a default bootstrap.
+Use `framework/file-inventory.json` to identify and hash unchanged framework
+files. Copying an unchanged file does not require loading its prose. Read only
+the canonical owners and target templates selected by the installation scope,
+changed facts, approval triggers, or failed validation.
 
 ## Rule References
 
@@ -132,6 +119,8 @@ The plan must identify:
   evidence, and stale-view evidence needs
 - optional scaffolding plan and selected `core`, `standard`, or `full` support
   profile, if any
+- matching `core`, `standard`, or `complete` framework pack, including any
+  enabled-module expansion that the smallest matching pack does not cover
 - migration diff, adapter output contract, AI infrastructure inventory and
   recommendation reports, and effectiveness report needs
 - AI infrastructure router/item, recommendation, and adaptation-record needs
@@ -177,8 +166,10 @@ In a typical target repository:
    repository uses file ownership metadata.
 3. Create `.ai/alatyr.yaml` or an equivalent manifest.
 4. Create `.ai/README.md` to explain target ownership contours.
-5. Copy or adapt portable framework files into `.ai/framework`, including
-   `framework/*.md` and `framework/rule-registry.json`.
+5. Copy or adapt the selected portable framework pack into `.ai/framework`.
+   Record `framework.pack` in the manifest. Preserve the pack-projected rule
+   registry, ownership map, and file inventory; use `complete` when all
+   `framework/*.md` and JSON files are installed.
 6. Create `.ai/project/contour.md` and target project source-of-truth docs.
    When AI recommendations should use cross-task patterns, add the compact
    `.ai/project/development-evidence.json` index with target owner and retention
@@ -339,10 +330,10 @@ The scaffolder is Python-based and can be run on Linux, macOS, and Windows.
 Windows users may use the provided Command Prompt or PowerShell wrappers under
 `tools/`.
 
-The selected profile must be recorded in `.ai/alatyr.yaml`. Scaffold
-projection must remove manifest, router, operation, and capability claims for
-omitted optional surfaces; a smaller profile is not a full template copy with
-missing files.
+The selected support profile and compatible framework pack must be recorded in
+`.ai/alatyr.yaml`. Scaffold projection must remove manifest, router, operation,
+capability, and framework-rule claims for omitted optional surfaces; a smaller
+profile or pack is not a complete installation with unexplained missing files.
 
 Scaffolding does not replace target inspection, installation planning,
 approval gates, adapter rewriting, validation, logical integrity review, or

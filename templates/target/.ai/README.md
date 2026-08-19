@@ -95,5 +95,6 @@ are not framework core.
 
 `.ai/alatyr.yaml` records target-owned installation metadata such as framework
 version, adapter schema version, template version, selected support profile,
+installed framework pack and projected inventory,
 supported assistants, source-of-truth files, module state, validation entry
 points, known gaps, and local deviations.

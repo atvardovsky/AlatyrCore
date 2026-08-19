@@ -114,8 +114,8 @@ Machine checks can verify only deterministic repository facts, such as:
 - target profiles route every framework document somewhere
 - target context routers match the profile template and route known framework
   documents somewhere
-- static bootstrap/profile file and word costs remain within declared template
-  budgets
+- static and installed bootstrap/profile paths can be measured against total,
+  portable, and reserved target-context budgets
 - supported bridge templates expose the same compact bootstrap, operation
   catalog, single entry, health, help, and operation-routing entry points
 - manifest, operation catalog, approval, prompt-injection, help, and policy

@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -246,7 +247,11 @@ installations and do not prove real target validation.
     (output / "README.md").write_text(readme, encoding="utf-8")
 
 
-def prepare_run(args: argparse.Namespace) -> list[str]:
+def prepare_run(
+    args: argparse.Namespace,
+    *,
+    staged_target_cache: dict[str, Path] | None = None,
+) -> list[str]:
     failures: list[str] = []
     output = args.output.resolve()
     staged_adapter_profile = getattr(args, "staged_adapter_profile", None)
@@ -298,14 +303,32 @@ def prepare_run(args: argparse.Namespace) -> list[str]:
         try:
             fixture = load_json(fixture_dir / "fixture.json")
             expected = load_json(fixture_dir / "expected.json")
-            fixture_name, seed_files = materialize_fixture(
-                fixture_dir,
-                targets,
-                overwrite=args.overwrite,
+            expected_name = fixture.get("fixture")
+            cached_target = (
+                staged_target_cache.get(expected_name)
+                if staged_target_cache is not None and isinstance(expected_name, str)
+                else None
             )
+            if cached_target is not None:
+                fixture_name = expected_name
+                target = targets / fixture_name
+                if target.exists():
+                    raise ValueError(f"cached fixture output already exists: {target}")
+                shutil.copytree(cached_target, target)
+                seed_files = [
+                    item.get("path")
+                    for item in fixture.get("seed_files", [])
+                    if isinstance(item, dict) and isinstance(item.get("path"), str)
+                ]
+            else:
+                fixture_name, seed_files = materialize_fixture(
+                    fixture_dir,
+                    targets,
+                    overwrite=args.overwrite,
+                )
             scaffold_actions: list[str] = []
             scaffold_skipped: list[str] = []
-            if staged_adapter_profile:
+            if staged_adapter_profile and cached_target is None:
                 scaffold_actions, scaffold_skipped = scaffold_plan(
                     argparse.Namespace(
                         target=targets / fixture_name,
@@ -314,6 +337,8 @@ def prepare_run(args: argparse.Namespace) -> list[str]:
                         profile=staged_adapter_profile,
                     )
                 )
+                if staged_target_cache is not None:
+                    staged_target_cache[fixture_name] = targets / fixture_name
             prompt_path = prompts / f"{fixture_name}.md"
             if prompt_path.exists() and not args.overwrite:
                 raise ValueError(

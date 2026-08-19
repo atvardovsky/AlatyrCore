@@ -89,13 +89,13 @@
       "category": "ADAPTER",
       "owner": "framework/project-adapter-contract.md",
       "rule_ids": ["ALATYR-ADAPTER-001"],
-      "derived_surfaces": ["installation plan", "readiness checklist", "manifest template", "adapter recheck flow", "target development-pattern evidence", "AI infrastructure router", "AI infrastructure recommendation contract", "AI infrastructure item contracts"]
+      "derived_surfaces": ["installation plan", "readiness checklist", "manifest template", "adapter recheck flow", "target development-pattern evidence", "framework pack and projected inventory", "AI infrastructure router", "AI infrastructure recommendation contract", "AI infrastructure item contracts"]
     },
     {
       "category": "MODULE",
       "owner": "framework/module-profile.md",
       "rule_ids": ["ALATYR-MODULE-001"],
-      "derived_surfaces": ["target module profile", "manifest modules", "operation help routing", "maturity review"]
+      "derived_surfaces": ["target module profile", "manifest modules", "framework pack catalog", "scaffold profile-to-pack mapping", "operation help routing", "maturity review"]
     },
     {
       "category": "OPERATION",
@@ -119,7 +119,7 @@
       "category": "LIFECYCLE",
       "owner": "framework/lifecycle.md",
       "rule_ids": ["ALATYR-LIFECYCLE-001"],
-      "derived_surfaces": ["version files", "migration notes", "framework update recheck", "changelog"]
+      "derived_surfaces": ["version files", "installed framework pack", "migration notes", "framework update recheck", "changelog"]
     },
     {
       "category": "EVIDENCE",
@@ -133,7 +133,7 @@
       "id": "ALATYR-CONTEXT-001",
       "category": "CONTEXT",
       "canonical_source": "framework/context-profiles.md",
-      "summary": "Use a compact budgeted bootstrap, select the smallest task profile, project-area overlays, and optional task-scale overlay through an aligned context router, run compact active-work preflight before state-changing work when team collaboration is enabled, record expansion only when boundaries or conflicts require it, prefer changed-fact relationship routing when an adapted consistency map exists, use item routing for AI infrastructure work, and keep optional change-package, code-documentation, project-vocabulary, test-first, extension, and full team detail lazy.",
+      "summary": "Use a compact budgeted bootstrap and the smallest task profile through an aligned context router; separate total, portable, and reserved target context budgets; measure representative compact and expansion scenarios; record expansion only when boundaries or conflicts require it; prefer changed-fact relationship and AI-item routing when available; and keep optional module and full team detail lazy.",
       "applies_to": ["all installed adapter tasks"],
       "enforcement": "required"
     },
@@ -253,7 +253,7 @@
       "id": "ALATYR-ADAPTER-001",
       "category": "ADAPTER",
       "canonical_source": "framework/project-adapter-contract.md",
-      "summary": "Keep framework core, project facts, and repository adapter facts separated and rewritten from target evidence, including target development-pattern evidence, routed AI infrastructure items, project-evidenced recommendation records, adaptation records, optional project-owned code-documentation profiles and generators, optional project vocabulary and data-dictionary links, optional target test-first policy and evidence, optional normalized extension catalogs, locks, bindings, and lifecycle records, and optional target team policy, ignored local identity, active index, task records, and backend contract.",
+      "summary": "Keep framework core, project facts, and repository adapter facts separated and rewritten from target evidence; record the installed framework pack and its projected registry and inventory; and preserve target development-pattern evidence, routed AI infrastructure items, recommendation and adaptation records, optional project-owned documentation, vocabulary, testing, extension, and team state.",
       "applies_to": ["installation", "framework update", "adapter maintenance"],
       "enforcement": "required"
     },
@@ -261,7 +261,7 @@
       "id": "ALATYR-MODULE-001",
       "category": "MODULE",
       "canonical_source": "framework/module-profile.md",
-      "summary": "Establish the required core profile first, then enable optional modules, including change packages, source-set code documentation, project vocabulary, test-first development, and extensions, only when the target needs and can maintain them.",
+      "summary": "Establish the required core profile first, select a compatible dependency-closed framework pack, and enable optional modules, including change packages, source-set code documentation, project vocabulary, test-first development, and extensions, only when the target needs and can maintain them; expand the pack before claiming support for an absent module owner.",
       "applies_to": ["installation", "framework update", "adapter maturity", "framework upgrades"],
       "enforcement": "required"
     },
@@ -293,7 +293,7 @@
       "id": "ALATYR-LIFECYCLE-001",
       "category": "LIFECYCLE",
       "canonical_source": "framework/lifecycle.md",
-      "summary": "Record framework version, adapter schema version, template version, baseline, local deviations, migration notes, upgrade evidence, preservation of enabled target package records, code-documentation profiles, vocabulary records, accepted test-first policy and evidence, installed extension state, and target team policy, actor, task, claim, review, handoff, decision, backend, and ignored local identity state; migrate changed team schemas atomically without replacing active state with placeholders.",
+      "summary": "Record framework version, adapter schema version, template version, installed framework pack, baseline, local deviations, migration notes, and upgrade evidence; preserve enabled target package, documentation, vocabulary, testing, extension, and team state; migrate changed schemas atomically without replacing active state with placeholders.",
       "applies_to": ["installation", "framework upgrades"],
       "enforcement": "required"
     },

@@ -4,6 +4,7 @@ framework:
   version: "{ALATYR_CORE_VERSION}"
   source: "{ALATYR_CORE_SOURCE}"
   template_version: "{ALATYR_TEMPLATE_VERSION}"
+  pack: "{CORE_STANDARD_OR_COMPLETE}"
   rule_registry: ".ai/framework/rule-registry.json"
 installation:
   id: "{INSTALLATION_ID}"
@@ -49,7 +50,7 @@ source_of_truth:
   project_sources:
     - "{TARGET_PROJECT_SOURCE_OF_TRUTH}"
 context_routing:
-  router_schema_version: 3
+  router_schema_version: 4
   preloaded_context:
     - "AGENTS.md"
   compact_bootstrap:
@@ -59,8 +60,10 @@ context_routing:
   bootstrap_max_files: 4
   bootstrap_max_words: 2000
   profile_default_max_files: 12
-  profile_default_max_words: 8000
-  budget_behavior: "record expansion reason and load only required owners"
+  profile_default_max_total_words: 8000
+  profile_default_max_portable_words: 5600
+  profile_default_reserved_target_words: 2400
+  budget_behavior: "load required safety and owner evidence, then record measured expansion"
 modules:
   core_profile: "{COMPLETE_OR_MISSING_GAPS}"
   enabled:

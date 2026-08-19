@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "router_kind": "alatyr-source-context-router",
+  "canonical_rule": "ALATYR-CONTEXT-001",
+  "preloaded_context": ["AGENTS.md"],
+  "bootstrap_context": ["tools/source_context_router.json"],
+  "budgets": {
+    "bootstrap_max_words": 2000,
+    "on_exceed": "stop and repair or report routing drift"
+  },
+  "profiles": {
+    "docs-local": {
+      "required_context": ["docs/framework-maintenance.md"],
+      "conditional_context": ["edited file", "directly linked neighbor"],
+      "checks": ["check_markdown_links", "check_framework_consistency"]
+    },
+    "framework-rule": {
+      "required_context": [
+        "framework/rule-registry.json",
+        "framework/rule-ownership.md"
+      ],
+      "conditional_context": [
+        "canonical owner selected by rule ID",
+        "owner dependency selected from alatyr_doc metadata",
+        "affected installer or target template surface"
+      ],
+      "checks": ["check_framework_metadata", "check_rule_ownership", "check_framework_consistency"]
+    },
+    "installer-template": {
+      "required_context": [
+        "installer/context-router.json",
+        "INSTALL.md",
+        "installer/assistant-installation.flow.md"
+      ],
+      "conditional_context": [
+        "affected readiness or plan section",
+        "selected target template",
+        "owning framework rule"
+      ],
+      "checks": ["check_source_context_routing", "check_scaffold_profiles", "check_framework_consistency"]
+    },
+    "source-tooling": {
+      "required_context": ["tools/README.md", "docs/framework-maintenance.md"],
+      "conditional_context": ["tool being changed", "contract validated by the tool"],
+      "checks": ["focused tool check", "check_framework_consistency"]
+    },
+    "release-versioning": {
+      "required_context": [
+        "VERSION",
+        "ADAPTER_SCHEMA_VERSION",
+        "TEMPLATE_VERSION",
+        "CHANGELOG.md",
+        "docs/release-process.md",
+        "framework/lifecycle.md",
+        "framework/migration-diff.md"
+      ],
+      "conditional_context": ["release migration report", "changed rule owners and templates"],
+      "checks": ["check_versioning", "check_release_drift", "check_migration_diff_report"]
+    },
+    "ai-infrastructure-bridge": {
+      "required_context": [
+        "AI_ASSISTANTS.md",
+        "docs/assistant-compatibility.md",
+        "framework/bridge-capability-matrix.md",
+        "framework/ai-infrastructure-routing.md"
+      ],
+      "conditional_context": [
+        "selected skill prompt gate tool MCP bridge or wrapper",
+        "import policy when an external source is involved",
+        "operation help when routing changes"
+      ],
+      "checks": ["check_assistant_surface_conformance", "check_bridge_capability_matrix"]
+    }
+  },
+  "expansion_triggers": [
+    "canonical owner dependency",
+    "cross-contour change",
+    "approval or safety boundary",
+    "conflicting evidence",
+    "failed focused check",
+    "intentional full-corpus comparison or rebaseline"
+  ],
+  "fallback": "report an unmatched task; do not load the full framework automatically"
+}

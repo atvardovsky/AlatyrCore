@@ -12,7 +12,9 @@ from scaffold_target_structure import (
     TEMPLATE_ROOT,
     profile_names,
     resolve_profile_paths,
+    resolved_framework_pack,
 )
+from framework_packaging import resolve_framework_files
 
 
 EXPECTED_PROFILES = ["core", "standard", "full"]
@@ -21,6 +23,7 @@ CORE_REQUIRED = {
     Path(".ai/alatyr.yaml"),
     Path(".ai/assistant/context-router.json"),
     Path(".ai/assistant/context-profiles.md"),
+    Path(".ai/assistant/bridge-capability-matrix.md"),
     Path(".ai/assistant/module-profile.md"),
     Path(".ai/assistant/flows/ai-infrastructure-inventory.flow.md"),
     Path(".ai/assistant/flows/ai-infrastructure-recommendation.flow.md"),
@@ -88,6 +91,14 @@ def main() -> int:
         leaked_bridges = sorted(FULL_ONLY_BRIDGES & standard)
         if leaked_bridges:
             failures.append(f"assistant-specific bridges leaked into standard: {leaked_bridges}")
+        matched_packs = {
+            profile: resolved_framework_pack(profile, "matched")
+            for profile in EXPECTED_PROFILES
+        }
+        if matched_packs != {"core": "core", "standard": "standard", "full": "complete"}:
+            failures.append(f"support-profile framework pack mapping drifted: {matched_packs}")
+        if not resolve_framework_files("core") < resolve_framework_files("standard"):
+            failures.append("core framework pack must be smaller than standard")
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         failures.append(str(exc))
 

@@ -138,6 +138,8 @@ def registry_facts() -> Tuple[Dict[str, Dict[str, Any]], Dict[str, List[str]], s
             raise AssertionError(f"rules[{index}] missing id")
         if not isinstance(source, str) or not source:
             raise AssertionError(f"{rule_id} missing canonical_source")
+        if rule_id in rules_by_id:
+            raise AssertionError(f"duplicate rule id in registry: {rule_id}")
         rules_by_id[rule_id] = rule
         rules_by_source.setdefault(source, []).append(rule_id)
 
@@ -166,6 +168,7 @@ def validate() -> List[str]:
 
     required_metadata_paths = set(rules_by_source) | category_owner_paths
     seen_ids: Dict[str, str] = {}
+    dependency_graph: Dict[str, List[str]] = {}
 
     for path in sorted(FRAMEWORK.glob("*.md")):
         relpath = path.relative_to(ROOT).as_posix()
@@ -204,6 +207,7 @@ def validate() -> List[str]:
         for rule_id in owns_rules:
             if rule_id not in rules_by_id:
                 failures.append(f"{relpath} owns unknown rule {rule_id}")
+            dependency_graph[rule_id] = list(depends_on)
         for rule_id in depends_on:
             if rule_id not in rules_by_id:
                 failures.append(f"{relpath} depends on unknown rule {rule_id}")
@@ -214,6 +218,25 @@ def validate() -> List[str]:
     missing_ids = sorted(path for path in required_metadata_paths if path not in seen_ids.values())
     for relpath in missing_ids:
         failures.append(f"{relpath} required metadata was not loaded")
+
+    visiting: list[str] = []
+    visited: set[str] = set()
+
+    def visit(rule_id: str) -> None:
+        if rule_id in visited:
+            return
+        if rule_id in visiting:
+            cycle = visiting[visiting.index(rule_id) :] + [rule_id]
+            failures.append("framework rule dependency cycle: " + " -> ".join(cycle))
+            return
+        visiting.append(rule_id)
+        for dependency in dependency_graph.get(rule_id, []):
+            visit(dependency)
+        visiting.pop()
+        visited.add(rule_id)
+
+    for rule_id in sorted(rules_by_id):
+        visit(rule_id)
 
     return failures
 

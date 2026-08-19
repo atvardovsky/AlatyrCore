@@ -15,17 +15,26 @@ import argparse
 import json
 import shutil
 import sys
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 from scaffold_projection import (
     build_operation_index,
     load_object,
+    project_agent_rule_ids,
+    project_ai_infrastructure_router,
     project_catalog,
     project_context_descriptor,
     project_manifest,
     project_router,
     render_json,
+)
+from framework_packaging import (
+    pack_names,
+    project_registry,
+    projected_framework_contents,
+    resolve_framework_files,
 )
 
 
@@ -90,12 +99,20 @@ def iter_template_files(profile: str = "full") -> list[Path]:
     return sorted(TEMPLATE_ROOT / relpath for relpath in resolve_profile_paths(profile))
 
 
-def iter_framework_files() -> list[Path]:
-    return sorted(
-        path
-        for path in FRAMEWORK_ROOT.iterdir()
-        if path.is_file() and path.suffix in {".md", ".json"}
-    )
+def resolved_framework_pack(profile: str, requested: str) -> str:
+    if requested == "matched":
+        return {"core": "core", "standard": "standard", "full": "complete"}[profile]
+    minimum = {"core": 0, "standard": 1, "full": 2}[profile]
+    rank = {"core": 0, "standard": 1, "complete": 2}[requested]
+    if rank < minimum:
+        raise ValueError(
+            f"framework pack {requested} is too small for support profile {profile}"
+        )
+    return requested
+
+
+def iter_framework_files(pack: str = "complete") -> list[Path]:
+    return sorted(FRAMEWORK_ROOT / name for name in resolve_framework_files(pack))
 
 
 def copy_file(src: Path, dst: Path, *, write: bool, content: str | None = None) -> None:
@@ -107,34 +124,58 @@ def copy_file(src: Path, dst: Path, *, write: bool, content: str | None = None) 
             dst.write_text(content, encoding="utf-8")
 
 
+@dataclass(frozen=True)
+class ProjectionContext:
+    catalog: dict[str, Any] | None
+    operation_ids: frozenset[str]
+
+
+def build_projection_context(selected: set[Path]) -> ProjectionContext:
+    catalog_rel = Path(".ai/assistant/operation-catalog.json")
+    catalog = None
+    if catalog_rel in selected:
+        catalog = project_catalog(load_object(TEMPLATE_ROOT / catalog_rel), selected)
+    operation_ids = frozenset(
+        operation["id"]
+        for operation in (catalog or {}).get("operations", [])
+        if isinstance(operation, dict) and isinstance(operation.get("id"), str)
+    )
+    return ProjectionContext(catalog=catalog, operation_ids=operation_ids)
+
+
 def projected_template_content(
     rel: Path,
     profile: str,
+    framework_pack: str,
     selected: set[Path],
+    context: ProjectionContext,
 ) -> str | None:
     src = TEMPLATE_ROOT / rel
+    if rel == Path("AGENTS.md") and framework_pack != "complete":
+        rule_ids = [rule["id"] for rule in project_registry(framework_pack)["rules"]]
+        return project_agent_rule_ids(src.read_text(encoding="utf-8"), rule_ids)
     if rel == Path(".ai/alatyr.yaml"):
-        return project_manifest(src.read_text(encoding="utf-8"), profile, selected)
+        return project_manifest(
+            src.read_text(encoding="utf-8"), profile, framework_pack, selected
+        )
 
     catalog_rel = Path(".ai/assistant/operation-catalog.json")
     index_rel = Path(".ai/assistant/operation-index.json")
     router_rel = Path(".ai/assistant/context-router.json")
-    catalog = None
-    if catalog_rel in selected:
-        catalog = project_catalog(load_object(TEMPLATE_ROOT / catalog_rel), selected)
+    catalog = context.catalog
     if rel == catalog_rel and catalog is not None:
         return render_json(catalog)
     if rel == index_rel and catalog is not None:
         return render_json(build_operation_index(catalog))
     if rel == router_rel:
-        operation_ids = {
-            operation["id"]
-            for operation in (catalog or {}).get("operations", [])
-            if isinstance(operation, dict) and isinstance(operation.get("id"), str)
-        }
-        return render_json(project_router(load_object(src), selected, operation_ids))
+        return render_json(
+            project_router(load_object(src), selected, set(context.operation_ids))
+        )
+    if rel == Path(".ai/assistant/ai-infrastructure-router.json"):
+        return render_json(project_ai_infrastructure_router(load_object(src), selected))
     if rel.parts[:4] == (".ai", "assistant", "context", "profiles") or rel in {
         Path(".ai/assistant/context/migration-routing.json"),
+        Path(".ai/assistant/context/cost-scenarios.json"),
         Path(".ai/assistant/context/consistency-routing.json"),
         Path(".ai/assistant/context/intents/diagram-request.json"),
         Path(".ai/assistant/context/intents/architecture-request.json"),
@@ -145,13 +186,10 @@ def projected_template_content(
         Path(".ai/assistant/context/task-scales/large-or-resumable.json"),
         Path(".ai/assistant/context/task-scales/change-package.json"),
     }:
-        operation_ids = {
-            operation["id"]
-            for operation in (catalog or {}).get("operations", [])
-            if isinstance(operation, dict) and isinstance(operation.get("id"), str)
-        }
         return render_json(
-            project_context_descriptor(load_object(src), selected, operation_ids)
+            project_context_descriptor(
+                load_object(src), selected, set(context.operation_ids)
+            )
         )
     return None
 
@@ -159,7 +197,15 @@ def projected_template_content(
 def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
     target = args.target.resolve()
     profile = getattr(args, "profile", "full")
-    selected = resolve_profile_paths(profile)
+    requested_pack = getattr(args, "framework_pack", "matched")
+    framework_pack = resolved_framework_pack(profile, requested_pack)
+    selected_templates = resolve_profile_paths(profile)
+    framework_files = resolve_framework_files(framework_pack)
+    selected = selected_templates | {
+        Path(".ai") / "framework" / name for name in framework_files
+    }
+    projection_context = build_projection_context(selected)
+    framework_contents = projected_framework_contents(framework_pack)
     actions: list[str] = []
     blocked: list[str] = []
 
@@ -180,17 +226,19 @@ def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
             src,
             dst,
             write=args.write,
-            content=projected_template_content(rel, profile, selected),
+            content=projected_template_content(
+                rel, profile, framework_pack, selected, projection_context
+            ),
         )
         actions.append(f"template: {rel} -> {dst}")
 
-    for src in iter_framework_files():
+    for src in iter_framework_files(framework_pack):
         rel = Path(".ai") / "framework" / src.name
         dst = target / rel
         if dst.exists() and not args.overwrite_existing:
             blocked.append(f"exists, would not overwrite: {dst}")
             continue
-        copy_file(src, dst, write=args.write)
+        copy_file(src, dst, write=args.write, content=framework_contents[src.name])
         actions.append(f"framework: {src.name} -> {dst}")
 
     return actions, blocked
@@ -219,6 +267,15 @@ def main() -> int:
         help="Existing target repository directory.",
     )
     parser.add_argument(
+        "--framework-pack",
+        choices=["matched", *pack_names()],
+        default="matched",
+        help=(
+            "Portable framework pack. matched selects core, standard, or "
+            "complete from the target support profile; a broader pack is allowed."
+        ),
+    )
+    parser.add_argument(
         "--write",
         action="store_true",
         help="Write files. Without this flag the helper prints the plan only.",
@@ -243,11 +300,17 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    actions, blocked = plan(args)
+    try:
+        actions, blocked = plan(args)
+        framework_pack = resolved_framework_pack(args.profile, args.framework_pack)
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        print(f"FAIL: {exc}", file=sys.stderr)
+        return 1
 
     mode = "WRITE" if args.write else "DRY-RUN"
     print(f"Alatyr scaffold mode: {mode}")
     print(f"Alatyr scaffold profile: {args.profile}")
+    print(f"Alatyr framework pack: {framework_pack}")
     print("This helper does not complete installation or fill target facts.")
     print("Supported platforms: Linux, macOS, Windows.")
 

@@ -29,12 +29,14 @@ Use this guide when changing Alatyr Core itself.
   migration-note contract change: update `framework/`, `installer/`,
   `templates/target`, assistant compatibility docs, checker rules, README, and
   changelog when affected.
-- Rule registry, scaffolding helper, conformance fixture, migration-diff, or
-  effectiveness metrics change: update `framework/`, `installer/`, `tools/`,
-  `conformance/`, README, checker rules, and changelog when affected.
+- Rule registry, framework pack, scaffolding helper, conformance fixture,
+  migration-diff, or effectiveness metrics change: update `framework/`,
+  `installer/`, `tools/`, `conformance/`, README, checker rules, and changelog
+  when affected.
 - Rule ownership or duplicate-policy change: update
-  `framework/rule-ownership.md`, `framework/rule-registry.*`, source lists,
-  checker rules, README, and changelog when affected.
+  `framework/rule-registry.json`, regenerate the Markdown registry and
+  ownership map, then update source lists, checker rules, README, and changelog
+  when affected.
 - Framework metadata change: update the owning framework document front
   matter, rule registry or ownership map when affected, checker rules, README,
   and changelog.
@@ -72,6 +74,15 @@ Before accepting a change, check:
   available.
 - `python3 tools/check_framework_metadata.py` passes when rule-owner framework
   docs, owned rule IDs, rule dependencies, or task-profile scope changes.
+- `python3 tools/check_framework_packs.py` passes when support-profile pack
+  mapping, rule dependency closure, or projected registry/inventory behavior
+  changes.
+- `python3 tools/render_rule_registry_docs.py --check` passes when generated
+  human rule and ownership surfaces match the machine registry.
+- `python3 tools/render_target_validator_findings.py --check` passes when the
+  generated validator finding catalog matches diagnostic source calls.
+- `python3 tools/render_framework_file_inventory.py --check` passes when the
+  complete source framework inventory matches current versions and files.
 - `python3 tools/check_architecture_knowledge.py` passes when architecture
   knowledge statuses, catalog records, pattern discussion, documentation
   maintenance, lazy routing, operation output, gates, or module paths change.
@@ -312,6 +323,8 @@ Before accepting a change, check:
   current source baseline.
 - source entry points use bootstrap plus task-specific context routing instead
   of requiring every task to read the full framework corpus.
+- `tools/check_manifest.json` keeps fast, full, change-baseline, and release
+  validation explicit; fast checks never replace the full acceptance gate.
 - derived installer docs, target templates, request templates, and entry
   points reference canonical rule IDs instead of owning repeated policy text.
 - `README.md` still gives an assistant enough context to install the

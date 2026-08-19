@@ -3,6 +3,10 @@
 Use this file to choose the smallest sufficient context for `{PROJECT_NAME}`.
 Replace placeholders with target evidence before accepting installation.
 
+The machine router is canonical for the selected support profile and framework
+pack. Paths absent from the installed pack are expansion candidates, not
+required context; expand and revalidate the pack before enabling them.
+
 `AGENTS.md` is host-preloaded context and should not be reread. Compact
 bootstrap context for every task is:
 
@@ -27,12 +31,12 @@ cheap automatic routing. Resolve an exact operation ID or alias through
 `.ai/assistant/operation-catalog.json` only for the bare `Alatyr` entry,
 ambiguity, or operation/adapter repair.
 
-Use the router's context budgets. When sufficient context exceeds a budget,
-record selected profiles and areas, loaded files and reasons, approximate
-volume, expansion triggers, intentional omissions, and residual risk in the
-context receipt. Treat source byte/token estimates as static benchmark
-evidence; actual runs should name loaded paths or sections and distinguish
-observed, assistant-reported, estimated, and unavailable context.
+Use the router's total, portable, and reserved target-context budgets. Resolve
+and measure target-owned paths before accepting the adapter. When sufficient
+context exceeds a budget, load required safety and owner evidence and record
+selected profiles and areas, loaded files and reasons, approximate volume,
+expansion triggers, intentional omissions, and residual risk. Source estimates
+remain benchmark evidence, not exact runtime or billing data.
 
 ## Project-Area Overlays
 

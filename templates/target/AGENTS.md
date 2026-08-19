@@ -15,16 +15,15 @@ for ambiguity, conflict, or repair. Record context receipt on expansion.
 
 Route exact IDs/aliases through `.ai/assistant/operation-index.json`; use
 profile candidates for clear requests. Load
-`.ai/assistant/operation-catalog.json` only for bare `Alatyr`, ambiguity, or
-repair. Status/doctor is read-only.
+`.ai/assistant/operation-catalog.json` only for ambiguity or repair. Status is
+read-only.
 
-Activate task-scale overlays only on their trigger. Load only selected
-workstream/task evidence.
+Load only triggered task-scale overlays and selected task evidence.
 
 ## Session Recovery
 
-Do not rely on prior chat for adapter state. After installation/update or
-unclear state, use the note/message named by `.ai/README.md`.
+For installation, update, or unclear state, recover through the note/message
+named by `.ai/README.md`.
 
 ## Target Evidence
 
@@ -40,21 +39,19 @@ unclear state, use the note/message named by `.ai/README.md`.
 
 ## Canonical Rules
 
-Use canonical owners for `ALATYR-CONTEXT-001`, `ALATYR-SOURCE-001`,
+Use installed owners for `ALATYR-CONTEXT-001`, `ALATYR-SOURCE-001`,
 `ALATYR-RISK-001`, `ALATYR-APPROVAL-001`, `ALATYR-SAFETY-001`,
 `ALATYR-SAFETY-002`, `ALATYR-INTEGRITY-001`, `ALATYR-CHANGE-001`,
 `ALATYR-PACKAGE-001`, `ALATYR-CODEDOC-001`,
 `ALATYR-VOCABULARY-001`, `ALATYR-TDD-001`, `ALATYR-EXTENSION-001`,
 `ALATYR-ADAPTER-001`, `ALATYR-MODULE-001`, `ALATYR-OPERATION-001`,
 `ALATYR-DIAGRAM-001`, `ALATYR-TEAM-001`, and `ALATYR-EVIDENCE-001`. Project
-facts belong under the project contour; local
-flows, gates, prompts, skills, bridges, checkers, and commands belong under the
-assistant contour. Do not invent facts or copy policy into bridges.
+facts belong to project contour; local AI infrastructure to assistant contour.
+Do not invent facts or copy policy into bridges.
 
-For semantic changes, re-derive target invariants and reconcile related review
-items by shared fact or contract. Use the consistency map when enabled. For AI
-infrastructure, select one route and the smallest item-ID set before loading
-item-specific context. Run only validation that exists.
+For semantic changes, re-derive invariants and reconcile reviews sharing a
+fact or contract. Use the consistency map when enabled. Select one AI-infrastructure
+route and the smallest item set. Run only validation that exists.
 
 Routing selects a flow; it does not grant approval or broaden allowed actions.
 A preview is not approval and becomes stale when material risk or scope

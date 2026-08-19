@@ -16,26 +16,46 @@ TARGET_PATH_RE = re.compile(
 
 
 def path_available(value: str, selected: set[Path]) -> bool:
-    if value == ".ai/framework" or value.startswith(".ai/framework/"):
-        return True
     if not value.startswith(".ai/"):
         return True
     path = Path(value)
     return path in selected or any(path in candidate.parents for candidate in selected)
 
 
-def project_manifest(text: str, profile: str, selected: set[Path]) -> str:
+def project_manifest(
+    text: str,
+    profile: str,
+    framework_pack: str,
+    selected: set[Path],
+) -> str:
     """Remove manifest path claims for surfaces absent from the scaffold."""
 
     rendered: list[str] = []
     for line in text.splitlines():
         if "{CORE_STANDARD_OR_FULL}" in line:
             line = line.replace("{CORE_STANDARD_OR_FULL}", profile)
+        if "{CORE_STANDARD_OR_COMPLETE}" in line:
+            line = line.replace("{CORE_STANDARD_OR_COMPLETE}", framework_pack)
         match = TARGET_PATH_RE.match(line)
         if match and not path_available(match.group("path"), selected):
             continue
         rendered.append(line)
     return "\n".join(rendered) + "\n"
+
+
+def project_agent_rule_ids(text: str, rule_ids: list[str]) -> str:
+    """Limit the root rule summary to IDs present in a selective pack."""
+
+    rendered_ids = ", ".join(f"`{rule_id}`" for rule_id in rule_ids)
+    pattern = re.compile(
+        r"Use installed owners for .*?\. Project\nfacts belong",
+        flags=re.DOTALL,
+    )
+    replacement = f"Use installed owners for {rendered_ids}. Project\nfacts belong"
+    rendered, count = pattern.subn(replacement, text, count=1)
+    if count != 1:
+        raise ValueError("cannot project AGENTS.md registered rule IDs")
+    return rendered
 
 
 def load_object(path: Path) -> dict[str, Any]:
@@ -96,7 +116,14 @@ def _filter_paths(value: Any, selected: set[Path]) -> Any:
         return [
             _filter_paths(item, selected)
             for item in value
-            if not isinstance(item, str) or path_available(item, selected)
+            if (
+                (not isinstance(item, str) or path_available(item, selected))
+                and (
+                    not isinstance(item, dict)
+                    or not isinstance(item.get("path"), str)
+                    or path_available(item["path"], selected)
+                )
+            )
         ]
     if isinstance(value, dict):
         result: dict[str, Any] = {}
@@ -190,6 +217,38 @@ def project_context_descriptor(
         else:
             projected.pop("operation_candidates", None)
     return _filter_paths(projected, selected)
+
+
+def project_ai_infrastructure_router(
+    router: dict[str, Any], selected: set[Path]
+) -> dict[str, Any]:
+    """Remove routes whose concrete canonical context is not installed."""
+
+    projected = copy.deepcopy(router)
+    routes = projected.get("routes")
+    if not isinstance(routes, dict):
+        return projected
+    available_routes: dict[str, Any] = {}
+    for name, route in routes.items():
+        if not isinstance(route, dict):
+            continue
+        required = route.get("required_context", [])
+        if not isinstance(required, list):
+            continue
+        concrete = [
+            value
+            for value in required
+            if isinstance(value, str) and value.startswith(".ai/")
+        ]
+        if all(path_available(value, selected) for value in concrete):
+            available_routes[name] = _filter_paths(route, selected)
+    projected["routes"] = available_routes
+    order = projected.get("routing_order")
+    if isinstance(order, list):
+        projected["routing_order"] = [
+            value for value in order if value in available_routes
+        ]
+    return projected
 
 
 def render_json(data: dict[str, Any]) -> str:

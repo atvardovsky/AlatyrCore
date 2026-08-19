@@ -28,6 +28,44 @@ def source_path(reference: str) -> Path | None:
     return None
 
 
+def installed_path(target: Path, reference: str) -> Path | None:
+    if "{" in reference:
+        return None
+    if reference.startswith(".ai/") or reference in {"AGENTS.md", "AI_ASSISTANTS.md"}:
+        return target / reference
+    if reference.startswith(("/", "\\")) or re.match(r"^[A-Za-z]:[\\/]", reference):
+        return None
+    return target / reference
+
+
+def measure_installed(target: Path, references: list[str]) -> dict[str, Any]:
+    unique = list(dict.fromkeys(references))
+    resolved: list[tuple[str, Path]] = []
+    unresolved: list[str] = []
+    missing: list[str] = []
+    for reference in unique:
+        path = installed_path(target, reference)
+        if path is None:
+            unresolved.append(reference)
+        elif not path.is_file():
+            missing.append(reference)
+        else:
+            resolved.append((reference, path))
+    texts = [path.read_text(encoding="utf-8") for _, path in resolved]
+    characters = sum(len(value) for value in texts)
+    return {
+        "declared_files": len(unique),
+        "resolved_files": len(resolved),
+        "words": sum(len(re.findall(r"\S+", value)) for value in texts),
+        "characters": characters,
+        "bytes": sum(len(value.encode("utf-8")) for value in texts),
+        "estimated_tokens_4_chars": math.ceil(characters / 4),
+        "resolved_paths": [reference for reference, _ in resolved],
+        "unresolved_references": unresolved,
+        "missing_paths": missing,
+    }
+
+
 def measure(references: list[str]) -> dict[str, Any]:
     unique = list(dict.fromkeys(references))
     resolved: list[tuple[str, Path]] = []
@@ -78,11 +116,31 @@ def build_report() -> dict[str, Any]:
         return reference, data if isinstance(data, dict) else {}
 
     profiles: dict[str, dict[str, Any]] = {}
+    profile_contracts: dict[str, tuple[str | None, dict[str, Any]]] = {}
     for name, entry in router.get("profile_index", {}).items():
         reference, profile = descriptor(entry)
-        profiles[name] = measure(
+        profile_contracts[name] = (reference, profile)
+        profile_measure = measure(
             [value for value in [reference, *profile.get("required_context", [])] if value]
         )
+        conditional_refs = [
+            item.get("path")
+            for item in profile.get("conditional_context", [])
+            if isinstance(item, dict) and isinstance(item.get("path"), str)
+        ]
+        profile_measure["conditional_context"] = measure(conditional_refs)
+        profile_measure["full_candidate_union"] = measure(
+            [
+                value
+                for value in [
+                    reference,
+                    *profile.get("required_context", []),
+                    *conditional_refs,
+                ]
+                if value
+            ]
+        )
+        profiles[name] = profile_measure
 
     intent_overlays: dict[str, dict[str, Any]] = {}
     intent_contracts: dict[str, tuple[str | None, dict[str, Any]]] = {}
@@ -360,6 +418,44 @@ def build_report() -> dict[str, Any]:
     migration_initial = measure(migration_initial_refs)
     migration_full = measure(migration_full_refs)
 
+    _, cost_scenario_contract = descriptor(router.get("cost_scenarios", {}))
+    cost_scenarios: dict[str, dict[str, Any]] = {}
+    for name, scenario in cost_scenario_contract.get("scenarios", {}).items():
+        if not isinstance(scenario, dict):
+            continue
+        references: list[str] = []
+        profile_name = scenario.get("profile")
+        profile_reference, profile_contract = profile_contracts.get(
+            profile_name, (None, {})
+        )
+        references.extend(
+            value
+            for value in [
+                profile_reference,
+                *profile_contract.get("required_context", []),
+            ]
+            if value
+        )
+        for overlay_name in scenario.get("intent_overlays", []):
+            reference, contract = intent_contracts.get(overlay_name, (None, {}))
+            references.extend(
+                value
+                for value in [reference, *contract.get("required_context", [])]
+                if value
+            )
+        for overlay_name in scenario.get("task_scale_overlays", []):
+            reference, contract = task_scale_contracts.get(overlay_name, (None, {}))
+            references.extend(
+                value
+                for value in [reference, *contract.get("required_context", [])]
+                if value
+            )
+        scenario_measure = measure(references)
+        scenario_measure["expected_budget_state"] = scenario.get(
+            "expected_budget_state"
+        )
+        cost_scenarios[name] = scenario_measure
+
     return {
         "schema_version": 1,
         "report_kind": "static-target-context-cost",
@@ -373,6 +469,7 @@ def build_report() -> dict[str, Any]:
         "task_overlay_compositions": {
             "large-or-resumable+team-active": team_large_composition,
         },
+        "cost_scenarios": cost_scenarios,
         "operation_routes": {
             "diagram-discussion": {
                 "compact": diagram_compact,
@@ -446,13 +543,57 @@ def build_report() -> dict[str, Any]:
     }
 
 
+def build_installed_report(target: Path) -> dict[str, Any]:
+    target = target.resolve()
+    router_path = target / ".ai" / "assistant" / "context-router.json"
+    router = json.loads(router_path.read_text(encoding="utf-8"))
+    if not isinstance(router, dict):
+        raise ValueError("installed context router must contain an object")
+    bootstrap = measure_installed(
+        target,
+        [
+            *router.get("preloaded_context", []),
+            *router.get("bootstrap_context", []),
+        ],
+    )
+    profiles: dict[str, dict[str, Any]] = {}
+    for name, entry in router.get("profile_index", {}).items():
+        if not isinstance(entry, dict) or not isinstance(entry.get("descriptor"), str):
+            continue
+        reference = entry["descriptor"]
+        descriptor_path = installed_path(target, reference)
+        descriptor_data: dict[str, Any] = {}
+        if descriptor_path and descriptor_path.is_file():
+            loaded = json.loads(descriptor_path.read_text(encoding="utf-8"))
+            if isinstance(loaded, dict):
+                descriptor_data = loaded
+        profiles[name] = measure_installed(
+            target,
+            [reference, *descriptor_data.get("required_context", [])],
+        )
+    return {
+        "schema_version": 1,
+        "report_kind": "installed-target-context-cost",
+        "target": str(target),
+        "budgets": router.get("context_budgets", {}),
+        "bootstrap": bootstrap,
+        "profiles": profiles,
+        "limitations": [
+            "word counts measure repository files, not hidden client context or billed tokens",
+            "conditional context is measured only when selected for a concrete task",
+        ],
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Measure deterministic context costs from the target router template."
     )
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--target", type=Path)
     args = parser.parse_args()
-    rendered = json.dumps(build_report(), indent=2, sort_keys=True) + "\n"
+    report = build_installed_report(args.target) if args.target else build_report()
+    rendered = json.dumps(report, indent=2, sort_keys=True) + "\n"
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(rendered, encoding="utf-8")

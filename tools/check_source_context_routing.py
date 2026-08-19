@@ -1,0 +1,158 @@
+#!/usr/bin/env python3
+"""Validate compact source and installation context routing."""
+
+from __future__ import annotations
+
+import json
+import re
+import sys
+from pathlib import Path
+from typing import Any
+
+from render_framework_file_inventory import build_inventory
+
+
+ROOT = Path(__file__).resolve().parents[1]
+SOURCE_ROUTER = ROOT / "tools" / "source_context_router.json"
+INSTALL_ROUTER = ROOT / "installer" / "context-router.json"
+INVENTORY = ROOT / "framework" / "file-inventory.json"
+EXPECTED_SOURCE_PROFILES = {
+    "docs-local",
+    "framework-rule",
+    "installer-template",
+    "source-tooling",
+    "release-versioning",
+    "ai-infrastructure-bridge",
+}
+EXPECTED_INSTALL_STAGES = [
+    "discovery",
+    "scope-selection",
+    "plan-and-approval",
+    "adaptation",
+    "validation",
+    "handoff",
+]
+
+
+def load_object(path: Path) -> dict[str, Any]:
+    data = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise ValueError(f"{path.relative_to(ROOT)} must contain an object")
+    return data
+
+
+def concrete_paths(value: Any) -> list[str]:
+    paths: list[str] = []
+    if isinstance(value, dict):
+        for key, nested in value.items():
+            if key in {"required_context", "preloaded_context", "bootstrap_context"}:
+                if isinstance(nested, list):
+                    paths.extend(item for item in nested if isinstance(item, str))
+            paths.extend(concrete_paths(nested))
+    elif isinstance(value, list):
+        for nested in value:
+            paths.extend(concrete_paths(nested))
+    return paths
+
+
+def word_count(paths: list[str]) -> int:
+    total = 0
+    for relpath in dict.fromkeys(paths):
+        path = ROOT / relpath
+        if path.is_file():
+            total += len(re.findall(r"\S+", path.read_text(encoding="utf-8")))
+    return total
+
+
+def validate_router_paths(router: dict[str, Any], label: str) -> list[str]:
+    failures: list[str] = []
+    for relpath in concrete_paths(router):
+        if "{" in relpath or relpath in {
+            "edited file",
+            "directly linked neighbor",
+        }:
+            continue
+        if not (ROOT / relpath).is_file():
+            failures.append(f"{label} references missing required path {relpath}")
+    return failures
+
+
+def main() -> int:
+    failures: list[str] = []
+    try:
+        source = load_object(SOURCE_ROUTER)
+        installer = load_object(INSTALL_ROUTER)
+        inventory = load_object(INVENTORY)
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        print(f"FAIL: {exc}", file=sys.stderr)
+        return 1
+
+    if source.get("schema_version") != 1 or source.get("router_kind") != "alatyr-source-context-router":
+        failures.append("source context router schema or kind is invalid")
+    profiles = source.get("profiles")
+    if not isinstance(profiles, dict) or set(profiles) != EXPECTED_SOURCE_PROFILES:
+        failures.append("source context router profile set is incomplete")
+    source_bootstrap = [
+        *source.get("preloaded_context", []),
+        *source.get("bootstrap_context", []),
+    ]
+    source_limit = source.get("budgets", {}).get("bootstrap_max_words")
+    if not isinstance(source_limit, int) or word_count(source_bootstrap) > source_limit:
+        failures.append("source bootstrap exceeds its word budget")
+
+    if installer.get("schema_version") != 1 or installer.get("router_kind") != "alatyr-installation-context-router":
+        failures.append("installation context router schema or kind is invalid")
+    if installer.get("routing_order") != EXPECTED_INSTALL_STAGES:
+        failures.append("installation context router stage order is invalid")
+    stages = installer.get("stages")
+    if not isinstance(stages, dict) or list(stages) != EXPECTED_INSTALL_STAGES:
+        failures.append("installation context router stages are incomplete")
+    install_bootstrap = [
+        *installer.get("preloaded_context", []),
+        *installer.get("bootstrap_context", []),
+    ]
+    install_limit = installer.get("budgets", {}).get("bootstrap_max_words")
+    if not isinstance(install_limit, int) or word_count(install_bootstrap) > install_limit:
+        failures.append("installation bootstrap exceeds its word budget")
+
+    failures.extend(validate_router_paths(source, "source router"))
+    failures.extend(validate_router_paths(installer, "installation router"))
+
+    if inventory != build_inventory():
+        failures.append("framework/file-inventory.json is stale")
+
+    entry_points = {
+        "AGENTS.md": "tools/source_context_router.json",
+        "README.md": "installer/context-router.json",
+        "INSTALL.md": "installer/context-router.json",
+        "AI_ASSISTANTS.md": "installer/context-router.json",
+        "installer/assistant-installation.flow.md": "installer/context-router.json",
+    }
+    for relpath, required in entry_points.items():
+        if required not in (ROOT / relpath).read_text(encoding="utf-8"):
+            failures.append(f"{relpath} does not route through {required}")
+
+    forbidden = [
+        "Read every framework file before copying",
+        "Read each framework file before copying",
+    ]
+    for relpath in ["README.md", "INSTALL.md", "AI_ASSISTANTS.md"]:
+        text = (ROOT / relpath).read_text(encoding="utf-8")
+        for phrase in forbidden:
+            if phrase in text:
+                failures.append(f"{relpath} retains broad bootstrap phrase: {phrase}")
+
+    if failures:
+        for failure in failures:
+            print(f"FAIL: {failure}", file=sys.stderr)
+        return 1
+    print(
+        "OK: checked source and installation routing; "
+        f"source_words={word_count(source_bootstrap)} "
+        f"installation_words={word_count(install_bootstrap)}"
+    )
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

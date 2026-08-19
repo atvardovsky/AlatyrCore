@@ -20,6 +20,10 @@ TEMPLATE_VERSION = ROOT / "TEMPLATE_VERSION"
 CHANGELOG = ROOT / "CHANGELOG.md"
 RELEASE_PROCESS = ROOT / "docs" / "release-process.md"
 RELEASES = ROOT / "docs" / "releases"
+PUBLIC_VERSION_SURFACES = [
+    ROOT / "README.md",
+    ROOT / "docs" / "human" / "faq.md",
+]
 
 SEMVER_RE = re.compile(
     r"^(0|[1-9]\d*)\."
@@ -138,6 +142,22 @@ def validate_release_process(text: str) -> List[str]:
     return failures
 
 
+def validate_public_version_surfaces(version: str) -> List[str]:
+    failures: List[str] = []
+    expected = f"currently records `{version}`"
+    for path in PUBLIC_VERSION_SURFACES:
+        try:
+            text = path.read_text(encoding="utf-8")
+        except OSError as exc:
+            failures.append(str(exc))
+            continue
+        if expected not in text:
+            failures.append(
+                f"{path.relative_to(ROOT)} does not publish VERSION={version}"
+            )
+    return failures
+
+
 def main() -> int:
     failures: List[str] = []
     try:
@@ -162,6 +182,7 @@ def main() -> int:
         failures.extend(validate_changelog(changelog))
         failures.extend(validate_current_release(version, changelog))
         failures.extend(validate_release_process(release_process))
+        failures.extend(validate_public_version_surfaces(version))
 
     if failures:
         for failure in failures:

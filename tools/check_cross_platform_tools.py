@@ -8,6 +8,7 @@ import json
 import subprocess
 import sys
 import tempfile
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 
@@ -91,8 +92,15 @@ def main() -> int:
     help_result = run("--help")
     if help_result.returncode != 0:
         failures.append("cross-platform tool help failed")
-    for command in sorted(EXPECTED_COMMANDS):
-        result = run(command, "--help")
+    command_names = sorted(EXPECTED_COMMANDS)
+    with ThreadPoolExecutor(max_workers=min(8, len(command_names))) as executor:
+        help_results = dict(
+            zip(
+                command_names,
+                executor.map(lambda command: run(command, "--help"), command_names),
+            )
+        )
+    for command, result in help_results.items():
         if result.returncode != 0:
             failures.append(f"tool command help failed: {command}")
 

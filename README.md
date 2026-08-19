@@ -176,7 +176,10 @@ Do not install every optional capability by default. Establish the required
 core profile first, then enable optional modules only when the target needs and
 can maintain them. The source scaffolder exposes `core`, `standard`, and `full`
 support profiles, but each remains a starting structure that requires target
-inspection and adaptation.
+inspection and adaptation. Matching `core`, `standard`, and `complete`
+framework packs can also avoid installing unused optional rule owners. Existing
+complete installations stay complete unless a reviewed migration explicitly
+changes the pack.
 
 The [module profile](framework/module-profile.md) defines required and optional
 capabilities. The [context router](framework/context-router.md) keeps routine
@@ -184,7 +187,7 @@ tasks from loading the complete framework or project corpus.
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.8`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.10`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance fixtures,
 optional scaffolding, and an optional installed-adapter structural validator.
@@ -263,25 +266,16 @@ release.
 If a programmer gives you this repository and asks you to install Alatyr Core
 into another project, do this:
 
-1. Read the source bootstrap: this `README.md`, `AGENTS.md`, `INSTALL.md`,
-   `framework/README.md`, `framework/context-profiles.md`,
-   `framework/context-router.md`,
-   `framework/project-adapter-contract.md`, `framework/portability.md`,
-   `framework/module-profile.md`, `framework/operation-help.md`,
-   `framework/rule-ownership.md`,
-   `framework/rule-registry.md`, `framework/rule-registry.json`,
-   `installer/assistant-installation.flow.md`,
-   `installer/readiness-checklist.md`, and
-   `installer/installation-plan-template.md`.
+1. Treat `AGENTS.md` as preloaded and read `installer/context-router.json`.
+   Select the current installation stage before loading framework prose.
 2. Inspect the target repository before creating files.
 3. Identify existing AI instructions, project docs, tests, commands, CI,
    diagrams, security policy, generated files, and assistant bridge files.
 4. Create an installation plan from
    `installer/installation-plan-template.md`.
 5. Separate portable framework core from target project adapter facts.
-6. Read each framework file before copying or adapting it into the target
-   repository. Full installs that copy the whole core must read
-   `framework/*.md` and `framework/rule-registry.json` at that stage.
+6. Use `framework/file-inventory.json` for deterministic copy and hash
+   comparison. Read only selected or changed canonical framework owners.
 7. Rewrite target adapter files from the target repository, using
    `templates/target` only as placeholders.
 8. Apply the canonical rule references instead of copying policy text:
@@ -341,6 +335,8 @@ Additional source-repository helpers include:
 - `python3 tools/alatyr.py --help`
 - `python3 tools/alatyr.py doctor --target <target-repo>`
 - `python3 tools/check_all.py`
+- `python3 tools/check_all.py --profile fast`
+- `python3 tools/check_all.py --profile full --jobs 4`
 - `python3 tools/check_framework_metadata.py`
 - `python3 tools/check_approval_template.py`
 - `python3 tools/check_change_packages.py`
@@ -356,6 +352,11 @@ Additional source-repository helpers include:
 - `python3 tools/prepare_diagram_conformance_run.py --check`
 - `python3 tools/check_context_router.py`
 - `python3 tools/check_context_costs.py`
+- `python3 tools/check_framework_packs.py`
+- `python3 tools/check_source_context_routing.py`
+- `python3 tools/render_framework_file_inventory.py --check`
+- `python3 tools/render_rule_registry_docs.py --check`
+- `python3 tools/render_target_validator_findings.py --check`
 - `python3 tools/render_operation_index.py`
 - `python3 tools/render_assistant_capability_index.py`
 - `python3 tools/check_diagram_conformance_results.py`
@@ -420,9 +421,9 @@ Additional source-repository helpers include:
 - adapter output contracts for installation, update, and recheck evidence
 - optional safe scaffolding guidance that does not replace installation review
 - deterministic `core`, `standard`, and `full` scaffold support profiles that
-  reduce unused target-template files without changing the portable framework
-  baseline, while projecting manifest and route claims to files that actually
-  exist in the selected profile
+  reduce unused target-template files, paired with dependency-closed `core`,
+  `standard`, and `complete` portable framework packs; selective packs project
+  registry, ownership, inventory, manifest, and route claims to installed files
 - optional target adapter validator guidance for installed-adapter structural
   checks
 - context discovery and source-of-truth decisions
@@ -500,8 +501,9 @@ Additional source-repository helpers include:
 - source release/version workflow for framework, adapter schema, and template
   version tracking
 - source release migration report template for framework update evidence
-- release drift enforcement against the latest Git tag with required framework,
-  adapter-schema, and template version movement
+- release drift enforcement against an explicit change baseline or the prior
+  changelog release tag, with required framework, adapter-schema, and template
+  version movement
 - executable migration-diff output validation for adapter contract impact,
   affected categories, task profiles, canonical sources, and action hints
 - source-repository migration diff, conformance fixture, scaffold snapshot,

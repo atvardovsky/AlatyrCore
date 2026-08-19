@@ -3,12 +3,14 @@
 
 from __future__ import annotations
 
+import argparse
 import json
-import subprocess
 import sys
 import tempfile
 from pathlib import Path
 from typing import Any
+
+from prepare_conformance_run import prepare_run
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -47,6 +49,7 @@ def main() -> int:
 
     with tempfile.TemporaryDirectory() as directory:
         base = Path(directory)
+        staged_target_cache: dict[str, Path] = {}
         for surface in surfaces:
             if not isinstance(surface, dict):
                 failures.append("assistant surface entries must be objects")
@@ -122,28 +125,20 @@ def main() -> int:
                     )
 
             output = base / surface_id
-            result = subprocess.run(
-                [
-                    sys.executable,
-                    "tools/prepare_conformance_run.py",
-                    "--output",
-                    str(output),
-                    "--assistant-surface",
-                    surface_id,
-                    "--source-commit",
-                    "surface-contract",
-                    "--fixture",
-                    "frontend-app-minimal",
-                    "--staged-adapter-profile",
-                    "core",
-                ],
-                cwd=ROOT,
-                check=False,
-                text=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+            prepare_failures = prepare_run(
+                argparse.Namespace(
+                    output=output,
+                    assistant_surface=surface_id,
+                    source_commit="surface-contract",
+                    fixture=["frontend-app-minimal"],
+                    staged_adapter_profile="core",
+                    allow_custom_surface=False,
+                    run_id=None,
+                    overwrite=False,
+                ),
+                staged_target_cache=staged_target_cache,
             )
-            if result.returncode != 0:
+            if prepare_failures:
                 failures.append(f"could not prepare conformance run for {surface_id}")
                 continue
             prompt = output / "prompts" / "frontend-app-minimal.md"

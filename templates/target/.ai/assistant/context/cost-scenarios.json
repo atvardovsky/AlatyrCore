@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "descriptor_kind": "target-context-cost-scenarios",
+  "scenarios": {
+    "architecture-discussion": {
+      "profile": "docs-local",
+      "intent_overlays": ["architecture-request"],
+      "task_scale_overlays": [],
+      "expected_budget_state": "compact"
+    },
+    "architecture-implementation": {
+      "profile": "architecture-change",
+      "intent_overlays": ["architecture-request"],
+      "task_scale_overlays": ["change-package"],
+      "expected_budget_state": "expansion-receipt-required"
+    },
+    "test-first-code-change": {
+      "profile": "code-local",
+      "intent_overlays": ["test-first-request"],
+      "task_scale_overlays": [],
+      "expected_budget_state": "expansion-receipt-required"
+    },
+    "team-large-change": {
+      "profile": "business-change",
+      "intent_overlays": [],
+      "task_scale_overlays": ["large-or-resumable", "team-active"],
+      "expected_budget_state": "expansion-receipt-required"
+    },
+    "framework-upgrade": {
+      "profile": "framework-upgrade",
+      "intent_overlays": [],
+      "task_scale_overlays": [],
+      "expected_budget_state": "compact"
+    }
+  }
+}

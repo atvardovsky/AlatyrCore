@@ -300,7 +300,7 @@ List commands or manual checks:
 - context-profile review:
 - context-router bootstrap reference review:
 - preloaded versus compact-bootstrap review:
-- context budget and receipt review:
+- context total/portable/reserved-target budget and receipt review:
 - project-area overlay review:
 - adapter drift/local leakage review:
 - module-profile review:
@@ -339,6 +339,8 @@ List commands or manual checks:
 Final evidence must say:
 
 - framework core installed/adapted
+- selected framework pack is compatible with the support profile and enabled
+  modules; projected registry and inventory match installed files
 - adapter manifest and version facts recorded
 - adapter owner, backup owner, review cadence, and CODEOWNERS or equivalent
   owner map recorded or explicitly unresolved

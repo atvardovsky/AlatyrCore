@@ -51,7 +51,8 @@ The stable command set is:
   no file output (use `validate-adapter` for an explicit report file)
 - `migration-report`: optional explicit report output only
 - `assess-upgrade`: explicit assessment output only; no adapter changes
-- `context-costs`: optional static context-cost report output only
+- `context-costs`: optional source-template or `--target` installed context-cost
+  report output only
 - `inspect-extension`: read-only validation and digest calculation for a local
   extension checkout; no network access, execution, or target writes
 - `prepare-conformance`: explicit conformance workspace output only; no
@@ -64,8 +65,11 @@ The stable command set is:
 
 ## Source Validation Runner
 
-`check_all.py` runs the stable source-repository checks for AlatyrCore source
-maintenance. It validates this repository only; it is not a portable framework
+`check_all.py` loads `tools/check_manifest.json` and runs dependency-aware
+source validation. The default `full` profile remains the acceptance gate.
+`fast` provides conservative local feedback and falls back to full when changed
+paths are not owned by a manifest entry. `release` adds tag-baseline migration
+checks. It validates this repository only; it is not a portable framework
 requirement for target projects.
 
 The workflow at `.github/workflows/cross-platform-source-checks.yml` runs this
@@ -76,6 +80,8 @@ Linux or macOS:
 
 ```sh
 python3 tools/check_all.py
+python3 tools/check_all.py --profile fast --changed-from HEAD
+python3 tools/check_all.py --profile release
 python3 tools/check_all.py --list
 ```
 
@@ -83,6 +89,8 @@ Windows PowerShell or Command Prompt:
 
 ```powershell
 py -3 .\tools\check_all.py
+py -3 .\tools\check_all.py --profile fast --changed-from HEAD
+py -3 .\tools\check_all.py --profile release
 py -3 .\tools\check_all.py --list
 ```
 
@@ -357,10 +365,10 @@ py -3 .\tools\prepare_diagram_conformance_run.py --output tmp\diagram-conformanc
 `check_context_router.py` validates the target
 `.ai/assistant/context-router.json` template in this source repository. It
 checks canonical profile names, preloaded versus compact bootstrap context,
-schema-3 lazy profile and overlay descriptors, budgets, receipt fields,
-bounded candidates, intent/area overlays, path references, duplicate route
-entries, and framework file routing coverage. It is not a portable framework
-requirement for target projects.
+schema-4 lazy profile and overlay descriptors, separated total/portable/target
+budgets, cost scenarios, receipt fields, bounded candidates, intent/area
+overlays, path references, duplicate route entries, and framework file routing
+coverage. It is not a portable framework requirement for target projects.
 
 Linux or macOS:
 
@@ -476,16 +484,15 @@ py -3 .\tools\check_large_task_orchestration.py
 ## Scaffold Target Structure
 
 `scaffold_target_structure.py` copies placeholder target templates and
-framework files, including `framework/rule-registry.json`, into an existing
-target directory. It is dry-run by default. The `full` profile preserves the
-historical all-template behavior. Use `core` for required adapter support
-surfaces or `standard` for core plus common product and lifecycle operations.
-Every profile copies the complete portable framework baseline; profile
-selection filters target adapter templates only. The projection layer records
-the selected profile in `.ai/alatyr.yaml`, removes path claims for omitted
-surfaces, filters operation routes to installed flows, derives the compact
-operation index, and removes optional router/capability references that the
-profile does not provide.
+framework files into an existing target directory. It is dry-run by default.
+The `full` profile preserves the historical all-template behavior. Use `core`
+for required adapter support surfaces or `standard` for common product and
+lifecycle operations. By default, `--framework-pack matched` selects the
+`core`, `standard`, or `complete` portable pack that matches the support
+profile. Selective packs project their rule registry, ownership map, and file
+inventory so omitted optional owners are explicit. The projection layer also
+removes path claims for omitted surfaces, filters operation routes to installed
+flows, and derives the compact operation index.
 
 It does not inspect target facts, complete installation, approve overwrites, or
 validate an installed adapter.
@@ -495,6 +502,7 @@ Linux or macOS:
 ```sh
 python3 tools/scaffold_target_structure.py --target /path/to/target-repo
 python3 tools/scaffold_target_structure.py --target /path/to/target-repo --profile core --write
+python3 tools/scaffold_target_structure.py --target /path/to/target-repo --profile core --framework-pack complete --write
 ```
 
 Windows PowerShell:
@@ -515,7 +523,9 @@ Use `--overwrite-existing` only after explicit approval for the exact target
 path and protected surfaces.
 
 `check_scaffold_profiles.py` verifies profile inheritance, required core
-surfaces, full-template coverage, and bridge isolation.
+surfaces, full-template coverage, bridge isolation, and profile-to-pack
+mapping. `check_framework_packs.py` validates pack inheritance, rule dependency
+closure, projected registries, and inventories.
 
 ## Target Adapter Validator
 
@@ -1122,4 +1132,15 @@ Windows PowerShell or Command Prompt:
 py -3 .\tools\check_bridge_templates.py
 py -3 .\tools\render_bridge_templates.py
 py -3 .\tools\render_bridge_templates.py --write
+```
+
+## Target Validator Findings
+
+`render_target_validator_findings.py` derives the target validator's stable
+finding-code catalog and human reference directly from validator source. This
+keeps integrations from maintaining a second manual code list. Use `--check`
+in validation and run without it only when validator diagnostics change.
+
+```sh
+python3 tools/render_target_validator_findings.py --check
 ```

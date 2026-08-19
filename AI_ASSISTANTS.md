@@ -13,32 +13,17 @@ When the optional team module is selected, also apply `ALATYR-TEAM-001`.
 
 If you are installing Alatyr Core into a target project:
 
-1. Read `README.md`.
-2. Read `INSTALL.md`.
-3. Read `AGENTS.md`, `framework/README.md`,
-   `framework/context-profiles.md`, `framework/context-router.md`,
-   `framework/ai-infrastructure-routing.md`,
-   `framework/project-adapter-contract.md`, `framework/portability.md`,
-   `framework/module-profile.md`, `framework/rule-ownership.md`,
-   `framework/operation-help.md`, `framework/architecture-knowledge.md`,
-   `framework/code-documentation.md`,
-   `framework/project-vocabulary.md`,
-   `framework/test-first-development.md`,
-   `framework/extensions.md`,
-   `framework/rule-registry.md`, and
-   `framework/rule-registry.json`.
-4. Read `installer/assistant-installation.flow.md`.
-5. Read `installer/readiness-checklist.md`.
-6. Read `installer/installation-plan-template.md`.
-7. Inspect the target repository before writing files.
-8. Create an installation plan.
-9. For a new full-core install, use the deterministic framework file list
-   without loading all prose into one context. For upgrades, prepare migration
-   evidence first and read only changed or affected canonical sources.
-10. Rewrite target adapter facts from target evidence.
-11. Use `templates/target` only as placeholders.
-12. Do not invent target validation commands.
-13. Report unresolved checks and residual risk.
+1. Treat `AGENTS.md` as host-preloaded context.
+2. Read `installer/context-router.json` and select the current stage.
+3. Inspect the target repository before writing files.
+4. Load only stage-required canonical owners and selected target templates.
+5. Create and review an installation plan before protected changes.
+6. Use `framework/file-inventory.json` for deterministic file and hash
+   comparison without loading unchanged framework prose.
+7. Rewrite target adapter facts from target evidence.
+8. Use `templates/target` only as placeholders.
+9. Do not invent target validation commands.
+10. Report unresolved checks and residual risk.
 
 Assistant-specific target bridge files should be short pointers to target
 canonical files. Do not duplicate full Alatyr Core policy into bridge files.

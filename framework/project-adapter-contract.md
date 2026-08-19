@@ -21,9 +21,12 @@ project. Without an adapter, the framework only describes process concepts.
 Every project using this framework must define:
 
 - adapter manifest or equivalent discoverable record of framework version,
-  adapter schema version, template version, selected support profile, owner,
-  source-of-truth files, supported assistants, validation entry points, known
-  gaps, and local deviations
+  adapter schema version, template version, selected support profile,
+  installed framework pack, owner, source-of-truth files, supported assistants,
+  validation entry points, known gaps, and local deviations
+- dependency-closed framework pack evidence whose projected rule registry,
+  ownership map, and file inventory match installed portable files; pack
+  expansion is required before enabling a module whose owner is absent
 - adapter ownership metadata: responsible team, technical owner, backup owner,
   last review date, review cadence or triggers, and CODEOWNERS or equivalent
   file-owner map when the target repository supports it
@@ -166,6 +169,8 @@ An adapter may provide:
 - architecture catalog, pattern/area documentation, selected evidence,
   decision-state, comparison, and review reports
 - context router drift reports or deterministic routing checks
+- measured installed bootstrap/profile costs, unresolved context references,
+  and expansion receipts when required context exceeds a budget
 - task-specific maturity reports
 - bridge capability or conformance reports
 - migration notes for framework upgrades

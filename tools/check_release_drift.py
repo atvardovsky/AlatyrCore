@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check source release drift against the latest reachable Git tag."""
+"""Check source contract drift against an explicit change or release baseline."""
 
 from __future__ import annotations
 
@@ -108,11 +108,62 @@ def report_has_changes(report: str) -> bool:
     return bool(counts) and any(counts)
 
 
+def latest_prior_changelog_version(current_version: str) -> str:
+    changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
+    versions = re.findall(
+        r"^## (?!Unreleased\b)v?([^\s]+)(?: - \d{4}-\d{2}-\d{2})?$",
+        changelog,
+        flags=re.MULTILINE,
+    )
+    try:
+        current_index = versions.index(current_version)
+    except ValueError as exc:
+        raise RuntimeError(
+            f"CHANGELOG.md has no release section for VERSION={current_version}"
+        ) from exc
+    if current_index + 1 >= len(versions):
+        raise RuntimeError(f"VERSION={current_version} has no prior changelog release")
+    return versions[current_index + 1]
+
+
+def resolve_baseline(mode: str, from_ref: str | None) -> str:
+    if mode == "change":
+        if not from_ref:
+            raise RuntimeError("change mode requires --from-ref")
+        require_git_text("rev-parse", "--verify", f"{from_ref}^{{commit}}")
+        return from_ref
+
+    current_version = read_current("VERSION")
+    prior_version = latest_prior_changelog_version(current_version)
+    expected_tag = f"v{prior_version}"
+    if from_ref and from_ref != expected_tag:
+        raise RuntimeError(
+            f"release mode baseline must be the prior release tag {expected_tag}, "
+            f"not {from_ref}"
+        )
+    result = git("rev-parse", "--verify", f"refs/tags/{expected_tag}^{{commit}}")
+    if result.returncode != 0:
+        raise RuntimeError(
+            f"release mode requires reachable prior release tag {expected_tag}; "
+            "fetch complete tag history or repair the release baseline"
+        )
+    return expected_tag
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Compare source contracts and versions with the latest Git release tag."
+        description="Compare source contracts with an explicit change or release baseline."
     )
-    parser.add_argument("--from-ref", help="Release tag or commit. Defaults to latest tag.")
+    parser.add_argument(
+        "--mode",
+        choices=["change", "release"],
+        required=True,
+        help="Use an explicit Git base ref for changes or the prior version tag for release.",
+    )
+    parser.add_argument(
+        "--from-ref",
+        help="Required in change mode; optional prior release tag assertion in release mode.",
+    )
     parser.add_argument("--report-output", type=Path)
     args = parser.parse_args()
 
@@ -122,7 +173,7 @@ def main() -> int:
     schema_changed = False
     templates_changed = False
     try:
-        baseline = args.from_ref or require_git_text("describe", "--tags", "--abbrev=0")
+        baseline = resolve_baseline(args.mode, args.from_ref)
         paths = changed_paths(baseline)
         framework_changed = any(path.startswith("framework/") for path in paths)
         templates_changed = any(path.startswith("templates/target/") for path in paths)
@@ -206,7 +257,7 @@ def main() -> int:
             print(f"FAIL: {failure}", file=sys.stderr)
         return 1
     print(
-        f"OK: release drift against {baseline}; framework_changed={framework_changed} "
+        f"OK: {args.mode} drift against {baseline}; framework_changed={framework_changed} "
         f"schema_changed={schema_changed} templates_changed={templates_changed}"
     )
     return 0

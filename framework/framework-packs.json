@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "pack_kind": "alatyr-framework-pack-catalog",
+  "packs": {
+    "core": {
+      "description": "Portable rule owners and supporting guidance required by the core target scaffold.",
+      "rule_ids": [
+        "ALATYR-ADAPTER-001",
+        "ALATYR-APPROVAL-001",
+        "ALATYR-BRIDGE-001",
+        "ALATYR-CONTEXT-001",
+        "ALATYR-EVIDENCE-001",
+        "ALATYR-INTEGRITY-001",
+        "ALATYR-LIFECYCLE-001",
+        "ALATYR-MODULE-001",
+        "ALATYR-OPERATION-001",
+        "ALATYR-RISK-001",
+        "ALATYR-SAFETY-001",
+        "ALATYR-SAFETY-002",
+        "ALATYR-SOURCE-001"
+      ],
+      "additional_files": [
+        "README.md",
+        "adapter-maturity.md",
+        "ai-infrastructure-recommendations.md",
+        "ai-infrastructure-routing.md",
+        "consistency-model.md",
+        "context-discovery.md",
+        "context-router.md",
+        "contour.md",
+        "framework-packs.json",
+        "installed-operations.md",
+        "portability.md",
+        "skill-adaptation.md",
+        "testing-guidance.md"
+      ]
+    },
+    "standard": {
+      "description": "Core framework plus common blueprint and migration guidance.",
+      "extends": "core",
+      "rule_ids": [
+        "ALATYR-CHANGE-001"
+      ],
+      "additional_files": [
+        "large-task-orchestration.md",
+        "migration-diff.md"
+      ]
+    },
+    "complete": {
+      "description": "Every portable framework Markdown and JSON file.",
+      "extends": "standard",
+      "rule_ids": [],
+      "additional_files": [],
+      "include_remaining_framework_files": true
+    }
+  },
+  "projected_files": [
+    "README.md",
+    "file-inventory.json",
+    "rule-ownership.md",
+    "rule-registry.json",
+    "rule-registry.md"
+  ]
+}

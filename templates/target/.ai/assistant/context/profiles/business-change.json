@@ -19,12 +19,14 @@
     ".ai/framework/change-risk-model.md",
     ".ai/framework/source-of-truth-registry.md",
     ".ai/framework/logical-integrity.md",
-    ".ai/framework/blueprint-driven-change.md",
-    ".ai/framework/approval-records.md",
-    ".ai/framework/testing-guidance.md",
-    ".ai/assistant/flows/blueprint-driven-change.flow.md",
-    ".ai/assistant/gates/checklist.md",
     "{TARGET_BLUEPRINT_OR_PRODUCT_SOURCE_OF_TRUTH}"
+  ],
+  "conditional_context": [
+    {"path": ".ai/framework/blueprint-driven-change.md", "when": "the accepted business decision enters planning"},
+    {"path": ".ai/framework/approval-records.md", "when": "accepted behavior or another protected category changes"},
+    {"path": ".ai/framework/testing-guidance.md", "when": "the decision enters implementation planning or validation"},
+    {"path": ".ai/assistant/flows/blueprint-driven-change.flow.md", "when": "the accepted change is implemented through the product workflow"},
+    {"path": ".ai/assistant/gates/checklist.md", "when": "the change is previewed approved implemented or finalized"}
   ],
   "expand_when": [
     "architecture_boundary_changes",

@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "suite_kind": "alatyr-effectiveness-task-class-suite",
+  "suite_version": 1,
+  "status": "coverage-contract-not-executed",
+  "required_adapter_modes": ["none", "minimal", "full"],
+  "recommended_minimum_repetitions": 3,
+  "required_acceptance_dimensions": [
+    "requested outcome correctness",
+    "changed-fact and companion-surface consistency",
+    "validation and residual-risk evidence",
+    "context and token cost"
+  ],
+  "required_metrics": [
+    "input_tokens",
+    "output_tokens",
+    "context_files_loaded",
+    "context_expansions",
+    "clarifications",
+    "validation_error_count",
+    "missed_companion_updates",
+    "rework_count",
+    "duration_seconds"
+  ],
+  "task_classes": [
+    {
+      "id": "docs-local-small",
+      "task_profile": "docs-local",
+      "task_scale": "local",
+      "risk_focus": "wording and reference accuracy",
+      "purpose": "Measure whether routing overhead remains bounded for a narrow documentation task."
+    },
+    {
+      "id": "code-regression-local",
+      "task_profile": "code-local",
+      "task_scale": "local",
+      "risk_focus": "behavioral regression and focused test evidence",
+      "purpose": "Measure local repair quality without unnecessary framework-context expansion."
+    },
+    {
+      "id": "business-rule-change",
+      "task_profile": "business-change",
+      "task_scale": "cross-cutting",
+      "risk_focus": "changed invariant and companion-surface closure",
+      "purpose": "Measure semantic change coverage across implementation and project knowledge."
+    },
+    {
+      "id": "architecture-boundary-change",
+      "task_profile": "architecture-change",
+      "task_scale": "cross-cutting",
+      "risk_focus": "ownership, dependency direction, and accepted architecture",
+      "purpose": "Measure architecture reasoning and synchronized decision evidence."
+    },
+    {
+      "id": "data-contract-change",
+      "task_profile": "data-change",
+      "task_scale": "cross-cutting",
+      "risk_focus": "schema, migration, API, persistence, and rollback consistency",
+      "purpose": "Measure data-contract impact closure and executable validation."
+    },
+    {
+      "id": "security-protected-change",
+      "task_profile": "security-sensitive",
+      "task_scale": "cross-cutting",
+      "risk_focus": "approval, secret boundaries, permissions, and excluded actions",
+      "purpose": "Measure whether protected work is constrained and evidenced before execution."
+    },
+    {
+      "id": "large-resumable-change",
+      "task_profile": "business-change",
+      "task_scale": "large-or-resumable",
+      "risk_focus": "workstream convergence, handoff continuity, and context reuse",
+      "purpose": "Measure quality and cost when a coherent change spans multiple bounded workstreams."
+    }
+  ],
+  "claim_boundary": "This suite defines required coverage only. It contains no execution results and supports no effectiveness or cost claim by itself."
+}

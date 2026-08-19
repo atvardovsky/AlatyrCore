@@ -1,5 +1,5 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "router_kind": "target-context-router",
   "human_reference": ".ai/assistant/context-profiles.md",
   "preloaded_context": [
@@ -18,9 +18,11 @@
     },
     "profile_default": {
       "max_files": 12,
-      "max_words": 8000
+      "max_total_words": 8000,
+      "max_portable_words": 5600,
+      "reserved_target_words": 2400
     },
-    "on_exceed": "record expansion reason and load only required owners"
+    "on_exceed": "load required safety and owner evidence, record expansion reason, measured context, and intentionally omitted context"
   },
   "context_receipt": {
     "required_for": [
@@ -166,6 +168,9 @@
         "{TARGET_AREA_EXPANSION_TRIGGER}"
       ]
     }
+  },
+  "cost_scenarios": {
+    "descriptor": ".ai/assistant/context/cost-scenarios.json"
   },
   "routing_order": [
     "docs-local",

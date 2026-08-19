@@ -51,6 +51,12 @@ from target_validation_support import (
     sha256,
     should_skip_path,
 )
+from target_adapter_validation.context import ValidationContext
+from target_adapter_validation.framework_baseline import source_pack_expectation
+from target_adapter_validation.router_costs import (
+    validate_budget_shape,
+    validate_installed_costs,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -130,6 +136,7 @@ MANIFEST_REQUIRED_SCALARS: set[PathKey] = {
     ("framework", "version"),
     ("framework", "source"),
     ("framework", "template_version"),
+    ("framework", "pack"),
     ("framework", "rule_registry"),
     ("installation", "id"),
     ("installation", "date"),
@@ -146,6 +153,14 @@ MANIFEST_REQUIRED_SCALARS: set[PathKey] = {
     ("source_of_truth", "context_router"),
     ("source_of_truth", "context_profiles"),
     ("source_of_truth", "module_profile"),
+    ("context_routing", "router_schema_version"),
+    ("context_routing", "bootstrap_max_files"),
+    ("context_routing", "bootstrap_max_words"),
+    ("context_routing", "profile_default_max_files"),
+    ("context_routing", "profile_default_max_total_words"),
+    ("context_routing", "profile_default_max_portable_words"),
+    ("context_routing", "profile_default_reserved_target_words"),
+    ("context_routing", "budget_behavior"),
     ("operations", "help"),
     ("operations", "operation_request"),
     ("operations", "output_contracts"),
@@ -565,6 +580,7 @@ class Validator:
         self.allow_local_paths = allow_local_paths + config.local_path_patterns()
         self.findings: list[Finding] = list(initial_findings or [])
         self.framework_drift_detected = False
+        self.context = ValidationContext(self.target)
 
     def error(self, code: str, message: str, path: str | None = None) -> None:
         self.add_finding("error", code, message, path)
@@ -658,12 +674,7 @@ class Validator:
             return str(path)
 
     def read_text(self, path: Path) -> str:
-        try:
-            return path.read_text(encoding="utf-8")
-        except UnicodeDecodeError:
-            return ""
-        except OSError:
-            return ""
+        return self.context.read_text(path)
 
     def manifest_support_profile(self, manifest: ManifestData | None) -> str:
         if manifest is None:
@@ -737,6 +748,73 @@ class Validator:
                     f".ai/alatyr.yaml:{support_scalar.line}",
                 )
 
+        pack_scalar = manifest.scalars.get(("framework", "pack"))
+        if pack_scalar and not is_unresolved_value(pack_scalar.value):
+            if pack_scalar.value not in {"core", "standard", "complete"}:
+                self.error(
+                    "MANIFEST_FRAMEWORK_PACK",
+                    "framework.pack must be core, standard, or complete",
+                    f".ai/alatyr.yaml:{pack_scalar.line}",
+                )
+            elif support_scalar and support_scalar.value in SUPPORT_PROFILES:
+                pack_rank = {"core": 0, "standard": 1, "complete": 2}
+                profile_rank = {"core": 0, "standard": 1, "full": 2}
+                if pack_rank[pack_scalar.value] < profile_rank[support_scalar.value]:
+                    self.error(
+                        "MANIFEST_FRAMEWORK_PACK",
+                        "framework.pack is too small for installation.support_profile",
+                        f".ai/alatyr.yaml:{pack_scalar.line}",
+                    )
+
+        numeric_context_fields = [
+            ("context_routing", "router_schema_version"),
+            ("context_routing", "bootstrap_max_files"),
+            ("context_routing", "bootstrap_max_words"),
+            ("context_routing", "profile_default_max_files"),
+            ("context_routing", "profile_default_max_total_words"),
+            ("context_routing", "profile_default_max_portable_words"),
+            ("context_routing", "profile_default_reserved_target_words"),
+        ]
+        numeric_values: dict[PathKey, int] = {}
+        for key in numeric_context_fields:
+            scalar = manifest.scalars.get(key)
+            if not scalar or is_unresolved_value(scalar.value):
+                continue
+            try:
+                value = int(scalar.value)
+            except ValueError:
+                self.error(
+                    "MANIFEST_CONTEXT_BUDGET",
+                    f"{dotted(key)} must be a positive integer",
+                    f".ai/alatyr.yaml:{scalar.line}",
+                )
+                continue
+            if value <= 0:
+                self.error(
+                    "MANIFEST_CONTEXT_BUDGET",
+                    f"{dotted(key)} must be a positive integer",
+                    f".ai/alatyr.yaml:{scalar.line}",
+                )
+            numeric_values[key] = value
+
+        router_schema = numeric_values.get(("context_routing", "router_schema_version"))
+        if router_schema not in {2, 3, 4}:
+            self.error(
+                "MANIFEST_CONTEXT_SCHEMA",
+                "context_routing.router_schema_version must be 2, 3, or 4",
+                ".ai/alatyr.yaml",
+            )
+        total = numeric_values.get(("context_routing", "profile_default_max_total_words"))
+        portable = numeric_values.get(("context_routing", "profile_default_max_portable_words"))
+        reserved = numeric_values.get(("context_routing", "profile_default_reserved_target_words"))
+        if all(isinstance(value, int) for value in [total, portable, reserved]):
+            if portable + reserved > total:
+                self.error(
+                    "MANIFEST_CONTEXT_BUDGET",
+                    "portable plus reserved target words exceeds total words",
+                    ".ai/alatyr.yaml",
+                )
+
         for key in sorted(MANIFEST_PATH_SCALARS):
             scalar = manifest.scalars.get(key)
             if not scalar:
@@ -796,15 +874,28 @@ class Validator:
         if schema_version == 1:
             self.warn(
                 "ROUTER_SCHEMA_LEGACY",
-                "context router schema 1 should migrate to lazy routing schema 3",
+                "context router schema 1 should migrate to budgeted lazy routing schema 4",
                 ".ai/assistant/context-router.json",
             )
-        elif schema_version not in {2, 3}:
+        elif schema_version not in {2, 3, 4}:
             self.error(
                 "ROUTER_SCHEMA",
-                "context router schema_version should be 2 or 3",
+                "context router schema_version should be 2, 3, or 4",
                 ".ai/assistant/context-router.json",
             )
+        manifest_path = self.target_path(".ai/alatyr.yaml")
+        if manifest_path.is_file():
+            manifest = parse_manifest(manifest_path)
+            manifest_schema = manifest.scalars.get(
+                ("context_routing", "router_schema_version")
+            )
+            if manifest_schema and not is_unresolved_value(manifest_schema.value):
+                if manifest_schema.value != str(schema_version):
+                    self.error(
+                        "ROUTER_MANIFEST_SCHEMA_DRIFT",
+                        "manifest router_schema_version differs from context router",
+                        ".ai/alatyr.yaml",
+                    )
         if router.get("human_reference") != ".ai/assistant/context-profiles.md":
             self.error(
                 "ROUTER_HUMAN_REFERENCE",
@@ -812,7 +903,7 @@ class Validator:
                 ".ai/assistant/context-router.json",
             )
 
-        if schema_version in {2, 3}:
+        if schema_version in {2, 3, 4}:
             preloaded = expect_string_list(
                 router.get("preloaded_context"),
                 self,
@@ -855,21 +946,25 @@ class Validator:
                     ".ai/assistant/context-router.json",
                 )
 
-            if not isinstance(router.get("context_budgets"), dict):
+            budgets = router.get("context_budgets")
+            if not isinstance(budgets, dict):
                 self.error(
                     "ROUTER_BUDGETS_MISSING",
-                    "schema 2 or 3 router must define context_budgets",
+                    "schema 2, 3, or 4 router must define context_budgets",
                     ".ai/assistant/context-router.json",
                 )
+                budgets = {}
+            elif schema_version == 4:
+                self.check_router_budget_shape(budgets)
             if not isinstance(router.get("context_receipt"), dict):
                 self.error(
                     "ROUTER_RECEIPT_MISSING",
-                    "schema 2 or 3 router must define context_receipt",
+                    "schema 2, 3, or 4 router must define context_receipt",
                     ".ai/assistant/context-router.json",
                 )
             migration_entry = router.get("migration_routing")
             migration = migration_entry
-            if schema_version == 3 and isinstance(migration_entry, dict):
+            if schema_version in {3, 4} and isinstance(migration_entry, dict):
                 migration = self.load_context_descriptor(
                     migration_entry,
                     "target-migration-routing",
@@ -878,7 +973,7 @@ class Validator:
             if not isinstance(migration, dict):
                 self.error(
                     "ROUTER_MIGRATION_MISSING",
-                    "schema 2 or 3 router must define migration-first routing",
+                    "schema 2, 3, or 4 router must define migration-first routing",
                     ".ai/assistant/context-router.json",
                 )
             else:
@@ -971,6 +1066,41 @@ class Validator:
                 if field in {"required_context", "validation"}:
                     for value in values:
                         self.check_router_path(value, profile, field)
+            conditional = data.get("conditional_context", [])
+            if conditional is not None and not isinstance(conditional, list):
+                self.error(
+                    "ROUTER_CONDITIONAL_CONTEXT",
+                    f"profiles.{profile}.conditional_context must be a list",
+                    ".ai/assistant/context-router.json",
+                )
+            elif isinstance(conditional, list):
+                for index, entry in enumerate(conditional):
+                    if not isinstance(entry, dict):
+                        self.error(
+                            "ROUTER_CONDITIONAL_CONTEXT",
+                            f"profiles.{profile}.conditional_context[{index}] must be an object",
+                            ".ai/assistant/context-router.json",
+                        )
+                        continue
+                    path_value = entry.get("path")
+                    when = entry.get("when")
+                    if not isinstance(path_value, str) or not path_value:
+                        self.error(
+                            "ROUTER_CONDITIONAL_CONTEXT",
+                            f"profiles.{profile}.conditional_context[{index}].path is missing",
+                            ".ai/assistant/context-router.json",
+                        )
+                    else:
+                        self.check_router_path(path_value, profile, "conditional_context")
+                    if not isinstance(when, str) or not when:
+                        self.error(
+                            "ROUTER_CONDITIONAL_CONTEXT",
+                            f"profiles.{profile}.conditional_context[{index}].when is missing",
+                            ".ai/assistant/context-router.json",
+                        )
+
+        if schema_version == 4 and isinstance(budgets, dict):
+            self.check_installed_context_costs(router, profiles, budgets)
 
         upgrade = profiles.get("framework-upgrade")
         if isinstance(upgrade, dict):
@@ -998,6 +1128,17 @@ class Validator:
                         ".ai/assistant/context-profiles.md",
                     )
             self.check_markdown_required_context_duplicates(profiles_path)
+
+    def check_router_budget_shape(self, budgets: dict[str, Any]) -> None:
+        validate_budget_shape(self, budgets)
+
+    def check_installed_context_costs(
+        self,
+        router: dict[str, Any],
+        profiles: dict[str, Any],
+        budgets: dict[str, Any],
+    ) -> None:
+        validate_installed_costs(self, router, profiles, budgets)
 
     def load_context_descriptor(
         self,
@@ -1031,14 +1172,14 @@ class Validator:
         return data
 
     def router_profiles(self, router: dict[str, Any]) -> dict[str, Any]:
-        if router.get("schema_version") != 3:
+        if router.get("schema_version") not in {3, 4}:
             profiles = router.get("profiles")
             return profiles if isinstance(profiles, dict) else {}
         index = router.get("profile_index")
         if not isinstance(index, dict):
             self.error(
                 "ROUTER_PROFILE_INDEX",
-                "schema 3 router must define profile_index",
+                "schema 3 or 4 router must define profile_index",
                 ".ai/assistant/context-router.json",
             )
             return {}
@@ -5277,10 +5418,9 @@ class Validator:
     def load_json_object(self, path: Path, code_prefix: str) -> dict[str, Any] | None:
         if not path.is_file():
             return None
-        try:
-            data = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError) as exc:
-            self.error(f"{code_prefix}_INVALID_JSON", str(exc), self.rel(path))
+        data, error = self.context.read_json(path)
+        if error is not None:
+            self.error(f"{code_prefix}_INVALID_JSON", error, self.rel(path))
             return None
         if not isinstance(data, dict):
             self.error(
@@ -6838,6 +6978,151 @@ class Validator:
             )
             return
         if not target_framework.is_dir():
+            return
+
+        manifest = parse_manifest(self.target_path(".ai/alatyr.yaml"))
+        pack_scalar = manifest.scalars.get(("framework", "pack"))
+        framework_pack = pack_scalar.value if pack_scalar else "complete"
+        if framework_pack in {"core", "standard"}:
+            inventory_path = target_framework / "file-inventory.json"
+            inventory = self.load_json_object(inventory_path, "FRAMEWORK_INVENTORY")
+            if inventory is None:
+                self.error(
+                    "FRAMEWORK_PACK_INVENTORY_MISSING",
+                    "selective framework pack requires a projected file inventory",
+                    ".ai/framework/file-inventory.json",
+                )
+                return
+            if inventory.get("framework_pack") != framework_pack:
+                self.error(
+                    "FRAMEWORK_PACK_INVENTORY_DRIFT",
+                    "framework inventory pack differs from the adapter manifest",
+                    ".ai/framework/file-inventory.json",
+                )
+            entries = inventory.get("files")
+            if not isinstance(entries, list):
+                self.error(
+                    "FRAMEWORK_PACK_INVENTORY_SHAPE",
+                    "framework pack inventory files must be a list",
+                    ".ai/framework/file-inventory.json",
+                )
+                return
+            expected: dict[str, dict[str, Any]] = {}
+            for index, entry in enumerate(entries):
+                if not isinstance(entry, dict):
+                    self.error(
+                        "FRAMEWORK_PACK_INVENTORY_ENTRY",
+                        f"framework pack inventory entry {index} must be an object",
+                        ".ai/framework/file-inventory.json",
+                    )
+                    continue
+                relpath = entry.get("path")
+                digest = entry.get("sha256")
+                if (
+                    not isinstance(relpath, str)
+                    or not relpath.startswith("framework/")
+                    or Path(relpath).name != relpath[len("framework/") :]
+                    or not isinstance(digest, str)
+                    or len(digest) != 64
+                ):
+                    self.error(
+                        "FRAMEWORK_PACK_INVENTORY_ENTRY",
+                        f"framework pack inventory entry {index} is invalid",
+                        ".ai/framework/file-inventory.json",
+                    )
+                    continue
+                expected[Path(relpath).name] = entry
+            expected_names = set(expected) | {"file-inventory.json"}
+            try:
+                source_expected_names, source_projected_registry, source_expected_hashes = (
+                    source_pack_expectation(source_framework, framework_pack)
+                )
+            except (OSError, ValueError, json.JSONDecodeError) as exc:
+                self.warn(
+                    "FRAMEWORK_SOURCE_PACK_INVALID",
+                    f"cannot resolve source framework pack: {exc}",
+                    ".ai/framework/framework-packs.json",
+                )
+                source_expected_names = expected_names
+                source_projected_registry = None
+                source_expected_hashes = {}
+            if expected_names != source_expected_names:
+                self.framework_drift_detected = True
+                self.warn(
+                    "FRAMEWORK_PACK_SELECTION_DRIFT",
+                    "installed framework pack file set differs from the source pack catalog",
+                    ".ai/framework/file-inventory.json",
+                )
+            target_registry, registry_error = self.context.read_json(
+                target_framework / "rule-registry.json"
+            )
+            if registry_error is not None:
+                self.warn(
+                    "FRAMEWORK_PACK_REGISTRY_INVALID",
+                    f"cannot read projected rule registry: {registry_error}",
+                    ".ai/framework/rule-registry.json",
+                )
+            elif (
+                source_projected_registry is not None
+                and target_registry != source_projected_registry
+            ):
+                self.framework_drift_detected = True
+                self.warn(
+                    "FRAMEWORK_PACK_REGISTRY_DRIFT",
+                    "installed projected rule registry differs from the source pack",
+                    ".ai/framework/rule-registry.json",
+                )
+            target_names = {
+                path.name
+                for path in target_framework.iterdir()
+                if path.is_file() and path.suffix in {".md", ".json"}
+            }
+            for name in sorted(expected_names - target_names):
+                self.framework_drift_detected = True
+                self.warn(
+                    "FRAMEWORK_FILE_MISSING",
+                    f"installed framework pack is missing {name}",
+                    f".ai/framework/{name}",
+                )
+            for name in sorted(target_names - expected_names):
+                self.framework_drift_detected = True
+                self.warn(
+                    "FRAMEWORK_FILE_EXTRA",
+                    f"installed framework has file outside selected pack: {name}",
+                    f".ai/framework/{name}",
+                )
+            for name, entry in sorted(expected.items()):
+                target_path = target_framework / name
+                if not target_path.is_file():
+                    continue
+                actual_digest = sha256(target_path)
+                source_digest = source_expected_hashes.get(name)
+                if source_digest is not None and entry["sha256"] != source_digest:
+                    self.framework_drift_detected = True
+                    self.warn(
+                        "FRAMEWORK_PACK_INVENTORY_DIGEST_DRIFT",
+                        f"framework inventory digest differs from source projection: {name}",
+                        ".ai/framework/file-inventory.json",
+                    )
+                baseline_digest = source_digest or entry["sha256"]
+                if actual_digest != baseline_digest:
+                    self.framework_drift_detected = True
+                    self.warn(
+                        "FRAMEWORK_FILE_DRIFT",
+                        f"installed framework pack file differs from source projection: {name}",
+                        f".ai/framework/{name}",
+                    )
+            source_inventory_digest = source_expected_hashes.get("file-inventory.json")
+            if (
+                source_inventory_digest is not None
+                and sha256(inventory_path) != source_inventory_digest
+            ):
+                self.framework_drift_detected = True
+                self.warn(
+                    "FRAMEWORK_PACK_INVENTORY_CONTENT_DRIFT",
+                    "installed framework pack inventory differs from source projection",
+                    ".ai/framework/file-inventory.json",
+                )
             return
 
         source_files = {

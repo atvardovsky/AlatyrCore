@@ -34,13 +34,20 @@ def framework_files() -> list[str]:
     )
 
 
-def git_check_ignore_no_index(relpath: str) -> bool:
+def git_ignored_no_index(relpaths: list[str]) -> set[str]:
+    if not relpaths:
+        return set()
     result = subprocess.run(
-        ["git", "check-ignore", "--no-index", "-q", relpath],
+        ["git", "check-ignore", "--no-index", "-z", "--stdin"],
         cwd=ROOT,
         check=False,
+        input="\0".join(relpaths) + "\0",
+        capture_output=True,
+        text=True,
     )
-    return result.returncode == 0
+    if result.returncode not in {0, 1}:
+        raise RuntimeError(result.stderr.strip() or "git check-ignore failed")
+    return set(filter(None, result.stdout.split("\0")))
 
 
 def main() -> int:
@@ -51,43 +58,31 @@ def main() -> int:
         "AGENTS.md": [
             "## Bootstrap Context",
             "## Context Expansion Profiles",
-            "Do not load every framework file by",
-            "framework/context-router.md",
-            "framework/context-profiles.md",
-            "framework/rule-ownership.md",
-            "framework/rule-registry.md",
-            "docs/framework-maintenance.md",
+            "tools/source_context_router.json",
+            "choose the smallest matching source task",
+            "loading the full framework corpus by default",
         ],
         "README.md": [
-            "Read the source bootstrap",
-            "framework/context-profiles.md",
-            "framework/context-router.md",
-            "framework/project-adapter-contract.md",
-            "framework/rule-registry.json",
-            "Read each framework file before copying or adapting",
+            "installer/context-router.json",
+            "framework/file-inventory.json",
+            "Read only selected or changed canonical framework owners",
         ],
         "INSTALL.md": [
             "## Source Bootstrap",
-            "framework/context-profiles.md",
-            "framework/context-router.md",
-            "framework/project-adapter-contract.md",
-            "framework/rule-registry.json",
-            "not as a default bootstrap",
+            "installer/context-router.json",
+            "framework/file-inventory.json",
+            "Copying an unchanged file does not require loading its prose",
         ],
         "AI_ASSISTANTS.md": [
-            "framework/context-profiles.md",
-            "framework/context-router.md",
-            "framework/project-adapter-contract.md",
-            "framework/rule-registry.json",
-            "read only changed or affected canonical sources",
+            "installer/context-router.json",
+            "framework/file-inventory.json",
+            "Load only stage-required canonical owners",
         ],
         "installer/assistant-installation.flow.md": [
             "## Source Bootstrap",
-            "framework/context-profiles.md",
-            "framework/context-router.md",
-            "framework/project-adapter-contract.md",
-            "framework/rule-registry.json",
-            "not as a default bootstrap",
+            "installer/context-router.json",
+            "framework/file-inventory.json",
+            "Unchanged framework files do not need to be loaded",
         ],
     }
     max_bootstrap_framework_refs = 18
@@ -953,11 +948,11 @@ def main() -> int:
     else:
         source_runner_text = read_text("tools/check_all.py")
         for required_source_runner_text in [
-            "source repository only",
-            "CHECKS",
-            "check_framework_consistency.py",
-            "run_conformance_scaffold.py",
-            "summarize_effectiveness_reports.py",
+            "check_manifest.json",
+            "load_manifest",
+            "ThreadPoolExecutor",
+            'default="full"',
+            "--changed-from",
         ]:
             if required_source_runner_text not in source_runner_text:
                 failures.append(
@@ -2196,13 +2191,20 @@ def main() -> int:
             if required_ref not in text:
                 failures.append(f"{relpath} does not route {required_ref}")
 
+    hidden_template_paths: list[str] = []
     for path in (ROOT / "templates" / "target").rglob("*"):
         if not path.is_file():
             continue
         relpath = path.relative_to(ROOT).as_posix()
         if any(part.startswith(".") for part in path.relative_to(ROOT).parts):
-            if git_check_ignore_no_index(relpath):
-                failures.append(f"{relpath} is hidden by .gitignore")
+            hidden_template_paths.append(relpath)
+    try:
+        ignored_template_paths = git_ignored_no_index(hidden_template_paths)
+    except RuntimeError as exc:
+        failures.append(str(exc))
+    else:
+        for relpath in sorted(ignored_template_paths):
+            failures.append(f"{relpath} is hidden by .gitignore")
 
     if failures:
         for failure in failures:

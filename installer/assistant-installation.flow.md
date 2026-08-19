@@ -20,36 +20,21 @@ Use this flow when:
 
 ## Source Bootstrap
 
-Read in this repository first:
+Treat root `AGENTS.md` as preloaded. Read `installer/context-router.json` and
+the source version files, then choose the current installation stage. Inspect
+the target before loading stage-specific sources. The router names required
+rule owners, installer documents, templates, checks, and expansion triggers.
 
-- `README.md`
-- `AGENTS.md`
-- `INSTALL.md`
-- `framework/README.md`
-- `framework/context-profiles.md`
-- `framework/context-router.md`
-- `framework/project-adapter-contract.md`
-- `framework/portability.md`
-- `framework/module-profile.md`
-- `framework/architecture-knowledge.md`
-- `framework/code-documentation.md`
-- `framework/project-vocabulary.md`
-- `framework/test-first-development.md`
-- `framework/extensions.md`
-- `framework/rule-ownership.md`
-- `framework/rule-registry.md`
-- `framework/rule-registry.json`
-- `installer/readiness-checklist.md`
-- `installer/installation-plan-template.md`
+For a new installation or upgrade, compare
+`framework/file-inventory.json`, file hashes, and rule registries first. Read
+changed or selected canonical sources and affected target surfaces only.
+Unchanged framework files do not need to be loaded merely to preserve or copy
+them.
 
-Then inspect the target repository and load additional source files from the
-smallest matching installation scope. For a new full-core installation, use a
-deterministic framework file list and inspect rule owners as needed without
-loading all prose into one context. For an upgrade, compare file hashes and
-rule registries first, then read changed or added canonical sources and their
-affected target surfaces. Unchanged framework files do not need to be loaded
-again merely to preserve or copy them, and the full framework remains outside
-the compact startup set, not as a default bootstrap.
+When target evidence selects an optional module, route to its owner rather than
+preloading it. Examples include `framework/project-vocabulary.md`,
+`framework/test-first-development.md`, and `framework/extensions.md` before
+creating their vocabulary, test-first, or `alatyr-extension.json` surfaces.
 
 Load target templates from `templates/target` only for surfaces the plan will
 create or compare, and keep them as placeholders until rewritten from target
@@ -145,10 +130,12 @@ Classify every proposed target file:
 2. Optionally use source-repository scaffolding only to preview or create
    placeholder structure. Select the smallest `core`, `standard`, or `full`
    support profile justified by the installation plan, and record the
-   selection in the target manifest. Verify that projected manifest, router,
-   operation, and capability claims reference only files present in that
-   profile. Do not treat scaffolding or profile selection as installation or
-   module enablement.
+   selection in the target manifest. Select the matching `core`, `standard`,
+   or `complete` framework pack, expanding it when enabled modules require
+   additional rule owners. Verify that projected manifest, router, operation,
+   capability, rule-registry, ownership, and inventory claims reference only
+   installed files. Do not treat scaffolding, profile selection, or pack
+   selection as installation or module enablement.
 3. Fill `installer/readiness-checklist.md` for the target.
 4. Prepare an installation plan from
    `installer/installation-plan-template.md`.
@@ -162,8 +149,10 @@ Classify every proposed target file:
    backup owner, review cadence, CODEOWNERS or equivalent owner map,
    source-of-truth, validation, known gaps, and local deviations.
 10. Create or adapt target `.ai/README.md`.
-11. Copy or adapt portable framework files into target `.ai/framework`,
-    including `framework/*.md` and `framework/rule-registry.json`.
+11. Copy or adapt the selected portable framework pack into target
+    `.ai/framework`. Record the pack in the manifest and preserve its projected
+    rule registry, ownership map, and file inventory. Use `complete` when all
+    portable Markdown and JSON files are installed.
 12. Create target `.ai/project/contour.md` and target project
    source-of-truth docs from target facts.
     Add `.ai/project/development-evidence.json` only when the target enables

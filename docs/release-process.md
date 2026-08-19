@@ -64,12 +64,15 @@ not update target repositories. It should include adapter contract impact,
 affected rule categories, affected task profiles, affected canonical sources,
 and migration action hints.
 
-Use `tools/check_release_drift.py` to compare the working release with the
-latest `v<VERSION>` Git tag. The check materializes the tagged framework and
-target templates, runs the migration reporter against that real baseline, and
-requires the corresponding framework, adapter-schema, or template version to
-advance when its owned surfaces change. CI checkout must include tag history;
-a shallow checkout cannot establish this release baseline reliably.
+Use `tools/check_release_drift.py --mode change --from-ref <base-ref>` for
+ordinary change validation. This mode never guesses a baseline from stale
+tags. Use `tools/check_release_drift.py --mode release` before a release. The
+release mode requires the prior changelog version's `v<VERSION>` tag,
+materializes its framework and target templates, and runs the migration
+reporter against that real baseline. Both modes require the corresponding
+framework, adapter-schema, or template version to advance when owned surfaces
+change. Release CI checkout must include tag history; a shallow checkout
+cannot establish this baseline reliably.
 
 Store the reviewed report for a tagged version at
 `docs/releases/<VERSION>-migration.md`. The report must name the compared
@@ -86,15 +89,18 @@ Before tagging a source release:
 - update `TEMPLATE_VERSION` when target template contracts change
 - update `CHANGELOG.md`
 - add `docs/releases/<VERSION>-migration.md`
-- update `framework/rule-registry.md` and `framework/rule-registry.json` when
-  rule IDs, rule summaries, owners, dependencies, or enforcement levels change
-- update `framework/rule-ownership.md` when category owners change
+- update `framework/rule-registry.json` when rule IDs, summaries, owners, or
+  enforcement levels change, then run
+  `tools/render_rule_registry_docs.py` to refresh the Markdown registry and
+  ownership map
+- update owning document metadata when rule dependencies change and run the
+  framework metadata cycle check
 - update target templates and conformance fixtures when installable surfaces
   change
 - run source-repository checks listed in `docs/framework-maintenance.md`
 - run `tools/check_release_migration_template.py`
 - run `tools/check_migration_diff_report.py`
-- run `tools/check_release_drift.py`
+- run `tools/check_release_drift.py --mode release`
 - run `tools/check_versioning.py`
 - review `git diff --check`
 

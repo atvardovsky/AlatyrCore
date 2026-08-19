@@ -37,18 +37,23 @@ def main() -> int:
         failures.append("bootstrap word count exceeds its soft headroom budget")
 
     profile_budget = report["budgets"]["profile_default"]
+    max_total_words = profile_budget["max_total_words"]
+    max_portable_words = profile_budget["max_portable_words"]
+    reserved_target_words = profile_budget["reserved_target_words"]
+    if max_portable_words + reserved_target_words > max_total_words:
+        failures.append("profile portable and target budgets exceed total budget")
     for name, profile in report["profiles"].items():
         if profile["declared_files"] > profile_budget["max_files"]:
             failures.append(f"profile {name} exceeds the default file budget")
-        if profile["words"] > profile_budget["max_words"]:
-            failures.append(f"profile {name} exceeds the default word budget")
+        if profile["words"] > max_portable_words:
+            failures.append(f"profile {name} exceeds the portable word budget")
         if profile["missing_paths"]:
             failures.append(f"profile {name} contains missing paths")
 
     for name, overlay in report["intent_overlays"].items():
         if overlay["declared_files"] > profile_budget["max_files"]:
             failures.append(f"intent overlay {name} exceeds the default file budget")
-        if overlay["words"] > profile_budget["max_words"]:
+        if overlay["words"] > max_total_words:
             failures.append(f"intent overlay {name} exceeds the default word budget")
         if overlay["missing_paths"]:
             failures.append(f"intent overlay {name} contains missing paths")
@@ -56,7 +61,7 @@ def main() -> int:
     for name, overlay in report["task_scale_overlays"].items():
         if overlay["declared_files"] > profile_budget["max_files"]:
             failures.append(f"task-scale overlay {name} exceeds the default file budget")
-        if overlay["words"] > profile_budget["max_words"]:
+        if overlay["words"] > max_total_words:
             failures.append(f"task-scale overlay {name} exceeds the default word budget")
         if overlay["missing_paths"]:
             failures.append(f"task-scale overlay {name} contains missing paths")
@@ -131,8 +136,21 @@ def main() -> int:
     ]
     if team_composition["missing_paths"]:
         failures.append("large-task and team composition contains missing paths")
-    if team_composition["words"] > profile_budget["max_words"]:
+    if team_composition["words"] > max_total_words:
         failures.append("large-task and team compact composition exceeds profile budget")
+
+    for name, scenario in report["cost_scenarios"].items():
+        expected = scenario.get("expected_budget_state")
+        if expected == "compact":
+            if scenario["declared_files"] > profile_budget["max_files"]:
+                failures.append(f"compact cost scenario {name} exceeds the file budget")
+            if scenario["words"] > max_portable_words:
+                failures.append(f"compact cost scenario {name} exceeds the portable budget")
+        elif expected == "expansion-receipt-required":
+            if scenario["words"] <= 0:
+                failures.append(f"expansion cost scenario {name} has no measured context")
+        else:
+            failures.append(f"cost scenario {name} has no valid expected budget state")
 
     migration = report["migration_routing"]
     reduction = migration["initial_word_reduction_percent"]

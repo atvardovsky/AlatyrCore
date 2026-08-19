@@ -24,7 +24,18 @@ from summarize_effectiveness_reports import validate_report as validate_metrics
 
 ROOT = Path(__file__).resolve().parents[1]
 PLAN_TEMPLATE = ROOT / "conformance" / "benchmarks" / "benchmark-plan-template.json"
+TASK_SUITE = ROOT / "conformance" / "benchmarks" / "benchmark-task-suite.json"
 HEX = set("0123456789abcdef")
+CANONICAL_TASK_PROFILES = {
+    "docs-local",
+    "code-local",
+    "business-change",
+    "architecture-change",
+    "data-change",
+    "security-sensitive",
+    "ai-infrastructure",
+    "framework-upgrade",
+}
 
 
 def is_placeholder(value: str) -> bool:
@@ -352,6 +363,7 @@ def validate_source_templates() -> list[str]:
     try:
         plan = load_json(PLAN_TEMPLATE)
         report = load_json(REPORT_TEMPLATE)
+        suite = load_json(TASK_SUITE)
         if plan.get("schema_version") != 1:
             failures.append("benchmark plan template schema_version must be 1")
         if plan.get("benchmark_kind") != "alatyr-effectiveness-benchmark-input":
@@ -389,6 +401,60 @@ def validate_source_templates() -> list[str]:
         ]:
             if field not in report:
                 failures.append(f"effectiveness run report template missing {field}")
+        if suite.get("schema_version") != 1:
+            failures.append("benchmark task suite schema_version must be 1")
+        if suite.get("suite_kind") != "alatyr-effectiveness-task-class-suite":
+            failures.append("benchmark task suite kind is invalid")
+        if suite.get("status") != "coverage-contract-not-executed":
+            failures.append("benchmark task suite must not claim execution")
+        if suite.get("required_adapter_modes") != MODES:
+            failures.append("benchmark task suite must compare none, minimal, and full")
+        repetitions = suite.get("recommended_minimum_repetitions")
+        if not isinstance(repetitions, int) or repetitions < 2:
+            failures.append("benchmark task suite must recommend repeated runs")
+        for field in ["required_acceptance_dimensions", "required_metrics"]:
+            values = suite.get(field)
+            if not isinstance(values, list) or len(values) < 4 or not all(
+                isinstance(value, str) and value for value in values
+            ):
+                failures.append(f"benchmark task suite {field} is incomplete")
+        task_classes = suite.get("task_classes")
+        if not isinstance(task_classes, list) or len(task_classes) < 6:
+            failures.append("benchmark task suite must cover at least six task classes")
+        else:
+            seen_classes: set[str] = set()
+            covered_profiles: set[str] = set()
+            for index, task_class in enumerate(task_classes):
+                if not isinstance(task_class, dict):
+                    failures.append(f"benchmark task class {index} must be an object")
+                    continue
+                class_id = task_class.get("id")
+                if not isinstance(class_id, str) or not class_id or class_id in seen_classes:
+                    failures.append(f"benchmark task class {index} has invalid id")
+                else:
+                    seen_classes.add(class_id)
+                profile = task_class.get("task_profile")
+                if profile not in CANONICAL_TASK_PROFILES:
+                    failures.append(f"benchmark task class {class_id} has invalid profile")
+                else:
+                    covered_profiles.add(profile)
+                for field in ["task_scale", "risk_focus", "purpose"]:
+                    value = task_class.get(field)
+                    if not isinstance(value, str) or not value:
+                        failures.append(f"benchmark task class {class_id} missing {field}")
+            required_profiles = {
+                "docs-local",
+                "code-local",
+                "business-change",
+                "architecture-change",
+                "data-change",
+                "security-sensitive",
+            }
+            if not required_profiles <= covered_profiles:
+                failures.append("benchmark task suite misses required risk profiles")
+        claim_boundary = suite.get("claim_boundary")
+        if not isinstance(claim_boundary, str) or "no execution results" not in claim_boundary:
+            failures.append("benchmark task suite must state its non-evidence boundary")
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         failures.append(str(exc))
     return failures

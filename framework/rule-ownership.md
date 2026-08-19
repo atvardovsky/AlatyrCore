@@ -1,30 +1,16 @@
 # Rule Ownership
 
-This file names the canonical owner for each Alatyr rule category.
-
-Use it to reduce repeated policy text across README files, installer docs,
-target templates, bridges, help files, and checkers. Owning documents contain
-the rule meaning. Derived documents should reference the owner, rule ID, or
-short summary instead of restating full policy.
-
-The machine-readable ownership map lives in
-`framework/rule-registry.json` under `category_owners`.
+This file is generated from `framework/rule-registry.json`. Canonical owner
+documents define rule semantics; this map only routes maintainers and tools.
+Derived documents should reference the owner or rule ID and avoid copying
+the complete policy language.
 
 ## Ownership Rules
 
-- Full rule semantics belong in the owning framework document.
-- Rule-owner framework documents must carry `alatyr_doc` front matter with a
-  stable document ID, owned rule IDs, rule dependencies, and task-profile
-  scope.
-- `framework/rule-registry.md` and `framework/rule-registry.json` keep stable
-  IDs, summaries, category owners, and migration metadata.
-- Installer docs may summarize a rule only enough to route installation work.
-- Target templates may contain placeholders and local adaptation prompts, but
-  must not become portable rule owners.
-- Bridge files must stay pointers to canonical target files, not policy
-  copies.
-- When a rule changes materially, update the owning document first, then the
-  registry, affected templates, checkers, and changelog.
+- Change the canonical owner document before changing a rule summary.
+- Keep installer, template, bridge, and help wording as short references.
+- Keep owner front matter aligned with registered IDs and dependencies.
+- Record material contract changes in the changelog and migration evidence.
 
 ## Category Owners
 
@@ -86,60 +72,65 @@ Category: `ARCHITECTURE`
 Owner: `.ai/framework/architecture-knowledge.md`
 Rule IDs: `ALATYR-ARCHITECTURE-001`
 Derived surfaces: target architecture index and catalog, pattern and area
-templates, architecture-assistance operation and intent route, architecture
-discussion result, installation and update planning, gates, and validation.
+templates, architecture-assistance operation, architecture intent routing,
+architecture discussion result, installation and update planning, target gates,
+architecture validation.
 
 Category: `CODEDOC`
 Owner: `.ai/framework/code-documentation.md`
 Rule IDs: `ALATYR-CODEDOC-001`
-Derived surfaces: target code-documentation catalog and profiles,
-documentation intent route and synchronization flow, project-adapted comment
+Derived surfaces: target code-documentation catalog and profiles, documentation
+intent routing, documentation synchronization flow, project-adapted comment
 skill, profile review template, generated-output policy, installation and
-update planning, gates, and structural validation.
+update planning, target gates, structural validation.
 
 Category: `VOCABULARY`
 Owner: `.ai/framework/project-vocabulary.md`
 Rule IDs: `ALATYR-VOCABULARY-001`
-Derived surfaces: target vocabulary catalog, term and data-link records,
-vocabulary intent route and operation flow, project-adapted vocabulary skill,
-term review template, installation and update planning, gates, and structural
-validation.
+Derived surfaces: target vocabulary catalog, term records, data-dictionary link
+records, vocabulary intent routing, project-vocabulary operation flow,
+project-adapted vocabulary skill, term review template, installation and update
+planning, target gates, structural validation.
 
 Category: `TDD`
 Owner: `.ai/framework/test-first-development.md`
 Rule IDs: `ALATYR-TDD-001`
 Derived surfaces: target test-first policy, recommendation gate, configuration
-and change operations, intent route, project-adapted skill, gate, evidence
-template, installation and update planning, and structural validation.
+and change operations, test-first intent routing, project-adapted test-first
+skill, test-first gate, RED GREEN refactor evidence template, installation and
+update planning, structural validation.
 
 Category: `EXTENSION`
 Owner: `.ai/framework/extensions.md`
 Rule IDs: `ALATYR-EXTENSION-001`
-Derived surfaces: external extension package template and inspection tool,
-target extension catalog and lock, lifecycle flow, intent routing, review and
-lifecycle evidence, module profile, gates, installer/update planning, bridge
-routing, and structural validation.
+Derived surfaces: external extension package template, extension inspection
+tool, target extension catalog and lock, extension lifecycle flow, extension
+intent routing, extension review and lifecycle evidence, module profile, target
+gates, installation and update planning, bridge routing, structural validation.
 
 Category: `DIAGRAM`
 Owner: `.ai/framework/diagram-guidance.md`
 Rule IDs: `ALATYR-DIAGRAM-001`
-Derived surfaces: portable ASCII grammar, target diagram discussion flow,
-ASCII and diagram presentation templates, operation catalog/index, intent
-routing, bridge matrix, compact capabilities, operation fixture, installation
-planning, adapter recheck, and validation.
+Derived surfaces: portable ASCII diagram grammar, target diagram discussion
+flow, ASCII and diagram presentation templates, operation catalog and compact
+index, context intent routing, bridge capability matrix, compact assistant
+capabilities, operation conformance fixture, installation planning, adapter
+recheck, diagram validation evidence.
 
 Category: `ADAPTER`
 Owner: `.ai/framework/project-adapter-contract.md`
 Rule IDs: `ALATYR-ADAPTER-001`
 Derived surfaces: installation plan, readiness checklist, manifest template,
-adapter recheck flow, target development-pattern evidence, AI infrastructure
-router, recommendation, and item contracts.
+adapter recheck flow, target development-pattern evidence, framework pack and
+projected inventory, AI infrastructure router, AI infrastructure recommendation
+contract, AI infrastructure item contracts.
 
 Category: `MODULE`
 Owner: `.ai/framework/module-profile.md`
 Rule IDs: `ALATYR-MODULE-001`
-Derived surfaces: target module profile, manifest modules, operation help
-routing, maturity review.
+Derived surfaces: target module profile, manifest modules, framework pack
+catalog, scaffold profile-to-pack mapping, operation help routing, maturity
+review.
 
 Category: `OPERATION`
 Owner: `.ai/framework/operation-help.md`
@@ -151,24 +142,23 @@ manifest operation paths, assistant bridges.
 Category: `TEAM`
 Owner: `.ai/framework/team-collaboration.md`
 Rule IDs: `ALATYR-TEAM-001`
-Derived surfaces: structured target team policy, human operating model, ignored
-local actor selection, active-work index, registry metadata, per-task records,
-backend contract, task claims, conflict review, checkpoints, handoffs, decision
-records, team review, merge-readiness evidence, operation routes, team-active
-context overlay, and adapted team skill.
+Derived surfaces: structured target team policy, human team operating model,
+ignored local actor selection, active-work index, work registry metadata,
+per-task records, backend contract, task claims, conflict review, checkpoints,
+handoffs, decision records, team review, merge-readiness evidence, operation
+routes, team-active context overlay, adapted team skill.
 
 Category: `BRIDGE`
 Owner: `.ai/framework/bridge-capability-matrix.md`
 Rule IDs: `ALATYR-BRIDGE-001`
 Derived surfaces: assistant bridge templates, bridge renderer, bridge
-capability target records, generated assistant-capability index,
-cross-assistant AI item routing.
+capability target template, cross-assistant AI item routing.
 
 Category: `LIFECYCLE`
 Owner: `.ai/framework/lifecycle.md`
 Rule IDs: `ALATYR-LIFECYCLE-001`
-Derived surfaces: version files, migration notes, framework update recheck,
-changelog.
+Derived surfaces: version files, installed framework pack, migration notes,
+framework update recheck, changelog.
 
 Category: `EVIDENCE`
 Owner: `.ai/framework/guarantees.md`
@@ -178,14 +168,9 @@ effectiveness reports, operation packets.
 
 ## Change Protocol
 
-When changing a rule category:
-
-1. Update the owning framework document.
-2. Update the owning document's `alatyr_doc` front matter when owned rules,
-   dependencies, or task-profile scope change.
-3. Update `framework/rule-registry.md` and
-   `framework/rule-registry.json`.
-4. Update derived installer docs, target templates, tools, or conformance
-   data only when their contract changes.
-5. Keep bridges as pointers.
-6. Record behavior or contract changes in `CHANGELOG.md`.
+1. Update the owning framework document and its `alatyr_doc` metadata.
+2. Update `framework/rule-registry.json`.
+3. Regenerate this file and `framework/rule-registry.md`.
+4. Update affected installer, target, checker, and conformance surfaces.
+5. Keep assistant bridges as pointers.
+6. Record behavioral changes in `CHANGELOG.md` and migration evidence.

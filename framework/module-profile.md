@@ -127,7 +127,11 @@ During installation or update:
 3. Record module states in the target adapter manifest and module profile.
 4. Select and record the `core`, `standard`, or `full` support profile, then
    create only the target templates needed for enabled or required modules.
-5. Leave deferred, disabled, not-applicable, or blocked modules in evidence
+5. Select a compatible `core`, `standard`, or `complete` framework pack. The
+   pack controls installed portable files, while context routing controls what
+   is loaded for a task. A smaller pack must never be used to claim support for
+   a broader profile or enabled module.
+6. Leave deferred, disabled, not-applicable, or blocked modules in evidence
    with the reason and next safe action.
 
 Optional modules must not add target project facts from guesses or from another
@@ -140,6 +144,7 @@ A module profile review should report:
 ```text
 Core profile state: <complete/missing gaps>
 Adapter ownership: <owner/cadence/CODEOWNERS or equivalent/gaps>
+Framework pack: <core/standard/complete and expansion needs>
 Enabled modules: <modules>
 Deferred modules: <modules and reasons>
 Blocked modules: <modules and missing owners/policies/validation>

@@ -116,8 +116,10 @@ selected task profile instead of being mandatory for every task.
 
 ## Context Budgets And Receipts
 
-The router should define maximum bootstrap and default profile file/word
-budgets. A target may tune them from measured repository evidence.
+The router should define maximum bootstrap files/words and default profile
+files, total words, portable words, and words reserved for target-owned facts.
+A target may tune them from measured repository evidence, but portable plus
+reserved capacity must not exceed the total.
 
 Record both a soft bootstrap threshold and a hard maximum. Rebaseline the
 static estimate when bootstrap files change. For an actual assistant run,
@@ -134,8 +136,11 @@ If sufficient context exceeds a budget, continue safely and record:
 - context intentionally not loaded
 - residual risk
 
-Budgets reduce accidental overloading; they never justify skipping an owner,
-approval rule, safety policy, or validation fact required by changed behavior.
+Source-template estimates must charge unresolved target references against the
+reserved target capacity. Accepted adapters resolve and measure concrete target
+paths. Budgets reduce accidental overloading; they never justify skipping an
+owner, approval rule, safety policy, or validation fact required by changed
+behavior.
 
 ## Project-Area Overlays
 

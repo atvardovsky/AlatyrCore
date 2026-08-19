@@ -12,58 +12,35 @@ Agents working here must preserve the separation between:
 
 ## Bootstrap Context
 
-At the start of an AlatyrCore source-repository task, read only the bootstrap
-context first:
-
-- `README.md`
-- `AGENTS.md`
-- `framework/README.md`
-- `framework/context-router.md`
-- `framework/context-profiles.md`
-- `framework/rule-ownership.md`
-- `framework/rule-registry.md`
-- `docs/framework-maintenance.md`
-
-Then choose the smallest matching source task profile below and read the
-profile-required files before editing. Do not load every framework file by
-default.
+Treat this file as host-preloaded context and do not reread it. Read
+`tools/source_context_router.json`, choose the smallest matching source task
+profile, and load only that profile's required paths and rule owners. Expand
+only for a named boundary, dependency, conflict, or failed check. If the router
+is missing or invalid, stop and repair or report the routing gap instead of
+loading the full framework corpus by default.
 
 ## Context Expansion Profiles
 
-Use `docs-local` for wording, index, changelog, or maintainer-doc changes
-that do not alter framework behavior. Read the edited file, its linked
-neighbors, and `docs/framework-maintenance.md`.
+The machine-readable source router owns concrete required-path and check lists.
+The summaries below explain profile intent without replacing that router.
+
+Use `docs-local` for wording, index, changelog, or maintainer-doc changes that
+do not alter framework behavior.
 
 Use `framework-rule` for portable rule, contour, risk, integrity, safety,
 approval, lifecycle, operation, module, context-router, or source-of-truth
-changes. Read the owning `framework/*.md` file, its `alatyr_doc` dependencies
-when present, `framework/rule-registry.md`, `framework/rule-registry.json`,
-`framework/rule-ownership.md`, and affected installer/template surfaces.
+changes.
 
 Use `installer-template` for installation flow, readiness, request template,
-target adapter template, bridge template, or post-install/update behavior
-changes. Read `INSTALL.md`, `installer/assistant-installation.flow.md`,
-`installer/readiness-checklist.md`, `installer/installation-plan-template.md`,
-the affected `templates/target` files, and the owning framework rule files
-named by the changed behavior.
+target adapter template, bridge template, or post-install/update behavior.
 
-Use `source-tooling` for source-repository helper or checker changes. Read the
-tool being changed, `tools/README.md`, `docs/framework-maintenance.md`, and
-the framework, installer, or template contracts the tool validates.
+Use `source-tooling` for source-repository helper or checker changes.
 
 Use `release-versioning` for version files, changelog, release process,
-migration diff, or release migration evidence changes. Read `VERSION`,
-`ADAPTER_SCHEMA_VERSION`, `TEMPLATE_VERSION`, `CHANGELOG.md`,
-`docs/release-process.md`, `docs/release-migration-report-template.md`,
-`framework/lifecycle.md`, and `framework/migration-diff.md`.
+migration diff, or release migration evidence changes.
 
 Use `ai-infrastructure-bridge` for assistant compatibility, bridge, skill,
-prompt, MCP/tool, operation-help, or imported-source changes. Read
-`AI_ASSISTANTS.md`, `docs/assistant-compatibility.md`,
-`framework/bridge-capability-matrix.md`, `framework/skill-adaptation.md`,
-`framework/ai-infrastructure-routing.md`,
-`framework/prompt-injection.md`, `framework/operation-help.md`, and affected
-bridge or target assistant files.
+prompt, MCP/tool, operation-help, or imported-source changes.
 
 Expand beyond the selected profile only when the change crosses framework,
 installer, template, tool, release, security, assistant-infrastructure, or
@@ -161,6 +138,7 @@ python3 tools/check_bridge_capability_matrix.py
 python3 tools/check_captured_effectiveness_results.py
 python3 tools/check_context_router.py
 python3 tools/check_context_costs.py
+python3 tools/check_source_context_routing.py
 python3 tools/check_diagram_conformance_results.py
 python3 tools/check_discussion_diagrams.py
 python3 tools/prepare_diagram_conformance_run.py --check
@@ -174,6 +152,7 @@ python3 tools/check_manifest_contract.py
 python3 tools/check_markdown_links.py
 python3 tools/check_maturity_profile.py
 python3 tools/check_module_profile.py
+python3 tools/check_framework_packs.py
 python3 tools/check_migration_diff_report.py
 python3 tools/check_operation_contracts.py
 python3 tools/check_operation_catalog.py
@@ -185,11 +164,15 @@ python3 tools/check_rule_ownership.py
 python3 tools/check_scaffold_profiles.py
 python3 tools/check_source_of_truth_registry.py
 python3 tools/check_target_adapter_validator.py
+python3 tools/check_check_manifest.py
 python3 tools/check_team_collaboration.py
 python3 tools/check_team_collaboration_scenarios.py
 python3 tools/check_versioning.py
 python3 tools/render_assistant_capability_index.py
+python3 tools/render_framework_file_inventory.py --check
 python3 tools/render_operation_index.py
+python3 tools/render_rule_registry_docs.py --check
+python3 tools/render_target_validator_findings.py --check
 python3 tools/summarize_effectiveness_benchmark.py
 ```
 

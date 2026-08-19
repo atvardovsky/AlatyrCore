@@ -36,7 +36,8 @@ A target context router should define:
 - human reference file
 - preloaded context that must not be reread
 - bootstrap context
-- bootstrap and profile context budgets
+- bootstrap budget plus profile total, portable, and reserved target-context
+  budgets
 - context receipt fields
 - routing order
 - canonical profile entries
@@ -111,13 +112,18 @@ The router should use the same canonical profile names as
 `context-profiles.md` unless the target adapter records a deliberate local
 renaming.
 
-Budgets are routing controls, not safety limits. A target should keep a soft
-bootstrap threshold below its hard maximum so growth becomes visible before
-the router fails its contract. When sufficient work requires more context,
-the assistant records the reason, changed boundary, added files, and measured
-or explicitly estimated context volume in the context receipt before
-expanding. Static source estimates are benchmark evidence; they are not a
-claim about hidden client context or an actual assistant run.
+Budgets are routing controls, not safety limits. Schema 4 separates the maximum
+total profile words, portable framework/adapter words, and capacity reserved
+for target-owned facts. Values must be positive, portable plus reserved must
+not exceed total, and source templates should retain meaningful target
+headroom. A target may tune them from measured evidence.
+
+Keep a soft bootstrap threshold below its hard maximum so growth is visible
+before failure. When required owner, safety, approval, or validation context
+exceeds a budget, load it and record the reason, boundary, added files,
+measured or explicitly estimated volume, and intentionally omitted context.
+Static source estimates are benchmark evidence, not a claim about hidden
+client context or an actual assistant run.
 
 A large-task overlay should route to the orchestration flow and operation
 packet without adding those files to every normal task profile. While a packet

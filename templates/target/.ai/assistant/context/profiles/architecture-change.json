@@ -19,13 +19,15 @@
     ".ai/framework/change-risk-model.md",
     ".ai/framework/source-of-truth-registry.md",
     ".ai/framework/logical-integrity.md",
-    ".ai/framework/blueprint-driven-change.md",
-    ".ai/framework/approval-records.md",
-    ".ai/framework/security-safety-guidance.md",
-    ".ai/framework/testing-guidance.md",
-    ".ai/assistant/flows/blueprint-driven-change.flow.md",
-    ".ai/assistant/gates/checklist.md",
     "{TARGET_ARCHITECTURE_SOURCE_OF_TRUTH}"
+  ],
+  "conditional_context": [
+    {"path": ".ai/framework/blueprint-driven-change.md", "when": "an accepted architecture decision enters change planning"},
+    {"path": ".ai/framework/approval-records.md", "when": "the proposed change crosses a protected architecture or dependency boundary"},
+    {"path": ".ai/framework/security-safety-guidance.md", "when": "security privacy external service production or permission boundaries are affected"},
+    {"path": ".ai/framework/testing-guidance.md", "when": "the accepted decision enters implementation planning or validation"},
+    {"path": ".ai/assistant/flows/blueprint-driven-change.flow.md", "when": "the accepted decision is implemented through the blueprint workflow"},
+    {"path": ".ai/assistant/gates/checklist.md", "when": "the change is previewed approved implemented or finalized"}
   ],
   "expand_when": [
     "data_ownership_changes",

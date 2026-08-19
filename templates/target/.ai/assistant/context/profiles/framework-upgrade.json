@@ -20,9 +20,11 @@
     ".ai/framework/lifecycle.md",
     ".ai/framework/migration-diff.md",
     ".ai/framework/rule-registry.json",
-    ".ai/assistant/flows/adapter-recheck.flow.md",
-    ".ai/assistant/templates/installation-note.md",
-    ".ai/assistant/templates/migration-note.md"
+    ".ai/assistant/flows/adapter-recheck.flow.md"
+  ],
+  "conditional_context": [
+    {"path": ".ai/assistant/templates/installation-note.md", "when": "installation baseline or current adapter state must be inspected or updated"},
+    {"path": ".ai/assistant/templates/migration-note.md", "when": "reviewed migration impact must be recorded for the target"}
   ],
   "expand_when": [
     "migration_assessment_identifies_affected_canonical_source",

@@ -25,6 +25,7 @@ Each installed framework should identify:
 - framework version
 - adapter schema version
 - template version when templates were used
+- installed framework pack and its projected file inventory
 - framework source or baseline
 - installation or upgrade date
 - local adapter owner
@@ -47,8 +48,8 @@ target-owned equivalent.
 Before upgrading framework files in a target project:
 
 1. Load the compact bootstrap and migration-first context only.
-2. Inspect the current target manifest, installed framework baseline, local
-   deviations, and adapter owner evidence.
+2. Inspect the current target manifest, installed framework pack and baseline,
+   projected inventory, local deviations, and adapter owner evidence.
 3. Prepare or review a migration assessment before changing target files. It
    should compare rule registries, framework files, versions, and structural
    adapter state.
@@ -59,7 +60,9 @@ Before upgrading framework files in a target project:
 6. Preserve target project facts.
 7. Compare supported assistant bridge needs and limitations.
 8. Identify new approval, testing, security, diagram, or validation guidance.
-9. Compare required core profile and optional module states.
+9. Compare required core profile, installed framework pack, and optional module
+   states. Expand the pack before enabling a module whose portable owner is not
+   installed; do not replace target facts while changing the pack.
    When `team-collaboration` is enabled, compare its rule, structured policy,
    local-identity boundary, registry and task schemas, active-work index,
    backend contract, lazy overlay, operation routes, and operating model.

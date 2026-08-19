@@ -171,8 +171,8 @@ def main() -> int:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
 
-    if router.get("schema_version") != 3:
-        failures.append("context-router.json schema_version must be 3")
+    if router.get("schema_version") != 4:
+        failures.append("context-router.json schema_version must be 4")
     if router.get("router_kind") != "target-context-router":
         failures.append("context-router.json router_kind must be target-context-router")
     if router.get("human_reference") != ".ai/assistant/context-profiles.md":
@@ -198,15 +198,35 @@ def main() -> int:
     if not isinstance(budgets, dict):
         failures.append("context_budgets must be an object")
     else:
-        for name in ["bootstrap", "profile_default"]:
-            budget = budgets.get(name)
-            if not isinstance(budget, dict):
-                failures.append(f"context_budgets.{name} must be an object")
-                continue
-            for field in ["max_files", "max_words"]:
-                if not isinstance(budget.get(field), int) or budget[field] <= 0:
-                    failures.append(f"context_budgets.{name}.{field} must be positive")
-        bootstrap_budget = budgets.get("bootstrap", {})
+        bootstrap_budget = budgets.get("bootstrap")
+        if not isinstance(bootstrap_budget, dict):
+            failures.append("context_budgets.bootstrap must be an object")
+            bootstrap_budget = {}
+        for field in ["max_files", "max_words"]:
+            if not isinstance(bootstrap_budget.get(field), int) or bootstrap_budget[field] <= 0:
+                failures.append(f"context_budgets.bootstrap.{field} must be positive")
+        profile_budget = budgets.get("profile_default")
+        if not isinstance(profile_budget, dict):
+            failures.append("context_budgets.profile_default must be an object")
+            profile_budget = {}
+        for field in [
+            "max_files",
+            "max_total_words",
+            "max_portable_words",
+            "reserved_target_words",
+        ]:
+            if not isinstance(profile_budget.get(field), int) or profile_budget[field] <= 0:
+                failures.append(f"context_budgets.profile_default.{field} must be positive")
+        total = profile_budget.get("max_total_words")
+        portable = profile_budget.get("max_portable_words")
+        reserved = profile_budget.get("reserved_target_words")
+        if all(isinstance(value, int) for value in [total, portable, reserved]):
+            if portable + reserved > total:
+                failures.append(
+                    "profile max_portable_words plus reserved_target_words exceeds max_total_words"
+                )
+            if reserved * 10 < total * 3:
+                failures.append("template profile budget must reserve at least 30% for target context")
         soft = bootstrap_budget.get("soft_max_words")
         hard = bootstrap_budget.get("max_words")
         if not isinstance(soft, int) or not isinstance(hard, int) or not 0 < soft < hard:
@@ -257,6 +277,7 @@ def main() -> int:
 
     profile_index = router.get("profile_index")
     profiles: dict[str, dict[str, Any]] = {}
+    profile_conditional_context: list[str] = []
     if not isinstance(profile_index, dict):
         failures.append("profile_index must be an object")
         profile_index = {}
@@ -287,10 +308,48 @@ def main() -> int:
             failures,
             {"required_context", "validation"},
         )
+        if "conditional_context" in profile:
+            profile_conditional_context.extend(
+                check_conditional_context(profile, f"profiles.{name}", failures)
+            )
         profiles[name] = profile
     extras = sorted(set(profile_index) - set(CANONICAL_PROFILES))
     if extras:
         failures.append(f"context-router.json has unexpected profiles: {extras}")
+
+    cost_scenario_entry = router.get("cost_scenarios")
+    cost_scenario_contract = descriptor(
+        cost_scenario_entry.get("descriptor")
+        if isinstance(cost_scenario_entry, dict)
+        else None,
+        "target-context-cost-scenarios",
+        "cost_scenarios",
+        failures,
+    )
+    cost_scenarios = cost_scenario_contract.get("scenarios")
+    if not isinstance(cost_scenarios, dict) or not cost_scenarios:
+        failures.append("cost scenario descriptor must contain scenarios")
+    else:
+        for name, scenario in cost_scenarios.items():
+            if not isinstance(scenario, dict):
+                failures.append(f"cost_scenarios.{name} must be an object")
+                continue
+            if scenario.get("profile") not in CANONICAL_PROFILES:
+                failures.append(f"cost_scenarios.{name} selects an unknown profile")
+            for field, available in [
+                ("intent_overlays", set((router.get("intent_overlays") or {}).keys())),
+                ("task_scale_overlays", set((router.get("task_scale_overlays") or {}).keys())),
+            ]:
+                values = scenario.get(field)
+                if not isinstance(values, list) or not all(
+                    isinstance(value, str) and value in available for value in values
+                ):
+                    failures.append(f"cost_scenarios.{name}.{field} is invalid")
+            if scenario.get("expected_budget_state") not in {
+                "compact",
+                "expansion-receipt-required",
+            }:
+                failures.append(f"cost_scenarios.{name} has invalid budget state")
 
     intent_index = router.get("intent_overlays")
     diagram: dict[str, Any] = {}
@@ -592,6 +651,11 @@ def main() -> int:
         for value in profile.get("required_context", [])
         if isinstance(value, str) and value.startswith(".ai/framework/")
     }
+    routed_framework_paths.update(
+        value
+        for value in profile_conditional_context
+        if value.startswith(".ai/framework/")
+    )
     for contract, field in [
         (consistency, "required_context"),
         (migration, "candidate_context"),
