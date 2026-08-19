@@ -67,9 +67,12 @@ and migration action hints.
 Use `tools/check_release_drift.py --mode change --from-ref <base-ref>` for
 ordinary change validation. This mode never guesses a baseline from stale
 tags. Use `tools/check_release_drift.py --mode release` before a release. The
-release mode requires the prior changelog version's `v<VERSION>` tag,
-materializes its framework and target templates, and runs the migration
-reporter against that real baseline. Both modes require the corresponding
+release mode uses the nearest reachable prior changelog version's `v<VERSION>`
+tag, requires migration reports for any intervening untagged versions,
+materializes the tagged framework and target templates, and runs the migration
+reporter against that real baseline. This recovery rule preserves an auditable
+baseline without inventing missing historical tags. Both modes require the
+corresponding
 framework, adapter-schema, or template version to advance when owned surfaces
 change. Release CI checkout must include tag history; a shallow checkout
 cannot establish this baseline reliably.

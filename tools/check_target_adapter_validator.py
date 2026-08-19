@@ -15,9 +15,11 @@ from validate_target_adapter import (
     AdapterValidatorConfig,
     Finding,
     Validator,
+    approval_enforcement_enabled,
     extract_list_field,
     findings_payload,
     git_changed_files,
+    result_code,
     scope_entries_cover,
 )
 
@@ -47,6 +49,18 @@ def write_json(path: Path, data: object) -> None:
 
 def main() -> int:
     failures: list[str] = []
+    if not approval_enforcement_enabled(
+        diff_ref="HEAD",
+        approval_records=[Path("approval.json")],
+        explicitly_enforced=False,
+    ):
+        failures.append("explicit approval plus diff must enable scope enforcement")
+    if approval_enforcement_enabled(
+        diff_ref="HEAD",
+        approval_records=[],
+        explicitly_enforced=False,
+    ):
+        failures.append("diff inspection without selected approval must remain advisory")
     with tempfile.TemporaryDirectory() as directory:
         target = Path(directory)
         router_path = target / ".ai" / "assistant" / "context-router.json"
@@ -79,14 +93,15 @@ def main() -> int:
                     f"schema-1 router must not receive schema-2 finding {forbidden}"
                 )
 
-        large_context_path = target / ".ai" / "assistant" / "large-context.md"
+        large_context_path = target / ".ai" / "framework" / "large-context.md"
+        large_context_path.parent.mkdir(parents=True, exist_ok=True)
         large_context_path.write_text("one two three four five\n", encoding="utf-8")
         budget_validator = validator(target)
         budget_validator.check_installed_context_costs(
             {"preloaded_context": [], "bootstrap_context": [], "profile_index": {}},
             {
                 "docs-local": {
-                    "required_context": [".ai/assistant/large-context.md"]
+                    "required_context": [".ai/framework/large-context.md"]
                 }
             },
             {
@@ -141,6 +156,19 @@ def main() -> int:
             failures.append("selective pack must detect a self-declared digest change")
         if "FRAMEWORK_PACK_INVENTORY_CONTENT_DRIFT" not in tampered_inventory_codes:
             failures.append("selective pack must detect projected inventory tampering")
+        if result_code(
+            tampered_inventory_validator.findings, strict_warnings=False
+        ) != 1:
+            failures.append("framework integrity drift must fail without strict warnings")
+        drift_payload = findings_payload(
+            tampered_inventory_validator.findings,
+            target=pack_target,
+            strict_warnings=False,
+        )
+        if drift_payload.get("adapter_health", {}).get("state") != "blocked":
+            failures.append("framework integrity drift must block adapter health")
+        if drift_payload.get("counts", {}).get("blocking_warnings", 0) < 1:
+            failures.append("validator JSON must count blocking warnings")
         inventory_path.write_text(original_inventory, encoding="utf-8")
 
         registry_path = framework_target / "rule-registry.json"
@@ -155,6 +183,26 @@ def main() -> int:
         }:
             failures.append("selective pack must detect projected registry tampering")
         registry_path.write_text(original_registry, encoding="utf-8")
+
+        capability_target = target / "capability-target"
+        capability_framework = capability_target / ".ai" / "framework"
+        capability_framework.mkdir(parents=True)
+        (capability_framework / "capabilities.json").write_bytes(
+            (ROOT / "framework" / "capabilities.json").read_bytes()
+        )
+        capability_manifest = capability_target / ".ai" / "alatyr.yaml"
+        capability_manifest.write_text(
+            "framework:\n  pack: complete\nmodules:\n  enabled:\n    - extensions\n",
+            encoding="utf-8",
+        )
+        capability_check = validator(capability_target)
+        parsed_capability_manifest = capability_check.check_manifest()
+        capability_check.check_capability_closure(parsed_capability_manifest)
+        capability_codes = {finding.code for finding in capability_check.findings}
+        if "CAPABILITY_DEPENDENCY_MISSING" not in capability_codes:
+            failures.append("enabled module dependency closure must be enforced")
+        if "CAPABILITY_TARGET_FILE_MISSING" not in capability_codes:
+            failures.append("enabled module target-file closure must be enforced")
 
         write_json(
             router_path,
@@ -1325,6 +1373,8 @@ Excluded files or surfaces:
             "extension-management"
         ]:
             failures.append("extension findings must route to extension-management")
+        if extension_health.get("exit_code") != 0:
+            failures.append("ordinary advisory warnings must remain non-blocking by default")
 
     if failures:
         for failure in failures:

@@ -32,12 +32,14 @@ EXPECTED_COMMANDS = {
     "prepare-benchmark",
     "check-benchmark",
     "summarize-benchmark",
+    "clean-artifacts",
 }
 ALLOWED_WRITE_SCOPES = {
     "none",
     "target-structure-with-explicit-write",
     "explicit-report-output-only",
     "explicit-evidence-output-only",
+    "local-source-artifacts-with-explicit-apply",
 }
 
 
@@ -148,7 +150,9 @@ def main() -> int:
             "windows-latest",
             "actions/checkout@v7",
             "actions/setup-python@v6",
-            "python tools/check_all.py",
+            "python tools/check_all.py --profile full",
+            "python tools/check_all.py --profile platform",
+            "python -m pip install -r requirements-dev.txt",
             "workflow_dispatch:",
             "contents: read",
         ]:

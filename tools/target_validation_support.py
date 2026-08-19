@@ -11,6 +11,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Tuple
 
+import yaml
+from yaml.nodes import MappingNode, Node, ScalarNode, SequenceNode
+
 
 PathKey = Tuple[str, ...]
 
@@ -35,12 +38,6 @@ UNAVAILABLE_HASH_MARKERS = {
 
 
 @dataclass(frozen=True)
-class Frame:
-    indent: int
-    key: str
-
-
-@dataclass(frozen=True)
 class Scalar:
     value: str
     line: int
@@ -48,67 +45,79 @@ class Scalar:
 
 @dataclass
 class ManifestData:
+    containers: set[PathKey]
     scalars: dict[PathKey, Scalar]
     lists: dict[PathKey, list[Scalar]]
     parse_failures: list[str]
 
 
+def load_manifest_object(path: Path) -> dict[str, Any]:
+    value = yaml.safe_load(path.read_text(encoding="utf-8"))
+    if not isinstance(value, dict):
+        raise ValueError("manifest root must be a mapping")
+    return value
+
+
 def parse_manifest(path: Path) -> ManifestData:
+    containers: set[PathKey] = set()
     scalars: dict[PathKey, Scalar] = {}
     lists: dict[PathKey, list[Scalar]] = {}
     failures: list[str] = []
-    stack: list[Frame] = []
+    try:
+        root = yaml.compose(path.read_text(encoding="utf-8"))
+    except yaml.YAMLError as exc:
+        mark = getattr(exc, "problem_mark", None)
+        location = f"line {mark.line + 1}: " if mark is not None else ""
+        return ManifestData(containers, scalars, lists, [location + str(exc)])
 
-    for line_number, raw_line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
-        if not raw_line.strip() or raw_line.lstrip().startswith("#"):
-            continue
-        if "\t" in raw_line:
-            failures.append(f"line {line_number}: tabs are not allowed")
-            continue
-        indent = len(raw_line) - len(raw_line.lstrip(" "))
-        if indent % 2:
-            failures.append(f"line {line_number}: indentation should use two spaces")
-            continue
-
-        content = raw_line[indent:]
-        stack = [frame for frame in stack if frame.indent < indent]
-        parent = tuple(frame.key for frame in stack)
-        try:
-            if content.startswith("- "):
-                item = content[2:].strip()
-                lists.setdefault(parent, [])
-                if ":" in item:
-                    key, value = parse_key_value(item, line_number)
-                    lists[parent].append(Scalar("<mapping>", line_number))
-                    stack.append(Frame(indent, "[]"))
-                    child_path = parent + ("[]", key)
-                    if value:
-                        scalars[child_path] = Scalar(value, line_number)
-                    else:
-                        stack.append(Frame(indent, key))
+    def visit(node: Node, current_path: PathKey) -> None:
+        if isinstance(node, MappingNode):
+            if current_path:
+                containers.add(current_path)
+            seen: set[str] = set()
+            for key_node, value_node in node.value:
+                if not isinstance(key_node, ScalarNode) or not key_node.value:
+                    failures.append(
+                        f"line {key_node.start_mark.line + 1}: mapping key must be a string"
+                    )
+                    continue
+                key = key_node.value
+                if key in seen:
+                    failures.append(
+                        f"line {key_node.start_mark.line + 1}: duplicate key {key}"
+                    )
+                seen.add(key)
+                visit(value_node, current_path + (key,))
+            return
+        if isinstance(node, SequenceNode):
+            containers.add(current_path)
+            values = lists.setdefault(current_path, [])
+            for item in node.value:
+                line = item.start_mark.line + 1
+                if isinstance(item, ScalarNode):
+                    values.append(Scalar(item.value, line))
                 else:
-                    lists[parent].append(Scalar(strip_quotes(item), line_number))
-                continue
-            key, value = parse_key_value(content, line_number)
-            current_path = parent + (key,)
-            if value:
-                scalars[current_path] = Scalar(value, line_number)
-            else:
-                stack.append(Frame(indent, key))
-        except AssertionError as exc:
-            failures.append(str(exc))
+                    values.append(Scalar("<mapping>", line))
+                    visit(item, current_path + ("[]",))
+            return
+        if isinstance(node, ScalarNode):
+            scalars[current_path] = Scalar(node.value, node.start_mark.line + 1)
+            return
+        failures.append(f"unsupported YAML node at {dotted(current_path)}")
 
-    return ManifestData(scalars=scalars, lists=lists, parse_failures=failures)
+    if root is None:
+        failures.append("manifest is empty")
+    else:
+        visit(root, ())
+        if not isinstance(root, MappingNode):
+            failures.append("manifest root must be a mapping")
 
-
-def parse_key_value(content: str, line_number: int) -> tuple[str, str]:
-    if ":" not in content:
-        raise AssertionError(f"line {line_number}: expected key/value syntax")
-    key, value = content.split(":", 1)
-    key = key.strip()
-    if not key:
-        raise AssertionError(f"line {line_number}: empty key")
-    return key, strip_quotes(value)
+    return ManifestData(
+        containers=containers,
+        scalars=scalars,
+        lists=lists,
+        parse_failures=failures,
+    )
 
 
 def strip_quotes(value: str) -> str:
@@ -442,4 +451,3 @@ def section_items(lines: list[str]) -> list[str]:
             continue
         items.append(value.strip("`"))
     return items
-

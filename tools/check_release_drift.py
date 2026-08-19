@@ -14,7 +14,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 REPORTER = ROOT / "tools" / "report_migration_diff.py"
 SCHEMA_CONTRACT_PATHS = {
+    "framework/capabilities.json",
+    "schemas/alatyr-adapter.schema.json",
     "templates/target/.ai/alatyr.yaml",
+    "templates/target/.ai/assistant/module-profile.md",
     "templates/target/.ai/assistant/context-router.json",
     "templates/target/.ai/assistant/operation-catalog.json",
     "templates/target/.ai/assistant/operation-index.json",
@@ -62,7 +65,7 @@ def changed_paths(ref: str) -> set[str]:
         filter(
             None,
             require_git_text(
-                "diff", "--name-only", ref, "--", "framework", "templates/target"
+                "diff", "--name-only", ref, "--", "framework", "schemas", "templates/target"
             ).splitlines(),
         )
     )
@@ -75,6 +78,7 @@ def changed_paths(ref: str) -> set[str]:
                 "--exclude-standard",
                 "--",
                 "framework",
+                "schemas",
                 "templates/target",
             ).splitlines(),
         )
@@ -108,7 +112,7 @@ def report_has_changes(report: str) -> bool:
     return bool(counts) and any(counts)
 
 
-def latest_prior_changelog_version(current_version: str) -> str:
+def prior_changelog_versions(current_version: str) -> list[str]:
     changelog = (ROOT / "CHANGELOG.md").read_text(encoding="utf-8")
     versions = re.findall(
         r"^## (?!Unreleased\b)v?([^\s]+)(?: - \d{4}-\d{2}-\d{2})?$",
@@ -123,7 +127,32 @@ def latest_prior_changelog_version(current_version: str) -> str:
         ) from exc
     if current_index + 1 >= len(versions):
         raise RuntimeError(f"VERSION={current_version} has no prior changelog release")
-    return versions[current_index + 1]
+    return versions[current_index + 1 :]
+
+
+def nearest_tagged_baseline(current_version: str) -> tuple[str, list[str]]:
+    prior_versions = prior_changelog_versions(current_version)
+    for index, version in enumerate(prior_versions):
+        tag = f"v{version}"
+        result = git("rev-parse", "--verify", f"refs/tags/{tag}^{{commit}}")
+        if result.returncode != 0:
+            continue
+        intervening = prior_versions[:index]
+        missing_reports = [
+            item
+            for item in intervening
+            if not (ROOT / "docs" / "releases" / f"{item}-migration.md").is_file()
+        ]
+        if missing_reports:
+            raise RuntimeError(
+                "release history has untagged versions without migration evidence: "
+                + ", ".join(missing_reports)
+            )
+        return tag, intervening
+    raise RuntimeError(
+        "release mode requires at least one reachable prior changelog release tag; "
+        "fetch complete tag history or repair the release baseline"
+    )
 
 
 def resolve_baseline(mode: str, from_ref: str | None) -> str:
@@ -134,18 +163,12 @@ def resolve_baseline(mode: str, from_ref: str | None) -> str:
         return from_ref
 
     current_version = read_current("VERSION")
-    prior_version = latest_prior_changelog_version(current_version)
-    expected_tag = f"v{prior_version}"
+    expected_tag, _intervening = nearest_tagged_baseline(current_version)
     if from_ref and from_ref != expected_tag:
         raise RuntimeError(
-            f"release mode baseline must be the prior release tag {expected_tag}, "
+            f"release mode baseline must be the nearest reachable prior release "
+            f"tag {expected_tag}, "
             f"not {from_ref}"
-        )
-    result = git("rev-parse", "--verify", f"refs/tags/{expected_tag}^{{commit}}")
-    if result.returncode != 0:
-        raise RuntimeError(
-            f"release mode requires reachable prior release tag {expected_tag}; "
-            "fetch complete tag history or repair the release baseline"
         )
     return expected_tag
 

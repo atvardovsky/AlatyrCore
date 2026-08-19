@@ -208,9 +208,11 @@ Reusable parsing, Git, hashing, and approval-scope helpers live in
 `tools/target_validation_support.py`. Cached and domain-specific validator
 components live under `tools/target_adapter_validation`; its generated finding
 catalog is documented in `docs/target-adapter-validator-findings.md`.
+Source tool dependencies are declared in `requirements.txt`; source acceptance
+and CI dependencies are routed through `requirements-dev.txt`.
 
 `tools/check_manifest.json` is the dependency-aware source-check catalog used
-by `tools/check_all.py` for fast, full, change, and release profiles.
+by `tools/check_all.py` for fast, full, change, platform, and release profiles.
 `tools/source_context_router.json` and `installer/context-router.json` keep
 source maintenance and installation bootstrap bounded. The generated
 `framework/file-inventory.json` and `framework/framework-packs.json` define the

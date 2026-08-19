@@ -1302,9 +1302,8 @@ def main() -> int:
         module_profile_tool_text = read_text("tools/check_module_profile.py")
         for required_module_profile_tool_text in [
             "module profile template",
-            "portable",
             "CORE_ITEMS",
-            "OPTIONAL_MODULES",
+            "capabilities.json",
             "OK: checked",
         ]:
             if required_module_profile_tool_text not in module_profile_tool_text:

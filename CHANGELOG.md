@@ -4,6 +4,38 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.11 - 2026-08-19
+
+- Increased the framework version to `0.1.0-alpha.11`, adapter schema version
+  to `10`, and target template version to `11`.
+- Made framework baseline and missing migration evidence blocking by default
+  while retaining explicit accepted-deviation and severity policy. Supplying a
+  Git diff base with explicit approval records now enables complete changed-
+  path scope enforcement automatically.
+- Replaced eager dependency submission in the source runner with dependency-
+  gated parallel execution. Failed prerequisites now block transitive
+  dependents while independent checks continue, with focused unit coverage.
+- Added JSON Schema validation for the adapter manifest, consolidated YAML
+  parsing with line-aware diagnostics, and added a canonical capability graph
+  for all 18 optional modules. Enabled target modules now require dependency,
+  pack, rule, installed-framework-file, target-file, and source-check closure.
+- Added a deterministic lifecycle walking skeleton that proves a Git-scoped
+  approved core installation, placeholder-free structural acceptance,
+  blocking framework drift, synthetic update application, and post-update
+  acceptance without claiming AI execution or project-semantic validation.
+- Changed source routes to canonical check IDs and added an explicit full
+  repository-audit route. `.ai/assistant` context is now correctly measured as
+  project-owned target context rather than portable framework context.
+- Split CI so Linux runs the full suite once and macOS and Windows run the
+  portable lifecycle/tooling contract. Added declared source-check
+  dependencies and a tested dry-run-first cleanup command for ignored local
+  artifacts.
+- Changed release drift recovery to use the nearest reachable prior changelog
+  tag while requiring migration reports for intervening untagged versions.
+  This preserves a real auditable baseline without fabricating historical tags.
+- Changed `ALATYR-APPROVAL-001`, `ALATYR-MODULE-001`, and
+  `ALATYR-EVIDENCE-001`; no rule IDs were added or removed.
+
 ## 0.1.0-alpha.10 - 2026-08-19
 
 - Increased the framework version to `0.1.0-alpha.10`, adapter schema version

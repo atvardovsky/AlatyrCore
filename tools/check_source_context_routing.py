@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Any
 
 from render_framework_file_inventory import build_inventory
+from check_all import ALLOWED_PROFILES, load_manifest
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -23,6 +24,7 @@ EXPECTED_SOURCE_PROFILES = {
     "source-tooling",
     "release-versioning",
     "ai-infrastructure-bridge",
+    "repository-audit",
 }
 EXPECTED_INSTALL_STAGES = [
     "discovery",
@@ -92,6 +94,26 @@ def main() -> int:
     profiles = source.get("profiles")
     if not isinstance(profiles, dict) or set(profiles) != EXPECTED_SOURCE_PROFILES:
         failures.append("source context router profile set is incomplete")
+    else:
+        manifest_ids = {check["id"] for check in load_manifest()}
+        for profile_id, profile in profiles.items():
+            checks = profile.get("checks")
+            if not isinstance(checks, list) or not checks:
+                failures.append(f"source profile {profile_id} has no check IDs")
+                continue
+            unknown = sorted(set(checks) - manifest_ids)
+            if unknown:
+                failures.append(
+                    f"source profile {profile_id} references unknown check IDs: {unknown}"
+                )
+            check_profile = profile.get("check_profile")
+            if check_profile is not None and check_profile not in ALLOWED_PROFILES:
+                failures.append(
+                    f"source profile {profile_id} has invalid check profile {check_profile}"
+                )
+        audit = profiles.get("repository-audit", {})
+        if audit.get("check_profile") != "full":
+            failures.append("repository-audit must route through the full check profile")
     source_bootstrap = [
         *source.get("preloaded_context", []),
         *source.get("bootstrap_context", []),

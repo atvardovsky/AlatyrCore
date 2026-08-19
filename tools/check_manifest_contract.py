@@ -8,28 +8,24 @@ portable framework requirement for target projects.
 from __future__ import annotations
 
 import sys
-from dataclasses import dataclass
+import json
 from pathlib import Path
-from typing import Tuple
+
+import jsonschema
+
+from target_validation_support import (
+    PathKey,
+    Scalar,
+    dotted,
+    load_manifest_object,
+    parse_manifest,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "templates" / "target"
 MANIFEST = TARGET / ".ai" / "alatyr.yaml"
-
-PathKey = Tuple[str, ...]
-
-
-@dataclass(frozen=True)
-class Frame:
-    indent: int
-    key: str
-
-
-@dataclass(frozen=True)
-class Scalar:
-    value: str
-    line: int
+SCHEMA = ROOT / "schemas" / "alatyr-adapter.schema.json"
 
 
 REQUIRED_CONTAINERS: set[PathKey] = {
@@ -330,77 +326,6 @@ PATH_SCALARS: set[PathKey] = {
 }
 
 
-def strip_quotes(value: str) -> str:
-    stripped = value.strip()
-    if len(stripped) >= 2 and stripped[0] == stripped[-1] and stripped[0] in "'\"":
-        return stripped[1:-1]
-    return stripped
-
-
-def parse_key_value(content: str, line_number: int) -> tuple[str, str]:
-    if ":" not in content:
-        raise AssertionError(f"line {line_number}: expected key/value syntax")
-    key, value = content.split(":", 1)
-    key = key.strip()
-    if not key:
-        raise AssertionError(f"line {line_number}: empty key")
-    return key, strip_quotes(value)
-
-
-def parse_manifest() -> tuple[set[PathKey], dict[PathKey, Scalar], dict[PathKey, list[Scalar]], list[str]]:
-    containers: set[PathKey] = set()
-    scalars: dict[PathKey, Scalar] = {}
-    lists: dict[PathKey, list[Scalar]] = {}
-    failures: list[str] = []
-    stack: list[Frame] = []
-
-    for line_number, raw_line in enumerate(MANIFEST.read_text(encoding="utf-8").splitlines(), start=1):
-        if not raw_line.strip() or raw_line.lstrip().startswith("#"):
-            continue
-        if "\t" in raw_line:
-            failures.append(f"line {line_number}: tabs are not allowed")
-            continue
-
-        indent = len(raw_line) - len(raw_line.lstrip(" "))
-        if indent % 2:
-            failures.append(f"line {line_number}: indentation must use two spaces")
-            continue
-
-        content = raw_line[indent:]
-        stack = [frame for frame in stack if frame.indent < indent]
-        parent = tuple(frame.key for frame in stack)
-
-        try:
-            if content.startswith("- "):
-                item = content[2:].strip()
-                lists.setdefault(parent, [])
-                if ":" in item:
-                    key, value = parse_key_value(item, line_number)
-                    lists[parent].append(Scalar("<mapping>", line_number))
-                    stack.append(Frame(indent, "[]"))
-                    path = parent + ("[]", key)
-                    if value:
-                        scalars[path] = Scalar(value, line_number)
-                    else:
-                        containers.add(path)
-                        stack.append(Frame(indent, key))
-                else:
-                    lists[parent].append(Scalar(strip_quotes(item), line_number))
-                continue
-
-            key, value = parse_key_value(content, line_number)
-            path = parent + (key,)
-            if value:
-                scalars[path] = Scalar(value, line_number)
-            else:
-                containers.add(path)
-                stack.append(Frame(indent, key))
-        except AssertionError as exc:
-            failures.append(str(exc))
-
-    return containers, scalars, lists, failures
-
-
 def has_placeholder(value: str) -> bool:
     return "{" in value and "}" in value
 
@@ -413,15 +338,27 @@ def target_reference_exists(value: str) -> bool:
     return (TARGET / value).exists()
 
 
-def dotted(path: PathKey) -> str:
-    return ".".join(path)
-
-
 def main() -> int:
     failures: list[str] = []
 
-    containers, scalars, lists, parse_failures = parse_manifest()
-    failures.extend(parse_failures)
+    parsed = parse_manifest(MANIFEST)
+    containers = parsed.containers
+    scalars = parsed.scalars
+    lists = parsed.lists
+    failures.extend(parsed.parse_failures)
+
+    try:
+        schema = json.loads(SCHEMA.read_text(encoding="utf-8"))
+        manifest_object = load_manifest_object(MANIFEST)
+        schema_errors = sorted(
+            jsonschema.Draft7Validator(schema).iter_errors(manifest_object),
+            key=lambda error: list(error.absolute_path),
+        )
+        for error in schema_errors:
+            location = ".".join(str(item) for item in error.absolute_path) or "root"
+            failures.append(f"schema {location}: {error.message}")
+    except (OSError, ValueError, json.JSONDecodeError, jsonschema.SchemaError) as exc:
+        failures.append(f"cannot validate manifest schema: {exc}")
 
     for path in sorted(REQUIRED_CONTAINERS):
         if path not in containers:

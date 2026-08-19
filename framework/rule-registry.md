@@ -226,10 +226,9 @@ Enforcement: required.
 Rule ID: `ALATYR-MODULE-001`
 Canonical source: `.ai/framework/module-profile.md`
 Commitment: Establish the required core profile first, select a compatible
-dependency-closed framework pack, and enable optional modules, including change
-packages, source-set code documentation, project vocabulary, test-first
-development, and extensions, only when the target needs and can maintain them;
-expand the pack before claiming support for an absent module owner.
+dependency-closed framework pack, and enforce optional-module dependency, rule,
+required-file, and deterministic-check closure from the installed capability
+catalog before claiming a target module is enabled.
 Applies to: installation, framework update, adapter maturity, framework
 upgrades.
 Enforcement: required.

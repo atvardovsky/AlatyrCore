@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 634
+Catalog entries: 644
 
 ## Codes
 
@@ -178,6 +178,20 @@ Catalog entries: 634
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `BOOTSTRAP_CONTEXT_ROUTER_MISSING`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
+- `CAPABILITY_CATALOG_INVALID`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `CAPABILITY_CATALOG_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `CAPABILITY_DEPENDENCY_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `CAPABILITY_FRAMEWORK_FILE_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `CAPABILITY_MODULE_UNKNOWN`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `CAPABILITY_PACK_TOO_SMALL`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `CAPABILITY_TARGET_FILE_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `CODEDOC_ACCEPTED_AMBIGUITY`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `CODEDOC_ACCEPTED_UNRESOLVED`
@@ -566,6 +580,10 @@ Catalog entries: 634
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `MANIFEST_PATH_NOT_AI`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `MANIFEST_SCHEMA`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `MANIFEST_SCHEMA_UNAVAILABLE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `MANIFEST_SUPPORT_PROFILE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `MIGRATION_DIFF_FILE_MISSING`
@@ -868,6 +886,8 @@ Catalog entries: 634
   Level: error. Source: `tools/target_adapter_validation/router_costs.py`.
 - `ROUTER_PROFILE_COST_EMPTY`
   Level: warning. Source: `tools/target_adapter_validation/router_costs.py`.
+- `ROUTER_PROFILE_COST_MEASURED`
+  Level: info. Source: `tools/target_adapter_validation/router_costs.py`.
 - `ROUTER_PROFILE_IDENTITY`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ROUTER_PROFILE_INDEX`

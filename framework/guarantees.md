@@ -112,10 +112,16 @@ Machine checks can verify only deterministic repository facts, such as:
 - templates remain placeholder-based before installation
 - bridge files stay short and point to canonical target files
 - target profiles route every framework document somewhere
+- enabled optional modules have dependency, minimum-pack, rule, required-file,
+  and deterministic-check closure against the installed capability catalog
 - target context routers match the profile template and route known framework
   documents somewhere
 - static and installed bootstrap/profile paths can be measured against total,
-  portable, and reserved target-context budgets
+  portable framework, and project-owned target-context budgets
+- a deterministic source walking skeleton can prove scaffold, Git-diff
+  approval scope, placeholder-free core acceptance, blocking baseline drift,
+  and post-update structural acceptance without claiming assistant execution or
+  project semantic correctness
 - supported bridge templates expose the same compact bootstrap, operation
   catalog, single entry, health, help, and operation-routing entry points
 - manifest, operation catalog, approval, prompt-injection, help, and policy

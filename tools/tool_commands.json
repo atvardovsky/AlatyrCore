@@ -79,6 +79,12 @@
       "script": "summarize_effectiveness_benchmark.py",
       "purpose": "summarize reviewed benchmark measurements and deltas",
       "write_scope": "none"
+    },
+    {
+      "name": "clean-artifacts",
+      "script": "clean_local_artifacts.py",
+      "purpose": "report or explicitly remove old ignored source-repository artifacts",
+      "write_scope": "local-source-artifacts-with-explicit-apply"
     }
   ]
 }

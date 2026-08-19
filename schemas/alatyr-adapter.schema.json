@@ -1,0 +1,113 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/atvardovsky/AlatyrCore/schemas/alatyr-adapter.schema.json",
+  "title": "Alatyr target adapter manifest",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "framework",
+    "installation",
+    "owner",
+    "supported_assistants",
+    "contours",
+    "source_of_truth",
+    "context_routing",
+    "modules",
+    "validation",
+    "operations",
+    "maturity",
+    "approvals",
+    "known_gaps",
+    "local_deviations"
+  ],
+  "properties": {
+    "schema_version": {"type": ["integer", "string"]},
+    "framework": {
+      "type": "object",
+      "required": ["name", "version", "source", "template_version", "pack", "rule_registry"],
+      "properties": {
+        "name": {"const": "Alatyr Core"},
+        "version": {"type": "string"},
+        "source": {"type": "string"},
+        "template_version": {"type": ["integer", "string"]},
+        "pack": {"type": "string"},
+        "rule_registry": {"type": "string"}
+      }
+    },
+    "installation": {
+      "type": "object",
+      "required": ["id", "date", "mode", "support_profile"]
+    },
+    "owner": {
+      "type": "object",
+      "required": ["responsible_team", "technical_owner", "backup_owner", "last_review_date", "review_cadence", "review_triggers"],
+      "properties": {
+        "review_triggers": {"$ref": "#/definitions/nonEmptyStringArray"}
+      }
+    },
+    "supported_assistants": {"$ref": "#/definitions/nonEmptyStringArray"},
+    "contours": {
+      "type": "object",
+      "required": ["framework", "project", "assistant"]
+    },
+    "source_of_truth": {
+      "type": "object",
+      "required": ["project_contour", "registry", "assistant_contour", "context_router", "context_profiles", "module_profile", "project_sources"],
+      "properties": {
+        "project_sources": {"$ref": "#/definitions/nonEmptyStringArray"}
+      }
+    },
+    "context_routing": {
+      "type": "object",
+      "required": ["router_schema_version", "preloaded_context", "compact_bootstrap", "bootstrap_max_files", "bootstrap_max_words", "profile_default_max_files", "profile_default_max_total_words", "profile_default_max_portable_words", "profile_default_reserved_target_words", "budget_behavior"],
+      "properties": {
+        "preloaded_context": {"$ref": "#/definitions/nonEmptyStringArray"},
+        "compact_bootstrap": {"$ref": "#/definitions/nonEmptyStringArray"}
+      }
+    },
+    "modules": {
+      "type": "object",
+      "required": ["core_profile", "enabled", "deferred", "blocked"],
+      "properties": {
+        "enabled": {"$ref": "#/definitions/stringArray"},
+        "deferred": {"$ref": "#/definitions/stringArray"},
+        "blocked": {"$ref": "#/definitions/stringArray"}
+      }
+    },
+    "validation": {
+      "type": "object",
+      "required": ["commands"],
+      "properties": {
+        "commands": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["name", "command", "required_for"],
+            "properties": {
+              "name": {"type": "string"},
+              "command": {"type": "string"},
+              "required_for": {"$ref": "#/definitions/nonEmptyStringArray"}
+            }
+          }
+        }
+      }
+    },
+    "operations": {"type": "object"},
+    "maturity": {"type": "object", "required": ["profile"]},
+    "approvals": {"type": "object", "required": ["directory", "template", "machine_template"]},
+    "known_gaps": {"$ref": "#/definitions/stringArray"},
+    "local_deviations": {"$ref": "#/definitions/stringArray"}
+  },
+  "definitions": {
+    "stringArray": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "nonEmptyStringArray": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1}
+    }
+  }
+}

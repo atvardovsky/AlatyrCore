@@ -5,8 +5,9 @@ This is an optional helper. It checks structural adapter consistency in a
 target repository; it does not install Alatyr Core, approve changes, validate
 project business facts, or replace assistant logical integrity review.
 
-The implementation uses only Python standard-library APIs so it can run on
-Linux, macOS, and Windows with Python 3.
+The implementation is cross-platform and uses the dependencies declared in
+the source repository's `requirements.txt` for YAML and schema validation.
+With those dependencies installed, it runs on Linux, macOS, and Windows.
 """
 
 from __future__ import annotations
@@ -20,6 +21,8 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+import jsonschema
 
 from target_validation_support import (
     ManifestData,
@@ -39,6 +42,7 @@ from target_validation_support import (
     is_protected_surface,
     is_target_relative_path,
     is_target_scope_pattern,
+    load_manifest_object,
     is_unresolved_value,
     json_string_list,
     markdown_sections,
@@ -60,6 +64,7 @@ from target_adapter_validation.router_costs import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
+ADAPTER_MANIFEST_SCHEMA = ROOT / "schemas" / "alatyr-adapter.schema.json"
 
 CANONICAL_PROFILES = [
     "docs-local",
@@ -490,6 +495,7 @@ class Finding:
         }
         if self.path:
             payload["path"] = self.path
+        payload["blocking"] = is_blocking_finding(self)
         if self.level in {"error", "warning"}:
             payload["owner_surface"] = self.path or "target adapter"
             payload["repair_operation"] = repair_operation_for(self.code)
@@ -503,6 +509,30 @@ class AcceptedDeviation:
     code: str
     path: str | None = None
     reason: str = ""
+
+
+# Integrity drift is advisory only after a target records an explicit accepted
+# deviation or severity override. Silent success would make baseline checks
+# unsuitable for CI and framework-update gates.
+BLOCKING_WARNING_CODES = {
+    "FRAMEWORK_FILE_DRIFT",
+    "FRAMEWORK_FILE_EXTRA",
+    "FRAMEWORK_FILE_MISSING",
+    "FRAMEWORK_PACK_INVENTORY_CONTENT_DRIFT",
+    "FRAMEWORK_PACK_INVENTORY_DIGEST_DRIFT",
+    "FRAMEWORK_PACK_INVENTORY_DRIFT",
+    "FRAMEWORK_PACK_REGISTRY_DRIFT",
+    "FRAMEWORK_PACK_REGISTRY_INVALID",
+    "FRAMEWORK_PACK_SELECTION_DRIFT",
+    "FRAMEWORK_SOURCE_PACK_INVALID",
+    "MIGRATION_DIFF_MISSING",
+}
+
+
+def is_blocking_finding(finding: Finding) -> bool:
+    return finding.level == "error" or (
+        finding.level == "warning" and finding.code in BLOCKING_WARNING_CODES
+    )
 
 
 @dataclass
@@ -632,6 +662,7 @@ class Validator:
         manifest = self.check_manifest()
         support_profile = self.manifest_support_profile(manifest)
         self.check_required_files(support_profile)
+        self.check_capability_closure(manifest)
         self.check_router()
         if support_profile in {"standard", "full"} or self.target_path(
             ".ai/assistant/operation-catalog.json"
@@ -714,6 +745,31 @@ class Validator:
         manifest = parse_manifest(path)
         for failure in manifest.parse_failures:
             self.error("MANIFEST_PARSE", failure, ".ai/alatyr.yaml")
+        try:
+            manifest_object = load_manifest_object(path)
+            schema = json.loads(ADAPTER_MANIFEST_SCHEMA.read_text(encoding="utf-8"))
+            schema_errors = sorted(
+                jsonschema.Draft7Validator(schema).iter_errors(manifest_object),
+                key=lambda error: list(error.absolute_path),
+            )
+            for error in schema_errors:
+                location = ".".join(str(item) for item in error.absolute_path) or "root"
+                self.error(
+                    "MANIFEST_SCHEMA",
+                    f"{location}: {error.message}",
+                    ".ai/alatyr.yaml",
+                )
+        except (
+            OSError,
+            ValueError,
+            json.JSONDecodeError,
+            jsonschema.SchemaError,
+        ) as exc:
+            self.error(
+                "MANIFEST_SCHEMA_UNAVAILABLE",
+                f"cannot validate adapter manifest schema: {exc}",
+                ".ai/alatyr.yaml",
+            )
 
         support_scalar = manifest.scalars.get(("installation", "support_profile"))
         support_profile = support_scalar.value if support_scalar else "full"
@@ -844,6 +900,88 @@ class Validator:
             )
 
         return manifest
+
+    def check_capability_closure(self, manifest: ManifestData | None) -> None:
+        if manifest is None:
+            return
+        enabled = [
+            scalar.value
+            for scalar in manifest.lists.get(("modules", "enabled"), [])
+            if not is_unresolved_value(scalar.value)
+        ]
+        if not enabled:
+            return
+
+        catalog_path = self.target_path(".ai/framework/capabilities.json")
+        catalog = self.load_json_object(catalog_path, "CAPABILITY_CATALOG")
+        if catalog is None:
+            self.error(
+                "CAPABILITY_CATALOG_MISSING",
+                "enabled modules require the installed capability catalog",
+                ".ai/framework/capabilities.json",
+            )
+            return
+        modules = catalog.get("modules")
+        if (
+            catalog.get("schema_version") != 1
+            or catalog.get("capability_kind") != "alatyr-optional-module-catalog"
+            or not isinstance(modules, dict)
+        ):
+            self.error(
+                "CAPABILITY_CATALOG_INVALID",
+                "installed capability catalog schema or kind is invalid",
+                ".ai/framework/capabilities.json",
+            )
+            return
+
+        enabled_set = set(enabled)
+        pack_scalar = manifest.scalars.get(("framework", "pack"))
+        selected_pack = pack_scalar.value if pack_scalar else "complete"
+        pack_rank = {"core": 0, "standard": 1, "complete": 2}
+        for module_id in sorted(enabled_set):
+            contract = modules.get(module_id)
+            if not isinstance(contract, dict):
+                self.error(
+                    "CAPABILITY_MODULE_UNKNOWN",
+                    f"enabled module is absent from capability catalog: {module_id}",
+                    ".ai/alatyr.yaml",
+                )
+                continue
+            missing_dependencies = sorted(
+                set(contract.get("requires", [])) - enabled_set
+            )
+            if missing_dependencies:
+                self.error(
+                    "CAPABILITY_DEPENDENCY_MISSING",
+                    f"enabled module {module_id} requires {missing_dependencies}",
+                    ".ai/alatyr.yaml",
+                )
+            minimum_pack = contract.get("min_framework_pack")
+            if (
+                selected_pack in pack_rank
+                and minimum_pack in pack_rank
+                and pack_rank[selected_pack] < pack_rank[minimum_pack]
+            ):
+                self.error(
+                    "CAPABILITY_PACK_TOO_SMALL",
+                    f"module {module_id} requires framework pack {minimum_pack}",
+                    ".ai/alatyr.yaml",
+                )
+            for filename in contract.get("framework_files", []):
+                relpath = f".ai/framework/{filename}"
+                if not self.target_path(relpath).is_file():
+                    self.error(
+                        "CAPABILITY_FRAMEWORK_FILE_MISSING",
+                        f"module {module_id} requires installed framework file {filename}",
+                        relpath,
+                    )
+            for relpath in contract.get("target_files", []):
+                if not self.target_path(relpath).is_file():
+                    self.error(
+                        "CAPABILITY_TARGET_FILE_MISSING",
+                        f"module {module_id} requires target adapter file {relpath}",
+                        relpath,
+                    )
 
     def check_router(self) -> None:
         router_path = self.target_path(".ai/assistant/context-router.json")
@@ -7382,7 +7520,7 @@ def string_list_config(
 def adapter_health_state(findings: list[Finding]) -> str:
     if any(finding.code in {"TARGET_MISSING", "TARGET_NOT_DIRECTORY"} for finding in findings):
         return "unverified"
-    if any(finding.level == "error" for finding in findings):
+    if any(is_blocking_finding(finding) for finding in findings):
         return "blocked"
     if any(finding.level == "warning" for finding in findings):
         return "attention"
@@ -7411,14 +7549,22 @@ def render_summary(findings: list[Finding], *, strict_warnings: bool) -> int:
     errors = sum(1 for finding in findings if finding.level == "error")
     warnings = sum(1 for finding in findings if finding.level == "warning")
     infos = sum(1 for finding in findings if finding.level == "info")
+    blocking_warnings = sum(
+        1
+        for finding in findings
+        if finding.level == "warning" and is_blocking_finding(finding)
+    )
     health = adapter_health_state(findings)
-    print(f"\nSummary: errors={errors} warnings={warnings} info={infos}")
+    print(
+        f"\nSummary: errors={errors} warnings={warnings} "
+        f"blocking_warnings={blocking_warnings} info={infos}"
+    )
     print(f"Alatyr adapter health: {health}")
     repairs = prioritized_repair_operations(findings)
     if repairs:
         print("Suggested repair operations: " + ", ".join(repairs))
 
-    if errors:
+    if errors or blocking_warnings:
         return 1
     if strict_warnings and warnings:
         return 1
@@ -7428,7 +7574,7 @@ def render_summary(findings: list[Finding], *, strict_warnings: bool) -> int:
 def result_code(findings: list[Finding], *, strict_warnings: bool) -> int:
     errors = sum(1 for finding in findings if finding.level == "error")
     warnings = sum(1 for finding in findings if finding.level == "warning")
-    if errors:
+    if errors or any(is_blocking_finding(finding) for finding in findings):
         return 1
     if strict_warnings and warnings:
         return 1
@@ -7444,6 +7590,11 @@ def findings_payload(
     errors = sum(1 for finding in findings if finding.level == "error")
     warnings = sum(1 for finding in findings if finding.level == "warning")
     infos = sum(1 for finding in findings if finding.level == "info")
+    blocking_warnings = sum(
+        1
+        for finding in findings
+        if finding.level == "warning" and is_blocking_finding(finding)
+    )
     exit_code = result_code(findings, strict_warnings=strict_warnings)
     observed_revision = git_head_revision(target)
     observed_at = datetime.now(timezone.utc).isoformat()
@@ -7473,6 +7624,7 @@ def findings_payload(
         "counts": {
             "errors": errors,
             "warnings": warnings,
+            "blocking_warnings": blocking_warnings,
             "info": infos,
         },
         "exit_code": exit_code,
@@ -7488,6 +7640,15 @@ def findings_payload(
             )
         ],
     }
+
+
+def approval_enforcement_enabled(
+    *,
+    diff_ref: str | None,
+    approval_records: list[Path],
+    explicitly_enforced: bool,
+) -> bool:
+    return explicitly_enforced or bool(diff_ref and approval_records)
 
 
 def main() -> int:
@@ -7532,7 +7693,8 @@ def main() -> int:
         action="store_true",
         help=(
             "Fail unless every changed path is covered by explicitly selected "
-            "machine-readable JSON approval records bound to --diff-ref."
+            "machine-readable JSON approval records bound to --diff-ref. This "
+            "is automatic when both --diff-ref and --approval-record are supplied."
         ),
     )
     parser.add_argument(
@@ -7598,12 +7760,17 @@ def main() -> int:
     args = parser.parse_args()
 
     config, config_findings = load_validator_config(args.target, args.config)
+    enforce_approval_scope = approval_enforcement_enabled(
+        diff_ref=args.diff_ref,
+        approval_records=args.approval_record,
+        explicitly_enforced=args.enforce_approval_scope,
+    )
     validator = Validator(
         args.target,
         framework_source=args.framework_source,
         diff_ref=args.diff_ref,
         approval_records=args.approval_record,
-        enforce_approval_scope=args.enforce_approval_scope,
+        enforce_approval_scope=enforce_approval_scope,
         change_packages=args.change_package,
         enforce_change_package=args.enforce_change_package,
         migration_diff=args.migration_diff,

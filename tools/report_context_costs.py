@@ -53,14 +53,28 @@ def measure_installed(target: Path, references: list[str]) -> dict[str, Any]:
             resolved.append((reference, path))
     texts = [path.read_text(encoding="utf-8") for _, path in resolved]
     characters = sum(len(value) for value in texts)
+    word_counts = {
+        reference: len(re.findall(r"\S+", path.read_text(encoding="utf-8")))
+        for reference, path in resolved
+    }
+    portable_paths = [
+        reference for reference, _ in resolved if reference.startswith(".ai/framework/")
+    ]
+    target_paths = [
+        reference for reference, _ in resolved if reference not in portable_paths
+    ]
     return {
         "declared_files": len(unique),
         "resolved_files": len(resolved),
         "words": sum(len(re.findall(r"\S+", value)) for value in texts),
+        "portable_words": sum(word_counts[path] for path in portable_paths),
+        "target_words": sum(word_counts[path] for path in target_paths),
         "characters": characters,
         "bytes": sum(len(value.encode("utf-8")) for value in texts),
         "estimated_tokens_4_chars": math.ceil(characters / 4),
         "resolved_paths": [reference for reference, _ in resolved],
+        "portable_paths": portable_paths,
+        "target_paths": target_paths,
         "unresolved_references": unresolved,
         "missing_paths": missing,
     }
@@ -81,14 +95,28 @@ def measure(references: list[str]) -> dict[str, Any]:
             resolved.append((reference, path))
     texts = [path.read_text(encoding="utf-8") for _, path in resolved]
     characters = sum(len(value) for value in texts)
+    word_counts = {
+        reference: len(re.findall(r"\S+", path.read_text(encoding="utf-8")))
+        for reference, path in resolved
+    }
+    portable_paths = [
+        reference for reference, _ in resolved if reference.startswith(".ai/framework/")
+    ]
+    target_paths = [
+        reference for reference, _ in resolved if reference not in portable_paths
+    ]
     return {
         "declared_files": len(unique),
         "resolved_files": len(resolved),
         "words": sum(len(re.findall(r"\S+", value)) for value in texts),
+        "portable_words": sum(word_counts[path] for path in portable_paths),
+        "target_words": sum(word_counts[path] for path in target_paths),
         "characters": characters,
         "bytes": sum(len(value.encode("utf-8")) for value in texts),
         "estimated_tokens_4_chars": math.ceil(characters / 4),
         "resolved_paths": [reference for reference, _ in resolved],
+        "portable_paths": portable_paths,
+        "target_paths": target_paths,
         "unresolved_references": unresolved,
         "missing_paths": missing,
     }

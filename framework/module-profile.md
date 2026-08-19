@@ -18,6 +18,11 @@ The framework has a required core profile and optional modules. A target
 adapter records which modules are enabled, deferred, disabled, or not
 applicable from target evidence.
 
+The installed `capabilities.json` catalog is the machine-readable owner for
+optional-module dependencies, minimum framework packs, required target files,
+rule IDs, and deterministic check IDs. Human module profiles explain target
+state and evidence; they must not redefine that closure independently.
+
 ## Required Core Profile
 
 Every accepted installation should provide:

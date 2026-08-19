@@ -99,6 +99,8 @@ Those belong to a project contour or repository adapter.
   source-repository migration and consistency helpers.
 - `.ai/framework/framework-packs.json`: checked portable file packs used to
   keep smaller support profiles from copying unused optional rule owners.
+- `.ai/framework/capabilities.json`: canonical optional-module dependencies,
+  minimum framework packs, target surfaces, rule IDs, and source check IDs.
 - `.ai/framework/file-inventory.json`: deterministic complete-baseline file
   inventory; selective scaffolds receive a pack-projected inventory.
 - `.ai/framework/project-adapter-contract.md`: what a project must provide so

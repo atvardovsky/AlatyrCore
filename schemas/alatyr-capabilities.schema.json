@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Alatyr optional module catalog",
+  "type": "object",
+  "required": ["schema_version", "capability_kind", "modules"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "capability_kind": {"const": "alatyr-optional-module-catalog"},
+    "modules": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"$ref": "#/definitions/module"}
+    }
+  },
+  "definitions": {
+    "stringArray": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "module": {
+      "type": "object",
+      "required": ["min_framework_pack", "requires", "rule_ids", "framework_files", "target_files", "check_ids"],
+      "properties": {
+        "min_framework_pack": {"enum": ["core", "standard", "complete"]},
+        "requires": {"$ref": "#/definitions/stringArray"},
+        "rule_ids": {"$ref": "#/definitions/stringArray"},
+        "framework_files": {"$ref": "#/definitions/stringArray"},
+        "target_files": {"$ref": "#/definitions/stringArray"},
+        "check_ids": {"$ref": "#/definitions/stringArray", "minItems": 1}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

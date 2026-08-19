@@ -97,6 +97,11 @@ Strict scope validation should:
 - fail when any changed path matches an excluded scope
 - report unavailable Git or record evidence instead of treating it as a pass
 
+The source target-adapter validator enters strict scope mode automatically
+when a caller supplies both a diff base and one or more explicit approval
+records. A caller that supplies only a diff base receives advisory protected-
+surface review because no operation-specific approval was selected.
+
 When semantic scope fields are present, deterministic validation should also
 compare declared actual fact IDs, areas, behavior categories, and external
 effects with the approved lists. This detects declared scope drift; it does

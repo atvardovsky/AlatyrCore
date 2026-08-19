@@ -11,14 +11,37 @@ permissions:
   contents: read
 
 jobs:
-  source-checks:
-    name: Source checks (${{ matrix.os }})
+  linux-source-checks:
+    name: Full source checks (Linux)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+          cache: pip
+      - name: Install source-check dependencies
+        run: python -m pip install -r requirements-dev.txt
+      - name: Run full source checks
+        run: python tools/check_all.py --profile full
+      - name: Check pull request contract drift
+        if: github.event_name == 'pull_request'
+        run: python tools/check_release_drift.py --mode change --from-ref ${{ github.event.pull_request.base.sha }}
+      - name: Check pushed contract drift
+        if: github.event_name == 'push' && github.event.before != '0000000000000000000000000000000000000000'
+        run: python tools/check_release_drift.py --mode change --from-ref ${{ github.event.before }}
+
+  portable-source-checks:
+    name: Portable source checks (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os:
-          - ubuntu-latest
           - macos-latest
           - windows-latest
     steps:
@@ -30,11 +53,8 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.13"
-      - name: Run source checks
-        run: python tools/check_all.py
-      - name: Check pull request contract drift
-        if: github.event_name == 'pull_request'
-        run: python tools/check_release_drift.py --mode change --from-ref ${{ github.event.pull_request.base.sha }}
-      - name: Check pushed contract drift
-        if: github.event_name == 'push' && github.event.before != '0000000000000000000000000000000000000000'
-        run: python tools/check_release_drift.py --mode change --from-ref ${{ github.event.before }}
+          cache: pip
+      - name: Install source-check dependencies
+        run: python -m pip install -r requirements-dev.txt
+      - name: Run portable source checks
+        run: python tools/check_all.py --profile platform

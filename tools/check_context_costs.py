@@ -45,8 +45,10 @@ def main() -> int:
     for name, profile in report["profiles"].items():
         if profile["declared_files"] > profile_budget["max_files"]:
             failures.append(f"profile {name} exceeds the default file budget")
-        if profile["words"] > max_portable_words:
+        if profile["portable_words"] > max_portable_words:
             failures.append(f"profile {name} exceeds the portable word budget")
+        if profile["portable_words"] + profile["target_words"] != profile["words"]:
+            failures.append(f"profile {name} context classification does not sum")
         if profile["missing_paths"]:
             failures.append(f"profile {name} contains missing paths")
 
@@ -55,6 +57,8 @@ def main() -> int:
             failures.append(f"intent overlay {name} exceeds the default file budget")
         if overlay["words"] > max_total_words:
             failures.append(f"intent overlay {name} exceeds the default word budget")
+        if overlay["portable_words"] > max_portable_words:
+            failures.append(f"intent overlay {name} exceeds the portable word budget")
         if overlay["missing_paths"]:
             failures.append(f"intent overlay {name} contains missing paths")
 
@@ -63,6 +67,8 @@ def main() -> int:
             failures.append(f"task-scale overlay {name} exceeds the default file budget")
         if overlay["words"] > max_total_words:
             failures.append(f"task-scale overlay {name} exceeds the default word budget")
+        if overlay["portable_words"] > max_portable_words:
+            failures.append(f"task-scale overlay {name} exceeds the portable word budget")
         if overlay["missing_paths"]:
             failures.append(f"task-scale overlay {name} contains missing paths")
 
@@ -144,8 +150,10 @@ def main() -> int:
         if expected == "compact":
             if scenario["declared_files"] > profile_budget["max_files"]:
                 failures.append(f"compact cost scenario {name} exceeds the file budget")
-            if scenario["words"] > max_portable_words:
+            if scenario["portable_words"] > max_portable_words:
                 failures.append(f"compact cost scenario {name} exceeds the portable budget")
+            if scenario["words"] > max_total_words:
+                failures.append(f"compact cost scenario {name} exceeds the total budget")
         elif expected == "expansion-receipt-required":
             if scenario["words"] <= 0:
                 failures.append(f"expansion cost scenario {name} has no measured context")

@@ -261,7 +261,7 @@
       "id": "ALATYR-MODULE-001",
       "category": "MODULE",
       "canonical_source": "framework/module-profile.md",
-      "summary": "Establish the required core profile first, select a compatible dependency-closed framework pack, and enable optional modules, including change packages, source-set code documentation, project vocabulary, test-first development, and extensions, only when the target needs and can maintain them; expand the pack before claiming support for an absent module owner.",
+      "summary": "Establish the required core profile first, select a compatible dependency-closed framework pack, and enforce optional-module dependency, rule, required-file, and deterministic-check closure from the installed capability catalog before claiming a target module is enabled.",
       "applies_to": ["installation", "framework update", "adapter maturity", "framework upgrades"],
       "enforcement": "required"
     },

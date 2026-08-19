@@ -12,7 +12,7 @@
     "docs-local": {
       "required_context": ["docs/framework-maintenance.md"],
       "conditional_context": ["edited file", "directly linked neighbor"],
-      "checks": ["check_markdown_links", "check_framework_consistency"]
+      "checks": ["markdown-links", "framework-consistency"]
     },
     "framework-rule": {
       "required_context": [
@@ -24,7 +24,7 @@
         "owner dependency selected from alatyr_doc metadata",
         "affected installer or target template surface"
       ],
-      "checks": ["check_framework_metadata", "check_rule_ownership", "check_framework_consistency"]
+      "checks": ["framework-metadata", "rule-ownership", "framework-consistency"]
     },
     "installer-template": {
       "required_context": [
@@ -37,12 +37,13 @@
         "selected target template",
         "owning framework rule"
       ],
-      "checks": ["check_source_context_routing", "check_scaffold_profiles", "check_framework_consistency"]
+      "checks": ["source-context-routing", "scaffold-profiles", "framework-consistency"]
     },
     "source-tooling": {
       "required_context": ["tools/README.md", "docs/framework-maintenance.md"],
       "conditional_context": ["tool being changed", "contract validated by the tool"],
-      "checks": ["focused tool check", "check_framework_consistency"]
+      "check_selection": "select focused check IDs from tools/check_manifest.json by owned_paths",
+      "checks": ["check-manifest", "source-unit-tests", "framework-consistency"]
     },
     "release-versioning": {
       "required_context": [
@@ -55,7 +56,7 @@
         "framework/migration-diff.md"
       ],
       "conditional_context": ["release migration report", "changed rule owners and templates"],
-      "checks": ["check_versioning", "check_release_drift", "check_migration_diff_report"]
+      "checks": ["versioning", "release-drift-release", "migration-diff-report"]
     },
     "ai-infrastructure-bridge": {
       "required_context": [
@@ -69,7 +70,21 @@
         "import policy when an external source is involved",
         "operation help when routing changes"
       ],
-      "checks": ["check_assistant_surface_conformance", "check_bridge_capability_matrix"]
+      "checks": ["assistant-surface-conformance", "bridge-capability-matrix"]
+    },
+    "repository-audit": {
+      "required_context": [
+        "tools/check_manifest.json",
+        "tools/README.md",
+        "docs/framework-maintenance.md"
+      ],
+      "conditional_context": [
+        "canonical owners selected by failed check IDs",
+        "affected installer or target template surfaces",
+        "release context only when release checks fail"
+      ],
+      "check_profile": "full",
+      "checks": ["check-manifest", "source-unit-tests", "framework-consistency"]
     }
   },
   "expansion_triggers": [

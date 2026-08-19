@@ -19,6 +19,8 @@ python3 tools/alatyr.py validate-adapter --target /path/to/target-repo
 python3 tools/alatyr.py assess-upgrade --target /path/to/target-repo --framework-source . --output-dir tmp/upgrade-assessment
 python3 tools/alatyr.py inspect-extension --package /path/to/local-extension-checkout
 python3 tools/alatyr.py inspect-extension --package /path/to/local-extension-checkout --target /path/to/target-repo
+python3 tools/alatyr.py clean-artifacts --older-than-days 7
+python3 tools/alatyr.py clean-artifacts --older-than-days 7 --apply
 ```
 
 Windows PowerShell:
@@ -30,6 +32,7 @@ Windows PowerShell:
 .\tools\alatyr.ps1 assess-upgrade --target C:\path\to\target-repo --framework-source . --output-dir tmp\upgrade-assessment
 .\tools\alatyr.ps1 inspect-extension --package C:\path\to\local-extension-checkout
 .\tools\alatyr.ps1 inspect-extension --package C:\path\to\local-extension-checkout --target C:\path\to\target-repo
+.\tools\alatyr.ps1 clean-artifacts --older-than-days 7
 ```
 
 Windows Command Prompt:
@@ -40,6 +43,7 @@ tools\alatyr.cmd doctor --target C:\path\to\target-repo
 tools\alatyr.cmd validate-adapter --target C:\path\to\target-repo
 tools\alatyr.cmd inspect-extension --package C:\path\to\local-extension-checkout
 tools\alatyr.cmd inspect-extension --package C:\path\to\local-extension-checkout --target C:\path\to\target-repo
+tools\alatyr.cmd clean-artifacts --older-than-days 7
 ```
 
 The stable command set is:
@@ -62,6 +66,8 @@ The stable command set is:
   assistant execution
 - `check-benchmark`: read-only isolation, report, and review validation
 - `summarize-benchmark`: read-only reviewed measurement comparison
+- `clean-artifacts`: dry-run report by default; removes old ignored `tmp/`
+  entries only with `--apply`
 
 ## Source Validation Runner
 
@@ -69,12 +75,19 @@ The stable command set is:
 source validation. The default `full` profile remains the acceptance gate.
 `fast` provides conservative local feedback and falls back to full when changed
 paths are not owned by a manifest entry. `release` adds tag-baseline migration
-checks. It validates this repository only; it is not a portable framework
+checks. `platform` runs the portable tooling contract slice used on macOS and
+Windows. It validates this repository only; it is not a portable framework
 requirement for target projects.
 
-The workflow at `.github/workflows/cross-platform-source-checks.yml` runs this
-suite natively on current Ubuntu, macOS, and Windows GitHub-hosted runners. It
-does not run paid assistant conformance or effectiveness benchmarks.
+Install source-check dependencies first:
+
+```sh
+python3 -m pip install -r requirements-dev.txt
+```
+
+The workflow at `.github/workflows/cross-platform-source-checks.yml` runs the
+full suite once on Linux and the portable contract slice on macOS and Windows.
+It does not run paid assistant conformance or effectiveness benchmarks.
 
 Linux or macOS:
 
@@ -82,6 +95,7 @@ Linux or macOS:
 python3 tools/check_all.py
 python3 tools/check_all.py --profile fast --changed-from HEAD
 python3 tools/check_all.py --profile release
+python3 tools/check_all.py --profile platform
 python3 tools/check_all.py --list
 ```
 
@@ -91,6 +105,7 @@ Windows PowerShell or Command Prompt:
 py -3 .\tools\check_all.py
 py -3 .\tools\check_all.py --profile fast --changed-from HEAD
 py -3 .\tools\check_all.py --profile release
+py -3 .\tools\check_all.py --profile platform
 py -3 .\tools\check_all.py --list
 ```
 
@@ -538,6 +553,11 @@ revision-bound merge-readiness structure, optional approval scope against a
 supplied git diff, and optional `.ai/framework` drift against an AlatyrCore
 source checkout.
 
+When `--diff-ref` and one or more explicit `--approval-record` values are
+provided together, changed-file scope enforcement is automatic. The explicit
+`--enforce-approval-scope` flag remains available for callers that want a
+hard failure when either required input is absent.
+
 Reusable manifest parsing, Git diff, hashing, and approval-scope primitives
 live in `target_validation_support.py`; the validator remains the reporting and
 contract orchestration surface.
@@ -550,6 +570,12 @@ Use `--json` or `--output <file>` when a target CI job or assistant recheck
 needs machine-readable findings. The JSON output contains severity counts,
 exit status, and stable finding objects with `level`, `code`, `message`, and
 optional `path`.
+
+Framework baseline and migration-evidence drift warnings are blocking by
+default because silent success would make an update gate unreliable. Other
+warnings remain advisory unless `--strict-warnings` is used. A target can
+record an accepted deviation or an explicit severity override when reviewed
+local policy permits the drift; hard structural errors cannot be demoted.
 
 Validator JSON classifies its findings as `current-state-structural` evidence.
 It does not treat current files as proof that historical installation,

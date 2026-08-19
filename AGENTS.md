@@ -42,6 +42,12 @@ migration diff, or release migration evidence changes.
 Use `ai-infrastructure-bridge` for assistant compatibility, bridge, skill,
 prompt, MCP/tool, operation-help, or imported-source changes.
 
+Use `repository-audit` only for an explicit whole-repository consistency or
+release-readiness review. Read `tools/check_manifest.json`, `tools/README.md`,
+and `docs/framework-maintenance.md`, run the manifest `full` profile, and load
+additional canonical owners only for failed check IDs. Do not turn a local
+task into a repository audit by default.
+
 Expand beyond the selected profile only when the change crosses framework,
 installer, template, tool, release, security, assistant-infrastructure, or
 governance boundaries, or when evidence conflicts. Full framework-corpus

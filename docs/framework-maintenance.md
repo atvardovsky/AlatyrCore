@@ -257,7 +257,9 @@ Before accepting a change, check:
   repository is available. Use `--json --output <report.json>` when a target
   CI job or assistant recheck needs machine-readable findings, and use
   `--migration-diff <report.md>` when framework drift should be tied to rule
-  and action evidence. It is optional target-adapter validation, not a
+  and action evidence. Framework baseline and missing migration evidence are
+  blocking unless the target explicitly records an accepted deviation or
+  severity decision. It is optional target-adapter validation, not a
   source-template check and not proof of project business truth.
   The equivalent `python3 tools/alatyr.py doctor --target <target-repo>` alias
   remains read-only and returns prioritized repair operation IDs.

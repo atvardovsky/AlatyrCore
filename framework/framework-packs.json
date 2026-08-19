@@ -24,6 +24,7 @@
         "adapter-maturity.md",
         "ai-infrastructure-recommendations.md",
         "ai-infrastructure-routing.md",
+        "capabilities.json",
         "consistency-model.md",
         "context-discovery.md",
         "context-router.md",

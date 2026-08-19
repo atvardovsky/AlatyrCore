@@ -748,6 +748,69 @@
       ]
     },
     {
+      "code": "CAPABILITY_CATALOG_INVALID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CAPABILITY_CATALOG_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CAPABILITY_DEPENDENCY_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CAPABILITY_FRAMEWORK_FILE_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CAPABILITY_MODULE_UNKNOWN",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CAPABILITY_PACK_TOO_SMALL",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CAPABILITY_TARGET_FILE_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "CODEDOC_ACCEPTED_AMBIGUITY",
       "levels": [
         "error"
@@ -2494,6 +2557,24 @@
       ]
     },
     {
+      "code": "MANIFEST_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "MANIFEST_SCHEMA_UNAVAILABLE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "MANIFEST_SUPPORT_PROFILE",
       "levels": [
         "error"
@@ -3848,6 +3929,15 @@
       "code": "ROUTER_PROFILE_COST_EMPTY",
       "levels": [
         "warning"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/router_costs.py"
+      ]
+    },
+    {
+      "code": "ROUTER_PROFILE_COST_MEASURED",
+      "levels": [
+        "info"
       ],
       "sources": [
         "tools/target_adapter_validation/router_costs.py"

@@ -362,6 +362,14 @@ After installation or update, a maintainer may use the source helper
 machine-detectable structural drift:
 
 ```sh
+python3 -m pip install -r requirements.txt
+```
+
+The dependencies provide standards-compliant YAML parsing and JSON Schema
+validation for source tooling; they are not target-project runtime
+dependencies.
+
+```sh
 python3 tools/validate_target_adapter.py --target /path/to/target-repo
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --framework-source /path/to/AlatyrCore
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --json --output tmp/alatyr-adapter-report.json

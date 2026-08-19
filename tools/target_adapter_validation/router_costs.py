@@ -19,6 +19,8 @@ class FindingSink(Protocol):
 
     def warn(self, code: str, message: str, path: str | None = None) -> None: ...
 
+    def info(self, code: str, message: str, path: str | None = None) -> None: ...
+
     def target_path(self, relpath: str) -> Path: ...
 
     def read_text(self, path: Path) -> str: ...
@@ -93,9 +95,10 @@ def validate_installed_costs(
     bootstrap_budget = budgets.get("bootstrap", {})
     profile_budget = budgets.get("profile_default", {})
 
-    def measure(references: list[str], label: str) -> tuple[int, int, int]:
+    def measure(references: list[str], label: str) -> tuple[int, int, int, int]:
         words = 0
         portable_words = 0
+        target_words = 0
         concrete_files = 0
         for reference in dict.fromkeys(references):
             if is_placeholder(reference):
@@ -133,15 +136,17 @@ def validate_installed_costs(
             count = len(re.findall(r"\S+", text))
             concrete_files += 1
             words += count
-            if reference.startswith((".ai/framework/", ".ai/assistant/")):
+            if reference.startswith(".ai/framework/"):
                 portable_words += count
-        return concrete_files, words, portable_words
+            else:
+                target_words += count
+        return concrete_files, words, portable_words, target_words
 
     bootstrap_refs = [
         *router.get("preloaded_context", []),
         *router.get("bootstrap_context", []),
     ]
-    bootstrap_files, bootstrap_words, _ = measure(bootstrap_refs, "bootstrap")
+    bootstrap_files, bootstrap_words, _, _ = measure(bootstrap_refs, "bootstrap")
     max_bootstrap_files = bootstrap_budget.get("max_files")
     max_bootstrap_words = bootstrap_budget.get("max_words")
     if isinstance(max_bootstrap_files, int) and bootstrap_files > max_bootstrap_files:
@@ -160,7 +165,9 @@ def validate_installed_costs(
             for value in [descriptor, *profile.get("required_context", [])]
             if isinstance(value, str) and value
         ]
-        files, total_words, portable_words = measure(references, f"profile {name}")
+        files, total_words, portable_words, target_words = measure(
+            references, f"profile {name}"
+        )
         max_files = profile_budget.get("max_files")
         max_total = profile_budget.get("max_total_words")
         max_portable = profile_budget.get("max_portable_words")
@@ -182,6 +189,12 @@ def validate_installed_costs(
                 f"profile {name} measures {portable_words} portable words above {max_portable}",
                 SOURCE,
             )
+        sink.info(
+            "ROUTER_PROFILE_COST_MEASURED",
+            f"profile {name} measures total={total_words} portable={portable_words} "
+            f"target={target_words} words",
+            SOURCE,
+        )
         if files == 0 and references:
             sink.warn(
                 "ROUTER_PROFILE_COST_EMPTY",

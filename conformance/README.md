@@ -103,6 +103,19 @@ python3 tools/run_conformance_scaffold.py --write-golden-snapshots
 This is scaffold conformance only. It is not an assistant installation test
 and does not validate a real target adapter.
 
+The deterministic lifecycle walking skeleton goes one step further: it
+resolves a synthetic core adapter, checks its installation approval against
+the real Git diff, validates an accepted placeholder-free state, proves that
+framework drift blocks by default, applies a synthetic update, and validates
+the updated state:
+
+```sh
+python3 tools/check_lifecycle_conformance.py
+```
+
+This remains source-tool conformance. It does not execute an AI assistant,
+validate project semantics, or replace captured real-project evidence.
+
 The report checker is also source conformance only. It validates expected
 assistant-result evidence fields; it does not run an assistant or prove a real
 installation.

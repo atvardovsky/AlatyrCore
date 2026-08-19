@@ -4,7 +4,7 @@
   "snapshot_kind": "scaffolded-adapter",
   "conformance_scope": "Source scaffold output snapshot; not an assistant installation test and not a completed target adapter.",
   "claims_installation_complete": false,
-  "action_count": 193,
+  "action_count": 194,
   "blocked_count": 0,
   "created_paths": [
     ".agents/skills/README.md",
@@ -136,6 +136,7 @@
     ".ai/framework/ascii-diagrams.md",
     ".ai/framework/blueprint-driven-change.md",
     ".ai/framework/bridge-capability-matrix.md",
+    ".ai/framework/capabilities.json",
     ".ai/framework/change-packages.md",
     ".ai/framework/change-risk-model.md",
     ".ai/framework/code-documentation.md",

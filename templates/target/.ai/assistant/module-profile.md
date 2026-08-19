@@ -108,7 +108,8 @@ State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `{TARGET_BLUEPRINT_MODULE_OWNER_OR_FILE}`
 Required files:
 
-- `{BLUEPRINT_CHANGE_REQUIRED_FILE}`
+- `.ai/assistant/flows/blueprint-driven-change.flow.md`
+- `.ai/assistant/flows/project-blueprint-creation.flow.md`
 
 Reason: `{REASON}`
 Validation or review: `{VALIDATION_OR_REVIEW}`
