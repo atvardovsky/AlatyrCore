@@ -77,9 +77,13 @@ List what must not be changed.
 - Task-scale overlays and large-task activation rules:
 - Large-task packet storage, retention, or ignore policy:
 - Team-collaboration need and team-active activation rules:
-- Team operating-model owner, coordination backend, and synchronization:
-- Stable actors, decision authority, priority, review, and escalation policy:
-- Work registry, active task/claim migration, storage, retention, and privacy:
+- Team policy/operating-model owner, actor names/aliases, local identity ignore,
+  verification boundary, and enrollment process:
+- Coordination backend capabilities, synchronization, consistency, atomic-write,
+  idempotency, permissions, and unavailable-evidence policy:
+- Stable actors, decision authority, priority, transitions, review, and escalation:
+- Active-work index, registry metadata, per-task records, schema-1 task/claim
+  migration, storage, retention, and privacy:
 - Adapter owner metadata:
 - CODEOWNERS or equivalent owner map:
 - Module profile:
@@ -275,15 +279,17 @@ audit, pilot, or publishable provenance. Define record ownership, retention,
 redaction, Git/PR evidence policy, and target validator use. Start with an
 empty index and do not infer historical packages.
 
-Include `.ai/project/team-operating-model.md`,
-`.ai/assistant/team/context-overlay.json`,
-`.ai/assistant/team/work-registry.json`, the team task/handoff/decision/review
-flows, `.ai/assistant/gates/team-collaboration.md`, and checkpoint/handoff/
-decision templates only when the target enables team collaboration. Derive
-actors, authority, priority, backend, review, retention, and privacy from
-target evidence. Start with an empty registry unless active tasks are
-explicitly reviewed. For upgrades, preserve task IDs, claims, handoffs,
-decisions, and external references before schema changes.
+Include `.ai/.gitignore`, `.ai/project/team-policy.json`, its human operating
+model, active-work index, registry metadata, per-task and backend contracts,
+team overlay, identity/task/handoff/decision/review flows, team gate, adapted
+skill, and identity/checkpoint/handoff/decision templates only when enabled.
+Derive actors, aliases, authority, priority, transitions, backend, identity
+verification, review, retention, and privacy from target evidence. Start with
+empty task storage and index unless active tasks are explicitly reviewed. For
+upgrades, preserve task IDs, actor references, claims, handoffs, decisions,
+external references, and ignored local identity. Migrate schema-1 arrays to
+schema-2 per-task records and regenerate the index before replacing registry
+metadata.
 
 ## Context, Risk, Safety, Testing, And Diagram Adaptation
 

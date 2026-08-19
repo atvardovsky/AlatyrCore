@@ -139,7 +139,10 @@ Required context:
 Required owners present: `{YES_NO_DETAILS}`
 Validation or manual review: `{TEAM_COLLABORATION_VALIDATION_OR_REVIEW}`
 Approval needs: `{TEAM_COLLABORATION_APPROVAL_NEEDS}`
-Blocking criteria: `{TEAM_COLLABORATION_BLOCKERS_OR_NONE}`
+Blocking criteria: `{TEAM_COLLABORATION_BLOCKERS_OR_NONE}`. Write-capable
+collaboration is blocked without resolved current-actor attribution, structured
+authority, active-work preflight, task/backend revision conflict handling, and
+backend capability evidence.
 Residual risks: `{TEAM_COLLABORATION_RESIDUAL_RISKS}`
 Final evidence: `{TEAM_COLLABORATION_FINAL_EVIDENCE}`
 

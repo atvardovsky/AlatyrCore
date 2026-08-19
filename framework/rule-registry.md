@@ -63,11 +63,13 @@ routing, installation, or final evidence. The human ownership map is
 Rule ID: `ALATYR-CONTEXT-001`
 Canonical source: `.ai/framework/context-profiles.md`
 Commitment: use a compact budgeted bootstrap, select the smallest task profile,
-project-area overlays, and optional task-scale overlay, and record context
-expansion only when boundaries or conflicts require it; prefer changed-fact
-relationship routing when an adapted consistency map exists and item routing
-for AI infrastructure work; keep optional change-package, code-documentation,
-project-vocabulary, test-first, and extension detail lazy.
+project-area overlays, and optional task-scale overlay; run compact active-work
+preflight before state-changing work when team collaboration is enabled; record
+context expansion only when boundaries or conflicts require it; prefer changed-
+fact relationship routing when an adapted consistency map exists and item
+routing for AI infrastructure work; keep optional change-package, code-
+documentation, project-vocabulary, test-first, extension, and full team detail
+lazy.
 Applies to: all installed adapter tasks.
 
 Rule ID: `ALATYR-SOURCE-001`
@@ -77,8 +79,9 @@ it exists, record invariant and dependency constraints, use stable fact IDs
 for optional relationship routing, preserve bounded code-comment ownership,
 derived generated-output boundaries, and vocabulary links to canonical fact
 owners, preserve target test-strategy and accepted test-first-policy ownership,
-and otherwise use contour ownership plus a manual invariant closure while
-reporting missing owners or relationship coverage.
+and target team-policy versus coordination-record ownership, and otherwise use
+contour ownership plus a manual invariant closure while reporting missing
+owners or relationship coverage.
 Applies to: logical integrity, documentation sync, blueprint-driven changes.
 
 Rule ID: `ALATYR-RISK-001`
@@ -189,12 +192,13 @@ contract changes, risky refactoring, and other target-activated code changes.
 
 Rule ID: `ALATYR-EXTENSION-001`
 Canonical source: `.ai/framework/extensions.md`
-Commitment: treat an external Alatyr extension as a declarative untrusted
-package until read-only inspection, immutable provenance, compatibility,
-license, permissions, target bindings, conflicts, approval, normalization,
-installed-file ownership, lock evidence, and validation are resolved; prohibit
-arbitrary lifecycle hooks, framework replacement, project-fact ownership,
-automatic updates, and transitive extension installation.
+Commitment: treat an external Alatyr extension, including a provider-backed
+collaboration integration, as a declarative untrusted package until read-only
+inspection, immutable provenance, compatibility, license, permissions, target
+bindings, conflicts, approval, normalization, installed-file ownership, lock
+evidence, and validation are resolved; prohibit arbitrary lifecycle hooks,
+framework replacement, project-fact ownership, automatic updates, and
+transitive extension installation.
 Applies to: extension inspection, planning, installation, update, disablement,
 removal, recommendation, drift review, and cross-assistant routing.
 
@@ -217,7 +221,9 @@ infrastructure items, target development-pattern evidence, project-evidenced
 recommendation records, adaptation records, optional project-owned code-
 documentation profiles and generators, and optional project vocabulary and
 data-dictionary links, optional target test-first policy and evidence, and
-optional normalized extension catalogs, locks, bindings, and lifecycle records.
+optional normalized extension catalogs, locks, bindings, and lifecycle records,
+and optional target team policy, ignored local identity, active index, task
+records, and backend contract.
 Applies to: installation, update, and adapter maintenance.
 
 Rule ID: `ALATYR-MODULE-001`
@@ -233,8 +239,8 @@ Canonical source: `.ai/framework/operation-help.md`
 Commitment: expose one conversational Alatyr entry point, route clear requests
 automatically through a canonical target operation catalog and checked compact
 exact-alias index, including optional code-documentation, project-vocabulary,
-test-first, and extension lifecycle requests, provide a read-only evidence-
-based adapter health operation, and show
+test-first, extension lifecycle, team identity, and team coordination requests,
+provide a read-only evidence-based adapter health operation, and show
 a bounded pre-change preview only when changed-fact risk, approval, or scope
 uncertainty requires it.
 Applies to: installed operation routing, adapter health, and changes requiring
@@ -242,20 +248,22 @@ preview.
 
 Rule ID: `ALATYR-TEAM-001`
 Canonical source: `.ai/framework/team-collaboration.md`
-Commitment: when the optional team module is enabled, coordinate stable actor
-and task identities, priorities, changed-fact overlap, advisory claims,
+Commitment: when the optional team module is enabled, coordinate structured
+actor policy, ignored local attribution, active-work preflight, conflict-safe
+task records, backend capabilities, priorities, changed-fact overlap, claims,
 checkpoints, handoffs, decisions, reviews, and revision-bound merge readiness
-without replacing project source of truth, approvals, trackers, or target
-validation.
-Applies to: concurrent work, team handoffs, team review, and merge readiness.
+without replacing authentication, project source of truth, approvals,
+trackers, or target validation.
+Applies to: actor selection, state-changing work, concurrent work, team
+handoffs, team review, and merge readiness.
 
 Rule ID: `ALATYR-BRIDGE-001`
 Canonical source: `.ai/framework/bridge-capability-matrix.md`
 Commitment: keep bridge files thin and record assistant loading behavior,
 permission model, alias routing, limitations, and conformance checks.
 Selected AI infrastructure items and enabled project-vocabulary, test-first,
-and extension requests must route through canonical target routing across
-supported assistant surfaces.
+extension, team identity, and team coordination requests must route through
+canonical target routing across supported assistant surfaces.
 Applies to: supported assistant surfaces.
 
 Rule ID: `ALATYR-LIFECYCLE-001`
@@ -263,8 +271,10 @@ Canonical source: `.ai/framework/lifecycle.md`
 Commitment: record framework version, adapter schema version, template version,
 baseline, local deviations, migration notes, upgrade evidence, and preservation
 of enabled target package records, code-documentation profiles, vocabulary
-records, accepted test-first policies and evidence, and installed extension
-catalog, lock, bindings, ownership, and historical lifecycle evidence.
+records, accepted test-first policies and evidence, installed extension state,
+and target team policy, actor, task, claim, review, handoff, decision, backend,
+and ignored local identity state; migrate changed team schemas atomically
+without replacing active state with placeholders.
 Applies to: installation and framework upgrades.
 
 Rule ID: `ALATYR-EVIDENCE-001`
@@ -273,8 +283,9 @@ Commitment: distinguish declarative process commitments, machine-checkable
 expectations, target-dependent guarantees, and non-guarantees in final claims,
 including strong versus bounded package provenance and the semantic limits of
 comments, generated reference output, structurally valid vocabulary, and
-structurally complete RED/GREEN records, and structurally valid extension
-packages and locks.
+structurally complete RED/GREEN records, structurally valid extension packages
+and locks, and structurally valid team identity, index, task, review, and
+backend records.
 Applies to: final evidence and framework positioning.
 
 ## Use In Target Adapters

@@ -22,6 +22,10 @@ SCHEMA_CONTRACT_PATHS = {
     "templates/target/.ai/assistant/approvals/approval-record-template.json",
     "templates/target/.ai/assistant/team/context-overlay.json",
     "templates/target/.ai/assistant/team/work-registry.json",
+    "templates/target/.ai/assistant/team/active-work-index.json",
+    "templates/target/.ai/assistant/team/backend-contract.json",
+    "templates/target/.ai/assistant/team/task-record-template.json",
+    "templates/target/.ai/project/team-policy.json",
 }
 
 

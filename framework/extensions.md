@@ -46,6 +46,13 @@ AlatyrCore source repository, not a dynamically installed extension.
 Executable vendor plugins, packages, tools, and MCP servers remain external AI
 infrastructure and require their own target permissions and approval.
 
+A team coordination provider may be packaged as a declarative `tool` or `mcp`
+item plus flows, gates, and templates. It binds to the target team backend
+contract and must not own actor identity, authority, project decisions, task
+facts, credentials, or approval. Write capability remains disabled until the
+target resolves authentication, permissions, atomic-update behavior,
+idempotency, validation, and rollback.
+
 After review, normalized extension items belong to the target assistant
 contour. Target bindings, commands, owners, validation, and project-area
 references remain target-owned facts.

@@ -147,7 +147,9 @@
     },
     "team-active": {
       "use_when": [
-        "team coordination request"
+        "team identity or coordination request",
+        "enabled-team write operation matches an active task branch worktree project area changed fact owner contract dependency or surface",
+        "enabled-team write operation cannot rule out active-work overlap from the compact index"
       ],
       "descriptor": ".ai/assistant/team/context-overlay.json"
     }

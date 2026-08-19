@@ -62,10 +62,13 @@ Operation help:
   provenance, target bindings, permissions, approvals, file ownership, local
   deviations, and lifecycle history; recheck compatibility and drift without
   automatically updating, activating, or removing any extension.
-- When team collaboration is enabled, recheck the operating model, registry
-  schema, active task IDs, claims, handoffs, decisions, external references,
-  stale overlaps, and revision-bound reviews before changing active records.
-- Use `Alatyr team status` for current coordination evidence and the specific
+- When team collaboration is enabled, recheck the structured policy, ignored
+  identity boundary, active index, registry/task schemas, backend contract,
+  optimistic concurrency, active task IDs, claims, handoffs, decisions,
+  external references, stale overlaps, and revision-bound reviews before
+  changing active records. Migrate schema-1 arrays atomically when applicable.
+- Use `Alatyr set actor <actor>` for local attribution, `Alatyr who am I` to
+  inspect it, `Alatyr team status` for coordination evidence, and the specific
   team aliases for task, conflict, handoff, decision, review, or merge work.
 - Recheck AI infrastructure router entries and adaptation records when skills, prompts, gates, tools, or bridge contracts changed.
 - Recheck `diagram-discussion`, stable diagram lineage, security/privacy and

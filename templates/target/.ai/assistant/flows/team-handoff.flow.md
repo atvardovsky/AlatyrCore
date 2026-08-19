@@ -10,7 +10,10 @@ permission.
 ## Target Sources
 
 - Team operating model: `.ai/project/team-operating-model.md`
+- Canonical team policy: `.ai/project/team-policy.json`
 - Work registry: `.ai/assistant/team/work-registry.json`
+- Active-work index: `.ai/assistant/team/active-work-index.json`
+- Backend contract: `.ai/assistant/team/backend-contract.json`
 - Checkpoint template: `.ai/assistant/templates/team-checkpoint.md`
 - Handoff template: `.ai/assistant/templates/team-handoff.md`
 - Team gate: `.ai/assistant/gates/team-collaboration.md`
@@ -18,8 +21,8 @@ permission.
 
 ## Steps
 
-1. Resolve the task, source actor, destination actor or role, current
-   repository revision, and canonical task backend.
+1. Resolve the selected task record, source actor, destination actor or role,
+   current task/backend revisions, repository revision, and canonical backend.
 2. Verify that the source actor and destination reference exist in the target
    operating model or record the missing target fact.
 3. Re-run active-task overlap and invalidate stale claim, dependency,
@@ -30,10 +33,13 @@ permission.
 6. Include completed work, changed facts and owners, decisions, current diff,
    validation, approvals, unresolved questions, residual risk, required
    context, and exact next action.
-7. Mark the handoff `pending`; do not silently accept it for the receiver.
-8. On acceptance, the receiver compares the record with current repository,
+7. Stop when the task/backend revision changed since it was read. Otherwise
+   write the handoff and selected task delta atomically when supported.
+8. Mark the handoff `pending`; do not silently accept it for the receiver.
+9. On acceptance, the receiver compares the record with current repository,
    registry, backend, and owner evidence before recording `accepted`.
-9. When evidence changed materially, mark the handoff `stale` and refresh it.
+10. When evidence changed materially, mark the handoff `stale` and refresh it.
+11. Regenerate the active-work index after a successful task-state write.
 
 ## Final Evidence
 

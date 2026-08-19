@@ -109,6 +109,22 @@ def build_report() -> dict[str, Any]:
             ]
         )
 
+    task_scale_overlays: dict[str, dict[str, Any]] = {}
+    task_scale_contracts: dict[str, tuple[str | None, dict[str, Any]]] = {}
+    for name, overlay in router.get("task_scale_overlays", {}).items():
+        reference, contract = descriptor(overlay)
+        task_scale_contracts[name] = (reference, contract)
+        task_scale_overlays[name] = measure(
+            [
+                value
+                for value in [
+                    reference,
+                    *contract.get("required_context", []),
+                ]
+                if value
+            ]
+        )
+
     operation_routing = router.get("operation_routing", {})
     diagram_reference, diagram_overlay = intent_contracts.get(
         "diagram-request", (None, {})
@@ -279,6 +295,54 @@ def build_report() -> dict[str, Any]:
         [value for value in extension_full_reference_refs if value]
     )
 
+    team_reference, team_overlay = task_scale_contracts.get(
+        "team-active", (None, {})
+    )
+    team_conditional_refs = [
+        entry.get("path")
+        for entry in team_overlay.get("conditional_context", [])
+        if isinstance(entry, dict) and isinstance(entry.get("path"), str)
+    ]
+    team_compact_refs = [
+        operation_routing.get("index", ""),
+        team_reference,
+        *team_overlay.get("required_context", []),
+    ]
+    team_full_reference_refs = [
+        operation_routing.get("catalog", ""),
+        ".ai/assistant/help.md",
+        ".ai/assistant/flows/operation-routing.flow.md",
+        ".ai/assistant/module-profile.md",
+        team_reference,
+        *team_overlay.get("required_context", []),
+        *team_conditional_refs,
+        ".ai/assistant/flows/team-identity.flow.md",
+        ".ai/assistant/flows/team-task-coordination.flow.md",
+        ".ai/assistant/flows/team-handoff.flow.md",
+        ".ai/assistant/flows/team-decision.flow.md",
+        ".ai/assistant/flows/team-review.flow.md",
+    ]
+    team_compact = measure([value for value in team_compact_refs if value])
+    team_full_reference = measure(
+        [value for value in team_full_reference_refs if value]
+    )
+
+    large_reference, large_overlay = task_scale_contracts.get(
+        "large-or-resumable", (None, {})
+    )
+    team_large_composition = measure(
+        [
+            value
+            for value in [
+                large_reference,
+                *large_overlay.get("required_context", []),
+                team_reference,
+                *team_overlay.get("required_context", []),
+            ]
+            if value
+        ]
+    )
+
     migration_reference, migration = descriptor(router.get("migration_routing", {}))
     migration_initial_refs = [
         value
@@ -305,6 +369,10 @@ def build_report() -> dict[str, Any]:
         "bootstrap": bootstrap,
         "profiles": profiles,
         "intent_overlays": intent_overlays,
+        "task_scale_overlays": task_scale_overlays,
+        "task_overlay_compositions": {
+            "large-or-resumable+team-active": team_large_composition,
+        },
         "operation_routes": {
             "diagram-discussion": {
                 "compact": diagram_compact,
@@ -351,6 +419,14 @@ def build_report() -> dict[str, Any]:
                 "word_reduction_percent": reduction_percent(
                     extension_compact["words"],
                     extension_full_reference["words"],
+                ),
+            },
+            "team-collaboration": {
+                "compact": team_compact,
+                "full_reference_union": team_full_reference,
+                "word_reduction_percent": reduction_percent(
+                    team_compact["words"],
+                    team_full_reference["words"],
                 ),
             },
         },

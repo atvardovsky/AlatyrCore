@@ -94,7 +94,7 @@ Target adapters may include fact types such as:
 - vocabulary-to-data-dictionary link
 - test strategy and accepted test-first policy
 - assistant operation
-- team operating model, authority, or priority policy
+- structured team policy, actor identity mapping, authority, or priority policy
 - skill, prompt, wrapper, or bridge behavior
 - approval rule
 
@@ -113,7 +113,7 @@ that commonly create drift when left ownerless:
 - security policy
 - assistant operation
 - AI infrastructure item
-- team operating model when team collaboration is enabled
+- team policy when team collaboration is enabled
 - code documentation profile when code-documentation generation is enabled
 - project vocabulary when terminology support is enabled
 - test strategy and test-first policy when that optional module is enabled

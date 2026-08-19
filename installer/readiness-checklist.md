@@ -33,10 +33,11 @@ changes.
 - Existing operation catalog, installed-operation, operation-help, automatic
   routing, adapter-health, pre-change preview, blueprint-creation,
   adapter-recheck, or chat-message process:
-- Existing team operating model, stable actors, decision authority, priority
-  policy, task tracker, active tasks, claims, branch/worktree conventions,
-  reviews, checkpoints, handoffs, decisions, merge rules, storage, retention,
-  and privacy:
+- Existing structured team policy and operating model, stable actor IDs and
+  display-name mappings, current-user selection, identity verification,
+  decision authority, priority/transitions, task backend and atomic-write
+  behavior, active tasks, claims, branches/worktrees, reviews, checkpoints,
+  handoffs, decisions, merge rules, storage, retention, and privacy:
 - Existing adapter output contracts:
 - Existing risk or approval policy:
 - Existing security, privacy, live-service, destructive-operation, dependency,
@@ -219,10 +220,11 @@ Collect target-specific facts before writing project docs:
 - change-package activation, compact index, semantic and path approval scope,
   companion decisions, implementation corrections, provenance quality,
   retention/redaction, and validator expectations when needed
-- team-collaboration owner, backend, synchronization direction, actor and
-  authority model, priority policy, registry, claim/staleness, changed-fact
-  conflict, checkpoint, handoff, decision, review, merge-readiness, storage,
-  retention, and privacy expectations when needed
+- team-collaboration owner, structured actor/authority/priority/transition
+  policy, ignored local identity boundary, backend capabilities and
+  synchronization, active-work index, per-task registry and optimistic
+  concurrency, claim/staleness, changed-fact conflict, checkpoint, handoff,
+  decision, review, merge-readiness, storage, retention, and privacy when needed
 - operation catalog, single entry, automatic routing, read-only health,
   risk-gated preview, and post-install/update assistant chat-message
   expectations
@@ -309,9 +311,11 @@ List commands or manual checks:
 - migration assessment completed before target upgrade changes:
 - effectiveness metrics review:
 - operation-catalog, automatic-routing, health, or preview review:
-- team operating model, registry schema, backend synchronization, active-record
-  preservation, overlap, claim, handoff, decision, review, merge-readiness,
-  retention, and privacy review:
+- team policy/operating model, local identity ignore and attribution boundary,
+  registry/task schemas, active index, backend capabilities/synchronization,
+  optimistic concurrency, schema-1 migration, active-record preservation,
+  overlap, claim, handoff, decision, review, merge-readiness, retention, and
+  privacy review:
 - skill/provenance/safety review:
 - AI infrastructure inventory review:
 - AI infrastructure recommendation and existing-item improvement review:
@@ -361,9 +365,10 @@ Final evidence must say:
   companion decisions, correction handling, provenance grades, record
   retention/redaction, and validator support
 - team collaboration is enabled or skipped from target evidence; enabled
-  adapters define an operating-model owner, backend and synchronization
-  direction, stable actor/authority/priority evidence, registry, conflict
-  policy, record storage, retention/privacy, and revision-bound review evidence
+  adapters define a policy owner, backend capability/synchronization contract,
+  stable actor/authority/priority/transition evidence, ignored local identity,
+  compact preflight, per-task records, atomic writes, conflict policy, storage,
+  retention/privacy, and revision-bound review evidence
 - adapter drift checks run or recorded as manual/unresolved, including local
   path leakage, stale checker statements, duplicate profile references,
   unresolved owner placeholders, and target-local checker status
@@ -391,9 +396,11 @@ Final evidence must say:
 - large-task flow and operation-packet template added or skipped
 - change-package index, lazy overlay, flow, machine record, redacted report,
   and retention/redaction policy added, migrated, skipped, or blocked
-- team operating model, work registry, team-active overlay, task/handoff/
-  decision/review flows, team gate, and checkpoint/handoff/decision templates
-  added, migrated, skipped, or blocked without overwriting active target state
+- team policy and operating model, local ignore rule, active-work index,
+  registry metadata, per-task template, backend contract, team-active overlay,
+  identity/task/handoff/decision/review flows, team gate, adapted skill, and
+  identity/checkpoint/handoff/decision templates added, migrated, skipped, or
+  blocked without overwriting active target state
 - AI infrastructure inventory report template added or skipped
 - AI infrastructure recommendation flow and report template added or skipped
 - development-evidence index and lazy capture flow added or skipped

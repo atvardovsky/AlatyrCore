@@ -13,6 +13,7 @@ semantic fact requires the applicable project-change scope and approval.
 ## Target Sources
 
 - Team operating model: `.ai/project/team-operating-model.md`
+- Canonical team policy: `.ai/project/team-policy.json`
 - Work registry: `.ai/assistant/team/work-registry.json`
 - Decision template: `.ai/assistant/templates/team-decision-record.md`
 - Source-of-truth registry: `.ai/project/source-of-truth-registry.md`
@@ -24,7 +25,7 @@ semantic fact requires the applicable project-change scope and approval.
 1. Resolve the decision question, decision type, owner, participants, affected
    task IDs, changed or disputed fact IDs, canonical owners, constraints, and
    dependencies.
-2. Confirm decision authority from the target operating model. Do not infer it
+2. Confirm decision authority from the structured target policy. Do not infer it
    from task ownership, priority, review, or commit authorship.
 3. Record material options, benefits, costs, risks, evidence, priority
    implications, dependencies, and unresolved concerns.
@@ -36,7 +37,8 @@ semantic fact requires the applicable project-change scope and approval.
    target canonical decision or source-of-truth surface. Otherwise report the
    destination and follow-up operation. Keep `proposed`, `deferred`, or
    unresolved records out of accepted project facts.
-7. Update affected task references without changing unrelated task state.
+7. Update affected task references only after checking each observed task and
+   backend revision; do not change unrelated task state.
 8. Route implementation through the applicable product-change,
    logical-integrity, documentation, or large-task operation.
 

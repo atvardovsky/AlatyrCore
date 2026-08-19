@@ -354,8 +354,12 @@ When routing a request:
 13. Add a large-task scale overlay only when the work is cross-boundary,
     multi-workstream, budget-exceeding, or resumable. Keep small tasks on their
     normal flow without an operation packet.
-14. Add a team-active overlay only for enabled team coordination. Load the
-    selected task and relevant active overlaps, not all team history.
+14. In an enabled team project, read the compact active-work index before a
+    state-changing operation. Add the team-active overlay for explicit team
+    coordination, a task/branch match, possible logical overlap, or unresolved
+    index evidence. Load the selected task and relevant overlaps, not all team
+    history. Route `set actor`, `who am I`, and `clear actor` through ignored
+    local identity without treating selection as authentication.
 15. For diagram discussion, load the diagram policy and current compact
     assistant-capability entry, then choose native inline, rendered artifact,
     plus a portable ASCII view without loading the full bridge matrix.

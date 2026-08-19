@@ -876,6 +876,69 @@ def main() -> int:
             ),
             encoding="utf-8",
         )
+        write_json(
+            target / ".ai" / "project" / "team-policy.json",
+            {
+                "schema_version": 1,
+                "policy_kind": "target-team-policy",
+                "policy_revision": "policy-1",
+                "identity": {
+                    "local_identity_path": ".ai/local/team-identity.json",
+                    "git_identity_is_authoritative": False,
+                },
+                "actors": [
+                    {
+                        "id": "actor-owner",
+                        "display_name": "Owner",
+                        "aliases": [],
+                        "status": "active",
+                        "teams": [],
+                        "roles": ["owner"],
+                        "responsibilities": [],
+                        "decision_authority": [],
+                        "review_scopes": [],
+                        "priority_scopes": ["normal"],
+                        "external_identity_refs": [],
+                    }
+                ],
+                "priorities": [
+                    {"id": "normal", "assigner_actor_ids": ["actor-owner"]}
+                ],
+                "review_policy": {
+                    "implementer_reviewer_separation": "required"
+                },
+                "state_transitions": [],
+            },
+        )
+        write_json(
+            target / ".ai" / "assistant" / "team" / "active-work-index.json",
+            {
+                "schema_version": 1,
+                "index_kind": "target-team-active-work-index",
+                "source_registry": ".ai/assistant/team/work-registry.json",
+                "entries": [],
+            },
+        )
+        write_json(
+            target / ".ai" / "assistant" / "team" / "backend-contract.json",
+            {
+                "schema_version": 1,
+                "contract_kind": "target-team-backend-contract",
+                "backend_id": "repository",
+                "backend_mode": "repository",
+                "provider": "repository",
+                "canonical_task_source": "registry",
+                "projection_direction": "manual",
+                "consistency_model": "manual",
+                "write_strategy": "compare-and-swap",
+                "capabilities": ["read-tasks"],
+                "idempotency_policy": "task revision",
+                "conflict_policy": "stop",
+                "permission_policy": "adapter-only",
+                "authentication_policy": "target",
+                "validation": "fixture",
+            },
+        )
         team_overlay_path = (
             target / ".ai" / "assistant" / "team" / "context-overlay.json"
         )

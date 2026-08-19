@@ -215,6 +215,7 @@ Human-oriented guides:
 - [The project guardian concept](docs/human/project-guardian-concept.md)
 - [Quick demonstration](docs/human/quick-demo.md)
 - [Team use cases](docs/human/team-use-cases.md)
+- [Team collaboration workflow](docs/human/team-collaboration-workflow.md)
 - [Frequently asked questions](docs/human/faq.md)
 
 Installation and technical reference:
@@ -433,9 +434,10 @@ Additional source-repository helpers include:
 - optional change packages that bind coherent material outcomes to semantic
   approval scope, companion decisions, implementation corrections,
   validation, and reproducible repository provenance
-- optional team collaboration with target-owned actors, authority, priority,
-  review, and coordination policy plus lazy task, claim, conflict, checkpoint,
-  handoff, decision, and revision-bound merge-readiness evidence
+- optional team collaboration with target-owned actors, local user attribution,
+  authority, priority, review, and backend policy plus compact active-work
+  preflight, conflict-safe per-task records, claims, checkpoints, handoffs,
+  decisions, and revision-bound merge-readiness evidence
 - source-of-truth registry guidance and source-template checks for fact
   ownership, derived surfaces, sync direction, validation, and conflict
   resolution
@@ -647,7 +649,8 @@ A mature target installation usually has:
   `.ai/project/documentation/profiles.json` when code documentation is enabled
 - `.ai/project/vocabulary/README.md`, catalog, scoped term records, and data-
   dictionary links when project vocabulary is enabled
-- `.ai/project/team-operating-model.md` when team collaboration is enabled
+- `.ai/project/team-policy.json` and its human-oriented
+  `.ai/project/team-operating-model.md` when team collaboration is enabled
 - `.ai/project/context` or equivalent project source-of-truth docs
 - `.ai/assistant/contour.md`
 - `.ai/assistant/context-router.json`
@@ -672,8 +675,10 @@ A mature target installation usually has:
 - `.ai/assistant/ai-infrastructure-router.json` when AI infrastructure is used
 - `.ai/assistant/extensions/catalog.json`, lock, intent, lifecycle flow, gate,
   and evidence templates when extensions are supported
-- `.ai/assistant/team/context-overlay.json` and
-  `.ai/assistant/team/work-registry.json` when team collaboration is enabled
+- `.ai/assistant/team/context-overlay.json`, active-work index, registry
+  metadata, backend contract, and per-task record template when team
+  collaboration is enabled; current actor selection stays ignored under
+  `.ai/local/`
 - `.ai/assistant/help.md`
 - `.ai/assistant/help-reference.md`
 - `.ai/assistant/operation-index.json`

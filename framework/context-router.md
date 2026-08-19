@@ -17,7 +17,8 @@ A target adapter can load:
 2. the compact bootstrap, including `.ai/assistant/context-router.json`
 3. the selected profile's required context
 4. one or more project-area overlays when the task names affected areas
-5. task-scale overlays only when the task is large, resumable, or team-active
+5. task-scale overlays only when the task is large, resumable, team-active, or
+   an enabled-team write preflight finds possible active-work overlap
 
 Then it expands only when the router or human profile names a boundary,
 conflict, approval trigger, or missing source-of-truth fact.
@@ -131,10 +132,13 @@ active workstream references first; expand to plan, discussion, companion,
 correction, or validation evidence only when needed.
 
 A team-active route should point to a lazy target overlay descriptor outside
-bootstrap. That descriptor selects the optional team contract, target
-operating model, compact work registry or selected task, and relevant team
-flow and gate. Compare changed-fact IDs and canonical owners before file paths,
-and keep unrelated tasks and team history outside the selected context.
+bootstrap. In an enabled team project, a state-changing operation reads the
+compact active-work index first. It expands the descriptor only for an explicit
+team request, a task/backend/branch match, possible changed-fact, owner,
+contract, dependency, migration, generated-artifact, or surface overlap, or
+unresolved index evidence. The expanded route selects the structured team
+policy, registry metadata, backend contract, selected task record, relevant
+flow, and gate. Keep unrelated tasks and team history outside context.
 
 When the optional consistency-map module is enabled, the router should point
 to its machine-readable map. Use it only after a semantic change or suspected

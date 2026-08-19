@@ -58,14 +58,21 @@ Installation id: `{INSTALLATION_ID}`
 - Operation packet storage policy: `{TARGET_OPERATION_PACKET_POLICY}`
 - Team-collaboration module state:
   `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
-- Team operating model: `.ai/project/team-operating-model.md`
+- Canonical team policy: `.ai/project/team-policy.json`
+- Human team operating model: `.ai/project/team-operating-model.md`
 - Lazy team context: `.ai/assistant/team/context-overlay.json`
-- Team work registry: `.ai/assistant/team/work-registry.json`
+- Compact active-work index: `.ai/assistant/team/active-work-index.json`
+- Team registry metadata and task records:
+  `.ai/assistant/team/work-registry.json` and
+  `.ai/assistant/team/tasks/{TASK_ID}.json`
+- Backend contract: `.ai/assistant/team/backend-contract.json`
+- Local identity: ignored `.ai/local/team-identity.json`
 - Team coordination backend and synchronization:
   `{TARGET_BACKEND_AND_SYNCHRONIZATION_DIRECTION}`
 - Team record storage, retention, and privacy:
   `{TARGET_TEAM_RECORD_STORAGE_RETENTION_AND_PRIVACY_POLICY}`
 - Team flows and gate:
+  `.ai/assistant/flows/team-identity.flow.md`,
   `.ai/assistant/flows/team-task-coordination.flow.md`,
   `.ai/assistant/flows/team-handoff.flow.md`,
   `.ai/assistant/flows/team-decision.flow.md`,
@@ -94,10 +101,11 @@ Use `Alatyr` as the single conversational entry, `Alatyr status` for read-only
 health, automatic routing for clear requests, and the risk-gated pre-change
 preview before applicable edits.
 
-When team collaboration is enabled, use `Alatyr team status` and the target
-team aliases through the canonical operation catalog. Keep team-active context
-lazy and do not treat assignment, priority, claim, review, or handoff as
-approval.
+When team collaboration is enabled, use `Alatyr set actor`, `Alatyr who am I`,
+`Alatyr team status`, and the target team aliases through the catalog. Check
+the compact active-work index before state-changing operations. Keep full team
+context lazy, and do not treat local selection, assignment, priority, claim,
+review, or handoff as authentication, authority, or approval.
 
 If this note lists gaps or bridge-file uncertainty, run
 `recheck-after-installation` or `recheck-after-framework-update` before broad

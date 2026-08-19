@@ -192,15 +192,17 @@ or load a package for an ordinary local task.
 
 ## Team-Active Tasks
 
-When the optional team module is enabled, use a `team-active` task-scale
-overlay for team status, claims, concurrent-work checks, checkpoints, handoffs,
-team review, or merge readiness. Load the target team operating model, compact
-work registry or selected task projection, relevant team flow and gate, and
-only the selected task's changed-fact owners and dependencies.
+When the optional team module is enabled, run a compact active-work-index
+preflight before state-changing operations. Use a `team-active` task-scale
+overlay for identity selection, team status, claims, concurrent-work checks,
+checkpoints, handoffs, team review, merge readiness, or a write operation that
+matches or may overlap active work. Load the structured team policy, registry
+metadata, backend contract, selected task projection, relevant team flow and
+gate, and only the selected task's changed-fact owners and dependencies.
 
 Compose `team-active` with `large-or-resumable` only when the task satisfies
 both activation gates. Do not load the full team history or all active tasks
-when registry metadata proves they cannot overlap the selected facts,
+when active-index metadata proves they cannot overlap the selected facts,
 contracts, dependencies, or surfaces.
 
 ## Expansion Rules

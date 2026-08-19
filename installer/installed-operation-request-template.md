@@ -10,10 +10,10 @@ Target repository path:
 <path-or-repo-url-to-target-project>
 
 Operation type:
-<optional; help/adapter-health/create-project-blueprint/recheck-after-installation/recheck-after-framework-update/product-change/large-task/team-status/team-task/team-conflict-review/team-handoff/team-decision/team-review/team-merge-check/logical-integrity-review/architecture-assistance/diagram-discussion/ai-infrastructure-inventory/ai-infrastructure-recommendation/skill-adaptation/extension-management/drift-review/documentation-sync/project-vocabulary/test-first-configuration/test-first-change/adapter-maturity-review/other>
+<optional; help/adapter-health/create-project-blueprint/recheck-after-installation/recheck-after-framework-update/product-change/large-task/team-identity/team-status/team-task/team-conflict-review/team-handoff/team-decision/team-review/team-merge-check/logical-integrity-review/architecture-assistance/diagram-discussion/ai-infrastructure-inventory/ai-infrastructure-recommendation/skill-adaptation/extension-management/drift-review/documentation-sync/project-vocabulary/test-first-configuration/test-first-change/adapter-maturity-review/other>
 
 Operation alias, if used:
-<for example: Alatyr architecture, Alatyr diagram, document code, Alatyr glossary, Alatyr enable test-first, Alatyr test first, Alatyr extensions, Alatyr inspect extension <source>, Alatyr team status, alatyr-ai-inventory, alatyr-suggest-ai <scope>, alatyr-adaptation <source>, or alatyr-add-ai <source>>
+<for example: Alatyr architecture, Alatyr diagram, document code, Alatyr glossary, Alatyr enable test-first, Alatyr test first, Alatyr extensions, Alatyr inspect extension <source>, Alatyr set actor <actor>, Alatyr team status, alatyr-ai-inventory, alatyr-suggest-ai <scope>, alatyr-adaptation <source>, or alatyr-add-ai <source>>
 
 Goal:
 <what the assistant should accomplish>
@@ -131,10 +131,14 @@ Constraints:
   `.ai/assistant/flows/large-task-orchestration.flow.md` with
   `.ai/assistant/templates/large-task-operation-packet.md`. Do not create a
   packet for a small task.
-- For enabled team coordination, activate the `team-active` overlay and load
-  only the selected task, relevant active overlaps, actor/authority evidence,
-  changed-fact owners, dependencies, and selected team flow/gate. Do not load
-  unrelated team history.
+- For enabled team collaboration, read the compact active-work index before
+  state-changing operations. Expand `team-active` only for an explicit team
+  request, task/branch match, possible logical overlap, or unresolved index,
+  then load the selected task, policy clauses, backend contract, relevant
+  overlaps, owners, dependencies, and one team flow/gate.
+- Resolve current-user attribution from explicit request or ignored local
+  identity. Selection is not authentication or authority and must not change
+  global Git configuration. Stop task writes on record/backend revision drift.
 - Team status, conflict review, review, and merge check are read-only.
   Start/claim/checkpoint/handoff/release may update adapter-owned coordination
   records only. Assignment, priority, review, and handoff never grant approval.

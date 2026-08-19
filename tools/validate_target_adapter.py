@@ -410,6 +410,7 @@ OPERATION_LIST_FIELDS = {
 
 def repair_operation_for(code: str) -> str:
     routes = [
+        (("TEAM_LOCAL_IDENTITY_", "TEAM_ACTOR_ALIAS_"), "team-identity"),
         (("TEAM_MERGE_",), "team-merge-check"),
         (("TEAM_REVIEW_",), "team-review"),
         (("TEAM_OVERLAP_", "TEAM_ACTIVE_OVERLAP_"), "team-conflict-review"),
@@ -4120,13 +4121,28 @@ class Validator:
                 )
 
     def check_team_collaboration(self, manifest: ManifestData | None) -> None:
+        policy_key = ("team_collaboration", "policy")
         model_key = ("team_collaboration", "operating_model")
         source_model_key = ("source_of_truth", "team_operating_model")
         registry_key = ("team_collaboration", "work_registry")
+        index_key = ("team_collaboration", "active_work_index")
+        backend_key = ("team_collaboration", "backend_contract")
+        tasks_key = ("team_collaboration", "task_records_directory")
+        local_identity_key = ("team_collaboration", "local_identity")
+        policy_scalar = manifest.scalars.get(policy_key) if manifest else None
         model_scalar = manifest.scalars.get(model_key) if manifest else None
         if not model_scalar and manifest:
             model_scalar = manifest.scalars.get(source_model_key)
         registry_scalar = manifest.scalars.get(registry_key) if manifest else None
+        index_scalar = manifest.scalars.get(index_key) if manifest else None
+        backend_scalar = manifest.scalars.get(backend_key) if manifest else None
+        tasks_scalar = manifest.scalars.get(tasks_key) if manifest else None
+        local_identity_scalar = (
+            manifest.scalars.get(local_identity_key) if manifest else None
+        )
+        policy_relpath = (
+            policy_scalar.value if policy_scalar else ".ai/project/team-policy.json"
+        )
         model_relpath = (
             model_scalar.value
             if model_scalar
@@ -4137,10 +4153,42 @@ class Validator:
             if registry_scalar
             else ".ai/assistant/team/work-registry.json"
         )
+        index_relpath = (
+            index_scalar.value
+            if index_scalar
+            else ".ai/assistant/team/active-work-index.json"
+        )
+        backend_relpath = (
+            backend_scalar.value
+            if backend_scalar
+            else ".ai/assistant/team/backend-contract.json"
+        )
+        tasks_relpath = (
+            tasks_scalar.value
+            if tasks_scalar
+            else ".ai/assistant/team/tasks"
+        )
+        local_identity_relpath = (
+            local_identity_scalar.value
+            if local_identity_scalar
+            else ".ai/local/team-identity.json"
+        )
+        policy_path = self.target_path(policy_relpath)
         model_path = self.target_path(model_relpath)
         registry_path = self.target_path(registry_relpath)
+        index_path = self.target_path(index_relpath)
+        backend_path = self.target_path(backend_relpath)
+        tasks_path = self.target_path(tasks_relpath)
+        local_identity_path = self.target_path(local_identity_relpath)
 
-        if not model_path.exists() and not registry_path.exists():
+        if not policy_path.exists() and not model_path.exists() and not registry_path.exists():
+            return
+        if not policy_path.is_file():
+            self.error(
+                "TEAM_POLICY_MISSING",
+                "team collaboration exists without its structured target policy",
+                policy_relpath,
+            )
             return
         if not model_path.is_file():
             self.error(
@@ -4157,13 +4205,45 @@ class Validator:
             )
             return
 
+        for path, relpath, code, message in [
+            (
+                index_path,
+                index_relpath,
+                "TEAM_ACTIVE_INDEX_MISSING",
+                "team collaboration requires a compact active-work index",
+            ),
+            (
+                backend_path,
+                backend_relpath,
+                "TEAM_BACKEND_CONTRACT_MISSING",
+                "team collaboration requires a backend capability contract",
+            ),
+        ]:
+            if not path.is_file():
+                self.error(code, message, relpath)
+                return
+
+        policy = self.load_json_object(policy_path, "TEAM_POLICY")
+        active_index = self.load_json_object(index_path, "TEAM_ACTIVE_INDEX")
+        backend = self.load_json_object(backend_path, "TEAM_BACKEND")
+        if policy is None or active_index is None or backend is None:
+            return
+
         registry = self.load_json_object(registry_path, "TEAM_REGISTRY")
         if registry is None:
             return
-        if registry.get("schema_version") != 1:
+        registry_schema = registry.get("schema_version")
+        if registry_schema == 1:
+            self.error(
+                "TEAM_REGISTRY_MIGRATION_REQUIRED",
+                "schema-1 monolithic task records must be migrated atomically to "
+                "schema-2 per-task records before team writes",
+                registry_relpath,
+            )
+        elif registry_schema != 2:
             self.error(
                 "TEAM_REGISTRY_SCHEMA",
-                "schema_version should be 1",
+                "schema_version should be 2",
                 registry_relpath,
             )
         if registry.get("registry_kind") != "target-team-work-registry":
@@ -4179,7 +4259,12 @@ class Validator:
             "coordination_backend",
             "canonical_task_source",
             "synchronization_direction",
+            "team_policy",
             "operating_model",
+            "backend_contract",
+            "active_work_index",
+            "task_records_directory",
+            "task_record_template",
             "updated_at",
             "evidence_revision",
             "storage_policy",
@@ -4236,30 +4321,192 @@ class Validator:
                 registry_relpath,
             )
 
-        model_text = self.read_text(model_path)
-        actor_ids = {
-            match.group(1)
-            for match in re.finditer(r"^### Actor `([^`]+)`$", model_text, re.MULTILINE)
-            if not is_placeholder(match.group(1))
-        }
-        priority_ids = {
-            match.group(1)
-            for match in re.finditer(
-                r"^### Priority `([^`]+)`$",
-                model_text,
-                re.MULTILINE,
-            )
-            if not is_placeholder(match.group(1))
-        }
-
-        tasks = registry.get("tasks")
-        if not isinstance(tasks, list):
+        for field, expected in [
+            ("team_policy", policy_relpath),
+            ("backend_contract", backend_relpath),
+            ("active_work_index", index_relpath),
+            ("task_records_directory", tasks_relpath),
+        ]:
+            if registry_schema == 2 and registry.get(field) != expected:
+                self.error(
+                    "TEAM_REGISTRY_PATH",
+                    f"{field} should point to {expected}",
+                    registry_relpath,
+                )
+        if registry_schema == 2 and not isinstance(
+            registry.get("registry_revision"), int
+        ):
             self.error(
-                "TEAM_REGISTRY_TASKS",
-                "tasks must be a list",
+                "TEAM_REGISTRY_REVISION",
+                "schema-2 registry_revision must be an integer",
                 registry_relpath,
             )
-            return
+        if registry_schema == 2 and "tasks" in registry:
+            self.error(
+                "TEAM_REGISTRY_MONOLITHIC_TASKS",
+                "schema-2 registry must not contain a monolithic tasks array",
+                registry_relpath,
+            )
+
+        if policy.get("schema_version") != 1:
+            self.error("TEAM_POLICY_SCHEMA", "schema_version should be 1", policy_relpath)
+        if policy.get("policy_kind") != "target-team-policy":
+            self.error(
+                "TEAM_POLICY_KIND",
+                "policy_kind should be target-team-policy",
+                policy_relpath,
+            )
+        identity_policy = policy.get("identity")
+        if not isinstance(identity_policy, dict):
+            self.error("TEAM_IDENTITY_POLICY", "identity must be an object", policy_relpath)
+            identity_policy = {}
+        else:
+            if identity_policy.get("local_identity_path") != local_identity_relpath:
+                self.error(
+                    "TEAM_LOCAL_IDENTITY_PATH",
+                    f"local identity path should be {local_identity_relpath}",
+                    policy_relpath,
+                )
+            if identity_policy.get("git_identity_is_authoritative") is not False:
+                self.error(
+                    "TEAM_GIT_IDENTITY_AUTHORITY",
+                    "Git identity must not be authoritative for team actor selection",
+                    policy_relpath,
+                )
+
+        actors = policy.get("actors")
+        if not isinstance(actors, list):
+            self.error("TEAM_ACTORS_SHAPE", "actors must be a list", policy_relpath)
+            actors = []
+        actor_by_id: dict[str, dict[str, Any]] = {}
+        actor_aliases: dict[str, set[str]] = {}
+        for index, actor in enumerate(actors):
+            label = f"actors[{index}]"
+            if not isinstance(actor, dict):
+                self.error("TEAM_ACTOR_SHAPE", f"{label} must be an object", policy_relpath)
+                continue
+            actor_id = actor.get("id")
+            if not isinstance(actor_id, str) or not actor_id:
+                self.error("TEAM_ACTOR_ID", f"{label}.id must be a string", policy_relpath)
+                continue
+            if is_placeholder(actor_id):
+                continue
+            if actor_id in actor_by_id:
+                self.error("TEAM_ACTOR_DUPLICATE", f"duplicate actor {actor_id}", policy_relpath)
+            actor_by_id[actor_id] = actor
+            raw_aliases = actor.get("aliases")
+            names = [
+                actor.get("display_name"),
+                *(raw_aliases if isinstance(raw_aliases, list) else []),
+            ]
+            for name in names:
+                if isinstance(name, str) and name and not is_placeholder(name):
+                    actor_aliases.setdefault(name.casefold(), set()).add(actor_id)
+            for field in [
+                "aliases",
+                "teams",
+                "roles",
+                "responsibilities",
+                "decision_authority",
+                "review_scopes",
+                "priority_scopes",
+                "external_identity_refs",
+            ]:
+                values = actor.get(field)
+                if not isinstance(values, list) or not all(
+                    isinstance(value, str) and value for value in values
+                ):
+                    self.error(
+                        "TEAM_ACTOR_LIST",
+                        f"{label}.{field} must be a string list",
+                        policy_relpath,
+                    )
+        actor_ids = set(actor_by_id)
+
+        priorities = policy.get("priorities")
+        if not isinstance(priorities, list):
+            self.error("TEAM_PRIORITIES_SHAPE", "priorities must be a list", policy_relpath)
+            priorities = []
+        priority_by_id = {
+            item.get("id"): item
+            for item in priorities
+            if isinstance(item, dict)
+            and isinstance(item.get("id"), str)
+            and not is_placeholder(item["id"])
+        }
+        priority_ids = set(priority_by_id)
+
+        if active_index.get("schema_version") != 1:
+            self.error("TEAM_ACTIVE_INDEX_SCHEMA", "schema_version should be 1", index_relpath)
+        if active_index.get("index_kind") != "target-team-active-work-index":
+            self.error(
+                "TEAM_ACTIVE_INDEX_KIND",
+                "index_kind should be target-team-active-work-index",
+                index_relpath,
+            )
+        if active_index.get("source_registry") != registry_relpath:
+            self.error(
+                "TEAM_ACTIVE_INDEX_REGISTRY",
+                f"source_registry should point to {registry_relpath}",
+                index_relpath,
+            )
+        index_entries = active_index.get("entries")
+        if not isinstance(index_entries, list):
+            self.error("TEAM_ACTIVE_INDEX_ENTRIES", "entries must be a list", index_relpath)
+            index_entries = []
+
+        if backend.get("schema_version") != 1:
+            self.error("TEAM_BACKEND_SCHEMA", "schema_version should be 1", backend_relpath)
+        if backend.get("contract_kind") != "target-team-backend-contract":
+            self.error(
+                "TEAM_BACKEND_KIND",
+                "contract_kind should be target-team-backend-contract",
+                backend_relpath,
+            )
+        capabilities = backend.get("capabilities")
+        if not isinstance(capabilities, list) or not all(
+            isinstance(value, str) and value for value in capabilities
+        ):
+            self.error(
+                "TEAM_BACKEND_CAPABILITIES",
+                "capabilities must be a string list",
+                backend_relpath,
+            )
+        for field in [
+            "backend_id",
+            "backend_mode",
+            "provider",
+            "canonical_task_source",
+            "projection_direction",
+            "consistency_model",
+            "write_strategy",
+            "idempotency_policy",
+            "conflict_policy",
+            "permission_policy",
+            "authentication_policy",
+            "validation",
+        ]:
+            value = backend.get(field)
+            if not isinstance(value, str) or not value.strip():
+                self.error(
+                    "TEAM_BACKEND_FIELD",
+                    f"{field} must be a non-empty string",
+                    backend_relpath,
+                )
+
+        tasks: list[Any] = []
+        task_sources: list[str] = []
+        if registry_schema == 1:
+            legacy_tasks = registry.get("tasks")
+            if isinstance(legacy_tasks, list):
+                tasks = legacy_tasks
+                task_sources = [registry_relpath] * len(tasks)
+        elif tasks_path.is_dir():
+            for task_path in sorted(tasks_path.glob("*.json")):
+                task_record = self.load_json_object(task_path, "TEAM_TASK")
+                if task_record is not None:
+                    tasks.append(task_record)
+                    task_sources.append(self.rel(task_path))
 
         task_statuses = {
             "proposed",
@@ -4299,12 +4546,17 @@ class Validator:
         handoff_states = {"none", "pending", "accepted", "rejected", "stale"}
         required_strings = [
             "id",
+            "record_kind",
+            "backend_revision",
             "goal",
             "priority",
             "priority_rationale",
             "priority_decided_by",
             "status",
+            "requested_by_actor_id",
             "owner_actor_id",
+            "last_updated_by_actor_id",
+            "assistant_actor_id",
             "parent_request",
             "coordination_backend_ref",
             "branch_or_worktree",
@@ -4358,6 +4610,11 @@ class Validator:
 
         for index, task in enumerate(tasks):
             label = f"tasks[{index}]"
+            task_source = (
+                task_sources[index]
+                if index < len(task_sources)
+                else registry_relpath
+            )
             if not isinstance(task, dict):
                 self.error(
                     "TEAM_TASK_SHAPE",
@@ -4365,6 +4622,43 @@ class Validator:
                     registry_relpath,
                 )
                 continue
+            if registry_schema == 2:
+                if task.get("schema_version") != 2:
+                    self.error(
+                        "TEAM_TASK_SCHEMA",
+                        f"{label}.schema_version should be 2",
+                        task_source,
+                    )
+                if task.get("record_kind") != "target-team-task":
+                    self.error(
+                        "TEAM_TASK_KIND",
+                        f"{label}.record_kind should be target-team-task",
+                        task_source,
+                    )
+                record_revision = task.get("record_revision")
+                expected_revision = task.get("expected_revision")
+                if not isinstance(record_revision, int) or record_revision < 0:
+                    self.error(
+                        "TEAM_TASK_RECORD_REVISION",
+                        f"{label}.record_revision must be a non-negative integer",
+                        task_source,
+                    )
+                if not isinstance(expected_revision, int) or expected_revision < 0:
+                    self.error(
+                        "TEAM_TASK_EXPECTED_REVISION",
+                        f"{label}.expected_revision must be a non-negative integer",
+                        task_source,
+                    )
+                if (
+                    isinstance(record_revision, int)
+                    and isinstance(expected_revision, int)
+                    and expected_revision != record_revision
+                ):
+                    self.error(
+                        "TEAM_TASK_REVISION_CONFLICT",
+                        f"{label} expected revision does not match current record revision",
+                        task_source,
+                    )
             for field in required_strings:
                 value = task.get(field)
                 if not isinstance(value, str) or not value.strip():
@@ -4438,6 +4732,18 @@ class Validator:
                 )
 
             check_actor(task.get("owner_actor_id"), f"{label}.owner_actor_id")
+            check_actor(
+                task.get("requested_by_actor_id"),
+                f"{label}.requested_by_actor_id",
+            )
+            check_actor(
+                task.get("last_updated_by_actor_id"),
+                f"{label}.last_updated_by_actor_id",
+            )
+            check_actor(
+                task.get("assistant_actor_id"),
+                f"{label}.assistant_actor_id",
+            )
             check_actor(task.get("priority_decided_by"), f"{label}.priority_decided_by")
             reviewers = task.get("reviewer_actor_ids")
             if isinstance(reviewers, list):
@@ -4445,6 +4751,30 @@ class Validator:
                     check_actor(
                         reviewer,
                         f"{label}.reviewer_actor_ids[{reviewer_index}]",
+                    )
+
+            priority_decider = task.get("priority_decided_by")
+            priority_policy = priority_by_id.get(priority)
+            if isinstance(priority_policy, dict) and concrete(priority_decider):
+                assigners = priority_policy.get("assigner_actor_ids")
+                if isinstance(assigners, list) and any(concrete(item) for item in assigners):
+                    if priority_decider not in assigners:
+                        self.error(
+                            "TEAM_PRIORITY_AUTHORITY",
+                            f"{label}.priority_decided_by lacks authority for {priority}",
+                            task_source,
+                        )
+
+            review_policy = policy.get("review_policy")
+            if isinstance(review_policy, dict) and review_policy.get(
+                "implementer_reviewer_separation"
+            ) == "required":
+                owner = task.get("owner_actor_id")
+                if concrete(owner) and isinstance(reviewers, list) and owner in reviewers:
+                    self.error(
+                        "TEAM_REVIEWER_SEPARATION",
+                        f"{label} assigns its implementer as reviewer",
+                        task_source,
                     )
 
             overlap = task.get("overlap")
@@ -4503,6 +4833,11 @@ class Validator:
                     "expires_at",
                     "base_revision",
                     "state",
+                    *(
+                        ["lease_id", "heartbeat_at", "backend_revision"]
+                        if registry_schema == 2
+                        else []
+                    ),
                 ]:
                     value = claim.get(field)
                     if not isinstance(value, str) or not value.strip():
@@ -4529,12 +4864,60 @@ class Validator:
                     )
                 check_actor(claim.get("actor_id"), f"{label}.claim.actor_id")
                 if claim_state == "active":
-                    for field in ["actor_id", "claimed_at", "base_revision"]:
+                    for field in [
+                        "actor_id",
+                        "claimed_at",
+                        "base_revision",
+                        *(["lease_id"] if registry_schema == 2 else []),
+                    ]:
                         if not concrete(claim.get(field)):
                             self.error(
                                 "TEAM_ACTIVE_CLAIM_INCOMPLETE",
                                 f"{label}.claim.{field} is required for an active claim",
                                 registry_relpath,
+                            )
+
+            if registry_schema == 2:
+                transition = task.get("transition")
+                if not isinstance(transition, dict):
+                    self.error(
+                        "TEAM_TRANSITION_SHAPE",
+                        f"{label}.transition must be an object",
+                        task_source,
+                    )
+                else:
+                    transition_from = transition.get("from")
+                    transition_to = transition.get("to")
+                    transition_actor = transition.get("changed_by_actor_id")
+                    check_actor(
+                        transition_actor,
+                        f"{label}.transition.changed_by_actor_id",
+                    )
+                    if concrete(transition_to) and transition_to != status:
+                        self.error(
+                            "TEAM_TRANSITION_STATUS",
+                            f"{label}.transition.to must match task status",
+                            task_source,
+                        )
+                    transitions = policy.get("state_transitions")
+                    if (
+                        concrete(transition_from)
+                        and concrete(transition_to)
+                        and isinstance(transitions, list)
+                    ):
+                        matching = [
+                            item
+                            for item in transitions
+                            if isinstance(item, dict)
+                            and item.get("from") == transition_from
+                            and item.get("to") == transition_to
+                        ]
+                        if not matching:
+                            self.error(
+                                "TEAM_TRANSITION_NOT_ALLOWED",
+                                f"{label} transition {transition_from} -> {transition_to} "
+                                "is absent from the team policy",
+                                task_source,
                             )
 
             if status in {"claimed", "active"} and claim_state != "active":
@@ -4606,6 +4989,23 @@ class Validator:
                             f"{label}.{field} is required for merge-ready evidence",
                             registry_relpath,
                         )
+                if registry_schema == 2:
+                    reviewed_head = task.get("reviewed_head_revision")
+                    reviewed_base = task.get("reviewed_base_revision")
+                    if not concrete(reviewed_head) or not concrete(reviewed_base):
+                        self.error(
+                            "TEAM_MERGE_READY_REVIEW_REVISIONS",
+                            f"{label} must record reviewed head and base revisions",
+                            task_source,
+                        )
+                    elif reviewed_head != task_revision or reviewed_base != task.get(
+                        "base_revision"
+                    ):
+                        self.error(
+                            "TEAM_MERGE_READY_REVIEW_STALE",
+                            f"{label} review revisions do not match task evidence",
+                            task_source,
+                        )
                 if (
                     current_head
                     and concrete(task_revision)
@@ -4617,6 +5017,161 @@ class Validator:
                         "HEAD; confirm its selected branch or worktree before merge",
                         registry_relpath,
                     )
+
+        for alias, matching_ids in actor_aliases.items():
+            if len(matching_ids) > 1:
+                self.warn(
+                    "TEAM_ACTOR_ALIAS_AMBIGUOUS",
+                    f"actor name or alias {alias!r} resolves to multiple actor IDs",
+                    policy_relpath,
+                )
+
+        index_ids: set[str] = set()
+        for index, entry in enumerate(index_entries):
+            label = f"entries[{index}]"
+            if not isinstance(entry, dict):
+                self.error(
+                    "TEAM_ACTIVE_INDEX_ENTRY",
+                    f"{label} must be an object",
+                    index_relpath,
+                )
+                continue
+            entry_id = entry.get("task_id")
+            if not concrete(entry_id):
+                self.error(
+                    "TEAM_ACTIVE_INDEX_TASK_ID",
+                    f"{label}.task_id must be a concrete string",
+                    index_relpath,
+                )
+                continue
+            if entry_id in index_ids:
+                self.error(
+                    "TEAM_ACTIVE_INDEX_DUPLICATE",
+                    f"duplicate active task {entry_id}",
+                    index_relpath,
+                )
+            index_ids.add(str(entry_id))
+            for field in [
+                "task_record",
+                "status",
+                "owner_actor_id",
+                "branch_or_worktree",
+                "record_revision",
+                "backend_revision",
+            ]:
+                if field not in entry:
+                    self.error(
+                        "TEAM_ACTIVE_INDEX_FIELD",
+                        f"{label} missing {field}",
+                        index_relpath,
+                    )
+            for field in [
+                "project_areas",
+                "changed_fact_ids",
+                "canonical_owner_refs",
+                "contract_or_dependency_refs",
+                "expected_surfaces",
+            ]:
+                values = entry.get(field)
+                if not isinstance(values, list) or not all(
+                    isinstance(value, str) and value for value in values
+                ):
+                    self.error(
+                        "TEAM_ACTIVE_INDEX_LIST",
+                        f"{label}.{field} must be a string list",
+                        index_relpath,
+                    )
+
+        active_statuses = {
+            "ready",
+            "claimed",
+            "active",
+            "blocked",
+            "review",
+            "merge-ready",
+            "stale",
+        }
+        local_active_ids = {
+            str(task.get("id"))
+            for task in tasks
+            if isinstance(task, dict)
+            and concrete(task.get("id"))
+            and task.get("status") in active_statuses
+        }
+        backend_mode = backend.get("backend_mode")
+        if registry_schema == 2 and backend_mode in {"repository", "both"}:
+            missing_from_index = sorted(local_active_ids - index_ids)
+            extra_in_index = sorted(index_ids - local_active_ids)
+            if missing_from_index:
+                self.error(
+                    "TEAM_ACTIVE_INDEX_INCOMPLETE",
+                    f"active-work index misses task records {missing_from_index}",
+                    index_relpath,
+                )
+            if extra_in_index:
+                self.error(
+                    "TEAM_ACTIVE_INDEX_STALE",
+                    f"active-work index references absent or inactive tasks {extra_in_index}",
+                    index_relpath,
+                )
+
+        if local_identity_path.is_file():
+            local_identity = self.load_json_object(
+                local_identity_path,
+                "TEAM_LOCAL_IDENTITY",
+            )
+            if local_identity is not None:
+                if local_identity.get("schema_version") != 1:
+                    self.error(
+                        "TEAM_LOCAL_IDENTITY_SCHEMA",
+                        "schema_version should be 1",
+                        local_identity_relpath,
+                    )
+                if local_identity.get("identity_kind") != "local-team-identity":
+                    self.error(
+                        "TEAM_LOCAL_IDENTITY_KIND",
+                        "identity_kind should be local-team-identity",
+                        local_identity_relpath,
+                    )
+                selected_actor = local_identity.get("actor_id")
+                if concrete(selected_actor):
+                    if selected_actor not in actor_by_id:
+                        self.error(
+                            "TEAM_LOCAL_IDENTITY_UNKNOWN",
+                            f"selected actor {selected_actor!r} is absent from team policy",
+                            local_identity_relpath,
+                        )
+                    elif actor_by_id[selected_actor].get("status") != "active":
+                        self.error(
+                            "TEAM_LOCAL_IDENTITY_INACTIVE",
+                            f"selected actor {selected_actor!r} is not active",
+                            local_identity_relpath,
+                        )
+                selected_policy_revision = local_identity.get("policy_revision")
+                current_policy_revision = policy.get("policy_revision")
+                if (
+                    concrete(selected_policy_revision)
+                    and concrete(current_policy_revision)
+                    and selected_policy_revision != current_policy_revision
+                ):
+                    self.warn(
+                        "TEAM_LOCAL_IDENTITY_STALE",
+                        "local actor selection was made against another policy revision",
+                        local_identity_relpath,
+                    )
+                if local_identity.get("selected_by") != "explicit-user-request":
+                    self.error(
+                        "TEAM_LOCAL_IDENTITY_SELECTION",
+                        "local actor selection must record an explicit user request",
+                        local_identity_relpath,
+                    )
+            ignore_path = self.target_path(".ai/.gitignore")
+            if not ignore_path.is_file() or "local/" not in self.read_text(ignore_path):
+                self.error(
+                    "TEAM_LOCAL_IDENTITY_NOT_IGNORED",
+                    ".ai/local must be ignored before storing local identity",
+                    ".ai/.gitignore",
+                )
 
         registry_revision = registry.get("evidence_revision")
         if (
@@ -4658,10 +5213,10 @@ class Validator:
             "TEAM_CONTEXT_OVERLAY",
         )
         if overlay is not None:
-            if overlay.get("schema_version") != 1:
+            if overlay.get("schema_version") != 2:
                 self.error(
                     "TEAM_CONTEXT_OVERLAY_SCHEMA",
-                    "schema_version should be 1",
+                    "schema_version should be 2",
                     descriptor,
                 )
             if overlay.get("overlay_kind") != "target-team-context-overlay":
@@ -4684,16 +5239,38 @@ class Validator:
                     descriptor,
                 )
             else:
+                if required_context != [index_relpath]:
+                    self.error(
+                        "TEAM_CONTEXT_OVERLAY_PREFLIGHT",
+                        "team-active required_context should contain only the "
+                        "compact active-work index",
+                        descriptor,
+                    )
+            conditional_context = overlay.get("conditional_context")
+            if not isinstance(conditional_context, list):
+                self.error(
+                    "TEAM_CONTEXT_OVERLAY_CONDITIONAL",
+                    "team-active conditional_context must be a list",
+                    descriptor,
+                )
+            else:
+                conditional_paths = {
+                    entry.get("path")
+                    for entry in conditional_context
+                    if isinstance(entry, dict)
+                }
                 for required_path in [
                     ".ai/framework/team-collaboration.md",
+                    policy_relpath,
                     model_relpath,
                     registry_relpath,
+                    backend_relpath,
                     ".ai/assistant/gates/team-collaboration.md",
                 ]:
-                    if required_path not in required_context:
+                    if required_path not in conditional_paths:
                         self.error(
                             "TEAM_CONTEXT_OVERLAY_PATH",
-                            f"team-active required_context is missing {required_path}",
+                            f"team-active conditional context is missing {required_path}",
                             descriptor,
                         )
 
@@ -4872,13 +5449,19 @@ class Validator:
             self.target_path(".ai/assistant/maturity-profile.md"),
             self.target_path(".ai/assistant/gates/checklist.md"),
             self.target_path(".ai/assistant/operation-catalog.json"),
+            self.target_path(".ai/project/team-policy.json"),
             self.target_path(".ai/project/team-operating-model.md"),
             self.target_path(".ai/assistant/team/context-overlay.json"),
             self.target_path(".ai/assistant/team/work-registry.json"),
+            self.target_path(".ai/assistant/team/active-work-index.json"),
+            self.target_path(".ai/assistant/team/backend-contract.json"),
+            self.target_path(".ai/assistant/team/task-record-template.json"),
             self.target_path(".ai/assistant/gates/team-collaboration.md"),
             self.target_path(".ai/assistant/templates/team-checkpoint.md"),
             self.target_path(".ai/assistant/templates/team-handoff.md"),
             self.target_path(".ai/assistant/templates/team-decision-record.md"),
+            self.target_path(".ai/assistant/templates/team-identity.example.json"),
+            self.target_path(".ai/assistant/templates/team-collaboration-review.md"),
         ]
         flows = self.target_path(".ai/assistant/flows")
         if flows.is_dir():

@@ -333,13 +333,19 @@ Next action: `{CHANGE_PACKAGES_NEXT_ACTION}`
 
 Module: `team-collaboration`
 State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
-Owner or file: `.ai/project/team-operating-model.md`
+Owner or file: `.ai/project/team-policy.json`
 Required files:
 
 - `.ai/framework/team-collaboration.md`
+- `.ai/.gitignore`
+- `.ai/project/team-policy.json`
 - `.ai/project/team-operating-model.md`
 - `.ai/assistant/team/context-overlay.json`
 - `.ai/assistant/team/work-registry.json`
+- `.ai/assistant/team/active-work-index.json`
+- `.ai/assistant/team/backend-contract.json`
+- `.ai/assistant/team/task-record-template.json`
+- `.ai/assistant/flows/team-identity.flow.md`
 - `.ai/assistant/flows/team-task-coordination.flow.md`
 - `.ai/assistant/flows/team-handoff.flow.md`
 - `.ai/assistant/flows/team-decision.flow.md`
@@ -348,6 +354,9 @@ Required files:
 - `.ai/assistant/templates/team-checkpoint.md`
 - `.ai/assistant/templates/team-handoff.md`
 - `.ai/assistant/templates/team-decision-record.md`
+- `.ai/assistant/templates/team-identity.example.json`
+- `.ai/assistant/templates/team-collaboration-review.md`
+- `.ai/assistant/skills/team-collaboration/SKILL.md`
 
 Reason: `{REASON}`
 Validation or review: `{VALIDATION_OR_REVIEW}`

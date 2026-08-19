@@ -104,6 +104,14 @@ routes, gate, adapted skill, RED/GREEN/refactor evidence, bridge coverage, and
 target-validator support. It does not prove command execution, expected RED
 causality, assertion quality, or contract correctness.
 
+`tools/check_team_collaboration.py` validates the source contract for
+target-owned actors, local identity selection, active-work routing, per-task
+records, backend capabilities, collaboration operations, and aggregate review.
+`tools/check_team_collaboration_scenarios.py` then exercises target-validator
+fixtures for concurrency, review separation, index freshness, identity, and
+merge-evidence failure modes. Neither checker authenticates people or verifies
+external tracker state.
+
 `tools/validate_extension_package.py` performs offline, non-executing
 structural inspection and deterministic digest calculation for a local
 extension checkout. `tools/check_extensions.py` validates the framework,

@@ -175,8 +175,9 @@ defines:
 - task-specific maturity and blocking criteria
 - migration notes for framework upgrades
 - prompt-injection and source-access policies for imported AI infrastructure
-- team operating model, coordination backend, lazy overlay, maintained
-  registry or projection, and review policy when team collaboration is enabled
+- structured team policy, local attribution boundary, coordination backend
+  contract, lazy active-work overlay, maintained per-task records or projection,
+  concurrency control, and review policy when team collaboration is enabled
 
 ## Required Project Adapter
 
@@ -220,8 +221,9 @@ defines:
   evidence when large or resumable operations are expected
 - change-package record, retention policy, semantic scope, companion decisions,
   and provenance policy when coherent material-change evidence is expected
-- target actors, authority, priorities, task source, synchronization, storage,
-  privacy, conflict, and review rules when team collaboration is enabled
+- target actors, local identity mapping, authority, priorities, task source,
+  backend capabilities, synchronization, concurrency, storage, privacy,
+  conflict, and review rules when team collaboration is enabled
 - operation catalog, single entry, automatic routing, read-only health,
   risk-gated preview, help, and post-install/update chat-message templates when
   the target wants discoverable assistant requests

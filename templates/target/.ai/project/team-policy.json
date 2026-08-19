@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "policy_kind": "target-team-policy",
+  "project": "{PROJECT_NAME}",
+  "module_state": "{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}",
+  "policy_revision": "{TARGET_TEAM_POLICY_REVISION}",
+  "owner_actor_id": "{TEAM_POLICY_OWNER_ACTOR_ID}",
+  "last_reviewed": "{LAST_REVIEW_DATE}",
+  "review_cadence": "{TEAM_POLICY_REVIEW_CADENCE}",
+  "identity": {
+    "local_identity_path": ".ai/local/team-identity.json",
+    "selection_mode": "explicit-user-or-verified-provider",
+    "unknown_actor_action": "propose-enrollment",
+    "git_identity_is_authoritative": false,
+    "authentication_boundary": "local-selection-is-attribution-not-authentication",
+    "identity_proof_required_for": [
+      "{TARGET_ACTION_REQUIRING_VERIFIED_IDENTITY_OR_NONE}"
+    ]
+  },
+  "coordination_backend": {
+    "mode": "{REPOSITORY_EXTERNAL_TRACKER_BOTH_OR_OTHER}",
+    "canonical_task_source": "{TARGET_TASK_SOURCE_OF_TRUTH}",
+    "synchronization_direction": "{BACKEND_TO_REGISTRY_REGISTRY_TO_BACKEND_BIDIRECTIONAL_OR_MANUAL}",
+    "branch_or_worktree_policy": "{TARGET_BRANCH_OR_WORKTREE_POLICY}",
+    "claim_enforcement": "{ADVISORY_OR_TARGET_ENFORCED}",
+    "claim_staleness_policy": "{TARGET_CLAIM_STALENESS_POLICY}",
+    "storage_policy": "{TARGET_TEAM_RECORD_STORAGE_POLICY}",
+    "retention_policy": "{TARGET_TEAM_RECORD_RETENTION_POLICY}",
+    "privacy_policy": "{TARGET_TEAM_RECORD_PRIVACY_POLICY}"
+  },
+  "actors": [
+    {
+      "id": "{ACTOR_ID}",
+      "display_name": "{ACTOR_DISPLAY_NAME_OR_ROLE}",
+      "aliases": [
+        "{ACTOR_ALIAS_OR_NONE}"
+      ],
+      "actor_type": "{HUMAN_IMPLEMENTER_HUMAN_REVIEWER_AI_ASSISTANT_AUTOMATION_CI_OR_DECISION_OWNER}",
+      "status": "{ACTIVE_INACTIVE_OR_EXTERNAL}",
+      "teams": [
+        "{TARGET_TEAM_OR_NONE}"
+      ],
+      "roles": [
+        "{TARGET_ROLE_ID}"
+      ],
+      "responsibilities": [
+        "{RESPONSIBILITY}"
+      ],
+      "decision_authority": [
+        "{DECISION_TYPE_OR_NONE}"
+      ],
+      "review_scopes": [
+        "{REVIEW_SCOPE_OR_NONE}"
+      ],
+      "priority_scopes": [
+        "{PRIORITY_ID_OR_NONE}"
+      ],
+      "escalation_actor_id": "{ESCALATION_ACTOR_ID}",
+      "external_identity_refs": [
+        "{TARGET_IDENTITY_REFERENCE_OR_NONE}"
+      ]
+    }
+  ],
+  "priorities": [
+    {
+      "id": "{PRIORITY_ID}",
+      "rank": "{TARGET_PRIORITY_ORDER}",
+      "meaning": "{TARGET_PRIORITY_MEANING}",
+      "assigner_actor_ids": [
+        "{PRIORITY_DECISION_ACTOR_ID}"
+      ],
+      "required_rationale": "{PRIORITY_RATIONALE_REQUIREMENT}",
+      "deadline_or_dependency_policy": "{DEADLINE_OR_DEPENDENCY_POLICY}",
+      "preemption_rule": "{TARGET_PREEMPTION_RULE}",
+      "escalation_rule": "{TARGET_PRIORITY_ESCALATION_RULE}"
+    }
+  ],
+  "review_policy": {
+    "implementer_reviewer_separation": "{REQUIRED_OPTIONAL_OR_NOT_APPLICABLE}",
+    "owner_map": "{TARGET_OWNER_MAP}",
+    "required_review_scopes": [
+      "{TARGET_REQUIRED_REVIEW_SCOPE}"
+    ],
+    "merge_authority_actor_ids": [
+      "{TARGET_MERGE_AUTHORITY_ACTOR_ID}"
+    ],
+    "merge_readiness_validation": "{TARGET_MERGE_READINESS_VALIDATION_OR_REVIEW}"
+  },
+  "decision_owners": {
+    "business": ["{TARGET_BUSINESS_DECISION_OWNER_ACTOR_ID}"],
+    "architecture": ["{TARGET_ARCHITECTURE_DECISION_OWNER_ACTOR_ID}"],
+    "data": ["{TARGET_DATA_DECISION_OWNER_ACTOR_ID}"],
+    "security": ["{TARGET_SECURITY_DECISION_OWNER_ACTOR_ID}"],
+    "adapter": ["{TARGET_ADAPTER_DECISION_OWNER_ACTOR_ID}"]
+  },
+  "state_transitions": [
+    {
+      "from": "{TASK_STATE}",
+      "to": "{NEXT_TASK_STATE}",
+      "allowed_roles": [
+        "{TARGET_ROLE_ID}"
+      ],
+      "required_evidence": [
+        "{REQUIRED_TRANSITION_EVIDENCE_OR_NONE}"
+      ]
+    }
+  ],
+  "conflict_policy": {
+    "fact_overlap_source": ".ai/project/source-of-truth-registry.md",
+    "consistency_map": ".ai/project/consistency-map.json",
+    "shared_contract_policy": "{TARGET_SHARED_CONTRACT_COORDINATION_POLICY}",
+    "sequencing_policy": "{TARGET_SEQUENCING_POLICY}",
+    "unresolved_overlap_action": "{COORDINATE_SEQUENCE_MERGE_TASKS_OR_BLOCK}"
+  },
+  "known_gaps": [
+    "{TEAM_POLICY_GAP}"
+  ]
+}

@@ -13,7 +13,13 @@ approval, accepts project facts, or authorizes implementation.
 ## Target Sources
 
 - Team operating model: `.ai/project/team-operating-model.md`
+- Canonical team policy: `.ai/project/team-policy.json`
 - Work registry: `.ai/assistant/team/work-registry.json`
+- Active-work index: `.ai/assistant/team/active-work-index.json`
+- Selected task record: `.ai/assistant/team/tasks/{TASK_ID}.json` or the target
+  backend projection
+- Backend contract: `.ai/assistant/team/backend-contract.json`
+- Current local actor: `.ai/local/team-identity.json` when selected
 - Source-of-truth registry: `.ai/project/source-of-truth-registry.md`
 - Consistency map: `.ai/project/consistency-map.json` when enabled
 - Team gate: `.ai/assistant/gates/team-collaboration.md`
@@ -26,7 +32,8 @@ approval, accepts project facts, or authorizes implementation.
 For `Alatyr team status`:
 
 1. Keep allowed actions `read-only`.
-2. Read the operating model and compact active-task projection.
+2. Read the active-work index before selected task records or the operating
+   model.
 3. Report evidence time and revision, module/backend state, active tasks,
    blocked tasks, stale claims, unresolved overlaps, pending handoffs, and
    review or merge-ready tasks.
@@ -41,13 +48,15 @@ For `Alatyr start {TASK}`:
 
 1. Confirm the task goal, non-goals, priority evidence, owner, reviewers,
    allowed actions, selected base profile, and project areas.
-2. Resolve changed-fact IDs and canonical owners as far as current evidence
+2. Resolve the requesting and updating actor from explicit or local identity;
+   stop if attribution is required and unresolved.
+3. Resolve changed-fact IDs and canonical owners as far as current evidence
    permits.
-3. Compare the proposed task with active registry entries before assigning
+4. Compare the proposed task with active index entries before assigning
    `ready` or `claimed`.
-4. Record unresolved facts, dependencies, approval needs, and overlap state.
-5. Create the task in the canonical backend or registry according to the
-   configured synchronization direction.
+5. Record unresolved facts, dependencies, approval needs, and overlap state.
+6. Create one task record in the canonical backend or repository according to
+   the configured synchronization direction, then regenerate the compact index.
 
 Do not invent actors, priority, authority, active history, or external tracker
 state.
@@ -56,12 +65,16 @@ state.
 
 For `Alatyr claim {TASK_ID}`:
 
-1. Check the task, current revision, actor ID, claim policy, and existing claim.
+1. Check the task, current task/backend revisions, current actor ID, claim
+   policy, and existing claim.
 2. Re-run changed-fact, contract, dependency, generated-artifact, migration,
    and secondary file/surface overlap review.
 3. Stop or sequence when overlap is conflicting or unresolved.
-4. Record claim actor, mode, time, expiry/staleness evidence, and base revision.
-5. Keep claims advisory unless the target backend explicitly enforces them.
+4. Require the observed record revision for the write. Stop and refresh on a
+   task or backend revision mismatch.
+5. Record claim lease ID, actor, mode, time, heartbeat, expiry/staleness
+   evidence, and base/backend revisions.
+6. Keep claims advisory unless the target backend explicitly enforces them.
 
 Claiming a task does not approve its changes or mark implementation started.
 
@@ -92,8 +105,10 @@ For `Alatyr checkpoint {TASK_ID}`:
 3. Record completed work, changed facts, decisions, diff/revision, review
    state and evidence, validation, approvals, invalidated assumptions,
    blockers, residual risk, minimum resume context, and next action.
-4. Update only the checkpoint reference and normalized task state in the work
-   registry or configured backend.
+4. Recheck the observed task/backend revision, then update only the selected
+   task checkpoint reference and normalized state through the configured
+   atomic write strategy.
+5. Regenerate the compact active-work index after a successful write.
 
 ## Release
 
@@ -103,12 +118,15 @@ For `Alatyr release {TASK_ID}`:
 2. Record whether work is paused, handed off, blocked, cancelled, or still
    active without a claim.
 3. Preserve checkpoint, diff, validation, approval, and residual-risk evidence.
-4. Mark the claim released with time and revision.
+4. Stop on a task/backend revision mismatch; otherwise mark the claim released
+   with actor, time, revision, and lease evidence.
+5. Regenerate the compact active-work index after a successful write.
 
 Releasing a claim does not mark the task complete or discard unresolved work.
 
 ## Final Evidence
 
-Report the operation, task and actor IDs, evidence revision, priority,
-changed-fact overlap, claim state, backend synchronization result, approvals,
-validation, residual risk, and next responsible actor.
+Report the operation, requesting/updating/assistant actor IDs, task and backend
+revisions, compare-and-swap result, evidence revision, priority, changed-fact
+overlap, claim state, backend synchronization result, approvals, validation,
+residual risk, and next responsible actor.

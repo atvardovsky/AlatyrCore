@@ -75,9 +75,13 @@ For `Alatyr status` or `Alatyr doctor`, route directly to `adapter-health` with
    smallest missing question. Do not edit while ambiguity remains material.
 9. Use the `large-task` operation only for genuinely multi-workstream,
    cross-boundary, budget-exceeding, or resumable work.
-10. Use the `team-active` overlay only for enabled team operations. Load the
-    selected task, relevant overlaps, and one team flow; do not load the whole
-    registry history or infer unavailable external tracker state.
+10. When team collaboration is enabled, run the compact active-work preflight
+    before every state-changing operation. Read only the active index first.
+    Expand `team-active` for an explicit team operation, a task/backend/branch
+    match, possible changed-fact/owner/contract/dependency/surface overlap, or
+    unresolved index evidence. Load the selected task, relevant overlaps, and
+    one team flow; do not load unrelated records or infer unavailable tracker
+    state.
 
 ## Pre-Change Decision
 
@@ -108,6 +112,9 @@ record that preview was skipped and why.
   source access, provenance, prompt-injection, approval, and safety rules
   before fetching or integration.
 - `Alatyr team status` routes to read-only `team-status`.
+- `Alatyr set actor`, `Alatyr who am I`, and `Alatyr clear actor` route to
+  `team-identity`. Selection writes ignored local state only and does not
+  authenticate the user or change Git configuration.
 - `Alatyr enable test-first`, `Alatyr configure TDD`, `Alatyr review
   test-first`, and `Alatyr disable test-first` route to
   `test-first-configuration`, which may assess a disabled module.

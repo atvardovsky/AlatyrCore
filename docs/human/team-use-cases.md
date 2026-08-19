@@ -79,6 +79,13 @@ Source checks can validate bridge structure, but equivalent runtime behavior
 requires external evidence. See the
 [bridge capability matrix](../../framework/bridge-capability-matrix.md).
 
+When the optional team module is enabled, compatible assistants can also use
+the same actor policy, compact active-work projection, conflict-safe task
+records, checkpoints, handoffs, decisions, and revision-bound review evidence.
+Current-user selection remains ignored local attribution and does not grant
+authentication or authority. See the
+[team collaboration workflow](team-collaboration-workflow.md).
+
 ## Detecting Contradictions
 
 When implementation and intended architecture disagree, AlatyrCore requires
@@ -95,4 +102,3 @@ These use cases are supported by implemented framework contracts and target
 templates. Their practical effect on onboarding time, rework, delivery speed,
 quality, and cost remains dependent on target adaptation and requires
 validation in real teams.
-

@@ -186,6 +186,7 @@ python3 tools/check_scaffold_profiles.py
 python3 tools/check_source_of_truth_registry.py
 python3 tools/check_target_adapter_validator.py
 python3 tools/check_team_collaboration.py
+python3 tools/check_team_collaboration_scenarios.py
 python3 tools/check_versioning.py
 python3 tools/render_assistant_capability_index.py
 python3 tools/render_operation_index.py

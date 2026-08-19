@@ -44,9 +44,10 @@ Default routing:
 - Add the `large-or-resumable` task-scale overlay only for multi-workstream,
   cross-boundary, budget-exceeding, or resumable work. Small tasks should not
   create operation packets.
-- Add the `team-active` overlay only for team task, claim, conflict,
-  checkpoint, handoff, decision, review, merge-check, or release work. Keep
-  unrelated active tasks and team history out of context.
+- In an enabled team project, check the compact active-work index before a
+  state-changing operation. Expand `team-active` only for explicit team work,
+  a selected task/branch match, possible logical overlap, or unresolved index
+  evidence. Keep unrelated tasks and team history out of context.
 
 ## Quick Operations
 
@@ -93,9 +94,15 @@ state without editing.
 Flow: `.ai/assistant/flows/team-task-coordination.flow.md`
 Minimum input: optional team, area, actor, or task scope.
 
+Operation: `team-identity`
+Use when: selecting, inspecting, or clearing the current local actor.
+Flow: `.ai/assistant/flows/team-identity.flow.md`
+Minimum input: action and actor ID or name for selection.
+
 Use `Alatyr architecture` for project pattern and architecture discussion. Use
-`Alatyr diagram` for a capability-checked diagram view and `Alatyr team status`
-for the compact team view. When `code-documentation` is enabled, use
+`Alatyr diagram` for a capability-checked diagram view, `Alatyr team status`
+for the compact team view, and `Alatyr set actor <actor-id-or-name>` to select
+local attribution. When `code-documentation` is enabled, use
 `propose comment style`, `document code`, `generate code docs`, or
 `review code documentation`; the assistant selects a bounded accepted profile.
 When `project-vocabulary` is enabled, use `Alatyr glossary`, `Alatyr define

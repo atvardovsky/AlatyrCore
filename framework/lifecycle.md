@@ -60,8 +60,9 @@ Before upgrading framework files in a target project:
 7. Compare supported assistant bridge needs and limitations.
 8. Identify new approval, testing, security, diagram, or validation guidance.
 9. Compare required core profile and optional module states.
-   When `team-collaboration` is enabled, compare its rule, registry schema,
-   lazy overlay, operation routes, and target operating model.
+   When `team-collaboration` is enabled, compare its rule, structured policy,
+   local-identity boundary, registry and task schemas, active-work index,
+   backend contract, lazy overlay, operation routes, and operating model.
    When `change-packages` is enabled, compare its record schema, semantic
    approval fields, provenance policy, lazy route, and validator support.
    When `code-documentation` is enabled, compare its catalog/profile schemas,
@@ -137,8 +138,10 @@ Framework lifecycle notes should record:
 - migration-assessment evidence and intentionally omitted context
 - adapter recheck results for installed framework updates
 - help/routing and post-update chat-message migration needs
-- team-collaboration rule, registry schema, lazy route, active-record
-  preservation, and post-update stale-state review when that module is enabled
+- team-collaboration rule, policy, identity boundary, registry/task schemas,
+  active-work route, backend contract, optimistic-concurrency behavior,
+  schema-1 record migration, active-record preservation, and post-update stale-
+  state review when that module is enabled
 - change-package rule, record schema, lazy route, target retention policy,
   provenance grades, and validator migration when that module is enabled
 - code-documentation rule, catalog/profile schemas, source-set selection,

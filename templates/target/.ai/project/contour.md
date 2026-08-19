@@ -35,7 +35,8 @@ Replace placeholders with target facts before accepting installation.
 - target team actors and roles, decision authority, priority policy, required
   review, escalation, coordination backend, synchronization, retention,
   privacy, and accepted business or architecture decisions when team
-  collaboration is enabled
+  collaboration is enabled; machine-relevant team policy is canonical in
+  `.ai/project/team-policy.json`
 
 ## Does Not Own
 

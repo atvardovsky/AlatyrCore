@@ -42,6 +42,10 @@ Replace placeholders with target facts before accepting installation.
   merge-readiness evidence when the optional module is enabled; project-owned
   actors, authority, priorities, and accepted decisions remain in the project
   contour
+- ignored current-actor selection, compact active-work preflight, per-task
+  record mechanics, optimistic concurrency, and coordination-backend contracts
+  when team collaboration is enabled; local selection is attribution, not
+  authentication or authority
 - documentation-sync rules
 - code-documentation intent routing, accepted-profile selection, adapted skill,
   generator execution, and derived-output evidence when the optional module is

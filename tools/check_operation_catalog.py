@@ -34,6 +34,7 @@ EXPECTED_OPERATIONS = {
     "recheck-after-framework-update",
     "product-change",
     "large-task",
+    "team-identity",
     "team-status",
     "team-task",
     "team-conflict-review",

@@ -33,6 +33,8 @@ unclear state, use the note/message named by `.ai/README.md`.
 - Checks: `{TARGET_VALIDATION}`.
 - Security/live services: `{TARGET_SECURITY_POLICY}`.
 - Diagrams/artifacts: `{TARGET_DIAGRAM_POLICY}`.
+- Team policy and current attribution when enabled:
+  `.ai/project/team-policy.json` and ignored `.ai/local/team-identity.json`.
 - AI infrastructure: `.ai/assistant/ai-infrastructure-router.json` and its
   source-access and prompt-injection policies.
 

@@ -27,7 +27,7 @@ Entry points:
 - `.ai/project/documentation/catalog.json` and `.ai/project/documentation/profiles.json` when code documentation is enabled
 - `.ai/project/vocabulary/catalog.json`, `.ai/project/vocabulary/terms.json`, and `.ai/project/vocabulary/data-dictionary-links.json` when project vocabulary is enabled
 - `.ai/project/testing/test-first-policy.json` when test-first development is enabled
-- `.ai/project/team-operating-model.md` and `.ai/assistant/team/work-registry.json` when team collaboration is enabled
+- `.ai/project/team-policy.json`, `.ai/assistant/team/active-work-index.json`, and `.ai/assistant/team/work-registry.json` when team collaboration is enabled
 - `.ai/assistant/maturity-profile.md`
 - `.ai/assistant/bridge-capability-matrix.md`
 - `.ai/assistant/assistant-capabilities.json`
@@ -48,7 +48,7 @@ Installed operation help:
 - Clear development requests route automatically; operation IDs are optional.
 - Risky or cross-boundary changes show a pre-change preview before edits.
 - Use `.ai/assistant/templates/operation-request.md` for structured requests.
-- When team collaboration is enabled, use `Alatyr team status`, `Alatyr start`, `Alatyr claim`, `Alatyr conflicts`, `Alatyr checkpoint`, `Alatyr handoff`, `Alatyr decision`, `Alatyr review`, `Alatyr merge check`, or `Alatyr release`.
+- When team collaboration is enabled, use `Alatyr set actor <actor>`, `Alatyr who am I`, `Alatyr team status`, `Alatyr start`, `Alatyr claim`, `Alatyr conflicts`, `Alatyr checkpoint`, `Alatyr handoff`, `Alatyr decision`, `Alatyr review`, `Alatyr merge check`, or `Alatyr release`. Actor selection is local attribution, not authentication or authority.
 - When architecture knowledge is enabled, use `Alatyr architecture` to inventory, explain, discuss, compare, review, or document project architecture and patterns.
 
 Available next actions:
@@ -76,7 +76,7 @@ Available next actions:
 - Change packages activate automatically for coherent material outcomes,
   semantic multi-surface approval, audit, or publishable provenance when the
   optional module is enabled; ordinary local tasks do not create one.
-- `team-status` and related team operations: coordinate target-owned actors, tasks, changed-fact conflicts, handoffs, decisions, reviews, and revision-bound merge readiness when the optional module is enabled.
+- `team-identity`, `team-status`, and related team operations: select ignored local attribution, coordinate target-owned actors and conflict-safe task records, run active-work preflight, and preserve revision-bound handoff, decision, review, and merge evidence when enabled.
 - `ai-infrastructure-inventory`: check existing AI instructions, prompts, skills, wrappers, bridges, rules, MCP/tool configs, gates, and checkers. Alias: `alatyr-ai-inventory`.
 - `ai-infrastructure-recommendation`: suggest new items or improvements to existing items from bounded project evidence in read-only mode. Aliases: `alatyr-suggest-ai <scope>`, `alatyr-improve-ai <item-id>`.
 - `skill-adaptation`: adapt or add skills, prompts, wrappers, bridges, rules, MCP/tool configs, gates, checkers, or third-party assistant infrastructure. Aliases: `alatyr-adaptation <source>`, `alatyr-add-ai <source>`.

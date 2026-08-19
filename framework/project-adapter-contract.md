@@ -126,10 +126,11 @@ Every project using this framework must define:
 - large-task flow, task-scale routing, operation-packet policy, and resumable
   checkpoint evidence when the repository needs cross-boundary or multi-session
   operations
-- target team operating model, lazy team context overlay, compact work
-  registry or external projection, coordination backend, synchronization,
-  privacy, retention, conflict, handoff, review, and merge-readiness evidence
-  when the optional team module is enabled
+- structured target team policy and human operating model, ignored local actor
+  selection, compact active-work preflight, registry metadata, per-task records
+  or external projection, backend capability and optimistic-concurrency
+  contract, synchronization, privacy, retention, conflict, handoff, review, and
+  merge-readiness evidence when the optional team module is enabled
 - allowed-action meanings for installed-operation requests
 - operation catalog and checked compact index, single entry, automatic routing, read-only health,
   risk-gated preview, help, and post-install/update chat-message templates when

@@ -32,9 +32,11 @@ Constraints:
   enabled, help, and post-install/update chat-message templates
   when useful for the target adapter.
 - Enable team collaboration only from target evidence. When enabled, add the
-  target operating model, compact work registry, team-active routing, team
-  flows/gate/templates, and preserve active task IDs, claims, decisions,
-  handoffs, and external references during upgrades.
+  structured policy and human operating model, ignored local actor selection,
+  compact active-work index, per-task records, backend/concurrency contract,
+  team-active routing, flows/gate/skill/templates, and preserve active task
+  IDs, claims, decisions, handoffs, identity, and external references during
+  upgrades.
 - Adapt prompts, skills, wrappers, and third-party assistant infrastructure
   from target evidence before making them canonical.
 - Do not copy source commands, CI jobs, test folders, fixtures, security

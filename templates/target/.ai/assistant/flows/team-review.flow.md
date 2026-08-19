@@ -9,7 +9,10 @@ product-change, logical-integrity, documentation, or adapter operation.
 ## Target Sources
 
 - Team operating model: `.ai/project/team-operating-model.md`
+- Canonical team policy: `.ai/project/team-policy.json`
 - Work registry: `.ai/assistant/team/work-registry.json`
+- Active-work index: `.ai/assistant/team/active-work-index.json`
+- Backend contract: `.ai/assistant/team/backend-contract.json`
 - Team gate: `.ai/assistant/gates/team-collaboration.md`
 - Source-of-truth registry: `.ai/project/source-of-truth-registry.md`
 - Approval records: `.ai/assistant/approvals`
@@ -26,6 +29,7 @@ For `Alatyr review {TASK_ID}`:
 3. Re-run overlap against active tasks and identify assumptions invalidated by
    concurrent work.
 4. Verify required role, specialist, and CODEOWNERS-equivalent review.
+   Enforce target implementer/reviewer separation from the structured policy.
 5. Review implementation, tests, docs, diagrams, generated artifacts,
    blueprints, and AI infrastructure surfaces selected by changed facts.
 6. Run target validation or record unavailable checks.
@@ -58,9 +62,9 @@ Merge readiness is evidence, not a universal authorization to merge.
 ## Final Evidence
 
 Report task and reviewer IDs, head/base revisions, changed facts, active-task
-overlap, required reviews, approval coverage, validation, logical integrity,
-handoff/checkpoint state, readiness classification, blockers, residual risk,
-and next responsible actor.
+overlap, task/backend record revisions, required reviews, authority/separation,
+approval coverage, validation, logical integrity, handoff/checkpoint state,
+readiness classification, blockers, residual risk, and next responsible actor.
 
 ## Rejection Criteria
 

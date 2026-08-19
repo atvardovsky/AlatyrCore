@@ -123,6 +123,38 @@
       "final_evidence": ["workstream state", "context receipts", "global convergence"]
     },
     {
+      "id": "team-identity",
+      "title": "Team identity",
+      "summary": "Inspect, select, or clear the current local actor without granting authentication or authority.",
+      "use_when": [
+        "set current actor",
+        "who am I",
+        "clear current actor"
+      ],
+      "context_profiles": [],
+      "required_module": "team-collaboration",
+      "flow": ".ai/assistant/flows/team-identity.flow.md",
+      "minimum_inputs": [
+        "identity action",
+        "actor ID or name when selecting"
+      ],
+      "allowed_actions": [
+        "read-only",
+        "adapter-only"
+      ],
+      "preview": "never",
+      "aliases": [
+        "Alatyr set actor",
+        "Alatyr who am I",
+        "Alatyr clear actor"
+      ],
+      "final_evidence": [
+        "resolved actor and policy revision",
+        "selection and verification state",
+        "local path and actions not taken"
+      ]
+    },
+    {
       "id": "team-status",
       "title": "Team status",
       "summary": "Report current team work, stale claims, conflicts, handoffs, and review state without editing.",

@@ -4,11 +4,14 @@
 - Task ID: `{TASK_ID}`
 - Source actor: `{SOURCE_ACTOR_ID}`
 - Destination actor or role: `{DESTINATION_ACTOR_ID_OR_ROLE}`
+- Assistant actor: `{ASSISTANT_ACTOR_ID_OR_NONE}`
 - Reason: `{HANDOFF_REASON}`
 - State: `{PENDING_ACCEPTED_REJECTED_OR_STALE}`
 - Created at: `{OBSERVATION_TIME}`
 - Accepted or rejected at: `{ACCEPTANCE_TIME_OR_NONE}`
 - Repository revision: `{HEAD_REVISION_OR_UNAVAILABLE}`
+- Task record revision: `{TASK_RECORD_REVISION}`
+- Backend revision: `{BACKEND_REVISION_OR_UNAVAILABLE}`
 - Checkpoint reference: `{CHECKPOINT_PATH_OR_ID}`
 
 ## Scope And Evidence

@@ -41,6 +41,8 @@ task evidence reveals one of these conditions:
 
 - repeated work that follows the same specialized reasoning or output shape
 - recurring review, consistency, validation, or documentation failures
+- recurring stale claims, late overlap discovery, handoff drift, concurrent
+  write rejection, missing reviewer/authority evidence, or team context waste
 - recurring code-comment omissions, style inconsistency, generated-reference
   drift, or profile ambiguity within a bounded project source set
 - a deterministic invariant that is repeatedly checked manually

@@ -151,9 +151,11 @@ manifest operation paths, assistant bridges.
 Category: `TEAM`
 Owner: `.ai/framework/team-collaboration.md`
 Rule IDs: `ALATYR-TEAM-001`
-Derived surfaces: target team operating model, work registry, task claims,
-conflict review, checkpoints, handoffs, decision records, team review,
-merge-readiness evidence, operation routes, and team-active context overlay.
+Derived surfaces: structured target team policy, human operating model, ignored
+local actor selection, active-work index, registry metadata, per-task records,
+backend contract, task claims, conflict review, checkpoints, handoffs, decision
+records, team review, merge-readiness evidence, operation routes, team-active
+context overlay, and adapted team skill.
 
 Category: `BRIDGE`
 Owner: `.ai/framework/bridge-capability-matrix.md`

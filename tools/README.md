@@ -426,10 +426,11 @@ workstream completion.
 ## Team Collaboration Check
 
 `check_team_collaboration.py` validates the optional portable team rule,
-target operating model, lazy context overlay, work registry, coordination
-flows, records, gate, operation catalog routes, help aliases, and manifest
-wiring. It checks source templates, not current people, task truth, external
-trackers, approvals, or business decisions.
+target team policy, local identity boundary, lazy active-work overlay,
+schema-2 task records, backend contract, coordination flows, records, gate,
+adapted skill, operation catalog routes, help aliases, and manifest wiring. It
+checks source templates, not current people, task truth, external trackers,
+approvals, or business decisions.
 
 Linux or macOS:
 
@@ -441,6 +442,23 @@ Windows PowerShell or Command Prompt:
 
 ```powershell
 py -3 .\tools\check_team_collaboration.py
+```
+
+`check_team_collaboration_scenarios.py` exercises portable target-validator
+fixtures for a valid repository-backed team, optimistic-concurrency conflict,
+self-review rejection, stale active-work index, unknown local identity, and
+stale merge-review evidence.
+
+Linux or macOS:
+
+```sh
+python3 tools/check_team_collaboration_scenarios.py
+```
+
+Windows PowerShell or Command Prompt:
+
+```powershell
+py -3 .\tools\check_team_collaboration_scenarios.py
 ```
 
 Linux or macOS:

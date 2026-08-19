@@ -26,6 +26,9 @@
     "plan large task": "large-task",
     "continue large task": "large-task",
     "resume Alatyr task": "large-task",
+    "Alatyr set actor": "team-identity",
+    "Alatyr who am I": "team-identity",
+    "Alatyr clear actor": "team-identity",
     "Alatyr team status": "team-status",
     "Alatyr start": "team-task",
     "Alatyr claim": "team-task",
@@ -135,6 +138,12 @@
       "adapter-only",
       "code-and-tests",
       "full-with-approval"
+    ],
+    "team-identity": [
+      "team-collaboration",
+      ".ai/assistant/flows/team-identity.flow.md",
+      "read-only",
+      "adapter-only"
     ],
     "team-status": [
       "team-collaboration",

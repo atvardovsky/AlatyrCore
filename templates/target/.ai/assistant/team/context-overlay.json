@@ -1,13 +1,15 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "overlay_kind": "target-team-context-overlay",
   "overlay_id": "team-active",
   "use_when": [
-    "team status claim conflict checkpoint handoff decision review merge or release request",
+    "team identity status claim conflict checkpoint handoff decision review merge or release request",
+    "a write operation names a task branch worktree project area changed fact contract dependency or surface present in active work",
     "multiple actors or active tasks may share changed facts",
     "task state must move across an assistant session branch or worktree"
   ],
   "operation_candidates": [
+    "team-identity",
     "team-status",
     "team-task",
     "team-conflict-review",
@@ -17,10 +19,33 @@
     "team-merge-check"
   ],
   "required_context": [
-    ".ai/framework/team-collaboration.md",
-    ".ai/project/team-operating-model.md",
-    ".ai/assistant/team/work-registry.json",
-    ".ai/assistant/gates/team-collaboration.md"
+    ".ai/assistant/team/active-work-index.json"
+  ],
+  "conditional_context": [
+    {
+      "path": ".ai/framework/team-collaboration.md",
+      "load_when": "the preflight matches active work or a team operation is selected"
+    },
+    {
+      "path": ".ai/project/team-policy.json",
+      "load_when": "actor authority priority transition review or backend policy is needed"
+    },
+    {
+      "path": ".ai/project/team-operating-model.md",
+      "load_when": "human operating guidance or known gaps are needed"
+    },
+    {
+      "path": ".ai/assistant/team/work-registry.json",
+      "load_when": "registry metadata synchronization or task-record location is needed"
+    },
+    {
+      "path": ".ai/assistant/team/backend-contract.json",
+      "load_when": "backend read write synchronization or availability evidence is needed"
+    },
+    {
+      "path": ".ai/assistant/gates/team-collaboration.md",
+      "load_when": "a claim write handoff review merge or state transition is evaluated"
+    }
   ],
   "expand_when": [
     "selected task changed facts or canonical owners are unresolved",
@@ -29,10 +54,11 @@
     "accepted decision changes project facts",
     "review or merge readiness requires target specialist evidence"
   ],
-  "budget_behavior": "load only the selected task projection relevant active overlaps owner references dependencies and selected team flow",
+  "budget_behavior": "load the active index first then only the selected task relevant overlaps policy clauses backend capability owner references dependencies and selected team flow",
   "final_evidence": [
-    "task actor priority and evidence revision",
+    "current actor task actor priority and evidence revision",
     "changed fact and concurrent overlap result",
+    "record revision and backend compare-and-swap result",
     "claim checkpoint handoff decision review or merge state",
     "approvals validation residual risk and next responsible actor"
   ]

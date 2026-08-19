@@ -266,6 +266,29 @@ Conflict resolver: `{TARGET_TEST_FIRST_DECISION_AUTHORITY}`
 Approval trigger: `{POLICY_ACCEPTANCE_DEPENDENCY_CI_MERGE_GATE_PERMISSION_OR_VALIDATION_CHANGE}`
 Final evidence: `{POLICY_STATE_TRIGGER_MODES_COMMANDS_ISOLATION_EXCEPTIONS_VALIDATION_AND_RESIDUAL_RISK}`
 
+### Fact Type: `team policy`
+
+Fact type: `team policy`
+Canonical owner: `.ai/project/team-policy.json`
+Human explanation: `.ai/project/team-operating-model.md`
+Consistency level: `{TEAM_POLICY_CONSISTENCY_LEVEL}`
+Project area: `{TEAM_POLICY_PROJECT_AREA}`
+Consistency map node: `{TEAM_POLICY_FACT_ID_OR_MISSING}`
+Relationship coverage: `{TEAM_POLICY_RELATIONSHIP_COVERAGE_OR_GAP}`
+Invariant and dependency constraints: `{ACTOR_AUTHORITY_PRIORITY_REVIEW_TRANSITION_BACKEND_AND_IDENTITY_CONSTRAINTS}`
+Derived surfaces:
+
+- `.ai/assistant/team/active-work-index.json`
+- `.ai/assistant/team/work-registry.json`
+- `.ai/assistant/team/backend-contract.json`
+- `{TARGET_TRACKER_ROLE_OR_REVIEW_CONFIGURATION_OR_NONE}`
+
+Sync direction: `{TEAM_POLICY_TO_COORDINATION_AND_REVIEW_SURFACES}`
+Validation or manual review: `{TARGET_TEAM_POLICY_AND_BACKEND_VALIDATION}`
+Conflict resolver: `{TEAM_POLICY_OWNER_ACTOR_ID}`
+Approval trigger: `{ACTOR_AUTHORITY_REVIEW_MERGE_BACKEND_PERMISSION_OR_IDENTITY_POLICY_CHANGE}`
+Final evidence: `{POLICY_REVISION_ACTORS_AUTHORITY_BACKEND_TASK_REVISIONS_VALIDATION_AND_RESIDUAL_RISK}`
+
 ## Conflict Handling
 
 When sources disagree:

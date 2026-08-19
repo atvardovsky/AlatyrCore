@@ -44,6 +44,9 @@ or speculative future problems.
 2. Select the smallest project area and its canonical owner.
 3. Normalize the problem category and outcome signal. Do not copy raw request,
    prompt, review, or conversation text.
+   Team examples include stale claim, late overlap, handoff drift, concurrent
+   write rejection, missing authority/reviewer evidence, or excess team context.
+   Record aggregate process evidence, not individual productivity judgments.
 4. Remove secrets, credentials, personal data, and target-prohibited details.
 5. Find a semantically matching active pattern before creating a new ID.
 6. Add one independently identifiable evidence reference, update first/last

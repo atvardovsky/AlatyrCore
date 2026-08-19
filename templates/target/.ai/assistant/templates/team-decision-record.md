@@ -4,6 +4,8 @@
 - Status: `{PROPOSED_ACCEPTED_REJECTED_SUPERSEDED_OR_DEFERRED}`
 - Decision owner: `{DECISION_OWNER_ACTOR_ID}`
 - Participants: `{PARTICIPANT_ACTOR_IDS}`
+- Recorded by actor: `{RECORDING_ACTOR_ID}`
+- Assistant actor: `{ASSISTANT_ACTOR_ID_OR_NONE}`
 - Recorded at: `{OBSERVATION_TIME}`
 - Review or expiry date: `{REVIEW_DATE_OR_NONE}`
 - Supersedes: `{DECISION_IDS_OR_NONE}`

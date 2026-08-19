@@ -81,9 +81,10 @@ Before creating files in the target repository, inspect:
 - existing assistant bridge files, prompts, skills, gates, checker rules,
   source-access policies, operation help, routing, or chat-completion message
   templates
-- existing team roles and decision authority, priority policy, task tracker,
-  active work, claims, branch/worktree conventions, review requirements,
-  handoffs, decision records, merge policy, retention, and privacy rules
+- existing team roles, stable IDs, names/aliases and identity mappings,
+  decision authority, priority/transition policy, task backend, active work,
+  claims, branch/worktree conventions, atomic-write behavior, review,
+  handoffs, decisions, merge policy, retention, and privacy rules
 
 If a target fact is missing, mark it as missing. Do not invent it.
 
@@ -102,9 +103,10 @@ The plan must identify:
 - compact context router, selected lazy profile descriptors, and human context
   profiles needed for the target
 - large-task task-scale routing, packet, checkpoint, and storage needs
-- optional team-collaboration owner, coordination backend, synchronization
-  direction, actor/authority/priority evidence, registry, conflict, handoff,
-  decision, review, storage, retention, and privacy needs
+- optional team-collaboration owner, structured actor/authority/priority policy,
+  local identity and verification boundary, coordination backend capabilities,
+  synchronization and write-conflict behavior, active-work preflight, per-task
+  storage, conflict, handoff, decision, review, retention, and privacy needs
 - required core profile and optional modules needed for the target
 - source-of-truth registry needs
 - optional consistency-map need, fact-ID strategy, relationship coverage, and
@@ -195,9 +197,10 @@ In a typical target repository:
    test-first development is assessed or enabled. Enabling requires accepted
    target commands, triggers, modes, isolation, exceptions, and evidence; do
    not infer strict TDD from the existence of tests.
-   Add `.ai/project/team-operating-model.md` only when team collaboration is
-   enabled, and derive actors, authority, priorities, review, backend,
-   retention, and privacy from target evidence.
+   Add `.ai/project/team-policy.json` and its human-oriented
+   `.ai/project/team-operating-model.md` only when team collaboration is
+   enabled. Derive actors, aliases, authority, priorities, review, transitions,
+   backend, identity verification, retention, and privacy from target evidence.
 7. Create `.ai/assistant/contour.md`, compact context router and selected lazy
    profile descriptors, operation catalog and its checked compact index,
    context profiles, module profile, task-specific maturity profile, bridge
@@ -205,7 +208,8 @@ In a typical target repository:
    surface records, and target workflows/gates. Keep the catalog outside routine
    routing and resolve exact aliases through the compact index.
    When team collaboration is enabled, route `team-active` through
-   `.ai/assistant/team/context-overlay.json` and keep team state outside
+   `.ai/assistant/team/context-overlay.json`. Check only the compact active-work
+   index before state-changing operations and keep full team state outside
    routine bootstrap.
    When change packages are enabled, add the lazy `change-package` overlay and
    compact index; do not load package records for ordinary tasks.
@@ -239,10 +243,12 @@ In a typical target repository:
    evidence-based suggestions, or imported-item provenance evidence. Add the
    lazy development-evidence capture flow with the pattern index; target
    evidence must not directly change `.ai/framework` or portable rules.
-   When team collaboration is enabled, add the work registry, task/handoff/
-   decision/review flows, team gate, and checkpoint/handoff/decision
-   templates. Initialize the registry empty unless active target tasks are
-   explicitly reviewed; never overwrite active records from source templates.
+   When team collaboration is enabled, add `.ai/.gitignore`, registry metadata,
+   compact active-work index, backend contract, task-record template, identity/
+   task/handoff/decision/review flows, team gate, adapted skill, and identity/
+   checkpoint/handoff/decision templates. Initialize task storage and the index
+   empty unless active target tasks are explicitly reviewed. Never overwrite
+   active records or copy a local actor selection from source templates.
 10. Add skills, prompts, diagrams, and deterministic checks only when useful
    for the target, after adapting them to target rules and recording source or
    provenance when applicable. Route AI infrastructure through target item IDs
@@ -295,12 +301,17 @@ evidence revision, validation, and known gaps. Observed code is not accepted
 architecture without target decision evidence.
 
 When the target enables team collaboration, aliases such as `Alatyr team
-status`, `Alatyr start`, `Alatyr claim`, `Alatyr conflicts`, `Alatyr
+status`, `Alatyr set actor`, `Alatyr who am I`, `Alatyr clear actor`, `Alatyr
+start`, `Alatyr claim`, `Alatyr conflicts`, `Alatyr
 checkpoint`, `Alatyr handoff`, `Alatyr decision`, `Alatyr discuss`, `Alatyr
 review`, `Alatyr merge check`, and `Alatyr release` route through target-owned
-team evidence. Team status, conflicts, review, and merge check remain
-read-only. Installation or update must preserve active task IDs, claims,
-handoffs, decisions, and external tracker references.
+team evidence. Team status, who-am-I, conflicts, review, and merge check remain
+read-only. Local actor selection is ignored attribution, not authentication or
+authority. Installation or update must preserve active task IDs, claims,
+handoffs, decisions, external tracker references, and local identity without
+committing it. Migrate schema-1 task arrays atomically into schema-2 per-task
+records and generate the compact active-work index before replacing registry
+metadata.
 
 If the programmer asks for `alatyr-ai-inventory`, inspect existing AI
 infrastructure before adding anything. If the programmer asks for

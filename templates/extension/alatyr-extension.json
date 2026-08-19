@@ -10,16 +10,16 @@
   "compatibility": {
     "extension_api": 1,
     "framework": {
-      "minimum": "0.1.0-alpha.8",
+      "minimum": "0.1.0-alpha.9",
       "maximum_exclusive": "0.2.0"
     },
     "adapter_schema": {
-      "minimum": 7,
-      "maximum": 7
-    },
-    "template": {
       "minimum": 8,
       "maximum": 8
+    },
+    "template": {
+      "minimum": 9,
+      "maximum": 9
     },
     "required_rule_ids": [
       "{REQUIRED_ALATYR_RULE_ID}"

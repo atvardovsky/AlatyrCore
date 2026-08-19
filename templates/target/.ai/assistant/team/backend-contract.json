@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "contract_kind": "target-team-backend-contract",
+  "project": "{PROJECT_NAME}",
+  "backend_id": "{TARGET_COORDINATION_BACKEND_ID}",
+  "backend_mode": "{REPOSITORY_EXTERNAL_TRACKER_BOTH_OR_OTHER}",
+  "provider": "{TARGET_BACKEND_PROVIDER_OR_REPOSITORY}",
+  "canonical_task_source": "{TARGET_TASK_SOURCE_OF_TRUTH}",
+  "projection_direction": "{BACKEND_TO_REGISTRY_REGISTRY_TO_BACKEND_BIDIRECTIONAL_OR_MANUAL}",
+  "consistency_model": "{MANUAL_EVENTUAL_STRONG_OR_UNRESOLVED}",
+  "write_strategy": "{COMPARE_AND_SWAP_TARGET_NATIVE_READ_ONLY_OR_MANUAL}",
+  "capabilities": [
+    "{READ_TASKS_CREATE_TASK_CLAIM_RELEASE_CHECKPOINT_HANDOFF_REVIEW_OR_SYNC_STATUS}"
+  ],
+  "idempotency_policy": "{TARGET_BACKEND_IDEMPOTENCY_POLICY}",
+  "conflict_policy": "{TARGET_BACKEND_WRITE_CONFLICT_POLICY}",
+  "unavailable_evidence_policy": "partial-or-unverified",
+  "permission_policy": "{TARGET_BACKEND_PERMISSION_POLICY}",
+  "authentication_policy": "{TARGET_BACKEND_AUTHENTICATION_POLICY}",
+  "extension_id": "{TARGET_COORDINATION_EXTENSION_ID_OR_NONE}",
+  "validation": "{TARGET_BACKEND_CONTRACT_VALIDATION_OR_MANUAL_REVIEW}"
+}

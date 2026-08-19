@@ -44,6 +44,9 @@ updating the canonical catalog.
 - `alatyr-add-ai {AI_INFRASTRUCTURE_SOURCE}`: route to `skill-adaptation` with
   integration intent after inventory, provenance, safety, and approval checks.
 - `Alatyr team status`: route to read-only `team-status`.
+- `Alatyr set actor {ACTOR_ID_OR_NAME}`, `Alatyr who am I`, or `Alatyr clear
+  actor`: route to `team-identity`. Local selection is attribution, not
+  authentication or authority.
 - `Alatyr start {TASK}`, `Alatyr claim {TASK_ID}`,
   `Alatyr checkpoint {TASK_ID}`, or `Alatyr release {TASK_ID}`: route to
   `team-task`.
@@ -125,6 +128,14 @@ team work without making changes.
 Flow: `.ai/assistant/flows/team-task-coordination.flow.md`
 Minimum input: optional team, area, actor, or task scope.
 Default allowed actions: `read-only`.
+
+Operation: `team-identity`
+Use when: selecting, inspecting, or clearing the current actor through ignored
+local state without changing the canonical team policy or Git configuration.
+Flow: `.ai/assistant/flows/team-identity.flow.md`
+Minimum input: action and actor ID or display name for selection.
+Default allowed actions: `read-only` for inspection and `adapter-only` for
+local set or clear.
 
 Operation: `team-task`
 Use when: starting, claiming, checkpointing, or releasing a team task.
@@ -378,6 +389,10 @@ large-task activation gate passes.
 
 Alias: `Alatyr team status`
 Route to: `team-status`.
+
+Alias: `Alatyr set actor {ACTOR_ID_OR_NAME}`, `Alatyr who am I`, or `Alatyr
+clear actor`
+Route to: `team-identity`.
 
 Alias: `Alatyr start {TASK}`, `Alatyr claim {TASK_ID}`,
 `Alatyr checkpoint {TASK_ID}`, or `Alatyr release {TASK_ID}`

@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "index_kind": "target-team-active-work-index",
+  "project": "{PROJECT_NAME}",
+  "module_state": "{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}",
+  "source_registry": ".ai/assistant/team/work-registry.json",
+  "source_revision": "{TEAM_REGISTRY_REVISION_OR_UNAVAILABLE}",
+  "generated_at": "{OBSERVATION_TIME}",
+  "entries": []
+}

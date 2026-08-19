@@ -118,10 +118,11 @@ Read in the target repository:
   matrix, and migration notes
 - existing fact IDs, consistency maps, relationship coverage, and staleness
   evidence
-- existing team roles and stable actor IDs, decision authority, priority
-  policy, issue/task tracker, active work, claims, branch/worktree
-  conventions, review and merge rules, checkpoints, handoffs, decision
-  records, coordination storage, retention, and privacy policy
+- existing team roles, stable actor IDs, display-name mappings, local identity,
+  decision authority, priority and transition policy, issue/task tracker,
+  active work, claims, branch/worktree conventions, backend atomic-write
+  capability, review and merge rules, checkpoints, handoffs, decisions,
+  coordination storage, retention, and privacy policy
 
 ## Ownership Classification
 
@@ -191,17 +192,18 @@ Classify every proposed target file:
     test-first development is assessed or enabled. Derive owners, trigger
     severity, modes, levels, commands, isolation, exceptions, and evidence from
     the target; never infer strict TDD from the presence of tests.
-    Add `.ai/project/team-operating-model.md` only when the target enables team
-    collaboration. Derive actor IDs, authority, priorities, review,
-    coordination backend, synchronization, storage, retention, and privacy
-    from target evidence.
+    Add `.ai/project/team-policy.json` and its human explanation only when the
+    target enables team collaboration. Derive actor IDs, display names and
+    aliases, authority, priorities, transitions, review, identity verification,
+    backend, synchronization, storage, retention, and privacy from evidence.
 13. Create target `.ai/assistant/contour.md`, compact context router and
     selected lazy descriptors, operation catalog and checked compact operation
     index, context profiles, module profile, task-specific maturity profile,
     bridge capability matrix, generated assistant-capability index, installed-
     surface capability records, and minimal workflows/gates from target facts.
-    Route enabled team operations through the lazy
-    `.ai/assistant/team/context-overlay.json`, not routine bootstrap.
+    Route enabled team operations and matched state-changing work through the
+    lazy `.ai/assistant/team/context-overlay.json`. Read the compact active-work
+    index first; do not put full team state in bootstrap.
     The router must distinguish host-preloaded instructions from compact
     bootstrap, define context budgets and receipts, and route project-area
     overlays without putting full project sources or the operation catalog in
@@ -212,9 +214,9 @@ Classify every proposed target file:
     large-task orchestration.
     Add the `change-package` overlay only when the target enables coherent
     material-change evidence. Keep package records outside routine bootstrap.
-    Add the `team-active` overlay only when team collaboration is enabled. Keep
-    the full work registry and unrelated active tasks outside routine
-    bootstrap.
+    Add the `team-active` overlay only when team collaboration is enabled. Run
+    its compact index preflight before state-changing operations, then keep the
+    full registry, policy, and unrelated tasks outside routine bootstrap.
     Add the `code-documentation` intent overlay only when the optional module
     is enabled. Keep its full profiles, selected source, generator
     configuration, and generated output outside routine bootstrap.
@@ -267,19 +269,23 @@ Classify every proposed target file:
     and keep unresolved items blocked. Target evidence may improve target-owned
     AI infrastructure but must not directly change `.ai/framework`, AlatyrCore
     source, or portable rules.
-    When the target enables team collaboration, add the work registry,
-    task-coordination, handoff, decision, and review flows, team gate, and
-    checkpoint/handoff/decision templates. Initialize active tasks as empty
-    unless target records are explicitly reviewed. On upgrade, preserve task
-    IDs, actor references, claims, decisions, handoffs, and external links;
-    never replace active state with source placeholders.
+    When the target enables team collaboration, add `.ai/.gitignore`, structured
+    policy, registry metadata, active-work index, backend contract, per-task
+    record template, identity/task/handoff/decision/review flows, team gate,
+    adapted skill, and identity/checkpoint/handoff/decision templates. Start
+    task storage empty unless target records are explicitly reviewed. On
+    upgrade, preserve task IDs, actor references, claims, decisions, handoffs,
+    external links, and ignored local identity. Migrate schema-1 task arrays to
+    schema-2 task files and regenerate the index as one planned operation;
+    never replace active state with placeholders.
 16. Ensure root assistant entry points and supported bridge files point future
     sessions to the installation note, compact help, operation catalog, and
     routing flow. Expose `Alatyr` as the single conversational entry and
     `Alatyr status` or `Alatyr doctor` as read-only health aliases on every
     supported surface.
-    Team aliases route through the same canonical catalog when the optional
-    module is enabled; bridge files do not duplicate the team policy.
+    Team and current-actor aliases route through the same canonical catalog
+    when the optional module is enabled; bridge files do not duplicate team or
+    identity policy.
     When diagrams are enabled, route `Alatyr diagram` through the canonical
     flow and record native inline, rendered-artifact, ASCII-baseline,
     client-version, freshness, and evidence fields separately for every
@@ -304,7 +310,8 @@ Classify every proposed target file:
 22. Send the appropriate post-install or post-update assistant chat message
     using the target template when installed. Name the single `Alatyr` entry,
     read-only health aliases, automatic routing, and risk-gated preview.
-    Name team aliases and module state when team collaboration is enabled.
+    Name team/current-actor aliases, attribution limits, and module state when
+    team collaboration is enabled.
 
 ## Human Approval Gate
 
@@ -375,10 +382,11 @@ Report:
   added or skipped
 - change-package index, lazy overlay, flow, schema, redacted report, retention
   policy, and validator support added, migrated, skipped, or blocked
-- team collaboration operating model, coordination backend and synchronization
-  direction, work registry, team-active overlay, task/handoff/decision/review
-  flows, team gate, templates, active-record preservation, and privacy policy
-  added, migrated, skipped, or blocked
+- team collaboration policy and operating model, ignored local identity,
+  backend capabilities and synchronization, active-work index, registry/task
+  schemas, optimistic concurrency, team-active overlay, identity/task/handoff/
+  decision/review flows, team gate, skill, templates, active-record
+  preservation, and privacy policy added, migrated, skipped, or blocked
 - AI infrastructure router, recommendation flow/report, and adaptation-record
   template added or skipped
 - development-evidence index, owner, retention/privacy policy, and lazy capture

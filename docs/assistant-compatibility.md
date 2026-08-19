@@ -92,9 +92,11 @@ The short help file may point to `.ai/assistant/help-reference.md` for the
 full operation menu.
 
 When `team-collaboration` is enabled, every supported surface uses the same
-catalog aliases for team status, tasks, conflicts, handoffs, decisions,
-reviews, and merge checks. The bridge loads the lazy team overlay only for
-those requests; it does not copy actor, priority, task, or review policy.
+catalog aliases for local actor selection, team status, tasks, conflicts,
+handoffs, decisions, reviews, and merge checks. Every state-changing operation
+runs the compact active-work preflight, while the bridge expands the lazy team
+overlay only for a match, unresolved overlap, or explicit team request. It does
+not copy actor, priority, task, identity, or review policy.
 
 When `diagrams` is enabled, every supported surface routes `Alatyr diagram`
 and equivalent clear requests to the canonical diagram discussion flow. The

@@ -111,8 +111,10 @@ Each bridge should:
   the target
 - route selected AI infrastructure work through the canonical target router
   instead of choosing item content from a bridge
-- route enabled team operations through the canonical catalog and
-  `.ai/assistant/team/context-overlay.json` instead of embedding team policy
+- route current-actor aliases and enabled team operations through the
+  canonical catalog and `.ai/assistant/team/context-overlay.json`, and apply
+  the active-work preflight before state-changing operations instead of
+  embedding team or identity policy
 - route enabled code-documentation requests through the canonical operation
   index and intent descriptor; assistant-native wrappers point to the shared
   target profile and do not duplicate comment policy

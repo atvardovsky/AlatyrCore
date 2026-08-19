@@ -3,11 +3,14 @@
 - Checkpoint ID: `{CHECKPOINT_ID}`
 - Task ID: `{TASK_ID}`
 - Recorded by actor: `{ACTOR_ID}`
+- Assistant actor: `{ASSISTANT_ACTOR_ID_OR_NONE}`
 - Recorded at: `{OBSERVATION_TIME}`
 - Repository revision: `{HEAD_REVISION_OR_UNAVAILABLE}`
 - Base revision: `{BASE_REVISION_OR_UNAVAILABLE}`
 - Branch or worktree: `{TARGET_BRANCH_WORKTREE_OR_NONE}`
 - Task status: `{TASK_STATUS}`
+- Task record revision: `{TASK_RECORD_REVISION}`
+- Backend revision: `{BACKEND_REVISION_OR_UNAVAILABLE}`
 - Claim state: `{CLAIM_STATE}`
 
 ## Work State

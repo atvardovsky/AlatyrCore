@@ -13,10 +13,14 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "templates" / "target"
 FRAMEWORK = ROOT / "framework" / "team-collaboration.md"
+POLICY = TARGET / ".ai" / "project" / "team-policy.json"
 OPERATING_MODEL = TARGET / ".ai" / "project" / "team-operating-model.md"
-PROJECT_CONTOUR = TARGET / ".ai" / "project" / "contour.md"
 REGISTRY = TARGET / ".ai" / "assistant" / "team" / "work-registry.json"
+ACTIVE_INDEX = TARGET / ".ai" / "assistant" / "team" / "active-work-index.json"
+BACKEND = TARGET / ".ai" / "assistant" / "team" / "backend-contract.json"
+TASK_TEMPLATE = TARGET / ".ai" / "assistant" / "team" / "task-record-template.json"
 CONTEXT_OVERLAY = TARGET / ".ai" / "assistant" / "team" / "context-overlay.json"
+IDENTITY_FLOW = TARGET / ".ai" / "assistant" / "flows" / "team-identity.flow.md"
 TASK_FLOW = TARGET / ".ai" / "assistant" / "flows" / "team-task-coordination.flow.md"
 HANDOFF_FLOW = TARGET / ".ai" / "assistant" / "flows" / "team-handoff.flow.md"
 DECISION_FLOW = TARGET / ".ai" / "assistant" / "flows" / "team-decision.flow.md"
@@ -25,15 +29,19 @@ GATE = TARGET / ".ai" / "assistant" / "gates" / "team-collaboration.md"
 CHECKPOINT = TARGET / ".ai" / "assistant" / "templates" / "team-checkpoint.md"
 HANDOFF = TARGET / ".ai" / "assistant" / "templates" / "team-handoff.md"
 DECISION = TARGET / ".ai" / "assistant" / "templates" / "team-decision-record.md"
+IDENTITY_EXAMPLE = TARGET / ".ai" / "assistant" / "templates" / "team-identity.example.json"
+COLLABORATION_REVIEW = TARGET / ".ai" / "assistant" / "templates" / "team-collaboration-review.md"
+SKILL = TARGET / ".ai" / "assistant" / "skills" / "team-collaboration" / "SKILL.md"
+IGNORE = TARGET / ".ai" / ".gitignore"
 CATALOG = TARGET / ".ai" / "assistant" / "operation-catalog.json"
 ROUTER = TARGET / ".ai" / "assistant" / "context-router.json"
 MANIFEST = TARGET / ".ai" / "alatyr.yaml"
 MODULE_PROFILE = TARGET / ".ai" / "assistant" / "module-profile.md"
-MATURITY_PROFILE = TARGET / ".ai" / "assistant" / "maturity-profile.md"
 HELP = TARGET / ".ai" / "assistant" / "help.md"
 HELP_REFERENCE = TARGET / ".ai" / "assistant" / "help-reference.md"
 
 TEAM_OPERATIONS = {
+    "team-identity",
     "team-status",
     "team-task",
     "team-conflict-review",
@@ -48,56 +56,6 @@ READ_ONLY_OPERATIONS = {
     "team-review",
     "team-merge-check",
 }
-REGISTRY_METADATA = [
-    "project",
-    "module_state",
-    "coordination_backend",
-    "canonical_task_source",
-    "synchronization_direction",
-    "operating_model",
-    "updated_at",
-    "evidence_revision",
-    "storage_policy",
-    "retention_policy",
-    "privacy_policy",
-]
-TASK_STRINGS = [
-    "id",
-    "goal",
-    "priority",
-    "priority_rationale",
-    "priority_decided_by",
-    "status",
-    "owner_actor_id",
-    "parent_request",
-    "coordination_backend_ref",
-    "branch_or_worktree",
-    "base_revision",
-    "evidence_revision",
-    "review_state",
-    "validation_state",
-    "latest_checkpoint",
-    "handoff_state",
-    "next_action",
-    "updated_at",
-]
-TASK_LISTS = [
-    "non_goals",
-    "reviewer_actor_ids",
-    "allowed_actions",
-    "context_profiles",
-    "project_areas",
-    "changed_fact_ids",
-    "canonical_owner_refs",
-    "expected_surfaces",
-    "dependencies",
-    "blockers",
-    "related_task_ids",
-    "approval_records",
-    "review_evidence_refs",
-    "decision_records",
-    "residual_risks",
-]
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -122,9 +80,12 @@ def require_text(path: Path, snippets: list[str], failures: list[str]) -> None:
             failures.append(f"{path.relative_to(ROOT)} missing {snippet}")
 
 
-def require_string(value: Any, label: str, failures: list[str]) -> None:
-    if not isinstance(value, str) or not value:
-        failures.append(f"{label} must be a non-empty string")
+def require_fields(
+    data: dict[str, Any], fields: list[str], label: str, failures: list[str]
+) -> None:
+    for field in fields:
+        if field not in data:
+            failures.append(f"{label} missing {field}")
 
 
 def require_string_list(value: Any, label: str, failures: list[str]) -> None:
@@ -141,15 +102,13 @@ def main() -> int:
         FRAMEWORK,
         [
             "ALATYR-TEAM-001",
-            "## Ownership Split",
-            "## Shared Work Registry",
-            "## Priority",
-            "## Claims And Concurrent Work",
-            "## Checkpoints And Handoffs",
-            "## Decisions And Discussions",
-            "## Team Review And Merge Readiness",
-            "## Installation And Update",
-            "changed-fact IDs and canonical owner references",
+            "ignored local",
+            "active-work index",
+            "one record per task",
+            "optimistic concurrency",
+            "Local actor selection supports attribution",
+            "backend contract",
+            "schema-1 task entries",
             "not portable shell commands",
         ],
         failures,
@@ -157,150 +116,226 @@ def main() -> int:
     require_text(
         OPERATING_MODEL,
         [
+            ".ai/project/team-policy.json",
+            "## Identity And Attribution",
             "## Coordination Backend",
-            "## Actors And Roles",
-            "## Priority Policy",
-            "## Review And Decision Policy",
-            "## Concurrent Work Policy",
-            "{TARGET_TASK_SOURCE_OF_TRUTH}",
-            "{TARGET_TEAM_RECORD_PRIVACY_POLICY}",
+            "## Concurrent Work",
+            ".ai/local/team-identity.json",
+            "not authentication",
         ],
         failures,
     )
     require_text(
-        PROJECT_CONTOUR,
+        IDENTITY_FLOW,
         [
-            "target team actors and roles",
-            ".ai/project/team-operating-model.md",
-            "assistant work registry",
-        ],
-        failures,
-    )
-    require_text(
-        MATURITY_PROFILE,
-        [
-            "### Task Area: `team-collaboration`",
-            "task source, synchronization direction",
-            "changed-fact overlap policy",
+            "## Who Am I",
+            "## Set Actor",
+            "## Clear Actor",
+            "enrollment proposal",
+            "authentication",
         ],
         failures,
     )
     require_text(
         TASK_FLOW,
         [
-            "## Status",
-            "## Start",
-            "## Claim",
-            "## Conflicts",
-            "## Checkpoint",
-            "## Release",
-            "return the proposed registry/backend delta",
+            "active-work index",
+            "observed record revision",
+            "backend revision mismatch",
+            "Regenerate the compact active-work index",
         ],
         failures,
     )
     require_text(
         HANDOFF_FLOW,
-        ["## Steps", "acceptance", "repository revision", "target backend"],
+        ["task/backend revision", "atomically", "active-work index"],
         failures,
     )
     require_text(
         DECISION_FLOW,
-        [
-            "## Priority Rule",
-            "authorized target decision owner",
-            "canonical source",
-            "With `read-only`",
-        ],
+        ["structured target policy", "observed task", "backend revision"],
         failures,
     )
     require_text(
         REVIEW_FLOW,
-        ["## Team Review", "## Merge Check", "current head and base", "Merge readiness is evidence"],
+        ["implementer/reviewer separation", "task/backend record revisions"],
         failures,
     )
     require_text(
         GATE,
         [
-            "## Before Start Or Resume",
-            "## Before Handoff",
-            "## Before Review Or Merge Readiness",
-            "Changed-fact IDs",
-            "never grants approval",
+            "## Before Any State-Changing Operation",
+            "Current actor resolved",
+            "Task writes never overwrite",
+            "Global Git identity is never changed",
         ],
         failures,
     )
+    require_text(SKILL, ["compact active-work index", "## Prohibited"], failures)
+    require_text(CHECKPOINT, ["Task record revision:", "Backend revision:"], failures)
+    require_text(HANDOFF, ["Task record revision:", "Assistant actor:"], failures)
+    require_text(DECISION, ["Recorded by actor:", "Assistant actor:"], failures)
     require_text(
-        CHECKPOINT,
-        ["Checkpoint ID:", "Repository revision:", "Minimum resume context:", "Exact next action:"],
+        COLLABORATION_REVIEW,
+        ["## Aggregate Signals", "Do not rank individuals", "## Improvement Candidates"],
         failures,
     )
-    require_text(
-        HANDOFF,
-        ["Handoff ID:", "Source actor:", "Destination actor or role:", "State:", "Required context:"],
-        failures,
-    )
-    require_text(
-        DECISION,
-        ["Decision ID:", "Decision owner:", "## Options", "Priority implications:", "Canonical destination:"],
-        failures,
-    )
+    require_text(IGNORE, ["local/"], failures)
 
     try:
+        policy = load_json(POLICY)
         registry = load_json(REGISTRY)
-        context_overlay = load_json(CONTEXT_OVERLAY)
+        active_index = load_json(ACTIVE_INDEX)
+        backend = load_json(BACKEND)
+        task = load_json(TASK_TEMPLATE)
+        overlay = load_json(CONTEXT_OVERLAY)
+        identity = load_json(IDENTITY_EXAMPLE)
         catalog = load_json(CATALOG)
         router = load_json(ROUTER)
     except AssertionError as exc:
         failures.append(str(exc))
-        registry = {}
-        context_overlay = {}
-        catalog = {}
-        router = {}
+        policy = registry = active_index = backend = task = overlay = identity = {}
+        catalog = router = {}
 
-    if registry.get("schema_version") != 1:
-        failures.append("team work registry schema_version must be 1")
+    if policy.get("schema_version") != 1 or policy.get("policy_kind") != "target-team-policy":
+        failures.append("team policy identity is invalid")
+    require_fields(
+        policy,
+        [
+            "policy_revision",
+            "owner_actor_id",
+            "identity",
+            "coordination_backend",
+            "actors",
+            "priorities",
+            "review_policy",
+            "decision_owners",
+            "state_transitions",
+            "conflict_policy",
+        ],
+        "team policy",
+        failures,
+    )
+    identity_policy = policy.get("identity", {})
+    if not isinstance(identity_policy, dict):
+        failures.append("team policy identity must be an object")
+    else:
+        if identity_policy.get("git_identity_is_authoritative") is not False:
+            failures.append("Git identity must not be authoritative by default")
+        if identity_policy.get("local_identity_path") != ".ai/local/team-identity.json":
+            failures.append("team policy local identity path is invalid")
+    for field in ["actors", "priorities", "state_transitions"]:
+        if not isinstance(policy.get(field), list) or not policy[field]:
+            failures.append(f"team policy {field} must contain a placeholder contract")
+
+    if registry.get("schema_version") != 2:
+        failures.append("team work registry schema_version must be 2")
     if registry.get("registry_kind") != "target-team-work-registry":
-        failures.append("team work registry registry_kind is invalid")
-    for field in REGISTRY_METADATA:
-        require_string(registry.get(field), f"registry.{field}", failures)
-    if registry.get("operating_model") != ".ai/project/team-operating-model.md":
-        failures.append("registry operating_model must point to the target team model")
-    tasks = registry.get("tasks")
-    if not isinstance(tasks, list) or not tasks:
-        failures.append("registry.tasks must contain a placeholder task contract")
-        tasks = []
-    for index, task in enumerate(tasks):
-        label = f"registry.tasks[{index}]"
-        if not isinstance(task, dict):
-            failures.append(f"{label} must be an object")
-            continue
-        for field in TASK_STRINGS:
-            require_string(task.get(field), f"{label}.{field}", failures)
-        for field in TASK_LISTS:
-            require_string_list(task.get(field), f"{label}.{field}", failures)
-        overlap = task.get("overlap")
-        claim = task.get("claim")
-        if not isinstance(overlap, dict):
-            failures.append(f"{label}.overlap must be an object")
-        else:
-            for field in ["state", "checked_at", "checked_revision", "resolution"]:
-                require_string(overlap.get(field), f"{label}.overlap.{field}", failures)
-            for field in ["fact_ids", "contract_or_dependency_refs", "file_or_surface_refs"]:
-                require_string_list(
-                    overlap.get(field), f"{label}.overlap.{field}", failures
-                )
-        if not isinstance(claim, dict):
-            failures.append(f"{label}.claim must be an object")
-        else:
-            for field in [
-                "mode",
-                "actor_id",
-                "claimed_at",
-                "expires_at",
-                "base_revision",
-                "state",
-            ]:
-                require_string(claim.get(field), f"{label}.claim.{field}", failures)
+        failures.append("team work registry kind is invalid")
+    expected_registry_paths = {
+        "team_policy": ".ai/project/team-policy.json",
+        "active_work_index": ".ai/assistant/team/active-work-index.json",
+        "backend_contract": ".ai/assistant/team/backend-contract.json",
+        "task_records_directory": ".ai/assistant/team/tasks",
+        "task_record_template": ".ai/assistant/team/task-record-template.json",
+    }
+    for field, expected in expected_registry_paths.items():
+        if registry.get(field) != expected:
+            failures.append(f"registry {field} must point to {expected}")
+    if not isinstance(registry.get("registry_revision"), int):
+        failures.append("registry revision must be an integer")
+    if "tasks" in registry:
+        failures.append("schema-2 registry must not contain a monolithic tasks array")
+
+    if active_index.get("schema_version") != 1 or active_index.get("index_kind") != "target-team-active-work-index":
+        failures.append("active-work index identity is invalid")
+    if active_index.get("source_registry") != ".ai/assistant/team/work-registry.json":
+        failures.append("active-work index source registry is invalid")
+    if not isinstance(active_index.get("entries"), list):
+        failures.append("active-work index entries must be a list")
+
+    if backend.get("schema_version") != 1 or backend.get("contract_kind") != "target-team-backend-contract":
+        failures.append("team backend contract identity is invalid")
+    require_fields(
+        backend,
+        [
+            "backend_id",
+            "backend_mode",
+            "provider",
+            "consistency_model",
+            "write_strategy",
+            "idempotency_policy",
+            "conflict_policy",
+            "permission_policy",
+            "authentication_policy",
+            "extension_id",
+            "validation",
+        ],
+        "team backend contract",
+        failures,
+    )
+    require_string_list(backend.get("capabilities"), "backend capabilities", failures)
+
+    if task.get("schema_version") != 2 or task.get("record_kind") != "target-team-task":
+        failures.append("task record template identity is invalid")
+    require_fields(
+        task,
+        [
+            "record_revision",
+            "expected_revision",
+            "backend_revision",
+            "requested_by_actor_id",
+            "last_updated_by_actor_id",
+            "assistant_actor_id",
+            "transition",
+            "reviewed_head_revision",
+            "reviewed_base_revision",
+        ],
+        "task record template",
+        failures,
+    )
+    if not isinstance(task.get("record_revision"), int) or not isinstance(
+        task.get("expected_revision"), int
+    ):
+        failures.append("task record revisions must be integers")
+    claim = task.get("claim")
+    if not isinstance(claim, dict):
+        failures.append("task claim must be an object")
+    else:
+        require_fields(
+            claim,
+            ["lease_id", "heartbeat_at", "backend_revision", "state"],
+            "task claim",
+            failures,
+        )
+
+    if overlay.get("schema_version") != 2 or overlay.get("overlay_id") != "team-active":
+        failures.append("team-active overlay identity is invalid")
+    if set(overlay.get("operation_candidates", [])) != TEAM_OPERATIONS:
+        failures.append("team-active operation candidates must match team operations")
+    if overlay.get("required_context") != [
+        ".ai/assistant/team/active-work-index.json"
+    ]:
+        failures.append("team-active must preflight only the active-work index")
+    conditional = {
+        entry.get("path")
+        for entry in overlay.get("conditional_context", [])
+        if isinstance(entry, dict)
+    }
+    for required in [
+        ".ai/framework/team-collaboration.md",
+        ".ai/project/team-policy.json",
+        ".ai/assistant/team/work-registry.json",
+        ".ai/assistant/team/backend-contract.json",
+        ".ai/assistant/gates/team-collaboration.md",
+    ]:
+        if required not in conditional:
+            failures.append(f"team-active conditional context missing {required}")
+
+    if identity.get("schema_version") != 1 or identity.get("identity_kind") != "local-team-identity":
+        failures.append("local identity example is invalid")
+    if identity.get("selected_by") != "explicit-user-request":
+        failures.append("local identity must require explicit user selection")
 
     operations = catalog.get("operations", [])
     operation_by_id = {
@@ -310,93 +345,60 @@ def main() -> int:
     if missing_operations:
         failures.append(f"operation catalog missing team operations {missing_operations}")
     for operation_id in TEAM_OPERATIONS:
-        operation = operation_by_id.get(operation_id, {})
-        if operation.get("required_module") != "team-collaboration":
+        if operation_by_id.get(operation_id, {}).get("required_module") != "team-collaboration":
             failures.append(f"{operation_id} must require team-collaboration")
     for operation_id in READ_ONLY_OPERATIONS:
         if operation_by_id.get(operation_id, {}).get("allowed_actions") != ["read-only"]:
             failures.append(f"{operation_id} must be read-only")
-
-    overlay_route = router.get("task_scale_overlays", {}).get("team-active")
-    if not isinstance(overlay_route, dict):
-        failures.append("context router missing team-active overlay")
-    else:
-        if overlay_route.get("descriptor") != (
-            ".ai/assistant/team/context-overlay.json"
-        ):
-            failures.append("team-active must route to its lazy descriptor")
-    if context_overlay.get("schema_version") != 1:
-        failures.append("team-active context overlay schema_version must be 1")
-    if context_overlay.get("overlay_kind") != "target-team-context-overlay":
-        failures.append("team-active context overlay kind is invalid")
-    if context_overlay.get("overlay_id") != "team-active":
-        failures.append("team-active context overlay ID is invalid")
-    candidates = set(context_overlay.get("operation_candidates", []))
-    if candidates != TEAM_OPERATIONS:
-        failures.append("team-active operation candidates must match team operations")
-    required_context = set(context_overlay.get("required_context", []))
-    for path in [
-        ".ai/framework/team-collaboration.md",
-        ".ai/project/team-operating-model.md",
-        ".ai/assistant/team/work-registry.json",
-        ".ai/assistant/gates/team-collaboration.md",
+    if operation_by_id.get("team-identity", {}).get("allowed_actions") != [
+        "read-only",
+        "adapter-only",
     ]:
-        if path not in required_context:
-            failures.append(f"team-active overlay missing {path}")
-    if any(
-        path in router.get("bootstrap_context", [])
-        for path in [
-            ".ai/framework/team-collaboration.md",
-            ".ai/project/team-operating-model.md",
-            ".ai/assistant/team/work-registry.json",
-        ]
-    ):
-        failures.append("team collaboration files must stay outside bootstrap")
+        failures.append("team-identity must restrict writes to adapter-only")
+
+    route = router.get("task_scale_overlays", {}).get("team-active", {})
+    if route.get("descriptor") != ".ai/assistant/team/context-overlay.json":
+        failures.append("context router team-active descriptor is invalid")
+    route_signals = " ".join(route.get("use_when", []))
+    if "write operation" not in route_signals or "active" not in route_signals:
+        failures.append("context router must trigger team preflight for writes")
+    for forbidden in [
+        ".ai/project/team-policy.json",
+        ".ai/assistant/team/active-work-index.json",
+        ".ai/assistant/team/work-registry.json",
+    ]:
+        if forbidden in router.get("bootstrap_context", []):
+            failures.append(f"team state must stay outside bootstrap: {forbidden}")
 
     manifest_text = MANIFEST.read_text(encoding="utf-8")
-    for path in [
-        ".ai/project/team-operating-model.md",
-        ".ai/assistant/team/context-overlay.json",
-        ".ai/assistant/team/work-registry.json",
-        ".ai/assistant/gates/team-collaboration.md",
-    ]:
-        if path not in manifest_text:
-            failures.append(f"manifest missing team path {path}")
-
     module_text = MODULE_PROFILE.read_text(encoding="utf-8")
-    match = re.search(
-        r"Module: `team-collaboration`(?P<body>.*?)(?=\nModule: `|\n## Evidence)",
-        module_text,
-        flags=re.DOTALL,
-    )
-    if not match:
-        failures.append("module profile missing team-collaboration")
-    else:
-        body = match.group("body")
-        for path in [
-            ".ai/project/team-operating-model.md",
-            ".ai/assistant/team/work-registry.json",
-            ".ai/assistant/gates/team-collaboration.md",
-        ]:
-            if path not in body:
-                failures.append(f"team module profile missing {path}")
+    for required in [
+        ".ai/project/team-policy.json",
+        ".ai/assistant/team/active-work-index.json",
+        ".ai/assistant/team/backend-contract.json",
+        ".ai/assistant/team/task-record-template.json",
+        ".ai/local/team-identity.json",
+        ".ai/assistant/flows/team-identity.flow.md",
+        ".ai/assistant/templates/team-collaboration-review.md",
+        ".ai/assistant/skills/team-collaboration/SKILL.md",
+    ]:
+        if required not in manifest_text:
+            failures.append(f"manifest missing team path {required}")
+        if required != ".ai/local/team-identity.json" and required not in module_text:
+            failures.append(f"module profile missing team path {required}")
 
-    for path in [HELP_REFERENCE]:
-        text = path.read_text(encoding="utf-8")
-        for alias in [
-            "Alatyr team status",
-            "Alatyr claim",
-            "Alatyr conflicts",
-            "Alatyr handoff",
-            "Alatyr decision",
-            "Alatyr review",
-            "Alatyr merge check",
-            "Alatyr release",
-        ]:
-            if alias not in text:
-                failures.append(f"{path.relative_to(ROOT)} missing alias {alias}")
-    if "Alatyr team status" not in HELP.read_text(encoding="utf-8"):
-        failures.append(f"{HELP.relative_to(ROOT)} missing alias Alatyr team status")
+    combined_help = " ".join(
+        (
+            HELP.read_text(encoding="utf-8")
+            + HELP_REFERENCE.read_text(encoding="utf-8")
+        ).split()
+    )
+    for alias in ["Alatyr set actor", "Alatyr who am I", "Alatyr clear actor", "Alatyr team status"]:
+        if alias not in combined_help:
+            failures.append(f"help missing alias {alias}")
+
+    if not re.search(r"state-changing operation.*active-work", FRAMEWORK.read_text(encoding="utf-8"), re.DOTALL):
+        failures.append("framework missing automatic active-work preflight contract")
 
     if failures:
         for failure in failures:
@@ -404,8 +406,8 @@ def main() -> int:
         return 1
 
     print(
-        "OK: checked team collaboration rule, target records, lazy routing, "
-        f"and {len(TEAM_OPERATIONS)} operations"
+        "OK: checked team policy, local identity, active-work preflight, "
+        f"schema-2 task records, backend contract, and {len(TEAM_OPERATIONS)} operations"
     )
     return 0
 

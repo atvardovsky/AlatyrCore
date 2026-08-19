@@ -4,6 +4,53 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.9 - 2026-08-19
+
+- Increased the framework version to `0.1.0-alpha.9`, adapter schema version
+  to `8`, and target template version to `9`, with migration evidence from the
+  committed `0.1.0-alpha.8` source state.
+- Replaced the optional team module's mixed Markdown/JSON actor and task state
+  with a target-owned schema-2 team policy, registry metadata, independently
+  updateable task records, a generated compact active-work index, and an
+  explicit coordination-backend capability contract.
+- Added assistant-driven local identity selection through `Alatyr set actor`,
+  `Alatyr who am I`, and `Alatyr clear actor`. Local selection is ignored
+  repository state used for attribution only; it does not authenticate a user,
+  grant authority, modify global Git configuration, or silently enroll an
+  unknown actor.
+- Added automatic compact active-work preflight before state-changing
+  operations. Full team policy, task records, and human operating guidance are
+  loaded only when overlap, ownership, authority, handoff, review, or backend
+  evidence requires expansion.
+- Added optimistic-concurrency fields, claim leases, transition-policy checks,
+  self-review rejection, active-index freshness and parity checks, and
+  revision-bound merge-review evidence to reduce silent concurrent updates and
+  stale merge readiness.
+- Added an adapted team collaboration skill, one aggregate collaboration-
+  improvement review, and target-evidenced recommendations for existing skills,
+  prompts, gates, checks, flows, and tools without ranking individual people.
+- Added portable target-validator scenarios covering a valid repository-backed
+  team, revision conflict, self-review, stale active-work index, unknown local
+  identity, and stale merge-review evidence.
+- Defined extension-mediated provider integration for external trackers or
+  collaboration services. Core remains vendor-neutral and requires explicit
+  backend capabilities, synchronization direction, permissions, provenance,
+  approval, and failure behavior.
+- Defined an atomic adapter migration from schema-1 embedded task arrays to
+  schema-2 per-task records. Existing actors, tasks, claims, reviews, handoffs,
+  decisions, external links, and local identity must be preserved; placeholder
+  replacement is prohibited.
+- Kept routine bootstrap at 1,899 words, under the unchanged 1,900-word soft
+  limit. The team compact preflight loads 3 files and about 796 words versus 17
+  files and about 11,123 words for the full team reference union, a 92.8%
+  static word reduction. Combined large-task and team overlays remain about
+  2,255 words; framework-update routing retains an 85.9% static word reduction
+  from the complete candidate union.
+- Changed `ALATYR-TEAM-001`, `ALATYR-CONTEXT-001`, `ALATYR-SOURCE-001`,
+  `ALATYR-ADAPTER-001`, `ALATYR-OPERATION-001`, `ALATYR-BRIDGE-001`,
+  `ALATYR-EXTENSION-001`, `ALATYR-LIFECYCLE-001`, and
+  `ALATYR-EVIDENCE-001`; no rule IDs were added or removed.
+
 ## 0.1.0-alpha.8 - 2026-08-12
 
 - Increased the framework version to `0.1.0-alpha.8`, adapter schema version

@@ -53,6 +53,14 @@ def main() -> int:
         if overlay["missing_paths"]:
             failures.append(f"intent overlay {name} contains missing paths")
 
+    for name, overlay in report["task_scale_overlays"].items():
+        if overlay["declared_files"] > profile_budget["max_files"]:
+            failures.append(f"task-scale overlay {name} exceeds the default file budget")
+        if overlay["words"] > profile_budget["max_words"]:
+            failures.append(f"task-scale overlay {name} exceeds the default word budget")
+        if overlay["missing_paths"]:
+            failures.append(f"task-scale overlay {name} contains missing paths")
+
     diagram_route = report["operation_routes"]["diagram-discussion"]
     if diagram_route["compact"]["missing_paths"]:
         failures.append("diagram compact route contains missing paths")
@@ -110,6 +118,22 @@ def main() -> int:
             "extension compact route should reduce reference words by at least 25%"
         )
 
+    team_route = report["operation_routes"]["team-collaboration"]
+    if team_route["compact"]["missing_paths"]:
+        failures.append("team compact route contains missing paths")
+    team_reduction = team_route["word_reduction_percent"]
+    if not isinstance(team_reduction, (int, float)) or team_reduction < 50:
+        failures.append(
+            "team compact preflight should reduce reference words by at least 50%"
+        )
+    team_composition = report["task_overlay_compositions"][
+        "large-or-resumable+team-active"
+    ]
+    if team_composition["missing_paths"]:
+        failures.append("large-task and team composition contains missing paths")
+    if team_composition["words"] > profile_budget["max_words"]:
+        failures.append("large-task and team compact composition exceeds profile budget")
+
     migration = report["migration_routing"]
     reduction = migration["initial_word_reduction_percent"]
     if not isinstance(reduction, (int, float)) or reduction < 70:
@@ -129,6 +153,7 @@ def main() -> int:
         f"; project-vocabulary route reduction is {vocabulary_reduction}%"
         f"; test-first route reduction is {test_first_reduction}%"
         f"; extension route reduction is {extension_reduction}%"
+        f"; team preflight reduction is {team_reduction}%"
     )
     return 0
 

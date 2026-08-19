@@ -184,8 +184,12 @@ Before accepting a change, check:
   validator routing, route-map schemas, strict complete changed-path approval
   scope matching, Git diff collection, or evidence classification changes.
 - `python3 tools/check_team_collaboration.py` passes when the optional team
-  rule, operating model, lazy overlay, registry, flows, records, gate,
-  operation routes, help aliases, or manifest wiring changes.
+  rule, structured policy, local identity boundary, active-work index,
+  registry/task schemas, backend contract, lazy overlay, flows, records, gate,
+  skill, operation routes, help aliases, or manifest wiring changes.
+- `python3 tools/check_team_collaboration_scenarios.py` passes when multi-actor
+  revision conflict, reviewer separation, active-index freshness, local
+  identity, or revision-bound merge behavior changes.
 - `python3 tools/check_versioning.py` passes when source versions, changelog,
   release process, migration evidence, adapter schema version, or template
   version changes.
@@ -290,9 +294,10 @@ Before accepting a change, check:
   bridge paths, auto-load behavior, instruction priority, supported surfaces,
   tool permission model, help, team-operation, and AI-infrastructure alias
   routing, known limitations, and conformance check fields.
-- optional team rule, operating model, lazy overlay, registry, flows, records,
-  gate, catalog, module profile, installation/update migration, and validator
-  contracts agree without adding team state to routine bootstrap.
+- optional team rule, policy, local identity, active-work index, registry/task
+  schemas, backend contract, optimistic concurrency, lazy overlay, flows,
+  records, gate, skill, catalog, module profile, installation/update migration,
+  and validator contracts agree without adding full team state to bootstrap.
 - rule registry, scaffolding helper, conformance fixtures, conformance report
   contracts, migration-diff guidance, and effectiveness metrics agree with
   checker rules.
