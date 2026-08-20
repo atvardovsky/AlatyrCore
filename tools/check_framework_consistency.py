@@ -66,6 +66,8 @@ def main() -> int:
             "installer/context-router.json",
             "framework/file-inventory.json",
             "Read only selected or changed canonical framework owners",
+            "AI_ASSISTANTS.md",
+            "tools/README.md",
         ],
         "INSTALL.md": [
             "## Source Bootstrap",
@@ -1052,7 +1054,6 @@ def main() -> int:
                 )
 
     for relpath in [
-        "README.md",
         "INSTALL.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
@@ -1082,7 +1083,6 @@ def main() -> int:
                 )
     for relpath in [
         "AGENTS.md",
-        "README.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -1110,7 +1110,6 @@ def main() -> int:
                 )
     for relpath in [
         "AGENTS.md",
-        "README.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -1120,7 +1119,6 @@ def main() -> int:
 
     for relpath in [
         "AGENTS.md",
-        "README.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -1150,7 +1148,6 @@ def main() -> int:
                 )
     for relpath in [
         "AGENTS.md",
-        "README.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -1179,7 +1176,6 @@ def main() -> int:
                 )
     for relpath in [
         "AGENTS.md",
-        "README.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -1207,7 +1203,6 @@ def main() -> int:
                 )
     for relpath in [
         "AGENTS.md",
-        "README.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -1235,7 +1230,6 @@ def main() -> int:
                 )
     for relpath in [
         "AGENTS.md",
-        "README.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -1260,7 +1254,6 @@ def main() -> int:
                     f"{required_markdown_link_text}"
                 )
     for relpath in [
-        "README.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -1287,7 +1280,6 @@ def main() -> int:
                 )
     for relpath in [
         "AGENTS.md",
-        "README.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -1313,7 +1305,6 @@ def main() -> int:
                 )
     for relpath in [
         "AGENTS.md",
-        "README.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -1339,7 +1330,6 @@ def main() -> int:
                     f"{required_operation_contract_text}"
                 )
     for relpath in [
-        "README.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -1366,7 +1356,6 @@ def main() -> int:
                 )
     for relpath in [
         "AGENTS.md",
-        "README.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -1393,7 +1382,6 @@ def main() -> int:
                 )
     for relpath in [
         "AGENTS.md",
-        "README.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -1420,7 +1408,6 @@ def main() -> int:
                 )
     for relpath in [
         "AGENTS.md",
-        "README.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -1453,7 +1440,6 @@ def main() -> int:
                 )
     for relpath in [
         "AGENTS.md",
-        "README.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -1482,7 +1468,6 @@ def main() -> int:
                 )
     for relpath in [
         "AGENTS.md",
-        "README.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -1509,7 +1494,6 @@ def main() -> int:
                 )
     for relpath in [
         "AGENTS.md",
-        "README.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -1564,7 +1548,6 @@ def main() -> int:
                 )
     for relpath in [
         "AGENTS.md",
-        "README.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -1627,7 +1610,6 @@ def main() -> int:
                 )
     for relpath in [
         "AGENTS.md",
-        "README.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -1685,7 +1667,6 @@ def main() -> int:
                 )
     for relpath in [
         "AGENTS.md",
-        "README.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",

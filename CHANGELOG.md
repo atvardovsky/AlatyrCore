@@ -2,7 +2,15 @@
 
 ## Unreleased
 
-- No unreleased changes.
+- Reworked the public README into a shorter human-oriented product, usage,
+  installation, maturity, and navigation guide while preserving explicit
+  capability and claim boundaries.
+- Expanded `AI_ASSISTANTS.md` into the dedicated assistant-facing route for
+  source work, installation, installed operation, compact context, bridge,
+  infrastructure, and evidence behavior.
+- Made the consistency checker keep detailed source-tool references in their
+  canonical `tools/README.md` owner instead of forcing that inventory into the
+  public README.
 
 ## 0.1.0-alpha.11 - 2026-08-19
 
