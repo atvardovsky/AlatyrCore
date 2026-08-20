@@ -89,6 +89,9 @@ maintain them:
 - `large-task-orchestration`: task-scale routing, operation packets,
   workstreams, resumable checkpoints, and final convergence evidence for
   repositories that need large or multi-session changes.
+- `subagent-delegation`: capability-gated decomposition into bounded,
+  independently verifiable packets, target-owned assistant role/model
+  bindings, disjoint write scopes, fallbacks, and primary-agent convergence.
 - `change-packages`: coherent material-change evidence with semantic approval
   scope, companion-surface decisions, implementation corrections, compact
   architecture discussion, and before-to-after repository provenance.
@@ -172,6 +175,9 @@ Reject module-profile work that:
   installed-file ownership, lock validation, and safe removal behavior
 - enables team collaboration without a coordination backend, actor and
   decision-owner evidence, storage/privacy policy, or conflict review
+- enables subagent delegation without a target policy, current per-surface
+  capability evidence, bounded role/model bindings, write isolation,
+  validation, fallback, and primary-agent convergence
 - enables a consistency map without target-owned fact IDs, relationship
   coverage, or staleness handling
 - enables architecture knowledge without a project owner, compact catalog,

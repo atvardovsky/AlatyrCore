@@ -27,6 +27,12 @@ context budget, or needs separate approval or validation checkpoints.
 If none applies, continue with the smallest normal operation flow and do not
 create a packet.
 
+When the optional `subagent-delegation` module is enabled, apply
+`.ai/assistant/flows/subagent-delegation.flow.md` only to independently useful,
+locally verifiable workstreams with disjoint writes or read-only scope. Keep
+the primary assistant on the immediate critical path and in control of final
+convergence.
+
 ## Steps
 
 1. Load the compact bootstrap and select the smallest base task profile and
@@ -58,6 +64,9 @@ create a packet.
 11. When a change package is active, finalize its semantic scope, companion
     decisions, material corrections, and repository provenance after global
     convergence.
+12. When subagents were used, reconcile packet scope, requested and actual
+    model or unverified status, validation, fallback, rejected output, and
+    primary review before accepting any workstream result.
 
 ## Final Evidence
 
@@ -73,6 +82,8 @@ Report:
 - approval coverage and target validation
 - global logical integrity result
 - active change-package result and evidence quality when applicable
+- delegated packet, model/capability, validation, fallback, and primary-review
+  evidence when applicable
 - unresolved work and residual risk
 
 ## Rejection Criteria

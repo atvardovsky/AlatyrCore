@@ -34,6 +34,7 @@ Registered categories:
 - `MODULE`
 - `OPERATION`
 - `TEAM`
+- `DELEGATION`
 - `BRIDGE`
 - `LIFECYCLE`
 - `EVIDENCE`
@@ -50,7 +51,7 @@ through an aligned context router; separate total, portable, and reserved
 target context budgets; measure representative compact and expansion scenarios;
 record expansion only when boundaries or conflicts require it; prefer
 changed-fact relationship and AI-item routing when available; and keep optional
-module and full team detail lazy.
+module, delegated-execution, and full team detail lazy.
 Applies to: all installed adapter tasks.
 Enforcement: required.
 
@@ -219,7 +220,7 @@ separated and rewritten from target evidence; record the installed framework
 pack and its projected registry and inventory; and preserve target
 development-pattern evidence, routed AI infrastructure items, recommendation
 and adaptation records, optional project-owned documentation, vocabulary,
-testing, extension, and team state.
+testing, extension, team, and delegation policy state.
 Applies to: installation, framework update, adapter maintenance.
 Enforcement: required.
 
@@ -228,7 +229,8 @@ Canonical source: `.ai/framework/module-profile.md`
 Commitment: Establish the required core profile first, select a compatible
 dependency-closed framework pack, and enforce optional-module dependency, rule,
 required-file, and deterministic-check closure from the installed capability
-catalog before claiming a target module is enabled.
+catalog before claiming a target module, including subagent delegation, is
+enabled.
 Applies to: installation, framework update, adapter maturity, framework
 upgrades.
 Enforcement: required.
@@ -237,11 +239,10 @@ Rule ID: `ALATYR-OPERATION-001`
 Canonical source: `.ai/framework/operation-help.md`
 Commitment: Expose one conversational Alatyr entry point, route clear requests
 automatically through a canonical target operation catalog and checked compact
-exact-alias index, including optional code-documentation, project-vocabulary,
-test-first, extension lifecycle, team identity, and team coordination requests,
-provide a read-only evidence-based adapter health operation, and show a bounded
-pre-change preview only when changed-fact risk, approval, or scope uncertainty
-requires it.
+exact-alias index, compose capability-gated delegated execution only for
+bounded independent packets, provide a read-only evidence-based adapter health
+operation, and show a bounded pre-change preview only when changed-fact risk,
+approval, or scope uncertainty requires it.
 Applies to: installed operation routing, adapter health, changes requiring
 preview.
 Enforcement: required.
@@ -258,13 +259,26 @@ Applies to: actor selection, state-changing work, concurrent work, team
 handoffs, team review, merge readiness.
 Enforcement: required when module enabled.
 
+Rule ID: `ALATYR-DELEGATION-001`
+Canonical source: `.ai/framework/subagent-delegation.md`
+Commitment: When optional subagent delegation is enabled, keep orchestration,
+project decisions, approval, integration, and final evidence with the primary
+assistant; use the same bounded packet and convergence contract for
+target-verified native workers, external dispatchers, and suggestion-only
+handoff across assistant surfaces; preserve context, action, tool, write,
+privacy, validation, model, and concurrency boundaries; and fall back without
+unsupported quality, latency, or cost claims.
+Applies to: delegated execution, parallel workstreams, fast focused coding,
+large tasks.
+Enforcement: required when module enabled or delegated execution is attempted.
+
 Rule ID: `ALATYR-BRIDGE-001`
 Canonical source: `.ai/framework/bridge-capability-matrix.md`
 Commitment: Keep bridge files thin, record assistant loading behavior,
-permission model, alias routing, limitations, and conformance checks, and route
-selected AI infrastructure items and enabled project-vocabulary, test-first,
-extension, team identity, and team coordination requests through canonical
-target routing across supported assistant surfaces.
+permission model, alias routing, subagent launch/model-override/parallelism
+capability, limitations, and conformance checks, and route selected AI
+infrastructure items plus enabled project, team, and delegation behavior
+through canonical target routing across supported assistant surfaces.
 Applies to: supported assistant surfaces.
 Enforcement: required.
 
@@ -273,8 +287,8 @@ Canonical source: `.ai/framework/lifecycle.md`
 Commitment: Record framework version, adapter schema version, template version,
 installed framework pack, baseline, local deviations, migration notes, and
 upgrade evidence; preserve enabled target package, documentation, vocabulary,
-testing, extension, and team state; migrate changed schemas atomically without
-replacing active state with placeholders.
+testing, extension, team, and delegation policy/capability state; migrate
+changed schemas atomically without replacing active state with placeholders.
 Applies to: installation, framework upgrades.
 Enforcement: required.
 
@@ -282,11 +296,10 @@ Rule ID: `ALATYR-EVIDENCE-001`
 Canonical source: `.ai/framework/guarantees.md`
 Commitment: Distinguish declarative process commitments, machine-checkable
 expectations, target-dependent guarantees, and non-guarantees in final claims,
-including strong versus bounded change-package provenance and the semantic
-limits of comments, generated reference output, structurally valid vocabulary
-records, structurally complete RED GREEN refactor records, structurally valid
-extension packages and locks, and structurally valid team identity, index,
-task, review, and backend records.
+including strong versus bounded change-package provenance; semantic limits of
+generated records; structurally valid team and extension state; and the
+difference between declared versus verified delegated model, scope, validation,
+latency, quality, and cost evidence.
 Applies to: final evidence, framework positioning.
 Enforcement: required.
 

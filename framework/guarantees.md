@@ -225,6 +225,9 @@ defines:
   recheck evidence when durable operation records are expected
 - operation packet, storage policy, workstream boundaries, and checkpoint
   evidence when large or resumable operations are expected
+- delegation policy, per-surface capability evidence, bounded role/model
+  bindings, packet scope, write isolation, fallback, validation, privacy, and
+  primary convergence when subagent execution is expected
 - change-package record, retention policy, semantic scope, companion decisions,
   and provenance policy when coherent material-change evidence is expected
 - target actors, local identity mapping, authority, priorities, task source,
@@ -246,6 +249,8 @@ The framework does not guarantee:
 
 - correctness of project facts that are missing, stale, or contradictory
 - that an assistant can infer business policy without programmer input
+- that a client can launch subagents, select a requested model, report the
+  actual model, or improve latency, quality, or cost through delegation
 - that local commands exist in another project
 - that generated files can be produced without the target repository tooling
 - that architecture changes are safe without explicit approval and validation

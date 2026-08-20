@@ -75,6 +75,9 @@ List what must not be changed.
 - Context receipt fields and storage policy:
 - Project-area overlays:
 - Task-scale overlays and large-task activation rules:
+- Subagent delegation owner, mode, supported surfaces, role/model bindings,
+  per-surface dispatch backend, external dispatcher item, packet limits,
+  write/tool boundaries, fallback, privacy, and validation:
 - Large-task packet storage, retention, or ignore policy:
 - Team-collaboration need and team-active activation rules:
 - Team policy/operating-model owner, actor names/aliases, local identity ignore,
@@ -276,6 +279,14 @@ Include `.ai/assistant/flows/large-task-orchestration.flow.md` and
 cross-boundary, multi-workstream, budget-exceeding, or resumable operations.
 Record where completed packets are stored, ignored, redacted, or removed.
 
+Include `.ai/assistant/delegation-policy.json`, the delegated-execution
+overlay, `.ai/assistant/flows/subagent-delegation.flow.md`, and
+`.ai/assistant/templates/subagent-task-packet.md` only when the target enables
+subagent delegation. Record verified surface capabilities and never infer
+model access from framework examples. For each surface, select native,
+external, suggestion-only, or unsupported dispatch and bind an external route
+to an approved target AI-infrastructure item.
+
 Include `.ai/assistant/change-packages/index.json`, the lazy change-package
 overlay, `.ai/assistant/flows/change-package.flow.md`, and machine/human report
 templates only when the target needs coherent material-change evidence,
@@ -352,6 +363,8 @@ metadata.
 - Operation catalog, single entry, automatic routing, health, and preview
   rules:
 - Large-task workstream, checkpoint, and final-convergence rules:
+- Subagent delegation activation, role/model, packet, isolation, fallback,
+  primary-review, and evidence rules:
 - Adapter output contract rules:
 - Adapter drift/local leakage rules:
 - Target-local adapter checker rules:

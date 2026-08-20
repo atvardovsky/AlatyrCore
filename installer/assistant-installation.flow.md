@@ -247,6 +247,12 @@ Classify every proposed target file:
     Add the large-task flow and operation-packet template when the target needs
     cross-boundary, multi-workstream, budget-exceeding, or resumable work, and
     record the target packet storage policy.
+    Add the target delegation policy, delegated-execution overlay, delegation
+    flow, and packet template only when subagent delegation is enabled. Record
+    each surface's native, external, suggestion-only, or unsupported dispatch
+    backend; any external dispatcher AI-infrastructure item; model override,
+    parallelism, actual-model evidence, verified role bindings, write/tool
+    boundaries, fallback, privacy, validation, and primary convergence.
     Add the change-package index, flow, machine record, and redacted report
     template when the target needs semantic multi-surface approval, architecture
     segment/capability evidence, audit, pilot, or publishable provenance. Record
@@ -369,6 +375,8 @@ Report:
   templates added or skipped
 - large-task orchestration flow, operation packet, and target storage policy
   added or skipped
+- subagent delegation policy, overlay, flow, packet, per-surface capability
+  evidence, role/model bindings, fallback, and validation added or skipped
 - change-package index, lazy overlay, flow, schema, redacted report, retention
   policy, and validator support added, migrated, skipped, or blocked
 - team collaboration policy and operating model, ignored local identity,

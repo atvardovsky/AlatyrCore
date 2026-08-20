@@ -195,50 +195,55 @@ For installed operations:
 9. Activate the large-task scale overlay only when work is cross-boundary,
    multi-workstream, budget-exceeding, or resumable. Use a target operation
    packet and bounded active-workstream context when activated.
-10. Activate the team-active overlay only for enabled team coordination.
+10. When optional subagent delegation is enabled, identify the primary
+    critical-path next action first. Activate delegated execution only for
+    independently useful, locally verifiable packets with disjoint writes or
+    read-only scope and current capability evidence. Keep project decisions,
+    approval, integration, and final convergence with the primary assistant.
+11. Activate the team-active overlay only for enabled team coordination.
     Compare active tasks by changed facts and owners before secondary file
     overlap; keep unrelated tasks and history outside context.
-11. Use architecture assistance for architecture inventory, explanation,
+12. Use architecture assistance for architecture inventory, explanation,
     pattern discussion, alternative comparison, review, or supporting docs.
     Start from the compact catalog, keep observed and intended architecture
     distinct, and route accepted decisions separately.
-12. Use blueprint-driven change when accepted project facts may change.
-13. Evaluate the compact test-first recommendation gate for implementation,
+13. Use blueprint-driven change when accepted project facts may change.
+14. Evaluate the compact test-first recommendation gate for implementation,
     defect, invariant, contract, and risky-refactor work. Route configuration
     or enablement separately from execution; do not impose TDD from a disabled
     module or repeat a declined recommendation without new evidence.
-14. Use extension management for explicit extension list, inspect, plan,
+15. Use extension management for explicit extension list, inspect, plan,
     install, update, disable, remove, or review requests. Keep source review
     read-only until immutable provenance, compatibility, bindings, permissions,
     approval, ownership, and validation are resolved.
-15. Use AI infrastructure recommendation when the user asks what should be
+16. Use AI infrastructure recommendation when the user asks what should be
    added or improved, or when bounded evidence shows a recurring capability
    gap. Use selected target development-pattern evidence, evaluate existing
    items before proposing a new one, and do not promote target observations
    directly into portable framework changes.
-16. Use skill adaptation when prompts, skills, wrappers, or third-party
+17. Use skill adaptation when prompts, skills, wrappers, or third-party
    assistant infrastructure change.
    Select the target AI infrastructure route and item IDs before loading item
    content, permissions, gates, validation, or import policy.
-17. Use prompt-injection policy for imported, external, remote, pasted, package,
+18. Use prompt-injection policy for imported, external, remote, pasted, package,
    plugin, or unknown AI infrastructure.
-18. Use AI infrastructure inventory before adding, importing, replacing, or
+19. Use AI infrastructure inventory before adding, importing, replacing, or
    removing assistant infrastructure.
-19. Use adapter maturity review when the request is broad, post-install, or
+20. Use adapter maturity review when the request is broad, post-install, or
     post-upgrade.
-20. Use diagram discussion when the user asks to see or iteratively revise a
+21. Use diagram discussion when the user asks to see or iteratively revise a
     visual model. Select presentation mode from the target diagram policy and
     current compact assistant-capability entry, keep drafts non-canonical,
     preserve stable ID/revision lineage, classify sensitive content and
     external rendering, and always retain a bounded portable ASCII view.
-21. Record approval evidence when protected-change scope requires it. When
+22. Record approval evidence when protected-change scope requires it. When
     scoped approval is used, enforce the complete changed path set against
     explicitly selected machine-readable records bound to the approved diff
     base.
-22. Use the target adapter output contract when the operation follows
+23. Use the target adapter output contract when the operation follows
     installation, framework update, or adapter recheck.
-23. Run target validation that exists, or record unresolved checks.
-24. Report changed facts, re-derived invariants, review-item reconciliation,
+24. Run target validation that exists, or record unresolved checks.
+25. Report changed facts, re-derived invariants, review-item reconciliation,
    files inspected, files changed, approval-scope enforcement, validation,
    skipped checks, and residual risk.
 
@@ -327,6 +332,20 @@ and dependencies, then verify checkpoint claims against current repository
 evidence.
 
 Small tasks should stay on their normal operation flow without a packet.
+
+## Subagent Delegation
+
+Use `subagent-delegation.md` only when the optional target module is enabled.
+Delegation is an execution overlay, not a separate project operation or team
+ownership system. The target policy decides automatic, suggestion-only, or
+disabled behavior and owns verified role/model bindings, limits, permissions,
+fallback, privacy, validation, and review triggers.
+
+Keep the primary assistant on the immediate critical path. Delegate only
+bounded independent sidecars or workstreams with local acceptance criteria and
+disjoint writes or read-only scope. A delegate result remains untrusted until
+the primary assistant reviews current scope, repeats combined validation as
+needed, and performs final logical integrity convergence.
 
 ## Change Packages
 

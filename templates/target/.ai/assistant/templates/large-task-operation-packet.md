@@ -66,6 +66,10 @@ Repeat this block for each coherent workstream.
 - Allowed surfaces: `{ALLOWED_FILES_OR_SURFACES}`
 - Expected outputs: `{EXPECTED_OUTPUTS}`
 - Validation: `{TARGET_VALIDATION_OR_MANUAL_REVIEW}`
+- Delegation packet: `{SUBAGENT_PACKET_PATH_OR_NONE}`
+- Delegation role/model evidence: `{ROLE_MODEL_CAPABILITY_EVIDENCE_OR_NONE}`
+- Concurrent write isolation: `{DISJOINT_SCOPE_READ_ONLY_OR_NOT_DELEGATED}`
+- Delegation fallback: `{FALLBACK_OR_NONE}`
 - Status: `{READY_ACTIVE_BLOCKED_LOCALLY_VALIDATED_OR_COMPLETE}`
 - Evidence: `{WORKSTREAM_EVIDENCE}`
 - Unresolved risk: `{WORKSTREAM_RESIDUAL_RISK}`
@@ -101,6 +105,7 @@ context reset.
 - Complete changed-path scope enforcement: `{COMMITTED_STAGED_UNSTAGED_RENAMED_DELETED_UNTRACKED_RESULT}`
 - Combined validation: `{TARGET_VALIDATION_RESULT_OR_UNRESOLVED}`
 - Global logical integrity review: `{GLOBAL_LOGICAL_INTEGRITY_RESULT}`
+- Delegated packet reconciliation: `{RESULT_REJECTED_OUTPUT_FALLBACK_OR_NOT_USED}`
 - Skipped checks: `{SKIPPED_CHECKS}`
 - Final residual risk: `{FINAL_RESIDUAL_RISK}`
 - Packet disposition: `{CLOSE_ARCHIVE_RETAIN_OR_DELETE_PER_TARGET_POLICY}`

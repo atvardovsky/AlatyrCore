@@ -15,6 +15,7 @@ installed Alatyr Core adapter.
 - Known context: `{KNOWN_CONTEXT}`
 - Review comments or defect reports to reconcile: `{REVIEW_ITEMS_OR_NONE}`
 - Task scale: `{NORMAL_OR_LARGE_OR_RESUMABLE}`
+- Delegation preference: `{AUTO_ALLOW_FORBID_OR_REQUIRE_SUPPORTED}`
 - Existing operation packet: `{PACKET_PATH_OR_NONE}`
 - Team task id: `{TEAM_TASK_ID_OR_NONE}`
 - Actor ids or roles: `{SOURCE_DESTINATION_REVIEWER_OR_DECISION_ACTOR_IDS_OR_NONE}`
@@ -115,6 +116,13 @@ operation packet for a small task.
 For enabled team coordination, add the `team-active` overlay and load only the
 selected task, relevant active overlaps, actor/authority evidence, changed-fact
 owners, dependencies, and selected team flow/gate.
+
+When `subagent-delegation` is enabled, honor the request preference and add
+the `delegated-execution` overlay only after identifying the primary critical-
+path action and a bounded, independently useful packet with disjoint writes or
+read-only scope. Unsupported or stale capability evidence falls back to
+primary execution; it does not block the parent operation unless the request
+explicitly requires supported delegation.
 
 ## Operation Choices
 

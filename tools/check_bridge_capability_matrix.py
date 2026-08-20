@@ -40,6 +40,8 @@ REQUIRED_FIELDS = [
     "Routes code-documentation aliases:",
     "Routes project-vocabulary aliases:",
     "Routes test-first aliases:",
+    "Routes subagent delegation:",
+    "Subagent delegation capability record:",
     "Diagram capability record:",
     "Routes `alatyr-ai-inventory`:",
     "Routes `alatyr-suggest-ai`:",
@@ -64,6 +66,7 @@ PLACEHOLDER_FIELDS = [
     "Routes code-documentation aliases:",
     "Routes project-vocabulary aliases:",
     "Routes test-first aliases:",
+    "Routes subagent delegation:",
     "Routes `alatyr-ai-inventory`:",
     "Routes `alatyr-suggest-ai`:",
     "Routes `alatyr-improve-ai`:",
@@ -171,6 +174,17 @@ def main() -> int:
         if capability_line != f"Diagram capability record: `{expected_capability}`":
             failures.append(
                 f"{surface_id} diagram capability record must be {expected_capability}"
+            )
+        delegation_line = field_line(
+            block, "Subagent delegation capability record:"
+        )
+        if delegation_line != (
+            "Subagent delegation capability record: "
+            f"`{expected_capability}`"
+        ):
+            failures.append(
+                f"{surface_id} subagent capability record must be "
+                f"{expected_capability}"
             )
 
     duplicate_surface_ids = [

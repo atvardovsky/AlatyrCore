@@ -18,5 +18,23 @@
       "assistant bridge changed",
       "{TARGET_CAPABILITY_REVIEW_TRIGGER}"
     ]
+  },
+  "subagent_delegation": {
+    "route": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "dispatch_backend": "{NATIVE_EXTERNAL_SUGGESTION_ONLY_UNSUPPORTED_OR_UNKNOWN}",
+    "external_dispatcher": "{TARGET_AI_INFRASTRUCTURE_ITEM_ID_NONE_OR_UNKNOWN}",
+    "native_subagents": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "model_override": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "parallel_dispatch": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "actual_model_evidence": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "verified_at": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}",
+    "client_version": "{CLIENT_VERSION_OR_UNKNOWN_WITH_REASON}",
+    "evidence": "{TARGET_EVIDENCE_OR_MANUAL_REVIEW}",
+    "expires_at": "{ISO_DATE_OR_REVIEW_TRIGGER_WITH_REASON}",
+    "review_triggers": [
+      "client version or assistant bridge changed",
+      "subagent or model-selection behavior changed",
+      "{TARGET_DELEGATION_CAPABILITY_REVIEW_TRIGGER}"
+    ]
   }
 }

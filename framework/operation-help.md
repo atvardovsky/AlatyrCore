@@ -354,13 +354,17 @@ When routing a request:
 13. Add a large-task scale overlay only when the work is cross-boundary,
     multi-workstream, budget-exceeding, or resumable. Keep small tasks on their
     normal flow without an operation packet.
-14. In an enabled team project, read the compact active-work index before a
+14. When subagent delegation is enabled, identify the primary critical-path
+    action first. Add delegated execution only for independently useful,
+    locally verifiable packets with disjoint writes or read-only scope and
+    current capability evidence. Honor an explicit `forbid` preference.
+15. In an enabled team project, read the compact active-work index before a
     state-changing operation. Add the team-active overlay for explicit team
     coordination, a task/branch match, possible logical overlap, or unresolved
     index evidence. Load the selected task and relevant overlaps, not all team
     history. Route `set actor`, `who am I`, and `clear actor` through ignored
     local identity without treating selection as authentication.
-15. For diagram discussion, load the diagram policy and current compact
+16. For diagram discussion, load the diagram policy and current compact
     assistant-capability entry, then choose native inline, rendered artifact,
     plus a portable ASCII view without loading the full bridge matrix.
 

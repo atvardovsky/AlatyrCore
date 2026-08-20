@@ -10,6 +10,11 @@ selection reads only the current entry in
 `.ai/assistant/assistant-capabilities.json`; keep that checked projection
 aligned with the references below.
 
+Each delegation capability record must select `native`, `external`,
+`suggestion-only`, `unsupported`, or `unknown`. External dispatch must name a
+routed target AI-infrastructure item. The shared packet and primary-
+convergence contract apply regardless of assistant vendor or backend.
+
 ## Supported Assistant Surfaces
 
 Resolve these entries from target evidence before claiming a bridge is
@@ -37,6 +42,8 @@ Routes code-documentation aliases: `{GENERIC_ROUTES_CODE_DOCUMENTATION}`
 Routes project-vocabulary aliases: `{GENERIC_ROUTES_PROJECT_VOCABULARY}`
 Routes test-first aliases: `{GENERIC_ROUTES_TEST_FIRST}`
 Routes extension aliases: `{GENERIC_ROUTES_EXTENSIONS}`
+Routes subagent delegation: `{GENERIC_ROUTES_SUBAGENT_DELEGATION}`
+Subagent delegation capability record: `.ai/assistant/assistant-capabilities/generic.json`
 Diagram capability record: `.ai/assistant/assistant-capabilities/generic.json`
 Routes `alatyr-ai-inventory`: `{GENERIC_ROUTES_AI_INVENTORY}`
 Routes `alatyr-suggest-ai`: `{GENERIC_ROUTES_AI_RECOMMENDATION}`
@@ -68,6 +75,8 @@ Routes code-documentation aliases: `{AGENTS_ROUTES_CODE_DOCUMENTATION}`
 Routes project-vocabulary aliases: `{AGENTS_ROUTES_PROJECT_VOCABULARY}`
 Routes test-first aliases: `{AGENTS_ROUTES_TEST_FIRST}`
 Routes extension aliases: `{AGENTS_ROUTES_EXTENSIONS}`
+Routes subagent delegation: `{AGENTS_ROUTES_SUBAGENT_DELEGATION}`
+Subagent delegation capability record: `.ai/assistant/assistant-capabilities/agents.json`
 Diagram capability record: `.ai/assistant/assistant-capabilities/agents.json`
 Routes `alatyr-ai-inventory`: `{AGENTS_ROUTES_AI_INVENTORY}`
 Routes `alatyr-suggest-ai`: `{AGENTS_ROUTES_AI_RECOMMENDATION}`
@@ -100,6 +109,8 @@ Routes code-documentation aliases: `{CODEX_ROUTES_CODE_DOCUMENTATION}`
 Routes project-vocabulary aliases: `{CODEX_ROUTES_PROJECT_VOCABULARY}`
 Routes test-first aliases: `{CODEX_ROUTES_TEST_FIRST}`
 Routes extension aliases: `{CODEX_ROUTES_EXTENSIONS}`
+Routes subagent delegation: `{CODEX_ROUTES_SUBAGENT_DELEGATION}`
+Subagent delegation capability record: `.ai/assistant/assistant-capabilities/codex.json`
 Diagram capability record: `.ai/assistant/assistant-capabilities/codex.json`
 Routes `alatyr-ai-inventory`: `{CODEX_ROUTES_AI_INVENTORY}`
 Routes `alatyr-suggest-ai`: `{CODEX_ROUTES_AI_RECOMMENDATION}`
@@ -131,6 +142,8 @@ Routes code-documentation aliases: `{CLAUDE_ROUTES_CODE_DOCUMENTATION}`
 Routes project-vocabulary aliases: `{CLAUDE_ROUTES_PROJECT_VOCABULARY}`
 Routes test-first aliases: `{CLAUDE_ROUTES_TEST_FIRST}`
 Routes extension aliases: `{CLAUDE_ROUTES_EXTENSIONS}`
+Routes subagent delegation: `{CLAUDE_ROUTES_SUBAGENT_DELEGATION}`
+Subagent delegation capability record: `.ai/assistant/assistant-capabilities/claude.json`
 Diagram capability record: `.ai/assistant/assistant-capabilities/claude.json`
 Routes `alatyr-ai-inventory`: `{CLAUDE_ROUTES_AI_INVENTORY}`
 Routes `alatyr-suggest-ai`: `{CLAUDE_ROUTES_AI_RECOMMENDATION}`
@@ -162,6 +175,8 @@ Routes code-documentation aliases: `{GEMINI_ROUTES_CODE_DOCUMENTATION}`
 Routes project-vocabulary aliases: `{GEMINI_ROUTES_PROJECT_VOCABULARY}`
 Routes test-first aliases: `{GEMINI_ROUTES_TEST_FIRST}`
 Routes extension aliases: `{GEMINI_ROUTES_EXTENSIONS}`
+Routes subagent delegation: `{GEMINI_ROUTES_SUBAGENT_DELEGATION}`
+Subagent delegation capability record: `.ai/assistant/assistant-capabilities/gemini.json`
 Diagram capability record: `.ai/assistant/assistant-capabilities/gemini.json`
 Routes `alatyr-ai-inventory`: `{GEMINI_ROUTES_AI_INVENTORY}`
 Routes `alatyr-suggest-ai`: `{GEMINI_ROUTES_AI_RECOMMENDATION}`
@@ -194,6 +209,8 @@ Routes code-documentation aliases: `{GITHUB_COPILOT_ROUTES_CODE_DOCUMENTATION}`
 Routes project-vocabulary aliases: `{GITHUB_COPILOT_ROUTES_PROJECT_VOCABULARY}`
 Routes test-first aliases: `{GITHUB_COPILOT_ROUTES_TEST_FIRST}`
 Routes extension aliases: `{GITHUB_COPILOT_ROUTES_EXTENSIONS}`
+Routes subagent delegation: `{GITHUB_COPILOT_ROUTES_SUBAGENT_DELEGATION}`
+Subagent delegation capability record: `.ai/assistant/assistant-capabilities/github-copilot.json`
 Diagram capability record: `.ai/assistant/assistant-capabilities/github-copilot.json`
 Routes `alatyr-ai-inventory`: `{GITHUB_COPILOT_ROUTES_AI_INVENTORY}`
 Routes `alatyr-suggest-ai`: `{GITHUB_COPILOT_ROUTES_AI_RECOMMENDATION}`
@@ -226,6 +243,8 @@ Routes code-documentation aliases: `{CURSOR_ROUTES_CODE_DOCUMENTATION}`
 Routes project-vocabulary aliases: `{CURSOR_ROUTES_PROJECT_VOCABULARY}`
 Routes test-first aliases: `{CURSOR_ROUTES_TEST_FIRST}`
 Routes extension aliases: `{CURSOR_ROUTES_EXTENSIONS}`
+Routes subagent delegation: `{CURSOR_ROUTES_SUBAGENT_DELEGATION}`
+Subagent delegation capability record: `.ai/assistant/assistant-capabilities/cursor.json`
 Diagram capability record: `.ai/assistant/assistant-capabilities/cursor.json`
 Routes `alatyr-ai-inventory`: `{CURSOR_ROUTES_AI_INVENTORY}`
 Routes `alatyr-suggest-ai`: `{CURSOR_ROUTES_AI_RECOMMENDATION}`
@@ -257,6 +276,8 @@ Routes code-documentation aliases: `{DEVIN_CASCADE_ROUTES_CODE_DOCUMENTATION}`
 Routes project-vocabulary aliases: `{DEVIN_CASCADE_ROUTES_PROJECT_VOCABULARY}`
 Routes test-first aliases: `{DEVIN_CASCADE_ROUTES_TEST_FIRST}`
 Routes extension aliases: `{DEVIN_CASCADE_ROUTES_EXTENSIONS}`
+Routes subagent delegation: `{DEVIN_CASCADE_ROUTES_SUBAGENT_DELEGATION}`
+Subagent delegation capability record: `.ai/assistant/assistant-capabilities/devin-cascade.json`
 Diagram capability record: `.ai/assistant/assistant-capabilities/devin-cascade.json`
 Routes `alatyr-ai-inventory`: `{DEVIN_CASCADE_ROUTES_AI_INVENTORY}`
 Routes `alatyr-suggest-ai`: `{DEVIN_CASCADE_ROUTES_AI_RECOMMENDATION}`
@@ -289,6 +310,8 @@ Routes code-documentation aliases: `{WINDSURF_ROUTES_CODE_DOCUMENTATION}`
 Routes project-vocabulary aliases: `{WINDSURF_ROUTES_PROJECT_VOCABULARY}`
 Routes test-first aliases: `{WINDSURF_ROUTES_TEST_FIRST}`
 Routes extension aliases: `{WINDSURF_ROUTES_EXTENSIONS}`
+Routes subagent delegation: `{WINDSURF_ROUTES_SUBAGENT_DELEGATION}`
+Subagent delegation capability record: `.ai/assistant/assistant-capabilities/windsurf.json`
 Diagram capability record: `.ai/assistant/assistant-capabilities/windsurf.json`
 Routes `alatyr-ai-inventory`: `{WINDSURF_ROUTES_AI_INVENTORY}`
 Routes `alatyr-suggest-ai`: `{WINDSURF_ROUTES_AI_RECOMMENDATION}`

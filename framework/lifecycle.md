@@ -83,6 +83,10 @@ Before upgrading framework files in a target project:
    package compatibility, installed ownership and hashes, target bindings,
    permissions, lifecycle flow, gates, operation/bridge routing, historical
    records, and validator support.
+   When `subagent-delegation` is enabled, compare its policy schema, selected
+   assistant capability records, role/model bindings, client freshness,
+   packet and overlay contracts, write isolation, fallbacks, privacy,
+   validation, and primary convergence.
 10. Prepare a target migration note or installation plan from reviewed
     assessment evidence.
 11. Require approval before overwriting existing target AI instructions.
@@ -111,6 +115,10 @@ Before upgrading framework files in a target project:
     Preserve target vocabulary term IDs, definitions, states, owners, aliases,
     acronyms, links, and decisions. Never replace accepted project language
     with source placeholders or inferred definitions.
+    Preserve target delegation role/model bindings, capability evidence,
+    limits, privacy policy, fallbacks, and historical packet evidence. Never
+    replace them with source placeholders or assume a newly documented model
+    is available on the installed client.
 14. Recheck root assistant entry points and supported bridge files so future
     sessions can find the installation note, operation catalog, health, help,
     and routing flow.
@@ -160,6 +168,9 @@ Framework lifecycle notes should record:
   lifecycle operation, ownership/removal behavior, bindings, permissions,
   bridges, lazy route, inspection tooling, and validator migration when that
   module is enabled
+- subagent delegation rule, target policy, capability records, role/model
+  bindings, packet and overlay contracts, fallbacks, and validator migration
+  when that module is enabled
 
 ## Deprecation
 

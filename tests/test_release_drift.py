@@ -18,7 +18,7 @@ class ReleaseBaselineTests(unittest.TestCase):
         tag, intervening = nearest_tagged_baseline(version)
 
         self.assertEqual(tag, "v0.1.0-alpha.3")
-        self.assertEqual(intervening[0], "0.1.0-alpha.10")
+        self.assertEqual(intervening[0], "0.1.0-alpha.11")
         self.assertEqual(intervening[-1], "0.1.0-alpha.4")
         self.assertEqual(
             prior_changelog_versions(version)[: len(intervening)], intervening

@@ -71,11 +71,18 @@ completion test. Every workstream should define:
 - allowed files or surfaces
 - expected outputs and validation
 - status, evidence, unresolved risk, and handoff state
+- delegation packet, selected role/model evidence, write isolation, and
+  fallback when `subagent-delegation` is enabled for that workstream
 
 Do not split one semantic fact across independent workstreams unless one
 workstream owns final reconciliation. Parallel-looking edits are not
 independent when they share a source-of-truth decision, approval, generated
 artifact, migration order, or external contract.
+
+When `subagent-delegation` is enabled, dispatch only independently useful,
+locally verifiable packets. Delegates do not own project decisions, approval,
+or final convergence. Keep the primary assistant on the immediate critical
+path and require disjoint writes or read-only packets.
 
 ## Resume Protocol
 
@@ -126,6 +133,9 @@ Local workstream success is not final operation success. Before completion:
 9. When a change package is active, finalize companion decisions,
    implementation corrections, semantic-scope reconciliation, and repository
    provenance after the combined workstream result is known.
+10. When subagents were used, reconcile every packet's actual scope, model or
+    unverified status, validation, rejected output, fallback, and primary
+    review before accepting the workstream result.
 
 ## Storage And Privacy
 

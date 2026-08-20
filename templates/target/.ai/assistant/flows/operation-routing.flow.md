@@ -57,8 +57,8 @@ For `Alatyr status` or `Alatyr doctor`, route directly to `adapter-health` with
    the smallest likely operation without loading the full catalog for every
    routine task.
 5. Select the smallest matching context profile from the router, then select
-   project-area overlays and optional `large-or-resumable` or `team-active`
-   scale overlays.
+   project-area overlays and optional `large-or-resumable`,
+   `delegated-execution`, or `team-active` scale overlays.
    Do not load all `.ai/framework` or `.ai/project` files; load only required
    context and record budget exceptions.
 6. Classify contour, changed facts, risk, source-of-truth owners, and approval
@@ -82,6 +82,12 @@ For `Alatyr status` or `Alatyr doctor`, route directly to `adapter-health` with
     unresolved index evidence. Load the selected task, relevant overlaps, and
     one team flow; do not load unrelated records or infer unavailable tracker
     state.
+11. When subagent delegation is enabled and not forbidden by the request,
+    identify the primary critical-path next action first. Add the
+    `delegated-execution` overlay only for independently useful, locally
+    verifiable packets with disjoint writes or read-only scope and current
+    assistant capability evidence. Keep decisions, approval, integration, and
+    final convergence with the primary assistant.
 
 ## Pre-Change Decision
 
@@ -154,6 +160,9 @@ Report:
 - diagram presentation mode, source status, and fallback when applicable
 - test-first recommendation result, policy state, trigger, mode, likely level,
   cost, and selected configuration or execution route when applicable
+- Delegation preference, activation decision, packets, role/model or
+  unverified status, capability freshness, validation, fallback, and primary
+  convergence when applicable
 - extension lifecycle mode, selected ID/source, source-access state, immutable
   revision/digest, compatibility, permissions, ownership, and next safe action
   when applicable

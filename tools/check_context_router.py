@@ -598,6 +598,24 @@ def main() -> int:
     )
     if not isinstance(large_task.get("budget_behavior"), str):
         failures.append("large task overlay needs budget_behavior")
+    delegated_entry = scale_index.get("delegated-execution")
+    delegated = descriptor(
+        delegated_entry.get("descriptor")
+        if isinstance(delegated_entry, dict)
+        else None,
+        "target-task-scale-overlay",
+        "task_scale_overlays.delegated-execution",
+        failures,
+    )
+    check_contract(
+        delegated,
+        ["use_when", "required_context", "expand_when", "final_evidence"],
+        "task_scale_overlays.delegated-execution",
+        failures,
+        {"required_context"},
+    )
+    if not isinstance(delegated.get("budget_behavior"), str):
+        failures.append("delegated execution overlay needs budget_behavior")
     package_entry = scale_index.get("change-package")
     change_package = descriptor(
         package_entry.get("descriptor") if isinstance(package_entry, dict) else None,
@@ -660,6 +678,7 @@ def main() -> int:
         (consistency, "required_context"),
         (migration, "candidate_context"),
         (large_task, "required_context"),
+        (delegated, "required_context"),
         (change_package, "required_context"),
         (diagram, "required_context"),
         (architecture, "required_context"),

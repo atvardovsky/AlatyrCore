@@ -138,6 +138,10 @@
       ],
       "descriptor": ".ai/assistant/context/task-scales/large-or-resumable.json"
     },
+    "delegated-execution": {
+      "use_when": ["delegation"],
+      "descriptor": ".ai/assistant/context/task-scales/delegated-execution.json"
+    },
     "change-package": {
       "use_when": [
         "coherent material outcome across multiple project surfaces",
