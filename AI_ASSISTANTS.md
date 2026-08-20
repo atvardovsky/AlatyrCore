@@ -164,6 +164,12 @@ delegated-execution overlay, bounded packet, and selected assistant-capability
 record. The primary assistant retains project decisions, approval, result
 review, integration, logical integrity, and final validation.
 
+This strategy applies equally to generic, AGENTS-aware, Codex, Claude, Gemini,
+GitHub Copilot, Cursor, Devin/Cascade, and Windsurf surfaces. `Subagent` is a
+portable role: the selected surface may use native workers, an approved
+external dispatcher, suggestion-only packet handoff, or primary execution as
+recorded by target evidence.
+
 Do not assume a model can be selected because its name is known. Use a target-
 verified role/model binding and current client evidence, then fall back to
 primary execution or a stronger verified model when subagents, model override,

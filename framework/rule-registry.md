@@ -263,10 +263,11 @@ Rule ID: `ALATYR-DELEGATION-001`
 Canonical source: `.ai/framework/subagent-delegation.md`
 Commitment: When optional subagent delegation is enabled, keep orchestration,
 project decisions, approval, integration, and final evidence with the primary
-assistant; delegate only bounded independently verifiable packets through
-current assistant-capability and target role/model evidence; preserve context,
-action, tool, write, privacy, validation, and concurrency boundaries; and fall
-back without silently claiming a model, quality, latency, or cost result.
+assistant; use the same bounded packet and convergence contract for
+target-verified native workers, external dispatchers, and suggestion-only
+handoff across assistant surfaces; preserve context, action, tool, write,
+privacy, validation, model, and concurrency boundaries; and fall back without
+unsupported quality, latency, or cost claims.
 Applies to: delegated execution, parallel workstreams, fast focused coding,
 large tasks.
 Enforcement: required when module enabled or delegated execution is attempted.

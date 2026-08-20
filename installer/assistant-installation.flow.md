@@ -249,9 +249,10 @@ Classify every proposed target file:
     record the target packet storage policy.
     Add the target delegation policy, delegated-execution overlay, delegation
     flow, and packet template only when subagent delegation is enabled. Record
-    per-surface launch, model override, parallelism, actual-model evidence,
-    verified role bindings, write/tool boundaries, fallback, privacy,
-    validation, and primary convergence.
+    each surface's native, external, suggestion-only, or unsupported dispatch
+    backend; any external dispatcher AI-infrastructure item; model override,
+    parallelism, actual-model evidence, verified role bindings, write/tool
+    boundaries, fallback, privacy, validation, and primary convergence.
     Add the change-package index, flow, machine record, and redacted report
     template when the target needs semantic multi-surface approval, architecture
     segment/capability evidence, audit, pilot, or publishable provenance. Record

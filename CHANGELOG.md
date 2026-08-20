@@ -17,10 +17,11 @@
   subagent flow, task/result packet, large-task integration, operation request
   preference, and installation/update migration guidance.
 - Extended all nine assistant capability templates and the bridge matrix with
-  subagent launch, model override, parallel dispatch, actual-model evidence,
-  freshness, and fallback behavior. Model bindings remain target-verified and
-  vendor-neutral; Codex Spark is documented as an optional current example,
-  not a portable requirement.
+  native, external, suggestion-only, or unsupported dispatch backends,
+  external-dispatcher item binding, worker launch, model override, parallel
+  dispatch, actual-model evidence, freshness, and fallback behavior. Model
+  bindings remain target-verified and vendor-neutral; Codex Spark is
+  documented as an optional current example, not a portable requirement.
 - Added source and installed-target structural validation for delegation
   policy, required guards, role/model bindings, supported surfaces, packet
   routing, and primary convergence. These checks do not prove decomposition

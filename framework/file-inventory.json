@@ -19,7 +19,7 @@
     {
       "path": "framework/ai-infrastructure-routing.md",
       "rule_ids": [],
-      "sha256": "2ab068b44248e895093743f9779b8617608eb29d71db016199cdc32d2de21e5f"
+      "sha256": "42f2e6a8042aefc5902b92a8405e00361d219ce2333d7d2ef9bc964622c9435d"
     },
     {
       "path": "framework/approval-records.md",
@@ -52,7 +52,7 @@
       "rule_ids": [
         "ALATYR-BRIDGE-001"
       ],
-      "sha256": "db524304518d65f7260fa5b1fe008d9d173e59db93854c3534c9392cb35ee419"
+      "sha256": "6be4c028e21986ed24ac51db1c8f059e489c5c44c13a54c99672403d813e3cd9"
     },
     {
       "path": "framework/capabilities.json",
@@ -215,12 +215,12 @@
     {
       "path": "framework/rule-registry.json",
       "rule_ids": [],
-      "sha256": "e4a17cda0491dbfdabda7161e915464003785b004cdd1eda217c5a37f53115a9"
+      "sha256": "89da15245eda22c5448c4ae127e0d01bb6d194e0612e2ab8936aef56e6457412"
     },
     {
       "path": "framework/rule-registry.md",
       "rule_ids": [],
-      "sha256": "ed5f079c4acdde66fd9b9ed11fc6cdd601d8f0030d186fe6f41038df0c0ab1df"
+      "sha256": "63a33944f2ea58a2afdfe5a122f644e742a92fb1712ebd20e606019c5041b858"
     },
     {
       "path": "framework/scaffolding.md",
@@ -251,7 +251,7 @@
       "rule_ids": [
         "ALATYR-DELEGATION-001"
       ],
-      "sha256": "b35a9ff62f9ed7d7f5a008ad7ceb4eae75bfaf96c657192faf0bbe9250a25f66"
+      "sha256": "a3c3ad9c1df14c38986c7b4ecd42f20cad05967f842ff0ff13fe49ddf9035e39"
     },
     {
       "path": "framework/team-collaboration.md",

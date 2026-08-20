@@ -26,6 +26,12 @@ parallelism limits, tool and write permissions, validation, and evidence.
 Portable framework core does not require a vendor, model, client feature, or
 paid service.
 
+The word `subagent` names a portable worker role, not a product-specific API.
+A supported assistant surface may execute the same packet through a native
+worker, an approved external dispatcher such as a target tool, MCP server, or
+wrapper, or a suggestion-only handoff. When none is supported, the primary
+assistant continues locally.
+
 ## Responsibility Boundary
 
 The primary assistant remains the operation orchestrator. It owns:
@@ -101,16 +107,24 @@ Before dispatch:
 1. Confirm the module is enabled and the operation does not forbid delegation.
 2. Load the target delegation policy and only the selected assistant-
    capability record.
-3. Confirm native or external subagent support, model-override behavior,
-   parallelism, client version, verification time, and freshness evidence.
-4. Resolve a target-owned role binding. Treat unavailable, unsupported,
+3. Select one verified dispatch backend: native worker, approved external
+   dispatcher, suggestion-only handoff, or unsupported/local fallback.
+4. Confirm worker launch, model-override behavior, parallelism, actual-model
+   evidence, client version, verification time, and freshness evidence. For an
+   external dispatcher, also resolve its target AI-infrastructure item,
+   provenance, permissions, approval, privacy, and failure behavior.
+5. Resolve a target-owned role binding. Treat unavailable, unsupported,
    unknown, expired, or rate-limited bindings as a fallback condition.
-5. Confirm allowed actions, tools, context, write scope, approval, privacy,
+6. Confirm allowed actions, tools, context, write scope, approval, privacy,
    validation, and maximum concurrency.
 
 If model selection is unavailable, the target may inherit the primary model,
 use a verified client default, suggest delegation without executing it, or
 continue locally. Never silently claim that a requested model was used.
+
+Do not infer capability parity between assistant products. The same strategy
+applies through the shared packet and convergence contract, while execution
+mechanics remain target-verified for each surface.
 
 ## Delegation Packet
 

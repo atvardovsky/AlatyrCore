@@ -53,6 +53,8 @@ Concurrent packets and write-isolation decision:
 ## Delegation Selection
 
 Assistant surface: `{ASSISTANT_SURFACE}`
+Dispatch backend: `{NATIVE_EXTERNAL_SUGGESTION_ONLY_OR_UNSUPPORTED}`
+External dispatcher item: `{TARGET_AI_INFRASTRUCTURE_ITEM_ID_NONE_OR_UNKNOWN}`
 Role: `{TARGET_DELEGATION_ROLE}`
 Requested model or selection mode: `{MODEL_ID_INHERIT_OR_CLIENT_DEFAULT}`
 Capability evidence: `{CAPABILITY_RECORD_PATH_AND_FRESHNESS}`

@@ -27,6 +27,7 @@ OVERLAY = (
 ROUTER = TARGET / ".ai" / "assistant" / "context-router.json"
 MATRIX = TARGET / ".ai" / "assistant" / "bridge-capability-matrix.md"
 CAPABILITIES = TARGET / ".ai" / "assistant" / "assistant-capabilities"
+CAPABILITY_INDEX = TARGET / ".ai" / "assistant" / "assistant-capabilities.json"
 SURFACES = ROOT / "conformance" / "runs" / "assistant-surfaces.json"
 
 FRAMEWORK_REQUIRED = [
@@ -40,6 +41,8 @@ FRAMEWORK_REQUIRED = [
     "## Cost And Performance Evidence",
     "primary assistant",
     "actual model",
+    "approved external dispatcher",
+    "suggestion-only handoff",
 ]
 FLOW_REQUIRED = [
     "## Activation Gate",
@@ -49,6 +52,7 @@ FLOW_REQUIRED = [
     "delegated-execution",
     ".ai/assistant/delegation-policy.json",
     ".ai/assistant/templates/subagent-task-packet.md",
+    "approved target AI-infrastructure dispatcher",
 ]
 PACKET_REQUIRED = [
     "Packet ID:",
@@ -62,6 +66,8 @@ PACKET_REQUIRED = [
     "Allowed files or surfaces:",
     "Concurrent packets and write-isolation decision:",
     "Requested model or selection mode:",
+    "Dispatch backend:",
+    "External dispatcher item:",
     "Capability evidence:",
     "Fallback:",
     "Actual role/model:",
@@ -108,6 +114,8 @@ MODEL_FIELDS = {
 }
 CAPABILITY_FIELDS = {
     "route",
+    "dispatch_backend",
+    "external_dispatcher",
     "native_subagents",
     "model_override",
     "parallel_dispatch",
@@ -117,6 +125,18 @@ CAPABILITY_FIELDS = {
     "evidence",
     "expires_at",
     "review_triggers",
+}
+PORTABLE_PROVIDER_TERMS = {
+    "openai",
+    "codex",
+    "anthropic",
+    "claude",
+    "gemini",
+    "github copilot",
+    "cursor",
+    "devin",
+    "windsurf",
+    "gpt-",
 }
 
 
@@ -147,17 +167,30 @@ def main() -> int:
     require_text(FRAMEWORK, FRAMEWORK_REQUIRED, failures)
     require_text(FLOW, FLOW_REQUIRED, failures)
     require_text(PACKET, PACKET_REQUIRED, failures)
+    for path in [FRAMEWORK, POLICY, FLOW, PACKET, OVERLAY]:
+        try:
+            text = path.read_text(encoding="utf-8").casefold()
+        except OSError as exc:
+            failures.append(str(exc))
+            continue
+        for term in sorted(PORTABLE_PROVIDER_TERMS):
+            if term in text:
+                failures.append(
+                    f"{path.relative_to(ROOT)} hard-codes provider term {term}"
+                )
 
     try:
         policy = load_object(POLICY)
         overlay = load_object(OVERLAY)
         router = load_object(ROUTER)
+        capability_index = load_object(CAPABILITY_INDEX)
         surfaces = load_object(SURFACES).get("surfaces")
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         failures.append(str(exc))
         policy = {}
         overlay = {}
         router = {}
+        capability_index = {}
         surfaces = []
 
     missing_policy = sorted(POLICY_FIELDS - set(policy))
@@ -231,12 +264,30 @@ def main() -> int:
     if not isinstance(surfaces, list):
         failures.append("assistant surface list is invalid")
         surfaces = []
+    surface_ids = {
+        surface.get("id")
+        for surface in surfaces
+        if isinstance(surface, dict) and isinstance(surface.get("id"), str)
+    }
+    indexed_surfaces = capability_index.get("surfaces")
+    if not isinstance(indexed_surfaces, dict) or set(indexed_surfaces) != surface_ids:
+        failures.append(
+            "assistant capability index must cover every supported surface exactly"
+        )
+        indexed_surfaces = {}
     for surface in surfaces:
         surface_id = surface.get("id") if isinstance(surface, dict) else None
         if not isinstance(surface_id, str) or not surface_id:
             failures.append("assistant surface has no valid ID")
             continue
         path = CAPABILITIES / f"{surface_id}.json"
+        expected_index_path = (
+            f".ai/assistant/assistant-capabilities/{surface_id}.json"
+        )
+        if indexed_surfaces.get(surface_id) != expected_index_path:
+            failures.append(
+                f"assistant capability index has an invalid path for {surface_id}"
+            )
         try:
             record = load_object(path)
         except (OSError, ValueError, json.JSONDecodeError) as exc:

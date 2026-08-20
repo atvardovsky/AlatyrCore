@@ -204,6 +204,101 @@ def main() -> int:
         if "CAPABILITY_TARGET_FILE_MISSING" not in capability_codes:
             failures.append("enabled module target-file closure must be enforced")
 
+        delegation_target = target / "delegation-target"
+        delegation_manifest_path = delegation_target / ".ai" / "alatyr.yaml"
+        delegation_manifest_path.parent.mkdir(parents=True)
+        delegation_manifest_path.write_text(
+            "schema_version: 11\nmodules:\n  enabled:\n    - subagent-delegation\n",
+            encoding="utf-8",
+        )
+        delegation_paths = [
+            ".ai/framework/subagent-delegation.md",
+            ".ai/assistant/delegation-policy.json",
+            ".ai/assistant/context/task-scales/delegated-execution.json",
+            ".ai/assistant/flows/subagent-delegation.flow.md",
+            ".ai/assistant/templates/subagent-task-packet.md",
+            ".ai/assistant/assistant-capabilities.json",
+            ".ai/assistant/bridge-capability-matrix.md",
+        ]
+        capability_index = json.loads(
+            (
+                ROOT
+                / "templates/target/.ai/assistant/assistant-capabilities.json"
+            ).read_text(encoding="utf-8")
+        )
+        delegation_paths.extend(capability_index["surfaces"].values())
+        for relpath in delegation_paths:
+            source = (
+                ROOT / "framework" / Path(relpath).name
+                if relpath.startswith(".ai/framework/")
+                else ROOT / "templates/target" / relpath
+            )
+            destination = delegation_target / relpath
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_bytes(source.read_bytes())
+        write_json(
+            delegation_target / ".ai/assistant/ai-infrastructure-router.json",
+            {"items": [{"id": "fixture.dispatcher"}]},
+        )
+        generic_capability_path = (
+            delegation_target
+            / ".ai/assistant/assistant-capabilities/generic.json"
+        )
+        generic_capability = json.loads(
+            generic_capability_path.read_text(encoding="utf-8")
+        )
+        generic_delegation = generic_capability["subagent_delegation"]
+        generic_delegation.update(
+            {
+                "route": "supported",
+                "dispatch_backend": "external",
+                "external_dispatcher": "fixture.dispatcher",
+                "native_subagents": "unsupported",
+            }
+        )
+        write_json(generic_capability_path, generic_capability)
+
+        external_delegation = validator(delegation_target)
+        external_manifest = external_delegation.check_manifest()
+        external_delegation.findings.clear()
+        external_delegation.check_subagent_delegation(external_manifest)
+        external_errors = {
+            finding.code
+            for finding in external_delegation.findings
+            if finding.level == "error" and finding.code.startswith("DELEGATION_")
+        }
+        if external_errors:
+            failures.append(
+                "valid external delegation backend produced errors: "
+                + ", ".join(sorted(external_errors))
+            )
+
+        generic_delegation["external_dispatcher"] = "missing.dispatcher"
+        write_json(generic_capability_path, generic_capability)
+        missing_dispatcher = validator(delegation_target)
+        missing_dispatcher.check_subagent_delegation(external_manifest)
+        if "DELEGATION_EXTERNAL_DISPATCHER" not in {
+            finding.code for finding in missing_dispatcher.findings
+        }:
+            failures.append("external delegation must reject an unknown dispatcher")
+
+        generic_delegation.update(
+            {
+                "dispatch_backend": "native",
+                "external_dispatcher": "none",
+                "native_subagents": "unsupported",
+            }
+        )
+        write_json(generic_capability_path, generic_capability)
+        unsupported_native = validator(delegation_target)
+        unsupported_native.check_subagent_delegation(external_manifest)
+        if "DELEGATION_NATIVE_BACKEND_UNSUPPORTED" not in {
+            finding.code for finding in unsupported_native.findings
+        }:
+            failures.append(
+                "native delegation must require native worker capability evidence"
+            )
+
         write_json(
             router_path,
             {

@@ -102,10 +102,19 @@ not copy actor, priority, task, identity, or review policy.
 When `subagent-delegation` is enabled, every supported surface uses the same
 target policy, delegated-execution overlay, packet template, and primary-
 convergence rule. The selected per-surface capability record states whether
-the client can launch subagents, override their model, dispatch in parallel,
-and report the actual model. Unsupported or stale capability evidence must
-fall back to primary execution, a stronger verified role, or suggestion-only
-mode; bridges must not silently claim delegation or a model choice.
+the surface uses native workers, an approved external dispatcher,
+suggestion-only handoff, or no delegation; whether it can override the worker
+model, dispatch in parallel, and report the actual model; and which target AI-
+infrastructure item owns external dispatch. Unsupported or stale capability
+evidence must fall back to primary execution, a stronger verified role, or
+suggestion-only mode; bridges must not silently claim delegation, backend, or
+model choice.
+
+The contract is identical for generic, AGENTS-aware, Codex, Claude, Gemini,
+GitHub Copilot, Cursor, Devin/Cascade, and Windsurf surfaces. Their execution
+mechanics may differ, and no capability is copied from one product to another.
+The portable term `subagent` means a bounded worker packet, not a dependency
+on an OpenAI API or client feature.
 
 As of 2026-08-20, OpenAI describes
 [`gpt-5.3-codex-spark`](https://openai.com/index/introducing-gpt-5-3-codex-spark/)
@@ -207,9 +216,9 @@ supported bridge capability entries.
 
 Maintainers can run `python3 tools/check_subagent_delegation.py` to validate
 the portable delegation rule, target policy, lazy overlay, flow, packet,
-per-surface capability fields, bridge routing, and primary convergence
-contract. Structural conformance does not prove safe decomposition or actual
-vendor model availability.
+per-surface dispatch backend and capability fields, bridge routing, and
+primary convergence contract. Structural conformance does not prove safe
+decomposition or actual vendor model availability.
 
 Maintainers can run `python3 tools/check_architecture_knowledge.py` to validate
 the portable architecture rule, target catalog, operation, lazy route,

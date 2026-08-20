@@ -21,6 +21,8 @@
   },
   "subagent_delegation": {
     "route": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "dispatch_backend": "{NATIVE_EXTERNAL_SUGGESTION_ONLY_UNSUPPORTED_OR_UNKNOWN}",
+    "external_dispatcher": "{TARGET_AI_INFRASTRUCTURE_ITEM_ID_NONE_OR_UNKNOWN}",
     "native_subagents": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
     "model_override": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
     "parallel_dispatch": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",

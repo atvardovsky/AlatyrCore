@@ -35,11 +35,15 @@ Selected task-scale overlay: `delegated-execution`
 
 1. Load the target policy and capability index, then only the current
    assistant-surface record.
-2. Confirm subagent routing, model override, parallelism, client version,
-   verification, expiry, permissions, and target role binding.
-3. Select `fast-focused-worker` only for small, focused, reversible, context-
+2. Select the surface's verified dispatch backend: `native`, `external`,
+   `suggestion-only`, or `unsupported`. An external backend must reference an
+   approved target AI-infrastructure dispatcher with provenance, permissions,
+   privacy, approval, and failure behavior.
+3. Confirm worker routing, model override, parallelism, actual-model evidence,
+   client version, verification, expiry, permissions, and target role binding.
+4. Select `fast-focused-worker` only for small, focused, reversible, context-
    bounded work with objective local validation.
-4. If the requested model is unavailable, unsupported, unknown, expired,
+5. If the requested model is unavailable, unsupported, unknown, expired,
    rate-limited, or not selectable by the client, apply the recorded fallback.
    Never report a model as used without evidence.
 

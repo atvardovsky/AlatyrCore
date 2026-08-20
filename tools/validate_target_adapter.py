@@ -1810,6 +1810,8 @@ class Validator:
 
         capability_fields = {
             "route",
+            "dispatch_backend",
+            "external_dispatcher",
             "native_subagents",
             "model_override",
             "parallel_dispatch",
@@ -1821,6 +1823,16 @@ class Validator:
             "review_triggers",
         }
         capability_records: dict[str, dict[str, Any]] = {}
+        ai_router = self.load_json_object(
+            self.target_path(".ai/assistant/ai-infrastructure-router.json"),
+            "DELEGATION_AI_ROUTER",
+        )
+        ai_items = ai_router.get("items") if isinstance(ai_router, dict) else []
+        ai_item_ids = {
+            item.get("id")
+            for item in ai_items
+            if isinstance(item, dict) and concrete(item.get("id"))
+        }
         for surface_id, relpath in surfaces.items():
             if not isinstance(surface_id, str) or not isinstance(relpath, str):
                 continue
@@ -1860,6 +1872,45 @@ class Validator:
                         f"assistant surface {surface_id} {field} is invalid",
                         relpath,
                     )
+            backend = delegation.get("dispatch_backend")
+            if concrete(backend) and backend not in {
+                "native",
+                "external",
+                "suggestion-only",
+                "unsupported",
+                "unknown",
+            }:
+                self.error(
+                    "DELEGATION_DISPATCH_BACKEND",
+                    f"assistant surface {surface_id} dispatch_backend is invalid",
+                    relpath,
+                )
+            dispatcher = delegation.get("external_dispatcher")
+            if backend == "native" and delegation.get("native_subagents") != "supported":
+                self.error(
+                    "DELEGATION_NATIVE_BACKEND_UNSUPPORTED",
+                    f"assistant surface {surface_id} selects native dispatch without native worker evidence",
+                    relpath,
+                )
+            if backend == "external":
+                if not concrete(dispatcher) or dispatcher not in ai_item_ids:
+                    self.error(
+                        "DELEGATION_EXTERNAL_DISPATCHER",
+                        f"assistant surface {surface_id} external dispatcher must reference a routed AI-infrastructure item",
+                        relpath,
+                    )
+                if delegation.get("route") != "supported":
+                    self.error(
+                        "DELEGATION_EXTERNAL_ROUTE_UNSUPPORTED",
+                        f"assistant surface {surface_id} external dispatch requires a supported route",
+                        relpath,
+                    )
+            if backend == "unsupported" and delegation.get("route") == "supported":
+                self.error(
+                    "DELEGATION_UNSUPPORTED_ROUTE_CONFLICT",
+                    f"assistant surface {surface_id} cannot claim a supported route with an unsupported backend",
+                    relpath,
+                )
             capability_records[surface_id] = delegation
 
         roles = policy.get("roles")

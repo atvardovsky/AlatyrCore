@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 666
+Catalog entries: 671
 
 ## Codes
 
@@ -308,6 +308,12 @@ Catalog entries: 666
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DELEGATION_DEFAULT_PREFERENCE`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_DISPATCH_BACKEND`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_EXTERNAL_DISPATCHER`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_EXTERNAL_ROUTE_UNSUPPORTED`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `DELEGATION_MODEL_BINDING`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DELEGATION_MODEL_OVERRIDE_UNSUPPORTED`
@@ -315,6 +321,8 @@ Catalog entries: 666
 - `DELEGATION_MODEL_SELECTION_MODE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DELEGATION_MODEL_SURFACE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_NATIVE_BACKEND_UNSUPPORTED`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DELEGATION_OVERLAY_CONTRACT`
   Level: error. Source: `tools/validate_target_adapter.py`.
@@ -339,6 +347,8 @@ Catalog entries: 666
 - `DELEGATION_ROLE_DUPLICATE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DELEGATION_ROLE_SHAPE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_UNSUPPORTED_ROUTE_CONFLICT`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEVELOPMENT_EVIDENCE_CONTENT_POLICY`
   Level: error. Source: `tools/validate_target_adapter.py`.

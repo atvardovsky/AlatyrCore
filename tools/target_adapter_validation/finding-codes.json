@@ -1333,6 +1333,33 @@
       ]
     },
     {
+      "code": "DELEGATION_DISPATCH_BACKEND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_EXTERNAL_DISPATCHER",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_EXTERNAL_ROUTE_UNSUPPORTED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "DELEGATION_MODEL_BINDING",
       "levels": [
         "error"
@@ -1361,6 +1388,15 @@
     },
     {
       "code": "DELEGATION_MODEL_SURFACE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_NATIVE_BACKEND_UNSUPPORTED",
       "levels": [
         "error"
       ],
@@ -1469,6 +1505,15 @@
     },
     {
       "code": "DELEGATION_ROLE_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_UNSUPPORTED_ROUTE_CONFLICT",
       "levels": [
         "error"
       ],

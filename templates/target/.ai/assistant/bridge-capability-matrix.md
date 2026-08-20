@@ -10,6 +10,11 @@ selection reads only the current entry in
 `.ai/assistant/assistant-capabilities.json`; keep that checked projection
 aligned with the references below.
 
+Each delegation capability record must select `native`, `external`,
+`suggestion-only`, `unsupported`, or `unknown`. External dispatch must name a
+routed target AI-infrastructure item. The shared packet and primary-
+convergence contract apply regardless of assistant vendor or backend.
+
 ## Supported Assistant Surfaces
 
 Resolve these entries from target evidence before claiming a bridge is
