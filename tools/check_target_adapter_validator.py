@@ -143,8 +143,8 @@ def main() -> int:
             )
 
         inventory_path = framework_target / "file-inventory.json"
-        original_inventory = inventory_path.read_text(encoding="utf-8")
-        inventory = json.loads(original_inventory)
+        original_inventory = inventory_path.read_bytes()
+        inventory = json.loads(original_inventory.decode("utf-8"))
         inventory["files"][0]["sha256"] = "0" * 64
         write_json(inventory_path, inventory)
         tampered_inventory_validator = validator(pack_target, ROOT)
@@ -169,11 +169,11 @@ def main() -> int:
             failures.append("framework integrity drift must block adapter health")
         if drift_payload.get("counts", {}).get("blocking_warnings", 0) < 1:
             failures.append("validator JSON must count blocking warnings")
-        inventory_path.write_text(original_inventory, encoding="utf-8")
+        inventory_path.write_bytes(original_inventory)
 
         registry_path = framework_target / "rule-registry.json"
-        original_registry = registry_path.read_text(encoding="utf-8")
-        registry = json.loads(original_registry)
+        original_registry = registry_path.read_bytes()
+        registry = json.loads(original_registry.decode("utf-8"))
         registry["rules"] = registry["rules"][1:]
         write_json(registry_path, registry)
         tampered_registry_validator = validator(pack_target, ROOT)
@@ -182,7 +182,7 @@ def main() -> int:
             finding.code for finding in tampered_registry_validator.findings
         }:
             failures.append("selective pack must detect projected registry tampering")
-        registry_path.write_text(original_registry, encoding="utf-8")
+        registry_path.write_bytes(original_registry)
 
         capability_target = target / "capability-target"
         capability_framework = capability_target / ".ai" / "framework"

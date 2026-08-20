@@ -35,9 +35,10 @@
 - Made the consistency checker keep detailed source-tool references in their
   canonical `tools/README.md` owner instead of forcing that inventory into the
   public README.
-- Fixed selective framework-pack scaffolding to write generated projections as
-  byte-exact UTF-8 with LF endings, preventing Windows newline conversion from
-  invalidating the projected framework inventory.
+- Fixed selective framework-pack scaffolding, validator fixtures, and lifecycle
+  conformance updates to preserve generated projections as byte-exact UTF-8
+  with LF endings, preventing Windows newline conversion from invalidating
+  projected framework evidence.
 
 ## 0.1.0-alpha.11 - 2026-08-19
 

@@ -184,8 +184,8 @@ def apply_synthetic_framework_update(repo: Path, source: Path) -> None:
         raise ValueError("synthetic update inventory does not match source pack")
     for name, entry in entries.items():
         entry["sha256"] = expected_hashes[name]
-    inventory_path.write_text(
-        json.dumps(inventory, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    inventory_path.write_bytes(
+        (json.dumps(inventory, indent=2, sort_keys=True) + "\n").encode("utf-8")
     )
     manifest_path = repo / ".ai" / "alatyr.yaml"
     manifest = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
