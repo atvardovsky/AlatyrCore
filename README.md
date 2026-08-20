@@ -189,8 +189,9 @@ facts correct by itself.
    architecture states, validation, and known gaps.
 2. A repository-aware project adapter connects those facts to portable
    AlatyrCore rules and supported assistant surfaces.
-3. A compact router selects the smallest task and project-area context for a
-   question or change.
+3. A generated, hash-bound bootstrap index and compact router select the
+   smallest task, gate fragments, and project-area context for a question or
+   change.
 4. The assistant explains the project or follows the matching workflow,
    including approvals for protected changes.
 5. Deterministic checks validate structural contracts where possible; human
@@ -241,6 +242,8 @@ files do not need to be loaded as prose.
 
 Optional scaffolding can create placeholder structure, but it does not inspect
 the target, resolve project facts, approve changes, or complete installation.
+It can scaffold an explicit dependency-closed capability set instead of
+copying every optional target surface.
 
 To our knowledge, AlatyrCore is among the first publicly documented AI
 engineering frameworks whose primary installation model is repository-aware
@@ -276,8 +279,8 @@ The full installed-operation and assistant workflow is documented in
 Do not install every optional capability by default. Establish the required
 core profile first, then enable optional modules only when the target needs and
 can maintain them. The source scaffolder exposes `core`, `standard`, and `full`
-support profiles, paired with dependency-closed `core`, `standard`, and
-`complete` framework packs.
+support profiles, repeatable `--enable-module` capability selection, and
+dependency-closed `core`, `standard`, and `complete` framework packs.
 
 The [module profile](framework/module-profile.md) defines required and optional
 capabilities. The [context router](framework/context-router.md) keeps routine
@@ -285,7 +288,7 @@ tasks from loading the complete framework or project corpus.
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.12`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.13`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural
@@ -298,6 +301,8 @@ Important limits:
   agent, or portable shell command.
 - Source checks prove selected repository structures and references, not the
   correctness of target business facts or architecture.
+- Generated bootstrap, gate, upgrade-impact, and validator routes reduce
+  repeated structural work; they do not replace assistant logical reasoning.
 - Static bridge and prompt checks do not prove that every external assistant
   client auto-loads or follows instructions identically.
 - Onboarding, quality, rework, and cost benefits require broader validation in

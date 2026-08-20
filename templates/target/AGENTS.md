@@ -6,12 +6,13 @@ This repository uses Alatyr Core. Resolve placeholders from target evidence.
 
 Treat this file as host-preloaded context; do not reread it. Load only:
 
-- `.ai/alatyr.yaml`
-- `.ai/README.md`
-- `.ai/assistant/context-router.json`
+- `.ai/assistant/bootstrap-index.json`
 
-Select smallest profile/areas. Load `.ai/assistant/context-profiles.md` only
-for ambiguity, conflict, or repair. Record context receipt on expansion.
+The bootstrap index is a hash-bound projection of `.ai/alatyr.yaml`,
+`.ai/README.md`, and `.ai/assistant/context-router.json`. If it is missing or
+stale, load those owners and repair the projection before routine routing.
+Select the smallest profile/areas. Load `.ai/assistant/context-profiles.md`
+only for ambiguity, conflict, or repair. Record context receipt on expansion.
 
 Route IDs/aliases through `.ai/assistant/operation-index.json`; use
 profile candidates for requests. Load
@@ -53,6 +54,10 @@ Do not invent facts or copy policy into bridges.
 For semantic changes, re-derive invariants and reconcile reviews sharing a
 fact or contract. Use the consistency map when enabled. Select one AI-infrastructure
 route and the smallest item set. Run only validation that exists.
+
+Select routine acceptance gates through `.ai/assistant/gates/index.json` and
+load only the routed fragments. Load the complete gate checklist for adapter
+repair, ambiguity, or a full acceptance audit.
 
 Routing selects a flow; it does not grant approval or broaden allowed actions.
 A preview is not approval and becomes stale when material risk or scope

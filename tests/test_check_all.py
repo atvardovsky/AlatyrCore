@@ -17,6 +17,9 @@ def check(check_id: str, *dependencies: str) -> dict[str, Any]:
         "id": check_id,
         "command": [f"tools/{check_id}.py"],
         "depends_on": list(dependencies),
+        "trigger_paths": [f"area/{check_id}/**"],
+        "owned_paths": [f"area/{check_id}/**"],
+        "always_for_changed": False,
     }
 
 
@@ -40,6 +43,61 @@ class CheckGraphTests(unittest.TestCase):
         )
 
         self.assertEqual([item["id"] for item in selected], ["portable"])
+
+    def test_changed_fast_profile_selects_invariants_and_matching_routes(self) -> None:
+        checks = [
+            {
+                **check("invariant"),
+                "profiles": ["fast", "full"],
+                "platforms": ["all"],
+                "always_for_changed": True,
+            },
+            {
+                **check("matched"),
+                "profiles": ["fast", "full"],
+                "platforms": ["all"],
+            },
+            {
+                **check("unrelated"),
+                "profiles": ["fast", "full"],
+                "platforms": ["all"],
+            },
+        ]
+
+        from unittest.mock import patch
+
+        with patch("check_all.git_changed_paths", return_value=["area/matched/file.md"]):
+            selected, fell_back = select_checks(
+                checks, "fast", "HEAD~1", platform="linux"
+            )
+
+        self.assertFalse(fell_back)
+        self.assertEqual([item["id"] for item in selected], ["invariant", "matched"])
+
+    def test_trigger_paths_can_be_narrower_than_owned_paths(self) -> None:
+        item = {
+            **check("broad-owner"),
+            "profiles": ["full"],
+            "platforms": ["all"],
+            "owned_paths": ["area/**"],
+            "trigger_paths": ["area/contracts/**"],
+        }
+        fallback = {
+            **check("fallback"),
+            "profiles": ["full"],
+            "platforms": ["all"],
+            "owned_paths": ["**"],
+            "trigger_paths": ["**"],
+        }
+
+        from unittest.mock import patch
+
+        with patch("check_all.git_changed_paths", return_value=["area/docs/note.md"]):
+            selected, _fell_back = select_checks(
+                [item, fallback], "fast", "HEAD~1", platform="linux"
+            )
+
+        self.assertEqual([entry["id"] for entry in selected], ["fallback"])
 
     def test_dependency_runs_only_after_successful_prerequisite(self) -> None:
         completed: list[str] = []

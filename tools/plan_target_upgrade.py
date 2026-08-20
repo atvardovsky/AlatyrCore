@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import subprocess
 import sys
@@ -44,6 +45,87 @@ def run(command: list[str], cwd: Path) -> subprocess.CompletedProcess[str]:
     )
 
 
+def sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def installed_owner_path(path: str) -> str:
+    if path.startswith("framework/"):
+        return ".ai/framework/" + path[len("framework/") :]
+    return path
+
+
+def enrich_upgrade_impact(
+    path: Path,
+    *,
+    target: Path,
+    framework_pack: str,
+    migration_report: Path,
+) -> None:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    manifest = parse_manifest(target / ".ai" / "alatyr.yaml")
+    payload["target"] = {
+        "framework_pack": framework_pack,
+        "support_profile": manifest_value(target, ("installation", "support_profile")),
+        "enabled_modules": sorted(
+            scalar.value
+            for scalar in manifest.lists.get(("modules", "enabled"), [])
+            if scalar.value and not scalar.value.startswith("{")
+        ),
+    }
+    payload["evidence"] = {
+        "migration_report": migration_report.name,
+        "migration_report_sha256": sha256(migration_report),
+        "target_manifest": ".ai/alatyr.yaml",
+        "target_manifest_sha256": sha256(target / ".ai" / "alatyr.yaml"),
+    }
+    affected = payload.get("affected", {})
+    framework_files = payload.get("framework_files", {})
+    target_surfaces = payload.get("target_template_surfaces", {})
+    canonical_sources = (
+        affected.get("canonical_sources", []) if isinstance(affected, dict) else []
+    )
+    changed_framework = (
+        framework_files.get("added", []) + framework_files.get("changed", [])
+        if isinstance(framework_files, dict)
+        else []
+    )
+    changed_target_surfaces = (
+        target_surfaces.get("added", []) + target_surfaces.get("changed", [])
+        if isinstance(target_surfaces, dict)
+        else []
+    )
+    candidate_context = sorted(
+        {
+            *(installed_owner_path(value) for value in canonical_sources),
+            *(f".ai/framework/{value}" for value in changed_framework),
+            *changed_target_surfaces,
+        }
+    )
+    payload["routing"] = {
+        "first_context": [path.name, ".ai/alatyr.yaml"],
+        "candidate_context": candidate_context,
+        "removed_framework_files": (
+            framework_files.get("removed", [])
+            if isinstance(framework_files, dict)
+            else []
+        ),
+        "removed_target_surfaces": (
+            target_surfaces.get("removed", [])
+            if isinstance(target_surfaces, dict)
+            else []
+        ),
+        "full_corpus_required": False,
+        "full_corpus_trigger": (
+            "only when impact is ambiguous, validation disproves the boundary, "
+            "or a full compatibility audit is explicitly requested"
+        ),
+    }
+    path.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+
+
 def render_plan(
     *,
     target: Path,
@@ -71,20 +153,21 @@ Target repository label: `{target.name}`
 ## Assessment Outputs
 
 - Migration report: `migration-report.md` ({migration_status})
+- Upgrade impact router: `upgrade-impact.json` ({migration_status})
 - Structural validator report: `adapter-validation.json` ({validation_status})
 - Validator counts: `{json.dumps(validation_counts, sort_keys=True)}`
 
 ## Apply Gate
 
 This assessment does not apply an upgrade, approve protected changes, or
-replace target validation. Review the migration report first, load only its
+replace target validation. Review `upgrade-impact.json` first, load only its
 affected canonical sources and target surfaces, preserve local deviations,
 prepare a target migration note, and obtain approval before protected changes.
 
 ## Next Actions
 
-1. Review changed rules, categories, canonical sources, framework files, and
-   pack compatibility.
+1. Review the impact router, then load its changed rules, canonical sources,
+   framework files, target surfaces, and pack compatibility evidence.
 2. Resolve structural validator errors or record accepted target deviations.
 3. Map affected source changes to installed adapter surfaces and local owners.
 4. Prepare the target migration note and explicit approval scope.
@@ -116,9 +199,10 @@ def main() -> int:
     source = args.framework_source.resolve()
     output_dir = args.output_dir.resolve()
     migration_report = output_dir / "migration-report.md"
+    impact_report = output_dir / "upgrade-impact.json"
     validation_report = output_dir / "adapter-validation.json"
     assessment_plan = output_dir / "upgrade-assessment.md"
-    outputs = [migration_report, validation_report, assessment_plan]
+    outputs = [migration_report, impact_report, validation_report, assessment_plan]
 
     if not target.is_dir():
         print(f"Target repository does not exist: {target}", file=sys.stderr)
@@ -216,9 +300,26 @@ def main() -> int:
             str(to_framework),
             "--output",
             str(migration_report),
+            "--json-output",
+            str(impact_report),
         ]
         migration = run(migration_command, source)
     migration_status = "generated" if migration.returncode == 0 else "failed"
+
+    if migration.returncode == 0:
+        try:
+            enrich_upgrade_impact(
+                impact_report,
+                target=target,
+                framework_pack=framework_pack,
+                migration_report=migration_report,
+            )
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            print(f"Cannot finalize upgrade impact: {exc}", file=sys.stderr)
+            migration_status = "impact generation failed"
+            migration = subprocess.CompletedProcess(
+                migration.args, 1, migration.stdout, str(exc)
+            )
 
     validation_status = "not run"
     validation_counts: dict[str, object] = {}
@@ -271,6 +372,7 @@ def main() -> int:
         print(f"Wrote partial assessment: {assessment_plan}")
         return 1
     print(f"Wrote migration report: {migration_report}")
+    print(f"Wrote upgrade impact: {impact_report}")
     print(f"Wrote validator report: {validation_report}")
     print(f"Wrote upgrade assessment: {assessment_plan}")
     return validation_code

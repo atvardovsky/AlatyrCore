@@ -165,6 +165,11 @@ framework rule-owner documents.
 `.ai/assistant/context-router.json` compact index, lazy descriptors, canonical
 context profile names, and framework file coverage.
 
+`tools/bootstrap_index.py` and `tools/render_target_bootstrap_index.py` create
+or check the hash-bound compact target bootstrap. Routed gate fragments live
+under `templates/target/.ai/assistant/gates/`; `tools/check_bootstrap_routing.py`
+checks profile coverage and deterministic scaffold projection.
+
 `tools/check_manifest_contract.py` validates the target `.ai/alatyr.yaml`
 template contract, including required sections, placeholder fields, list
 shape, and path references.
@@ -196,8 +201,9 @@ reachable Git tag and runs real migration evidence against that baseline.
 
 `tools/scaffold_target_structure.py` is an optional dry-run-first helper for
 copying profile-projected placeholder structure. `tools/scaffold_projection.py`
-keeps manifest, router, operation, and capability claims aligned with selected
-files. Neither tool is the installation mechanism or fills target facts.
+and `tools/capability_catalog.py` keep manifest, router, operation, selected
+module dependency, target-file, and framework-pack claims aligned. Neither
+tool is the installation mechanism or fills target facts.
 
 `tools/validate_target_adapter.py` is an optional installed-adapter structural
 validator. It checks target adapter files for router/bootstrap drift,
@@ -222,7 +228,10 @@ Windows wrappers under `tools/` delegate to the Python helpers. They should
 stay thin and must not duplicate installation or validation logic.
 
 `tools/report_migration_diff.py` compares machine-readable rule manifests and
-prints migration evidence. `tools/check_conformance_fixtures.py` validates
+prints human migration evidence plus an optional machine-readable upgrade
+impact projection. `tools/plan_target_upgrade.py` enriches that projection with
+target pack/module and source-hash evidence before structural validation.
+`tools/check_conformance_fixtures.py` validates
 source fixture metadata. `tools/check_conformance_reports.py` validates golden
 assistant-result report contracts for those fixtures.
 

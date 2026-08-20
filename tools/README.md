@@ -50,6 +50,7 @@ The stable command set is:
 
 - `check-source`: no writes
 - `scaffold`: target structure writes only with `--write`
+- `render-bootstrap`: target bootstrap regeneration only with `--write`
 - `validate-adapter`: optional explicit report output only
 - `doctor`: read-only adapter health with at most three repair operation routes;
   no file output (use `validate-adapter` for an explicit report file)
@@ -73,8 +74,9 @@ The stable command set is:
 
 `check_all.py` loads `tools/check_manifest.json` and runs dependency-aware
 source validation. The default `full` profile remains the acceptance gate.
-`fast` provides conservative local feedback and falls back to full when changed
-paths are not owned by a manifest entry. `release` adds tag-baseline migration
+With `fast --changed-from`, explicit `trigger_paths` select focused checks while
+a small invariant set always runs; unmatched paths retain the conservative
+full-suite fallback. `release` adds tag-baseline migration
 checks. `platform` runs the portable tooling contract slice used on macOS and
 Windows. It validates this repository only; it is not a portable framework
 requirement for target projects.
@@ -379,8 +381,8 @@ py -3 .\tools\prepare_diagram_conformance_run.py --output tmp\diagram-conformanc
 
 `check_context_router.py` validates the target
 `.ai/assistant/context-router.json` template in this source repository. It
-checks canonical profile names, preloaded versus compact bootstrap context,
-schema-4 lazy profile and overlay descriptors, separated total/portable/target
+checks canonical profile names, preloaded versus generated compact bootstrap,
+schema-5 lazy profile and overlay descriptors, separated total/portable/target
 budgets, cost scenarios, receipt fields, bounded candidates, intent/area
 overlays, path references, duplicate route entries, and framework file routing
 coverage. It is not a portable framework requirement for target projects.
@@ -395,6 +397,20 @@ Windows PowerShell or Command Prompt:
 
 ```powershell
 py -3 .\tools\check_context_router.py
+```
+
+`bootstrap_index.py` builds the deterministic target bootstrap projection from
+the adapter manifest, compact project map, and context router.
+`render_target_bootstrap_index.py` checks it by default and rewrites it only
+with `--write`; use `--stdout` for a non-writing preview.
+`check_bootstrap_routing.py` verifies source hashes,
+gate-index/profile coverage, budget headroom, and deterministic core scaffold
+generation.
+
+```sh
+python3 tools/render_target_bootstrap_index.py --target /path/to/target-repo --check
+python3 tools/render_target_bootstrap_index.py --target /path/to/target-repo --write
+python3 tools/check_bootstrap_routing.py
 ```
 
 ## Operation Catalog Check
@@ -516,7 +532,8 @@ lifecycle operations. By default, `--framework-pack matched` selects the
 profile. Selective packs project their rule registry, ownership map, and file
 inventory so omitted optional owners are explicit. The projection layer also
 removes path claims for omitted surfaces, filters operation routes to installed
-flows, and derives the compact operation index.
+flows, derives the compact operation index and bootstrap index, and accepts
+repeatable `--enable-module` capability IDs with dependency closure.
 
 It does not inspect target facts, complete installation, approve overwrites, or
 validate an installed adapter.
@@ -529,6 +546,7 @@ Linux or macOS:
 ```sh
 python3 tools/scaffold_target_structure.py --target /path/to/target-repo
 python3 tools/scaffold_target_structure.py --target /path/to/target-repo --profile core --write
+python3 tools/scaffold_target_structure.py --target /path/to/target-repo --profile core --enable-module ai-infrastructure --write
 python3 tools/scaffold_target_structure.py --target /path/to/target-repo --profile core --framework-pack complete --write
 ```
 
@@ -958,8 +976,12 @@ py -3 .\tools\report_migration_diff.py --from-rules old-rule-registry.json --fro
 ```
 
 `plan_target_upgrade.py`, also available as `alatyr.py assess-upgrade`, creates
-`migration-report.md`, `adapter-validation.json`, and
-`upgrade-assessment.md` in an explicit output directory. It compares the
+`migration-report.md`, `upgrade-impact.json`, `adapter-validation.json`, and
+`upgrade-assessment.md` in an explicit output directory. The machine-readable
+impact file is the first upgrade-routing input and records evidence hashes,
+installed pack/modules, affected owners, changed installed framework/template
+surfaces, removals to review, and the full-corpus expansion trigger.
+The helper compares the
 installed framework baseline with the selected AlatyrCore source and runs the
 structural validator before any upgrade edits. A non-zero result means the
 assessment contains findings that require review; generated evidence remains
@@ -1107,7 +1129,11 @@ content drift outside declared adapter surfaces and writes
 
 `check_effectiveness_benchmark.py` validates prepared isolation and, with
 `--require-reports --require-reviewed`, requires every paired run plus
-independent acceptance-criteria review. `summarize_effectiveness_benchmark.py`
+independent acceptance-criteria review. Reviewed paired results also reject a
+cost or speed interpretation when
+acceptance outcomes, hallucinated commands, validation errors, missed
+companion updates, rework, or unresolved consistency gaps regress.
+`summarize_effectiveness_benchmark.py`
 reports averages and relative deltas only from complete reviewed reports. It
 marks unknown or zero-reference comparisons as non-computable. Token and
 monetary-cost readiness requires comparable evidence across every paired run.

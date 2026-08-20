@@ -21,18 +21,15 @@ EXPECTED_PROFILES = ["core", "standard", "full"]
 CORE_REQUIRED = {
     Path(".ai/README.md"),
     Path(".ai/alatyr.yaml"),
+    Path(".ai/assistant/bootstrap-index.json"),
     Path(".ai/assistant/context-router.json"),
     Path(".ai/assistant/context-profiles.md"),
-    Path(".ai/assistant/bridge-capability-matrix.md"),
     Path(".ai/assistant/module-profile.md"),
-    Path(".ai/assistant/flows/ai-infrastructure-inventory.flow.md"),
-    Path(".ai/assistant/flows/ai-infrastructure-recommendation.flow.md"),
-    Path(".ai/assistant/flows/development-evidence-capture.flow.md"),
-    Path(".ai/assistant/flows/skill-adaptation.flow.md"),
-    Path(".ai/assistant/templates/ai-infrastructure-recommendation.md"),
-    Path(".ai/assistant/approvals/approval-record-template.json"),
+    Path(".ai/assistant/gates/index.json"),
+    Path(".ai/assistant/gates/core.md"),
+    Path(".ai/assistant/gates/final-evidence.md"),
+    Path(".ai/assistant/flows/logical-integrity-review.flow.md"),
     Path(".ai/project/source-of-truth-registry.md"),
-    Path(".ai/project/development-evidence.json"),
     Path("AGENTS.md"),
 }
 STANDARD_REQUIRED = {
@@ -99,6 +96,19 @@ def main() -> int:
             failures.append(f"support-profile framework pack mapping drifted: {matched_packs}")
         if not resolve_framework_files("core") < resolve_framework_files("standard"):
             failures.append("core framework pack must be smaller than standard")
+        ai_infrastructure = resolve_profile_paths("core", {"ai-infrastructure"})
+        if not core < ai_infrastructure:
+            failures.append("enabled ai-infrastructure capability must expand core")
+        if Path(".ai/assistant/ai-infrastructure-router.json") not in ai_infrastructure:
+            failures.append("ai-infrastructure capability misses its router")
+        architecture = resolve_profile_paths("core", {"architecture-knowledge"})
+        if Path(".ai/project/architecture/catalog.json") not in architecture:
+            failures.append("architecture capability misses its compact catalog")
+        if (
+            resolved_framework_pack("core", "matched", {"architecture-knowledge"})
+            != "complete"
+        ):
+            failures.append("architecture capability must raise the matched framework pack")
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         failures.append(str(exc))
 

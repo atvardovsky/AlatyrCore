@@ -14,7 +14,7 @@ Use a context router to reduce repeated prose parsing before routine work.
 A target adapter can load:
 
 1. assistant instructions that the host already preloaded
-2. the compact bootstrap, including `.ai/assistant/context-router.json`
+2. the generated `.ai/assistant/bootstrap-index.json` routing projection
 3. the selected profile's required context
 4. one or more project-area overlays when the task names affected areas
 5. task-scale overlays only when the task is large, resumable, team-active, or
@@ -22,6 +22,13 @@ A target adapter can load:
 
 Then it expands only when the router or human profile names a boundary,
 conflict, approval trigger, or missing source-of-truth fact.
+
+The bootstrap index is a deterministic, hash-bound projection of the target
+manifest, compact project map, and context router. It exposes only routing,
+operation, gate, enabled-module, version, and known-gap metadata. If a source
+hash differs, repair or regenerate the projection before routine routing; load
+the named canonical sources only for that repair, ambiguity, or explicit
+audit.
 
 The compact router should be an index, not a second policy corpus. Keep full
 profile, intent, migration, consistency, and task-scale instructions in lazy
@@ -35,7 +42,7 @@ A target context router should define:
 - schema version
 - human reference file
 - preloaded context that must not be reread
-- bootstrap context
+- generated bootstrap projection and its canonical source hashes
 - bootstrap budget plus profile total, portable, and reserved target-context
   budgets
 - context receipt fields
@@ -112,9 +119,9 @@ The router should use the same canonical profile names as
 `context-profiles.md` unless the target adapter records a deliberate local
 renaming.
 
-Budgets are routing controls, not safety limits. Schema 4 separates the maximum
-total profile words, portable framework/adapter words, and capacity reserved
-for target-owned facts. Values must be positive, portable plus reserved must
+Budgets are routing controls, not safety limits. Schema 5 preserves schema 4's
+separate maximum total profile words, portable framework/adapter words, and
+capacity reserved for target-owned facts. Values must be positive, portable plus reserved must
 not exceed total, and source templates should retain meaningful target
 headroom. A target may tune them from measured evidence.
 
@@ -150,6 +157,12 @@ When the optional consistency-map module is enabled, the router should point
 to its machine-readable map. Use it only after a semantic change or suspected
 drift: resolve changed fact IDs, select applicable direct edges, and expand to
 dependent contracts only when the map or conflicting evidence requires it.
+
+Gate routing follows the same principle. Load the compact gate index and the
+profile's core, task-specific, and final-evidence fragments. Load the complete
+checklist only for ambiguity, gate repair, or an explicit full acceptance
+audit. Fragments route obligations; they do not weaken their canonical rule
+owners or replace semantic review.
 
 When the map is disabled or incomplete, route logical review to canonical fact
 owners and the smallest target surfaces needed to re-derive scope, identity,

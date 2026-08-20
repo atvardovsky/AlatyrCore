@@ -127,10 +127,15 @@
       "framework_files": ["ai-infrastructure-routing.md", "ai-infrastructure-recommendations.md", "prompt-injection.md", "skill-adaptation.md"],
       "target_files": [
         ".ai/assistant/ai-infrastructure-router.json",
+        ".ai/assistant/bridge-capability-matrix.md",
+        ".ai/assistant/context/profiles/ai-infrastructure.json",
         ".ai/assistant/flows/ai-infrastructure-inventory.flow.md",
         ".ai/assistant/flows/ai-infrastructure-recommendation.flow.md",
         ".ai/assistant/flows/development-evidence-capture.flow.md",
         ".ai/assistant/flows/skill-adaptation.flow.md",
+        ".ai/assistant/policies/ai-infrastructure-source-access.md",
+        ".ai/assistant/policies/prompt-injection.md",
+        ".ai/assistant/templates/ai-infrastructure-inventory.md",
         ".ai/assistant/templates/ai-infrastructure-recommendation.md",
         ".ai/assistant/templates/ai-infrastructure-adaptation-record.md",
         ".ai/project/development-evidence.json"
@@ -243,7 +248,10 @@
       "requires": [],
       "rule_ids": ["ALATYR-LIFECYCLE-001"],
       "framework_files": ["migration-diff.md"],
-      "target_files": [".ai/assistant/templates/migration-note.md"],
+      "target_files": [
+        ".ai/assistant/context/migration-routing.json",
+        ".ai/assistant/templates/migration-note.md"
+      ],
       "check_ids": ["migration-diff-report"]
     },
     "effectiveness-metrics": {

@@ -90,9 +90,7 @@ def main() -> int:
                 text = path.read_text(encoding="utf-8")
                 for required in [
                     "AGENTS.md",
-                    ".ai/alatyr.yaml",
-                    ".ai/README.md",
-                    ".ai/assistant/context-router.json",
+                    ".ai/assistant/bootstrap-index.json",
                     ".ai/assistant/operation-index.json",
                     ".ai/assistant/operation-catalog.json",
                     ".ai/assistant/help.md",

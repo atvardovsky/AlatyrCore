@@ -163,14 +163,16 @@ and infer inventory, explain, discuss, compare, review, or document mode.
 For installed operations:
 
 1. Treat the target assistant entry point as preloaded, then read only
-   `.ai/alatyr.yaml`, `.ai/README.md`, and
-   `.ai/assistant/context-router.json` as compact bootstrap.
+   `.ai/assistant/bootstrap-index.json` as compact bootstrap. If its canonical
+   source hashes differ, repair it from the named manifest, project map, and
+   context router before routine operation routing.
 2. Read the installation note and post-install/update message templates when
    the request follows an installation, framework update, or unclear adapter
    state.
 3. Select the smallest matching context profile and project-area overlays from
-   the context router, then read their required framework, project, assistant,
-   flow, gate, policy, and validation context. Load human profile rationale
+   the bootstrap projection and context router, then read their required
+   framework, project, assistant, flow, routed gate fragments, policy, and
+   validation context. Load the complete gate checklist and human rationale
    only for ambiguity or drift and record budget exceptions in the context
    receipt.
 4. Resolve exact IDs and aliases through the checked compact operation index.

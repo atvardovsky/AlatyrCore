@@ -240,8 +240,10 @@ def fixture_dirs(selected: list[str]) -> list[Path]:
 
 def validate_support_profiles(work_root: Path) -> list[str]:
     failures: list[str] = []
-    for profile in profile_names():
-        repo = work_root / f"support-profile-{profile}"
+    scenarios = [(profile, profile, []) for profile in profile_names()]
+    scenarios.append(("core-ai-infrastructure", "core", ["ai-infrastructure"]))
+    for label, profile, enabled_modules in scenarios:
+        repo = work_root / f"support-profile-{label}"
         repo.mkdir(parents=True, exist_ok=False)
         actions, blocked = scaffold_plan(
             SimpleNamespace(
@@ -249,11 +251,12 @@ def validate_support_profiles(work_root: Path) -> list[str]:
                 write=True,
                 overwrite_existing=False,
                 profile=profile,
+                enable_module=enabled_modules,
             )
         )
         if not actions or blocked:
             failures.append(
-                f"{profile} support profile did not scaffold cleanly: {blocked}"
+                f"{label} support profile did not scaffold cleanly: {blocked}"
             )
             continue
         validator = Validator(
@@ -274,10 +277,10 @@ def validate_support_profiles(work_root: Path) -> list[str]:
             details = "; ".join(
                 f"{finding.code} {finding.path or ''}".strip() for finding in errors
             )
-            failures.append(f"{profile} support profile failed validation: {details}")
+            failures.append(f"{label} support profile failed validation: {details}")
         else:
             print(
-                f"OK: {profile} support profile scaffolded and passed structural validation"
+                f"OK: {label} support profile scaffolded and passed structural validation"
             )
     return failures
 

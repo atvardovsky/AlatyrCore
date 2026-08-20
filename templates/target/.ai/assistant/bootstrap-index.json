@@ -1,0 +1,231 @@
+{
+  "schema_version": 1,
+  "index_kind": "target-bootstrap-index",
+  "derived_from": {
+    "manifest": {
+      "path": ".ai/alatyr.yaml",
+      "sha256": "6109b92ce048a0213649749425a76b20223a84211657f852cd28f283757c0a3d"
+    },
+    "project_map": {
+      "path": ".ai/README.md",
+      "sha256": "ecc49e4f34f034c35ab7083f616b8c3095cdc922acd3023f68214f22c8725488"
+    },
+    "context_router": {
+      "path": ".ai/assistant/context-router.json",
+      "sha256": "7b42d9892454f79270fa6b2a666fe01a91072a31972d8fa51a0f5ad3b32ff314"
+    }
+  },
+  "installation": {
+    "framework_version": "{ALATYR_CORE_VERSION}",
+    "adapter_schema_version": "{ALATYR_ADAPTER_SCHEMA_VERSION}",
+    "template_version": "{ALATYR_TEMPLATE_VERSION}",
+    "support_profile": "{CORE_STANDARD_OR_FULL}",
+    "framework_pack": "{CORE_STANDARD_OR_COMPLETE}"
+  },
+  "project_map": ".ai/README.md",
+  "context_router": ".ai/assistant/context-router.json",
+  "routing_order": [
+    "docs-local",
+    "code-local",
+    "business-change",
+    "architecture-change",
+    "data-change",
+    "security-sensitive",
+    "ai-infrastructure",
+    "framework-upgrade"
+  ],
+  "profiles": {
+    "docs-local": {
+      "signals": [
+        "local wording",
+        "README or documentation text",
+        "non-semantic documentation change"
+      ],
+      "descriptor": ".ai/assistant/context/profiles/docs-local.json"
+    },
+    "code-local": {
+      "signals": [
+        "implementation change",
+        "test change",
+        "no accepted behavior change",
+        "review comments or defect fixes"
+      ],
+      "descriptor": ".ai/assistant/context/profiles/code-local.json"
+    },
+    "business-change": {
+      "signals": [
+        "accepted behavior change",
+        "domain rule change",
+        "product policy change",
+        "workflow or public contract change"
+      ],
+      "descriptor": ".ai/assistant/context/profiles/business-change.json"
+    },
+    "architecture-change": {
+      "signals": [
+        "module boundary change",
+        "dependency direction change",
+        "runtime topology change",
+        "public API or cross-component contract change"
+      ],
+      "descriptor": ".ai/assistant/context/profiles/architecture-change.json"
+    },
+    "data-change": {
+      "signals": [
+        "schema change",
+        "persistence change",
+        "migration or backfill",
+        "data ownership or retention change"
+      ],
+      "descriptor": ".ai/assistant/context/profiles/data-change.json"
+    },
+    "security-sensitive": {
+      "signals": [
+        "secrets or credentials",
+        "permissions or authentication",
+        "network or external services",
+        "destructive actions",
+        "production or spend boundary"
+      ],
+      "descriptor": ".ai/assistant/context/profiles/security-sensitive.json"
+    },
+    "ai-infrastructure": {
+      "signals": [
+        "AI infrastructure inventory, recommendation, or item improvement",
+        "prompt or skill change",
+        "assistant wrapper or bridge change",
+        "MCP or tool config change",
+        "checker gate flow or template change",
+        "third-party assistant infrastructure review"
+      ],
+      "descriptor": ".ai/assistant/context/profiles/ai-infrastructure.json"
+    },
+    "framework-upgrade": {
+      "signals": [
+        "installing Alatyr",
+        "updating Alatyr Core",
+        "adapter recheck",
+        "adapter maturity review",
+        "framework drift repair"
+      ],
+      "descriptor": ".ai/assistant/context/profiles/framework-upgrade.json"
+    }
+  },
+  "intent_overlays": {
+    "diagram-request": {
+      "signals": [
+        "diagram view explanation comparison or revision request"
+      ],
+      "descriptor": ".ai/assistant/context/intents/diagram-request.json",
+      "required_module": "diagrams",
+      "operations": [
+        "diagram-discussion"
+      ]
+    },
+    "architecture-request": {
+      "signals": [
+        "architecture inventory explanation pattern discussion comparison review or documentation request"
+      ],
+      "descriptor": ".ai/assistant/context/intents/architecture-request.json",
+      "required_module": "architecture-knowledge",
+      "operations": [
+        "architecture-assistance"
+      ]
+    },
+    "code-documentation": {
+      "signals": [
+        "code comment style proposal documentation profile review generated code reference or documentation synchronization request"
+      ],
+      "descriptor": ".ai/assistant/context/intents/code-documentation.json",
+      "required_module": "code-documentation",
+      "operations": [
+        "documentation-sync"
+      ]
+    },
+    "vocabulary-request": {
+      "signals": [
+        "project term definition acronym alias ambiguity glossary vocabulary or terminology consistency request"
+      ],
+      "descriptor": ".ai/assistant/context/intents/vocabulary-request.json",
+      "required_module": "project-vocabulary",
+      "operations": [
+        "project-vocabulary"
+      ]
+    },
+    "test-first-request": {
+      "signals": [
+        "explicit test-first TDD regression-first characterization-first or contract-first request",
+        "bounded recommendation trigger or test-first configuration request"
+      ],
+      "descriptor": ".ai/assistant/context/intents/test-first-request.json",
+      "required_module": "core-profile",
+      "operations": [
+        "test-first-configuration",
+        "test-first-change"
+      ]
+    },
+    "extension-request": {
+      "signals": [
+        "extension list inspect plan install update disable remove or review request",
+        "explicit external extension source or installed extension ID"
+      ],
+      "descriptor": ".ai/assistant/context/intents/extension-request.json",
+      "required_module": "core-profile",
+      "operations": [
+        "extension-management"
+      ]
+    }
+  },
+  "task_scale_overlays": {
+    "large-or-resumable": {
+      "signals": [
+        "explicitly large phased or resumable work",
+        "multiple independently verifiable workstreams",
+        "multiple project areas or task profiles",
+        "profile context budget exceeded",
+        "separate approval or validation checkpoints"
+      ],
+      "descriptor": ".ai/assistant/context/task-scales/large-or-resumable.json"
+    },
+    "delegated-execution": {
+      "signals": [
+        "delegation"
+      ],
+      "descriptor": ".ai/assistant/context/task-scales/delegated-execution.json"
+    },
+    "change-package": {
+      "signals": [
+        "coherent material outcome across multiple project surfaces",
+        "semantic multi-surface approval",
+        "architecture segment capability migration or public contract package",
+        "audit pilot or publishable before-to-after provenance"
+      ],
+      "descriptor": ".ai/assistant/context/task-scales/change-package.json"
+    },
+    "team-active": {
+      "signals": [
+        "team identity or coordination request",
+        "enabled-team write operation matches an active task branch worktree project area changed fact owner contract dependency or surface",
+        "enabled-team write operation cannot rule out active-work overlap from the compact index"
+      ],
+      "descriptor": ".ai/assistant/team/context-overlay.json"
+    }
+  },
+  "area_overlays": {
+    "{TARGET_AREA_ID}": {
+      "signals": [
+        "{TARGET_AREA_TRIGGER}"
+      ]
+    }
+  },
+  "operation_index": ".ai/assistant/operation-index.json",
+  "operation_catalog": ".ai/assistant/operation-catalog.json",
+  "gate_index": ".ai/assistant/gates/index.json",
+  "enabled_modules": [
+    "{ENABLED_MODULE}"
+  ],
+  "known_gaps": [
+    "{KNOWN_GAP}"
+  ],
+  "expansion_policy": "load required safety and owner evidence, record expansion reason, measured context, and intentionally omitted context"
+}

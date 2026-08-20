@@ -2,9 +2,12 @@
 
 This directory is split by ownership.
 
-For routine routing, treat root `AGENTS.md` as preloaded and read only this
-file, `.ai/alatyr.yaml`, and `.ai/assistant/context-router.json`. Load the
-blueprint, registries, contours, module profile, and human context profiles
+For routine routing, treat root `AGENTS.md` as preloaded and read only
+`.ai/assistant/bootstrap-index.json`. That file is a generated, hash-bound
+projection of this project map, `.ai/alatyr.yaml`, and
+`.ai/assistant/context-router.json`; load those canonical sources when the
+projection is stale, routing is ambiguous, or adapter repair is required. Load
+the blueprint, registries, contours, module profile, and human context profiles
 only when the selected task profile, task-scale overlay, or project-area
 overlay requires them.
 
@@ -47,6 +50,7 @@ Replace this section with the actual target project map.
 
 `.ai/assistant` contains local assistant operating rules:
 
+- a compact generated bootstrap index that does not own project facts or rules
 - context profiles for task-specific context loading
 - module profile for required core and optional Alatyr capabilities
 - task-specific maturity profile
@@ -60,6 +64,8 @@ Replace this section with the actual target project map.
   enabled
 - vocabulary route, review template, flow, and skill when enabled
 - gates
+- a compact gate index and phase-specific gate fragments; the complete
+  checklist remains lazy for audits and repair
 - prompts
 - skills
 - skill adaptation and provenance rules

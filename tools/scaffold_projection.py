@@ -27,10 +27,12 @@ def project_manifest(
     profile: str,
     framework_pack: str,
     selected: set[Path],
+    enabled_modules: set[str] | None = None,
 ) -> str:
     """Remove manifest path claims for surfaces absent from the scaffold."""
 
     rendered: list[str] = []
+    module_items = sorted(enabled_modules or set())
     for line in text.splitlines():
         if "{CORE_STANDARD_OR_FULL}" in line:
             line = line.replace("{CORE_STANDARD_OR_FULL}", profile)
@@ -39,7 +41,14 @@ def project_manifest(
         match = TARGET_PATH_RE.match(line)
         if match and not path_available(match.group("path"), selected):
             continue
-        rendered.append(line)
+        if line == "approvals:" and not any(
+            Path(".ai/assistant/approvals") in path.parents for path in selected
+        ):
+            continue
+        if line.strip() == '- "{ENABLED_MODULE}"' and module_items:
+            rendered.extend(f'    - "{module_id}"' for module_id in module_items)
+        else:
+            rendered.append(line)
     return "\n".join(rendered) + "\n"
 
 
@@ -159,10 +168,16 @@ def project_router(
     if not has_catalog:
         projected.pop("operation_routing", None)
 
-    profiles = projected.get("profiles")
+    profiles = projected.get("profile_index")
     if isinstance(profiles, dict):
-        for profile in profiles.values():
+        available_profiles: dict[str, Any] = {}
+        for name, profile in profiles.items():
             if not isinstance(profile, dict):
+                continue
+            descriptor = profile.get("descriptor")
+            if not isinstance(descriptor, str) or not path_available(
+                descriptor, selected
+            ):
                 continue
             candidates = profile.get("operation_candidates")
             if isinstance(candidates, list):
@@ -172,6 +187,13 @@ def project_router(
                     ]
                 else:
                     profile.pop("operation_candidates", None)
+            available_profiles[name] = profile
+        projected["profile_index"] = available_profiles
+        order = projected.get("routing_order")
+        if isinstance(order, list):
+            projected["routing_order"] = [
+                value for value in order if value in available_profiles
+            ]
 
     overlays = projected.get("intent_overlays")
     if isinstance(overlays, dict):

@@ -40,12 +40,13 @@ PROFILE_FIELDS = [
 ]
 REQUIRED_PRELOADED = ["AGENTS.md"]
 REQUIRED_BOOTSTRAP = [
-    ".ai/alatyr.yaml",
-    ".ai/README.md",
-    ".ai/assistant/context-router.json",
+    ".ai/assistant/bootstrap-index.json",
 ]
 FORBIDDEN_BOOTSTRAP = {
     "AGENTS.md",
+    ".ai/alatyr.yaml",
+    ".ai/README.md",
+    ".ai/assistant/context-router.json",
     ".ai/assistant/context-profiles.md",
     ".ai/assistant/module-profile.md",
     ".ai/project/contour.md",
@@ -171,8 +172,8 @@ def main() -> int:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
 
-    if router.get("schema_version") != 4:
-        failures.append("context-router.json schema_version must be 4")
+    if router.get("schema_version") != 5:
+        failures.append("context-router.json schema_version must be 5")
     if router.get("router_kind") != "target-context-router":
         failures.append("context-router.json router_kind must be target-context-router")
     if router.get("human_reference") != ".ai/assistant/context-profiles.md":
@@ -191,8 +192,8 @@ def main() -> int:
     forbidden = sorted(set(bootstrap) & FORBIDDEN_BOOTSTRAP)
     if forbidden:
         failures.append(f"bootstrap_context contains deferred context: {forbidden}")
-    if len(bootstrap) > 4:
-        failures.append("bootstrap_context must contain at most 4 files")
+    if len(bootstrap) > 1:
+        failures.append("bootstrap_context must contain only the derived bootstrap index")
 
     budgets = router.get("context_budgets")
     if not isinstance(budgets, dict):

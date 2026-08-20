@@ -5,9 +5,11 @@ description: Review a change against the target repository's Alatyr Core gates.
 
 This prompt is a bridge, not the source of truth. Ensure `AGENTS.md` is loaded
 once; if it was not preloaded by the host, read it now. Then read
-`AI_ASSISTANTS.md`, `.ai/alatyr.yaml`, `.ai/README.md`, and
-`.ai/assistant/context-router.json` before selecting gate-review context.
-Then read `.ai/assistant/gates/checklist.md`,
+`AI_ASSISTANTS.md` and `.ai/assistant/bootstrap-index.json` before selecting
+gate-review context. Repair a missing or stale derived index from its named
+canonical sources. Then use `.ai/assistant/gates/index.json` to select the
+smallest applicable gate fragments. Load `.ai/assistant/gates/checklist.md`
+only for ambiguity, full audit, or gate-repair work. Also read
 `.ai/assistant/flows/logical-integrity-review.flow.md`,
 `.ai/framework/logical-integrity.md`, and the changed files.
 For an exact operation ID or alias, including diagram, team, or AI aliases, read

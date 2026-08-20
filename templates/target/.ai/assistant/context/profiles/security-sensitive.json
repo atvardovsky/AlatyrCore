@@ -21,7 +21,10 @@
     ".ai/framework/logical-integrity.md",
     ".ai/framework/approval-records.md",
     ".ai/assistant/policies/prompt-injection.md",
-    ".ai/assistant/gates/checklist.md",
+    ".ai/assistant/gates/core.md",
+    ".ai/assistant/gates/semantic-integrity.md",
+    ".ai/assistant/gates/security-approval.md",
+    ".ai/assistant/gates/final-evidence.md",
     "{TARGET_SECURITY_SOURCE_OF_TRUTH}"
   ],
   "expand_when": [

@@ -36,6 +36,13 @@ CANONICAL_TASK_PROFILES = {
     "ai-infrastructure",
     "framework-upgrade",
 }
+QUALITY_NON_REGRESSION_METRICS = {
+    "hallucinated_command_count",
+    "validation_error_count",
+    "missed_companion_updates",
+    "rework_count",
+    "unresolved_consistency_gaps",
+}
 
 
 def is_placeholder(value: str) -> bool:
@@ -348,6 +355,36 @@ def validate_benchmark(
                     failures.append(
                         f"paired runs use different assistant or measurement contracts: {key}"
                     )
+                by_mode = {report["adapter_mode"]: report for report in pair_reports}
+                if set(by_mode) != set(MODES):
+                    failures.append(f"paired runs do not cover every adapter mode: {key}")
+                    continue
+                reference = by_mode["none"]
+                reference_acceptance = sum(
+                    result.get("status") != "pass"
+                    for result in reference["acceptance_criteria_results"]
+                )
+                for mode in ["minimal", "full"]:
+                    candidate = by_mode[mode]
+                    candidate_acceptance = sum(
+                        result.get("status") != "pass"
+                        for result in candidate["acceptance_criteria_results"]
+                    )
+                    if candidate_acceptance > reference_acceptance:
+                        failures.append(
+                            f"{mode} acceptance results regress relative to none: {key}"
+                        )
+                    for metric in sorted(QUALITY_NON_REGRESSION_METRICS):
+                        previous = reference.get(metric)
+                        current = candidate.get(metric)
+                        if not isinstance(previous, int) or not isinstance(current, int):
+                            failures.append(
+                                f"paired quality metric {metric} is not comparable: {key}"
+                            )
+                        elif current > previous:
+                            failures.append(
+                                f"{mode} {metric} regresses relative to none: {key}"
+                            )
     except (OSError, ValueError, json.JSONDecodeError, AssertionError) as exc:
         failures.append(str(exc))
     return failures, reports
@@ -418,6 +455,20 @@ def validate_source_templates() -> list[str]:
                 isinstance(value, str) and value for value in values
             ):
                 failures.append(f"benchmark task suite {field} is incomplete")
+        quality = suite.get("quality_non_regression")
+        if not isinstance(quality, dict):
+            failures.append("benchmark task suite needs a quality non-regression contract")
+        else:
+            if quality.get("reference_mode") != "none":
+                failures.append("quality reference mode must be none")
+            if quality.get("candidate_modes") != ["minimal", "full"]:
+                failures.append("quality candidate modes must be minimal and full")
+            metrics = quality.get("metrics_that_must_not_increase")
+            if not isinstance(metrics, list) or set(metrics) != QUALITY_NON_REGRESSION_METRICS:
+                failures.append("quality non-regression metrics are incomplete")
+            rule = quality.get("acceptance_rule")
+            if not isinstance(rule, str) or "only when" not in rule:
+                failures.append("quality non-regression acceptance rule is incomplete")
         task_classes = suite.get("task_classes")
         if not isinstance(task_classes, list) or len(task_classes) < 6:
             failures.append("benchmark task suite must cover at least six task classes")
@@ -475,6 +526,10 @@ def source_self_check() -> list[str]:
                 snapshots / mode / ".ai" / "assistant" / "context-router.json",
                 "{}\n",
             )
+            write_file(
+                snapshots / mode / ".ai" / "assistant" / "bootstrap-index.json",
+                "{}\n",
+            )
         for relpath in [
             ".ai/framework/README.md",
             ".ai/project/source-of-truth-registry.md",
@@ -496,6 +551,7 @@ def source_self_check() -> list[str]:
                     "required_paths": [
                         "AGENTS.md",
                         ".ai/alatyr.yaml",
+                        ".ai/assistant/bootstrap-index.json",
                         ".ai/assistant/context-router.json",
                     ],
                     "forbidden_paths": [],
@@ -504,6 +560,7 @@ def source_self_check() -> list[str]:
                     "required_paths": [
                         "AGENTS.md",
                         ".ai/alatyr.yaml",
+                        ".ai/assistant/bootstrap-index.json",
                         ".ai/framework/README.md",
                         ".ai/project/source-of-truth-registry.md",
                         ".ai/assistant/context-router.json",

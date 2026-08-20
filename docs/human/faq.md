@@ -82,7 +82,7 @@ newest file or the implementation is automatically correct. See the
 
 ## Is The Project Production-Ready?
 
-The source [VERSION](../../VERSION) currently records `0.1.0-alpha.12`.
+The source [VERSION](../../VERSION) currently records `0.1.0-alpha.13`.
 AlatyrCore has implemented framework contracts, target templates, source
 checks, conformance fixtures, optional scaffolding, and an optional structural
 target validator. It should not be

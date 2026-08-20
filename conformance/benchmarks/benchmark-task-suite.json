@@ -22,6 +22,18 @@
     "rework_count",
     "duration_seconds"
   ],
+  "quality_non_regression": {
+    "reference_mode": "none",
+    "candidate_modes": ["minimal", "full"],
+    "metrics_that_must_not_increase": [
+      "hallucinated_command_count",
+      "validation_error_count",
+      "missed_companion_updates",
+      "rework_count",
+      "unresolved_consistency_gaps"
+    ],
+    "acceptance_rule": "A context, token, time, or monetary reduction is useful only when independently reviewed acceptance results and required quality metrics do not regress."
+  },
   "task_classes": [
     {
       "id": "docs-local-small",
@@ -71,6 +83,20 @@
       "task_scale": "large-or-resumable",
       "risk_focus": "workstream convergence, handoff continuity, and context reuse",
       "purpose": "Measure quality and cost when a coherent change spans multiple bounded workstreams."
+    },
+    {
+      "id": "framework-upgrade-delta",
+      "task_profile": "framework-upgrade",
+      "task_scale": "cross-cutting",
+      "risk_focus": "changed-rule routing, local-deviation preservation, and migration evidence",
+      "purpose": "Measure whether delta-first upgrade routing avoids full-corpus loading without missing affected adapter surfaces."
+    },
+    {
+      "id": "team-large-coordination",
+      "task_profile": "business-change",
+      "task_scale": "large-or-resumable+team-active",
+      "risk_focus": "active-work conflicts, handoff continuity, bounded delegation, and final convergence",
+      "purpose": "Measure context reuse and consistency across a coordinated multi-contributor change."
     }
   ],
   "claim_boundary": "This suite defines required coverage only. It contains no execution results and supports no effectiveness or cost claim by itself."

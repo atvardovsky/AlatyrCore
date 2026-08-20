@@ -14,6 +14,12 @@
       "write_scope": "target-structure-with-explicit-write"
     },
     {
+      "name": "render-bootstrap",
+      "script": "render_target_bootstrap_index.py",
+      "purpose": "check or explicitly regenerate a target bootstrap index",
+      "write_scope": "target-structure-with-explicit-write"
+    },
+    {
       "name": "validate-adapter",
       "script": "validate_target_adapter.py",
       "purpose": "validate adapter structure and optionally enforce machine-readable approval scope",

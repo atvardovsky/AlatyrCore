@@ -21,6 +21,7 @@ SCAFFOLD_CONFORMANCE = TOOLS / "run_conformance_scaffold.py"
 EXPECTED_COMMANDS = {
     "check-source",
     "scaffold",
+    "render-bootstrap",
     "validate-adapter",
     "doctor",
     "migration-report",
@@ -185,6 +186,7 @@ def main() -> int:
             failures.append("upgrade assessment modified target repository files")
         for filename in [
             "migration-report.md",
+            "upgrade-impact.json",
             "adapter-validation.json",
             "upgrade-assessment.md",
         ]:
@@ -203,6 +205,13 @@ def main() -> int:
             failures.append("upgrade assessment validator evidence is not current-state")
         if payload.get("counts", {}).get("errors") != 0:
             failures.append("fresh scaffold validator evidence contains errors")
+        impact = json.loads((output / "upgrade-impact.json").read_text(encoding="utf-8"))
+        if impact.get("impact_kind") != "alatyr-upgrade-impact":
+            failures.append("upgrade assessment impact output has an invalid contract")
+        if impact.get("routing", {}).get("full_corpus_required") is not False:
+            failures.append("upgrade assessment must begin with bounded impact routing")
+        if not isinstance(impact.get("routing", {}).get("candidate_context"), list):
+            failures.append("upgrade assessment must expose routed candidate context")
 
     if failures:
         for failure in failures:

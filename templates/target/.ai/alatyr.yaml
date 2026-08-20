@@ -45,20 +45,19 @@ source_of_truth:
   team_policy: ".ai/project/team-policy.json"
   assistant_contour: ".ai/assistant/contour.md"
   context_router: ".ai/assistant/context-router.json"
+  bootstrap_index: ".ai/assistant/bootstrap-index.json"
   context_profiles: ".ai/assistant/context-profiles.md"
   module_profile: ".ai/assistant/module-profile.md"
   project_sources:
     - "{TARGET_PROJECT_SOURCE_OF_TRUTH}"
 context_routing:
-  router_schema_version: 4
+  router_schema_version: 5
   preloaded_context:
     - "AGENTS.md"
   compact_bootstrap:
-    - ".ai/alatyr.yaml"
-    - ".ai/README.md"
-    - ".ai/assistant/context-router.json"
-  bootstrap_max_files: 4
-  bootstrap_max_words: 2000
+    - ".ai/assistant/bootstrap-index.json"
+  bootstrap_max_files: 2
+  bootstrap_max_words: 1400
   profile_default_max_files: 12
   profile_default_max_total_words: 8000
   profile_default_max_portable_words: 5600
@@ -93,6 +92,7 @@ extensions:
   review: ".ai/assistant/templates/extension-review.md"
   lifecycle_record: ".ai/assistant/templates/extension-lifecycle-record.md"
 operations:
+  gate_index: ".ai/assistant/gates/index.json"
   index: ".ai/assistant/operation-index.json"
   catalog: ".ai/assistant/operation-catalog.json"
   routing: ".ai/assistant/flows/operation-routing.flow.md"

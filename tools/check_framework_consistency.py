@@ -282,6 +282,7 @@ def main() -> int:
 
     target_ai_assistants = read_text("templates/target/AI_ASSISTANTS.md")
     for required_target_ai_ref in [
+        ".ai/assistant/bootstrap-index.json",
         ".ai/alatyr.yaml",
         ".ai/README.md",
         ".ai/assistant/context-router.json",
@@ -2005,8 +2006,8 @@ def main() -> int:
         text = read_text(relpath)
         if "AGENTS.md" not in text:
             failures.append(f"{relpath} missing AGENTS.md bootstrap reference")
-        if ".ai/assistant/context-router.json" not in text:
-            failures.append(f"{relpath} missing context router bootstrap reference")
+        if ".ai/assistant/bootstrap-index.json" not in text:
+            failures.append(f"{relpath} missing generated bootstrap reference")
         if "preloaded" not in text.lower():
             failures.append(f"{relpath} missing preloaded-context guidance")
         if ".ai/assistant/context-profiles.md" in text and "only when" not in text:
@@ -2021,7 +2022,7 @@ def main() -> int:
             "profile gate"
         )
     for required_gate_text in [
-        ".ai/assistant/context-router.json",
+        ".ai/assistant/gates/index.json",
         "Adapter drift checks",
         "hard-coded local machine paths",
         "stale checker",

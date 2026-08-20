@@ -90,6 +90,7 @@ Check whether the target already has:
 - `.ai/alatyr.yaml`
 - `.ai/assistant/policies`
 - `.ai/assistant/context-router.json`
+- `.ai/assistant/bootstrap-index.json`
 - `.ai/assistant/context/profiles`
 - `.ai/assistant/context-profiles.md`
 - `.ai/assistant/maturity-profile.md`
@@ -304,6 +305,8 @@ List commands or manual checks:
 - adapter output contract review:
 - context-profile review:
 - context-router bootstrap reference review:
+- generated bootstrap source-hash and deterministic projection review:
+- routed gate-index/profile-fragment review:
 - preloaded versus compact-bootstrap review:
 - context total/portable/reserved-target budget and receipt review:
 - project-area overlay review:
@@ -314,6 +317,8 @@ List commands or manual checks:
 - bridge capability matrix review:
 - migration-diff review:
 - migration assessment completed before target upgrade changes:
+- machine-readable upgrade-impact projection reviewed before broad upgrade
+  context:
 - effectiveness metrics review:
 - operation-catalog, automatic-routing, health, or preview review:
 - team policy/operating model, local identity ignore and attribution boundary,
@@ -357,6 +362,10 @@ Final evidence must say:
 - context router index and lazy descriptor references checked against the
   selected support profile, compact bootstrap, gates, operation routing, root
   entry points, and bridge files
+- generated bootstrap index matches the manifest, project map, and router
+  source hashes; bridges load the projection and retain canonical repair paths
+- profile default gate fragments match the gate index; the complete checklist
+  remains lazy outside ambiguity, repair, or full audit
 - operation catalog stays outside routine routing; exact aliases use the
   checked compact index and context profiles/intent overlays expose bounded
   candidates

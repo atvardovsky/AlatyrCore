@@ -11,6 +11,7 @@ from typing import Any
 import jsonschema
 
 from check_all import load_manifest
+from capability_catalog import dependency_closure
 from framework_packaging import resolve_framework_files
 
 
@@ -26,25 +27,6 @@ def load_object(path: Path) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise ValueError(f"{path.relative_to(ROOT)} must contain an object")
     return value
-
-
-def dependency_closure(modules: dict[str, Any], module_id: str) -> set[str]:
-    closure: set[str] = set()
-    visiting: set[str] = set()
-
-    def visit(current: str) -> None:
-        if current in visiting:
-            raise ValueError(f"capability dependency cycle includes {current}")
-        if current in closure:
-            return
-        visiting.add(current)
-        for dependency in modules[current]["requires"]:
-            visit(dependency)
-        visiting.remove(current)
-        closure.add(current)
-
-    visit(module_id)
-    return closure
 
 
 def main() -> int:
@@ -107,7 +89,7 @@ def main() -> int:
 
         if not failures:
             for module_id in modules:
-                closure = dependency_closure(modules, module_id)
+                closure = dependency_closure([module_id], modules)
                 module_pack = modules[module_id]["min_framework_pack"]
                 for dependency in closure - {module_id}:
                     dependency_pack = modules[dependency]["min_framework_pack"]

@@ -43,9 +43,7 @@ REQUIRED_BRIDGE_REFS = [
 
 REQUIRED_CANONICAL_REFS = [
     "AGENTS.md",
-    ".ai/alatyr.yaml",
-    ".ai/README.md",
-    ".ai/assistant/context-router.json",
+    ".ai/assistant/bootstrap-index.json",
 ]
 
 

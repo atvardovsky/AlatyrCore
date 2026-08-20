@@ -1,8 +1,9 @@
 # Devin / Cascade Instructions
 
 Ensure `AGENTS.md` is loaded once; if it was not preloaded by the host, read it now.
-Then read `AI_ASSISTANTS.md`, `.ai/alatyr.yaml`,
-`.ai/README.md`, and `.ai/assistant/context-router.json`. Select the smallest
+Then read `AI_ASSISTANTS.md` and `.ai/assistant/bootstrap-index.json`.
+If the derived index is missing or stale, repair it from its named canonical
+sources. Select the smallest
 profile before reading the matching task flow.
 
 For an exact operation ID or alias, including diagram, team, or AI aliases, read

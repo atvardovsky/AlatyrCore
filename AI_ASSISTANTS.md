@@ -130,17 +130,23 @@ source guide when the target adapter says otherwise.
 
 ## Context And Cost Discipline
 
-Start from the compact bootstrap and route by task and project area. Load only:
+Start from `.ai/assistant/bootstrap-index.json` after the target entry point,
+verify or repair its canonical source hashes when stale, and route by task and
+project area. Load only:
 
 - the selected operation or task profile
 - the relevant project-area source
 - the canonical fact owner
-- required gates, permissions, validation, and output contract
+- routed gate fragments, permissions, validation, and output contract
 
 Expand only for a named dependency, boundary crossing, approval or safety
 trigger, missing fact, stale reference, or conflicting evidence. Cost
 optimization must not bypass logical integrity, approval, security, or
 validation.
+
+Load the complete gate checklist only for ambiguity, gate repair, or an
+explicit full acceptance audit. For framework updates, read the generated
+`upgrade-impact.json` before lifecycle or rule-owner expansion.
 
 ## Assistant Bridges
 
@@ -148,8 +154,9 @@ AlatyrCore supports generic, AGENTS-aware, Codex, Claude, Gemini, GitHub
 Copilot, Cursor, Devin/Cascade, and Windsurf target surfaces through short
 bridges. The target decides which surfaces are actually supported.
 
-Every bridge should point back to the same target manifest, project contour,
-context router, operation index, help, flows, and gates. It must not duplicate
+Every bridge should point back to the same generated bootstrap index and its
+canonical recovery sources, project contour, operation index, help, flows, and
+routed gates. It must not duplicate
 project policy or claim capabilities that lack target evidence.
 
 See [assistant compatibility](docs/assistant-compatibility.md) and the

@@ -118,12 +118,19 @@ Machine checks can verify only deterministic repository facts, such as:
   documents somewhere
 - static and installed bootstrap/profile paths can be measured against total,
   portable framework, and project-owned target-context budgets
+- generated bootstrap projections can be checked against canonical source
+  hashes, routed gate fragments can be checked for profile coverage, optional
+  validator work can be dispatched from declared capability state, and source
+  checks can be selected from explicit changed-path triggers
 - a deterministic source walking skeleton can prove scaffold, Git-diff
   approval scope, placeholder-free core acceptance, blocking baseline drift,
   and post-update structural acceptance without claiming assistant execution or
   project semantic correctness
 - supported bridge templates expose the same compact bootstrap, operation
   catalog, single entry, health, help, and operation-routing entry points
+- reviewed cost or speed improvements count as useful evidence only when
+  accepted outcomes, hallucinated commands, validation errors, missed
+  companion updates, rework, and unresolved consistency gaps do not regress
 - manifest, operation catalog, approval, prompt-injection, help, and policy
   templates contain required fields
 - explicitly selected machine-readable approvals can be checked so the

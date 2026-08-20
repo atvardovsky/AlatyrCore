@@ -19,6 +19,9 @@
     ".ai/framework/change-risk-model.md",
     ".ai/framework/source-of-truth-registry.md",
     ".ai/framework/logical-integrity.md",
+    ".ai/assistant/gates/core.md",
+    ".ai/assistant/gates/semantic-integrity.md",
+    ".ai/assistant/gates/final-evidence.md",
     "{TARGET_ARCHITECTURE_SOURCE_OF_TRUTH}"
   ],
   "conditional_context": [
@@ -27,7 +30,8 @@
     {"path": ".ai/framework/security-safety-guidance.md", "when": "security privacy external service production or permission boundaries are affected"},
     {"path": ".ai/framework/testing-guidance.md", "when": "the accepted decision enters implementation planning or validation"},
     {"path": ".ai/assistant/flows/blueprint-driven-change.flow.md", "when": "the accepted decision is implemented through the blueprint workflow"},
-    {"path": ".ai/assistant/gates/checklist.md", "when": "the change is previewed approved implemented or finalized"}
+    {"path": ".ai/assistant/gates/security-approval.md", "when": "the change reaches a protected approval or security boundary"},
+    {"path": ".ai/assistant/gates/checklist.md", "when": "adapter ambiguity or a full acceptance audit requires the complete checklist"}
   ],
   "expand_when": [
     "data_ownership_changes",

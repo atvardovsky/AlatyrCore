@@ -24,6 +24,8 @@ Load the selected profile descriptor from
 `.ai/assistant/context/profiles/`. Intent, migration, consistency, and
 task-scale descriptors under `.ai/assistant/context/` compose only when their
 trigger applies. Do not load all descriptors to classify one task.
+The generated bootstrap index is repaired from `.ai/alatyr.yaml`,
+`.ai/README.md`, and `.ai/assistant/context-router.json` when its hashes drift.
 
 Use each profile's operation candidates from the machine-readable router for
 cheap automatic routing. Resolve an exact operation ID or alias through
@@ -232,8 +234,9 @@ Operation candidates: `documentation-sync`, `drift-review`,
 Required context:
 
 - `.ai/framework/context-discovery.md`
-- `.ai/framework/testing-guidance.md`
-- `.ai/assistant/gates/checklist.md`
+- `.ai/assistant/gates/core.md`
+- `.ai/assistant/gates/documentation.md`
+- `.ai/assistant/gates/final-evidence.md`
 - `{TARGET_DOC_SOURCE_OF_TRUTH}`
 
 For a diagram request or diagram-relevant change, load
@@ -259,10 +262,15 @@ Required context:
 
 - `.ai/framework/context-discovery.md`
 - `.ai/framework/change-risk-model.md`
-- `.ai/framework/testing-guidance.md`
 - `.ai/framework/logical-integrity.md`
-- `.ai/assistant/gates/checklist.md`
+- `.ai/assistant/gates/core.md`
+- `.ai/assistant/gates/code-and-tests.md`
+- `.ai/assistant/gates/final-evidence.md`
 - `{TARGET_CODE_SOURCE_OF_TRUTH}`
+
+Load general testing guidance only when test selection, isolation, or boundary
+validation is unfamiliar or disputed. Add semantic-integrity or security-
+approval gate fragments only when the repair reaches those boundaries.
 
 Approval gates: only if the task crosses a protected category.
 
@@ -285,12 +293,14 @@ Required context:
 - `.ai/framework/change-risk-model.md`
 - `.ai/framework/source-of-truth-registry.md`
 - `.ai/framework/logical-integrity.md`
-- `.ai/framework/blueprint-driven-change.md`
-- `.ai/framework/approval-records.md`
-- `.ai/framework/testing-guidance.md`
-- `.ai/assistant/flows/blueprint-driven-change.flow.md`
-- `.ai/assistant/gates/checklist.md`
+- `.ai/assistant/gates/core.md`
+- `.ai/assistant/gates/semantic-integrity.md`
+- `.ai/assistant/gates/final-evidence.md`
 - `{TARGET_BLUEPRINT_OR_PRODUCT_SOURCE_OF_TRUTH}`
+
+Load blueprint, approval, testing, product-flow, security gate, or complete
+checklist context only when the accepted decision enters that stage or crosses
+that boundary.
 
 Approval gates: explicit programmer approval before changing accepted business
 behavior.
@@ -314,13 +324,14 @@ Required context:
 - `.ai/framework/change-risk-model.md`
 - `.ai/framework/source-of-truth-registry.md`
 - `.ai/framework/logical-integrity.md`
-- `.ai/framework/blueprint-driven-change.md`
-- `.ai/framework/approval-records.md`
-- `.ai/framework/security-safety-guidance.md`
-- `.ai/framework/testing-guidance.md`
-- `.ai/assistant/flows/blueprint-driven-change.flow.md`
-- `.ai/assistant/gates/checklist.md`
+- `.ai/assistant/gates/core.md`
+- `.ai/assistant/gates/semantic-integrity.md`
+- `.ai/assistant/gates/final-evidence.md`
 - `{TARGET_ARCHITECTURE_SOURCE_OF_TRUTH}`
+
+Load blueprint, approval, security, testing, product-flow, security gate, or
+complete checklist context only when the accepted decision enters that stage
+or crosses that boundary.
 
 Load `.ai/framework/diagram-guidance.md` when diagram discussion or a
 diagram-relevant architecture change is selected.
@@ -346,10 +357,14 @@ Required context:
 - `.ai/framework/change-risk-model.md`
 - `.ai/framework/source-of-truth-registry.md`
 - `.ai/framework/logical-integrity.md`
-- `.ai/framework/security-safety-guidance.md`
-- `.ai/framework/testing-guidance.md`
-- `.ai/assistant/gates/checklist.md`
+- `.ai/assistant/gates/core.md`
+- `.ai/assistant/gates/semantic-integrity.md`
+- `.ai/assistant/gates/code-and-tests.md`
+- `.ai/assistant/gates/final-evidence.md`
 - `{TARGET_DATA_SOURCE_OF_TRUTH}`
+
+Load security, testing, security-approval, or complete-checklist context only
+when migration, privacy, destructive, live, or audit boundaries require it.
 
 Approval gates: explicit approval for destructive, data-loss, live-service,
 privacy, or migration-risk changes.
@@ -374,7 +389,10 @@ Required context:
 - `.ai/framework/logical-integrity.md`
 - `.ai/framework/approval-records.md`
 - `.ai/assistant/policies/prompt-injection.md`
-- `.ai/assistant/gates/checklist.md`
+- `.ai/assistant/gates/core.md`
+- `.ai/assistant/gates/semantic-integrity.md`
+- `.ai/assistant/gates/security-approval.md`
+- `.ai/assistant/gates/final-evidence.md`
 - `{TARGET_SECURITY_SOURCE_OF_TRUTH}`
 
 Approval gates: explicit approval before protected changes; use approval
@@ -398,7 +416,9 @@ Required context:
 
 - `.ai/framework/ai-infrastructure-routing.md`
 - `.ai/assistant/ai-infrastructure-router.json`
-- `.ai/assistant/gates/checklist.md`
+- `.ai/assistant/gates/core.md`
+- `.ai/assistant/gates/security-approval.md`
+- `.ai/assistant/gates/final-evidence.md`
 
 Select one AI infrastructure route and item ID before loading additional
 skill, prompt, gate, checker, tool/MCP, bridge, source-access,
@@ -432,36 +452,39 @@ scope.
 
 Required context:
 
-- `.ai/framework/lifecycle.md`
-- `.ai/framework/migration-diff.md`
-- `.ai/framework/rule-registry.json`
-- `.ai/assistant/flows/adapter-recheck.flow.md`
-- `.ai/assistant/templates/installation-note.md`
-- `.ai/assistant/templates/migration-note.md`
+- `.ai/assistant/context/migration-routing.json`
+- `{TARGET_UPGRADE_IMPACT_REPORT}`
+- `.ai/assistant/gates/core.md`
+- `.ai/assistant/gates/final-evidence.md`
 
-Run or review the migration assessment before loading more framework files.
-Then load only canonical framework sources and target adapter surfaces named by
-changed rule IDs, affected categories/profiles, template changes, bridge
-capability changes, or local-deviation conflicts. Record intentionally omitted
-candidate context in the context receipt.
+Generate or review the migration assessment before loading lifecycle, rule,
+flow, or note files. Then load only canonical framework sources and target
+adapter surfaces named by `upgrade-impact.json`, changed rule IDs, affected
+categories/profiles, template changes, bridge capability changes, enabled
+modules, or local-deviation conflicts. Record intentionally omitted candidate
+context in the context receipt.
 
 Candidate framework context, loaded only when selected by migration impact:
 
 - `.ai/framework/README.md`
 - `.ai/framework/adapter-maturity.md`
 - `.ai/framework/bridge-capability-matrix.md`
+- `.ai/framework/blueprint-driven-change.md`
 - `.ai/framework/context-profiles.md`
 - `.ai/framework/context-router.md`
 - `.ai/framework/contour.md`
 - `.ai/framework/effectiveness-metrics.md`
 - `.ai/framework/guarantees.md`
 - `.ai/framework/installed-operations.md`
+- `.ai/framework/lifecycle.md`
+- `.ai/framework/migration-diff.md`
 - `.ai/framework/module-profile.md`
 - `.ai/framework/operation-help.md`
 - `.ai/framework/portability.md`
 - `.ai/framework/project-adapter-contract.md`
 - `.ai/framework/prompt-injection.md`
 - `.ai/framework/rule-ownership.md`
+- `.ai/framework/rule-registry.json`
 - `.ai/framework/rule-registry.md`
 - `.ai/framework/scaffolding.md`
 - `.ai/framework/skill-adaptation.md`

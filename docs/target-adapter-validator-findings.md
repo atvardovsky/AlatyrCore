@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 671
+Catalog entries: 677
 
 ## Codes
 
@@ -175,9 +175,21 @@ Catalog entries: 671
 - `BACKUP_OWNER_UNRESOLVED`
   Level: configured. Source: `tools/validate_target_adapter.py`.
 - `BOOTSTRAP_AREA_MAP_MISSING`
-  Level: dynamic. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `BOOTSTRAP_CONTEXT_ROUTER_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `BOOTSTRAP_INDEX_CURRENT`
+  Level: info. Source: `tools/validate_target_adapter.py`.
+- `BOOTSTRAP_INDEX_DRIFT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `BOOTSTRAP_INDEX_INVALID`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `BOOTSTRAP_INDEX_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `BOOTSTRAP_INDEX_REFERENCE_MISSING`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
+- `BOOTSTRAP_INDEX_SOURCE_INVALID`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `CAPABILITY_CATALOG_INVALID`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `CAPABILITY_CATALOG_MISSING`

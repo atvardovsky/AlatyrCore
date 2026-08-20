@@ -174,6 +174,8 @@ An adapter may provide:
 - context router drift reports or deterministic routing checks
 - measured installed bootstrap/profile costs, unresolved context references,
   and expansion receipts when required context exceeds a budget
+- generated bootstrap-index path and canonical source hashes, routed gate
+  index, enabled capability closure, and delta-first upgrade-impact evidence
 - task-specific maturity reports
 - bridge capability or conformance reports
 - migration notes for framework upgrades

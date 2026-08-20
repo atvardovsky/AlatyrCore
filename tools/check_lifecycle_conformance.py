@@ -16,6 +16,7 @@ from typing import Any
 
 import yaml
 
+from bootstrap_index import BOOTSTRAP_PATH, build_from_target, render
 from scaffold_target_structure import plan as scaffold_plan
 from target_adapter_validation.framework_baseline import source_pack_expectation
 from validate_target_adapter import (
@@ -101,6 +102,12 @@ def resolve_adapter(repo: Path) -> None:
         yaml.safe_dump(manifest, sort_keys=False, allow_unicode=False),
         encoding="utf-8",
     )
+    refresh_bootstrap(repo)
+
+
+def refresh_bootstrap(repo: Path) -> None:
+    output = repo / BOOTSTRAP_PATH
+    output.write_bytes(render(build_from_target(repo)).encode("utf-8"))
 
 
 def approval_record(base: str) -> dict[str, Any]:
@@ -193,6 +200,7 @@ def apply_synthetic_framework_update(repo: Path, source: Path) -> None:
     manifest_path.write_text(
         yaml.safe_dump(manifest, sort_keys=False, allow_unicode=False), encoding="utf-8"
     )
+    refresh_bootstrap(repo)
 
 
 def main() -> int:
@@ -229,6 +237,7 @@ def main() -> int:
             failures.append(f"core scaffold failed: {blocked}")
         resolve_adapter(repo)
         approval_path = repo / ".ai" / "assistant" / "approvals" / "fixture-install.json"
+        approval_path.parent.mkdir(parents=True, exist_ok=True)
         approval_path.write_text(
             json.dumps(approval_record(base), indent=2) + "\n", encoding="utf-8"
         )

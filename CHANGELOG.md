@@ -4,6 +4,38 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.13 - 2026-08-20
+
+- Increased the framework version to `0.1.0-alpha.13`, adapter schema version
+  to `12`, and target template version to `13` for compact generated bootstrap
+  routing and capability-selected target projections.
+- Replaced the routine installed-target bootstrap corpus with a deterministic
+  `.ai/assistant/bootstrap-index.json` projection. Router schema 5 starts from
+  that index and loads project sources, gate fragments, and optional module
+  context only when the selected task profile requires them.
+- Split the monolithic gate checklist into an indexed core plus focused
+  documentation, code-and-tests, semantic-integrity, security-approval, and
+  final-evidence fragments while retaining the checklist as a canonical
+  explanatory surface.
+- Reduced the core scaffold and added repeatable `--enable-module` capability
+  selection with dependency closure, minimum-pack enforcement, target-file
+  projection, and generated bootstrap output. Optional modules remain disabled
+  unless target evidence and policy enable them.
+- Changed installed-target validation to run universal contracts for every
+  adapter and optional deep checks only for enabled modules. Added source tests
+  for validator dispatch and capability projection.
+- Added machine-readable upgrade-impact evidence and delta-first upgrade
+  routing so an installed adapter begins from changed owners, rules, profiles,
+  and surfaces before considering full-corpus expansion.
+- Made changed-path source validation use declared trigger paths while retaining
+  invariant checks and conservative full-suite fallback for unowned paths.
+- Extended effectiveness benchmarks with framework-upgrade and team-scale task
+  classes plus a quality non-regression contract. Existing captured results
+  are not reinterpreted as evidence of cost savings.
+- Changed `ALATYR-CONTEXT-001`, `ALATYR-ADAPTER-001`, `ALATYR-MODULE-001`,
+  `ALATYR-BRIDGE-001`, `ALATYR-LIFECYCLE-001`, and `ALATYR-EVIDENCE-001`; no
+  rule IDs were added or removed.
+
 ## 0.1.0-alpha.12 - 2026-08-20
 
 - Increased the framework version to `0.1.0-alpha.12`, adapter schema version

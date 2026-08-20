@@ -16,7 +16,6 @@
     "validation",
     "operations",
     "maturity",
-    "approvals",
     "known_gaps",
     "local_deviations"
   ],
@@ -52,7 +51,7 @@
     },
     "source_of_truth": {
       "type": "object",
-      "required": ["project_contour", "registry", "assistant_contour", "context_router", "context_profiles", "module_profile", "project_sources"],
+      "required": ["project_contour", "registry", "assistant_contour", "context_router", "bootstrap_index", "context_profiles", "module_profile", "project_sources"],
       "properties": {
         "project_sources": {"$ref": "#/definitions/nonEmptyStringArray"}
       }
@@ -93,7 +92,10 @@
         }
       }
     },
-    "operations": {"type": "object"},
+    "operations": {
+      "type": "object",
+      "required": ["gate_index", "help", "operation_request", "output_contracts"]
+    },
     "maturity": {"type": "object", "required": ["profile"]},
     "approvals": {"type": "object", "required": ["directory", "template", "machine_template"]},
     "known_gaps": {"$ref": "#/definitions/stringArray"},

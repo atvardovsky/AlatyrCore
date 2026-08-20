@@ -46,12 +46,13 @@ the changelog and release migration note.
 
 Rule ID: `ALATYR-CONTEXT-001`
 Canonical source: `.ai/framework/context-profiles.md`
-Commitment: Use a compact budgeted bootstrap and the smallest task profile
-through an aligned context router; separate total, portable, and reserved
-target context budgets; measure representative compact and expansion scenarios;
-record expansion only when boundaries or conflicts require it; prefer
-changed-fact relationship and AI-item routing when available; and keep optional
-module, delegated-execution, and full team detail lazy.
+Commitment: Use a generated hash-bound bootstrap index, routed gate fragments,
+and the smallest task profile through an aligned context router; separate
+total, portable, and reserved target context budgets; measure representative
+compact and expansion scenarios; record expansion only when boundaries or
+conflicts require it; prefer changed-fact, upgrade-impact, and AI-item routing
+when available; and keep optional module, delegated-execution,
+complete-checklist, and full team detail lazy.
 Applies to: all installed adapter tasks.
 Enforcement: required.
 
@@ -217,20 +218,21 @@ Rule ID: `ALATYR-ADAPTER-001`
 Canonical source: `.ai/framework/project-adapter-contract.md`
 Commitment: Keep framework core, project facts, and repository adapter facts
 separated and rewritten from target evidence; record the installed framework
-pack and its projected registry and inventory; and preserve target
-development-pattern evidence, routed AI infrastructure items, recommendation
-and adaptation records, optional project-owned documentation, vocabulary,
-testing, extension, team, and delegation policy state.
+pack and its projected registry, inventory, bootstrap index, gate index, and
+capability closure; and preserve target development-pattern evidence, routed AI
+infrastructure items, recommendation and adaptation records, optional
+project-owned documentation, vocabulary, testing, extension, team, and
+delegation policy state.
 Applies to: installation, framework update, adapter maintenance.
 Enforcement: required.
 
 Rule ID: `ALATYR-MODULE-001`
 Canonical source: `.ai/framework/module-profile.md`
-Commitment: Establish the required core profile first, select a compatible
-dependency-closed framework pack, and enforce optional-module dependency, rule,
-required-file, and deterministic-check closure from the installed capability
-catalog before claiming a target module, including subagent delegation, is
-enabled.
+Commitment: Establish the required core profile first, scaffold only selected
+dependency-closed capabilities, select a compatible framework pack, and enforce
+optional-module dependency, rule, required-file, deterministic-check, and
+module-gated validator closure from the installed capability catalog before
+claiming a target module, including subagent delegation, is enabled.
 Applies to: installation, framework update, adapter maturity, framework
 upgrades.
 Enforcement: required.
@@ -274,21 +276,24 @@ Enforcement: required when module enabled or delegated execution is attempted.
 
 Rule ID: `ALATYR-BRIDGE-001`
 Canonical source: `.ai/framework/bridge-capability-matrix.md`
-Commitment: Keep bridge files thin, record assistant loading behavior,
-permission model, alias routing, subagent launch/model-override/parallelism
-capability, limitations, and conformance checks, and route selected AI
-infrastructure items plus enabled project, team, and delegation behavior
-through canonical target routing across supported assistant surfaces.
+Commitment: Keep bridge files thin, route every supported assistant through the
+generated bootstrap and gate indexes, record loading behavior, permission
+model, alias routing, subagent launch/model-override/parallelism capability,
+limitations, and conformance checks, and route selected AI infrastructure items
+plus enabled project, team, and delegation behavior through canonical target
+routing.
 Applies to: supported assistant surfaces.
 Enforcement: required.
 
 Rule ID: `ALATYR-LIFECYCLE-001`
 Canonical source: `.ai/framework/lifecycle.md`
 Commitment: Record framework version, adapter schema version, template version,
-installed framework pack, baseline, local deviations, migration notes, and
-upgrade evidence; preserve enabled target package, documentation, vocabulary,
-testing, extension, team, and delegation policy/capability state; migrate
-changed schemas atomically without replacing active state with placeholders.
+installed framework pack, baseline, local deviations, migration notes, and a
+hash-bound delta-first upgrade impact; preserve enabled target package,
+documentation, vocabulary, testing, extension, team, and delegation
+policy/capability state; expand upgrade context from affected owners and
+migrate changed schemas atomically without replacing active state with
+placeholders.
 Applies to: installation, framework upgrades.
 Enforcement: required.
 
@@ -297,9 +302,10 @@ Canonical source: `.ai/framework/guarantees.md`
 Commitment: Distinguish declarative process commitments, machine-checkable
 expectations, target-dependent guarantees, and non-guarantees in final claims,
 including strong versus bounded change-package provenance; semantic limits of
-generated records; structurally valid team and extension state; and the
-difference between declared versus verified delegated model, scope, validation,
-latency, quality, and cost evidence.
+generated records; structurally valid team and extension state;
+quality-non-regression gates for cost evidence; and the difference between
+declared versus verified delegated model, scope, validation, latency, quality,
+and cost evidence.
 Applies to: final evidence, framework positioning.
 Enforcement: required.
 

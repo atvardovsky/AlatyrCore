@@ -47,15 +47,17 @@ target-owned equivalent.
 
 Before upgrading framework files in a target project:
 
-1. Load the compact bootstrap and migration-first context only.
+1. Load the compact bootstrap and the generated upgrade impact only.
 2. Inspect the current target manifest, installed framework pack and baseline,
    projected inventory, local deviations, and adapter owner evidence.
 3. Prepare or review a migration assessment before changing target files. It
    should compare rule registries, framework files, versions, and structural
-   adapter state.
-4. Use changed rule IDs, categories, task profiles, canonical sources, template
-   surfaces, and bridge capabilities to select additional context. Do not load
-   the full framework corpus by default.
+   adapter state and emit a hash-bound machine-readable impact projection.
+4. Use the impact projection's changed rule IDs, categories, task profiles,
+   canonical sources, template surfaces, enabled modules, and bridge
+   capabilities to select additional context. Load the full framework corpus
+   only when impact is ambiguous, validation disproves the boundary, or a full
+   compatibility audit is explicitly requested.
 5. Identify framework-core changes versus target-adapter changes.
 6. Preserve target project facts.
 7. Compare supported assistant bridge needs and limitations.

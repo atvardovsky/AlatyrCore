@@ -3,8 +3,8 @@
 This repository uses Alatyr Core.
 
 Ensure `AGENTS.md` is loaded once; if it was not preloaded by the host, read it now.
-Then read `AI_ASSISTANTS.md`,
-`.ai/alatyr.yaml`, `.ai/README.md`, and `.ai/assistant/context-router.json`.
+Then read `AI_ASSISTANTS.md` and `.ai/assistant/bootstrap-index.json`.
+If the derived index is missing or stale, repair it from its named canonical sources.
 Select the smallest profile before reading task-owned context or flows.
 
 For an exact operation ID or alias, including diagram, team, or AI aliases, read

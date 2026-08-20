@@ -19,6 +19,8 @@ Entry points:
 - `.ai/assistant/operation-index.json`
 - `.ai/assistant/operation-catalog.json`
 - `.ai/assistant/context-router.json`
+- `.ai/assistant/bootstrap-index.json`
+- `.ai/assistant/gates/index.json`
 - `.ai/assistant/context-profiles.md`
 - `.ai/assistant/module-profile.md`
 - `.ai/project/source-of-truth-registry.md`
@@ -37,8 +39,8 @@ Entry points:
 
 Future assistant bootstrap:
 - Do not rely on this chat message alone.
-- Treat `AGENTS.md` as preloaded; start from `.ai/alatyr.yaml`, `.ai/README.md`, and `.ai/assistant/context-router.json`.
-- Load profiles, module state, registries, blueprint, gates, and the installation note only when routing or unclear adapter state requires them.
+- Treat `AGENTS.md` as preloaded; start from `.ai/assistant/bootstrap-index.json`.
+- Repair a stale generated index from its named manifest, project-map, and router sources; otherwise load profiles, module state, registries, blueprint, gate fragments, and the installation note only when routing or unclear adapter state requires them.
 - Send `Alatyr` for compact actions or `Alatyr status` for a read-only adapter health check.
 - If the installation itself is unclear, run `recheck-after-installation` before editing files.
 

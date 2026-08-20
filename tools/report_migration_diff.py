@@ -173,6 +173,115 @@ def migration_action_hints(
     return [f"- {hint}" for hint in sorted(hints)]
 
 
+def build_impact_data(
+    *,
+    from_rules: dict[str, dict[str, Any]],
+    to_rules: dict[str, dict[str, Any]],
+    from_owner_categories: dict[str, dict[str, Any]],
+    to_owner_categories: dict[str, dict[str, Any]],
+    from_version: str,
+    to_version: str,
+    from_adapter_schema_version: str,
+    to_adapter_schema_version: str,
+    from_template_version: str,
+    to_template_version: str,
+    from_framework_files: dict[str, str] | None,
+    to_framework_files: dict[str, str] | None,
+    from_template_files: dict[str, str] | None,
+    to_template_files: dict[str, str] | None,
+) -> dict[str, Any]:
+    """Build a deterministic machine-readable migration routing projection."""
+
+    from_ids = set(from_rules)
+    to_ids = set(to_rules)
+    added = sorted(to_ids - from_ids)
+    removed = sorted(from_ids - to_ids)
+    changed = sorted(
+        rule_id
+        for rule_id in from_ids & to_ids
+        if normalized_rule(from_rules[rule_id]) != normalized_rule(to_rules[rule_id])
+    )
+    affected_rule_ids = sorted(set(added) | set(changed) | set(removed))
+
+    from_owner_ids = set(from_owner_categories)
+    to_owner_ids = set(to_owner_categories)
+    added_owners = sorted(to_owner_ids - from_owner_ids)
+    removed_owners = sorted(from_owner_ids - to_owner_ids)
+    changed_owners = sorted(
+        category
+        for category in from_owner_ids & to_owner_ids
+        if normalized_mapping(from_owner_categories[category])
+        != normalized_mapping(to_owner_categories[category])
+    )
+
+    def file_changes(
+        previous: dict[str, str] | None,
+        next_value: dict[str, str] | None,
+    ) -> dict[str, Any]:
+        if previous is None or next_value is None:
+            return {"compared": False, "added": [], "changed": [], "removed": []}
+        previous_ids = set(previous)
+        next_ids = set(next_value)
+        return {
+            "compared": True,
+            "added": sorted(next_ids - previous_ids),
+            "changed": sorted(
+                item
+                for item in previous_ids & next_ids
+                if previous[item] != next_value[item]
+            ),
+            "removed": sorted(previous_ids - next_ids),
+        }
+
+    framework_files = file_changes(from_framework_files, to_framework_files)
+    template_surfaces = file_changes(from_template_files, to_template_files)
+    affected_categories = affected_rule_values(
+        affected_rule_ids, from_rules, to_rules, "category"
+    )
+    affected_profiles = affected_rule_values(
+        affected_rule_ids, from_rules, to_rules, "applies_to"
+    )
+    affected_sources = affected_rule_values(
+        affected_rule_ids, from_rules, to_rules, "canonical_source"
+    )
+    hints = migration_action_hints(
+        affected_categories,
+        known_version_changed(from_adapter_schema_version, to_adapter_schema_version),
+        known_version_changed(from_template_version, to_template_version),
+        framework_files["compared"],
+        bool(framework_files["added"] or framework_files["changed"] or framework_files["removed"]),
+        template_surfaces["compared"],
+        bool(template_surfaces["added"] or template_surfaces["changed"] or template_surfaces["removed"]),
+    )
+    return {
+        "schema_version": 1,
+        "impact_kind": "alatyr-upgrade-impact",
+        "versions": {
+            "framework": {"from": from_version, "to": to_version},
+            "adapter_schema": {
+                "from": from_adapter_schema_version,
+                "to": to_adapter_schema_version,
+            },
+            "template": {"from": from_template_version, "to": to_template_version},
+        },
+        "rule_changes": {"added": added, "changed": changed, "removed": removed},
+        "affected": {
+            "rule_ids": affected_rule_ids,
+            "categories": affected_categories,
+            "task_profiles": affected_profiles,
+            "canonical_sources": affected_sources,
+        },
+        "rule_owner_changes": {
+            "added": added_owners,
+            "changed": changed_owners,
+            "removed": removed_owners,
+        },
+        "framework_files": framework_files,
+        "target_template_surfaces": template_surfaces,
+        "action_hints": [line[2:] for line in hints if line != "- none"],
+    }
+
+
 def render_report(
     from_path: Path,
     to_path: Path,
@@ -455,8 +564,8 @@ def render_report(
     lines.extend(
         [
             "",
-        "## Required Target Actions",
-        "",
+            "## Required Target Actions",
+            "",
         ]
     )
 
@@ -567,6 +676,11 @@ def main() -> int:
         type=Path,
         help="Optional path for a Markdown report. Defaults to stdout.",
     )
+    parser.add_argument(
+        "--json-output",
+        type=Path,
+        help="Optional path for a machine-readable upgrade impact projection.",
+    )
     args = parser.parse_args()
 
     from_path = args.from_rules.resolve()
@@ -608,12 +722,34 @@ def main() -> int:
         from_template_files,
         to_template_files,
     )
+    impact = build_impact_data(
+        from_rules=from_rules,
+        to_rules=to_rules,
+        from_owner_categories=from_owner_categories,
+        to_owner_categories=to_owner_categories,
+        from_version=args.from_version,
+        to_version=args.to_version,
+        from_adapter_schema_version=args.from_adapter_schema_version,
+        to_adapter_schema_version=args.to_adapter_schema_version,
+        from_template_version=args.from_template_version,
+        to_template_version=args.to_template_version,
+        from_framework_files=from_framework_files,
+        to_framework_files=to_framework_files,
+        from_template_files=from_template_files,
+        to_template_files=to_template_files,
+    )
 
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_text(report + "\n", encoding="utf-8")
     else:
         print(report)
+    if args.json_output:
+        args.json_output.parent.mkdir(parents=True, exist_ok=True)
+        args.json_output.write_text(
+            json.dumps(impact, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
     return 0
 
 

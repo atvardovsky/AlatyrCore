@@ -30,6 +30,14 @@ from scaffold_projection import (
     project_router,
     render_json,
 )
+from bootstrap_index import build_bootstrap_index, render as render_bootstrap_index
+from capability_catalog import (
+    PACK_ORDER,
+    dependency_closure,
+    load_modules,
+    minimum_pack,
+    target_files as capability_target_files,
+)
 from framework_packaging import (
     pack_names,
     project_registry,
@@ -58,7 +66,9 @@ def profile_names() -> list[str]:
     return list(profiles)
 
 
-def resolve_profile_paths(profile: str) -> set[Path]:
+def resolve_profile_paths(
+    profile: str, enabled_modules: set[str] | None = None
+) -> set[Path]:
     manifest = load_profile_manifest()
     profiles = manifest.get("profiles")
     if not isinstance(profiles, dict) or profile not in profiles:
@@ -92,21 +102,34 @@ def resolve_profile_paths(profile: str) -> set[Path]:
         resolving.remove(name)
         return paths
 
-    return resolve(profile)
+    paths = resolve(profile)
+    paths.update(capability_target_files(enabled_modules or set()))
+    return paths
 
 
-def iter_template_files(profile: str = "full") -> list[Path]:
-    return sorted(TEMPLATE_ROOT / relpath for relpath in resolve_profile_paths(profile))
+def iter_template_files(
+    profile: str = "full", enabled_modules: set[str] | None = None
+) -> list[Path]:
+    return sorted(
+        TEMPLATE_ROOT / relpath
+        for relpath in resolve_profile_paths(profile, enabled_modules)
+    )
 
 
-def resolved_framework_pack(profile: str, requested: str) -> str:
+def resolved_framework_pack(
+    profile: str, requested: str, enabled_modules: set[str] | None = None
+) -> str:
+    profile_pack = {"core": "core", "standard": "standard", "full": "complete"}[
+        profile
+    ]
+    module_pack = minimum_pack(enabled_modules or set())
+    required = max([profile_pack, module_pack], key=PACK_ORDER.__getitem__)
     if requested == "matched":
-        return {"core": "core", "standard": "standard", "full": "complete"}[profile]
-    minimum = {"core": 0, "standard": 1, "full": 2}[profile]
-    rank = {"core": 0, "standard": 1, "complete": 2}[requested]
-    if rank < minimum:
+        return required
+    if PACK_ORDER[requested] < PACK_ORDER[required]:
         raise ValueError(
-            f"framework pack {requested} is too small for support profile {profile}"
+            f"framework pack {requested} is too small for support profile {profile} "
+            f"and enabled capabilities {sorted(enabled_modules or set())}"
         )
     return requested
 
@@ -131,9 +154,12 @@ def copy_file(src: Path, dst: Path, *, write: bool, content: str | None = None) 
 class ProjectionContext:
     catalog: dict[str, Any] | None
     operation_ids: frozenset[str]
+    enabled_modules: frozenset[str]
 
 
-def build_projection_context(selected: set[Path]) -> ProjectionContext:
+def build_projection_context(
+    selected: set[Path], enabled_modules: set[str]
+) -> ProjectionContext:
     catalog_rel = Path(".ai/assistant/operation-catalog.json")
     catalog = None
     if catalog_rel in selected:
@@ -143,7 +169,11 @@ def build_projection_context(selected: set[Path]) -> ProjectionContext:
         for operation in (catalog or {}).get("operations", [])
         if isinstance(operation, dict) and isinstance(operation.get("id"), str)
     )
-    return ProjectionContext(catalog=catalog, operation_ids=operation_ids)
+    return ProjectionContext(
+        catalog=catalog,
+        operation_ids=operation_ids,
+        enabled_modules=frozenset(enabled_modules),
+    )
 
 
 def projected_template_content(
@@ -159,7 +189,11 @@ def projected_template_content(
         return project_agent_rule_ids(src.read_text(encoding="utf-8"), rule_ids)
     if rel == Path(".ai/alatyr.yaml"):
         return project_manifest(
-            src.read_text(encoding="utf-8"), profile, framework_pack, selected
+            src.read_text(encoding="utf-8"),
+            profile,
+            framework_pack,
+            selected,
+            set(context.enabled_modules),
         )
 
     catalog_rel = Path(".ai/assistant/operation-catalog.json")
@@ -173,6 +207,27 @@ def projected_template_content(
     if rel == router_rel:
         return render_json(
             project_router(load_object(src), selected, set(context.operation_ids))
+        )
+    if rel == Path(".ai/assistant/bootstrap-index.json"):
+        manifest_text = project_manifest(
+            (TEMPLATE_ROOT / ".ai/alatyr.yaml").read_text(encoding="utf-8"),
+            profile,
+            framework_pack,
+            selected,
+            set(context.enabled_modules),
+        )
+        router_text = render_json(
+            project_router(
+                load_object(TEMPLATE_ROOT / router_rel),
+                selected,
+                set(context.operation_ids),
+            )
+        )
+        project_map_text = (TEMPLATE_ROOT / ".ai/README.md").read_text(
+            encoding="utf-8"
+        )
+        return render_bootstrap_index(
+            build_bootstrap_index(manifest_text, project_map_text, router_text)
         )
     if rel == Path(".ai/assistant/ai-infrastructure-router.json"):
         return render_json(project_ai_infrastructure_router(load_object(src), selected))
@@ -201,13 +256,15 @@ def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
     target = args.target.resolve()
     profile = getattr(args, "profile", "full")
     requested_pack = getattr(args, "framework_pack", "matched")
-    framework_pack = resolved_framework_pack(profile, requested_pack)
-    selected_templates = resolve_profile_paths(profile)
+    requested_modules = set(getattr(args, "enable_module", []) or [])
+    enabled_modules = dependency_closure(requested_modules)
+    framework_pack = resolved_framework_pack(profile, requested_pack, enabled_modules)
+    selected_templates = resolve_profile_paths(profile, enabled_modules)
     framework_files = resolve_framework_files(framework_pack)
     selected = selected_templates | {
         Path(".ai") / "framework" / name for name in framework_files
     }
-    projection_context = build_projection_context(selected)
+    projection_context = build_projection_context(selected, enabled_modules)
     framework_contents = projected_framework_contents(framework_pack)
     actions: list[str] = []
     blocked: list[str] = []
@@ -219,7 +276,7 @@ def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
         blocked.append(f"target is not a directory: {target}")
         return actions, blocked
 
-    for src in iter_template_files(profile):
+    for src in iter_template_files(profile, enabled_modules):
         rel = src.relative_to(TEMPLATE_ROOT)
         dst = target / rel
         if dst.exists() and not args.overwrite_existing:
@@ -270,6 +327,16 @@ def main() -> int:
         help="Existing target repository directory.",
     )
     parser.add_argument(
+        "--enable-module",
+        action="append",
+        default=[],
+        choices=sorted(load_modules()),
+        help=(
+            "Add one optional capability and its dependency closure. Repeat for "
+            "multiple capabilities."
+        ),
+    )
+    parser.add_argument(
         "--framework-pack",
         choices=["matched", *pack_names()],
         default="matched",
@@ -305,7 +372,10 @@ def main() -> int:
 
     try:
         actions, blocked = plan(args)
-        framework_pack = resolved_framework_pack(args.profile, args.framework_pack)
+        enabled_modules = dependency_closure(set(args.enable_module))
+        framework_pack = resolved_framework_pack(
+            args.profile, args.framework_pack, enabled_modules
+        )
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
@@ -314,6 +384,10 @@ def main() -> int:
     print(f"Alatyr scaffold mode: {mode}")
     print(f"Alatyr scaffold profile: {args.profile}")
     print(f"Alatyr framework pack: {framework_pack}")
+    print(
+        "Enabled optional capabilities: "
+        + (", ".join(sorted(enabled_modules)) if enabled_modules else "none")
+    )
     print("This helper does not complete installation or fill target facts.")
     print("Supported platforms: Linux, macOS, Windows.")
 

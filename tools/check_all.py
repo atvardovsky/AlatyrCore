@@ -41,6 +41,7 @@ def load_manifest() -> list[dict[str, Any]]:
         profiles = check.get("profiles")
         platforms = check.get("platforms")
         owned_paths = check.get("owned_paths")
+        trigger_paths = check.get("trigger_paths", owned_paths)
         dependencies = check.get("depends_on")
         if not isinstance(check_id, str) or not check_id or check_id in ids:
             raise ValueError(f"checks[{index}] has invalid or duplicate id")
@@ -67,11 +68,19 @@ def load_manifest() -> list[dict[str, Any]]:
             isinstance(value, str) and value for value in owned_paths
         ):
             raise ValueError(f"{check_id}.owned_paths is invalid")
+        if not isinstance(trigger_paths, list) or not trigger_paths or not all(
+            isinstance(value, str) and value for value in trigger_paths
+        ):
+            raise ValueError(f"{check_id}.trigger_paths is invalid")
+        if not isinstance(check.get("always_for_changed", False), bool):
+            raise ValueError(f"{check_id}.always_for_changed must be boolean")
         if not isinstance(dependencies, list) or not all(
             isinstance(value, str) and value for value in dependencies
         ):
             raise ValueError(f"{check_id}.depends_on is invalid")
         ids.add(check_id)
+        check["trigger_paths"] = trigger_paths
+        check["always_for_changed"] = check.get("always_for_changed", False)
         normalized.append(check)
 
     by_id = {check["id"]: check for check in normalized}
@@ -128,6 +137,10 @@ def matches(check: dict[str, Any], path: str) -> bool:
     return any(fnmatch.fnmatch(path, pattern) for pattern in check["owned_paths"])
 
 
+def routes(check: dict[str, Any], path: str) -> bool:
+    return any(fnmatch.fnmatch(path, pattern) for pattern in check["trigger_paths"])
+
+
 def current_platform() -> str:
     if sys.platform.startswith("linux"):
         return "linux"
@@ -157,6 +170,13 @@ def select_checks(
             if "full" in check["profiles"] or "release" in check["profiles"]
             if supports_platform(check, selected_platform)
         }
+    elif profile == "fast" and changed_from:
+        selected_ids = {
+            check["id"]
+            for check in checks
+            if check.get("always_for_changed", False)
+            and supports_platform(check, selected_platform)
+        }
     else:
         selected_ids = {
             check["id"]
@@ -174,7 +194,7 @@ def select_checks(
             and supports_platform(check, selected_platform)
         ]
         unmatched = [
-            path for path in changed if not any(matches(check, path) for check in full_checks)
+            path for path in changed if not any(routes(check, path) for check in full_checks)
         ]
         if unmatched:
             fell_back_to_full = True
@@ -183,7 +203,7 @@ def select_checks(
             selected_ids.update(
                 check["id"]
                 for check in full_checks
-                if any(matches(check, path) for path in changed)
+                if any(routes(check, path) for path in changed)
             )
 
     by_id = {check["id"]: check for check in checks}

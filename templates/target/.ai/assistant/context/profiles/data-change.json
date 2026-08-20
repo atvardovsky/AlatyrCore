@@ -19,12 +19,17 @@
     ".ai/framework/change-risk-model.md",
     ".ai/framework/source-of-truth-registry.md",
     ".ai/framework/logical-integrity.md",
+    ".ai/assistant/gates/core.md",
+    ".ai/assistant/gates/semantic-integrity.md",
+    ".ai/assistant/gates/code-and-tests.md",
+    ".ai/assistant/gates/final-evidence.md",
     "{TARGET_DATA_SOURCE_OF_TRUTH}"
   ],
   "conditional_context": [
     {"path": ".ai/framework/security-safety-guidance.md", "when": "privacy credentials destructive live-service or retention boundaries are affected"},
     {"path": ".ai/framework/testing-guidance.md", "when": "a migration implementation rollback or validation plan is prepared"},
-    {"path": ".ai/assistant/gates/checklist.md", "when": "the data change is previewed approved implemented or finalized"}
+    {"path": ".ai/assistant/gates/security-approval.md", "when": "the data change reaches a protected destructive privacy live or approval boundary"},
+    {"path": ".ai/assistant/gates/checklist.md", "when": "adapter ambiguity or a full acceptance audit requires the complete checklist"}
   ],
   "expand_when": [
     "destructive_or_data_loss_risk",

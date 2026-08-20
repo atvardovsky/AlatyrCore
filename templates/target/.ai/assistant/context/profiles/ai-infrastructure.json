@@ -20,7 +20,9 @@
   "required_context": [
     ".ai/framework/ai-infrastructure-routing.md",
     ".ai/assistant/ai-infrastructure-router.json",
-    ".ai/assistant/gates/checklist.md"
+    ".ai/assistant/gates/core.md",
+    ".ai/assistant/gates/security-approval.md",
+    ".ai/assistant/gates/final-evidence.md"
   ],
   "expand_when": [
     "selected item route requires additional context",

@@ -102,17 +102,22 @@ paths are acceptable only before the adapter is accepted.
 Every installed adapter should keep a compact bootstrap set:
 
 - target root assistant entry point as host-preloaded context
-- `.ai/alatyr.yaml`
-- `.ai/README.md` or an equivalent compact project/context map
-- `.ai/assistant/context-router.json`
+- generated `.ai/assistant/bootstrap-index.json`
+
+The generated index must carry source hashes for `.ai/alatyr.yaml`,
+`.ai/README.md`, and `.ai/assistant/context-router.json`. Those canonical files
+are recovery and audit inputs, not routine bootstrap. A stale or missing index
+must be repaired before it is trusted for routing.
 
 Do not put the full blueprint, source-of-truth registry, operation catalog,
 module profile, project contour, assistant contour, human context profiles, or
 task-owned source files in mandatory bootstrap. Route them after task
 classification.
 
-Framework documents, flows, gates, and policies should be loaded through the
-selected task profile instead of being mandatory for every task.
+Framework documents, flows, gate fragments, and policies should be loaded
+through the selected task profile instead of being mandatory for every task.
+The complete gate checklist remains lazy unless ambiguity or a full audit
+requires it.
 
 ## Context Budgets And Receipts
 

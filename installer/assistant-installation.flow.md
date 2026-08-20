@@ -185,18 +185,20 @@ Classify every proposed target file:
     target enables team collaboration. Derive actor IDs, display names and
     aliases, authority, priorities, transitions, review, identity verification,
     backend, synchronization, storage, retention, and privacy from evidence.
-13. Create target `.ai/assistant/contour.md`, compact context router and
-    selected lazy descriptors, operation catalog and checked compact operation
+13. Create target `.ai/assistant/contour.md`, generated hash-bound bootstrap
+    index, compact context router, routed gate index/fragments, and selected
+    lazy descriptors, operation catalog and checked compact operation
     index, context profiles, module profile, task-specific maturity profile,
     bridge capability matrix, generated assistant-capability index, installed-
     surface capability records, and minimal workflows/gates from target facts.
     Route enabled team operations and matched state-changing work through the
     lazy `.ai/assistant/team/context-overlay.json`. Read the compact active-work
     index first; do not put full team state in bootstrap.
-    The router must distinguish host-preloaded instructions from compact
-    bootstrap, define context budgets and receipts, and route project-area
+    The router must distinguish host-preloaded instructions from the generated
+    compact bootstrap, define context budgets and receipts, and route project-area
     overlays without putting full project sources or the operation catalog in
-    mandatory bootstrap. Add compact per-profile candidates and intent
+    mandatory bootstrap. Keep the manifest, project map, and router as hashed
+    recovery sources rather than routine startup context. Add compact per-profile candidates and intent
     overlays, resolve exact IDs/aliases through the index, and load the full
     catalog only for the bare Alatyr entry, ambiguity, or repair. Add
     the `large-or-resumable` task-scale overlay only when the target enables

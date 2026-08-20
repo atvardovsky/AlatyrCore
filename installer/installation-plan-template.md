@@ -68,6 +68,8 @@ List what must not be changed.
   permissions, approval, installed-file ownership, conflicts, dependents,
   local-modification policy, and removal evidence:
 - Context router schema and lazy descriptors:
+- Generated bootstrap index, source hashes, and regeneration owner:
+- Routed gate index and default profile fragments:
 - Context profiles:
 - Context-router bootstrap references:
 - Preloaded versus compact-bootstrap context:
@@ -312,6 +314,7 @@ metadata.
 - Target context entry points:
 - Host-preloaded context:
 - Compact bootstrap context:
+- Generated bootstrap source-hash verification:
 - Context router:
 - Task context profiles:
 - Context-router bootstrap references:

@@ -17,10 +17,25 @@
   "required_context": [
     ".ai/framework/context-discovery.md",
     ".ai/framework/change-risk-model.md",
-    ".ai/framework/testing-guidance.md",
     ".ai/framework/logical-integrity.md",
-    ".ai/assistant/gates/checklist.md",
+    ".ai/assistant/gates/core.md",
+    ".ai/assistant/gates/code-and-tests.md",
+    ".ai/assistant/gates/final-evidence.md",
     "{TARGET_CODE_SOURCE_OF_TRUTH}"
+  ],
+  "conditional_context": [
+    {
+      "path": ".ai/framework/testing-guidance.md",
+      "when": "test level isolation or cross-boundary validation is unfamiliar or disputed"
+    },
+    {
+      "path": ".ai/assistant/gates/semantic-integrity.md",
+      "when": "the repair changes or may contradict an accepted semantic fact"
+    },
+    {
+      "path": ".ai/assistant/gates/security-approval.md",
+      "when": "the repair crosses a protected or security-sensitive boundary"
+    }
   ],
   "expand_when": [
     "accepted_behavior_changes",

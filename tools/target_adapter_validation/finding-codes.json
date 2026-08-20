@@ -6,6 +6,7 @@
     "tools/target_adapter_validation/__init__.py",
     "tools/target_adapter_validation/context.py",
     "tools/target_adapter_validation/framework_baseline.py",
+    "tools/target_adapter_validation/modules.py",
     "tools/target_adapter_validation/router_costs.py"
   ],
   "finding_codes": [
@@ -732,7 +733,7 @@
     {
       "code": "BOOTSTRAP_AREA_MAP_MISSING",
       "levels": [
-        "dynamic"
+        "error"
       ],
       "sources": [
         "tools/validate_target_adapter.py"
@@ -741,7 +742,61 @@
     {
       "code": "BOOTSTRAP_CONTEXT_ROUTER_MISSING",
       "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "BOOTSTRAP_INDEX_CURRENT",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "BOOTSTRAP_INDEX_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "BOOTSTRAP_INDEX_INVALID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "BOOTSTRAP_INDEX_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "BOOTSTRAP_INDEX_REFERENCE_MISSING",
+      "levels": [
         "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "BOOTSTRAP_INDEX_SOURCE_INVALID",
+      "levels": [
+        "error"
       ],
       "sources": [
         "tools/validate_target_adapter.py"

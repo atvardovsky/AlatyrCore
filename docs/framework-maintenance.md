@@ -141,6 +141,10 @@ Before accepting a change, check:
 - `python3 tools/check_context_router.py` passes when target context-router
   schema, lazy descriptors, profile names, required context, approval gates,
   validation, final evidence, or framework-routing coverage changes.
+- `python3 tools/check_bootstrap_routing.py` passes when generated bootstrap,
+  gate fragments, profile defaults, or core scaffold routing changes. Refresh
+  the target projection with `python3 tools/render_target_bootstrap_index.py
+  --target templates/target --write` only after reviewing canonical sources.
 - `python3 tools/check_context_costs.py` passes when bootstrap/profile paths,
   context budgets, or routed source word counts change; refresh the golden
   baseline only after reviewing the cost difference.
@@ -186,7 +190,7 @@ Before accepting a change, check:
   migration evidence, release template fields, or migration-diff output shape
   changes.
 - `python3 tools/check_migration_diff_report.py` passes when
-  `tools/report_migration_diff.py` output sections, self-compare behavior,
+  `tools/report_migration_diff.py` Markdown/JSON output, self-compare behavior,
   adapter-contract impact, affected categories, task profiles, canonical
   sources, or action hints change.
 - `python3 tools/check_rule_ownership.py` passes when rule IDs, rule

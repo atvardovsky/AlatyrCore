@@ -8,7 +8,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from check_capability_graph import dependency_closure  # noqa: E402
+from capability_catalog import dependency_closure  # noqa: E402
 
 
 class CapabilityGraphTests(unittest.TestCase):
@@ -19,7 +19,7 @@ class CapabilityGraphTests(unittest.TestCase):
             "top": {"requires": ["middle"]},
         }
 
-        self.assertEqual(dependency_closure(modules, "top"), {"base", "middle", "top"})
+        self.assertEqual(dependency_closure(["top"], modules), {"base", "middle", "top"})
 
     def test_rejects_dependency_cycle(self) -> None:
         modules = {
@@ -28,7 +28,7 @@ class CapabilityGraphTests(unittest.TestCase):
         }
 
         with self.assertRaisesRegex(ValueError, "dependency cycle"):
-            dependency_closure(modules, "first")
+            dependency_closure(["first"], modules)
 
 
 if __name__ == "__main__":

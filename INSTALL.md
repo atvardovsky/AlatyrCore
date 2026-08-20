@@ -87,8 +87,9 @@ The plan must identify:
 - adapter owner, backup owner, review cadence, and CODEOWNERS or equivalent
   owner map when the target supports file ownership metadata
 - supported assistants
-- compact context router, selected lazy profile descriptors, and human context
-  profiles needed for the target
+- generated bootstrap index, compact context router, routed gate fragments,
+  selected lazy profile descriptors, and human context profiles needed for
+  the target
 - large-task task-scale routing, packet, checkpoint, and storage needs
 - subagent launch/model-selection support, target delegation policy, role
   bindings, write isolation, fallback, privacy, and validation needs
@@ -119,8 +120,8 @@ The plan must identify:
 - diagram discussion, source/visual ownership, portable ASCII layout/width,
   per-assistant rich presentation, capability expiry/review triggers, captured-result
   evidence, and stale-view evidence needs
-- optional scaffolding plan and selected `core`, `standard`, or `full` support
-  profile, if any
+- optional scaffolding plan, selected `core`, `standard`, or `full` support
+  profile, and explicit dependency-closed `--enable-module` set, if any
 - matching `core`, `standard`, or `complete` framework pack, including any
   enabled-module expansion that the smallest matching pack does not cover
 - migration diff, adapter output contract, AI infrastructure inventory and
@@ -194,7 +195,8 @@ In a typical target repository:
    `.ai/project/team-operating-model.md` only when team collaboration is
    enabled. Derive actors, aliases, authority, priorities, review, transitions,
    backend, identity verification, retention, and privacy from target evidence.
-7. Create `.ai/assistant/contour.md`, compact context router and selected lazy
+7. Create `.ai/assistant/contour.md`, a generated hash-bound bootstrap index,
+   compact context router, routed gate index/fragments, and selected lazy
    profile descriptors, operation catalog and its checked compact index,
    context profiles, module profile, task-specific maturity profile, bridge
    capability matrix, generated assistant-capability index and installed-
@@ -345,6 +347,9 @@ The selected support profile and compatible framework pack must be recorded in
 `.ai/alatyr.yaml`. Scaffold projection must remove manifest, router, operation,
 capability, and framework-rule claims for omitted optional surfaces; a smaller
 profile or pack is not a complete installation with unexplained missing files.
+Use repeatable `--enable-module <capability-id>` options to add only reviewed
+capabilities and their dependency closure. The scaffolder raises the matched
+framework pack when a selected capability requires a broader canonical owner.
 
 Scaffolding does not replace target inspection, installation planning,
 approval gates, adapter rewriting, validation, logical integrity review, or
@@ -361,10 +366,11 @@ python3 tools/alatyr.py assess-upgrade --target /path/to/target-repo --framework
 ```
 
 On Windows use `tools\alatyr.cmd` or `tools\alatyr.ps1` with the same command
-arguments. The assessment does not install or update Alatyr. Review its changed
-rules, canonical sources, target surfaces, local deviations, and validation
-findings first; then prepare a target migration note and approval scope. Load
-only the affected context before applying approved changes separately.
+arguments. The assessment does not install or update Alatyr. Review its
+`upgrade-impact.json` first, then load only the selected changed rules,
+canonical sources, target surfaces, local deviations, enabled modules, and
+validation findings. Prepare a target migration note and approval scope before
+applying approved changes separately.
 
 ## Optional Target Adapter Validation
 
@@ -392,15 +398,17 @@ python3 tools/validate_target_adapter.py --target /path/to/target-repo --framewo
 Windows users may run the same helper through `py -3` or the provided
 Command Prompt and PowerShell wrappers under `tools/`.
 
-This validator can check router/bootstrap references, consistency-map and AI
-infrastructure router contracts when present, unresolved placeholders,
+This validator can check generated bootstrap and routed-gate drift, router
+references, and enabled-module contracts without running every optional module
+check. It can also inspect consistency-map and AI infrastructure router
+contracts when enabled, unresolved placeholders,
 absolute local path leakage, stale checker claims, manifest fields,
 target-local checker coverage, advisory legacy approval scope, and strict
 complete changed-path enforcement through explicitly selected JSON records
-bound to a supplied Git diff. It also checks optional framework baseline drift
-and explicitly selected change-package refs, hashes, declared semantic/path
-scope, companion decisions, correction impact, and provenance strength.
-and migration-diff evidence when supplied. Its JSON is current-state structural evidence, not
+bound to a supplied Git diff. It also checks optional framework baseline drift,
+explicitly selected change-package refs, hashes, declared semantic/path scope,
+companion decisions, correction impact, provenance strength, and migration-
+diff evidence when supplied. Its JSON is current-state structural evidence, not
 proof of historical actions. It does not inspect target business truth,
 approve protected changes, replace target validation, or replace assistant
 logical integrity review.

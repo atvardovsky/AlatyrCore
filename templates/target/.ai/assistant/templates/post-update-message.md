@@ -19,8 +19,8 @@ Updated adapter surfaces:
 
 Future assistant bootstrap:
 - Do not rely on this chat message alone.
-- Treat `AGENTS.md` as preloaded; start from `.ai/alatyr.yaml`, `.ai/README.md`, and `.ai/assistant/context-router.json`.
-- Load profiles, module state, registries, blueprint, gates, and the installation note only when routing or unclear adapter state requires them.
+- Treat `AGENTS.md` as preloaded; start from `.ai/assistant/bootstrap-index.json`.
+- Repair a stale generated index from `.ai/alatyr.yaml`, `.ai/README.md`, and `.ai/assistant/context-router.json`; otherwise load profiles, module state, registries, blueprint, gate fragments, and the installation note only when routing or unclear adapter state requires them.
 - Send `Alatyr` for compact actions or `Alatyr status` for a read-only adapter health check.
 - If migration impact is unclear, run `recheck-after-framework-update` before editing files.
 
@@ -33,6 +33,9 @@ Allowed actions: read-only
 
 Migration assessment:
 `{MIGRATION_ASSESSMENT_PATH_OR_MANUAL_REVIEW}`
+
+Upgrade impact router:
+`{UPGRADE_IMPACT_JSON_PATH_OR_MANUAL_REVIEW}`
 
 Load only canonical sources and target surfaces selected by the migration
 assessment. Record candidate context intentionally omitted.

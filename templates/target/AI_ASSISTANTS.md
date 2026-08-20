@@ -6,17 +6,16 @@ the canonical instruction file.
 Before making changes:
 
 1. Ensure `AGENTS.md` is loaded once; if it was not preloaded by the host,
-   read it now. Then read `.ai/alatyr.yaml`, `.ai/README.md`, and `.ai/assistant/context-router.json`.
+   read it now. Then read `.ai/assistant/bootstrap-index.json`.
+   If stale, repair it from `.ai/alatyr.yaml`, `.ai/README.md`, and `.ai/assistant/context-router.json`.
 2. Select the smallest task profile and project-area overlays, then read only
    their required framework, project, assistant, flow, gate, policy, and
    validation files.
-3. Read `.ai/assistant/context-profiles.md`, the module profile, source-of-truth
-   registry, blueprint, and gates only when selected context or conflicting
-   evidence requires them.
+3. Read `.ai/assistant/context-profiles.md`, module state, fact owners, and
+   full gates only when selected context or conflicting evidence requires them.
 4. After installation/update or unclear state, read post-install/update message templates.
-5. For an exact operation ID or alias, including diagram, code-documentation,
-   project-vocabulary, test-first, extension, team, or AI aliases, read
-   `.ai/assistant/operation-index.json`; for bare `Alatyr`, ambiguity, or repair, read
+5. For an exact operation ID or alias, read `.ai/assistant/operation-index.json`;
+   for bare `Alatyr`, ambiguity, or repair, read
    `.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.
 6. For AI infrastructure work, use `.ai/assistant/ai-infrastructure-router.json`
    to select a route and item ID before loading item-specific context.

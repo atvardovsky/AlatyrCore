@@ -3,12 +3,8 @@
   "descriptor_kind": "target-migration-routing",
   "assessment_required_before_changes": true,
   "required_context": [
-    ".ai/framework/lifecycle.md",
-    ".ai/framework/migration-diff.md",
-    ".ai/framework/rule-registry.json",
-    ".ai/assistant/flows/adapter-recheck.flow.md",
-    ".ai/assistant/templates/installation-note.md",
-    ".ai/assistant/templates/migration-note.md"
+    "{TARGET_UPGRADE_IMPACT_REPORT}",
+    ".ai/alatyr.yaml"
   ],
   "impact_selectors": [
     "changed rule ids",

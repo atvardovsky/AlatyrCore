@@ -257,10 +257,15 @@ Owner or file: `{TARGET_AI_INFRASTRUCTURE_MODULE_OWNER_OR_FILE}`
 Required files:
 
 - `.ai/assistant/ai-infrastructure-router.json`
+- `.ai/assistant/bridge-capability-matrix.md`
+- `.ai/assistant/context/profiles/ai-infrastructure.json`
 - `.ai/assistant/flows/ai-infrastructure-inventory.flow.md`
 - `.ai/assistant/flows/ai-infrastructure-recommendation.flow.md`
 - `.ai/assistant/flows/development-evidence-capture.flow.md`
 - `.ai/assistant/flows/skill-adaptation.flow.md`
+- `.ai/assistant/policies/ai-infrastructure-source-access.md`
+- `.ai/assistant/policies/prompt-injection.md`
+- `.ai/assistant/templates/ai-infrastructure-inventory.md`
 - `.ai/assistant/templates/ai-infrastructure-recommendation.md`
 - `.ai/assistant/templates/ai-infrastructure-adaptation-record.md`
 - `.ai/project/development-evidence.json`
@@ -407,6 +412,7 @@ State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `.ai/assistant/templates/migration-note.md`
 Required files:
 
+- `.ai/assistant/context/migration-routing.json`
 - `.ai/assistant/templates/migration-note.md`
 
 Reason: `{REASON}`

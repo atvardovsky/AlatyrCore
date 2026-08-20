@@ -144,6 +144,7 @@ python3 tools/check_assistant_surface_conformance.py
 python3 tools/check_bridge_capability_matrix.py
 python3 tools/check_captured_effectiveness_results.py
 python3 tools/check_context_router.py
+python3 tools/check_bootstrap_routing.py
 python3 tools/check_context_costs.py
 python3 tools/check_source_context_routing.py
 python3 tools/check_diagram_conformance_results.py
@@ -180,6 +181,7 @@ python3 tools/render_assistant_capability_index.py
 python3 tools/render_framework_file_inventory.py --check
 python3 tools/render_operation_index.py
 python3 tools/render_rule_registry_docs.py --check
+python3 tools/render_target_bootstrap_index.py --target templates/target --check
 python3 tools/render_target_validator_findings.py --check
 python3 tools/summarize_effectiveness_benchmark.py
 ```

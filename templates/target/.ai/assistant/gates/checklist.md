@@ -17,8 +17,11 @@ commands from another project.
   `ALATYR-OPERATION-001`,
   `ALATYR-DIAGRAM-001`, `ALATYR-TEAM-001`, and `ALATYR-EVIDENCE-001`.
 - `AGENTS.md` treated as preloaded; compact bootstrap loaded from
-  `.ai/alatyr.yaml`, `.ai/README.md`, and
-  `.ai/assistant/context-router.json`.
+  `.ai/assistant/bootstrap-index.json`; canonical manifest, project map, and
+  `.ai/assistant/context-router.json` loaded only for stale-index repair,
+  ambiguity, or audit.
+- Gate fragments selected through `.ai/assistant/gates/index.json`; this full
+  checklist loaded only for ambiguity, repair, or explicit acceptance audit.
 - Source-of-truth registry checked when a changed fact has multiple possible
   owners or derived surfaces.
 - When enabled, consistency map checked from changed fact IDs through

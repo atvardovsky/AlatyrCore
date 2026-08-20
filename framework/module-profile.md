@@ -23,6 +23,12 @@ optional-module dependencies, minimum framework packs, required target files,
 rule IDs, and deterministic check IDs. Human module profiles explain target
 state and evidence; they must not redefine that closure independently.
 
+Scaffolding may begin with no optional modules and add an explicit dependency
+closure through selected capability IDs. The target validator should dispatch
+deep optional checks only for enabled modules or explicit module evidence.
+Universal manifest, contour, routing, safety, framework-drift, and final-
+evidence checks remain independent of optional module selection.
+
 ## Required Core Profile
 
 Every accepted installation should provide:
@@ -33,8 +39,9 @@ Every accepted installation should provide:
 - adapter ownership metadata with responsible owner, backup owner, review
   cadence, last review date, and CODEOWNERS or equivalent file-owner map when
   supported
-- context profiles with a small bootstrap context and task-specific expansion
-  rules, a compact router, and selected lazy profile descriptors
+- context profiles with a generated hash-bound bootstrap index, task-specific
+  expansion rules, routed gate fragments, a compact router, and selected lazy
+  profile descriptors
 - source-of-truth registry or explicit missing owner records for important
   fact types
 - change-risk classification and approval triggers
@@ -102,8 +109,8 @@ maintain them:
 - `durable-approvals`: human and machine-readable approval-record storage plus
   strict diff-base/path-scope enforcement for protected changes that need plan,
   scope, or file evidence.
-- `migration-diff`: migration notes and framework baseline comparisons for
-  upgrades.
+- `migration-diff`: human migration notes, framework baseline comparisons, and
+  a machine-readable delta-first upgrade impact router.
 - `effectiveness-metrics`: comparable task reporting for measuring framework
   usefulness.
 - `scaffolding`: optional source-repository scaffolding helpers used only to

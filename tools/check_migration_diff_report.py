@@ -7,8 +7,10 @@ framework requirement for target projects.
 
 from __future__ import annotations
 
+import json
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 
@@ -55,52 +57,56 @@ ZERO_CHANGE_TEXT = [
 ]
 
 
-def run_reporter() -> str:
-    result = subprocess.run(
-        [
-            sys.executable,
-            "tools/report_migration_diff.py",
-            "--from-rules",
-            "framework/rule-registry.json",
-            "--to-rules",
-            "framework/rule-registry.json",
-            "--from-version",
-            "current",
-            "--to-version",
-            "current",
-            "--from-adapter-schema-version",
-            "current",
-            "--to-adapter-schema-version",
-            "current",
-            "--from-template-version",
-            "current",
-            "--to-template-version",
-            "current",
-            "--from-framework-dir",
-            "framework",
-            "--to-framework-dir",
-            "framework",
-            "--from-template-dir",
-            "templates/target",
-            "--to-template-dir",
-            "templates/target",
-        ],
-        cwd=ROOT,
-        check=False,
-        text=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-    )
-    if result.returncode != 0:
-        raise RuntimeError(result.stderr.strip() or result.stdout.strip())
-    return result.stdout
+def run_reporter() -> tuple[str, dict[str, object]]:
+    with tempfile.TemporaryDirectory(prefix="alatyr-impact-") as directory:
+        json_output = Path(directory) / "upgrade-impact.json"
+        result = subprocess.run(
+            [
+                sys.executable,
+                "tools/report_migration_diff.py",
+                "--from-rules",
+                "framework/rule-registry.json",
+                "--to-rules",
+                "framework/rule-registry.json",
+                "--from-version",
+                "current",
+                "--to-version",
+                "current",
+                "--from-adapter-schema-version",
+                "current",
+                "--to-adapter-schema-version",
+                "current",
+                "--from-template-version",
+                "current",
+                "--to-template-version",
+                "current",
+                "--from-framework-dir",
+                "framework",
+                "--to-framework-dir",
+                "framework",
+                "--from-template-dir",
+                "templates/target",
+                "--to-template-dir",
+                "templates/target",
+                "--json-output",
+                str(json_output),
+            ],
+            cwd=ROOT,
+            check=False,
+            text=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        if result.returncode != 0:
+            raise RuntimeError(result.stderr.strip() or result.stdout.strip())
+        return result.stdout, json.loads(json_output.read_text(encoding="utf-8"))
 
 
 def main() -> int:
     failures: list[str] = []
     try:
-        output = run_reporter()
-    except RuntimeError as exc:
+        output, impact = run_reporter()
+    except (RuntimeError, OSError, json.JSONDecodeError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
 
@@ -118,6 +124,19 @@ def main() -> int:
         if changed_marker in output:
             failures.append(f"self-compare output should not mark {changed_marker}")
 
+    if impact.get("schema_version") != 1:
+        failures.append("upgrade impact schema_version must be 1")
+    if impact.get("impact_kind") != "alatyr-upgrade-impact":
+        failures.append("upgrade impact kind is invalid")
+    affected = impact.get("affected")
+    if not isinstance(affected, dict) or any(affected.get(field) for field in [
+        "rule_ids", "categories", "task_profiles", "canonical_sources"
+    ]):
+        failures.append("self-compare upgrade impact should have no affected rule surfaces")
+    framework_files = impact.get("framework_files")
+    if not isinstance(framework_files, dict) or framework_files.get("compared") is not True:
+        failures.append("upgrade impact should record compared framework files")
+
     if failures:
         for failure in failures:
             print(f"FAIL: {failure}", file=sys.stderr)
@@ -129,4 +148,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

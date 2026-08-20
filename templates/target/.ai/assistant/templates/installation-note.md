@@ -26,6 +26,8 @@ Installation id: `{INSTALLATION_ID}`
 - Compact operation index: `.ai/assistant/operation-index.json`
 - Operation catalog: `.ai/assistant/operation-catalog.json`
 - Context router: `.ai/assistant/context-router.json`
+- Generated bootstrap index: `.ai/assistant/bootstrap-index.json`
+- Routed gate index: `.ai/assistant/gates/index.json`
 - Context profiles: `.ai/assistant/context-profiles.md`
 - Module profile: `.ai/assistant/module-profile.md`
 - Source-of-truth registry: `.ai/project/source-of-truth-registry.md`
@@ -91,8 +93,10 @@ Installation id: `{INSTALLATION_ID}`
 ## Future Session Bootstrap
 
 Future assistants should not rely on the installation or update chat message
-being visible. Treat `AGENTS.md` as preloaded, then read `.ai/alatyr.yaml`,
-`.ai/README.md`, and `.ai/assistant/context-router.json`. Load this note after
+being visible. Treat `AGENTS.md` as preloaded, then read
+`.ai/assistant/bootstrap-index.json`. Repair a stale index from
+`.ai/alatyr.yaml`, `.ai/README.md`, and `.ai/assistant/context-router.json`.
+Load this note after
 installation/update or when adapter state is unclear. Load human profiles,
 module state, registries, help, and operation routing only when selected by the
 router or required by ambiguity or drift.

@@ -24,6 +24,7 @@ from typing import Any
 
 import jsonschema
 
+from bootstrap_index import BOOTSTRAP_PATH, build_from_target
 from target_validation_support import (
     ManifestData,
     PathKey,
@@ -57,6 +58,7 @@ from target_validation_support import (
 )
 from target_adapter_validation.context import ValidationContext
 from target_adapter_validation.framework_baseline import source_pack_expectation
+from target_adapter_validation.modules import dispatch_capability_checks
 from target_adapter_validation.router_costs import (
     validate_budget_shape,
     validate_installed_costs,
@@ -81,6 +83,7 @@ CORE_REQUIRED_FILES = [
     "AGENTS.md",
     ".ai/alatyr.yaml",
     ".ai/README.md",
+    ".ai/assistant/bootstrap-index.json",
     ".ai/project/contour.md",
     ".ai/project/source-of-truth-registry.md",
     ".ai/assistant/contour.md",
@@ -88,8 +91,10 @@ CORE_REQUIRED_FILES = [
     ".ai/assistant/context-profiles.md",
     ".ai/assistant/module-profile.md",
     ".ai/assistant/maturity-profile.md",
+    ".ai/assistant/gates/index.json",
+    ".ai/assistant/gates/core.md",
+    ".ai/assistant/gates/final-evidence.md",
     ".ai/assistant/gates/checklist.md",
-    ".ai/assistant/approvals/approval-record-template.json",
     ".ai/assistant/templates/adapter-output-contracts.md",
 ]
 
@@ -109,6 +114,10 @@ REQUIRED_PRELOADED = [
 ]
 
 REQUIRED_BOOTSTRAP = [
+    ".ai/assistant/bootstrap-index.json",
+]
+
+LEGACY_REQUIRED_BOOTSTRAP = [
     ".ai/alatyr.yaml",
     ".ai/README.md",
     ".ai/assistant/context-router.json",
@@ -116,6 +125,9 @@ REQUIRED_BOOTSTRAP = [
 
 DEFERRED_BOOTSTRAP = {
     "AGENTS.md",
+    ".ai/alatyr.yaml",
+    ".ai/README.md",
+    ".ai/assistant/context-router.json",
     ".ai/assistant/context-profiles.md",
     ".ai/assistant/module-profile.md",
     ".ai/project/contour.md",
@@ -156,6 +168,7 @@ MANIFEST_REQUIRED_SCALARS: set[PathKey] = {
     ("source_of_truth", "registry"),
     ("source_of_truth", "assistant_contour"),
     ("source_of_truth", "context_router"),
+    ("source_of_truth", "bootstrap_index"),
     ("source_of_truth", "context_profiles"),
     ("source_of_truth", "module_profile"),
     ("context_routing", "router_schema_version"),
@@ -167,14 +180,10 @@ MANIFEST_REQUIRED_SCALARS: set[PathKey] = {
     ("context_routing", "profile_default_reserved_target_words"),
     ("context_routing", "budget_behavior"),
     ("operations", "help"),
+    ("operations", "gate_index"),
     ("operations", "operation_request"),
     ("operations", "output_contracts"),
     ("maturity", "profile"),
-    ("approvals", "directory"),
-    ("approvals", "template"),
-    ("approvals", "machine_template"),
-    ("policies", "source_access"),
-    ("policies", "prompt_injection"),
 }
 
 MANIFEST_STANDARD_REQUIRED_SCALARS: set[PathKey] = {
@@ -663,22 +672,14 @@ class Validator:
         support_profile = self.manifest_support_profile(manifest)
         self.check_required_files(support_profile)
         self.check_capability_closure(manifest)
-        self.check_router()
+        self.check_bootstrap_index()
+        enabled_modules = self.enabled_modules(manifest)
+        self.check_router(enabled_modules)
         if support_profile in {"standard", "full"} or self.target_path(
             ".ai/assistant/operation-catalog.json"
         ).is_file():
             self.check_operation_catalog()
-        self.check_discussion_diagrams(manifest)
-        self.check_subagent_delegation(manifest)
-        self.check_architecture_knowledge(manifest)
-        self.check_code_documentation(manifest)
-        self.check_project_vocabulary(manifest)
-        self.check_test_first_development(manifest)
-        self.check_extensions(manifest)
-        self.check_consistency_map()
-        self.check_ai_infrastructure_router()
-        self.check_development_evidence(manifest)
-        self.check_team_collaboration(manifest)
+        dispatch_capability_checks(self, enabled_modules, manifest)
         self.check_bootstrap_references()
         self.check_placeholders()
         self.check_local_paths()
@@ -715,6 +716,35 @@ class Validator:
         if scalar and scalar.value in SUPPORT_PROFILES:
             return scalar.value
         return "full"
+
+    def enabled_modules(self, manifest: ManifestData | None) -> set[str]:
+        """Return enabled modules from the manifest and legacy human profile."""
+
+        enabled: set[str] = set()
+        if manifest is not None:
+            enabled.update(
+                scalar.value
+                for scalar in manifest.lists.get(("modules", "enabled"), [])
+                if not is_unresolved_value(scalar.value)
+            )
+
+        profile_path = self.target_path(".ai/assistant/module-profile.md")
+        if not profile_path.is_file():
+            return enabled
+        text = self.read_text(profile_path)
+        for match in re.finditer(
+            r"^Module: `([^`]+)`\s*$([\s\S]*?)(?=^Module: `|\Z)",
+            text,
+            flags=re.MULTILINE,
+        ):
+            state = re.search(
+                r"^State:\s*`?([^`\n]+)`?\s*$",
+                match.group(2),
+                flags=re.MULTILINE,
+            )
+            if state and state.group(1).strip().casefold() in {"enabled", "required"}:
+                enabled.add(match.group(1))
+        return enabled
 
     def check_required_files(self, support_profile: str) -> None:
         required = list(CORE_REQUIRED_FILES)
@@ -855,10 +885,10 @@ class Validator:
             numeric_values[key] = value
 
         router_schema = numeric_values.get(("context_routing", "router_schema_version"))
-        if router_schema not in {2, 3, 4}:
+        if router_schema not in {2, 3, 4, 5}:
             self.error(
                 "MANIFEST_CONTEXT_SCHEMA",
-                "context_routing.router_schema_version must be 2, 3, or 4",
+                "context_routing.router_schema_version must be 2, 3, 4, or 5",
                 ".ai/alatyr.yaml",
             )
         total = numeric_values.get(("context_routing", "profile_default_max_total_words"))
@@ -984,7 +1014,47 @@ class Validator:
                         relpath,
                     )
 
-    def check_router(self) -> None:
+    def check_bootstrap_index(self) -> None:
+        relpath = BOOTSTRAP_PATH.as_posix()
+        path = self.target_path(relpath)
+        if not path.is_file():
+            self.error(
+                "BOOTSTRAP_INDEX_MISSING",
+                "compact bootstrap index is missing",
+                relpath,
+            )
+            return
+        actual, error = self.context.read_json(path)
+        if error is not None or not isinstance(actual, dict):
+            self.error(
+                "BOOTSTRAP_INDEX_INVALID",
+                f"compact bootstrap index is invalid: {error or 'root is not an object'}",
+                relpath,
+            )
+            return
+        try:
+            expected = build_from_target(self.target)
+        except (OSError, UnicodeError, ValueError, json.JSONDecodeError) as exc:
+            self.error(
+                "BOOTSTRAP_INDEX_SOURCE_INVALID",
+                f"cannot derive compact bootstrap index: {exc}",
+                relpath,
+            )
+            return
+        if actual != expected:
+            self.error(
+                "BOOTSTRAP_INDEX_DRIFT",
+                "compact bootstrap index differs from its canonical manifest, project map, or router sources",
+                relpath,
+            )
+            return
+        self.info(
+            "BOOTSTRAP_INDEX_CURRENT",
+            "compact bootstrap index matches its canonical source hashes and routing projection",
+            relpath,
+        )
+
+    def check_router(self, enabled_modules: set[str] | None = None) -> None:
         router_path = self.target_path(".ai/assistant/context-router.json")
         profiles_path = self.target_path(".ai/assistant/context-profiles.md")
         if not router_path.is_file():
@@ -1013,13 +1083,13 @@ class Validator:
         if schema_version == 1:
             self.warn(
                 "ROUTER_SCHEMA_LEGACY",
-                "context router schema 1 should migrate to budgeted lazy routing schema 4",
+                "context router schema 1 should migrate to generated-bootstrap routing schema 5",
                 ".ai/assistant/context-router.json",
             )
-        elif schema_version not in {2, 3, 4}:
+        elif schema_version not in {2, 3, 4, 5}:
             self.error(
                 "ROUTER_SCHEMA",
-                "context router schema_version should be 2, 3, or 4",
+                "context router schema_version should be 2, 3, 4, or 5",
                 ".ai/assistant/context-router.json",
             )
         manifest_path = self.target_path(".ai/alatyr.yaml")
@@ -1042,7 +1112,7 @@ class Validator:
                 ".ai/assistant/context-router.json",
             )
 
-        if schema_version in {2, 3, 4}:
+        if schema_version in {2, 3, 4, 5}:
             preloaded = expect_string_list(
                 router.get("preloaded_context"),
                 self,
@@ -1069,14 +1139,17 @@ class Validator:
                     f"duplicate bootstrap entry {duplicate}",
                     ".ai/assistant/context-router.json",
                 )
-            for required in REQUIRED_BOOTSTRAP:
+            required_bootstrap = (
+                REQUIRED_BOOTSTRAP if schema_version == 5 else LEGACY_REQUIRED_BOOTSTRAP
+            )
+            for required in required_bootstrap:
                 if required not in bootstrap:
                     self.error(
                         "ROUTER_BOOTSTRAP_MISSING",
                         f"bootstrap_context missing {required}",
                         ".ai/assistant/context-router.json",
                     )
-            deferred = sorted(set(bootstrap) & DEFERRED_BOOTSTRAP)
+            deferred = sorted(set(bootstrap) & DEFERRED_BOOTSTRAP) if schema_version == 5 else []
             if deferred:
                 self.warn(
                     "ROUTER_BOOTSTRAP_BROAD",
@@ -1089,21 +1162,21 @@ class Validator:
             if not isinstance(budgets, dict):
                 self.error(
                     "ROUTER_BUDGETS_MISSING",
-                    "schema 2, 3, or 4 router must define context_budgets",
+                    "schema 2, 3, 4, or 5 router must define context_budgets",
                     ".ai/assistant/context-router.json",
                 )
                 budgets = {}
-            elif schema_version == 4:
+            elif schema_version in {4, 5}:
                 self.check_router_budget_shape(budgets)
             if not isinstance(router.get("context_receipt"), dict):
                 self.error(
                     "ROUTER_RECEIPT_MISSING",
-                    "schema 2, 3, or 4 router must define context_receipt",
+                    "schema 2, 3, 4, or 5 router must define context_receipt",
                     ".ai/assistant/context-router.json",
                 )
             migration_entry = router.get("migration_routing")
             migration = migration_entry
-            if schema_version in {3, 4} and isinstance(migration_entry, dict):
+            if schema_version in {3, 4, 5} and isinstance(migration_entry, dict):
                 migration = self.load_context_descriptor(
                     migration_entry,
                     "target-migration-routing",
@@ -1112,7 +1185,7 @@ class Validator:
             if not isinstance(migration, dict):
                 self.error(
                     "ROUTER_MIGRATION_MISSING",
-                    "schema 2, 3, or 4 router must define migration-first routing",
+                    "schema 2, 3, 4, or 5 router must define migration-first routing",
                     ".ai/assistant/context-router.json",
                 )
             else:
@@ -1165,7 +1238,10 @@ class Validator:
             )
             profiles = {}
 
-        for profile in CANONICAL_PROFILES:
+        expected_profiles = set(CANONICAL_PROFILES)
+        if "ai-infrastructure" not in (enabled_modules or set()):
+            expected_profiles.discard("ai-infrastructure")
+        for profile in sorted(expected_profiles):
             if profile not in profiles:
                 self.warn(
                     "ROUTER_PROFILE_MISSING",
@@ -1238,7 +1314,7 @@ class Validator:
                             ".ai/assistant/context-router.json",
                         )
 
-        if schema_version == 4 and isinstance(budgets, dict):
+        if schema_version in {4, 5} and isinstance(budgets, dict):
             self.check_installed_context_costs(router, profiles, budgets)
 
         upgrade = profiles.get("framework-upgrade")
@@ -1311,14 +1387,14 @@ class Validator:
         return data
 
     def router_profiles(self, router: dict[str, Any]) -> dict[str, Any]:
-        if router.get("schema_version") not in {3, 4}:
+        if router.get("schema_version") not in {3, 4, 5}:
             profiles = router.get("profiles")
             return profiles if isinstance(profiles, dict) else {}
         index = router.get("profile_index")
         if not isinstance(index, dict):
             self.error(
                 "ROUTER_PROFILE_INDEX",
-                "schema 3 or 4 router must define profile_index",
+                "schema 3, 4, or 5 router must define profile_index",
                 ".ai/assistant/context-router.json",
             )
             return {}
@@ -6003,26 +6079,31 @@ class Validator:
             if not path.is_file():
                 continue
             text = self.read_text(path)
-            if ".ai/assistant/context-router.json" not in text:
+            if ".ai/assistant/bootstrap-index.json" not in text:
                 level = self.error if relpath == "AGENTS.md" else self.warn
                 level(
-                    "BOOTSTRAP_CONTEXT_ROUTER_MISSING",
-                    "bootstrap references do not include .ai/assistant/context-router.json",
+                    "BOOTSTRAP_INDEX_REFERENCE_MISSING",
+                    "bootstrap references do not include .ai/assistant/bootstrap-index.json",
                     relpath,
                 )
-            if ".ai/README.md" not in text:
-                level = self.error if relpath == "AGENTS.md" else self.warn
-                level(
+            if relpath == "AGENTS.md" and ".ai/assistant/context-router.json" not in text:
+                self.error(
+                    "BOOTSTRAP_CONTEXT_ROUTER_MISSING",
+                    "bootstrap recovery references do not include .ai/assistant/context-router.json",
+                    relpath,
+                )
+            if relpath == "AGENTS.md" and ".ai/README.md" not in text:
+                self.error(
                     "BOOTSTRAP_AREA_MAP_MISSING",
-                    "bootstrap references do not include .ai/README.md",
+                    "bootstrap recovery references do not include .ai/README.md",
                     relpath,
                 )
 
         gates = self.target_path(".ai/assistant/gates/checklist.md")
-        if gates.is_file() and ".ai/assistant/context-router.json" not in self.read_text(gates):
+        if gates.is_file() and ".ai/assistant/gates/index.json" not in self.read_text(gates):
             self.error(
                 "GATE_CONTEXT_ROUTER_MISSING",
-                "gate checklist bootstrap does not mention context-router.json",
+                "complete gate checklist does not route through gates/index.json",
                 ".ai/assistant/gates/checklist.md",
             )
 
