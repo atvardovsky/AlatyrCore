@@ -159,6 +159,23 @@ Load only the active workstream context, changed-fact owners, and
 dependencies. Record checkpoints and one global convergence review. Do not
 create a packet for a small task.
 
+## Task-Scale Overlay: `delegated-execution`
+
+Activate only when `subagent-delegation` is enabled, the primary critical-path
+action is already selected, and an independently useful packet has local
+acceptance criteria plus disjoint writes or read-only scope. Required context:
+
+- `.ai/framework/subagent-delegation.md`
+- `.ai/assistant/delegation-policy.json`
+- `.ai/assistant/flows/subagent-delegation.flow.md`
+- `.ai/assistant/templates/subagent-task-packet.md`
+- `.ai/assistant/assistant-capabilities.json`
+
+Load only the selected assistant capability record and packet context. Keep
+project decisions, approval, integration, and final convergence with the
+primary assistant. Fall back when capability evidence is unsupported, stale,
+or unverifiable, or when coordination overhead exceeds expected benefit.
+
 ## Task-Scale Overlay: `change-package`
 
 Activate only for a coherent material outcome, semantic multi-surface

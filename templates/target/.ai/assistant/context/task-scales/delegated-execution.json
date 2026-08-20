@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "descriptor_kind": "target-task-scale-overlay",
+  "id": "delegated-execution",
+  "required_module": "subagent-delegation",
+  "use_when": [
+    "primary critical-path action is selected",
+    "independent locally verifiable work can run without blocking it",
+    "disjoint writes or read-only scope and current capability evidence exist"
+  ],
+  "required_context": [
+    ".ai/framework/subagent-delegation.md",
+    ".ai/assistant/delegation-policy.json",
+    ".ai/assistant/flows/subagent-delegation.flow.md",
+    ".ai/assistant/templates/subagent-task-packet.md",
+    ".ai/assistant/assistant-capabilities.json"
+  ],
+  "expand_when": [
+    "selected assistant capability record is required",
+    "parent large-task operation packet exists",
+    "changed-fact owner approval or target validation must be reconciled",
+    "risk scope permissions or dependencies expand"
+  ],
+  "budget_behavior": "keep packets bounded; fall back to primary execution when delegation overhead or context exceeds target policy",
+  "final_evidence": [
+    "delegation decision and packets",
+    "requested and actual model or unverified status",
+    "scope capability validation fallback and primary convergence"
+  ]
+}

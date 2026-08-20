@@ -30,6 +30,9 @@ Review comments or defect reports to reconcile:
 Task scale:
 <normal/large/resumable>
 
+Delegation preference:
+<auto/allow/forbid/require-supported>
+
 Existing operation packet, when resuming:
 <target-approved packet path or none>
 

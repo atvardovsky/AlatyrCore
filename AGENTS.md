@@ -76,6 +76,7 @@ policy wording.
 - External extension packages: `ALATYR-EXTENSION-001`
 - Discussion diagram presentation: `ALATYR-DIAGRAM-001`
 - Optional team collaboration: `ALATYR-TEAM-001`
+- Optional subagent delegation: `ALATYR-DELEGATION-001`
 
 ## Operating Rules
 
@@ -154,6 +155,7 @@ python3 tools/check_conformance_summary.py
 python3 tools/check_effectiveness_benchmark.py
 python3 tools/check_cross_platform_tools.py
 python3 tools/check_large_task_orchestration.py
+python3 tools/check_subagent_delegation.py
 python3 tools/check_manifest_contract.py
 python3 tools/check_markdown_links.py
 python3 tools/check_maturity_profile.py

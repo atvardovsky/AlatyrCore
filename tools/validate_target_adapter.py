@@ -669,6 +669,7 @@ class Validator:
         ).is_file():
             self.check_operation_catalog()
         self.check_discussion_diagrams(manifest)
+        self.check_subagent_delegation(manifest)
         self.check_architecture_knowledge(manifest)
         self.check_code_documentation(manifest)
         self.check_project_vocabulary(manifest)
@@ -1661,6 +1662,298 @@ class Validator:
                 "catalog operations have no compact profile candidate: "
                 + ", ".join(unrouted),
                 ".ai/assistant/context-router.json",
+            )
+
+    def check_subagent_delegation(self, manifest: ManifestData | None) -> None:
+        if manifest is None:
+            return
+        enabled = {
+            scalar.value
+            for scalar in manifest.lists.get(("modules", "enabled"), [])
+        }
+        if "subagent-delegation" not in enabled:
+            return
+
+        required_paths = [
+            ".ai/framework/subagent-delegation.md",
+            ".ai/assistant/delegation-policy.json",
+            ".ai/assistant/context/task-scales/delegated-execution.json",
+            ".ai/assistant/flows/subagent-delegation.flow.md",
+            ".ai/assistant/templates/subagent-task-packet.md",
+            ".ai/assistant/assistant-capabilities.json",
+            ".ai/assistant/bridge-capability-matrix.md",
+        ]
+        for relpath in required_paths:
+            if not self.target_path(relpath).is_file():
+                self.error(
+                    "DELEGATION_REQUIRED_FILE_MISSING",
+                    "enabled subagent delegation is missing a required contract",
+                    relpath,
+                )
+
+        policy_relpath = ".ai/assistant/delegation-policy.json"
+        policy = self.load_json_object(
+            self.target_path(policy_relpath), "DELEGATION_POLICY"
+        )
+        if policy is None:
+            return
+
+        def concrete(value: Any) -> bool:
+            return (
+                isinstance(value, str)
+                and bool(value.strip())
+                and not is_placeholder(value)
+                and not is_unresolved_value(value)
+            )
+
+        if policy.get("schema_version") != 1:
+            self.error(
+                "DELEGATION_POLICY_SCHEMA",
+                "delegation policy schema_version must be 1",
+                policy_relpath,
+            )
+        if policy.get("policy_kind") != "target-subagent-delegation-policy":
+            self.error(
+                "DELEGATION_POLICY_KIND",
+                "delegation policy kind is invalid",
+                policy_relpath,
+            )
+        state = policy.get("state")
+        if concrete(state) and state not in {"enabled", "suggest-only"}:
+            self.error(
+                "DELEGATION_POLICY_STATE",
+                "enabled module requires enabled or suggest-only policy state",
+                policy_relpath,
+            )
+        decision_mode = policy.get("decision_mode")
+        if concrete(decision_mode) and decision_mode not in {
+            "automatic",
+            "suggest-only",
+        }:
+            self.error(
+                "DELEGATION_DECISION_MODE",
+                "enabled delegation decision_mode must be automatic or suggest-only",
+                policy_relpath,
+            )
+        preference = policy.get("default_preference")
+        if concrete(preference) and preference not in {
+            "auto",
+            "allow",
+            "forbid",
+            "require-supported",
+        }:
+            self.error(
+                "DELEGATION_DEFAULT_PREFERENCE",
+                "delegation default_preference is invalid",
+                policy_relpath,
+            )
+        parallel = policy.get("max_parallel_delegates")
+        if not is_placeholder(parallel) and (
+            not isinstance(parallel, int) or isinstance(parallel, bool) or parallel < 1
+        ):
+            self.error(
+                "DELEGATION_PARALLEL_LIMIT",
+                "max_parallel_delegates must be a positive integer",
+                policy_relpath,
+            )
+
+        requirements = policy.get("requirements")
+        required_guards = {
+            "primary_keeps_critical_path",
+            "independent_local_acceptance",
+            "disjoint_write_scope",
+            "primary_final_convergence",
+            "current_capability_evidence",
+        }
+        if not isinstance(requirements, dict) or any(
+            requirements.get(field) is not True for field in required_guards
+        ):
+            self.error(
+                "DELEGATION_REQUIRED_GUARDS",
+                "delegation policy must retain every primary and isolation guard",
+                policy_relpath,
+            )
+
+        result_policy = policy.get("result_policy")
+        expected_result_policy = {
+            "accept_out_of_scope_changes": False,
+            "accept_unvalidated_changes": False,
+            "require_primary_review": True,
+            "require_actual_model_or_unverified_status": True,
+        }
+        if not isinstance(result_policy, dict) or any(
+            result_policy.get(field) is not expected
+            for field, expected in expected_result_policy.items()
+        ):
+            self.error(
+                "DELEGATION_RESULT_GUARDS",
+                "delegation result policy weakens primary review or scope evidence",
+                policy_relpath,
+            )
+
+        capability_index_relpath = ".ai/assistant/assistant-capabilities.json"
+        capability_index = self.load_json_object(
+            self.target_path(capability_index_relpath), "DELEGATION_CAPABILITY_INDEX"
+        )
+        surfaces = (
+            capability_index.get("surfaces")
+            if isinstance(capability_index, dict)
+            else None
+        )
+        if not isinstance(surfaces, dict) or not surfaces:
+            self.error(
+                "DELEGATION_CAPABILITY_SURFACES",
+                "enabled delegation requires assistant capability surface records",
+                capability_index_relpath,
+            )
+            surfaces = {}
+
+        capability_fields = {
+            "route",
+            "native_subagents",
+            "model_override",
+            "parallel_dispatch",
+            "actual_model_evidence",
+            "verified_at",
+            "client_version",
+            "evidence",
+            "expires_at",
+            "review_triggers",
+        }
+        capability_records: dict[str, dict[str, Any]] = {}
+        for surface_id, relpath in surfaces.items():
+            if not isinstance(surface_id, str) or not isinstance(relpath, str):
+                continue
+            record = self.load_json_object(
+                self.target_path(relpath), "DELEGATION_SURFACE_CAPABILITY"
+            )
+            delegation = record.get("subagent_delegation") if record else None
+            if not isinstance(delegation, dict):
+                self.error(
+                    "DELEGATION_CAPABILITY_MISSING",
+                    f"assistant surface {surface_id} has no delegation capability",
+                    relpath,
+                )
+                continue
+            missing = sorted(capability_fields - set(delegation))
+            if missing:
+                self.error(
+                    "DELEGATION_CAPABILITY_FIELDS",
+                    f"assistant surface {surface_id} is missing {missing}",
+                    relpath,
+                )
+            for field in [
+                "route",
+                "native_subagents",
+                "model_override",
+                "parallel_dispatch",
+                "actual_model_evidence",
+            ]:
+                value = delegation.get(field)
+                if concrete(value) and value not in {
+                    "supported",
+                    "unsupported",
+                    "unknown",
+                }:
+                    self.error(
+                        "DELEGATION_CAPABILITY_VALUE",
+                        f"assistant surface {surface_id} {field} is invalid",
+                        relpath,
+                    )
+            capability_records[surface_id] = delegation
+
+        roles = policy.get("roles")
+        if not isinstance(roles, list) or not roles:
+            self.error(
+                "DELEGATION_ROLES_MISSING",
+                "enabled delegation requires at least one bounded role",
+                policy_relpath,
+            )
+            roles = []
+        role_ids: set[str] = set()
+        for index, role in enumerate(roles):
+            if not isinstance(role, dict):
+                self.error(
+                    "DELEGATION_ROLE_SHAPE",
+                    f"roles[{index}] must be an object",
+                    policy_relpath,
+                )
+                continue
+            role_id = role.get("id")
+            if concrete(role_id):
+                if role_id in role_ids:
+                    self.error(
+                        "DELEGATION_ROLE_DUPLICATE",
+                        f"duplicate delegation role {role_id}",
+                        policy_relpath,
+                    )
+                role_ids.add(role_id)
+            actions = role.get("allowed_actions")
+            if isinstance(actions, list):
+                self.check_allowed_actions(
+                    [value for value in actions if isinstance(value, str)],
+                    policy_relpath,
+                    f"roles[{index}].allowed_actions",
+                )
+            else:
+                self.error(
+                    "DELEGATION_ROLE_ACTIONS",
+                    f"roles[{index}].allowed_actions must be a list",
+                    policy_relpath,
+                )
+            binding = role.get("model_binding")
+            if not isinstance(binding, dict):
+                self.error(
+                    "DELEGATION_MODEL_BINDING",
+                    f"roles[{index}].model_binding must be an object",
+                    policy_relpath,
+                )
+                continue
+            surface_id = binding.get("assistant_surface")
+            selection_mode = binding.get("selection_mode")
+            if concrete(surface_id) and surface_id not in surfaces:
+                self.error(
+                    "DELEGATION_MODEL_SURFACE",
+                    f"roles[{index}] references unknown surface {surface_id}",
+                    policy_relpath,
+                )
+                continue
+            if concrete(selection_mode) and selection_mode not in {
+                "explicit-model",
+                "inherit",
+                "client-default",
+            }:
+                self.error(
+                    "DELEGATION_MODEL_SELECTION_MODE",
+                    f"roles[{index}] selection_mode is invalid",
+                    policy_relpath,
+                )
+            capability = capability_records.get(surface_id)
+            if (
+                capability is not None
+                and selection_mode == "explicit-model"
+                and capability.get("model_override") != "supported"
+            ):
+                self.error(
+                    "DELEGATION_MODEL_OVERRIDE_UNSUPPORTED",
+                    f"roles[{index}] selects a model without supported override evidence",
+                    policy_relpath,
+                )
+
+        overlay_relpath = (
+            ".ai/assistant/context/task-scales/delegated-execution.json"
+        )
+        overlay = self.load_json_object(
+            self.target_path(overlay_relpath), "DELEGATION_OVERLAY"
+        )
+        if overlay is not None and (
+            overlay.get("id") != "delegated-execution"
+            or overlay.get("required_module") != "subagent-delegation"
+        ):
+            self.error(
+                "DELEGATION_OVERLAY_CONTRACT",
+                "delegated execution overlay identity or module is invalid",
+                overlay_relpath,
             )
 
     def check_discussion_diagrams(self, manifest: ManifestData | None) -> None:

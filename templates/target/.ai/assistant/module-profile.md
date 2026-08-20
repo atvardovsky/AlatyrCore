@@ -319,6 +319,24 @@ Approval needs: `{LARGE_TASK_ORCHESTRATION_APPROVAL_NEEDS}`
 Residual risk: `{LARGE_TASK_ORCHESTRATION_RESIDUAL_RISK}`
 Next action: `{LARGE_TASK_ORCHESTRATION_NEXT_ACTION}`
 
+Module: `subagent-delegation`
+State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+Owner or file: `.ai/assistant/delegation-policy.json`
+Required files:
+
+- `.ai/assistant/delegation-policy.json`
+- `.ai/assistant/context/task-scales/delegated-execution.json`
+- `.ai/assistant/flows/subagent-delegation.flow.md`
+- `.ai/assistant/templates/subagent-task-packet.md`
+- `.ai/assistant/assistant-capabilities.json`
+- `.ai/assistant/bridge-capability-matrix.md`
+
+Reason: `{REASON}`
+Validation or review: `{VALIDATION_OR_REVIEW}`
+Approval needs: `{SUBAGENT_DELEGATION_APPROVAL_NEEDS}`
+Residual risk: `{SUBAGENT_DELEGATION_RESIDUAL_RISK}`
+Next action: `{SUBAGENT_DELEGATION_NEXT_ACTION}`
+
 Module: `change-packages`
 State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `.ai/assistant/change-packages/index.json`

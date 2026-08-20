@@ -129,6 +129,9 @@ Every project using this framework must define:
 - large-task flow, task-scale routing, operation-packet policy, and resumable
   checkpoint evidence when the repository needs cross-boundary or multi-session
   operations
+- target subagent policy, delegated-execution overlay, bounded packet,
+  per-surface capability evidence, role/model bindings, write isolation,
+  fallback, privacy, validation, and primary review when delegation is enabled
 - structured target team policy and human operating model, ignored local actor
   selection, compact active-work preflight, registry metadata, per-task records
   or external projection, backend capability and optimistic-concurrency
@@ -180,6 +183,8 @@ An adapter may provide:
 - installed-operation request templates or adapter audit reports
 - large-task operation packets stored, ignored, redacted, or retained under a
   target-owned policy
+- subagent packets and result evidence stored, ignored, redacted, or retained
+  under a target-owned policy
 - team checkpoints, handoffs, decision captures, work-registry projections, or
   external tracker integrations under target-owned storage and synchronization
   policy

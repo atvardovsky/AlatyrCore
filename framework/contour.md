@@ -52,6 +52,8 @@ Framework core owns:
   pre-change-preview, and bounded-help pattern
 - optional team actor, priority, task, claim, conflict, checkpoint, handoff,
   decision, review, and merge-readiness coordination pattern
+- optional capability-gated subagent decomposition, model-role binding,
+  bounded packet, write-isolation, fallback, and primary-convergence pattern
 - project-adapter contract
 - framework installation and portability rules
 - improvement-advice trigger pattern
@@ -88,6 +90,8 @@ Framework core must not own:
   maintenance schedule
 - project-specific people, team authority, priorities, task state, tracker,
   branch, review, storage, retention, or privacy facts
+- project-specific subagent products, model bindings, availability, rate
+  limits, tool permissions, parallelism, latency, or cost claims
 - project-specific operation names, help wording, local command aliases, or
   chat-completion message text
 

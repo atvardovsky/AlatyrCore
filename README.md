@@ -198,8 +198,9 @@ facts correct by itself.
 
 Optional modules can add architecture knowledge, project vocabulary, generated
 code-reference documentation, test-first development, team coordination,
-large-task orchestration, diagrams, and adapted AI infrastructure. They are
-enabled only when the target project needs and can maintain them.
+large-task orchestration, capability-gated subagent delegation, diagrams, and
+adapted AI infrastructure. They are enabled only when the target project needs
+and can maintain them.
 
 ### Core Differentiators
 
@@ -284,7 +285,7 @@ tasks from loading the complete framework or project corpus.
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.11`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.12`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural

@@ -118,6 +118,9 @@ Operation: `large-task`
 Use when: coordinating large, cross-boundary, multi-workstream, or resumable
 work while keeping context bounded per workstream.
 Flow: `.ai/assistant/flows/large-task-orchestration.flow.md`
+Companion flow: `.ai/assistant/flows/subagent-delegation.flow.md`
+Use it only for bounded delegated workstreams when the module and current
+assistant capability permit it.
 Minimum input: goal, non-goals, affected project areas, allowed actions, and
 known approval or validation checkpoints, including diff base and explicit
 JSON approval records when scoped.

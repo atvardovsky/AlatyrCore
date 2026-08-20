@@ -446,6 +446,13 @@ framework guidance, target task-scale route, orchestration flow, resumable
 packet fields, and manifest path. It does not validate target project facts or
 workstream completion.
 
+## Subagent Delegation Check
+
+`check_subagent_delegation.py` validates the optional delegation rule, target
+policy, lazy overlay, bounded packet, operation routing, and per-surface
+subagent/model capability fields. It proves structural coverage, not safe task
+decomposition or actual vendor model availability.
+
 ## Team Collaboration Check
 
 `check_team_collaboration.py` validates the optional portable team rule,
@@ -488,12 +495,14 @@ Linux or macOS:
 
 ```sh
 python3 tools/check_large_task_orchestration.py
+python3 tools/check_subagent_delegation.py
 ```
 
 Windows PowerShell or Command Prompt:
 
 ```powershell
 py -3 .\tools\check_large_task_orchestration.py
+py -3 .\tools\check_subagent_delegation.py
 ```
 
 ## Scaffold Target Structure

@@ -2,6 +2,29 @@
 
 ## Unreleased
 
+- No unreleased changes.
+
+## 0.1.0-alpha.12 - 2026-08-20
+
+- Increased the framework version to `0.1.0-alpha.12`, adapter schema version
+  to `11`, and target template version to `12` for the optional delegation
+  policy and per-assistant capability contracts.
+- Added optional model-aware subagent delegation under new rule
+  `ALATYR-DELEGATION-001`, with primary-agent responsibility, bounded packet
+  decomposition, non-delegable semantic/protected decisions, disjoint writes,
+  capability negotiation, fallback, result review, and evidence boundaries.
+- Added a target-owned delegation policy, lazy delegated-execution overlay,
+  subagent flow, task/result packet, large-task integration, operation request
+  preference, and installation/update migration guidance.
+- Extended all nine assistant capability templates and the bridge matrix with
+  subagent launch, model override, parallel dispatch, actual-model evidence,
+  freshness, and fallback behavior. Model bindings remain target-verified and
+  vendor-neutral; Codex Spark is documented as an optional current example,
+  not a portable requirement.
+- Added source and installed-target structural validation for delegation
+  policy, required guards, role/model bindings, supported surfaces, packet
+  routing, and primary convergence. These checks do not prove decomposition
+  quality, actual model availability, latency, or cost savings.
 - Reworked the public README into a shorter human-oriented product, usage,
   installation, maturity, and navigation guide while preserving explicit
   capability and claim boundaries.

@@ -148,6 +148,14 @@ per-task records, backend contract, task claims, conflict review, checkpoints,
 handoffs, decision records, team review, merge-readiness evidence, operation
 routes, team-active context overlay, adapted team skill.
 
+Category: `DELEGATION`
+Owner: `.ai/framework/subagent-delegation.md`
+Rule IDs: `ALATYR-DELEGATION-001`
+Derived surfaces: target delegation policy, delegated-execution overlay,
+subagent task packet, large-task workstreams, assistant capability records,
+bridge capability matrix, operation routing, installation and update planning,
+structural validation.
+
 Category: `BRIDGE`
 Owner: `.ai/framework/bridge-capability-matrix.md`
 Rule IDs: `ALATYR-BRIDGE-001`

@@ -42,6 +42,7 @@ as:
 - `.ai/assistant/context-profiles.md`
 - `.ai/assistant/bridge-capability-matrix.md`
 - `.ai/assistant/assistant-capabilities.json`
+- `.ai/assistant/delegation-policy.json` when subagent delegation is selected
 - `.ai/assistant/help.md`
 - `.ai/assistant/help-reference.md`
 - `.ai/assistant/operation-index.json`
@@ -97,6 +98,23 @@ handoffs, decisions, reviews, and merge checks. Every state-changing operation
 runs the compact active-work preflight, while the bridge expands the lazy team
 overlay only for a match, unresolved overlap, or explicit team request. It does
 not copy actor, priority, task, identity, or review policy.
+
+When `subagent-delegation` is enabled, every supported surface uses the same
+target policy, delegated-execution overlay, packet template, and primary-
+convergence rule. The selected per-surface capability record states whether
+the client can launch subagents, override their model, dispatch in parallel,
+and report the actual model. Unsupported or stale capability evidence must
+fall back to primary execution, a stronger verified role, or suggestion-only
+mode; bridges must not silently claim delegation or a model choice.
+
+As of 2026-08-20, OpenAI describes
+[`gpt-5.3-codex-spark`](https://openai.com/index/introducing-gpt-5-3-codex-spark/)
+as a Codex research preview optimized for fast, targeted, real-time coding,
+with separate availability and rate limits. A target Codex adapter may bind
+its `fast-focused-worker` role to that model only after verifying access and
+subagent model-selection support in the actual client. AlatyrCore does not
+require that model, assume that every Codex surface exposes it to subagents,
+or treat its label as evidence of lower cost or sufficient quality.
 
 When `diagrams` is enabled, every supported surface routes `Alatyr diagram`
 and equivalent clear requests to the canonical diagram discussion flow. The
@@ -186,6 +204,12 @@ Maintainers can run `python3 tools/check_discussion_diagrams.py` to validate
 the source rule, target operation, flow, presentation template, manifest,
 ASCII grammar and width limits, module profile, help, routing, and all
 supported bridge capability entries.
+
+Maintainers can run `python3 tools/check_subagent_delegation.py` to validate
+the portable delegation rule, target policy, lazy overlay, flow, packet,
+per-surface capability fields, bridge routing, and primary convergence
+contract. Structural conformance does not prove safe decomposition or actual
+vendor model availability.
 
 Maintainers can run `python3 tools/check_architecture_knowledge.py` to validate
 the portable architecture rule, target catalog, operation, lazy route,

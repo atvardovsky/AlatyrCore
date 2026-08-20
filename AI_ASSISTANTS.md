@@ -92,6 +92,7 @@ file or into assistant-specific bridges:
 - External extensions: `ALATYR-EXTENSION-001`
 - Discussion diagrams: `ALATYR-DIAGRAM-001`
 - Optional team collaboration: `ALATYR-TEAM-001`
+- Optional subagent delegation: `ALATYR-DELEGATION-001`
 - Final evidence: `ALATYR-EVIDENCE-001`
 
 Resolve the current owner through the
@@ -153,6 +154,20 @@ project policy or claim capabilities that lack target evidence.
 
 See [assistant compatibility](docs/assistant-compatibility.md) and the
 [bridge capability matrix](framework/bridge-capability-matrix.md).
+
+## Subagent Delegation
+
+When the target enables `subagent-delegation`, the primary assistant may keep
+its immediate critical-path action and dispatch independent, locally
+verifiable sidecars through the target delegation policy. Load only the
+delegated-execution overlay, bounded packet, and selected assistant-capability
+record. The primary assistant retains project decisions, approval, result
+review, integration, logical integrity, and final validation.
+
+Do not assume a model can be selected because its name is known. Use a target-
+verified role/model binding and current client evidence, then fall back to
+primary execution or a stronger verified model when subagents, model override,
+parallelism, or actual-model reporting is unsupported or stale.
 
 ## AI Infrastructure And Extensions
 

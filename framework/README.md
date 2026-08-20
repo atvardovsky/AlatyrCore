@@ -34,6 +34,8 @@ sync, logical integrity review, and final evidence.
   and supporting-documentation maintenance
 - optional large-task orchestration with bounded workstreams, context receipts,
   resumable checkpoints, and final convergence
+- optional capability-gated subagent delegation with bounded packets, verified
+  role/model bindings, write isolation, fallback, and primary convergence
 - optional team collaboration with target-owned actors, priorities, shared
   work registry, changed-fact overlap, claims, handoffs, decisions, review, and
   revision-bound merge readiness
@@ -177,6 +179,9 @@ Those belong to a project contour or repository adapter.
   impact across comparable tasks and adapter states.
 - `.ai/framework/large-task-orchestration.md`: optional coordination contract
   for large, cross-boundary, multi-workstream, or resumable changes.
+- `.ai/framework/subagent-delegation.md`: optional contract for capability-
+  checked decomposition, fast focused workers, bounded packets, result review,
+  fallback, and primary-agent convergence.
 - `.ai/framework/team-collaboration.md`: optional multi-actor coordination
   contract for team tasks, claims, conflicts, checkpoints, handoffs,
   decisions, review, and merge readiness.

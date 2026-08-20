@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 644
+Catalog entries: 666
 
 ## Codes
 
@@ -295,6 +295,50 @@ Catalog entries: 644
 - `CONSISTENCY_MAP_SCHEMA`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `CONSISTENCY_MAP_TARGET_LEVEL`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_CAPABILITY_FIELDS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_CAPABILITY_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_CAPABILITY_SURFACES`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_CAPABILITY_VALUE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_DECISION_MODE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_DEFAULT_PREFERENCE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_MODEL_BINDING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_MODEL_OVERRIDE_UNSUPPORTED`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_MODEL_SELECTION_MODE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_MODEL_SURFACE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_OVERLAY_CONTRACT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_PARALLEL_LIMIT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_POLICY_KIND`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_POLICY_SCHEMA`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_POLICY_STATE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_REQUIRED_FILE_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_REQUIRED_GUARDS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_RESULT_GUARDS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_ROLES_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_ROLE_ACTIONS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_ROLE_DUPLICATE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_ROLE_SHAPE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEVELOPMENT_EVIDENCE_CONTENT_POLICY`
   Level: error. Source: `tools/validate_target_adapter.py`.

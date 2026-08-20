@@ -48,6 +48,10 @@ For each supported assistant, record:
 - whether test-first configuration and enabled execution aliases route through
   the canonical operation index, intent, target policy, selected flow, and
   shared gate regardless of assistant-native skill support
+- whether optional subagent delegation routes through the target policy,
+  delegated-execution overlay, packet template, and primary convergence
+- whether the surface can launch subagents, override their model, dispatch in
+  parallel, and report the actual model used
 - whether extension list, inspection, installation, update, disablement,
   removal, and review aliases route through the canonical operation index,
   selected catalog/lock entry, lifecycle flow, and shared gate
@@ -124,6 +128,9 @@ Each bridge should:
 - route test-first configuration while the module is disabled and route
   execution only when enabled, without duplicating target triggers, commands,
   isolation, or exceptions in bridge files
+- route enabled subagent delegation through the target policy and selected
+  capability record; unsupported surfaces continue locally or use the target
+  fallback without pretending a model override occurred
 - route extension lifecycle requests through the canonical target catalog,
   lock, intent, and flow; never let a bridge fetch, trust, activate, update, or
   remove an extension independently

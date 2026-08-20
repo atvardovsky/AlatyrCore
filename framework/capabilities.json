@@ -175,6 +175,21 @@
       ],
       "check_ids": ["large-task-orchestration"]
     },
+    "subagent-delegation": {
+      "min_framework_pack": "complete",
+      "requires": ["ai-infrastructure", "multi-assistant-bridges"],
+      "rule_ids": ["ALATYR-DELEGATION-001"],
+      "framework_files": ["subagent-delegation.md"],
+      "target_files": [
+        ".ai/assistant/delegation-policy.json",
+        ".ai/assistant/context/task-scales/delegated-execution.json",
+        ".ai/assistant/flows/subagent-delegation.flow.md",
+        ".ai/assistant/templates/subagent-task-packet.md",
+        ".ai/assistant/assistant-capabilities.json",
+        ".ai/assistant/bridge-capability-matrix.md"
+      ],
+      "check_ids": ["subagent-delegation", "assistant-capability-index", "bridge-capability-matrix"]
+    },
     "change-packages": {
       "min_framework_pack": "complete",
       "requires": ["durable-approvals"],

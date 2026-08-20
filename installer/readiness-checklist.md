@@ -217,6 +217,9 @@ Collect target-specific facts before writing project docs:
   framework-update review expectations
 - large-task activation, task-scale overlay, operation packet, workstream,
   checkpoint, storage, resume, and final-convergence expectations when needed
+- subagent capability, target policy, automatic/suggestion-only mode,
+  role/model binding, packet, disjoint-write, tool, fallback, privacy,
+  validation, and primary-convergence expectations when needed
 - change-package activation, compact index, semantic and path approval scope,
   companion decisions, implementation corrections, provenance quality,
   retention/redaction, and validator expectations when needed
@@ -362,6 +365,10 @@ Final evidence must say:
 - large-task orchestration is enabled or skipped from target evidence; enabled
   adapters define activation, packet storage, bounded resume context,
   checkpoints, and global convergence
+- subagent delegation is enabled or skipped from target evidence; enabled
+  adapters define current per-surface capabilities, bounded role/model
+  bindings, packet limits, disjoint writes, fallback, privacy, validation, and
+  primary convergence
 - change packages are enabled or skipped from target evidence; enabled
   adapters define activation, owner, empty initial index, semantic/path scope,
   companion decisions, correction handling, provenance grades, record
@@ -396,6 +403,8 @@ Final evidence must say:
   promoting observed implementation to accepted architecture
 - adapter output contracts added or skipped
 - large-task flow and operation-packet template added or skipped
+- subagent delegation policy, delegated-execution overlay, flow, packet, and
+  per-surface capability fields added or skipped
 - change-package index, lazy overlay, flow, machine record, redacted report,
   and retention/redaction policy added, migrated, skipped, or blocked
 - team policy and operating model, local ignore rule, active-work index,

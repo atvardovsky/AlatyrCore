@@ -63,6 +63,14 @@ Each routable item should define:
 - output contract and final evidence
 - conflicts, superseded items, and provenance/adaptation record
 
+Model-aware subagent delegation is not an ordinary item trigger. When the
+optional module is enabled, the target delegation policy owns role/model
+bindings, context and write limits, concurrency, fallback, and result review.
+The selected assistant-capability record owns whether the current client can
+dispatch subagents or override models. AI infrastructure items used inside a
+packet remain subject to their own permissions, gates, validation, and output
+contracts.
+
 An item is not routable when its canonical source, permission scope, required
 gate, or validation is missing. Keep it blocked or unresolved instead of
 loading nearby files and guessing.
