@@ -128,7 +128,7 @@ def main() -> int:
             if content is None:
                 destination.write_bytes((FRAMEWORK_ROOT / name).read_bytes())
             else:
-                destination.write_text(content, encoding="utf-8")
+                destination.write_bytes(content.encode("utf-8"))
         pack_validator = validator(pack_target, ROOT)
         pack_validator.check_framework_baseline()
         pack_drift = [

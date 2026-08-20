@@ -121,7 +121,10 @@ def copy_file(src: Path, dst: Path, *, write: bool, content: str | None = None) 
         if content is None:
             shutil.copyfile(src, dst)
         else:
-            dst.write_text(content, encoding="utf-8")
+            # Projected framework hashes are defined over canonical UTF-8 bytes.
+            # Text-mode writes translate LF to CRLF on Windows and invalidate
+            # the generated file inventory.
+            dst.write_bytes(content.encode("utf-8"))
 
 
 @dataclass(frozen=True)
