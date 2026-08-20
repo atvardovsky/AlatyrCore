@@ -512,6 +512,9 @@ flows, and derives the compact operation index.
 It does not inspect target facts, complete installation, approve overwrites, or
 validate an installed adapter.
 
+Generated projections are written as exact UTF-8 bytes with LF endings so
+their inventory hashes remain stable across Linux, macOS, and Windows.
+
 Linux or macOS:
 
 ```sh
