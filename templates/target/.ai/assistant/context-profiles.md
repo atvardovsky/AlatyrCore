@@ -256,6 +256,22 @@ repair. Load only the selected historical record for lookup. A small
 self-explanatory task may skip with a specific reason; capture does not
 activate a change package and raw session reasoning is never evidence input.
 
+## Task-Scale Overlay: `debug-mode`
+
+Activate only after an explicit current-task or current-session user request
+when the optional `debug-mode` module is enabled. Required compact context:
+
+- `.ai/framework/debug-mode.md`
+- `.ai/assistant/flows/debug-mode.flow.md`
+- `.ai/assistant/gates/debug-mode.md`
+- `.ai/project/debug/index.json`
+
+Load the active record, record template, or summary template only for the
+current checkpoint, finalization, selected lookup, or comparison. Capture
+material normalized events rather than transcript detail. Debug activation
+does not authorize engineering changes, commits, publication, live actions,
+or protected work, and it expires when the logical scope completes or changes.
+
 ## Task-Scale Overlay: `team-active`
 
 Activate only for team status, task start/claim/release, concurrent-work

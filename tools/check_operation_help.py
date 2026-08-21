@@ -52,6 +52,7 @@ REFERENCE_REQUIRED = [
     "Operation: `test-first-configuration`",
     "Operation: `test-first-change`",
     "Operation: `team-identity`",
+    "Operation: `debug-mode`",
     "Alatyr glossary",
     "Alatyr enable test-first",
     "Alatyr test first",

@@ -59,6 +59,9 @@ Replace placeholders with target facts before accepting installation.
 - Durable engineering evidence: `.ai/project/engineering-evidence/README.md`,
   compact index, selected records, task-scale overlay, capture flow, gate, and
   machine template
+- Debug Mode when enabled: `.ai/project/debug/README.md`, compact index,
+  selected records, task-scale overlay, operation flow, gate, machine record,
+  and summary template
 - AI infrastructure router, recommendation, and adaptation record:
   `.ai/assistant/ai-infrastructure-router.json`,
   `.ai/assistant/templates/ai-infrastructure-adaptation-record.md`
@@ -111,6 +114,8 @@ Replace placeholders with target facts before accepting installation.
    flow and packet, change-package index/flow/schema, team operating
    model/registry/flows/gate/templates,
    durable engineering-evidence policy/index/overlay/flow/gate/schema,
+   Debug Mode policy/index/overlay/operation/flow/gate/schema/summary when
+   enabled,
    chat-message templates, and final-evidence expectations.
 9. Check adapter drift hazards: hard-coded local machine paths in `.ai/*`,
    root assistant entry points, bridge files, templates, and policies; stale
@@ -149,6 +154,11 @@ Replace placeholders with target facts before accepting installation.
     Preserve durable engineering-evidence IDs and records, then recheck task
     and repository bindings, index synchronization, canonical-owner links,
     privacy flags, external-patch policy, and existing-record accessibility.
+    When Debug Mode is enabled, preserve IDs, records, active-scope evidence,
+    events, timing, metrics, and target policy; recheck explicit activation and
+    expiry, non-canonical authority, causal attribution, privacy, observer
+    effect, compact index sync, result binding, clean-upstream projection, and
+    validator support. Never reactivate a closed scope during update.
     When test-first development is enabled, preserve target commands, trigger
     severity, modes, levels, isolation, exceptions, policy revision, and
     historical evidence; recheck recommendation and RED/GREEN routing without
@@ -226,6 +236,10 @@ Report:
 - durable engineering-evidence owner, retained storage and external-patch
   policy, compact index/record synchronization, task/revision binding,
   canonical-owner links, privacy, validation, and unresolved access gaps
+- Debug Mode module/dependency state, non-canonical owner/policy, active scope
+  or inactive state, index/record synchronization, attribution, timing/capture
+  quality, event-derived metrics, result binding, clean-upstream boundary,
+  validation, and unresolved gaps
 - bridge capability matrix status
 - diagram discussion presentation, ASCII readability, and source-revision status
 - target validation run or unresolved

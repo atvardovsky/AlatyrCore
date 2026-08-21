@@ -1,0 +1,253 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/atvardovsky/AlatyrCore/schemas/alatyr-debug-session.schema.json",
+  "title": "Alatyr Debug Mode session record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "record_kind", "evidence_classification", "debug_id",
+    "status", "authority", "owner", "task", "activation", "timing",
+    "capture_quality", "events", "metrics", "final_result", "publication",
+    "privacy", "residual_uncertainty", "limitations"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "record_kind": {"const": "alatyr-debug-session"},
+    "evidence_classification": {"const": "non-canonical-observability"},
+    "debug_id": {"type": "string", "minLength": 1},
+    "status": {"enum": ["active", "completed", "abandoned"]},
+    "authority": {"const": "non-canonical"},
+    "owner": {"type": "string", "minLength": 1},
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summary", "references", "scope_kind", "scope_id", "operation_ids", "task_class"],
+      "properties": {
+        "summary": {"type": "string", "minLength": 1},
+        "references": {"$ref": "#/definitions/nonEmptyStrings"},
+        "scope_kind": {"enum": ["task", "session"]},
+        "scope_id": {"type": "string", "minLength": 1},
+        "operation_ids": {"$ref": "#/definitions/strings"},
+        "task_class": {"type": "string", "minLength": 1}
+      }
+    },
+    "activation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled_by", "request_reference", "enabled_at", "initial_revision", "expires_on", "ended_by"],
+      "properties": {
+        "enabled_by": {"const": "explicit-user-request"},
+        "request_reference": {"type": "string", "minLength": 1},
+        "enabled_at": {"$ref": "#/definitions/timeValue"},
+        "initial_revision": {"type": "string", "minLength": 1},
+        "expires_on": {"enum": ["task-completion", "session-completion", "scope-change", "explicit-disable", "abandonment"]},
+        "ended_by": {"enum": ["active", "task-completion", "session-completion", "scope-change", "explicit-disable", "abandonment"]}
+      }
+    },
+    "timing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["started_at", "completed_at", "elapsed_seconds", "active_work_seconds"],
+      "properties": {
+        "started_at": {"$ref": "#/definitions/timeValue"},
+        "completed_at": {"$ref": "#/definitions/timeValue"},
+        "elapsed_seconds": {"$ref": "#/definitions/durationValue"},
+        "active_work_seconds": {"$ref": "#/definitions/durationValue"}
+      }
+    },
+    "capture_quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["event_coverage", "missing_intervals", "observer_effect", "estimated_overhead_seconds"],
+      "properties": {
+        "event_coverage": {"enum": ["complete", "partial", "unknown"]},
+        "missing_intervals": {"$ref": "#/definitions/strings"},
+        "observer_effect": {"enum": ["negligible", "possible", "material", "unknown"]},
+        "estimated_overhead_seconds": {"$ref": "#/definitions/durationValue"}
+      }
+    },
+    "events": {
+      "type": "array",
+      "items": {"$ref": "#/definitions/event"}
+    },
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "human_interventions", "human_architectural_interventions",
+        "alatyr_independent_findings", "derived_findings_after_human",
+        "alatyr_independent_dependency_checks", "human_requested_dependency_checks",
+        "derived_dependency_expansions_after_human", "hypotheses_tested",
+        "hypotheses_rejected", "implementation_revisions",
+        "implementation_corrections_after_human", "validation_expansions",
+        "regression_scenarios_added", "maintainer_corrections", "post_review_rework"
+      ],
+      "properties": {
+        "human_interventions": {"$ref": "#/definitions/metric"},
+        "human_architectural_interventions": {"$ref": "#/definitions/metric"},
+        "alatyr_independent_findings": {"$ref": "#/definitions/metric"},
+        "derived_findings_after_human": {"$ref": "#/definitions/metric"},
+        "alatyr_independent_dependency_checks": {"$ref": "#/definitions/metric"},
+        "human_requested_dependency_checks": {"$ref": "#/definitions/metric"},
+        "derived_dependency_expansions_after_human": {"$ref": "#/definitions/metric"},
+        "hypotheses_tested": {"$ref": "#/definitions/metric"},
+        "hypotheses_rejected": {"$ref": "#/definitions/metric"},
+        "implementation_revisions": {"$ref": "#/definitions/metric"},
+        "implementation_corrections_after_human": {"$ref": "#/definitions/metric"},
+        "validation_expansions": {"$ref": "#/definitions/metric"},
+        "regression_scenarios_added": {"$ref": "#/definitions/metric"},
+        "maintainer_corrections": {"$ref": "#/definitions/metric"},
+        "post_review_rework": {"$ref": "#/definitions/metric"}
+      }
+    },
+    "final_result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summary", "repository_binding", "implementation_surfaces", "validation", "engineering_evidence_ids", "upstream_projection"],
+      "properties": {
+        "summary": {"type": "string", "minLength": 1},
+        "repository_binding": {"$ref": "#/definitions/repositoryBinding"},
+        "implementation_surfaces": {"$ref": "#/definitions/strings"},
+        "validation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["results", "skipped"],
+          "properties": {
+            "results": {"$ref": "#/definitions/strings"},
+            "skipped": {"$ref": "#/definitions/strings"}
+          }
+        },
+        "engineering_evidence_ids": {"$ref": "#/definitions/strings"},
+        "upstream_projection": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "included_debug_files", "projected_paths", "evidence"],
+          "properties": {
+            "kind": {"enum": ["clean-external", "same-repository", "not-applicable", "unknown"]},
+            "included_debug_files": {"type": "boolean"},
+            "projected_paths": {"$ref": "#/definitions/strings"},
+            "evidence": {"$ref": "#/definitions/strings"}
+          }
+        }
+      }
+    },
+    "publication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["storage_mode", "visibility", "included_in_external_patch", "policy_evidence"],
+      "properties": {
+        "storage_mode": {"type": "string", "minLength": 1},
+        "visibility": {"type": "string", "minLength": 1},
+        "included_in_external_patch": {"type": "boolean"},
+        "policy_evidence": {"type": "string", "minLength": 1}
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "raw_ai_conversation_stored", "raw_human_conversation_stored",
+        "chain_of_thought_stored", "prompts_stored", "secrets_stored",
+        "credentials_stored", "unrelated_personal_data_stored",
+        "unrelated_session_history_stored", "unused_speculation_stored",
+        "complete_diffs_stored", "verbose_logs_stored", "redactions"
+      ],
+      "properties": {
+        "raw_ai_conversation_stored": {"const": false},
+        "raw_human_conversation_stored": {"const": false},
+        "chain_of_thought_stored": {"const": false},
+        "prompts_stored": {"const": false},
+        "secrets_stored": {"const": false},
+        "credentials_stored": {"const": false},
+        "unrelated_personal_data_stored": {"const": false},
+        "unrelated_session_history_stored": {"const": false},
+        "unused_speculation_stored": {"const": false},
+        "complete_diffs_stored": {"const": false},
+        "verbose_logs_stored": {"const": false},
+        "redactions": {"$ref": "#/definitions/strings"}
+      }
+    },
+    "residual_uncertainty": {"$ref": "#/definitions/strings"},
+    "limitations": {"$ref": "#/definitions/nonEmptyStrings"}
+  },
+  "definitions": {
+    "strings": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "nonEmptyStrings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "timeValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "evidence_kind"],
+      "properties": {
+        "value": {"type": ["string", "null"]},
+        "evidence_kind": {"enum": ["observed", "estimated", "unknown"]}
+      }
+    },
+    "durationValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "evidence_kind"],
+      "properties": {
+        "value": {"type": ["integer", "null"], "minimum": 0},
+        "evidence_kind": {"enum": ["observed", "estimated", "unknown"]}
+      }
+    },
+    "metric": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "evidence_kind", "event_ids"],
+      "properties": {
+        "value": {"type": ["integer", "null"], "minimum": 0},
+        "evidence_kind": {"enum": ["event-derived", "estimated", "unavailable"]},
+        "event_ids": {"$ref": "#/definitions/strings"}
+      }
+    },
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_id", "sequence", "occurred_at", "origin", "category",
+        "summary", "material_effect", "evidence", "caused_by_event_ids",
+        "architectural_supervision", "dependency_expansion",
+        "validation_expansion", "post_review_rework", "hypothesis_outcome"
+      ],
+      "properties": {
+        "event_id": {"type": "string", "minLength": 1},
+        "sequence": {"type": "integer", "minimum": 1},
+        "occurred_at": {"$ref": "#/definitions/timeValue"},
+        "origin": {"enum": ["alatyr-initiated", "human-initiated", "derived-after-human-intervention", "external-maintainer"]},
+        "category": {"enum": ["architecture-area", "invariant", "dependency", "execution-path", "risk", "test", "regression-scenario", "hypothesis", "validation", "implementation-revision", "review-correction", "other"]},
+        "summary": {"type": "string", "minLength": 1},
+        "material_effect": {"type": "string", "minLength": 1},
+        "evidence": {"$ref": "#/definitions/nonEmptyStrings"},
+        "caused_by_event_ids": {"$ref": "#/definitions/strings"},
+        "architectural_supervision": {"type": "boolean"},
+        "dependency_expansion": {"type": "boolean"},
+        "validation_expansion": {"type": "boolean"},
+        "post_review_rework": {"type": "boolean"},
+        "hypothesis_outcome": {"enum": ["confirmed", "rejected", "unresolved", "not-applicable"]}
+      }
+    },
+    "repositoryBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "base_revision", "result_revision", "review_reference", "selected_paths", "snapshot_sha256"],
+      "properties": {
+        "kind": {"enum": ["commit", "pull-request", "tree", "selected-file-snapshot", "unverified"]},
+        "base_revision": {"type": "string", "minLength": 1},
+        "result_revision": {"type": "string", "minLength": 1},
+        "review_reference": {"type": "string", "minLength": 1},
+        "selected_paths": {"$ref": "#/definitions/strings"},
+        "snapshot_sha256": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

@@ -220,6 +220,24 @@ for an authorized write or repair. Small self-explanatory changes may skip
 with a specific reason. Do not load the full evidence history, raw session
 content, or a change package solely because this overlay applies.
 
+## Debug Mode Tasks
+
+Use the optional `debug-mode` task-scale overlay only after explicit activation
+for the current task or session, or for status, finalization, repair, or
+comparison of selected existing debug evidence. It composes with the ordinary
+task profile; it does not replace that profile or grant engineering actions.
+
+Load the compact debug index, gate, and portable owner first. Load only the
+active or explicitly selected record. Load the flow and templates for an
+authorized checkpoint, finalization, repair, or summary. Do not load unrelated
+records, raw conversations, or session history. Checkpoint only material events
+so observation does not materially distort the task.
+
+Expire the overlay when the logical scope completes, changes, is abandoned, or
+is explicitly disabled. Cross-task comparison should read compact index
+metrics first and expand only to selected records when task class, capture
+quality, timing evidence, or quality evidence requires it.
+
 ## Team-Active Tasks
 
 When the optional team module is enabled, run a compact active-work-index

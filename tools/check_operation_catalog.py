@@ -43,6 +43,7 @@ EXPECTED_OPERATIONS = {
     "team-review",
     "team-merge-check",
     "engineering-evidence",
+    "debug-mode",
     "logical-integrity-review",
     "diagram-discussion",
     "ai-infrastructure-inventory",
@@ -99,6 +100,7 @@ ALLOWED_MODULES = {
     "test-first-development",
     "dependency-knowledge",
     "workspace-modes",
+    "debug-mode",
 }
 ALLOWED_PREVIEW = {"never", "risk-gated"}
 ALLOWED_PROFILES = {

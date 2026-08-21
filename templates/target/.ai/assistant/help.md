@@ -1,10 +1,5 @@
 # Alatyr Help
 
-Use this file in `{PROJECT_NAME}` when a programmer asks for Alatyr help,
-available actions, commands, or gives an unclear request.
-
-Replace placeholders with target facts before accepting installation.
-
 Alatyr is used here through assistant requests over the installed Markdown
 adapter. It is not a universal CLI command unless `{PROJECT_NAME}` defines a
 local command in `{TARGET_VALIDATION_OR_LOCAL_COMMANDS}`.
@@ -58,6 +53,10 @@ Default routing:
 - Before completing material semantic, architectural, or non-obvious repair
   work, apply the lazy durable engineering-evidence gate. Small local work may
   skip with a specific reason; do not load unrelated evidence records.
+- When the optional `debug-mode` module is enabled, activate it only from an
+  explicit current-task or current-session request. Load only its compact index
+  and active record, checkpoint material events rather than conversation turns,
+  and expire activation when the logical scope ends.
 
 ## Quick Operations
 
@@ -116,6 +115,12 @@ Use `Alatyr evidence` to inspect compact historical evidence, `Alatyr capture
 evidence` to request capture for the current task, or `Alatyr explain decision
 <evidence-id>` to reconstruct why a prior change was made. These records store
 normalized conclusions and references, never raw assistant reasoning.
+When `debug-mode` is enabled, use `Enable Alatyr Debug Mode for this task` to
+start explicit task-local observation, `Alatyr debug status` for read-only
+state, `Alatyr debug checkpoint` for a material event checkpoint, `Alatyr debug
+summary` to finalize or summarize, and `Disable Alatyr Debug Mode` to stop.
+Debug records measure Alatyr and supervision; they are not architecture
+authority and never grant code, commit, publish, or live-action permission.
 Detailed team, blueprint, integrity, update, documentation, vocabulary,
 test-first, extension, dependency-knowledge, workspace-mode, and
 AI-infrastructure operations and aliases are in

@@ -69,6 +69,7 @@ policy wording.
 - Logical integrity evidence: `ALATYR-INTEGRITY-001`
 - Coherent material change packages: `ALATYR-PACKAGE-001`
 - Durable engineering evidence: `ALATYR-ENGINEERING-EVIDENCE-001`
+- Optional Debug Mode: `ALATYR-DEBUG-001`
 - Lifecycle and versioning: `ALATYR-LIFECYCLE-001`
 - Installed operation control surface: `ALATYR-OPERATION-001`
 - Project architecture knowledge: `ALATYR-ARCHITECTURE-001`
@@ -150,6 +151,7 @@ python3 tools/check_action_authorization.py
 python3 tools/check_approval_template.py
 python3 tools/check_change_packages.py
 python3 tools/check_engineering_evidence.py
+python3 tools/check_debug_mode.py
 python3 tools/check_code_documentation.py
 python3 tools/check_project_vocabulary.py
 python3 tools/check_test_first_development.py

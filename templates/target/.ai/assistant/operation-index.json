@@ -43,6 +43,13 @@
     "Alatyr evidence": "engineering-evidence",
     "Alatyr capture evidence": "engineering-evidence",
     "Alatyr explain decision": "engineering-evidence",
+    "Enable Alatyr Debug Mode": "debug-mode",
+    "Alatyr debug": "debug-mode",
+    "Alatyr debug status": "debug-mode",
+    "Alatyr debug checkpoint": "debug-mode",
+    "Alatyr debug summary": "debug-mode",
+    "Disable Alatyr Debug Mode": "debug-mode",
+    "Alatyr compare debug": "debug-mode",
     "check integrity": "logical-integrity-review",
     "logical integrity review": "logical-integrity-review",
     "Alatyr diagram": "diagram-discussion",
@@ -207,6 +214,12 @@
       "adapter-only",
       "code-and-tests",
       "full-with-approval"
+    ],
+    "debug-mode": [
+      "debug-mode",
+      ".ai/assistant/flows/debug-mode.flow.md",
+      "read-only",
+      "adapter-only"
     ],
     "logical-integrity-review": [
       "core-profile",

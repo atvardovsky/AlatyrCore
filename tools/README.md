@@ -212,6 +212,19 @@ solution, or regression matrix is semantically correct.
 python3 tools/check_engineering_evidence.py
 ```
 
+## Debug Mode Check
+
+`check_debug_mode.py` validates the optional per-task/session activation,
+non-canonical evidence boundary, normalized event origins and causal chains,
+privacy declarations, timing quality, event-derived supervision metrics,
+compact index synchronization, result binding, and clean-upstream projection.
+It cannot prove event completeness, semantic attribution, engineering quality,
+or an actual reduction in human supervision.
+
+```sh
+python3 tools/check_debug_mode.py
+```
+
 ## Code Documentation Check
 
 `check_code_documentation.py` validates the optional portable rule, bounded

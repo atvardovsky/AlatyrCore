@@ -133,6 +133,10 @@ List what must not be changed.
 - Durable engineering-evidence owner, storage mode, retention/redaction and
   external-contribution policy, compact index, record access, and revision-
   binding policy:
+- Debug Mode need, owner, explicit activation/expiry, non-canonical storage,
+  visibility, retention/redaction, normalized event attribution, timing and
+  capture-quality evidence, supervision metrics, comparison, and clean-
+  upstream policy:
 - AI infrastructure router, stable item IDs, activation triggers, and statuses:
 - Item canonical sources, required context, allowed actions, permissions,
   gates, validation, output contracts, conflicts, and assistant wrappers:
@@ -212,6 +216,14 @@ the required core profile. Start the index empty unless bounded historical
 records were explicitly validated. Keep these support records outside external
 contribution patches unless the target project accepts them.
 
+Include `.ai/project/debug/README.md`, `index.json`, `records/`, the lazy
+task-scale overlay, operation flow, gate, machine record, and compact summary
+only when `debug-mode` is enabled with `effectiveness-metrics` and
+`installed-operations`. Keep records non-canonical, start empty unless bounded
+history was validated, require explicit activation for each task/session, and
+exclude debug files from clean upstream patches unless target policy explicitly
+allows inclusion.
+
 Include `.ai/project/consistency-map.json` when the target has enough project
 areas or competing surfaces to benefit from bounded changed-fact relationship
 traversal. Populate it from target evidence or leave the module blocked; do not
@@ -264,6 +276,11 @@ need durable migration evidence.
 Include `.ai/assistant/templates/effectiveness-report.md` when the target
 wants to compare Alatyr effectiveness across comparable tasks or adapter
 states.
+
+Enable `debug-mode` only when task-level contribution and human-supervision
+evidence justifies its maintenance and privacy cost. Module availability is not
+task activation. Define checkpoint overhead limits and comparison quality
+criteria before accepting the module.
 
 Include `.ai/assistant/templates/adapter-output-contracts.md` when the target
 wants repeatable installation, framework-update, and adapter-recheck evidence
@@ -523,6 +540,7 @@ List drift, overwrite, unsupported-assistant, gate, security, diagram,
 maturity, lifecycle, installed-operation, operation-help, context-profile,
 context-router, local-path leakage, target-local checker, approval-record,
 prompt-injection, skill-adaptation, source-access, migration-diff,
-effectiveness-metrics, team identity/authority, active-record overwrite,
+effectiveness-metrics, Debug Mode privacy/attribution/observer-effect,
+team identity/authority, active-record overwrite,
 concurrent overlap, stale claim/handoff/review evidence, privacy, scaffolding,
 and validation risks.

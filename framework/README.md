@@ -37,6 +37,8 @@ sync, logical integrity review, and final evidence.
 - required proportional durable engineering-evidence capture with compact
   task/revision, invariant, root-cause, solution, regression, validation,
   privacy, and publication records for material work
+- optional task-local Debug Mode for evidence-based observation of independent
+  Alatyr findings, human supervision, causal follow-up, timing, and rework
 - optional large-task orchestration with bounded workstreams, context receipts,
   resumable checkpoints, and final convergence
 - optional capability-gated subagent delegation with bounded packets, verified
@@ -152,6 +154,8 @@ Those belong to a project contour or repository adapter.
   repository provenance.
 - `.ai/framework/engineering-evidence.md`: proportional project-owned capture
   of reusable material task conclusions without raw assistant reasoning.
+- `.ai/framework/debug-mode.md`: optional task-local observability for Alatyr
+  contribution, human supervision, timing, causal events, and result binding.
 - `.ai/framework/architecture-knowledge.md`: portable project architecture
   catalog, pattern discussion, alternative comparison, review, and
   documentation-maintenance contract.

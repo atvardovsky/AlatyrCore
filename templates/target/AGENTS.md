@@ -4,15 +4,14 @@ This repository uses Alatyr Core. Resolve placeholders from evidence.
 
 ## Compact Bootstrap
 
-Treat this file as host-preloaded context; do not reread it. Load only:
+Treat this file as host-preloaded context. Load only:
 
 - `.ai/assistant/bootstrap-index.json`
 
-The bootstrap index is a hash-bound projection of `.ai/alatyr.yaml`,
-`.ai/README.md`, and `.ai/assistant/context-router.json`. If missing or stale,
-load those owners and repair it before routing.
+If the hash-bound bootstrap projection is stale, repair it from
+`.ai/alatyr.yaml`, `.ai/README.md`, and `.ai/assistant/context-router.json`.
 Select the smallest profile/areas. Load `.ai/assistant/context-profiles.md`
-only for ambiguity, conflict, or repair. Record context receipt on expansion.
+only for ambiguity, conflict, or repair; record a context receipt on expansion.
 
 Route IDs/aliases through `.ai/assistant/operation-index.json`; use profile
 candidates otherwise. Load `.ai/assistant/operation-catalog.json` only for
@@ -42,7 +41,7 @@ Use `.ai/README.md` for installation/update recovery.
 Use installed owners for `ALATYR-CONTEXT-001`, `ALATYR-SOURCE-001`,
 `ALATYR-RISK-001`, `ALATYR-APPROVAL-001`, `ALATYR-AUTHORIZATION-001`, `ALATYR-SAFETY-001`,
 `ALATYR-SAFETY-002`, `ALATYR-INTEGRITY-001`, `ALATYR-CHANGE-001`,
-`ALATYR-PACKAGE-001`, `ALATYR-ENGINEERING-EVIDENCE-001`, `ALATYR-CODEDOC-001`,
+`ALATYR-PACKAGE-001`, `ALATYR-ENGINEERING-EVIDENCE-001`, `ALATYR-DEBUG-001`, `ALATYR-CODEDOC-001`,
 `ALATYR-VOCABULARY-001`, `ALATYR-TDD-001`, `ALATYR-EXTENSION-001`,
 `ALATYR-DEPENDENCY-001`, `ALATYR-MODE-001`,
 `ALATYR-ADAPTER-001`, `ALATYR-MODULE-001`, `ALATYR-OPERATION-001`,

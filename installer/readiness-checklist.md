@@ -68,6 +68,9 @@ changes.
 - Existing migration-diff process:
 - Existing migration assessment or reviewed baseline comparison:
 - Existing effectiveness metrics or reports:
+- Existing Debug Mode policy, non-canonical index/records, active scope,
+  privacy/retention, event attribution, timing/capture quality, supervision
+  metrics, external projection, and comparison evidence:
 - Existing prompt-injection or imported-source policy:
 - Supported assistants needed:
 
@@ -224,6 +227,10 @@ Collect target-specific facts before writing project docs:
 - framework migration-note expectations
 - framework migration-diff expectations
 - effectiveness measurement expectations
+- optional Debug Mode owner, activation/expiry, storage, visibility,
+  retention/redaction, normalized event origins and causal links, timing,
+  capture quality, observer effect, metric derivation, clean-upstream boundary,
+  comparison quality criteria, and overhead limit
 - installed-operation request, blueprint-creation, adapter-recheck, and
   framework-update review expectations
 - large-task activation, task-scale overlay, operation packet, workstream,
@@ -340,6 +347,9 @@ List commands or manual checks:
 - machine-readable upgrade-impact projection reviewed before broad upgrade
   context:
 - effectiveness metrics review:
+- Debug Mode dependency, explicit activation/expiry, non-canonical authority,
+  privacy, event attribution, timing/capture quality, metric derivation,
+  clean-upstream, observer-effect, and validator review:
 - operation-catalog, automatic-routing, health, or preview review:
 - team policy/operating model, local identity ignore and attribution boundary,
   registry/task schemas, active index, backend capabilities/synchronization,
@@ -464,6 +474,9 @@ Final evidence must say:
 - human and machine-readable approval-record templates added or skipped
 - migration-note template added or skipped
 - effectiveness-report template added or skipped
+- Debug Mode index/records, lazy overlay, operation, flow, gate, record/summary
+  templates, and validator added, preserved, skipped, or blocked; task
+  activation remains inactive unless explicitly requested
 - scaffolding helper used or skipped
 - skills, prompts, wrappers, or third-party assistant infrastructure adapted or
   skipped

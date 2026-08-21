@@ -4,6 +4,31 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.19 - 2026-08-21
+
+- Increased the framework version to `0.1.0-alpha.19`, adapter schema version
+  to `18`, and target template version to `19` for optional task-local Debug
+  Mode observability.
+- Added `ALATYR-DEBUG-001`, an explicitly activated per-task/session contract
+  that distinguishes independent Alatyr findings, human interventions,
+  consequences derived after human direction, and external maintainer input.
+- Added normalized event, timing, capture-quality, metric, final-result,
+  privacy, and clean-upstream projection contracts without storing raw
+  conversations, prompts, private reasoning, secrets, or unrelated data.
+- Added target-owned non-canonical debug policy/index/record surfaces, a lazy
+  context overlay, operation aliases, flow, gate, compact final summary, and
+  installation/update preservation guidance across supported assistants.
+- Extended the portable target validator with schema, causal attribution,
+  event-derived metric, timing, index synchronization, repository-binding,
+  privacy, and external-projection checks. Added deterministic conformance
+  scenarios for valid and invalid records.
+- Kept Debug Mode independent from current-scope engineering authorization:
+  activation permits only target-approved debug evidence writes and never
+  grants code, commit, publish, live, protected-change, or tool authority.
+- Added `ALATYR-DEBUG-001`; changed `ALATYR-ADAPTER-001`,
+  `ALATYR-CONTEXT-001`, `ALATYR-EVIDENCE-001`, `ALATYR-LIFECYCLE-001`,
+  `ALATYR-MODULE-001`, and `ALATYR-OPERATION-001`; no rule IDs were removed.
+
 ## 0.1.0-alpha.18 - 2026-08-21
 
 - Increased the framework version to `0.1.0-alpha.18`, adapter schema version

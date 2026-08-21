@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "record_kind": "alatyr-debug-session",
+  "evidence_classification": "non-canonical-observability",
+  "debug_id": "{DEBUG_ID}",
+  "status": "active",
+  "authority": "non-canonical",
+  "owner": "{DEBUG_EVIDENCE_OWNER}",
+  "task": {
+    "summary": "{TASK_SUMMARY}",
+    "references": ["{TASK_OR_ISSUE_REFERENCE}"],
+    "scope_kind": "task",
+    "scope_id": "{CURRENT_LOGICAL_SCOPE_ID}",
+    "operation_ids": ["{OPERATION_ID_OR_NONE}"],
+    "task_class": "{TARGET_TASK_CLASS}"
+  },
+  "activation": {
+    "enabled_by": "explicit-user-request",
+    "request_reference": "{CURRENT_USER_REQUEST_REFERENCE}",
+    "enabled_at": {"value": null, "evidence_kind": "unknown"},
+    "initial_revision": "{INITIAL_REVISION_OR_UNAVAILABLE}",
+    "expires_on": "task-completion",
+    "ended_by": "active"
+  },
+  "timing": {
+    "started_at": {"value": null, "evidence_kind": "unknown"},
+    "completed_at": {"value": null, "evidence_kind": "unknown"},
+    "elapsed_seconds": {"value": null, "evidence_kind": "unknown"},
+    "active_work_seconds": {"value": null, "evidence_kind": "unknown"}
+  },
+  "capture_quality": {
+    "event_coverage": "unknown",
+    "missing_intervals": [],
+    "observer_effect": "unknown",
+    "estimated_overhead_seconds": {"value": null, "evidence_kind": "unknown"}
+  },
+  "events": [],
+  "metrics": {
+    "human_interventions": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
+    "human_architectural_interventions": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
+    "alatyr_independent_findings": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
+    "derived_findings_after_human": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
+    "alatyr_independent_dependency_checks": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
+    "human_requested_dependency_checks": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
+    "derived_dependency_expansions_after_human": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
+    "hypotheses_tested": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
+    "hypotheses_rejected": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
+    "implementation_revisions": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
+    "implementation_corrections_after_human": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
+    "validation_expansions": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
+    "regression_scenarios_added": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
+    "maintainer_corrections": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
+    "post_review_rework": {"value": null, "evidence_kind": "unavailable", "event_ids": []}
+  },
+  "final_result": {
+    "summary": "{CURRENT_OR_FINAL_RESULT_SUMMARY}",
+    "repository_binding": {
+      "kind": "unverified",
+      "base_revision": "{BASE_REVISION_OR_UNAVAILABLE}",
+      "result_revision": "{RESULT_REVISION_OR_UNAVAILABLE}",
+      "review_reference": "{REVIEW_REFERENCE_OR_NOT_APPLICABLE}",
+      "selected_paths": [],
+      "snapshot_sha256": "{SHA256_OR_NOT_APPLICABLE}"
+    },
+    "implementation_surfaces": [],
+    "validation": {"results": [], "skipped": []},
+    "engineering_evidence_ids": [],
+    "upstream_projection": {
+      "kind": "unknown",
+      "included_debug_files": false,
+      "projected_paths": [],
+      "evidence": []
+    }
+  },
+  "publication": {
+    "storage_mode": "{TARGET_DEBUG_STORAGE_MODE}",
+    "visibility": "{TARGET_DEBUG_VISIBILITY}",
+    "included_in_external_patch": false,
+    "policy_evidence": ".ai/project/debug/README.md"
+  },
+  "privacy": {
+    "raw_ai_conversation_stored": false,
+    "raw_human_conversation_stored": false,
+    "chain_of_thought_stored": false,
+    "prompts_stored": false,
+    "secrets_stored": false,
+    "credentials_stored": false,
+    "unrelated_personal_data_stored": false,
+    "unrelated_session_history_stored": false,
+    "unused_speculation_stored": false,
+    "complete_diffs_stored": false,
+    "verbose_logs_stored": false,
+    "redactions": []
+  },
+  "residual_uncertainty": [],
+  "limitations": [
+    "Debug evidence cannot prove event completeness attribution correctness or engineering quality."
+  ]
+}

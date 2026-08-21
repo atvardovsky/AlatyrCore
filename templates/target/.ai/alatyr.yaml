@@ -145,6 +145,7 @@ operations:
   change_package_report: ".ai/assistant/templates/change-package-report.md"
   engineering_evidence_capture: ".ai/assistant/flows/engineering-evidence-capture.flow.md"
   engineering_evidence_record: ".ai/assistant/templates/engineering-evidence-record.json"
+  debug_mode: ".ai/assistant/flows/debug-mode.flow.md"
   ai_infrastructure_inventory: ".ai/assistant/templates/ai-infrastructure-inventory.md"
   ai_infrastructure_recommendation: ".ai/assistant/templates/ai-infrastructure-recommendation.md"
   extension_management: ".ai/assistant/flows/extension-lifecycle.flow.md"
@@ -202,6 +203,14 @@ engineering_evidence:
   storage_mode: "{REPOSITORY_INTERNAL_BRANCH_IGNORED_LOCAL_OR_APPROVED_EXTERNAL}"
   external_patch_policy: "{EXCLUDE_FROM_EXTERNAL_PATCH_OR_TARGET_APPROVED_INCLUSION}"
   retention_policy: "{TARGET_ENGINEERING_EVIDENCE_RETENTION_POLICY}"
+debug_mode:
+  index: ".ai/project/debug/index.json"
+  records: ".ai/project/debug/records"
+  overlay: ".ai/assistant/context/task-scales/debug-mode.json"
+  flow: ".ai/assistant/flows/debug-mode.flow.md"
+  gate: ".ai/assistant/gates/debug-mode.md"
+  record_template: ".ai/assistant/templates/debug-session-record.json"
+  summary_template: ".ai/assistant/templates/debug-summary.md"
 code_documentation:
   catalog: ".ai/project/documentation/catalog.json"
   profiles: ".ai/project/documentation/profiles.json"

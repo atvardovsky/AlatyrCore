@@ -215,6 +215,14 @@ from repository evidence after installation, while users decide which modes
 are accepted. Each actual mode keeps bounded support in its own project-owned
 directory; optional root support holds only facts shared across modes.
 
+For selected tasks, the optional [Debug Mode](framework/debug-mode.md) can
+record normalized, non-canonical evidence about what Alatyr found
+independently, where human supervision changed the investigation, which
+validation expanded, and how the task concluded. It is explicitly enabled per
+task or session, does not store raw conversations or private reasoning, and
+does not grant permission to edit code, commit, publish, or perform protected
+actions.
+
 ### Core Differentiators
 
 1. **Project memory belongs to the project.** Knowledge is recorded in
@@ -307,7 +315,7 @@ tasks from loading the complete framework or project corpus.
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.18`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.19`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural

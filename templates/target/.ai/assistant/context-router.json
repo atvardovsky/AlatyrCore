@@ -187,6 +187,13 @@
       ],
       "descriptor": ".ai/assistant/context/task-scales/engineering-evidence.json"
     },
+    "debug-mode": {
+      "use_when": [
+        "explicit current-task or current-session Debug Mode activation",
+        "status checkpoint finalization disablement or comparison for selected debug evidence"
+      ],
+      "descriptor": ".ai/assistant/context/task-scales/debug-mode.json"
+    },
     "team-active": {
       "use_when": [
         "team request active write operation or possible work overlap"

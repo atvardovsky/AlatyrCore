@@ -291,6 +291,10 @@ Before accepting a change, check:
 - durable engineering-evidence rule, compact index, lazy routing, capture gate,
   record schema, task/revision binding, privacy/publication policy, operation,
   installation/update surfaces, and target validator agree.
+- optional Debug Mode rule, explicit task/session activation and expiry,
+  non-canonical index/records, lazy overlay, flow, gate, summary, event
+  attribution, privacy, timing, event-derived metrics, clean-upstream policy,
+  installation/update preservation, and target validator agree.
 - target gate, operation-catalog, operation-routing, adapter-health,
   pre-change-preview, adapter-recheck, and output-contract
   templates preserve context-router bootstrap references and adapter drift

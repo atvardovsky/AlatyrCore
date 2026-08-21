@@ -68,6 +68,25 @@ from target_adapter_validation.router_costs import (
 ROOT = Path(__file__).resolve().parents[1]
 ADAPTER_MANIFEST_SCHEMA = ROOT / "schemas" / "alatyr-adapter.schema.json"
 ENGINEERING_EVIDENCE_SCHEMA = ROOT / "schemas" / "alatyr-engineering-evidence.schema.json"
+DEBUG_SESSION_SCHEMA = ROOT / "schemas" / "alatyr-debug-session.schema.json"
+
+DEBUG_METRIC_NAMES = [
+    "human_interventions",
+    "human_architectural_interventions",
+    "alatyr_independent_findings",
+    "derived_findings_after_human",
+    "alatyr_independent_dependency_checks",
+    "human_requested_dependency_checks",
+    "derived_dependency_expansions_after_human",
+    "hypotheses_tested",
+    "hypotheses_rejected",
+    "implementation_revisions",
+    "implementation_corrections_after_human",
+    "validation_expansions",
+    "regression_scenarios_added",
+    "maintainer_corrections",
+    "post_review_rework",
+]
 
 CANONICAL_PROFILES = [
     "docs-local",
@@ -303,6 +322,7 @@ MANIFEST_PATH_SCALARS: set[PathKey] = {
     ("operations", "action_authorization_policy"),
     ("operations", "engineering_evidence_capture"),
     ("operations", "engineering_evidence_record"),
+    ("operations", "debug_mode"),
     ("operations", "operation_request"),
     ("operations", "output_contracts"),
     ("operations", "development_evidence_capture"),
@@ -333,6 +353,13 @@ MANIFEST_PATH_SCALARS: set[PathKey] = {
     ("engineering_evidence", "flow"),
     ("engineering_evidence", "gate"),
     ("engineering_evidence", "machine_template"),
+    ("debug_mode", "index"),
+    ("debug_mode", "records"),
+    ("debug_mode", "overlay"),
+    ("debug_mode", "flow"),
+    ("debug_mode", "gate"),
+    ("debug_mode", "record_template"),
+    ("debug_mode", "summary_template"),
     ("code_documentation", "catalog"),
     ("code_documentation", "profiles"),
     ("code_documentation", "intent"),
@@ -563,6 +590,7 @@ def repair_operation_for(code: str) -> str:
         (("AI_", "PROMPT_", "DEVELOPMENT_EVIDENCE_"), "ai-infrastructure-recommendation"),
         (("CONSISTENCY_", "SOURCE_"), "logical-integrity-review"),
         (("PACKAGE_",), "logical-integrity-review"),
+        (("DEBUG_MODE_",), "debug-mode"),
         (("BRIDGE_",), "drift-review"),
         (("DIAGRAM_",), "diagram-discussion"),
         (("APPROVAL_",), "logical-integrity-review"),
@@ -8544,6 +8572,519 @@ class Validator:
             self.info(
                 "ENGINEERING_EVIDENCE_CHECKED",
                 f"checked durable engineering evidence {evidence_id}; structural validation does not prove invariant, root-cause, solution, or regression correctness",
+                record_ref,
+            )
+
+    def check_debug_mode(self, manifest: ManifestData | None) -> None:
+        index_relpath = ".ai/project/debug/index.json"
+        expected_manifest = {
+            ("operations", "debug_mode"): ".ai/assistant/flows/debug-mode.flow.md",
+            ("debug_mode", "index"): index_relpath,
+            ("debug_mode", "records"): ".ai/project/debug/records",
+            ("debug_mode", "overlay"): ".ai/assistant/context/task-scales/debug-mode.json",
+            ("debug_mode", "flow"): ".ai/assistant/flows/debug-mode.flow.md",
+            ("debug_mode", "gate"): ".ai/assistant/gates/debug-mode.md",
+            ("debug_mode", "record_template"): ".ai/assistant/templates/debug-session-record.json",
+            ("debug_mode", "summary_template"): ".ai/assistant/templates/debug-summary.md",
+        }
+        if manifest is not None:
+            for key, expected in expected_manifest.items():
+                scalar = manifest.scalars.get(key)
+                if scalar is None or scalar.value != expected:
+                    self.error(
+                        "DEBUG_MODE_MANIFEST_PATH",
+                        f"{dotted(key)} must be {expected}",
+                        ".ai/alatyr.yaml",
+                    )
+
+        index = self.load_json_object(
+            self.target_path(index_relpath), "DEBUG_MODE_INDEX"
+        )
+        if index is None:
+            return
+        if index.get("schema_version") != 1:
+            self.error("DEBUG_MODE_INDEX_SCHEMA", "schema_version must be 1", index_relpath)
+        if index.get("index_kind") != "target-alatyr-debug-index":
+            self.error(
+                "DEBUG_MODE_INDEX_KIND",
+                "index_kind must be target-alatyr-debug-index",
+                index_relpath,
+            )
+
+        def concrete(value: Any) -> bool:
+            return (
+                isinstance(value, str)
+                and bool(value.strip())
+                and not is_placeholder(value)
+                and not is_unresolved_value(value)
+            )
+
+        unresolved_report = self.warn if self.allow_placeholders else self.error
+        for field in [
+            "project",
+            "owner",
+            "storage_mode",
+            "visibility",
+            "retention_policy",
+            "external_patch_policy",
+        ]:
+            value = index.get(field)
+            if not isinstance(value, str) or not value.strip():
+                self.error(
+                    "DEBUG_MODE_INDEX_METADATA",
+                    f"{field} must be a non-empty string",
+                    index_relpath,
+                )
+            elif not concrete(value):
+                unresolved_report(
+                    "DEBUG_MODE_INDEX_METADATA_UNRESOLVED",
+                    f"{field} is unresolved",
+                    index_relpath,
+                )
+
+        records = index.get("records")
+        if not isinstance(records, list):
+            self.error("DEBUG_MODE_INDEX_RECORDS", "records must be a list", index_relpath)
+            return
+
+        try:
+            schema = json.loads(DEBUG_SESSION_SCHEMA.read_text(encoding="utf-8"))
+            schema_validator = jsonschema.Draft7Validator(schema)
+        except (OSError, json.JSONDecodeError, jsonschema.SchemaError) as exc:
+            self.error("DEBUG_MODE_SOURCE_SCHEMA", f"cannot load Debug Mode schema: {exc}")
+            return
+
+        required_index_fields = {
+            "debug_id",
+            "status",
+            "record",
+            "task_references",
+            "scope_kind",
+            "scope_id",
+            "task_class",
+            "repository_binding_kind",
+            "result_revision",
+            "event_coverage",
+            "observer_effect",
+            "elapsed_seconds",
+            "elapsed_evidence_kind",
+            "metrics",
+            "residual_uncertainty",
+        }
+        seen_ids: set[str] = set()
+        seen_records: set[str] = set()
+        for entry_index, entry in enumerate(records):
+            label = f"records[{entry_index}]"
+            if not isinstance(entry, dict):
+                self.error("DEBUG_MODE_INDEX_ENTRY", f"{label} must be an object", index_relpath)
+                continue
+            missing = sorted(required_index_fields - set(entry))
+            if missing:
+                self.error("DEBUG_MODE_INDEX_FIELD", f"{label} missing {missing}", index_relpath)
+                continue
+            debug_id = entry.get("debug_id")
+            if not concrete(debug_id):
+                self.error("DEBUG_MODE_INDEX_ID", f"{label}.debug_id must be resolved", index_relpath)
+                continue
+            if debug_id in seen_ids:
+                self.error("DEBUG_MODE_INDEX_DUPLICATE", f"duplicate debug_id {debug_id}", index_relpath)
+            seen_ids.add(debug_id)
+            if entry.get("status") not in {"active", "completed", "abandoned"}:
+                self.error("DEBUG_MODE_INDEX_FIELD", f"{label}.status is invalid", index_relpath)
+            if entry.get("scope_kind") not in {"task", "session"}:
+                self.error("DEBUG_MODE_INDEX_FIELD", f"{label}.scope_kind is invalid", index_relpath)
+            if entry.get("repository_binding_kind") not in {
+                "commit", "pull-request", "tree", "selected-file-snapshot", "unverified"
+            }:
+                self.error("DEBUG_MODE_INDEX_FIELD", f"{label}.repository_binding_kind is invalid", index_relpath)
+            if entry.get("event_coverage") not in {"complete", "partial", "unknown"}:
+                self.error("DEBUG_MODE_INDEX_FIELD", f"{label}.event_coverage is invalid", index_relpath)
+            if entry.get("observer_effect") not in {"negligible", "possible", "material", "unknown"}:
+                self.error("DEBUG_MODE_INDEX_FIELD", f"{label}.observer_effect is invalid", index_relpath)
+            if entry.get("elapsed_evidence_kind") not in {"observed", "estimated", "unknown"}:
+                self.error("DEBUG_MODE_INDEX_FIELD", f"{label}.elapsed_evidence_kind is invalid", index_relpath)
+            elapsed_index = entry.get("elapsed_seconds")
+            if elapsed_index is not None and (not isinstance(elapsed_index, int) or elapsed_index < 0):
+                self.error("DEBUG_MODE_INDEX_FIELD", f"{label}.elapsed_seconds must be a non-negative integer or null", index_relpath)
+            for field in ["task_references", "residual_uncertainty"]:
+                values = entry.get(field)
+                if not isinstance(values, list) or not all(concrete(value) for value in values):
+                    self.error("DEBUG_MODE_INDEX_LIST", f"{label}.{field} must be a resolved string list", index_relpath)
+            for field in ["scope_id", "task_class", "result_revision"]:
+                if not isinstance(entry.get(field), str) or not entry[field].strip():
+                    self.error("DEBUG_MODE_INDEX_FIELD", f"{label}.{field} must be a non-empty string", index_relpath)
+            index_metrics = entry.get("metrics")
+            if not isinstance(index_metrics, dict) or set(index_metrics) != set(DEBUG_METRIC_NAMES):
+                self.error("DEBUG_MODE_INDEX_METRICS", f"{label}.metrics must contain the canonical metric set", index_relpath)
+            elif not all(value is None or (isinstance(value, int) and value >= 0) for value in index_metrics.values()):
+                self.error("DEBUG_MODE_INDEX_METRICS", f"{label}.metrics values must be non-negative integers or null", index_relpath)
+
+            record_ref = entry.get("record")
+            if not concrete(record_ref):
+                self.error("DEBUG_MODE_INDEX_RECORD", f"{label}.record must be resolved", index_relpath)
+                continue
+            if record_ref.startswith(("https://", "http://", "external:")):
+                self.warn(
+                    "DEBUG_MODE_EXTERNAL_RECORD_UNCHECKED",
+                    f"{debug_id} uses an external record that this repository validator cannot inspect",
+                    index_relpath,
+                )
+                continue
+            if not is_target_relative_path(record_ref):
+                self.error("DEBUG_MODE_RECORD_PATH", f"record path must be target-relative: {record_ref}", index_relpath)
+                continue
+            if record_ref in seen_records:
+                self.error("DEBUG_MODE_RECORD_DUPLICATE", f"record path is reused: {record_ref}", index_relpath)
+            seen_records.add(record_ref)
+            if not record_ref.startswith(".ai/project/debug/records/"):
+                self.error("DEBUG_MODE_RECORD_LOCATION", "local records must stay under the target debug records directory", record_ref)
+            record = self.load_json_object(self.target_path(record_ref), "DEBUG_MODE_RECORD")
+            if record is None:
+                continue
+
+            for schema_error in sorted(
+                schema_validator.iter_errors(record),
+                key=lambda item: list(item.absolute_path),
+            ):
+                location = ".".join(str(item) for item in schema_error.absolute_path) or "root"
+                self.error("DEBUG_MODE_RECORD_SCHEMA", f"{location}: {schema_error.message}", record_ref)
+
+            forbidden_keys = {
+                "raw_chat",
+                "raw_conversation",
+                "raw_ai_conversation",
+                "raw_human_conversation",
+                "chat_transcript",
+                "conversation_transcript",
+                "chain_of_thought",
+                "reasoning_trace",
+                "prompt_text",
+                "session_history",
+                "complete_diff",
+                "full_diff",
+                "credentials",
+                "secrets",
+                "personal_data",
+                "verbose_logs",
+                "speculative_reasoning",
+            }
+
+            def find_forbidden(value: Any, prefix: str = "") -> list[str]:
+                found: list[str] = []
+                if isinstance(value, dict):
+                    for key, child in value.items():
+                        path = f"{prefix}.{key}" if prefix else str(key)
+                        if key.casefold() in forbidden_keys:
+                            found.append(path)
+                        found.extend(find_forbidden(child, path))
+                elif isinstance(value, list):
+                    for item_index, child in enumerate(value):
+                        found.extend(find_forbidden(child, f"{prefix}[{item_index}]"))
+                return found
+
+            forbidden = find_forbidden(record)
+            if forbidden:
+                self.error(
+                    "DEBUG_MODE_PROHIBITED_CONTENT_FIELD",
+                    f"record contains prohibited raw-content fields: {forbidden}",
+                    record_ref,
+                )
+
+            privacy = record.get("privacy")
+            if isinstance(privacy, dict):
+                for field in [
+                    "raw_ai_conversation_stored",
+                    "raw_human_conversation_stored",
+                    "chain_of_thought_stored",
+                    "prompts_stored",
+                    "secrets_stored",
+                    "credentials_stored",
+                    "unrelated_personal_data_stored",
+                    "unrelated_session_history_stored",
+                    "unused_speculation_stored",
+                    "complete_diffs_stored",
+                    "verbose_logs_stored",
+                ]:
+                    if privacy.get(field) is not False:
+                        self.error("DEBUG_MODE_PRIVACY", f"privacy.{field} must be false", record_ref)
+
+            task = record.get("task") if isinstance(record.get("task"), dict) else {}
+            task_references = task.get("references") if isinstance(task.get("references"), list) else []
+            activation = record.get("activation") if isinstance(record.get("activation"), dict) else {}
+            if activation.get("enabled_by") != "explicit-user-request":
+                self.error("DEBUG_MODE_ACTIVATION", "activation must be bound to an explicit current user request", record_ref)
+            status = record.get("status")
+            ended_by = activation.get("ended_by")
+            if status == "active" and ended_by != "active":
+                self.error("DEBUG_MODE_EXPIRY", "active record must have ended_by active", record_ref)
+            if status in {"completed", "abandoned"} and ended_by == "active":
+                self.error("DEBUG_MODE_EXPIRY", "closed record must identify its expiry event", record_ref)
+
+            def parse_time_value(container: Any, field: str) -> datetime | None:
+                item = container.get(field) if isinstance(container, dict) else None
+                if not isinstance(item, dict):
+                    return None
+                value = item.get("value")
+                evidence_kind = item.get("evidence_kind")
+                if evidence_kind == "unknown":
+                    if value is not None:
+                        self.error("DEBUG_MODE_TIMING", f"{field} marked unknown must use null", record_ref)
+                    return None
+                if not isinstance(value, str) or not value:
+                    self.error("DEBUG_MODE_TIMING", f"{field} with {evidence_kind} evidence requires a timestamp", record_ref)
+                    return None
+                try:
+                    parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+                except ValueError:
+                    self.error("DEBUG_MODE_TIMING", f"{field} is not a valid ISO-8601 timestamp", record_ref)
+                    return None
+                if parsed.utcoffset() is None:
+                    self.error("DEBUG_MODE_TIMING", f"{field} must include a timezone offset", record_ref)
+                    return None
+                return parsed
+
+            def duration_value(container: Any, field: str) -> int | None:
+                item = container.get(field) if isinstance(container, dict) else None
+                if not isinstance(item, dict):
+                    return None
+                value = item.get("value")
+                evidence_kind = item.get("evidence_kind")
+                if evidence_kind == "unknown":
+                    if value is not None:
+                        self.error("DEBUG_MODE_TIMING", f"{field} marked unknown must use null", record_ref)
+                    return None
+                if not isinstance(value, int) or value < 0:
+                    self.error("DEBUG_MODE_TIMING", f"{field} with {evidence_kind} evidence requires non-negative seconds", record_ref)
+                    return None
+                return value
+
+            timing = record.get("timing") if isinstance(record.get("timing"), dict) else {}
+            started_at = parse_time_value(timing, "started_at")
+            completed_at = parse_time_value(timing, "completed_at")
+            elapsed_seconds = duration_value(timing, "elapsed_seconds")
+            duration_value(timing, "active_work_seconds")
+            capture_quality = record.get("capture_quality") if isinstance(record.get("capture_quality"), dict) else {}
+            duration_value(capture_quality, "estimated_overhead_seconds")
+            if started_at is not None and completed_at is not None:
+                if completed_at < started_at:
+                    self.error("DEBUG_MODE_TIMING_ORDER", "completed_at precedes started_at", record_ref)
+                elapsed_kind = timing.get("elapsed_seconds", {}).get("evidence_kind") if isinstance(timing.get("elapsed_seconds"), dict) else None
+                start_kind = timing.get("started_at", {}).get("evidence_kind") if isinstance(timing.get("started_at"), dict) else None
+                end_kind = timing.get("completed_at", {}).get("evidence_kind") if isinstance(timing.get("completed_at"), dict) else None
+                if start_kind == end_kind == "observed" and elapsed_kind == "observed" and elapsed_seconds is not None:
+                    actual = round((completed_at - started_at).total_seconds())
+                    if abs(actual - elapsed_seconds) > 1:
+                        self.error("DEBUG_MODE_TIMING_DRIFT", "observed elapsed seconds do not match observed timestamps", record_ref)
+
+            coverage = capture_quality.get("event_coverage")
+            missing_intervals = capture_quality.get("missing_intervals")
+            if coverage == "complete" and missing_intervals:
+                self.error("DEBUG_MODE_CAPTURE_QUALITY", "complete coverage cannot declare missing intervals", record_ref)
+            if coverage == "partial" and not missing_intervals:
+                self.error("DEBUG_MODE_CAPTURE_QUALITY", "partial coverage must name missing intervals", record_ref)
+            if capture_quality.get("observer_effect") == "material":
+                self.warn("DEBUG_MODE_OBSERVER_EFFECT", "record declares material observer effect; comparison claims must account for it", record_ref)
+
+            events = record.get("events") if isinstance(record.get("events"), list) else []
+            event_by_id: dict[str, dict[str, Any]] = {}
+            event_order: dict[str, int] = {}
+            for event_index, event in enumerate(events):
+                event_label = f"events[{event_index}]"
+                if not isinstance(event, dict):
+                    continue
+                event_id = event.get("event_id")
+                if not concrete(event_id):
+                    self.error("DEBUG_MODE_EVENT_ID", f"{event_label}.event_id must be resolved", record_ref)
+                    continue
+                if event_id in event_by_id:
+                    self.error("DEBUG_MODE_EVENT_DUPLICATE", f"duplicate event_id {event_id}", record_ref)
+                event_by_id[event_id] = event
+                event_order[event_id] = event_index
+                if event.get("sequence") != event_index + 1:
+                    self.error("DEBUG_MODE_EVENT_SEQUENCE", f"{event_label}.sequence must be {event_index + 1}", record_ref)
+                parse_time_value({"occurred_at": event.get("occurred_at")}, "occurred_at")
+                evidence = event.get("evidence")
+                if not isinstance(evidence, list) or not evidence or not all(concrete(item) for item in evidence):
+                    self.error("DEBUG_MODE_EVENT_EVIDENCE", f"{event_label}.evidence must be a non-empty resolved string list", record_ref)
+
+            for event_id, event in event_by_id.items():
+                causes = event.get("caused_by_event_ids")
+                if not isinstance(causes, list):
+                    continue
+                for cause in causes:
+                    if cause not in event_by_id:
+                        self.error("DEBUG_MODE_EVENT_CAUSE", f"{event_id} references unknown cause {cause}", record_ref)
+                    elif event_order[cause] >= event_order[event_id]:
+                        self.error("DEBUG_MODE_EVENT_CAUSE_ORDER", f"{event_id} cause {cause} must be earlier", record_ref)
+
+            def has_human_ancestor(event: dict[str, Any]) -> bool:
+                pending = list(event.get("caused_by_event_ids", []))
+                visited: set[str] = set()
+                while pending:
+                    cause_id = pending.pop()
+                    if cause_id in visited:
+                        continue
+                    visited.add(cause_id)
+                    cause = event_by_id.get(cause_id)
+                    if cause is None:
+                        continue
+                    if cause.get("origin") == "human-initiated":
+                        return True
+                    pending.extend(cause.get("caused_by_event_ids", []))
+                return False
+
+            for event_id, event in event_by_id.items():
+                origin = event.get("origin")
+                human_ancestor = has_human_ancestor(event)
+                if origin == "derived-after-human-intervention" and not human_ancestor:
+                    self.error("DEBUG_MODE_DERIVATION_CAUSE", f"{event_id} has no human-initiated ancestor", record_ref)
+                if origin == "alatyr-initiated" and human_ancestor:
+                    self.error("DEBUG_MODE_INDEPENDENCE", f"{event_id} cannot be independent because its causal chain contains a human intervention", record_ref)
+
+            def matching_event_ids(metric_name: str) -> list[str]:
+                def matches(event: dict[str, Any]) -> bool:
+                    origin = event.get("origin")
+                    category = event.get("category")
+                    if metric_name == "human_interventions":
+                        return origin == "human-initiated"
+                    if metric_name == "human_architectural_interventions":
+                        return origin == "human-initiated" and event.get("architectural_supervision") is True
+                    if metric_name == "alatyr_independent_findings":
+                        return origin == "alatyr-initiated"
+                    if metric_name == "derived_findings_after_human":
+                        return origin == "derived-after-human-intervention"
+                    if metric_name == "alatyr_independent_dependency_checks":
+                        return origin == "alatyr-initiated" and category == "dependency"
+                    if metric_name == "human_requested_dependency_checks":
+                        return origin == "human-initiated" and category == "dependency"
+                    if metric_name == "derived_dependency_expansions_after_human":
+                        return origin == "derived-after-human-intervention" and event.get("dependency_expansion") is True
+                    if metric_name == "hypotheses_tested":
+                        return category == "hypothesis" and event.get("hypothesis_outcome") in {"confirmed", "rejected"}
+                    if metric_name == "hypotheses_rejected":
+                        return category == "hypothesis" and event.get("hypothesis_outcome") == "rejected"
+                    if metric_name == "implementation_revisions":
+                        return category == "implementation-revision"
+                    if metric_name == "implementation_corrections_after_human":
+                        return category == "implementation-revision" and origin == "derived-after-human-intervention"
+                    if metric_name == "validation_expansions":
+                        return event.get("validation_expansion") is True
+                    if metric_name == "regression_scenarios_added":
+                        return category == "regression-scenario"
+                    if metric_name == "maintainer_corrections":
+                        return origin == "external-maintainer"
+                    if metric_name == "post_review_rework":
+                        return event.get("post_review_rework") is True
+                    return False
+
+                return [event_id for event_id, event in event_by_id.items() if matches(event)]
+
+            metrics = record.get("metrics") if isinstance(record.get("metrics"), dict) else {}
+            for metric_name in DEBUG_METRIC_NAMES:
+                metric = metrics.get(metric_name)
+                if not isinstance(metric, dict):
+                    continue
+                metric_event_ids = metric.get("event_ids")
+                unknown_event_ids = sorted(
+                    set(metric_event_ids if isinstance(metric_event_ids, list) else []) - set(event_by_id)
+                )
+                if unknown_event_ids:
+                    self.error("DEBUG_MODE_METRIC_EVENT", f"metrics.{metric_name} references unknown events {unknown_event_ids}", record_ref)
+                if metric.get("evidence_kind") == "event-derived":
+                    expected_ids = matching_event_ids(metric_name)
+                    if metric.get("value") != len(expected_ids) or metric_event_ids != expected_ids:
+                        self.error("DEBUG_MODE_METRIC_DRIFT", f"metrics.{metric_name} does not match its event predicate", record_ref)
+                elif metric.get("evidence_kind") == "unavailable" and (metric.get("value") is not None or metric_event_ids):
+                    self.error("DEBUG_MODE_METRIC_UNAVAILABLE", f"metrics.{metric_name} marked unavailable must have null value and no event IDs", record_ref)
+            if status == "completed":
+                if not events:
+                    self.error("DEBUG_MODE_COMPLETED_EMPTY", "completed record must contain at least one material event", record_ref)
+                for metric_name in DEBUG_METRIC_NAMES:
+                    metric = metrics.get(metric_name)
+                    if not isinstance(metric, dict) or metric.get("evidence_kind") != "event-derived":
+                        self.error("DEBUG_MODE_COMPLETED_METRICS", f"completed record requires event-derived metrics.{metric_name}", record_ref)
+
+            final_result = record.get("final_result") if isinstance(record.get("final_result"), dict) else {}
+            binding = final_result.get("repository_binding") if isinstance(final_result.get("repository_binding"), dict) else {}
+            binding_kind = binding.get("kind")
+            result_revision = binding.get("result_revision")
+            if binding_kind in {"commit", "pull-request", "tree"}:
+                for field in ["base_revision", "result_revision"]:
+                    value = binding.get(field)
+                    if not concrete(value) or git_resolve_ref(self.target, value) is None:
+                        self.error("DEBUG_MODE_REVISION", f"{field} does not resolve: {value}", record_ref)
+                if binding_kind == "pull-request" and not concrete(binding.get("review_reference")):
+                    self.error("DEBUG_MODE_REVIEW_REFERENCE", "pull-request binding requires a stable review reference", record_ref)
+            elif binding_kind == "selected-file-snapshot":
+                selected_paths = binding.get("selected_paths")
+                paths = selected_paths if isinstance(selected_paths, list) else []
+                digest = hashlib.sha256()
+                snapshot_valid = bool(paths)
+                if not paths:
+                    self.error("DEBUG_MODE_SNAPSHOT_PATH", "selected-file snapshot requires paths", record_ref)
+                for selected_path in sorted(set(paths)):
+                    if not concrete(selected_path) or not is_target_relative_path(selected_path) or not self.target_path(selected_path).is_file():
+                        self.error("DEBUG_MODE_SNAPSHOT_PATH", f"invalid snapshot path: {selected_path}", record_ref)
+                        snapshot_valid = False
+                        continue
+                    digest.update(selected_path.replace("\\", "/").encode("utf-8"))
+                    digest.update(b"\0")
+                    digest.update(self.target_path(selected_path).read_bytes())
+                    digest.update(b"\0")
+                recorded_digest = binding.get("snapshot_sha256")
+                if snapshot_valid and (not concrete(recorded_digest) or recorded_digest.casefold() != digest.hexdigest()):
+                    self.error("DEBUG_MODE_SNAPSHOT_HASH", "selected-file snapshot SHA-256 does not match current files", record_ref)
+            elif binding_kind == "unverified" and status == "completed":
+                self.warn("DEBUG_MODE_UNVERIFIED_RESULT", "completed debug record has no reproducible result binding", record_ref)
+
+            projection = final_result.get("upstream_projection") if isinstance(final_result.get("upstream_projection"), dict) else {}
+            projected_paths = projection.get("projected_paths") if isinstance(projection.get("projected_paths"), list) else []
+            if projection.get("kind") == "clean-external":
+                if projection.get("included_debug_files") is not False:
+                    self.error("DEBUG_MODE_UPSTREAM_BOUNDARY", "clean external projection must exclude debug files", record_ref)
+                if any(isinstance(path, str) and path.startswith(".ai/") for path in projected_paths):
+                    self.error("DEBUG_MODE_UPSTREAM_PATH", "clean external projection contains an Alatyr support path", record_ref)
+
+            publication = record.get("publication") if isinstance(record.get("publication"), dict) else {}
+            if publication.get("included_in_external_patch") is True and "exclude" in str(index.get("external_patch_policy", "")).casefold():
+                self.error("DEBUG_MODE_PUBLICATION_SCOPE", "record inclusion contradicts the debug index external-patch policy", record_ref)
+            if projection.get("kind") == "clean-external" and publication.get("included_in_external_patch") is not False:
+                self.error("DEBUG_MODE_PUBLICATION_SCOPE", "clean external projection must keep the debug record outside the patch", record_ref)
+
+            metric_values = {
+                metric_name: metrics.get(metric_name, {}).get("value")
+                if isinstance(metrics.get(metric_name), dict)
+                else None
+                for metric_name in DEBUG_METRIC_NAMES
+            }
+            comparisons = {
+                "debug_id": record.get("debug_id"),
+                "status": status,
+                "task_references": task_references,
+                "scope_kind": task.get("scope_kind"),
+                "scope_id": task.get("scope_id"),
+                "task_class": task.get("task_class"),
+                "repository_binding_kind": binding_kind,
+                "result_revision": result_revision,
+                "event_coverage": capture_quality.get("event_coverage"),
+                "observer_effect": capture_quality.get("observer_effect"),
+                "elapsed_seconds": timing.get("elapsed_seconds", {}).get("value") if isinstance(timing.get("elapsed_seconds"), dict) else None,
+                "elapsed_evidence_kind": timing.get("elapsed_seconds", {}).get("evidence_kind") if isinstance(timing.get("elapsed_seconds"), dict) else None,
+                "metrics": metric_values,
+                "residual_uncertainty": record.get("residual_uncertainty"),
+            }
+            for field, record_value in comparisons.items():
+                index_value = entry.get(field)
+                if isinstance(record_value, list) and isinstance(index_value, list):
+                    matches = sorted(record_value) == sorted(index_value)
+                else:
+                    matches = record_value == index_value
+                if not matches:
+                    self.error("DEBUG_MODE_INDEX_DRIFT", f"{label}.{field} differs from record {debug_id}", index_relpath)
+
+            self.info(
+                "DEBUG_MODE_CHECKED",
+                f"checked Debug Mode record {debug_id}; structural validation cannot prove event completeness, attribution, engineering quality, or reduced supervision",
                 record_ref,
             )
 

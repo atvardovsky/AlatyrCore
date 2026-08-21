@@ -112,6 +112,20 @@
         "retention_policy": {"type": "string", "minLength": 1}
       }
     },
+    "debug_mode": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["index", "records", "overlay", "flow", "gate", "record_template", "summary_template"],
+      "properties": {
+        "index": {"type": "string", "minLength": 1},
+        "records": {"type": "string", "minLength": 1},
+        "overlay": {"type": "string", "minLength": 1},
+        "flow": {"type": "string", "minLength": 1},
+        "gate": {"type": "string", "minLength": 1},
+        "record_template": {"type": "string", "minLength": 1},
+        "summary_template": {"type": "string", "minLength": 1}
+      }
+    },
     "maturity": {"type": "object", "required": ["profile"]},
     "approvals": {"type": "object", "required": ["directory", "template", "machine_template"]},
     "dependency_knowledge": {

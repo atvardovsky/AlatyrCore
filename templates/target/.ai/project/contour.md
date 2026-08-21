@@ -36,6 +36,9 @@ Replace placeholders with target facts before accepting installation.
   `.ai/project/engineering-evidence`, including compact task and revision
   binding, invariant, root-cause, solution, regression, validation, and
   uncertainty conclusions that link back to canonical project owners
+- optional non-canonical Debug Mode evidence under `.ai/project/debug`, with
+  task/session activation, normalized contribution events, timing/capture
+  quality, supervision metrics, final result, and external-projection evidence
 - target team actors and roles, decision authority, priority policy, required
   review, escalation, coordination backend, synchronization, retention,
   privacy, and accepted business or architecture decisions when team
@@ -59,6 +62,8 @@ List target source-of-truth files:
 - `{TARGET_PROJECT_SOURCE_OF_TRUTH}`
 - `.ai/project/source-of-truth-registry.md`
 - `.ai/project/engineering-evidence/README.md` and `index.json`
+- `.ai/project/debug/README.md` and `index.json` when Debug Mode is enabled;
+  these own observability records and policy, not architecture or business facts
 - `.ai/project/architecture/README.md` and
   `.ai/project/architecture/catalog.json` when the architecture-knowledge
   module is enabled
@@ -83,6 +88,8 @@ implemented, routed, validated, and maintained.
 Target development evidence must not directly change `.ai/framework`,
 AlatyrCore source, or portable rules. Keep raw conversations, secrets,
 credentials, and personal data out of the development evidence index.
+Keep raw conversations, private reasoning, prompts, secrets, credentials,
+unrelated personal data, and unused speculation out of Debug Mode records.
 
 When team collaboration is enabled,
 `.ai/project/team-operating-model.md` owns actor, authority, priority, review,

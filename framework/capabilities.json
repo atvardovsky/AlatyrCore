@@ -304,6 +304,23 @@
       "target_files": [".ai/assistant/templates/effectiveness-report.md"],
       "check_ids": ["effectiveness-benchmark", "captured-effectiveness-results"]
     },
+    "debug-mode": {
+      "min_framework_pack": "complete",
+      "requires": ["effectiveness-metrics", "installed-operations"],
+      "rule_ids": ["ALATYR-DEBUG-001", "ALATYR-AUTHORIZATION-001", "ALATYR-EVIDENCE-001"],
+      "framework_files": ["debug-mode.md", "effectiveness-metrics.md", "operation-help.md"],
+      "target_files": [
+        ".ai/project/debug/README.md",
+        ".ai/project/debug/index.json",
+        ".ai/project/debug/records/README.md",
+        ".ai/assistant/context/task-scales/debug-mode.json",
+        ".ai/assistant/flows/debug-mode.flow.md",
+        ".ai/assistant/gates/debug-mode.md",
+        ".ai/assistant/templates/debug-session-record.json",
+        ".ai/assistant/templates/debug-summary.md"
+      ],
+      "check_ids": ["debug-mode", "target-adapter-validator"]
+    },
     "scaffolding": {
       "min_framework_pack": "complete",
       "requires": [],

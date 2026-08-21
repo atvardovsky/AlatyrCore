@@ -201,6 +201,14 @@ Derived surfaces: target evidence index and records, capture flow, finalization
 gate, task-scale routing, operation help, change-package links, target
 validation, installation and migration planning.
 
+Category: `DEBUG`
+Routing owner: `.ai/framework/debug-mode.md`
+Rule IDs: `ALATYR-DEBUG-001`
+Derived surfaces: optional target debug index and records, task-local
+activation and expiry, normalized event attribution, capture-quality and timing
+evidence, event-derived supervision metrics, clean upstream projection, compact
+debug summary, target validation, installation and migration planning.
+
 Category: `EVIDENCE`
 Routing owner: `.ai/framework/guarantees.md`
 Rule IDs: `ALATYR-EVIDENCE-001`
@@ -241,6 +249,9 @@ Canonical owner: `.ai/framework/change-packages.md`
 
 Rule: `ALATYR-ENGINEERING-EVIDENCE-001`
 Canonical owner: `.ai/framework/engineering-evidence.md`
+
+Rule: `ALATYR-DEBUG-001`
+Canonical owner: `.ai/framework/debug-mode.md`
 
 Rule: `ALATYR-ARCHITECTURE-001`
 Canonical owner: `.ai/framework/architecture-knowledge.md`

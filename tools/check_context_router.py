@@ -765,6 +765,27 @@ def main() -> int:
         "task_scale_overlays.engineering-evidence",
         failures,
     )
+    debug_entry = scale_index.get("debug-mode")
+    debug_mode = descriptor(
+        debug_entry.get("descriptor") if isinstance(debug_entry, dict) else None,
+        "target-task-scale-overlay",
+        "task_scale_overlays.debug-mode",
+        failures,
+    )
+    check_contract(
+        debug_mode,
+        ["use_when", "required_context", "expand_when", "final_evidence"],
+        "task_scale_overlays.debug-mode",
+        failures,
+        {"required_context"},
+    )
+    if not isinstance(debug_mode.get("budget_behavior"), str):
+        failures.append("Debug Mode overlay needs budget_behavior")
+    debug_mode_conditional_context = check_conditional_context(
+        debug_mode,
+        "task_scale_overlays.debug-mode",
+        failures,
+    )
     team_entry = scale_index.get("team-active")
     if not isinstance(team_entry, dict) or team_entry.get("descriptor") != (
         ".ai/assistant/team/context-overlay.json"
@@ -811,6 +832,7 @@ def main() -> int:
         (delegated, "required_context"),
         (change_package, "required_context"),
         (engineering_evidence, "required_context"),
+        (debug_mode, "required_context"),
         (diagram, "required_context"),
         (architecture, "required_context"),
         (code_documentation, "required_context"),
@@ -838,6 +860,11 @@ def main() -> int:
     routed_framework_paths.update(
         value
         for value in engineering_evidence_conditional_context
+        if value.startswith(".ai/framework/")
+    )
+    routed_framework_paths.update(
+        value
+        for value in debug_mode_conditional_context
         if value.startswith(".ai/framework/")
     )
     routed_framework_paths.update(

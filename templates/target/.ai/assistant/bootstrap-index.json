@@ -4,15 +4,15 @@
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "968d3cd0a52ab656d6d8f8d02afa256f49037b536becdeef32feb79d0394d713"
+      "sha256": "5a416576d8679fa07b7ab27d7b68515ea1de272b3d3bf3219dfa3e57800e5fb0"
     },
     "project_map": {
       "path": ".ai/README.md",
-      "sha256": "ad50958d5b2bfe641923394908c0ff08580e2e02fb8f3b320d64089dc51bc83f"
+      "sha256": "74705d4301470a5e26bcca4e49960d102cba1c6103714a5df3386336fa1b6bff"
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",
-      "sha256": "2d4c877cc8d7278f04c8bfc320b9fac6062c1760ebba1afbfa72ccb5ebeeb151"
+      "sha256": "85fd7d7f220affbcf60c894645a9a61e24c2739de19784d1dab82f36455fc50a"
     }
   },
   "installation": {
@@ -229,6 +229,13 @@
         "material task finalization or explicit engineering-evidence request"
       ],
       "descriptor": ".ai/assistant/context/task-scales/engineering-evidence.json"
+    },
+    "debug-mode": {
+      "signals": [
+        "explicit current-task or current-session Debug Mode activation",
+        "status checkpoint finalization disablement or comparison for selected debug evidence"
+      ],
+      "descriptor": ".ai/assistant/context/task-scales/debug-mode.json"
     },
     "team-active": {
       "signals": [

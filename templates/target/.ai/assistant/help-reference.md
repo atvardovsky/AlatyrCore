@@ -211,6 +211,21 @@ Default allowed actions: `read-only` for inspection; use `docs-only`,
 `adapter-only`, or a broader current-scope modify phase only when target policy
 permits record changes.
 
+Operation: `debug-mode`
+Use when: explicitly enabling non-canonical Alatyr performance observation for
+the current task or session; checking or checkpointing an active record;
+finalizing or disabling capture; or comparing selected completed records.
+Flow: `.ai/assistant/flows/debug-mode.flow.md`
+Minimum input: debug action and selected scope; enablement also requires an
+explicit current user activation request.
+Aliases: `Enable Alatyr Debug Mode`, `Alatyr debug`, `Alatyr debug status`,
+`Alatyr debug checkpoint`, `Alatyr debug summary`, `Disable Alatyr Debug Mode`,
+`Alatyr compare debug`.
+Default allowed actions: `read-only` for status and comparison; `adapter-only`
+for target-approved record writes. Activation never grants code, commit,
+publish, live-external, protected-change, or tool permission and expires at the
+logical-scope boundary.
+
 Operation: `logical-integrity-review`
 Use when: reviewing whether code, docs, tests, diagrams, prompts, skills,
 gates, and bridges agree.
@@ -447,6 +462,13 @@ Alias: `plan large task`, `continue large task`, or `resume Alatyr task`
 Route to: `large-task`. Continue from an existing operation packet when its
 path or operation ID is known; otherwise create a packet only after the
 large-task activation gate passes.
+
+Alias: `Enable Alatyr Debug Mode`, `Alatyr debug`, `Alatyr debug status`,
+`Alatyr debug checkpoint`, `Alatyr debug summary`, `Disable Alatyr Debug Mode`,
+or `Alatyr compare debug`
+Route to: `debug-mode` only when the optional module is enabled. Enablement
+requires an explicit current-task or current-session request; status and
+comparison remain read-only, and activation expires with the logical scope.
 
 Alias: `Alatyr team status`
 Route to: `team-status`.

@@ -35,6 +35,10 @@
       "path": ".ai/assistant/gates/engineering-evidence.md",
       "use_when": ["material semantic architectural or non-obvious repair reaches finalization"]
     },
+    "debug-mode": {
+      "path": ".ai/assistant/gates/debug-mode.md",
+      "use_when": ["Debug Mode is explicitly active or selected debug evidence is inspected compared repaired or finalized"]
+    },
     "final-evidence": {
       "path": ".ai/assistant/gates/final-evidence.md",
       "use_when": ["before reporting completion"]

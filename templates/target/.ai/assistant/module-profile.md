@@ -513,6 +513,28 @@ Approval needs: `{EFFECTIVENESS_METRICS_APPROVAL_NEEDS}`
 Residual risk: `{EFFECTIVENESS_METRICS_RESIDUAL_RISK}`
 Next action: `{EFFECTIVENESS_METRICS_NEXT_ACTION}`
 
+Module: `debug-mode`
+State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+Owner or file: `.ai/project/debug/README.md`
+Dependencies: `effectiveness-metrics`, `installed-operations`
+Required files:
+
+- `.ai/framework/debug-mode.md`
+- `.ai/project/debug/README.md`
+- `.ai/project/debug/index.json`
+- `.ai/project/debug/records/README.md`
+- `.ai/assistant/context/task-scales/debug-mode.json`
+- `.ai/assistant/flows/debug-mode.flow.md`
+- `.ai/assistant/gates/debug-mode.md`
+- `.ai/assistant/templates/debug-session-record.json`
+- `.ai/assistant/templates/debug-summary.md`
+
+Reason: `{REASON}`
+Validation or review: `{VALIDATION_OR_REVIEW}`
+Approval needs: `{DEBUG_MODE_APPROVAL_NEEDS}`
+Residual risk: `{DEBUG_MODE_RESIDUAL_RISK}`
+Next action: `{DEBUG_MODE_NEXT_ACTION}`
+
 Module: `scaffolding`
 State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `{TARGET_SCAFFOLDING_EVIDENCE_OR_NONE}`

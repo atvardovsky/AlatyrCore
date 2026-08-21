@@ -108,6 +108,9 @@ The plan must identify:
   synchronization and write-conflict behavior, active-work preflight, per-task
   storage, conflict, handoff, decision, review, retention, and privacy needs
 - required core profile and optional modules needed for the target
+- optional Debug Mode need, owner, explicit task/session activation and expiry,
+  non-canonical storage, privacy/retention, event attribution, timing evidence,
+  supervision metrics, clean-upstream projection, and comparison policy
 - source-of-truth registry needs
 - optional consistency-map need, fact-ID strategy, relationship coverage, and
   staleness owner
@@ -144,6 +147,8 @@ The plan must identify:
   enabled-module expansion that the smallest matching pack does not cover
 - migration diff, adapter output contract, AI infrastructure inventory and
   recommendation reports, and effectiveness report needs
+- Debug Mode index/record, overlay, operation, flow, gate, summary, target
+  validator, and post-install/update guidance needs when the module is selected
 - AI infrastructure router/item, recommendation, and adaptation-record needs
 - target development-evidence index, owner, retention/privacy policy, and lazy
   capture needs when recommendations should learn from recurring project work
@@ -267,6 +272,9 @@ In a typical target repository:
    material-change evidence is needed,
    durable engineering-evidence task-scale overlay, capture flow, gate, and
    machine record template as lazy required-core finalization surfaces,
+   optional Debug Mode project index/records, task-scale overlay, operation,
+   flow, gate, machine record, and compact summary when selected with its
+   dependency closure,
    and
    post-install/update chat-message templates when the target wants
    post-install operation requests or AI infrastructure adaptation.
@@ -290,7 +298,10 @@ In a typical target repository:
 12. Apply the durable engineering-evidence decision. Capture reusable material
    installation knowledge when triggered and authorized, or report a specific
    skip/block reason.
-13. Report files changed, validation run, skipped checks, approvals, and
+13. If Debug Mode is enabled for the installation operation by an explicit
+   current-scope request, capture only normalized material events and finalize
+   or expire that record. Module installation alone does not activate it.
+14. Report files changed, validation run, skipped checks, approvals, and
    residual risk.
 
 ## Post-Install Operations
@@ -301,7 +312,8 @@ operate the installed target adapter. Typical requests include blueprint
 creation or repair, adapter recheck after framework updates, drift review,
 blueprint-driven product changes, architecture and pattern discussion, diagram
 discussion, team coordination, AI infrastructure recommendation, and skill
-adaptation, or extension inspection and lifecycle management. Include Allowed actions
+adaptation, extension inspection and lifecycle management, or explicit Debug
+Mode activation/status/finalization/comparison. Include Allowed actions
 when the request should be limited to `read-only`, `docs-only`,
 `adapter-only`, `code-and-tests`, or `full-with-approval`.
 
@@ -324,6 +336,13 @@ mode <id>` route through the canonical workspace-mode operation. Suggestions
 remain proposed. A selected mode can narrow context and actions but cannot
 activate nested adapters or grant approval, write scope, permissions,
 authority, tools, or gate bypass.
+
+When Debug Mode is enabled, `Enable Alatyr Debug Mode for this task` starts one
+explicit task-local record; `Alatyr debug status`, `Alatyr debug checkpoint`,
+`Alatyr debug summary`, `Disable Alatyr Debug Mode`, and `Alatyr compare debug`
+route through the canonical operation catalog. Activation grants only allowed
+debug evidence writes and expires with the logical scope. It never authorizes
+implementation, commit, push, publication, or live effects.
 
 When the target enables subagent delegation, the assistant may keep its
 critical-path action and dispatch bounded independent sidecars under the target

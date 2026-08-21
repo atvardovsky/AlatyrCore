@@ -130,6 +130,10 @@ Every project using this framework must define:
 - migration-diff process when comparing framework baselines
 - effectiveness measurement process when the target wants to evaluate AI work
   quality over time
+- optional Debug Mode policy when the target wants task-level Alatyr
+  observability: explicit activation/expiry, owner, non-canonical storage,
+  privacy/redaction/retention, compact index, normalized causal events, timing
+  evidence, supervision metrics, clean-upstream projection, and validation
 - approval-record location or policy when protected-change approvals require
   durable evidence, plus a machine-readable record and strict complete-diff
   scope check when path-bounded approval must be enforced
@@ -205,6 +209,8 @@ An adapter may provide:
 - CODEOWNERS or equivalent file-owner metadata for `.ai/*`, root assistant
   entry points, and supported bridge files
 - effectiveness reports for comparable task runs
+- non-canonical Debug Mode records and compact cross-task supervision summaries
+  when the optional module is explicitly enabled for selected scopes
 - installed-operation request templates or adapter audit reports
 - large-task operation packets stored, ignored, redacted, or retained under a
   target-owned policy

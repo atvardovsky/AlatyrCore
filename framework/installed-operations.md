@@ -507,6 +507,20 @@ clarification count, approvals, validation, missed companion updates, rework,
 residual risks, and outcome. Do not claim improvement from one incomparable
 task.
 
+When the optional `debug-mode` module is enabled, route explicit activation,
+status, checkpoint, finalization, disablement, and comparison through the
+canonical `debug-mode` operation. Activation is task/session-local, authorizes
+only target-approved debug evidence writes under `adapter-only`, and expires
+at the logical-scope boundary. It never implies implementation, commit, push,
+publication, live action, approval, or canonical project authority.
+
+Use normalized event and outcome records rather than raw conversations. A
+completed result reports evidence-based timing, capture quality, independent
+Alatyr findings, human interventions, derived-after-human consequences,
+validation expansion, corrections, final result binding, and external
+projection. Cross-task comparison must account for task class, capture quality,
+observer effect, and independent result quality.
+
 ## Rejection Criteria
 
 Reject or revise installed-operation work that:

@@ -86,6 +86,7 @@ file or into assistant-specific bridges:
 - Safety boundaries: `ALATYR-SAFETY-001`
 - Imported AI infrastructure: `ALATYR-SAFETY-002`
 - Logical integrity: `ALATYR-INTEGRITY-001`
+- Optional Debug Mode: `ALATYR-DEBUG-001`
 - Installed operations: `ALATYR-OPERATION-001`
 - Architecture knowledge: `ALATYR-ARCHITECTURE-001`
 - Project vocabulary: `ALATYR-VOCABULARY-001`
@@ -281,6 +282,14 @@ result. Store normalized conclusions, not raw chat, chain-of-thought, secrets,
 or unrelated history. A small self-explanatory fix may skip with a specific
 reason, and capture alone does not activate a change package.
 
+When the user explicitly enables the target's optional Debug Mode for the
+current task or session, apply its lazy task-scale overlay and record only
+material normalized events at checkpoints. Keep independent findings, human
+interventions, and consequences derived after an intervention causally
+distinct. Debug activation authorizes only target-approved debug evidence
+writes; every engineering action still requires its own current-scope
+authorization. Expire activation when the scope completes or changes.
+
 AlatyrCore checks can detect structural drift and contract violations. They do
 not prove business truth, architectural correctness, external client
 auto-loading, or correct assistant reasoning.
@@ -298,6 +307,7 @@ risk.
 - Operation help: [framework/operation-help.md](framework/operation-help.md)
 - Project adapter contract: [framework/project-adapter-contract.md](framework/project-adapter-contract.md)
 - Durable engineering evidence: [framework/engineering-evidence.md](framework/engineering-evidence.md)
+- Optional Debug Mode: [framework/debug-mode.md](framework/debug-mode.md)
 - Framework limits: [framework/guarantees.md](framework/guarantees.md)
 - Source maintainer tools: [tools/README.md](tools/README.md)
 

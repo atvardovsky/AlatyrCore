@@ -169,6 +169,12 @@ Classify every proposed target file:
     pattern-based AI infrastructure recommendations. Start with an empty index
     unless bounded historical evidence is explicitly reviewed; never copy raw
     conversations, secrets, credentials, or personal data.
+    Add `.ai/project/debug/README.md`, `index.json`, and an empty `records/`
+    directory only when the target enables `debug-mode`. Resolve the owner,
+    non-canonical authority, storage, visibility, retention, redaction, and
+    external-patch policy. Start empty unless bounded historical records were
+    explicitly validated; never reconstruct attribution from a final diff or
+    raw conversation history.
     Add `.ai/project/consistency-map.json` only when the target enables bounded
     relationship routing. Give every live source-of-truth registry Fact Type
     one resolved, unique map node whose `fact_type` matches exactly; populate
@@ -225,6 +231,10 @@ Classify every proposed target file:
     large-task orchestration.
     Add the `change-package` overlay only when the target enables coherent
     material-change evidence. Keep package records outside routine bootstrap.
+    Add the `debug-mode` task-scale overlay only when the optional module and
+    its `effectiveness-metrics` and `installed-operations` dependencies are
+    enabled. Keep unrelated records outside context and require explicit
+    current-task/session activation before record writes.
     Add the `team-active` overlay only when team collaboration is enabled. Run
     its compact index preflight before state-changing operations, then keep the
     full registry, policy, and unrelated tasks outside routine bootstrap.
@@ -298,6 +308,11 @@ Classify every proposed target file:
     Add the durable engineering-evidence task-scale overlay, capture flow,
     gate, and machine record template in every accepted core profile. Keep
     them lazy and separate from change-package activation.
+    Add the Debug Mode overlay, operation, flow, gate, machine record, and
+    compact summary only when the optional module is enabled. Record explicit
+    activation/expiry, privacy, capture-quality, timing, event attribution,
+    metric derivation, external projection, and validator policy. Enabling the
+    module does not activate observation for a task.
     When the target uses multiple AI infrastructure items, add
     `.ai/assistant/ai-infrastructure-router.json`, the recommendation flow and
     report template, lazy development-evidence capture flow, and the
@@ -333,6 +348,10 @@ Classify every proposed target file:
     Route extension aliases through the same canonical operation catalog on
     every supported surface. Package inspection remains read-only; install,
     update, disable, and remove require target-owned lifecycle evidence.
+    When Debug Mode is enabled, route enable/status/checkpoint/summary/disable/
+    compare aliases through the same catalog on every supported assistant
+    surface. Bridges do not store activation state or duplicate privacy and
+    attribution policy.
 18. Add prompts, skills, diagrams, or consistency checks only when they solve
     target friction, can be maintained, and have been adapted to target facts.
 19. Run target validation that exists. Do not invent commands.
@@ -354,6 +373,9 @@ Classify every proposed target file:
     When workspace modes are enabled, report proposed and accepted modes
     separately, state that installation/update did not accept proposals, and
     name the mode status, suggestion, selection, and acceptance aliases.
+    When Debug Mode is enabled, state that it remains inactive until explicitly
+    enabled for one task/session and name its status, summary, and disable
+    aliases plus the target storage and external-patch boundary.
 
 ## Human Approval Gate
 
@@ -432,6 +454,10 @@ Report:
 - durable engineering-evidence owner, policy, compact index, lazy overlay,
   capture flow, gate, record schema, validator, existing-record preservation,
   and current installation capture decision
+- Debug Mode module state, dependency closure, owner, non-canonical storage,
+  explicit activation/expiry, compact index, lazy overlay, operation, flow,
+  gate, record/summary templates, privacy/timing/attribution/metrics policy,
+  clean-upstream boundary, validator, and existing-record preservation
 - team collaboration policy and operating model, ignored local identity,
   backend capabilities and synchronization, active-work index, registry/task
   schemas, optimistic concurrency, team-active overlay, identity/task/handoff/

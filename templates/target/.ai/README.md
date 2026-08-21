@@ -52,6 +52,8 @@ facts, or target skill infrastructure.
 - compact durable engineering evidence for material task invariants, root
   causes, solution rationale, regression intent, validation, and repository
   binding; these historical records link to but do not replace canonical owners
+- optional non-canonical Debug Mode evidence for measuring Alatyr contribution
+  and human supervision in explicitly selected task/session scopes
 
 Replace this section with the actual target project map.
 
@@ -96,6 +98,9 @@ Replace this section with the actual target project map.
   repository provenance
 - lazy durable engineering-evidence capture and validation that preserves
   normalized conclusions without raw chat or assistant reasoning traces
+- optional task-local Debug Mode activation, normalized event capture,
+  evidence-based supervision metrics, clean-upstream projection, and compact
+  summaries without making debug records project authority
 - migration notes for framework updates
 - operation help, operation routing, and post-install/update assistant chat
   messages

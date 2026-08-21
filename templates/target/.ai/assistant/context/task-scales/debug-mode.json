@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "descriptor_kind": "target-task-scale-overlay",
+  "overlay": "debug-mode",
+  "use_when": [
+    "the user explicitly enabled Alatyr Debug Mode for the current task or session",
+    "the user requests status finalization disablement or comparison of an existing debug record"
+  ],
+  "operation_candidates": ["debug-mode"],
+  "required_context": [
+    ".ai/framework/debug-mode.md",
+    ".ai/assistant/gates/debug-mode.md",
+    ".ai/project/debug/index.json"
+  ],
+  "conditional_context": [
+    {
+      "path": ".ai/assistant/flows/debug-mode.flow.md",
+      "when": "activation checkpoint finalization disablement repair or comparison is requested"
+    },
+    {
+      "path": ".ai/assistant/templates/debug-session-record.json",
+      "when": "creating or repairing a debug record"
+    },
+    {
+      "path": ".ai/assistant/templates/debug-summary.md",
+      "when": "finalizing or comparing debug evidence"
+    }
+  ],
+  "expand_when": [
+    "event attribution has an unresolved causal conflict",
+    "repository binding or external projection cannot support the claim",
+    "privacy or retention policy conflicts with requested capture",
+    "cross-task comparison needs selected records because index evidence is insufficient"
+  ],
+  "budget_behavior": "load the compact index and at most the active or explicitly selected records; checkpoint material events only and never load raw session history",
+  "final_evidence": [
+    "activation status scope and expiry",
+    "record ID path and capture quality",
+    "compact event-derived metrics with evidence kinds",
+    "final result binding and external projection",
+    "privacy publication validation and residual uncertainty"
+  ]
+}

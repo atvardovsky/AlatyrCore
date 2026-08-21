@@ -19,8 +19,9 @@ A target adapter can load:
 4. one selected mode descriptor and applicable shared root context
 5. the selected profile's required context
 6. one or more project-area overlays when the task names affected areas
-7. task-scale overlays only when the task is large, resumable, team-active, or
-   an enabled-team write preflight finds possible active-work overlap
+7. task-scale overlays only when the task is large, resumable, team-active,
+   explicitly debug-enabled, at material evidence finalization, or an enabled-
+   team write preflight finds possible active-work overlap
 
 Then it expands only when the router or human profile names a boundary,
 conflict, approval trigger, or missing source-of-truth fact.
@@ -57,7 +58,8 @@ A target context router should define:
   one selected mode directory, ambiguity behavior, and preflight
 - optional intent overlays that compose with every base profile
 - optional project-area overlays
-- optional task-scale overlays for large, resumable, or team-active work
+- optional task-scale overlays for large, resumable, team-active, material-
+  evidence, or explicitly debug-enabled work
 - optional consistency routing from changed fact IDs to applicable
   relationships
 - use-when signals
@@ -164,6 +166,13 @@ publishable provenance need. Bootstrap and ordinary local profiles should not
 load package templates. During execution, load the compact package index and
 active workstream references first; expand to plan, discussion, companion,
 correction, or validation evidence only when needed.
+
+A Debug Mode overlay is optional and explicitly scoped. Route it only after a
+current task/session activation request or when selected debug evidence needs
+status, checkpoint, finalization, repair, or comparison. Start from the compact
+index and selected record, keep transcripts and unrelated records out of
+context, and expire the overlay at the logical-scope boundary. Debug routing
+does not authorize the observed engineering task.
 
 A team-active route should point to a lazy target overlay descriptor outside
 bootstrap. In an enabled team project, a state-changing operation reads the

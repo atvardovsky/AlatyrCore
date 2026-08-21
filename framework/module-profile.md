@@ -126,6 +126,10 @@ maintain them:
   a machine-readable delta-first upgrade impact router.
 - `effectiveness-metrics`: comparable task reporting for measuring framework
   usefulness.
+- `debug-mode`: explicitly activated task/session observability with compact
+  origin-attributed events, timing and capture-quality evidence, event-derived
+  human-supervision metrics, clean-upstream projection, and non-canonical
+  storage. It depends on `effectiveness-metrics` and `installed-operations`.
 - `scaffolding`: optional source-repository scaffolding helpers used only to
   create placeholder structure.
 
@@ -206,6 +210,9 @@ Reject module-profile work that:
 - enables subagent delegation without a target policy, current per-surface
   capability evidence, bounded role/model bindings, write isolation,
   validation, fallback, and primary-agent convergence
+- enables Debug Mode without explicit per-scope activation, target-owned
+  privacy/retention/publication policy, non-canonical authority, causal event
+  attribution, event-derived metric validation, bounded context, and expiry
 - enables a consistency map without target-owned fact IDs, relationship
   coverage, or staleness handling
 - enables architecture knowledge without a project owner, compact catalog,

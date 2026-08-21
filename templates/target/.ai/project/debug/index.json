@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "index_kind": "target-alatyr-debug-index",
+  "project": "{PROJECT_NAME}",
+  "owner": "{DEBUG_EVIDENCE_OWNER}",
+  "storage_mode": "{REPOSITORY_INTERNAL_BRANCH_IGNORED_LOCAL_OR_APPROVED_EXTERNAL}",
+  "visibility": "{DEBUG_EVIDENCE_VISIBILITY}",
+  "retention_policy": "{DEBUG_EVIDENCE_RETENTION_POLICY}",
+  "external_patch_policy": "{EXCLUDE_FROM_EXTERNAL_PATCH_OR_TARGET_APPROVED_INCLUSION}",
+  "records": []
+}

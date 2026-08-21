@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "suite_kind": "alatyr-debug-mode-scenarios",
+  "scenarios": [
+    {
+      "id": "explicit-task-activation",
+      "request_shape": "The user explicitly enables Debug Mode for one named engineering task.",
+      "expected_mode": "enabled",
+      "required_outcomes": [
+        "current task scope and request reference",
+        "non-canonical record",
+        "target privacy and publication policy",
+        "activation expiry",
+        "no additional engineering authorization"
+      ]
+    },
+    {
+      "id": "implicit-or-prior-scope-activation",
+      "request_shape": "A task starts after a previous debugged task or only asks for analysis without explicitly enabling Debug Mode.",
+      "expected_mode": "inactive",
+      "required_outcomes": [
+        "no new debug record",
+        "no carried activation",
+        "read-only status only when requested"
+      ]
+    },
+    {
+      "id": "human-direction-with-derived-findings",
+      "request_shape": "A human requests one broad dependency check and Alatyr derives several concrete affected paths and tests.",
+      "expected_mode": "checkpointed",
+      "required_outcomes": [
+        "one human-initiated intervention",
+        "separate derived-after-human-intervention events",
+        "causal references to the human event",
+        "no independent attribution for derived findings"
+      ]
+    },
+    {
+      "id": "privacy-sensitive-conversation",
+      "request_shape": "The session contains raw dialogue, credentials, and speculative reasoning that did not affect the task.",
+      "expected_mode": "redacted",
+      "required_outcomes": [
+        "normalized material engineering events only",
+        "no transcript",
+        "no chain-of-thought",
+        "no secrets credentials or unused speculation"
+      ]
+    },
+    {
+      "id": "clean-upstream-projection",
+      "request_shape": "The assisted implementation will be contributed to a repository that does not adopt Alatyr support files.",
+      "expected_mode": "finalized",
+      "required_outcomes": [
+        "debug record retained in target-approved storage",
+        "clean external projected paths",
+        "no .ai path in the external patch",
+        "publication remains separately authorized"
+      ]
+    },
+    {
+      "id": "cross-task-supervision-comparison",
+      "request_shape": "The user compares supervision burden across completed Debug Mode records.",
+      "expected_mode": "compared",
+      "required_outcomes": [
+        "comparable task class",
+        "capture coverage and timing evidence",
+        "event-derived intervention metrics",
+        "independent quality evidence",
+        "no causal improvement claim from intervention count alone"
+      ]
+    }
+  ]
+}

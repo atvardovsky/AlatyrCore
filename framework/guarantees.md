@@ -127,6 +127,10 @@ Machine checks can verify only deterministic repository facts, such as:
 - target profiles route every framework document somewhere
 - enabled optional modules have dependency, minimum-pack, rule, required-file,
   and deterministic-check closure against the installed capability catalog
+- optional Debug Mode records can be checked for explicit activation metadata,
+  non-canonical authority, event ordering, causal attribution, timing evidence,
+  metric derivation, privacy declarations, index synchronization, result
+  binding, and clean-upstream policy
 - target context routers match the profile template and route known framework
   documents somewhere
 - static and installed bootstrap/profile paths can be measured against total,

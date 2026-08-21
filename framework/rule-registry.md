@@ -44,6 +44,7 @@ Registered categories:
 - `BRIDGE`
 - `LIFECYCLE`
 - `ENGINEERING_EVIDENCE`
+- `DEBUG`
 - `EVIDENCE`
 
 Do not reuse an ID for a different meaning. Record material rule changes in
@@ -59,10 +60,10 @@ target registry and consistency map together for semantic work while keeping
 redundant portable explanation conditional; separate total, portable, and
 reserved target context budgets; measure representative compact and expansion
 scenarios; record expansion only when boundaries or conflicts require it;
-prefer changed-fact, upgrade-impact, AI-item, and finalization-only
-engineering-evidence routing when available; and keep optional module,
-evidence-history, delegated-execution, complete-checklist, and full team detail
-lazy.
+prefer changed-fact, upgrade-impact, AI-item, finalization-only
+engineering-evidence, and explicitly activated Debug Mode routing when
+available; and keep optional module, evidence-history, unrelated debug records,
+delegated-execution, complete-checklist, and full team detail lazy.
 Applies to: all installed adapter tasks.
 Enforcement: required.
 
@@ -178,6 +179,18 @@ repairs, final evidence.
 Enforcement: required capture decision; record required when triggered and
 authorized.
 
+Rule ID: `ALATYR-DEBUG-001`
+Canonical source: `.ai/framework/debug-mode.md`
+Commitment: When optional Debug Mode is explicitly enabled for a current task
+or session, record compact non-canonical events that distinguish
+Alatyr-initiated, human-initiated, derived-after-human-intervention, and
+external-maintainer contributions; derive supervision metrics from evidence;
+preserve privacy, timing quality, action authorization, and clean upstream
+boundaries; and expire activation at the logical-scope boundary.
+Applies to: debug activation, task observability, human supervision
+measurement, cross-task effectiveness comparison, clean upstream projection.
+Enforcement: required when module enabled and Debug Mode is activated.
+
 Rule ID: `ALATYR-ARCHITECTURE-001`
 Canonical source: `.ai/framework/architecture-knowledge.md`
 Commitment: Keep a project-owned architecture catalog that distinguishes
@@ -287,8 +300,9 @@ separated and rewritten from target evidence; record the installed framework
 pack and its projected registry, inventory, bootstrap index, gate index,
 capability closure, and current-scope action policy; reject live support claims
 that contradict enabled module state; and preserve durable task engineering
-evidence, development-pattern evidence, routed AI infrastructure items,
-recommendation/adaptation records, and optional project-owned module state.
+evidence, non-canonical Debug Mode evidence, development-pattern evidence,
+routed AI infrastructure items, recommendation/adaptation records, and optional
+project-owned module state.
 Applies to: installation, framework update, adapter maintenance.
 Enforcement: required.
 
@@ -296,7 +310,8 @@ Rule ID: `ALATYR-MODULE-001`
 Canonical source: `.ai/framework/module-profile.md`
 Commitment: Establish the required core profile, including current-scope action
 authorization and proportional durable engineering evidence, before optional
-modules; scaffold only selected dependency-closed capabilities; select a
+modules; scaffold only selected dependency-closed capabilities, including Debug
+Mode only with effectiveness and installed-operation dependencies; select a
 compatible framework pack; and enforce optional-module dependency, rule,
 required-file, deterministic-check, and module-gated validator closure before
 claiming a target module is enabled.
@@ -310,9 +325,9 @@ Commitment: Expose one conversational Alatyr entry point, route clear requests
 automatically through a canonical target operation catalog and checked compact
 exact-alias index, enforce current-scope action phases independently of routing
 and allowed-action mode, expose lazy durable engineering-evidence
-capture/lookup, compose bounded capability-gated delegation, provide read-only
-adapter health, and show a pre-change preview only when risk, approval, or
-scope uncertainty requires it.
+capture/lookup and explicitly scoped Debug Mode operations, compose bounded
+capability-gated delegation, provide read-only adapter health, and show a
+pre-change preview only when risk, approval, or scope uncertainty requires it.
 Applies to: installed operation routing, adapter health, changes requiring
 preview.
 Enforcement: required.
@@ -360,9 +375,9 @@ Commitment: Record framework version, adapter schema version, template version,
 installed framework pack, baseline, deviations, migration notes, and hash-bound
 upgrade impact; bind releases to v<VERSION>, shipped schemas, and contract-tree
 evidence; preserve current-scope authorization, durable engineering evidence,
-and enabled target package/module state; expand context from affected owners
-and migrate schemas atomically without replacing active state with
-placeholders.
+non-canonical Debug Mode records, and enabled target package/module state;
+expand context from affected owners and migrate schemas atomically without
+replacing active state with placeholders.
 Applies to: installation, framework upgrades.
 Enforcement: required.
 
@@ -371,9 +386,10 @@ Canonical source: `.ai/framework/guarantees.md`
 Commitment: Distinguish process commitments, machine-checkable expectations,
 target-dependent guarantees, and non-guarantees in final claims; report
 current-scope authorization and actions; classify durable engineering evidence
-as captured, skipped, or blocked without exposing raw reasoning; distinguish
-strong versus bounded package provenance and generated-record limits; and
-separate declared from verified scope, validation, quality, latency, and cost
+without exposing raw reasoning; keep optional Debug Mode observability
+non-canonical and evidence-qualified; distinguish strong versus bounded package
+provenance and generated-record limits; and separate declared from verified
+scope, validation, quality, latency, cost, attribution, and supervision
 evidence.
 Applies to: final evidence, framework positioning.
 Enforcement: required.
