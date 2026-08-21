@@ -27,6 +27,8 @@ SCHEMA_CONTRACT_PATHS = SHIPPED_SCHEMA_PATHS | {
     "templates/target/.ai/alatyr.yaml",
     "templates/target/.ai/assistant/module-profile.md",
     "templates/target/.ai/assistant/context-router.json",
+    "templates/target/.ai/assistant/context/consistency-routing.json",
+    "templates/target/.ai/assistant/context/cost-scenarios.json",
     "templates/target/.ai/assistant/operation-catalog.json",
     "templates/target/.ai/assistant/operation-index.json",
     "templates/target/.ai/assistant/assistant-capabilities.json",
@@ -37,6 +39,7 @@ SCHEMA_CONTRACT_PATHS = SHIPPED_SCHEMA_PATHS | {
     "templates/target/.ai/assistant/team/backend-contract.json",
     "templates/target/.ai/assistant/team/task-record-template.json",
     "templates/target/.ai/project/team-policy.json",
+    "templates/target/.ai/project/consistency-map.json",
 }
 CONTRACT_VERSION_FILES = ("VERSION", "ADAPTER_SCHEMA_VERSION", "TEMPLATE_VERSION")
 

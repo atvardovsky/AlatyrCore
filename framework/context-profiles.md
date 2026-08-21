@@ -157,10 +157,17 @@ changed facts.
 ## Consistency Relationship Routing
 
 Targets with many project areas or competing surfaces may enable a compact
-consistency map. Load it after a semantic change or suspected drift, resolve
-changed fact IDs, and follow only applicable relationship edges. Expand to
-dependent contracts for propagation, conflicts, failed validation, or approval
+consistency map. After a semantic change or suspected drift, load the target
+source-of-truth registry and consistency map together, resolve changed fact
+IDs, and follow only applicable relationship edges. Keep the portable
+consistency-model explanation conditional unless relationship semantics,
+adapter repair, or conflicting evidence requires it. Expand to dependent
+contracts for propagation, conflicts, failed validation, or approval
 boundaries. The human source-of-truth registry remains the owner explanation.
+
+Measure this composed semantic route as a target context-cost scenario. Do not
+remove either target-owned surface to recover budget; move redundant portable
+explanation to conditional context or record a justified expansion receipt.
 
 ## AI Infrastructure Item Routing
 

@@ -1244,7 +1244,25 @@
       ]
     },
     {
+      "code": "CONSISTENCY_MAP_NODE_AREA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "CONSISTENCY_MAP_NODE_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_MAP_NODE_FACT_TYPE",
       "levels": [
         "error"
       ],
@@ -1307,6 +1325,33 @@
       ]
     },
     {
+      "code": "CONSISTENCY_MAP_REGISTRY_EMPTY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_MAP_REGISTRY_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_MAP_REGISTRY_SYNC_POLICY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "CONSISTENCY_MAP_RELATIONSHIPS",
       "levels": [
         "error"
@@ -1325,9 +1370,72 @@
       ]
     },
     {
+      "code": "CONSISTENCY_MAP_SCHEMA_LEGACY",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "CONSISTENCY_MAP_TARGET_LEVEL",
       "levels": [
         "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_REGISTRY_FACT_TYPE_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_REGISTRY_FACT_TYPE_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_REGISTRY_NODE_FACT_TYPE_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_REGISTRY_NODE_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_REGISTRY_NODE_REUSED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_REGISTRY_NODE_UNRESOLVED",
+      "levels": [
+        "configured"
       ],
       "sources": [
         "tools/validate_target_adapter.py"
@@ -2516,6 +2624,15 @@
       "code": "DIFF_SCOPE_UNAVAILABLE",
       "levels": [
         "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ENABLED_MODULE_STALE_STATUS",
+      "levels": [
+        "error"
       ],
       "sources": [
         "tools/validate_target_adapter.py"
@@ -4523,6 +4640,60 @@
       "code": "ROUTER_CONDITIONAL_CONTEXT",
       "levels": [
         "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_CONSISTENCY_COMPOSITION_COST",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/router_costs.py"
+      ]
+    },
+    {
+      "code": "ROUTER_CONSISTENCY_COMPOSITION_MEASURED",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/router_costs.py"
+      ]
+    },
+    {
+      "code": "ROUTER_CONSISTENCY_CONDITIONAL",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_CONSISTENCY_CONTEXT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_CONSISTENCY_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_CONSISTENCY_PORTABLE_EAGER",
+      "levels": [
+        "warning"
       ],
       "sources": [
         "tools/validate_target_adapter.py"

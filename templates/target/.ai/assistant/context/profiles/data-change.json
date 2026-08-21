@@ -17,7 +17,7 @@
   "required_context": [
     ".ai/framework/context-discovery.md",
     ".ai/framework/change-risk-model.md",
-    ".ai/framework/source-of-truth-registry.md",
+    ".ai/project/source-of-truth-registry.md",
     ".ai/framework/logical-integrity.md",
     ".ai/assistant/gates/core.md",
     ".ai/assistant/gates/semantic-integrity.md",
@@ -26,6 +26,7 @@
     "{TARGET_DATA_SOURCE_OF_TRUTH}"
   ],
   "conditional_context": [
+    {"path": ".ai/framework/source-of-truth-registry.md", "when": "registry ownership semantics are disputed or the target registry requires repair"},
     {"path": ".ai/framework/security-safety-guidance.md", "when": "privacy credentials destructive live-service or retention boundaries are affected"},
     {"path": ".ai/framework/testing-guidance.md", "when": "a migration implementation rollback or validation plan is prepared"},
     {"path": ".ai/assistant/gates/security-approval.md", "when": "the data change reaches a protected destructive privacy live or approval boundary"},

@@ -174,7 +174,8 @@ Collect target-specific facts before writing project docs:
 - context/source-of-truth owners and generated artifacts
 - source-of-truth registry entries for important fact types
 - consistency-map need, owner, fact-ID strategy, relationship coverage, and
-  staleness checks
+  staleness checks, including exact one-to-one coverage from every live
+  registry Fact Type to its referenced map node
 - adapter owner, backup owner, review cadence, and file-owner map expectations
 - risk classes and approval triggers
 - security, privacy, live-service, destructive-operation, dependency, and

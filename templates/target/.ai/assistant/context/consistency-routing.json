@@ -6,8 +6,14 @@
     "semantic fact changed or drift is suspected"
   ],
   "required_context": [
-    ".ai/framework/consistency-model.md",
+    ".ai/project/source-of-truth-registry.md",
     ".ai/project/consistency-map.json"
+  ],
+  "conditional_context": [
+    {
+      "path": ".ai/framework/consistency-model.md",
+      "when": "relationship semantics are disputed, adapter repair is required, or registry and map evidence conflict"
+    }
   ],
   "lookup_order": [
     "changed fact ids",

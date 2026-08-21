@@ -17,7 +17,7 @@
   "required_context": [
     ".ai/framework/context-discovery.md",
     ".ai/framework/change-risk-model.md",
-    ".ai/framework/source-of-truth-registry.md",
+    ".ai/project/source-of-truth-registry.md",
     ".ai/framework/logical-integrity.md",
     ".ai/assistant/gates/core.md",
     ".ai/assistant/gates/semantic-integrity.md",
@@ -25,6 +25,7 @@
     "{TARGET_BLUEPRINT_OR_PRODUCT_SOURCE_OF_TRUTH}"
   ],
   "conditional_context": [
+    {"path": ".ai/framework/source-of-truth-registry.md", "when": "registry ownership semantics are disputed or the target registry requires repair"},
     {"path": ".ai/framework/blueprint-driven-change.md", "when": "the accepted business decision enters planning"},
     {"path": ".ai/framework/approval-records.md", "when": "accepted behavior or another protected category changes"},
     {"path": ".ai/framework/testing-guidance.md", "when": "the decision enters implementation planning or validation"},

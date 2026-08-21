@@ -646,6 +646,26 @@ def main() -> int:
         failures,
         {"required_context"},
     )
+    consistency_required = consistency.get("required_context", [])
+    for required in [
+        ".ai/project/source-of-truth-registry.md",
+        ".ai/project/consistency-map.json",
+    ]:
+        if required not in consistency_required:
+            failures.append(f"consistency_routing missing {required}")
+    if ".ai/framework/consistency-model.md" in consistency_required:
+        failures.append(
+            "consistency_routing should keep portable consistency-model guidance conditional"
+        )
+    consistency_conditional = check_conditional_context(
+        consistency,
+        "consistency_routing",
+        failures,
+    )
+    if ".ai/framework/consistency-model.md" not in consistency_conditional:
+        failures.append(
+            "consistency_routing conditional context missing portable consistency-model guidance"
+        )
 
     migration_entry = router.get("migration_routing")
     migration = descriptor(

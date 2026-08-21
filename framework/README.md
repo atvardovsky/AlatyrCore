@@ -25,8 +25,8 @@ sync, logical integrity review, and final evidence.
 - machine-readable context router guidance for cheaper task startup
 - context profiles for task-specific minimum reading sets
 - source-of-truth registry guidance for fact ownership and sync direction
-- optional multi-level consistency mapping for bounded changed-fact impact
-  traversal
+- optional multi-level consistency mapping with exact registry Fact Type to
+  node identity and bounded changed-fact impact traversal
 - change-risk classification and approval trigger model
 - first-class logical integrity review
 - blueprint-driven product-change workflow

@@ -211,6 +211,27 @@ def build_report() -> dict[str, Any]:
             ]
         )
 
+    consistency_reference, consistency_contract = descriptor(
+        router.get("consistency_routing", {})
+    )
+    consistency_routing = measure(
+        [
+            value
+            for value in [
+                consistency_reference,
+                *consistency_contract.get("required_context", []),
+            ]
+            if value
+        ]
+    )
+    consistency_routing["conditional_context"] = measure(
+        [
+            item.get("path")
+            for item in consistency_contract.get("conditional_context", [])
+            if isinstance(item, dict) and isinstance(item.get("path"), str)
+        ]
+    )
+
     operation_routing = router.get("operation_routing", {})
     diagram_reference, diagram_overlay = intent_contracts.get(
         "diagram-request", (None, {})
@@ -536,6 +557,15 @@ def build_report() -> dict[str, Any]:
                 for value in [reference, *contract.get("required_context", [])]
                 if value
             )
+        if scenario.get("consistency_routing") is True:
+            references.extend(
+                value
+                for value in [
+                    consistency_reference,
+                    *consistency_contract.get("required_context", []),
+                ]
+                if value
+            )
         scenario_measure = measure(references)
         scenario_measure["expected_budget_state"] = scenario.get(
             "expected_budget_state"
@@ -552,6 +582,7 @@ def build_report() -> dict[str, Any]:
         "profiles": profiles,
         "intent_overlays": intent_overlays,
         "task_scale_overlays": task_scale_overlays,
+        "consistency_routing": consistency_routing,
         "task_overlay_compositions": {
             "large-or-resumable+team-active": team_large_composition,
         },
@@ -673,6 +704,33 @@ def build_installed_report(target: Path) -> dict[str, Any]:
             target,
             [reference, *descriptor_data.get("required_context", [])],
         )
+    consistency_entry = router.get("consistency_routing")
+    consistency_reference = (
+        consistency_entry.get("descriptor")
+        if isinstance(consistency_entry, dict)
+        else None
+    )
+    consistency_contract: dict[str, Any] = {}
+    consistency_path = (
+        installed_path(target, consistency_reference)
+        if isinstance(consistency_reference, str)
+        else None
+    )
+    if consistency_path and consistency_path.is_file():
+        loaded = json.loads(consistency_path.read_text(encoding="utf-8"))
+        if isinstance(loaded, dict):
+            consistency_contract = loaded
+    consistency_routing = measure_installed(
+        target,
+        [
+            value
+            for value in [
+                consistency_reference,
+                *consistency_contract.get("required_context", []),
+            ]
+            if isinstance(value, str) and value
+        ],
+    )
     return {
         "schema_version": 1,
         "report_kind": "installed-target-context-cost",
@@ -680,6 +738,7 @@ def build_installed_report(target: Path) -> dict[str, Any]:
         "budgets": router.get("context_budgets", {}),
         "bootstrap": bootstrap,
         "profiles": profiles,
+        "consistency_routing": consistency_routing,
         "limitations": [
             "word counts measure repository files, not hidden client context or billed tokens",
             "conditional context is measured only when selected for a concrete task",

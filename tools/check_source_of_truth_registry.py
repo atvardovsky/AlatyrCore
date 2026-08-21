@@ -28,6 +28,8 @@ REQUIRED_FACT_TYPES = [
     "architecture decision",
     "architecture pattern",
     "data model",
+    "dependency public contract and target use",
+    "workspace identity and development mode relationship",
     "validation command",
     "security policy",
     "assistant operation",
@@ -36,6 +38,7 @@ REQUIRED_FACT_TYPES = [
     "code documentation profile",
     "project vocabulary",
     "test strategy and test-first policy",
+    "team policy",
 ]
 
 REQUIRED_FIELDS = [
@@ -88,7 +91,15 @@ def main() -> int:
             failures.append(f"missing registry entry for fact type: {fact_type}")
             continue
 
-        for field in REQUIRED_FIELDS:
+        required_fields = [
+            field
+            for field in REQUIRED_FIELDS
+            if not (
+                fact_type == "dependency public contract and target use"
+                and field == "Canonical owner:"
+            )
+        ]
+        for field in required_fields:
             if field not in block:
                 failures.append(f"{fact_type} missing field {field}")
 
@@ -108,6 +119,18 @@ def main() -> int:
                 )
                 if "{" not in line:
                     failures.append(f"{fact_type} {field} should be placeholder-based")
+        if fact_type == "dependency public contract and target use":
+            for field in [
+                "Upstream public fact owner:",
+                "Target configuration, restriction, wrapper, or patch owner:",
+                "Cross-package integration owner:",
+            ]:
+                line = next(
+                    (line for line in block.splitlines() if line.startswith(field)),
+                    "",
+                )
+                if "{" not in line:
+                    failures.append(f"{fact_type} {field} should be placeholder-based")
 
         canonical_line = next(
             (line for line in block.splitlines() if line.startswith("Canonical owner:")),
@@ -118,8 +141,12 @@ def main() -> int:
             "code documentation profile": ".ai/project/documentation/profiles.json",
             "project vocabulary": ".ai/project/vocabulary/terms.json",
             "test strategy and test-first policy": ".ai/project/testing/test-first-policy.json",
+            "workspace identity and development mode relationship": ".ai/project/workspace-modes/catalog.json",
+            "team policy": ".ai/project/team-policy.json",
         }
-        if fact_type in fixed_owners:
+        if fact_type == "dependency public contract and target use":
+            pass
+        elif fact_type in fixed_owners:
             if fixed_owners[fact_type] not in canonical_line:
                 failures.append(
                     f"{fact_type} canonical owner must be {fixed_owners[fact_type]}"
@@ -127,7 +154,10 @@ def main() -> int:
         elif "{" not in canonical_line:
             failures.append(f"{fact_type} canonical owner should remain placeholder-based")
 
-        if not re.search(r"Derived surfaces:\s*\n\s*-\s*`?\{[^}]+\}`?", block):
+        derived_block = block.partition("Derived surfaces:")[2].partition(
+            "Sync direction:"
+        )[0]
+        if not re.search(r"^\s*-\s*`?\{[^}]+\}`?", derived_block, re.MULTILINE):
             failures.append(f"{fact_type} derived surfaces must include a placeholder bullet")
 
         for field in [

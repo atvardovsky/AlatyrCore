@@ -117,8 +117,12 @@ Replace placeholders with target facts before accepting installation.
    known gaps; and target-local adapter checker evidence that no longer matches
    repository files.
 10. Check project blueprint/source-of-truth ownership, registry entries,
-   consistency-map nodes and edges when enabled, missing facts, stale
-   relationships, and drift.
+   consistency-map nodes and edges when enabled, exact registry Fact Type to
+   node-ID and node-`fact_type` agreement, missing facts, stale relationships,
+   and drift. Treat registry, map, consistency routing, measured semantic
+   context, and generated bootstrap evidence as one adapter sync set. Reject
+   live support surfaces that still describe an enabled module as deferred,
+   disabled, blocked, or not installed.
     When architecture knowledge is enabled, check catalog ownership, decision
     authority, item states, selected evidence, revision freshness,
     documentation routes, contradictions, and accepted-decision handoff.

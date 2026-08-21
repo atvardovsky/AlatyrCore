@@ -1,10 +1,10 @@
 {
-  "adapter_schema_version": 14,
+  "adapter_schema_version": 15,
   "files": [
     {
       "path": "framework/README.md",
       "rule_ids": [],
-      "sha256": "952ff55adfa2f8b819ba74017a82a69c0cc958ca2181e6192244be855e5d2b07"
+      "sha256": "e6e15746b5afc7a3d937356ae23222fefed801989cb7c45a8568d8a19bafb411"
     },
     {
       "path": "framework/adapter-maturity.md",
@@ -57,7 +57,7 @@
     {
       "path": "framework/capabilities.json",
       "rule_ids": [],
-      "sha256": "ddfe46fbf12c80d99a02480dd9ab605408cf594d3bb69591327a5517c3070696"
+      "sha256": "66cd86e7f06e09d4a95e4600603de7e07a7975e141f4c20a1f43492bac7fb6e9"
     },
     {
       "path": "framework/change-packages.md",
@@ -95,7 +95,7 @@
       "rule_ids": [
         "ALATYR-CONTEXT-001"
       ],
-      "sha256": "71290c6e025197b180619bb8edb3a7bf788abac189ad6b6923229f71763a27ed"
+      "sha256": "27d8003191d9fd74c848d114db398914191616da50e8751d8192148606749108"
     },
     {
       "path": "framework/context-router.md",
@@ -198,7 +198,7 @@
       "rule_ids": [
         "ALATYR-ADAPTER-001"
       ],
-      "sha256": "9c4e16ca9d3f36f7572af740735a12808edde5e0be3cfe15ec91e00ed4f50153"
+      "sha256": "235483f20fab5eb7ee0e41e2a03429f6552618c87f8e12c91a2f5fdf80b1dc76"
     },
     {
       "path": "framework/project-vocabulary.md",
@@ -222,12 +222,12 @@
     {
       "path": "framework/rule-registry.json",
       "rule_ids": [],
-      "sha256": "d4fdf6b7b4b463e50dbe9b80974aa00b8d11dd1cd37620d493678490954cea6d"
+      "sha256": "dc81ddc0101e5be3952ea13493350e1d6242c445b78e86660b013775e74cd802"
     },
     {
       "path": "framework/rule-registry.md",
       "rule_ids": [],
-      "sha256": "39da5b3e2038fd794e22684fe35d3d983a8a98618e8d4462303fe33800a6357a"
+      "sha256": "7e37d33c2ca5ce077b606f6f678ea618dbf6e73da0731d91a4ad35e022c3de54"
     },
     {
       "path": "framework/scaffolding.md",
@@ -251,7 +251,7 @@
       "rule_ids": [
         "ALATYR-SOURCE-001"
       ],
-      "sha256": "048cea36a1f5ab1baf92038bae5b35218c7b587526cd01dc746ecc5a11f5f6e3"
+      "sha256": "c3434db871609d2e158d2244d06060693ee5c200f705038b764677fa0b39e1b7"
     },
     {
       "path": "framework/subagent-delegation.md",
@@ -287,8 +287,8 @@
       "sha256": "dc1b84f72ca465f735d51ee5de02d3c26fd8054688556b4f11c1663eddc239da"
     }
   ],
-  "framework_version": "0.1.0-alpha.15",
+  "framework_version": "0.1.0-alpha.16",
   "inventory_kind": "alatyr-framework-files",
   "schema_version": 1,
-  "template_version": 15
+  "template_version": 16
 }

@@ -4,6 +4,29 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.16 - 2026-08-21
+
+- Increased the framework version to `0.1.0-alpha.16`, adapter schema version
+  to `15`, and target template version to `16` for exact source-of-truth
+  registry and consistency-map synchronization.
+- Required every live registry Fact Type in an enabled consistency map to
+  reference one resolved, unique node whose `fact_type` matches exactly;
+  additional derived contract, area, system, and adapter nodes remain allowed.
+- Changed semantic routing to load the target registry and map together while
+  keeping the portable consistency-model explanation conditional.
+- Added a measured compact semantic-consistency scenario so registry/map
+  routing changes remain inside declared context budgets without dropping
+  target-owned evidence; installed validation also checks each composed
+  profile against total, portable, reserved-target, and file limits.
+- Added target-validator findings for missing, reused, unresolved, duplicate,
+  and mismatched registry/map identities and for stale unavailable-state claims
+  about enabled modules on live support surfaces.
+- Synchronized installation, planning, recheck, logical-integrity, blueprint,
+  module-capability, maintenance, and validation guidance around one reviewed
+  registry/map/routing/budget/bootstrap adapter change set.
+- Changed `ALATYR-CONTEXT-001`, `ALATYR-SOURCE-001`, and
+  `ALATYR-ADAPTER-001`; no rule IDs were added or removed.
+
 ## 0.1.0-alpha.15 - 2026-08-21
 
 - Increased the framework version to `0.1.0-alpha.15`, adapter schema version

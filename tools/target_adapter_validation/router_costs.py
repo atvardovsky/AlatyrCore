@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import re
 from pathlib import Path
 from typing import Any, Protocol
@@ -155,6 +156,7 @@ def validate_installed_costs(
         sink.error("ROUTER_BOOTSTRAP_COST", "bootstrap exceeds max_words", SOURCE)
 
     profile_index = router.get("profile_index", {})
+    profile_references: dict[str, list[str]] = {}
     for name, profile in profiles.items():
         if not isinstance(profile, dict):
             continue
@@ -165,12 +167,14 @@ def validate_installed_costs(
             for value in [descriptor, *profile.get("required_context", [])]
             if isinstance(value, str) and value
         ]
+        profile_references[name] = references
         files, total_words, portable_words, target_words = measure(
             references, f"profile {name}"
         )
         max_files = profile_budget.get("max_files")
         max_total = profile_budget.get("max_total_words")
         max_portable = profile_budget.get("max_portable_words")
+        reserved_target = profile_budget.get("reserved_target_words")
         if isinstance(max_files, int) and len(dict.fromkeys(references)) > max_files:
             sink.error(
                 "ROUTER_PROFILE_COST",
@@ -189,6 +193,12 @@ def validate_installed_costs(
                 f"profile {name} measures {portable_words} portable words above {max_portable}",
                 SOURCE,
             )
+        if isinstance(reserved_target, int) and target_words > reserved_target:
+            sink.error(
+                "ROUTER_PROFILE_COST",
+                f"profile {name} measures {target_words} target words above reserved_target_words {reserved_target}",
+                SOURCE,
+            )
         sink.info(
             "ROUTER_PROFILE_COST_MEASURED",
             f"profile {name} measures total={total_words} portable={portable_words} "
@@ -201,3 +211,69 @@ def validate_installed_costs(
                 f"profile {name} has no measurable context files",
                 SOURCE,
             )
+
+    consistency_entry = router.get("consistency_routing")
+    consistency_reference = (
+        consistency_entry.get("descriptor")
+        if isinstance(consistency_entry, dict)
+        else None
+    )
+    consistency_contract: dict[str, Any] = {}
+    if isinstance(consistency_reference, str) and consistency_reference:
+        consistency_path = sink.target_path(consistency_reference)
+        if consistency_path.is_file():
+            try:
+                loaded = json.loads(sink.read_text(consistency_path))
+            except json.JSONDecodeError:
+                loaded = None
+            if isinstance(loaded, dict):
+                consistency_contract = loaded
+    consistency_references = [
+        value
+        for value in [
+            consistency_reference,
+            *consistency_contract.get("required_context", []),
+        ]
+        if isinstance(value, str) and value
+    ]
+    if not consistency_references:
+        return
+
+    max_files = profile_budget.get("max_files")
+    max_total = profile_budget.get("max_total_words")
+    max_portable = profile_budget.get("max_portable_words")
+    reserved_target = profile_budget.get("reserved_target_words")
+    for name, references in profile_references.items():
+        composed = list(dict.fromkeys([*references, *consistency_references]))
+        _, total_words, portable_words, target_words = measure(
+            composed, f"profile {name} with consistency routing"
+        )
+        if isinstance(max_files, int) and len(composed) > max_files:
+            sink.error(
+                "ROUTER_CONSISTENCY_COMPOSITION_COST",
+                f"profile {name} with consistency routing declares more than {max_files} context files",
+                SOURCE,
+            )
+        if isinstance(max_total, int) and total_words > max_total:
+            sink.error(
+                "ROUTER_CONSISTENCY_COMPOSITION_COST",
+                f"profile {name} with consistency routing measures {total_words} words above max_total_words {max_total}",
+                SOURCE,
+            )
+        if isinstance(max_portable, int) and portable_words > max_portable:
+            sink.error(
+                "ROUTER_CONSISTENCY_COMPOSITION_COST",
+                f"profile {name} with consistency routing measures {portable_words} portable words above {max_portable}",
+                SOURCE,
+            )
+        if isinstance(reserved_target, int) and target_words > reserved_target:
+            sink.error(
+                "ROUTER_CONSISTENCY_COMPOSITION_COST",
+                f"profile {name} with consistency routing measures {target_words} target words above reserved_target_words {reserved_target}",
+                SOURCE,
+            )
+        sink.info(
+            "ROUTER_CONSISTENCY_COMPOSITION_MEASURED",
+            f"profile {name} with consistency routing measures total={total_words} portable={portable_words} target={target_words} words",
+            SOURCE,
+        )

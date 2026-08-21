@@ -47,7 +47,9 @@ Every project using this framework must define:
   surfaces can describe the same fact, including invariant and dependency
   constraints used when relationship mapping is unavailable
 - machine-readable consistency map when the target needs bounded fact-to-
-  contract, area, system, and adapter impact traversal
+  contract, area, system, and adapter impact traversal; an enabled map covers
+  every live registry Fact Type through an exact, unique node reference and is
+  routed together with the human registry
 - project architecture index and compact catalog when the target enables
   architecture inventory, explanation, pattern discussion, comparison,
   review, or supporting-documentation maintenance; entries distinguish
@@ -162,6 +164,8 @@ An adapter may provide:
   statements, duplicate context profile references, missing context-router
   bootstrap references, unresolved owner placeholders, and target-local
   checker coverage
+- enabled-module drift checks that reject live support surfaces which still
+  claim an enabled capability is deferred, disabled, blocked, or not installed
 - security/dependency/license scanners or manual review checklists
 - project-specific test-generation prompts or skills
 - skill import or normalization notes

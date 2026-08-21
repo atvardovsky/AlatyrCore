@@ -146,11 +146,13 @@ Before accepting a change, check:
   the target projection with `python3 tools/render_target_bootstrap_index.py
   --target templates/target --write` only after reviewing canonical sources.
 - `python3 tools/check_context_costs.py` passes when bootstrap/profile paths,
-  context budgets, or routed source word counts change; refresh the golden
-  baseline only after reviewing the cost difference.
+  consistency composition, context budgets, or routed source word counts
+  change; refresh the golden baseline only after reviewing the cost difference.
+  The installed validator must enforce the same total, portable, reserved-
+  target, and file limits over profile-plus-consistency composition.
 - `python3 tools/check_consistency_map.py` passes when consistency levels,
-  relationship types, impact traversal, source registry linkage, manifest
-  routing, or map placeholders change.
+  relationship types, impact traversal, exact source-registry node linkage,
+  semantic routing, or map placeholders change.
 - `python3 tools/check_cross_platform_tools.py` passes when the unified tool
   manifest, platform launchers, write scopes, or migration-first upgrade
   assessment changes. The source workflow must also run `check_all.py` on
@@ -302,8 +304,9 @@ Before accepting a change, check:
   checker rules.
 - source-of-truth registry, maturity profile, bridge capability matrix, and
   migration-note template agree with installer docs and checker rules.
-- optional consistency-map schema, human registry fact IDs, relationship
-  routing, module state, impact evidence, and checker rules agree.
+- optional consistency-map schema, exact human registry Fact Type and node
+  identity, relationship routing, measured semantic composition, module state,
+  impact evidence, and checker rules agree.
 - target source-of-truth registry baseline entries include canonical owner,
   stable fact ID, consistency level, project area, relationship coverage,
   derived surfaces, sync direction, validation, conflict resolver, approval,

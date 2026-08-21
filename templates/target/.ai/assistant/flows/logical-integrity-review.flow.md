@@ -18,10 +18,13 @@ This flow adapts `.ai/framework/logical-integrity.md` to `{PROJECT_NAME}`.
    If the task starts from multiple review comments or defects, cluster them
    by fact and contract before choosing local repairs.
 5. When the `consistency-map` module is enabled, use
-   `.ai/project/consistency-map.json` to select applicable relationship edges
-   and build a bounded impact closure. Record skipped or missing edges. When
-   the map is disabled or incomplete, build a compact manual closure from the
-   re-derived invariants and record unknown relationships.
+   `.ai/project/source-of-truth-registry.md` and
+   `.ai/project/consistency-map.json` together. Confirm that every selected
+   registry Fact Type points to a node with the exact same `fact_type`, then
+   select applicable relationship edges and build a bounded impact closure.
+   Record skipped or missing edges. When the map is disabled or incomplete,
+   build a compact manual closure from the re-derived invariants and record
+   unknown relationships.
 6. Map each changed fact to target contracts:
    - business/domain rules
    - use cases or workflows

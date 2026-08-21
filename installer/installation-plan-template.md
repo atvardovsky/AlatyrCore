@@ -201,7 +201,10 @@ surfaces can describe the same project fact.
 Include `.ai/project/consistency-map.json` when the target has enough project
 areas or competing surfaces to benefit from bounded changed-fact relationship
 traversal. Populate it from target evidence or leave the module blocked; do not
-infer complete relationships from filenames.
+infer complete relationships from filenames. The plan must map every live
+registry Fact Type to one resolved, unique node with an exact `fact_type`
+match, route the registry and map together, and include the measured composed
+semantic context scenario.
 
 Include `.ai/project/architecture/README.md` and
 `.ai/project/architecture/catalog.json` when architecture knowledge is

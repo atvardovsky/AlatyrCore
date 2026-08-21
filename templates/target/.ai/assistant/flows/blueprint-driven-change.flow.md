@@ -24,8 +24,10 @@ Replace placeholders with target facts before accepting installation.
 3. Apply `.ai/assistant/flows/logical-integrity-review.flow.md`.
 4. List changed fact IDs and canonical owners, re-derive testable invariants,
    and cluster related review items by shared fact or contract. When the `consistency-map`
-   module is enabled, derive affected contracts, areas, and surfaces from
-   `.ai/project/consistency-map.json` and record selected/skipped edges.
+   module is enabled, resolve exact registry-to-node identity from
+   `.ai/project/source-of-truth-registry.md` and
+   `.ai/project/consistency-map.json`, then derive affected contracts, areas,
+   and surfaces and record selected/skipped edges.
 5. Update target blueprint or equivalent source-of-truth docs when accepted
    facts change.
 6. Update project flow, use-case, data, runtime, architecture, or public docs

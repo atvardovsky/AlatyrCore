@@ -400,6 +400,30 @@ CONSISTENCY_RELATIONSHIPS = {
     "depends-on",
     "routes",
 }
+CONSISTENCY_REGISTRY_SYNC_POLICY = {
+    "coverage": "every-live-registry-fact-type",
+    "node_reference": "registry-consistency-map-node-id",
+    "fact_type_match": "exact",
+    "extra_nodes": "allowed-for-derived-contract-area-system-and-adapter-surfaces",
+}
+REGISTRY_ENTRY_HEADING_RE = re.compile(
+    r"^### Fact Type: `([^`]+)`\s*$", re.MULTILINE
+)
+STALE_ENABLED_MODULE_STATE_RE = re.compile(
+    r"\b(?:is|remains|was|still\s+is)\s+"
+    r"(?:not\s+installed|not\s+enabled|deferred|disabled|not-applicable|blocked)\b",
+    re.IGNORECASE,
+)
+STALE_GENERIC_MODULE_STATE_RE = re.compile(
+    r"\b(?:this|the)\s+(?:optional\s+)?(?:module|capability)\s+"
+    r"(?:is|remains|was|still\s+is)\s+"
+    r"(?:not\s+installed|not\s+enabled|deferred|disabled|not-applicable|blocked)\b",
+    re.IGNORECASE,
+)
+CONDITIONAL_STATUS_RE = re.compile(
+    r"\b(?:if|when|unless|until|while|may|might|can|could|example|possible)\b",
+    re.IGNORECASE,
+)
 AI_INFRASTRUCTURE_ROUTES_V1 = {
     "inventory",
     "use-existing",
@@ -430,6 +454,45 @@ ALLOWED_ACTION_MODES = {
     "code-and-tests",
     "full-with-approval",
 }
+
+
+@dataclass(frozen=True)
+class RegistryFactEntry:
+    heading_fact_type: str
+    declared_fact_type: str | None
+    map_node_id: str | None
+    line: int
+
+
+def markdown_scalar(block: str, field: str) -> str | None:
+    match = re.search(
+        rf"^{re.escape(field)}:\s*(.*?)\s*$",
+        block,
+        flags=re.MULTILINE,
+    )
+    if match is None:
+        return None
+    value = match.group(1).strip()
+    if len(value) >= 2 and value.startswith("`") and value.endswith("`"):
+        value = value[1:-1].strip()
+    return value or None
+
+
+def parse_registry_fact_entries(text: str) -> list[RegistryFactEntry]:
+    matches = list(REGISTRY_ENTRY_HEADING_RE.finditer(text))
+    entries: list[RegistryFactEntry] = []
+    for index, match in enumerate(matches):
+        end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
+        block = text[match.end():end]
+        entries.append(
+            RegistryFactEntry(
+                heading_fact_type=match.group(1).strip(),
+                declared_fact_type=markdown_scalar(block, "Fact type"),
+                map_node_id=markdown_scalar(block, "Consistency map node"),
+                line=text.count("\n", 0, match.start()) + 1,
+            )
+        )
+    return entries
 
 OPERATION_REQUIRED_FIELDS = {
     "id",
@@ -692,6 +755,7 @@ class Validator:
         ).is_file():
             self.check_operation_catalog()
         dispatch_capability_checks(self, enabled_modules, manifest)
+        self.check_enabled_module_status_claims(enabled_modules)
         self.check_bootstrap_references()
         self.check_placeholders()
         self.check_local_paths()
@@ -1325,6 +1389,82 @@ class Validator:
                             f"profiles.{profile}.conditional_context[{index}].when is missing",
                             ".ai/assistant/context-router.json",
                         )
+
+        if "consistency-map" in (enabled_modules or set()):
+            consistency_entry = router.get("consistency_routing")
+            if not isinstance(consistency_entry, dict):
+                self.error(
+                    "ROUTER_CONSISTENCY_MISSING",
+                    "enabled consistency-map requires consistency_routing",
+                    ".ai/assistant/context-router.json",
+                )
+            else:
+                consistency = self.load_context_descriptor(
+                    consistency_entry,
+                    "target-consistency-routing",
+                    "consistency_routing",
+                )
+                if isinstance(consistency, dict):
+                    descriptor_path = str(consistency_entry.get("descriptor"))
+                    required_context = expect_string_list(
+                        consistency.get("required_context"),
+                        self,
+                        "ROUTER_CONSISTENCY_CONTEXT",
+                        descriptor_path,
+                        label="consistency_routing.required_context",
+                    )
+                    for required in [
+                        ".ai/project/source-of-truth-registry.md",
+                        ".ai/project/consistency-map.json",
+                    ]:
+                        if required not in required_context:
+                            self.error(
+                                "ROUTER_CONSISTENCY_CONTEXT",
+                                f"consistency routing missing {required}",
+                                descriptor_path,
+                            )
+                    for reference in required_context:
+                        self.check_router_path(
+                            reference, "consistency_routing", "required_context"
+                        )
+                    if ".ai/framework/consistency-model.md" in required_context:
+                        self.warn(
+                            "ROUTER_CONSISTENCY_PORTABLE_EAGER",
+                            "portable consistency-model guidance should be conditional after target registry and map evidence",
+                            descriptor_path,
+                        )
+                    conditional = consistency.get("conditional_context")
+                    if not isinstance(conditional, list):
+                        self.error(
+                            "ROUTER_CONSISTENCY_CONDITIONAL",
+                            "consistency routing must define conditional_context",
+                            descriptor_path,
+                        )
+                    else:
+                        portable_condition = next(
+                            (
+                                item
+                                for item in conditional
+                                if isinstance(item, dict)
+                                and item.get("path")
+                                == ".ai/framework/consistency-model.md"
+                            ),
+                            None,
+                        )
+                        if not isinstance(portable_condition, dict) or not isinstance(
+                            portable_condition.get("when"), str
+                        ):
+                            self.error(
+                                "ROUTER_CONSISTENCY_CONDITIONAL",
+                                "portable consistency-model guidance needs an explicit conditional load trigger",
+                                descriptor_path,
+                            )
+                        else:
+                            self.check_router_path(
+                                str(portable_condition["path"]),
+                                "consistency_routing",
+                                "conditional_context",
+                            )
 
         if schema_version in {4, 5, 6} and isinstance(budgets, dict):
             self.check_installed_context_costs(router, profiles, budgets)
@@ -5162,8 +5302,19 @@ class Validator:
         data = self.load_json_object(path, "CONSISTENCY_MAP")
         if data is None:
             return
-        if data.get("schema_version") != 1:
-            self.error("CONSISTENCY_MAP_SCHEMA", "schema_version should be 1", relpath)
+        schema_version = data.get("schema_version")
+        if schema_version == 1:
+            self.warn(
+                "CONSISTENCY_MAP_SCHEMA_LEGACY",
+                "schema_version 1 should migrate to schema 2 registry-sync policy",
+                relpath,
+            )
+        elif schema_version != 2:
+            self.error(
+                "CONSISTENCY_MAP_SCHEMA",
+                "schema_version should be 1 or 2",
+                relpath,
+            )
         if data.get("map_kind") != "target-consistency-map":
             self.error(
                 "CONSISTENCY_MAP_KIND",
@@ -5174,6 +5325,12 @@ class Validator:
             self.error(
                 "CONSISTENCY_MAP_REGISTRY",
                 "human_registry should point to the target source-of-truth registry",
+                relpath,
+            )
+        if schema_version == 2 and data.get("registry_sync_policy") != CONSISTENCY_REGISTRY_SYNC_POLICY:
+            self.error(
+                "CONSISTENCY_MAP_REGISTRY_SYNC_POLICY",
+                "registry_sync_policy must require exact coverage while allowing extra derived nodes",
                 relpath,
             )
         if data.get("levels") != CONSISTENCY_LEVELS:
@@ -5215,6 +5372,7 @@ class Validator:
             self.error("CONSISTENCY_MAP_NODES", "nodes must be a non-empty list", relpath)
             return
         node_ids: set[str] = set()
+        nodes_by_id: dict[str, dict[str, Any]] = {}
         edge_ids: set[str] = set()
         for index, node in enumerate(nodes):
             label = f"nodes[{index}]"
@@ -5232,11 +5390,38 @@ class Validator:
                         relpath,
                     )
                 node_ids.add(node_id)
+                nodes_by_id[node_id] = node
+            fact_type = node.get("fact_type")
+            if not isinstance(fact_type, str) or not fact_type.strip():
+                self.error(
+                    "CONSISTENCY_MAP_NODE_FACT_TYPE",
+                    f"{label}.fact_type must be a non-empty string",
+                    relpath,
+                )
+            elif is_placeholder(fact_type) and not self.allow_placeholders:
+                self.error(
+                    "CONSISTENCY_MAP_NODE_FACT_TYPE",
+                    f"{label}.fact_type must be resolved in an accepted adapter",
+                    relpath,
+                )
             level = node.get("level")
             if not is_placeholder(level) and level not in CONSISTENCY_LEVELS:
                 self.error(
                     "CONSISTENCY_MAP_NODE_LEVEL",
                     f"{label}.level is invalid: {level}",
+                    relpath,
+                )
+            project_area = node.get("project_area")
+            if not isinstance(project_area, str) or not project_area.strip():
+                self.error(
+                    "CONSISTENCY_MAP_NODE_AREA",
+                    f"{label}.project_area must be a non-empty string",
+                    relpath,
+                )
+            elif is_placeholder(project_area) and not self.allow_placeholders:
+                self.error(
+                    "CONSISTENCY_MAP_NODE_AREA",
+                    f"{label}.project_area must be resolved in an accepted adapter",
                     relpath,
                 )
             owner = node.get("canonical_owner")
@@ -5317,6 +5502,150 @@ class Validator:
                         relpath,
                         label=f"{edge_label}.{field}",
                     )
+
+        registry_relpath = ".ai/project/source-of-truth-registry.md"
+        registry_path = self.target_path(registry_relpath)
+        if not registry_path.is_file():
+            self.error(
+                "CONSISTENCY_MAP_REGISTRY_MISSING",
+                "enabled consistency map requires the human source-of-truth registry",
+                registry_relpath,
+            )
+            return
+        registry_entries = parse_registry_fact_entries(self.read_text(registry_path))
+        if not registry_entries:
+            self.error(
+                "CONSISTENCY_MAP_REGISTRY_EMPTY",
+                "source-of-truth registry has no Fact Type entries",
+                registry_relpath,
+            )
+            return
+
+        heading_counts: dict[str, int] = {}
+        referenced_nodes: dict[str, str] = {}
+        for entry in registry_entries:
+            heading_counts[entry.heading_fact_type] = (
+                heading_counts.get(entry.heading_fact_type, 0) + 1
+            )
+            entry_path = f"{registry_relpath}:{entry.line}"
+            if entry.declared_fact_type != entry.heading_fact_type:
+                self.error(
+                    "CONSISTENCY_REGISTRY_FACT_TYPE_DRIFT",
+                    "Fact type field must match its Fact Type heading exactly",
+                    entry_path,
+                )
+            node_id = entry.map_node_id
+            if (
+                not isinstance(node_id, str)
+                or is_placeholder(node_id)
+                or is_unresolved_value(node_id)
+            ):
+                report = self.warn if self.allow_placeholders else self.error
+                report(
+                    "CONSISTENCY_REGISTRY_NODE_UNRESOLVED",
+                    f"Fact Type {entry.heading_fact_type!r} needs one resolved consistency-map node ID",
+                    entry_path,
+                )
+                continue
+            previous_fact_type = referenced_nodes.get(node_id)
+            if previous_fact_type is not None:
+                self.error(
+                    "CONSISTENCY_REGISTRY_NODE_REUSED",
+                    f"node {node_id!r} is referenced by both {previous_fact_type!r} and {entry.heading_fact_type!r}",
+                    entry_path,
+                )
+                continue
+            referenced_nodes[node_id] = entry.heading_fact_type
+            node = nodes_by_id.get(node_id)
+            if node is None:
+                self.error(
+                    "CONSISTENCY_REGISTRY_NODE_MISSING",
+                    f"Fact Type {entry.heading_fact_type!r} references missing node {node_id!r}",
+                    entry_path,
+                )
+                continue
+            if node.get("fact_type") != entry.heading_fact_type:
+                self.error(
+                    "CONSISTENCY_REGISTRY_NODE_FACT_TYPE_DRIFT",
+                    f"node {node_id!r} fact_type must exactly match {entry.heading_fact_type!r}",
+                    relpath,
+                )
+
+        for fact_type, count in sorted(heading_counts.items()):
+            if count > 1:
+                self.error(
+                    "CONSISTENCY_REGISTRY_FACT_TYPE_DUPLICATE",
+                    f"registry repeats Fact Type {fact_type!r}",
+                    registry_relpath,
+                )
+
+    def check_enabled_module_status_claims(
+        self, enabled_modules: set[str]
+    ) -> None:
+        if not enabled_modules:
+            return
+
+        catalog_path = self.target_path(".ai/framework/capabilities.json")
+        catalog, error = self.context.read_json(catalog_path)
+        modules = catalog.get("modules") if isinstance(catalog, dict) else None
+        if error is not None or not isinstance(modules, dict):
+            return
+
+        shared_surfaces = {
+            ".ai/README.md",
+            ".ai/assistant/contour.md",
+            ".ai/assistant/context-profiles.md",
+            ".ai/assistant/help.md",
+            ".ai/assistant/help-reference.md",
+            ".ai/assistant/maturity-profile.md",
+            ".ai/project/contour.md",
+            ".ai/project/blueprint.md",
+        }
+        for module_id in sorted(enabled_modules):
+            contract = modules.get(module_id)
+            module_surfaces = {
+                value
+                for value in (
+                    contract.get("target_files", [])
+                    if isinstance(contract, dict)
+                    else []
+                )
+                if isinstance(value, str)
+            }
+            for relpath in sorted(shared_surfaces | module_surfaces):
+                path = self.target_path(relpath)
+                if not path.is_file() or path.suffix.lower() not in {
+                    ".md",
+                    ".flow",
+                    ".txt",
+                }:
+                    continue
+                text = self.read_text(path)
+                paragraphs = re.finditer(
+                    r"(?:\A|\n\s*\n)(\S[\s\S]*?)(?=\n\s*\n|\Z)", text
+                )
+                for paragraph_match in paragraphs:
+                    paragraph = paragraph_match.group(1).strip()
+                    normalized = " ".join(paragraph.split())
+                    status_match = STALE_ENABLED_MODULE_STATE_RE.search(normalized)
+                    if status_match is None:
+                        continue
+                    conditional_prefix = normalized[: status_match.start()]
+                    if CONDITIONAL_STATUS_RE.search(conditional_prefix):
+                        continue
+                    module_named = module_id.casefold() in normalized.casefold()
+                    generic_claim = STALE_GENERIC_MODULE_STATE_RE.search(normalized)
+                    if not module_named and not (
+                        relpath in module_surfaces and generic_claim is not None
+                    ):
+                        continue
+                    line = text.count("\n", 0, paragraph_match.start(1)) + 1
+                    self.error(
+                        "ENABLED_MODULE_STALE_STATUS",
+                        f"enabled module {module_id!r} is described with an unavailable module state",
+                        f"{relpath}:{line}",
+                    )
+                    break
 
     def check_ai_infrastructure_router(self) -> None:
         relpath = ".ai/assistant/ai-infrastructure-router.json"
@@ -6954,6 +7283,8 @@ class Validator:
             self.target_path(".ai/project/source-of-truth-registry.md"),
             self.target_path(".ai/assistant/contour.md"),
             self.target_path(".ai/assistant/context-profiles.md"),
+            self.target_path(".ai/assistant/help.md"),
+            self.target_path(".ai/assistant/help-reference.md"),
             self.target_path(".ai/assistant/module-profile.md"),
             self.target_path(".ai/assistant/maturity-profile.md"),
             self.target_path(".ai/assistant/gates/checklist.md"),
@@ -6971,6 +7302,7 @@ class Validator:
             self.target_path(".ai/assistant/templates/team-decision-record.md"),
             self.target_path(".ai/assistant/templates/team-identity.example.json"),
             self.target_path(".ai/assistant/templates/team-collaboration-review.md"),
+            self.target_path(".ai/project/blueprint.md"),
         ]
         flows = self.target_path(".ai/assistant/flows")
         if flows.is_dir():

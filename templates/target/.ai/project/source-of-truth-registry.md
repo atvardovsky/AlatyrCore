@@ -10,6 +10,11 @@ Resolve these entries from target evidence or mark the owner as missing before
 accepting installation. Add target-specific entries when other fact types can
 have competing owners or derived surfaces.
 
+When the `consistency-map` module is enabled, every live Fact Type entry must
+name one resolved, unique `Consistency map node`. The referenced node's
+`fact_type` must match the Fact Type heading exactly. Additional map nodes may
+represent derived contracts, areas, systems, or adapter surfaces.
+
 ### Fact Type: `product behavior`
 
 Fact type: `product behavior`

@@ -71,12 +71,19 @@ def main() -> int:
         print(f"FAIL: invalid {MAP.relative_to(ROOT)}: {exc}", file=sys.stderr)
         return 1
 
-    if data.get("schema_version") != 1:
-        failures.append("consistency-map schema_version must be 1")
+    if data.get("schema_version") != 2:
+        failures.append("consistency-map schema_version must be 2")
     if data.get("map_kind") != "target-consistency-map":
         failures.append("consistency-map map_kind must be target-consistency-map")
     if data.get("human_registry") != ".ai/project/source-of-truth-registry.md":
         failures.append("consistency-map human_registry path is incorrect")
+    if data.get("registry_sync_policy") != {
+        "coverage": "every-live-registry-fact-type",
+        "node_reference": "registry-consistency-map-node-id",
+        "fact_type_match": "exact",
+        "extra_nodes": "allowed-for-derived-contract-area-system-and-adapter-surfaces",
+    }:
+        failures.append("consistency-map registry_sync_policy is incorrect")
     if data.get("levels") != LEVELS:
         failures.append("consistency-map levels must match the portable level order")
     if data.get("relationship_types") != RELATIONSHIPS:
@@ -145,6 +152,8 @@ def main() -> int:
         "Project area:",
         "Consistency map node:",
         "Relationship coverage:",
+        "every live Fact Type entry",
+        "`fact_type` must match the Fact Type heading exactly",
     ]:
         if required not in registry_text:
             failures.append(f"source-of-truth registry missing {required}")
@@ -162,11 +171,25 @@ def main() -> int:
         failures.append(f"invalid context-router consistency routing: {exc}")
     else:
         for required in [
-            ".ai/framework/consistency-model.md",
+            ".ai/project/source-of-truth-registry.md",
             ".ai/project/consistency-map.json",
         ]:
             if required not in routing_context:
                 failures.append(f"consistency routing missing {required}")
+        conditional = routing.get("conditional_context")
+        portable = next(
+            (
+                item
+                for item in conditional
+                if isinstance(item, dict)
+                and item.get("path") == ".ai/framework/consistency-model.md"
+            ),
+            None,
+        ) if isinstance(conditional, list) else None
+        if not isinstance(portable, dict) or not isinstance(portable.get("when"), str):
+            failures.append(
+                "consistency routing must load portable consistency-model guidance conditionally"
+            )
 
     if failures:
         for failure in failures:

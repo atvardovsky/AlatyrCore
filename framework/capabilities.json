@@ -20,7 +20,9 @@
       "framework_files": ["logical-integrity.md", "source-of-truth-registry.md"],
       "target_files": [
         ".ai/project/source-of-truth-registry.md",
-        ".ai/project/consistency-map.json"
+        ".ai/project/consistency-map.json",
+        ".ai/assistant/context/consistency-routing.json",
+        ".ai/assistant/context/cost-scenarios.json"
       ],
       "check_ids": ["consistency-map", "source-of-truth-registry"]
     },

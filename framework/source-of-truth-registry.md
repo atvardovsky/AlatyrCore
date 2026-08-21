@@ -67,9 +67,19 @@ provides compact changed-fact routing to contracts, project areas,
 implementations, tests, docs, diagrams, generated artifacts, and assistant
 governance.
 
-Use stable fact IDs to connect registry entries to map nodes. A missing or
-stale relationship remains an adapter gap; it does not justify scanning every
-project surface or inventing an edge.
+Use stable fact IDs to connect registry entries to map nodes. When the module
+is enabled, every live registry entry must name one resolved map node, that
+node's `fact_type` must match the registry Fact Type exactly, and no two
+registry entries may claim the same node. The map may contain additional
+contract, area, system, or adapter nodes that do not own registry facts.
+
+A missing or stale relationship remains an adapter gap; it does not justify
+scanning every project surface or inventing an edge. Update the human
+registry, machine map, consistency-routing descriptor, measured semantic
+context scenario, and generated bootstrap evidence as one reviewed adapter
+change. Deterministic tooling may validate or regenerate derived routing and
+bootstrap surfaces, but it must not infer canonical owners or relationship
+edges.
 
 ## Common Fact Types
 

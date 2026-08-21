@@ -429,8 +429,10 @@ Command Prompt and PowerShell wrappers under `tools/`.
 
 This validator can check generated bootstrap and routed-gate drift, router
 references, and enabled-module contracts without running every optional module
-check. It can also inspect consistency-map and AI infrastructure router
-contracts when enabled, unresolved placeholders,
+check. It can also inspect exact registry Fact Type to consistency-map node
+coverage, semantic routing context, consistency-map and AI infrastructure
+router contracts when enabled, unresolved placeholders and stale enabled-
+module claims on live support surfaces, and composed semantic context budgets,
 absolute local path leakage, stale checker claims, manifest fields,
 target-local checker coverage, advisory legacy approval scope, and strict
 complete changed-path enforcement through explicitly selected JSON records

@@ -160,8 +160,12 @@ Classify every proposed target file:
     unless bounded historical evidence is explicitly reviewed; never copy raw
     conversations, secrets, credentials, or personal data.
     Add `.ai/project/consistency-map.json` only when the target enables bounded
-    relationship routing; populate fact IDs and edges from target evidence or
-    record the module as blocked or deferred.
+    relationship routing. Give every live source-of-truth registry Fact Type
+    one resolved, unique map node whose `fact_type` matches exactly; populate
+    edges from target evidence or record the module as blocked or deferred.
+    Route the human registry and machine map together for semantic work, keep
+    redundant portable explanation conditional, and measure the composed
+    semantic route before accepting its context budget.
     Add `.ai/project/architecture/README.md` and
     `.ai/project/architecture/catalog.json` only when architecture knowledge is
     enabled. Derive owner, decision authority, item states, selected evidence,

@@ -124,6 +124,8 @@ Required files:
 
 - `.ai/project/source-of-truth-registry.md`
 - `.ai/project/consistency-map.json`
+- `.ai/assistant/context/consistency-routing.json`
+- `.ai/assistant/context/cost-scenarios.json`
 
 Reason: `{REASON}`
 Validation or review: `{VALIDATION_OR_REVIEW}`

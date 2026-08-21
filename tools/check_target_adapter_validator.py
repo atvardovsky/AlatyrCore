@@ -19,6 +19,7 @@ from validate_target_adapter import (
     extract_list_field,
     findings_payload,
     git_changed_files,
+    parse_registry_fact_entries,
     result_code,
     scope_entries_cover,
 )
@@ -49,6 +50,17 @@ def write_json(path: Path, data: object) -> None:
 
 def main() -> int:
     failures: list[str] = []
+    parsed_registry = parse_registry_fact_entries(
+        "### Fact Type: `business rule`\n\n"
+        "Fact type: `business rule`\n"
+        "Consistency map node: `fact-business-rule`\n"
+    )
+    if len(parsed_registry) != 1 or (
+        parsed_registry[0].heading_fact_type,
+        parsed_registry[0].declared_fact_type,
+        parsed_registry[0].map_node_id,
+    ) != ("business rule", "business rule", "fact-business-rule"):
+        failures.append("registry Fact Type parser lost exact node identity")
     if not approval_enforcement_enabled(
         diff_ref="HEAD",
         approval_records=[Path("approval.json")],
@@ -93,6 +105,48 @@ def main() -> int:
                     f"schema-1 router must not receive schema-2 finding {forbidden}"
                 )
 
+        consistency_descriptor = (
+            target
+            / ".ai"
+            / "assistant"
+            / "context"
+            / "consistency-routing.json"
+        )
+        write_json(
+            consistency_descriptor,
+            {
+                "schema_version": 1,
+                "descriptor_kind": "target-consistency-routing",
+                "required_context": [".ai/project/consistency-map.json"],
+            },
+        )
+        write_json(
+            router_path,
+            {
+                "schema_version": 1,
+                "router_kind": "target-context-router",
+                "human_reference": ".ai/assistant/context-profiles.md",
+                "routing_order": ["docs-local"],
+                "profiles": {},
+                "consistency_routing": {
+                    "descriptor": ".ai/assistant/context/consistency-routing.json"
+                },
+            },
+        )
+        consistency_router = validator(target)
+        consistency_router.check_router({"consistency-map"})
+        consistency_router_codes = {
+            finding.code for finding in consistency_router.findings
+        }
+        for required in [
+            "ROUTER_CONSISTENCY_CONTEXT",
+            "ROUTER_CONSISTENCY_CONDITIONAL",
+        ]:
+            if required not in consistency_router_codes:
+                failures.append(
+                    f"broken consistency routing missing finding {required}"
+                )
+
         large_context_path = target / ".ai" / "framework" / "large-context.md"
         large_context_path.parent.mkdir(parents=True, exist_ok=True)
         large_context_path.write_text("one two three four five\n", encoding="utf-8")
@@ -117,6 +171,57 @@ def main() -> int:
             finding.code for finding in budget_validator.findings
         }:
             failures.append("portable context over-budget must produce ROUTER_PROFILE_COST")
+
+        consistency_cost_descriptor = (
+            target / ".ai" / "assistant" / "context" / "cost-consistency.json"
+        )
+        write_json(
+            consistency_cost_descriptor,
+            {
+                "required_context": [
+                    ".ai/project/source-of-truth-registry.md",
+                    ".ai/project/consistency-map.json",
+                ]
+            },
+        )
+        (target / ".ai" / "project").mkdir(parents=True, exist_ok=True)
+        (target / ".ai" / "project" / "source-of-truth-registry.md").write_text(
+            "one two three four five\n", encoding="utf-8"
+        )
+        (target / ".ai" / "project" / "consistency-map.json").write_text(
+            "one two three four five\n", encoding="utf-8"
+        )
+        composition_validator = validator(target)
+        composition_validator.check_installed_context_costs(
+            {
+                "preloaded_context": [],
+                "bootstrap_context": [],
+                "profile_index": {},
+                "consistency_routing": {
+                    "descriptor": ".ai/assistant/context/cost-consistency.json"
+                },
+            },
+            {
+                "code-local": {
+                    "required_context": [".ai/framework/large-context.md"]
+                }
+            },
+            {
+                "bootstrap": {"max_files": 4, "max_words": 100},
+                "profile_default": {
+                    "max_files": 8,
+                    "max_total_words": 10,
+                    "max_portable_words": 100,
+                    "reserved_target_words": 100,
+                },
+            },
+        )
+        if "ROUTER_CONSISTENCY_COMPOSITION_COST" not in {
+            finding.code for finding in composition_validator.findings
+        }:
+            failures.append(
+                "profile plus consistency routing over-budget must be rejected"
+            )
 
         pack_target = target / "pack-target"
         framework_target = pack_target / ".ai" / "framework"
@@ -1472,6 +1577,123 @@ def main() -> int:
         ]:
             if required not in consistency_codes:
                 failures.append(f"broken consistency map missing finding {required}")
+
+        registry_path = target / ".ai" / "project" / "source-of-truth-registry.md"
+        registry_path.write_text(
+            "# Registry\n\n"
+            "### Fact Type: `business rule`\n\n"
+            "Fact type: `business rule`\n"
+            "Consistency map node: `fact-business-rule`\n\n"
+            "### Fact Type: `data model`\n\n"
+            "Fact type: `data model`\n"
+            "Consistency map node: `fact-data-model`\n",
+            encoding="utf-8",
+        )
+        write_json(
+            map_path,
+            {
+                "schema_version": 2,
+                "map_kind": "target-consistency-map",
+                "human_registry": ".ai/project/source-of-truth-registry.md",
+                "registry_sync_policy": {
+                    "coverage": "every-live-registry-fact-type",
+                    "node_reference": "registry-consistency-map-node-id",
+                    "fact_type_match": "exact",
+                    "extra_nodes": "allowed-for-derived-contract-area-system-and-adapter-surfaces",
+                },
+                "levels": ["fact", "contract", "area", "system", "adapter"],
+                "relationship_types": [
+                    "implements",
+                    "verifies",
+                    "documents",
+                    "visualizes",
+                    "generates",
+                    "constrains",
+                    "depends-on",
+                    "routes",
+                ],
+                "impact_policy": {
+                    "transitive_expand_when": ["dependent contract changes"],
+                    "required_evidence": ["selected relationships"],
+                },
+                "nodes": [
+                    {
+                        "id": "fact-business-rule",
+                        "fact_type": "business Rule",
+                        "level": "fact",
+                        "project_area": "core",
+                        "canonical_owner": "docs/business.md",
+                        "relationships": [
+                            {
+                                "id": "documents-business-rule",
+                                "type": "documents",
+                                "target": "docs/reference.md",
+                                "target_level": "contract",
+                                "direction": "outbound",
+                                "required_when": ["business rule changes"],
+                                "validation": ["manual review"],
+                            }
+                        ],
+                    }
+                ],
+            },
+        )
+        registry_map_sync = validator(target)
+        registry_map_sync.check_consistency_map()
+        registry_map_codes = {
+            finding.code for finding in registry_map_sync.findings
+        }
+        for required in [
+            "CONSISTENCY_REGISTRY_NODE_FACT_TYPE_DRIFT",
+            "CONSISTENCY_REGISTRY_NODE_MISSING",
+        ]:
+            if required not in registry_map_codes:
+                failures.append(
+                    f"registry/map semantic drift missing finding {required}"
+                )
+
+        capabilities_path = target / ".ai" / "framework" / "capabilities.json"
+        write_json(
+            capabilities_path,
+            {
+                "schema_version": 1,
+                "capability_kind": "alatyr-optional-module-catalog",
+                "modules": {
+                    "consistency-map": {
+                        "target_files": [
+                            ".ai/assistant/flows/consistency-review.flow.md"
+                        ]
+                    }
+                },
+            },
+        )
+        stale_flow = (
+            target
+            / ".ai"
+            / "assistant"
+            / "flows"
+            / "consistency-review.flow.md"
+        )
+        stale_flow.parent.mkdir(parents=True, exist_ok=True)
+        stale_flow.write_text(
+            "The consistency-map module is deferred.\n", encoding="utf-8"
+        )
+        stale_module = validator(target)
+        stale_module.check_enabled_module_status_claims({"consistency-map"})
+        if "ENABLED_MODULE_STALE_STATUS" not in {
+            finding.code for finding in stale_module.findings
+        }:
+            failures.append("enabled module stale status claim was not rejected")
+        stale_flow.write_text(
+            "If the consistency-map module is deferred, stop and report it.\n",
+            encoding="utf-8",
+        )
+        conditional_module = validator(target)
+        conditional_module.check_enabled_module_status_claims({"consistency-map"})
+        if "ENABLED_MODULE_STALE_STATUS" in {
+            finding.code for finding in conditional_module.findings
+        }:
+            failures.append("conditional module-state guidance was treated as stale")
 
         ai_router_path = target / ".ai" / "assistant" / "ai-infrastructure-router.json"
         write_json(

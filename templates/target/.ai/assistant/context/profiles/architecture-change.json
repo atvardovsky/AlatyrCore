@@ -17,7 +17,7 @@
   "required_context": [
     ".ai/framework/context-discovery.md",
     ".ai/framework/change-risk-model.md",
-    ".ai/framework/source-of-truth-registry.md",
+    ".ai/project/source-of-truth-registry.md",
     ".ai/framework/logical-integrity.md",
     ".ai/assistant/gates/core.md",
     ".ai/assistant/gates/semantic-integrity.md",
@@ -25,6 +25,7 @@
     "{TARGET_ARCHITECTURE_SOURCE_OF_TRUTH}"
   ],
   "conditional_context": [
+    {"path": ".ai/framework/source-of-truth-registry.md", "when": "registry ownership semantics are disputed or the target registry requires repair"},
     {"path": ".ai/framework/blueprint-driven-change.md", "when": "an accepted architecture decision enters change planning"},
     {"path": ".ai/framework/approval-records.md", "when": "the proposed change crosses a protected architecture or dependency boundary"},
     {"path": ".ai/framework/security-safety-guidance.md", "when": "security privacy external service production or permission boundaries are affected"},

@@ -483,7 +483,8 @@ py -3 .\tools\check_operation_catalog.py
 
 `check_consistency_map.py` validates the optional target consistency-map JSON,
 portable levels and relationship types, impact policy, human registry linkage,
-manifest path, and placeholder node/edge contract.
+exact Fact Type/node sync policy, manifest path, semantic routing descriptor,
+and placeholder node/edge contract.
 
 Linux or macOS:
 
@@ -618,8 +619,11 @@ closure, projected registries, and inventories.
 
 `validate_target_adapter.py` validates structural consistency of an installed
 Alatyr adapter in a target repository. It checks router/bootstrap references,
-consistency-map and AI-infrastructure-router schemas when present, unresolved
-placeholders, hard-coded local paths, stale checker claims, manifest fields,
+exact source-of-truth registry to consistency-map node coverage when that
+module is enabled, consistency and AI-infrastructure routing contracts,
+unresolved placeholders, hard-coded local paths, stale checker claims, stale
+enabled-module status claims on live support surfaces, individual profile and
+profile-plus-consistency context budgets, manifest fields,
 target-local checker coverage, optional team actor/registry/claim/overlap and
 revision-bound merge-readiness structure, optional approval scope against a
 supplied git diff, and optional `.ai/framework` drift against an AlatyrCore
@@ -713,9 +717,10 @@ tools\validate_target_adapter.cmd --target C:\path\to\target-repo
 ## Target Adapter Validator Contract Check
 
 `check_target_adapter_validator.py` exercises the source validator's schema
-compatibility, consistency-map and AI-router findings, explicit approval-scope
-matching, broken team merge-readiness findings, and current-state evidence
-classification. It validates AlatyrCore source tooling only.
+compatibility, exact registry/map identity findings, consistency and AI-router
+routing, enabled-module status drift, explicit approval-scope matching, broken
+team merge-readiness findings, and current-state evidence classification. It
+validates AlatyrCore source tooling only.
 
 ```sh
 python3 tools/check_target_adapter_validator.py
@@ -729,9 +734,9 @@ py -3 .\tools\check_target_adapter_validator.py
 
 `report_context_costs.py` resolves target router paths to source templates and
 reports declared files plus whitespace word counts for bootstrap, profiles,
-intent overlays, migration-first routing, and compact versus full-reference
-diagram operation routing. It is a deterministic static estimate, not model
-token usage.
+intent overlays, consistency routing, migration-first routing, and compact
+versus full-reference operation routes. It is a deterministic static estimate,
+not model token usage.
 
 ```sh
 python3 tools/alatyr.py context-costs

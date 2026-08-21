@@ -52,24 +52,27 @@ the changelog and release migration note.
 Rule ID: `ALATYR-CONTEXT-001`
 Canonical source: `.ai/framework/context-profiles.md`
 Commitment: Use a generated hash-bound bootstrap index, routed gate fragments,
-and the smallest task profile through an aligned context router; separate
-total, portable, and reserved target context budgets; measure representative
-compact and expansion scenarios; record expansion only when boundaries or
-conflicts require it; prefer changed-fact, upgrade-impact, and AI-item routing
-when available; and keep optional module, delegated-execution,
-complete-checklist, and full team detail lazy.
+and the smallest task profile through an aligned context router; route the
+target registry and consistency map together for semantic work while keeping
+redundant portable explanation conditional; separate total, portable, and
+reserved target context budgets; measure representative compact and expansion
+scenarios; record expansion only when boundaries or conflicts require it;
+prefer changed-fact, upgrade-impact, and AI-item routing when available; and
+keep optional module, delegated-execution, complete-checklist, and full team
+detail lazy.
 Applies to: all installed adapter tasks.
 Enforcement: required.
 
 Rule ID: `ALATYR-SOURCE-001`
 Canonical source: `.ai/framework/source-of-truth-registry.md`
 Commitment: Choose fact owners from the target source-of-truth registry, record
-invariant and dependency constraints, use stable fact IDs for optional
-relationship routing, preserve bounded code-comment ownership, derived
-generated-output boundaries, vocabulary links to canonical fact owners, target
-test-strategy and accepted test-first-policy ownership, and target team-policy
-versus coordination-record ownership, and otherwise use contour ownership plus
-a manual invariant closure while reporting missing coverage.
+invariant and dependency constraints, require every live registry Fact Type to
+reference one unique exact-matching node when consistency mapping is enabled,
+preserve bounded code-comment ownership, derived generated-output boundaries,
+vocabulary links to canonical fact owners, target test-strategy and accepted
+test-first-policy ownership, and target team-policy versus coordination-record
+ownership, and otherwise use contour ownership plus a manual invariant closure
+while reporting missing coverage.
 Applies to: logical integrity, documentation sync, blueprint-driven changes.
 Enforcement: required.
 
@@ -251,7 +254,8 @@ Canonical source: `.ai/framework/project-adapter-contract.md`
 Commitment: Keep framework core, project facts, and repository adapter facts
 separated and rewritten from target evidence; record the installed framework
 pack and its projected registry, inventory, bootstrap index, gate index, and
-capability closure; and preserve target development-pattern evidence, routed AI
+capability closure; reject live support claims that contradict enabled module
+state; and preserve target development-pattern evidence, routed AI
 infrastructure items, recommendation and adaptation records, optional
 project-owned documentation, vocabulary, testing, extension, team, and
 delegation policy state.

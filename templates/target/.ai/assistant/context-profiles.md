@@ -261,12 +261,14 @@ gates apply.
 When the `consistency-map` module is enabled and a semantic fact changes or
 drift is suspected, load:
 
-- `.ai/framework/consistency-model.md`
+- `.ai/project/source-of-truth-registry.md`
 - `.ai/project/consistency-map.json`
 
 Resolve changed fact IDs, follow applicable direct edges, and expand to
 dependent contracts only for propagation, conflicts, failed validation, or
-approval boundaries. Record selected and skipped edges with reasons.
+approval boundaries. Load `.ai/framework/consistency-model.md` only when
+relationship semantics are disputed, adapter repair is required, or registry
+and map evidence conflict. Record selected and skipped edges with reasons.
 
 ## Profile: `docs-local`
 

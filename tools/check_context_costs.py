@@ -47,6 +47,8 @@ def main() -> int:
             failures.append(f"profile {name} exceeds the default file budget")
         if profile["portable_words"] > max_portable_words:
             failures.append(f"profile {name} exceeds the portable word budget")
+        if profile["target_words"] > reserved_target_words:
+            failures.append(f"profile {name} exceeds the reserved target word budget")
         if profile["portable_words"] + profile["target_words"] != profile["words"]:
             failures.append(f"profile {name} context classification does not sum")
         if profile["missing_paths"]:
@@ -59,6 +61,8 @@ def main() -> int:
             failures.append(f"intent overlay {name} exceeds the default word budget")
         if overlay["portable_words"] > max_portable_words:
             failures.append(f"intent overlay {name} exceeds the portable word budget")
+        if overlay["target_words"] > reserved_target_words:
+            failures.append(f"intent overlay {name} exceeds the reserved target word budget")
         if overlay["missing_paths"]:
             failures.append(f"intent overlay {name} contains missing paths")
 
@@ -69,8 +73,26 @@ def main() -> int:
             failures.append(f"task-scale overlay {name} exceeds the default word budget")
         if overlay["portable_words"] > max_portable_words:
             failures.append(f"task-scale overlay {name} exceeds the portable word budget")
+        if overlay["target_words"] > reserved_target_words:
+            failures.append(f"task-scale overlay {name} exceeds the reserved target word budget")
         if overlay["missing_paths"]:
             failures.append(f"task-scale overlay {name} contains missing paths")
+
+    consistency = report["consistency_routing"]
+    if consistency["declared_files"] > profile_budget["max_files"]:
+        failures.append("consistency routing exceeds the default file budget")
+    if consistency["words"] > max_total_words:
+        failures.append("consistency routing exceeds the default total-word budget")
+    if consistency["portable_words"] > max_portable_words:
+        failures.append("consistency routing exceeds the portable-word budget")
+    if consistency["target_words"] > reserved_target_words:
+        failures.append("consistency routing exceeds the reserved target-word budget")
+    if consistency["missing_paths"]:
+        failures.append("consistency routing contains missing paths")
+    if ".ai/project/source-of-truth-registry.md" not in consistency["resolved_paths"]:
+        failures.append("consistency routing does not measure the target registry")
+    if ".ai/project/consistency-map.json" not in consistency["resolved_paths"]:
+        failures.append("consistency routing does not measure the target map")
 
     diagram_route = report["operation_routes"]["diagram-discussion"]
     if diagram_route["compact"]["missing_paths"]:
@@ -170,6 +192,8 @@ def main() -> int:
                 failures.append(f"compact cost scenario {name} exceeds the file budget")
             if scenario["portable_words"] > max_portable_words:
                 failures.append(f"compact cost scenario {name} exceeds the portable budget")
+            if scenario["target_words"] > reserved_target_words:
+                failures.append(f"compact cost scenario {name} exceeds the reserved target budget")
             if scenario["words"] > max_total_words:
                 failures.append(f"compact cost scenario {name} exceeds the total budget")
         elif expected == "expansion-receipt-required":

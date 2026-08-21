@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 772
+Catalog entries: 791
 
 ## Codes
 
@@ -288,7 +288,11 @@ Catalog entries: 772
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `CONSISTENCY_MAP_NODES`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `CONSISTENCY_MAP_NODE_AREA`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `CONSISTENCY_MAP_NODE_DUPLICATE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `CONSISTENCY_MAP_NODE_FACT_TYPE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `CONSISTENCY_MAP_NODE_ID`
   Level: error. Source: `tools/validate_target_adapter.py`.
@@ -302,12 +306,32 @@ Catalog entries: 772
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `CONSISTENCY_MAP_REGISTRY`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `CONSISTENCY_MAP_REGISTRY_EMPTY`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `CONSISTENCY_MAP_REGISTRY_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `CONSISTENCY_MAP_REGISTRY_SYNC_POLICY`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `CONSISTENCY_MAP_RELATIONSHIPS`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `CONSISTENCY_MAP_SCHEMA`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `CONSISTENCY_MAP_SCHEMA_LEGACY`
+  Level: warning. Source: `tools/validate_target_adapter.py`.
 - `CONSISTENCY_MAP_TARGET_LEVEL`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `CONSISTENCY_REGISTRY_FACT_TYPE_DRIFT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `CONSISTENCY_REGISTRY_FACT_TYPE_DUPLICATE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `CONSISTENCY_REGISTRY_NODE_FACT_TYPE_DRIFT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `CONSISTENCY_REGISTRY_NODE_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `CONSISTENCY_REGISTRY_NODE_REUSED`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `CONSISTENCY_REGISTRY_NODE_UNRESOLVED`
+  Level: configured. Source: `tools/validate_target_adapter.py`.
 - `DELEGATION_CAPABILITY_FIELDS`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DELEGATION_CAPABILITY_MISSING`
@@ -572,6 +596,8 @@ Catalog entries: 772
   Level: info. Source: `tools/validate_target_adapter.py`.
 - `DIFF_SCOPE_UNAVAILABLE`
   Level: warning. Source: `tools/validate_target_adapter.py`.
+- `ENABLED_MODULE_STALE_STATUS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `EVIDENCE_SCOPE_CURRENT_STATE`
   Level: info. Source: `tools/validate_target_adapter.py`.
 - `EXTENSION_APPROVAL_MISSING`
@@ -1018,6 +1044,18 @@ Catalog entries: 772
   Level: error. Source: `tools/target_adapter_validation/router_costs.py`.
 - `ROUTER_CONDITIONAL_CONTEXT`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `ROUTER_CONSISTENCY_COMPOSITION_COST`
+  Level: error. Source: `tools/target_adapter_validation/router_costs.py`.
+- `ROUTER_CONSISTENCY_COMPOSITION_MEASURED`
+  Level: info. Source: `tools/target_adapter_validation/router_costs.py`.
+- `ROUTER_CONSISTENCY_CONDITIONAL`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ROUTER_CONSISTENCY_CONTEXT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ROUTER_CONSISTENCY_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ROUTER_CONSISTENCY_PORTABLE_EAGER`
+  Level: warning. Source: `tools/validate_target_adapter.py`.
 - `ROUTER_CONTEXT_COST_UNREADABLE`
   Level: warning. Source: `tools/target_adapter_validation/router_costs.py`.
 - `ROUTER_CONTEXT_COST_UNRESOLVED`
