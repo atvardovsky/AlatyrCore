@@ -12,6 +12,11 @@ installed Alatyr Core adapter.
 - Date: `{DATE}`
 - Goal: `{GOAL}`
 - Non-goals: `{NON_GOALS}`
+- Current logical scope: `{CURRENT_LOGICAL_SCOPE_OR_OPERATION_ID}`
+- Current user authorization:
+  `{INSPECT_MODIFY_COMMIT_PUBLISH_LIVE_EXTERNAL_PHASES}`
+- Authorization source/message: `{CURRENT_USER_MESSAGE_OR_REFERENCE}`
+- Prior authorization invalidated: `{YES_NO_AND_REASON}`
 - Known context: `{KNOWN_CONTEXT}`
 - Review comments or defect reports to reconcile: `{REVIEW_ITEMS_OR_NONE}`
 - Task scale: `{NORMAL_OR_LARGE_OR_RESUMABLE}`
@@ -46,6 +51,11 @@ installed Alatyr Core adapter.
   `{LOCAL_CHECKOUT_OR_APPROVED_SOURCE_REFERENCE}; {EXTENSION_ID_OR_UNKNOWN}; {SOURCE_REVISION_OR_UNRESOLVED}`
 
 ## Allowed Actions Guide
+
+Allowed actions are a maximum surface, not current user authorization. Apply
+`.ai/assistant/policies/action-authorization.json` separately. Implementation
+does not imply commit, commit does not imply push, and prior task authorization
+does not carry into a completed or redirected scope.
 
 - `read-only`: inspect target files and report only; no file changes.
 - `docs-only`: docs, blueprint-equivalent docs, and diagram sources only; no

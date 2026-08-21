@@ -14,9 +14,12 @@ Target repository path:
 Supported assistants needed:
 <Codex/Claude/Gemini/GitHub Copilot/Cursor/Devin/Cascade/Windsurf/generic>
 
+Current user authorization:
+<inspect/modify/commit/publish/live-external phases authorized for this installation>
+
 Constraints:
 - Rule references: ALATYR-CONTEXT-001, ALATYR-ADAPTER-001,
-  ALATYR-APPROVAL-001, ALATYR-SAFETY-001, ALATYR-SAFETY-002,
+  ALATYR-APPROVAL-001, ALATYR-AUTHORIZATION-001, ALATYR-SAFETY-001, ALATYR-SAFETY-002,
   ALATYR-OPERATION-001, ALATYR-TEAM-001, ALATYR-EVIDENCE-001.
 - Do not use an installer script.
 - Inspect the target repository before creating files.
@@ -44,6 +47,10 @@ Constraints:
   formats, third-party assistant infrastructure, or project facts as framework
   core.
 - Apply ALATYR-APPROVAL-001 before overwrites or protected target changes.
+- Apply ALATYR-AUTHORIZATION-001 separately. Installation intent may authorize
+  target edits when explicit, but it does not authorize commit, push, release,
+  deployment, or another live action unless the current request names that
+  phase.
 - Run only target validation that exists; report unresolved checks.
 ```
 

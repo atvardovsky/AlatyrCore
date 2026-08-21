@@ -28,6 +28,8 @@ sync, logical integrity review, and final evidence.
 - optional multi-level consistency mapping with exact registry Fact Type to
   node identity and bounded changed-fact impact traversal
 - change-risk classification and approval trigger model
+- current-scope action authorization across inspect, modify, commit, publish,
+  and live-external phases
 - first-class logical integrity review
 - blueprint-driven product-change workflow
 - optional project-owned architecture knowledge, pattern discussion, review,
@@ -136,6 +138,8 @@ Those belong to a project contour or repository adapter.
   levels.
 - `.ai/framework/change-risk-model.md`: portable risk classes used to decide
   approvals, tests, docs, diagrams, and final evidence.
+- `.ai/framework/action-authorization.md`: current-scope user-intent boundary
+  for inspection, repository edits, commits, publication, and live actions.
 - `.ai/framework/logical-integrity.md`: portable semantic/logical review for
   changed facts, source-of-truth decisions, repair sets, and evidence.
 - `.ai/framework/blueprint-driven-change.md`: portable product-change workflow

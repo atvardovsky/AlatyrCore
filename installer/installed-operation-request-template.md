@@ -24,6 +24,18 @@ Non-goals:
 Known context:
 <changed facts, framework update source, existing docs, or suspected drift>
 
+Current logical scope:
+<operation-id, issue, backlog item, or bounded goal>
+
+Current user authorization:
+<inspect/modify/commit/publish/live-external phases explicitly requested now>
+
+Authorization source/message:
+<current user message or reference>
+
+Prior authorization invalidated:
+<yes/no and reason>
+
 Review comments or defect reports to reconcile:
 <items or none>
 
@@ -87,6 +99,11 @@ Allowed actions meaning:
 - full-with-approval: protected changes require explicit programmer approval
   before they are made.
 
+Allowed actions are a ceiling, not user authorization. Returning to an issue,
+backlog item, report, or discussion, or asking for status, analysis, planning,
+or next steps is `inspect` only. Implementation does not imply commit; commit
+does not imply push; prior completed-task authorization is not reusable.
+
 AI infrastructure source, when applicable:
 <local path/Git URL/HTTPS URL/assistant-native reference/package or plugin/pasted content>
 
@@ -119,7 +136,7 @@ Dependency knowledge mode, package scope, and changed lockfile, when applicable:
 
 Constraints:
 - Rule references: ALATYR-CONTEXT-001, ALATYR-SOURCE-001,
-  ALATYR-RISK-001, ALATYR-APPROVAL-001, ALATYR-SAFETY-001,
+  ALATYR-RISK-001, ALATYR-APPROVAL-001, ALATYR-AUTHORIZATION-001, ALATYR-SAFETY-001,
   ALATYR-SAFETY-002, ALATYR-INTEGRITY-001, ALATYR-CHANGE-001,
   ALATYR-TDD-001, ALATYR-EXTENSION-001, ALATYR-DEPENDENCY-001, ALATYR-MODE-001, ALATYR-ADAPTER-001,
   ALATYR-MODULE-001, ALATYR-OPERATION-001, ALATYR-DIAGRAM-001,
@@ -160,6 +177,9 @@ Constraints:
 - Keep `Alatyr status` and `Alatyr doctor` read-only. Apply
   `.ai/assistant/templates/pre-change-preview.md` before edits when changed-fact
   risk or scope triggers it; preview does not grant approval.
+- Apply `.ai/assistant/policies/action-authorization.json` before each
+  state-changing phase. Stop before `modify`, `commit`, `publish`, or
+  `live-external` when the newest current-scope request does not authorize it.
 - For `Alatyr diagram` or `diagram-discussion`, read only the current entry in
   `.ai/assistant/assistant-capabilities.json` and its selected surface record,
   reject stale or expired capability evidence, default to a non-canonical
@@ -236,8 +256,9 @@ Constraints:
   dependency invariants before implementing. Cluster related review items by
   fact and contract, then review the combined repair set.
 - Run only target validation that exists; report unresolved checks.
-- Report final evidence: files inspected, changed facts, files changed,
-  approvals, validation, skipped checks, adapter gaps, and residual risk.
+- Report final evidence: `current_user_authorization`, files inspected, changed
+  facts, files changed, approvals, validation, skipped checks, adapter gaps,
+  and residual risk.
 - Report selected/skipped relationship edges and missing coverage when the
   consistency map was used.
 - For packet-based work, report workstream dependencies, checkpoints, context

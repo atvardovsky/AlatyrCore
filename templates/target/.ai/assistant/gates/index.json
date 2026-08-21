@@ -43,7 +43,7 @@
     "architecture-change": ["core", "semantic-integrity", "final-evidence"],
     "data-change": ["core", "semantic-integrity", "code-and-tests", "final-evidence"],
     "security-sensitive": ["core", "semantic-integrity", "security-approval", "final-evidence"],
-    "ai-infrastructure": ["core", "security-approval", "final-evidence"],
+    "ai-infrastructure": ["core", "final-evidence"],
     "framework-upgrade": ["core", "final-evidence"]
   }
 }

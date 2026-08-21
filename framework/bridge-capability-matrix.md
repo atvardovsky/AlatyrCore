@@ -34,6 +34,9 @@ For each supported assistant, record:
   through the compact index and canonical catalog
 - whether automatic routing and risk-gated pre-change preview reach the same
   canonical flow on every supported surface
+- whether current-scope inspect, modify, commit, publish, and live-external
+  authorization routes through the same canonical policy on every supported
+  surface
 - whether AI infrastructure inventory, recommendation, and adaptation aliases
   are routed
 - whether enabled team status, task, conflict, handoff, decision, review, and
@@ -114,6 +117,9 @@ Each bridge should:
   operation routing
 - route `Alatyr`, `Alatyr status`, and `Alatyr doctor` without presenting them
   as executable shell commands
+- route state-changing phases through the target action-authorization policy;
+  bridge or client tool permission must not grant commit, publish, or live
+  action authority
 - route `alatyr-ai-inventory`, `alatyr-suggest-ai`, `alatyr-improve-ai`,
   `alatyr-adaptation`, and `alatyr-add-ai` when those aliases are supported by
   the target

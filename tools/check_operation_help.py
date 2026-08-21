@@ -32,6 +32,7 @@ SHORT_HELP_REQUIRED = [
     "## Quick Operations",
     "## Minimal Request Shape",
     "Allowed actions:",
+    "Current user authorization:",
     "## When Unsure",
 ]
 
@@ -45,6 +46,7 @@ REFERENCE_REQUIRED = [
     "## Target Notes",
     ".ai/assistant/operation-catalog.json",
     ".ai/assistant/operation-index.json",
+    ".ai/assistant/policies/action-authorization.json",
     "Operation: `adapter-health`",
     "Operation: `project-vocabulary`",
     "Operation: `test-first-configuration`",

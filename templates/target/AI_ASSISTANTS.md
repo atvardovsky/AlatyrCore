@@ -1,7 +1,6 @@
 # AI Assistant Entry Point
 
-This repository uses Alatyr Core. All assistants should treat `AGENTS.md` as
-the canonical instruction file.
+This repository uses Alatyr Core. All assistants should treat `AGENTS.md` as the canonical instruction file.
 
 Before making changes:
 
@@ -19,6 +18,8 @@ Before making changes:
    `.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.
 6. For AI infrastructure work, use `.ai/assistant/ai-infrastructure-router.json`
    to select a route and item ID before loading item-specific context.
+7. Before state changes, use `.ai/assistant/policies/action-authorization.json`; a topic switch or backlog/issue return is read-only.
+   Status, discussion, report, analysis, plan, or ambiguous continuation is read-only. Implementation does not imply
+   commit; commit does not imply push; prior completed-task authorization expires.
 
-Assistant-specific bridge files must stay short and point back to canonical
-target files.
+Assistant-specific bridge files must stay short and point back to canonical target files.

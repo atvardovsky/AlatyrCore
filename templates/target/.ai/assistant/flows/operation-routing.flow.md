@@ -17,6 +17,8 @@ placeholders with target facts before accepting installation.
 - Team operating model: `.ai/project/team-operating-model.md` when enabled
 - Team work registry: `.ai/assistant/team/work-registry.json` when enabled
 - Pre-change preview: `.ai/assistant/templates/pre-change-preview.md`
+- Action authorization policy:
+  `.ai/assistant/policies/action-authorization.json`
 - Installed operations guidance: `.ai/framework/installed-operations.md`
 - Operation routing guidance: `.ai/framework/operation-help.md`
 - Project source of truth: `{TARGET_PROJECT_SOURCE_OF_TRUTH}`
@@ -45,8 +47,10 @@ For `Alatyr status` or `Alatyr doctor`, route directly to `adapter-health` with
 ## Automatic Routing
 
 1. Restate the request in concrete language and record supplied allowed
-   actions. When absent, infer only the minimum actions needed for an
-   unambiguous routine request; ask before broadening the surface.
+   actions. Classify current user authorization separately. When allowed
+   actions are absent, infer only the minimum surface needed for an unambiguous
+   routine request; when phase intent is absent or ambiguous, remain
+   `inspect` and ask before state changes.
 2. Apply an explicit operation ID or exact alias through the compact operation
    index first. Otherwise use bounded router candidates; load catalog
    `use_when` fields only when ambiguity remains.
@@ -67,22 +71,27 @@ For `Alatyr status` or `Alatyr doctor`, route directly to `adapter-health` with
    evaluate the compact test-first recommendation gate. Load the target policy
    and test-first intent only when the result is required/recommended or the
    request is explicit; do not suggest it for every code edit.
-7. When exactly one operation fits and its allowed-action scope is sufficient,
-   state the operation and reason briefly, then continue without asking the
-   user to confirm routing.
-8. When two or more operations remain plausible, load compact help or the full
+7. Classify the newest request under the action-authorization policy. Topic or
+   issue switches, backlog returns, status, discussion, reports, analysis,
+   planning, recommendations, and ambiguous continuation authorize only
+   `inspect`. A clear implementation request may authorize `modify`, but not
+   `commit` or `publish`. Prior completed-scope authorization is invalid.
+8. When exactly one operation fits, its allowed-action scope is sufficient,
+   and the next phase is authorized, state the operation and reason briefly,
+   then continue without asking the user to confirm routing.
+9. When two or more operations remain plausible, load compact help or the full
    help reference, present only the closest two or three choices, and ask the
    smallest missing question. Do not edit while ambiguity remains material.
-9. Use the `large-task` operation only for genuinely multi-workstream,
+10. Use the `large-task` operation only for genuinely multi-workstream,
    cross-boundary, budget-exceeding, or resumable work.
-10. When team collaboration is enabled, run the compact active-work preflight
+11. When team collaboration is enabled, run the compact active-work preflight
     before every state-changing operation. Read only the active index first.
     Expand `team-active` for an explicit team operation, a task/backend/branch
     match, possible changed-fact/owner/contract/dependency/surface overlap, or
     unresolved index evidence. Load the selected task, relevant overlaps, and
     one team flow; do not load unrelated records or infer unavailable tracker
     state.
-11. When subagent delegation is enabled and not forbidden by the request,
+12. When subagent delegation is enabled and not forbidden by the request,
     identify the primary critical-path next action first. Add the
     `delegated-execution` overlay only for independently useful, locally
     verifiable packets with disjoint writes or read-only scope and current
@@ -104,6 +113,11 @@ Before the selected flow edits files, show the pre-change preview when:
 The preview is not approval. Refresh it when risk or scope changes. For
 read-only work and clear local changes with no semantic or protected effect,
 record that preview was skipped and why.
+
+Before every `modify`, `commit`, `publish`, or `live-external` phase, recheck
+the newest user instruction and current logical scope. Allowed actions,
+protected approval, tool access, task assignment, mode selection, delegation,
+and successful validation cannot supply missing phase authorization.
 
 ## Specialized Aliases
 
@@ -155,6 +169,8 @@ Report:
 - matching flow and required module state
 - reason for selection
 - allowed actions and approval needs
+- `current_user_authorization`, including current scope, source request,
+  authorized phases, invalidated prior authorization, and actions performed
 - pre-change preview shown, refreshed, or skipped with reason
 - team overlay, task/actor IDs, and registry evidence revision when applicable
 - diagram presentation mode, source status, and fallback when applicable
@@ -179,6 +195,10 @@ Reject or revise routing that:
 - loads the full bridge matrix or module profile for a clear indexed route
 - routes through a disabled, deferred, not-applicable, or blocked module
 - starts edits while material routing or allowed-action ambiguity remains
+- treats a backlog/issue return, report, discussion, status, analysis, plan, or
+  ambiguous continuation as permission to edit
+- carries commit or publish authorization from a completed or redirected scope
+- infers publish from commit, protected approval, allowed actions, or tool access
 - treats the pre-change preview as approval
 - claims adapter health without fresh evidence
 - claims target validation exists without target evidence

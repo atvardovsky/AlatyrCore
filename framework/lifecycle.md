@@ -99,9 +99,13 @@ Before upgrading framework files in a target project:
 12. Recheck the installed adapter for framework references, bridge files, gates,
    prompts, skills, lifecycle notes, and maturity gaps.
 13. Recheck adapter owners, review cadence, CODEOWNERS or equivalent owner
-   map, operation catalog, help, routing/health/preview flows, and post-update
-   chat message
-   templates.
+    map, operation catalog, help, routing/health/preview flows, and post-update
+    chat message
+    templates.
+    Recheck the action-authorization policy, phase list, scope invalidation,
+    operation request, preview, core/final gates, bridge routing, and intent
+    conformance scenarios. Preserve stricter target authorization rules, but
+    never preserve reusable cross-scope commit or publication permission.
     Preserve active team task IDs, actor references, claims, checkpoints,
     handoffs, decisions, and external references. Never replace current team
     state with the source placeholder registry.
@@ -170,6 +174,8 @@ Framework lifecycle notes should record:
 - migration-assessment evidence and intentionally omitted context
 - adapter recheck results for installed framework updates
 - help/routing and post-update chat-message migration needs
+- current-scope action-authorization rule, target policy, phase gates,
+  conformance scenarios, bridge routing, and final-evidence migration needs
 - team-collaboration rule, policy, identity boundary, registry/task schemas,
   active-work route, backend contract, optimistic-concurrency behavior,
   schema-1 record migration, active-record preservation, and post-update stale-

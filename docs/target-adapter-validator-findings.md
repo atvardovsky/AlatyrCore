@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 791
+Catalog entries: 807
 
 ## Codes
 
@@ -171,6 +171,38 @@ Catalog entries: 791
 - `ARCHITECTURE_PATTERN_SHAPE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ARCHITECTURE_REQUIRED_FILE_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `AUTHORIZATION_BOUNDARY_CONFLATED`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `AUTHORIZATION_CATALOG_EVIDENCE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `AUTHORIZATION_CATALOG_PHASES`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `AUTHORIZATION_CATALOG_ROUTE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `AUTHORIZATION_DELEGATION_ESCALATION`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `AUTHORIZATION_EVIDENCE_FIELD`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `AUTHORIZATION_PHASE_GATE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `AUTHORIZATION_POLICY_EFFECTS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `AUTHORIZATION_POLICY_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `AUTHORIZATION_POLICY_PHASES`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `AUTHORIZATION_POLICY_SCHEMA`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `AUTHORIZATION_POLICY_SCOPE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `AUTHORIZATION_SCOPE_INVALIDATION`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `AUTHORIZATION_SCOPE_REUSE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `AUTHORIZATION_SURFACE_DRIFT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `AUTHORIZATION_SURFACE_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `BACKUP_OWNER_UNRESOLVED`
   Level: configured. Source: `tools/validate_target_adapter.py`.

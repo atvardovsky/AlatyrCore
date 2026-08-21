@@ -139,21 +139,25 @@ Classify every proposed target file:
 3. Fill `installer/readiness-checklist.md` for the target.
 4. Prepare an installation plan from
    `installer/installation-plan-template.md`.
-5. Identify protected changes and required approvals.
-6. If approval is required, stop until the programmer confirms it.
-7. Create or adapt target `AGENTS.md` and `AI_ASSISTANTS.md`.
-8. Create or preserve `CODEOWNERS` or equivalent owner metadata when the
+5. Record the current logical installation scope and the action phases
+   authorized by the newest user request. Installation intent does not imply
+   commit, push, release, deployment, or another live action. Apply
+   `ALATYR-AUTHORIZATION-001` before each state-changing phase.
+6. Identify protected changes and required approvals.
+7. If approval is required, stop until the programmer confirms it.
+8. Create or adapt target `AGENTS.md` and `AI_ASSISTANTS.md`.
+9. Create or preserve `CODEOWNERS` or equivalent owner metadata when the
    target supports file ownership.
-9. Create or adapt target `.ai/alatyr.yaml` or equivalent manifest with
+10. Create or adapt target `.ai/alatyr.yaml` or equivalent manifest with
    framework version, adapter schema version, template version, owner,
    backup owner, review cadence, CODEOWNERS or equivalent owner map,
    source-of-truth, validation, known gaps, and local deviations.
-10. Create or adapt target `.ai/README.md`.
-11. Copy or adapt the selected portable framework pack into target
+11. Create or adapt target `.ai/README.md`.
+12. Copy or adapt the selected portable framework pack into target
     `.ai/framework`. Record the pack in the manifest and preserve its projected
     rule registry, ownership map, and file inventory. Use `complete` when all
     portable Markdown and JSON files are installed.
-12. Create target `.ai/project/contour.md` and target project
+13. Create target `.ai/project/contour.md` and target project
    source-of-truth docs from target facts.
     Add `.ai/project/development-evidence.json` only when the target enables
     pattern-based AI infrastructure recommendations. Start with an empty index
@@ -195,7 +199,7 @@ Classify every proposed target file:
     target enables team collaboration. Derive actor IDs, display names and
     aliases, authority, priorities, transitions, review, identity verification,
     backend, synchronization, storage, retention, and privacy from evidence.
-13. Create target `.ai/assistant/contour.md`, generated hash-bound bootstrap
+14. Create target `.ai/assistant/contour.md`, generated hash-bound bootstrap
     index, compact context router, routed gate index/fragments, and selected
     lazy descriptors, operation catalog and checked compact operation
     index, context profiles, module profile, task-specific maturity profile,
@@ -238,8 +242,9 @@ Classify every proposed target file:
     are enabled. Read the compact catalog after bootstrap and before the task
     profile; load one selected descriptor plus applicable root context and ask
     on ambiguity. Do not load all mode directories or activate nested adapters.
-14. Add bridge files only for assistants the target uses.
-15. Add installed-operation, operation-help, automatic operation-routing,
+15. Add bridge files only for assistants the target uses.
+16. Add installed-operation, operation-help, automatic operation-routing,
+    current-scope action-authorization policy,
     read-only adapter-health, risk-gated pre-change preview,
     diagram-discussion flow, ASCII layout template, and presentation template
     when the diagrams module is enabled,
@@ -300,7 +305,7 @@ Classify every proposed target file:
     external links, and ignored local identity. Migrate schema-1 task arrays to
     schema-2 task files and regenerate the index as one planned operation;
     never replace active state with placeholders.
-16. Ensure root assistant entry points and supported bridge files point future
+17. Ensure root assistant entry points and supported bridge files point future
     sessions to the installation note, compact help, operation catalog, and
     routing flow. Expose `Alatyr` as the single conversational entry and
     `Alatyr status` or `Alatyr doctor` as read-only health aliases on every
@@ -319,17 +324,17 @@ Classify every proposed target file:
     Route extension aliases through the same canonical operation catalog on
     every supported surface. Package inspection remains read-only; install,
     update, disable, and remove require target-owned lifecycle evidence.
-17. Add prompts, skills, diagrams, or consistency checks only when they solve
+18. Add prompts, skills, diagrams, or consistency checks only when they solve
     target friction, can be maintained, and have been adapted to target facts.
-18. Run target validation that exists. Do not invent commands.
-19. Apply logical integrity review: changed facts, re-derived invariants,
+19. Run target validation that exists. Do not invent commands.
+20. Apply logical integrity review: changed facts, re-derived invariants,
     reconciled review-item clusters, affected contracts, source of truth,
     repair direction, and residual risk.
-20. Classify final evidence as `current-state`, `historical-record`, or `mixed`.
+21. Classify final evidence as `current-state`, `historical-record`, or `mixed`.
     Do not infer past installation, approval, or validation actions only from
     files that exist in the current tree.
-21. Report final evidence.
-22. Send the appropriate post-install or post-update assistant chat message
+22. Report final evidence.
+23. Send the appropriate post-install or post-update assistant chat message
     using the target template when installed. Name the single `Alatyr` entry,
     read-only health aliases, automatic routing, and risk-gated preview.
     Name team/current-actor aliases, attribution limits, and module state when
@@ -377,6 +382,9 @@ Report:
 - evidence basis, observation time, and repository revision when available
 - dated historical records used and historical claims that remain unverifiable
 - installation id and approval used, if any
+- `current_user_authorization`: logical installation scope, source request,
+  authorized and unauthorized phases, invalidated prior authorization, and
+  repository, history, publication, or live actions actually performed
 - framework version, adapter schema version, template version, and manifest
   path
 - adapter owner, backup owner, review cadence, and CODEOWNERS or equivalent
@@ -389,7 +397,7 @@ Report:
 - existing files preserved, skipped, or overwritten with approval
 - supported assistant bridges added or skipped
 - operation catalog and checked compact index, installed-operation,
-  operation-help, automatic routing,
+  operation-help, automatic routing, current-scope action authorization,
   read-only health, risk-gated preview,
   diagram-discussion flow, ASCII template, and presentation template when enabled,
   architecture index/catalog, discussion flow, pattern/area/result templates,

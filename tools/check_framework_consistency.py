@@ -733,6 +733,7 @@ def main() -> int:
         "ALATYR-SOURCE-001",
         "ALATYR-RISK-001",
         "ALATYR-APPROVAL-001",
+        "ALATYR-AUTHORIZATION-001",
         "ALATYR-SAFETY-001",
         "ALATYR-SAFETY-002",
         "ALATYR-INTEGRITY-001",

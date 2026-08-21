@@ -4,6 +4,36 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.17 - 2026-08-21
+
+- Increased the framework version to `0.1.0-alpha.17`, adapter schema version
+  to `16`, and target template version to `17` for current-scope action
+  authorization across every supported assistant surface.
+- Added `ALATYR-AUTHORIZATION-001` and a required target policy that evaluates
+  `inspect`, `modify`, `commit`, `publish`, and `live-external` independently
+  against the newest user request and current logical scope.
+- Made issue/backlog returns, status, discussion, analysis, plans, reports, and
+  ambiguous continuation read-only by default. Implementation no longer
+  implies commit or publication, commit no longer implies publication, and
+  authorization from a completed or redirected task cannot be reused.
+- Extended the boundary to local Git index/history/ref mutations, remote pull
+  request/issue/review/release mutations, live operational effects,
+  delegation, team assignment, allowed-action modes, protected approval,
+  project decisions, tool permissions, and successful validation.
+- Added 15 deterministic intent-conformance scenarios, a portable source
+  checker, installed-target structural findings, validator regressions, and
+  the required `current_user_authorization` final-evidence field. These checks
+  validate declared contracts; they cannot prove that an assistant interpreted
+  an arbitrary conversation correctly.
+- Synchronized framework packs, capabilities, source/target manifests,
+  installer planning and readiness, required-core maturity, operation routing,
+  gates, output contracts, subagent packets, bridge capability records, and
+  post-install/update messages around the same phase boundary.
+- Added `ALATYR-AUTHORIZATION-001`; changed `ALATYR-ADAPTER-001`,
+  `ALATYR-APPROVAL-001`, `ALATYR-BRIDGE-001`, `ALATYR-DELEGATION-001`,
+  `ALATYR-EVIDENCE-001`, `ALATYR-LIFECYCLE-001`, `ALATYR-MODULE-001`,
+  `ALATYR-OPERATION-001`, and `ALATYR-TEAM-001`; no rule IDs were removed.
+
 ## 0.1.0-alpha.16 - 2026-08-21
 
 - Increased the framework version to `0.1.0-alpha.16`, adapter schema version

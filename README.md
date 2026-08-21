@@ -276,6 +276,13 @@ adapter reports its current evidence status and relevant next actions. Clear,
 low-risk requests route automatically; ambiguous or protected work receives a
 bounded preview and any required approval before changes.
 
+Action authorization is tied to the newest request and current logical task.
+Returning to an issue, backlog item, report, or discussion is read-only unless
+the same request clearly asks for implementation. Implementation does not
+authorize commit or push, and commit does not authorize push. AlatyrCore keeps
+these phases separate from allowed file scope, protected-change approval, and
+tool access.
+
 The full installed-operation and assistant workflow is documented in
 [AI_ASSISTANTS.md](AI_ASSISTANTS.md),
 [installed operations](framework/installed-operations.md), and
@@ -295,7 +302,7 @@ tasks from loading the complete framework or project corpus.
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.16`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.17`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural
@@ -355,7 +362,7 @@ Use `framework/file-inventory.json` for unchanged-file comparison and read only
 selected or changed canonical framework owners.
 
 Apply canonical rule references rather than copying policy text into bridge
-files: `ALATYR-ADAPTER-001`, `ALATYR-APPROVAL-001`, `ALATYR-SAFETY-001`,
+files: `ALATYR-ADAPTER-001`, `ALATYR-APPROVAL-001`, `ALATYR-AUTHORIZATION-001`, `ALATYR-SAFETY-001`,
 `ALATYR-SAFETY-002`, `ALATYR-INTEGRITY-001`, `ALATYR-EVIDENCE-001`, and
 `ALATYR-OPERATION-001`. Load `ALATYR-DEPENDENCY-001` only when the optional
 dependency-knowledge module or a dependency operation is selected.

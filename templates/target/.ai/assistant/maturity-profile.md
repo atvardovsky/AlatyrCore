@@ -148,6 +148,13 @@ Final evidence: `{TEAM_COLLABORATION_FINAL_EVIDENCE}`
 
 ## Blocking Criteria
 
+State-changing work is blocked unless the current logical scope and authorized
+`inspect`, `modify`, `commit`, `publish`, and `live-external` phases can be
+resolved from the newest user request through
+`.ai/assistant/policies/action-authorization.json`. Prior authorization,
+allowed-action mode, approval, assignment, routing, tool availability,
+delegation, or successful validation does not fill a missing phase.
+
 Security-sensitive work is blocked unless `{TARGET_SECURITY_OWNER}`,
 `{TARGET_SECURITY_POLICY}`, validation, credential handling, and approval rules
 are defined.
@@ -185,4 +192,4 @@ enabled, report the additional discovery cost and residual coverage risk.
 ## Evidence
 
 Report task area, maturity, blockers, missing facts, validation, approval
-needs, and residual risk before broad work.
+needs, current-scope authorization, and residual risk before broad work.

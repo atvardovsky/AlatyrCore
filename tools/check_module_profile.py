@@ -20,6 +20,7 @@ CORE_ITEMS = [
     "context-profiles",
     "source-of-truth-registry",
     "risk-approval-integrity",
+    "current-scope-action-authorization",
     "validation-and-final-evidence",
 ]
 CORE_FIELDS = [

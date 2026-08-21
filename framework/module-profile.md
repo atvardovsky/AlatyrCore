@@ -45,6 +45,9 @@ Every accepted installation should provide:
 - source-of-truth registry or explicit missing owner records for important
   fact types
 - change-risk classification and approval triggers
+- current-scope action authorization that separates inspection, working-tree
+  modification, local Git mutation, publication, and live external effects;
+  expires prior-scope authorization; and does not infer one phase from another
 - logical integrity review for changed semantic or logical facts
 - validation or manual-review evidence, including unresolved checks
 - final evidence format

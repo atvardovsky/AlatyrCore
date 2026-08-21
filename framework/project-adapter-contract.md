@@ -148,9 +148,13 @@ Every project using this framework must define:
   contract, synchronization, privacy, retention, conflict, handoff, review, and
   merge-readiness evidence when the optional team module is enabled
 - allowed-action meanings for installed-operation requests
+- current-scope action-authorization policy that separates inspect, modify,
+  commit, publish, and live-external phases and invalidates prior authorization
+  after completion, redirection, or material scope expansion
 - operation catalog and checked compact index, single entry, automatic routing, read-only health,
-  risk-gated preview, help, and post-install/update chat-message templates when
-  the repository wants discoverable assistant requests
+  risk-gated preview, current-scope action authorization, help, and
+  post-install/update chat-message templates when the repository wants
+  discoverable assistant requests
 - final evidence format for that project
 
 ## Adapter May Provide

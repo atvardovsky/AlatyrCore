@@ -21,8 +21,13 @@
     ".ai/framework/ai-infrastructure-routing.md",
     ".ai/assistant/ai-infrastructure-router.json",
     ".ai/assistant/gates/core.md",
-    ".ai/assistant/gates/security-approval.md",
     ".ai/assistant/gates/final-evidence.md"
+  ],
+  "conditional_context": [
+    {
+      "path": ".ai/assistant/gates/security-approval.md",
+      "when": "source import permission change live or destructive capability credential access protected integration or weakened governance is possible"
+    }
   ],
   "expand_when": [
     "selected item route requires additional context",

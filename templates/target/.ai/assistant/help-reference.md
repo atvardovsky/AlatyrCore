@@ -11,6 +11,13 @@ local command in `{TARGET_VALIDATION_OR_LOCAL_COMMANDS}`.
 
 These aliases are chat/request shortcuts, not shell commands.
 
+Action authorization is current-scope and phase-specific. Returning to an
+issue or backlog item, discussing a report, checking status, requesting
+analysis or a plan, and ambiguous continuation are read-only. Implementation
+does not imply commit; commit does not imply push; authorization from a
+completed or redirected task is not reusable. See
+`.ai/assistant/policies/action-authorization.json`.
+
 Canonical operation metadata lives in
 `.ai/assistant/operation-catalog.json`. This file is its human explanation,
 not a competing operation registry. A clear request routes automatically and
@@ -470,6 +477,9 @@ Task scale: `{NORMAL_OR_LARGE_OR_RESUMABLE}`
 Existing operation packet: `{PACKET_PATH_OR_NONE}`
 Team task id: `{TEAM_TASK_ID_OR_NONE}`
 Actor id: `{ACTOR_ID_OR_NONE}`
+Current logical scope: `{CURRENT_LOGICAL_SCOPE_OR_OPERATION_ID}`
+Current user authorization: `{INSPECT_MODIFY_COMMIT_PUBLISH_LIVE_EXTERNAL_PHASES}`
+Authorization source/message: `{CURRENT_USER_MESSAGE_OR_REFERENCE}`
 Allowed actions: `{READ_ONLY_DOCS_ONLY_ADAPTER_ONLY_CODE_AND_TESTS_OR_FULL_WITH_APPROVAL}`
 Expected final evidence: `{EXPECTED_FINAL_EVIDENCE}`
 ```

@@ -152,6 +152,11 @@ Replace placeholders with target facts before accepting installation.
     recheck compatibility and drift without automatic updates.
 15. Identify required migrations, approvals, unresolved facts, and skipped
    checks.
+   Recheck `.ai/assistant/policies/action-authorization.json`, root assistant
+   entry points, operation request, preview, core gate, final-evidence gate,
+   bridge matrix, and conformance scenarios. Confirm subject-only issue/backlog
+   transitions remain read-only and prior commit/publish authorization is not
+   reusable.
 16. Use `.ai/assistant/templates/migration-note.md` when a framework update
     requires target migration evidence.
 17. Use `.ai/assistant/templates/effectiveness-report.md` only when comparing
@@ -175,6 +180,9 @@ Report:
 - evidence basis, observation time, and repository revision when available
 - historical records used and historical claims that remain unverifiable
 - adapter references changed or still current
+- action-authorization policy and routed surfaces current, including phase
+  separation, scope invalidation, explicit publication intent, delegation
+  inheritance, and `current_user_authorization` evidence
 - adapter drift checks result, including local path leakage, stale checker
   statements, duplicate profile references, context-router references, owner
   placeholders, and target-local checker evidence

@@ -18,6 +18,7 @@ Entry points:
 - `.ai/assistant/help-reference.md`
 - `.ai/assistant/operation-index.json`
 - `.ai/assistant/operation-catalog.json`
+- `.ai/assistant/policies/action-authorization.json`
 - `.ai/assistant/context-router.json`
 - `.ai/assistant/bootstrap-index.json`
 - `.ai/assistant/gates/index.json`
@@ -45,11 +46,18 @@ Future assistant bootstrap:
 - Repair a stale generated index from its named manifest, project-map, and router sources; otherwise load profiles, module state, registries, blueprint, gate fragments, and the installation note only when routing or unclear adapter state requires them.
 - Send `Alatyr` for compact actions or `Alatyr status` for a read-only adapter health check.
 - If the installation itself is unclear, run `recheck-after-installation` before editing files.
+- Re-evaluate the newest request at every action-phase boundary. A completed
+  task's edit, commit, or push authorization does not carry into a new issue,
+  backlog item, discussion, report, or subject switch.
 
 Installed operation help:
 - Send `Alatyr` to see adapter state and up to three relevant operations.
 - Send `Alatyr status` or `Alatyr doctor` for read-only health evidence.
 - Clear development requests route automatically; operation IDs are optional.
+- Issue/backlog returns, status requests, discussion, analysis, plans, reports,
+  and ambiguous continuation are read-only until the current request explicitly
+  authorizes implementation. Implementation intent does not authorize commit
+  or push, and commit intent does not authorize push.
 - Risky or cross-boundary changes show a pre-change preview before edits.
 - Use `.ai/assistant/templates/operation-request.md` for structured requests.
 - When team collaboration is enabled, use `Alatyr set actor <actor>`, `Alatyr who am I`, `Alatyr team status`, `Alatyr start`, `Alatyr claim`, `Alatyr conflicts`, `Alatyr checkpoint`, `Alatyr handoff`, `Alatyr decision`, `Alatyr review`, `Alatyr merge check`, or `Alatyr release`. Actor selection is local attribution, not authentication or authority.

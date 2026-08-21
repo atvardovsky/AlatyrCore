@@ -60,6 +60,9 @@ The framework commits to giving an assistant a defined process for:
   review, and documentation through a compact project-owned catalog while
   separating observed, intended, proposed, and contradicted architecture
 - requiring explicit programmer approval for protected changes
+- binding inspect, modify, commit, publish, and live-external phases to the
+  newest user intent in one current logical scope, without carrying prior
+  phase authorization into a completed or redirected task
 - keeping architecture discussion separate from architecture mutation
 - keeping documentation and diagrams synchronized with code and project facts
 - selecting bounded target-owned code-documentation profiles and generating
@@ -95,6 +98,9 @@ The framework commits to giving an assistant a defined process for:
   keeping accepted modes user-owned and preventing mode selection from granting
   approval, write scope, permissions, authority, or gate bypass
 - bounding installed-operation requests by allowed actions before editing files
+- keeping current user authorization independent from allowed actions,
+  protected approval, tool permission, routing, assignment, mode selection,
+  delegation, and structural validation
 - routing clear requests automatically through a target operation catalog and
   checked compact exact-alias index,
   showing bounded help before guessing on ambiguity, keeping adapter health
@@ -136,6 +142,8 @@ Machine checks can verify only deterministic repository facts, such as:
   companion updates, rework, and unresolved consistency gaps do not regress
 - manifest, operation catalog, approval, prompt-injection, help, and policy
   templates contain required fields
+- target action-authorization policy, request, preview, gate, and final-evidence
+  surfaces expose the required phase and current-scope contract
 - explicitly selected machine-readable approvals can be checked so the
   complete Git changed-path set is allowed, not excluded, and bound to the
   selected diff base
@@ -147,6 +155,11 @@ Machine checks do not prove the assistant understood the target project or
 that project facts are correct. Prepared prompts and static bridge checks also
 do not prove a vendor actually auto-loaded instructions or stayed within a
 runtime context budget.
+
+Machine checks also cannot prove that an assistant interpreted conversational
+intent correctly or that the newest chat message authorized an action. They
+can require a common policy, conformance scenarios, and evidence fields so the
+boundary is visible and reviewable across supported assistant surfaces.
 
 Machine-readable validator output can make adapter evidence cheaper to reuse in
 CI, assistant rechecks, or final reports, but it remains structural evidence.

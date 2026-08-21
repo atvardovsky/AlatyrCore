@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "policy_kind": "target-action-authorization-policy",
+  "canonical_rule": "ALATYR-AUTHORIZATION-001",
+  "canonical_owner": ".ai/framework/action-authorization.md",
+  "default_phase": "inspect",
+  "phases": [
+    "inspect",
+    "modify",
+    "commit",
+    "publish",
+    "live-external"
+  ],
+  "phase_effects": {
+    "inspect": "read analyze discuss review plan explain compare or report without meaningful repository or external state mutation",
+    "modify": "change repository working-tree content",
+    "commit": "change the Git index local history refs or checked-out revision including stage commit merge rebase pull switch branch stash or reset",
+    "publish": "mutate remote refs pull requests issues reviews releases packages or collaboration and distribution state",
+    "live-external": "deploy change live or production state spend money rotate credentials or perform operational side effects"
+  },
+  "scope": {
+    "prior_authorization_reusable": false,
+    "continuation_behavior": "inherit only explicit phases of one unambiguously unfinished current scope",
+    "invalidate_on": [
+      "operation completed",
+      "new logical scope",
+      "user redirection",
+      "material changed-fact or surface expansion",
+      "material external-effect expansion",
+      "user pause cancellation or replacement"
+    ]
+  },
+  "separation": {
+    "allowed_actions": "ceiling-not-grant",
+    "protected_change_approval": "additional-gate-not-grant",
+    "tool_permission": "capability-not-grant",
+    "operation_routing": "process-selection-not-grant",
+    "team_assignment": "coordination-not-grant",
+    "project_decision": "fact-authority-not-grant",
+    "workspace_mode": "context-selection-not-grant",
+    "delegation": "inherited-boundary-not-grant",
+    "validation_result": "evidence-not-grant"
+  },
+  "intent_classes": {
+    "subject_selection": {
+      "default_authorized_phases": ["inspect"],
+      "examples": [
+        "back to issue from backlog",
+        "return to the issue",
+        "let us discuss this report",
+        "what is the current status"
+      ]
+    },
+    "analysis_or_plan": {
+      "default_authorized_phases": ["inspect"],
+      "examples": [
+        "analyze the issue",
+        "review the implementation",
+        "suggest a fix",
+        "provide a plan"
+      ]
+    },
+    "implementation": {
+      "default_authorized_phases": ["inspect", "modify"],
+      "examples": [
+        "fix the issue",
+        "implement the plan",
+        "update the files"
+      ]
+    },
+    "history": {
+      "default_authorized_phases": ["inspect", "commit"],
+      "examples": [
+        "commit the current changes",
+        "stage these files",
+        "switch to the named branch"
+      ]
+    },
+    "publication": {
+      "default_authorized_phases": ["inspect", "publish"],
+      "examples": [
+        "push the current commit",
+        "publish the release",
+        "create the pull request",
+        "comment on the issue"
+      ]
+    },
+    "live_external": {
+      "default_authorized_phases": ["inspect", "live-external"],
+      "examples": [
+        "deploy this approved revision",
+        "run the approved live operation"
+      ]
+    }
+  },
+  "phase_rules": {
+    "modify_does_not_grant": ["commit", "publish", "live-external"],
+    "commit_does_not_grant": ["modify", "publish", "live-external"],
+    "publish_requires_explicit_current_scope_intent": true,
+    "live_external_requires_explicit_current_scope_intent": true,
+    "multiple_phases_may_be_authorized_together": true,
+    "recheck_newest_user_instruction_before_each_state_changing_phase": true
+  },
+  "delegation": {
+    "inherits_parent_scope": true,
+    "may_broaden_phases": false,
+    "primary_rechecks_before_integration_commit_publish_or_live_action": true
+  },
+  "final_evidence_field": "current_user_authorization"
+}

@@ -8,6 +8,7 @@ alatyr_doc:
     - ALATYR-CONTEXT-001
     - ALATYR-RISK-001
     - ALATYR-APPROVAL-001
+    - ALATYR-AUTHORIZATION-001
     - ALATYR-MODULE-001
   applies_to:
     - all
@@ -36,6 +37,8 @@ Operation help exists to:
 - make installed Alatyr usage discoverable after installation or update
 - route unclear requests to the right target flow
 - prevent assistants from treating vague requests as permission to edit files
+- prevent authorization for edits, commits, publication, or live actions from
+  leaking across logical task scopes
 - distinguish assistant requests from nonexistent universal commands
 - expose missing target adapter facts before work starts
 - provide one stable entry point across supported assistant surfaces
@@ -108,17 +111,24 @@ Automatic routing should use this order:
    operation.
 4. Classify changed facts and approval triggers using the owning risk and
    approval rules.
-5. Proceed without a routing confirmation when one operation is clearly
-   applicable and its allowed-action scope is sufficient.
-6. Present two or three candidates and ask one bounded question when multiple
+5. Classify the newest request under the current-scope action-authorization
+   policy. A subject switch, issue or backlog return, status, discussion,
+   report, analysis, plan, or ambiguous continuation remains `inspect` only.
+6. Proceed without a routing confirmation when one operation is clearly
+   applicable, its allowed-action scope is sufficient, and the requested phase
+   is explicitly authorized.
+7. Present two or three candidates and ask one bounded question when multiple
    operations remain plausible or the permitted scope is unclear.
-7. Route unsupported or disabled operations to help with the specific missing
+8. Route unsupported or disabled operations to help with the specific missing
    module or adapter fact.
 
 The assistant should state the selected operation and reason briefly before
 edits, but must not turn routine low-risk work into a form-filling exchange.
 Operation routing selects the process; it does not grant approval or broaden
-allowed actions.
+allowed actions. Allowed actions are a ceiling, not user authorization. Clear
+implementation intent may authorize repository edits for the current scope,
+but it does not authorize commit or publication. Commit does not authorize
+push. A previous scope's phase authorization is never carried forward.
 
 ## Adapter Health
 
@@ -157,9 +167,10 @@ least one of these conditions applies:
 
 The preview names the operation, changed facts, canonical owners, affected
 surfaces, risk classes, expected file or surface scope, allowed actions,
-approval needs, validation, unresolved questions, and the proceed/ask/blocked
-decision. It is not approval and must never manufacture certainty about exact
-files before discovery supports it.
+current user authorization, approval needs, validation, unresolved questions,
+and the proceed/ask/blocked decision. It is not approval or phase
+authorization and must never manufacture certainty about exact files before
+discovery supports it.
 
 Routine read-only work and local changes with no semantic or protected effect
 may skip the preview. The assistant should record a short skip reason in its
@@ -179,6 +190,10 @@ Show operation help when:
 
 Do not show the full operation reference merely because a clear low-risk task
 did not use a formal operation name.
+
+An issue, backlog, report, or discussion transition with no clear action must
+route to read-only analysis even when an earlier completed task included
+implementation, commit, or push authorization.
 
 Showing help does not require approval because it does not change repository
 facts.

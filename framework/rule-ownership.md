@@ -43,6 +43,14 @@ Derived surfaces: installation approval gate, installed-operation allowed
 actions, human and machine-readable approval templates, strict target diff
 scope validation, security-sensitive profiles.
 
+Category: `AUTHORIZATION`
+Routing owner: `.ai/framework/action-authorization.md`
+Rule IDs: `ALATYR-AUTHORIZATION-001`
+Derived surfaces: source and target assistant entry points, installed-operation
+routing, action-authorization policy, operation request and preview, core and
+final-evidence gates, subagent and team boundaries, target structural
+validation, authorization conformance scenarios.
+
 Category: `SAFETY`
 Routing owner: `.ai/framework/security-safety-guidance.md`
 Rule IDs: `ALATYR-SAFETY-001`, `ALATYR-SAFETY-002`
@@ -205,6 +213,9 @@ Canonical owner: `.ai/framework/change-risk-model.md`
 
 Rule: `ALATYR-APPROVAL-001`
 Canonical owner: `.ai/framework/approval-records.md`
+
+Rule: `ALATYR-AUTHORIZATION-001`
+Canonical owner: `.ai/framework/action-authorization.md`
 
 Rule: `ALATYR-SAFETY-001`
 Canonical owner: `.ai/framework/security-safety-guidance.md`

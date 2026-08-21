@@ -82,6 +82,7 @@ file or into assistant-specific bridges:
 - Context routing: `ALATYR-CONTEXT-001`
 - Adapter separation: `ALATYR-ADAPTER-001`
 - Approval boundaries: `ALATYR-APPROVAL-001`
+- Current-scope action authorization: `ALATYR-AUTHORIZATION-001`
 - Safety boundaries: `ALATYR-SAFETY-001`
 - Imported AI infrastructure: `ALATYR-SAFETY-002`
 - Logical integrity: `ALATYR-INTEGRITY-001`
@@ -125,6 +126,14 @@ three relevant next actions. Clear ordinary requests route automatically.
 Unclear requests use compact help. Semantic, protected, cross-boundary,
 external, or unclear-scope changes receive a bounded pre-change preview before
 edits. A preview is not approval.
+
+Before changing state, distinguish `inspect`, `modify`, `commit`, `publish`,
+and `live-external` authorization for the newest logical scope. Returning to a
+backlog item, discussing a report, asking for status, or requesting analysis
+is read-only unless that same request clearly asks for a state-changing phase.
+Implementation does not imply commit; commit does not imply push; tool access,
+allowed actions, protected approval, team assignment, and prior completed-task
+authorization do not grant a missing phase.
 
 Exact operation IDs and aliases come from the installed target's compact
 operation index and canonical catalog. Do not infer an operation from this

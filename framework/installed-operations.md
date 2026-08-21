@@ -68,6 +68,8 @@ A post-install request should state:
 - target source-of-truth docs to inspect
 - validation commands or manual checks known to the target
 - approval constraints
+- current logical scope and the action phases explicitly authorized by the
+  newest user request
 - related review comments or defect reports
 - approved Git diff base and explicitly selected machine-readable approval
   records when scoped approval applies
@@ -120,6 +122,20 @@ operation request:
 
 If the requested operation exceeds the allowed actions, the assistant should
 stop before editing and ask for a narrower operation or explicit approval.
+
+Allowed actions are a maximum surface, not authorization to use that surface.
+Apply `ALATYR-AUTHORIZATION-001` separately for `inspect`, `modify`, `commit`,
+`publish`, and `live-external`. The latest request must authorize each
+state-changing phase in the current logical scope. `Fix` or `implement` may
+authorize `modify`, but not commit or push. `Commit` does not authorize push.
+A direct current request may authorize multiple named phases together.
+
+A subject-only transition such as returning to an issue or backlog item,
+switching discussion topics, asking for status, reviewing a report, requesting
+analysis, or asking what comes next defaults to `inspect`. Prior phase
+authorization expires after completion, redirection, material scope expansion,
+pause, cancellation, or replacement. Ambiguous `continue` inherits phases only
+for one clearly unfinished current scope; otherwise it remains read-only.
 
 If a request says `Alatyr`, "ask Alatyr", or similar, interpret that as "ask an
 assistant to use the installed Alatyr Core adapter in this repository." A bare
@@ -192,74 +208,82 @@ For installed operations:
    catalog signals and enabled module state. Route one clear match
    automatically; ask one bounded question when multiple plausible operations
    remain.
-6. Identify whether the request is framework-core, target-project, repository
+6. Classify the current logical scope and authorized phases from the newest
+   user request. Treat issue/backlog returns, status, discussion, reports,
+   analysis, planning, and ambiguous continuation as read-only. Do not reuse
+   authorization from a completed or redirected operation.
+7. Identify whether the request is framework-core, target-project, repository
    adapter, bridge, generated-artifact, or skill/prompt work.
-7. Classify changed facts, risk, approval triggers, and allowed-action scope.
+8. Classify changed facts, risk, approval triggers, and allowed-action scope.
    Before edits, show a bounded pre-change preview when semantic or protected
    risk, boundary crossing, external effects, or unclear scope triggers it.
    Record why preview was skipped for routine read-only or local non-semantic
    work. A preview is not approval.
-8. Apply logical integrity review before claiming consistency. Re-derive
+9. Before every state-changing phase, recheck the newest instruction,
+   current-scope authorization, allowed actions, protected approval, and tool
+   permissions. Stop before `modify`, `commit`, `publish`, or `live-external`
+   when that phase is not explicit.
+10. Apply logical integrity review before claiming consistency. Re-derive
    invariants and reconcile related review items over the combined repair set.
    When the optional consistency map is enabled, build a bounded impact closure
    from changed fact IDs before loading related surfaces.
-9. Activate the large-task scale overlay only when work is cross-boundary,
+11. Activate the large-task scale overlay only when work is cross-boundary,
    multi-workstream, budget-exceeding, or resumable. Use a target operation
    packet and bounded active-workstream context when activated.
-10. When optional subagent delegation is enabled, identify the primary
+12. When optional subagent delegation is enabled, identify the primary
     critical-path next action first. Activate delegated execution only for
     independently useful, locally verifiable packets with disjoint writes or
     read-only scope and current capability evidence. Keep project decisions,
     approval, integration, and final convergence with the primary assistant.
-11. Activate the team-active overlay only for enabled team coordination.
+13. Activate the team-active overlay only for enabled team coordination.
     Compare active tasks by changed facts and owners before secondary file
     overlap; keep unrelated tasks and history outside context.
-12. Use architecture assistance for architecture inventory, explanation,
+14. Use architecture assistance for architecture inventory, explanation,
     pattern discussion, alternative comparison, review, or supporting docs.
     Start from the compact catalog, keep observed and intended architecture
     distinct, and route accepted decisions separately.
-13. Use blueprint-driven change when accepted project facts may change.
-14. Evaluate the compact test-first recommendation gate for implementation,
+15. Use blueprint-driven change when accepted project facts may change.
+16. Evaluate the compact test-first recommendation gate for implementation,
     defect, invariant, contract, and risky-refactor work. Route configuration
     or enablement separately from execution; do not impose TDD from a disabled
     module or repeat a declined recommendation without new evidence.
-15. Use extension management for explicit extension list, inspect, plan,
+17. Use extension management for explicit extension list, inspect, plan,
     install, update, disable, remove, or review requests. Keep source review
     read-only until immutable provenance, compatibility, bindings, permissions,
     approval, ownership, and validation are resolved.
-16. Use AI infrastructure recommendation when the user asks what should be
+18. Use AI infrastructure recommendation when the user asks what should be
    added or improved, or when bounded evidence shows a recurring capability
    gap. Use selected target development-pattern evidence, evaluate existing
    items before proposing a new one, and do not promote target observations
    directly into portable framework changes.
-17. Use skill adaptation when prompts, skills, wrappers, or third-party
+19. Use skill adaptation when prompts, skills, wrappers, or third-party
    assistant infrastructure change.
    Select the target AI infrastructure route and item IDs before loading item
    content, permissions, gates, validation, or import policy.
-18. Use prompt-injection policy for imported, external, remote, pasted, package,
+20. Use prompt-injection policy for imported, external, remote, pasted, package,
    plugin, or unknown AI infrastructure.
-19. Use AI infrastructure inventory before adding, importing, replacing, or
+21. Use AI infrastructure inventory before adding, importing, replacing, or
    removing assistant infrastructure.
-20. Use adapter maturity review when the request is broad, post-install, or
+22. Use adapter maturity review when the request is broad, post-install, or
     post-upgrade.
-21. Use workspace-mode flow for mode listing, suggestion, inspection,
+23. Use workspace-mode flow for mode listing, suggestion, inspection,
     per-task selection, definition, acceptance, update, disablement,
     deprecation, or removal. Keep suggestions proposed until the user accepts
     them, show a compact mode preflight before changes, and reject any mode
     that grants permission or activates a nested adapter.
-22. Use diagram discussion when the user asks to see or iteratively revise a
+24. Use diagram discussion when the user asks to see or iteratively revise a
     visual model. Select presentation mode from the target diagram policy and
     current compact assistant-capability entry, keep drafts non-canonical,
     preserve stable ID/revision lineage, classify sensitive content and
     external rendering, and always retain a bounded portable ASCII view.
-23. Record approval evidence when protected-change scope requires it. When
+25. Record approval evidence when protected-change scope requires it. When
     scoped approval is used, enforce the complete changed path set against
     explicitly selected machine-readable records bound to the approved diff
     base.
-24. Use the target adapter output contract when the operation follows
+26. Use the target adapter output contract when the operation follows
     installation, framework update, or adapter recheck.
-25. Run target validation that exists, or record unresolved checks.
-26. Report changed facts, re-derived invariants, review-item reconciliation,
+27. Run target validation that exists, or record unresolved checks.
+28. Report current user authorization, changed facts, re-derived invariants,
    files inspected, files changed, approval-scope enforcement, validation,
    skipped checks, and residual risk.
 

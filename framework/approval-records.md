@@ -19,6 +19,11 @@ alatyr_doc:
 Approval records bind protected changes to a specific plan, scope, and
 evidence trail.
 
+They do not authorize an assistant to start implementation, commit, publish,
+or perform a live external action. Current user authorization for those phases
+is owned separately by `ALATYR-AUTHORIZATION-001`; both gates must pass when
+both apply.
+
 They are required when a target adapter needs durable evidence for an approval,
 when approval scope covers multiple files or protected categories, or when a
 plan may be reused after review.

@@ -31,7 +31,8 @@ changes.
   freshness or expiry evidence:
 - Existing blueprint or equivalent source-of-truth docs:
 - Existing operation catalog, installed-operation, operation-help, automatic
-  routing, adapter-health, pre-change preview, blueprint-creation,
+  routing, action-authorization policy, adapter-health, pre-change preview,
+  blueprint-creation,
   adapter-recheck, or chat-message process:
 - Existing structured team policy and operating model, stable actor IDs and
   display-name mappings, current-user selection, identity verification,
@@ -147,6 +148,9 @@ The target installation must define or adapt:
   relationships, impact traversal, staleness handling, and missing coverage
 - context profiles: task-specific required context, approval, validation, and
   evidence rules
+- current-scope action authorization: phase definitions, scope invalidation,
+  default read-only intent classes, independent gates, delegation inheritance,
+  and final evidence
 - task-specific maturity profile and blocking criteria
 - bridge capability matrix for supported assistants
 
@@ -178,6 +182,8 @@ Collect target-specific facts before writing project docs:
   registry Fact Type to its referenced map node
 - adapter owner, backup owner, review cadence, and file-owner map expectations
 - risk classes and approval triggers
+- current-scope authorization expectations for inspection, working-tree
+  changes, local Git state, remote publication, and live external effects
 - security, privacy, live-service, destructive-operation, dependency, and
   credential/log-redaction rules
 - deployment/operations facts
@@ -359,6 +365,9 @@ List commands or manual checks:
 
 Final evidence must say:
 
+- current logical scope and `current_user_authorization`, including source
+  request, authorized and unauthorized phases, invalidated prior
+  authorization, and state-changing actions actually performed
 - framework core installed/adapted
 - selected framework pack is compatible with the support profile and enabled
   modules; projected registry and inventory match installed files
@@ -421,6 +430,7 @@ Final evidence must say:
   unknown with reason
 - bridge files added or checked
 - operation catalog, installed-operation, operation-help, automatic routing,
+  action-authorization policy,
   read-only adapter-health, risk-gated preview, blueprint-creation,
   adapter-recheck, or post-install/update chat-message templates added or
   skipped

@@ -8,7 +8,8 @@ commands from another project.
 ## Mandatory Gates
 
 - Rule references checked: `ALATYR-CONTEXT-001`, `ALATYR-SOURCE-001`,
-  `ALATYR-RISK-001`, `ALATYR-APPROVAL-001`, `ALATYR-SAFETY-001`,
+  `ALATYR-RISK-001`, `ALATYR-APPROVAL-001`,
+  `ALATYR-AUTHORIZATION-001`, `ALATYR-SAFETY-001`,
   `ALATYR-SAFETY-002`, `ALATYR-INTEGRITY-001`, `ALATYR-CHANGE-001`,
   `ALATYR-PACKAGE-001`,
   `ALATYR-ARCHITECTURE-001`, `ALATYR-CODEDOC-001`,
@@ -109,6 +110,11 @@ commands from another project.
   adapter actions.
 - Operation catalog/module checked when routed; status/doctor remains
   read-only, and risk-gated preview is shown, refreshed, or explicitly skipped.
+- Current logical scope and newest user authorization checked separately for
+  `inspect`, `modify`, `commit`, `publish`, and `live-external`; topic switches,
+  backlog/issue returns, reports, discussion, status, analysis, plans, and
+  ambiguous continuation remain read-only, and prior completed-task phase
+  authorization is not reused.
 - Team status, conflict review, review, and merge check remain read-only;
   record-changing team operations stay adapter-only, assignment or priority
   never grants approval, and merge readiness is bound to current revisions.
@@ -130,7 +136,7 @@ commands from another project.
 - Final evidence reports run checks, skipped checks, assumptions, and residual
   risk, including loaded context and budget expansion when measured, changed
   fact IDs, selected/skipped relationships, companion surfaces, and unresolved
-  consistency gaps.
+  consistency gaps, plus `current_user_authorization` and actions performed.
 
 ## Target Validation
 

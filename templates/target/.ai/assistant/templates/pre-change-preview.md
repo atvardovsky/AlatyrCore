@@ -6,6 +6,8 @@ effect, or unclear allowed-action surface.
 
 The preview is not approval. Refresh it when changed facts, risk, expected
 surfaces, allowed actions, or approval scope changes materially.
+It is also not action authorization. Stop when the newest user request does not
+authorize the next state-changing phase.
 
 ## Preview
 
@@ -20,6 +22,10 @@ surfaces, allowed actions, or approval scope changes materially.
 - Preview trigger: `{SEMANTIC_PROTECTED_CROSS_BOUNDARY_EXTERNAL_OR_UNCLEAR_SCOPE}`
 - Expected files or bounded surface patterns: `{EXPECTED_CHANGE_SCOPE}`
 - Allowed actions: `{ALLOWED_ACTIONS}`
+- Current logical scope: `{CURRENT_LOGICAL_SCOPE_OR_OPERATION_ID}`
+- Current user authorization: `{AUTHORIZED_ACTION_PHASES}`
+- Authorization source/message: `{CURRENT_USER_MESSAGE_OR_REFERENCE}`
+- Next phase authorized: `{YES_NO_AND_REASON}`
 - Approval needs and selected records: `{APPROVAL_NEEDS_AND_RECORDS}`
 - Planned validation: `{VALIDATION_OR_MANUAL_REVIEW}`
 - Unresolved questions: `{UNRESOLVED_QUESTIONS_OR_NONE}`

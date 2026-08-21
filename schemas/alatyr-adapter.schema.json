@@ -94,7 +94,7 @@
     },
     "operations": {
       "type": "object",
-      "required": ["gate_index", "help", "operation_request", "output_contracts"]
+      "required": ["gate_index", "help", "operation_request", "output_contracts", "action_authorization_policy"]
     },
     "maturity": {"type": "object", "required": ["profile"]},
     "approvals": {"type": "object", "required": ["directory", "template", "machine_template"]},

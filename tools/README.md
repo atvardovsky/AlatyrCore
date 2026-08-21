@@ -168,6 +168,19 @@ Linux or macOS:
 python3 tools/check_approval_template.py
 ```
 
+## Action Authorization Check
+
+`check_action_authorization.py` validates the portable current-scope phase
+rule, target policy, operation request and preview fields, routed gates, final
+evidence, and deterministic intent scenarios. It covers subject-only issue or
+backlog transitions, implementation, commit, push, continuation, protected
+approval, delegation, and live external action boundaries. Structural checks
+do not prove that an assistant interpreted a real conversation correctly.
+
+```sh
+python3 tools/check_action_authorization.py
+```
+
 Windows PowerShell or Command Prompt:
 
 ```powershell

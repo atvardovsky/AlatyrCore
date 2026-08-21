@@ -9,6 +9,9 @@ Replace placeholders with target facts before accepting installation.
 - assistant workflows under `.ai/assistant/flows`
 - gates under `.ai/assistant/gates`
 - policies under `.ai/assistant/policies`
+- current-scope action-phase policy under
+  `.ai/assistant/policies/action-authorization.json`; it distinguishes
+  inspection, modification, commit, publication, and live external action
 - context profiles under `.ai/assistant/context-profiles.md`
 - module profile under `.ai/assistant/module-profile.md`
 - adapter manifest facts under `.ai/alatyr.yaml`
@@ -32,7 +35,8 @@ Replace placeholders with target facts before accepting installation.
 - installed-operation request, blueprint-creation, adapter-recheck, and
   framework-update review flows
 - operation catalog, checked compact operation index, single `Alatyr` entry,
-  automatic routing, read-only health, risk-gated preview, help, and
+  automatic routing, current-scope action authorization, read-only health,
+  risk-gated preview, help, and
   post-install/update assistant chat message templates
 - diagram discussion routing and presentation mechanics when the diagrams
   module is enabled; project diagram facts and accepted source ownership remain

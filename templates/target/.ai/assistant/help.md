@@ -30,6 +30,10 @@ Default routing:
   allowed actions `read-only`.
 - If the request is unclear, show only the two or three closest operations and
   ask for the smallest missing decision.
+- If the request only returns to an issue, backlog item, report, or discussion,
+  or asks for status, analysis, a plan, or what comes next, keep the operation
+  read-only. Do not reuse implementation, commit, or push authorization from a
+  completed task.
 - Use `.ai/assistant/context-router.json` to choose task context before
   expanding the reading set, and use `.ai/assistant/context-profiles.md` when
   human rationale or conflict resolution is needed.
@@ -119,6 +123,7 @@ Operation type: `{OPERATION_TYPE}`
 Goal: `{GOAL}`
 Non-goals: `{NON_GOALS}`
 Known context: `{KNOWN_CONTEXT}`
+Current user authorization: `{INSPECT_MODIFY_COMMIT_PUBLISH_OR_LIVE_EXTERNAL}`
 Allowed actions: `{READ_ONLY_DOCS_ONLY_ADAPTER_ONLY_CODE_AND_TESTS_OR_FULL_WITH_APPROVAL}`
 Expected final evidence: `{EXPECTED_FINAL_EVIDENCE}`
 ```
@@ -129,3 +134,5 @@ Expected final evidence: `{EXPECTED_FINAL_EVIDENCE}`
 2. Show the two or three closest options.
 3. Ask for the smallest missing decision.
 4. Avoid repository edits until the operation is selected.
+5. Ask before any `modify`, `commit`, `publish`, or `live-external` phase that
+   the newest current-scope request did not explicitly authorize.

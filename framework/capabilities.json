@@ -197,8 +197,8 @@
     "installed-operations": {
       "min_framework_pack": "core",
       "requires": [],
-      "rule_ids": ["ALATYR-OPERATION-001"],
-      "framework_files": ["installed-operations.md", "operation-help.md"],
+      "rule_ids": ["ALATYR-OPERATION-001", "ALATYR-AUTHORIZATION-001"],
+      "framework_files": ["installed-operations.md", "operation-help.md", "action-authorization.md"],
       "target_files": [
         ".ai/assistant/operation-index.json",
         ".ai/assistant/operation-catalog.json",
@@ -206,9 +206,10 @@
         ".ai/assistant/help-reference.md",
         ".ai/assistant/flows/operation-routing.flow.md",
         ".ai/assistant/flows/adapter-health.flow.md",
-        ".ai/assistant/templates/pre-change-preview.md"
+        ".ai/assistant/templates/pre-change-preview.md",
+        ".ai/assistant/policies/action-authorization.json"
       ],
-      "check_ids": ["operation-catalog", "operation-index", "operation-help"]
+      "check_ids": ["action-authorization", "operation-catalog", "operation-index", "operation-help"]
     },
     "large-task-orchestration": {
       "min_framework_pack": "standard",

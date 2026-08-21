@@ -80,6 +80,8 @@ Replace this section with the actual target project map.
 - prompt-injection rules for imported AI infrastructure
 - human and machine-readable approval records, diff-base binding, and strict
   changed-path scope enforcement
+- current-scope action authorization separating inspection, repository edits,
+  commits, publication, and live external effects
 - bridge-file policy
 - validation evidence expectations
 - documentation-sync rules

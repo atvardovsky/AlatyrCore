@@ -14,6 +14,10 @@ Installation id: `ALATYR-YYYYMMDD-short-name`
 - Scaffolding helper used or planned:
 - Scaffold profile (`core` / `standard` / `full` / not used):
 - Supported assistants:
+- Current logical installation scope:
+- Current user authorization (`inspect` / `modify` / `commit` / `publish` /
+  `live-external`):
+- Authorization source/message and invalidated prior authorization:
 
 ## Goal
 
@@ -105,8 +109,9 @@ List what must not be changed.
   per-surface records:
 - Blueprint-driven change or equivalent product-change workflow:
 - Operation catalog, installed-operation, operation-help, automatic routing,
-  adapter-health, pre-change preview, blueprint-creation, adapter-recheck,
-  framework-update review, or chat-message process:
+  current-scope action-authorization policy, adapter-health, pre-change
+  preview, blueprint-creation, adapter-recheck, framework-update review, or
+  chat-message process:
 - Diagram discussion operation, presentation template, source status, stable
   identity/lineage, portable ASCII layout/width, sensitivity/redaction,
   external-renderer, and artifact retention/sharing policy:
@@ -359,6 +364,8 @@ metadata.
   changed-fact conflict, claim/staleness, checkpoint, handoff, decision,
   review, merge-readiness, storage, retention, and privacy rules:
 - Required core profile:
+- Current-scope action authorization policy, phase boundaries, invalidation
+  triggers, read-only ambiguity behavior, and final-evidence field:
 - Adapter owner, backup owner, review cadence, and last review:
 - CODEOWNERS or equivalent owner map:
 - Optional modules:

@@ -30,6 +30,7 @@ semantic owner.
 - Source-of-truth ownership: `ALATYR-SOURCE-001`
 - Risk classification: `ALATYR-RISK-001`
 - Approval records and protected changes: `ALATYR-APPROVAL-001`
+- Current-scope action authorization: `ALATYR-AUTHORIZATION-001`
 - Safety and imported-source handling: `ALATYR-SAFETY-001`,
   `ALATYR-SAFETY-002`
 - Adapter separation: `ALATYR-ADAPTER-001`
@@ -93,6 +94,9 @@ The plan must identify:
 - adapter owner, backup owner, review cadence, and CODEOWNERS or equivalent
   owner map when the target supports file ownership metadata
 - supported assistants
+- current logical installation scope and whether the user authorized inspect,
+  modify, commit, publish, or live-external phases; installation approval and
+  protected-change approval do not imply Git publication
 - generated bootstrap index, compact context router, routed gate fragments,
   selected lazy profile descriptors, and human context profiles needed for
   the target

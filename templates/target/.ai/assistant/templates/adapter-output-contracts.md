@@ -11,6 +11,7 @@ Use after the initial Alatyr Core installation or a scoped adapter expansion.
 
 - Operation id: `{OPERATION_ID}`
 - Operation type: `{INSTALLATION_OR_ADAPTER_EXPANSION}`
+- Current user authorization: `{CURRENT_SCOPE_SOURCE_AUTHORIZED_PHASES_INVALIDATION_AND_ACTIONS_PERFORMED}`
 - Evidence basis: `{CURRENT_STATE_HISTORICAL_RECORD_OR_MIXED}`
 - Observed at: `{OBSERVATION_DATE_TIME}`
 - Observed repository revision: `{REPOSITORY_REVISION_OR_NOT_AVAILABLE}`
@@ -73,6 +74,7 @@ Core baseline.
 
 - Operation id: `{OPERATION_ID}`
 - Operation type: `{FRAMEWORK_UPDATE_OR_IMPACT_REVIEW}`
+- Current user authorization: `{CURRENT_SCOPE_SOURCE_AUTHORIZED_PHASES_INVALIDATION_AND_ACTIONS_PERFORMED}`
 - Evidence basis: `{CURRENT_STATE_HISTORICAL_RECORD_OR_MIXED}`
 - Observed at: `{OBSERVATION_DATE_TIME}`
 - Observed repository revision: `{REPOSITORY_REVISION_OR_NOT_AVAILABLE}`
@@ -138,6 +140,7 @@ adapter.
 
 - Operation id: `{OPERATION_ID}`
 - Operation type: `{ADAPTER_RECHECK_OR_MATURITY_REVIEW}`
+- Current user authorization: `{CURRENT_SCOPE_SOURCE_AUTHORIZED_PHASES_INVALIDATION_AND_ACTIONS_PERFORMED}`
 - Evidence basis: `{CURRENT_STATE_HISTORICAL_RECORD_OR_MIXED}`
 - Observed at: `{OBSERVATION_DATE_TIME}`
 - Observed repository revision: `{REPOSITORY_REVISION_OR_NOT_AVAILABLE}`

@@ -9,6 +9,7 @@ alatyr_doc:
     - ALATYR-SOURCE-001
     - ALATYR-RISK-001
     - ALATYR-APPROVAL-001
+    - ALATYR-AUTHORIZATION-001
     - ALATYR-INTEGRITY-001
     - ALATYR-MODULE-001
     - ALATYR-OPERATION-001
@@ -83,6 +84,11 @@ The target operating model should record actor type, active status, roles,
 decision authority, review scopes, and escalation owner. Do not infer a real
 person, authority, or approval from a username, commit author, assistant
 session, or task assignment.
+
+Task assignment, claim, priority, review, handoff, or merge-readiness evidence
+also does not authorize repository mutation, commit, publication, or live
+external action. Apply `ALATYR-AUTHORIZATION-001` to the newest user request
+and current logical scope independently from team coordination state.
 
 The target should keep those machine-relevant fields in one structured team
 policy. A human operating-model document may explain the policy but must not

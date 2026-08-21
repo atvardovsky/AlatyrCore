@@ -31,6 +31,9 @@ Context budget: `{TARGET_PACKET_CONTEXT_BUDGET}`
 ## Authority Boundary
 
 Allowed actions: `{READ_ONLY_DOCS_ONLY_ADAPTER_ONLY_OR_CODE_AND_TESTS}`
+Current logical scope: `{PARENT_CURRENT_LOGICAL_SCOPE}`
+Inherited action phases: `{PARENT_AUTHORIZED_PHASES}`
+Prohibited phase escalation: `commit, publish, and live-external unless already authorized for the parent and rechecked by the primary`
 Allowed files or surfaces:
 
 - `{ALLOWED_PATH_OR_SURFACE}`

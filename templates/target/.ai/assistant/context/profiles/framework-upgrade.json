@@ -23,6 +23,7 @@
     ".ai/assistant/gates/final-evidence.md"
   ],
   "conditional_context": [
+    {"path": ".ai/framework/action-authorization.md", "when": "authorization phase semantics are disputed or the target policy requires repair"},
     {"path": ".ai/framework/lifecycle.md", "when": "the impact report selects lifecycle or target migration actions"},
     {"path": ".ai/framework/migration-diff.md", "when": "migration evidence must be generated repaired or interpreted"},
     {"path": ".ai/framework/rule-registry.json", "when": "changed rule IDs need canonical detail or the impact report is disputed"},

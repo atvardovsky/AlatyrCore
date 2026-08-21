@@ -23,6 +23,9 @@ Future assistant bootstrap:
 - Repair a stale generated index from `.ai/alatyr.yaml`, `.ai/README.md`, and `.ai/assistant/context-router.json`; otherwise load profiles, module state, registries, blueprint, gate fragments, and the installation note only when routing or unclear adapter state requires them.
 - Send `Alatyr` for compact actions or `Alatyr status` for a read-only adapter health check.
 - If migration impact is unclear, run `recheck-after-framework-update` before editing files.
+- Re-evaluate `.ai/assistant/policies/action-authorization.json` at every
+  action-phase boundary. Never reuse edit, commit, push, or live-action intent
+  from a completed or superseded scope.
 
 Recommended follow-up:
 Use the installed Alatyr adapter in this repository.
@@ -46,6 +49,10 @@ Operation help:
 - Exact IDs and aliases route through `.ai/assistant/operation-index.json`;
   bounded natural-language requests route automatically and operation IDs are
   optional. Load the full catalog only for ambiguity or repair.
+- Issue/backlog returns, status requests, discussion, analysis, plans, reports,
+  and ambiguous continuation remain read-only. Require current-scope intent for
+  modification, commit, publication, and live external action separately; a
+  clear request may authorize multiple named phases together.
 - Risky or cross-boundary changes show a pre-change preview before edits.
 - Use `.ai/assistant/help.md`, `.ai/assistant/help-reference.md`, and `.ai/assistant/templates/operation-request.md` for structured requests.
 - Use `large-task` only for cross-boundary or resumable work, and resume an existing packet when one is named.

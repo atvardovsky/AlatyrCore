@@ -4,11 +4,11 @@
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "112bf6750c0b843e4151a6b80c5e5c91e9d098a00392de8b40697a01fb4dfb4f"
+      "sha256": "9db0e067ce6938288200901c70fc7d54243af122bd95a5d81fe4c1a0481c92ac"
     },
     "project_map": {
       "path": ".ai/README.md",
-      "sha256": "201676238c6902d7f0e659b75fc11284d8cd17402620d3f7acafee3f3eb07f6d"
+      "sha256": "598c4caf049d5865b8e3d9213bf33efa08466ceaf444ca29061a5ee2b5dc4e54"
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",

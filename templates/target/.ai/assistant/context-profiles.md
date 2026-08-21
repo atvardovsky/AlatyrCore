@@ -32,6 +32,9 @@ Load the selected profile descriptor from
 `.ai/assistant/context/profiles/`. Intent, migration, consistency, and
 task-scale descriptors under `.ai/assistant/context/` compose only when their
 trigger applies. Do not load all descriptors to classify one task.
+Load `.ai/framework/action-authorization.md` only when phase semantics are
+disputed or the target policy requires repair; routine phase decisions use the
+preloaded root rule, core gate, and target policy.
 The generated bootstrap index is repaired from `.ai/alatyr.yaml`,
 `.ai/README.md`, and `.ai/assistant/context-router.json` when its hashes drift.
 
@@ -464,12 +467,14 @@ Required context:
 - `.ai/framework/ai-infrastructure-routing.md`
 - `.ai/assistant/ai-infrastructure-router.json`
 - `.ai/assistant/gates/core.md`
-- `.ai/assistant/gates/security-approval.md`
 - `.ai/assistant/gates/final-evidence.md`
 
 Select one AI infrastructure route and item ID before loading additional
 skill, prompt, gate, checker, tool/MCP, bridge, source-access,
 prompt-injection, approval, permission, validation, or output-contract context.
+Load `.ai/assistant/gates/security-approval.md` for source import, permission
+change, live/destructive capability, credential access, protected integration,
+or weakened governance; read-only inventory and recommendation do not load it.
 For `recommend`, load only the bounded project area, its owner, relevant
 inventory/items, `.ai/project/development-evidence.json`, and
 `.ai/framework/ai-infrastructure-recommendations.md`. Inspect only evidence

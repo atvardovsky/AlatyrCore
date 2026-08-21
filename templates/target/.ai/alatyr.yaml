@@ -120,6 +120,7 @@ operations:
   routing: ".ai/assistant/flows/operation-routing.flow.md"
   health: ".ai/assistant/flows/adapter-health.flow.md"
   pre_change_preview: ".ai/assistant/templates/pre-change-preview.md"
+  action_authorization_policy: ".ai/assistant/policies/action-authorization.json"
   diagram_discussion: ".ai/assistant/flows/diagram-discussion.flow.md"
   diagram_presentation: ".ai/assistant/templates/diagram-presentation.md"
   architecture_assistance: ".ai/assistant/flows/architecture-assistance.flow.md"

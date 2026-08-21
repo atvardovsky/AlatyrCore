@@ -8,6 +8,7 @@ alatyr_doc:
     - ALATYR-CONTEXT-001
     - ALATYR-ADAPTER-001
     - ALATYR-APPROVAL-001
+    - ALATYR-AUTHORIZATION-001
     - ALATYR-INTEGRITY-001
     - ALATYR-BRIDGE-001
   applies_to:
@@ -46,6 +47,12 @@ A delegate is an execution surface, not a project owner, approver, decision
 authority, or automatically enrolled team actor. Delegation does not broaden
 allowed actions, tool permissions, network access, approval scope, or changed
 files.
+
+Delegation also does not broaden current user authorization. A worker inherits
+only the parent scope and authorized action phases. It must not commit, push,
+publish, deploy, or perform live external effects unless the newest parent
+request explicitly authorizes that phase and the primary assistant rechecks it
+before integration or execution.
 
 ## Activation Gate
 

@@ -95,6 +95,7 @@ CORE_REQUIRED_FILES = [
     ".ai/assistant/gates/core.md",
     ".ai/assistant/gates/final-evidence.md",
     ".ai/assistant/gates/checklist.md",
+    ".ai/assistant/policies/action-authorization.json",
     ".ai/assistant/templates/adapter-output-contracts.md",
 ]
 
@@ -183,6 +184,7 @@ MANIFEST_REQUIRED_SCALARS: set[PathKey] = {
     ("operations", "gate_index"),
     ("operations", "operation_request"),
     ("operations", "output_contracts"),
+    ("operations", "action_authorization_policy"),
     ("maturity", "profile"),
 }
 
@@ -279,6 +281,7 @@ MANIFEST_PATH_SCALARS: set[PathKey] = {
     ("operations", "routing"),
     ("operations", "health"),
     ("operations", "pre_change_preview"),
+    ("operations", "action_authorization_policy"),
     ("operations", "operation_request"),
     ("operations", "output_contracts"),
     ("operations", "development_evidence_capture"),
@@ -454,6 +457,7 @@ ALLOWED_ACTION_MODES = {
     "code-and-tests",
     "full-with-approval",
 }
+AUTHORIZATION_PHASES = ["inspect", "modify", "commit", "publish", "live-external"]
 
 
 @dataclass(frozen=True)
@@ -536,6 +540,7 @@ def repair_operation_for(code: str) -> str:
         (("BRIDGE_",), "drift-review"),
         (("DIAGRAM_",), "diagram-discussion"),
         (("APPROVAL_",), "logical-integrity-review"),
+        (("AUTHORIZATION_",), "help"),
         (
             (
                 "OPERATION_",
@@ -748,6 +753,7 @@ class Validator:
         self.check_required_files(support_profile)
         self.check_capability_closure(manifest)
         self.check_bootstrap_index()
+        self.check_action_authorization_contract()
         enabled_modules = self.enabled_modules(manifest)
         self.check_router(enabled_modules)
         if support_profile in {"standard", "full"} or self.target_path(
@@ -1572,6 +1578,185 @@ class Validator:
                 profiles[name] = profile
         return profiles
 
+    def check_action_authorization_contract(self) -> None:
+        relpath = ".ai/assistant/policies/action-authorization.json"
+        path = self.target_path(relpath)
+        if not path.is_file():
+            self.error(
+                "AUTHORIZATION_POLICY_MISSING",
+                "current-scope action authorization policy is missing",
+                relpath,
+            )
+            return
+
+        policy = self.load_json_object(path, "AUTHORIZATION_POLICY")
+        if policy is None:
+            return
+        if (
+            policy.get("schema_version") != 1
+            or policy.get("policy_kind") != "target-action-authorization-policy"
+            or policy.get("canonical_rule") != "ALATYR-AUTHORIZATION-001"
+        ):
+            self.error(
+                "AUTHORIZATION_POLICY_SCHEMA",
+                "action authorization policy schema, kind, or canonical rule is invalid",
+                relpath,
+            )
+        if policy.get("default_phase") != "inspect" or policy.get("phases") != AUTHORIZATION_PHASES:
+            self.error(
+                "AUTHORIZATION_POLICY_PHASES",
+                "ambiguous intent must default to inspect and expose the canonical phase order",
+                relpath,
+            )
+        phase_effects = policy.get("phase_effects")
+        if (
+            not isinstance(phase_effects, dict)
+            or set(phase_effects) != set(AUTHORIZATION_PHASES)
+            or not all(isinstance(value, str) and value for value in phase_effects.values())
+        ):
+            self.error(
+                "AUTHORIZATION_POLICY_EFFECTS",
+                "action authorization phase effects must describe every canonical phase",
+                relpath,
+            )
+
+        scope = policy.get("scope")
+        if not isinstance(scope, dict):
+            self.error(
+                "AUTHORIZATION_POLICY_SCOPE",
+                "action authorization scope must be an object",
+                relpath,
+            )
+        else:
+            if scope.get("prior_authorization_reusable") is not False:
+                self.error(
+                    "AUTHORIZATION_SCOPE_REUSE",
+                    "authorization from a prior logical scope must not be reusable",
+                    relpath,
+                )
+            invalidations = scope.get("invalidate_on")
+            required_invalidations = {
+                "operation completed",
+                "new logical scope",
+                "user redirection",
+                "material changed-fact or surface expansion",
+            }
+            if not isinstance(invalidations, list) or not required_invalidations.issubset(
+                {value for value in invalidations if isinstance(value, str)}
+            ):
+                self.error(
+                    "AUTHORIZATION_SCOPE_INVALIDATION",
+                    "authorization scope is missing required invalidation triggers",
+                    relpath,
+                )
+
+        expected_separation = {
+            "allowed_actions": "ceiling-not-grant",
+            "protected_change_approval": "additional-gate-not-grant",
+            "tool_permission": "capability-not-grant",
+            "operation_routing": "process-selection-not-grant",
+            "team_assignment": "coordination-not-grant",
+            "project_decision": "fact-authority-not-grant",
+            "workspace_mode": "context-selection-not-grant",
+            "delegation": "inherited-boundary-not-grant",
+            "validation_result": "evidence-not-grant",
+        }
+        if policy.get("separation") != expected_separation:
+            self.error(
+                "AUTHORIZATION_BOUNDARY_CONFLATED",
+                "allowed actions, approval, tools, routing, team state, and modes must not grant action phases",
+                relpath,
+            )
+
+        phase_rules = policy.get("phase_rules")
+        if not isinstance(phase_rules, dict) or not all(
+            phase_rules.get(field) is True
+            for field in [
+                "publish_requires_explicit_current_scope_intent",
+                "live_external_requires_explicit_current_scope_intent",
+                "recheck_newest_user_instruction_before_each_state_changing_phase",
+            ]
+        ):
+            self.error(
+                "AUTHORIZATION_PHASE_GATE",
+                "publish, live external, and newest-instruction phase gates are incomplete",
+                relpath,
+            )
+        delegation = policy.get("delegation")
+        if not isinstance(delegation, dict) or (
+            delegation.get("inherits_parent_scope") is not True
+            or delegation.get("may_broaden_phases") is not False
+            or delegation.get(
+                "primary_rechecks_before_integration_commit_publish_or_live_action"
+            )
+            is not True
+        ):
+            self.error(
+                "AUTHORIZATION_DELEGATION_ESCALATION",
+                "delegation must inherit and never broaden parent authorization",
+                relpath,
+            )
+        if policy.get("final_evidence_field") != "current_user_authorization":
+            self.error(
+                "AUTHORIZATION_EVIDENCE_FIELD",
+                "action authorization policy must require current_user_authorization evidence",
+                relpath,
+            )
+
+        required_surfaces = {
+            "AGENTS.md": [
+                "ALATYR-AUTHORIZATION-001",
+                "Implementation does not imply commit; commit does not imply push",
+            ],
+            ".ai/assistant/gates/core.md": [
+                "Issue/backlog returns",
+                "Do not infer commit from implementation, publish from commit",
+            ],
+            ".ai/assistant/gates/final-evidence.md": [
+                "`current_user_authorization`",
+                "latest commit/publish/live confirmation",
+            ],
+            ".ai/assistant/contour.md": [
+                ".ai/assistant/policies/action-authorization.json",
+                "current-scope action authorization",
+            ],
+            ".ai/assistant/module-profile.md": [
+                "current-scope-action-authorization",
+                ".ai/assistant/policies/action-authorization.json",
+            ],
+            ".ai/assistant/maturity-profile.md": [
+                ".ai/assistant/policies/action-authorization.json",
+                "Prior authorization",
+            ],
+            ".ai/assistant/templates/installation-note.md": [
+                ".ai/assistant/policies/action-authorization.json",
+                "previous task's authorization expires",
+            ],
+            ".ai/assistant/templates/operation-request.md": [
+                "Current logical scope:",
+                "Current user authorization:",
+                "Authorization source/message:",
+                "Prior authorization invalidated:",
+            ],
+        }
+        for surface, snippets in required_surfaces.items():
+            surface_path = self.target_path(surface)
+            if not surface_path.is_file():
+                self.error(
+                    "AUTHORIZATION_SURFACE_MISSING",
+                    "required action authorization surface is missing",
+                    surface,
+                )
+                continue
+            text = self.read_text(surface_path)
+            for snippet in snippets:
+                if snippet not in text:
+                    self.error(
+                        "AUTHORIZATION_SURFACE_DRIFT",
+                        f"action authorization surface is missing {snippet}",
+                        surface,
+                    )
+
     def check_operation_catalog(self) -> None:
         relpath = ".ai/assistant/operation-catalog.json"
         path = self.target_path(relpath)
@@ -1596,6 +1781,26 @@ class Validator:
             self.error(
                 "OPERATION_CATALOG_KIND",
                 "catalog_kind should be target-operation-catalog",
+                relpath,
+            )
+        if catalog.get("authorization_phases") != AUTHORIZATION_PHASES:
+            self.error(
+                "AUTHORIZATION_CATALOG_PHASES",
+                "operation catalog authorization phases differ from the canonical policy",
+                relpath,
+            )
+        if catalog.get("required_final_evidence") != ["current_user_authorization"]:
+            self.error(
+                "AUTHORIZATION_CATALOG_EVIDENCE",
+                "operation catalog must require current_user_authorization evidence",
+                relpath,
+            )
+        if catalog.get("action_authorization_policy") != (
+            ".ai/assistant/policies/action-authorization.json"
+        ):
+            self.error(
+                "AUTHORIZATION_CATALOG_ROUTE",
+                "operation catalog does not route the canonical action authorization policy",
                 relpath,
             )
 

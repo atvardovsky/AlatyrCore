@@ -63,6 +63,7 @@ policy wording.
 - Context routing: `ALATYR-CONTEXT-001`
 - Adapter separation: `ALATYR-ADAPTER-001`
 - Approval and protected changes: `ALATYR-APPROVAL-001`
+- Current-scope action authorization: `ALATYR-AUTHORIZATION-001`
 - Safety boundaries: `ALATYR-SAFETY-001`
 - Imported AI infrastructure: `ALATYR-SAFETY-002`
 - Logical integrity evidence: `ALATYR-INTEGRITY-001`
@@ -83,6 +84,10 @@ policy wording.
 ## Operating Rules
 
 - Keep Alatyr Core assistant-neutral and Markdown-first.
+- Treat inspect, modify, commit, publish, and live-external as separate
+  current-scope authorization phases. A topic switch, backlog return, report,
+  discussion, analysis, plan, or ambiguous continuation is read-only. Never
+  reuse commit or push authorization from a completed or redirected task.
 - Do not add project-specific business facts to framework core.
 - Do not add local validation commands as framework requirements.
 - Do not add installer scripts as the installation mechanism.
@@ -140,6 +145,7 @@ When relevant to the change, also run the focused source helpers:
 ```sh
 python3 tools/check_framework_metadata.py
 python3 tools/check_architecture_knowledge.py
+python3 tools/check_action_authorization.py
 python3 tools/check_approval_template.py
 python3 tools/check_change_packages.py
 python3 tools/check_code_documentation.py

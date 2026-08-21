@@ -21,6 +21,8 @@ Selected task-scale overlay: `delegated-execution`
 
 1. Select the parent operation, task profile, changed facts, risk, source-of-
    truth owners, allowed actions, and primary critical-path next action first.
+   Record the parent's current logical scope and authorized phases. A delegated
+   packet can narrow but never broaden them.
 2. Respect request preference `auto`, `allow`, `forbid`, or
    `require-supported`. `require-supported` still does not bypass capability,
    permission, approval, or safety gates.
@@ -70,7 +72,9 @@ Selected task-scale overlay: `delegated-execution`
 5. Reconcile changed facts, approvals, companion surfaces, and workstreams in
    the primary operation or large-task packet.
 6. The primary assistant performs final logical integrity review and reports
-   completion. Delegate-local success is not final success.
+   completion. Delegate-local success is not final success. The primary
+   rechecks the newest user instruction before integrating writes, committing,
+   publishing, or performing a live external action.
 
 ## Final Evidence
 

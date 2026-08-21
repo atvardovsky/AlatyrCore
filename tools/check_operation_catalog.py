@@ -64,8 +64,11 @@ CATALOG_PATHS = {
     "routing_flow": ".ai/assistant/flows/operation-routing.flow.md",
     "health_flow": ".ai/assistant/flows/adapter-health.flow.md",
     "pre_change_preview": ".ai/assistant/templates/pre-change-preview.md",
+    "action_authorization_policy": ".ai/assistant/policies/action-authorization.json",
     "module_profile": ".ai/assistant/module-profile.md",
 }
+
+AUTHORIZATION_PHASES = ["inspect", "modify", "commit", "publish", "live-external"]
 
 REQUIRED_OPERATION_STRINGS = ["id", "title", "summary", "required_module", "flow", "preview"]
 REQUIRED_OPERATION_LISTS = [
@@ -154,6 +157,10 @@ def main() -> int:
         failures.append("operation catalog catalog_kind must be target-operation-catalog")
     if catalog.get("fallback_operation") != "help":
         failures.append("operation catalog fallback_operation must be help")
+    if catalog.get("authorization_phases") != AUTHORIZATION_PHASES:
+        failures.append("operation catalog authorization phases are invalid")
+    if catalog.get("required_final_evidence") != ["current_user_authorization"]:
+        failures.append("operation catalog must require current user authorization evidence")
 
     for field, expected in CATALOG_PATHS.items():
         if catalog.get(field) != expected:
@@ -357,6 +364,7 @@ def main() -> int:
         "routing": ".ai/assistant/flows/operation-routing.flow.md",
         "health": ".ai/assistant/flows/adapter-health.flow.md",
         "pre_change_preview": ".ai/assistant/templates/pre-change-preview.md",
+        "action_authorization_policy": ".ai/assistant/policies/action-authorization.json",
         "diagram_discussion": ".ai/assistant/flows/diagram-discussion.flow.md",
         "diagram_presentation": ".ai/assistant/templates/diagram-presentation.md",
     }.items():
@@ -379,9 +387,11 @@ def main() -> int:
         ],
         PREVIEW: [
             "The preview is not approval.",
+            "It is also not action authorization.",
             "Changed facts or suspected facts:",
             "Canonical owners:",
             "Allowed actions:",
+            "Current user authorization:",
             "Decision: `{PROCEED_ASK_OR_BLOCKED}`",
         ],
     }

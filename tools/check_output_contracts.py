@@ -44,6 +44,7 @@ REQUIRED_CONTRACTS = {
 REQUIRED_FIELDS = [
     "Operation id:",
     "Operation type:",
+    "Current user authorization:",
     "Evidence basis:",
     "Observed at:",
     "Observed repository revision:",

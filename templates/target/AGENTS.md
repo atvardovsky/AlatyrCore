@@ -1,6 +1,6 @@
 # Agent Instructions
 
-This repository uses Alatyr Core. Resolve placeholders from target evidence.
+This repository uses Alatyr Core. Resolve placeholders from evidence.
 
 ## Compact Bootstrap
 
@@ -9,22 +9,18 @@ Treat this file as host-preloaded context; do not reread it. Load only:
 - `.ai/assistant/bootstrap-index.json`
 
 The bootstrap index is a hash-bound projection of `.ai/alatyr.yaml`,
-`.ai/README.md`, and `.ai/assistant/context-router.json`. If it is missing or
-stale, load those owners and repair the projection before routine routing.
+`.ai/README.md`, and `.ai/assistant/context-router.json`. If missing or stale,
+load those owners and repair it before routing.
 Select the smallest profile/areas. Load `.ai/assistant/context-profiles.md`
 only for ambiguity, conflict, or repair. Record context receipt on expansion.
 
-Route IDs/aliases through `.ai/assistant/operation-index.json`; use
-profile candidates for requests. Load
-`.ai/assistant/operation-catalog.json` only for ambiguity or repair. Status is
-read-only.
-
-Load triggered task-scale overlays and task evidence.
+Route IDs/aliases through `.ai/assistant/operation-index.json`; use profile
+candidates otherwise. Load `.ai/assistant/operation-catalog.json` only for
+ambiguity or repair. Status is read-only.
 
 ## Session Recovery
 
-For installation, update, or uncertainty, use the `.ai/README.md` recovery
-note/message.
+Use `.ai/README.md` for installation/update recovery.
 
 ## Target Evidence
 
@@ -44,7 +40,7 @@ note/message.
 ## Canonical Rules
 
 Use installed owners for `ALATYR-CONTEXT-001`, `ALATYR-SOURCE-001`,
-`ALATYR-RISK-001`, `ALATYR-APPROVAL-001`, `ALATYR-SAFETY-001`,
+`ALATYR-RISK-001`, `ALATYR-APPROVAL-001`, `ALATYR-AUTHORIZATION-001`, `ALATYR-SAFETY-001`,
 `ALATYR-SAFETY-002`, `ALATYR-INTEGRITY-001`, `ALATYR-CHANGE-001`,
 `ALATYR-PACKAGE-001`, `ALATYR-CODEDOC-001`,
 `ALATYR-VOCABULARY-001`, `ALATYR-TDD-001`, `ALATYR-EXTENSION-001`,
@@ -80,6 +76,12 @@ Routing selects a flow; it does not grant approval or broaden allowed actions.
 A preview is not approval and becomes stale when material risk or scope
 changes.
 
+Before state changes, apply
+`.ai/assistant/policies/action-authorization.json` to the newest request and
+current scope. Issue/backlog returns and ambiguous informational requests are
+`inspect` only. Implementation does not imply commit; commit does not imply push.
+Prior-scope authorization and other gates cannot grant a missing phase.
+
 ## Protected Changes
 
 Apply target approval policy before architecture, accepted behavior, security,
@@ -94,5 +96,5 @@ approval and require reapproval for protected semantic expansion.
 
 Report profile/areas, changed facts/files, invariant/integrity result,
 reconciled reviews, synchronized surfaces, validation/skips, approval scope,
-context expansion, optional task-scale or AI-item evidence, preview state, and
-residual risk.
+current user authorization, context expansion, optional task-scale or AI-item
+evidence, preview state, and residual risk.

@@ -7,8 +7,11 @@
   "routing_flow": ".ai/assistant/flows/operation-routing.flow.md",
   "health_flow": ".ai/assistant/flows/adapter-health.flow.md",
   "pre_change_preview": ".ai/assistant/templates/pre-change-preview.md",
+  "action_authorization_policy": ".ai/assistant/policies/action-authorization.json",
   "module_profile": ".ai/assistant/module-profile.md",
   "fallback_operation": "help",
+  "authorization_phases": ["inspect", "modify", "commit", "publish", "live-external"],
+  "required_final_evidence": ["current_user_authorization"],
   "operations": [
     {
       "id": "help",

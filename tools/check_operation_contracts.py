@@ -25,6 +25,29 @@ OPERATION_REQUEST_SURFACES = [
     HELP_REFERENCE,
 ]
 
+AUTHORIZATION_REQUIRED_TEXT = {
+    INSTALLED_OPERATIONS: [
+        "ALATYR-AUTHORIZATION-001",
+        "returning to an issue or backlog item",
+        "`Commit` does not authorize push.",
+    ],
+    ROOT / "installer" / "installed-operation-request-template.md": [
+        "Current logical scope:",
+        "Current user authorization:",
+        "Implementation does not imply commit; commit does not imply push",
+    ],
+    TARGET / ".ai" / "assistant" / "templates" / "operation-request.md": [
+        "Current logical scope:",
+        "Current user authorization:",
+        "Prior authorization invalidated:",
+    ],
+    TARGET / ".ai" / "assistant" / "flows" / "operation-routing.flow.md": [
+        "backlog returns",
+        "Prior completed-scope authorization is invalid.",
+        "Before every `modify`, `commit`, `publish`, or `live-external` phase",
+    ],
+}
+
 OPERATION_RE = re.compile(r"^Operation: `([^`]+)`", re.MULTILINE)
 FLOW_RE = re.compile(r"^(?:Flow|Companion flow):\s*`([^`]+)`", re.MULTILINE)
 ROUTE_RE = re.compile(r"(?:route to|Route to:)\s+`([^`]+)`")
@@ -231,6 +254,15 @@ def main() -> int:
             if required_text not in text:
                 failures.append(
                     f"{source.relative_to(ROOT)} adapter-only contract missing: "
+                    f"{required_text}"
+                )
+
+    for source, required_values in AUTHORIZATION_REQUIRED_TEXT.items():
+        text = normalized_markdown(read(source))
+        for required_text in required_values:
+            if required_text not in text:
+                failures.append(
+                    f"{source.relative_to(ROOT)} authorization contract missing: "
                     f"{required_text}"
                 )
 

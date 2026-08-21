@@ -89,6 +89,18 @@ Validation or review: `{RISK_APPROVAL_INTEGRITY_VALIDATION_OR_REVIEW}`
 Approval needs: `{RISK_APPROVAL_INTEGRITY_APPROVAL_NEEDS}`
 Residual risk: `{RISK_APPROVAL_INTEGRITY_RESIDUAL_RISK}`
 
+Core item: `current-scope-action-authorization`
+State: `{REQUIRED_ENABLED_OR_BLOCKED}`
+Owner or file: `.ai/assistant/policies/action-authorization.json`
+Required files:
+
+- `.ai/assistant/policies/action-authorization.json`
+
+Evidence: `{ACTION_AUTHORIZATION_EVIDENCE_OR_GAP}`
+Validation or review: `{ACTION_AUTHORIZATION_VALIDATION_OR_REVIEW}`
+Approval needs: `{ACTION_AUTHORIZATION_APPROVAL_NEEDS}`
+Residual risk: `{ACTION_AUTHORIZATION_RESIDUAL_RISK}`
+
 Core item: `validation-and-final-evidence`
 State: `{REQUIRED_ENABLED_OR_BLOCKED}`
 Owner or file: `{TARGET_VALIDATION_OR_EVIDENCE_OWNER}`
@@ -352,6 +364,7 @@ Required files:
 - `.ai/assistant/flows/operation-routing.flow.md`
 - `.ai/assistant/flows/adapter-health.flow.md`
 - `.ai/assistant/templates/pre-change-preview.md`
+- `.ai/assistant/policies/action-authorization.json`
 
 Reason: `{REASON}`
 Validation or review: `{VALIDATION_OR_REVIEW}`
