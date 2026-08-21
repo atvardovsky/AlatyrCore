@@ -65,6 +65,16 @@ Operation help:
   provenance, target bindings, permissions, approvals, file ownership, local
   deviations, and lifecycle history; recheck compatibility and drift without
   automatically updating, activating, or removing any extension.
+- When dependency knowledge is enabled, preserve target policy, reviewed
+  package instances, independent semantic state, deviations, retention
+  decisions, and permitted snapshots; recheck export API, artifact identity,
+  fingerprints, routing, and drift without running package managers,
+  activating nested adapters, or presenting stale claims as current.
+- When workspace modes are enabled, preserve user-accepted mode IDs,
+  per-mode directories, shared root context, relationships, ownership, and
+  decision evidence. Recheck them against the revised contract and present
+  migrations as proposals; never accept, replace, or activate a mode solely
+  because Alatyr was updated.
 - When team collaboration is enabled, recheck the structured policy, ignored
   identity boundary, active index, registry/task schemas, backend contract,
   optimistic concurrency, active task IDs, claims, handoffs, decisions,

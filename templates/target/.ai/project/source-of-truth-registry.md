@@ -106,6 +106,53 @@ Conflict resolver: `{DATA_MODEL_CONFLICT_RESOLVER}`
 Approval trigger: `{DATA_MODEL_APPROVAL_TRIGGER}`
 Final evidence: `{DATA_MODEL_FINAL_EVIDENCE}`
 
+### Fact Type: `dependency public contract and target use`
+
+Fact type: `dependency public contract and target use`
+Upstream public fact owner: `{DEPENDENCY_PUBLIC_FACT_OWNER_OR_MISSING}`
+Target configuration, restriction, wrapper, or patch owner: `{TARGET_DEPENDENCY_USE_OWNER_OR_MISSING}`
+Cross-package integration owner: `{DEPENDENCY_INTEGRATION_OWNER_OR_MISSING}`
+Dependency knowledge policy: `.ai/project/dependencies/policy.json`
+Dependency knowledge catalog: `.ai/project/dependencies/catalog.json`
+Target deviations: `.ai/project/dependencies/deviations.json`
+Consistency level: `{DEPENDENCY_FACT_CONSISTENCY_LEVEL}`
+Project area: `{DEPENDENCY_FACT_PROJECT_AREA}`
+Consistency map node: `{DEPENDENCY_FACT_ID_OR_MISSING}`
+Relationship coverage: `{DEPENDENCY_RELATIONSHIP_COVERAGE_OR_GAP}`
+Invariant and dependency constraints: `{PACKAGE_IDENTITY_PUBLIC_CONTRACT_TARGET_USE_PATCH_APPLICABILITY_AND_INTEGRATION_CONSTRAINTS}`
+Derived surfaces:
+
+- `.ai/project/dependencies/knowledge-lock.json`
+- `{DEPENDENCY_FACT_DERIVED_TARGET_SURFACE_OR_NONE}`
+
+Sync direction: `{UPSTREAM_EXPORT_TO_REVIEWED_PROJECTION_AND_TARGET_DECISION_TO_DEVIATION}`
+Validation or manual review: `{DEPENDENCY_IDENTITY_EXPORT_PROJECTION_AND_TARGET_VALIDATION}`
+Conflict resolver: `{DEPENDENCY_FACT_CONFLICT_RESOLVER}`
+Approval trigger: `{DEPENDENCY_TARGET_FACT_OR_PROTECTED_CHANGE_TRIGGER}`
+Final evidence: `{PACKAGE_INSTANCE_FACT_STATES_DEVIATIONS_IMPACT_VALIDATION_AND_RESIDUAL_RISK}`
+
+### Fact Type: `workspace identity and development mode relationship`
+
+Fact type: `workspace identity and development mode relationship`
+Canonical owner: `.ai/project/workspace-modes/catalog.json` and the selected
+`.ai/project/workspace-modes/modes/{MODE_ID}/mode.json`
+Consistency level: `{WORKSPACE_MODE_CONSISTENCY_LEVEL}`
+Project area: `{WORKSPACE_MODE_PROJECT_AREA}`
+Consistency map node: `{WORKSPACE_MODE_FACT_ID_OR_MISSING}`
+Relationship coverage: `{WORKSPACE_MODE_RELATIONSHIP_COVERAGE_OR_GAP}`
+Invariant and dependency constraints: `{WORKSPACE_IDENTITY_MODE_RELATIONSHIP_ADAPTER_ROLE_OWNERSHIP_SELECTION_AND_NO_GRANTS_CONSTRAINTS}`
+Derived surfaces:
+
+- `.ai/assistant/context-router.json`
+- `.ai/assistant/templates/workspace-mode-preflight.md`
+- `{WORKSPACE_MODE_DERIVED_TASK_OR_OPERATION_EVIDENCE}`
+
+Sync direction: `{USER_DECISION_AND_REPOSITORY_EVIDENCE_TO_CATALOG_DESCRIPTOR_AND_ROUTED_EVIDENCE}`
+Validation or manual review: `{WORKSPACE_MODE_VALIDATION_OR_REVIEW}`
+Conflict resolver: `{TARGET_WORKSPACE_MODE_DECISION_OWNER}`
+Approval trigger: `{WORKSPACE_MODE_PROJECT_FACT_OR_PROTECTED_CHANGE_TRIGGER}`
+Final evidence: `{WORKSPACE_MODE_SELECTION_RELATIONSHIPS_CONTEXT_DECISION_VALIDATION_AND_RESIDUAL_RISK}`
+
 ### Fact Type: `validation command`
 
 Fact type: `validation command`

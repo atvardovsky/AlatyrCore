@@ -23,6 +23,14 @@
       "path": ".ai/assistant/gates/security-approval.md",
       "use_when": ["protected security live destructive permission dependency or approval boundary"]
     },
+    "dependency-knowledge": {
+      "path": ".ai/assistant/gates/dependency-knowledge.md",
+      "use_when": ["dependency knowledge is discovered synchronized explained or used for impact analysis"]
+    },
+    "workspace-mode": {
+      "path": ".ai/assistant/gates/workspace-mode.md",
+      "use_when": ["workspace mode is suggested selected accepted changed disabled deprecated removed or used for state-changing work"]
+    },
     "final-evidence": {
       "path": ".ai/assistant/gates/final-evidence.md",
       "use_when": ["before reporting completion"]

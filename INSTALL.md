@@ -39,6 +39,7 @@ in `framework/rule-registry.*` and `framework/rule-ownership.md`.
   `ALATYR-VOCABULARY-001`
 - Optional target-adapted test-first development: `ALATYR-TDD-001`
 - Optional externally sourced extensions: `ALATYR-EXTENSION-001`
+- Optional passive dependency knowledge: `ALATYR-DEPENDENCY-001`
 - Discussion diagram presentation: `ALATYR-DIAGRAM-001`
 - Optional team collaboration: `ALATYR-TEAM-001`
 - Lifecycle and migration evidence: `ALATYR-LIFECYCLE-001`
@@ -65,6 +66,9 @@ Before creating files in the target repository, inspect:
 - existing extension package manifests, extension catalog and lock records,
   installed-file ownership, source revisions, digests, bindings, and lifecycle
   evidence
+- package-manager manifests and lockfiles, native metadata for passive Alatyr
+  dependency exports, local patches/forks/workspaces, dependency knowledge
+  ownership, retention, trust, applicability, and validation policy
 - existing assistant bridge files, prompts, skills, gates, checker rules,
   source-access policies, operation help, routing, or chat-completion message
   templates
@@ -116,6 +120,14 @@ The plan must identify:
 - optional extensions need, owner, source-access policy, catalog and lock,
   immutable source and digest evidence, compatibility, target bindings,
   permissions, approval, installed-file ownership, update, and removal needs
+- optional dependency-knowledge need, owner, selected package ecosystems and
+  lockfiles, native export discovery, exact artifact identity, trust and
+  semantic state, target deviations, retention, bounded graph routing,
+  synchronization, explanation, impact, and validation needs
+- optional workspace-mode need, workspace identity, active adapter, proposed
+  application/framework/library/skeleton/dependency/workspace perspectives,
+  shared root support, per-mode context, user decision authority, selection
+  ambiguity, maintenance cost, and validation needs
 - task-specific maturity and bridge capability needs
 - diagram discussion, source/visual ownership, portable ASCII layout/width,
   per-assistant rich presentation, capability expiry/review triggers, captured-result
@@ -195,6 +207,11 @@ In a typical target repository:
    `.ai/project/team-operating-model.md` only when team collaboration is
    enabled. Derive actors, aliases, authority, priorities, review, transitions,
    backend, identity verification, retention, and privacy from target evidence.
+   Add `.ai/project/workspace-modes/catalog.json`, optional shared root
+   support, and one directory per actual mode only when workspace roles require
+   distinct context. Propose zero or more evidence-bound modes after
+   inspection, but keep them proposed until a separate user decision accepts
+   them. Installation approval is not mode acceptance.
 7. Create `.ai/assistant/contour.md`, a generated hash-bound bootstrap index,
    compact context router, routed gate index/fragments, and selected lazy
    profile descriptors, operation catalog and its checked compact index,
@@ -223,6 +240,9 @@ In a typical target repository:
    explicit configuration review,
    extension catalog and lock, lifecycle flow, gate, review and lifecycle
    templates when optional extensions are supported,
+   workspace-mode catalog, root descriptor, per-mode authoring template,
+   intent, flow, gate, suggestion, preflight, and operation when optional
+   workspace modes are enabled,
    AI-infrastructure-inventory, AI-infrastructure-recommendation, adapter output contracts, source-access
    policy, prompt-injection policy, human and machine-readable approval-record
    templates,
@@ -279,6 +299,13 @@ catalog and module profile only for ambiguity or repair. Show a bounded
 pre-change preview only when changed-fact risk, protected scope, boundary
 crossing, external effects, or unclear allowed actions require it; a preview
 does not grant approval.
+
+When workspace modes are enabled, aliases such as `Alatyr modes`, `Alatyr
+suggest modes`, `Alatyr mode <id>`, `Alatyr define mode`, and `Alatyr accept
+mode <id>` route through the canonical workspace-mode operation. Suggestions
+remain proposed. A selected mode can narrow context and actions but cannot
+activate nested adapters or grant approval, write scope, permissions,
+authority, tools, or gate bypass.
 
 When the target enables subagent delegation, the assistant may keep its
 critical-path action and dispatch bounded independent sidecars under the target

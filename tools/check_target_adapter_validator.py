@@ -682,6 +682,443 @@ def main() -> int:
             )
 
         module_profile_path.write_text(
+            "# Module Profile\n\n"
+            "Module: `dependency-knowledge`\nState: `enabled`\n",
+            encoding="utf-8",
+        )
+        dependency_knowledge = validator(target)
+        dependency_knowledge.check_dependency_knowledge(None)
+        if "DEPENDENCY_KNOWLEDGE_REQUIRED_FILE_MISSING" not in {
+            finding.code for finding in dependency_knowledge.findings
+        }:
+            failures.append(
+                "enabled dependency knowledge must report missing contracts"
+            )
+
+        dependency_paths = [
+            ".ai/framework/dependency-knowledge.md",
+            ".ai/project/dependencies/README.md",
+            ".ai/project/dependencies/policy.json",
+            ".ai/project/dependencies/catalog.json",
+            ".ai/project/dependencies/knowledge-lock.json",
+            ".ai/project/dependencies/deviations.json",
+            ".ai/project/dependencies/snapshots/README.md",
+            ".ai/assistant/context/intents/dependency-knowledge-request.json",
+            ".ai/assistant/flows/dependency-knowledge-sync.flow.md",
+            ".ai/assistant/gates/dependency-knowledge.md",
+            ".ai/assistant/templates/dependency-knowledge-sync-report.md",
+            ".ai/assistant/operation-catalog.json",
+            ".ai/assistant/context-router.json",
+        ]
+        for relpath in dependency_paths:
+            source = (
+                ROOT / "framework/dependency-knowledge.md"
+                if relpath.startswith(".ai/framework/")
+                else ROOT / "templates/target" / relpath
+            )
+            destination = target / relpath
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_bytes(source.read_bytes())
+        (target / "package.json").write_text("{}\n", encoding="utf-8")
+        (target / "package-lock.json").write_text("{}\n", encoding="utf-8")
+        dependency_policy_path = target / ".ai/project/dependencies/policy.json"
+        dependency_policy = json.loads(
+            dependency_policy_path.read_text(encoding="utf-8")
+        )
+        dependency_policy.update({"state": "enabled", "owner": "fixture-owner"})
+        dependency_policy["package_sources"] = [
+            {
+                "ecosystem": "fixture",
+                "manifest": "package.json",
+                "lockfile": "package-lock.json",
+                "metadata_locator": "fixture.alatyr",
+            }
+        ]
+        dependency_policy["limits"] = {
+            key: 10
+            for key in [
+                "max_manifest_bytes",
+                "max_export_bytes",
+                "max_exports_per_package",
+                "max_graph_depth",
+                "max_graph_instances",
+            ]
+        }
+        write_json(dependency_policy_path, dependency_policy)
+        instance_id = "fixture:example/library@1.0.0#root"
+        export_id = "fixture:example/library.public-contract"
+        fingerprint = "a" * 64
+        export_digest = "b" * 64
+        manifest_digest = "c" * 64
+        catalog_data = {
+            "schema_version": 1,
+            "catalog_kind": "target-dependency-knowledge-catalog",
+            "owner": "fixture-owner",
+            "package_lock_fingerprint": fingerprint,
+            "packages": [
+                {
+                    "instance_id": instance_id,
+                    "ecosystem": "fixture",
+                    "name": "example/library",
+                    "version": "1.0.0",
+                    "export_status": "available",
+                    "trust": "reviewed",
+                    "freshness": "current",
+                    "exports": [
+                        {
+                            "id": export_id,
+                            "type": "public-contract",
+                            "summary": "fixture public contract",
+                            "content_digest": export_digest,
+                            "authority": "upstream-canonical",
+                            "stability": "stable",
+                            "applicability": {
+                                "state": "active",
+                                "conditions": [],
+                            },
+                            "evidence": ["exports/contracts.json"],
+                        }
+                    ],
+                }
+            ],
+        }
+        lock_data = {
+            "schema_version": 1,
+            "lock_kind": "target-dependency-knowledge-lock",
+            "knowledge_api": 1,
+            "package_lock_fingerprint": fingerprint,
+            "instances": [
+                {
+                    "instance_id": instance_id,
+                    "ecosystem": "fixture",
+                    "name": "example/library",
+                    "version": "1.0.0",
+                    "source": "fixture-source",
+                    "integrity": "fixture-integrity",
+                    "revision": "fixture-revision",
+                    "modifications": [],
+                    "manifest": {
+                        "path": "alatyr-dependency.json",
+                        "content_digest": manifest_digest,
+                    },
+                    "exports": [
+                        {
+                            "id": export_id,
+                            "path": "exports/contracts.json",
+                            "content_digest": export_digest,
+                        }
+                    ],
+                    "graph": {
+                        "dependency_set": "runtime",
+                        "direct": True,
+                        "public_instance_ids": [],
+                    },
+                }
+            ],
+        }
+        write_json(target / ".ai/project/dependencies/catalog.json", catalog_data)
+        write_json(target / ".ai/project/dependencies/knowledge-lock.json", lock_data)
+        write_json(
+            target / ".ai/project/dependencies/deviations.json",
+            {
+                "schema_version": 1,
+                "deviation_kind": "target-dependency-knowledge-deviations",
+                "owner": "fixture-owner",
+                "deviations": [],
+            },
+        )
+        valid_dependency = validator(target)
+        valid_dependency.check_dependency_knowledge(None)
+        valid_dependency_errors = [
+            finding.code
+            for finding in valid_dependency.findings
+            if finding.level == "error"
+            and finding.code.startswith("DEPENDENCY_KNOWLEDGE_")
+        ]
+        if valid_dependency_errors:
+            failures.append(
+                "resolved dependency knowledge projection produced errors: "
+                + ", ".join(valid_dependency_errors)
+            )
+        lock_data["instances"][0]["graph"]["public_instance_ids"] = [
+            "fixture:missing@1.0.0#transitive"
+        ]
+        write_json(target / ".ai/project/dependencies/knowledge-lock.json", lock_data)
+        dangling_dependency = validator(target)
+        dangling_dependency.check_dependency_knowledge(None)
+        if "DEPENDENCY_KNOWLEDGE_GRAPH_REFERENCE" not in {
+            finding.code for finding in dangling_dependency.findings
+        }:
+            failures.append(
+                "dependency knowledge must reject dangling graph references"
+            )
+
+        module_profile_path.write_text(
+            "# Module Profile\n\nModule: `workspace-modes`\nState: `enabled`\n",
+            encoding="utf-8",
+        )
+        missing_modes = validator(target)
+        missing_modes.check_workspace_modes(None)
+        if "WORKSPACE_MODE_REQUIRED_FILE_MISSING" not in {
+            finding.code for finding in missing_modes.findings
+        }:
+            failures.append("enabled workspace modes must report missing contracts")
+
+        workspace_mode_paths = [
+            ".ai/framework/workspace-modes.md",
+            ".ai/project/workspace-modes/README.md",
+            ".ai/project/workspace-modes/catalog.json",
+            ".ai/project/workspace-modes/root/README.md",
+            ".ai/project/workspace-modes/root/context.json",
+            ".ai/project/workspace-modes/modes/_template/README.md",
+            ".ai/project/workspace-modes/modes/_template/mode.json",
+            ".ai/assistant/context/intents/workspace-mode-request.json",
+            ".ai/assistant/flows/workspace-mode.flow.md",
+            ".ai/assistant/gates/workspace-mode.md",
+            ".ai/assistant/templates/workspace-mode-suggestion.md",
+            ".ai/assistant/templates/workspace-mode-preflight.md",
+            ".ai/assistant/operation-catalog.json",
+            ".ai/assistant/context-router.json",
+        ]
+        for relpath in workspace_mode_paths:
+            source = (
+                ROOT / "framework/workspace-modes.md"
+                if relpath.startswith(".ai/framework/")
+                else ROOT / "templates/target" / relpath
+            )
+            destination = target / relpath
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_bytes(source.read_bytes())
+        (target / "README.md").write_text("# Fixture\n", encoding="utf-8")
+        mode_id = "application-development"
+        mode_path = (
+            target
+            / ".ai/project/workspace-modes/modes"
+            / mode_id
+            / "mode.json"
+        )
+        mode_path.parent.mkdir(parents=True, exist_ok=True)
+        (mode_path.parent / "README.md").write_text(
+            "# Application development\n", encoding="utf-8"
+        )
+        mode_data = {
+            "schema_version": 1,
+            "descriptor_kind": "target-workspace-mode",
+            "id": mode_id,
+            "title": "Application development",
+            "state": "accepted",
+            "mode_kind": "application-development",
+            "purpose": "Develop the application owned by the selected workspace.",
+            "owner": "fixture-owner",
+            "decision_authority": "fixture-owner",
+            "last_reviewed": "2026-08-21",
+            "evidence_revision": "fixture-revision",
+            "workspace_scope": {
+                "root": ".",
+                "include": ["."],
+                "exclude": [],
+            },
+            "use_when": ["the selected task changes the application"],
+            "do_not_use_when": ["the selected task contributes upstream"],
+            "relationships": [
+                {
+                    "subject": "fixture-workspace",
+                    "relationship": "workspace-root",
+                    "adapter_role": "active",
+                    "ownership": "target",
+                    "evidence": ["README.md"],
+                }
+            ],
+            "context": {
+                "root_context": "skip",
+                "required_context": ["README.md"],
+                "conditional_context": [],
+            },
+            "source_of_truth_ids": [],
+            "validation_entry_point_ids": [],
+            "constraints": {
+                "narrows_allowed_actions": [],
+                "grants_write_scope": False,
+                "grants_approval": False,
+                "grants_permissions": False,
+                "grants_authority": False,
+                "grants_tools": False,
+                "activates_nested_adapters": False,
+                "bypasses_gates": False,
+            },
+            "known_gaps": [],
+        }
+        write_json(mode_path, mode_data)
+        write_json(
+            target / ".ai/project/workspace-modes/catalog.json",
+            {
+                "schema_version": 1,
+                "catalog_kind": "target-workspace-mode-catalog",
+                "state": "enabled",
+                "owner": "fixture-owner",
+                "decision_authority": "fixture-owner",
+                "workspace": {
+                    "id": "fixture-workspace",
+                    "kind": "application",
+                    "root": ".",
+                    "adapter_role": "active",
+                    "evidence": ["README.md"],
+                },
+                "selection": {
+                    "default_mode_id": mode_id,
+                    "automatic_selection": "accepted-unambiguous-only",
+                    "ambiguity_behavior": "ask-user",
+                    "no_match_behavior": "root-read-only",
+                    "persistence": "per-task",
+                    "local_preference_allowed": False,
+                    "show_preflight_before_changes": True,
+                },
+                "suggestions": {
+                    "after_installation": True,
+                    "after_framework_update": True,
+                    "after_workspace_change": True,
+                    "automatic_acceptance": False,
+                },
+                "root_context": ".ai/project/workspace-modes/root/context.json",
+                "modes": [
+                    {
+                        "id": mode_id,
+                        "title": "Application development",
+                        "state": "accepted",
+                        "mode_kind": "application-development",
+                        "path": f".ai/project/workspace-modes/modes/{mode_id}/mode.json",
+                        "summary": "Develop the selected application.",
+                        "evidence_revision": "fixture-revision",
+                    }
+                ],
+            },
+        )
+        write_json(
+            target / ".ai/project/workspace-modes/root/context.json",
+            {
+                "schema_version": 1,
+                "descriptor_kind": "target-workspace-root-context",
+                "state": "disabled",
+                "owner": "fixture-owner",
+                "required_context": [],
+                "conditional_context": [],
+                "known_gaps": [],
+            },
+        )
+        valid_modes = validator(target)
+        valid_modes.check_workspace_modes(None)
+        valid_mode_errors = [
+            finding.code
+            for finding in valid_modes.findings
+            if finding.level == "error" and finding.code.startswith("WORKSPACE_MODE_")
+        ]
+        if valid_mode_errors:
+            failures.append(
+                "resolved workspace modes produced errors: "
+                + ", ".join(valid_mode_errors)
+            )
+        proposed_catalog = json.loads(
+            (target / ".ai/project/workspace-modes/catalog.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        proposed_catalog["selection"]["default_mode_id"] = None
+        proposed_catalog["modes"][0]["state"] = "proposed"
+        mode_data["state"] = "proposed"
+        write_json(target / ".ai/project/workspace-modes/catalog.json", proposed_catalog)
+        write_json(mode_path, mode_data)
+        proposed_modes = validator(target)
+        proposed_modes.check_workspace_modes(None)
+        proposed_mode_errors = [
+            finding.code
+            for finding in proposed_modes.findings
+            if finding.level == "error" and finding.code.startswith("WORKSPACE_MODE_")
+        ]
+        if proposed_mode_errors:
+            failures.append(
+                "proposal-only workspace modes produced errors: "
+                + ", ".join(proposed_mode_errors)
+            )
+
+        def workspace_mode_codes() -> set[str]:
+            checked = validator(target)
+            checked.check_workspace_modes(None)
+            return {
+                finding.code
+                for finding in checked.findings
+                if finding.level == "error" and finding.code.startswith("WORKSPACE_MODE_")
+            }
+
+        proposed_catalog["selection"]["default_mode_id"] = mode_id
+        write_json(target / ".ai/project/workspace-modes/catalog.json", proposed_catalog)
+        if "WORKSPACE_MODE_DEFAULT" not in workspace_mode_codes():
+            failures.append("workspace modes must reject a proposed default mode")
+
+        proposed_catalog["selection"]["default_mode_id"] = mode_id
+        proposed_catalog["modes"][0]["state"] = "accepted"
+        mode_data["state"] = "accepted"
+        write_json(target / ".ai/project/workspace-modes/catalog.json", proposed_catalog)
+        write_json(mode_path, mode_data)
+
+        mode_data["workspace_scope"]["root"] = "missing-workspace"
+        write_json(mode_path, mode_data)
+        if "WORKSPACE_MODE_SCOPE" not in workspace_mode_codes():
+            failures.append("accepted workspace modes must reject missing workspace roots")
+        mode_data["workspace_scope"]["root"] = "."
+
+        mode_data["context"]["root_context"] = "required"
+        write_json(mode_path, mode_data)
+        if "WORKSPACE_MODE_CONTEXT" not in workspace_mode_codes():
+            failures.append("accepted workspace modes must reject disabled required root context")
+        mode_data["context"]["root_context"] = "skip"
+
+        mode_data["constraints"]["grants_approval"] = True
+        write_json(mode_path, mode_data)
+        if "WORKSPACE_MODE_GRANT" not in workspace_mode_codes():
+            failures.append("workspace modes must reject permission-granting constraints")
+        mode_data["constraints"]["grants_approval"] = False
+
+        proposed_catalog["modes"][0]["state"] = "proposed"
+        write_json(target / ".ai/project/workspace-modes/catalog.json", proposed_catalog)
+        write_json(mode_path, mode_data)
+        if "WORKSPACE_MODE_DESCRIPTOR_DRIFT" not in workspace_mode_codes():
+            failures.append("workspace modes must reject catalog and descriptor state drift")
+        proposed_catalog["modes"][0]["state"] = "accepted"
+        write_json(target / ".ai/project/workspace-modes/catalog.json", proposed_catalog)
+
+        mode_data["relationships"].append(
+            {
+                "subject": "fixture-workspace",
+                "relationship": "workspace-root",
+                "adapter_role": "active",
+                "ownership": "target",
+                "evidence": ["README.md"],
+            }
+        )
+        write_json(mode_path, mode_data)
+        if "WORKSPACE_MODE_ACTIVE_ROOT" not in workspace_mode_codes():
+            failures.append("accepted workspace modes must reject multiple active roots")
+        mode_data["relationships"].pop()
+
+        mode_data["relationships"].append(
+            {
+                "subject": "fixture-dependency",
+                "relationship": "dependency",
+                "adapter_role": "active",
+                "ownership": "upstream",
+                "evidence": ["README.md"],
+            }
+        )
+        write_json(mode_path, mode_data)
+        invalid_modes = validator(target)
+        invalid_modes.check_workspace_modes(None)
+        if "WORKSPACE_MODE_NESTED_ADAPTER" not in {
+            finding.code for finding in invalid_modes.findings
+        }:
+            failures.append("workspace modes must reject active dependency adapters")
+        write_json(router_path, {"intent_overlays": {}})
+
+        module_profile_path.write_text(
             "# Module Profile\n\nModule: `extensions`\nState: `enabled`\n",
             encoding="utf-8",
         )

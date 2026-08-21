@@ -85,6 +85,10 @@ Before upgrading framework files in a target project:
    package compatibility, installed ownership and hashes, target bindings,
    permissions, lifecycle flow, gates, operation/bridge routing, historical
    records, and validator support.
+   When `dependency-knowledge` is enabled, compare its export API, target
+   policy/catalog/knowledge-lock/deviation schemas, passive activation
+   boundary, independent semantic state axes, artifact identity, retention,
+   intent route, flow, gate, operation, and validator support.
    When `subagent-delegation` is enabled, compare its policy schema, selected
    assistant capability records, role/model bindings, client freshness,
    packet and overlay contracts, write isolation, fallbacks, privacy,
@@ -114,6 +118,14 @@ Before upgrading framework files in a target project:
     provenance, target bindings, local deviations, installed-file ownership,
     permissions, approvals, and lifecycle history. Never auto-update an
     extension or replace target bindings with source defaults.
+    Preserve dependency knowledge policy, reviewed package-instance state,
+    target deviations, retention decisions, and permitted historical
+    snapshots. Never activate nested adapters, replace target facts with
+    dependency claims, or mark stale exports current during a framework update.
+    Preserve accepted workspace identity, modes, per-mode support directories,
+    root context, relationships, defaults, and user decision evidence. New
+    source templates may produce suggestions but must not replace or silently
+    activate target modes.
     Preserve target vocabulary term IDs, definitions, states, owners, aliases,
     acronyms, links, and decisions. Never replace accepted project language
     with source placeholders or inferred definitions.
@@ -170,6 +182,12 @@ Framework lifecycle notes should record:
   lifecycle operation, ownership/removal behavior, bindings, permissions,
   bridges, lazy route, inspection tooling, and validator migration when that
   module is enabled
+- dependency knowledge rule, export API and package template, target policy,
+  catalog, knowledge lock, deviations, snapshot policy, routing, gate,
+  operation, and validator migration when that module is enabled
+- workspace-mode rule, catalog, root context, per-mode descriptor contract,
+  suggestion/selection flow, preflight, routing, gate, operation, and validator
+  migration when that module is enabled
 - subagent delegation rule, target policy, capability records, role/model
   bindings, packet and overlay contracts, fallbacks, and validator migration
   when that module is enabled

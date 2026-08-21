@@ -4,6 +4,46 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.14 - 2026-08-21
+
+- Increased the framework version to `0.1.0-alpha.14`, adapter schema version
+  to `13`, and target template version to `14` for optional passive dependency
+  knowledge and user-owned workspace modes.
+- Added `ALATYR-DEPENDENCY-001` and a canonical protocol that permits one
+  active project adapter to consume bounded documentation and contract exports
+  from exact resolved dependency artifacts without activating nested adapters.
+- Added a strict dependency export schema and cross-platform, read-only source
+  validator covering declared paths, digests, strict fields, graph references,
+  and prohibited executable or assistant-control surfaces.
+- Added target-owned dependency policy, catalog, knowledge lock, deviations,
+  retained-snapshot boundary, routed operation, flow, gate, report, and intent
+  templates. Trust, freshness, authority, and applicability remain independent
+  decisions.
+- Defined and enforced normalized catalog package/export, exact lock-instance,
+  bounded graph, and target-deviation record contracts, including duplicate
+  and dangling-reference detection.
+- Extended installation, update, bootstrap, module selection, operation help,
+  source-of-truth, safety, lifecycle, and target validation contracts. Native
+  package metadata owns discovery; dependency content remains untrusted data
+  and is never routine bootstrap context.
+- Added source consistency, target-validator dispatch, manifest, framework-pack,
+  context-routing, and cross-platform command coverage for the new module.
+- Added `ALATYR-MODE-001` and an optional project-owned mode catalog with
+  explicit workspace identity, artifact relationships, one support directory
+  per actual mode, optional shared root support, evidence-bound installation
+  suggestions, user-owned acceptance, safe ambiguity handling, and per-task
+  selection preflight.
+- Added a routed workspace-mode operation, post-install/update suggestion and
+  preservation behavior, compact context-cost evidence, source checks, and
+  installed-target enforcement for catalog/descriptor agreement, one active
+  root, inactive nested adapters, target-relative context, and explicit
+  no-grants fields. Router schema 6 composes one selected mode before the
+  ordinary task profile and project-area overlays.
+- Added `ALATYR-DEPENDENCY-001` and `ALATYR-MODE-001`; changed `ALATYR-CONTEXT-001`,
+  `ALATYR-SOURCE-001`, `ALATYR-SAFETY-002`, `ALATYR-INTEGRITY-001`,
+  `ALATYR-ADAPTER-001`, `ALATYR-MODULE-001`, `ALATYR-LIFECYCLE-001`,
+  `ALATYR-OPERATION-001`, and `ALATYR-EVIDENCE-001`; no rule IDs were removed.
+
 ## 0.1.0-alpha.13 - 2026-08-20
 
 - Increased the framework version to `0.1.0-alpha.13`, adapter schema version

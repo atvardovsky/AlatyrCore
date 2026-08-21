@@ -28,6 +28,7 @@ EXPECTED_COMMANDS = {
     "assess-upgrade",
     "context-costs",
     "inspect-extension",
+    "inspect-dependency-knowledge",
     "prepare-conformance",
     "check-conformance",
     "prepare-benchmark",
@@ -119,6 +120,16 @@ def main() -> int:
     )
     if extension_output.returncode != 0:
         failures.append("cross-platform extension inspection failed")
+
+    dependency_output = run(
+        "inspect-dependency-knowledge",
+        "--source",
+        str(ROOT / "templates" / "dependency-knowledge"),
+        "--allow-placeholders",
+        "--no-file-check",
+    )
+    if dependency_output.returncode != 0:
+        failures.append("cross-platform dependency knowledge inspection failed")
 
     cmd_text = (TOOLS / "alatyr.cmd").read_text(encoding="utf-8")
     ps_text = (TOOLS / "alatyr.ps1").read_text(encoding="utf-8")

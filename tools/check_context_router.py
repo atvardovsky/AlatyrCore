@@ -85,6 +85,10 @@ def target_reference_exists(value: str) -> bool:
         return True
     if "{EXTENSION_ID}" in value:
         return value.startswith(".ai/assistant/extensions/{EXTENSION_ID}/") and ".." not in value
+    if "{PACKAGE_INSTANCE_ID}" in value:
+        return value.startswith(".ai/project/dependencies/snapshots/{PACKAGE_INSTANCE_ID}/") and ".." not in value
+    if "{MODE_ID}" in value:
+        return value.startswith(".ai/project/workspace-modes/modes/{MODE_ID}/") and ".." not in value
     if value == ".ai/framework":
         return (ROOT / "framework").is_dir()
     if value.startswith(".ai/framework/"):
@@ -172,8 +176,8 @@ def main() -> int:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
 
-    if router.get("schema_version") != 5:
-        failures.append("context-router.json schema_version must be 5")
+    if router.get("schema_version") != 6:
+        failures.append("context-router.json schema_version must be 6")
     if router.get("router_kind") != "target-context-router":
         failures.append("context-router.json router_kind must be target-context-router")
     if router.get("human_reference") != ".ai/assistant/context-profiles.md":
@@ -365,6 +369,10 @@ def main() -> int:
     test_first_conditional_context: list[str] = []
     extension: dict[str, Any] = {}
     extension_conditional_context: list[str] = []
+    dependency_knowledge: dict[str, Any] = {}
+    dependency_knowledge_conditional_context: list[str] = []
+    workspace_mode: dict[str, Any] = {}
+    workspace_mode_conditional_context: list[str] = []
     if not isinstance(intent_index, dict) or not isinstance(
         intent_index.get("diagram-request"), dict
     ):
@@ -544,6 +552,86 @@ def main() -> int:
             extension, "intent_overlays.extension-request", failures
         )
 
+    if not isinstance(intent_index, dict) or not isinstance(
+        intent_index.get("dependency-knowledge-request"), dict
+    ):
+        failures.append("intent_overlays.dependency-knowledge-request must be indexed")
+    else:
+        entry = intent_index["dependency-knowledge-request"]
+        dependency_knowledge = descriptor(
+            entry.get("descriptor"),
+            "target-intent-overlay",
+            "intent_overlays.dependency-knowledge-request",
+            failures,
+        )
+        check_contract(
+            dependency_knowledge,
+            ["use_when", "operation_candidates", "required_context", "expand_when"],
+            "intent_overlays.dependency-knowledge-request",
+            failures,
+            {"required_context"},
+        )
+        if dependency_knowledge.get("required_module") != "dependency-knowledge":
+            failures.append("dependency knowledge intent must require dependency-knowledge")
+        if dependency_knowledge.get("operation_candidates") != ["dependency-knowledge"]:
+            failures.append("dependency knowledge intent must route dependency-knowledge")
+        dependency_knowledge_conditional_context = check_conditional_context(
+            dependency_knowledge,
+            "intent_overlays.dependency-knowledge-request",
+            failures,
+        )
+
+    workspace_routing = router.get("workspace_mode_routing")
+    if not isinstance(workspace_routing, dict):
+        failures.append("workspace_mode_routing must be an object")
+    else:
+        expected_mode_routing = {
+            "required_module": "workspace-modes",
+            "catalog": ".ai/project/workspace-modes/catalog.json",
+            "root_context": ".ai/project/workspace-modes/root/context.json",
+            "mode_path_pattern": ".ai/project/workspace-modes/modes/{MODE_ID}/mode.json",
+            "ambiguity_behavior": "ask-user-and-remain-read-only",
+            "no_match_behavior": "root-read-only",
+            "preflight": ".ai/assistant/templates/workspace-mode-preflight.md",
+        }
+        for field, expected in expected_mode_routing.items():
+            if workspace_routing.get(field) != expected:
+                failures.append(f"workspace_mode_routing.{field} must be {expected}")
+        selection_order = workspace_routing.get("selection_order")
+        if not isinstance(selection_order, list) or len(selection_order) != 3 or not all(
+            isinstance(value, str) and value for value in selection_order
+        ):
+            failures.append("workspace_mode_routing.selection_order must contain three steps")
+
+    if not isinstance(intent_index, dict) or not isinstance(
+        intent_index.get("workspace-mode-request"), dict
+    ):
+        failures.append("intent_overlays.workspace-mode-request must be indexed")
+    else:
+        entry = intent_index["workspace-mode-request"]
+        workspace_mode = descriptor(
+            entry.get("descriptor"),
+            "target-intent-overlay",
+            "intent_overlays.workspace-mode-request",
+            failures,
+        )
+        check_contract(
+            workspace_mode,
+            ["use_when", "operation_candidates", "required_context", "expand_when"],
+            "intent_overlays.workspace-mode-request",
+            failures,
+            {"required_context"},
+        )
+        if workspace_mode.get("required_module") != "workspace-modes":
+            failures.append("workspace mode intent must require workspace-modes")
+        if workspace_mode.get("operation_candidates") != ["workspace-mode"]:
+            failures.append("workspace mode intent must route workspace-mode")
+        workspace_mode_conditional_context = check_conditional_context(
+            workspace_mode,
+            "intent_overlays.workspace-mode-request",
+            failures,
+        )
+
     consistency_entry = router.get("consistency_routing")
     consistency = descriptor(
         consistency_entry.get("descriptor") if isinstance(consistency_entry, dict) else None,
@@ -687,6 +775,8 @@ def main() -> int:
         (vocabulary, "required_context"),
         (test_first, "required_context"),
         (extension, "required_context"),
+        (dependency_knowledge, "required_context"),
+        (workspace_mode, "required_context"),
     ]:
         routed_framework_paths.update(
             value
@@ -726,6 +816,16 @@ def main() -> int:
     routed_framework_paths.update(
         value
         for value in extension_conditional_context
+        if value.startswith(".ai/framework/")
+    )
+    routed_framework_paths.update(
+        value
+        for value in dependency_knowledge_conditional_context
+        if value.startswith(".ai/framework/")
+    )
+    routed_framework_paths.update(
+        value
+        for value in workspace_mode_conditional_context
         if value.startswith(".ai/framework/")
     )
     try:

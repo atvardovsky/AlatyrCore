@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "policy_kind": "target-dependency-knowledge-policy",
+  "state": "{ENABLED_DEFERRED_DISABLED_OR_BLOCKED}",
+  "owner": "{TARGET_DEPENDENCY_KNOWLEDGE_OWNER}",
+  "package_sources": [
+    {
+      "ecosystem": "{PACKAGE_ECOSYSTEM}",
+      "manifest": "{TARGET_RELATIVE_PACKAGE_MANIFEST}",
+      "lockfile": "{TARGET_RELATIVE_PACKAGE_LOCKFILE}",
+      "metadata_locator": "{NATIVE_ALATYR_EXPORT_METADATA_KEY_OR_ADAPTER}"
+    }
+  ],
+  "discovery": {
+    "native_metadata_only": true,
+    "recursive_scan": false,
+    "execute_package_manager": false,
+    "execute_package_hooks": false
+  },
+  "trust": {
+    "raw_content_is_instruction": false,
+    "require_artifact_binding": true,
+    "require_digest": true,
+    "require_license_review_for_snapshots": true
+  },
+  "retention": {
+    "default_mode": "{REFERENCE_LOCAL_CACHE_OR_COMMITTED_SNAPSHOT}",
+    "cache_path": "{TARGET_IGNORED_CACHE_PATH_OR_NONE}",
+    "committed_snapshot_allowed_when": [
+      "{LICENSE_PRIVACY_AND_REPOSITORY_VISIBILITY_CONDITION}"
+    ]
+  },
+  "limits": {
+    "max_manifest_bytes": "{POSITIVE_INTEGER}",
+    "max_export_bytes": "{POSITIVE_INTEGER}",
+    "max_exports_per_package": "{POSITIVE_INTEGER}",
+    "max_graph_depth": "{POSITIVE_INTEGER}",
+    "max_graph_instances": "{POSITIVE_INTEGER}"
+  },
+  "review": {
+    "semantic_changes_require_review": true,
+    "digest_change_is_semantic_proof": false,
+    "project_fact_changes_use_normal_approval": true
+  },
+  "routing": {
+    "routine_bootstrap": false,
+    "direct_dependencies_first": true,
+    "load_selected_facts_only": true
+  }
+}

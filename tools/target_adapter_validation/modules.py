@@ -15,17 +15,21 @@ CAPABILITY_CHECKS: dict[str, tuple[str, ...]] = {
     "code-documentation": ("check_code_documentation",),
     "consistency-map": ("check_consistency_map",),
     "diagrams": ("check_discussion_diagrams",),
+    "dependency-knowledge": ("check_dependency_knowledge",),
     "extensions": ("check_extensions",),
     "project-vocabulary": ("check_project_vocabulary",),
     "subagent-delegation": ("check_subagent_delegation",),
     "team-collaboration": ("check_team_collaboration",),
     "test-first-development": ("check_test_first_development",),
+    "workspace-modes": ("check_workspace_modes",),
 }
 
 
 class ModuleValidator(Protocol):
     def check_ai_infrastructure_router(self) -> None: ...
     def check_development_evidence(self, manifest: Any) -> None: ...
+    def check_dependency_knowledge(self, manifest: Any) -> None: ...
+    def check_workspace_modes(self, manifest: Any) -> None: ...
 
 
 def dispatch_capability_checks(

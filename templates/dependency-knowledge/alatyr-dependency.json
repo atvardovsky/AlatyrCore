@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "package_kind": "alatyr-dependency-knowledge",
+  "knowledge_api": 1,
+  "package": {
+    "ecosystem": "{PACKAGE_ECOSYSTEM}",
+    "name": "{CANONICAL_PACKAGE_NAME}",
+    "version": "{RELEASE_VERSION}",
+    "source": "{SOURCE_REPOSITORY_OR_DISTRIBUTION_IDENTITY}",
+    "release_profile": "consumer",
+    "license": "{SPDX_LICENSE_OR_UNKNOWN_WITH_REASON}"
+  },
+  "compatibility": {
+    "required_capabilities": [
+      "dependency-knowledge:v1"
+    ]
+  },
+  "export_root": "exports",
+  "exports": [
+    {
+      "id": "{NAMESPACED_EXPORT_ID}",
+      "type": "{PUBLIC_CONTRACT_ARCHITECTURE_VOCABULARY_CONFIGURATION_MIGRATION_OR_VALIDATION_GUIDANCE}",
+      "path": "exports/{RELATIVE_EXPORT_PATH}",
+      "content_digest": "{SHA256}",
+      "authority": "{UPSTREAM_CANONICAL_UPSTREAM_DERIVED_OBSERVED_OR_THIRD_PARTY}",
+      "stability": "{STABLE_EXPERIMENTAL_DEPRECATED_OR_INTERNAL}",
+      "summary": "{BOUNDED_PUBLIC_SUMMARY}",
+      "applicability": {
+        "state": "{ACTIVE_INACTIVE_OR_CONDITIONAL}",
+        "conditions": [
+          "{DECLARATIVE_TARGET_RESOLVABLE_CONDITION_OR_NONE}"
+        ]
+      },
+      "evidence": [
+        "{VERSION_BOUND_PUBLIC_EVIDENCE_REFERENCE}"
+      ]
+    }
+  ],
+  "public_dependencies": [
+    {
+      "package": "{DEPENDENCY_PACKAGE_COORDINATE}",
+      "relationship": "{PUBLIC_CONTRACT_OPTIONAL_PEER_PLUGIN_OR_INTEGRATION}",
+      "version_constraint": "{DECLARED_VERSION_CONSTRAINT}",
+      "required_export_ids": [
+        "{DEPENDENCY_EXPORT_ID}"
+      ]
+    }
+  ],
+  "prohibited_surfaces": [
+    "assistant-bridges",
+    "prompts",
+    "skills",
+    "gates",
+    "tools",
+    "permissions",
+    "lifecycle-hooks",
+    "executable-commands"
+  ]
+}

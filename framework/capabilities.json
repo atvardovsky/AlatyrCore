@@ -106,6 +106,45 @@
       ],
       "check_ids": ["extensions"]
     },
+    "dependency-knowledge": {
+      "min_framework_pack": "complete",
+      "requires": [],
+      "rule_ids": ["ALATYR-DEPENDENCY-001", "ALATYR-SAFETY-002", "ALATYR-SOURCE-001"],
+      "framework_files": ["dependency-knowledge.md", "prompt-injection.md", "source-of-truth-registry.md"],
+      "target_files": [
+        ".ai/project/dependencies/README.md",
+        ".ai/project/dependencies/policy.json",
+        ".ai/project/dependencies/catalog.json",
+        ".ai/project/dependencies/knowledge-lock.json",
+        ".ai/project/dependencies/deviations.json",
+        ".ai/project/dependencies/snapshots/README.md",
+        ".ai/assistant/context/intents/dependency-knowledge-request.json",
+        ".ai/assistant/flows/dependency-knowledge-sync.flow.md",
+        ".ai/assistant/gates/dependency-knowledge.md",
+        ".ai/assistant/templates/dependency-knowledge-sync-report.md"
+      ],
+      "check_ids": ["dependency-knowledge"]
+    },
+    "workspace-modes": {
+      "min_framework_pack": "complete",
+      "requires": [],
+      "rule_ids": ["ALATYR-MODE-001", "ALATYR-CONTEXT-001", "ALATYR-SOURCE-001"],
+      "framework_files": ["workspace-modes.md", "context-router.md", "source-of-truth-registry.md"],
+      "target_files": [
+        ".ai/project/workspace-modes/README.md",
+        ".ai/project/workspace-modes/catalog.json",
+        ".ai/project/workspace-modes/root/README.md",
+        ".ai/project/workspace-modes/root/context.json",
+        ".ai/project/workspace-modes/modes/_template/README.md",
+        ".ai/project/workspace-modes/modes/_template/mode.json",
+        ".ai/assistant/context/intents/workspace-mode-request.json",
+        ".ai/assistant/flows/workspace-mode.flow.md",
+        ".ai/assistant/gates/workspace-mode.md",
+        ".ai/assistant/templates/workspace-mode-suggestion.md",
+        ".ai/assistant/templates/workspace-mode-preflight.md"
+      ],
+      "check_ids": ["workspace-modes"]
+    },
     "diagrams": {
       "min_framework_pack": "complete",
       "requires": [],

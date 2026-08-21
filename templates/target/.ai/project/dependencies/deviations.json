@@ -1,0 +1,6 @@
+{
+  "schema_version": 1,
+  "deviation_kind": "target-dependency-knowledge-deviations",
+  "owner": "{TARGET_DEPENDENCY_KNOWLEDGE_OWNER}",
+  "deviations": []
+}

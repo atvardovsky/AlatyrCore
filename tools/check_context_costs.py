@@ -129,6 +129,24 @@ def main() -> int:
             "extension compact route should reduce reference words by at least 25%"
         )
 
+    dependency_route = report["operation_routes"]["dependency-knowledge"]
+    if dependency_route["compact"]["missing_paths"]:
+        failures.append("dependency-knowledge compact route contains missing paths")
+    dependency_reduction = dependency_route["word_reduction_percent"]
+    if not isinstance(dependency_reduction, (int, float)) or dependency_reduction < 25:
+        failures.append(
+            "dependency-knowledge compact route should reduce reference words by at least 25%"
+        )
+
+    workspace_mode_route = report["operation_routes"]["workspace-mode"]
+    if workspace_mode_route["compact"]["missing_paths"]:
+        failures.append("workspace-mode compact route contains missing paths")
+    workspace_mode_reduction = workspace_mode_route["word_reduction_percent"]
+    if not isinstance(workspace_mode_reduction, (int, float)) or workspace_mode_reduction < 25:
+        failures.append(
+            "workspace-mode compact route should reduce reference words by at least 25%"
+        )
+
     team_route = report["operation_routes"]["team-collaboration"]
     if team_route["compact"]["missing_paths"]:
         failures.append("team compact route contains missing paths")
@@ -179,6 +197,8 @@ def main() -> int:
         f"; project-vocabulary route reduction is {vocabulary_reduction}%"
         f"; test-first route reduction is {test_first_reduction}%"
         f"; extension route reduction is {extension_reduction}%"
+        f"; dependency-knowledge route reduction is {dependency_reduction}%"
+        f"; workspace-mode route reduction is {workspace_mode_reduction}%"
         f"; team preflight reduction is {team_reduction}%"
     )
     return 0

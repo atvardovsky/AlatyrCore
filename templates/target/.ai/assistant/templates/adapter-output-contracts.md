@@ -34,6 +34,7 @@ Use after the initial Alatyr Core installation or a scoped adapter expansion.
   `{EXISTING_FILES_OVERWRITTEN_WITH_APPROVAL_OR_NONE}`
 - Required core profile result: `{REQUIRED_CORE_PROFILE_RESULT}`
 - Optional module profile result: `{OPTIONAL_MODULE_PROFILE_RESULT}`
+- Workspace-mode result: `{MODULE_STATE_WORKSPACE_IDENTITY_PROPOSED_ACCEPTED_OR_REJECTED_MODES_USER_DECISIONS_ROOT_AND_PER_MODE_CONTEXT_VALIDATION_AND_GAPS}`
 - Context profiles result: `{CONTEXT_PROFILES_RESULT}`
 - Operation catalog and automatic routing result: `{OPERATION_CATALOG_ROUTING_RESULT}`
 - Adapter health and evidence freshness: `{HEALTH_STATE_TIME_REVISION_OR_UNVERIFIED}`
@@ -103,6 +104,7 @@ Core baseline.
 - Approval scope enforcement: `{DIFF_BASE_RECORDS_CHANGED_PATHS_AND_RESULT_OR_NOT_REQUIRED}`
 - Required core profile result: `{REQUIRED_CORE_PROFILE_RESULT}`
 - Optional module profile result: `{OPTIONAL_MODULE_PROFILE_RESULT}`
+- Workspace-mode migration result: `{PRESERVED_ACCEPTED_MODES_PROPOSED_MIGRATIONS_USER_DECISIONS_ROUTING_VALIDATION_AND_GAPS}`
 - Context profiles result: `{CONTEXT_PROFILES_RESULT}`
 - Context receipt and cost evidence: `{LOADED_FILES_VOLUME_EXPANSIONS_OR_NOT_REQUIRED}`
 - Large-task orchestration result: `{LARGE_TASK_ORCHESTRATION_RESULT_OR_SKIPPED}`
@@ -157,6 +159,7 @@ adapter.
 - Existing files preserved: `{EXISTING_FILES_PRESERVED}`
 - Required core profile result: `{REQUIRED_CORE_PROFILE_RESULT}`
 - Optional module profile result: `{OPTIONAL_MODULE_PROFILE_RESULT}`
+- Workspace-mode recheck result: `{WORKSPACE_IDENTITY_ACCEPTED_PROPOSED_STALE_OR_AMBIGUOUS_MODES_ROUTING_VALIDATION_AND_GAPS}`
 - Context profiles result: `{CONTEXT_PROFILES_RESULT}`
 - Context receipt and cost evidence: `{LOADED_FILES_VOLUME_EXPANSIONS_OR_NOT_REQUIRED}`
 - Large-task orchestration result: `{LARGE_TASK_ORCHESTRATION_RESULT_OR_SKIPPED}`

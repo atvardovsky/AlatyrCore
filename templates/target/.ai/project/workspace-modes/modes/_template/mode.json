@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "descriptor_kind": "target-workspace-mode",
+  "id": "{MODE_ID}",
+  "title": "{MODE_TITLE}",
+  "state": "{PROPOSED_ACCEPTED_DISABLED_DEPRECATED_OR_BLOCKED}",
+  "mode_kind": "{APPLICATION_DEVELOPMENT_FRAMEWORK_DEVELOPMENT_LIBRARY_DEVELOPMENT_SKELETON_DEVELOPMENT_DEPENDENCY_INTEGRATION_DEPENDENCY_CONTRIBUTION_SKELETON_MIGRATION_WORKSPACE_COORDINATION_OR_CUSTOM}",
+  "purpose": "{BOUNDED_MODE_PURPOSE}",
+  "owner": "{TARGET_MODE_OWNER}",
+  "decision_authority": "{TARGET_MODE_DECISION_AUTHORITY}",
+  "last_reviewed": "{YYYY_MM_DD_OR_UNRESOLVED}",
+  "evidence_revision": "{TARGET_REVISION_OR_UNRESOLVED}",
+  "workspace_scope": {
+    "root": ".",
+    "include": [],
+    "exclude": []
+  },
+  "use_when": [
+    "{POSITIVE_MODE_SELECTION_SIGNAL}"
+  ],
+  "do_not_use_when": [
+    "{NEGATIVE_MODE_SELECTION_SIGNAL}"
+  ],
+  "relationships": [
+    {
+      "subject": "{WORKSPACE_PACKAGE_SKELETON_OR_SOURCE_ID}",
+      "relationship": "{WORKSPACE_ROOT_WORKSPACE_MEMBER_DEPENDENCY_SCAFFOLD_ORIGIN_OR_VENDORED_SOURCE}",
+      "adapter_role": "{ACTIVE_PASSIVE_OR_PROVENANCE_ONLY}",
+      "ownership": "{TARGET_UPSTREAM_OR_MIXED}",
+      "evidence": [
+        "{TARGET_RELATIVE_RELATIONSHIP_EVIDENCE}"
+      ]
+    }
+  ],
+  "context": {
+    "root_context": "{INHERIT_REQUIRED_OR_SKIP}",
+    "required_context": [],
+    "conditional_context": []
+  },
+  "source_of_truth_ids": [],
+  "validation_entry_point_ids": [],
+  "constraints": {
+    "narrows_allowed_actions": [],
+    "grants_write_scope": false,
+    "grants_approval": false,
+    "grants_permissions": false,
+    "grants_authority": false,
+    "grants_tools": false,
+    "activates_nested_adapters": false,
+    "bypasses_gates": false
+  },
+  "known_gaps": []
+}

@@ -91,6 +91,9 @@ The framework commits to giving an assistant a defined process for:
   framework update recheck, and adapter maturity review
 - separating required core from optional modules so targets do not carry
   unused Alatyr surfaces as mandatory process
+- separating workspace identity, artifact relationship, and current task mode;
+  keeping accepted modes user-owned and preventing mode selection from granting
+  approval, write scope, permissions, authority, or gate bypass
 - bounding installed-operation requests by allowed actions before editing files
 - routing clear requests automatically through a target operation catalog and
   checked compact exact-alias index,
@@ -240,6 +243,9 @@ defines:
 - target actors, local identity mapping, authority, priorities, task source,
   backend capabilities, synchronization, concurrency, storage, privacy,
   conflict, and review rules when team collaboration is enabled
+- target workspace-mode identity, accepted definitions, relationship evidence,
+  shared root support, per-mode context, selection policy, ambiguity behavior,
+  and user decision records when workspace modes are enabled
 - operation catalog, single entry, automatic routing, read-only health,
   risk-gated preview, help, and post-install/update chat-message templates when
   the target wants discoverable assistant requests
@@ -272,6 +278,10 @@ The framework does not guarantee:
 - that a structurally valid extension package, catalog, lock, digest, path, or
   compatibility result proves source trustworthiness, license interpretation,
   semantic usefulness, runtime safety, or item correctness
+- that a structurally valid dependency export, package-manager lock, artifact
+  digest, publisher claim, normalized snapshot, or compatibility result proves
+  semantic correctness, completeness, current applicability, client
+  instruction precedence, or safe runtime behavior
 - that unsupported assistants will auto-load the right files without a bridge
   or user instruction
 - that missing security, live-service, or diagram policy can be inferred from

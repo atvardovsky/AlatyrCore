@@ -381,6 +381,64 @@ def build_report() -> dict[str, Any]:
         [value for value in extension_full_reference_refs if value]
     )
 
+    dependency_reference, dependency_overlay = intent_contracts.get(
+        "dependency-knowledge-request", (None, {})
+    )
+    dependency_conditional_refs = [
+        entry.get("path")
+        for entry in dependency_overlay.get("conditional_context", [])
+        if isinstance(entry, dict) and isinstance(entry.get("path"), str)
+    ]
+    dependency_compact_refs = [
+        operation_routing.get("index", ""),
+        dependency_reference,
+        *dependency_overlay.get("required_context", []),
+    ]
+    dependency_full_reference_refs = [
+        operation_routing.get("catalog", ""),
+        ".ai/assistant/help.md",
+        ".ai/assistant/flows/operation-routing.flow.md",
+        ".ai/assistant/module-profile.md",
+        dependency_reference,
+        *dependency_overlay.get("required_context", []),
+        *dependency_conditional_refs,
+    ]
+    dependency_compact = measure(
+        [value for value in dependency_compact_refs if value]
+    )
+    dependency_full_reference = measure(
+        [value for value in dependency_full_reference_refs if value]
+    )
+
+    workspace_mode_reference, workspace_mode_overlay = intent_contracts.get(
+        "workspace-mode-request", (None, {})
+    )
+    workspace_mode_conditional_refs = [
+        entry.get("path")
+        for entry in workspace_mode_overlay.get("conditional_context", [])
+        if isinstance(entry, dict) and isinstance(entry.get("path"), str)
+    ]
+    workspace_mode_compact_refs = [
+        operation_routing.get("index", ""),
+        workspace_mode_reference,
+        *workspace_mode_overlay.get("required_context", []),
+    ]
+    workspace_mode_full_reference_refs = [
+        operation_routing.get("catalog", ""),
+        ".ai/assistant/help.md",
+        ".ai/assistant/flows/operation-routing.flow.md",
+        ".ai/assistant/module-profile.md",
+        workspace_mode_reference,
+        *workspace_mode_overlay.get("required_context", []),
+        *workspace_mode_conditional_refs,
+    ]
+    workspace_mode_compact = measure(
+        [value for value in workspace_mode_compact_refs if value]
+    )
+    workspace_mode_full_reference = measure(
+        [value for value in workspace_mode_full_reference_refs if value]
+    )
+
     team_reference, team_overlay = task_scale_contracts.get(
         "team-active", (None, {})
     )
@@ -544,6 +602,22 @@ def build_report() -> dict[str, Any]:
                 "word_reduction_percent": reduction_percent(
                     extension_compact["words"],
                     extension_full_reference["words"],
+                ),
+            },
+            "dependency-knowledge": {
+                "compact": dependency_compact,
+                "full_reference_union": dependency_full_reference,
+                "word_reduction_percent": reduction_percent(
+                    dependency_compact["words"],
+                    dependency_full_reference["words"],
+                ),
+            },
+            "workspace-mode": {
+                "compact": workspace_mode_compact,
+                "full_reference_union": workspace_mode_full_reference,
+                "word_reduction_percent": reduction_percent(
+                    workspace_mode_compact["words"],
+                    workspace_mode_full_reference["words"],
                 ),
             },
             "team-collaboration": {

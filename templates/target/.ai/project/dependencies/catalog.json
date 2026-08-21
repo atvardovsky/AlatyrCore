@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "catalog_kind": "target-dependency-knowledge-catalog",
+  "owner": "{TARGET_DEPENDENCY_KNOWLEDGE_OWNER}",
+  "package_lock_fingerprint": "{SHA256_OR_UNRESOLVED}",
+  "packages": []
+}

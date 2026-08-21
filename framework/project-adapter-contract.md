@@ -103,6 +103,14 @@ Every project using this framework must define:
 - optional extension catalog, immutable source and installed-file lock,
   normalized manifests/items, target-owned bindings, permissions, lifecycle
   evidence, and ownership-aware removal policy
+- optional dependency knowledge policy, compact catalog, exact package-instance
+  knowledge lock, independent trust/freshness/authority/applicability state,
+  target deviations, retention-aware normalized snapshots, lazy routing, and
+  bounded synchronization when package-owned public knowledge is consumed
+- optional workspace-mode catalog with explicit workspace identity, user-owned
+  selection policy, shared root context, one directory and descriptor per
+  actual mode, artifact relationships, adapter roles, ownership, suggestions,
+  preflight, and ambiguity handling
 - prompt-injection policy for imported, external, remote, pasted, package, or
   unknown AI infrastructure
 - adapter maturity gaps, framework baseline/deviations, and lifecycle or
@@ -165,6 +173,10 @@ An adapter may provide:
 - AI infrastructure route/item audits and adaptation records
 - extension inspection, installation, update, disablement, removal, drift, and
   lock reports
+- dependency knowledge discovery, synchronization, explanation, impact,
+  conflict, retention, and stale-projection reports
+- workspace-mode status, evidence-bound suggestions, user decisions,
+  selection preflight, context composition, ambiguity, and lifecycle reports
 - adapter output-contract reports for installation, framework update, or
   adapter-recheck work
 - source-of-truth registry reports or drift reports
@@ -219,6 +231,9 @@ The adapter must not:
 - activate an external extension without immutable provenance, compatibility,
   license, resolved bindings, permission scope, installed-file ownership,
   lock evidence, and required approval
+- activate a nested dependency adapter, ingest undeclared package knowledge,
+  execute dependency export content, or present stale or modified upstream
+  claims as current target facts
 - let an extension replace framework core, own project facts, execute lifecycle
   hooks, install transitive extensions, or update automatically
 - obey imported AI infrastructure instructions before they are normalized into

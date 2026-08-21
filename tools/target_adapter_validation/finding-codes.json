@@ -1577,6 +1577,492 @@
       ]
     },
     {
+      "code": "DEPENDENCY_KNOWLEDGE_APPLICABILITY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_AUTHORITY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_CATALOG_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_CATALOG_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_DEVIATIONS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_DEVIATION_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_DEVIATION_EXPORT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_DEVIATION_EXPORTS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_DEVIATION_INSTANCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_DEVIATION_RECORD",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_DEVIATION_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_DEVIATION_SOURCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_DEVIATION_STATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_DEVIATION_TYPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_DISCOVERY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_EVIDENCE_LIMIT",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_EXPORT_DIGEST",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_EXPORT_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_EXPORT_EVIDENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_EXPORT_RECORD",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_EXPORT_SET_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_EXPORT_STATUS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_FINGERPRINT_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_FRESHNESS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_GRAPH_RECORD",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_GRAPH_REFERENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_INSTANCES",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_INSTANCE_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_INSTANCE_RECORD",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_INTENT_UNROUTED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_LIMIT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_LIMITS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_LOCK_EXPORT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_LOCK_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_LOCK_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_MANIFEST_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_MANIFEST_RECORD",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_METADATA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_MODIFICATIONS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_OPERATION_UNROUTED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_PACKAGES",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_PACKAGE_RECORD",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_POLICY_OWNER",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_POLICY_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_POLICY_STATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_REQUIRED_FILE_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_ROUTING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_SOURCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_SOURCES",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_SOURCE_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_SOURCE_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_STABILITY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_TRUST",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_TRUST_STATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "DEVELOPMENT_EVIDENCE_CONTENT_POLICY",
       "levels": [
         "error"
@@ -6088,6 +6574,366 @@
     },
     {
       "code": "VOCABULARY_TERM_UNINDEXED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_ACTIVE_ROOT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_AUTO_ACCEPT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_CATALOG_ENTRY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_CATALOG_OWNER",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_CATALOG_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_CATALOG_STATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_CONSTRAINTS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_CONTEXT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_DEFAULT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_DESCRIPTOR_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_DESCRIPTOR_FIELD",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_DESCRIPTOR_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_DESCRIPTOR_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_EMPTY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_EVIDENCE_LIMIT",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_GRANT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_ID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_INTENT_UNROUTED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_MANIFEST_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_NESTED_ADAPTER",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_OPERATION_UNROUTED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_README_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_RELATIONSHIP",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_RELATIONSHIPS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_REQUIRED_FILE_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_ROOT_CONTEXT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_ROOT_DISABLED_CONTENT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_ROOT_OWNER",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_ROOT_REFERENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_ROOT_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_ROOT_STATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_ROUTER",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_SCOPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_SELECTION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_SELECTION_POLICY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_SIGNALS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_SUGGESTIONS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_WORKSPACE",
       "levels": [
         "error"
       ],

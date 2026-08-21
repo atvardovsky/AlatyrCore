@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "descriptor_kind": "target-intent-overlay",
+  "intent": "workspace-mode-request",
+  "use_when": [
+    "workspace development mode list status suggestion selection definition update disable or review request",
+    "framework application skeleton dependency workspace or ownership role is ambiguous",
+    "a task may require a different accepted workspace perspective"
+  ],
+  "operation_candidates": [
+    "workspace-mode"
+  ],
+  "required_module": "workspace-modes",
+  "required_context": [
+    ".ai/framework/workspace-modes.md",
+    ".ai/project/workspace-modes/catalog.json"
+  ],
+  "conditional_context": [
+    {
+      "path": ".ai/project/workspace-modes/root/context.json",
+      "when": "shared root context is enabled and applicable"
+    },
+    {
+      "path": ".ai/project/workspace-modes/modes/{MODE_ID}/mode.json",
+      "when": "one proposed or accepted mode is selected"
+    },
+    {
+      "path": ".ai/assistant/flows/workspace-mode.flow.md",
+      "when": "mode suggestion configuration or selection is requested"
+    },
+    {
+      "path": ".ai/assistant/gates/workspace-mode.md",
+      "when": "a mode is accepted changed disabled removed or used for state-changing work"
+    }
+  ],
+  "expand_when": [
+    "workspace identity scope relationship ownership or adapter role conflicts",
+    "multiple accepted modes match",
+    "a selected mode references missing or stale context",
+    "mode configuration would change protected project facts"
+  ],
+  "budget_behavior": "load the compact catalog first, then one selected mode descriptor and only applicable root or supporting context"
+}

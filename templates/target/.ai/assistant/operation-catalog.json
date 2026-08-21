@@ -337,6 +337,34 @@
       "final_evidence": ["source revision digest license and compatibility", "target bindings permissions files and ownership", "catalog lock approval validation cost and residual risk"]
     },
     {
+      "id": "dependency-knowledge",
+      "title": "Dependency knowledge",
+      "summary": "Discover, inspect, plan, synchronize, explain, or assess passive package knowledge without activating nested adapters or changing dependencies.",
+      "use_when": ["dependency knowledge status", "dependency export discovery or inspection", "package knowledge synchronization", "explain dependency contract", "dependency change impact"],
+      "context_profiles": ["code-local", "architecture-change", "security-sensitive", "framework-upgrade"],
+      "required_module": "dependency-knowledge",
+      "flow": ".ai/assistant/flows/dependency-knowledge-sync.flow.md",
+      "minimum_inputs": ["mode or dependency question", "package ecosystem name instance or changed lockfile when known"],
+      "allowed_actions": ["read-only", "adapter-only", "full-with-approval"],
+      "preview": "risk-gated",
+      "aliases": ["Alatyr dependencies", "Alatyr dependency status", "Alatyr sync dependencies", "Alatyr inspect dependency", "Alatyr explain dependency", "Alatyr dependency impact"],
+      "final_evidence": ["package instances fingerprints provenance and export state", "trust freshness authority applicability and selected graph edges", "projection changes validation cost and residual risk"]
+    },
+    {
+      "id": "workspace-mode",
+      "title": "Workspace modes",
+      "summary": "List, suggest, inspect, select, define, accept, update, disable, deprecate, remove, or review user-owned workspace modes.",
+      "use_when": ["workspace mode status or suggestion", "framework application library skeleton dependency or workspace role selection", "mode definition acceptance update disablement deprecation removal or review"],
+      "context_profiles": ["code-local", "architecture-change", "framework-upgrade"],
+      "required_module": "workspace-modes",
+      "flow": ".ai/assistant/flows/workspace-mode.flow.md",
+      "minimum_inputs": ["mode action or workspace-role question", "mode ID and user decision when changing accepted state"],
+      "allowed_actions": ["read-only", "adapter-only", "full-with-approval"],
+      "preview": "risk-gated",
+      "aliases": ["Alatyr modes", "Alatyr mode status", "Alatyr suggest modes", "Alatyr mode", "Alatyr define mode", "Alatyr accept mode"],
+      "final_evidence": ["workspace identity scope and active adapter", "mode state selection basis relationships ownership and context", "user decision validation cost ambiguity and residual risk"]
+    },
+    {
       "id": "drift-review",
       "title": "Drift review",
       "summary": "Find stale owners, derived surfaces, or adapter claims without assuming repair scope.",

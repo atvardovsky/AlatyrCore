@@ -108,6 +108,23 @@ tool, target extension catalog and lock, extension lifecycle flow, extension
 intent routing, extension review and lifecycle evidence, module profile, target
 gates, installation and update planning, bridge routing, structural validation.
 
+Category: `DEPENDENCY`
+Owner: `.ai/framework/dependency-knowledge.md`
+Rule IDs: `ALATYR-DEPENDENCY-001`
+Derived surfaces: passive dependency export template, target dependency
+knowledge policy catalog lock deviations and snapshots, dependency knowledge
+intent routing, dependency synchronization flow, dependency knowledge gate,
+operation catalog and help, installation and update planning, structural
+validation.
+
+Category: `MODE`
+Owner: `.ai/framework/workspace-modes.md`
+Rule IDs: `ALATYR-MODE-001`
+Derived surfaces: target workspace-mode catalog, shared root context, per-mode
+directories and descriptors, workspace-mode intent and flow, mode suggestion
+and preflight, workspace-mode gate, installation and update suggestions,
+structural validation.
+
 Category: `DIAGRAM`
 Owner: `.ai/framework/diagram-guidance.md`
 Rule IDs: `ALATYR-DIAGRAM-001`

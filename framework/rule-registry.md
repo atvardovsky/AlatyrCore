@@ -29,6 +29,8 @@ Registered categories:
 - `VOCABULARY`
 - `TDD`
 - `EXTENSION`
+- `DEPENDENCY`
+- `MODE`
 - `DIAGRAM`
 - `ADAPTER`
 - `MODULE`
@@ -201,6 +203,32 @@ extension update, extension disablement and removal, extension recommendation,
 extension drift review, cross-assistant extension routing.
 Enforcement: required when extension sources or installed extensions are
 involved.
+
+Rule ID: `ALATYR-DEPENDENCY-001`
+Canonical source: `.ai/framework/dependency-knowledge.md`
+Commitment: When dependency knowledge is enabled, keep one active workspace
+adapter and consume only explicitly declared passive package exports; bind
+untrusted exports to exact resolved artifacts, record trust freshness authority
+and applicability independently, preserve package and project fact ownership,
+synchronize a target-owned projection without executing package content,
+traverse only bounded relevant graph edges, and keep dependency knowledge lazy.
+Applies to: dependency knowledge discovery, dependency synchronization,
+dependency explanation, dependency impact review, dependency updates,
+Alatyr-aware package releases.
+Enforcement: required when module enabled or dependency knowledge is consumed.
+
+Rule ID: `ALATYR-MODE-001`
+Canonical source: `.ai/framework/workspace-modes.md`
+Commitment: When workspace modes are enabled, keep workspace identity, artifact
+relationships, and task mode separate; let assistants propose evidence-bound
+modes but require user-owned acceptance; store shared root context and every
+actual mode in bounded project directories; select one accepted mode before
+task routing; ask on ambiguity; and never let a mode activate nested adapters
+or grant approval, write scope, permissions, authority, tools, or gate bypass.
+Applies to: installation mode suggestions, workspace identity, framework and
+application development, skeleton and dependency relationships, mode selection,
+mode lifecycle, multi-scope repositories.
+Enforcement: required when module enabled or a workspace mode is used.
 
 Rule ID: `ALATYR-DIAGRAM-001`
 Canonical source: `.ai/framework/diagram-guidance.md`

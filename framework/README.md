@@ -69,6 +69,12 @@ sync, logical integrity review, and final evidence.
   bounded recommendation, RED/GREEN/refactor evidence, and justified exceptions
 - optional declarative extension packages with immutable provenance, target
   bindings, permission review, installed-file ownership, and lifecycle locks
+- optional passive dependency knowledge exports with exact artifact binding,
+  target-owned semantic state, bounded synchronization, deviations, retention,
+  lazy explanation, and impact routing
+- optional user-owned workspace modes with explicit workspace identity,
+  artifact relationships, shared root context, per-mode support directories,
+  evidence-based suggestions, ambiguity handling, and task preflight
 - supported-assistant bridge pattern
 - bridge capability matrix plus compact per-surface capability projection
 - migration diff and effectiveness measurement patterns
@@ -150,6 +156,12 @@ Those belong to a project contour or repository adapter.
   enablement, recommendation, execution, exception, and evidence contract.
 - `.ai/framework/extensions.md`: declarative external extension package,
   inspection, normalization, lock, update, removal, and recommendation contract.
+- `.ai/framework/dependency-knowledge.md`: passive package knowledge export,
+  exact resolved-instance binding, target projection, synchronization, trust,
+  ownership, retention, graph, explanation, and impact contract.
+- `.ai/framework/workspace-modes.md`: optional user-owned workspace identity,
+  artifact relationship, shared root support, per-mode context, suggestion,
+  selection, ambiguity, no-grants, and evidence contract.
 - `.ai/framework/security-safety-guidance.md`: portable security and safety
   expectations for secrets, live services, dependencies, and destructive work.
 - `.ai/framework/prompt-injection.md`: policy for treating imported AI

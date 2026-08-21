@@ -33,6 +33,12 @@ Installation id: `{INSTALLATION_ID}`
 - Source-of-truth registry: `.ai/project/source-of-truth-registry.md`
 - Consistency map: `.ai/project/consistency-map.json`
 - Consistency-map module state: `{ENABLED_DEFERRED_DISABLED_OR_BLOCKED}`
+- Workspace-mode module state:
+  `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+- Workspace-mode catalog: `.ai/project/workspace-modes/catalog.json`
+- Workspace identity, active adapter, shared root support, proposed modes,
+  accepted modes, and user decision evidence:
+  `{WORKSPACE_MODE_INSTALLATION_RESULT}`
 - Maturity profile: `.ai/assistant/maturity-profile.md`
 - Bridge capability matrix: `.ai/assistant/bridge-capability-matrix.md`
 - Compact assistant capabilities: `.ai/assistant/assistant-capabilities.json`
@@ -104,6 +110,12 @@ router or required by ambiguity or drift.
 Use `Alatyr` as the single conversational entry, `Alatyr status` for read-only
 health, automatic routing for clear requests, and the risk-gated pre-change
 preview before applicable edits.
+
+When workspace modes are enabled, read only the compact catalog first. Use
+`Alatyr modes`, `Alatyr suggest modes`, or `Alatyr mode <id>` for read-only
+state, proposals, or task selection. A proposal is not accepted by this
+installation note or its installation approval; only a separate user decision
+may accept it.
 
 When team collaboration is enabled, use `Alatyr set actor`, `Alatyr who am I`,
 `Alatyr team status`, and the target team aliases through the catalog. Check

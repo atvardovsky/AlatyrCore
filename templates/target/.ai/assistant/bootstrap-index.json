@@ -4,15 +4,15 @@
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "6109b92ce048a0213649749425a76b20223a84211657f852cd28f283757c0a3d"
+      "sha256": "112bf6750c0b843e4151a6b80c5e5c91e9d098a00392de8b40697a01fb4dfb4f"
     },
     "project_map": {
       "path": ".ai/README.md",
-      "sha256": "ecc49e4f34f034c35ab7083f616b8c3095cdc922acd3023f68214f22c8725488"
+      "sha256": "201676238c6902d7f0e659b75fc11284d8cd17402620d3f7acafee3f3eb07f6d"
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",
-      "sha256": "7b42d9892454f79270fa6b2a666fe01a91072a31972d8fa51a0f5ad3b32ff314"
+      "sha256": "780f590de52fcd7583627978cc479143beed328ca6c8fe1cf443e903c8a960ad"
     }
   },
   "installation": {
@@ -173,6 +173,28 @@
       "required_module": "core-profile",
       "operations": [
         "extension-management"
+      ]
+    },
+    "dependency-knowledge-request": {
+      "signals": [
+        "dependency knowledge status discovery inspection planning synchronization explanation or impact request",
+        "package-manager lock change or selected dependency contract may affect the task"
+      ],
+      "descriptor": ".ai/assistant/context/intents/dependency-knowledge-request.json",
+      "required_module": "dependency-knowledge",
+      "operations": [
+        "dependency-knowledge"
+      ]
+    },
+    "workspace-mode-request": {
+      "signals": [
+        "workspace mode status suggestion selection definition lifecycle or review request",
+        "framework application skeleton dependency or workspace role is ambiguous"
+      ],
+      "descriptor": ".ai/assistant/context/intents/workspace-mode-request.json",
+      "required_module": "workspace-modes",
+      "operations": [
+        "workspace-mode"
       ]
     }
   },

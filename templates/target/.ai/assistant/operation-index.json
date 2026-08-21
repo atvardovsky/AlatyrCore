@@ -58,6 +58,18 @@
     "Alatyr disable extension": "extension-management",
     "Alatyr remove extension": "extension-management",
     "Alatyr review extension": "extension-management",
+    "Alatyr dependencies": "dependency-knowledge",
+    "Alatyr dependency status": "dependency-knowledge",
+    "Alatyr sync dependencies": "dependency-knowledge",
+    "Alatyr inspect dependency": "dependency-knowledge",
+    "Alatyr explain dependency": "dependency-knowledge",
+    "Alatyr dependency impact": "dependency-knowledge",
+    "Alatyr modes": "workspace-mode",
+    "Alatyr mode status": "workspace-mode",
+    "Alatyr suggest modes": "workspace-mode",
+    "Alatyr mode": "workspace-mode",
+    "Alatyr define mode": "workspace-mode",
+    "Alatyr accept mode": "workspace-mode",
     "review drift": "drift-review",
     "find stale Alatyr facts": "drift-review",
     "sync documentation": "documentation-sync",
@@ -219,6 +231,20 @@
     "extension-management": [
       "core-profile",
       ".ai/assistant/flows/extension-lifecycle.flow.md",
+      "read-only",
+      "adapter-only",
+      "full-with-approval"
+    ],
+    "dependency-knowledge": [
+      "dependency-knowledge",
+      ".ai/assistant/flows/dependency-knowledge-sync.flow.md",
+      "read-only",
+      "adapter-only",
+      "full-with-approval"
+    ],
+    "workspace-mode": [
+      "workspace-modes",
+      ".ai/assistant/flows/workspace-mode.flow.md",
       "read-only",
       "adapter-only",
       "full-with-approval"

@@ -74,6 +74,8 @@ policy wording.
 - Project vocabulary: `ALATYR-VOCABULARY-001`
 - Optional test-first development: `ALATYR-TDD-001`
 - External extension packages: `ALATYR-EXTENSION-001`
+- Passive dependency knowledge: `ALATYR-DEPENDENCY-001`
+- User-owned workspace modes: `ALATYR-MODE-001`
 - Discussion diagram presentation: `ALATYR-DIAGRAM-001`
 - Optional team collaboration: `ALATYR-TEAM-001`
 - Optional subagent delegation: `ALATYR-DELEGATION-001`
@@ -87,6 +89,13 @@ policy wording.
 - Do not copy another project's commands, test folders, fixtures, security
   policy, diagram tooling, lifecycle notes, or assistant bridge wording into
   framework core.
+- Keep dependency knowledge passive and target-selected: one active project
+  adapter, exact artifact binding, no recursive adapter activation, and no
+  execution of dependency-provided instructions during discovery or review.
+- Keep workspace identity, artifact relationship, and task mode separate.
+  Suggestions require user-owned acceptance, actual modes require their own
+  directories, and no mode may activate nested adapters or grant approval,
+  write scope, permissions, authority, tools, or gate bypass.
 - Templates under `templates/target` must contain placeholders, not accepted
   facts for a real project.
 - Bridge templates must stay short and point to canonical target files.
@@ -137,6 +146,8 @@ python3 tools/check_code_documentation.py
 python3 tools/check_project_vocabulary.py
 python3 tools/check_test_first_development.py
 python3 tools/check_extensions.py
+python3 tools/check_dependency_knowledge.py
+python3 tools/check_workspace_modes.py
 python3 tools/check_ai_infrastructure_inventory.py
 python3 tools/check_ai_infrastructure_recommendations.py
 python3 tools/check_ai_infrastructure_router.py

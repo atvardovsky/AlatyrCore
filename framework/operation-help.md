@@ -56,6 +56,9 @@ Operation help exists to:
 - route extension list, inspection, planning, installation, update,
   disablement, removal, and review through one lifecycle operation while
   keeping source access, approval, and activation separate
+- route user-owned workspace-mode listing, evidence-bound suggestion,
+  inspection, selection, definition, acceptance, and lifecycle changes without
+  confusing a mode with workspace identity, artifact ownership, or authority
 
 ## Canonical Operation Catalog
 
@@ -228,6 +231,8 @@ Typical operation categories include:
 - project term lookup, acronym and alias resolution, vocabulary proposal and
   review, and terminology checks when the optional module is enabled
 - adapter maturity review
+- optional workspace-mode status, suggestion, inspection, per-task selection,
+  definition, acceptance, update, disablement, deprecation, and removal
 
 The target adapter may narrow, rename, or add operations when it records the
 local meaning and matching flow.
@@ -296,6 +301,29 @@ ownership and stops for local modifications or active dependents.
 infrastructure recommendation operation. It does not search remote registries,
 fetch source, or approve installation unless target source-access policy and a
 separate lifecycle request permit those actions.
+
+For an enabled dependency-knowledge module, aliases may include `Alatyr
+dependencies`, `Alatyr dependency status`, `Alatyr sync dependencies`,
+`Alatyr inspect dependency <package>`, `Alatyr explain dependency <package>`,
+and `Alatyr dependency impact <package-or-change>`. Route them to one
+dependency-knowledge operation and infer status, discover, inspect, plan, sync,
+explain, or impact mode. These requests do not run package managers, update
+dependencies, activate nested adapters, or trust raw package text. Projection
+sync stays adapter-only; protected or project behavior changes use their normal
+operation and approval route.
+
+For an enabled workspace-modes module, aliases may include `Alatyr modes`,
+`Alatyr mode status`, `Alatyr suggest modes`, `Alatyr mode <id>`, `Alatyr
+define mode`, and `Alatyr accept mode <id>`. Route them to one `workspace-mode`
+operation and infer list, status, suggest, inspect, select, define, accept,
+update, disable, deprecate, or remove mode. These are chat/request shortcuts,
+not shell commands. Listing, status, suggestion, inspection, and selection
+preview default to read-only. Suggestions remain proposed until the user
+accepts them. Selection must show the workspace, active adapter, relationships,
+ownership, selected context, and ordinary task profile before state-changing
+work. A mode may narrow actions but cannot grant approval, write scope,
+permissions, tools, decision authority, nested-adapter activation, or gate
+bypass.
 
 For AI infrastructure, aliases may include `alatyr-ai-inventory`, which routes
 to an inventory flow, or `alatyr-adaptation <source>` and

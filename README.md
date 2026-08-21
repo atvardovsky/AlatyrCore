@@ -200,8 +200,15 @@ facts correct by itself.
 Optional modules can add architecture knowledge, project vocabulary, generated
 code-reference documentation, test-first development, team coordination,
 large-task orchestration, capability-gated subagent delegation, diagrams, and
-adapted AI infrastructure. They are enabled only when the target project needs
-and can maintain them.
+adapted AI infrastructure. A passive dependency-knowledge module can also bind
+framework or library documentation to exact installed package artifacts while
+keeping one active project adapter and project-owned deviations. Optional
+modules are enabled only when the target project needs and can maintain them.
+Workspace modes can additionally separate application, framework, library,
+skeleton, dependency, or workspace perspectives. The assistant proposes modes
+from repository evidence after installation, while users decide which modes
+are accepted. Each actual mode keeps bounded support in its own project-owned
+directory; optional root support holds only facts shared across modes.
 
 ### Core Differentiators
 
@@ -288,7 +295,7 @@ tasks from loading the complete framework or project corpus.
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.13`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.14`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural
@@ -332,6 +339,8 @@ Technical entry points:
 - [Repository layout](docs/repository-layout.md)
 - [Source tooling reference](tools/README.md)
 - [Assistant compatibility](docs/assistant-compatibility.md)
+- [Passive dependency knowledge](framework/dependency-knowledge.md)
+- [User-owned workspace modes](framework/workspace-modes.md)
 
 Human guides explain the product; they do not own framework policy. Canonical
 rules remain in the referenced framework documents and
@@ -348,7 +357,10 @@ selected or changed canonical framework owners.
 Apply canonical rule references rather than copying policy text into bridge
 files: `ALATYR-ADAPTER-001`, `ALATYR-APPROVAL-001`, `ALATYR-SAFETY-001`,
 `ALATYR-SAFETY-002`, `ALATYR-INTEGRITY-001`, `ALATYR-EVIDENCE-001`, and
-`ALATYR-OPERATION-001`.
+`ALATYR-OPERATION-001`. Load `ALATYR-DEPENDENCY-001` only when the optional
+dependency-knowledge module or a dependency operation is selected.
+Load `ALATYR-MODE-001` only when workspace modes are enabled, mode selection is
+ambiguous, or a mode lifecycle operation is requested.
 
 ## Contributing
 

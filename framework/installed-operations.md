@@ -31,6 +31,9 @@ An installed adapter should support these operation categories:
   RED/GREEN/refactor execution
 - optional extension listing, inspection, planning, installation, update,
   disablement, ownership-aware removal, and review
+- optional user-owned workspace-mode listing, evidence-bound suggestion,
+  inspection, per-task selection, definition, acceptance, update, disablement,
+  deprecation, removal, and review
 - blueprint-driven product change
 - large-task orchestration for cross-boundary, multi-workstream, or resumable
   work
@@ -85,6 +88,8 @@ A post-install request should state:
   preferred mode, and exception context when test-first work applies
 - extension lifecycle mode, source or extension ID, immutable revision when
   known, allowed actions, and source-access boundary when extension work applies
+- workspace-mode action, explicit mode ID when known, workspace scope, artifact
+  relationship, and user decision evidence when workspace modes apply
 - expected final evidence
 - output contract when the target adapter requires a durable installation,
   framework-update, or adapter-recheck evidence shape
@@ -175,6 +180,10 @@ For installed operations:
    validation context. Load the complete gate checklist and human rationale
    only for ambiguity or drift and record budget exceptions in the context
    receipt.
+   When workspace modes are enabled, read the compact mode catalog before this
+   selection, resolve at most one accepted mode, and load only that descriptor
+   plus applicable shared root context. Ask the user when selection is
+   ambiguous.
 4. Resolve exact IDs and aliases through the checked compact operation index.
    Use bounded profile candidates and intent overlays for routine routing.
    Load the full catalog only for the bare `Alatyr` entry, ambiguity, or
@@ -233,21 +242,43 @@ For installed operations:
    removing assistant infrastructure.
 20. Use adapter maturity review when the request is broad, post-install, or
     post-upgrade.
-21. Use diagram discussion when the user asks to see or iteratively revise a
+21. Use workspace-mode flow for mode listing, suggestion, inspection,
+    per-task selection, definition, acceptance, update, disablement,
+    deprecation, or removal. Keep suggestions proposed until the user accepts
+    them, show a compact mode preflight before changes, and reject any mode
+    that grants permission or activates a nested adapter.
+22. Use diagram discussion when the user asks to see or iteratively revise a
     visual model. Select presentation mode from the target diagram policy and
     current compact assistant-capability entry, keep drafts non-canonical,
     preserve stable ID/revision lineage, classify sensitive content and
     external rendering, and always retain a bounded portable ASCII view.
-22. Record approval evidence when protected-change scope requires it. When
+23. Record approval evidence when protected-change scope requires it. When
     scoped approval is used, enforce the complete changed path set against
     explicitly selected machine-readable records bound to the approved diff
     base.
-23. Use the target adapter output contract when the operation follows
+24. Use the target adapter output contract when the operation follows
     installation, framework update, or adapter recheck.
-24. Run target validation that exists, or record unresolved checks.
-25. Report changed facts, re-derived invariants, review-item reconciliation,
+25. Run target validation that exists, or record unresolved checks.
+26. Report changed facts, re-derived invariants, review-item reconciliation,
    files inspected, files changed, approval-scope enforcement, validation,
    skipped checks, and residual risk.
+
+## Workspace Modes
+
+Workspace modes are an optional project-contour capability for repositories
+where application, framework, library, skeleton, dependency, or workspace
+roles require different support context. Installation and framework-update
+review may suggest zero or more evidence-bound modes, but installation approval
+does not accept those suggestions. The user owns acceptance and lifecycle
+decisions.
+
+Each actual mode has its own target directory. Optional root support contains
+only context shared across applicable modes. For each task, keep workspace
+identity, artifact relationship, and selected mode separate; load the compact
+catalog first and only one selected descriptor. If selection is ambiguous,
+remain read-only and ask one bounded question. A mode selects and narrows
+context. It never grants write scope, approval, permissions, tools, decision
+authority, nested-adapter activation, or validation bypass.
 
 ## Blueprint Creation
 
@@ -412,6 +443,9 @@ After installation or framework upgrade, an assistant should recheck:
 - AI infrastructure inventory, recommendation, source access, provenance, and
   compatibility status
 - prompt-injection policy and approval-record template
+- dependency knowledge policy, catalog, exact package-instance lock,
+  deviations, retention state, passive export routing, and stale or modified
+  evidence when the optional module is enabled
 - security, live-service, destructive-operation, and dependency boundaries
 - diagram and generated-artifact policy
 - diagram discussion flow, presentation template, per-assistant presentation

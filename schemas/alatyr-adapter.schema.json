@@ -98,6 +98,38 @@
     },
     "maturity": {"type": "object", "required": ["profile"]},
     "approvals": {"type": "object", "required": ["directory", "template", "machine_template"]},
+    "dependency_knowledge": {
+      "type": ["object", "null"],
+      "properties": {
+        "index": {"type": "string", "minLength": 1},
+        "policy": {"type": "string", "minLength": 1},
+        "catalog": {"type": "string", "minLength": 1},
+        "lock": {"type": "string", "minLength": 1},
+        "deviations": {"type": "string", "minLength": 1},
+        "snapshots": {"type": "string", "minLength": 1},
+        "intent": {"type": "string", "minLength": 1},
+        "flow": {"type": "string", "minLength": 1},
+        "gate": {"type": "string", "minLength": 1},
+        "report": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "workspace_modes": {
+      "type": ["object", "null"],
+      "properties": {
+        "index": {"type": "string", "minLength": 1},
+        "catalog": {"type": "string", "minLength": 1},
+        "root_context": {"type": "string", "minLength": 1},
+        "modes": {"type": "string", "minLength": 1},
+        "mode_template": {"type": "string", "minLength": 1},
+        "intent": {"type": "string", "minLength": 1},
+        "flow": {"type": "string", "minLength": 1},
+        "gate": {"type": "string", "minLength": 1},
+        "suggestion": {"type": "string", "minLength": 1},
+        "preflight": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
     "known_gaps": {"$ref": "#/definitions/stringArray"},
     "local_deviations": {"$ref": "#/definitions/stringArray"}
   },

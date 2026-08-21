@@ -62,6 +62,14 @@ Replace placeholders with target facts before accepting installation.
 - extension catalog, lock, normalized manifests/items, target bindings,
   lifecycle routing, gates, adaptation evidence, and installed-file ownership;
   external source remains untrusted and project facts remain project-owned
+- dependency-knowledge intent, non-executing synchronization, bounded lookup,
+  explanation, impact routing, and structural validation when enabled;
+  package graph facts, trust decisions, applicability, deviations, and retained
+  snapshots remain in the project contour
+- workspace-mode intent, compact selection, evidence-bound suggestion,
+  per-task preflight, lifecycle flow, and gate when enabled; workspace
+  identity, accepted modes, relationships, ownership, and shared or per-mode
+  support remain in the project contour
 - final evidence requirements
 - target adapter maturity and lifecycle notes
 - required core profile, enabled optional modules, deferred modules, and

@@ -340,6 +340,18 @@ MANIFEST_PATH_SCALARS: set[PathKey] = {
     ("operations", "extension_management"),
     ("operations", "extension_review"),
     ("operations", "extension_lifecycle_record"),
+    ("workspace_modes", "index"),
+    ("workspace_modes", "catalog"),
+    ("workspace_modes", "root_context"),
+    ("workspace_modes", "modes"),
+    ("workspace_modes", "mode_template"),
+    ("workspace_modes", "intent"),
+    ("workspace_modes", "flow"),
+    ("workspace_modes", "gate"),
+    ("workspace_modes", "suggestion"),
+    ("workspace_modes", "preflight"),
+    ("operations", "workspace_mode"),
+    ("operations", "workspace_mode_preflight"),
     ("policies", "source_access"),
     ("policies", "prompt_injection"),
     ("team_collaboration", "operating_model"),
@@ -885,10 +897,10 @@ class Validator:
             numeric_values[key] = value
 
         router_schema = numeric_values.get(("context_routing", "router_schema_version"))
-        if router_schema not in {2, 3, 4, 5}:
+        if router_schema not in {2, 3, 4, 5, 6}:
             self.error(
                 "MANIFEST_CONTEXT_SCHEMA",
-                "context_routing.router_schema_version must be 2, 3, 4, or 5",
+                "context_routing.router_schema_version must be 2, 3, 4, 5, or 6",
                 ".ai/alatyr.yaml",
             )
         total = numeric_values.get(("context_routing", "profile_default_max_total_words"))
@@ -1083,13 +1095,13 @@ class Validator:
         if schema_version == 1:
             self.warn(
                 "ROUTER_SCHEMA_LEGACY",
-                "context router schema 1 should migrate to generated-bootstrap routing schema 5",
+                "context router schema 1 should migrate to generated-bootstrap routing schema 6",
                 ".ai/assistant/context-router.json",
             )
-        elif schema_version not in {2, 3, 4, 5}:
+        elif schema_version not in {2, 3, 4, 5, 6}:
             self.error(
                 "ROUTER_SCHEMA",
-                "context router schema_version should be 2, 3, 4, or 5",
+                "context router schema_version should be 2, 3, 4, 5, or 6",
                 ".ai/assistant/context-router.json",
             )
         manifest_path = self.target_path(".ai/alatyr.yaml")
@@ -1112,7 +1124,7 @@ class Validator:
                 ".ai/assistant/context-router.json",
             )
 
-        if schema_version in {2, 3, 4, 5}:
+        if schema_version in {2, 3, 4, 5, 6}:
             preloaded = expect_string_list(
                 router.get("preloaded_context"),
                 self,
@@ -1140,7 +1152,7 @@ class Validator:
                     ".ai/assistant/context-router.json",
                 )
             required_bootstrap = (
-                REQUIRED_BOOTSTRAP if schema_version == 5 else LEGACY_REQUIRED_BOOTSTRAP
+                REQUIRED_BOOTSTRAP if schema_version in {5, 6} else LEGACY_REQUIRED_BOOTSTRAP
             )
             for required in required_bootstrap:
                 if required not in bootstrap:
@@ -1149,7 +1161,7 @@ class Validator:
                         f"bootstrap_context missing {required}",
                         ".ai/assistant/context-router.json",
                     )
-            deferred = sorted(set(bootstrap) & DEFERRED_BOOTSTRAP) if schema_version == 5 else []
+            deferred = sorted(set(bootstrap) & DEFERRED_BOOTSTRAP) if schema_version in {5, 6} else []
             if deferred:
                 self.warn(
                     "ROUTER_BOOTSTRAP_BROAD",
@@ -1162,21 +1174,21 @@ class Validator:
             if not isinstance(budgets, dict):
                 self.error(
                     "ROUTER_BUDGETS_MISSING",
-                    "schema 2, 3, 4, or 5 router must define context_budgets",
+                    "schema 2, 3, 4, 5, or 6 router must define context_budgets",
                     ".ai/assistant/context-router.json",
                 )
                 budgets = {}
-            elif schema_version in {4, 5}:
+            elif schema_version in {4, 5, 6}:
                 self.check_router_budget_shape(budgets)
             if not isinstance(router.get("context_receipt"), dict):
                 self.error(
                     "ROUTER_RECEIPT_MISSING",
-                    "schema 2, 3, 4, or 5 router must define context_receipt",
+                    "schema 2, 3, 4, 5, or 6 router must define context_receipt",
                     ".ai/assistant/context-router.json",
                 )
             migration_entry = router.get("migration_routing")
             migration = migration_entry
-            if schema_version in {3, 4, 5} and isinstance(migration_entry, dict):
+            if schema_version in {3, 4, 5, 6} and isinstance(migration_entry, dict):
                 migration = self.load_context_descriptor(
                     migration_entry,
                     "target-migration-routing",
@@ -1185,7 +1197,7 @@ class Validator:
             if not isinstance(migration, dict):
                 self.error(
                     "ROUTER_MIGRATION_MISSING",
-                    "schema 2, 3, 4, or 5 router must define migration-first routing",
+                    "schema 2, 3, 4, 5, or 6 router must define migration-first routing",
                     ".ai/assistant/context-router.json",
                 )
             else:
@@ -1314,7 +1326,7 @@ class Validator:
                             ".ai/assistant/context-router.json",
                         )
 
-        if schema_version in {4, 5} and isinstance(budgets, dict):
+        if schema_version in {4, 5, 6} and isinstance(budgets, dict):
             self.check_installed_context_costs(router, profiles, budgets)
 
         upgrade = profiles.get("framework-upgrade")
@@ -1387,14 +1399,14 @@ class Validator:
         return data
 
     def router_profiles(self, router: dict[str, Any]) -> dict[str, Any]:
-        if router.get("schema_version") not in {3, 4, 5}:
+        if router.get("schema_version") not in {3, 4, 5, 6}:
             profiles = router.get("profiles")
             return profiles if isinstance(profiles, dict) else {}
         index = router.get("profile_index")
         if not isinstance(index, dict):
             self.error(
                 "ROUTER_PROFILE_INDEX",
-                "schema 3, 4, or 5 router must define profile_index",
+                "schema 3, 4, 5, or 6 router must define profile_index",
                 ".ai/assistant/context-router.json",
             )
             return {}
@@ -4348,6 +4360,794 @@ class Validator:
         self.info(
             "EXTENSION_EVIDENCE_LIMIT",
             "extension structural checks do not prove source trust, license interpretation, semantic quality, target suitability, or safe runtime behavior",
+        )
+
+    def check_dependency_knowledge(self, manifest: ManifestData | None) -> None:
+        required_paths = [
+            ".ai/framework/dependency-knowledge.md",
+            ".ai/project/dependencies/README.md",
+            ".ai/project/dependencies/policy.json",
+            ".ai/project/dependencies/catalog.json",
+            ".ai/project/dependencies/knowledge-lock.json",
+            ".ai/project/dependencies/deviations.json",
+            ".ai/project/dependencies/snapshots/README.md",
+            ".ai/assistant/context/intents/dependency-knowledge-request.json",
+            ".ai/assistant/flows/dependency-knowledge-sync.flow.md",
+            ".ai/assistant/gates/dependency-knowledge.md",
+            ".ai/assistant/templates/dependency-knowledge-sync-report.md",
+        ]
+        missing = False
+        for relpath in required_paths:
+            if not self.target_path(relpath).is_file():
+                missing = True
+                self.error(
+                    "DEPENDENCY_KNOWLEDGE_REQUIRED_FILE_MISSING",
+                    "enabled dependency-knowledge module is missing a contract",
+                    relpath,
+                )
+        if missing:
+            return
+
+        expected_manifest = {
+            ("dependency_knowledge", "index"): required_paths[1],
+            ("dependency_knowledge", "policy"): required_paths[2],
+            ("dependency_knowledge", "catalog"): required_paths[3],
+            ("dependency_knowledge", "lock"): required_paths[4],
+            ("dependency_knowledge", "deviations"): required_paths[5],
+            ("dependency_knowledge", "snapshots"): ".ai/project/dependencies/snapshots",
+            ("dependency_knowledge", "intent"): required_paths[7],
+            ("dependency_knowledge", "flow"): required_paths[8],
+            ("dependency_knowledge", "gate"): required_paths[9],
+            ("dependency_knowledge", "report"): required_paths[10],
+            ("operations", "dependency_knowledge"): required_paths[8],
+            ("operations", "dependency_knowledge_report"): required_paths[10],
+        }
+        if manifest is not None:
+            for key, expected in expected_manifest.items():
+                scalar = manifest.scalars.get(key)
+                if scalar is None or scalar.value != expected:
+                    self.error(
+                        "DEPENDENCY_KNOWLEDGE_MANIFEST_PATH",
+                        f"{dotted(key)} must be {expected} when dependency knowledge is enabled",
+                        ".ai/alatyr.yaml",
+                    )
+
+        policy_relpath = required_paths[2]
+        catalog_relpath = required_paths[3]
+        lock_relpath = required_paths[4]
+        deviation_relpath = required_paths[5]
+        policy = self.load_json_object(self.target_path(policy_relpath), "DEPENDENCY_KNOWLEDGE_POLICY")
+        catalog = self.load_json_object(self.target_path(catalog_relpath), "DEPENDENCY_KNOWLEDGE_CATALOG")
+        lock = self.load_json_object(self.target_path(lock_relpath), "DEPENDENCY_KNOWLEDGE_LOCK")
+        deviations = self.load_json_object(self.target_path(deviation_relpath), "DEPENDENCY_KNOWLEDGE_DEVIATIONS")
+        if any(value is None for value in [policy, catalog, lock, deviations]):
+            return
+
+        def resolved(value: Any) -> bool:
+            return (
+                isinstance(value, str)
+                and bool(value.strip())
+                and not is_placeholder(value)
+                and not is_unresolved_value(value)
+            )
+
+        if policy.get("schema_version") != 1 or policy.get("policy_kind") != "target-dependency-knowledge-policy":
+            self.error("DEPENDENCY_KNOWLEDGE_POLICY_SCHEMA", "policy schema or kind is invalid", policy_relpath)
+        if policy.get("state") not in {"enabled", "required"}:
+            self.error("DEPENDENCY_KNOWLEDGE_POLICY_STATE", "enabled module requires enabled or required policy state", policy_relpath)
+        if not resolved(policy.get("owner")):
+            self.error("DEPENDENCY_KNOWLEDGE_POLICY_OWNER", "enabled policy requires a resolved owner", policy_relpath)
+        sources = policy.get("package_sources")
+        if not isinstance(sources, list) or not sources:
+            self.error("DEPENDENCY_KNOWLEDGE_SOURCES", "enabled policy requires package_sources", policy_relpath)
+        else:
+            for index, source in enumerate(sources):
+                if not isinstance(source, dict):
+                    self.error("DEPENDENCY_KNOWLEDGE_SOURCE", f"package_sources[{index}] must be an object", policy_relpath)
+                    continue
+                for field in ["ecosystem", "manifest", "lockfile", "metadata_locator"]:
+                    if not resolved(source.get(field)):
+                        self.error("DEPENDENCY_KNOWLEDGE_SOURCE", f"package_sources[{index}].{field} must be resolved", policy_relpath)
+                for field in ["manifest", "lockfile"]:
+                    value = source.get(field)
+                    if resolved(value) and not is_target_relative_path(value):
+                        self.error("DEPENDENCY_KNOWLEDGE_SOURCE_PATH", f"package_sources[{index}].{field} must be target-relative", policy_relpath)
+                    elif resolved(value) and not self.target_path(value).is_file():
+                        self.error("DEPENDENCY_KNOWLEDGE_SOURCE_MISSING", f"package_sources[{index}].{field} does not exist", policy_relpath)
+        discovery = policy.get("discovery")
+        expected_discovery = {
+            "native_metadata_only": True,
+            "recursive_scan": False,
+            "execute_package_manager": False,
+            "execute_package_hooks": False,
+        }
+        if not isinstance(discovery, dict) or any(discovery.get(key) is not value for key, value in expected_discovery.items()):
+            self.error("DEPENDENCY_KNOWLEDGE_DISCOVERY", "discovery must be native-metadata-only and non-executing", policy_relpath)
+        trust = policy.get("trust")
+        if not isinstance(trust, dict) or trust.get("raw_content_is_instruction") is not False or trust.get("require_artifact_binding") is not True or trust.get("require_digest") is not True:
+            self.error("DEPENDENCY_KNOWLEDGE_TRUST", "trust policy must keep raw content as data and require artifact binding and digest", policy_relpath)
+        limits = policy.get("limits")
+        if not isinstance(limits, dict):
+            self.error("DEPENDENCY_KNOWLEDGE_LIMITS", "limits must be an object", policy_relpath)
+        else:
+            for field in ["max_manifest_bytes", "max_export_bytes", "max_exports_per_package", "max_graph_depth", "max_graph_instances"]:
+                value = limits.get(field)
+                if not isinstance(value, int) or isinstance(value, bool) or value < 1:
+                    self.error("DEPENDENCY_KNOWLEDGE_LIMIT", f"limits.{field} must be a positive integer", policy_relpath)
+        routing = policy.get("routing")
+        if not isinstance(routing, dict) or routing.get("routine_bootstrap") is not False or routing.get("load_selected_facts_only") is not True:
+            self.error("DEPENDENCY_KNOWLEDGE_ROUTING", "routing must stay outside bootstrap and load selected facts only", policy_relpath)
+
+        if catalog.get("schema_version") != 1 or catalog.get("catalog_kind") != "target-dependency-knowledge-catalog":
+            self.error("DEPENDENCY_KNOWLEDGE_CATALOG_SCHEMA", "catalog schema or kind is invalid", catalog_relpath)
+        if lock.get("schema_version") != 1 or lock.get("lock_kind") != "target-dependency-knowledge-lock" or lock.get("knowledge_api") != 1:
+            self.error("DEPENDENCY_KNOWLEDGE_LOCK_SCHEMA", "knowledge lock schema kind or API is invalid", lock_relpath)
+        if deviations.get("schema_version") != 1 or deviations.get("deviation_kind") != "target-dependency-knowledge-deviations":
+            self.error("DEPENDENCY_KNOWLEDGE_DEVIATION_SCHEMA", "deviation schema or kind is invalid", deviation_relpath)
+        for value, source, field in [
+            (catalog.get("owner"), catalog_relpath, "owner"),
+            (deviations.get("owner"), deviation_relpath, "owner"),
+            (catalog.get("package_lock_fingerprint"), catalog_relpath, "package_lock_fingerprint"),
+            (lock.get("package_lock_fingerprint"), lock_relpath, "package_lock_fingerprint"),
+        ]:
+            if not resolved(value):
+                self.error("DEPENDENCY_KNOWLEDGE_METADATA", f"{field} must be resolved", source)
+        if catalog.get("package_lock_fingerprint") != lock.get("package_lock_fingerprint"):
+            self.error("DEPENDENCY_KNOWLEDGE_FINGERPRINT_DRIFT", "catalog and knowledge lock fingerprints differ", catalog_relpath)
+        packages = catalog.get("packages")
+        instances = lock.get("instances")
+        deviation_entries = deviations.get("deviations")
+        catalog_instance_ids: set[str] = set()
+        lock_instance_ids: set[str] = set()
+        catalog_exports: dict[str, set[str]] = {}
+        lock_exports: dict[str, set[str]] = {}
+        digest_pattern = re.compile(r"^[0-9a-f]{64}$")
+
+        def dependency_digest(value: Any) -> bool:
+            return isinstance(value, str) and digest_pattern.fullmatch(value) is not None
+
+        def dependency_list(value: Any) -> bool:
+            return (
+                isinstance(value, list)
+                and bool(value)
+                and all(resolved(item) for item in value)
+            )
+
+        def package_relative(value: Any) -> bool:
+            if not resolved(value):
+                return False
+            if "\\" in value:
+                return False
+            path = Path(value)
+            return not path.is_absolute() and ".." not in path.parts
+
+        if not isinstance(packages, list):
+            self.error("DEPENDENCY_KNOWLEDGE_PACKAGES", "catalog packages must be a list", catalog_relpath)
+        else:
+            for index, package in enumerate(packages):
+                location = f"{catalog_relpath}:packages[{index}]"
+                if not isinstance(package, dict):
+                    self.error("DEPENDENCY_KNOWLEDGE_PACKAGE_RECORD", "catalog package must be an object", location)
+                    continue
+                for field in ["instance_id", "ecosystem", "name", "version"]:
+                    if not resolved(package.get(field)):
+                        self.error("DEPENDENCY_KNOWLEDGE_PACKAGE_RECORD", f"catalog package {field} must be resolved", location)
+                instance_id = package.get("instance_id")
+                if resolved(instance_id):
+                    if instance_id in catalog_instance_ids:
+                        self.error("DEPENDENCY_KNOWLEDGE_INSTANCE_DUPLICATE", f"duplicate catalog instance_id {instance_id}", location)
+                    catalog_instance_ids.add(instance_id)
+                if package.get("export_status") not in {"available", "unsupported", "blocked", "missing"}:
+                    self.error("DEPENDENCY_KNOWLEDGE_EXPORT_STATUS", "export_status must be available, unsupported, blocked, or missing", location)
+                if package.get("trust") not in {"unreviewed", "reviewed", "blocked"}:
+                    self.error("DEPENDENCY_KNOWLEDGE_TRUST_STATE", "trust must be unreviewed, reviewed, or blocked", location)
+                if package.get("freshness") not in {"current", "stale", "missing", "modified"}:
+                    self.error("DEPENDENCY_KNOWLEDGE_FRESHNESS", "freshness must be current, stale, missing, or modified", location)
+                export_records = package.get("exports")
+                package_export_ids: set[str] = set()
+                if not isinstance(export_records, list):
+                    self.error("DEPENDENCY_KNOWLEDGE_EXPORT_RECORD", "catalog package exports must be a list", location)
+                else:
+                    for export_index, export in enumerate(export_records):
+                        export_location = f"{location}.exports[{export_index}]"
+                        if not isinstance(export, dict):
+                            self.error("DEPENDENCY_KNOWLEDGE_EXPORT_RECORD", "catalog export must be an object", export_location)
+                            continue
+                        for field in ["id", "type", "summary"]:
+                            if not resolved(export.get(field)):
+                                self.error("DEPENDENCY_KNOWLEDGE_EXPORT_RECORD", f"catalog export {field} must be resolved", export_location)
+                        export_id = export.get("id")
+                        if resolved(export_id):
+                            if export_id in package_export_ids:
+                                self.error("DEPENDENCY_KNOWLEDGE_EXPORT_DUPLICATE", f"duplicate export ID {export_id} for {instance_id}", export_location)
+                            package_export_ids.add(export_id)
+                        if not dependency_digest(export.get("content_digest")):
+                            self.error("DEPENDENCY_KNOWLEDGE_EXPORT_DIGEST", "catalog export content_digest must be lowercase SHA-256", export_location)
+                        if export.get("authority") not in {"upstream-canonical", "upstream-derived", "observed", "third-party", "target-deviation"}:
+                            self.error("DEPENDENCY_KNOWLEDGE_AUTHORITY", "catalog export authority is invalid", export_location)
+                        if export.get("stability") not in {"stable", "experimental", "deprecated", "internal", "unknown"}:
+                            self.error("DEPENDENCY_KNOWLEDGE_STABILITY", "catalog export stability is invalid", export_location)
+                        applicability = export.get("applicability")
+                        if not isinstance(applicability, dict) or applicability.get("state") not in {"active", "inactive", "conditional", "contradicted"} or not isinstance(applicability.get("conditions"), list) or not all(isinstance(item, str) for item in applicability.get("conditions", [])):
+                            self.error("DEPENDENCY_KNOWLEDGE_APPLICABILITY", "catalog export applicability requires a valid independent state and string conditions", export_location)
+                        if not dependency_list(export.get("evidence")):
+                            self.error("DEPENDENCY_KNOWLEDGE_EXPORT_EVIDENCE", "catalog export evidence must be a non-empty resolved string list", export_location)
+                if resolved(instance_id):
+                    catalog_exports[instance_id] = package_export_ids
+        if not isinstance(instances, list):
+            self.error("DEPENDENCY_KNOWLEDGE_INSTANCES", "knowledge lock instances must be a list", lock_relpath)
+        else:
+            for index, instance in enumerate(instances):
+                location = f"{lock_relpath}:instances[{index}]"
+                if not isinstance(instance, dict):
+                    self.error("DEPENDENCY_KNOWLEDGE_INSTANCE_RECORD", "knowledge-lock instance must be an object", location)
+                    continue
+                for field in ["instance_id", "ecosystem", "name", "version", "source", "integrity", "revision"]:
+                    if not resolved(instance.get(field)):
+                        self.error("DEPENDENCY_KNOWLEDGE_INSTANCE_RECORD", f"knowledge-lock instance {field} must be resolved", location)
+                instance_id = instance.get("instance_id")
+                if resolved(instance_id):
+                    if instance_id in lock_instance_ids:
+                        self.error("DEPENDENCY_KNOWLEDGE_INSTANCE_DUPLICATE", f"duplicate knowledge-lock instance_id {instance_id}", location)
+                    lock_instance_ids.add(instance_id)
+                modifications = instance.get("modifications")
+                valid_modifications = {"replacement", "fork", "alias", "patch", "path", "workspace", "modified-tree"}
+                if not isinstance(modifications, list) or any(item not in valid_modifications for item in modifications):
+                    self.error("DEPENDENCY_KNOWLEDGE_MODIFICATIONS", "modifications must contain only supported artifact modification classes", location)
+                manifest_record = instance.get("manifest")
+                if manifest_record is not None and (
+                    not isinstance(manifest_record, dict)
+                    or not package_relative(manifest_record.get("path"))
+                    or not dependency_digest(manifest_record.get("content_digest"))
+                ):
+                    self.error("DEPENDENCY_KNOWLEDGE_MANIFEST_RECORD", "manifest requires a contained package-relative path and lowercase SHA-256 digest", location)
+                export_records = instance.get("exports")
+                instance_export_ids: set[str] = set()
+                if not isinstance(export_records, list):
+                    self.error("DEPENDENCY_KNOWLEDGE_LOCK_EXPORT", "knowledge-lock exports must be a list", location)
+                else:
+                    for export_index, export in enumerate(export_records):
+                        export_location = f"{location}.exports[{export_index}]"
+                        if not isinstance(export, dict) or not resolved(export.get("id")) or not package_relative(export.get("path")) or not dependency_digest(export.get("content_digest")):
+                            self.error("DEPENDENCY_KNOWLEDGE_LOCK_EXPORT", "knowledge-lock export requires ID, contained path, and lowercase SHA-256 digest", export_location)
+                            continue
+                        export_id = export["id"]
+                        if export_id in instance_export_ids:
+                            self.error("DEPENDENCY_KNOWLEDGE_EXPORT_DUPLICATE", f"duplicate knowledge-lock export ID {export_id} for {instance_id}", export_location)
+                        instance_export_ids.add(export_id)
+                if manifest_record is None and instance_export_ids:
+                    self.error("DEPENDENCY_KNOWLEDGE_MANIFEST_RECORD", "an instance with exports must record its export manifest path and digest", location)
+                if resolved(instance_id):
+                    lock_exports[instance_id] = instance_export_ids
+                graph = instance.get("graph")
+                if not isinstance(graph, dict) or not resolved(graph.get("dependency_set")) or not isinstance(graph.get("direct"), bool) or not isinstance(graph.get("public_instance_ids"), list) or not all(resolved(item) for item in graph.get("public_instance_ids", [])):
+                    self.error("DEPENDENCY_KNOWLEDGE_GRAPH_RECORD", "graph requires dependency_set, boolean direct, and resolved public_instance_ids", location)
+        if not isinstance(deviation_entries, list):
+            self.error("DEPENDENCY_KNOWLEDGE_DEVIATIONS", "deviations must be a list", deviation_relpath)
+        else:
+            deviation_ids: set[str] = set()
+            for index, deviation in enumerate(deviation_entries):
+                location = f"{deviation_relpath}:deviations[{index}]"
+                if not isinstance(deviation, dict):
+                    self.error("DEPENDENCY_KNOWLEDGE_DEVIATION_RECORD", "deviation must be an object", location)
+                    continue
+                for field in ["id", "instance_id", "owner", "source", "effect", "reviewed_at"]:
+                    if not resolved(deviation.get(field)):
+                        self.error("DEPENDENCY_KNOWLEDGE_DEVIATION_RECORD", f"deviation {field} must be resolved", location)
+                if resolved(deviation.get("source")) and not is_target_relative_path(deviation["source"]):
+                    self.error("DEPENDENCY_KNOWLEDGE_DEVIATION_SOURCE", "deviation source must be target-relative", location)
+                deviation_id = deviation.get("id")
+                if resolved(deviation_id):
+                    if deviation_id in deviation_ids:
+                        self.error("DEPENDENCY_KNOWLEDGE_DEVIATION_DUPLICATE", f"duplicate deviation ID {deviation_id}", location)
+                    deviation_ids.add(deviation_id)
+                if deviation.get("type") not in {"restriction", "wrapper", "patch", "configuration", "applicability", "conflict"}:
+                    self.error("DEPENDENCY_KNOWLEDGE_DEVIATION_TYPE", "deviation type is invalid", location)
+                if deviation.get("state") not in {"active", "inactive", "superseded"}:
+                    self.error("DEPENDENCY_KNOWLEDGE_DEVIATION_STATE", "deviation state is invalid", location)
+                if not isinstance(deviation.get("export_ids"), list) or not all(resolved(item) for item in deviation.get("export_ids", [])):
+                    self.error("DEPENDENCY_KNOWLEDGE_DEVIATION_EXPORTS", "deviation export_ids must be a resolved string list", location)
+
+        for instance_id in sorted(catalog_instance_ids - lock_instance_ids):
+            self.error("DEPENDENCY_KNOWLEDGE_LOCK_MISSING", f"catalog instance {instance_id} has no knowledge-lock instance", lock_relpath)
+        for instance_id in sorted(lock_instance_ids - catalog_instance_ids):
+            self.error("DEPENDENCY_KNOWLEDGE_CATALOG_MISSING", f"knowledge-lock instance {instance_id} has no catalog package", catalog_relpath)
+        for instance_id in sorted(catalog_instance_ids & lock_instance_ids):
+            if catalog_exports.get(instance_id, set()) != lock_exports.get(instance_id, set()):
+                self.error("DEPENDENCY_KNOWLEDGE_EXPORT_SET_DRIFT", f"catalog and knowledge-lock export IDs differ for {instance_id}", catalog_relpath)
+        if isinstance(instances, list):
+            for index, instance in enumerate(instances):
+                if not isinstance(instance, dict) or not isinstance(instance.get("graph"), dict):
+                    continue
+                references = instance["graph"].get("public_instance_ids")
+                if not isinstance(references, list):
+                    continue
+                for reference in references:
+                    if resolved(reference) and reference not in lock_instance_ids:
+                        self.error("DEPENDENCY_KNOWLEDGE_GRAPH_REFERENCE", f"knowledge-lock graph references unknown instance {reference}", f"{lock_relpath}:instances[{index}]")
+        if isinstance(deviation_entries, list):
+            for index, deviation in enumerate(deviation_entries):
+                if not isinstance(deviation, dict):
+                    continue
+                instance_id = deviation.get("instance_id")
+                if resolved(instance_id) and instance_id not in lock_instance_ids:
+                    self.error("DEPENDENCY_KNOWLEDGE_DEVIATION_INSTANCE", f"deviation references unknown instance {instance_id}", f"{deviation_relpath}:deviations[{index}]")
+                    continue
+                export_ids = deviation.get("export_ids")
+                if not isinstance(export_ids, list):
+                    continue
+                for export_id in export_ids:
+                    if resolved(export_id) and export_id not in catalog_exports.get(instance_id, set()):
+                        self.error("DEPENDENCY_KNOWLEDGE_DEVIATION_EXPORT", f"deviation references unknown export {export_id} for {instance_id}", f"{deviation_relpath}:deviations[{index}]")
+
+        operations = self.load_json_object(self.target_path(".ai/assistant/operation-catalog.json"), "OPERATION_CATALOG")
+        operation = next((item for item in operations.get("operations", []) if isinstance(item, dict) and item.get("id") == "dependency-knowledge"), None) if isinstance(operations, dict) else None
+        if not isinstance(operation, dict) or operation.get("required_module") != "dependency-knowledge":
+            self.error("DEPENDENCY_KNOWLEDGE_OPERATION_UNROUTED", "dependency-knowledge operation must require the enabled module", ".ai/assistant/operation-catalog.json")
+        router = self.load_json_object(self.target_path(".ai/assistant/context-router.json"), "ROUTER")
+        overlays = router.get("intent_overlays") if isinstance(router, dict) else None
+        route = overlays.get("dependency-knowledge-request") if isinstance(overlays, dict) else None
+        if not isinstance(route, dict) or route.get("operation_candidates") != ["dependency-knowledge"]:
+            self.error("DEPENDENCY_KNOWLEDGE_INTENT_UNROUTED", "dependency knowledge intent must route the dependency-knowledge operation", ".ai/assistant/context-router.json")
+
+        self.info(
+            "DEPENDENCY_KNOWLEDGE_EVIDENCE_LIMIT",
+            "dependency knowledge structural checks do not prove publisher identity, semantic correctness, completeness, current applicability, client instruction precedence, or safe runtime behavior",
+        )
+
+    def check_workspace_modes(self, manifest: ManifestData | None) -> None:
+        required_paths = [
+            ".ai/framework/workspace-modes.md",
+            ".ai/project/workspace-modes/README.md",
+            ".ai/project/workspace-modes/catalog.json",
+            ".ai/project/workspace-modes/root/README.md",
+            ".ai/project/workspace-modes/root/context.json",
+            ".ai/project/workspace-modes/modes/_template/README.md",
+            ".ai/project/workspace-modes/modes/_template/mode.json",
+            ".ai/assistant/context/intents/workspace-mode-request.json",
+            ".ai/assistant/flows/workspace-mode.flow.md",
+            ".ai/assistant/gates/workspace-mode.md",
+            ".ai/assistant/templates/workspace-mode-suggestion.md",
+            ".ai/assistant/templates/workspace-mode-preflight.md",
+        ]
+        missing = False
+        for relpath in required_paths:
+            if not self.target_path(relpath).is_file():
+                missing = True
+                self.error(
+                    "WORKSPACE_MODE_REQUIRED_FILE_MISSING",
+                    "enabled workspace-modes module is missing a contract",
+                    relpath,
+                )
+        if missing:
+            return
+
+        expected_manifest = {
+            ("workspace_modes", "index"): required_paths[1],
+            ("workspace_modes", "catalog"): required_paths[2],
+            ("workspace_modes", "root_context"): required_paths[4],
+            ("workspace_modes", "modes"): ".ai/project/workspace-modes/modes",
+            ("workspace_modes", "mode_template"): required_paths[6],
+            ("workspace_modes", "intent"): required_paths[7],
+            ("workspace_modes", "flow"): required_paths[8],
+            ("workspace_modes", "gate"): required_paths[9],
+            ("workspace_modes", "suggestion"): required_paths[10],
+            ("workspace_modes", "preflight"): required_paths[11],
+            ("operations", "workspace_mode"): required_paths[8],
+            ("operations", "workspace_mode_preflight"): required_paths[11],
+        }
+        if manifest is not None:
+            for key, expected in expected_manifest.items():
+                scalar = manifest.scalars.get(key)
+                if scalar is None or scalar.value != expected:
+                    self.error(
+                        "WORKSPACE_MODE_MANIFEST_PATH",
+                        f"{dotted(key)} must be {expected} when workspace modes are enabled",
+                        ".ai/alatyr.yaml",
+                    )
+
+        catalog_relpath = required_paths[2]
+        root_relpath = required_paths[4]
+        catalog = self.load_json_object(
+            self.target_path(catalog_relpath), "WORKSPACE_MODE_CATALOG"
+        )
+        root_context = self.load_json_object(
+            self.target_path(root_relpath), "WORKSPACE_MODE_ROOT_CONTEXT"
+        )
+        if catalog is None or root_context is None:
+            return
+
+        def resolved(value: Any) -> bool:
+            return (
+                isinstance(value, str)
+                and bool(value.strip())
+                and not is_placeholder(value)
+                and not is_unresolved_value(value)
+            )
+
+        def target_path_list(
+            value: Any,
+            code: str,
+            label: str,
+            source: str,
+            *,
+            non_empty: bool = False,
+            require_exists: bool = False,
+        ) -> list[str]:
+            if not isinstance(value, list) or (non_empty and not value):
+                self.error(code, f"{label} must be a {'non-empty ' if non_empty else ''}list", source)
+                return []
+            result: list[str] = []
+            for entry in value:
+                if not resolved(entry) or not is_target_relative_path(entry):
+                    self.error(code, f"{label} must contain target-relative resolved paths", source)
+                    continue
+                if require_exists and not self.target_path(entry).exists():
+                    self.error(code, f"{label} points to missing target evidence {entry}", source)
+                    continue
+                result.append(entry)
+            return result
+
+        if (
+            catalog.get("schema_version") != 1
+            or catalog.get("catalog_kind") != "target-workspace-mode-catalog"
+        ):
+            self.error(
+                "WORKSPACE_MODE_CATALOG_SCHEMA",
+                "catalog schema or kind is invalid",
+                catalog_relpath,
+            )
+        if catalog.get("state") not in {"enabled", "required"}:
+            self.error(
+                "WORKSPACE_MODE_CATALOG_STATE",
+                "enabled module requires enabled or required catalog state",
+                catalog_relpath,
+            )
+        for field in ["owner", "decision_authority"]:
+            if not resolved(catalog.get(field)):
+                self.error(
+                    "WORKSPACE_MODE_CATALOG_OWNER",
+                    f"catalog {field} must be resolved",
+                    catalog_relpath,
+                )
+
+        workspace = catalog.get("workspace")
+        workspace_id: str | None = None
+        if not isinstance(workspace, dict):
+            self.error(
+                "WORKSPACE_MODE_WORKSPACE",
+                "catalog workspace must be an object",
+                catalog_relpath,
+            )
+        else:
+            workspace_id = workspace.get("id") if resolved(workspace.get("id")) else None
+            if workspace_id is None:
+                self.error("WORKSPACE_MODE_WORKSPACE", "workspace id must be resolved", catalog_relpath)
+            if workspace.get("kind") not in {
+                "application",
+                "framework",
+                "library",
+                "skeleton",
+                "tool",
+                "monorepo",
+                "mixed",
+            }:
+                self.error("WORKSPACE_MODE_WORKSPACE", "workspace kind is invalid", catalog_relpath)
+            if workspace.get("root") != "." or workspace.get("adapter_role") != "active":
+                self.error(
+                    "WORKSPACE_MODE_ACTIVE_ROOT",
+                    "catalog workspace must identify the selected root '.' and active adapter",
+                    catalog_relpath,
+                )
+            target_path_list(
+                workspace.get("evidence"),
+                "WORKSPACE_MODE_WORKSPACE_EVIDENCE",
+                "workspace.evidence",
+                catalog_relpath,
+                non_empty=True,
+                require_exists=True,
+            )
+
+        selection = catalog.get("selection")
+        if not isinstance(selection, dict):
+            self.error("WORKSPACE_MODE_SELECTION", "selection must be an object", catalog_relpath)
+            selection = {}
+        expected_selection = {
+            "automatic_selection": "accepted-unambiguous-only",
+            "ambiguity_behavior": "ask-user",
+            "no_match_behavior": "root-read-only",
+            "persistence": "per-task",
+            "local_preference_allowed": False,
+            "show_preflight_before_changes": True,
+        }
+        for field, expected in expected_selection.items():
+            if selection.get(field) != expected:
+                self.error(
+                    "WORKSPACE_MODE_SELECTION_POLICY",
+                    f"selection.{field} must be {expected!r}",
+                    catalog_relpath,
+                )
+        suggestions = catalog.get("suggestions")
+        if not isinstance(suggestions, dict):
+            self.error("WORKSPACE_MODE_SUGGESTIONS", "suggestions must be an object", catalog_relpath)
+        else:
+            for field in ["after_installation", "after_framework_update", "after_workspace_change"]:
+                if suggestions.get(field) is not True:
+                    self.error("WORKSPACE_MODE_SUGGESTIONS", f"suggestions.{field} must be true", catalog_relpath)
+            if suggestions.get("automatic_acceptance") is not False:
+                self.error("WORKSPACE_MODE_AUTO_ACCEPT", "mode suggestions must never be accepted automatically", catalog_relpath)
+        if catalog.get("root_context") != root_relpath:
+            self.error("WORKSPACE_MODE_ROOT_REFERENCE", "catalog root_context path is invalid", catalog_relpath)
+
+        if (
+            root_context.get("schema_version") != 1
+            or root_context.get("descriptor_kind") != "target-workspace-root-context"
+        ):
+            self.error("WORKSPACE_MODE_ROOT_SCHEMA", "root context schema or kind is invalid", root_relpath)
+        root_state = root_context.get("state")
+        if root_state not in {"enabled", "disabled"}:
+            self.error("WORKSPACE_MODE_ROOT_STATE", "root context state must be enabled or disabled", root_relpath)
+        if not resolved(root_context.get("owner")):
+            self.error("WORKSPACE_MODE_ROOT_OWNER", "root context owner must be resolved", root_relpath)
+        root_required = target_path_list(
+            root_context.get("required_context"),
+            "WORKSPACE_MODE_ROOT_CONTEXT",
+            "required_context",
+            root_relpath,
+            require_exists=root_state == "enabled",
+        )
+        root_conditional = root_context.get("conditional_context")
+        if not isinstance(root_conditional, list):
+            self.error("WORKSPACE_MODE_ROOT_CONTEXT", "conditional_context must be a list", root_relpath)
+        else:
+            for index, entry in enumerate(root_conditional):
+                if (
+                    not isinstance(entry, dict)
+                    or not resolved(entry.get("path"))
+                    or not is_target_relative_path(entry["path"])
+                    or not resolved(entry.get("when"))
+                ):
+                    self.error(
+                        "WORKSPACE_MODE_ROOT_CONTEXT",
+                        f"conditional_context[{index}] requires target-relative path and condition",
+                        root_relpath,
+                    )
+                elif root_state == "enabled" and not self.target_path(entry["path"]).exists():
+                    self.error(
+                        "WORKSPACE_MODE_ROOT_CONTEXT",
+                        f"conditional_context[{index}] points to missing target context",
+                        root_relpath,
+                    )
+        if root_state == "disabled" and (root_required or root_conditional):
+            self.error(
+                "WORKSPACE_MODE_ROOT_DISABLED_CONTENT",
+                "disabled root context must not route support paths",
+                root_relpath,
+            )
+
+        modes = catalog.get("modes")
+        if not isinstance(modes, list) or not modes:
+            self.error(
+                "WORKSPACE_MODE_EMPTY",
+                "enabled workspace-modes module requires at least one catalog mode",
+                catalog_relpath,
+            )
+            modes = []
+        seen_ids: set[str] = set()
+        seen_paths: set[str] = set()
+        accepted_ids: set[str] = set()
+        mode_kinds = {
+            "application-development",
+            "framework-development",
+            "library-development",
+            "skeleton-development",
+            "dependency-integration",
+            "dependency-contribution",
+            "skeleton-migration",
+            "workspace-coordination",
+            "custom",
+        }
+        states = {"proposed", "accepted", "disabled", "deprecated", "blocked"}
+        relationship_types = {
+            "workspace-root",
+            "workspace-member",
+            "dependency",
+            "scaffold-origin",
+            "vendored-source",
+        }
+        adapter_roles = {"active", "passive", "provenance-only"}
+        ownership_values = {"target", "upstream", "mixed"}
+
+        for index, entry in enumerate(modes):
+            location = f"{catalog_relpath}:modes[{index}]"
+            if not isinstance(entry, dict):
+                self.error("WORKSPACE_MODE_CATALOG_ENTRY", "mode entry must be an object", location)
+                continue
+            mode_id = entry.get("id")
+            state = entry.get("state")
+            mode_kind = entry.get("mode_kind")
+            path = entry.get("path")
+            if not resolved(mode_id) or re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", mode_id) is None:
+                self.error("WORKSPACE_MODE_ID", "mode ID must be resolved kebab-case", location)
+                continue
+            if mode_id in seen_ids:
+                self.error("WORKSPACE_MODE_DUPLICATE", f"duplicate mode ID {mode_id}", location)
+            seen_ids.add(mode_id)
+            if state not in states or mode_kind not in mode_kinds:
+                self.error("WORKSPACE_MODE_CATALOG_ENTRY", "mode state or kind is invalid", location)
+            for field in ["title", "summary", "evidence_revision"]:
+                if not resolved(entry.get(field)):
+                    self.error("WORKSPACE_MODE_CATALOG_ENTRY", f"mode {field} must be resolved", location)
+            expected_path = f".ai/project/workspace-modes/modes/{mode_id}/mode.json"
+            if path != expected_path or path in seen_paths or "_template" in str(path):
+                self.error("WORKSPACE_MODE_PATH", f"mode path must be unique and equal {expected_path}", location)
+            if isinstance(path, str):
+                seen_paths.add(path)
+            descriptor = self.load_json_object(self.target_path(expected_path), "WORKSPACE_MODE")
+            readme_path = f".ai/project/workspace-modes/modes/{mode_id}/README.md"
+            if not self.target_path(readme_path).is_file():
+                self.error("WORKSPACE_MODE_README_MISSING", "actual mode directory requires README.md", readme_path)
+            if descriptor is None:
+                self.error("WORKSPACE_MODE_DESCRIPTOR_MISSING", "catalog mode descriptor is missing", expected_path)
+                continue
+            if descriptor.get("schema_version") != 1 or descriptor.get("descriptor_kind") != "target-workspace-mode":
+                self.error("WORKSPACE_MODE_DESCRIPTOR_SCHEMA", "mode descriptor schema or kind is invalid", expected_path)
+            if descriptor.get("id") != mode_id or descriptor.get("state") != state or descriptor.get("mode_kind") != mode_kind:
+                self.error("WORKSPACE_MODE_DESCRIPTOR_DRIFT", "catalog and descriptor identity state or kind differ", expected_path)
+            if state == "accepted":
+                accepted_ids.add(mode_id)
+            for field in ["title", "purpose", "owner", "decision_authority", "last_reviewed", "evidence_revision"]:
+                if not resolved(descriptor.get(field)):
+                    self.error("WORKSPACE_MODE_DESCRIPTOR_FIELD", f"mode {field} must be resolved", expected_path)
+            scope = descriptor.get("workspace_scope")
+            if not isinstance(scope, dict) or not resolved(scope.get("root")) or not is_target_relative_path(scope["root"]):
+                self.error("WORKSPACE_MODE_SCOPE", "workspace_scope requires a target-relative root", expected_path)
+            else:
+                if state == "accepted" and not self.target_path(scope["root"]).exists():
+                    self.error(
+                        "WORKSPACE_MODE_SCOPE",
+                        f"accepted workspace_scope.root points to missing target scope {scope['root']}",
+                        expected_path,
+                    )
+                target_path_list(scope.get("include"), "WORKSPACE_MODE_SCOPE", "workspace_scope.include", expected_path, non_empty=state == "accepted")
+                target_path_list(scope.get("exclude"), "WORKSPACE_MODE_SCOPE", "workspace_scope.exclude", expected_path)
+            for field in ["use_when", "do_not_use_when"]:
+                value = descriptor.get(field)
+                if not isinstance(value, list) or not value or not all(resolved(item) for item in value):
+                    self.error("WORKSPACE_MODE_SIGNALS", f"{field} must be a non-empty resolved string list", expected_path)
+            relationships = descriptor.get("relationships")
+            active_roots = 0
+            if not isinstance(relationships, list) or not relationships:
+                self.error("WORKSPACE_MODE_RELATIONSHIPS", "relationships must be a non-empty list", expected_path)
+            else:
+                for relationship_index, relationship in enumerate(relationships):
+                    rel_location = f"{expected_path}:relationships[{relationship_index}]"
+                    if not isinstance(relationship, dict):
+                        self.error("WORKSPACE_MODE_RELATIONSHIP", "relationship must be an object", rel_location)
+                        continue
+                    if not resolved(relationship.get("subject")):
+                        self.error("WORKSPACE_MODE_RELATIONSHIP", "relationship subject must be resolved", rel_location)
+                    rel_type = relationship.get("relationship")
+                    role = relationship.get("adapter_role")
+                    if rel_type not in relationship_types or role not in adapter_roles or relationship.get("ownership") not in ownership_values:
+                        self.error("WORKSPACE_MODE_RELATIONSHIP", "relationship type adapter role or ownership is invalid", rel_location)
+                    target_path_list(
+                        relationship.get("evidence"),
+                        "WORKSPACE_MODE_RELATIONSHIP_EVIDENCE",
+                        "relationship.evidence",
+                        rel_location,
+                        non_empty=True,
+                        require_exists=True,
+                    )
+                    if role == "active":
+                        if rel_type != "workspace-root":
+                            self.error("WORKSPACE_MODE_NESTED_ADAPTER", "only workspace-root may have an active adapter role", rel_location)
+                        else:
+                            active_roots += 1
+                            if workspace_id is not None and relationship.get("subject") != workspace_id:
+                                self.error("WORKSPACE_MODE_ACTIVE_ROOT", "active root subject must match catalog workspace ID", rel_location)
+                    if rel_type in {"dependency", "scaffold-origin"} and role not in {"passive", "provenance-only"}:
+                        self.error("WORKSPACE_MODE_NESTED_ADAPTER", "dependency and scaffold adapters must remain passive or provenance-only", rel_location)
+            if state == "accepted" and active_roots != 1:
+                self.error("WORKSPACE_MODE_ACTIVE_ROOT", "accepted mode must define exactly one active workspace-root relationship", expected_path)
+            context = descriptor.get("context")
+            if not isinstance(context, dict) or context.get("root_context") not in {"inherit", "required", "skip"}:
+                self.error("WORKSPACE_MODE_CONTEXT", "context requires inherit required or skip root_context", expected_path)
+            else:
+                if (
+                    state == "accepted"
+                    and context.get("root_context") == "required"
+                    and root_state != "enabled"
+                ):
+                    self.error(
+                        "WORKSPACE_MODE_CONTEXT",
+                        "accepted mode cannot require disabled shared root context",
+                        expected_path,
+                    )
+                target_path_list(
+                    context.get("required_context"),
+                    "WORKSPACE_MODE_CONTEXT",
+                    "context.required_context",
+                    expected_path,
+                    require_exists=state == "accepted",
+                )
+                conditional = context.get("conditional_context")
+                if not isinstance(conditional, list):
+                    self.error("WORKSPACE_MODE_CONTEXT", "context.conditional_context must be a list", expected_path)
+                else:
+                    for conditional_index, conditional_entry in enumerate(conditional):
+                        if (
+                            not isinstance(conditional_entry, dict)
+                            or not resolved(conditional_entry.get("path"))
+                            or not is_target_relative_path(conditional_entry["path"])
+                            or not resolved(conditional_entry.get("when"))
+                        ):
+                            self.error("WORKSPACE_MODE_CONTEXT", f"conditional context {conditional_index} is invalid", expected_path)
+                        elif state == "accepted" and not self.target_path(
+                            conditional_entry["path"]
+                        ).exists():
+                            self.error(
+                                "WORKSPACE_MODE_CONTEXT",
+                                f"conditional context {conditional_index} points to missing target context",
+                                expected_path,
+                            )
+            for field in ["source_of_truth_ids", "validation_entry_point_ids", "known_gaps"]:
+                value = descriptor.get(field)
+                if not isinstance(value, list) or not all(resolved(item) for item in value):
+                    self.error("WORKSPACE_MODE_DESCRIPTOR_FIELD", f"{field} must be a resolved string list", expected_path)
+            constraints = descriptor.get("constraints")
+            if not isinstance(constraints, dict):
+                self.error("WORKSPACE_MODE_CONSTRAINTS", "constraints must be an object", expected_path)
+            else:
+                narrowing = constraints.get("narrows_allowed_actions")
+                if not isinstance(narrowing, list) or any(item not in ALLOWED_ACTION_MODES for item in narrowing):
+                    self.error("WORKSPACE_MODE_CONSTRAINTS", "narrows_allowed_actions contains an invalid mode", expected_path)
+                for field in [
+                    "grants_write_scope",
+                    "grants_approval",
+                    "grants_permissions",
+                    "grants_authority",
+                    "grants_tools",
+                    "activates_nested_adapters",
+                    "bypasses_gates",
+                ]:
+                    if constraints.get(field) is not False:
+                        self.error("WORKSPACE_MODE_GRANT", f"constraints.{field} must be false", expected_path)
+
+        default_mode = selection.get("default_mode_id")
+        if default_mode is not None and default_mode not in accepted_ids:
+            self.error("WORKSPACE_MODE_DEFAULT", "default_mode_id must reference an accepted mode", catalog_relpath)
+
+        operations = self.load_json_object(
+            self.target_path(".ai/assistant/operation-catalog.json"), "OPERATION_CATALOG"
+        )
+        operation = next(
+            (
+                item
+                for item in (operations.get("operations", []) if isinstance(operations, dict) else [])
+                if isinstance(item, dict) and item.get("id") == "workspace-mode"
+            ),
+            None,
+        )
+        if not isinstance(operation, dict) or operation.get("required_module") != "workspace-modes":
+            self.error("WORKSPACE_MODE_OPERATION_UNROUTED", "workspace-mode operation must require the enabled module", ".ai/assistant/operation-catalog.json")
+        router = self.load_json_object(self.target_path(".ai/assistant/context-router.json"), "ROUTER")
+        overlays = router.get("intent_overlays") if isinstance(router, dict) else None
+        route = overlays.get("workspace-mode-request") if isinstance(overlays, dict) else None
+        mode_routing = router.get("workspace_mode_routing") if isinstance(router, dict) else None
+        if not isinstance(route, dict) or route.get("operation_candidates") != ["workspace-mode"]:
+            self.error("WORKSPACE_MODE_INTENT_UNROUTED", "workspace mode intent must route the workspace-mode operation", ".ai/assistant/context-router.json")
+        if (
+            not isinstance(mode_routing, dict)
+            or mode_routing.get("catalog") != catalog_relpath
+            or mode_routing.get("root_context") != root_relpath
+            or mode_routing.get("ambiguity_behavior") != "ask-user-and-remain-read-only"
+        ):
+            self.error("WORKSPACE_MODE_ROUTER", "workspace mode routing must bind catalog root context and safe ambiguity behavior", ".ai/assistant/context-router.json")
+
+        self.info(
+            "WORKSPACE_MODE_EVIDENCE_LIMIT",
+            "workspace-mode structural checks do not prove strategic correctness, complete workspace discovery, ownership truth, semantic consistency, or assistant compliance",
         )
 
     def check_consistency_map(self) -> None:

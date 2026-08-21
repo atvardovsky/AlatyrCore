@@ -19,6 +19,7 @@ python3 tools/alatyr.py validate-adapter --target /path/to/target-repo
 python3 tools/alatyr.py assess-upgrade --target /path/to/target-repo --framework-source . --output-dir tmp/upgrade-assessment
 python3 tools/alatyr.py inspect-extension --package /path/to/local-extension-checkout
 python3 tools/alatyr.py inspect-extension --package /path/to/local-extension-checkout --target /path/to/target-repo
+python3 tools/alatyr.py inspect-dependency-knowledge --source /path/to/local-package-export
 python3 tools/alatyr.py clean-artifacts --older-than-days 7
 python3 tools/alatyr.py clean-artifacts --older-than-days 7 --apply
 ```
@@ -32,6 +33,7 @@ Windows PowerShell:
 .\tools\alatyr.ps1 assess-upgrade --target C:\path\to\target-repo --framework-source . --output-dir tmp\upgrade-assessment
 .\tools\alatyr.ps1 inspect-extension --package C:\path\to\local-extension-checkout
 .\tools\alatyr.ps1 inspect-extension --package C:\path\to\local-extension-checkout --target C:\path\to\target-repo
+.\tools\alatyr.ps1 inspect-dependency-knowledge --source C:\path\to\local-package-export
 .\tools\alatyr.ps1 clean-artifacts --older-than-days 7
 ```
 
@@ -43,6 +45,7 @@ tools\alatyr.cmd doctor --target C:\path\to\target-repo
 tools\alatyr.cmd validate-adapter --target C:\path\to\target-repo
 tools\alatyr.cmd inspect-extension --package C:\path\to\local-extension-checkout
 tools\alatyr.cmd inspect-extension --package C:\path\to\local-extension-checkout --target C:\path\to\target-repo
+tools\alatyr.cmd inspect-dependency-knowledge --source C:\path\to\local-package-export
 tools\alatyr.cmd clean-artifacts --older-than-days 7
 ```
 
@@ -60,6 +63,9 @@ The stable command set is:
   report output only
 - `inspect-extension`: read-only validation and digest calculation for a local
   extension checkout; no network access, execution, or target writes
+- `inspect-dependency-knowledge`: read-only structural inspection of one local
+  passive dependency export; no recursive discovery, network access,
+  execution, package update, or target writes
 - `prepare-conformance`: explicit conformance workspace output only; no
   assistant execution
 - `check-conformance`: read-only prepared or captured matrix validation
@@ -247,6 +253,42 @@ Windows PowerShell or Command Prompt:
 ```powershell
 .\tools\alatyr.ps1 inspect-extension --package C:\path\to\local-extension-checkout
 py -3 .\tools\check_extensions.py
+```
+
+## Dependency Knowledge Checks
+
+`validate_dependency_knowledge_export.py` inspects one local passive package
+export without executing package content. It validates manifest identity,
+the strict JSON Schema and undeclared-surface boundary, capability declaration,
+export-root containment, symlink boundaries,
+namespaced fact IDs, typed authority/stability/applicability fields, declared
+public dependency references, required prohibitions, and file SHA-256 values.
+
+`check_dependency_knowledge.py` validates the canonical framework rule, export
+schema and author template, target projection templates, operation and intent
+routing, installation guidance, structural checker, and accepted/rejected
+fixtures. These checks do not prove semantic correctness or applicability.
+The portable target validator separately checks normalized catalog, lock,
+graph, and deviation record shapes and cross-references when the module is
+enabled.
+
+```sh
+python3 tools/alatyr.py inspect-dependency-knowledge --source /path/to/local-package-export
+python3 tools/check_dependency_knowledge.py
+```
+
+## Workspace Mode Checks
+
+`check_workspace_modes.py` validates the canonical mode rule, per-mode target
+structure, safe no-grants contract, operation and intent routing, and
+installation guidance. The portable target validator additionally checks
+accepted catalog/descriptor agreement, one active workspace root, inactive
+nested adapters, target-relative context, user-owned acceptance, and safe
+ambiguity behavior when the optional module is enabled. Structural checks do
+not prove that a proposed mode is strategically correct.
+
+```sh
+python3 tools/check_workspace_modes.py
 ```
 
 ## AI Infrastructure Inventory Check

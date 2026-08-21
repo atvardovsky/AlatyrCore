@@ -232,6 +232,53 @@ Approval needs: `{EXTENSIONS_APPROVAL_NEEDS}`
 Residual risk: `{EXTENSIONS_RESIDUAL_RISK}`
 Next action: `{EXTENSIONS_NEXT_ACTION}`
 
+Module: `dependency-knowledge`
+State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+Owner or file: `.ai/project/dependencies/policy.json`
+Required files:
+
+- `.ai/framework/dependency-knowledge.md`
+- `.ai/project/dependencies/README.md`
+- `.ai/project/dependencies/policy.json`
+- `.ai/project/dependencies/catalog.json`
+- `.ai/project/dependencies/knowledge-lock.json`
+- `.ai/project/dependencies/deviations.json`
+- `.ai/project/dependencies/snapshots/README.md`
+- `.ai/assistant/context/intents/dependency-knowledge-request.json`
+- `.ai/assistant/flows/dependency-knowledge-sync.flow.md`
+- `.ai/assistant/gates/dependency-knowledge.md`
+- `.ai/assistant/templates/dependency-knowledge-sync-report.md`
+
+Reason: `{REASON}`
+Validation or review: `{VALIDATION_OR_REVIEW}`
+Approval needs: `{DEPENDENCY_KNOWLEDGE_APPROVAL_NEEDS}`
+Residual risk: `{DEPENDENCY_KNOWLEDGE_RESIDUAL_RISK}`
+Next action: `{DEPENDENCY_KNOWLEDGE_NEXT_ACTION}`
+
+Module: `workspace-modes`
+State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+Owner or file: `.ai/project/workspace-modes/catalog.json`
+Required files:
+
+- `.ai/framework/workspace-modes.md`
+- `.ai/project/workspace-modes/README.md`
+- `.ai/project/workspace-modes/catalog.json`
+- `.ai/project/workspace-modes/root/README.md`
+- `.ai/project/workspace-modes/root/context.json`
+- `.ai/project/workspace-modes/modes/_template/README.md`
+- `.ai/project/workspace-modes/modes/_template/mode.json`
+- `.ai/assistant/context/intents/workspace-mode-request.json`
+- `.ai/assistant/flows/workspace-mode.flow.md`
+- `.ai/assistant/gates/workspace-mode.md`
+- `.ai/assistant/templates/workspace-mode-suggestion.md`
+- `.ai/assistant/templates/workspace-mode-preflight.md`
+
+Reason: `{REASON}`
+Validation or review: `{VALIDATION_OR_REVIEW}`
+Approval needs: `{WORKSPACE_MODES_APPROVAL_NEEDS}`
+Residual risk: `{WORKSPACE_MODES_RESIDUAL_RISK}`
+Next action: `{WORKSPACE_MODES_NEXT_ACTION}`
+
 Module: `diagrams`
 State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `{TARGET_DIAGRAM_MODULE_OWNER_OR_FILE}`

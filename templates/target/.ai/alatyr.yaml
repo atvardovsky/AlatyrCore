@@ -51,7 +51,7 @@ source_of_truth:
   project_sources:
     - "{TARGET_PROJECT_SOURCE_OF_TRUTH}"
 context_routing:
-  router_schema_version: 5
+  router_schema_version: 6
   preloaded_context:
     - "AGENTS.md"
   compact_bootstrap:
@@ -91,6 +91,28 @@ extensions:
   gate: ".ai/assistant/gates/extensions.md"
   review: ".ai/assistant/templates/extension-review.md"
   lifecycle_record: ".ai/assistant/templates/extension-lifecycle-record.md"
+dependency_knowledge:
+  index: ".ai/project/dependencies/README.md"
+  policy: ".ai/project/dependencies/policy.json"
+  catalog: ".ai/project/dependencies/catalog.json"
+  lock: ".ai/project/dependencies/knowledge-lock.json"
+  deviations: ".ai/project/dependencies/deviations.json"
+  snapshots: ".ai/project/dependencies/snapshots"
+  intent: ".ai/assistant/context/intents/dependency-knowledge-request.json"
+  flow: ".ai/assistant/flows/dependency-knowledge-sync.flow.md"
+  gate: ".ai/assistant/gates/dependency-knowledge.md"
+  report: ".ai/assistant/templates/dependency-knowledge-sync-report.md"
+workspace_modes:
+  index: ".ai/project/workspace-modes/README.md"
+  catalog: ".ai/project/workspace-modes/catalog.json"
+  root_context: ".ai/project/workspace-modes/root/context.json"
+  modes: ".ai/project/workspace-modes/modes"
+  mode_template: ".ai/project/workspace-modes/modes/_template/mode.json"
+  intent: ".ai/assistant/context/intents/workspace-mode-request.json"
+  flow: ".ai/assistant/flows/workspace-mode.flow.md"
+  gate: ".ai/assistant/gates/workspace-mode.md"
+  suggestion: ".ai/assistant/templates/workspace-mode-suggestion.md"
+  preflight: ".ai/assistant/templates/workspace-mode-preflight.md"
 operations:
   gate_index: ".ai/assistant/gates/index.json"
   index: ".ai/assistant/operation-index.json"
@@ -124,6 +146,10 @@ operations:
   extension_management: ".ai/assistant/flows/extension-lifecycle.flow.md"
   extension_review: ".ai/assistant/templates/extension-review.md"
   extension_lifecycle_record: ".ai/assistant/templates/extension-lifecycle-record.md"
+  dependency_knowledge: ".ai/assistant/flows/dependency-knowledge-sync.flow.md"
+  dependency_knowledge_report: ".ai/assistant/templates/dependency-knowledge-sync-report.md"
+  workspace_mode: ".ai/assistant/flows/workspace-mode.flow.md"
+  workspace_mode_preflight: ".ai/assistant/templates/workspace-mode-preflight.md"
   development_evidence_capture: ".ai/assistant/flows/development-evidence-capture.flow.md"
   migration_note: ".ai/assistant/templates/migration-note.md"
   effectiveness_report: ".ai/assistant/templates/effectiveness-report.md"

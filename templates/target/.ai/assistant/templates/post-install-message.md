@@ -35,6 +35,8 @@ Entry points:
 - `.ai/assistant/assistant-capabilities.json`
 - `.ai/assistant/ai-infrastructure-router.json` when AI infrastructure is enabled
 - `.ai/assistant/extensions/catalog.json` and `.ai/assistant/extensions/lock.json` when extensions are enabled
+- `.ai/project/dependencies/policy.json`, `catalog.json`, `knowledge-lock.json`, and `deviations.json` when dependency knowledge is enabled
+- `.ai/project/workspace-modes/catalog.json`, optional root context, and one subdirectory per actual mode when workspace modes are enabled
 - `.ai/assistant/change-packages/index.json` when change packages are enabled
 
 Future assistant bootstrap:
@@ -52,6 +54,9 @@ Installed operation help:
 - Use `.ai/assistant/templates/operation-request.md` for structured requests.
 - When team collaboration is enabled, use `Alatyr set actor <actor>`, `Alatyr who am I`, `Alatyr team status`, `Alatyr start`, `Alatyr claim`, `Alatyr conflicts`, `Alatyr checkpoint`, `Alatyr handoff`, `Alatyr decision`, `Alatyr review`, `Alatyr merge check`, or `Alatyr release`. Actor selection is local attribution, not authentication or authority.
 - When architecture knowledge is enabled, use `Alatyr architecture` to inventory, explain, discuss, compare, review, or document project architecture and patterns.
+- Review installation mode suggestions separately. Installation approval does
+  not accept a suggested mode. Use `Alatyr suggest modes`, then `Alatyr accept
+  mode <id>` only for a mode the user chooses.
 
 Available next actions:
 - `create-project-blueprint`: create or repair project source-of-truth docs from target evidence.
@@ -84,6 +89,11 @@ Available next actions:
 - `skill-adaptation`: adapt or add skills, prompts, wrappers, bridges, rules, MCP/tool configs, gates, checkers, or third-party assistant infrastructure. Aliases: `alatyr-adaptation <source>`, `alatyr-add-ai <source>`.
 - `extension-management`: list, inspect, plan, install, update, disable, remove, or review declarative extension packages. Aliases: `Alatyr extensions`, `Alatyr inspect extension <source>`, `Alatyr add extension <source>`, `Alatyr update extension <id>`, `Alatyr disable extension <id>`, `Alatyr remove extension <id>`, `Alatyr review extension <id>`.
 - `Alatyr suggest extensions <scope>` routes to read-only AI infrastructure recommendation and does not fetch or install source.
+- `dependency-knowledge`: report, discover, inspect, plan, synchronize, explain, or assess passive dependency knowledge. Aliases: `Alatyr dependencies`, `Alatyr sync dependencies`, `Alatyr explain dependency <package>`, `Alatyr dependency impact <package-or-change>`. It does not run package managers, update packages, or activate nested adapters.
+- `workspace-mode`: list, suggest, inspect, select, define, accept, update,
+  disable, deprecate, remove, or review user-owned workspace modes. Aliases:
+  `Alatyr modes`, `Alatyr suggest modes`, `Alatyr mode <id>`, `Alatyr define
+  mode`, and `Alatyr accept mode <id>`. A mode selects context only.
 - AI infrastructure operations select a route and item ID before loading item-specific context.
 - Use `continue large task <packet-path-or-operation-id>` to resume a target-approved operation packet without reloading completed workstream context.
 

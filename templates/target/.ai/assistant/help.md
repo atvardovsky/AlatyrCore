@@ -35,6 +35,9 @@ Default routing:
   human rationale or conflict resolution is needed.
 - Use `.ai/assistant/module-profile.md` to avoid routing to blocked or
   disabled optional modules.
+- When `workspace-modes` is enabled, read its compact catalog before selecting
+  task profile or project area. Prefer an explicit accepted mode, select
+  automatically only on one unambiguous match, and ask before edits otherwise.
 - Load `.ai/assistant/operation-index.json` for an exact operation ID or alias.
   Load the full catalog only for the bare `Alatyr` entry, ambiguity, or
   operation/adapter repair.
@@ -61,48 +64,24 @@ Use when: the user asks for Alatyr status, doctor, or current adapter health.
 Flow: `.ai/assistant/flows/adapter-health.flow.md`
 Minimum input: optional health scope. Allowed actions are `read-only`.
 
-Operation: `architecture-assistance`
-Use when: the user asks to inventory, explain, discuss, compare, review, or
-document project architecture, patterns, boundaries, or constraints.
-Flow: `.ai/assistant/flows/architecture-assistance.flow.md`
-Minimum input: architecture question or scope. Starts `read-only` unless
-documentation or accepted-decision intent is explicit.
-
 Operation: `product-change`
 Use when: accepted behavior, architecture, data, runtime, or public contract
 may change.
 Flow: `.ai/assistant/flows/blueprint-driven-change.flow.md`
 Minimum input: change intent, non-goals, and approval constraints.
 
-Operation: `diagram-discussion`
-Use when: the user asks to see, sketch, compare, or revise a diagram during the
-discussion.
-Flow: `.ai/assistant/flows/diagram-discussion.flow.md`
-Minimum input: diagram purpose or question and scope. Defaults to `read-only`.
-Presentation: bounded pure ASCII by default; native or artifact output is an
-optional supported supplement.
-
-Operation: `large-task`
-Use when: work needs multiple workstreams, crosses project areas or profiles,
-exceeds the context budget, or must resume after a context reset.
-Flow: `.ai/assistant/flows/large-task-orchestration.flow.md`
-Minimum input: goal, non-goals, affected areas, and allowed actions.
-
-Operation: `team-status`
-Use when: reporting active work, stale claims, conflicts, handoffs, and review
-state without editing.
-Flow: `.ai/assistant/flows/team-task-coordination.flow.md`
-Minimum input: optional team, area, actor, or task scope.
-
-Operation: `team-identity`
-Use when: selecting, inspecting, or clearing the current local actor.
-Flow: `.ai/assistant/flows/team-identity.flow.md`
-Minimum input: action and actor ID or name for selection.
+Operation: `workspace-mode`
+Use when: the user asks to list, suggest, inspect, select, define, accept,
+update, disable, deprecate, remove, or review workspace modes.
+Flow: `.ai/assistant/flows/workspace-mode.flow.md`
+Minimum input: mode action or workspace-role question; mode ID and explicit
+user decision for accepted-state changes.
 
 Use `Alatyr architecture` for project pattern and architecture discussion. Use
 `Alatyr diagram` for a capability-checked diagram view, `Alatyr team status`
 for the compact team view, and `Alatyr set actor <actor-id-or-name>` to select
-local attribution. When `code-documentation` is enabled, use
+local attribution. These route to `architecture-assistance` and
+`diagram-discussion`. When `code-documentation` is enabled, use
 `propose comment style`, `document code`, `generate code docs`, or
 `review code documentation`; the assistant selects a bounded accepted profile.
 When `project-vocabulary` is enabled, use `Alatyr glossary`, `Alatyr define
@@ -116,8 +95,19 @@ Use `Alatyr extensions` to list compact state, `Alatyr inspect extension
 extension <source-or-id>` for an approval-aware lifecycle request. These are
 chat shortcuts, not shell commands. `Alatyr suggest extensions <scope>` remains
 read-only and does not fetch or install a package.
+When `dependency-knowledge` is enabled, use `Alatyr dependencies` for compact
+state, `Alatyr sync dependencies` to compare and update only the reviewed
+project projection, `Alatyr explain dependency <package>` for selected current
+facts, or `Alatyr dependency impact <package-or-change>` for bounded impact.
+These requests never activate nested adapters or update software packages.
+When `workspace-modes` is enabled, use `Alatyr modes` for compact state,
+`Alatyr suggest modes` for evidence-bound proposals, `Alatyr mode <id>` for a
+per-task selection preview, `Alatyr define mode` to draft a mode, or `Alatyr
+accept mode <id>` for an explicit acceptance request. Suggestions remain
+proposed, and a mode never grants permissions or activates nested adapters.
 Detailed team, blueprint, integrity, update, documentation, vocabulary,
-test-first, extension, and AI-infrastructure operations and aliases are in
+test-first, extension, dependency-knowledge, workspace-mode, and
+AI-infrastructure operations and aliases are in
 `.ai/assistant/help-reference.md`.
 
 ## Minimal Request Shape

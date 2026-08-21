@@ -35,6 +35,12 @@ Portable framework core may describe reusable assistant operating patterns:
 - framework core versus target project adapter installation planning
 - adapter maturity levels and framework lifecycle/upgrade concepts
 - module-profile concepts for target-specific capability selection
+- passive dependency knowledge export, exact artifact binding, target
+  projection, bounded graph synchronization, independent semantic state, and
+  lazy routing concepts
+- user-owned workspace identity and development-mode concepts, artifact
+  relationships, optional shared root context, per-mode support directories,
+  bounded selection, and non-authorizing preflight
 
 Portable framework core must stay Markdown-first and assistant-neutral.
 
@@ -101,6 +107,11 @@ A repository adapter owns the concrete facts for one project:
   request aliases, and
   post-install/update assistant chat-message templates
 - target final-evidence requirements for commands that actually exist there
+- target package-manager sources, dependency knowledge policy, accepted
+  package instances, local patches and deviations, retention decisions,
+  applicability conditions, and dependency knowledge validation
+- target workspace identity, accepted mode definitions, root/mode supporting
+  context, relationship evidence, selection policy, defaults, and mode owners
 
 Each project using Alatyr Core has its own adapter and local gates. Those
 local gates can verify that repository, but they must not be copied as

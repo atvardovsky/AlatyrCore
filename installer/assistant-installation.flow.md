@@ -177,6 +177,12 @@ Classify every proposed target file:
     `data-dictionary-links.json` only when project vocabulary is enabled.
     Derive scoped terms, aliases, acronyms, owners, states, canonical sources,
     and links from target evidence; never infer acceptance from frequency.
+    When workspace roles require distinct perspectives, add
+    `.ai/project/workspace-modes/catalog.json`, optional shared root support,
+    and one directory per actual mode. Inspect workspace, package, framework,
+    skeleton, and ownership evidence and propose zero or more modes. Keep every
+    suggestion proposed until a separate user decision accepts it;
+    installation approval alone is not acceptance.
     Add `.ai/project/testing/README.md` and `test-first-policy.json` only when
     test-first development is assessed or enabled. Derive owners, trigger
     severity, modes, levels, commands, isolation, exceptions, and evidence from
@@ -220,6 +226,14 @@ Classify every proposed target file:
     Add the `extension-request` intent overlay when extension inspection or
     lifecycle management is supported. Keep package items, unrelated lock
     entries, and installed extension records outside routine bootstrap.
+    Add the `dependency-knowledge-request` intent overlay only when passive
+    package knowledge is enabled. Keep package-manager graphs, raw dependency
+    docs, nested adapters, unrelated packages, and historical snapshots
+    outside routine bootstrap.
+    Add the `workspace-mode-request` intent overlay only when workspace modes
+    are enabled. Read the compact catalog after bootstrap and before the task
+    profile; load one selected descriptor plus applicable root context and ask
+    on ambiguity. Do not load all mode directories or activate nested adapters.
 14. Add bridge files only for assistants the target uses.
 15. Add installed-operation, operation-help, automatic operation-routing,
     read-only adapter-health, risk-gated pre-change preview,
@@ -239,6 +253,13 @@ Classify every proposed target file:
     extension catalog and lock, lifecycle flow, gate, package-review template,
     lifecycle-record template, and lazy intent routing when extensions are
     supported,
+    dependency knowledge policy, catalog, exact package-instance knowledge
+    lock, deviations, retention-aware snapshot directory, synchronization
+    flow, gate, report template, operation, and lazy intent routing when
+    passive dependency knowledge is enabled,
+    workspace-mode catalog, optional root support, per-mode authoring
+    template, intent, flow, gate, suggestion, preflight, and operation when
+    workspace modes are enabled,
     AI-infrastructure-inventory, AI-infrastructure-recommendation, adapter output contract
     `.ai/assistant/templates/adapter-output-contracts.md`, source-access
     policy, prompt-injection policy, human and machine-readable approval-record
@@ -309,6 +330,9 @@ Classify every proposed target file:
     read-only health aliases, automatic routing, and risk-gated preview.
     Name team/current-actor aliases, attribution limits, and module state when
     team collaboration is enabled.
+    When workspace modes are enabled, report proposed and accepted modes
+    separately, state that installation/update did not accept proposals, and
+    name the mode status, suggestion, selection, and acceptance aliases.
 
 ## Human Approval Gate
 

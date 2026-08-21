@@ -256,6 +256,16 @@ Collect target-specific facts before writing project docs:
   manifest, immutable source and digest, compatibility, catalog/lock, bindings,
   permissions, approval, installed-file ownership, update/removal policy, lazy
   route, and cross-assistant exposure when optional extensions are supported
+- dependency knowledge owner, package-manager manifests and lockfiles,
+  native-metadata-only export discovery, exact artifact identity, untrusted
+  source policy, independent trust/freshness/authority/applicability state,
+  project deviations, retention, graph bounds, lazy route, synchronization
+  flow, gate, operation, and validation when the optional module is enabled
+- workspace-mode owner and decision authority, workspace identity and active
+  adapter evidence, proposed or accepted mode states, artifact relationships,
+  one directory per actual mode, optional shared root support, ambiguity
+  behavior, user decisions, routing, preflight, gate, cost, and validation
+  when the optional module is enabled
 
 ## 6. Assistant Compatibility
 
@@ -394,6 +404,12 @@ Final evidence must say:
   path leakage, stale checker statements, duplicate profile references,
   unresolved owner placeholders, and target-local checker status
 - module profile created or updated
+- workspace modes are enabled, deferred, disabled, not applicable, or blocked
+  with reason; installation suggestions remain proposed until separately
+  accepted by the user
+- each actual mode has its own directory, optional shared root support is
+  bounded, nested adapters remain inactive, and mode constraints grant no
+  approval, write scope, permissions, authority, tools, or gate bypass
 - architecture knowledge is enabled, skipped, deferred, or blocked from
   target evidence; enabled adapters define owner, decision authority, compact
   catalog, states, selected-source routing, validation, and known gaps

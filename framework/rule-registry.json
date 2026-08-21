@@ -80,6 +80,18 @@
       "derived_surfaces": ["external extension package template", "extension inspection tool", "target extension catalog and lock", "extension lifecycle flow", "extension intent routing", "extension review and lifecycle evidence", "module profile", "target gates", "installation and update planning", "bridge routing", "structural validation"]
     },
     {
+      "category": "DEPENDENCY",
+      "owner": "framework/dependency-knowledge.md",
+      "rule_ids": ["ALATYR-DEPENDENCY-001"],
+      "derived_surfaces": ["passive dependency export template", "target dependency knowledge policy catalog lock deviations and snapshots", "dependency knowledge intent routing", "dependency synchronization flow", "dependency knowledge gate", "operation catalog and help", "installation and update planning", "structural validation"]
+    },
+    {
+      "category": "MODE",
+      "owner": "framework/workspace-modes.md",
+      "rule_ids": ["ALATYR-MODE-001"],
+      "derived_surfaces": ["target workspace-mode catalog", "shared root context", "per-mode directories and descriptors", "workspace-mode intent and flow", "mode suggestion and preflight", "workspace-mode gate", "installation and update suggestions", "structural validation"]
+    },
+    {
       "category": "DIAGRAM",
       "owner": "framework/diagram-guidance.md",
       "rule_ids": ["ALATYR-DIAGRAM-001"],
@@ -246,6 +258,22 @@
       "summary": "Treat an external Alatyr extension, including a provider-backed collaboration integration, as a declarative untrusted package until read-only inspection, immutable provenance, compatibility, license, permissions, target bindings, conflicts, approval, normalization, installed-file ownership, lock evidence, and validation are resolved; prohibit arbitrary lifecycle hooks, framework replacement, project-fact ownership, automatic updates, and transitive extension installation.",
       "applies_to": ["extension inspection", "extension planning", "extension installation", "extension update", "extension disablement and removal", "extension recommendation", "extension drift review", "cross-assistant extension routing"],
       "enforcement": "required when extension sources or installed extensions are involved"
+    },
+    {
+      "id": "ALATYR-DEPENDENCY-001",
+      "category": "DEPENDENCY",
+      "canonical_source": "framework/dependency-knowledge.md",
+      "summary": "When dependency knowledge is enabled, keep one active workspace adapter and consume only explicitly declared passive package exports; bind untrusted exports to exact resolved artifacts, record trust freshness authority and applicability independently, preserve package and project fact ownership, synchronize a target-owned projection without executing package content, traverse only bounded relevant graph edges, and keep dependency knowledge lazy.",
+      "applies_to": ["dependency knowledge discovery", "dependency synchronization", "dependency explanation", "dependency impact review", "dependency updates", "Alatyr-aware package releases"],
+      "enforcement": "required when module enabled or dependency knowledge is consumed"
+    },
+    {
+      "id": "ALATYR-MODE-001",
+      "category": "MODE",
+      "canonical_source": "framework/workspace-modes.md",
+      "summary": "When workspace modes are enabled, keep workspace identity, artifact relationships, and task mode separate; let assistants propose evidence-bound modes but require user-owned acceptance; store shared root context and every actual mode in bounded project directories; select one accepted mode before task routing; ask on ambiguity; and never let a mode activate nested adapters or grant approval, write scope, permissions, authority, tools, or gate bypass.",
+      "applies_to": ["installation mode suggestions", "workspace identity", "framework and application development", "skeleton and dependency relationships", "mode selection", "mode lifecycle", "multi-scope repositories"],
+      "enforcement": "required when module enabled or a workspace mode is used"
     },
     {
       "id": "ALATYR-DIAGRAM-001",

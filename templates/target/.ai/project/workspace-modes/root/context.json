@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "descriptor_kind": "target-workspace-root-context",
+  "state": "{ENABLED_OR_DISABLED}",
+  "owner": "{TARGET_WORKSPACE_MODE_OWNER}",
+  "required_context": [],
+  "conditional_context": [],
+  "known_gaps": []
+}

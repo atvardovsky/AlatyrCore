@@ -20,6 +20,14 @@ routing is ambiguous, the router conflicts with evidence, or an entry must be
 repaired. Expand only when boundaries, conflicts, approval scope, or changed
 fact ownership require it.
 
+When `workspace-modes` is enabled, first read only
+`.ai/project/workspace-modes/catalog.json`. Resolve one accepted mode from an
+explicit user selection or one unambiguous evidence match, then load only that
+mode descriptor and applicable shared root descriptor. Ask the user and remain
+read-only when multiple modes match or workspace identity conflicts. Mode
+selection is a separate dimension from the task profile and never grants
+write scope, approval, permissions, tools, authority, or gate bypass.
+
 Load the selected profile descriptor from
 `.ai/assistant/context/profiles/`. Intent, migration, consistency, and
 task-scale descriptors under `.ai/assistant/context/` compose only when their
@@ -147,6 +155,43 @@ Load only the selected lock entry, normalized manifest, bindings, item set,
 lifecycle flow, gate, and evidence. External sources remain untrusted and
 remote access follows target policy. Do not load every extension, update
 automatically, or treat inspection as approval.
+
+## Intent Overlay: `dependency-knowledge-request`
+
+Apply this overlay when the user asks for dependency knowledge status,
+discovery, inspection, planning, synchronization, explanation, or impact, or
+when a selected package contract may affect the current task.
+
+Required compact context:
+
+- `.ai/framework/dependency-knowledge.md`
+- `.ai/project/dependencies/policy.json`
+- `.ai/project/dependencies/catalog.json`
+
+Load only one exact resolved package instance and selected normalized facts.
+Load its knowledge-lock entry for identity or freshness, target deviations for
+patches or applicability, and a prior snapshot only when target retention
+policy permits semantic comparison. Do not recursively scan dependencies,
+activate nested adapters, execute package managers or hooks, trust raw package
+text, or load unrelated package graphs. Projection sync is adapter-only;
+actual dependency or project changes use their normal operation and approval.
+
+## Intent Overlay: `workspace-mode-request`
+
+Apply this overlay for mode status, suggestion, inspection, per-task
+selection, definition, acceptance, update, disablement, deprecation, removal,
+or review, and when application/framework/skeleton/dependency/workspace roles
+are ambiguous.
+
+Required compact context:
+
+- `.ai/framework/workspace-modes.md`
+- `.ai/project/workspace-modes/catalog.json`
+
+Load one mode descriptor, applicable shared root context, and the mode flow or
+gate only when the selected action needs them. Suggestions remain proposed;
+accepted-state changes require a user decision and preview. Do not infer a
+mode from paths alone or activate nested adapters.
 
 ## Task-Scale Overlay: `large-or-resumable`
 

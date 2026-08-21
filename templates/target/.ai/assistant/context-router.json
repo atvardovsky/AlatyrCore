@@ -1,5 +1,5 @@
 {
-  "schema_version": 5,
+  "schema_version": 6,
   "router_kind": "target-context-router",
   "human_reference": ".ai/assistant/context-profiles.md",
   "preloaded_context": [
@@ -57,6 +57,20 @@
     ],
     "automatic_when": "single enabled sufficient match",
     "preview_policy": "risk-gated"
+  },
+  "workspace_mode_routing": {
+    "required_module": "workspace-modes",
+    "catalog": ".ai/project/workspace-modes/catalog.json",
+    "root_context": ".ai/project/workspace-modes/root/context.json",
+    "mode_path_pattern": ".ai/project/workspace-modes/modes/{MODE_ID}/mode.json",
+    "selection_order": [
+      "explicit accepted mode",
+      "single unambiguous accepted evidence match",
+      "accepted default whose conditions apply"
+    ],
+    "ambiguity_behavior": "ask-user-and-remain-read-only",
+    "no_match_behavior": "root-read-only",
+    "preflight": ".ai/assistant/templates/workspace-mode-preflight.md"
   },
   "intent_overlays": {
     "diagram-request": {
@@ -116,6 +130,24 @@
       "descriptor": ".ai/assistant/context/intents/extension-request.json",
       "operation_candidates": ["extension-management"],
       "required_module": "core-profile"
+    },
+    "dependency-knowledge-request": {
+      "use_when": [
+        "dependency knowledge status discovery inspection planning synchronization explanation or impact request",
+        "package-manager lock change or selected dependency contract may affect the task"
+      ],
+      "descriptor": ".ai/assistant/context/intents/dependency-knowledge-request.json",
+      "operation_candidates": ["dependency-knowledge"],
+      "required_module": "dependency-knowledge"
+    },
+    "workspace-mode-request": {
+      "use_when": [
+        "workspace mode status suggestion selection definition lifecycle or review request",
+        "framework application skeleton dependency or workspace role is ambiguous"
+      ],
+      "descriptor": ".ai/assistant/context/intents/workspace-mode-request.json",
+      "operation_candidates": ["workspace-mode"],
+      "required_module": "workspace-modes"
     }
   },
   "consistency_routing": {

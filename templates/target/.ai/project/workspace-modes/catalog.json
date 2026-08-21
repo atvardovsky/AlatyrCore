@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "catalog_kind": "target-workspace-mode-catalog",
+  "state": "{ENABLED_DEFERRED_DISABLED_OR_BLOCKED}",
+  "owner": "{TARGET_WORKSPACE_MODE_OWNER}",
+  "decision_authority": "{TARGET_WORKSPACE_MODE_DECISION_AUTHORITY}",
+  "workspace": {
+    "id": "{TARGET_WORKSPACE_ID}",
+    "kind": "{APPLICATION_FRAMEWORK_LIBRARY_SKELETON_TOOL_MONOREPO_OR_MIXED}",
+    "root": ".",
+    "adapter_role": "active",
+    "evidence": [
+      "{TARGET_WORKSPACE_IDENTITY_EVIDENCE}"
+    ]
+  },
+  "selection": {
+    "default_mode_id": null,
+    "automatic_selection": "accepted-unambiguous-only",
+    "ambiguity_behavior": "ask-user",
+    "no_match_behavior": "root-read-only",
+    "persistence": "per-task",
+    "local_preference_allowed": false,
+    "show_preflight_before_changes": true
+  },
+  "suggestions": {
+    "after_installation": true,
+    "after_framework_update": true,
+    "after_workspace_change": true,
+    "automatic_acceptance": false
+  },
+  "root_context": ".ai/project/workspace-modes/root/context.json",
+  "modes": []
+}

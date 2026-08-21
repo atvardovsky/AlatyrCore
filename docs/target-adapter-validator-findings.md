@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 677
+Catalog entries: 771
 
 ## Codes
 
@@ -361,6 +361,114 @@ Catalog entries: 677
 - `DELEGATION_ROLE_SHAPE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DELEGATION_UNSUPPORTED_ROUTE_CONFLICT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_APPLICABILITY`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_AUTHORITY`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_CATALOG_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_CATALOG_SCHEMA`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_DEVIATIONS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_DEVIATION_DUPLICATE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_DEVIATION_EXPORT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_DEVIATION_EXPORTS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_DEVIATION_INSTANCE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_DEVIATION_RECORD`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_DEVIATION_SCHEMA`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_DEVIATION_SOURCE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_DEVIATION_STATE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_DEVIATION_TYPE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_DISCOVERY`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_EVIDENCE_LIMIT`
+  Level: info. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_EXPORT_DIGEST`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_EXPORT_DUPLICATE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_EXPORT_EVIDENCE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_EXPORT_RECORD`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_EXPORT_SET_DRIFT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_EXPORT_STATUS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_FINGERPRINT_DRIFT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_FRESHNESS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_GRAPH_RECORD`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_GRAPH_REFERENCE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_INSTANCES`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_INSTANCE_DUPLICATE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_INSTANCE_RECORD`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_INTENT_UNROUTED`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_LIMIT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_LIMITS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_LOCK_EXPORT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_LOCK_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_LOCK_SCHEMA`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_MANIFEST_PATH`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_MANIFEST_RECORD`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_METADATA`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_MODIFICATIONS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_OPERATION_UNROUTED`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_PACKAGES`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_PACKAGE_RECORD`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_POLICY_OWNER`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_POLICY_SCHEMA`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_POLICY_STATE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_REQUIRED_FILE_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_ROUTING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_SOURCE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_SOURCES`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_SOURCE_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_SOURCE_PATH`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_STABILITY`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_TRUST`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_TRUST_STATE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEVELOPMENT_EVIDENCE_CONTENT_POLICY`
   Level: error. Source: `tools/validate_target_adapter.py`.
@@ -1365,6 +1473,86 @@ Catalog entries: 677
 - `VOCABULARY_TERM_STATE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `VOCABULARY_TERM_UNINDEXED`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_ACTIVE_ROOT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_AUTO_ACCEPT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_CATALOG_ENTRY`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_CATALOG_OWNER`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_CATALOG_SCHEMA`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_CATALOG_STATE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_CONSTRAINTS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_CONTEXT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_DEFAULT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_DESCRIPTOR_DRIFT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_DESCRIPTOR_FIELD`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_DESCRIPTOR_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_DESCRIPTOR_SCHEMA`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_DUPLICATE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_EMPTY`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_EVIDENCE_LIMIT`
+  Level: info. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_GRANT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_ID`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_INTENT_UNROUTED`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_MANIFEST_PATH`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_NESTED_ADAPTER`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_OPERATION_UNROUTED`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_PATH`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_README_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_RELATIONSHIP`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_RELATIONSHIPS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_REQUIRED_FILE_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_ROOT_CONTEXT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_ROOT_DISABLED_CONTENT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_ROOT_OWNER`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_ROOT_REFERENCE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_ROOT_SCHEMA`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_ROOT_STATE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_ROUTER`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_SCOPE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_SELECTION`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_SELECTION_POLICY`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_SIGNALS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_SUGGESTIONS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `WORKSPACE_MODE_WORKSPACE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `{prefix}_INVALID_JSON`
   Level: error. Source: `tools/validate_target_adapter.py`.

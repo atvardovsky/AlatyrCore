@@ -34,6 +34,12 @@ facts, or target skill infrastructure.
   explicit enablement, target commands, and RED/GREEN/refactor evidence
 - optional declarative external extensions with compact catalog, immutable
   source and installed-file lock, target bindings, permissions, and lifecycle
+- optional passive dependency knowledge with exact resolved-artifact binding,
+  target-owned trust/freshness/authority/applicability state, deviations,
+  retention, bounded synchronization, lazy explanation, and impact routing
+- optional user-owned workspace modes with an explicit active root, artifact
+  relationships, one directory per actual mode, and optional shared root
+  support outside routine bootstrap
 - blueprint or equivalent source-of-truth facts
 - source-of-truth registry entries
 - optional machine-readable consistency relationships for bounded impact
@@ -53,6 +59,8 @@ Replace this section with the actual target project map.
 - a compact generated bootstrap index that does not own project facts or rules
 - context profiles for task-specific context loading
 - module profile for required core and optional Alatyr capabilities
+- compact workspace-mode routing and per-mode support when application,
+  framework, library, skeleton, dependency, or workspace perspectives differ
 - task-specific maturity profile
 - bridge matrix and indexed per-assistant capability evidence
 - portable ASCII diagram layout and readability rules

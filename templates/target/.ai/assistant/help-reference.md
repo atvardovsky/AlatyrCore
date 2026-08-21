@@ -57,6 +57,16 @@ updating the canonical catalog.
   `Alatyr discuss {QUESTION}`: route to `team-decision`.
 - `Alatyr review {TASK_ID}`: route to read-only `team-review`.
 - `Alatyr merge check {TASK_ID}`: route to read-only `team-merge-check`.
+- `Alatyr dependencies`, `Alatyr dependency status`, `Alatyr sync
+  dependencies`, `Alatyr inspect dependency {PACKAGE}`, `Alatyr explain
+  dependency {PACKAGE}`, or `Alatyr dependency impact {PACKAGE_OR_CHANGE}`:
+  route to `dependency-knowledge` when the optional module is enabled. These
+  aliases do not run package managers, update packages, or activate nested
+  adapters.
+- `Alatyr modes`, `Alatyr mode status`, `Alatyr suggest modes`, `Alatyr mode
+  {MODE_ID}`, `Alatyr define mode`, or `Alatyr accept mode {MODE_ID}`: route
+  to `workspace-mode` when the optional module is enabled. Suggestions remain
+  proposed and mode selection grants no authority or permissions.
 
 ## Operation Menu
 
@@ -300,6 +310,34 @@ Default allowed actions: `read-only` for list, inspect, plan, and review;
 canonical integration uses `adapter-only` or `full-with-approval` only after
 immutable source, compatibility, bindings, permissions, ownership, approval,
 and validation are resolved.
+
+Operation: `dependency-knowledge`
+Use when: reporting dependency knowledge state; discovering or inspecting one
+declared passive export; planning or synchronizing the target-owned projection;
+explaining selected dependency contracts; or mapping dependency change impact.
+Flow: `.ai/assistant/flows/dependency-knowledge-sync.flow.md`
+Minimum input: mode or dependency question, plus package ecosystem, name,
+instance, or changed lockfile when known.
+Aliases: `Alatyr dependencies`, `Alatyr dependency status`, `Alatyr sync
+dependencies`, `Alatyr inspect dependency`, `Alatyr explain dependency`,
+`Alatyr dependency impact`.
+Default allowed actions: `read-only`; use `adapter-only` only for reviewed
+catalog, knowledge-lock, deviation, and permitted normalized-snapshot changes.
+Dependency, code, CI, security, permission, or policy-authority changes require
+their normal operation and approval route.
+
+Operation: `workspace-mode`
+Use when: listing mode state; suggesting evidence-bound modes; inspecting or
+selecting one mode for a task; or defining, accepting, updating, disabling,
+deprecating, removing, or reviewing a user-owned mode.
+Flow: `.ai/assistant/flows/workspace-mode.flow.md`
+Minimum input: mode action or workspace-role question; mode ID and explicit
+user decision for accepted-state changes.
+Aliases: `Alatyr modes`, `Alatyr mode status`, `Alatyr suggest modes`,
+`Alatyr mode`, `Alatyr define mode`, `Alatyr accept mode`.
+Default allowed actions: `read-only` for list, status, suggestion, inspection,
+and selection preview; `adapter-only` for accepted descriptor/catalog changes.
+Protected project facts require their normal operation and approval route.
 
 Operation: `adapter-maturity-review`
 Use when: reporting whether the adapter is incomplete, minimal, usable, or

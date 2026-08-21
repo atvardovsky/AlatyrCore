@@ -53,6 +53,8 @@ EXPECTED_OPERATIONS = {
     "test-first-configuration",
     "test-first-change",
     "extension-management",
+    "dependency-knowledge",
+    "workspace-mode",
     "adapter-maturity-review",
 }
 
@@ -91,6 +93,8 @@ ALLOWED_MODULES = {
     "architecture-knowledge",
     "project-vocabulary",
     "test-first-development",
+    "dependency-knowledge",
+    "workspace-modes",
 }
 ALLOWED_PREVIEW = {"never", "risk-gated"}
 ALLOWED_PROFILES = {

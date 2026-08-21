@@ -67,6 +67,13 @@ List what must not be changed.
 - Proposed extension catalog and extension lock paths, target bindings,
   permissions, approval, installed-file ownership, conflicts, dependents,
   local-modification policy, and removal evidence:
+- Workspace-mode need, owner, decision authority, and module state:
+- Workspace identity, selected root, active adapter, and evidence:
+- Proposed modes with IDs, kinds, scopes, use/do-not-use signals,
+  relationships, ownership, confidence, and maintenance cost:
+- Optional shared root context and one directory per actual mode:
+- User acceptance process, ambiguity behavior, per-task selection, preflight,
+  validation, and post-install/update suggestion behavior:
 - Context router schema and lazy descriptors:
 - Generated bootstrap index, source hashes, and regeneration owner:
 - Routed gate index and default profile fragments:
@@ -275,6 +282,25 @@ content untrusted during inspection. Canonical installation requires an
 immutable source revision, deterministic digest, compatible manifest,
 target-owned bindings, explicit installed-file ownership, approval, and
 validation; it must not execute package lifecycle hooks.
+
+Include `.ai/project/dependencies/policy.json`, `catalog.json`,
+`knowledge-lock.json`, `deviations.json`, the optional normalized snapshot
+boundary, `dependency-knowledge-request` overlay, synchronization flow, gate,
+report template, and operation when passive dependency knowledge is enabled.
+Name target package ecosystems and lockfiles, native export metadata, exact
+artifact identity, local patch/fork/workspace handling, trust and state axes,
+retention/license/privacy policy, graph limits, owner, validation, and known
+gaps. Do not recursively scan dependencies, activate nested adapters, execute
+package content, or copy dependency claims into project facts.
+
+Include the optional workspace mode structure through
+`.ai/project/workspace-modes/catalog.json`, optional root support, one
+directory per actual mode, the `workspace-mode-request` overlay, flow, gate,
+suggestion, preflight, and operation only when distinct workspace perspectives
+are justified. Record workspace identity, relationships, adapter roles,
+ownership, selection and ambiguity rules, user decision authority, context,
+validation, and cost. Installation may propose zero or more modes but must not
+accept them automatically or activate nested adapters.
 
 Include `.ai/assistant/flows/large-task-orchestration.flow.md` and
 `.ai/assistant/templates/large-task-operation-packet.md` when the target needs

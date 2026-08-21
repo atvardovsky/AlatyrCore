@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "descriptor_kind": "target-intent-overlay",
+  "intent": "dependency-knowledge-request",
+  "use_when": [
+    "dependency knowledge status discovery inspection planning synchronization explanation or impact request",
+    "package-manager lock changed and dependency knowledge may be stale",
+    "a code architecture security or migration task depends on an exported package contract"
+  ],
+  "operation_candidates": [
+    "dependency-knowledge"
+  ],
+  "required_module": "dependency-knowledge",
+  "required_context": [
+    ".ai/framework/dependency-knowledge.md",
+    ".ai/project/dependencies/policy.json",
+    ".ai/project/dependencies/catalog.json"
+  ],
+  "conditional_context": [
+    {
+      "path": ".ai/project/dependencies/knowledge-lock.json",
+      "when": "resolved identity freshness graph or digest evidence is needed"
+    },
+    {
+      "path": ".ai/project/dependencies/deviations.json",
+      "when": "the selected dependency is patched wrapped restricted conditional or contradicted"
+    },
+    {
+      "path": ".ai/project/dependencies/snapshots/{PACKAGE_INSTANCE_ID}/",
+      "when": "policy permits a normalized snapshot and historical semantic comparison is needed"
+    },
+    {
+      "path": ".ai/assistant/flows/dependency-knowledge-sync.flow.md",
+      "when": "a dependency knowledge operation mode is selected"
+    },
+    {
+      "path": ".ai/assistant/gates/dependency-knowledge.md",
+      "when": "trust synchronization applicability conflict or projection acceptance is evaluated"
+    }
+  ],
+  "expand_when": [
+    "package identity provenance license digest or schema is unresolved",
+    "exported fact authority freshness applicability or stability is unclear",
+    "target patches configuration project facts or cross-package contracts may conflict",
+    "a selected public dependency edge requires bounded traversal",
+    "a project or protected fact change needs its normal operation and approval"
+  ],
+  "budget_behavior": "load one package instance and selected fact records first; bound graph depth and instance count; keep unrelated packages and raw documentation out of context"
+}

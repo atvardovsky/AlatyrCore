@@ -57,6 +57,12 @@
       "write_scope": "none"
     },
     {
+      "name": "inspect-dependency-knowledge",
+      "script": "validate_dependency_knowledge_export.py",
+      "purpose": "inspect a local passive dependency knowledge export without network access or execution",
+      "write_scope": "none"
+    },
+    {
       "name": "prepare-conformance",
       "script": "prepare_conformance_matrix.py",
       "purpose": "prepare all-surface assistant conformance workspaces",

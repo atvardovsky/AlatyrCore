@@ -97,8 +97,25 @@ Target adapters may include fact types such as:
 - structured team policy, actor identity mapping, authority, or priority policy
 - skill, prompt, wrapper, or bridge behavior
 - approval rule
+- external dependency public contract
+- target dependency configuration, restriction, wrapper, or patch deviation
+- cross-package integration contract
 
 The target adapter decides the actual names and owners.
+
+Dependency exports are external claims, not automatically target-owned facts.
+When dependency knowledge is enabled, register the applicable ownership split:
+the package owner controls its declared public guarantee, the target controls
+local use and deviation, and a named integration owner controls cross-package
+behavior. Record trust, freshness, authority, and applicability separately;
+do not encode them as one precedence value.
+
+Workspace identity, accepted development modes, default selection, and
+artifact relationships are target-owned project facts when workspace modes are
+enabled. Register their decision authority and evidence. Mode descriptors may
+link to architecture, package, skeleton, ownership, or validation sources but
+must not replace those owners. A selected mode routes context; it does not
+become source of truth for the facts it references.
 
 ## Baseline Template Entries
 

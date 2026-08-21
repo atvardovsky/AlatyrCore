@@ -31,6 +31,12 @@
       "intent_overlays": [],
       "task_scale_overlays": [],
       "expected_budget_state": "compact"
+    },
+    "workspace-mode-selection": {
+      "profile": "code-local",
+      "intent_overlays": ["workspace-mode-request"],
+      "task_scale_overlays": [],
+      "expected_budget_state": "compact"
     }
   }
 }

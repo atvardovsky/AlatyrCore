@@ -15,9 +15,11 @@ A target adapter can load:
 
 1. assistant instructions that the host already preloaded
 2. the generated `.ai/assistant/bootstrap-index.json` routing projection
-3. the selected profile's required context
-4. one or more project-area overlays when the task names affected areas
-5. task-scale overlays only when the task is large, resumable, team-active, or
+3. the compact workspace-mode catalog when that optional module is enabled
+4. one selected mode descriptor and applicable shared root context
+5. the selected profile's required context
+6. one or more project-area overlays when the task names affected areas
+7. task-scale overlays only when the task is large, resumable, team-active, or
    an enabled-team write preflight finds possible active-work overlap
 
 Then it expands only when the router or human profile names a boundary,
@@ -51,6 +53,8 @@ A target context router should define:
 - bounded operation candidates per profile
 - compact operation-index and canonical operation-catalog paths, single entry
   alias, health operation, and preview policy without embedding either source
+- optional workspace-mode routing to a compact catalog, shared root descriptor,
+  one selected mode directory, ambiguity behavior, and preflight
 - optional intent overlays that compose with every base profile
 - optional project-area overlays
 - optional task-scale overlays for large, resumable, or team-active work
@@ -110,6 +114,14 @@ target catalog. Load only one selected lock entry, normalized manifest,
 bindings, item set, lifecycle flow, gate, and evidence record. Do not scan or
 load every extension, and do not access remote sources outside target policy.
 
+Dependency knowledge work should use a separate optional intent overlay. Start
+with the target dependency policy and compact catalog. Load one resolved
+package instance, selected normalized fact records, applicable deviations, and
+named evidence only after the route requires them. Keep package-manager graphs,
+raw vendor documentation, nested adapters, unrelated packages, and historical
+snapshots outside routine bootstrap. Use fingerprints for an unchanged fast
+path and bounded graph traversal for public transitive references.
+
 When an overlay needs a detailed reference only for a subset of requests, put
 the path and its load condition in `conditional_context` instead of the default
 `required_context`. Conditional paths must remain machine-visible to routing
@@ -119,7 +131,7 @@ The router should use the same canonical profile names as
 `context-profiles.md` unless the target adapter records a deliberate local
 renaming.
 
-Budgets are routing controls, not safety limits. Schema 5 preserves schema 4's
+Budgets are routing controls, not safety limits. Schema 6 preserves schema 5's
 separate maximum total profile words, portable framework/adapter words, and
 capacity reserved for target-owned facts. Values must be positive, portable plus reserved must
 not exceed total, and source templates should retain meaningful target
@@ -131,6 +143,15 @@ exceeds a budget, load it and record the reason, boundary, added files,
 measured or explicitly estimated volume, and intentionally omitted context.
 Static source estimates are benchmark evidence, not a claim about hidden
 client context or an actual assistant run.
+
+Workspace-mode routing is a separate dimension from task profiles, intent,
+project areas, gates, and task scale. When enabled, read the compact mode
+catalog after bootstrap, select one accepted mode from explicit user choice or
+one unambiguous evidence match, then load only that descriptor and applicable
+root support. Ask on ambiguity. Mode selection must not activate nested
+adapters or grant permissions, approval, write scope, authority, or gate
+bypass. Keep every actual mode in its own target directory and keep the
+authoring `_template` outside active catalog entries.
 
 A large-task overlay should route to the orchestration flow and operation
 packet without adding those files to every normal task profile. While a packet

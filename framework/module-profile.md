@@ -79,6 +79,14 @@ maintain them:
   read-only inspection, target normalization, compact catalog, immutable
   source and installed-file lock, permissions, lifecycle evidence, safe update,
   and ownership-aware removal.
+- `dependency-knowledge`: passive package-owned public knowledge exports,
+  exact artifact binding, target-owned trust/freshness/authority/applicability
+  projection, bounded graph synchronization, deviations, retention, lazy
+  explanation, and impact routing without activating nested adapters.
+- `workspace-modes`: user-owned workspace identity, accepted development modes,
+  explicit framework/application/library/skeleton/dependency relationships,
+  optional shared root context, one directory per mode, evidence-based
+  installation suggestions, bounded selection, and pre-change mode evidence.
 - `diagrams`: diagram source, visual artifact, render or manual-review, drift,
   discussion presentation, generated capability index, per-assistant
   capability/freshness records, captured result conformance, security/privacy,
@@ -180,6 +188,14 @@ Reject module-profile work that:
 - enables extensions without immutable provenance, license and compatibility
   review, resolved target bindings, permission and approval evidence, exact
   installed-file ownership, lock validation, and safe removal behavior
+- enables dependency knowledge without native-metadata-only discovery, exact
+  artifact identity, untrusted-source handling, independent semantic state
+  axes, target ownership, bounded graph traversal, retention policy, lazy
+  routing, and structural validation
+- enables workspace modes without user-owned acceptance, explicit workspace
+  identity, one active root adapter, relationship/ownership evidence, one
+  directory per actual mode, ambiguity handling, lazy context, preflight, and
+  structural validation
 - enables team collaboration without a coordination backend, actor and
   decision-owner evidence, storage/privacy policy, or conflict review
 - enables subagent delegation without a target policy, current per-surface
