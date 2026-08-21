@@ -8,6 +8,8 @@ explanation, and impact review when the optional module is enabled.
 - One explicit workspace adapter scope is selected.
 - Nested dependency adapters and assistant-native bridges remain inactive.
 - Only native-metadata-declared passive exports are inspected.
+- Every metadata locator is typed `native-package-metadata-key`, resolves in
+  the declared native manifest, and does not invoke adapter code.
 - Package managers, plugins, hooks, commands, tools, and exported validation
   are not executed by synchronization.
 

@@ -4,6 +4,29 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.15 - 2026-08-21
+
+- Increased the framework version to `0.1.0-alpha.15`, adapter schema version
+  to `14`, and target template version to `15` for ownership, dependency
+  discovery, release-evidence, and conformance enforcement changes.
+- Separated category routing owners from per-rule canonical semantic owners in
+  generated rule documentation and source checks, removing the ambiguous dual
+  ownership of `ALATYR-SAFETY-002` without changing its canonical owner.
+- Required dependency package sources to identify locators as
+  `native-package-metadata-key`; target validation now rejects executable or
+  adapter-style locator contracts.
+- Bound release validation to the exact `v<VERSION>` tag in tag-triggered CI,
+  included every shipped schema in contract classification and migration diffs,
+  and bound reviewed migration evidence to deterministic baseline and
+  destination contract-tree SHA-256 values.
+- Added a machine-readable captured-conformance run index. Canonical source
+  checks now validate every committed run and reject missing, unexpected, or
+  unregistered captured report sets; aggregate checking and summarization use
+  the indexed run-root contract.
+- Corrected installation and maintenance guidance so generated registries,
+  ownership maps, and captured-run parent directories are not presented as
+  semantic owners or direct report directories.
+
 ## 0.1.0-alpha.14 - 2026-08-21
 
 - Increased the framework version to `0.1.0-alpha.14`, adapter schema version

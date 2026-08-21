@@ -97,8 +97,8 @@ Those belong to a project contour or repository adapter.
 - `.ai/framework/contour.md`: boundary for portable framework core.
 - `.ai/framework/guarantees.md`: what the framework guarantees and what it
   cannot guarantee without a project adapter.
-- `.ai/framework/rule-ownership.md`: canonical owner map for framework rule
-  categories and duplicate-policy boundaries.
+- `.ai/framework/rule-ownership.md`: generated category-routing and per-rule
+  canonical-owner map for framework rules and duplicate-policy boundaries.
 - Rule-owner framework documents carry `alatyr_doc` front matter so source
   helpers can validate rule ownership, dependencies, and task-profile scope.
 - `.ai/framework/rule-registry.md`: stable rule identifiers and canonical

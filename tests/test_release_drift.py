@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -8,7 +9,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from check_release_drift import nearest_tagged_baseline, prior_changelog_versions  # noqa: E402
+from check_release_drift import (  # noqa: E402
+    SCHEMA_CONTRACT_PATHS,
+    contract_digest,
+    nearest_tagged_baseline,
+    prior_changelog_versions,
+)
+from check_versioning import validate_release_tag  # noqa: E402
 
 
 class ReleaseBaselineTests(unittest.TestCase):
@@ -18,11 +25,41 @@ class ReleaseBaselineTests(unittest.TestCase):
         tag, intervening = nearest_tagged_baseline(version)
 
         self.assertEqual(tag, "v0.1.0-alpha.3")
-        self.assertEqual(intervening[0], "0.1.0-alpha.13")
+        self.assertEqual(intervening[0], prior_changelog_versions(version)[0])
         self.assertEqual(intervening[-1], "0.1.0-alpha.4")
         self.assertEqual(
             prior_changelog_versions(version)[: len(intervening)], intervening
         )
+
+    def test_all_shipped_schemas_are_release_contract_paths(self) -> None:
+        schema_paths = {
+            path.relative_to(ROOT).as_posix()
+            for path in (ROOT / "schemas").rglob("*.json")
+        }
+
+        self.assertTrue(schema_paths)
+        self.assertTrue(schema_paths.issubset(SCHEMA_CONTRACT_PATHS))
+
+    def test_contract_digest_changes_with_schema_content(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "framework").mkdir()
+            (root / "schemas").mkdir()
+            (root / "templates" / "target").mkdir(parents=True)
+            (root / "schemas/example.json").write_text("{}\n", encoding="utf-8")
+            for name in ["VERSION", "ADAPTER_SCHEMA_VERSION", "TEMPLATE_VERSION"]:
+                (root / name).write_text("1\n", encoding="utf-8")
+
+            before = contract_digest(root)
+            (root / "schemas/example.json").write_text(
+                '{"type":"object"}\n', encoding="utf-8"
+            )
+
+            self.assertNotEqual(contract_digest(root), before)
+
+    def test_release_tag_must_match_version(self) -> None:
+        self.assertEqual(validate_release_tag("1.2.3", "v1.2.3"), [])
+        self.assertTrue(validate_release_tag("1.2.3", "v1.2.4"))
 
 
 if __name__ == "__main__":

@@ -20,6 +20,7 @@ FIXTURES = ROOT / "conformance" / "fixtures"
 SHARED = ROOT / "conformance" / "golden" / "shared-expectations.json"
 REPORTS = ROOT / "conformance" / "golden" / "fixture-reports"
 RUN_TEMPLATE = ROOT / "conformance" / "runs" / "assistant-run-report-template.json"
+CAPTURED_RUNS_ROOT = ROOT / "conformance" / "runs" / "assistant-results"
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -390,6 +391,9 @@ def validate_actual_reports(
     require_reports: bool,
     require_all_fixtures: bool,
     expected_fixtures: set[str] | None = None,
+    expected_run_id: str | None = None,
+    expected_assistant_surface: str | None = None,
+    expected_source_commit: str | None = None,
 ) -> list[str]:
     failures: list[str] = []
     if not actual_dir.is_dir():
@@ -410,6 +414,15 @@ def validate_actual_reports(
     for report_path in report_paths:
         try:
             report = load_json(report_path)
+            for field, expected_value in [
+                ("run_id", expected_run_id),
+                ("assistant_surface", expected_assistant_surface),
+                ("source_commit", expected_source_commit),
+            ]:
+                if expected_value is not None and report.get(field) != expected_value:
+                    raise AssertionError(
+                        f"{report_path} {field} must match registered value {expected_value}"
+                    )
             fixture_name = report.get("fixture")
             if not isinstance(fixture_name, str) or fixture_name not in fixture_dirs:
                 raise AssertionError(
@@ -441,6 +454,114 @@ def validate_actual_reports(
     return failures
 
 
+def registered_runs(
+    runs_root: Path,
+) -> list[tuple[Path, set[str], bool, str, str, str]]:
+    index_path = runs_root / "index.json"
+    index = load_json(index_path)
+    if index.get("schema_version") != 1 or index.get("index_kind") != "alatyr-captured-conformance-runs":
+        raise AssertionError(f"invalid captured run index contract: {index_path}")
+    runs = index.get("runs")
+    if not isinstance(runs, list) or not runs:
+        raise AssertionError(f"{index_path} must contain registered runs")
+
+    fixture_names = {path.name for path in FIXTURES.iterdir() if path.is_dir()}
+    seen_ids: set[str] = set()
+    seen_directories: set[str] = set()
+    registered: list[tuple[Path, set[str], bool, str, str, str]] = []
+    root = runs_root.resolve()
+    for position, run in enumerate(runs):
+        if not isinstance(run, dict):
+            raise AssertionError(f"{index_path} runs[{position}] must be an object")
+        run_id = run.get("id")
+        directory = run.get("directory")
+        expected = run.get("expected_fixtures")
+        complete = run.get("complete_fixture_set")
+        report_run_id = run.get("report_run_id")
+        assistant_surface = run.get("assistant_surface")
+        source_commit = run.get("source_commit")
+        if not isinstance(run_id, str) or not run_id:
+            raise AssertionError(f"{index_path} runs[{position}].id must be non-empty")
+        if run_id in seen_ids:
+            raise AssertionError(f"{index_path} duplicates run id {run_id}")
+        if not isinstance(directory, str) or not directory or Path(directory).name != directory:
+            raise AssertionError(f"{index_path} run {run_id} directory must be one relative segment")
+        if directory in seen_directories:
+            raise AssertionError(f"{index_path} duplicates run directory {directory}")
+        run_dir = (runs_root / directory).resolve()
+        if run_dir.parent != root or not run_dir.is_dir():
+            raise AssertionError(f"{index_path} run {run_id} directory is missing or escapes the root")
+        if not isinstance(expected, list) or not expected or any(
+            not isinstance(item, str) or not item for item in expected
+        ):
+            raise AssertionError(f"{index_path} run {run_id} expected_fixtures must be non-empty strings")
+        expected_set = set(expected)
+        if len(expected_set) != len(expected):
+            raise AssertionError(f"{index_path} run {run_id} duplicates expected fixtures")
+        unknown = sorted(expected_set - fixture_names)
+        if unknown:
+            raise AssertionError(f"{index_path} run {run_id} has unknown fixtures: {unknown}")
+        if not isinstance(complete, bool):
+            raise AssertionError(f"{index_path} run {run_id} complete_fixture_set must be boolean")
+        for field, value in [
+            ("report_run_id", report_run_id),
+            ("assistant_surface", assistant_surface),
+            ("source_commit", source_commit),
+        ]:
+            if not isinstance(value, str) or not value:
+                raise AssertionError(
+                    f"{index_path} run {run_id} {field} must be non-empty"
+                )
+        if complete and expected_set != fixture_names:
+            raise AssertionError(f"{index_path} run {run_id} claims complete coverage without every fixture")
+        seen_ids.add(run_id)
+        seen_directories.add(directory)
+        registered.append(
+            (
+                run_dir,
+                expected_set,
+                complete,
+                report_run_id,
+                assistant_surface,
+                source_commit,
+            )
+        )
+
+    unregistered = sorted(
+        path.name
+        for path in runs_root.iterdir()
+        if path.is_dir() and any(path.glob("*.json")) and path.name not in seen_directories
+    )
+    if unregistered:
+        raise AssertionError(f"{index_path} omits captured run directories: {unregistered}")
+    return registered
+
+
+def validate_registered_runs(runs_root: Path, shared: dict[str, Any]) -> list[str]:
+    failures: list[str] = []
+    for (
+        run_dir,
+        expected,
+        _complete,
+        report_run_id,
+        assistant_surface,
+        source_commit,
+    ) in registered_runs(runs_root):
+        failures.extend(
+            validate_actual_reports(
+                run_dir,
+                shared,
+                require_reports=True,
+                require_all_fixtures=True,
+                expected_fixtures=expected,
+                expected_run_id=report_run_id,
+                expected_assistant_surface=assistant_surface,
+                expected_source_commit=source_commit,
+            )
+        )
+    return failures
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description=(
@@ -466,6 +587,11 @@ def main() -> int:
         action="store_true",
         help="Fail when --actual-dir does not contain a valid report for every fixture.",
     )
+    parser.add_argument(
+        "--actual-root",
+        type=Path,
+        help="Registered captured-run root containing index.json and run directories.",
+    )
     args = parser.parse_args()
 
     failures: list[str] = []
@@ -473,6 +599,7 @@ def main() -> int:
         shared = load_json(SHARED)
         failures.extend(validate_run_template(shared))
         failures.extend(validate_golden_reports(shared))
+        failures.extend(validate_registered_runs(CAPTURED_RUNS_ROOT, shared))
         if args.require_all_fixtures and args.actual_dir is None:
             failures.append("--require-all-fixtures requires --actual-dir")
         if args.actual_dir is not None:
@@ -484,6 +611,8 @@ def main() -> int:
                     require_all_fixtures=args.require_all_fixtures,
                 )
             )
+        if args.actual_root is not None and args.actual_root.resolve() != CAPTURED_RUNS_ROOT.resolve():
+            failures.extend(validate_registered_runs(args.actual_root, shared))
     except (OSError, AssertionError) as exc:
         failures.append(str(exc))
 
@@ -492,8 +621,8 @@ def main() -> int:
             print(f"FAIL: {failure}", file=sys.stderr)
         return 1
 
-    if args.actual_dir is None:
-        print("OK: checked golden conformance reports")
+    if args.actual_dir is None and args.actual_root is None:
+        print("OK: checked golden and registered captured conformance reports")
     else:
         print("OK: checked golden conformance reports and actual assistant-run reports")
     return 0

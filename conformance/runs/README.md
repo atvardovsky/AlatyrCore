@@ -21,19 +21,19 @@ reviewed assistant outside that list.
 Validate captured reports with:
 
 ```sh
-python3 tools/check_conformance_reports.py --actual-dir conformance/runs/assistant-results
+python3 tools/check_conformance_reports.py --actual-root conformance/runs/assistant-results
 ```
 
 For a completed full fixture run, require reports for every fixture:
 
 ```sh
-python3 tools/check_conformance_reports.py --actual-dir conformance/runs/assistant-results --require-actual-reports --require-all-fixtures
+python3 tools/check_conformance_reports.py --actual-dir conformance/runs/assistant-results/<complete-run-id> --require-actual-reports --require-all-fixtures
 ```
 
 Summarize one or more captured run directories with:
 
 ```sh
-python3 tools/summarize_conformance_reports.py --actual-dir conformance/runs/assistant-results --require-all-fixtures
+python3 tools/summarize_conformance_reports.py --actual-root conformance/runs/assistant-results
 ```
 
 To prepare identical seed repositories for an assistant run:

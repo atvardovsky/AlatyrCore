@@ -1735,6 +1735,7 @@ def main() -> int:
             "not an assistant installation test",
             "assistant-run-result",
             "--actual-dir",
+            "--actual-root",
             "--require-actual-reports",
             "--require-all-fixtures",
             "source_commit",
@@ -1742,7 +1743,7 @@ def main() -> int:
             "auto_load_observed",
             "assistant-result-conformance",
             "forbidden_claims_absent",
-            "OK: checked golden conformance reports",
+            "OK: checked golden and registered captured conformance reports",
         ]:
             if required_conformance_reports_text not in conformance_reports_text:
                 failures.append(
@@ -1774,6 +1775,7 @@ def main() -> int:
     for conformance_run_file in [
         "conformance/runs/README.md",
         "conformance/runs/assistant-results/README.md",
+        "conformance/runs/assistant-results/index.json",
         "conformance/runs/assistant-run-report-template.json",
         "conformance/runs/assistant-surfaces.json",
     ]:

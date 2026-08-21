@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 771
+Catalog entries: 772
 
 ## Codes
 
@@ -459,6 +459,8 @@ Catalog entries: 771
 - `DEPENDENCY_KNOWLEDGE_SOURCE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEPENDENCY_KNOWLEDGE_SOURCES`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEPENDENCY_KNOWLEDGE_SOURCE_LOCATOR`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEPENDENCY_KNOWLEDGE_SOURCE_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.

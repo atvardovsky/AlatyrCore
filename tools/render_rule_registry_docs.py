@@ -50,7 +50,10 @@ def render_registry(data: dict[str, Any]) -> str:
         "",
         "Rule IDs let target adapters and migration records reference stable process",
         "contracts without copying complete policy text. Canonical semantics remain in",
-        "the owner named by each entry and by `framework/rule-ownership.md`.",
+        "the `canonical_source` owner named by each registry entry. Category routing",
+        "owners group related rules but do not replace those semantic owners.",
+        "`framework/rule-ownership.md` renders both mappings from this registry for",
+        "maintainers and tools; it is not an independent policy source.",
         "",
         "## Rule ID Format",
         "",
@@ -99,8 +102,9 @@ def render_ownership(data: dict[str, Any]) -> str:
     lines = [
         "# Rule Ownership",
         "",
-        "This file is generated from `framework/rule-registry.json`. Canonical owner",
-        "documents define rule semantics; this map only routes maintainers and tools.",
+        "This file is generated from `framework/rule-registry.json`. Per-rule canonical",
+        "owners define rule semantics. Category routing owners group related rules for",
+        "maintainers and tools but do not become additional semantic owners.",
         "Derived documents should reference the owner or rule ID and avoid copying",
         "the complete policy language.",
         "",
@@ -111,7 +115,7 @@ def render_ownership(data: dict[str, Any]) -> str:
         "- Keep owner front matter aligned with registered IDs and dependencies.",
         "- Record material contract changes in the changelog and migration evidence.",
         "",
-        "## Category Owners",
+        "## Category Routing Owners",
         "",
     ]
     for owner in data["category_owners"]:
@@ -119,9 +123,24 @@ def render_ownership(data: dict[str, Any]) -> str:
         lines.extend(
             [
                 f"Category: `{owner['category']}`",
-                f"Owner: `{target_owner}`",
+                f"Routing owner: `{target_owner}`",
                 "Rule IDs: " + ", ".join(f"`{item}`" for item in owner["rule_ids"]),
                 *wrapped("Derived surfaces: ", ", ".join(owner["derived_surfaces"]) + "."),
+                "",
+            ]
+        )
+    lines.extend(
+        [
+            "## Rule Canonical Owners",
+            "",
+        ]
+    )
+    for rule in data["rules"]:
+        target_source = f".ai/{rule['canonical_source']}"
+        lines.extend(
+            [
+                f"Rule: `{rule['id']}`",
+                f"Canonical owner: `{target_source}`",
                 "",
             ]
         )

@@ -123,18 +123,19 @@ installation.
 Captured assistant-run reports can be checked when they exist:
 
 ```sh
-python3 tools/check_conformance_reports.py --actual-dir conformance/runs/assistant-results
+python3 tools/check_conformance_reports.py --actual-root conformance/runs/assistant-results
 ```
 
 Use `conformance/runs/assistant-run-report-template.json` for the report shape.
-Use `--require-actual-reports` when a conformance run is expected to have
-produced JSON reports. Use `--require-all-fixtures` when a full run should
-include one valid report for every fixture.
+The indexed root records each run's expected scope. When checking one
+unregistered or temporary run through `--actual-dir`, use
+`--require-actual-reports` when reports must exist and `--require-all-fixtures`
+when that run should cover every fixture.
 
 Captured runs can be summarized by assistant surface and fixture with:
 
 ```sh
-python3 tools/summarize_conformance_reports.py --actual-dir conformance/runs/assistant-results --require-all-fixtures
+python3 tools/summarize_conformance_reports.py --actual-root conformance/runs/assistant-results
 ```
 
 ## Fixture Set

@@ -20,6 +20,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_RULES = ROOT / "framework" / "rule-registry.json"
 DEFAULT_FRAMEWORK_DIR = ROOT / "framework"
+DEFAULT_SCHEMA_DIR = ROOT / "schemas"
 DEFAULT_TEMPLATE_DIR = ROOT / "templates" / "target"
 
 
@@ -84,6 +85,40 @@ def file_index(path: Path) -> dict[str, str]:
     return index
 
 
+def contract_surface_digest(
+    framework_dir: Path,
+    schema_dir: Path,
+    template_dir: Path,
+    framework_version: str,
+    adapter_schema_version: str,
+    template_version: str,
+) -> str:
+    digest = hashlib.sha256()
+    for prefix, directory in [
+        ("framework", framework_dir),
+        ("schemas", schema_dir),
+        ("templates/target", template_dir),
+    ]:
+        if not directory.is_dir():
+            raise ValueError(f"missing contract directory: {directory}")
+        for path in sorted(item for item in directory.rglob("*") if item.is_file()):
+            relpath = f"{prefix}/{path.relative_to(directory).as_posix()}"
+            digest.update(relpath.encode("utf-8"))
+            digest.update(b"\0")
+            digest.update(path.read_bytes())
+            digest.update(b"\0")
+    for filename, value in [
+        ("VERSION", framework_version),
+        ("ADAPTER_SCHEMA_VERSION", adapter_schema_version),
+        ("TEMPLATE_VERSION", template_version),
+    ]:
+        digest.update(filename.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update((value + "\n").encode("utf-8"))
+        digest.update(b"\0")
+    return digest.hexdigest()
+
+
 def normalized_rule(rule: dict[str, Any]) -> str:
     return json.dumps(rule, sort_keys=True, separators=(",", ":"))
 
@@ -138,6 +173,8 @@ def migration_action_hints(
     template_version_changed: bool,
     framework_files_compared: bool,
     framework_files_changed: bool,
+    schema_files_compared: bool,
+    schema_files_changed: bool,
     template_files_compared: bool,
     template_files_changed: bool,
 ) -> list[str]:
@@ -166,6 +203,8 @@ def migration_action_hints(
         hints.add("Compare target templates and decide which installed adapter placeholders need migration.")
     if framework_files_compared and framework_files_changed:
         hints.add("Compare installed `.ai/framework` files against changed framework sources before applying updates.")
+    if schema_files_compared and schema_files_changed:
+        hints.add("Review every changed shipped schema and migrate affected consumers atomically.")
     if template_files_compared and template_files_changed:
         hints.add("Compare installed adapter templates against changed target template surfaces before applying updates.")
     if not hints:
@@ -187,6 +226,8 @@ def build_impact_data(
     to_template_version: str,
     from_framework_files: dict[str, str] | None,
     to_framework_files: dict[str, str] | None,
+    from_schema_files: dict[str, str] | None,
+    to_schema_files: dict[str, str] | None,
     from_template_files: dict[str, str] | None,
     to_template_files: dict[str, str] | None,
 ) -> dict[str, Any]:
@@ -234,6 +275,7 @@ def build_impact_data(
         }
 
     framework_files = file_changes(from_framework_files, to_framework_files)
+    schema_contracts = file_changes(from_schema_files, to_schema_files)
     template_surfaces = file_changes(from_template_files, to_template_files)
     affected_categories = affected_rule_values(
         affected_rule_ids, from_rules, to_rules, "category"
@@ -250,6 +292,8 @@ def build_impact_data(
         known_version_changed(from_template_version, to_template_version),
         framework_files["compared"],
         bool(framework_files["added"] or framework_files["changed"] or framework_files["removed"]),
+        schema_contracts["compared"],
+        bool(schema_contracts["added"] or schema_contracts["changed"] or schema_contracts["removed"]),
         template_surfaces["compared"],
         bool(template_surfaces["added"] or template_surfaces["changed"] or template_surfaces["removed"]),
     )
@@ -277,6 +321,7 @@ def build_impact_data(
             "removed": removed_owners,
         },
         "framework_files": framework_files,
+        "schema_contracts": schema_contracts,
         "target_template_surfaces": template_surfaces,
         "action_hints": [line[2:] for line in hints if line != "- none"],
     }
@@ -299,6 +344,10 @@ def render_report(
     to_framework_dir: Path | None,
     from_framework_files: dict[str, str] | None,
     to_framework_files: dict[str, str] | None,
+    from_schema_dir: Path | None,
+    to_schema_dir: Path | None,
+    from_schema_files: dict[str, str] | None,
+    to_schema_files: dict[str, str] | None,
     from_template_dir: Path | None,
     to_template_dir: Path | None,
     from_template_files: dict[str, str] | None,
@@ -324,6 +373,30 @@ def render_report(
     )
     affected_sources = affected_rule_values(
         affected_rule_ids, from_rules, to_rules, "canonical_source"
+    )
+    from_contract_digest = (
+        contract_surface_digest(
+            from_framework_dir,
+            from_schema_dir,
+            from_template_dir,
+            from_version,
+            from_adapter_schema_version,
+            from_template_version,
+        )
+        if from_framework_dir and from_schema_dir and from_template_dir
+        else "not compared"
+    )
+    to_contract_digest = (
+        contract_surface_digest(
+            to_framework_dir,
+            to_schema_dir,
+            to_template_dir,
+            to_version,
+            to_adapter_schema_version,
+            to_template_version,
+        )
+        if to_framework_dir and to_schema_dir and to_template_dir
+        else "not compared"
     )
 
     from_owner_ids = set(from_owner_categories)
@@ -352,6 +425,21 @@ def render_report(
         removed_files = []
         changed_files = []
 
+    if from_schema_files is not None and to_schema_files is not None:
+        from_schema_ids = set(from_schema_files)
+        to_schema_ids = set(to_schema_files)
+        added_schema_files = sorted(to_schema_ids - from_schema_ids)
+        removed_schema_files = sorted(from_schema_ids - to_schema_ids)
+        changed_schema_files = sorted(
+            file_id
+            for file_id in from_schema_ids & to_schema_ids
+            if from_schema_files[file_id] != to_schema_files[file_id]
+        )
+    else:
+        added_schema_files = []
+        removed_schema_files = []
+        changed_schema_files = []
+
     if from_template_files is not None and to_template_files is not None:
         from_template_ids = set(from_template_files)
         to_template_ids = set(to_template_files)
@@ -378,6 +466,9 @@ def render_report(
             added_files,
             changed_files,
             removed_files,
+            added_schema_files,
+            changed_schema_files,
+            removed_schema_files,
             added_template_files,
             changed_template_files,
             removed_template_files,
@@ -394,6 +485,12 @@ def render_report(
         from_framework_files is not None and to_framework_files is not None
     )
     framework_files_changed = bool(added_files or changed_files or removed_files)
+    schema_files_compared = (
+        from_schema_files is not None and to_schema_files is not None
+    )
+    schema_files_changed = bool(
+        added_schema_files or changed_schema_files or removed_schema_files
+    )
     template_files_compared = from_template_files is not None and to_template_files is not None
     template_files_changed = bool(
         added_template_files or changed_template_files or removed_template_files
@@ -404,6 +501,8 @@ def render_report(
         template_version_changed,
         framework_files_compared,
         framework_files_changed,
+        schema_files_compared,
+        schema_files_changed,
         template_files_compared,
         template_files_changed,
     )
@@ -428,6 +527,8 @@ def render_report(
         f"To adapter schema version: `{to_adapter_schema_version}`",
         f"From template version: `{from_template_version}`",
         f"To template version: `{to_template_version}`",
+        f"From contract SHA-256: `{from_contract_digest}`",
+        f"To contract SHA-256: `{to_contract_digest}`",
         "",
         "## Summary",
         "",
@@ -441,6 +542,9 @@ def render_report(
         f"- Added framework files: {len(added_files)}",
         f"- Changed framework files: {len(changed_files)}",
         f"- Removed framework files: {len(removed_files)}",
+        f"- Added schema contracts: {len(added_schema_files)}",
+        f"- Changed schema contracts: {len(changed_schema_files)}",
+        f"- Removed schema contracts: {len(removed_schema_files)}",
         f"- Added target template surfaces: {len(added_template_files)}",
         f"- Changed target template surfaces: {len(changed_template_files)}",
         f"- Removed target template surfaces: {len(removed_template_files)}",
@@ -458,6 +562,11 @@ def render_report(
             "Framework files",
             framework_files_changed,
             unknown=not framework_files_compared,
+        ),
+        contract_status(
+            "Schema contracts",
+            schema_files_changed,
+            unknown=not schema_files_compared,
         ),
         contract_status(
             "Target template surfaces",
@@ -534,6 +643,30 @@ def render_report(
                 "",
                 "Removed framework files:",
                 *bullet_list(removed_files),
+            ]
+        )
+
+    lines.extend(["", "## Schema Contract Changes", ""])
+    if from_schema_files is None or to_schema_files is None:
+        lines.extend(
+            [
+                "- not requested; pass `--from-schema-dir` to compare schema contracts",
+            ]
+        )
+    else:
+        lines.extend(
+            [
+                f"From schema directory: `{from_schema_dir}`",
+                f"To schema directory: `{to_schema_dir}`",
+                "",
+                "Added schema contracts:",
+                *bullet_list(added_schema_files),
+                "",
+                "Changed schema contracts:",
+                *bullet_list(changed_schema_files),
+                "",
+                "Removed schema contracts:",
+                *bullet_list(removed_schema_files),
             ]
         )
 
@@ -661,6 +794,17 @@ def main() -> int:
         help="Next framework directory. Defaults to this repository's framework/.",
     )
     parser.add_argument(
+        "--from-schema-dir",
+        type=Path,
+        help="Optional previous directory containing shipped JSON schemas.",
+    )
+    parser.add_argument(
+        "--to-schema-dir",
+        default=DEFAULT_SCHEMA_DIR,
+        type=Path,
+        help="Next schema directory. Defaults to this repository's schemas/.",
+    )
+    parser.add_argument(
         "--from-template-dir",
         type=Path,
         help="Optional previous target template directory, such as templates/target from an older release.",
@@ -695,6 +839,10 @@ def main() -> int:
     to_framework_dir = args.to_framework_dir.resolve() if args.from_framework_dir else None
     from_framework_files = file_index(from_framework_dir) if from_framework_dir else None
     to_framework_files = file_index(to_framework_dir) if to_framework_dir else None
+    from_schema_dir = args.from_schema_dir.resolve() if args.from_schema_dir else None
+    to_schema_dir = args.to_schema_dir.resolve() if args.from_schema_dir else None
+    from_schema_files = file_index(from_schema_dir) if from_schema_dir else None
+    to_schema_files = file_index(to_schema_dir) if to_schema_dir else None
     from_template_dir = args.from_template_dir.resolve() if args.from_template_dir else None
     to_template_dir = args.to_template_dir.resolve() if args.from_template_dir else None
     from_template_files = file_index(from_template_dir) if from_template_dir else None
@@ -717,6 +865,10 @@ def main() -> int:
         to_framework_dir,
         from_framework_files,
         to_framework_files,
+        from_schema_dir,
+        to_schema_dir,
+        from_schema_files,
+        to_schema_files,
         from_template_dir,
         to_template_dir,
         from_template_files,
@@ -735,6 +887,8 @@ def main() -> int:
         to_template_version=args.to_template_version,
         from_framework_files=from_framework_files,
         to_framework_files=to_framework_files,
+        from_schema_files=from_schema_files,
+        to_schema_files=to_schema_files,
         from_template_files=from_template_files,
         to_template_files=to_template_files,
     )

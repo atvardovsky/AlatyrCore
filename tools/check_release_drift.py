@@ -10,12 +10,20 @@ import sys
 import tempfile
 from pathlib import Path
 
+try:
+    from report_migration_diff import contract_surface_digest
+except ModuleNotFoundError:  # Support package-style imports in source tests.
+    from tools.report_migration_diff import contract_surface_digest
+
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORTER = ROOT / "tools" / "report_migration_diff.py"
-SCHEMA_CONTRACT_PATHS = {
+SHIPPED_SCHEMA_PATHS = {
+    path.relative_to(ROOT).as_posix()
+    for path in (ROOT / "schemas").rglob("*.json")
+}
+SCHEMA_CONTRACT_PATHS = SHIPPED_SCHEMA_PATHS | {
     "framework/capabilities.json",
-    "schemas/alatyr-adapter.schema.json",
     "templates/target/.ai/alatyr.yaml",
     "templates/target/.ai/assistant/module-profile.md",
     "templates/target/.ai/assistant/context-router.json",
@@ -30,6 +38,7 @@ SCHEMA_CONTRACT_PATHS = {
     "templates/target/.ai/assistant/team/task-record-template.json",
     "templates/target/.ai/project/team-policy.json",
 }
+CONTRACT_VERSION_FILES = ("VERSION", "ADAPTER_SCHEMA_VERSION", "TEMPLATE_VERSION")
 
 
 def git(
@@ -87,6 +96,7 @@ def changed_paths(ref: str) -> set[str]:
 
 
 def materialize(ref: str, prefix: str, destination: Path) -> None:
+    (destination / prefix).mkdir(parents=True, exist_ok=True)
     paths = require_git_text("ls-tree", "-r", "--name-only", ref, "--", prefix)
     for relpath in filter(None, paths.splitlines()):
         result = git("show", f"{ref}:{relpath}", text=False)
@@ -98,12 +108,62 @@ def materialize(ref: str, prefix: str, destination: Path) -> None:
         output.write_bytes(result.stdout)
 
 
+def contract_digest(root: Path) -> str:
+    versions = [
+        (root / filename).read_text(encoding="utf-8").strip()
+        for filename in CONTRACT_VERSION_FILES
+    ]
+    return contract_surface_digest(
+        root / "framework",
+        root / "schemas",
+        root / "templates" / "target",
+        versions[0],
+        versions[1],
+        versions[2],
+    )
+
+
+def validate_committed_report(
+    *,
+    baseline: str,
+    from_version: str,
+    to_version: str,
+    from_adapter: str,
+    to_adapter: str,
+    from_template: str,
+    to_template: str,
+    from_digest: str,
+    to_digest: str,
+) -> list[str]:
+    report_path = ROOT / "docs" / "releases" / f"{to_version}-migration.md"
+    if not report_path.is_file():
+        return [f"missing committed migration report: {report_path.relative_to(ROOT)}"]
+    text = report_path.read_text(encoding="utf-8")
+    required = [
+        f"From manifest: `{baseline}:framework/rule-registry.json`",
+        "To manifest: `framework/rule-registry.json`",
+        f"From framework version: `{from_version}`",
+        f"To framework version: `{to_version}`",
+        f"From adapter schema version: `{from_adapter}`",
+        f"To adapter schema version: `{to_adapter}`",
+        f"From template version: `{from_template}`",
+        f"To template version: `{to_template}`",
+        f"From contract SHA-256: `{from_digest}`",
+        f"To contract SHA-256: `{to_digest}`",
+    ]
+    return [
+        f"{report_path.relative_to(ROOT)} missing release binding {item}"
+        for item in required
+        if item not in text
+    ]
+
+
 def report_has_changes(report: str) -> bool:
     counts = [
         int(value)
         for value in re.findall(
             r"^- (?:Added|Changed|Removed) "
-            r"(?:rules|rule owner categories|framework files|target template surfaces): "
+            r"(?:rules|rule owner categories|framework files|schema contracts|target template surfaces): "
             r"(\d+)$",
             report,
             flags=re.MULTILINE,
@@ -198,7 +258,10 @@ def main() -> int:
     try:
         baseline = resolve_baseline(args.mode, args.from_ref)
         paths = changed_paths(baseline)
-        framework_changed = any(path.startswith("framework/") for path in paths)
+        framework_changed = any(
+            path.startswith("framework/") or path.startswith("schemas/")
+            for path in paths
+        )
         templates_changed = any(path.startswith("templates/target/") for path in paths)
         schema_changed = bool(paths & SCHEMA_CONTRACT_PATHS)
 
@@ -227,7 +290,11 @@ def main() -> int:
         with tempfile.TemporaryDirectory(prefix="alatyr-release-baseline-") as directory:
             previous = Path(directory)
             materialize(baseline, "framework", previous)
+            materialize(baseline, "schemas", previous)
             materialize(baseline, "templates/target", previous)
+            for filename in CONTRACT_VERSION_FILES:
+                output = previous / filename
+                output.write_text(read_at(baseline, filename) + "\n", encoding="utf-8")
             command = [
                 sys.executable,
                 str(REPORTER),
@@ -251,6 +318,10 @@ def main() -> int:
                 str(previous / "framework"),
                 "--to-framework-dir",
                 str(ROOT / "framework"),
+                "--from-schema-dir",
+                str(previous / "schemas"),
+                "--to-schema-dir",
+                str(ROOT / "schemas"),
                 "--from-template-dir",
                 str(previous / "templates" / "target"),
                 "--to-template-dir",
@@ -267,6 +338,20 @@ def main() -> int:
                 if paths and not report_has_changes(report):
                     failures.append(
                         "migration report declared no contract changes against a changed release baseline"
+                    )
+                if args.mode == "release":
+                    failures.extend(
+                        validate_committed_report(
+                            baseline=baseline,
+                            from_version=from_version,
+                            to_version=to_version,
+                            from_adapter=from_adapter,
+                            to_adapter=to_adapter,
+                            from_template=from_template,
+                            to_template=to_template,
+                            from_digest=contract_digest(previous),
+                            to_digest=contract_digest(ROOT),
+                        )
                     )
                 if args.report_output:
                     output = args.report_output.resolve()

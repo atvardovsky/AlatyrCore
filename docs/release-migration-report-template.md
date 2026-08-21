@@ -18,6 +18,8 @@ From adapter schema version: `{FROM_ADAPTER_SCHEMA_VERSION}`
 To adapter schema version: `{TO_ADAPTER_SCHEMA_VERSION}`
 From template version: `{FROM_TEMPLATE_VERSION}`
 To template version: `{TO_TEMPLATE_VERSION}`
+From contract SHA-256: `{FROM_CONTRACT_SHA256}`
+To contract SHA-256: `{TO_CONTRACT_SHA256}`
 
 ## Adapter Contract Impact
 
@@ -27,6 +29,7 @@ Template version: `{CHANGED_UNCHANGED_OR_NOT_COMPARED}`
 Rule registry: `{CHANGED_UNCHANGED_OR_NOT_COMPARED}`
 Rule ownership: `{CHANGED_UNCHANGED_OR_NOT_COMPARED}`
 Framework files: `{CHANGED_UNCHANGED_OR_NOT_COMPARED}`
+Schema contracts: `{CHANGED_UNCHANGED_OR_NOT_COMPARED}`
 Target template surfaces: `{CHANGED_UNCHANGED_OR_NOT_COMPARED}`
 
 ## Affected Rule Categories
@@ -90,6 +93,20 @@ Changed framework files:
 Removed framework files:
 
 - `{REMOVED_FRAMEWORK_FILE_OR_NONE}`
+
+## Schema Contract Changes
+
+Added schema contracts:
+
+- `{ADDED_SCHEMA_CONTRACT_OR_NONE}`
+
+Changed schema contracts:
+
+- `{CHANGED_SCHEMA_CONTRACT_OR_NONE}`
+
+Removed schema contracts:
+
+- `{REMOVED_SCHEMA_CONTRACT_OR_NONE}`
 
 ## Target Template Surface Changes
 

@@ -2018,6 +2018,15 @@
       ]
     },
     {
+      "code": "DEPENDENCY_KNOWLEDGE_SOURCE_LOCATOR",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "DEPENDENCY_KNOWLEDGE_SOURCE_MISSING",
       "levels": [
         "error"

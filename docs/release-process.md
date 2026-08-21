@@ -79,9 +79,12 @@ cannot establish this baseline reliably.
 
 Store the reviewed report for a tagged version at
 `docs/releases/<VERSION>-migration.md`. The report must name the compared
-source baseline, all three version values, required target actions, validation,
-and residual risks. Generated output is a starting point; replace temporary
-paths and unresolved version labels before accepting it as release evidence.
+source baseline, all three version values, schema changes, required target
+actions, validation, residual risks, and deterministic SHA-256 values for the
+baseline and destination contract trees. Release validation recomputes those
+digests across `framework/`, `schemas/`, `templates/target/`, and the three
+version files. Generated output is a starting point; replace temporary paths
+and unresolved version labels before accepting it as release evidence.
 
 ## Pre-Release Checklist
 
@@ -105,6 +108,7 @@ Before tagging a source release:
 - run `tools/check_migration_diff_report.py`
 - run `tools/check_release_drift.py --mode release`
 - run `tools/check_versioning.py`
+- confirm the triggering release tag is exactly `v<VERSION>`
 - review `git diff --check`
 
 ## Tagging

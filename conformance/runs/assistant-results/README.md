@@ -2,6 +2,12 @@
 
 Place actual assistant-run JSON reports here when running fixture conformance.
 
+Register every committed run directory in `index.json`, including its report
+run ID, assistant surface, source commit, expected fixture set, and whether it
+represents complete fixture coverage. Canonical source checks bind every report
+to those values and reject unregistered run directories that contain JSON
+reports.
+
 Each report should be named for the fixture, for example
 `backend-api-minimal.json`, and should use
 `conformance/runs/assistant-run-report-template.json` as its shape.

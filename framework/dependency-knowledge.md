@@ -73,6 +73,12 @@ A package may publish `alatyr-dependency.json` at a path declared through its
 native package metadata. Do not recursively scan dependency directories for
 exports or `.ai` installations.
 
+Each enabled target package source records
+`metadata_locator_kind: native-package-metadata-key` and the exact metadata key
+or key path in `metadata_locator`. The locator must resolve inside the declared
+native package manifest. It must not name executable adapter code, a plugin,
+hook, command, nested Alatyr adapter, or recursive search strategy.
+
 Version 1 exports define:
 
 - `schema_version: 1` and `package_kind: alatyr-dependency-knowledge`

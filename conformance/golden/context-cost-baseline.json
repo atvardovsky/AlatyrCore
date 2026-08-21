@@ -349,15 +349,15 @@
       "words": 2616
     },
     "dependency-knowledge-request": {
-      "bytes": 18071,
-      "characters": 18071,
+      "bytes": 18471,
+      "characters": 18471,
       "declared_files": 4,
-      "estimated_tokens_4_chars": 4518,
+      "estimated_tokens_4_chars": 4618,
       "missing_paths": [],
       "portable_paths": [
         ".ai/framework/dependency-knowledge.md"
       ],
-      "portable_words": 1842,
+      "portable_words": 1888,
       "resolved_files": 4,
       "resolved_paths": [
         ".ai/assistant/context/intents/dependency-knowledge-request.json",
@@ -370,9 +370,9 @@
         ".ai/project/dependencies/policy.json",
         ".ai/project/dependencies/catalog.json"
       ],
-      "target_words": 305,
+      "target_words": 307,
       "unresolved_references": [],
-      "words": 2147
+      "words": 2195
     },
     "diagram-request": {
       "bytes": 23158,
@@ -516,10 +516,10 @@
   "measurement": "whitespace-delimited words in resolved source templates",
   "migration_routing": {
     "full_candidate_union": {
-      "bytes": 327695,
-      "characters": 327695,
+      "bytes": 330876,
+      "characters": 330876,
       "declared_files": 36,
-      "estimated_tokens_4_chars": 81924,
+      "estimated_tokens_4_chars": 82719,
       "missing_paths": [],
       "portable_paths": [
         ".ai/framework/README.md",
@@ -556,7 +556,7 @@
         ".ai/framework/team-collaboration.md",
         ".ai/framework/testing-guidance.md"
       ],
-      "portable_words": 41032,
+      "portable_words": 41306,
       "resolved_files": 35,
       "resolved_paths": [
         ".ai/assistant/context/migration-routing.json",
@@ -603,7 +603,7 @@
       "unresolved_references": [
         "{TARGET_UPGRADE_IMPACT_REPORT}"
       ],
-      "words": 41582
+      "words": 41856
     },
     "initial": {
       "bytes": 13658,
@@ -791,15 +791,15 @@
     },
     "dependency-knowledge": {
       "compact": {
-        "bytes": 27886,
-        "characters": 27886,
+        "bytes": 28286,
+        "characters": 28286,
         "declared_files": 5,
-        "estimated_tokens_4_chars": 6972,
+        "estimated_tokens_4_chars": 7072,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/dependency-knowledge.md"
         ],
-        "portable_words": 1842,
+        "portable_words": 1888,
         "resolved_files": 5,
         "resolved_paths": [
           ".ai/assistant/operation-index.json",
@@ -814,20 +814,20 @@
           ".ai/project/dependencies/policy.json",
           ".ai/project/dependencies/catalog.json"
         ],
-        "target_words": 867,
+        "target_words": 869,
         "unresolved_references": [],
-        "words": 2709
+        "words": 2757
       },
       "full_reference_union": {
-        "bytes": 89518,
-        "characters": 89518,
+        "bytes": 90195,
+        "characters": 90195,
         "declared_files": 13,
-        "estimated_tokens_4_chars": 22380,
+        "estimated_tokens_4_chars": 22549,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/dependency-knowledge.md"
         ],
-        "portable_words": 1842,
+        "portable_words": 1888,
         "resolved_files": 12,
         "resolved_paths": [
           ".ai/assistant/operation-catalog.json",
@@ -856,13 +856,13 @@
           ".ai/assistant/flows/dependency-knowledge-sync.flow.md",
           ".ai/assistant/gates/dependency-knowledge.md"
         ],
-        "target_words": 6918,
+        "target_words": 6955,
         "unresolved_references": [
           ".ai/project/dependencies/snapshots/{PACKAGE_INSTANCE_ID}/"
         ],
-        "words": 8760
+        "words": 8843
       },
-      "word_reduction_percent": 69.1
+      "word_reduction_percent": 68.8
     },
     "diagram-discussion": {
       "compact": {
@@ -1914,17 +1914,17 @@
       "bytes": 6003,
       "characters": 6003,
       "conditional_context": {
-        "bytes": 64720,
-        "characters": 64720,
+        "bytes": 65287,
+        "characters": 65287,
         "declared_files": 7,
-        "estimated_tokens_4_chars": 16180,
+        "estimated_tokens_4_chars": 16322,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/lifecycle.md",
           ".ai/framework/migration-diff.md",
           ".ai/framework/rule-registry.json"
         ],
-        "portable_words": 4549,
+        "portable_words": 4627,
         "resolved_files": 7,
         "resolved_paths": [
           ".ai/framework/lifecycle.md",
@@ -1943,22 +1943,22 @@
         ],
         "target_words": 2082,
         "unresolved_references": [],
-        "words": 6631
+        "words": 6709
       },
       "declared_files": 5,
       "estimated_tokens_4_chars": 1501,
       "full_candidate_union": {
-        "bytes": 70723,
-        "characters": 70723,
+        "bytes": 71290,
+        "characters": 71290,
         "declared_files": 12,
-        "estimated_tokens_4_chars": 17681,
+        "estimated_tokens_4_chars": 17823,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/lifecycle.md",
           ".ai/framework/migration-diff.md",
           ".ai/framework/rule-registry.json"
         ],
-        "portable_words": 4549,
+        "portable_words": 4627,
         "resolved_files": 11,
         "resolved_paths": [
           ".ai/assistant/context/profiles/framework-upgrade.json",
@@ -1987,7 +1987,7 @@
         "unresolved_references": [
           "{TARGET_UPGRADE_IMPACT_REPORT}"
         ],
-        "words": 7096
+        "words": 7174
       },
       "missing_paths": [],
       "portable_paths": [],

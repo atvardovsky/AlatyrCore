@@ -8,7 +8,8 @@
       "ecosystem": "{PACKAGE_ECOSYSTEM}",
       "manifest": "{TARGET_RELATIVE_PACKAGE_MANIFEST}",
       "lockfile": "{TARGET_RELATIVE_PACKAGE_LOCKFILE}",
-      "metadata_locator": "{NATIVE_ALATYR_EXPORT_METADATA_KEY_OR_ADAPTER}"
+      "metadata_locator_kind": "native-package-metadata-key",
+      "metadata_locator": "{NATIVE_ALATYR_EXPORT_METADATA_KEY}"
     }
   ],
   "discovery": {

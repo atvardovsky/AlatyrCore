@@ -731,6 +731,7 @@ def main() -> int:
                 "ecosystem": "fixture",
                 "manifest": "package.json",
                 "lockfile": "package-lock.json",
+                "metadata_locator_kind": "native-package-metadata-key",
                 "metadata_locator": "fixture.alatyr",
             }
         ]
@@ -840,6 +841,20 @@ def main() -> int:
                 "resolved dependency knowledge projection produced errors: "
                 + ", ".join(valid_dependency_errors)
             )
+        dependency_policy["package_sources"][0]["metadata_locator_kind"] = "adapter"
+        write_json(dependency_policy_path, dependency_policy)
+        invalid_locator = validator(target)
+        invalid_locator.check_dependency_knowledge(None)
+        if "DEPENDENCY_KNOWLEDGE_SOURCE_LOCATOR" not in {
+            finding.code for finding in invalid_locator.findings
+        }:
+            failures.append(
+                "dependency knowledge must reject non-native metadata locators"
+            )
+        dependency_policy["package_sources"][0]["metadata_locator_kind"] = (
+            "native-package-metadata-key"
+        )
+        write_json(dependency_policy_path, dependency_policy)
         lock_data["instances"][0]["graph"]["public_instance_ids"] = [
             "fixture:missing@1.0.0#transitive"
         ]

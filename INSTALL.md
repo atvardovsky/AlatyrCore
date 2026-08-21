@@ -22,7 +22,9 @@ changed facts, approval triggers, or failed validation.
 ## Rule References
 
 Installation docs are derived routing surfaces. Canonical rule meanings live
-in `framework/rule-registry.*` and `framework/rule-ownership.md`.
+in the owner document named by each entry in `framework/rule-registry.json`.
+`framework/rule-ownership.md` is a generated routing map, not an independent
+semantic owner.
 
 - Context routing: `ALATYR-CONTEXT-001`
 - Source-of-truth ownership: `ALATYR-SOURCE-001`

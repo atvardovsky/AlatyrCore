@@ -143,6 +143,13 @@ Before upgrading framework files in a target project:
 Do not use an installer script as the framework mechanism. Do not overwrite
 target-specific rules just because the source framework changed.
 
+For an AlatyrCore source release, the release tag must equal `v<VERSION>`.
+Reviewed migration evidence must name the exact baseline and all three version
+values, compare every shipped schema contract, and bind the baseline and
+destination framework, schema, target-template, and version-file trees with
+deterministic SHA-256 values. A generated temporary report does not validate a
+different committed migration report.
+
 ## Change Log Expectations
 
 Framework lifecycle notes should record:

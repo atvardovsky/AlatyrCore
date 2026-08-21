@@ -6,7 +6,10 @@ registry and the canonical owner document, then run
 
 Rule IDs let target adapters and migration records reference stable process
 contracts without copying complete policy text. Canonical semantics remain in
-the owner named by each entry and by `framework/rule-ownership.md`.
+the `canonical_source` owner named by each registry entry. Category routing
+owners group related rules but do not replace those semantic owners.
+`framework/rule-ownership.md` renders both mappings from this registry for
+maintainers and tools; it is not an independent policy source.
 
 ## Rule ID Format
 
@@ -207,11 +210,12 @@ involved.
 Rule ID: `ALATYR-DEPENDENCY-001`
 Canonical source: `.ai/framework/dependency-knowledge.md`
 Commitment: When dependency knowledge is enabled, keep one active workspace
-adapter and consume only explicitly declared passive package exports; bind
+adapter and consume only passive package exports declared by a typed native
+package metadata key; never execute metadata adapters or package content, bind
 untrusted exports to exact resolved artifacts, record trust freshness authority
 and applicability independently, preserve package and project fact ownership,
-synchronize a target-owned projection without executing package content,
-traverse only bounded relevant graph edges, and keep dependency knowledge lazy.
+synchronize a target-owned projection, traverse only bounded relevant graph
+edges, and keep dependency knowledge lazy.
 Applies to: dependency knowledge discovery, dependency synchronization,
 dependency explanation, dependency impact review, dependency updates,
 Alatyr-aware package releases.
@@ -317,11 +321,12 @@ Rule ID: `ALATYR-LIFECYCLE-001`
 Canonical source: `.ai/framework/lifecycle.md`
 Commitment: Record framework version, adapter schema version, template version,
 installed framework pack, baseline, local deviations, migration notes, and a
-hash-bound delta-first upgrade impact; preserve enabled target package,
-documentation, vocabulary, testing, extension, team, and delegation
-policy/capability state; expand upgrade context from affected owners and
-migrate changed schemas atomically without replacing active state with
-placeholders.
+hash-bound delta-first upgrade impact; bind source releases to v<VERSION>,
+every shipped schema, and deterministic contract-tree evidence; preserve
+enabled target package, documentation, vocabulary, testing, extension, team,
+and delegation policy/capability state; expand upgrade context from affected
+owners and migrate changed schemas atomically without replacing active state
+with placeholders.
 Applies to: installation, framework upgrades.
 Enforcement: required.
 

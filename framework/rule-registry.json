@@ -263,7 +263,7 @@
       "id": "ALATYR-DEPENDENCY-001",
       "category": "DEPENDENCY",
       "canonical_source": "framework/dependency-knowledge.md",
-      "summary": "When dependency knowledge is enabled, keep one active workspace adapter and consume only explicitly declared passive package exports; bind untrusted exports to exact resolved artifacts, record trust freshness authority and applicability independently, preserve package and project fact ownership, synchronize a target-owned projection without executing package content, traverse only bounded relevant graph edges, and keep dependency knowledge lazy.",
+      "summary": "When dependency knowledge is enabled, keep one active workspace adapter and consume only passive package exports declared by a typed native package metadata key; never execute metadata adapters or package content, bind untrusted exports to exact resolved artifacts, record trust freshness authority and applicability independently, preserve package and project fact ownership, synchronize a target-owned projection, traverse only bounded relevant graph edges, and keep dependency knowledge lazy.",
       "applies_to": ["dependency knowledge discovery", "dependency synchronization", "dependency explanation", "dependency impact review", "dependency updates", "Alatyr-aware package releases"],
       "enforcement": "required when module enabled or dependency knowledge is consumed"
     },
@@ -335,7 +335,7 @@
       "id": "ALATYR-LIFECYCLE-001",
       "category": "LIFECYCLE",
       "canonical_source": "framework/lifecycle.md",
-      "summary": "Record framework version, adapter schema version, template version, installed framework pack, baseline, local deviations, migration notes, and a hash-bound delta-first upgrade impact; preserve enabled target package, documentation, vocabulary, testing, extension, team, and delegation policy/capability state; expand upgrade context from affected owners and migrate changed schemas atomically without replacing active state with placeholders.",
+      "summary": "Record framework version, adapter schema version, template version, installed framework pack, baseline, local deviations, migration notes, and a hash-bound delta-first upgrade impact; bind source releases to v<VERSION>, every shipped schema, and deterministic contract-tree evidence; preserve enabled target package, documentation, vocabulary, testing, extension, team, and delegation policy/capability state; expand upgrade context from affected owners and migrate changed schemas atomically without replacing active state with placeholders.",
       "applies_to": ["installation", "framework upgrades"],
       "enforcement": "required"
     },

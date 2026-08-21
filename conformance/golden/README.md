@@ -54,11 +54,13 @@ Validate captured assistant-run reports against the same fixture contracts
 with:
 
 ```sh
-python3 tools/check_conformance_reports.py --actual-dir conformance/runs/assistant-results
+python3 tools/check_conformance_reports.py --actual-root conformance/runs/assistant-results
 ```
 
-Use `--require-actual-reports` when the run should fail if no captured reports
-exist. Use `--require-all-fixtures` when the run should cover every fixture.
+For one temporary run selected with `--actual-dir`, use
+`--require-actual-reports` when reports must exist and `--require-all-fixtures`
+when that run should cover every fixture. Indexed committed runs carry their
+expected scope in `conformance/runs/assistant-results/index.json`.
 
 Validate scaffolded-adapter snapshots with:
 

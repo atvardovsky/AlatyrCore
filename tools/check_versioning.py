@@ -7,6 +7,8 @@ framework requirement for target projects.
 
 from __future__ import annotations
 
+import argparse
+import os
 import re
 import sys
 from pathlib import Path
@@ -54,6 +56,15 @@ def read_single_line(path: Path) -> str:
 def require_positive_integer(value: str, relpath: str) -> None:
     if not re.fullmatch(r"[1-9]\d*", value):
         raise AssertionError(f"{relpath} must be a positive integer")
+
+
+def validate_release_tag(version: str, tag: str | None) -> List[str]:
+    if not tag:
+        return []
+    expected = f"v{version}"
+    if tag != expected:
+        return [f"release tag {tag} must match VERSION as {expected}"]
+    return []
 
 
 def unreleased_body(changelog: str) -> str:
@@ -110,6 +121,8 @@ def validate_current_release(version: str, changelog: str) -> List[str]:
         "## Required Target Actions",
         "## Validation Run",
         "## Residual Risks",
+        "From contract SHA-256:",
+        "To contract SHA-256:",
         "recheck-after-framework-update",
     ]:
         if required not in text:
@@ -159,6 +172,12 @@ def validate_public_version_surfaces(version: str) -> List[str]:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--expected-release-tag",
+        help="Explicit release tag to compare with v<VERSION>.",
+    )
+    args = parser.parse_args()
     failures: List[str] = []
     try:
         version = read_single_line(VERSION)
@@ -180,6 +199,16 @@ def main() -> int:
         except AssertionError as exc:
             failures.append(str(exc))
         failures.extend(validate_changelog(changelog))
+        environment_tag = (
+            os.environ.get("GITHUB_REF_NAME")
+            if os.environ.get("GITHUB_REF_TYPE") == "tag"
+            else None
+        )
+        failures.extend(
+            validate_release_tag(
+                version, args.expected_release_tag or environment_tag
+            )
+        )
         failures.extend(validate_current_release(version, changelog))
         failures.extend(validate_release_process(release_process))
         failures.extend(validate_public_version_surfaces(version))

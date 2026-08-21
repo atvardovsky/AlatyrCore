@@ -67,12 +67,27 @@ def validate() -> list[str]:
         try:
             rule_id = require_string(rule.get("id"), f"rules[{index}].id")
             category = require_string(rule.get("category"), f"{rule_id}.category")
+            canonical_source = require_string(
+                rule.get("canonical_source"), f"{rule_id}.canonical_source"
+            )
         except AssertionError as exc:
             failures.append(str(exc))
             continue
         if rule_id in rule_categories:
             failures.append(f"duplicate rule id: {rule_id}")
         rule_categories[rule_id] = category
+        if not (ROOT / canonical_source).is_file():
+            failures.append(
+                f"{rule_id} canonical source does not exist: {canonical_source}"
+            )
+        canonical_mapping = (
+            f"Rule: `{rule_id}`\nCanonical owner: `.ai/{canonical_source}`"
+        )
+        if canonical_mapping not in ownership_text:
+            failures.append(
+                "framework/rule-ownership.md missing canonical owner mapping for "
+                f"{rule_id}: .ai/{canonical_source}"
+            )
 
     category_owners = data.get("category_owners")
     if not isinstance(category_owners, list) or not category_owners:
@@ -102,9 +117,9 @@ def validate() -> list[str]:
 
         if f"Category: `{category}`" not in ownership_text:
             failures.append(f"framework/rule-ownership.md missing category {category}")
-        if f"Owner: `.ai/{owner_path}`" not in ownership_text:
+        if f"Routing owner: `.ai/{owner_path}`" not in ownership_text:
             failures.append(
-                "framework/rule-ownership.md missing owner mapping for "
+                "framework/rule-ownership.md missing category routing owner for "
                 f"{category}: .ai/{owner_path}"
             )
 
@@ -140,7 +155,7 @@ def main() -> int:
         for failure in failures:
             print(f"FAIL: {failure}", file=sys.stderr)
         return 1
-    print("OK: checked rule ownership categories and rule IDs")
+    print("OK: checked category routing and canonical rule ownership")
     return 0
 
 

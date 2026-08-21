@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-captured-conformance-runs",
+  "runs": [
+    {
+      "id": "codex-current-session-8dab3d1",
+      "directory": "codex-current-session-8dab3d1",
+      "report_run_id": "current-all-surfaces-codex",
+      "assistant_surface": "codex",
+      "source_commit": "8dab3d15c6e0dc983096c2aaca89fba75fe6fa14",
+      "expected_fixtures": [
+        "backend-api-minimal",
+        "frontend-app-minimal",
+        "monorepo-mixed",
+        "python-cli-existing-ai"
+      ],
+      "complete_fixture_set": true
+    },
+    {
+      "id": "codex-isolated-core-6ee985d",
+      "directory": "codex-isolated-core-6ee985d",
+      "report_run_id": "codex-staged-core-6ee985d",
+      "assistant_surface": "codex",
+      "source_commit": "6ee985df3e6e65507cda175944b2b3ea4be630ae",
+      "expected_fixtures": [
+        "backend-api-minimal",
+        "frontend-app-minimal",
+        "monorepo-mixed",
+        "python-cli-existing-ai"
+      ],
+      "complete_fixture_set": true
+    },
+    {
+      "id": "codex-source-bootstrap-6ee985d",
+      "directory": "codex-source-bootstrap-6ee985d",
+      "report_run_id": "codex-isolated-6ee985d",
+      "assistant_surface": "codex",
+      "source_commit": "6ee985df3e6e65507cda175944b2b3ea4be630ae",
+      "expected_fixtures": [
+        "backend-api-minimal"
+      ],
+      "complete_fixture_set": false
+    }
+  ]
+}

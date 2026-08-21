@@ -951,19 +951,23 @@ py -3 .\tools\check_source_of_truth_registry.py
 ## Versioning Check
 
 `check_versioning.py` validates source version files, changelog structure, and
-release-process documentation for this repository. It is not a portable
+release-process documentation for this repository. In tag-triggered GitHub CI
+it also requires `GITHUB_REF_NAME` to equal `v<VERSION>`; maintainers can supply
+the same assertion locally with `--expected-release-tag`. It is not a portable
 framework requirement for target projects.
 
 Linux or macOS:
 
 ```sh
 python3 tools/check_versioning.py
+python3 tools/check_versioning.py --expected-release-tag "v$(cat VERSION)"
 ```
 
 Windows PowerShell or Command Prompt:
 
 ```powershell
 py -3 .\tools\check_versioning.py
+py -3 .\tools\check_versioning.py --expected-release-tag "v$(Get-Content VERSION)"
 ```
 
 ## Release Migration Report Check
@@ -973,12 +977,13 @@ report template and checks that `report_migration_diff.py` emits the same
 evidence shape. It is not a portable framework requirement for target
 projects.
 
-`check_release_drift.py` compares framework and target-template changes with
-the latest reachable release tag. It requires the corresponding source version
-files to advance and runs the migration reporter against the materialized tag
-baseline. Use `--from-ref` for an explicit baseline or `--report-output` to
-write generated evidence for review. The check requires Git tags to be
-available in CI.
+`check_release_drift.py` compares framework, shipped schema, and target-template
+changes with the latest reachable release tag. It requires the corresponding
+source version files to advance, runs the migration reporter against the
+materialized tag baseline, and verifies the committed report's exact baseline,
+three versions, and contract-tree SHA-256 values. Use `--from-ref` for an
+explicit baseline or `--report-output` to write generated evidence for review.
+The check requires Git tags to be available in CI.
 
 Linux or macOS:
 
@@ -999,13 +1004,15 @@ prints a Markdown release migration report using
 `docs/release-migration-report-template.md`. The report is evidence only. It
 does not apply target changes. The report includes adapter contract impact,
 affected rule categories, affected task profiles, affected canonical sources,
-and migration action hints.
+framework files, shipped schema contracts, target templates, and migration
+action hints.
 
 Linux or macOS:
 
 ```sh
 python3 tools/report_migration_diff.py --from-rules old-rule-registry.json
 python3 tools/report_migration_diff.py --from-rules old-rule-registry.json --from-framework-dir /path/to/old/.ai/framework
+python3 tools/report_migration_diff.py --from-rules old-rule-registry.json --from-schema-dir /path/to/old/schemas
 python3 tools/report_migration_diff.py --from-rules old-rule-registry.json --from-template-dir /path/to/old/templates/target
 ```
 
@@ -1014,6 +1021,7 @@ Windows PowerShell or Command Prompt:
 ```powershell
 py -3 .\tools\report_migration_diff.py --from-rules old-rule-registry.json
 py -3 .\tools\report_migration_diff.py --from-rules old-rule-registry.json --from-framework-dir C:\path\to\old\.ai\framework
+py -3 .\tools\report_migration_diff.py --from-rules old-rule-registry.json --from-schema-dir C:\path\to\old\schemas
 py -3 .\tools\report_migration_diff.py --from-rules old-rule-registry.json --from-template-dir C:\path\to\old\templates\target
 ```
 
@@ -1088,10 +1096,11 @@ run ID, assistant surface, source commit, and report provenance.
 `check_conformance_reports.py` validates golden assistant-result report
 contracts for each fixture. It checks expected behaviors and required evidence
 fields, but it does not run an assistant or validate a real target adapter.
-It can also validate captured assistant-run reports when `--actual-dir` points
-to a directory of JSON reports. Add `--require-actual-reports` when CI should
-fail if the directory has no captured reports, and `--require-all-fixtures`
-when a full run should cover every fixture.
+It also validates every committed run registered under
+`conformance/runs/assistant-results/index.json`. Use `--actual-root` for another
+indexed run root. Use `--actual-dir` for one run directory, add
+`--require-actual-reports` when it must contain reports, and add
+`--require-all-fixtures` when that individual run should cover every fixture.
 
 `summarize_conformance_reports.py` summarizes captured assistant-run reports by
 assistant surface and fixture after validating the report contracts. It is for
@@ -1121,10 +1130,10 @@ python3 tools/alatyr.py check-conformance --matrix tmp/conformance-matrix/matrix
 python3 tools/alatyr.py check-conformance --matrix tmp/conformance-matrix/matrix.json --require-reports
 python3 tools/check_conformance_reports.py
 python3 tools/check_conformance_summary.py
-python3 tools/check_conformance_reports.py --actual-dir conformance/runs/assistant-results
-python3 tools/check_conformance_reports.py --actual-dir conformance/runs/assistant-results --require-actual-reports
-python3 tools/check_conformance_reports.py --actual-dir conformance/runs/assistant-results --require-actual-reports --require-all-fixtures
-python3 tools/summarize_conformance_reports.py --actual-dir conformance/runs/assistant-results --require-all-fixtures
+python3 tools/check_conformance_reports.py --actual-root conformance/runs/assistant-results
+python3 tools/check_conformance_reports.py --actual-dir conformance/runs/assistant-results/<run-id> --require-actual-reports
+python3 tools/check_conformance_reports.py --actual-dir conformance/runs/assistant-results/<complete-run-id> --require-actual-reports --require-all-fixtures
+python3 tools/summarize_conformance_reports.py --actual-root conformance/runs/assistant-results
 python3 tools/summarize_conformance_reports.py --matrix tmp/conformance-matrix/matrix.json
 python3 tools/run_conformance_scaffold.py
 python3 tools/run_conformance_scaffold.py --write-golden-snapshots
@@ -1143,10 +1152,10 @@ py -3 .\tools\alatyr.py check-conformance --matrix tmp\conformance-matrix\matrix
 py -3 .\tools\alatyr.py check-conformance --matrix tmp\conformance-matrix\matrix.json --require-reports
 py -3 .\tools\check_conformance_reports.py
 py -3 .\tools\check_conformance_summary.py
-py -3 .\tools\check_conformance_reports.py --actual-dir conformance\runs\assistant-results
-py -3 .\tools\check_conformance_reports.py --actual-dir conformance\runs\assistant-results --require-actual-reports
-py -3 .\tools\check_conformance_reports.py --actual-dir conformance\runs\assistant-results --require-actual-reports --require-all-fixtures
-py -3 .\tools\summarize_conformance_reports.py --actual-dir conformance\runs\assistant-results --require-all-fixtures
+py -3 .\tools\check_conformance_reports.py --actual-root conformance\runs\assistant-results
+py -3 .\tools\check_conformance_reports.py --actual-dir conformance\runs\assistant-results\RUN_ID --require-actual-reports
+py -3 .\tools\check_conformance_reports.py --actual-dir conformance\runs\assistant-results\COMPLETE_RUN_ID --require-actual-reports --require-all-fixtures
+py -3 .\tools\summarize_conformance_reports.py --actual-root conformance\runs\assistant-results
 py -3 .\tools\summarize_conformance_reports.py --matrix tmp\conformance-matrix\matrix.json
 py -3 .\tools\run_conformance_scaffold.py
 py -3 .\tools\run_conformance_scaffold.py --write-golden-snapshots

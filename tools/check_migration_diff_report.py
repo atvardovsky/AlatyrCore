@@ -19,6 +19,8 @@ ROOT = Path(__file__).resolve().parents[1]
 REQUIRED_OUTPUT_TEXT = [
     "# Alatyr Release Migration Report",
     "## Version Scope",
+    "From contract SHA-256:",
+    "To contract SHA-256:",
     "## Summary",
     "## Adapter Contract Impact",
     "Framework version:",
@@ -27,6 +29,7 @@ REQUIRED_OUTPUT_TEXT = [
     "Rule registry:",
     "Rule ownership:",
     "Framework files:",
+    "Schema contracts:",
     "Target template surfaces:",
     "## Affected Rule Categories",
     "## Affected Task Profiles",
@@ -35,6 +38,7 @@ REQUIRED_OUTPUT_TEXT = [
     "## Rule Changes",
     "## Rule Owner Changes",
     "## Framework File Changes",
+    "## Schema Contract Changes",
     "## Target Template Surface Changes",
     "## Required Target Actions",
     "## Optional Target Actions",
@@ -51,6 +55,9 @@ ZERO_CHANGE_TEXT = [
     "- Added framework files: 0",
     "- Changed framework files: 0",
     "- Removed framework files: 0",
+    "- Added schema contracts: 0",
+    "- Changed schema contracts: 0",
+    "- Removed schema contracts: 0",
     "- Added target template surfaces: 0",
     "- Changed target template surfaces: 0",
     "- Removed target template surfaces: 0",
@@ -84,6 +91,10 @@ def run_reporter() -> tuple[str, dict[str, object]]:
                 "framework",
                 "--to-framework-dir",
                 "framework",
+                "--from-schema-dir",
+                "schemas",
+                "--to-schema-dir",
+                "schemas",
                 "--from-template-dir",
                 "templates/target",
                 "--to-template-dir",
@@ -123,6 +134,8 @@ def main() -> int:
     ]:
         if changed_marker in output:
             failures.append(f"self-compare output should not mark {changed_marker}")
+    if "contract SHA-256: `not compared`" in output:
+        failures.append("self-compare output must bind both contract-tree digests")
 
     if impact.get("schema_version") != 1:
         failures.append("upgrade impact schema_version must be 1")
@@ -136,6 +149,12 @@ def main() -> int:
     framework_files = impact.get("framework_files")
     if not isinstance(framework_files, dict) or framework_files.get("compared") is not True:
         failures.append("upgrade impact should record compared framework files")
+    schema_contracts = impact.get("schema_contracts")
+    if (
+        not isinstance(schema_contracts, dict)
+        or schema_contracts.get("compared") is not True
+    ):
+        failures.append("upgrade impact should record compared schema contracts")
 
     if failures:
         for failure in failures:

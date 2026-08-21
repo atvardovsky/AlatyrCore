@@ -4448,6 +4448,12 @@ class Validator:
                 for field in ["ecosystem", "manifest", "lockfile", "metadata_locator"]:
                     if not resolved(source.get(field)):
                         self.error("DEPENDENCY_KNOWLEDGE_SOURCE", f"package_sources[{index}].{field} must be resolved", policy_relpath)
+                if source.get("metadata_locator_kind") != "native-package-metadata-key":
+                    self.error(
+                        "DEPENDENCY_KNOWLEDGE_SOURCE_LOCATOR",
+                        f"package_sources[{index}].metadata_locator_kind must be native-package-metadata-key",
+                        policy_relpath,
+                    )
                 for field in ["manifest", "lockfile"]:
                     value = source.get(field)
                     if resolved(value) and not is_target_relative_path(value):

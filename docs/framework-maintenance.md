@@ -227,13 +227,14 @@ Before accepting a change, check:
   all-surface preparation, report provenance, or matrix completeness changes.
 - `python3 tools/check_conformance_summary.py` passes when captured-run context
   cost, logical-integrity evidence, or summary output changes.
-- `python3 tools/check_conformance_reports.py --actual-dir conformance/runs/assistant-results`
-  can validate captured assistant-run reports when reviewed run JSON exists.
+- `python3 tools/check_conformance_reports.py --actual-root conformance/runs/assistant-results`
+  validates every indexed committed captured run, including its declared
+  expected fixture scope.
 - Add `--require-actual-reports` when the maintenance task expects captured
   run reports to exist.
 - Add `--require-all-fixtures` when a conformance run should prove every
   fixture produced a valid report.
-- `python3 tools/summarize_conformance_reports.py --actual-dir conformance/runs/assistant-results --require-all-fixtures`
+- `python3 tools/summarize_conformance_reports.py --actual-root conformance/runs/assistant-results`
   can compare reviewed assistant-run reports by assistant surface and fixture.
 - `python3 tools/run_conformance_scaffold.py` passes when fixture seed files,
   scaffolder behavior, required scaffold surfaces, or scaffolded-adapter

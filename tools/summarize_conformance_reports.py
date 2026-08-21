@@ -19,6 +19,7 @@ from check_conformance_reports import (
     SHARED,
     load_json,
     validate_actual_reports,
+    registered_runs,
 )
 from check_conformance_matrix import safe_relative_path, validate_matrix
 
@@ -215,6 +216,13 @@ def main() -> int:
         help="Prepared matrix.json containing captured reports. May be repeated.",
     )
     parser.add_argument(
+        "--actual-root",
+        action="append",
+        default=[],
+        type=Path,
+        help="Registered captured-run root containing index.json. May be repeated.",
+    )
+    parser.add_argument(
         "--require-all-fixtures",
         action="store_true",
         help="Require each actual report directory to cover every fixture.",
@@ -223,9 +231,32 @@ def main() -> int:
 
     failures: list[str] = []
     try:
-        if not args.actual_dir and not args.matrix:
-            failures.append("provide --actual-dir or --matrix")
+        if not args.actual_dir and not args.actual_root and not args.matrix:
+            failures.append("provide --actual-dir, --actual-root, or --matrix")
         actual_dirs = list(args.actual_dir)
+        shared = load_json(SHARED)
+        for runs_root in args.actual_root:
+            for (
+                run_dir,
+                expected,
+                _complete,
+                report_run_id,
+                assistant_surface,
+                source_commit,
+            ) in registered_runs(runs_root):
+                failures.extend(
+                    validate_actual_reports(
+                        run_dir,
+                        shared,
+                        require_reports=True,
+                        require_all_fixtures=True,
+                        expected_fixtures=expected,
+                        expected_run_id=report_run_id,
+                        expected_assistant_surface=assistant_surface,
+                        expected_source_commit=source_commit,
+                    )
+                )
+                actual_dirs.append(run_dir)
         for matrix_path in args.matrix:
             failures.extend(validate_matrix(matrix_path, require_reports=True))
             matrix = load_json(matrix_path)
@@ -239,7 +270,6 @@ def main() -> int:
                             "reports_directory",
                         )
                     )
-        shared = load_json(SHARED)
         for actual_dir in args.actual_dir:
             failures.extend(
                 validate_actual_reports(

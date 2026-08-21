@@ -35,8 +35,10 @@ separate normal operation and applicable approval.
    commands, or validation declared by the dependency.
 4. Compare deterministic package-lock and export fingerprints. Stop early and
    report current evidence when neither changed.
-5. Discover only explicitly declared `alatyr-dependency.json` manifests. Do
-   not recursively scan dependency directories. Record absent exports as
+5. Resolve the target-approved `native-package-metadata-key` in the declared
+   package manifest and discover only the explicitly declared
+   `alatyr-dependency.json` manifest. Do not execute a metadata adapter or
+   recursively scan dependency directories. Record absent exports as
    unsupported, not invalid.
 6. Bind the manifest to the exact resolved instance, including ecosystem,
    coordinate, version, source/integrity, graph instance, and patch or modified

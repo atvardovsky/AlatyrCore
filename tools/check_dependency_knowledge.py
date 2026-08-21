@@ -130,11 +130,14 @@ def main() -> int:
         "## Synchronization Procedure",
         "Do not collapse these axes into one `accepted` state",
         "Do not recursively scan dependency directories",
+        "metadata_locator_kind: native-package-metadata-key",
+        "must not name executable adapter code",
         "Do not automatically accept a semantic change",
     ], failures)
     require(paths["flow"], [
         "Do not activate nested dependency adapters",
         "Do not execute package managers",
+        "Do not execute a metadata adapter",
         "Record trust, freshness, authority, and applicability independently",
         "A hash difference shows change only",
         "Never edit dependency files",
@@ -156,6 +159,22 @@ def main() -> int:
     ], failures)
     for name in ["install", "install_flow", "readiness", "plan"]:
         require(paths[name], ["dependency knowledge"], failures)
+
+    policy = load(paths["policy"])
+    package_sources = policy.get("package_sources")
+    if not isinstance(package_sources, list) or not package_sources:
+        failures.append("dependency policy must declare package_sources")
+    else:
+        for index, source in enumerate(package_sources):
+            if (
+                not isinstance(source, dict)
+                or source.get("metadata_locator_kind")
+                != "native-package-metadata-key"
+            ):
+                failures.append(
+                    "dependency policy package source "
+                    f"{index} must use native-package-metadata-key"
+                )
 
     capabilities = load(ROOT / "framework/capabilities.json")
     module = capabilities.get("modules", {}).get("dependency-knowledge")
