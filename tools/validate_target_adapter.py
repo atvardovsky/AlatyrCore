@@ -35,6 +35,7 @@ from target_validation_support import (
     extract_field,
     extract_list_field,
     git_changed_files,
+    git_branch_name,
     git_diff_patch,
     git_head_revision,
     git_range_changed_files,
@@ -135,6 +136,16 @@ STANDARD_REQUIRED_FILES = [
 ]
 
 SUPPORT_PROFILES = {"core", "standard", "full"}
+VALIDATION_PHASES = {"acceptance", "migration-staging"}
+
+AUTHORING_FILE_PATTERNS = (
+    re.compile(r"^\.ai/assistant/templates/"),
+    re.compile(r"^\.ai/assistant/approvals/.*template", re.IGNORECASE),
+    re.compile(r"^\.ai/assistant/team/task-record-template\.json$"),
+    re.compile(r"^\.ai/project/workspace-modes/modes/_template/"),
+    re.compile(r"(?:^|/)examples?/"),
+    re.compile(r"\.example\.[^/]+$"),
+)
 
 REQUIRED_PRELOADED = [
     "AGENTS.md",
@@ -222,6 +233,7 @@ MANIFEST_REQUIRED_SCALARS: set[PathKey] = {
     ("engineering_evidence", "storage_mode"),
     ("engineering_evidence", "external_patch_policy"),
     ("engineering_evidence", "retention_policy"),
+    ("engineering_evidence", "redaction_policy"),
     ("maturity", "profile"),
 }
 
@@ -733,6 +745,7 @@ class Validator:
         allow_local_paths: list[str],
         config: AdapterValidatorConfig,
         initial_findings: list[Finding] | None = None,
+        validation_phase: str | None = None,
     ) -> None:
         self.target = target.resolve()
         self.framework_source = framework_source.resolve() if framework_source else None
@@ -748,7 +761,14 @@ class Validator:
         ]
         self.enforce_change_package = enforce_change_package
         self.migration_diff = migration_diff.resolve() if migration_diff else None
-        self.allow_placeholders = allow_placeholders
+        self.validation_phase = validation_phase or (
+            "migration-staging" if allow_placeholders else "acceptance"
+        )
+        if self.validation_phase not in VALIDATION_PHASES:
+            raise ValueError(f"unsupported validation phase: {self.validation_phase}")
+        self.allow_placeholders = self.validation_phase == "migration-staging"
+        self.unresolved_active_placeholders = 0
+        self.capability_modules: dict[str, Any] = {}
         self.config = config
         self.allow_local_paths = allow_local_paths + config.local_path_patterns()
         self.findings: list[Finding] = list(initial_findings or [])
@@ -806,6 +826,7 @@ class Validator:
         support_profile = self.manifest_support_profile(manifest)
         self.check_required_files(support_profile)
         self.check_capability_closure(manifest)
+        self.check_module_profile_sync(manifest)
         self.check_bootstrap_index()
         self.check_action_authorization_contract()
         enabled_modules = self.enabled_modules(manifest)
@@ -817,7 +838,7 @@ class Validator:
         dispatch_capability_checks(self, enabled_modules, manifest)
         self.check_enabled_module_status_claims(enabled_modules)
         self.check_bootstrap_references()
-        self.check_placeholders()
+        self.check_placeholders(manifest, support_profile, enabled_modules)
         self.check_local_paths()
         checker_files, checker_commands = self.discover_checkers(manifest)
         self.check_checker_claims(checker_files, checker_commands)
@@ -882,6 +903,77 @@ class Validator:
             if state and state.group(1).strip().casefold() in {"enabled", "required"}:
                 enabled.add(match.group(1))
         return enabled
+
+    def module_profile_states(self) -> dict[str, list[str]]:
+        profile_path = self.target_path(".ai/assistant/module-profile.md")
+        if not profile_path.is_file():
+            return {}
+        states: dict[str, list[str]] = {}
+        text = self.read_text(profile_path)
+        for match in re.finditer(
+            r"^Module: `([^`]+)`\s*$([\s\S]*?)(?=^Module: `|\Z)",
+            text,
+            flags=re.MULTILINE,
+        ):
+            state_match = re.search(
+                r"^State:\s*`?([^`\n]+)`?\s*$",
+                match.group(2),
+                flags=re.MULTILINE,
+            )
+            state = state_match.group(1).strip().casefold() if state_match else "missing"
+            states.setdefault(match.group(1), []).append(state)
+        return states
+
+    def check_module_profile_sync(self, manifest: ManifestData | None) -> None:
+        if manifest is None:
+            return
+        manifest_enabled = {
+            scalar.value
+            for scalar in manifest.lists.get(("modules", "enabled"), [])
+            if not is_unresolved_value(scalar.value)
+        }
+        profile_states = self.module_profile_states()
+        for module_id, states in sorted(profile_states.items()):
+            if len(states) > 1:
+                self.error(
+                    "MODULE_PROFILE_DUPLICATE",
+                    f"module {module_id} has {len(states)} profile blocks",
+                    ".ai/assistant/module-profile.md",
+                )
+            if (
+                states
+                and states[0] in {"enabled", "required"}
+                and module_id not in self.capability_modules
+            ):
+                self.error(
+                    "MODULE_PROFILE_UNKNOWN",
+                    f"module profile names unknown capability {module_id}",
+                    ".ai/assistant/module-profile.md",
+                )
+
+        for module_id in sorted(manifest_enabled):
+            states = profile_states.get(module_id, [])
+            if not states:
+                self.error(
+                    "MODULE_PROFILE_ENABLED_MISSING",
+                    f"manifest-enabled module {module_id} has no module-profile block",
+                    ".ai/assistant/module-profile.md",
+                )
+                continue
+            if states[0] not in {"enabled", "required"}:
+                self.error(
+                    "MODULE_PROFILE_STATE_DRIFT",
+                    f"manifest enables {module_id}, but module profile state is {states[0]}",
+                    ".ai/assistant/module-profile.md",
+                )
+
+        for module_id, states in sorted(profile_states.items()):
+            if states and states[0] in {"enabled", "required"} and module_id not in manifest_enabled:
+                self.error(
+                    "MODULE_MANIFEST_ENABLED_MISSING",
+                    f"module profile enables {module_id}, but manifest modules.enabled does not",
+                    ".ai/alatyr.yaml",
+                )
 
     def check_required_files(self, support_profile: str) -> None:
         required = list(CORE_REQUIRED_FILES)
@@ -1101,6 +1193,7 @@ class Validator:
                 ".ai/framework/capabilities.json",
             )
             return
+        self.capability_modules = modules
 
         enabled_set = set(enabled)
         pack_scalar = manifest.scalars.get(("framework", "pack"))
@@ -7534,53 +7627,62 @@ class Validator:
                     ".ai/assistant/flows/operation-routing.flow.md",
                 )
 
-    def check_placeholders(self) -> None:
-        if self.allow_placeholders:
-            self.info("PLACEHOLDERS_ALLOWED", "placeholder checks were downgraded by option")
-            return
+    def is_authoring_file(self, relpath: str) -> bool:
+        return any(pattern.search(relpath) for pattern in AUTHORING_FILE_PATTERNS)
 
-        paths = [
-            self.target_path(".ai/alatyr.yaml"),
-            self.target_path(".ai/README.md"),
-            self.target_path(".ai/project/contour.md"),
-            self.target_path(".ai/project/source-of-truth-registry.md"),
-            self.target_path(".ai/assistant/contour.md"),
-            self.target_path(".ai/assistant/context-profiles.md"),
-            self.target_path(".ai/assistant/help.md"),
-            self.target_path(".ai/assistant/help-reference.md"),
-            self.target_path(".ai/assistant/module-profile.md"),
-            self.target_path(".ai/assistant/maturity-profile.md"),
-            self.target_path(".ai/assistant/gates/checklist.md"),
-            self.target_path(".ai/assistant/operation-catalog.json"),
-            self.target_path(".ai/project/team-policy.json"),
-            self.target_path(".ai/project/team-operating-model.md"),
-            self.target_path(".ai/assistant/team/context-overlay.json"),
-            self.target_path(".ai/assistant/team/work-registry.json"),
-            self.target_path(".ai/assistant/team/active-work-index.json"),
-            self.target_path(".ai/assistant/team/backend-contract.json"),
-            self.target_path(".ai/assistant/team/task-record-template.json"),
-            self.target_path(".ai/assistant/gates/team-collaboration.md"),
-            self.target_path(".ai/assistant/templates/team-checkpoint.md"),
-            self.target_path(".ai/assistant/templates/team-handoff.md"),
-            self.target_path(".ai/assistant/templates/team-decision-record.md"),
-            self.target_path(".ai/assistant/templates/team-identity.example.json"),
-            self.target_path(".ai/assistant/templates/team-collaboration-review.md"),
-            self.target_path(".ai/project/blueprint.md"),
+    def active_adapter_files(
+        self,
+        manifest: ManifestData | None,
+        support_profile: str,
+        enabled_modules: set[str],
+    ) -> list[Path]:
+        relpaths = set(CORE_REQUIRED_FILES)
+        if support_profile in {"standard", "full"}:
+            relpaths.update(STANDARD_REQUIRED_FILES)
+        relpaths.update(["AGENTS.md", *BRIDGE_FILES])
+        for module_id in enabled_modules:
+            contract = self.capability_modules.get(module_id)
+            if isinstance(contract, dict):
+                relpaths.update(contract.get("target_files", []))
+        if manifest is not None:
+            for scalar in manifest.scalars.values():
+                if isinstance(scalar.value, str) and scalar.value.startswith(".ai/"):
+                    path = self.target_path(scalar.value)
+                    if path.is_file():
+                        relpaths.add(scalar.value)
+        return [
+            self.target_path(relpath)
+            for relpath in sorted(relpaths)
+            if not self.is_authoring_file(relpath)
         ]
-        flows = self.target_path(".ai/assistant/flows")
-        if flows.is_dir():
-            paths.extend(sorted(flows.glob("*.md")))
-        paths.extend(self.target_path(relpath) for relpath in ["AGENTS.md", *BRIDGE_FILES])
 
+    def check_placeholders(
+        self,
+        manifest: ManifestData | None = None,
+        support_profile: str = "full",
+        enabled_modules: set[str] | None = None,
+    ) -> None:
+        paths = self.active_adapter_files(
+            manifest,
+            support_profile,
+            enabled_modules or self.enabled_modules(manifest),
+        )
+        report = self.warn if self.allow_placeholders else self.error
+        finding_code = (
+            "PLACEHOLDER_STAGING_UNRESOLVED"
+            if self.allow_placeholders
+            else "PLACEHOLDER_UNRESOLVED"
+        )
         for path in paths:
             if not path.is_file():
                 continue
             text = self.read_text(path)
             for line_number, line in enumerate(text.splitlines(), start=1):
                 if PLACEHOLDER_RE.search(line):
-                    self.error(
-                        "PLACEHOLDER_UNRESOLVED",
-                        "unresolved template placeholder remains in accepted adapter surface",
+                    self.unresolved_active_placeholders += 1
+                    report(
+                        finding_code,
+                        "unresolved template placeholder remains in an active adapter surface",
                         f"{self.rel(path)}:{line_number}",
                     )
                 if "not defined" in line.lower():
@@ -7589,6 +7691,11 @@ class Validator:
                         "unresolved 'not defined' marker remains",
                         f"{self.rel(path)}:{line_number}",
                     )
+        if self.allow_placeholders:
+            self.info(
+                "PLACEHOLDERS_ALLOWED",
+                "migration-staging records unresolved active placeholders but cannot accept the adapter",
+            )
 
     def check_local_paths(self) -> None:
         scan_paths = self.scan_text_files()
@@ -8194,6 +8301,41 @@ class Validator:
                     relpath,
                 )
 
+    def check_policy_readme_projection(
+        self,
+        *,
+        index: dict[str, Any],
+        readme_relpath: str,
+        fields: dict[str, str],
+        code_prefix: str,
+    ) -> None:
+        readme_path = self.target_path(readme_relpath)
+        if not readme_path.is_file():
+            self.error(f"{code_prefix}_README_MISSING", "policy README is missing", readme_relpath)
+            return
+        text = self.read_text(readme_path)
+        for label, index_field in fields.items():
+            match = re.search(
+                rf"^{re.escape(label)}:\s*`?([^`\n]+?)`?\s*$",
+                text,
+                flags=re.MULTILINE,
+            )
+            if not match:
+                self.error(
+                    f"{code_prefix}_FIELD_MISSING",
+                    f"README does not declare {label}",
+                    readme_relpath,
+                )
+                continue
+            readme_value = match.group(1).strip()
+            index_value = index.get(index_field)
+            if not isinstance(index_value, str) or readme_value != index_value.strip():
+                self.error(
+                    f"{code_prefix}_DRIFT",
+                    f"README {label} differs from index.{index_field}",
+                    readme_relpath,
+                )
+
     def check_engineering_evidence(self, manifest: ManifestData | None) -> None:
         index_relpath = ".ai/project/engineering-evidence/index.json"
         expected_manifest = {
@@ -8221,8 +8363,8 @@ class Validator:
         )
         if index is None:
             return
-        if index.get("schema_version") != 1:
-            self.error("ENGINEERING_EVIDENCE_INDEX_SCHEMA", "schema_version must be 1", index_relpath)
+        if index.get("schema_version") != 2:
+            self.error("ENGINEERING_EVIDENCE_INDEX_SCHEMA", "schema_version must be 2", index_relpath)
         if index.get("index_kind") != "target-engineering-evidence-index":
             self.error(
                 "ENGINEERING_EVIDENCE_INDEX_KIND",
@@ -8245,6 +8387,7 @@ class Validator:
             "storage_mode",
             "external_patch_policy",
             "retention_policy",
+            "redaction_policy",
         ]:
             value = index.get(field)
             if not isinstance(value, str) or not value.strip():
@@ -8259,6 +8402,34 @@ class Validator:
                     f"{field} is unresolved",
                     index_relpath,
                 )
+
+        self.check_policy_readme_projection(
+            index=index,
+            readme_relpath=".ai/project/engineering-evidence/README.md",
+            fields={
+                "Owner": "owner",
+                "Storage mode": "storage_mode",
+                "External patch policy": "external_patch_policy",
+                "Retention policy": "retention_policy",
+                "Redaction policy": "redaction_policy",
+            },
+            code_prefix="ENGINEERING_EVIDENCE_POLICY",
+        )
+        if manifest is not None:
+            for manifest_field, index_field in {
+                "storage_mode": "storage_mode",
+                "external_patch_policy": "external_patch_policy",
+                "retention_policy": "retention_policy",
+                "redaction_policy": "redaction_policy",
+            }.items():
+                scalar = manifest.scalars.get(("engineering_evidence", manifest_field))
+                index_value = index.get(index_field)
+                if scalar is None or scalar.value != index_value:
+                    self.error(
+                        "ENGINEERING_EVIDENCE_MANIFEST_POLICY_DRIFT",
+                        f"engineering_evidence.{manifest_field} differs from index.{index_field}",
+                        ".ai/alatyr.yaml",
+                    )
 
         records = index.get("records")
         if not isinstance(records, list):
@@ -8602,8 +8773,8 @@ class Validator:
         )
         if index is None:
             return
-        if index.get("schema_version") != 1:
-            self.error("DEBUG_MODE_INDEX_SCHEMA", "schema_version must be 1", index_relpath)
+        if index.get("schema_version") != 2:
+            self.error("DEBUG_MODE_INDEX_SCHEMA", "schema_version must be 2", index_relpath)
         if index.get("index_kind") != "target-alatyr-debug-index":
             self.error(
                 "DEBUG_MODE_INDEX_KIND",
@@ -8626,6 +8797,7 @@ class Validator:
             "storage_mode",
             "visibility",
             "retention_policy",
+            "redaction_policy",
             "external_patch_policy",
         ]:
             value = index.get(field)
@@ -8641,6 +8813,20 @@ class Validator:
                     f"{field} is unresolved",
                     index_relpath,
                 )
+
+        self.check_policy_readme_projection(
+            index=index,
+            readme_relpath=".ai/project/debug/README.md",
+            fields={
+                "Owner": "owner",
+                "Storage mode": "storage_mode",
+                "Visibility": "visibility",
+                "Retention policy": "retention_policy",
+                "Redaction policy": "redaction_policy",
+                "External patch policy": "external_patch_policy",
+            },
+            code_prefix="DEBUG_MODE_POLICY",
+        )
 
         records = index.get("records")
         if not isinstance(records, list):
@@ -10268,11 +10454,15 @@ def string_list_config(
     return value
 
 
-def adapter_health_state(findings: list[Finding]) -> str:
+def adapter_health_state(
+    findings: list[Finding], *, validation_phase: str = "acceptance"
+) -> str:
     if any(finding.code in {"TARGET_MISSING", "TARGET_NOT_DIRECTORY"} for finding in findings):
         return "unverified"
     if any(is_blocking_finding(finding) for finding in findings):
         return "blocked"
+    if validation_phase == "migration-staging":
+        return "staged"
     if any(finding.level == "warning" for finding in findings):
         return "attention"
     return "ready"
@@ -10292,7 +10482,9 @@ def prioritized_repair_operations(findings: list[Finding]) -> list[str]:
     return operations
 
 
-def render_summary(findings: list[Finding], *, strict_warnings: bool) -> int:
+def render_summary(
+    findings: list[Finding], *, strict_warnings: bool, validation_phase: str
+) -> int:
     order = {"error": 0, "warning": 1, "info": 2}
     for finding in sorted(findings, key=lambda item: (order[item.level], item.code, item.path or "")):
         print(finding.render())
@@ -10305,12 +10497,15 @@ def render_summary(findings: list[Finding], *, strict_warnings: bool) -> int:
         for finding in findings
         if finding.level == "warning" and is_blocking_finding(finding)
     )
-    health = adapter_health_state(findings)
+    health = adapter_health_state(findings, validation_phase=validation_phase)
     print(
         f"\nSummary: errors={errors} warnings={warnings} "
         f"blocking_warnings={blocking_warnings} info={infos}"
     )
     print(f"Alatyr adapter health: {health}")
+    print(f"Validation phase: {validation_phase}")
+    if validation_phase == "migration-staging":
+        print("Acceptance eligible: no; rerun in acceptance phase after resolving active placeholders")
     repairs = prioritized_repair_operations(findings)
     if repairs:
         print("Suggested repair operations: " + ", ".join(repairs))
@@ -10337,6 +10532,7 @@ def findings_payload(
     *,
     target: Path,
     strict_warnings: bool,
+    validation_phase: str = "acceptance",
 ) -> dict[str, Any]:
     errors = sum(1 for finding in findings if finding.level == "error")
     warnings = sum(1 for finding in findings if finding.level == "warning")
@@ -10348,26 +10544,50 @@ def findings_payload(
     )
     exit_code = result_code(findings, strict_warnings=strict_warnings)
     observed_revision = git_head_revision(target)
+    observed_branch = git_branch_name(target)
     observed_at = datetime.now(timezone.utc).isoformat()
+    unresolved_active = sum(
+        1
+        for finding in findings
+        if finding.code in {"PLACEHOLDER_UNRESOLVED", "PLACEHOLDER_STAGING_UNRESOLVED"}
+    )
+    acceptance_eligible = validation_phase == "acceptance" and exit_code == 0
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "tool": "validate_target_adapter",
         "target": str(target),
         "evidence": {
             "basis": "current-state-structural",
             "observed_at": observed_at,
             "observed_revision": observed_revision,
+            "observed_branch": observed_branch,
             "historical_actions_verified": False,
             "limitation": (
                 "Current files do not prove historical installation, update, "
                 "approval, or validation actions without dated records."
             ),
         },
-        "status": "failed" if exit_code else "passed",
+        "status": (
+            "failed"
+            if exit_code
+            else "staged"
+            if validation_phase == "migration-staging"
+            else "passed"
+        ),
+        "validation_phase": validation_phase,
+        "placeholder_validation": {
+            "mode": "staging-only" if validation_phase == "migration-staging" else "strict",
+            "unresolved_active": unresolved_active,
+            "acceptance_eligible": acceptance_eligible,
+            "required_final_phase": "acceptance",
+        },
         "adapter_health": {
-            "state": adapter_health_state(findings),
+            "state": adapter_health_state(
+                findings, validation_phase=validation_phase
+            ),
             "observed_at": observed_at,
             "observed_revision": observed_revision,
+            "observed_branch": observed_branch,
             "repair_operations": prioritized_repair_operations(findings),
             "automatic_repair_performed": False,
         },
@@ -10483,9 +10703,21 @@ def main() -> int:
         ),
     )
     parser.add_argument(
+        "--validation-phase",
+        choices=sorted(VALIDATION_PHASES),
+        default="acceptance",
+        help=(
+            "Validation contract. acceptance is strict; migration-staging records "
+            "unresolved active placeholders but is never acceptance eligible."
+        ),
+    )
+    parser.add_argument(
         "--allow-placeholders",
         action="store_true",
-        help="Do not fail on unresolved placeholders in adapter surfaces.",
+        help=(
+            "Deprecated compatibility alias for --validation-phase migration-staging. "
+            "It never produces accepted or ready adapter evidence."
+        ),
     )
     parser.add_argument(
         "--allow-local-path",
@@ -10509,6 +10741,9 @@ def main() -> int:
         help="Write machine-readable JSON findings to this file.",
     )
     args = parser.parse_args()
+    validation_phase = (
+        "migration-staging" if args.allow_placeholders else args.validation_phase
+    )
 
     config, config_findings = load_validator_config(args.target, args.config)
     enforce_approval_scope = approval_enforcement_enabled(
@@ -10529,12 +10764,14 @@ def main() -> int:
         allow_local_paths=args.allow_local_path,
         config=config,
         initial_findings=config_findings,
+        validation_phase=validation_phase,
     )
     findings = validator.run()
     payload = findings_payload(
         findings,
         target=args.target.resolve(),
         strict_warnings=args.strict_warnings,
+        validation_phase=validation_phase,
     )
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
@@ -10545,7 +10782,11 @@ def main() -> int:
     if args.json:
         print(json.dumps(payload, indent=2, sort_keys=True))
         return payload["exit_code"]
-    return render_summary(findings, strict_warnings=args.strict_warnings)
+    return render_summary(
+        findings,
+        strict_warnings=args.strict_warnings,
+        validation_phase=validation_phase,
+    )
 
 
 if __name__ == "__main__":

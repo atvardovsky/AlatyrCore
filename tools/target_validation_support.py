@@ -426,6 +426,21 @@ def git_head_revision(target: Path) -> str | None:
     return revision or None
 
 
+def git_branch_name(target: Path) -> str | None:
+    result = subprocess.run(
+        ["git", "branch", "--show-current"],
+        cwd=target,
+        check=False,
+        text=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+    )
+    if result.returncode != 0:
+        return None
+    branch = result.stdout.strip()
+    return branch or "detached HEAD"
+
+
 def markdown_sections(text: str) -> dict[str, list[str]]:
     sections: dict[str, list[str]] = {}
     current: str | None = None

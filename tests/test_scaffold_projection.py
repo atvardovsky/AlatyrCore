@@ -8,7 +8,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from scaffold_projection import project_manifest, project_router  # noqa: E402
+from scaffold_projection import (  # noqa: E402
+    project_manifest,
+    project_module_profile,
+    project_router,
+)
 
 
 class ScaffoldProjectionTests(unittest.TestCase):
@@ -44,6 +48,23 @@ class ScaffoldProjectionTests(unittest.TestCase):
 
         self.assertEqual(list(projected["profile_index"]), ["docs-local"])
         self.assertEqual(projected["routing_order"], ["docs-local"])
+
+    def test_enabled_modules_are_projected_into_human_profile(self) -> None:
+        source = (
+            "Module: `ai-infrastructure`\n"
+            "State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`\n\n"
+            "Module: `debug-mode`\n"
+            "State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`\n"
+        )
+
+        rendered = project_module_profile(source, {"ai-infrastructure"})
+
+        self.assertIn("Module: `ai-infrastructure`\nState: `enabled`", rendered)
+        self.assertIn(
+            "Module: `debug-mode`\n"
+            "State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`",
+            rendered,
+        )
 
 
 if __name__ == "__main__":

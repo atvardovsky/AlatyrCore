@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "templates" / "target"
 FRAMEWORK = ROOT / "framework" / "debug-mode.md"
 INDEX = TARGET / ".ai" / "project" / "debug" / "index.json"
+POLICY = TARGET / ".ai" / "project" / "debug" / "README.md"
 FLOW = TARGET / ".ai" / "assistant" / "flows" / "debug-mode.flow.md"
 GATE = TARGET / ".ai" / "assistant" / "gates" / "debug-mode.md"
 RECORD = TARGET / ".ai" / "assistant" / "templates" / "debug-session-record.json"
@@ -257,13 +258,14 @@ def fixture_index(record: dict[str, Any]) -> dict[str, Any]:
     binding = record["final_result"]["repository_binding"]
     elapsed = record["timing"]["elapsed_seconds"]
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "index_kind": "target-alatyr-debug-index",
         "project": "fixture",
         "owner": "engineering",
         "storage_mode": "repository support branch",
         "visibility": "internal",
         "retention_policy": "retain reviewed records",
+        "redaction_policy": "exclude raw conversations and secrets",
         "external_patch_policy": "exclude from external patch",
         "records": [
             {
@@ -327,6 +329,16 @@ def validate_fixture(failures: list[str]) -> None:
         record_path = repo / ".ai/project/debug/records/DEBUG-1.json"
         record_path.parent.mkdir(parents=True)
         index_path = record_path.parent.parent / "index.json"
+        (index_path.parent / "README.md").write_text(
+            "# Alatyr Debug Evidence\n\n"
+            "Owner: engineering\n"
+            "Storage mode: repository support branch\n"
+            "Visibility: internal\n"
+            "Retention policy: retain reviewed records\n"
+            "Redaction policy: exclude raw conversations and secrets\n"
+            "External patch policy: exclude from external patch\n",
+            encoding="utf-8",
+        )
 
         def write(value: dict[str, Any]) -> None:
             record_path.write_text(json.dumps(value, indent=2) + "\n", encoding="utf-8")
@@ -405,6 +417,11 @@ def main() -> int:
     require_text(FLOW, ["## Modes", "explicit current user request", "derived-after-human-intervention"], failures)
     require_text(GATE, ["non-canonical observability evidence", "logical scope"], failures)
     require_text(SUMMARY, ["# Alatyr Debug Summary", "Human architectural interventions", "External projection"], failures)
+    require_text(
+        POLICY,
+        ["Owner:", "Storage mode:", "Visibility:", "Retention policy:", "Redaction policy:", "External patch policy:"],
+        failures,
+    )
 
     try:
         schema = json.loads(SCHEMA.read_text(encoding="utf-8"))
@@ -418,6 +435,8 @@ def main() -> int:
     else:
         if index.get("records") != []:
             failures.append("source Debug Mode index must start empty")
+        if index.get("schema_version") != 2 or "redaction_policy" not in index:
+            failures.append("source Debug Mode index must use policy schema 2")
         if record.get("record_kind") != "alatyr-debug-session":
             failures.append("debug record template kind is invalid")
         if record.get("evidence_classification") != "non-canonical-observability":

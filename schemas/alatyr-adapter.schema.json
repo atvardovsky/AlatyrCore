@@ -100,7 +100,7 @@
     "engineering_evidence": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["index", "records", "flow", "gate", "machine_template", "storage_mode", "external_patch_policy", "retention_policy"],
+      "required": ["index", "records", "flow", "gate", "machine_template", "storage_mode", "external_patch_policy", "retention_policy", "redaction_policy"],
       "properties": {
         "index": {"type": "string", "minLength": 1},
         "records": {"type": "string", "minLength": 1},
@@ -109,7 +109,8 @@
         "machine_template": {"type": "string", "minLength": 1},
         "storage_mode": {"type": "string", "minLength": 1},
         "external_patch_policy": {"type": "string", "minLength": 1},
-        "retention_policy": {"type": "string", "minLength": 1}
+        "retention_policy": {"type": "string", "minLength": 1},
+        "redaction_policy": {"type": "string", "minLength": 1}
       }
     },
     "debug_mode": {

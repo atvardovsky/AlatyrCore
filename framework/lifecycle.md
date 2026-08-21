@@ -53,6 +53,8 @@ Before upgrading framework files in a target project:
 3. Prepare or review a migration assessment before changing target files. It
    should compare rule registries, framework files, versions, and structural
    adapter state and emit a hash-bound machine-readable impact projection.
+   Bind the assessment to the checked-out target branch and revision. Evidence
+   for one branch does not establish adapter state on another branch.
 4. Use the impact projection's changed rule IDs, categories, task profiles,
    canonical sources, template surfaces, enabled modules, and bridge
    capabilities to select additional context. Load the full framework corpus
@@ -156,6 +158,12 @@ Before upgrading framework files in a target project:
     sessions can find the installation note, operation catalog, health, help,
     and routing flow.
 15. Run or report target validation.
+    A migration-staging run may retain unresolved target placeholders while
+    work is in progress, but it must report `staged`, never `ready` or
+    accepted. Resolve active policy, flow, routing, manifest, module-profile,
+    and enabled-capability placeholders, then run strict acceptance validation
+    on the branch and revision being accepted. Enabled manifest modules and
+    human module-profile states must agree before acceptance.
 16. Send a post-update assistant chat message that names updated surfaces,
     recommended recheck operation, validation, and unresolved gaps.
 
@@ -250,3 +258,6 @@ Reject lifecycle changes that:
 - overwrite active team records from a source template or omit enabled-team
   migration evidence
 - claim upgrade success without validation or residual-risk evidence
+- claim an update is complete from migration-staging evidence, unresolved
+  active placeholders, module manifest/profile drift, or validation performed
+  on a different branch or revision

@@ -4,6 +4,33 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.20 - 2026-08-22
+
+- Increased the framework version to `0.1.0-alpha.20`, adapter schema version
+  to `19`, and target template version to `20` for deterministic installed-
+  adapter update acceptance.
+- Split structural validation into strict `acceptance` and non-accepting
+  `migration-staging` phases. The deprecated `--allow-placeholders` option now
+  maps to staging and can no longer produce `passed`, `ready`, or acceptance-
+  eligible evidence.
+- Made active placeholder scanning capability-aware across required core,
+  support-profile, manifest-referenced, and enabled-module live surfaces while
+  preserving placeholders in explicit reusable authoring templates.
+- Required one-to-one agreement between manifest-enabled modules and
+  `enabled` or `required` blocks in the human module profile.
+- Upgraded Debug Mode and durable engineering-evidence indexes to schema 2,
+  added explicit redaction policy, and added deterministic machine-index to
+  human-README policy projection checks.
+- Bound validator, upgrade-impact, and assessment evidence to the checked-out
+  target branch and revision. Acceptance on one branch no longer implies that
+  another branch is updated.
+- Added regression coverage for staged versus accepted placeholders, missing
+  enabled-module profile blocks, policy projection drift, and arbitrary target
+  branches on Linux, macOS, and Windows compatible tooling.
+- Changed `ALATYR-ADAPTER-001`, `ALATYR-EVIDENCE-001`,
+  `ALATYR-LIFECYCLE-001`, and `ALATYR-MODULE-001`; no rule IDs were added or
+  removed.
+
 ## 0.1.0-alpha.19 - 2026-08-21
 
 - Increased the framework version to `0.1.0-alpha.19`, adapter schema version

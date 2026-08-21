@@ -298,10 +298,11 @@ Canonical source: `.ai/framework/project-adapter-contract.md`
 Commitment: Keep framework core, project facts, and repository adapter facts
 separated and rewritten from target evidence; record the installed framework
 pack and its projected registry, inventory, bootstrap index, gate index,
-capability closure, and current-scope action policy; reject live support claims
-that contradict enabled module state; and preserve durable task engineering
-evidence, non-canonical Debug Mode evidence, development-pattern evidence,
-routed AI infrastructure items, recommendation/adaptation records, and optional
+capability closure, and current-scope action policy; reject live support
+placeholders, manifest/profile module disagreement, and machine/human policy
+drift before acceptance; and preserve durable task engineering evidence,
+non-canonical Debug Mode evidence, development-pattern evidence, routed AI
+infrastructure items, recommendation/adaptation records, and optional
 project-owned module state.
 Applies to: installation, framework update, adapter maintenance.
 Enforcement: required.
@@ -313,8 +314,8 @@ authorization and proportional durable engineering evidence, before optional
 modules; scaffold only selected dependency-closed capabilities, including Debug
 Mode only with effectiveness and installed-operation dependencies; select a
 compatible framework pack; and enforce optional-module dependency, rule,
-required-file, deterministic-check, and module-gated validator closure before
-claiming a target module is enabled.
+required-file, deterministic-check, manifest/profile state agreement, and
+module-gated validator closure before claiming a target module is enabled.
 Applies to: installation, framework update, adapter maturity, framework
 upgrades.
 Enforcement: required.
@@ -373,11 +374,12 @@ Rule ID: `ALATYR-LIFECYCLE-001`
 Canonical source: `.ai/framework/lifecycle.md`
 Commitment: Record framework version, adapter schema version, template version,
 installed framework pack, baseline, deviations, migration notes, and hash-bound
-upgrade impact; bind releases to v<VERSION>, shipped schemas, and contract-tree
-evidence; preserve current-scope authorization, durable engineering evidence,
-non-canonical Debug Mode records, and enabled target package/module state;
-expand context from affected owners and migrate schemas atomically without
-replacing active state with placeholders.
+upgrade impact; bind releases to v<VERSION>, shipped schemas, contract-tree
+evidence, and the checked-out target branch/revision; preserve current-scope
+authorization, durable engineering evidence, non-canonical Debug Mode records,
+and enabled target package/module state; distinguish non-accepting migration
+staging from strict acceptance; expand context from affected owners and migrate
+schemas atomically without replacing active state with placeholders.
 Applies to: installation, framework upgrades.
 Enforcement: required.
 
@@ -387,10 +389,10 @@ Commitment: Distinguish process commitments, machine-checkable expectations,
 target-dependent guarantees, and non-guarantees in final claims; report
 current-scope authorization and actions; classify durable engineering evidence
 without exposing raw reasoning; keep optional Debug Mode observability
-non-canonical and evidence-qualified; distinguish strong versus bounded package
-provenance and generated-record limits; and separate declared from verified
-scope, validation, quality, latency, cost, attribution, and supervision
-evidence.
+non-canonical and evidence-qualified; distinguish migration staging from
+branch/revision-bound acceptance, strong versus bounded package provenance, and
+generated-record limits; and separate declared from verified scope, validation,
+quality, latency, cost, attribution, and supervision evidence.
 Applies to: final evidence, framework positioning.
 Enforcement: required.
 

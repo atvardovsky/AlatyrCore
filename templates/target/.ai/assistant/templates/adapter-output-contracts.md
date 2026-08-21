@@ -14,6 +14,7 @@ Use after the initial Alatyr Core installation or a scoped adapter expansion.
 - Current user authorization: `{CURRENT_SCOPE_SOURCE_AUTHORIZED_PHASES_INVALIDATION_AND_ACTIONS_PERFORMED}`
 - Evidence basis: `{CURRENT_STATE_HISTORICAL_RECORD_OR_MIXED}`
 - Observed at: `{OBSERVATION_DATE_TIME}`
+- Observed repository branch: `{REPOSITORY_BRANCH_OR_DETACHED_HEAD_OR_NOT_AVAILABLE}`
 - Observed repository revision: `{REPOSITORY_REVISION_OR_NOT_AVAILABLE}`
 - Historical records used: `{DATED_OPERATION_APPROVAL_OR_MIGRATION_RECORDS_OR_NONE}`
 - Unverifiable historical claims: `{UNVERIFIABLE_HISTORICAL_CLAIMS_OR_NONE}`
@@ -64,6 +65,11 @@ Use after the initial Alatyr Core installation or a scoped adapter expansion.
 - AI infrastructure router result: `{AI_INFRASTRUCTURE_ROUTER_RESULT_OR_SKIPPED}`
 - AI infrastructure adaptation-record result: `{AI_INFRASTRUCTURE_ADAPTATION_RECORD_RESULT_OR_SKIPPED}`
 - Validation run: `{TARGET_VALIDATION_RUN_OR_MANUAL_REVIEW}`
+- Validation phase: `{ACCEPTANCE_OR_MIGRATION_STAGING}`
+- Active unresolved placeholders: `{COUNT_AND_PATHS_OR_NONE}`
+- Manifest/module-profile agreement: `{MATCH_OR_DRIFT_DETAILS}`
+- Acceptance eligible: `{YES_OR_NO_WITH_REASON}`
+- Required final strict rerun: `{COMMAND_OR_NOT_REQUIRED}`
 - Validation skipped or unresolved: `{VALIDATION_SKIPPED_OR_UNRESOLVED}`
 - Post-install message result: `{POST_INSTALL_MESSAGE_SENT_OR_SKIPPED}`
 - Final evidence: `{FINAL_EVIDENCE}`
@@ -79,6 +85,7 @@ Core baseline.
 - Current user authorization: `{CURRENT_SCOPE_SOURCE_AUTHORIZED_PHASES_INVALIDATION_AND_ACTIONS_PERFORMED}`
 - Evidence basis: `{CURRENT_STATE_HISTORICAL_RECORD_OR_MIXED}`
 - Observed at: `{OBSERVATION_DATE_TIME}`
+- Observed repository branch: `{REPOSITORY_BRANCH_OR_DETACHED_HEAD_OR_NOT_AVAILABLE}`
 - Observed repository revision: `{REPOSITORY_REVISION_OR_NOT_AVAILABLE}`
 - Historical records used: `{DATED_OPERATION_APPROVAL_OR_MIGRATION_RECORDS_OR_NONE}`
 - Unverifiable historical claims: `{UNVERIFIABLE_HISTORICAL_CLAIMS_OR_NONE}`
@@ -132,6 +139,11 @@ Core baseline.
 - Development-pattern evidence result: `{INDEX_OWNER_RETENTION_CAPTURE_AND_FRAMEWORK_BOUNDARY_OR_SKIPPED}`
 - AI infrastructure adaptation-record result: `{AI_INFRASTRUCTURE_ADAPTATION_RECORD_RESULT_OR_SKIPPED}`
 - Validation run: `{TARGET_VALIDATION_RUN_OR_MANUAL_REVIEW}`
+- Validation phase: `{ACCEPTANCE_OR_MIGRATION_STAGING}`
+- Active unresolved placeholders: `{COUNT_AND_PATHS_OR_NONE}`
+- Manifest/module-profile agreement: `{MATCH_OR_DRIFT_DETAILS}`
+- Acceptance eligible: `{YES_OR_NO_WITH_REASON}`
+- Required final strict rerun: `{COMMAND_OR_NOT_REQUIRED}`
 - Validation skipped or unresolved: `{VALIDATION_SKIPPED_OR_UNRESOLVED}`
 - Post-update message result: `{POST_UPDATE_MESSAGE_SENT_OR_SKIPPED}`
 - Final evidence: `{FINAL_EVIDENCE}`
@@ -147,6 +159,7 @@ adapter.
 - Current user authorization: `{CURRENT_SCOPE_SOURCE_AUTHORIZED_PHASES_INVALIDATION_AND_ACTIONS_PERFORMED}`
 - Evidence basis: `{CURRENT_STATE_HISTORICAL_RECORD_OR_MIXED}`
 - Observed at: `{OBSERVATION_DATE_TIME}`
+- Observed repository branch: `{REPOSITORY_BRANCH_OR_DETACHED_HEAD_OR_NOT_AVAILABLE}`
 - Observed repository revision: `{REPOSITORY_REVISION_OR_NOT_AVAILABLE}`
 - Historical records used: `{DATED_OPERATION_APPROVAL_OR_MIGRATION_RECORDS_OR_NONE}`
 - Unverifiable historical claims: `{UNVERIFIABLE_HISTORICAL_CLAIMS_OR_NONE}`
@@ -194,6 +207,11 @@ adapter.
 - AI infrastructure adaptation-record result: `{AI_INFRASTRUCTURE_ADAPTATION_RECORD_RESULT_OR_SKIPPED}`
 - Prompt-injection policy result: `{PROMPT_INJECTION_POLICY_RESULT}`
 - Validation run: `{TARGET_VALIDATION_RUN_OR_MANUAL_REVIEW}`
+- Validation phase: `{ACCEPTANCE_OR_MIGRATION_STAGING}`
+- Active unresolved placeholders: `{COUNT_AND_PATHS_OR_NONE}`
+- Manifest/module-profile agreement: `{MATCH_OR_DRIFT_DETAILS}`
+- Acceptance eligible: `{YES_OR_NO_WITH_REASON}`
+- Required final strict rerun: `{COMMAND_OR_NOT_REQUIRED}`
 - Validation skipped or unresolved: `{VALIDATION_SKIPPED_OR_UNRESOLVED}`
 - Recommended next operation: `{RECOMMENDED_NEXT_OPERATION}`
 - Final evidence: `{FINAL_EVIDENCE}`

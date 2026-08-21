@@ -27,6 +27,7 @@ from scaffold_projection import (
     project_catalog,
     project_context_descriptor,
     project_manifest,
+    project_module_profile,
     project_router,
     render_json,
 )
@@ -194,6 +195,10 @@ def projected_template_content(
             framework_pack,
             selected,
             set(context.enabled_modules),
+        )
+    if rel == Path(".ai/assistant/module-profile.md"):
+        return project_module_profile(
+            src.read_text(encoding="utf-8"), set(context.enabled_modules)
         )
 
     catalog_rel = Path(".ai/assistant/operation-catalog.json")

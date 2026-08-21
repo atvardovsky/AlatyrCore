@@ -346,6 +346,12 @@ List commands or manual checks:
 - migration assessment completed before target upgrade changes:
 - machine-readable upgrade-impact projection reviewed before broad upgrade
   context:
+- checked-out target branch and revision recorded for migration and final
+  validation evidence:
+- migration-staging output classified as non-accepting, with active unresolved
+  placeholders listed and an acceptance-phase rerun required:
+- manifest `modules.enabled` and human module-profile enabled/required blocks
+  agree one-to-one:
 - effectiveness metrics review:
 - Debug Mode dependency, explicit activation/expiry, non-canonical authority,
   privacy, event attribution, timing/capture quality, metric derivation,

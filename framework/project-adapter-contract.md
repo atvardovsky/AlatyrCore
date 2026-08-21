@@ -177,6 +177,9 @@ An adapter may provide:
   checker coverage
 - enabled-module drift checks that reject live support surfaces which still
   claim an enabled capability is deferred, disabled, blocked, or not installed
+- branch/revision-bound upgrade checks that distinguish migration staging from
+  acceptance, scan active enabled-capability surfaces for unresolved target
+  placeholders, and require manifest/module-profile state agreement
 - security/dependency/license scanners or manual review checklists
 - project-specific test-generation prompts or skills
 - skill import or normalization notes

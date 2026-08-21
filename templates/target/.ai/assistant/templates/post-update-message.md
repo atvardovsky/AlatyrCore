@@ -114,6 +114,16 @@ Operation help:
 Validation run:
 `{VALIDATION_RUN_OR_UNRESOLVED}`
 
+Validation phase and branch/revision:
+`{ACCEPTANCE_OR_MIGRATION_STAGING_AND_TARGET_BRANCH_REVISION}`
+
+Acceptance status:
+`{ACCEPTED_OR_STAGED_WITH_ACTIVE_PLACEHOLDERS_AND_REQUIRED_STRICT_RERUN}`
+
+Do not describe the update as complete when validation used migration staging,
+active adapter placeholders remain, enabled manifest modules disagree with the
+module profile, or evidence belongs to another branch or revision.
+
 Known adapter gaps or migrations:
 `{KNOWN_GAPS_OR_MIGRATIONS}`
 

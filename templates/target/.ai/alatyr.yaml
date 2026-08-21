@@ -203,6 +203,7 @@ engineering_evidence:
   storage_mode: "{REPOSITORY_INTERNAL_BRANCH_IGNORED_LOCAL_OR_APPROVED_EXTERNAL}"
   external_patch_policy: "{EXCLUDE_FROM_EXTERNAL_PATCH_OR_TARGET_APPROVED_INCLUSION}"
   retention_policy: "{TARGET_ENGINEERING_EVIDENCE_RETENTION_POLICY}"
+  redaction_policy: "{TARGET_ENGINEERING_EVIDENCE_REDACTION_POLICY}"
 debug_mode:
   index: ".ai/project/debug/index.json"
   records: ".ai/project/debug/records"

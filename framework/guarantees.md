@@ -143,6 +143,13 @@ Machine checks can verify only deterministic repository facts, such as:
   approval scope, placeholder-free core acceptance, blocking baseline drift,
   and post-update structural acceptance without claiming assistant execution or
   project semantic correctness
+- target validation can distinguish non-accepting migration staging from strict
+  acceptance, bind current-state evidence to the checked-out branch/revision,
+  scan live surfaces required by enabled capabilities, and reject disagreement
+  between manifest-enabled modules and their human module-profile state
+- Debug Mode and durable engineering-evidence policy indexes can be checked
+  against their human policy projections so resolved machine metadata cannot
+  coexist with stale placeholder or contradictory README claims
 - supported bridge templates expose the same compact bootstrap, operation
   catalog, single entry, health, help, and operation-routing entry points
 - reviewed cost or speed improvements count as useful evidence only when

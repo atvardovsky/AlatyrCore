@@ -409,11 +409,29 @@ Use target repository commands only when they are discovered in the target.
 If target validation is missing, manual, or unavailable, report the unresolved
 check and residual risk.
 
+For adapter structure, use `migration-staging` only as an intermediate rewrite
+check. It may retain target placeholders and exit zero, but it is never
+accepted or ready. Before reporting installation or update completion:
+
+1. Resolve placeholders on required core surfaces and every live surface owned
+   by an enabled capability. Preserve placeholders only in explicit reusable
+   authoring templates.
+2. Synchronize manifest `modules.enabled` with exactly one matching human
+   module-profile block in `enabled` or `required` state.
+3. Synchronize machine policy indexes and their human README projections.
+4. Run strict `acceptance` validation on the checked-out target branch and
+   record that branch and exact revision. Repeat this final step separately on
+   any other branch whose adapter state is to be accepted.
+
 ## Final Evidence
 
 Report:
 
-- evidence basis, observation time, and repository revision when available
+- evidence basis, observation time, checked-out branch, and repository revision
+  when available
+- adapter validation phase, active unresolved-placeholder count,
+  manifest/module-profile agreement, acceptance eligibility, and required
+  strict rerun when staging was used
 - dated historical records used and historical claims that remain unverifiable
 - installation id and approval used, if any
 - `current_user_authorization`: logical installation scope, source request,

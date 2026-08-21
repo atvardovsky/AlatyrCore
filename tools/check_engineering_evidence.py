@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "templates" / "target"
 FRAMEWORK = ROOT / "framework" / "engineering-evidence.md"
 INDEX = TARGET / ".ai" / "project" / "engineering-evidence" / "index.json"
+POLICY = TARGET / ".ai" / "project" / "engineering-evidence" / "README.md"
 FLOW = TARGET / ".ai" / "assistant" / "flows" / "engineering-evidence-capture.flow.md"
 GATE = TARGET / ".ai" / "assistant" / "gates" / "engineering-evidence.md"
 RECORD = TARGET / ".ai" / "assistant" / "templates" / "engineering-evidence-record.json"
@@ -140,13 +141,14 @@ def fixture_record(base: str, result: str) -> dict[str, Any]:
 
 def fixture_index(record: dict[str, Any]) -> dict[str, Any]:
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "index_kind": "target-engineering-evidence-index",
         "project": "fixture",
         "owner": "engineering",
         "storage_mode": "repository",
         "external_patch_policy": "exclude from external patch",
         "retention_policy": "retain validated records",
+        "redaction_policy": "exclude raw conversations and secrets",
         "records": [
             {
                 "evidence_id": record["evidence_id"],
@@ -204,6 +206,15 @@ def validate_fixture(failures: list[str]) -> None:
         record_path.write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
         index_path = record_path.parent.parent / "index.json"
         index_path.write_text(json.dumps(fixture_index(record), indent=2) + "\n", encoding="utf-8")
+        (index_path.parent / "README.md").write_text(
+            "# Durable Engineering Evidence\n\n"
+            "Owner: engineering\n\n"
+            "Storage mode: repository\n\n"
+            "External patch policy: exclude from external patch\n\n"
+            "Retention policy: retain validated records\n\n"
+            "Redaction policy: exclude raw conversations and secrets\n",
+            encoding="utf-8",
+        )
 
         errors = [finding for finding in run_validator(repo) if finding.level == "error"]
         if errors:
@@ -253,6 +264,11 @@ def main() -> int:
     require_text(FRAMEWORK, ["ALATYR-ENGINEERING-EVIDENCE-001", "## Capture Decision", "## Publication Boundary", "Do not store raw chat"], failures)
     require_text(FLOW, ["## Steps", "captured", "skipped", "blocked", "Reject raw chats"], failures)
     require_text(GATE, ["reusable engineering knowledge", "durable_engineering_evidence"], failures)
+    require_text(
+        POLICY,
+        ["Owner:", "Storage mode:", "External patch policy:", "Retention policy:", "Redaction policy:"],
+        failures,
+    )
 
     try:
         schema = json.loads(SCHEMA.read_text(encoding="utf-8"))
@@ -266,6 +282,8 @@ def main() -> int:
     else:
         if index.get("records") != []:
             failures.append("source engineering-evidence index must start empty")
+        if index.get("schema_version") != 2 or "redaction_policy" not in index:
+            failures.append("source engineering-evidence index must use policy schema 2")
         if record.get("record_kind") != "alatyr-engineering-evidence":
             failures.append("record template kind is invalid")
         if overlay.get("overlay") != "engineering-evidence":

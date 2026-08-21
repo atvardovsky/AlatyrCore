@@ -16,6 +16,7 @@ To template version: `{TO_TEMPLATE_VERSION}`
 Prepared by: `{PREPARED_BY}`
 Prepared at: `{PREPARED_AT}`
 Evidence basis: `{CURRENT_STATE_HISTORICAL_RECORD_OR_MIXED}`
+Observed target branch: `{TARGET_BRANCH_OR_DETACHED_HEAD_OR_NOT_AVAILABLE}`
 Observed target revision: `{TARGET_REVISION_OR_NOT_AVAILABLE}`
 Migration assessment: `{MIGRATION_ASSESSMENT_PATH_OR_MANUAL_REVIEW}`
 
@@ -75,9 +76,14 @@ Approval needed: `{YES_NO_REASON}`
 Approval record: `{APPROVAL_RECORD_OR_NOT_REQUIRED}`
 Assessment completed before target changes: `{YES_NO_AND_REASON}`
 Validation run: `{VALIDATION_RUN_OR_SKIPPED_WITH_REASON}`
+Validation phase: `{ACCEPTANCE_OR_MIGRATION_STAGING}`
+Active unresolved placeholders: `{COUNT_AND_PATHS_OR_NONE}`
+Manifest/module-profile agreement: `{MATCH_OR_DRIFT_DETAILS}`
+Acceptance eligible: `{YES_OR_NO_WITH_REASON}`
+Required final strict rerun: `{COMMAND_OR_NOT_REQUIRED}`
 
 ## Final Evidence
 
-Migration result: `{COMPLETE_PARTIAL_OR_BLOCKED}`
+Migration result: `{COMPLETE_STAGED_PARTIAL_OR_BLOCKED}`
 Remaining gaps: `{REMAINING_GAPS_OR_NONE}`
 Residual risk: `{RESIDUAL_RISK}`

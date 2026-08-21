@@ -136,6 +136,12 @@ maintain them:
 Targets may add local modules when they record the owner, enabled state,
 required files, validation, and residual risk.
 
+The manifest and human module profile are one projected contract. Every module
+listed in `modules.enabled` must have exactly one matching profile block in
+`enabled` or `required` state. A profile block in either state must be listed
+in the manifest. Migration staging may expose disagreement as repair work, but
+strict adapter acceptance must reject it.
+
 ## Module States
 
 Use these states in target adapters:

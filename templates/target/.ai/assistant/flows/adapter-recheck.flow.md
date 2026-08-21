@@ -106,7 +106,9 @@ Replace placeholders with target facts before accepting installation.
 6. Compare framework version, adapter schema version, template version, module
    states, known gaps, local deviations, and owner facts in `.ai/alatyr.yaml`.
 7. Check required core and optional module state in
-   `.ai/assistant/module-profile.md`.
+   `.ai/assistant/module-profile.md`. Require every manifest-enabled module to
+   have exactly one `enabled` or `required` profile block, and reject a profile
+   block in either state when the manifest does not enable it.
 8. Check target adapter references to framework files, operation help, routing
    flows, AI infrastructure inventory, recommendation and item router, gates,
    prompts, skills, recommendation/adaptation records, bridge files,
@@ -179,6 +181,11 @@ Replace placeholders with target facts before accepting installation.
 17. Use `.ai/assistant/templates/effectiveness-report.md` only when comparing
     adapter effectiveness across comparable tasks or adapter states.
 18. Run target validation that exists. Do not invent commands.
+    Use `migration-staging` only while adapting unresolved target facts. It may
+    produce a non-blocking work inventory, but it must not produce `ready`,
+    accepted, or complete evidence. Before accepting an installation or
+    update, resolve active placeholders and rerun strict `acceptance`
+    validation on the checked-out branch/revision.
 19. Classify final evidence as `current-state`, `historical-record`, or `mixed`.
     Current files prove current structure only; name dated operation, approval,
     validation, or migration records before making historical claims.
@@ -195,6 +202,9 @@ Report:
 - framework version, adapter schema version, and template version
 - files inspected
 - evidence basis, observation time, and repository revision when available
+- checked-out branch, validation phase, active unresolved-placeholder count,
+  manifest/module-profile agreement, acceptance eligibility, and the final
+  strict rerun when staging was used
 - historical records used and historical claims that remain unverifiable
 - adapter references changed or still current
 - action-authorization policy and routed surfaces current, including phase

@@ -178,6 +178,26 @@ def main() -> int:
         scaffold = run("scaffold", "--target", str(target), "--write")
         if scaffold.returncode != 0:
             failures.append("scaffold smoke setup failed")
+        git_setup_commands = [
+            ["git", "init", "-q"],
+            ["git", "config", "user.email", "alatyr-conformance@example.invalid"],
+            ["git", "config", "user.name", "Alatyr Conformance"],
+            ["git", "add", "."],
+            ["git", "commit", "-qm", "Initialize target fixture"],
+            ["git", "switch", "-qc", "feature/adapter-upgrade"],
+        ]
+        for command in git_setup_commands:
+            result = subprocess.run(
+                command,
+                cwd=target,
+                check=False,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+            if result.returncode != 0:
+                failures.append(f"upgrade branch fixture setup failed: {' '.join(command)}")
+                break
         before = tree_hashes(target)
         output = base / "assessment"
         assessment = run(
@@ -206,8 +226,11 @@ def main() -> int:
         plan = (output / "upgrade-assessment.md").read_text(encoding="utf-8")
         for required in [
             "Evidence basis: `current-state`",
+            "Observed target branch: `feature/adapter-upgrade`",
             "This assessment does not apply an upgrade",
             "affected canonical sources",
+            "Validation phase: `migration-staging`",
+            "Acceptance eligible: `false`",
         ]:
             if required not in plan:
                 failures.append(f"upgrade assessment missing safety text: {required}")
@@ -216,7 +239,17 @@ def main() -> int:
             failures.append("upgrade assessment validator evidence is not current-state")
         if payload.get("counts", {}).get("errors") != 0:
             failures.append("fresh scaffold validator evidence contains errors")
+        if payload.get("status") != "staged":
+            failures.append("placeholder-tolerant upgrade assessment must remain staged")
+        if payload.get("adapter_health", {}).get("state") != "staged":
+            failures.append("staging assessment must not report ready adapter health")
+        if payload.get("placeholder_validation", {}).get("acceptance_eligible") is not False:
+            failures.append("staging assessment must not be acceptance eligible")
+        if payload.get("evidence", {}).get("observed_branch") != "feature/adapter-upgrade":
+            failures.append("validator evidence must bind the checked-out target branch")
         impact = json.loads((output / "upgrade-impact.json").read_text(encoding="utf-8"))
+        if impact.get("target", {}).get("branch") != "feature/adapter-upgrade":
+            failures.append("upgrade impact must bind the checked-out target branch")
         if impact.get("impact_kind") != "alatyr-upgrade-impact":
             failures.append("upgrade assessment impact output has an invalid contract")
         if impact.get("routing", {}).get("full_corpus_required") is not False:

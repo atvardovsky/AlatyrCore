@@ -12,10 +12,11 @@ Owner: `{TARGET_ENGINEERING_EVIDENCE_OWNER}`
 
 Storage mode: `{REPOSITORY_INTERNAL_BRANCH_IGNORED_LOCAL_OR_APPROVED_EXTERNAL}`
 
-External contribution policy:
-`{EXCLUDE_FROM_EXTERNAL_PATCH_OR_TARGET_APPROVED_INCLUSION}`
+External patch policy: `{EXCLUDE_FROM_EXTERNAL_PATCH_OR_TARGET_APPROVED_INCLUSION}`
 
-Retention and redaction policy: `{TARGET_ENGINEERING_EVIDENCE_POLICY}`
+Retention policy: `{TARGET_ENGINEERING_EVIDENCE_RETENTION_POLICY}`
+
+Redaction policy: `{TARGET_ENGINEERING_EVIDENCE_REDACTION_POLICY}`
 
 Ignored local storage is not durable team memory unless an approved retained
 store also preserves the record. Do not store raw chats, chain-of-thought,

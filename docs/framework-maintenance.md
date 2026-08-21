@@ -269,7 +269,11 @@ Before accepting a change, check:
   `--migration-diff <report.md>` when framework drift should be tied to rule
   and action evidence. Framework baseline and missing migration evidence are
   blocking unless the target explicitly records an accepted deviation or
-  severity decision. It is optional target-adapter validation, not a
+  severity decision. Use `--validation-phase migration-staging` only for a
+  non-accepting unresolved-fact inventory and rerun the default strict
+  `acceptance` phase on the checked-out branch/revision before completion.
+  The deprecated `--allow-placeholders` flag is a staging alias and cannot
+  produce ready or acceptance-eligible evidence. It is optional target-adapter validation, not a
   source-template check and not proof of project business truth.
   The equivalent `python3 tools/alatyr.py doctor --target <target-repo>` alias
   remains read-only and returns prioritized repair operation IDs.

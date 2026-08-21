@@ -468,6 +468,13 @@ metadata.
 - Local deviations:
 - Upgrade or migration notes:
 - Migration assessment path or manual baseline comparison:
+- Checked-out target branch and revision:
+- Adapter validation phase (`migration-staging` or `acceptance`):
+- Active placeholder resolution plan for required and enabled-capability
+  surfaces:
+- Manifest/module-profile synchronization plan:
+- Machine policy index/human README synchronization plan:
+- Final acceptance-phase validation command:
 - Canonical sources selected from migration impact:
 - Candidate upgrade context intentionally omitted:
 - Effectiveness metrics:

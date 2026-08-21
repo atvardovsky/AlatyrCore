@@ -457,13 +457,23 @@ python3 tools/validate_target_adapter.py --target /path/to/target-repo --json --
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --diff-ref origin/main --approval-record .ai/assistant/approvals/change-approval.json --enforce-approval-scope
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --change-package .ai/assistant/change-packages/change-package.json --enforce-change-package
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --framework-source /path/to/AlatyrCore --migration-diff /path/to/migration-report.md
+python3 tools/validate_target_adapter.py --target /path/to/target-repo --validation-phase migration-staging
+python3 tools/validate_target_adapter.py --target /path/to/target-repo --validation-phase acceptance
 ```
 
 Windows users may run the same helper through `py -3` or the provided
 Command Prompt and PowerShell wrappers under `tools/`.
 
+`migration-staging` is an intermediate adaptation check. It reports unresolved
+active placeholders and always remains non-accepting even when it exits zero.
+The default `acceptance` phase rejects those placeholders. Final update
+evidence must name the checked-out branch and revision, show manifest/module-
+profile agreement, and come from acceptance validation on that same state.
+Validation of one branch does not establish that another branch is updated.
+
 This validator can check generated bootstrap and routed-gate drift, router
-references, and enabled-module contracts without running every optional module
+  references, enabled-module contracts, manifest/module-profile agreement, and
+  live enabled-capability placeholders without running every optional module
 check. It can also inspect exact registry Fact Type to consistency-map node
 coverage, semantic routing context, consistency-map and AI infrastructure
 router contracts when enabled, unresolved placeholders and stale enabled-

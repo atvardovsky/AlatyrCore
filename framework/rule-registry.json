@@ -329,7 +329,7 @@
       "id": "ALATYR-ADAPTER-001",
       "category": "ADAPTER",
       "canonical_source": "framework/project-adapter-contract.md",
-      "summary": "Keep framework core, project facts, and repository adapter facts separated and rewritten from target evidence; record the installed framework pack and its projected registry, inventory, bootstrap index, gate index, capability closure, and current-scope action policy; reject live support claims that contradict enabled module state; and preserve durable task engineering evidence, non-canonical Debug Mode evidence, development-pattern evidence, routed AI infrastructure items, recommendation/adaptation records, and optional project-owned module state.",
+      "summary": "Keep framework core, project facts, and repository adapter facts separated and rewritten from target evidence; record the installed framework pack and its projected registry, inventory, bootstrap index, gate index, capability closure, and current-scope action policy; reject live support placeholders, manifest/profile module disagreement, and machine/human policy drift before acceptance; and preserve durable task engineering evidence, non-canonical Debug Mode evidence, development-pattern evidence, routed AI infrastructure items, recommendation/adaptation records, and optional project-owned module state.",
       "applies_to": ["installation", "framework update", "adapter maintenance"],
       "enforcement": "required"
     },
@@ -337,7 +337,7 @@
       "id": "ALATYR-MODULE-001",
       "category": "MODULE",
       "canonical_source": "framework/module-profile.md",
-      "summary": "Establish the required core profile, including current-scope action authorization and proportional durable engineering evidence, before optional modules; scaffold only selected dependency-closed capabilities, including Debug Mode only with effectiveness and installed-operation dependencies; select a compatible framework pack; and enforce optional-module dependency, rule, required-file, deterministic-check, and module-gated validator closure before claiming a target module is enabled.",
+      "summary": "Establish the required core profile, including current-scope action authorization and proportional durable engineering evidence, before optional modules; scaffold only selected dependency-closed capabilities, including Debug Mode only with effectiveness and installed-operation dependencies; select a compatible framework pack; and enforce optional-module dependency, rule, required-file, deterministic-check, manifest/profile state agreement, and module-gated validator closure before claiming a target module is enabled.",
       "applies_to": ["installation", "framework update", "adapter maturity", "framework upgrades"],
       "enforcement": "required"
     },
@@ -377,7 +377,7 @@
       "id": "ALATYR-LIFECYCLE-001",
       "category": "LIFECYCLE",
       "canonical_source": "framework/lifecycle.md",
-      "summary": "Record framework version, adapter schema version, template version, installed framework pack, baseline, deviations, migration notes, and hash-bound upgrade impact; bind releases to v<VERSION>, shipped schemas, and contract-tree evidence; preserve current-scope authorization, durable engineering evidence, non-canonical Debug Mode records, and enabled target package/module state; expand context from affected owners and migrate schemas atomically without replacing active state with placeholders.",
+      "summary": "Record framework version, adapter schema version, template version, installed framework pack, baseline, deviations, migration notes, and hash-bound upgrade impact; bind releases to v<VERSION>, shipped schemas, contract-tree evidence, and the checked-out target branch/revision; preserve current-scope authorization, durable engineering evidence, non-canonical Debug Mode records, and enabled target package/module state; distinguish non-accepting migration staging from strict acceptance; expand context from affected owners and migrate schemas atomically without replacing active state with placeholders.",
       "applies_to": ["installation", "framework upgrades"],
       "enforcement": "required"
     },
@@ -385,7 +385,7 @@
       "id": "ALATYR-EVIDENCE-001",
       "category": "EVIDENCE",
       "canonical_source": "framework/guarantees.md",
-      "summary": "Distinguish process commitments, machine-checkable expectations, target-dependent guarantees, and non-guarantees in final claims; report current-scope authorization and actions; classify durable engineering evidence without exposing raw reasoning; keep optional Debug Mode observability non-canonical and evidence-qualified; distinguish strong versus bounded package provenance and generated-record limits; and separate declared from verified scope, validation, quality, latency, cost, attribution, and supervision evidence.",
+      "summary": "Distinguish process commitments, machine-checkable expectations, target-dependent guarantees, and non-guarantees in final claims; report current-scope authorization and actions; classify durable engineering evidence without exposing raw reasoning; keep optional Debug Mode observability non-canonical and evidence-qualified; distinguish migration staging from branch/revision-bound acceptance, strong versus bounded package provenance, and generated-record limits; and separate declared from verified scope, validation, quality, latency, cost, attribution, and supervision evidence.",
       "applies_to": ["final evidence", "framework positioning"],
       "enforcement": "required"
     }

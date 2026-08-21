@@ -19,6 +19,7 @@ from validate_target_adapter import (
     extract_list_field,
     findings_payload,
     git_changed_files,
+    parse_manifest,
     parse_registry_fact_entries,
     result_code,
     scope_entries_cover,
@@ -27,7 +28,12 @@ from validate_target_adapter import (
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def validator(target: Path, framework_source: Path | None = None) -> Validator:
+def validator(
+    target: Path,
+    framework_source: Path | None = None,
+    *,
+    validation_phase: str = "migration-staging",
+) -> Validator:
     return Validator(
         target,
         framework_source=framework_source,
@@ -40,6 +46,7 @@ def validator(target: Path, framework_source: Path | None = None) -> Validator:
         allow_placeholders=True,
         allow_local_paths=[],
         config=AdapterValidatorConfig(),
+        validation_phase=validation_phase,
     )
 
 
@@ -2177,12 +2184,99 @@ Excluded files or surfaces:
 
         payload = findings_payload([], target=target, strict_warnings=False)
         evidence = payload.get("evidence", {})
-        if payload.get("schema_version") != 2:
-            failures.append("validator JSON schema must expose evidence schema 2")
+        if payload.get("schema_version") != 3:
+            failures.append("validator JSON schema must expose evidence schema 3")
         if evidence.get("basis") != "current-state-structural":
             failures.append("validator JSON must classify current-state evidence")
         if evidence.get("historical_actions_verified") is not False:
             failures.append("validator JSON must not imply historical actions were verified")
+
+        staging_payload = findings_payload(
+            [
+                Finding(
+                    "warning",
+                    "PLACEHOLDER_STAGING_UNRESOLVED",
+                    "staged placeholder",
+                    ".ai/project/debug/README.md:1",
+                )
+            ],
+            target=target,
+            strict_warnings=False,
+            validation_phase="migration-staging",
+        )
+        if staging_payload.get("status") != "staged":
+            failures.append("migration staging must not report passed status")
+        if staging_payload.get("adapter_health", {}).get("state") != "staged":
+            failures.append("migration staging must not report ready adapter health")
+        if staging_payload.get("placeholder_validation", {}).get("acceptance_eligible") is not False:
+            failures.append("migration staging must never be acceptance eligible")
+        if staging_payload.get("placeholder_validation", {}).get("unresolved_active") != 1:
+            failures.append("migration staging must count unresolved active placeholders")
+
+        active_target = target / "active-surface"
+        active_readme = active_target / ".ai/project/debug/README.md"
+        active_readme.parent.mkdir(parents=True, exist_ok=True)
+        active_readme.write_text("Owner: `{DEBUG_EVIDENCE_OWNER}`\n", encoding="utf-8")
+        strict_placeholders = validator(active_target, validation_phase="acceptance")
+        strict_placeholders.capability_modules = {
+            "debug-mode": {"target_files": [".ai/project/debug/README.md"]}
+        }
+        strict_placeholders.check_placeholders(
+            None, "core", {"debug-mode"}
+        )
+        if "PLACEHOLDER_UNRESOLVED" not in {
+            finding.code for finding in strict_placeholders.findings
+        }:
+            failures.append("acceptance must reject placeholders on enabled live surfaces")
+
+        staged_placeholders = validator(
+            active_target, validation_phase="migration-staging"
+        )
+        staged_placeholders.capability_modules = strict_placeholders.capability_modules
+        staged_placeholders.check_placeholders(None, "core", {"debug-mode"})
+        if "PLACEHOLDER_STAGING_UNRESOLVED" not in {
+            finding.code for finding in staged_placeholders.findings
+        }:
+            failures.append("migration staging must inventory live placeholders")
+        if any(
+            finding.code == "PLACEHOLDER_UNRESOLVED"
+            for finding in staged_placeholders.findings
+        ):
+            failures.append("migration staging must classify rather than accept/reject placeholders")
+
+        profile_target = target / "module-profile-sync"
+        profile_path = profile_target / ".ai/assistant/module-profile.md"
+        profile_path.parent.mkdir(parents=True, exist_ok=True)
+        profile_path.write_text("# Module Profile\n", encoding="utf-8")
+        profile_manifest_path = profile_target / ".ai/alatyr.yaml"
+        profile_manifest_path.parent.mkdir(parents=True, exist_ok=True)
+        profile_manifest_path.write_text(
+            "modules:\n  enabled:\n    - debug-mode\n", encoding="utf-8"
+        )
+        profile_manifest = parse_manifest(profile_manifest_path)
+        profile_validator = validator(profile_target)
+        profile_validator.capability_modules = {"debug-mode": {}}
+        profile_validator.check_module_profile_sync(profile_manifest)
+        if "MODULE_PROFILE_ENABLED_MISSING" not in {
+            finding.code for finding in profile_validator.findings
+        }:
+            failures.append("manifest-enabled modules must require a matching profile block")
+
+        projection_target = target / "policy-projection"
+        projection_readme = projection_target / ".ai/project/debug/README.md"
+        projection_readme.parent.mkdir(parents=True, exist_ok=True)
+        projection_readme.write_text("Owner: human-owner\n", encoding="utf-8")
+        projection_validator = validator(projection_target)
+        projection_validator.check_policy_readme_projection(
+            index={"owner": "machine-owner"},
+            readme_relpath=".ai/project/debug/README.md",
+            fields={"Owner": "owner"},
+            code_prefix="DEBUG_MODE_POLICY",
+        )
+        if "DEBUG_MODE_POLICY_DRIFT" not in {
+            finding.code for finding in projection_validator.findings
+        }:
+            failures.append("machine and human policy metadata drift must be rejected")
 
         health_payload = findings_payload(
             [

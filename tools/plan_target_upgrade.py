@@ -11,7 +11,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-from validate_target_adapter import git_head_revision, parse_manifest
+from validate_target_adapter import git_branch_name, git_head_revision, parse_manifest
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -65,6 +65,8 @@ def enrich_upgrade_impact(
     payload = json.loads(path.read_text(encoding="utf-8"))
     manifest = parse_manifest(target / ".ai" / "alatyr.yaml")
     payload["target"] = {
+        "branch": git_branch_name(target) or "not available",
+        "revision": git_head_revision(target) or "not available",
         "framework_pack": framework_pack,
         "support_profile": manifest_value(target, ("installation", "support_profile")),
         "enabled_modules": sorted(
@@ -132,14 +134,20 @@ def render_plan(
     migration_status: str,
     validation_status: str,
     validation_counts: dict[str, object],
+    validation_contract: dict[str, object],
     from_versions: tuple[str, str, str],
     to_versions: tuple[str, str, str],
     framework_pack: str,
 ) -> str:
     target_revision = git_head_revision(target) or "not available"
+    target_branch = git_branch_name(target) or "not available"
+    validation_phase = validation_contract.get("validation_phase", "unknown")
+    acceptance_eligible = validation_contract.get("acceptance_eligible", False)
+    unresolved_active = validation_contract.get("unresolved_active", "unknown")
     return f"""# Alatyr Target Upgrade Assessment
 
 Evidence basis: `current-state`
+Observed target branch: `{target_branch}`
 Observed target revision: `{target_revision}`
 Target repository label: `{target.name}`
 
@@ -155,6 +163,9 @@ Target repository label: `{target.name}`
 - Migration report: `migration-report.md` ({migration_status})
 - Upgrade impact router: `upgrade-impact.json` ({migration_status})
 - Structural validator report: `adapter-validation.json` ({validation_status})
+- Validation phase: `{validation_phase}`
+- Acceptance eligible: `{str(acceptance_eligible).lower()}`
+- Unresolved active placeholders: `{unresolved_active}`
 - Validator counts: `{json.dumps(validation_counts, sort_keys=True)}`
 
 ## Apply Gate
@@ -163,6 +174,13 @@ This assessment does not apply an upgrade, approve protected changes, or
 replace target validation. Review `upgrade-impact.json` first, load only its
 affected canonical sources and target surfaces, preserve local deviations,
 prepare a target migration note, and obtain approval before protected changes.
+Evidence applies only to the named checked-out branch and observed revision.
+It does not prove that another branch contains the same adapter state.
+
+Migration-staging validation may inventory unresolved target facts, but it
+cannot complete or accept an update. Resolve every active placeholder and run
+the validator with `--validation-phase acceptance` before reporting the
+adapter as updated.
 
 ## Next Actions
 
@@ -171,7 +189,8 @@ prepare a target migration note, and obtain approval before protected changes.
 2. Resolve structural validator errors or record accepted target deviations.
 3. Map affected source changes to installed adapter surfaces and local owners.
 4. Prepare the target migration note and explicit approval scope.
-5. Apply approved changes separately, then rerun adapter and target validation.
+5. Apply approved changes separately, then rerun adapter and target validation
+   in the acceptance phase on the branch and revision being accepted.
 """
 
 
@@ -187,13 +206,25 @@ def main() -> int:
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--diff-ref")
     parser.add_argument("--approval-record", action="append", default=[], type=Path)
-    parser.add_argument("--allow-placeholders", action="store_true")
+    parser.add_argument(
+        "--validation-phase",
+        choices=["acceptance", "migration-staging"],
+        default="acceptance",
+    )
+    parser.add_argument(
+        "--allow-placeholders",
+        action="store_true",
+        help="Deprecated alias for --validation-phase migration-staging.",
+    )
     parser.add_argument(
         "--overwrite",
         action="store_true",
         help="Replace existing assessment outputs in --output-dir.",
     )
     args = parser.parse_args()
+    validation_phase = (
+        "migration-staging" if args.allow_placeholders else args.validation_phase
+    )
 
     target = args.target.resolve()
     source = args.framework_source.resolve()
@@ -341,11 +372,10 @@ def main() -> int:
             validator_command.extend(["--diff-ref", args.diff_ref])
         for record in args.approval_record:
             validator_command.extend(["--approval-record", str(record)])
-        if args.allow_placeholders:
-            validator_command.append("--allow-placeholders")
+        validator_command.extend(["--validation-phase", validation_phase])
         validation = run(validator_command, source)
         validation_code = validation.returncode
-        validation_status = "passed" if validation.returncode == 0 else "findings require review"
+        validation_status = "findings require review"
         if validation_report.is_file():
             try:
                 payload = json.loads(validation_report.read_text(encoding="utf-8"))
@@ -353,6 +383,33 @@ def main() -> int:
                 validation_status = "invalid validator report"
             else:
                 validation_counts = payload.get("counts", {})
+                validation_status = str(payload.get("status", "unknown"))
+
+    validation_contract: dict[str, object] = {
+        "validation_phase": validation_phase,
+        "acceptance_eligible": False,
+        "unresolved_active": "unknown",
+    }
+    if validation_report.is_file():
+        try:
+            validation_payload = json.loads(validation_report.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            pass
+        else:
+            placeholder_validation = validation_payload.get("placeholder_validation", {})
+            validation_contract = {
+                "validation_phase": validation_payload.get("validation_phase", validation_phase),
+                "acceptance_eligible": (
+                    placeholder_validation.get("acceptance_eligible", False)
+                    if isinstance(placeholder_validation, dict)
+                    else False
+                ),
+                "unresolved_active": (
+                    placeholder_validation.get("unresolved_active", "unknown")
+                    if isinstance(placeholder_validation, dict)
+                    else "unknown"
+                ),
+            }
 
     assessment_plan.write_text(
         render_plan(
@@ -360,6 +417,7 @@ def main() -> int:
             migration_status=migration_status,
             validation_status=validation_status,
             validation_counts=validation_counts,
+            validation_contract=validation_contract,
             from_versions=from_versions,
             to_versions=to_versions,
             framework_pack=framework_pack,

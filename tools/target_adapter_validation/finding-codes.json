@@ -3422,6 +3422,15 @@
       ]
     },
     {
+      "code": "ENGINEERING_EVIDENCE_MANIFEST_POLICY_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "ENGINEERING_EVIDENCE_PRIVACY",
       "levels": [
         "error"
@@ -4493,6 +4502,51 @@
       ]
     },
     {
+      "code": "MODULE_MANIFEST_ENABLED_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "MODULE_PROFILE_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "MODULE_PROFILE_ENABLED_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "MODULE_PROFILE_STATE_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "MODULE_PROFILE_UNKNOWN",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "OPERATION_CANDIDATES_MISSING",
       "levels": [
         "warning"
@@ -5450,15 +5504,6 @@
       "code": "PLACEHOLDERS_ALLOWED",
       "levels": [
         "info"
-      ],
-      "sources": [
-        "tools/validate_target_adapter.py"
-      ]
-    },
-    {
-      "code": "PLACEHOLDER_UNRESOLVED",
-      "levels": [
-        "error"
       ],
       "sources": [
         "tools/validate_target_adapter.py"

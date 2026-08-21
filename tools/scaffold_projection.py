@@ -67,6 +67,22 @@ def project_agent_rule_ids(text: str, rule_ids: list[str]) -> str:
     return rendered
 
 
+def project_module_profile(text: str, enabled_modules: set[str]) -> str:
+    """Project scaffold-selected capabilities into the human module profile."""
+
+    rendered = text
+    for module_id in sorted(enabled_modules):
+        pattern = re.compile(
+            rf"(^Module: `{re.escape(module_id)}`\s*$[\s\S]*?^State:\s*)"
+            r"`?\{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED\}`?\s*$",
+            flags=re.MULTILINE,
+        )
+        rendered, count = pattern.subn(r"\1`enabled`", rendered, count=1)
+        if count != 1:
+            raise ValueError(f"cannot project enabled module {module_id} into module profile")
+    return rendered
+
+
 def load_object(path: Path) -> dict[str, Any]:
     data = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(data, dict):

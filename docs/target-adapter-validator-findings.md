@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 896
+Catalog entries: 901
 
 ## Codes
 
@@ -772,6 +772,8 @@ Catalog entries: 896
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ENGINEERING_EVIDENCE_MANIFEST_PATH`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_MANIFEST_POLICY_DRIFT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `ENGINEERING_EVIDENCE_PRIVACY`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ENGINEERING_EVIDENCE_PROHIBITED_CONTENT_FIELD`
@@ -1010,6 +1012,16 @@ Catalog entries: 896
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `MIGRATION_DIFF_SKIPPED`
   Level: info. Source: `tools/validate_target_adapter.py`.
+- `MODULE_MANIFEST_ENABLED_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `MODULE_PROFILE_DUPLICATE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `MODULE_PROFILE_ENABLED_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `MODULE_PROFILE_STATE_DRIFT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `MODULE_PROFILE_UNKNOWN`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `OPERATION_CANDIDATES_MISSING`
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `OPERATION_CANDIDATE_COVERAGE`
@@ -1224,8 +1236,6 @@ Catalog entries: 896
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `PLACEHOLDERS_ALLOWED`
   Level: info. Source: `tools/validate_target_adapter.py`.
-- `PLACEHOLDER_UNRESOLVED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
 - `PROFILE_DUPLICATE_CONTEXT`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `PROFILE_MARKDOWN_MISSING`

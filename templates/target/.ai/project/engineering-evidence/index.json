@@ -1,10 +1,11 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "index_kind": "target-engineering-evidence-index",
   "project": "{PROJECT_NAME}",
   "owner": "{TARGET_ENGINEERING_EVIDENCE_OWNER}",
   "storage_mode": "{REPOSITORY_INTERNAL_BRANCH_IGNORED_LOCAL_OR_APPROVED_EXTERNAL}",
   "external_patch_policy": "{EXCLUDE_FROM_EXTERNAL_PATCH_OR_TARGET_APPROVED_INCLUSION}",
   "retention_policy": "{TARGET_ENGINEERING_EVIDENCE_RETENTION_POLICY}",
+  "redaction_policy": "{TARGET_ENGINEERING_EVIDENCE_REDACTION_POLICY}",
   "records": []
 }
