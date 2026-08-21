@@ -29,6 +29,7 @@ contours:
 source_of_truth:
   project_contour: ".ai/project/contour.md"
   registry: ".ai/project/source-of-truth-registry.md"
+  engineering_evidence_index: ".ai/project/engineering-evidence/index.json"
   development_evidence: ".ai/project/development-evidence.json"
   consistency_map: ".ai/project/consistency-map.json"
   architecture_index: ".ai/project/architecture/README.md"
@@ -142,6 +143,8 @@ operations:
   change_package_index: ".ai/assistant/change-packages/index.json"
   change_package_record: ".ai/assistant/templates/change-package-record.json"
   change_package_report: ".ai/assistant/templates/change-package-report.md"
+  engineering_evidence_capture: ".ai/assistant/flows/engineering-evidence-capture.flow.md"
+  engineering_evidence_record: ".ai/assistant/templates/engineering-evidence-record.json"
   ai_infrastructure_inventory: ".ai/assistant/templates/ai-infrastructure-inventory.md"
   ai_infrastructure_recommendation: ".ai/assistant/templates/ai-infrastructure-recommendation.md"
   extension_management: ".ai/assistant/flows/extension-lifecycle.flow.md"
@@ -190,6 +193,15 @@ change_packages:
   machine_template: ".ai/assistant/templates/change-package-record.json"
   human_report_template: ".ai/assistant/templates/change-package-report.md"
   retention_policy: "{TARGET_CHANGE_PACKAGE_RETENTION_AND_REDACTION_POLICY}"
+engineering_evidence:
+  index: ".ai/project/engineering-evidence/index.json"
+  records: ".ai/project/engineering-evidence/records"
+  flow: ".ai/assistant/flows/engineering-evidence-capture.flow.md"
+  gate: ".ai/assistant/gates/engineering-evidence.md"
+  machine_template: ".ai/assistant/templates/engineering-evidence-record.json"
+  storage_mode: "{REPOSITORY_INTERNAL_BRANCH_IGNORED_LOCAL_OR_APPROVED_EXTERNAL}"
+  external_patch_policy: "{EXCLUDE_FROM_EXTERNAL_PATCH_OR_TARGET_APPROVED_INCLUSION}"
+  retention_policy: "{TARGET_ENGINEERING_EVIDENCE_RETENTION_POLICY}"
 code_documentation:
   catalog: ".ai/project/documentation/catalog.json"
   profiles: ".ai/project/documentation/profiles.json"

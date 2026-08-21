@@ -264,8 +264,11 @@ def main() -> int:
         failures.append("operation catalog does not route action authorization policy")
     if catalog.get("authorization_phases") != PHASES:
         failures.append("operation catalog authorization phases differ from policy")
-    if catalog.get("required_final_evidence") != ["current_user_authorization"]:
-        failures.append("operation catalog must require current user authorization evidence")
+    if catalog.get("required_final_evidence") != [
+        "current_user_authorization",
+        "durable_engineering_evidence",
+    ]:
+        failures.append("operation catalog must require authorization and durable engineering evidence")
 
     manifest = (TARGET / ".ai" / "alatyr.yaml").read_text(encoding="utf-8")
     if (

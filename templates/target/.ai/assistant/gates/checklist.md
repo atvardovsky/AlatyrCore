@@ -17,7 +17,8 @@ commands from another project.
   `ALATYR-DEPENDENCY-001`, `ALATYR-MODE-001`,
   `ALATYR-ADAPTER-001`, `ALATYR-MODULE-001`,
   `ALATYR-OPERATION-001`,
-  `ALATYR-DIAGRAM-001`, `ALATYR-TEAM-001`, and `ALATYR-EVIDENCE-001`.
+  `ALATYR-DIAGRAM-001`, `ALATYR-TEAM-001`,
+  `ALATYR-ENGINEERING-EVIDENCE-001`, and `ALATYR-EVIDENCE-001`.
 - `AGENTS.md` treated as preloaded; compact bootstrap loaded from
   `.ai/assistant/bootstrap-index.json`; canonical manifest, project map, and
   `.ai/assistant/context-router.json` loaded only for stale-index repair,
@@ -137,6 +138,10 @@ commands from another project.
   risk, including loaded context and budget expansion when measured, changed
   fact IDs, selected/skipped relationships, companion surfaces, and unresolved
   consistency gaps, plus `current_user_authorization` and actions performed.
+- Durable engineering evidence is classified as `captured`, `skipped`, or
+  `blocked`; captured records bind task, repository result, invariant,
+  root-cause, solution, regression rationale, validation, privacy, and
+  publication policy, while skipped records have a fact-specific reason.
 
 ## Target Validation
 

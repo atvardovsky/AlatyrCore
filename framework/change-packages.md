@@ -25,6 +25,11 @@ Changed facts remain the universal unit of Alatyr reasoning. A package is an
 optional evidence and coordination layer for changes whose architectural or
 cross-surface scope makes a file list or ordinary final response too weak.
 
+A durable engineering-evidence record is a smaller project-memory artifact for
+the invariant, root cause, solution rationale, and regression reasoning of one
+material task. It may exist without a package. When both apply, the package
+links the evidence ID instead of duplicating those conclusions.
+
 ## Activation
 
 Use a change package when at least one condition is true:
@@ -77,6 +82,7 @@ A package should record:
 - compact architecture discussion evidence when architecture reasoning applies
 - validation results, skipped checks, and residual risks
 - before and after revisions and evidence-quality classification
+- linked durable engineering-evidence IDs when that capture gate applies
 
 The package is historical evidence. It links to canonical project owners and
 must not become a second source of truth for business, architecture, data,

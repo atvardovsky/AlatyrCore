@@ -43,7 +43,10 @@ evidence. Large-task activation alone is not sufficient.
    `missing`, with a fact-specific reason and evidence.
 8. When architecture reasoning applies, retain a compact problem,
    alternatives, direction, authority, status, and source summary. Do not keep
-   raw chat by default.
+    raw chat by default.
+   If a durable engineering-evidence record captures the same invariant,
+   root-cause, solution, and regression conclusions, link its ID and do not
+   duplicate the content.
 9. At convergence, record actual facts, areas, behavior categories, external
    effects, and paths; reconcile them with approval and logical integrity.
 10. Record validation, skipped checks, residual risks, and before/after
@@ -65,5 +68,5 @@ architecture correctness.
 
 Report package ID, activation reason, changed facts and owners, approved and
 actual semantic/path scope, material corrections, companion decisions,
-architecture summary, validation, provenance quality, public claim strength,
-and residual risk.
+architecture summary, linked engineering-evidence IDs, validation, provenance
+quality, public claim strength, and residual risk.

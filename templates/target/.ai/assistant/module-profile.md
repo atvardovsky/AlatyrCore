@@ -113,6 +113,23 @@ Validation or review: `{VALIDATION_AND_EVIDENCE_VALIDATION_OR_REVIEW}`
 Approval needs: `{VALIDATION_AND_EVIDENCE_APPROVAL_NEEDS}`
 Residual risk: `{VALIDATION_AND_EVIDENCE_RESIDUAL_RISK}`
 
+Core item: `durable-engineering-evidence`
+State: `{REQUIRED_ENABLED_OR_BLOCKED}`
+Owner or file: `.ai/project/engineering-evidence/README.md`
+Required files:
+
+- `.ai/project/engineering-evidence/README.md`
+- `.ai/project/engineering-evidence/index.json`
+- `.ai/assistant/context/task-scales/engineering-evidence.json`
+- `.ai/assistant/flows/engineering-evidence-capture.flow.md`
+- `.ai/assistant/gates/engineering-evidence.md`
+- `.ai/assistant/templates/engineering-evidence-record.json`
+
+Evidence: `{ENGINEERING_EVIDENCE_POLICY_INDEX_AND_CAPTURE_EVIDENCE_OR_GAP}`
+Validation or review: `{ENGINEERING_EVIDENCE_VALIDATION_OR_REVIEW}`
+Approval needs: `{ENGINEERING_EVIDENCE_STORAGE_OR_CAPTURE_APPROVAL_NEEDS}`
+Residual risk: `{ENGINEERING_EVIDENCE_RESIDUAL_RISK}`
+
 ## Optional Modules
 
 Module: `blueprint-change`

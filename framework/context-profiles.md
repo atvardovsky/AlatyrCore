@@ -207,6 +207,19 @@ machine template, discussion summary, companion decisions, corrections, plan,
 or validation evidence only when the current phase needs them. Do not create
 or load a package for an ordinary local task.
 
+## Durable Engineering-Evidence Tasks
+
+Apply the `engineering-evidence` overlay lazily at finalization when a material
+semantic, architectural, or non-obvious repair may leave reusable knowledge
+only in the current session, or when a user explicitly asks to capture or
+inspect a record.
+
+Load the compact target index, capture gate, and portable owner first. Load
+only the selected record for lookup, and load the capture flow/template only
+for an authorized write or repair. Small self-explanatory changes may skip
+with a specific reason. Do not load the full evidence history, raw session
+content, or a change package solely because this overlay applies.
+
 ## Team-Active Tasks
 
 When the optional team module is enabled, run a compact active-work-index

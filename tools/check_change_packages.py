@@ -143,6 +143,7 @@ def valid_package_fixture(repo: Path) -> tuple[Path, dict[str, object]]:
             "assumptions_or_disagreement": [],
             "raw_chat_retained": False,
         },
+        "engineering_evidence_ids": [],
         "provenance": {
             "evidence_quality": "git-range",
             "before_revision": before,
@@ -278,6 +279,7 @@ def main() -> int:
             "discoveries_and_corrections",
             "companion_decisions",
             "architecture_discussion",
+            "engineering_evidence_ids",
             "provenance",
             "validation",
         ]:

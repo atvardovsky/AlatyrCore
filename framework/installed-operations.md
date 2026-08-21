@@ -40,6 +40,8 @@ An installed adapter should support these operation categories:
 - optional team status, task start/claim/checkpoint/release, concurrent-work
   conflict review, handoff, decision, team review, and merge readiness
 - logical integrity review
+- durable engineering-evidence capture, lookup, explanation, or repair for
+  material tasks and prior compact decision records
 - discussion diagram creation, comparison, or revision with a portable ASCII
   baseline
 - AI infrastructure inventory for existing skills, prompts, wrappers, bridge
@@ -418,6 +420,19 @@ implementation corrections, validation, and before-to-after provenance.
 Ordinary local work should retain the normal operation result without this
 overhead.
 
+## Durable Engineering Evidence
+
+Before a material semantic, architectural, or non-obvious repair completes,
+apply `engineering-evidence.md`. Capture compact project-owned task/revision,
+invariant, hypothesis outcome, root-cause, solution, regression, validation,
+and uncertainty evidence when those conclusions would otherwise be lost.
+
+Keep the overlay lazy and proportional. Small self-explanatory changes may
+skip with a specific reason. Capture alone does not activate a change package,
+grant repository modification, or authorize commit/publication. `Alatyr
+evidence`, `Alatyr capture evidence`, and `Alatyr explain decision` are target
+assistant requests, not shell commands.
+
 ## Team Operations
 
 Use `team-collaboration.md` only when the target enables the optional module.
@@ -447,6 +462,8 @@ After installation or framework upgrade, an assistant should recheck:
 - consistency-map module state, relationship coverage, and stale edge evidence
 - change-package module, index, record schema, semantic approval scope,
   provenance policy, and target validator support
+- durable engineering-evidence owner, storage/publication policy, compact
+  index, record schema, routing, existing records, and validator support
 - operation catalog, single entry, automatic routing, read-only health,
   pre-change preview, compact help, operation-routing flow, and
   post-install/update chat-message templates

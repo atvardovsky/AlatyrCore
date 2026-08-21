@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "record_kind": "alatyr-engineering-evidence",
+  "evidence_classification": "historical-record",
+  "evidence_id": "{ENGINEERING_EVIDENCE_ID}",
+  "status": "{DRAFT_VALIDATED_SUPERSEDED_OR_BLOCKED}",
+  "owner": "{TARGET_ENGINEERING_EVIDENCE_OWNER}",
+  "captured_at": "{TIMESTAMP_OR_TARGET_OPERATION_REFERENCE}",
+  "task": {
+    "summary": "{COMPACT_TASK_SUMMARY}",
+    "references": ["{TASK_ISSUE_OR_REVIEW_REFERENCE}"],
+    "operation_id": "{OPERATION_ID_OR_NOT_AVAILABLE}"
+  },
+  "repository_binding": {
+    "kind": "{COMMIT_PULL_REQUEST_TREE_SELECTED_FILE_SNAPSHOT_OR_UNVERIFIED}",
+    "base_revision": "{BASE_REVISION_OR_NOT_AVAILABLE_WITH_REASON}",
+    "result_revision": "{RESULT_COMMIT_HEAD_TREE_DIGEST_OR_NOT_AVAILABLE_WITH_REASON}",
+    "review_reference": "{PULL_REQUEST_OR_NOT_APPLICABLE}",
+    "selected_paths": ["{TARGET_RELATIVE_PATH_OR_NOT_APPLICABLE}"],
+    "snapshot_sha256": "{SHA256_OR_NOT_APPLICABLE}"
+  },
+  "observed_failure": "{OBSERVED_FAILURE_OR_CHANGE_PRESSURE}",
+  "affected_architecture": [
+    {
+      "area": "{TARGET_ARCHITECTURE_AREA}",
+      "owner_or_source": "{TARGET_RELATIVE_CANONICAL_OWNER_OR_UNRESOLVED}",
+      "effect": "{WHY_THE_AREA_IS_AFFECTED}"
+    }
+  ],
+  "invariants": [
+    {
+      "statement": "{TESTABLE_INVARIANT}",
+      "status": "{OBSERVED_PROPOSED_ACCEPTED_OR_UNKNOWN}",
+      "canonical_owner": "{TARGET_RELATIVE_OWNER_OR_UNRESOLVED}",
+      "evidence": ["{TARGET_RELATIVE_EVIDENCE_OR_VALIDATION_REFERENCE}"]
+    }
+  ],
+  "hypotheses": [
+    {
+      "statement": "{COMPACT_HYPOTHESIS}",
+      "outcome": "{CONFIRMED_REJECTED_OR_UNRESOLVED}",
+      "evidence": ["{TARGET_RELATIVE_EVIDENCE_OR_VALIDATION_REFERENCE}"],
+      "decision_impact": "{HOW_THIS_CHANGED_OR_CONFIRMED_THE_SOLUTION}"
+    }
+  ],
+  "root_cause": {
+    "statement": "{ROOT_CAUSE}",
+    "evidence": ["{TARGET_RELATIVE_EVIDENCE_OR_VALIDATION_REFERENCE}"]
+  },
+  "chosen_solution": {
+    "summary": "{CHOSEN_SOLUTION}",
+    "rationale": "{WHY_IT_PRESERVES_THE_INVARIANT}",
+    "material_rejected_alternatives": [
+      {
+        "alternative": "{REJECTED_ALTERNATIVE_OR_NONE}",
+        "reason": "{EVIDENCE_BASED_REJECTION_REASON}"
+      }
+    ]
+  },
+  "impact": {
+    "changed_fact_ids": ["{CHANGED_FACT_ID}"],
+    "code_and_test_surfaces": ["{TARGET_RELATIVE_PATH_OR_SURFACE}"],
+    "companion_surfaces": ["{TARGET_RELATIVE_PATH_OR_NOT_REQUIRED_WITH_REASON}"],
+    "canonical_knowledge_updates": ["{TARGET_RELATIVE_OWNER_UPDATE_OR_NONE_WITH_REASON}"]
+  },
+  "regression_matrix": [
+    {
+      "case": "{REGRESSION_CASE}",
+      "protects": "{INVARIANT_OR_RISK}",
+      "expected_result": "{EXPECTED_RESULT}",
+      "validation_evidence": "{CHECK_TEST_OR_REVIEW_REFERENCE}"
+    }
+  ],
+  "validation": {
+    "results": ["{VALIDATION_RESULT_AND_EVIDENCE}"],
+    "skipped": ["{SKIPPED_CHECK_AND_REASON_OR_NONE}"]
+  },
+  "residual_uncertainty": ["{RESIDUAL_UNCERTAINTY_OR_NONE}"],
+  "related_records": {
+    "change_package_ids": ["{CHANGE_PACKAGE_ID_OR_NONE}"],
+    "approval_records": ["{TARGET_RELATIVE_APPROVAL_RECORD_OR_NONE}"],
+    "architecture_decisions": ["{TARGET_RELATIVE_DECISION_RECORD_OR_NONE}"],
+    "development_evidence_pattern_ids": ["{PATTERN_ID_OR_NONE}"]
+  },
+  "publication": {
+    "storage_mode": "{REPOSITORY_INTERNAL_BRANCH_IGNORED_LOCAL_OR_APPROVED_EXTERNAL}",
+    "included_in_external_patch": false,
+    "visibility": "{TARGET_VISIBILITY}",
+    "policy_evidence": "{TARGET_ENGINEERING_EVIDENCE_POLICY_REFERENCE}"
+  },
+  "privacy": {
+    "raw_chat_stored": false,
+    "chain_of_thought_stored": false,
+    "secrets_stored": false,
+    "unrelated_session_history_stored": false,
+    "redactions": ["{REDACTION_OR_NONE}"]
+  }
+}

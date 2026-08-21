@@ -22,6 +22,7 @@ CORE_ITEMS = [
     "risk-approval-integrity",
     "current-scope-action-authorization",
     "validation-and-final-evidence",
+    "durable-engineering-evidence",
 ]
 CORE_FIELDS = [
     "State:",

@@ -4,6 +4,39 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.18 - 2026-08-21
+
+- Increased the framework version to `0.1.0-alpha.18`, adapter schema version
+  to `17`, and target template version to `18` for required proportional
+  durable engineering-evidence capture.
+- Added `ALATYR-ENGINEERING-EVIDENCE-001`. Material semantic,
+  architectural, and non-obvious repair work now asks whether reusable
+  knowledge would be lost after the session and records a compact capture,
+  skip, or block result before completion.
+- Added project-owned evidence policy/index and record contracts for task and
+  repository binding, affected architecture, invariants, confirmed/rejected/
+  unresolved hypotheses, root cause, solution rationale, material alternatives,
+  impact, invariant-driven regression cases, validation, and uncertainty.
+- Prohibited raw chat, chain-of-thought, prompts, secrets, credentials,
+  personal data, unrelated session history, complete diffs, and verbose logs
+  from durable records. Added a target-owned retained-storage and external-
+  contribution boundary so support evidence need not pollute upstream patches.
+- Kept capture proportional and independent from change-package activation:
+  small self-explanatory fixes may skip with a fact-specific reason, while an
+  active package links evidence IDs instead of duplicating conclusions.
+- Added a lazy task-scale route, target operation and aliases, capture flow,
+  gate, JSON Schema, final-evidence field, installation/update preservation,
+  and post-install/update guidance across supported assistant surfaces.
+- Extended the portable target validator with index/record synchronization,
+  revision resolution, selected-file snapshot hashing, privacy, publication,
+  and prohibited-field checks. Added Git-backed source fixtures and captured,
+  skipped, read-only-blocked, and clean-upstream conformance scenarios.
+- Added `ALATYR-ENGINEERING-EVIDENCE-001`; changed
+  `ALATYR-ADAPTER-001`, `ALATYR-CHANGE-001`, `ALATYR-CONTEXT-001`,
+  `ALATYR-EVIDENCE-001`, `ALATYR-INTEGRITY-001`, `ALATYR-LIFECYCLE-001`,
+  `ALATYR-MODULE-001`, `ALATYR-OPERATION-001`, and `ALATYR-PACKAGE-001`; no
+  rule IDs were removed.
+
 ## 0.1.0-alpha.17 - 2026-08-21
 
 - Increased the framework version to `0.1.0-alpha.17`, adapter schema version

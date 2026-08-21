@@ -51,6 +51,8 @@ Every accepted installation should provide:
 - logical integrity review for changed semantic or logical facts
 - validation or manual-review evidence, including unresolved checks
 - final evidence format
+- durable engineering-evidence capture decision, compact index, target storage
+  policy, and record validation for material tasks
 
 If any required core item is missing, the adapter can still exist, but it must
 report the missing item as a gap before claiming maturity.

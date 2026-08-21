@@ -59,6 +59,10 @@ Operation help:
 - Recheck change-package records, semantic approval fields, provenance grades,
   and validator support when the optional module or schema changed. Preserve
   historical target records.
+- Preserve durable engineering-evidence IDs and records. Recheck compact index
+  synchronization, task/revision binding, canonical-owner links, privacy,
+  external-patch policy, and record access; never replace existing records
+  with source placeholders.
 - When code documentation is enabled, preserve target profiles and recheck
   source-set matching, accepted state, canonical owners, generator/output
   policy, adapted skill, and validation before generation.

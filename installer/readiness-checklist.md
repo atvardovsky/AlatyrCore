@@ -201,6 +201,9 @@ Collect target-specific facts before writing project docs:
   maintenance estimates, acceptance criteria, and read-only behavior
 - Target development-pattern index, owner, retention/privacy policy, capture
   threshold, bounded evidence references, and allowed historical sources
+- Durable engineering-evidence owner, retained storage mode, redaction and
+  external-contribution policy, capture threshold, task/revision binding, and
+  access path for future developers and assistants
 - AI infrastructure router/item expectations for canonical source, triggers,
   status, required context, allowed actions, permissions, gates, validation,
   output, conflicts, wrappers, and adaptation records

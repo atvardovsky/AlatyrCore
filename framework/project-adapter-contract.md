@@ -100,6 +100,9 @@ Every project using this framework must define:
 - compact target development evidence index, owner, retention policy, and lazy
   capture flow when recommendations should learn from repeated requests,
   corrections, review findings, rework, or context-expansion patterns
+- compact durable engineering-evidence index, owner, retention and external-
+  patch policy, lazy capture gate, record template, and validator so material
+  task knowledge survives sessions without retaining raw assistant reasoning
 - durable adaptation records for imported or materially changed AI
   infrastructure
 - optional extension catalog, immutable source and installed-file lock,

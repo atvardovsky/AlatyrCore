@@ -11,7 +11,7 @@
   "module_profile": ".ai/assistant/module-profile.md",
   "fallback_operation": "help",
   "authorization_phases": ["inspect", "modify", "commit", "publish", "live-external"],
-  "required_final_evidence": ["current_user_authorization"],
+  "required_final_evidence": ["current_user_authorization", "durable_engineering_evidence"],
   "operations": [
     {
       "id": "help",
@@ -254,6 +254,20 @@
       "preview": "never",
       "aliases": ["Alatyr merge check"],
       "final_evidence": ["readiness state", "revision-bound review and approval evidence", "blockers residual risk and next actor"]
+    },
+    {
+      "id": "engineering-evidence",
+      "title": "Durable engineering evidence",
+      "summary": "Capture or inspect compact project-owned invariant, root-cause, solution, regression, validation, and repository-binding evidence.",
+      "use_when": ["material task reaches finalization", "reusable engineering knowledge would be lost", "inspect or explain a prior engineering decision"],
+      "context_profiles": ["code-local", "business-change", "architecture-change", "data-change", "security-sensitive"],
+      "required_module": "core-profile",
+      "flow": ".ai/assistant/flows/engineering-evidence-capture.flow.md",
+      "minimum_inputs": ["current task or evidence ID", "capture inspect or repair intent"],
+      "allowed_actions": ["read-only", "docs-only", "adapter-only", "code-and-tests", "full-with-approval"],
+      "preview": "never",
+      "aliases": ["Alatyr evidence", "Alatyr capture evidence", "Alatyr explain decision"],
+      "final_evidence": ["capture status and trigger or skip reason", "task and repository binding", "record validation privacy publication and residual uncertainty"]
     },
     {
       "id": "logical-integrity-review",

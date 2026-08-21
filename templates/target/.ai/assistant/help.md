@@ -55,6 +55,9 @@ Default routing:
   state-changing operation. Expand `team-active` only for explicit team work,
   a selected task/branch match, possible logical overlap, or unresolved index
   evidence. Keep unrelated tasks and team history out of context.
+- Before completing material semantic, architectural, or non-obvious repair
+  work, apply the lazy durable engineering-evidence gate. Small local work may
+  skip with a specific reason; do not load unrelated evidence records.
 
 ## Quick Operations
 
@@ -109,6 +112,10 @@ When `workspace-modes` is enabled, use `Alatyr modes` for compact state,
 per-task selection preview, `Alatyr define mode` to draft a mode, or `Alatyr
 accept mode <id>` for an explicit acceptance request. Suggestions remain
 proposed, and a mode never grants permissions or activates nested adapters.
+Use `Alatyr evidence` to inspect compact historical evidence, `Alatyr capture
+evidence` to request capture for the current task, or `Alatyr explain decision
+<evidence-id>` to reconstruct why a prior change was made. These records store
+normalized conclusions and references, never raw assistant reasoning.
 Detailed team, blueprint, integrity, update, documentation, vocabulary,
 test-first, extension, dependency-knowledge, workspace-mode, and
 AI-infrastructure operations and aliases are in

@@ -241,6 +241,21 @@ correction, or validation detail only when the current phase needs it. Compose
 with `large-or-resumable` only when both gates pass. Do not create a package
 for an ordinary local task.
 
+## Task-Scale Overlay: `engineering-evidence`
+
+Apply lazily at finalization for material semantic, architectural, or
+non-obvious repair work when reusable knowledge may be lost, or for an
+explicit evidence lookup/capture request. Required context:
+
+- `.ai/framework/engineering-evidence.md`
+- `.ai/assistant/gates/engineering-evidence.md`
+- `.ai/project/engineering-evidence/index.json`
+
+Load the capture flow and machine template only for an authorized write or
+repair. Load only the selected historical record for lookup. A small
+self-explanatory task may skip with a specific reason; capture does not
+activate a change package and raw session reasoning is never evidence input.
+
 ## Task-Scale Overlay: `team-active`
 
 Activate only for team status, task start/claim/release, concurrent-work

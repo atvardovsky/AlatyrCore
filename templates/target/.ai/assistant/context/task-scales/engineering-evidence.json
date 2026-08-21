@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "descriptor_kind": "target-task-scale-overlay",
+  "overlay": "engineering-evidence",
+  "use_when": [
+    "material semantic architectural or non-obvious repair reaches finalization",
+    "an undocumented invariant or material rejected hypothesis was discovered",
+    "a broad regression matrix protects one reusable invariant",
+    "explicit durable engineering evidence capture or lookup request"
+  ],
+  "required_context": [
+    ".ai/framework/engineering-evidence.md",
+    ".ai/assistant/gates/engineering-evidence.md",
+    ".ai/project/engineering-evidence/index.json"
+  ],
+  "conditional_context": [
+    {
+      "path": ".ai/assistant/flows/engineering-evidence-capture.flow.md",
+      "when": "capture update or repair is authorized"
+    },
+    {
+      "path": ".ai/assistant/templates/engineering-evidence-record.json",
+      "when": "creating or repairing a record"
+    },
+    {
+      "path": ".ai/assistant/flows/change-package.flow.md",
+      "when": "an active change package must link the evidence ID"
+    }
+  ],
+  "expand_when": [
+    "canonical invariant ownership is missing or contradicted",
+    "repository binding cannot support the claimed evidence",
+    "publication policy conflicts with an external contribution",
+    "validation evidence does not explain the regression matrix"
+  ],
+  "budget_behavior": "load the compact index and selected record only; do not load unrelated records or raw session history",
+  "final_evidence": [
+    "capture status and trigger or skip reason",
+    "record identity and task or repository binding",
+    "canonical knowledge updates",
+    "privacy and publication result",
+    "validation and residual uncertainty"
+  ]
+}

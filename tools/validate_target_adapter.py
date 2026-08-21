@@ -67,6 +67,7 @@ from target_adapter_validation.router_costs import (
 
 ROOT = Path(__file__).resolve().parents[1]
 ADAPTER_MANIFEST_SCHEMA = ROOT / "schemas" / "alatyr-adapter.schema.json"
+ENGINEERING_EVIDENCE_SCHEMA = ROOT / "schemas" / "alatyr-engineering-evidence.schema.json"
 
 CANONICAL_PROFILES = [
     "docs-local",
@@ -86,6 +87,8 @@ CORE_REQUIRED_FILES = [
     ".ai/assistant/bootstrap-index.json",
     ".ai/project/contour.md",
     ".ai/project/source-of-truth-registry.md",
+    ".ai/project/engineering-evidence/README.md",
+    ".ai/project/engineering-evidence/index.json",
     ".ai/assistant/contour.md",
     ".ai/assistant/context-router.json",
     ".ai/assistant/context-profiles.md",
@@ -94,9 +97,13 @@ CORE_REQUIRED_FILES = [
     ".ai/assistant/gates/index.json",
     ".ai/assistant/gates/core.md",
     ".ai/assistant/gates/final-evidence.md",
+    ".ai/assistant/gates/engineering-evidence.md",
     ".ai/assistant/gates/checklist.md",
     ".ai/assistant/policies/action-authorization.json",
     ".ai/assistant/templates/adapter-output-contracts.md",
+    ".ai/assistant/templates/engineering-evidence-record.json",
+    ".ai/assistant/flows/engineering-evidence-capture.flow.md",
+    ".ai/assistant/context/task-scales/engineering-evidence.json",
 ]
 
 STANDARD_REQUIRED_FILES = [
@@ -167,6 +174,7 @@ MANIFEST_REQUIRED_SCALARS: set[PathKey] = {
     ("owner", "review_cadence"),
     ("source_of_truth", "project_contour"),
     ("source_of_truth", "registry"),
+    ("source_of_truth", "engineering_evidence_index"),
     ("source_of_truth", "assistant_contour"),
     ("source_of_truth", "context_router"),
     ("source_of_truth", "bootstrap_index"),
@@ -185,6 +193,16 @@ MANIFEST_REQUIRED_SCALARS: set[PathKey] = {
     ("operations", "operation_request"),
     ("operations", "output_contracts"),
     ("operations", "action_authorization_policy"),
+    ("operations", "engineering_evidence_capture"),
+    ("operations", "engineering_evidence_record"),
+    ("engineering_evidence", "index"),
+    ("engineering_evidence", "records"),
+    ("engineering_evidence", "flow"),
+    ("engineering_evidence", "gate"),
+    ("engineering_evidence", "machine_template"),
+    ("engineering_evidence", "storage_mode"),
+    ("engineering_evidence", "external_patch_policy"),
+    ("engineering_evidence", "retention_policy"),
     ("maturity", "profile"),
 }
 
@@ -261,6 +279,7 @@ MANIFEST_PATH_SCALARS: set[PathKey] = {
     ("framework", "rule_registry"),
     ("source_of_truth", "project_contour"),
     ("source_of_truth", "registry"),
+    ("source_of_truth", "engineering_evidence_index"),
     ("source_of_truth", "development_evidence"),
     ("source_of_truth", "consistency_map"),
     ("source_of_truth", "code_documentation_index"),
@@ -282,6 +301,8 @@ MANIFEST_PATH_SCALARS: set[PathKey] = {
     ("operations", "health"),
     ("operations", "pre_change_preview"),
     ("operations", "action_authorization_policy"),
+    ("operations", "engineering_evidence_capture"),
+    ("operations", "engineering_evidence_record"),
     ("operations", "operation_request"),
     ("operations", "output_contracts"),
     ("operations", "development_evidence_capture"),
@@ -307,6 +328,11 @@ MANIFEST_PATH_SCALARS: set[PathKey] = {
     ("change_packages", "index"),
     ("change_packages", "machine_template"),
     ("change_packages", "human_report_template"),
+    ("engineering_evidence", "index"),
+    ("engineering_evidence", "records"),
+    ("engineering_evidence", "flow"),
+    ("engineering_evidence", "gate"),
+    ("engineering_evidence", "machine_template"),
     ("code_documentation", "catalog"),
     ("code_documentation", "profiles"),
     ("code_documentation", "intent"),
@@ -768,6 +794,7 @@ class Validator:
         checker_files, checker_commands = self.discover_checkers(manifest)
         self.check_checker_claims(checker_files, checker_commands)
         self.check_approval_scope()
+        self.check_engineering_evidence(manifest)
         self.check_change_package_index()
         self.check_change_packages()
         self.check_framework_baseline()
@@ -1789,10 +1816,13 @@ class Validator:
                 "operation catalog authorization phases differ from the canonical policy",
                 relpath,
             )
-        if catalog.get("required_final_evidence") != ["current_user_authorization"]:
+        if catalog.get("required_final_evidence") != [
+            "current_user_authorization",
+            "durable_engineering_evidence",
+        ]:
             self.error(
                 "AUTHORIZATION_CATALOG_EVIDENCE",
-                "operation catalog must require current_user_authorization evidence",
+                "operation catalog must require current_user_authorization and durable_engineering_evidence",
                 relpath,
             )
         if catalog.get("action_authorization_policy") != (
@@ -8136,6 +8166,387 @@ class Validator:
                     relpath,
                 )
 
+    def check_engineering_evidence(self, manifest: ManifestData | None) -> None:
+        index_relpath = ".ai/project/engineering-evidence/index.json"
+        expected_manifest = {
+            ("source_of_truth", "engineering_evidence_index"): index_relpath,
+            ("engineering_evidence", "index"): index_relpath,
+            ("engineering_evidence", "records"): ".ai/project/engineering-evidence/records",
+            ("engineering_evidence", "flow"): ".ai/assistant/flows/engineering-evidence-capture.flow.md",
+            ("engineering_evidence", "gate"): ".ai/assistant/gates/engineering-evidence.md",
+            ("engineering_evidence", "machine_template"): ".ai/assistant/templates/engineering-evidence-record.json",
+            ("operations", "engineering_evidence_capture"): ".ai/assistant/flows/engineering-evidence-capture.flow.md",
+            ("operations", "engineering_evidence_record"): ".ai/assistant/templates/engineering-evidence-record.json",
+        }
+        if manifest is not None:
+            for key, expected in expected_manifest.items():
+                scalar = manifest.scalars.get(key)
+                if scalar is None or scalar.value != expected:
+                    self.error(
+                        "ENGINEERING_EVIDENCE_MANIFEST_PATH",
+                        f"{dotted(key)} must be {expected}",
+                        ".ai/alatyr.yaml",
+                    )
+
+        index = self.load_json_object(
+            self.target_path(index_relpath), "ENGINEERING_EVIDENCE_INDEX"
+        )
+        if index is None:
+            return
+        if index.get("schema_version") != 1:
+            self.error("ENGINEERING_EVIDENCE_INDEX_SCHEMA", "schema_version must be 1", index_relpath)
+        if index.get("index_kind") != "target-engineering-evidence-index":
+            self.error(
+                "ENGINEERING_EVIDENCE_INDEX_KIND",
+                "index_kind must be target-engineering-evidence-index",
+                index_relpath,
+            )
+
+        def concrete(value: Any) -> bool:
+            return (
+                isinstance(value, str)
+                and bool(value.strip())
+                and not is_placeholder(value)
+                and not is_unresolved_value(value)
+            )
+
+        unresolved_report = self.warn if self.allow_placeholders else self.error
+        for field in [
+            "project",
+            "owner",
+            "storage_mode",
+            "external_patch_policy",
+            "retention_policy",
+        ]:
+            value = index.get(field)
+            if not isinstance(value, str) or not value.strip():
+                self.error(
+                    "ENGINEERING_EVIDENCE_INDEX_METADATA",
+                    f"{field} must be a non-empty string",
+                    index_relpath,
+                )
+            elif not concrete(value):
+                unresolved_report(
+                    "ENGINEERING_EVIDENCE_INDEX_METADATA_UNRESOLVED",
+                    f"{field} is unresolved",
+                    index_relpath,
+                )
+
+        records = index.get("records")
+        if not isinstance(records, list):
+            self.error(
+                "ENGINEERING_EVIDENCE_INDEX_RECORDS",
+                "records must be a list",
+                index_relpath,
+            )
+            return
+
+        try:
+            schema = json.loads(ENGINEERING_EVIDENCE_SCHEMA.read_text(encoding="utf-8"))
+            schema_validator = jsonschema.Draft7Validator(schema)
+        except (OSError, json.JSONDecodeError, jsonschema.SchemaError) as exc:
+            self.error(
+                "ENGINEERING_EVIDENCE_SOURCE_SCHEMA",
+                f"cannot load engineering-evidence schema: {exc}",
+            )
+            return
+
+        required_index_fields = {
+            "evidence_id",
+            "status",
+            "record",
+            "task_references",
+            "changed_fact_ids",
+            "architecture_areas",
+            "repository_binding_kind",
+            "result_revision",
+            "residual_uncertainty",
+        }
+        seen_ids: set[str] = set()
+        seen_records: set[str] = set()
+        for entry_index, entry in enumerate(records):
+            label = f"records[{entry_index}]"
+            if not isinstance(entry, dict):
+                self.error("ENGINEERING_EVIDENCE_INDEX_ENTRY", f"{label} must be an object", index_relpath)
+                continue
+            missing = sorted(required_index_fields - set(entry))
+            if missing:
+                self.error("ENGINEERING_EVIDENCE_INDEX_FIELD", f"{label} missing {missing}", index_relpath)
+                continue
+            evidence_id = entry.get("evidence_id")
+            if not concrete(evidence_id):
+                self.error("ENGINEERING_EVIDENCE_INDEX_ID", f"{label}.evidence_id must be resolved", index_relpath)
+                continue
+            if evidence_id in seen_ids:
+                self.error("ENGINEERING_EVIDENCE_INDEX_DUPLICATE", f"duplicate evidence_id {evidence_id}", index_relpath)
+            seen_ids.add(evidence_id)
+            if entry.get("status") not in {"draft", "validated", "superseded", "blocked"}:
+                self.error("ENGINEERING_EVIDENCE_INDEX_FIELD", f"{label}.status is invalid", index_relpath)
+            if entry.get("repository_binding_kind") not in {
+                "commit",
+                "pull-request",
+                "tree",
+                "selected-file-snapshot",
+                "unverified",
+            }:
+                self.error(
+                    "ENGINEERING_EVIDENCE_INDEX_FIELD",
+                    f"{label}.repository_binding_kind is invalid",
+                    index_relpath,
+                )
+            if not concrete(entry.get("result_revision")):
+                self.error(
+                    "ENGINEERING_EVIDENCE_INDEX_FIELD",
+                    f"{label}.result_revision must be resolved",
+                    index_relpath,
+                )
+            for field in ["task_references", "changed_fact_ids", "architecture_areas", "residual_uncertainty"]:
+                values = entry.get(field)
+                if not isinstance(values, list) or not all(concrete(value) for value in values):
+                    self.error("ENGINEERING_EVIDENCE_INDEX_LIST", f"{label}.{field} must be a resolved string list", index_relpath)
+            if not entry.get("task_references"):
+                self.error(
+                    "ENGINEERING_EVIDENCE_TASK_REFERENCE",
+                    f"{label} requires a task or issue reference",
+                    index_relpath,
+                )
+            for field in ["changed_fact_ids", "architecture_areas"]:
+                if not entry.get(field):
+                    self.error(
+                        "ENGINEERING_EVIDENCE_INDEX_LIST",
+                        f"{label}.{field} must not be empty",
+                        index_relpath,
+                    )
+
+            record_ref = entry.get("record")
+            if not concrete(record_ref):
+                self.error("ENGINEERING_EVIDENCE_INDEX_RECORD", f"{label}.record must be resolved", index_relpath)
+                continue
+            if record_ref.startswith(("https://", "http://", "external:")):
+                self.warn(
+                    "ENGINEERING_EVIDENCE_EXTERNAL_RECORD_UNCHECKED",
+                    f"{evidence_id} uses an external record that this repository validator cannot inspect",
+                    index_relpath,
+                )
+                continue
+            if not is_target_relative_path(record_ref):
+                self.error("ENGINEERING_EVIDENCE_RECORD_PATH", f"record path must be target-relative: {record_ref}", index_relpath)
+                continue
+            if record_ref in seen_records:
+                self.error("ENGINEERING_EVIDENCE_RECORD_DUPLICATE", f"record path is reused: {record_ref}", index_relpath)
+            seen_records.add(record_ref)
+            if not record_ref.startswith(".ai/project/engineering-evidence/records/"):
+                self.error("ENGINEERING_EVIDENCE_RECORD_LOCATION", "local records must stay under the target engineering-evidence records directory", record_ref)
+            record_path = self.target_path(record_ref)
+            record = self.load_json_object(record_path, "ENGINEERING_EVIDENCE_RECORD")
+            if record is None:
+                continue
+
+            for schema_error in sorted(
+                schema_validator.iter_errors(record),
+                key=lambda item: list(item.absolute_path),
+            ):
+                location = ".".join(str(item) for item in schema_error.absolute_path) or "root"
+                self.error(
+                    "ENGINEERING_EVIDENCE_RECORD_SCHEMA",
+                    f"{location}: {schema_error.message}",
+                    record_ref,
+                )
+
+            forbidden_keys = {
+                "raw_chat",
+                "chat_transcript",
+                "conversation_transcript",
+                "chain_of_thought",
+                "reasoning_trace",
+                "prompt_text",
+                "session_history",
+                "complete_diff",
+                "full_diff",
+                "credentials",
+                "secrets",
+                "personal_data",
+                "verbose_logs",
+            }
+
+            def find_forbidden(value: Any, prefix: str = "") -> list[str]:
+                found: list[str] = []
+                if isinstance(value, dict):
+                    for key, child in value.items():
+                        path = f"{prefix}.{key}" if prefix else str(key)
+                        if key.casefold() in forbidden_keys:
+                            found.append(path)
+                        found.extend(find_forbidden(child, path))
+                elif isinstance(value, list):
+                    for item_index, child in enumerate(value):
+                        found.extend(find_forbidden(child, f"{prefix}[{item_index}]"))
+                return found
+
+            forbidden = find_forbidden(record)
+            if forbidden:
+                self.error(
+                    "ENGINEERING_EVIDENCE_PROHIBITED_CONTENT_FIELD",
+                    f"record contains prohibited raw-content fields: {forbidden}",
+                    record_ref,
+                )
+
+            privacy = record.get("privacy")
+            if isinstance(privacy, dict):
+                for field in [
+                    "raw_chat_stored",
+                    "chain_of_thought_stored",
+                    "secrets_stored",
+                    "unrelated_session_history_stored",
+                ]:
+                    if privacy.get(field) is not False:
+                        self.error(
+                            "ENGINEERING_EVIDENCE_PRIVACY",
+                            f"privacy.{field} must be false",
+                            record_ref,
+                        )
+
+            def resolved_list(container: Any, field: str, *, required: bool = True) -> list[str]:
+                values = container.get(field) if isinstance(container, dict) else None
+                if not isinstance(values, list) or (required and not values) or not all(concrete(value) for value in values):
+                    self.error("ENGINEERING_EVIDENCE_RECORD_LIST", f"{field} must be a {'non-empty ' if required else ''}resolved string list", record_ref)
+                    return []
+                return values
+
+            task = record.get("task")
+            task_refs = resolved_list(task, "references")
+            invariants = record.get("invariants")
+            if isinstance(invariants, list):
+                for invariant_index, invariant in enumerate(invariants):
+                    invariant_label = f"invariants[{invariant_index}]"
+                    if not isinstance(invariant, dict):
+                        self.error("ENGINEERING_EVIDENCE_INVARIANT", f"{invariant_label} must be an object", record_ref)
+                        continue
+                    for field in ["statement", "status", "canonical_owner"]:
+                        if not concrete(invariant.get(field)):
+                            self.error("ENGINEERING_EVIDENCE_INVARIANT", f"{invariant_label}.{field} must be resolved", record_ref)
+                    if invariant.get("status") not in {"observed", "proposed", "accepted", "unknown"}:
+                        self.error("ENGINEERING_EVIDENCE_INVARIANT_STATUS", f"{invariant_label}.status is invalid", record_ref)
+                    resolved_list(invariant, "evidence")
+
+            hypotheses = record.get("hypotheses")
+            if isinstance(hypotheses, list):
+                for hypothesis_index, hypothesis in enumerate(hypotheses):
+                    hypothesis_label = f"hypotheses[{hypothesis_index}]"
+                    if not isinstance(hypothesis, dict):
+                        self.error("ENGINEERING_EVIDENCE_HYPOTHESIS", f"{hypothesis_label} must be an object", record_ref)
+                        continue
+                    for field in ["statement", "outcome", "decision_impact"]:
+                        if not concrete(hypothesis.get(field)):
+                            self.error("ENGINEERING_EVIDENCE_HYPOTHESIS", f"{hypothesis_label}.{field} must be resolved", record_ref)
+                    if hypothesis.get("outcome") not in {"confirmed", "rejected", "unresolved"}:
+                        self.error("ENGINEERING_EVIDENCE_HYPOTHESIS_OUTCOME", f"{hypothesis_label}.outcome is invalid", record_ref)
+                    resolved_list(hypothesis, "evidence")
+
+            root_cause = record.get("root_cause")
+            solution = record.get("chosen_solution")
+            for container, fields, code in [
+                (root_cause, ["statement"], "ENGINEERING_EVIDENCE_ROOT_CAUSE"),
+                (solution, ["summary", "rationale"], "ENGINEERING_EVIDENCE_SOLUTION"),
+            ]:
+                for field in fields:
+                    if not isinstance(container, dict) or not concrete(container.get(field)):
+                        self.error(code, f"{field} must be resolved", record_ref)
+            resolved_list(root_cause, "evidence")
+
+            alternatives = solution.get("material_rejected_alternatives") if isinstance(solution, dict) else None
+            if not isinstance(alternatives, list):
+                self.error("ENGINEERING_EVIDENCE_ALTERNATIVES", "material_rejected_alternatives must be a list", record_ref)
+            else:
+                for alternative_index, alternative in enumerate(alternatives):
+                    if not isinstance(alternative, dict) or not all(
+                        concrete(alternative.get(field)) for field in ["alternative", "reason"]
+                    ):
+                        self.error("ENGINEERING_EVIDENCE_ALTERNATIVES", f"material_rejected_alternatives[{alternative_index}] must contain resolved alternative and reason", record_ref)
+
+            matrix = record.get("regression_matrix")
+            if isinstance(matrix, list):
+                for case_index, case in enumerate(matrix):
+                    if not isinstance(case, dict) or not all(
+                        concrete(case.get(field))
+                        for field in ["case", "protects", "expected_result", "validation_evidence"]
+                    ):
+                        self.error("ENGINEERING_EVIDENCE_REGRESSION", f"regression_matrix[{case_index}] must explain case, protected invariant/risk, expected result, and evidence", record_ref)
+
+            binding = record.get("repository_binding")
+            binding_kind = binding.get("kind") if isinstance(binding, dict) else None
+            result_revision = binding.get("result_revision") if isinstance(binding, dict) else None
+            base_revision = binding.get("base_revision") if isinstance(binding, dict) else None
+            if binding_kind in {"commit", "pull-request", "tree"}:
+                for field, value in [("base_revision", base_revision), ("result_revision", result_revision)]:
+                    if not concrete(value) or git_resolve_ref(self.target, value) is None:
+                        self.error("ENGINEERING_EVIDENCE_REVISION", f"{field} does not resolve: {value}", record_ref)
+                if binding_kind == "pull-request" and not concrete(binding.get("review_reference")):
+                    self.error("ENGINEERING_EVIDENCE_REVIEW_REFERENCE", "pull-request binding requires a stable review reference", record_ref)
+            elif binding_kind == "selected-file-snapshot":
+                paths = resolved_list(binding, "selected_paths")
+                digest = hashlib.sha256()
+                snapshot_valid = True
+                for selected_path in sorted(set(paths)):
+                    if not is_target_relative_path(selected_path) or not self.target_path(selected_path).is_file():
+                        self.error("ENGINEERING_EVIDENCE_SNAPSHOT_PATH", f"invalid snapshot path: {selected_path}", record_ref)
+                        snapshot_valid = False
+                        continue
+                    digest.update(selected_path.replace("\\", "/").encode("utf-8"))
+                    digest.update(b"\0")
+                    digest.update(self.target_path(selected_path).read_bytes())
+                    digest.update(b"\0")
+                recorded_digest = binding.get("snapshot_sha256") if isinstance(binding, dict) else None
+                if snapshot_valid and (not concrete(recorded_digest) or recorded_digest.casefold() != digest.hexdigest()):
+                    self.error("ENGINEERING_EVIDENCE_SNAPSHOT_HASH", "selected-file snapshot SHA-256 does not match current files", record_ref)
+            elif binding_kind == "unverified":
+                if record.get("status") == "validated":
+                    self.error("ENGINEERING_EVIDENCE_UNVERIFIED_VALIDATED", "validated evidence requires a reproducible repository binding", record_ref)
+                else:
+                    self.warn("ENGINEERING_EVIDENCE_UNVERIFIED", "record has no reproducible repository result binding", record_ref)
+
+            publication = record.get("publication")
+            if (
+                isinstance(publication, dict)
+                and publication.get("included_in_external_patch") is True
+                and isinstance(index.get("external_patch_policy"), str)
+                and "exclude" in index["external_patch_policy"].casefold()
+            ):
+                self.error("ENGINEERING_EVIDENCE_PUBLICATION_SCOPE", "record inclusion contradicts the index external-patch policy", record_ref)
+
+            impact = record.get("impact")
+            changed_facts = resolved_list(impact, "changed_fact_ids")
+            areas = [
+                area.get("area")
+                for area in record.get("affected_architecture", [])
+                if isinstance(area, dict) and concrete(area.get("area"))
+            ]
+            residual = record.get("residual_uncertainty")
+            residual = residual if isinstance(residual, list) else []
+            comparisons = {
+                "evidence_id": record.get("evidence_id"),
+                "status": record.get("status"),
+                "task_references": task_refs,
+                "changed_fact_ids": changed_facts,
+                "architecture_areas": areas,
+                "repository_binding_kind": binding_kind,
+                "result_revision": result_revision,
+                "residual_uncertainty": residual,
+            }
+            for field, record_value in comparisons.items():
+                index_value = entry.get(field)
+                if isinstance(record_value, list) and isinstance(index_value, list):
+                    matches = sorted(record_value) == sorted(index_value)
+                else:
+                    matches = record_value == index_value
+                if not matches:
+                    self.error("ENGINEERING_EVIDENCE_INDEX_DRIFT", f"{label}.{field} differs from record {evidence_id}", index_relpath)
+
+            self.info(
+                "ENGINEERING_EVIDENCE_CHECKED",
+                f"checked durable engineering evidence {evidence_id}; structural validation does not prove invariant, root-cause, solution, or regression correctness",
+                record_ref,
+            )
+
     def change_package_finding(
         self, code: str, message: str, path: str | None = None
     ) -> None:
@@ -8353,6 +8764,24 @@ class Validator:
             )
 
         packages = self.resolve_change_packages()
+        engineering_evidence_ids: set[str] = set()
+        engineering_index_path = self.target_path(
+            ".ai/project/engineering-evidence/index.json"
+        )
+        if engineering_index_path.is_file():
+            try:
+                engineering_index = json.loads(
+                    engineering_index_path.read_text(encoding="utf-8")
+                )
+            except (OSError, json.JSONDecodeError):
+                engineering_index = {}
+            if isinstance(engineering_index, dict):
+                engineering_evidence_ids = {
+                    entry.get("evidence_id")
+                    for entry in engineering_index.get("records", [])
+                    if isinstance(entry, dict)
+                    and isinstance(entry.get("evidence_id"), str)
+                }
         for package in packages:
             source = self.rel(package)
             if self.enforce_change_package and source not in indexed_records:
@@ -8859,6 +9288,19 @@ class Validator:
                     self.warn(
                         "PACKAGE_RAW_CHAT_REVIEW",
                         "raw chat retention requires target privacy, retention, and redaction review",
+                        source,
+                    )
+
+            linked_evidence = self.package_list(
+                data, ("engineering_evidence_ids",), source, required=False
+            )
+            for evidence_id in linked_evidence:
+                if evidence_id.casefold() in {"none", "not applicable", "n/a"}:
+                    continue
+                if evidence_id not in engineering_evidence_ids:
+                    self.change_package_finding(
+                        "PACKAGE_ENGINEERING_EVIDENCE_REFERENCE",
+                        f"change package references unknown engineering evidence: {evidence_id}",
                         source,
                     )
 

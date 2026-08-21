@@ -271,6 +271,15 @@ Before claiming completion, distinguish:
 - validation that was unavailable or skipped
 - structural checker evidence
 - semantic conclusions that still require human or domain review
+- durable engineering-evidence capture, skip, or block status for material
+  semantic, architectural, or non-obvious repair work
+
+When reusable invariant, hypothesis, root-cause, solution, or regression
+knowledge would be lost after the session, use the target's compact
+engineering-evidence record and bind it to the task plus exact repository
+result. Store normalized conclusions, not raw chat, chain-of-thought, secrets,
+or unrelated history. A small self-explanatory fix may skip with a specific
+reason, and capture alone does not activate a change package.
 
 AlatyrCore checks can detect structural drift and contract violations. They do
 not prove business truth, architectural correctness, external client
@@ -288,6 +297,7 @@ risk.
 - Installed operations: [framework/installed-operations.md](framework/installed-operations.md)
 - Operation help: [framework/operation-help.md](framework/operation-help.md)
 - Project adapter contract: [framework/project-adapter-contract.md](framework/project-adapter-contract.md)
+- Durable engineering evidence: [framework/engineering-evidence.md](framework/engineering-evidence.md)
 - Framework limits: [framework/guarantees.md](framework/guarantees.md)
 - Source maintainer tools: [tools/README.md](tools/README.md)
 

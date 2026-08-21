@@ -70,6 +70,9 @@ Before upgrading framework files in a target project:
    backend contract, lazy overlay, operation routes, and operating model.
    When `change-packages` is enabled, compare its record schema, semantic
    approval fields, provenance policy, lazy route, and validator support.
+   For required durable engineering evidence, compare its policy, compact
+   index, record schema, lazy route, capture gate, repository binding, privacy,
+   publication boundary, and validator support.
    When `code-documentation` is enabled, compare its catalog/profile schemas,
    source-set selectors, accepted states, canonical-owner boundaries,
    generators, output/publication policies, adapted skill, lazy route, and
@@ -111,6 +114,10 @@ Before upgrading framework files in a target project:
     state with the source placeholder registry.
     Preserve target change-package records. Never replace historical package
     evidence with the source placeholder templates.
+    Preserve target durable engineering-evidence IDs, records, task/revision
+    bindings, and storage/publication policy. Never replace historical records
+    with source placeholders or move them into an external contribution patch
+    contrary to target policy.
     Preserve target code-documentation profiles and decisions. Never replace
     accepted frontend, backend, shared, or infrastructure conventions with
     source placeholders or a universal style.
@@ -182,6 +189,9 @@ Framework lifecycle notes should record:
   state review when that module is enabled
 - change-package rule, record schema, lazy route, target retention policy,
   provenance grades, and validator migration when that module is enabled
+- durable engineering-evidence rule, policy, index/record schema, lazy route,
+  capture gate, task/revision binding, privacy/publication boundary, existing-
+  record preservation, and validator migration
 - code-documentation rule, catalog/profile schemas, source-set selection,
   accepted style decisions, generator/output policy, adapted skill, lazy
   route, and validator migration when that module is enabled

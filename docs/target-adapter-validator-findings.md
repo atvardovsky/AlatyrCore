@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 807
+Catalog entries: 845
 
 ## Codes
 
@@ -630,6 +630,80 @@ Catalog entries: 807
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `ENABLED_MODULE_STALE_STATUS`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_ALTERNATIVES`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_CHECKED`
+  Level: info. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_EXTERNAL_RECORD_UNCHECKED`
+  Level: warning. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_HYPOTHESIS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_HYPOTHESIS_OUTCOME`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_INDEX_DRIFT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_INDEX_DUPLICATE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_INDEX_ENTRY`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_INDEX_FIELD`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_INDEX_ID`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_INDEX_KIND`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_INDEX_LIST`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_INDEX_METADATA`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_INDEX_METADATA_UNRESOLVED`
+  Level: dynamic. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_INDEX_RECORD`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_INDEX_RECORDS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_INDEX_SCHEMA`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_INVARIANT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_INVARIANT_STATUS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_MANIFEST_PATH`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_PRIVACY`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_PROHIBITED_CONTENT_FIELD`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_PUBLICATION_SCOPE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_RECORD_DUPLICATE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_RECORD_LIST`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_RECORD_LOCATION`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_RECORD_PATH`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_RECORD_SCHEMA`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_REGRESSION`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_REVIEW_REFERENCE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_REVISION`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_SNAPSHOT_HASH`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_SNAPSHOT_PATH`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_SOURCE_SCHEMA`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_TASK_REFERENCE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_UNVERIFIED`
+  Level: warning. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_UNVERIFIED_VALIDATED`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `EVIDENCE_SCOPE_CURRENT_STATE`
   Level: info. Source: `tools/validate_target_adapter.py`.
 - `EXTENSION_APPROVAL_MISSING`
@@ -947,6 +1021,8 @@ Catalog entries: 807
 - `PACKAGE_CORRECTION_KIND`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_CORRECTION_SCOPE`
+  Level: dynamic. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_ENGINEERING_EVIDENCE_REFERENCE`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_EVIDENCE_CLASS`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.

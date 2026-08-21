@@ -130,6 +130,9 @@ List what must not be changed.
 - AI infrastructure recommendation records and evidence owners:
 - Development-pattern index, owner, retention/privacy policy, and historical
   evidence sources allowed for bounded backfill:
+- Durable engineering-evidence owner, storage mode, retention/redaction and
+  external-contribution policy, compact index, record access, and revision-
+  binding policy:
 - AI infrastructure router, stable item IDs, activation triggers, and statuses:
 - Item canonical sources, required context, allowed actions, permissions,
   gates, validation, output contracts, conflicts, and assistant wrappers:
@@ -202,6 +205,12 @@ enabled optional modules, deferred modules, blocked modules, and reasons.
 
 Include `.ai/project/source-of-truth-registry.md` when multiple files or
 surfaces can describe the same project fact.
+
+Include `.ai/project/engineering-evidence/README.md`, its compact `index.json`,
+the lazy task-scale overlay, capture flow, gate, and machine record template in
+the required core profile. Start the index empty unless bounded historical
+records were explicitly validated. Keep these support records outside external
+contribution patches unless the target project accepts them.
 
 Include `.ai/project/consistency-map.json` when the target has enough project
 areas or competing surfaces to benefit from bounded changed-fact relationship

@@ -33,6 +33,15 @@ Installation id: `{INSTALLATION_ID}`
 - Context profiles: `.ai/assistant/context-profiles.md`
 - Module profile: `.ai/assistant/module-profile.md`
 - Source-of-truth registry: `.ai/project/source-of-truth-registry.md`
+- Durable engineering-evidence index:
+  `.ai/project/engineering-evidence/index.json`
+- Durable engineering-evidence owner, storage, retention/redaction, and
+  external-contribution policy: `{TARGET_ENGINEERING_EVIDENCE_POLICY}`
+- Durable engineering-evidence overlay, flow, gate, and record template:
+  `.ai/assistant/context/task-scales/engineering-evidence.json`,
+  `.ai/assistant/flows/engineering-evidence-capture.flow.md`,
+  `.ai/assistant/gates/engineering-evidence.md`,
+  `.ai/assistant/templates/engineering-evidence-record.json`
 - Consistency map: `.ai/project/consistency-map.json`
 - Consistency-map module state: `{ENABLED_DEFERRED_DISABLED_OR_BLOCKED}`
 - Workspace-mode module state:

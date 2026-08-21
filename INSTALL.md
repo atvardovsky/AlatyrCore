@@ -147,6 +147,8 @@ The plan must identify:
 - AI infrastructure router/item, recommendation, and adaptation-record needs
 - target development-evidence index, owner, retention/privacy policy, and lazy
   capture needs when recommendations should learn from recurring project work
+- durable engineering-evidence owner, retained storage and redaction policy,
+  external-contribution boundary, compact index, lazy capture, and validation
 - files to create, adapt, preserve, or skip
 - framework core versus target adapter decisions
 - target validation plan
@@ -192,6 +194,11 @@ In a typical target repository:
    registry, ownership map, and file inventory; use `complete` when all
    `framework/*.md` and JSON files are installed.
 6. Create `.ai/project/contour.md` and target project source-of-truth docs.
+   Always create `.ai/project/engineering-evidence/README.md` and `index.json`
+   for the required core capture decision. Resolve the target owner, retained
+   storage mode, redaction policy, external-contribution boundary, and access
+   path. Start empty unless bounded historical records were explicitly
+   validated.
    When AI recommendations should use cross-task patterns, add the compact
    `.ai/project/development-evidence.json` index with target owner and retention
    policy. Do not seed it with guessed history or raw conversations.
@@ -258,6 +265,8 @@ In a typical target repository:
    template when delegation is enabled,
    change-package flow, machine record, redacted report, and index when coherent
    material-change evidence is needed,
+   durable engineering-evidence task-scale overlay, capture flow, gate, and
+   machine record template as lazy required-core finalization surfaces,
    and
    post-install/update chat-message templates when the target wants
    post-install operation requests or AI infrastructure adaptation.
@@ -278,7 +287,10 @@ In a typical target repository:
    and keep unresolved permissions, gates, validation, or output contracts
    blocked.
 11. Run target validation that exists.
-12. Report files changed, validation run, skipped checks, approvals, and
+12. Apply the durable engineering-evidence decision. Capture reusable material
+   installation knowledge when triggered and authorized, or report a specific
+   skip/block reason.
+13. Report files changed, validation run, skipped checks, approvals, and
    residual risk.
 
 ## Post-Install Operations

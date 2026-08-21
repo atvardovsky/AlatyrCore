@@ -62,6 +62,9 @@ Operation help exists to:
 - route user-owned workspace-mode listing, evidence-bound suggestion,
   inspection, selection, definition, acceptance, and lifecycle changes without
   confusing a mode with workspace identity, artifact ownership, or authority
+- route durable engineering-evidence capture, lookup, explanation, and repair
+  while keeping the materiality decision proportional and the evidence corpus
+  outside routine context
 
 ## Canonical Operation Catalog
 
@@ -234,6 +237,7 @@ Typical operation categories include:
 - team coordination for status, start/claim/checkpoint/release, changed-fact
   conflicts, handoffs, decisions, review, and revision-bound merge readiness
 - logical integrity review
+- durable engineering-evidence capture or lookup
 - discussion diagram creation, comparison, or revision with inline, artifact,
   plus a portable ASCII view
 - AI infrastructure inventory

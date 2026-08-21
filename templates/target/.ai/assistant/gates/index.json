@@ -31,6 +31,10 @@
       "path": ".ai/assistant/gates/workspace-mode.md",
       "use_when": ["workspace mode is suggested selected accepted changed disabled deprecated removed or used for state-changing work"]
     },
+    "engineering-evidence": {
+      "path": ".ai/assistant/gates/engineering-evidence.md",
+      "use_when": ["material semantic architectural or non-obvious repair reaches finalization"]
+    },
     "final-evidence": {
       "path": ".ai/assistant/gates/final-evidence.md",
       "use_when": ["before reporting completion"]

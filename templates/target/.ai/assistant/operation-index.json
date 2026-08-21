@@ -40,6 +40,9 @@
     "Alatyr discuss": "team-decision",
     "Alatyr review": "team-review",
     "Alatyr merge check": "team-merge-check",
+    "Alatyr evidence": "engineering-evidence",
+    "Alatyr capture evidence": "engineering-evidence",
+    "Alatyr explain decision": "engineering-evidence",
     "check integrity": "logical-integrity-review",
     "logical integrity review": "logical-integrity-review",
     "Alatyr diagram": "diagram-discussion",
@@ -195,6 +198,15 @@
       "team-collaboration",
       ".ai/assistant/flows/team-review.flow.md",
       "read-only"
+    ],
+    "engineering-evidence": [
+      "core-profile",
+      ".ai/assistant/flows/engineering-evidence-capture.flow.md",
+      "read-only",
+      "docs-only",
+      "adapter-only",
+      "code-and-tests",
+      "full-with-approval"
     ],
     "logical-integrity-review": [
       "core-profile",

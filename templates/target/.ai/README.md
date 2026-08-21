@@ -49,6 +49,9 @@ facts, or target skill infrastructure.
 - data model
 - runtime flows
 - project terminology and decisions
+- compact durable engineering evidence for material task invariants, root
+  causes, solution rationale, regression intent, validation, and repository
+  binding; these historical records link to but do not replace canonical owners
 
 Replace this section with the actual target project map.
 
@@ -91,6 +94,8 @@ Replace this section with the actual target project map.
 - optional change packages for coherent material outcomes, semantic approval
   scope, companion decisions, implementation corrections, and before-to-after
   repository provenance
+- lazy durable engineering-evidence capture and validation that preserves
+  normalized conclusions without raw chat or assistant reasoning traces
 - migration notes for framework updates
 - operation help, operation routing, and post-install/update assistant chat
   messages

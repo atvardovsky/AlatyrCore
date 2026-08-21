@@ -200,6 +200,18 @@ python3 tools/check_change_packages.py
 python3 tools/validate_target_adapter.py --target /path/to/target --change-package .ai/assistant/change-packages/change.json --enforce-change-package
 ```
 
+## Durable Engineering Evidence Check
+
+`check_engineering_evidence.py` validates the required proportional capture
+rule, compact target index and record contract, task/revision binding, privacy
+and publication boundaries, index synchronization, and captured/skipped/
+blocked conformance scenarios. It does not prove an invariant, root cause,
+solution, or regression matrix is semantically correct.
+
+```sh
+python3 tools/check_engineering_evidence.py
+```
+
 ## Code Documentation Check
 
 `check_code_documentation.py` validates the optional portable rule, bounded

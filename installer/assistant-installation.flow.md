@@ -61,6 +61,7 @@ in the owning framework documents and use these IDs for installation routing:
 - `ALATYR-EXTENSION-001`
 - `ALATYR-DIAGRAM-001`
 - `ALATYR-TEAM-001`
+- `ALATYR-ENGINEERING-EVIDENCE-001`
 - `ALATYR-LIFECYCLE-001`
 - `ALATYR-EVIDENCE-001`
 
@@ -159,6 +160,11 @@ Classify every proposed target file:
     portable Markdown and JSON files are installed.
 13. Create target `.ai/project/contour.md` and target project
    source-of-truth docs from target facts.
+    Create `.ai/project/engineering-evidence/README.md` and `index.json` as
+    required core surfaces. Resolve the target owner, retained storage mode,
+    external-contribution policy, redaction policy, and record access. Start
+    with an empty index unless bounded historical records are explicitly
+    reviewed; never infer past engineering decisions from the current tree.
     Add `.ai/project/development-evidence.json` only when the target enables
     pattern-based AI infrastructure recommendations. Start with an empty index
     unless bounded historical evidence is explicitly reviewed; never copy raw
@@ -289,6 +295,9 @@ Classify every proposed target file:
     template when the target needs semantic multi-surface approval, architecture
     segment/capability evidence, audit, pilot, or publishable provenance. Record
     retention and redaction policy; do not seed historical records.
+    Add the durable engineering-evidence task-scale overlay, capture flow,
+    gate, and machine record template in every accepted core profile. Keep
+    them lazy and separate from change-package activation.
     When the target uses multiple AI infrastructure items, add
     `.ai/assistant/ai-infrastructure-router.json`, the recommendation flow and
     report template, lazy development-evidence capture flow, and the
@@ -329,12 +338,15 @@ Classify every proposed target file:
 19. Run target validation that exists. Do not invent commands.
 20. Apply logical integrity review: changed facts, re-derived invariants,
     reconciled review-item clusters, affected contracts, source of truth,
-    repair direction, and residual risk.
-21. Classify final evidence as `current-state`, `historical-record`, or `mixed`.
+   repair direction, and residual risk.
+21. Apply the durable engineering-evidence capture decision. For installation
+    itself, capture only when reusable non-obvious target-adaptation knowledge
+    would otherwise be lost; otherwise record the specific skip reason.
+22. Classify final evidence as `current-state`, `historical-record`, or `mixed`.
     Do not infer past installation, approval, or validation actions only from
     files that exist in the current tree.
-22. Report final evidence.
-23. Send the appropriate post-install or post-update assistant chat message
+23. Report final evidence.
+24. Send the appropriate post-install or post-update assistant chat message
     using the target template when installed. Name the single `Alatyr` entry,
     read-only health aliases, automatic routing, and risk-gated preview.
     Name team/current-actor aliases, attribution limits, and module state when
@@ -417,6 +429,9 @@ Report:
   evidence, role/model bindings, fallback, and validation added or skipped
 - change-package index, lazy overlay, flow, schema, redacted report, retention
   policy, and validator support added, migrated, skipped, or blocked
+- durable engineering-evidence owner, policy, compact index, lazy overlay,
+  capture flow, gate, record schema, validator, existing-record preservation,
+  and current installation capture decision
 - team collaboration policy and operating model, ignored local identity,
   backend capabilities and synchronization, active-work index, registry/task
   schemas, optimistic concurrency, team-active overlay, identity/task/handoff/

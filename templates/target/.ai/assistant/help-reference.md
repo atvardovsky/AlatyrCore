@@ -198,6 +198,19 @@ Flow: `.ai/assistant/flows/team-review.flow.md`
 Minimum input: task ID and current head/base revisions.
 Default allowed actions: `read-only`.
 
+Operation: `engineering-evidence`
+Use when: a material task reaches finalization and reusable invariant,
+root-cause, solution, or regression knowledge would otherwise be lost; or when
+reviewing a prior compact engineering-evidence record.
+Flow: `.ai/assistant/flows/engineering-evidence-capture.flow.md`
+Minimum input: current task or evidence ID, plus capture, inspect, or repair
+intent.
+Aliases: `Alatyr evidence`, `Alatyr capture evidence`, `Alatyr explain
+decision`.
+Default allowed actions: `read-only` for inspection; use `docs-only`,
+`adapter-only`, or a broader current-scope modify phase only when target policy
+permits record changes.
+
 Operation: `logical-integrity-review`
 Use when: reviewing whether code, docs, tests, diagrams, prompts, skills,
 gates, and bridges agree.

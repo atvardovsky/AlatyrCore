@@ -288,6 +288,9 @@ Before accepting a change, check:
   and output contracts agree.
 - development-pattern index, capture flow, project/assistant ownership,
   recommendation route, manifest, module profile, and target validator agree.
+- durable engineering-evidence rule, compact index, lazy routing, capture gate,
+  record schema, task/revision binding, privacy/publication policy, operation,
+  installation/update surfaces, and target validator agree.
 - target gate, operation-catalog, operation-routing, adapter-health,
   pre-change-preview, adapter-recheck, and output-contract
   templates preserve context-router bootstrap references and adapter drift

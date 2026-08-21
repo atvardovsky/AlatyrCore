@@ -123,6 +123,9 @@
     ],
     "raw_chat_retained": false
   },
+  "engineering_evidence_ids": [
+    "{ENGINEERING_EVIDENCE_ID_OR_NONE}"
+  ],
   "provenance": {
     "evidence_quality": "{GIT_RANGE_PULL_REQUEST_SELECTED_FILE_SNAPSHOT_OR_UNVERIFIED}",
     "before_revision": "{BEFORE_GIT_REVISION_OR_NOT_AVAILABLE_WITH_REASON}",

@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "suite_kind": "alatyr-engineering-evidence-scenarios",
+  "scenarios": [
+    {
+      "id": "material-undocumented-invariant",
+      "task_shape": "A defect reveals an undocumented identity invariant, rejects a plausible local workaround, crosses two architecture areas, and requires a broader regression matrix.",
+      "expected_capture_status": "captured",
+      "required_outcomes": [
+        "task and exact repository result binding",
+        "invariant and canonical owner or ownership gap",
+        "root cause and evidence",
+        "material rejected hypothesis",
+        "chosen solution and rationale",
+        "regression cases tied to the invariant",
+        "validation and residual uncertainty",
+        "privacy and external-patch policy"
+      ],
+      "forbidden_outcomes": [
+        "raw chat",
+        "chain-of-thought",
+        "secret or credential content",
+        "automatic change-package activation"
+      ]
+    },
+    {
+      "id": "small-self-explanatory-local-fix",
+      "task_shape": "A small one-profile local correction changes no accepted invariant and the patch plus focused test explain the result completely.",
+      "expected_capture_status": "skipped",
+      "required_outcomes": [
+        "short fact-specific skip reason in final evidence"
+      ],
+      "forbidden_outcomes": [
+        "large engineering evidence record",
+        "automatic change package"
+      ]
+    },
+    {
+      "id": "material-capture-read-only",
+      "task_shape": "Analysis finds reusable material knowledge, but the current scope authorizes inspection only.",
+      "expected_capture_status": "blocked",
+      "required_outcomes": [
+        "capture proposal",
+        "missing modify authorization",
+        "next safe action"
+      ],
+      "forbidden_outcomes": [
+        "record write",
+        "commit",
+        "publication"
+      ]
+    },
+    {
+      "id": "clean-upstream-contribution",
+      "task_shape": "The code change is intended for an upstream repository that does not accept Alatyr support artifacts.",
+      "expected_capture_status": "captured",
+      "required_outcomes": [
+        "record retained in the target-approved support store",
+        "exact upstream task and revision binding",
+        "evidence excluded from the upstream patch"
+      ],
+      "forbidden_outcomes": [
+        "Alatyr support files in the external contribution patch",
+        "ignored-local-only evidence presented as durable team memory"
+      ]
+    }
+  ]
+}

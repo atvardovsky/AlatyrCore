@@ -28,6 +28,9 @@ Replace placeholders with target facts before accepting installation.
   rules
 - lazy development-evidence capture mechanics; normalized pattern facts remain
   owned by `.ai/project/development-evidence.json`
+- lazy durable engineering-evidence routing, capture, privacy/publication gate,
+  template, and structural validation; normalized historical conclusions and
+  storage policy remain project-owned under `.ai/project/engineering-evidence`
 - AI infrastructure route/item contracts and adaptation records under
   `.ai/assistant/ai-infrastructure-router.json` and target-owned record paths
 - target validation commands or manual checks

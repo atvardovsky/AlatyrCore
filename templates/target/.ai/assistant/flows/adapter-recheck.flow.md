@@ -56,6 +56,9 @@ Replace placeholders with target facts before accepting installation.
 - Development pattern evidence:
   `.ai/project/development-evidence.json`,
   `.ai/assistant/flows/development-evidence-capture.flow.md`
+- Durable engineering evidence: `.ai/project/engineering-evidence/README.md`,
+  compact index, selected records, task-scale overlay, capture flow, gate, and
+  machine template
 - AI infrastructure router, recommendation, and adaptation record:
   `.ai/assistant/ai-infrastructure-router.json`,
   `.ai/assistant/templates/ai-infrastructure-adaptation-record.md`
@@ -107,6 +110,7 @@ Replace placeholders with target facts before accepting installation.
    checker rules, operation catalog and health/preview contracts, large-task
    flow and packet, change-package index/flow/schema, team operating
    model/registry/flows/gate/templates,
+   durable engineering-evidence policy/index/overlay/flow/gate/schema,
    chat-message templates, and final-evidence expectations.
 9. Check adapter drift hazards: hard-coded local machine paths in `.ai/*`,
    root assistant entry points, bridge files, templates, and policies; stale
@@ -142,6 +146,9 @@ Replace placeholders with target facts before accepting installation.
     When change packages are enabled, preserve historical target records and
     check semantic approval fields, companion decisions, correction impact,
     provenance quality, and target validator support.
+    Preserve durable engineering-evidence IDs and records, then recheck task
+    and repository bindings, index synchronization, canonical-owner links,
+    privacy flags, external-patch policy, and existing-record accessibility.
     When test-first development is enabled, preserve target commands, trigger
     severity, modes, levels, isolation, exceptions, policy revision, and
     historical evidence; recheck recommendation and RED/GREEN routing without
@@ -216,6 +223,9 @@ Report:
   approval scope, provenance policy, and validator support
 - development-pattern index schema, owner, retention/privacy policy, evidence
   references, and target-only optimization boundary
+- durable engineering-evidence owner, retained storage and external-patch
+  policy, compact index/record synchronization, task/revision binding,
+  canonical-owner links, privacy, validation, and unresolved access gaps
 - bridge capability matrix status
 - diagram discussion presentation, ASCII readability, and source-revision status
 - target validation run or unresolved

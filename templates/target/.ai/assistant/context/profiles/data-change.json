@@ -11,6 +11,7 @@
   "operation_candidates": [
     "product-change",
     "logical-integrity-review",
+    "engineering-evidence",
     "drift-review",
     "test-first-change"
   ],

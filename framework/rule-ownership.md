@@ -194,6 +194,13 @@ Rule IDs: `ALATYR-LIFECYCLE-001`
 Derived surfaces: version files, installed framework pack, migration notes,
 framework update recheck, changelog.
 
+Category: `ENGINEERING_EVIDENCE`
+Routing owner: `.ai/framework/engineering-evidence.md`
+Rule IDs: `ALATYR-ENGINEERING-EVIDENCE-001`
+Derived surfaces: target evidence index and records, capture flow, finalization
+gate, task-scale routing, operation help, change-package links, target
+validation, installation and migration planning.
+
 Category: `EVIDENCE`
 Routing owner: `.ai/framework/guarantees.md`
 Rule IDs: `ALATYR-EVIDENCE-001`
@@ -231,6 +238,9 @@ Canonical owner: `.ai/framework/blueprint-driven-change.md`
 
 Rule: `ALATYR-PACKAGE-001`
 Canonical owner: `.ai/framework/change-packages.md`
+
+Rule: `ALATYR-ENGINEERING-EVIDENCE-001`
+Canonical owner: `.ai/framework/engineering-evidence.md`
 
 Rule: `ALATYR-ARCHITECTURE-001`
 Canonical owner: `.ai/framework/architecture-knowledge.md`

@@ -44,6 +44,11 @@ This flow adapts `.ai/framework/logical-integrity.md` to `{PROJECT_NAME}`.
 11. For multi-workstream operations, reconcile the combined repair set in one
    global review after local workstream checks. Confirm shared fact owners,
    dependency order, approval scope, and generated artifacts agree.
+12. Before completion, apply
+    `.ai/assistant/gates/engineering-evidence.md`. Capture compact reusable
+    engineering conclusions when triggered and authorized, or report a
+    fact-specific skip or blocker. Do not turn capture alone into a change
+    package.
 
 ## Explanation Format
 
@@ -60,4 +65,5 @@ External failure distinction: <typed/result/status/other contract or not applica
 Repair: <files or behavior to change>
 Gate: <target validation or manual review>
 Workstream convergence: <global result or not applicable>
+Durable engineering evidence: <captured ID/path, skipped reason, or blocker>
 ```

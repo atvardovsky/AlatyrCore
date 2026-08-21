@@ -34,6 +34,9 @@ sync, logical integrity review, and final evidence.
 - blueprint-driven product-change workflow
 - optional project-owned architecture knowledge, pattern discussion, review,
   and supporting-documentation maintenance
+- required proportional durable engineering-evidence capture with compact
+  task/revision, invariant, root-cause, solution, regression, validation,
+  privacy, and publication records for material work
 - optional large-task orchestration with bounded workstreams, context receipts,
   resumable checkpoints, and final convergence
 - optional capability-gated subagent delegation with bounded packets, verified
@@ -147,6 +150,8 @@ Those belong to a project contour or repository adapter.
 - `.ai/framework/change-packages.md`: optional coherent material-change
   evidence with semantic scope, companion decisions, corrections, and
   repository provenance.
+- `.ai/framework/engineering-evidence.md`: proportional project-owned capture
+  of reusable material task conclusions without raw assistant reasoning.
 - `.ai/framework/architecture-knowledge.md`: portable project architecture
   catalog, pattern discussion, alternative comparison, review, and
   documentation-maintenance contract.

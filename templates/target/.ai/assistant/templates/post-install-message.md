@@ -25,6 +25,7 @@ Entry points:
 - `.ai/assistant/context-profiles.md`
 - `.ai/assistant/module-profile.md`
 - `.ai/project/source-of-truth-registry.md`
+- `.ai/project/engineering-evidence/index.json` and its target storage policy
 - `.ai/project/consistency-map.json` when the optional module is enabled
 - `.ai/project/architecture/README.md` and `.ai/project/architecture/catalog.json` when architecture knowledge is enabled
 - `.ai/project/documentation/catalog.json` and `.ai/project/documentation/profiles.json` when code documentation is enabled
@@ -91,6 +92,10 @@ Available next actions:
 - Change packages activate automatically for coherent material outcomes,
   semantic multi-surface approval, audit, or publishable provenance when the
   optional module is enabled; ordinary local tasks do not create one.
+- `engineering-evidence`: use `Alatyr evidence`, `Alatyr capture evidence`, or
+  `Alatyr explain decision <evidence-id>`. Material tasks preserve compact
+  reusable conclusions when triggered; small self-explanatory tasks may skip
+  with a specific reason. Raw assistant reasoning is never retained.
 - `team-identity`, `team-status`, and related team operations: select ignored local attribution, coordinate target-owned actors and conflict-safe task records, run active-work preflight, and preserve revision-bound handoff, decision, review, and merge evidence when enabled.
 - `ai-infrastructure-inventory`: check existing AI instructions, prompts, skills, wrappers, bridges, rules, MCP/tool configs, gates, and checkers. Alias: `alatyr-ai-inventory`.
 - `ai-infrastructure-recommendation`: suggest new items or improvements to existing items from bounded project evidence in read-only mode. Aliases: `alatyr-suggest-ai <scope>`, `alatyr-improve-ai <item-id>`.

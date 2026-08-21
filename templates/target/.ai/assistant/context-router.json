@@ -181,11 +181,15 @@
       ],
       "descriptor": ".ai/assistant/context/task-scales/change-package.json"
     },
+    "engineering-evidence": {
+      "use_when": [
+        "material task finalization or explicit engineering-evidence request"
+      ],
+      "descriptor": ".ai/assistant/context/task-scales/engineering-evidence.json"
+    },
     "team-active": {
       "use_when": [
-        "team identity or coordination request",
-        "enabled-team write operation matches an active task branch worktree project area changed fact owner contract dependency or surface",
-        "enabled-team write operation cannot rule out active-work overlap from the compact index"
+        "team request active write operation or possible work overlap"
       ],
       "descriptor": ".ai/assistant/team/context-overlay.json"
     }

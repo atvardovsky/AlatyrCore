@@ -46,6 +46,10 @@ The framework commits to giving an assistant a defined process for:
 - binding activated material changes into optional change packages with
   semantic scope, companion decisions, implementation corrections, and
   repository provenance
+- deciding proportionally whether reusable engineering knowledge would be lost
+  after a material task, then preserving compact project-owned invariant,
+  hypothesis outcome, root-cause, solution, regression, validation, and
+  repository-binding evidence or reporting a specific skip or blocker
 - coordinating enabled team work through target-owned actors and authority,
   changed-fact-first overlap checks, bounded handoffs, and revision-bound
   review evidence
@@ -150,6 +154,10 @@ Machine checks can verify only deterministic repository facts, such as:
 - explicitly selected change packages can be checked for record shape,
   resolvable revisions, plan hashes, declared semantic and path scope,
   companion decisions, correction impact, and evidence-quality prerequisites
+- durable engineering-evidence indexes and selected records can be checked for
+  shape, identity, task and repository binding, invariant and regression
+  evidence, index synchronization, publication policy, and prohibited raw
+  conversation or secret-bearing fields
 
 Machine checks do not prove the assistant understood the target project or
 that project facts are correct. Prepared prompts and static bridge checks also
@@ -196,6 +204,8 @@ defines:
 - context router or equivalent machine-readable profile map when cheaper
   startup is expected
 - module profile for required core and optional capabilities
+- durable engineering-evidence owner, storage/publication policy, compact
+  index, and retained record access for material tasks
 - project validation or explicit manual review
 - approval rules and approval records when durable evidence is needed
 - adapter output contracts for installation, framework update, and recheck

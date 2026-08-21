@@ -43,6 +43,7 @@ Registered categories:
 - `DELEGATION`
 - `BRIDGE`
 - `LIFECYCLE`
+- `ENGINEERING_EVIDENCE`
 - `EVIDENCE`
 
 Do not reuse an ID for a different meaning. Record material rule changes in
@@ -58,9 +59,10 @@ target registry and consistency map together for semantic work while keeping
 redundant portable explanation conditional; separate total, portable, and
 reserved target context budgets; measure representative compact and expansion
 scenarios; record expansion only when boundaries or conflicts require it;
-prefer changed-fact, upgrade-impact, and AI-item routing when available; and
-keep optional module, delegated-execution, complete-checklist, and full team
-detail lazy.
+prefer changed-fact, upgrade-impact, AI-item, and finalization-only
+engineering-evidence routing when available; and keep optional module,
+evidence-history, delegated-execution, complete-checklist, and full team detail
+lazy.
 Applies to: all installed adapter tasks.
 Enforcement: required.
 
@@ -128,12 +130,12 @@ Enforcement: required.
 Rule ID: `ALATYR-INTEGRITY-001`
 Canonical source: `.ai/framework/logical-integrity.md`
 Commitment: Name changed facts, re-derive testable invariants, reconcile
-related review items, identify owners and repair sets, validate, and report
-residual risk, using mapped or manual impact closure, global multi-workstream
-convergence, active package scope, selected code-documentation profile and
-generator reconciliation, changed project term IDs, aliases, meanings and data
-links, and activated test-first trigger and RED GREEN refactor evidence as
-applicable.
+related review items, identify owners and repair sets, validate, decide
+proportional durable engineering-evidence capture, and report residual risk,
+using mapped or manual impact closure, global multi-workstream convergence,
+active package scope, selected code-documentation profile and generator
+reconciliation, changed project term IDs and data links, and activated
+test-first evidence as applicable.
 Applies to: semantic fact changes, drift reviews.
 Enforcement: required.
 
@@ -141,10 +143,10 @@ Rule ID: `ALATYR-CHANGE-001`
 Canonical source: `.ai/framework/blueprint-driven-change.md`
 Commitment: Carry accepted product changes through invariant re-derivation,
 source-of-truth and flow updates, implementation planning, code and tests,
-companion sync, and final evidence, reconciling related review items and large
-workstreams globally, composing an enabled target test-first flow when its
-trigger applies, and activating a change package only when its separate gate
-passes.
+companion sync, proportional durable engineering-evidence capture, and final
+evidence, reconciling related review items and large workstreams globally,
+composing an enabled target test-first flow when its trigger applies, and
+activating a change package only when its separate gate passes.
 Applies to: business changes, architecture changes, data changes, runtime
 changes, public contract changes.
 Enforcement: required.
@@ -154,12 +156,27 @@ Canonical source: `.ai/framework/change-packages.md`
 Commitment: Activate a change package only for a coherent material outcome,
 semantic multi-surface approval, audit, or publishable provenance need; bind
 changed facts, semantic and path scope, plan, approvals, companion decisions,
-implementation corrections, validation, and before-to-after evidence without
-replacing canonical project owners or burdening ordinary local tasks.
+implementation corrections, linked durable engineering-evidence IDs,
+validation, and before-to-after evidence without replacing canonical project
+owners or burdening ordinary local tasks.
 Applies to: activated business changes, activated architecture changes,
 activated data changes, activated security changes, migrations, public contract
 changes.
 Enforcement: required when activated.
+
+Rule ID: `ALATYR-ENGINEERING-EVIDENCE-001`
+Canonical source: `.ai/framework/engineering-evidence.md`
+Commitment: Before completing material semantic, architectural, or non-obvious
+repair work, decide whether reusable knowledge would be lost after the session;
+capture compact project-owned task, revision, invariant, hypothesis outcome,
+root-cause, solution, regression, validation, publication, and uncertainty
+evidence when triggered, or record a fact-specific skip or block reason,
+without storing raw chat, chain-of-thought, secrets, or unrelated history and
+without forcing ordinary small changes into change packages.
+Applies to: material semantic changes, architecture changes, non-obvious defect
+repairs, final evidence.
+Enforcement: required capture decision; record required when triggered and
+authorized.
 
 Rule ID: `ALATYR-ARCHITECTURE-001`
 Canonical source: `.ai/framework/architecture-knowledge.md`
@@ -269,21 +286,20 @@ Commitment: Keep framework core, project facts, and repository adapter facts
 separated and rewritten from target evidence; record the installed framework
 pack and its projected registry, inventory, bootstrap index, gate index,
 capability closure, and current-scope action policy; reject live support claims
-that contradict enabled module state; and preserve target development-pattern
-evidence, routed AI infrastructure items, recommendation and adaptation
-records, optional project-owned documentation, vocabulary, testing, extension,
-team, and delegation policy state.
+that contradict enabled module state; and preserve durable task engineering
+evidence, development-pattern evidence, routed AI infrastructure items,
+recommendation/adaptation records, and optional project-owned module state.
 Applies to: installation, framework update, adapter maintenance.
 Enforcement: required.
 
 Rule ID: `ALATYR-MODULE-001`
 Canonical source: `.ai/framework/module-profile.md`
 Commitment: Establish the required core profile, including current-scope action
-authorization, before optional modules; scaffold only selected
-dependency-closed capabilities; select a compatible framework pack; and enforce
-optional-module dependency, rule, required-file, deterministic-check, and
-module-gated validator closure before claiming a target module, including
-subagent delegation, is enabled.
+authorization and proportional durable engineering evidence, before optional
+modules; scaffold only selected dependency-closed capabilities; select a
+compatible framework pack; and enforce optional-module dependency, rule,
+required-file, deterministic-check, and module-gated validator closure before
+claiming a target module is enabled.
 Applies to: installation, framework update, adapter maturity, framework
 upgrades.
 Enforcement: required.
@@ -293,10 +309,10 @@ Canonical source: `.ai/framework/operation-help.md`
 Commitment: Expose one conversational Alatyr entry point, route clear requests
 automatically through a canonical target operation catalog and checked compact
 exact-alias index, enforce current-scope action phases independently of routing
-and allowed-action mode, compose capability-gated delegated execution only for
-bounded independent packets, provide a read-only evidence-based adapter health
-operation, and show a bounded pre-change preview only when changed-fact risk,
-approval, or scope uncertainty requires it.
+and allowed-action mode, expose lazy durable engineering-evidence
+capture/lookup, compose bounded capability-gated delegation, provide read-only
+adapter health, and show a pre-change preview only when risk, approval, or
+scope uncertainty requires it.
 Applies to: installed operation routing, adapter health, changes requiring
 preview.
 Enforcement: required.
@@ -341,24 +357,24 @@ Enforcement: required.
 Rule ID: `ALATYR-LIFECYCLE-001`
 Canonical source: `.ai/framework/lifecycle.md`
 Commitment: Record framework version, adapter schema version, template version,
-installed framework pack, baseline, local deviations, migration notes, and a
-hash-bound delta-first upgrade impact; bind source releases to v<VERSION>,
-every shipped schema, and deterministic contract-tree evidence; preserve
-current-scope authorization plus enabled target package, documentation,
-vocabulary, testing, extension, team, and delegation policy/capability state;
-expand upgrade context from affected owners and migrate changed schemas
-atomically without replacing active state with placeholders.
+installed framework pack, baseline, deviations, migration notes, and hash-bound
+upgrade impact; bind releases to v<VERSION>, shipped schemas, and contract-tree
+evidence; preserve current-scope authorization, durable engineering evidence,
+and enabled target package/module state; expand context from affected owners
+and migrate schemas atomically without replacing active state with
+placeholders.
 Applies to: installation, framework upgrades.
 Enforcement: required.
 
 Rule ID: `ALATYR-EVIDENCE-001`
 Canonical source: `.ai/framework/guarantees.md`
-Commitment: Distinguish declarative process commitments, machine-checkable
-expectations, target-dependent guarantees, and non-guarantees in final claims;
-report current-scope action authorization and actions performed; distinguish
-strong versus bounded change-package provenance and semantic limits of
-generated records; and separate declared from verified team, extension,
-delegated model, scope, validation, latency, quality, and cost evidence.
+Commitment: Distinguish process commitments, machine-checkable expectations,
+target-dependent guarantees, and non-guarantees in final claims; report
+current-scope authorization and actions; classify durable engineering evidence
+as captured, skipped, or blocked without exposing raw reasoning; distinguish
+strong versus bounded package provenance and generated-record limits; and
+separate declared from verified scope, validation, quality, latency, and cost
+evidence.
 Applies to: final evidence, framework positioning.
 Enforcement: required.
 

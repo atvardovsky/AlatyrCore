@@ -1,18 +1,19 @@
 # Final Evidence Gate
 
-Canonical owner: `ALATYR-EVIDENCE-001`.
+Owner: `ALATYR-EVIDENCE-001`.
 
-Before reporting completion, state:
+Before completion, report:
 
-- selected profile, areas, changed facts, files, and synchronized surfaces
-- `current_user_authorization`: current logical scope, source request or
-  message reference, authorized and unauthorized phases, invalidation state,
-  latest commit/publish/live confirmation, and state-changing actions performed
-- invariant and review-item reconciliation result
+- profile, areas, facts, files, and synchronized surfaces
+- `current_user_authorization`: scope/source, allowed/forbidden phases,
+  invalidation, latest commit/publish/live confirmation, and performed effects
+- invariant and review reconciliation
 - validation run, skipped, unavailable, or unresolved
-- approval scope and protected actions avoided when applicable
-- context expansion and task-scale, package, team, or delegation evidence used
-- residual risk and the exact next owner or action for unresolved work
+- approval scope and avoided protected actions
+- context expansions, task scale, and package/team/delegation evidence
+- `durable_engineering_evidence`: `captured`, `skipped`, or `blocked`, with
+  ID/path/repository binding or a fact-specific reason
+- residual risk and next owner/action
 
-Do not present structural checks as proof of semantic correctness or an
-unverified assistant capability as observed execution evidence.
+Structural checks do not prove semantics; unverified capabilities are not
+observed evidence.

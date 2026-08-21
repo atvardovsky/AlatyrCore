@@ -21,6 +21,10 @@
     {
       "path": ".ai/assistant/templates/change-package-report.md",
       "when": "human audit pilot or publishable report requested"
+    },
+    {
+      "path": ".ai/project/engineering-evidence/index.json",
+      "when": "a durable engineering-evidence record is linked"
     }
   ],
   "expand_when": [

@@ -17,3 +17,5 @@ only for ambiguity, adapter repair, or a boundary named by another gate.
 - Expand context for conflicting evidence, missing ownership, or a crossed
   business, architecture, data, security, lifecycle, or AI-infrastructure
   boundary.
+- At finalization, apply the lazy durable engineering-evidence decision for
+  material tasks; do not load the evidence corpus during routine bootstrap.

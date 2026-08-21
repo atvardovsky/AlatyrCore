@@ -42,6 +42,7 @@ EXPECTED_OPERATIONS = {
     "team-decision",
     "team-review",
     "team-merge-check",
+    "engineering-evidence",
     "logical-integrity-review",
     "diagram-discussion",
     "ai-infrastructure-inventory",
@@ -159,8 +160,11 @@ def main() -> int:
         failures.append("operation catalog fallback_operation must be help")
     if catalog.get("authorization_phases") != AUTHORIZATION_PHASES:
         failures.append("operation catalog authorization phases are invalid")
-    if catalog.get("required_final_evidence") != ["current_user_authorization"]:
-        failures.append("operation catalog must require current user authorization evidence")
+    if catalog.get("required_final_evidence") != [
+        "current_user_authorization",
+        "durable_engineering_evidence",
+    ]:
+        failures.append("operation catalog must require authorization and durable engineering evidence")
 
     for field, expected in CATALOG_PATHS.items():
         if catalog.get(field) != expected:

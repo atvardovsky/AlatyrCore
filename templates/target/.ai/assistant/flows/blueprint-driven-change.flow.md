@@ -50,7 +50,10 @@ Replace placeholders with target facts before accepting installation.
     or excluded paths.
 12. Perform a final consistency check across changed surfaces and related
     review-item clusters.
-13. Report final evidence, skipped checks, approvals, and residual risk.
+13. Apply `.ai/assistant/gates/engineering-evidence.md` and preserve compact
+    reusable task knowledge when triggered and authorized, or record a
+    fact-specific skip or blocker.
+14. Report final evidence, skipped checks, approvals, and residual risk.
 
 For large or resumable changes, use
 `.ai/assistant/flows/large-task-orchestration.flow.md` and maintain one packet
@@ -87,3 +90,5 @@ Report:
 - for large tasks, workstream convergence, context receipts, and checkpoints
 - for activated change packages, semantic and path scope, companion decisions,
   material corrections, provenance quality, and public claim strength
+- durable engineering-evidence status, record ID/path and repository binding,
+  or a fact-specific skip or blocker

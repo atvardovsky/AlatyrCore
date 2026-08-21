@@ -4,15 +4,15 @@
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "9db0e067ce6938288200901c70fc7d54243af122bd95a5d81fe4c1a0481c92ac"
+      "sha256": "968d3cd0a52ab656d6d8f8d02afa256f49037b536becdeef32feb79d0394d713"
     },
     "project_map": {
       "path": ".ai/README.md",
-      "sha256": "598c4caf049d5865b8e3d9213bf33efa08466ceaf444ca29061a5ee2b5dc4e54"
+      "sha256": "ad50958d5b2bfe641923394908c0ff08580e2e02fb8f3b320d64089dc51bc83f"
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",
-      "sha256": "780f590de52fcd7583627978cc479143beed328ca6c8fe1cf443e903c8a960ad"
+      "sha256": "2d4c877cc8d7278f04c8bfc320b9fac6062c1760ebba1afbfa72ccb5ebeeb151"
     }
   },
   "installation": {
@@ -224,11 +224,15 @@
       ],
       "descriptor": ".ai/assistant/context/task-scales/change-package.json"
     },
+    "engineering-evidence": {
+      "signals": [
+        "material task finalization or explicit engineering-evidence request"
+      ],
+      "descriptor": ".ai/assistant/context/task-scales/engineering-evidence.json"
+    },
     "team-active": {
       "signals": [
-        "team identity or coordination request",
-        "enabled-team write operation matches an active task branch worktree project area changed fact owner contract dependency or surface",
-        "enabled-team write operation cannot rule out active-work overlap from the compact index"
+        "team request active write operation or possible work overlap"
       ],
       "descriptor": ".ai/assistant/team/context-overlay.json"
     }

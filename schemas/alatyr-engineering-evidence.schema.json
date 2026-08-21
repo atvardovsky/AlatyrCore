@@ -1,0 +1,195 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/atvardovsky/AlatyrCore/schemas/alatyr-engineering-evidence.schema.json",
+  "title": "Alatyr durable engineering evidence record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "record_kind", "evidence_classification", "evidence_id",
+    "status", "owner", "captured_at", "task", "repository_binding",
+    "observed_failure", "affected_architecture", "invariants", "hypotheses",
+    "root_cause", "chosen_solution", "impact", "regression_matrix",
+    "validation", "residual_uncertainty", "related_records", "publication",
+    "privacy"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "record_kind": {"const": "alatyr-engineering-evidence"},
+    "evidence_classification": {"const": "historical-record"},
+    "evidence_id": {"type": "string", "minLength": 1},
+    "status": {"enum": ["draft", "validated", "superseded", "blocked"]},
+    "owner": {"type": "string", "minLength": 1},
+    "captured_at": {"type": "string", "minLength": 1},
+    "task": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summary", "references", "operation_id"],
+      "properties": {
+        "summary": {"type": "string", "minLength": 1},
+        "references": {"$ref": "#/definitions/nonEmptyStrings"},
+        "operation_id": {"type": "string", "minLength": 1}
+      }
+    },
+    "repository_binding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "base_revision", "result_revision", "review_reference", "selected_paths", "snapshot_sha256"],
+      "properties": {
+        "kind": {"enum": ["commit", "pull-request", "tree", "selected-file-snapshot", "unverified"]},
+        "base_revision": {"type": "string", "minLength": 1},
+        "result_revision": {"type": "string", "minLength": 1},
+        "review_reference": {"type": "string", "minLength": 1},
+        "selected_paths": {"$ref": "#/definitions/strings"},
+        "snapshot_sha256": {"type": "string", "minLength": 1}
+      }
+    },
+    "observed_failure": {"type": "string", "minLength": 1},
+    "affected_architecture": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["area", "owner_or_source", "effect"],
+        "properties": {
+          "area": {"type": "string", "minLength": 1},
+          "owner_or_source": {"type": "string", "minLength": 1},
+          "effect": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "invariants": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["statement", "status", "canonical_owner", "evidence"],
+        "properties": {
+          "statement": {"type": "string", "minLength": 1},
+          "status": {"enum": ["observed", "proposed", "accepted", "unknown"]},
+          "canonical_owner": {"type": "string", "minLength": 1},
+          "evidence": {"$ref": "#/definitions/nonEmptyStrings"}
+        }
+      }
+    },
+    "hypotheses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["statement", "outcome", "evidence", "decision_impact"],
+        "properties": {
+          "statement": {"type": "string", "minLength": 1},
+          "outcome": {"enum": ["confirmed", "rejected", "unresolved"]},
+          "evidence": {"$ref": "#/definitions/nonEmptyStrings"},
+          "decision_impact": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "root_cause": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["statement", "evidence"],
+      "properties": {
+        "statement": {"type": "string", "minLength": 1},
+        "evidence": {"$ref": "#/definitions/nonEmptyStrings"}
+      }
+    },
+    "chosen_solution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summary", "rationale", "material_rejected_alternatives"],
+      "properties": {
+        "summary": {"type": "string", "minLength": 1},
+        "rationale": {"type": "string", "minLength": 1},
+        "material_rejected_alternatives": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["alternative", "reason"],
+            "properties": {
+              "alternative": {"type": "string", "minLength": 1},
+              "reason": {"type": "string", "minLength": 1}
+            }
+          }
+        }
+      }
+    },
+    "impact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["changed_fact_ids", "code_and_test_surfaces", "companion_surfaces", "canonical_knowledge_updates"],
+      "properties": {
+        "changed_fact_ids": {"$ref": "#/definitions/nonEmptyStrings"},
+        "code_and_test_surfaces": {"$ref": "#/definitions/strings"},
+        "companion_surfaces": {"$ref": "#/definitions/strings"},
+        "canonical_knowledge_updates": {"$ref": "#/definitions/strings"}
+      }
+    },
+    "regression_matrix": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["case", "protects", "expected_result", "validation_evidence"],
+        "properties": {
+          "case": {"type": "string", "minLength": 1},
+          "protects": {"type": "string", "minLength": 1},
+          "expected_result": {"type": "string", "minLength": 1},
+          "validation_evidence": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["results", "skipped"],
+      "properties": {
+        "results": {"$ref": "#/definitions/nonEmptyStrings"},
+        "skipped": {"$ref": "#/definitions/strings"}
+      }
+    },
+    "residual_uncertainty": {"$ref": "#/definitions/strings"},
+    "related_records": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["change_package_ids", "approval_records", "architecture_decisions", "development_evidence_pattern_ids"],
+      "properties": {
+        "change_package_ids": {"$ref": "#/definitions/strings"},
+        "approval_records": {"$ref": "#/definitions/strings"},
+        "architecture_decisions": {"$ref": "#/definitions/strings"},
+        "development_evidence_pattern_ids": {"$ref": "#/definitions/strings"}
+      }
+    },
+    "publication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["storage_mode", "included_in_external_patch", "visibility", "policy_evidence"],
+      "properties": {
+        "storage_mode": {"type": "string", "minLength": 1},
+        "included_in_external_patch": {"type": "boolean"},
+        "visibility": {"type": "string", "minLength": 1},
+        "policy_evidence": {"type": "string", "minLength": 1}
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["raw_chat_stored", "chain_of_thought_stored", "secrets_stored", "unrelated_session_history_stored", "redactions"],
+      "properties": {
+        "raw_chat_stored": {"const": false},
+        "chain_of_thought_stored": {"const": false},
+        "secrets_stored": {"const": false},
+        "unrelated_session_history_stored": {"const": false},
+        "redactions": {"$ref": "#/definitions/strings"}
+      }
+    }
+  },
+  "definitions": {
+    "strings": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "nonEmptyStrings": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+  }
+}

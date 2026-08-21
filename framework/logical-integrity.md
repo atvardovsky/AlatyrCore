@@ -81,7 +81,11 @@ Use this sequence when a fact may have changed:
 9. Choose the smallest coherent repair set that preserves those invariants.
 10. Apply required companion updates or explain why none are needed.
 11. Run target validation that exists, or record manual/unresolved checks.
-12. Report final evidence and residual risk.
+12. Apply the durable engineering-evidence capture decision. For a material
+    task, preserve compact invariant, root-cause, solution, regression, and
+    repository-binding evidence when reusable knowledge would otherwise be
+    lost; otherwise state a fact-specific skip or block reason.
+13. Report final evidence and residual risk.
 
 When test-first development is activated, the repair set must include the
 selected policy trigger, changed fact or invariant, valid expected RED,

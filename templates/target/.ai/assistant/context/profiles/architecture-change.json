@@ -12,6 +12,7 @@
     "product-change",
     "create-project-blueprint",
     "logical-integrity-review",
+    "engineering-evidence",
     "test-first-change"
   ],
   "required_context": [
