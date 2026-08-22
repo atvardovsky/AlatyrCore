@@ -132,8 +132,11 @@ Every project using this framework must define:
   quality over time
 - optional Debug Mode policy when the target wants task-level Alatyr
   observability: explicit activation/expiry, owner, non-canonical storage,
-  privacy/redaction/retention, compact index, normalized causal events, timing
-  evidence, supervision metrics, clean-upstream projection, and validation
+  privacy/redaction/retention, compact index, normalized causal events,
+  structured architectural impacts, direction-change hypothesis/replacement
+  causality, exact durable engineering-evidence reference resolution, timing
+  evidence, event-derived supervision metrics, active-versus-finalized
+  comparison, clean-upstream projection, and validation
 - approval-record location or policy when protected-change approvals require
   durable evidence, plus a machine-readable record and strict complete-diff
   scope check when path-bounded approval must be enforced

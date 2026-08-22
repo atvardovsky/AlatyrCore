@@ -69,8 +69,10 @@ changes.
 - Existing migration assessment or reviewed baseline comparison:
 - Existing effectiveness metrics or reports:
 - Existing Debug Mode policy, non-canonical index/records, active scope,
-  privacy/retention, event attribution, timing/capture quality, supervision
-  metrics, external projection, and comparison evidence:
+  privacy/retention, event attribution, structured architectural impacts,
+  direction-change hypothesis/replacement chains, durable evidence links,
+  timing/capture quality, supervision metrics, external projection, and
+  comparison evidence:
 - Existing prompt-injection or imported-source policy:
 - Supported assistants needed:
 
@@ -229,8 +231,10 @@ Collect target-specific facts before writing project docs:
 - effectiveness measurement expectations
 - optional Debug Mode owner, activation/expiry, storage, visibility,
   retention/redaction, normalized event origins and causal links, timing,
-  capture quality, observer effect, metric derivation, clean-upstream boundary,
-  comparison quality criteria, and overhead limit
+  structured architectural impacts, direction-change hypothesis/replacement
+  causality, exact durable evidence reference resolution, capture quality,
+  observer effect, metric derivation, clean-upstream boundary, active-versus-
+  finalized comparison quality criteria, and overhead limit
 - installed-operation request, blueprint-creation, adapter-recheck, and
   framework-update review expectations
 - large-task activation, task-scale overlay, operation packet, workstream,
@@ -354,8 +358,11 @@ List commands or manual checks:
   agree one-to-one:
 - effectiveness metrics review:
 - Debug Mode dependency, explicit activation/expiry, non-canonical authority,
-  privacy, event attribution, timing/capture quality, metric derivation,
-  clean-upstream, observer-effect, and validator review:
+  privacy, event attribution, structured architectural impacts, direction-
+  change hypothesis/replacement causality, timing/capture quality, metric
+  derivation, exact durable engineering-evidence reference resolution, active-
+  versus-finalized comparison, clean-upstream, observer-effect, and validator
+  review:
 - operation-catalog, automatic-routing, health, or preview review:
 - team policy/operating model, local identity ignore and attribution boundary,
   registry/task schemas, active index, backend capabilities/synchronization,
@@ -481,8 +488,10 @@ Final evidence must say:
 - migration-note template added or skipped
 - effectiveness-report template added or skipped
 - Debug Mode index/records, lazy overlay, operation, flow, gate, record/summary
-  templates, and validator added, preserved, skipped, or blocked; task
-  activation remains inactive unless explicitly requested
+  templates, structured event classification and durable evidence reference
+  validation added, preserved, migrated, skipped, or blocked; task activation
+  remains inactive unless explicitly requested, and legacy records remain
+  migration-limited rather than silently inferred
 - scaffolding helper used or skipped
 - skills, prompts, wrappers, or third-party assistant infrastructure adapted or
   skipped

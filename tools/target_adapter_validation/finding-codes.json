@@ -1595,6 +1595,33 @@
       ]
     },
     {
+      "code": "DEBUG_MODE_ARCHITECTURAL_IMPACT_MISSING",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_ARCHITECTURAL_SUPERVISION_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_ARCHITECTURAL_SUPERVISION_ORIGIN",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "DEBUG_MODE_CAPTURE_QUALITY",
       "levels": [
         "error"
@@ -1632,6 +1659,51 @@
     },
     {
       "code": "DEBUG_MODE_DERIVATION_CAUSE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_DIRECTION_HYPOTHESIS_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_DIRECTION_IMPACT_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_DIRECTION_REPLACEMENT_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_ENGINEERING_EVIDENCE_EVENT_ID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_ENGINEERING_EVIDENCE_REFERENCE",
       "levels": [
         "error"
       ],
@@ -1946,6 +2018,15 @@
       ]
     },
     {
+      "code": "DEBUG_MODE_REVIEW_CORRECTION_UNASSESSED",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "DEBUG_MODE_REVIEW_REFERENCE",
       "levels": [
         "error"
@@ -1985,6 +2066,15 @@
       "code": "DEBUG_MODE_SOURCE_SCHEMA",
       "levels": [
         "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_STRUCTURED_CLASSIFICATION_MISSING",
+      "levels": [
+        "warning"
       ],
       "sources": [
         "tools/validate_target_adapter.py"

@@ -311,8 +311,11 @@ Classify every proposed target file:
     Add the Debug Mode overlay, operation, flow, gate, machine record, and
     compact summary only when the optional module is enabled. Record explicit
     activation/expiry, privacy, capture-quality, timing, event attribution,
-    metric derivation, external projection, and validator policy. Enabling the
-    module does not activate observation for a task.
+    structured architectural impacts, direction-change hypothesis/replacement
+    causality, metric derivation, exact durable engineering-evidence reference
+    resolution, external projection, active-versus-finalized comparison, and
+    validator policy. Enabling the module does not activate observation for a
+    task.
     When the target uses multiple AI infrastructure items, add
     `.ai/assistant/ai-infrastructure-router.json`, the recommendation flow and
     report template, lazy development-evidence capture flow, and the
@@ -475,7 +478,10 @@ Report:
 - Debug Mode module state, dependency closure, owner, non-canonical storage,
   explicit activation/expiry, compact index, lazy overlay, operation, flow,
   gate, record/summary templates, privacy/timing/attribution/metrics policy,
-  clean-upstream boundary, validator, and existing-record preservation
+  structured architectural impacts, direction-change hypothesis/replacement
+  causality, exact durable engineering-evidence reference resolution, active-
+  versus-finalized comparison, clean-upstream boundary, validator, and
+  existing-record preservation
 - team collaboration policy and operating model, ignored local identity,
   backend capabilities and synchronization, active-work index, registry/task
   schemas, optimistic concurrency, team-active overlay, identity/task/handoff/

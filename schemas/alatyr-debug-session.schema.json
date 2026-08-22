@@ -230,11 +230,29 @@
         "evidence": {"$ref": "#/definitions/nonEmptyStrings"},
         "caused_by_event_ids": {"$ref": "#/definitions/strings"},
         "architectural_supervision": {"type": "boolean"},
+        "architectural_impacts": {"$ref": "#/definitions/architecturalImpacts"},
+        "decision_effect": {"enum": ["not-assessed", "none", "confirms-direction", "changes-direction"]},
         "dependency_expansion": {"type": "boolean"},
         "validation_expansion": {"type": "boolean"},
         "post_review_rework": {"type": "boolean"},
         "hypothesis_outcome": {"enum": ["confirmed", "rejected", "unresolved", "not-applicable"]}
       }
+    },
+    "architecturalImpacts": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "accepted-invariant",
+          "canonical-source-interpretation",
+          "public-contract",
+          "subsystem-responsibility",
+          "solution-class",
+          "compatibility-strategy",
+          "lifecycle-semantics",
+          "authority-boundary"
+        ]
+      },
+      "uniqueItems": true
     },
     "repositoryBinding": {
       "type": "object",

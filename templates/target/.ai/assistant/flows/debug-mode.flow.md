@@ -31,18 +31,28 @@ explicit read-only configuration review.
    consequences independently derived from that direction as
    `derived-after-human-intervention`. Do not count either as an independent
    Alatyr finding.
-6. Reject raw conversations, chain-of-thought, prompts, credentials, secrets,
+6. For each new event, record `decision_effect` and `architectural_impacts`.
+   Human or external-maintainer events with accepted-invariant, canonical-
+   source-interpretation, public-contract, subsystem-responsibility, solution-
+   class, compatibility-strategy, lifecycle-semantics, or authority-boundary
+   impact are architectural supervision. If review changes the accepted
+   direction, add a later rejected-hypothesis event with counter-evidence and a
+   replacement invariant or architecture event in the same causal chain.
+7. Reject raw conversations, chain-of-thought, prompts, credentials, secrets,
    unrelated personal data, complete diffs, verbose logs, and speculation that
    did not affect the task.
-7. Record timing evidence honestly. Use active work time only when a trusted
+8. Record timing evidence honestly. Use active work time only when a trusted
    environment measures it. Record partial coverage, missing intervals,
    observer effect, and capture overhead.
-8. For `finalize`, derive metrics from event predicates, bind the engineering
-   result, link durable evidence, record clean-upstream projection evidence,
-   validate the record, synchronize the index, and render the compact summary.
-9. Expire activation when the scope completes, changes, is abandoned, or is
+9. For `finalize`, derive metrics from event predicates, bind the engineering
+   result, and link only durable evidence IDs that resolve exactly once in the
+   target Engineering Evidence index. Keep the list empty instead of using a
+   Debug event ID or temporary identifier. Record clean-upstream projection
+   evidence, validate the record, synchronize the index, and render the compact
+   summary.
+10. Expire activation when the scope completes, changes, is abandoned, or is
    explicitly disabled. A later task requires a new explicit activation.
-10. For `compare`, use comparable completed records, evidence kinds, capture
+11. For `compare`, use comparable completed records, evidence kinds, capture
     quality, task class, and independent quality review. Do not infer framework
     improvement from lower intervention count alone.
 

@@ -128,8 +128,11 @@ maintain them:
   usefulness.
 - `debug-mode`: explicitly activated task/session observability with compact
   origin-attributed events, timing and capture-quality evidence, event-derived
-  human-supervision metrics, clean-upstream projection, and non-canonical
-  storage. It depends on `effectiveness-metrics` and `installed-operations`.
+  human-supervision metrics, structured architectural impacts, causal
+  hypothesis replacement for direction changes, exact durable engineering-
+  evidence references, completed-record comparison, clean-upstream projection,
+  and non-canonical storage. It depends on `effectiveness-metrics` and
+  `installed-operations`.
 - `scaffolding`: optional source-repository scaffolding helpers used only to
   create placeholder structure.
 

@@ -36,6 +36,18 @@
       ]
     },
     {
+      "id": "architectural-direction-replacement",
+      "request_shape": "A human architectural review changes the accepted solution direction after an initially working implementation.",
+      "expected_mode": "checkpointed",
+      "required_outcomes": [
+        "structured architectural impacts on the human correction",
+        "architectural supervision classification",
+        "later rejected hypothesis with counter-evidence",
+        "replacement invariant or architecture direction caused by the rejection",
+        "derived implementation and validation events preserve the human causal chain"
+      ]
+    },
+    {
       "id": "privacy-sensitive-conversation",
       "request_shape": "The session contains raw dialogue, credentials, and speculative reasoning that did not affect the task.",
       "expected_mode": "redacted",
@@ -67,6 +79,26 @@
         "event-derived intervention metrics",
         "independent quality evidence",
         "no causal improvement claim from intervention count alone"
+      ]
+    },
+    {
+      "id": "unknown-engineering-evidence-reference",
+      "request_shape": "A Debug result links an event-local, unknown, or multiply indexed value as durable engineering evidence.",
+      "expected_mode": "rejected",
+      "required_outcomes": [
+        "every non-empty evidence ID resolves exactly once in the Engineering Evidence index",
+        "Debug event IDs are rejected",
+        "an empty list remains valid when no durable evidence record exists"
+      ]
+    },
+    {
+      "id": "active-record-comparison",
+      "request_shape": "A user asks to include an active or abandoned Debug record in finalized cross-task metrics.",
+      "expected_mode": "excluded",
+      "required_outcomes": [
+        "only completed records enter finalized comparison",
+        "active evidence remains explicitly provisional",
+        "no premature final metrics are claimed"
       ]
     }
   ]

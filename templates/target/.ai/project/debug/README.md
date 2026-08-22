@@ -14,6 +14,14 @@ Debug records answer how Alatyr and human supervision contributed to a task.
 They do not own architecture, business rules, code contracts, approvals, or
 validation facts. Route accepted findings to their canonical project owner and
 link that owner or durable engineering-evidence record from the debug record.
+Each new event records its decision effect and structured architectural
+impacts. A direction-changing correction is linked to the rejected hypothesis
+and replacement invariant or architecture direction that followed it.
+
+Values in `final_result.engineering_evidence_ids` must be durable evidence IDs
+that resolve exactly once in `.ai/project/engineering-evidence/index.json`.
+Debug event IDs are not durable evidence IDs; leave the list empty until a
+durable record exists.
 
 Debug Mode is inactive unless the user explicitly enables it for the current
 task or session. Activation expires when that logical scope completes, changes,

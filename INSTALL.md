@@ -109,8 +109,11 @@ The plan must identify:
   storage, conflict, handoff, decision, review, retention, and privacy needs
 - required core profile and optional modules needed for the target
 - optional Debug Mode need, owner, explicit task/session activation and expiry,
-  non-canonical storage, privacy/retention, event attribution, timing evidence,
-  supervision metrics, clean-upstream projection, and comparison policy
+  non-canonical storage, privacy/retention, event attribution, structured
+  architectural impacts, direction-change hypothesis/replacement causality,
+  timing evidence, supervision metrics, exact durable engineering-evidence
+  reference resolution, active-versus-finalized comparison, and clean-upstream
+  projection policy
 - source-of-truth registry needs
 - optional consistency-map need, fact-ID strategy, relationship coverage, and
   staleness owner
@@ -148,7 +151,8 @@ The plan must identify:
 - migration diff, adapter output contract, AI infrastructure inventory and
   recommendation reports, and effectiveness report needs
 - Debug Mode index/record, overlay, operation, flow, gate, summary, target
-  validator, and post-install/update guidance needs when the module is selected
+  validator, structured classification and durable evidence reference checks,
+  and post-install/update guidance needs when the module is selected
 - AI infrastructure router/item, recommendation, and adaptation-record needs
 - target development-evidence index, owner, retention/privacy policy, and lazy
   capture needs when recommendations should learn from recurring project work
@@ -273,8 +277,9 @@ In a typical target repository:
    durable engineering-evidence task-scale overlay, capture flow, gate, and
    machine record template as lazy required-core finalization surfaces,
    optional Debug Mode project index/records, task-scale overlay, operation,
-   flow, gate, machine record, and compact summary when selected with its
-   dependency closure,
+   flow, gate, machine record, compact summary, structured architectural-
+   impact classification, hypothesis replacement chain, and exact durable
+   evidence reference checks when selected with its dependency closure,
    and
    post-install/update chat-message templates when the target wants
    post-install operation requests or AI infrastructure adaptation.

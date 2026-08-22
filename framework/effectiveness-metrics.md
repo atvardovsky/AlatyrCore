@@ -49,10 +49,13 @@ Track:
 - human architectural interventions, independent Alatyr findings, findings
   derived after human direction, independently initiated versus human-requested
   dependency checks, maintainer corrections, and post-review rework when an
-  explicitly activated Debug Mode record provides normalized event evidence
+  explicitly activated Debug Mode record provides normalized event evidence;
+  architectural counts require structured impact classification, and direction
+  replacements retain their correction, rejected-hypothesis, and replacement
+  causal chain
 
 Debug Mode is one optional evidence source for these measures. Compare only
-records with compatible task classes, capture coverage, timing evidence,
+completed records with compatible task classes, capture coverage, timing evidence,
 observer effect, and independent result-quality review. A lower intervention
 count alone is not proof of improved architecture reasoning.
 

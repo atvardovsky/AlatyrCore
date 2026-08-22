@@ -54,9 +54,9 @@ Default routing:
   work, apply the lazy durable engineering-evidence gate. Small local work may
   skip with a specific reason; do not load unrelated evidence records.
 - When the optional `debug-mode` module is enabled, activate it only from an
-  explicit current-task or current-session request. Load only its compact index
-  and active record, checkpoint material events rather than conversation turns,
-  and expire activation when the logical scope ends.
+  explicit current-task or current-session request. Checkpoint material events,
+  classify architectural impacts and direction replacements structurally, and
+  expire activation with the scope. Resolve durable evidence links lazily.
 
 ## Quick Operations
 

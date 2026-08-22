@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 901
+Catalog entries: 911
 
 ## Codes
 
@@ -366,6 +366,12 @@ Catalog entries: 901
   Level: configured. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_ACTIVATION`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_ARCHITECTURAL_IMPACT_MISSING`
+  Level: dynamic. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_ARCHITECTURAL_SUPERVISION_DRIFT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_ARCHITECTURAL_SUPERVISION_ORIGIN`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_CAPTURE_QUALITY`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_CHECKED`
@@ -375,6 +381,16 @@ Catalog entries: 901
 - `DEBUG_MODE_COMPLETED_METRICS`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_DERIVATION_CAUSE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_DIRECTION_HYPOTHESIS_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_DIRECTION_IMPACT_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_DIRECTION_REPLACEMENT_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_ENGINEERING_EVIDENCE_EVENT_ID`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_ENGINEERING_EVIDENCE_REFERENCE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_EVENT_CAUSE`
   Level: error. Source: `tools/validate_target_adapter.py`.
@@ -444,6 +460,8 @@ Catalog entries: 901
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_RECORD_SCHEMA`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_REVIEW_CORRECTION_UNASSESSED`
+  Level: warning. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_REVIEW_REFERENCE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_REVISION`
@@ -454,6 +472,8 @@ Catalog entries: 901
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_SOURCE_SCHEMA`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_STRUCTURED_CLASSIFICATION_MISSING`
+  Level: warning. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_TIMING`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_TIMING_DRIFT`

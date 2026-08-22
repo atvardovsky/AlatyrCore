@@ -65,9 +65,12 @@ Operation help:
   with source placeholders.
 - Preserve Debug Mode IDs, records, active-scope evidence, normalized events,
   timing, metrics, and publication policy when the module is enabled. Recheck
-  dependency closure, schema, lazy route, operation, validator, and activation
-  expiry. Do not reactivate a closed scope or include debug files in a clean
-  external patch.
+  structured architectural impacts, direction-change hypothesis/replacement
+  chains, exact durable Engineering Evidence references, completed-record
+  comparison, dependency closure, schema, lazy route, operation, validator,
+  and activation expiry. Preserve older unstructured events as migration-
+  limited evidence; do not reactivate a closed scope or include debug files in
+  a clean external patch.
 - When code documentation is enabled, preserve target profiles and recheck
   source-set matching, accepted state, canonical owners, generator/output
   policy, adapted skill, and validation before generation.

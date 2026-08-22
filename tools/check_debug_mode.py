@@ -21,6 +21,7 @@ TARGET = ROOT / "templates" / "target"
 FRAMEWORK = ROOT / "framework" / "debug-mode.md"
 INDEX = TARGET / ".ai" / "project" / "debug" / "index.json"
 POLICY = TARGET / ".ai" / "project" / "debug" / "README.md"
+RECORD_POLICY = TARGET / ".ai" / "project" / "debug" / "records" / "README.md"
 FLOW = TARGET / ".ai" / "assistant" / "flows" / "debug-mode.flow.md"
 GATE = TARGET / ".ai" / "assistant" / "gates" / "debug-mode.md"
 RECORD = TARGET / ".ai" / "assistant" / "templates" / "debug-session-record.json"
@@ -78,6 +79,8 @@ def event(
     *,
     causes: list[str] | None = None,
     architectural: bool = False,
+    architectural_impacts: list[str] | None = None,
+    decision_effect: str = "none",
     dependency: bool = False,
     validation: bool = False,
     post_review: bool = False,
@@ -97,6 +100,8 @@ def event(
         "evidence": ["src/example.txt"],
         "caused_by_event_ids": causes or [],
         "architectural_supervision": architectural,
+        "architectural_impacts": architectural_impacts or [],
+        "decision_effect": decision_effect,
         "dependency_expansion": dependency,
         "validation_expansion": validation,
         "post_review_rework": post_review,
@@ -107,7 +112,15 @@ def event(
 def fixture_events() -> list[dict[str, Any]]:
     return [
         event("EVT-1", 1, "alatyr-initiated", "dependency", dependency=True),
-        event("EVT-2", 2, "human-initiated", "dependency", architectural=True),
+        event(
+            "EVT-2",
+            2,
+            "human-initiated",
+            "review-correction",
+            architectural=True,
+            architectural_impacts=["accepted-invariant", "solution-class"],
+            decision_effect="changes-direction",
+        ),
         event(
             "EVT-3",
             3,
@@ -139,6 +152,14 @@ def fixture_events() -> list[dict[str, Any]]:
             "regression-scenario",
             causes=["EVT-2"],
         ),
+        event(
+            "EVT-7",
+            7,
+            "derived-after-human-intervention",
+            "invariant",
+            causes=["EVT-4"],
+            architectural_impacts=["accepted-invariant"],
+        ),
     ]
 
 
@@ -147,9 +168,9 @@ def fixture_metrics() -> dict[str, Any]:
         "human_interventions": ["EVT-2"],
         "human_architectural_interventions": ["EVT-2"],
         "alatyr_independent_findings": ["EVT-1"],
-        "derived_findings_after_human": ["EVT-3", "EVT-4", "EVT-6"],
+        "derived_findings_after_human": ["EVT-3", "EVT-4", "EVT-6", "EVT-7"],
         "alatyr_independent_dependency_checks": ["EVT-1"],
-        "human_requested_dependency_checks": ["EVT-2"],
+        "human_requested_dependency_checks": [],
         "derived_dependency_expansions_after_human": ["EVT-3"],
         "hypotheses_tested": ["EVT-4"],
         "hypotheses_rejected": ["EVT-4"],
@@ -339,6 +360,22 @@ def validate_fixture(failures: list[str]) -> None:
             "External patch policy: exclude from external patch\n",
             encoding="utf-8",
         )
+        engineering_index_path = (
+            repo / ".ai/project/engineering-evidence/index.json"
+        )
+        engineering_index_path.parent.mkdir(parents=True)
+        engineering_index_path.write_text(
+            json.dumps(
+                {
+                    "schema_version": 2,
+                    "index_kind": "target-engineering-evidence-index",
+                    "records": [{"evidence_id": "ENG-1"}],
+                },
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
 
         def write(value: dict[str, Any]) -> None:
             record_path.write_text(json.dumps(value, indent=2) + "\n", encoding="utf-8")
@@ -388,6 +425,36 @@ def validate_fixture(failures: list[str]) -> None:
                 lambda value: value["activation"].update(enabled_by="inferred"),
                 {"DEBUG_MODE_ACTIVATION", "DEBUG_MODE_RECORD_SCHEMA"},
             ),
+            (
+                "human architectural impact without supervision",
+                lambda value: value["events"][1].update(architectural_supervision=False),
+                {"DEBUG_MODE_ARCHITECTURAL_SUPERVISION_DRIFT"},
+            ),
+            (
+                "architectural supervision without structured impacts",
+                lambda value: value["events"][1].update(architectural_impacts=[]),
+                {"DEBUG_MODE_ARCHITECTURAL_IMPACT_MISSING"},
+            ),
+            (
+                "direction change without rejected hypothesis",
+                lambda value: value["events"][3].update(hypothesis_outcome="confirmed"),
+                {"DEBUG_MODE_DIRECTION_HYPOTHESIS_MISSING"},
+            ),
+            (
+                "direction change without replacement invariant",
+                lambda value: value["events"][6].update(category="validation"),
+                {"DEBUG_MODE_DIRECTION_REPLACEMENT_MISSING"},
+            ),
+            (
+                "Debug event used as durable evidence",
+                lambda value: value["final_result"].update(engineering_evidence_ids=["EVT-1"]),
+                {"DEBUG_MODE_ENGINEERING_EVIDENCE_EVENT_ID"},
+            ),
+            (
+                "unknown durable engineering evidence",
+                lambda value: value["final_result"].update(engineering_evidence_ids=["ENG-UNKNOWN"]),
+                {"DEBUG_MODE_ENGINEERING_EVIDENCE_REFERENCE"},
+            ),
         ]
         for label, mutate, expected_codes in invalid_cases:
             invalid = copy.deepcopy(record)
@@ -400,6 +467,42 @@ def validate_fixture(failures: list[str]) -> None:
             ):
                 failures.append(f"validator did not reject {label}")
 
+        legacy = copy.deepcopy(record)
+        for legacy_event in legacy["events"]:
+            legacy_event.pop("architectural_impacts")
+            legacy_event.pop("decision_effect")
+        write(legacy)
+        legacy_findings = run_validator(repo)
+        legacy_errors = [item for item in legacy_findings if item.level == "error"]
+        if legacy_errors:
+            failures.append(
+                "legacy structured-classification compatibility failed: "
+                + "; ".join(
+                    f"{item.code}: {item.message}" for item in legacy_errors
+                )
+            )
+        if not any(
+            item.code == "DEBUG_MODE_STRUCTURED_CLASSIFICATION_MISSING"
+            for item in legacy_findings
+        ):
+            failures.append("legacy events did not report structured classification migration warnings")
+
+        duplicate_index = {
+            "schema_version": 2,
+            "index_kind": "target-engineering-evidence-index",
+            "records": [{"evidence_id": "ENG-1"}, {"evidence_id": "ENG-1"}],
+        }
+        engineering_index_path.write_text(
+            json.dumps(duplicate_index, indent=2) + "\n", encoding="utf-8"
+        )
+        write(record)
+        if not any(
+            finding.level == "error"
+            and finding.code == "DEBUG_MODE_ENGINEERING_EVIDENCE_REFERENCE"
+            for finding in run_validator(repo)
+        ):
+            failures.append("validator did not reject duplicate durable evidence resolution")
+
 
 def main() -> int:
     failures: list[str] = []
@@ -409,17 +512,23 @@ def main() -> int:
             "ALATYR-DEBUG-001",
             "## Activation And Expiry",
             "## Normalized Event Model",
+            "## Architectural Supervision",
             "## Privacy Boundary",
             "## Final Result And External Projection",
         ],
         failures,
     )
-    require_text(FLOW, ["## Modes", "explicit current user request", "derived-after-human-intervention"], failures)
-    require_text(GATE, ["non-canonical observability evidence", "logical scope"], failures)
+    require_text(FLOW, ["## Modes", "explicit current user request", "derived-after-human-intervention", "architectural_impacts", "rejected-hypothesis"], failures)
+    require_text(GATE, ["non-canonical observability evidence", "logical scope", "engineering-evidence ID", "direction-changing correction"], failures)
     require_text(SUMMARY, ["# Alatyr Debug Summary", "Human architectural interventions", "External projection"], failures)
     require_text(
         POLICY,
         ["Owner:", "Storage mode:", "Visibility:", "Retention policy:", "Redaction policy:", "External patch policy:"],
+        failures,
+    )
+    require_text(
+        RECORD_POLICY,
+        ["architectural_impacts", "decision_effect", "migration-limited"],
         failures,
     )
 
@@ -448,7 +557,7 @@ def main() -> int:
             for item in scenarios.get("scenarios", [])
             if isinstance(item, dict)
         }
-        if modes != {"enabled", "inactive", "checkpointed", "redacted", "finalized", "compared"}:
+        if modes != {"enabled", "inactive", "checkpointed", "redacted", "finalized", "compared", "rejected", "excluded"}:
             failures.append("conformance scenarios do not cover the required Debug Mode lifecycle")
 
     validate_fixture(failures)

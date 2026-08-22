@@ -4,6 +4,32 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.21 - 2026-08-22
+
+- Increased the framework version to `0.1.0-alpha.21`, adapter schema version
+  to `20`, and target template version to `21` for deterministic Debug Mode
+  architectural-supervision and durable-evidence linkage.
+- Added optional structured `architectural_impacts` and `decision_effect`
+  fields to Debug events. New records classify accepted-invariant, canonical-
+  source, public-contract, subsystem-responsibility, solution-class,
+  compatibility, lifecycle, and authority-boundary interventions without
+  invalidating legacy records that lack these fields.
+- Required direction-changing corrections to preserve a causal sequence from
+  correction through a rejected hypothesis with counter-evidence to a
+  replacement invariant or architecture direction.
+- Required every non-empty Debug `engineering_evidence_ids` value to resolve
+  exactly once in the target Engineering Evidence index and rejected Debug
+  event IDs, unknown IDs, and duplicate index resolution.
+- Added migration warnings for legacy unstructured classifications, hard
+  failures for explicit structured contradictions, completed-record comparison
+  boundaries, and generic conformance coverage for the reported field failure.
+- Updated installation, adapter recheck, post-update, help, lifecycle, module,
+  evidence, and context-routing surfaces so any target branch can receive and
+  validate the complete contract without silently inferring historical facts.
+- Changed `ALATYR-ADAPTER-001`, `ALATYR-DEBUG-001`, `ALATYR-EVIDENCE-001`,
+  `ALATYR-LIFECYCLE-001`, and `ALATYR-MODULE-001`; no rule IDs were added or
+  removed.
+
 ## 0.1.0-alpha.20 - 2026-08-22
 
 - Increased the framework version to `0.1.0-alpha.20`, adapter schema version

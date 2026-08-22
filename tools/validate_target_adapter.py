@@ -8840,6 +8840,26 @@ class Validator:
             self.error("DEBUG_MODE_SOURCE_SCHEMA", f"cannot load Debug Mode schema: {exc}")
             return
 
+        engineering_evidence_counts: dict[str, int] = {}
+        engineering_index_relpath = ".ai/project/engineering-evidence/index.json"
+        engineering_index_path = self.target_path(engineering_index_relpath)
+        if engineering_index_path.is_file():
+            try:
+                engineering_index = json.loads(
+                    engineering_index_path.read_text(encoding="utf-8")
+                )
+            except (OSError, json.JSONDecodeError):
+                engineering_index = None
+            if isinstance(engineering_index, dict):
+                for evidence_entry in engineering_index.get("records", []):
+                    if not isinstance(evidence_entry, dict):
+                        continue
+                    evidence_id = evidence_entry.get("evidence_id")
+                    if isinstance(evidence_id, str) and evidence_id:
+                        engineering_evidence_counts[evidence_id] = (
+                            engineering_evidence_counts.get(evidence_id, 0) + 1
+                        )
+
         required_index_fields = {
             "debug_id",
             "status",
@@ -9119,6 +9139,21 @@ class Validator:
                     pending.extend(cause.get("caused_by_event_ids", []))
                 return False
 
+            def has_ancestor(event: dict[str, Any], ancestor_id: str) -> bool:
+                pending = list(event.get("caused_by_event_ids", []))
+                visited: set[str] = set()
+                while pending:
+                    cause_id = pending.pop()
+                    if cause_id == ancestor_id:
+                        return True
+                    if cause_id in visited:
+                        continue
+                    visited.add(cause_id)
+                    cause = event_by_id.get(cause_id)
+                    if cause is not None:
+                        pending.extend(cause.get("caused_by_event_ids", []))
+                return False
+
             for event_id, event in event_by_id.items():
                 origin = event.get("origin")
                 human_ancestor = has_human_ancestor(event)
@@ -9126,6 +9161,89 @@ class Validator:
                     self.error("DEBUG_MODE_DERIVATION_CAUSE", f"{event_id} has no human-initiated ancestor", record_ref)
                 if origin == "alatyr-initiated" and human_ancestor:
                     self.error("DEBUG_MODE_INDEPENDENCE", f"{event_id} cannot be independent because its causal chain contains a human intervention", record_ref)
+
+                impacts = event.get("architectural_impacts")
+                decision_effect = event.get("decision_effect")
+                if impacts is None or decision_effect is None:
+                    self.warn(
+                        "DEBUG_MODE_STRUCTURED_CLASSIFICATION_MISSING",
+                        f"{event_id} predates or omits structured architectural impact and decision-effect evidence",
+                        record_ref,
+                    )
+                impact_values = impacts if isinstance(impacts, list) else []
+                is_human_input = origin in {"human-initiated", "external-maintainer"}
+                claims_supervision = event.get("architectural_supervision") is True
+                if claims_supervision and not is_human_input:
+                    self.error(
+                        "DEBUG_MODE_ARCHITECTURAL_SUPERVISION_ORIGIN",
+                        f"{event_id} cannot claim human architectural supervision with origin {origin}",
+                        record_ref,
+                    )
+                if is_human_input and impact_values and not claims_supervision:
+                    self.error(
+                        "DEBUG_MODE_ARCHITECTURAL_SUPERVISION_DRIFT",
+                        f"{event_id} has human architectural impacts but architectural_supervision is false",
+                        record_ref,
+                    )
+                if claims_supervision and not impact_values:
+                    finding = (
+                        self.warn
+                        if impacts is None and decision_effect is None
+                        else self.error
+                    )
+                    finding(
+                        "DEBUG_MODE_ARCHITECTURAL_IMPACT_MISSING",
+                        f"{event_id} claims architectural supervision without structured architectural impacts",
+                        record_ref,
+                    )
+                if decision_effect == "changes-direction" and not impact_values:
+                    self.error(
+                        "DEBUG_MODE_DIRECTION_IMPACT_MISSING",
+                        f"{event_id} changes direction but names no architectural impact",
+                        record_ref,
+                    )
+                if (
+                    event.get("category") == "review-correction"
+                    and is_human_input
+                    and decision_effect in {None, "not-assessed"}
+                    and not claims_supervision
+                ):
+                    self.warn(
+                        "DEBUG_MODE_REVIEW_CORRECTION_UNASSESSED",
+                        f"{event_id} is a review correction without an assessed architectural effect",
+                        record_ref,
+                    )
+
+            for direction_id, direction_event in event_by_id.items():
+                if direction_event.get("decision_effect") != "changes-direction":
+                    continue
+                rejected_hypotheses = [
+                    (event_id, event)
+                    for event_id, event in event_by_id.items()
+                    if event.get("category") == "hypothesis"
+                    and event.get("hypothesis_outcome") == "rejected"
+                    and has_ancestor(event, direction_id)
+                ]
+                if not rejected_hypotheses:
+                    self.error(
+                        "DEBUG_MODE_DIRECTION_HYPOTHESIS_MISSING",
+                        f"{direction_id} changes direction without a causally linked rejected hypothesis",
+                        record_ref,
+                    )
+                    continue
+                rejected_ids = {event_id for event_id, _event in rejected_hypotheses}
+                replacements = [
+                    event_id
+                    for event_id, event in event_by_id.items()
+                    if event.get("category") in {"invariant", "architecture-area"}
+                    and any(has_ancestor(event, rejected_id) for rejected_id in rejected_ids)
+                ]
+                if not replacements:
+                    self.error(
+                        "DEBUG_MODE_DIRECTION_REPLACEMENT_MISSING",
+                        f"{direction_id} has a rejected hypothesis but no causally linked replacement invariant or architecture direction",
+                        record_ref,
+                    )
 
             def matching_event_ids(metric_name: str) -> list[str]:
                 def matches(event: dict[str, Any]) -> bool:
@@ -9191,6 +9309,23 @@ class Validator:
                         self.error("DEBUG_MODE_COMPLETED_METRICS", f"completed record requires event-derived metrics.{metric_name}", record_ref)
 
             final_result = record.get("final_result") if isinstance(record.get("final_result"), dict) else {}
+            linked_evidence = final_result.get("engineering_evidence_ids")
+            if isinstance(linked_evidence, list):
+                for evidence_id in linked_evidence:
+                    if evidence_id in event_by_id:
+                        self.error(
+                            "DEBUG_MODE_ENGINEERING_EVIDENCE_EVENT_ID",
+                            f"Debug event ID {evidence_id} cannot be used as durable engineering evidence",
+                            record_ref,
+                        )
+                        continue
+                    resolution_count = engineering_evidence_counts.get(evidence_id, 0)
+                    if resolution_count != 1:
+                        self.error(
+                            "DEBUG_MODE_ENGINEERING_EVIDENCE_REFERENCE",
+                            f"engineering evidence {evidence_id} resolves {resolution_count} times in {engineering_index_relpath}; expected exactly once",
+                            record_ref,
+                        )
             binding = final_result.get("repository_binding") if isinstance(final_result.get("repository_binding"), dict) else {}
             binding_kind = binding.get("kind")
             result_revision = binding.get("result_revision")

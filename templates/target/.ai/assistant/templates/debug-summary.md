@@ -7,11 +7,13 @@ Elapsed time: `{VALUE_AND_OBSERVED_ESTIMATED_OR_UNKNOWN}`
 Capture quality: `{COMPLETE_PARTIAL_OR_UNKNOWN_MISSING_INTERVALS_AND_OBSERVER_EFFECT}`
 Human interventions: `{EVENT_DERIVED_VALUE_OR_UNAVAILABLE}`
 Human architectural interventions: `{EVENT_DERIVED_VALUE_OR_UNAVAILABLE}`
+Architectural impact dimensions: `{STRUCTURED_IMPACTS_OR_NOT_ASSESSED}`
 Independent Alatyr findings: `{EVENT_DERIVED_VALUE_OR_UNAVAILABLE}`
 Findings derived after human intervention: `{EVENT_DERIVED_VALUE_OR_UNAVAILABLE}`
 Dependency checks initiated by Alatyr: `{EVENT_DERIVED_VALUE_OR_UNAVAILABLE}`
 Dependency checks initiated by human: `{EVENT_DERIVED_VALUE_OR_UNAVAILABLE}`
 Rejected hypotheses: `{EVENT_DERIVED_VALUE_OR_UNAVAILABLE}`
+Direction replacements: `{CORRECTION_REJECTED_HYPOTHESIS_AND_REPLACEMENT_CHAIN_OR_NONE}`
 Implementation corrections after human intervention: `{EVENT_DERIVED_VALUE_OR_UNAVAILABLE}`
 External maintainer corrections: `{EVENT_DERIVED_VALUE_OR_UNAVAILABLE}`
 Post-review rework: `{EVENT_DERIVED_VALUE_OR_UNAVAILABLE}`

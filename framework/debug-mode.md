@@ -87,6 +87,49 @@ execution paths, risks, tests, regression scenarios, hypotheses, validation,
 implementation revisions, and review corrections. A concise `other` category
 may be used only when no supported category fits.
 
+## Architectural Supervision
+
+Do not classify architectural supervision from job titles, message wording, or
+the number of files changed. For each new event, record `decision_effect` as
+`none`, `confirms-direction`, or `changes-direction`, and record every affected
+architectural decision dimension in `architectural_impacts`:
+
+- `accepted-invariant`
+- `canonical-source-interpretation`
+- `public-contract`
+- `subsystem-responsibility`
+- `solution-class`
+- `compatibility-strategy`
+- `lifecycle-semantics`
+- `authority-boundary`
+
+A human-initiated or external-maintainer event with one or more of these
+impacts is architectural supervision and must set
+`architectural_supervision: true`. A human event without an architectural
+impact must keep the flag false. Alatyr-initiated and derived events may record
+architectural impacts as investigation outcomes, but they are not human
+architectural-supervision events.
+
+Existing records that predate these structured fields may retain
+`decision_effect` as absent or `not-assessed` and may omit
+`architectural_impacts`. Treat that state as migration-limited evidence, not as
+proof that no architectural supervision occurred. New and migrated events
+should use the structured fields.
+
+When a human or external-maintainer correction changes the accepted direction,
+record the causal transition explicitly:
+
+```text
+direction-changing correction
+        -> rejected hypothesis with counter-evidence
+        -> replacement invariant or architecture direction
+```
+
+The rejected hypothesis must be a later event caused by the correction. The
+replacement invariant or architecture event must be later and descend from
+that rejected hypothesis. This preserves the difference between the
+intervention, the invalidated premise, and Alatyr's derived replacement.
+
 ## Capture Discipline
 
 Update the task-local record at material checkpoints, not after every message.
@@ -99,6 +142,8 @@ Record:
 - independently identified invariants, architecture areas, dependencies,
   execution paths, risks, tests, and validation requirements
 - human interventions that materially expanded or corrected the work
+- structured architectural impacts and direction changes introduced by human
+  or external-maintainer review
 - concrete consequences derived after those interventions
 - hypotheses that were confirmed, rejected, or left unresolved and affected
   the task
@@ -170,6 +215,10 @@ is useful only when independent review and result quality remain comparable.
 Bind the final result to an exact commit, pull request, tree, selected-file
 snapshot, or an honest unverified state. Link implementation surfaces,
 validation evidence, and durable engineering-evidence IDs when applicable.
+Every non-empty durable engineering-evidence ID must resolve exactly once in
+the target Engineering Evidence index. A Debug event ID is not a durable
+evidence ID. Keep the list empty while no durable record exists instead of
+using a temporary or event-local identifier.
 
 Support this boundary:
 
@@ -204,7 +253,9 @@ record and expire activation before leaving the logical scope.
 ## Deterministic Checks And Limits
 
 Target validation may check schema shape, event ordering, causal attribution,
-metric derivation, timing consistency, privacy declarations, index/record sync,
+structured architectural-impact consistency, direction-change hypothesis
+transitions, metric derivation, timing consistency, privacy declarations,
+Debug-to-Engineering-Evidence reference integrity, index/record sync,
 repository bindings, and external-patch policy.
 
 It cannot prove that every material event was recorded, that attribution is
@@ -220,6 +271,12 @@ Reject or repair Debug Mode use that:
 - stores transcripts, private reasoning, secrets, or unrelated data
 - counts human-directed work as independently Alatyr-initiated
 - records derived work without a causal human event
+- marks a human architectural impact as non-architectural, or claims human
+  architectural supervision without structured impact evidence in a new record
+- changes an accepted direction without recording the rejected hypothesis and
+  its replacement invariant or architecture direction
+- links an unknown, duplicate, or Debug-local ID as durable engineering
+  evidence
 - infers metrics from the final patch instead of recorded events
 - turns debug evidence into architecture or business-rule authority
 - includes Alatyr files in a clean external patch contrary to target policy

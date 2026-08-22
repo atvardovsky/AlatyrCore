@@ -135,8 +135,10 @@ List what must not be changed.
   binding policy:
 - Debug Mode need, owner, explicit activation/expiry, non-canonical storage,
   visibility, retention/redaction, normalized event attribution, timing and
-  capture-quality evidence, supervision metrics, comparison, and clean-
-  upstream policy:
+  capture-quality evidence, structured architectural impacts, direction-change
+  hypothesis/replacement causality, exact durable engineering-evidence
+  reference resolution, supervision metrics, active-versus-finalized
+  comparison, and clean-upstream policy:
 - AI infrastructure router, stable item IDs, activation triggers, and statuses:
 - Item canonical sources, required context, allowed actions, permissions,
   gates, validation, output contracts, conflicts, and assistant wrappers:
@@ -548,6 +550,8 @@ maturity, lifecycle, installed-operation, operation-help, context-profile,
 context-router, local-path leakage, target-local checker, approval-record,
 prompt-injection, skill-adaptation, source-access, migration-diff,
 effectiveness-metrics, Debug Mode privacy/attribution/observer-effect,
+architectural-impact classification, hypothesis-transition and durable-
+evidence-reference integrity,
 team identity/authority, active-record overwrite,
 concurrent overlap, stale claim/handoff/review evidence, privacy, scaffolding,
 and validation risks.

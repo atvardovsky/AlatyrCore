@@ -78,7 +78,10 @@ Before upgrading framework files in a target project:
    When `debug-mode` is enabled, compare its explicit activation/expiry rule,
    non-canonical storage policy, index/record schema, lazy overlay, operation,
    flow, gate, summary, event attribution, timing/capture quality, metric
-   derivation, clean-upstream boundary, and validator support.
+   derivation, structured architectural-impact and decision-effect fields,
+   direction-change hypothesis/replacement causality, durable engineering-
+   evidence reference resolution, active-versus-finalized comparison boundary,
+   clean-upstream boundary, and validator support.
    When `code-documentation` is enabled, compare its catalog/profile schemas,
    source-set selectors, accepted states, canonical-owner boundaries,
    generators, output/publication policies, adapted skill, lazy route, and
@@ -128,6 +131,10 @@ Before upgrading framework files in a target project:
     event attribution, timing evidence, publication policy, and compact index.
     Never replace records with source placeholders, silently reactivate a
     closed scope, or move debug files into a clean external contribution.
+    Preserve older events without structured architectural fields as migration-
+    limited evidence; do not silently infer those fields. Add structured fields
+    to new events, repair invalid durable evidence references, and keep active
+    records out of finalized comparisons.
     Preserve target code-documentation profiles and decisions. Never replace
     accepted frontend, backend, shared, or infrastructure conventions with
     source placeholders or a universal style.
@@ -210,8 +217,11 @@ Framework lifecycle notes should record:
   record preservation, and validator migration
 - Debug Mode rule, module dependencies, explicit activation/expiry, non-
   canonical index/record schema, event attribution, timing/capture quality,
-  supervision metrics, clean-upstream boundary, record preservation, operation,
-  lazy route, and validator migration when that module is enabled
+  structured architectural impacts, direction-change hypothesis/replacement
+  causality, supervision metrics, exact durable evidence reference resolution,
+  active-versus-finalized comparison, clean-upstream boundary, record
+  preservation, operation, lazy route, and validator migration when that module
+  is enabled
 - code-documentation rule, catalog/profile schemas, source-set selection,
   accepted style decisions, generator/output policy, adapted skill, lazy
   route, and validator migration when that module is enabled

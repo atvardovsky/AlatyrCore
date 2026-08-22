@@ -61,7 +61,7 @@ Replace placeholders with target facts before accepting installation.
   machine template
 - Debug Mode when enabled: `.ai/project/debug/README.md`, compact index,
   selected records, task-scale overlay, operation flow, gate, machine record,
-  and summary template
+  summary template, and linked durable Engineering Evidence index
 - AI infrastructure router, recommendation, and adaptation record:
   `.ai/assistant/ai-infrastructure-router.json`,
   `.ai/assistant/templates/ai-infrastructure-adaptation-record.md`
@@ -156,11 +156,15 @@ Replace placeholders with target facts before accepting installation.
     Preserve durable engineering-evidence IDs and records, then recheck task
     and repository bindings, index synchronization, canonical-owner links,
     privacy flags, external-patch policy, and existing-record accessibility.
-    When Debug Mode is enabled, preserve IDs, records, active-scope evidence,
-    events, timing, metrics, and target policy; recheck explicit activation and
-    expiry, non-canonical authority, causal attribution, privacy, observer
-    effect, compact index sync, result binding, clean-upstream projection, and
-    validator support. Never reactivate a closed scope during update.
+   When Debug Mode is enabled, preserve IDs, records, active-scope evidence,
+   events, timing, metrics, and target policy; recheck explicit activation and
+    expiry, non-canonical authority, causal attribution, structured
+    architectural impacts, direction-change hypothesis/replacement chains,
+    privacy, observer effect, exact durable engineering-evidence reference
+    resolution, compact index sync, result binding, completed-record comparison,
+    clean-upstream projection, and validator support. Never reactivate a closed
+    scope during update. Preserve older unstructured events as migration-
+    limited evidence instead of inventing classifications.
     When test-first development is enabled, preserve target commands, trigger
     severity, modes, levels, isolation, exceptions, policy revision, and
     historical evidence; recheck recommendation and RED/GREEN routing without
@@ -248,8 +252,10 @@ Report:
   canonical-owner links, privacy, validation, and unresolved access gaps
 - Debug Mode module/dependency state, non-canonical owner/policy, active scope
   or inactive state, index/record synchronization, attribution, timing/capture
-  quality, event-derived metrics, result binding, clean-upstream boundary,
-  validation, and unresolved gaps
+  quality, structured architectural impacts, direction-change hypothesis/
+  replacement chains, exact durable evidence reference resolution, event-
+  derived metrics, completed-record comparison, result binding, clean-upstream
+  boundary, validation, and unresolved gaps
 - bridge capability matrix status
 - diagram discussion presentation, ASCII readability, and source-revision status
 - target validation run or unresolved
