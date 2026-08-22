@@ -37,6 +37,7 @@ Entry points:
 - `.ai/assistant/maturity-profile.md`
 - `.ai/assistant/bridge-capability-matrix.md`
 - `.ai/assistant/assistant-capabilities.json`
+- `.ai/assistant/delegation-policy.json`, `.ai/assistant/workers/role-catalog.json`, and `.ai/assistant/prompts/worker-orchestration.md` when subagent delegation is enabled
 - `.ai/assistant/ai-infrastructure-router.json` when AI infrastructure is enabled
 - `.ai/assistant/extensions/catalog.json` and `.ai/assistant/extensions/lock.json` when extensions are enabled
 - `.ai/project/dependencies/policy.json`, `catalog.json`, `knowledge-lock.json`, and `deviations.json` when dependency knowledge is enabled
@@ -91,6 +92,10 @@ Available next actions:
   lineage, security/privacy policy, and a portable ASCII view. Accepted/derived
   views require project-owner and source-revision evidence.
 - `large-task`: coordinate cross-boundary or resumable work with bounded workstreams, checkpoints, and final convergence.
+- `subagent-delegation`: when enabled, let the primary assistant propose or
+  dispatch bounded worker tasks through project-owned roles and the selected
+  current assistant capability. Unsupported clients continue sequentially;
+  native worker support and model choice are never inferred.
 - Change packages activate automatically for coherent material outcomes,
   semantic multi-surface approval, audit, or publishable provenance when the
   optional module is enabled; ordinary local tasks do not create one.

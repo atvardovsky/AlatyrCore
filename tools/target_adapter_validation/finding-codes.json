@@ -2171,6 +2171,15 @@
       ]
     },
     {
+      "code": "DELEGATION_CONFLICT_GUARDS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "DELEGATION_DECISION_MODE",
       "levels": [
         "error"
@@ -2198,6 +2207,60 @@
       ]
     },
     {
+      "code": "DELEGATION_ENABLED_ROLES",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_ENABLED_ROLE_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_ENABLED_ROLE_INACTIVE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_ENABLED_ROLE_UNBOUND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_ENABLED_ROLE_UNKNOWN",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_EXPLICIT_MODEL_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "DELEGATION_EXTERNAL_DISPATCHER",
       "levels": [
         "error"
@@ -2208,15 +2271,6 @@
     },
     {
       "code": "DELEGATION_EXTERNAL_ROUTE_UNSUPPORTED",
-      "levels": [
-        "error"
-      ],
-      "sources": [
-        "tools/validate_target_adapter.py"
-      ]
-    },
-    {
-      "code": "DELEGATION_MODEL_BINDING",
       "levels": [
         "error"
       ],
@@ -2243,7 +2297,7 @@
       ]
     },
     {
-      "code": "DELEGATION_MODEL_SURFACE",
+      "code": "DELEGATION_NATIVE_BACKEND_UNSUPPORTED",
       "levels": [
         "error"
       ],
@@ -2252,7 +2306,25 @@
       ]
     },
     {
-      "code": "DELEGATION_NATIVE_BACKEND_UNSUPPORTED",
+      "code": "DELEGATION_NATIVE_INVOCATION_UNSUPPORTED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_NATIVE_ROUTE_UNSUPPORTED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_OVERLAY_CONTEXT",
       "levels": [
         "error"
       ],
@@ -2333,6 +2405,33 @@
       ]
     },
     {
+      "code": "DELEGATION_RETRY_LIMIT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_RETRY_POLICY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_RETRY_SCOPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "DELEGATION_ROLES_MISSING",
       "levels": [
         "error"
@@ -2342,7 +2441,79 @@
       ]
     },
     {
-      "code": "DELEGATION_ROLE_ACTIONS",
+      "code": "DELEGATION_ROLE_ACTION_CEILING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_ROLE_BINDINGS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_ROLE_BINDING_AVAILABILITY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_ROLE_BINDING_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_ROLE_BINDING_ROUTE_CONFLICT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_ROLE_BINDING_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_ROLE_BINDING_UNKNOWN",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_ROLE_CATALOG_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_ROLE_CATALOG_SCHEMA",
       "levels": [
         "error"
       ],
@@ -2360,6 +2531,24 @@
       ]
     },
     {
+      "code": "DELEGATION_ROLE_PROMPT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_ROLE_RESULT_CONTRACT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "DELEGATION_ROLE_SHAPE",
       "levels": [
         "error"
@@ -2369,7 +2558,106 @@
       ]
     },
     {
+      "code": "DELEGATION_ROLE_STATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_ROLE_WRITE_CEILING_CONFLICT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_ROLE_WRITE_MODE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_SHARED_WRITE_ISOLATION",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "DELEGATION_UNSUPPORTED_ROUTE_CONFLICT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_WORKER_DEFINITION_FORMAT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_WORKER_DEFINITION_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_WORKER_DEFINITION_NOT_THIN",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_WORKER_DEFINITION_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_WORKER_DEFINITION_PATHS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_WORKER_DEFINITION_STATE_CONFLICT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_WRITE_ISOLATION",
       "levels": [
         "error"
       ],

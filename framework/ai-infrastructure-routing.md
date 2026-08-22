@@ -64,11 +64,12 @@ Each routable item should define:
 - conflicts, superseded items, and provenance/adaptation record
 
 Model-aware subagent delegation is not an ordinary item trigger. When the
-optional module is enabled, the target delegation policy owns role/model
-bindings, context and write limits, concurrency, fallback, and result review.
-The selected assistant-capability record owns whether the current client can
-dispatch native workers, route through an approved external dispatcher, or
-support only packet suggestions; it also owns model-override evidence. An
+optional module is enabled, the target delegation policy and role catalog own
+worker semantics, context/action/write limits, task readiness, retries,
+conflicts, and result review. The selected assistant-capability record owns
+role/model bindings and whether the exact current client/runtime can dispatch
+native workers, route through an approved external dispatcher, or support only
+packet suggestions; it also owns native-definition and model evidence. An
 external dispatcher must be a selected target AI-infrastructure item with its
 own provenance, permissions, approval, privacy, failure, validation, and
 output contracts. Other items used inside a packet remain subject to those

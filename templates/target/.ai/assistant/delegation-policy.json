@@ -1,11 +1,15 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "policy_kind": "target-subagent-delegation-policy",
   "state": "{ENABLED_SUGGEST_ONLY_DISABLED_OR_BLOCKED}",
   "owner": "{TARGET_DELEGATION_POLICY_OWNER}",
   "decision_mode": "{AUTOMATIC_SUGGEST_ONLY_OR_DISABLED}",
   "default_preference": "{AUTO_ALLOW_FORBID_OR_REQUIRE_SUPPORTED}",
   "max_parallel_delegates": "{POSITIVE_INTEGER_OR_TARGET_LIMIT}",
+  "role_catalog": ".ai/assistant/workers/role-catalog.json",
+  "enabled_role_ids": [
+    "{TARGET_ENABLED_WORKER_ROLE_ID}"
+  ],
   "requirements": {
     "primary_keeps_critical_path": true,
     "independent_local_acceptance": true,
@@ -24,44 +28,33 @@
     "overlapping write scopes or final convergence",
     "{TARGET_ADDITIONAL_PROHIBITED_WORK}"
   ],
-  "roles": [
-    {
-      "id": "fast-focused-worker",
-      "state": "{ENABLED_DISABLED_OR_BLOCKED}",
-      "use_when": [
-        "small focused reversible context-bounded work",
-        "objective local validation exists",
-        "{TARGET_FAST_WORKER_TRIGGER}"
-      ],
-      "allowed_actions": [
-        "{READ_ONLY_DOCS_ONLY_ADAPTER_ONLY_OR_CODE_AND_TESTS}"
-      ],
-      "allowed_tools": [
-        "{TARGET_ALLOWED_TOOL_OR_NONE}"
-      ],
-      "max_files": "{POSITIVE_INTEGER_OR_TARGET_LIMIT}",
-      "max_context_words": "{POSITIVE_INTEGER_OR_TARGET_LIMIT}",
-      "model_binding": {
-        "assistant_surface": "{SUPPORTED_ASSISTANT_SURFACE}",
-        "selection_mode": "{EXPLICIT_MODEL_INHERIT_OR_CLIENT_DEFAULT}",
-        "model": "{VERIFIED_MODEL_ID_OR_INHERIT}",
-        "availability": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
-        "verified_at": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}",
-        "client_version": "{CLIENT_VERSION_OR_UNKNOWN_WITH_REASON}",
-        "evidence": "{TARGET_CAPABILITY_EVIDENCE_OR_MANUAL_REVIEW}",
-        "expires_at": "{ISO_DATE_OR_REVIEW_TRIGGER_WITH_REASON}"
-      },
-      "required_validation": [
-        "{TARGET_ROLE_VALIDATION_OR_MANUAL_REVIEW}"
-      ],
-      "fallback": "{CONTINUE_PRIMARY_USE_STRONGER_VERIFIED_MODEL_OR_STOP}"
-    }
-  ],
+  "retry_policy": {
+    "max_attempts_per_task": "{POSITIVE_INTEGER_OR_ZERO}",
+    "retry_only_when_scope_unchanged": true,
+    "retryable_outcomes": [
+      "transient dispatch failure",
+      "bounded validation failure with a known local repair",
+      "{TARGET_RETRYABLE_OUTCOME_OR_NONE}"
+    ],
+    "non_retryable_outcomes": [
+      "authorization capability or approval failure",
+      "scope dependency semantic or architecture expansion",
+      "repeated identical failure",
+      "{TARGET_NON_RETRYABLE_OUTCOME_OR_NONE}"
+    ]
+  },
+  "conflict_policy": {
+    "overlapping_writes": "reject-concurrent-dispatch",
+    "contradictory_results": "return-to-primary",
+    "stale_baseline": "revalidate-before-integration",
+    "scope_violation": "reject-result"
+  },
   "result_policy": {
     "accept_out_of_scope_changes": false,
     "accept_unvalidated_changes": false,
     "require_primary_review": true,
-    "require_actual_model_or_unverified_status": true
+    "require_actual_model_or_unverified_status": true,
+    "require_normalized_worker_result": true
   },
   "privacy_and_retention": "{TARGET_PACKET_AND_RESULT_PRIVACY_RETENTION_POLICY}",
   "validation": [

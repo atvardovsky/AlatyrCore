@@ -271,9 +271,10 @@ defines:
   recheck evidence when durable operation records are expected
 - operation packet, storage policy, workstream boundaries, and checkpoint
   evidence when large or resumable operations are expected
-- delegation policy, per-surface capability evidence, bounded role/model
-  bindings, packet scope, write isolation, fallback, validation, privacy, and
-  primary convergence when subagent execution is expected
+- delegation policy, target role catalog/prompts, task and normalized-result
+  contracts, per-surface runtime/native-definition evidence, bounded
+  role/model bindings, packet scope, write isolation, retry/conflict fallback,
+  validation, privacy, and primary convergence when worker execution is expected
 - change-package record, retention policy, semantic scope, companion decisions,
   and provenance policy when coherent material-change evidence is expected
 - target actors, local identity mapping, authority, priorities, task source,

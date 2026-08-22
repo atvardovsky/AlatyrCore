@@ -407,7 +407,18 @@ def main() -> int:
             ".ai/assistant/delegation-policy.json",
             ".ai/assistant/context/task-scales/delegated-execution.json",
             ".ai/assistant/flows/subagent-delegation.flow.md",
+            ".ai/assistant/prompts/worker-orchestration.md",
             ".ai/assistant/templates/subagent-task-packet.md",
+            ".ai/assistant/templates/native-worker-binding.md",
+            ".ai/assistant/templates/worker-execution-plan.md",
+            ".ai/assistant/templates/worker-result.md",
+            ".ai/assistant/workers/role-catalog.json",
+            ".ai/assistant/workers/roles/explorer.md",
+            ".ai/assistant/workers/roles/implementer.md",
+            ".ai/assistant/workers/roles/test-runner.md",
+            ".ai/assistant/workers/roles/documentation-worker.md",
+            ".ai/assistant/workers/roles/reviewer.md",
+            ".ai/assistant/workers/roles/fast-focused-worker.md",
             ".ai/assistant/assistant-capabilities.json",
             ".ai/assistant/bridge-capability-matrix.md",
         ]
@@ -489,6 +500,68 @@ def main() -> int:
             failures.append(
                 "native delegation must require native worker capability evidence"
             )
+
+        generic_delegation.update(
+            {
+                "route": "supported",
+                "native_subagents": "supported",
+                "explicit_delegation": "supported",
+                "project_worker_definitions": "supported",
+                "worker_definition_format": "fixture-markdown",
+                "worker_definition_paths": [".ai/native-workers/explorer.md"],
+            }
+        )
+        native_worker_path = delegation_target / ".ai/native-workers/explorer.md"
+        native_worker_path.parent.mkdir(parents=True, exist_ok=True)
+        native_worker_path.write_text("native worker without routing\n", encoding="utf-8")
+        write_json(generic_capability_path, generic_capability)
+        non_thin_worker = validator(delegation_target)
+        non_thin_worker.check_subagent_delegation(external_manifest)
+        if "DELEGATION_WORKER_DEFINITION_NOT_THIN" not in {
+            finding.code for finding in non_thin_worker.findings
+        }:
+            failures.append(
+                "native worker definitions must route to canonical contracts"
+            )
+
+        generic_delegation["worker_definition_paths"] = ["../outside-worker.md"]
+        write_json(generic_capability_path, generic_capability)
+        unsafe_worker_path = validator(delegation_target)
+        unsafe_worker_path.check_subagent_delegation(external_manifest)
+        if "DELEGATION_WORKER_DEFINITION_PATH" not in {
+            finding.code for finding in unsafe_worker_path.findings
+        }:
+            failures.append(
+                "native worker definitions must reject unsafe target paths"
+            )
+
+        generic_delegation.update(
+            {
+                "dispatch_backend": "external",
+                "external_dispatcher": "fixture.dispatcher",
+                "project_worker_definitions": "unsupported",
+                "worker_definition_format": "none",
+                "worker_definition_paths": [],
+                "role_bindings": [
+                    {
+                        "role_id": "missing-role",
+                        "selection_mode": "inherit",
+                        "model": "inherit",
+                        "reasoning": "client-default",
+                        "availability": "supported",
+                        "evidence": "fixture",
+                        "expires_at": "manual review",
+                    }
+                ],
+            }
+        )
+        write_json(generic_capability_path, generic_capability)
+        unknown_role = validator(delegation_target)
+        unknown_role.check_subagent_delegation(external_manifest)
+        if "DELEGATION_ROLE_BINDING_UNKNOWN" not in {
+            finding.code for finding in unknown_role.findings
+        }:
+            failures.append("surface bindings must reject unknown worker roles")
 
         write_json(
             router_path,

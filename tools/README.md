@@ -546,9 +546,11 @@ workstream completion.
 ## Subagent Delegation Check
 
 `check_subagent_delegation.py` validates the optional delegation rule, target
-policy, lazy overlay, bounded packet, operation routing, and per-surface
-subagent/model capability fields. It proves structural coverage, not safe task
-decomposition or actual vendor model availability.
+policy, six-role catalog, orchestration prompt, deterministic task plan,
+bounded packet, normalized result, unsafe-decomposition fixtures, operation
+routing, and per-surface worker/model/native-definition capability fields. It
+proves structural coverage, not safe semantic decomposition or actual provider
+model availability.
 
 ## Team Collaboration Check
 

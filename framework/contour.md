@@ -52,8 +52,9 @@ Framework core owns:
   pre-change-preview, and bounded-help pattern
 - optional team actor, priority, task, claim, conflict, checkpoint, handoff,
   decision, review, and merge-readiness coordination pattern
-- optional capability-gated subagent decomposition, model-role binding,
-  bounded packet, write-isolation, fallback, and primary-convergence pattern
+- optional capability-gated worker decomposition, target role/prompt and
+  model/native binding, deterministic task readiness, bounded packet/result,
+  write isolation, retry/conflict fallback, and primary convergence pattern
 - project-adapter contract
 - framework installation and portability rules
 - improvement-advice trigger pattern

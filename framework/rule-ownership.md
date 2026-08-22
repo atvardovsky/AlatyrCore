@@ -177,10 +177,11 @@ routes, team-active context overlay, adapted team skill.
 Category: `DELEGATION`
 Routing owner: `.ai/framework/subagent-delegation.md`
 Rule IDs: `ALATYR-DELEGATION-001`
-Derived surfaces: target delegation policy, delegated-execution overlay,
-subagent task packet, large-task workstreams, assistant capability records,
-bridge capability matrix, operation routing, installation and update planning,
-structural validation.
+Derived surfaces: target delegation policy, worker role catalog and prompts,
+worker execution plan, delegated-execution overlay, subagent task packet,
+normalized worker result, large-task workstreams, assistant capability records
+and native bindings, bridge capability matrix, operation routing, installation
+and update planning, delegation conformance scenarios, structural validation.
 
 Category: `BRIDGE`
 Routing owner: `.ai/framework/bridge-capability-matrix.md`

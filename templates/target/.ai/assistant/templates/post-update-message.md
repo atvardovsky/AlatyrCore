@@ -102,6 +102,13 @@ Operation help:
 - Use `Alatyr set actor <actor>` for local attribution, `Alatyr who am I` to
   inspect it, `Alatyr team status` for coordination evidence, and the specific
   team aliases for task, conflict, handoff, decision, review, or merge work.
+- When subagent delegation is enabled, preserve the target policy, role
+  catalog/prompts, execution plans, packet/result evidence, privacy, and
+  retry/conflict rules. Recheck each surface's exact client/runtime, native
+  definition format and paths, invocation mode, tools, isolation, background/
+  nested behavior, role/model bindings, and freshness. Remove or migrate stale
+  thin native bindings only from target evidence; never infer support from the
+  updated framework templates.
 - Recheck AI infrastructure router entries and adaptation records when skills, prompts, gates, tools, or bridge contracts changed.
 - Recheck `diagram-discussion`, stable diagram lineage, security/privacy and
   external-renderer policy, and each selected compact assistant capability's

@@ -161,8 +161,9 @@ Before accepting a change, check:
   activation, task-scale routing, workstream, packet, checkpoint, resume, or
   convergence contracts change.
 - `python3 tools/check_subagent_delegation.py` passes when delegation policy,
-  lazy overlay, packet, model/capability evidence, bridge routing, fallback,
-  or primary-convergence contracts change.
+  worker roles/prompts, task/packet/result contracts, lazy overlay,
+  model/native-definition capability evidence, bridge routing,
+  retry/conflict fallback, or primary convergence changes.
 - `python3 tools/check_manifest_contract.py` passes when the target manifest
   template, versioning fields, path references, or adapter metadata contract
   changes.

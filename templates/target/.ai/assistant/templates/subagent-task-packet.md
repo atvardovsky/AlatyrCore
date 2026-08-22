@@ -1,6 +1,8 @@
 # Subagent Task Packet
 
 Packet ID: `{PACKET_ID}`
+Task ID: `{TASK_ID}`
+Execution plan ID: `{PLAN_ID}`
 Parent operation ID: `{OPERATION_ID}`
 Parent workstream ID: `{WORKSTREAM_ID_OR_NONE}`
 Primary assistant/session reference: `{PRIMARY_ASSISTANT_REFERENCE}`
@@ -15,6 +17,7 @@ Changed fact IDs: `{CHANGED_FACT_IDS_OR_NONE}`
 Semantic fact owner: `{PRIMARY_OWNED_OWNER_OR_NONE}`
 Local acceptance criteria: `{OBJECTIVE_ACCEPTANCE_CRITERIA}`
 Dependency state: `{READY_DEPENDENCIES_OR_BLOCKER}`
+Base revision: `{BASE_REVISION}`
 
 ## Context Boundary
 
@@ -59,6 +62,7 @@ Assistant surface: `{ASSISTANT_SURFACE}`
 Dispatch backend: `{NATIVE_EXTERNAL_SUGGESTION_ONLY_OR_UNSUPPORTED}`
 External dispatcher item: `{TARGET_AI_INFRASTRUCTURE_ITEM_ID_NONE_OR_UNKNOWN}`
 Role: `{TARGET_DELEGATION_ROLE}`
+Role prompt: `{TARGET_ROLE_PROMPT_PATH}`
 Requested model or selection mode: `{MODEL_ID_INHERIT_OR_CLIENT_DEFAULT}`
 Capability evidence: `{CAPABILITY_RECORD_PATH_AND_FRESHNESS}`
 Selection rationale: `{LATENCY_CONTEXT_OR_PARALLELISM_REASON}`
@@ -72,14 +76,11 @@ Delegate validation:
 
 Return format:
 
-- summary and packet status
-- files or surfaces touched
-- commands or tools used and results
-- requested versus actual model, or `unverified`
-- acceptance-criteria result
-- unresolved findings and residual risk
+- `.ai/assistant/templates/worker-result.md`
 
 ## Returned Result
+
+Normalized result ID: `{WORKER_RESULT_ID}`
 
 Actual assistant surface: `{ACTUAL_SURFACE_OR_UNVERIFIED}`
 Actual role/model: `{ACTUAL_ROLE_AND_MODEL_OR_UNVERIFIED}`

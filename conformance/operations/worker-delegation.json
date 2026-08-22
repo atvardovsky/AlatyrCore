@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "operation": "worker-delegation",
+  "purpose": "Exercise portable decomposition, rejection, and fallback decisions without invoking a provider runtime.",
+  "cases": [
+    {
+      "id": "bounded-read-only-exploration",
+      "input": "Find the canonical owner and current references for one named fact without editing files.",
+      "preconditions": ["current capability evidence exists", "bounded context", "objective evidence output"],
+      "expected_role": "explorer",
+      "expected_outcome": "eligible"
+    },
+    {
+      "id": "overlapping-write-scopes",
+      "input": "Run two implementers concurrently against the same source file.",
+      "preconditions": ["both packets write the same path"],
+      "expected_role": "primary",
+      "expected_outcome": "reject"
+    },
+    {
+      "id": "unresolved-architecture-decision",
+      "input": "Let a worker select the project's persistence boundary.",
+      "preconditions": ["architecture decision is unresolved"],
+      "expected_role": "primary",
+      "expected_outcome": "primary-only"
+    },
+    {
+      "id": "scope-violating-result",
+      "input": "A bounded documentation packet returns an unrequested code change.",
+      "preconditions": ["returned write is outside packet action ceiling"],
+      "expected_role": "primary",
+      "expected_outcome": "reject-result"
+    },
+    {
+      "id": "unsupported-surface",
+      "input": "The selected assistant has no verified worker backend.",
+      "preconditions": ["native and approved external dispatch are unavailable"],
+      "expected_role": "primary",
+      "expected_outcome": "sequential-primary-fallback"
+    }
+  ]
+}

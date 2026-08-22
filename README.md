@@ -204,8 +204,9 @@ facts correct by itself.
 
 Optional modules can add architecture knowledge, project vocabulary, generated
 code-reference documentation, test-first development, team coordination,
-large-task orchestration, capability-gated subagent delegation, diagrams, and
-adapted AI infrastructure. A passive dependency-knowledge module can also bind
+large-task orchestration, capability-gated worker delegation with project-
+owned roles and provider-specific thin bindings, diagrams, and adapted AI
+infrastructure. A passive dependency-knowledge module can also bind
 framework or library documentation to exact installed package artifacts while
 keeping one active project adapter and project-owned deviations. Optional
 modules are enabled only when the target project needs and can maintain them.
@@ -315,7 +316,7 @@ tasks from loading the complete framework or project corpus.
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.21`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.22`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural

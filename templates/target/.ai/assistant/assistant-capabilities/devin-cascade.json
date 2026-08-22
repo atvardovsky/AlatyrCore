@@ -23,10 +23,34 @@
     "route": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
     "dispatch_backend": "{NATIVE_EXTERNAL_SUGGESTION_ONLY_UNSUPPORTED_OR_UNKNOWN}",
     "external_dispatcher": "{TARGET_AI_INFRASTRUCTURE_ITEM_ID_NONE_OR_UNKNOWN}",
+    "client_product": "{TARGET_CLIENT_PRODUCT_OR_UNKNOWN}",
+    "runtime_variant": "{TARGET_RUNTIME_VARIANT_OR_UNKNOWN}",
     "native_subagents": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "automatic_delegation": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "explicit_delegation": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "project_worker_definitions": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "worker_definition_format": "{TARGET_NATIVE_FORMAT_NONE_OR_UNKNOWN}",
+    "worker_definition_paths": [
+      "{TARGET_NATIVE_WORKER_DEFINITION_PATH_OR_NONE}"
+    ],
+    "tool_restrictions": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "write_isolation": "{SHARED_WORKSPACE_NATIVE_ISOLATED_EXTERNAL_ISOLATED_UNSUPPORTED_OR_UNKNOWN}",
+    "background_execution": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "nested_delegation": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
     "model_override": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
     "parallel_dispatch": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
     "actual_model_evidence": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "role_bindings": [
+      {
+        "role_id": "{TARGET_ENABLED_WORKER_ROLE_ID}",
+        "selection_mode": "{EXPLICIT_MODEL_INHERIT_OR_CLIENT_DEFAULT}",
+        "model": "{VERIFIED_MODEL_ID_OR_INHERIT}",
+        "reasoning": "{TARGET_REASONING_SETTING_OR_CLIENT_DEFAULT}",
+        "availability": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+        "evidence": "{TARGET_ROLE_BINDING_EVIDENCE_OR_MANUAL_REVIEW}",
+        "expires_at": "{ISO_DATE_OR_REVIEW_TRIGGER_WITH_REASON}"
+      }
+    ],
     "verified_at": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}",
     "client_version": "{CLIENT_VERSION_OR_UNKNOWN_WITH_REASON}",
     "evidence": "{TARGET_EVIDENCE_OR_MANUAL_REVIEW}",

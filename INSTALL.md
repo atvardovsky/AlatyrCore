@@ -101,8 +101,10 @@ The plan must identify:
   selected lazy profile descriptors, and human context profiles needed for
   the target
 - large-task task-scale routing, packet, checkpoint, and storage needs
-- subagent launch/model-selection support, target delegation policy, role
-  bindings, write isolation, fallback, privacy, and validation needs
+- worker launch/model-selection support, target delegation policy, role
+  catalog, orchestration prompt, task-plan and result contracts, native worker
+  definition paths, write isolation, retry/conflict fallback, privacy, and
+  validation needs
 - optional team-collaboration owner, structured actor/authority/priority policy,
   local identity and verification boundary, coordination backend capabilities,
   synchronization and write-conflict behavior, active-work preflight, per-task
@@ -270,8 +272,9 @@ In a typical target repository:
    templates,
    migration-note template, effectiveness-report template, blueprint-creation,
    adapter-recheck, large-task orchestration and operation-packet templates,
-   subagent delegation policy, delegated-execution overlay, flow, and packet
-   template when delegation is enabled,
+   subagent delegation policy, worker role catalog/prompts, delegated-
+   execution overlay, flow, native-binding authoring, execution-plan, packet,
+   and normalized-result templates when delegation is enabled,
    change-package flow, machine record, redacted report, and index when coherent
    material-change evidence is needed,
    durable engineering-evidence task-scale overlay, capture flow, gate, and
@@ -352,9 +355,13 @@ implementation, commit, push, publication, or live effects.
 When the target enables subagent delegation, the assistant may keep its
 critical-path action and dispatch bounded independent sidecars under the target
 policy. Installation must record per-surface capability freshness, role/model
-bindings, write and tool limits, fallback, privacy, validation, and primary
-convergence. An unavailable requested model falls back; it is never silently
-reported as used.
+bindings, exact client/runtime, explicit/automatic dispatch, project worker-
+definition format and paths, write and tool limits, background/nested behavior,
+retry/conflict fallback, privacy, validation, and primary convergence. Create
+provider-native worker definitions only for a verified supported target
+surface. Keep them as thin bindings to the target-owned policy, role prompt,
+packet, result, and validation. An unavailable requested model falls back; it
+is never silently reported as used.
 
 When the target enables diagrams, `Alatyr diagram`, `show as a diagram`, and
 equivalent target-language requests route to `diagram-discussion`. Installation

@@ -9,5 +9,6 @@ profile before reading the matching task flow.
 For an exact operation ID or alias, including diagram, team, or AI aliases, read
 `.ai/assistant/operation-index.json`; for bare `Alatyr`, ambiguity, or repair, read
 `.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.
+When delegation is selected, use `.ai/assistant/prompts/worker-orchestration.md` and the selected capability record; do not infer native worker support.
 
 This file is a legacy bridge, not the source of truth.

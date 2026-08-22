@@ -2263,7 +2263,18 @@ class Validator:
             ".ai/assistant/delegation-policy.json",
             ".ai/assistant/context/task-scales/delegated-execution.json",
             ".ai/assistant/flows/subagent-delegation.flow.md",
+            ".ai/assistant/prompts/worker-orchestration.md",
             ".ai/assistant/templates/subagent-task-packet.md",
+            ".ai/assistant/templates/native-worker-binding.md",
+            ".ai/assistant/templates/worker-execution-plan.md",
+            ".ai/assistant/templates/worker-result.md",
+            ".ai/assistant/workers/role-catalog.json",
+            ".ai/assistant/workers/roles/explorer.md",
+            ".ai/assistant/workers/roles/implementer.md",
+            ".ai/assistant/workers/roles/test-runner.md",
+            ".ai/assistant/workers/roles/documentation-worker.md",
+            ".ai/assistant/workers/roles/reviewer.md",
+            ".ai/assistant/workers/roles/fast-focused-worker.md",
             ".ai/assistant/assistant-capabilities.json",
             ".ai/assistant/bridge-capability-matrix.md",
         ]
@@ -2290,10 +2301,10 @@ class Validator:
                 and not is_unresolved_value(value)
             )
 
-        if policy.get("schema_version") != 1:
+        if policy.get("schema_version") != 2:
             self.error(
                 "DELEGATION_POLICY_SCHEMA",
-                "delegation policy schema_version must be 1",
+                "delegation policy schema_version must be 2",
                 policy_relpath,
             )
         if policy.get("policy_kind") != "target-subagent-delegation-policy":
@@ -2340,6 +2351,72 @@ class Validator:
                 "max_parallel_delegates must be a positive integer",
                 policy_relpath,
             )
+        if policy.get("role_catalog") != ".ai/assistant/workers/role-catalog.json":
+            self.error(
+                "DELEGATION_ROLE_CATALOG_PATH",
+                "delegation policy must select the canonical target role catalog",
+                policy_relpath,
+            )
+        enabled_role_ids = policy.get("enabled_role_ids")
+        if not isinstance(enabled_role_ids, list) or not enabled_role_ids:
+            self.error(
+                "DELEGATION_ENABLED_ROLES",
+                "enabled delegation requires a non-empty enabled_role_ids list",
+                policy_relpath,
+            )
+            enabled_role_ids = []
+        concrete_enabled_roles = [
+            value for value in enabled_role_ids if concrete(value)
+        ]
+        if len(concrete_enabled_roles) != len(set(concrete_enabled_roles)):
+            self.error(
+                "DELEGATION_ENABLED_ROLE_DUPLICATE",
+                "enabled_role_ids contains duplicates",
+                policy_relpath,
+            )
+
+        retry_policy = policy.get("retry_policy")
+        if not isinstance(retry_policy, dict):
+            self.error(
+                "DELEGATION_RETRY_POLICY",
+                "enabled delegation requires a retry policy",
+                policy_relpath,
+            )
+        else:
+            attempts = retry_policy.get("max_attempts_per_task")
+            if not is_placeholder(attempts) and (
+                not isinstance(attempts, int)
+                or isinstance(attempts, bool)
+                or attempts < 0
+            ):
+                self.error(
+                    "DELEGATION_RETRY_LIMIT",
+                    "max_attempts_per_task must be zero or a positive integer",
+                    policy_relpath,
+                )
+            if retry_policy.get("retry_only_when_scope_unchanged") is not True:
+                self.error(
+                    "DELEGATION_RETRY_SCOPE",
+                    "retry policy must forbid scope expansion",
+                    policy_relpath,
+                )
+
+        conflict_policy = policy.get("conflict_policy")
+        expected_conflicts = {
+            "overlapping_writes": "reject-concurrent-dispatch",
+            "contradictory_results": "return-to-primary",
+            "stale_baseline": "revalidate-before-integration",
+            "scope_violation": "reject-result",
+        }
+        if not isinstance(conflict_policy, dict) or any(
+            conflict_policy.get(field) != expected
+            for field, expected in expected_conflicts.items()
+        ):
+            self.error(
+                "DELEGATION_CONFLICT_GUARDS",
+                "delegation conflict policy weakens portable rejection rules",
+                policy_relpath,
+            )
 
         requirements = policy.get("requirements")
         required_guards = {
@@ -2364,6 +2441,7 @@ class Validator:
             "accept_unvalidated_changes": False,
             "require_primary_review": True,
             "require_actual_model_or_unverified_status": True,
+            "require_normalized_worker_result": True,
         }
         if not isinstance(result_policy, dict) or any(
             result_policy.get(field) is not expected
@@ -2373,6 +2451,28 @@ class Validator:
                 "DELEGATION_RESULT_GUARDS",
                 "delegation result policy weakens primary review or scope evidence",
                 policy_relpath,
+            )
+
+        catalog_relpath = ".ai/assistant/workers/role-catalog.json"
+        catalog = self.load_json_object(
+            self.target_path(catalog_relpath), "DELEGATION_ROLE_CATALOG"
+        )
+        catalog_roles = catalog.get("roles") if isinstance(catalog, dict) else None
+        if not isinstance(catalog_roles, list) or not catalog_roles:
+            self.error(
+                "DELEGATION_ROLES_MISSING",
+                "enabled delegation requires a non-empty target worker role catalog",
+                catalog_relpath,
+            )
+            catalog_roles = []
+        if isinstance(catalog, dict) and (
+            catalog.get("schema_version") != 1
+            or catalog.get("catalog_kind") != "target-worker-role-catalog"
+        ):
+            self.error(
+                "DELEGATION_ROLE_CATALOG_SCHEMA",
+                "worker role catalog identity or schema is invalid",
+                catalog_relpath,
             )
 
         capability_index_relpath = ".ai/assistant/assistant-capabilities.json"
@@ -2396,10 +2496,22 @@ class Validator:
             "route",
             "dispatch_backend",
             "external_dispatcher",
+            "client_product",
+            "runtime_variant",
             "native_subagents",
+            "automatic_delegation",
+            "explicit_delegation",
+            "project_worker_definitions",
+            "worker_definition_format",
+            "worker_definition_paths",
+            "tool_restrictions",
+            "write_isolation",
+            "background_execution",
+            "nested_delegation",
             "model_override",
             "parallel_dispatch",
             "actual_model_evidence",
+            "role_bindings",
             "verified_at",
             "client_version",
             "evidence",
@@ -2441,6 +2553,12 @@ class Validator:
             for field in [
                 "route",
                 "native_subagents",
+                "automatic_delegation",
+                "explicit_delegation",
+                "project_worker_definitions",
+                "tool_restrictions",
+                "background_execution",
+                "nested_delegation",
                 "model_override",
                 "parallel_dispatch",
                 "actual_model_evidence",
@@ -2470,12 +2588,28 @@ class Validator:
                     relpath,
                 )
             dispatcher = delegation.get("external_dispatcher")
-            if backend == "native" and delegation.get("native_subagents") != "supported":
-                self.error(
-                    "DELEGATION_NATIVE_BACKEND_UNSUPPORTED",
-                    f"assistant surface {surface_id} selects native dispatch without native worker evidence",
-                    relpath,
-                )
+            if backend == "native":
+                if delegation.get("route") != "supported":
+                    self.error(
+                        "DELEGATION_NATIVE_ROUTE_UNSUPPORTED",
+                        f"assistant surface {surface_id} native dispatch requires a supported route",
+                        relpath,
+                    )
+                if delegation.get("native_subagents") != "supported":
+                    self.error(
+                        "DELEGATION_NATIVE_BACKEND_UNSUPPORTED",
+                        f"assistant surface {surface_id} selects native dispatch without native worker evidence",
+                        relpath,
+                    )
+                if not any(
+                    delegation.get(field) == "supported"
+                    for field in ["automatic_delegation", "explicit_delegation"]
+                ):
+                    self.error(
+                        "DELEGATION_NATIVE_INVOCATION_UNSUPPORTED",
+                        f"assistant surface {surface_id} selects native dispatch without a verified invocation mode",
+                        relpath,
+                    )
             if backend == "external":
                 if not concrete(dispatcher) or dispatcher not in ai_item_ids:
                     self.error(
@@ -2495,23 +2629,87 @@ class Validator:
                     f"assistant surface {surface_id} cannot claim a supported route with an unsupported backend",
                     relpath,
                 )
+            write_isolation = delegation.get("write_isolation")
+            if concrete(write_isolation) and write_isolation not in {
+                "shared-workspace",
+                "native-isolated",
+                "external-isolated",
+                "unsupported",
+                "unknown",
+            }:
+                self.error(
+                    "DELEGATION_WRITE_ISOLATION",
+                    f"assistant surface {surface_id} write_isolation is invalid",
+                    relpath,
+                )
+            definition_paths = delegation.get("worker_definition_paths")
+            if not isinstance(definition_paths, list):
+                self.error(
+                    "DELEGATION_WORKER_DEFINITION_PATHS",
+                    f"assistant surface {surface_id} worker_definition_paths must be a list",
+                    relpath,
+                )
+                definition_paths = []
+            concrete_definition_paths = [
+                value for value in definition_paths if concrete(value)
+            ]
+            if delegation.get("project_worker_definitions") == "supported":
+                if not concrete(delegation.get("worker_definition_format")):
+                    self.error(
+                        "DELEGATION_WORKER_DEFINITION_FORMAT",
+                        f"assistant surface {surface_id} supports project worker definitions but has no format",
+                        relpath,
+                    )
+                if not concrete_definition_paths:
+                    self.error(
+                        "DELEGATION_WORKER_DEFINITION_PATHS",
+                        f"assistant surface {surface_id} supports project worker definitions but has no target paths",
+                        relpath,
+                    )
+            elif concrete_definition_paths:
+                self.error(
+                    "DELEGATION_WORKER_DEFINITION_STATE_CONFLICT",
+                    f"assistant surface {surface_id} records native worker paths without supported project definitions",
+                    relpath,
+                )
+            for definition_path in concrete_definition_paths:
+                candidate = Path(definition_path)
+                if candidate.is_absolute() or ".." in candidate.parts:
+                    self.error(
+                        "DELEGATION_WORKER_DEFINITION_PATH",
+                        f"assistant surface {surface_id} has an unsafe native worker definition path",
+                        relpath,
+                    )
+                elif delegation.get("project_worker_definitions") == "supported" and not self.target_path(definition_path).is_file():
+                    self.error(
+                        "DELEGATION_WORKER_DEFINITION_MISSING",
+                        f"assistant surface {surface_id} native worker definition is missing",
+                        definition_path,
+                    )
+                elif delegation.get("project_worker_definitions") == "supported":
+                    native_text = self.read_text(self.target_path(definition_path))
+                    for canonical_reference in [
+                        ".ai/assistant/delegation-policy.json",
+                        ".ai/assistant/prompts/worker-orchestration.md",
+                        ".ai/assistant/workers/role-catalog.json",
+                    ]:
+                        if canonical_reference not in native_text:
+                            self.error(
+                                "DELEGATION_WORKER_DEFINITION_NOT_THIN",
+                                f"assistant surface {surface_id} native worker definition does not route to {canonical_reference}",
+                                definition_path,
+                            )
             capability_records[surface_id] = delegation
 
-        roles = policy.get("roles")
-        if not isinstance(roles, list) or not roles:
-            self.error(
-                "DELEGATION_ROLES_MISSING",
-                "enabled delegation requires at least one bounded role",
-                policy_relpath,
-            )
-            roles = []
         role_ids: set[str] = set()
-        for index, role in enumerate(roles):
+        writable_role_ids: set[str] = set()
+        role_states: dict[str, str] = {}
+        for index, role in enumerate(catalog_roles):
             if not isinstance(role, dict):
                 self.error(
                     "DELEGATION_ROLE_SHAPE",
                     f"roles[{index}] must be an object",
-                    policy_relpath,
+                    catalog_relpath,
                 )
                 continue
             role_id = role.get("id")
@@ -2520,59 +2718,192 @@ class Validator:
                     self.error(
                         "DELEGATION_ROLE_DUPLICATE",
                         f"duplicate delegation role {role_id}",
-                        policy_relpath,
+                        catalog_relpath,
                     )
                 role_ids.add(role_id)
-            actions = role.get("allowed_actions")
-            if isinstance(actions, list):
-                self.check_allowed_actions(
-                    [value for value in actions if isinstance(value, str)],
-                    policy_relpath,
-                    f"roles[{index}].allowed_actions",
-                )
-            else:
-                self.error(
-                    "DELEGATION_ROLE_ACTIONS",
-                    f"roles[{index}].allowed_actions must be a list",
-                    policy_relpath,
-                )
-            binding = role.get("model_binding")
-            if not isinstance(binding, dict):
-                self.error(
-                    "DELEGATION_MODEL_BINDING",
-                    f"roles[{index}].model_binding must be an object",
-                    policy_relpath,
-                )
-                continue
-            surface_id = binding.get("assistant_surface")
-            selection_mode = binding.get("selection_mode")
-            if concrete(surface_id) and surface_id not in surfaces:
-                self.error(
-                    "DELEGATION_MODEL_SURFACE",
-                    f"roles[{index}] references unknown surface {surface_id}",
-                    policy_relpath,
-                )
-                continue
-            if concrete(selection_mode) and selection_mode not in {
-                "explicit-model",
-                "inherit",
-                "client-default",
+            state_value = role.get("state")
+            if concrete(state_value) and state_value not in {
+                "enabled",
+                "disabled",
+                "blocked",
             }:
                 self.error(
-                    "DELEGATION_MODEL_SELECTION_MODE",
-                    f"roles[{index}] selection_mode is invalid",
-                    policy_relpath,
+                    "DELEGATION_ROLE_STATE",
+                    f"roles[{index}].state is invalid",
+                    catalog_relpath,
                 )
-            capability = capability_records.get(surface_id)
+            if concrete(role_id) and concrete(state_value):
+                role_states[role_id] = state_value
+            action_ceiling = role.get("action_ceiling")
+            if concrete(action_ceiling) and action_ceiling not in {
+                "read-only",
+                "docs-only",
+                "adapter-only",
+                "code-and-tests",
+            }:
+                self.error(
+                    "DELEGATION_ROLE_ACTION_CEILING",
+                    f"roles[{index}].action_ceiling is invalid",
+                    catalog_relpath,
+                )
+            write_mode = role.get("write_mode")
+            if concrete(write_mode) and write_mode not in {"none", "bounded"}:
+                self.error(
+                    "DELEGATION_ROLE_WRITE_MODE",
+                    f"roles[{index}].write_mode is invalid",
+                    catalog_relpath,
+                )
+            if write_mode == "bounded" and concrete(role_id):
+                writable_role_ids.add(role_id)
             if (
-                capability is not None
-                and selection_mode == "explicit-model"
-                and capability.get("model_override") != "supported"
+                concrete(action_ceiling)
+                and concrete(write_mode)
+                and (
+                    (action_ceiling == "read-only" and write_mode != "none")
+                    or (action_ceiling != "read-only" and write_mode != "bounded")
+                )
             ):
                 self.error(
-                    "DELEGATION_MODEL_OVERRIDE_UNSUPPORTED",
-                    f"roles[{index}] selects a model without supported override evidence",
+                    "DELEGATION_ROLE_WRITE_CEILING_CONFLICT",
+                    f"roles[{index}] action ceiling and write mode disagree",
+                    catalog_relpath,
+                )
+            prompt = role.get("prompt")
+            if concrete(prompt):
+                prompt_path = Path(prompt)
+                if (
+                    prompt_path.is_absolute()
+                    or ".." in prompt_path.parts
+                    or not self.target_path(prompt).is_file()
+                ):
+                    self.error(
+                        "DELEGATION_ROLE_PROMPT",
+                        f"roles[{index}] prompt is unsafe or missing",
+                        catalog_relpath,
+                    )
+            if role.get("required_output") != "normalized-worker-result":
+                self.error(
+                    "DELEGATION_ROLE_RESULT_CONTRACT",
+                    f"roles[{index}] must require normalized-worker-result",
+                    catalog_relpath,
+                )
+
+        for role_id in concrete_enabled_roles:
+            if role_id not in role_ids:
+                self.error(
+                    "DELEGATION_ENABLED_ROLE_UNKNOWN",
+                    f"enabled role {role_id} is absent from the role catalog",
                     policy_relpath,
+                )
+            elif role_states.get(role_id) != "enabled":
+                self.error(
+                    "DELEGATION_ENABLED_ROLE_INACTIVE",
+                    f"enabled role {role_id} is not enabled in the role catalog",
+                    policy_relpath,
+                )
+
+        for surface_id, capability in capability_records.items():
+            relpath = surfaces.get(surface_id, ".ai/assistant/assistant-capabilities.json")
+            bindings = capability.get("role_bindings")
+            if not isinstance(bindings, list):
+                self.error(
+                    "DELEGATION_ROLE_BINDINGS",
+                    f"assistant surface {surface_id} role_bindings must be a list",
+                    relpath,
+                )
+                continue
+            bound_roles: set[str] = set()
+            for index, binding in enumerate(bindings):
+                if not isinstance(binding, dict):
+                    self.error(
+                        "DELEGATION_ROLE_BINDING_SHAPE",
+                        f"assistant surface {surface_id} role_bindings[{index}] must be an object",
+                        relpath,
+                    )
+                    continue
+                role_id = binding.get("role_id")
+                if concrete(role_id):
+                    if role_id not in role_ids:
+                        self.error(
+                            "DELEGATION_ROLE_BINDING_UNKNOWN",
+                            f"assistant surface {surface_id} binds unknown role {role_id}",
+                            relpath,
+                        )
+                    if role_id in bound_roles:
+                        self.error(
+                            "DELEGATION_ROLE_BINDING_DUPLICATE",
+                            f"assistant surface {surface_id} binds role {role_id} more than once",
+                            relpath,
+                        )
+                    bound_roles.add(role_id)
+                selection_mode = binding.get("selection_mode")
+                if concrete(selection_mode) and selection_mode not in {
+                    "explicit-model",
+                    "inherit",
+                    "client-default",
+                }:
+                    self.error(
+                        "DELEGATION_MODEL_SELECTION_MODE",
+                        f"assistant surface {surface_id} role binding selection_mode is invalid",
+                        relpath,
+                    )
+                availability = binding.get("availability")
+                if concrete(availability) and availability not in {
+                    "supported",
+                    "unsupported",
+                    "unknown",
+                }:
+                    self.error(
+                        "DELEGATION_ROLE_BINDING_AVAILABILITY",
+                        f"assistant surface {surface_id} role binding availability is invalid",
+                        relpath,
+                    )
+                if (
+                    selection_mode == "explicit-model"
+                    and capability.get("model_override") != "supported"
+                ):
+                    self.error(
+                        "DELEGATION_MODEL_OVERRIDE_UNSUPPORTED",
+                        f"assistant surface {surface_id} selects a model without supported override evidence",
+                        relpath,
+                    )
+                if (
+                    availability == "supported"
+                    and capability.get("route") != "supported"
+                ):
+                    self.error(
+                        "DELEGATION_ROLE_BINDING_ROUTE_CONFLICT",
+                        f"assistant surface {surface_id} has an available role binding on an unsupported route",
+                        relpath,
+                    )
+                if selection_mode == "explicit-model" and not concrete(
+                    binding.get("model")
+                ):
+                    self.error(
+                        "DELEGATION_EXPLICIT_MODEL_MISSING",
+                        f"assistant surface {surface_id} explicit role binding has no model",
+                        relpath,
+                    )
+            if (
+                capability.get("dispatch_backend") in {"native", "external"}
+                and capability.get("route") == "supported"
+                and concrete_enabled_roles
+                and not set(concrete_enabled_roles).intersection(bound_roles)
+            ):
+                self.error(
+                    "DELEGATION_ENABLED_ROLE_UNBOUND",
+                    f"assistant surface {surface_id} has no binding for an enabled worker role",
+                    relpath,
+                )
+            if (
+                capability.get("parallel_dispatch") == "supported"
+                and capability.get("write_isolation") == "shared-workspace"
+                and writable_role_ids.intersection(bound_roles)
+            ):
+                self.warn(
+                    "DELEGATION_SHARED_WRITE_ISOLATION",
+                    f"assistant surface {surface_id} can parallelize writable roles only with packet-level disjoint-write enforcement",
+                    relpath,
                 )
 
         overlay_relpath = (
@@ -2588,6 +2919,23 @@ class Validator:
             self.error(
                 "DELEGATION_OVERLAY_CONTRACT",
                 "delegated execution overlay identity or module is invalid",
+                overlay_relpath,
+            )
+        required_worker_context = {
+            ".ai/assistant/delegation-policy.json",
+            ".ai/assistant/workers/role-catalog.json",
+            ".ai/assistant/prompts/worker-orchestration.md",
+            ".ai/assistant/templates/worker-execution-plan.md",
+            ".ai/assistant/templates/subagent-task-packet.md",
+            ".ai/assistant/templates/worker-result.md",
+        }
+        overlay_context = overlay.get("required_context") if overlay else None
+        if not isinstance(overlay_context, list) or not required_worker_context.issubset(
+            set(overlay_context)
+        ):
+            self.error(
+                "DELEGATION_OVERLAY_CONTEXT",
+                "delegated execution overlay does not load the portable worker contracts",
                 overlay_relpath,
             )
 

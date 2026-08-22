@@ -102,9 +102,10 @@ Before upgrading framework files in a target project:
    boundary, independent semantic state axes, artifact identity, retention,
    intent route, flow, gate, operation, and validator support.
    When `subagent-delegation` is enabled, compare its policy schema, selected
-   assistant capability records, role/model bindings, client freshness,
-   packet and overlay contracts, write isolation, fallbacks, privacy,
-   validation, and primary convergence.
+   assistant capability records, role catalog/prompts, role/model and native-
+   definition bindings, client/runtime freshness, task-plan, packet, result,
+   and overlay contracts, write isolation, retries/conflicts, fallbacks,
+   privacy, validation, and primary convergence.
 10. Prepare a target migration note or installation plan from reviewed
     assessment evidence.
 11. Require approval before overwriting existing target AI instructions.
@@ -157,10 +158,11 @@ Before upgrading framework files in a target project:
     Preserve target vocabulary term IDs, definitions, states, owners, aliases,
     acronyms, links, and decisions. Never replace accepted project language
     with source placeholders or inferred definitions.
-    Preserve target delegation role/model bindings, capability evidence,
-    limits, privacy policy, fallbacks, and historical packet evidence. Never
-    replace them with source placeholders or assume a newly documented model
-    is available on the installed client.
+    Preserve target delegation roles/prompts, role/model and native-definition
+    bindings, capability evidence, limits, privacy policy, fallbacks, and
+    historical plan/packet/result evidence. Never replace them with source
+    placeholders or assume a newly documented model or worker format is
+    available on the installed client.
 14. Recheck root assistant entry points and supported bridge files so future
     sessions can find the installation note, operation catalog, health, help,
     and routing flow.
@@ -241,9 +243,10 @@ Framework lifecycle notes should record:
 - workspace-mode rule, catalog, root context, per-mode descriptor contract,
   suggestion/selection flow, preflight, routing, gate, operation, and validator
   migration when that module is enabled
-- subagent delegation rule, target policy, capability records, role/model
-  bindings, packet and overlay contracts, fallbacks, and validator migration
-  when that module is enabled
+- subagent delegation rule, target policy, worker roles/prompts, capability
+  records, role/model/native-definition bindings, task-plan/packet/result and
+  overlay contracts, retry/conflict fallbacks, and validator migration when
+  that module is enabled
 
 ## Deprecation
 

@@ -71,8 +71,9 @@ completion test. Every workstream should define:
 - allowed files or surfaces
 - expected outputs and validation
 - status, evidence, unresolved risk, and handoff state
-- delegation packet, selected role/model evidence, write isolation, and
-  fallback when `subagent-delegation` is enabled for that workstream
+- worker execution-plan task, delegation packet, normalized result, selected
+  role/model/native evidence, write isolation, and retry/fallback when
+  `subagent-delegation` is enabled for that workstream
 
 Do not split one semantic fact across independent workstreams unless one
 workstream owns final reconciliation. Parallel-looking edits are not
@@ -80,9 +81,10 @@ independent when they share a source-of-truth decision, approval, generated
 artifact, migration order, or external contract.
 
 When `subagent-delegation` is enabled, dispatch only independently useful,
-locally verifiable packets. Delegates do not own project decisions, approval,
-or final convergence. Keep the primary assistant on the immediate critical
-path and require disjoint writes or read-only packets.
+locally verifiable ready tasks through the target orchestration and role
+contracts. Delegates do not own project decisions, approval, or final
+convergence. Keep the primary assistant on the immediate critical path and
+require disjoint writes or read-only packets.
 
 ## Resume Protocol
 

@@ -11,8 +11,12 @@
   "required_context": [
     ".ai/framework/subagent-delegation.md",
     ".ai/assistant/delegation-policy.json",
+    ".ai/assistant/workers/role-catalog.json",
+    ".ai/assistant/prompts/worker-orchestration.md",
     ".ai/assistant/flows/subagent-delegation.flow.md",
+    ".ai/assistant/templates/worker-execution-plan.md",
     ".ai/assistant/templates/subagent-task-packet.md",
+    ".ai/assistant/templates/worker-result.md",
     ".ai/assistant/assistant-capabilities.json"
   ],
   "expand_when": [

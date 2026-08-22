@@ -397,8 +397,10 @@ Small tasks should stay on their normal operation flow without a packet.
 Use `subagent-delegation.md` only when the optional target module is enabled.
 Delegation is an execution overlay, not a separate project operation or team
 ownership system. The target policy decides automatic, suggestion-only, or
-disabled behavior and owns verified role/model bindings, limits, permissions,
-fallback, privacy, validation, and review triggers.
+disabled behavior. The target owns role prompts, deterministic task readiness,
+bounded packet/result contracts, verified per-surface native/model bindings,
+limits, permissions, retry/conflict fallback, privacy, validation, and review
+triggers.
 
 Keep the primary assistant on the immediate critical path. Delegate only
 bounded independent sidecars or workstreams with local acceptance criteria and

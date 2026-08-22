@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 911
+Catalog entries: 943
 
 ## Codes
 
@@ -494,25 +494,41 @@ Catalog entries: 911
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DELEGATION_CAPABILITY_VALUE`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_CONFLICT_GUARDS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `DELEGATION_DECISION_MODE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DELEGATION_DEFAULT_PREFERENCE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DELEGATION_DISPATCH_BACKEND`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_ENABLED_ROLES`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_ENABLED_ROLE_DUPLICATE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_ENABLED_ROLE_INACTIVE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_ENABLED_ROLE_UNBOUND`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_ENABLED_ROLE_UNKNOWN`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_EXPLICIT_MODEL_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `DELEGATION_EXTERNAL_DISPATCHER`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DELEGATION_EXTERNAL_ROUTE_UNSUPPORTED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
-- `DELEGATION_MODEL_BINDING`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DELEGATION_MODEL_OVERRIDE_UNSUPPORTED`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DELEGATION_MODEL_SELECTION_MODE`
   Level: error. Source: `tools/validate_target_adapter.py`.
-- `DELEGATION_MODEL_SURFACE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
 - `DELEGATION_NATIVE_BACKEND_UNSUPPORTED`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_NATIVE_INVOCATION_UNSUPPORTED`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_NATIVE_ROUTE_UNSUPPORTED`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_OVERLAY_CONTEXT`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DELEGATION_OVERLAY_CONTRACT`
   Level: error. Source: `tools/validate_target_adapter.py`.
@@ -530,15 +546,63 @@ Catalog entries: 911
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DELEGATION_RESULT_GUARDS`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_RETRY_LIMIT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_RETRY_POLICY`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_RETRY_SCOPE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `DELEGATION_ROLES_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
-- `DELEGATION_ROLE_ACTIONS`
+- `DELEGATION_ROLE_ACTION_CEILING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_ROLE_BINDINGS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_ROLE_BINDING_AVAILABILITY`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_ROLE_BINDING_DUPLICATE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_ROLE_BINDING_ROUTE_CONFLICT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_ROLE_BINDING_SHAPE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_ROLE_BINDING_UNKNOWN`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_ROLE_CATALOG_PATH`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_ROLE_CATALOG_SCHEMA`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DELEGATION_ROLE_DUPLICATE`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_ROLE_PROMPT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_ROLE_RESULT_CONTRACT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `DELEGATION_ROLE_SHAPE`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_ROLE_STATE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_ROLE_WRITE_CEILING_CONFLICT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_ROLE_WRITE_MODE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_SHARED_WRITE_ISOLATION`
+  Level: warning. Source: `tools/validate_target_adapter.py`.
 - `DELEGATION_UNSUPPORTED_ROUTE_CONFLICT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_WORKER_DEFINITION_FORMAT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_WORKER_DEFINITION_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_WORKER_DEFINITION_NOT_THIN`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_WORKER_DEFINITION_PATH`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_WORKER_DEFINITION_PATHS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_WORKER_DEFINITION_STATE_CONFLICT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DELEGATION_WRITE_ISOLATION`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEPENDENCY_KNOWLEDGE_APPLICABILITY`
   Level: error. Source: `tools/validate_target_adapter.py`.

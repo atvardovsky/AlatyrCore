@@ -4,6 +4,36 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.22 - 2026-08-23
+
+- Increased the framework version to `0.1.0-alpha.22`, adapter schema version
+  to `21`, and target template version to `22` for portable worker
+  orchestration across supported assistant surfaces.
+- Replaced the delegation policy's embedded example role/model binding with a
+  target-owned six-role catalog and reusable project prompts for exploration,
+  bounded implementation, test execution, documentation, review, and fast
+  focused work.
+- Added deterministic worker task readiness, dependency and write-conflict
+  review, bounded packet identity, normalized result evidence, scoped retries,
+  stale-baseline handling, and primary-owned convergence contracts.
+- Expanded every assistant capability record with exact client/runtime,
+  explicit/automatic invocation, native worker-definition format and paths,
+  tool restrictions, write isolation, background/nested behavior, and per-role
+  model binding evidence.
+- Kept provider-native worker definitions target-generated and thin. Install
+  or update creates them only after current evidence verifies support in the
+  exact client; unsupported surfaces use suggestion-only or sequential-primary
+  fallback.
+- Extended source and installed-target validation with role/catalog closure,
+  unsafe native path checks, unsupported invocation/model checks, shared-write
+  warnings, and five deterministic delegation conformance scenarios.
+- Updated installation, update, lifecycle, bridge, capability, module, and
+  assistant documentation so all supported agents route through the same
+  portable worker contracts without claiming runtime parity.
+- Changed `ALATYR-ADAPTER-001`, `ALATYR-BRIDGE-001`,
+  `ALATYR-DELEGATION-001`, `ALATYR-LIFECYCLE-001`, and
+  `ALATYR-MODULE-001`; no rule IDs were added or removed.
+
 ## 0.1.0-alpha.21 - 2026-08-22
 
 - Increased the framework version to `0.1.0-alpha.21`, adapter schema version

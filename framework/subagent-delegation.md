@@ -33,6 +33,12 @@ worker, an approved external dispatcher such as a target tool, MCP server, or
 wrapper, or a suggestion-only handoff. When none is supported, the primary
 assistant continues locally.
 
+An enabled target owns a portable worker layer made of a delegation policy,
+role catalog, orchestration prompt, task graph, bounded packet, normalized
+result, and primary convergence record. Provider-native agents, managed
+workers, external dispatchers, and suggestion-only handoffs are thin execution
+bindings to that layer. They do not become policy or project-knowledge owners.
+
 ## Responsibility Boundary
 
 The primary assistant remains the operation orchestrator. It owns:
@@ -72,6 +78,46 @@ Use it when all applicable conditions are satisfied:
 Do not delegate merely because a client supports subagents. Skip delegation
 when packet preparation, result review, or synchronization is likely to cost
 more than doing the work locally.
+
+## Task Planning Contract
+
+Before dispatch, the primary assistant creates a deterministic task graph for
+the work it may delegate. Each task records one bounded goal, dependencies,
+changed facts, expected write scope, required context, objective acceptance,
+validation, selected role, and current status.
+
+Use the following portable statuses: `PLANNED`, `BLOCKED`, `READY`, `RUNNING`,
+`REVIEW_REQUIRED`, `DONE`, `FAILED`, and `CANCELLED`. Only the primary
+assistant may mark a task ready. A task is ready only when:
+
+- every dependency is complete or explicitly not applicable
+- its semantic owner and parent authorization are already known
+- required context fits the packet budget
+- its write scope is disjoint from concurrent work, or it is read-only
+- acceptance and validation can be evaluated without a new project decision
+
+Reject dependency cycles. Keep tasks with shared semantic ownership in one
+primary-owned convergence stream even when their mechanical work is separate.
+Do not turn the task graph into an autonomous scheduler: dispatch still passes
+through capability, authorization, approval, and cost gates.
+
+## Worker Role Catalog
+
+The target role catalog owns reusable semantic roles such as explorer,
+implementer, test runner, documentation worker, reviewer, and fast focused
+worker. A role defines its purpose, action ceiling, write mode, packet limits,
+required output, and prohibited responsibilities. It does not name a portable
+vendor model.
+
+Per-surface capability records bind enabled role IDs to a native profile,
+approved external route, inherited model, explicit verified model, or client
+default. Installation and update may create provider-native worker definitions
+only after verifying that the selected target client supports project-owned
+definitions. Those definitions must remain thin: point to the target policy,
+role prompt, packet, result, and validation instead of duplicating them.
+
+Do not install speculative native worker files for unsupported or unknown
+surfaces. Record suggestion-only or sequential-primary fallback instead.
 
 ## Fast Focused Worker
 
@@ -116,12 +162,15 @@ Before dispatch:
    capability record.
 3. Select one verified dispatch backend: native worker, approved external
    dispatcher, suggestion-only handoff, or unsupported/local fallback.
-4. Confirm worker launch, model-override behavior, parallelism, actual-model
-   evidence, client version, verification time, and freshness evidence. For an
-   external dispatcher, also resolve its target AI-infrastructure item,
+4. Confirm exact client product/runtime, explicit or automatic delegation,
+   project worker-definition support and paths, tool restrictions, write
+   isolation, background and nested behavior, model override, parallelism,
+   actual-model evidence, client version, verification time, and freshness.
+   For an external dispatcher, also resolve its target AI-infrastructure item,
    provenance, permissions, approval, privacy, and failure behavior.
-5. Resolve a target-owned role binding. Treat unavailable, unsupported,
-   unknown, expired, or rate-limited bindings as a fallback condition.
+5. Resolve an enabled target-owned role and its per-surface binding. Treat
+   unavailable, unsupported, unknown, expired, or rate-limited bindings as a
+   fallback condition.
 6. Confirm allowed actions, tools, context, write scope, approval, privacy,
    validation, and maximum concurrency.
 
@@ -150,6 +199,34 @@ Do not send the full project context by default. Do not split one semantic fact
 across independent delegates unless one primary-owned workstream performs
 reconciliation.
 
+## Normalized Result Contract
+
+Every backend returns or is normalized into the target worker-result contract.
+It records task and packet identity, observed base revision, status, actual
+surface/role/model or unverified status, touched surfaces, commands/tools,
+validation, acceptance criteria, scope violations, semantic or architecture
+deviations, unexpected repository state, authorization concerns, unresolved
+findings, follow-up, and residual risk.
+
+Provider-native prose is not accepted directly as completion evidence. The
+primary assistant must normalize it first. A missing identity, stale baseline,
+out-of-scope write, unsupported model claim, or omitted required validation is
+a rejection or rework condition.
+
+## Retry And Conflict Handling
+
+Retry only when the target policy allows it, the parent scope and authorization
+are unchanged, and the failure is transient or has one bounded local repair.
+Do not retry authorization, capability, approval, scope, dependency, semantic,
+or architecture failures. Do not repeat an identical failing attempt without
+new evidence.
+
+Reject concurrent overlapping writes. Return contradictory results to the
+primary assistant rather than asking workers to vote. Revalidate a result
+against current repository state before integration when its baseline is
+stale. Reject scope violations even when their output appears useful; create a
+new primary-owned plan and authorization gate if that work is still desired.
+
 ## Dispatch And Convergence
 
 Dispatch independent packets in parallel only when their write sets and
@@ -169,6 +246,10 @@ After a delegate returns, the primary assistant must:
    quality, latency, or cost evidence.
 
 A delegate result is evidence for primary review, not operation completion.
+
+Nested delegation is disabled unless the selected surface capability and
+target policy explicitly support it. Even when enabled, a child packet may
+only narrow its parent's context, action ceiling, write scope, and authority.
 
 ## Cost And Performance Evidence
 

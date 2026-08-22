@@ -52,13 +52,16 @@ For each supported assistant, record:
   the canonical operation index, intent, target policy, selected flow, and
   shared gate regardless of assistant-native skill support
 - whether optional subagent delegation routes through the target policy,
-  delegated-execution overlay, packet template, and primary convergence
+  worker orchestration prompt, role catalog, delegated-execution overlay,
+  task/packet/result templates, and primary convergence
 - whether the surface uses native workers, an approved external dispatcher,
   suggestion-only handoff, or no delegation
 - which target AI-infrastructure item owns an external dispatcher, including
   its permissions, approval, provenance, privacy, and failure behavior
-- whether the selected backend can launch workers, override their model,
-  dispatch in parallel, and report the actual model used
+- exact client/runtime; whether the selected backend supports explicit or
+  automatic delegation, project worker definitions and their target paths,
+  tool restrictions, write isolation, background or nested execution, model
+  override, parallel dispatch, and actual-model evidence
 - whether extension list, inspection, installation, update, disablement,
   removal, and review aliases route through the canonical operation index,
   selected catalog/lock entry, lifecycle flow, and shared gate
@@ -140,8 +143,9 @@ Each bridge should:
   isolation, or exceptions in bridge files
 - route enabled subagent delegation through the target policy and selected
   capability record; native, external, and suggestion-only routes use the same
-  packet and convergence contract, while unsupported surfaces continue
-  locally without pretending a dispatch or model override occurred
+  worker orchestration, role, task, packet, result, and convergence contracts,
+  while unsupported surfaces continue locally without pretending a dispatch
+  or model override occurred
 - route extension lifecycle requests through the canonical target catalog,
   lock, intent, and flow; never let a bridge fetch, trust, activate, update, or
   remove an extension independently
@@ -178,4 +182,9 @@ During framework update or adapter recheck:
    time, expiry or review triggers, and evidence against current surface
    capability; retain the ASCII baseline for unknown, stale, or unsupported
    rich rendering.
-7. Report bridge-specific limitations and residual risk.
+7. When delegation is enabled, recheck the exact client/runtime, role bindings,
+   native worker-definition format and paths, permissions, isolation,
+   background/nested behavior, and fallback. Remove stale generated native
+   definitions when support is no longer accepted; never infer replacement
+   paths from another assistant.
+8. Report bridge-specific limitations and residual risk.

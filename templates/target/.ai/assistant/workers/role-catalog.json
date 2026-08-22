@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "catalog_kind": "target-worker-role-catalog",
+  "owner": "{TARGET_WORKER_ROLE_CATALOG_OWNER}",
+  "delegation_policy": ".ai/assistant/delegation-policy.json",
+  "task_packet_template": ".ai/assistant/templates/subagent-task-packet.md",
+  "result_template": ".ai/assistant/templates/worker-result.md",
+  "roles": [
+    {
+      "id": "explorer",
+      "state": "{ENABLED_DISABLED_OR_BLOCKED}",
+      "prompt": ".ai/assistant/workers/roles/explorer.md",
+      "use_when": ["bounded read-only discovery", "evidence or ownership lookup"],
+      "action_ceiling": "read-only",
+      "write_mode": "none",
+      "max_files": "{POSITIVE_INTEGER_OR_TARGET_LIMIT}",
+      "max_context_words": "{POSITIVE_INTEGER_OR_TARGET_LIMIT}",
+      "required_output": "normalized-worker-result",
+      "prohibited_responsibilities": ["project decisions", "implementation", "final convergence"]
+    },
+    {
+      "id": "implementer",
+      "state": "{ENABLED_DISABLED_OR_BLOCKED}",
+      "prompt": ".ai/assistant/workers/roles/implementer.md",
+      "use_when": ["settled design with bounded code or test scope", "objective local validation"],
+      "action_ceiling": "code-and-tests",
+      "write_mode": "bounded",
+      "max_files": "{POSITIVE_INTEGER_OR_TARGET_LIMIT}",
+      "max_context_words": "{POSITIVE_INTEGER_OR_TARGET_LIMIT}",
+      "required_output": "normalized-worker-result",
+      "prohibited_responsibilities": ["architecture selection", "approval", "commit or publish", "final convergence"]
+    },
+    {
+      "id": "test-runner",
+      "state": "{ENABLED_DISABLED_OR_BLOCKED}",
+      "prompt": ".ai/assistant/workers/roles/test-runner.md",
+      "use_when": ["bounded validation execution", "failure evidence collection"],
+      "action_ceiling": "read-only",
+      "write_mode": "none",
+      "max_files": "{POSITIVE_INTEGER_OR_TARGET_LIMIT}",
+      "max_context_words": "{POSITIVE_INTEGER_OR_TARGET_LIMIT}",
+      "required_output": "normalized-worker-result",
+      "prohibited_responsibilities": ["unrequested fixes", "test expectation changes", "completion claims"]
+    },
+    {
+      "id": "documentation-worker",
+      "state": "{ENABLED_DISABLED_OR_BLOCKED}",
+      "prompt": ".ai/assistant/workers/roles/documentation-worker.md",
+      "use_when": ["bounded derived documentation update", "settled terminology and source ownership"],
+      "action_ceiling": "docs-only",
+      "write_mode": "bounded",
+      "max_files": "{POSITIVE_INTEGER_OR_TARGET_LIMIT}",
+      "max_context_words": "{POSITIVE_INTEGER_OR_TARGET_LIMIT}",
+      "required_output": "normalized-worker-result",
+      "prohibited_responsibilities": ["inventing project facts", "changing canonical policy", "final convergence"]
+    },
+    {
+      "id": "reviewer",
+      "state": "{ENABLED_DISABLED_OR_BLOCKED}",
+      "prompt": ".ai/assistant/workers/roles/reviewer.md",
+      "use_when": ["bounded independent review", "scope acceptance or validation evidence review"],
+      "action_ceiling": "read-only",
+      "write_mode": "none",
+      "max_files": "{POSITIVE_INTEGER_OR_TARGET_LIMIT}",
+      "max_context_words": "{POSITIVE_INTEGER_OR_TARGET_LIMIT}",
+      "required_output": "normalized-worker-result",
+      "prohibited_responsibilities": ["silent repair", "approval authority", "final acceptance"]
+    },
+    {
+      "id": "fast-focused-worker",
+      "state": "{ENABLED_DISABLED_OR_BLOCKED}",
+      "prompt": ".ai/assistant/workers/roles/fast-focused-worker.md",
+      "use_when": ["small reversible context-bounded task", "mechanically verifiable settled change"],
+      "action_ceiling": "{READ_ONLY_DOCS_ONLY_ADAPTER_ONLY_OR_CODE_AND_TESTS}",
+      "write_mode": "{NONE_OR_BOUNDED}",
+      "max_files": "{POSITIVE_INTEGER_OR_TARGET_LIMIT}",
+      "max_context_words": "{POSITIVE_INTEGER_OR_TARGET_LIMIT}",
+      "required_output": "normalized-worker-result",
+      "prohibited_responsibilities": ["semantic decisions", "protected actions", "final convergence"]
+    }
+  ],
+  "review_triggers": [
+    "project workflow or validation changed",
+    "a worker role repeatedly caused rework or scope drift",
+    "assistant capability or native worker format changed",
+    "{TARGET_WORKER_CATALOG_REVIEW_TRIGGER}"
+  ]
+}

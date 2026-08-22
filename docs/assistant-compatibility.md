@@ -100,21 +100,29 @@ overlay only for a match, unresolved overlap, or explicit team request. It does
 not copy actor, priority, task, identity, or review policy.
 
 When `subagent-delegation` is enabled, every supported surface uses the same
-target policy, delegated-execution overlay, packet template, and primary-
-convergence rule. The selected per-surface capability record states whether
-the surface uses native workers, an approved external dispatcher,
-suggestion-only handoff, or no delegation; whether it can override the worker
-model, dispatch in parallel, and report the actual model; and which target AI-
-infrastructure item owns external dispatch. Unsupported or stale capability
-evidence must fall back to primary execution, a stronger verified role, or
-suggestion-only mode; bridges must not silently claim delegation, backend, or
-model choice.
+target policy, role catalog and prompts, orchestration prompt, deterministic
+task plan, delegated-execution overlay, packet/result templates, and primary-
+convergence rule. The selected per-surface capability record states the exact
+client/runtime; native, approved external, suggestion-only, or unsupported
+backend; explicit/automatic invocation; project worker-definition format and
+paths; tool, isolation, background/nested, model, parallelism, and evidence
+behavior; role bindings; and external dispatcher owner. Unsupported or stale
+capability falls back to primary execution, a stronger verified role, or
+suggestion-only mode. Bridges must not silently claim delegation, native
+definitions, backend, or model choice.
 
 The contract is identical for generic, AGENTS-aware, Codex, Claude, Gemini,
 GitHub Copilot, Cursor, Devin/Cascade, and Windsurf surfaces. Their execution
 mechanics may differ, and no capability is copied from one product to another.
 The portable term `subagent` means a bounded worker packet, not a dependency
 on an OpenAI API or client feature.
+
+Provider-native worker definitions are installed only after target evidence
+confirms that exact client supports project-owned definitions. They remain
+thin bindings to `.ai/assistant/prompts/worker-orchestration.md`, the selected
+role prompt, packet/result contracts, and target validation. This lets every
+supported assistant use the same project-owned semantics while preserving
+different invocation and configuration mechanics.
 
 As of 2026-08-20, OpenAI describes
 [`gpt-5.3-codex-spark`](https://openai.com/index/introducing-gpt-5-3-codex-spark/)
@@ -215,10 +223,11 @@ ASCII grammar and width limits, module profile, help, routing, and all
 supported bridge capability entries.
 
 Maintainers can run `python3 tools/check_subagent_delegation.py` to validate
-the portable delegation rule, target policy, lazy overlay, flow, packet,
-per-surface dispatch backend and capability fields, bridge routing, and
-primary convergence contract. Structural conformance does not prove safe
-decomposition or actual vendor model availability.
+the portable delegation rule, target policy, six-role catalog, orchestration
+prompt, task graph, packet/result contracts, lazy overlay, unsafe-decomposition
+fixtures, per-surface backend/native-definition capabilities, bridge routing,
+and primary convergence. Structural conformance does not prove safe semantic
+decomposition or actual provider/model availability.
 
 Maintainers can run `python3 tools/check_architecture_knowledge.py` to validate
 the portable architecture rule, target catalog, operation, lazy route,

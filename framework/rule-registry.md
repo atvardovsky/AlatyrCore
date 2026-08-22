@@ -353,14 +353,15 @@ Enforcement: required when module enabled.
 
 Rule ID: `ALATYR-DELEGATION-001`
 Canonical source: `.ai/framework/subagent-delegation.md`
-Commitment: When optional subagent delegation is enabled, keep orchestration,
+Commitment: When optional subagent delegation is enabled, keep task readiness,
 project decisions, approval, integration, and final evidence with the primary
-assistant; let workers inherit but never broaden current-scope action phases;
-use the same bounded packet and convergence contract for target-verified native
-workers, external dispatchers, and suggestion-only handoff across assistant
-surfaces; preserve context, action, tool, write, privacy, validation, model,
-and concurrency boundaries; and fall back without unsupported quality, latency,
-or cost claims.
+assistant; use target-owned roles, deterministic dependency and write-scope
+planning, bounded packets, normalized results, scoped retries, and primary
+convergence for target-verified native workers, external dispatchers, and
+suggestion-only handoff; keep provider-native definitions as thin target
+bindings; preserve context, action, tool, write, privacy, validation, model,
+runtime-capability, and concurrency boundaries; and fall back without
+unsupported quality, latency, or cost claims.
 Applies to: delegated execution, parallel workstreams, fast focused coding,
 large tasks.
 Enforcement: required when module enabled or delegated execution is attempted.

@@ -21,5 +21,5 @@ Before making changes:
 7. Before state changes, use `.ai/assistant/policies/action-authorization.json`; a topic switch or backlog/issue return is read-only.
    Status, discussion, report, analysis, plan, or ambiguous continuation is read-only. Implementation does not imply
    commit; commit does not imply push; prior completed-task authorization expires.
-
+8. When delegation is selected, use `.ai/assistant/prompts/worker-orchestration.md` and the selected capability record; do not infer native worker support.
 Assistant-specific bridge files must stay short and point back to canonical target files.

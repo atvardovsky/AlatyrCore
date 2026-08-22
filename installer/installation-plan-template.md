@@ -88,9 +88,11 @@ List what must not be changed.
 - Context receipt fields and storage policy:
 - Project-area overlays:
 - Task-scale overlays and large-task activation rules:
-- Subagent delegation owner, mode, supported surfaces, role/model bindings,
-  per-surface dispatch backend, external dispatcher item, packet limits,
-  write/tool boundaries, fallback, privacy, and validation:
+- Subagent delegation owner, mode, supported surfaces, role catalog/prompts,
+  per-surface role/model bindings, dispatch backend, external dispatcher item,
+  native worker-definition format/paths, task/packet limits, write/tool
+  boundaries, background/nested behavior, retry/conflict fallback, privacy,
+  and validation:
 - Large-task packet storage, retention, or ignore policy:
 - Team-collaboration need and team-active activation rules:
 - Team policy/operating-model owner, actor names/aliases, local identity ignore,
@@ -344,12 +346,15 @@ cross-boundary, multi-workstream, budget-exceeding, or resumable operations.
 Record where completed packets are stored, ignored, redacted, or removed.
 
 Include `.ai/assistant/delegation-policy.json`, the delegated-execution
-overlay, `.ai/assistant/flows/subagent-delegation.flow.md`, and
-`.ai/assistant/templates/subagent-task-packet.md` only when the target enables
-subagent delegation. Record verified surface capabilities and never infer
-model access from framework examples. For each surface, select native,
-external, suggestion-only, or unsupported dispatch and bind an external route
-to an approved target AI-infrastructure item.
+overlay, worker role catalog/prompts, orchestration prompt,
+`.ai/assistant/flows/subagent-delegation.flow.md`, native-binding authoring,
+execution-plan, packet, and normalized-result templates only when the target enables subagent
+delegation. Record verified surface capabilities and never infer model access
+or native definition support from framework examples. For each surface,
+select native, external, suggestion-only, or unsupported dispatch and bind an
+external route to an approved target AI-infrastructure item. Create native
+worker definitions only after verifying the exact target client; keep them as
+thin bindings and record their format and paths in that capability record.
 
 Include `.ai/assistant/change-packages/index.json`, the lazy change-package
 overlay, `.ai/assistant/flows/change-package.flow.md`, and machine/human report
@@ -430,7 +435,8 @@ metadata.
 - Operation catalog, single entry, automatic routing, health, and preview
   rules:
 - Large-task workstream, checkpoint, and final-convergence rules:
-- Subagent delegation activation, role/model, packet, isolation, fallback,
+- Subagent delegation activation, role catalog/model binding, task graph,
+  packet/result, native definition, isolation, retry/conflict fallback,
   primary-review, and evidence rules:
 - Adapter output contract rules:
 - Adapter drift/local leakage rules:

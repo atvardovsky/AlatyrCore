@@ -110,8 +110,9 @@ maintain them:
   workstreams, resumable checkpoints, and final convergence evidence for
   repositories that need large or multi-session changes.
 - `subagent-delegation`: capability-gated decomposition into bounded,
-  independently verifiable packets, target-owned assistant role/model
-  bindings, disjoint write scopes, fallbacks, and primary-agent convergence.
+  independently verifiable tasks, target-owned worker roles/prompts and
+  assistant role/model/native bindings, deterministic readiness, normalized
+  results, disjoint writes, retry/conflict fallbacks, and primary convergence.
 - `change-packages`: coherent material-change evidence with semantic approval
   scope, companion-surface decisions, implementation corrections, compact
   architecture discussion, and before-to-after repository provenance.
@@ -217,8 +218,9 @@ Reject module-profile work that:
 - enables team collaboration without a coordination backend, actor and
   decision-owner evidence, storage/privacy policy, or conflict review
 - enables subagent delegation without a target policy, current per-surface
-  capability evidence, bounded role/model bindings, write isolation,
-  validation, fallback, and primary-agent convergence
+  capability evidence, bounded role catalog/model/native bindings, task and
+  result contracts, write isolation, validation, retry/conflict fallback, and
+  primary-agent convergence
 - enables Debug Mode without explicit per-scope activation, target-owned
   privacy/retention/publication policy, non-canonical authority, causal event
   attribution, event-derived metric validation, bounded context, and expiry

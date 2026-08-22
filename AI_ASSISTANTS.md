@@ -179,8 +179,9 @@ See [assistant compatibility](docs/assistant-compatibility.md) and the
 When the target enables `subagent-delegation`, the primary assistant may keep
 its immediate critical-path action and dispatch independent, locally
 verifiable sidecars through the target delegation policy. Load only the
-delegated-execution overlay, bounded packet, and selected assistant-capability
-record. The primary assistant retains project decisions, approval, result
+worker orchestration prompt, role catalog, delegated-execution overlay,
+task/packet/result contracts, and selected assistant-capability record. The
+primary assistant retains task readiness, project decisions, approval, result
 review, integration, logical integrity, and final validation.
 
 This strategy applies equally to generic, AGENTS-aware, Codex, Claude, Gemini,
@@ -188,6 +189,12 @@ GitHub Copilot, Cursor, Devin/Cascade, and Windsurf surfaces. `Subagent` is a
 portable role: the selected surface may use native workers, an approved
 external dispatcher, suggestion-only packet handoff, or primary execution as
 recorded by target evidence.
+
+Create assistant-native worker definitions only after the exact target client
+confirms project definition support. Keep each definition as a thin binding to
+the project-owned role and orchestration contracts, and record its format and
+path in that surface's capability record. Unsupported clients use suggestion-
+only or sequential-primary fallback.
 
 Do not assume a model can be selected because its name is known. Use a target-
 verified role/model binding and current client evidence, then fall back to

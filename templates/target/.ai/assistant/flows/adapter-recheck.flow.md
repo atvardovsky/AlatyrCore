@@ -214,6 +214,9 @@ Report:
 - action-authorization policy and routed surfaces current, including phase
   separation, scope invalidation, explicit publication intent, delegation
   inheritance, and `current_user_authorization` evidence
+- enabled worker role catalog/prompts, orchestration prompt, execution-plan,
+  packet/result contracts, per-surface client/runtime and native-definition
+  evidence, retries/conflicts, and thin provider bindings remain synchronized
 - adapter drift checks result, including local path leakage, stale checker
   statements, duplicate profile references, context-router references, owner
   placeholders, and target-local checker evidence

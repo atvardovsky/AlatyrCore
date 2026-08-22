@@ -41,8 +41,9 @@ sync, logical integrity review, and final evidence.
   Alatyr findings, human supervision, causal follow-up, timing, and rework
 - optional large-task orchestration with bounded workstreams, context receipts,
   resumable checkpoints, and final convergence
-- optional capability-gated subagent delegation with bounded packets, verified
-  role/model bindings, write isolation, fallback, and primary convergence
+- optional capability-gated worker delegation with project-owned roles and
+  prompts, deterministic task/packet/result contracts, verified per-surface
+  native/model bindings, write isolation, fallback, and primary convergence
 - optional team collaboration with target-owned actors, priorities, shared
   work registry, changed-fact overlap, claims, handoffs, decisions, review, and
   revision-bound merge readiness
@@ -205,8 +206,9 @@ Those belong to a project contour or repository adapter.
 - `.ai/framework/large-task-orchestration.md`: optional coordination contract
   for large, cross-boundary, multi-workstream, or resumable changes.
 - `.ai/framework/subagent-delegation.md`: optional contract for capability-
-  checked decomposition, fast focused workers, bounded packets, result review,
-  fallback, and primary-agent convergence.
+  checked decomposition, target worker roles, deterministic task readiness,
+  bounded packet/results, thin native bindings, retry/conflict handling, and
+  primary-agent convergence.
 - `.ai/framework/team-collaboration.md`: optional multi-actor coordination
   contract for team tasks, claims, conflicts, checkpoints, handoffs,
   decisions, review, and merge readiness.

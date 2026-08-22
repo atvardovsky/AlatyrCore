@@ -27,7 +27,7 @@
         "7. Before state changes, use `.ai/assistant/policies/action-authorization.json`; a topic switch or backlog/issue return is read-only.",
         "   Status, discussion, report, analysis, plan, or ambiguous continuation is read-only. Implementation does not imply",
         "   commit; commit does not imply push; prior completed-task authorization expires.",
-        "",
+        "8. When delegation is selected, use `.ai/assistant/prompts/worker-orchestration.md` and the selected capability record; do not infer native worker support.",
         "Assistant-specific bridge files must stay short and point back to canonical target files."
       ]
     },
@@ -44,6 +44,7 @@
         "For an exact operation ID or alias, including diagram, team, or AI aliases, read",
         "`.ai/assistant/operation-index.json`; for bare `Alatyr`, ambiguity, or repair, read",
         "`.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.",
+        "When delegation is selected, use `.ai/assistant/prompts/worker-orchestration.md` and the selected capability record; do not infer native worker support.",
         "",
         "Do not treat this bridge file as the source of truth."
       ]
@@ -61,6 +62,7 @@
         "For an exact operation ID or alias, including diagram, team, or AI aliases, read",
         "`.ai/assistant/operation-index.json`; for bare `Alatyr`, ambiguity, or repair, read",
         "`.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.",
+        "When delegation is selected, use `.ai/assistant/prompts/worker-orchestration.md` and the selected capability record; do not infer native worker support.",
         "",
         "Do not treat this bridge file as the source of truth."
       ]
@@ -82,6 +84,7 @@
         "For an exact operation ID or alias, including diagram, team, or AI aliases, read",
         "`.ai/assistant/operation-index.json`; for bare `Alatyr`, ambiguity, or repair, read",
         "`.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.",
+        "When delegation is selected, use `.ai/assistant/prompts/worker-orchestration.md` and the selected capability record; do not infer native worker support.",
         "",
         "This Cursor rule is a bridge, not the source of truth."
       ]
@@ -90,7 +93,8 @@
       "path": "templates/target/.cursorrules",
       "lines": [
         "Ensure AGENTS.md is loaded once; if it was not preloaded by the host, read it now. Then read AI_ASSISTANTS.md and .ai/assistant/bootstrap-index.json. Repair a missing or stale derived index from its named canonical sources. This file is a legacy bridge for Cursor-compatible tools.",
-        "For an exact operation ID or alias, read .ai/assistant/operation-index.json. For bare Alatyr, ambiguity, or repair, read .ai/assistant/operation-catalog.json, .ai/assistant/help.md, and .ai/assistant/flows/operation-routing.flow.md."
+        "For an exact operation ID or alias, read .ai/assistant/operation-index.json. For bare Alatyr, ambiguity, or repair, read .ai/assistant/operation-catalog.json, .ai/assistant/help.md, and .ai/assistant/flows/operation-routing.flow.md.",
+        "When delegation is selected, use .ai/assistant/prompts/worker-orchestration.md and the selected capability record; do not infer native worker support."
       ]
     },
     {
@@ -107,6 +111,7 @@
         "For an exact operation ID or alias, including diagram, team, or AI aliases, read",
         "`.ai/assistant/operation-index.json`; for bare `Alatyr`, ambiguity, or repair, read",
         "`.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.",
+        "When delegation is selected, use `.ai/assistant/prompts/worker-orchestration.md` and the selected capability record; do not infer native worker support.",
         "",
         "This file is a bridge, not the source of truth."
       ]
@@ -126,6 +131,7 @@
         "For an exact operation ID or alias, including diagram, team, or AI aliases, read",
         "`.ai/assistant/operation-index.json`; for bare `Alatyr`, ambiguity, or repair, read",
         "`.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.",
+        "When delegation is selected, use `.ai/assistant/prompts/worker-orchestration.md` and the selected capability record; do not infer native worker support.",
         "",
         "Keep this file as a bridge. Do not duplicate full project or framework policy",
         "here."
@@ -151,6 +157,7 @@
         "For an exact operation ID or alias, including diagram, team, or AI aliases, read",
         "`.ai/assistant/operation-index.json`; for bare `Alatyr`, ambiguity, or repair, read",
         "`.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.",
+        "When delegation is selected, use `.ai/assistant/prompts/worker-orchestration.md` and the selected capability record; do not infer native worker support.",
         "Return blockers first, then final evidence."
       ]
     },
@@ -168,6 +175,7 @@
         "For an exact operation ID or alias, including diagram, team, or AI aliases, read",
         "`.ai/assistant/operation-index.json`; for bare `Alatyr`, ambiguity, or repair, read",
         "`.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.",
+        "When delegation is selected, use `.ai/assistant/prompts/worker-orchestration.md` and the selected capability record; do not infer native worker support.",
         "",
         "This file is a legacy bridge, not the source of truth."
       ]
@@ -176,7 +184,8 @@
       "path": "templates/target/.windsurfrules",
       "lines": [
         "Ensure AGENTS.md is loaded once; if it was not preloaded by the host, read it now. Then read AI_ASSISTANTS.md and .ai/assistant/bootstrap-index.json. Repair a missing or stale derived index from its named canonical sources. This file is a legacy bridge for Windsurf-compatible tools.",
-        "For an exact operation ID or alias, read .ai/assistant/operation-index.json. For bare Alatyr, ambiguity, or repair, read .ai/assistant/operation-catalog.json, .ai/assistant/help.md, and .ai/assistant/flows/operation-routing.flow.md."
+        "For an exact operation ID or alias, read .ai/assistant/operation-index.json. For bare Alatyr, ambiguity, or repair, read .ai/assistant/operation-catalog.json, .ai/assistant/help.md, and .ai/assistant/flows/operation-routing.flow.md.",
+        "When delegation is selected, use .ai/assistant/prompts/worker-orchestration.md and the selected capability record; do not infer native worker support."
       ]
     }
   ]

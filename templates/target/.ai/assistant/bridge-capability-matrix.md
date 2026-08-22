@@ -15,6 +15,12 @@ Each delegation capability record must select `native`, `external`,
 routed target AI-infrastructure item. The shared packet and primary-
 convergence contract apply regardless of assistant vendor or backend.
 
+When delegation is selected, every surface routes through
+`.ai/assistant/prompts/worker-orchestration.md` and the project-owned role,
+task, packet, and result contracts. Native worker definitions are thin target
+bindings whose verified format and paths belong to the selected capability
+record; no surface inherits support claims from another.
+
 ## Supported Assistant Surfaces
 
 Resolve these entries from target evidence before claiming a bridge is

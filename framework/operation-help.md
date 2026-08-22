@@ -409,7 +409,9 @@ When routing a request:
 14. When subagent delegation is enabled, identify the primary critical-path
     action first. Add delegated execution only for independently useful,
     locally verifiable packets with disjoint writes or read-only scope and
-    current capability evidence. Honor an explicit `forbid` preference.
+    current capability evidence. Use the target orchestration prompt, role
+    catalog, execution plan, packet, and normalized result. Honor an explicit
+    `forbid` preference.
 15. In an enabled team project, read the compact active-work index before a
     state-changing operation. Add the team-active overlay for explicit team
     coordination, a task/branch match, possible logical overlap, or unresolved

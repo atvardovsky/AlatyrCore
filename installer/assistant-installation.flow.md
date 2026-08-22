@@ -295,12 +295,18 @@ Classify every proposed target file:
     Add the large-task flow and operation-packet template when the target needs
     cross-boundary, multi-workstream, budget-exceeding, or resumable work, and
     record the target packet storage policy.
-    Add the target delegation policy, delegated-execution overlay, delegation
-    flow, and packet template only when subagent delegation is enabled. Record
+    Add the target delegation policy, role catalog/prompts, orchestration
+    prompt, delegated-execution overlay, delegation flow, native-binding
+    authoring, execution-plan, packet, and normalized-result templates only
+    when subagent delegation is enabled. Record
     each surface's native, external, suggestion-only, or unsupported dispatch
-    backend; any external dispatcher AI-infrastructure item; model override,
-    parallelism, actual-model evidence, verified role bindings, write/tool
-    boundaries, fallback, privacy, validation, and primary convergence.
+    backend; any external dispatcher AI-infrastructure item; exact
+    client/runtime, explicit/automatic dispatch, project worker-definition
+    format and paths, model override, parallelism, background/nested behavior,
+    actual-model evidence, verified role bindings, write/tool boundaries,
+    retry/conflict fallback, privacy, validation, and primary convergence.
+    Generate provider-native definitions only after support is verified and
+    keep them as thin target bindings to portable worker contracts.
     Add the change-package index, flow, machine record, and redacted report
     template when the target needs semantic multi-surface approval, architecture
     segment/capability evidence, audit, pilot, or publishable provenance. Record
@@ -468,8 +474,11 @@ Report:
   templates added or skipped
 - large-task orchestration flow, operation packet, and target storage policy
   added or skipped
-- subagent delegation policy, overlay, flow, packet, per-surface capability
-  evidence, role/model bindings, fallback, and validation added or skipped
+- subagent delegation policy, role catalog/prompts, orchestration prompt,
+  overlay, flow, native-binding authoring, execution plan, packet, normalized
+  result, per-surface
+  capability evidence, native definition paths, role/model bindings,
+  retry/conflict fallback, and validation added or skipped
 - change-package index, lazy overlay, flow, schema, redacted report, retention
   policy, and validator support added, migrated, skipped, or blocked
 - durable engineering-evidence owner, policy, compact index, lazy overlay,
