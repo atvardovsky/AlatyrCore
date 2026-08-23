@@ -25,6 +25,8 @@ When Debug Mode is requested or active, verify:
   counter-evidence and a replacement invariant or architecture event in its
   causal chain
 - timing and metric evidence kinds are honest
+- completed events lie inside the Debug lifecycle interval and event sequence,
+  causal order, and timestamps agree
 - capture coverage, missing intervals, observer effect, and overhead are stated
 - raw conversations, chain-of-thought, prompts, secrets, credentials, unrelated
   personal data, complete diffs, verbose logs, and unused speculation are absent
@@ -32,9 +34,13 @@ When Debug Mode is requested or active, verify:
   binding state, Git object type, ancestry, and preserved prior bindings
 - finalized historical snapshot drift is reported without rewriting or
   invalidating the original record
-- completed records close the Engineering Evidence decision; material rejected
-  hypotheses and direction changes are captured, blocked, or skipped only with
-  named canonical preservation
+- completed records close the Engineering Evidence decision; supporting event
+  roles match referenced events, every materiality condition is evaluated, and
+  a skip has registry-backed canonical preservation for each applicable result
+- validation fidelity distinguishes exact reproduction from representative,
+  partial, unavailable, or not-applicable evidence and retains unresolved gaps
+- completed records are immutable; continued work uses a newly activated record
+  with one closed predecessor
 - every durable engineering-evidence ID resolves exactly once in the target
   Engineering Evidence index; Debug event IDs and temporary IDs are not used
 - the compact index and selected record agree
@@ -42,4 +48,4 @@ When Debug Mode is requested or active, verify:
   explicit disablement or abandonment
 
 Deterministic checks cannot prove event completeness, semantic attribution,
-result quality, or reduced human supervision.
+domain claim correctness, result quality, or reduced human supervision.

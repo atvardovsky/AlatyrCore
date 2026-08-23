@@ -79,10 +79,13 @@ Before upgrading framework files in a target project:
    When `debug-mode` is enabled, compare its explicit activation/expiry rule,
    non-canonical storage policy, index/record schema, lazy overlay, operation,
    flow, gate, summary, contract and authoring-template schema, versioned actor/
-   causality/intervention/contribution attribution, timing/capture quality, metric
-   derivation, structured architectural-impact and decision-effect fields,
-   direction-change hypothesis/replacement causality, durable engineering-
-   evidence decision/reference resolution, repository-binding state/lineage,
+   causality/intervention/contribution attribution, lifecycle-bounded timing,
+   immutable completion and continuation, capture quality, metric derivation,
+   structured architectural-impact and decision-effect fields, direction-
+   change hypothesis/replacement causality, typed evidence-event roles,
+   complete materiality, canonical skip preservation, claim-validation
+   fidelity, durable engineering-evidence decision/reference resolution,
+   repository-binding state/lineage,
    active-versus-finalized comparison boundary, clean-upstream boundary, and
    validator support.
    When `code-documentation` is enabled, compare its catalog/profile schemas,
@@ -135,11 +138,15 @@ Before upgrading framework files in a target project:
     event attribution, timing evidence, publication policy, and compact index.
     Never replace records with source placeholders, silently reactivate a
     closed scope, or move debug files into a clean external contribution.
-    Preserve schema-version-1 events and records as migration-limited evidence;
-    do not silently infer version-2 attribution or binding lineage. Install the
-    current contract version, authoring templates, and derived index projections
-    for new records. Repair invalid durable evidence decisions/references and
-    keep active records out of finalized comparisons. A finalized historical
+    Preserve schema-version-1 and version-2 events and records as migration-
+    limited evidence; do not silently infer attribution, materiality, claim
+    fidelity, continuation, or binding lineage. Install the current contract
+    version, authoring templates, and derived index projections for new
+    records. Repair invalid lifecycle bounds, event roles, durable evidence
+    decisions/references, canonical skip claims, and
+    keep active records out of finalized comparisons. Never append to a
+    completed record; create a linked continuation after explicit activation.
+    A finalized historical
     snapshot that no longer matches the current worktree is a reproducibility
     warning, not a reason to rewrite or invalidate the old record.
     Preserve target code-documentation profiles and decisions. Never replace

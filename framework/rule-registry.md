@@ -169,12 +169,15 @@ Rule ID: `ALATYR-ENGINEERING-EVIDENCE-001`
 Canonical source: `.ai/framework/engineering-evidence.md`
 Commitment: Before completing material semantic, architectural, or non-obvious
 repair work, decide whether reusable knowledge would be lost after the session;
-capture compact project-owned task, invariant, hypothesis outcome, root-cause,
-solution, regression, validation, publication, and uncertainty evidence when
-triggered, with versioned provisional/final repository binding, correct Git
-object and ancestry checks, and preserved rebinding lineage; otherwise record a
-fact-specific skip or block reason without storing raw chat, private reasoning,
-secrets, or unrelated history.
+keep supporting implementation and validation events separate from materiality;
+evaluate supported capture conditions explicitly; capture compact project-owned
+task, invariant, hypothesis outcome, root-cause, solution, regression,
+validation, publication, and uncertainty evidence when triggered, with
+versioned provisional/final repository binding, correct Git object and ancestry
+checks, and preserved rebinding lineage; skip only when materiality is resolved
+and every applicable conclusion is already preserved by a registry-backed
+canonical source; otherwise capture or block without storing raw chat, private
+reasoning, secrets, or unrelated history.
 Applies to: material semantic changes, architecture changes, non-obvious defect
 repairs, final evidence.
 Enforcement: required capture decision; record required when triggered and
@@ -184,13 +187,16 @@ Rule ID: `ALATYR-DEBUG-001`
 Canonical source: `.ai/framework/debug-mode.md`
 Commitment: When optional Debug Mode is explicitly enabled for a current task
 or session, record compact non-canonical events with separate actor, causal
-class, intervention kind, contribution kind, and category; do not count initial
-task scope as intervention; distinguish validation requests from corrections;
-preserve direction-change causality; close the durable Engineering Evidence
-decision; bind results with typed Git objects and lineage; derive metrics from
-versioned predicates; preserve privacy, authorization, historical
-comparability, and clean upstream boundaries; and expire activation at the
-logical-scope boundary.
+class, intervention kind, contribution kind, and category; keep completed
+records immutable and continue related work through newly activated lineage;
+enforce lifecycle-bounded event time; distinguish validation requests from
+corrections; preserve direction-change causality; type supporting
+evidence-event roles; evaluate every durable-evidence materiality condition;
+require registry-backed canonical preservation before skipping; classify exact,
+representative, partial, unavailable, or not-applicable validation claims; bind
+results with typed Git objects and lineage; derive metrics from versioned
+predicates; preserve privacy, authorization, historical comparability, and
+clean upstream boundaries; and expire activation at the logical-scope boundary.
 Applies to: debug activation, task observability, human supervision
 measurement, cross-task effectiveness comparison, clean upstream projection.
 Enforcement: required when module enabled and Debug Mode is activated.
@@ -384,11 +390,12 @@ installed framework pack, baseline, deviations, migration notes, and hash-bound
 upgrade impact; bind releases to v<VERSION>, shipped schemas, contract-tree
 evidence, and the checked-out target branch/revision; preserve current-scope
 authorization, durable engineering evidence, non-canonical Debug Mode records
-and their migration-limited legacy classifications, and enabled target
-package/module state; distinguish non-accepting migration staging from strict
-acceptance; expand context from affected owners and migrate schemas atomically
-without replacing active state with placeholders or inferring missing
-historical evidence.
+and their migration-limited legacy attribution, materiality, claim-fidelity,
+continuation, and binding classifications, and enabled target package/module
+state; distinguish non-accepting migration staging from strict acceptance;
+expand context from affected owners and migrate schemas atomically without
+replacing active state with placeholders or inferring missing historical
+evidence.
 Applies to: installation, framework upgrades.
 Enforcement: required.
 

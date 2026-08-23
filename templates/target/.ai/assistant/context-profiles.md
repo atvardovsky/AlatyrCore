@@ -271,6 +271,9 @@ current checkpoint, finalization, selected lookup, or comparison. Capture
 material normalized events rather than transcript detail. Debug activation
 does not authorize engineering changes, commits, publication, live actions,
 or protected work, and it expires when the logical scope completes or changes.
+At finalization, load `.ai/project/source-of-truth-registry.md` only when a
+skip claims canonical preservation, and load only the exact validation owner
+needed to classify reproducer fidelity.
 
 ## Task-Scale Overlay: `team-active`
 

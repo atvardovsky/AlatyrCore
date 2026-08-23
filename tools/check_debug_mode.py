@@ -48,6 +48,19 @@ METRIC_NAMES = [
     "post_review_rework",
 ]
 
+MATERIALITY_KINDS = [
+    "undocumented-invariant",
+    "rejected-hypothesis",
+    "non-obvious-dependency",
+    "cross-area-impact",
+    "broad-regression-matrix",
+    "compatibility-or-public-contract",
+    "reviewer-correction",
+    "direction-change",
+    "expensive-to-reconstruct",
+    "unresolved-authority-or-contract",
+]
+
 
 def require_text(path: Path, values: list[str], failures: list[str]) -> None:
     if not path.is_file():
@@ -245,9 +258,25 @@ def fixture_metrics() -> dict[str, Any]:
     }
 
 
+def materiality_evaluation(
+    kind: str,
+    outcome: str,
+    *,
+    event_ids: list[str] | None = None,
+    evidence: list[str] | None = None,
+) -> dict[str, Any]:
+    return {
+        "kind": kind,
+        "outcome": outcome,
+        "event_ids": event_ids or [],
+        "evidence": evidence or [],
+        "reason": f"Fixture assessment for {kind}",
+    }
+
+
 def fixture_record(base: str, result: str) -> dict[str, Any]:
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "record_kind": "alatyr-debug-session",
         "evidence_classification": "non-canonical-observability",
         "debug_id": "DEBUG-1",
@@ -269,6 +298,11 @@ def fixture_record(base: str, result: str) -> dict[str, Any]:
             "initial_revision": base,
             "expires_on": "task-completion",
             "ended_by": "task-completion",
+        },
+        "continuation": {
+            "kind": "initial",
+            "previous_debug_id": "not-applicable",
+            "reason": "Initial fixture Debug scope.",
         },
         "timing": {
             "started_at": {"value": "2026-08-21T12:00:00Z", "evidence_kind": "observed"},
@@ -298,11 +332,43 @@ def fixture_record(base: str, result: str) -> dict[str, Any]:
             },
             "implementation_surfaces": ["src/example.txt"],
             "validation": {"results": ["fixture review passed"], "skipped": []},
+            "claim_validation": {
+                "fidelity": "exact-reproducer",
+                "claims": ["The fixture invariant is repaired."],
+                "evidence": ["fixture review passed"],
+                "limitation": "The fixture proves only its bounded invariant.",
+            },
             "engineering_evidence_ids": ["ENG-1"],
             "engineering_evidence_decision": {
                 "status": "captured",
-                "trigger_event_ids": ["EVT-2", "EVT-4", "EVT-5"],
-                "trigger_kinds": ["direction-change", "rejected-hypothesis", "correction"],
+                "event_links": [
+                    {"event_id": "EVT-1", "role": "finding"},
+                    {"event_id": "EVT-2", "role": "decision"},
+                    {"event_id": "EVT-2", "role": "correction"},
+                    {"event_id": "EVT-2", "role": "direction-change"},
+                    {"event_id": "EVT-3", "role": "implementation"},
+                    {"event_id": "EVT-4", "role": "finding"},
+                    {"event_id": "EVT-4", "role": "rejected-hypothesis"},
+                    {"event_id": "EVT-5", "role": "decision"},
+                    {"event_id": "EVT-5", "role": "correction"},
+                    {"event_id": "EVT-6", "role": "validation"},
+                    {"event_id": "EVT-7", "role": "finding"},
+                    {"event_id": "EVT-8", "role": "finding"},
+                    {"event_id": "EVT-9", "role": "implementation"},
+                    {"event_id": "EVT-10", "role": "validation"}
+                ],
+                "materiality_evaluations": [
+                    materiality_evaluation("undocumented-invariant", "applicable", event_ids=["EVT-7"]),
+                    materiality_evaluation("rejected-hypothesis", "applicable", event_ids=["EVT-4"]),
+                    materiality_evaluation("non-obvious-dependency", "applicable", event_ids=["EVT-1", "EVT-8"]),
+                    materiality_evaluation("cross-area-impact", "applicable", event_ids=["EVT-2"]),
+                    materiality_evaluation("broad-regression-matrix", "applicable", event_ids=["EVT-6", "EVT-10"]),
+                    materiality_evaluation("compatibility-or-public-contract", "not-applicable"),
+                    materiality_evaluation("reviewer-correction", "applicable", event_ids=["EVT-2", "EVT-5"]),
+                    materiality_evaluation("direction-change", "applicable", event_ids=["EVT-2"]),
+                    materiality_evaluation("expensive-to-reconstruct", "applicable", event_ids=["EVT-4"]),
+                    materiality_evaluation("unresolved-authority-or-contract", "not-applicable")
+                ],
                 "knowledge_preserved_by": [],
                 "reason": "Material investigation knowledge is reusable.",
                 "next_safe_action": "No further evidence action is required.",
@@ -342,8 +408,10 @@ def fixture_record(base: str, result: str) -> dict[str, Any]:
 def fixture_index(record: dict[str, Any]) -> dict[str, Any]:
     binding = record["final_result"]["repository_binding"]
     elapsed = record["timing"]["elapsed_seconds"]
+    continuation = record.get("continuation", {})
+    claim_validation = record["final_result"].get("claim_validation", {})
     return {
-        "schema_version": 3,
+        "schema_version": 4,
         "index_kind": "target-alatyr-debug-index",
         "project": "fixture",
         "owner": "engineering",
@@ -365,6 +433,9 @@ def fixture_index(record: dict[str, Any]) -> dict[str, Any]:
                 "record_schema_version": record["schema_version"],
                 "repository_binding_state": binding.get("binding_state", "legacy"),
                 "engineering_evidence_status": record["final_result"].get("engineering_evidence_decision", {}).get("status", "legacy"),
+                "continuation_kind": continuation.get("kind", "legacy"),
+                "continued_from_debug_id": continuation.get("previous_debug_id", "not-applicable"),
+                "claim_validation_fidelity": claim_validation.get("fidelity", "legacy"),
                 "result_revision": binding["result_revision"],
                 "event_coverage": record["capture_quality"]["event_coverage"],
                 "observer_effect": record["capture_quality"]["observer_effect"],
@@ -446,6 +517,21 @@ def validate_fixture(failures: list[str]) -> None:
         authoring_template = repo / ".ai/assistant/templates/debug-session-record.json"
         authoring_template.parent.mkdir(parents=True)
         authoring_template.write_text(RECORD.read_text(encoding="utf-8"), encoding="utf-8")
+        canonical_knowledge = repo / "docs/architecture.md"
+        canonical_knowledge.parent.mkdir(parents=True)
+        canonical_knowledge.write_text(
+            "# Architecture\n\nCanonical dependency decision.\n", encoding="utf-8"
+        )
+        registry = repo / ".ai/project/source-of-truth-registry.md"
+        registry.parent.mkdir(parents=True, exist_ok=True)
+        registry.write_text(
+            "# Source Of Truth Registry\n\n"
+            "### Fact Type: `architecture decision`\n\n"
+            "Fact type: `architecture decision`\n"
+            "Canonical owner: `docs/architecture.md`\n"
+            "Consistency map node: `not-applicable`\n",
+            encoding="utf-8",
+        )
 
         def write(value: dict[str, Any]) -> None:
             record_path.write_text(json.dumps(value, indent=2) + "\n", encoding="utf-8")
@@ -464,6 +550,15 @@ def validate_fixture(failures: list[str]) -> None:
         ) -> None:
             value["metrics"][metric_name].update(
                 value=len(event_ids), event_ids=event_ids
+            )
+
+        def evaluation(value: dict[str, Any], kind: str) -> dict[str, Any]:
+            return next(
+                item
+                for item in value["final_result"]["engineering_evidence_decision"][
+                    "materiality_evaluations"
+                ]
+                if item["kind"] == kind
             )
 
         def assert_valid(label: str, value: dict[str, Any]) -> None:
@@ -501,20 +596,83 @@ def validate_fixture(failures: list[str]) -> None:
             }
             for name in METRIC_NAMES
         }
-        activation_only["final_result"]["engineering_evidence_ids"] = []
-        activation_only["final_result"]["engineering_evidence_decision"].update(
-            status="skipped",
-            trigger_event_ids=[],
-            trigger_kinds=[],
-            knowledge_preserved_by=[],
-            reason="No durable material trigger was observed.",
+        activation_only["final_result"]["implementation_surfaces"] = []
+        activation_only["final_result"]["claim_validation"].update(
+            fidelity="not-applicable",
+            claims=[],
+            evidence=[],
+            limitation="No implementation claim was made.",
         )
+        activation_only["final_result"]["engineering_evidence_decision"][
+            "event_links"
+        ] = [{"event_id": "EVT-1", "role": "finding"}]
+        activation_only["final_result"]["engineering_evidence_decision"][
+            "materiality_evaluations"
+        ] = [
+            materiality_evaluation(
+                kind,
+                "applicable" if kind == "non-obvious-dependency" else "not-applicable",
+                event_ids=["EVT-1"] if kind == "non-obvious-dependency" else [],
+            )
+            for kind in MATERIALITY_KINDS
+        ]
         assert_valid("task activation is not an intervention", activation_only)
+
+        canonical_skip = copy.deepcopy(activation_only)
+        canonical_skip["final_result"]["engineering_evidence_ids"] = []
+        canonical_skip["final_result"]["engineering_evidence_decision"].update(
+            status="skipped",
+            knowledge_preserved_by=[
+                {
+                    "materiality_kind": "non-obvious-dependency",
+                    "fact_type": "architecture decision",
+                    "canonical_source": "docs/architecture.md",
+                    "evidence": "Canonical architecture owner already records the conclusion.",
+                }
+            ],
+            reason="The applicable dependency conclusion is already canonical.",
+        )
+        assert_valid("canonical materiality preservation permits skip", canonical_skip)
+
+        previous_record = copy.deepcopy(record)
+        previous_record["debug_id"] = "DEBUG-0"
+        previous_record["task"]["scope_id"] = "task-0"
+        previous_record_path = record_path.parent / "DEBUG-0.json"
+        previous_record_path.write_text(
+            json.dumps(previous_record, indent=2) + "\n", encoding="utf-8"
+        )
+        continued_record = copy.deepcopy(record)
+        continued_record["continuation"].update(
+            kind="continued",
+            previous_debug_id="DEBUG-0",
+            reason="A new explicit task continues the closed investigation.",
+        )
+        continued_index = fixture_index(continued_record)
+        previous_entry = fixture_index(previous_record)["records"][0]
+        previous_entry["record"] = ".ai/project/debug/records/DEBUG-0.json"
+        continued_index["records"].insert(0, previous_entry)
+        record_path.write_text(
+            json.dumps(continued_record, indent=2) + "\n", encoding="utf-8"
+        )
+        index_path.write_text(
+            json.dumps(continued_index, indent=2) + "\n", encoding="utf-8"
+        )
+        continuation_errors = [
+            finding for finding in run_validator(repo) if finding.level == "error"
+        ]
+        if continuation_errors:
+            failures.append(
+                "valid continuation fixture failed: "
+                + "; ".join(
+                    f"{item.code}: {item.message}" for item in continuation_errors
+                )
+            )
+        previous_record_path.unlink()
 
         validation_request = copy.deepcopy(record)
         validation_request["events"][1].update(
             intervention_kind="validation-request",
-            contribution_kind="coordination",
+            contribution_kind="validation",
             category="validation",
             architectural_supervision=False,
             architectural_impacts=[],
@@ -524,9 +682,24 @@ def validate_fixture(failures: list[str]) -> None:
         set_metric(
             validation_request, "implementation_corrections_after_human", []
         )
-        validation_request["final_result"]["engineering_evidence_decision"][
-            "trigger_event_ids"
-        ] = ["EVT-4", "EVT-5"]
+        validation_links = validation_request["final_result"][
+            "engineering_evidence_decision"
+        ]["event_links"]
+        validation_links[:] = [
+            link
+            for link in validation_links
+            if not (link["event_id"] == "EVT-2" and link["role"] in {"decision", "correction", "direction-change"})
+        ]
+        validation_links.append({"event_id": "EVT-2", "role": "validation"})
+        evaluation(validation_request, "cross-area-impact").update(
+            outcome="not-applicable", event_ids=[]
+        )
+        evaluation(validation_request, "reviewer-correction")["event_ids"] = [
+            "EVT-5"
+        ]
+        evaluation(validation_request, "direction-change").update(
+            outcome="not-applicable", event_ids=[]
+        )
         assert_valid(
             "human validation request is not an implementation correction",
             validation_request,
@@ -535,31 +708,129 @@ def validate_fixture(failures: list[str]) -> None:
         external_validation_request = copy.deepcopy(record)
         external_validation_request["events"][4].update(
             intervention_kind="validation-request",
-            contribution_kind="coordination",
+            contribution_kind="validation",
             category="validation",
         )
         external_validation_request["events"][8]["post_review_rework"] = False
         set_metric(external_validation_request, "maintainer_corrections", [])
         set_metric(external_validation_request, "post_review_rework", [])
-        external_validation_request["final_result"][
+        external_links = external_validation_request["final_result"][
             "engineering_evidence_decision"
-        ]["trigger_event_ids"] = ["EVT-2", "EVT-4"]
+        ]["event_links"]
+        external_links[:] = [
+            link
+            for link in external_links
+            if not (link["event_id"] == "EVT-5" and link["role"] in {"decision", "correction"})
+        ]
+        external_links.append({"event_id": "EVT-5", "role": "validation"})
+        evaluation(external_validation_request, "reviewer-correction")[
+            "event_ids"
+        ] = ["EVT-2"]
         assert_valid(
             "external validation request is not a maintainer correction",
             external_validation_request,
         )
 
+        compatibility_field_case = copy.deepcopy(record)
+        compatibility_field_case["events"] = [
+            event("EVT-1", 1, "alatyr", "independent-within-scope", "not-applicable", "finding", "dependency", dependency=True),
+            event(
+                "EVT-2",
+                2,
+                "alatyr",
+                "independent-within-scope",
+                "not-applicable",
+                "decision",
+                "architecture-area",
+                architectural_impacts=["public-contract", "authority-boundary"],
+            ),
+            event("EVT-3", 3, "alatyr", "independent-within-scope", "not-applicable", "implementation", "implementation-revision"),
+            event(
+                "EVT-4",
+                4,
+                "alatyr",
+                "independent-within-scope",
+                "not-applicable",
+                "validation",
+                "regression-scenario",
+                validation=True,
+            ),
+        ]
+        compatibility_field_case["metrics"] = {
+            name: {
+                "value": 0,
+                "evidence_kind": "event-derived",
+                "event_ids": [],
+            }
+            for name in METRIC_NAMES
+        }
+        set_metric(compatibility_field_case, "alatyr_independent_findings", ["EVT-1"])
+        set_metric(
+            compatibility_field_case,
+            "alatyr_independent_dependency_checks",
+            ["EVT-1"],
+        )
+        set_metric(compatibility_field_case, "implementation_revisions", ["EVT-3"])
+        set_metric(compatibility_field_case, "validation_expansions", ["EVT-4"])
+        set_metric(compatibility_field_case, "regression_scenarios_added", ["EVT-4"])
+        field_decision = compatibility_field_case["final_result"][
+            "engineering_evidence_decision"
+        ]
+        field_decision["event_links"] = [
+            {"event_id": "EVT-1", "role": "finding"},
+            {"event_id": "EVT-2", "role": "decision"},
+            {"event_id": "EVT-3", "role": "implementation"},
+            {"event_id": "EVT-4", "role": "validation"},
+        ]
+        field_decision["materiality_evaluations"] = [
+            materiality_evaluation(
+                kind,
+                "applicable"
+                if kind
+                in {
+                    "non-obvious-dependency",
+                    "broad-regression-matrix",
+                    "compatibility-or-public-contract",
+                    "expensive-to-reconstruct",
+                    "unresolved-authority-or-contract",
+                }
+                else "not-applicable",
+                event_ids={
+                    "non-obvious-dependency": ["EVT-1"],
+                    "broad-regression-matrix": ["EVT-4"],
+                    "compatibility-or-public-contract": ["EVT-2"],
+                    "expensive-to-reconstruct": ["EVT-1"],
+                    "unresolved-authority-or-contract": ["EVT-2"],
+                }.get(kind, []),
+                evidence=["external contract remains unresolved"]
+                if kind == "unresolved-authority-or-contract"
+                else [],
+            )
+            for kind in MATERIALITY_KINDS
+        ]
+        compatibility_field_case["final_result"]["claim_validation"].update(
+            fidelity="partial",
+            claims=["The platform-folding compatibility path is improved."],
+            evidence=["representative compatibility regression matrix"],
+            limitation="The exact external result-normalization configuration is not reproduced.",
+        )
+        compatibility_field_case["residual_uncertainty"] = [
+            "External contract authority and exact reproducer remain unresolved."
+        ]
+        assert_valid(
+            "independent compatibility investigation requires captured evidence",
+            compatibility_field_case,
+        )
+
         def remove_external_correction_claim(value: dict[str, Any]) -> None:
             value["events"][4].update(
                 intervention_kind="validation-request",
-                contribution_kind="coordination",
+                contribution_kind="validation",
                 category="validation",
             )
             set_metric(value, "maintainer_corrections", [])
             set_metric(value, "post_review_rework", [])
-            value["final_result"]["engineering_evidence_decision"][
-                "trigger_event_ids"
-            ] = ["EVT-2", "EVT-4"]
+            evaluation(value, "reviewer-correction")["event_ids"] = ["EVT-2"]
 
         invalid_cases: list[tuple[str, Callable[[dict[str, Any]], None], set[str]]] = [
             (
@@ -608,6 +879,27 @@ def validate_fixture(failures: list[str]) -> None:
                 {"DEBUG_MODE_TIMING_DRIFT"},
             ),
             (
+                "event after completed Debug session",
+                lambda value: value["events"][9]["occurred_at"].update(
+                    value="2026-08-21T12:11:00Z"
+                ),
+                {"DEBUG_MODE_EVENT_TIME_WINDOW"},
+            ),
+            (
+                "event before Debug session start",
+                lambda value: value["events"][0]["occurred_at"].update(
+                    value="2026-08-21T11:59:00Z"
+                ),
+                {"DEBUG_MODE_EVENT_TIME_WINDOW"},
+            ),
+            (
+                "event sequence contradicts timestamps",
+                lambda value: value["events"][8]["occurred_at"].update(
+                    value="2026-08-21T12:04:30Z"
+                ),
+                {"DEBUG_MODE_EVENT_TIME_ORDER", "DEBUG_MODE_EVENT_CAUSAL_TIME"},
+            ),
+            (
                 "Alatyr path in clean upstream projection",
                 lambda value: value["final_result"]["upstream_projection"].update(projected_paths=[".ai/project/debug/index.json"]),
                 {"DEBUG_MODE_UPSTREAM_PATH"},
@@ -653,6 +945,11 @@ def validate_fixture(failures: list[str]) -> None:
                 {"DEBUG_MODE_EVIDENCE_PENDING"},
             ),
             (
+                "evidence event role does not match referenced event",
+                lambda value: value["final_result"]["engineering_evidence_decision"]["event_links"][5].update(role="implementation"),
+                {"DEBUG_MODE_EVIDENCE_EVENT_ROLE"},
+            ),
+            (
                 "material evidence skipped without canonical preservation",
                 lambda value: (
                     value["final_result"].update(engineering_evidence_ids=[]),
@@ -662,8 +959,51 @@ def validate_fixture(failures: list[str]) -> None:
             ),
             (
                 "material evidence trigger omitted",
-                lambda value: value["final_result"]["engineering_evidence_decision"].update(trigger_event_ids=["EVT-2"]),
-                {"DEBUG_MODE_EVIDENCE_TRIGGER"},
+                lambda value: evaluation(value, "rejected-hypothesis").update(event_ids=[]),
+                {"DEBUG_MODE_MATERIALITY_TRIGGER"},
+            ),
+            (
+                "materiality evaluation omitted",
+                lambda value: value["final_result"]["engineering_evidence_decision"]["materiality_evaluations"].pop(),
+                {"DEBUG_MODE_MATERIALITY_SET", "DEBUG_MODE_RECORD_SCHEMA"},
+            ),
+            (
+                "skipped evidence leaves unknown materiality",
+                lambda value: (
+                    value["final_result"].update(engineering_evidence_ids=[]),
+                    value["final_result"]["engineering_evidence_decision"].update(status="skipped"),
+                    evaluation(value, "unresolved-authority-or-contract").update(outcome="unknown"),
+                ),
+                {"DEBUG_MODE_EVIDENCE_SKIP_UNKNOWN"},
+            ),
+            (
+                "partial claim omits residual uncertainty",
+                lambda value: (
+                    value["final_result"]["claim_validation"].update(fidelity="partial"),
+                    value.update(residual_uncertainty=[]),
+                ),
+                {"DEBUG_MODE_CLAIM_UNCERTAINTY"},
+            ),
+            (
+                "exact reproducer claim omits validation evidence",
+                lambda value: value["final_result"]["claim_validation"].update(
+                    evidence=[]
+                ),
+                {"DEBUG_MODE_CLAIM_EVIDENCE"},
+            ),
+            (
+                "implemented result marks claim validation not applicable",
+                lambda value: value["final_result"]["claim_validation"].update(
+                    fidelity="not-applicable", claims=[], evidence=[]
+                ),
+                {"DEBUG_MODE_CLAIM_FIDELITY"},
+            ),
+            (
+                "continued record references unknown prior record",
+                lambda value: value["continuation"].update(
+                    kind="continued", previous_debug_id="DEBUG-UNKNOWN"
+                ),
+                {"DEBUG_MODE_CONTINUATION_REFERENCE"},
             ),
         ]
         for label, mutate, expected_codes in invalid_cases:
@@ -677,8 +1017,59 @@ def validate_fixture(failures: list[str]) -> None:
             ):
                 failures.append(f"validator did not reject {label}")
 
+        version_two = copy.deepcopy(record)
+        version_two["schema_version"] = 2
+        version_two.pop("continuation")
+        version_two["final_result"].pop("claim_validation")
+        version_two["final_result"]["engineering_evidence_decision"] = {
+            "status": "captured",
+            "trigger_event_ids": ["EVT-2", "EVT-4", "EVT-5"],
+            "trigger_kinds": [
+                "direction-change",
+                "rejected-hypothesis",
+                "correction",
+            ],
+            "knowledge_preserved_by": [],
+            "reason": "Legacy version-2 evidence was captured.",
+            "next_safe_action": "Migrate when the record is next maintained.",
+        }
+        write(version_two)
+        version_two_findings = run_validator(repo)
+        version_two_errors = [
+            item for item in version_two_findings if item.level == "error"
+        ]
+        if version_two_errors:
+            failures.append(
+                "schema-version-2 compatibility failed: "
+                + "; ".join(
+                    f"{item.code}: {item.message}" for item in version_two_errors
+                )
+            )
+        if not any(
+            item.code == "DEBUG_MODE_V2_CONTRACT" for item in version_two_findings
+        ):
+            failures.append("schema-version-2 records did not report migration warning")
+
+        version_two_late_event = copy.deepcopy(version_two)
+        version_two_late_event["events"][9]["occurred_at"]["value"] = (
+            "2026-08-21T12:11:00Z"
+        )
+        write(version_two_late_event)
+        version_two_late_findings = run_validator(repo)
+        if any(
+            item.level == "error" and item.code == "DEBUG_MODE_EVENT_TIME_WINDOW"
+            for item in version_two_late_findings
+        ):
+            failures.append("schema-version-2 post-completion event was rejected instead of warned")
+        if not any(
+            item.level == "warning" and item.code == "DEBUG_MODE_EVENT_TIME_WINDOW"
+            for item in version_two_late_findings
+        ):
+            failures.append("schema-version-2 post-completion event lacked migration warning")
+
         legacy = copy.deepcopy(record)
         legacy["schema_version"] = 1
+        legacy.pop("continuation")
         legacy_event = copy.deepcopy(record["events"][0])
         for field in ["actor", "causal_class", "intervention_kind", "contribution_kind"]:
             legacy_event.pop(field)
@@ -693,6 +1084,7 @@ def validate_fixture(failures: list[str]) -> None:
             for name in METRIC_NAMES
         }
         legacy["final_result"].pop("engineering_evidence_decision")
+        legacy["final_result"].pop("claim_validation")
         legacy_binding = legacy["final_result"]["repository_binding"]
         legacy_binding.pop("binding_state")
         legacy_binding.pop("prior_bindings")
@@ -737,12 +1129,15 @@ def main() -> int:
             "## Architectural Supervision",
             "## Privacy Boundary",
             "## Final Result And External Projection",
+            "immutable task evidence",
+            "`materiality_evaluations`",
+            "`exact-reproducer`",
         ],
         failures,
     )
-    require_text(FLOW, ["## Modes", "explicit current user request", "derived-from-human", "contribution kind", "rejected-hypothesis", "prior_bindings"], failures)
-    require_text(GATE, ["non-canonical observability evidence", "logical scope", "Engineering Evidence decision", "direction-changing correction"], failures)
-    require_text(SUMMARY, ["# Alatyr Debug Summary", "Record schema and attribution model", "Human architectural interventions", "Final result binding", "Durable engineering evidence", "External projection"], failures)
+    require_text(FLOW, ["## Modes", "explicit current user request", "derived-from-human", "contribution kind", "rejected-hypothesis", "prior_bindings", "continued investigation", "materiality", "exact reproducer"], failures)
+    require_text(GATE, ["non-canonical observability evidence", "logical scope", "Engineering Evidence decision", "direction-changing correction", "continued work", "materiality", "validation fidelity"], failures)
+    require_text(SUMMARY, ["# Alatyr Debug Summary", "Record schema and attribution model", "Human architectural interventions", "Final result binding", "Durable engineering evidence", "External projection", "Claim-validation fidelity", "Continuation lineage"], failures)
     require_text(
         POLICY,
         ["Owner:", "Storage mode:", "Visibility:", "Retention policy:", "Redaction policy:", "External patch policy:"],
@@ -750,7 +1145,7 @@ def main() -> int:
     )
     require_text(
         RECORD_POLICY,
-        ["architectural_impacts", "decision_effect", "migration-limited"],
+        ["architectural_impacts", "decision_effect", "migration-limited", "schema version 3", "continuation lineage", "validation fidelity"],
         failures,
     )
 
@@ -766,16 +1161,20 @@ def main() -> int:
     else:
         if index.get("records") != []:
             failures.append("source Debug Mode index must start empty")
-        if index.get("schema_version") != 3 or "redaction_policy" not in index:
-            failures.append("source Debug Mode index must use contract-projection schema 3")
+        if index.get("schema_version") != 4 or "redaction_policy" not in index:
+            failures.append("source Debug Mode index must use lifecycle-projection schema 4")
         if record.get("record_kind") != "alatyr-debug-session":
             failures.append("debug record template kind is invalid")
         if record.get("evidence_classification") != "non-canonical-observability":
             failures.append("debug record template must be non-canonical")
-        if record.get("schema_version") != 2:
-            failures.append("debug record template must use attribution contract schema 2")
+        if record.get("schema_version") != 3:
+            failures.append("debug record template must use lifecycle and materiality schema 3")
+        if "continuation" not in record:
+            failures.append("debug record template must expose continuation lineage")
         if "engineering_evidence_decision" not in record.get("final_result", {}):
             failures.append("debug record template must expose durable evidence closure")
+        if "claim_validation" not in record.get("final_result", {}):
+            failures.append("debug record template must expose claim-validation fidelity")
         if overlay.get("overlay") != "debug-mode":
             failures.append("Debug Mode overlay identity is invalid")
         modes = {

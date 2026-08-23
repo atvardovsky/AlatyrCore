@@ -4,6 +4,36 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.24 - 2026-08-23
+
+- Increased the framework version to `0.1.0-alpha.24`, adapter schema version
+  to `23`, and target template version to `24` for Debug lifecycle,
+  materiality, and validation-claim integrity.
+- Added Debug session schema version 3. Completed records are immutable,
+  concrete event timestamps must remain inside lifecycle and causal order, and
+  related later work starts a newly activated record with one closed
+  predecessor.
+- Replaced parallel evidence trigger IDs and labels with typed supporting-event
+  links plus an exhaustive materiality evaluation that keeps implementation
+  and validation support separate from durable-capture reasons.
+- Required skipped material evidence to resolve every applicable conclusion to
+  an existing canonical source registered for the named project fact type;
+  unknown materiality now prevents skipping.
+- Added exact-reproducer, representative, partial, unavailable, and not-
+  applicable claim-validation fidelity. Partial or unavailable completed
+  results must retain residual uncertainty.
+- Preserved schema-version-1 and version-2 records as migration-limited
+  historical evidence instead of silently inventing continuation, materiality,
+  or claim-fidelity facts.
+- Added generic field regression coverage for independent dependency findings,
+  compatibility/public-contract reasoning, broad validation, unresolved
+  authority, zero human intervention, and mandatory durable evidence capture.
+- Updated installation, adapter recheck, lifecycle, context routing, target
+  templates, validator findings, and compact index projections for deterministic
+  upgrades from any target branch.
+- Changed `ALATYR-DEBUG-001`, `ALATYR-ENGINEERING-EVIDENCE-001`, and
+  `ALATYR-LIFECYCLE-001`; no rule IDs were added or removed.
+
 ## 0.1.0-alpha.23 - 2026-08-23
 
 - Increased the framework version to `0.1.0-alpha.23`, adapter schema version

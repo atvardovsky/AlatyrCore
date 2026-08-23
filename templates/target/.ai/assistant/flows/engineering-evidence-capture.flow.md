@@ -16,9 +16,14 @@ publication, or live external actions.
 ## Steps
 
 1. Ask whether reusable engineering knowledge would be lost when the session
-   ends. Evaluate the rule triggers from current task evidence.
+   ends. Evaluate every applicable rule trigger from current task evidence as
+   applicable, not applicable, or unknown. Keep supporting implementation and
+   validation evidence separate from the materiality reason.
 2. Classify the decision as `captured`, `skipped`, or `blocked`. A small,
-   self-explanatory local task may skip with one fact-specific reason.
+   self-explanatory local task may skip with one fact-specific reason when no
+   trigger applies. A material task may skip only when every applicable
+   conclusion resolves to an existing canonical source registered for its
+   project fact type; unknown materiality blocks skipping.
 3. Under `read-only`, do not create or update records. Return a capture proposal
    or block reason. Writing the target evidence store requires current-scope
    `docs-only`, `adapter-only`, or a broader authorized modify phase compatible

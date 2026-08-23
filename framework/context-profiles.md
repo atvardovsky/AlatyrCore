@@ -233,6 +233,11 @@ authorized checkpoint, finalization, repair, or summary. Do not load unrelated
 records, raw conversations, or session history. Checkpoint only material events
 so observation does not materially distort the task.
 
+At finalization, load the source-of-truth registry only when a skipped durable-
+evidence decision claims canonical preservation. Load the exact reproducer or
+validation owner only when claim fidelity is being classified; do not broaden
+to unrelated project validation.
+
 Expire the overlay when the logical scope completes, changes, is abandoned, or
 is explicitly disabled. Cross-task comparison should read compact index
 metrics first and expand only to selected records when task class, capture

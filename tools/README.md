@@ -217,9 +217,11 @@ python3 tools/check_engineering_evidence.py
 `check_debug_mode.py` validates the optional per-task/session activation,
 non-canonical evidence boundary, normalized event origins and causal chains,
 privacy declarations, timing quality, event-derived supervision metrics,
-compact index synchronization, result binding, and clean-upstream projection.
-It cannot prove event completeness, semantic attribution, engineering quality,
-or an actual reduction in human supervision.
+lifecycle bounds, continuation lineage, typed evidence-event roles, complete
+materiality, canonical skip references, claim-validation fidelity, compact
+index synchronization, result binding, and clean-upstream projection. It
+cannot prove event completeness, semantic attribution, domain claim
+correctness, engineering quality, or an actual reduction in human supervision.
 
 ```sh
 python3 tools/check_debug_mode.py

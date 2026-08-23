@@ -130,10 +130,13 @@ Machine checks can verify only deterministic repository facts, such as:
 - optional Debug Mode records can be checked for explicit activation metadata,
   non-canonical authority, versioned actor/causality/intervention/contribution
   attribution, event ordering, causal attribution, structured
-  architectural impacts, direction-changing hypothesis replacement, timing
-  evidence, metric derivation, privacy declarations, exact durable engineering-
-  evidence decision and reference resolution, index synchronization, Git
-  object type, ancestry, binding state and lineage,
+  architectural impacts, direction-changing hypothesis replacement, lifecycle-
+  bounded timing, immutable completion and continuation references, metric
+  derivation, privacy declarations, typed evidence-event roles, complete
+  materiality evaluation, registry-backed canonical skip references, claim-
+  validation fidelity, exact durable engineering-evidence decision and
+  reference resolution, index synchronization, Git object type, ancestry,
+  binding state and lineage,
   active-versus-finalized comparison boundaries, and clean-upstream policy
 - target context routers match the profile template and route known framework
   documents somewhere

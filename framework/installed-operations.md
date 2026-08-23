@@ -519,6 +519,12 @@ only target-approved debug evidence writes under `adapter-only`, and expires
 at the logical-scope boundary. It never implies implementation, commit, push,
 publication, live action, approval, or canonical project authority.
 
+A completed record is immutable. Related later work requires a new explicit
+activation and linked continuation record. Finalization verifies lifecycle-
+bounded timestamps, typed supporting-event roles, complete materiality,
+registry-backed preservation for skips, and exact versus partial validation
+claims before synchronizing the compact index.
+
 Use normalized event and outcome records rather than raw conversations. A
 completed result reports evidence-based timing, capture quality, independent
 Alatyr findings, human interventions, derived-after-human consequences,

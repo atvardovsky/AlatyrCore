@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 952
+Catalog entries: 977
 
 ## Codes
 
@@ -366,6 +366,8 @@ Catalog entries: 952
   Level: configured. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_ACTIVATION`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_ACTIVE_COMPLETION_TIME`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_AGENT_CLASSIFICATION`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_ARCHITECTURAL_IMPACT_MISSING`
@@ -378,9 +380,23 @@ Catalog entries: 952
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_CHECKED`
   Level: info. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_CLAIM_EVIDENCE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_CLAIM_FIDELITY`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_CLAIM_UNCERTAINTY`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_COMPLETED_EMPTY`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_COMPLETED_METRICS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_COMPLETION_TIME_REQUIRED`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_CONTINUATION`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_CONTINUATION_REFERENCE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_CONTINUATION_STATE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_CONTRACT_VERSION`
   Level: error. Source: `tools/validate_target_adapter.py`.
@@ -396,6 +412,8 @@ Catalog entries: 952
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_ENGINEERING_EVIDENCE_REFERENCE`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_EVENT_CAUSAL_TIME`
+  Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_EVENT_CAUSE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_EVENT_CAUSE_ORDER`
@@ -408,15 +426,25 @@ Catalog entries: 952
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_EVENT_SEQUENCE`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_EVENT_TIME_ORDER`
+  Level: dynamic. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_EVENT_TIME_WINDOW`
+  Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_EVIDENCE_BLOCKED`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_EVIDENCE_CAPTURE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_EVIDENCE_DECISION`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_EVIDENCE_EVENT_LINK`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_EVIDENCE_EVENT_ROLE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_EVIDENCE_PENDING`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_EVIDENCE_SKIP`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_EVIDENCE_SKIP_UNKNOWN`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_EVIDENCE_TRIGGER`
   Level: error. Source: `tools/validate_target_adapter.py`.
@@ -460,6 +488,16 @@ Catalog entries: 952
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_MANIFEST_PATH`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_MATERIALITY_EVENT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_MATERIALITY_EVENT_LINK`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_MATERIALITY_EVIDENCE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_MATERIALITY_SET`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_MATERIALITY_TRIGGER`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_METRIC_DRIFT`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_METRIC_EVENT`
@@ -469,6 +507,14 @@ Catalog entries: 952
 - `DEBUG_MODE_OBSERVER_EFFECT`
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_POST_REVIEW_CAUSE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_PRESERVATION_OWNER`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_PRESERVATION_REGISTRY`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_PRESERVATION_SCOPE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_PRESERVATION_SOURCE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_PRIVACY`
   Level: error. Source: `tools/validate_target_adapter.py`.
@@ -492,6 +538,8 @@ Catalog entries: 952
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_TEMPLATE_BINDING`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_TEMPLATE_CONTINUATION`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_TEMPLATE_EVIDENCE_DECISION`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_TEMPLATE_VERSION`
@@ -506,6 +554,8 @@ Catalog entries: 952
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_UPSTREAM_PATH`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_V2_CONTRACT`
+  Level: warning. Source: `tools/validate_target_adapter.py`.
 - `DELEGATION_CAPABILITY_FIELDS`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DELEGATION_CAPABILITY_MISSING`

@@ -317,12 +317,16 @@ Classify every proposed target file:
     them lazy and separate from change-package activation.
     Add the Debug Mode overlay, operation, flow, gate, machine record, and
     compact summary only when the optional module is enabled. Record explicit
-    activation/expiry, privacy, capture-quality, timing, version-2 actor/
-    causality/intervention/contribution attribution,
+    activation/expiry, immutable completion and linked continuation, privacy,
+    capture-quality, lifecycle-bounded timing, versioned actor/causality/
+    intervention/contribution attribution,
     structured architectural impacts, direction-change hypothesis/replacement
-    causality, metric derivation, durable Engineering Evidence decision and
-    exact reference resolution, repository-binding state/lineage, external
-    projection, active-versus-finalized comparison, and validator policy.
+    causality, metric derivation, typed evidence-event roles, complete
+    materiality evaluation, canonical skip preservation, claim-validation
+    fidelity, durable Engineering Evidence decision and exact reference
+    resolution, repository-binding state/lineage, external projection, active-
+    versus-finalized comparison, and validator policy. Use schema version 3 for
+    new records and preserve older schemas as migration-limited evidence.
     Enabling the module does not activate observation for a task.
     When the target uses multiple AI infrastructure items, add
     `.ai/assistant/ai-infrastructure-router.json`, the recommendation flow and

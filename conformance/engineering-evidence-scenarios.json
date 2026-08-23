@@ -65,6 +65,23 @@
       ]
     },
     {
+      "id": "partial-compatibility-contract-investigation",
+      "task_shape": "An independent defect investigation distinguishes two similar dependency contracts, affects public compatibility, builds a broad regression matrix, and leaves the exact external configuration and authority unresolved.",
+      "expected_capture_status": "captured",
+      "required_outcomes": [
+        "supporting implementation and validation events remain separate from materiality",
+        "dependency compatibility regression and unresolved-authority conditions are applicable",
+        "partial reproducer fidelity is explicit",
+        "residual uncertainty retains the exact scenario gap",
+        "reusable contract distinction is captured"
+      ],
+      "forbidden_outcomes": [
+        "skip justified only by a commit message",
+        "skip justified only by tests",
+        "claim that representative coverage proves the original configuration"
+      ]
+    },
+    {
       "id": "final-tree-binding",
       "task_shape": "A validated working result is bound to an immutable Git tree object before a result commit exists.",
       "expected_capture_status": "captured",

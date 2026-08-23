@@ -11,7 +11,7 @@
     "privacy", "residual_uncertainty", "limitations"
   ],
   "properties": {
-    "schema_version": {"enum": [1, 2]},
+    "schema_version": {"enum": [1, 2, 3]},
     "record_kind": {"const": "alatyr-debug-session"},
     "evidence_classification": {"const": "non-canonical-observability"},
     "debug_id": {"type": "string", "minLength": 1},
@@ -44,6 +44,7 @@
         "ended_by": {"enum": ["active", "task-completion", "session-completion", "scope-change", "explicit-disable", "abandonment"]}
       }
     },
+    "continuation": {"type": "object"},
     "timing": {
       "type": "object",
       "additionalProperties": false,
@@ -155,6 +156,17 @@
         "properties": {
           "events": {"items": {"$ref": "#/definitions/eventV2"}},
           "final_result": {"$ref": "#/definitions/finalResultV2"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"schema_version": {"const": 3}}},
+      "then": {
+        "required": ["continuation"],
+        "properties": {
+          "continuation": {"$ref": "#/definitions/continuationV3"},
+          "events": {"items": {"$ref": "#/definitions/eventV2"}},
+          "final_result": {"$ref": "#/definitions/finalResultV3"}
         }
       }
     }
@@ -341,7 +353,7 @@
         "evidence": {"$ref": "#/definitions/strings"}
       }
     },
-    "engineeringEvidenceDecision": {
+    "engineeringEvidenceDecisionV2": {
       "type": "object",
       "additionalProperties": false,
       "required": ["status", "trigger_event_ids", "trigger_kinds", "knowledge_preserved_by", "reason", "next_safe_action"],
@@ -352,6 +364,112 @@
         "knowledge_preserved_by": {"$ref": "#/definitions/strings"},
         "reason": {"type": "string", "minLength": 1},
         "next_safe_action": {"type": "string", "minLength": 1}
+      }
+    },
+    "continuationV3": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "previous_debug_id", "reason"],
+      "properties": {
+        "kind": {"enum": ["initial", "continued"]},
+        "previous_debug_id": {"type": "string", "minLength": 1},
+        "reason": {"type": "string", "minLength": 1}
+      }
+    },
+    "engineeringEvidenceEventLinkV3": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["event_id", "role"],
+      "properties": {
+        "event_id": {"type": "string", "minLength": 1},
+        "role": {
+          "enum": [
+            "finding", "decision", "implementation", "validation",
+            "correction", "direction-change", "rejected-hypothesis"
+          ]
+        }
+      }
+    },
+    "materialityEvaluationV3": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "outcome", "event_ids", "evidence", "reason"],
+      "properties": {
+        "kind": {
+          "enum": [
+            "undocumented-invariant", "rejected-hypothesis",
+            "non-obvious-dependency", "cross-area-impact",
+            "broad-regression-matrix", "compatibility-or-public-contract",
+            "reviewer-correction", "direction-change",
+            "expensive-to-reconstruct", "unresolved-authority-or-contract"
+          ]
+        },
+        "outcome": {"enum": ["applicable", "not-applicable", "unknown"]},
+        "event_ids": {"$ref": "#/definitions/strings"},
+        "evidence": {"$ref": "#/definitions/strings"},
+        "reason": {"type": "string", "minLength": 1}
+      }
+    },
+    "knowledgePreservationV3": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["materiality_kind", "fact_type", "canonical_source", "evidence"],
+      "properties": {
+        "materiality_kind": {"$ref": "#/definitions/materialityKindV3"},
+        "fact_type": {"type": "string", "minLength": 1},
+        "canonical_source": {"type": "string", "minLength": 1},
+        "evidence": {"type": "string", "minLength": 1}
+      }
+    },
+    "materialityKindV3": {
+      "enum": [
+        "undocumented-invariant", "rejected-hypothesis",
+        "non-obvious-dependency", "cross-area-impact",
+        "broad-regression-matrix", "compatibility-or-public-contract",
+        "reviewer-correction", "direction-change",
+        "expensive-to-reconstruct", "unresolved-authority-or-contract"
+      ]
+    },
+    "engineeringEvidenceDecisionV3": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status", "event_links", "materiality_evaluations",
+        "knowledge_preserved_by", "reason", "next_safe_action"
+      ],
+      "properties": {
+        "status": {"enum": ["pending", "captured", "skipped", "blocked"]},
+        "event_links": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/engineeringEvidenceEventLinkV3"},
+          "uniqueItems": true
+        },
+        "materiality_evaluations": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/materialityEvaluationV3"}
+        },
+        "knowledge_preserved_by": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/knowledgePreservationV3"}
+        },
+        "reason": {"type": "string", "minLength": 1},
+        "next_safe_action": {"type": "string", "minLength": 1}
+      }
+    },
+    "claimValidationV3": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fidelity", "claims", "evidence", "limitation"],
+      "properties": {
+        "fidelity": {
+          "enum": [
+            "exact-reproducer", "representative", "partial", "unavailable",
+            "not-applicable"
+          ]
+        },
+        "claims": {"$ref": "#/definitions/strings"},
+        "evidence": {"$ref": "#/definitions/strings"},
+        "limitation": {"type": "string", "minLength": 1}
       }
     },
     "finalResultV1": {
@@ -377,7 +495,26 @@
         "implementation_surfaces": {"$ref": "#/definitions/strings"},
         "validation": {"$ref": "#/definitions/validationResult"},
         "engineering_evidence_ids": {"$ref": "#/definitions/strings"},
-        "engineering_evidence_decision": {"$ref": "#/definitions/engineeringEvidenceDecision"},
+        "engineering_evidence_decision": {"$ref": "#/definitions/engineeringEvidenceDecisionV2"},
+        "upstream_projection": {"$ref": "#/definitions/upstreamProjection"}
+      }
+    },
+    "finalResultV3": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "summary", "repository_binding", "implementation_surfaces",
+        "validation", "claim_validation", "engineering_evidence_ids",
+        "engineering_evidence_decision", "upstream_projection"
+      ],
+      "properties": {
+        "summary": {"type": "string", "minLength": 1},
+        "repository_binding": {"$ref": "#/definitions/repositoryBindingV2"},
+        "implementation_surfaces": {"$ref": "#/definitions/strings"},
+        "validation": {"$ref": "#/definitions/validationResult"},
+        "claim_validation": {"$ref": "#/definitions/claimValidationV3"},
+        "engineering_evidence_ids": {"$ref": "#/definitions/strings"},
+        "engineering_evidence_decision": {"$ref": "#/definitions/engineeringEvidenceDecisionV3"},
         "upstream_projection": {"$ref": "#/definitions/upstreamProjection"}
       }
     }

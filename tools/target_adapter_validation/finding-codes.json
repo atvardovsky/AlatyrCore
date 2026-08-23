@@ -1595,6 +1595,15 @@
       ]
     },
     {
+      "code": "DEBUG_MODE_ACTIVE_COMPLETION_TIME",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "DEBUG_MODE_AGENT_CLASSIFICATION",
       "levels": [
         "error"
@@ -1649,6 +1658,33 @@
       ]
     },
     {
+      "code": "DEBUG_MODE_CLAIM_EVIDENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_CLAIM_FIDELITY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_CLAIM_UNCERTAINTY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "DEBUG_MODE_COMPLETED_EMPTY",
       "levels": [
         "error"
@@ -1659,6 +1695,42 @@
     },
     {
       "code": "DEBUG_MODE_COMPLETED_METRICS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_COMPLETION_TIME_REQUIRED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_CONTINUATION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_CONTINUATION_REFERENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_CONTINUATION_STATE",
       "levels": [
         "error"
       ],
@@ -1730,6 +1802,15 @@
       ]
     },
     {
+      "code": "DEBUG_MODE_EVENT_CAUSAL_TIME",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "DEBUG_MODE_EVENT_CAUSE",
       "levels": [
         "error"
@@ -1784,6 +1865,24 @@
       ]
     },
     {
+      "code": "DEBUG_MODE_EVENT_TIME_ORDER",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_EVENT_TIME_WINDOW",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "DEBUG_MODE_EVIDENCE_BLOCKED",
       "levels": [
         "error"
@@ -1811,6 +1910,24 @@
       ]
     },
     {
+      "code": "DEBUG_MODE_EVIDENCE_EVENT_LINK",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_EVIDENCE_EVENT_ROLE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "DEBUG_MODE_EVIDENCE_PENDING",
       "levels": [
         "error"
@@ -1821,6 +1938,15 @@
     },
     {
       "code": "DEBUG_MODE_EVIDENCE_SKIP",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_EVIDENCE_SKIP_UNKNOWN",
       "levels": [
         "error"
       ],
@@ -2018,6 +2144,51 @@
       ]
     },
     {
+      "code": "DEBUG_MODE_MATERIALITY_EVENT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_MATERIALITY_EVENT_LINK",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_MATERIALITY_EVIDENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_MATERIALITY_SET",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_MATERIALITY_TRIGGER",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "DEBUG_MODE_METRIC_DRIFT",
       "levels": [
         "error"
@@ -2055,6 +2226,42 @@
     },
     {
       "code": "DEBUG_MODE_POST_REVIEW_CAUSE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_PRESERVATION_OWNER",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_PRESERVATION_REGISTRY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_PRESERVATION_SCOPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_PRESERVATION_SOURCE",
       "levels": [
         "error"
       ],
@@ -2162,6 +2369,15 @@
       ]
     },
     {
+      "code": "DEBUG_MODE_TEMPLATE_CONTINUATION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "DEBUG_MODE_TEMPLATE_EVIDENCE_DECISION",
       "levels": [
         "error"
@@ -2219,6 +2435,15 @@
       "code": "DEBUG_MODE_UPSTREAM_PATH",
       "levels": [
         "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_V2_CONTRACT",
+      "levels": [
+        "warning"
       ],
       "sources": [
         "tools/validate_target_adapter.py"

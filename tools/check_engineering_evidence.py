@@ -326,9 +326,9 @@ def validate_fixture(failures: list[str]) -> None:
 
 def main() -> int:
     failures: list[str] = []
-    require_text(FRAMEWORK, ["ALATYR-ENGINEERING-EVIDENCE-001", "## Capture Decision", "## Publication Boundary", "Do not store raw chat"], failures)
-    require_text(FLOW, ["## Steps", "captured", "skipped", "blocked", "Reject raw chats"], failures)
-    require_text(GATE, ["reusable engineering knowledge", "durable_engineering_evidence"], failures)
+    require_text(FRAMEWORK, ["ALATYR-ENGINEERING-EVIDENCE-001", "## Capture Decision", "## Publication Boundary", "Do not store raw chat", "materiality", "source-of-truth registry"], failures)
+    require_text(FLOW, ["## Steps", "captured", "skipped", "blocked", "Reject raw chats", "applicable, not applicable, or unknown", "canonical source"], failures)
+    require_text(GATE, ["reusable engineering knowledge", "durable_engineering_evidence", "structured materiality", "registered for the named project fact"], failures)
     require_text(TARGET_AGENTS, ["durable_engineering_evidence", "captured/skipped/blocked"], failures)
     require_text(OPERATION_ROUTING, ["durable_engineering_evidence", "fact-specific reason"], failures)
     require_text(

@@ -14,6 +14,14 @@ Small self-explanatory changes may skip capture with a short fact-specific
 reason. Do not activate a change package solely because this gate captures a
 lightweight record.
 
+When structured materiality is available, evaluate every condition as
+applicable, not applicable, or unknown. Implementation and validation events
+support the decision but do not independently force capture. Do not skip with
+unknown materiality. Every applicable conclusion in a skipped decision must
+resolve to an existing canonical source registered for the named project fact
+type; a commit message, issue, test, or Debug record alone is not canonical
+preservation.
+
 For capture, require a task reference, repository result binding, invariant,
 root cause, solution rationale, material alternatives when applicable,
 regression rationale, validation, residual uncertainty, canonical-owner links,

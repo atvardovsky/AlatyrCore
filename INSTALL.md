@@ -114,9 +114,12 @@ The plan must identify:
   non-canonical storage, privacy/retention, versioned actor/causality/
   intervention/contribution attribution, structured
   architectural impacts, direction-change hypothesis/replacement causality,
-  timing evidence, supervision metrics, exact durable engineering-evidence
-  decision/reference resolution, repository-binding state/lineage, active-
-  versus-finalized comparison, and clean-upstream projection policy
+  lifecycle-bounded timing evidence, immutable completion and continuation
+  lineage, supervision metrics, typed evidence-event roles, complete
+  materiality evaluation, canonical skip preservation, claim-validation
+  fidelity, exact durable engineering-evidence decision/reference resolution,
+  repository-binding state/lineage, active-versus-finalized comparison, and
+  clean-upstream projection policy
 - source-of-truth registry needs
 - optional consistency-map need, fact-ID strategy, relationship coverage, and
   staleness owner
@@ -154,8 +157,9 @@ The plan must identify:
 - migration diff, adapter output contract, AI infrastructure inventory and
   recommendation reports, and effectiveness report needs
 - Debug Mode index/record, overlay, operation, flow, gate, summary, target
-  validator, structured classification and durable evidence reference checks,
-  and post-install/update guidance needs when the module is selected
+  validator, structured classification, lifecycle, materiality, claim fidelity,
+  canonical preservation and durable evidence reference checks, and post-
+  install/update guidance needs when the module is selected
 - AI infrastructure router/item, recommendation, and adaptation-record needs
 - target development-evidence index, owner, retention/privacy policy, and lazy
   capture needs when recommendations should learn from recurring project work

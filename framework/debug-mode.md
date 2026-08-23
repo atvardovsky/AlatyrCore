@@ -56,8 +56,12 @@ Activation:
 - expires on task completion, logical-scope change, explicit disablement, or
   abandonment
 
-After expiry, a new task needs a new explicit activation. Current-scope action
-authorization remains independently required for every engineering action.
+After expiry, a new task needs a new explicit activation. A completed record is
+immutable task evidence: do not append later events or silently reopen it. When
+authorized work continues the same investigation, create a new record with
+`continuation.kind: continued`, reference the one closed predecessor, and state
+why a new logical scope was opened. Current-scope action authorization remains
+independently required for every engineering action.
 
 ## Normalized Event Model
 
@@ -190,7 +194,10 @@ Timing values must identify their evidence kind:
 - `unknown`: reliable timing evidence is unavailable
 
 Record start, completion, and elapsed time when trustworthy evidence exists.
-Record active work time only when the environment measures it reliably.
+Record active work time only when the environment measures it reliably. In a
+completed schema-version-3 record, every concrete event timestamp must remain
+within the start/completion interval, follow sequence order, and not precede a
+causal ancestor. Active records do not declare a completion timestamp.
 
 Every record also declares event coverage, missing intervals, possible observer
 effect, and estimated recording overhead. A partial record is valid evidence of
@@ -245,12 +252,41 @@ Every non-empty durable engineering-evidence ID must resolve exactly once in
 the target Engineering Evidence index. A Debug event ID is not a durable
 evidence ID.
 
-Every version-2 Debug result also records an Engineering Evidence decision as
+Every versioned Debug result records an Engineering Evidence decision as
 `pending`, `captured`, `skipped`, or `blocked`. Completion cannot leave it
-pending. Material rejected hypotheses and direction-changing corrections must
-be captured or blocked, or skipped only when named canonical project knowledge
-already preserves the reusable conclusion. A blocked decision names the next
-safe action.
+pending.
+
+Schema version 3 separates two concepts:
+
+- typed `event_links` identify whether a referenced event is a finding,
+  decision, implementation, validation, correction, direction change, or
+  rejected hypothesis
+- `materiality_evaluations` decide whether each durable capture condition is
+  applicable, not applicable, or unknown
+
+Evaluate undocumented invariants, rejected hypotheses, non-obvious
+dependencies, cross-area impact, broad regression matrices, compatibility or
+public-contract reasoning, reviewer corrections, direction changes,
+expensive-to-reconstruct conclusions, and unresolved authority or external
+contracts. Implementation and validation events support the decision but do
+not become material merely because they exist.
+
+Capture applicable or unresolved reusable knowledge, or mark it blocked with a
+next safe action. `skipped` is valid only when no materiality remains unknown
+and every applicable conclusion names an existing canonical source registered
+for that project fact type. A commit message, issue, or regression test alone
+does not prove canonical preservation.
+
+Schema version 3 also classifies the implementation claim as
+`exact-reproducer`, `representative`, `partial`, `unavailable`, or
+`not-applicable`. Exact, representative, and partial claims name both the claim
+and validation evidence. Partial or unavailable completed results retain the
+gap as residual uncertainty. This classification prevents broad validation
+from being presented as proof of an untested original configuration.
+
+Schema-version-2 decisions remain readable as migration-limited historical
+evidence. Do not silently infer structured materiality, continuation lineage,
+or claim fidelity that the old record did not capture.
 
 Support this boundary:
 
@@ -277,6 +313,9 @@ Summary` containing:
 - implementation corrections after human intervention
 - external maintainer corrections and post-review rework
 - final repository binding and external projection result
+- claim-validation fidelity and exact reproducer gap
+- durable evidence materiality decision and canonical preservation when skipped
+- continuation lineage when the task continues an earlier closed record
 - residual uncertainty
 
 Report exact numbers only when supported by the record. Finalize or abandon the
@@ -284,11 +323,13 @@ record and expire activation before leaving the logical scope.
 
 ## Deterministic Checks And Limits
 
-Target validation may check schema shape, event ordering, causal attribution,
-structured architectural-impact consistency, direction-change hypothesis
-transitions, metric derivation, timing consistency, privacy declarations,
-Debug-to-Engineering-Evidence reference integrity, index/record sync,
-repository bindings, and external-patch policy.
+Target validation may check schema shape, event ordering and lifecycle bounds,
+causal attribution, typed evidence-event roles, complete materiality
+evaluation, canonical skip references, claim-fidelity evidence, continuation
+lineage, structured architectural-impact consistency, direction-change
+hypothesis transitions, metric derivation, timing consistency, privacy
+declarations, Debug-to-Engineering-Evidence reference integrity, index/record
+sync, repository bindings, and external-patch policy.
 
 It cannot prove that every material event was recorded, that attribution is
 semantically correct, that the work was good, that an unrecorded conversation
@@ -314,6 +355,10 @@ Reject or repair Debug Mode use that:
 - links an unknown, duplicate, or Debug-local ID as durable engineering
   evidence
 - completes material Debug work without an explicit durable-evidence decision
+- appends events after completion instead of opening a linked continuation
+- labels an evidence event with a role inconsistent with that event
+- skips applicable materiality without registry-backed canonical preservation
+- claims an exact reproducer from only representative or partial validation
 - rewrites historical attribution or repository-binding lineage silently
 - infers metrics from the final patch instead of recorded events
 - turns debug evidence into architecture or business-rule authority

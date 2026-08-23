@@ -222,10 +222,12 @@ independently, where human supervision changed the investigation, which
 validation expanded, and how the task concluded. Its versioned event model
 separates actor, causality, intervention, and contribution so a task request or
 validation request is not misreported as a correction. Finalization closes the
-durable-evidence decision and preserves repository-binding lineage. Debug Mode
-is explicitly enabled per task or session, does not store raw conversations or
-private reasoning, and does not grant permission to edit code, commit,
-publish, or perform protected actions.
+durable-evidence decision, evaluates reusable materiality, distinguishes exact
+from partial reproduction evidence, preserves repository-binding lineage, and
+opens continued work in a new linked record rather than rewriting completed
+evidence. Debug Mode is explicitly enabled per task or session, does not store
+raw conversations or private reasoning, and does not grant permission to edit
+code, commit, publish, or perform protected actions.
 
 ### Core Differentiators
 
@@ -319,7 +321,7 @@ tasks from loading the complete framework or project corpus.
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.23`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.24`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural

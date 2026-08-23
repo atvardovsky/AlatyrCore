@@ -68,12 +68,15 @@ Operation help:
   timing, metrics, and publication policy when the module is enabled. Recheck
   versioned actor/causality/intervention/contribution attribution, structured
   architectural impacts, direction-change hypothesis/replacement chains,
-  durable Engineering Evidence decisions/references, binding lineage, completed-record
-  comparison, dependency closure, schema, lazy route, operation, validator,
-  and activation expiry. Preserve older unstructured events as migration-
-  limited evidence; do not reactivate a closed scope or include debug files in
-  a clean external patch. Use schema version 2 only for new records; do not
-  silently rewrite historical version-1 attribution.
+  lifecycle timestamp bounds, immutable completion and continuation lineage,
+  typed evidence-event roles, materiality evaluation, canonical skip
+  preservation, claim-validation fidelity, durable Engineering Evidence
+  decisions/references, binding lineage, completed-record comparison,
+  dependency closure, schema, lazy route, operation, validator, and activation
+  expiry. Preserve schema-version-1 and version-2 records as migration-limited
+  evidence; do not reactivate or append to a closed scope or include debug
+  files in a clean external patch. Use schema version 3 only for new records;
+  do not silently invent historical attribution or materiality.
 - When code documentation is enabled, preserve target profiles and recheck
   source-set matching, accepted state, canonical owners, generator/output
   policy, adapted skill, and validation before generation.

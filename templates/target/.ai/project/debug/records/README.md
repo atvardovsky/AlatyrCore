@@ -7,7 +7,8 @@ policy.
 
 Do not create records by copying raw conversations or private reasoning.
 
-New records use schema version 2. New events separate attribution dimensions:
+New records use schema version 3. Events continue to separate attribution
+dimensions:
 
 ```json
 {
@@ -27,7 +28,12 @@ external intervention event only for a specific direction, expansion,
 constraint, correction, or validation request. Use only values allowed by the
 installed Debug session schema.
 
-Schema-version-1 records remain migration-limited evidence. Do not infer or
-rewrite historical attribution. New completed records close the durable
-Engineering Evidence decision and use a final repository binding with
-lineage.
+Schema-version-3 records also keep completed lifecycle timestamps immutable,
+open related continuation work in a new linked record, type every supporting
+evidence event, evaluate the full materiality set, prove canonical preservation
+before skipping, and classify validation fidelity.
+
+Schema-version-1 and version-2 records remain migration-limited evidence. Do
+not infer or rewrite historical attribution, materiality, claim fidelity, or
+continuation lineage. New completed records close the durable Engineering
+Evidence decision and use a final repository binding with lineage.

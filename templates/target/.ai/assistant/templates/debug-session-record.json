@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "record_kind": "alatyr-debug-session",
   "evidence_classification": "non-canonical-observability",
   "debug_id": "{DEBUG_ID}",
@@ -21,6 +21,11 @@
     "initial_revision": "{INITIAL_REVISION_OR_UNAVAILABLE}",
     "expires_on": "task-completion",
     "ended_by": "active"
+  },
+  "continuation": {
+    "kind": "initial",
+    "previous_debug_id": "not-applicable",
+    "reason": "This activation starts a new logical Debug scope."
   },
   "timing": {
     "started_at": {"value": null, "evidence_kind": "unknown"},
@@ -66,11 +71,28 @@
     },
     "implementation_surfaces": [],
     "validation": {"results": [], "skipped": []},
+    "claim_validation": {
+      "fidelity": "unavailable",
+      "claims": [],
+      "evidence": [],
+      "limitation": "The active task has not reached a final validation claim."
+    },
     "engineering_evidence_ids": [],
     "engineering_evidence_decision": {
       "status": "pending",
-      "trigger_event_ids": [],
-      "trigger_kinds": [],
+      "event_links": [],
+      "materiality_evaluations": [
+        {"kind": "undocumented-invariant", "outcome": "unknown", "event_ids": [], "evidence": [], "reason": "Assess before completion."},
+        {"kind": "rejected-hypothesis", "outcome": "unknown", "event_ids": [], "evidence": [], "reason": "Assess before completion."},
+        {"kind": "non-obvious-dependency", "outcome": "unknown", "event_ids": [], "evidence": [], "reason": "Assess before completion."},
+        {"kind": "cross-area-impact", "outcome": "unknown", "event_ids": [], "evidence": [], "reason": "Assess before completion."},
+        {"kind": "broad-regression-matrix", "outcome": "unknown", "event_ids": [], "evidence": [], "reason": "Assess before completion."},
+        {"kind": "compatibility-or-public-contract", "outcome": "unknown", "event_ids": [], "evidence": [], "reason": "Assess before completion."},
+        {"kind": "reviewer-correction", "outcome": "unknown", "event_ids": [], "evidence": [], "reason": "Assess before completion."},
+        {"kind": "direction-change", "outcome": "unknown", "event_ids": [], "evidence": [], "reason": "Assess before completion."},
+        {"kind": "expensive-to-reconstruct", "outcome": "unknown", "event_ids": [], "evidence": [], "reason": "Assess before completion."},
+        {"kind": "unresolved-authority-or-contract", "outcome": "unknown", "event_ids": [], "evidence": [], "reason": "Assess before completion."}
+      ],
       "knowledge_preserved_by": [],
       "reason": "Durable engineering evidence is assessed when the Debug session is finalized.",
       "next_safe_action": "Complete the evidence decision before marking this record completed."

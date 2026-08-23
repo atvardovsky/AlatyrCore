@@ -206,7 +206,7 @@ engineering_evidence:
   retention_policy: "{TARGET_ENGINEERING_EVIDENCE_RETENTION_POLICY}"
   redaction_policy: "{TARGET_ENGINEERING_EVIDENCE_REDACTION_POLICY}"
 debug_mode:
-  contract_version: 2
+  contract_version: 3
   index: ".ai/project/debug/index.json"
   records: ".ai/project/debug/records"
   overlay: ".ai/assistant/context/task-scales/debug-mode.json"

@@ -160,13 +160,17 @@ Replace placeholders with target facts before accepting installation.
     object type/ancestry, index synchronization, canonical-owner links,
     privacy flags, external-patch policy, and existing-record accessibility.
    When Debug Mode is enabled, preserve IDs, records, active-scope evidence,
-   events, timing, metrics, and target policy. Preserve schema-version-1
-    attribution without inventing migration values; use version 2 for new
-    records. Recheck explicit activation and expiry, non-canonical authority,
+   events, timing, metrics, and target policy. Preserve schema-version-1 and
+    version-2 evidence without inventing migration values; use version 3 for
+    new records. Recheck explicit activation and expiry, immutable completion
+    and continuation lineage, lifecycle-bounded event timestamps,
+    non-canonical authority,
     actor/causality/intervention/contribution attribution, structured
     architectural impacts, direction-change hypothesis/replacement chains,
-    privacy, observer effect, durable engineering-evidence decision/reference
-    resolution, compact index sync, result binding state/lineage and Git object
+    privacy, observer effect, typed evidence-event roles, complete materiality,
+    canonical skip preservation, claim-validation fidelity, durable
+    engineering-evidence decision/reference resolution, compact index sync,
+    result binding state/lineage and Git object
     checks, completed-record comparison,
     clean-upstream projection, and validator support. Never reactivate a closed
     scope during update. Preserve older unstructured events as migration-

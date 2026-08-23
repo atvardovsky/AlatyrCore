@@ -92,6 +92,29 @@ DEBUG_METRIC_NAMES = [
     "post_review_rework",
 ]
 
+DEBUG_EVENT_LINK_ROLES = {
+    "finding",
+    "decision",
+    "implementation",
+    "validation",
+    "correction",
+    "direction-change",
+    "rejected-hypothesis",
+}
+
+DEBUG_MATERIALITY_KINDS = {
+    "undocumented-invariant",
+    "rejected-hypothesis",
+    "non-obvious-dependency",
+    "cross-area-impact",
+    "broad-regression-matrix",
+    "compatibility-or-public-contract",
+    "reviewer-correction",
+    "direction-change",
+    "expensive-to-reconstruct",
+    "unresolved-authority-or-contract",
+}
+
 CANONICAL_PROFILES = [
     "docs-local",
     "code-local",
@@ -533,6 +556,7 @@ class RegistryFactEntry:
     heading_fact_type: str
     declared_fact_type: str | None
     map_node_id: str | None
+    canonical_owner_values: tuple[str, ...]
     line: int
 
 
@@ -556,11 +580,21 @@ def parse_registry_fact_entries(text: str) -> list[RegistryFactEntry]:
     for index, match in enumerate(matches):
         end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
         block = text[match.end():end]
+        owner_values = tuple(
+            value.strip().strip("`")
+            for _field, value in re.findall(
+                r"^([^:\n]*owner):\s*(.*?)\s*$",
+                block,
+                flags=re.MULTILINE | re.IGNORECASE,
+            )
+            if value.strip()
+        )
         entries.append(
             RegistryFactEntry(
                 heading_fact_type=match.group(1).strip(),
                 declared_fact_type=markdown_scalar(block, "Fact type"),
                 map_node_id=markdown_scalar(block, "Consistency map node"),
+                canonical_owner_values=owner_values,
                 line=text.count("\n", 0, match.start()) + 1,
             )
         )
@@ -9260,10 +9294,10 @@ class Validator:
                         ".ai/alatyr.yaml",
                     )
             contract = manifest.scalars.get(("debug_mode", "contract_version"))
-            if contract is None or contract.value != "2":
+            if contract is None or contract.value != "3":
                 self.error(
                     "DEBUG_MODE_CONTRACT_VERSION",
-                    "debug_mode.contract_version must be 2",
+                    "debug_mode.contract_version must be 3",
                     ".ai/alatyr.yaml",
                 )
 
@@ -9272,12 +9306,16 @@ class Validator:
         if template is not None:
             template_final = template.get("final_result")
             template_binding = template_final.get("repository_binding") if isinstance(template_final, dict) else None
-            if template.get("schema_version") != 2:
-                self.error("DEBUG_MODE_TEMPLATE_VERSION", "authoring template schema_version must be 2", template_relpath)
+            if template.get("schema_version") != 3:
+                self.error("DEBUG_MODE_TEMPLATE_VERSION", "authoring template schema_version must be 3", template_relpath)
             if not isinstance(template_binding, dict) or not {"binding_state", "prior_bindings"}.issubset(template_binding):
-                self.error("DEBUG_MODE_TEMPLATE_BINDING", "version-2 authoring template must expose binding_state and prior_bindings", template_relpath)
-            if not isinstance(template_final, dict) or "engineering_evidence_decision" not in template_final:
-                self.error("DEBUG_MODE_TEMPLATE_EVIDENCE_DECISION", "version-2 authoring template must expose engineering_evidence_decision", template_relpath)
+                self.error("DEBUG_MODE_TEMPLATE_BINDING", "version-3 authoring template must expose binding_state and prior_bindings", template_relpath)
+            if not isinstance(template_final, dict) or not {
+                "claim_validation", "engineering_evidence_decision"
+            }.issubset(template_final):
+                self.error("DEBUG_MODE_TEMPLATE_EVIDENCE_DECISION", "version-3 authoring template must expose claim validation and engineering-evidence materiality", template_relpath)
+            if not isinstance(template.get("continuation"), dict):
+                self.error("DEBUG_MODE_TEMPLATE_CONTINUATION", "version-3 authoring template must expose continuation lineage", template_relpath)
 
         index = self.load_json_object(
             self.target_path(index_relpath), "DEBUG_MODE_INDEX"
@@ -9285,10 +9323,10 @@ class Validator:
         if index is None:
             return
         index_schema_version = index.get("schema_version")
-        if index_schema_version not in {2, 3}:
-            self.error("DEBUG_MODE_INDEX_SCHEMA", "schema_version must be 2 or 3", index_relpath)
-        elif index_schema_version == 2:
-            self.warn("DEBUG_MODE_INDEX_LEGACY", "schema-version-2 index omits record contract, binding-state, and evidence-decision projections", index_relpath)
+        if index_schema_version not in {2, 3, 4}:
+            self.error("DEBUG_MODE_INDEX_SCHEMA", "schema_version must be 2, 3, or 4", index_relpath)
+        elif index_schema_version in {2, 3}:
+            self.warn("DEBUG_MODE_INDEX_LEGACY", "legacy Debug index omits schema-version-3 continuation or claim-fidelity projections", index_relpath)
         if index.get("index_kind") != "target-alatyr-debug-index":
             self.error(
                 "DEBUG_MODE_INDEX_KIND",
@@ -9374,6 +9412,17 @@ class Validator:
                             engineering_evidence_counts.get(evidence_id, 0) + 1
                         )
 
+        registry_relpath = ".ai/project/source-of-truth-registry.md"
+        registry_path = self.target_path(registry_relpath)
+        registry_entries_by_fact_type: dict[str, list[RegistryFactEntry]] = {}
+        if registry_path.is_file():
+            for registry_entry in parse_registry_fact_entries(
+                self.read_text(registry_path)
+            ):
+                registry_entries_by_fact_type.setdefault(
+                    registry_entry.heading_fact_type, []
+                ).append(registry_entry)
+
         required_index_fields = {
             "debug_id",
             "status",
@@ -9395,6 +9444,25 @@ class Validator:
             required_index_fields.update(
                 {"record_schema_version", "repository_binding_state", "engineering_evidence_status"}
             )
+        elif index_schema_version == 4:
+            required_index_fields.update(
+                {
+                    "record_schema_version",
+                    "repository_binding_state",
+                    "engineering_evidence_status",
+                    "continuation_kind",
+                    "continued_from_debug_id",
+                    "claim_validation_fidelity",
+                }
+            )
+        indexed_entries = [entry for entry in records if isinstance(entry, dict)]
+        indexed_id_counts: dict[str, int] = {}
+        indexed_entries_by_id: dict[str, dict[str, Any]] = {}
+        for indexed_entry in indexed_entries:
+            indexed_debug_id = indexed_entry.get("debug_id")
+            if isinstance(indexed_debug_id, str) and indexed_debug_id:
+                indexed_id_counts[indexed_debug_id] = indexed_id_counts.get(indexed_debug_id, 0) + 1
+                indexed_entries_by_id.setdefault(indexed_debug_id, indexed_entry)
         seen_ids: set[str] = set()
         seen_records: set[str] = set()
         for entry_index, entry in enumerate(records):
@@ -9430,6 +9498,16 @@ class Validator:
             elapsed_index = entry.get("elapsed_seconds")
             if elapsed_index is not None and (not isinstance(elapsed_index, int) or elapsed_index < 0):
                 self.error("DEBUG_MODE_INDEX_FIELD", f"{label}.elapsed_seconds must be a non-negative integer or null", index_relpath)
+            if index_schema_version == 4:
+                if entry.get("continuation_kind") not in {"initial", "continued", "legacy"}:
+                    self.error("DEBUG_MODE_INDEX_FIELD", f"{label}.continuation_kind is invalid", index_relpath)
+                if not isinstance(entry.get("continued_from_debug_id"), str) or not entry["continued_from_debug_id"].strip():
+                    self.error("DEBUG_MODE_INDEX_FIELD", f"{label}.continued_from_debug_id must be a non-empty string", index_relpath)
+                if entry.get("claim_validation_fidelity") not in {
+                    "exact-reproducer", "representative", "partial", "unavailable",
+                    "not-applicable", "legacy",
+                }:
+                    self.error("DEBUG_MODE_INDEX_FIELD", f"{label}.claim_validation_fidelity is invalid", index_relpath)
             for field in ["task_references", "residual_uncertainty"]:
                 values = entry.get(field)
                 if not isinstance(values, list) or not all(concrete(value) for value in values):
@@ -9472,6 +9550,13 @@ class Validator:
             ):
                 location = ".".join(str(item) for item in schema_error.absolute_path) or "root"
                 self.error("DEBUG_MODE_RECORD_SCHEMA", f"{location}: {schema_error.message}", record_ref)
+            record_schema_version = record.get("schema_version") if isinstance(record.get("schema_version"), int) else 1
+            if record_schema_version == 2:
+                self.warn(
+                    "DEBUG_MODE_V2_CONTRACT",
+                    "schema-version-2 record remains readable but lacks structured materiality, claim fidelity, and continuation lineage",
+                    record_ref,
+                )
 
             forbidden_keys = {
                 "raw_chat",
@@ -9544,6 +9629,41 @@ class Validator:
             if status in {"completed", "abandoned"} and ended_by == "active":
                 self.error("DEBUG_MODE_EXPIRY", "closed record must identify its expiry event", record_ref)
 
+            continuation = record.get("continuation") if isinstance(record.get("continuation"), dict) else {}
+            continuation_kind = "legacy"
+            continued_from_debug_id = "not-applicable"
+            if record_schema_version >= 3:
+                continuation_kind = str(continuation.get("kind", ""))
+                continued_from_debug_id = str(continuation.get("previous_debug_id", ""))
+                if continuation_kind == "initial":
+                    if continued_from_debug_id != "not-applicable":
+                        self.error(
+                            "DEBUG_MODE_CONTINUATION",
+                            "initial Debug record must use previous_debug_id not-applicable",
+                            record_ref,
+                        )
+                elif continuation_kind == "continued":
+                    if continued_from_debug_id in {"", "not-applicable", str(debug_id)}:
+                        self.error(
+                            "DEBUG_MODE_CONTINUATION",
+                            "continued Debug record must name a different previous Debug ID",
+                            record_ref,
+                        )
+                    elif indexed_id_counts.get(continued_from_debug_id, 0) != 1:
+                        self.error(
+                            "DEBUG_MODE_CONTINUATION_REFERENCE",
+                            f"previous Debug ID {continued_from_debug_id!r} must resolve exactly once in the index",
+                            record_ref,
+                        )
+                    else:
+                        previous_entry = indexed_entries_by_id[continued_from_debug_id]
+                        if previous_entry.get("status") not in {"completed", "abandoned"}:
+                            self.error(
+                                "DEBUG_MODE_CONTINUATION_STATE",
+                                f"previous Debug ID {continued_from_debug_id!r} must be closed before continuation",
+                                record_ref,
+                            )
+
             def parse_time_value(container: Any, field: str) -> datetime | None:
                 item = container.get(field) if isinstance(container, dict) else None
                 if not isinstance(item, dict):
@@ -9610,7 +9730,6 @@ class Validator:
                 self.warn("DEBUG_MODE_OBSERVER_EFFECT", "record declares material observer effect; comparison claims must account for it", record_ref)
 
             events = record.get("events") if isinstance(record.get("events"), list) else []
-            record_schema_version = record.get("schema_version") if isinstance(record.get("schema_version"), int) else 1
             if record_schema_version == 1:
                 self.warn(
                     "DEBUG_MODE_LEGACY_ATTRIBUTION",
@@ -9619,6 +9738,7 @@ class Validator:
                 )
             event_by_id: dict[str, dict[str, Any]] = {}
             event_order: dict[str, int] = {}
+            event_times: dict[str, datetime] = {}
             for event_index, event in enumerate(events):
                 event_label = f"events[{event_index}]"
                 if not isinstance(event, dict):
@@ -9633,7 +9753,11 @@ class Validator:
                 event_order[event_id] = event_index
                 if event.get("sequence") != event_index + 1:
                     self.error("DEBUG_MODE_EVENT_SEQUENCE", f"{event_label}.sequence must be {event_index + 1}", record_ref)
-                parse_time_value({"occurred_at": event.get("occurred_at")}, "occurred_at")
+                event_time = parse_time_value(
+                    {"occurred_at": event.get("occurred_at")}, "occurred_at"
+                )
+                if event_time is not None:
+                    event_times[event_id] = event_time
                 evidence = event.get("evidence")
                 if not isinstance(evidence, list) or not evidence or not all(concrete(item) for item in evidence):
                     self.error("DEBUG_MODE_EVENT_EVIDENCE", f"{event_label}.evidence must be a non-empty resolved string list", record_ref)
@@ -9647,6 +9771,62 @@ class Validator:
                         self.error("DEBUG_MODE_EVENT_CAUSE", f"{event_id} references unknown cause {cause}", record_ref)
                     elif event_order[cause] >= event_order[event_id]:
                         self.error("DEBUG_MODE_EVENT_CAUSE_ORDER", f"{event_id} cause {cause} must be earlier", record_ref)
+
+            def lifecycle_finding(code: str, message: str) -> None:
+                finding = self.error if record_schema_version >= 3 else self.warn
+                finding(code, message, record_ref)
+
+            if record_schema_version >= 3 and status == "completed" and (
+                started_at is None or completed_at is None
+            ):
+                self.error(
+                    "DEBUG_MODE_COMPLETION_TIME_REQUIRED",
+                    "completed schema-version-3 record requires concrete start and completion timestamps",
+                    record_ref,
+                )
+            if record_schema_version >= 3 and status == "active" and completed_at is not None:
+                self.error(
+                    "DEBUG_MODE_ACTIVE_COMPLETION_TIME",
+                    "active schema-version-3 record cannot declare a completion timestamp",
+                    record_ref,
+                )
+
+            previous_event_id: str | None = None
+            for event_id in event_order:
+                event_time = event_times.get(event_id)
+                if event_time is None:
+                    previous_event_id = event_id
+                    continue
+                if started_at is not None and event_time < started_at:
+                    lifecycle_finding(
+                        "DEBUG_MODE_EVENT_TIME_WINDOW",
+                        f"{event_id} occurs before timing.started_at",
+                    )
+                if status == "completed" and completed_at is not None and event_time > completed_at:
+                    lifecycle_finding(
+                        "DEBUG_MODE_EVENT_TIME_WINDOW",
+                        f"{event_id} occurs after timing.completed_at",
+                    )
+                if previous_event_id is not None:
+                    previous_time = event_times.get(previous_event_id)
+                    if previous_time is not None and event_time < previous_time:
+                        lifecycle_finding(
+                            "DEBUG_MODE_EVENT_TIME_ORDER",
+                            f"{event_id} timestamp precedes earlier sequence event {previous_event_id}",
+                        )
+                previous_event_id = event_id
+
+            for event_id, event in event_by_id.items():
+                event_time = event_times.get(event_id)
+                if event_time is None:
+                    continue
+                for cause_id in event.get("caused_by_event_ids", []):
+                    cause_time = event_times.get(cause_id)
+                    if cause_time is not None and cause_time > event_time:
+                        lifecycle_finding(
+                            "DEBUG_MODE_EVENT_CAUSAL_TIME",
+                            f"{event_id} occurs before its cause {cause_id}",
+                        )
 
             def has_matching_ancestor(event: dict[str, Any], predicate: Any) -> bool:
                 pending = list(event.get("caused_by_event_ids", []))
@@ -9946,33 +10126,19 @@ class Validator:
                             record_ref,
                         )
 
+            implementation_surfaces = [
+                value
+                for value in final_result.get("implementation_surfaces", [])
+                if isinstance(value, str)
+            ]
             evidence_status = "legacy"
+            claim_fidelity = "legacy"
             if record_schema_version >= 2:
                 evidence_decision = final_result.get("engineering_evidence_decision")
                 if not isinstance(evidence_decision, dict):
-                    self.error("DEBUG_MODE_EVIDENCE_DECISION", "version-2 record requires engineering_evidence_decision", record_ref)
+                    self.error("DEBUG_MODE_EVIDENCE_DECISION", "versioned record requires engineering_evidence_decision", record_ref)
                     evidence_decision = {}
                 evidence_status = str(evidence_decision.get("status", ""))
-                trigger_ids = evidence_decision.get("trigger_event_ids")
-                trigger_ids = trigger_ids if isinstance(trigger_ids, list) else []
-                unknown_triggers = sorted(set(trigger_ids) - set(event_by_id))
-                if unknown_triggers:
-                    self.error("DEBUG_MODE_EVIDENCE_TRIGGER", f"engineering-evidence decision references unknown events {unknown_triggers}", record_ref)
-                material_trigger_ids = {
-                    event_id
-                    for event_id, event in event_by_id.items()
-                    if (
-                        event.get("hypothesis_outcome") == "rejected"
-                        or event.get("decision_effect") == "changes-direction"
-                        or event.get("intervention_kind") == "correction"
-                    )
-                }
-                missing_material_triggers = sorted(material_trigger_ids - set(trigger_ids))
-                if missing_material_triggers:
-                    self.error("DEBUG_MODE_EVIDENCE_TRIGGER", f"material evidence triggers are not represented in the decision: {missing_material_triggers}", record_ref)
-                trigger_kinds = evidence_decision.get("trigger_kinds")
-                if trigger_ids and (not isinstance(trigger_kinds, list) or not trigger_kinds):
-                    self.error("DEBUG_MODE_EVIDENCE_TRIGGER", "triggered evidence decision must name at least one trigger kind", record_ref)
                 evidence_ids = linked_evidence if isinstance(linked_evidence, list) else []
                 if status == "completed" and evidence_status == "pending":
                     self.error("DEBUG_MODE_EVIDENCE_PENDING", "completed Debug session cannot leave durable engineering evidence pending", record_ref)
@@ -9982,17 +10148,270 @@ class Validator:
                     self.error("DEBUG_MODE_EVIDENCE_DECISION", f"{evidence_status} decision cannot list captured engineering evidence IDs", record_ref)
                 if evidence_status == "blocked" and not concrete(evidence_decision.get("next_safe_action")):
                     self.error("DEBUG_MODE_EVIDENCE_BLOCKED", "blocked evidence decision requires a next safe action", record_ref)
-                preserved_by = evidence_decision.get("knowledge_preserved_by")
-                if material_trigger_ids and evidence_status == "skipped" and (not isinstance(preserved_by, list) or not preserved_by):
-                    self.error("DEBUG_MODE_EVIDENCE_SKIP", "material Debug findings may be skipped only when canonical durable knowledge already preserves them", record_ref)
-                if status == "completed" and material_trigger_ids and evidence_status not in {"captured", "blocked", "skipped"}:
-                    self.error("DEBUG_MODE_EVIDENCE_DECISION", "material completed Debug work requires captured, blocked, or justified skipped durable evidence", record_ref)
 
-            implementation_surfaces = [
-                value
-                for value in final_result.get("implementation_surfaces", [])
-                if isinstance(value, str)
-            ]
+                if record_schema_version == 2:
+                    trigger_ids = evidence_decision.get("trigger_event_ids")
+                    trigger_ids = trigger_ids if isinstance(trigger_ids, list) else []
+                    unknown_triggers = sorted(set(trigger_ids) - set(event_by_id))
+                    if unknown_triggers:
+                        self.error("DEBUG_MODE_EVIDENCE_TRIGGER", f"engineering-evidence decision references unknown events {unknown_triggers}", record_ref)
+                    material_trigger_ids = {
+                        event_id
+                        for event_id, event in event_by_id.items()
+                        if (
+                            event.get("hypothesis_outcome") == "rejected"
+                            or event.get("decision_effect") == "changes-direction"
+                            or event.get("intervention_kind") == "correction"
+                        )
+                    }
+                    missing_material_triggers = sorted(material_trigger_ids - set(trigger_ids))
+                    if missing_material_triggers:
+                        self.error("DEBUG_MODE_EVIDENCE_TRIGGER", f"material evidence triggers are not represented in the decision: {missing_material_triggers}", record_ref)
+                    trigger_kinds = evidence_decision.get("trigger_kinds")
+                    if trigger_ids and (not isinstance(trigger_kinds, list) or not trigger_kinds):
+                        self.error("DEBUG_MODE_EVIDENCE_TRIGGER", "triggered evidence decision must name at least one trigger kind", record_ref)
+                    preserved_by = evidence_decision.get("knowledge_preserved_by")
+                    if material_trigger_ids and evidence_status == "skipped" and (not isinstance(preserved_by, list) or not preserved_by):
+                        self.error("DEBUG_MODE_EVIDENCE_SKIP", "material Debug findings may be skipped only when canonical durable knowledge already preserves them", record_ref)
+                    if status == "completed" and material_trigger_ids and evidence_status not in {"captured", "blocked", "skipped"}:
+                        self.error("DEBUG_MODE_EVIDENCE_DECISION", "material completed Debug work requires captured, blocked, or justified skipped durable evidence", record_ref)
+                else:
+                    def event_matches_role(event: dict[str, Any], role: str) -> bool:
+                        if role == "finding":
+                            return event.get("contribution_kind") == "finding"
+                        if role == "decision":
+                            return event.get("contribution_kind") == "decision"
+                        if role == "implementation":
+                            return event.get("contribution_kind") == "implementation"
+                        if role == "validation":
+                            return event.get("contribution_kind") == "validation"
+                        if role == "correction":
+                            return (
+                                event.get("actor") in {"human", "external-maintainer"}
+                                and event.get("causal_class") == "intervention"
+                                and event.get("intervention_kind") == "correction"
+                            )
+                        if role == "direction-change":
+                            return event.get("decision_effect") == "changes-direction"
+                        if role == "rejected-hypothesis":
+                            return (
+                                event.get("contribution_kind") == "finding"
+                                and event.get("category") == "hypothesis"
+                                and event.get("hypothesis_outcome") == "rejected"
+                            )
+                        return False
+
+                    event_links = evidence_decision.get("event_links")
+                    event_links = event_links if isinstance(event_links, list) else []
+                    linked_event_ids: set[str] = set()
+                    for link_index, link in enumerate(event_links):
+                        if not isinstance(link, dict):
+                            continue
+                        event_id = link.get("event_id")
+                        role = link.get("role")
+                        if event_id not in event_by_id:
+                            self.error(
+                                "DEBUG_MODE_EVIDENCE_EVENT_LINK",
+                                f"event_links[{link_index}] references unknown event {event_id}",
+                                record_ref,
+                            )
+                            continue
+                        linked_event_ids.add(str(event_id))
+                        if role not in DEBUG_EVENT_LINK_ROLES or not event_matches_role(event_by_id[event_id], str(role)):
+                            self.error(
+                                "DEBUG_MODE_EVIDENCE_EVENT_ROLE",
+                                f"event_links[{link_index}] role {role!r} is incompatible with event {event_id}",
+                                record_ref,
+                            )
+
+                    evaluations = evidence_decision.get("materiality_evaluations")
+                    evaluations = evaluations if isinstance(evaluations, list) else []
+                    evaluations_by_kind: dict[str, dict[str, Any]] = {}
+                    evaluation_counts: dict[str, int] = {}
+                    all_evaluation_event_ids: set[str] = set()
+                    for evaluation_index, evaluation in enumerate(evaluations):
+                        if not isinstance(evaluation, dict):
+                            continue
+                        kind = str(evaluation.get("kind", ""))
+                        evaluation_counts[kind] = evaluation_counts.get(kind, 0) + 1
+                        evaluations_by_kind.setdefault(kind, evaluation)
+                        event_ids = evaluation.get("event_ids")
+                        event_ids = event_ids if isinstance(event_ids, list) else []
+                        unknown_ids = sorted(set(event_ids) - set(event_by_id))
+                        if unknown_ids:
+                            self.error(
+                                "DEBUG_MODE_MATERIALITY_EVENT",
+                                f"materiality_evaluations[{evaluation_index}] references unknown events {unknown_ids}",
+                                record_ref,
+                            )
+                        all_evaluation_event_ids.update(
+                            event_id for event_id in event_ids if event_id in event_by_id
+                        )
+                        evidence_refs = evaluation.get("evidence")
+                        evidence_refs = evidence_refs if isinstance(evidence_refs, list) else []
+                        outcome = evaluation.get("outcome")
+                        if outcome == "applicable" and not event_ids and not evidence_refs:
+                            self.error(
+                                "DEBUG_MODE_MATERIALITY_EVIDENCE",
+                                f"applicable materiality kind {kind!r} requires event or external evidence",
+                                record_ref,
+                            )
+                        if outcome == "not-applicable" and event_ids:
+                            self.error(
+                                "DEBUG_MODE_MATERIALITY_EVIDENCE",
+                                f"not-applicable materiality kind {kind!r} cannot cite trigger events",
+                                record_ref,
+                            )
+
+                    missing_kinds = sorted(DEBUG_MATERIALITY_KINDS - set(evaluations_by_kind))
+                    duplicate_kinds = sorted(
+                        kind for kind, count in evaluation_counts.items() if count > 1
+                    )
+                    extra_kinds = sorted(set(evaluations_by_kind) - DEBUG_MATERIALITY_KINDS)
+                    if missing_kinds or duplicate_kinds or extra_kinds:
+                        self.error(
+                            "DEBUG_MODE_MATERIALITY_SET",
+                            f"materiality evaluation set drift: missing={missing_kinds}, duplicate={duplicate_kinds}, extra={extra_kinds}",
+                            record_ref,
+                        )
+                    missing_event_links = sorted(all_evaluation_event_ids - linked_event_ids)
+                    if missing_event_links:
+                        self.error(
+                            "DEBUG_MODE_MATERIALITY_EVENT_LINK",
+                            f"materiality events lack typed event links: {missing_event_links}",
+                            record_ref,
+                        )
+
+                    deterministic_materiality = {
+                        "rejected-hypothesis": {
+                            event_id
+                            for event_id, event in event_by_id.items()
+                            if event_matches_role(event, "rejected-hypothesis")
+                        },
+                        "reviewer-correction": {
+                            event_id
+                            for event_id, event in event_by_id.items()
+                            if event_matches_role(event, "correction")
+                        },
+                        "direction-change": {
+                            event_id
+                            for event_id, event in event_by_id.items()
+                            if event_matches_role(event, "direction-change")
+                        },
+                    }
+                    for kind, expected_event_ids in deterministic_materiality.items():
+                        evaluation = evaluations_by_kind.get(kind, {})
+                        recorded_ids = set(evaluation.get("event_ids", [])) if isinstance(evaluation, dict) else set()
+                        if expected_event_ids and (
+                            evaluation.get("outcome") != "applicable"
+                            or not expected_event_ids.issubset(recorded_ids)
+                        ):
+                            self.error(
+                                "DEBUG_MODE_MATERIALITY_TRIGGER",
+                                f"materiality kind {kind!r} must be applicable and include events {sorted(expected_event_ids)}",
+                                record_ref,
+                            )
+
+                    applicable_kinds = {
+                        kind
+                        for kind, evaluation in evaluations_by_kind.items()
+                        if evaluation.get("outcome") == "applicable"
+                    }
+                    unknown_kinds = {
+                        kind
+                        for kind, evaluation in evaluations_by_kind.items()
+                        if evaluation.get("outcome") == "unknown"
+                    }
+                    preservation = evidence_decision.get("knowledge_preserved_by")
+                    preservation = preservation if isinstance(preservation, list) else []
+                    preserved_kinds: set[str] = set()
+                    for preservation_index, item in enumerate(preservation):
+                        if not isinstance(item, dict):
+                            continue
+                        kind = str(item.get("materiality_kind", ""))
+                        fact_type = str(item.get("fact_type", ""))
+                        canonical_source = str(item.get("canonical_source", ""))
+                        if kind not in applicable_kinds:
+                            self.error(
+                                "DEBUG_MODE_PRESERVATION_SCOPE",
+                                f"knowledge_preserved_by[{preservation_index}] names non-applicable kind {kind!r}",
+                                record_ref,
+                            )
+                        registry_matches = registry_entries_by_fact_type.get(fact_type, [])
+                        if len(registry_matches) != 1:
+                            self.error(
+                                "DEBUG_MODE_PRESERVATION_REGISTRY",
+                                f"fact type {fact_type!r} must resolve exactly once in {registry_relpath}",
+                                record_ref,
+                            )
+                        elif not any(
+                            canonical_source in owner_value
+                            for owner_value in registry_matches[0].canonical_owner_values
+                        ):
+                            self.error(
+                                "DEBUG_MODE_PRESERVATION_OWNER",
+                                f"{canonical_source!r} is not registered as an owner for fact type {fact_type!r}",
+                                record_ref,
+                            )
+                        if not is_target_relative_path(canonical_source) or not self.target_path(canonical_source).is_file():
+                            self.error(
+                                "DEBUG_MODE_PRESERVATION_SOURCE",
+                                f"canonical preservation source must be an existing target file: {canonical_source}",
+                                record_ref,
+                            )
+                        preserved_kinds.add(kind)
+
+                    if evidence_status == "skipped":
+                        if unknown_kinds:
+                            self.error(
+                                "DEBUG_MODE_EVIDENCE_SKIP_UNKNOWN",
+                                f"skipped evidence decision cannot leave unknown materiality: {sorted(unknown_kinds)}",
+                                record_ref,
+                            )
+                        missing_preservation = sorted(applicable_kinds - preserved_kinds)
+                        if missing_preservation:
+                            self.error(
+                                "DEBUG_MODE_EVIDENCE_SKIP",
+                                f"skipped evidence lacks canonical preservation for applicable materiality: {missing_preservation}",
+                                record_ref,
+                            )
+                    if status == "completed" and (applicable_kinds or unknown_kinds) and evidence_status not in {"captured", "blocked", "skipped"}:
+                        self.error(
+                            "DEBUG_MODE_EVIDENCE_DECISION",
+                            "material completed Debug work requires captured, blocked, or fully justified skipped evidence",
+                            record_ref,
+                        )
+
+                    claim_validation = final_result.get("claim_validation")
+                    claim_validation = claim_validation if isinstance(claim_validation, dict) else {}
+                    claim_fidelity = str(claim_validation.get("fidelity", ""))
+                    claim_evidence = claim_validation.get("evidence")
+                    claim_evidence = claim_evidence if isinstance(claim_evidence, list) else []
+                    claims = claim_validation.get("claims")
+                    claims = claims if isinstance(claims, list) else []
+                    if claim_fidelity in {"exact-reproducer", "representative", "partial"} and (
+                        not claims or not claim_evidence
+                    ):
+                        self.error(
+                            "DEBUG_MODE_CLAIM_EVIDENCE",
+                            f"claim fidelity {claim_fidelity!r} requires claims and validation evidence",
+                            record_ref,
+                        )
+                    if claim_fidelity == "not-applicable" and implementation_surfaces:
+                        self.error(
+                            "DEBUG_MODE_CLAIM_FIDELITY",
+                            "implemented Debug result cannot mark claim validation not-applicable",
+                            record_ref,
+                        )
+                    if status == "completed" and claim_fidelity in {"partial", "unavailable"}:
+                        residual = record.get("residual_uncertainty")
+                        if not isinstance(residual, list) or not residual:
+                            self.error(
+                                "DEBUG_MODE_CLAIM_UNCERTAINTY",
+                                f"completed result with {claim_fidelity} validation must retain residual uncertainty",
+                                record_ref,
+                            )
+
             binding = final_result.get("repository_binding")
             binding_kind, result_revision = self.check_repository_binding(
                 binding=binding,
@@ -10039,13 +10458,21 @@ class Validator:
                 "metrics": metric_values,
                 "residual_uncertainty": record.get("residual_uncertainty"),
             }
-            if index_schema_version == 3:
+            if index_schema_version in {3, 4}:
                 binding_value = binding if isinstance(binding, dict) else {}
                 comparisons.update(
                     {
                         "record_schema_version": record_schema_version,
                         "repository_binding_state": binding_value.get("binding_state", "legacy"),
                         "engineering_evidence_status": evidence_status,
+                    }
+                )
+            if index_schema_version == 4:
+                comparisons.update(
+                    {
+                        "continuation_kind": continuation_kind,
+                        "continued_from_debug_id": continued_from_debug_id,
+                        "claim_validation_fidelity": claim_fidelity,
                     }
                 )
             for field, record_value in comparisons.items():

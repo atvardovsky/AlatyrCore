@@ -2405,6 +2405,8 @@ Excluded files or surfaces:
         debug_template["schema_version"] = 1
         debug_template["final_result"]["repository_binding"].pop("binding_state")
         debug_template["final_result"]["repository_binding"].pop("prior_bindings")
+        debug_template.pop("continuation")
+        debug_template["final_result"].pop("claim_validation")
         debug_template["final_result"].pop("engineering_evidence_decision")
         write_json(debug_template_path, debug_template)
         stale_templates = validator(contract_target)
@@ -2418,6 +2420,7 @@ Excluded files or surfaces:
             "DEBUG_MODE_TEMPLATE_VERSION",
             "DEBUG_MODE_TEMPLATE_BINDING",
             "DEBUG_MODE_TEMPLATE_EVIDENCE_DECISION",
+            "DEBUG_MODE_TEMPLATE_CONTINUATION",
         }:
             if required not in stale_template_codes:
                 failures.append(f"installed validator did not detect stale authoring contract {required}")
@@ -2428,7 +2431,7 @@ Excluded files or surfaces:
             "engineering_evidence:\n  contract_version: 2",
             "engineering_evidence:\n  contract_version: 1",
         ).replace(
-            "debug_mode:\n  contract_version: 2",
+            "debug_mode:\n  contract_version: 3",
             "debug_mode:\n  contract_version: 1",
         )
         manifest_path.write_text(manifest_text, encoding="utf-8")

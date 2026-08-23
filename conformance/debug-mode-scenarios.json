@@ -110,6 +110,49 @@
       ]
     },
     {
+      "id": "completed-record-rejects-later-events",
+      "request_shape": "A completed Debug record is edited to append implementation or validation events after its completion timestamp.",
+      "expected_mode": "rejected",
+      "required_outcomes": [
+        "post-completion event is rejected",
+        "completed record remains immutable",
+        "related later work requires a new explicit activation"
+      ]
+    },
+    {
+      "id": "continued-investigation-opens-linked-record",
+      "request_shape": "An explicitly authorized new task continues an investigation whose previous Debug record is completed.",
+      "expected_mode": "finalized",
+      "required_outcomes": [
+        "new Debug ID and record",
+        "exactly one closed predecessor",
+        "continuation reason",
+        "no mutation of the completed predecessor"
+      ]
+    },
+    {
+      "id": "evidence-event-role-mismatch",
+      "request_shape": "An engineering-evidence decision labels a decision event as implementation while the actual implementation is a different event.",
+      "expected_mode": "rejected",
+      "required_outcomes": [
+        "referenced event resolves exactly once",
+        "declared role matches event contribution semantics",
+        "mislabelled supporting event is rejected"
+      ]
+    },
+    {
+      "id": "independent-compatibility-investigation",
+      "request_shape": "An independent investigation finds a non-obvious dependency distinction, public-contract risk, broad regression matrix, unresolved external authority, and only partial reproduction evidence without human intervention.",
+      "expected_mode": "finalized",
+      "required_outcomes": [
+        "zero human interventions",
+        "typed finding decision implementation and validation event links",
+        "applicable compatibility dependency regression and unresolved-authority materiality",
+        "partial claim fidelity and residual uncertainty",
+        "captured or blocked durable engineering evidence"
+      ]
+    },
+    {
       "id": "historical-snapshot-after-later-edit",
       "request_shape": "Files captured by a finalized selected-file snapshot are changed or removed by later legitimate work.",
       "expected_mode": "finalized",

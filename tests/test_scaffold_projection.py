@@ -32,7 +32,7 @@ class ScaffoldProjectionTests(unittest.TestCase):
         source = (
             "framework:\n  version: x\n"
             "debug_mode:\n"
-            "  contract_version: 2\n"
+            "  contract_version: 3\n"
             "  flow: .ai/assistant/flows/debug-mode.flow.md\n"
             "engineering_evidence:\n"
             "  contract_version: 2\n"

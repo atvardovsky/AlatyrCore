@@ -48,6 +48,21 @@ Do not force a small, self-explanatory local change into a large artifact. A
 small task may skip capture with one short fact-specific reason. Task size,
 file count, or a successful test run alone does not decide materiality.
 
+When the active operation exposes structured materiality evaluation, assess
+every supported condition as `applicable`, `not-applicable`, or `unknown`.
+Keep supporting implementation and validation events separate from the reason
+capture is material. An implementation event does not become a durable-capture
+trigger merely because code changed, and a large test count does not prove that
+the originally reported scenario was reproduced.
+
+Do not accept `skipped` while materiality is unknown. When one or more
+conditions are applicable, skipping requires each reusable conclusion to name
+an existing project-owned canonical source and matching fact type in the
+source-of-truth registry. Issues, commit messages, tests, and Debug records may
+support that decision but do not become canonical owners merely by being
+detailed. If canonical preservation cannot be established, capture the record
+or mark capture blocked with the next safe action.
+
 ## Compact Record
 
 A durable record should normalize this chain:
@@ -165,6 +180,10 @@ Reject or repair evidence that:
 - includes secrets, raw reasoning, unrelated session history, or an external
   patch contrary to the target publication policy
 - skips a material task without a fact-specific reason
+- skips applicable materiality without proving canonical preservation for each
+  applicable conclusion
+- treats a commit message, issue, test, or Debug record as a canonical owner
+  without source-of-truth registry evidence
 - uses a reversed Git range, a symbolic name as a final immutable binding, or
   silently replaces repository-binding lineage
 - treats later worktree drift as proof that finalized historical evidence was
