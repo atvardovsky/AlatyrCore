@@ -9,8 +9,14 @@ When Debug Mode is requested or active, verify:
 - engineering actions retain their independent authorization and approval gates
 - records are non-canonical observability evidence
 - events are material, normalized, evidenced, ordered, and causally attributable
-- derived-after-human events have an earlier human intervention ancestor
-- Alatyr-initiated findings have no human-intervention ancestor
+- the initial task request remains activation metadata and is not counted as a
+  human intervention without a specific investigative effect
+- version-2 events separate actor, causal class, intervention kind,
+  contribution kind, and category
+- derived events have the matching earlier human or external intervention
+  ancestor; independent findings have no intervention ancestor
+- validation requests are not counted as implementation corrections, and
+  external input is not counted as a maintainer correction unless typed as one
 - new events state decision effect and structured architectural impacts
 - human or external-maintainer architectural impacts set
   `architectural_supervision: true`, while non-human events do not claim human
@@ -22,7 +28,13 @@ When Debug Mode is requested or active, verify:
 - capture coverage, missing intervals, observer effect, and overhead are stated
 - raw conversations, chain-of-thought, prompts, secrets, credentials, unrelated
   personal data, complete diffs, verbose logs, and unused speculation are absent
-- final result and clean-upstream projection are bound to evidence
+- final result and clean-upstream projection are bound to evidence with valid
+  binding state, Git object type, ancestry, and preserved prior bindings
+- finalized historical snapshot drift is reported without rewriting or
+  invalidating the original record
+- completed records close the Engineering Evidence decision; material rejected
+  hypotheses and direction changes are captured, blocked, or skipped only with
+  named canonical preservation
 - every durable engineering-evidence ID resolves exactly once in the target
   Engineering Evidence index; Debug event IDs and temporary IDs are not used
 - the compact index and selected record agree

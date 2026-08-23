@@ -172,6 +172,8 @@ Report:
 - `current_user_authorization`, including current scope, source request,
   authorized phases, invalidated prior authorization, and actions performed
 - pre-change preview shown, refreshed, or skipped with reason
+- `durable_engineering_evidence` as captured, skipped, or blocked, including
+  the record ID/path/repository binding or a fact-specific reason
 - team overlay, task/actor IDs, and registry evidence revision when applicable
 - diagram presentation mode, source status, and fallback when applicable
 - test-first recommendation result, policy state, trigger, mode, likely level,

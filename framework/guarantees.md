@@ -128,10 +128,12 @@ Machine checks can verify only deterministic repository facts, such as:
 - enabled optional modules have dependency, minimum-pack, rule, required-file,
   and deterministic-check closure against the installed capability catalog
 - optional Debug Mode records can be checked for explicit activation metadata,
-  non-canonical authority, event ordering, causal attribution, structured
+  non-canonical authority, versioned actor/causality/intervention/contribution
+  attribution, event ordering, causal attribution, structured
   architectural impacts, direction-changing hypothesis replacement, timing
   evidence, metric derivation, privacy declarations, exact durable engineering-
-  evidence reference resolution, index synchronization, result binding,
+  evidence decision and reference resolution, index synchronization, Git
+  object type, ancestry, binding state and lineage,
   active-versus-finalized comparison boundaries, and clean-upstream policy
 - target context routers match the profile template and route known framework
   documents somewhere
@@ -169,8 +171,9 @@ Machine checks can verify only deterministic repository facts, such as:
   companion decisions, correction impact, and evidence-quality prerequisites
 - durable engineering-evidence indexes and selected records can be checked for
   shape, identity, task and repository binding, invariant and regression
-  evidence, index synchronization, publication policy, and prohibited raw
-  conversation or secret-bearing fields
+  evidence, Git object type, ancestry, binding state and lineage, historical
+  snapshot drift, index synchronization, publication policy, and prohibited
+  raw conversation or secret-bearing fields
 
 Machine checks do not prove the assistant understood the target project or
 that project facts are correct. Prepared prompts and static bridge checks also

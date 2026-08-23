@@ -32,20 +32,27 @@ publication, or live external actions.
 6. Link canonical knowledge updates. If an accepted fact has no owner, record
    the ownership gap and do not let this historical record become the owner.
 7. Bind the result to an exact commit, pull request, Git tree, selected-file
-   snapshot, or `unverified` limitation. Link the task or issue explicitly.
-8. Apply the target storage and external-patch policy. Keep support evidence
+   snapshot, or `unverified` limitation. Mark a working binding provisional and
+   a completed reproducible binding final. Final commit and pull-request ranges
+   use immutable object IDs and valid ancestry; tree results resolve as Git
+   trees. Link the task or issue explicitly.
+8. When finalizing or strengthening a binding, append the replaced binding to
+   `prior_bindings`. Never silently rewrite lineage. Treat later drift from a
+   finalized selected-file snapshot as a historical reproducibility warning,
+   not retroactive evidence corruption.
+9. Apply the target storage and external-patch policy. Keep support evidence
    outside a clean upstream contribution unless the upstream project accepts
    it. Confirm that the selected retained store remains discoverable.
-9. Reject raw chats, chain-of-thought, prompts, secrets, credentials, personal
+10. Reject raw chats, chain-of-thought, prompts, secrets, credentials, personal
    data, unrelated session history, complete diffs, and verbose test logs.
-10. Validate the record, then add one compact index entry containing evidence
+11. Validate the record, then add one compact index entry containing evidence
     ID, status, record path or approved external reference, task references,
     changed fact IDs, architecture areas, repository binding, and uncertainty.
-11. If a change package is active, link the evidence ID from it instead of
+12. If a change package is active, link the evidence ID from it instead of
     copying the normalized conclusions.
 
 ## Final Evidence
 
 Report capture status, trigger or skip/block reason, evidence ID and path when
-captured, task and repository binding, canonical owner updates, privacy and
-publication result, validation, and residual uncertainty.
+captured, task and repository binding state and lineage, canonical owner
+updates, privacy and publication result, validation, and residual uncertainty.

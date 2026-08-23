@@ -11,7 +11,7 @@
     "privacy", "residual_uncertainty", "limitations"
   ],
   "properties": {
-    "schema_version": {"const": 1},
+    "schema_version": {"enum": [1, 2]},
     "record_kind": {"const": "alatyr-debug-session"},
     "evidence_classification": {"const": "non-canonical-observability"},
     "debug_id": {"type": "string", "minLength": 1},
@@ -67,8 +67,7 @@
       }
     },
     "events": {
-      "type": "array",
-      "items": {"$ref": "#/definitions/event"}
+      "type": "array"
     },
     "metrics": {
       "type": "object",
@@ -100,37 +99,7 @@
         "post_review_rework": {"$ref": "#/definitions/metric"}
       }
     },
-    "final_result": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["summary", "repository_binding", "implementation_surfaces", "validation", "engineering_evidence_ids", "upstream_projection"],
-      "properties": {
-        "summary": {"type": "string", "minLength": 1},
-        "repository_binding": {"$ref": "#/definitions/repositoryBinding"},
-        "implementation_surfaces": {"$ref": "#/definitions/strings"},
-        "validation": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["results", "skipped"],
-          "properties": {
-            "results": {"$ref": "#/definitions/strings"},
-            "skipped": {"$ref": "#/definitions/strings"}
-          }
-        },
-        "engineering_evidence_ids": {"$ref": "#/definitions/strings"},
-        "upstream_projection": {
-          "type": "object",
-          "additionalProperties": false,
-          "required": ["kind", "included_debug_files", "projected_paths", "evidence"],
-          "properties": {
-            "kind": {"enum": ["clean-external", "same-repository", "not-applicable", "unknown"]},
-            "included_debug_files": {"type": "boolean"},
-            "projected_paths": {"$ref": "#/definitions/strings"},
-            "evidence": {"$ref": "#/definitions/strings"}
-          }
-        }
-      }
-    },
+    "final_result": {"type": "object"},
     "publication": {
       "type": "object",
       "additionalProperties": false,
@@ -170,6 +139,26 @@
     "residual_uncertainty": {"$ref": "#/definitions/strings"},
     "limitations": {"$ref": "#/definitions/nonEmptyStrings"}
   },
+  "allOf": [
+    {
+      "if": {"properties": {"schema_version": {"const": 1}}},
+      "then": {
+        "properties": {
+          "events": {"items": {"$ref": "#/definitions/eventV1"}},
+          "final_result": {"$ref": "#/definitions/finalResultV1"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"schema_version": {"const": 2}}},
+      "then": {
+        "properties": {
+          "events": {"items": {"$ref": "#/definitions/eventV2"}},
+          "final_result": {"$ref": "#/definitions/finalResultV2"}
+        }
+      }
+    }
+  ],
   "definitions": {
     "strings": {
       "type": "array",
@@ -210,7 +199,7 @@
         "event_ids": {"$ref": "#/definitions/strings"}
       }
     },
-    "event": {
+    "eventV1": {
       "type": "object",
       "additionalProperties": false,
       "required": [
@@ -224,6 +213,38 @@
         "sequence": {"type": "integer", "minimum": 1},
         "occurred_at": {"$ref": "#/definitions/timeValue"},
         "origin": {"enum": ["alatyr-initiated", "human-initiated", "derived-after-human-intervention", "external-maintainer"]},
+        "category": {"enum": ["architecture-area", "invariant", "dependency", "execution-path", "risk", "test", "regression-scenario", "hypothesis", "validation", "implementation-revision", "review-correction", "other"]},
+        "summary": {"type": "string", "minLength": 1},
+        "material_effect": {"type": "string", "minLength": 1},
+        "evidence": {"$ref": "#/definitions/nonEmptyStrings"},
+        "caused_by_event_ids": {"$ref": "#/definitions/strings"},
+        "architectural_supervision": {"type": "boolean"},
+        "architectural_impacts": {"$ref": "#/definitions/architecturalImpacts"},
+        "decision_effect": {"enum": ["not-assessed", "none", "confirms-direction", "changes-direction"]},
+        "dependency_expansion": {"type": "boolean"},
+        "validation_expansion": {"type": "boolean"},
+        "post_review_rework": {"type": "boolean"},
+        "hypothesis_outcome": {"enum": ["confirmed", "rejected", "unresolved", "not-applicable"]}
+      }
+    },
+    "eventV2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_id", "sequence", "occurred_at", "actor", "causal_class",
+        "intervention_kind", "contribution_kind", "category", "summary",
+        "material_effect", "evidence", "caused_by_event_ids",
+        "architectural_supervision", "dependency_expansion",
+        "validation_expansion", "post_review_rework", "hypothesis_outcome"
+      ],
+      "properties": {
+        "event_id": {"type": "string", "minLength": 1},
+        "sequence": {"type": "integer", "minimum": 1},
+        "occurred_at": {"$ref": "#/definitions/timeValue"},
+        "actor": {"enum": ["alatyr", "human", "external-maintainer"]},
+        "causal_class": {"enum": ["independent-within-scope", "intervention", "derived-from-human", "derived-from-external"]},
+        "intervention_kind": {"enum": ["not-applicable", "line-direction", "scope-expansion", "constraint", "correction", "validation-request"]},
+        "contribution_kind": {"enum": ["finding", "decision", "implementation", "validation", "coordination"]},
         "category": {"enum": ["architecture-area", "invariant", "dependency", "execution-path", "risk", "test", "regression-scenario", "hypothesis", "validation", "implementation-revision", "review-correction", "other"]},
         "summary": {"type": "string", "minLength": 1},
         "material_effect": {"type": "string", "minLength": 1},
@@ -254,7 +275,7 @@
       },
       "uniqueItems": true
     },
-    "repositoryBinding": {
+    "repositoryBindingV1": {
       "type": "object",
       "additionalProperties": false,
       "required": ["kind", "base_revision", "result_revision", "review_reference", "selected_paths", "snapshot_sha256"],
@@ -265,6 +286,99 @@
         "review_reference": {"type": "string", "minLength": 1},
         "selected_paths": {"$ref": "#/definitions/strings"},
         "snapshot_sha256": {"type": "string", "minLength": 1}
+      }
+    },
+    "repositoryBindingV2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "binding_state", "base_revision", "result_revision", "review_reference", "selected_paths", "snapshot_sha256", "prior_bindings"],
+      "properties": {
+        "kind": {"enum": ["commit", "pull-request", "tree", "selected-file-snapshot", "unverified"]},
+        "binding_state": {"enum": ["provisional", "final"]},
+        "base_revision": {"type": "string", "minLength": 1},
+        "result_revision": {"type": "string", "minLength": 1},
+        "review_reference": {"type": "string", "minLength": 1},
+        "selected_paths": {"$ref": "#/definitions/strings"},
+        "snapshot_sha256": {"type": "string", "minLength": 1},
+        "prior_bindings": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/priorRepositoryBinding"}
+        }
+      }
+    },
+    "priorRepositoryBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "base_revision", "result_revision", "review_reference", "selected_paths", "snapshot_sha256", "replaced_at", "reason"],
+      "properties": {
+        "kind": {"enum": ["commit", "pull-request", "tree", "selected-file-snapshot", "unverified"]},
+        "base_revision": {"type": "string", "minLength": 1},
+        "result_revision": {"type": "string", "minLength": 1},
+        "review_reference": {"type": "string", "minLength": 1},
+        "selected_paths": {"$ref": "#/definitions/strings"},
+        "snapshot_sha256": {"type": "string", "minLength": 1},
+        "replaced_at": {"type": "string", "minLength": 1},
+        "reason": {"type": "string", "minLength": 1}
+      }
+    },
+    "validationResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["results", "skipped"],
+      "properties": {
+        "results": {"$ref": "#/definitions/strings"},
+        "skipped": {"$ref": "#/definitions/strings"}
+      }
+    },
+    "upstreamProjection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "included_debug_files", "projected_paths", "evidence"],
+      "properties": {
+        "kind": {"enum": ["clean-external", "same-repository", "not-applicable", "unknown"]},
+        "included_debug_files": {"type": "boolean"},
+        "projected_paths": {"$ref": "#/definitions/strings"},
+        "evidence": {"$ref": "#/definitions/strings"}
+      }
+    },
+    "engineeringEvidenceDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "trigger_event_ids", "trigger_kinds", "knowledge_preserved_by", "reason", "next_safe_action"],
+      "properties": {
+        "status": {"enum": ["pending", "captured", "skipped", "blocked"]},
+        "trigger_event_ids": {"$ref": "#/definitions/strings"},
+        "trigger_kinds": {"$ref": "#/definitions/strings"},
+        "knowledge_preserved_by": {"$ref": "#/definitions/strings"},
+        "reason": {"type": "string", "minLength": 1},
+        "next_safe_action": {"type": "string", "minLength": 1}
+      }
+    },
+    "finalResultV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summary", "repository_binding", "implementation_surfaces", "validation", "engineering_evidence_ids", "upstream_projection"],
+      "properties": {
+        "summary": {"type": "string", "minLength": 1},
+        "repository_binding": {"$ref": "#/definitions/repositoryBindingV1"},
+        "implementation_surfaces": {"$ref": "#/definitions/strings"},
+        "validation": {"$ref": "#/definitions/validationResult"},
+        "engineering_evidence_ids": {"$ref": "#/definitions/strings"},
+        "upstream_projection": {"$ref": "#/definitions/upstreamProjection"}
+      }
+    },
+    "finalResultV2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summary", "repository_binding", "implementation_surfaces", "validation", "engineering_evidence_ids", "engineering_evidence_decision", "upstream_projection"],
+      "properties": {
+        "summary": {"type": "string", "minLength": 1},
+        "repository_binding": {"$ref": "#/definitions/repositoryBindingV2"},
+        "implementation_surfaces": {"$ref": "#/definitions/strings"},
+        "validation": {"$ref": "#/definitions/validationResult"},
+        "engineering_evidence_ids": {"$ref": "#/definitions/strings"},
+        "engineering_evidence_decision": {"$ref": "#/definitions/engineeringEvidenceDecision"},
+        "upstream_projection": {"$ref": "#/definitions/upstreamProjection"}
       }
     }
   }

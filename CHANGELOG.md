@@ -4,6 +4,36 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.23 - 2026-08-23
+
+- Increased the framework version to `0.1.0-alpha.23`, adapter schema version
+  to `22`, and target template version to `23` for versioned Debug attribution,
+  deterministic evidence closure, and repository-binding lifecycle checks.
+- Added Debug session schema version 2 with separate actor, causal class,
+  intervention kind, contribution kind, and category fields. Initial task scope
+  is not an intervention; validation requests and generic external input are
+  no longer counted as implementation or maintainer corrections.
+- Required completed version-2 Debug sessions to close a durable Engineering
+  Evidence decision and account for material rejected hypotheses, corrections,
+  and direction changes through capture, blocking, or canonical preservation.
+- Added version-2 Debug and Engineering Evidence bindings with provisional/final
+  state, immutable Git object checks, commit ancestry, true tree-object support,
+  and explicit `prior_bindings` lineage.
+- Preserved schema-version-1 records as legacy evidence without inventing new
+  attribution. Later worktree changes now produce historical-snapshot warnings
+  instead of retroactively invalidating finalized evidence.
+- Added contract versions and schema-3 compact index projections so installed
+  validation detects stale authoring templates, binding state, attribution
+  model, and Debug evidence-decision drift.
+- Extended change-package provenance with Git-range ancestry checks and the
+  same non-corrupting treatment of finalized historical snapshots.
+- Routed installed-validator findings back into upgrade impact context, kept
+  update evidence branch-specific, and added deterministic regression coverage
+  for tree bindings, reversed ranges, legacy compatibility, attribution
+  boundaries, evidence closure, historical drift, and selective scaffolding.
+- Changed `ALATYR-DEBUG-001`, `ALATYR-ENGINEERING-EVIDENCE-001`, and
+  `ALATYR-LIFECYCLE-001`; no rule IDs were added or removed.
+
 ## 0.1.0-alpha.22 - 2026-08-23
 
 - Increased the framework version to `0.1.0-alpha.22`, adapter schema version

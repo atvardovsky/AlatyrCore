@@ -3,6 +3,7 @@
 Debug ID: `{DEBUG_ID}`
 Task/session scope: `{SCOPE_KIND_AND_ID}`
 Status: `{COMPLETED_ABANDONED_OR_ACTIVE}`
+Record schema and attribution model: `{SCHEMA_VERSION_AND_LEGACY_OR_VERSIONED_LIMITATION}`
 Elapsed time: `{VALUE_AND_OBSERVED_ESTIMATED_OR_UNKNOWN}`
 Capture quality: `{COMPLETE_PARTIAL_OR_UNKNOWN_MISSING_INTERVALS_AND_OBSERVER_EFFECT}`
 Human interventions: `{EVENT_DERIVED_VALUE_OR_UNAVAILABLE}`
@@ -17,10 +18,10 @@ Direction replacements: `{CORRECTION_REJECTED_HYPOTHESIS_AND_REPLACEMENT_CHAIN_O
 Implementation corrections after human intervention: `{EVENT_DERIVED_VALUE_OR_UNAVAILABLE}`
 External maintainer corrections: `{EVENT_DERIVED_VALUE_OR_UNAVAILABLE}`
 Post-review rework: `{EVENT_DERIVED_VALUE_OR_UNAVAILABLE}`
-Final result binding: `{KIND_AND_REVISION_OR_UNVERIFIED}`
+Final result binding: `{KIND_STATE_REVISION_AND_LINEAGE_OR_UNVERIFIED}`
 External projection: `{CLEAN_EXTERNAL_SAME_REPOSITORY_NOT_APPLICABLE_OR_UNKNOWN}`
 Debug files included in external patch: `{FALSE_OR_TARGET_APPROVED_TRUE}`
-Durable engineering evidence: `{IDS_OR_NONE}`
+Durable engineering evidence: `{CAPTURED_SKIPPED_OR_BLOCKED_IDS_TRIGGERS_REASON_AND_NEXT_ACTION}`
 Validation: `{RECORD_AND_RESULT_VALIDATION}`
 Residual uncertainty: `{RESIDUAL_UNCERTAINTY}`
 

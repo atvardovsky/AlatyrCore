@@ -73,15 +73,18 @@ Before upgrading framework files in a target project:
    When `change-packages` is enabled, compare its record schema, semantic
    approval fields, provenance policy, lazy route, and validator support.
    For required durable engineering evidence, compare its policy, compact
-   index, record schema, lazy route, capture gate, repository binding, privacy,
-   publication boundary, and validator support.
+   index, contract version, authoring-template record schema, lazy route,
+   capture gate, repository binding state/lineage, Git object and ancestry
+   checks, privacy, publication boundary, and validator support.
    When `debug-mode` is enabled, compare its explicit activation/expiry rule,
    non-canonical storage policy, index/record schema, lazy overlay, operation,
-   flow, gate, summary, event attribution, timing/capture quality, metric
+   flow, gate, summary, contract and authoring-template schema, versioned actor/
+   causality/intervention/contribution attribution, timing/capture quality, metric
    derivation, structured architectural-impact and decision-effect fields,
    direction-change hypothesis/replacement causality, durable engineering-
-   evidence reference resolution, active-versus-finalized comparison boundary,
-   clean-upstream boundary, and validator support.
+   evidence decision/reference resolution, repository-binding state/lineage,
+   active-versus-finalized comparison boundary, clean-upstream boundary, and
+   validator support.
    When `code-documentation` is enabled, compare its catalog/profile schemas,
    source-set selectors, accepted states, canonical-owner boundaries,
    generators, output/publication policies, adapted skill, lazy route, and
@@ -125,17 +128,20 @@ Before upgrading framework files in a target project:
     Preserve target change-package records. Never replace historical package
     evidence with the source placeholder templates.
     Preserve target durable engineering-evidence IDs, records, task/revision
-    bindings, and storage/publication policy. Never replace historical records
+    bindings and prior-binding lineage, and storage/publication policy. Never replace historical records
     with source placeholders or move them into an external contribution patch
     contrary to target policy.
     Preserve target Debug Mode IDs, completed records, active-scope state,
     event attribution, timing evidence, publication policy, and compact index.
     Never replace records with source placeholders, silently reactivate a
     closed scope, or move debug files into a clean external contribution.
-    Preserve older events without structured architectural fields as migration-
-    limited evidence; do not silently infer those fields. Add structured fields
-    to new events, repair invalid durable evidence references, and keep active
-    records out of finalized comparisons.
+    Preserve schema-version-1 events and records as migration-limited evidence;
+    do not silently infer version-2 attribution or binding lineage. Install the
+    current contract version, authoring templates, and derived index projections
+    for new records. Repair invalid durable evidence decisions/references and
+    keep active records out of finalized comparisons. A finalized historical
+    snapshot that no longer matches the current worktree is a reproducibility
+    warning, not a reason to rewrite or invalidate the old record.
     Preserve target code-documentation profiles and decisions. Never replace
     accepted frontend, backend, shared, or infrastructure conventions with
     source placeholders or a universal style.

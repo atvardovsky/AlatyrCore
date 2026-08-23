@@ -62,25 +62,35 @@ authorization remains independently required for every engineering action.
 ## Normalized Event Model
 
 Record only material events that changed or validated the investigation. Every
-event has a stable ID, sequence, origin, category, compact summary, material
-effect, evidence references, and causal references when applicable.
+version-2 event has a stable ID, sequence, actor, causal class, intervention
+kind, contribution kind, category, compact material effect, evidence
+references, and causal references when applicable.
 
-Origins are:
+Keep the attribution dimensions separate:
 
-- `alatyr-initiated`: Alatyr identified the finding or check before a recorded
-  human intervention directed that line of work
-- `human-initiated`: a human expanded, corrected, constrained, or redirected
-  the investigation
-- `derived-after-human-intervention`: Alatyr derived a concrete consequence,
-  dependency, test, correction, or validation path from a recorded human
-  intervention
-- `external-maintainer`: a reviewer or maintainer outside the active
-  human-assistant loop supplied a correction or requirement
+- `actor`: `alatyr`, `human`, or `external-maintainer`
+- `causal_class`: `independent-within-scope`, `intervention`,
+  `derived-from-human`, or `derived-from-external`
+- `intervention_kind`: `line-direction`, `scope-expansion`, `constraint`,
+  `correction`, `validation-request`, or `not-applicable`
+- `contribution_kind`: `finding`, `decision`, `implementation`, `validation`,
+  or `coordination`
 
-A derived event must reference an earlier human event through its causal chain.
-An Alatyr-initiated event must not claim independence when its causal chain
-contains a human intervention. Preserve the distinction between a broad human
-direction and the concrete consequences Alatyr subsequently derives.
+The request that activates Debug Mode or states the task scope belongs in the
+activation and task metadata. It is not itself a human intervention event.
+Create an intervention event only when a human or external maintainer directs,
+expands, constrains, corrects, or requests validation for a specific line of
+the active investigation.
+
+A derived event must reference the matching earlier intervention through its
+causal chain. An independent event must not have a human or external
+intervention ancestor. A validation request is not an implementation
+correction, and external input is not a maintainer correction unless its
+intervention kind is `correction`.
+
+Schema-version-1 `origin` values remain readable as legacy evidence. Do not
+silently rewrite their attribution. Comparisons across versions must identify
+the attribution-model difference.
 
 Supported categories include architecture areas, invariants, dependencies,
 execution paths, risks, tests, regression scenarios, hypotheses, validation,
@@ -203,7 +213,11 @@ an assistant's impression. Metrics include:
 Each metric stores its evidence kind and contributing event IDs. Use `estimated`
 or `unavailable` only when exact event-derived evidence cannot be claimed.
 Completed records with `event-derived` metrics must agree exactly with their
-event predicates.
+event predicates. Version 2 counts findings only from `finding` contributions,
+implementation revisions only from `implementation` contributions, and
+validation expansion only from `validation` contributions. Implementation
+correction and post-review rework metrics require a causal correction ancestor;
+a validation request alone does not satisfy that predicate.
 
 Cross-task comparison reads compact index summaries and compares like task
 classes, capture coverage, result quality, and timing evidence. Do not claim
@@ -213,12 +227,30 @@ is useful only when independent review and result quality remain comparable.
 ## Final Result And External Projection
 
 Bind the final result to an exact commit, pull request, tree, selected-file
-snapshot, or an honest unverified state. Link implementation surfaces,
-validation evidence, and durable engineering-evidence IDs when applicable.
+snapshot, or an honest unverified state. Version-2 bindings declare
+`provisional` or `final` state and preserve replaced bindings in
+`prior_bindings`. Final commit and pull-request bindings use immutable commit
+IDs with an ancestor-ordered base/result range. A tree binding resolves its
+result as a Git tree object, not as a commit.
+
+A finalized selected-file snapshot is historical evidence. Later legitimate
+edits or deletion may make it not currently reproducible, but must not turn the
+old record into corrupt evidence. Report that state explicitly. When the
+snapshot matches a commit, suggest an explicit lineage-preserving rebind; do
+not rewrite it automatically.
+
+Link implementation surfaces, validation evidence, and durable
+engineering-evidence IDs when applicable.
 Every non-empty durable engineering-evidence ID must resolve exactly once in
 the target Engineering Evidence index. A Debug event ID is not a durable
-evidence ID. Keep the list empty while no durable record exists instead of
-using a temporary or event-local identifier.
+evidence ID.
+
+Every version-2 Debug result also records an Engineering Evidence decision as
+`pending`, `captured`, `skipped`, or `blocked`. Completion cannot leave it
+pending. Material rejected hypotheses and direction-changing corrections must
+be captured or blocked, or skipped only when named canonical project knowledge
+already preserves the reusable conclusion. A blocked decision names the next
+safe action.
 
 Support this boundary:
 
@@ -270,6 +302,10 @@ Reject or repair Debug Mode use that:
 - carries activation or write permission into a new task
 - stores transcripts, private reasoning, secrets, or unrelated data
 - counts human-directed work as independently Alatyr-initiated
+- counts the initial task request as an intervention without a specific
+  investigative effect
+- counts a validation request as an implementation correction or generic
+  external input as a maintainer correction
 - records derived work without a causal human event
 - marks a human architectural impact as non-architectural, or claims human
   architectural supervision without structured impact evidence in a new record
@@ -277,6 +313,8 @@ Reject or repair Debug Mode use that:
   its replacement invariant or architecture direction
 - links an unknown, duplicate, or Debug-local ID as durable engineering
   evidence
+- completes material Debug work without an explicit durable-evidence decision
+- rewrites historical attribution or repository-binding lineage silently
 - infers metrics from the final patch instead of recorded events
 - turns debug evidence into architecture or business-rule authority
 - includes Alatyr files in a clean external patch contrary to target policy

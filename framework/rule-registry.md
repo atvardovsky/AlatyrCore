@@ -169,11 +169,12 @@ Rule ID: `ALATYR-ENGINEERING-EVIDENCE-001`
 Canonical source: `.ai/framework/engineering-evidence.md`
 Commitment: Before completing material semantic, architectural, or non-obvious
 repair work, decide whether reusable knowledge would be lost after the session;
-capture compact project-owned task, revision, invariant, hypothesis outcome,
-root-cause, solution, regression, validation, publication, and uncertainty
-evidence when triggered, or record a fact-specific skip or block reason,
-without storing raw chat, chain-of-thought, secrets, or unrelated history and
-without forcing ordinary small changes into change packages.
+capture compact project-owned task, invariant, hypothesis outcome, root-cause,
+solution, regression, validation, publication, and uncertainty evidence when
+triggered, with versioned provisional/final repository binding, correct Git
+object and ancestry checks, and preserved rebinding lineage; otherwise record a
+fact-specific skip or block reason without storing raw chat, private reasoning,
+secrets, or unrelated history.
 Applies to: material semantic changes, architecture changes, non-obvious defect
 repairs, final evidence.
 Enforcement: required capture decision; record required when triggered and
@@ -182,15 +183,14 @@ authorized.
 Rule ID: `ALATYR-DEBUG-001`
 Canonical source: `.ai/framework/debug-mode.md`
 Commitment: When optional Debug Mode is explicitly enabled for a current task
-or session, record compact non-canonical events that distinguish
-Alatyr-initiated, human-initiated, derived-after-human-intervention, and
-external-maintainer contributions; classify architectural supervision through
-structured decision impacts; preserve direction-changing correction to
-rejected-hypothesis to replacement causality; resolve durable
-engineering-evidence links exactly once; derive supervision metrics from
-events; preserve privacy, timing quality, action authorization,
-active-versus-finalized comparison boundaries, and clean upstream boundaries;
-and expire activation at the logical-scope boundary.
+or session, record compact non-canonical events with separate actor, causal
+class, intervention kind, contribution kind, and category; do not count initial
+task scope as intervention; distinguish validation requests from corrections;
+preserve direction-change causality; close the durable Engineering Evidence
+decision; bind results with typed Git objects and lineage; derive metrics from
+versioned predicates; preserve privacy, authorization, historical
+comparability, and clean upstream boundaries; and expire activation at the
+logical-scope boundary.
 Applies to: debug activation, task observability, human supervision
 measurement, cross-task effectiveness comparison, clean upstream projection.
 Enforcement: required when module enabled and Debug Mode is activated.

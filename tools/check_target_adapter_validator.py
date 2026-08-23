@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -2390,6 +2391,58 @@ Excluded files or surfaces:
             failures.append("extension findings must route to extension-management")
         if extension_health.get("exit_code") != 0:
             failures.append("ordinary advisory warnings must remain non-blocking by default")
+
+        contract_target = target / "versioned-record-contracts"
+        shutil.copytree(ROOT / "templates" / "target", contract_target)
+        engineering_template_path = contract_target / ".ai/assistant/templates/engineering-evidence-record.json"
+        engineering_template = json.loads(engineering_template_path.read_text(encoding="utf-8"))
+        engineering_template["schema_version"] = 1
+        engineering_template["repository_binding"].pop("binding_state")
+        engineering_template["repository_binding"].pop("prior_bindings")
+        write_json(engineering_template_path, engineering_template)
+        debug_template_path = contract_target / ".ai/assistant/templates/debug-session-record.json"
+        debug_template = json.loads(debug_template_path.read_text(encoding="utf-8"))
+        debug_template["schema_version"] = 1
+        debug_template["final_result"]["repository_binding"].pop("binding_state")
+        debug_template["final_result"]["repository_binding"].pop("prior_bindings")
+        debug_template["final_result"].pop("engineering_evidence_decision")
+        write_json(debug_template_path, debug_template)
+        stale_templates = validator(contract_target)
+        manifest = parse_manifest(contract_target / ".ai/alatyr.yaml")
+        stale_templates.check_engineering_evidence(manifest)
+        stale_templates.check_debug_mode(manifest)
+        stale_template_codes = {finding.code for finding in stale_templates.findings}
+        for required in {
+            "ENGINEERING_EVIDENCE_TEMPLATE_VERSION",
+            "ENGINEERING_EVIDENCE_TEMPLATE_BINDING",
+            "DEBUG_MODE_TEMPLATE_VERSION",
+            "DEBUG_MODE_TEMPLATE_BINDING",
+            "DEBUG_MODE_TEMPLATE_EVIDENCE_DECISION",
+        }:
+            if required not in stale_template_codes:
+                failures.append(f"installed validator did not detect stale authoring contract {required}")
+
+        manifest_path = contract_target / ".ai/alatyr.yaml"
+        manifest_text = manifest_path.read_text(encoding="utf-8")
+        manifest_text = manifest_text.replace(
+            "engineering_evidence:\n  contract_version: 2",
+            "engineering_evidence:\n  contract_version: 1",
+        ).replace(
+            "debug_mode:\n  contract_version: 2",
+            "debug_mode:\n  contract_version: 1",
+        )
+        manifest_path.write_text(manifest_text, encoding="utf-8")
+        stale_contracts = validator(contract_target)
+        stale_manifest = parse_manifest(manifest_path)
+        stale_contracts.check_engineering_evidence(stale_manifest)
+        stale_contracts.check_debug_mode(stale_manifest)
+        stale_contract_codes = {finding.code for finding in stale_contracts.findings}
+        for required in {
+            "ENGINEERING_EVIDENCE_CONTRACT_VERSION",
+            "DEBUG_MODE_CONTRACT_VERSION",
+        }:
+            if required not in stale_contract_codes:
+                failures.append(f"installed validator did not detect stale manifest contract {required}")
 
     if failures:
         for failure in failures:

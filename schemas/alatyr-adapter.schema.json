@@ -100,8 +100,9 @@
     "engineering_evidence": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["index", "records", "flow", "gate", "machine_template", "storage_mode", "external_patch_policy", "retention_policy", "redaction_policy"],
+      "required": ["contract_version", "index", "records", "flow", "gate", "machine_template", "storage_mode", "external_patch_policy", "retention_policy", "redaction_policy"],
       "properties": {
+        "contract_version": {"const": 2},
         "index": {"type": "string", "minLength": 1},
         "records": {"type": "string", "minLength": 1},
         "flow": {"type": "string", "minLength": 1},
@@ -116,8 +117,9 @@
     "debug_mode": {
       "type": ["object", "null"],
       "additionalProperties": false,
-      "required": ["index", "records", "overlay", "flow", "gate", "record_template", "summary_template"],
+      "required": ["contract_version", "index", "records", "overlay", "flow", "gate", "record_template", "summary_template"],
       "properties": {
+        "contract_version": {"const": 2},
         "index": {"type": "string", "minLength": 1},
         "records": {"type": "string", "minLength": 1},
         "overlay": {"type": "string", "minLength": 1},

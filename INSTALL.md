@@ -111,11 +111,12 @@ The plan must identify:
   storage, conflict, handoff, decision, review, retention, and privacy needs
 - required core profile and optional modules needed for the target
 - optional Debug Mode need, owner, explicit task/session activation and expiry,
-  non-canonical storage, privacy/retention, event attribution, structured
+  non-canonical storage, privacy/retention, versioned actor/causality/
+  intervention/contribution attribution, structured
   architectural impacts, direction-change hypothesis/replacement causality,
   timing evidence, supervision metrics, exact durable engineering-evidence
-  reference resolution, active-versus-finalized comparison, and clean-upstream
-  projection policy
+  decision/reference resolution, repository-binding state/lineage, active-
+  versus-finalized comparison, and clean-upstream projection policy
 - source-of-truth registry needs
 - optional consistency-map need, fact-ID strategy, relationship coverage, and
   staleness owner
@@ -159,7 +160,8 @@ The plan must identify:
 - target development-evidence index, owner, retention/privacy policy, and lazy
   capture needs when recommendations should learn from recurring project work
 - durable engineering-evidence owner, retained storage and redaction policy,
-  external-contribution boundary, compact index, lazy capture, and validation
+  external-contribution boundary, compact index, lazy capture, versioned
+  binding state/lineage, and validation
 - files to create, adapt, preserve, or skip
 - framework core versus target adapter decisions
 - target validation plan
@@ -278,11 +280,13 @@ In a typical target repository:
    change-package flow, machine record, redacted report, and index when coherent
    material-change evidence is needed,
    durable engineering-evidence task-scale overlay, capture flow, gate, and
-   machine record template as lazy required-core finalization surfaces,
+   machine record template and contract version as lazy required-core
+   finalization surfaces,
    optional Debug Mode project index/records, task-scale overlay, operation,
    flow, gate, machine record, compact summary, structured architectural-
-   impact classification, hypothesis replacement chain, and exact durable
-   evidence reference checks when selected with its dependency closure,
+   impact classification, versioned attribution, hypothesis replacement chain,
+   durable evidence decision/reference checks, and repository-binding lineage
+   when selected with its dependency closure,
    and
    post-install/update chat-message templates when the target wants
    post-install operation requests or AI infrastructure adaptation.

@@ -92,6 +92,19 @@ Use `unverified` honestly and report the resulting limitation. A later commit,
 review, or snapshot may finalize the record without rewriting its engineering
 conclusions.
 
+Version-2 bindings distinguish `provisional` from `final` and retain every
+replaced binding in `prior_bindings`. A final commit or pull-request binding
+uses immutable object IDs and an ancestor-ordered base/result range. A tree
+binding resolves the result as a Git tree object. Equal base and result commits
+cannot support a claim that implementation surfaces changed.
+
+A finalized selected-file snapshot describes the files at capture time, not a
+permanent assertion about the current worktree. Later edits or deletion make
+the snapshot not currently reproducible and should produce a warning, not
+retroactively corrupt the historical record. If the recorded digest matches a
+Git commit, the assistant may suggest a stronger commit binding, but rebinding
+is explicit and appends the replaced binding to lineage.
+
 ## Publication Boundary
 
 Evidence storage is target-owned. A target may keep records in its normal
@@ -128,7 +141,8 @@ Before completion:
 
 1. classify capture as `captured`, `skipped`, or `blocked`
 2. for `captured`, validate the record and compact index, bind it to the task
-   and repository result, and confirm the publication boundary
+   and repository result, finalize the binding, preserve any prior binding,
+   and confirm the publication boundary
 3. for `skipped`, state a short task-specific reason
 4. for `blocked`, name the missing owner, policy, authorization, revision, or
    storage surface and the next safe action
@@ -151,3 +165,7 @@ Reject or repair evidence that:
 - includes secrets, raw reasoning, unrelated session history, or an external
   patch contrary to the target publication policy
 - skips a material task without a fact-specific reason
+- uses a reversed Git range, a symbolic name as a final immutable binding, or
+  silently replaces repository-binding lineage
+- treats later worktree drift as proof that finalized historical evidence was
+  corrupt when it was captured

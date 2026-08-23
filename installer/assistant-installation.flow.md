@@ -312,16 +312,18 @@ Classify every proposed target file:
     segment/capability evidence, audit, pilot, or publishable provenance. Record
     retention and redaction policy; do not seed historical records.
     Add the durable engineering-evidence task-scale overlay, capture flow,
-    gate, and machine record template in every accepted core profile. Keep
+    gate, version-2 machine record template, contract version, and schema-3
+    compact index in every accepted core profile. Keep
     them lazy and separate from change-package activation.
     Add the Debug Mode overlay, operation, flow, gate, machine record, and
     compact summary only when the optional module is enabled. Record explicit
-    activation/expiry, privacy, capture-quality, timing, event attribution,
+    activation/expiry, privacy, capture-quality, timing, version-2 actor/
+    causality/intervention/contribution attribution,
     structured architectural impacts, direction-change hypothesis/replacement
-    causality, metric derivation, exact durable engineering-evidence reference
-    resolution, external projection, active-versus-finalized comparison, and
-    validator policy. Enabling the module does not activate observation for a
-    task.
+    causality, metric derivation, durable Engineering Evidence decision and
+    exact reference resolution, repository-binding state/lineage, external
+    projection, active-versus-finalized comparison, and validator policy.
+    Enabling the module does not activate observation for a task.
     When the target uses multiple AI infrastructure items, add
     `.ai/assistant/ai-infrastructure-router.json`, the recommendation flow and
     report template, lazy development-evidence capture flow, and the
@@ -482,11 +484,12 @@ Report:
 - change-package index, lazy overlay, flow, schema, redacted report, retention
   policy, and validator support added, migrated, skipped, or blocked
 - durable engineering-evidence owner, policy, compact index, lazy overlay,
-  capture flow, gate, record schema, validator, existing-record preservation,
-  and current installation capture decision
+  capture flow, gate, contract/record schema, binding lineage, validator,
+  existing-record preservation, and current installation capture decision
 - Debug Mode module state, dependency closure, owner, non-canonical storage,
   explicit activation/expiry, compact index, lazy overlay, operation, flow,
-  gate, record/summary templates, privacy/timing/attribution/metrics policy,
+  gate, contract/record/summary templates, privacy/timing/versioned attribution/
+  metrics policy, durable evidence decision, repository-binding lineage,
   structured architectural impacts, direction-change hypothesis/replacement
   causality, exact durable engineering-evidence reference resolution, active-
   versus-finalized comparison, clean-upstream boundary, validator, and

@@ -58,10 +58,11 @@ Replace placeholders with target facts before accepting installation.
   `.ai/assistant/flows/development-evidence-capture.flow.md`
 - Durable engineering evidence: `.ai/project/engineering-evidence/README.md`,
   compact index, selected records, task-scale overlay, capture flow, gate, and
-  machine template
+  versioned machine template and contract version
 - Debug Mode when enabled: `.ai/project/debug/README.md`, compact index,
   selected records, task-scale overlay, operation flow, gate, machine record,
-  summary template, and linked durable Engineering Evidence index
+  summary template, contract version, and linked durable Engineering Evidence
+  decision/index
 - AI infrastructure router, recommendation, and adaptation record:
   `.ai/assistant/ai-infrastructure-router.json`,
   `.ai/assistant/templates/ai-infrastructure-adaptation-record.md`
@@ -153,15 +154,20 @@ Replace placeholders with target facts before accepting installation.
     When change packages are enabled, preserve historical target records and
     check semantic approval fields, companion decisions, correction impact,
     provenance quality, and target validator support.
-    Preserve durable engineering-evidence IDs and records, then recheck task
-    and repository bindings, index synchronization, canonical-owner links,
+    Preserve durable engineering-evidence IDs and schema-version-1 records,
+    install the current authoring template without rewriting historical
+    conclusions, then recheck task and repository binding state/lineage, Git
+    object type/ancestry, index synchronization, canonical-owner links,
     privacy flags, external-patch policy, and existing-record accessibility.
    When Debug Mode is enabled, preserve IDs, records, active-scope evidence,
-   events, timing, metrics, and target policy; recheck explicit activation and
-    expiry, non-canonical authority, causal attribution, structured
+   events, timing, metrics, and target policy. Preserve schema-version-1
+    attribution without inventing migration values; use version 2 for new
+    records. Recheck explicit activation and expiry, non-canonical authority,
+    actor/causality/intervention/contribution attribution, structured
     architectural impacts, direction-change hypothesis/replacement chains,
-    privacy, observer effect, exact durable engineering-evidence reference
-    resolution, compact index sync, result binding, completed-record comparison,
+    privacy, observer effect, durable engineering-evidence decision/reference
+    resolution, compact index sync, result binding state/lineage and Git object
+    checks, completed-record comparison,
     clean-upstream projection, and validator support. Never reactivate a closed
     scope during update. Preserve older unstructured events as migration-
     limited evidence instead of inventing classifications.

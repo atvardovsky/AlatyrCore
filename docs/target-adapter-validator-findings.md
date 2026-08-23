@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 943
+Catalog entries: 952
 
 ## Codes
 
@@ -366,6 +366,8 @@ Catalog entries: 943
   Level: configured. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_ACTIVATION`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_AGENT_CLASSIFICATION`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_ARCHITECTURAL_IMPACT_MISSING`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_ARCHITECTURAL_SUPERVISION_DRIFT`
@@ -379,6 +381,8 @@ Catalog entries: 943
 - `DEBUG_MODE_COMPLETED_EMPTY`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_COMPLETED_METRICS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_CONTRACT_VERSION`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_DERIVATION_CAUSE`
   Level: error. Source: `tools/validate_target_adapter.py`.
@@ -404,6 +408,18 @@ Catalog entries: 943
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_EVENT_SEQUENCE`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_EVIDENCE_BLOCKED`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_EVIDENCE_CAPTURE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_EVIDENCE_DECISION`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_EVIDENCE_PENDING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_EVIDENCE_SKIP`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_EVIDENCE_TRIGGER`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_EXPIRY`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_EXTERNAL_RECORD_UNCHECKED`
@@ -422,6 +438,8 @@ Catalog entries: 943
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_INDEX_KIND`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_INDEX_LEGACY`
+  Level: warning. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_INDEX_LIST`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_INDEX_METADATA`
@@ -436,6 +454,10 @@ Catalog entries: 943
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_INDEX_SCHEMA`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_INTERVENTION_CLASSIFICATION`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_LEGACY_ATTRIBUTION`
+  Level: warning. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_MANIFEST_PATH`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_METRIC_DRIFT`
@@ -446,6 +468,8 @@ Catalog entries: 943
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_OBSERVER_EFFECT`
   Level: warning. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_POST_REVIEW_CAUSE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_PRIVACY`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_PROHIBITED_CONTENT_FIELD`
@@ -462,26 +486,22 @@ Catalog entries: 943
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_REVIEW_CORRECTION_UNASSESSED`
   Level: warning. Source: `tools/validate_target_adapter.py`.
-- `DEBUG_MODE_REVIEW_REFERENCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
-- `DEBUG_MODE_REVISION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
-- `DEBUG_MODE_SNAPSHOT_HASH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
-- `DEBUG_MODE_SNAPSHOT_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_SOURCE_SCHEMA`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_STRUCTURED_CLASSIFICATION_MISSING`
   Level: warning. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_TEMPLATE_BINDING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_TEMPLATE_EVIDENCE_DECISION`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_TEMPLATE_VERSION`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_TIMING`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_TIMING_DRIFT`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_TIMING_ORDER`
   Level: error. Source: `tools/validate_target_adapter.py`.
-- `DEBUG_MODE_UNVERIFIED_RESULT`
-  Level: warning. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_UPSTREAM_BOUNDARY`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_UPSTREAM_PATH`
@@ -820,6 +840,8 @@ Catalog entries: 943
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ENGINEERING_EVIDENCE_CHECKED`
   Level: info. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_CONTRACT_VERSION`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `ENGINEERING_EVIDENCE_EXTERNAL_RECORD_UNCHECKED`
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `ENGINEERING_EVIDENCE_HYPOTHESIS`
@@ -838,6 +860,8 @@ Catalog entries: 943
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ENGINEERING_EVIDENCE_INDEX_KIND`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_INDEX_LEGACY`
+  Level: warning. Source: `tools/validate_target_adapter.py`.
 - `ENGINEERING_EVIDENCE_INDEX_LIST`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ENGINEERING_EVIDENCE_INDEX_METADATA`
@@ -876,21 +900,13 @@ Catalog entries: 943
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ENGINEERING_EVIDENCE_REGRESSION`
   Level: error. Source: `tools/validate_target_adapter.py`.
-- `ENGINEERING_EVIDENCE_REVIEW_REFERENCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
-- `ENGINEERING_EVIDENCE_REVISION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
-- `ENGINEERING_EVIDENCE_SNAPSHOT_HASH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
-- `ENGINEERING_EVIDENCE_SNAPSHOT_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
 - `ENGINEERING_EVIDENCE_SOURCE_SCHEMA`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ENGINEERING_EVIDENCE_TASK_REFERENCE`
   Level: error. Source: `tools/validate_target_adapter.py`.
-- `ENGINEERING_EVIDENCE_UNVERIFIED`
-  Level: warning. Source: `tools/validate_target_adapter.py`.
-- `ENGINEERING_EVIDENCE_UNVERIFIED_VALIDATED`
+- `ENGINEERING_EVIDENCE_TEMPLATE_BINDING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_TEMPLATE_VERSION`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `EVIDENCE_SCOPE_CURRENT_STATE`
   Level: info. Source: `tools/validate_target_adapter.py`.
@@ -1298,16 +1314,18 @@ Catalog entries: 943
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_REAPPROVAL_MISSING`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_REVISION_ANCESTRY`
+  Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_SCHEMA`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_SELECTION_REQUIRED`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_SEMANTIC_SCOPE`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
-- `PACKAGE_SNAPSHOT_FILE`
-  Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_SNAPSHOT_HASH`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
+- `PACKAGE_SNAPSHOT_HISTORICAL`
+  Level: warning. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_SNAPSHOT_PATH`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `PACKAGE_SNAPSHOT_READ`

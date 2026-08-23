@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "record_kind": "alatyr-engineering-evidence",
   "evidence_classification": "historical-record",
   "evidence_id": "{ENGINEERING_EVIDENCE_ID}",
@@ -13,11 +13,13 @@
   },
   "repository_binding": {
     "kind": "{COMMIT_PULL_REQUEST_TREE_SELECTED_FILE_SNAPSHOT_OR_UNVERIFIED}",
+    "binding_state": "{PROVISIONAL_OR_FINAL}",
     "base_revision": "{BASE_REVISION_OR_NOT_AVAILABLE_WITH_REASON}",
     "result_revision": "{RESULT_COMMIT_HEAD_TREE_DIGEST_OR_NOT_AVAILABLE_WITH_REASON}",
     "review_reference": "{PULL_REQUEST_OR_NOT_APPLICABLE}",
     "selected_paths": ["{TARGET_RELATIVE_PATH_OR_NOT_APPLICABLE}"],
-    "snapshot_sha256": "{SHA256_OR_NOT_APPLICABLE}"
+    "snapshot_sha256": "{SHA256_OR_NOT_APPLICABLE}",
+    "prior_bindings": []
   },
   "observed_failure": "{OBSERVED_FAILURE_OR_CHANGE_PRESSURE}",
   "affected_architecture": [

@@ -60,17 +60,20 @@ Operation help:
   and validator support when the optional module or schema changed. Preserve
   historical target records.
 - Preserve durable engineering-evidence IDs and records. Recheck compact index
-  synchronization, task/revision binding, canonical-owner links, privacy,
+  synchronization, contract/template versions, task/revision binding state,
+  Git object type/ancestry, prior-binding lineage, canonical-owner links, privacy,
   external-patch policy, and record access; never replace existing records
   with source placeholders.
 - Preserve Debug Mode IDs, records, active-scope evidence, normalized events,
   timing, metrics, and publication policy when the module is enabled. Recheck
-  structured architectural impacts, direction-change hypothesis/replacement
-  chains, exact durable Engineering Evidence references, completed-record
+  versioned actor/causality/intervention/contribution attribution, structured
+  architectural impacts, direction-change hypothesis/replacement chains,
+  durable Engineering Evidence decisions/references, binding lineage, completed-record
   comparison, dependency closure, schema, lazy route, operation, validator,
   and activation expiry. Preserve older unstructured events as migration-
   limited evidence; do not reactivate a closed scope or include debug files in
-  a clean external patch.
+  a clean external patch. Use schema version 2 only for new records; do not
+  silently rewrite historical version-1 attribution.
 - When code documentation is enabled, preserve target profiles and recheck
   source-set matching, accepted state, canonical owners, generator/output
   policy, adapted skill, and validation before generation.

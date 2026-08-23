@@ -93,7 +93,7 @@ approval and require reapproval for protected semantic expansion.
 
 ## Final Evidence
 
-Report profile/areas, changed facts/files, invariant/integrity result,
-reconciled reviews, synchronized surfaces, validation/skips, approval scope,
-current user authorization, context expansion, optional task-scale or AI-item
-evidence, preview state, and residual risk.
+Report profile/areas, facts/files, integrity, reconciled reviews, synchronized
+surfaces, validation/skips, approval scope, current authorization, context
+expansion, task-scale or AI-item evidence, `durable_engineering_evidence` as
+captured/skipped/blocked with ID/path/binding or reason, preview, and risk.

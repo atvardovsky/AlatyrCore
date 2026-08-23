@@ -128,6 +128,43 @@ def enrich_upgrade_impact(
     )
 
 
+def add_validation_impact(path: Path, validation_report: Path) -> None:
+    """Route installed-surface findings after the validator has inspected them."""
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    validation = json.loads(validation_report.read_text(encoding="utf-8"))
+    findings = validation.get("findings", [])
+    relevant = [
+        finding
+        for finding in findings
+        if isinstance(finding, dict)
+        and finding.get("level") in {"error", "warning"}
+        and isinstance(finding.get("path"), str)
+        and finding["path"]
+    ]
+    affected_paths = sorted({str(finding["path"]) for finding in relevant})
+    routing = payload.setdefault("routing", {})
+    candidate_context = routing.get("candidate_context", [])
+    if not isinstance(candidate_context, list):
+        candidate_context = []
+    routing["candidate_context"] = sorted(set(candidate_context) | set(affected_paths))
+    routing["validator_affected_paths"] = affected_paths
+    payload["validator_impact"] = {
+        "report": validation_report.name,
+        "report_sha256": sha256(validation_report),
+        "finding_codes": sorted(
+            {
+                str(finding.get("code"))
+                for finding in relevant
+                if finding.get("code")
+            }
+        ),
+        "affected_paths": affected_paths,
+    }
+    path.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+
+
 def render_plan(
     *,
     target: Path,
@@ -384,6 +421,11 @@ def main() -> int:
             else:
                 validation_counts = payload.get("counts", {})
                 validation_status = str(payload.get("status", "unknown"))
+                try:
+                    add_validation_impact(impact_report, validation_report)
+                except (OSError, ValueError, json.JSONDecodeError) as exc:
+                    validation_status = f"validator impact routing failed: {exc}"
+                    validation_code = 1
 
     validation_contract: dict[str, object] = {
         "validation_phase": validation_phase,

@@ -33,7 +33,33 @@ def project_manifest(
 
     rendered: list[str] = []
     module_items = sorted(enabled_modules or set())
-    for line in text.splitlines():
+    source_lines = text.splitlines()
+    disabled_sections: set[str] = set()
+    current_section: str | None = None
+    section_contracts: set[str] = set()
+    section_paths: dict[str, list[str]] = {}
+    for source_line in source_lines:
+        top_level = re.match(r"^([A-Za-z0-9_-]+):\s*$", source_line)
+        if top_level:
+            current_section = top_level.group(1)
+        if current_section is None:
+            continue
+        if re.match(r"^\s+contract_version:\s+", source_line):
+            section_contracts.add(current_section)
+        path_match = TARGET_PATH_RE.match(source_line)
+        if path_match:
+            section_paths.setdefault(current_section, []).append(path_match.group("path"))
+    for section in section_contracts:
+        paths = section_paths.get(section, [])
+        if paths and not any(path_available(path, selected) for path in paths):
+            disabled_sections.add(section)
+    current_top_level: str | None = None
+    for line in source_lines:
+        top_level = re.match(r"^([A-Za-z0-9_-]+):\s*$", line)
+        if top_level:
+            current_top_level = top_level.group(1)
+        if current_top_level in disabled_sections:
+            continue
         if "{CORE_STANDARD_OR_FULL}" in line:
             line = line.replace("{CORE_STANDARD_OR_FULL}", profile)
         if "{CORE_STANDARD_OR_COMPLETE}" in line:

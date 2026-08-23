@@ -267,7 +267,7 @@
       "allowed_actions": ["read-only", "docs-only", "adapter-only", "code-and-tests", "full-with-approval"],
       "preview": "never",
       "aliases": ["Alatyr evidence", "Alatyr capture evidence", "Alatyr explain decision"],
-      "final_evidence": ["capture status and trigger or skip reason", "task and repository binding", "record validation privacy publication and residual uncertainty"]
+      "final_evidence": ["capture status and trigger or skip reason", "task and repository binding state lineage and object verification", "record validation privacy publication and residual uncertainty"]
     },
     {
       "id": "debug-mode",
@@ -281,7 +281,7 @@
       "allowed_actions": ["read-only", "adapter-only"],
       "preview": "never",
       "aliases": ["Enable Alatyr Debug Mode", "Alatyr debug", "Alatyr debug status", "Alatyr debug checkpoint", "Alatyr debug summary", "Disable Alatyr Debug Mode", "Alatyr compare debug"],
-      "final_evidence": ["activation status scope and expiry", "record ID capture quality and event-derived metrics", "result binding external projection privacy validation and residual uncertainty"]
+      "final_evidence": ["activation status scope and expiry", "record schema attribution model capture quality and event-derived metrics", "durable engineering-evidence decision", "result binding lineage external projection privacy validation and residual uncertainty"]
     },
     {
       "id": "logical-integrity-review",

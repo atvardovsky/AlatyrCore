@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 import subprocess
@@ -220,6 +221,73 @@ def validate_fixture(failures: list[str]) -> None:
                 + "; ".join(f"{item.code}: {item.message}" for item in package_errors)
             )
 
+        reversed_package = copy.deepcopy(package)
+        reversed_provenance = reversed_package["provenance"]
+        assert isinstance(reversed_provenance, dict)
+        before = reversed_provenance["before_revision"]
+        reversed_provenance["before_revision"] = reversed_provenance["after_revision"]
+        reversed_provenance["after_revision"] = before
+        package_path.write_text(json.dumps(reversed_package, indent=2) + "\n", encoding="utf-8")
+        reversed_validator = Validator(
+            repo,
+            framework_source=None,
+            diff_ref=None,
+            approval_records=[],
+            enforce_approval_scope=False,
+            change_packages=[package_path],
+            enforce_change_package=True,
+            migration_diff=None,
+            allow_placeholders=True,
+            allow_local_paths=[],
+            config=AdapterValidatorConfig(),
+        )
+        reversed_validator.check_change_packages()
+        if not any(finding.code == "PACKAGE_REVISION_ANCESTRY" for finding in reversed_validator.findings):
+            failures.append("change-package validator accepted a reversed Git range")
+
+        snapshot_package = copy.deepcopy(package)
+        snapshot_provenance = snapshot_package["provenance"]
+        assert isinstance(snapshot_provenance, dict)
+        digest = hashlib.sha256()
+        digest.update(b"src/feature.txt\0")
+        digest.update((repo / "src/feature.txt").read_bytes())
+        digest.update(b"\0")
+        snapshot_provenance.update(
+            evidence_quality="selected-file-snapshot",
+            public_claim_strength="limited",
+            before_revision="not available with reason",
+            after_revision="not available with reason",
+            selected_file_snapshot={
+                "algorithm": "sha256",
+                "digest": digest.hexdigest(),
+                "paths": ["src/feature.txt"],
+            },
+        )
+        package_path.write_text(json.dumps(snapshot_package, indent=2) + "\n", encoding="utf-8")
+        (repo / "src/feature.txt").write_text("later edit\n", encoding="utf-8")
+        snapshot_validator = Validator(
+            repo,
+            framework_source=None,
+            diff_ref=None,
+            approval_records=[],
+            enforce_approval_scope=False,
+            change_packages=[package_path],
+            enforce_change_package=True,
+            migration_diff=None,
+            allow_placeholders=True,
+            allow_local_paths=[],
+            config=AdapterValidatorConfig(),
+        )
+        snapshot_validator.check_change_packages()
+        if any(
+            finding.level == "error" and finding.code.startswith("PACKAGE_SNAPSHOT")
+            for finding in snapshot_validator.findings
+        ):
+            failures.append("later edits invalidated a complete historical change-package snapshot")
+        if not any(finding.code == "PACKAGE_SNAPSHOT_HISTORICAL" for finding in snapshot_validator.findings):
+            failures.append("historical change-package snapshot drift was not reported")
+
+        package_path.write_text(json.dumps(package, indent=2) + "\n", encoding="utf-8")
         actual = package["actual_scope"]
         assert isinstance(actual, dict)
         actual["behavior_categories"] = ["unapproved-behavior"]

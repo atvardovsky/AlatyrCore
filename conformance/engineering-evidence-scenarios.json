@@ -63,6 +63,46 @@
         "Alatyr support files in the external contribution patch",
         "ignored-local-only evidence presented as durable team memory"
       ]
+    },
+    {
+      "id": "final-tree-binding",
+      "task_shape": "A validated working result is bound to an immutable Git tree object before a result commit exists.",
+      "expected_capture_status": "captured",
+      "required_outcomes": [
+        "result revision resolves as a tree object",
+        "binding state is final",
+        "base revision resolves as a commit"
+      ],
+      "forbidden_outcomes": [
+        "commit-only resolution of the tree result"
+      ]
+    },
+    {
+      "id": "reversed-commit-range",
+      "task_shape": "A record declares a base commit that is not an ancestor of its result commit.",
+      "expected_capture_status": "blocked",
+      "required_outcomes": [
+        "ancestry failure",
+        "no validated or final evidence claim",
+        "next safe binding action"
+      ],
+      "forbidden_outcomes": [
+        "accepted reversed range"
+      ]
+    },
+    {
+      "id": "historical-snapshot-drift",
+      "task_shape": "A finalized selected-file snapshot no longer matches the current worktree after later legitimate edits.",
+      "expected_capture_status": "captured",
+      "required_outcomes": [
+        "historical record remains preserved",
+        "not currently reproducible warning",
+        "explicit lineage-preserving rebind suggestion when a commit matches"
+      ],
+      "forbidden_outcomes": [
+        "silent record rewrite",
+        "retroactive corruption claim"
+      ]
     }
   ]
 }

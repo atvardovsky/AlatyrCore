@@ -38,8 +38,11 @@ from target_validation_support import (
     git_branch_name,
     git_diff_patch,
     git_head_revision,
+    git_is_ancestor,
     git_range_changed_files,
+    git_resolve_object,
     git_resolve_ref,
+    git_snapshot_sha256,
     is_placeholder,
     is_protected_surface,
     is_target_relative_path,
@@ -5255,7 +5258,6 @@ class Validator:
                         f"{dotted(key)} must be {expected} when dependency knowledge is enabled",
                         ".ai/alatyr.yaml",
                     )
-
         policy_relpath = required_paths[2]
         catalog_relpath = required_paths[3]
         lock_relpath = required_paths[4]
@@ -8649,6 +8651,136 @@ class Validator:
                     relpath,
                 )
 
+    def check_repository_binding(
+        self,
+        *,
+        binding: Any,
+        record_relpath: str,
+        code_prefix: str,
+        record_status: str,
+        schema_version: int,
+        implementation_surfaces: list[str],
+    ) -> tuple[str | None, str | None]:
+        if not isinstance(binding, dict):
+            self.error(f"{code_prefix}_BINDING", "repository_binding must be an object", record_relpath)
+            return None, None
+
+        def concrete(value: Any) -> bool:
+            return (
+                isinstance(value, str)
+                and bool(value.strip())
+                and not is_placeholder(value)
+                and not is_unresolved_value(value)
+            )
+
+        binding_kind = binding.get("kind")
+        binding_state = binding.get("binding_state")
+        base_revision = binding.get("base_revision")
+        result_revision = binding.get("result_revision")
+        historical_status = record_status in {"completed", "validated", "superseded"}
+
+        if schema_version >= 2:
+            if binding_state not in {"provisional", "final"}:
+                self.error(f"{code_prefix}_BINDING_STATE", "version-2 binding_state must be provisional or final", record_relpath)
+            if historical_status and binding_state != "final":
+                self.error(f"{code_prefix}_BINDING_STATE", f"{record_status} version-2 evidence requires a final binding", record_relpath)
+            prior_bindings = binding.get("prior_bindings")
+            if not isinstance(prior_bindings, list):
+                self.error(f"{code_prefix}_BINDING_LINEAGE", "version-2 prior_bindings must be a list", record_relpath)
+        else:
+            self.warn(
+                f"{code_prefix}_LEGACY_BINDING",
+                "schema-version-1 repository binding is accepted as legacy evidence; attribution and rebinding lineage were not enforced",
+                record_relpath,
+            )
+
+        if binding_kind in {"commit", "pull-request", "tree"}:
+            base_resolved = git_resolve_object(self.target, str(base_revision), "commit") if concrete(base_revision) else None
+            result_object_kind = "tree" if binding_kind == "tree" else "commit"
+            result_resolved = (
+                git_resolve_object(self.target, str(result_revision), result_object_kind)
+                if concrete(result_revision)
+                else None
+            )
+            for field, value, resolved in [
+                ("base_revision", base_revision, base_resolved),
+                ("result_revision", result_revision, result_resolved),
+            ]:
+                if resolved is None:
+                    self.error(f"{code_prefix}_REVISION", f"{field} does not resolve to the required Git object: {value}", record_relpath)
+                elif schema_version >= 2 and binding_state == "final" and str(value).casefold() != resolved.casefold():
+                    self.error(f"{code_prefix}_REVISION_EXACT", f"final {field} must be the immutable object ID {resolved}", record_relpath)
+            if binding_kind == "pull-request" and not concrete(binding.get("review_reference")):
+                self.error(f"{code_prefix}_REVIEW_REFERENCE", "pull-request binding requires a stable review reference", record_relpath)
+            if binding_kind in {"commit", "pull-request"} and base_resolved and result_resolved:
+                ancestry = git_is_ancestor(self.target, base_resolved, result_resolved)
+                if ancestry is False:
+                    self.error(f"{code_prefix}_REVISION_ANCESTRY", "base_revision is not an ancestor of result_revision", record_relpath)
+                elif ancestry is None:
+                    self.error(f"{code_prefix}_REVISION_ANCESTRY", "could not verify repository-binding ancestry", record_relpath)
+                if base_resolved == result_resolved and implementation_surfaces:
+                    self.error(f"{code_prefix}_REVISION_EMPTY_RANGE", "base_revision equals result_revision despite recorded implementation surfaces", record_relpath)
+        elif binding_kind == "selected-file-snapshot":
+            selected_paths = binding.get("selected_paths")
+            paths = selected_paths if isinstance(selected_paths, list) else []
+            if not paths:
+                self.error(f"{code_prefix}_SNAPSHOT_PATH", "selected-file snapshot requires paths", record_relpath)
+            digest = hashlib.sha256()
+            current_snapshot_valid = bool(paths)
+            historical_binding = historical_status and (schema_version == 1 or binding_state == "final")
+            for selected_path in sorted(set(paths)):
+                path_is_valid = concrete(selected_path) and is_target_relative_path(str(selected_path))
+                if not path_is_valid:
+                    self.error(f"{code_prefix}_SNAPSHOT_PATH", f"invalid snapshot path: {selected_path}", record_relpath)
+                    current_snapshot_valid = False
+                    continue
+                selected_file = self.target_path(str(selected_path))
+                if not selected_file.is_file():
+                    finding = self.warn if historical_binding else self.error
+                    finding(
+                        f"{code_prefix}_SNAPSHOT_HISTORICAL" if historical_binding else f"{code_prefix}_SNAPSHOT_PATH",
+                        f"snapshot path is not present in the current worktree: {selected_path}",
+                        record_relpath,
+                    )
+                    current_snapshot_valid = False
+                    continue
+                digest.update(str(selected_path).replace("\\", "/").encode("utf-8"))
+                digest.update(b"\0")
+                digest.update(selected_file.read_bytes())
+                digest.update(b"\0")
+            recorded_digest = binding.get("snapshot_sha256")
+            digest_matches = current_snapshot_valid and concrete(recorded_digest) and recorded_digest.casefold() == digest.hexdigest()
+            if current_snapshot_valid and not digest_matches:
+                finding = self.warn if historical_binding else self.error
+                finding(
+                    f"{code_prefix}_SNAPSHOT_HISTORICAL" if historical_binding else f"{code_prefix}_SNAPSHOT_HASH",
+                    "historical selected-file snapshot no longer matches current files" if historical_binding else "selected-file snapshot SHA-256 does not match current files",
+                    record_relpath,
+                )
+            if historical_binding and not digest_matches and concrete(recorded_digest):
+                head = git_head_revision(self.target)
+                head_digest = git_snapshot_sha256(self.target, head or "", [str(path) for path in paths])
+                if head and head_digest and head_digest.casefold() == str(recorded_digest).casefold():
+                    self.info(
+                        f"{code_prefix}_SNAPSHOT_COMMIT_CANDIDATE",
+                        f"snapshot matches immutable commit {head}; rebind only through an explicit lineage-preserving update",
+                        record_relpath,
+                    )
+        elif binding_kind == "unverified":
+            if historical_status:
+                finding = (
+                    self.warn
+                    if schema_version == 1 and code_prefix == "DEBUG_MODE"
+                    else self.error
+                )
+                finding(f"{code_prefix}_UNVERIFIED_FINAL", f"{record_status} evidence requires a reproducible repository result binding", record_relpath)
+            else:
+                self.warn(f"{code_prefix}_UNVERIFIED", "record has no reproducible repository result binding", record_relpath)
+        else:
+            self.error(f"{code_prefix}_BINDING_KIND", f"unsupported repository binding kind: {binding_kind}", record_relpath)
+
+        return binding_kind if isinstance(binding_kind, str) else None, result_revision if isinstance(result_revision, str) else None
+
     def check_policy_readme_projection(
         self,
         *,
@@ -8705,14 +8837,33 @@ class Validator:
                         f"{dotted(key)} must be {expected}",
                         ".ai/alatyr.yaml",
                     )
+            contract = manifest.scalars.get(("engineering_evidence", "contract_version"))
+            if contract is None or contract.value != "2":
+                self.error(
+                    "ENGINEERING_EVIDENCE_CONTRACT_VERSION",
+                    "engineering_evidence.contract_version must be 2",
+                    ".ai/alatyr.yaml",
+                )
+
+        template_relpath = ".ai/assistant/templates/engineering-evidence-record.json"
+        template = self.load_json_object(self.target_path(template_relpath), "ENGINEERING_EVIDENCE_TEMPLATE")
+        if template is not None:
+            template_binding = template.get("repository_binding")
+            if template.get("schema_version") != 2:
+                self.error("ENGINEERING_EVIDENCE_TEMPLATE_VERSION", "authoring template schema_version must be 2", template_relpath)
+            if not isinstance(template_binding, dict) or not {"binding_state", "prior_bindings"}.issubset(template_binding):
+                self.error("ENGINEERING_EVIDENCE_TEMPLATE_BINDING", "version-2 authoring template must expose binding_state and prior_bindings", template_relpath)
 
         index = self.load_json_object(
             self.target_path(index_relpath), "ENGINEERING_EVIDENCE_INDEX"
         )
         if index is None:
             return
-        if index.get("schema_version") != 2:
-            self.error("ENGINEERING_EVIDENCE_INDEX_SCHEMA", "schema_version must be 2", index_relpath)
+        index_schema_version = index.get("schema_version")
+        if index_schema_version not in {2, 3}:
+            self.error("ENGINEERING_EVIDENCE_INDEX_SCHEMA", "schema_version must be 2 or 3", index_relpath)
+        elif index_schema_version == 2:
+            self.warn("ENGINEERING_EVIDENCE_INDEX_LEGACY", "schema-version-2 index omits record contract and binding-state projections", index_relpath)
         if index.get("index_kind") != "target-engineering-evidence-index":
             self.error(
                 "ENGINEERING_EVIDENCE_INDEX_KIND",
@@ -8809,6 +8960,8 @@ class Validator:
             "result_revision",
             "residual_uncertainty",
         }
+        if index_schema_version == 3:
+            required_index_fields.update({"record_schema_version", "repository_binding_state"})
         seen_ids: set[str] = set()
         seen_records: set[str] = set()
         for entry_index, entry in enumerate(records):
@@ -9019,37 +9172,20 @@ class Validator:
                     ):
                         self.error("ENGINEERING_EVIDENCE_REGRESSION", f"regression_matrix[{case_index}] must explain case, protected invariant/risk, expected result, and evidence", record_ref)
 
-            binding = record.get("repository_binding")
-            binding_kind = binding.get("kind") if isinstance(binding, dict) else None
-            result_revision = binding.get("result_revision") if isinstance(binding, dict) else None
-            base_revision = binding.get("base_revision") if isinstance(binding, dict) else None
-            if binding_kind in {"commit", "pull-request", "tree"}:
-                for field, value in [("base_revision", base_revision), ("result_revision", result_revision)]:
-                    if not concrete(value) or git_resolve_ref(self.target, value) is None:
-                        self.error("ENGINEERING_EVIDENCE_REVISION", f"{field} does not resolve: {value}", record_ref)
-                if binding_kind == "pull-request" and not concrete(binding.get("review_reference")):
-                    self.error("ENGINEERING_EVIDENCE_REVIEW_REFERENCE", "pull-request binding requires a stable review reference", record_ref)
-            elif binding_kind == "selected-file-snapshot":
-                paths = resolved_list(binding, "selected_paths")
-                digest = hashlib.sha256()
-                snapshot_valid = True
-                for selected_path in sorted(set(paths)):
-                    if not is_target_relative_path(selected_path) or not self.target_path(selected_path).is_file():
-                        self.error("ENGINEERING_EVIDENCE_SNAPSHOT_PATH", f"invalid snapshot path: {selected_path}", record_ref)
-                        snapshot_valid = False
-                        continue
-                    digest.update(selected_path.replace("\\", "/").encode("utf-8"))
-                    digest.update(b"\0")
-                    digest.update(self.target_path(selected_path).read_bytes())
-                    digest.update(b"\0")
-                recorded_digest = binding.get("snapshot_sha256") if isinstance(binding, dict) else None
-                if snapshot_valid and (not concrete(recorded_digest) or recorded_digest.casefold() != digest.hexdigest()):
-                    self.error("ENGINEERING_EVIDENCE_SNAPSHOT_HASH", "selected-file snapshot SHA-256 does not match current files", record_ref)
-            elif binding_kind == "unverified":
-                if record.get("status") == "validated":
-                    self.error("ENGINEERING_EVIDENCE_UNVERIFIED_VALIDATED", "validated evidence requires a reproducible repository binding", record_ref)
-                else:
-                    self.warn("ENGINEERING_EVIDENCE_UNVERIFIED", "record has no reproducible repository result binding", record_ref)
+            impact_value = record.get("impact") if isinstance(record.get("impact"), dict) else {}
+            implementation_surfaces = [
+                value
+                for value in impact_value.get("code_and_test_surfaces", [])
+                if isinstance(value, str)
+            ]
+            binding_kind, result_revision = self.check_repository_binding(
+                binding=record.get("repository_binding"),
+                record_relpath=record_ref,
+                code_prefix="ENGINEERING_EVIDENCE",
+                record_status=str(record.get("status", "")),
+                schema_version=record.get("schema_version") if isinstance(record.get("schema_version"), int) else 1,
+                implementation_surfaces=implementation_surfaces,
+            )
 
             publication = record.get("publication")
             if (
@@ -9079,6 +9215,14 @@ class Validator:
                 "result_revision": result_revision,
                 "residual_uncertainty": residual,
             }
+            if index_schema_version == 3:
+                binding_value = record.get("repository_binding") if isinstance(record.get("repository_binding"), dict) else {}
+                comparisons.update(
+                    {
+                        "record_schema_version": record.get("schema_version"),
+                        "repository_binding_state": binding_value.get("binding_state", "legacy"),
+                    }
+                )
             for field, record_value in comparisons.items():
                 index_value = entry.get(field)
                 if isinstance(record_value, list) and isinstance(index_value, list):
@@ -9115,14 +9259,36 @@ class Validator:
                         f"{dotted(key)} must be {expected}",
                         ".ai/alatyr.yaml",
                     )
+            contract = manifest.scalars.get(("debug_mode", "contract_version"))
+            if contract is None or contract.value != "2":
+                self.error(
+                    "DEBUG_MODE_CONTRACT_VERSION",
+                    "debug_mode.contract_version must be 2",
+                    ".ai/alatyr.yaml",
+                )
+
+        template_relpath = ".ai/assistant/templates/debug-session-record.json"
+        template = self.load_json_object(self.target_path(template_relpath), "DEBUG_MODE_TEMPLATE")
+        if template is not None:
+            template_final = template.get("final_result")
+            template_binding = template_final.get("repository_binding") if isinstance(template_final, dict) else None
+            if template.get("schema_version") != 2:
+                self.error("DEBUG_MODE_TEMPLATE_VERSION", "authoring template schema_version must be 2", template_relpath)
+            if not isinstance(template_binding, dict) or not {"binding_state", "prior_bindings"}.issubset(template_binding):
+                self.error("DEBUG_MODE_TEMPLATE_BINDING", "version-2 authoring template must expose binding_state and prior_bindings", template_relpath)
+            if not isinstance(template_final, dict) or "engineering_evidence_decision" not in template_final:
+                self.error("DEBUG_MODE_TEMPLATE_EVIDENCE_DECISION", "version-2 authoring template must expose engineering_evidence_decision", template_relpath)
 
         index = self.load_json_object(
             self.target_path(index_relpath), "DEBUG_MODE_INDEX"
         )
         if index is None:
             return
-        if index.get("schema_version") != 2:
-            self.error("DEBUG_MODE_INDEX_SCHEMA", "schema_version must be 2", index_relpath)
+        index_schema_version = index.get("schema_version")
+        if index_schema_version not in {2, 3}:
+            self.error("DEBUG_MODE_INDEX_SCHEMA", "schema_version must be 2 or 3", index_relpath)
+        elif index_schema_version == 2:
+            self.warn("DEBUG_MODE_INDEX_LEGACY", "schema-version-2 index omits record contract, binding-state, and evidence-decision projections", index_relpath)
         if index.get("index_kind") != "target-alatyr-debug-index":
             self.error(
                 "DEBUG_MODE_INDEX_KIND",
@@ -9225,6 +9391,10 @@ class Validator:
             "metrics",
             "residual_uncertainty",
         }
+        if index_schema_version == 3:
+            required_index_fields.update(
+                {"record_schema_version", "repository_binding_state", "engineering_evidence_status"}
+            )
         seen_ids: set[str] = set()
         seen_records: set[str] = set()
         for entry_index, entry in enumerate(records):
@@ -9440,6 +9610,13 @@ class Validator:
                 self.warn("DEBUG_MODE_OBSERVER_EFFECT", "record declares material observer effect; comparison claims must account for it", record_ref)
 
             events = record.get("events") if isinstance(record.get("events"), list) else []
+            record_schema_version = record.get("schema_version") if isinstance(record.get("schema_version"), int) else 1
+            if record_schema_version == 1:
+                self.warn(
+                    "DEBUG_MODE_LEGACY_ATTRIBUTION",
+                    "schema-version-1 attribution is accepted as historical evidence but is not comparable to version-2 intervention metrics without qualification",
+                    record_ref,
+                )
             event_by_id: dict[str, dict[str, Any]] = {}
             event_order: dict[str, int] = {}
             for event_index, event in enumerate(events):
@@ -9471,7 +9648,7 @@ class Validator:
                     elif event_order[cause] >= event_order[event_id]:
                         self.error("DEBUG_MODE_EVENT_CAUSE_ORDER", f"{event_id} cause {cause} must be earlier", record_ref)
 
-            def has_human_ancestor(event: dict[str, Any]) -> bool:
+            def has_matching_ancestor(event: dict[str, Any], predicate: Any) -> bool:
                 pending = list(event.get("caused_by_event_ids", []))
                 visited: set[str] = set()
                 while pending:
@@ -9482,10 +9659,39 @@ class Validator:
                     cause = event_by_id.get(cause_id)
                     if cause is None:
                         continue
-                    if cause.get("origin") == "human-initiated":
+                    if predicate(cause):
                         return True
                     pending.extend(cause.get("caused_by_event_ids", []))
                 return False
+
+            def is_human_intervention(event: dict[str, Any]) -> bool:
+                if record_schema_version == 1:
+                    return event.get("origin") == "human-initiated"
+                return event.get("actor") == "human" and event.get("causal_class") == "intervention"
+
+            def is_external_intervention(event: dict[str, Any]) -> bool:
+                if record_schema_version == 1:
+                    return event.get("origin") == "external-maintainer"
+                return event.get("actor") == "external-maintainer" and event.get("causal_class") == "intervention"
+
+            def has_human_ancestor(event: dict[str, Any]) -> bool:
+                return has_matching_ancestor(event, is_human_intervention)
+
+            def has_external_ancestor(event: dict[str, Any]) -> bool:
+                return has_matching_ancestor(event, is_external_intervention)
+
+            def has_correction_ancestor(event: dict[str, Any]) -> bool:
+                return has_matching_ancestor(
+                    event,
+                    lambda cause: (
+                        is_human_intervention(cause) or is_external_intervention(cause)
+                    )
+                    and (
+                        cause.get("intervention_kind") == "correction"
+                        if record_schema_version >= 2
+                        else cause.get("category") == "review-correction"
+                    ),
+                )
 
             def has_ancestor(event: dict[str, Any], ancestor_id: str) -> bool:
                 pending = list(event.get("caused_by_event_ids", []))
@@ -9504,11 +9710,35 @@ class Validator:
 
             for event_id, event in event_by_id.items():
                 origin = event.get("origin")
+                actor = event.get("actor") if record_schema_version >= 2 else None
+                causal_class = event.get("causal_class") if record_schema_version >= 2 else None
+                intervention_kind = event.get("intervention_kind") if record_schema_version >= 2 else None
                 human_ancestor = has_human_ancestor(event)
-                if origin == "derived-after-human-intervention" and not human_ancestor:
-                    self.error("DEBUG_MODE_DERIVATION_CAUSE", f"{event_id} has no human-initiated ancestor", record_ref)
-                if origin == "alatyr-initiated" and human_ancestor:
-                    self.error("DEBUG_MODE_INDEPENDENCE", f"{event_id} cannot be independent because its causal chain contains a human intervention", record_ref)
+                external_ancestor = has_external_ancestor(event)
+                if record_schema_version == 1:
+                    if origin == "derived-after-human-intervention" and not human_ancestor:
+                        self.error("DEBUG_MODE_DERIVATION_CAUSE", f"{event_id} has no human-initiated ancestor", record_ref)
+                    if origin == "alatyr-initiated" and human_ancestor:
+                        self.error("DEBUG_MODE_INDEPENDENCE", f"{event_id} cannot be independent because its causal chain contains a human intervention", record_ref)
+                else:
+                    if actor in {"human", "external-maintainer"}:
+                        if causal_class != "intervention" or intervention_kind == "not-applicable":
+                            self.error("DEBUG_MODE_INTERVENTION_CLASSIFICATION", f"{event_id} human or external input must be a typed intervention", record_ref)
+                    elif actor == "alatyr":
+                        if causal_class == "intervention" or intervention_kind != "not-applicable":
+                            self.error("DEBUG_MODE_AGENT_CLASSIFICATION", f"{event_id} Alatyr contribution cannot be classified as an intervention", record_ref)
+                    if causal_class == "derived-from-human" and not human_ancestor:
+                        self.error("DEBUG_MODE_DERIVATION_CAUSE", f"{event_id} has no human intervention ancestor", record_ref)
+                    if causal_class == "derived-from-external" and not external_ancestor:
+                        self.error("DEBUG_MODE_DERIVATION_CAUSE", f"{event_id} has no external-maintainer intervention ancestor", record_ref)
+                    if causal_class == "independent-within-scope" and (human_ancestor or external_ancestor):
+                        self.error("DEBUG_MODE_INDEPENDENCE", f"{event_id} cannot be independent because its causal chain contains an intervention", record_ref)
+                    if event.get("post_review_rework") is True and not has_correction_ancestor(event):
+                        self.error(
+                            "DEBUG_MODE_POST_REVIEW_CAUSE",
+                            f"{event_id} claims post-review rework without a human or external correction ancestor",
+                            record_ref,
+                        )
 
                 impacts = event.get("architectural_impacts")
                 decision_effect = event.get("decision_effect")
@@ -9519,7 +9749,11 @@ class Validator:
                         record_ref,
                     )
                 impact_values = impacts if isinstance(impacts, list) else []
-                is_human_input = origin in {"human-initiated", "external-maintainer"}
+                is_human_input = (
+                    origin in {"human-initiated", "external-maintainer"}
+                    if record_schema_version == 1
+                    else actor in {"human", "external-maintainer"}
+                )
                 claims_supervision = event.get("architectural_supervision") is True
                 if claims_supervision and not is_human_input:
                     self.error(
@@ -9596,37 +9830,74 @@ class Validator:
             def matching_event_ids(metric_name: str) -> list[str]:
                 def matches(event: dict[str, Any]) -> bool:
                     origin = event.get("origin")
+                    actor = event.get("actor")
+                    causal_class = event.get("causal_class")
+                    intervention_kind = event.get("intervention_kind")
+                    contribution_kind = event.get("contribution_kind")
                     category = event.get("category")
+                    if record_schema_version == 1:
+                        if metric_name == "human_interventions":
+                            return origin == "human-initiated"
+                        if metric_name == "human_architectural_interventions":
+                            return origin == "human-initiated" and event.get("architectural_supervision") is True
+                        if metric_name == "alatyr_independent_findings":
+                            return origin == "alatyr-initiated"
+                        if metric_name == "derived_findings_after_human":
+                            return origin == "derived-after-human-intervention"
+                        if metric_name == "alatyr_independent_dependency_checks":
+                            return origin == "alatyr-initiated" and category == "dependency"
+                        if metric_name == "human_requested_dependency_checks":
+                            return origin == "human-initiated" and category == "dependency"
+                        if metric_name == "derived_dependency_expansions_after_human":
+                            return origin == "derived-after-human-intervention" and event.get("dependency_expansion") is True
+                        if metric_name == "hypotheses_tested":
+                            return category == "hypothesis" and event.get("hypothesis_outcome") in {"confirmed", "rejected"}
+                        if metric_name == "hypotheses_rejected":
+                            return category == "hypothesis" and event.get("hypothesis_outcome") == "rejected"
+                        if metric_name == "implementation_revisions":
+                            return category == "implementation-revision"
+                        if metric_name == "implementation_corrections_after_human":
+                            return category == "implementation-revision" and origin == "derived-after-human-intervention"
+                        if metric_name == "validation_expansions":
+                            return event.get("validation_expansion") is True
+                        if metric_name == "regression_scenarios_added":
+                            return category == "regression-scenario"
+                        if metric_name == "maintainer_corrections":
+                            return origin == "external-maintainer"
+                        if metric_name == "post_review_rework":
+                            return event.get("post_review_rework") is True
+                        return False
+
                     if metric_name == "human_interventions":
-                        return origin == "human-initiated"
+                        return actor == "human" and causal_class == "intervention"
                     if metric_name == "human_architectural_interventions":
-                        return origin == "human-initiated" and event.get("architectural_supervision") is True
+                        return actor == "human" and causal_class == "intervention" and event.get("architectural_supervision") is True
                     if metric_name == "alatyr_independent_findings":
-                        return origin == "alatyr-initiated"
+                        return actor == "alatyr" and causal_class == "independent-within-scope" and contribution_kind == "finding"
                     if metric_name == "derived_findings_after_human":
-                        return origin == "derived-after-human-intervention"
+                        return actor == "alatyr" and causal_class == "derived-from-human" and contribution_kind == "finding"
                     if metric_name == "alatyr_independent_dependency_checks":
-                        return origin == "alatyr-initiated" and category == "dependency"
+                        return actor == "alatyr" and causal_class == "independent-within-scope" and contribution_kind == "finding" and category == "dependency"
                     if metric_name == "human_requested_dependency_checks":
-                        return origin == "human-initiated" and category == "dependency"
+                        return actor == "human" and causal_class == "intervention" and category == "dependency"
                     if metric_name == "derived_dependency_expansions_after_human":
-                        return origin == "derived-after-human-intervention" and event.get("dependency_expansion") is True
+                        return actor == "alatyr" and causal_class == "derived-from-human" and contribution_kind == "finding" and event.get("dependency_expansion") is True
                     if metric_name == "hypotheses_tested":
-                        return category == "hypothesis" and event.get("hypothesis_outcome") in {"confirmed", "rejected"}
+                        return contribution_kind == "finding" and category == "hypothesis" and event.get("hypothesis_outcome") in {"confirmed", "rejected"}
                     if metric_name == "hypotheses_rejected":
-                        return category == "hypothesis" and event.get("hypothesis_outcome") == "rejected"
+                        return contribution_kind == "finding" and category == "hypothesis" and event.get("hypothesis_outcome") == "rejected"
                     if metric_name == "implementation_revisions":
-                        return category == "implementation-revision"
+                        return contribution_kind == "implementation" and category == "implementation-revision"
                     if metric_name == "implementation_corrections_after_human":
-                        return category == "implementation-revision" and origin == "derived-after-human-intervention"
+                        return contribution_kind == "implementation" and category == "implementation-revision" and causal_class == "derived-from-human" and has_correction_ancestor(event)
                     if metric_name == "validation_expansions":
-                        return event.get("validation_expansion") is True
+                        return contribution_kind == "validation" and event.get("validation_expansion") is True
                     if metric_name == "regression_scenarios_added":
-                        return category == "regression-scenario"
+                        return contribution_kind == "validation" and category == "regression-scenario"
                     if metric_name == "maintainer_corrections":
-                        return origin == "external-maintainer"
+                        return actor == "external-maintainer" and causal_class == "intervention" and intervention_kind == "correction"
                     if metric_name == "post_review_rework":
-                        return event.get("post_review_rework") is True
+                        return contribution_kind == "implementation" and event.get("post_review_rework") is True and has_correction_ancestor(event)
                     return False
 
                 return [event_id for event_id, event in event_by_id.items() if matches(event)]
@@ -9674,37 +9945,63 @@ class Validator:
                             f"engineering evidence {evidence_id} resolves {resolution_count} times in {engineering_index_relpath}; expected exactly once",
                             record_ref,
                         )
-            binding = final_result.get("repository_binding") if isinstance(final_result.get("repository_binding"), dict) else {}
-            binding_kind = binding.get("kind")
-            result_revision = binding.get("result_revision")
-            if binding_kind in {"commit", "pull-request", "tree"}:
-                for field in ["base_revision", "result_revision"]:
-                    value = binding.get(field)
-                    if not concrete(value) or git_resolve_ref(self.target, value) is None:
-                        self.error("DEBUG_MODE_REVISION", f"{field} does not resolve: {value}", record_ref)
-                if binding_kind == "pull-request" and not concrete(binding.get("review_reference")):
-                    self.error("DEBUG_MODE_REVIEW_REFERENCE", "pull-request binding requires a stable review reference", record_ref)
-            elif binding_kind == "selected-file-snapshot":
-                selected_paths = binding.get("selected_paths")
-                paths = selected_paths if isinstance(selected_paths, list) else []
-                digest = hashlib.sha256()
-                snapshot_valid = bool(paths)
-                if not paths:
-                    self.error("DEBUG_MODE_SNAPSHOT_PATH", "selected-file snapshot requires paths", record_ref)
-                for selected_path in sorted(set(paths)):
-                    if not concrete(selected_path) or not is_target_relative_path(selected_path) or not self.target_path(selected_path).is_file():
-                        self.error("DEBUG_MODE_SNAPSHOT_PATH", f"invalid snapshot path: {selected_path}", record_ref)
-                        snapshot_valid = False
-                        continue
-                    digest.update(selected_path.replace("\\", "/").encode("utf-8"))
-                    digest.update(b"\0")
-                    digest.update(self.target_path(selected_path).read_bytes())
-                    digest.update(b"\0")
-                recorded_digest = binding.get("snapshot_sha256")
-                if snapshot_valid and (not concrete(recorded_digest) or recorded_digest.casefold() != digest.hexdigest()):
-                    self.error("DEBUG_MODE_SNAPSHOT_HASH", "selected-file snapshot SHA-256 does not match current files", record_ref)
-            elif binding_kind == "unverified" and status == "completed":
-                self.warn("DEBUG_MODE_UNVERIFIED_RESULT", "completed debug record has no reproducible result binding", record_ref)
+
+            evidence_status = "legacy"
+            if record_schema_version >= 2:
+                evidence_decision = final_result.get("engineering_evidence_decision")
+                if not isinstance(evidence_decision, dict):
+                    self.error("DEBUG_MODE_EVIDENCE_DECISION", "version-2 record requires engineering_evidence_decision", record_ref)
+                    evidence_decision = {}
+                evidence_status = str(evidence_decision.get("status", ""))
+                trigger_ids = evidence_decision.get("trigger_event_ids")
+                trigger_ids = trigger_ids if isinstance(trigger_ids, list) else []
+                unknown_triggers = sorted(set(trigger_ids) - set(event_by_id))
+                if unknown_triggers:
+                    self.error("DEBUG_MODE_EVIDENCE_TRIGGER", f"engineering-evidence decision references unknown events {unknown_triggers}", record_ref)
+                material_trigger_ids = {
+                    event_id
+                    for event_id, event in event_by_id.items()
+                    if (
+                        event.get("hypothesis_outcome") == "rejected"
+                        or event.get("decision_effect") == "changes-direction"
+                        or event.get("intervention_kind") == "correction"
+                    )
+                }
+                missing_material_triggers = sorted(material_trigger_ids - set(trigger_ids))
+                if missing_material_triggers:
+                    self.error("DEBUG_MODE_EVIDENCE_TRIGGER", f"material evidence triggers are not represented in the decision: {missing_material_triggers}", record_ref)
+                trigger_kinds = evidence_decision.get("trigger_kinds")
+                if trigger_ids and (not isinstance(trigger_kinds, list) or not trigger_kinds):
+                    self.error("DEBUG_MODE_EVIDENCE_TRIGGER", "triggered evidence decision must name at least one trigger kind", record_ref)
+                evidence_ids = linked_evidence if isinstance(linked_evidence, list) else []
+                if status == "completed" and evidence_status == "pending":
+                    self.error("DEBUG_MODE_EVIDENCE_PENDING", "completed Debug session cannot leave durable engineering evidence pending", record_ref)
+                if evidence_status == "captured" and not evidence_ids:
+                    self.error("DEBUG_MODE_EVIDENCE_CAPTURE", "captured decision requires at least one engineering evidence ID", record_ref)
+                if evidence_status in {"skipped", "blocked"} and evidence_ids:
+                    self.error("DEBUG_MODE_EVIDENCE_DECISION", f"{evidence_status} decision cannot list captured engineering evidence IDs", record_ref)
+                if evidence_status == "blocked" and not concrete(evidence_decision.get("next_safe_action")):
+                    self.error("DEBUG_MODE_EVIDENCE_BLOCKED", "blocked evidence decision requires a next safe action", record_ref)
+                preserved_by = evidence_decision.get("knowledge_preserved_by")
+                if material_trigger_ids and evidence_status == "skipped" and (not isinstance(preserved_by, list) or not preserved_by):
+                    self.error("DEBUG_MODE_EVIDENCE_SKIP", "material Debug findings may be skipped only when canonical durable knowledge already preserves them", record_ref)
+                if status == "completed" and material_trigger_ids and evidence_status not in {"captured", "blocked", "skipped"}:
+                    self.error("DEBUG_MODE_EVIDENCE_DECISION", "material completed Debug work requires captured, blocked, or justified skipped durable evidence", record_ref)
+
+            implementation_surfaces = [
+                value
+                for value in final_result.get("implementation_surfaces", [])
+                if isinstance(value, str)
+            ]
+            binding = final_result.get("repository_binding")
+            binding_kind, result_revision = self.check_repository_binding(
+                binding=binding,
+                record_relpath=record_ref,
+                code_prefix="DEBUG_MODE",
+                record_status=str(status or ""),
+                schema_version=record_schema_version,
+                implementation_surfaces=implementation_surfaces,
+            )
 
             projection = final_result.get("upstream_projection") if isinstance(final_result.get("upstream_projection"), dict) else {}
             projected_paths = projection.get("projected_paths") if isinstance(projection.get("projected_paths"), list) else []
@@ -9742,6 +10039,15 @@ class Validator:
                 "metrics": metric_values,
                 "residual_uncertainty": record.get("residual_uncertainty"),
             }
+            if index_schema_version == 3:
+                binding_value = binding if isinstance(binding, dict) else {}
+                comparisons.update(
+                    {
+                        "record_schema_version": record_schema_version,
+                        "repository_binding_state": binding_value.get("binding_state", "legacy"),
+                        "engineering_evidence_status": evidence_status,
+                    }
+                )
             for field, record_value in comparisons.items():
                 index_value = entry.get(field)
                 if isinstance(record_value, list) and isinstance(index_value, list):
@@ -9908,7 +10214,9 @@ class Validator:
             result.append(item.strip())
         return result
 
-    def package_snapshot_digest(self, paths: list[str], source: str) -> str | None:
+    def package_snapshot_digest(
+        self, paths: list[str], source: str, *, historical: bool = False
+    ) -> str | None:
         digest = hashlib.sha256()
         for relpath in sorted(set(paths)):
             if not is_target_relative_path(relpath):
@@ -9920,8 +10228,9 @@ class Validator:
                 return None
             path = self.target_path(relpath)
             if not path.is_file():
-                self.change_package_finding(
-                    "PACKAGE_SNAPSHOT_FILE",
+                finding = self.warn if historical else self.change_package_finding
+                finding(
+                    "PACKAGE_SNAPSHOT_HISTORICAL" if historical else "PACKAGE_SNAPSHOT_FILE",
                     f"snapshot path is not a file: {relpath}",
                     source,
                 )
@@ -10377,14 +10686,24 @@ class Validator:
                 allow_unavailable=True,
             )
             if quality in {"git-range", "pull-request"}:
-                if git_resolve_ref(self.target, before) is None:
+                before_resolved = git_resolve_ref(self.target, before)
+                after_resolved = git_resolve_ref(self.target, after)
+                if before_resolved is None:
                     self.change_package_finding(
                         "PACKAGE_BEFORE_REF", f"before revision does not resolve: {before}", source
                     )
-                if git_resolve_ref(self.target, after) is None:
+                if after_resolved is None:
                     self.change_package_finding(
                         "PACKAGE_AFTER_REF", f"after revision does not resolve: {after}", source
                     )
+                if before_resolved and after_resolved:
+                    ancestry = git_is_ancestor(self.target, before_resolved, after_resolved)
+                    if ancestry is not True:
+                        self.change_package_finding(
+                            "PACKAGE_REVISION_ANCESTRY",
+                            "before_revision must be an ancestor of after_revision",
+                            source,
+                        )
                 range_paths = git_range_changed_files(self.target, before, after)
                 if range_paths is None:
                     self.change_package_finding(
@@ -10421,13 +10740,23 @@ class Validator:
                 recorded_digest = self.package_string(
                     data, ("provenance", "selected_file_snapshot", "digest"), source
                 ).lower()
-                computed_digest = self.package_snapshot_digest(snapshot_paths, source)
+                historical_snapshot = status in {"validated", "complete"}
+                computed_digest = self.package_snapshot_digest(
+                    snapshot_paths, source, historical=historical_snapshot
+                )
                 if computed_digest and recorded_digest != computed_digest:
-                    self.change_package_finding(
-                        "PACKAGE_SNAPSHOT_HASH",
-                        "selected-file snapshot SHA-256 does not match current files",
-                        source,
-                    )
+                    if historical_snapshot:
+                        self.warn(
+                            "PACKAGE_SNAPSHOT_HISTORICAL",
+                            "historical selected-file snapshot no longer matches current files",
+                            source,
+                        )
+                    else:
+                        self.change_package_finding(
+                            "PACKAGE_SNAPSHOT_HASH",
+                            "selected-file snapshot SHA-256 does not match current files",
+                            source,
+                        )
                 if claim not in {"limited", "unsupported"}:
                     self.change_package_finding(
                         "PACKAGE_PUBLIC_CLAIM",

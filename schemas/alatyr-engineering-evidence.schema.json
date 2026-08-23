@@ -13,7 +13,7 @@
     "privacy"
   ],
   "properties": {
-    "schema_version": {"const": 1},
+    "schema_version": {"enum": [1, 2]},
     "record_kind": {"const": "alatyr-engineering-evidence"},
     "evidence_classification": {"const": "historical-record"},
     "evidence_id": {"type": "string", "minLength": 1},
@@ -30,19 +30,7 @@
         "operation_id": {"type": "string", "minLength": 1}
       }
     },
-    "repository_binding": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["kind", "base_revision", "result_revision", "review_reference", "selected_paths", "snapshot_sha256"],
-      "properties": {
-        "kind": {"enum": ["commit", "pull-request", "tree", "selected-file-snapshot", "unverified"]},
-        "base_revision": {"type": "string", "minLength": 1},
-        "result_revision": {"type": "string", "minLength": 1},
-        "review_reference": {"type": "string", "minLength": 1},
-        "selected_paths": {"$ref": "#/definitions/strings"},
-        "snapshot_sha256": {"type": "string", "minLength": 1}
-      }
-    },
+    "repository_binding": {"type": "object"},
     "observed_failure": {"type": "string", "minLength": 1},
     "affected_architecture": {
       "type": "array",
@@ -188,8 +176,64 @@
       }
     }
   },
+  "allOf": [
+    {
+      "if": {"properties": {"schema_version": {"const": 1}}},
+      "then": {"properties": {"repository_binding": {"$ref": "#/definitions/repositoryBindingV1"}}}
+    },
+    {
+      "if": {"properties": {"schema_version": {"const": 2}}},
+      "then": {"properties": {"repository_binding": {"$ref": "#/definitions/repositoryBindingV2"}}}
+    }
+  ],
   "definitions": {
     "strings": {"type": "array", "items": {"type": "string", "minLength": 1}},
-    "nonEmptyStrings": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+    "nonEmptyStrings": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "repositoryBindingV1": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "base_revision", "result_revision", "review_reference", "selected_paths", "snapshot_sha256"],
+      "properties": {
+        "kind": {"enum": ["commit", "pull-request", "tree", "selected-file-snapshot", "unverified"]},
+        "base_revision": {"type": "string", "minLength": 1},
+        "result_revision": {"type": "string", "minLength": 1},
+        "review_reference": {"type": "string", "minLength": 1},
+        "selected_paths": {"$ref": "#/definitions/strings"},
+        "snapshot_sha256": {"type": "string", "minLength": 1}
+      }
+    },
+    "repositoryBindingV2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "binding_state", "base_revision", "result_revision", "review_reference", "selected_paths", "snapshot_sha256", "prior_bindings"],
+      "properties": {
+        "kind": {"enum": ["commit", "pull-request", "tree", "selected-file-snapshot", "unverified"]},
+        "binding_state": {"enum": ["provisional", "final"]},
+        "base_revision": {"type": "string", "minLength": 1},
+        "result_revision": {"type": "string", "minLength": 1},
+        "review_reference": {"type": "string", "minLength": 1},
+        "selected_paths": {"$ref": "#/definitions/strings"},
+        "snapshot_sha256": {"type": "string", "minLength": 1},
+        "prior_bindings": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/priorRepositoryBinding"}
+        }
+      }
+    },
+    "priorRepositoryBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "base_revision", "result_revision", "review_reference", "selected_paths", "snapshot_sha256", "replaced_at", "reason"],
+      "properties": {
+        "kind": {"enum": ["commit", "pull-request", "tree", "selected-file-snapshot", "unverified"]},
+        "base_revision": {"type": "string", "minLength": 1},
+        "result_revision": {"type": "string", "minLength": 1},
+        "review_reference": {"type": "string", "minLength": 1},
+        "selected_paths": {"$ref": "#/definitions/strings"},
+        "snapshot_sha256": {"type": "string", "minLength": 1},
+        "replaced_at": {"type": "string", "minLength": 1},
+        "reason": {"type": "string", "minLength": 1}
+      }
+    }
   }
 }

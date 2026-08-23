@@ -26,8 +26,20 @@
       "when": "finalizing or comparing debug evidence"
     },
     {
+      "path": ".ai/framework/engineering-evidence.md",
+      "when": "finalizing the required durable engineering-evidence decision"
+    },
+    {
+      "path": ".ai/assistant/gates/engineering-evidence.md",
+      "when": "finalizing the required durable engineering-evidence decision"
+    },
+    {
+      "path": ".ai/assistant/flows/engineering-evidence-capture.flow.md",
+      "when": "durable engineering evidence is captured or blocked during finalization"
+    },
+    {
       "path": ".ai/project/engineering-evidence/index.json",
-      "when": "linking or validating non-empty durable engineering-evidence IDs"
+      "when": "finalizing the evidence decision or validating non-empty durable engineering-evidence IDs"
     }
   ],
   "expand_when": [
@@ -35,6 +47,7 @@
     "a direction-changing correction lacks a rejected hypothesis or replacement invariant chain",
     "architectural supervision classification conflicts with structured impacts",
     "a durable engineering-evidence ID does not resolve exactly once",
+    "the durable engineering-evidence decision cannot be closed",
     "repository binding or external projection cannot support the claim",
     "privacy or retention policy conflicts with requested capture",
     "cross-task comparison needs selected records because index evidence is insufficient"
@@ -44,7 +57,7 @@
     "activation status scope and expiry",
     "record ID path and capture quality",
     "compact event-derived metrics with structured architectural and direction-replacement evidence",
-    "final result binding and external projection",
+    "durable engineering-evidence decision plus final result binding lineage and external projection",
     "privacy publication validation and residual uncertainty"
   ]
 }

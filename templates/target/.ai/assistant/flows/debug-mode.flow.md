@@ -26,11 +26,14 @@ explicit read-only configuration review.
    Activation grants no code, commit, publish, live-external, protected-change,
    or tool permission.
 4. During the task, capture only material normalized events at checkpoints.
-   Classify origin before category. Preserve causal links and evidence.
-5. Classify broad human direction as `human-initiated`. Classify concrete
-   consequences independently derived from that direction as
-   `derived-after-human-intervention`. Do not count either as an independent
-   Alatyr finding.
+   Classify actor, causal class, intervention kind, contribution kind, and then
+   category. Preserve causal links and evidence. Keep the initial task request
+   in activation metadata; it is not an intervention event by itself.
+5. Record human or external input as an `intervention` only when it directs,
+   expands, constrains, corrects, or requests validation for a specific line.
+   Classify concrete Alatyr consequences as `derived-from-human` or
+   `derived-from-external`. A validation request is not an implementation
+   correction. Generic external input is not a maintainer correction.
 6. For each new event, record `decision_effect` and `architectural_impacts`.
    Human or external-maintainer events with accepted-invariant, canonical-
    source-interpretation, public-contract, subsystem-responsibility, solution-
@@ -44,20 +47,30 @@ explicit read-only configuration review.
 8. Record timing evidence honestly. Use active work time only when a trusted
    environment measures it. Record partial coverage, missing intervals,
    observer effect, and capture overhead.
-9. For `finalize`, derive metrics from event predicates, bind the engineering
-   result, and link only durable evidence IDs that resolve exactly once in the
-   target Engineering Evidence index. Keep the list empty instead of using a
-   Debug event ID or temporary identifier. Record clean-upstream projection
-   evidence, validate the record, synchronize the index, and render the compact
-   summary.
-10. Expire activation when the scope completes, changes, is abandoned, or is
+9. For `finalize`, derive metrics from the versioned event predicates and run
+   the Durable Engineering Evidence decision. Complete it as `captured`,
+   `skipped`, or `blocked`; do not leave it pending. Material rejected
+   hypotheses and direction-changing corrections require capture or blocking,
+   or a skip that names the canonical knowledge already preserving the result.
+10. Bind the engineering result as provisional or final. Final commit and
+    pull-request ranges use immutable object IDs and valid ancestry; tree
+    results resolve as Git trees. Preserve every replaced binding in
+    `prior_bindings`. Link only durable evidence IDs that resolve exactly once
+    in the target Engineering Evidence index.
+11. Record clean-upstream projection evidence, validate the record, synchronize
+    the index, and render the compact summary. Later worktree drift may make a
+    finalized snapshot not currently reproducible, but does not corrupt its
+    historical value.
+12. Expire activation when the scope completes, changes, is abandoned, or is
    explicitly disabled. A later task requires a new explicit activation.
-11. For `compare`, use comparable completed records, evidence kinds, capture
+13. For `compare`, use comparable completed records, attribution schema,
+    evidence kinds, capture
     quality, task class, and independent quality review. Do not infer framework
     improvement from lower intervention count alone.
 
 ## Final Evidence
 
 Report activation/expiry, record ID and path, timing evidence, capture quality,
-event-derived metrics, result binding, external projection, privacy and
-publication result, validation, and residual uncertainty.
+event-derived metrics, durable engineering-evidence decision, result binding
+and lineage, external projection, privacy and publication result, validation,
+and residual uncertainty.

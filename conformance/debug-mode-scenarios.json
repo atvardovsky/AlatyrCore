@@ -29,10 +29,40 @@
       "request_shape": "A human requests one broad dependency check and Alatyr derives several concrete affected paths and tests.",
       "expected_mode": "checkpointed",
       "required_outcomes": [
-        "one human-initiated intervention",
-        "separate derived-after-human-intervention events",
+        "one human intervention with a specific intervention kind",
+        "separate derived-from-human finding events",
         "causal references to the human event",
         "no independent attribution for derived findings"
+      ]
+    },
+    {
+      "id": "task-request-is-not-intervention",
+      "request_shape": "The user states the task and enables Debug Mode without directing a specific investigative line.",
+      "expected_mode": "checkpointed",
+      "required_outcomes": [
+        "task request remains in activation metadata",
+        "zero human intervention events until a specific direction expansion constraint correction or validation request occurs",
+        "independent in-scope findings remain attributable to Alatyr"
+      ]
+    },
+    {
+      "id": "validation-request-is-not-correction",
+      "request_shape": "A human asks Alatyr to run an additional validation without changing the implementation direction.",
+      "expected_mode": "checkpointed",
+      "required_outcomes": [
+        "human intervention kind is validation-request",
+        "derived validation contribution preserves the causal link",
+        "implementation corrections after human remains unchanged"
+      ]
+    },
+    {
+      "id": "external-input-is-not-maintainer-correction",
+      "request_shape": "An external maintainer supplies context that does not correct the active solution.",
+      "expected_mode": "checkpointed",
+      "required_outcomes": [
+        "external actor is recorded separately",
+        "intervention kind is not correction",
+        "maintainer correction and post-review rework metrics remain unchanged"
       ]
     },
     {
@@ -67,6 +97,26 @@
         "clean external projected paths",
         "no .ai path in the external patch",
         "publication remains separately authorized"
+      ]
+    },
+    {
+      "id": "material-debug-evidence-closure",
+      "request_shape": "A completed Debug session contains a rejected material hypothesis and a direction-changing correction.",
+      "expected_mode": "finalized",
+      "required_outcomes": [
+        "durable Engineering Evidence decision is not pending",
+        "material trigger event IDs and kinds are named",
+        "capture or block is used unless named canonical knowledge already preserves the conclusion"
+      ]
+    },
+    {
+      "id": "historical-snapshot-after-later-edit",
+      "request_shape": "Files captured by a finalized selected-file snapshot are changed or removed by later legitimate work.",
+      "expected_mode": "finalized",
+      "required_outcomes": [
+        "historical record remains valid",
+        "current reproducibility warning is reported",
+        "any stronger commit rebind is explicit and preserves prior binding lineage"
       ]
     },
     {

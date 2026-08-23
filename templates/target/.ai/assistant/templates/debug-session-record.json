@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "record_kind": "alatyr-debug-session",
   "evidence_classification": "non-canonical-observability",
   "debug_id": "{DEBUG_ID}",
@@ -56,15 +56,25 @@
     "summary": "{CURRENT_OR_FINAL_RESULT_SUMMARY}",
     "repository_binding": {
       "kind": "unverified",
+      "binding_state": "provisional",
       "base_revision": "{BASE_REVISION_OR_UNAVAILABLE}",
       "result_revision": "{RESULT_REVISION_OR_UNAVAILABLE}",
       "review_reference": "{REVIEW_REFERENCE_OR_NOT_APPLICABLE}",
       "selected_paths": [],
-      "snapshot_sha256": "{SHA256_OR_NOT_APPLICABLE}"
+      "snapshot_sha256": "{SHA256_OR_NOT_APPLICABLE}",
+      "prior_bindings": []
     },
     "implementation_surfaces": [],
     "validation": {"results": [], "skipped": []},
     "engineering_evidence_ids": [],
+    "engineering_evidence_decision": {
+      "status": "pending",
+      "trigger_event_ids": [],
+      "trigger_kinds": [],
+      "knowledge_preserved_by": [],
+      "reason": "Durable engineering evidence is assessed when the Debug session is finalized.",
+      "next_safe_action": "Complete the evidence decision before marking this record completed."
+    },
     "upstream_projection": {
       "kind": "unknown",
       "included_debug_files": false,

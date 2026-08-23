@@ -7,11 +7,14 @@ policy.
 
 Do not create records by copying raw conversations or private reasoning.
 
-New events use this structured classification shape in addition to the other
-required event fields:
+New records use schema version 2. New events separate attribution dimensions:
 
 ```json
 {
+  "actor": "alatyr",
+  "causal_class": "independent-within-scope",
+  "intervention_kind": "not-applicable",
+  "contribution_kind": "finding",
   "architectural_supervision": false,
   "architectural_impacts": [],
   "decision_effect": "none",
@@ -19,7 +22,12 @@ required event fields:
 }
 ```
 
-Use only architectural-impact and decision-effect values allowed by the
-installed Debug session schema. Older events may omit the two structured
-fields and remain migration-limited evidence. Do not infer historical values
-without evidence.
+The initial user task request stays in activation metadata. Add a human or
+external intervention event only for a specific direction, expansion,
+constraint, correction, or validation request. Use only values allowed by the
+installed Debug session schema.
+
+Schema-version-1 records remain migration-limited evidence. Do not infer or
+rewrite historical attribution. New completed records close the durable
+Engineering Evidence decision and use a final repository binding with
+lineage.

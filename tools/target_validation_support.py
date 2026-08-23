@@ -377,11 +377,13 @@ def json_string_list(value: Any) -> list[str]:
     return [str(item).strip() for item in value if isinstance(item, str) and item.strip()]
 
 
-def git_resolve_ref(target: Path, ref: str) -> str | None:
+def git_resolve_object(target: Path, ref: str, object_kind: str = "commit") -> str | None:
     if not ref:
         return None
+    if object_kind not in {"commit", "tree"}:
+        raise ValueError(f"unsupported Git object kind: {object_kind}")
     result = subprocess.run(
-        ["git", "rev-parse", "--verify", f"{ref}^{{commit}}"],
+        ["git", "rev-parse", "--verify", f"{ref}^{{{object_kind}}}"],
         cwd=target,
         check=False,
         text=True,
@@ -391,6 +393,55 @@ def git_resolve_ref(target: Path, ref: str) -> str | None:
     if result.returncode != 0:
         return None
     return result.stdout.strip() or None
+
+
+def git_resolve_ref(target: Path, ref: str) -> str | None:
+    return git_resolve_object(target, ref, "commit")
+
+
+def git_is_ancestor(target: Path, base: str, result: str) -> bool | None:
+    base_revision = git_resolve_object(target, base, "commit")
+    result_revision = git_resolve_object(target, result, "commit")
+    if base_revision is None or result_revision is None:
+        return None
+    check = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", base_revision, result_revision],
+        cwd=target,
+        check=False,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    if check.returncode == 0:
+        return True
+    if check.returncode == 1:
+        return False
+    return None
+
+
+def git_snapshot_sha256(target: Path, revision: str, paths: list[str]) -> str | None:
+    """Hash selected repository-relative file contents at an immutable revision."""
+    resolved = git_resolve_object(target, revision, "commit")
+    if resolved is None or not paths:
+        return None
+    digest = hashlib.sha256()
+    for selected_path in sorted(set(paths)):
+        normalized = selected_path.replace("\\", "/")
+        if not is_target_scope_pattern(normalized):
+            return None
+        result = subprocess.run(
+            ["git", "show", f"{resolved}:{normalized}"],
+            cwd=target,
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+        )
+        if result.returncode != 0:
+            return None
+        digest.update(normalized.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(result.stdout)
+        digest.update(b"\0")
+    return digest.hexdigest()
 
 
 def refs_match(target: Path, approved: str, selected: str) -> bool:

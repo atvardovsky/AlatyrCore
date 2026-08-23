@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import copy
+import hashlib
 import json
 import subprocess
 import sys
@@ -27,6 +28,8 @@ RECORD = TARGET / ".ai" / "assistant" / "templates" / "engineering-evidence-reco
 OVERLAY = TARGET / ".ai" / "assistant" / "context" / "task-scales" / "engineering-evidence.json"
 SCHEMA = ROOT / "schemas" / "alatyr-engineering-evidence.schema.json"
 SCENARIOS = ROOT / "conformance" / "engineering-evidence-scenarios.json"
+TARGET_AGENTS = TARGET / "AGENTS.md"
+OPERATION_ROUTING = TARGET / ".ai" / "assistant" / "flows" / "operation-routing.flow.md"
 
 
 def require_text(path: Path, values: list[str], failures: list[str]) -> None:
@@ -53,7 +56,7 @@ def git(repo: Path, *args: str) -> str:
 
 def fixture_record(base: str, result: str) -> dict[str, Any]:
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "record_kind": "alatyr-engineering-evidence",
         "evidence_classification": "historical-record",
         "evidence_id": "ENG-1",
@@ -67,11 +70,13 @@ def fixture_record(base: str, result: str) -> dict[str, Any]:
         },
         "repository_binding": {
             "kind": "commit",
+            "binding_state": "final",
             "base_revision": base,
             "result_revision": result,
             "review_reference": "not applicable",
             "selected_paths": [],
             "snapshot_sha256": "not applicable",
+            "prior_bindings": [],
         },
         "observed_failure": "Distinct identities collided in one map",
         "affected_architecture": [
@@ -141,7 +146,7 @@ def fixture_record(base: str, result: str) -> dict[str, Any]:
 
 def fixture_index(record: dict[str, Any]) -> dict[str, Any]:
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "index_kind": "target-engineering-evidence-index",
         "project": "fixture",
         "owner": "engineering",
@@ -158,6 +163,8 @@ def fixture_index(record: dict[str, Any]) -> dict[str, Any]:
                 "changed_fact_ids": record["impact"]["changed_fact_ids"],
                 "architecture_areas": [record["affected_architecture"][0]["area"]],
                 "repository_binding_kind": record["repository_binding"]["kind"],
+                "record_schema_version": record["schema_version"],
+                "repository_binding_state": record["repository_binding"].get("binding_state", "legacy"),
                 "result_revision": record["repository_binding"]["result_revision"],
                 "residual_uncertainty": record["residual_uncertainty"],
             }
@@ -215,6 +222,13 @@ def validate_fixture(failures: list[str]) -> None:
             "Redaction policy: exclude raw conversations and secrets\n",
             encoding="utf-8",
         )
+        authoring_template = repo / ".ai/assistant/templates/engineering-evidence-record.json"
+        authoring_template.parent.mkdir(parents=True)
+        authoring_template.write_text(RECORD.read_text(encoding="utf-8"), encoding="utf-8")
+
+        def write(value: dict[str, Any]) -> None:
+            record_path.write_text(json.dumps(value, indent=2) + "\n", encoding="utf-8")
+            index_path.write_text(json.dumps(fixture_index(value), indent=2) + "\n", encoding="utf-8")
 
         errors = [finding for finding in run_validator(repo) if finding.level == "error"]
         if errors:
@@ -246,6 +260,16 @@ def validate_fixture(failures: list[str]) -> None:
                 lambda value: value["repository_binding"].update(result_revision="missing-revision"),
                 {"ENGINEERING_EVIDENCE_REVISION"},
             ),
+            (
+                "reversed repository range",
+                lambda value: value["repository_binding"].update(base_revision=result, result_revision=base),
+                {"ENGINEERING_EVIDENCE_REVISION_ANCESTRY"},
+            ),
+            (
+                "symbolic final revision",
+                lambda value: value["repository_binding"].update(result_revision="HEAD"),
+                {"ENGINEERING_EVIDENCE_REVISION_EXACT"},
+            ),
         ]
         for label, mutate, expected_codes in invalid_cases:
             invalid = copy.deepcopy(record)
@@ -258,12 +282,55 @@ def validate_fixture(failures: list[str]) -> None:
             ):
                 failures.append(f"validator did not reject {label}")
 
+        tree_record = copy.deepcopy(record)
+        tree_record["repository_binding"].update(
+            kind="tree",
+            result_revision=git(repo, "rev-parse", f"{result}^{{tree}}"),
+        )
+        write(tree_record)
+        tree_errors = [finding for finding in run_validator(repo) if finding.level == "error"]
+        if tree_errors:
+            failures.append("valid tree binding failed: " + "; ".join(f"{item.code}: {item.message}" for item in tree_errors))
+
+        legacy = copy.deepcopy(record)
+        legacy["schema_version"] = 1
+        legacy["repository_binding"].pop("binding_state")
+        legacy["repository_binding"].pop("prior_bindings")
+        write(legacy)
+        legacy_findings = run_validator(repo)
+        if any(item.level == "error" for item in legacy_findings):
+            failures.append("schema-version-1 engineering evidence was not preserved as compatible")
+        if not any(item.code == "ENGINEERING_EVIDENCE_LEGACY_BINDING" for item in legacy_findings):
+            failures.append("legacy engineering evidence did not report binding limitations")
+
+        snapshot_record = copy.deepcopy(record)
+        digest = hashlib.sha256()
+        digest.update(b"src/example.txt\0")
+        digest.update((repo / "src/example.txt").read_bytes())
+        digest.update(b"\0")
+        snapshot_digest = digest.hexdigest()
+        snapshot_record["repository_binding"].update(
+            kind="selected-file-snapshot",
+            result_revision=snapshot_digest,
+            selected_paths=["src/example.txt"],
+            snapshot_sha256=snapshot_digest,
+        )
+        write(snapshot_record)
+        (repo / "src/example.txt").write_text("later legitimate edit\n", encoding="utf-8")
+        historical_findings = run_validator(repo)
+        if any(item.level == "error" and item.code.startswith("ENGINEERING_EVIDENCE_SNAPSHOT") for item in historical_findings):
+            failures.append("later edits invalidated a finalized historical snapshot")
+        if not any(item.code == "ENGINEERING_EVIDENCE_SNAPSHOT_HISTORICAL" for item in historical_findings):
+            failures.append("historical snapshot drift was not reported as non-corrupting evidence")
+
 
 def main() -> int:
     failures: list[str] = []
     require_text(FRAMEWORK, ["ALATYR-ENGINEERING-EVIDENCE-001", "## Capture Decision", "## Publication Boundary", "Do not store raw chat"], failures)
     require_text(FLOW, ["## Steps", "captured", "skipped", "blocked", "Reject raw chats"], failures)
     require_text(GATE, ["reusable engineering knowledge", "durable_engineering_evidence"], failures)
+    require_text(TARGET_AGENTS, ["durable_engineering_evidence", "captured/skipped/blocked"], failures)
+    require_text(OPERATION_ROUTING, ["durable_engineering_evidence", "fact-specific reason"], failures)
     require_text(
         POLICY,
         ["Owner:", "Storage mode:", "External patch policy:", "Retention policy:", "Redaction policy:"],
@@ -282,10 +349,12 @@ def main() -> int:
     else:
         if index.get("records") != []:
             failures.append("source engineering-evidence index must start empty")
-        if index.get("schema_version") != 2 or "redaction_policy" not in index:
-            failures.append("source engineering-evidence index must use policy schema 2")
+        if index.get("schema_version") != 3 or "redaction_policy" not in index:
+            failures.append("source engineering-evidence index must use contract-projection schema 3")
         if record.get("record_kind") != "alatyr-engineering-evidence":
             failures.append("record template kind is invalid")
+        if record.get("schema_version") != 2:
+            failures.append("record template must use repository-binding schema 2")
         if overlay.get("overlay") != "engineering-evidence":
             failures.append("engineering-evidence overlay identity is invalid")
         scenario_states = {item.get("expected_capture_status") for item in scenarios.get("scenarios", []) if isinstance(item, dict)}

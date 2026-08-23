@@ -17,6 +17,7 @@ from typing import Any
 import yaml
 
 from bootstrap_index import BOOTSTRAP_PATH, build_from_target, render
+from plan_target_upgrade import add_validation_impact
 from scaffold_target_structure import plan as scaffold_plan
 from target_adapter_validation.framework_baseline import source_pack_expectation
 from validate_target_adapter import (
@@ -223,7 +224,35 @@ def main() -> int:
         (repo / "README.md").write_text("# Lifecycle Fixture\n", encoding="utf-8")
         run_git(repo, "add", ".")
         run_git(repo, "commit", "-q", "-m", "seed fixture")
+        run_git(repo, "branch", "-m", "adapter-support")
         base = run_git(repo, "rev-parse", "HEAD")
+        if run_git(repo, "branch", "--show-current") != "adapter-support":
+            failures.append("lifecycle fixture did not preserve the non-main target branch")
+
+        impact_path = Path(directory) / "upgrade-impact.json"
+        report_path = Path(directory) / "adapter-validation.json"
+        impact_path.write_text(
+            json.dumps({"routing": {"candidate_context": [".ai/alatyr.yaml"]}}),
+            encoding="utf-8",
+        )
+        report_path.write_text(
+            json.dumps(
+                {
+                    "findings": [
+                        {
+                            "level": "error",
+                            "code": "DEBUG_MODE_TEMPLATE_VERSION",
+                            "path": ".ai/assistant/templates/debug-session-record.json",
+                        }
+                    ]
+                }
+            ),
+            encoding="utf-8",
+        )
+        add_validation_impact(impact_path, report_path)
+        routed_impact = json.loads(impact_path.read_text(encoding="utf-8"))
+        if ".ai/assistant/templates/debug-session-record.json" not in routed_impact["routing"]["candidate_context"]:
+            failures.append("upgrade impact did not route installed validator findings")
 
         actions, blocked = scaffold_plan(
             SimpleNamespace(
@@ -263,6 +292,8 @@ def main() -> int:
                 "accepted core installation failed: "
                 + ", ".join(
                     finding.code
+                    + ":"
+                    + finding.message
                     for finding in accepted_findings
                     if finding.level in {"error", "warning"}
                 )
@@ -300,6 +331,8 @@ def main() -> int:
                 "post-update adapter validation failed: "
                 + ", ".join(
                     finding.code
+                    + ":"
+                    + finding.message
                     for finding in updated_findings
                     if finding.level in {"error", "warning"}
                 )

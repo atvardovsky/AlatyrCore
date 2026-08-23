@@ -1595,6 +1595,15 @@
       ]
     },
     {
+      "code": "DEBUG_MODE_AGENT_CLASSIFICATION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "DEBUG_MODE_ARCHITECTURAL_IMPACT_MISSING",
       "levels": [
         "dynamic"
@@ -1650,6 +1659,15 @@
     },
     {
       "code": "DEBUG_MODE_COMPLETED_METRICS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_CONTRACT_VERSION",
       "levels": [
         "error"
       ],
@@ -1766,6 +1784,60 @@
       ]
     },
     {
+      "code": "DEBUG_MODE_EVIDENCE_BLOCKED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_EVIDENCE_CAPTURE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_EVIDENCE_DECISION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_EVIDENCE_PENDING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_EVIDENCE_SKIP",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_EVIDENCE_TRIGGER",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "DEBUG_MODE_EXPIRY",
       "levels": [
         "error"
@@ -1847,6 +1919,15 @@
       ]
     },
     {
+      "code": "DEBUG_MODE_INDEX_LEGACY",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "DEBUG_MODE_INDEX_LIST",
       "levels": [
         "error"
@@ -1910,6 +1991,24 @@
       ]
     },
     {
+      "code": "DEBUG_MODE_INTERVENTION_CLASSIFICATION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_LEGACY_ATTRIBUTION",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "DEBUG_MODE_MANIFEST_PATH",
       "levels": [
         "error"
@@ -1949,6 +2048,15 @@
       "code": "DEBUG_MODE_OBSERVER_EFFECT",
       "levels": [
         "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_POST_REVIEW_CAUSE",
+      "levels": [
+        "error"
       ],
       "sources": [
         "tools/validate_target_adapter.py"
@@ -2027,42 +2135,6 @@
       ]
     },
     {
-      "code": "DEBUG_MODE_REVIEW_REFERENCE",
-      "levels": [
-        "error"
-      ],
-      "sources": [
-        "tools/validate_target_adapter.py"
-      ]
-    },
-    {
-      "code": "DEBUG_MODE_REVISION",
-      "levels": [
-        "error"
-      ],
-      "sources": [
-        "tools/validate_target_adapter.py"
-      ]
-    },
-    {
-      "code": "DEBUG_MODE_SNAPSHOT_HASH",
-      "levels": [
-        "error"
-      ],
-      "sources": [
-        "tools/validate_target_adapter.py"
-      ]
-    },
-    {
-      "code": "DEBUG_MODE_SNAPSHOT_PATH",
-      "levels": [
-        "error"
-      ],
-      "sources": [
-        "tools/validate_target_adapter.py"
-      ]
-    },
-    {
       "code": "DEBUG_MODE_SOURCE_SCHEMA",
       "levels": [
         "error"
@@ -2075,6 +2147,33 @@
       "code": "DEBUG_MODE_STRUCTURED_CLASSIFICATION_MISSING",
       "levels": [
         "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_TEMPLATE_BINDING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_TEMPLATE_EVIDENCE_DECISION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_TEMPLATE_VERSION",
+      "levels": [
+        "error"
       ],
       "sources": [
         "tools/validate_target_adapter.py"
@@ -2102,15 +2201,6 @@
       "code": "DEBUG_MODE_TIMING_ORDER",
       "levels": [
         "error"
-      ],
-      "sources": [
-        "tools/validate_target_adapter.py"
-      ]
-    },
-    {
-      "code": "DEBUG_MODE_UNVERIFIED_RESULT",
-      "levels": [
-        "warning"
       ],
       "sources": [
         "tools/validate_target_adapter.py"
@@ -3638,6 +3728,15 @@
       ]
     },
     {
+      "code": "ENGINEERING_EVIDENCE_CONTRACT_VERSION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "ENGINEERING_EVIDENCE_EXTERNAL_RECORD_UNCHECKED",
       "levels": [
         "warning"
@@ -3713,6 +3812,15 @@
       "code": "ENGINEERING_EVIDENCE_INDEX_KIND",
       "levels": [
         "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ENGINEERING_EVIDENCE_INDEX_LEGACY",
+      "levels": [
+        "warning"
       ],
       "sources": [
         "tools/validate_target_adapter.py"
@@ -3890,42 +3998,6 @@
       ]
     },
     {
-      "code": "ENGINEERING_EVIDENCE_REVIEW_REFERENCE",
-      "levels": [
-        "error"
-      ],
-      "sources": [
-        "tools/validate_target_adapter.py"
-      ]
-    },
-    {
-      "code": "ENGINEERING_EVIDENCE_REVISION",
-      "levels": [
-        "error"
-      ],
-      "sources": [
-        "tools/validate_target_adapter.py"
-      ]
-    },
-    {
-      "code": "ENGINEERING_EVIDENCE_SNAPSHOT_HASH",
-      "levels": [
-        "error"
-      ],
-      "sources": [
-        "tools/validate_target_adapter.py"
-      ]
-    },
-    {
-      "code": "ENGINEERING_EVIDENCE_SNAPSHOT_PATH",
-      "levels": [
-        "error"
-      ],
-      "sources": [
-        "tools/validate_target_adapter.py"
-      ]
-    },
-    {
       "code": "ENGINEERING_EVIDENCE_SOURCE_SCHEMA",
       "levels": [
         "error"
@@ -3944,16 +4016,16 @@
       ]
     },
     {
-      "code": "ENGINEERING_EVIDENCE_UNVERIFIED",
+      "code": "ENGINEERING_EVIDENCE_TEMPLATE_BINDING",
       "levels": [
-        "warning"
+        "error"
       ],
       "sources": [
         "tools/validate_target_adapter.py"
       ]
     },
     {
-      "code": "ENGINEERING_EVIDENCE_UNVERIFIED_VALIDATED",
+      "code": "ENGINEERING_EVIDENCE_TEMPLATE_VERSION",
       "levels": [
         "error"
       ],
@@ -5789,6 +5861,15 @@
       ]
     },
     {
+      "code": "PACKAGE_REVISION_ANCESTRY",
+      "levels": [
+        "dynamic"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "PACKAGE_SCHEMA",
       "levels": [
         "dynamic"
@@ -5816,7 +5897,7 @@
       ]
     },
     {
-      "code": "PACKAGE_SNAPSHOT_FILE",
+      "code": "PACKAGE_SNAPSHOT_HASH",
       "levels": [
         "dynamic"
       ],
@@ -5825,9 +5906,9 @@
       ]
     },
     {
-      "code": "PACKAGE_SNAPSHOT_HASH",
+      "code": "PACKAGE_SNAPSHOT_HISTORICAL",
       "levels": [
-        "dynamic"
+        "warning"
       ],
       "sources": [
         "tools/validate_target_adapter.py"

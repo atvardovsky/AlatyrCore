@@ -41,7 +41,10 @@ An installed adapter should support these operation categories:
   conflict review, handoff, decision, team review, and merge readiness
 - logical integrity review
 - durable engineering-evidence capture, lookup, explanation, or repair for
-  material tasks and prior compact decision records
+  material tasks and prior compact decision records, including binding-state
+  finalization and explicit lineage-preserving rebinds
+- optional Debug Mode activation, checkpoint, finalization, and comparison with
+  versioned attribution and a required durable-evidence decision
 - discussion diagram creation, comparison, or revision with a portable ASCII
   baseline
 - AI infrastructure inventory for existing skills, prompts, wrappers, bridge

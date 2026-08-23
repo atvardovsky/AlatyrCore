@@ -28,6 +28,30 @@ class ScaffoldProjectionTests(unittest.TestCase):
 
         self.assertNotIn("approvals:", rendered)
 
+    def test_disabled_debug_contract_metadata_is_omitted_with_its_surfaces(self) -> None:
+        source = (
+            "framework:\n  version: x\n"
+            "debug_mode:\n"
+            "  contract_version: 2\n"
+            "  flow: .ai/assistant/flows/debug-mode.flow.md\n"
+            "engineering_evidence:\n"
+            "  contract_version: 2\n"
+            "  flow: .ai/assistant/flows/engineering-evidence-capture.flow.md\n"
+        )
+
+        rendered = project_manifest(
+            source,
+            "core",
+            "core",
+            {
+                Path(".ai/alatyr.yaml"),
+                Path(".ai/assistant/flows/engineering-evidence-capture.flow.md"),
+            },
+        )
+
+        self.assertNotIn("debug_mode:", rendered)
+        self.assertIn("engineering_evidence:\n  contract_version: 2", rendered)
+
     def test_router_omits_profiles_without_installed_descriptors(self) -> None:
         router = {
             "routing_order": ["docs-local", "ai-infrastructure"],

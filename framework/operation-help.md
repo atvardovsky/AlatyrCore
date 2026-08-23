@@ -67,7 +67,9 @@ Operation help exists to:
   outside routine context
 - route optional task-local Debug Mode activation, status, checkpoint,
   finalization, disablement, and comparison without treating observability as
-  authority or carrying activation across logical scopes
+  authority or carrying activation across logical scopes; finalization closes
+  the durable Engineering Evidence decision and reports attribution-contract
+  and repository-binding lineage
 
 ## Canonical Operation Catalog
 
