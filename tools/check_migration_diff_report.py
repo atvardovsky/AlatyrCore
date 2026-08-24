@@ -87,6 +87,10 @@ def run_reporter() -> tuple[str, dict[str, object]]:
                 "current",
                 "--to-template-version",
                 "current",
+                "--from-source-label",
+                "baseline-source",
+                "--to-source-label",
+                "current-source",
                 "--from-framework-dir",
                 "framework",
                 "--to-framework-dir",
@@ -136,6 +140,18 @@ def main() -> int:
             failures.append(f"self-compare output should not mark {changed_marker}")
     if "contract SHA-256: `not compared`" in output:
         failures.append("self-compare output must bind both contract-tree digests")
+    for required_label in [
+        "From manifest: `baseline-source:framework/rule-registry.json`",
+        "To manifest: `current-source:framework/rule-registry.json`",
+        "From framework directory: `baseline-source:framework`",
+        "To framework directory: `current-source:framework`",
+        "From schema directory: `baseline-source:schemas`",
+        "To schema directory: `current-source:schemas`",
+        "From template directory: `baseline-source:templates/target`",
+        "To template directory: `current-source:templates/target`",
+    ]:
+        if required_label not in output:
+            failures.append(f"migration diff output missing portable label {required_label}")
 
     if impact.get("schema_version") != 1:
         failures.append("upgrade impact schema_version must be 1")

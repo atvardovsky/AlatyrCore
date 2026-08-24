@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 977
+Catalog entries: 979
 
 ## Codes
 
@@ -1152,6 +1152,8 @@ Catalog entries: 977
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `MIGRATION_DIFF_IMPACT`
   Level: info. Source: `tools/validate_target_adapter.py`.
+- `MIGRATION_DIFF_INVALID`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `MIGRATION_DIFF_MISSING`
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `MIGRATION_DIFF_NO_IMPACT`
@@ -1511,6 +1513,8 @@ Catalog entries: 977
 - `TARGET_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `TARGET_NOT_DIRECTORY`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `TARGET_PATH_ESCAPE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `TDD_COMMAND_EXTERNAL_ACTIONS`
   Level: error. Source: `tools/validate_target_adapter.py`.

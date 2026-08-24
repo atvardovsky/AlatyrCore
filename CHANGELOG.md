@@ -4,6 +4,33 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.25 - 2026-08-24
+
+- Increased the framework version to `0.1.0-alpha.25` and adapter schema
+  version to `24`; target template version remains `24` because no target
+  template shape changed.
+- Enforced read-only source-check write scopes with deterministic tracked and
+  non-ignored source snapshots, and added machine-readable run reports with
+  exact checker, platform, interpreter, and dependency evidence.
+- Rejected target-relative traversal and symlink resolution outside the target
+  root while preserving explicitly selected external migration-report inputs.
+- Expanded deterministic lifecycle conformance across accepted `core`,
+  `standard`, and `full` support profiles, including approval scope, blocking
+  drift, synthetic update, and post-update validation.
+- Tightened Debug schema versions 1 and 2 so they cannot carry the version-3
+  continuation contract, with focused compatibility and rejection coverage.
+- Added an exact current-release tag binding gate and separated pre-tag release
+  candidate consistency from actual `v<VERSION>` publication evidence.
+- Added generated real-run evidence status so historical Codex runs, prepared
+  assistant surfaces, and incomplete effectiveness benchmarks cannot be
+  represented as current cross-assistant or broad cost proof.
+- Pinned CI dependencies and GitHub Actions revisions, added Python 3.10 and
+  3.13 Linux coverage, retained cross-platform diagnostic artifacts, and added
+  Dependabot, contribution, and security guidance.
+- Added focused source-state, target-containment, and release-binding unit
+  tests, and portable provenance labels for committed migration evidence. No
+  framework rule IDs or target template contracts changed.
+
 ## 0.1.0-alpha.24 - 2026-08-23
 
 - Increased the framework version to `0.1.0-alpha.24`, adapter schema version

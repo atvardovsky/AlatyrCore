@@ -1,0 +1,92 @@
+{
+  "assistant_conformance": {
+    "broad_cross_assistant_claim_supported": false,
+    "captured_runs": [
+      {
+        "assistant_surface": "codex",
+        "complete_fixture_set": true,
+        "id": "codex-current-session-8dab3d1",
+        "source_commit": "8dab3d15c6e0dc983096c2aaca89fba75fe6fa14",
+        "source_version": "0.1.0-alpha.0"
+      },
+      {
+        "assistant_surface": "codex",
+        "complete_fixture_set": true,
+        "id": "codex-isolated-core-6ee985d",
+        "source_commit": "6ee985df3e6e65507cda175944b2b3ea4be630ae",
+        "source_version": "0.1.0-alpha.0"
+      },
+      {
+        "assistant_surface": "codex",
+        "complete_fixture_set": false,
+        "id": "codex-source-bootstrap-6ee985d",
+        "source_commit": "6ee985df3e6e65507cda175944b2b3ea4be630ae",
+        "source_version": "0.1.0-alpha.0"
+      }
+    ],
+    "captured_surfaces": [
+      "codex"
+    ],
+    "current_version_complete_surfaces": [],
+    "declared_surfaces": [
+      "generic",
+      "agents",
+      "codex",
+      "claude",
+      "gemini",
+      "github-copilot",
+      "cursor",
+      "devin-cascade",
+      "windsurf"
+    ]
+  },
+  "current_framework_version": "0.1.0-alpha.25",
+  "effectiveness": {
+    "broad_cost_or_quality_claim_supported": false,
+    "captured_benchmarks": [
+      {
+        "all_modes_accepted": true,
+        "benchmark_id": "codex-docs-local-0619871",
+        "broad_cost_claim_supported": false,
+        "repetition": 1,
+        "source_commit": "061987108d8e7ecd15625953d7c41683ee7fe497",
+        "source_version": "0.1.0-alpha.0",
+        "task_class_id": null,
+        "task_id": "readme-wording",
+        "task_profile": "docs-local"
+      }
+    ],
+    "current_accepted_repetitions_by_task_class": {
+      "architecture-boundary-change": 0,
+      "business-rule-change": 0,
+      "code-regression-local": 0,
+      "data-contract-change": 0,
+      "docs-local-small": 0,
+      "framework-upgrade-delta": 0,
+      "large-resumable-change": 0,
+      "security-protected-change": 0,
+      "team-large-coordination": 0
+    },
+    "recommended_minimum_repetitions": 3,
+    "required_coverage_complete": false,
+    "required_task_classes": [
+      "docs-local-small",
+      "code-regression-local",
+      "business-rule-change",
+      "architecture-boundary-change",
+      "data-contract-change",
+      "security-protected-change",
+      "large-resumable-change",
+      "framework-upgrade-delta",
+      "team-large-coordination"
+    ],
+    "suite_status": "coverage-contract-not-executed"
+  },
+  "evidence_kind": "alatyr-source-evidence-coverage",
+  "interpretation": {
+    "historical_runs_do_not_prove_current_version_behavior": true,
+    "missing_evidence_is_not_treated_as_failure_of_project_semantics": true,
+    "static_conformance_is_not_real_run_evidence": true
+  },
+  "schema_version": 1
+}

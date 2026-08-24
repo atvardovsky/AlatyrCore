@@ -16,6 +16,9 @@ ROOT = Path(__file__).resolve().parents[1]
 TOOLS = ROOT / "tools"
 MANIFEST = TOOLS / "tool_commands.json"
 NATIVE_WORKFLOW = ROOT / ".github" / "workflows" / "cross-platform-source-checks.yml"
+RELEASE_WORKFLOW = ROOT / ".github" / "workflows" / "release-source-checks.yml"
+RUNTIME_COMPATIBILITY = TOOLS / "runtime-compatibility.json"
+CI_CONSTRAINTS = ROOT / "constraints-ci.txt"
 FRAMEWORK_CHECKER = TOOLS / "check_framework_consistency.py"
 SCAFFOLD_CONFORMANCE = TOOLS / "run_conformance_scaffold.py"
 EXPECTED_COMMANDS = {
@@ -68,9 +71,33 @@ def main() -> int:
     failures: list[str] = []
     try:
         data = json.loads(MANIFEST.read_text(encoding="utf-8"))
+        runtime = json.loads(RUNTIME_COMPATIBILITY.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
         print(f"FAIL: invalid tool command manifest: {exc}", file=sys.stderr)
         return 1
+
+    if runtime.get("schema_version") != 1:
+        failures.append("runtime compatibility schema_version must be 1")
+    python_contract = runtime.get("python")
+    if (
+        not isinstance(python_contract, dict)
+        or python_contract.get("minimum_supported") != "3.10"
+        or python_contract.get("ci_versions") != ["3.10", "3.13"]
+    ):
+        failures.append("runtime compatibility Python contract drifted")
+    dependency_contract = runtime.get("dependencies")
+    if not isinstance(dependency_contract, dict) or dependency_contract != {
+        "requirements": "requirements-dev.txt",
+        "ci_constraints": "constraints-ci.txt",
+    }:
+        failures.append("runtime compatibility dependency contract drifted")
+    if not CI_CONSTRAINTS.is_file():
+        failures.append("CI dependency constraints are missing")
+    else:
+        constraints = CI_CONSTRAINTS.read_text(encoding="utf-8")
+        for required in ["jsonschema==4.26.0", "PyYAML==6.0.3", "rpds-py=="]:
+            if required not in constraints:
+                failures.append(f"CI dependency constraints missing {required}")
 
     if data.get("schema_version") != 1:
         failures.append("tool command manifest schema_version must be 1")
@@ -160,16 +187,38 @@ def main() -> int:
             "ubuntu-latest",
             "macos-latest",
             "windows-latest",
-            "actions/checkout@v7",
-            "actions/setup-python@v6",
+            "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+            "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+            'python-version: ["3.10", "3.13"]',
+            "cache-dependency-path:",
             "python tools/check_all.py --profile full",
             "python tools/check_all.py --profile platform",
-            "python -m pip install -r requirements-dev.txt",
+            "-c constraints-ci.txt",
+            "python -m pip check",
+            "--report",
             "workflow_dispatch:",
             "contents: read",
         ]:
             if required not in workflow:
                 failures.append(f"native cross-platform workflow missing {required}")
+
+    if not RELEASE_WORKFLOW.is_file():
+        failures.append("release source-check workflow is missing")
+    else:
+        release_workflow = RELEASE_WORKFLOW.read_text(encoding="utf-8")
+        for required in [
+            "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+            "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02",
+            "--require-current-tag",
+            "cache-dependency-path:",
+            "-c constraints-ci.txt",
+            "python -m pip check",
+            "--report",
+        ]:
+            if required not in release_workflow:
+                failures.append(f"release source workflow missing {required}")
 
     with tempfile.TemporaryDirectory() as directory:
         base = Path(directory)

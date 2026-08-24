@@ -8,16 +8,20 @@ import concurrent.futures
 import fnmatch
 import json
 import os
+import platform
 import subprocess
 import sys
+from importlib.metadata import PackageNotFoundError, version as package_version
 from pathlib import Path
 from typing import Any
+
+from source_state import snapshot_changes, source_snapshot
 
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "tools" / "check_manifest.json"
 ALLOWED_PROFILES = {"fast", "full", "change", "platform", "release"}
-ALLOWED_WRITE_SCOPES = {"none", "explicit-output-only"}
+ALLOWED_WRITE_SCOPES = {"none"}
 ALLOWED_PLATFORMS = {"all", "linux", "macos", "windows"}
 
 
@@ -238,14 +242,94 @@ def resolved_command(check: dict[str, Any], baseline: str | None) -> list[str]:
 
 def run_check(check: dict[str, Any], baseline: str | None) -> tuple[int, str, str, list[str]]:
     command = resolved_command(check, baseline)
+    environment = os.environ.copy()
+    environment["PYTHONDONTWRITEBYTECODE"] = "1"
     result = subprocess.run(
         command,
         cwd=ROOT,
+        env=environment,
         check=False,
         capture_output=True,
         text=True,
     )
     return result.returncode, result.stdout, result.stderr, command
+
+
+def environment_report() -> dict[str, Any]:
+    dependencies: dict[str, str] = {}
+    for dependency in ["jsonschema", "PyYAML"]:
+        try:
+            dependencies[dependency] = package_version(dependency)
+        except PackageNotFoundError:
+            dependencies[dependency] = "not-installed"
+    return {
+        "platform": current_platform(),
+        "platform_detail": platform.platform(),
+        "python": sys.version,
+        "python_executable": sys.executable,
+        "dependencies": dependencies,
+    }
+
+
+def render_report(
+    *,
+    profile: str,
+    selected: list[dict[str, Any]],
+    results: dict[str, tuple[int, str, str, list[str]]],
+    blocked: dict[str, list[str]],
+    source_changes: list[str],
+) -> dict[str, Any]:
+    checks: list[dict[str, Any]] = []
+    for check in selected:
+        check_id = check["id"]
+        if check_id in blocked:
+            checks.append(
+                {
+                    "id": check_id,
+                    "status": "blocked",
+                    "blocked_by": blocked[check_id],
+                }
+            )
+            continue
+        code, stdout, stderr, command = results[check_id]
+        checks.append(
+            {
+                "id": check_id,
+                "status": "passed" if code == 0 else "failed",
+                "exit_code": code,
+                "command": command,
+                "stdout": stdout,
+                "stderr": stderr,
+            }
+        )
+    return {
+        "schema_version": 1,
+        "report_kind": "alatyr-source-check-run",
+        "profile": profile,
+        "environment": environment_report(),
+        "source_write_scope": {
+            "declared": "none",
+            "preserved": not source_changes,
+            "changes": source_changes,
+        },
+        "checks": checks,
+    }
+
+
+def write_report(path: Path, report: dict[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def resolve_report_path(path: Path) -> Path:
+    resolved = path.resolve()
+    try:
+        relative = resolved.relative_to(ROOT)
+    except ValueError:
+        return resolved
+    if relative.parts and relative.parts[0] == "tmp":
+        return resolved
+    raise ValueError("--report must be outside the source tree or under ignored tmp/")
 
 
 def execute_checks(
@@ -318,6 +402,11 @@ def main() -> int:
     parser.add_argument("--from-ref", help="Baseline substituted into change checks.")
     parser.add_argument("--jobs", type=int, default=min(4, os.cpu_count() or 1))
     parser.add_argument("--list", action="store_true")
+    parser.add_argument(
+        "--report",
+        type=Path,
+        help="Write a machine-readable run report to this explicit output path.",
+    )
     args = parser.parse_args()
     if args.jobs <= 0:
         parser.error("--jobs must be positive")
@@ -326,6 +415,7 @@ def main() -> int:
         checks = load_manifest()
         selected, fell_back = select_checks(checks, args.profile, args.changed_from)
         commands = [resolved_command(check, args.from_ref) for check in selected]
+        report_path = resolve_report_path(args.report) if args.report else None
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 2
@@ -338,8 +428,10 @@ def main() -> int:
         print("INFO: unmatched changed paths selected the full check profile", flush=True)
 
     try:
+        before = source_snapshot(ROOT)
         results, blocked = execute_checks(selected, args.from_ref, args.jobs)
-    except ValueError as exc:
+        source_changes = snapshot_changes(before, source_snapshot(ROOT))
+    except (OSError, ValueError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 2
 
@@ -361,6 +453,28 @@ def main() -> int:
             print(stderr, end="" if stderr.endswith("\n") else "\n", file=sys.stderr)
         if code != 0:
             failures.append(check["id"])
+
+    if source_changes:
+        print("\nFAILED read-only source-check write scope:", file=sys.stderr)
+        for change in source_changes:
+            print(f"- {change}", file=sys.stderr)
+        failures.append("source-write-scope")
+
+    if report_path:
+        try:
+            write_report(
+                report_path,
+                render_report(
+                    profile=args.profile,
+                    selected=selected,
+                    results=results,
+                    blocked=blocked,
+                    source_changes=source_changes,
+                ),
+            )
+        except OSError as exc:
+            print(f"FAIL: cannot write source-check report: {exc}", file=sys.stderr)
+            failures.append("source-check-report")
 
     if failures:
         print("\nFAILED source checks:", file=sys.stderr)

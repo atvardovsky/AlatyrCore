@@ -156,7 +156,9 @@ Before accepting a change, check:
 - `python3 tools/check_cross_platform_tools.py` passes when the unified tool
   manifest, platform launchers, write scopes, or migration-first upgrade
   assessment changes. The source workflow must also run `check_all.py` on
-  native Linux, macOS, and Windows runners.
+  native Linux, macOS, and Windows runners, cover the minimum and current
+  supported Python versions, use pinned CI constraints and immutable action
+  revisions, and retain machine-readable failure diagnostics.
 - `python3 tools/check_large_task_orchestration.py` passes when large-task
   activation, task-scale routing, workstream, packet, checkpoint, resume, or
   convergence contracts change.

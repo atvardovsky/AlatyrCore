@@ -15,7 +15,10 @@ from check_release_drift import (  # noqa: E402
     nearest_tagged_baseline,
     prior_changelog_versions,
 )
-from check_versioning import validate_release_tag  # noqa: E402
+from check_versioning import (  # noqa: E402
+    validate_current_release_binding,
+    validate_release_tag,
+)
 
 
 class ReleaseBaselineTests(unittest.TestCase):
@@ -60,6 +63,34 @@ class ReleaseBaselineTests(unittest.TestCase):
     def test_release_tag_must_match_version(self) -> None:
         self.assertEqual(validate_release_tag("1.2.3", "v1.2.3"), [])
         self.assertTrue(validate_release_tag("1.2.3", "v1.2.4"))
+
+    def test_current_release_binding_requires_tag_on_head(self) -> None:
+        import subprocess
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            subprocess.run(
+                ["git", "config", "user.email", "alatyr@example.invalid"],
+                cwd=root,
+                check=True,
+            )
+            subprocess.run(
+                ["git", "config", "user.name", "Alatyr Check"],
+                cwd=root,
+                check=True,
+            )
+            (root / "README.md").write_text("fixture\n", encoding="utf-8")
+            subprocess.run(["git", "add", "."], cwd=root, check=True)
+            subprocess.run(["git", "commit", "-qm", "fixture"], cwd=root, check=True)
+
+            self.assertTrue(validate_current_release_binding("1.2.3", root))
+            subprocess.run(["git", "tag", "v1.2.3"], cwd=root, check=True)
+            self.assertEqual(validate_current_release_binding("1.2.3", root), [])
+
+            (root / "README.md").write_text("next\n", encoding="utf-8")
+            subprocess.run(["git", "commit", "-qam", "next"], cwd=root, check=True)
+            self.assertTrue(validate_current_release_binding("1.2.3", root))
 
 
 if __name__ == "__main__":

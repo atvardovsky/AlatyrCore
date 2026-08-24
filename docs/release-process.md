@@ -108,6 +108,9 @@ Before tagging a source release:
 - run `tools/check_migration_diff_report.py`
 - run `tools/check_release_drift.py --mode release`
 - run `tools/check_versioning.py`
+- run `tools/check_versioning.py --require-current-tag` on the tagged release
+  commit; ordinary pre-tag validation intentionally omits this publication
+  assertion
 - confirm the triggering release tag is exactly `v<VERSION>`
 - review `git diff --check`
 
@@ -122,6 +125,10 @@ v<VERSION>
 Do not tag a release that has unresolved source-repository consistency
 failures. If a release intentionally ships unresolved target-adapter migration
 work, record it in the changelog and migration evidence.
+
+Passing the local `release` profile before tagging proves release-candidate
+consistency, not publication. The tag-triggered release workflow additionally
+requires `v<VERSION>` to exist and resolve to the checked-out commit.
 
 ## Target Adapter Update Message
 

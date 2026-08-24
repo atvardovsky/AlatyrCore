@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import os
 import re
+import subprocess
 import sys
 from pathlib import Path
 from typing import List
@@ -64,6 +65,30 @@ def validate_release_tag(version: str, tag: str | None) -> List[str]:
     expected = f"v{version}"
     if tag != expected:
         return [f"release tag {tag} must match VERSION as {expected}"]
+    return []
+
+
+def validate_current_release_binding(version: str, root: Path = ROOT) -> List[str]:
+    expected = f"v{version}"
+
+    def resolve(ref: str) -> str | None:
+        result = subprocess.run(
+            ["git", "rev-parse", "--verify", f"{ref}^{{commit}}"],
+            cwd=root,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        return result.stdout.strip() if result.returncode == 0 else None
+
+    head = resolve("HEAD")
+    tagged = resolve(f"refs/tags/{expected}")
+    if head is None:
+        return ["cannot resolve current Git HEAD for release binding"]
+    if tagged is None:
+        return [f"current source version is not published as local tag {expected}"]
+    if tagged != head:
+        return [f"release tag {expected} does not point to current HEAD"]
     return []
 
 
@@ -177,6 +202,11 @@ def main() -> int:
         "--expected-release-tag",
         help="Explicit release tag to compare with v<VERSION>.",
     )
+    parser.add_argument(
+        "--require-current-tag",
+        action="store_true",
+        help="Require v<VERSION> to exist and point to the current Git HEAD.",
+    )
     args = parser.parse_args()
     failures: List[str] = []
     try:
@@ -209,6 +239,8 @@ def main() -> int:
                 version, args.expected_release_tag or environment_tag
             )
         )
+        if args.require_current_tag:
+            failures.extend(validate_current_release_binding(version))
         failures.extend(validate_current_release(version, changelog))
         failures.extend(validate_release_process(release_process))
         failures.extend(validate_public_version_surfaces(version))

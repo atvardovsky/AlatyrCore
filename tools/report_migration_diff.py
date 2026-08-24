@@ -352,6 +352,8 @@ def render_report(
     to_template_dir: Path | None,
     from_template_files: dict[str, str] | None,
     to_template_files: dict[str, str] | None,
+    from_source_label: str | None = None,
+    to_source_label: str | None = None,
 ) -> str:
     from_ids = set(from_rules)
     to_ids = set(to_rules)
@@ -507,6 +509,9 @@ def render_report(
         template_files_changed,
     )
 
+    def display_path(path: Path | None, label: str | None, suffix: str) -> str:
+        return f"{label}:{suffix}" if label else str(path)
+
     lines = [
         "# Alatyr Release Migration Report",
         "",
@@ -519,8 +524,14 @@ def render_report(
         "",
         "## Version Scope",
         "",
-        f"From manifest: `{from_path}`",
-        f"To manifest: `{to_path}`",
+        "From manifest: `"
+        + display_path(
+            from_path, from_source_label, "framework/rule-registry.json"
+        )
+        + "`",
+        "To manifest: `"
+        + display_path(to_path, to_source_label, "framework/rule-registry.json")
+        + "`",
         f"From framework version: `{from_version}`",
         f"To framework version: `{to_version}`",
         f"From adapter schema version: `{from_adapter_schema_version}`",
@@ -632,8 +643,12 @@ def render_report(
     else:
         lines.extend(
             [
-                f"From framework directory: `{from_framework_dir}`",
-                f"To framework directory: `{to_framework_dir}`",
+                "From framework directory: `"
+                + display_path(from_framework_dir, from_source_label, "framework")
+                + "`",
+                "To framework directory: `"
+                + display_path(to_framework_dir, to_source_label, "framework")
+                + "`",
                 "",
                 "Added framework files:",
                 *bullet_list(added_files),
@@ -656,8 +671,12 @@ def render_report(
     else:
         lines.extend(
             [
-                f"From schema directory: `{from_schema_dir}`",
-                f"To schema directory: `{to_schema_dir}`",
+                "From schema directory: `"
+                + display_path(from_schema_dir, from_source_label, "schemas")
+                + "`",
+                "To schema directory: `"
+                + display_path(to_schema_dir, to_source_label, "schemas")
+                + "`",
                 "",
                 "Added schema contracts:",
                 *bullet_list(added_schema_files),
@@ -680,8 +699,14 @@ def render_report(
     else:
         lines.extend(
             [
-                f"From template directory: `{from_template_dir}`",
-                f"To template directory: `{to_template_dir}`",
+                "From template directory: `"
+                + display_path(
+                    from_template_dir, from_source_label, "templates/target"
+                )
+                + "`",
+                "To template directory: `"
+                + display_path(to_template_dir, to_source_label, "templates/target")
+                + "`",
                 "",
                 "Added target template surfaces:",
                 *bullet_list(added_template_files),
@@ -783,6 +808,14 @@ def main() -> int:
     parser.add_argument("--from-template-version", default="unknown")
     parser.add_argument("--to-template-version", default="current")
     parser.add_argument(
+        "--from-source-label",
+        help="Portable provenance label used instead of local from-source paths in the report.",
+    )
+    parser.add_argument(
+        "--to-source-label",
+        help="Portable provenance label used instead of local to-source paths in the report.",
+    )
+    parser.add_argument(
         "--from-framework-dir",
         type=Path,
         help="Optional previous framework directory, such as a target .ai/framework.",
@@ -873,6 +906,8 @@ def main() -> int:
         to_template_dir,
         from_template_files,
         to_template_files,
+        args.from_source_label,
+        args.to_source_label,
     )
     impact = build_impact_data(
         from_rules=from_rules,

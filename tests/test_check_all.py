@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 from typing import Any
@@ -9,7 +10,13 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from check_all import execute_checks, select_checks  # noqa: E402
+from check_all import (  # noqa: E402
+    execute_checks,
+    render_report,
+    resolve_report_path,
+    select_checks,
+)
+from source_state import snapshot_changes, source_snapshot  # noqa: E402
 
 
 def check(check_id: str, *dependencies: str) -> dict[str, Any]:
@@ -154,6 +161,61 @@ class CheckGraphTests(unittest.TestCase):
         self.assertEqual(set(executed), {"failed", "independent"})
         self.assertEqual(results["independent"][0], 0)
         self.assertEqual(blocked["blocked"], ["failed"])
+
+    def test_source_snapshot_detects_changes_to_already_dirty_files(self) -> None:
+        import subprocess
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            path = root / "tracked.txt"
+            path.write_text("accepted\n", encoding="utf-8")
+            subprocess.run(["git", "add", "tracked.txt"], cwd=root, check=True)
+            path.write_text("dirty before checks\n", encoding="utf-8")
+            before = source_snapshot(root)
+
+            path.write_text("changed by checker\n", encoding="utf-8")
+            changes = snapshot_changes(before, source_snapshot(root))
+
+            self.assertEqual(changes, ["modified tracked.txt"])
+
+    def test_source_snapshot_detects_non_ignored_created_files(self) -> None:
+        import subprocess
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            before = source_snapshot(root)
+
+            (root / "created.txt").write_text("unexpected\n", encoding="utf-8")
+
+            self.assertEqual(
+                snapshot_changes(before, source_snapshot(root)),
+                ["created created.txt"],
+            )
+
+    def test_machine_report_preserves_exact_failure_evidence(self) -> None:
+        selected = [{**check("failed"), "write_scope": "none"}]
+        report = render_report(
+            profile="full",
+            selected=selected,
+            results={"failed": (7, "partial output\n", "failure detail\n", ["python", "failed.py"])},
+            blocked={},
+            source_changes=["modified tracked.txt"],
+        )
+
+        self.assertEqual(report["checks"][0]["status"], "failed")
+        self.assertEqual(report["checks"][0]["exit_code"], 7)
+        self.assertEqual(report["checks"][0]["stderr"], "failure detail\n")
+        self.assertFalse(report["source_write_scope"]["preserved"])
+
+    def test_report_output_cannot_bypass_source_write_scope(self) -> None:
+        with self.assertRaisesRegex(ValueError, "outside the source tree"):
+            resolve_report_path(ROOT / "source-check-report.json")
+        self.assertEqual(
+            resolve_report_path(ROOT / "tmp" / "source-check-report.json"),
+            (ROOT / "tmp" / "source-check-report.json").resolve(),
+        )
 
 
 if __name__ == "__main__":

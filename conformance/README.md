@@ -104,17 +104,19 @@ This is scaffold conformance only. It is not an assistant installation test
 and does not validate a real target adapter.
 
 The deterministic lifecycle walking skeleton goes one step further: it
-resolves a synthetic core adapter, checks its installation approval against
-the real Git diff, validates an accepted placeholder-free state, proves that
-framework drift blocks by default, applies a synthetic update, and validates
-the updated state:
+resolves synthetic `core`, `standard`, and `full` adapters with optional
+modules deferred, checks each installation approval against the real Git diff,
+validates accepted placeholder-free states, proves that framework drift blocks
+by default, applies a synthetic update, and validates each updated state:
 
 ```sh
 python3 tools/check_lifecycle_conformance.py
 ```
 
 This remains source-tool conformance. It does not execute an AI assistant,
-validate project semantics, or replace captured real-project evidence.
+validate project semantics, prove acceptance of project-specific optional
+module facts, or replace captured real-project evidence. Enabled module
+contracts remain covered by their focused source and target-validator checks.
 
 The report checker is also source conformance only. It validates expected
 assistant-result evidence fields; it does not run an assistant or prove a real
@@ -125,6 +127,13 @@ Captured assistant-run reports can be checked when they exist:
 ```sh
 python3 tools/check_conformance_reports.py --actual-root conformance/runs/assistant-results
 ```
+
+`conformance/evidence-status.json` is the generated compact truth surface for
+real-run coverage. Refresh it with `python3 tools/render_evidence_status.py`
+after captured assistant or effectiveness evidence changes, and validate it
+with `--check`. A declared or statically prepared assistant surface is not
+listed as current real-run evidence unless a complete captured run belongs to
+the current framework version.
 
 Use `conformance/runs/assistant-run-report-template.json` for the report shape.
 The indexed root records each run's expected scope. When checking one

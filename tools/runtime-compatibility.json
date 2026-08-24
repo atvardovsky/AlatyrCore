@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "runtime_kind": "alatyr-source-tooling-compatibility",
+  "python": {
+    "minimum_supported": "3.10",
+    "ci_versions": ["3.10", "3.13"]
+  },
+  "dependencies": {
+    "requirements": "requirements-dev.txt",
+    "ci_constraints": "constraints-ci.txt"
+  },
+  "platforms": ["linux", "macos", "windows"],
+  "policy": "The minimum and current CI interpreters run the full source profile on Linux; the current interpreter runs portable checks on macOS and Windows."
+}

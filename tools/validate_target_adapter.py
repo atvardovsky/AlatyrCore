@@ -60,7 +60,7 @@ from target_validation_support import (
     sha256,
     should_skip_path,
 )
-from target_adapter_validation.context import ValidationContext
+from target_adapter_validation.context import TargetPathEscapeError, ValidationContext
 from target_adapter_validation.framework_baseline import source_pack_expectation
 from target_adapter_validation.modules import dispatch_capability_checks
 from target_adapter_validation.router_costs import (
@@ -785,17 +785,19 @@ class Validator:
         validation_phase: str | None = None,
     ) -> None:
         self.target = target.resolve()
+        self.context = ValidationContext(self.target)
+        self.unsafe_target_paths: set[str] = set()
+        self.findings: list[Finding] = list(initial_findings or [])
+        self.config = config
         self.framework_source = framework_source.resolve() if framework_source else None
         self.diff_ref = diff_ref
         self.enforce_approval_scope = enforce_approval_scope
-        self.approval_records = [
-            path.resolve() if path.is_absolute() else (self.target / path).resolve()
-            for path in approval_records
-        ]
-        self.change_packages = [
-            path.resolve() if path.is_absolute() else (self.target / path).resolve()
-            for path in change_packages
-        ]
+        self.approval_records = self.selected_target_paths(
+            approval_records, "--approval-record"
+        )
+        self.change_packages = self.selected_target_paths(
+            change_packages, "--change-package"
+        )
         self.enforce_change_package = enforce_change_package
         self.migration_diff = migration_diff.resolve() if migration_diff else None
         self.validation_phase = validation_phase or (
@@ -806,11 +808,8 @@ class Validator:
         self.allow_placeholders = self.validation_phase == "migration-staging"
         self.unresolved_active_placeholders = 0
         self.capability_modules: dict[str, Any] = {}
-        self.config = config
         self.allow_local_paths = allow_local_paths + config.local_path_patterns()
-        self.findings: list[Finding] = list(initial_findings or [])
         self.framework_drift_detected = False
-        self.context = ValidationContext(self.target)
 
     def error(self, code: str, message: str, path: str | None = None) -> None:
         self.add_finding("error", code, message, path)
@@ -893,7 +892,40 @@ class Validator:
         return self.findings
 
     def target_path(self, relpath: str) -> Path:
-        return self.target / relpath
+        candidate = self.target / relpath
+        try:
+            self.context.resolve_path(candidate)
+        except (OSError, TargetPathEscapeError) as exc:
+            label = str(relpath)
+            if label not in self.unsafe_target_paths:
+                self.unsafe_target_paths.add(label)
+                self.error(
+                    "TARGET_PATH_ESCAPE",
+                    f"target-relative path is unsafe: {exc}",
+                    label,
+                )
+            digest = hashlib.sha256(label.encode("utf-8")).hexdigest()
+            return self.target / ".ai" / ".invalid-target-path" / digest
+        return candidate
+
+    def selected_target_paths(self, paths: list[Path], option: str) -> list[Path]:
+        selected: list[Path] = []
+        for path in paths:
+            label = str(path)
+            candidate = path if path.is_absolute() else self.target / path
+            try:
+                resolved = self.context.resolve_path(candidate)
+            except (OSError, TargetPathEscapeError) as exc:
+                if label not in self.unsafe_target_paths:
+                    self.unsafe_target_paths.add(label)
+                    self.error(
+                        "TARGET_PATH_ESCAPE",
+                        f"{option} must stay inside the target: {exc}",
+                        label,
+                    )
+                continue
+            selected.append(resolved)
+        return selected
 
     def rel(self, path: Path) -> str:
         try:
@@ -902,7 +934,14 @@ class Validator:
             return str(path)
 
     def read_text(self, path: Path) -> str:
-        return self.context.read_text(path)
+        try:
+            return self.context.read_text(path)
+        except (OSError, TargetPathEscapeError) as exc:
+            label = self.rel(path)
+            if label not in self.unsafe_target_paths:
+                self.unsafe_target_paths.add(label)
+                self.error("TARGET_PATH_ESCAPE", str(exc), label)
+            return ""
 
     def manifest_support_profile(self, manifest: ManifestData | None) -> str:
         if manifest is None:
@@ -11492,7 +11531,15 @@ class Validator:
             )
             return
 
-        text = self.read_text(self.migration_diff)
+        try:
+            text = self.migration_diff.read_text(encoding="utf-8")
+        except (OSError, UnicodeError) as exc:
+            self.error(
+                "MIGRATION_DIFF_INVALID",
+                f"cannot read explicitly selected migration diff: {exc}",
+                str(self.migration_diff),
+            )
+            return
         sections = markdown_sections(text)
         required_sections = [
             "Affected Rule Categories",

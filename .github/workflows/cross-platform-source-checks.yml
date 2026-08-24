@@ -12,27 +12,44 @@ permissions:
 
 jobs:
   linux-source-checks:
-    name: Full source checks (Linux)
+    name: Full source checks (Linux, Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.13"]
     steps:
       - name: Check out source
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
-          python-version: "3.13"
+          python-version: ${{ matrix.python-version }}
           cache: pip
+          cache-dependency-path: |
+            requirements-dev.txt
+            constraints-ci.txt
       - name: Install source-check dependencies
-        run: python -m pip install -r requirements-dev.txt
+        run: python -m pip install -r requirements-dev.txt -c constraints-ci.txt
+      - name: Verify source-check dependencies
+        run: python -m pip check
       - name: Run full source checks
-        run: python tools/check_all.py --profile full
+        run: python tools/check_all.py --profile full --report "${{ runner.temp }}/alatyr-source-checks-linux-${{ matrix.python-version }}.json"
+      - name: Upload source-check diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: source-checks-linux-python-${{ matrix.python-version }}
+          path: ${{ runner.temp }}/alatyr-source-checks-linux-${{ matrix.python-version }}.json
+          if-no-files-found: warn
+          retention-days: 14
       - name: Check pull request contract drift
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && matrix.python-version == '3.13'
         run: python tools/check_release_drift.py --mode change --from-ref ${{ github.event.pull_request.base.sha }}
       - name: Check pushed contract drift
-        if: github.event_name == 'push' && github.event.before != '0000000000000000000000000000000000000000'
+        if: github.event_name == 'push' && matrix.python-version == '3.13' && github.event.before != '0000000000000000000000000000000000000000'
         run: python tools/check_release_drift.py --mode change --from-ref ${{ github.event.before }}
 
   portable-source-checks:
@@ -46,15 +63,28 @@ jobs:
           - windows-latest
     steps:
       - name: Check out source
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           fetch-depth: 0
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: "3.13"
           cache: pip
+          cache-dependency-path: |
+            requirements-dev.txt
+            constraints-ci.txt
       - name: Install source-check dependencies
-        run: python -m pip install -r requirements-dev.txt
+        run: python -m pip install -r requirements-dev.txt -c constraints-ci.txt
+      - name: Verify source-check dependencies
+        run: python -m pip check
       - name: Run portable source checks
-        run: python tools/check_all.py --profile platform
+        run: python tools/check_all.py --profile platform --report "${{ runner.temp }}/alatyr-source-checks-${{ runner.os }}.json"
+      - name: Upload source-check diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: source-checks-${{ runner.os }}
+          path: ${{ runner.temp }}/alatyr-source-checks-${{ runner.os }}.json
+          if-no-files-found: warn
+          retention-days: 14

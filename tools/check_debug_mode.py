@@ -1050,6 +1050,21 @@ def validate_fixture(failures: list[str]) -> None:
         ):
             failures.append("schema-version-2 records did not report migration warning")
 
+        version_two_with_continuation = copy.deepcopy(version_two)
+        version_two_with_continuation["continuation"] = {
+            "kind": "continued",
+            "previous_debug_id": "DEBUG-0",
+            "reason": "invalid backport",
+        }
+        write(version_two_with_continuation)
+        if not any(
+            item.level == "error" and item.code == "DEBUG_MODE_RECORD_SCHEMA"
+            for item in run_validator(repo)
+        ):
+            failures.append(
+                "schema-version-2 record accepted version-3 continuation fields"
+            )
+
         version_two_late_event = copy.deepcopy(version_two)
         version_two_late_event["events"][9]["occurred_at"]["value"] = (
             "2026-08-21T12:11:00Z"

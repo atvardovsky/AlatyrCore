@@ -98,6 +98,8 @@ REQUIRED_REPORTER_TEXT = [
     "--to-template-dir",
     "--from-schema-dir",
     "--to-schema-dir",
+    "--from-source-label",
+    "--to-source-label",
     "release-migration-report-template.md",
 ]
 

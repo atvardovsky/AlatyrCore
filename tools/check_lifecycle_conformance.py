@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Exercise an accepted core install, approval scope, drift, and update cycle."""
+"""Exercise accepted profile installs, approval scope, drift, and update cycles."""
 
 from __future__ import annotations
 
@@ -28,7 +28,8 @@ from validate_target_adapter import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
-GOLDEN = ROOT / "conformance" / "golden" / "lifecycle" / "accepted-core.json"
+GOLDEN = ROOT / "conformance" / "golden" / "lifecycle" / "accepted-profiles.json"
+PROFILE_PACKS = {"core": "core", "standard": "standard", "full": "complete"}
 PLACEHOLDER = re.compile(r"\{[A-Z0-9_]+(?:_[A-Z0-9_]+)*\}")
 
 
@@ -77,7 +78,7 @@ def replacement(name: str) -> str:
     return "fixture-value"
 
 
-def resolve_adapter(repo: Path) -> None:
+def resolve_adapter(repo: Path, support_profile: str = "core") -> None:
     framework_root = repo / ".ai" / "framework"
     for path in sorted(repo.rglob("*")):
         if not path.is_file() or ".git" in path.parts:
@@ -93,8 +94,8 @@ def resolve_adapter(repo: Path) -> None:
 
     manifest_path = repo / ".ai" / "alatyr.yaml"
     manifest = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
-    manifest["framework"]["pack"] = "core"
-    manifest["installation"]["support_profile"] = "core"
+    manifest["framework"]["pack"] = PROFILE_PACKS[support_profile]
+    manifest["installation"]["support_profile"] = support_profile
     manifest["modules"]["enabled"] = []
     manifest["modules"]["deferred"] = ["all optional modules: fixture does not require them"]
     manifest["modules"]["blocked"] = []
@@ -111,7 +112,7 @@ def refresh_bootstrap(repo: Path) -> None:
     output.write_bytes(render(build_from_target(repo)).encode("utf-8"))
 
 
-def approval_record(base: str) -> dict[str, Any]:
+def approval_record(base: str, support_profile: str) -> dict[str, Any]:
     return {
         "schema_version": 2,
         "record_kind": "alatyr-approval-record",
@@ -125,13 +126,29 @@ def approval_record(base: str) -> dict[str, Any]:
             "repository_revision_at_approval": base,
         },
         "scope": {
-            "allowed_protected_changes": ["install core target adapter"],
+            "allowed_protected_changes": [
+                f"install {support_profile} target adapter support profile"
+            ],
             "allowed_changed_fact_ids": ["adapter-installation"],
             "allowed_architecture_areas": ["none"],
             "allowed_behavior_categories": ["adapter-only"],
             "excluded_semantic_effects": ["project behavior changes"],
             "permitted_external_effects": ["none"],
-            "allowed_files_or_surfaces": [".ai/**", "AGENTS.md", "CODEOWNERS"],
+            "allowed_files_or_surfaces": [
+                ".ai/**",
+                ".agents/**",
+                ".cursor/**",
+                ".cursorrules",
+                ".devin/**",
+                ".github/**",
+                ".windsurf/**",
+                ".windsurfrules",
+                "AGENTS.md",
+                "AI_ASSISTANTS.md",
+                "CLAUDE.md",
+                "CODEOWNERS",
+                "GEMINI.md",
+            ],
             "excluded_files_or_surfaces": ["src/**"],
             "excluded_actions": ["project source changes"],
             "allowed_actions_mode": "adapter-only",
@@ -178,11 +195,11 @@ def make_validator(
     )
 
 
-def apply_synthetic_framework_update(repo: Path, source: Path) -> None:
+def apply_synthetic_framework_update(repo: Path, source: Path, pack: str) -> None:
     target_framework = repo / ".ai" / "framework"
     shutil.copy2(source / "framework" / "context-profiles.md", target_framework / "context-profiles.md")
     expected_names, _registry, expected_hashes = source_pack_expectation(
-        source / "framework", "core"
+        source / "framework", pack
     )
     inventory_path = target_framework / "file-inventory.json"
     inventory = json.loads(inventory_path.read_text(encoding="utf-8"))
@@ -204,38 +221,35 @@ def apply_synthetic_framework_update(repo: Path, source: Path) -> None:
     refresh_bootstrap(repo)
 
 
-def main() -> int:
-    failures: list[str] = []
-    try:
-        golden = json.loads(GOLDEN.read_text(encoding="utf-8"))
-        expected_phases = golden["phases"]
-        if expected_phases[-1] != "accepted-post-update-validation":
-            failures.append("lifecycle golden contract is invalid")
-    except (OSError, KeyError, json.JSONDecodeError) as exc:
-        print(f"FAIL: {exc}", file=sys.stderr)
-        return 1
+def exercise_profile(
+    root: Path,
+    support_profile: str,
+    expected_pack: str,
+    failures: list[str],
+) -> None:
+    repo = root / f"target-{support_profile}"
+    repo.mkdir()
+    run_git(repo, "init", "-q")
+    run_git(repo, "config", "user.email", "alatyr@example.invalid")
+    run_git(repo, "config", "user.name", "Alatyr Conformance")
+    (repo / "README.md").write_text("# Lifecycle Fixture\n", encoding="utf-8")
+    run_git(repo, "add", ".")
+    run_git(repo, "commit", "-q", "-m", "seed fixture")
+    base = run_git(repo, "rev-parse", "HEAD")
+    branch = f"adapter-support-{support_profile}"
+    run_git(repo, "branch", "-m", branch)
+    if run_git(repo, "branch", "--show-current") != branch:
+        failures.append(
+            f"{support_profile} lifecycle fixture did not preserve the non-main target branch"
+        )
 
-    with tempfile.TemporaryDirectory(prefix="alatyr-lifecycle-") as directory:
-        repo = Path(directory) / "target"
-        repo.mkdir()
-        run_git(repo, "init", "-q")
-        run_git(repo, "config", "user.email", "alatyr@example.invalid")
-        run_git(repo, "config", "user.name", "Alatyr Conformance")
-        (repo / "README.md").write_text("# Lifecycle Fixture\n", encoding="utf-8")
-        run_git(repo, "add", ".")
-        run_git(repo, "commit", "-q", "-m", "seed fixture")
-        run_git(repo, "branch", "-m", "adapter-support")
-        base = run_git(repo, "rev-parse", "HEAD")
-        if run_git(repo, "branch", "--show-current") != "adapter-support":
-            failures.append("lifecycle fixture did not preserve the non-main target branch")
-
-        impact_path = Path(directory) / "upgrade-impact.json"
-        report_path = Path(directory) / "adapter-validation.json"
-        impact_path.write_text(
+    impact_path = root / f"upgrade-impact-{support_profile}.json"
+    report_path = root / f"adapter-validation-{support_profile}.json"
+    impact_path.write_text(
             json.dumps({"routing": {"candidate_context": [".ai/alatyr.yaml"]}}),
             encoding="utf-8",
         )
-        report_path.write_text(
+    report_path.write_text(
             json.dumps(
                 {
                     "findings": [
@@ -249,100 +263,145 @@ def main() -> int:
             ),
             encoding="utf-8",
         )
-        add_validation_impact(impact_path, report_path)
-        routed_impact = json.loads(impact_path.read_text(encoding="utf-8"))
-        if ".ai/assistant/templates/debug-session-record.json" not in routed_impact["routing"]["candidate_context"]:
-            failures.append("upgrade impact did not route installed validator findings")
+    add_validation_impact(impact_path, report_path)
+    routed_impact = json.loads(impact_path.read_text(encoding="utf-8"))
+    if ".ai/assistant/templates/debug-session-record.json" not in routed_impact["routing"]["candidate_context"]:
+        failures.append("upgrade impact did not route installed validator findings")
 
-        actions, blocked = scaffold_plan(
+    actions, blocked = scaffold_plan(
             SimpleNamespace(
                 target=repo,
                 write=True,
                 overwrite_existing=False,
-                profile="core",
+                profile=support_profile,
+                framework_pack="matched",
+                enable_module=[],
             )
         )
-        if not actions or blocked:
-            failures.append(f"core scaffold failed: {blocked}")
-        resolve_adapter(repo)
-        approval_path = repo / ".ai" / "assistant" / "approvals" / "fixture-install.json"
-        approval_path.parent.mkdir(parents=True, exist_ok=True)
-        approval_path.write_text(
-            json.dumps(approval_record(base), indent=2) + "\n", encoding="utf-8"
-        )
-
-        approval_validator = make_validator(
-            repo, ROOT, diff_ref=base, approval=approval_path
-        )
-        approval_validator.check_approval_scope()
-        approval_errors = [
-            finding for finding in approval_validator.findings if finding.level == "error"
-        ]
-        if approval_errors:
-            failures.append(
-                "installation approval scope failed: "
-                + ", ".join(finding.code for finding in approval_errors)
-            )
-
-        accepted = make_validator(repo, ROOT)
-        accepted_findings = accepted.run()
-        accepted_errors = [finding for finding in accepted_findings if finding.level == "error"]
-        if accepted_errors or result_code(accepted_findings, strict_warnings=False):
-            failures.append(
-                "accepted core installation failed: "
-                + ", ".join(
-                    finding.code
-                    + ":"
-                    + finding.message
-                    for finding in accepted_findings
-                    if finding.level in {"error", "warning"}
-                )
-            )
-        if any(PLACEHOLDER.search(path.read_text(encoding="utf-8")) for path in repo.rglob("*") if path.is_file() and ".git" not in path.parts and ".ai/framework" not in path.as_posix()):
-            failures.append("accepted adapter retains target placeholders")
-
-        run_git(repo, "add", ".")
-        run_git(repo, "commit", "-q", "-m", "install accepted core adapter")
-
-        source = Path(directory) / "next-source"
-        (source / "framework").parent.mkdir(parents=True, exist_ok=True)
-        shutil.copytree(ROOT / "framework", source / "framework")
-        for name in ["VERSION", "ADAPTER_SCHEMA_VERSION", "TEMPLATE_VERSION"]:
-            shutil.copy2(ROOT / name, source / name)
-        (source / "VERSION").write_text("0.1.0-lifecycle-fixture\n", encoding="utf-8")
-        context_path = source / "framework" / "context-profiles.md"
-        context_path.write_text(
-            context_path.read_text(encoding="utf-8") + "\nLifecycle fixture update.\n",
+    if not actions or blocked:
+        failures.append(f"{support_profile} scaffold failed: {blocked}")
+    resolve_adapter(repo, support_profile)
+    manifest = yaml.safe_load((repo / ".ai" / "alatyr.yaml").read_text(encoding="utf-8"))
+    if manifest.get("framework", {}).get("pack") != expected_pack:
+        failures.append(f"{support_profile} scaffold resolved unexpected framework pack")
+    if manifest.get("installation", {}).get("support_profile") != support_profile:
+        failures.append(f"{support_profile} scaffold lost its support profile")
+    approval_path = repo / ".ai" / "assistant" / "approvals" / "fixture-install.json"
+    approval_path.parent.mkdir(parents=True, exist_ok=True)
+    approval_path.write_text(
+            json.dumps(approval_record(base, support_profile), indent=2) + "\n",
             encoding="utf-8",
         )
 
-        drift = make_validator(repo, source)
-        drift.check_framework_baseline()
-        drift.check_migration_diff_evidence()
-        if result_code(drift.findings, strict_warnings=False) != 1:
-            failures.append("synthetic framework drift did not block validation")
+    approval_validator = make_validator(repo, ROOT, diff_ref=base, approval=approval_path)
+    approval_validator.check_approval_scope()
+    approval_errors = [
+        finding for finding in approval_validator.findings if finding.level == "error"
+    ]
+    if approval_errors:
+        failures.append(
+            f"{support_profile} installation approval scope failed: "
+            + ", ".join(finding.code for finding in approval_errors)
+        )
 
-        apply_synthetic_framework_update(repo, source)
-        updated = make_validator(repo, source)
-        updated_findings = updated.run()
-        updated_errors = [finding for finding in updated_findings if finding.level == "error"]
-        if updated_errors or result_code(updated_findings, strict_warnings=False):
-            failures.append(
-                "post-update adapter validation failed: "
-                + ", ".join(
-                    finding.code
-                    + ":"
-                    + finding.message
-                    for finding in updated_findings
-                    if finding.level in {"error", "warning"}
-                )
+    accepted = make_validator(repo, ROOT)
+    accepted_findings = accepted.run()
+    accepted_errors = [finding for finding in accepted_findings if finding.level == "error"]
+    if accepted_errors or result_code(accepted_findings, strict_warnings=False):
+        failures.append(
+            f"accepted {support_profile} installation failed: "
+            + ", ".join(
+                finding.code + ":" + finding.message
+                for finding in accepted_findings
+                if finding.level in {"error", "warning"}
             )
+        )
+    if any(
+        PLACEHOLDER.search(path.read_text(encoding="utf-8"))
+        for path in repo.rglob("*")
+        if path.is_file()
+        and ".git" not in path.parts
+        and ".ai/framework" not in path.as_posix()
+    ):
+        failures.append(f"accepted {support_profile} adapter retains target placeholders")
+
+    run_git(repo, "add", ".")
+    run_git(repo, "commit", "-q", "-m", f"install accepted {support_profile} adapter")
+
+    source = root / f"next-source-{support_profile}"
+    (source / "framework").parent.mkdir(parents=True, exist_ok=True)
+    shutil.copytree(ROOT / "framework", source / "framework")
+    for name in ["VERSION", "ADAPTER_SCHEMA_VERSION", "TEMPLATE_VERSION"]:
+        shutil.copy2(ROOT / name, source / name)
+    (source / "VERSION").write_text("0.1.0-lifecycle-fixture\n", encoding="utf-8")
+    context_path = source / "framework" / "context-profiles.md"
+    context_path.write_text(
+            context_path.read_text(encoding="utf-8") + "\nLifecycle fixture update.\n",
+            encoding="utf-8",
+        )
+    source_inventory_path = source / "framework" / "file-inventory.json"
+    source_inventory = json.loads(source_inventory_path.read_text(encoding="utf-8"))
+    source_inventory["framework_version"] = "0.1.0-lifecycle-fixture"
+    for entry in source_inventory.get("files", []):
+        if entry.get("path") == "framework/context-profiles.md":
+            entry["sha256"] = hashlib.sha256(context_path.read_bytes()).hexdigest()
+    source_inventory_path.write_text(
+            json.dumps(source_inventory, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+
+    drift = make_validator(repo, source)
+    drift.check_framework_baseline()
+    drift.check_migration_diff_evidence()
+    if result_code(drift.findings, strict_warnings=False) != 1:
+        failures.append(
+            f"{support_profile} synthetic framework drift did not block validation"
+        )
+
+    apply_synthetic_framework_update(repo, source, expected_pack)
+    updated = make_validator(repo, source)
+    updated_findings = updated.run()
+    updated_errors = [finding for finding in updated_findings if finding.level == "error"]
+    if updated_errors or result_code(updated_findings, strict_warnings=False):
+        failures.append(
+            f"{support_profile} post-update adapter validation failed: "
+            + ", ".join(
+                finding.code + ":" + finding.message
+                for finding in updated_findings
+                if finding.level in {"error", "warning"}
+            )
+        )
+
+def main() -> int:
+    failures: list[str] = []
+    try:
+        golden = json.loads(GOLDEN.read_text(encoding="utf-8"))
+        expected_phases = golden["phases"]
+        profile_contracts = golden["support_profiles"]
+        if expected_phases[-1] != "accepted-post-update-validation":
+            failures.append("lifecycle golden contract is invalid")
+        if profile_contracts != {
+            profile: {"framework_pack": pack, "enabled_optional_modules": []}
+            for profile, pack in PROFILE_PACKS.items()
+        }:
+            failures.append("lifecycle profile and framework-pack matrix drifted")
+    except (OSError, KeyError, json.JSONDecodeError) as exc:
+        print(f"FAIL: {exc}", file=sys.stderr)
+        return 1
+
+    with tempfile.TemporaryDirectory(prefix="alatyr-lifecycle-") as directory:
+        root = Path(directory)
+        for support_profile, expected_pack in PROFILE_PACKS.items():
+            exercise_profile(root, support_profile, expected_pack, failures)
 
     if failures:
         for failure in failures:
             print(f"FAIL: {failure}", file=sys.stderr)
         return 1
-    print("OK: accepted core installation, approval scope, drift, and update cycle passed")
+    print(
+        "OK: accepted core, standard, and full profile installation, approval scope, "
+        "drift, and update cycles passed"
+    )
     return 0
 
 

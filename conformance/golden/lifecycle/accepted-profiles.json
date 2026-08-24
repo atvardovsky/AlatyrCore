@@ -1,0 +1,35 @@
+{
+  "schema_version": 2,
+  "evidence_kind": "deterministic-lifecycle-contract",
+  "support_profiles": {
+    "core": {
+      "framework_pack": "core",
+      "enabled_optional_modules": []
+    },
+    "standard": {
+      "framework_pack": "standard",
+      "enabled_optional_modules": []
+    },
+    "full": {
+      "framework_pack": "complete",
+      "enabled_optional_modules": []
+    }
+  },
+  "phases": [
+    "seed-baseline",
+    "approved-adapter-diff",
+    "accepted-installation",
+    "blocking-framework-drift",
+    "applied-framework-update",
+    "accepted-post-update-validation"
+  ],
+  "claims": {
+    "assistant_installation_executed": false,
+    "project_semantics_validated": false,
+    "approval_scope_checked_against_git_diff": true,
+    "framework_drift_blocks_by_default": true,
+    "accepted_adapter_contains_placeholders": false,
+    "all_support_profiles_exercised": true,
+    "enabled_optional_modules_exercised": false
+  }
+}

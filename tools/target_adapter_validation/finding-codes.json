@@ -5132,6 +5132,15 @@
       ]
     },
     {
+      "code": "MIGRATION_DIFF_INVALID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "MIGRATION_DIFF_MISSING",
       "levels": [
         "warning"
@@ -6745,6 +6754,15 @@
     },
     {
       "code": "TARGET_NOT_DIRECTORY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TARGET_PATH_ESCAPE",
       "levels": [
         "error"
       ],

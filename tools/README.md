@@ -93,9 +93,18 @@ Install source-check dependencies first:
 python3 -m pip install -r requirements-dev.txt
 ```
 
+Supported source tooling starts at Python 3.10. The machine-readable contract
+is `tools/runtime-compatibility.json`. CI resolves `requirements-dev.txt`
+through `constraints-ci.txt`; update and validate the complete pinned set as one
+dependency change rather than allowing each platform to resolve unrelated
+versions.
+
 The workflow at `.github/workflows/cross-platform-source-checks.yml` runs the
-full suite once on Linux and the portable contract slice on macOS and Windows.
-It does not run paid assistant conformance or effectiveness benchmarks.
+full suite on the minimum and current Python versions on Linux and the portable
+contract slice on macOS and Windows. Every job writes a machine-readable report
+with exact checker output, interpreter, platform, and dependency versions, then
+uploads it even when a check fails. It does not run paid assistant conformance
+or effectiveness benchmarks.
 
 Linux or macOS:
 
@@ -104,6 +113,7 @@ python3 tools/check_all.py
 python3 tools/check_all.py --profile fast --changed-from HEAD
 python3 tools/check_all.py --profile release
 python3 tools/check_all.py --profile platform
+python3 tools/check_all.py --profile full --report /tmp/alatyr-source-checks.json
 python3 tools/check_all.py --list
 ```
 
@@ -114,6 +124,7 @@ py -3 .\tools\check_all.py
 py -3 .\tools\check_all.py --profile fast --changed-from HEAD
 py -3 .\tools\check_all.py --profile release
 py -3 .\tools\check_all.py --profile platform
+py -3 .\tools\check_all.py --profile full --report C:\Temp\alatyr-source-checks.json
 py -3 .\tools\check_all.py --list
 ```
 
@@ -1000,14 +1011,18 @@ py -3 .\tools\check_source_of_truth_registry.py
 `check_versioning.py` validates source version files, changelog structure, and
 release-process documentation for this repository. In tag-triggered GitHub CI
 it also requires `GITHUB_REF_NAME` to equal `v<VERSION>`; maintainers can supply
-the same assertion locally with `--expected-release-tag`. It is not a portable
-framework requirement for target projects.
+the same name assertion locally with `--expected-release-tag`. Use
+`--require-current-tag` only on the release commit to require that `v<VERSION>`
+exists and points to `HEAD`; pre-tag release-candidate checks intentionally do
+not claim publication. It is not a portable framework requirement for target
+projects.
 
 Linux or macOS:
 
 ```sh
 python3 tools/check_versioning.py
 python3 tools/check_versioning.py --expected-release-tag "v$(cat VERSION)"
+python3 tools/check_versioning.py --require-current-tag
 ```
 
 Windows PowerShell or Command Prompt:
@@ -1015,6 +1030,7 @@ Windows PowerShell or Command Prompt:
 ```powershell
 py -3 .\tools\check_versioning.py
 py -3 .\tools\check_versioning.py --expected-release-tag "v$(Get-Content VERSION)"
+py -3 .\tools\check_versioning.py --require-current-tag
 ```
 
 ## Release Migration Report Check
@@ -1053,6 +1069,11 @@ does not apply target changes. The report includes adapter contract impact,
 affected rule categories, affected task profiles, affected canonical sources,
 framework files, shipped schema contracts, target templates, and migration
 action hints.
+
+Use `--from-source-label` and `--to-source-label` for committed evidence so
+the report records stable provenance such as a tag or `source-tree` instead of
+temporary or workstation-local paths. Labels affect presentation only; the
+explicit directory arguments still own the compared bytes.
 
 Linux or macOS:
 
@@ -1154,6 +1175,20 @@ assistant surface and fixture after validating the report contracts. It is for
 comparing reviewed run outputs, context cost, logical-integrity evidence,
 adapter evidence status, residual risks, and unresolved validation, not for
 running assistants.
+
+`render_evidence_status.py` derives `conformance/evidence-status.json` from the
+declared assistant surfaces, captured run index, effectiveness suite, and
+captured benchmark results. It distinguishes historical evidence from complete
+runs produced for the current framework version and keeps broad cross-assistant
+or cost claims false until their required evidence exists. Broad effectiveness
+coverage requires every suite task class, its explicit `task.class_id`, the
+recommended unique repetitions, current-version evidence, accepted modes, and
+reviewed claim support.
+
+```sh
+python3 tools/render_evidence_status.py
+python3 tools/render_evidence_status.py --check
+```
 
 `check_conformance_summary.py` exercises that validator and summary using
 synthetic source-only records. It does not represent an actual assistant run.

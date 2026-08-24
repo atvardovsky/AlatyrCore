@@ -164,6 +164,7 @@ python3 tools/check_ai_infrastructure_router.py
 python3 tools/check_assistant_surface_conformance.py
 python3 tools/check_bridge_capability_matrix.py
 python3 tools/check_captured_effectiveness_results.py
+python3 tools/render_evidence_status.py --check
 python3 tools/check_context_router.py
 python3 tools/check_bootstrap_routing.py
 python3 tools/check_context_costs.py
