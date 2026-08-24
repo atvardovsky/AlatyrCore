@@ -39,7 +39,7 @@ jobs:
         run: python tools/check_all.py --profile full --report "${{ runner.temp }}/alatyr-source-checks-linux-${{ matrix.python-version }}.json"
       - name: Upload source-check diagnostics
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: source-checks-linux-python-${{ matrix.python-version }}
           path: ${{ runner.temp }}/alatyr-source-checks-linux-${{ matrix.python-version }}.json
@@ -82,7 +82,7 @@ jobs:
         run: python tools/check_all.py --profile platform --report "${{ runner.temp }}/alatyr-source-checks-${{ runner.os }}.json"
       - name: Upload source-check diagnostics
         if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: source-checks-${{ runner.os }}
           path: ${{ runner.temp }}/alatyr-source-checks-${{ runner.os }}.json
