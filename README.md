@@ -17,6 +17,8 @@ changes in people, tools, agents, and time.
 Other systems add AI to a project. AlatyrCore gives the project memory, a
 voice, and continuity.
 
+**One project will. Many human and AI executors.**
+
 ## What AlatyrCore Is
 
 AlatyrCore is not another coding agent. It is a repository-owned framework and
@@ -201,6 +203,10 @@ facts correct by itself.
    validation, and exact repository binding when that knowledge would
    otherwise disappear with the session. Small self-explanatory changes may
    skip it with a specific reason.
+7. A separate project-knowledge gate lets target decision owners accept,
+   narrow, reject, or defer reusable conclusions. Accepted facts remain in
+   canonical project sources; compact, freshness-checked route shards help a
+   later assistant find those owners without loading the full project memory.
 
 Optional modules can add architecture knowledge, project vocabulary, generated
 code-reference documentation, test-first development, team coordination,
@@ -321,7 +327,7 @@ tasks from loading the complete framework or project corpus.
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.26`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.27`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural
@@ -372,6 +378,7 @@ Technical entry points:
 - [Passive dependency knowledge](framework/dependency-knowledge.md)
 - [User-owned workspace modes](framework/workspace-modes.md)
 - [Durable engineering evidence](framework/engineering-evidence.md)
+- [Project knowledge promotion and delivery](framework/project-knowledge.md)
 
 Human guides explain the product; they do not own framework policy. Canonical
 rules remain in the referenced framework documents and
@@ -388,7 +395,8 @@ selected or changed canonical framework owners.
 Apply canonical rule references rather than copying policy text into bridge
 files: `ALATYR-ADAPTER-001`, `ALATYR-APPROVAL-001`, `ALATYR-AUTHORIZATION-001`, `ALATYR-SAFETY-001`,
 `ALATYR-SAFETY-002`, `ALATYR-INTEGRITY-001`, `ALATYR-EVIDENCE-001`,
-`ALATYR-ENGINEERING-EVIDENCE-001`, and `ALATYR-OPERATION-001`. Load
+`ALATYR-ENGINEERING-EVIDENCE-001`, `ALATYR-KNOWLEDGE-001`, and
+`ALATYR-OPERATION-001`. Load
 `ALATYR-DEPENDENCY-001` only when the optional
 dependency-knowledge module or a dependency operation is selected.
 Load `ALATYR-MODE-001` only when workspace modes are enabled, mode selection is

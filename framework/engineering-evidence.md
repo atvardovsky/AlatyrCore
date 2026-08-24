@@ -144,11 +144,19 @@ retains it.
 - An ADR, blueprint, contract, or source-of-truth document owns accepted
   project facts. The durable record links to those owners and explains the
   historical decision; it does not become their canonical owner.
+- The project-knowledge flow may propose one reusable conclusion for promotion.
+  A decision owner must accept, narrow, reject, or defer it. Only an accepted
+  canonical owner update plus a reviewed route entry can make the conclusion
+  available as a current constraint to later tasks.
 
 When a change package is active, link the evidence ID from the package instead
 of duplicating the normalized reasoning. When a durable record reveals a new
 accepted fact, update the canonical owner in the same repair set or report the
 missing owner as a blocker or residual risk.
+
+Finalizing engineering evidence does not promote it. Record the project-
+knowledge candidate and disposition separately so an archive remains
+historical even when its conclusion is useful.
 
 ## Finalization Gate
 

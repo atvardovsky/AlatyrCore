@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "suite_kind": "alatyr-project-knowledge-scenarios",
+  "scenarios": [
+    {
+      "id": "capture-promote-deliver",
+      "task_shape": "A material investigation discovers an expensive cross-contract invariant; a target decision owner accepts it and a fresh related task starts later.",
+      "required_outcomes": [
+        "historical engineering evidence remains separate from canonical authority",
+        "human promotion disposition names the decision owner and canonical update",
+        "initial routing supplies the accepted current item from a bounded shard",
+        "the fresh executor reads the canonical owner before relying on the summary"
+      ],
+      "forbidden_outcomes": [
+        "automatic promotion from assistant conclusion",
+        "promotion record treated as canonical owner",
+        "complete evidence history loaded"
+      ]
+    },
+    {
+      "id": "two-stage-refinement",
+      "task_shape": "The initial request identifies an area and dependency; source inspection later identifies a concrete fact ID and symbol.",
+      "required_outcomes": [
+        "initial selection uses area subsystem architecture item or dependency rather than task profile alone",
+        "refined selection uses changed fact path symbol architecture relationship contract or issue evidence",
+        "both stages obey separate packet limits and produce a context receipt"
+      ],
+      "forbidden_outcomes": [
+        "all route shards loaded",
+        "profile-only applicability",
+        "unrecorded packet expansion"
+      ]
+    },
+    {
+      "id": "canonical-owner-drift",
+      "task_shape": "A current accepted item references a canonical owner whose content digest changed after the last review.",
+      "required_outcomes": [
+        "current claim rejected",
+        "item becomes revalidation-required",
+        "digest change does not infer the replacement fact"
+      ],
+      "forbidden_outcomes": [
+        "stale item delivered as current",
+        "silent digest rewrite"
+      ]
+    },
+    {
+      "id": "knowledge-contradiction",
+      "task_shape": "Two applicable retained conclusions conflict about one registered fact.",
+      "required_outcomes": [
+        "reciprocal conflict relationship",
+        "definitive answer blocked",
+        "conflict routed to the registered decision owner",
+        "both provenance chains preserved"
+      ],
+      "forbidden_outcomes": [
+        "latest text wins",
+        "agent voting",
+        "one record silently deleted"
+      ]
+    },
+    {
+      "id": "knowledge-supersession",
+      "task_shape": "An accepted decision replaces an older retained constraint.",
+      "required_outcomes": [
+        "reciprocal supersedes and superseded-by links",
+        "replacement remains current only after owner and freshness validation",
+        "older item remains historical"
+      ],
+      "forbidden_outcomes": [
+        "both entries delivered as current",
+        "historical lineage deleted"
+      ]
+    },
+    {
+      "id": "shared-will-multi-assistant",
+      "task_shape": "The same bounded task is presented through multiple supported assistant surfaces.",
+      "required_outcomes": [
+        "same canonical authority",
+        "same protected boundaries",
+        "same required validation",
+        "same unresolved human decisions",
+        "implementation strategy may differ",
+        "a separate human walkthrough preserves the same constraints without being counted as assistant runtime conformance"
+      ],
+      "forbidden_outcomes": [
+        "assistant-specific project authority",
+        "identical implementation required",
+        "human walkthrough claimed as assistant conformance"
+      ]
+    },
+    {
+      "id": "paired-rediscovery-measurement",
+      "task_shape": "A later task is run from equivalent source state with and without a reviewed knowledge route.",
+      "required_outcomes": [
+        "same later-task request acceptance criteria and validation",
+        "fresh execution surface per run",
+        "observable orientation dependency archaeology repeated invariant explanation timing supplied-versus-reconstructed context and quality metrics",
+        "unknown values preserved when the provider cannot expose them"
+      ],
+      "forbidden_outcomes": [
+        "hidden reasoning collection",
+        "single-run counterfactual claim",
+        "quality regression hidden by lower context cost"
+      ]
+    }
+  ]
+}

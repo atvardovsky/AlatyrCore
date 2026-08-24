@@ -43,6 +43,8 @@ An installed adapter should support these operation categories:
 - durable engineering-evidence capture, lookup, explanation, or repair for
   material tasks and prior compact decision records, including binding-state
   finalization and explicit lineage-preserving rebinds
+- project-knowledge proposal, human review, promotion, bounded automatic
+  delivery, freshness review, contradiction resolution, and supersession
 - optional Debug Mode activation, checkpoint, finalization, and comparison with
   versioned attribution and a required durable-evidence decision
 - discussion diagram creation, comparison, or revision with a portable ASCII
@@ -438,6 +440,20 @@ grant repository modification, or authorize commit/publication. `Alatyr
 evidence`, `Alatyr capture evidence`, and `Alatyr explain decision` are target
 assistant requests, not shell commands.
 
+## Project Knowledge Delivery
+
+For non-trivial tasks, route the compact target project-knowledge index after
+profile and area selection and refine the route after concrete facts, paths,
+symbols, subsystem or architecture relationships, dependencies, contracts, or
+issue lineage are known. Require a match stronger than task profile, obey
+packet limits, and read selected canonical
+owners before relying on summaries.
+
+Only accepted-current items may be supplied as current constraints. Stale
+items are warnings; contradictions block definitive conclusions. A material
+engineering conclusion may become a promotion proposal, but only target-owned
+review and a canonical-owner update can make it accepted project knowledge.
+
 ## Team Operations
 
 Use `team-collaboration.md` only when the target enables the optional module.
@@ -469,6 +485,9 @@ After installation or framework upgrade, an assistant should recheck:
   provenance policy, and target validator support
 - durable engineering-evidence owner, storage/publication policy, compact
   index, record schema, routing, existing records, and validator support
+- project-knowledge owner, review/retention/redaction policy, promotion records,
+  sharded route index, two-stage delivery, freshness/conflict/supersession
+  evidence, packet limits, and validator support
 - operation catalog, single entry, automatic routing, read-only health,
   pre-change preview, compact help, operation-routing flow, and
   post-install/update chat-message templates

@@ -209,6 +209,9 @@ Collect target-specific facts before writing project docs:
 - Durable engineering-evidence owner, retained storage mode, redaction and
   external-contribution policy, capture threshold, task/revision binding, and
   access path for future developers and assistants
+- Project-knowledge owner, decision authority, canonical owner registry,
+  promotion policy, compact index/shards, two-stage selectors, freshness and
+  contradiction policy, retention/redaction, and evidence access
 - AI infrastructure router/item expectations for canonical source, triggers,
   status, required context, allowed actions, permissions, gates, validation,
   output, conflicts, wrappers, and adaptation records
@@ -464,6 +467,9 @@ Final evidence must say:
   read-only adapter-health, risk-gated preview, blueprint-creation,
   adapter-recheck, or post-install/update chat-message templates added or
   skipped
+- project-knowledge policy/index/promotions/routes, two-stage routing
+  descriptor, flow, gate, authoring templates, and validator added or blocked
+  with unresolved owner/authority facts
 - diagram-discussion flow, ASCII template, presentation template, stable lineage,
   security/privacy/external-renderer policy, and operation conformance fixture
   added, skipped, or blocked from target evidence

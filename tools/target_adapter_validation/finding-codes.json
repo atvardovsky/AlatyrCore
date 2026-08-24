@@ -3,6 +3,7 @@
   "catalog_kind": "target-adapter-validator-findings",
   "generated_from": [
     "tools/validate_target_adapter.py",
+    "tools/project_knowledge.py",
     "tools/target_adapter_validation/__init__.py",
     "tools/target_adapter_validation/context.py",
     "tools/target_adapter_validation/framework_baseline.py",
@@ -6221,6 +6222,357 @@
       ]
     },
     {
+      "code": "PROJECT_KNOWLEDGE_CONFLICT_RECIPROCITY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_CONTRACT_VERSION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_CONTRADICTION_LINK",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_CONTRADICTION_STATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_CURRENT_OWNER",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_CURRENT_OWNER_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_FRESHNESS_TRIGGER",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_ID_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_INDEX_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_INDEX_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_LOAD",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_MANIFEST_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_MANIFEST_POLICY_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_POLICY_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_POLICY_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_PRIVACY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_PROFILE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_PROMOTION_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_PROMOTION_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_PROMOTION_LOAD",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_PROMOTION_OWNER_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_PROMOTION_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_PROMOTION_REFERENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_REVIEW_EXPIRED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_ROUTING_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_ROUTING_LOAD",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_ROUTING_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_ROUTING_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_ROUTING_POLICY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_ROUTING_SELECTORS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_SELECTOR_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_SHARD_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_SHARD_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_SHARD_LOAD",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_SHARD_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_SUMMARY_BUDGET",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_SUPERSESSION_LINK",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_SUPERSESSION_RECIPROCITY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_SUPERSESSION_STATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
       "code": "REQUIRED_FILE_MISSING",
       "levels": [
         "error"
@@ -6628,6 +6980,42 @@
     },
     {
       "code": "ROUTER_PROFILE_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_PROJECT_KNOWLEDGE_BUDGET",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_PROJECT_KNOWLEDGE_INDEX",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_PROJECT_KNOWLEDGE_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ROUTER_PROJECT_KNOWLEDGE_PROFILE_ONLY",
       "levels": [
         "error"
       ],

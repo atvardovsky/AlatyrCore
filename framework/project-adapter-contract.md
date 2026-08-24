@@ -46,6 +46,10 @@ Every project using this framework must define:
 - source-of-truth registry or equivalent fact-owner registry when multiple
   surfaces can describe the same fact, including invariant and dependency
   constraints used when relationship mapping is unavailable
+- required project-knowledge policy, compact index and route shards, reviewed
+  promotion records, canonical owner/freshness bindings, two-stage selectors,
+  and validation so reusable conclusions reach later tasks without becoming a
+  second source of truth
 - machine-readable consistency map when the target needs bounded fact-to-
   contract, area, system, and adapter impact traversal; an enabled map covers
   every live registry Fact Type through an exact, unique node reference and is
@@ -103,6 +107,9 @@ Every project using this framework must define:
 - compact durable engineering-evidence index, owner, retention and external-
   patch policy, lazy capture gate, record template, and validator so material
   task knowledge survives sessions without retaining raw assistant reasoning
+- project-knowledge decision authority, promotion dispositions, canonical
+  owner update policy, contradiction/supersession lineage, packet limits, and
+  cross-assistant constraint conformance
 - durable adaptation records for imported or materially changed AI
   infrastructure
 - optional extension catalog, immutable source and installed-file lock,
@@ -277,6 +284,7 @@ In a target repository, the adapter usually includes:
 - `AGENTS.md` and `AI_ASSISTANTS.md`
 - `.ai/alatyr.yaml` or equivalent adapter manifest
 - `.ai/project/source-of-truth-registry.md`
+- `.ai/project/knowledge`
 - `.ai/assistant`
 - optional `.agents/skills`
 - optional assistant-native wrappers such as `.claude`, `.cursor`, or

@@ -15,6 +15,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 VALIDATOR = ROOT / "tools" / "validate_target_adapter.py"
 MODULES = ROOT / "tools" / "target_adapter_validation"
+PROJECT_KNOWLEDGE = ROOT / "tools" / "project_knowledge.py"
 JSON_OUTPUT = MODULES / "finding-codes.json"
 MARKDOWN_OUTPUT = ROOT / "docs" / "target-adapter-validator-findings.md"
 CODE_PATTERN = re.compile(r"^[A-Z][A-Z0-9_]+$")
@@ -22,7 +23,7 @@ LEVELS = {"error", "warn", "info"}
 
 
 def source_paths() -> list[Path]:
-    return [VALIDATOR, *sorted(MODULES.glob("*.py"))]
+    return [VALIDATOR, PROJECT_KNOWLEDGE, *sorted(MODULES.glob("*.py"))]
 
 
 def literal_code(node: ast.AST) -> str | None:
@@ -48,11 +49,23 @@ def collect() -> dict[str, Any]:
         for node in ast.walk(tree):
             if not isinstance(node, ast.Call) or not node.args:
                 continue
-            code = literal_code(node.args[0])
+            finding_constructor = (
+                isinstance(node.func, ast.Name) and node.func.id == "KnowledgeFinding"
+            )
+            code_arg = (
+                node.args[1]
+                if finding_constructor and len(node.args) > 1
+                else node.args[0]
+            )
+            code = literal_code(code_arg)
             if code is None:
                 continue
             level = "dynamic"
-            if isinstance(node.func, ast.Attribute) and node.func.attr in LEVELS:
+            if finding_constructor:
+                raw_level = node.args[0]
+                if isinstance(raw_level, ast.Constant) and raw_level.value in LEVELS:
+                    level = "warning" if raw_level.value == "warn" else str(raw_level.value)
+            elif isinstance(node.func, ast.Attribute) and node.func.attr in LEVELS:
                 level = "warning" if node.func.attr == "warn" else node.func.attr
             elif isinstance(node.func, ast.Name) and node.func.id == "report":
                 level = "configured"

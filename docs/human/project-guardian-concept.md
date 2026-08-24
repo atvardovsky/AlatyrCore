@@ -60,6 +60,12 @@ The adapter does not replace the project sources it points to. It is a routing
 and operating layer whose requirements are owned by the
 [project adapter contract](../../framework/project-adapter-contract.md).
 
+Material engineering evidence remains historical. The
+[project-knowledge lifecycle](../../framework/project-knowledge.md) adds a
+separate human disposition before a reusable conclusion can enter bounded
+routing. This preserves one project intent across assistants without turning
+an assistant conclusion or `.ai` summary into authority.
+
 ## Interchangeable AI Assistants
 
 Compatible assistants can use the same project-owned entry points, but their
@@ -106,4 +112,3 @@ Framework and adapter versioning expectations are defined in
 [lifecycle guidance](../../framework/lifecycle.md). Semantic change evidence
 remains subject to the limits in
 [framework guarantees and limits](../../framework/guarantees.md).
-

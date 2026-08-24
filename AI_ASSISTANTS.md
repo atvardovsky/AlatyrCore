@@ -50,6 +50,11 @@ Use the target repository's own entry points, normally:
 Treat target facts and commands as target-owned. Do not substitute AlatyrCore
 source-repository examples, tools, or conformance fixtures for target evidence.
 
+For a non-trivial target task, run the installed project-knowledge preflight
+after task-profile and project-area selection. Use its initial and refined
+selectors, read selected canonical owners, and apply only accepted/current
+constraints. Historical evidence and promotion records are not authority.
+
 ## Installation Workflow
 
 If the user asks to install AlatyrCore:
@@ -86,6 +91,7 @@ file or into assistant-specific bridges:
 - Safety boundaries: `ALATYR-SAFETY-001`
 - Imported AI infrastructure: `ALATYR-SAFETY-002`
 - Logical integrity: `ALATYR-INTEGRITY-001`
+- Project knowledge promotion and delivery: `ALATYR-KNOWLEDGE-001`
 - Optional Debug Mode: `ALATYR-DEBUG-001`
 - Installed operations: `ALATYR-OPERATION-001`
 - Architecture knowledge: `ALATYR-ARCHITECTURE-001`

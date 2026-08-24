@@ -13,6 +13,7 @@
     "create-project-blueprint",
     "logical-integrity-review",
     "engineering-evidence",
+    "project-knowledge",
     "test-first-change"
   ],
   "required_context": [

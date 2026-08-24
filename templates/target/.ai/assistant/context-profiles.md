@@ -58,6 +58,29 @@ documentation domains in `.ai/assistant/context-router.json`. Each area should
 name its trigger, required context, and expansion conditions. Compose the base
 task profile with only areas that own changed facts.
 
+## Project Knowledge Routing
+
+For every non-trivial selected task, read the compact project-knowledge index
+after profile and area selection. Open only shard descriptors matching the
+profile plus at least one area, dependency, fact, contract, path, symbol, or
+issue signal. Subsystem and architecture-item relationships are also strong
+selectors. Profile matching alone never selects an item.
+
+The portable policy owner is `.ai/framework/project-knowledge.md`; load it
+only for lifecycle work, ambiguity, conflict, or adapter repair.
+
+Run an initial route before broad orientation and a refined route after source
+inspection identifies changed facts, paths, symbols, dependencies, contracts,
+or issue lineage. Obey the separate packet limits in the index. Read selected
+canonical owners before relying on summaries. Supply only accepted-current
+items as candidate constraints; stale items are warnings and contradictions
+are blockers. Record selected, used, inapplicable, stale, blocked, and omitted
+IDs in the context receipt.
+
+When a material investigation discovers reusable knowledge, the finalization
+flow may propose promotion. Human review and canonical-owner update are
+required before the item enters routine routing.
+
 ## Intent Overlay: `diagram-request`
 
 Apply this overlay to any profile, including `code-local` and

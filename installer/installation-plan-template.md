@@ -135,6 +135,9 @@ List what must not be changed.
 - Durable engineering-evidence owner, storage mode, retention/redaction and
   external-contribution policy, compact index, record access, and revision-
   binding policy:
+- Project-knowledge owner and decision authority, canonical owner registry,
+  promotion/freshness/contradiction policy, retention/redaction, compact index,
+  route-shard ownership, and two-stage selector strategy:
 - Debug Mode need, owner, explicit activation/expiry, non-canonical storage,
   visibility, retention/redaction, normalized event attribution, timing and
   capture-quality evidence, structured architectural impacts, direction-change
@@ -219,6 +222,13 @@ the lazy task-scale overlay, capture flow, gate, and machine record template in
 the required core profile. Start the index empty unless bounded historical
 records were explicitly validated. Keep these support records outside external
 contribution patches unless the target project accepts them.
+
+Include `.ai/project/knowledge/README.md`, its compact `index.json`, empty or
+preserved `promotions/` and `routes/`, the two-stage routing descriptor, flow,
+gate, and machine authoring templates in every accepted core profile. Start
+without active project facts unless target decision authority reviews an
+explicit promotion into a registered canonical owner. Historical evidence is
+input to review, not an active constraint by itself.
 
 Include `.ai/project/debug/README.md`, `index.json`, `records/`, the lazy
 task-scale overlay, operation flow, gate, machine record, and compact summary

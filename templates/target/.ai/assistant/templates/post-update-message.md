@@ -56,6 +56,10 @@ Operation help:
 - Risky or cross-boundary changes show a pre-change preview before edits.
 - Use `.ai/assistant/help.md`, `.ai/assistant/help-reference.md`, and `.ai/assistant/templates/operation-request.md` for structured requests.
 - Use `large-task` only for cross-boundary or resumable work, and resume an existing packet when one is named.
+- Use `Alatyr what do we know <subject>` for bounded accepted/current project
+  knowledge, `Alatyr remember this` for a review proposal, and `Alatyr
+  revalidate knowledge <id>` after freshness triggers. Historical evidence is
+  not promoted during update.
 - Recheck change-package records, semantic approval fields, provenance grades,
   and validator support when the optional module or schema changed. Preserve
   historical target records.
@@ -64,6 +68,11 @@ Operation help:
   Git object type/ancestry, prior-binding lineage, canonical-owner links, privacy,
   external-patch policy, and record access; never replace existing records
   with source placeholders.
+- Preserve project-knowledge promotion IDs and dispositions, canonical owner
+  bindings/digests, route shards, contradiction and supersession lineage, and
+  retention policy. Revalidate accepted facts against canonical owners and
+  rebuild derived routes when needed; do not promote historical evidence or
+  source placeholders during update.
 - Preserve Debug Mode IDs, records, active-scope evidence, normalized events,
   timing, metrics, and publication policy when the module is enabled. Recheck
   versioned actor/causality/intervention/contribution attribution, structured

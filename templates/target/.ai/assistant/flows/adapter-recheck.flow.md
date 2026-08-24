@@ -117,6 +117,8 @@ Replace placeholders with target facts before accepting installation.
    flow and packet, change-package index/flow/schema, team operating
    model/registry/flows/gate/templates,
    durable engineering-evidence policy/index/overlay/flow/gate/schema,
+   project-knowledge policy/index/promotions/routes/two-stage routing/flow/gate/
+   schemas,
    Debug Mode policy/index/overlay/operation/flow/gate/schema/summary when
    enabled,
    chat-message templates, and final-evidence expectations.

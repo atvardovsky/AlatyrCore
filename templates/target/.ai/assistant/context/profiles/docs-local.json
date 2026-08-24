@@ -10,7 +10,8 @@
   "operation_candidates": [
     "documentation-sync",
     "drift-review",
-    "logical-integrity-review"
+    "logical-integrity-review",
+    "project-knowledge"
   ],
   "required_context": [
     ".ai/framework/context-discovery.md",

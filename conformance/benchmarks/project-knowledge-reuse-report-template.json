@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "report_kind": "alatyr-project-knowledge-reuse-result",
+  "pair_id": "{PAIRED_RUN_ID}",
+  "run_mode": "{WITHOUT_ROUTED_KNOWLEDGE_OR_WITH_ROUTED_KNOWLEDGE}",
+  "fresh_execution_surface": true,
+  "source_state_digest": "{SHA256}",
+  "task_request_digest": "{SHA256}",
+  "acceptance_criteria_digest": "{SHA256}",
+  "validation_contract_digest": "{SHA256}",
+  "knowledge_packet": {
+    "candidate_items_considered": "{COUNT_OR_UNKNOWN}",
+    "current_items_supplied": "{COUNT_OR_UNKNOWN}",
+    "warning_items_supplied": "{COUNT_OR_UNKNOWN}",
+    "blocked_items": "{COUNT_OR_UNKNOWN}",
+    "supplied_item_ids": [],
+    "used_item_ids": [],
+    "canonical_sources_reverified": []
+  },
+  "observable_metrics": {
+    "orientation_files_opened": "{COUNT_OR_UNKNOWN}",
+    "dependency_source_files_reopened_for_known_facts": "{COUNT_OR_UNKNOWN}",
+    "repeated_known_fact_searches": "{COUNT_OR_UNKNOWN}",
+    "repeated_discovery_of_recorded_invariants": "{COUNT_OR_UNKNOWN}",
+    "human_repeated_explanations": "{COUNT_OR_UNKNOWN}",
+    "routed_context_items_used": "{COUNT_OR_UNKNOWN}",
+    "known_context_items_independently_reconstructed": "{COUNT_OR_UNKNOWN}",
+    "seconds_to_first_supported_hypothesis": "{COUNT_OR_UNKNOWN}",
+    "input_tokens": "{COUNT_OR_UNKNOWN}",
+    "output_tokens": "{COUNT_OR_UNKNOWN}",
+    "duration_seconds": "{COUNT_OR_UNKNOWN}",
+    "rework_count": "{COUNT_OR_UNKNOWN}",
+    "validation_error_count": "{COUNT_OR_UNKNOWN}",
+    "unresolved_consistency_gaps": "{COUNT_OR_UNKNOWN}"
+  },
+  "measurement_evidence": "{HOST_OBSERVATION_ASSISTANT_REPORT_REVIEW_OR_UNKNOWN}",
+  "acceptance_result": "{PASS_FAIL_OR_UNRESOLVED}",
+  "quality_non_regression": "{YES_NO_OR_UNKNOWN}",
+  "raw_reasoning_collected": false,
+  "single_run_counterfactual_claimed": false,
+  "review": {
+    "status": "pending",
+    "reviewer": "unknown",
+    "reviewed_at": "unknown",
+    "notes": "A paired independently reviewed result is required before a rediscovery-avoidance claim."
+  }
+}

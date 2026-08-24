@@ -44,6 +44,7 @@ Registered categories:
 - `BRIDGE`
 - `LIFECYCLE`
 - `ENGINEERING_EVIDENCE`
+- `PROJECT_KNOWLEDGE`
 - `DEBUG`
 - `EVIDENCE`
 
@@ -57,13 +58,15 @@ Canonical source: `.ai/framework/context-profiles.md`
 Commitment: Use a generated hash-bound bootstrap index, routed gate fragments,
 and the smallest task profile through an aligned context router; route the
 target registry and consistency map together for semantic work while keeping
-redundant portable explanation conditional; separate total, portable, and
-reserved target context budgets; measure representative compact and expansion
-scenarios; record expansion only when boundaries or conflicts require it;
-prefer changed-fact, upgrade-impact, AI-item, finalization-only
+redundant portable explanation conditional; apply bounded two-stage
+project-knowledge delivery from profile plus a stronger area, dependency, fact,
+contract, path, symbol, or issue signal; separate total, portable, and reserved
+target context budgets; record expansion only when boundaries or conflicts
+require it; prefer changed-fact, upgrade-impact, AI-item, finalization-only
 engineering-evidence, and explicitly activated Debug Mode routing when
-available; and keep optional module, evidence-history, unrelated debug records,
-delegated-execution, complete-checklist, and full team detail lazy.
+available; and keep unrelated knowledge, optional modules, evidence history,
+debug records, delegated execution, complete checklists, and full team detail
+lazy.
 Applies to: all installed adapter tasks.
 Enforcement: required.
 
@@ -182,6 +185,22 @@ Applies to: material semantic changes, architecture changes, non-obvious defect
 repairs, final evidence.
 Enforcement: required capture decision; record required when triggered and
 authorized.
+
+Rule ID: `ALATYR-KNOWLEDGE-001`
+Canonical source: `.ai/framework/project-knowledge.md`
+Commitment: Turn expensive reusable engineering conclusions into human-reviewed
+project knowledge without transferring authority to evidence records: require
+accepted facts to update registered canonical owners, keep a compact derived
+sharded routing index with independent authority and freshness states, deliver
+only accepted current items through bounded initial and refined task routes,
+surface stale items as warnings and contradictions as owner-routed blockers,
+preserve reciprocal supersession lineage, and measure rediscovery avoidance
+only through comparable paired evidence.
+Applies to: material task finalization, project knowledge promotion,
+non-trivial task context routing, knowledge revalidation, knowledge
+contradiction and supersession, cross-assistant constraint conformance,
+rediscovery benchmarks.
+Enforcement: required core promotion decision and bounded delivery contract.
 
 Rule ID: `ALATYR-DEBUG-001`
 Canonical source: `.ai/framework/debug-mode.md`

@@ -1,0 +1,120 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/atvardovsky/AlatyrCore/schemas/alatyr-project-knowledge-index.schema.json",
+  "title": "Alatyr project knowledge routing index",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "index_kind",
+    "project",
+    "owner",
+    "review_policy",
+    "retention_policy",
+    "redaction_policy",
+    "routing_policy",
+    "promotion_records",
+    "shards"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "index_kind": {"const": "target-project-knowledge-routing-index"},
+    "project": {"type": "string", "minLength": 1},
+    "owner": {"type": "string", "minLength": 1},
+    "review_policy": {"type": "string", "minLength": 1},
+    "retention_policy": {"type": "string", "minLength": 1},
+    "redaction_policy": {"type": "string", "minLength": 1},
+    "routing_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "max_initial_items",
+        "max_refined_items",
+        "max_summary_words",
+        "current_constraint_states",
+        "warning_freshness_states",
+        "blocking_freshness_states",
+        "selection_order",
+        "profile_only_match_allowed"
+      ],
+      "properties": {
+        "max_initial_items": {"type": "integer", "minimum": 1, "maximum": 20},
+        "max_refined_items": {"type": "integer", "minimum": 1, "maximum": 30},
+        "max_summary_words": {"type": "integer", "minimum": 10, "maximum": 120},
+        "current_constraint_states": {
+          "const": ["accepted", "current"]
+        },
+        "warning_freshness_states": {
+          "const": ["revalidation-required"]
+        },
+        "blocking_freshness_states": {
+          "type": "array",
+          "items": {"const": "contradicted"},
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "selection_order": {
+          "const": [
+            "task-profile",
+            "project-area",
+            "subsystem-or-architecture-item",
+            "dependency-or-contract",
+            "changed-fact",
+            "path-or-symbol",
+            "issue-lineage"
+          ]
+        },
+        "profile_only_match_allowed": {"const": false}
+      }
+    },
+    "promotion_records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["promotion_id", "status", "path"],
+        "properties": {
+          "promotion_id": {"type": "string", "minLength": 1},
+          "status": {
+            "enum": ["pending-review", "accepted", "narrowed", "rejected", "deferred"]
+          },
+          "path": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "shards": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "shard_id",
+          "path",
+          "task_profiles",
+          "project_areas",
+          "subsystems",
+          "architecture_item_ids",
+          "dependency_coordinates",
+          "path_prefixes"
+        ],
+        "properties": {
+          "shard_id": {"type": "string", "minLength": 1},
+          "path": {"type": "string", "minLength": 1},
+          "task_profiles": {"$ref": "#/definitions/strings"},
+          "project_areas": {"$ref": "#/definitions/strings"},
+          "subsystems": {"$ref": "#/definitions/strings"},
+          "architecture_item_ids": {"$ref": "#/definitions/strings"},
+          "dependency_coordinates": {"$ref": "#/definitions/strings"},
+          "path_prefixes": {"$ref": "#/definitions/strings"}
+        }
+      }
+    }
+  },
+  "definitions": {
+    "strings": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    }
+  }
+}

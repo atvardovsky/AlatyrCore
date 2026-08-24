@@ -68,6 +68,13 @@ conflicts instead of treating documentation as automatically true.
 Adapter ownership and review requirements belong to the
 [project adapter contract](../../framework/project-adapter-contract.md).
 
+For expensive non-obvious discoveries, a separate
+[project-knowledge lifecycle](../../framework/project-knowledge.md) lets an
+assistant propose a reusable conclusion and lets a target decision owner
+accept, narrow, reject, or defer it. Accepted facts remain in canonical project
+sources; compact routing is designed to reduce repeated orientation for later
+related work without preloading the full memory corpus.
+
 ## Coordination Between AI Assistants
 
 Thin assistant bridges can point different compatible AI tools to the same
@@ -78,6 +85,11 @@ limitations.
 Source checks can validate bridge structure, but equivalent runtime behavior
 requires external evidence. See the
 [bridge capability matrix](../../framework/bridge-capability-matrix.md).
+
+Project-knowledge conformance additionally checks that supported surfaces are
+given the same canonical authority, protected boundaries, required validation,
+and unresolved decisions. It does not require identical implementation
+strategies or claim equivalent client behavior without captured runs.
 
 When the optional team module is enabled, compatible assistants can also use
 the same actor policy, compact active-work projection, conflict-safe task

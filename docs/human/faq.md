@@ -66,11 +66,13 @@ reasoning, complete impact analysis, or successful target validation. See
 ## How Is Project Knowledge Kept Current?
 
 The target adapter should identify owners, review cadence or triggers, source
-of truth, validation, known gaps, and framework baseline. Changes should update
-canonical owners and synchronize derived surfaces through normal repository
-review. This maintenance is not automatic. See the
+of truth, validation, known gaps, and framework baseline. Reusable conclusions
+remain historical until a target decision owner reviews their promotion.
+Accepted facts are updated in canonical project sources; bounded derived route
+shards help later assistants find and reverify those sources. This maintenance
+is controlled and checked, not automatic semantic inference. See the
 [project adapter contract](../../framework/project-adapter-contract.md) and
-[lifecycle guidance](../../framework/lifecycle.md).
+[project-knowledge rule](../../framework/project-knowledge.md).
 
 ## What Happens When Project Documentation Contradicts The Code?
 
@@ -82,7 +84,7 @@ newest file or the implementation is automatically correct. See the
 
 ## Is The Project Production-Ready?
 
-The source [VERSION](../../VERSION) currently records `0.1.0-alpha.26`.
+The source [VERSION](../../VERSION) currently records `0.1.0-alpha.27`.
 AlatyrCore has implemented framework contracts, target templates, source
 checks, conformance fixtures, optional scaffolding, and an optional structural
 target validator. It should not be

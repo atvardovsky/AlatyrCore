@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "fixture_kind": "alatyr-project-knowledge-two-task-reuse",
+  "fixture_id": "cross-contract-result-mapping",
+  "first_task": {
+    "summary": "Investigate a result-mapping failure across an ORM and a database abstraction dependency.",
+    "files_opened_for_orientation": [
+      "src/Hydration.php",
+      "vendor/dbal/Platform.php",
+      "vendor/dbal/Result.php",
+      "tests/HydrationTest.php"
+    ],
+    "discovered_knowledge_id": "KNOW-RESULT-TRANSFORM-001",
+    "discovery": "Platform identifier folding and result-key transformation are independent contracts."
+  },
+  "human_promotion": {
+    "disposition": "accepted",
+    "canonical_owner": "docs/contracts/result-mapping.md",
+    "decision_owner": "maintainers",
+    "promotion_id": "PROMO-RESULT-TRANSFORM-001"
+  },
+  "second_task": {
+    "summary": "Review a related hydration alias failure with a fresh executor.",
+    "initial_route": {
+      "task_profile": "code-local",
+      "project_areas": ["hydration"],
+      "subsystems": ["result-hydration"],
+      "architecture_item_ids": ["ARCH-HYDRATION-BOUNDARY"],
+      "dependency_coordinates": ["dbal/package"],
+      "paths": [],
+      "symbols": [],
+      "fact_ids": [],
+      "contract_ids": ["result-key-contract"],
+      "issue_lineage": []
+    },
+    "refined_route": {
+      "task_profile": "code-local",
+      "project_areas": ["hydration"],
+      "subsystems": ["result-hydration"],
+      "architecture_item_ids": ["ARCH-HYDRATION-BOUNDARY"],
+      "dependency_coordinates": ["dbal/package"],
+      "paths": ["src/Hydration.php"],
+      "symbols": ["hydrateRow"],
+      "fact_ids": ["FACT-RESULT-KEY-TRANSFORM"],
+      "contract_ids": ["result-key-contract"],
+      "issue_lineage": ["related-hydration-family"]
+    }
+  },
+  "expected": {
+    "initial_selected_ids": ["KNOW-RESULT-TRANSFORM-001"],
+    "refined_selected_ids": ["KNOW-RESULT-TRANSFORM-001"],
+    "canonical_owner_must_be_read": true,
+    "maximum_initial_items": 6,
+    "maximum_refined_items": 8,
+    "does_not_prove_real_agent_savings": true
+  }
+}

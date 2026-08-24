@@ -1,0 +1,190 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/atvardovsky/AlatyrCore/schemas/alatyr-project-knowledge-promotion.schema.json",
+  "title": "Alatyr project knowledge promotion record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_kind",
+    "promotion_id",
+    "created_at",
+    "candidate",
+    "human_review",
+    "privacy"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "record_kind": {"const": "alatyr-project-knowledge-promotion"},
+    "promotion_id": {"type": "string", "minLength": 1},
+    "created_at": {"type": "string", "minLength": 1},
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_id",
+        "statement",
+        "knowledge_kind",
+        "reuse_rationale",
+        "source_engineering_evidence_ids",
+        "repository_evidence",
+        "proposed_fact_type",
+        "proposed_fact_ids",
+        "proposed_canonical_owner",
+        "proposed_decision_owner",
+        "route_hints"
+      ],
+      "properties": {
+        "candidate_id": {"type": "string", "minLength": 1},
+        "statement": {"type": "string", "minLength": 1},
+        "knowledge_kind": {
+          "enum": [
+            "invariant",
+            "compatibility-boundary",
+            "dependency-observation",
+            "rejected-direction",
+            "architecture-rationale",
+            "operational-constraint",
+            "validation-rule",
+            "cross-surface-relationship"
+          ]
+        },
+        "reuse_rationale": {"type": "string", "minLength": 1},
+        "source_engineering_evidence_ids": {"$ref": "#/definitions/nonEmptyStrings"},
+        "repository_evidence": {"$ref": "#/definitions/nonEmptyStrings"},
+        "proposed_fact_type": {"type": "string", "minLength": 1},
+        "proposed_fact_ids": {"$ref": "#/definitions/nonEmptyStrings"},
+        "proposed_canonical_owner": {"type": "string", "minLength": 1},
+        "proposed_decision_owner": {"type": "string", "minLength": 1},
+        "route_hints": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "task_profiles",
+            "project_areas",
+            "subsystems",
+            "architecture_item_ids",
+            "dependency_coordinates",
+            "path_globs",
+            "symbols",
+            "contract_ids",
+            "issue_lineage",
+            "conditions"
+          ],
+          "properties": {
+            "task_profiles": {"$ref": "#/definitions/strings"},
+            "project_areas": {"$ref": "#/definitions/strings"},
+            "subsystems": {"$ref": "#/definitions/strings"},
+            "architecture_item_ids": {"$ref": "#/definitions/strings"},
+            "dependency_coordinates": {"$ref": "#/definitions/strings"},
+            "path_globs": {"$ref": "#/definitions/strings"},
+            "symbols": {"$ref": "#/definitions/strings"},
+            "contract_ids": {"$ref": "#/definitions/strings"},
+            "issue_lineage": {"$ref": "#/definitions/strings"},
+            "conditions": {"$ref": "#/definitions/strings"}
+          }
+        }
+      }
+    },
+    "human_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "disposition",
+        "decision_owner",
+        "decision_reference",
+        "decided_at",
+        "decision_rationale",
+        "accepted_statement",
+        "canonical_update",
+        "route_entry_ids"
+      ],
+      "properties": {
+        "disposition": {
+          "enum": ["pending-review", "accepted", "narrowed", "rejected", "deferred"]
+        },
+        "decision_owner": {"type": "string", "minLength": 1},
+        "decision_reference": {"type": "string", "minLength": 1},
+        "decided_at": {"type": "string", "minLength": 1},
+        "decision_rationale": {"type": "string", "minLength": 1},
+        "accepted_statement": {"type": "string"},
+        "canonical_update": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "owner_path", "content_sha256", "fact_ids"],
+          "properties": {
+            "state": {"enum": ["not-applicable", "pending", "complete", "blocked"]},
+            "owner_path": {"type": "string", "minLength": 1},
+            "content_sha256": {
+              "type": "string",
+              "pattern": "^([0-9a-fA-F]{64}|unknown|unresolved|not-applicable)$"
+            },
+            "fact_ids": {"$ref": "#/definitions/strings"}
+          }
+        },
+        "route_entry_ids": {"$ref": "#/definitions/strings"}
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "raw_chat_stored",
+        "chain_of_thought_stored",
+        "secrets_stored",
+        "personal_data_stored",
+        "redactions"
+      ],
+      "properties": {
+        "raw_chat_stored": {"const": false},
+        "chain_of_thought_stored": {"const": false},
+        "secrets_stored": {"const": false},
+        "personal_data_stored": {"const": false},
+        "redactions": {"$ref": "#/definitions/strings"}
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "human_review": {
+            "properties": {
+              "disposition": {"enum": ["accepted", "narrowed"]}
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "human_review": {
+            "properties": {
+              "accepted_statement": {"minLength": 1},
+              "canonical_update": {
+                "properties": {
+                  "state": {"const": "complete"},
+                  "content_sha256": {"pattern": "^[0-9a-fA-F]{64}$"},
+                  "fact_ids": {"minItems": 1}
+                }
+              },
+              "route_entry_ids": {"minItems": 1}
+            }
+          }
+        }
+      }
+    }
+  ],
+  "definitions": {
+    "strings": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "nonEmptyStrings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    }
+  }
+}

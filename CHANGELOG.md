@@ -4,6 +4,33 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.27 - 2026-08-24
+
+- Increased the framework version to `0.1.0-alpha.27`, adapter schema version
+  to `25`, and target template version to `25` for reviewed project-knowledge
+  promotion and delivery.
+- Added required `ALATYR-KNOWLEDGE-001` with separate historical evidence,
+  promotion disposition, canonical fact ownership, and compact derived routing
+  surfaces. Captured evidence is never promoted automatically.
+- Added independent authority and freshness states, canonical-owner digest and
+  expiry revalidation, reciprocal contradiction/supersession lineage, and
+  bounded two-stage routing that rejects profile-only applicability.
+- Added target manifest, policy, index, promotion, route-shard, flow, gate,
+  operation, help, bootstrap, context receipt, and post-install/update support.
+- Added portable JSON schemas and target validation for promotion linkage,
+  current-owner drift, packet limits, strong selectors, conflict reciprocity,
+  and retained target state across framework updates.
+- Added fresh-task reuse, stale-owner, contradiction, supersession, paired-cost,
+  and nine-surface shared-constraint conformance contracts without claiming
+  identical assistant strategies or unmeasured savings.
+- Kept the routine target bootstrap below its existing 1,200-word soft budget
+  and refreshed generated indexes, framework inventory, validator findings,
+  context-cost baselines, scaffold snapshots, and evidence status.
+- Added `ALATYR-KNOWLEDGE-001` and changed `ALATYR-CONTEXT-001`,
+  `ALATYR-ADAPTER-001`, `ALATYR-SOURCE-001`,
+  `ALATYR-ENGINEERING-EVIDENCE-001`, `ALATYR-OPERATION-001`,
+  `ALATYR-MODULE-001`, and `ALATYR-LIFECYCLE-001`.
+
 ## 0.1.0-alpha.26 - 2026-08-24
 
 - Increased the framework version to `0.1.0-alpha.26`; adapter schema and

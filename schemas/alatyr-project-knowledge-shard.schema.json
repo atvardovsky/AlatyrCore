@@ -1,0 +1,206 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/atvardovsky/AlatyrCore/schemas/alatyr-project-knowledge-shard.schema.json",
+  "title": "Alatyr project knowledge routing shard",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "shard_kind",
+    "shard_id",
+    "task_profiles",
+    "project_areas",
+    "subsystems",
+    "architecture_item_ids",
+    "dependency_coordinates",
+    "path_prefixes",
+    "entries"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "shard_kind": {"const": "target-project-knowledge-routing-shard"},
+    "shard_id": {"type": "string", "minLength": 1},
+    "task_profiles": {"$ref": "#/definitions/strings"},
+    "project_areas": {"$ref": "#/definitions/strings"},
+    "subsystems": {"$ref": "#/definitions/strings"},
+    "architecture_item_ids": {"$ref": "#/definitions/strings"},
+    "dependency_coordinates": {"$ref": "#/definitions/strings"},
+    "path_prefixes": {"$ref": "#/definitions/strings"},
+    "entries": {
+      "type": "array",
+      "items": {"$ref": "#/definitions/routeEntry"}
+    }
+  },
+  "definitions": {
+    "strings": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "routeEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "knowledge_id",
+        "summary",
+        "fact_type",
+        "fact_ids",
+        "authority",
+        "freshness",
+        "applicability",
+        "provenance",
+        "relations",
+        "validation"
+      ],
+      "properties": {
+        "knowledge_id": {"type": "string", "minLength": 1},
+        "summary": {"type": "string", "minLength": 1},
+        "fact_type": {"type": "string", "minLength": 1},
+        "fact_ids": {"$ref": "#/definitions/nonEmptyStrings"},
+        "authority": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "state",
+            "canonical_owner",
+            "canonical_owner_sha256",
+            "decision_owner",
+            "decision_reference"
+          ],
+          "properties": {
+            "state": {"enum": ["accepted", "observed", "proposed", "unresolved"]},
+            "canonical_owner": {"type": "string", "minLength": 1},
+            "canonical_owner_sha256": {
+              "type": "string",
+              "pattern": "^([0-9a-fA-F]{64}|unknown|unresolved)$"
+            },
+            "decision_owner": {"type": "string", "minLength": 1},
+            "decision_reference": {"type": "string", "minLength": 1}
+          }
+        },
+        "freshness": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "verified_revision", "verified_at", "triggers"],
+          "properties": {
+            "state": {
+              "enum": [
+                "current",
+                "revalidation-required",
+                "contradicted",
+                "historical",
+                "superseded"
+              ]
+            },
+            "verified_revision": {"type": "string", "minLength": 1},
+            "verified_at": {"type": "string", "minLength": 1},
+            "triggers": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["kind", "subject", "expected", "evidence", "action"],
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "canonical-owner-sha256",
+                      "dependency-version",
+                      "canonical-source-change",
+                      "ownership-change",
+                      "public-contract-change",
+                      "replacement-decision",
+                      "maintainer-review",
+                      "upstream-behavior-change",
+                      "review-expiry"
+                    ]
+                  },
+                  "subject": {"type": "string", "minLength": 1},
+                  "expected": {"type": "string", "minLength": 1},
+                  "evidence": {"type": "string", "minLength": 1},
+                  "action": {"type": "string", "minLength": 1}
+                }
+              }
+            }
+          }
+        },
+        "applicability": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "task_profiles",
+            "project_areas",
+            "subsystems",
+            "architecture_item_ids",
+            "dependencies",
+            "path_globs",
+            "symbols",
+            "contract_ids",
+            "issue_lineage",
+            "conditions"
+          ],
+          "properties": {
+            "task_profiles": {"$ref": "#/definitions/strings"},
+            "project_areas": {"$ref": "#/definitions/strings"},
+            "subsystems": {"$ref": "#/definitions/strings"},
+            "architecture_item_ids": {"$ref": "#/definitions/strings"},
+            "dependencies": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["coordinate", "version_range", "resolved_version"],
+                "properties": {
+                  "coordinate": {"type": "string", "minLength": 1},
+                  "version_range": {"type": "string", "minLength": 1},
+                  "resolved_version": {"type": "string", "minLength": 1}
+                }
+              }
+            },
+            "path_globs": {"$ref": "#/definitions/strings"},
+            "symbols": {"$ref": "#/definitions/strings"},
+            "contract_ids": {"$ref": "#/definitions/strings"},
+            "issue_lineage": {"$ref": "#/definitions/strings"},
+            "conditions": {"$ref": "#/definitions/strings"}
+          }
+        },
+        "provenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["engineering_evidence_ids", "promotion_record", "source_revision"],
+          "properties": {
+            "engineering_evidence_ids": {"$ref": "#/definitions/nonEmptyStrings"},
+            "promotion_record": {"type": "string", "minLength": 1},
+            "source_revision": {"type": "string", "minLength": 1}
+          }
+        },
+        "relations": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["conflicts_with", "supersedes", "superseded_by"],
+          "properties": {
+            "conflicts_with": {"$ref": "#/definitions/strings"},
+            "supersedes": {"$ref": "#/definitions/strings"},
+            "superseded_by": {"$ref": "#/definitions/strings"}
+          }
+        },
+        "validation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["checks", "last_result", "residual_uncertainty"],
+          "properties": {
+            "checks": {"$ref": "#/definitions/nonEmptyStrings"},
+            "last_result": {"type": "string", "minLength": 1},
+            "residual_uncertainty": {"$ref": "#/definitions/strings"}
+          }
+        }
+      }
+    },
+    "nonEmptyStrings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    }
+  }
+}

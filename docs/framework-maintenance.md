@@ -102,6 +102,10 @@ Before accepting a change, check:
   states, compact lookup, aliases, acronyms, scoped ambiguity, data-dictionary
   links, canonical-owner boundaries, operation routing, adapted skill, gates,
   installer wiring, or target structural validation changes.
+- `python3 tools/check_project_knowledge.py` passes when knowledge promotion,
+  canonical ownership, authority/freshness state, strong selectors, compact
+  delivery, contradiction/supersession, reuse measurement, shared-will
+  conformance, schemas, installer wiring, or target validation changes.
 - `python3 tools/check_test_first_development.py` passes when test-first policy
   state, bounded recommendation, enablement, trigger/mode/command/isolation,
   RED/GREEN/refactor evidence, operation routing, skill/gate, installer wiring,
@@ -318,6 +322,9 @@ Before accepting a change, check:
   checker rules.
 - source-of-truth registry, maturity profile, bridge capability matrix, and
   migration-note template agree with installer docs and checker rules.
+- required project-knowledge policy/index/promotions/routes, two-stage routing,
+  flow, gate, operation/help, schemas, target preservation, benchmark, and
+  checker rules agree; historical evidence is never current authority.
 - optional consistency-map schema, exact human registry Fact Type and node
   identity, relationship routing, measured semantic composition, module state,
   impact evidence, and checker rules agree.

@@ -43,6 +43,7 @@ EXPECTED_OPERATIONS = {
     "team-review",
     "team-merge-check",
     "engineering-evidence",
+    "project-knowledge",
     "debug-mode",
     "logical-integrity-review",
     "diagram-discussion",

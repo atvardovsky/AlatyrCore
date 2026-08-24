@@ -134,6 +134,11 @@ Before upgrading framework files in a target project:
     bindings and prior-binding lineage, and storage/publication policy. Never replace historical records
     with source placeholders or move them into an external contribution patch
     contrary to target policy.
+    Preserve project-knowledge promotion IDs and dispositions, canonical owner
+    bindings and digests, route-shard IDs, contradiction/supersession lineage,
+    retention policy, and review authority. Revalidate active accepted facts
+    against their canonical owners, rebuild only derived routing surfaces, and
+    never promote historical evidence or source placeholders during an update.
     Preserve target Debug Mode IDs, completed records, active-scope state,
     event attribution, timing evidence, publication policy, and compact index.
     Never replace records with source placeholders, silently reactivate a
@@ -230,6 +235,9 @@ Framework lifecycle notes should record:
 - durable engineering-evidence rule, policy, index/record schema, lazy route,
   capture gate, task/revision binding, privacy/publication boundary, existing-
   record preservation, and validator migration
+- project-knowledge rule, promotion/index/route-shard schemas, canonical owner
+  bindings, two-stage routing, authority/freshness states, contradiction and
+  supersession lineage, retained target decisions, and validator migration
 - Debug Mode rule, module dependencies, explicit activation/expiry, non-
   canonical index/record schema, event attribution, timing/capture quality,
   structured architectural impacts, direction-change hypothesis/replacement

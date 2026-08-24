@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "shard_kind": "target-project-knowledge-routing-shard",
+  "shard_id": "{PROJECT_KNOWLEDGE_SHARD_ID}",
+  "task_profiles": [
+    "{TASK_PROFILE}"
+  ],
+  "project_areas": [
+    "{PROJECT_AREA}"
+  ],
+  "subsystems": [],
+  "architecture_item_ids": [],
+  "dependency_coordinates": [],
+  "path_prefixes": [],
+  "entries": []
+}

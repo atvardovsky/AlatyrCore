@@ -53,6 +53,11 @@ Default routing:
 - Before completing material semantic, architectural, or non-obvious repair
   work, apply the lazy durable engineering-evidence gate. Small local work may
   skip with a specific reason; do not load unrelated evidence records.
+- For non-trivial work, apply bounded project-knowledge routing after profile
+  and area selection and refine it after concrete facts or source surfaces are
+  known. Profile match alone is insufficient. Read canonical owners, deliver
+  only accepted-current items as constraints, and treat contradictions as
+  blockers. Promotion always requires target-owned review.
 - When the optional `debug-mode` module is enabled, activate it only from an
   explicit current-task or current-session request. Checkpoint material events,
   classify architectural impacts and direction replacements structurally, and
@@ -64,30 +69,23 @@ Operation: `help`
 Use when: the user asks what Alatyr can do or the request is unclear.
 Flow: `.ai/assistant/flows/operation-routing.flow.md`
 Minimum input: goal or suspected task area.
-
 Operation: `adapter-health`
 Use when: the user asks for Alatyr status, doctor, or current adapter health.
 Flow: `.ai/assistant/flows/adapter-health.flow.md`
 Minimum input: optional health scope. Allowed actions are `read-only`.
-
 Operation: `product-change`
-Use when: accepted behavior, architecture, data, runtime, or public contract
-may change.
+Use when: accepted behavior, architecture, data, runtime, or a public contract may change.
 Flow: `.ai/assistant/flows/blueprint-driven-change.flow.md`
 Minimum input: change intent, non-goals, and approval constraints.
-
 Operation: `workspace-mode`
-Use when: the user asks to list, suggest, inspect, select, define, accept,
-update, disable, deprecate, remove, or review workspace modes.
+Use when: the user asks to inspect, select, define, or change workspace modes.
 Flow: `.ai/assistant/flows/workspace-mode.flow.md`
-Minimum input: mode action or workspace-role question; mode ID and explicit
-user decision for accepted-state changes.
+Minimum input: action or question; accepted-state changes need a mode ID and user decision.
 
-Use `Alatyr architecture` for project pattern and architecture discussion. Use
-`Alatyr diagram` for a capability-checked diagram view, `Alatyr team status`
-for the compact team view, and `Alatyr set actor <actor-id-or-name>` to select
-local attribution. These route to `architecture-assistance` and
-`diagram-discussion`. When `code-documentation` is enabled, use
+Use `Alatyr architecture` for architecture discussion, `Alatyr diagram` for a
+diagram, `Alatyr team status` for team state, and `Alatyr set actor
+<actor-id-or-name>` for attribution. These route through
+`architecture-assistance` and `diagram-discussion`. When `code-documentation` is enabled, use
 `propose comment style`, `document code`, `generate code docs`, or
 `review code documentation`; the assistant selects a bounded accepted profile.
 When `project-vocabulary` is enabled, use `Alatyr glossary`, `Alatyr define
@@ -115,15 +113,17 @@ Use `Alatyr evidence` to inspect compact historical evidence, `Alatyr capture
 evidence` to request capture for the current task, or `Alatyr explain decision
 <evidence-id>` to reconstruct why a prior change was made. These records store
 normalized conclusions and references, never raw assistant reasoning.
+Use `Alatyr knowledge` for routed knowledge, `Alatyr remember this` to propose
+review, `Alatyr what do we know <subject>` for lookup, or `Alatyr revalidate
+knowledge <id>` for freshness. Only accepted canonical-owner updates become
+project authority.
 When `debug-mode` is enabled, use `Enable Alatyr Debug Mode for this task` to
 start explicit task-local observation, `Alatyr debug status` for read-only
 state, `Alatyr debug checkpoint` for a material event checkpoint, `Alatyr debug
 summary` to finalize or summarize, and `Disable Alatyr Debug Mode` to stop.
 Debug records measure Alatyr and supervision; they are not architecture
 authority and never grant code, commit, publish, or live-action permission.
-Detailed team, blueprint, integrity, update, documentation, vocabulary,
-test-first, extension, dependency-knowledge, workspace-mode, and
-AI-infrastructure operations and aliases are in
+Detailed operations and aliases are in
 `.ai/assistant/help-reference.md`.
 
 ## Minimal Request Shape

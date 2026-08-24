@@ -202,6 +202,13 @@ Derived surfaces: target evidence index and records, capture flow, finalization
 gate, task-scale routing, operation help, change-package links, target
 validation, installation and migration planning.
 
+Category: `PROJECT_KNOWLEDGE`
+Routing owner: `.ai/framework/project-knowledge.md`
+Rule IDs: `ALATYR-KNOWLEDGE-001`
+Derived surfaces: target knowledge policy and routing index, promotion and
+route-shard templates, two-stage context routing, knowledge operation and gate,
+target validation, shared-will conformance, paired rediscovery benchmark.
+
 Category: `DEBUG`
 Routing owner: `.ai/framework/debug-mode.md`
 Rule IDs: `ALATYR-DEBUG-001`
@@ -250,6 +257,9 @@ Canonical owner: `.ai/framework/change-packages.md`
 
 Rule: `ALATYR-ENGINEERING-EVIDENCE-001`
 Canonical owner: `.ai/framework/engineering-evidence.md`
+
+Rule: `ALATYR-KNOWLEDGE-001`
+Canonical owner: `.ai/framework/project-knowledge.md`
 
 Rule: `ALATYR-DEBUG-001`
 Canonical owner: `.ai/framework/debug-mode.md`

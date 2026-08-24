@@ -61,6 +61,13 @@ fact types to canonical owners and derived surfaces. The
 [context router](../../framework/context-router.md) helps an assistant load
 only the part relevant to the current task.
 
+When an investigation produces an expensive reusable conclusion, the assistant
+may propose it for review. A project decision owner accepts, narrows, rejects,
+or defers the candidate. Accepted facts stay in canonical project sources;
+compact route shards only help later developers and assistants find and
+reverify those owners. See
+[project knowledge promotion and delivery](../../framework/project-knowledge.md).
+
 ## Agent And Guardian Are Different Roles
 
 The AI agent is an interaction and execution surface. It can answer a
@@ -118,4 +125,3 @@ assistant should report the gap instead of choosing the nearest or newest file.
 Project decision owners retain authority. AlatyrCore continues recorded
 intent; it does not create that authority or make an old decision permanently
 correct.
-

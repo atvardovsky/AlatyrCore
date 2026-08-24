@@ -193,6 +193,12 @@ CI, assistant rechecks, or final reports, but it remains structural evidence.
 It does not decide source-of-truth correctness or replace logical integrity
 review.
 
+Project-knowledge checks can validate promotion linkage, route selectors,
+authority/freshness states, canonical-owner digests, reciprocal conflict or
+supersession links, packet limits, and shared constraints across assistant
+surfaces. They cannot decide whether a promoted statement is true or whether
+the named human authority should accept it.
+
 `git-range` and `pull-request` package evidence can support a strong historical
 claim about a complete reviewable change set. `selected-file-snapshot` is
 bounded evidence only, and `unverified` supports no completeness claim.
@@ -225,6 +231,9 @@ defines:
 - module profile for required core and optional capabilities
 - durable engineering-evidence owner, storage/publication policy, compact
   index, and retained record access for material tasks
+- project-knowledge owner and decision authority, reviewed promotion records,
+  registered canonical owners, compact route shards, freshness policy,
+  two-stage routing, packet limits, and retained decision access
 - project validation or explicit manual review
 - approval rules and approval records when durable evidence is needed
 - adapter output contracts for installation, framework update, and recheck
@@ -304,6 +313,8 @@ defines:
 The framework does not guarantee:
 
 - correctness of project facts that are missing, stale, or contradictory
+- that captured engineering evidence is automatically accepted, promoted, or
+  delivered as current project authority
 - that an assistant can infer business policy without programmer input
 - that a client can launch subagents, select a requested model, report the
   actual model, or improve latency, quality, or cost through delegation

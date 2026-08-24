@@ -160,6 +160,13 @@ Classify every proposed target file:
     portable Markdown and JSON files are installed.
 13. Create target `.ai/project/contour.md` and target project
    source-of-truth docs from target facts.
+    Create the required project-knowledge policy, empty routing index, empty
+    promotion directory, and route-shard directory. Resolve canonical owner,
+    decision authority, retention, redaction, review cadence, and freshness
+    policy from target evidence. Do not promote historical records, code
+    observations, or installation conclusions automatically. Every accepted
+    reusable constraint must have a reviewed promotion record, a registered
+    canonical target owner, and a compact derived route shard.
     Create `.ai/project/engineering-evidence/README.md` and `index.json` as
     required core surfaces. Resolve the target owner, retained storage mode,
     external-contribution policy, redaction policy, and record access. Start
@@ -261,6 +268,8 @@ Classify every proposed target file:
 15. Add bridge files only for assistants the target uses.
 16. Add installed-operation, operation-help, automatic operation-routing,
     current-scope action-authorization policy,
+    project-knowledge routing policy, compact index, promotion and route-shard
+    templates, two-stage routing descriptor, flow, and gate,
     read-only adapter-health, risk-gated pre-change preview,
     diagram-discussion flow, ASCII layout template, and presentation template
     when the diagrams module is enabled,
@@ -376,11 +385,17 @@ Classify every proposed target file:
 21. Apply the durable engineering-evidence capture decision. For installation
     itself, capture only when reusable non-obvious target-adaptation knowledge
     would otherwise be lost; otherwise record the specific skip reason.
-22. Classify final evidence as `current-state`, `historical-record`, or `mixed`.
+22. Apply the project-knowledge disposition gate to any reusable conclusion.
+    Keep evidence historical unless target decision authority explicitly
+    accepts a promotion and the canonical owner plus route shard are updated.
+    Record proposed, rejected, deferred, superseded, or unresolved conclusions
+    without turning them into active constraints.
+23. Classify final evidence as `current-state`, `historical-record`, or `mixed`.
     Do not infer past installation, approval, or validation actions only from
     files that exist in the current tree.
-23. Report final evidence.
-24. Send the appropriate post-install or post-update assistant chat message
+24. Report final evidence, including the project-knowledge route receipt and
+    promotion decisions or the explicit reason no promotion was needed.
+25. Send the appropriate post-install or post-update assistant chat message
     using the target template when installed. Name the single `Alatyr` entry,
     read-only health aliases, automatic routing, and risk-gated preview.
     Name team/current-actor aliases, attribution limits, and module state when
@@ -460,6 +475,9 @@ Report:
 - target repository inspected
 - framework core files installed or adapted
 - project adapter files rewritten from target facts
+- project-knowledge owner/policy, empty or preserved promotion state, compact
+  index and route shards, two-stage routing, canonical-owner freshness, and
+  current installation promotion decisions
 - consistency map enabled, skipped, or blocked with relationship gaps recorded
 - existing files preserved, skipped, or overwritten with approval
 - supported assistant bridges added or skipped
@@ -490,6 +508,9 @@ Report:
 - durable engineering-evidence owner, policy, compact index, lazy overlay,
   capture flow, gate, contract/record schema, binding lineage, validator,
   existing-record preservation, and current installation capture decision
+- project-knowledge index, promotion records, route shards, routing policy,
+  flow, gate, templates, validator, selected/skipped route receipt, and
+  accepted/rejected/deferred promotion decisions
 - Debug Mode module state, dependency closure, owner, non-canonical storage,
   explicit activation/expiry, compact index, lazy overlay, operation, flow,
   gate, contract/record/summary templates, privacy/timing/versioned attribution/

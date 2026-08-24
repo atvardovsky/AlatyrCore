@@ -22,6 +22,9 @@ A target adapter can load:
 7. task-scale overlays only when the task is large, resumable, team-active,
    explicitly debug-enabled, at material evidence finalization, or an enabled-
    team write preflight finds possible active-work overlap
+8. bounded project-knowledge routing after profile/area selection and again
+   after concrete changed facts, paths, symbols, subsystem or architecture
+   relationships, dependencies, contracts, or issue lineage become known
 
 Then it expands only when the router or human profile names a boundary,
 conflict, approval trigger, or missing source-of-truth fact.
@@ -62,6 +65,8 @@ A target context router should define:
   evidence, or explicitly debug-enabled work
 - optional consistency routing from changed fact IDs to applicable
   relationships
+- required project-knowledge routing through a compact root index, bounded
+  shard selectors, initial/refined packet limits, and authority/freshness rules
 - use-when signals
 - required context paths
 - conditional context paths paired with explicit load conditions
@@ -133,7 +138,7 @@ The router should use the same canonical profile names as
 `context-profiles.md` unless the target adapter records a deliberate local
 renaming.
 
-Budgets are routing controls, not safety limits. Schema 6 preserves schema 5's
+Budgets are routing controls, not safety limits. Schema 7 preserves schema 6's
 separate maximum total profile words, portable framework/adapter words, and
 capacity reserved for target-owned facts. Values must be positive, portable plus reserved must
 not exceed total, and source templates should retain meaningful target
@@ -187,6 +192,16 @@ When the optional consistency-map module is enabled, the router should point
 to its machine-readable map. Use it only after a semantic change or suspected
 drift: resolve changed fact IDs, select applicable direct edges, and expand to
 dependent contracts only when the map or conflicting evidence requires it.
+
+Project-knowledge routing is a required core route but not bootstrap content.
+After selecting a non-trivial profile and project area, load its compact root
+index and only descriptors matching the profile plus a stronger area,
+dependency, fact, contract, path, symbol, or issue signal. Run an initial
+selection before broad orientation and a refined selection after concrete
+source evidence appears. Only accepted-current entries may become candidate
+constraints after their canonical owners are read. Route stale items as
+warnings and contradictions as blockers. Record selected, used, stale,
+blocked, inapplicable, and packet-limit-omitted IDs in the context receipt.
 
 Gate routing follows the same principle. Load the compact gate index and the
 profile's core, task-specific, and final-evidence fragments. Load the complete

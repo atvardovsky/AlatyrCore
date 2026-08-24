@@ -26,6 +26,8 @@ Entry points:
 - `.ai/assistant/module-profile.md`
 - `.ai/project/source-of-truth-registry.md`
 - `.ai/project/engineering-evidence/index.json` and its target storage policy
+- `.ai/project/knowledge/index.json`, reviewed promotions, compact route shards,
+  and `.ai/assistant/context/project-knowledge-routing.json`
 - `.ai/project/debug/index.json` and its non-canonical storage/privacy policy
   when optional Debug Mode is enabled
 - `.ai/project/consistency-map.json` when the optional module is enabled
@@ -72,6 +74,9 @@ Installed operation help:
 
 Available next actions:
 - `create-project-blueprint`: create or repair project source-of-truth docs from target evidence.
+- `project-knowledge`: explain, route, review, promote, reject, defer,
+  supersede, or revalidate reusable project knowledge without treating
+  historical evidence as current authority.
 - `recheck-after-installation`: verify the installed adapter and report gaps.
 - `product-change`: run blueprint-driven change from intent through validation and evidence.
 - `logical-integrity-review`: check consistency across code, docs, tests, diagrams, prompts, skills, gates, and bridges.

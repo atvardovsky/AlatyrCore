@@ -211,6 +211,18 @@ Default allowed actions: `read-only` for inspection; use `docs-only`,
 `adapter-only`, or a broader current-scope modify phase only when target policy
 permits record changes.
 
+Operation: `project-knowledge`
+Use when: proposing, reviewing, promoting, routing, revalidating, superseding,
+or explaining reusable project knowledge.
+Flow: `.ai/assistant/flows/project-knowledge.flow.md`
+Minimum input: knowledge subject, candidate ID, or selected knowledge ID, plus
+the requested lifecycle action.
+Aliases: `Alatyr knowledge`, `Alatyr remember this`, `Alatyr what do we know`,
+`Alatyr revalidate knowledge`.
+Default allowed actions: `read-only` for lookup and proposals. Canonical-owner,
+promotion-record, or route changes require the matching current-scope modify
+authorization and normal approval policy.
+
 Operation: `debug-mode`
 Use when: explicitly enabling non-canonical Alatyr performance observation for
 the current task or session; checking or checkpointing an active record;

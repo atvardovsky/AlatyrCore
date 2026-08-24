@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 979
+Catalog entries: 1022
 
 ## Codes
 
@@ -1394,6 +1394,84 @@ Catalog entries: 979
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `PROFILE_MARKDOWN_MISSING`
   Level: warning. Source: `tools/validate_target_adapter.py`.
+- `PROJECT_KNOWLEDGE_CONFLICT_RECIPROCITY`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_CONTRACT_VERSION`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `PROJECT_KNOWLEDGE_CONTRADICTION_LINK`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_CONTRADICTION_STATE`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_CURRENT_OWNER`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_CURRENT_OWNER_DRIFT`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_FRESHNESS_TRIGGER`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_ID_DUPLICATE`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_INDEX_MISSING`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_INDEX_PATH`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_LOAD`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_MANIFEST_PATH`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `PROJECT_KNOWLEDGE_MANIFEST_POLICY_DRIFT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `PROJECT_KNOWLEDGE_POLICY_DRIFT`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_POLICY_MISSING`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_PRIVACY`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_PROFILE`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_PROMOTION_DRIFT`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_PROMOTION_DUPLICATE`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_PROMOTION_LOAD`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_PROMOTION_OWNER_DRIFT`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_PROMOTION_PATH`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_PROMOTION_REFERENCE`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_REVIEW_EXPIRED`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_ROUTING_DRIFT`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_ROUTING_LOAD`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_ROUTING_MISSING`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_ROUTING_PATH`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_ROUTING_POLICY`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_ROUTING_SELECTORS`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_SELECTOR_MISSING`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_SHARD_DRIFT`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_SHARD_DUPLICATE`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_SHARD_LOAD`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_SHARD_PATH`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_SUMMARY_BUDGET`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_SUPERSESSION_LINK`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_SUPERSESSION_RECIPROCITY`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_SUPERSESSION_STATE`
+  Level: error. Source: `tools/project_knowledge.py`.
 - `REQUIRED_FILE_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ROUTED_PATH_MISSING`
@@ -1485,6 +1563,14 @@ Catalog entries: 979
 - `ROUTER_PROFILE_MISSING`
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `ROUTER_PROFILE_SHAPE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ROUTER_PROJECT_KNOWLEDGE_BUDGET`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ROUTER_PROJECT_KNOWLEDGE_INDEX`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ROUTER_PROJECT_KNOWLEDGE_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ROUTER_PROJECT_KNOWLEDGE_PROFILE_ONLY`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ROUTER_RECEIPT_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.

@@ -130,6 +130,26 @@ Validation or review: `{ENGINEERING_EVIDENCE_VALIDATION_OR_REVIEW}`
 Approval needs: `{ENGINEERING_EVIDENCE_STORAGE_OR_CAPTURE_APPROVAL_NEEDS}`
 Residual risk: `{ENGINEERING_EVIDENCE_RESIDUAL_RISK}`
 
+Core item: `project-knowledge-delivery`
+State: `{REQUIRED_ENABLED_OR_BLOCKED}`
+Owner or file: `.ai/project/knowledge/README.md`
+Required files:
+
+- `.ai/project/knowledge/README.md`
+- `.ai/project/knowledge/index.json`
+- `.ai/project/knowledge/routes/README.md`
+- `.ai/project/knowledge/promotions/README.md`
+- `.ai/assistant/context/project-knowledge-routing.json`
+- `.ai/assistant/flows/project-knowledge.flow.md`
+- `.ai/assistant/gates/project-knowledge.md`
+- `.ai/assistant/templates/project-knowledge-promotion.json`
+- `.ai/assistant/templates/project-knowledge-route-shard.json`
+
+Evidence: `{PROJECT_KNOWLEDGE_POLICY_INDEX_ROUTING_AND_PROMOTION_EVIDENCE_OR_GAP}`
+Validation or review: `{PROJECT_KNOWLEDGE_VALIDATION_OR_REVIEW}`
+Approval needs: `{PROJECT_KNOWLEDGE_PROMOTION_AND_OWNER_UPDATE_APPROVAL_NEEDS}`
+Residual risk: `{PROJECT_KNOWLEDGE_RESIDUAL_RISK}`
+
 ## Optional Modules
 
 Module: `blueprint-change`

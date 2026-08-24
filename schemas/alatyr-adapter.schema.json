@@ -16,6 +16,7 @@
     "validation",
     "operations",
     "engineering_evidence",
+    "project_knowledge",
     "maturity",
     "known_gaps",
     "local_deviations"
@@ -52,7 +53,7 @@
     },
     "source_of_truth": {
       "type": "object",
-      "required": ["project_contour", "registry", "assistant_contour", "context_router", "bootstrap_index", "context_profiles", "module_profile", "project_sources"],
+      "required": ["project_contour", "registry", "engineering_evidence_index", "assistant_contour", "context_router", "bootstrap_index", "context_profiles", "module_profile", "project_sources"],
       "properties": {
         "project_sources": {"$ref": "#/definitions/nonEmptyStringArray"}
       }
@@ -95,7 +96,7 @@
     },
     "operations": {
       "type": "object",
-      "required": ["gate_index", "help", "operation_request", "output_contracts", "action_authorization_policy"]
+      "required": ["gate_index", "help", "operation_request", "output_contracts", "action_authorization_policy", "engineering_evidence_capture", "engineering_evidence_record", "project_knowledge", "project_knowledge_promotion", "project_knowledge_route_shard"]
     },
     "engineering_evidence": {
       "type": "object",
@@ -110,6 +111,26 @@
         "machine_template": {"type": "string", "minLength": 1},
         "storage_mode": {"type": "string", "minLength": 1},
         "external_patch_policy": {"type": "string", "minLength": 1},
+        "retention_policy": {"type": "string", "minLength": 1},
+        "redaction_policy": {"type": "string", "minLength": 1}
+      }
+    },
+    "project_knowledge": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contract_version", "index", "route_shards", "promotions", "routing", "flow", "gate", "promotion_template", "route_shard_template", "owner", "review_policy", "retention_policy", "redaction_policy"],
+      "properties": {
+        "contract_version": {"const": 1},
+        "index": {"type": "string", "minLength": 1},
+        "route_shards": {"type": "string", "minLength": 1},
+        "promotions": {"type": "string", "minLength": 1},
+        "routing": {"type": "string", "minLength": 1},
+        "flow": {"type": "string", "minLength": 1},
+        "gate": {"type": "string", "minLength": 1},
+        "promotion_template": {"type": "string", "minLength": 1},
+        "route_shard_template": {"type": "string", "minLength": 1},
+        "owner": {"type": "string", "minLength": 1},
+        "review_policy": {"type": "string", "minLength": 1},
         "retention_policy": {"type": "string", "minLength": 1},
         "redaction_policy": {"type": "string", "minLength": 1}
       }

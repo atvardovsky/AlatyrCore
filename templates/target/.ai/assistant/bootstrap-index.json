@@ -4,15 +4,15 @@
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "a518711e6780ec7c21e244877292242e9f5b73d60fcd43995ffa4ee4597b9bd9"
+      "sha256": "84520178bfee35942439a014ce9f4ed5864f289a84453c7fd8003a300e3627c5"
     },
     "project_map": {
       "path": ".ai/README.md",
-      "sha256": "74705d4301470a5e26bcca4e49960d102cba1c6103714a5df3386336fa1b6bff"
+      "sha256": "04ca99826e3b67dc625bf1e55fac572829086d486ac73a42c80587fac76979c3"
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",
-      "sha256": "85fd7d7f220affbcf60c894645a9a61e24c2739de19784d1dab82f36455fc50a"
+      "sha256": "f281f1e668177ca93aa3cde9ed9292278ce84911019a645f9b5f11474d4a770d"
     }
   },
   "installation": {
@@ -251,6 +251,7 @@
       ]
     }
   },
+  "project_knowledge_routing": ".ai/assistant/context/project-knowledge-routing.json",
   "operation_index": ".ai/assistant/operation-index.json",
   "operation_catalog": ".ai/assistant/operation-catalog.json",
   "gate_index": ".ai/assistant/gates/index.json",

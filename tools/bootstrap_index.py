@@ -108,6 +108,12 @@ def build_bootstrap_index(
         "intent_overlays": _route_projection(router.get("intent_overlays")),
         "task_scale_overlays": _route_projection(router.get("task_scale_overlays")),
         "area_overlays": _route_projection(router.get("area_overlays")),
+        "project_knowledge_routing": _string(
+            router.get("project_knowledge_routing", {}).get("descriptor")
+            if isinstance(router.get("project_knowledge_routing"), dict)
+            else None,
+            "not installed",
+        ),
         "operation_index": _string(operation_routing.get("index"), "not installed"),
         "operation_catalog": _string(
             operation_routing.get("catalog"), "not installed"

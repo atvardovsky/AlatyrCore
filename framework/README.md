@@ -37,6 +37,10 @@ sync, logical integrity review, and final evidence.
 - required proportional durable engineering-evidence capture with compact
   task/revision, invariant, root-cause, solution, regression, validation,
   privacy, and publication records for material work
+- required reviewed project-knowledge promotion and compact two-stage delivery,
+  with canonical owner verification, independent authority/freshness state,
+  contradiction handling, and bounded cross-assistant packets
+  (installed owner: `.ai/framework/project-knowledge.md`)
 - optional task-local Debug Mode for evidence-based observation of independent
   Alatyr findings, human supervision, causal follow-up, timing, and rework
 - optional large-task orchestration with bounded workstreams, context receipts,

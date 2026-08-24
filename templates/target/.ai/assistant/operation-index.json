@@ -43,6 +43,10 @@
     "Alatyr evidence": "engineering-evidence",
     "Alatyr capture evidence": "engineering-evidence",
     "Alatyr explain decision": "engineering-evidence",
+    "Alatyr knowledge": "project-knowledge",
+    "Alatyr remember this": "project-knowledge",
+    "Alatyr what do we know": "project-knowledge",
+    "Alatyr revalidate knowledge": "project-knowledge",
     "Enable Alatyr Debug Mode": "debug-mode",
     "Alatyr debug": "debug-mode",
     "Alatyr debug status": "debug-mode",
@@ -209,6 +213,15 @@
     "engineering-evidence": [
       "core-profile",
       ".ai/assistant/flows/engineering-evidence-capture.flow.md",
+      "read-only",
+      "docs-only",
+      "adapter-only",
+      "code-and-tests",
+      "full-with-approval"
+    ],
+    "project-knowledge": [
+      "core-profile",
+      ".ai/assistant/flows/project-knowledge.flow.md",
       "read-only",
       "docs-only",
       "adapter-only",

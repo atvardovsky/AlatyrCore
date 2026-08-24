@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "descriptor_kind": "target-project-knowledge-routing",
+  "enabled_when": [
+    "a non-trivial task profile and at least one project area subsystem architecture item dependency contract or issue-lineage signal are selected",
+    "refined inspection identifies changed facts paths symbols architecture relationships contracts dependencies or issue lineage"
+  ],
+  "index": ".ai/project/knowledge/index.json",
+  "initial_selectors": [
+    "task profile",
+    "project areas",
+    "subsystems",
+    "architecture item IDs",
+    "named dependencies",
+    "contract IDs",
+    "explicit issue lineage"
+  ],
+  "refined_selectors": [
+    "changed fact IDs",
+    "affected paths",
+    "affected symbols",
+    "architecture item IDs",
+    "dependency instances",
+    "contract IDs",
+    "issue lineage"
+  ],
+  "delivery_rules": [
+    "accepted plus current entries may be candidate constraints only after canonical-owner revalidation",
+    "revalidation-required entries are warnings rather than current constraints",
+    "contradicted entries block a definitive conclusion and route to the decision owner",
+    "observed proposed unresolved historical and superseded entries remain lazy unless explicitly requested"
+  ],
+  "conditional_context": [
+    {
+      "path": ".ai/framework/project-knowledge.md",
+      "when": "promotion revalidation contradiction supersession routing repair or authority semantics require the portable owner"
+    },
+    {
+      "path": ".ai/assistant/flows/project-knowledge.flow.md",
+      "when": "an explicit project-knowledge lifecycle operation is selected"
+    },
+    {
+      "path": ".ai/assistant/templates/project-knowledge-promotion.json",
+      "when": "an authorized promotion record is drafted or repaired"
+    },
+    {
+      "path": ".ai/assistant/templates/project-knowledge-route-shard.json",
+      "when": "an authorized route shard is created or repaired"
+    }
+  ],
+  "expand_when": [
+    "a selected owner digest changed",
+    "applicability conditions are unresolved",
+    "selected knowledge conflicts with repository evidence",
+    "a dependency or public contract freshness trigger changed",
+    "the packet limit omits equally relevant constraints"
+  ],
+  "budget_behavior": "load the root index then only matching shard descriptors and bounded selected entries; never load all shards by default",
+  "context_receipt": [
+    "routing stage and selectors",
+    "selected shard and knowledge IDs",
+    "current warnings blocked and omitted items",
+    "canonical owners reverified",
+    "packet limits and expansion reason",
+    "residual risk"
+  ]
+}

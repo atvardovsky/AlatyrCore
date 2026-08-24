@@ -22,6 +22,8 @@ These paths exist in this repository:
 - [Target architecture index template](../../templates/target/.ai/project/architecture/README.md)
 - [Target architecture catalog template](../../templates/target/.ai/project/architecture/catalog.json)
 - [Target source-of-truth registry template](../../templates/target/.ai/project/source-of-truth-registry.md)
+- [Target project-knowledge policy](../../templates/target/.ai/project/knowledge/README.md)
+- [Target project-knowledge routing template](../../templates/target/.ai/assistant/context/project-knowledge-routing.json)
 - [Architecture assistance flow](../../templates/target/.ai/assistant/flows/architecture-assistance.flow.md)
 - [Installed operation request template](../../templates/target/.ai/assistant/templates/operation-request.md)
 
@@ -111,7 +113,29 @@ Operation routing is defined by
 defined by
 [framework guarantees and limits](../../framework/guarantees.md).
 
-## 6. Understand The Evidence Boundary
+## 6. Promote Reusable Knowledge
+
+After a material investigation, ask:
+
+```text
+Alatyr remember this: <reusable non-obvious conclusion>
+```
+
+The assistant should propose a review, not declare project truth. A target
+decision owner may accept, narrow, reject, or defer the candidate. For a later
+related task, ask:
+
+```text
+Alatyr what do we know about <selected subsystem or contract>?
+```
+
+The assistant should use bounded two-stage routing, reverify canonical owners,
+and return only accepted/current constraints. Historical evidence stays lazy,
+stale knowledge is a warning, and contradictions block a definitive answer.
+The canonical lifecycle is defined by
+[project knowledge promotion and delivery](../../framework/project-knowledge.md).
+
+## 7. Understand The Evidence Boundary
 
 A useful target answer should distinguish:
 
@@ -124,4 +148,3 @@ A useful target answer should distinguish:
 Without a completed target adapter, this repository can demonstrate only the
 framework contracts and placeholder shapes. A future runnable demonstration
 target would be needed for an end-to-end public product demo.
-

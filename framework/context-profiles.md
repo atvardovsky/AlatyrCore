@@ -154,6 +154,16 @@ overlays. Each overlay names its trigger, required context, and expansion
 conditions. Compose one base task profile with only the overlays that own the
 changed facts.
 
+After profile and area selection for a non-trivial task, apply the compact
+project-knowledge preflight. Read the root routing index, then only shard
+descriptors matching the profile plus at least one area, subsystem,
+architecture item, dependency, fact, contract, path, symbol, or issue signal.
+Perform an initial route before broad
+orientation and one refined route after concrete changed facts or source
+surfaces become known. Load only bounded accepted-current entries and their
+canonical owners; stale items are warnings, contradictions are blockers, and
+unrelated knowledge remains lazy.
+
 ## Consistency Relationship Routing
 
 Targets with many project areas or competing surfaces may enable a compact
@@ -219,6 +229,11 @@ only the selected record for lookup, and load the capture flow/template only
 for an authorized write or repair. Small self-explanatory changes may skip
 with a specific reason. Do not load the full evidence history, raw session
 content, or a change package solely because this overlay applies.
+
+When captured evidence contains a reusable conclusion, hand off a bounded
+candidate to the project-knowledge promotion flow. Do not promote it or add it
+to routine task routing without target-owned review and canonical-owner
+update.
 
 ## Debug Mode Tasks
 

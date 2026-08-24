@@ -52,7 +52,7 @@ source_of_truth:
   project_sources:
     - "{TARGET_PROJECT_SOURCE_OF_TRUTH}"
 context_routing:
-  router_schema_version: 6
+  router_schema_version: 7
   preloaded_context:
     - "AGENTS.md"
   compact_bootstrap:
@@ -145,6 +145,9 @@ operations:
   change_package_report: ".ai/assistant/templates/change-package-report.md"
   engineering_evidence_capture: ".ai/assistant/flows/engineering-evidence-capture.flow.md"
   engineering_evidence_record: ".ai/assistant/templates/engineering-evidence-record.json"
+  project_knowledge: ".ai/assistant/flows/project-knowledge.flow.md"
+  project_knowledge_promotion: ".ai/assistant/templates/project-knowledge-promotion.json"
+  project_knowledge_route_shard: ".ai/assistant/templates/project-knowledge-route-shard.json"
   debug_mode: ".ai/assistant/flows/debug-mode.flow.md"
   ai_infrastructure_inventory: ".ai/assistant/templates/ai-infrastructure-inventory.md"
   ai_infrastructure_recommendation: ".ai/assistant/templates/ai-infrastructure-recommendation.md"
@@ -205,6 +208,20 @@ engineering_evidence:
   external_patch_policy: "{EXCLUDE_FROM_EXTERNAL_PATCH_OR_TARGET_APPROVED_INCLUSION}"
   retention_policy: "{TARGET_ENGINEERING_EVIDENCE_RETENTION_POLICY}"
   redaction_policy: "{TARGET_ENGINEERING_EVIDENCE_REDACTION_POLICY}"
+project_knowledge:
+  contract_version: 1
+  index: ".ai/project/knowledge/index.json"
+  route_shards: ".ai/project/knowledge/routes"
+  promotions: ".ai/project/knowledge/promotions"
+  routing: ".ai/assistant/context/project-knowledge-routing.json"
+  flow: ".ai/assistant/flows/project-knowledge.flow.md"
+  gate: ".ai/assistant/gates/project-knowledge.md"
+  promotion_template: ".ai/assistant/templates/project-knowledge-promotion.json"
+  route_shard_template: ".ai/assistant/templates/project-knowledge-route-shard.json"
+  owner: "{TARGET_PROJECT_KNOWLEDGE_OWNER}"
+  review_policy: "{TARGET_PROJECT_KNOWLEDGE_REVIEW_POLICY}"
+  retention_policy: "{TARGET_PROJECT_KNOWLEDGE_RETENTION_POLICY}"
+  redaction_policy: "{TARGET_PROJECT_KNOWLEDGE_REDACTION_POLICY}"
 debug_mode:
   contract_version: 3
   index: ".ai/project/debug/index.json"

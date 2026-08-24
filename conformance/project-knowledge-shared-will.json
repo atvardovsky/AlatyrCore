@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "suite_kind": "alatyr-project-knowledge-shared-will-contract",
+  "assistant_surfaces_source": "conformance/runs/assistant-surfaces.json",
+  "common_expectations": [
+    "canonical authority",
+    "protected boundaries",
+    "required validation",
+    "unresolved human decisions"
+  ],
+  "strategy_equivalence_required": false,
+  "human_walkthrough_is_assistant_conformance": false,
+  "human_walkthrough_expectation": {
+    "evidence_kind": "separate-usability-evidence",
+    "must_preserve": [
+      "canonical authority",
+      "protected boundaries",
+      "required validation",
+      "unresolved human decisions"
+    ],
+    "must_not_claim": "assistant runtime conformance"
+  },
+  "surface_expectations": {
+    "generic": "consume the canonical project-knowledge route through the generic bridge",
+    "agents": "consume the canonical project-knowledge route through AGENTS bootstrap",
+    "codex": "consume the canonical project-knowledge route through AGENTS bootstrap",
+    "claude": "consume the canonical project-knowledge route through the Claude bridge",
+    "gemini": "consume the canonical project-knowledge route through the Gemini bridge",
+    "github-copilot": "consume the canonical project-knowledge route through Copilot instructions",
+    "cursor": "consume the canonical project-knowledge route through Cursor rules",
+    "devin-cascade": "consume the canonical project-knowledge route through Devin or Cascade rules",
+    "windsurf": "consume the canonical project-knowledge route through Windsurf rules"
+  }
+}

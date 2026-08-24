@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "record_kind": "alatyr-project-knowledge-promotion",
+  "promotion_id": "{PROJECT_KNOWLEDGE_PROMOTION_ID}",
+  "created_at": "{TIMESTAMP_OR_TARGET_OPERATION_REFERENCE}",
+  "candidate": {
+    "candidate_id": "{KNOWLEDGE_CANDIDATE_ID}",
+    "statement": "{REUSABLE_CONCLUSION}",
+    "knowledge_kind": "{INVARIANT_COMPATIBILITY_BOUNDARY_DEPENDENCY_OBSERVATION_REJECTED_DIRECTION_ARCHITECTURE_RATIONALE_OPERATIONAL_CONSTRAINT_VALIDATION_RULE_OR_CROSS_SURFACE_RELATIONSHIP}",
+    "reuse_rationale": "{WHY_A_LATER_TASK_SHOULD_NOT_REDISCOVER_THIS}",
+    "source_engineering_evidence_ids": [
+      "{ENGINEERING_EVIDENCE_ID}"
+    ],
+    "repository_evidence": [
+      "{TARGET_RELATIVE_EVIDENCE_REFERENCE}"
+    ],
+    "proposed_fact_type": "{REGISTERED_FACT_TYPE}",
+    "proposed_fact_ids": [
+      "{STABLE_FACT_ID}"
+    ],
+    "proposed_canonical_owner": "{TARGET_RELATIVE_CANONICAL_OWNER_OR_UNRESOLVED}",
+    "proposed_decision_owner": "{TARGET_DECISION_OWNER_OR_UNRESOLVED}",
+    "route_hints": {
+      "task_profiles": [
+        "{TASK_PROFILE}"
+      ],
+      "project_areas": [
+        "{PROJECT_AREA}"
+      ],
+      "subsystems": [],
+      "architecture_item_ids": [],
+      "dependency_coordinates": [],
+      "path_globs": [],
+      "symbols": [],
+      "contract_ids": [],
+      "issue_lineage": [],
+      "conditions": []
+    }
+  },
+  "human_review": {
+    "disposition": "pending-review",
+    "decision_owner": "{TARGET_DECISION_OWNER_OR_PENDING}",
+    "decision_reference": "{DECISION_REFERENCE_OR_PENDING}",
+    "decided_at": "{TIMESTAMP_OR_PENDING}",
+    "decision_rationale": "{RATIONALE_OR_PENDING}",
+    "accepted_statement": "",
+    "canonical_update": {
+      "state": "pending",
+      "owner_path": "{TARGET_RELATIVE_CANONICAL_OWNER_OR_PENDING}",
+      "content_sha256": "unknown",
+      "fact_ids": []
+    },
+    "route_entry_ids": []
+  },
+  "privacy": {
+    "raw_chat_stored": false,
+    "chain_of_thought_stored": false,
+    "secrets_stored": false,
+    "personal_data_stored": false,
+    "redactions": []
+  }
+}

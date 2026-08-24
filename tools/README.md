@@ -228,6 +228,20 @@ solution, or regression matrix is semantically correct.
 python3 tools/check_engineering_evidence.py
 ```
 
+## Project Knowledge Check
+
+`check_project_knowledge.py` validates reviewed promotion, canonical-owner and
+freshness binding, subsystem/architecture selectors, bounded two-stage
+delivery, contradiction and supersession lineage, paired reuse evidence, and
+shared constraints across supported assistant surfaces. It also runs mutation
+cases for profile-only selection, stale owners, stale routing policy,
+promotion drift, and asymmetric conflicts. It does not decide whether a human
+should accept a candidate or whether the accepted project fact is true.
+
+```sh
+python3 tools/check_project_knowledge.py
+```
+
 ## Debug Mode Check
 
 `check_debug_mode.py` validates the optional per-task/session activation,
@@ -679,6 +693,8 @@ closure, projected registries, and inventories.
 Alatyr adapter in a target repository. It checks router/bootstrap references,
 exact source-of-truth registry to consistency-map node coverage when that
 module is enabled, consistency and AI-infrastructure routing contracts,
+project-knowledge policy/index/promotion/shard linkage, owner freshness,
+two-stage selectors, contradiction/supersession, and historical-state routing,
 unresolved placeholders, hard-coded local paths, stale checker claims, stale
 enabled-module status claims on live support surfaces, individual profile and
 profile-plus-consistency context budgets, manifest fields,

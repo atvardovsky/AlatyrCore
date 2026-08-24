@@ -53,6 +53,9 @@ Every accepted installation should provide:
 - final evidence format
 - durable engineering-evidence capture decision, compact index, target storage
   policy, and record validation for material tasks
+- project-knowledge promotion review, canonical-owner update, compact sharded
+  routing index, two-stage bounded delivery, freshness, conflict, supersession,
+  and paired reuse evidence
 
 If any required core item is missing, the adapter can still exist, but it must
 report the missing item as a gap before claiming maturity.

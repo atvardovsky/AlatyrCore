@@ -36,6 +36,7 @@ semantic owner.
 - Adapter separation: `ALATYR-ADAPTER-001`
 - Module selection: `ALATYR-MODULE-001`
 - Installed operation control surface: `ALATYR-OPERATION-001`
+- Reviewed project-knowledge promotion and delivery: `ALATYR-KNOWLEDGE-001`
 - Optional architecture knowledge and pattern discussion:
   `ALATYR-ARCHITECTURE-001`
 - Optional project vocabulary and terminology lookup:
@@ -121,6 +122,10 @@ The plan must identify:
   repository-binding state/lineage, active-versus-finalized comparison, and
   clean-upstream projection policy
 - source-of-truth registry needs
+- project-knowledge owner and decision authority, promotion review,
+  canonical-owner/freshness bindings, subsystem and architecture selectors,
+  compact packet limits, contradiction/supersession, retention/redaction, and
+  paired reuse evidence needs
 - optional consistency-map need, fact-ID strategy, relationship coverage, and
   staleness owner
 - optional architecture-knowledge owner, compact catalog, pattern/area docs,
@@ -211,6 +216,10 @@ In a typical target repository:
    registry, ownership map, and file inventory; use `complete` when all
    `framework/*.md` and JSON files are installed.
 6. Create `.ai/project/contour.md` and target project source-of-truth docs.
+   Always create the project-knowledge policy, empty compact index, promotion
+   directory, and route-shard directory. Resolve target owner, decision
+   authority, canonical owner registry, freshness, retention, redaction, and
+   packet limits. Do not promote historical evidence during installation.
    Always create `.ai/project/engineering-evidence/README.md` and `index.json`
    for the required core capture decision. Resolve the target owner, retained
    storage mode, redaction policy, external-contribution boundary, and access
@@ -248,7 +257,10 @@ In a typical target repository:
    context profiles, module profile, task-specific maturity profile, bridge
    capability matrix, generated assistant-capability index and installed-
    surface records, and target workflows/gates. Keep the catalog outside routine
-   routing and resolve exact aliases through the compact index.
+   routing and resolve exact aliases through the compact index. Include the
+   project-knowledge routing descriptor, flow, gate, operation/help entries,
+   promotion and route-shard templates, and context receipt fields in every
+   accepted core profile. Keep route shards lazy.
    When team collaboration is enabled, route `team-active` through
    `.ai/assistant/team/context-overlay.json`. Check only the compact active-work
    index before state-changing operations and keep full team state outside
@@ -314,10 +326,15 @@ In a typical target repository:
 12. Apply the durable engineering-evidence decision. Capture reusable material
    installation knowledge when triggered and authorized, or report a specific
    skip/block reason.
-13. If Debug Mode is enabled for the installation operation by an explicit
+13. Review any reusable conclusion through the project-knowledge disposition
+   gate. Only target-authorized acceptance plus a canonical owner update may
+   create a current route entry; otherwise preserve the candidate as proposed,
+   rejected, deferred, unresolved, or historical.
+14. If Debug Mode is enabled for the installation operation by an explicit
    current-scope request, capture only normalized material events and finalize
    or expire that record. Module installation alone does not activate it.
-14. Report files changed, validation run, skipped checks, approvals, and
+15. Report files changed, validation run, skipped checks, approvals, knowledge
+   promotion/routing disposition, and
    residual risk.
 
 ## Post-Install Operations
@@ -326,8 +343,9 @@ After installation, use
 `installer/installed-operation-request-template.md` when asking an assistant to
 operate the installed target adapter. Typical requests include blueprint
 creation or repair, adapter recheck after framework updates, drift review,
-blueprint-driven product changes, architecture and pattern discussion, diagram
-discussion, team coordination, AI infrastructure recommendation, and skill
+blueprint-driven product changes, project-knowledge lookup/promotion/revalidation,
+architecture and pattern discussion, diagram discussion, team coordination,
+AI infrastructure recommendation, and skill
 adaptation, extension inspection and lifecycle management, or explicit Debug
 Mode activation/status/finalization/comparison. Include Allowed actions
 when the request should be limited to `read-only`, `docs-only`,

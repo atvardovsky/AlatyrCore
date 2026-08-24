@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "index_kind": "target-project-knowledge-routing-index",
+  "project": "{PROJECT_NAME}",
+  "owner": "{TARGET_PROJECT_KNOWLEDGE_OWNER}",
+  "review_policy": "{TARGET_PROJECT_KNOWLEDGE_REVIEW_POLICY}",
+  "retention_policy": "{TARGET_PROJECT_KNOWLEDGE_RETENTION_POLICY}",
+  "redaction_policy": "{TARGET_PROJECT_KNOWLEDGE_REDACTION_POLICY}",
+  "routing_policy": {
+    "max_initial_items": 6,
+    "max_refined_items": 8,
+    "max_summary_words": 60,
+    "current_constraint_states": [
+      "accepted",
+      "current"
+    ],
+    "warning_freshness_states": [
+      "revalidation-required"
+    ],
+    "blocking_freshness_states": [
+      "contradicted"
+    ],
+    "selection_order": [
+      "task-profile",
+      "project-area",
+      "subsystem-or-architecture-item",
+      "dependency-or-contract",
+      "changed-fact",
+      "path-or-symbol",
+      "issue-lineage"
+    ],
+    "profile_only_match_allowed": false
+  },
+  "promotion_records": [],
+  "shards": []
+}

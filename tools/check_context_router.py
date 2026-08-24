@@ -176,8 +176,8 @@ def main() -> int:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
 
-    if router.get("schema_version") != 6:
-        failures.append("context-router.json schema_version must be 6")
+    if router.get("schema_version") != 7:
+        failures.append("context-router.json schema_version must be 7")
     if router.get("router_kind") != "target-context-router":
         failures.append("context-router.json router_kind must be target-context-router")
     if router.get("human_reference") != ".ai/assistant/context-profiles.md":
@@ -667,6 +667,46 @@ def main() -> int:
             "consistency_routing conditional context missing portable consistency-model guidance"
         )
 
+    knowledge_entry = router.get("project_knowledge_routing")
+    project_knowledge = descriptor(
+        knowledge_entry.get("descriptor") if isinstance(knowledge_entry, dict) else None,
+        "target-project-knowledge-routing",
+        "project_knowledge_routing",
+        failures,
+    )
+    if not isinstance(knowledge_entry, dict):
+        failures.append("project_knowledge_routing must be indexed")
+    else:
+        if knowledge_entry.get("profile_only_match_allowed") is not False:
+            failures.append("project knowledge routing must reject profile-only matches")
+        for field in ["initial_after", "refined_after"]:
+            if not isinstance(knowledge_entry.get(field), str) or not knowledge_entry[field]:
+                failures.append(f"project_knowledge_routing.{field} must be recorded")
+    check_contract(
+        project_knowledge,
+        [
+            "enabled_when",
+            "initial_selectors",
+            "refined_selectors",
+            "delivery_rules",
+            "expand_when",
+            "context_receipt",
+        ],
+        "project_knowledge_routing",
+        failures,
+    )
+    if project_knowledge.get("index") != ".ai/project/knowledge/index.json":
+        failures.append("project knowledge route must use its compact target index")
+    if not isinstance(project_knowledge.get("budget_behavior"), str):
+        failures.append("project knowledge route must define budget_behavior")
+    project_knowledge_conditional_context = check_conditional_context(
+        project_knowledge,
+        "project_knowledge_routing",
+        failures,
+    )
+    if ".ai/framework/project-knowledge.md" not in project_knowledge_conditional_context:
+        failures.append("project knowledge route must keep its portable owner conditionally available")
+
     migration_entry = router.get("migration_routing")
     migration = descriptor(
         migration_entry.get("descriptor") if isinstance(migration_entry, dict) else None,
@@ -833,6 +873,7 @@ def main() -> int:
         (change_package, "required_context"),
         (engineering_evidence, "required_context"),
         (debug_mode, "required_context"),
+        (project_knowledge, "required_context"),
         (diagram, "required_context"),
         (architecture, "required_context"),
         (code_documentation, "required_context"),
@@ -865,6 +906,11 @@ def main() -> int:
     routed_framework_paths.update(
         value
         for value in debug_mode_conditional_context
+        if value.startswith(".ai/framework/")
+    )
+    routed_framework_paths.update(
+        value
+        for value in project_knowledge_conditional_context
         if value.startswith(".ai/framework/")
     )
     routed_framework_paths.update(

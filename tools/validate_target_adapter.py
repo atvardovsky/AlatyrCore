@@ -67,6 +67,7 @@ from target_adapter_validation.router_costs import (
     validate_budget_shape,
     validate_installed_costs,
 )
+from project_knowledge import validate_project_knowledge
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -135,6 +136,10 @@ CORE_REQUIRED_FILES = [
     ".ai/project/source-of-truth-registry.md",
     ".ai/project/engineering-evidence/README.md",
     ".ai/project/engineering-evidence/index.json",
+    ".ai/project/knowledge/README.md",
+    ".ai/project/knowledge/index.json",
+    ".ai/project/knowledge/routes/README.md",
+    ".ai/project/knowledge/promotions/README.md",
     ".ai/assistant/contour.md",
     ".ai/assistant/context-router.json",
     ".ai/assistant/context-profiles.md",
@@ -144,11 +149,16 @@ CORE_REQUIRED_FILES = [
     ".ai/assistant/gates/core.md",
     ".ai/assistant/gates/final-evidence.md",
     ".ai/assistant/gates/engineering-evidence.md",
+    ".ai/assistant/gates/project-knowledge.md",
     ".ai/assistant/gates/checklist.md",
     ".ai/assistant/policies/action-authorization.json",
     ".ai/assistant/templates/adapter-output-contracts.md",
     ".ai/assistant/templates/engineering-evidence-record.json",
+    ".ai/assistant/templates/project-knowledge-promotion.json",
+    ".ai/assistant/templates/project-knowledge-route-shard.json",
     ".ai/assistant/flows/engineering-evidence-capture.flow.md",
+    ".ai/assistant/flows/project-knowledge.flow.md",
+    ".ai/assistant/context/project-knowledge-routing.json",
     ".ai/assistant/context/task-scales/engineering-evidence.json",
 ]
 
@@ -251,6 +261,9 @@ MANIFEST_REQUIRED_SCALARS: set[PathKey] = {
     ("operations", "action_authorization_policy"),
     ("operations", "engineering_evidence_capture"),
     ("operations", "engineering_evidence_record"),
+    ("operations", "project_knowledge"),
+    ("operations", "project_knowledge_promotion"),
+    ("operations", "project_knowledge_route_shard"),
     ("engineering_evidence", "index"),
     ("engineering_evidence", "records"),
     ("engineering_evidence", "flow"),
@@ -260,6 +273,19 @@ MANIFEST_REQUIRED_SCALARS: set[PathKey] = {
     ("engineering_evidence", "external_patch_policy"),
     ("engineering_evidence", "retention_policy"),
     ("engineering_evidence", "redaction_policy"),
+    ("project_knowledge", "contract_version"),
+    ("project_knowledge", "index"),
+    ("project_knowledge", "route_shards"),
+    ("project_knowledge", "promotions"),
+    ("project_knowledge", "routing"),
+    ("project_knowledge", "flow"),
+    ("project_knowledge", "gate"),
+    ("project_knowledge", "promotion_template"),
+    ("project_knowledge", "route_shard_template"),
+    ("project_knowledge", "owner"),
+    ("project_knowledge", "review_policy"),
+    ("project_knowledge", "retention_policy"),
+    ("project_knowledge", "redaction_policy"),
     ("maturity", "profile"),
 }
 
@@ -880,6 +906,7 @@ class Validator:
         self.check_checker_claims(checker_files, checker_commands)
         self.check_approval_scope()
         self.check_engineering_evidence(manifest)
+        self.check_project_knowledge(manifest)
         self.check_change_package_index()
         self.check_change_packages()
         self.check_framework_baseline()
@@ -1190,10 +1217,10 @@ class Validator:
             numeric_values[key] = value
 
         router_schema = numeric_values.get(("context_routing", "router_schema_version"))
-        if router_schema not in {2, 3, 4, 5, 6}:
+        if router_schema not in {2, 3, 4, 5, 6, 7}:
             self.error(
                 "MANIFEST_CONTEXT_SCHEMA",
-                "context_routing.router_schema_version must be 2, 3, 4, 5, or 6",
+                "context_routing.router_schema_version must be 2, 3, 4, 5, 6, or 7",
                 ".ai/alatyr.yaml",
             )
         total = numeric_values.get(("context_routing", "profile_default_max_total_words"))
@@ -1389,13 +1416,13 @@ class Validator:
         if schema_version == 1:
             self.warn(
                 "ROUTER_SCHEMA_LEGACY",
-                "context router schema 1 should migrate to generated-bootstrap routing schema 6",
+                "context router schema 1 should migrate to generated-bootstrap routing schema 7",
                 ".ai/assistant/context-router.json",
             )
-        elif schema_version not in {2, 3, 4, 5, 6}:
+        elif schema_version not in {2, 3, 4, 5, 6, 7}:
             self.error(
                 "ROUTER_SCHEMA",
-                "context router schema_version should be 2, 3, 4, 5, or 6",
+                "context router schema_version should be 2, 3, 4, 5, 6, or 7",
                 ".ai/assistant/context-router.json",
             )
         manifest_path = self.target_path(".ai/alatyr.yaml")
@@ -1418,7 +1445,7 @@ class Validator:
                 ".ai/assistant/context-router.json",
             )
 
-        if schema_version in {2, 3, 4, 5, 6}:
+        if schema_version in {2, 3, 4, 5, 6, 7}:
             preloaded = expect_string_list(
                 router.get("preloaded_context"),
                 self,
@@ -1446,7 +1473,7 @@ class Validator:
                     ".ai/assistant/context-router.json",
                 )
             required_bootstrap = (
-                REQUIRED_BOOTSTRAP if schema_version in {5, 6} else LEGACY_REQUIRED_BOOTSTRAP
+                REQUIRED_BOOTSTRAP if schema_version in {5, 6, 7} else LEGACY_REQUIRED_BOOTSTRAP
             )
             for required in required_bootstrap:
                 if required not in bootstrap:
@@ -1455,7 +1482,7 @@ class Validator:
                         f"bootstrap_context missing {required}",
                         ".ai/assistant/context-router.json",
                     )
-            deferred = sorted(set(bootstrap) & DEFERRED_BOOTSTRAP) if schema_version in {5, 6} else []
+            deferred = sorted(set(bootstrap) & DEFERRED_BOOTSTRAP) if schema_version in {5, 6, 7} else []
             if deferred:
                 self.warn(
                     "ROUTER_BOOTSTRAP_BROAD",
@@ -1468,21 +1495,21 @@ class Validator:
             if not isinstance(budgets, dict):
                 self.error(
                     "ROUTER_BUDGETS_MISSING",
-                    "schema 2, 3, 4, 5, or 6 router must define context_budgets",
+                    "schema 2, 3, 4, 5, 6, or 7 router must define context_budgets",
                     ".ai/assistant/context-router.json",
                 )
                 budgets = {}
-            elif schema_version in {4, 5, 6}:
+            elif schema_version in {4, 5, 6, 7}:
                 self.check_router_budget_shape(budgets)
             if not isinstance(router.get("context_receipt"), dict):
                 self.error(
                     "ROUTER_RECEIPT_MISSING",
-                    "schema 2, 3, 4, 5, or 6 router must define context_receipt",
+                    "schema 2, 3, 4, 5, 6, or 7 router must define context_receipt",
                     ".ai/assistant/context-router.json",
                 )
             migration_entry = router.get("migration_routing")
             migration = migration_entry
-            if schema_version in {3, 4, 5, 6} and isinstance(migration_entry, dict):
+            if schema_version in {3, 4, 5, 6, 7} and isinstance(migration_entry, dict):
                 migration = self.load_context_descriptor(
                     migration_entry,
                     "target-migration-routing",
@@ -1491,7 +1518,7 @@ class Validator:
             if not isinstance(migration, dict):
                 self.error(
                     "ROUTER_MIGRATION_MISSING",
-                    "schema 2, 3, 4, 5, or 6 router must define migration-first routing",
+                    "schema 2, 3, 4, 5, 6, or 7 router must define migration-first routing",
                     ".ai/assistant/context-router.json",
                 )
             else:
@@ -1620,6 +1647,61 @@ class Validator:
                             ".ai/assistant/context-router.json",
                         )
 
+        if schema_version == 7:
+            knowledge_entry = router.get("project_knowledge_routing")
+            if not isinstance(knowledge_entry, dict):
+                self.error(
+                    "ROUTER_PROJECT_KNOWLEDGE_MISSING",
+                    "schema 7 requires project_knowledge_routing",
+                    ".ai/assistant/context-router.json",
+                )
+            else:
+                if knowledge_entry.get("profile_only_match_allowed") is not False:
+                    self.error(
+                        "ROUTER_PROJECT_KNOWLEDGE_PROFILE_ONLY",
+                        "project knowledge routing must reject profile-only matches",
+                        ".ai/assistant/context-router.json",
+                    )
+                knowledge = self.load_context_descriptor(
+                    knowledge_entry,
+                    "target-project-knowledge-routing",
+                    "project_knowledge_routing",
+                )
+                if isinstance(knowledge, dict):
+                    descriptor_path = str(knowledge_entry.get("descriptor"))
+                    if knowledge.get("index") != ".ai/project/knowledge/index.json":
+                        self.error(
+                            "ROUTER_PROJECT_KNOWLEDGE_INDEX",
+                            "project knowledge route must use the compact target index",
+                            descriptor_path,
+                        )
+                    for field in [
+                        "enabled_when",
+                        "initial_selectors",
+                        "refined_selectors",
+                        "delivery_rules",
+                        "expand_when",
+                        "context_receipt",
+                    ]:
+                        expect_string_list(
+                            knowledge.get(field),
+                            self,
+                            "ROUTER_PROJECT_KNOWLEDGE_FIELD",
+                            descriptor_path,
+                            label=f"project_knowledge_routing.{field}",
+                        )
+                    if not isinstance(knowledge.get("budget_behavior"), str):
+                        self.error(
+                            "ROUTER_PROJECT_KNOWLEDGE_BUDGET",
+                            "project knowledge route must define bounded budget behavior",
+                            descriptor_path,
+                        )
+                    self.check_router_path(
+                        ".ai/project/knowledge/index.json",
+                        "project_knowledge_routing",
+                        "index",
+                    )
+
         if "consistency-map" in (enabled_modules or set()):
             consistency_entry = router.get("consistency_routing")
             if not isinstance(consistency_entry, dict):
@@ -1696,7 +1778,7 @@ class Validator:
                                 "conditional_context",
                             )
 
-        if schema_version in {4, 5, 6} and isinstance(budgets, dict):
+        if schema_version in {4, 5, 6, 7} and isinstance(budgets, dict):
             self.check_installed_context_costs(router, profiles, budgets)
 
         upgrade = profiles.get("framework-upgrade")
@@ -9310,6 +9392,70 @@ class Validator:
                 f"checked durable engineering evidence {evidence_id}; structural validation does not prove invariant, root-cause, solution, or regression correctness",
                 record_ref,
             )
+
+    def check_project_knowledge(self, manifest: ManifestData | None) -> None:
+        index_relpath = ".ai/project/knowledge/index.json"
+        expected_manifest = {
+            ("operations", "project_knowledge"): ".ai/assistant/flows/project-knowledge.flow.md",
+            ("operations", "project_knowledge_promotion"): ".ai/assistant/templates/project-knowledge-promotion.json",
+            ("operations", "project_knowledge_route_shard"): ".ai/assistant/templates/project-knowledge-route-shard.json",
+            ("project_knowledge", "index"): index_relpath,
+            ("project_knowledge", "route_shards"): ".ai/project/knowledge/routes",
+            ("project_knowledge", "promotions"): ".ai/project/knowledge/promotions",
+            ("project_knowledge", "routing"): ".ai/assistant/context/project-knowledge-routing.json",
+            ("project_knowledge", "flow"): ".ai/assistant/flows/project-knowledge.flow.md",
+            ("project_knowledge", "gate"): ".ai/assistant/gates/project-knowledge.md",
+            ("project_knowledge", "promotion_template"): ".ai/assistant/templates/project-knowledge-promotion.json",
+            ("project_knowledge", "route_shard_template"): ".ai/assistant/templates/project-knowledge-route-shard.json",
+        }
+        if manifest is not None:
+            for key, expected in expected_manifest.items():
+                scalar = manifest.scalars.get(key)
+                if scalar is None or scalar.value != expected:
+                    self.error(
+                        "PROJECT_KNOWLEDGE_MANIFEST_PATH",
+                        f"{dotted(key)} must be {expected}",
+                        ".ai/alatyr.yaml",
+                    )
+            contract = manifest.scalars.get(("project_knowledge", "contract_version"))
+            if contract is None or contract.value != "1":
+                self.error(
+                    "PROJECT_KNOWLEDGE_CONTRACT_VERSION",
+                    "project_knowledge.contract_version must be 1",
+                    ".ai/alatyr.yaml",
+                )
+
+        findings = validate_project_knowledge(
+            self.target,
+            ROOT / "schemas",
+            allow_placeholders=self.allow_placeholders,
+        )
+        for finding in findings:
+            self.add_finding(
+                finding.level,
+                finding.code,
+                finding.message,
+                finding.path,
+            )
+
+        index = self.load_json_object(
+            self.target_path(index_relpath), "PROJECT_KNOWLEDGE_INDEX"
+        )
+        if index is None or manifest is None:
+            return
+        for manifest_field, index_field in {
+            "owner": "owner",
+            "review_policy": "review_policy",
+            "retention_policy": "retention_policy",
+            "redaction_policy": "redaction_policy",
+        }.items():
+            scalar = manifest.scalars.get(("project_knowledge", manifest_field))
+            if scalar is None or scalar.value != index.get(index_field):
+                self.error(
+                    "PROJECT_KNOWLEDGE_MANIFEST_POLICY_DRIFT",
+                    f"project_knowledge.{manifest_field} differs from index.{index_field}",
+                    ".ai/alatyr.yaml",
+                )
 
     def check_debug_mode(self, manifest: ManifestData | None) -> None:
         index_relpath = ".ai/project/debug/index.json"
