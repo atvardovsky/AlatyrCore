@@ -10,6 +10,12 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from evidence_contract import (
+    contract_digest_at,
+    current_contract_digest,
+    valid_source_commit,
+)
+
 
 ROOT = Path(__file__).resolve().parents[1]
 SURFACES = ROOT / "conformance" / "runs" / "assistant-surfaces.json"
@@ -27,6 +33,8 @@ def load_object(path: Path) -> dict[str, Any]:
 
 
 def source_version(commit: str) -> str:
+    if not valid_source_commit(commit):
+        return "unavailable"
     result = subprocess.run(
         ["git", "show", f"{commit}:VERSION"],
         cwd=ROOT,
@@ -37,7 +45,25 @@ def source_version(commit: str) -> str:
     return result.stdout.strip() if result.returncode == 0 else "unavailable"
 
 
-def captured_benchmarks() -> list[dict[str, Any]]:
+def evidence_state(
+    source_version_value: str,
+    source_digest: str | None,
+    current_version: str,
+    current_digest: str,
+) -> str:
+    if source_digest is None:
+        return "unavailable"
+    if source_digest == current_digest:
+        return "current-contract"
+    if source_version_value == current_version:
+        return "same-version-stale-contract"
+    return "historical"
+
+
+def captured_benchmarks(
+    current_version: str,
+    current_digest: str,
+) -> list[dict[str, Any]]:
     captured: list[dict[str, Any]] = []
     if not RESULTS.is_dir():
         return captured
@@ -46,6 +72,8 @@ def captured_benchmarks() -> list[dict[str, Any]]:
         task = result.get("task") if isinstance(result.get("task"), dict) else {}
         claims = result.get("claims") if isinstance(result.get("claims"), dict) else {}
         commit = str(result.get("source_commit", ""))
+        version = source_version(commit)
+        source_digest = contract_digest_at(commit)
         captured.append(
             {
                 "benchmark_id": result.get("benchmark_id"),
@@ -54,8 +82,18 @@ def captured_benchmarks() -> list[dict[str, Any]]:
                 "task_profile": task.get("task_profile"),
                 "repetition": task.get("repetition"),
                 "source_commit": commit,
-                "source_version": source_version(commit),
+                "source_version": version,
+                "source_contract_digest": source_digest,
+                "evidence_state": evidence_state(
+                    version,
+                    source_digest,
+                    current_version,
+                    current_digest,
+                ),
                 "all_modes_accepted": claims.get("all_modes_accepted", False),
+                "aggregate_coverage_eligible": claims.get(
+                    "aggregate_coverage_eligible", False
+                ),
                 "broad_cost_claim_supported": claims.get(
                     "broad_cost_claim_supported", False
                 ),
@@ -67,7 +105,7 @@ def captured_benchmarks() -> list[dict[str, Any]]:
 def benchmark_coverage(
     task_classes: list[str],
     minimum_repetitions: Any,
-    current_version: str,
+    current_digest: str,
     benchmarks: list[dict[str, Any]],
 ) -> tuple[dict[str, int], bool]:
     repetitions = {
@@ -76,9 +114,9 @@ def benchmark_coverage(
                 item.get("repetition")
                 for item in benchmarks
                 if item.get("task_class_id") == task_class
-                and item.get("source_version") == current_version
+                and item.get("source_contract_digest") == current_digest
                 and item.get("all_modes_accepted") is True
-                and item.get("broad_cost_claim_supported") is True
+                and item.get("aggregate_coverage_eligible") is True
             }
         )
         for task_class in task_classes
@@ -95,6 +133,7 @@ def benchmark_coverage(
 
 def build() -> dict[str, Any]:
     current_version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+    current_digest = current_contract_digest()
     surface_data = load_object(SURFACES)
     run_data = load_object(RUNS)
     suite = load_object(SUITE)
@@ -108,12 +147,21 @@ def build() -> dict[str, Any]:
         if not isinstance(run, dict):
             continue
         commit = str(run.get("source_commit", ""))
+        version = source_version(commit)
+        source_digest = contract_digest_at(commit)
         captured_runs.append(
             {
                 "id": run.get("id"),
                 "assistant_surface": run.get("assistant_surface"),
                 "source_commit": commit,
-                "source_version": source_version(commit),
+                "source_version": version,
+                "source_contract_digest": source_digest,
+                "evidence_state": evidence_state(
+                    version,
+                    source_digest,
+                    current_version,
+                    current_digest,
+                ),
                 "complete_fixture_set": run.get("complete_fixture_set") is True,
             }
         )
@@ -128,7 +176,7 @@ def build() -> dict[str, Any]:
         {
             str(run["assistant_surface"])
             for run in captured_runs
-            if run.get("source_version") == current_version
+            if run.get("source_contract_digest") == current_digest
             and run.get("complete_fixture_set") is True
         }
     )
@@ -138,21 +186,22 @@ def build() -> dict[str, Any]:
         if isinstance(item, dict) and isinstance(item.get("id"), str)
     ]
     minimum_repetitions = suite.get("recommended_minimum_repetitions")
-    benchmarks = captured_benchmarks()
+    benchmarks = captured_benchmarks(current_version, current_digest)
     current_accepted_repetitions, coverage_complete = benchmark_coverage(
         task_classes,
         minimum_repetitions,
-        current_version,
+        current_digest,
         benchmarks,
     )
     return {
         "schema_version": 1,
         "evidence_kind": "alatyr-source-evidence-coverage",
         "current_framework_version": current_version,
+        "current_contract_digest": current_digest,
         "assistant_conformance": {
             "declared_surfaces": declared_surfaces,
             "captured_surfaces": captured_surfaces,
-            "current_version_complete_surfaces": current_surfaces,
+            "current_contract_complete_surfaces": current_surfaces,
             "captured_runs": captured_runs,
             "broad_cross_assistant_claim_supported": bool(declared_surfaces)
             and set(current_surfaces) == set(declared_surfaces),
@@ -162,14 +211,15 @@ def build() -> dict[str, Any]:
             "required_task_classes": task_classes,
             "recommended_minimum_repetitions": minimum_repetitions,
             "captured_benchmarks": benchmarks,
-            "current_accepted_repetitions_by_task_class": current_accepted_repetitions,
+            "current_contract_accepted_repetitions_by_task_class": current_accepted_repetitions,
             "required_coverage_complete": coverage_complete,
             "broad_cost_or_quality_claim_supported": coverage_complete
             and suite.get("status") == "executed",
         },
         "interpretation": {
             "static_conformance_is_not_real_run_evidence": True,
-            "historical_runs_do_not_prove_current_version_behavior": True,
+            "same_version_runs_with_stale_contracts_are_historical": True,
+            "historical_runs_do_not_prove_current_contract_behavior": True,
             "missing_evidence_is_not_treated_as_failure_of_project_semantics": True,
         },
     }

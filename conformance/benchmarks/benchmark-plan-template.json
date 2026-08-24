@@ -56,6 +56,7 @@
     {
       "id": "{TASK_ID}",
       "name": "{TASK_NAME}",
+      "class_id": "{TASK_CLASS_ID_FROM_BENCHMARK_TASK_SUITE}",
       "task_profile": "{TASK_PROFILE}",
       "request": "{IDENTICAL_TASK_REQUEST_FOR_EVERY_MODE}",
       "allowed_actions": "{READ_ONLY_DOCS_ONLY_ADAPTER_ONLY_CODE_AND_TESTS_OR_FULL_WITH_APPROVAL}",

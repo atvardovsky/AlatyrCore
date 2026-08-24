@@ -210,12 +210,44 @@ class CheckGraphTests(unittest.TestCase):
         self.assertFalse(report["source_write_scope"]["preserved"])
 
     def test_report_output_cannot_bypass_source_write_scope(self) -> None:
-        with self.assertRaisesRegex(ValueError, "outside the source tree"):
-            resolve_report_path(ROOT / "source-check-report.json")
-        self.assertEqual(
-            resolve_report_path(ROOT / "tmp" / "source-check-report.json"),
-            (ROOT / "tmp" / "source-check-report.json").resolve(),
-        )
+        import subprocess
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            (root / ".gitignore").write_text("tmp/\n", encoding="utf-8")
+
+            with self.assertRaisesRegex(ValueError, "outside the source tree"):
+                resolve_report_path(root / "source-check-report.json", root=root)
+            self.assertEqual(
+                resolve_report_path(root / "tmp" / "source-check-report.json", root=root),
+                (root / "tmp" / "source-check-report.json").resolve(),
+            )
+
+    def test_report_output_rejects_tracked_file_under_ignored_tmp(self) -> None:
+        import subprocess
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            (root / ".gitignore").write_text("tmp/\n", encoding="utf-8")
+            report = root / "tmp" / "report.json"
+            report.parent.mkdir()
+            report.write_text("tracked\n", encoding="utf-8")
+            subprocess.run(["git", "add", "-f", "tmp/report.json"], cwd=root, check=True)
+
+            with self.assertRaisesRegex(ValueError, "tracked source file"):
+                resolve_report_path(report, root=root)
+
+    def test_report_output_rejects_unignored_tmp_path(self) -> None:
+        import subprocess
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+
+            with self.assertRaisesRegex(ValueError, "ignored by Git"):
+                resolve_report_path(root / "tmp" / "report.json", root=root)
 
 
 if __name__ == "__main__":

@@ -5,6 +5,7 @@
   "run_id": "{ASSISTANT_RUN_ID}",
   "assistant_surface": "{ASSISTANT_SURFACE}",
   "source_commit": "{ALATYR_CORE_SOURCE_COMMIT}",
+  "evidence_contract_digest": "{ALATYR_EVIDENCE_CONTRACT_SHA256}",
   "run_provenance": {
     "provider": "{ASSISTANT_PROVIDER_OR_UNKNOWN}",
     "product": "{ASSISTANT_PRODUCT_OR_UNKNOWN}",

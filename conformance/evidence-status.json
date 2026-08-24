@@ -5,29 +5,35 @@
       {
         "assistant_surface": "codex",
         "complete_fixture_set": true,
+        "evidence_state": "historical",
         "id": "codex-current-session-8dab3d1",
         "source_commit": "8dab3d15c6e0dc983096c2aaca89fba75fe6fa14",
+        "source_contract_digest": "8d6b4e36aa161d478237d338be55feb2179ca677e52e2296a7dbf3f65e9872b4",
         "source_version": "0.1.0-alpha.0"
       },
       {
         "assistant_surface": "codex",
         "complete_fixture_set": true,
+        "evidence_state": "historical",
         "id": "codex-isolated-core-6ee985d",
         "source_commit": "6ee985df3e6e65507cda175944b2b3ea4be630ae",
+        "source_contract_digest": "57a4719114d29666e3ce5eb7d118ceacc5c333c5a92394cde28fd452b086e1a6",
         "source_version": "0.1.0-alpha.0"
       },
       {
         "assistant_surface": "codex",
         "complete_fixture_set": false,
+        "evidence_state": "historical",
         "id": "codex-source-bootstrap-6ee985d",
         "source_commit": "6ee985df3e6e65507cda175944b2b3ea4be630ae",
+        "source_contract_digest": "57a4719114d29666e3ce5eb7d118ceacc5c333c5a92394cde28fd452b086e1a6",
         "source_version": "0.1.0-alpha.0"
       }
     ],
     "captured_surfaces": [
       "codex"
     ],
-    "current_version_complete_surfaces": [],
+    "current_contract_complete_surfaces": [],
     "declared_surfaces": [
       "generic",
       "agents",
@@ -40,23 +46,27 @@
       "windsurf"
     ]
   },
-  "current_framework_version": "0.1.0-alpha.25",
+  "current_contract_digest": "64aac847ad595792dc5677f5b232859ec6a8f7e0b764192a006f501b3793f2c5",
+  "current_framework_version": "0.1.0-alpha.26",
   "effectiveness": {
     "broad_cost_or_quality_claim_supported": false,
     "captured_benchmarks": [
       {
+        "aggregate_coverage_eligible": false,
         "all_modes_accepted": true,
         "benchmark_id": "codex-docs-local-0619871",
         "broad_cost_claim_supported": false,
+        "evidence_state": "historical",
         "repetition": 1,
         "source_commit": "061987108d8e7ecd15625953d7c41683ee7fe497",
+        "source_contract_digest": "80ea037e6bc0eee8a71ab5ac04747f9b9ed941fface07793920cbbb4d0e83008",
         "source_version": "0.1.0-alpha.0",
         "task_class_id": null,
         "task_id": "readme-wording",
         "task_profile": "docs-local"
       }
     ],
-    "current_accepted_repetitions_by_task_class": {
+    "current_contract_accepted_repetitions_by_task_class": {
       "architecture-boundary-change": 0,
       "business-rule-change": 0,
       "code-regression-local": 0,
@@ -84,8 +94,9 @@
   },
   "evidence_kind": "alatyr-source-evidence-coverage",
   "interpretation": {
-    "historical_runs_do_not_prove_current_version_behavior": true,
+    "historical_runs_do_not_prove_current_contract_behavior": true,
     "missing_evidence_is_not_treated_as_failure_of_project_semantics": true,
+    "same_version_runs_with_stale_contracts_are_historical": true,
     "static_conformance_is_not_real_run_evidence": true
   },
   "schema_version": 1

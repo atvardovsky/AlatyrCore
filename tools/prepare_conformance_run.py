@@ -18,6 +18,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from evidence_contract import current_contract_digest
 from materialize_conformance_fixtures import (
     FIXTURES,
     fixture_dirs,
@@ -99,6 +100,7 @@ def render_prompt(
     run_id: str,
     assistant_surface: str,
     source_commit: str,
+    evidence_contract_digest: str,
     staged_adapter_profile: str | None,
     report_template_path: Path,
 ) -> str:
@@ -139,6 +141,7 @@ adapter. Do not invent validation commands.
 - Run id: `{run_id}`
 - Assistant surface: `{assistant_surface}`
 - Source commit: `{source_commit}`
+- Evidence contract SHA-256: `{evidence_contract_digest}`
 - Target state: {target_state}
 
 ## Task
@@ -187,6 +190,7 @@ Write valid JSON to `{report_path}` with:
 - `run_id`: `{run_id}`
 - `assistant_surface`: `{assistant_surface}`
 - `source_commit`: `{source_commit}`
+- `evidence_contract_digest`: `{evidence_contract_digest}`
 - `run_provenance`: provider/product/model/version, execution mode, timestamps,
   operator, and report origin; use explicit `unknown` values when unavailable
 - `conformance_scope`: include `not target validation`
@@ -212,6 +216,7 @@ def write_run_readme(
     run_id: str,
     assistant_surface: str,
     source_commit: str,
+    evidence_contract_digest: str,
     staged_adapter_profile: str | None,
 ) -> None:
     readme = f"""# Alatyr Assistant Conformance Run
@@ -219,6 +224,7 @@ def write_run_readme(
 Run id: `{run_id}`
 Assistant surface: `{assistant_surface}`
 Source commit: `{source_commit}`
+Evidence contract SHA-256: `{evidence_contract_digest}`
 
 ## Layout
 
@@ -279,6 +285,7 @@ def prepare_run(
         allow_custom=args.allow_custom_surface,
     )
     source_commit = args.source_commit or default_source_commit()
+    evidence_digest = current_contract_digest()
     run_id = args.run_id or f"manual-{safe_name(assistant_surface)}-{source_commit}"
     selected_fixture_dirs = fixture_dirs(args.fixture)
     prepared_fixtures: list[str] = []
@@ -288,6 +295,7 @@ def prepare_run(
         run_id=run_id,
         assistant_surface=assistant_surface,
         source_commit=source_commit,
+        evidence_contract_digest=evidence_digest,
         staged_adapter_profile=staged_adapter_profile,
     )
     (output / "report-template.json").write_text(
@@ -353,6 +361,7 @@ def prepare_run(
                     run_id=run_id,
                     assistant_surface=assistant_surface,
                     source_commit=source_commit,
+                    evidence_contract_digest=evidence_digest,
                     staged_adapter_profile=staged_adapter_profile,
                     report_template_path=output / "report-template.json",
                 ),
@@ -375,6 +384,7 @@ def prepare_run(
             "run_id": run_id,
             "assistant_surface": assistant_surface,
             "source_commit": source_commit,
+            "evidence_contract_digest": evidence_digest,
             "fixtures": prepared_fixtures,
             "expected_report_count": len(prepared_fixtures),
             "reports_directory": "reports",

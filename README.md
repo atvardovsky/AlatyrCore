@@ -321,7 +321,7 @@ tasks from loading the complete framework or project corpus.
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.25`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.26`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural
@@ -341,8 +341,9 @@ Important limits:
 - Onboarding, quality, rework, and cost benefits require broader validation in
   real teams and projects.
 - The generated [evidence status](conformance/evidence-status.json) records
-  which assistant surfaces and effectiveness claims have current real-run
-  support; historical or prepared evidence is not promoted to current proof.
+  which assistant surfaces and effectiveness claims have current-contract
+  real-run support; same-version stale, historical, or prepared evidence is not
+  promoted to current proof.
 - Optional modules are useful only when a target provides owners, evidence,
   maintenance, and validation.
 

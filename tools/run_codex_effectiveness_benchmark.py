@@ -76,21 +76,23 @@ def update_report(
     duration_seconds: float,
 ) -> None:
     report = load_object(path)
-    report.update(
-        {
-            "schema_version": 1,
-            "report_kind": "effectiveness-benchmark-result",
-            "benchmark_id": manifest["benchmark_id"],
-            "task": task["name"],
-            "task_id": run["task_id"],
-            "task_profile": task["task_profile"],
-            "adapter_mode": run["adapter_mode"],
-            "operation_id": run["run_id"],
-            "repetition": run["repetition"],
-            "source_commit": manifest["source_commit"],
-            "target_baseline_hash": run["project_baseline_hash"],
-        }
-    )
+    identity = {
+        "schema_version": 1,
+        "report_kind": "effectiveness-benchmark-result",
+        "benchmark_id": manifest["benchmark_id"],
+        "task": task["name"],
+        "task_id": run["task_id"],
+        "task_class_id": task["class_id"],
+        "task_profile": task["task_profile"],
+        "adapter_mode": run["adapter_mode"],
+        "operation_id": run["run_id"],
+        "repetition": run["repetition"],
+        "source_commit": manifest["source_commit"],
+        "target_baseline_hash": run["project_baseline_hash"],
+    }
+    if "evidence_contract_digest" in manifest:
+        identity["evidence_contract_digest"] = manifest["evidence_contract_digest"]
+    report.update(identity)
     provenance = report.get("run_provenance")
     if not isinstance(provenance, dict):
         provenance = {}
@@ -250,6 +252,8 @@ def run_benchmark(args: argparse.Namespace) -> int:
         "executions": executions,
         "total_usage": totals,
     }
+    if "evidence_contract_digest" in manifest:
+        summary["evidence_contract_digest"] = manifest["evidence_contract_digest"]
     (base / "execution-summary.json").write_text(
         json.dumps(summary, indent=2) + "\n",
         encoding="utf-8",

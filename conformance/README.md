@@ -132,8 +132,9 @@ python3 tools/check_conformance_reports.py --actual-root conformance/runs/assist
 real-run coverage. Refresh it with `python3 tools/render_evidence_status.py`
 after captured assistant or effectiveness evidence changes, and validate it
 with `--check`. A declared or statically prepared assistant surface is not
-listed as current real-run evidence unless a complete captured run belongs to
-the current framework version.
+listed as current real-run evidence unless a complete captured run matches the
+current deterministic evidence-contract digest. Same-version runs become
+historical when assistant-facing contracts change.
 
 Use `conformance/runs/assistant-run-report-template.json` for the report shape.
 The indexed root records each run's expected scope. When checking one
@@ -207,8 +208,10 @@ source for runtime context and logical-integrity evidence.
 Paired no/minimal/full benchmark contracts live under
 `conformance/benchmarks`. The preparer accepts explicit mode snapshots, checks
 that their project content matches outside declared adapter surfaces, and
-creates isolated workspaces. Completed comparisons require report provenance
-and independent acceptance-criteria review:
+creates isolated workspaces. Each task selects a declared task-class ID and its
+matching context profile so reviewed repetitions can contribute to aggregate
+coverage without making a broad claim individually. Completed comparisons
+require report provenance and independent acceptance-criteria review:
 
 ```sh
 python3 tools/prepare_effectiveness_benchmark.py --plan benchmark.json --output tmp/benchmark

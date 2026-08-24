@@ -28,6 +28,7 @@
   "summary": "summary.md",
   "claims": {
     "all_modes_accepted": true,
+    "aggregate_coverage_eligible": false,
     "minimal_total_token_reduction_percent": -0.4,
     "minimal_duration_reduction_percent": 24.7,
     "full_total_token_reduction_percent": -67.0,

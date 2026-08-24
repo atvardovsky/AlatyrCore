@@ -4,6 +4,25 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.26 - 2026-08-24
+
+- Increased the framework version to `0.1.0-alpha.26`; adapter schema and
+  target template versions remain `24` because no installed-adapter or target
+  template contract changed.
+- Bound assistant conformance and effectiveness status to a deterministic
+  evidence-contract digest so same-version source changes cannot retain stale
+  current-evidence status.
+- Replaced the unreachable per-result broad-cost condition with validated
+  aggregate coverage eligibility while preserving narrow claims for every
+  individual benchmark result.
+- Hardened source-check report outputs so repository-local reports must be
+  ignored and untracked and report generation remains inside the final
+  read-only source snapshot.
+- Added focused evidence, aggregation, digest, and report-path regression tests
+  and synchronized reproducible dependency and evidence documentation. No
+  framework rule IDs, adapter schema contracts, or target template contracts
+  changed.
+
 ## 0.1.0-alpha.25 - 2026-08-24
 
 - Increased the framework version to `0.1.0-alpha.25` and adapter schema

@@ -330,6 +330,8 @@ def validate_golden_reports(shared: dict[str, Any]) -> list[str]:
 def validate_run_template(shared: dict[str, Any]) -> list[str]:
     failures: list[str] = []
     template = load_json(RUN_TEMPLATE)
+    if "evidence_contract_digest" not in template:
+        failures.append(f"{RUN_TEMPLATE} missing evidence_contract_digest")
     required = require_string_list(shared, "required_evidence", SHARED)
     for key in required:
         if key not in template:

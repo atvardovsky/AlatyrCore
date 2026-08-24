@@ -13,11 +13,14 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from evidence_contract import current_contract_digest
+
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORT_TEMPLATE = (
     ROOT / "conformance" / "benchmarks" / "effectiveness-run-report-template.json"
 )
+TASK_SUITE = ROOT / "conformance" / "benchmarks" / "benchmark-task-suite.json"
 MODES = ["none", "minimal", "full"]
 ALLOWED_ACTIONS = {
     "read-only",
@@ -181,6 +184,7 @@ def render_prompt(
     report: Path,
     benchmark_id: str,
     commit: str,
+    evidence_contract_digest: str,
     baseline_hash: str,
 ) -> str:
     criteria = "\n".join(
@@ -194,10 +198,12 @@ This is one isolated run in a paired effectiveness benchmark.
 
 - Benchmark: `{benchmark_id}`
 - Task id: `{task['id']}`
+- Task class: `{task['class_id']}`
 - Adapter mode: `{mode}`
 - Repetition: `{repetition}`
 - Run id: `{run_id}`
 - Source commit: `{commit}`
+- Evidence contract SHA-256: `{evidence_contract_digest}`
 - Target baseline hash: `{baseline_hash}`
 - Target workspace: `{target}`
 - Report path: `{report}`
@@ -258,18 +264,34 @@ def prepare_benchmark(plan_path: Path, output: Path, *, overwrite: bool) -> Path
     tasks = plan.get("tasks")
     if not isinstance(tasks, list) or not tasks:
         raise ValueError("tasks must be a non-empty list")
+    suite = load_json(TASK_SUITE)
+    task_classes = {
+        item["id"]: item["task_profile"]
+        for item in suite.get("task_classes", [])
+        if isinstance(item, dict)
+        and isinstance(item.get("id"), str)
+        and isinstance(item.get("task_profile"), str)
+    }
     if output.exists() and any(output.iterdir()) and not overwrite:
         raise ValueError(f"benchmark output is not empty: {output}; use --overwrite")
     output.mkdir(parents=True, exist_ok=True)
 
     commit = source_commit()
+    evidence_digest = current_contract_digest()
     runs: list[dict[str, Any]] = []
     seen_task_ids: set[str] = set()
     prepared_tasks: list[dict[str, Any]] = []
     for task_index, task in enumerate(tasks):
         if not isinstance(task, dict):
             raise ValueError(f"tasks[{task_index}] must be an object")
-        for field in ["id", "name", "task_profile", "request", "allowed_actions"]:
+        for field in [
+            "id",
+            "name",
+            "class_id",
+            "task_profile",
+            "request",
+            "allowed_actions",
+        ]:
             if not isinstance(task.get(field), str) or not task[field]:
                 raise ValueError(f"tasks[{task_index}].{field} must be non-empty")
         task_id = safe_id(task["id"])
@@ -280,6 +302,13 @@ def prepare_benchmark(plan_path: Path, output: Path, *, overwrite: bool) -> Path
         seen_task_ids.add(task_id)
         if task["allowed_actions"] not in ALLOWED_ACTIONS:
             raise ValueError(f"task {task_id} has invalid allowed_actions")
+        expected_profile = task_classes.get(task["class_id"])
+        if expected_profile is None:
+            raise ValueError(f"task {task_id} has unknown class_id {task['class_id']}")
+        if task["task_profile"] != expected_profile:
+            raise ValueError(
+                f"task {task_id} profile does not match class {task['class_id']}"
+            )
         criteria = string_list(
             task.get("acceptance_criteria"),
             f"tasks[{task_index}].acceptance_criteria",
@@ -317,6 +346,7 @@ def prepare_benchmark(plan_path: Path, output: Path, *, overwrite: bool) -> Path
             {
                 "id": task_id,
                 "name": task["name"],
+                "class_id": task["class_id"],
                 "task_profile": task["task_profile"],
                 "allowed_actions": task["allowed_actions"],
                 "acceptance_criteria": criteria,
@@ -346,6 +376,7 @@ def prepare_benchmark(plan_path: Path, output: Path, *, overwrite: bool) -> Path
                         report=report,
                         benchmark_id=benchmark_id,
                         commit=commit,
+                        evidence_contract_digest=evidence_digest,
                         baseline_hash=project_hash,
                     ),
                     encoding="utf-8",
@@ -371,6 +402,7 @@ def prepare_benchmark(plan_path: Path, output: Path, *, overwrite: bool) -> Path
         "status": "prepared-not-executed",
         "benchmark_id": benchmark_id,
         "source_commit": commit,
+        "evidence_contract_digest": evidence_digest,
         "input_plan_hash": hashlib.sha256(plan_path.read_bytes()).hexdigest(),
         "adapter_surface_patterns": patterns,
         "repetitions": repetitions,

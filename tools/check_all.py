@@ -321,15 +321,36 @@ def write_report(path: Path, report: dict[str, Any]) -> None:
     path.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
-def resolve_report_path(path: Path) -> Path:
+def resolve_report_path(path: Path, *, root: Path = ROOT) -> Path:
     resolved = path.resolve()
+    source_root = root.resolve()
     try:
-        relative = resolved.relative_to(ROOT)
+        relative = resolved.relative_to(source_root)
     except ValueError:
         return resolved
-    if relative.parts and relative.parts[0] == "tmp":
-        return resolved
-    raise ValueError("--report must be outside the source tree or under ignored tmp/")
+    if not relative.parts or relative.parts[0] != "tmp":
+        raise ValueError("--report must be outside the source tree or under ignored tmp/")
+
+    relpath = relative.as_posix()
+    tracked = subprocess.run(
+        ["git", "ls-files", "--error-unmatch", "--", relpath],
+        cwd=source_root,
+        check=False,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    if tracked.returncode == 0:
+        raise ValueError("--report must not replace a tracked source file")
+    ignored = subprocess.run(
+        ["git", "check-ignore", "--quiet", "--no-index", "--", relpath],
+        cwd=source_root,
+        check=False,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    if ignored.returncode != 0:
+        raise ValueError("--report repository path must be ignored by Git")
+    return resolved
 
 
 def execute_checks(
@@ -454,12 +475,6 @@ def main() -> int:
         if code != 0:
             failures.append(check["id"])
 
-    if source_changes:
-        print("\nFAILED read-only source-check write scope:", file=sys.stderr)
-        for change in source_changes:
-            print(f"- {change}", file=sys.stderr)
-        failures.append("source-write-scope")
-
     if report_path:
         try:
             write_report(
@@ -475,6 +490,36 @@ def main() -> int:
         except OSError as exc:
             print(f"FAIL: cannot write source-check report: {exc}", file=sys.stderr)
             failures.append("source-check-report")
+
+    try:
+        final_source_changes = snapshot_changes(before, source_snapshot(ROOT))
+    except (OSError, ValueError) as exc:
+        print(f"FAIL: cannot verify final source write scope: {exc}", file=sys.stderr)
+        failures.append("source-write-scope")
+        final_source_changes = source_changes
+    if final_source_changes != source_changes:
+        source_changes = final_source_changes
+        if report_path:
+            try:
+                write_report(
+                    report_path,
+                    render_report(
+                        profile=args.profile,
+                        selected=selected,
+                        results=results,
+                        blocked=blocked,
+                        source_changes=source_changes,
+                    ),
+                )
+            except OSError as exc:
+                print(f"FAIL: cannot refresh source-check report: {exc}", file=sys.stderr)
+                failures.append("source-check-report")
+
+    if source_changes:
+        print("\nFAILED read-only source-check write scope:", file=sys.stderr)
+        for change in source_changes:
+            print(f"- {change}", file=sys.stderr)
+        failures.append("source-write-scope")
 
     if failures:
         print("\nFAILED source checks:", file=sys.stderr)

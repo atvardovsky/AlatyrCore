@@ -87,10 +87,15 @@ checks. `platform` runs the portable tooling contract slice used on macOS and
 Windows. It validates this repository only; it is not a portable framework
 requirement for target projects.
 
+Machine-readable reports should normally be written outside the repository.
+A repository-local `--report` path is accepted only under `tmp/` when Git
+confirms that the path is ignored and untracked. Report generation is included
+in the runner's final read-only source snapshot.
+
 Install source-check dependencies first:
 
 ```sh
-python3 -m pip install -r requirements-dev.txt
+python3 -m pip install -r requirements-dev.txt -c constraints-ci.txt
 ```
 
 Supported source tooling starts at Python 3.10. The machine-readable contract
@@ -1178,12 +1183,17 @@ running assistants.
 
 `render_evidence_status.py` derives `conformance/evidence-status.json` from the
 declared assistant surfaces, captured run index, effectiveness suite, and
-captured benchmark results. It distinguishes historical evidence from complete
-runs produced for the current framework version and keeps broad cross-assistant
-or cost claims false until their required evidence exists. Broad effectiveness
-coverage requires every suite task class, its explicit `task.class_id`, the
-recommended unique repetitions, current-version evidence, accepted modes, and
-reviewed claim support.
+captured benchmark results. It binds current evidence to a deterministic digest
+of assistant-facing framework, installer, template, schema, fixture, prompt,
+preparation, execution, and validation contracts. A run from the same framework
+version becomes historical when that contract digest changes.
+
+Individual benchmark results must keep `broad_cost_claim_supported` false. A
+reviewed result may set `aggregate_coverage_eligible` true only when all modes
+are accepted, required quality metrics are comparable and non-regressing, and
+the task class and repetition are explicit. Broad effectiveness coverage then
+requires every suite task class, the recommended unique repetitions,
+current-contract evidence, and an executed suite state.
 
 ```sh
 python3 tools/render_evidence_status.py
@@ -1258,7 +1268,9 @@ For controlled comparisons, `prepare_effectiveness_benchmark.py`, also
 available as `alatyr.py prepare-benchmark`, copies user-supplied `none`,
 `minimal`, and `full` snapshots into isolated workspaces. It rejects project
 content drift outside declared adapter surfaces and writes
-`prepared-not-executed` run prompts.
+`prepared-not-executed` run prompts. Every task must select a `class_id` from
+`conformance/benchmarks/benchmark-task-suite.json`; its `task_profile` must
+match that declared class.
 
 `check_effectiveness_benchmark.py` validates prepared isolation and, with
 `--require-reports --require-reviewed`, requires every paired run plus
@@ -1280,8 +1292,9 @@ real model usage and is not part of `check_all.py`.
 `check_captured_effectiveness_results.py` validates compact committed benchmark
 evidence under `conformance/benchmarks/results`: reviewed mode reports,
 execution-summary token alignment, review hashes, and the narrow claim
-boundary. Complete temporary targets and raw logs remain outside the source
-repository.
+boundary. Aggregate eligibility additionally requires a declared task class,
+repetition, accepted modes, and non-regressing quality metrics. Complete
+temporary targets and raw logs remain outside the source repository.
 
 Linux or macOS:
 

@@ -100,6 +100,9 @@ def task_index(manifest: dict[str, Any]) -> dict[str, dict[str, Any]]:
         for field in ["name", "task_profile", "allowed_actions"]:
             if not isinstance(task.get(field), str) or not task[field]:
                 raise AssertionError(f"benchmark task {task_id} has invalid {field}")
+        class_id = task.get("class_id")
+        if class_id is not None and (not isinstance(class_id, str) or not class_id):
+            raise AssertionError(f"benchmark task {task_id} has invalid class_id")
         if not valid_sha256(task.get("project_baseline_hash")):
             raise AssertionError(f"benchmark task {task_id} has invalid baseline hash")
         hashes = task.get("mode_snapshot_hashes")
@@ -182,6 +185,10 @@ def validate_benchmark_report(
         "source_commit": manifest["source_commit"],
         "target_baseline_hash": run["project_baseline_hash"],
     }
+    if "class_id" in task:
+        expected["task_class_id"] = task["class_id"]
+    if "evidence_contract_digest" in manifest:
+        expected["evidence_contract_digest"] = manifest["evidence_contract_digest"]
     for field, value in expected.items():
         if report.get(field) != value:
             raise AssertionError(f"{report_path} field {field} does not match benchmark")
@@ -252,6 +259,10 @@ def validate_benchmark(
             "unknown",
         }:
             raise AssertionError("benchmark source_commit must identify a source revision")
+        if "evidence_contract_digest" in manifest and not valid_sha256(
+            manifest.get("evidence_contract_digest")
+        ):
+            raise AssertionError("benchmark evidence_contract_digest must be sha256")
         if not valid_sha256(manifest.get("input_plan_hash")):
             raise AssertionError("benchmark input_plan_hash must be sha256")
         if manifest.get("modes") != MODES:
@@ -267,6 +278,25 @@ def validate_benchmark(
         ):
             raise AssertionError("benchmark adapter surface patterns are missing")
         tasks = task_index(manifest)
+        suite = load_json(TASK_SUITE)
+        task_classes = {
+            item["id"]: item["task_profile"]
+            for item in suite.get("task_classes", [])
+            if isinstance(item, dict)
+            and isinstance(item.get("id"), str)
+            and isinstance(item.get("task_profile"), str)
+        }
+        for task_id, task in tasks.items():
+            class_id = task.get("class_id")
+            if class_id is None:
+                continue
+            expected_profile = task_classes.get(class_id)
+            if expected_profile is None:
+                raise AssertionError(f"benchmark task {task_id} has unknown class_id")
+            if task.get("task_profile") != expected_profile:
+                raise AssertionError(
+                    f"benchmark task {task_id} profile does not match class {class_id}"
+                )
         expected_count = len(tasks) * len(MODES) * repetitions
         if manifest.get("expected_report_count") != expected_count:
             raise AssertionError("benchmark expected_report_count drifted")
@@ -417,13 +447,17 @@ def validate_source_templates() -> list[str]:
             failures.append("benchmark plan template must contain one placeholder task")
         elif set(tasks[0].get("sources", {})) != set(MODES):
             failures.append("benchmark plan placeholder task must define all mode sources")
+        elif "class_id" not in tasks[0]:
+            failures.append("benchmark plan placeholder task must define class_id")
         for field in [
             "benchmark_id",
             "task_id",
+            "task_class_id",
             "adapter_mode",
             "operation_id",
             "repetition",
             "source_commit",
+            "evidence_contract_digest",
             "target_baseline_hash",
             "run_provenance",
             "context_measurement_kind",
@@ -578,6 +612,7 @@ def source_self_check() -> list[str]:
                 {
                     "id": "paired-task",
                     "name": "Paired source contract task",
+                    "class_id": "business-rule-change",
                     "task_profile": "business-change",
                     "request": "Review the same generic fact.",
                     "allowed_actions": "read-only",
@@ -605,11 +640,13 @@ def source_self_check() -> list[str]:
                     "benchmark_id": manifest["benchmark_id"],
                     "task": task["name"],
                     "task_id": run["task_id"],
+                    "task_class_id": task["class_id"],
                     "task_profile": task["task_profile"],
                     "adapter_mode": run["adapter_mode"],
                     "operation_id": run["run_id"],
                     "repetition": run["repetition"],
                     "source_commit": manifest["source_commit"],
+                    "evidence_contract_digest": manifest["evidence_contract_digest"],
                     "target_baseline_hash": run["project_baseline_hash"],
                     "run_provenance": {
                         "provider": "synthetic",

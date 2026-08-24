@@ -9,11 +9,20 @@ from pathlib import Path
 from typing import Any
 
 from check_effectiveness_benchmark import MODES, validate_benchmark_report
+from evidence_contract import contract_digest_at, valid_source_commit
 
 
 ROOT = Path(__file__).resolve().parents[1]
 RESULTS = ROOT / "conformance" / "benchmarks" / "results"
+TASK_SUITE = ROOT / "conformance" / "benchmarks" / "benchmark-task-suite.json"
 HEX = set("0123456789abcdef")
+QUALITY_METRICS = [
+    "hallucinated_command_count",
+    "validation_error_count",
+    "missed_companion_updates",
+    "rework_count",
+    "unresolved_consistency_gaps",
+]
 
 
 def load(path: Path) -> dict[str, Any]:
@@ -39,6 +48,57 @@ def sha256(value: Any) -> bool:
     return isinstance(value, str) and len(value) == 64 and set(value.lower()) <= HEX
 
 
+def validate_aggregate_eligibility(
+    path: Path,
+    task: dict[str, Any],
+    claims: dict[str, Any],
+    report_by_mode: dict[str, dict[str, Any]],
+    task_classes: dict[str, str],
+) -> None:
+    aggregate_eligible = claims.get("aggregate_coverage_eligible")
+    if not isinstance(aggregate_eligible, bool):
+        raise AssertionError(f"{path} aggregate_coverage_eligible must be boolean")
+    if not aggregate_eligible:
+        return
+    expected_profile = task_classes.get(task.get("class_id"))
+    if expected_profile is None:
+        raise AssertionError(f"{path} aggregate evidence needs a known task class")
+    if task.get("task_profile") != expected_profile:
+        raise AssertionError(f"{path} aggregate evidence task profile drifted")
+    if not isinstance(task.get("repetition"), int) or isinstance(
+        task["repetition"], bool
+    ) or task["repetition"] < 1:
+        raise AssertionError(f"{path} aggregate evidence needs a positive repetition")
+    if claims.get("all_modes_accepted") is not True:
+        raise AssertionError(f"{path} aggregate evidence requires all modes accepted")
+    for mode in MODES:
+        report = report_by_mode[mode]
+        if report.get("outcome") != "accepted" or any(
+            not isinstance(item, dict) or item.get("status") != "pass"
+            for item in report.get("acceptance_criteria_results", [])
+        ):
+            raise AssertionError(f"{path} aggregate evidence has unaccepted {mode} results")
+    reference = report_by_mode["none"]
+    for mode in ["minimal", "full"]:
+        candidate = report_by_mode[mode]
+        for metric in QUALITY_METRICS:
+            previous = reference.get(metric)
+            current = candidate.get(metric)
+            if (
+                not isinstance(previous, int)
+                or isinstance(previous, bool)
+                or not isinstance(current, int)
+                or isinstance(current, bool)
+            ):
+                raise AssertionError(
+                    f"{path} aggregate evidence metric {metric} is not comparable"
+                )
+            if current > previous:
+                raise AssertionError(
+                    f"{path} aggregate evidence {mode} regresses {metric}"
+                )
+
+
 def validate_result(path: Path) -> None:
     result = load(path)
     base = path.parent
@@ -49,6 +109,15 @@ def validate_result(path: Path) -> None:
     for field in ["benchmark_id", "source_commit"]:
         if not isinstance(result.get(field), str) or not result[field]:
             raise AssertionError(f"{path} missing {field}")
+    if not valid_source_commit(result["source_commit"]):
+        raise AssertionError(f"{path} source_commit must be a full Git object ID")
+    recorded_digest = result.get("evidence_contract_digest")
+    if recorded_digest is not None:
+        if not sha256(recorded_digest):
+            raise AssertionError(f"{path} evidence_contract_digest must be sha256")
+        derived_digest = contract_digest_at(result["source_commit"])
+        if derived_digest != recorded_digest:
+            raise AssertionError(f"{path} evidence contract does not match source_commit")
     if not sha256(result.get("input_plan_hash")):
         raise AssertionError(f"{path} input_plan_hash must be sha256")
 
@@ -80,6 +149,7 @@ def validate_result(path: Path) -> None:
         "benchmark_id": result["benchmark_id"],
         "source_commit": result["source_commit"],
     }
+    report_by_mode: dict[str, dict[str, Any]] = {}
     for mode, report_relpath in reports.items():
         report_path = safe_child(base, report_relpath, f"report {mode}")
         report = load(report_path)
@@ -98,6 +168,7 @@ def validate_result(path: Path) -> None:
             task,
             require_reviewed=True,
         )
+        report_by_mode[mode] = report
         observed = execution_by_mode[mode]
         usage = observed.get("usage")
         if not isinstance(usage, dict):
@@ -123,6 +194,21 @@ def validate_result(path: Path) -> None:
     claims = result.get("claims")
     if not isinstance(claims, dict) or claims.get("broad_cost_claim_supported") is not False:
         raise AssertionError(f"{path} must preserve the narrow interpretation boundary")
+    suite = load(TASK_SUITE)
+    task_classes = {
+        item["id"]: item["task_profile"]
+        for item in suite.get("task_classes", [])
+        if isinstance(item, dict)
+        and isinstance(item.get("id"), str)
+        and isinstance(item.get("task_profile"), str)
+    }
+    validate_aggregate_eligibility(
+        path,
+        task,
+        claims,
+        report_by_mode,
+        task_classes,
+    )
 
 
 def main() -> int:
