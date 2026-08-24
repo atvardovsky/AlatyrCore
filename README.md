@@ -3,9 +3,9 @@
 **Your project should remember why it was built this way.**
 
 AlatyrCore is a vendor-neutral project guardian for software teams and AI
-coding agents. It keeps project knowledge, architectural intent, decision
-boundaries, and validation guidance with the repository so they can survive
-changes in people, tools, agents, and time.
+coding agents. It keeps reviewed project knowledge, recorded architectural
+intent, decision boundaries, and validation guidance with the repository so
+they can survive changes in people, tools, agents, and time.
 
 - Persistent project memory owned by the project
 - Architectural continuity without treating code as the whole design record
@@ -17,7 +17,7 @@ changes in people, tools, agents, and time.
 Other systems add AI to a project. AlatyrCore gives the project memory, a
 voice, and continuity.
 
-**One project will. Many human and AI executors.**
+**One project. Shared recorded intent. Many human and AI executors.**
 
 ## What AlatyrCore Is
 
@@ -45,21 +45,72 @@ people. AI coding agents can produce useful local changes, but they do not
 automatically preserve the intent and constraints distributed across those
 surfaces.
 
+Each new developer, session, or assistant can therefore repeat the same
+repository archaeology: locating authority, reconstructing architecture,
+rechecking dependency behavior, and asking maintainers to explain constraints
+the project has already established. AlatyrCore is designed to reduce that
+repeated reconstruction without replacing source inspection or freshness
+checks.
+
 AlatyrCore gives supported assistants the same project-owned starting point.
-It routes a request to the smallest relevant context, identifies fact owners,
-separates observed implementation from accepted intent, and requires
+It routes a request to a bounded task-relevant context packet, identifies fact
+owners, separates observed implementation from accepted intent, and requires
 validation and residual-risk evidence before consistency is claimed.
 
 This is the practical distinction:
 
-- **The AI agent performs the work.** It reads, explains, plans, edits, and
-  validates within its available capabilities.
+- **The AI agent performs the work.** It reads, explains, investigates, and
+  proposes a solution. When the current request authorizes implementation, it
+  edits and validates within accepted project boundaries and its available
+  capabilities.
 - **The installed Alatyr adapter supplies project continuity.** It records
   where truth is owned, which decisions are accepted, which boundaries apply,
   and what remains unknown.
-- **People retain authority.** AlatyrCore preserves recorded decisions and
-  approval boundaries; it does not replace project owners or make stale
+- **Target-designated decision owners retain authority.** AlatyrCore preserves
+  recorded decisions and approval boundaries; it does not grant every
+  contributor the same authority, replace project owners, or make stale
   decisions permanently correct.
+
+## From Engineering Discovery To Project Knowledge
+
+AlatyrCore separates historical engineering evidence from accepted project
+knowledge. An assistant may identify an expensive, reusable conclusion, but it
+cannot promote that conclusion into project truth by itself.
+
+```text
+engineering discovery
+        -> reusable knowledge proposal
+        -> target decision-owner review
+        -> accepted canonical project source
+        -> bounded routing to later related work
+```
+
+The reviewer may accept, narrow, reject, or defer the proposal. Only accepted,
+current knowledge can become a candidate constraint, and a later executor must
+still read the canonical owner before relying on it for a material decision.
+Stale knowledge becomes a revalidation warning; contradictory knowledge blocks
+a definitive conclusion until the target owner resolves it.
+
+The intended product criterion is straightforward: help a new developer or
+compatible AI agent begin from reviewed project knowledge and spend less effort
+reconstructing already-known context. That is a measurable goal, not a claim
+that current evidence proves the benefit for every project or assistant.
+
+Canonical behavior is defined by
+[project knowledge promotion and delivery](framework/project-knowledge.md).
+
+## What AlatyrCore Is Not
+
+AlatyrCore is not a coding agent, hosted intelligence service, daemon, or
+universal shell command. It does not replace architects or target decision
+owners, automatically infer accepted intent from code, or turn assistant
+conclusions into project truth.
+
+It also does not copy the repository or raw conversations into one large memory
+store. Its adapter routes bounded project-owned sources and reviewed derived
+records. Structural checks can detect contract drift, but they cannot guarantee
+semantic correctness or that every assistant client loaded and followed the
+same instructions.
 
 ## See It In Action
 
@@ -146,6 +197,23 @@ Canonical guidance is in
 [architecture knowledge and discussion](framework/architecture-knowledge.md)
 and [logical integrity review](framework/logical-integrity.md).
 
+## Why Not Just `AGENTS.md`?
+
+An `AGENTS.md` file is a useful assistant entry surface, and AlatyrCore supports
+it. A single instruction file can point an agent in the right direction, but it
+does not by itself provide AlatyrCore's project-level contracts for:
+
+- canonical ownership, authority, and provenance
+- accepted, observed, proposed, stale, contradicted, and historical states
+- task-specific context and project-knowledge routing
+- freshness, revalidation, conflict, and supersession handling
+- approval, validation, and final-evidence boundaries
+- reviewed promotion of reusable engineering discoveries
+
+In an installed adapter, `AGENTS.md` remains a compact bridge into those
+project-owned contracts. It is not required to duplicate the complete policy or
+project-memory model.
+
 ## Start Here
 
 Choose the path that matches what you are doing:
@@ -192,8 +260,8 @@ facts correct by itself.
 2. A repository-aware project adapter connects those facts to portable
    AlatyrCore rules and supported assistant surfaces.
 3. A generated, hash-bound bootstrap index and compact router select the
-   smallest task, gate fragments, and project-area context for a question or
-   change.
+   bounded task profile, gate fragments, and project-area context for a
+   question or change.
 4. The assistant explains the project or follows the matching workflow,
    including approvals for protected changes.
 5. Deterministic checks validate structural contracts where possible; human
