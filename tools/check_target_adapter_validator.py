@@ -192,6 +192,78 @@ def main() -> int:
         }:
             failures.append("client permissions must not grant Alatyr authorization")
 
+        inactive_bridge_target = target / "inactive-assistant-bridge"
+        (inactive_bridge_target / ".ai/assistant/assistant-capabilities").mkdir(
+            parents=True
+        )
+        (inactive_bridge_target / "AGENTS.md").write_text(
+            "# Active instructions\n", encoding="utf-8"
+        )
+        (inactive_bridge_target / "CLAUDE.md").write_text(
+            "Legacy example: size={24}\n", encoding="utf-8"
+        )
+        inactive_manifest_path = inactive_bridge_target / ".ai/alatyr.yaml"
+        inactive_manifest_path.write_text(
+            "supported_assistants:\n  - codex\n", encoding="utf-8"
+        )
+        write_json(
+            inactive_bridge_target / ".ai/assistant/assistant-capabilities.json",
+            {
+                "schema_version": 2,
+                "capability_kind": "target-assistant-capability-index",
+                "surfaces": {
+                    "codex": ".ai/assistant/assistant-capabilities/codex.json",
+                    "claude": ".ai/assistant/assistant-capabilities/claude.json",
+                },
+            },
+        )
+        write_json(
+            inactive_bridge_target
+            / ".ai/assistant/assistant-capabilities/codex.json",
+            {"instruction_loading": {"route": "supported"}},
+        )
+        write_json(
+            inactive_bridge_target
+            / ".ai/assistant/assistant-capabilities/claude.json",
+            {"instruction_loading": {"route": "unsupported"}},
+        )
+        inactive_manifest = parse_manifest(inactive_manifest_path)
+        inactive_bridge_validator = validator(
+            inactive_bridge_target, validation_phase="acceptance"
+        )
+        inactive_bridge_validator.check_placeholders(
+            inactive_manifest, "core", set()
+        )
+        if any(
+            finding.code == "PLACEHOLDER_UNRESOLVED"
+            and finding.path == "CLAUDE.md:1"
+            for finding in inactive_bridge_validator.findings
+        ):
+            failures.append(
+                "explicitly unsupported unselected assistant bridges must not be "
+                "scanned as active adapter surfaces"
+            )
+
+        inactive_manifest_path.write_text(
+            "supported_assistants:\n  - claude\n", encoding="utf-8"
+        )
+        selected_inactive_manifest = parse_manifest(inactive_manifest_path)
+        selected_inactive_validator = validator(
+            inactive_bridge_target, validation_phase="acceptance"
+        )
+        selected_inactive_validator.check_placeholders(
+            selected_inactive_manifest, "core", set()
+        )
+        if not any(
+            finding.code == "PLACEHOLDER_UNRESOLVED"
+            and finding.path == "CLAUDE.md:1"
+            for finding in selected_inactive_validator.findings
+        ):
+            failures.append(
+                "a manifest-selected assistant bridge must remain active even when "
+                "its capability route is inconsistent"
+            )
+
         policy_source = (
             ROOT
             / "templates"
@@ -2398,6 +2470,64 @@ Excluded files or surfaces:
             for finding in covered.findings
         ):
             failures.append("covered strict approval scope should pass")
+
+        historical_target = target / "historical-approval-selection"
+        historical_path = (
+            historical_target
+            / ".ai"
+            / "assistant"
+            / "approvals"
+            / "historical.json"
+        )
+        historical_data = dict(approval_data)
+        historical_data["scope"] = dict(approval_data["scope"])
+        historical_data["scope"]["allowed_files_or_surfaces"] = [
+            "../external-project/**"
+        ]
+        historical_data["use_result"] = {
+            "patch_changed_after_approval": "yes: historical correction",
+            "implementation_within_scope": "yes",
+        }
+        write_json(historical_path, historical_data)
+
+        ordinary_health = validator(
+            historical_target, validation_phase="acceptance"
+        )
+        ordinary_health.check_approval_scope()
+        ordinary_codes = {finding.code for finding in ordinary_health.findings}
+        if ordinary_codes & {
+            "APPROVAL_RECORD_SCOPE_INVALID",
+            "APPROVAL_PATCH_CHANGED",
+        }:
+            failures.append(
+                "ordinary current-health validation must not auto-select historical "
+                "approval records"
+            )
+
+        explicit_history = Validator(
+            historical_target,
+            framework_source=None,
+            diff_ref=None,
+            approval_records=[historical_path],
+            enforce_approval_scope=False,
+            change_packages=[],
+            enforce_change_package=False,
+            migration_diff=None,
+            allow_placeholders=False,
+            allow_local_paths=[],
+            config=AdapterValidatorConfig(),
+            validation_phase="acceptance",
+        )
+        explicit_history.check_approval_scope()
+        explicit_codes = {finding.code for finding in explicit_history.findings}
+        for required in {
+            "APPROVAL_RECORD_SCOPE_INVALID",
+            "APPROVAL_PATCH_CHANGED",
+        }:
+            if required not in explicit_codes:
+                failures.append(
+                    f"explicitly selected historical approval must retain {required}"
+                )
 
         payload = findings_payload(
             [],

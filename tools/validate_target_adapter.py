@@ -236,6 +236,20 @@ BRIDGE_FILES = [
     ".rules",
 ]
 
+BRIDGE_FILE_SURFACES = {
+    "AI_ASSISTANTS.md": {"generic", "codex"},
+    "CLAUDE.md": {"claude"},
+    "GEMINI.md": {"gemini"},
+    ".github/copilot-instructions.md": {"github-copilot"},
+    ".cursorrules": {"cursor"},
+    ".cursor/rules/alatyr-core.mdc": {"cursor"},
+    ".devin/rules/alatyr-core.md": {"devin-cascade"},
+    ".windsurfrules": {"windsurf"},
+    ".windsurf/rules/alatyr-core.md": {"windsurf"},
+    ".roo/rules/alatyr-core.md": {"roo-code"},
+    ".rules": {"zed-agent"},
+}
+
 MANIFEST_REQUIRED_SCALARS: set[PathKey] = {
     ("schema_version",),
     ("framework", "name"),
@@ -7833,7 +7847,8 @@ class Validator:
         relpaths = set(CORE_REQUIRED_FILES)
         if support_profile in {"standard", "full"}:
             relpaths.update(STANDARD_REQUIRED_FILES)
-        relpaths.update(["AGENTS.md", *BRIDGE_FILES])
+        relpaths.add("AGENTS.md")
+        relpaths.update(self.active_assistant_bridge_files(manifest))
         for module_id in enabled_modules:
             contract = self.capability_modules.get(module_id)
             if isinstance(contract, dict):
@@ -7849,6 +7864,56 @@ class Validator:
             for relpath in sorted(relpaths)
             if not self.is_authoring_file(relpath)
         ]
+
+    def active_assistant_bridge_files(
+        self, manifest: ManifestData | None
+    ) -> set[str]:
+        selected = {
+            scalar.value
+            for scalar in manifest.lists.get(("supported_assistants",), [])
+            if not is_placeholder(scalar.value)
+            and not is_unresolved_value(scalar.value)
+        } if manifest is not None else set()
+        index_path = self.target_path(
+            ".ai/assistant/assistant-capabilities.json"
+        )
+        index, error = self.context.read_json(index_path)
+        if error or not isinstance(index, dict):
+            return set(BRIDGE_FILES)
+        surfaces = index.get("surfaces")
+        if not isinstance(surfaces, dict):
+            return set(BRIDGE_FILES)
+
+        routes: dict[str, str | None] = {}
+        for surface_id, relpath in surfaces.items():
+            if not isinstance(surface_id, str) or not isinstance(relpath, str):
+                continue
+            record_path = self.target_path(relpath)
+            record, record_error = self.context.read_json(record_path)
+            if record_error or not isinstance(record, dict):
+                routes[surface_id] = None
+                continue
+            loading = record.get("instruction_loading")
+            routes[surface_id] = (
+                str(loading.get("route"))
+                if isinstance(loading, dict) and loading.get("route") is not None
+                else None
+            )
+
+        active: set[str] = set()
+        indexed = set(routes)
+        for relpath in BRIDGE_FILES:
+            associated = BRIDGE_FILE_SURFACES.get(relpath, set())
+            if not associated or selected & associated:
+                active.add(relpath)
+                continue
+            represented = associated & indexed
+            if not represented or any(
+                routes.get(surface_id) != "unsupported"
+                for surface_id in represented
+            ):
+                active.add(relpath)
+        return active
 
     def check_placeholders(
         self,
@@ -8162,13 +8227,10 @@ class Validator:
                     continue
                 records.append(record)
             return records
-        directory = self.target_path(".ai/assistant/approvals")
-        return sorted(
-            path
-            for pattern in ("*.md", "*.json")
-            for path in directory.glob(pattern)
-            if path.name not in {"approval-template.md", "approval-record-template.json"}
-        )
+        # Approval records are historical evidence, not implicit current-task
+        # inputs. Callers must select the records whose scope and result should
+        # be validated for the current operation.
+        return []
 
     def load_approval_scope(self, record: Path) -> ApprovalScope | None:
         if record.suffix.lower() == ".json":

@@ -775,6 +775,11 @@ provided together, changed-file scope enforcement is automatic. The explicit
 `--enforce-approval-scope` flag remains available for callers that want a
 hard failure when either required input is absent.
 
+Approval records are historical evidence and are validated only when selected
+with `--approval-record`; an ordinary current-health or doctor run does not
+auto-select every record in `.ai/assistant/approvals`. Explicitly selected
+records retain their full shape, hash, result, and scope validation.
+
 Reusable manifest parsing, Git diff, hashing, and approval-scope primitives
 live in `target_validation_support.py`; the validator remains the reporting and
 contract orchestration surface.

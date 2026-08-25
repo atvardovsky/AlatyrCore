@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Fixed target health validation so an explicitly unsupported, unselected
+  assistant bridge is not treated as an active placeholder surface, while a
+  manifest-selected bridge remains active and strictly validated.
+- Stopped ordinary current-health checks from auto-selecting every historical
+  approval record; explicitly selected approvals retain full validation.
 - Fixed Windows source checks by normalizing repository-relative scaffold paths
   independently of host separators and by writing lifecycle hash fixtures as
   canonical UTF-8 bytes.
