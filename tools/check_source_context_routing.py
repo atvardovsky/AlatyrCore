@@ -17,6 +17,9 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE_ROUTER = ROOT / "tools" / "source_context_router.json"
 INSTALL_ROUTER = ROOT / "installer" / "context-router.json"
 INVENTORY = ROOT / "framework" / "file-inventory.json"
+SOURCE_AGENTS = ROOT / "AGENTS.md"
+SOURCE_ASSISTANTS = ROOT / "AI_ASSISTANTS.md"
+SOURCE_WORKER_STRATEGY = ROOT / "docs" / "source-worker-strategy.md"
 EXPECTED_SOURCE_PROFILES = {
     "docs-local",
     "framework-rule",
@@ -79,6 +82,17 @@ def validate_router_paths(router: dict[str, Any], label: str) -> list[str]:
     return failures
 
 
+def require_text(path: Path, values: list[str], failures: list[str]) -> None:
+    try:
+        text = path.read_text(encoding="utf-8")
+    except OSError as exc:
+        failures.append(str(exc))
+        return
+    for value in values:
+        if value not in text:
+            failures.append(f"{path.relative_to(ROOT)} missing {value}")
+
+
 def main() -> int:
     failures: list[str] = []
     try:
@@ -114,6 +128,20 @@ def main() -> int:
         audit = profiles.get("repository-audit", {})
         if audit.get("check_profile") != "full":
             failures.append("repository-audit must route through the full check profile")
+        source_tooling = profiles.get("source-tooling", {})
+        if "by trigger_paths" not in source_tooling.get("check_selection", ""):
+            failures.append("source-tooling must document trigger_paths selection")
+    overlays = source.get("conditional_overlays")
+    worker_overlay = overlays.get("source-worker-strategy") if isinstance(overlays, dict) else None
+    if not isinstance(worker_overlay, dict):
+        failures.append("source router has no source-worker-strategy overlay")
+    else:
+        if worker_overlay.get("required_context") != ["docs/source-worker-strategy.md"]:
+            failures.append("source worker overlay context is invalid")
+        if worker_overlay.get("canonical_rule") != "ALATYR-DELEGATION-001":
+            failures.append("source worker overlay canonical rule is invalid")
+        if worker_overlay.get("fallback") != "continue with the primary assistant":
+            failures.append("source worker overlay fallback is invalid")
     source_bootstrap = [
         *source.get("preloaded_context", []),
         *source.get("bootstrap_context", []),
@@ -153,6 +181,37 @@ def main() -> int:
     for relpath, required in entry_points.items():
         if required not in (ROOT / relpath).read_text(encoding="utf-8"):
             failures.append(f"{relpath} does not route through {required}")
+
+    require_text(
+        SOURCE_AGENTS,
+        [
+            "## Source-Contour Worker Routing",
+            "docs/source-worker-strategy.md",
+            "Host and target repositories keep their own active adapter policy",
+            "ALATYR-DELEGATION-001",
+        ],
+        failures,
+    )
+    require_text(
+        SOURCE_ASSISTANTS,
+        [
+            "docs/source-worker-strategy.md",
+            "Host and target",
+            "active adapter policy",
+        ],
+        failures,
+    )
+    require_text(
+        SOURCE_WORKER_STRATEGY,
+        [
+            "Scope: AlatyrCore source repository only.",
+            "Canonical portable rule: `ALATYR-DELEGATION-001`",
+            "## Activation",
+            "## Model Routing",
+            "## Responsibility",
+        ],
+        failures,
+    )
 
     forbidden = [
         "Read every framework file before copying",

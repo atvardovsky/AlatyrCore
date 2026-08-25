@@ -8,7 +8,7 @@
         "evidence_state": "historical",
         "id": "codex-current-session-8dab3d1",
         "source_commit": "8dab3d15c6e0dc983096c2aaca89fba75fe6fa14",
-        "source_contract_digest": "8d6b4e36aa161d478237d338be55feb2179ca677e52e2296a7dbf3f65e9872b4",
+        "source_contract_digest": "72f1df27321a0f95b188960ef4eb66e9b4d62f44baa98f06a285da5ac5584730",
         "source_version": "0.1.0-alpha.0"
       },
       {
@@ -17,7 +17,7 @@
         "evidence_state": "historical",
         "id": "codex-isolated-core-6ee985d",
         "source_commit": "6ee985df3e6e65507cda175944b2b3ea4be630ae",
-        "source_contract_digest": "57a4719114d29666e3ce5eb7d118ceacc5c333c5a92394cde28fd452b086e1a6",
+        "source_contract_digest": "bfe1b082bb7307a2853515902bab46547db789447f879917ee0de698737ff9d5",
         "source_version": "0.1.0-alpha.0"
       },
       {
@@ -26,7 +26,7 @@
         "evidence_state": "historical",
         "id": "codex-source-bootstrap-6ee985d",
         "source_commit": "6ee985df3e6e65507cda175944b2b3ea4be630ae",
-        "source_contract_digest": "57a4719114d29666e3ce5eb7d118ceacc5c333c5a92394cde28fd452b086e1a6",
+        "source_contract_digest": "bfe1b082bb7307a2853515902bab46547db789447f879917ee0de698737ff9d5",
         "source_version": "0.1.0-alpha.0"
       }
     ],
@@ -46,8 +46,8 @@
       "windsurf"
     ]
   },
-  "current_contract_digest": "319dd228db2a955029700061c252df8c4296945d272309767e62c533b8ba73ad",
-  "current_framework_version": "0.1.0-alpha.27",
+  "current_contract_digest": "3c1419418f07863a51b37140a44b693a659677c4165e2083e5163b7d09b1d908",
+  "current_framework_version": "0.1.0-alpha.28",
   "effectiveness": {
     "broad_cost_or_quality_claim_supported": false,
     "captured_benchmarks": [
@@ -59,7 +59,7 @@
         "evidence_state": "historical",
         "repetition": 1,
         "source_commit": "061987108d8e7ecd15625953d7c41683ee7fe497",
-        "source_contract_digest": "80ea037e6bc0eee8a71ab5ac04747f9b9ed941fface07793920cbbb4d0e83008",
+        "source_contract_digest": "6329e53eea06ef64c8c739d16e81bb38f3f0e213a4f3cf666fd6b7b57042cef6",
         "source_version": "0.1.0-alpha.0",
         "task_class_id": null,
         "task_id": "readme-wording",

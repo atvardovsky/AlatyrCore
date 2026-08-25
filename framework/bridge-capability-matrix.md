@@ -169,6 +169,13 @@ capability record, loaded paths or sections, context measurement kind,
 presentation result, fallback, repository changes, and residual risk. Hidden
 client context must remain `unknown` unless the client exposes evidence.
 
+Conformance execution uses one provider-neutral lifecycle: `prepare`,
+`invoke-or-manual-import`, `collect`, and `validate`. A native provider adapter
+may implement invocation when the current runtime supports it. Other surfaces
+remain manual or unverified until reviewed reports are imported. Static
+fixtures, prepared matrices, manual imports, and capability declarations must
+never be represented as observed vendor execution.
+
 ## Upgrade Use
 
 During framework update or adapter recheck:

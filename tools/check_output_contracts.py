@@ -54,6 +54,8 @@ REQUIRED_FIELDS = [
     "Adapter schema version:",
     "Template version:",
     "Manifest path:",
+    "Installation state:",
+    "Installation transition record:",
     "Approval records used:",
     "Approval scope enforcement:",
     "Surfaces created:",
@@ -82,6 +84,31 @@ REQUIRED_FIELDS = [
     "Validation skipped or unresolved:",
     "Final evidence:",
     "Residual risk:",
+]
+
+DELIVERY_FIELDS = {
+    "installation-output": [
+        "Post-install message result:",
+        "Post-install delivery status:",
+        "Post-install delivery mechanism:",
+        "Post-install delivery reason:",
+        "Post-install delivery observed at:",
+    ],
+    "framework-update-output": [
+        "Post-update message result:",
+        "Post-update delivery status:",
+        "Post-update delivery mechanism:",
+        "Post-update delivery reason:",
+        "Post-update delivery observed at:",
+    ],
+}
+
+REQUIRED_MESSAGE_TEXT = [
+    "Delivery status: `{SENT_SKIPPED_OR_BLOCKED}`",
+    "Delivery mechanism: `{CHAT_SURFACE_OR_UNAVAILABLE}`",
+    "Delivery reason: `{WHY_SENT_SKIPPED_OR_BLOCKED}`",
+    "Delivery observed at: `{DELIVERY_TIMESTAMP_OR_NOT_OBSERVED}`",
+    "The presence of this file never proves that a chat message reached a user.",
 ]
 
 REQUIRED_INSTALLATION_TEXT = [
@@ -138,6 +165,9 @@ def main() -> int:
                 failures.append(
                     f"{contract} field {field} must remain placeholder-based"
                 )
+        for field in DELIVERY_FIELDS.get(contract, []):
+            if field not in block:
+                failures.append(f"{contract} missing delivery field {field}")
 
     for contract in ["framework-update-output", "adapter-recheck-output"]:
         if "Migration assessment result/path:" not in blocks.get(contract, ""):
@@ -156,6 +186,13 @@ def main() -> int:
             failures.append(
                 f"{INSTALL_FLOW.relative_to(ROOT)} missing {required_text}"
             )
+
+    for filename in ["post-install-message.md", "post-update-message.md"]:
+        message = TEMPLATE.parent / filename
+        message_text = read(message)
+        for required_text in REQUIRED_MESSAGE_TEXT:
+            if required_text not in message_text:
+                failures.append(f"{message.relative_to(ROOT)} missing {required_text}")
 
     if failures:
         for failure in failures:

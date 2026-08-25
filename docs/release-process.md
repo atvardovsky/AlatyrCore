@@ -42,6 +42,11 @@ Before a release:
 
 During active development, `Unreleased` may contain pending entries.
 
+A versioned changelog and migration section is a source-development checkpoint,
+not proof that the corresponding Git tag was published. Never create historical
+tags retroactively to make an evidence chain appear complete. Publication is
+established only by an explicit `v<VERSION>` tag on the reviewed release commit.
+
 ## Migration Evidence
 
 For releases that affect installed adapters, prepare migration evidence from:

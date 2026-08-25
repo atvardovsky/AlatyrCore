@@ -9,10 +9,13 @@ import re
 from pathlib import Path
 from typing import Any
 
+from scaffold_state import INITIAL_INSTALLATION_STATE
+
 
 TARGET_PATH_RE = re.compile(
     r"^(?P<prefix>\s+[A-Za-z0-9_-]+:\s+)(?P<quote>[\"']?)(?P<path>\.ai/[^\"']+)(?P=quote)\s*$"
 )
+INSTALLATION_STATE_RE = re.compile(r'^(\s{2}state:\s+)["\']?[^"\']+["\']?\s*$')
 
 
 def path_available(value: str, selected: set[Path]) -> bool:
@@ -60,6 +63,8 @@ def project_manifest(
             current_top_level = top_level.group(1)
         if current_top_level in disabled_sections:
             continue
+        if current_top_level == "installation" and INSTALLATION_STATE_RE.match(line):
+            line = f'  state: "{INITIAL_INSTALLATION_STATE}"'
         if "{CORE_STANDARD_OR_FULL}" in line:
             line = line.replace("{CORE_STANDARD_OR_FULL}", profile)
         if "{CORE_STANDARD_OR_COMPLETE}" in line:

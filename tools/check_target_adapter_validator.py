@@ -2256,7 +2256,12 @@ Excluded files or surfaces:
         ):
             failures.append("covered strict approval scope should pass")
 
-        payload = findings_payload([], target=target, strict_warnings=False)
+        payload = findings_payload(
+            [],
+            target=target,
+            strict_warnings=False,
+            installation_state="accepted",
+        )
         evidence = payload.get("evidence", {})
         if payload.get("schema_version") != 3:
             failures.append("validator JSON schema must expose evidence schema 3")
@@ -2277,11 +2282,12 @@ Excluded files or surfaces:
             target=target,
             strict_warnings=False,
             validation_phase="migration-staging",
+            installation_state="staged",
         )
         if staging_payload.get("status") != "staged":
             failures.append("migration staging must not report passed status")
-        if staging_payload.get("adapter_health", {}).get("state") != "staged":
-            failures.append("migration staging must not report ready adapter health")
+        if staging_payload.get("adapter_health", {}).get("state") != "unverified":
+            failures.append("migration staging must report unverified adapter health")
         if staging_payload.get("placeholder_validation", {}).get("acceptance_eligible") is not False:
             failures.append("migration staging must never be acceptance eligible")
         if staging_payload.get("placeholder_validation", {}).get("unresolved_active") != 1:
@@ -2363,6 +2369,7 @@ Excluded files or surfaces:
             ],
             target=target,
             strict_warnings=False,
+            installation_state="accepted",
         )
         if health_payload.get("adapter_health", {}).get("state") != "attention":
             failures.append("validator warning must produce attention health state")
@@ -2384,6 +2391,7 @@ Excluded files or surfaces:
             ],
             target=target,
             strict_warnings=False,
+            installation_state="accepted",
         )
         if extension_health.get("adapter_health", {}).get("repair_operations") != [
             "extension-management"

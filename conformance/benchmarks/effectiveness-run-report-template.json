@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "report_kind": "effectiveness-benchmark-result",
   "benchmark_id": "{BENCHMARK_ID}",
   "task": "{TASK_NAME}",
@@ -22,6 +22,28 @@
     "completed_at": "{ISO_8601_OR_UNKNOWN}",
     "operator": "{OPERATOR_OR_UNKNOWN}",
     "report_origin": "{ASSISTANT_REPORTED_REVIEWER_TRANSCRIBED_OR_UNKNOWN}"
+  },
+  "context_receipt": {
+    "schema_version": 1,
+    "receipt_kind": "alatyr-context-receipt",
+    "measurement_state": "{PLANNED_RESOLVED_OR_OBSERVED}",
+    "planned": {
+      "paths": ["{PLANNED_CONTEXT_PATH_OR_NONE}"],
+      "approximate_words": "{COUNT_OR_UNKNOWN}"
+    },
+    "resolved": {
+      "status": "{RECORDED_OR_UNAVAILABLE}",
+      "paths": ["{RESOLVED_CONTEXT_PATH_OR_NONE}"],
+      "approximate_words": "{COUNT_OR_UNKNOWN}"
+    },
+    "observed": {
+      "evidence_level": "{EXACT_PARTIAL_OR_UNAVAILABLE}",
+      "source": "{HOST_TELEMETRY_PROVIDER_USAGE_ASSISTANT_REPORTED_MANUAL_OR_UNAVAILABLE}",
+      "files_loaded": "{COUNT_OR_UNKNOWN}",
+      "input_tokens": "{COUNT_OR_UNKNOWN}",
+      "output_tokens": "{COUNT_OR_UNKNOWN}",
+      "evidence": "{TELEMETRY_REFERENCE_OR_UNAVAILABLE_REASON}"
+    }
   },
   "context_measurement_kind": "{HOST_OBSERVED_TOKENS_ASSISTANT_REPORTED_WORDS_OR_UNKNOWN}",
   "input_tokens": "{COUNT_OR_UNKNOWN}",

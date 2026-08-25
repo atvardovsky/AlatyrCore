@@ -1,8 +1,10 @@
 # Rule Ownership
 
-This file is generated from `framework/rule-registry.json`. Per-rule canonical
-owners define rule semantics. Category routing owners group related rules for
-maintainers and tools but do not become additional semantic owners.
+This file is generated from `framework/rule-registry.json`. Source owners
+under `framework/` define rule semantics in AlatyrCore. Installed owners under
+`.ai/framework/` are deterministic target-adapter projections of those source
+owners. Category routing owners group related rules for maintainers and tools
+but do not become additional semantic owners.
 Derived documents should reference the owner or rule ID and avoid copying
 the complete policy language.
 
@@ -16,7 +18,8 @@ the complete policy language.
 ## Category Routing Owners
 
 Category: `CONTEXT`
-Routing owner: `.ai/framework/context-profiles.md`
+Source routing owner: `framework/context-profiles.md`
+Installed routing owner: `.ai/framework/context-profiles.md`
 Rule IDs: `ALATYR-CONTEXT-001`
 Derived surfaces: README source context, installation source context, target
 context profiles, target context router, task-scale overlays, operation packet
@@ -24,27 +27,31 @@ context receipts, consistency relationship routing, session bootstrap
 instructions, AI infrastructure capability and recommendation routing.
 
 Category: `SOURCE`
-Routing owner: `.ai/framework/source-of-truth-registry.md`
+Source routing owner: `framework/source-of-truth-registry.md`
+Installed routing owner: `.ai/framework/source-of-truth-registry.md`
 Rule IDs: `ALATYR-SOURCE-001`
 Derived surfaces: project adapter contract, logical integrity, blueprint
 change, target source-of-truth registry template, invariant constraints,
 consistency map.
 
 Category: `RISK`
-Routing owner: `.ai/framework/change-risk-model.md`
+Source routing owner: `framework/change-risk-model.md`
+Installed routing owner: `.ai/framework/change-risk-model.md`
 Rule IDs: `ALATYR-RISK-001`
 Derived surfaces: installer approval planning, target gates, operation request
 templates, external failure observability, final evidence.
 
 Category: `APPROVAL`
-Routing owner: `.ai/framework/approval-records.md`
+Source routing owner: `framework/approval-records.md`
+Installed routing owner: `.ai/framework/approval-records.md`
 Rule IDs: `ALATYR-APPROVAL-001`
 Derived surfaces: installation approval gate, installed-operation allowed
 actions, human and machine-readable approval templates, strict target diff
 scope validation, security-sensitive profiles.
 
 Category: `AUTHORIZATION`
-Routing owner: `.ai/framework/action-authorization.md`
+Source routing owner: `framework/action-authorization.md`
+Installed routing owner: `.ai/framework/action-authorization.md`
 Rule IDs: `ALATYR-AUTHORIZATION-001`
 Derived surfaces: source and target assistant entry points, installed-operation
 routing, action-authorization policy, operation request and preview, core and
@@ -52,33 +59,38 @@ final-evidence gates, subagent and team boundaries, target structural
 validation, authorization conformance scenarios.
 
 Category: `SAFETY`
-Routing owner: `.ai/framework/security-safety-guidance.md`
+Source routing owner: `framework/security-safety-guidance.md`
+Installed routing owner: `.ai/framework/security-safety-guidance.md`
 Rule IDs: `ALATYR-SAFETY-001`, `ALATYR-SAFETY-002`
 Derived surfaces: prompt-injection guidance, skill adaptation, source-access
 policy, adaptation records, security-sensitive context profile.
 
 Category: `INTEGRITY`
-Routing owner: `.ai/framework/logical-integrity.md`
+Source routing owner: `framework/logical-integrity.md`
+Installed routing owner: `.ai/framework/logical-integrity.md`
 Rule IDs: `ALATYR-INTEGRITY-001`
 Derived surfaces: target gates, documentation sync, adapter recheck,
 relationship or manual invariant impact closure, review-item reconciliation,
 workstream convergence, final evidence.
 
 Category: `CHANGE`
-Routing owner: `.ai/framework/blueprint-driven-change.md`
+Source routing owner: `framework/blueprint-driven-change.md`
+Installed routing owner: `.ai/framework/blueprint-driven-change.md`
 Rule IDs: `ALATYR-CHANGE-001`
 Derived surfaces: product-change operation, blueprint-driven target flow,
 large-task orchestration, documentation and diagram sync.
 
 Category: `PACKAGE`
-Routing owner: `.ai/framework/change-packages.md`
+Source routing owner: `framework/change-packages.md`
+Installed routing owner: `.ai/framework/change-packages.md`
 Rule IDs: `ALATYR-PACKAGE-001`
 Derived surfaces: change-package target flow and records, semantic approval
 scope, large-task convergence, blueprint change, target validation, installer
 module selection, migration evidence.
 
 Category: `ARCHITECTURE`
-Routing owner: `.ai/framework/architecture-knowledge.md`
+Source routing owner: `framework/architecture-knowledge.md`
+Installed routing owner: `.ai/framework/architecture-knowledge.md`
 Rule IDs: `ALATYR-ARCHITECTURE-001`
 Derived surfaces: target architecture index and catalog, pattern and area
 templates, architecture-assistance operation, architecture intent routing,
@@ -86,7 +98,8 @@ architecture discussion result, installation and update planning, target gates,
 architecture validation.
 
 Category: `CODEDOC`
-Routing owner: `.ai/framework/code-documentation.md`
+Source routing owner: `framework/code-documentation.md`
+Installed routing owner: `.ai/framework/code-documentation.md`
 Rule IDs: `ALATYR-CODEDOC-001`
 Derived surfaces: target code-documentation catalog and profiles, documentation
 intent routing, documentation synchronization flow, project-adapted comment
@@ -94,7 +107,8 @@ skill, profile review template, generated-output policy, installation and
 update planning, target gates, structural validation.
 
 Category: `VOCABULARY`
-Routing owner: `.ai/framework/project-vocabulary.md`
+Source routing owner: `framework/project-vocabulary.md`
+Installed routing owner: `.ai/framework/project-vocabulary.md`
 Rule IDs: `ALATYR-VOCABULARY-001`
 Derived surfaces: target vocabulary catalog, term records, data-dictionary link
 records, vocabulary intent routing, project-vocabulary operation flow,
@@ -102,7 +116,8 @@ project-adapted vocabulary skill, term review template, installation and update
 planning, target gates, structural validation.
 
 Category: `TDD`
-Routing owner: `.ai/framework/test-first-development.md`
+Source routing owner: `framework/test-first-development.md`
+Installed routing owner: `.ai/framework/test-first-development.md`
 Rule IDs: `ALATYR-TDD-001`
 Derived surfaces: target test-first policy, recommendation gate, configuration
 and change operations, test-first intent routing, project-adapted test-first
@@ -110,7 +125,8 @@ skill, test-first gate, RED GREEN refactor evidence template, installation and
 update planning, structural validation.
 
 Category: `EXTENSION`
-Routing owner: `.ai/framework/extensions.md`
+Source routing owner: `framework/extensions.md`
+Installed routing owner: `.ai/framework/extensions.md`
 Rule IDs: `ALATYR-EXTENSION-001`
 Derived surfaces: external extension package template, extension inspection
 tool, target extension catalog and lock, extension lifecycle flow, extension
@@ -118,7 +134,8 @@ intent routing, extension review and lifecycle evidence, module profile, target
 gates, installation and update planning, bridge routing, structural validation.
 
 Category: `DEPENDENCY`
-Routing owner: `.ai/framework/dependency-knowledge.md`
+Source routing owner: `framework/dependency-knowledge.md`
+Installed routing owner: `.ai/framework/dependency-knowledge.md`
 Rule IDs: `ALATYR-DEPENDENCY-001`
 Derived surfaces: passive dependency export template, target dependency
 knowledge policy catalog lock deviations and snapshots, dependency knowledge
@@ -127,7 +144,8 @@ operation catalog and help, installation and update planning, structural
 validation.
 
 Category: `MODE`
-Routing owner: `.ai/framework/workspace-modes.md`
+Source routing owner: `framework/workspace-modes.md`
+Installed routing owner: `.ai/framework/workspace-modes.md`
 Rule IDs: `ALATYR-MODE-001`
 Derived surfaces: target workspace-mode catalog, shared root context, per-mode
 directories and descriptors, workspace-mode intent and flow, mode suggestion
@@ -135,7 +153,8 @@ and preflight, workspace-mode gate, installation and update suggestions,
 structural validation.
 
 Category: `DIAGRAM`
-Routing owner: `.ai/framework/diagram-guidance.md`
+Source routing owner: `framework/diagram-guidance.md`
+Installed routing owner: `.ai/framework/diagram-guidance.md`
 Rule IDs: `ALATYR-DIAGRAM-001`
 Derived surfaces: portable ASCII diagram grammar, target diagram discussion
 flow, ASCII and diagram presentation templates, operation catalog and compact
@@ -144,7 +163,8 @@ capabilities, operation conformance fixture, installation planning, adapter
 recheck, diagram validation evidence.
 
 Category: `ADAPTER`
-Routing owner: `.ai/framework/project-adapter-contract.md`
+Source routing owner: `framework/project-adapter-contract.md`
+Installed routing owner: `.ai/framework/project-adapter-contract.md`
 Rule IDs: `ALATYR-ADAPTER-001`
 Derived surfaces: installation plan, readiness checklist, manifest template,
 adapter recheck flow, target development-pattern evidence, framework pack and
@@ -152,21 +172,24 @@ projected inventory, AI infrastructure router, AI infrastructure recommendation
 contract, AI infrastructure item contracts.
 
 Category: `MODULE`
-Routing owner: `.ai/framework/module-profile.md`
+Source routing owner: `framework/module-profile.md`
+Installed routing owner: `.ai/framework/module-profile.md`
 Rule IDs: `ALATYR-MODULE-001`
 Derived surfaces: target module profile, manifest modules, framework pack
 catalog, scaffold profile-to-pack mapping, operation help routing, maturity
 review.
 
 Category: `OPERATION`
-Routing owner: `.ai/framework/operation-help.md`
+Source routing owner: `framework/operation-help.md`
+Installed routing owner: `.ai/framework/operation-help.md`
 Rule IDs: `ALATYR-OPERATION-001`
 Derived surfaces: target operation catalog, checked compact operation index,
 automatic routing flow, compact help, adapter health flow, pre-change preview,
 manifest operation paths, assistant bridges.
 
 Category: `TEAM`
-Routing owner: `.ai/framework/team-collaboration.md`
+Source routing owner: `framework/team-collaboration.md`
+Installed routing owner: `.ai/framework/team-collaboration.md`
 Rule IDs: `ALATYR-TEAM-001`
 Derived surfaces: structured target team policy, human team operating model,
 ignored local actor selection, active-work index, work registry metadata,
@@ -175,7 +198,8 @@ handoffs, decision records, team review, merge-readiness evidence, operation
 routes, team-active context overlay, adapted team skill.
 
 Category: `DELEGATION`
-Routing owner: `.ai/framework/subagent-delegation.md`
+Source routing owner: `framework/subagent-delegation.md`
+Installed routing owner: `.ai/framework/subagent-delegation.md`
 Rule IDs: `ALATYR-DELEGATION-001`
 Derived surfaces: target delegation policy, worker role catalog and prompts,
 worker execution plan, delegated-execution overlay, subagent task packet,
@@ -184,33 +208,38 @@ and native bindings, bridge capability matrix, operation routing, installation
 and update planning, delegation conformance scenarios, structural validation.
 
 Category: `BRIDGE`
-Routing owner: `.ai/framework/bridge-capability-matrix.md`
+Source routing owner: `framework/bridge-capability-matrix.md`
+Installed routing owner: `.ai/framework/bridge-capability-matrix.md`
 Rule IDs: `ALATYR-BRIDGE-001`
 Derived surfaces: assistant bridge templates, bridge renderer, bridge
 capability target template, cross-assistant AI item routing.
 
 Category: `LIFECYCLE`
-Routing owner: `.ai/framework/lifecycle.md`
+Source routing owner: `framework/lifecycle.md`
+Installed routing owner: `.ai/framework/lifecycle.md`
 Rule IDs: `ALATYR-LIFECYCLE-001`
 Derived surfaces: version files, installed framework pack, migration notes,
 framework update recheck, changelog.
 
 Category: `ENGINEERING_EVIDENCE`
-Routing owner: `.ai/framework/engineering-evidence.md`
+Source routing owner: `framework/engineering-evidence.md`
+Installed routing owner: `.ai/framework/engineering-evidence.md`
 Rule IDs: `ALATYR-ENGINEERING-EVIDENCE-001`
 Derived surfaces: target evidence index and records, capture flow, finalization
 gate, task-scale routing, operation help, change-package links, target
 validation, installation and migration planning.
 
 Category: `PROJECT_KNOWLEDGE`
-Routing owner: `.ai/framework/project-knowledge.md`
+Source routing owner: `framework/project-knowledge.md`
+Installed routing owner: `.ai/framework/project-knowledge.md`
 Rule IDs: `ALATYR-KNOWLEDGE-001`
 Derived surfaces: target knowledge policy and routing index, promotion and
 route-shard templates, two-stage context routing, knowledge operation and gate,
 target validation, shared-will conformance, paired rediscovery benchmark.
 
 Category: `DEBUG`
-Routing owner: `.ai/framework/debug-mode.md`
+Source routing owner: `framework/debug-mode.md`
+Installed routing owner: `.ai/framework/debug-mode.md`
 Rule IDs: `ALATYR-DEBUG-001`
 Derived surfaces: optional target debug index and records, task-local
 activation and expiry, normalized event attribution, capture-quality and timing
@@ -218,7 +247,8 @@ evidence, event-derived supervision metrics, clean upstream projection, compact
 debug summary, target validation, installation and migration planning.
 
 Category: `EVIDENCE`
-Routing owner: `.ai/framework/guarantees.md`
+Source routing owner: `framework/guarantees.md`
+Installed routing owner: `.ai/framework/guarantees.md`
 Rule IDs: `ALATYR-EVIDENCE-001`
 Derived surfaces: final evidence, process commitments, conformance reports,
 effectiveness reports, operation packets.
@@ -226,91 +256,120 @@ effectiveness reports, operation packets.
 ## Rule Canonical Owners
 
 Rule: `ALATYR-CONTEXT-001`
-Canonical owner: `.ai/framework/context-profiles.md`
+Source canonical owner: `framework/context-profiles.md`
+Installed canonical owner: `.ai/framework/context-profiles.md`
 
 Rule: `ALATYR-SOURCE-001`
-Canonical owner: `.ai/framework/source-of-truth-registry.md`
+Source canonical owner: `framework/source-of-truth-registry.md`
+Installed canonical owner: `.ai/framework/source-of-truth-registry.md`
 
 Rule: `ALATYR-RISK-001`
-Canonical owner: `.ai/framework/change-risk-model.md`
+Source canonical owner: `framework/change-risk-model.md`
+Installed canonical owner: `.ai/framework/change-risk-model.md`
 
 Rule: `ALATYR-APPROVAL-001`
-Canonical owner: `.ai/framework/approval-records.md`
+Source canonical owner: `framework/approval-records.md`
+Installed canonical owner: `.ai/framework/approval-records.md`
 
 Rule: `ALATYR-AUTHORIZATION-001`
-Canonical owner: `.ai/framework/action-authorization.md`
+Source canonical owner: `framework/action-authorization.md`
+Installed canonical owner: `.ai/framework/action-authorization.md`
 
 Rule: `ALATYR-SAFETY-001`
-Canonical owner: `.ai/framework/security-safety-guidance.md`
+Source canonical owner: `framework/security-safety-guidance.md`
+Installed canonical owner: `.ai/framework/security-safety-guidance.md`
 
 Rule: `ALATYR-SAFETY-002`
-Canonical owner: `.ai/framework/prompt-injection.md`
+Source canonical owner: `framework/prompt-injection.md`
+Installed canonical owner: `.ai/framework/prompt-injection.md`
 
 Rule: `ALATYR-INTEGRITY-001`
-Canonical owner: `.ai/framework/logical-integrity.md`
+Source canonical owner: `framework/logical-integrity.md`
+Installed canonical owner: `.ai/framework/logical-integrity.md`
 
 Rule: `ALATYR-CHANGE-001`
-Canonical owner: `.ai/framework/blueprint-driven-change.md`
+Source canonical owner: `framework/blueprint-driven-change.md`
+Installed canonical owner: `.ai/framework/blueprint-driven-change.md`
 
 Rule: `ALATYR-PACKAGE-001`
-Canonical owner: `.ai/framework/change-packages.md`
+Source canonical owner: `framework/change-packages.md`
+Installed canonical owner: `.ai/framework/change-packages.md`
 
 Rule: `ALATYR-ENGINEERING-EVIDENCE-001`
-Canonical owner: `.ai/framework/engineering-evidence.md`
+Source canonical owner: `framework/engineering-evidence.md`
+Installed canonical owner: `.ai/framework/engineering-evidence.md`
 
 Rule: `ALATYR-KNOWLEDGE-001`
-Canonical owner: `.ai/framework/project-knowledge.md`
+Source canonical owner: `framework/project-knowledge.md`
+Installed canonical owner: `.ai/framework/project-knowledge.md`
 
 Rule: `ALATYR-DEBUG-001`
-Canonical owner: `.ai/framework/debug-mode.md`
+Source canonical owner: `framework/debug-mode.md`
+Installed canonical owner: `.ai/framework/debug-mode.md`
 
 Rule: `ALATYR-ARCHITECTURE-001`
-Canonical owner: `.ai/framework/architecture-knowledge.md`
+Source canonical owner: `framework/architecture-knowledge.md`
+Installed canonical owner: `.ai/framework/architecture-knowledge.md`
 
 Rule: `ALATYR-CODEDOC-001`
-Canonical owner: `.ai/framework/code-documentation.md`
+Source canonical owner: `framework/code-documentation.md`
+Installed canonical owner: `.ai/framework/code-documentation.md`
 
 Rule: `ALATYR-VOCABULARY-001`
-Canonical owner: `.ai/framework/project-vocabulary.md`
+Source canonical owner: `framework/project-vocabulary.md`
+Installed canonical owner: `.ai/framework/project-vocabulary.md`
 
 Rule: `ALATYR-TDD-001`
-Canonical owner: `.ai/framework/test-first-development.md`
+Source canonical owner: `framework/test-first-development.md`
+Installed canonical owner: `.ai/framework/test-first-development.md`
 
 Rule: `ALATYR-EXTENSION-001`
-Canonical owner: `.ai/framework/extensions.md`
+Source canonical owner: `framework/extensions.md`
+Installed canonical owner: `.ai/framework/extensions.md`
 
 Rule: `ALATYR-DEPENDENCY-001`
-Canonical owner: `.ai/framework/dependency-knowledge.md`
+Source canonical owner: `framework/dependency-knowledge.md`
+Installed canonical owner: `.ai/framework/dependency-knowledge.md`
 
 Rule: `ALATYR-MODE-001`
-Canonical owner: `.ai/framework/workspace-modes.md`
+Source canonical owner: `framework/workspace-modes.md`
+Installed canonical owner: `.ai/framework/workspace-modes.md`
 
 Rule: `ALATYR-DIAGRAM-001`
-Canonical owner: `.ai/framework/diagram-guidance.md`
+Source canonical owner: `framework/diagram-guidance.md`
+Installed canonical owner: `.ai/framework/diagram-guidance.md`
 
 Rule: `ALATYR-ADAPTER-001`
-Canonical owner: `.ai/framework/project-adapter-contract.md`
+Source canonical owner: `framework/project-adapter-contract.md`
+Installed canonical owner: `.ai/framework/project-adapter-contract.md`
 
 Rule: `ALATYR-MODULE-001`
-Canonical owner: `.ai/framework/module-profile.md`
+Source canonical owner: `framework/module-profile.md`
+Installed canonical owner: `.ai/framework/module-profile.md`
 
 Rule: `ALATYR-OPERATION-001`
-Canonical owner: `.ai/framework/operation-help.md`
+Source canonical owner: `framework/operation-help.md`
+Installed canonical owner: `.ai/framework/operation-help.md`
 
 Rule: `ALATYR-TEAM-001`
-Canonical owner: `.ai/framework/team-collaboration.md`
+Source canonical owner: `framework/team-collaboration.md`
+Installed canonical owner: `.ai/framework/team-collaboration.md`
 
 Rule: `ALATYR-DELEGATION-001`
-Canonical owner: `.ai/framework/subagent-delegation.md`
+Source canonical owner: `framework/subagent-delegation.md`
+Installed canonical owner: `.ai/framework/subagent-delegation.md`
 
 Rule: `ALATYR-BRIDGE-001`
-Canonical owner: `.ai/framework/bridge-capability-matrix.md`
+Source canonical owner: `framework/bridge-capability-matrix.md`
+Installed canonical owner: `.ai/framework/bridge-capability-matrix.md`
 
 Rule: `ALATYR-LIFECYCLE-001`
-Canonical owner: `.ai/framework/lifecycle.md`
+Source canonical owner: `framework/lifecycle.md`
+Installed canonical owner: `.ai/framework/lifecycle.md`
 
 Rule: `ALATYR-EVIDENCE-001`
-Canonical owner: `.ai/framework/guarantees.md`
+Source canonical owner: `framework/guarantees.md`
+Installed canonical owner: `.ai/framework/guarantees.md`
 
 ## Change Protocol
 

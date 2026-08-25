@@ -61,7 +61,18 @@ from target_validation_support import (
     should_skip_path,
 )
 from target_adapter_validation.context import TargetPathEscapeError, ValidationContext
+from target_adapter_validation.capability import CapabilityValidationContext
+from target_adapter_validation.ai_infrastructure import (
+    AI_INFRASTRUCTURE_ROUTER_MODULE,
+)
+from target_adapter_validation.consistency_map import (
+    CONSISTENCY_MAP_MODULE,
+    RegistryFactEntry,
+    parse_registry_fact_entries,
+)
 from target_adapter_validation.framework_baseline import source_pack_expectation
+from target_adapter_validation.installation_state import validate_installation_state
+from scaffold_state import validate_installation_state_record
 from target_adapter_validation.modules import dispatch_capability_checks
 from target_adapter_validation.router_costs import (
     validate_budget_shape,
@@ -143,6 +154,7 @@ CORE_REQUIRED_FILES = [
     ".ai/assistant/contour.md",
     ".ai/assistant/context-router.json",
     ".ai/assistant/context-profiles.md",
+    ".ai/assistant/installation-state.json",
     ".ai/assistant/module-profile.md",
     ".ai/assistant/maturity-profile.md",
     ".ai/assistant/gates/index.json",
@@ -173,6 +185,7 @@ STANDARD_REQUIRED_FILES = [
 
 SUPPORT_PROFILES = {"core", "standard", "full"}
 VALIDATION_PHASES = {"acceptance", "migration-staging"}
+INSTALLATION_STATES = {"scaffolded", "staged", "accepted", "degraded"}
 
 AUTHORING_FILE_PATTERNS = (
     re.compile(r"^\.ai/assistant/templates/"),
@@ -233,6 +246,8 @@ MANIFEST_REQUIRED_SCALARS: set[PathKey] = {
     ("installation", "date"),
     ("installation", "mode"),
     ("installation", "support_profile"),
+    ("installation", "state"),
+    ("installation", "state_record"),
     ("owner", "responsible_team"),
     ("owner", "technical_owner"),
     ("owner", "backup_owner"),
@@ -509,26 +524,6 @@ DEFAULT_CHECKER_COVERAGE = {
     "manifest": "manifest coverage",
 }
 
-CONSISTENCY_LEVELS = ["fact", "contract", "area", "system", "adapter"]
-CONSISTENCY_RELATIONSHIPS = {
-    "implements",
-    "verifies",
-    "documents",
-    "visualizes",
-    "generates",
-    "constrains",
-    "depends-on",
-    "routes",
-}
-CONSISTENCY_REGISTRY_SYNC_POLICY = {
-    "coverage": "every-live-registry-fact-type",
-    "node_reference": "registry-consistency-map-node-id",
-    "fact_type_match": "exact",
-    "extra_nodes": "allowed-for-derived-contract-area-system-and-adapter-surfaces",
-}
-REGISTRY_ENTRY_HEADING_RE = re.compile(
-    r"^### Fact Type: `([^`]+)`\s*$", re.MULTILINE
-)
 STALE_ENABLED_MODULE_STATE_RE = re.compile(
     r"\b(?:is|remains|was|still\s+is)\s+"
     r"(?:not\s+installed|not\s+enabled|deferred|disabled|not-applicable|blocked)\b",
@@ -544,29 +539,6 @@ CONDITIONAL_STATUS_RE = re.compile(
     r"\b(?:if|when|unless|until|while|may|might|can|could|example|possible)\b",
     re.IGNORECASE,
 )
-AI_INFRASTRUCTURE_ROUTES_V1 = {
-    "inventory",
-    "use-existing",
-    "adapt-import",
-    "gate-checker-change",
-    "tool-mcp-change",
-    "bridge-wrapper-change",
-}
-AI_INFRASTRUCTURE_ROUTES = AI_INFRASTRUCTURE_ROUTES_V1 | {"recommend"}
-AI_INFRASTRUCTURE_ITEM_TYPES = {
-    "skill",
-    "prompt",
-    "gate",
-    "checker",
-    "flow",
-    "tool",
-    "mcp",
-    "bridge",
-    "wrapper",
-    "rule",
-    "template",
-    "other",
-}
 ALLOWED_ACTION_MODES = {
     "read-only",
     "docs-only",
@@ -576,55 +548,6 @@ ALLOWED_ACTION_MODES = {
 }
 AUTHORIZATION_PHASES = ["inspect", "modify", "commit", "publish", "live-external"]
 
-
-@dataclass(frozen=True)
-class RegistryFactEntry:
-    heading_fact_type: str
-    declared_fact_type: str | None
-    map_node_id: str | None
-    canonical_owner_values: tuple[str, ...]
-    line: int
-
-
-def markdown_scalar(block: str, field: str) -> str | None:
-    match = re.search(
-        rf"^{re.escape(field)}:\s*(.*?)\s*$",
-        block,
-        flags=re.MULTILINE,
-    )
-    if match is None:
-        return None
-    value = match.group(1).strip()
-    if len(value) >= 2 and value.startswith("`") and value.endswith("`"):
-        value = value[1:-1].strip()
-    return value or None
-
-
-def parse_registry_fact_entries(text: str) -> list[RegistryFactEntry]:
-    matches = list(REGISTRY_ENTRY_HEADING_RE.finditer(text))
-    entries: list[RegistryFactEntry] = []
-    for index, match in enumerate(matches):
-        end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
-        block = text[match.end():end]
-        owner_values = tuple(
-            value.strip().strip("`")
-            for _field, value in re.findall(
-                r"^([^:\n]*owner):\s*(.*?)\s*$",
-                block,
-                flags=re.MULTILINE | re.IGNORECASE,
-            )
-            if value.strip()
-        )
-        entries.append(
-            RegistryFactEntry(
-                heading_fact_type=match.group(1).strip(),
-                declared_fact_type=markdown_scalar(block, "Fact type"),
-                map_node_id=markdown_scalar(block, "Consistency map node"),
-                canonical_owner_values=owner_values,
-                line=text.count("\n", 0, match.start()) + 1,
-            )
-        )
-    return entries
 
 OPERATION_REQUIRED_FIELDS = {
     "id",
@@ -833,6 +756,7 @@ class Validator:
             raise ValueError(f"unsupported validation phase: {self.validation_phase}")
         self.allow_placeholders = self.validation_phase == "migration-staging"
         self.unresolved_active_placeholders = 0
+        self.installation_state = "unverified"
         self.capability_modules: dict[str, Any] = {}
         self.allow_local_paths = allow_local_paths + config.local_path_patterns()
         self.framework_drift_detected = False
@@ -885,6 +809,7 @@ class Validator:
             return self.findings
 
         manifest = self.check_manifest()
+        validate_installation_state(self.capability_validation_context(), manifest)
         support_profile = self.manifest_support_profile(manifest)
         self.check_required_files(support_profile)
         self.check_capability_closure(manifest)
@@ -969,6 +894,20 @@ class Validator:
                 self.unsafe_target_paths.add(label)
                 self.error("TARGET_PATH_ESCAPE", str(exc), label)
             return ""
+
+    def capability_validation_context(self) -> CapabilityValidationContext:
+        """Expose the stable, narrow host interface used by capability modules."""
+
+        return CapabilityValidationContext(
+            filesystem=self.context,
+            findings=self,
+            allow_placeholders=self.allow_placeholders,
+            resolve_target_path=self.target_path,
+            read_target_text=self.read_text,
+            load_target_json_object=self.load_json_object,
+            check_target_reference=self.check_optional_target_reference,
+            check_action_modes=self.check_allowed_actions,
+        )
 
     def manifest_support_profile(self, manifest: ManifestData | None) -> str:
         if manifest is None:
@@ -1166,6 +1105,14 @@ class Validator:
                     "installation.support_profile must be core, standard, or full",
                     f".ai/alatyr.yaml:{support_scalar.line}",
                 )
+
+        state_scalar = manifest.scalars.get(("installation", "state"))
+        if (
+            state_scalar
+            and not is_unresolved_value(state_scalar.value)
+            and state_scalar.value in INSTALLATION_STATES
+        ):
+            self.installation_state = state_scalar.value
 
         pack_scalar = manifest.scalars.get(("framework", "pack"))
         if pack_scalar and not is_unresolved_value(pack_scalar.value):
@@ -6158,287 +6105,7 @@ class Validator:
         )
 
     def check_consistency_map(self) -> None:
-        relpath = ".ai/project/consistency-map.json"
-        path = self.target_path(relpath)
-        data = self.load_json_object(path, "CONSISTENCY_MAP")
-        if data is None:
-            return
-        schema_version = data.get("schema_version")
-        if schema_version == 1:
-            self.warn(
-                "CONSISTENCY_MAP_SCHEMA_LEGACY",
-                "schema_version 1 should migrate to schema 2 registry-sync policy",
-                relpath,
-            )
-        elif schema_version != 2:
-            self.error(
-                "CONSISTENCY_MAP_SCHEMA",
-                "schema_version should be 1 or 2",
-                relpath,
-            )
-        if data.get("map_kind") != "target-consistency-map":
-            self.error(
-                "CONSISTENCY_MAP_KIND",
-                "map_kind should be target-consistency-map",
-                relpath,
-            )
-        if data.get("human_registry") != ".ai/project/source-of-truth-registry.md":
-            self.error(
-                "CONSISTENCY_MAP_REGISTRY",
-                "human_registry should point to the target source-of-truth registry",
-                relpath,
-            )
-        if schema_version == 2 and data.get("registry_sync_policy") != CONSISTENCY_REGISTRY_SYNC_POLICY:
-            self.error(
-                "CONSISTENCY_MAP_REGISTRY_SYNC_POLICY",
-                "registry_sync_policy must require exact coverage while allowing extra derived nodes",
-                relpath,
-            )
-        if data.get("levels") != CONSISTENCY_LEVELS:
-            self.error(
-                "CONSISTENCY_MAP_LEVELS",
-                "levels must match the portable consistency level order",
-                relpath,
-            )
-        relationships = data.get("relationship_types")
-        if (
-            not isinstance(relationships, list)
-            or not all(isinstance(value, str) for value in relationships)
-            or set(relationships) != CONSISTENCY_RELATIONSHIPS
-        ):
-            self.error(
-                "CONSISTENCY_MAP_RELATIONSHIPS",
-                "relationship_types must match the portable relationship set",
-                relpath,
-            )
-        policy = data.get("impact_policy")
-        if not isinstance(policy, dict):
-            self.error(
-                "CONSISTENCY_MAP_IMPACT_POLICY",
-                "impact_policy must be an object",
-                relpath,
-            )
-        else:
-            for field in ["transitive_expand_when", "required_evidence"]:
-                expect_string_list(
-                    policy.get(field),
-                    self,
-                    "CONSISTENCY_MAP_IMPACT_POLICY",
-                    relpath,
-                    label=f"impact_policy.{field}",
-                )
-
-        nodes = data.get("nodes")
-        if not isinstance(nodes, list) or not nodes:
-            self.error("CONSISTENCY_MAP_NODES", "nodes must be a non-empty list", relpath)
-            return
-        node_ids: set[str] = set()
-        nodes_by_id: dict[str, dict[str, Any]] = {}
-        edge_ids: set[str] = set()
-        for index, node in enumerate(nodes):
-            label = f"nodes[{index}]"
-            if not isinstance(node, dict):
-                self.error("CONSISTENCY_MAP_NODE_SHAPE", f"{label} must be an object", relpath)
-                continue
-            node_id = node.get("id")
-            if not isinstance(node_id, str) or not node_id:
-                self.error("CONSISTENCY_MAP_NODE_ID", f"{label}.id must be a string", relpath)
-            elif not is_placeholder(node_id):
-                if node_id in node_ids:
-                    self.error(
-                        "CONSISTENCY_MAP_NODE_DUPLICATE",
-                        f"duplicate node id {node_id}",
-                        relpath,
-                    )
-                node_ids.add(node_id)
-                nodes_by_id[node_id] = node
-            fact_type = node.get("fact_type")
-            if not isinstance(fact_type, str) or not fact_type.strip():
-                self.error(
-                    "CONSISTENCY_MAP_NODE_FACT_TYPE",
-                    f"{label}.fact_type must be a non-empty string",
-                    relpath,
-                )
-            elif is_placeholder(fact_type) and not self.allow_placeholders:
-                self.error(
-                    "CONSISTENCY_MAP_NODE_FACT_TYPE",
-                    f"{label}.fact_type must be resolved in an accepted adapter",
-                    relpath,
-                )
-            level = node.get("level")
-            if not is_placeholder(level) and level not in CONSISTENCY_LEVELS:
-                self.error(
-                    "CONSISTENCY_MAP_NODE_LEVEL",
-                    f"{label}.level is invalid: {level}",
-                    relpath,
-                )
-            project_area = node.get("project_area")
-            if not isinstance(project_area, str) or not project_area.strip():
-                self.error(
-                    "CONSISTENCY_MAP_NODE_AREA",
-                    f"{label}.project_area must be a non-empty string",
-                    relpath,
-                )
-            elif is_placeholder(project_area) and not self.allow_placeholders:
-                self.error(
-                    "CONSISTENCY_MAP_NODE_AREA",
-                    f"{label}.project_area must be resolved in an accepted adapter",
-                    relpath,
-                )
-            owner = node.get("canonical_owner")
-            if (
-                isinstance(owner, str)
-                and not is_placeholder(owner)
-                and not is_unresolved_value(owner)
-            ):
-                if not is_target_relative_path(owner):
-                    self.error(
-                        "CONSISTENCY_MAP_OWNER_PATH",
-                        f"{label}.canonical_owner must be target-relative",
-                        relpath,
-                    )
-                elif not self.target_path(owner).exists():
-                    self.warn(
-                        "CONSISTENCY_MAP_OWNER_MISSING",
-                        f"{label}.canonical_owner is missing: {owner}",
-                        relpath,
-                    )
-            edges = node.get("relationships")
-            if not isinstance(edges, list) or not edges:
-                self.error(
-                    "CONSISTENCY_MAP_EDGES",
-                    f"{label}.relationships must be non-empty",
-                    relpath,
-                )
-                continue
-            for edge_index, edge in enumerate(edges):
-                edge_label = f"{label}.relationships[{edge_index}]"
-                if not isinstance(edge, dict):
-                    self.error(
-                        "CONSISTENCY_MAP_EDGE_SHAPE",
-                        f"{edge_label} must be an object",
-                        relpath,
-                    )
-                    continue
-                edge_id = edge.get("id")
-                if not isinstance(edge_id, str) or not edge_id:
-                    self.error(
-                        "CONSISTENCY_MAP_EDGE_ID",
-                        f"{edge_label}.id must be a string",
-                        relpath,
-                    )
-                elif not is_placeholder(edge_id):
-                    if edge_id in edge_ids:
-                        self.error(
-                            "CONSISTENCY_MAP_EDGE_DUPLICATE",
-                            f"duplicate relationship id {edge_id}",
-                            relpath,
-                        )
-                    edge_ids.add(edge_id)
-                edge_type = edge.get("type")
-                if not is_placeholder(edge_type) and edge_type not in CONSISTENCY_RELATIONSHIPS:
-                    self.error(
-                        "CONSISTENCY_MAP_EDGE_TYPE",
-                        f"{edge_label}.type is invalid: {edge_type}",
-                        relpath,
-                    )
-                target_level = edge.get("target_level")
-                if not is_placeholder(target_level) and target_level not in CONSISTENCY_LEVELS:
-                    self.error(
-                        "CONSISTENCY_MAP_TARGET_LEVEL",
-                        f"{edge_label}.target_level is invalid: {target_level}",
-                        relpath,
-                    )
-                if edge.get("direction") != "outbound":
-                    self.error(
-                        "CONSISTENCY_MAP_DIRECTION",
-                        f"{edge_label}.direction must be outbound",
-                        relpath,
-                    )
-                for field in ["required_when", "validation"]:
-                    expect_string_list(
-                        edge.get(field),
-                        self,
-                        "CONSISTENCY_MAP_EDGE_FIELD",
-                        relpath,
-                        label=f"{edge_label}.{field}",
-                    )
-
-        registry_relpath = ".ai/project/source-of-truth-registry.md"
-        registry_path = self.target_path(registry_relpath)
-        if not registry_path.is_file():
-            self.error(
-                "CONSISTENCY_MAP_REGISTRY_MISSING",
-                "enabled consistency map requires the human source-of-truth registry",
-                registry_relpath,
-            )
-            return
-        registry_entries = parse_registry_fact_entries(self.read_text(registry_path))
-        if not registry_entries:
-            self.error(
-                "CONSISTENCY_MAP_REGISTRY_EMPTY",
-                "source-of-truth registry has no Fact Type entries",
-                registry_relpath,
-            )
-            return
-
-        heading_counts: dict[str, int] = {}
-        referenced_nodes: dict[str, str] = {}
-        for entry in registry_entries:
-            heading_counts[entry.heading_fact_type] = (
-                heading_counts.get(entry.heading_fact_type, 0) + 1
-            )
-            entry_path = f"{registry_relpath}:{entry.line}"
-            if entry.declared_fact_type != entry.heading_fact_type:
-                self.error(
-                    "CONSISTENCY_REGISTRY_FACT_TYPE_DRIFT",
-                    "Fact type field must match its Fact Type heading exactly",
-                    entry_path,
-                )
-            node_id = entry.map_node_id
-            if (
-                not isinstance(node_id, str)
-                or is_placeholder(node_id)
-                or is_unresolved_value(node_id)
-            ):
-                report = self.warn if self.allow_placeholders else self.error
-                report(
-                    "CONSISTENCY_REGISTRY_NODE_UNRESOLVED",
-                    f"Fact Type {entry.heading_fact_type!r} needs one resolved consistency-map node ID",
-                    entry_path,
-                )
-                continue
-            previous_fact_type = referenced_nodes.get(node_id)
-            if previous_fact_type is not None:
-                self.error(
-                    "CONSISTENCY_REGISTRY_NODE_REUSED",
-                    f"node {node_id!r} is referenced by both {previous_fact_type!r} and {entry.heading_fact_type!r}",
-                    entry_path,
-                )
-                continue
-            referenced_nodes[node_id] = entry.heading_fact_type
-            node = nodes_by_id.get(node_id)
-            if node is None:
-                self.error(
-                    "CONSISTENCY_REGISTRY_NODE_MISSING",
-                    f"Fact Type {entry.heading_fact_type!r} references missing node {node_id!r}",
-                    entry_path,
-                )
-                continue
-            if node.get("fact_type") != entry.heading_fact_type:
-                self.error(
-                    "CONSISTENCY_REGISTRY_NODE_FACT_TYPE_DRIFT",
-                    f"node {node_id!r} fact_type must exactly match {entry.heading_fact_type!r}",
-                    relpath,
-                )
-
-        for fact_type, count in sorted(heading_counts.items()):
-            if count > 1:
-                self.error(
-                    "CONSISTENCY_REGISTRY_FACT_TYPE_DUPLICATE",
-                    f"registry repeats Fact Type {fact_type!r}",
-                    registry_relpath,
-                )
+        CONSISTENCY_MAP_MODULE.validate(self.capability_validation_context(), None)
 
     def check_enabled_module_status_claims(
         self, enabled_modules: set[str]
@@ -6509,162 +6176,9 @@ class Validator:
                     break
 
     def check_ai_infrastructure_router(self) -> None:
-        relpath = ".ai/assistant/ai-infrastructure-router.json"
-        path = self.target_path(relpath)
-        data = self.load_json_object(path, "AI_ROUTER")
-        if data is None:
-            return
-        schema_version = data.get("schema_version")
-        if schema_version not in {1, 2}:
-            self.error("AI_ROUTER_SCHEMA", "schema_version should be 1 or 2", relpath)
-        elif schema_version == 1:
-            self.warn(
-                "AI_ROUTER_LEGACY_SCHEMA",
-                "schema_version 1 has no evidence-based recommendation route",
-                relpath,
-            )
-        if data.get("router_kind") != "target-ai-infrastructure-router":
-            self.error(
-                "AI_ROUTER_KIND",
-                "router_kind should be target-ai-infrastructure-router",
-                relpath,
-            )
-        routing_order = expect_string_list(
-            data.get("routing_order"), self, "AI_ROUTER_ORDER", relpath
+        AI_INFRASTRUCTURE_ROUTER_MODULE.validate(
+            self.capability_validation_context(), None
         )
-        expected_routes = (
-            AI_INFRASTRUCTURE_ROUTES
-            if schema_version == 2
-            else AI_INFRASTRUCTURE_ROUTES_V1
-        )
-        if set(routing_order) != expected_routes:
-            self.error(
-                "AI_ROUTER_ROUTES",
-                "routing_order must contain each portable AI infrastructure route",
-                relpath,
-            )
-        item_types = expect_string_list(
-            data.get("item_types"), self, "AI_ROUTER_ITEM_TYPES", relpath
-        )
-        if set(item_types) != AI_INFRASTRUCTURE_ITEM_TYPES:
-            self.error(
-                "AI_ROUTER_ITEM_TYPES",
-                "item_types must match the portable item type set",
-                relpath,
-            )
-
-        if schema_version == 2:
-            recommendation_template = data.get("recommendation_template")
-            if not isinstance(recommendation_template, str) or not recommendation_template:
-                self.error(
-                    "AI_ROUTER_RECOMMENDATION_TEMPLATE",
-                    "schema_version 2 requires recommendation_template",
-                    relpath,
-                )
-            else:
-                self.check_optional_target_reference(
-                    recommendation_template,
-                    relpath,
-                    "recommendation_template",
-                )
-
-        routes = data.get("routes")
-        if not isinstance(routes, dict):
-            self.error("AI_ROUTER_ROUTE_SHAPE", "routes must be an object", relpath)
-            routes = {}
-        for route_name in expected_routes:
-            route = routes.get(route_name)
-            if not isinstance(route, dict):
-                self.error("AI_ROUTER_ROUTE_MISSING", f"route is missing: {route_name}", relpath)
-                continue
-            for field in [
-                "use_when",
-                "required_context",
-                "expand_when",
-                "allowed_actions",
-                "approval_gates",
-                "validation",
-                "final_evidence",
-            ]:
-                values = expect_string_list(
-                    route.get(field),
-                    self,
-                    "AI_ROUTER_ROUTE_FIELD",
-                    relpath,
-                    label=f"routes.{route_name}.{field}",
-                )
-                if field == "required_context":
-                    for value in values:
-                        self.check_optional_target_reference(
-                            value, relpath, f"routes.{route_name}.{field}"
-                        )
-                if field == "allowed_actions":
-                    self.check_allowed_actions(
-                        values, relpath, f"routes.{route_name}.{field}"
-                    )
-
-        items = data.get("items")
-        if not isinstance(items, list) or not items:
-            self.error("AI_ROUTER_ITEMS", "items must be a non-empty list", relpath)
-            return
-        item_ids: set[str] = set()
-        for index, item in enumerate(items):
-            label = f"items[{index}]"
-            if not isinstance(item, dict):
-                self.error("AI_ROUTER_ITEM_SHAPE", f"{label} must be an object", relpath)
-                continue
-            item_id = item.get("id")
-            if not isinstance(item_id, str) or not item_id:
-                self.error("AI_ROUTER_ITEM_ID", f"{label}.id must be a string", relpath)
-            elif not is_placeholder(item_id):
-                if item_id in item_ids:
-                    self.error("AI_ROUTER_ITEM_DUPLICATE", f"duplicate item id {item_id}", relpath)
-                item_ids.add(item_id)
-            item_type = item.get("type")
-            if not is_placeholder(item_type) and item_type not in AI_INFRASTRUCTURE_ITEM_TYPES:
-                self.error("AI_ROUTER_ITEM_TYPE", f"{label}.type is invalid: {item_type}", relpath)
-            status = item.get("status")
-            if not is_placeholder(status) and status not in {
-                "active",
-                "blocked",
-                "deprecated",
-                "unresolved",
-            }:
-                self.error(
-                    "AI_ROUTER_ITEM_STATUS",
-                    f"{label}.status is invalid: {status}",
-                    relpath,
-                )
-            for field in [
-                "activation_triggers",
-                "required_context",
-                "assistant_surfaces",
-                "wrappers",
-                "allowed_actions",
-                "required_permissions",
-                "approval_triggers",
-                "gates",
-                "validation",
-                "conflicts_with",
-            ]:
-                values = expect_string_list(
-                    item.get(field),
-                    self,
-                    "AI_ROUTER_ITEM_FIELD",
-                    relpath,
-                    label=f"{label}.{field}",
-                )
-                if field in {"required_context", "wrappers", "gates"}:
-                    for value in values:
-                        self.check_optional_target_reference(value, relpath, f"{label}.{field}")
-                if field == "allowed_actions":
-                    self.check_allowed_actions(values, relpath, f"{label}.{field}")
-            for field in ["canonical_source", "output_contract", "adaptation_record"]:
-                value = item.get(field)
-                if not isinstance(value, str) or not value:
-                    self.error("AI_ROUTER_ITEM_FIELD", f"{label}.{field} must be a string", relpath)
-                elif field != "output_contract":
-                    self.check_optional_target_reference(value, relpath, f"{label}.{field}")
 
     def check_development_evidence(self, manifest: ManifestData | None) -> None:
         key = ("source_of_truth", "development_evidence")
@@ -11887,17 +11401,49 @@ def string_list_config(
 
 
 def adapter_health_state(
-    findings: list[Finding], *, validation_phase: str = "acceptance"
+    findings: list[Finding],
+    *,
+    validation_phase: str = "acceptance",
+    installation_state: str = "unverified",
 ) -> str:
     if any(finding.code in {"TARGET_MISSING", "TARGET_NOT_DIRECTORY"} for finding in findings):
         return "unverified"
     if any(is_blocking_finding(finding) for finding in findings):
         return "blocked"
-    if validation_phase == "migration-staging":
-        return "staged"
+    if installation_state != "accepted" or validation_phase != "acceptance":
+        return "unverified"
     if any(finding.level == "warning" for finding in findings):
         return "attention"
     return "ready"
+
+
+def target_installation_state(target: Path) -> str:
+    """Read installation state only when its transition evidence is valid."""
+
+    manifest_path = target / ".ai" / "alatyr.yaml"
+    if not manifest_path.is_file():
+        return "unverified"
+    try:
+        manifest = parse_manifest(manifest_path)
+    except (OSError, UnicodeError, ValueError):
+        return "unverified"
+    scalar = manifest.scalars.get(("installation", "state"))
+    if scalar is None or scalar.value not in INSTALLATION_STATES:
+        return "unverified"
+    record_scalar = manifest.scalars.get(("installation", "state_record"))
+    if record_scalar is None or not is_target_relative_path(record_scalar.value):
+        return "unverified"
+    root = target.resolve()
+    try:
+        record_path = (target / record_scalar.value).resolve()
+        if record_path != root and root not in record_path.parents:
+            return "unverified"
+        record = json.loads(record_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, ValueError, json.JSONDecodeError):
+        return "unverified"
+    if validate_installation_state_record(record, manifest_state=scalar.value):
+        return "unverified"
+    return scalar.value
 
 
 def prioritized_repair_operations(findings: list[Finding]) -> list[str]:
@@ -11915,7 +11461,11 @@ def prioritized_repair_operations(findings: list[Finding]) -> list[str]:
 
 
 def render_summary(
-    findings: list[Finding], *, strict_warnings: bool, validation_phase: str
+    findings: list[Finding],
+    *,
+    strict_warnings: bool,
+    validation_phase: str,
+    installation_state: str = "unverified",
 ) -> int:
     order = {"error": 0, "warning": 1, "info": 2}
     for finding in sorted(findings, key=lambda item: (order[item.level], item.code, item.path or "")):
@@ -11929,7 +11479,11 @@ def render_summary(
         for finding in findings
         if finding.level == "warning" and is_blocking_finding(finding)
     )
-    health = adapter_health_state(findings, validation_phase=validation_phase)
+    health = adapter_health_state(
+        findings,
+        validation_phase=validation_phase,
+        installation_state=installation_state,
+    )
     print(
         f"\nSummary: errors={errors} warnings={warnings} "
         f"blocking_warnings={blocking_warnings} info={infos}"
@@ -11965,6 +11519,7 @@ def findings_payload(
     target: Path,
     strict_warnings: bool,
     validation_phase: str = "acceptance",
+    installation_state: str | None = None,
 ) -> dict[str, Any]:
     errors = sum(1 for finding in findings if finding.level == "error")
     warnings = sum(1 for finding in findings if finding.level == "warning")
@@ -11978,12 +11533,17 @@ def findings_payload(
     observed_revision = git_head_revision(target)
     observed_branch = git_branch_name(target)
     observed_at = datetime.now(timezone.utc).isoformat()
+    resolved_installation_state = installation_state or target_installation_state(target)
     unresolved_active = sum(
         1
         for finding in findings
         if finding.code in {"PLACEHOLDER_UNRESOLVED", "PLACEHOLDER_STAGING_UNRESOLVED"}
     )
-    acceptance_eligible = validation_phase == "acceptance" and exit_code == 0
+    acceptance_eligible = (
+        resolved_installation_state == "accepted"
+        and validation_phase == "acceptance"
+        and exit_code == 0
+    )
     return {
         "schema_version": 3,
         "tool": "validate_target_adapter",
@@ -11993,6 +11553,7 @@ def findings_payload(
             "observed_at": observed_at,
             "observed_revision": observed_revision,
             "observed_branch": observed_branch,
+            "installation_state": resolved_installation_state,
             "historical_actions_verified": False,
             "limitation": (
                 "Current files do not prove historical installation, update, "
@@ -12007,6 +11568,7 @@ def findings_payload(
             else "passed"
         ),
         "validation_phase": validation_phase,
+        "installation_state": resolved_installation_state,
         "placeholder_validation": {
             "mode": "staging-only" if validation_phase == "migration-staging" else "strict",
             "unresolved_active": unresolved_active,
@@ -12015,7 +11577,9 @@ def findings_payload(
         },
         "adapter_health": {
             "state": adapter_health_state(
-                findings, validation_phase=validation_phase
+                findings,
+                validation_phase=validation_phase,
+                installation_state=resolved_installation_state,
             ),
             "observed_at": observed_at,
             "observed_revision": observed_revision,
@@ -12204,6 +11768,7 @@ def main() -> int:
         target=args.target.resolve(),
         strict_warnings=args.strict_warnings,
         validation_phase=validation_phase,
+        installation_state=validator.installation_state,
     )
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
@@ -12218,6 +11783,7 @@ def main() -> int:
         findings,
         strict_warnings=args.strict_warnings,
         validation_phase=validation_phase,
+        installation_state=validator.installation_state,
     )
 
 

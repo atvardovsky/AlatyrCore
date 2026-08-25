@@ -290,8 +290,8 @@ def main() -> int:
             failures.append("fresh scaffold validator evidence contains errors")
         if payload.get("status") != "staged":
             failures.append("placeholder-tolerant upgrade assessment must remain staged")
-        if payload.get("adapter_health", {}).get("state") != "staged":
-            failures.append("staging assessment must not report ready adapter health")
+        if payload.get("adapter_health", {}).get("state") != "unverified":
+            failures.append("staging assessment must report unverified adapter health")
         if payload.get("placeholder_validation", {}).get("acceptance_eligible") is not False:
             failures.append("staging assessment must not be acceptance eligible")
         if payload.get("evidence", {}).get("observed_branch") != "feature/adapter-upgrade":

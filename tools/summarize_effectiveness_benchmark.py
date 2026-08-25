@@ -11,6 +11,7 @@ from typing import Any
 
 from check_effectiveness_benchmark import validate_benchmark
 from prepare_effectiveness_benchmark import MODES, load_json
+from context_receipt import supports_observed_context_claim
 
 
 METRICS = [
@@ -62,12 +63,18 @@ def render_summary(manifest: dict[str, Any], reports: list[dict[str, Any]]) -> s
     for report in reports:
         by_mode[report["adapter_mode"]].append(report)
     measurements = {report["context_measurement_kind"] for report in reports}
+    receipts_ready = all(
+        supports_observed_context_claim(report.get("context_receipt"))
+        for report in reports
+    )
     context_ready = (
+        receipts_ready
+        and
         len(measurements) == 1
         and "unknown" not in measurements
         and all(isinstance(report.get("approximate_context_volume"), int) for report in reports)
     )
-    token_ready = all(
+    token_ready = receipts_ready and all(
         isinstance(report.get(field), int)
         for report in reports
         for field in ["input_tokens", "output_tokens"]
@@ -182,6 +189,25 @@ def source_self_check() -> list[str]:
                 "adapter_mode": mode,
                 "outcome": "accepted",
                 "context_measurement_kind": "host-observed-tokens",
+                "context_receipt": {
+                    "schema_version": 1,
+                    "receipt_kind": "alatyr-context-receipt",
+                    "measurement_state": "observed",
+                    "planned": {"paths": ["planned.md"], "approximate_words": 100},
+                    "resolved": {
+                        "status": "recorded",
+                        "paths": ["resolved.md"],
+                        "approximate_words": 100,
+                    },
+                    "observed": {
+                        "evidence_level": "exact",
+                        "source": "host-telemetry",
+                        "files_loaded": index,
+                        "input_tokens": index * 80,
+                        "output_tokens": index * 20,
+                        "evidence": "synthetic source self-check telemetry",
+                    },
+                },
                 "input_tokens": index * 80,
                 "output_tokens": index * 20,
                 "estimated_cost": index * 0.01,

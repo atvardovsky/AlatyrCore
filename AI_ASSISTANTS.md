@@ -207,6 +207,10 @@ verified role/model binding and current client evidence, then fall back to
 primary execution or a stronger verified model when subagents, model override,
 parallelism, or actual-model reporting is unsupported or stale.
 
+When AlatyrCore itself is the active project contour, follow the lazy source
+route in `AGENTS.md` and `docs/source-worker-strategy.md`. Host and target
+projects continue to use their own active adapter policy.
+
 ## AI Infrastructure And Extensions
 
 Skills, prompts, gates, checkers, tools, MCP configurations, bridges, wrappers,

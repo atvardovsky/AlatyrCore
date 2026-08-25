@@ -54,6 +54,14 @@ governance boundaries, or when evidence conflicts. Full framework-corpus
 reading is required only for changes that intentionally compare, copy, or
 rebaseline the full framework set.
 
+## Source-Contour Worker Routing
+
+When AlatyrCore itself is the active project contour, evaluate whether bounded
+worker delegation is beneficial. If it is, load
+`docs/source-worker-strategy.md` through `tools/source_context_router.json`.
+Host and target repositories keep their own active adapter policy. This local
+route composes `ALATYR-DELEGATION-001` without changing portable target rules.
+
 ## Rule References
 
 This file is a source-repository entry point, not the canonical owner for

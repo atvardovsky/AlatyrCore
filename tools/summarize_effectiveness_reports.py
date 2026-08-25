@@ -14,6 +14,8 @@ from collections import Counter, defaultdict
 from pathlib import Path
 from typing import Any
 
+from context_receipt import validate_context_receipt
+
 
 REQUIRED_FIELDS = [
     "task",
@@ -130,6 +132,13 @@ def validate_report(report: dict[str, Any], index: int) -> list[str]:
     for field in ["context_receipt_reused", "context_budget_exceeded"]:
         if report.get(field) not in {"yes", "no", "unknown"}:
             failures.append(f"report {index} {field} must be yes, no, or unknown")
+
+    if report.get("schema_version") == 2:
+        failures.extend(
+            validate_context_receipt(
+                report.get("context_receipt"), f"report {index} context_receipt"
+            )
+        )
 
     return failures
 

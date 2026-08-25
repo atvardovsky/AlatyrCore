@@ -7,6 +7,15 @@ Replace placeholders with target facts before accepting installation.
 An optional module owner may be absent from a selective framework pack; install
 it through reviewed pack expansion before enabling that module.
 
+## Shared Capability Surfaces
+
+Use `.ai/framework/capabilities.json` as the lifecycle owner for target paths
+produced by multiple modules. Merge all enabled producers according to the
+declared strategy. Disabling one module must not remove a surface required by
+another enabled producer. Preserve a target-owned shared surface when
+`preserve_on_disable` is true; any later cleanup requires explicit scope and
+evidence that no target facts or active capability output will be lost.
+
 ## Required Core Profile
 
 Core profile state: `{COMPLETE_OR_MISSING_GAPS}`
@@ -582,5 +591,5 @@ Next action: `{SCAFFOLDING_NEXT_ACTION}`
 ## Evidence
 
 Report enabled modules, deferred modules, blocked modules, files created or
-skipped, validation, approvals, and residual risk before claiming adapter
-maturity.
+skipped, shared surfaces retained or merged, validation, approvals, and
+residual risk before claiming adapter maturity.

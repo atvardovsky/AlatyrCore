@@ -31,12 +31,14 @@ from scaffold_projection import (
     project_router,
     render_json,
 )
+from scaffold_state import INITIAL_INSTALLATION_STATE
 from bootstrap_index import build_bootstrap_index, render as render_bootstrap_index
 from capability_catalog import (
     PACK_ORDER,
     dependency_closure,
     load_modules,
     minimum_pack,
+    shared_surface_merge_requirement,
     target_files as capability_target_files,
 )
 from framework_packaging import (
@@ -284,6 +286,13 @@ def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
     for src in iter_template_files(profile, enabled_modules):
         rel = src.relative_to(TEMPLATE_ROOT)
         dst = target / rel
+        merge_strategy = shared_surface_merge_requirement(rel)
+        if dst.exists() and merge_strategy is not None:
+            blocked.append(
+                "shared surface requires adapter-aware merge "
+                f"({merge_strategy}); preserved existing file: {dst}"
+            )
+            continue
         if dst.exists() and not args.overwrite_existing:
             blocked.append(f"exists, would not overwrite: {dst}")
             continue
@@ -369,8 +378,10 @@ def main() -> int:
         "--overwrite-existing",
         action="store_true",
         help=(
-            "Overwrite existing files. Use only after explicit human approval "
-            "for the exact target path and protected surfaces."
+            "Overwrite existing non-shared files. Use only after explicit human "
+            "approval for the exact target path and protected surfaces. Existing "
+            "catalog-managed shared surfaces are always preserved for an "
+            "adapter-aware merge."
         ),
     )
     args = parser.parse_args()
@@ -389,6 +400,7 @@ def main() -> int:
     print(f"Alatyr scaffold mode: {mode}")
     print(f"Alatyr scaffold profile: {args.profile}")
     print(f"Alatyr framework pack: {framework_pack}")
+    print(f"Alatyr adapter installation state: {INITIAL_INSTALLATION_STATE}")
     print(
         "Enabled optional capabilities: "
         + (", ".join(sorted(enabled_modules)) if enabled_modules else "none")

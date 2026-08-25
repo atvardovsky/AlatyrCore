@@ -5,6 +5,10 @@ updated in `{PROJECT_NAME}`.
 
 Replace placeholders with target facts before sending the message.
 
+Delivery evidence is separate from this template. Record `sent`, `skipped`, or
+`blocked`, together with the delivery mechanism, reason, and observation time.
+The presence of this file never proves that a chat message reached a user.
+
 ```text
 Alatyr Core has been updated for `{PROJECT_NAME}`.
 
@@ -154,4 +158,9 @@ Known adapter gaps or migrations:
 
 Migration note:
 `.ai/assistant/templates/migration-note.md` or `{MIGRATION_NOTE_RESULT}`
+
+Delivery status: `{SENT_SKIPPED_OR_BLOCKED}`
+Delivery mechanism: `{CHAT_SURFACE_OR_UNAVAILABLE}`
+Delivery reason: `{WHY_SENT_SKIPPED_OR_BLOCKED}`
+Delivery observed at: `{DELIVERY_TIMESTAMP_OR_NOT_OBSERVED}`
 ```

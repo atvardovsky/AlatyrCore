@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/atvardovsky/AlatyrCore/schemas/alatyr-installation-state.schema.json",
+  "title": "Alatyr target adapter installation state",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "record_kind", "current_state", "transitions"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "record_kind": {"const": "alatyr-installation-state"},
+    "current_state": {"$ref": "#/definitions/state"},
+    "transitions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/definitions/transition"}
+    }
+  },
+  "definitions": {
+    "state": {
+      "enum": ["scaffolded", "staged", "accepted", "degraded"]
+    },
+    "transition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sequence",
+        "previous_state",
+        "next_state",
+        "reason",
+        "operation_id",
+        "repository_revision",
+        "current_user_authorization",
+        "approval_evidence",
+        "validation",
+        "recorded_at"
+      ],
+      "properties": {
+        "sequence": {"type": "integer", "minimum": 1},
+        "previous_state": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/definitions/state"}
+          ]
+        },
+        "next_state": {"$ref": "#/definitions/state"},
+        "reason": {
+          "enum": [
+            "initial-scaffold",
+            "legacy-migration-baseline",
+            "adaptation-started",
+            "strict-acceptance",
+            "controlled-update",
+            "blocking-drift",
+            "repair-started"
+          ]
+        },
+        "operation_id": {"type": "string", "minLength": 1},
+        "repository_revision": {"type": "string", "minLength": 1},
+        "current_user_authorization": {"type": "string", "minLength": 1},
+        "approval_evidence": {"type": ["string", "null"]},
+        "validation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status", "evidence"],
+          "properties": {
+            "status": {
+              "enum": ["not-run", "passed", "failed", "unavailable"]
+            },
+            "evidence": {"type": "string", "minLength": 1}
+          }
+        },
+        "recorded_at": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

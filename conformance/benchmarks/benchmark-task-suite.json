@@ -14,6 +14,7 @@
   "required_metrics": [
     "input_tokens",
     "output_tokens",
+    "context_receipt",
     "context_files_loaded",
     "context_expansions",
     "clarifications",

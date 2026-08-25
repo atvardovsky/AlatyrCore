@@ -19,6 +19,7 @@ from prepare_effectiveness_benchmark import (
     prepare_benchmark,
     tree_hash,
 )
+from context_receipt import validate_context_receipt
 from summarize_effectiveness_reports import validate_report as validate_metrics
 
 
@@ -172,8 +173,10 @@ def validate_benchmark_report(
     failures = validate_metrics(report, 1)
     if failures:
         raise AssertionError(f"{report_path}: {'; '.join(failures)}")
+    schema_version = report.get("schema_version")
+    if schema_version not in {1, 2}:
+        raise AssertionError(f"{report_path} schema_version must be 1 or 2")
     expected = {
-        "schema_version": 1,
         "report_kind": "effectiveness-benchmark-result",
         "benchmark_id": manifest["benchmark_id"],
         "task": task["name"],
@@ -185,6 +188,24 @@ def validate_benchmark_report(
         "source_commit": manifest["source_commit"],
         "target_baseline_hash": run["project_baseline_hash"],
     }
+    if schema_version == 2:
+        receipt = report.get("context_receipt")
+        receipt_failures = validate_context_receipt(
+            receipt, f"{report_path} context_receipt"
+        )
+        if receipt_failures:
+            raise AssertionError("; ".join(receipt_failures))
+        observed = receipt["observed"]
+        for report_field, receipt_field in [
+            ("context_files_loaded", "files_loaded"),
+            ("input_tokens", "input_tokens"),
+            ("output_tokens", "output_tokens"),
+        ]:
+            receipt_value = observed[receipt_field]
+            if receipt_value != "unknown" and report.get(report_field) != receipt_value:
+                raise AssertionError(
+                    f"{report_path} {report_field} differs from context receipt"
+                )
     if "class_id" in task:
         expected["task_class_id"] = task["class_id"]
     if "evidence_contract_digest" in manifest:
@@ -430,6 +451,8 @@ def validate_source_templates() -> list[str]:
     try:
         plan = load_json(PLAN_TEMPLATE)
         report = load_json(REPORT_TEMPLATE)
+        if report.get("schema_version") != 2:
+            failures.append("effectiveness run report template schema_version must be 2")
         suite = load_json(TASK_SUITE)
         if plan.get("schema_version") != 1:
             failures.append("benchmark plan template schema_version must be 1")
@@ -460,6 +483,7 @@ def validate_source_templates() -> list[str]:
             "evidence_contract_digest",
             "target_baseline_hash",
             "run_provenance",
+            "context_receipt",
             "context_measurement_kind",
             "input_tokens",
             "output_tokens",
@@ -660,6 +684,28 @@ def source_self_check() -> list[str]:
                         "report_origin": "synthetic-source-contract",
                     },
                     "context_measurement_kind": "assistant-reported-words",
+                    "context_receipt": {
+                        "schema_version": 1,
+                        "receipt_kind": "alatyr-context-receipt",
+                        "measurement_state": "observed",
+                        "planned": {
+                            "paths": ["AGENTS.md"],
+                            "approximate_words": 100,
+                        },
+                        "resolved": {
+                            "status": "recorded",
+                            "paths": ["AGENTS.md"],
+                            "approximate_words": (index + 1) * 100,
+                        },
+                        "observed": {
+                            "evidence_level": "partial",
+                            "source": "assistant-reported",
+                            "files_loaded": index + 1,
+                            "input_tokens": (index + 1) * 80,
+                            "output_tokens": (index + 1) * 20,
+                            "evidence": "synthetic assistant-reported source check",
+                        },
+                    },
                     "input_tokens": (index + 1) * 80,
                     "output_tokens": (index + 1) * 20,
                     "estimated_cost": (index + 1) * 0.01,

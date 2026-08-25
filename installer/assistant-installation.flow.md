@@ -452,6 +452,14 @@ accepted or ready. Before reporting installation or update completion:
 4. Run strict `acceptance` validation on the checked-out target branch and
    record that branch and exact revision. Repeat this final step separately on
    any other branch whose adapter state is to be accepted.
+5. Update the manifest installation state and its machine-readable transition
+   record together. Require a continuous previous-state chain, the current
+   operation and revision, current-scope authorization evidence, approval
+   evidence when applicable, and the strict validation result. A failed or
+   unavailable strict check cannot produce `accepted`.
+   When upgrading a pre-transition-record adapter, initialize the record at
+   `staged` with `legacy-migration-baseline` and an explicit unavailable prior-
+   history explanation instead of reconstructing unobserved events.
 
 ## Final Evidence
 
@@ -462,6 +470,8 @@ Report:
 - adapter validation phase, active unresolved-placeholder count,
   manifest/module-profile agreement, acceptance eligibility, and required
   strict rerun when staging was used
+- manifest installation state, transition-record path, final transition
+  revision, validation status, and any transition-history failure
 - dated historical records used and historical claims that remain unverifiable
 - installation id and approval used, if any
 - `current_user_authorization`: logical installation scope, source request,

@@ -32,6 +32,7 @@ def load_object(path: Path) -> dict[str, Any]:
 def main() -> int:
     failures: list[str] = []
     modules: dict[str, Any] = {}
+    surfaces: dict[str, Any] = {}
     try:
         catalog = load_object(CATALOG)
         schema = load_object(SCHEMA)
@@ -49,6 +50,10 @@ def main() -> int:
         if not isinstance(raw_modules, dict):
             raise ValueError("capability catalog modules must be an object")
         modules = raw_modules
+        raw_surfaces = catalog.get("surfaces", {})
+        if not isinstance(raw_surfaces, dict):
+            raise ValueError("capability catalog surfaces must be an object")
+        surfaces = raw_surfaces
 
         registry = load_object(ROOT / "framework" / "rule-registry.json")
         rule_ids = {
@@ -87,6 +92,45 @@ def main() -> int:
                 if not (TARGET / relpath).is_file():
                     failures.append(f"{module_id} references missing target file {relpath}")
 
+        producers_by_path: dict[str, set[str]] = {}
+        for module_id, module in modules.items():
+            if not isinstance(module, dict):
+                continue
+            for relpath in module.get("target_files", []):
+                if isinstance(relpath, str):
+                    producers_by_path.setdefault(relpath, set()).add(module_id)
+
+        shared_paths = {
+            relpath: producers
+            for relpath, producers in producers_by_path.items()
+            if len(producers) > 1
+        }
+        if set(surfaces) != set(shared_paths):
+            failures.append(
+                "shared surface catalog mismatch: "
+                f"missing={sorted(set(shared_paths) - set(surfaces))} "
+                f"extra={sorted(set(surfaces) - set(shared_paths))}"
+            )
+        for relpath, contract in surfaces.items():
+            if not isinstance(contract, dict):
+                continue
+            declared_producers = set(contract.get("producers", []))
+            actual_producers = shared_paths.get(relpath, set())
+            if declared_producers != actual_producers:
+                failures.append(
+                    f"shared surface {relpath} producers mismatch: "
+                    f"declared={sorted(declared_producers)} "
+                    f"actual={sorted(actual_producers)}"
+                )
+            if contract.get("ownership") != "target-adapter-shared":
+                failures.append(f"shared surface {relpath} has invalid ownership")
+            if not isinstance(contract.get("preserve_on_disable"), bool):
+                failures.append(
+                    f"shared surface {relpath} lacks preserve_on_disable policy"
+                )
+            if not isinstance(contract.get("merge_strategy"), str):
+                failures.append(f"shared surface {relpath} lacks merge strategy")
+
         if not failures:
             for module_id in modules:
                 closure = dependency_closure([module_id], modules)
@@ -105,7 +149,10 @@ def main() -> int:
         for failure in failures:
             print(f"FAIL: {failure}", file=sys.stderr)
         return 1
-    print(f"OK: checked closure for {len(modules)} optional capabilities")
+    print(
+        f"OK: checked closure for {len(modules)} optional capabilities and "
+        f"{len(surfaces)} shared surfaces"
+    )
     return 0
 
 

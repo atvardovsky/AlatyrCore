@@ -1,6 +1,29 @@
 {
   "schema_version": 1,
   "capability_kind": "alatyr-optional-module-catalog",
+  "surfaces": {
+    ".ai/assistant/assistant-capabilities.json": {
+      "ownership": "target-adapter-shared",
+      "producers": [
+        "diagrams",
+        "multi-assistant-bridges",
+        "subagent-delegation"
+      ],
+      "merge_strategy": "record-merge-by-assistant-id",
+      "preserve_on_disable": true
+    },
+    ".ai/assistant/bridge-capability-matrix.md": {
+      "ownership": "target-adapter-shared",
+      "producers": [
+        "ai-infrastructure",
+        "diagrams",
+        "multi-assistant-bridges",
+        "subagent-delegation"
+      ],
+      "merge_strategy": "target-owned-section-merge",
+      "preserve_on_disable": true
+    }
+  },
   "modules": {
     "blueprint-change": {
       "min_framework_pack": "standard",

@@ -488,7 +488,7 @@ tasks from loading the complete framework or project corpus.
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.27`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.28`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural
@@ -505,6 +505,11 @@ Important limits:
   repeated structural work; they do not replace assistant logical reasoning.
 - Static bridge and prompt checks do not prove that every external assistant
   client auto-loads or follows instructions identically.
+- Provider-neutral conformance contracts can prepare, import, collect, and
+  validate evidence across supported surfaces, but only captured reviewed runs
+  prove actual provider behavior.
+- Context receipts separate planned and resolved source estimates from observed
+  host/provider telemetry; estimates are not presented as actual token savings.
 - Onboarding, quality, rework, and cost benefits require broader validation in
   real teams and projects.
 - The generated [evidence status](conformance/evidence-status.json) records

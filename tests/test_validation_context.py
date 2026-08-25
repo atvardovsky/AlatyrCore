@@ -126,3 +126,35 @@ class ValidationContextTests(unittest.TestCase):
                 [item.code for item in validator.findings],
                 ["TARGET_PATH_ESCAPE", "TARGET_PATH_ESCAPE"],
             )
+
+    def test_capability_module_cannot_follow_external_symlink(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            parent = Path(directory)
+            target = parent / "target"
+            map_path = target / ".ai/project/consistency-map.json"
+            map_path.parent.mkdir(parents=True)
+            outside = parent / "outside.json"
+            outside.write_text("{}\n", encoding="utf-8")
+            try:
+                map_path.symlink_to(outside)
+            except OSError as exc:
+                self.skipTest(f"symlink creation is unavailable: {exc}")
+            validator = Validator(
+                target,
+                framework_source=None,
+                diff_ref=None,
+                approval_records=[],
+                enforce_approval_scope=False,
+                change_packages=[],
+                enforce_change_package=False,
+                migration_diff=None,
+                allow_placeholders=False,
+                allow_local_paths=[],
+                config=AdapterValidatorConfig(),
+            )
+
+            validator.check_consistency_map()
+
+            self.assertEqual(
+                [item.code for item in validator.findings], ["TARGET_PATH_ESCAPE"]
+            )

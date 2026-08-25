@@ -5,8 +5,12 @@
     "tools/validate_target_adapter.py",
     "tools/project_knowledge.py",
     "tools/target_adapter_validation/__init__.py",
+    "tools/target_adapter_validation/ai_infrastructure.py",
+    "tools/target_adapter_validation/capability.py",
+    "tools/target_adapter_validation/consistency_map.py",
     "tools/target_adapter_validation/context.py",
     "tools/target_adapter_validation/framework_baseline.py",
+    "tools/target_adapter_validation/installation_state.py",
     "tools/target_adapter_validation/modules.py",
     "tools/target_adapter_validation/router_costs.py"
   ],
@@ -26,7 +30,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/ai_infrastructure.py"
       ]
     },
     {
@@ -35,7 +39,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/ai_infrastructure.py"
       ]
     },
     {
@@ -44,7 +48,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/ai_infrastructure.py"
       ]
     },
     {
@@ -53,7 +57,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/ai_infrastructure.py"
       ]
     },
     {
@@ -62,7 +66,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/ai_infrastructure.py"
       ]
     },
     {
@@ -71,7 +75,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/ai_infrastructure.py"
       ]
     },
     {
@@ -80,7 +84,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/ai_infrastructure.py"
       ]
     },
     {
@@ -89,7 +93,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/ai_infrastructure.py"
       ]
     },
     {
@@ -98,7 +102,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/ai_infrastructure.py"
       ]
     },
     {
@@ -107,7 +111,7 @@
         "warning"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/ai_infrastructure.py"
       ]
     },
     {
@@ -116,7 +120,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/ai_infrastructure.py"
       ]
     },
     {
@@ -125,7 +129,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/ai_infrastructure.py"
       ]
     },
     {
@@ -134,7 +138,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/ai_infrastructure.py"
       ]
     },
     {
@@ -143,7 +147,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/ai_infrastructure.py"
       ]
     },
     {
@@ -152,7 +156,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/ai_infrastructure.py"
       ]
     },
     {
@@ -1304,7 +1308,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1313,7 +1317,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1322,7 +1326,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1331,7 +1335,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1340,7 +1344,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1349,7 +1353,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1358,7 +1362,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1367,7 +1371,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1376,7 +1380,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1385,7 +1389,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1394,7 +1398,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1403,7 +1407,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1412,7 +1416,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1421,7 +1425,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1430,7 +1434,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1439,7 +1443,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1448,7 +1452,7 @@
         "warning"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1457,7 +1461,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1466,7 +1470,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1475,7 +1479,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1484,7 +1488,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1493,7 +1497,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1502,7 +1506,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1511,7 +1515,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1520,7 +1524,7 @@
         "warning"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1529,7 +1533,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1538,7 +1542,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1547,7 +1551,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1556,7 +1560,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1565,7 +1569,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1574,7 +1578,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -1583,7 +1587,7 @@
         "configured"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/consistency_map.py"
       ]
     },
     {
@@ -5004,6 +5008,33 @@
       ],
       "sources": [
         "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "INSTALLATION_STATE_RECORD_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/installation_state.py"
+      ]
+    },
+    {
+      "code": "INSTALLATION_STATE_RECORD_PATH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/installation_state.py"
+      ]
+    },
+    {
+      "code": "INSTALLATION_STATE_TRANSITION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/installation_state.py"
       ]
     },
     {

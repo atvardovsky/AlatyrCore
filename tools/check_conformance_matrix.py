@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from check_conformance_reports import REPORTS, SHARED, load_json, validate_actual_reports
+from conformance_execution.contract import validate_execution_record
 from materialize_conformance_fixtures import fixture_dirs
 from prepare_conformance_matrix import canonical_surface_ids, prepare_matrix
 
@@ -126,6 +127,10 @@ def validate_matrix(matrix_path: Path, *, require_reports: bool) -> list[str]:
                         expected_fixtures=set(fixtures),
                     )
                 )
+                record_path = workspace / "execution-record.json"
+                if record_path.is_file():
+                    for failure in validate_execution_record(load_json(record_path)):
+                        failures.append(f"{record_path}: {failure}")
                 for report_path in reports_dir.glob("*.json"):
                     report = load_json(report_path)
                     pair = (str(report.get("assistant_surface")), str(report.get("fixture")))

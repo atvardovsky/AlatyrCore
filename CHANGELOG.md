@@ -4,6 +4,41 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.28 - 2026-08-25
+
+- Increased the framework version to `0.1.0-alpha.28`, adapter schema version
+  to `26`, and target template version to `26` for explicit adapter lifecycle,
+  shared capability-surface, context-evidence, and delivery contracts.
+- Added a machine-readable installation-state transition record and validator
+  enforcement for continuous `scaffolded`, `staged`, `accepted`, and
+  `degraded` histories. Only accepted adapters with passing current evidence
+  can report acceptance eligibility or ready health.
+- Added lifecycle metadata for shared capability surfaces and made scaffolding
+  preserve existing target-owned shared files for adapter-aware merging,
+  including deterministic retention and overwrite regression coverage.
+- Replaced source-check ownership shortcuts with explicit contract,
+  implementation, and trigger inputs; added per-check timing, resource classes,
+  process timeouts, dependency blocking, schema-version-2 reports, and dynamic
+  evidence-contract routing checks.
+- Added normalized planned, resolved, and observed context receipts. Exact
+  context or token comparisons now require host or provider telemetry and
+  quality non-regression evidence remains mandatory.
+- Added a provider-neutral conformance lifecycle and static request-routing
+  protocol expectations, retained Codex as a thin native executor adapter, and
+  kept unsupported assistant surfaces manual or unverified.
+- Added explicit post-install/update delivery outcomes and separated template
+  presence from observed `sent`, `skipped`, or `blocked` message evidence.
+- Distinguished source rule owners from installed `.ai/framework` projections,
+  narrowed the adapter contract to structural interfaces, and extracted
+  consistency-map and AI-infrastructure target validation behind parity-tested
+  capability modules.
+- Added an AlatyrCore source-contour worker strategy as lazy routed context
+  rather than expanding the preloaded source bootstrap.
+- Changed `ALATYR-CONTEXT-001`, `ALATYR-ADAPTER-001`,
+  `ALATYR-EVIDENCE-001`, `ALATYR-BRIDGE-001`, `ALATYR-OPERATION-001`,
+  `ALATYR-MODULE-001`, and `ALATYR-LIFECYCLE-001`; no rule IDs were added or
+  removed.
+
 ## 0.1.0-alpha.27 - 2026-08-24
 
 - Increased the framework version to `0.1.0-alpha.27`, adapter schema version

@@ -28,6 +28,20 @@ Token and monetary comparisons are shown only when every paired report uses a
 comparable measurement source and currency; otherwise they remain unknown or
 non-computable.
 
+Version-2 run reports contain a normalized context receipt with three separate
+layers:
+
+- `planned`: context selected before loading
+- `resolved`: files actually resolved by routing
+- `observed`: telemetry reported by the client or provider
+
+Planned and resolved word counts are estimates. They must not be presented as
+actual model context or token savings. Actual context comparisons require an
+`observed` receipt with `exact` host or provider telemetry. Assistant-reported,
+manual, partial, and unavailable measurements remain useful evidence, but they
+do not support actual-cost claims. Historical version-1 reports remain
+readable and retain their original evidence limits.
+
 ```sh
 python3 tools/prepare_effectiveness_benchmark.py --plan benchmark.json --output tmp/benchmark
 python3 tools/check_effectiveness_benchmark.py --benchmark tmp/benchmark/benchmark.json

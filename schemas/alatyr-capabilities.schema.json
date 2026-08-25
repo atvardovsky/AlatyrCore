@@ -2,10 +2,16 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Alatyr optional module catalog",
   "type": "object",
-  "required": ["schema_version", "capability_kind", "modules"],
+  "required": ["schema_version", "capability_kind", "surfaces", "modules"],
   "properties": {
     "schema_version": {"const": 1},
     "capability_kind": {"const": "alatyr-optional-module-catalog"},
+    "surfaces": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {"pattern": "^\\.ai/"},
+      "additionalProperties": {"$ref": "#/definitions/sharedSurface"}
+    },
     "modules": {
       "type": "object",
       "minProperties": 1,
@@ -17,6 +23,30 @@
       "type": "array",
       "items": {"type": "string", "minLength": 1},
       "uniqueItems": true
+    },
+    "sharedSurface": {
+      "type": "object",
+      "required": [
+        "ownership",
+        "producers",
+        "merge_strategy",
+        "preserve_on_disable"
+      ],
+      "properties": {
+        "ownership": {"const": "target-adapter-shared"},
+        "producers": {
+          "$ref": "#/definitions/stringArray",
+          "minItems": 2
+        },
+        "merge_strategy": {
+          "enum": [
+            "record-merge-by-assistant-id",
+            "target-owned-section-merge"
+          ]
+        },
+        "preserve_on_disable": {"type": "boolean"}
+      },
+      "additionalProperties": false
     },
     "module": {
       "type": "object",

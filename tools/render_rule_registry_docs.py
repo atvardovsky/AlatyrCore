@@ -39,6 +39,18 @@ def wrapped(prefix: str, value: str) -> list[str]:
     )
 
 
+def installed_owner(source_owner: str) -> str:
+    """Project a source-repository framework owner into an installed adapter."""
+    path = Path(source_owner)
+    if (
+        path.is_absolute()
+        or ".." in path.parts
+        or not source_owner.startswith("framework/")
+    ):
+        raise ValueError(f"invalid source framework owner: {source_owner}")
+    return f".ai/{source_owner}"
+
+
 def render_registry(data: dict[str, Any]) -> str:
     categories = [owner["category"] for owner in data["category_owners"]]
     lines = [
@@ -49,9 +61,11 @@ def render_registry(data: dict[str, Any]) -> str:
         "`python3 tools/render_rule_registry_docs.py`.",
         "",
         "Rule IDs let target adapters and migration records reference stable process",
-        "contracts without copying complete policy text. Canonical semantics remain in",
-        "the `canonical_source` owner named by each registry entry. Category routing",
-        "owners group related rules but do not replace those semantic owners.",
+        "contracts without copying complete policy text. In this source repository,",
+        "canonical semantics remain in the `canonical_source` owner named by each",
+        "registry entry. The installed owner is its deterministic `.ai/framework/`",
+        "projection in a target adapter. Category routing owners group related rules",
+        "but do not replace those semantic owners.",
         "`framework/rule-ownership.md` renders both mappings from this registry for",
         "maintainers and tools; it is not an independent policy source.",
         "",
@@ -73,11 +87,12 @@ def render_registry(data: dict[str, Any]) -> str:
     ]
     for rule in data["rules"]:
         source = rule["canonical_source"]
-        target_source = f".ai/{source}"
+        target_source = installed_owner(source)
         lines.extend(
             [
                 f"Rule ID: `{rule['id']}`",
-                f"Canonical source: `{target_source}`",
+                f"Source owner: `{source}`",
+                f"Installed owner: `{target_source}`",
                 *wrapped("Commitment: ", rule["summary"]),
                 *wrapped("Applies to: ", ", ".join(rule["applies_to"]) + "."),
                 *wrapped("Enforcement: ", rule["enforcement"] + "."),
@@ -102,9 +117,11 @@ def render_ownership(data: dict[str, Any]) -> str:
     lines = [
         "# Rule Ownership",
         "",
-        "This file is generated from `framework/rule-registry.json`. Per-rule canonical",
-        "owners define rule semantics. Category routing owners group related rules for",
-        "maintainers and tools but do not become additional semantic owners.",
+        "This file is generated from `framework/rule-registry.json`. Source owners",
+        "under `framework/` define rule semantics in AlatyrCore. Installed owners under",
+        "`.ai/framework/` are deterministic target-adapter projections of those source",
+        "owners. Category routing owners group related rules for maintainers and tools",
+        "but do not become additional semantic owners.",
         "Derived documents should reference the owner or rule ID and avoid copying",
         "the complete policy language.",
         "",
@@ -119,11 +136,13 @@ def render_ownership(data: dict[str, Any]) -> str:
         "",
     ]
     for owner in data["category_owners"]:
-        target_owner = f".ai/{owner['owner']}"
+        source_owner = owner["owner"]
+        target_owner = installed_owner(source_owner)
         lines.extend(
             [
                 f"Category: `{owner['category']}`",
-                f"Routing owner: `{target_owner}`",
+                f"Source routing owner: `{source_owner}`",
+                f"Installed routing owner: `{target_owner}`",
                 "Rule IDs: " + ", ".join(f"`{item}`" for item in owner["rule_ids"]),
                 *wrapped("Derived surfaces: ", ", ".join(owner["derived_surfaces"]) + "."),
                 "",
@@ -136,11 +155,13 @@ def render_ownership(data: dict[str, Any]) -> str:
         ]
     )
     for rule in data["rules"]:
-        target_source = f".ai/{rule['canonical_source']}"
+        source = rule["canonical_source"]
+        target_source = installed_owner(source)
         lines.extend(
             [
                 f"Rule: `{rule['id']}`",
-                f"Canonical owner: `{target_source}`",
+                f"Source canonical owner: `{source}`",
+                f"Installed canonical owner: `{target_source}`",
                 "",
             ]
         )

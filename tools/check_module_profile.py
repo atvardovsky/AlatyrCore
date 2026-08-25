@@ -98,6 +98,15 @@ def main() -> int:
     core_blocks = parse_blocks(text, CORE_HEADING)
     module_blocks = parse_blocks(text, MODULE_HEADING)
 
+    for required_text in [
+        "## Shared Capability Surfaces",
+        ".ai/framework/capabilities.json",
+        "preserve_on_disable",
+        "another enabled producer",
+    ]:
+        if required_text not in text:
+            failures.append(f"module profile missing shared-surface rule: {required_text}")
+
     for core_item in CORE_ITEMS:
         block = core_blocks.get(core_item)
         if block is None:

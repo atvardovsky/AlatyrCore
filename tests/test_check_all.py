@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import sys
 import tempfile
+import threading
+import time
 import unittest
 from pathlib import Path
 from typing import Any
@@ -11,9 +13,12 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 from check_all import (  # noqa: E402
+    RunnerResult,
     execute_checks,
+    load_manifest,
     render_report,
     resolve_report_path,
+    run_check,
     select_checks,
 )
 from source_state import snapshot_changes, source_snapshot  # noqa: E402
@@ -24,9 +29,12 @@ def check(check_id: str, *dependencies: str) -> dict[str, Any]:
         "id": check_id,
         "command": [f"tools/{check_id}.py"],
         "depends_on": list(dependencies),
-        "trigger_paths": [f"area/{check_id}/**"],
-        "owned_paths": [f"area/{check_id}/**"],
+        "contract_inputs": [f"area/{check_id}/**"],
+        "implementation_paths": [f"tools/{check_id}.py"],
+        "trigger_paths": [f"area/{check_id}/**", f"tools/{check_id}.py"],
         "always_for_changed": False,
+        "timeout_seconds": 30,
+        "resource_class": "standard",
     }
 
 
@@ -81,13 +89,13 @@ class CheckGraphTests(unittest.TestCase):
         self.assertFalse(fell_back)
         self.assertEqual([item["id"] for item in selected], ["invariant", "matched"])
 
-    def test_trigger_paths_can_be_narrower_than_owned_paths(self) -> None:
+    def test_contract_inputs_always_trigger_focused_validation(self) -> None:
         item = {
-            **check("broad-owner"),
+            **check("contract-owner"),
             "profiles": ["full"],
             "platforms": ["all"],
-            "owned_paths": ["area/**"],
-            "trigger_paths": ["area/contracts/**"],
+            "contract_inputs": ["area/**"],
+            "trigger_paths": ["area/**", "tools/contract-owner.py"],
         }
         fallback = {
             **check("fallback"),
@@ -104,7 +112,24 @@ class CheckGraphTests(unittest.TestCase):
                 [item, fallback], "fast", "HEAD~1", platform="linux"
             )
 
-        self.assertEqual([entry["id"] for entry in selected], ["fallback"])
+        self.assertEqual(
+            [entry["id"] for entry in selected], ["contract-owner", "fallback"]
+        )
+
+    def test_implementation_change_triggers_its_check(self) -> None:
+        item = {**check("implementation"), "profiles": ["full"], "platforms": ["all"]}
+
+        from unittest.mock import patch
+
+        with patch(
+            "check_all.git_changed_paths", return_value=["tools/implementation.py"]
+        ):
+            selected, fell_back = select_checks(
+                [item], "fast", "HEAD~1", platform="linux"
+            )
+
+        self.assertFalse(fell_back)
+        self.assertEqual([entry["id"] for entry in selected], ["implementation"])
 
     def test_dependency_runs_only_after_successful_prerequisite(self) -> None:
         completed: list[str] = []
@@ -162,6 +187,88 @@ class CheckGraphTests(unittest.TestCase):
         self.assertEqual(results["independent"][0], 0)
         self.assertEqual(blocked["blocked"], ["failed"])
 
+    def test_heavy_checks_respect_resource_capacity(self) -> None:
+        active = 0
+        peak = 0
+        lock = threading.Lock()
+
+        def runner(_item: dict[str, Any], _baseline: str | None):
+            nonlocal active, peak
+            with lock:
+                active += 1
+                peak = max(peak, active)
+            time.sleep(0.03)
+            with lock:
+                active -= 1
+            return 0, "", "", ["check"]
+
+        heavy = {**check("heavy-one"), "resource_class": "heavy"}
+        other = {**check("heavy-two"), "resource_class": "heavy"}
+        results, blocked = execute_checks([heavy, other], None, 2, runner=runner)
+
+        self.assertEqual(set(results), {"heavy-one", "heavy-two"})
+        self.assertEqual(blocked, {})
+        self.assertEqual(peak, 1)
+
+    def test_timeout_blocks_dependents_and_is_reported(self) -> None:
+        telemetry: dict[str, dict[str, Any]] = {}
+
+        def runner(item: dict[str, Any], _baseline: str | None):
+            if item["id"] == "timed-out":
+                return RunnerResult((124, "", "timed out\n", ["timed-out"]), timed_out=True)
+            return 0, "", "", [item["id"]]
+
+        selected = [check("timed-out"), check("dependent", "timed-out")]
+        results, blocked = execute_checks(
+            selected, None, 2, runner=runner, telemetry=telemetry
+        )
+        report = render_report(
+            profile="full",
+            selected=selected,
+            results=results,
+            blocked=blocked,
+            source_changes=[],
+            telemetry=telemetry,
+        )
+
+        self.assertEqual(blocked, {"dependent": ["timed-out"]})
+        self.assertTrue(report["checks"][0]["timed_out"])
+        self.assertEqual(report["checks"][0]["status"], "failed")
+        self.assertEqual(report["checks"][1]["status"], "blocked")
+        self.assertFalse(report["checks"][1]["timed_out"])
+        self.assertIsInstance(report["checks"][0]["duration_seconds"], float)
+
+    def test_runner_exception_is_recorded_as_a_failed_check(self) -> None:
+        telemetry: dict[str, dict[str, Any]] = {}
+
+        def runner(_item: dict[str, Any], _baseline: str | None):
+            raise RuntimeError("runner unavailable")
+
+        results, blocked = execute_checks(
+            [check("unavailable")], None, 1, runner=runner, telemetry=telemetry
+        )
+
+        self.assertEqual(blocked, {})
+        self.assertEqual(results["unavailable"][0], 1)
+        self.assertIn("runner unavailable", results["unavailable"][2])
+        self.assertGreaterEqual(telemetry["unavailable"]["duration_seconds"], 0.0)
+
+    def test_process_timeout_is_a_typed_runner_failure(self) -> None:
+        from unittest.mock import patch
+        import subprocess
+
+        item = check("timed-process")
+        with patch(
+            "check_all.subprocess.run",
+            side_effect=subprocess.TimeoutExpired(["python", "check"], 30, output="partial"),
+        ):
+            result = run_check(item, None)
+
+        self.assertTrue(result.timed_out)
+        self.assertEqual(result.result[0], 124)
+        self.assertEqual(result.result[1], "partial")
+        self.assertIn("timed out after 30 seconds", result.result[2])
+
     def test_source_snapshot_detects_changes_to_already_dirty_files(self) -> None:
         import subprocess
 
@@ -207,7 +314,34 @@ class CheckGraphTests(unittest.TestCase):
         self.assertEqual(report["checks"][0]["status"], "failed")
         self.assertEqual(report["checks"][0]["exit_code"], 7)
         self.assertEqual(report["checks"][0]["stderr"], "failure detail\n")
+        self.assertEqual(report["schema_version"], 2)
+        self.assertEqual(report["checks"][0]["resource_class"], "standard")
         self.assertFalse(report["source_write_scope"]["preserved"])
+
+    def test_live_manifest_declares_complete_trigger_inputs(self) -> None:
+        for item in load_manifest():
+            declared = set(item["contract_inputs"] + item["implementation_paths"])
+            self.assertTrue(declared <= set(item["trigger_paths"]), item["id"])
+
+    def test_report_order_follows_selected_manifest_order(self) -> None:
+        first = check("first")
+        second = check("second")
+        report = render_report(
+            profile="full",
+            selected=[first, second],
+            results={
+                "second": (0, "", "", ["second"]),
+                "first": (0, "", "", ["first"]),
+            },
+            blocked={},
+            source_changes=[],
+            telemetry={
+                "second": {"duration_seconds": 0.2, "timed_out": False},
+                "first": {"duration_seconds": 0.1, "timed_out": False},
+            },
+        )
+
+        self.assertEqual([item["id"] for item in report["checks"]], ["first", "second"])
 
     def test_report_output_cannot_bypass_source_write_scope(self) -> None:
         import subprocess

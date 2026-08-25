@@ -11,6 +11,18 @@ the blueprint, registries, contours, module profile, and human context profiles
 only when the selected task profile, task-scale overlay, or project-area
 overlay requires them.
 
+## Installation State
+
+Read `.ai/alatyr.yaml` before describing this adapter as installed or ready.
+`scaffolded` means only placeholder structure exists. `staged` means adaptation
+or update work remains unresolved. `accepted` requires strict validation for
+the current branch and revision with no active placeholders or blocking gaps.
+`degraded` means a previously accepted contract is no longer satisfied or
+cannot currently be proven. Only `accepted` may qualify for `ready` health.
+The ordered evidence for that claim lives at
+`.ai/assistant/installation-state.json`; its final state must match the
+manifest. The record does not grant authorization or approval.
+
 ## Framework Area
 
 `.ai/framework` contains Alatyr Core portable framework rules.
@@ -127,5 +139,5 @@ are not framework core.
 `.ai/alatyr.yaml` records target-owned installation metadata such as framework
 version, adapter schema version, template version, selected support profile,
 installed framework pack and projected inventory,
-supported assistants, source-of-truth files, module state, validation entry
-points, known gaps, and local deviations.
+supported assistants, explicit installation state, source-of-truth files,
+module state, validation entry points, known gaps, and local deviations.

@@ -78,7 +78,7 @@ The stable command set is:
 
 ## Source Validation Runner
 
-`check_all.py` loads `tools/check_manifest.json` and runs dependency-aware
+`check_all.py` loads the schema-version-2 `tools/check_manifest.json` and runs dependency-aware
 source validation. The default `full` profile remains the acceptance gate.
 With `fast --changed-from`, explicit `trigger_paths` select focused checks while
 a small invariant set always runs; unmatched paths retain the conservative
@@ -86,6 +86,36 @@ full-suite fallback. `release` adds tag-baseline migration
 checks. `platform` runs the portable tooling contract slice used on macOS and
 Windows. It validates this repository only; it is not a portable framework
 requirement for target projects.
+
+Each manifest check declares four separate concerns:
+
+- `contract_inputs`: repository facts, templates, schemas, fixtures, or other
+  artifacts whose content the check evaluates.
+- `implementation_paths`: the checker command and direct local helper modules
+  whose behavior determines the result.
+- `trigger_paths`: changed paths that select the check for a focused run. They
+  must include every declared contract and implementation path; additional
+  broad triggers are allowed only when they make selection safer.
+- `depends_on`: prerequisite checks that must pass before the check can run.
+
+The manifest also declares `timeout_seconds` and `resource_class`. The runner
+uses resource classes to avoid scheduling several heavy checks into the same
+worker capacity and treats a timeout as a failed check; dependent checks are
+reported as blocked. Current classes are `light`, `standard`, and `heavy`.
+The configured timeout is per process and does not replace CI-level job
+timeouts.
+
+The manifest checker also reconciles the dynamically computed captured-evidence
+contract with the `evidence-status` routes. Changing an executor contract,
+context receipt, benchmark input, or other digest owner therefore selects the
+freshness check instead of leaving older evidence apparently current.
+
+Machine-readable reports use schema version 2. Each selected check is emitted
+in manifest order with its resource class, timeout, elapsed duration, command,
+output, exit status, and timeout state. A report records a blocked check
+separately from a failed process so consumers can distinguish root failures
+from dependency fallout. Durations are local runner observations, not a
+cross-platform performance benchmark.
 
 Machine-readable reports should normally be written outside the repository.
 A repository-local `--report` path is accepted only under `tmp/` when Git

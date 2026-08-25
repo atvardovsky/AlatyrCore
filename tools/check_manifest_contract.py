@@ -13,6 +13,8 @@ from pathlib import Path
 
 import jsonschema
 
+from scaffold_state import validate_installation_state_record
+
 from target_validation_support import (
     PathKey,
     Scalar,
@@ -26,6 +28,8 @@ ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "templates" / "target"
 MANIFEST = TARGET / ".ai" / "alatyr.yaml"
 SCHEMA = ROOT / "schemas" / "alatyr-adapter.schema.json"
+INSTALLATION_STATE = TARGET / ".ai" / "assistant" / "installation-state.json"
+INSTALLATION_STATE_SCHEMA = ROOT / "schemas" / "alatyr-installation-state.schema.json"
 
 
 REQUIRED_CONTAINERS: set[PathKey] = {
@@ -78,6 +82,8 @@ REQUIRED_SCALARS: set[PathKey] = {
     ("installation", "date"),
     ("installation", "mode"),
     ("installation", "support_profile"),
+    ("installation", "state"),
+    ("installation", "state_record"),
     ("owner", "responsible_team"),
     ("owner", "technical_owner"),
     ("owner", "backup_owner"),
@@ -247,6 +253,7 @@ PLACEHOLDER_LISTS: set[PathKey] = {
 }
 
 PATH_SCALARS: set[PathKey] = {
+    ("installation", "state_record"),
     ("framework", "rule_registry"),
     ("contours", "framework"),
     ("contours", "project"),
@@ -382,6 +389,28 @@ def main() -> int:
     except (OSError, ValueError, json.JSONDecodeError, jsonschema.SchemaError) as exc:
         failures.append(f"cannot validate manifest schema: {exc}")
 
+    try:
+        state_schema = json.loads(INSTALLATION_STATE_SCHEMA.read_text(encoding="utf-8"))
+        state_record = json.loads(INSTALLATION_STATE.read_text(encoding="utf-8"))
+        state_errors = sorted(
+            jsonschema.Draft7Validator(state_schema).iter_errors(state_record),
+            key=lambda error: list(error.absolute_path),
+        )
+        for error in state_errors:
+            location = ".".join(str(item) for item in error.absolute_path) or "root"
+            failures.append(f"installation-state schema {location}: {error.message}")
+        manifest_state = load_manifest_object(MANIFEST).get("installation", {}).get(
+            "state", ""
+        )
+        failures.extend(
+            validate_installation_state_record(
+                state_record,
+                manifest_state=str(manifest_state),
+            )
+        )
+    except (OSError, ValueError, json.JSONDecodeError, jsonschema.SchemaError) as exc:
+        failures.append(f"cannot validate installation-state schema: {exc}")
+
     for path in sorted(REQUIRED_CONTAINERS):
         if path not in containers:
             failures.append(f"missing container: {dotted(path)}")
@@ -429,6 +458,10 @@ def main() -> int:
     framework_name = scalars.get(("framework", "name"))
     if framework_name and framework_name.value != "Alatyr Core":
         failures.append("framework.name must be Alatyr Core")
+
+    installation_state = scalars.get(("installation", "state"))
+    if installation_state and installation_state.value != "scaffolded":
+        failures.append("target manifest template must start in scaffolded state")
 
     if failures:
         for failure in failures:

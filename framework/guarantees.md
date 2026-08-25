@@ -162,6 +162,13 @@ Machine checks can verify only deterministic repository facts, such as:
 - reviewed cost or speed improvements count as useful evidence only when
   accepted outcomes, hallucinated commands, validation errors, missed
   companion updates, rework, and unresolved consistency gaps do not regress
+- normalized context receipts distinguish planned and resolved source estimates
+  from observed host/provider telemetry, and reject exact context or token
+  claims when that observed evidence is partial or unavailable
+- provider-neutral conformance execution records prepare, invocation or manual
+  import, collection, and validation separately, while post-install/update
+  delivery evidence records `sent`, `skipped`, or `blocked`; neither static
+  fixture nor message-template presence proves an assistant run or user delivery
 - manifest, operation catalog, approval, prompt-injection, help, and policy
   templates contain required fields
 - target action-authorization policy, request, preview, gate, and final-evidence

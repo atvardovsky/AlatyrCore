@@ -132,6 +132,17 @@ record loaded paths or sections and distinguish observed, assistant-reported,
 estimated, and unavailable context rather than presenting source byte counts
 as exact model-token usage.
 
+Use one normalized context receipt with separate layers:
+
+- `planned`: paths selected before loading and their static word estimate
+- `resolved`: paths actually resolved by routing and their static word estimate
+- `observed`: files and tokens exposed by host or provider telemetry
+
+Only exact host or provider telemetry supports observed context or token-cost
+comparisons. Planned and resolved estimates remain routing evidence even when
+observed telemetry is partial or unavailable; they must not be relabeled as
+actual model context.
+
 If sufficient context exceeds a budget, continue safely and record:
 
 - selected profile, task-scale overlay, and project areas

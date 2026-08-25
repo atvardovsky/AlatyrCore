@@ -25,6 +25,8 @@ Use after the initial Alatyr Core installation or a scoped adapter expansion.
 - Adapter schema version: `{ALATYR_ADAPTER_SCHEMA_VERSION}`
 - Template version: `{ALATYR_TEMPLATE_VERSION}`
 - Manifest path: `.ai/alatyr.yaml`
+- Installation state: `{SCAFFOLDED_STAGED_ACCEPTED_DEGRADED_OR_INVALID}`
+- Installation transition record: `{PATH_FINAL_SEQUENCE_REVISION_VALIDATION_AND_CONTINUITY_RESULT}`
 - Installation plan path or summary: `{INSTALLATION_PLAN_PATH_OR_SUMMARY}`
 - Approval records used: `{APPROVAL_RECORDS_USED_OR_NOT_REQUIRED}`
 - Approval scope enforcement: `{DIFF_BASE_RECORDS_CHANGED_PATHS_AND_RESULT_OR_NOT_REQUIRED}`
@@ -71,7 +73,11 @@ Use after the initial Alatyr Core installation or a scoped adapter expansion.
 - Acceptance eligible: `{YES_OR_NO_WITH_REASON}`
 - Required final strict rerun: `{COMMAND_OR_NOT_REQUIRED}`
 - Validation skipped or unresolved: `{VALIDATION_SKIPPED_OR_UNRESOLVED}`
-- Post-install message result: `{POST_INSTALL_MESSAGE_SENT_OR_SKIPPED}`
+- Post-install message result: `{POST_INSTALL_MESSAGE_SENT_SKIPPED_OR_BLOCKED}`
+- Post-install delivery status: `{SENT_SKIPPED_OR_BLOCKED}`
+- Post-install delivery mechanism: `{CHAT_SURFACE_OR_UNAVAILABLE}`
+- Post-install delivery reason: `{WHY_SENT_SKIPPED_OR_BLOCKED}`
+- Post-install delivery observed at: `{DELIVERY_TIMESTAMP_OR_NOT_OBSERVED}`
 - Final evidence: `{FINAL_EVIDENCE}`
 - Residual risk: `{RESIDUAL_RISK}`
 
@@ -100,6 +106,8 @@ Core baseline.
 - New template version: `{NEW_TEMPLATE_VERSION}`
 - Template version: `{NEW_TEMPLATE_VERSION}`
 - Manifest path: `.ai/alatyr.yaml`
+- Installation state: `{SCAFFOLDED_STAGED_ACCEPTED_DEGRADED_OR_INVALID}`
+- Installation transition record: `{PATH_FINAL_SEQUENCE_REVISION_VALIDATION_AND_CONTINUITY_RESULT}`
 - Migration note path: `.ai/assistant/templates/migration-note.md`
 - Migration assessment result/path: `{MIGRATION_ASSESSMENT_RESULT_OR_PATH}`
 - Migration diff result: `{MIGRATION_DIFF_RESULT}`
@@ -145,7 +153,11 @@ Core baseline.
 - Acceptance eligible: `{YES_OR_NO_WITH_REASON}`
 - Required final strict rerun: `{COMMAND_OR_NOT_REQUIRED}`
 - Validation skipped or unresolved: `{VALIDATION_SKIPPED_OR_UNRESOLVED}`
-- Post-update message result: `{POST_UPDATE_MESSAGE_SENT_OR_SKIPPED}`
+- Post-update message result: `{POST_UPDATE_MESSAGE_SENT_SKIPPED_OR_BLOCKED}`
+- Post-update delivery status: `{SENT_SKIPPED_OR_BLOCKED}`
+- Post-update delivery mechanism: `{CHAT_SURFACE_OR_UNAVAILABLE}`
+- Post-update delivery reason: `{WHY_SENT_SKIPPED_OR_BLOCKED}`
+- Post-update delivery observed at: `{DELIVERY_TIMESTAMP_OR_NOT_OBSERVED}`
 - Final evidence: `{FINAL_EVIDENCE}`
 - Residual risk: `{RESIDUAL_RISK}`
 
@@ -166,6 +178,8 @@ adapter.
 - Recheck trigger: `{RECHECK_TRIGGER}`
 - Allowed actions: `{READ_ONLY_DOCS_ONLY_ADAPTER_ONLY_CODE_AND_TESTS_OR_FULL_WITH_APPROVAL}`
 - Manifest path: `.ai/alatyr.yaml`
+- Installation state: `{SCAFFOLDED_STAGED_ACCEPTED_DEGRADED_OR_INVALID}`
+- Installation transition record: `{PATH_FINAL_SEQUENCE_REVISION_VALIDATION_AND_CONTINUITY_RESULT}`
 - Installation note status: `{INSTALLATION_NOTE_STATUS}`
 - Migration assessment result/path: `{MIGRATION_ASSESSMENT_RESULT_PATH_OR_NOT_APPLICABLE}`
 - Framework version: `{ALATYR_CORE_VERSION}`

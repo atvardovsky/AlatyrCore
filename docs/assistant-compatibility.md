@@ -24,6 +24,23 @@ Source conformance runs use the machine-readable surface list at
 Copilot, Cursor, Devin/Cascade, Windsurf, generic, and AGENTS-aware runs use
 consistent names.
 
+## Provider-Neutral Conformance Execution
+
+`conformance/executors/executor-capabilities.json` defines a provider-neutral
+fixture lifecycle: prepare, invoke-or-manual-import, collect, and validate.
+It records an execution mechanism, not a promise that a vendor, account,
+model, or client version is available.
+
+Codex CLI is a thin native adapter for the Codex surface. Other supported
+surfaces use manual import until a project records reviewed captured evidence.
+Unsupported or unverified clients must remain manual or unverified; they must
+not be represented as executed because static templates, bridges, or a matrix
+plan exist.
+
+Captured runs keep lifecycle evidence beside their reports. Static routing and
+delivery fixtures are protocol expectations only, separate from captured
+assistant-run evidence and target-adapter validation.
+
 ## Bridge Rule
 
 Bridge files must be short. They should point to canonical target files such

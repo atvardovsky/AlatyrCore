@@ -141,6 +141,12 @@ implementation intent may authorize repository edits for the current scope,
 but it does not authorize commit or publication. Commit does not authorize
 push. A previous scope's phase authorization is never carried forward.
 
+Source conformance may define provider-neutral static routing expectations for
+common request shapes such as help, status, architecture discussion, product
+change, backlog return, framework update, commit, and push. These fixtures
+check protocol alignment with the operation catalog and authorization policy;
+they do not prove that a client interpreted an actual conversation correctly.
+
 ## Adapter Health
 
 `Alatyr status` and `Alatyr doctor` route to the same read-only adapter-health

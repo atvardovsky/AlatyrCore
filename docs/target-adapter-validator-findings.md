@@ -10,42 +10,42 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1022
+Catalog entries: 1025
 
 ## Codes
 
 - `AI_ROUTER_ALLOWED_ACTION`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `AI_ROUTER_ITEMS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/ai_infrastructure.py`.
 - `AI_ROUTER_ITEM_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/ai_infrastructure.py`.
 - `AI_ROUTER_ITEM_FIELD`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/ai_infrastructure.py`.
 - `AI_ROUTER_ITEM_ID`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/ai_infrastructure.py`.
 - `AI_ROUTER_ITEM_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/ai_infrastructure.py`.
 - `AI_ROUTER_ITEM_STATUS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/ai_infrastructure.py`.
 - `AI_ROUTER_ITEM_TYPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/ai_infrastructure.py`.
 - `AI_ROUTER_ITEM_TYPES`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/ai_infrastructure.py`.
 - `AI_ROUTER_KIND`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/ai_infrastructure.py`.
 - `AI_ROUTER_LEGACY_SCHEMA`
-  Level: warning. Source: `tools/validate_target_adapter.py`.
+  Level: warning. Source: `tools/target_adapter_validation/ai_infrastructure.py`.
 - `AI_ROUTER_RECOMMENDATION_TEMPLATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/ai_infrastructure.py`.
 - `AI_ROUTER_ROUTES`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/ai_infrastructure.py`.
 - `AI_ROUTER_ROUTE_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/ai_infrastructure.py`.
 - `AI_ROUTER_ROUTE_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/ai_infrastructure.py`.
 - `AI_ROUTER_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/ai_infrastructure.py`.
 - `APPROVAL_DIFF_BASE_MISMATCH`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `APPROVAL_DIFF_REF_REQUIRED`
@@ -301,69 +301,69 @@ Catalog entries: 1022
 - `CODEDOC_SELECTION_POLICY`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `CONSISTENCY_MAP_DIRECTION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_EDGES`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_EDGE_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_EDGE_ID`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_EDGE_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_EDGE_TYPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_IMPACT_POLICY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_KIND`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_LEVELS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_NODES`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_NODE_AREA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_NODE_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_NODE_FACT_TYPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_NODE_ID`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_NODE_LEVEL`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_NODE_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_OWNER_MISSING`
-  Level: warning. Source: `tools/validate_target_adapter.py`.
+  Level: warning. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_OWNER_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_REGISTRY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_REGISTRY_EMPTY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_REGISTRY_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_REGISTRY_SYNC_POLICY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_RELATIONSHIPS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_SCHEMA_LEGACY`
-  Level: warning. Source: `tools/validate_target_adapter.py`.
+  Level: warning. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_TARGET_LEVEL`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_REGISTRY_FACT_TYPE_DRIFT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_REGISTRY_FACT_TYPE_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_REGISTRY_NODE_FACT_TYPE_DRIFT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_REGISTRY_NODE_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_REGISTRY_NODE_REUSED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_REGISTRY_NODE_UNRESOLVED`
-  Level: configured. Source: `tools/validate_target_adapter.py`.
+  Level: configured. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `DEBUG_MODE_ACTIVATION`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_ACTIVE_COMPLETION_TIME`
@@ -1124,6 +1124,12 @@ Catalog entries: 1022
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `GATE_CONTEXT_ROUTER_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `INSTALLATION_STATE_RECORD_MISSING`
+  Level: error. Source: `tools/target_adapter_validation/installation_state.py`.
+- `INSTALLATION_STATE_RECORD_PATH`
+  Level: error. Source: `tools/target_adapter_validation/installation_state.py`.
+- `INSTALLATION_STATE_TRANSITION`
+  Level: error. Source: `tools/target_adapter_validation/installation_state.py`.
 - `LOCAL_PATH_LEAKAGE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `MANIFEST_CONTEXT_BUDGET`

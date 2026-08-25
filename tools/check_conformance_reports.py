@@ -14,6 +14,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from conformance_execution.contract import capability_contract, validate_execution_record
+
 
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "conformance" / "fixtures"
@@ -21,6 +23,66 @@ SHARED = ROOT / "conformance" / "golden" / "shared-expectations.json"
 REPORTS = ROOT / "conformance" / "golden" / "fixture-reports"
 RUN_TEMPLATE = ROOT / "conformance" / "runs" / "assistant-run-report-template.json"
 CAPTURED_RUNS_ROOT = ROOT / "conformance" / "runs" / "assistant-results"
+ASSISTANT_SURFACES = ROOT / "conformance" / "runs" / "assistant-surfaces.json"
+
+
+def validate_executor_contract() -> list[str]:
+    try:
+        contract = capability_contract()
+        surfaces = load_json(ASSISTANT_SURFACES).get("surfaces")
+        if not isinstance(surfaces, list):
+            raise ValueError("assistant surfaces must be a list")
+        surface_ids = {
+            item.get("id")
+            for item in surfaces
+            if isinstance(item, dict) and isinstance(item.get("id"), str)
+        }
+        manual = next(
+            (
+                executor
+                for executor in contract["executors"]
+                if executor.get("id") == "manual-import"
+            ),
+            None,
+        )
+        if not isinstance(manual, dict):
+            raise ValueError("executor contract must include manual-import")
+        if set(manual.get("supported_surfaces", [])) != surface_ids:
+            raise ValueError(
+                "manual-import executor surfaces must match assistant surface contract"
+            )
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        return [f"invalid provider-neutral executor contract: {exc}"]
+    return []
+
+
+def validate_execution_record_file(
+    actual_dir: Path, *, require_execution_record: bool
+) -> list[str]:
+    """Validate lifecycle evidence when an external run provides it."""
+
+    candidates = [
+        actual_dir / "execution-record.json",
+        actual_dir.parent / "execution-record.json",
+    ]
+    record_path = next((path for path in candidates if path.is_file()), None)
+    if record_path is None:
+        return (
+            [
+                "missing execution lifecycle record beside reports or captured run: "
+                + ", ".join(str(path) for path in candidates)
+            ]
+            if require_execution_record
+            else []
+        )
+    try:
+        record = load_json(record_path)
+    except AssertionError as exc:
+        return [str(exc)]
+    failures = validate_execution_record(record)
+    if require_execution_record and record.get("status") != "validated":
+        failures.append("execution record must be validated before it is accepted")
+    return [f"{record_path}: {failure}" for failure in failures]
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -396,6 +458,7 @@ def validate_actual_reports(
     expected_run_id: str | None = None,
     expected_assistant_surface: str | None = None,
     expected_source_commit: str | None = None,
+    require_execution_record: bool = False,
 ) -> list[str]:
     failures: list[str] = []
     if not actual_dir.is_dir():
@@ -453,6 +516,11 @@ def validate_actual_reports(
         missing = sorted(expected - seen_fixtures)
         if missing:
             failures.append(f"actual reports missing fixture(s): {missing}")
+    failures.extend(
+        validate_execution_record_file(
+            actual_dir, require_execution_record=require_execution_record
+        )
+    )
     return failures
 
 
@@ -590,6 +658,11 @@ def main() -> int:
         help="Fail when --actual-dir does not contain a valid report for every fixture.",
     )
     parser.add_argument(
+        "--require-execution-record",
+        action="store_true",
+        help="Require validated provider-neutral lifecycle evidence beside actual reports.",
+    )
+    parser.add_argument(
         "--actual-root",
         type=Path,
         help="Registered captured-run root containing index.json and run directories.",
@@ -599,11 +672,14 @@ def main() -> int:
     failures: list[str] = []
     try:
         shared = load_json(SHARED)
+        failures.extend(validate_executor_contract())
         failures.extend(validate_run_template(shared))
         failures.extend(validate_golden_reports(shared))
         failures.extend(validate_registered_runs(CAPTURED_RUNS_ROOT, shared))
         if args.require_all_fixtures and args.actual_dir is None:
             failures.append("--require-all-fixtures requires --actual-dir")
+        if args.require_execution_record and args.actual_dir is None:
+            failures.append("--require-execution-record requires --actual-dir")
         if args.actual_dir is not None:
             failures.extend(
                 validate_actual_reports(
@@ -611,6 +687,7 @@ def main() -> int:
                     shared,
                     require_reports=args.require_actual_reports,
                     require_all_fixtures=args.require_all_fixtures,
+                    require_execution_record=args.require_execution_record,
                 )
             )
         if args.actual_root is not None and args.actual_root.resolve() != CAPTURED_RUNS_ROOT.resolve():

@@ -37,6 +37,7 @@
         ".ai/assistant/gates/security-approval.md",
         ".ai/assistant/gates/semantic-integrity.md",
         ".ai/assistant/help.md",
+        ".ai/assistant/installation-state.json",
         ".ai/assistant/maturity-profile.md",
         ".ai/assistant/module-profile.md",
         ".ai/assistant/policies/action-authorization.json",

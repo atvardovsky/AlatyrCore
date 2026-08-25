@@ -149,6 +149,27 @@ listed in `modules.enabled` must have exactly one matching profile block in
 in the manifest. Migration staging may expose disagreement as repair work, but
 strict adapter acceptance must reject it.
 
+## Shared Capability Surfaces
+
+The machine capability catalog owns lifecycle metadata for target paths
+produced by more than one optional module. Each shared surface declares its
+target-adapter ownership, producer modules, merge strategy, and
+`preserve_on_disable` behavior.
+
+Enablement projects the union of every enabled module's required paths.
+Disabling one producer must not remove or replace a shared surface while
+another producer remains enabled. A shared target-owned surface marked
+`preserve_on_disable` also remains after its final producer is disabled until
+an explicit, separately authorized cleanup verifies that no target facts,
+assistant capability evidence, or other module output would be lost. Module
+state changes are not file-deletion authorization.
+
+Source scaffolding may create a missing shared surface, but must not overwrite
+an existing target-owned shared surface, including when generic overwrite mode
+is enabled. Existing shared content requires the declared adapter-aware merge
+strategy and exact path authorization. Record whether each affected shared
+surface was created, retained, merged, or left blocked.
+
 ## Module States
 
 Use these states in target adapters:
@@ -178,6 +199,9 @@ During installation or update:
    a broader profile or enabled module.
 6. Leave deferred, disabled, not-applicable, or blocked modules in evidence
    with the reason and next safe action.
+7. Resolve shared surfaces from the complete enabled-module set. Apply the
+   catalog merge strategy and retain any surface required by another enabled
+   producer or marked `preserve_on_disable`.
 
 Optional modules must not add target project facts from guesses or from another
 repository.
@@ -238,4 +262,7 @@ Reject module-profile work that:
 - copies source-repository helper behavior into target requirements
 - installs bridge, diagram, skill, or operation-help surfaces the target does
   not use
+- removes a shared capability surface because one producer was disabled while
+  another producer still requires it, or treats module disablement as cleanup
+  authorization
 - hides blocked core gaps behind a broad maturity claim

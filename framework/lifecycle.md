@@ -43,6 +43,49 @@ The source repository may store these facts in simple files such as `VERSION`,
 record them in a discoverable manifest such as `.ai/alatyr.yaml` or a
 target-owned equivalent.
 
+## Adapter Installation State
+
+The target manifest records one explicit installation state:
+
+- `scaffolded`: placeholder structure exists, but target facts have not been
+  adapted or accepted.
+- `staged`: repository-aware adaptation or upgrade work is in progress; active
+  placeholders, unresolved required facts, or acceptance evidence remain.
+- `accepted`: strict validation passed for the branch and revision being
+  accepted, required target facts are resolved, enabled module state agrees
+  across canonical surfaces, and no blocking finding remains.
+- `degraded`: an adapter that was accepted no longer satisfies, or cannot
+  currently prove, its accepted contract because of blocking drift, stale
+  critical evidence, or an invalid required surface.
+
+Scaffolding always starts in `scaffolded`. Beginning repository-aware
+adaptation moves it to `staged`. Only explicit strict acceptance evidence may
+move `staged` to `accepted`. An accepted adapter enters `staged` while an
+approved upgrade introduces unresolved work, or `degraded` when current
+evidence discovers contract failure outside a controlled staging process.
+Repair moves `degraded` to `staged`; strict validation is required before
+returning to `accepted`. No transition grants modify, commit, publication, or
+live-external authorization.
+
+Health and maturity are separate projections. `ready` health requires the
+manifest state `accepted`; `scaffolded`, `staged`, and `degraded` must never be
+reported as `ready`. Unresolved active placeholders always prevent acceptance.
+
+The manifest points to a machine-readable installation-state record. That
+record preserves an ordered transition chain with the previous and next state,
+operation ID, repository revision, current-scope authorization evidence,
+approval evidence when applicable, validation result, reason, and observation
+time. Its final state must equal the manifest state. Direct jumps, broken
+history, or `staged` to `accepted` without passed strict validation invalidate
+acceptance. A transition record documents evidence; it does not create user
+authorization or approval.
+
+An adapter installed before transition records existed must not reconstruct
+events it cannot prove. Its update may start a new record at `staged` with
+reason `legacy-migration-baseline`, the current repository revision, and an
+explicit unavailable-history explanation. Strict validation is still required
+for the next `accepted` transition.
+
 ## Upgrade Process
 
 Before upgrading framework files in a target project:
@@ -67,6 +110,12 @@ Before upgrading framework files in a target project:
 9. Compare required core profile, installed framework pack, and optional module
    states. Expand the pack before enabling a module whose portable owner is not
    installed; do not replace target facts while changing the pack.
+   Resolve every shared capability surface from all enabled producers, apply
+   its catalog merge strategy, and preserve it when another enabled module
+   still requires it or its lifecycle contract says `preserve_on_disable`.
+   A source scaffolder must preserve an existing target-owned shared surface;
+   an assistant performs the target-aware merge under exact current-scope
+   authorization and records the retained or merged result.
    When `team-collaboration` is enabled, compare its rule, structured policy,
    local-identity boundary, registry and task schemas, active-work index,
    backend contract, lazy overlay, operation routes, and operating model.

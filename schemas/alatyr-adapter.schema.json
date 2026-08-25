@@ -37,7 +37,13 @@
     },
     "installation": {
       "type": "object",
-      "required": ["id", "date", "mode", "support_profile"]
+      "required": ["id", "date", "mode", "support_profile", "state", "state_record"],
+      "properties": {
+        "state": {
+          "enum": ["scaffolded", "staged", "accepted", "degraded"]
+        },
+        "state_record": {"type": "string", "minLength": 1}
+      }
     },
     "owner": {
       "type": "object",

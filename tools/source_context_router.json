@@ -8,6 +8,14 @@
     "bootstrap_max_words": 2000,
     "on_exceed": "stop and repair or report routing drift"
   },
+  "conditional_overlays": {
+    "source-worker-strategy": {
+      "activate_when": "worker delegation is available and likely to improve wall-clock time or independent review quality",
+      "required_context": ["docs/source-worker-strategy.md"],
+      "canonical_rule": "ALATYR-DELEGATION-001",
+      "fallback": "continue with the primary assistant"
+    }
+  },
   "profiles": {
     "docs-local": {
       "required_context": ["docs/framework-maintenance.md"],
@@ -42,7 +50,7 @@
     "source-tooling": {
       "required_context": ["tools/README.md", "docs/framework-maintenance.md"],
       "conditional_context": ["tool being changed", "contract validated by the tool"],
-      "check_selection": "select focused check IDs from tools/check_manifest.json by owned_paths",
+      "check_selection": "select focused check IDs from tools/check_manifest.json by trigger_paths",
       "checks": ["check-manifest", "source-unit-tests", "framework-consistency"]
     },
     "release-versioning": {

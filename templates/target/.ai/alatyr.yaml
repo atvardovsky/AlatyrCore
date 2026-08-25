@@ -11,6 +11,8 @@ installation:
   date: "{INSTALLATION_DATE}"
   mode: "{NEW_INSTALL_OR_UPGRADE}"
   support_profile: "{CORE_STANDARD_OR_FULL}"
+  state: "scaffolded"
+  state_record: ".ai/assistant/installation-state.json"
 owner:
   responsible_team: "{RESPONSIBLE_TEAM}"
   technical_owner: "{TECHNICAL_OWNER}"

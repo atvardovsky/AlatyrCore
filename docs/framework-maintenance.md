@@ -332,9 +332,6 @@ Before accepting a change, check:
   stable fact ID, consistency level, project area, relationship coverage,
   derived surfaces, sync direction, validation, conflict resolver, approval,
   and final evidence fields.
-- target maturity profile baseline entries include maturity level, supported
-  work, required context, owners, validation, approval needs, blockers,
-  residual risks, and final evidence fields.
 - target bridge capability matrix baseline entries include assistant surface,
   bridge paths, auto-load behavior, instruction priority, supported surfaces,
   tool permission model, help, team-operation, and AI-infrastructure alias

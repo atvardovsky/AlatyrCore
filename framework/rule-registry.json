@@ -175,7 +175,7 @@
       "id": "ALATYR-CONTEXT-001",
       "category": "CONTEXT",
       "canonical_source": "framework/context-profiles.md",
-      "summary": "Use a generated hash-bound bootstrap index, routed gate fragments, and the smallest task profile through an aligned context router; route the target registry and consistency map together for semantic work while keeping redundant portable explanation conditional; apply bounded two-stage project-knowledge delivery from profile plus a stronger area, dependency, fact, contract, path, symbol, or issue signal; separate total, portable, and reserved target context budgets; record expansion only when boundaries or conflicts require it; prefer changed-fact, upgrade-impact, AI-item, finalization-only engineering-evidence, and explicitly activated Debug Mode routing when available; and keep unrelated knowledge, optional modules, evidence history, debug records, delegated execution, complete checklists, and full team detail lazy.",
+      "summary": "Use a generated hash-bound bootstrap index, routed gate fragments, and the smallest task profile through an aligned context router; route the target registry and consistency map together for semantic work while keeping redundant portable explanation conditional; apply bounded two-stage project-knowledge delivery from profile plus a stronger area, dependency, fact, contract, path, symbol, or issue signal; separate total, portable, and reserved target context budgets; distinguish planned selection, resolved routing, and observed host/provider context evidence without presenting source estimates as model telemetry; record expansion only when boundaries or conflicts require it; prefer changed-fact, upgrade-impact, AI-item, finalization-only engineering-evidence, and explicitly activated Debug Mode routing when available; and keep unrelated knowledge, optional modules, evidence history, debug records, delegated execution, complete checklists, and full team detail lazy.",
       "applies_to": ["all installed adapter tasks"],
       "enforcement": "required"
     },
@@ -343,7 +343,7 @@
       "id": "ALATYR-ADAPTER-001",
       "category": "ADAPTER",
       "canonical_source": "framework/project-adapter-contract.md",
-      "summary": "Keep framework core, project facts, and repository adapter facts separated and rewritten from target evidence; record the installed framework pack and its projected registry, inventory, bootstrap index, gate index, capability closure, and current-scope action policy; reject live support placeholders, manifest/profile module disagreement, and machine/human policy drift before acceptance; and preserve durable task engineering evidence, structured and non-canonical Debug Mode evidence, development-pattern evidence, routed AI infrastructure items, recommendation/adaptation records, and optional project-owned module state.",
+      "summary": "Keep framework core, project facts, and repository adapter facts separated and rewritten from target evidence; distinguish source-repository rule owners from their installed .ai/framework projections; record the installed framework pack and its projected registry, inventory, bootstrap index, gate index, capability closure, installation state and transition evidence, and current-scope action policy; reject live support placeholders, manifest/profile module disagreement, invalid installation-state history, and machine/human policy drift before acceptance; and preserve durable task engineering evidence, structured and non-canonical Debug Mode evidence, development-pattern evidence, routed AI infrastructure items, recommendation/adaptation records, and optional project-owned module state.",
       "applies_to": ["installation", "framework update", "adapter maintenance"],
       "enforcement": "required"
     },
@@ -351,7 +351,7 @@
       "id": "ALATYR-MODULE-001",
       "category": "MODULE",
       "canonical_source": "framework/module-profile.md",
-      "summary": "Establish the required core profile, including current-scope action authorization and proportional durable engineering evidence, before optional modules; scaffold only selected dependency-closed capabilities, including Debug Mode only with effectiveness and installed-operation dependencies plus structured supervision, causal direction replacement, durable-evidence reference, and completed-comparison contracts; select a compatible framework pack; and enforce optional-module dependency, rule, required-file, deterministic-check, manifest/profile state agreement, and module-gated validator closure before claiming a target module is enabled.",
+      "summary": "Establish the required core profile, including current-scope action authorization and proportional durable engineering evidence, before optional modules; scaffold only selected dependency-closed capabilities, including Debug Mode only with effectiveness and installed-operation dependencies plus structured supervision, causal direction replacement, durable-evidence reference, and completed-comparison contracts; select a compatible framework pack; preserve existing target-owned shared surfaces for their declared adapter-aware merge strategy, retain shared output while producers or preservation policy require it, and record create/retain/merge/remove outcomes; and enforce optional-module dependency, rule, required-file, deterministic-check, manifest/profile state agreement, and module-gated validator closure before claiming a target module is enabled.",
       "applies_to": ["installation", "framework update", "adapter maturity", "framework upgrades"],
       "enforcement": "required"
     },
@@ -359,7 +359,7 @@
       "id": "ALATYR-OPERATION-001",
       "category": "OPERATION",
       "canonical_source": "framework/operation-help.md",
-      "summary": "Expose one conversational Alatyr entry point, route clear requests automatically through a canonical target operation catalog and checked compact exact-alias index, enforce current-scope action phases independently of routing and allowed-action mode, expose lazy durable engineering-evidence capture/lookup and explicitly scoped Debug Mode operations, compose bounded capability-gated delegation, provide read-only adapter health, and show a pre-change preview only when risk, approval, or scope uncertainty requires it.",
+      "summary": "Expose one conversational Alatyr entry point, route clear requests automatically through a canonical target operation catalog and checked compact exact-alias index, bind common help, status, discussion, change, backlog, update, commit, and publish request shapes to provider-neutral static protocol expectations, enforce current-scope action phases independently of routing and allowed-action mode, expose lazy durable engineering-evidence capture/lookup and explicitly scoped Debug Mode operations, compose bounded capability-gated delegation, provide read-only adapter health, and show a pre-change preview only when risk, approval, or scope uncertainty requires it.",
       "applies_to": ["installed operation routing", "adapter health", "changes requiring preview"],
       "enforcement": "required"
     },
@@ -383,7 +383,7 @@
       "id": "ALATYR-BRIDGE-001",
       "category": "BRIDGE",
       "canonical_source": "framework/bridge-capability-matrix.md",
-      "summary": "Keep bridge files thin, route every supported assistant through the generated bootstrap and gate indexes plus current-scope action authorization, record loading behavior, permission model, alias routing, subagent launch/model-override/parallelism capability, limitations, and conformance checks, and route selected AI infrastructure items plus enabled project, team, and delegation behavior through canonical target routing.",
+      "summary": "Keep bridge files thin, route every supported assistant through the generated bootstrap and gate indexes plus current-scope action authorization, record loading behavior, permission model, alias routing, subagent launch/model-override/parallelism capability, limitations, and conformance checks, use a provider-neutral prepare/invoke-or-manual-import/collect/validate evidence lifecycle without representing static or manual fixtures as vendor execution, and route selected AI infrastructure items plus enabled project, team, and delegation behavior through canonical target routing.",
       "applies_to": ["supported assistant surfaces"],
       "enforcement": "required"
     },
@@ -391,7 +391,7 @@
       "id": "ALATYR-LIFECYCLE-001",
       "category": "LIFECYCLE",
       "canonical_source": "framework/lifecycle.md",
-      "summary": "Record framework version, adapter schema version, template version, installed framework pack, baseline, deviations, migration notes, and hash-bound upgrade impact; bind releases to v<VERSION>, shipped schemas, contract-tree evidence, and the checked-out target branch/revision; preserve current-scope authorization, durable engineering evidence, non-canonical Debug Mode records and their migration-limited legacy attribution, materiality, claim-fidelity, continuation, and binding classifications, and enabled target package/module state; distinguish non-accepting migration staging from strict acceptance; expand context from affected owners and migrate schemas atomically without replacing active state with placeholders or inferring missing historical evidence.",
+      "summary": "Record framework version, adapter schema version, template version, installed framework pack, baseline, deviations, migration notes, and hash-bound upgrade impact; bind releases to v<VERSION>, shipped schemas, contract-tree evidence, and the checked-out target branch/revision; preserve current-scope authorization, durable engineering evidence, non-canonical Debug Mode records and their migration-limited legacy attribution, materiality, claim-fidelity, continuation, and binding classifications, and enabled target package/module state; bind scaffolded, staged, accepted, and degraded installation states to a continuous operation/revision/authorization/approval/validation transition record; distinguish non-accepting migration staging from strict acceptance; expand context from affected owners and migrate schemas atomically without replacing active state with placeholders or inferring missing historical evidence.",
       "applies_to": ["installation", "framework upgrades"],
       "enforcement": "required"
     },
@@ -399,7 +399,7 @@
       "id": "ALATYR-EVIDENCE-001",
       "category": "EVIDENCE",
       "canonical_source": "framework/guarantees.md",
-      "summary": "Distinguish process commitments, machine-checkable expectations, target-dependent guarantees, and non-guarantees in final claims; report current-scope authorization and actions; classify durable engineering evidence without exposing raw reasoning; keep optional Debug Mode observability non-canonical, structurally classified, reference-checked, and evidence-qualified; distinguish migration staging from branch/revision-bound acceptance, strong versus bounded package provenance, and generated-record limits; and separate declared from verified scope, validation, quality, latency, cost, attribution, and supervision evidence.",
+      "summary": "Distinguish process commitments, machine-checkable expectations, target-dependent guarantees, and non-guarantees in final claims; report current-scope authorization and actions; classify durable engineering evidence without exposing raw reasoning; keep optional Debug Mode observability non-canonical, structurally classified, reference-checked, and evidence-qualified; distinguish migration staging from branch/revision-bound acceptance, strong versus bounded package provenance, static protocol expectations from captured provider runs, and message-template presence from sent/skipped/blocked delivery evidence; and separate declared from verified scope, validation, quality, latency, cost, attribution, and supervision evidence.",
       "applies_to": ["final evidence", "framework positioning"],
       "enforcement": "required"
     }

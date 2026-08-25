@@ -228,9 +228,11 @@ Task profile for comparison: `{task['task_profile']}`
 ## Evidence
 
 After the task, write a JSON report to `{report}` using
-`{REPORT_TEMPLATE}`. Record observed or explicitly unknown tokens, monetary
-cost, context volume, duration, validation, changed files, consistency
-evidence, and run provenance.
+`{REPORT_TEMPLATE}`. Record planned and resolved context separately from
+observed client telemetry. Use `observed` and `exact` only with host or provider
+usage evidence; otherwise preserve `partial` or `unavailable`. Also record
+monetary cost, duration, validation, changed files, consistency evidence, and
+run provenance.
 Keep `review.status` as `pending`; an independent reviewer evaluates the same
 acceptance criteria for every adapter mode. Do not claim that this run proves
 Alatyr is cheaper or more effective.

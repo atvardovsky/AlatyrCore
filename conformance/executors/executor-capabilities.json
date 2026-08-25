@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "contract_kind": "provider-neutral-conformance-executor-capabilities",
+  "scope": "Execution-contract metadata for AlatyrCore conformance fixtures. It does not claim provider availability or target-adapter validation.",
+  "lifecycle": [
+    "prepare",
+    "invoke-or-manual-import",
+    "collect",
+    "validate"
+  ],
+  "executors": [
+    {
+      "id": "codex-cli",
+      "provider": "OpenAI",
+      "supported_surfaces": ["codex"],
+      "execution_modes": ["native-invoke", "manual-import"],
+      "availability": "requires-current-runtime-verification",
+      "adapter": "tools/run_codex_conformance.py"
+    },
+    {
+      "id": "manual-import",
+      "provider": "provider-neutral",
+      "supported_surfaces": [
+        "generic",
+        "agents",
+        "codex",
+        "claude",
+        "gemini",
+        "github-copilot",
+        "cursor",
+        "devin-cascade",
+        "windsurf"
+      ],
+      "execution_modes": ["manual-import"],
+      "availability": "manual-evidence-only",
+      "adapter": null
+    }
+  ]
+}

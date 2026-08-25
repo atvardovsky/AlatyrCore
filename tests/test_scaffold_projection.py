@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import sys
+import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -13,6 +15,7 @@ from scaffold_projection import (  # noqa: E402
     project_module_profile,
     project_router,
 )
+from scaffold_target_structure import plan  # noqa: E402
 
 
 class ScaffoldProjectionTests(unittest.TestCase):
@@ -52,6 +55,20 @@ class ScaffoldProjectionTests(unittest.TestCase):
         self.assertNotIn("debug_mode:", rendered)
         self.assertIn("engineering_evidence:\n  contract_version: 2", rendered)
 
+    def test_manifest_projection_forces_non_accepted_scaffold_state(self) -> None:
+        source = (
+            "installation:\n"
+            "  support_profile: \"{CORE_STANDARD_OR_FULL}\"\n"
+            "  state: \"accepted\"\n"
+            "framework:\n"
+            "  pack: \"{CORE_STANDARD_OR_COMPLETE}\"\n"
+        )
+
+        rendered = project_manifest(source, "standard", "standard", set())
+
+        self.assertIn('state: "scaffolded"', rendered)
+        self.assertNotIn('state: "accepted"', rendered)
+
     def test_router_omits_profiles_without_installed_descriptors(self) -> None:
         router = {
             "routing_order": ["docs-local", "ai-infrastructure"],
@@ -89,6 +106,36 @@ class ScaffoldProjectionTests(unittest.TestCase):
             "State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`",
             rendered,
         )
+
+    def test_overwrite_preserves_existing_catalog_shared_surface(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            shared = target / ".ai/assistant/assistant-capabilities.json"
+            shared.parent.mkdir(parents=True)
+            shared.write_text('{"target_authored": true}\n', encoding="utf-8")
+
+            _actions, blocked = plan(
+                SimpleNamespace(
+                    target=target,
+                    write=True,
+                    overwrite_existing=True,
+                    profile="full",
+                    framework_pack="matched",
+                    enable_module=[],
+                )
+            )
+
+            self.assertEqual(
+                shared.read_text(encoding="utf-8"),
+                '{"target_authored": true}\n',
+            )
+            self.assertTrue(
+                any(
+                    "record-merge-by-assistant-id" in item
+                    and "preserved existing file" in item
+                    for item in blocked
+                )
+            )
 
 
 if __name__ == "__main__":

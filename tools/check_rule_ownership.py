@@ -15,6 +15,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 REGISTRY = ROOT / "framework" / "rule-registry.json"
+REGISTRY_DOC = ROOT / "framework" / "rule-registry.md"
 OWNERSHIP_DOC = ROOT / "framework" / "rule-ownership.md"
 
 
@@ -51,6 +52,7 @@ def validate() -> list[str]:
     failures: list[str] = []
     try:
         data = load_json(REGISTRY)
+        registry_text = REGISTRY_DOC.read_text(encoding="utf-8")
         ownership_text = OWNERSHIP_DOC.read_text(encoding="utf-8")
     except (OSError, AssertionError) as exc:
         return [str(exc)]
@@ -80,13 +82,26 @@ def validate() -> list[str]:
             failures.append(
                 f"{rule_id} canonical source does not exist: {canonical_source}"
             )
-        canonical_mapping = (
-            f"Rule: `{rule_id}`\nCanonical owner: `.ai/{canonical_source}`"
+        registry_mapping = (
+            f"Rule ID: `{rule_id}`\n"
+            f"Source owner: `{canonical_source}`\n"
+            f"Installed owner: `.ai/{canonical_source}`"
         )
-        if canonical_mapping not in ownership_text:
+        if registry_mapping not in registry_text:
             failures.append(
-                "framework/rule-ownership.md missing canonical owner mapping for "
-                f"{rule_id}: .ai/{canonical_source}"
+                "framework/rule-registry.md missing source/installed owner mapping "
+                f"for {rule_id}: {canonical_source} -> .ai/{canonical_source}"
+            )
+        ownership_mapping = (
+            f"Rule: `{rule_id}`\n"
+            f"Source canonical owner: `{canonical_source}`\n"
+            f"Installed canonical owner: `.ai/{canonical_source}`"
+        )
+        if ownership_mapping not in ownership_text:
+            failures.append(
+                "framework/rule-ownership.md missing source/installed canonical "
+                f"owner mapping for {rule_id}: {canonical_source} -> "
+                f".ai/{canonical_source}"
             )
 
     category_owners = data.get("category_owners")
@@ -117,10 +132,15 @@ def validate() -> list[str]:
 
         if f"Category: `{category}`" not in ownership_text:
             failures.append(f"framework/rule-ownership.md missing category {category}")
-        if f"Routing owner: `.ai/{owner_path}`" not in ownership_text:
+        routing_mapping = (
+            f"Category: `{category}`\n"
+            f"Source routing owner: `{owner_path}`\n"
+            f"Installed routing owner: `.ai/{owner_path}`"
+        )
+        if routing_mapping not in ownership_text:
             failures.append(
-                "framework/rule-ownership.md missing category routing owner for "
-                f"{category}: .ai/{owner_path}"
+                "framework/rule-ownership.md missing source/installed category "
+                f"routing owner for {category}: {owner_path} -> .ai/{owner_path}"
             )
 
         for rule_id in rule_ids:

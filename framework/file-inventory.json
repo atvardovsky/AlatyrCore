@@ -1,5 +1,5 @@
 {
-  "adapter_schema_version": 25,
+  "adapter_schema_version": 26,
   "files": [
     {
       "path": "framework/README.md",
@@ -59,12 +59,12 @@
       "rule_ids": [
         "ALATYR-BRIDGE-001"
       ],
-      "sha256": "d393f1e32aa6f621f843761d3846d60fa2c05bf664186dfd6cb3497c06ebc6b2"
+      "sha256": "9fcdba78e2311b4e3412f4d4b5b274694a6274dcb2037704dc443c1051cecf4d"
     },
     {
       "path": "framework/capabilities.json",
       "rule_ids": [],
-      "sha256": "9b7c35b2fa40c8a3ef4c780d902b4e44a3dfd0e0fa0b3e4b96c209903fd27e13"
+      "sha256": "67d3a754802ebd6364fba36e0be8e347508751a0b0b92ce6d1344ae7c6cd62ac"
     },
     {
       "path": "framework/change-packages.md",
@@ -102,7 +102,7 @@
       "rule_ids": [
         "ALATYR-CONTEXT-001"
       ],
-      "sha256": "f9993723ffbe54988e7463ccdabc0492372e1efc36cdd2d6ffd658d925517d7b"
+      "sha256": "cab7b69b294ac66cdbb85e449023600fe30c36505db7746dd157d2e7da479935"
     },
     {
       "path": "framework/context-router.md",
@@ -164,7 +164,7 @@
       "rule_ids": [
         "ALATYR-EVIDENCE-001"
       ],
-      "sha256": "7709feb5a319a0404c6231834d86bbce1095c97bb14ca66e8f82d258bbc6e8e0"
+      "sha256": "242dee4550b4c2539831773dd0bd50fb01feb386e5068d204f1ec160e9bad3ec"
     },
     {
       "path": "framework/installed-operations.md",
@@ -181,7 +181,7 @@
       "rule_ids": [
         "ALATYR-LIFECYCLE-001"
       ],
-      "sha256": "ded08a561b423de9b453dd8ef41ca551464c09de5d54da471c9d15d6b27a665b"
+      "sha256": "0b562d5e4d3cebc05d0f3499a04888e94b6a54e4a946ce9cd251057e86877eff"
     },
     {
       "path": "framework/logical-integrity.md",
@@ -200,14 +200,14 @@
       "rule_ids": [
         "ALATYR-MODULE-001"
       ],
-      "sha256": "6165d09af52ac30b91d68f7b4aaaacb8e3d1b4df3f80e24a1b739faba0423243"
+      "sha256": "84026734df4349b48be320d83a5f6c10b4f7d969b039a08ce9830699fad5e500"
     },
     {
       "path": "framework/operation-help.md",
       "rule_ids": [
         "ALATYR-OPERATION-001"
       ],
-      "sha256": "587326ab1685b0777277fe359ba8d113a7d236869af8f9bf8f6e71f46e395fba"
+      "sha256": "2e87b747ec8fda2c6b98eaa85eeab1a79462dea3e20b9eb8eab1c35928cefb29"
     },
     {
       "path": "framework/portability.md",
@@ -219,7 +219,7 @@
       "rule_ids": [
         "ALATYR-ADAPTER-001"
       ],
-      "sha256": "b05e939047b25871d9c6b991e772999a53c715b08c84d2c0bf95e536a19c8723"
+      "sha256": "7313e90ed0b50f8147abceba9ca558ad1b9f756dd3276ceb4a6129b55d4981e1"
     },
     {
       "path": "framework/project-knowledge.md",
@@ -245,17 +245,17 @@
     {
       "path": "framework/rule-ownership.md",
       "rule_ids": [],
-      "sha256": "bcad8fe466088ba26609bf9559188a8baaf69937231d9176d7f765508a30f749"
+      "sha256": "ae1fa9b1784c064c5c0ffb5d4effc8442fe64bf52d4ecda7d5b3ba956062492e"
     },
     {
       "path": "framework/rule-registry.json",
       "rule_ids": [],
-      "sha256": "6b502ae1c512ae48009132b4dc5eed5016f388f117707fc818f9af8b144abcf9"
+      "sha256": "d03797959df38d26c54ee3ae17bdcd5b069cacdafe0d05a341e47ecadc26c6e9"
     },
     {
       "path": "framework/rule-registry.md",
       "rule_ids": [],
-      "sha256": "96f751e914bc5b836937e9651faba457ad41e83d4ac83f1119385afb4062bb51"
+      "sha256": "d5469df32e738b4d9db458cd24c747807f908746240732f691a60a64ace6f7be"
     },
     {
       "path": "framework/scaffolding.md",
@@ -315,8 +315,8 @@
       "sha256": "dc1b84f72ca465f735d51ee5de02d3c26fd8054688556b4f11c1663eddc239da"
     }
   ],
-  "framework_version": "0.1.0-alpha.27",
+  "framework_version": "0.1.0-alpha.28",
   "inventory_kind": "alatyr-framework-files",
   "schema_version": 1,
-  "template_version": 25
+  "template_version": 26
 }

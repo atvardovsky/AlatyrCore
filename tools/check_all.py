@@ -11,6 +11,8 @@ import os
 import platform
 import subprocess
 import sys
+import time
+from dataclasses import dataclass
 from importlib.metadata import PackageNotFoundError, version as package_version
 from pathlib import Path
 from typing import Any
@@ -23,11 +25,45 @@ MANIFEST = ROOT / "tools" / "check_manifest.json"
 ALLOWED_PROFILES = {"fast", "full", "change", "platform", "release"}
 ALLOWED_WRITE_SCOPES = {"none"}
 ALLOWED_PLATFORMS = {"all", "linux", "macos", "windows"}
+ALLOWED_RESOURCE_CLASSES = {"light", "standard", "heavy"}
+RESOURCE_CLASS_WEIGHTS = {"light": 1, "standard": 1, "heavy": 2}
+TIMEOUT_EXIT_CODE = 124
+
+
+@dataclass(frozen=True)
+class RunnerResult:
+    """Process result metadata that legacy test runners do not need to provide."""
+
+    result: tuple[int, str, str, list[str]]
+    timed_out: bool = False
+
+
+def _valid_manifest_path(value: str) -> bool:
+    """Accept portable repository-relative literal or glob path declarations."""
+
+    path = Path(value)
+    return (
+        bool(value)
+        and "\\" not in value
+        and not path.is_absolute()
+        and ".." not in path.parts
+        and "." not in path.parts
+    )
+
+
+def _validate_path_list(check_id: str, field: str, value: Any) -> list[str]:
+    if not isinstance(value, list) or not value or not all(
+        isinstance(item, str) and _valid_manifest_path(item) for item in value
+    ):
+        raise ValueError(f"{check_id}.{field} is invalid")
+    if len(value) != len(set(value)):
+        raise ValueError(f"{check_id}.{field} contains duplicate paths")
+    return value
 
 
 def load_manifest() -> list[dict[str, Any]]:
     data = json.loads(MANIFEST.read_text(encoding="utf-8"))
-    if data.get("schema_version") != 1 or data.get("manifest_kind") != "alatyr-source-checks":
+    if data.get("schema_version") != 2 or data.get("manifest_kind") != "alatyr-source-checks":
         raise ValueError("unsupported source check manifest")
     defaults = data.get("defaults")
     checks = data.get("checks")
@@ -44,8 +80,17 @@ def load_manifest() -> list[dict[str, Any]]:
         command = check.get("command")
         profiles = check.get("profiles")
         platforms = check.get("platforms")
-        owned_paths = check.get("owned_paths")
-        trigger_paths = check.get("trigger_paths", owned_paths)
+        if "owned_paths" in check:
+            raise ValueError(f"{check_id}.owned_paths is obsolete; use contract_inputs")
+        contract_inputs = _validate_path_list(
+            check_id, "contract_inputs", check.get("contract_inputs")
+        )
+        implementation_paths = _validate_path_list(
+            check_id, "implementation_paths", check.get("implementation_paths")
+        )
+        trigger_paths = _validate_path_list(
+            check_id, "trigger_paths", check.get("trigger_paths")
+        )
         dependencies = check.get("depends_on")
         if not isinstance(check_id, str) or not check_id or check_id in ids:
             raise ValueError(f"checks[{index}] has invalid or duplicate id")
@@ -68,14 +113,31 @@ def load_manifest() -> list[dict[str, Any]]:
             raise ValueError(f"{check_id}.platforms is invalid")
         if check.get("write_scope") not in ALLOWED_WRITE_SCOPES:
             raise ValueError(f"{check_id}.write_scope is invalid")
-        if not isinstance(owned_paths, list) or not owned_paths or not all(
-            isinstance(value, str) and value for value in owned_paths
+        if script not in implementation_paths:
+            raise ValueError(f"{check_id}.implementation_paths must include its command script")
+        overlap = sorted(set(contract_inputs) & set(implementation_paths))
+        if overlap:
+            raise ValueError(
+                f"{check_id} declarations overlap between contract_inputs and "
+                f"implementation_paths: {overlap}"
+            )
+        undeclared_triggers = sorted(
+            set(contract_inputs + implementation_paths) - set(trigger_paths)
+        )
+        if undeclared_triggers:
+            raise ValueError(
+                f"{check_id}.trigger_paths must include every contract or "
+                f"implementation input: {undeclared_triggers}"
+            )
+        timeout_seconds = check.get("timeout_seconds")
+        if (
+            not isinstance(timeout_seconds, int)
+            or isinstance(timeout_seconds, bool)
+            or timeout_seconds <= 0
         ):
-            raise ValueError(f"{check_id}.owned_paths is invalid")
-        if not isinstance(trigger_paths, list) or not trigger_paths or not all(
-            isinstance(value, str) and value for value in trigger_paths
-        ):
-            raise ValueError(f"{check_id}.trigger_paths is invalid")
+            raise ValueError(f"{check_id}.timeout_seconds is invalid")
+        if check.get("resource_class") not in ALLOWED_RESOURCE_CLASSES:
+            raise ValueError(f"{check_id}.resource_class is invalid")
         if not isinstance(check.get("always_for_changed", False), bool):
             raise ValueError(f"{check_id}.always_for_changed must be boolean")
         if not isinstance(dependencies, list) or not all(
@@ -83,6 +145,8 @@ def load_manifest() -> list[dict[str, Any]]:
         ):
             raise ValueError(f"{check_id}.depends_on is invalid")
         ids.add(check_id)
+        check["contract_inputs"] = contract_inputs
+        check["implementation_paths"] = implementation_paths
         check["trigger_paths"] = trigger_paths
         check["always_for_changed"] = check.get("always_for_changed", False)
         normalized.append(check)
@@ -138,7 +202,12 @@ def git_changed_paths(ref: str) -> list[str]:
 
 
 def matches(check: dict[str, Any], path: str) -> bool:
-    return any(fnmatch.fnmatch(path, pattern) for pattern in check["owned_paths"])
+    """Whether a path is declared as a checked contract or implementation input."""
+
+    return any(
+        fnmatch.fnmatch(path, pattern)
+        for pattern in [*check["contract_inputs"], *check["implementation_paths"]]
+    )
 
 
 def routes(check: dict[str, Any], path: str) -> bool:
@@ -240,19 +309,43 @@ def resolved_command(check: dict[str, Any], baseline: str | None) -> list[str]:
     return [sys.executable, *command]
 
 
-def run_check(check: dict[str, Any], baseline: str | None) -> tuple[int, str, str, list[str]]:
+def _captured_text(value: str | bytes | None) -> str:
+    if value is None:
+        return ""
+    if isinstance(value, bytes):
+        return value.decode("utf-8", errors="replace")
+    return value
+
+
+def run_check(check: dict[str, Any], baseline: str | None) -> RunnerResult:
     command = resolved_command(check, baseline)
     environment = os.environ.copy()
     environment["PYTHONDONTWRITEBYTECODE"] = "1"
-    result = subprocess.run(
-        command,
-        cwd=ROOT,
-        env=environment,
-        check=False,
-        capture_output=True,
-        text=True,
-    )
-    return result.returncode, result.stdout, result.stderr, command
+    try:
+        result = subprocess.run(
+            command,
+            cwd=ROOT,
+            env=environment,
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=check["timeout_seconds"],
+        )
+    except subprocess.TimeoutExpired as exc:
+        timeout_message = (
+            f"timed out after {check['timeout_seconds']} seconds "
+            f"(resource_class={check['resource_class']})\n"
+        )
+        return RunnerResult(
+            (
+                TIMEOUT_EXIT_CODE,
+                _captured_text(exc.stdout),
+                _captured_text(exc.stderr) + timeout_message,
+                command,
+            ),
+            timed_out=True,
+        )
+    return RunnerResult((result.returncode, result.stdout, result.stderr, command))
 
 
 def environment_report() -> dict[str, Any]:
@@ -278,16 +371,26 @@ def render_report(
     results: dict[str, tuple[int, str, str, list[str]]],
     blocked: dict[str, list[str]],
     source_changes: list[str],
+    telemetry: dict[str, dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     checks: list[dict[str, Any]] = []
+    telemetry = telemetry or {}
     for check in selected:
         check_id = check["id"]
+        observation = telemetry.get(check_id, {})
+        common = {
+            "resource_class": check.get("resource_class", "standard"),
+            "timeout_seconds": check.get("timeout_seconds"),
+            "duration_seconds": observation.get("duration_seconds", 0.0),
+            "timed_out": observation.get("timed_out", False),
+        }
         if check_id in blocked:
             checks.append(
                 {
                     "id": check_id,
                     "status": "blocked",
                     "blocked_by": blocked[check_id],
+                    **common,
                 }
             )
             continue
@@ -300,10 +403,11 @@ def render_report(
                 "command": command,
                 "stdout": stdout,
                 "stderr": stderr,
+                **common,
             }
         )
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "report_kind": "alatyr-source-check-run",
         "profile": profile,
         "environment": environment_report(),
@@ -359,6 +463,7 @@ def execute_checks(
     jobs: int,
     *,
     runner: Any = run_check,
+    telemetry: dict[str, dict[str, Any]] | None = None,
 ) -> tuple[
     dict[str, tuple[int, str, str, list[str]]],
     dict[str, list[str]],
@@ -369,6 +474,30 @@ def execute_checks(
     remaining = {check["id"]: check for check in checks}
     results: dict[str, tuple[int, str, str, list[str]]] = {}
     blocked: dict[str, list[str]] = {}
+
+    observations = telemetry if telemetry is not None else {}
+
+    def run_with_observation(
+        check: dict[str, Any],
+    ) -> tuple[tuple[int, str, str, list[str]], bool, float]:
+        started = time.monotonic()
+        try:
+            outcome = runner(check, baseline)
+        except Exception as exc:  # pragma: no cover - defensive process boundary
+            return (1, "", str(exc), []), False, round(time.monotonic() - started, 6)
+        duration_seconds = round(time.monotonic() - started, 6)
+        if isinstance(outcome, RunnerResult):
+            return outcome.result, outcome.timed_out, duration_seconds
+        if (
+            not isinstance(outcome, tuple)
+            or len(outcome) != 4
+            or not isinstance(outcome[0], int)
+        ):
+            raise ValueError("runner must return a four-item result tuple or RunnerResult")
+        return outcome, False, duration_seconds
+
+    def resource_weight(check: dict[str, Any]) -> int:
+        return min(RESOURCE_CLASS_WEIGHTS[check.get("resource_class", "standard")], jobs)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=jobs) as executor:
         while remaining:
@@ -402,15 +531,35 @@ def execute_checks(
                     raise ValueError(f"unresolvable selected check dependencies: {unresolved}")
                 break
 
+            batch: list[dict[str, Any]] = []
+            remaining_capacity = jobs
+            for check in ready:
+                weight = resource_weight(check)
+                if weight <= remaining_capacity:
+                    batch.append(check)
+                    remaining_capacity -= weight
+            if not batch:
+                batch = [ready[0]]
+
             futures = {
-                executor.submit(runner, check, baseline): check["id"] for check in ready
+                executor.submit(run_with_observation, check): check for check in batch
             }
             for future in concurrent.futures.as_completed(futures):
-                check_id = futures[future]
+                check = futures[future]
+                check_id = check["id"]
                 try:
-                    results[check_id] = future.result()
-                except Exception as exc:  # pragma: no cover - defensive process boundary
+                    result, timed_out, duration_seconds = future.result()
+                    results[check_id] = result
+                    observations[check_id] = {
+                        "duration_seconds": duration_seconds,
+                        "timed_out": timed_out,
+                    }
+                except Exception as exc:  # pragma: no cover - executor boundary
                     results[check_id] = (1, "", str(exc), [])
+                    observations[check_id] = {
+                        "duration_seconds": 0.0,
+                        "timed_out": False,
+                    }
                 remaining.pop(check_id)
 
     return results, blocked
@@ -450,7 +599,10 @@ def main() -> int:
 
     try:
         before = source_snapshot(ROOT)
-        results, blocked = execute_checks(selected, args.from_ref, args.jobs)
+        telemetry: dict[str, dict[str, Any]] = {}
+        results, blocked = execute_checks(
+            selected, args.from_ref, args.jobs, telemetry=telemetry
+        )
         source_changes = snapshot_changes(before, source_snapshot(ROOT))
     except (OSError, ValueError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
@@ -485,6 +637,7 @@ def main() -> int:
                     results=results,
                     blocked=blocked,
                     source_changes=source_changes,
+                    telemetry=telemetry,
                 ),
             )
         except OSError as exc:
@@ -509,6 +662,7 @@ def main() -> int:
                         results=results,
                         blocked=blocked,
                         source_changes=source_changes,
+                        telemetry=telemetry,
                     ),
                 )
             except OSError as exc:

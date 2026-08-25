@@ -24,6 +24,10 @@ MANIFEST = TARGET / ".ai" / "alatyr.yaml"
 ROUTING_FLOW = TARGET / ".ai" / "assistant" / "flows" / "operation-routing.flow.md"
 HEALTH_FLOW = TARGET / ".ai" / "assistant" / "flows" / "adapter-health.flow.md"
 PREVIEW = TARGET / ".ai" / "assistant" / "templates" / "pre-change-preview.md"
+ROUTING_PROTOCOL = (
+    ROOT / "conformance" / "operations" / "request-routing-protocol-expectations.json"
+)
+AUTHORIZATION_SCENARIOS = ROOT / "conformance" / "authorization-intent-scenarios.json"
 
 EXPECTED_OPERATIONS = {
     "help",
@@ -115,6 +119,17 @@ ALLOWED_PROFILES = {
     "framework-upgrade",
 }
 
+ROUTING_CASE_IDS = {
+    "help",
+    "status",
+    "architecture-discussion",
+    "product-change",
+    "backlog-return",
+    "framework-update",
+    "commit",
+    "push",
+}
+
 
 def load_json(path: Path) -> dict[str, Any]:
     try:
@@ -143,6 +158,125 @@ def string_list(value: Any, label: str, failures: list[str]) -> list[str]:
 
 def target_path_exists(value: str) -> bool:
     return value.startswith(".ai/") and (TARGET / value).exists()
+
+
+def validate_request_routing_protocol(
+    operations: list[dict[str, Any]], failures: list[str]
+) -> None:
+    """Bind static routing expectations to catalog and authorization owners."""
+
+    protocol = load_json(ROUTING_PROTOCOL)
+    if protocol.get("schema_version") != 1:
+        failures.append("routing protocol schema_version must be 1")
+    if protocol.get("fixture_kind") != "operation-routing-protocol-expectations":
+        failures.append("routing protocol fixture_kind is invalid")
+    scope = protocol.get("scope")
+    if not isinstance(scope, str) or "Static protocol expectations only" not in scope:
+        failures.append("routing protocol must identify itself as static expectations")
+    if protocol.get("authorization_scenarios") != "conformance/authorization-intent-scenarios.json":
+        failures.append("routing protocol must reference authorization scenarios")
+
+    scenarios = load_json(AUTHORIZATION_SCENARIOS).get("scenarios")
+    authorization: dict[str, set[str]] = {}
+    if isinstance(scenarios, list):
+        for scenario in scenarios:
+            if not isinstance(scenario, dict):
+                continue
+            scenario_id = scenario.get("id")
+            phases = scenario.get("authorized_phases")
+            if isinstance(scenario_id, str) and isinstance(phases, list):
+                authorization[scenario_id] = {
+                    phase for phase in phases if isinstance(phase, str)
+                }
+    else:
+        failures.append("authorization scenarios must be a list")
+
+    by_id = {operation.get("id"): operation for operation in operations}
+    cases = protocol.get("cases")
+    if not isinstance(cases, list):
+        failures.append("routing protocol cases must be a list")
+        return
+    seen: set[str] = set()
+    for index, case in enumerate(cases):
+        label = f"routing protocol cases[{index}]"
+        if not isinstance(case, dict):
+            failures.append(f"{label} must be an object")
+            continue
+        case_id = case.get("id")
+        if not isinstance(case_id, str) or not case_id:
+            failures.append(f"{label}.id must be non-empty")
+            continue
+        if case_id in seen:
+            failures.append(f"duplicate routing protocol case {case_id}")
+        seen.add(case_id)
+        if not isinstance(case.get("request"), str) or not case["request"]:
+            failures.append(f"routing protocol case {case_id} request must be non-empty")
+        phase = case.get("expected_action_phase")
+        if phase not in AUTHORIZATION_PHASES:
+            failures.append(f"routing protocol case {case_id} action phase is invalid")
+        profile_value = case.get("expected_context_profiles")
+        if not isinstance(profile_value, list) or not all(
+            isinstance(profile, str) and profile for profile in profile_value
+        ):
+            failures.append(
+                f"routing protocol case {case_id}.expected_context_profiles must be a string list"
+            )
+            profiles = []
+        else:
+            profiles = profile_value
+        evidence = string_list(
+            case.get("minimum_evidence"),
+            f"routing protocol case {case_id}.minimum_evidence",
+            failures,
+        )
+        operation_id = case.get("expected_operation")
+        if operation_id is not None and operation_id not in by_id:
+            failures.append(f"routing protocol case {case_id} has unknown operation")
+        elif isinstance(operation_id, str):
+            operation = by_id[operation_id]
+            missing_profiles = sorted(
+                set(profiles) - set(operation.get("context_profiles", []))
+            )
+            if missing_profiles:
+                failures.append(
+                    f"routing protocol case {case_id} profiles are not routed by "
+                    f"{operation_id}: {missing_profiles}"
+                )
+            missing_evidence = sorted(
+                set(evidence) - set(operation.get("final_evidence", []))
+            )
+            if missing_evidence:
+                failures.append(
+                    f"routing protocol case {case_id} evidence is not owned by "
+                    f"{operation_id}: {missing_evidence}"
+                )
+            if phase == "inspect" and "read-only" not in operation.get("allowed_actions", []):
+                failures.append(f"routing protocol case {case_id} must allow read-only")
+        elif operation_id is not None:
+            failures.append(f"routing protocol case {case_id} operation must be string or null")
+        elif profiles:
+            failures.append(
+                f"routing protocol authorization-only case {case_id} must not select profiles"
+            )
+        if operation_id is None and "current_user_authorization" not in evidence:
+            failures.append(
+                f"routing protocol authorization-only case {case_id} must report authorization"
+            )
+
+        scenario_id = case.get("authorization_scenario")
+        if scenario_id is not None:
+            if not isinstance(scenario_id, str) or scenario_id not in authorization:
+                failures.append(f"routing protocol case {case_id} has unknown authorization scenario")
+            elif phase not in authorization[scenario_id]:
+                failures.append(
+                    f"routing protocol case {case_id} phase {phase} is not authorized "
+                    f"by {scenario_id}"
+                )
+    if seen != ROUTING_CASE_IDS:
+        failures.append(
+            "routing protocol cases differ from required set: "
+            f"missing={sorted(ROUTING_CASE_IDS - seen)}, extra={sorted(seen - ROUTING_CASE_IDS)}"
+        )
 
 
 def main() -> int:
@@ -228,6 +362,10 @@ def main() -> int:
             f"missing={sorted(EXPECTED_OPERATIONS - operation_ids)}, "
             f"extra={sorted(operation_ids - EXPECTED_OPERATIONS)}"
         )
+
+    validate_request_routing_protocol(
+        [operation for operation in operations if isinstance(operation, dict)], failures
+    )
 
     expected_alias_index: dict[str, str] = {}
     expected_operation_index: dict[str, list[str]] = {}

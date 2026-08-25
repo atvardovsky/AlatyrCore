@@ -23,6 +23,7 @@ from target_adapter_validation.framework_baseline import source_pack_expectation
 from validate_target_adapter import (
     AdapterValidatorConfig,
     Validator,
+    findings_payload,
     result_code,
 )
 
@@ -96,10 +97,97 @@ def resolve_adapter(repo: Path, support_profile: str = "core") -> None:
     manifest = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
     manifest["framework"]["pack"] = PROFILE_PACKS[support_profile]
     manifest["installation"]["support_profile"] = support_profile
+    manifest["installation"]["state"] = "staged"
     manifest["modules"]["enabled"] = []
     manifest["modules"]["deferred"] = ["all optional modules: fixture does not require them"]
     manifest["modules"]["blocked"] = []
     manifest["source_of_truth"]["project_sources"] = ["README.md"]
+    manifest_path.write_text(
+        yaml.safe_dump(manifest, sort_keys=False, allow_unicode=False),
+        encoding="utf-8",
+    )
+    state_path = repo / ".ai" / "assistant" / "installation-state.json"
+    state_path.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "record_kind": "alatyr-installation-state",
+                "current_state": "staged",
+                "transitions": [
+                    {
+                        "sequence": 1,
+                        "previous_state": None,
+                        "next_state": "scaffolded",
+                        "reason": "initial-scaffold",
+                        "operation_id": "scaffold-target-adapter",
+                        "repository_revision": run_git(repo, "rev-parse", "HEAD"),
+                        "current_user_authorization": "fixture adapter-only modify",
+                        "approval_evidence": None,
+                        "validation": {
+                            "status": "not-run",
+                            "evidence": "scaffolding does not accept installation",
+                        },
+                        "recorded_at": "2026-01-01T00:00:00Z",
+                    },
+                    {
+                        "sequence": 2,
+                        "previous_state": "scaffolded",
+                        "next_state": "staged",
+                        "reason": "adaptation-started",
+                        "operation_id": "fixture-install",
+                        "repository_revision": run_git(repo, "rev-parse", "HEAD"),
+                        "current_user_authorization": "fixture adapter-only modify",
+                        "approval_evidence": "fixture-install",
+                        "validation": {
+                            "status": "not-run",
+                            "evidence": "repository-aware adaptation in progress",
+                        },
+                        "recorded_at": "2026-01-01T00:01:00Z",
+                    },
+                ],
+            },
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    refresh_bootstrap(repo)
+
+
+def transition_installation_state(
+    repo: Path,
+    *,
+    next_state: str,
+    reason: str,
+    operation_id: str,
+    validation_status: str,
+    validation_evidence: str,
+) -> None:
+    manifest_path = repo / ".ai" / "alatyr.yaml"
+    state_path = repo / ".ai" / "assistant" / "installation-state.json"
+    manifest = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
+    record = json.loads(state_path.read_text(encoding="utf-8"))
+    previous_state = record["current_state"]
+    record["transitions"].append(
+        {
+            "sequence": len(record["transitions"]) + 1,
+            "previous_state": previous_state,
+            "next_state": next_state,
+            "reason": reason,
+            "operation_id": operation_id,
+            "repository_revision": run_git(repo, "rev-parse", "HEAD"),
+            "current_user_authorization": "fixture adapter-only modify",
+            "approval_evidence": "fixture-install",
+            "validation": {
+                "status": validation_status,
+                "evidence": validation_evidence,
+            },
+            "recorded_at": "2026-01-01T00:02:00Z",
+        }
+    )
+    record["current_state"] = next_state
+    state_path.write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
+    manifest["installation"]["state"] = next_state
     manifest_path.write_text(
         yaml.safe_dump(manifest, sort_keys=False, allow_unicode=False),
         encoding="utf-8",
@@ -304,6 +392,31 @@ def exercise_profile(
             + ", ".join(finding.code for finding in approval_errors)
         )
 
+    staged = make_validator(repo, ROOT)
+    staged_findings = staged.run()
+    staged_payload = findings_payload(
+        staged_findings,
+        target=repo,
+        strict_warnings=False,
+        installation_state=staged.installation_state,
+    )
+    if result_code(staged_findings, strict_warnings=False):
+        failures.append(
+            f"staged {support_profile} strict validation failed before acceptance"
+        )
+    if staged_payload["adapter_health"]["state"] != "unverified" or staged_payload[
+        "placeholder_validation"
+    ]["acceptance_eligible"]:
+        failures.append(f"staged {support_profile} adapter incorrectly claimed acceptance")
+
+    transition_installation_state(
+        repo,
+        next_state="accepted",
+        reason="strict-acceptance",
+        operation_id="fixture-install",
+        validation_status="passed",
+        validation_evidence="strict target adapter validation passed",
+    )
     accepted = make_validator(repo, ROOT)
     accepted_findings = accepted.run()
     accepted_errors = [finding for finding in accepted_findings if finding.level == "error"]
@@ -315,6 +428,18 @@ def exercise_profile(
                 for finding in accepted_findings
                 if finding.level in {"error", "warning"}
             )
+        )
+    accepted_payload = findings_payload(
+        accepted_findings,
+        target=repo,
+        strict_warnings=False,
+        installation_state=accepted.installation_state,
+    )
+    if accepted_payload["adapter_health"]["state"] not in {"ready", "attention"} or not accepted_payload[
+        "placeholder_validation"
+    ]["acceptance_eligible"]:
+        failures.append(
+            f"accepted {support_profile} adapter did not report acceptance-eligible health"
         )
     if any(
         PLACEHOLDER.search(path.read_text(encoding="utf-8"))
@@ -358,7 +483,43 @@ def exercise_profile(
             f"{support_profile} synthetic framework drift did not block validation"
         )
 
+    transition_installation_state(
+        repo,
+        next_state="degraded",
+        reason="blocking-drift",
+        operation_id="fixture-update",
+        validation_status="failed",
+        validation_evidence="framework baseline drift detected",
+    )
+    transition_installation_state(
+        repo,
+        next_state="staged",
+        reason="repair-started",
+        operation_id="fixture-update",
+        validation_status="not-run",
+        validation_evidence="controlled repair started",
+    )
+
     apply_synthetic_framework_update(repo, source, expected_pack)
+    staged_update = make_validator(repo, source)
+    staged_update_findings = staged_update.run()
+    if result_code(staged_update_findings, strict_warnings=False):
+        failures.append(
+            f"staged {support_profile} framework update failed validation: "
+            + ", ".join(
+                finding.code + ":" + finding.message
+                for finding in staged_update_findings
+                if finding.level in {"error", "warning"}
+            )
+        )
+    transition_installation_state(
+        repo,
+        next_state="accepted",
+        reason="strict-acceptance",
+        operation_id="fixture-update",
+        validation_status="passed",
+        validation_evidence="strict post-update validation passed",
+    )
     updated = make_validator(repo, source)
     updated_findings = updated.run()
     updated_errors = [finding for finding in updated_findings if finding.level == "error"]

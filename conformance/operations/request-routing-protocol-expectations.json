@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "fixture_kind": "operation-routing-protocol-expectations",
+  "scope": "Static protocol expectations only. This fixture does not execute an assistant, prove provider routing behavior, or authorize target changes.",
+  "authorization_scenarios": "conformance/authorization-intent-scenarios.json",
+  "cases": [
+    {
+      "id": "help",
+      "request": "Alatyr help",
+      "authorization_scenario": null,
+      "expected_operation": "help",
+      "expected_action_phase": "inspect",
+      "expected_context_profiles": [],
+      "minimum_evidence": ["adapter state evidence status", "relevant operations", "next safe action"]
+    },
+    {
+      "id": "status",
+      "request": "Alatyr status",
+      "authorization_scenario": "issue-status-is-read-only",
+      "expected_operation": "adapter-health",
+      "expected_action_phase": "inspect",
+      "expected_context_profiles": ["framework-upgrade"],
+      "minimum_evidence": ["health state", "evidence revision or time", "up to three repair operations"]
+    },
+    {
+      "id": "architecture-discussion",
+      "request": "Discuss the persistence pattern used by this project.",
+      "authorization_scenario": null,
+      "expected_operation": "architecture-assistance",
+      "expected_action_phase": "inspect",
+      "expected_context_profiles": ["architecture-change"],
+      "minimum_evidence": ["selected architecture evidence and states", "drivers options and pattern-proliferation result", "validation and residual risk"]
+    },
+    {
+      "id": "product-change",
+      "request": "Change a business rule for payment retries.",
+      "authorization_scenario": null,
+      "expected_operation": "product-change",
+      "expected_action_phase": "inspect",
+      "expected_context_profiles": ["business-change"],
+      "minimum_evidence": ["changed facts and owners", "repair set", "validation and residual risk"]
+    },
+    {
+      "id": "backlog-return",
+      "request": "back to issue from backlog",
+      "authorization_scenario": "backlog-return-is-read-only",
+      "expected_operation": null,
+      "expected_action_phase": "inspect",
+      "expected_context_profiles": [],
+      "minimum_evidence": ["current_user_authorization", "unresolved routing or next safe action"]
+    },
+    {
+      "id": "framework-update",
+      "request": "update Alatyr",
+      "authorization_scenario": null,
+      "expected_operation": "recheck-after-framework-update",
+      "expected_action_phase": "inspect",
+      "expected_context_profiles": ["framework-upgrade"],
+      "minimum_evidence": ["migration impact", "adapter changes", "validation and residual risk"]
+    },
+    {
+      "id": "commit",
+      "request": "commit the current changes",
+      "authorization_scenario": "commit-existing-does-not-authorize-edit-or-push",
+      "expected_operation": null,
+      "expected_action_phase": "commit",
+      "expected_context_profiles": [],
+      "minimum_evidence": ["current_user_authorization", "current scope and actions performed"]
+    },
+    {
+      "id": "push",
+      "request": "push the current commit",
+      "authorization_scenario": "push-existing-does-not-authorize-edit-or-commit",
+      "expected_operation": null,
+      "expected_action_phase": "publish",
+      "expected_context_profiles": [],
+      "minimum_evidence": ["current_user_authorization", "current scope and actions performed"]
+    }
+  ]
+}

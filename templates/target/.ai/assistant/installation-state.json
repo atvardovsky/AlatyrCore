@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "record_kind": "alatyr-installation-state",
+  "current_state": "scaffolded",
+  "transitions": [
+    {
+      "sequence": 1,
+      "previous_state": null,
+      "next_state": "scaffolded",
+      "reason": "initial-scaffold",
+      "operation_id": "scaffold-target-adapter",
+      "repository_revision": "{REPOSITORY_REVISION_OR_UNAVAILABLE_WITH_REASON}",
+      "current_user_authorization": "{CURRENT_SCOPE_MODIFY_AUTHORIZATION_EVIDENCE}",
+      "approval_evidence": null,
+      "validation": {
+        "status": "not-run",
+        "evidence": "Scaffolding does not accept an installation."
+      },
+      "recorded_at": "{RECORDED_AT}"
+    }
+  ]
+}

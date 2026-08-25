@@ -467,6 +467,10 @@ Final evidence must say:
   read-only adapter-health, risk-gated preview, blueprint-creation,
   adapter-recheck, or post-install/update chat-message templates added or
   skipped
+- manifest installation state and machine-readable transition history agree;
+  the chain starts at `scaffolded` for a new install or at truthful `staged`
+  `legacy-migration-baseline` for a pre-record adapter, contains no invalid
+  jump, and reaches `accepted` only with current strict validation evidence
 - project-knowledge policy/index/promotions/routes, two-stage routing
   descriptor, flow, gate, authoring templates, and validator added or blocked
   with unresolved owner/authority facts

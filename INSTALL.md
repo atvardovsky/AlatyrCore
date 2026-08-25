@@ -210,6 +210,15 @@ In a typical target repository:
 2. Create or preserve `CODEOWNERS` or an equivalent owner map when the target
    repository uses file ownership metadata.
 3. Create `.ai/alatyr.yaml` or an equivalent manifest.
+   Create `.ai/assistant/installation-state.json` or an equivalent
+   machine-readable transition record. Start at `scaffolded`; record every
+   later transition with operation, revision, current-scope authorization,
+   approval evidence when applicable, validation result, and time. Never mark
+   `accepted` without a continuous transition history and passed strict
+   validation for the current branch and revision.
+   For an older adapter that has no transition record, start at `staged` with
+   `legacy-migration-baseline` and record that prior history is unavailable;
+   do not invent a historical scaffold or acceptance event.
 4. Create `.ai/README.md` to explain target ownership contours.
 5. Copy or adapt the selected portable framework pack into `.ai/framework`.
    Record `framework.pack` in the manifest. Preserve the pack-projected rule

@@ -24,6 +24,7 @@ CORE_REQUIRED = {
     Path(".ai/assistant/bootstrap-index.json"),
     Path(".ai/assistant/context-router.json"),
     Path(".ai/assistant/context-profiles.md"),
+    Path(".ai/assistant/installation-state.json"),
     Path(".ai/assistant/module-profile.md"),
     Path(".ai/assistant/gates/index.json"),
     Path(".ai/assistant/gates/core.md"),

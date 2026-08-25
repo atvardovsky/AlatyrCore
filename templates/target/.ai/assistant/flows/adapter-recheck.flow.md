@@ -255,6 +255,12 @@ Report:
   inventory/recommendation, bridge, prompt,
   skill, gate, checker, item router, recommendation/adaptation records,
   large-task orchestration, diagram, chat-message, and lifecycle status
+- post-install or post-update delivery status as `sent`, `skipped`, or
+  `blocked`, including the mechanism, reason, observation time, and any
+  unsupported chat-output limitation; template presence is not delivery proof
+- manifest installation state and transition-record continuity, including the
+  operation, repository revision, current-scope authorization, applicable
+  approval evidence, strict validation result, and final-state agreement
 - team module owner/backend, active registry schema and references, stale
   claims, overlaps, handoffs, decision destinations, review evidence, and
   revision-bound merge readiness
