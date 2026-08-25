@@ -80,7 +80,7 @@
       ]
     },
     "full": {
-      "description": "Every target template, including all optional modules and assistant bridges.",
+      "description": "Every target support template and optional module; native assistant bridges remain explicit scaffold selections.",
       "extends": "standard",
       "template_files": [],
       "include_remaining_template_files": true

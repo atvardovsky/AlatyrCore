@@ -307,6 +307,13 @@ def is_protected_surface(path: str) -> bool:
         ".cursor/",
         ".devin/",
         ".windsurf/",
+        ".junie/",
+        ".cline/",
+        ".clinerules/",
+        ".roo/",
+        ".kiro/",
+        ".zed/",
+        ".opencode/",
         ".agents/",
     ]
     protected_files = {
@@ -317,6 +324,13 @@ def is_protected_surface(path: str) -> bool:
         "CODEOWNERS",
         ".cursorrules",
         ".windsurfrules",
+        ".clinerules",
+        ".rules",
+        ".roorules",
+        ".roomodes",
+        "AGENT.md",
+        "opencode.json",
+        "opencode.jsonc",
     }
     return path in protected_files or any(path.startswith(prefix) for prefix in protected_prefixes)
 

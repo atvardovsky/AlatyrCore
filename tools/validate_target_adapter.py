@@ -232,6 +232,8 @@ BRIDGE_FILES = [
     ".devin/rules/alatyr-core.md",
     ".windsurfrules",
     ".windsurf/rules/alatyr-core.md",
+    ".roo/rules/alatyr-core.md",
+    ".rules",
 ]
 
 MANIFEST_REQUIRED_SCALARS: set[PathKey] = {
@@ -825,6 +827,7 @@ class Validator:
         dispatch_capability_checks(self, enabled_modules, manifest)
         self.check_enabled_module_status_claims(enabled_modules)
         self.check_bootstrap_references()
+        self.check_assistant_instruction_capabilities(manifest)
         self.check_placeholders(manifest, support_profile, enabled_modules)
         self.check_local_paths()
         checker_files, checker_commands = self.discover_checkers(manifest)
@@ -842,6 +845,178 @@ class Validator:
             "require dated operation, approval, or migration records",
         )
         return self.findings
+
+    def check_assistant_instruction_capabilities(
+        self, manifest: ManifestData | None
+    ) -> None:
+        def concrete(value: Any) -> bool:
+            return (
+                isinstance(value, str)
+                and bool(value.strip())
+                and not is_placeholder(value)
+                and not is_unresolved_value(value)
+            )
+
+        index_relpath = ".ai/assistant/assistant-capabilities.json"
+        if not self.target_path(index_relpath).is_file():
+            return
+        index = self.load_json_object(
+            self.target_path(index_relpath), "ASSISTANT_CAPABILITY_INDEX"
+        )
+        surfaces = index.get("surfaces") if isinstance(index, dict) else None
+        if not isinstance(surfaces, dict) or not surfaces:
+            self.error(
+                "ASSISTANT_CAPABILITY_SURFACES",
+                "assistant capability index requires surface records",
+                index_relpath,
+            )
+            return
+
+        selected = {
+            scalar.value
+            for scalar in manifest.lists.get(("supported_assistants",), [])
+            if not is_placeholder(scalar.value)
+            and not is_unresolved_value(scalar.value)
+        } if manifest is not None else set()
+        unknown_selected = sorted(selected - set(surfaces))
+        if unknown_selected:
+            self.error(
+                "ASSISTANT_CAPABILITY_SELECTED_MISSING",
+                f"selected assistants lack capability records: {unknown_selected}",
+                index_relpath,
+            )
+
+        evidence_fields = {
+            "verified_at",
+            "client_version",
+            "evidence",
+            "expires_at",
+            "review_triggers",
+        }
+        sections = {
+            "instruction_loading": {
+                "route",
+                "runtime_variant",
+                "selected_entry_path",
+                "competing_sources",
+                "auto_load_observed",
+                "precedence_evidence",
+                "configuration_state",
+            },
+            "skills": {
+                "route",
+                "discovery_paths",
+                "selected_source",
+                "activation_mode",
+            },
+            "tool_permissions": {
+                "client_permission_mode",
+                "effective_restrictions",
+                "alatyr_authorization_separate",
+            },
+        }
+        for surface_id, relpath in surfaces.items():
+            if not isinstance(surface_id, str) or not isinstance(relpath, str):
+                self.error(
+                    "ASSISTANT_CAPABILITY_INDEX_ENTRY",
+                    "assistant capability index entries must map IDs to paths",
+                    index_relpath,
+                )
+                continue
+            record = self.load_json_object(
+                self.target_path(relpath), "ASSISTANT_SURFACE_CAPABILITIES"
+            )
+            if record is None:
+                continue
+            if record.get("schema_version") != 2:
+                self.error(
+                    "ASSISTANT_CAPABILITY_SCHEMA",
+                    f"assistant surface {surface_id} must use capability schema 2",
+                    relpath,
+                )
+            if record.get("assistant_surface") != surface_id:
+                self.error(
+                    "ASSISTANT_CAPABILITY_ID",
+                    f"assistant surface record identity must be {surface_id}",
+                    relpath,
+                )
+            for section_name, required in sections.items():
+                section = record.get(section_name)
+                if not isinstance(section, dict):
+                    self.error(
+                        "ASSISTANT_CAPABILITY_SECTION",
+                        f"assistant surface {surface_id} lacks {section_name}",
+                        relpath,
+                    )
+                    continue
+                missing = sorted((required | evidence_fields) - set(section))
+                if missing:
+                    self.error(
+                        "ASSISTANT_CAPABILITY_FIELDS",
+                        f"assistant surface {surface_id} {section_name} is missing {missing}",
+                        relpath,
+                    )
+                review_triggers = section.get("review_triggers")
+                if not isinstance(review_triggers, list) or not review_triggers:
+                    self.error(
+                        "ASSISTANT_CAPABILITY_REVIEW_TRIGGERS",
+                        f"assistant surface {surface_id} {section_name} needs review triggers",
+                        relpath,
+                    )
+                for list_field in ["competing_sources", "discovery_paths"]:
+                    if list_field in section and not isinstance(section.get(list_field), list):
+                        self.error(
+                            "ASSISTANT_CAPABILITY_LIST",
+                            f"assistant surface {surface_id} {list_field} must be a list",
+                            relpath,
+                        )
+
+            loading = record.get("instruction_loading")
+            if isinstance(loading, dict):
+                route = loading.get("route")
+                if concrete(route) and route not in {"supported", "unsupported", "unknown"}:
+                    self.error(
+                        "ASSISTANT_INSTRUCTION_ROUTE",
+                        f"assistant surface {surface_id} instruction route is invalid",
+                        relpath,
+                    )
+                if surface_id in selected:
+                    if route == "unsupported":
+                        self.error(
+                            "ASSISTANT_SELECTED_UNSUPPORTED",
+                            f"selected assistant {surface_id} has an unsupported instruction route",
+                            relpath,
+                        )
+                    elif route != "supported":
+                        self.warn(
+                            "ASSISTANT_INSTRUCTION_LOADING_UNVERIFIED",
+                            f"selected assistant {surface_id} has no verified instruction-loading evidence",
+                            relpath,
+                        )
+                    else:
+                        entry = loading.get("selected_entry_path")
+                        observed = str(loading.get("auto_load_observed", "")).casefold()
+                        if not concrete(entry) or not self.target_path(str(entry)).is_file():
+                            self.error(
+                                "ASSISTANT_SELECTED_ENTRY_MISSING",
+                                f"selected assistant {surface_id} has no existing instruction entry",
+                                relpath,
+                            )
+                        if observed not in {"yes", "true"}:
+                            self.error(
+                                "ASSISTANT_AUTO_LOAD_UNPROVEN",
+                                f"selected assistant {surface_id} claims support without observed auto-load",
+                                relpath,
+                            )
+            permissions = record.get("tool_permissions")
+            if not isinstance(permissions, dict) or permissions.get(
+                "alatyr_authorization_separate"
+            ) is not True:
+                self.error(
+                    "ASSISTANT_PERMISSION_AUTHORIZATION_CONFLICT",
+                    f"assistant surface {surface_id} must keep client permissions separate from Alatyr authorization",
+                    relpath,
+                )
 
     def target_path(self, relpath: str) -> Path:
         candidate = self.target / relpath
@@ -3270,10 +3445,10 @@ class Validator:
             )
             if surface is None:
                 continue
-            if surface.get("schema_version") != 1:
+            if surface.get("schema_version") != 2:
                 self.error(
                     "DIAGRAM_SURFACE_CAPABILITY_SCHEMA",
-                    "surface capability schema_version should be 1",
+                    "surface capability schema_version should be 2",
                     surface_relpath,
                 )
             if surface.get("capability_kind") != (

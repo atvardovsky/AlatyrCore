@@ -24,11 +24,18 @@ For each supported assistant, record:
 
 - assistant surface ID and display label
 - bridge file path
+- product lifecycle and source-support status
+- exact client/runtime variant, selected instruction entry path, competing
+  sources, rule-toggle/configuration state, observed auto-load, precedence
+  evidence, and freshness review triggers
+- skill discovery paths, selected source, activation mode, and evidence
 - auto-load behavior
 - instruction priority or known precedence
 - supported Markdown, prompt, rule, or skill surfaces
 - AI infrastructure router and item-ID support
 - tool permission model
+- evidence that client permissions or auto-approval restrict execution but do
+  not grant Alatyr modify, commit, publish, or live-external authorization
 - whether operation help aliases are routed
 - whether the single `Alatyr` entry and read-only status/doctor aliases route
   through the compact index and canonical catalog
@@ -83,11 +90,11 @@ The human bridge matrix owns explanatory precedence and limitation notes.
 `.ai/assistant/assistant-capabilities.json` is its compact runtime projection
 for selecting one assistant surface without loading the whole matrix. It maps
 surface IDs to separate target-owned records under
-`.ai/assistant/assistant-capabilities/`. Each record must use constrained
-values, retain client version, verification, expiry or review-trigger
-freshness evidence, and be checked against the surface list and matrix
-references. Derive the index from those records; do not maintain duplicate
-capability claims in the index.
+`.ai/assistant/assistant-capabilities/`. Each record must use capability schema
+2 and constrained values. It records instruction loading, skill routing, tool-
+permission separation, diagrams, and delegation with client version,
+verification, expiry or review-trigger freshness evidence. Derive the index
+from those records; do not maintain duplicate capability claims in the index.
 
 ## Baseline Template Surfaces
 
@@ -97,6 +104,12 @@ for the assistant surfaces tracked by the source conformance surface list:
 - generic
 - agents
 - codex
+- junie
+- cline
+- roo-code (legacy compatibility for the archived client)
+- kiro
+- zed-agent
+- opencode
 - claude
 - gemini
 - github-copilot
@@ -107,6 +120,21 @@ for the assistant surfaces tracked by the source conformance surface list:
 Targets may mark a surface unsupported or not applicable, but a missing row
 should be treated as a bridge capability gap when that assistant is expected
 to work.
+
+Named source admission means AlatyrCore has a checked static bridge and target
+evidence contract. It does not prove a vendor client loaded or followed the
+instructions. Keep runtime capabilities unknown until an exact-client run
+records instruction precedence, configuration/toggle state, permissions,
+skills, delegation, diagram presentation, and post-install/update delivery.
+
+Use root `AGENTS.md` for Junie, Cline, Kiro, and OpenCode unless target evidence
+requires a reviewed native adaptation. Preserve `.junie/AGENTS.md`, Junie
+custom-guideline settings, Cline rule directories/toggles, Kiro steering and
+custom-agent resources, and OpenCode V1/V2 differences during inspection. Use
+the generated `.rules` thin bridge for Zed Agent because it is the first
+compatible project instruction path. Keep `.roo/rules/alatyr-core.md` only as
+a legacy bridge; Roo Code was archived and shut down on 2026-05-15, so do not
+claim maintained or current runtime support.
 
 ## Conformance Expectations
 
@@ -158,6 +186,8 @@ Each bridge should:
 - avoid becoming a source of truth for project facts
 - state assistant-specific limitations only when target evidence supports
   them
+- bind a selected target assistant to a capability record whose instruction
+  route is not contradicted by its bridge, runtime variant, or precedence
 
 If an assistant surface cannot auto-load a bridge, record the manual loading
 step or unsupported status.
@@ -185,13 +215,16 @@ During framework update or adapter recheck:
 3. Check each bridge points to the same canonical entry points.
 4. Check the compact operation index still derives exactly from the catalog.
 5. Check operation aliases still route to the canonical flows.
-6. Check diagram presentation claims, enums, client version, verification
+6. Recheck instruction entry path, runtime variant, competing sources, client
+   toggles/configuration, observed auto-load, skills, and permissions. A new
+   surface remains runtime-unverified until target evidence is captured.
+7. Check diagram presentation claims, enums, client version, verification
    time, expiry or review triggers, and evidence against current surface
    capability; retain the ASCII baseline for unknown, stale, or unsupported
    rich rendering.
-7. When delegation is enabled, recheck the exact client/runtime, role bindings,
+8. When delegation is enabled, recheck the exact client/runtime, role bindings,
    native worker-definition format and paths, permissions, isolation,
    background/nested behavior, and fallback. Remove stale generated native
    definitions when support is no longer accepted; never infer replacement
    paths from another assistant.
-8. Report bridge-specific limitations and residual risk.
+9. Report bridge-specific limitations and residual risk.

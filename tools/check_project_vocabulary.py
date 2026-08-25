@@ -27,6 +27,7 @@ GATES = TARGET / ".ai/assistant/gates/checklist.md"
 MANIFEST = TARGET / ".ai/alatyr.yaml"
 REGISTRY = TARGET / ".ai/project/source-of-truth-registry.md"
 BRIDGES = TARGET / ".ai/assistant/bridge-capability-matrix.md"
+SURFACES = ROOT / "conformance/runs/assistant-surfaces.json"
 INSTALL = ROOT / "INSTALL.md"
 INSTALL_FLOW = ROOT / "installer/assistant-installation.flow.md"
 READINESS = ROOT / "installer/readiness-checklist.md"
@@ -281,8 +282,12 @@ def main() -> int:
          "Data dictionary links: `.ai/project/vocabulary/data-dictionary-links.json`"],
         failures,
     )
-    if read(BRIDGES).count("Routes project-vocabulary aliases:") != 9:
-        failures.append("bridge matrix must route project-vocabulary on 9 surfaces")
+    surface_count = len(load_object(SURFACES).get("surfaces", []))
+    if read(BRIDGES).count("Routes project-vocabulary aliases:") != surface_count:
+        failures.append(
+            "bridge matrix must route project-vocabulary on every canonical "
+            f"surface ({surface_count})"
+        )
     require(
         INSTALL,
         ["ALATYR-VOCABULARY-001", "optional project-vocabulary owner",

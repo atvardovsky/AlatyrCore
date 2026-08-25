@@ -10,7 +10,9 @@ from pathlib import Path
 from scaffold_target_structure import (
     PROFILE_MANIFEST,
     TEMPLATE_ROOT,
+    project_assistant_bridges,
     profile_names,
+    resolve_assistant_surfaces,
     resolve_profile_paths,
     resolved_framework_pack,
 )
@@ -44,9 +46,14 @@ FULL_ONLY_BRIDGES = {
     Path("CLAUDE.md"),
     Path("GEMINI.md"),
     Path(".github/copilot-instructions.md"),
+    Path(".github/prompts/gate-review.prompt.md"),
     Path(".cursor/rules/alatyr-core.mdc"),
+    Path(".cursorrules"),
+    Path(".roo/rules/alatyr-core.md"),
+    Path(".rules"),
     Path(".devin/rules/alatyr-core.md"),
     Path(".windsurf/rules/alatyr-core.md"),
+    Path(".windsurfrules"),
 }
 
 
@@ -89,6 +96,31 @@ def main() -> int:
         leaked_bridges = sorted(FULL_ONLY_BRIDGES & standard)
         if leaked_bridges:
             failures.append(f"assistant-specific bridges leaked into standard: {leaked_bridges}")
+        default_bridges = sorted(
+            FULL_ONLY_BRIDGES & project_assistant_bridges(full, set())
+        )
+        if default_bridges:
+            failures.append(
+                "assistant-specific bridges leaked into default full scaffold: "
+                f"{default_bridges}"
+            )
+        selected_zed_bridges = FULL_ONLY_BRIDGES & project_assistant_bridges(
+            full, resolve_assistant_surfaces(["zed"])
+        )
+        if selected_zed_bridges != {Path(".rules")}:
+            failures.append(
+                "Zed alias selection must add only the .rules native bridge"
+            )
+        try:
+            project_assistant_bridges(
+                standard, resolve_assistant_surfaces(["claude"])
+            )
+        except ValueError:
+            pass
+        else:
+            failures.append(
+                "standard profile must reject an unavailable Claude native bridge"
+            )
         matched_packs = {
             profile: resolved_framework_pack(profile, "matched")
             for profile in EXPECTED_PROFILES

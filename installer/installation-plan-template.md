@@ -263,9 +263,11 @@ and blocking criteria.
 Include `.ai/assistant/bridge-capability-matrix.md` when more than one
 assistant surface is supported or bridge behavior may differ.
 Include `.ai/assistant/assistant-capabilities.json` as the compact runtime
-index. Store rich diagram enums, ASCII baseline, client version, verification,
-expiry or review triggers, and evidence in one referenced record per installed
-assistant surface. Generate or check the index from those records.
+index. Store instruction loading, skills, tool-permission separation, rich
+diagram enums, ASCII baseline, delegation, client version, verification,
+expiry or review triggers, and evidence in one schema-2 record per installed
+assistant surface. Generate or check the index from those records. New source
+surfaces start unknown until exact-client target evidence is reviewed.
 
 Include `.ai/assistant/templates/ascii-diagram.md` for the required portable
 view. Record preferred and hard width limits, connector meanings, chart scale
@@ -507,6 +509,15 @@ metadata.
 ## Bridge File Plan
 
 List assistant-specific bridge files to create, update, skip, or preserve.
+If the optional source scaffolder is used, record every explicit
+`--assistant-surface` value. Its default must remain no vendor-native bridges;
+do not treat the source registry as the target's selected-client list.
+
+For each selected assistant, list the exact runtime variant, selected
+instruction entry path, competing sources, toggle/configuration state,
+observed auto-load, skill source, client permission mode, capability-record
+action, and residual runtime checks. Client permission or auto-approval is not
+Alatyr modify, commit, publish, or live-external authorization.
 
 Also state how root `AGENTS.md`, `AI_ASSISTANTS.md`, and supported bridge
 files will point future sessions to the installation note, compact help,

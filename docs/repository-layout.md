@@ -136,6 +136,14 @@ help aliases, and manifest paths.
 surfaces and required bridge path, loading, priority, skill/prompt,
 permission, routing, limitation, and conformance fields.
 
+`schemas/alatyr-assistant-surface-capability.schema.json` defines target
+schema-2 evidence for instruction loading, skills, client permissions,
+diagrams, and delegation. `tools/check_assistant_capability_contract.py`
+validates every source template record, while
+`tools/check_assistant_surface_audits.py` checks lifecycle, official loading
+sources, precedence risks, bridge routing, and the static-versus-runtime claim
+boundary for every canonical assistant surface.
+
 `tools/check_discussion_diagrams.py` validates the portable discussion-diagram
 rule and ASCII grammar, target operation, compact routing/capability
 projections, security, revision lineage, operation fixture, module, manifest,
@@ -204,6 +212,12 @@ copying profile-projected placeholder structure. `tools/scaffold_projection.py`
 and `tools/capability_catalog.py` keep manifest, router, operation, selected
 module dependency, target-file, and framework-pack claims aligned. Neither
 tool is the installation mechanism or fills target facts.
+
+Assistant-native bridge templates are an explicit scaffold selection through
+repeatable `--assistant-surface` values. The helper omits them by default,
+resolves aliases from the canonical assistant-surface registry, and rejects a
+profile that cannot provide a selected bridge's complete support context.
+Static bridge selection remains distinct from observed client loading.
 
 `tools/validate_target_adapter.py` is an optional installed-adapter structural
 validator. It checks target adapter files for router/bootstrap drift,

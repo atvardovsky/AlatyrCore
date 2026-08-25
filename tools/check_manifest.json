@@ -202,6 +202,26 @@
       ]
     },
     {
+      "id": "assistant-capability-contract",
+      "command": [
+        "tools/check_assistant_capability_contract.py"
+      ],
+      "contract_inputs": [
+        "conformance/runs/assistant-surfaces.json",
+        "schemas/alatyr-assistant-surface-capability.schema.json",
+        "templates/target/.ai/assistant/assistant-capabilities/**"
+      ],
+      "implementation_paths": [
+        "tools/check_assistant_capability_contract.py"
+      ],
+      "trigger_paths": [
+        "conformance/runs/assistant-surfaces.json",
+        "schemas/alatyr-assistant-surface-capability.schema.json",
+        "templates/target/.ai/assistant/assistant-capabilities/**",
+        "tools/check_assistant_capability_contract.py"
+      ]
+    },
+    {
       "id": "bridge-capability-matrix",
       "command": [
         "tools/check_bridge_capability_matrix.py"
@@ -217,6 +237,38 @@
         "framework/bridge-capability-matrix.md",
         "templates/target/.ai/assistant/bridge-capability-matrix.md",
         "tools/check_bridge_capability_matrix.py"
+      ]
+    },
+    {
+      "id": "assistant-surface-audits",
+      "command": [
+        "tools/check_assistant_surface_audits.py"
+      ],
+      "contract_inputs": [
+        "conformance/assistant-surface-integration-audits.json",
+        "conformance/executors/executor-capabilities.json",
+        "conformance/runs/assistant-surfaces.json",
+        "templates/target/AGENTS.md",
+        "templates/target/.ai/assistant/assistant-capabilities.json",
+        "templates/target/.ai/assistant/assistant-capabilities/**",
+        "templates/target/.ai/assistant/bridge-capability-matrix.md"
+      ],
+      "implementation_paths": [
+        "tools/check_assistant_surface_audits.py"
+      ],
+      "trigger_paths": [
+        "conformance/assistant-surface-integration-audits.json",
+        "conformance/executors/executor-capabilities.json",
+        "conformance/runs/assistant-surfaces.json",
+        "templates/target/AGENTS.md",
+        "templates/target/.ai/assistant/assistant-capabilities.json",
+        "templates/target/.ai/assistant/assistant-capabilities/**",
+        "templates/target/.ai/assistant/bridge-capability-matrix.md",
+        "tools/check_assistant_surface_audits.py"
+      ],
+      "depends_on": [
+        "assistant-capability-contract",
+        "bridge-capability-matrix"
       ]
     },
     {
@@ -520,6 +572,7 @@
         "TEMPLATE_VERSION",
         "VERSION",
         "conformance/benchmarks/**",
+        "conformance/assistant-surface-integration-audits.json",
         "conformance/evidence-status.json",
         "conformance/executors/executor-capabilities.json",
         "conformance/fixtures/**",
@@ -535,6 +588,8 @@
         "tools/bootstrap_index.py",
         "tools/capability_catalog.py",
         "tools/check_captured_effectiveness_results.py",
+        "tools/check_assistant_capability_contract.py",
+        "tools/check_assistant_surface_audits.py",
         "tools/check_conformance_matrix.py",
         "tools/check_conformance_reports.py",
         "tools/check_effectiveness_benchmark.py",
@@ -569,6 +624,7 @@
         "TEMPLATE_VERSION",
         "VERSION",
         "conformance/benchmarks/**",
+        "conformance/assistant-surface-integration-audits.json",
         "conformance/evidence-status.json",
         "conformance/executors/executor-capabilities.json",
         "conformance/fixtures/**",
@@ -584,6 +640,8 @@
         "tools/bootstrap_index.py",
         "tools/capability_catalog.py",
         "tools/check_captured_effectiveness_results.py",
+        "tools/check_assistant_capability_contract.py",
+        "tools/check_assistant_surface_audits.py",
         "tools/check_conformance_matrix.py",
         "tools/check_conformance_reports.py",
         "tools/check_effectiveness_benchmark.py",

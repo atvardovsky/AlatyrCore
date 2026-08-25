@@ -168,9 +168,11 @@ explicit full acceptance audit. For framework updates, read the generated
 
 ## Assistant Bridges
 
-AlatyrCore supports generic, AGENTS-aware, Codex, Claude, Gemini, GitHub
-Copilot, Cursor, Devin/Cascade, and Windsurf target surfaces through short
-bridges. The target decides which surfaces are actually supported.
+AlatyrCore has static bridge contracts for generic, AGENTS-aware, Codex,
+JetBrains Junie, Cline, Kiro, Zed Agent, OpenCode, Claude, Gemini, GitHub
+Copilot, Cursor, Devin/Cascade, Windsurf, and legacy Roo Code surfaces. The
+target decides which clients are selected and records runtime evidence before
+claiming that a client loaded or followed Alatyr.
 
 Every bridge should point back to the same generated bootstrap index and its
 canonical recovery sources, project contour, operation index, help, flows, and
@@ -190,11 +192,10 @@ task/packet/result contracts, and selected assistant-capability record. The
 primary assistant retains task readiness, project decisions, approval, result
 review, integration, logical integrity, and final validation.
 
-This strategy applies equally to generic, AGENTS-aware, Codex, Claude, Gemini,
-GitHub Copilot, Cursor, Devin/Cascade, and Windsurf surfaces. `Subagent` is a
-portable role: the selected surface may use native workers, an approved
-external dispatcher, suggestion-only packet handoff, or primary execution as
-recorded by target evidence.
+This strategy applies equally to every surface in the canonical conformance
+registry. `Subagent` is a portable role: the selected surface may use native
+workers, an approved external dispatcher, suggestion-only packet handoff, or
+primary execution as recorded by exact-client target evidence.
 
 Create assistant-native worker definitions only after the exact target client
 confirms project definition support. Keep each definition as a thin binding to

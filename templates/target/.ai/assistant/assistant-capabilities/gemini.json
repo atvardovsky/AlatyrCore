@@ -1,7 +1,42 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "capability_kind": "target-assistant-surface-capabilities",
   "assistant_surface": "gemini",
+  "instruction_loading": {
+    "route": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "runtime_variant": "{TARGET_RUNTIME_VARIANT_OR_UNKNOWN}",
+    "selected_entry_path": "{TARGET_SELECTED_INSTRUCTION_PATH_OR_UNKNOWN}",
+    "competing_sources": ["{TARGET_COMPETING_INSTRUCTION_SOURCE_OR_NONE}"],
+    "auto_load_observed": "{YES_NO_OR_UNKNOWN_WITH_REASON}",
+    "precedence_evidence": "{TARGET_PRECEDENCE_EVIDENCE_OR_MANUAL_REVIEW}",
+    "configuration_state": "{TARGET_RULE_TOGGLE_OR_CONFIGURATION_STATE}",
+    "verified_at": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}",
+    "client_version": "{CLIENT_VERSION_OR_UNKNOWN_WITH_REASON}",
+    "evidence": "{TARGET_EVIDENCE_OR_MANUAL_REVIEW}",
+    "expires_at": "{ISO_DATE_OR_REVIEW_TRIGGER_WITH_REASON}",
+    "review_triggers": ["client or runtime variant changed", "instruction files or toggles changed", "{TARGET_INSTRUCTION_LOADING_REVIEW_TRIGGER}"]
+  },
+  "skills": {
+    "route": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "discovery_paths": ["{TARGET_SKILL_DISCOVERY_PATH_OR_NONE}"],
+    "selected_source": "{TARGET_SELECTED_SKILL_SOURCE_OR_NONE_OR_UNKNOWN}",
+    "activation_mode": "{AUTOMATIC_EXPLICIT_DISABLED_OR_UNKNOWN}",
+    "verified_at": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}",
+    "client_version": "{CLIENT_VERSION_OR_UNKNOWN_WITH_REASON}",
+    "evidence": "{TARGET_EVIDENCE_OR_MANUAL_REVIEW}",
+    "expires_at": "{ISO_DATE_OR_REVIEW_TRIGGER_WITH_REASON}",
+    "review_triggers": ["client or skill configuration changed", "{TARGET_SKILL_CAPABILITY_REVIEW_TRIGGER}"]
+  },
+  "tool_permissions": {
+    "client_permission_mode": "{TARGET_PERMISSION_OR_AUTO_APPROVAL_MODE_OR_UNKNOWN}",
+    "effective_restrictions": "{TARGET_EFFECTIVE_TOOL_RESTRICTIONS_OR_UNKNOWN}",
+    "alatyr_authorization_separate": true,
+    "verified_at": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}",
+    "client_version": "{CLIENT_VERSION_OR_UNKNOWN_WITH_REASON}",
+    "evidence": "{TARGET_EVIDENCE_OR_MANUAL_REVIEW}",
+    "expires_at": "{ISO_DATE_OR_REVIEW_TRIGGER_WITH_REASON}",
+    "review_triggers": ["client permissions, autonomy, or tool configuration changed", "{TARGET_PERMISSION_REVIEW_TRIGGER}"]
+  },
   "diagram_discussion": {
     "route": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
     "native_inline_syntaxes": [

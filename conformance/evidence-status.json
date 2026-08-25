@@ -38,6 +38,12 @@
       "generic",
       "agents",
       "codex",
+      "junie",
+      "cline",
+      "roo-code",
+      "kiro",
+      "zed-agent",
+      "opencode",
       "claude",
       "gemini",
       "github-copilot",
@@ -46,8 +52,8 @@
       "windsurf"
     ]
   },
-  "current_contract_digest": "3c1419418f07863a51b37140a44b693a659677c4165e2083e5163b7d09b1d908",
-  "current_framework_version": "0.1.0-alpha.28",
+  "current_contract_digest": "bb33fffdf97a31e3d03a998e8a08734157114596b722cec5ff899f52d91529ec",
+  "current_framework_version": "0.1.0-alpha.29",
   "effectiveness": {
     "broad_cost_or_quality_claim_supported": false,
     "captured_benchmarks": [

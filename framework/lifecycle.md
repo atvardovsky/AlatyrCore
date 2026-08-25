@@ -105,7 +105,12 @@ Before upgrading framework files in a target project:
    compatibility audit is explicitly requested.
 5. Identify framework-core changes versus target-adapter changes.
 6. Preserve target project facts.
-7. Compare supported assistant bridge needs and limitations.
+7. Compare supported assistant bridge needs and limitations. Merge source
+   surface additions by ID without overwriting target capability evidence.
+   Recheck exact runtime variant, selected entry path, competing instruction
+   sources, toggles/configuration, observed auto-load, skill source, and client
+   permissions. New or changed clients remain runtime-unverified until target
+   evidence exists; client permissions never grant Alatyr authorization.
 8. Identify new approval, testing, security, diagram, or validation guidance.
 9. Compare required core profile, installed framework pack, and optional module
    states. Expand the pack before enabling a module whose portable owner is not
@@ -230,6 +235,11 @@ Before upgrading framework files in a target project:
     historical plan/packet/result evidence. Never replace them with source
     placeholders or assume a newly documented model or worker format is
     available on the installed client.
+    Preserve target instruction-loading, skill, permission, diagram, and
+    delegation evidence by assistant ID. Migrate capability records to the
+    current schema and add new source surfaces as unknown; never replace
+    selected client/runtime facts with template placeholders or evidence from
+    another branch, client, or runtime variant.
 14. Recheck root assistant entry points and supported bridge files so future
     sessions can find the installation note, operation catalog, health, help,
     and routing flow.

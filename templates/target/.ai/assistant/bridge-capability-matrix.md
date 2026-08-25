@@ -130,6 +130,211 @@ Routes AI infrastructure items: `{CODEX_ROUTES_AI_INFRASTRUCTURE_ITEMS}`
 Known limitations: `{CODEX_KNOWN_LIMITATIONS_OR_NONE}`
 Conformance check: `{CODEX_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
 
+### Assistant Surface: `junie`
+
+Assistant: `JetBrains Junie`
+Surface id: `junie`
+Bridge paths:
+
+- `AGENTS.md`
+
+Auto-load behavior: `{JUNIE_AUTO_LOAD_BEHAVIOR}`
+Instruction priority: `{JUNIE_INSTRUCTION_PRIORITY_OR_UNKNOWN}`
+Supported rule/prompt/skill surfaces: `{JUNIE_SUPPORTED_SURFACES}`
+Tool permission model: `{JUNIE_TOOL_PERMISSION_MODEL_OR_UNKNOWN}`
+Routes operation help: `{JUNIE_ROUTES_OPERATION_HELP}`
+Routes single `Alatyr` entry: `{JUNIE_ROUTES_ALATYR_ENTRY}`
+Routes adapter health: `{JUNIE_ROUTES_ADAPTER_HEALTH}`
+Routes pre-change preview: `{JUNIE_ROUTES_PRE_CHANGE_PREVIEW}`
+Routes action authorization: `{JUNIE_ROUTES_ACTION_AUTHORIZATION}`
+Routes enabled team operations: `{JUNIE_ROUTES_TEAM_OPERATIONS}`
+Routes code-documentation aliases: `{JUNIE_ROUTES_CODE_DOCUMENTATION}`
+Routes project-vocabulary aliases: `{JUNIE_ROUTES_PROJECT_VOCABULARY}`
+Routes test-first aliases: `{JUNIE_ROUTES_TEST_FIRST}`
+Routes extension aliases: `{JUNIE_ROUTES_EXTENSIONS}`
+Routes subagent delegation: `{JUNIE_ROUTES_SUBAGENT_DELEGATION}`
+Subagent delegation capability record: `.ai/assistant/assistant-capabilities/junie.json`
+Diagram capability record: `.ai/assistant/assistant-capabilities/junie.json`
+Routes `alatyr-ai-inventory`: `{JUNIE_ROUTES_AI_INVENTORY}`
+Routes `alatyr-suggest-ai`: `{JUNIE_ROUTES_AI_RECOMMENDATION}`
+Routes `alatyr-improve-ai`: `{JUNIE_ROUTES_AI_IMPROVEMENT}`
+Routes `alatyr-adaptation`: `{JUNIE_ROUTES_ADAPTATION}`
+Routes `alatyr-add-ai`: `{JUNIE_ROUTES_ADD_AI}`
+Routes AI infrastructure items: `{JUNIE_ROUTES_AI_INFRASTRUCTURE_ITEMS}`
+Known limitations: `{JUNIE_KNOWN_LIMITATIONS_OR_NONE}`
+Conformance check: `{JUNIE_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
+
+### Assistant Surface: `cline`
+
+Assistant: `Cline`
+Surface id: `cline`
+Bridge paths:
+
+- `AGENTS.md`
+
+Auto-load behavior: `{CLINE_AUTO_LOAD_BEHAVIOR}`
+Instruction priority: `{CLINE_INSTRUCTION_PRIORITY_OR_UNKNOWN}`
+Supported rule/prompt/skill surfaces: `{CLINE_SUPPORTED_SURFACES}`
+Tool permission model: `{CLINE_TOOL_PERMISSION_MODEL_OR_UNKNOWN}`
+Routes operation help: `{CLINE_ROUTES_OPERATION_HELP}`
+Routes single `Alatyr` entry: `{CLINE_ROUTES_ALATYR_ENTRY}`
+Routes adapter health: `{CLINE_ROUTES_ADAPTER_HEALTH}`
+Routes pre-change preview: `{CLINE_ROUTES_PRE_CHANGE_PREVIEW}`
+Routes action authorization: `{CLINE_ROUTES_ACTION_AUTHORIZATION}`
+Routes enabled team operations: `{CLINE_ROUTES_TEAM_OPERATIONS}`
+Routes code-documentation aliases: `{CLINE_ROUTES_CODE_DOCUMENTATION}`
+Routes project-vocabulary aliases: `{CLINE_ROUTES_PROJECT_VOCABULARY}`
+Routes test-first aliases: `{CLINE_ROUTES_TEST_FIRST}`
+Routes extension aliases: `{CLINE_ROUTES_EXTENSIONS}`
+Routes subagent delegation: `{CLINE_ROUTES_SUBAGENT_DELEGATION}`
+Subagent delegation capability record: `.ai/assistant/assistant-capabilities/cline.json`
+Diagram capability record: `.ai/assistant/assistant-capabilities/cline.json`
+Routes `alatyr-ai-inventory`: `{CLINE_ROUTES_AI_INVENTORY}`
+Routes `alatyr-suggest-ai`: `{CLINE_ROUTES_AI_RECOMMENDATION}`
+Routes `alatyr-improve-ai`: `{CLINE_ROUTES_AI_IMPROVEMENT}`
+Routes `alatyr-adaptation`: `{CLINE_ROUTES_ADAPTATION}`
+Routes `alatyr-add-ai`: `{CLINE_ROUTES_ADD_AI}`
+Routes AI infrastructure items: `{CLINE_ROUTES_AI_INFRASTRUCTURE_ITEMS}`
+Known limitations: `{CLINE_KNOWN_LIMITATIONS_OR_NONE}`
+Conformance check: `{CLINE_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
+
+### Assistant Surface: `roo-code`
+
+Assistant: `Roo Code (legacy)`
+Surface id: `roo-code`
+Bridge paths:
+
+- `.roo/rules/alatyr-core.md`
+- `AGENTS.md`
+
+Auto-load behavior: `{ROO_CODE_AUTO_LOAD_BEHAVIOR}`
+Instruction priority: `{ROO_CODE_INSTRUCTION_PRIORITY_OR_UNKNOWN}`
+Supported rule/prompt/skill surfaces: `{ROO_CODE_SUPPORTED_SURFACES}`
+Tool permission model: `{ROO_CODE_TOOL_PERMISSION_MODEL_OR_UNKNOWN}`
+Routes operation help: `{ROO_CODE_ROUTES_OPERATION_HELP}`
+Routes single `Alatyr` entry: `{ROO_CODE_ROUTES_ALATYR_ENTRY}`
+Routes adapter health: `{ROO_CODE_ROUTES_ADAPTER_HEALTH}`
+Routes pre-change preview: `{ROO_CODE_ROUTES_PRE_CHANGE_PREVIEW}`
+Routes action authorization: `{ROO_CODE_ROUTES_ACTION_AUTHORIZATION}`
+Routes enabled team operations: `{ROO_CODE_ROUTES_TEAM_OPERATIONS}`
+Routes code-documentation aliases: `{ROO_CODE_ROUTES_CODE_DOCUMENTATION}`
+Routes project-vocabulary aliases: `{ROO_CODE_ROUTES_PROJECT_VOCABULARY}`
+Routes test-first aliases: `{ROO_CODE_ROUTES_TEST_FIRST}`
+Routes extension aliases: `{ROO_CODE_ROUTES_EXTENSIONS}`
+Routes subagent delegation: `{ROO_CODE_ROUTES_SUBAGENT_DELEGATION}`
+Subagent delegation capability record: `.ai/assistant/assistant-capabilities/roo-code.json`
+Diagram capability record: `.ai/assistant/assistant-capabilities/roo-code.json`
+Routes `alatyr-ai-inventory`: `{ROO_CODE_ROUTES_AI_INVENTORY}`
+Routes `alatyr-suggest-ai`: `{ROO_CODE_ROUTES_AI_RECOMMENDATION}`
+Routes `alatyr-improve-ai`: `{ROO_CODE_ROUTES_AI_IMPROVEMENT}`
+Routes `alatyr-adaptation`: `{ROO_CODE_ROUTES_ADAPTATION}`
+Routes `alatyr-add-ai`: `{ROO_CODE_ROUTES_ADD_AI}`
+Routes AI infrastructure items: `{ROO_CODE_ROUTES_AI_INFRASTRUCTURE_ITEMS}`
+Known limitations: `{ROO_CODE_KNOWN_LIMITATIONS_OR_NONE}`
+Conformance check: `{ROO_CODE_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
+
+### Assistant Surface: `kiro`
+
+Assistant: `Kiro`
+Surface id: `kiro`
+Bridge paths:
+
+- `AGENTS.md`
+
+Auto-load behavior: `{KIRO_AUTO_LOAD_BEHAVIOR}`
+Instruction priority: `{KIRO_INSTRUCTION_PRIORITY_OR_UNKNOWN}`
+Supported rule/prompt/skill surfaces: `{KIRO_SUPPORTED_SURFACES}`
+Tool permission model: `{KIRO_TOOL_PERMISSION_MODEL_OR_UNKNOWN}`
+Routes operation help: `{KIRO_ROUTES_OPERATION_HELP}`
+Routes single `Alatyr` entry: `{KIRO_ROUTES_ALATYR_ENTRY}`
+Routes adapter health: `{KIRO_ROUTES_ADAPTER_HEALTH}`
+Routes pre-change preview: `{KIRO_ROUTES_PRE_CHANGE_PREVIEW}`
+Routes action authorization: `{KIRO_ROUTES_ACTION_AUTHORIZATION}`
+Routes enabled team operations: `{KIRO_ROUTES_TEAM_OPERATIONS}`
+Routes code-documentation aliases: `{KIRO_ROUTES_CODE_DOCUMENTATION}`
+Routes project-vocabulary aliases: `{KIRO_ROUTES_PROJECT_VOCABULARY}`
+Routes test-first aliases: `{KIRO_ROUTES_TEST_FIRST}`
+Routes extension aliases: `{KIRO_ROUTES_EXTENSIONS}`
+Routes subagent delegation: `{KIRO_ROUTES_SUBAGENT_DELEGATION}`
+Subagent delegation capability record: `.ai/assistant/assistant-capabilities/kiro.json`
+Diagram capability record: `.ai/assistant/assistant-capabilities/kiro.json`
+Routes `alatyr-ai-inventory`: `{KIRO_ROUTES_AI_INVENTORY}`
+Routes `alatyr-suggest-ai`: `{KIRO_ROUTES_AI_RECOMMENDATION}`
+Routes `alatyr-improve-ai`: `{KIRO_ROUTES_AI_IMPROVEMENT}`
+Routes `alatyr-adaptation`: `{KIRO_ROUTES_ADAPTATION}`
+Routes `alatyr-add-ai`: `{KIRO_ROUTES_ADD_AI}`
+Routes AI infrastructure items: `{KIRO_ROUTES_AI_INFRASTRUCTURE_ITEMS}`
+Known limitations: `{KIRO_KNOWN_LIMITATIONS_OR_NONE}`
+Conformance check: `{KIRO_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
+
+### Assistant Surface: `zed-agent`
+
+Assistant: `Zed Agent`
+Surface id: `zed-agent`
+Bridge paths:
+
+- `.rules`
+
+Auto-load behavior: `{ZED_AUTO_LOAD_BEHAVIOR}`
+Instruction priority: `{ZED_INSTRUCTION_PRIORITY_OR_UNKNOWN}`
+Supported rule/prompt/skill surfaces: `{ZED_SUPPORTED_SURFACES}`
+Tool permission model: `{ZED_TOOL_PERMISSION_MODEL_OR_UNKNOWN}`
+Routes operation help: `{ZED_ROUTES_OPERATION_HELP}`
+Routes single `Alatyr` entry: `{ZED_ROUTES_ALATYR_ENTRY}`
+Routes adapter health: `{ZED_ROUTES_ADAPTER_HEALTH}`
+Routes pre-change preview: `{ZED_ROUTES_PRE_CHANGE_PREVIEW}`
+Routes action authorization: `{ZED_ROUTES_ACTION_AUTHORIZATION}`
+Routes enabled team operations: `{ZED_ROUTES_TEAM_OPERATIONS}`
+Routes code-documentation aliases: `{ZED_ROUTES_CODE_DOCUMENTATION}`
+Routes project-vocabulary aliases: `{ZED_ROUTES_PROJECT_VOCABULARY}`
+Routes test-first aliases: `{ZED_ROUTES_TEST_FIRST}`
+Routes extension aliases: `{ZED_ROUTES_EXTENSIONS}`
+Routes subagent delegation: `{ZED_ROUTES_SUBAGENT_DELEGATION}`
+Subagent delegation capability record: `.ai/assistant/assistant-capabilities/zed-agent.json`
+Diagram capability record: `.ai/assistant/assistant-capabilities/zed-agent.json`
+Routes `alatyr-ai-inventory`: `{ZED_ROUTES_AI_INVENTORY}`
+Routes `alatyr-suggest-ai`: `{ZED_ROUTES_AI_RECOMMENDATION}`
+Routes `alatyr-improve-ai`: `{ZED_ROUTES_AI_IMPROVEMENT}`
+Routes `alatyr-adaptation`: `{ZED_ROUTES_ADAPTATION}`
+Routes `alatyr-add-ai`: `{ZED_ROUTES_ADD_AI}`
+Routes AI infrastructure items: `{ZED_ROUTES_AI_INFRASTRUCTURE_ITEMS}`
+Known limitations: `{ZED_KNOWN_LIMITATIONS_OR_NONE}`
+Conformance check: `{ZED_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
+
+### Assistant Surface: `opencode`
+
+Assistant: `OpenCode`
+Surface id: `opencode`
+Bridge paths:
+
+- `AGENTS.md`
+
+Auto-load behavior: `{OPENCODE_AUTO_LOAD_BEHAVIOR}`
+Instruction priority: `{OPENCODE_INSTRUCTION_PRIORITY_OR_UNKNOWN}`
+Supported rule/prompt/skill surfaces: `{OPENCODE_SUPPORTED_SURFACES}`
+Tool permission model: `{OPENCODE_TOOL_PERMISSION_MODEL_OR_UNKNOWN}`
+Routes operation help: `{OPENCODE_ROUTES_OPERATION_HELP}`
+Routes single `Alatyr` entry: `{OPENCODE_ROUTES_ALATYR_ENTRY}`
+Routes adapter health: `{OPENCODE_ROUTES_ADAPTER_HEALTH}`
+Routes pre-change preview: `{OPENCODE_ROUTES_PRE_CHANGE_PREVIEW}`
+Routes action authorization: `{OPENCODE_ROUTES_ACTION_AUTHORIZATION}`
+Routes enabled team operations: `{OPENCODE_ROUTES_TEAM_OPERATIONS}`
+Routes code-documentation aliases: `{OPENCODE_ROUTES_CODE_DOCUMENTATION}`
+Routes project-vocabulary aliases: `{OPENCODE_ROUTES_PROJECT_VOCABULARY}`
+Routes test-first aliases: `{OPENCODE_ROUTES_TEST_FIRST}`
+Routes extension aliases: `{OPENCODE_ROUTES_EXTENSIONS}`
+Routes subagent delegation: `{OPENCODE_ROUTES_SUBAGENT_DELEGATION}`
+Subagent delegation capability record: `.ai/assistant/assistant-capabilities/opencode.json`
+Diagram capability record: `.ai/assistant/assistant-capabilities/opencode.json`
+Routes `alatyr-ai-inventory`: `{OPENCODE_ROUTES_AI_INVENTORY}`
+Routes `alatyr-suggest-ai`: `{OPENCODE_ROUTES_AI_RECOMMENDATION}`
+Routes `alatyr-improve-ai`: `{OPENCODE_ROUTES_AI_IMPROVEMENT}`
+Routes `alatyr-adaptation`: `{OPENCODE_ROUTES_ADAPTATION}`
+Routes `alatyr-add-ai`: `{OPENCODE_ROUTES_ADD_AI}`
+Routes AI infrastructure items: `{OPENCODE_ROUTES_AI_INFRASTRUCTURE_ITEMS}`
+Known limitations: `{OPENCODE_KNOWN_LIMITATIONS_OR_NONE}`
+Conformance check: `{OPENCODE_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
+
 ### Assistant Surface: `claude`
 
 Assistant: `Claude`

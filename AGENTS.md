@@ -172,6 +172,8 @@ python3 tools/check_ai_infrastructure_inventory.py
 python3 tools/check_ai_infrastructure_recommendations.py
 python3 tools/check_ai_infrastructure_router.py
 python3 tools/check_assistant_surface_conformance.py
+python3 tools/check_assistant_capability_contract.py
+python3 tools/check_assistant_surface_audits.py
 python3 tools/check_bridge_capability_matrix.py
 python3 tools/check_captured_effectiveness_results.py
 python3 tools/render_evidence_status.py --check

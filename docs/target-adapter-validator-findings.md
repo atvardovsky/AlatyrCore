@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1025
+Catalog entries: 1040
 
 ## Codes
 
@@ -171,6 +171,36 @@ Catalog entries: 1025
 - `ARCHITECTURE_PATTERN_SHAPE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ARCHITECTURE_REQUIRED_FILE_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_AUTO_LOAD_UNPROVEN`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_CAPABILITY_FIELDS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_CAPABILITY_ID`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_CAPABILITY_INDEX_ENTRY`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_CAPABILITY_LIST`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_CAPABILITY_REVIEW_TRIGGERS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_CAPABILITY_SCHEMA`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_CAPABILITY_SECTION`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_CAPABILITY_SELECTED_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_CAPABILITY_SURFACES`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_INSTRUCTION_LOADING_UNVERIFIED`
+  Level: warning. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_INSTRUCTION_ROUTE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_PERMISSION_AUTHORIZATION_CONFLICT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_SELECTED_ENTRY_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_SELECTED_UNSUPPORTED`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `AUTHORIZATION_BOUNDARY_CONFLATED`
   Level: error. Source: `tools/validate_target_adapter.py`.

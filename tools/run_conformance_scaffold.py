@@ -215,7 +215,7 @@ def run_fixture(
     expected_existing = {
         seed["path"]
         for seed in fixture["seed_files"]
-        if seed["path"] in {"AGENTS.md", ".github/copilot-instructions.md"}
+        if seed["path"] == "AGENTS.md"
     }
     actual_existing = set(skipped_existing_paths(repo, write_blocked))
     for relpath in expected_existing:

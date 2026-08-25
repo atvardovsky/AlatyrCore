@@ -1,9 +1,9 @@
 {
   "bootstrap": {
-    "bytes": 13653,
-    "characters": 13653,
+    "bytes": 13980,
+    "characters": 13980,
     "declared_files": 2,
-    "estimated_tokens_4_chars": 3414,
+    "estimated_tokens_4_chars": 3495,
     "missing_paths": [],
     "portable_paths": [],
     "portable_words": 0,
@@ -16,9 +16,9 @@
       "AGENTS.md",
       ".ai/assistant/bootstrap-index.json"
     ],
-    "target_words": 1179,
+    "target_words": 1200,
     "unresolved_references": [],
-    "words": 1179
+    "words": 1200
   },
   "budgets": {
     "bootstrap": {
@@ -458,10 +458,10 @@
       "words": 2195
     },
     "diagram-request": {
-      "bytes": 24436,
-      "characters": 24436,
+      "bytes": 26957,
+      "characters": 26957,
       "declared_files": 6,
-      "estimated_tokens_4_chars": 6109,
+      "estimated_tokens_4_chars": 6740,
       "missing_paths": [],
       "portable_paths": [
         ".ai/framework/diagram-guidance.md"
@@ -483,9 +483,9 @@
         ".ai/assistant/assistant-capabilities.json",
         ".ai/assistant/assistant-capabilities/generic.json"
       ],
-      "target_words": 1375,
+      "target_words": 1476,
       "unresolved_references": [],
-      "words": 2812
+      "words": 2913
     },
     "extension-request": {
       "bytes": 21632,
@@ -599,10 +599,10 @@
   "measurement": "whitespace-delimited words in resolved source templates",
   "migration_routing": {
     "full_candidate_union": {
-      "bytes": 374662,
-      "characters": 374662,
+      "bytes": 377374,
+      "characters": 377374,
       "declared_files": 36,
-      "estimated_tokens_4_chars": 93666,
+      "estimated_tokens_4_chars": 94344,
       "missing_paths": [],
       "portable_paths": [
         ".ai/framework/README.md",
@@ -639,7 +639,7 @@
         ".ai/framework/team-collaboration.md",
         ".ai/framework/testing-guidance.md"
       ],
-      "portable_words": 45982,
+      "portable_words": 46325,
       "resolved_files": 35,
       "resolved_paths": [
         ".ai/assistant/context/migration-routing.json",
@@ -686,7 +686,7 @@
       "unresolved_references": [
         "{TARGET_UPGRADE_IMPACT_REPORT}"
       ],
-      "words": 46617
+      "words": 46960
     },
     "initial": {
       "bytes": 16201,
@@ -949,10 +949,10 @@
     },
     "diagram-discussion": {
       "compact": {
-        "bytes": 35499,
-        "characters": 35499,
+        "bytes": 38020,
+        "characters": 38020,
         "declared_files": 7,
-        "estimated_tokens_4_chars": 8875,
+        "estimated_tokens_4_chars": 9505,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/diagram-guidance.md"
@@ -976,15 +976,15 @@
           ".ai/assistant/assistant-capabilities.json",
           ".ai/assistant/assistant-capabilities/generic.json"
         ],
-        "target_words": 2021,
+        "target_words": 2122,
         "unresolved_references": [],
-        "words": 3458
+        "words": 3559
       },
       "full_reference_union": {
-        "bytes": 117265,
-        "characters": 117265,
+        "bytes": 129990,
+        "characters": 129990,
         "declared_files": 11,
-        "estimated_tokens_4_chars": 29317,
+        "estimated_tokens_4_chars": 32498,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/diagram-guidance.md"
@@ -1016,11 +1016,11 @@
           ".ai/assistant/assistant-capabilities.json",
           ".ai/assistant/assistant-capabilities/generic.json"
         ],
-        "target_words": 9240,
+        "target_words": 9995,
         "unresolved_references": [],
-        "words": 10677
+        "words": 11432
       },
-      "word_reduction_percent": 67.6
+      "word_reduction_percent": 68.9
     },
     "extension-management": {
       "compact": {
@@ -2011,10 +2011,10 @@
       "bytes": 6935,
       "characters": 6935,
       "conditional_context": {
-        "bytes": 96262,
-        "characters": 96262,
+        "bytes": 97005,
+        "characters": 97005,
         "declared_files": 8,
-        "estimated_tokens_4_chars": 24066,
+        "estimated_tokens_4_chars": 24252,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/action-authorization.md",
@@ -2022,7 +2022,7 @@
           ".ai/framework/migration-diff.md",
           ".ai/framework/rule-registry.json"
         ],
-        "portable_words": 7534,
+        "portable_words": 7622,
         "resolved_files": 8,
         "resolved_paths": [
           ".ai/framework/action-authorization.md",
@@ -2042,15 +2042,15 @@
         ],
         "target_words": 2702,
         "unresolved_references": [],
-        "words": 10236
+        "words": 10324
       },
       "declared_files": 5,
       "estimated_tokens_4_chars": 1734,
       "full_candidate_union": {
-        "bytes": 103197,
-        "characters": 103197,
+        "bytes": 103940,
+        "characters": 103940,
         "declared_files": 13,
-        "estimated_tokens_4_chars": 25800,
+        "estimated_tokens_4_chars": 25985,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/action-authorization.md",
@@ -2058,7 +2058,7 @@
           ".ai/framework/migration-diff.md",
           ".ai/framework/rule-registry.json"
         ],
-        "portable_words": 7534,
+        "portable_words": 7622,
         "resolved_files": 12,
         "resolved_paths": [
           ".ai/assistant/context/profiles/framework-upgrade.json",
@@ -2088,7 +2088,7 @@
         "unresolved_references": [
           "{TARGET_UPGRADE_IMPACT_REPORT}"
         ],
-        "words": 10796
+        "words": 10884
       },
       "missing_paths": [],
       "portable_paths": [],
@@ -2304,10 +2304,10 @@
       "words": 2984
     },
     "delegated-execution": {
-      "bytes": 36389,
-      "characters": 36389,
+      "bytes": 36791,
+      "characters": 36791,
       "declared_files": 10,
-      "estimated_tokens_4_chars": 9098,
+      "estimated_tokens_4_chars": 9198,
       "missing_paths": [],
       "portable_paths": [
         ".ai/framework/subagent-delegation.md"
@@ -2337,9 +2337,9 @@
         ".ai/assistant/templates/worker-result.md",
         ".ai/assistant/assistant-capabilities.json"
       ],
-      "target_words": 2011,
+      "target_words": 2023,
       "unresolved_references": [],
-      "words": 3844
+      "words": 3856
     },
     "engineering-evidence": {
       "bytes": 13634,

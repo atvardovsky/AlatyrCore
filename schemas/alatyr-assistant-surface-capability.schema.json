@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Alatyr target assistant surface capability record",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "capability_kind",
+    "assistant_surface",
+    "instruction_loading",
+    "skills",
+    "tool_permissions",
+    "diagram_discussion",
+    "subagent_delegation"
+  ],
+  "properties": {
+    "schema_version": {"const": 2},
+    "capability_kind": {"const": "target-assistant-surface-capabilities"},
+    "assistant_surface": {"type": "string", "minLength": 1},
+    "instruction_loading": {"$ref": "#/definitions/instructionLoading"},
+    "skills": {"$ref": "#/definitions/skills"},
+    "tool_permissions": {"$ref": "#/definitions/toolPermissions"},
+    "diagram_discussion": {"type": "object"},
+    "subagent_delegation": {"type": "object"}
+  },
+  "definitions": {
+    "stringArray": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "uniqueItems": true
+    },
+    "evidence": {
+      "type": "object",
+      "required": ["verified_at", "client_version", "evidence", "expires_at", "review_triggers"],
+      "properties": {
+        "verified_at": {"type": "string", "minLength": 1},
+        "client_version": {"type": "string", "minLength": 1},
+        "evidence": {"type": "string", "minLength": 1},
+        "expires_at": {"type": "string", "minLength": 1},
+        "review_triggers": {"$ref": "#/definitions/stringArray"}
+      }
+    },
+    "instructionLoading": {
+      "allOf": [
+        {"$ref": "#/definitions/evidence"},
+        {
+          "type": "object",
+          "required": ["route", "runtime_variant", "selected_entry_path", "competing_sources", "auto_load_observed", "precedence_evidence", "configuration_state"],
+          "properties": {
+            "route": {"type": "string", "minLength": 1},
+            "runtime_variant": {"type": "string", "minLength": 1},
+            "selected_entry_path": {"type": "string", "minLength": 1},
+            "competing_sources": {"$ref": "#/definitions/stringArray"},
+            "auto_load_observed": {"type": "string", "minLength": 1},
+            "precedence_evidence": {"type": "string", "minLength": 1},
+            "configuration_state": {"type": "string", "minLength": 1}
+          }
+        }
+      ]
+    },
+    "skills": {
+      "allOf": [
+        {"$ref": "#/definitions/evidence"},
+        {
+          "type": "object",
+          "required": ["route", "discovery_paths", "selected_source", "activation_mode"],
+          "properties": {
+            "route": {"type": "string", "minLength": 1},
+            "discovery_paths": {"$ref": "#/definitions/stringArray"},
+            "selected_source": {"type": "string", "minLength": 1},
+            "activation_mode": {"type": "string", "minLength": 1}
+          }
+        }
+      ]
+    },
+    "toolPermissions": {
+      "allOf": [
+        {"$ref": "#/definitions/evidence"},
+        {
+          "type": "object",
+          "required": ["client_permission_mode", "effective_restrictions", "alatyr_authorization_separate"],
+          "properties": {
+            "client_permission_mode": {"type": "string", "minLength": 1},
+            "effective_restrictions": {"type": "string", "minLength": 1},
+            "alatyr_authorization_separate": {"const": true}
+          }
+        }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

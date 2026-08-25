@@ -32,6 +32,8 @@ BRIDGE_FILES = [
     "templates/target/.github/prompts/gate-review.prompt.md",
     "templates/target/.windsurf/rules/alatyr-core.md",
     "templates/target/.windsurfrules",
+    "templates/target/.roo/rules/alatyr-core.md",
+    "templates/target/.rules",
 ]
 
 REQUIRED_BRIDGE_REFS = [

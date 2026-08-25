@@ -26,6 +26,7 @@ CATALOG = TARGET / ".ai/assistant/operation-catalog.json"
 ROUTER = TARGET / ".ai/assistant/context-router.json"
 MANIFEST = TARGET / ".ai/alatyr.yaml"
 BRIDGES = TARGET / ".ai/assistant/bridge-capability-matrix.md"
+SURFACES = ROOT / "conformance/runs/assistant-surfaces.json"
 INSTALL = ROOT / "INSTALL.md"
 INSTALL_FLOW = ROOT / "installer/assistant-installation.flow.md"
 READINESS = ROOT / "installer/readiness-checklist.md"
@@ -231,8 +232,12 @@ def main() -> int:
         if snippet not in manifest_text:
             failures.append(f"manifest missing {snippet}")
 
-    if read(BRIDGES).count("Routes test-first aliases:") != 9:
-        failures.append("bridge matrix must route test-first aliases on 9 surfaces")
+    surface_count = len(load_json(SURFACES).get("surfaces", []))
+    if read(BRIDGES).count("Routes test-first aliases:") != surface_count:
+        failures.append(
+            "bridge matrix must route test-first aliases on every canonical "
+            f"surface ({surface_count})"
+        )
 
     if failures:
         for failure in failures:

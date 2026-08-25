@@ -1,5 +1,5 @@
 {
-  "adapter_schema_version": 26,
+  "adapter_schema_version": 27,
   "files": [
     {
       "path": "framework/README.md",
@@ -59,7 +59,7 @@
       "rule_ids": [
         "ALATYR-BRIDGE-001"
       ],
-      "sha256": "9fcdba78e2311b4e3412f4d4b5b274694a6274dcb2037704dc443c1051cecf4d"
+      "sha256": "5440c955b30d231699203fb7a3e7aa7db217639b5eb232104937dfcdaf2d08e1"
     },
     {
       "path": "framework/capabilities.json",
@@ -181,7 +181,7 @@
       "rule_ids": [
         "ALATYR-LIFECYCLE-001"
       ],
-      "sha256": "0b562d5e4d3cebc05d0f3499a04888e94b6a54e4a946ce9cd251057e86877eff"
+      "sha256": "d83ffb73485b96b75d9bfec5657095d306a887708f18a06850a5f62d3e692dd6"
     },
     {
       "path": "framework/logical-integrity.md",
@@ -315,8 +315,8 @@
       "sha256": "dc1b84f72ca465f735d51ee5de02d3c26fd8054688556b4f11c1663eddc239da"
     }
   ],
-  "framework_version": "0.1.0-alpha.28",
+  "framework_version": "0.1.0-alpha.29",
   "inventory_kind": "alatyr-framework-files",
   "schema_version": 1,
-  "template_version": 26
+  "template_version": 27
 }

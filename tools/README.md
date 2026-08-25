@@ -475,6 +475,28 @@ Windows PowerShell or Command Prompt:
 py -3 .\tools\check_bridge_capability_matrix.py
 ```
 
+## Assistant Capability And Admission Checks
+
+`check_assistant_capability_contract.py` validates every target surface record
+against the schema-2 instruction-loading, skill, client-permission, diagram,
+and delegation evidence contract. `check_assistant_surface_audits.py` then
+checks all canonical surfaces against source lifecycle, official instruction
+paths, precedence risks, static bridge controls, provider-neutral conformance,
+and explicit runtime limits. These checks prove source integration readiness,
+not that an external client followed Alatyr.
+
+```sh
+python3 tools/check_assistant_capability_contract.py
+python3 tools/check_assistant_surface_audits.py
+```
+
+Windows PowerShell or Command Prompt:
+
+```powershell
+py -3 .\tools\check_assistant_capability_contract.py
+py -3 .\tools\check_assistant_surface_audits.py
+```
+
 ## Discussion Diagram Check
 
 `check_discussion_diagrams.py` validates the portable diagram rule, target
@@ -670,9 +692,14 @@ py -3 .\tools\check_subagent_delegation.py
 
 `scaffold_target_structure.py` copies placeholder target templates and
 framework files into an existing target directory. It is dry-run by default.
-The `full` profile preserves the historical all-template behavior. Use `core`
-for required adapter support surfaces or `standard` for common product and
-lifecycle operations. By default, `--framework-pack matched` selects the
+The `full` profile exposes the complete support-template set, while
+assistant-native bridge files remain opt-in. Use repeatable
+`--assistant-surface <id-or-alias>` selections only for clients the target
+actually uses; no native bridge is scaffolded by default. Native bridge
+selection currently requires `--profile full` because those compact bridges
+route to the complete assistant support layer. Use `core` for required adapter
+support surfaces or `standard` for common product and lifecycle operations. By
+default, `--framework-pack matched` selects the
 `core`, `standard`, or `complete` portable pack that matches the support
 profile. Selective packs project their rule registry, ownership map, and file
 inventory so omitted optional owners are explicit. The projection layer also
@@ -693,6 +720,7 @@ python3 tools/scaffold_target_structure.py --target /path/to/target-repo
 python3 tools/scaffold_target_structure.py --target /path/to/target-repo --profile core --write
 python3 tools/scaffold_target_structure.py --target /path/to/target-repo --profile core --enable-module ai-infrastructure --write
 python3 tools/scaffold_target_structure.py --target /path/to/target-repo --profile core --framework-pack complete --write
+python3 tools/scaffold_target_structure.py --target /path/to/target-repo --profile full --assistant-surface claude --assistant-surface zed --write
 ```
 
 Windows PowerShell:
@@ -700,17 +728,22 @@ Windows PowerShell:
 ```powershell
 py -3 .\tools\scaffold_target_structure.py --target C:\path\to\target-repo
 .\tools\scaffold_target_structure.ps1 --target C:\path\to\target-repo --profile standard
+py -3 .\tools\scaffold_target_structure.py --target C:\path\to\target-repo --profile full --assistant-surface github-copilot --write
 ```
 
 Windows Command Prompt:
 
 ```bat
 tools\scaffold_target_structure.cmd --target C:\path\to\target-repo
-tools\scaffold_target_structure.cmd --target C:\path\to\target-repo --profile full --write
+tools\scaffold_target_structure.cmd --target C:\path\to\target-repo --profile full --assistant-surface cursor --write
 ```
 
-Use `--overwrite-existing` only after explicit approval for the exact target
-path and protected surfaces.
+Aliases are resolved through `conformance/runs/assistant-surfaces.json`.
+Selection adds source bridge templates only; it does not prove that a target
+client loaded them. Installation must still inspect precedence, competing
+instruction sources, client version/configuration, and runtime loading
+evidence. Use `--overwrite-existing` only after explicit approval for the exact
+target path and protected surfaces.
 
 `check_scaffold_profiles.py` verifies profile inheritance, required core
 surfaces, full-template coverage, bridge isolation, and profile-to-pack

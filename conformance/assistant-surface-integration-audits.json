@@ -1,0 +1,370 @@
+{
+  "schema_version": 1,
+  "audit_kind": "alatyr-assistant-surface-integration-admission",
+  "reviewed_at": "2026-08-25",
+  "scope": "Source-level bridge and contract evidence only. These audits do not prove that a vendor client loaded or followed Alatyr instructions.",
+  "required_controls": [
+    "bootstrap-routing",
+    "operation-routing",
+    "current-scope-authorization",
+    "tool-permission-separation",
+    "skills-and-prompts",
+    "subagent-delegation",
+    "diagram-presentation",
+    "post-install-update-delivery",
+    "runtime-evidence"
+  ],
+  "control_dispositions": {
+    "bootstrap-routing": "bridge-static",
+    "operation-routing": "bridge-static",
+    "current-scope-authorization": "bridge-static",
+    "tool-permission-separation": "runtime-verification-required",
+    "skills-and-prompts": "canonical-routing-static-native-loading-unverified",
+    "subagent-delegation": "runtime-verification-required",
+    "diagram-presentation": "ascii-fallback-static-rich-output-unverified",
+    "post-install-update-delivery": "runtime-verification-required",
+    "runtime-evidence": "required-before-supported-runtime-claim"
+  },
+  "required_runtime_checks": [
+    "observe instruction auto-load and precedence in the exact client version",
+    "route an exact alias and an ambiguous request through the installed operation surfaces",
+    "confirm read-only discussion does not escalate to modify, commit, publish, or live-external action",
+    "confirm client tool permissions do not replace Alatyr current-scope authorization",
+    "confirm selected skills and prompts remain thin routes to target-owned contracts",
+    "record delegation backend, isolation, model, and result evidence or keep delegation unverified",
+    "show the portable ASCII diagram fallback and record any richer presentation evidence",
+    "record post-install or post-update delivery as sent, skipped, or blocked"
+  ],
+  "audits": [
+    {
+      "id": "generic",
+      "surface_id": "generic",
+      "status": "protocol-static-contract-runtime-unverified",
+      "selected_bridge_paths": ["AI_ASSISTANTS.md"],
+      "documented_instruction_paths": ["AI_ASSISTANTS.md", "AGENTS.md"],
+      "loading_behavior": "No vendor auto-load behavior is assumed; the target must record the exact client and manual or native route before claiming support.",
+      "precedence_risks": ["Unknown clients can ignore, partially load, or reorder repository instructions."],
+      "compatibility_paths_to_inspect": ["AI_ASSISTANTS.md", "AGENTS.md", "client-specific instruction configuration"],
+      "official_sources": [],
+      "contract_sources": ["AI_ASSISTANTS.md", "framework/bridge-capability-matrix.md"],
+      "runtime_execution_claimed": false,
+      "residual_limits": ["Generic compatibility proves only a portable manual route, never vendor behavior."]
+    },
+    {
+      "id": "agents",
+      "surface_id": "agents",
+      "status": "protocol-static-contract-runtime-unverified",
+      "selected_bridge_paths": ["AGENTS.md"],
+      "documented_instruction_paths": ["AGENTS.md", "nested AGENTS.md"],
+      "loading_behavior": "Use the root and applicable scoped AGENTS.md files according to the selected client's implementation of the shared convention.",
+      "precedence_risks": ["The AGENTS.md convention does not make every client use identical hierarchy, conflict, or permission behavior."],
+      "compatibility_paths_to_inspect": ["AGENTS.md", "nested AGENTS.md", "client-specific global instructions"],
+      "official_sources": ["https://agents.md/"],
+      "runtime_execution_claimed": false,
+      "residual_limits": ["A protocol-compatible label requires exact-client evidence before runtime support is claimed."]
+    },
+    {
+      "id": "codex",
+      "surface_id": "codex",
+      "status": "static-contract-ready-runtime-unverified",
+      "selected_bridge_paths": ["AGENTS.md", "AI_ASSISTANTS.md"],
+      "documented_instruction_paths": ["AGENTS.md", "nested AGENTS.md", "user AGENTS.md"],
+      "loading_behavior": "Use the applicable AGENTS.md chain and the Alatyr generic bridge; record the exact Codex client, project root, configuration, skills, sandbox, approvals, and subagent evidence.",
+      "precedence_risks": ["User and nested instructions can alter effective context; sandbox or approval settings can restrict tools but cannot grant Alatyr authorization."],
+      "compatibility_paths_to_inspect": ["AGENTS.md", "nested AGENTS.md", ".codex/", ".agents/skills/"],
+      "official_sources": ["https://learn.chatgpt.com/docs/agent-configuration/agents-md"],
+      "runtime_execution_claimed": false,
+      "residual_limits": ["CLI, IDE, desktop, cloud, and remote clients require separate current evidence."]
+    },
+    {
+      "id": "claude",
+      "surface_id": "claude",
+      "status": "static-contract-ready-runtime-unverified",
+      "selected_bridge_paths": ["CLAUDE.md"],
+      "documented_instruction_paths": ["CLAUDE.md", ".claude/CLAUDE.md", "CLAUDE.local.md", ".claude/rules/"],
+      "loading_behavior": "Use CLAUDE.md as the native thin import route to root AGENTS.md; inspect managed, user, project, local, nested, rule, import, and exclusion sources.",
+      "precedence_risks": ["Claude treats instruction files as context rather than enforcement, combines multiple scopes, and can exclude project files through settings."],
+      "compatibility_paths_to_inspect": ["CLAUDE.md", ".claude/CLAUDE.md", "CLAUDE.local.md", ".claude/rules/", ".claude/settings*.json", ".claude/skills/", ".claude/agents/"],
+      "official_sources": ["https://code.claude.com/docs/en/memory"],
+      "runtime_execution_claimed": false,
+      "residual_limits": ["Memory, hooks, permissions, skills, and subagents require exact-client evidence."]
+    },
+    {
+      "id": "gemini",
+      "surface_id": "gemini",
+      "status": "static-contract-ready-runtime-unverified",
+      "selected_bridge_paths": ["GEMINI.md"],
+      "documented_instruction_paths": ["GEMINI.md", "configured context.fileName files", "nested context files"],
+      "loading_behavior": "Use GEMINI.md as the default bridge unless target Gemini settings select different context filenames; inspect settings, policies, skills, and agents.",
+      "precedence_risks": ["context.fileName and include-directory settings can replace or expand the expected instruction set."],
+      "compatibility_paths_to_inspect": ["GEMINI.md", ".gemini/settings.json", ".gemini/policies/", ".gemini/agents/", ".gemini/skills/"],
+      "official_sources": ["https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md", "https://github.com/google-gemini/gemini-cli/blob/main/docs/core/subagents.md"],
+      "runtime_execution_claimed": false,
+      "residual_limits": ["Gemini CLI and other Gemini surfaces do not inherit capability evidence from one another."]
+    },
+    {
+      "id": "github-copilot",
+      "surface_id": "github-copilot",
+      "status": "static-contract-ready-runtime-unverified",
+      "selected_bridge_paths": [".github/copilot-instructions.md", ".github/prompts/gate-review.prompt.md"],
+      "documented_instruction_paths": [".github/copilot-instructions.md", ".github/instructions/*.instructions.md", "AGENTS.md", "CLAUDE.md", "GEMINI.md", ".github/skills/", ".github/agents/"],
+      "loading_behavior": "Use repository-wide and applicable path-specific instructions according to the selected Copilot product; route the Alatyr gate prompt through canonical target files.",
+      "precedence_risks": ["Copilot products support different instruction, prompt, skill, custom-agent, and permission subsets; nearest AGENTS.md can take precedence."],
+      "compatibility_paths_to_inspect": [".github/copilot-instructions.md", ".github/instructions/", ".github/prompts/", "AGENTS.md", ".github/skills/", ".agents/skills/", ".github/agents/"],
+      "official_sources": ["https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/customize-copilot-overview", "https://docs.github.com/en/copilot/reference/customization-cheat-sheet"],
+      "runtime_execution_claimed": false,
+      "residual_limits": ["Cloud agent, code review, CLI, IDE agent mode, and chat require product-specific evidence."]
+    },
+    {
+      "id": "cursor",
+      "surface_id": "cursor",
+      "status": "static-contract-ready-runtime-unverified",
+      "selected_bridge_paths": [".cursor/rules/alatyr-core.mdc", ".cursorrules"],
+      "documented_instruction_paths": [".cursor/rules/", "AGENTS.md", ".cursorrules", "user rules"],
+      "loading_behavior": "Prefer the always-applied project rule; retain .cursorrules only as a legacy compatibility candidate and record which path actually loaded.",
+      "precedence_risks": ["Project, user, scoped, AGENTS, and legacy rules can overlap; client versions differ in nested AGENTS support."],
+      "compatibility_paths_to_inspect": [".cursor/rules/", "AGENTS.md", ".cursorrules", ".cursor/skills/", ".agents/skills/"],
+      "official_sources": ["https://docs.cursor.com/context/rules-for-ai", "https://cursor.com/docs/skills"],
+      "runtime_execution_claimed": false,
+      "residual_limits": ["Rule selection, skills, subagents, permissions, and model evidence require the exact Cursor version."]
+    },
+    {
+      "id": "devin-cascade",
+      "surface_id": "devin-cascade",
+      "status": "static-contract-ready-runtime-unverified",
+      "selected_bridge_paths": [".devin/rules/alatyr-core.md"],
+      "documented_instruction_paths": [".devin/rules/", "AGENTS.md", "CLAUDE.md", ".rules", ".cursorrules", ".windsurfrules", ".agents/skills/"],
+      "loading_behavior": "Use the thin Devin/Cascade bridge and inspect repository instruction ingestion, generated or pinned Knowledge, skills, review rules, and environment blueprints separately.",
+      "precedence_risks": ["Repository files can be copied into mutable product Knowledge whose trigger, pin, enabled state, and freshness differ from Git."],
+      "compatibility_paths_to_inspect": [".devin/rules/", "AGENTS.md", ".agents/skills/", "REVIEW.md", ".devin/"],
+      "official_sources": ["https://docs.devin.ai/onboard-devin/knowledge-onboarding", "https://docs.devin.ai/product-guides/skills", "https://docs.devin.ai/work-with-devin/devin-review"],
+      "runtime_execution_claimed": false,
+      "residual_limits": ["Devin, Devin Review, and Cascade/Desktop behaviors need separate target evidence."]
+    },
+    {
+      "id": "windsurf",
+      "surface_id": "windsurf",
+      "status": "legacy-static-contract-runtime-unverified",
+      "selected_bridge_paths": [".windsurf/rules/alatyr-core.md", ".windsurfrules"],
+      "documented_instruction_paths": [".windsurf/rules/", ".windsurfrules", "AGENTS.md", "Cascade memories"],
+      "loading_behavior": "Treat Windsurf paths as legacy compatibility candidates and bind the exact client now serving Cascade behavior before selecting a route.",
+      "precedence_risks": ["Current Windsurf documentation redirects into Devin/Cascade documentation, while legacy clients retain older rule and memory behavior."],
+      "compatibility_paths_to_inspect": [".windsurf/rules/", ".windsurfrules", "AGENTS.md", ".windsurf/skills/"],
+      "official_sources": ["https://docs.windsurf.com/windsurf/cascade/memories"],
+      "runtime_execution_claimed": false,
+      "residual_limits": ["Do not claim current Windsurf runtime support from legacy bridge files alone."]
+    },
+    {
+      "id": "junie",
+      "surface_id": "junie",
+      "status": "static-contract-ready-runtime-unverified",
+      "selected_bridge_paths": ["AGENTS.md"],
+      "documented_instruction_paths": [
+        ".junie/AGENTS.md",
+        "AGENTS.md",
+        ".junie/playbook.md",
+        ".junie/rules/*.md",
+        ".junie/guidelines.md"
+      ],
+      "loading_behavior": "Use root AGENTS.md when no target-owned .junie/AGENTS.md overrides it; inspect Junie playbook, rules, legacy guidelines, and global guidance before accepting precedence.",
+      "precedence_risks": [
+        "A target .junie/AGENTS.md can replace the root AGENTS.md path instead of supplementing it.",
+        "Global and project guidance may both load and must not grant missing Alatyr authorization."
+      ],
+      "compatibility_paths_to_inspect": [".junie/AGENTS.md", ".junie/playbook.md", ".junie/rules/", ".junie/guidelines.md", ".junie/skills/", ".agents/skills/", ".junie/agents/", ".agents/", "configured custom guidelines path"],
+      "official_sources": [
+        "https://junie.jetbrains.com/docs/guidelines-and-memory.html",
+        "https://junie.jetbrains.com/docs/junie-plugin-project-settings.html",
+        "https://junie.jetbrains.com/docs/agent-skills.html",
+        "https://junie.jetbrains.com/docs/junie-cli-subagents.html",
+        "https://junie.jetbrains.com/docs/action-allowlist.html"
+      ],
+      "control_dispositions": {
+        "bootstrap-routing": "bridge-static",
+        "operation-routing": "bridge-static",
+        "current-scope-authorization": "bridge-static",
+        "tool-permission-separation": "runtime-verification-required",
+        "skills-and-prompts": "canonical-routing-static-native-loading-unverified",
+        "subagent-delegation": "runtime-verification-required",
+        "diagram-presentation": "ascii-fallback-static-rich-output-unverified",
+        "post-install-update-delivery": "runtime-verification-required",
+        "runtime-evidence": "required-before-supported-runtime-claim"
+      },
+      "runtime_execution_claimed": false,
+      "residual_limits": [
+        "IDE and CLI versions can load guidance differently.",
+        "No reviewed Junie execution report is bundled with this source admission."
+      ]
+    },
+    {
+      "id": "cline",
+      "surface_id": "cline",
+      "status": "static-contract-ready-runtime-unverified",
+      "selected_bridge_paths": ["AGENTS.md"],
+      "documented_instruction_paths": [".clinerules/", ".cursorrules", ".windsurfrules", "AGENTS.md"],
+      "loading_behavior": "Use root AGENTS.md as the Alatyr bridge and inspect all Cline-compatible workspace rule sources because Cline can aggregate and toggle them.",
+      "precedence_risks": [
+        "Multiple compatible rule formats can duplicate or contradict the root bridge.",
+        "A user can disable a detected rule in the client UI for the current session."
+      ],
+      "compatibility_paths_to_inspect": [".clinerules/", ".cline/rules/", ".cursorrules", ".windsurfrules", ".cline/skills/", ".agents/skills/"],
+      "official_sources": [
+        "https://docs.cline.bot/customization/cline-rules",
+        "https://docs.cline.bot/getting-started/config",
+        "https://docs.cline.bot/customization/skills",
+        "https://docs.cline.bot/features/subagents",
+        "https://docs.cline.bot/features/auto-approve"
+      ],
+      "control_dispositions": {
+        "bootstrap-routing": "bridge-static",
+        "operation-routing": "bridge-static",
+        "current-scope-authorization": "bridge-static",
+        "tool-permission-separation": "runtime-verification-required",
+        "skills-and-prompts": "canonical-routing-static-native-loading-unverified",
+        "subagent-delegation": "runtime-verification-required",
+        "diagram-presentation": "ascii-fallback-static-rich-output-unverified",
+        "post-install-update-delivery": "runtime-verification-required",
+        "runtime-evidence": "required-before-supported-runtime-claim"
+      },
+      "runtime_execution_claimed": false,
+      "residual_limits": [
+        "Rule activation can depend on client toggles and path conditions.",
+        "No reviewed Cline execution report is bundled with this source admission."
+      ]
+    },
+    {
+      "id": "roo-code",
+      "surface_id": "roo-code",
+      "status": "legacy-static-contract-runtime-unverified",
+      "selected_bridge_paths": [".roo/rules/alatyr-core.md", "AGENTS.md"],
+      "documented_instruction_paths": ["AGENTS.md", ".roo/rules/", ".roo/rules-{mode}/", ".roorules", ".roorules-{mode}"],
+      "loading_behavior": "Use root AGENTS.md as the canonical bridge and inspect general, mode-specific, global, and legacy Roo rule sources before recording effective precedence.",
+      "precedence_risks": [
+        "Mode-specific and general rules are combined and can conflict with the root bridge.",
+        "AGENTS.md loading can be disabled by client configuration."
+      ],
+      "compatibility_paths_to_inspect": [".roo/rules/", ".roo/rules-*/", ".roorules", ".roorules-*", ".roomodes"],
+      "official_sources": [
+        "https://github.com/RooCodeInc/Roo-Code",
+        "https://github.com/RooCodeInc/Roo-Code/blob/main/apps/docs/docs/features/custom-instructions.md"
+      ],
+      "control_dispositions": {
+        "bootstrap-routing": "bridge-static",
+        "operation-routing": "bridge-static",
+        "current-scope-authorization": "bridge-static",
+        "tool-permission-separation": "runtime-verification-required",
+        "skills-and-prompts": "canonical-routing-static-native-loading-unverified",
+        "subagent-delegation": "runtime-verification-required",
+        "diagram-presentation": "ascii-fallback-static-rich-output-unverified",
+        "post-install-update-delivery": "runtime-verification-required",
+        "runtime-evidence": "required-before-supported-runtime-claim"
+      },
+      "runtime_execution_claimed": false,
+      "residual_limits": [
+        "Custom modes can change tools and instruction composition independently of Alatyr.",
+        "No reviewed Roo Code execution report is bundled with this source admission."
+      ]
+    },
+    {
+      "id": "kiro",
+      "surface_id": "kiro",
+      "status": "static-contract-ready-runtime-unverified",
+      "selected_bridge_paths": ["AGENTS.md"],
+      "documented_instruction_paths": ["AGENTS.md", ".kiro/steering/"],
+      "loading_behavior": "Use root and applicable nested AGENTS.md files as the Alatyr bridge; inspect Kiro steering inclusion modes and custom-agent resources before accepting effective context.",
+      "precedence_risks": [
+        "Always, file-match, automatic, and manual steering can add competing instructions.",
+        "Custom agents do not automatically inherit every steering resource."
+      ],
+      "compatibility_paths_to_inspect": [".kiro/steering/", ".kiro/agents/", ".kiro/skills/"],
+      "official_sources": [
+        "https://kiro.dev/docs/steering/",
+        "https://kiro.dev/docs/custom-agents/configuration-reference/",
+        "https://kiro.dev/docs/skills/",
+        "https://kiro.dev/docs/custom-agents/subagents/"
+      ],
+      "control_dispositions": {
+        "bootstrap-routing": "bridge-static",
+        "operation-routing": "bridge-static",
+        "current-scope-authorization": "bridge-static",
+        "tool-permission-separation": "runtime-verification-required",
+        "skills-and-prompts": "canonical-routing-static-native-loading-unverified",
+        "subagent-delegation": "runtime-verification-required",
+        "diagram-presentation": "ascii-fallback-static-rich-output-unverified",
+        "post-install-update-delivery": "runtime-verification-required",
+        "runtime-evidence": "required-before-supported-runtime-claim"
+      },
+      "runtime_execution_claimed": false,
+      "residual_limits": [
+        "Steering inclusion and custom-agent resource behavior require exact-client evidence.",
+        "No reviewed Kiro execution report is bundled with this source admission."
+      ]
+    },
+    {
+      "id": "zed-agent",
+      "surface_id": "zed-agent",
+      "status": "static-contract-ready-runtime-unverified",
+      "selected_bridge_paths": [".rules"],
+      "documented_instruction_paths": [".rules", ".cursorrules", ".windsurfrules", ".clinerules", ".github/copilot-instructions.md", "AGENT.md", "AGENTS.md", "CLAUDE.md", "GEMINI.md"],
+      "loading_behavior": "Use generated .rules as Zed Agent's first-match thin bridge to root AGENTS.md and the compact Alatyr bootstrap; inspect every compatibility path and attribute external agents to their actual surface.",
+      "precedence_risks": [
+        "A higher-priority compatibility file can prevent Zed from selecting root AGENTS.md.",
+        "External agents opened inside Zed retain their own instruction and permission behavior."
+      ],
+      "compatibility_paths_to_inspect": [".rules", ".cursorrules", ".windsurfrules", ".clinerules", ".github/copilot-instructions.md", "AGENT.md", "CLAUDE.md", "GEMINI.md", ".agents/skills/"],
+      "official_sources": ["https://zed.dev/docs/ai/instructions", "https://zed.dev/docs/ai/tool-permissions", "https://zed.dev/docs/ai/skills", "https://zed.dev/docs/ai/tools"],
+      "control_dispositions": {
+        "bootstrap-routing": "bridge-static",
+        "operation-routing": "bridge-static",
+        "current-scope-authorization": "bridge-static",
+        "tool-permission-separation": "runtime-verification-required",
+        "skills-and-prompts": "canonical-routing-static-native-loading-unverified",
+        "subagent-delegation": "runtime-verification-required",
+        "diagram-presentation": "ascii-fallback-static-rich-output-unverified",
+        "post-install-update-delivery": "runtime-verification-required",
+        "runtime-evidence": "required-before-supported-runtime-claim"
+      },
+      "runtime_execution_claimed": false,
+      "residual_limits": [
+        "First-match precedence depends on every compatible file present in the target.",
+        "External and terminal agents in Zed do not inherit Zed Agent guarantees.",
+        "No reviewed Zed Agent execution report is bundled with this source admission."
+      ]
+    },
+    {
+      "id": "opencode",
+      "surface_id": "opencode",
+      "status": "static-contract-ready-runtime-unverified",
+      "selected_bridge_paths": ["AGENTS.md"],
+      "documented_instruction_paths": ["AGENTS.md", ".opencode/agents/"],
+      "loading_behavior": "Bind the exact OpenCode V1 or V2 runtime before interpreting loading: V1 selects local AGENTS.md ahead of CLAUDE.md, while V2 combines global, root, and discovered nested AGENTS.md files.",
+      "runtime_variants": ["v1", "v2"],
+      "variant_loading": {
+        "v1": "Local AGENTS.md wins over CLAUDE.md; custom opencode.json instructions can add sources.",
+        "v2": "Global and hierarchical AGENTS.md files combine; CLAUDE.md fallback is absent and configured instructions are not currently resolved."
+      },
+      "precedence_risks": [
+        "Global and project AGENTS.md files are combined without automatic conflict resolution.",
+        "Nested instructions are discovered as files or directories are traversed and can change effective context."
+      ],
+      "compatibility_paths_to_inspect": [".opencode/agents/", ".opencode/skills/", ".agents/skills/", "opencode.json", "opencode.jsonc"],
+      "official_sources": ["https://opencode.ai/docs/rules", "https://opencode.ai/docs/agents/", "https://opencode.ai/docs/skills", "https://opencode.ai/docs/permissions/", "https://opencode.ai/v2/docs/instructions", "https://opencode.ai/v2/docs/agents"],
+      "control_dispositions": {
+        "bootstrap-routing": "bridge-static",
+        "operation-routing": "bridge-static",
+        "current-scope-authorization": "bridge-static",
+        "tool-permission-separation": "runtime-verification-required",
+        "skills-and-prompts": "canonical-routing-static-native-loading-unverified",
+        "subagent-delegation": "runtime-verification-required",
+        "diagram-presentation": "ascii-fallback-static-rich-output-unverified",
+        "post-install-update-delivery": "runtime-verification-required",
+        "runtime-evidence": "required-before-supported-runtime-claim"
+      },
+      "runtime_execution_claimed": false,
+      "residual_limits": [
+        "Instruction conflicts remain a target-adapter concern.",
+        "No reviewed OpenCode execution report is bundled with this source admission."
+      ]
+    }
+  ]
+}

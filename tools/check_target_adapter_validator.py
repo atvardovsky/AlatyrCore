@@ -83,6 +83,115 @@ def main() -> int:
         failures.append("diff inspection without selected approval must remain advisory")
     with tempfile.TemporaryDirectory() as directory:
         target = Path(directory)
+        instruction_target = target / "instruction-capabilities"
+        (instruction_target / ".ai/assistant/assistant-capabilities").mkdir(
+            parents=True
+        )
+        (instruction_target / "AGENTS.md").write_text(
+            "# Test instructions\n", encoding="utf-8"
+        )
+        (instruction_target / ".ai/alatyr.yaml").parent.mkdir(
+            parents=True, exist_ok=True
+        )
+        (instruction_target / ".ai/alatyr.yaml").write_text(
+            "schema_version: 27\nsupported_assistants:\n  - generic\n",
+            encoding="utf-8",
+        )
+        write_json(
+            instruction_target / ".ai/assistant/assistant-capabilities.json",
+            {
+                "schema_version": 2,
+                "capability_kind": "target-assistant-capability-index",
+                "surfaces": {
+                    "generic": ".ai/assistant/assistant-capabilities/generic.json"
+                },
+            },
+        )
+        evidence = {
+            "verified_at": "2026-08-25",
+            "client_version": "fixture-1",
+            "evidence": "fixture observation",
+            "expires_at": "review-trigger: client changed",
+            "review_triggers": ["client changed"],
+        }
+        instruction_record = {
+            "schema_version": 2,
+            "capability_kind": "target-assistant-surface-capabilities",
+            "assistant_surface": "generic",
+            "instruction_loading": {
+                **evidence,
+                "route": "supported",
+                "runtime_variant": "fixture",
+                "selected_entry_path": "AGENTS.md",
+                "competing_sources": [],
+                "auto_load_observed": "yes",
+                "precedence_evidence": "fixture observation",
+                "configuration_state": "fixture default",
+            },
+            "skills": {
+                **evidence,
+                "route": "unsupported",
+                "discovery_paths": [],
+                "selected_source": "none",
+                "activation_mode": "disabled",
+            },
+            "tool_permissions": {
+                **evidence,
+                "client_permission_mode": "ask",
+                "effective_restrictions": "fixture read/write prompt",
+                "alatyr_authorization_separate": True,
+            },
+            "diagram_discussion": {},
+            "subagent_delegation": {},
+        }
+        instruction_path = (
+            instruction_target
+            / ".ai/assistant/assistant-capabilities/generic.json"
+        )
+        write_json(instruction_path, instruction_record)
+        instruction_validator = validator(instruction_target)
+        instruction_manifest = parse_manifest(
+            instruction_target / ".ai/alatyr.yaml"
+        )
+        instruction_validator.check_assistant_instruction_capabilities(
+            instruction_manifest
+        )
+        instruction_errors = {
+            finding.code
+            for finding in instruction_validator.findings
+            if finding.level == "error"
+        }
+        if instruction_errors:
+            failures.append(
+                "valid assistant instruction capability produced errors: "
+                + ", ".join(sorted(instruction_errors))
+            )
+
+        instruction_record["instruction_loading"]["auto_load_observed"] = "no"
+        write_json(instruction_path, instruction_record)
+        unproven_validator = validator(instruction_target)
+        unproven_validator.check_assistant_instruction_capabilities(
+            instruction_manifest
+        )
+        if "ASSISTANT_AUTO_LOAD_UNPROVEN" not in {
+            finding.code for finding in unproven_validator.findings
+        }:
+            failures.append("supported assistant route must require observed auto-load")
+
+        instruction_record["instruction_loading"]["auto_load_observed"] = "yes"
+        instruction_record["tool_permissions"][
+            "alatyr_authorization_separate"
+        ] = False
+        write_json(instruction_path, instruction_record)
+        permission_validator = validator(instruction_target)
+        permission_validator.check_assistant_instruction_capabilities(
+            instruction_manifest
+        )
+        if "ASSISTANT_PERMISSION_AUTHORIZATION_CONFLICT" not in {
+            finding.code for finding in permission_validator.findings
+        }:
+            failures.append("client permissions must not grant Alatyr authorization")
+
         policy_source = (
             ROOT
             / "templates"

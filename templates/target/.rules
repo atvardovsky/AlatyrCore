@@ -1,0 +1,3 @@
+Ensure AGENTS.md is loaded once; if it was not preloaded by the host, read it now. Then read AI_ASSISTANTS.md and .ai/assistant/bootstrap-index.json. This is the Zed Agent first-match bridge, not the source of truth.
+For an exact operation ID or alias, read .ai/assistant/operation-index.json. For bare Alatyr, ambiguity, or repair, read .ai/assistant/operation-catalog.json, .ai/assistant/help.md, and .ai/assistant/flows/operation-routing.flow.md.
+When delegation is selected, use .ai/assistant/prompts/worker-orchestration.md and the selected capability record; do not infer native worker support or treat Zed permissions as Alatyr authorization.

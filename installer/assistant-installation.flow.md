@@ -136,7 +136,10 @@ Classify every proposed target file:
    additional rule owners. Verify that projected manifest, router, operation,
    capability, rule-registry, ownership, and inventory claims reference only
    installed files. Do not treat scaffolding, profile selection, or pack
-   selection as installation or module enablement.
+   selection as installation or module enablement. Source scaffolding omits
+   vendor-native bridges by default. Under the `full` profile, pass one
+   `--assistant-surface` selection per reviewed target client; do not select
+   every registered surface merely because its template exists.
 3. Fill `installer/readiness-checklist.md` for the target.
 4. Prepare an installation plan from
    `installer/installation-plan-template.md`.
@@ -146,13 +149,24 @@ Classify every proposed target file:
    `ALATYR-AUTHORIZATION-001` before each state-changing phase.
 6. Identify protected changes and required approvals.
 7. If approval is required, stop until the programmer confirms it.
-8. Create or adapt target `AGENTS.md` and `AI_ASSISTANTS.md`.
+8. Create or adapt target `AGENTS.md` and `AI_ASSISTANTS.md`. For every
+   selected assistant, inspect all native and compatibility instruction paths,
+   bind the exact client/runtime variant, and choose the bridge that actually
+   wins precedence. Use `.rules` for Zed Agent's first-match bridge. Do not add
+   `.junie/AGENTS.md`, Cline rules, Kiro steering, OpenCode configuration, or
+   Roo mode files unless target evidence requires a reviewed adaptation; Roo
+   Code is legacy compatibility only.
 9. Create or preserve `CODEOWNERS` or equivalent owner metadata when the
    target supports file ownership.
 10. Create or adapt target `.ai/alatyr.yaml` or equivalent manifest with
    framework version, adapter schema version, template version, owner,
    backup owner, review cadence, CODEOWNERS or equivalent owner map,
    source-of-truth, validation, known gaps, and local deviations.
+   Create one schema-2 assistant capability record per registered surface.
+   Resolve instruction loading, skill source and activation, client permission
+   mode, diagrams, and delegation from exact-client evidence. A selected but
+   untested surface remains unknown; client permissions or auto-approval never
+   grant Alatyr action authorization.
 11. Create or adapt target `.ai/README.md`.
 12. Copy or adapt the selected portable framework pack into target
     `.ai/framework`. Record the pack in the manifest and preserve its projected
@@ -265,7 +279,10 @@ Classify every proposed target file:
     are enabled. Read the compact catalog after bootstrap and before the task
     profile; load one selected descriptor plus applicable root context and ask
     on ambiguity. Do not load all mode directories or activate nested adapters.
-15. Add bridge files only for assistants the target uses.
+15. Add bridge files only for assistants the target uses. Whether added by the
+    optional source helper or adapted manually, reconcile each selected bridge
+    with existing native instruction precedence and capture observed loading;
+    a generated file is not runtime evidence.
 16. Add installed-operation, operation-help, automatic operation-routing,
     current-scope action-authorization policy,
     project-knowledge routing policy, compact index, promotion and route-shard
@@ -400,6 +417,10 @@ Classify every proposed target file:
     read-only health aliases, automatic routing, and risk-gated preview.
     Name team/current-actor aliases, attribution limits, and module state when
     team collaboration is enabled.
+    Name selected assistant surfaces and whether instruction auto-load,
+    precedence, skills, permissions, diagrams, delegation, and message delivery
+    are verified, unknown, unsupported, or blocked. Do not convert static
+    source admission into a runtime claim.
     When workspace modes are enabled, report proposed and accepted modes
     separately, state that installation/update did not accept proposals, and
     name the mode status, suggestion, selection, and acceptance aliases.

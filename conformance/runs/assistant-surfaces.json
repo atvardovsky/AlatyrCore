@@ -5,31 +5,100 @@
       "id": "generic",
       "label": "Generic assistant",
       "aliases": ["ai-assistant"],
-      "bridge_paths": ["AI_ASSISTANTS.md"]
+      "bridge_paths": ["AI_ASSISTANTS.md"],
+      "admission_audit": "generic",
+      "product_lifecycle": "protocol",
+      "support_status": "protocol-static-admission-runtime-unverified"
     },
     {
       "id": "agents",
       "label": "AGENTS-aware assistant",
       "aliases": ["agents-aware"],
-      "bridge_paths": ["AGENTS.md"]
+      "bridge_paths": ["AGENTS.md"],
+      "admission_audit": "agents",
+      "product_lifecycle": "protocol",
+      "support_status": "protocol-static-admission-runtime-unverified"
     },
     {
       "id": "codex",
       "label": "Codex",
       "aliases": ["openai-codex"],
-      "bridge_paths": ["AGENTS.md", "AI_ASSISTANTS.md"]
+      "bridge_paths": ["AGENTS.md", "AI_ASSISTANTS.md"],
+      "admission_audit": "codex",
+      "product_lifecycle": "active",
+      "support_status": "named-static-admission-runtime-unverified"
+    },
+    {
+      "id": "junie",
+      "label": "JetBrains Junie",
+      "aliases": ["jetbrains-junie"],
+      "bridge_paths": ["AGENTS.md"],
+      "admission_audit": "junie",
+      "product_lifecycle": "active",
+      "support_status": "named-static-admission-runtime-unverified"
+    },
+    {
+      "id": "cline",
+      "label": "Cline",
+      "aliases": ["cline-agent"],
+      "bridge_paths": ["AGENTS.md"],
+      "admission_audit": "cline",
+      "product_lifecycle": "active",
+      "support_status": "named-static-admission-runtime-unverified"
+    },
+    {
+      "id": "roo-code",
+      "label": "Roo Code (legacy)",
+      "aliases": ["roo", "roo-code-agent"],
+      "bridge_paths": [".roo/rules/alatyr-core.md", "AGENTS.md"],
+      "admission_audit": "roo-code",
+      "product_lifecycle": "archived",
+      "support_status": "legacy-static-admission-runtime-unverified"
+    },
+    {
+      "id": "kiro",
+      "label": "Kiro",
+      "aliases": ["aws-kiro"],
+      "bridge_paths": ["AGENTS.md"],
+      "admission_audit": "kiro",
+      "product_lifecycle": "active",
+      "support_status": "named-static-admission-runtime-unverified"
+    },
+    {
+      "id": "zed-agent",
+      "label": "Zed Agent",
+      "aliases": ["zed"],
+      "bridge_paths": [".rules"],
+      "admission_audit": "zed-agent",
+      "product_lifecycle": "active",
+      "support_status": "named-static-admission-runtime-unverified"
+    },
+    {
+      "id": "opencode",
+      "label": "OpenCode",
+      "aliases": ["opencode-agent"],
+      "bridge_paths": ["AGENTS.md"],
+      "admission_audit": "opencode",
+      "product_lifecycle": "active",
+      "support_status": "named-static-admission-runtime-unverified"
     },
     {
       "id": "claude",
       "label": "Claude",
       "aliases": ["anthropic-claude"],
-      "bridge_paths": ["CLAUDE.md"]
+      "bridge_paths": ["CLAUDE.md"],
+      "admission_audit": "claude",
+      "product_lifecycle": "active",
+      "support_status": "named-static-admission-runtime-unverified"
     },
     {
       "id": "gemini",
       "label": "Gemini",
       "aliases": ["google-gemini"],
-      "bridge_paths": ["GEMINI.md"]
+      "bridge_paths": ["GEMINI.md"],
+      "admission_audit": "gemini",
+      "product_lifecycle": "active",
+      "support_status": "named-static-admission-runtime-unverified"
     },
     {
       "id": "github-copilot",
@@ -38,25 +107,37 @@
       "bridge_paths": [
         ".github/copilot-instructions.md",
         ".github/prompts/gate-review.prompt.md"
-      ]
+      ],
+      "admission_audit": "github-copilot",
+      "product_lifecycle": "active",
+      "support_status": "named-static-admission-runtime-unverified"
     },
     {
       "id": "cursor",
       "label": "Cursor",
       "aliases": ["cursor-agent"],
-      "bridge_paths": [".cursor/rules/alatyr-core.mdc", ".cursorrules"]
+      "bridge_paths": [".cursor/rules/alatyr-core.mdc", ".cursorrules"],
+      "admission_audit": "cursor",
+      "product_lifecycle": "active",
+      "support_status": "named-static-admission-runtime-unverified"
     },
     {
       "id": "devin-cascade",
       "label": "Devin/Cascade",
       "aliases": ["devin", "cascade"],
-      "bridge_paths": [".devin/rules/alatyr-core.md"]
+      "bridge_paths": [".devin/rules/alatyr-core.md"],
+      "admission_audit": "devin-cascade",
+      "product_lifecycle": "active",
+      "support_status": "named-static-admission-runtime-unverified"
     },
     {
       "id": "windsurf",
       "label": "Windsurf",
       "aliases": ["windsurf-legacy"],
-      "bridge_paths": [".windsurf/rules/alatyr-core.md", ".windsurfrules"]
+      "bridge_paths": [".windsurf/rules/alatyr-core.md", ".windsurfrules"],
+      "admission_audit": "windsurf",
+      "product_lifecycle": "legacy",
+      "support_status": "legacy-static-admission-runtime-unverified"
     }
   ]
 }

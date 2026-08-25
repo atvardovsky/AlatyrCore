@@ -89,6 +89,13 @@ Check whether the target already has:
 - `.github/prompts`
 - `.cursor/rules` or `.cursorrules`
 - `.cursor/skills`
+- `.junie/AGENTS.md`, `.junie/playbook.md`, `.junie/rules`,
+  `.junie/guidelines*`, `.junie/skills`, or `.junie/agents`
+- `.clinerules`, `.clinerules/`, `.cline/rules`, or Cline rule toggles
+- `.roo/rules`, `.roo/rules-*`, `.roorules*`, or `.roomodes`
+- `.kiro/steering`, `.kiro/agents`, or `.kiro/skills`
+- `.rules`, `AGENT.md`, or `.zed`
+- `.opencode`, `opencode.json`, or `opencode.jsonc`
 - `.claude/skills`
 - `.devin/rules`
 - `.windsurf/rules` or `.windsurfrules`
@@ -299,6 +306,12 @@ Choose only bridge files that the target needs:
 
 - Generic assistant entry point
 - Codex / AGENTS-aware tools
+- JetBrains Junie
+- Cline
+- Kiro
+- Zed Agent
+- OpenCode
+- Roo Code legacy compatibility only
 - Claude
 - Gemini
 - GitHub Copilot
@@ -309,6 +322,12 @@ Choose only bridge files that the target needs:
 Bridge files must stay short and point to canonical target files.
 Assistant-specific skill wrappers must also point to canonical target rules
 instead of duplicating full policy.
+
+For every selected client, record the exact runtime variant, selected entry
+path, competing instruction sources, toggle/configuration state, observed
+auto-load, skill source, permission mode, and freshness evidence. Static source
+admission is not runtime support. Client permissions or auto-approval may
+restrict execution but never grant Alatyr authorization.
 
 ## 7. Approval And Risk
 

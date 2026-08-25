@@ -75,10 +75,16 @@
       ],
       "conditional_context": [
         "selected skill prompt gate tool MCP bridge or wrapper",
+        "assistant surface admission audit and capability schema when support changes",
         "import policy when an external source is involved",
         "operation help when routing changes"
       ],
-      "checks": ["assistant-surface-conformance", "bridge-capability-matrix"]
+      "checks": [
+        "assistant-surface-conformance",
+        "assistant-capability-contract",
+        "assistant-surface-audits",
+        "bridge-capability-matrix"
+      ]
     },
     "repository-audit": {
       "required_context": [

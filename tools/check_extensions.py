@@ -30,6 +30,7 @@ OPERATIONS = TARGET / ".ai/assistant/operation-catalog.json"
 ROUTER = TARGET / ".ai/assistant/context-router.json"
 MANIFEST = TARGET / ".ai/alatyr.yaml"
 BRIDGES = TARGET / ".ai/assistant/bridge-capability-matrix.md"
+SURFACES = ROOT / "conformance/runs/assistant-surfaces.json"
 INSTALL = ROOT / "INSTALL.md"
 INSTALL_FLOW = ROOT / "installer/assistant-installation.flow.md"
 READINESS = ROOT / "installer/readiness-checklist.md"
@@ -295,8 +296,12 @@ def main() -> int:
     if not isinstance(recommendation, dict) or "Alatyr suggest extensions" not in recommendation.get("aliases", []):
         failures.append("extension suggestions must use read-only recommendation")
 
-    if read(BRIDGES).count("Routes extension aliases:") != 9:
-        failures.append("bridge matrix must route extension aliases on 9 surfaces")
+    surface_count = len(load(SURFACES).get("surfaces", []))
+    if read(BRIDGES).count("Routes extension aliases:") != surface_count:
+        failures.append(
+            "bridge matrix must route extension aliases on every canonical "
+            f"surface ({surface_count})"
+        )
     for snippet in [
         "extensions:",
         'catalog: ".ai/assistant/extensions/catalog.json"',

@@ -358,6 +358,14 @@ The framework implements that model through these repository surfaces:
    canonical project sources; compact, freshness-checked route shards help a
    later assistant find those owners without loading the full project memory.
 
+The checked static surface registry covers generic and AGENTS-aware clients,
+Codex, JetBrains Junie, Cline, Kiro, Zed Agent, OpenCode, Claude, Gemini,
+GitHub Copilot, Cursor, Devin/Cascade, Windsurf, and legacy Roo Code. This means
+AlatyrCore supplies a bridge and evidence contract, not that every client has
+been observed following it. Each installed project records the exact client,
+instruction precedence, skills, permissions, diagrams, and delegation before
+claiming runtime support. See [assistant compatibility](docs/assistant-compatibility.md).
+
 Optional modules can add architecture knowledge, project vocabulary, generated
 code-reference documentation, test-first development, team coordination,
 large-task orchestration, capability-gated worker delegation with project-
@@ -488,7 +496,7 @@ tasks from loading the complete framework or project corpus.
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.28`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.29`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural

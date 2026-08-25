@@ -34,6 +34,16 @@ def framework_files() -> list[str]:
     )
 
 
+def assistant_surfaces() -> list[dict[str, object]]:
+    data = json.loads(
+        read_text("conformance/runs/assistant-surfaces.json")
+    )
+    surfaces = data.get("surfaces")
+    if not isinstance(surfaces, list):
+        raise ValueError("assistant-surfaces.json must contain surfaces")
+    return [surface for surface in surfaces if isinstance(surface, dict)]
+
+
 def git_ignored_no_index(relpaths: list[str]) -> set[str]:
     if not relpaths:
         return set()
@@ -652,17 +662,16 @@ def main() -> int:
                 "templates/target/.ai/assistant/bridge-capability-matrix.md "
                 f"missing {required_bridge_matrix_text}"
             )
-    for required_bridge_surface in [
-        "### Assistant Surface: `generic`",
-        "### Assistant Surface: `agents`",
-        "### Assistant Surface: `codex`",
-        "### Assistant Surface: `claude`",
-        "### Assistant Surface: `gemini`",
-        "### Assistant Surface: `github-copilot`",
-        "### Assistant Surface: `cursor`",
-        "### Assistant Surface: `devin-cascade`",
-        "### Assistant Surface: `windsurf`",
-    ]:
+    try:
+        required_bridge_surfaces = [
+            f"### Assistant Surface: `{surface['id']}`"
+            for surface in assistant_surfaces()
+            if isinstance(surface.get("id"), str)
+        ]
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        failures.append(str(exc))
+        required_bridge_surfaces = []
+    for required_bridge_surface in required_bridge_surfaces:
         if required_bridge_surface not in bridge_matrix:
             failures.append(
                 "templates/target/.ai/assistant/bridge-capability-matrix.md "
@@ -1801,20 +1810,16 @@ def main() -> int:
                 for surface in surfaces
                 if isinstance(surface, dict)
             }
-            for required_surface in [
-                "generic",
-                "agents",
-                "codex",
-                "claude",
-                "gemini",
-                "github-copilot",
-                "cursor",
-                "devin-cascade",
-                "windsurf",
-            ]:
-                if required_surface not in surface_ids:
+            if None in surface_ids or len(surface_ids) != len(surfaces):
+                failures.append("assistant-surfaces.json IDs must be unique strings")
+            for surface in surfaces:
+                if not isinstance(surface, dict):
+                    continue
+                if not isinstance(surface.get("label"), str) or not isinstance(
+                    surface.get("bridge_paths"), list
+                ):
                     failures.append(
-                        f"assistant-surfaces.json missing {required_surface}"
+                        "assistant-surfaces.json entries require label and bridge_paths"
                     )
 
     scaffold_conformance_tool = ROOT / "tools" / "run_conformance_scaffold.py"

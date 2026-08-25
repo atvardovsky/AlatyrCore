@@ -265,8 +265,13 @@ In a typical target repository:
    profile descriptors, operation catalog and its checked compact index,
    context profiles, module profile, task-specific maturity profile, bridge
    capability matrix, generated assistant-capability index and installed-
-   surface records, and target workflows/gates. Keep the catalog outside routine
-   routing and resolve exact aliases through the compact index. Include the
+   surface schema-2 records, and target workflows/gates. For every selected
+   assistant, record the exact runtime, instruction entry path, competing
+   sources, toggle/configuration state, observed loading, skills, client
+   permissions, diagrams, delegation, and freshness evidence. Keep unknown
+   runtime facts unknown and keep client permissions separate from Alatyr
+   authorization. Keep the catalog outside routine routing and resolve exact
+   aliases through the compact index. Include the
    project-knowledge routing descriptor, flow, gate, operation/help entries,
    promotion and route-shard templates, and context receipt fields in every
    accepted core profile. Keep route shards lazy.
@@ -279,7 +284,10 @@ In a typical target repository:
    Add the `extension-request` intent overlay when extension inspection or
    lifecycle management is supported. Keep extension items and unrelated lock
    entries outside routine bootstrap.
-8. Add bridge files only for assistants the target uses.
+8. Add bridge files only for assistants the target uses. Inspect native and
+   compatibility instruction paths before choosing a bridge. Preserve target
+   Junie/Cline/Kiro/OpenCode configuration, use `.rules` for Zed Agent's
+   first-match route, and treat Roo Code only as archived legacy compatibility.
 9. Add installed-operation, operation-help, automatic operation-routing,
    read-only adapter-health, risk-gated pre-change preview,
    diagram-discussion flow, ASCII layout template, and presentation template
@@ -461,6 +469,12 @@ profile or pack is not a complete installation with unexplained missing files.
 Use repeatable `--enable-module <capability-id>` options to add only reviewed
 capabilities and their dependency closure. The scaffolder raises the matched
 framework pack when a selected capability requires a broader canonical owner.
+Vendor-native bridges are omitted by default. With the `full` support profile,
+use repeatable `--assistant-surface <id-or-alias>` options only for assistants
+the target actually uses. The helper resolves aliases through the canonical
+surface registry and rejects native bridge selections under profiles that do
+not contain their complete support context. Selection is static source
+scaffolding, not evidence that the client loaded the bridge.
 
 Scaffolding does not replace target inspection, installation planning,
 approval gates, adapter rewriting, validation, logical integrity review, or

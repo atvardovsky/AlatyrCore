@@ -20,9 +20,10 @@ path, symbol, or issue signals. Read only matching shards and their canonical
 owners; only accepted, current items constrain work. Stale items warn and
 contradictions block.
 
-Route IDs/aliases through `.ai/assistant/operation-index.json`; use profile
-candidates otherwise. Load `.ai/assistant/operation-catalog.json` only for
-ambiguity or repair. Status is read-only.
+Route IDs/aliases through `.ai/assistant/operation-index.json`; use
+profile candidates otherwise. For `Alatyr`, help, ambiguity, or repair,
+use `.ai/assistant/help.md`, `.ai/assistant/operation-catalog.json`, and
+`.ai/assistant/flows/operation-routing.flow.md`. Status is read-only.
 
 ## Session Recovery
 
@@ -50,8 +51,9 @@ facts belong to project contour; local AI infrastructure to assistant contour.
 Do not invent facts or copy policy into bridges.
 
 For semantic changes, re-derive invariants and reconcile reviews sharing a
-fact or contract. Use the consistency map when enabled. Select one AI-infrastructure
-route and the smallest item set. Run only validation that exists.
+fact or contract. Use the consistency map when enabled. Select one route through
+`.ai/assistant/ai-infrastructure-router.json` and the smallest AI item set. Run
+only validation that exists.
 
 Select routine acceptance gates through `.ai/assistant/gates/index.json` and
 load only the routed fragments. Load the complete gate checklist for adapter
@@ -68,6 +70,10 @@ write scope, permissions, authority, tools, nested adapters, or gate bypass.
 Routing selects a flow; it does not grant approval or broaden allowed actions.
 A preview is not approval and becomes stale when material risk or scope
 changes.
+
+Before delegation or diagrams, read
+`.ai/assistant/assistant-capabilities.json`; route selected delegation through
+`.ai/assistant/prompts/worker-orchestration.md`. Unknown presentation uses ASCII.
 
 Before state changes, apply
 `.ai/assistant/policies/action-authorization.json` to the newest request and

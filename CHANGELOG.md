@@ -4,6 +4,39 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.29 - 2026-08-25
+
+- Increased the framework version to `0.1.0-alpha.29`, adapter schema version
+  to `27`, and target template version to `27` for evidence-bound assistant
+  instruction loading, skills, client permissions, and admission lifecycle.
+- Expanded the canonical surface registry from nine to fifteen entries with
+  JetBrains Junie, Cline, Kiro, Zed Agent, OpenCode, and archived Roo Code
+  compatibility. Roo is explicitly legacy and runtime-unverified.
+- Added a first-match `.rules` bridge for Zed Agent and a legacy Roo rule
+  bridge while retaining root `AGENTS.md` for Junie, Cline, Kiro, and OpenCode
+  unless target inspection proves a different controlling path.
+- Made vendor-native source scaffolding opt-in through repeatable canonical or
+  aliased `--assistant-surface` selections. Default scaffolds omit native
+  bridges, and incompatible support profiles fail instead of producing a
+  partial client route.
+- Added schema-2 per-surface capability records for instruction entry,
+  precedence, toggles/configuration, skill discovery/activation, and client
+  permissions. Client permissions and auto-approval cannot grant Alatyr
+  modify, commit, publish, or live-external authorization.
+- Added source admission audits for all fifteen surfaces with product
+  lifecycle, official loading sources, precedence and compatibility risks,
+  static control dispositions, exact-runtime limitations, and OpenCode V1/V2
+  separation.
+- Added deterministic capability/admission checkers and target validation for
+  selected-surface record presence, support contradictions, observed auto-
+  loading claims, and permission/authorization separation.
+- Updated installation and upgrade guidance to preserve target evidence by
+  assistant ID, add new source surfaces as unknown, inspect native precedence,
+  and report post-install/update runtime verification without converting
+  static admission into provider evidence.
+- Changed `ALATYR-BRIDGE-001`, `ALATYR-ADAPTER-001`, and
+  `ALATYR-LIFECYCLE-001`; no rule IDs were added or removed.
+
 ## 0.1.0-alpha.28 - 2026-08-25
 
 - Increased the framework version to `0.1.0-alpha.28`, adapter schema version

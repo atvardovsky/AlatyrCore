@@ -53,6 +53,8 @@ ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE_ROOT = ROOT / "templates" / "target"
 FRAMEWORK_ROOT = ROOT / "framework"
 PROFILE_MANIFEST = ROOT / "tools" / "scaffold_profiles.json"
+ASSISTANT_SURFACES = ROOT / "conformance" / "runs" / "assistant-surfaces.json"
+NEUTRAL_ASSISTANT_ENTRY_PATHS = {Path("AGENTS.md"), Path("AI_ASSISTANTS.md")}
 
 
 def load_profile_manifest() -> dict[str, Any]:
@@ -67,6 +69,77 @@ def profile_names() -> list[str]:
     if not isinstance(profiles, dict):
         raise ValueError("scaffold profile manifest must define profiles")
     return list(profiles)
+
+
+def load_assistant_surfaces() -> list[dict[str, Any]]:
+    data = json.loads(ASSISTANT_SURFACES.read_text(encoding="utf-8"))
+    surfaces = data.get("surfaces") if isinstance(data, dict) else None
+    if not isinstance(surfaces, list) or not surfaces:
+        raise ValueError("assistant surface registry must define surfaces")
+    if not all(isinstance(surface, dict) for surface in surfaces):
+        raise ValueError("assistant surface registry entries must be objects")
+    return surfaces
+
+
+def resolve_assistant_surfaces(requested: list[str] | None) -> set[str]:
+    aliases: dict[str, str] = {}
+    canonical_ids: set[str] = set()
+    for surface in load_assistant_surfaces():
+        surface_id = surface.get("id")
+        surface_aliases = surface.get("aliases", [])
+        if not isinstance(surface_id, str) or not surface_id:
+            raise ValueError("assistant surface registry contains an invalid id")
+        if not isinstance(surface_aliases, list) or not all(
+            isinstance(alias, str) and alias for alias in surface_aliases
+        ):
+            raise ValueError(f"assistant surface {surface_id} has invalid aliases")
+        canonical_ids.add(surface_id)
+        for value in [surface_id, *surface_aliases]:
+            previous = aliases.get(value)
+            if previous is not None and previous != surface_id:
+                raise ValueError(f"duplicate assistant surface name: {value}")
+            aliases[value] = surface_id
+
+    selected: set[str] = set()
+    for value in requested or []:
+        surface_id = aliases.get(value)
+        if surface_id is None:
+            allowed = ", ".join(sorted(canonical_ids))
+            raise ValueError(
+                f"unknown assistant surface: {value}; expected one of {allowed}"
+            )
+        selected.add(surface_id)
+    return selected
+
+
+def project_assistant_bridges(
+    paths: set[Path], selected_surfaces: set[str]
+) -> set[Path]:
+    """Keep native bridge files only for explicitly selected assistant clients."""
+
+    native_paths: set[Path] = set()
+    selected_native_paths: set[Path] = set()
+    for surface in load_assistant_surfaces():
+        surface_id = surface.get("id")
+        bridge_paths = surface.get("bridge_paths")
+        if not isinstance(surface_id, str) or not isinstance(bridge_paths, list) or not all(
+            isinstance(path, str) and path for path in bridge_paths
+        ):
+            raise ValueError("assistant surface registry contains invalid bridge paths")
+        surface_paths = {Path(path) for path in bridge_paths}
+        surface_native_paths = surface_paths - NEUTRAL_ASSISTANT_ENTRY_PATHS
+        native_paths.update(surface_native_paths)
+        if surface_id in selected_surfaces:
+            selected_native_paths.update(surface_native_paths)
+
+    unavailable = selected_native_paths - paths
+    if unavailable:
+        unavailable_text = ", ".join(path.as_posix() for path in sorted(unavailable))
+        raise ValueError(
+            "selected assistant bridge paths are unavailable in this scaffold "
+            f"profile: {unavailable_text}; use --profile full"
+        )
+    return (paths - native_paths) | selected_native_paths
 
 
 def resolve_profile_paths(
@@ -264,9 +337,14 @@ def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
     profile = getattr(args, "profile", "full")
     requested_pack = getattr(args, "framework_pack", "matched")
     requested_modules = set(getattr(args, "enable_module", []) or [])
+    selected_assistant_surfaces = resolve_assistant_surfaces(
+        getattr(args, "assistant_surface", []) or []
+    )
     enabled_modules = dependency_closure(requested_modules)
     framework_pack = resolved_framework_pack(profile, requested_pack, enabled_modules)
-    selected_templates = resolve_profile_paths(profile, enabled_modules)
+    selected_templates = project_assistant_bridges(
+        resolve_profile_paths(profile, enabled_modules), selected_assistant_surfaces
+    )
     framework_files = resolve_framework_files(framework_pack)
     selected = selected_templates | {
         Path(".ai") / "framework" / name for name in framework_files
@@ -283,8 +361,8 @@ def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
         blocked.append(f"target is not a directory: {target}")
         return actions, blocked
 
-    for src in iter_template_files(profile, enabled_modules):
-        rel = src.relative_to(TEMPLATE_ROOT)
+    for rel in sorted(selected_templates):
+        src = TEMPLATE_ROOT / rel
         dst = target / rel
         merge_strategy = shared_surface_merge_requirement(rel)
         if dst.exists() and merge_strategy is not None:
@@ -360,6 +438,16 @@ def main() -> int:
         ),
     )
     parser.add_argument(
+        "--assistant-surface",
+        action="append",
+        default=[],
+        help=(
+            "Add native bridge files for one canonical or aliased assistant "
+            "surface. Repeat for multiple clients. Native bridges are omitted "
+            "by default and currently require --profile full."
+        ),
+    )
+    parser.add_argument(
         "--write",
         action="store_true",
         help="Write files. Without this flag the helper prints the plan only.",
@@ -389,6 +477,9 @@ def main() -> int:
     try:
         actions, blocked = plan(args)
         enabled_modules = dependency_closure(set(args.enable_module))
+        selected_assistant_surfaces = resolve_assistant_surfaces(
+            args.assistant_surface
+        )
         framework_pack = resolved_framework_pack(
             args.profile, args.framework_pack, enabled_modules
         )
@@ -404,6 +495,14 @@ def main() -> int:
     print(
         "Enabled optional capabilities: "
         + (", ".join(sorted(enabled_modules)) if enabled_modules else "none")
+    )
+    print(
+        "Selected assistant surfaces: "
+        + (
+            ", ".join(sorted(selected_assistant_surfaces))
+            if selected_assistant_surfaces
+            else "none; native bridges omitted"
+        )
     )
     print("This helper does not complete installation or fill target facts.")
     print("Supported platforms: Linux, macOS, Windows.")

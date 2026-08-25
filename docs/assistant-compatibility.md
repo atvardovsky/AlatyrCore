@@ -9,6 +9,16 @@ Target repositories may add bridge files for:
 
 - generic assistants through `AI_ASSISTANTS.md`
 - AGENTS-aware tools through `AGENTS.md`
+- JetBrains Junie through root `AGENTS.md` unless a reviewed target override
+  or custom-guideline setting controls loading
+- Cline through root `AGENTS.md`, with existing `.clinerules`, `.cline/rules`,
+  compatible rule files, and client toggles inspected for conflicts
+- Kiro through root and nested `AGENTS.md`, with steering and custom-agent
+  resources inspected
+- Zed Agent through the generated first-match `.rules` bridge
+- OpenCode through `AGENTS.md`, with the exact V1 or V2 loading contract bound
+- Roo Code only as legacy compatibility through
+  `.roo/rules/alatyr-core.md`; the product is archived and shut down
 - Claude through `CLAUDE.md` or native project skill folders
 - Gemini through `GEMINI.md`
 - GitHub Copilot through `.github/copilot-instructions.md`,
@@ -20,9 +30,9 @@ Target repositories may add bridge files for:
 The target repository decides which bridge files are needed.
 
 Source conformance runs use the machine-readable surface list at
-`conformance/runs/assistant-surfaces.json` so Codex, Claude, Gemini, GitHub
-Copilot, Cursor, Devin/Cascade, Windsurf, generic, and AGENTS-aware runs use
-consistent names.
+`conformance/runs/assistant-surfaces.json`. The source admission audit records
+official instruction paths, precedence risks, lifecycle, static controls, and
+runtime limits for each newly named surface.
 
 ## Provider-Neutral Conformance Execution
 
@@ -36,6 +46,12 @@ surfaces use manual import until a project records reviewed captured evidence.
 Unsupported or unverified clients must remain manual or unverified; they must
 not be represented as executed because static templates, bridges, or a matrix
 plan exist.
+
+Static admission and actual support are separate. A selected target surface
+records instruction loading, skill source and activation, client permissions,
+diagram behavior, and delegation in its schema-2 capability record. Client
+permissions and auto-approval never grant Alatyr action authorization. Exact-
+client evidence is required before changing an unknown route to supported.
 
 Captured runs keep lifecycle evidence beside their reports. Static routing and
 delivery fixtures are protocol expectations only, separate from captured
@@ -128,9 +144,9 @@ capability falls back to primary execution, a stronger verified role, or
 suggestion-only mode. Bridges must not silently claim delegation, native
 definitions, backend, or model choice.
 
-The contract is identical for generic, AGENTS-aware, Codex, Claude, Gemini,
-GitHub Copilot, Cursor, Devin/Cascade, and Windsurf surfaces. Their execution
-mechanics may differ, and no capability is copied from one product to another.
+The portable contract is identical for every surface in the canonical
+registry. Execution mechanics differ, and no capability is copied from one
+product, runtime variant, or client version to another.
 The portable term `subagent` means a bounded worker packet, not a dependency
 on an OpenAI API or client feature.
 
