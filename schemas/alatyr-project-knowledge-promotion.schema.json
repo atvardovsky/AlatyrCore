@@ -14,7 +14,7 @@
     "privacy"
   ],
   "properties": {
-    "schema_version": {"const": 1},
+    "schema_version": {"enum": [1, 2]},
     "record_kind": {"const": "alatyr-project-knowledge-promotion"},
     "promotion_id": {"type": "string", "minLength": 1},
     "created_at": {"type": "string", "minLength": 1},
@@ -36,7 +36,19 @@
       ],
       "properties": {
         "candidate_id": {"type": "string", "minLength": 1},
+        "origin": {
+          "enum": ["engineering-discovery", "decision-owner-directive"]
+        },
         "statement": {"type": "string", "minLength": 1},
+        "guidance_kind": {
+          "enum": [
+            "development-rule",
+            "architectural-intent",
+            "reviewed-knowledge",
+            "validation-contract",
+            "known-restriction"
+          ]
+        },
         "knowledge_kind": {
           "enum": [
             "invariant",
@@ -50,7 +62,7 @@
           ]
         },
         "reuse_rationale": {"type": "string", "minLength": 1},
-        "source_engineering_evidence_ids": {"$ref": "#/definitions/nonEmptyStrings"},
+        "source_engineering_evidence_ids": {"$ref": "#/definitions/strings"},
         "repository_evidence": {"$ref": "#/definitions/nonEmptyStrings"},
         "proposed_fact_type": {"type": "string", "minLength": 1},
         "proposed_fact_ids": {"$ref": "#/definitions/nonEmptyStrings"},
@@ -145,6 +157,37 @@
     }
   },
   "allOf": [
+    {
+      "if": {
+        "properties": {"schema_version": {"const": 2}}
+      },
+      "then": {
+        "properties": {
+          "candidate": {
+            "required": ["origin", "guidance_kind"]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "schema_version": {"const": 2},
+          "candidate": {
+            "properties": {"origin": {"const": "engineering-discovery"}}
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "candidate": {
+            "properties": {
+              "source_engineering_evidence_ids": {"minItems": 1}
+            }
+          }
+        }
+      }
+    },
     {
       "if": {
         "properties": {

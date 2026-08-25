@@ -30,7 +30,7 @@ OVERLAY = TARGET / ".ai" / "assistant" / "context" / "task-scales" / "debug-mode
 SCHEMA = ROOT / "schemas" / "alatyr-debug-session.schema.json"
 SCENARIOS = ROOT / "conformance" / "debug-mode-scenarios.json"
 
-METRIC_NAMES = [
+LEGACY_METRIC_NAMES = [
     "human_interventions",
     "human_architectural_interventions",
     "alatyr_independent_findings",
@@ -47,6 +47,46 @@ METRIC_NAMES = [
     "maintainer_corrections",
     "post_review_rework",
 ]
+
+V4_METRIC_NAMES = [
+    "human_interventions",
+    "human_architectural_interventions",
+    "executor_independent_findings",
+    "executor_derived_findings_after_human",
+    "executor_independent_dependency_checks",
+    "human_requested_dependency_checks",
+    "executor_derived_dependency_expansions_after_human",
+    "hypotheses_tested",
+    "hypotheses_rejected",
+    "implementation_revisions",
+    "implementation_corrections_after_human",
+    "validation_expansions",
+    "regression_scenarios_added",
+    "maintainer_corrections",
+    "post_review_rework",
+    "new_guidance_candidates",
+    "known_guidance_routing_failures",
+    "known_guidance_compliance_failures",
+    "task_local_corrections",
+    "scope_changes",
+    "validation_requests",
+]
+
+CORRECTION_DISPOSITIONS = {
+    "new-guidance-candidate",
+    "known-guidance-routing-failure",
+    "known-guidance-compliance-failure",
+    "task-local",
+    "scope-change",
+    "validation-request",
+}
+
+IMPLEMENTATION_CORRECTION_DISPOSITIONS = {
+    "new-guidance-candidate",
+    "known-guidance-routing-failure",
+    "known-guidance-compliance-failure",
+    "task-local",
+}
 
 MATERIALITY_KINDS = [
     "undocumented-invariant",
@@ -254,8 +294,320 @@ def fixture_metrics() -> dict[str, Any]:
             "evidence_kind": "event-derived",
             "event_ids": event_ids[name],
         }
-        for name in METRIC_NAMES
+        for name in LEGACY_METRIC_NAMES
     }
+
+
+def actor_attribution(role: str) -> tuple[dict[str, str], dict[str, Any]]:
+    identities = {
+        "human": {"actor_id": "human-reviewer", "identity_kind": "pseudonymous"},
+        "executor": {"actor_id": "executor-primary", "identity_kind": "pseudonymous"},
+        "alatyr-system": {"actor_id": "alatyr-router", "identity_kind": "service"},
+        "external-maintainer": {"actor_id": "maintainer-reviewer", "identity_kind": "pseudonymous"},
+        "automation": {"actor_id": "ci-validation", "identity_kind": "service"},
+    }
+    if role in {"human", "external-maintainer"}:
+        provenance = {
+            "evidence_kind": "unavailable",
+            "provider": None,
+            "product": None,
+            "model": None,
+            "runtime": None,
+            "evidence": [],
+        }
+    elif role == "executor":
+        provenance = {
+            "evidence_kind": "declared",
+            "provider": "fixture-provider",
+            "product": "fixture-assistant",
+            "model": "fixture-model",
+            "runtime": "fixture-runtime",
+            "evidence": ["fixture executor declaration"],
+        }
+    elif role == "alatyr-system":
+        provenance = {
+            "evidence_kind": "observed",
+            "provider": None,
+            "product": "AlatyrCore",
+            "model": None,
+            "runtime": "context-router",
+            "evidence": ["fixture router result"],
+        }
+    else:
+        provenance = {
+            "evidence_kind": "observed",
+            "provider": "fixture-ci",
+            "product": "fixture-automation",
+            "model": None,
+            "runtime": "validation-job",
+            "evidence": ["fixture automation result"],
+        }
+    return identities[role], provenance
+
+
+def event_v4(
+    event_id: str,
+    sequence: int,
+    actor_role: str,
+    causal_class: str,
+    intervention_kind: str,
+    correction_disposition: str,
+    contribution_kind: str,
+    category: str,
+    *,
+    causes: list[str] | None = None,
+    guidance_ids: list[str] | None = None,
+    correction_evidence: list[str] | None = None,
+    architectural: bool = False,
+    architectural_impacts: list[str] | None = None,
+    decision_effect: str = "none",
+    dependency: bool = False,
+    validation: bool = False,
+    post_review: bool = False,
+    hypothesis: str = "not-applicable",
+) -> dict[str, Any]:
+    identity, provenance = actor_attribution(actor_role)
+    return {
+        "event_id": event_id,
+        "sequence": sequence,
+        "occurred_at": {
+            "value": f"2026-08-21T13:{sequence:02d}:00Z",
+            "evidence_kind": "observed",
+        },
+        "actor_role": actor_role,
+        "actor_identity": identity,
+        "actor_provenance": provenance,
+        "causal_class": causal_class,
+        "intervention_kind": intervention_kind,
+        "correction_disposition": correction_disposition,
+        "related_guidance_ids": guidance_ids or [],
+        "correction_evidence": correction_evidence or [],
+        "contribution_kind": contribution_kind,
+        "category": category,
+        "summary": f"Material version-4 event {event_id}",
+        "material_effect": f"Changed version-4 investigation outcome {event_id}",
+        "evidence": ["src/example.txt"],
+        "caused_by_event_ids": causes or [],
+        "architectural_supervision": architectural,
+        "architectural_impacts": architectural_impacts or [],
+        "decision_effect": decision_effect,
+        "dependency_expansion": dependency,
+        "validation_expansion": validation,
+        "post_review_rework": post_review,
+        "hypothesis_outcome": hypothesis,
+    }
+
+
+def fixture_v4_events() -> list[dict[str, Any]]:
+    return [
+        event_v4("V4-1", 1, "executor", "independent-within-scope", "not-applicable", "not-applicable", "finding", "dependency", dependency=True),
+        event_v4("V4-2", 2, "alatyr-system", "independent-within-scope", "not-applicable", "not-applicable", "coordination", "other"),
+        event_v4("V4-3", 3, "automation", "independent-within-scope", "not-applicable", "not-applicable", "validation", "regression-scenario", validation=True),
+        event_v4("V4-4", 4, "human", "intervention", "correction", "new-guidance-candidate", "decision", "review-correction", correction_evidence=["review introduced a reusable constraint"]),
+        event_v4("V4-5", 5, "external-maintainer", "intervention", "correction", "known-guidance-routing-failure", "decision", "review-correction", guidance_ids=["GUIDANCE-1"], correction_evidence=["routing receipt omitted GUIDANCE-1"]),
+        event_v4("V4-6", 6, "human", "intervention", "correction", "known-guidance-compliance-failure", "decision", "review-correction", guidance_ids=["GUIDANCE-2"], correction_evidence=["delivery receipt included GUIDANCE-2"]),
+        event_v4("V4-7", 7, "human", "intervention", "correction", "task-local", "decision", "review-correction", correction_evidence=["correction is bounded to this fixture"]),
+        event_v4("V4-8", 8, "human", "intervention", "scope-expansion", "scope-change", "coordination", "other", correction_evidence=["requested scope now includes a second boundary"]),
+        event_v4("V4-9", 9, "human", "intervention", "validation-request", "validation-request", "validation", "validation", correction_evidence=["requested one additional validation result"]),
+        event_v4("V4-10", 10, "executor", "derived-from-human", "not-applicable", "not-applicable", "implementation", "implementation-revision", causes=["V4-7"]),
+        event_v4("V4-11", 11, "executor", "derived-from-human", "not-applicable", "not-applicable", "finding", "dependency", causes=["V4-4"], dependency=True),
+        event_v4("V4-12", 12, "executor", "derived-from-external", "not-applicable", "not-applicable", "implementation", "implementation-revision", causes=["V4-5"], post_review=True),
+    ]
+
+
+def v4_ancestor_ids(event_id: str, events: dict[str, dict[str, Any]]) -> set[str]:
+    ancestors: set[str] = set()
+    pending = list(events.get(event_id, {}).get("caused_by_event_ids", []))
+    while pending:
+        ancestor_id = pending.pop()
+        if ancestor_id in ancestors or ancestor_id not in events:
+            continue
+        ancestors.add(ancestor_id)
+        pending.extend(events[ancestor_id].get("caused_by_event_ids", []))
+    return ancestors
+
+
+def expected_v4_metric_ids(events: list[dict[str, Any]]) -> dict[str, list[str]]:
+    event_by_id = {event["event_id"]: event for event in events}
+
+    def correction_ancestor(event: dict[str, Any], role: str | None = None) -> bool:
+        for ancestor_id in v4_ancestor_ids(event["event_id"], event_by_id):
+            ancestor = event_by_id[ancestor_id]
+            if (
+                ancestor.get("causal_class") == "intervention"
+                and ancestor.get("correction_disposition")
+                in IMPLEMENTATION_CORRECTION_DISPOSITIONS
+                and (role is None or ancestor.get("actor_role") == role)
+            ):
+                return True
+        return False
+
+    def ids(predicate: Callable[[dict[str, Any]], bool]) -> list[str]:
+        return [event["event_id"] for event in events if predicate(event)]
+
+    disposition_metrics = {
+        "new_guidance_candidates": "new-guidance-candidate",
+        "known_guidance_routing_failures": "known-guidance-routing-failure",
+        "known_guidance_compliance_failures": "known-guidance-compliance-failure",
+        "task_local_corrections": "task-local",
+        "scope_changes": "scope-change",
+        "validation_requests": "validation-request",
+    }
+    expected = {
+        "human_interventions": ids(lambda event: event["actor_role"] == "human" and event["causal_class"] == "intervention"),
+        "human_architectural_interventions": ids(lambda event: event["actor_role"] == "human" and event["causal_class"] == "intervention" and event["architectural_supervision"]),
+        "executor_independent_findings": ids(lambda event: event["actor_role"] == "executor" and event["causal_class"] == "independent-within-scope" and event["contribution_kind"] == "finding"),
+        "executor_derived_findings_after_human": ids(lambda event: event["actor_role"] == "executor" and event["causal_class"] == "derived-from-human" and event["contribution_kind"] == "finding"),
+        "executor_independent_dependency_checks": ids(lambda event: event["actor_role"] == "executor" and event["causal_class"] == "independent-within-scope" and event["category"] == "dependency"),
+        "human_requested_dependency_checks": ids(lambda event: event["actor_role"] == "human" and event["causal_class"] == "intervention" and event["category"] == "dependency"),
+        "executor_derived_dependency_expansions_after_human": ids(lambda event: event["actor_role"] == "executor" and event["causal_class"] == "derived-from-human" and event["dependency_expansion"]),
+        "hypotheses_tested": ids(lambda event: event["category"] == "hypothesis" and event["hypothesis_outcome"] != "not-applicable"),
+        "hypotheses_rejected": ids(lambda event: event["category"] == "hypothesis" and event["hypothesis_outcome"] == "rejected"),
+        "implementation_revisions": ids(lambda event: event["contribution_kind"] == "implementation"),
+        "implementation_corrections_after_human": ids(lambda event: event["contribution_kind"] == "implementation" and correction_ancestor(event, "human")),
+        "validation_expansions": ids(lambda event: event["contribution_kind"] == "validation" and event["validation_expansion"]),
+        "regression_scenarios_added": ids(lambda event: event["contribution_kind"] == "validation" and event["category"] == "regression-scenario"),
+        "maintainer_corrections": ids(lambda event: event["actor_role"] == "external-maintainer" and event["causal_class"] == "intervention" and event["correction_disposition"] in IMPLEMENTATION_CORRECTION_DISPOSITIONS),
+        "post_review_rework": ids(lambda event: event["post_review_rework"] and correction_ancestor(event, "external-maintainer")),
+    }
+    expected.update(
+        {
+            metric_name: ids(
+                lambda event, disposition=disposition: event.get(
+                    "correction_disposition"
+                )
+                == disposition
+            )
+            for metric_name, disposition in disposition_metrics.items()
+        }
+    )
+    return expected
+
+
+def fixture_v4_metrics(events: list[dict[str, Any]]) -> dict[str, Any]:
+    event_ids = expected_v4_metric_ids(events)
+    return {
+        name: {
+            "value": len(event_ids[name]),
+            "evidence_kind": "event-derived",
+            "event_ids": event_ids[name],
+        }
+        for name in V4_METRIC_NAMES
+    }
+
+
+def validate_v4_semantics(record: dict[str, Any], schema: dict[str, Any]) -> list[str]:
+    errors = [
+        f"schema:{'.'.join(str(item) for item in error.absolute_path) or 'root'}:{error.message}"
+        for error in sorted(
+            jsonschema.Draft7Validator(schema).iter_errors(record),
+            key=lambda item: list(item.absolute_path),
+        )
+    ]
+    if errors or record.get("schema_version") != 4:
+        return errors or ["record is not schema version 4"]
+
+    events = record.get("events", [])
+    event_by_id = {
+        event.get("event_id"): event
+        for event in events
+        if isinstance(event, dict) and isinstance(event.get("event_id"), str)
+    }
+    if len(event_by_id) != len(events):
+        errors.append("event IDs must be unique resolved strings")
+        return errors
+
+    causal_role = {
+        "derived-from-human": "human",
+        "derived-from-external": "external-maintainer",
+        "derived-from-executor": "executor",
+        "derived-from-alatyr-system": "alatyr-system",
+        "derived-from-automation": "automation",
+    }
+    for event in events:
+        event_id = event["event_id"]
+        ancestors = [event_by_id[item] for item in v4_ancestor_ids(event_id, event_by_id)]
+        expected_role = causal_role.get(event["causal_class"])
+        if expected_role and not any(item.get("actor_role") == expected_role for item in ancestors):
+            errors.append(f"{event_id} lacks a causal {expected_role} ancestor")
+        if event["causal_class"] == "independent-within-scope" and any(
+            item.get("causal_class") == "intervention" for item in ancestors
+        ):
+            errors.append(f"{event_id} is not independent because it descends from an intervention")
+        if event["architectural_supervision"] and (
+            event["actor_role"] not in {"human", "external-maintainer"}
+            or event["causal_class"] != "intervention"
+            or not event["architectural_impacts"]
+        ):
+            errors.append(f"{event_id} has invalid architectural-supervision attribution")
+
+    expected_metrics = expected_v4_metric_ids(events)
+    metrics = record.get("metrics", {})
+    for name in V4_METRIC_NAMES:
+        metric = metrics.get(name, {})
+        if metric.get("evidence_kind") != "event-derived":
+            continue
+        expected_ids = expected_metrics[name]
+        if metric.get("value") != len(expected_ids) or metric.get("event_ids") != expected_ids:
+            errors.append(f"metric {name} does not match its version-4 event predicate")
+    return errors
+
+
+def validate_v4_fixture(schema: dict[str, Any], failures: list[str]) -> None:
+    record = json.loads(RECORD.read_text(encoding="utf-8"))
+    record["events"] = fixture_v4_events()
+    record["metrics"] = fixture_v4_metrics(record["events"])
+    errors = validate_v4_semantics(record, schema)
+    if errors:
+        failures.append("valid schema-version-4 fixture failed: " + "; ".join(errors))
+
+    invalid_cases: list[tuple[str, Callable[[dict[str, Any]], None], str]] = [
+        (
+            "missing actor identity",
+            lambda value: value["events"][0].pop("actor_identity"),
+            "actor_identity",
+        ),
+        (
+            "known guidance failure without guidance ID",
+            lambda value: value["events"][4].update(related_guidance_ids=[]),
+            "related_guidance_ids",
+        ),
+        (
+            "non-intervention correction disposition",
+            lambda value: value["events"][0].update(correction_disposition="task-local", correction_evidence=["invalid"]),
+            "correction_disposition",
+        ),
+        (
+            "validation request mislabeled as correction",
+            lambda value: value["events"][8].update(correction_disposition="task-local"),
+            "correction_disposition",
+        ),
+        (
+            "derived executor event without human ancestor",
+            lambda value: value["events"][9].update(caused_by_event_ids=[]),
+            "causal human ancestor",
+        ),
+        (
+            "correction metric drift",
+            lambda value: value["metrics"]["known_guidance_routing_failures"].update(value=2),
+            "metric known_guidance_routing_failures",
+        ),
+    ]
+    for label, mutate, expected in invalid_cases:
+        invalid = copy.deepcopy(record)
+        mutate(invalid)
+        case_errors = validate_v4_semantics(invalid, schema)
+        if not any(expected in error for error in case_errors):
+            failures.append(f"version-4 checker did not reject {label}")
+
+    legacy = fixture_record("legacy-base", "legacy-result")
+    legacy_errors = list(jsonschema.Draft7Validator(schema).iter_errors(legacy))
+    if legacy_errors:
+        failures.append("schema-version-3 historical record no longer validates")
+    silently_reinterpreted = copy.deepcopy(legacy)
+    silently_reinterpreted["events"][0]["actor_role"] = "executor"
+    if not list(jsonschema.Draft7Validator(schema).iter_errors(silently_reinterpreted)):
+        failures.append("schema-version-3 record silently accepted version-4 attribution fields")
 
 
 def materiality_evaluation(
@@ -442,7 +794,7 @@ def fixture_index(record: dict[str, Any]) -> dict[str, Any]:
                 "elapsed_seconds": elapsed["value"],
                 "elapsed_evidence_kind": elapsed["evidence_kind"],
                 "metrics": {
-                    name: record["metrics"][name]["value"] for name in METRIC_NAMES
+                    name: record["metrics"][name]["value"] for name in LEGACY_METRIC_NAMES
                 },
                 "residual_uncertainty": record["residual_uncertainty"],
             }
@@ -516,7 +868,20 @@ def validate_fixture(failures: list[str]) -> None:
         )
         authoring_template = repo / ".ai/assistant/templates/debug-session-record.json"
         authoring_template.parent.mkdir(parents=True)
-        authoring_template.write_text(RECORD.read_text(encoding="utf-8"), encoding="utf-8")
+        legacy_authoring_template = json.loads(RECORD.read_text(encoding="utf-8"))
+        legacy_authoring_template["schema_version"] = 3
+        legacy_authoring_template["metrics"] = {
+            name: {
+                "value": None,
+                "evidence_kind": "unavailable",
+                "event_ids": [],
+            }
+            for name in LEGACY_METRIC_NAMES
+        }
+        authoring_template.write_text(
+            json.dumps(legacy_authoring_template, indent=2) + "\n",
+            encoding="utf-8",
+        )
         canonical_knowledge = repo / "docs/architecture.md"
         canonical_knowledge.parent.mkdir(parents=True)
         canonical_knowledge.write_text(
@@ -594,7 +959,7 @@ def validate_fixture(failures: list[str]) -> None:
                 }
                 else [],
             }
-            for name in METRIC_NAMES
+            for name in LEGACY_METRIC_NAMES
         }
         activation_only["final_result"]["implementation_surfaces"] = []
         activation_only["final_result"]["claim_validation"].update(
@@ -762,7 +1127,7 @@ def validate_fixture(failures: list[str]) -> None:
                 "evidence_kind": "event-derived",
                 "event_ids": [],
             }
-            for name in METRIC_NAMES
+            for name in LEGACY_METRIC_NAMES
         }
         set_metric(compatibility_field_case, "alatyr_independent_findings", ["EVT-1"])
         set_metric(
@@ -1096,7 +1461,7 @@ def validate_fixture(failures: list[str]) -> None:
                 "evidence_kind": "event-derived",
                 "event_ids": ["EVT-1"] if name in {"alatyr_independent_findings", "alatyr_independent_dependency_checks"} else [],
             }
-            for name in METRIC_NAMES
+            for name in LEGACY_METRIC_NAMES
         }
         legacy["final_result"].pop("engineering_evidence_decision")
         legacy["final_result"].pop("claim_validation")
@@ -1145,13 +1510,18 @@ def main() -> int:
             "## Privacy Boundary",
             "## Final Result And External Projection",
             "immutable task evidence",
+            "`actor_role`",
+            "`actor_identity`",
+            "`actor_provenance`",
+            "`known-guidance-routing-failure`",
+            "Schema versions 1 through 3 remain readable",
             "`materiality_evaluations`",
             "`exact-reproducer`",
         ],
         failures,
     )
-    require_text(FLOW, ["## Modes", "explicit current user request", "derived-from-human", "contribution kind", "rejected-hypothesis", "prior_bindings", "continued investigation", "materiality", "exact reproducer"], failures)
-    require_text(GATE, ["non-canonical observability evidence", "logical scope", "Engineering Evidence decision", "direction-changing correction", "continued work", "materiality", "validation fidelity"], failures)
+    require_text(FLOW, ["## Modes", "explicit current user request", "actor role", "correction disposition", "known-guidance-routing-failure", "derived-from-human", "contribution kind", "rejected-hypothesis", "prior_bindings", "continued investigation", "materiality", "exact reproducer"], failures)
+    require_text(GATE, ["non-canonical observability evidence", "logical scope", "actor role", "correction", "known-guidance", "Engineering Evidence decision", "direction-changing correction", "continued work", "materiality", "validation fidelity"], failures)
     require_text(SUMMARY, ["# Alatyr Debug Summary", "Record schema and attribution model", "Human architectural interventions", "Final result binding", "Durable engineering evidence", "External projection", "Claim-validation fidelity", "Continuation lineage"], failures)
     require_text(
         POLICY,
@@ -1160,7 +1530,7 @@ def main() -> int:
     )
     require_text(
         RECORD_POLICY,
-        ["architectural_impacts", "decision_effect", "migration-limited", "schema version 3", "continuation lineage", "validation fidelity"],
+        ["actor_role", "actor_identity", "actor_provenance", "correction_disposition", "migration-limited", "schema version 4", "continuation lineage", "validation fidelity"],
         failures,
     )
 
@@ -1182,8 +1552,16 @@ def main() -> int:
             failures.append("debug record template kind is invalid")
         if record.get("evidence_classification") != "non-canonical-observability":
             failures.append("debug record template must be non-canonical")
-        if record.get("schema_version") != 3:
-            failures.append("debug record template must use lifecycle and materiality schema 3")
+        if record.get("schema_version") != 4:
+            failures.append("debug record template must use attribution and correction schema 4")
+        template_schema_errors = list(
+            jsonschema.Draft7Validator(schema).iter_errors(record)
+        )
+        if template_schema_errors:
+            failures.append(
+                "debug record template does not match schema version 4: "
+                + "; ".join(error.message for error in template_schema_errors)
+            )
         if "continuation" not in record:
             failures.append("debug record template must expose continuation lineage")
         if "engineering_evidence_decision" not in record.get("final_result", {}):
@@ -1199,6 +1577,7 @@ def main() -> int:
         }
         if modes != {"enabled", "inactive", "checkpointed", "redacted", "finalized", "compared", "rejected", "excluded"}:
             failures.append("conformance scenarios do not cover the required Debug Mode lifecycle")
+        validate_v4_fixture(schema, failures)
 
     validate_fixture(failures)
     if failures:

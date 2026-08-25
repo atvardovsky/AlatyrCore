@@ -78,9 +78,10 @@ Installed operation help:
 
 Available next actions:
 - `create-project-blueprint`: create or repair project source-of-truth docs from target evidence.
-- `project-knowledge`: explain, route, review, promote, reject, defer,
-  supersede, or revalidate reusable project knowledge without treating
-  historical evidence as current authority.
+- `project-knowledge`: explain, route, review, promote, reject, defer, record
+  registered decision-owner guidance or an explicit exception, supersede, or
+  revalidate reusable project guidance without treating historical evidence as
+  current authority.
 - `recheck-after-installation`: verify the installed adapter and report gaps.
 - `product-change`: run blueprint-driven change from intent through validation and evidence.
 - `logical-integrity-review`: check consistency across code, docs, tests, diagrams, prompts, skills, gates, and bridges.

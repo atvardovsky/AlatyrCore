@@ -43,8 +43,9 @@ An installed adapter should support these operation categories:
 - durable engineering-evidence capture, lookup, explanation, or repair for
   material tasks and prior compact decision records, including binding-state
   finalization and explicit lineage-preserving rebinds
-- project-knowledge proposal, human review, promotion, bounded automatic
-  delivery, freshness review, contradiction resolution, and supersession
+- Project Development Model guidance intake from reviewed engineering discovery
+  or verified decision-owner directive, bounded automatic delivery, exception
+  and coverage review, freshness review, contradiction resolution, and supersession
 - optional Debug Mode activation, checkpoint, finalization, and comparison with
   versioned attribution and a required durable-evidence decision
 - discussion diagram creation, comparison, or revision with a portable ASCII
@@ -546,7 +547,7 @@ claims before synchronizing the compact index.
 
 Use normalized event and outcome records rather than raw conversations. A
 completed result reports evidence-based timing, capture quality, independent
-Alatyr findings, human interventions, derived-after-human consequences,
+executor findings, human interventions, derived-after-human consequences,
 validation expansion, corrections, final result binding, and external
 projection. Cross-task comparison must account for task class, capture quality,
 observer effect, and independent result quality.

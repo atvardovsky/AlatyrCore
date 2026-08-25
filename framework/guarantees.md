@@ -79,6 +79,16 @@ The framework commits to giving an assistant a defined process for:
   declarative external extensions when the optional target module is enabled
 - recording what was checked, what changed, what was skipped, and what risk
   remains
+- qualifying human attention, review cycles, classified interventions, and
+  observable executor-active time with explicit observed, manual, estimated,
+  or unavailable evidence states instead of treating missing measurements as
+  zero
+- recording later acceptance, pull-request, merge, rejection, regression,
+  revert, or follow-up outcomes as new linked evidence without mutating a
+  completed Debug record
+- measuring bounded adapter-maintenance effort separately from project-change
+  effort through files touched, manual corrections, stale claims, routing
+  changes, validation time, and local deviations
 - adapting the same process across supported assistants through thin bridge
   files and wrappers
 - recording bridge capability differences when supported assistant behavior can
@@ -162,6 +172,14 @@ Machine checks can verify only deterministic repository facts, such as:
 - reviewed cost or speed improvements count as useful evidence only when
   accepted outcomes, hallucinated commands, validation errors, missed
   companion updates, rework, and unresolved consistency gaps do not regress
+- schema-versioned effectiveness reports can require evidence-qualified human
+  attention, review-cycle, and classified-intervention measurements; require
+  executor active time to be observed or unavailable; and reject incompatible
+  value and evidence-state combinations
+- delayed-outcome records can require backward links, append-only lineage, and
+  a declaration that completed source records were not modified, while
+  adapter-maintenance records can require the six bounded maintenance metrics
+  and their evidence states
 - normalized context receipts distinguish planned and resolved source estimates
   from observed host/provider telemetry, and reject exact context or token
   claims when that observed evidence is partial or unavailable
@@ -189,6 +207,13 @@ Machine checks do not prove the assistant understood the target project or
 that project facts are correct. Prepared prompts and static bridge checks also
 do not prove a vendor actually auto-loaded instructions or stayed within a
 runtime context budget.
+
+Machine checks do not prove that reported human attention was continuous, that
+manually recorded or estimated timing is exact, that a declared delayed
+external outcome occurred, or that an earlier completed record was never
+mutated. Those claims require the named telemetry, repository history, or
+external evidence. Measurement fields do not by themselves prove productivity
+or cost savings.
 
 Machine checks also cannot prove that an assistant interpreted conversational
 intent correctly or that the newest chat message authorized an action. They
@@ -359,6 +384,14 @@ The framework does not guarantee:
   that task assignment, review, or a claim grants protected-change approval
 - that a package validator can infer missing domain invariants, undeclared
   semantic effects, or accepted architecture from record structure
+- that elapsed duration equals active human or executor work, that unavailable
+  measurements equal zero, or that observed, manual, and estimated values are
+  interchangeable
+- that fewer review cycles or interventions prove better engineering quality
+- that a delayed-outcome record proves an external acceptance, pull request,
+  merge, rejection, regression, revert, or follow-up without its named evidence
+- that effectiveness or maintenance measurements alone support a precise
+  productivity ratio, percentage saving, or return-on-investment claim
 
 ## Failure Rule
 

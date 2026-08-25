@@ -272,16 +272,16 @@
     {
       "id": "project-knowledge",
       "title": "Project knowledge",
-      "summary": "Propose, review, promote, route, revalidate, supersede, or explain reusable project knowledge without replacing canonical owners.",
-      "use_when": ["reusable engineering conclusion needs human promotion review", "inspect what the project already knows about a selected area or contract", "knowledge freshness contradiction or supersession review"],
+      "summary": "Intake, review, promote, except, route, revalidate, supersede, or explain reusable project guidance without replacing canonical owners.",
+      "use_when": ["reusable engineering conclusion needs human promotion review", "a registered decision owner gives durable project guidance", "inspect what the project already knows about a selected area or contract", "guidance exception coverage freshness contradiction or supersession review"],
       "context_profiles": ["docs-local", "code-local", "business-change", "architecture-change", "data-change", "security-sensitive"],
       "required_module": "core-profile",
       "flow": ".ai/assistant/flows/project-knowledge.flow.md",
-      "minimum_inputs": ["knowledge subject candidate ID or selected knowledge ID", "propose review promote explain revalidate or supersede intent"],
+      "minimum_inputs": ["knowledge subject candidate ID selected guidance ID or direct decision-owner guidance", "propose intake review promote except explain revalidate or supersede intent"],
       "allowed_actions": ["read-only", "docs-only", "adapter-only", "code-and-tests", "full-with-approval"],
       "preview": "risk-gated",
-      "aliases": ["Alatyr knowledge", "Alatyr remember this", "Alatyr what do we know", "Alatyr revalidate knowledge"],
-      "final_evidence": ["candidate and human disposition when applicable", "canonical owner update and freshness evidence", "initial and refined selectors selected omitted warning and blocked IDs", "packet limits validation and residual risk"]
+      "aliases": ["Alatyr knowledge", "Alatyr remember this", "Alatyr record guidance", "Alatyr what do we know", "Alatyr revalidate knowledge"],
+      "final_evidence": ["candidate origin guidance kind and human disposition when applicable", "decision-owner authority or canonical-owner update exception precedence and freshness evidence", "coverage state initial and refined selectors selected omitted warning and blocked IDs", "packet limits validation and residual risk"]
     },
     {
       "id": "debug-mode",

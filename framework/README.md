@@ -37,12 +37,15 @@ sync, logical integrity review, and final evidence.
 - required proportional durable engineering-evidence capture with compact
   task/revision, invariant, root-cause, solution, regression, validation,
   privacy, and publication records for material work
-- required reviewed project-knowledge promotion and compact two-stage delivery,
-  with canonical owner verification, independent authority/freshness state,
-  contradiction handling, and bounded cross-assistant packets
+- required Project Development Model guidance intake and compact two-stage
+  delivery, with direct decision-owner and reviewed-discovery origins,
+  canonical owner verification, target-owned exception semantics, coverage
+  gaps, independent authority/freshness state, contradiction handling, and
+  bounded cross-assistant packets
   (installed owner: `.ai/framework/project-knowledge.md`)
-- optional task-local Debug Mode for evidence-based observation of independent
-  Alatyr findings, human supervision, causal follow-up, timing, and rework
+- optional task-local Debug Mode for evidence-based separation of executor,
+  Alatyr-system, automation, and human contributions, correction disposition,
+  causal follow-up, timing, and rework
 - optional large-task orchestration with bounded workstreams, context receipts,
   resumable checkpoints, and final convergence
 - optional capability-gated worker delegation with project-owned roles and
@@ -159,8 +162,9 @@ Those belong to a project contour or repository adapter.
   repository provenance.
 - `.ai/framework/engineering-evidence.md`: proportional project-owned capture
   of reusable material task conclusions without raw assistant reasoning.
-- `.ai/framework/debug-mode.md`: optional task-local observability for Alatyr
-  contribution, human supervision, timing, causal events, and result binding.
+- `.ai/framework/debug-mode.md`: optional task-local observability for executor,
+  Alatyr-system, automation, and human contributions, timing, causal events,
+  correction disposition, and result binding.
 - `.ai/framework/architecture-knowledge.md`: portable project architecture
   catalog, pattern discussion, alternative comparison, review, and
   documentation-maintenance contract.

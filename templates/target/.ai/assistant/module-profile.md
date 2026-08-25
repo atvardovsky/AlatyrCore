@@ -154,9 +154,9 @@ Required files:
 - `.ai/assistant/templates/project-knowledge-promotion.json`
 - `.ai/assistant/templates/project-knowledge-route-shard.json`
 
-Evidence: `{PROJECT_KNOWLEDGE_POLICY_INDEX_ROUTING_AND_PROMOTION_EVIDENCE_OR_GAP}`
+Evidence: `{PROJECT_KNOWLEDGE_POLICY_GUIDANCE_ORIGIN_COVERAGE_EXCEPTION_INDEX_ROUTING_AND_PROMOTION_EVIDENCE_OR_GAP}`
 Validation or review: `{PROJECT_KNOWLEDGE_VALIDATION_OR_REVIEW}`
-Approval needs: `{PROJECT_KNOWLEDGE_PROMOTION_AND_OWNER_UPDATE_APPROVAL_NEEDS}`
+Approval needs: `{PROJECT_KNOWLEDGE_PROMOTION_EXCEPTION_AND_OWNER_UPDATE_APPROVAL_NEEDS}`
 Residual risk: `{PROJECT_KNOWLEDGE_RESIDUAL_RISK}`
 
 ## Optional Modules
@@ -546,6 +546,8 @@ Owner or file: `.ai/assistant/templates/effectiveness-report.md`
 Required files:
 
 - `.ai/assistant/templates/effectiveness-report.md`
+- `.ai/assistant/templates/delayed-outcome-evidence.json`
+- `.ai/assistant/templates/adapter-maintenance-evidence.json`
 
 Reason: `{REASON}`
 Validation or review: `{VALIDATION_OR_REVIEW}`

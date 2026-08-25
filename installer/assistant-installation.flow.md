@@ -174,13 +174,15 @@ Classify every proposed target file:
     portable Markdown and JSON files are installed.
 13. Create target `.ai/project/contour.md` and target project
    source-of-truth docs from target facts.
-    Create the required project-knowledge policy, empty routing index, empty
+    Create the required Project Development Model guidance policy, empty routing index, empty
     promotion directory, and route-shard directory. Resolve canonical owner,
-    decision authority, retention, redaction, review cadence, and freshness
-    policy from target evidence. Do not promote historical records, code
-    observations, or installation conclusions automatically. Every accepted
-    reusable constraint must have a reviewed promotion record, a registered
-    canonical target owner, and a compact derived route shard.
+    decision authority, guidance kinds, target-owned narrowing and exception
+    semantics, coverage gaps, retention, redaction, review cadence, and
+    freshness policy from target evidence. Do not promote historical records,
+    code observations, or installation conclusions automatically. Every
+    accepted reusable constraint must have a reviewed engineering-discovery or
+    verified direct decision-owner record, a registered canonical target owner,
+    and a compact derived route shard.
     Create `.ai/project/engineering-evidence/README.md` and `index.json` as
     required core surfaces. Resolve the target owner, retained storage mode,
     external-contribution policy, redaction policy, and record access. Start
@@ -192,8 +194,11 @@ Classify every proposed target file:
     conversations, secrets, credentials, or personal data.
     Add `.ai/project/debug/README.md`, `index.json`, and an empty `records/`
     directory only when the target enables `debug-mode`. Resolve the owner,
-    non-canonical authority, storage, visibility, retention, redaction, and
-    external-patch policy. Start empty unless bounded historical records were
+    non-canonical authority, storage, visibility, retention, redaction,
+    external-patch policy, schema-4 executor/Alatyr-system/automation
+    attribution, target-local actor identity, runtime provenance, correction
+    disposition, and known-guidance evidence policy. Preserve schema versions 1
+    through 3 without reinterpretation. Start empty unless bounded historical records were
     explicitly validated; never reconstruct attribution from a final diff or
     raw conversation history.
     Add `.ai/project/consistency-map.json` only when the target enables bounded
@@ -286,7 +291,9 @@ Classify every proposed target file:
 16. Add installed-operation, operation-help, automatic operation-routing,
     current-scope action-authorization policy,
     project-knowledge routing policy, compact index, promotion and route-shard
-    templates, two-stage routing descriptor, flow, and gate,
+    templates, direct decision-owner intake, guidance kind and exception
+    semantics, mapped/known-gap/unknown coverage, two-stage semantic routing
+    descriptor, flow, and gate,
     read-only adapter-health, risk-gated pre-change preview,
     diagram-discussion flow, ASCII layout template, and presentation template
     when the diagrams module is enabled,
@@ -344,15 +351,17 @@ Classify every proposed target file:
     Add the Debug Mode overlay, operation, flow, gate, machine record, and
     compact summary only when the optional module is enabled. Record explicit
     activation/expiry, immutable completion and linked continuation, privacy,
-    capture-quality, lifecycle-bounded timing, versioned actor/causality/
-    intervention/contribution attribution,
+    capture-quality, lifecycle-bounded timing, schema-4 executor,
+    Alatyr-system, automation, human, and external-maintainer roles, target-local
+    actor identity, runtime provenance, correction disposition,
     structured architectural impacts, direction-change hypothesis/replacement
     causality, metric derivation, typed evidence-event roles, complete
     materiality evaluation, canonical skip preservation, claim-validation
     fidelity, durable Engineering Evidence decision and exact reference
     resolution, repository-binding state/lineage, external projection, active-
-    versus-finalized comparison, and validator policy. Use schema version 3 for
-    new records and preserve older schemas as migration-limited evidence.
+    versus-finalized comparison, and validator policy. Use schema version 4 for
+    new records and preserve schema versions 1 through 3 as migration-limited
+    evidence without reinterpreting legacy `alatyr` attribution.
     Enabling the module does not activate observation for a task.
     When the target uses multiple AI infrastructure items, add
     `.ai/assistant/ai-infrastructure-router.json`, the recommendation flow and
@@ -393,6 +402,10 @@ Classify every proposed target file:
     compare aliases through the same catalog on every supported assistant
     surface. Bridges do not store activation state or duplicate privacy and
     attribution policy.
+    When effectiveness metrics are enabled, add the effectiveness report,
+    delayed-outcome evidence, and adapter-maintenance evidence templates. Keep
+    delayed outcomes append-only and maintenance effort separate from product
+    work; unavailable timing remains unknown.
 18. Add prompts, skills, diagrams, or consistency checks only when they solve
     target friction, can be maintained, and have been adapted to target facts.
 19. Run target validation that exists. Do not invent commands.
@@ -402,9 +415,11 @@ Classify every proposed target file:
 21. Apply the durable engineering-evidence capture decision. For installation
     itself, capture only when reusable non-obvious target-adaptation knowledge
     would otherwise be lost; otherwise record the specific skip reason.
-22. Apply the project-knowledge disposition gate to any reusable conclusion.
-    Keep evidence historical unless target decision authority explicitly
-    accepts a promotion and the canonical owner plus route shard are updated.
+22. Apply the project-knowledge disposition gate to any reusable conclusion or
+    direct decision-owner guidance. Keep engineering evidence historical unless
+    target decision authority explicitly accepts a promotion and the canonical
+    owner plus route shard are updated. Accept a direct directive only after
+    verifying target authority, scope, and its durable decision reference.
     Record proposed, rejected, deferred, superseded, or unresolved conclusions
     without turning them into active constraints.
 23. Classify final evidence as `current-state`, `historical-record`, or `mixed`.
@@ -506,8 +521,10 @@ Report:
 - target repository inspected
 - framework core files installed or adapted
 - project adapter files rewritten from target facts
-- project-knowledge owner/policy, empty or preserved promotion state, compact
-  index and route shards, two-stage routing, canonical-owner freshness, and
+- Project Development Model guidance owner/policy, empty or preserved
+  promotion and direct-decision state, compact index and route shards,
+  guidance kinds, target-owned exceptions, coverage gaps, two-stage semantic
+  routing, canonical-owner freshness, and
   current installation promotion decisions
 - consistency map enabled, skipped, or blocked with relationship gaps recorded
 - existing files preserved, skipped, or overwritten with approval

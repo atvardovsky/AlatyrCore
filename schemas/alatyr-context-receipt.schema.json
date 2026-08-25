@@ -58,6 +58,9 @@
         "output_tokens": {"$ref": "#/$defs/countOrUnknown"},
         "evidence": {"type": "string", "minLength": 1}
       }
+    },
+    "semantic_guidance": {
+      "$ref": "#/$defs/semanticGuidanceReceipt"
     }
   },
   "$defs": {
@@ -79,6 +82,195 @@
         },
         "approximate_words": {"$ref": "#/$defs/countOrUnknown"}
       }
+    },
+    "semanticGuidanceReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "planned", "resolved", "observed"],
+      "properties": {
+        "schema_version": {"const": 1},
+        "planned": {
+          "allOf": [
+            {"$ref": "#/$defs/semanticGuidanceStage"},
+            {
+              "properties": {
+                "status": {"const": "recorded"}
+              }
+            }
+          ]
+        },
+        "resolved": {"$ref": "#/$defs/resolvedSemanticGuidanceStage"},
+        "observed": {"$ref": "#/$defs/observedSemanticGuidanceStage"}
+      }
+    },
+    "semanticGuidanceStage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "identities", "bundle_digest"],
+      "properties": {
+        "status": {"enum": ["recorded", "unavailable"]},
+        "identities": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/semanticGuidanceIdentity"}
+        },
+        "bundle_digest": {"$ref": "#/$defs/semanticGuidanceBundleDigest"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"status": {"const": "unavailable"}}},
+          "then": {
+            "properties": {
+              "identities": {"maxItems": 0},
+              "bundle_digest": {
+                "properties": {"value": {"const": "unavailable"}}
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"status": {"const": "recorded"}}},
+          "then": {
+            "properties": {
+              "bundle_digest": {
+                "properties": {
+                  "value": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "resolvedSemanticGuidanceStage": {
+      "allOf": [
+        {"$ref": "#/$defs/semanticGuidanceStage"},
+        {
+          "properties": {
+            "identities": {
+              "items": {"$ref": "#/$defs/resolvedSemanticGuidanceIdentity"}
+            }
+          }
+        }
+      ]
+    },
+    "observedSemanticGuidanceStage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_level",
+        "source",
+        "identities",
+        "bundle_digest",
+        "evidence"
+      ],
+      "properties": {
+        "evidence_level": {"enum": ["exact", "partial", "unavailable"]},
+        "source": {
+          "enum": [
+            "host-telemetry",
+            "provider-usage",
+            "assistant-reported",
+            "manual",
+            "unavailable"
+          ]
+        },
+        "identities": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/semanticGuidanceIdentity"}
+        },
+        "bundle_digest": {"$ref": "#/$defs/semanticGuidanceBundleDigest"},
+        "evidence": {"type": "string", "minLength": 1}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"evidence_level": {"const": "unavailable"}}},
+          "then": {
+            "properties": {
+              "source": {"const": "unavailable"},
+              "identities": {"maxItems": 0},
+              "bundle_digest": {
+                "properties": {"value": {"const": "unavailable"}}
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "evidence_level": {"enum": ["exact", "partial"]}
+            }
+          },
+          "then": {
+            "properties": {
+              "identities": {
+                "items": {"$ref": "#/$defs/resolvedSemanticGuidanceIdentity"}
+              },
+              "bundle_digest": {
+                "properties": {
+                  "value": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {"properties": {"evidence_level": {"const": "exact"}}},
+          "then": {"properties": {"source": {"const": "host-telemetry"}}}
+        }
+      ]
+    },
+    "semanticGuidanceIdentity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "guidance_id",
+        "canonical_owner",
+        "owner_digest",
+        "authority",
+        "freshness",
+        "applicability"
+      ],
+      "properties": {
+        "guidance_id": {"type": "string", "minLength": 1},
+        "canonical_owner": {"type": "string", "minLength": 1},
+        "owner_digest": {
+          "oneOf": [
+            {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+            {"const": "unknown"}
+          ]
+        },
+        "authority": {"type": "string", "minLength": 1},
+        "freshness": {"type": "string", "minLength": 1},
+        "applicability": {"type": "string", "minLength": 1}
+      }
+    },
+    "semanticGuidanceBundleDigest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "algorithm", "value"],
+      "properties": {
+        "schema_version": {"const": 1},
+        "algorithm": {"const": "sha256"},
+        "value": {
+          "oneOf": [
+            {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+            {"const": "unavailable"}
+          ]
+        }
+      }
+    },
+    "resolvedSemanticGuidanceIdentity": {
+      "allOf": [
+        {"$ref": "#/$defs/semanticGuidanceIdentity"},
+        {
+          "properties": {
+            "owner_digest": {
+              "type": "string",
+              "pattern": "^sha256:[0-9a-f]{64}$"
+            }
+          }
+        }
+      ]
     }
   }
 }

@@ -24,6 +24,16 @@ CANONICAL_PROFILES = {
     "framework-upgrade",
 }
 
+GUIDANCE_KINDS = {
+    "development-rule",
+    "architectural-intent",
+    "reviewed-knowledge",
+    "validation-contract",
+    "known-restriction",
+}
+
+PRECEDENCE_KINDS = {"base-rule", "narrower-rule", "authorized-exception"}
+
 
 @dataclass(frozen=True)
 class KnowledgeFinding:
@@ -295,6 +305,17 @@ def validate_project_knowledge(
             entries[knowledge_id] = entry
             entry_paths[knowledge_id] = relpath
 
+            if shard.get("schema_version") == 2:
+                guidance_kind = entry.get("guidance_kind")
+                origin = entry.get("provenance", {}).get("origin")
+                precedence = entry.get("precedence")
+                if guidance_kind not in GUIDANCE_KINDS:
+                    findings.append(KnowledgeFinding("error", "PROJECT_GUIDANCE_KIND", f"{knowledge_id} lacks a valid guidance kind", relpath))
+                if origin not in {"engineering-discovery", "decision-owner-directive"}:
+                    findings.append(KnowledgeFinding("error", "PROJECT_GUIDANCE_ORIGIN", f"{knowledge_id} lacks a valid guidance origin", relpath))
+                if not isinstance(precedence, dict) or precedence.get("kind") not in PRECEDENCE_KINDS:
+                    findings.append(KnowledgeFinding("error", "PROJECT_GUIDANCE_PRECEDENCE", f"{knowledge_id} lacks a valid precedence record", relpath))
+
     max_words = index.get("routing_policy", {}).get("max_summary_words", 0)
     for knowledge_id, entry in entries.items():
         relpath = entry_paths[knowledge_id]
@@ -387,6 +408,14 @@ def validate_project_knowledge(
                 or review.get("decision_reference") != authority.get("decision_reference")
                 or set(candidate.get("source_engineering_evidence_ids", []))
                 != set(entry.get("provenance", {}).get("engineering_evidence_ids", []))
+                or (
+                    promotion.get("schema_version") == 2
+                    and candidate.get("origin") != entry.get("provenance", {}).get("origin")
+                )
+                or (
+                    promotion.get("schema_version") == 2
+                    and candidate.get("guidance_kind") != entry.get("guidance_kind")
+                )
             ):
                 findings.append(
                     KnowledgeFinding(
@@ -438,6 +467,46 @@ def validate_project_knowledge(
             other = entries.get(other_id)
             if other is None or knowledge_id not in other.get("relations", {}).get("supersedes", []):
                 findings.append(KnowledgeFinding("error", "PROJECT_KNOWLEDGE_SUPERSESSION_RECIPROCITY", f"{knowledge_id} superseded by {other_id} without reciprocal link", entry_paths[knowledge_id]))
+
+        precedence = entry.get("precedence")
+        if isinstance(precedence, dict):
+            kind = precedence.get("kind")
+            base_id = precedence.get("base_guidance_id")
+            if kind == "base-rule" and base_id is not None:
+                findings.append(KnowledgeFinding("error", "PROJECT_GUIDANCE_BASE_REFERENCE", f"base guidance {knowledge_id} must not reference another base", entry_paths[knowledge_id]))
+            if kind in {"narrower-rule", "authorized-exception"}:
+                base = entries.get(base_id)
+                if base is None or base_id == knowledge_id:
+                    findings.append(KnowledgeFinding("error", "PROJECT_GUIDANCE_BASE_REFERENCE", f"{knowledge_id} references a missing or invalid base guidance ID", entry_paths[knowledge_id]))
+                elif base.get("fact_type") != entry.get("fact_type"):
+                    findings.append(KnowledgeFinding("error", "PROJECT_GUIDANCE_BASE_FACT_TYPE", f"{knowledge_id} and base {base_id} have different fact types", entry_paths[knowledge_id]))
+                for field in ["scope", "revalidation_triggers", "validation"]:
+                    if not precedence.get(field):
+                        findings.append(KnowledgeFinding("error", "PROJECT_GUIDANCE_EXCEPTION_SCOPE", f"{knowledge_id} {field} must be explicit", entry_paths[knowledge_id]))
+                for field in ["authority_reference", "rationale"]:
+                    if not _concrete(precedence.get(field), allow_placeholders):
+                        findings.append(KnowledgeFinding("error", "PROJECT_GUIDANCE_EXCEPTION_AUTHORITY", f"{knowledge_id} {field} must be explicit", entry_paths[knowledge_id]))
+
+    if index.get("schema_version") == 2:
+        coverage = index.get("coverage", {})
+        for dimension in ["areas", "fact_types"]:
+            seen_subjects: set[str] = set()
+            for item in coverage.get(dimension, []):
+                subject = item.get("subject")
+                status = item.get("status")
+                guidance_ids = item.get("guidance_ids", [])
+                if subject in seen_subjects:
+                    findings.append(KnowledgeFinding("error", "PROJECT_GUIDANCE_COVERAGE_DUPLICATE", f"duplicate {dimension} coverage subject {subject}", index_relpath))
+                seen_subjects.add(subject)
+                missing_ids = sorted(set(guidance_ids) - set(entries))
+                if missing_ids:
+                    findings.append(KnowledgeFinding("error", "PROJECT_GUIDANCE_COVERAGE_REFERENCE", f"{dimension} coverage {subject} references missing guidance IDs {missing_ids}", index_relpath))
+                if status == "mapped" and not guidance_ids:
+                    findings.append(KnowledgeFinding("error", "PROJECT_GUIDANCE_COVERAGE_STATE", f"mapped {dimension} coverage {subject} has no guidance IDs", index_relpath))
+                if status in {"known-gap", "unknown"} and guidance_ids:
+                    findings.append(KnowledgeFinding("error", "PROJECT_GUIDANCE_COVERAGE_STATE", f"{status} {dimension} coverage {subject} must not imply mapped guidance", index_relpath))
+                if status == "known-gap" and not item.get("gap"):
+                    findings.append(KnowledgeFinding("error", "PROJECT_GUIDANCE_COVERAGE_GAP", f"known-gap {dimension} coverage {subject} lacks a gap explanation", index_relpath))
 
     return findings
 
@@ -510,10 +579,12 @@ def select_project_knowledge(
     for score, entry in scored:
         projected = {
             "knowledge_id": entry["knowledge_id"],
+            "guidance_kind": entry.get("guidance_kind", "reviewed-knowledge"),
             "summary": entry["summary"],
             "canonical_owner": entry["authority"]["canonical_owner"],
             "authority_state": entry["authority"]["state"],
             "freshness_state": entry["freshness"]["state"],
+            "precedence_kind": entry.get("precedence", {}).get("kind", "base-rule"),
             "score": score,
         }
         authority = entry["authority"]["state"]

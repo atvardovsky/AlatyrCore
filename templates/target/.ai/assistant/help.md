@@ -54,10 +54,10 @@ Default routing:
   work, apply the lazy durable engineering-evidence gate. Small local work may
   skip with a specific reason; do not load unrelated evidence records.
 - For non-trivial work, apply bounded project-knowledge routing after profile
-  and area selection and refine it after concrete facts or source surfaces are
-  known. Profile match alone is insufficient. Read canonical owners, deliver
-  only accepted-current items as constraints, and treat contradictions as
-  blockers. Promotion always requires target-owned review.
+  and area selection, then refine it after concrete facts are known. Read
+  canonical owners, deliver only accepted-current constraints, and block on
+  contradictions. Promotion requires target review; direct guidance also needs
+  registered decision-owner authority, ownership, and exception scope.
 - When the optional `debug-mode` module is enabled, activate it only from an
   explicit current-task or current-session request. Checkpoint material events,
   classify architectural impacts and direction replacements structurally, and
@@ -121,8 +121,8 @@ When `debug-mode` is enabled, use `Enable Alatyr Debug Mode for this task` to
 start explicit task-local observation, `Alatyr debug status` for read-only
 state, `Alatyr debug checkpoint` for a material event checkpoint, `Alatyr debug
 summary` to finalize or summarize, and `Disable Alatyr Debug Mode` to stop.
-Debug records measure Alatyr and supervision; they are not architecture
-authority and never grant code, commit, publish, or live-action permission.
+Debug records measure execution, Alatyr-system activity, and supervision; they
+are not authority and never grant code, commit, publish, or live permission.
 Detailed operations and aliases are in
 `.ai/assistant/help-reference.md`.
 

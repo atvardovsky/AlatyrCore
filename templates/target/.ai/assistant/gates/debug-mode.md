@@ -11,12 +11,23 @@ When Debug Mode is requested or active, verify:
 - events are material, normalized, evidenced, ordered, and causally attributable
 - the initial task request remains activation metadata and is not counted as a
   human intervention without a specific investigative effect
-- version-2 events separate actor, causal class, intervention kind,
+- new schema-version-4 events separate actor role, target-local identity,
+  provenance, causal class, intervention kind, correction disposition,
   contribution kind, and category
+- actor roles distinguish `human`, `executor`, `alatyr-system`,
+  `external-maintainer`, and `automation`; executor work is not attributed to
+  Alatyr system behavior, and provider/model/runtime facts remain provenance
+- versions 1 through 3 retain their historical attribution semantics and
+  legacy `alatyr_independent_*` metric names without reinterpretation
 - derived events have the matching earlier human or external intervention
   ancestor; independent findings have no intervention ancestor
-- validation requests are not counted as implementation corrections, and
-  external input is not counted as a maintainer correction unless typed as one
+- every human or external-maintainer intervention has one correction
+  disposition with compact evidence
+- known-guidance routing and compliance failures name the applicable guidance
+  IDs; new-guidance candidates remain non-canonical until normal review
+- scope changes trigger authorization review; validation requests and scope
+  changes are not counted as implementation corrections, and external input is
+  not counted as a maintainer correction unless typed as one
 - new events state decision effect and structured architectural impacts
 - human or external-maintainer architectural impacts set
   `architectural_supervision: true`, while non-human events do not claim human

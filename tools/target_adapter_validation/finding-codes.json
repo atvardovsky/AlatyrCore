@@ -6388,6 +6388,105 @@
       ]
     },
     {
+      "code": "PROJECT_GUIDANCE_BASE_FACT_TYPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_GUIDANCE_BASE_REFERENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_GUIDANCE_COVERAGE_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_GUIDANCE_COVERAGE_GAP",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_GUIDANCE_COVERAGE_REFERENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_GUIDANCE_COVERAGE_STATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_GUIDANCE_EXCEPTION_AUTHORITY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_GUIDANCE_EXCEPTION_SCOPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_GUIDANCE_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_GUIDANCE_ORIGIN",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_GUIDANCE_PRECEDENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
       "code": "PROJECT_KNOWLEDGE_CONFLICT_RECIPROCITY",
       "levels": [
         "error"

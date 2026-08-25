@@ -1,5 +1,5 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "record_kind": "alatyr-debug-session",
   "evidence_classification": "non-canonical-observability",
   "debug_id": "{DEBUG_ID}",
@@ -43,11 +43,11 @@
   "metrics": {
     "human_interventions": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
     "human_architectural_interventions": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
-    "alatyr_independent_findings": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
-    "derived_findings_after_human": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
-    "alatyr_independent_dependency_checks": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
+    "executor_independent_findings": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
+    "executor_derived_findings_after_human": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
+    "executor_independent_dependency_checks": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
     "human_requested_dependency_checks": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
-    "derived_dependency_expansions_after_human": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
+    "executor_derived_dependency_expansions_after_human": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
     "hypotheses_tested": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
     "hypotheses_rejected": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
     "implementation_revisions": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
@@ -55,7 +55,13 @@
     "validation_expansions": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
     "regression_scenarios_added": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
     "maintainer_corrections": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
-    "post_review_rework": {"value": null, "evidence_kind": "unavailable", "event_ids": []}
+    "post_review_rework": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
+    "new_guidance_candidates": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
+    "known_guidance_routing_failures": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
+    "known_guidance_compliance_failures": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
+    "task_local_corrections": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
+    "scope_changes": {"value": null, "evidence_kind": "unavailable", "event_ids": []},
+    "validation_requests": {"value": null, "evidence_kind": "unavailable", "event_ids": []}
   },
   "final_result": {
     "summary": "{CURRENT_OR_FINAL_RESULT_SUMMARY}",

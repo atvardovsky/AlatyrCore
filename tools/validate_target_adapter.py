@@ -9107,10 +9107,10 @@ class Validator:
                         ".ai/alatyr.yaml",
                     )
             contract = manifest.scalars.get(("project_knowledge", "contract_version"))
-            if contract is None or contract.value != "1":
+            if contract is None or contract.value != "2":
                 self.error(
                     "PROJECT_KNOWLEDGE_CONTRACT_VERSION",
-                    "project_knowledge.contract_version must be 1",
+                    "project_knowledge.contract_version must be 2",
                     ".ai/alatyr.yaml",
                 )
 
@@ -9168,10 +9168,10 @@ class Validator:
                         ".ai/alatyr.yaml",
                     )
             contract = manifest.scalars.get(("debug_mode", "contract_version"))
-            if contract is None or contract.value != "3":
+            if contract is None or contract.value != "4":
                 self.error(
                     "DEBUG_MODE_CONTRACT_VERSION",
-                    "debug_mode.contract_version must be 3",
+                    "debug_mode.contract_version must be 4",
                     ".ai/alatyr.yaml",
                 )
 

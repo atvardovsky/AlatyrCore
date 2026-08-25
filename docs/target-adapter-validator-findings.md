@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1040
+Catalog entries: 1051
 
 ## Codes
 
@@ -1430,6 +1430,28 @@ Catalog entries: 1040
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `PROFILE_MARKDOWN_MISSING`
   Level: warning. Source: `tools/validate_target_adapter.py`.
+- `PROJECT_GUIDANCE_BASE_FACT_TYPE`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_GUIDANCE_BASE_REFERENCE`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_GUIDANCE_COVERAGE_DUPLICATE`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_GUIDANCE_COVERAGE_GAP`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_GUIDANCE_COVERAGE_REFERENCE`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_GUIDANCE_COVERAGE_STATE`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_GUIDANCE_EXCEPTION_AUTHORITY`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_GUIDANCE_EXCEPTION_SCOPE`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_GUIDANCE_KIND`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_GUIDANCE_ORIGIN`
+  Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_GUIDANCE_PRECEDENCE`
+  Level: error. Source: `tools/project_knowledge.py`.
 - `PROJECT_KNOWLEDGE_CONFLICT_RECIPROCITY`
   Level: error. Source: `tools/project_knowledge.py`.
 - `PROJECT_KNOWLEDGE_CONTRACT_VERSION`

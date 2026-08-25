@@ -335,7 +335,11 @@
       "requires": [],
       "rule_ids": ["ALATYR-EVIDENCE-001"],
       "framework_files": ["effectiveness-metrics.md"],
-      "target_files": [".ai/assistant/templates/effectiveness-report.md"],
+      "target_files": [
+        ".ai/assistant/templates/effectiveness-report.md",
+        ".ai/assistant/templates/delayed-outcome-evidence.json",
+        ".ai/assistant/templates/adapter-maintenance-evidence.json"
+      ],
       "check_ids": ["effectiveness-benchmark", "captured-effectiveness-results"]
     },
     "debug-mode": {

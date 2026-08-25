@@ -53,9 +53,10 @@ Every accepted installation should provide:
 - final evidence format
 - durable engineering-evidence capture decision, compact index, target storage
   policy, and record validation for material tasks
-- project-knowledge promotion review, canonical-owner update, compact sharded
-  routing index, two-stage bounded delivery, freshness, conflict, supersession,
-  and paired reuse evidence
+- project-knowledge candidate or registered decision-owner guidance intake,
+  promotion review, canonical-owner update, explicit exception and precedence
+  evidence, compact sharded routing index, coverage states, two-stage bounded
+  delivery, freshness, conflict, supersession, and paired reuse evidence
 
 If any required core item is missing, the adapter can still exist, but it must
 report the missing item as a gap before claiming maturity.
@@ -250,7 +251,9 @@ Reject module-profile work that:
   primary-agent convergence
 - enables Debug Mode without explicit per-scope activation, target-owned
   privacy/retention/publication policy, non-canonical authority, causal event
-  attribution, event-derived metric validation, bounded context, and expiry
+  attribution that separates executor, Alatyr-system, automation, actor
+  identity, and runtime provenance, correction-disposition evidence,
+  event-derived metric validation, bounded context, and expiry
 - enables a consistency map without target-owned fact IDs, relationship
   coverage, or staleness handling
 - enables architecture knowledge without a project owner, compact catalog,

@@ -212,16 +212,21 @@ Default allowed actions: `read-only` for inspection; use `docs-only`,
 permits record changes.
 
 Operation: `project-knowledge`
-Use when: proposing, reviewing, promoting, routing, revalidating, superseding,
-or explaining reusable project knowledge.
+Use when: proposing reusable engineering knowledge, recording durable guidance
+from a registered decision owner, reviewing or promoting a candidate, recording
+an explicit exception, or routing, revalidating, superseding, or explaining
+accepted project guidance.
 Flow: `.ai/assistant/flows/project-knowledge.flow.md`
-Minimum input: knowledge subject, candidate ID, or selected knowledge ID, plus
-the requested lifecycle action.
-Aliases: `Alatyr knowledge`, `Alatyr remember this`, `Alatyr what do we know`,
-`Alatyr revalidate knowledge`.
+Minimum input: knowledge subject, candidate ID, selected guidance ID, or direct
+decision-owner guidance, plus the requested lifecycle action.
+Aliases: `Alatyr knowledge`, `Alatyr remember this`, `Alatyr record guidance`,
+`Alatyr what do we know`, `Alatyr revalidate knowledge`.
 Default allowed actions: `read-only` for lookup and proposals. Canonical-owner,
-promotion-record, or route changes require the matching current-scope modify
-authorization and normal approval policy.
+promotion-record, exception, coverage, or route changes require the matching
+current-scope modify authorization and normal approval policy. A direct human
+statement is authoritative only when target evidence identifies the speaker as
+the registered decision owner for that fact type and the durable record binds
+the statement to its canonical owner.
 
 Operation: `debug-mode`
 Use when: explicitly enabling non-canonical Alatyr performance observation for

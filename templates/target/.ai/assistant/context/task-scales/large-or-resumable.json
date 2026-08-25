@@ -17,14 +17,28 @@
   "expand_when": [
     "workstream dependency changes",
     "checkpoint evidence is stale",
+    "resolved semantic guidance bundle differs from the last accepted checkpoint",
     "cross-workstream contract conflict",
     "approval scope no longer covers applied changes"
   ],
-  "budget_behavior": "load only the active workstream context and its fact owners and dependencies",
+  "budget_behavior": "keep ordered semantic guidance identities within route packet limits; load only active workstream context and its fact owners and dependencies, then only new or changed owners when bundle revalidation differs",
+  "semantic_guidance_revalidation": {
+    "receipt_contract": "alatyr-context-receipt semantic_guidance schema 1",
+    "comparison_surface": "current resolved ordered bundle digest versus last accepted checkpoint digest",
+    "required_before": [
+      "protected implementation",
+      "material decisions",
+      "final validation",
+      "final evidence"
+    ],
+    "on_difference": "stop the affected phase, record the identity delta, load only changed owners, refresh risk approval dependencies and validation, then checkpoint an accepted resolved bundle",
+    "claim_boundary": "bundle identity is not proof of model comprehension or compliance"
+  },
   "final_evidence": [
     "activation reason",
     "workstream and dependency state",
-    "context receipts and checkpoints",
+    "planned resolved and observed semantic guidance identities and ordered bundle digests",
+    "revalidation gate results and checkpoints",
     "global logical integrity result",
     "final convergence and residual risk"
   ]

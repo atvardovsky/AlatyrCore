@@ -42,11 +42,15 @@ Track:
 - rework count
 - residual risks reported
 - time to usable result
+- human active-attention time when it can be bounded without storing raw chat,
+  private reasoning, or unrelated activity
+- human review cycles and interventions classified by why attention was needed
+- executor active time only when host or provider telemetry observes it
 - protected changes blocked before approval
 - activated change packages, evidence quality, and reapproval events
 - implementation discoveries or corrections that invalidated scope
 - duration to usable result when comparable timing is available
-- human architectural interventions, independent Alatyr findings, findings
+- human architectural interventions, independent executor findings, findings
   derived after human direction, independently initiated versus human-requested
   dependency checks, maintainer corrections, and post-review rework when an
   explicitly activated Debug Mode record provides normalized event evidence;
@@ -58,6 +62,99 @@ Debug Mode is one optional evidence source for these measures. Compare only
 completed records with compatible task classes, capture coverage, timing evidence,
 observer effect, and independent result-quality review. A lower intervention
 count alone is not proof of improved architecture reasoning.
+
+## Measurement Evidence States
+
+Every human-attention, review-cycle, intervention, executor-time, and adapter-
+maintenance measurement must carry one evidence state:
+
+- `observed`: captured directly by a named host, provider, repository, or
+  deterministic tool
+- `manual`: recorded by a named human from bounded task evidence
+- `estimated`: derived through a stated method that is not direct observation
+- `unavailable`: not measured; record the reason instead of substituting zero
+
+The recorded value and evidence state must agree. An unavailable measurement
+has no numeric value. A numeric estimate must state its method and must not be
+presented as observed telemetry. Executor active time permits only `observed`
+or `unavailable`: human recollection, wall-clock duration, and task start/end
+timestamps are not executor-active-time telemetry.
+
+## Human Attention And Interventions
+
+For comparable pilots, record:
+
+- active human-attention seconds
+- review-cycle count
+- classified intervention count
+
+Classify each intervention as one of:
+
+- `new-guidance-candidate`
+- `known-guidance-routing-failure`
+- `known-guidance-compliance-failure`
+- `task-local`
+- `scope-change`
+- `validation-request`
+- `other`
+
+Classification is measurement evidence, not automatic project authority. A
+new project judgment still requires the target's normal ownership and
+acceptance process. A routing or application failure should remain distinct
+from a newly discovered rule so effectiveness reports do not falsely claim
+project learning.
+
+Review cycles and intervention counts measure required human involvement, not
+the quality or value of that involvement. Compare them only across compatible
+task classes, acceptance criteria, execution contracts, and independent
+quality reviews.
+
+## Delayed Outcome Evidence
+
+Acceptance by a decision owner, pull-request activity, merge, rejection,
+regression, revert, or follow-up may occur after a task report or Debug record
+is completed. Record each later event as a new immutable
+`alatyr-delayed-outcome-evidence` record that links back to the completed
+operation and any relevant evidence records.
+
+Never reopen or mutate a completed Debug record to add a delayed outcome.
+Later events form an append-only chain through prior outcome IDs. A schema can
+check the declared link and immutability fields, but repository history or an
+external evidence source is still required to establish that the linked event
+actually occurred and the earlier record remained unchanged.
+
+Delayed outcomes are optional and do not block completion of the original
+task. Missing later evidence means the long-term outcome is unknown, not that
+the work was accepted or rejected.
+
+## Adapter Maintenance Evidence
+
+Framework installation, update, and adapter-recheck work may record one compact
+`alatyr-adapter-maintenance-evidence` record containing:
+
+- files touched
+- manual corrections
+- stale claims found
+- routing changes
+- validation time
+- local deviations requiring review
+
+Each metric uses the same evidence-state contract. Record measurement scope,
+evidence references, and limitations. Keep this evidence separate from normal
+product-change effort so adapter overhead can be compared without treating
+project implementation files as framework maintenance.
+
+## Claim Boundaries
+
+Do not derive a productivity score, output-per-minute value, percentage saving,
+or return-on-investment claim from these fields alone. Generated volume is not
+engineering output, elapsed duration is not active work, and fewer
+interventions can indicate either better guidance or a missed review.
+
+Cost or speed comparisons require compatible tasks, accepted outcomes,
+non-regressing quality measures, comparable measurement states, and explicit
+limitations. Manual and estimated timing can support investigation, but not a
+precision claim equivalent to observed telemetry.
 
 ## Reporting Shape
 
@@ -79,12 +176,21 @@ Consistency relationships reviewed: <count or unknown>
 Companion surfaces checked: <count or unknown>
 Unresolved consistency gaps: <count or unknown>
 Duration seconds: <count or unknown>
+Human active-attention seconds: <count or unknown>
+Human attention evidence state: <observed/manual/estimated/unavailable>
+Review cycles: <count or unknown>
+Review-cycle evidence state: <observed/manual/estimated/unavailable>
+Classified interventions: <classification=count with evidence state>
+Executor active seconds: <count or unknown>
+Executor-time evidence state: <observed/unavailable>
 Input tokens: <count or unknown>
 Output tokens: <count or unknown>
 Estimated cost and currency: <number/currency or unknown>
 Cost evidence: <billing export/host estimate/unknown>
 Residual risks: <summary>
 Outcome: <accepted/rework/blocked>
+Delayed outcome evidence: <separate record IDs or none-yet>
+Adapter maintenance evidence: <separate record IDs or not-applicable>
 ```
 
 ## Source-Repository Tooling
@@ -116,4 +222,11 @@ Reject effectiveness claims that:
 - ignore increased context cost
 - hide skipped validation
 - count generated volume as quality
+- treat wall-clock duration as executor active time
+- treat unavailable measurements as zero
+- compare observed, manual, and estimated values without qualification
+- mutate a completed Debug record to append a later outcome
+- infer acceptance from the absence of delayed outcome evidence
+- publish precise productivity ratios without comparable accepted-quality
+  evidence
 - treat one successful run as proof of broad reliability

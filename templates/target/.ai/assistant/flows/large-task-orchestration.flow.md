@@ -46,27 +46,40 @@ convergence.
    gate; large-task activation alone does not require a package.
 4. Record operation scope, allowed actions, changed facts, canonical owners,
    relationship impact closure when enabled, approvals, and the initial
-   context receipt.
+   context receipt. Include planned, resolved, and observed ordered semantic
+   guidance identities and each bundle digest's algorithm and schema version.
 5. Split work into coherent workstreams with explicit dependencies, allowed
    surfaces, outputs, validation, and completion evidence.
 6. Load only the active workstream's context and its owner/dependency context.
 7. Update status and create checkpoints after local validation, approval
    boundaries, handoffs, or before a context reset.
 8. On resume, compare checkpoint claims with current repository evidence and
-   invalidate stale assumptions before continuing.
-9. After local workstreams finish, reconcile cross-workstream contracts and
+   invalidate stale assumptions before continuing. Re-resolve the current
+   semantic guidance bundle and compare it with the checkpoint's last accepted
+   resolved digest.
+9. Repeat that resolved-bundle comparison before protected implementation,
+   every material decision, final validation, and final evidence. When it
+   differs or is unavailable, stop the affected phase, record added, removed,
+   reordered, or changed identities, load only changed canonical owners, and
+   refresh risk, approval, dependencies, validation, and invalidated decisions
+   before accepting a new checkpoint.
+10. After local workstreams finish, reconcile cross-workstream contracts and
    run one global logical integrity review over the combined repair set,
    re-derived invariants, and related review-item clusters. When scoped
    approval applies, enforce the complete combined Git change set against the
    explicitly selected machine-readable approval records.
-10. Confirm approval coverage, run target validation, and report final
+11. Confirm approval coverage, run target validation, and report final
     convergence, skipped checks, and residual risk.
-11. When a change package is active, finalize its semantic scope, companion
+12. When a change package is active, finalize its semantic scope, companion
     decisions, material corrections, and repository provenance after global
     convergence.
-12. When subagents were used, reconcile packet scope, requested and actual
+13. When subagents were used, reconcile packet scope, requested and actual
     model or unverified status, validation, fallback, rejected output, and
     primary review before accepting any workstream result.
+
+The bundle comparison proves the identity of recorded semantic metadata at the
+stated planned, resolved, or observed evidence level. It does not prove that a
+model read, understood, remembered, or followed that guidance.
 
 ## Final Evidence
 
@@ -77,7 +90,11 @@ Report:
 - changed facts and canonical owners
 - relationship closure, selected/skipped edges, and missing coverage
 - workstream status and dependency result
-- context receipts and budget expansions
+- planned, resolved, and observed semantic guidance identities and ordered
+  bundle digests
+- revalidation results before protected implementation, material decisions,
+  final validation, and final evidence
+- context receipts and bounded budget expansions
 - checkpoints and resumed assumptions
 - approval coverage and target validation
 - global logical integrity result
@@ -94,4 +111,7 @@ Reject or revise work that:
 - copies full source-of-truth content into the packet
 - starts a blocked workstream before its dependency or approval is satisfied
 - resumes from packet prose without checking current repository evidence
+- treats a bundle digest as proof of model comprehension or compliance
+- crosses a required semantic revalidation gate after the resolved bundle
+  changed without refreshing affected owners, decisions, and controls
 - claims global completion from workstream-local validation only

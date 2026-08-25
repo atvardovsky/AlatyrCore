@@ -18,17 +18,44 @@ alatyr_doc:
     - data-change
     - security-sensitive
 ---
-# Project Knowledge Promotion And Delivery
+# Project Development Guidance And Knowledge Delivery
 
-This rule closes the project-learning loop between a material engineering
-discovery and a later related task. It lets an assistant propose reusable
-knowledge, requires project-owned review before promotion, and routes a small
-derived packet to later developers or assistants.
+This rule provides the derived guidance layer of the Project Development Model.
+It closes the loop from either a material engineering discovery or an explicit
+decision-owner directive to later related work. It lets an assistant propose
+reusable knowledge, lets an authorized project decision owner record guidance
+directly, requires project-owned acceptance, and routes a small derived packet
+to later developers or assistants.
 
 Project knowledge is not automatically project authority. Only an accepted
 fact recorded by its canonical project owner represents project intent. A
 historical evidence record, repeated implementation pattern, assistant
 conclusion, or newer timestamp does not become project will by itself.
+
+The guidance layer is an envelope and routing projection, not a new source of
+truth. Architecture, business policy, validation, security, API, data, and
+other project facts remain owned by the canonical sources registered for their
+fact types.
+
+## Guidance Kinds And Required Identity
+
+Classify every version-2 routed item as one of:
+
+- `development-rule`: an accepted way the target expects engineering work to
+  be performed
+- `architectural-intent`: a recorded design boundary or rationale owned by an
+  architecture source
+- `reviewed-knowledge`: a reusable conclusion accepted after engineering
+  discovery
+- `validation-contract`: a required proof or check owned by target validation
+  policy
+- `known-restriction`: an accepted limitation, compatibility boundary, or
+  prohibited direction
+
+Each item needs a stable ID, kind, canonical owner, decision owner, authority,
+rationale, applicability, freshness evidence, validation, exception or
+narrowing state, and supersession lineage. The route may summarize those facts
+for selection, but it must retain owner references and content digests.
 
 ## Responsibility Boundaries
 
@@ -36,7 +63,7 @@ Keep these surfaces separate:
 
 - durable engineering evidence records what a completed investigation found
 - a promotion record preserves the human disposition of one reusable
-  conclusion
+  conclusion or the intake of one authorized decision-owner directive
 - the source-of-truth registry identifies the canonical owner and conflict
   resolver for the accepted fact type
 - the canonical target source owns the accepted project fact
@@ -50,7 +77,7 @@ decision.
 
 ## Promotion Lifecycle
 
-Use this lifecycle for a reusable conclusion:
+Use one of these entry paths for reusable guidance:
 
 ```text
 engineering discovery
@@ -58,6 +85,12 @@ engineering discovery
         -> human review
         -> accepted / narrowed / rejected / deferred
         -> canonical owner update when accepted
+        -> reviewed routing projection
+        -> bounded delivery to a later task
+
+authorized decision-owner directive
+        -> authority and scope verification
+        -> canonical owner update
         -> reviewed routing projection
         -> bounded delivery to a later task
 ```
@@ -69,16 +102,20 @@ recur, or an explanation of why a constraint exists. Do not propose line
 numbers, obvious declarations, complete source summaries, or facts that are
 already cheaply and reliably routed from their canonical owner.
 
-Each proposal should identify:
+Each proposal or directive should identify:
 
 - the candidate statement and reuse rationale
 - knowledge kind, fact type, fact IDs, project areas, and task profiles
 - dependency, contract, path, symbol, and issue-lineage hints when applicable
 - subsystem and architecture-item relationships when applicable
-- source engineering-evidence IDs and repository evidence
+- origin as `engineering-discovery` or `decision-owner-directive`
+- source engineering-evidence IDs for an engineering discovery, plus bounded
+  repository evidence for either origin
 - proposed canonical owner and decision owner, or an explicit ownership gap
 
-Promotion requires a human or target-authorized decision owner. The reviewer
+Promotion requires a target-authorized decision owner. A direct directive is
+valid only when the target can identify that authority and a durable decision
+reference; an arbitrary human message does not become project guidance. The reviewer
 may accept, narrow, reject, or defer the candidate. Acceptance is incomplete
 until the canonical owner is updated or already contains the exact accepted
 fact. A promotion record cannot itself substitute for that owner.
@@ -188,6 +225,30 @@ When two applicable items conflict:
 A superseded item remains historical. Do not delete it merely to make the
 current index appear consistent.
 
+## Narrowing And Authorized Exceptions
+
+Do not impose one global precedence order across project fact types. The
+registered target owner and conflict resolver determine whether guidance can be
+narrowed or excepted.
+
+A routed item identifies itself as a `base-rule`, `narrower-rule`, or
+`authorized-exception`. A narrower rule or exception must name its base
+guidance ID, bounded applicability scope, target authority reference,
+rationale, validation, revalidation triggers, and expiry when the target uses
+one. A lower-authority item cannot override a higher-authority owner or a
+safety boundary. An absent or expired exception is not permission.
+
+## Coverage And Known Gaps
+
+The compact index may publish a derived coverage view by project area and fact
+type. Use only `mapped`, `known-gap`, and `unknown` states. `Mapped` entries
+name existing guidance IDs. `Known-gap` entries state the missing evidence or
+owner. `Unknown` means coverage has not been established.
+
+Do not calculate a completeness percentage or infer that an area has no rule
+because no routing entry exists. The coverage view is discovery evidence, not
+project authority.
+
 ## Cost And Evidence
 
 Knowledge delivery is successful only when it preserves quality while reducing
@@ -195,6 +256,8 @@ repeated orientation. Record observable evidence rather than hidden reasoning:
 
 - candidate, current, warning, and blocked items supplied
 - selected item IDs and canonical owners reverified
+- guidance kinds, origins, precedence states, and authorized exceptions
+- mapped, known-gap, and unknown coverage relevant to the task
 - orientation files opened and repeated known-fact searches when observable
 - dependency source reopened only to recover a retained fact, and repeated
   discovery of a recorded invariant
@@ -233,6 +296,7 @@ Report:
 Reject or repair project-knowledge work that:
 
 - promotes an assistant conclusion without target-owned review
+- treats an arbitrary message as an authorized decision-owner directive
 - treats an evidence or promotion record as the canonical owner
 - routes observed, proposed, stale, contradicted, historical, or superseded
   knowledge as a current accepted constraint
@@ -241,5 +305,6 @@ Reject or repair project-knowledge work that:
 - silently resolves conflicts by recency, frequency, or agent consensus
 - marks an item current after its required owner digest or expiry changed
 - duplicates large canonical explanations into routing summaries
+- treats derived coverage as proof that unindexed guidance does not exist
 - claims rediscovery savings without a comparable paired run
 - stores prohibited private, secret, or raw reasoning content

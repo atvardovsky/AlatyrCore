@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "record_kind": "alatyr-adapter-maintenance-evidence",
+  "evidence_classification": "historical-record",
+  "maintenance_id": "{ADAPTER_MAINTENANCE_ID}",
+  "operation_id": "{INSTALL_UPDATE_OR_RECHECK_OPERATION_ID}",
+  "recorded_at": "{ISO_8601}",
+  "target_revision": "{TARGET_REVISION}",
+  "maintenance_scope": "{ADAPTER_MAINTENANCE_SCOPE}",
+  "metrics": {
+    "files_touched": {
+      "value": "{COUNT_OR_UNKNOWN}",
+      "evidence_state": "{OBSERVED_MANUAL_ESTIMATED_OR_UNAVAILABLE}",
+      "evidence_reference": "{SOURCE_METHOD_OR_UNAVAILABLE_REASON}"
+    },
+    "manual_corrections": {
+      "value": "{COUNT_OR_UNKNOWN}",
+      "evidence_state": "{OBSERVED_MANUAL_ESTIMATED_OR_UNAVAILABLE}",
+      "evidence_reference": "{SOURCE_METHOD_OR_UNAVAILABLE_REASON}"
+    },
+    "stale_claims": {
+      "value": "{COUNT_OR_UNKNOWN}",
+      "evidence_state": "{OBSERVED_MANUAL_ESTIMATED_OR_UNAVAILABLE}",
+      "evidence_reference": "{SOURCE_METHOD_OR_UNAVAILABLE_REASON}"
+    },
+    "routing_changes": {
+      "value": "{COUNT_OR_UNKNOWN}",
+      "evidence_state": "{OBSERVED_MANUAL_ESTIMATED_OR_UNAVAILABLE}",
+      "evidence_reference": "{SOURCE_METHOD_OR_UNAVAILABLE_REASON}"
+    },
+    "validation_time_seconds": {
+      "value": "{COUNT_OR_UNKNOWN}",
+      "evidence_state": "{OBSERVED_MANUAL_ESTIMATED_OR_UNAVAILABLE}",
+      "evidence_reference": "{SOURCE_METHOD_OR_UNAVAILABLE_REASON}"
+    },
+    "local_deviations": {
+      "value": "{COUNT_OR_UNKNOWN}",
+      "evidence_state": "{OBSERVED_MANUAL_ESTIMATED_OR_UNAVAILABLE}",
+      "evidence_reference": "{SOURCE_METHOD_OR_UNAVAILABLE_REASON}"
+    }
+  },
+  "validation": {
+    "status": "{PASSED_FAILED_PARTIAL_OR_NOT_RUN}",
+    "evidence": [
+      "{VALIDATION_EVIDENCE_OR_NONE}"
+    ]
+  },
+  "limitations": [
+    "{MEASUREMENT_LIMITATION_OR_NONE}"
+  ]
+}

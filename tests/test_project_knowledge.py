@@ -21,6 +21,7 @@ def entry(
 ) -> dict[str, Any]:
     return {
         "knowledge_id": knowledge_id,
+        "guidance_kind": "reviewed-knowledge",
         "summary": f"Knowledge {knowledge_id}",
         "fact_ids": [f"fact.{knowledge_id}"],
         "authority": {
@@ -28,6 +29,7 @@ def entry(
             "canonical_owner": "docs/architecture.md",
         },
         "freshness": {"state": freshness},
+        "precedence": {"kind": "base-rule"},
         "applicability": {
             "task_profiles": ["code-local"],
             "project_areas": areas or ["orders"],
@@ -119,6 +121,16 @@ class ProjectKnowledgeSelectionTests(unittest.TestCase):
             [item["knowledge_id"] for item in selected["warnings"]],
             ["stale"],
         )
+
+    def test_delivery_preserves_guidance_kind_and_precedence(self) -> None:
+        selected = select_project_knowledge(
+            [entry("one")],
+            {"task_profile": "code-local", "project_areas": ["orders"]},
+            stage="initial",
+            limit=1,
+        )
+        self.assertEqual(selected["constraints"][0]["guidance_kind"], "reviewed-knowledge")
+        self.assertEqual(selected["constraints"][0]["precedence_kind"], "base-rule")
 
 
 if __name__ == "__main__":

@@ -11,7 +11,7 @@
     "privacy", "residual_uncertainty", "limitations"
   ],
   "properties": {
-    "schema_version": {"enum": [1, 2, 3]},
+    "schema_version": {"enum": [1, 2, 3, 4]},
     "record_kind": {"const": "alatyr-debug-session"},
     "evidence_classification": {"const": "non-canonical-observability"},
     "debug_id": {"type": "string", "minLength": 1},
@@ -70,36 +70,7 @@
     "events": {
       "type": "array"
     },
-    "metrics": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": [
-        "human_interventions", "human_architectural_interventions",
-        "alatyr_independent_findings", "derived_findings_after_human",
-        "alatyr_independent_dependency_checks", "human_requested_dependency_checks",
-        "derived_dependency_expansions_after_human", "hypotheses_tested",
-        "hypotheses_rejected", "implementation_revisions",
-        "implementation_corrections_after_human", "validation_expansions",
-        "regression_scenarios_added", "maintainer_corrections", "post_review_rework"
-      ],
-      "properties": {
-        "human_interventions": {"$ref": "#/definitions/metric"},
-        "human_architectural_interventions": {"$ref": "#/definitions/metric"},
-        "alatyr_independent_findings": {"$ref": "#/definitions/metric"},
-        "derived_findings_after_human": {"$ref": "#/definitions/metric"},
-        "alatyr_independent_dependency_checks": {"$ref": "#/definitions/metric"},
-        "human_requested_dependency_checks": {"$ref": "#/definitions/metric"},
-        "derived_dependency_expansions_after_human": {"$ref": "#/definitions/metric"},
-        "hypotheses_tested": {"$ref": "#/definitions/metric"},
-        "hypotheses_rejected": {"$ref": "#/definitions/metric"},
-        "implementation_revisions": {"$ref": "#/definitions/metric"},
-        "implementation_corrections_after_human": {"$ref": "#/definitions/metric"},
-        "validation_expansions": {"$ref": "#/definitions/metric"},
-        "regression_scenarios_added": {"$ref": "#/definitions/metric"},
-        "maintainer_corrections": {"$ref": "#/definitions/metric"},
-        "post_review_rework": {"$ref": "#/definitions/metric"}
-      }
-    },
+    "metrics": {"type": "object"},
     "final_result": {"type": "object"},
     "publication": {
       "type": "object",
@@ -147,6 +118,7 @@
         "not": {"required": ["continuation"]},
         "properties": {
           "events": {"items": {"$ref": "#/definitions/eventV1"}},
+          "metrics": {"$ref": "#/definitions/legacyMetrics"},
           "final_result": {"$ref": "#/definitions/finalResultV1"}
         }
       }
@@ -157,6 +129,7 @@
         "not": {"required": ["continuation"]},
         "properties": {
           "events": {"items": {"$ref": "#/definitions/eventV2"}},
+          "metrics": {"$ref": "#/definitions/legacyMetrics"},
           "final_result": {"$ref": "#/definitions/finalResultV2"}
         }
       }
@@ -168,6 +141,19 @@
         "properties": {
           "continuation": {"$ref": "#/definitions/continuationV3"},
           "events": {"items": {"$ref": "#/definitions/eventV2"}},
+          "metrics": {"$ref": "#/definitions/legacyMetrics"},
+          "final_result": {"$ref": "#/definitions/finalResultV3"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"schema_version": {"const": 4}}},
+      "then": {
+        "required": ["continuation"],
+        "properties": {
+          "continuation": {"$ref": "#/definitions/continuationV3"},
+          "events": {"items": {"$ref": "#/definitions/eventV4"}},
+          "metrics": {"$ref": "#/definitions/metricsV4"},
           "final_result": {"$ref": "#/definitions/finalResultV3"}
         }
       }
@@ -211,6 +197,75 @@
         "value": {"type": ["integer", "null"], "minimum": 0},
         "evidence_kind": {"enum": ["event-derived", "estimated", "unavailable"]},
         "event_ids": {"$ref": "#/definitions/strings"}
+      }
+    },
+    "legacyMetrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "human_interventions", "human_architectural_interventions",
+        "alatyr_independent_findings", "derived_findings_after_human",
+        "alatyr_independent_dependency_checks", "human_requested_dependency_checks",
+        "derived_dependency_expansions_after_human", "hypotheses_tested",
+        "hypotheses_rejected", "implementation_revisions",
+        "implementation_corrections_after_human", "validation_expansions",
+        "regression_scenarios_added", "maintainer_corrections", "post_review_rework"
+      ],
+      "properties": {
+        "human_interventions": {"$ref": "#/definitions/metric"},
+        "human_architectural_interventions": {"$ref": "#/definitions/metric"},
+        "alatyr_independent_findings": {"$ref": "#/definitions/metric"},
+        "derived_findings_after_human": {"$ref": "#/definitions/metric"},
+        "alatyr_independent_dependency_checks": {"$ref": "#/definitions/metric"},
+        "human_requested_dependency_checks": {"$ref": "#/definitions/metric"},
+        "derived_dependency_expansions_after_human": {"$ref": "#/definitions/metric"},
+        "hypotheses_tested": {"$ref": "#/definitions/metric"},
+        "hypotheses_rejected": {"$ref": "#/definitions/metric"},
+        "implementation_revisions": {"$ref": "#/definitions/metric"},
+        "implementation_corrections_after_human": {"$ref": "#/definitions/metric"},
+        "validation_expansions": {"$ref": "#/definitions/metric"},
+        "regression_scenarios_added": {"$ref": "#/definitions/metric"},
+        "maintainer_corrections": {"$ref": "#/definitions/metric"},
+        "post_review_rework": {"$ref": "#/definitions/metric"}
+      }
+    },
+    "metricsV4": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "human_interventions", "human_architectural_interventions",
+        "executor_independent_findings", "executor_derived_findings_after_human",
+        "executor_independent_dependency_checks", "human_requested_dependency_checks",
+        "executor_derived_dependency_expansions_after_human", "hypotheses_tested",
+        "hypotheses_rejected", "implementation_revisions",
+        "implementation_corrections_after_human", "validation_expansions",
+        "regression_scenarios_added", "maintainer_corrections", "post_review_rework",
+        "new_guidance_candidates", "known_guidance_routing_failures",
+        "known_guidance_compliance_failures", "task_local_corrections",
+        "scope_changes", "validation_requests"
+      ],
+      "properties": {
+        "human_interventions": {"$ref": "#/definitions/metric"},
+        "human_architectural_interventions": {"$ref": "#/definitions/metric"},
+        "executor_independent_findings": {"$ref": "#/definitions/metric"},
+        "executor_derived_findings_after_human": {"$ref": "#/definitions/metric"},
+        "executor_independent_dependency_checks": {"$ref": "#/definitions/metric"},
+        "human_requested_dependency_checks": {"$ref": "#/definitions/metric"},
+        "executor_derived_dependency_expansions_after_human": {"$ref": "#/definitions/metric"},
+        "hypotheses_tested": {"$ref": "#/definitions/metric"},
+        "hypotheses_rejected": {"$ref": "#/definitions/metric"},
+        "implementation_revisions": {"$ref": "#/definitions/metric"},
+        "implementation_corrections_after_human": {"$ref": "#/definitions/metric"},
+        "validation_expansions": {"$ref": "#/definitions/metric"},
+        "regression_scenarios_added": {"$ref": "#/definitions/metric"},
+        "maintainer_corrections": {"$ref": "#/definitions/metric"},
+        "post_review_rework": {"$ref": "#/definitions/metric"},
+        "new_guidance_candidates": {"$ref": "#/definitions/metric"},
+        "known_guidance_routing_failures": {"$ref": "#/definitions/metric"},
+        "known_guidance_compliance_failures": {"$ref": "#/definitions/metric"},
+        "task_local_corrections": {"$ref": "#/definitions/metric"},
+        "scope_changes": {"$ref": "#/definitions/metric"},
+        "validation_requests": {"$ref": "#/definitions/metric"}
       }
     },
     "eventV1": {
@@ -272,6 +327,127 @@
         "post_review_rework": {"type": "boolean"},
         "hypothesis_outcome": {"enum": ["confirmed", "rejected", "unresolved", "not-applicable"]}
       }
+    },
+    "actorIdentityV4": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["actor_id", "identity_kind"],
+      "properties": {
+        "actor_id": {"type": "string", "minLength": 1},
+        "identity_kind": {"enum": ["named", "pseudonymous", "service", "unavailable"]}
+      }
+    },
+    "actorProvenanceV4": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_kind", "provider", "product", "model", "runtime", "evidence"],
+      "properties": {
+        "evidence_kind": {"enum": ["observed", "declared", "unavailable"]},
+        "provider": {"type": ["string", "null"], "minLength": 1},
+        "product": {"type": ["string", "null"], "minLength": 1},
+        "model": {"type": ["string", "null"], "minLength": 1},
+        "runtime": {"type": ["string", "null"], "minLength": 1},
+        "evidence": {"$ref": "#/definitions/strings"}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"evidence_kind": {"const": "unavailable"}}},
+          "then": {
+            "properties": {
+              "provider": {"const": null},
+              "product": {"const": null},
+              "model": {"const": null},
+              "runtime": {"const": null},
+              "evidence": {"maxItems": 0}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"evidence_kind": {"enum": ["observed", "declared"]}}},
+          "then": {
+            "properties": {"evidence": {"minItems": 1}},
+            "anyOf": [
+              {"properties": {"provider": {"type": "string"}}},
+              {"properties": {"product": {"type": "string"}}},
+              {"properties": {"model": {"type": "string"}}},
+              {"properties": {"runtime": {"type": "string"}}}
+            ]
+          }
+        }
+      ]
+    },
+    "eventV4": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event_id", "sequence", "occurred_at", "actor_role",
+        "actor_identity", "actor_provenance", "causal_class",
+        "intervention_kind", "correction_disposition",
+        "related_guidance_ids", "correction_evidence", "contribution_kind",
+        "category", "summary", "material_effect", "evidence",
+        "caused_by_event_ids", "architectural_supervision",
+        "architectural_impacts", "decision_effect", "dependency_expansion",
+        "validation_expansion", "post_review_rework", "hypothesis_outcome"
+      ],
+      "properties": {
+        "event_id": {"type": "string", "minLength": 1},
+        "sequence": {"type": "integer", "minimum": 1},
+        "occurred_at": {"$ref": "#/definitions/timeValue"},
+        "actor_role": {"enum": ["human", "executor", "alatyr-system", "external-maintainer", "automation"]},
+        "actor_identity": {"$ref": "#/definitions/actorIdentityV4"},
+        "actor_provenance": {"$ref": "#/definitions/actorProvenanceV4"},
+        "causal_class": {"enum": ["independent-within-scope", "intervention", "derived-from-human", "derived-from-external", "derived-from-executor", "derived-from-alatyr-system", "derived-from-automation"]},
+        "intervention_kind": {"enum": ["not-applicable", "line-direction", "scope-expansion", "constraint", "correction", "validation-request"]},
+        "correction_disposition": {"enum": ["not-applicable", "new-guidance-candidate", "known-guidance-routing-failure", "known-guidance-compliance-failure", "task-local", "scope-change", "validation-request"]},
+        "related_guidance_ids": {"$ref": "#/definitions/strings"},
+        "correction_evidence": {"$ref": "#/definitions/strings"},
+        "contribution_kind": {"enum": ["finding", "decision", "implementation", "validation", "coordination"]},
+        "category": {"enum": ["architecture-area", "invariant", "dependency", "execution-path", "risk", "test", "regression-scenario", "hypothesis", "validation", "implementation-revision", "review-correction", "other"]},
+        "summary": {"type": "string", "minLength": 1},
+        "material_effect": {"type": "string", "minLength": 1},
+        "evidence": {"$ref": "#/definitions/nonEmptyStrings"},
+        "caused_by_event_ids": {"$ref": "#/definitions/strings"},
+        "architectural_supervision": {"type": "boolean"},
+        "architectural_impacts": {"$ref": "#/definitions/architecturalImpacts"},
+        "decision_effect": {"enum": ["not-assessed", "none", "confirms-direction", "changes-direction"]},
+        "dependency_expansion": {"type": "boolean"},
+        "validation_expansion": {"type": "boolean"},
+        "post_review_rework": {"type": "boolean"},
+        "hypothesis_outcome": {"enum": ["confirmed", "rejected", "unresolved", "not-applicable"]}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"causal_class": {"const": "intervention"}}},
+          "then": {
+            "properties": {
+              "actor_role": {"enum": ["human", "external-maintainer"]},
+              "intervention_kind": {"enum": ["line-direction", "scope-expansion", "constraint", "correction", "validation-request"]},
+              "correction_disposition": {"enum": ["new-guidance-candidate", "known-guidance-routing-failure", "known-guidance-compliance-failure", "task-local", "scope-change", "validation-request"]},
+              "correction_evidence": {"minItems": 1}
+            }
+          },
+          "else": {
+            "properties": {
+              "intervention_kind": {"const": "not-applicable"},
+              "correction_disposition": {"const": "not-applicable"},
+              "related_guidance_ids": {"maxItems": 0},
+              "correction_evidence": {"maxItems": 0}
+            }
+          }
+        },
+        {
+          "if": {"properties": {"correction_disposition": {"enum": ["known-guidance-routing-failure", "known-guidance-compliance-failure"]}}},
+          "then": {"properties": {"related_guidance_ids": {"minItems": 1}}}
+        },
+        {
+          "if": {"properties": {"intervention_kind": {"const": "validation-request"}}},
+          "then": {"properties": {"correction_disposition": {"const": "validation-request"}}}
+        },
+        {
+          "if": {"properties": {"intervention_kind": {"const": "scope-expansion"}}},
+          "then": {"properties": {"correction_disposition": {"const": "scope-change"}}}
+        }
+      ]
     },
     "architecturalImpacts": {
       "type": "array",

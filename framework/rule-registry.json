@@ -5,7 +5,7 @@
       "category": "CONTEXT",
       "owner": "framework/context-profiles.md",
       "rule_ids": ["ALATYR-CONTEXT-001"],
-      "derived_surfaces": ["README source context", "installation source context", "target context profiles", "target context router", "task-scale overlays", "operation packet context receipts", "consistency relationship routing", "session bootstrap instructions", "AI infrastructure capability and recommendation routing"]
+      "derived_surfaces": ["README source context", "installation source context", "target context profiles", "target context router", "task-scale overlays", "operation packet context receipts", "ordered semantic-guidance identity and bundle receipts", "long-task semantic revalidation", "consistency relationship routing", "session bootstrap instructions", "AI infrastructure capability and recommendation routing"]
     },
     {
       "category": "SOURCE",
@@ -143,7 +143,7 @@
       "category": "LIFECYCLE",
       "owner": "framework/lifecycle.md",
       "rule_ids": ["ALATYR-LIFECYCLE-001"],
-      "derived_surfaces": ["version files", "installed framework pack", "migration notes", "framework update recheck", "changelog"]
+      "derived_surfaces": ["version files", "installed framework pack", "migration notes", "framework update recheck", "project-guidance contract migration", "Debug attribution migration", "effectiveness and maintenance evidence migration", "changelog"]
     },
     {
       "category": "ENGINEERING_EVIDENCE",
@@ -155,19 +155,19 @@
       "category": "PROJECT_KNOWLEDGE",
       "owner": "framework/project-knowledge.md",
       "rule_ids": ["ALATYR-KNOWLEDGE-001"],
-      "derived_surfaces": ["target knowledge policy and routing index", "promotion and route-shard templates", "two-stage context routing", "knowledge operation and gate", "target validation", "shared-will conformance", "paired rediscovery benchmark"]
+      "derived_surfaces": ["target Project Development Model guidance policy and routing index", "engineering-discovery and direct decision-owner intake", "promotion and route-shard templates", "guidance kind and exception semantics", "coverage and known-gap projection", "two-stage semantic context routing", "knowledge operation and gate", "target validation", "shared-will conformance", "paired rediscovery benchmark"]
     },
     {
       "category": "DEBUG",
       "owner": "framework/debug-mode.md",
       "rule_ids": ["ALATYR-DEBUG-001"],
-      "derived_surfaces": ["optional target debug index and records", "task-local activation and expiry", "normalized event attribution", "capture-quality and timing evidence", "event-derived supervision metrics", "clean upstream projection", "compact debug summary", "target validation", "installation and migration planning"]
+      "derived_surfaces": ["optional target debug index and records", "task-local activation and expiry", "executor versus Alatyr-system attribution", "actor identity and runtime provenance", "correction disposition and guidance-failure routing", "capture-quality and timing evidence", "event-derived supervision metrics", "clean upstream projection", "compact debug summary", "target validation", "installation and migration planning"]
     },
     {
       "category": "EVIDENCE",
       "owner": "framework/guarantees.md",
       "rule_ids": ["ALATYR-EVIDENCE-001"],
-      "derived_surfaces": ["final evidence", "process commitments", "conformance reports", "effectiveness reports", "operation packets"]
+      "derived_surfaces": ["final evidence", "process commitments", "conformance reports", "effectiveness reports", "evidence-qualified human attention and executor timing", "later-linked delayed outcomes", "adapter-maintenance evidence", "operation packets"]
     }
   ],
   "rules": [
@@ -175,7 +175,7 @@
       "id": "ALATYR-CONTEXT-001",
       "category": "CONTEXT",
       "canonical_source": "framework/context-profiles.md",
-      "summary": "Use a generated hash-bound bootstrap index, routed gate fragments, and the smallest task profile through an aligned context router; route the target registry and consistency map together for semantic work while keeping redundant portable explanation conditional; apply bounded two-stage project-knowledge delivery from profile plus a stronger area, dependency, fact, contract, path, symbol, or issue signal; separate total, portable, and reserved target context budgets; distinguish planned selection, resolved routing, and observed host/provider context evidence without presenting source estimates as model telemetry; record expansion only when boundaries or conflicts require it; prefer changed-fact, upgrade-impact, AI-item, finalization-only engineering-evidence, and explicitly activated Debug Mode routing when available; and keep unrelated knowledge, optional modules, evidence history, debug records, delegated execution, complete checklists, and full team detail lazy.",
+      "summary": "Use a generated hash-bound bootstrap index, routed gate fragments, and the smallest task profile through an aligned context router; route the target registry and consistency map together for semantic work while keeping redundant portable explanation conditional; apply bounded two-stage project-guidance delivery from profile plus a stronger area, dependency, fact, contract, path, symbol, or issue signal; record planned, resolved, and observably delivered ordered guidance identities with deterministic bundle digests while never claiming model comprehension; revalidate changed bundles before protected implementation, material decisions, final validation, and final evidence; separate total, portable, and reserved target context budgets; record expansion only when boundaries or conflicts require it; and keep unrelated knowledge, optional modules, evidence history, debug records, delegated execution, complete checklists, and full team detail lazy.",
       "applies_to": ["all installed adapter tasks"],
       "enforcement": "required"
     },
@@ -183,7 +183,7 @@
       "id": "ALATYR-SOURCE-001",
       "category": "SOURCE",
       "canonical_source": "framework/source-of-truth-registry.md",
-      "summary": "Choose fact owners from the target source-of-truth registry, record invariant and dependency constraints, require every live registry Fact Type to reference one unique exact-matching node when consistency mapping is enabled, preserve bounded code-comment ownership, derived generated-output boundaries, vocabulary links to canonical fact owners, target test-strategy and accepted test-first-policy ownership, and target team-policy versus coordination-record ownership, and otherwise use contour ownership plus a manual invariant closure while reporting missing coverage.",
+      "summary": "Choose fact owners from the target source-of-truth registry, record invariant and dependency constraints, require every live registry Fact Type to reference one unique exact-matching node when consistency mapping is enabled, keep Project Development Model guidance routes and decision records derived from registered owners with fact-type-specific exception authority, preserve bounded code-comment ownership, generated-output boundaries, vocabulary links, target test-strategy ownership, and target team-policy versus coordination-record ownership, and otherwise use contour ownership plus manual invariant closure while reporting missing coverage.",
       "applies_to": ["logical integrity", "documentation sync", "blueprint-driven changes"],
       "enforcement": "required"
     },
@@ -263,15 +263,15 @@
       "id": "ALATYR-KNOWLEDGE-001",
       "category": "PROJECT_KNOWLEDGE",
       "canonical_source": "framework/project-knowledge.md",
-      "summary": "Turn expensive reusable engineering conclusions into human-reviewed project knowledge without transferring authority to evidence records: require accepted facts to update registered canonical owners, keep a compact derived sharded routing index with independent authority and freshness states, deliver only accepted current items through bounded initial and refined task routes, surface stale items as warnings and contradictions as owner-routed blockers, preserve reciprocal supersession lineage, and measure rediscovery avoidance only through comparable paired evidence.",
-      "applies_to": ["material task finalization", "project knowledge promotion", "non-trivial task context routing", "knowledge revalidation", "knowledge contradiction and supersession", "cross-assistant constraint conformance", "rediscovery benchmarks"],
-      "enforcement": "required core promotion decision and bounded delivery contract"
+      "summary": "Route target-owned Project Development Model guidance without creating a second source of truth: accept either reviewed engineering discoveries or verified direct decision-owner directives, require accepted facts to update registered canonical owners, classify guidance kind and origin, model target-authorized narrowing and exceptions without a global precedence order, expose mapped, known-gap, and unknown coverage without fake completeness, keep a compact derived sharded index with independent authority and freshness states, and deliver only accepted current items through bounded initial and refined task routes.",
+      "applies_to": ["material task finalization", "direct decision-owner guidance", "project knowledge promotion", "non-trivial task context routing", "guidance narrowing and exceptions", "guidance coverage", "knowledge revalidation", "knowledge contradiction and supersession", "cross-assistant constraint conformance", "rediscovery benchmarks"],
+      "enforcement": "required core guidance intake, promotion decision, and bounded delivery contract"
     },
     {
       "id": "ALATYR-DEBUG-001",
       "category": "DEBUG",
       "canonical_source": "framework/debug-mode.md",
-      "summary": "When optional Debug Mode is explicitly enabled for a current task or session, record compact non-canonical events with separate actor, causal class, intervention kind, contribution kind, and category; keep completed records immutable and continue related work through newly activated lineage; enforce lifecycle-bounded event time; distinguish validation requests from corrections; preserve direction-change causality; type supporting evidence-event roles; evaluate every durable-evidence materiality condition; require registry-backed canonical preservation before skipping; classify exact, representative, partial, unavailable, or not-applicable validation claims; bind results with typed Git objects and lineage; derive metrics from versioned predicates; preserve privacy, authorization, historical comparability, and clean upstream boundaries; and expire activation at the logical-scope boundary.",
+      "summary": "When optional Debug Mode is explicitly enabled for a current task or session, record compact non-canonical events that separate human, executor, Alatyr-system, external-maintainer, and automation roles from actor identity and provider/product/model/runtime provenance; classify interventions as new guidance, known-guidance routing or compliance failure, task-local input, scope change, or validation request; keep completed records immutable and continue related work through newly activated lineage; preserve versions 1 through 3 without reinterpreting legacy Alatyr attribution; enforce lifecycle-bounded event time, direction-change causality, typed evidence roles, materiality, validation fidelity, result binding, privacy, authorization, and clean upstream boundaries; and expire activation at the logical-scope boundary.",
       "applies_to": ["debug activation", "task observability", "human supervision measurement", "cross-task effectiveness comparison", "clean upstream projection"],
       "enforcement": "required when module enabled and Debug Mode is activated"
     },
@@ -391,7 +391,7 @@
       "id": "ALATYR-LIFECYCLE-001",
       "category": "LIFECYCLE",
       "canonical_source": "framework/lifecycle.md",
-      "summary": "Record framework version, adapter schema version, template version, installed framework pack, baseline, deviations, migration notes, and hash-bound upgrade impact; bind releases to v<VERSION>, shipped schemas, contract-tree evidence, and the checked-out target branch/revision; preserve current-scope authorization, durable engineering evidence, non-canonical Debug Mode records and their migration-limited legacy attribution, materiality, claim-fidelity, continuation, and binding classifications, and enabled target package/module state; bind scaffolded, staged, accepted, and degraded installation states to a continuous operation/revision/authorization/approval/validation transition record; distinguish non-accepting migration staging from strict acceptance; expand context from affected owners and migrate schemas atomically without replacing active state with placeholders or inferring missing historical evidence.",
+      "summary": "Record framework version, adapter schema version, template version, installed framework pack, baseline, deviations, migration notes, and hash-bound upgrade impact; bind releases to v<VERSION>, shipped schemas, contract-tree evidence, and the checked-out target branch/revision; preserve current-scope authorization, Project Development Model guidance and coverage, durable engineering evidence, delayed outcomes and adapter-maintenance evidence, non-canonical Debug Mode records and their migration-limited legacy attribution, and enabled target package/module state; bind installation states to a continuous operation/revision/authorization/approval/validation transition record; distinguish migration staging from strict acceptance; expand context from affected owners and migrate schemas atomically without replacing active state with placeholders or inferring missing historical evidence.",
       "applies_to": ["installation", "framework upgrades"],
       "enforcement": "required"
     },
@@ -399,7 +399,7 @@
       "id": "ALATYR-EVIDENCE-001",
       "category": "EVIDENCE",
       "canonical_source": "framework/guarantees.md",
-      "summary": "Distinguish process commitments, machine-checkable expectations, target-dependent guarantees, and non-guarantees in final claims; report current-scope authorization and actions; classify durable engineering evidence without exposing raw reasoning; keep optional Debug Mode observability non-canonical, structurally classified, reference-checked, and evidence-qualified; distinguish migration staging from branch/revision-bound acceptance, strong versus bounded package provenance, static protocol expectations from captured provider runs, and message-template presence from sent/skipped/blocked delivery evidence; and separate declared from verified scope, validation, quality, latency, cost, attribution, and supervision evidence.",
+      "summary": "Distinguish process commitments, machine-checkable expectations, target-dependent guarantees, and non-guarantees in final claims; report current-scope authorization and actions; classify durable engineering evidence without exposing raw reasoning; keep optional Debug Mode observability non-canonical and evidence-qualified; qualify human attention, review cycles, interventions, and executor active time as observed, manual, estimated, or unavailable; record delayed outcomes as immutable later-linked evidence and adapter maintenance separately from product effort; reject false productivity precision; and separate declared from verified scope, validation, quality, latency, cost, attribution, and supervision evidence.",
       "applies_to": ["final evidence", "framework positioning"],
       "enforcement": "required"
     }

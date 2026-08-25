@@ -1,0 +1,117 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/atvardovsky/AlatyrCore/schemas/alatyr-delayed-outcome-evidence.schema.json",
+  "title": "Alatyr delayed outcome evidence record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_kind",
+    "evidence_classification",
+    "outcome_id",
+    "operation_id",
+    "recorded_at",
+    "outcome_type",
+    "source_records",
+    "prior_outcome_ids",
+    "outcome",
+    "immutability",
+    "privacy"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "record_kind": {"const": "alatyr-delayed-outcome-evidence"},
+    "evidence_classification": {"const": "historical-record"},
+    "outcome_id": {"type": "string", "minLength": 1},
+    "operation_id": {"type": "string", "minLength": 1},
+    "recorded_at": {"type": "string", "minLength": 1},
+    "outcome_type": {
+      "enum": [
+        "accepted-direction",
+        "pull-request",
+        "merge",
+        "rejection",
+        "regression",
+        "revert",
+        "follow-up"
+      ]
+    },
+    "source_records": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["record_kind", "record_id", "completion_state"],
+        "properties": {
+          "record_kind": {
+            "enum": [
+              "effectiveness-report",
+              "debug-session",
+              "engineering-evidence",
+              "change-package",
+              "operation-record",
+              "other"
+            ]
+          },
+          "record_id": {"type": "string", "minLength": 1},
+          "completion_state": {"const": "completed"}
+        }
+      }
+    },
+    "prior_outcome_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "summary",
+        "occurred_at",
+        "evidence_state",
+        "evidence_references",
+        "limitations"
+      ],
+      "properties": {
+        "summary": {"type": "string", "minLength": 1},
+        "occurred_at": {"type": "string", "minLength": 1},
+        "evidence_state": {"enum": ["observed", "manual"]},
+        "evidence_references": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "limitations": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "immutability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "append_only_record",
+        "completed_source_records_modified"
+      ],
+      "properties": {
+        "append_only_record": {"const": true},
+        "completed_source_records_modified": {"const": false}
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["raw_chat_stored", "chain_of_thought_stored", "secrets_stored"],
+      "properties": {
+        "raw_chat_stored": {"const": false},
+        "chain_of_thought_stored": {"const": false},
+        "secrets_stored": {"const": false}
+      }
+    }
+  }
+}

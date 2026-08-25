@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "index_kind": "target-project-knowledge-routing-index",
   "project": "{PROJECT_NAME}",
   "owner": "{TARGET_PROJECT_KNOWLEDGE_OWNER}",
@@ -32,5 +32,9 @@
     "profile_only_match_allowed": false
   },
   "promotion_records": [],
+  "coverage": {
+    "areas": [],
+    "fact_types": []
+  },
   "shards": []
 }

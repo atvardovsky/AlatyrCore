@@ -8,6 +8,7 @@ alatyr_doc:
     - ALATYR-AUTHORIZATION-001
     - ALATYR-ENGINEERING-EVIDENCE-001
     - ALATYR-EVIDENCE-001
+    - ALATYR-KNOWLEDGE-001
   applies_to:
     - all
 ---
@@ -15,9 +16,10 @@ alatyr_doc:
 
 Debug Mode is an optional, explicitly activated observability layer for an
 Alatyr-assisted engineering task. It records compact engineering events and
-outcomes so a project can evaluate what Alatyr discovered independently, where
-human supervision changed the work, and whether that supervision burden changes
-across comparable tasks.
+outcomes so a project can evaluate what the active executor discovered, which
+results came from deterministic Alatyr system behavior, where human supervision
+changed the work, and whether that supervision burden changes across comparable
+tasks.
 
 Debug Mode evaluates the assisted process. It does not make the resulting patch
 correct, expose private reasoning, or replace project evidence.
@@ -32,7 +34,8 @@ have greater authority.
 Keep these questions separate:
 
 - Durable engineering evidence: why is this change justified and validated?
-- Debug Mode: how did Alatyr and human supervision contribute to the result?
+- Debug Mode: how did the executor, Alatyr system behavior, automation, and
+  human supervision contribute to the result?
 
 Route an accepted fact discovered during debugging to its canonical project
 owner. Link the resulting owner or engineering-evidence record from the debug
@@ -66,19 +69,37 @@ independently required for every engineering action.
 ## Normalized Event Model
 
 Record only material events that changed or validated the investigation. Every
-version-2 event has a stable ID, sequence, actor, causal class, intervention
-kind, contribution kind, category, compact material effect, evidence
-references, and causal references when applicable.
+new version-4 event has a stable ID, sequence, actor role, actor identity,
+actor provenance, causal class, intervention kind, correction disposition,
+contribution kind, category, compact material effect, evidence references, and
+causal references when applicable.
 
 Keep the attribution dimensions separate:
 
-- `actor`: `alatyr`, `human`, or `external-maintainer`
+- `actor_role`: `human`, `executor`, `alatyr-system`, `external-maintainer`, or
+  `automation`
+- `actor_identity`: a target-local stable actor ID and identity kind; it is not
+  the role and must not expose unnecessary personal data
+- `actor_provenance`: provider, product, model, and runtime facts when observed
+  or declared; unavailable fields stay null and are not inferred
 - `causal_class`: `independent-within-scope`, `intervention`,
-  `derived-from-human`, or `derived-from-external`
+  `derived-from-human`, `derived-from-external`, `derived-from-executor`,
+  `derived-from-alatyr-system`, or `derived-from-automation`
 - `intervention_kind`: `line-direction`, `scope-expansion`, `constraint`,
   `correction`, `validation-request`, or `not-applicable`
+- `correction_disposition`: `new-guidance-candidate`,
+  `known-guidance-routing-failure`, `known-guidance-compliance-failure`,
+  `task-local`, `scope-change`, `validation-request`, or `not-applicable`
 - `contribution_kind`: `finding`, `decision`, `implementation`, `validation`,
   or `coordination`
+
+Alatyr is the framework and project support system, not the engineering
+executor. Use `executor` for the assistant or person performing the requested
+engineering work. Use `alatyr-system` only for attributable framework behavior
+such as deterministic routing, checking, or record normalization. Use
+`automation` for CI, scripts, bots, and other non-Alatyr automated producers.
+Provider, model, runtime, and product names belong in provenance and never
+replace the target-local actor identity.
 
 The request that activates Debug Mode or states the task scope belongs in the
 activation and task metadata. It is not itself a human intervention event.
@@ -86,15 +107,44 @@ Create an intervention event only when a human or external maintainer directs,
 expands, constrains, corrects, or requests validation for a specific line of
 the active investigation.
 
-A derived event must reference the matching earlier intervention through its
-causal chain. An independent event must not have a human or external
-intervention ancestor. A validation request is not an implementation
-correction, and external input is not a maintainer correction unless its
-intervention kind is `correction`.
+A `derived-from-human` or `derived-from-external` event must reference the
+matching earlier intervention through its causal chain. Other derived classes
+must reference an earlier event with the matching actor role. An independent
+event must not have a human or external intervention ancestor. A validation
+request is not an implementation correction, and external input is not a
+maintainer correction unless its intervention kind is `correction`.
 
-Schema-version-1 `origin` values remain readable as legacy evidence. Do not
-silently rewrite their attribution. Comparisons across versions must identify
-the attribution-model difference.
+Classify every human or external-maintainer intervention before deriving
+correction metrics or promoting knowledge:
+
+- `new-guidance-candidate`: the intervention may express a reusable rule or
+  decision not already delivered; route it to normal project-knowledge review
+  without granting the Debug record authority
+- `known-guidance-routing-failure`: applicable accepted guidance existed but
+  was not delivered; name at least one guidance ID and route a context-router
+  repair
+- `known-guidance-compliance-failure`: applicable accepted guidance was
+  delivered but the executor did not follow it; name at least one guidance ID
+  and preserve delivery evidence
+- `task-local`: the correction applies only to the current task and does not
+  justify durable project guidance
+- `scope-change`: the input changes the requested task or investigation scope;
+  reassess current-scope authorization before modification
+- `validation-request`: the input requests evidence rather than correcting an
+  implementation or decision
+
+Every non-`not-applicable` disposition requires compact evidence. Known-
+guidance failure dispositions also require related guidance IDs. Do not count
+`scope-change` or `validation-request` as implementation corrections. A
+non-intervention event uses `not-applicable`.
+
+Schema versions 1 through 3 remain readable with their original attribution
+semantics. Version 1 keeps `origin`; versions 2 and 3 keep the legacy `actor`
+values `alatyr`, `human`, and `external-maintainer` and the legacy
+`alatyr_independent_*` metric names. Those values are migration-limited and do
+not distinguish executor activity from Alatyr system behavior. Do not silently
+rewrite or reinterpret them. New records use schema version 4, and comparisons
+across versions must identify the attribution-model difference.
 
 Supported categories include architecture areas, invariants, dependencies,
 execution paths, risks, tests, regression scenarios, hypotheses, validation,
@@ -120,9 +170,9 @@ architectural decision dimension in `architectural_impacts`:
 A human-initiated or external-maintainer event with one or more of these
 impacts is architectural supervision and must set
 `architectural_supervision: true`. A human event without an architectural
-impact must keep the flag false. Alatyr-initiated and derived events may record
-architectural impacts as investigation outcomes, but they are not human
-architectural-supervision events.
+impact must keep the flag false. Executor, Alatyr-system, automation, and
+derived events may record architectural impacts as investigation outcomes, but
+they are not human architectural-supervision events.
 
 Existing records that predate these structured fields may retain
 `decision_effect` as absent or `not-assessed` and may omit
@@ -142,7 +192,7 @@ direction-changing correction
 The rejected hypothesis must be a later event caused by the correction. The
 replacement invariant or architecture event must be later and descend from
 that rejected hypothesis. This preserves the difference between the
-intervention, the invalidated premise, and Alatyr's derived replacement.
+intervention, the invalidated premise, and the derived replacement.
 
 ## Capture Discipline
 
@@ -154,8 +204,12 @@ workflow it measures.
 Record:
 
 - independently identified invariants, architecture areas, dependencies,
-  execution paths, risks, tests, and validation requirements
+  execution paths, risks, tests, and validation requirements, attributed to
+  the executor, Alatyr system behavior, or automation that produced them
 - human interventions that materially expanded or corrected the work
+- the correction disposition, related guidance IDs, and evidence required to
+  distinguish new guidance from routing, compliance, task-local, scope, or
+  validation outcomes
 - structured architectural impacts and direction changes introduced by human
   or external-maintainer review
 - concrete consequences derived after those interventions
@@ -195,7 +249,8 @@ Timing values must identify their evidence kind:
 
 Record start, completion, and elapsed time when trustworthy evidence exists.
 Record active work time only when the environment measures it reliably. In a
-completed schema-version-3 record, every concrete event timestamp must remain
+completed schema-version-3-or-newer record, every concrete event timestamp must
+remain
 within the start/completion interval, follow sequence order, and not precede a
 causal ancestor. Active records do not declare a completion timestamp.
 
@@ -209,8 +264,8 @@ Derive completed-task metrics from recorded events, not from the final diff or
 an assistant's impression. Metrics include:
 
 - human interventions and human architectural interventions
-- independent Alatyr findings and findings derived after human intervention
-- independent versus human-requested dependency checks
+- independent executor findings and findings derived after human intervention
+- independent executor versus human-requested dependency checks
 - dependency expansions derived after human intervention
 - hypotheses tested and rejected
 - implementation revisions and corrections after human intervention
@@ -220,11 +275,13 @@ an assistant's impression. Metrics include:
 Each metric stores its evidence kind and contributing event IDs. Use `estimated`
 or `unavailable` only when exact event-derived evidence cannot be claimed.
 Completed records with `event-derived` metrics must agree exactly with their
-event predicates. Version 2 counts findings only from `finding` contributions,
+event predicates. Version 4 counts findings only from `finding` contributions,
 implementation revisions only from `implementation` contributions, and
 validation expansion only from `validation` contributions. Implementation
 correction and post-review rework metrics require a causal correction ancestor;
-a validation request alone does not satisfy that predicate.
+a `scope-change` or `validation-request` disposition does not satisfy that
+predicate. Version-2 and version-3 metrics retain their historical predicates
+and names for compatibility.
 
 Cross-task comparison reads compact index summaries and compares like task
 classes, capture coverage, result quality, and timing evidence. Do not claim
@@ -307,7 +364,7 @@ Summary` containing:
 - elapsed time and evidence kind
 - capture coverage and observer-effect caveat
 - human architectural interventions
-- independent Alatyr findings
+- independent executor findings
 - independent and human-requested dependency checks
 - rejected hypotheses
 - implementation corrections after human intervention
@@ -324,7 +381,9 @@ record and expire activation before leaving the logical scope.
 ## Deterministic Checks And Limits
 
 Target validation may check schema shape, event ordering and lifecycle bounds,
-causal attribution, typed evidence-event roles, complete materiality
+role/identity/provenance separation, correction dispositions and required
+known-guidance references, causal attribution, typed evidence-event roles,
+complete materiality
 evaluation, canonical skip references, claim-fidelity evidence, continuation
 lineage, structured architectural-impact consistency, direction-change
 hypothesis transitions, metric derivation, timing consistency, privacy
@@ -342,12 +401,20 @@ Reject or repair Debug Mode use that:
 - activates without an explicit current-scope user request
 - carries activation or write permission into a new task
 - stores transcripts, private reasoning, secrets, or unrelated data
-- counts human-directed work as independently Alatyr-initiated
+- attributes executor work to `alatyr-system` or treats legacy `alatyr` events
+  as proof of executor or system attribution
 - counts the initial task request as an intervention without a specific
   investigative effect
 - counts a validation request as an implementation correction or generic
   external input as a maintainer correction
-- records derived work without a causal human event
+- omits a correction disposition for a human or external-maintainer
+  intervention, or classifies a non-intervention as a correction
+- claims a known-guidance routing or compliance failure without a related
+  guidance ID and compact evidence
+- treats a new-guidance candidate as accepted project knowledge without normal
+  target review and canonical ownership
+- records derived work without an earlier event from the role named by its
+  causal class
 - marks a human architectural impact as non-architectural, or claims human
   architectural supervision without structured impact evidence in a new record
 - changes an accepted direction without recording the rejected hypothesis and

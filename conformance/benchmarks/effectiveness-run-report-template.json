@@ -69,6 +69,32 @@
   "companion_surfaces_checked": "{COUNT_OR_UNKNOWN}",
   "unresolved_consistency_gaps": "{COUNT_OR_UNKNOWN}",
   "duration_seconds": "{COUNT_OR_UNKNOWN}",
+  "measurement_evidence": {
+    "human_active_attention_seconds": {
+      "value": "unknown",
+      "evidence_state": "unavailable",
+      "evidence_reference": "not captured by the report producer"
+    },
+    "review_cycles": {
+      "value": "unknown",
+      "evidence_state": "unavailable",
+      "evidence_reference": "not captured by the report producer"
+    },
+    "intervention_total": {
+      "value": "unknown",
+      "evidence_state": "unavailable",
+      "evidence_reference": "not captured by the report producer"
+    },
+    "classified_interventions": [],
+    "executor_active_time_seconds": {
+      "value": "unknown",
+      "evidence_state": "unavailable",
+      "evidence_reference": "no host or provider active-time telemetry captured"
+    }
+  },
+  "measurement_limitations": [
+    "Human-attention and executor-active-time measurements remain unavailable until supported evidence is captured."
+  ],
   "protected_changes_blocked": 0,
   "changed_files": [
     "{TARGET_RELATIVE_CHANGED_FILE_OR_NONE}"

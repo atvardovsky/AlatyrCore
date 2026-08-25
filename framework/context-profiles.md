@@ -138,10 +138,41 @@ Use one normalized context receipt with separate layers:
 - `resolved`: paths actually resolved by routing and their static word estimate
 - `observed`: files and tokens exposed by host or provider telemetry
 
+When selected project guidance can affect changed facts, approval, validation,
+or a material decision, extend that receipt with `semantic_guidance` schema 1.
+Record three distinct identity sets:
+
+- `planned`: guidance selected before canonical-owner resolution
+- `resolved`: the ordered guidance actually resolved for the task, with exact
+  canonical-owner SHA-256 digests
+- `observed`: only guidance identities whose delivery is supported by host or
+  provider evidence; use `partial` or `unavailable` honestly
+
+Each semantic identity contains a stable guidance ID, canonical-owner path and
+digest, authority, freshness, and applicability. A planned identity may use
+`unknown` for an owner digest; a resolved or reported observed identity may
+not. Preserve delivery order because narrower or later selected guidance may
+depend on that order. For project-knowledge routes, normalize `knowledge_id` as
+the receipt `guidance_id` and `canonical_owner_sha256` as lowercase
+`sha256:<digest>`; record only the authority state, freshness state, and
+applicability result needed to identify the selected guidance.
+
+For each identity set, record a bundle digest with digest schema version `1`
+and algorithm `sha256`. Compute it over the UTF-8 JSON array of the ordered
+identity objects using sorted object keys, ASCII escaping, and compact
+separators. The array order is significant. The empty applicable-guidance set
+has its own valid digest and is different from unavailable evidence.
+
 Only exact host or provider telemetry supports observed context or token-cost
 comparisons. Planned and resolved estimates remain routing evidence even when
 observed telemetry is partial or unavailable; they must not be relabeled as
 actual model context.
+
+A semantic bundle digest proves only which identity metadata was planned,
+resolved, or observably delivered at the stated evidence level. It does not
+prove that a model read, understood, remembered, or followed the guidance.
+Use resolved bundle comparison for deterministic revalidation; do not make
+safe progress depend on unavailable model-comprehension evidence.
 
 If sufficient context exceeds a budget, continue safely and record:
 
@@ -215,6 +246,10 @@ operation packet.
 The overlay does not authorize loading every profile. Resume from the compact
 bootstrap, packet, active workstream context, changed-fact owners, and
 dependencies. Do not create a packet for a small task that fits one profile.
+Keep semantic identity metadata in the packet, but load guidance content only
+for initially selected owners or identities changed by later revalidation.
+Keep the identity set inside the selected knowledge route's packet limits and
+record omitted applicable identities and the expansion decision.
 
 ## Change-Package Tasks
 

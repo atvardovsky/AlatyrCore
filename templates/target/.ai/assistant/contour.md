@@ -32,8 +32,9 @@ Replace placeholders with target facts before accepting installation.
   template, and structural validation; normalized historical conclusions and
   storage policy remain project-owned under `.ai/project/engineering-evidence`
 - optional Debug Mode routing, explicit activation/expiry, checkpoint,
-  finalization, causal attribution, metric derivation, summary, and structural
-  validation; non-canonical records remain project-owned under
+  finalization, executor/Alatyr-system/automation attribution, actor identity,
+  runtime provenance, correction disposition, metric derivation, summary, and
+  structural validation; non-canonical records remain project-owned under
   `.ai/project/debug`
 - AI infrastructure route/item contracts and adaptation records under
   `.ai/assistant/ai-infrastructure-router.json` and target-owned record paths

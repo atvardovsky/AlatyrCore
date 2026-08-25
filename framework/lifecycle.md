@@ -188,26 +188,38 @@ Before upgrading framework files in a target project:
     bindings and prior-binding lineage, and storage/publication policy. Never replace historical records
     with source placeholders or move them into an external contribution patch
     contrary to target policy.
-    Preserve project-knowledge promotion IDs and dispositions, canonical owner
-    bindings and digests, route-shard IDs, contradiction/supersession lineage,
-    retention policy, and review authority. Revalidate active accepted facts
-    against their canonical owners, rebuild only derived routing surfaces, and
-    never promote historical evidence or source placeholders during an update.
+    Preserve Project Development Model guidance IDs, origins, kinds, promotion
+    and direct-decision dispositions, canonical owner bindings and digests,
+    route-shard IDs, narrowing/exception and contradiction/supersession
+    lineage, mapped/known-gap/unknown coverage, retention policy, and review
+    authority. Revalidate active accepted facts against their canonical owners,
+    rebuild only derived routing and coverage surfaces, and never promote
+    historical evidence, arbitrary messages, or source placeholders during an
+    update. Version-1 knowledge records remain historical-compatible; new
+    records use the current guidance contract.
     Preserve target Debug Mode IDs, completed records, active-scope state,
     event attribution, timing evidence, publication policy, and compact index.
     Never replace records with source placeholders, silently reactivate a
     closed scope, or move debug files into a clean external contribution.
-    Preserve schema-version-1 and version-2 events and records as migration-
-    limited evidence; do not silently infer attribution, materiality, claim
-    fidelity, continuation, or binding lineage. Install the current contract
-    version, authoring templates, and derived index projections for new
-    records. Repair invalid lifecycle bounds, event roles, durable evidence
-    decisions/references, canonical skip claims, and
+    Preserve schema-version-1 through version-3 Debug events and records as
+    migration-limited evidence; do not silently infer executor versus
+    Alatyr-system attribution, actor identity, runtime provenance, correction
+    disposition, materiality, claim fidelity, continuation, or binding
+    lineage. Install Debug contract version 4, authoring templates, and derived
+    index projections for new records. Repair invalid lifecycle bounds, event
+    roles, durable evidence decisions/references, canonical skip claims, and
     keep active records out of finalized comparisons. Never append to a
     completed record; create a linked continuation after explicit activation.
     A finalized historical
     snapshot that no longer matches the current worktree is a reproducibility
     warning, not a reason to rewrite or invalidate the old record.
+    Preserve completed effectiveness reports and their measurement evidence
+    states. Never rewrite unavailable values as zero or infer executor active
+    time from elapsed duration. Preserve delayed-outcome records as append-only
+    linked evidence, and retain adapter-maintenance evidence separately from
+    product-change effort. Install current authoring templates for later
+    records without fabricating historical attention, outcomes, or maintenance
+    cost.
     Preserve target code-documentation profiles and decisions. Never replace
     accepted frontend, backend, shared, or infrastructure conventions with
     source placeholders or a universal style.
@@ -294,16 +306,24 @@ Framework lifecycle notes should record:
 - durable engineering-evidence rule, policy, index/record schema, lazy route,
   capture gate, task/revision binding, privacy/publication boundary, existing-
   record preservation, and validator migration
-- project-knowledge rule, promotion/index/route-shard schemas, canonical owner
-  bindings, two-stage routing, authority/freshness states, contradiction and
-  supersession lineage, retained target decisions, and validator migration
+- Project Development Model guidance rule, direct decision-owner and reviewed
+  discovery intake, promotion/index/route-shard schemas, guidance kinds,
+  target-owned exceptions, coverage gaps, canonical owner bindings, semantic
+  bundle receipts, two-stage routing, authority/freshness states, contradiction
+  and supersession lineage, retained target decisions, and validator migration
 - Debug Mode rule, module dependencies, explicit activation/expiry, non-
-  canonical index/record schema, event attribution, timing/capture quality,
+  canonical index/record schema, executor/Alatyr-system/automation role and
+  actor identity/provenance attribution, correction disposition,
+  timing/capture quality,
   structured architectural impacts, direction-change hypothesis/replacement
   causality, supervision metrics, exact durable evidence reference resolution,
   active-versus-finalized comparison, clean-upstream boundary, record
   preservation, operation, lazy route, and validator migration when that module
   is enabled
+- effectiveness metrics schema, evidence-qualified human attention and
+  observed-only executor timing, append-only delayed outcomes, adapter-
+  maintenance evidence, target storage policy, and validator migration when
+  that module is enabled
 - code-documentation rule, catalog/profile schemas, source-set selection,
   accepted style decisions, generator/output policy, adapted skill, lazy
   route, and validator migration when that module is enabled

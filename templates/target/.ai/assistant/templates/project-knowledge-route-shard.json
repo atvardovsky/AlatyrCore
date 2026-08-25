@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "shard_kind": "target-project-knowledge-routing-shard",
   "shard_id": "{PROJECT_KNOWLEDGE_SHARD_ID}",
   "task_profiles": [

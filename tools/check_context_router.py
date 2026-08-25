@@ -699,6 +699,14 @@ def main() -> int:
         failures.append("project knowledge route must use its compact target index")
     if not isinstance(project_knowledge.get("budget_behavior"), str):
         failures.append("project knowledge route must define budget_behavior")
+    knowledge_receipt = project_knowledge.get("context_receipt", [])
+    for required in [
+        "ordered planned resolved and observed guidance identities",
+        "canonical owner digests authority freshness and applicability",
+        "semantic guidance bundle digest algorithm and schema version",
+    ]:
+        if required not in knowledge_receipt:
+            failures.append(f"project knowledge context receipt missing {required}")
     project_knowledge_conditional_context = check_conditional_context(
         project_knowledge,
         "project_knowledge_routing",
@@ -747,6 +755,60 @@ def main() -> int:
     )
     if not isinstance(large_task.get("budget_behavior"), str):
         failures.append("large task overlay needs budget_behavior")
+    elif "only new or changed owners" not in large_task["budget_behavior"]:
+        failures.append("large task overlay must keep guidance reloads delta-only")
+    revalidation = large_task.get("semantic_guidance_revalidation")
+    if not isinstance(revalidation, dict):
+        failures.append("large task overlay needs semantic_guidance_revalidation")
+    else:
+        expected_revalidation = {
+            "receipt_contract": "alatyr-context-receipt semantic_guidance schema 1",
+            "comparison_surface": (
+                "current resolved ordered bundle digest versus last accepted "
+                "checkpoint digest"
+            ),
+            "claim_boundary": (
+                "bundle identity is not proof of model comprehension or compliance"
+            ),
+        }
+        for field, expected in expected_revalidation.items():
+            if revalidation.get(field) != expected:
+                failures.append(
+                    f"large task semantic_guidance_revalidation.{field} must be {expected}"
+                )
+        required_before = revalidation.get("required_before")
+        expected_gates = [
+            "protected implementation",
+            "material decisions",
+            "final validation",
+            "final evidence",
+        ]
+        if required_before != expected_gates:
+            failures.append(
+                "large task semantic guidance revalidation gates are incomplete or unordered"
+            )
+        on_difference = revalidation.get("on_difference")
+        for required in [
+            "stop the affected phase",
+            "load only changed owners",
+            "refresh risk approval dependencies and validation",
+        ]:
+            if not isinstance(on_difference, str) or required not in on_difference:
+                failures.append(
+                    f"large task semantic guidance difference handling missing {required}"
+                )
+    if (
+        "resolved semantic guidance bundle differs from the last accepted checkpoint"
+        not in large_task.get("expand_when", [])
+    ):
+        failures.append("large task overlay must expand on semantic guidance bundle drift")
+    large_final_evidence = large_task.get("final_evidence", [])
+    for required in [
+        "planned resolved and observed semantic guidance identities and ordered bundle digests",
+        "revalidation gate results and checkpoints",
+    ]:
+        if required not in large_final_evidence:
+            failures.append(f"large task final evidence missing {required}")
     delegated_entry = scale_index.get("delegated-execution")
     delegated = descriptor(
         delegated_entry.get("descriptor")

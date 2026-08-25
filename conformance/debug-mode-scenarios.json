@@ -26,7 +26,7 @@
     },
     {
       "id": "human-direction-with-derived-findings",
-      "request_shape": "A human requests one broad dependency check and Alatyr derives several concrete affected paths and tests.",
+      "request_shape": "A human requests one broad dependency check and the executor derives several concrete affected paths and tests.",
       "expected_mode": "checkpointed",
       "required_outcomes": [
         "one human intervention with a specific intervention kind",
@@ -42,7 +42,39 @@
       "required_outcomes": [
         "task request remains in activation metadata",
         "zero human intervention events until a specific direction expansion constraint correction or validation request occurs",
-        "independent in-scope findings remain attributable to Alatyr"
+        "independent in-scope findings remain attributable to the executor"
+      ]
+    },
+    {
+      "id": "executor-and-alatyr-system-attribution",
+      "request_shape": "One task contains assistant engineering work, deterministic Alatyr routing, and CI validation.",
+      "expected_mode": "checkpointed",
+      "required_outcomes": [
+        "engineering work is attributed to the executor",
+        "routing behavior is attributed to alatyr-system",
+        "CI is attributed to automation",
+        "actor identity remains separate from provider model product and runtime provenance"
+      ]
+    },
+    {
+      "id": "known-guidance-routing-failure",
+      "request_shape": "A human repeats an accepted applicable constraint that was absent from the delivered guidance bundle.",
+      "expected_mode": "checkpointed",
+      "required_outcomes": [
+        "correction disposition is known-guidance-routing-failure",
+        "related guidance IDs and delivery evidence are recorded",
+        "the context router is reviewed",
+        "the repeated rule is not promoted as new knowledge"
+      ]
+    },
+    {
+      "id": "new-guidance-candidate",
+      "request_shape": "An authorized maintainer introduces a reusable judgment not present in current routed guidance.",
+      "expected_mode": "checkpointed",
+      "required_outcomes": [
+        "correction disposition is new-guidance-candidate",
+        "debug evidence remains non-canonical",
+        "normal target guidance review and canonical ownership are required"
       ]
     },
     {

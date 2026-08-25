@@ -18,6 +18,21 @@
       ]
     },
     {
+      "id": "decision-owner-direct-guidance",
+      "task_shape": "A registered project decision owner records an accepted development rule without a preceding engineering discovery.",
+      "required_outcomes": [
+        "decision authority and scope are verified",
+        "a durable decision reference is retained",
+        "the registered canonical owner is updated before routing",
+        "the derived guidance route identifies decision-owner-directive origin"
+      ],
+      "forbidden_outcomes": [
+        "arbitrary human chat treated as project authority",
+        "empty engineering evidence misrepresented as a discovery",
+        "routing projection treated as canonical owner"
+      ]
+    },
+    {
       "id": "two-stage-refinement",
       "task_shape": "The initial request identifies an area and dependency; source inspection later identifies a concrete fact ID and symbol.",
       "required_outcomes": [
@@ -70,6 +85,35 @@
       "forbidden_outcomes": [
         "both entries delivered as current",
         "historical lineage deleted"
+      ]
+    },
+    {
+      "id": "authorized-guidance-exception",
+      "task_shape": "A target decision owner narrows one accepted development rule for a bounded project area.",
+      "required_outcomes": [
+        "base guidance ID and matching fact type are retained",
+        "scope authority rationale validation and revalidation triggers are explicit",
+        "target fact-type ownership decides precedence",
+        "expired or absent exception grants no permission"
+      ],
+      "forbidden_outcomes": [
+        "global precedence shortcut",
+        "lower authority overrides safety",
+        "unscoped exception"
+      ]
+    },
+    {
+      "id": "guidance-coverage-gap",
+      "task_shape": "A project area has incomplete guidance routing coverage.",
+      "required_outcomes": [
+        "coverage is classified as known-gap or unknown",
+        "known gap names evidence and missing owner or guidance",
+        "mapped coverage references existing guidance IDs"
+      ],
+      "forbidden_outcomes": [
+        "completeness percentage",
+        "missing route interpreted as no project rule",
+        "unknown coverage reported as mapped"
       ]
     },
     {

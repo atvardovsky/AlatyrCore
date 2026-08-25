@@ -1,16 +1,16 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "record_kind": "alatyr-project-knowledge-promotion",
   "promotion_id": "{PROJECT_KNOWLEDGE_PROMOTION_ID}",
   "created_at": "{TIMESTAMP_OR_TARGET_OPERATION_REFERENCE}",
   "candidate": {
     "candidate_id": "{KNOWLEDGE_CANDIDATE_ID}",
+    "origin": "{ENGINEERING_DISCOVERY_OR_DECISION_OWNER_DIRECTIVE}",
     "statement": "{REUSABLE_CONCLUSION}",
+    "guidance_kind": "{DEVELOPMENT_RULE_ARCHITECTURAL_INTENT_REVIEWED_KNOWLEDGE_VALIDATION_CONTRACT_OR_KNOWN_RESTRICTION}",
     "knowledge_kind": "{INVARIANT_COMPATIBILITY_BOUNDARY_DEPENDENCY_OBSERVATION_REJECTED_DIRECTION_ARCHITECTURE_RATIONALE_OPERATIONAL_CONSTRAINT_VALIDATION_RULE_OR_CROSS_SURFACE_RELATIONSHIP}",
     "reuse_rationale": "{WHY_A_LATER_TASK_SHOULD_NOT_REDISCOVER_THIS}",
-    "source_engineering_evidence_ids": [
-      "{ENGINEERING_EVIDENCE_ID}"
-    ],
+    "source_engineering_evidence_ids": [],
     "repository_evidence": [
       "{TARGET_RELATIVE_EVIDENCE_REFERENCE}"
     ],

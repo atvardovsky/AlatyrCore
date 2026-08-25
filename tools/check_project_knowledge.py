@@ -39,13 +39,15 @@ def fixture(target: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any
     owner.write_text("# Result Mapping\n\nFolding and result-key transformation are independent.\n", encoding="utf-8")
     digest = hashlib.sha256(owner.read_bytes()).hexdigest()
     promotion = {
-        "schema_version": 1,
+        "schema_version": 2,
         "record_kind": "alatyr-project-knowledge-promotion",
         "promotion_id": "PROMO-RESULT-TRANSFORM-001",
         "created_at": "2026-08-24T12:00:00Z",
         "candidate": {
             "candidate_id": "CANDIDATE-RESULT-TRANSFORM-001",
+            "origin": "engineering-discovery",
             "statement": "Folding and result-key transformation are independent.",
+            "guidance_kind": "reviewed-knowledge",
             "knowledge_kind": "compatibility-boundary",
             "reuse_rationale": "The relationship required cross-package investigation.",
             "source_engineering_evidence_ids": ["ENG-RESULT-TRANSFORM-001"],
@@ -92,6 +94,7 @@ def fixture(target: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any
     }
     entry = {
         "knowledge_id": "KNOW-RESULT-TRANSFORM-001",
+        "guidance_kind": "reviewed-knowledge",
         "summary": "Platform folding and result-key transformation are independent contracts.",
         "fact_type": "integration contract",
         "fact_ids": ["FACT-RESULT-KEY-TRANSFORM"],
@@ -138,9 +141,20 @@ def fixture(target: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any
             "conditions": ["DBAL-facing hydration work"],
         },
         "provenance": {
+            "origin": "engineering-discovery",
             "engineering_evidence_ids": ["ENG-RESULT-TRANSFORM-001"],
             "promotion_record": ".ai/project/knowledge/promotions/PROMO-RESULT-TRANSFORM-001.json",
             "source_revision": "0123456789012345678901234567890123456789",
+        },
+        "precedence": {
+            "kind": "base-rule",
+            "base_guidance_id": None,
+            "scope": ["hydration"],
+            "authority_reference": "decision:result-mapping",
+            "rationale": "The registered contract owner accepted this boundary.",
+            "expires_at": None,
+            "revalidation_triggers": ["canonical owner digest changes"],
+            "validation": ["canonical owner digest and target tests"],
         },
         "relations": {"conflicts_with": [], "supersedes": [], "superseded_by": []},
         "validation": {
@@ -150,7 +164,7 @@ def fixture(target: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any
         },
     }
     shard = {
-        "schema_version": 1,
+        "schema_version": 2,
         "shard_kind": "target-project-knowledge-routing-shard",
         "shard_id": "hydration",
         "task_profiles": ["code-local"],
@@ -162,7 +176,7 @@ def fixture(target: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any
         "entries": [entry],
     }
     index = {
-        "schema_version": 1,
+        "schema_version": 2,
         "index_kind": "target-project-knowledge-routing-index",
         "project": "fixture",
         "owner": "maintainers",
@@ -182,6 +196,26 @@ def fixture(target: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any
         "promotion_records": [
             {"promotion_id": promotion["promotion_id"], "status": "accepted", "path": ".ai/project/knowledge/promotions/PROMO-RESULT-TRANSFORM-001.json"}
         ],
+        "coverage": {
+            "areas": [
+                {
+                    "subject": "hydration",
+                    "status": "mapped",
+                    "guidance_ids": ["KNOW-RESULT-TRANSFORM-001"],
+                    "evidence": "reviewed routing projection",
+                    "gap": "",
+                }
+            ],
+            "fact_types": [
+                {
+                    "subject": "integration contract",
+                    "status": "mapped",
+                    "guidance_ids": ["KNOW-RESULT-TRANSFORM-001"],
+                    "evidence": "registered owner and promotion",
+                    "gap": "",
+                }
+            ],
+        },
         "shards": [
             {"shard_id": "hydration", "path": ".ai/project/knowledge/routes/hydration.json", "task_profiles": ["code-local"], "project_areas": ["hydration"], "subsystems": ["result-hydration"], "architecture_item_ids": ["ARCH-HYDRATION-BOUNDARY"], "dependency_coordinates": ["dbal/package"], "path_prefixes": ["src/Hydration"]}
         ],
@@ -222,10 +256,13 @@ def main() -> int:
     scenario_ids = {item.get("id") for item in scenarios.get("scenarios", []) if isinstance(item, dict)}
     required_scenarios = {
         "capture-promote-deliver",
+        "decision-owner-direct-guidance",
         "two-stage-refinement",
         "canonical-owner-drift",
         "knowledge-contradiction",
         "knowledge-supersession",
+        "authorized-guidance-exception",
+        "guidance-coverage-gap",
         "shared-will-multi-assistant",
         "paired-rediscovery-measurement",
     }
@@ -327,6 +364,35 @@ def main() -> int:
         if "PROJECT_KNOWLEDGE_PROMOTION_OWNER_DRIFT" not in promotion_codes:
             failures.append("promotion-to-route canonical binding drift was not rejected")
 
+        direct_index, direct_shard, direct_promotion = fixture(target)
+        direct_promotion["candidate"]["origin"] = "decision-owner-directive"
+        direct_promotion["candidate"]["guidance_kind"] = "development-rule"
+        direct_promotion["candidate"]["source_engineering_evidence_ids"] = []
+        direct_shard["entries"][0]["guidance_kind"] = "development-rule"
+        direct_shard["entries"][0]["provenance"]["origin"] = "decision-owner-directive"
+        direct_shard["entries"][0]["provenance"]["engineering_evidence_ids"] = []
+        write_json(target / ".ai/project/knowledge/index.json", direct_index)
+        write_json(target / ".ai/project/knowledge/routes/hydration.json", direct_shard)
+        write_json(target / ".ai/project/knowledge/promotions/PROMO-RESULT-TRANSFORM-001.json", direct_promotion)
+        direct_findings = validate_project_knowledge(target, SCHEMAS)
+        if direct_findings:
+            failures.extend(f"direct guidance {item.code}: {item.message}" for item in direct_findings)
+
+        invalid_coverage, _, _ = fixture(target)
+        invalid_coverage["coverage"]["areas"][0]["guidance_ids"] = ["KNOW-MISSING"]
+        write_json(target / ".ai/project/knowledge/index.json", invalid_coverage)
+        coverage_codes = {item.code for item in validate_project_knowledge(target, SCHEMAS)}
+        if "PROJECT_GUIDANCE_COVERAGE_REFERENCE" not in coverage_codes:
+            failures.append("coverage reference to missing guidance was not rejected")
+
+        _, invalid_exception_shard, _ = fixture(target)
+        invalid_exception_shard["entries"][0]["precedence"]["kind"] = "authorized-exception"
+        invalid_exception_shard["entries"][0]["precedence"]["base_guidance_id"] = "KNOW-MISSING"
+        write_json(target / ".ai/project/knowledge/routes/hydration.json", invalid_exception_shard)
+        exception_codes = {item.code for item in validate_project_knowledge(target, SCHEMAS)}
+        if "PROJECT_GUIDANCE_BASE_REFERENCE" not in exception_codes:
+            failures.append("exception with missing base guidance was not rejected")
+
         fixture(target)
         conflicted_shard = copy.deepcopy(shard)
         second = copy.deepcopy(conflicted_shard["entries"][0])
@@ -349,7 +415,7 @@ def main() -> int:
         for failure in failures:
             print(f"FAIL: {failure}", file=sys.stderr)
         return 1
-    print("OK: checked project knowledge promotion, routing, freshness, reuse, and shared-will contracts")
+    print("OK: checked project guidance, promotion, routing, freshness, reuse, and shared-will contracts")
     return 0
 
 

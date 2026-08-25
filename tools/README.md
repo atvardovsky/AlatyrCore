@@ -260,9 +260,11 @@ python3 tools/check_engineering_evidence.py
 
 ## Project Knowledge Check
 
-`check_project_knowledge.py` validates reviewed promotion, canonical-owner and
-freshness binding, subsystem/architecture selectors, bounded two-stage
-delivery, contradiction and supersession lineage, paired reuse evidence, and
+`check_project_knowledge.py` validates reviewed-discovery and direct decision-
+owner guidance intake, kind/origin, canonical-owner and freshness binding,
+target-owned narrowing and exceptions, mapped/known-gap/unknown coverage,
+subsystem/architecture selectors, bounded two-stage delivery, contradiction
+and supersession lineage, paired reuse evidence, and
 shared constraints across supported assistant surfaces. It also runs mutation
 cases for profile-only selection, stale owners, stale routing policy,
 promotion drift, and asymmetric conflicts. It does not decide whether a human
@@ -275,8 +277,10 @@ python3 tools/check_project_knowledge.py
 ## Debug Mode Check
 
 `check_debug_mode.py` validates the optional per-task/session activation,
-non-canonical evidence boundary, normalized event origins and causal chains,
-privacy declarations, timing quality, event-derived supervision metrics,
+non-canonical evidence boundary, schema-4 executor/Alatyr-system/automation
+roles, target-local actor identity, runtime provenance, correction disposition,
+normalized event origins and causal chains, privacy declarations, timing
+quality, event-derived supervision metrics,
 lifecycle bounds, continuation lineage, typed evidence-event roles, complete
 materiality, canonical skip references, claim-validation fidelity, compact
 index synchronization, result binding, and clean-upstream projection. It
@@ -1342,6 +1346,12 @@ effectiveness reports for pilots and conformance work. It does not prove
 framework quality by itself and is not a target validation requirement. The
 sample includes task profile, operation id, context volume, hallucinated
 command evidence, protected changes blocked, rework, and residual risk.
+
+Schema-3 benchmark reports can also qualify human active attention, review
+cycles, intervention classes, and observed-only executor active time with
+explicit evidence states. The source checker validates delayed-outcome and
+adapter-maintenance record templates, but those records still need target or
+external evidence and do not establish productivity ratios by themselves.
 
 For controlled comparisons, `prepare_effectiveness_benchmark.py`, also
 available as `alatyr.py prepare-benchmark`, copies user-supplied `none`,

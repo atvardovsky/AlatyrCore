@@ -36,7 +36,8 @@ semantic owner.
 - Adapter separation: `ALATYR-ADAPTER-001`
 - Module selection: `ALATYR-MODULE-001`
 - Installed operation control surface: `ALATYR-OPERATION-001`
-- Reviewed project-knowledge promotion and delivery: `ALATYR-KNOWLEDGE-001`
+- Project Development Model guidance intake, promotion, and bounded delivery:
+  `ALATYR-KNOWLEDGE-001`
 - Optional architecture knowledge and pattern discussion:
   `ALATYR-ARCHITECTURE-001`
 - Optional project vocabulary and terminology lookup:
@@ -113,7 +114,9 @@ The plan must identify:
 - required core profile and optional modules needed for the target
 - optional Debug Mode need, owner, explicit task/session activation and expiry,
   non-canonical storage, privacy/retention, versioned actor/causality/
-  intervention/contribution attribution, structured
+  intervention/contribution attribution, executor versus Alatyr-system roles,
+  target-local actor identity, runtime provenance, correction disposition,
+  known-guidance routing/compliance evidence, structured
   architectural impacts, direction-change hypothesis/replacement causality,
   lifecycle-bounded timing evidence, immutable completion and continuation
   lineage, supervision metrics, typed evidence-event roles, complete
@@ -122,10 +125,12 @@ The plan must identify:
   repository-binding state/lineage, active-versus-finalized comparison, and
   clean-upstream projection policy
 - source-of-truth registry needs
-- project-knowledge owner and decision authority, promotion review,
-  canonical-owner/freshness bindings, subsystem and architecture selectors,
-  compact packet limits, contradiction/supersession, retention/redaction, and
-  paired reuse evidence needs
+- Project Development Model guidance owner and decision authority, direct
+  decision-owner intake and engineering-discovery review, guidance kinds,
+  canonical-owner/freshness bindings, target-owned narrowing and exception
+  semantics, subsystem and architecture selectors, mapped/known-gap/unknown
+  coverage, compact packet limits, contradiction/supersession,
+  retention/redaction, and paired reuse evidence needs
 - optional consistency-map need, fact-ID strategy, relationship coverage, and
   staleness owner
 - optional architecture-knowledge owner, compact catalog, pattern/area docs,
@@ -225,10 +230,13 @@ In a typical target repository:
    registry, ownership map, and file inventory; use `complete` when all
    `framework/*.md` and JSON files are installed.
 6. Create `.ai/project/contour.md` and target project source-of-truth docs.
-   Always create the project-knowledge policy, empty compact index, promotion
+   Always create the Project Development Model guidance policy, empty compact index, promotion
    directory, and route-shard directory. Resolve target owner, decision
-   authority, canonical owner registry, freshness, retention, redaction, and
-   packet limits. Do not promote historical evidence during installation.
+   authority, accepted guidance kinds, canonical owner registry, freshness,
+   target-owned narrowing and exception semantics, coverage gaps, retention,
+   redaction, and packet limits. Do not promote historical evidence during
+   installation or treat an arbitrary human message as a decision-owner
+   directive.
    Always create `.ai/project/engineering-evidence/README.md` and `index.json`
    for the required core capture decision. Resolve the target owner, retained
    storage mode, redaction policy, external-contribution boundary, and access
@@ -273,8 +281,9 @@ In a typical target repository:
    authorization. Keep the catalog outside routine routing and resolve exact
    aliases through the compact index. Include the
    project-knowledge routing descriptor, flow, gate, operation/help entries,
-   promotion and route-shard templates, and context receipt fields in every
-   accepted core profile. Keep route shards lazy.
+   promotion and route-shard templates, semantic-guidance receipt fields, and
+   mapped/known-gap/unknown coverage in every accepted core profile. Keep route
+   shards lazy.
    When team collaboration is enabled, route `team-active` through
    `.ai/assistant/team/context-overlay.json`. Check only the compact active-work
    index before state-changing operations and keep full team state outside
@@ -343,14 +352,20 @@ In a typical target repository:
 12. Apply the durable engineering-evidence decision. Capture reusable material
    installation knowledge when triggered and authorized, or report a specific
    skip/block reason.
-13. Review any reusable conclusion through the project-knowledge disposition
-   gate. Only target-authorized acceptance plus a canonical owner update may
-   create a current route entry; otherwise preserve the candidate as proposed,
+13. Route reusable guidance through the project-knowledge disposition gate.
+   Engineering discoveries require evidence and target-authorized review.
+   Direct directives require verified authority and a durable decision
+   reference. Only target-authorized acceptance plus a canonical owner update
+   may create a current route entry; otherwise preserve the item as proposed,
    rejected, deferred, unresolved, or historical.
 14. If Debug Mode is enabled for the installation operation by an explicit
    current-scope request, capture only normalized material events and finalize
    or expire that record. Module installation alone does not activate it.
-15. Report files changed, validation run, skipped checks, approvals, knowledge
+15. When effectiveness measurement is enabled, add evidence-qualified human
+   attention and observed-only executor-time reporting, delayed-outcome and
+   adapter-maintenance authoring templates. Do not fabricate historical timing,
+   later outcomes, or maintenance cost.
+16. Report files changed, validation run, skipped checks, approvals, knowledge
    promotion/routing disposition, and
    residual risk.
 

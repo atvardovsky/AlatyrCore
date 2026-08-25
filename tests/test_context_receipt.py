@@ -11,7 +11,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from context_receipt import supports_observed_context_claim, validate_context_receipt
+from context_receipt import (
+    semantic_guidance_bundle_digest,
+    supports_observed_context_claim,
+    validate_context_receipt,
+)
 from summarize_effectiveness_benchmark import render_summary
 from conformance_execution.codex_benchmark import update_report
 
@@ -38,7 +42,110 @@ def exact_receipt() -> dict[str, object]:
     }
 
 
+def semantic_identity(guidance_id: str = "guidance-001") -> dict[str, str]:
+    return {
+        "guidance_id": guidance_id,
+        "canonical_owner": ".ai/project/architecture.md",
+        "owner_digest": f"sha256:{'a' * 64}",
+        "authority": "accepted",
+        "freshness": "current",
+        "applicability": "applies",
+    }
+
+
+def with_semantic_guidance(receipt: dict[str, object]) -> dict[str, object]:
+    identity = semantic_identity()
+    identities = [identity]
+    digest = semantic_guidance_bundle_digest(identities)
+    receipt["semantic_guidance"] = {
+        "schema_version": 1,
+        "planned": {
+            "status": "recorded",
+            "identities": identities,
+            "bundle_digest": digest,
+        },
+        "resolved": {
+            "status": "recorded",
+            "identities": identities,
+            "bundle_digest": digest,
+        },
+        "observed": {
+            "evidence_level": "exact",
+            "source": "host-telemetry",
+            "identities": identities,
+            "bundle_digest": digest,
+            "evidence": "host recorded injected semantic guidance bundle",
+        },
+    }
+    return receipt
+
+
 class ContextReceiptTests(unittest.TestCase):
+    def test_semantic_guidance_identity_and_digest_are_validated(self) -> None:
+        receipt = with_semantic_guidance(exact_receipt())
+        self.assertEqual(
+            validate_context_receipt(receipt, require_semantic_guidance=True), []
+        )
+
+    def test_semantic_guidance_digest_preserves_identity_order(self) -> None:
+        first = semantic_identity("guidance-001")
+        second = semantic_identity("guidance-002")
+        self.assertNotEqual(
+            semantic_guidance_bundle_digest([first, second]),
+            semantic_guidance_bundle_digest([second, first]),
+        )
+
+    def test_semantic_guidance_digest_mismatch_is_rejected(self) -> None:
+        receipt = with_semantic_guidance(exact_receipt())
+        receipt["semantic_guidance"]["resolved"]["bundle_digest"]["value"] = "0" * 64
+        failures = validate_context_receipt(receipt, require_semantic_guidance=True)
+        self.assertTrue(any("ordered identities" in failure for failure in failures))
+
+    def test_provider_usage_alone_is_not_exact_semantic_delivery_evidence(self) -> None:
+        receipt = with_semantic_guidance(exact_receipt())
+        receipt["semantic_guidance"]["observed"]["source"] = "provider-usage"
+        failures = validate_context_receipt(receipt, require_semantic_guidance=True)
+        self.assertTrue(any("host delivery telemetry" in failure for failure in failures))
+
+    def test_unavailable_semantic_stage_requires_unavailable_digest(self) -> None:
+        receipt = with_semantic_guidance(exact_receipt())
+        receipt["measurement_state"] = "planned"
+        receipt["semantic_guidance"]["resolved"] = {
+            "status": "unavailable",
+            "identities": [],
+            "bundle_digest": semantic_guidance_bundle_digest([]),
+        }
+        receipt["semantic_guidance"]["observed"] = {
+            "evidence_level": "unavailable",
+            "source": "unavailable",
+            "identities": [],
+            "bundle_digest": {
+                "schema_version": 1,
+                "algorithm": "sha256",
+                "value": "unavailable",
+            },
+            "evidence": "host does not expose semantic delivery evidence",
+        }
+        failures = validate_context_receipt(receipt, require_semantic_guidance=True)
+        self.assertTrue(any("value must be unavailable" in failure for failure in failures))
+
+    def test_resolved_guidance_requires_owner_digest(self) -> None:
+        receipt = with_semantic_guidance(exact_receipt())
+        receipt["semantic_guidance"]["resolved"]["identities"][0]["owner_digest"] = "unknown"
+        receipt["semantic_guidance"]["resolved"]["bundle_digest"] = (
+            semantic_guidance_bundle_digest(
+                receipt["semantic_guidance"]["resolved"]["identities"]
+            )
+        )
+        failures = validate_context_receipt(receipt, require_semantic_guidance=True)
+        self.assertTrue(any("owner_digest must be resolved" in failure for failure in failures))
+
+    def test_legacy_receipt_remains_valid_but_cannot_meet_semantic_requirement(self) -> None:
+        receipt = exact_receipt()
+        self.assertEqual(validate_context_receipt(receipt), [])
+        failures = validate_context_receipt(receipt, require_semantic_guidance=True)
+        self.assertIn("context_receipt.semantic_guidance must be recorded", failures)
+
     def test_exact_host_receipt_supports_observed_claim(self) -> None:
         receipt = exact_receipt()
         self.assertEqual(validate_context_receipt(receipt), [])

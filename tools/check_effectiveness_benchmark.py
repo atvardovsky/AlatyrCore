@@ -11,6 +11,8 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
+import jsonschema
+
 from prepare_effectiveness_benchmark import (
     MODES,
     REPORT_TEMPLATE,
@@ -26,7 +28,38 @@ from summarize_effectiveness_reports import validate_report as validate_metrics
 ROOT = Path(__file__).resolve().parents[1]
 PLAN_TEMPLATE = ROOT / "conformance" / "benchmarks" / "benchmark-plan-template.json"
 TASK_SUITE = ROOT / "conformance" / "benchmarks" / "benchmark-task-suite.json"
+DELAYED_OUTCOME_SCHEMA = ROOT / "schemas" / "alatyr-delayed-outcome-evidence.schema.json"
+ADAPTER_MAINTENANCE_SCHEMA = (
+    ROOT / "schemas" / "alatyr-adapter-maintenance-evidence.schema.json"
+)
+DELAYED_OUTCOME_TEMPLATE = (
+    ROOT
+    / "templates"
+    / "target"
+    / ".ai"
+    / "assistant"
+    / "templates"
+    / "delayed-outcome-evidence.json"
+)
+ADAPTER_MAINTENANCE_TEMPLATE = (
+    ROOT
+    / "templates"
+    / "target"
+    / ".ai"
+    / "assistant"
+    / "templates"
+    / "adapter-maintenance-evidence.json"
+)
 HEX = set("0123456789abcdef")
+MEASUREMENT_EVIDENCE_STATES = {"observed", "manual", "estimated", "unavailable"}
+INTERVENTION_CLASSIFICATIONS = {
+    "new-guidance-candidate",
+    "known-guidance-routing-failure",
+    "known-guidance-compliance-failure",
+    "task-local",
+    "scope-change",
+    "validation-request",
+}
 CANONICAL_TASK_PROFILES = {
     "docs-local",
     "code-local",
@@ -80,6 +113,117 @@ def validate_provenance(value: Any, path: Path) -> None:
         item = value.get(field)
         if not isinstance(item, str) or not item or is_placeholder(item):
             raise AssertionError(f"{path} run_provenance.{field} must be recorded")
+
+
+def validate_measurement(
+    value: Any,
+    field: str,
+    *,
+    allowed_states: set[str] = MEASUREMENT_EVIDENCE_STATES,
+    value_field: str = "value",
+) -> None:
+    if not isinstance(value, dict):
+        raise AssertionError(f"{field} must be an evidence-qualified measurement")
+    expected_fields = {value_field, "evidence_state", "evidence_reference"}
+    if value_field == "value" and set(value) != expected_fields:
+        raise AssertionError(f"{field} measurement fields drifted")
+    state = value.get("evidence_state")
+    if state not in allowed_states:
+        raise AssertionError(f"{field} evidence_state is invalid")
+    measured = value.get(value_field)
+    if state == "unavailable":
+        if measured != "unknown":
+            raise AssertionError(f"{field} unavailable value must be unknown")
+    elif not isinstance(measured, int) or isinstance(measured, bool) or measured < 0:
+        raise AssertionError(f"{field} recorded value must be a non-negative integer")
+    evidence = value.get("evidence_reference")
+    if not isinstance(evidence, str) or not evidence or is_placeholder(evidence):
+        raise AssertionError(f"{field} evidence reference or unavailable reason is missing")
+
+
+def validate_measurement_evidence(value: Any, report_path: Path) -> None:
+    if not isinstance(value, dict):
+        raise AssertionError(f"{report_path} measurement_evidence must be an object")
+    required = {
+        "human_active_attention_seconds",
+        "review_cycles",
+        "intervention_total",
+        "classified_interventions",
+        "executor_active_time_seconds",
+    }
+    if set(value) != required:
+        raise AssertionError(f"{report_path} measurement_evidence fields drifted")
+    for field in [
+        "human_active_attention_seconds",
+        "review_cycles",
+        "intervention_total",
+    ]:
+        validate_measurement(value[field], f"{report_path} measurement_evidence.{field}")
+    validate_measurement(
+        value["executor_active_time_seconds"],
+        f"{report_path} measurement_evidence.executor_active_time_seconds",
+        allowed_states={"observed", "unavailable"},
+    )
+    interventions = value["classified_interventions"]
+    if not isinstance(interventions, list):
+        raise AssertionError(
+            f"{report_path} measurement_evidence.classified_interventions must be a list"
+        )
+    seen: set[str] = set()
+    known_total = 0
+    all_counts_known = True
+    for index, intervention in enumerate(interventions):
+        field = (
+            f"{report_path} measurement_evidence.classified_interventions[{index}]"
+        )
+        if not isinstance(intervention, dict):
+            raise AssertionError(f"{field} must be an object")
+        if set(intervention) != {
+            "classification",
+            "count",
+            "evidence_state",
+            "evidence_reference",
+        }:
+            raise AssertionError(f"{field} fields drifted")
+        classification = intervention.get("classification")
+        if classification not in INTERVENTION_CLASSIFICATIONS:
+            raise AssertionError(f"{field} classification is invalid")
+        if classification in seen:
+            raise AssertionError(f"{field} classification is duplicated")
+        seen.add(classification)
+        validate_measurement(intervention, field, value_field="count")
+        count = intervention["count"]
+        if isinstance(count, int) and not isinstance(count, bool):
+            known_total += count
+        else:
+            all_counts_known = False
+    total = value["intervention_total"]["value"]
+    if isinstance(total, int) and not isinstance(total, bool):
+        if not all_counts_known or known_total != total:
+            raise AssertionError(
+                f"{report_path} classified intervention counts must equal intervention_total"
+            )
+
+
+def measurement_contract(report: dict[str, Any]) -> tuple[Any, ...]:
+    evidence = report.get("measurement_evidence", {})
+    interventions = evidence.get("classified_interventions", [])
+    return (
+        evidence.get("human_active_attention_seconds", {}).get("evidence_state"),
+        evidence.get("review_cycles", {}).get("evidence_state"),
+        evidence.get("intervention_total", {}).get("evidence_state"),
+        evidence.get("executor_active_time_seconds", {}).get("evidence_state"),
+        tuple(
+            sorted(
+                (
+                    item.get("classification"),
+                    item.get("evidence_state"),
+                )
+                for item in interventions
+                if isinstance(item, dict)
+            )
+        ),
+    )
 
 
 def task_index(manifest: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -174,8 +318,8 @@ def validate_benchmark_report(
     if failures:
         raise AssertionError(f"{report_path}: {'; '.join(failures)}")
     schema_version = report.get("schema_version")
-    if schema_version not in {1, 2}:
-        raise AssertionError(f"{report_path} schema_version must be 1 or 2")
+    if schema_version not in {1, 2, 3}:
+        raise AssertionError(f"{report_path} schema_version must be 1, 2, or 3")
     expected = {
         "report_kind": "effectiveness-benchmark-result",
         "benchmark_id": manifest["benchmark_id"],
@@ -188,7 +332,7 @@ def validate_benchmark_report(
         "source_commit": manifest["source_commit"],
         "target_baseline_hash": run["project_baseline_hash"],
     }
-    if schema_version == 2:
+    if schema_version in {2, 3}:
         receipt = report.get("context_receipt")
         receipt_failures = validate_context_receipt(
             receipt, f"{report_path} context_receipt"
@@ -206,6 +350,22 @@ def validate_benchmark_report(
                 raise AssertionError(
                     f"{report_path} {report_field} differs from context receipt"
                 )
+    if schema_version == 3 and (
+        "measurement_evidence" not in report or "measurement_limitations" not in report
+    ):
+        raise AssertionError(
+            f"{report_path} schema 3 requires evidence-qualified measurements"
+        )
+    if "measurement_evidence" in report or "measurement_limitations" in report:
+        validate_measurement_evidence(report.get("measurement_evidence"), report_path)
+        limitations = report.get("measurement_limitations")
+        if not isinstance(limitations, list) or not all(
+            isinstance(item, str) and item and not is_placeholder(item)
+            for item in limitations
+        ):
+            raise AssertionError(
+                f"{report_path} measurement_limitations must be a string list"
+            )
     if "class_id" in task:
         expected["task_class_id"] = task["class_id"]
     if "evidence_contract_digest" in manifest:
@@ -399,6 +559,7 @@ def validate_benchmark(
                         report["run_provenance"]["version_or_date"],
                         report["run_provenance"]["execution_mode"],
                         report["context_measurement_kind"],
+                        measurement_contract(report),
                     )
                     for report in pair_reports
                 }
@@ -446,6 +607,139 @@ def write_file(path: Path, content: str) -> None:
     path.write_text(content, encoding="utf-8")
 
 
+def validate_evidence_record_templates() -> list[str]:
+    failures: list[str] = []
+    try:
+        delayed_schema = load_json(DELAYED_OUTCOME_SCHEMA)
+        maintenance_schema = load_json(ADAPTER_MAINTENANCE_SCHEMA)
+        for path, schema in [
+            (DELAYED_OUTCOME_SCHEMA, delayed_schema),
+            (ADAPTER_MAINTENANCE_SCHEMA, maintenance_schema),
+        ]:
+            try:
+                jsonschema.Draft7Validator.check_schema(schema)
+            except jsonschema.SchemaError as exc:
+                failures.append(f"{path} is not a valid Draft 7 schema: {exc.message}")
+
+        delayed_template = load_json(DELAYED_OUTCOME_TEMPLATE)
+        required_delayed = {
+            "schema_version",
+            "record_kind",
+            "evidence_classification",
+            "outcome_id",
+            "operation_id",
+            "recorded_at",
+            "outcome_type",
+            "source_records",
+            "prior_outcome_ids",
+            "outcome",
+            "immutability",
+            "privacy",
+        }
+        if set(delayed_template) != required_delayed:
+            failures.append("delayed outcome evidence template fields drifted")
+        if delayed_template.get("immutability") != {
+            "append_only_record": True,
+            "completed_source_records_modified": False,
+        }:
+            failures.append(
+                "delayed outcome template must preserve completed source records"
+            )
+
+        maintenance_template = load_json(ADAPTER_MAINTENANCE_TEMPLATE)
+        required_metrics = {
+            "files_touched",
+            "manual_corrections",
+            "stale_claims",
+            "routing_changes",
+            "validation_time_seconds",
+            "local_deviations",
+        }
+        if set(maintenance_template.get("metrics", {})) != required_metrics:
+            failures.append("adapter maintenance evidence metrics drifted")
+
+        delayed_record = {
+            "schema_version": 1,
+            "record_kind": "alatyr-delayed-outcome-evidence",
+            "evidence_classification": "historical-record",
+            "outcome_id": "outcome-1",
+            "operation_id": "operation-1",
+            "recorded_at": "2026-01-02T00:00:00Z",
+            "outcome_type": "merge",
+            "source_records": [
+                {
+                    "record_kind": "debug-session",
+                    "record_id": "debug-1",
+                    "completion_state": "completed",
+                }
+            ],
+            "prior_outcome_ids": [],
+            "outcome": {
+                "summary": "The reviewed change was merged.",
+                "occurred_at": "2026-01-02T00:00:00Z",
+                "evidence_state": "observed",
+                "evidence_references": ["pull-request:1"],
+                "limitations": [],
+            },
+            "immutability": {
+                "append_only_record": True,
+                "completed_source_records_modified": False,
+            },
+            "privacy": {
+                "raw_chat_stored": False,
+                "chain_of_thought_stored": False,
+                "secrets_stored": False,
+            },
+        }
+        delayed_validator = jsonschema.Draft7Validator(delayed_schema)
+        if list(delayed_validator.iter_errors(delayed_record)):
+            failures.append("delayed outcome schema rejects a valid linked record")
+        invalid_delayed = json.loads(json.dumps(delayed_record))
+        invalid_delayed["immutability"]["completed_source_records_modified"] = True
+        if not list(delayed_validator.iter_errors(invalid_delayed)):
+            failures.append("delayed outcome schema permits completed-record mutation")
+
+        observed_measurement = {
+            "value": 1,
+            "evidence_state": "observed",
+            "evidence_reference": "synthetic source check",
+        }
+        maintenance_record = {
+            "schema_version": 1,
+            "record_kind": "alatyr-adapter-maintenance-evidence",
+            "evidence_classification": "historical-record",
+            "maintenance_id": "maintenance-1",
+            "operation_id": "operation-1",
+            "recorded_at": "2026-01-02T00:00:00Z",
+            "target_revision": "revision-1",
+            "maintenance_scope": "adapter-only source check",
+            "metrics": {
+                field: dict(observed_measurement) for field in required_metrics
+            },
+            "validation": {
+                "status": "passed",
+                "evidence": ["synthetic schema validation"],
+            },
+            "limitations": ["synthetic source contract only"],
+        }
+        maintenance_validator = jsonschema.Draft7Validator(maintenance_schema)
+        if list(maintenance_validator.iter_errors(maintenance_record)):
+            failures.append("adapter maintenance schema rejects a valid record")
+        invalid_maintenance = json.loads(json.dumps(maintenance_record))
+        invalid_maintenance["metrics"]["files_touched"] = {
+            "value": 0,
+            "evidence_state": "unavailable",
+            "evidence_reference": "not measured",
+        }
+        if not list(maintenance_validator.iter_errors(invalid_maintenance)):
+            failures.append(
+                "adapter maintenance schema treats unavailable evidence as zero"
+            )
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        failures.append(str(exc))
+    return failures
+
+
 def validate_source_templates() -> list[str]:
     failures: list[str] = []
     try:
@@ -490,6 +784,8 @@ def validate_source_templates() -> list[str]:
             "estimated_cost",
             "cost_currency",
             "cost_evidence",
+            "measurement_evidence",
+            "measurement_limitations",
             "changed_files",
             "acceptance_criteria_results",
             "review",
@@ -566,6 +862,7 @@ def validate_source_templates() -> list[str]:
             failures.append("benchmark task suite must state its non-evidence boundary")
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         failures.append(str(exc))
+    failures.extend(validate_evidence_record_templates())
     return failures
 
 
@@ -729,6 +1026,32 @@ def source_self_check() -> list[str]:
                     "companion_surfaces_checked": index,
                     "unresolved_consistency_gaps": 0,
                     "duration_seconds": (index + 1) * 10,
+                    "measurement_evidence": {
+                        "human_active_attention_seconds": {
+                            "value": (index + 1) * 5,
+                            "evidence_state": "manual",
+                            "evidence_reference": "synthetic bounded review log",
+                        },
+                        "review_cycles": {
+                            "value": 1,
+                            "evidence_state": "manual",
+                            "evidence_reference": "synthetic review record",
+                        },
+                        "intervention_total": {
+                            "value": 0,
+                            "evidence_state": "manual",
+                            "evidence_reference": "synthetic review record",
+                        },
+                        "classified_interventions": [],
+                        "executor_active_time_seconds": {
+                            "value": "unknown",
+                            "evidence_state": "unavailable",
+                            "evidence_reference": "no host active-time telemetry",
+                        },
+                    },
+                    "measurement_limitations": [
+                        "synthetic source contract only"
+                    ],
                     "protected_changes_blocked": 0,
                     "changed_files": ["none"],
                     "residual_risks": "synthetic source contract only",
@@ -769,6 +1092,49 @@ def source_self_check() -> list[str]:
         )[0]:
             failures.append("paired benchmark must reject assistant/model drift")
         full_report["run_provenance"]["model"] = "unknown"
+        full_report_path.write_text(
+            json.dumps(full_report, indent=2) + "\n", encoding="utf-8"
+        )
+
+        full_report["measurement_evidence"]["executor_active_time_seconds"] = {
+            "value": 12,
+            "evidence_state": "estimated",
+            "evidence_reference": "wall-clock estimate",
+        }
+        full_report_path.write_text(
+            json.dumps(full_report, indent=2) + "\n", encoding="utf-8"
+        )
+        if not validate_benchmark(
+            manifest_path, require_reports=True, require_reviewed=True
+        )[0]:
+            failures.append("benchmark must reject estimated executor active time")
+        full_report["measurement_evidence"]["executor_active_time_seconds"] = {
+            "value": "unknown",
+            "evidence_state": "unavailable",
+            "evidence_reference": "no host active-time telemetry",
+        }
+        full_report_path.write_text(
+            json.dumps(full_report, indent=2) + "\n", encoding="utf-8"
+        )
+
+        original_human_attention = dict(
+            full_report["measurement_evidence"]["human_active_attention_seconds"]
+        )
+        full_report["measurement_evidence"]["human_active_attention_seconds"] = {
+            "value": 0,
+            "evidence_state": "unavailable",
+            "evidence_reference": "not measured",
+        }
+        full_report_path.write_text(
+            json.dumps(full_report, indent=2) + "\n", encoding="utf-8"
+        )
+        if not validate_benchmark(
+            manifest_path, require_reports=True, require_reviewed=True
+        )[0]:
+            failures.append("benchmark must not treat unavailable attention as zero")
+        full_report["measurement_evidence"][
+            "human_active_attention_seconds"
+        ] = original_human_attention
         full_report_path.write_text(
             json.dumps(full_report, indent=2) + "\n", encoding="utf-8"
         )

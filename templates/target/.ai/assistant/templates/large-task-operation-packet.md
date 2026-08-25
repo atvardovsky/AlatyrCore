@@ -30,6 +30,21 @@ evidence, not a source of truth for project facts.
 - Intentionally omitted context: `{INTENTIONALLY_OMITTED_CONTEXT}`
 - Residual context risk: `{RESIDUAL_CONTEXT_RISK}`
 
+### Semantic Guidance Receipt
+
+- Receipt extension: `semantic_guidance` schema `1`
+- Planned ordered identities: `{PLANNED_GUIDANCE_IDS_OWNERS_DIGESTS_AUTHORITY_FRESHNESS_AND_APPLICABILITY}`
+- Planned bundle digest: `{DIGEST_SCHEMA_VERSION_ALGORITHM_AND_VALUE}`
+- Resolved ordered identities: `{RESOLVED_GUIDANCE_IDS_OWNERS_DIGESTS_AUTHORITY_FRESHNESS_AND_APPLICABILITY}`
+- Resolved bundle digest: `{DIGEST_SCHEMA_VERSION_ALGORITHM_AND_VALUE}`
+- Observed evidence level and source: `{EXACT_PARTIAL_OR_UNAVAILABLE_AND_SOURCE}`
+- Observed ordered identities: `{OBSERVED_GUIDANCE_IDENTITIES_OR_NONE}`
+- Observed bundle digest: `{DIGEST_SCHEMA_VERSION_ALGORITHM_VALUE_OR_UNAVAILABLE}`
+- Observation evidence: `{HOST_PROVIDER_MANUAL_OR_UNAVAILABLE_EVIDENCE}`
+- Omitted applicable identities: `{COUNT_IDS_REASONS_AND_EXPANSION_DECISION_OR_NONE}`
+- Claim boundary: bundle identity does not prove model comprehension or
+  compliance
+
 ## Changed Facts
 
 Repeat this block for each changed or disputed fact.
@@ -89,6 +104,13 @@ context reset.
 - Validation state: `{VALIDATION_STATE}`
 - Invalidated assumptions: `{INVALIDATED_ASSUMPTIONS_OR_NONE}`
 - Context receipt delta: `{NEW_FILES_REASONS_AND_VOLUME}`
+- Revalidation gate: `{RESUME_PROTECTED_IMPLEMENTATION_MATERIAL_DECISION_FINAL_VALIDATION_OR_FINAL_EVIDENCE}`
+- Previously accepted resolved bundle digest: `{DIGEST_SCHEMA_VERSION_ALGORITHM_AND_VALUE}`
+- Current resolved bundle digest: `{DIGEST_SCHEMA_VERSION_ALGORITHM_AND_VALUE_OR_UNAVAILABLE}`
+- Guidance identity delta: `{ADDED_REMOVED_REORDERED_OR_CHANGED_IDENTITIES_OR_NONE}`
+- Changed guidance owners loaded: `{ONLY_NEW_OR_CHANGED_OWNER_PATHS_OR_NONE}`
+- Revalidation result: `{UNCHANGED_ACCEPTED_AFTER_REVIEW_BLOCKED_OR_UNRESOLVED}`
+- Revalidated risk, approval, dependencies, and validation: `{RESULT_OR_NOT_AFFECTED}`
 - Unresolved items: `{UNRESOLVED_ITEMS}`
 - Next ready action: `{NEXT_READY_ACTION}`
 - Resume context: `{MINIMUM_RESUME_CONTEXT}`
@@ -104,6 +126,8 @@ context reset.
 - Approval scope versus applied changes: `{APPROVAL_COVERAGE_RESULT}`
 - Complete changed-path scope enforcement: `{COMMITTED_STAGED_UNSTAGED_RENAMED_DELETED_UNTRACKED_RESULT}`
 - Combined validation: `{TARGET_VALIDATION_RESULT_OR_UNRESOLVED}`
+- Final semantic-guidance revalidation: `{FINAL_VALIDATION_AND_FINAL_EVIDENCE_GATE_RESULTS}`
+- Final accepted resolved bundle digest: `{DIGEST_SCHEMA_VERSION_ALGORITHM_AND_VALUE}`
 - Global logical integrity review: `{GLOBAL_LOGICAL_INTEGRITY_RESULT}`
 - Delegated packet reconciliation: `{RESULT_REJECTED_OUTPUT_FALLBACK_OR_NOT_USED}`
 - Skipped checks: `{SKIPPED_CHECKS}`
@@ -116,4 +140,8 @@ context reset.
 On resume, load the compact adapter bootstrap, this packet, the active
 workstream's minimum context, its changed-fact owners, and dependencies. Check
 packet claims against current repository evidence before continuing. Do not
-load completed workstream context again unless evidence changed.
+load completed workstream context again unless evidence changed. Re-resolve the
+ordered semantic-guidance bundle and compare it with the last accepted digest.
+When it differs, stop the affected phase, load only changed owners, refresh
+risk, approval, dependencies, and validation, then record a new accepted
+checkpoint before continuing.

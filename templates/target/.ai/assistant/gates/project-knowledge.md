@@ -9,11 +9,13 @@ automatic.
 Before accepting a promotion, require:
 
 - target-owned decision authority and current-scope authorization
-- source engineering evidence and repository evidence
+- an explicit origin; engineering evidence for engineering discovery, or
+  verified authority and decision reference for direct decision-owner guidance
 - a registered fact type, fact IDs, and canonical owner or explicit blocker
 - accepted or narrowed wording and decision reference
 - canonical owner update with content SHA-256
 - bounded applicability and freshness triggers
+- guidance kind and base, narrowing, or authorized-exception semantics
 - route entry and promotion-record linkage
 - privacy, retention, validation, and residual-risk evidence
 
@@ -25,6 +27,8 @@ constraint. Treat stale items as warnings and contradictions as blockers.
 
 Do not resolve conflicts by recency, frequency, or agent agreement. Route them
 to the source-of-truth conflict resolver and preserve supersession lineage.
+Do not infer authority from a human message, and do not use a global precedence
+order across target fact types.
 
 Final evidence must name the routing stage, selectors, selected and omitted
 knowledge IDs, warnings or blockers, canonical owners read, packet-limit

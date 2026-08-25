@@ -4,6 +4,37 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.30 - 2026-08-25
+
+- Increased the framework version to `0.1.0-alpha.30`, adapter schema version
+  to `28`, and target template version to `28` for Project Development Model
+  guidance, semantic delivery evidence, Debug attribution, and effectiveness
+  evidence contracts.
+- Extended required project guidance to accept reviewed engineering discoveries
+  or verified direct decision-owner directives without creating a second source
+  of truth. Added guidance kinds, target-owned narrowing and exception
+  semantics, and mapped/known-gap/unknown coverage without completeness scores.
+- Added ordered planned, resolved, and observed semantic-guidance identities and
+  deterministic bundle digests to context receipts. Large tasks now revalidate
+  changed bundles before protected implementation, material decisions, final
+  validation, and final evidence while loading only changed owners.
+- Added Debug contract version 4 with separate human, executor, Alatyr-system,
+  external-maintainer, and automation roles; target-local identity and runtime
+  provenance; and correction dispositions for new guidance, routing failures,
+  compliance failures, task-local input, scope changes, and validation requests.
+  Schema versions 1 through 3 remain migration-limited historical evidence.
+- Added evidence-qualified human attention, review-cycle, intervention, and
+  observed-only executor-active-time measurements; immutable later-linked
+  delayed outcomes; and separate adapter-maintenance evidence. These fields do
+  not support precise productivity or savings claims by themselves.
+- Added deterministic project-guidance coverage, exception, direct-intake,
+  Debug attribution, semantic receipt, revalidation, evidence-template, and
+  compatibility checks, with synchronized installation and upgrade guidance.
+- Changed `ALATYR-KNOWLEDGE-001`, `ALATYR-CONTEXT-001`,
+  `ALATYR-DEBUG-001`, `ALATYR-EVIDENCE-001`, and
+  `ALATYR-LIFECYCLE-001`, and `ALATYR-SOURCE-001`; no rule IDs were added or
+  removed.
+
 ## 0.1.0-alpha.29 - 2026-08-25
 
 - Increased the framework version to `0.1.0-alpha.29`, adapter schema version

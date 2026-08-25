@@ -1,0 +1,94 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/atvardovsky/AlatyrCore/schemas/alatyr-adapter-maintenance-evidence.schema.json",
+  "title": "Alatyr adapter maintenance evidence record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "record_kind",
+    "evidence_classification",
+    "maintenance_id",
+    "operation_id",
+    "recorded_at",
+    "target_revision",
+    "maintenance_scope",
+    "metrics",
+    "validation",
+    "limitations"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "record_kind": {"const": "alatyr-adapter-maintenance-evidence"},
+    "evidence_classification": {"const": "historical-record"},
+    "maintenance_id": {"type": "string", "minLength": 1},
+    "operation_id": {"type": "string", "minLength": 1},
+    "recorded_at": {"type": "string", "minLength": 1},
+    "target_revision": {"type": "string", "minLength": 1},
+    "maintenance_scope": {"type": "string", "minLength": 1},
+    "metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "files_touched",
+        "manual_corrections",
+        "stale_claims",
+        "routing_changes",
+        "validation_time_seconds",
+        "local_deviations"
+      ],
+      "properties": {
+        "files_touched": {"$ref": "#/definitions/measurement"},
+        "manual_corrections": {"$ref": "#/definitions/measurement"},
+        "stale_claims": {"$ref": "#/definitions/measurement"},
+        "routing_changes": {"$ref": "#/definitions/measurement"},
+        "validation_time_seconds": {"$ref": "#/definitions/measurement"},
+        "local_deviations": {"$ref": "#/definitions/measurement"}
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "evidence"],
+      "properties": {
+        "status": {"enum": ["passed", "failed", "partial", "not-run"]},
+        "evidence": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1}
+    }
+  },
+  "definitions": {
+    "measurement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "evidence_state", "evidence_reference"],
+      "properties": {
+        "value": {
+          "anyOf": [
+            {"type": "integer", "minimum": 0},
+            {"const": "unknown"}
+          ]
+        },
+        "evidence_state": {
+          "enum": ["observed", "manual", "estimated", "unavailable"]
+        },
+        "evidence_reference": {"type": "string", "minLength": 1}
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {"evidence_state": {"const": "unavailable"}}
+          },
+          "then": {"properties": {"value": {"const": "unknown"}}},
+          "else": {"properties": {"value": {"type": "integer", "minimum": 0}}}
+        }
+      ]
+    }
+  }
+}

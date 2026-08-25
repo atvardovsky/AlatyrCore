@@ -119,10 +119,16 @@ route.
 target decision
         -> accepted development rule
         -> canonical project owner
-        -> task-specific routing
+        -> bounded task-specific guidance
         -> authorized agent execution
         -> project validation
 ```
+
+The adapter records whether guidance came from a reviewed engineering
+discovery or directly from a target-authorized decision owner. Narrower rules
+and exceptions remain scope- and authority-bound, while missing coverage is
+reported as a known gap or unknown rather than hidden behind a completeness
+score.
 
 ## From Engineering Discovery To Project Knowledge
 
@@ -150,7 +156,7 @@ reconstructing already-known context. That is a measurable goal, not a claim
 that current evidence proves the benefit for every project or assistant.
 
 Canonical behavior is defined by
-[project knowledge promotion and delivery](framework/project-knowledge.md).
+[Project Development Model guidance and knowledge delivery](framework/project-knowledge.md).
 
 ## What AlatyrCore Is Not
 
@@ -381,10 +387,11 @@ are accepted. Each actual mode keeps bounded support in its own project-owned
 directory; optional root support holds only facts shared across modes.
 
 For selected tasks, the optional [Debug Mode](framework/debug-mode.md) can
-record normalized, non-canonical evidence about what Alatyr found
-independently, where human supervision changed the investigation, which
-validation expanded, and how the task concluded. Its versioned event model
-separates actor, causality, intervention, and contribution so a task request or
+record normalized, non-canonical evidence about what the active executor found,
+which behavior came from deterministic Alatyr routing or checks, where human
+supervision changed the investigation, which validation expanded, and how the
+task concluded. Its versioned event model separates actor role, identity,
+runtime provenance, causality, correction disposition, and contribution so a task request or
 validation request is not misreported as a correction. Finalization closes the
 durable-evidence decision, evaluates reusable materiality, distinguishes exact
 from partial reproduction evidence, preserves repository-binding lineage, and
@@ -496,7 +503,7 @@ tasks from loading the complete framework or project corpus.
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.29`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.30`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural

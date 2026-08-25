@@ -71,7 +71,9 @@ Every project using this framework must define these structural bindings:
   unresolved placeholders were evaluated at the target revision.
 
 The exact contents of a selected capability are defined by its canonical rule
-owner and catalog entry. For example, architecture knowledge, project
+owner and catalog entry. Required Project Development Model guidance remains a
+derived envelope over registered canonical project owners; it is not a new
+fact store. Optional architecture knowledge, project
 vocabulary, test-first development, extensions, dependency knowledge,
 workspace modes, diagrams, team collaboration, delegation, Debug Mode, and AI
 infrastructure each keep their detailed policy outside this structural
@@ -142,7 +144,8 @@ In a target repository, the adapter usually includes:
 - `AGENTS.md` and `AI_ASSISTANTS.md`
 - `.ai/alatyr.yaml` or equivalent adapter manifest
 - `.ai/framework` containing the selected portable framework pack
-- `.ai/project` containing project-owned facts and knowledge routes
+- `.ai/project` containing project-owned facts, canonical-owner references,
+  and derived Project Development Model guidance routes
 - `.ai/assistant` containing repository-local routing, gates, and operations
 - optional project-selected skills and assistant-native wrappers
 - local consistency checks, validation commands, or manual-review rules owned

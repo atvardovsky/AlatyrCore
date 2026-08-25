@@ -23,8 +23,10 @@ Installed routing owner: `.ai/framework/context-profiles.md`
 Rule IDs: `ALATYR-CONTEXT-001`
 Derived surfaces: README source context, installation source context, target
 context profiles, target context router, task-scale overlays, operation packet
-context receipts, consistency relationship routing, session bootstrap
-instructions, AI infrastructure capability and recommendation routing.
+context receipts, ordered semantic-guidance identity and bundle receipts,
+long-task semantic revalidation, consistency relationship routing, session
+bootstrap instructions, AI infrastructure capability and recommendation
+routing.
 
 Category: `SOURCE`
 Source routing owner: `framework/source-of-truth-registry.md`
@@ -219,7 +221,9 @@ Source routing owner: `framework/lifecycle.md`
 Installed routing owner: `.ai/framework/lifecycle.md`
 Rule IDs: `ALATYR-LIFECYCLE-001`
 Derived surfaces: version files, installed framework pack, migration notes,
-framework update recheck, changelog.
+framework update recheck, project-guidance contract migration, Debug
+attribution migration, effectiveness and maintenance evidence migration,
+changelog.
 
 Category: `ENGINEERING_EVIDENCE`
 Source routing owner: `framework/engineering-evidence.md`
@@ -233,25 +237,31 @@ Category: `PROJECT_KNOWLEDGE`
 Source routing owner: `framework/project-knowledge.md`
 Installed routing owner: `.ai/framework/project-knowledge.md`
 Rule IDs: `ALATYR-KNOWLEDGE-001`
-Derived surfaces: target knowledge policy and routing index, promotion and
-route-shard templates, two-stage context routing, knowledge operation and gate,
-target validation, shared-will conformance, paired rediscovery benchmark.
+Derived surfaces: target Project Development Model guidance policy and routing
+index, engineering-discovery and direct decision-owner intake, promotion and
+route-shard templates, guidance kind and exception semantics, coverage and
+known-gap projection, two-stage semantic context routing, knowledge operation
+and gate, target validation, shared-will conformance, paired rediscovery
+benchmark.
 
 Category: `DEBUG`
 Source routing owner: `framework/debug-mode.md`
 Installed routing owner: `.ai/framework/debug-mode.md`
 Rule IDs: `ALATYR-DEBUG-001`
 Derived surfaces: optional target debug index and records, task-local
-activation and expiry, normalized event attribution, capture-quality and timing
-evidence, event-derived supervision metrics, clean upstream projection, compact
-debug summary, target validation, installation and migration planning.
+activation and expiry, executor versus Alatyr-system attribution, actor
+identity and runtime provenance, correction disposition and guidance-failure
+routing, capture-quality and timing evidence, event-derived supervision
+metrics, clean upstream projection, compact debug summary, target validation,
+installation and migration planning.
 
 Category: `EVIDENCE`
 Source routing owner: `framework/guarantees.md`
 Installed routing owner: `.ai/framework/guarantees.md`
 Rule IDs: `ALATYR-EVIDENCE-001`
 Derived surfaces: final evidence, process commitments, conformance reports,
-effectiveness reports, operation packets.
+effectiveness reports, evidence-qualified human attention and executor timing,
+later-linked delayed outcomes, adapter-maintenance evidence, operation packets.
 
 ## Rule Canonical Owners
 

@@ -678,14 +678,19 @@
       ],
       "trigger_paths": [
         "framework/context-*.md",
+        "schemas/alatyr-context-receipt.schema.json",
         "templates/target/.ai/assistant/context*/**",
+        "tests/test_context_receipt.py",
+        "tools/context_receipt.py",
         "tools/check_context_router.py"
       ],
       "contract_inputs": [
         "framework/context-*.md",
+        "schemas/alatyr-context-receipt.schema.json",
         "templates/target/.ai/assistant/context*/**"
       ],
       "implementation_paths": [
+        "tools/context_receipt.py",
         "tools/check_context_router.py"
       ]
     },
@@ -879,14 +884,22 @@
       ],
       "contract_inputs": [
         "framework/large-task-orchestration.md",
-        "templates/target/.ai/assistant/context/task-scales/**"
+        "schemas/alatyr-context-receipt.schema.json",
+        "templates/target/.ai/assistant/context/task-scales/**",
+        "templates/target/.ai/assistant/flows/large-task-orchestration.flow.md",
+        "templates/target/.ai/assistant/templates/large-task-operation-packet.md"
       ],
       "implementation_paths": [
+        "tools/context_receipt.py",
         "tools/check_large_task_orchestration.py"
       ],
       "trigger_paths": [
         "framework/large-task-orchestration.md",
+        "schemas/alatyr-context-receipt.schema.json",
         "templates/target/.ai/assistant/context/task-scales/**",
+        "templates/target/.ai/assistant/flows/large-task-orchestration.flow.md",
+        "templates/target/.ai/assistant/templates/large-task-operation-packet.md",
+        "tools/context_receipt.py",
         "tools/check_large_task_orchestration.py"
       ]
     },
@@ -1594,7 +1607,14 @@
         "tools/check_effectiveness_benchmark.py"
       ],
       "contract_inputs": [
-        "conformance/benchmarks/**"
+        "conformance/benchmarks/**",
+        "framework/effectiveness-metrics.md",
+        "framework/guarantees.md",
+        "schemas/alatyr-adapter-maintenance-evidence.schema.json",
+        "schemas/alatyr-delayed-outcome-evidence.schema.json",
+        "templates/target/.ai/assistant/templates/adapter-maintenance-evidence.json",
+        "templates/target/.ai/assistant/templates/delayed-outcome-evidence.json",
+        "templates/target/.ai/assistant/templates/effectiveness-report.md"
       ],
       "implementation_paths": [
         "tools/check_effectiveness_benchmark.py",
@@ -1606,6 +1626,13 @@
       ],
       "trigger_paths": [
         "conformance/benchmarks/**",
+        "framework/effectiveness-metrics.md",
+        "framework/guarantees.md",
+        "schemas/alatyr-adapter-maintenance-evidence.schema.json",
+        "schemas/alatyr-delayed-outcome-evidence.schema.json",
+        "templates/target/.ai/assistant/templates/adapter-maintenance-evidence.json",
+        "templates/target/.ai/assistant/templates/delayed-outcome-evidence.json",
+        "templates/target/.ai/assistant/templates/effectiveness-report.md",
         "tools/check_effectiveness_benchmark.py",
         "tools/conformance_execution/**",
         "tools/context_receipt.py",

@@ -17,7 +17,7 @@
     "entries"
   ],
   "properties": {
-    "schema_version": {"const": 1},
+    "schema_version": {"enum": [1, 2]},
     "shard_kind": {"const": "target-project-knowledge-routing-shard"},
     "shard_id": {"type": "string", "minLength": 1},
     "task_profiles": {"$ref": "#/definitions/strings"},
@@ -31,6 +31,23 @@
       "items": {"$ref": "#/definitions/routeEntry"}
     }
   },
+  "allOf": [
+    {
+      "if": {"properties": {"schema_version": {"const": 2}}},
+      "then": {
+        "properties": {
+          "entries": {
+            "items": {
+              "required": ["guidance_kind", "precedence"],
+              "properties": {
+                "provenance": {"required": ["origin"]}
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
   "definitions": {
     "strings": {
       "type": "array",
@@ -54,6 +71,15 @@
       ],
       "properties": {
         "knowledge_id": {"type": "string", "minLength": 1},
+        "guidance_kind": {
+          "enum": [
+            "development-rule",
+            "architectural-intent",
+            "reviewed-knowledge",
+            "validation-contract",
+            "known-restriction"
+          ]
+        },
         "summary": {"type": "string", "minLength": 1},
         "fact_type": {"type": "string", "minLength": 1},
         "fact_ids": {"$ref": "#/definitions/nonEmptyStrings"},
@@ -169,9 +195,36 @@
           "additionalProperties": false,
           "required": ["engineering_evidence_ids", "promotion_record", "source_revision"],
           "properties": {
-            "engineering_evidence_ids": {"$ref": "#/definitions/nonEmptyStrings"},
+            "origin": {
+              "enum": ["engineering-discovery", "decision-owner-directive"]
+            },
+            "engineering_evidence_ids": {"$ref": "#/definitions/strings"},
             "promotion_record": {"type": "string", "minLength": 1},
             "source_revision": {"type": "string", "minLength": 1}
+          }
+        },
+        "precedence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "base_guidance_id",
+            "scope",
+            "authority_reference",
+            "rationale",
+            "expires_at",
+            "revalidation_triggers",
+            "validation"
+          ],
+          "properties": {
+            "kind": {"enum": ["base-rule", "narrower-rule", "authorized-exception"]},
+            "base_guidance_id": {"type": ["string", "null"]},
+            "scope": {"$ref": "#/definitions/strings"},
+            "authority_reference": {"type": "string"},
+            "rationale": {"type": "string"},
+            "expires_at": {"type": ["string", "null"]},
+            "revalidation_triggers": {"$ref": "#/definitions/strings"},
+            "validation": {"$ref": "#/definitions/strings"}
           }
         },
         "relations": {

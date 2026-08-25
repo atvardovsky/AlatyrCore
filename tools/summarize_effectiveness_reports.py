@@ -133,7 +133,7 @@ def validate_report(report: dict[str, Any], index: int) -> list[str]:
         if report.get(field) not in {"yes", "no", "unknown"}:
             failures.append(f"report {index} {field} must be yes, no, or unknown")
 
-    if report.get("schema_version") == 2:
+    if report.get("schema_version") in {2, 3}:
         failures.extend(
             validate_context_receipt(
                 report.get("context_receipt"), f"report {index} context_receipt"

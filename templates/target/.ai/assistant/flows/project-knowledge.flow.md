@@ -32,19 +32,24 @@ project edits, commits, publication, or live external actions.
 7. Record selected, used, stale, blocked, rejected-as-inapplicable, and omitted
    item IDs in the context receipt.
 
-## Promotion
+## Promotion Or Direct Guidance Intake
 
-1. Start from a durable engineering-evidence record or equivalent bounded
-   repository evidence. Explain why the conclusion is expensive to reconstruct
-   and useful beyond the completed task.
+1. Classify the origin as an `engineering-discovery` or an explicitly recorded
+   `decision-owner-directive`. Engineering discovery requires durable
+   engineering evidence. A directive requires verified target decision
+   authority and a durable decision reference. Both require bounded repository
+   evidence and a registered canonical owner.
 2. Under `read-only`, return a proposal only. Creating a promotion record or
    changing a canonical source requires current-scope authorization compatible
    with target policy.
 3. Identify the fact type, fact IDs, proposed canonical owner, decision owner,
    and route hints. Report an ownership gap instead of inventing an owner.
-4. Ask the target decision owner to accept, narrow, reject, or defer the
-   candidate. Do not infer acceptance from silence, implementation frequency,
-   test success, or previous approval for another scope.
+4. Ask the target decision owner to accept, narrow, reject, or defer an
+   engineering-discovery candidate. For a direct directive, verify that the
+   named decision owner is authorized for the fact type and scope. Do not treat
+   an arbitrary human message as project authority. Do not infer acceptance
+   from silence, implementation frequency, test success, or previous approval
+   for another scope.
 5. For acceptance or narrowing, update or verify the canonical owner first and
    record its content SHA-256. Preserve the accepted wording and decision
    reference in the promotion record.
@@ -54,6 +59,18 @@ project edits, commits, publication, or live external actions.
    entry cannot remain current.
 8. Run target adapter and project validation. Report the promotion disposition,
    canonical update, route result, and residual uncertainty.
+
+## Narrowing, Exceptions, And Coverage
+
+1. Classify each routed entry as a base rule, narrower rule, or authorized
+   exception. A narrowing or exception names its base guidance ID.
+2. Verify scope, decision authority, rationale, validation, revalidation
+   triggers, and expiry. Never use a global precedence shortcut or let a lower
+   authority override target safety.
+3. Maintain the derived coverage view with `mapped`, `known-gap`, or `unknown`
+   states by area and fact type. Mapped entries reference existing guidance IDs.
+4. Do not publish a completeness percentage or treat missing index coverage as
+   proof that no guidance exists.
 
 ## Revalidation And Conflict
 

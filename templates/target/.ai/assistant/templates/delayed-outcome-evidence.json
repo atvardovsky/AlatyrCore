@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "record_kind": "alatyr-delayed-outcome-evidence",
+  "evidence_classification": "historical-record",
+  "outcome_id": "{DELAYED_OUTCOME_ID}",
+  "operation_id": "{COMPLETED_OPERATION_ID}",
+  "recorded_at": "{ISO_8601}",
+  "outcome_type": "{ACCEPTED_DIRECTION_PULL_REQUEST_MERGE_REJECTION_REGRESSION_REVERT_OR_FOLLOW_UP}",
+  "source_records": [
+    {
+      "record_kind": "{EFFECTIVENESS_REPORT_DEBUG_SESSION_ENGINEERING_EVIDENCE_CHANGE_PACKAGE_OPERATION_RECORD_OR_OTHER}",
+      "record_id": "{COMPLETED_SOURCE_RECORD_ID}",
+      "completion_state": "completed"
+    }
+  ],
+  "prior_outcome_ids": [],
+  "outcome": {
+    "summary": "{LATER_OUTCOME_SUMMARY}",
+    "occurred_at": "{ISO_8601}",
+    "evidence_state": "{OBSERVED_OR_MANUAL}",
+    "evidence_references": [
+      "{PULL_REQUEST_REVISION_REVIEW_OR_OTHER_EVIDENCE_REFERENCE}"
+    ],
+    "limitations": []
+  },
+  "immutability": {
+    "append_only_record": true,
+    "completed_source_records_modified": false
+  },
+  "privacy": {
+    "raw_chat_stored": false,
+    "chain_of_thought_stored": false,
+    "secrets_stored": false
+  }
+}

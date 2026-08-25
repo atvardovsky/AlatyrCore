@@ -163,6 +163,8 @@ operations:
   development_evidence_capture: ".ai/assistant/flows/development-evidence-capture.flow.md"
   migration_note: ".ai/assistant/templates/migration-note.md"
   effectiveness_report: ".ai/assistant/templates/effectiveness-report.md"
+  delayed_outcome_evidence: ".ai/assistant/templates/delayed-outcome-evidence.json"
+  adapter_maintenance_evidence: ".ai/assistant/templates/adapter-maintenance-evidence.json"
 team_collaboration:
   policy: ".ai/project/team-policy.json"
   operating_model: ".ai/project/team-operating-model.md"
@@ -211,7 +213,7 @@ engineering_evidence:
   retention_policy: "{TARGET_ENGINEERING_EVIDENCE_RETENTION_POLICY}"
   redaction_policy: "{TARGET_ENGINEERING_EVIDENCE_REDACTION_POLICY}"
 project_knowledge:
-  contract_version: 1
+  contract_version: 2
   index: ".ai/project/knowledge/index.json"
   route_shards: ".ai/project/knowledge/routes"
   promotions: ".ai/project/knowledge/promotions"
@@ -225,7 +227,7 @@ project_knowledge:
   retention_policy: "{TARGET_PROJECT_KNOWLEDGE_RETENTION_POLICY}"
   redaction_policy: "{TARGET_PROJECT_KNOWLEDGE_REDACTION_POLICY}"
 debug_mode:
-  contract_version: 3
+  contract_version: 4
   index: ".ai/project/debug/index.json"
   records: ".ai/project/debug/records"
   overlay: ".ai/assistant/context/task-scales/debug-mode.json"

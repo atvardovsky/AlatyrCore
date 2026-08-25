@@ -110,14 +110,17 @@ Target adapters may include fact types such as:
 - external dependency public contract
 - target dependency configuration, restriction, wrapper, or patch deviation
 - cross-package integration contract
-- accepted reusable project constraint and its promotion decision
+- accepted Project Development Model guidance and its reviewed-discovery or
+  verified direct decision-owner record
 
 The target adapter decides the actual names and owners.
 
-Project-knowledge route entries are derived lookup surfaces, not fact owners.
-Register the canonical owner and conflict resolver for every promoted fact,
-then use the route entry only to find and reverify that owner. A promotion
-record preserves review disposition but does not acquire canonical authority.
+Project-guidance route entries are derived lookup surfaces, not fact owners.
+Register the canonical owner and conflict resolver for every accepted fact,
+then use the route entry only to find and reverify that owner. A promotion or
+direct decision-owner record preserves origin, authority, scope, and
+disposition but does not acquire canonical authority. Narrowing and exception
+precedence remains fact-type-specific and target-owned.
 
 Dependency exports are external claims, not automatically target-owned facts.
 When dependency knowledge is enabled, register the applicable ownership split:

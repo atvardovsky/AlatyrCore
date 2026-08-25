@@ -490,9 +490,11 @@ Final evidence must say:
   the chain starts at `scaffolded` for a new install or at truthful `staged`
   `legacy-migration-baseline` for a pre-record adapter, contains no invalid
   jump, and reaches `accepted` only with current strict validation evidence
-- project-knowledge policy/index/promotions/routes, two-stage routing
-  descriptor, flow, gate, authoring templates, and validator added or blocked
-  with unresolved owner/authority facts
+- Project Development Model guidance policy/index/promotions/routes, direct
+  decision-owner intake, guidance kind and exception semantics,
+  mapped/known-gap/unknown coverage, two-stage semantic routing descriptor,
+  flow, gate, authoring templates, and validator added or blocked with
+  unresolved owner/authority facts
 - diagram-discussion flow, ASCII template, presentation template, stable lineage,
   security/privacy/external-renderer policy, and operation conformance fixture
   added, skipped, or blocked from target evidence

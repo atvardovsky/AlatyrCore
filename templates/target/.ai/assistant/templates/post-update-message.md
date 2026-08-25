@@ -73,10 +73,12 @@ Operation help:
   external-patch policy, and record access; never replace existing records
   with source placeholders.
 - Preserve project-knowledge promotion IDs and dispositions, canonical owner
-  bindings/digests, route shards, contradiction and supersession lineage, and
-  retention policy. Revalidate accepted facts against canonical owners and
-  rebuild derived routes when needed; do not promote historical evidence or
-  source placeholders during update.
+  bindings/digests, candidate origins, guidance kinds, direct decision-owner
+  authority, exception precedence, coverage states, route shards,
+  contradiction and supersession lineage, and retention policy. Revalidate
+  accepted facts against canonical owners and rebuild derived routes when
+  needed; do not promote historical evidence or source placeholders during
+  update.
 - Preserve Debug Mode IDs, records, active-scope evidence, normalized events,
   timing, metrics, and publication policy when the module is enabled. Recheck
   versioned actor/causality/intervention/contribution attribution, structured
