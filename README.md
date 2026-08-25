@@ -3,21 +3,24 @@
 **Your project should remember why it was built this way.**
 
 AlatyrCore is a vendor-neutral project guardian for software teams and AI
-coding agents. It keeps reviewed project knowledge, recorded architectural
-intent, decision boundaries, and validation guidance with the repository so
-they can survive changes in people, tools, agents, and time.
+coding agents. It makes project-specific development rules, recorded
+architectural intent, and reviewed engineering knowledge properties of the
+repository rather than of one developer or AI agent. These rules, records,
+boundaries, and validation expectations remain available as people, tools,
+agents, and time change.
 
-- Persistent project memory owned by the project
-- Architectural continuity without treating code as the whole design record
-- Conversational project reference for developers and maintainers
-- Onboarding support designed to reduce project discovery time
-- Safer AI-assisted change through project-specific boundaries and validation
-- Interchangeable assistant support without vendor-owned project memory
+- Project-owned development rules for human and AI engineering
+- Recorded architectural intent and reviewed engineering knowledge
+- Bounded task-specific delivery of applicable rules and context
+- Target-designated authority and approval boundaries
+- Project-specific validation and evidence expectations
+- Continuity across developers, compatible agents, tools, and sessions
 
-Other systems add AI to a project. AlatyrCore gives the project memory, a
-voice, and continuity.
+AlatyrCore lets the project own the rules, knowledge, and recorded intent that
+guide compatible assistants.
 
-**One project. Shared recorded intent. Many human and AI executors.**
+**One project. Shared rules, recorded intent, and reviewed knowledge. Many human
+and AI executors.**
 
 ## What AlatyrCore Is
 
@@ -37,6 +40,20 @@ The canonical boundaries for this model are the
 [source-of-truth registry](framework/source-of-truth-registry.md), and
 [framework guarantees and limits](framework/guarantees.md).
 
+## The Project Development Model
+
+Collectively, a target's canonical sources and installed Alatyr adapter
+represent its project development model: the applicable development rules,
+recorded intent, reviewed knowledge, authority boundaries, validation, and
+known gaps that shape engineering work.
+
+This is a human-facing description of a distributed model, not a new source of
+truth or an active Alatyr runtime. Architecture decisions, policies, CI,
+configuration, tests, and other project facts remain owned by their registered
+canonical sources. The adapter connects compatible assistants to those owners
+and reports missing or contradictory parts instead of pretending the model is
+complete.
+
 ## The Problem It Solves
 
 Project knowledge is usually fragmented across code, architecture decisions,
@@ -51,6 +68,15 @@ rechecking dependency behavior, and asking maintainers to explain constraints
 the project has already established. AlatyrCore is designed to reduce that
 repeated reconstruction without replacing source inspection or freshness
 checks.
+
+Executors must otherwise also infer how the project expects changes to be made:
+which boundaries are intentional, which compatibility commitments matter,
+which solution classes are restricted, what validation is required, and when a
+decision by a target-designated owner is necessary. Repeating that inference
+across people, sessions, and tools creates development-guidance drift even when
+everyone starts from the same repository. AlatyrCore makes those expectations
+explicit and routable where the target has recorded them; it does not
+automatically detect or repair every semantic disagreement.
 
 AlatyrCore gives supported assistants the same project-owned starting point.
 It routes a request to a bounded task-relevant context packet, identifies fact
@@ -70,6 +96,33 @@ This is the practical distinction:
   recorded decisions and approval boundaries; it does not grant every
   contributor the same authority, replace project owners, or make stale
   decisions permanently correct.
+
+## Project-Owned Development Rules
+
+An installed adapter can route not only project facts, but also accepted rules
+for how particular changes should be made. Depending on the target, these may
+include:
+
+- public API compatibility and release policy
+- subsystem ownership and permitted dependency directions
+- validation required for specific change classes
+- protected architecture decisions and approval triggers
+- security, data, runtime, or generated-artifact boundaries
+- accepted restrictions on solution classes rejected by project decision owners
+
+The rule remains owned by its canonical project source. AlatyrCore does not
+invent target policy from common practice, source-code statistics, or agent
+consensus, and the adapter must not duplicate a rule merely to make it easier to
+route.
+
+```text
+target decision
+        -> accepted development rule
+        -> canonical project owner
+        -> task-specific routing
+        -> authorized agent execution
+        -> project validation
+```
 
 ## From Engineering Discovery To Project Knowledge
 
@@ -214,6 +267,12 @@ In an installed adapter, `AGENTS.md` remains a compact bridge into those
 project-owned contracts. It is not required to duplicate the complete policy or
 project-memory model.
 
+For example, `AGENTS.md` may tell an assistant not to break public APIs in patch
+releases. The project sources behind an Alatyr route can additionally identify
+where that rule is owned, which branches and versions it covers, why it exists,
+which exceptions require approval, what validation demonstrates compliance,
+and whether its owner has changed since the rule was reviewed.
+
 ## Start Here
 
 Choose the path that matches what you are doing:
@@ -238,22 +297,45 @@ and asks for approval before protected changes.
 
 ## Who It Is For
 
-- Developers who need a reliable explanation of an unfamiliar project before
-  making a change
-- Maintainers who need project decisions, validation, and known gaps to remain
-  discoverable
-- Architects who want intended architecture distinguished from implementation
-  that merely happens to exist
-- Teams using one or more AI coding assistants for onboarding, daily work,
-  review, and knowledge transfer
+- Engineering teams using AI agents for production changes that must remain
+  consistent with project-specific rules and validation
+- Maintainers responsible for architecture, backward compatibility, release
+  policy, and known gaps
+- Architects and senior engineers whose recorded decisions need to scale across
+  developers and compatible AI agents
+- Teams using interchangeable AI coding tools or multiple AI vendors
 - Platform and developer-experience teams that need repository-owned AI
   operating boundaries rather than vendor-specific memory
+- Developers who need a reliable explanation of an unfamiliar project before
+  making a change
 
 The intended outcomes require validation in real projects. AlatyrCore does not
 claim to eliminate onboarding time, prevent every AI mistake, or make project
 facts correct by itself.
 
+The intended outcome is not zero human involvement. It is to concentrate human
+attention on new architecture, compatibility, risk, exception, and authority
+decisions while compatible agents perform authorized investigation,
+implementation, and validation. A correction that establishes a reusable
+project decision should be reviewed into its canonical owner so later work does
+not require the same explanation. Actual supervision savings remain an
+evidence-limited outcome.
+
 ## How It Works
+
+Conceptually:
+
+1. The project records applicable development rules and accepted intent in
+   canonical sources.
+2. The installed adapter routes a bounded relevant subset of rules, knowledge,
+   boundaries, and validation to the current task.
+3. The agent performs the authorized engineering work within that context.
+4. Target decision owners review matters requiring project authority or
+   judgment.
+5. Reusable discoveries and corrections can be reviewed back into canonical
+   project knowledge.
+
+The framework implements that model through these repository surfaces:
 
 1. The target repository identifies canonical project sources, owners,
    architecture states, validation, and known gaps.
@@ -305,26 +387,37 @@ code, commit, publish, or perform protected actions.
 
 ### Core Differentiators
 
-1. **Project memory belongs to the project.** Knowledge is recorded in
-   repository-owned sources rather than entrusted to one agent session or
-   vendor.
-2. **The framework adapts to the target repository.** AlatyrCore supplies the
-   process; each project supplies its own facts, commands, policies, and
-   validation.
-3. **The assistant performs repository-aware installation.** It inspects the
-   target, prepares a plan, and rewrites adapter placeholders from target
-   evidence.
-4. **Architecture is not inferred solely from code.** Observed implementation,
+1. **The project owns its development guidance.** Development rules, recorded
+   intent, reviewed knowledge, authority boundaries, and validation expectations
+   remain in project-owned canonical sources.
+2. **Applicable rules travel with task context.** Bounded routing selects the
+   relevant project model without loading every policy or retained knowledge
+   item.
+3. **Owners retain authority while agents retain engineering freedom.** Target
+   decision owners govern accepted truth, exceptions, and protected risk;
+   compatible agents perform authorized engineering work within those
+   boundaries and their available capabilities.
+4. **Important corrections can become reusable knowledge.** Human-reviewed
+   conclusions can update canonical owners and reach later related work without
+   turning raw conversations into authority.
+5. **The guidance survives changes in compatible executors.** Project-owned
+   sources do not depend on one assistant session or vendor, while bridge
+   capabilities and limitations remain explicit.
+6. **Architecture is not inferred solely from code.** Observed implementation,
    proposals, accepted decisions, restrictions, deprecations, contradictions,
    and unknowns remain distinct.
-5. **Project knowledge is versioned with the repository.** Sources, adapter
-   metadata, decisions, and gaps can evolve through normal repository review.
-6. **Humans interact through natural language.** `Alatyr` and related phrases
+7. **Validation and evidence are part of the guidance.** Structural checks and
+   project validation complement semantic reasoning without claiming business
+   truth.
+8. **The framework adapts to the target repository.** AlatyrCore supplies the
+   portable process; each project supplies its own facts, commands, policies,
+   validation, and unresolved gaps.
+9. **The assistant performs repository-aware installation.** It inspects the
+   target, prepares a plan, and rewrites adapter placeholders from target
+   evidence.
+10. **Humans interact through natural language.** `Alatyr` and related phrases
    are assistant request shortcuts backed by target files, not a universal
    daemon or shell command.
-7. **Checks complement reasoning.** Source and optional target validators can
-   detect structural drift, but they do not prove business truth or replace
-   logical integrity review.
 
 ## Agent-Driven Installation
 
