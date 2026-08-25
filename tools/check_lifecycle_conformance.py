@@ -474,20 +474,20 @@ def exercise_profile(
         shutil.copy2(ROOT / name, source / name)
     (source / "VERSION").write_text("0.1.0-lifecycle-fixture\n", encoding="utf-8")
     context_path = source / "framework" / "context-profiles.md"
-    context_path.write_text(
-            context_path.read_text(encoding="utf-8") + "\nLifecycle fixture update.\n",
-            encoding="utf-8",
-        )
+    context_path.write_bytes(
+        context_path.read_bytes() + b"\nLifecycle fixture update.\n"
+    )
     source_inventory_path = source / "framework" / "file-inventory.json"
     source_inventory = json.loads(source_inventory_path.read_text(encoding="utf-8"))
     source_inventory["framework_version"] = "0.1.0-lifecycle-fixture"
     for entry in source_inventory.get("files", []):
         if entry.get("path") == "framework/context-profiles.md":
             entry["sha256"] = hashlib.sha256(context_path.read_bytes()).hexdigest()
-    source_inventory_path.write_text(
-            json.dumps(source_inventory, indent=2, sort_keys=True) + "\n",
-            encoding="utf-8",
+    source_inventory_path.write_bytes(
+        (json.dumps(source_inventory, indent=2, sort_keys=True) + "\n").encode(
+            "utf-8"
         )
+    )
 
     drift = make_validator(repo, source)
     drift.check_framework_baseline()

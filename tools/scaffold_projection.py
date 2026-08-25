@@ -6,7 +6,7 @@ from __future__ import annotations
 import copy
 import json
 import re
-from pathlib import Path
+from pathlib import Path, PurePath, PurePosixPath
 from typing import Any
 
 from scaffold_state import INITIAL_INSTALLATION_STATE
@@ -18,11 +18,19 @@ TARGET_PATH_RE = re.compile(
 INSTALLATION_STATE_RE = re.compile(r'^(\s{2}state:\s+)["\']?[^"\']+["\']?\s*$')
 
 
+def portable_relative_path(value: str | PurePath) -> PurePosixPath:
+    """Normalize repository-relative contract paths independently of the host OS."""
+
+    text = value.as_posix() if isinstance(value, PurePath) else value.replace("\\", "/")
+    return PurePosixPath(text)
+
+
 def path_available(value: str, selected: set[Path]) -> bool:
     if not value.startswith(".ai/"):
         return True
-    path = Path(value)
-    return path in selected or any(path in candidate.parents for candidate in selected)
+    path = portable_relative_path(value)
+    normalized = {portable_relative_path(candidate) for candidate in selected}
+    return path in normalized or any(path in candidate.parents for candidate in normalized)
 
 
 def project_manifest(

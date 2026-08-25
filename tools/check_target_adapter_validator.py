@@ -301,6 +301,40 @@ def main() -> int:
                     f"schema-1 router must not receive schema-2 finding {forbidden}"
                 )
 
+        schema_seven_descriptor = (
+            target
+            / ".ai"
+            / "assistant"
+            / "context"
+            / "profiles"
+            / "docs-local.json"
+        )
+        write_json(
+            schema_seven_descriptor,
+            {
+                "schema_version": 1,
+                "descriptor_kind": "target-context-profile",
+                "profile": "docs-local",
+            },
+        )
+        schema_seven = validator(target)
+        schema_seven_profiles = schema_seven.router_profiles(
+            {
+                "schema_version": 7,
+                "profile_index": {
+                    "docs-local": {
+                        "descriptor": (
+                            ".ai/assistant/context/profiles/docs-local.json"
+                        )
+                    }
+                },
+            }
+        )
+        if set(schema_seven_profiles) != {"docs-local"}:
+            failures.append(
+                "schema-7 router must load descriptor-backed canonical profiles"
+            )
+
         consistency_descriptor = (
             target
             / ".ai"

@@ -29,6 +29,7 @@ from scaffold_projection import (
     project_manifest,
     project_module_profile,
     project_router,
+    portable_relative_path,
     render_json,
 )
 from scaffold_state import INITIAL_INSTALLATION_STATE
@@ -382,7 +383,9 @@ def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
                 rel, profile, framework_pack, selected, projection_context
             ),
         )
-        actions.append(f"template: {rel} -> {dst}")
+        actions.append(
+            f"template: {portable_relative_path(rel).as_posix()} -> {dst}"
+        )
 
     for src in iter_framework_files(framework_pack):
         rel = Path(".ai") / "framework" / src.name

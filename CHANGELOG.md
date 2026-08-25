@@ -2,7 +2,14 @@
 
 ## Unreleased
 
-- No unreleased changes.
+- Fixed Windows source checks by normalizing repository-relative scaffold paths
+  independently of host separators and by writing lifecycle hash fixtures as
+  canonical UTF-8 bytes.
+- Fixed schema-7 target routers so descriptor-backed profiles participate in
+  validator coverage, cost, and operation-routing checks.
+- Updated pinned diagnostic artifact uploads to official
+  `actions/upload-artifact` `v7.0.1`, removing the Node.js 20 deprecation
+  warning from source workflows.
 
 ## 0.1.0-alpha.30 - 2026-08-25
 

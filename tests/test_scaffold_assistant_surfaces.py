@@ -3,13 +3,14 @@ from __future__ import annotations
 import tempfile
 import sys
 import unittest
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 from types import SimpleNamespace
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 from scaffold_target_structure import plan, resolve_assistant_surfaces  # noqa: E402
+from scaffold_projection import path_available, portable_relative_path  # noqa: E402
 
 
 def scaffold_args(target: Path, *surfaces: str, profile: str = "full") -> SimpleNamespace:
@@ -33,6 +34,20 @@ def action_paths(actions: list[str]) -> set[str]:
 
 
 class ScaffoldAssistantSurfaceTests(unittest.TestCase):
+    def test_repository_paths_are_portable_across_windows_and_posix(self) -> None:
+        windows_path = PureWindowsPath(
+            ".ai\\assistant\\context\\profiles\\code-local.json"
+        )
+        self.assertEqual(
+            portable_relative_path(windows_path).as_posix(),
+            ".ai/assistant/context/profiles/code-local.json",
+        )
+        self.assertTrue(
+            path_available(
+                ".ai/assistant/context/profiles/code-local.json", {windows_path}
+            )
+        )
+
     def test_native_bridges_are_omitted_without_explicit_selection(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             actions, _blocked = plan(scaffold_args(Path(directory)))

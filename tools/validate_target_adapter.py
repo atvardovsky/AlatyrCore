@@ -1973,14 +1973,14 @@ class Validator:
         return data
 
     def router_profiles(self, router: dict[str, Any]) -> dict[str, Any]:
-        if router.get("schema_version") not in {3, 4, 5, 6}:
+        if router.get("schema_version") not in {3, 4, 5, 6, 7}:
             profiles = router.get("profiles")
             return profiles if isinstance(profiles, dict) else {}
         index = router.get("profile_index")
         if not isinstance(index, dict):
             self.error(
                 "ROUTER_PROFILE_INDEX",
-                "schema 3, 4, 5, or 6 router must define profile_index",
+                "schema 3, 4, 5, 6, or 7 router must define profile_index",
                 ".ai/assistant/context-router.json",
             )
             return {}
