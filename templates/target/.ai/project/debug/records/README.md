@@ -7,7 +7,7 @@ policy.
 
 Do not create records by copying raw conversations or private reasoning.
 
-New records use schema version 4. Events separate role, target-local identity,
+New records use schema version 5. Events separate role, target-local identity,
 provenance, causality, and correction classification:
 
 ```json
@@ -47,15 +47,19 @@ of these dispositions: `new-guidance-candidate`,
 known-guidance failures also name the related guidance IDs. Use only values
 allowed by the installed Debug session schema.
 
-Schema-version-4 records also keep completed lifecycle timestamps immutable,
+Schema-version-5 records also keep completed lifecycle timestamps immutable,
 open related continuation work in a new linked record, type every supporting
 evidence event, evaluate the full materiality set, prove canonical preservation
-before skipping, and classify validation fidelity.
+before skipping, classify validation fidelity, distinguish phase completion
+from full-task completion, and close every project-knowledge candidate with a
+reviewable disposition.
 
-Schema versions 1 through 3 remain migration-limited evidence with their
-original attribution semantics. Versions 2 and 3 keep legacy `actor` values and
+Schema versions 1 through 4 remain migration-limited evidence with their
+original contracts. Versions 2 and 3 keep legacy `actor` values and
 `alatyr_independent_*` metric names, which do not distinguish the executor from
 Alatyr system behavior. Do not infer, rewrite, or reinterpret historical
-attribution, materiality, claim fidelity, or continuation lineage. New
-completed records close the durable Engineering Evidence decision and use a
-final repository binding with lineage.
+attribution, materiality, claim fidelity, continuation lineage, phase coverage,
+or candidate dispositions. A schema-version-5 index projects these records with
+`legacy` lifecycle scope, empty covered phases and candidate IDs, and no
+expected continuation. New completed records close the durable Engineering
+Evidence decision and use a final repository binding with lineage.

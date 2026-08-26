@@ -192,10 +192,11 @@ evaluate supported capture conditions explicitly; capture compact project-owned
 task, invariant, hypothesis outcome, root-cause, solution, regression,
 validation, publication, and uncertainty evidence when triggered, with
 versioned provisional/final repository binding, correct Git object and ancestry
-checks, and preserved rebinding lineage; skip only when materiality is resolved
-and every applicable conclusion is already preserved by a registry-backed
-canonical source; otherwise capture or block without storing raw chat, private
-reasoning, secrets, or unrelated history.
+checks, preserved rebinding lineage, and reciprocal Debug session links when
+applicable; skip only when materiality is resolved and every applicable
+conclusion is already preserved by a registry-backed canonical source;
+otherwise capture or block without storing raw chat, private reasoning,
+secrets, or unrelated history.
 Applies to: material semantic changes, architecture changes, non-obvious defect
 repairs, final evidence.
 Enforcement: required capture decision; record required when triggered and
@@ -210,9 +211,10 @@ discoveries or verified direct decision-owner directives, require accepted
 facts to update registered canonical owners, classify guidance kind and origin,
 model target-authorized narrowing and exceptions without a global precedence
 order, expose mapped, known-gap, and unknown coverage without fake
-completeness, keep a compact derived sharded index with independent authority
-and freshness states, and deliver only accepted current items through bounded
-initial and refined task routes.
+completeness, classify module adoption as enabled-empty, populated, or
+reuse-observed without inventing reuse evidence, keep a compact derived sharded
+index with independent authority and freshness states, and deliver only
+accepted current items through bounded initial and refined task routes.
 Applies to: material task finalization, direct decision-owner guidance, project
 knowledge promotion, non-trivial task context routing, guidance narrowing and
 exceptions, guidance coverage, knowledge revalidation, knowledge contradiction
@@ -227,14 +229,16 @@ Installed owner: `.ai/framework/debug-mode.md`
 Commitment: When optional Debug Mode is explicitly enabled for a current task
 or session, record compact non-canonical events that separate human, executor,
 Alatyr-system, external-maintainer, and automation roles from actor identity
-and provider/product/model/runtime provenance; classify interventions as new
-guidance, known-guidance routing or compliance failure, task-local input, scope
-change, or validation request; keep completed records immutable and continue
-related work through newly activated lineage; preserve versions 1 through 3
-without reinterpreting legacy Alatyr attribution; enforce lifecycle-bounded
-event time, direction-change causality, typed evidence roles, materiality,
-validation fidelity, result binding, privacy, authorization, and clean upstream
-boundaries; and expire activation at the logical-scope boundary.
+and provider/product/model/runtime provenance; classify interventions and
+independently discovered knowledge candidates without conflating executor work
+with human correction; keep completed records immutable and continue related
+work through newly activated acyclic lineage; preserve versions 1 through 4
+without inventing missing attribution or lifecycle evidence; enforce phase
+versus full-task coverage, candidate disposition closure, reciprocal
+durable-evidence links, lifecycle-bounded event time, direction-change
+causality, materiality, validation fidelity, result binding, privacy,
+authorization, and clean upstream boundaries; and expire activation at the
+logical-scope boundary.
 Applies to: debug activation, task observability, human supervision
 measurement, cross-task effectiveness comparison, clean upstream projection.
 Enforcement: required when module enabled and Debug Mode is activated.

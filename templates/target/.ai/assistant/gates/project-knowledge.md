@@ -6,6 +6,11 @@ Before a material task ends, determine whether captured conclusions contain a
 reusable project-knowledge candidate. Proposal is allowed; promotion is not
 automatic.
 
+Every candidate identified during Debug finalization must resolve to an indexed
+promotion proposal, linked engineering evidence, an existing canonical owner,
+a documented rejection, or a blocker. Executor-discovered candidates are not
+human correction events.
+
 Before accepting a promotion, require:
 
 - target-owned decision authority and current-scope authorization
@@ -32,4 +37,5 @@ order across target fact types.
 
 Final evidence must name the routing stage, selectors, selected and omitted
 knowledge IDs, warnings or blockers, canonical owners read, packet-limit
-result, promotion disposition when applicable, validation, and residual risk.
+result, adoption state, reuse evidence or enabled-empty limitation, promotion
+disposition when applicable, validation, and residual risk.

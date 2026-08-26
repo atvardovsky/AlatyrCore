@@ -182,7 +182,9 @@ Classify every proposed target file:
     code observations, or installation conclusions automatically. Every
     accepted reusable constraint must have a reviewed engineering-discovery or
     verified direct decision-owner record, a registered canonical target owner,
-    and a compact derived route shard.
+    and a compact derived route shard. Initialize adoption as `enabled-empty`;
+    move it to `populated` or `reuse-observed` only from reviewed route and
+    later-task evidence.
     Create `.ai/project/engineering-evidence/README.md` and `index.json` as
     required core surfaces. Resolve the target owner, retained storage mode,
     external-contribution policy, redaction policy, and record access. Start
@@ -195,10 +197,11 @@ Classify every proposed target file:
     Add `.ai/project/debug/README.md`, `index.json`, and an empty `records/`
     directory only when the target enables `debug-mode`. Resolve the owner,
     non-canonical authority, storage, visibility, retention, redaction,
-    external-patch policy, schema-4 executor/Alatyr-system/automation
+    external-patch policy, schema-5 executor/Alatyr-system/automation
     attribution, target-local actor identity, runtime provenance, correction
-    disposition, and known-guidance evidence policy. Preserve schema versions 1
-    through 3 without reinterpretation. Start empty unless bounded historical records were
+    disposition, lifecycle phase coverage, project-knowledge candidate closure,
+    reciprocal engineering-evidence links, and known-guidance evidence policy.
+    Preserve schema versions 1 through 4 without reinterpretation. Start empty unless bounded historical records were
     explicitly validated; never reconstruct attribution from a final diff or
     raw conversation history.
     Add `.ai/project/consistency-map.json` only when the target enables bounded
@@ -345,22 +348,23 @@ Classify every proposed target file:
     segment/capability evidence, audit, pilot, or publishable provenance. Record
     retention and redaction policy; do not seed historical records.
     Add the durable engineering-evidence task-scale overlay, capture flow,
-    gate, version-2 machine record template, contract version, and schema-3
+    gate, version-3 machine record template, contract version, and schema-4
     compact index in every accepted core profile. Keep
     them lazy and separate from change-package activation.
     Add the Debug Mode overlay, operation, flow, gate, machine record, and
     compact summary only when the optional module is enabled. Record explicit
     activation/expiry, immutable completion and linked continuation, privacy,
-    capture-quality, lifecycle-bounded timing, schema-4 executor,
+    capture-quality, lifecycle-bounded timing, schema-5 executor,
     Alatyr-system, automation, human, and external-maintainer roles, target-local
     actor identity, runtime provenance, correction disposition,
     structured architectural impacts, direction-change hypothesis/replacement
     causality, metric derivation, typed evidence-event roles, complete
     materiality evaluation, canonical skip preservation, claim-validation
     fidelity, durable Engineering Evidence decision and exact reference
-    resolution, repository-binding state/lineage, external projection, active-
-    versus-finalized comparison, and validator policy. Use schema version 4 for
-    new records and preserve schema versions 1 through 3 as migration-limited
+    resolution, reciprocal evidence lineage, phase versus full-task completion,
+    candidate disposition closure, repository-binding state/lineage, external projection, active-
+    versus-finalized comparison, and validator policy. Use schema version 5 for
+    new records and preserve schema versions 1 through 4 as migration-limited
     evidence without reinterpreting legacy `alatyr` attribution.
     Enabling the module does not activate observation for a task.
     When the target uses multiple AI infrastructure items, add

@@ -24,3 +24,9 @@ secrets, credentials, personal data, unrelated session history, complete
 diffs, or verbose validation logs.
 
 Canonical rule: `.ai/framework/engineering-evidence.md`
+
+New schema-version-3 records list related Debug session IDs when Debug Mode was
+active. Each link is reciprocal and shares a task or issue reference. Leave the
+list empty when Debug Mode was not active; do not add inferred links to schema-
+version-1 or version-2 historical records. Schema-version-3 records require the
+schema-version-4 index.

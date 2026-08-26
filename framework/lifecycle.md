@@ -129,7 +129,8 @@ Before upgrading framework files in a target project:
    For required durable engineering evidence, compare its policy, compact
    index, contract version, authoring-template record schema, lazy route,
    capture gate, repository binding state/lineage, Git object and ancestry
-   checks, privacy, publication boundary, and validator support.
+   checks, reciprocal Debug session lineage, privacy, publication boundary, and
+   validator support.
    When `debug-mode` is enabled, compare its explicit activation/expiry rule,
    non-canonical storage policy, index/record schema, lazy overlay, operation,
    flow, gate, summary, contract and authoring-template schema, versioned actor/
@@ -139,7 +140,8 @@ Before upgrading framework files in a target project:
    change hypothesis/replacement causality, typed evidence-event roles,
    complete materiality, canonical skip preservation, claim-validation
    fidelity, durable engineering-evidence decision/reference resolution,
-   repository-binding state/lineage,
+   repository-binding state/lineage, lifecycle phase coverage, candidate
+   disposition closure, reciprocal evidence links,
    active-versus-finalized comparison boundary, clean-upstream boundary, and
    validator support.
    When `code-documentation` is enabled, compare its catalog/profile schemas,
@@ -191,25 +193,33 @@ Before upgrading framework files in a target project:
     Preserve Project Development Model guidance IDs, origins, kinds, promotion
     and direct-decision dispositions, canonical owner bindings and digests,
     route-shard IDs, narrowing/exception and contradiction/supersession
-    lineage, mapped/known-gap/unknown coverage, retention policy, and review
+    lineage, mapped/known-gap/unknown coverage, adoption state, reuse evidence,
+    retention policy, and review
     authority. Revalidate active accepted facts against their canonical owners,
     rebuild only derived routing and coverage surfaces, and never promote
     historical evidence, arbitrary messages, or source placeholders during an
-    update. Version-1 knowledge records remain historical-compatible; new
-    records use the current guidance contract.
+    update. Version-1 and version-2 knowledge indexes remain historical-
+    compatible; new indexes use contract version 3 and classify enabled-empty,
+    populated, or reuse-observed adoption without inventing reuse evidence.
     Preserve target Debug Mode IDs, completed records, active-scope state,
     event attribution, timing evidence, publication policy, and compact index.
     Never replace records with source placeholders, silently reactivate a
     closed scope, or move debug files into a clean external contribution.
-    Preserve schema-version-1 through version-3 Debug events and records as
+    Preserve schema-version-1 through version-4 Debug events and records as
     migration-limited evidence; do not silently infer executor versus
-    Alatyr-system attribution, actor identity, runtime provenance, correction
-    disposition, materiality, claim fidelity, continuation, or binding
-    lineage. Install Debug contract version 4, authoring templates, and derived
-    index projections for new records. Repair invalid lifecycle bounds, event
-    roles, durable evidence decisions/references, canonical skip claims, and
-    keep active records out of finalized comparisons. Never append to a
-    completed record; create a linked continuation after explicit activation.
+    Alatyr-system attribution for versions 1 through 3, or infer actor identity,
+    runtime provenance, correction disposition, materiality, claim fidelity,
+    continuation, phase coverage, candidate closure, or binding lineage that a
+    historical record did not contain. Install Debug contract version 5,
+    authoring templates, and derived index projections for new records. In a
+    version-5 index, project older records with `legacy` lifecycle scope, empty
+    covered phases and candidate IDs, and no expected continuation. Repair
+    invalid lifecycle bounds, event roles, durable evidence decisions/references,
+    canonical skip claims, and keep active records out of finalized
+    comparisons. Never append to a completed record; create a linked
+    continuation after explicit activation.
+    Preserve engineering-evidence schemas 1 and 2 without fabricated Debug
+    links; new schema-version-3 records use reciprocal task-lineage links.
     A finalized historical
     snapshot that no longer matches the current worktree is a reproducibility
     warning, not a reason to rewrite or invalidate the old record.

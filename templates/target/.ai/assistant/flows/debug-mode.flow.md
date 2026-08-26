@@ -29,7 +29,7 @@ explicit read-only configuration review.
    Activation grants no code, commit, publish, live-external, protected-change,
    or tool permission.
 4. During the task, capture only material normalized events at checkpoints.
-   For new schema-version-4 records, classify actor role, target-local actor
+   For new schema-version-5 records, classify actor role, target-local actor
    identity, observed/declared/unavailable provenance, causal class,
    intervention kind, correction disposition, contribution kind, and then
    category. Preserve causal links and evidence. Keep provider, product, model,
@@ -50,7 +50,9 @@ explicit read-only configuration review.
    failure to context-router repair, a compliance failure to executor evidence,
    and task-local input only to the current task. Re-evaluate authorization for
    scope change. A validation request is not an implementation correction.
-   Generic external input is not a maintainer correction.
+   Generic external input is not a maintainer correction. When the executor
+   independently discovers reusable guidance, record it as a candidate without
+   converting the event into a human correction.
 7. For each new event, record `decision_effect` and `architectural_impacts`.
    Human or external-maintainer events with accepted-invariant, canonical-
    source-interpretation, public-contract, subsystem-responsibility, solution-
@@ -73,6 +75,9 @@ explicit read-only configuration review.
    or `blocked`; do not leave it pending. A skip requires no unknown conditions
    and registry-backed canonical preservation for every applicable conclusion.
    Implementation and validation links do not by themselves force capture.
+   Resolve every new guidance candidate to an indexed promotion proposal,
+   linked engineering evidence, an existing canonical owner, a documented
+   rejection, or a blocker.
 11. Classify validation fidelity as exact reproducer, representative, partial,
     unavailable, or not applicable. Name the claim and evidence for exact,
     representative, or partial results. Keep partial and unavailable gaps in
@@ -82,25 +87,31 @@ explicit read-only configuration review.
     results resolve as Git trees. Preserve every replaced binding in
     `prior_bindings`. Link only durable evidence IDs that resolve exactly once
     in the target Engineering Evidence index.
-13. Record clean-upstream projection evidence, validate the record, synchronize
+13. Classify lifecycle coverage as active, phase-complete, or full-task-
+    complete. Name covered and omitted phases, whether continuation is
+    expected, and the next phase. Never present analysis-only evidence as the
+    completed implementation lifecycle.
+14. Record clean-upstream projection evidence, validate the record, synchronize
     the index, and render the compact summary. Later worktree drift may make a
     finalized snapshot not currently reproducible, but does not corrupt its
     historical value.
-14. Expire activation when the scope completes, changes, is abandoned, or is
+15. Expire activation when the scope completes, changes, is abandoned, or is
    explicitly disabled. A later task requires a new explicit activation and,
    when related, explicit continuation lineage.
-15. For `compare`, use comparable completed records, attribution schema,
+16. For `compare`, use comparable completed records, attribution schema,
     evidence kinds, capture
     quality, task class, and independent quality review. Do not infer framework
-    improvement from lower intervention count alone. Versions 1 through 3 keep
-    their historical attribution semantics and metric names; do not reinterpret
-    legacy `alatyr` events as proven executor or Alatyr-system activity.
+    improvement from lower intervention count alone. Versions 1 through 4 keep
+    their historical contracts; versions 1 through 3 retain legacy attribution
+    semantics and metric names. Do not invent missing phase or candidate
+    evidence during migration.
 
 ## Final Evidence
 
 Report activation/expiry, record ID and path, timing evidence, capture quality,
 role/identity/provenance attribution, correction dispositions, event-derived
 metrics, materiality and durable engineering-evidence decision,
-claim-validation fidelity, continuation and result-binding lineage, external
+claim-validation fidelity, lifecycle coverage, candidate dispositions,
+reciprocal evidence links, continuation and result-binding lineage, external
 projection, privacy and publication result, validation, and residual
 uncertainty.

@@ -134,15 +134,17 @@ List what must not be changed.
   evidence sources allowed for bounded backfill:
 - Durable engineering-evidence owner, storage mode, retention/redaction and
   external-contribution policy, compact index, record access, and revision-
-  binding policy:
+  binding policy, including reciprocal Debug lineage when active:
 - Project-knowledge owner and decision authority, canonical owner registry,
   promotion/freshness/contradiction policy, retention/redaction, compact index,
-  route-shard ownership, and two-stage selector strategy:
+  route-shard ownership, adoption-state evidence, and two-stage selector
+  strategy:
 - Debug Mode need, owner, explicit activation/expiry, non-canonical storage,
   visibility, retention/redaction, normalized event attribution, timing and
   capture-quality evidence, structured architectural impacts, direction-change
   hypothesis/replacement causality, exact durable engineering-evidence
-  reference resolution, supervision metrics, active-versus-finalized
+  reference resolution, lifecycle phase coverage, project-knowledge candidate
+  closure, supervision metrics, active-versus-finalized
   comparison, and clean-upstream policy:
 - AI infrastructure router, stable item IDs, activation triggers, and statuses:
 - Item canonical sources, required context, allowed actions, permissions,

@@ -351,13 +351,16 @@ In a typical target repository:
 11. Run target validation that exists.
 12. Apply the durable engineering-evidence decision. Capture reusable material
    installation knowledge when triggered and authorized, or report a specific
-   skip/block reason.
+   skip/block reason. When Debug Mode was active, use reciprocal Debug session
+   IDs and shared task lineage; otherwise keep the Debug link list empty.
 13. Route reusable guidance through the project-knowledge disposition gate.
    Engineering discoveries require evidence and target-authorized review.
    Direct directives require verified authority and a durable decision
    reference. Only target-authorized acceptance plus a canonical owner update
    may create a current route entry; otherwise preserve the item as proposed,
-   rejected, deferred, unresolved, or historical.
+   rejected, deferred, unresolved, or historical. Keep adoption `enabled-empty`
+   until reviewed route entries exist, and claim `reuse-observed` only from
+   explicit later-task delivery evidence.
 14. If Debug Mode is enabled for the installation operation by an explicit
    current-scope request, capture only normalized material events and finalize
    or expire that record. Module installation alone does not activate it.
@@ -409,6 +412,11 @@ explicit task-local record; `Alatyr debug status`, `Alatyr debug checkpoint`,
 route through the canonical operation catalog. Activation grants only allowed
 debug evidence writes and expires with the logical scope. It never authorizes
 implementation, commit, push, publication, or live effects.
+Schema-version-5 records distinguish phase completion from full-task
+completion and close every reusable candidate through promotion, engineering
+evidence, a canonical owner, rejection, or a blocker. Related implementation
+starts a separately authorized continuation rather than extending a completed
+analysis record.
 
 When the target enables subagent delegation, the assistant may keep its
 critical-path action and dispatch bounded independent sidecars under the target

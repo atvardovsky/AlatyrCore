@@ -71,6 +71,7 @@ changes.
 - Existing Debug Mode policy, non-canonical index/records, active scope,
   privacy/retention, event attribution, structured architectural impacts,
   direction-change hypothesis/replacement chains, durable evidence links,
+  reciprocal evidence lineage, lifecycle phase coverage, candidate closure,
   timing/capture quality, supervision metrics, external projection, and
   comparison evidence:
 - Existing prompt-injection or imported-source policy:
@@ -242,7 +243,8 @@ Collect target-specific facts before writing project docs:
 - optional Debug Mode owner, activation/expiry, storage, visibility,
   retention/redaction, normalized event origins and causal links, timing,
   structured architectural impacts, direction-change hypothesis/replacement
-  causality, exact durable evidence reference resolution, capture quality,
+  causality, exact reciprocal durable evidence reference resolution, lifecycle
+  phase coverage, project-knowledge candidate closure, capture quality,
   observer effect, metric derivation, clean-upstream boundary, active-versus-
   finalized comparison quality criteria, and overhead limit
 - installed-operation request, blueprint-creation, adapter-recheck, and
@@ -384,7 +386,8 @@ List commands or manual checks:
 - Debug Mode dependency, explicit activation/expiry, non-canonical authority,
   privacy, event attribution, structured architectural impacts, direction-
   change hypothesis/replacement causality, timing/capture quality, metric
-  derivation, exact durable engineering-evidence reference resolution, active-
+  derivation, exact reciprocal durable engineering-evidence reference
+  resolution, phase versus full-task completion, candidate disposition, active-
   versus-finalized comparison, clean-upstream, observer-effect, and validator
   review:
 - operation-catalog, automatic-routing, health, or preview review:
@@ -492,7 +495,8 @@ Final evidence must say:
   jump, and reaches `accepted` only with current strict validation evidence
 - Project Development Model guidance policy/index/promotions/routes, direct
   decision-owner intake, guidance kind and exception semantics,
-  mapped/known-gap/unknown coverage, two-stage semantic routing descriptor,
+  mapped/known-gap/unknown coverage, enabled-empty/populated/reuse-observed
+  adoption, two-stage semantic routing descriptor,
   flow, gate, authoring templates, and validator added or blocked with
   unresolved owner/authority facts
 - diagram-discussion flow, ASCII template, presentation template, stable lineage,
@@ -525,7 +529,8 @@ Final evidence must say:
 - migration-note template added or skipped
 - effectiveness-report template added or skipped
 - Debug Mode index/records, lazy overlay, operation, flow, gate, record/summary
-  templates, structured event classification and durable evidence reference
+  templates, structured event classification, lifecycle coverage, candidate
+  disposition, and reciprocal durable evidence reference
   validation added, preserved, migrated, skipped, or blocked; task activation
   remains inactive unless explicitly requested, and legacy records remain
   migration-limited rather than silently inferred

@@ -66,6 +66,19 @@ authorized work continues the same investigation, create a new record with
 why a new logical scope was opened. Current-scope action authorization remains
 independently required for every engineering action.
 
+Schema-version-5 records also classify lifecycle coverage as `active`,
+`phase-complete`, or `full-task-complete`. Record covered and omitted phases
+from `analysis`, `implementation`, `validation`, and `finalization`, whether a
+continuation is expected, and the next phase. A completed analysis-only record
+must not imply that implementation or validation was observed. A full-task
+record covers all four phases and cannot claim an expected continuation.
+
+When implementation evidence later shares task or issue lineage with a closed
+phase-complete record, create a separately authorized continuation with a new
+scope ID. The continuation shares at least one durable task reference with its
+one closed predecessor. Do not create cycles, reuse the same scope ID, or use a
+new record to mutate the predecessor.
+
 ## Normalized Event Model
 
 Record only material events that changed or validated the investigation. Every
@@ -138,13 +151,30 @@ guidance failure dispositions also require related guidance IDs. Do not count
 `scope-change` or `validation-request` as implementation corrections. A
 non-intervention event uses `not-applicable`.
 
-Schema versions 1 through 3 remain readable with their original attribution
+Schema versions 1 through 4 remain readable with their original contracts.
+Versions 1 through 3 retain their original attribution
 semantics. Version 1 keeps `origin`; versions 2 and 3 keep the legacy `actor`
 values `alatyr`, `human`, and `external-maintainer` and the legacy
 `alatyr_independent_*` metric names. Those values are migration-limited and do
 not distinguish executor activity from Alatyr system behavior. Do not silently
-rewrite or reinterpret them. New records use schema version 4, and comparisons
-across versions must identify the attribution-model difference.
+rewrite or reinterpret them. Version 4 retains the separated actor model but
+does not prove phase coverage or structured candidate closure. New records use
+schema version 5, and comparisons across versions must identify both the
+attribution and lifecycle-evidence differences.
+
+When a schema-version-5 index retains an older record, project the new
+lifecycle scope as `legacy`, keep covered phases and candidate IDs empty, and
+set continuation expectation to `false`. Do not synthesize lifecycle or
+candidate evidence for the historical record. New schema-version-5 records
+require the schema-version-5 index so these projections cannot be omitted.
+
+Schema-version-5 finalization records every new reusable project-knowledge
+candidate with a stable candidate ID, source event IDs, statement, disposition,
+references, and reason. A candidate must resolve to an indexed promotion
+proposal, linked durable engineering evidence, an existing canonical owner, a
+documented rejection, or a blocker. Candidate discovery by an executor is
+valid and must not be misclassified as a human correction. Promotion remains a
+separate target-authorized decision.
 
 Supported categories include architecture areas, invariants, dependencies,
 execution paths, risks, tests, regression scenarios, hypotheses, validation,
@@ -373,6 +403,8 @@ Summary` containing:
 - claim-validation fidelity and exact reproducer gap
 - durable evidence materiality decision and canonical preservation when skipped
 - continuation lineage when the task continues an earlier closed record
+- lifecycle completion scope, covered and omitted phases, and expected next phase
+- project-knowledge candidate IDs and their dispositions
 - residual uncertainty
 
 Report exact numbers only when supported by the record. Finalize or abandon the
@@ -385,7 +417,8 @@ role/identity/provenance separation, correction dispositions and required
 known-guidance references, causal attribution, typed evidence-event roles,
 complete materiality
 evaluation, canonical skip references, claim-fidelity evidence, continuation
-lineage, structured architectural-impact consistency, direction-change
+lineage and cycle freedom, lifecycle phase partition, reciprocal Debug-to-
+Engineering-Evidence links, project-knowledge candidate closure, structured architectural-impact consistency, direction-change
 hypothesis transitions, metric derivation, timing consistency, privacy
 declarations, Debug-to-Engineering-Evidence reference integrity, index/record
 sync, repository bindings, and external-patch policy.
@@ -413,6 +446,8 @@ Reject or repair Debug Mode use that:
   guidance ID and compact evidence
 - treats a new-guidance candidate as accepted project knowledge without normal
   target review and canonical ownership
+- finalizes a candidate count without candidate IDs, evidence events, and a
+  promotion, preservation, owner, rejection, or blocked disposition
 - records derived work without an earlier event from the role named by its
   causal class
 - marks a human architectural impact as non-architectural, or claims human
@@ -423,6 +458,8 @@ Reject or repair Debug Mode use that:
   evidence
 - completes material Debug work without an explicit durable-evidence decision
 - appends events after completion instead of opening a linked continuation
+- presents phase-complete analysis as full-task implementation evidence, reuses
+  a predecessor scope ID, or creates cyclic continuation lineage
 - labels an evidence event with a role inconsistent with that event
 - skips applicable materiality without registry-backed canonical preservation
 - claims an exact reproducer from only representative or partial validation

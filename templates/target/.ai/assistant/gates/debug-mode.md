@@ -11,13 +11,13 @@ When Debug Mode is requested or active, verify:
 - events are material, normalized, evidenced, ordered, and causally attributable
 - the initial task request remains activation metadata and is not counted as a
   human intervention without a specific investigative effect
-- new schema-version-4 events separate actor role, target-local identity,
+- new schema-version-5 records separate actor role, target-local identity,
   provenance, causal class, intervention kind, correction disposition,
   contribution kind, and category
 - actor roles distinguish `human`, `executor`, `alatyr-system`,
   `external-maintainer`, and `automation`; executor work is not attributed to
   Alatyr system behavior, and provider/model/runtime facts remain provenance
-- versions 1 through 3 retain their historical attribution semantics and
+- versions 1 through 4 retain their historical contracts; versions 1 through 3 retain historical attribution semantics and
   legacy `alatyr_independent_*` metric names without reinterpretation
 - derived events have the matching earlier human or external intervention
   ancestor; independent findings have no intervention ancestor
@@ -25,6 +25,8 @@ When Debug Mode is requested or active, verify:
   disposition with compact evidence
 - known-guidance routing and compliance failures name the applicable guidance
   IDs; new-guidance candidates remain non-canonical until normal review
+- every candidate has a stable ID, source events, and a promotion, engineering-
+  evidence, canonical-owner, rejection, or blocked disposition
 - scope changes trigger authorization review; validation requests and scope
   changes are not counted as implementation corrections, and external input is
   not counted as a maintainer correction unless typed as one
@@ -51,9 +53,14 @@ When Debug Mode is requested or active, verify:
 - validation fidelity distinguishes exact reproduction from representative,
   partial, unavailable, or not-applicable evidence and retains unresolved gaps
 - completed records are immutable; continued work uses a newly activated record
-  with one closed predecessor
+  with one closed predecessor, shared task lineage, a distinct scope ID, and no
+  continuation cycle
+- phase-complete records name omitted phases and do not imply full-task
+  completion; full-task records cover analysis, implementation, validation, and
+  finalization
 - every durable engineering-evidence ID resolves exactly once in the target
-  Engineering Evidence index; Debug event IDs and temporary IDs are not used
+  Engineering Evidence index and schema-version-3 evidence links back to the
+  Debug ID; Debug event IDs and temporary IDs are not used
 - the compact index and selected record agree
 - activation expires when the logical scope completes or changes, or through
   explicit disablement or abandonment

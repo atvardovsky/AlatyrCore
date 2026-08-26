@@ -141,6 +141,7 @@ Residual risk: `{ENGINEERING_EVIDENCE_RESIDUAL_RISK}`
 
 Core item: `project-knowledge-delivery`
 State: `{REQUIRED_ENABLED_OR_BLOCKED}`
+Adoption state: `{ENABLED_EMPTY_POPULATED_OR_REUSE_OBSERVED}`
 Owner or file: `.ai/project/knowledge/README.md`
 Required files:
 

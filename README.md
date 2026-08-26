@@ -150,6 +150,11 @@ still read the canonical owner before relying on it for a material decision.
 Stale knowledge becomes a revalidation warning; contradictory knowledge blocks
 a definitive conclusion until the target owner resolves it.
 
+The adapter reports whether this capability is merely enabled with an empty
+index, populated with reviewed routes, or supported by observed later-task
+reuse evidence. An empty index is a valid starting point, but it is not evidence
+that project knowledge reduced rediscovery.
+
 The intended product criterion is straightforward: help a new developer or
 compatible AI agent begin from reviewed project knowledge and spend less effort
 reconstructing already-known context. That is a measurable goal, not a claim
@@ -394,9 +399,11 @@ task concluded. Its versioned event model separates actor role, identity,
 runtime provenance, causality, correction disposition, and contribution so a task request or
 validation request is not misreported as a correction. Finalization closes the
 durable-evidence decision, evaluates reusable materiality, distinguishes exact
-from partial reproduction evidence, preserves repository-binding lineage, and
-opens continued work in a new linked record rather than rewriting completed
-evidence. Debug Mode is explicitly enabled per task or session, does not store
+from partial reproduction evidence, distinguishes phase completion from a full
+analysis-to-validation lifecycle, closes reusable knowledge candidates through
+reviewable dispositions, preserves reciprocal durable-evidence and repository-
+binding lineage, and opens continued work in a new linked record rather than
+rewriting completed evidence. Debug Mode is explicitly enabled per task or session, does not store
 raw conversations or private reasoning, and does not grant permission to edit
 code, commit, publish, or perform protected actions.
 
@@ -503,7 +510,7 @@ tasks from loading the complete framework or project corpus.
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.30`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.31`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural

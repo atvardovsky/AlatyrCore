@@ -62,6 +62,7 @@
     "canonical owner digests authority freshness and applicability",
     "semantic guidance bundle digest algorithm and schema version",
     "current warnings blocked and omitted items",
+    "adoption state and reuse evidence or enabled-empty limitation",
     "canonical owners reverified",
     "packet limits and expansion reason",
     "residual risk"

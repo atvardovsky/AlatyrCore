@@ -52,7 +52,9 @@ publication, or live external actions.
    data, unrelated session history, complete diffs, and verbose test logs.
 11. Validate the record, then add one compact index entry containing evidence
     ID, status, record path or approved external reference, task references,
-    changed fact IDs, architecture areas, repository binding, and uncertainty.
+    changed fact IDs, architecture areas, repository binding, related Debug
+    session IDs, and uncertainty. Every Debug link must resolve exactly once,
+    share task lineage, and link back to this evidence ID.
 12. If a change package is active, link the evidence ID from it instead of
     copying the normalized conclusions.
 
@@ -60,4 +62,5 @@ publication, or live external actions.
 
 Report capture status, trigger or skip/block reason, evidence ID and path when
 captured, task and repository binding state and lineage, canonical owner
-updates, privacy and publication result, validation, and residual uncertainty.
+updates, reciprocal Debug links or their absence, privacy and publication
+result, validation, and residual uncertainty.

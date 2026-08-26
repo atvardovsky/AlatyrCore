@@ -11,7 +11,7 @@
     "privacy", "residual_uncertainty", "limitations"
   ],
   "properties": {
-    "schema_version": {"enum": [1, 2, 3, 4]},
+    "schema_version": {"enum": [1, 2, 3, 4, 5]},
     "record_kind": {"const": "alatyr-debug-session"},
     "evidence_classification": {"const": "non-canonical-observability"},
     "debug_id": {"type": "string", "minLength": 1},
@@ -155,6 +155,18 @@
           "events": {"items": {"$ref": "#/definitions/eventV4"}},
           "metrics": {"$ref": "#/definitions/metricsV4"},
           "final_result": {"$ref": "#/definitions/finalResultV3"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"schema_version": {"const": 5}}},
+      "then": {
+        "required": ["continuation"],
+        "properties": {
+          "continuation": {"$ref": "#/definitions/continuationV3"},
+          "events": {"items": {"$ref": "#/definitions/eventV4"}},
+          "metrics": {"$ref": "#/definitions/metricsV4"},
+          "final_result": {"$ref": "#/definitions/finalResultV5"}
         }
       }
     }
@@ -650,6 +662,59 @@
         "limitation": {"type": "string", "minLength": 1}
       }
     },
+    "lifecycleCoverageV5": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "completion_scope", "covered_phases", "omitted_phases",
+        "continuation_expected", "next_phase", "reason"
+      ],
+      "properties": {
+        "completion_scope": {
+          "enum": ["active", "phase-complete", "full-task-complete"]
+        },
+        "covered_phases": {
+          "type": "array",
+          "items": {
+            "enum": ["analysis", "implementation", "validation", "finalization"]
+          },
+          "uniqueItems": true
+        },
+        "omitted_phases": {
+          "type": "array",
+          "items": {
+            "enum": ["analysis", "implementation", "validation", "finalization"]
+          },
+          "uniqueItems": true
+        },
+        "continuation_expected": {"type": "boolean"},
+        "next_phase": {
+          "enum": ["analysis", "implementation", "validation", "finalization", "not-applicable"]
+        },
+        "reason": {"type": "string", "minLength": 1}
+      }
+    },
+    "projectKnowledgeCandidateV5": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_id", "statement", "event_ids", "disposition",
+        "references", "reason"
+      ],
+      "properties": {
+        "candidate_id": {"type": "string", "minLength": 1},
+        "statement": {"type": "string", "minLength": 1},
+        "event_ids": {"$ref": "#/definitions/nonEmptyStrings"},
+        "disposition": {
+          "enum": [
+            "promotion-proposed", "preserved-as-engineering-evidence",
+            "existing-canonical-owner", "rejected", "blocked"
+          ]
+        },
+        "references": {"$ref": "#/definitions/nonEmptyStrings"},
+        "reason": {"type": "string", "minLength": 1}
+      }
+    },
     "finalResultV1": {
       "type": "object",
       "additionalProperties": false,
@@ -693,6 +758,31 @@
         "claim_validation": {"$ref": "#/definitions/claimValidationV3"},
         "engineering_evidence_ids": {"$ref": "#/definitions/strings"},
         "engineering_evidence_decision": {"$ref": "#/definitions/engineeringEvidenceDecisionV3"},
+        "upstream_projection": {"$ref": "#/definitions/upstreamProjection"}
+      }
+    },
+    "finalResultV5": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "summary", "repository_binding", "implementation_surfaces",
+        "validation", "claim_validation", "lifecycle_coverage",
+        "engineering_evidence_ids", "engineering_evidence_decision",
+        "project_knowledge_candidates", "upstream_projection"
+      ],
+      "properties": {
+        "summary": {"type": "string", "minLength": 1},
+        "repository_binding": {"$ref": "#/definitions/repositoryBindingV2"},
+        "implementation_surfaces": {"$ref": "#/definitions/strings"},
+        "validation": {"$ref": "#/definitions/validationResult"},
+        "claim_validation": {"$ref": "#/definitions/claimValidationV3"},
+        "lifecycle_coverage": {"$ref": "#/definitions/lifecycleCoverageV5"},
+        "engineering_evidence_ids": {"$ref": "#/definitions/strings"},
+        "engineering_evidence_decision": {"$ref": "#/definitions/engineeringEvidenceDecisionV3"},
+        "project_knowledge_candidates": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/projectKnowledgeCandidateV5"}
+        },
         "upstream_projection": {"$ref": "#/definitions/upstreamProjection"}
       }
     }

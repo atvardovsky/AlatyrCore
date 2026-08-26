@@ -9,7 +9,10 @@
         "historical engineering evidence remains separate from canonical authority",
         "human promotion disposition names the decision owner and canonical update",
         "initial routing supplies the accepted current item from a bounded shard",
-        "the fresh executor reads the canonical owner before relying on the summary"
+        "the fresh executor reads the canonical owner before relying on the summary",
+        "the later task receipt records delivered guidance IDs and content digests",
+        "the later task records whether guidance was used rejected stale or inapplicable",
+        "the routing index reaches reuse-observed only from explicit later-task evidence"
       ],
       "forbidden_outcomes": [
         "automatic promotion from assistant conclusion",

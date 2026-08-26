@@ -109,7 +109,7 @@
       "additionalProperties": false,
       "required": ["contract_version", "index", "records", "flow", "gate", "machine_template", "storage_mode", "external_patch_policy", "retention_policy", "redaction_policy"],
       "properties": {
-        "contract_version": {"const": 2},
+        "contract_version": {"const": 3},
         "index": {"type": "string", "minLength": 1},
         "records": {"type": "string", "minLength": 1},
         "flow": {"type": "string", "minLength": 1},
@@ -126,7 +126,7 @@
       "additionalProperties": false,
       "required": ["contract_version", "index", "route_shards", "promotions", "routing", "flow", "gate", "promotion_template", "route_shard_template", "owner", "review_policy", "retention_policy", "redaction_policy"],
       "properties": {
-        "contract_version": {"const": 2},
+        "contract_version": {"const": 3},
         "index": {"type": "string", "minLength": 1},
         "route_shards": {"type": "string", "minLength": 1},
         "promotions": {"type": "string", "minLength": 1},
@@ -146,7 +146,7 @@
       "additionalProperties": false,
       "required": ["contract_version", "index", "records", "overlay", "flow", "gate", "record_template", "summary_template"],
       "properties": {
-        "contract_version": {"const": 4},
+        "contract_version": {"const": 5},
         "index": {"type": "string", "minLength": 1},
         "records": {"type": "string", "minLength": 1},
         "overlay": {"type": "string", "minLength": 1},

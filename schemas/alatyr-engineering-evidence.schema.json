@@ -13,7 +13,7 @@
     "privacy"
   ],
   "properties": {
-    "schema_version": {"enum": [1, 2]},
+    "schema_version": {"enum": [1, 2, 3]},
     "record_kind": {"const": "alatyr-engineering-evidence"},
     "evidence_classification": {"const": "historical-record"},
     "evidence_id": {"type": "string", "minLength": 1},
@@ -141,17 +141,7 @@
       }
     },
     "residual_uncertainty": {"$ref": "#/definitions/strings"},
-    "related_records": {
-      "type": "object",
-      "additionalProperties": false,
-      "required": ["change_package_ids", "approval_records", "architecture_decisions", "development_evidence_pattern_ids"],
-      "properties": {
-        "change_package_ids": {"$ref": "#/definitions/strings"},
-        "approval_records": {"$ref": "#/definitions/strings"},
-        "architecture_decisions": {"$ref": "#/definitions/strings"},
-        "development_evidence_pattern_ids": {"$ref": "#/definitions/strings"}
-      }
-    },
+    "related_records": {"type": "object"},
     "publication": {
       "type": "object",
       "additionalProperties": false,
@@ -179,16 +169,58 @@
   "allOf": [
     {
       "if": {"properties": {"schema_version": {"const": 1}}},
-      "then": {"properties": {"repository_binding": {"$ref": "#/definitions/repositoryBindingV1"}}}
+      "then": {
+        "properties": {
+          "repository_binding": {"$ref": "#/definitions/repositoryBindingV1"},
+          "related_records": {"$ref": "#/definitions/relatedRecordsV2"}
+        }
+      }
     },
     {
       "if": {"properties": {"schema_version": {"const": 2}}},
-      "then": {"properties": {"repository_binding": {"$ref": "#/definitions/repositoryBindingV2"}}}
+      "then": {
+        "properties": {
+          "repository_binding": {"$ref": "#/definitions/repositoryBindingV2"},
+          "related_records": {"$ref": "#/definitions/relatedRecordsV2"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"schema_version": {"const": 3}}},
+      "then": {
+        "properties": {
+          "repository_binding": {"$ref": "#/definitions/repositoryBindingV2"},
+          "related_records": {"$ref": "#/definitions/relatedRecordsV3"}
+        }
+      }
     }
   ],
   "definitions": {
     "strings": {"type": "array", "items": {"type": "string", "minLength": 1}},
     "nonEmptyStrings": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "relatedRecordsV2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["change_package_ids", "approval_records", "architecture_decisions", "development_evidence_pattern_ids"],
+      "properties": {
+        "change_package_ids": {"$ref": "#/definitions/strings"},
+        "approval_records": {"$ref": "#/definitions/strings"},
+        "architecture_decisions": {"$ref": "#/definitions/strings"},
+        "development_evidence_pattern_ids": {"$ref": "#/definitions/strings"}
+      }
+    },
+    "relatedRecordsV3": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["change_package_ids", "approval_records", "architecture_decisions", "development_evidence_pattern_ids", "debug_session_ids"],
+      "properties": {
+        "change_package_ids": {"$ref": "#/definitions/strings"},
+        "approval_records": {"$ref": "#/definitions/strings"},
+        "architecture_decisions": {"$ref": "#/definitions/strings"},
+        "development_evidence_pattern_ids": {"$ref": "#/definitions/strings"},
+        "debug_session_ids": {"$ref": "#/definitions/strings"}
+      }
+    },
     "repositoryBindingV1": {
       "type": "object",
       "additionalProperties": false,

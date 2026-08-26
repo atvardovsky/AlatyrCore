@@ -176,7 +176,7 @@ def fixture(target: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any
         "entries": [entry],
     }
     index = {
-        "schema_version": 2,
+        "schema_version": 3,
         "index_kind": "target-project-knowledge-routing-index",
         "project": "fixture",
         "owner": "maintainers",
@@ -216,6 +216,7 @@ def fixture(target: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any
                 }
             ],
         },
+        "adoption": {"state": "populated", "reuse_evidence": []},
         "shards": [
             {"shard_id": "hydration", "path": ".ai/project/knowledge/routes/hydration.json", "task_profiles": ["code-local"], "project_areas": ["hydration"], "subsystems": ["result-hydration"], "architecture_item_ids": ["ARCH-HYDRATION-BOUNDARY"], "dependency_coordinates": ["dbal/package"], "path_prefixes": ["src/Hydration"]}
         ],
@@ -238,6 +239,15 @@ def fixture(target: Path) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any
 
 def main() -> int:
     failures: list[str] = []
+    framework_text = (ROOT / "framework/project-knowledge.md").read_text(encoding="utf-8")
+    for required_text in [
+        "## Adoption State",
+        "`enabled-empty`",
+        "`populated`",
+        "`reuse-observed`",
+    ]:
+        if required_text not in framework_text:
+            failures.append(f"project knowledge framework missing {required_text}")
     for schema_name in [
         "alatyr-project-knowledge-index.schema.json",
         "alatyr-project-knowledge-shard.schema.json",
@@ -314,6 +324,43 @@ def main() -> int:
         if valid:
             failures.extend(f"valid fixture {item.code}: {item.message}" for item in valid)
 
+        empty_target = target / "empty"
+        empty_index = load(TARGET / ".ai/project/knowledge/index.json")
+        empty_index.update(
+            project="fixture-empty",
+            owner="maintainers",
+            review_policy="maintainer review required",
+            retention_policy="retain reviewed decisions",
+            redaction_policy="exclude raw conversations and secrets",
+        )
+        write_json(empty_target / ".ai/project/knowledge/index.json", empty_index)
+        empty_policy = empty_target / ".ai/project/knowledge/README.md"
+        empty_policy.parent.mkdir(parents=True, exist_ok=True)
+        empty_policy.write_text(
+            "# Project Knowledge Delivery\n\n"
+            "Owner: `maintainers`\n\n"
+            "Review policy: `maintainer review required`\n\n"
+            "Retention policy: `retain reviewed decisions`\n\n"
+            "Redaction policy: `exclude raw conversations and secrets`\n",
+            encoding="utf-8",
+        )
+        write_json(
+            empty_target / ".ai/assistant/context/project-knowledge-routing.json",
+            load(TARGET / ".ai/assistant/context/project-knowledge-routing.json"),
+        )
+        empty_findings = validate_project_knowledge(empty_target, SCHEMAS)
+        if any(item.level == "error" for item in empty_findings):
+            failures.extend(
+                f"valid empty module {item.code}: {item.message}"
+                for item in empty_findings
+                if item.level == "error"
+            )
+        if not any(
+            item.code == "PROJECT_KNOWLEDGE_ENABLED_EMPTY"
+            for item in empty_findings
+        ):
+            failures.append("empty enabled project knowledge did not report its adoption limitation")
+
         initial = select_project_knowledge(
             shard["entries"], reuse["second_task"]["initial_route"], stage="initial", limit=index["routing_policy"]["max_initial_items"]
         )
@@ -377,6 +424,31 @@ def main() -> int:
         direct_findings = validate_project_knowledge(target, SCHEMAS)
         if direct_findings:
             failures.extend(f"direct guidance {item.code}: {item.message}" for item in direct_findings)
+
+        reused_index, _, _ = fixture(target)
+        reused_index["adoption"] = {
+            "state": "reuse-observed",
+            "reuse_evidence": ["operation:fixture-later-task"],
+        }
+        write_json(target / ".ai/project/knowledge/index.json", reused_index)
+        reused_findings = validate_project_knowledge(target, SCHEMAS)
+        if reused_findings:
+            failures.extend(
+                f"reuse-observed guidance {item.code}: {item.message}"
+                for item in reused_findings
+            )
+
+        invalid_adoption, _, _ = fixture(target)
+        invalid_adoption["adoption"] = {
+            "state": "reuse-observed",
+            "reuse_evidence": [],
+        }
+        write_json(target / ".ai/project/knowledge/index.json", invalid_adoption)
+        if not any(
+            item.code == "PROJECT_KNOWLEDGE_ADOPTION_STATE"
+            for item in validate_project_knowledge(target, SCHEMAS)
+        ):
+            failures.append("reuse-observed state without evidence was not rejected")
 
         invalid_coverage, _, _ = fixture(target)
         invalid_coverage["coverage"]["areas"][0]["guidance_ids"] = ["KNOW-MISSING"]

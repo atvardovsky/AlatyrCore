@@ -202,7 +202,7 @@ change_packages:
   human_report_template: ".ai/assistant/templates/change-package-report.md"
   retention_policy: "{TARGET_CHANGE_PACKAGE_RETENTION_AND_REDACTION_POLICY}"
 engineering_evidence:
-  contract_version: 2
+  contract_version: 3
   index: ".ai/project/engineering-evidence/index.json"
   records: ".ai/project/engineering-evidence/records"
   flow: ".ai/assistant/flows/engineering-evidence-capture.flow.md"
@@ -213,7 +213,7 @@ engineering_evidence:
   retention_policy: "{TARGET_ENGINEERING_EVIDENCE_RETENTION_POLICY}"
   redaction_policy: "{TARGET_ENGINEERING_EVIDENCE_REDACTION_POLICY}"
 project_knowledge:
-  contract_version: 2
+  contract_version: 3
   index: ".ai/project/knowledge/index.json"
   route_shards: ".ai/project/knowledge/routes"
   promotions: ".ai/project/knowledge/promotions"
@@ -227,7 +227,7 @@ project_knowledge:
   retention_policy: "{TARGET_PROJECT_KNOWLEDGE_RETENTION_POLICY}"
   redaction_policy: "{TARGET_PROJECT_KNOWLEDGE_REDACTION_POLICY}"
 debug_mode:
-  contract_version: 4
+  contract_version: 5
   index: ".ai/project/debug/index.json"
   records: ".ai/project/debug/records"
   overlay: ".ai/assistant/context/task-scales/debug-mode.json"

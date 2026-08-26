@@ -1,5 +1,5 @@
 {
-  "schema_version": 4,
+  "schema_version": 5,
   "record_kind": "alatyr-debug-session",
   "evidence_classification": "non-canonical-observability",
   "debug_id": "{DEBUG_ID}",
@@ -83,6 +83,14 @@
       "evidence": [],
       "limitation": "The active task has not reached a final validation claim."
     },
+    "lifecycle_coverage": {
+      "completion_scope": "active",
+      "covered_phases": [],
+      "omitted_phases": ["analysis", "implementation", "validation", "finalization"],
+      "continuation_expected": false,
+      "next_phase": "analysis",
+      "reason": "The active Debug scope has not finalized lifecycle coverage."
+    },
     "engineering_evidence_ids": [],
     "engineering_evidence_decision": {
       "status": "pending",
@@ -103,6 +111,7 @@
       "reason": "Durable engineering evidence is assessed when the Debug session is finalized.",
       "next_safe_action": "Complete the evidence decision before marking this record completed."
     },
+    "project_knowledge_candidates": [],
     "upstream_projection": {
       "kind": "unknown",
       "included_debug_files": false,

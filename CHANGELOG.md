@@ -2,6 +2,32 @@
 
 ## Unreleased
 
+- No unreleased changes.
+
+## 0.1.0-alpha.31 - 2026-08-26
+
+- Increased the framework version to `0.1.0-alpha.31`, adapter schema version
+  to `29`, and target template version to `29` for Debug lifecycle coverage,
+  reciprocal durable-evidence lineage, and project-knowledge adoption evidence.
+- Added Debug schema version 5 with explicit active, phase-complete, and full-
+  task lifecycle coverage; covered and omitted phases; continuation expectation;
+  and structured project-knowledge candidate dispositions. Analysis-only
+  evidence can no longer imply that implementation and validation were observed.
+- Added engineering-evidence schema version 3 and index schema version 4 with
+  reciprocal Debug session IDs, exact resolution, shared task lineage, and
+  legacy schema preservation without invented links.
+- Added project-knowledge index schema version 3 with machine-checkable
+  `enabled-empty`, `populated`, and `reuse-observed` states. Empty modules remain
+  valid but cannot be presented as evidence of guidance reuse.
+- Fixed the installed target validator's Debug v4 contract mismatch: current
+  templates, separated actor roles, v4 metric names, correction dispositions,
+  and derived-role causality are now validated consistently before v5 rules are
+  applied.
+- Added continuation-cycle, scope-lineage, lifecycle-partition, candidate-
+  closure, reciprocal evidence, empty-adoption, and reuse-evidence regression
+  coverage, plus multi-hop continuation recognition, legacy-record projection
+  in schema-version-5 indexes, and a complete capture-to-later-delivery
+  conformance expectation.
 - Fixed target health validation so generated bridge ownership, rather than a
   duplicate hard-coded vendor map, controls unsupported bridge filtering.
   Neutral, selected, partial, malformed, and unknown surfaces remain active
@@ -20,6 +46,9 @@
 - Updated pinned diagnostic artifact uploads to official
   `actions/upload-artifact` `v7.0.1`, removing the Node.js 20 deprecation
   warning from source workflows.
+- Changed `ALATYR-DEBUG-001`, `ALATYR-ENGINEERING-EVIDENCE-001`,
+  `ALATYR-KNOWLEDGE-001`, and `ALATYR-LIFECYCLE-001`; no rule IDs were added or
+  removed.
 
 ## 0.1.0-alpha.30 - 2026-08-25
 

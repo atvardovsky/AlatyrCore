@@ -306,7 +306,11 @@ material normalized events at checkpoints. Keep independent findings, human
 interventions, and consequences derived after an intervention causally
 distinct. Debug activation authorizes only target-approved debug evidence
 writes; every engineering action still requires its own current-scope
-authorization. Expire activation when the scope completes or changes.
+authorization. At finalization, distinguish phase completion from full-task
+completion, resolve reusable candidates through the project-knowledge gate,
+and use reciprocal engineering-evidence links when capture occurred. Expire
+activation when the scope completes or changes; related later work starts a
+new linked scope rather than extending completed evidence.
 
 AlatyrCore checks can detect structural drift and contract violations. They do
 not prove business truth, architectural correctness, external client

@@ -17,7 +17,7 @@
     "shards"
   ],
   "properties": {
-    "schema_version": {"enum": [1, 2]},
+    "schema_version": {"enum": [1, 2, 3]},
     "index_kind": {"const": "target-project-knowledge-routing-index"},
     "project": {"type": "string", "minLength": 1},
     "owner": {"type": "string", "minLength": 1},
@@ -97,6 +97,15 @@
         }
       }
     },
+    "adoption": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "reuse_evidence"],
+      "properties": {
+        "state": {"enum": ["enabled-empty", "populated", "reuse-observed"]},
+        "reuse_evidence": {"$ref": "#/definitions/strings"}
+      }
+    },
     "shards": {
       "type": "array",
       "items": {
@@ -129,6 +138,10 @@
     {
       "if": {"properties": {"schema_version": {"const": 2}}},
       "then": {"required": ["coverage"]}
+    },
+    {
+      "if": {"properties": {"schema_version": {"const": 3}}},
+      "then": {"required": ["coverage", "adoption"]}
     }
   ],
   "definitions": {

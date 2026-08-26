@@ -487,7 +487,7 @@ def validate_project_knowledge(
                     if not _concrete(precedence.get(field), allow_placeholders):
                         findings.append(KnowledgeFinding("error", "PROJECT_GUIDANCE_EXCEPTION_AUTHORITY", f"{knowledge_id} {field} must be explicit", entry_paths[knowledge_id]))
 
-    if index.get("schema_version") == 2:
+    if index.get("schema_version") in {2, 3}:
         coverage = index.get("coverage", {})
         for dimension in ["areas", "fact_types"]:
             seen_subjects: set[str] = set()
@@ -507,6 +507,59 @@ def validate_project_knowledge(
                     findings.append(KnowledgeFinding("error", "PROJECT_GUIDANCE_COVERAGE_STATE", f"{status} {dimension} coverage {subject} must not imply mapped guidance", index_relpath))
                 if status == "known-gap" and not item.get("gap"):
                     findings.append(KnowledgeFinding("error", "PROJECT_GUIDANCE_COVERAGE_GAP", f"known-gap {dimension} coverage {subject} lacks a gap explanation", index_relpath))
+
+    if index.get("schema_version") == 3:
+        adoption = index.get("adoption", {})
+        adoption_state = adoption.get("state")
+        reuse_evidence = adoption.get("reuse_evidence", [])
+        has_projection = bool(entries)
+        has_registry_state = bool(
+            index.get("promotion_records")
+            or index.get("shards")
+            or index.get("coverage", {}).get("areas")
+            or index.get("coverage", {}).get("fact_types")
+        )
+        if adoption_state == "enabled-empty":
+            if has_projection or has_registry_state or reuse_evidence:
+                findings.append(
+                    KnowledgeFinding(
+                        "error",
+                        "PROJECT_KNOWLEDGE_ADOPTION_STATE",
+                        "enabled-empty requires no promotions, shards, coverage, route entries, or reuse evidence",
+                        index_relpath,
+                    )
+                )
+            elif not allow_placeholders:
+                findings.append(
+                    KnowledgeFinding(
+                        "info",
+                        "PROJECT_KNOWLEDGE_ENABLED_EMPTY",
+                        "project knowledge is enabled but has no reviewed route entries; guidance reuse is not demonstrated",
+                        index_relpath,
+                    )
+                )
+        elif adoption_state == "populated":
+            if not has_projection or reuse_evidence:
+                findings.append(
+                    KnowledgeFinding(
+                        "error",
+                        "PROJECT_KNOWLEDGE_ADOPTION_STATE",
+                        "populated requires at least one route entry and no claimed reuse evidence",
+                        index_relpath,
+                    )
+                )
+        elif adoption_state == "reuse-observed":
+            if not has_projection or not reuse_evidence or not all(
+                _concrete(value, allow_placeholders) for value in reuse_evidence
+            ):
+                findings.append(
+                    KnowledgeFinding(
+                        "error",
+                        "PROJECT_KNOWLEDGE_ADOPTION_STATE",
+                        "reuse-observed requires route entries and explicit reuse evidence",
+                        index_relpath,
+                    )
+                )
 
     return findings
 

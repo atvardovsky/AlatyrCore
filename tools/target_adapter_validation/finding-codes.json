@@ -1872,7 +1872,34 @@
       ]
     },
     {
+      "code": "DEBUG_MODE_CONTINUATION_CYCLE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_CONTINUATION_LINEAGE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "DEBUG_MODE_CONTINUATION_REFERENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_CONTINUATION_SCOPE",
       "levels": [
         "error"
       ],
@@ -1936,6 +1963,24 @@
     },
     {
       "code": "DEBUG_MODE_ENGINEERING_EVIDENCE_EVENT_ID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_ENGINEERING_EVIDENCE_LINEAGE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_ENGINEERING_EVIDENCE_RECIPROCITY",
       "levels": [
         "error"
       ],
@@ -2133,6 +2178,15 @@
       ]
     },
     {
+      "code": "DEBUG_MODE_IMPLEMENTATION_CONTINUATION_MISSING",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "DEBUG_MODE_INDEPENDENCE",
       "levels": [
         "error"
@@ -2259,6 +2313,15 @@
       ]
     },
     {
+      "code": "DEBUG_MODE_INDEX_RECORD_VERSION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "DEBUG_MODE_INDEX_SCHEMA",
       "levels": [
         "error"
@@ -2277,9 +2340,135 @@
       ]
     },
     {
+      "code": "DEBUG_MODE_KNOWLEDGE_CANDIDATE_COVERAGE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_KNOWLEDGE_CANDIDATE_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_KNOWLEDGE_CANDIDATE_EVENT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_KNOWLEDGE_CANDIDATE_EVIDENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_KNOWLEDGE_CANDIDATE_OWNER",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_KNOWLEDGE_CANDIDATE_PROMOTION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "DEBUG_MODE_LEGACY_ATTRIBUTION",
       "levels": [
         "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_LIFECYCLE_COMPLETE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_LIFECYCLE_CONTINUATION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_LIFECYCLE_FINALIZATION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_LIFECYCLE_IMPLEMENTATION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_LIFECYCLE_PARTITION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_LIFECYCLE_PHASE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_LIFECYCLE_STATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_LIFECYCLE_VALIDATION",
+      "levels": [
+        "error"
       ],
       "sources": [
         "tools/validate_target_adapter.py"
@@ -4113,6 +4302,33 @@
       ]
     },
     {
+      "code": "ENGINEERING_EVIDENCE_DEBUG_LINEAGE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ENGINEERING_EVIDENCE_DEBUG_RECIPROCITY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ENGINEERING_EVIDENCE_DEBUG_REFERENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "ENGINEERING_EVIDENCE_EXTERNAL_RECORD_UNCHECKED",
       "levels": [
         "warning"
@@ -4240,6 +4456,15 @@
     },
     {
       "code": "ENGINEERING_EVIDENCE_INDEX_RECORDS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ENGINEERING_EVIDENCE_INDEX_RECORD_VERSION",
       "levels": [
         "error"
       ],
@@ -4393,6 +4618,15 @@
     },
     {
       "code": "ENGINEERING_EVIDENCE_TEMPLATE_BINDING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ENGINEERING_EVIDENCE_TEMPLATE_DEBUG_LINK",
       "levels": [
         "error"
       ],
@@ -6498,6 +6732,15 @@
       ]
     },
     {
+      "code": "PROJECT_KNOWLEDGE_ADOPTION_STATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
       "code": "PROJECT_KNOWLEDGE_CONFLICT_RECIPROCITY",
       "levels": [
         "error"
@@ -6546,6 +6789,15 @@
       "code": "PROJECT_KNOWLEDGE_CURRENT_OWNER_DRIFT",
       "levels": [
         "error"
+      ],
+      "sources": [
+        "tools/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_ENABLED_EMPTY",
+      "levels": [
+        "info"
       ],
       "sources": [
         "tools/project_knowledge.py"

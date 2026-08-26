@@ -86,7 +86,7 @@ ADAPTER_MANIFEST_SCHEMA = ROOT / "schemas" / "alatyr-adapter.schema.json"
 ENGINEERING_EVIDENCE_SCHEMA = ROOT / "schemas" / "alatyr-engineering-evidence.schema.json"
 DEBUG_SESSION_SCHEMA = ROOT / "schemas" / "alatyr-debug-session.schema.json"
 
-DEBUG_METRIC_NAMES = [
+DEBUG_LEGACY_METRIC_NAMES = [
     "human_interventions",
     "human_architectural_interventions",
     "alatyr_independent_findings",
@@ -102,6 +102,30 @@ DEBUG_METRIC_NAMES = [
     "regression_scenarios_added",
     "maintainer_corrections",
     "post_review_rework",
+]
+
+DEBUG_V4_METRIC_NAMES = [
+    "human_interventions",
+    "human_architectural_interventions",
+    "executor_independent_findings",
+    "executor_derived_findings_after_human",
+    "executor_independent_dependency_checks",
+    "human_requested_dependency_checks",
+    "executor_derived_dependency_expansions_after_human",
+    "hypotheses_tested",
+    "hypotheses_rejected",
+    "implementation_revisions",
+    "implementation_corrections_after_human",
+    "validation_expansions",
+    "regression_scenarios_added",
+    "maintainer_corrections",
+    "post_review_rework",
+    "new_guidance_candidates",
+    "known_guidance_routing_failures",
+    "known_guidance_compliance_failures",
+    "task_local_corrections",
+    "scope_changes",
+    "validation_requests",
 ]
 
 DEBUG_EVENT_LINK_ROLES = {
@@ -8784,10 +8808,10 @@ class Validator:
                         ".ai/alatyr.yaml",
                     )
             contract = manifest.scalars.get(("engineering_evidence", "contract_version"))
-            if contract is None or contract.value != "2":
+            if contract is None or contract.value != "3":
                 self.error(
                     "ENGINEERING_EVIDENCE_CONTRACT_VERSION",
-                    "engineering_evidence.contract_version must be 2",
+                    "engineering_evidence.contract_version must be 3",
                     ".ai/alatyr.yaml",
                 )
 
@@ -8795,10 +8819,13 @@ class Validator:
         template = self.load_json_object(self.target_path(template_relpath), "ENGINEERING_EVIDENCE_TEMPLATE")
         if template is not None:
             template_binding = template.get("repository_binding")
-            if template.get("schema_version") != 2:
-                self.error("ENGINEERING_EVIDENCE_TEMPLATE_VERSION", "authoring template schema_version must be 2", template_relpath)
+            if template.get("schema_version") != 3:
+                self.error("ENGINEERING_EVIDENCE_TEMPLATE_VERSION", "authoring template schema_version must be 3", template_relpath)
             if not isinstance(template_binding, dict) or not {"binding_state", "prior_bindings"}.issubset(template_binding):
-                self.error("ENGINEERING_EVIDENCE_TEMPLATE_BINDING", "version-2 authoring template must expose binding_state and prior_bindings", template_relpath)
+                self.error("ENGINEERING_EVIDENCE_TEMPLATE_BINDING", "version-3 authoring template must expose binding_state and prior_bindings", template_relpath)
+            related_records = template.get("related_records")
+            if not isinstance(related_records, dict) or "debug_session_ids" not in related_records:
+                self.error("ENGINEERING_EVIDENCE_TEMPLATE_DEBUG_LINK", "version-3 authoring template must expose Debug session lineage", template_relpath)
 
         index = self.load_json_object(
             self.target_path(index_relpath), "ENGINEERING_EVIDENCE_INDEX"
@@ -8806,8 +8833,8 @@ class Validator:
         if index is None:
             return
         index_schema_version = index.get("schema_version")
-        if index_schema_version not in {2, 3}:
-            self.error("ENGINEERING_EVIDENCE_INDEX_SCHEMA", "schema_version must be 2 or 3", index_relpath)
+        if index_schema_version not in {2, 3, 4}:
+            self.error("ENGINEERING_EVIDENCE_INDEX_SCHEMA", "schema_version must be 2, 3, or 4", index_relpath)
         elif index_schema_version == 2:
             self.warn("ENGINEERING_EVIDENCE_INDEX_LEGACY", "schema-version-2 index omits record contract and binding-state projections", index_relpath)
         if index.get("index_kind") != "target-engineering-evidence-index":
@@ -8895,6 +8922,23 @@ class Validator:
             )
             return
 
+        debug_entries_by_id: dict[str, list[dict[str, Any]]] = {}
+        debug_index_path = self.target_path(".ai/project/debug/index.json")
+        if debug_index_path.is_file():
+            try:
+                debug_index = json.loads(debug_index_path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                debug_index = None
+            if isinstance(debug_index, dict):
+                for debug_entry in debug_index.get("records", []):
+                    if not isinstance(debug_entry, dict):
+                        continue
+                    indexed_debug_id = debug_entry.get("debug_id")
+                    if isinstance(indexed_debug_id, str) and indexed_debug_id:
+                        debug_entries_by_id.setdefault(indexed_debug_id, []).append(
+                            debug_entry
+                        )
+
         required_index_fields = {
             "evidence_id",
             "status",
@@ -8906,8 +8950,10 @@ class Validator:
             "result_revision",
             "residual_uncertainty",
         }
-        if index_schema_version == 3:
+        if index_schema_version in {3, 4}:
             required_index_fields.update({"record_schema_version", "repository_binding_state"})
+        if index_schema_version == 4:
+            required_index_fields.add("debug_session_ids")
         seen_ids: set[str] = set()
         seen_records: set[str] = set()
         for entry_index, entry in enumerate(records):
@@ -8998,6 +9044,25 @@ class Validator:
                     f"{location}: {schema_error.message}",
                     record_ref,
                 )
+            record_schema_version = record.get("schema_version")
+            minimum_index_version = {1: 2, 2: 3, 3: 4}.get(
+                record_schema_version
+            )
+            if minimum_index_version is None:
+                self.error(
+                    "ENGINEERING_EVIDENCE_INDEX_RECORD_VERSION",
+                    "record schema_version must be an integer from 1 through 3",
+                    record_ref,
+                )
+            elif (
+                not isinstance(index_schema_version, int)
+                or index_schema_version < minimum_index_version
+            ):
+                self.error(
+                    "ENGINEERING_EVIDENCE_INDEX_RECORD_VERSION",
+                    f"schema-version-{record_schema_version} record requires index schema version {minimum_index_version} or later",
+                    index_relpath,
+                )
 
             forbidden_keys = {
                 "raw_chat",
@@ -9060,6 +9125,65 @@ class Validator:
 
             task = record.get("task")
             task_refs = resolved_list(task, "references")
+            related_records_value = record.get("related_records")
+            related_records_value = (
+                related_records_value
+                if isinstance(related_records_value, dict)
+                else {}
+            )
+            debug_session_ids = related_records_value.get("debug_session_ids")
+            if record.get("schema_version") == 3:
+                debug_session_ids = resolved_list(
+                    related_records_value, "debug_session_ids", required=False
+                )
+                for debug_session_id in debug_session_ids:
+                    debug_entries = debug_entries_by_id.get(debug_session_id, [])
+                    if len(debug_entries) != 1:
+                        self.error(
+                            "ENGINEERING_EVIDENCE_DEBUG_REFERENCE",
+                            f"Debug session {debug_session_id} resolves {len(debug_entries)} times; expected exactly once",
+                            record_ref,
+                        )
+                        continue
+                    debug_entry = debug_entries[0]
+                    debug_record_ref = debug_entry.get("record")
+                    if not isinstance(debug_record_ref, str) or not is_target_relative_path(
+                        debug_record_ref
+                    ):
+                        self.error(
+                            "ENGINEERING_EVIDENCE_DEBUG_REFERENCE",
+                            f"Debug session {debug_session_id} has no inspectable target record",
+                            record_ref,
+                        )
+                        continue
+                    debug_record = self.load_json_object(
+                        self.target_path(debug_record_ref),
+                        "ENGINEERING_EVIDENCE_DEBUG_RECORD",
+                    )
+                    if not isinstance(debug_record, dict):
+                        continue
+                    debug_final = debug_record.get("final_result")
+                    debug_final = debug_final if isinstance(debug_final, dict) else {}
+                    debug_evidence_ids = debug_final.get("engineering_evidence_ids")
+                    if not isinstance(debug_evidence_ids, list) or evidence_id not in debug_evidence_ids:
+                        self.error(
+                            "ENGINEERING_EVIDENCE_DEBUG_RECIPROCITY",
+                            f"Debug session {debug_session_id} does not link back to engineering evidence {evidence_id}",
+                            record_ref,
+                        )
+                    debug_task = debug_record.get("task")
+                    debug_task = debug_task if isinstance(debug_task, dict) else {}
+                    debug_task_refs = set(
+                        value
+                        for value in debug_task.get("references", [])
+                        if isinstance(value, str)
+                    )
+                    if debug_task_refs and not debug_task_refs & set(task_refs):
+                        self.error(
+                            "ENGINEERING_EVIDENCE_DEBUG_LINEAGE",
+                            f"Debug session {debug_session_id} does not share task lineage with engineering evidence {evidence_id}",
+                            record_ref,
+                        )
             invariants = record.get("invariants")
             if isinstance(invariants, list):
                 for invariant_index, invariant in enumerate(invariants):
@@ -9161,7 +9285,7 @@ class Validator:
                 "result_revision": result_revision,
                 "residual_uncertainty": residual,
             }
-            if index_schema_version == 3:
+            if index_schema_version in {3, 4, 5}:
                 binding_value = record.get("repository_binding") if isinstance(record.get("repository_binding"), dict) else {}
                 comparisons.update(
                     {
@@ -9169,6 +9293,9 @@ class Validator:
                         "repository_binding_state": binding_value.get("binding_state", "legacy"),
                     }
                 )
+            if index_schema_version == 4:
+                related_records = record.get("related_records") if isinstance(record.get("related_records"), dict) else {}
+                comparisons["debug_session_ids"] = related_records.get("debug_session_ids", [])
             for field, record_value in comparisons.items():
                 index_value = entry.get(field)
                 if isinstance(record_value, list) and isinstance(index_value, list):
@@ -9209,10 +9336,10 @@ class Validator:
                         ".ai/alatyr.yaml",
                     )
             contract = manifest.scalars.get(("project_knowledge", "contract_version"))
-            if contract is None or contract.value != "2":
+            if contract is None or contract.value != "3":
                 self.error(
                     "PROJECT_KNOWLEDGE_CONTRACT_VERSION",
-                    "project_knowledge.contract_version must be 2",
+                    "project_knowledge.contract_version must be 3",
                     ".ai/alatyr.yaml",
                 )
 
@@ -9270,10 +9397,10 @@ class Validator:
                         ".ai/alatyr.yaml",
                     )
             contract = manifest.scalars.get(("debug_mode", "contract_version"))
-            if contract is None or contract.value != "4":
+            if contract is None or contract.value != "5":
                 self.error(
                     "DEBUG_MODE_CONTRACT_VERSION",
-                    "debug_mode.contract_version must be 4",
+                    "debug_mode.contract_version must be 5",
                     ".ai/alatyr.yaml",
                 )
 
@@ -9282,14 +9409,15 @@ class Validator:
         if template is not None:
             template_final = template.get("final_result")
             template_binding = template_final.get("repository_binding") if isinstance(template_final, dict) else None
-            if template.get("schema_version") != 3:
-                self.error("DEBUG_MODE_TEMPLATE_VERSION", "authoring template schema_version must be 3", template_relpath)
+            if template.get("schema_version") != 5:
+                self.error("DEBUG_MODE_TEMPLATE_VERSION", "authoring template schema_version must be 5", template_relpath)
             if not isinstance(template_binding, dict) or not {"binding_state", "prior_bindings"}.issubset(template_binding):
-                self.error("DEBUG_MODE_TEMPLATE_BINDING", "version-3 authoring template must expose binding_state and prior_bindings", template_relpath)
+                self.error("DEBUG_MODE_TEMPLATE_BINDING", "version-5 authoring template must expose binding_state and prior_bindings", template_relpath)
             if not isinstance(template_final, dict) or not {
-                "claim_validation", "engineering_evidence_decision"
+                "claim_validation", "engineering_evidence_decision",
+                "lifecycle_coverage", "project_knowledge_candidates"
             }.issubset(template_final):
-                self.error("DEBUG_MODE_TEMPLATE_EVIDENCE_DECISION", "version-3 authoring template must expose claim validation and engineering-evidence materiality", template_relpath)
+                self.error("DEBUG_MODE_TEMPLATE_EVIDENCE_DECISION", "version-5 authoring template must expose lifecycle, claim, engineering-evidence, and project-knowledge closure", template_relpath)
             if not isinstance(template.get("continuation"), dict):
                 self.error("DEBUG_MODE_TEMPLATE_CONTINUATION", "version-3 authoring template must expose continuation lineage", template_relpath)
 
@@ -9299,10 +9427,10 @@ class Validator:
         if index is None:
             return
         index_schema_version = index.get("schema_version")
-        if index_schema_version not in {2, 3, 4}:
-            self.error("DEBUG_MODE_INDEX_SCHEMA", "schema_version must be 2, 3, or 4", index_relpath)
-        elif index_schema_version in {2, 3}:
-            self.warn("DEBUG_MODE_INDEX_LEGACY", "legacy Debug index omits schema-version-3 continuation or claim-fidelity projections", index_relpath)
+        if index_schema_version not in {2, 3, 4, 5}:
+            self.error("DEBUG_MODE_INDEX_SCHEMA", "schema_version must be 2, 3, 4, or 5", index_relpath)
+        elif index_schema_version in {2, 3, 4}:
+            self.warn("DEBUG_MODE_INDEX_LEGACY", "legacy Debug index omits schema-version-5 lifecycle or knowledge-candidate projections", index_relpath)
         if index.get("index_kind") != "target-alatyr-debug-index":
             self.error(
                 "DEBUG_MODE_INDEX_KIND",
@@ -9369,6 +9497,7 @@ class Validator:
             return
 
         engineering_evidence_counts: dict[str, int] = {}
+        engineering_evidence_entries: dict[str, list[dict[str, Any]]] = {}
         engineering_index_relpath = ".ai/project/engineering-evidence/index.json"
         engineering_index_path = self.target_path(engineering_index_relpath)
         if engineering_index_path.is_file():
@@ -9387,6 +9516,43 @@ class Validator:
                         engineering_evidence_counts[evidence_id] = (
                             engineering_evidence_counts.get(evidence_id, 0) + 1
                         )
+                        engineering_evidence_entries.setdefault(evidence_id, []).append(
+                            evidence_entry
+                        )
+
+        promotion_candidate_ids: set[str] = set()
+        project_knowledge_index_path = self.target_path(
+            ".ai/project/knowledge/index.json"
+        )
+        if project_knowledge_index_path.is_file():
+            try:
+                project_knowledge_index = json.loads(
+                    project_knowledge_index_path.read_text(encoding="utf-8")
+                )
+            except (OSError, json.JSONDecodeError):
+                project_knowledge_index = None
+            if isinstance(project_knowledge_index, dict):
+                for promotion_entry in project_knowledge_index.get(
+                    "promotion_records", []
+                ):
+                    if not isinstance(promotion_entry, dict):
+                        continue
+                    promotion_ref = promotion_entry.get("path")
+                    if not isinstance(promotion_ref, str) or not is_target_relative_path(
+                        promotion_ref
+                    ):
+                        continue
+                    promotion_record = self.load_json_object(
+                        self.target_path(promotion_ref),
+                        "DEBUG_MODE_PROJECT_KNOWLEDGE_PROMOTION",
+                    )
+                    if not isinstance(promotion_record, dict):
+                        continue
+                    candidate = promotion_record.get("candidate")
+                    candidate = candidate if isinstance(candidate, dict) else {}
+                    candidate_id = candidate.get("candidate_id")
+                    if isinstance(candidate_id, str) and candidate_id:
+                        promotion_candidate_ids.add(candidate_id)
 
         registry_relpath = ".ai/project/source-of-truth-registry.md"
         registry_path = self.target_path(registry_relpath)
@@ -9420,7 +9586,7 @@ class Validator:
             required_index_fields.update(
                 {"record_schema_version", "repository_binding_state", "engineering_evidence_status"}
             )
-        elif index_schema_version == 4:
+        elif index_schema_version in {4, 5}:
             required_index_fields.update(
                 {
                     "record_schema_version",
@@ -9431,6 +9597,15 @@ class Validator:
                     "claim_validation_fidelity",
                 }
             )
+        if index_schema_version == 5:
+            required_index_fields.update(
+                {
+                    "lifecycle_completion_scope",
+                    "covered_phases",
+                    "continuation_expected",
+                    "knowledge_candidate_ids",
+                }
+            )
         indexed_entries = [entry for entry in records if isinstance(entry, dict)]
         indexed_id_counts: dict[str, int] = {}
         indexed_entries_by_id: dict[str, dict[str, Any]] = {}
@@ -9439,8 +9614,29 @@ class Validator:
             if isinstance(indexed_debug_id, str) and indexed_debug_id:
                 indexed_id_counts[indexed_debug_id] = indexed_id_counts.get(indexed_debug_id, 0) + 1
                 indexed_entries_by_id.setdefault(indexed_debug_id, indexed_entry)
+        if index_schema_version in {4, 5}:
+            for indexed_debug_id in indexed_entries_by_id:
+                visited: set[str] = set()
+                current_id = indexed_debug_id
+                while current_id in indexed_entries_by_id:
+                    if current_id in visited:
+                        self.error(
+                            "DEBUG_MODE_CONTINUATION_CYCLE",
+                            f"continuation lineage for {indexed_debug_id} contains a cycle",
+                            index_relpath,
+                        )
+                        break
+                    visited.add(current_id)
+                    current_entry = indexed_entries_by_id[current_id]
+                    if current_entry.get("continuation_kind") != "continued":
+                        break
+                    previous_id = current_entry.get("continued_from_debug_id")
+                    if not isinstance(previous_id, str):
+                        break
+                    current_id = previous_id
         seen_ids: set[str] = set()
         seen_records: set[str] = set()
+        checked_debug_records: dict[str, dict[str, Any]] = {}
         for entry_index, entry in enumerate(records):
             label = f"records[{entry_index}]"
             if not isinstance(entry, dict):
@@ -9474,7 +9670,7 @@ class Validator:
             elapsed_index = entry.get("elapsed_seconds")
             if elapsed_index is not None and (not isinstance(elapsed_index, int) or elapsed_index < 0):
                 self.error("DEBUG_MODE_INDEX_FIELD", f"{label}.elapsed_seconds must be a non-negative integer or null", index_relpath)
-            if index_schema_version == 4:
+            if index_schema_version in {4, 5}:
                 if entry.get("continuation_kind") not in {"initial", "continued", "legacy"}:
                     self.error("DEBUG_MODE_INDEX_FIELD", f"{label}.continuation_kind is invalid", index_relpath)
                 if not isinstance(entry.get("continued_from_debug_id"), str) or not entry["continued_from_debug_id"].strip():
@@ -9484,6 +9680,34 @@ class Validator:
                     "not-applicable", "legacy",
                 }:
                     self.error("DEBUG_MODE_INDEX_FIELD", f"{label}.claim_validation_fidelity is invalid", index_relpath)
+            indexed_record_version = entry.get("record_schema_version", 1)
+            if index_schema_version == 5:
+                lifecycle_scopes = (
+                    {"legacy"}
+                    if isinstance(indexed_record_version, int)
+                    and indexed_record_version < 5
+                    else {"active", "phase-complete", "full-task-complete"}
+                )
+                if entry.get("lifecycle_completion_scope") not in lifecycle_scopes:
+                    self.error("DEBUG_MODE_INDEX_FIELD", f"{label}.lifecycle_completion_scope is invalid", index_relpath)
+                covered_phases = entry.get("covered_phases")
+                if (
+                    not isinstance(covered_phases, list)
+                    or len(covered_phases) != len(set(covered_phases))
+                    or not set(covered_phases).issubset(
+                        {"analysis", "implementation", "validation", "finalization"}
+                    )
+                ):
+                    self.error("DEBUG_MODE_INDEX_FIELD", f"{label}.covered_phases is invalid", index_relpath)
+                if not isinstance(entry.get("continuation_expected"), bool):
+                    self.error("DEBUG_MODE_INDEX_FIELD", f"{label}.continuation_expected must be boolean", index_relpath)
+                candidate_ids = entry.get("knowledge_candidate_ids")
+                if (
+                    not isinstance(candidate_ids, list)
+                    or len(candidate_ids) != len(set(candidate_ids))
+                    or not all(concrete(value) for value in candidate_ids)
+                ):
+                    self.error("DEBUG_MODE_INDEX_FIELD", f"{label}.knowledge_candidate_ids must be a unique resolved string list", index_relpath)
             for field in ["task_references", "residual_uncertainty"]:
                 values = entry.get(field)
                 if not isinstance(values, list) or not all(concrete(value) for value in values):
@@ -9492,7 +9716,12 @@ class Validator:
                 if not isinstance(entry.get(field), str) or not entry[field].strip():
                     self.error("DEBUG_MODE_INDEX_FIELD", f"{label}.{field} must be a non-empty string", index_relpath)
             index_metrics = entry.get("metrics")
-            if not isinstance(index_metrics, dict) or set(index_metrics) != set(DEBUG_METRIC_NAMES):
+            indexed_metric_names = (
+                DEBUG_V4_METRIC_NAMES
+                if isinstance(indexed_record_version, int) and indexed_record_version >= 4
+                else DEBUG_LEGACY_METRIC_NAMES
+            )
+            if not isinstance(index_metrics, dict) or set(index_metrics) != set(indexed_metric_names):
                 self.error("DEBUG_MODE_INDEX_METRICS", f"{label}.metrics must contain the canonical metric set", index_relpath)
             elif not all(value is None or (isinstance(value, int) and value >= 0) for value in index_metrics.values()):
                 self.error("DEBUG_MODE_INDEX_METRICS", f"{label}.metrics values must be non-negative integers or null", index_relpath)
@@ -9519,6 +9748,7 @@ class Validator:
             record = self.load_json_object(self.target_path(record_ref), "DEBUG_MODE_RECORD")
             if record is None:
                 continue
+            checked_debug_records[str(debug_id)] = record
 
             for schema_error in sorted(
                 schema_validator.iter_errors(record),
@@ -9526,6 +9756,25 @@ class Validator:
             ):
                 location = ".".join(str(item) for item in schema_error.absolute_path) or "root"
                 self.error("DEBUG_MODE_RECORD_SCHEMA", f"{location}: {schema_error.message}", record_ref)
+            record_schema_version = record.get("schema_version")
+            minimum_index_version = {1: 2, 2: 2, 3: 3, 4: 4, 5: 5}.get(
+                record_schema_version
+            )
+            if minimum_index_version is None:
+                self.error(
+                    "DEBUG_MODE_INDEX_RECORD_VERSION",
+                    "record schema_version must be an integer from 1 through 5",
+                    record_ref,
+                )
+            elif (
+                not isinstance(index_schema_version, int)
+                or index_schema_version < minimum_index_version
+            ):
+                self.error(
+                    "DEBUG_MODE_INDEX_RECORD_VERSION",
+                    f"schema-version-{record_schema_version} record requires index schema version {minimum_index_version} or later",
+                    index_relpath,
+                )
             record_schema_version = record.get("schema_version") if isinstance(record.get("schema_version"), int) else 1
             if record_schema_version == 2:
                 self.warn(
@@ -9639,6 +9888,25 @@ class Validator:
                                 f"previous Debug ID {continued_from_debug_id!r} must be closed before continuation",
                                 record_ref,
                             )
+                        if record_schema_version >= 5:
+                            previous_references = previous_entry.get("task_references")
+                            previous_references = (
+                                previous_references
+                                if isinstance(previous_references, list)
+                                else []
+                            )
+                            if not set(task_references) & set(previous_references):
+                                self.error(
+                                    "DEBUG_MODE_CONTINUATION_LINEAGE",
+                                    "continued Debug record must share a task or issue reference with its predecessor",
+                                    record_ref,
+                                )
+                            if previous_entry.get("scope_id") == task.get("scope_id"):
+                                self.error(
+                                    "DEBUG_MODE_CONTINUATION_SCOPE",
+                                    "continued Debug record must open a distinct logical scope ID",
+                                    record_ref,
+                                )
 
             def parse_time_value(container: Any, field: str) -> datetime | None:
                 item = container.get(field) if isinstance(container, dict) else None
@@ -9820,15 +10088,20 @@ class Validator:
                     pending.extend(cause.get("caused_by_event_ids", []))
                 return False
 
+            def event_actor_role(event: dict[str, Any]) -> Any:
+                if record_schema_version >= 4:
+                    return event.get("actor_role")
+                return event.get("actor")
+
             def is_human_intervention(event: dict[str, Any]) -> bool:
                 if record_schema_version == 1:
                     return event.get("origin") == "human-initiated"
-                return event.get("actor") == "human" and event.get("causal_class") == "intervention"
+                return event_actor_role(event) == "human" and event.get("causal_class") == "intervention"
 
             def is_external_intervention(event: dict[str, Any]) -> bool:
                 if record_schema_version == 1:
                     return event.get("origin") == "external-maintainer"
-                return event.get("actor") == "external-maintainer" and event.get("causal_class") == "intervention"
+                return event_actor_role(event) == "external-maintainer" and event.get("causal_class") == "intervention"
 
             def has_human_ancestor(event: dict[str, Any]) -> bool:
                 return has_matching_ancestor(event, is_human_intervention)
@@ -9866,7 +10139,7 @@ class Validator:
 
             for event_id, event in event_by_id.items():
                 origin = event.get("origin")
-                actor = event.get("actor") if record_schema_version >= 2 else None
+                actor = event_actor_role(event) if record_schema_version >= 2 else None
                 causal_class = event.get("causal_class") if record_schema_version >= 2 else None
                 intervention_kind = event.get("intervention_kind") if record_schema_version >= 2 else None
                 human_ancestor = has_human_ancestor(event)
@@ -9880,13 +10153,27 @@ class Validator:
                     if actor in {"human", "external-maintainer"}:
                         if causal_class != "intervention" or intervention_kind == "not-applicable":
                             self.error("DEBUG_MODE_INTERVENTION_CLASSIFICATION", f"{event_id} human or external input must be a typed intervention", record_ref)
-                    elif actor == "alatyr":
+                    elif actor not in {"human", "external-maintainer"}:
                         if causal_class == "intervention" or intervention_kind != "not-applicable":
-                            self.error("DEBUG_MODE_AGENT_CLASSIFICATION", f"{event_id} Alatyr contribution cannot be classified as an intervention", record_ref)
+                            self.error("DEBUG_MODE_AGENT_CLASSIFICATION", f"{event_id} non-human contribution cannot be classified as an intervention", record_ref)
                     if causal_class == "derived-from-human" and not human_ancestor:
                         self.error("DEBUG_MODE_DERIVATION_CAUSE", f"{event_id} has no human intervention ancestor", record_ref)
                     if causal_class == "derived-from-external" and not external_ancestor:
                         self.error("DEBUG_MODE_DERIVATION_CAUSE", f"{event_id} has no external-maintainer intervention ancestor", record_ref)
+                    if record_schema_version >= 4:
+                        derived_role = {
+                            "derived-from-executor": "executor",
+                            "derived-from-alatyr-system": "alatyr-system",
+                            "derived-from-automation": "automation",
+                        }.get(causal_class)
+                        if derived_role and not has_matching_ancestor(
+                            event, lambda cause: event_actor_role(cause) == derived_role
+                        ):
+                            self.error(
+                                "DEBUG_MODE_DERIVATION_CAUSE",
+                                f"{event_id} has no {derived_role} ancestor",
+                                record_ref,
+                            )
                     if causal_class == "independent-within-scope" and (human_ancestor or external_ancestor):
                         self.error("DEBUG_MODE_INDEPENDENCE", f"{event_id} cannot be independent because its causal chain contains an intervention", record_ref)
                     if event.get("post_review_rework") is True and not has_correction_ancestor(event):
@@ -9983,10 +10270,32 @@ class Validator:
                         record_ref,
                     )
 
+            project_candidate_records_v5: list[dict[str, Any]] = []
+            candidate_event_ids_v5: list[str] = []
+            if record_schema_version >= 5:
+                candidate_container = record.get("final_result")
+                project_candidate_records_v5 = (
+                    candidate_container.get("project_knowledge_candidates", [])
+                    if isinstance(candidate_container, dict)
+                    else []
+                )
+                project_candidate_records_v5 = [
+                    candidate
+                    for candidate in project_candidate_records_v5
+                    if isinstance(candidate, dict)
+                ]
+                for candidate in project_candidate_records_v5:
+                    if isinstance(candidate, dict) and isinstance(candidate.get("event_ids"), list):
+                        candidate_event_ids_v5.extend(
+                            event_id
+                            for event_id in candidate["event_ids"]
+                            if isinstance(event_id, str)
+                        )
+
             def matching_event_ids(metric_name: str) -> list[str]:
                 def matches(event: dict[str, Any]) -> bool:
                     origin = event.get("origin")
-                    actor = event.get("actor")
+                    actor = event_actor_role(event)
                     causal_class = event.get("causal_class")
                     intervention_kind = event.get("intervention_kind")
                     contribution_kind = event.get("contribution_kind")
@@ -10024,6 +10333,80 @@ class Validator:
                             return event.get("post_review_rework") is True
                         return False
 
+                    if record_schema_version >= 4:
+                        if metric_name == "human_interventions":
+                            return actor == "human" and causal_class == "intervention"
+                        if metric_name == "human_architectural_interventions":
+                            return actor == "human" and causal_class == "intervention" and event.get("architectural_supervision") is True
+                        if metric_name == "executor_independent_findings":
+                            return actor == "executor" and causal_class == "independent-within-scope" and contribution_kind == "finding"
+                        if metric_name == "executor_derived_findings_after_human":
+                            return actor == "executor" and causal_class == "derived-from-human" and contribution_kind == "finding"
+                        if metric_name == "executor_independent_dependency_checks":
+                            return actor == "executor" and causal_class == "independent-within-scope" and contribution_kind == "finding" and category == "dependency"
+                        if metric_name == "human_requested_dependency_checks":
+                            return actor == "human" and causal_class == "intervention" and category == "dependency"
+                        if metric_name == "executor_derived_dependency_expansions_after_human":
+                            return actor == "executor" and causal_class == "derived-from-human" and contribution_kind == "finding" and event.get("dependency_expansion") is True
+                        if metric_name == "hypotheses_tested":
+                            return contribution_kind == "finding" and category == "hypothesis" and event.get("hypothesis_outcome") in {"confirmed", "rejected"}
+                        if metric_name == "hypotheses_rejected":
+                            return contribution_kind == "finding" and category == "hypothesis" and event.get("hypothesis_outcome") == "rejected"
+                        if metric_name == "implementation_revisions":
+                            return contribution_kind == "implementation"
+                        if metric_name == "implementation_corrections_after_human":
+                            return contribution_kind == "implementation" and has_matching_ancestor(
+                                event,
+                                lambda cause: event_actor_role(cause) == "human"
+                                and cause.get("causal_class") == "intervention"
+                                and cause.get("correction_disposition")
+                                in {
+                                    "new-guidance-candidate",
+                                    "known-guidance-routing-failure",
+                                    "known-guidance-compliance-failure",
+                                    "task-local",
+                                },
+                            )
+                        if metric_name == "validation_expansions":
+                            return contribution_kind == "validation" and event.get("validation_expansion") is True
+                        if metric_name == "regression_scenarios_added":
+                            return contribution_kind == "validation" and category == "regression-scenario"
+                        if metric_name == "maintainer_corrections":
+                            return actor == "external-maintainer" and causal_class == "intervention" and event.get("correction_disposition") in {
+                                "new-guidance-candidate",
+                                "known-guidance-routing-failure",
+                                "known-guidance-compliance-failure",
+                                "task-local",
+                            }
+                        if metric_name == "post_review_rework":
+                            return event.get("post_review_rework") is True and has_matching_ancestor(
+                                event,
+                                lambda cause: event_actor_role(cause) == "external-maintainer"
+                                and cause.get("causal_class") == "intervention"
+                                and cause.get("correction_disposition")
+                                in {
+                                    "new-guidance-candidate",
+                                    "known-guidance-routing-failure",
+                                    "known-guidance-compliance-failure",
+                                    "task-local",
+                                },
+                            )
+                        if metric_name == "new_guidance_candidates":
+                            if record_schema_version >= 5:
+                                return event.get("event_id") in candidate_event_ids_v5
+                            return event.get("correction_disposition") == "new-guidance-candidate"
+                        disposition_metrics = {
+                            "known_guidance_routing_failures": "known-guidance-routing-failure",
+                            "known_guidance_compliance_failures": "known-guidance-compliance-failure",
+                            "task_local_corrections": "task-local",
+                            "scope_changes": "scope-change",
+                            "validation_requests": "validation-request",
+                        }
+                        expected_disposition = disposition_metrics.get(metric_name)
+                        if expected_disposition is not None:
+                            return event.get("correction_disposition") == expected_disposition
+                        return False
+
                     if metric_name == "human_interventions":
                         return actor == "human" and causal_class == "intervention"
                     if metric_name == "human_architectural_interventions":
@@ -10059,7 +10442,12 @@ class Validator:
                 return [event_id for event_id, event in event_by_id.items() if matches(event)]
 
             metrics = record.get("metrics") if isinstance(record.get("metrics"), dict) else {}
-            for metric_name in DEBUG_METRIC_NAMES:
+            metric_names = (
+                DEBUG_V4_METRIC_NAMES
+                if record_schema_version >= 4
+                else DEBUG_LEGACY_METRIC_NAMES
+            )
+            for metric_name in metric_names:
                 metric = metrics.get(metric_name)
                 if not isinstance(metric, dict):
                     continue
@@ -10071,14 +10459,20 @@ class Validator:
                     self.error("DEBUG_MODE_METRIC_EVENT", f"metrics.{metric_name} references unknown events {unknown_event_ids}", record_ref)
                 if metric.get("evidence_kind") == "event-derived":
                     expected_ids = matching_event_ids(metric_name)
-                    if metric.get("value") != len(expected_ids) or metric_event_ids != expected_ids:
+                    expected_value = (
+                        len(project_candidate_records_v5)
+                        if record_schema_version >= 5
+                        and metric_name == "new_guidance_candidates"
+                        else len(expected_ids)
+                    )
+                    if metric.get("value") != expected_value or metric_event_ids != expected_ids:
                         self.error("DEBUG_MODE_METRIC_DRIFT", f"metrics.{metric_name} does not match its event predicate", record_ref)
                 elif metric.get("evidence_kind") == "unavailable" and (metric.get("value") is not None or metric_event_ids):
                     self.error("DEBUG_MODE_METRIC_UNAVAILABLE", f"metrics.{metric_name} marked unavailable must have null value and no event IDs", record_ref)
             if status == "completed":
                 if not events:
                     self.error("DEBUG_MODE_COMPLETED_EMPTY", "completed record must contain at least one material event", record_ref)
-                for metric_name in DEBUG_METRIC_NAMES:
+                for metric_name in metric_names:
                     metric = metrics.get(metric_name)
                     if not isinstance(metric, dict) or metric.get("evidence_kind") != "event-derived":
                         self.error("DEBUG_MODE_COMPLETED_METRICS", f"completed record requires event-derived metrics.{metric_name}", record_ref)
@@ -10107,6 +10501,175 @@ class Validator:
                 for value in final_result.get("implementation_surfaces", [])
                 if isinstance(value, str)
             ]
+            lifecycle_completion_scope = "legacy"
+            covered_phases: list[str] = []
+            continuation_expected = False
+            project_candidate_ids: list[str] = []
+            if record_schema_version >= 5:
+                all_phases = {
+                    "analysis", "implementation", "validation", "finalization"
+                }
+                lifecycle = final_result.get("lifecycle_coverage")
+                lifecycle = lifecycle if isinstance(lifecycle, dict) else {}
+                lifecycle_completion_scope = str(
+                    lifecycle.get("completion_scope", "")
+                )
+                covered_value = lifecycle.get("covered_phases")
+                omitted_value = lifecycle.get("omitted_phases")
+                covered_phases = (
+                    covered_value if isinstance(covered_value, list) else []
+                )
+                omitted_phases = (
+                    omitted_value if isinstance(omitted_value, list) else []
+                )
+                continuation_expected = lifecycle.get("continuation_expected") is True
+                next_phase = lifecycle.get("next_phase")
+                if set(covered_phases) & set(omitted_phases) or (
+                    set(covered_phases) | set(omitted_phases)
+                ) != all_phases:
+                    self.error(
+                        "DEBUG_MODE_LIFECYCLE_PARTITION",
+                        "covered and omitted phases must form an exact lifecycle partition",
+                        record_ref,
+                    )
+                if status == "active":
+                    if lifecycle_completion_scope != "active":
+                        self.error(
+                            "DEBUG_MODE_LIFECYCLE_STATE",
+                            "active Debug record requires active lifecycle coverage",
+                            record_ref,
+                        )
+                elif lifecycle_completion_scope == "active":
+                    self.error(
+                        "DEBUG_MODE_LIFECYCLE_STATE",
+                        "closed Debug record cannot retain active lifecycle coverage",
+                        record_ref,
+                    )
+                if lifecycle_completion_scope == "full-task-complete":
+                    if set(covered_phases) != all_phases or continuation_expected or next_phase != "not-applicable":
+                        self.error(
+                            "DEBUG_MODE_LIFECYCLE_COMPLETE",
+                            "full-task completion requires all phases and no expected continuation",
+                            record_ref,
+                        )
+                if lifecycle_completion_scope == "phase-complete":
+                    if not omitted_phases:
+                        self.error(
+                            "DEBUG_MODE_LIFECYCLE_PHASE",
+                            "phase-complete evidence must identify omitted lifecycle phases",
+                            record_ref,
+                        )
+                    if continuation_expected and next_phase not in omitted_phases:
+                        self.error(
+                            "DEBUG_MODE_LIFECYCLE_CONTINUATION",
+                            "expected continuation must name one omitted next phase",
+                            record_ref,
+                        )
+                    if not continuation_expected and next_phase != "not-applicable":
+                        self.error(
+                            "DEBUG_MODE_LIFECYCLE_CONTINUATION",
+                            "non-continuing phase completion must use next_phase not-applicable",
+                            record_ref,
+                        )
+                contribution_kinds = {
+                    event.get("contribution_kind")
+                    for event in events
+                    if isinstance(event, dict)
+                }
+                validation_results = final_result.get("validation")
+                validation_results = (
+                    validation_results.get("results", [])
+                    if isinstance(validation_results, dict)
+                    else []
+                )
+                if (
+                    implementation_surfaces
+                    or "implementation" in contribution_kinds
+                ) and "implementation" not in covered_phases:
+                    self.error(
+                        "DEBUG_MODE_LIFECYCLE_IMPLEMENTATION",
+                        "implementation evidence requires implementation phase coverage",
+                        record_ref,
+                    )
+                if (
+                    validation_results or "validation" in contribution_kinds
+                ) and "validation" not in covered_phases:
+                    self.error(
+                        "DEBUG_MODE_LIFECYCLE_VALIDATION",
+                        "validation evidence requires validation phase coverage",
+                        record_ref,
+                    )
+                if status == "completed" and "finalization" not in covered_phases:
+                    self.error(
+                        "DEBUG_MODE_LIFECYCLE_FINALIZATION",
+                        "completed Debug evidence must cover finalization",
+                        record_ref,
+                    )
+
+                candidate_ids_seen: set[str] = set()
+                candidate_event_coverage: set[str] = set()
+                for candidate_index, candidate in enumerate(
+                    project_candidate_records_v5
+                ):
+                    candidate_id = candidate.get("candidate_id")
+                    if not concrete(candidate_id):
+                        continue
+                    project_candidate_ids.append(candidate_id)
+                    if candidate_id in candidate_ids_seen:
+                        self.error(
+                            "DEBUG_MODE_KNOWLEDGE_CANDIDATE_DUPLICATE",
+                            f"duplicate project knowledge candidate {candidate_id}",
+                            record_ref,
+                        )
+                    candidate_ids_seen.add(candidate_id)
+                    event_ids = candidate.get("event_ids")
+                    event_ids = event_ids if isinstance(event_ids, list) else []
+                    unknown_ids = sorted(set(event_ids) - set(event_by_id))
+                    if unknown_ids:
+                        self.error(
+                            "DEBUG_MODE_KNOWLEDGE_CANDIDATE_EVENT",
+                            f"project_knowledge_candidates[{candidate_index}] references unknown events {unknown_ids}",
+                            record_ref,
+                        )
+                    candidate_event_coverage.update(
+                        event_id for event_id in event_ids if event_id in event_by_id
+                    )
+                    disposition = candidate.get("disposition")
+                    references = candidate.get("references")
+                    references = references if isinstance(references, list) else []
+                    if disposition == "preserved-as-engineering-evidence" and not (
+                        set(references) & set(linked_evidence or [])
+                    ):
+                        self.error(
+                            "DEBUG_MODE_KNOWLEDGE_CANDIDATE_EVIDENCE",
+                            f"candidate {candidate_id} does not reference linked engineering evidence",
+                            record_ref,
+                        )
+                    if (
+                        disposition == "promotion-proposed"
+                        and candidate_id not in promotion_candidate_ids
+                    ):
+                        self.error(
+                            "DEBUG_MODE_KNOWLEDGE_CANDIDATE_PROMOTION",
+                            f"candidate {candidate_id} has no indexed promotion proposal",
+                            record_ref,
+                        )
+                    if disposition == "existing-canonical-owner" and not any(
+                        is_target_relative_path(reference)
+                        and self.target_path(reference).is_file()
+                        for reference in references
+                    ):
+                        self.error(
+                            "DEBUG_MODE_KNOWLEDGE_CANDIDATE_OWNER",
+                            f"candidate {candidate_id} does not resolve an existing canonical owner",
+                            record_ref,
+                        )
+                if set(candidate_event_ids_v5) != candidate_event_coverage:
+                    self.error(
+                        "DEBUG_MODE_KNOWLEDGE_CANDIDATE_COVERAGE",
+                        "knowledge candidate metric events and dispositions differ",
+                        record_ref,
+                    )
             evidence_status = "legacy"
             claim_fidelity = "legacy"
             if record_schema_version >= 2:
@@ -10163,9 +10726,19 @@ class Validator:
                             return event.get("contribution_kind") == "validation"
                         if role == "correction":
                             return (
-                                event.get("actor") in {"human", "external-maintainer"}
+                                event_actor_role(event) in {"human", "external-maintainer"}
                                 and event.get("causal_class") == "intervention"
-                                and event.get("intervention_kind") == "correction"
+                                and (
+                                    event.get("correction_disposition")
+                                    in {
+                                        "new-guidance-candidate",
+                                        "known-guidance-routing-failure",
+                                        "known-guidance-compliance-failure",
+                                        "task-local",
+                                    }
+                                    if record_schema_version >= 4
+                                    else event.get("intervention_kind") == "correction"
+                                )
                             )
                         if role == "direction-change":
                             return event.get("decision_effect") == "changes-direction"
@@ -10416,7 +10989,7 @@ class Validator:
                 metric_name: metrics.get(metric_name, {}).get("value")
                 if isinstance(metrics.get(metric_name), dict)
                 else None
-                for metric_name in DEBUG_METRIC_NAMES
+                for metric_name in metric_names
             }
             comparisons = {
                 "debug_id": record.get("debug_id"),
@@ -10443,12 +11016,21 @@ class Validator:
                         "engineering_evidence_status": evidence_status,
                     }
                 )
-            if index_schema_version == 4:
+            if index_schema_version in {4, 5}:
                 comparisons.update(
                     {
                         "continuation_kind": continuation_kind,
                         "continued_from_debug_id": continued_from_debug_id,
                         "claim_validation_fidelity": claim_fidelity,
+                    }
+                )
+            if index_schema_version == 5:
+                comparisons.update(
+                    {
+                        "lifecycle_completion_scope": lifecycle_completion_scope,
+                        "covered_phases": covered_phases,
+                        "continuation_expected": continuation_expected,
+                        "knowledge_candidate_ids": project_candidate_ids,
                     }
                 )
             for field, record_value in comparisons.items():
@@ -10465,6 +11047,124 @@ class Validator:
                 f"checked Debug Mode record {debug_id}; structural validation cannot prove event completeness, attribution, engineering quality, or reduced supervision",
                 record_ref,
             )
+
+        implementation_debug_ids: set[str] = set()
+        for candidate_id, candidate_record in checked_debug_records.items():
+            candidate_final = candidate_record.get("final_result")
+            candidate_final = candidate_final if isinstance(candidate_final, dict) else {}
+            candidate_lifecycle = candidate_final.get("lifecycle_coverage")
+            candidate_lifecycle = (
+                candidate_lifecycle
+                if isinstance(candidate_lifecycle, dict)
+                else {}
+            )
+            candidate_phases = candidate_lifecycle.get("covered_phases")
+            if isinstance(candidate_phases, list) and "implementation" in candidate_phases:
+                implementation_debug_ids.add(candidate_id)
+        for debug_id, record in checked_debug_records.items():
+            task_value = record.get("task") if isinstance(record.get("task"), dict) else {}
+            debug_refs = set(
+                value
+                for value in task_value.get("references", [])
+                if isinstance(value, str)
+            )
+            final_value = (
+                record.get("final_result")
+                if isinstance(record.get("final_result"), dict)
+                else {}
+            )
+            linked_ids = final_value.get("engineering_evidence_ids")
+            linked_ids = linked_ids if isinstance(linked_ids, list) else []
+            for evidence_id in linked_ids:
+                entries = engineering_evidence_entries.get(str(evidence_id), [])
+                if len(entries) != 1:
+                    continue
+                evidence_entry = entries[0]
+                evidence_ref = evidence_entry.get("record")
+                if not isinstance(evidence_ref, str) or not is_target_relative_path(
+                    evidence_ref
+                ):
+                    continue
+                evidence_record = self.load_json_object(
+                    self.target_path(evidence_ref), "DEBUG_MODE_ENGINEERING_EVIDENCE"
+                )
+                if not isinstance(evidence_record, dict):
+                    continue
+                evidence_schema_version = evidence_record.get("schema_version")
+                related_records = evidence_record.get("related_records")
+                related_records = (
+                    related_records if isinstance(related_records, dict) else {}
+                )
+                evidence_debug_ids = related_records.get("debug_session_ids")
+                if isinstance(evidence_schema_version, int) and evidence_schema_version >= 3:
+                    if not isinstance(evidence_debug_ids, list) or debug_id not in evidence_debug_ids:
+                        self.error(
+                            "DEBUG_MODE_ENGINEERING_EVIDENCE_RECIPROCITY",
+                            f"engineering evidence {evidence_id} does not link back to Debug record {debug_id}",
+                            evidence_ref,
+                        )
+                    evidence_task = evidence_record.get("task")
+                    evidence_task = evidence_task if isinstance(evidence_task, dict) else {}
+                    evidence_refs = set(
+                        value
+                        for value in evidence_task.get("references", [])
+                        if isinstance(value, str)
+                    )
+                    if debug_refs and evidence_refs and not debug_refs & evidence_refs:
+                        self.error(
+                            "DEBUG_MODE_ENGINEERING_EVIDENCE_LINEAGE",
+                            f"engineering evidence {evidence_id} does not share task lineage with Debug record {debug_id}",
+                            evidence_ref,
+                        )
+
+            lifecycle = final_value.get("lifecycle_coverage")
+            lifecycle = lifecycle if isinstance(lifecycle, dict) else {}
+            if (
+                record.get("schema_version") == 5
+                and record.get("status") == "completed"
+                and lifecycle.get("completion_scope") == "phase-complete"
+                and lifecycle.get("continuation_expected") is True
+                and "implementation" not in lifecycle.get("covered_phases", [])
+            ):
+                def continues_from(candidate_id: str, ancestor_id: str) -> bool:
+                    visited: set[str] = set()
+                    current_id = candidate_id
+                    while current_id in indexed_entries_by_id and current_id not in visited:
+                        visited.add(current_id)
+                        current_entry = indexed_entries_by_id[current_id]
+                        if current_entry.get("continuation_kind") != "continued":
+                            return False
+                        previous_id = current_entry.get("continued_from_debug_id")
+                        if previous_id == ancestor_id:
+                            return True
+                        if not isinstance(previous_id, str):
+                            return False
+                        current_id = previous_id
+                    return False
+
+                has_implementation_continuation = any(
+                    candidate_id in implementation_debug_ids
+                    and continues_from(candidate_id, debug_id)
+                    for candidate_id in indexed_entries_by_id
+                )
+                if not has_implementation_continuation:
+                    for evidence_entries in engineering_evidence_entries.values():
+                        for evidence_entry in evidence_entries:
+                            evidence_refs = set(
+                                value
+                                for value in evidence_entry.get("task_references", [])
+                                if isinstance(value, str)
+                            )
+                            if debug_refs & evidence_refs:
+                                self.warn(
+                                    "DEBUG_MODE_IMPLEMENTATION_CONTINUATION_MISSING",
+                                    f"later engineering evidence shares task lineage with phase-complete Debug record {debug_id}, but no implementation continuation is indexed",
+                                    index_relpath,
+                                )
+                                has_implementation_continuation = True
+                                break
+                        if has_implementation_continuation:
+                            break
 
     def change_package_finding(
         self, code: str, message: str, path: str | None = None

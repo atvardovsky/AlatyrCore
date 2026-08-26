@@ -249,6 +249,22 @@ Do not calculate a completeness percentage or infer that an area has no rule
 because no routing entry exists. The coverage view is discovery evidence, not
 project authority.
 
+## Adoption State
+
+The routing index records one machine-checkable adoption state:
+
+- `enabled-empty`: the module is installed but has no promotions, coverage, or
+  route entries; installation remains valid, but reuse is not demonstrated
+- `populated`: at least one reviewed route entry exists, but no later-task reuse
+  evidence is claimed
+- `reuse-observed`: reviewed route entries exist and the index names explicit
+  delivery or operation evidence from a later task
+
+An empty module must not block adapter acceptance or imply that the project has
+no knowledge. It must also not be presented as proof that Project Development
+Model guidance affected engineering work. Move to `reuse-observed` only from
+recorded delivery evidence, never from the mere presence of a route entry.
+
 ## Cost And Evidence
 
 Knowledge delivery is successful only when it preserves quality while reducing
@@ -283,6 +299,7 @@ are separate usability evidence.
 Report:
 
 - promotion candidates and human dispositions
+- adoption state and explicit reuse evidence, or the enabled-empty limitation
 - canonical owners updated or unresolved
 - initial and refined selectors and selected shard IDs
 - current items supplied, warnings, contradictions, and omissions

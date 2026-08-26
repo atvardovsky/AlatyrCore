@@ -2772,10 +2772,10 @@ Excluded files or surfaces:
         manifest_path = contract_target / ".ai/alatyr.yaml"
         manifest_text = manifest_path.read_text(encoding="utf-8")
         manifest_text = manifest_text.replace(
-            "engineering_evidence:\n  contract_version: 2",
+            "engineering_evidence:\n  contract_version: 3",
             "engineering_evidence:\n  contract_version: 1",
         ).replace(
-            "debug_mode:\n  contract_version: 4",
+            "debug_mode:\n  contract_version: 5",
             "debug_mode:\n  contract_version: 1",
         )
         manifest_path.write_text(manifest_text, encoding="utf-8")

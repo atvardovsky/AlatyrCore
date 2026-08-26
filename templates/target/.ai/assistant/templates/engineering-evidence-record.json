@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "record_kind": "alatyr-engineering-evidence",
   "evidence_classification": "historical-record",
   "evidence_id": "{ENGINEERING_EVIDENCE_ID}",
@@ -82,7 +82,8 @@
     "change_package_ids": ["{CHANGE_PACKAGE_ID_OR_NONE}"],
     "approval_records": ["{TARGET_RELATIVE_APPROVAL_RECORD_OR_NONE}"],
     "architecture_decisions": ["{TARGET_RELATIVE_DECISION_RECORD_OR_NONE}"],
-    "development_evidence_pattern_ids": ["{PATTERN_ID_OR_NONE}"]
+    "development_evidence_pattern_ids": ["{PATTERN_ID_OR_NONE}"],
+    "debug_session_ids": ["{DEBUG_SESSION_ID_OR_NONE}"]
   },
   "publication": {
     "storage_mode": "{REPOSITORY_INTERNAL_BRANCH_IGNORED_LOCAL_OR_APPROVED_EXTERNAL}",

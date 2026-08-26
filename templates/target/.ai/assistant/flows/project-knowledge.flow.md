@@ -59,6 +59,10 @@ project edits, commits, publication, or live external actions.
    entry cannot remain current.
 8. Run target adapter and project validation. Report the promotion disposition,
    canonical update, route result, and residual uncertainty.
+9. Synchronize the index adoption state. Use `enabled-empty` only with no
+   promotions, coverage, or route entries; use `populated` after reviewed route
+   entries exist; use `reuse-observed` only with explicit later-task delivery
+   or operation evidence.
 
 ## Narrowing, Exceptions, And Coverage
 
@@ -87,5 +91,5 @@ project edits, commits, publication, or live external actions.
 
 Report operation mode, current authorization, proposal and disposition,
 canonical owner update, initial and refined selectors, selected and omitted
-items, freshness and conflict results, packet limits, validation, and residual
-risk.
+items, freshness and conflict results, packet limits, adoption state and reuse
+evidence or enabled-empty limitation, validation, and residual risk.

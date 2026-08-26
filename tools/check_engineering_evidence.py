@@ -56,7 +56,7 @@ def git(repo: Path, *args: str) -> str:
 
 def fixture_record(base: str, result: str) -> dict[str, Any]:
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "record_kind": "alatyr-engineering-evidence",
         "evidence_classification": "historical-record",
         "evidence_id": "ENG-1",
@@ -127,6 +127,7 @@ def fixture_record(base: str, result: str) -> dict[str, Any]:
             "approval_records": [],
             "architecture_decisions": ["design.md"],
             "development_evidence_pattern_ids": [],
+            "debug_session_ids": [],
         },
         "publication": {
             "storage_mode": "repository",
@@ -146,7 +147,7 @@ def fixture_record(base: str, result: str) -> dict[str, Any]:
 
 def fixture_index(record: dict[str, Any]) -> dict[str, Any]:
     return {
-        "schema_version": 3,
+        "schema_version": 4,
         "index_kind": "target-engineering-evidence-index",
         "project": "fixture",
         "owner": "engineering",
@@ -165,6 +166,7 @@ def fixture_index(record: dict[str, Any]) -> dict[str, Any]:
                 "repository_binding_kind": record["repository_binding"]["kind"],
                 "record_schema_version": record["schema_version"],
                 "repository_binding_state": record["repository_binding"].get("binding_state", "legacy"),
+                "debug_session_ids": record.get("related_records", {}).get("debug_session_ids", []),
                 "result_revision": record["repository_binding"]["result_revision"],
                 "residual_uncertainty": record["residual_uncertainty"],
             }
@@ -234,6 +236,22 @@ def validate_fixture(failures: list[str]) -> None:
         if errors:
             failures.append("valid fixture failed: " + "; ".join(f"{item.code}: {item.message}" for item in errors))
 
+        downlevel_index = fixture_index(record)
+        downlevel_index["schema_version"] = 3
+        downlevel_index["records"][0].pop("debug_session_ids")
+        index_path.write_text(
+            json.dumps(downlevel_index, indent=2) + "\n", encoding="utf-8"
+        )
+        if not any(
+            finding.level == "error"
+            and finding.code == "ENGINEERING_EVIDENCE_INDEX_RECORD_VERSION"
+            for finding in run_validator(repo)
+        ):
+            failures.append(
+                "schema-version-3 engineering evidence accepted a downlevel index"
+            )
+        write(record)
+
         invalid_cases = [
             (
                 "raw-chat retention",
@@ -270,6 +288,11 @@ def validate_fixture(failures: list[str]) -> None:
                 lambda value: value["repository_binding"].update(result_revision="HEAD"),
                 {"ENGINEERING_EVIDENCE_REVISION_EXACT"},
             ),
+            (
+                "unknown Debug session link",
+                lambda value: value["related_records"].update(debug_session_ids=["DEBUG-MISSING"]),
+                {"ENGINEERING_EVIDENCE_DEBUG_REFERENCE"},
+            ),
         ]
         for label, mutate, expected_codes in invalid_cases:
             invalid = copy.deepcopy(record)
@@ -294,6 +317,7 @@ def validate_fixture(failures: list[str]) -> None:
 
         legacy = copy.deepcopy(record)
         legacy["schema_version"] = 1
+        legacy["related_records"].pop("debug_session_ids")
         legacy["repository_binding"].pop("binding_state")
         legacy["repository_binding"].pop("prior_bindings")
         write(legacy)
@@ -326,9 +350,9 @@ def validate_fixture(failures: list[str]) -> None:
 
 def main() -> int:
     failures: list[str] = []
-    require_text(FRAMEWORK, ["ALATYR-ENGINEERING-EVIDENCE-001", "## Capture Decision", "## Publication Boundary", "Do not store raw chat", "materiality", "source-of-truth registry"], failures)
-    require_text(FLOW, ["## Steps", "captured", "skipped", "blocked", "Reject raw chats", "applicable, not applicable, or unknown", "canonical source"], failures)
-    require_text(GATE, ["reusable engineering knowledge", "durable_engineering_evidence", "structured materiality", "registered for the named project fact"], failures)
+    require_text(FRAMEWORK, ["ALATYR-ENGINEERING-EVIDENCE-001", "## Capture Decision", "## Publication Boundary", "Do not store raw chat", "materiality", "source-of-truth registry", "Debug session IDs", "bidirectionally"], failures)
+    require_text(FLOW, ["## Steps", "captured", "skipped", "blocked", "Reject raw chats", "applicable, not applicable, or unknown", "canonical source", "link back to this evidence ID"], failures)
+    require_text(GATE, ["reusable engineering knowledge", "durable_engineering_evidence", "structured materiality", "registered for the named project fact", "reciprocal links"], failures)
     require_text(TARGET_AGENTS, ["durable_engineering_evidence", "captured/skipped/blocked"], failures)
     require_text(OPERATION_ROUTING, ["durable_engineering_evidence", "fact-specific reason"], failures)
     require_text(
@@ -349,12 +373,12 @@ def main() -> int:
     else:
         if index.get("records") != []:
             failures.append("source engineering-evidence index must start empty")
-        if index.get("schema_version") != 3 or "redaction_policy" not in index:
-            failures.append("source engineering-evidence index must use contract-projection schema 3")
+        if index.get("schema_version") != 4 or "redaction_policy" not in index:
+            failures.append("source engineering-evidence index must use Debug-lineage projection schema 4")
         if record.get("record_kind") != "alatyr-engineering-evidence":
             failures.append("record template kind is invalid")
-        if record.get("schema_version") != 2:
-            failures.append("record template must use repository-binding schema 2")
+        if record.get("schema_version") != 3:
+            failures.append("record template must use repository-binding and Debug-lineage schema 3")
         if overlay.get("overlay") != "engineering-evidence":
             failures.append("engineering-evidence overlay identity is invalid")
         scenario_states = {item.get("expected_capture_status") for item in scenarios.get("scenarios", []) if isinstance(item, dict)}

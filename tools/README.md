@@ -277,7 +277,7 @@ python3 tools/check_project_knowledge.py
 ## Debug Mode Check
 
 `check_debug_mode.py` validates the optional per-task/session activation,
-non-canonical evidence boundary, schema-4 executor/Alatyr-system/automation
+non-canonical evidence boundary, schema-5 executor/Alatyr-system/automation
 roles, target-local actor identity, runtime provenance, correction disposition,
 normalized event origins and causal chains, privacy declarations, timing
 quality, event-derived supervision metrics,

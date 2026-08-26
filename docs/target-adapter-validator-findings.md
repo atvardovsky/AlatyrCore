@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1052
+Catalog entries: 1080
 
 ## Codes
 
@@ -426,7 +426,13 @@ Catalog entries: 1052
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_CONTINUATION`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_CONTINUATION_CYCLE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_CONTINUATION_LINEAGE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_CONTINUATION_REFERENCE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_CONTINUATION_SCOPE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_CONTINUATION_STATE`
   Level: error. Source: `tools/validate_target_adapter.py`.
@@ -441,6 +447,10 @@ Catalog entries: 1052
 - `DEBUG_MODE_DIRECTION_REPLACEMENT_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_ENGINEERING_EVIDENCE_EVENT_ID`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_ENGINEERING_EVIDENCE_LINEAGE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_ENGINEERING_EVIDENCE_RECIPROCITY`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_ENGINEERING_EVIDENCE_REFERENCE`
   Level: error. Source: `tools/validate_target_adapter.py`.
@@ -484,6 +494,8 @@ Catalog entries: 1052
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_EXTERNAL_RECORD_UNCHECKED`
   Level: warning. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_IMPLEMENTATION_CONTINUATION_MISSING`
+  Level: warning. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_INDEPENDENCE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_INDEX_DRIFT`
@@ -512,12 +524,42 @@ Catalog entries: 1052
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_INDEX_RECORDS`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_INDEX_RECORD_VERSION`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_INDEX_SCHEMA`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_INTERVENTION_CLASSIFICATION`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_KNOWLEDGE_CANDIDATE_COVERAGE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_KNOWLEDGE_CANDIDATE_DUPLICATE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_KNOWLEDGE_CANDIDATE_EVENT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_KNOWLEDGE_CANDIDATE_EVIDENCE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_KNOWLEDGE_CANDIDATE_OWNER`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_KNOWLEDGE_CANDIDATE_PROMOTION`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_LEGACY_ATTRIBUTION`
   Level: warning. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_LIFECYCLE_COMPLETE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_LIFECYCLE_CONTINUATION`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_LIFECYCLE_FINALIZATION`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_LIFECYCLE_IMPLEMENTATION`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_LIFECYCLE_PARTITION`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_LIFECYCLE_PHASE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_LIFECYCLE_STATE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `DEBUG_MODE_LIFECYCLE_VALIDATION`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_MANIFEST_PATH`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEBUG_MODE_MATERIALITY_EVENT`
@@ -924,6 +966,12 @@ Catalog entries: 1052
   Level: info. Source: `tools/validate_target_adapter.py`.
 - `ENGINEERING_EVIDENCE_CONTRACT_VERSION`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_DEBUG_LINEAGE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_DEBUG_RECIPROCITY`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_DEBUG_REFERENCE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `ENGINEERING_EVIDENCE_EXTERNAL_RECORD_UNCHECKED`
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `ENGINEERING_EVIDENCE_HYPOTHESIS`
@@ -953,6 +1001,8 @@ Catalog entries: 1052
 - `ENGINEERING_EVIDENCE_INDEX_RECORD`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ENGINEERING_EVIDENCE_INDEX_RECORDS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_INDEX_RECORD_VERSION`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ENGINEERING_EVIDENCE_INDEX_SCHEMA`
   Level: error. Source: `tools/validate_target_adapter.py`.
@@ -987,6 +1037,8 @@ Catalog entries: 1052
 - `ENGINEERING_EVIDENCE_TASK_REFERENCE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ENGINEERING_EVIDENCE_TEMPLATE_BINDING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENGINEERING_EVIDENCE_TEMPLATE_DEBUG_LINK`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ENGINEERING_EVIDENCE_TEMPLATE_VERSION`
   Level: error. Source: `tools/validate_target_adapter.py`.
@@ -1454,6 +1506,8 @@ Catalog entries: 1052
   Level: error. Source: `tools/project_knowledge.py`.
 - `PROJECT_GUIDANCE_PRECEDENCE`
   Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_ADOPTION_STATE`
+  Level: error. Source: `tools/project_knowledge.py`.
 - `PROJECT_KNOWLEDGE_CONFLICT_RECIPROCITY`
   Level: error. Source: `tools/project_knowledge.py`.
 - `PROJECT_KNOWLEDGE_CONTRACT_VERSION`
@@ -1466,6 +1520,8 @@ Catalog entries: 1052
   Level: error. Source: `tools/project_knowledge.py`.
 - `PROJECT_KNOWLEDGE_CURRENT_OWNER_DRIFT`
   Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_ENABLED_EMPTY`
+  Level: info. Source: `tools/project_knowledge.py`.
 - `PROJECT_KNOWLEDGE_FRESHNESS_TRIGGER`
   Level: error. Source: `tools/project_knowledge.py`.
 - `PROJECT_KNOWLEDGE_ID_DUPLICATE`

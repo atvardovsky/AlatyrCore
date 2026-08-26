@@ -88,10 +88,18 @@ Record:
 - validation results, skipped checks, and residual uncertainty
 - links to an active change package, approval, architecture decision, or
   development-evidence pattern when applicable
+- Debug session IDs when the evidence was produced under Debug Mode
 
 The record contains decision outcomes and evidence references, not private
 chain-of-thought. Do not store raw chat, prompts, credentials, secrets,
 personal data, unrelated session history, complete diffs, or verbose test logs.
+
+New schema-version-3 records link related Debug sessions bidirectionally. Every
+listed Debug ID must resolve exactly once, share a task or issue reference, and
+link back to the engineering-evidence ID. An empty Debug ID list is valid when
+Debug Mode was not active. Schema versions 1 and 2 remain readable without
+invented Debug lineage. A schema-version-3 record requires the schema-version-4
+index so the reciprocal Debug projection cannot be silently omitted.
 
 ## Repository Binding
 
@@ -165,7 +173,8 @@ Before completion:
 1. classify capture as `captured`, `skipped`, or `blocked`
 2. for `captured`, validate the record and compact index, bind it to the task
    and repository result, finalize the binding, preserve any prior binding,
-   and confirm the publication boundary
+   confirm the publication boundary, and reconcile reciprocal Debug links when
+   Debug Mode was active
 3. for `skipped`, state a short task-specific reason
 4. for `blocked`, name the missing owner, policy, authorization, revision, or
    storage surface and the next safe action

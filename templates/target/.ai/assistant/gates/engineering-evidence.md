@@ -33,5 +33,9 @@ commit ancestry where applicable, and `prior_bindings` lineage when a binding
 is replaced. Later worktree drift does not invalidate a finalized historical
 snapshot; report that it is no longer currently reproducible.
 
+Schema-version-3 records list Debug session IDs when Debug Mode contributed to
+the evidence. Require one-to-one resolution, reciprocal links, and shared task
+lineage. Do not invent Debug links for historical schema versions.
+
 Final evidence must report `durable_engineering_evidence` as `captured`,
 `skipped`, or `blocked`, plus the record ID/path or a specific reason.
