@@ -163,6 +163,25 @@ py -3 .\tools\check_all.py --profile full --report C:\Temp\alatyr-source-checks.
 py -3 .\tools\check_all.py --list
 ```
 
+## Target Contract Compatibility
+
+`target-adapter-contract-compatibility.json` is the canonical
+source-tooling matrix for current, supported, and migration-limited Debug,
+engineering-evidence, and project-knowledge record/index versions. The target
+validator reads this matrix instead of repeating compatibility mappings across
+domain implementations.
+
+Validate the matrix against schemas, target templates, and the generated human
+reference with:
+
+```sh
+python3 tools/render_target_contract_compatibility.py --check
+```
+
+Regenerate `docs/target-adapter-contract-compatibility.md` after a reviewed
+matrix change by omitting `--check`. This matrix does not own portable rule
+semantics or target-project facts.
+
 ## Architecture Knowledge Check
 
 `check_architecture_knowledge.py` validates the portable architecture
@@ -1454,8 +1473,9 @@ py -3 .\tools\render_bridge_templates.py --write
 ## Target Validator Findings
 
 `render_target_validator_findings.py` derives the target validator's stable
-finding-code catalog and human reference directly from validator source. This
-keeps integrations from maintaining a second manual code list. Use `--check`
+finding-code catalog, family summary, and human reference directly from
+validator source. This keeps integrations from maintaining a second manual
+code list and makes growth visible without renaming stable codes. Use `--check`
 in validation and run without it only when validator diagnostics change.
 
 ```sh

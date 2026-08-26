@@ -217,6 +217,7 @@ python3 tools/render_operation_index.py
 python3 tools/render_rule_registry_docs.py --check
 python3 tools/render_target_bootstrap_index.py --target templates/target --check
 python3 tools/render_target_validator_findings.py --check
+python3 tools/render_target_contract_compatibility.py --check
 python3 tools/summarize_effectiveness_benchmark.py
 ```
 

@@ -66,6 +66,7 @@ CONTRACT_FILES = {
     "tools/render_rule_registry_docs.py",
 }
 HEX = set("0123456789abcdef")
+GIT_TRANSFORM_ATTRIBUTES = ("filter", "working-tree-encoding", "ident")
 
 
 def is_contract_path(relpath: str) -> bool:
@@ -87,6 +88,90 @@ def digest_entries(entries: Iterable[tuple[str, str, bytes]]) -> str:
     return digest.hexdigest()
 
 
+def _git_attributes(root: Path, relpaths: list[str]) -> dict[str, dict[str, str]]:
+    if not relpaths:
+        return {}
+    attributes = ("text", "eol", *GIT_TRANSFORM_ATTRIBUTES)
+    result = subprocess.run(
+        ["git", "check-attr", "-z", "--stdin", *attributes],
+        cwd=root,
+        input=b"".join(
+            relpath.encode("utf-8", errors="surrogateescape") + b"\0"
+            for relpath in relpaths
+        ),
+        check=False,
+        capture_output=True,
+    )
+    if result.returncode != 0:
+        message = result.stderr.decode("utf-8", errors="replace").strip()
+        raise ValueError(message or "cannot resolve evidence contract attributes")
+
+    fields = result.stdout.split(b"\0")
+    if fields and not fields[-1]:
+        fields.pop()
+    if len(fields) % 3:
+        raise ValueError("invalid git check-attr output for evidence contract")
+
+    resolved: dict[str, dict[str, str]] = {relpath: {} for relpath in relpaths}
+    for offset in range(0, len(fields), 3):
+        relpath, name, value = (
+            field.decode("utf-8", errors="surrogateescape")
+            for field in fields[offset : offset + 3]
+        )
+        resolved.setdefault(relpath, {})[name] = value
+    return resolved
+
+
+def _core_autocrlf_enabled(root: Path) -> bool:
+    result = subprocess.run(
+        ["git", "config", "--get", "core.autocrlf"],
+        cwd=root,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode == 1:
+        return False
+    if result.returncode != 0:
+        raise ValueError(result.stderr.strip() or "cannot resolve core.autocrlf")
+    value = result.stdout.strip().casefold()
+    if value in {"true", "input", "yes", "on", "1"}:
+        return True
+    if value in {"false", "no", "off", "0"}:
+        return False
+    raise ValueError(f"invalid core.autocrlf value: {value}")
+
+
+def _canonical_worktree_content(
+    relpath: str,
+    content: bytes,
+    attributes: dict[str, str],
+    *,
+    core_autocrlf: bool,
+) -> bytes:
+    for name in GIT_TRANSFORM_ATTRIBUTES:
+        value = attributes.get(name, "unspecified")
+        if value not in {"unspecified", "unset"}:
+            raise ValueError(
+                f"cannot canonicalize evidence contract path {relpath!r}: "
+                f"Git attribute {name}={value!r} requires a clean transform"
+            )
+
+    text = attributes.get("text", "unspecified")
+    eol = attributes.get("eol", "unspecified")
+    if text == "unset":
+        normalize = False
+    elif text == "set":
+        normalize = True
+    elif text == "auto":
+        normalize = b"\0" not in content[:8000]
+    elif eol in {"lf", "crlf"} or core_autocrlf:
+        normalize = b"\0" not in content[:8000]
+    else:
+        normalize = False
+    return content.replace(b"\r\n", b"\n") if normalize else content
+
+
 def current_contract_digest(root: Path = ROOT) -> str:
     result = subprocess.run(
         ["git", "ls-files", "-c", "-o", "--exclude-standard", "-z"],
@@ -98,17 +183,30 @@ def current_contract_digest(root: Path = ROOT) -> str:
         message = result.stderr.decode("utf-8", errors="replace").strip()
         raise ValueError(message or "cannot enumerate evidence contract paths")
 
+    relpaths = [
+        relpath
+        for relpath in result.stdout.decode(
+            "utf-8", errors="surrogateescape"
+        ).split("\0")
+        if relpath and is_contract_path(relpath)
+    ]
+    attributes = _git_attributes(root, relpaths)
+    core_autocrlf = _core_autocrlf_enabled(root)
     entries: list[tuple[str, str, bytes]] = []
-    for relpath in result.stdout.decode("utf-8", errors="surrogateescape").split("\0"):
-        if not relpath or not is_contract_path(relpath):
-            continue
+    for relpath in relpaths:
         path = root / relpath
         try:
             if path.is_symlink():
                 content = os.readlink(path).encode("utf-8", errors="surrogateescape")
                 entries.append((relpath, "symlink", content))
             elif path.is_file():
-                entries.append((relpath, "file", path.read_bytes()))
+                content = _canonical_worktree_content(
+                    relpath,
+                    path.read_bytes(),
+                    attributes.get(relpath, {}),
+                    core_autocrlf=core_autocrlf,
+                )
+                entries.append((relpath, "file", content))
         except FileNotFoundError:
             continue
     return digest_entries(entries)

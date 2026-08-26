@@ -204,8 +204,9 @@ required owner, sync, validation, conflict, approval, and evidence fields.
 `tools/check_versioning.py` validates source version files, changelog
 structure, and release-process documentation.
 
-`tools/check_release_drift.py` compares the working release with the latest
-reachable Git tag and runs real migration evidence against that baseline.
+`tools/check_release_drift.py` compares the working release with the nearest
+prior real tag or reviewed source release checkpoint and runs migration
+evidence against that commit-bound baseline.
 
 `tools/scaffold_target_structure.py` is an optional dry-run-first helper for
 copying profile-projected placeholder structure. `tools/scaffold_projection.py`
@@ -227,7 +228,11 @@ drift. It does not prove target project facts or replace assistant review.
 Reusable parsing, Git, hashing, and approval-scope helpers live in
 `tools/target_validation_support.py`. Cached and domain-specific validator
 components live under `tools/target_adapter_validation`; its generated finding
-catalog is documented in `docs/target-adapter-validator-findings.md`.
+catalog is documented in `docs/target-adapter-validator-findings.md`. Debug,
+engineering-evidence, and project-knowledge checks are separate domain modules;
+their current and migration-limited versions derive from
+`tools/target-adapter-contract-compatibility.json` and the generated
+`docs/target-adapter-contract-compatibility.md` reference.
 Source tool dependencies are declared in `requirements.txt`; source acceptance
 and CI dependencies are routed through `requirements-dev.txt`.
 

@@ -12,6 +12,54 @@ python3 tools/render_target_validator_findings.py
 
 Catalog entries: 1080
 
+## Families
+
+- `AI`: 16 codes.
+- `APPROVAL`: 31 codes.
+- `ARCHITECTURE`: 33 codes.
+- `ASSISTANT`: 15 codes.
+- `AUTHORIZATION`: 16 codes.
+- `BACKUP`: 1 codes.
+- `BOOTSTRAP`: 8 codes.
+- `CAPABILITY`: 7 codes.
+- `CODEDOC`: 32 codes.
+- `CONSISTENCY`: 32 codes.
+- `DEBUG`: 117 codes.
+- `DELEGATION`: 59 codes.
+- `DEPENDENCY`: 55 codes.
+- `DEVELOPMENT`: 15 codes.
+- `DIAGRAM`: 32 codes.
+- `DIFF`: 3 codes.
+- `ENABLED`: 1 codes.
+- `ENGINEERING`: 41 codes.
+- `EVIDENCE`: 1 codes.
+- `EXTENSION`: 65 codes.
+- `FRAMEWORK`: 16 codes.
+- `GATE`: 1 codes.
+- `INSTALLATION`: 3 codes.
+- `LOCAL`: 1 codes.
+- `MANIFEST`: 11 codes.
+- `MIGRATION`: 8 codes.
+- `MODULE`: 5 codes.
+- `OPERATION`: 29 codes.
+- `PACKAGE`: 78 codes.
+- `PLACEHOLDERS`: 1 codes.
+- `PROFILE`: 2 codes.
+- `PROJECT`: 52 codes.
+- `REQUIRED`: 1 codes.
+- `ROUTED`: 1 codes.
+- `ROUTER`: 52 codes.
+- `ROUTING`: 2 codes.
+- `RULE`: 1 codes.
+- `STALE`: 2 codes.
+- `TARGET`: 6 codes.
+- `TDD`: 44 codes.
+- `TEAM`: 98 codes.
+- `UNRESOLVED`: 1 codes.
+- `VOCABULARY`: 44 codes.
+- `WORKSPACE`: 40 codes.
+- `{prefix}`: 1 codes.
+
 ## Codes
 
 - `AI_ROUTER_ALLOWED_ACTION`
@@ -397,239 +445,239 @@ Catalog entries: 1080
 - `CONSISTENCY_REGISTRY_NODE_UNRESOLVED`
   Level: configured. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `DEBUG_MODE_ACTIVATION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_ACTIVE_COMPLETION_TIME`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_AGENT_CLASSIFICATION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_ARCHITECTURAL_IMPACT_MISSING`
-  Level: dynamic. Source: `tools/validate_target_adapter.py`.
+  Level: dynamic. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_ARCHITECTURAL_SUPERVISION_DRIFT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_ARCHITECTURAL_SUPERVISION_ORIGIN`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_CAPTURE_QUALITY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_CHECKED`
-  Level: info. Source: `tools/validate_target_adapter.py`.
+  Level: info. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_CLAIM_EVIDENCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_CLAIM_FIDELITY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_CLAIM_UNCERTAINTY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_COMPLETED_EMPTY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_COMPLETED_METRICS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_COMPLETION_TIME_REQUIRED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_CONTINUATION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_CONTINUATION_CYCLE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_CONTINUATION_LINEAGE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_CONTINUATION_REFERENCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_CONTINUATION_SCOPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_CONTINUATION_STATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_CONTRACT_VERSION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_DERIVATION_CAUSE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_DIRECTION_HYPOTHESIS_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_DIRECTION_IMPACT_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_DIRECTION_REPLACEMENT_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_ENGINEERING_EVIDENCE_EVENT_ID`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_ENGINEERING_EVIDENCE_LINEAGE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_ENGINEERING_EVIDENCE_RECIPROCITY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_ENGINEERING_EVIDENCE_REFERENCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_EVENT_CAUSAL_TIME`
-  Level: dynamic. Source: `tools/validate_target_adapter.py`.
+  Level: dynamic. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_EVENT_CAUSE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_EVENT_CAUSE_ORDER`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_EVENT_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_EVENT_EVIDENCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_EVENT_ID`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_EVENT_SEQUENCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_EVENT_TIME_ORDER`
-  Level: dynamic. Source: `tools/validate_target_adapter.py`.
+  Level: dynamic. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_EVENT_TIME_WINDOW`
-  Level: dynamic. Source: `tools/validate_target_adapter.py`.
+  Level: dynamic. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_EVIDENCE_BLOCKED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_EVIDENCE_CAPTURE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_EVIDENCE_DECISION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_EVIDENCE_EVENT_LINK`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_EVIDENCE_EVENT_ROLE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_EVIDENCE_PENDING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_EVIDENCE_SKIP`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_EVIDENCE_SKIP_UNKNOWN`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_EVIDENCE_TRIGGER`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_EXPIRY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_EXTERNAL_RECORD_UNCHECKED`
-  Level: warning. Source: `tools/validate_target_adapter.py`.
+  Level: warning. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_IMPLEMENTATION_CONTINUATION_MISSING`
-  Level: warning. Source: `tools/validate_target_adapter.py`.
+  Level: warning. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_INDEPENDENCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_INDEX_DRIFT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_INDEX_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_INDEX_ENTRY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_INDEX_FIELD`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_INDEX_ID`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_INDEX_KIND`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_INDEX_LEGACY`
-  Level: warning. Source: `tools/validate_target_adapter.py`.
+  Level: warning. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_INDEX_LIST`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_INDEX_METADATA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_INDEX_METADATA_UNRESOLVED`
-  Level: dynamic. Source: `tools/validate_target_adapter.py`.
+  Level: dynamic. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_INDEX_METRICS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_INDEX_RECORD`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_INDEX_RECORDS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_INDEX_RECORD_VERSION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_INDEX_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_INTERVENTION_CLASSIFICATION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_KNOWLEDGE_CANDIDATE_COVERAGE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_KNOWLEDGE_CANDIDATE_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_KNOWLEDGE_CANDIDATE_EVENT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_KNOWLEDGE_CANDIDATE_EVIDENCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_KNOWLEDGE_CANDIDATE_OWNER`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_KNOWLEDGE_CANDIDATE_PROMOTION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_LEGACY_ATTRIBUTION`
-  Level: warning. Source: `tools/validate_target_adapter.py`.
+  Level: warning. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_LIFECYCLE_COMPLETE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_LIFECYCLE_CONTINUATION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_LIFECYCLE_FINALIZATION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_LIFECYCLE_IMPLEMENTATION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_LIFECYCLE_PARTITION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_LIFECYCLE_PHASE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_LIFECYCLE_STATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_LIFECYCLE_VALIDATION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_MANIFEST_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_MATERIALITY_EVENT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_MATERIALITY_EVENT_LINK`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_MATERIALITY_EVIDENCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_MATERIALITY_SET`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_MATERIALITY_TRIGGER`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_METRIC_DRIFT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_METRIC_EVENT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_METRIC_UNAVAILABLE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_OBSERVER_EFFECT`
-  Level: warning. Source: `tools/validate_target_adapter.py`.
+  Level: warning. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_POST_REVIEW_CAUSE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_PRESERVATION_OWNER`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_PRESERVATION_REGISTRY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_PRESERVATION_SCOPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_PRESERVATION_SOURCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_PRIVACY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_PROHIBITED_CONTENT_FIELD`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_PUBLICATION_SCOPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_RECORD_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_RECORD_LOCATION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_RECORD_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_RECORD_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_REVIEW_CORRECTION_UNASSESSED`
-  Level: warning. Source: `tools/validate_target_adapter.py`.
+  Level: warning. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_SOURCE_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_STRUCTURED_CLASSIFICATION_MISSING`
-  Level: warning. Source: `tools/validate_target_adapter.py`.
+  Level: warning. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_TEMPLATE_BINDING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_TEMPLATE_CONTINUATION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_TEMPLATE_EVIDENCE_DECISION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_TEMPLATE_VERSION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_TIMING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_TIMING_DRIFT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_TIMING_ORDER`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_UPSTREAM_BOUNDARY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_UPSTREAM_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_V2_CONTRACT`
-  Level: warning. Source: `tools/validate_target_adapter.py`.
+  Level: warning. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DELEGATION_CAPABILITY_FIELDS`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DELEGATION_CAPABILITY_MISSING`
@@ -961,87 +1009,87 @@ Catalog entries: 1080
 - `ENABLED_MODULE_STALE_STATUS`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ENGINEERING_EVIDENCE_ALTERNATIVES`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_CHECKED`
-  Level: info. Source: `tools/validate_target_adapter.py`.
+  Level: info. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_CONTRACT_VERSION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_DEBUG_LINEAGE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_DEBUG_RECIPROCITY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_DEBUG_REFERENCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_EXTERNAL_RECORD_UNCHECKED`
-  Level: warning. Source: `tools/validate_target_adapter.py`.
+  Level: warning. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_HYPOTHESIS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_HYPOTHESIS_OUTCOME`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_INDEX_DRIFT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_INDEX_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_INDEX_ENTRY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_INDEX_FIELD`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_INDEX_ID`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_INDEX_KIND`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_INDEX_LEGACY`
-  Level: warning. Source: `tools/validate_target_adapter.py`.
+  Level: warning. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_INDEX_LIST`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_INDEX_METADATA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_INDEX_METADATA_UNRESOLVED`
-  Level: dynamic. Source: `tools/validate_target_adapter.py`.
+  Level: dynamic. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_INDEX_RECORD`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_INDEX_RECORDS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_INDEX_RECORD_VERSION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_INDEX_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_INVARIANT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_INVARIANT_STATUS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_MANIFEST_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_MANIFEST_POLICY_DRIFT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_PRIVACY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_PROHIBITED_CONTENT_FIELD`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_PUBLICATION_SCOPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_RECORD_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_RECORD_LIST`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_RECORD_LOCATION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_RECORD_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_RECORD_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_REGRESSION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_SOURCE_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_TASK_REFERENCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_TEMPLATE_BINDING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_TEMPLATE_DEBUG_LINK`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_TEMPLATE_VERSION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `EVIDENCE_SCOPE_CURRENT_STATE`
   Level: info. Source: `tools/validate_target_adapter.py`.
 - `EXTENSION_APPROVAL_MISSING`
@@ -1511,7 +1559,7 @@ Catalog entries: 1080
 - `PROJECT_KNOWLEDGE_CONFLICT_RECIPROCITY`
   Level: error. Source: `tools/project_knowledge.py`.
 - `PROJECT_KNOWLEDGE_CONTRACT_VERSION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_knowledge.py`.
 - `PROJECT_KNOWLEDGE_CONTRADICTION_LINK`
   Level: error. Source: `tools/project_knowledge.py`.
 - `PROJECT_KNOWLEDGE_CONTRADICTION_STATE`
@@ -1533,9 +1581,9 @@ Catalog entries: 1080
 - `PROJECT_KNOWLEDGE_LOAD`
   Level: error. Source: `tools/project_knowledge.py`.
 - `PROJECT_KNOWLEDGE_MANIFEST_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_knowledge.py`.
 - `PROJECT_KNOWLEDGE_MANIFEST_POLICY_DRIFT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_knowledge.py`.
 - `PROJECT_KNOWLEDGE_POLICY_DRIFT`
   Level: error. Source: `tools/project_knowledge.py`.
 - `PROJECT_KNOWLEDGE_POLICY_MISSING`

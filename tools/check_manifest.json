@@ -1341,6 +1341,61 @@
       ]
     },
     {
+      "id": "target-contract-compatibility",
+      "command": [
+        "tools/render_target_contract_compatibility.py",
+        "--check"
+      ],
+      "profiles": [
+        "fast",
+        "full",
+        "platform"
+      ],
+      "contract_inputs": [
+        "docs/target-adapter-contract-compatibility.md",
+        "schemas/alatyr-adapter.schema.json",
+        "schemas/alatyr-debug-session.schema.json",
+        "schemas/alatyr-engineering-evidence.schema.json",
+        "schemas/alatyr-project-knowledge-index.schema.json",
+        "schemas/alatyr-project-knowledge-promotion.schema.json",
+        "schemas/alatyr-project-knowledge-shard.schema.json",
+        "templates/target/.ai/alatyr.yaml",
+        "templates/target/.ai/assistant/templates/debug-session-record.json",
+        "templates/target/.ai/assistant/templates/engineering-evidence-record.json",
+        "templates/target/.ai/assistant/templates/project-knowledge-promotion.json",
+        "templates/target/.ai/assistant/templates/project-knowledge-route-shard.json",
+        "templates/target/.ai/project/debug/index.json",
+        "templates/target/.ai/project/engineering-evidence/index.json",
+        "templates/target/.ai/project/knowledge/index.json",
+        "tools/target-adapter-contract-compatibility.json"
+      ],
+      "implementation_paths": [
+        "tools/render_target_contract_compatibility.py",
+        "tools/target_adapter_validation/**"
+      ],
+      "trigger_paths": [
+        "docs/target-adapter-contract-compatibility.md",
+        "schemas/alatyr-adapter.schema.json",
+        "schemas/alatyr-debug-session.schema.json",
+        "schemas/alatyr-engineering-evidence.schema.json",
+        "schemas/alatyr-project-knowledge-index.schema.json",
+        "schemas/alatyr-project-knowledge-promotion.schema.json",
+        "schemas/alatyr-project-knowledge-shard.schema.json",
+        "templates/target/.ai/alatyr.yaml",
+        "templates/target/.ai/assistant/templates/debug-session-record.json",
+        "templates/target/.ai/assistant/templates/engineering-evidence-record.json",
+        "templates/target/.ai/assistant/templates/project-knowledge-promotion.json",
+        "templates/target/.ai/assistant/templates/project-knowledge-route-shard.json",
+        "templates/target/.ai/project/debug/index.json",
+        "templates/target/.ai/project/engineering-evidence/index.json",
+        "templates/target/.ai/project/knowledge/index.json",
+        "tools/render_target_contract_compatibility.py",
+        "tools/target-adapter-contract-compatibility.json",
+        "tools/target_adapter_validation/**"
+      ],
+      "resource_class": "light"
+    },
+    {
       "id": "target-validator-findings",
       "command": [
         "tools/render_target_validator_findings.py",
@@ -1349,6 +1404,9 @@
       "profiles": [
         "fast",
         "full"
+      ],
+      "depends_on": [
+        "target-contract-compatibility"
       ],
       "contract_inputs": [
         "docs/target-adapter-validator-findings.md"

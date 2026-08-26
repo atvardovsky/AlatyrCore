@@ -567,6 +567,7 @@ Technical entry points:
 - [User-owned workspace modes](framework/workspace-modes.md)
 - [Durable engineering evidence](framework/engineering-evidence.md)
 - [Project knowledge promotion and delivery](framework/project-knowledge.md)
+- [Target adapter contract compatibility](docs/target-adapter-contract-compatibility.md)
 
 Human guides explain the product; they do not own framework policy. Canonical
 rules remain in the referenced framework documents and

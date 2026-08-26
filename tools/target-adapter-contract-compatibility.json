@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "catalog_kind": "target-adapter-contract-compatibility",
+  "contracts": {
+    "debug-mode": {
+      "manifest_key": "debug_mode.contract_version",
+      "manifest_contract_version": 5,
+      "artifacts": {
+        "index": {
+          "current": 5,
+          "supported": [2, 3, 4, 5],
+          "migration_limited": [2, 3, 4],
+          "template": "templates/target/.ai/project/debug/index.json"
+        },
+        "record": {
+          "current": 5,
+          "supported": [1, 2, 3, 4, 5],
+          "migration_limited": [1, 2, 3, 4],
+          "schema": "schemas/alatyr-debug-session.schema.json",
+          "template": "templates/target/.ai/assistant/templates/debug-session-record.json",
+          "minimum_index_by_record": {
+            "1": 2,
+            "2": 2,
+            "3": 3,
+            "4": 4,
+            "5": 5
+          }
+        }
+      }
+    },
+    "engineering-evidence": {
+      "manifest_key": "engineering_evidence.contract_version",
+      "manifest_contract_version": 3,
+      "artifacts": {
+        "index": {
+          "current": 4,
+          "supported": [2, 3, 4],
+          "migration_limited": [2],
+          "template": "templates/target/.ai/project/engineering-evidence/index.json"
+        },
+        "record": {
+          "current": 3,
+          "supported": [1, 2, 3],
+          "migration_limited": [1, 2],
+          "schema": "schemas/alatyr-engineering-evidence.schema.json",
+          "template": "templates/target/.ai/assistant/templates/engineering-evidence-record.json",
+          "minimum_index_by_record": {
+            "1": 2,
+            "2": 3,
+            "3": 4
+          }
+        }
+      }
+    },
+    "project-knowledge": {
+      "manifest_key": "project_knowledge.contract_version",
+      "manifest_contract_version": 3,
+      "artifacts": {
+        "index": {
+          "current": 3,
+          "supported": [1, 2, 3],
+          "migration_limited": [1, 2],
+          "schema": "schemas/alatyr-project-knowledge-index.schema.json",
+          "template": "templates/target/.ai/project/knowledge/index.json"
+        },
+        "promotion": {
+          "current": 2,
+          "supported": [1, 2],
+          "migration_limited": [1],
+          "schema": "schemas/alatyr-project-knowledge-promotion.schema.json",
+          "template": "templates/target/.ai/assistant/templates/project-knowledge-promotion.json"
+        },
+        "route-shard": {
+          "current": 2,
+          "supported": [1, 2],
+          "migration_limited": [1],
+          "schema": "schemas/alatyr-project-knowledge-shard.schema.json",
+          "template": "templates/target/.ai/assistant/templates/project-knowledge-route-shard.json"
+        }
+      }
+    }
+  }
+}

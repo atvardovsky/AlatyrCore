@@ -2,7 +2,15 @@
 
 ## Unreleased
 
-- No unreleased changes.
+- Fixed cross-platform evidence contract digests so Git-normalized text has
+  one identity across LF and CRLF checkouts while binary and symlink content
+  remains byte-exact.
+- Extracted Debug, engineering-evidence, and project-knowledge validation from
+  the target-validator orchestrator and added a canonical compatibility matrix
+  with generated human documentation and finding-family summaries.
+- Added reviewed source release checkpoints as a non-publication fallback for
+  missing historical tags and converted the `alpha.31` migration report to an
+  incremental `alpha.30` baseline.
 
 ## 0.1.0-alpha.31 - 2026-08-26
 

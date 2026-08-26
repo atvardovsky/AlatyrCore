@@ -4,10 +4,12 @@
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import subprocess
 import sys
 import tempfile
+from dataclasses import dataclass
 from pathlib import Path
 
 try:
@@ -42,6 +44,16 @@ SCHEMA_CONTRACT_PATHS = SHIPPED_SCHEMA_PATHS | {
     "templates/target/.ai/project/consistency-map.json",
 }
 CONTRACT_VERSION_FILES = ("VERSION", "ADAPTER_SCHEMA_VERSION", "TEMPLATE_VERSION")
+RELEASE_BASELINE_DIR = ROOT / "docs" / "releases" / "baselines"
+
+
+@dataclass(frozen=True)
+class ReleaseBaseline:
+    ref: str
+    label: str
+    version: str
+    kind: str
+    expected_digest: str | None = None
 
 
 def git(
@@ -218,22 +230,129 @@ def nearest_tagged_baseline(current_version: str) -> tuple[str, list[str]]:
     )
 
 
-def resolve_baseline(mode: str, from_ref: str | None) -> str:
+def release_checkpoint(version: str) -> ReleaseBaseline | None:
+    path = RELEASE_BASELINE_DIR / f"{version}.json"
+    if not path.is_file():
+        return None
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise RuntimeError(f"invalid release checkpoint {path.relative_to(ROOT)}: {exc}") from exc
+    if not isinstance(data, dict):
+        raise RuntimeError(f"release checkpoint {path.relative_to(ROOT)} must be an object")
+    required = {
+        "schema_version": 1,
+        "baseline_kind": "source-release-checkpoint",
+        "framework_version": version,
+        "publication_status": "untagged-release-checkpoint",
+        "migration_report": f"docs/releases/{version}-migration.md",
+    }
+    for field, expected in required.items():
+        if data.get(field) != expected:
+            raise RuntimeError(
+                f"release checkpoint {path.relative_to(ROOT)} requires "
+                f"{field}={expected!r}"
+            )
+    commit = data.get("source_commit")
+    digest = data.get("contract_sha256")
+    adapter = data.get("adapter_schema_version")
+    template = data.get("template_version")
+    if not isinstance(commit, str) or not re.fullmatch(r"[0-9a-f]{40,64}", commit):
+        raise RuntimeError(f"release checkpoint {path.relative_to(ROOT)} has invalid source_commit")
+    if not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest):
+        raise RuntimeError(f"release checkpoint {path.relative_to(ROOT)} has invalid contract_sha256")
+    if not isinstance(adapter, str) or not adapter.isdigit():
+        raise RuntimeError(f"release checkpoint {path.relative_to(ROOT)} has invalid adapter schema version")
+    if not isinstance(template, str) or not template.isdigit():
+        raise RuntimeError(f"release checkpoint {path.relative_to(ROOT)} has invalid template version")
+    require_git_text("rev-parse", "--verify", f"{commit}^{{commit}}")
+    ancestry = git("merge-base", "--is-ancestor", commit, "HEAD")
+    if ancestry.returncode != 0:
+        raise RuntimeError(
+            f"release checkpoint {path.relative_to(ROOT)} source_commit is not an ancestor of HEAD"
+        )
+    committed_values = {
+        "framework_version": read_at(commit, "VERSION"),
+        "adapter_schema_version": read_at(commit, "ADAPTER_SCHEMA_VERSION"),
+        "template_version": read_at(commit, "TEMPLATE_VERSION"),
+    }
+    for field, actual in committed_values.items():
+        if data.get(field) != actual:
+            raise RuntimeError(
+                f"release checkpoint {path.relative_to(ROOT)} {field} differs from source_commit"
+            )
+    report_path = ROOT / data["migration_report"]
+    if not report_path.is_file():
+        raise RuntimeError(
+            f"release checkpoint {path.relative_to(ROOT)} migration report is missing"
+        )
+    report = report_path.read_text(encoding="utf-8")
+    report_bindings = [
+        f"To framework version: `{version}`",
+        f"To adapter schema version: `{adapter}`",
+        f"To template version: `{template}`",
+        f"To contract SHA-256: `{digest}`",
+    ]
+    missing = [item for item in report_bindings if item not in report]
+    if missing:
+        raise RuntimeError(
+            f"release checkpoint {path.relative_to(ROOT)} migration report lacks "
+            + ", ".join(missing)
+        )
+    return ReleaseBaseline(
+        ref=commit,
+        label=f"release-checkpoint:{version}",
+        version=version,
+        kind="checkpoint",
+        expected_digest=digest,
+    )
+
+
+def nearest_release_baseline(current_version: str) -> tuple[ReleaseBaseline, list[str]]:
+    prior_versions = prior_changelog_versions(current_version)
+    for index, version in enumerate(prior_versions):
+        tag = f"v{version}"
+        result = git("rev-parse", "--verify", f"refs/tags/{tag}^{{commit}}")
+        if result.returncode == 0:
+            baseline = ReleaseBaseline(tag, tag, version, "tag")
+        else:
+            baseline = release_checkpoint(version)
+            if baseline is None:
+                continue
+        intervening = prior_versions[:index]
+        missing_reports = [
+            item
+            for item in intervening
+            if not (ROOT / "docs" / "releases" / f"{item}-migration.md").is_file()
+        ]
+        if missing_reports:
+            raise RuntimeError(
+                "release history has versions without migration evidence: "
+                + ", ".join(missing_reports)
+            )
+        return baseline, intervening
+    raise RuntimeError(
+        "release mode requires a reachable prior release tag or reviewed source "
+        "release checkpoint; fetch history or repair the release baseline"
+    )
+
+
+def resolve_baseline(mode: str, from_ref: str | None) -> ReleaseBaseline:
     if mode == "change":
         if not from_ref:
             raise RuntimeError("change mode requires --from-ref")
         require_git_text("rev-parse", "--verify", f"{from_ref}^{{commit}}")
-        return from_ref
+        return ReleaseBaseline(from_ref, from_ref, "change-base", "explicit")
 
     current_version = read_current("VERSION")
-    expected_tag, _intervening = nearest_tagged_baseline(current_version)
-    if from_ref and from_ref != expected_tag:
+    baseline, _intervening = nearest_release_baseline(current_version)
+    if from_ref and from_ref not in {baseline.ref, baseline.label}:
         raise RuntimeError(
-            f"release mode baseline must be the nearest reachable prior release "
-            f"tag {expected_tag}, "
+            f"release mode baseline must be the nearest reviewed prior release "
+            f"baseline {baseline.label}, "
             f"not {from_ref}"
         )
-    return expected_tag
+    return baseline
 
 
 def main() -> int:
@@ -244,11 +363,11 @@ def main() -> int:
         "--mode",
         choices=["change", "release"],
         required=True,
-        help="Use an explicit Git base ref for changes or the prior version tag for release.",
+        help="Use an explicit Git base ref for changes or a reviewed prior release baseline.",
     )
     parser.add_argument(
         "--from-ref",
-        help="Required in change mode; optional prior release tag assertion in release mode.",
+        help="Required in change mode; optional tag, checkpoint label, or commit assertion in release mode.",
     )
     parser.add_argument("--report-output", type=Path)
     args = parser.parse_args()
@@ -260,7 +379,7 @@ def main() -> int:
     templates_changed = False
     try:
         baseline = resolve_baseline(args.mode, args.from_ref)
-        paths = changed_paths(baseline)
+        paths = changed_paths(baseline.ref)
         framework_changed = any(
             path.startswith("framework/") or path.startswith("schemas/")
             for path in paths
@@ -268,36 +387,41 @@ def main() -> int:
         templates_changed = any(path.startswith("templates/target/") for path in paths)
         schema_changed = bool(paths & SCHEMA_CONTRACT_PATHS)
 
-        from_version = read_at(baseline, "VERSION")
-        from_adapter = read_at(baseline, "ADAPTER_SCHEMA_VERSION")
-        from_template = read_at(baseline, "TEMPLATE_VERSION")
+        from_version = read_at(baseline.ref, "VERSION")
+        from_adapter = read_at(baseline.ref, "ADAPTER_SCHEMA_VERSION")
+        from_template = read_at(baseline.ref, "TEMPLATE_VERSION")
         to_version = read_current("VERSION")
         to_adapter = read_current("ADAPTER_SCHEMA_VERSION")
         to_template = read_current("TEMPLATE_VERSION")
 
         if framework_changed and to_version == from_version:
             failures.append(
-                f"framework changed since {baseline} but VERSION remains {to_version}"
+                f"framework changed since {baseline.label} but VERSION remains {to_version}"
             )
         if schema_changed and int(to_adapter) <= int(from_adapter):
             failures.append(
-                f"adapter schema contracts changed since {baseline} but "
+                f"adapter schema contracts changed since {baseline.label} but "
                 f"ADAPTER_SCHEMA_VERSION did not increase above {from_adapter}"
             )
         if templates_changed and int(to_template) <= int(from_template):
             failures.append(
-                f"target templates changed since {baseline} but TEMPLATE_VERSION "
+                f"target templates changed since {baseline.label} but TEMPLATE_VERSION "
                 f"did not increase above {from_template}"
             )
 
         with tempfile.TemporaryDirectory(prefix="alatyr-release-baseline-") as directory:
             previous = Path(directory)
-            materialize(baseline, "framework", previous)
-            materialize(baseline, "schemas", previous)
-            materialize(baseline, "templates/target", previous)
+            materialize(baseline.ref, "framework", previous)
+            materialize(baseline.ref, "schemas", previous)
+            materialize(baseline.ref, "templates/target", previous)
             for filename in CONTRACT_VERSION_FILES:
                 output = previous / filename
-                output.write_text(read_at(baseline, filename) + "\n", encoding="utf-8")
+                output.write_text(read_at(baseline.ref, filename) + "\n", encoding="utf-8")
+            from_digest = contract_digest(previous)
+            if baseline.expected_digest and from_digest != baseline.expected_digest:
+                failures.append(
+                    f"{baseline.label} contract digest differs from its reviewed checkpoint"
+                )
             command = [
                 sys.executable,
                 str(REPORTER),
@@ -318,7 +442,7 @@ def main() -> int:
                 "--to-template-version",
                 to_template,
                 "--from-source-label",
-                baseline,
+                baseline.label,
                 "--to-source-label",
                 "source-tree",
                 "--from-framework-dir",
@@ -349,14 +473,14 @@ def main() -> int:
                 if args.mode == "release":
                     failures.extend(
                         validate_committed_report(
-                            baseline=baseline,
+                            baseline=baseline.label,
                             from_version=from_version,
                             to_version=to_version,
                             from_adapter=from_adapter,
                             to_adapter=to_adapter,
                             from_template=from_template,
                             to_template=to_template,
-                            from_digest=contract_digest(previous),
+                            from_digest=from_digest,
                             to_digest=contract_digest(ROOT),
                         )
                     )
@@ -372,7 +496,7 @@ def main() -> int:
             print(f"FAIL: {failure}", file=sys.stderr)
         return 1
     print(
-        f"OK: {args.mode} drift against {baseline}; framework_changed={framework_changed} "
+        f"OK: {args.mode} drift against {baseline.label}; framework_changed={framework_changed} "
         f"schema_changed={schema_changed} templates_changed={templates_changed}"
     )
     return 0

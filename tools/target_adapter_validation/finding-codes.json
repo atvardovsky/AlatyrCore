@@ -9,10 +9,197 @@
     "tools/target_adapter_validation/capability.py",
     "tools/target_adapter_validation/consistency_map.py",
     "tools/target_adapter_validation/context.py",
+    "tools/target_adapter_validation/contract_compatibility.py",
+    "tools/target_adapter_validation/debug_mode.py",
+    "tools/target_adapter_validation/domain.py",
+    "tools/target_adapter_validation/engineering_evidence.py",
     "tools/target_adapter_validation/framework_baseline.py",
     "tools/target_adapter_validation/installation_state.py",
     "tools/target_adapter_validation/modules.py",
+    "tools/target_adapter_validation/project_knowledge.py",
     "tools/target_adapter_validation/router_costs.py"
+  ],
+  "families": [
+    {
+      "id": "AI",
+      "code_count": 16
+    },
+    {
+      "id": "APPROVAL",
+      "code_count": 31
+    },
+    {
+      "id": "ARCHITECTURE",
+      "code_count": 33
+    },
+    {
+      "id": "ASSISTANT",
+      "code_count": 15
+    },
+    {
+      "id": "AUTHORIZATION",
+      "code_count": 16
+    },
+    {
+      "id": "BACKUP",
+      "code_count": 1
+    },
+    {
+      "id": "BOOTSTRAP",
+      "code_count": 8
+    },
+    {
+      "id": "CAPABILITY",
+      "code_count": 7
+    },
+    {
+      "id": "CODEDOC",
+      "code_count": 32
+    },
+    {
+      "id": "CONSISTENCY",
+      "code_count": 32
+    },
+    {
+      "id": "DEBUG",
+      "code_count": 117
+    },
+    {
+      "id": "DELEGATION",
+      "code_count": 59
+    },
+    {
+      "id": "DEPENDENCY",
+      "code_count": 55
+    },
+    {
+      "id": "DEVELOPMENT",
+      "code_count": 15
+    },
+    {
+      "id": "DIAGRAM",
+      "code_count": 32
+    },
+    {
+      "id": "DIFF",
+      "code_count": 3
+    },
+    {
+      "id": "ENABLED",
+      "code_count": 1
+    },
+    {
+      "id": "ENGINEERING",
+      "code_count": 41
+    },
+    {
+      "id": "EVIDENCE",
+      "code_count": 1
+    },
+    {
+      "id": "EXTENSION",
+      "code_count": 65
+    },
+    {
+      "id": "FRAMEWORK",
+      "code_count": 16
+    },
+    {
+      "id": "GATE",
+      "code_count": 1
+    },
+    {
+      "id": "INSTALLATION",
+      "code_count": 3
+    },
+    {
+      "id": "LOCAL",
+      "code_count": 1
+    },
+    {
+      "id": "MANIFEST",
+      "code_count": 11
+    },
+    {
+      "id": "MIGRATION",
+      "code_count": 8
+    },
+    {
+      "id": "MODULE",
+      "code_count": 5
+    },
+    {
+      "id": "OPERATION",
+      "code_count": 29
+    },
+    {
+      "id": "PACKAGE",
+      "code_count": 78
+    },
+    {
+      "id": "PLACEHOLDERS",
+      "code_count": 1
+    },
+    {
+      "id": "PROFILE",
+      "code_count": 2
+    },
+    {
+      "id": "PROJECT",
+      "code_count": 52
+    },
+    {
+      "id": "REQUIRED",
+      "code_count": 1
+    },
+    {
+      "id": "ROUTED",
+      "code_count": 1
+    },
+    {
+      "id": "ROUTER",
+      "code_count": 52
+    },
+    {
+      "id": "ROUTING",
+      "code_count": 2
+    },
+    {
+      "id": "RULE",
+      "code_count": 1
+    },
+    {
+      "id": "STALE",
+      "code_count": 2
+    },
+    {
+      "id": "TARGET",
+      "code_count": 6
+    },
+    {
+      "id": "TDD",
+      "code_count": 44
+    },
+    {
+      "id": "TEAM",
+      "code_count": 98
+    },
+    {
+      "id": "UNRESOLVED",
+      "code_count": 1
+    },
+    {
+      "id": "VOCABULARY",
+      "code_count": 44
+    },
+    {
+      "id": "WORKSPACE",
+      "code_count": 40
+    },
+    {
+      "id": "{prefix}",
+      "code_count": 1
+    }
   ],
   "finding_codes": [
     {
@@ -1742,7 +1929,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -1751,7 +1938,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -1760,7 +1947,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -1769,7 +1956,7 @@
         "dynamic"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -1778,7 +1965,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -1787,7 +1974,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -1796,7 +1983,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -1805,7 +1992,7 @@
         "info"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -1814,7 +2001,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -1823,7 +2010,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -1832,7 +2019,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -1841,7 +2028,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -1850,7 +2037,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -1859,7 +2046,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -1868,7 +2055,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -1877,7 +2064,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -1886,7 +2073,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -1895,7 +2082,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -1904,7 +2091,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -1913,7 +2100,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -1922,7 +2109,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -1931,7 +2118,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -1940,7 +2127,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -1949,7 +2136,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -1958,7 +2145,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -1967,7 +2154,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -1976,7 +2163,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -1985,7 +2172,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -1994,7 +2181,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2003,7 +2190,7 @@
         "dynamic"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2012,7 +2199,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2021,7 +2208,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2030,7 +2217,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2039,7 +2226,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2048,7 +2235,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2057,7 +2244,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2066,7 +2253,7 @@
         "dynamic"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2075,7 +2262,7 @@
         "dynamic"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2084,7 +2271,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2093,7 +2280,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2102,7 +2289,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2111,7 +2298,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2120,7 +2307,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2129,7 +2316,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2138,7 +2325,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2147,7 +2334,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2156,7 +2343,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2165,7 +2352,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2174,7 +2361,7 @@
         "warning"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2183,7 +2370,7 @@
         "warning"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2192,7 +2379,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2201,7 +2388,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2210,7 +2397,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2219,7 +2406,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2228,7 +2415,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2237,7 +2424,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2246,7 +2433,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2255,7 +2442,7 @@
         "warning"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2264,7 +2451,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2273,7 +2460,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2282,7 +2469,7 @@
         "dynamic"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2291,7 +2478,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2300,7 +2487,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2309,7 +2496,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2318,7 +2505,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2327,7 +2514,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2336,7 +2523,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2345,7 +2532,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2354,7 +2541,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2363,7 +2550,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2372,7 +2559,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2381,7 +2568,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2390,7 +2577,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2399,7 +2586,7 @@
         "warning"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2408,7 +2595,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2417,7 +2604,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2426,7 +2613,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2435,7 +2622,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2444,7 +2631,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2453,7 +2640,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2462,7 +2649,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2471,7 +2658,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2480,7 +2667,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2489,7 +2676,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2498,7 +2685,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2507,7 +2694,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2516,7 +2703,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2525,7 +2712,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2534,7 +2721,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2543,7 +2730,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2552,7 +2739,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2561,7 +2748,7 @@
         "warning"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2570,7 +2757,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2579,7 +2766,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2588,7 +2775,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2597,7 +2784,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2606,7 +2793,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2615,7 +2802,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2624,7 +2811,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2633,7 +2820,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2642,7 +2829,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2651,7 +2838,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2660,7 +2847,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2669,7 +2856,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2678,7 +2865,7 @@
         "warning"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2687,7 +2874,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2696,7 +2883,7 @@
         "warning"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2705,7 +2892,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2714,7 +2901,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2723,7 +2910,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2732,7 +2919,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2741,7 +2928,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2750,7 +2937,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2759,7 +2946,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2768,7 +2955,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2777,7 +2964,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -2786,7 +2973,7 @@
         "warning"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/debug_mode.py"
       ]
     },
     {
@@ -4280,7 +4467,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4289,7 +4476,7 @@
         "info"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4298,7 +4485,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4307,7 +4494,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4316,7 +4503,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4325,7 +4512,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4334,7 +4521,7 @@
         "warning"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4343,7 +4530,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4352,7 +4539,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4361,7 +4548,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4370,7 +4557,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4379,7 +4566,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4388,7 +4575,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4397,7 +4584,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4406,7 +4593,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4415,7 +4602,7 @@
         "warning"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4424,7 +4611,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4433,7 +4620,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4442,7 +4629,7 @@
         "dynamic"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4451,7 +4638,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4460,7 +4647,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4469,7 +4656,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4478,7 +4665,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4487,7 +4674,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4496,7 +4683,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4505,7 +4692,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4514,7 +4701,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4523,7 +4710,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4532,7 +4719,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4541,7 +4728,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4550,7 +4737,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4559,7 +4746,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4568,7 +4755,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4577,7 +4764,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4586,7 +4773,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4595,7 +4782,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4604,7 +4791,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4613,7 +4800,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4622,7 +4809,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4631,7 +4818,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -4640,7 +4827,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/engineering_evidence.py"
       ]
     },
     {
@@ -6755,7 +6942,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_knowledge.py"
       ]
     },
     {
@@ -6854,7 +7041,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_knowledge.py"
       ]
     },
     {
@@ -6863,7 +7050,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_knowledge.py"
       ]
     },
     {

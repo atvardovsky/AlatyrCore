@@ -73,10 +73,19 @@ def collect() -> dict[str, Any]:
             entry["levels"].add(level)
             entry["sources"].add(relpath)
 
+    families: dict[str, int] = {}
+    for code in entries:
+        family = code.split("_", 1)[0]
+        families[family] = families.get(family, 0) + 1
+
     return {
         "schema_version": 1,
         "catalog_kind": "target-adapter-validator-findings",
         "generated_from": [path.relative_to(ROOT).as_posix() for path in source_paths()],
+        "families": [
+            {"id": family, "code_count": count}
+            for family, count in sorted(families.items())
+        ],
         "finding_codes": [
             {
                 "code": code,
@@ -104,9 +113,18 @@ def render_markdown(catalog: dict[str, Any]) -> str:
         "",
         f"Catalog entries: {len(catalog['finding_codes'])}",
         "",
-        "## Codes",
+        "## Families",
         "",
     ]
+    for family in catalog["families"]:
+        lines.append(f"- `{family['id']}`: {family['code_count']} codes.")
+    lines.extend(
+        [
+            "",
+        "## Codes",
+        "",
+        ]
+    )
     for entry in catalog["finding_codes"]:
         levels = ", ".join(entry["levels"])
         sources = ", ".join(f"`{source}`" for source in entry["sources"])

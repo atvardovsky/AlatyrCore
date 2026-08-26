@@ -72,15 +72,27 @@ and migration action hints.
 Use `tools/check_release_drift.py --mode change --from-ref <base-ref>` for
 ordinary change validation. This mode never guesses a baseline from stale
 tags. Use `tools/check_release_drift.py --mode release` before a release. The
-release mode uses the nearest reachable prior changelog version's `v<VERSION>`
-tag, requires migration reports for any intervening untagged versions,
-materializes the tagged framework and target templates, and runs the migration
-reporter against that real baseline. This recovery rule preserves an auditable
-baseline without inventing missing historical tags. Both modes require the
-corresponding
+release mode first uses the nearest reachable prior changelog version's
+`v<VERSION>` tag. When that tag was never published, it may instead use a
+reviewed source release checkpoint under `docs/releases/baselines/`. A
+checkpoint binds the real release commit, all three versions, contract digest,
+and migration report; it is not a tag and must declare
+`untagged-release-checkpoint` rather than implying publication. Release mode
+requires migration reports for any intervening versions, materializes the
+selected commit's framework and target templates, verifies its digest, and
+runs the migration reporter against that real baseline. This recovery rule
+preserves an auditable incremental baseline without inventing historical tags.
+Both modes require the corresponding
 framework, adapter-schema, or template version to advance when owned surfaces
 change. Release CI checkout must include tag history; a shallow checkout
 cannot establish this baseline reliably.
+
+A checkpoint is valid only while its `source_commit` is reachable and remains
+an ancestor of the reviewed source tree, its version files match that commit,
+and its migration report contains the same destination versions and contract
+digest. Prefer a real release tag whenever one exists; the resolver always
+selects the nearest prior version and gives its tag precedence over a
+checkpoint for that version.
 
 Store the reviewed report for a tagged version at
 `docs/releases/<VERSION>-migration.md`. The report must name the compared
@@ -100,6 +112,9 @@ Before tagging a source release:
 - update `TEMPLATE_VERSION` when target template contracts change
 - update `CHANGELOG.md`
 - add `docs/releases/<VERSION>-migration.md`
+- after the release commit exists, add or verify
+  `docs/releases/baselines/<VERSION>.json` when no real release tag will be
+  published; never use a checkpoint to claim publication
 - update `framework/rule-registry.json` when rule IDs, summaries, owners, or
   enforcement levels change, then run
   `tools/render_rule_registry_docs.py` to refresh the Markdown registry and

@@ -12,6 +12,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 from check_release_drift import (  # noqa: E402
     SCHEMA_CONTRACT_PATHS,
     contract_digest,
+    nearest_release_baseline,
     nearest_tagged_baseline,
     prior_changelog_versions,
 )
@@ -22,6 +23,15 @@ from check_versioning import (  # noqa: E402
 
 
 class ReleaseBaselineTests(unittest.TestCase):
+    def test_prefers_reviewed_incremental_checkpoint_over_distant_tag(self) -> None:
+        version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+
+        baseline, intervening = nearest_release_baseline(version)
+
+        self.assertEqual(baseline.label, "release-checkpoint:0.1.0-alpha.30")
+        self.assertEqual(baseline.kind, "checkpoint")
+        self.assertEqual(intervening, [])
+
     def test_uses_nearest_real_tag_and_preserves_intervening_report_chain(self) -> None:
         version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
 

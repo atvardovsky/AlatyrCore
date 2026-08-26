@@ -81,6 +81,10 @@ Before accepting a change, check:
   human rule and ownership surfaces match the machine registry.
 - `python3 tools/render_target_validator_findings.py --check` passes when the
   generated validator finding catalog matches diagnostic source calls.
+- `python3 tools/render_target_contract_compatibility.py --check` passes when
+  Debug, engineering-evidence, or project-knowledge manifest, index, record,
+  schema, or target-template versions match the canonical source-tooling
+  compatibility matrix.
 - `python3 tools/render_framework_file_inventory.py --check` passes when the
   complete source framework inventory matches current versions and files.
 - `python3 tools/check_architecture_knowledge.py` passes when architecture
