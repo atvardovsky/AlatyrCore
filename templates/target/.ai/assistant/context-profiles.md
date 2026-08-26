@@ -8,11 +8,13 @@ pack. Paths absent from the installed pack are expansion candidates, not
 required context; expand and revalidate the pack before enabling them.
 
 `AGENTS.md` is host-preloaded context and should not be reread. Compact
-bootstrap context for every task is:
+bootstrap context for every task is only:
 
-- `.ai/alatyr.yaml`
-- `.ai/README.md`
-- `.ai/assistant/context-router.json`
+- `.ai/assistant/bootstrap-index.json`
+
+The generated bootstrap embeds the required core semantic definitions and is
+hash-bound to `.ai/alatyr.yaml`, `.ai/README.md`,
+`.ai/assistant/context-router.json`, and the installed semantic-codebook index.
 
 After bootstrap, choose one profile and affected project-area overlays before
 editing files. This file is the human rationale surface; load it only when
@@ -36,7 +38,32 @@ Load `.ai/framework/action-authorization.md` only when phase semantics are
 disputed or the target policy requires repair; routine phase decisions use the
 preloaded root rule, core gate, and target policy.
 The generated bootstrap index is repaired from `.ai/alatyr.yaml`,
-`.ai/README.md`, and `.ai/assistant/context-router.json` when its hashes drift.
+`.ai/README.md`, `.ai/assistant/context-router.json`, and
+`.ai/framework/semantics/index.json` when its hashes drift.
+
+## Recursive Selection And Semantic Terms
+
+For each selected contour, open its root `context-index.json` and follow only
+entries matched by exact task, operation, owner, path, fact, contract,
+dependency, risk, or conflict signals. Repeat through child indexes until the
+minimum content set is resolved. Selecting a parent never selects all children.
+Reject cycles, multiple parents, duplicate content paths, stale digests, stale
+word estimates, and traversal beyond the configured maximum depth.
+
+The generated bootstrap is not assistant catalog content because it digests
+that catalog. Rebuild project and assistant indexes before bootstrap after
+installed target files change.
+
+Use bootstrap semantic definitions by exact ID and version. Resolve any lazy
+`semantic_refs` through `.ai/framework/semantics/index.json`, including term
+dependencies. A term is lossless shorthand for its complete definition; it
+does not own policy or project facts. On missing, stale, ambiguous, superseded,
+or conflicting terms, load the named canonical owner and record the fallback.
+
+For non-trivial work, budget expansion, handoff, or resume, materialize the
+selected indexes, item IDs/paths/digests/reasons, resolved term definitions,
+word totals, and deterministic packet digest with
+`.ai/assistant/templates/context-packet.json`.
 
 Use each profile's operation candidates from the machine-readable router for
 cheap automatic routing. Resolve an exact operation ID or alias through

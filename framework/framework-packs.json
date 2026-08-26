@@ -24,6 +24,12 @@
       ],
       "additional_files": [
         "README.md",
+        "semantics/index.json",
+        "semantics/core.json",
+        "semantics/change.json",
+        "semantics/knowledge.json",
+        "semantics/collaboration.json",
+        "semantics/infrastructure.json",
         "adapter-maturity.md",
         "ai-infrastructure-recommendations.md",
         "ai-infrastructure-routing.md",
@@ -60,6 +66,7 @@
   },
   "projected_files": [
     "README.md",
+    "context-index.json",
     "file-inventory.json",
     "rule-ownership.md",
     "rule-registry.json",

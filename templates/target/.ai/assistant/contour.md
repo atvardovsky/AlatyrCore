@@ -13,6 +13,11 @@ Replace placeholders with target facts before accepting installation.
   `.ai/assistant/policies/action-authorization.json`; it distinguishes
   inspection, modification, commit, publication, and live external action
 - context profiles under `.ai/assistant/context-profiles.md`
+- recursive framework, project, and assistant context indexes with bounded
+  traversal, selectors, word estimates, and content digests
+- versioned semantic-codebook resolution with a bounded core preload and lazy
+  domain shards
+- deterministic context packets for expanded, handed-off, or resumed work
 - module profile under `.ai/assistant/module-profile.md`
 - adapter manifest facts under `.ai/alatyr.yaml`
 - task-specific maturity under `.ai/assistant/maturity-profile.md`

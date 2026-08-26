@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "assistant.prompts",
+  "contour": "assistant",
+  "title": "Assistant Prompts Context",
+  "summary": "Recursive navigation for the assistant contour at prompts.",
+  "max_depth": 8,
+  "entries": [
+    {
+      "id": "assistant.content.prompts-worker-orchestration-md",
+      "kind": "content",
+      "path": "prompts/worker-orchestration.md",
+      "summary": "Worker Orchestration Prompt",
+      "selectors": {
+        "path_terms": [
+          "prompts",
+          "worker",
+          "orchestration"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 222,
+      "content_digest": "sha256:a377e48a1589abf40af3f2c516da6f755755d4c5a65c114d269717c9b8023c7c"
+    }
+  ]
+}

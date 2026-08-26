@@ -9,6 +9,7 @@
     "tools/target_adapter_validation/capability.py",
     "tools/target_adapter_validation/consistency_map.py",
     "tools/target_adapter_validation/context.py",
+    "tools/target_adapter_validation/context_catalogs.py",
     "tools/target_adapter_validation/contract_compatibility.py",
     "tools/target_adapter_validation/debug_mode.py",
     "tools/target_adapter_validation/domain.py",
@@ -59,6 +60,10 @@
     {
       "id": "CONSISTENCY",
       "code_count": 32
+    },
+    {
+      "id": "CONTEXT",
+      "code_count": 10
     },
     {
       "id": "DEBUG",
@@ -1921,6 +1926,96 @@
       ],
       "sources": [
         "tools/target_adapter_validation/consistency_map.py"
+      ]
+    },
+    {
+      "code": "CONTEXT_CATALOG_CURRENT",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/context_catalogs.py"
+      ]
+    },
+    {
+      "code": "CONTEXT_CATALOG_EVIDENCE_LIMIT",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/context_catalogs.py"
+      ]
+    },
+    {
+      "code": "CONTEXT_CATALOG_INVALID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/context_catalogs.py"
+      ]
+    },
+    {
+      "code": "CONTEXT_CATALOG_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/context_catalogs.py"
+      ]
+    },
+    {
+      "code": "CONTEXT_CATALOG_REFERENCE_UNINDEXED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/context_catalogs.py"
+      ]
+    },
+    {
+      "code": "CONTEXT_CATALOG_ROUTER",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/context_catalogs.py"
+      ]
+    },
+    {
+      "code": "CONTEXT_PACKET_TEMPLATE_INVALID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/context_catalogs.py"
+      ]
+    },
+    {
+      "code": "CONTEXT_SEMANTIC_CODEBOOK_INVALID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/context_catalogs.py"
+      ]
+    },
+    {
+      "code": "CONTEXT_SEMANTIC_OWNER_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/context_catalogs.py"
+      ]
+    },
+    {
+      "code": "CONTEXT_SEMANTIC_PRELOAD_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/context_catalogs.py"
       ]
     },
     {

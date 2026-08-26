@@ -269,7 +269,9 @@ In a typical target repository:
    inspection, but keep them proposed until a separate user decision accepts
    them. Installation approval is not mode acceptance.
 7. Create `.ai/assistant/contour.md`, a generated hash-bound bootstrap index,
-   compact context router, routed gate index/fragments, and selected lazy
+   compact context router, recursive framework/project/assistant
+   `context-index.json` trees, the versioned framework semantic codebook, a
+   context-packet template, routed gate index/fragments, and selected lazy
    profile descriptors, operation catalog and its checked compact index,
    context profiles, module profile, task-specific maturity profile, bridge
    capability matrix, generated assistant-capability index and installed-
@@ -284,6 +286,12 @@ In a typical target repository:
    promotion and route-shard templates, semantic-guidance receipt fields, and
    mapped/known-gap/unknown coverage in every accepted core profile. Keep route
    shards lazy.
+   Generate recursive indexes from the exact projected installation: every
+   installed routable file appears once, child indexes form an acyclic
+   single-parent tree within the configured depth, and word estimates and
+   digests match installed bytes. Resolve the small core codebook preload into
+   the bootstrap; keep domain shards lazy and retain canonical prose fallback.
+   Neither an index nor a semantic term becomes a source of truth.
    When team collaboration is enabled, route `team-active` through
    `.ai/assistant/team/context-overlay.json`. Check only the compact active-work
    index before state-changing operations and keep full team state outside
@@ -385,6 +393,12 @@ adaptation, extension inspection and lifecycle management, or explicit Debug
 Mode activation/status/finalization/comparison. Include Allowed actions
 when the request should be limited to `read-only`, `docs-only`,
 `adapter-only`, `code-and-tests`, or `full-with-approval`.
+
+The post-install message must tell the next assistant to load the compact
+bootstrap, use its resolved semantic preload, and navigate the recursive
+contour indexes rather than loading support directories. The post-update
+message must additionally name rebuilt index/codebook surfaces and unresolved
+fallbacks or stale entries.
 
 If the programmer asks for help, commands, or an unclear Alatyr action, the
 assistant should show the installed operation menu from the target adapter

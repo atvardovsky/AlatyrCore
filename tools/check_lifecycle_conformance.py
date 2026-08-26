@@ -19,7 +19,11 @@ import yaml
 from bootstrap_index import BOOTSTRAP_PATH, build_from_target, render
 from plan_target_upgrade import add_validation_impact
 from scaffold_target_structure import plan as scaffold_plan
-from target_adapter_validation.framework_baseline import source_pack_expectation
+from render_context_catalogs import build_framework_catalog_contents
+from render_installed_context_catalogs import expected_outputs as installed_context_outputs
+from target_adapter_validation.framework_baseline import (
+    source_pack_projection,
+)
 from validate_target_adapter import (
     AdapterValidatorConfig,
     Validator,
@@ -170,7 +174,7 @@ def resolve_adapter(repo: Path, support_profile: str = "core") -> None:
         + "\n",
         encoding="utf-8",
     )
-    refresh_bootstrap(repo)
+    refresh_context_and_bootstrap(repo)
 
 
 def transition_installation_state(
@@ -211,12 +215,19 @@ def transition_installation_state(
         yaml.safe_dump(manifest, sort_keys=False, allow_unicode=False),
         encoding="utf-8",
     )
-    refresh_bootstrap(repo)
+    refresh_context_and_bootstrap(repo)
 
 
 def refresh_bootstrap(repo: Path) -> None:
     output = repo / BOOTSTRAP_PATH
     output.write_bytes(render(build_from_target(repo)).encode("utf-8"))
+
+
+def refresh_context_and_bootstrap(repo: Path) -> None:
+    for path, content in installed_context_outputs(repo).items():
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(content, encoding="utf-8")
+    refresh_bootstrap(repo)
 
 
 def approval_record(base: str, support_profile: str) -> dict[str, Any]:
@@ -317,20 +328,17 @@ def make_validator(
 
 def apply_synthetic_framework_update(repo: Path, source: Path, pack: str) -> None:
     target_framework = repo / ".ai" / "framework"
-    shutil.copy2(source / "framework" / "context-profiles.md", target_framework / "context-profiles.md")
-    expected_names, _registry, expected_hashes = source_pack_expectation(
+    expected_names, _registry, expected_contents = source_pack_projection(
         source / "framework", pack
     )
-    inventory_path = target_framework / "file-inventory.json"
-    inventory = json.loads(inventory_path.read_text(encoding="utf-8"))
-    inventory["framework_version"] = (source / "VERSION").read_text(encoding="utf-8").strip()
-    entries = {Path(item["path"]).name: item for item in inventory["files"]}
-    if set(entries) | {"file-inventory.json"} != expected_names:
+    if set(expected_contents) != expected_names:
         raise ValueError("synthetic update inventory does not match source pack")
-    for name, entry in entries.items():
-        entry["sha256"] = expected_hashes[name]
-    inventory_path.write_bytes(
-        (json.dumps(inventory, indent=2, sort_keys=True) + "\n").encode("utf-8")
+    for name, content in expected_contents.items():
+        destination = target_framework / name
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_bytes(content)
+    inventory = json.loads(
+        (target_framework / "file-inventory.json").read_text(encoding="utf-8")
     )
     manifest_path = repo / ".ai" / "alatyr.yaml"
     manifest = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
@@ -412,6 +420,7 @@ def exercise_profile(
             json.dumps(approval_record(base, support_profile), indent=2) + "\n",
             encoding="utf-8",
         )
+    refresh_context_and_bootstrap(repo)
 
     approval_validator = make_validator(repo, ROOT, diff_ref=base, approval=approval_path)
     approval_validator.check_approval_scope()
@@ -495,6 +504,12 @@ def exercise_profile(
     context_path.write_bytes(
         context_path.read_bytes() + b"\nLifecycle fixture update.\n"
     )
+    for relpath, content in build_framework_catalog_contents(
+        root=source / "framework"
+    ).items():
+        destination = source / "framework" / relpath
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.write_text(content, encoding="utf-8")
     source_inventory_path = source / "framework" / "file-inventory.json"
     source_inventory = json.loads(source_inventory_path.read_text(encoding="utf-8"))
     source_inventory["framework_version"] = "0.1.0-lifecycle-fixture"

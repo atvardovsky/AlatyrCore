@@ -4,15 +4,19 @@
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "92869166867cc59e512da61452216f1cdb33e1211484229bc43ab1c5da49be7b"
+      "sha256": "163d54cb232ddb4c16d77d1af40fe28119b5b750b14d09524e979e18afdbc867"
     },
     "project_map": {
       "path": ".ai/README.md",
-      "sha256": "66557d2bccf3ebda1ca1bd2c346aee46f75d3d257e1b43a20fbded3b8f41041c"
+      "sha256": "dfed7e8bfcdb580357b9792583d38e738caac4c2f7cb6dae4d308e298826f4a4"
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",
-      "sha256": "f281f1e668177ca93aa3cde9ed9292278ce84911019a645f9b5f11474d4a770d"
+      "sha256": "8bc8052496ee57d02aff499c60ebdf3b9f4fae83bff41de8d40f6c94db85116f"
+    },
+    "semantic_codebook": {
+      "path": ".ai/framework/semantics/index.json",
+      "sha256": "d8d2e80c46d5f1a1a07968804949525aa2b988cd1c1cfa9d96f52233ad01992f"
     }
   },
   "installation": {
@@ -24,6 +28,63 @@
   },
   "project_map": ".ai/README.md",
   "context_router": ".ai/assistant/context-router.json",
+  "recursive_context": {
+    "contour_indexes": {
+      "framework": ".ai/framework/context-index.json",
+      "project": ".ai/project/context-index.json",
+      "assistant": ".ai/assistant/context-index.json"
+    },
+    "max_depth": 8,
+    "on_failure": "stop compact interpretation, load the named canonical owner when safe, and report index drift; never load the complete contour by default"
+  },
+  "semantic_preload": {
+    "index": ".ai/framework/semantics/index.json",
+    "codebook_schema_version": 1,
+    "terms": [
+      {
+        "id": "alatyr:current-scope-authorization@1",
+        "version": 1,
+        "definition": "Inspect, modify, commit, publish, and live-external actions are separate authorization phases for the current logical task. A completed, redirected, ambiguous, discussion-only, or analysis-only request does not authorize a later state-changing phase.",
+        "canonical_owner": ".ai/framework/action-authorization.md"
+      },
+      {
+        "id": "alatyr:canonical-owner@1",
+        "version": 1,
+        "definition": "Use the target-registered canonical owner for a fact type, preserve its conflict resolver and synchronization direction, and treat routing records, summaries, evidence, frequency, and recency as non-authoritative unless that owner says otherwise.",
+        "canonical_owner": ".ai/framework/source-of-truth-registry.md"
+      },
+      {
+        "id": "alatyr:protected-change@1",
+        "version": 1,
+        "definition": "A change that crosses a target-recorded protected category requires a current scoped approval whose semantic and path surfaces cover the actual change; changing the plan or scope invalidates approval as defined by the target policy.",
+        "canonical_owner": ".ai/framework/approval-records.md"
+      },
+      {
+        "id": "alatyr:logical-integrity@1",
+        "version": 1,
+        "definition": "Name changed semantic facts, re-derive their invariants, identify canonical owners and directly dependent surfaces, reconcile related findings as one repair set, validate the result, and report unresolved relationships and residual risk.",
+        "canonical_owner": ".ai/framework/logical-integrity.md"
+      },
+      {
+        "id": "alatyr:bounded-context-expansion@1",
+        "version": 1,
+        "definition": "Start from the smallest matching profile and selected index branch. Expand only for an applicable owner, safety or approval boundary, named dependency, changed-fact relationship, conflict, failed validation, or explicit broader audit, and record why the expansion occurred.",
+        "canonical_owner": ".ai/framework/context-profiles.md"
+      }
+    ],
+    "fallback": "load the referenced canonical owner and do not infer a missing stale conflicting cyclic or unsupported compact term"
+  },
+  "context_packet": {
+    "schema_version": 1,
+    "template": ".ai/assistant/templates/context-packet.json",
+    "receipt_required_for": [
+      "budget exceeded",
+      "multiple project areas",
+      "cross-boundary work",
+      "semantic codebook fallback",
+      "material or protected change"
+    ]
+  },
   "routing_order": [
     "docs-local",
     "code-local",

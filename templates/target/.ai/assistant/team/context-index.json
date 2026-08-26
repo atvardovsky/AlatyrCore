@@ -1,0 +1,161 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "assistant.team",
+  "contour": "assistant",
+  "title": "Assistant Team Context",
+  "summary": "Recursive navigation for the assistant contour at team.",
+  "max_depth": 8,
+  "entries": [
+    {
+      "id": "assistant.content.team-active-work-index-json",
+      "kind": "content",
+      "path": "team/active-work-index.json",
+      "summary": "Active Work Index",
+      "selectors": {
+        "path_terms": [
+          "team",
+          "active",
+          "work"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 18,
+      "content_digest": "sha256:82450854f0d9adc3484e589fa473d91311004d85bfd20586351c12adc03472f9"
+    },
+    {
+      "id": "assistant.content.team-backend-contract-json",
+      "kind": "content",
+      "path": "team/backend-contract.json",
+      "summary": "Backend Contract",
+      "selectors": {
+        "path_terms": [
+          "team",
+          "backend",
+          "contract"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 40,
+      "content_digest": "sha256:e1ac16a1483993921eea9c780a657a014a64a7ad19ad7bdf0b78c9ac9405f3ec"
+    },
+    {
+      "id": "assistant.content.team-context-overlay-json",
+      "kind": "content",
+      "path": "team/context-overlay.json",
+      "summary": "Context Overlay",
+      "selectors": {
+        "path_terms": [
+          "team",
+          "overlay"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 277,
+      "content_digest": "sha256:8fc77c65c702b0128fbb5b229066dcb88e81d3e636e52208de1d08a77855154f"
+    },
+    {
+      "id": "assistant.content.team-task-record-template-json",
+      "kind": "content",
+      "path": "team/task-record-template.json",
+      "summary": "Task Record Template",
+      "selectors": {
+        "path_terms": [
+          "team",
+          "task",
+          "record",
+          "template"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 139,
+      "content_digest": "sha256:ffbc7eea74b438a6166864b31c00905bfaf2482e9874bb82aca9a8d7fd0e041b"
+    },
+    {
+      "id": "assistant.content.team-work-registry-json",
+      "kind": "content",
+      "path": "team/work-registry.json",
+      "summary": "Work Registry",
+      "selectors": {
+        "path_terms": [
+          "team",
+          "work",
+          "registry"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 40,
+      "content_digest": "sha256:ba3900fac5bfe5bbb186c47eaf3ae1886d035eacb3fcc22c3f2a6c4023aab91c"
+    }
+  ]
+}

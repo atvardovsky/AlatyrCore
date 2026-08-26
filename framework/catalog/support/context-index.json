@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "framework.support",
+  "contour": "framework",
+  "title": "Support Framework Context",
+  "summary": "Bounded support framework rules and supporting guidance.",
+  "max_depth": 8,
+  "entries": [
+    {
+      "id": "framework.support.ascii-diagrams-md",
+      "kind": "content",
+      "path": "ascii-diagrams.md",
+      "summary": "Portable ASCII Diagrams",
+      "selectors": {
+        "path_terms": [
+          "ascii",
+          "diagrams"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 771,
+      "content_digest": "sha256:5ca399d6bcddd74b7ff14ef9cca70b256730fc912aecc2fc274ca79a62bcc5f8"
+    },
+    {
+      "id": "framework.support.effectiveness-metrics-md",
+      "kind": "content",
+      "path": "effectiveness-metrics.md",
+      "summary": "Effectiveness Metrics",
+      "selectors": {
+        "path_terms": [
+          "effectiveness",
+          "metrics"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 1275,
+      "content_digest": "sha256:1b40dfe7964b099a2d37a4e395bf429c92b963f22bb3e2035180e877ecab5758"
+    },
+    {
+      "id": "framework.support.test-first-development-md",
+      "kind": "content",
+      "path": "test-first-development.md",
+      "summary": "Test-First Development",
+      "selectors": {
+        "path_terms": [
+          "test",
+          "first",
+          "development"
+        ],
+        "rule_ids": [
+          "ALATYR-TDD-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [
+        "ALATYR-TDD-001"
+      ],
+      "estimated_words": 1153,
+      "content_digest": "sha256:0494df75ebb9c7f9eb1b6a633ff7e6d1d99f3ee47d0360ef9c860e3f1f7e02a7"
+    }
+  ]
+}

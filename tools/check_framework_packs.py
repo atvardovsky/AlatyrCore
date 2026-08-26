@@ -21,6 +21,7 @@ from framework_packaging import (
 EXPECTED_PACKS = ["core", "standard", "complete"]
 REQUIRED_PROJECTED = {
     "README.md",
+    "context-index.json",
     "file-inventory.json",
     "rule-ownership.md",
     "rule-registry.json",
@@ -43,8 +44,8 @@ def main() -> int:
             failures.append(f"framework packs must be {EXPECTED_PACKS}, got {names}")
 
         all_files = {
-            path.name
-            for path in FRAMEWORK_ROOT.iterdir()
+            path.relative_to(FRAMEWORK_ROOT).as_posix()
+            for path in FRAMEWORK_ROOT.rglob("*")
             if path.is_file() and path.suffix in {".md", ".json"}
         }
         selections = {name: resolve_framework_files(name) for name in EXPECTED_PACKS}
@@ -63,7 +64,7 @@ def main() -> int:
                 failures.append(f"framework pack {name} references missing files {missing_files}")
 
         dependencies: dict[str, set[str]] = {}
-        for path in FRAMEWORK_ROOT.glob("*.md"):
+        for path in FRAMEWORK_ROOT.rglob("*.md"):
             metadata = parse_front_matter(path)
             if not metadata:
                 continue
@@ -81,7 +82,7 @@ def main() -> int:
             contents = projected_framework_contents(name)
             inventory = json.loads(contents["file-inventory.json"] or "{}")
             inventory_names = {
-                Path(entry["path"]).name
+                str(entry["path"])[len("framework/"):]
                 for entry in inventory.get("files", [])
                 if isinstance(entry, dict) and isinstance(entry.get("path"), str)
             }

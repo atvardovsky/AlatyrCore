@@ -1,0 +1,183 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "framework.knowledge",
+  "contour": "framework",
+  "title": "Knowledge Framework Context",
+  "summary": "Bounded knowledge framework rules and supporting guidance.",
+  "max_depth": 8,
+  "entries": [
+    {
+      "id": "framework.knowledge.architecture-knowledge-md",
+      "kind": "content",
+      "path": "architecture-knowledge.md",
+      "summary": "Architecture Knowledge And Discussion",
+      "selectors": {
+        "path_terms": [
+          "architecture",
+          "knowledge"
+        ],
+        "rule_ids": [
+          "ALATYR-ARCHITECTURE-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:observed-is-not-accepted@1"
+      ],
+      "owner_refs": [
+        "ALATYR-ARCHITECTURE-001"
+      ],
+      "estimated_words": 1239,
+      "content_digest": "sha256:ca52641fca946c087b63e77d3fd9187cef0f74a0ead70f2e80a98a960030504c"
+    },
+    {
+      "id": "framework.knowledge.code-documentation-md",
+      "kind": "content",
+      "path": "code-documentation.md",
+      "summary": "Code Documentation Generation",
+      "selectors": {
+        "path_terms": [
+          "code",
+          "documentation"
+        ],
+        "rule_ids": [
+          "ALATYR-CODEDOC-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [
+        "ALATYR-CODEDOC-001"
+      ],
+      "estimated_words": 1586,
+      "content_digest": "sha256:3995f21616fb44304bf15080cc681271e1b686c678636398a04ad75c0b11acdc"
+    },
+    {
+      "id": "framework.knowledge.debug-mode-md",
+      "kind": "content",
+      "path": "debug-mode.md",
+      "summary": "Debug Mode",
+      "selectors": {
+        "path_terms": [
+          "debug",
+          "mode"
+        ],
+        "rule_ids": [
+          "ALATYR-DEBUG-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [
+        "ALATYR-DEBUG-001"
+      ],
+      "estimated_words": 3070,
+      "content_digest": "sha256:0ac04014ba441e8d54689fd4b2ed11314b6390eed5c136b54290d76c2cf78209"
+    },
+    {
+      "id": "framework.knowledge.diagram-guidance-md",
+      "kind": "content",
+      "path": "diagram-guidance.md",
+      "summary": "AI Framework Diagram Guidance",
+      "selectors": {
+        "path_terms": [
+          "diagram",
+          "guidance"
+        ],
+        "rule_ids": [
+          "ALATYR-DIAGRAM-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [
+        "ALATYR-DIAGRAM-001"
+      ],
+      "estimated_words": 1437,
+      "content_digest": "sha256:aa63daf895e17036f48feca1215fb76653ccd4fdfaeef600f16be3883bc4091f"
+    },
+    {
+      "id": "framework.knowledge.engineering-evidence-md",
+      "kind": "content",
+      "path": "engineering-evidence.md",
+      "summary": "Durable Engineering Evidence",
+      "selectors": {
+        "path_terms": [
+          "engineering",
+          "evidence"
+        ],
+        "rule_ids": [
+          "ALATYR-ENGINEERING-EVIDENCE-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [
+        "ALATYR-ENGINEERING-EVIDENCE-001"
+      ],
+      "estimated_words": 1436,
+      "content_digest": "sha256:a4aa8dbc200f1ceef74857c311019c1fd0b3f8455f87cafcd1061b2669302374"
+    },
+    {
+      "id": "framework.knowledge.project-knowledge-md",
+      "kind": "content",
+      "path": "project-knowledge.md",
+      "summary": "Project Development Guidance And Knowledge Delivery",
+      "selectors": {
+        "path_terms": [
+          "project",
+          "knowledge"
+        ],
+        "rule_ids": [
+          "ALATYR-KNOWLEDGE-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:accepted-current@1"
+      ],
+      "owner_refs": [
+        "ALATYR-KNOWLEDGE-001"
+      ],
+      "estimated_words": 2023,
+      "content_digest": "sha256:47b4849783a12149d80ae900bf268edc123112fd41d0392035c36a2688cb17f6"
+    },
+    {
+      "id": "framework.knowledge.project-vocabulary-md",
+      "kind": "content",
+      "path": "project-vocabulary.md",
+      "summary": "Project Vocabulary",
+      "selectors": {
+        "path_terms": [
+          "project",
+          "vocabulary"
+        ],
+        "rule_ids": [
+          "ALATYR-VOCABULARY-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [
+        "ALATYR-VOCABULARY-001"
+      ],
+      "estimated_words": 1358,
+      "content_digest": "sha256:548d3ce86ed7df6a4874e69ffcbf74c14fbaedf744ecc2b3582253e7470cf11d"
+    }
+  ]
+}

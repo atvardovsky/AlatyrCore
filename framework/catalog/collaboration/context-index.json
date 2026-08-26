@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "framework.collaboration",
+  "contour": "framework",
+  "title": "Collaboration Framework Context",
+  "summary": "Bounded collaboration framework rules and supporting guidance.",
+  "max_depth": 8,
+  "entries": [
+    {
+      "id": "framework.collaboration.large-task-orchestration-md",
+      "kind": "content",
+      "path": "large-task-orchestration.md",
+      "summary": "Large-Task Orchestration",
+      "selectors": {
+        "path_terms": [
+          "large",
+          "task",
+          "orchestration"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 1392,
+      "content_digest": "sha256:6f15a750f25d9dcd917e0962f28da823abfdef5f3f20becd78e56b6cf737347e"
+    },
+    {
+      "id": "framework.collaboration.subagent-delegation-md",
+      "kind": "content",
+      "path": "subagent-delegation.md",
+      "summary": "Subagent Delegation",
+      "selectors": {
+        "path_terms": [
+          "subagent",
+          "delegation"
+        ],
+        "rule_ids": [
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 1833,
+      "content_digest": "sha256:fd86a0db7333d6b33e34f80247c02da45929c00ec337ae153072dfc7a6582e32"
+    },
+    {
+      "id": "framework.collaboration.team-collaboration-md",
+      "kind": "content",
+      "path": "team-collaboration.md",
+      "summary": "Team Collaboration",
+      "selectors": {
+        "path_terms": [
+          "team",
+          "collaboration"
+        ],
+        "rule_ids": [
+          "ALATYR-TEAM-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [
+        "ALATYR-TEAM-001"
+      ],
+      "estimated_words": 2459,
+      "content_digest": "sha256:00b87cfe999d03df063975370b725008125624d5df6b14a1db7d69e170e71f49"
+    },
+    {
+      "id": "framework.collaboration.workspace-modes-md",
+      "kind": "content",
+      "path": "workspace-modes.md",
+      "summary": "Workspace Modes",
+      "selectors": {
+        "path_terms": [
+          "workspace",
+          "modes"
+        ],
+        "rule_ids": [
+          "ALATYR-MODE-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:mode-does-not-grant-authority@1"
+      ],
+      "owner_refs": [
+        "ALATYR-MODE-001"
+      ],
+      "estimated_words": 1382,
+      "content_digest": "sha256:dc1b84f72ca465f735d51ee5de02d3c26fd8054688556b4f11c1663eddc239da"
+    }
+  ]
+}

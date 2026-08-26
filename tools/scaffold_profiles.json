@@ -42,6 +42,7 @@
         ".ai/assistant/module-profile.md",
         ".ai/assistant/policies/action-authorization.json",
         ".ai/assistant/templates/adapter-output-contracts.md",
+        ".ai/assistant/templates/context-packet.json",
         ".ai/assistant/templates/engineering-evidence-record.json",
         ".ai/assistant/templates/project-knowledge-promotion.json",
         ".ai/assistant/templates/project-knowledge-route-shard.json",

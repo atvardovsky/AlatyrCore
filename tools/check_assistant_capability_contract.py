@@ -40,7 +40,11 @@ def main() -> int:
             for item in raw_surfaces
             if isinstance(item, dict) and isinstance(item.get("id"), str)
         }
-        records = {path.stem: path for path in CAPABILITIES.glob("*.json")}
+        records = {
+            path.stem: path
+            for path in CAPABILITIES.glob("*.json")
+            if path.name != "context-index.json"
+        }
         if set(records) != surface_ids:
             failures.append(
                 "assistant capability records differ from surfaces: "

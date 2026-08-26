@@ -354,17 +354,21 @@ The framework implements that model through these repository surfaces:
    AlatyrCore rules and supported assistant surfaces.
 3. A generated, hash-bound bootstrap index and compact router select the
    bounded task profile, gate fragments, and project-area context for a
-   question or change.
-4. The assistant explains the project or follows the matching workflow,
+   question or change. Recursive contour indexes then expose only matching
+   branches instead of whole support directories.
+4. A small versioned semantic codebook resolves repeated framework concepts
+   once per context packet. Compact terms retain complete definitions and
+   canonical-owner fallback; they never replace project facts or policy.
+5. The assistant explains the project or follows the matching workflow,
    including approvals for protected changes.
-5. Deterministic checks validate structural contracts where possible; human
+6. Deterministic checks validate structural contracts where possible; human
    and assistant reasoning still decide semantic correctness.
-6. Before a material task ends, a proportional evidence gate preserves the
+7. Before a material task ends, a proportional evidence gate preserves the
    compact invariant, root cause, solution rationale, regression intent,
    validation, and exact repository binding when that knowledge would
    otherwise disappear with the session. Small self-explanatory changes may
    skip it with a specific reason.
-7. A separate project-knowledge gate lets target decision owners accept,
+8. A separate project-knowledge gate lets target decision owners accept,
    narrow, reject, or defer reusable conclusions. Accepted facts remain in
    canonical project sources; compact, freshness-checked route shards help a
    later assistant find those owners without loading the full project memory.
@@ -376,6 +380,14 @@ AlatyrCore supplies a bridge and evidence contract, not that every client has
 been observed following it. Each installed project records the exact client,
 instruction precedence, skills, permissions, diagrams, and delegation before
 claiming runtime support. See [assistant compatibility](docs/assistant-compatibility.md).
+
+The recursive indexes behave like site navigation: each root links to smaller
+sections, sections may link to deeper sections, and selecting a parent does not
+load every child. Entries carry stable identities, selectors, word estimates,
+and content digests. For non-trivial or expanded work, a deterministic context
+packet records the chosen index chain, content identities, resolved semantic
+definitions, budget, and fallback state. These records prove routing identity,
+not that a model understood or followed the content.
 
 Optional modules can add architecture knowledge, project vocabulary, generated
 code-reference documentation, test-first development, team coordination,
@@ -510,7 +522,7 @@ tasks from loading the complete framework or project corpus.
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.31`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.32`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural

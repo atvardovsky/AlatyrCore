@@ -11,6 +11,12 @@ the blueprint, registries, contours, module profile, and human context profiles
 only when the selected task profile, task-scale overlay, or project-area
 overlay requires them.
 
+The bootstrap embeds the small core semantic codebook once. After routing,
+start from the selected contour's `context-index.json` and follow only matching
+child indexes or content entries. The indexes are derived navigation and cost
+metadata, not project authority. Domain codebook shards are lazy; every compact
+term resolves to versioned prose and its canonical owner before use.
+
 ## Installation State
 
 Read `.ai/alatyr.yaml` before describing this adapter as installed or ready.
@@ -78,6 +84,9 @@ Replace this section with the actual target project map.
 `.ai/assistant` contains local assistant operating rules:
 
 - a compact generated bootstrap index that does not own project facts or rules
+- recursive, digest-bound context indexes that expose only selected branches
+- a versioned semantic codebook for lossless compact rule references
+- deterministic context-packet evidence for non-trivial or expanded routes
 - context profiles for task-specific context loading
 - module profile for required core and optional Alatyr capabilities
 - compact workspace-mode routing and per-mode support when application,

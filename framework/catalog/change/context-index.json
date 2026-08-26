@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "framework.change",
+  "contour": "framework",
+  "title": "Change Framework Context",
+  "summary": "Bounded change framework rules and supporting guidance.",
+  "max_depth": 8,
+  "entries": [
+    {
+      "id": "framework.change.blueprint-driven-change-md",
+      "kind": "content",
+      "path": "blueprint-driven-change.md",
+      "summary": "AI Framework Blueprint-Driven Change",
+      "selectors": {
+        "path_terms": [
+          "blueprint",
+          "driven",
+          "change"
+        ],
+        "rule_ids": [
+          "ALATYR-CHANGE-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [
+        "ALATYR-CHANGE-001"
+      ],
+      "estimated_words": 785,
+      "content_digest": "sha256:6b3f19cc18bbf7905ded90051ac258066a5cca29a3b4f7417bdef4aaa3a1c89a"
+    },
+    {
+      "id": "framework.change.change-packages-md",
+      "kind": "content",
+      "path": "change-packages.md",
+      "summary": "Change Packages",
+      "selectors": {
+        "path_terms": [
+          "change",
+          "packages"
+        ],
+        "rule_ids": [
+          "ALATYR-PACKAGE-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [
+        "ALATYR-PACKAGE-001"
+      ],
+      "estimated_words": 1278,
+      "content_digest": "sha256:cb9cd1037d27cf67f609db309e230b8d871d65fefbf763b9f97a021e4523a1fd"
+    },
+    {
+      "id": "framework.change.consistency-model-md",
+      "kind": "content",
+      "path": "consistency-model.md",
+      "summary": "Multi-Level Consistency Model",
+      "selectors": {
+        "path_terms": [
+          "consistency",
+          "model"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 893,
+      "content_digest": "sha256:9770fb0b5ac01543d06c4b18f483542e647662db79f63ff4817ed509dd48e650"
+    },
+    {
+      "id": "framework.change.testing-guidance-md",
+      "kind": "content",
+      "path": "testing-guidance.md",
+      "summary": "AI Framework Testing Guidance",
+      "selectors": {
+        "path_terms": [
+          "testing",
+          "guidance"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 944,
+      "content_digest": "sha256:c27c8cdf2fe52e07e8e975833db98368bcb9d5e3f9fe5c7be11bb6dd9f6332aa"
+    }
+  ]
+}

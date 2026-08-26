@@ -105,6 +105,11 @@ Check whether the target already has:
 - `.ai/assistant/policies`
 - `.ai/assistant/context-router.json`
 - `.ai/assistant/bootstrap-index.json`
+- `.ai/framework/context-index.json`
+- `.ai/project/context-index.json`
+- `.ai/assistant/context-index.json`
+- `.ai/framework/semantics/index.json`
+- `.ai/assistant/templates/context-packet.json`
 - `.ai/assistant/context/profiles`
 - `.ai/assistant/context-profiles.md`
 - `.ai/assistant/maturity-profile.md`
@@ -116,6 +121,15 @@ Check whether the target already has:
 - `.agents/skills`
 
 Do not overwrite existing target instructions without explicit approval.
+
+For an accepted installation, verify that recursive indexes describe the exact
+installed profile and pack: one entry per routable file, no omitted-file
+references, one parent per child index, no cycles, bounded depth, current word
+estimates and digests, and resolvable semantic and rule-owner references.
+Verify that the bootstrap preload resolves exactly from the installed codebook,
+stays within budget, and falls back to canonical owner prose on any ambiguity
+or drift. Indexes and compact terms are derived routing aids, never project or
+framework fact owners.
 
 ## 3. Core Versus Adapter
 

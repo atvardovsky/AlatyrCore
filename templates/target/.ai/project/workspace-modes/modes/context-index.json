@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "project.workspace-modes-modes",
+  "contour": "project",
+  "title": "Project Modes Context",
+  "summary": "Recursive navigation for the project contour at workspace-modes/modes.",
+  "max_depth": 8,
+  "entries": [
+    {
+      "id": "project.section.workspace-modes-modes-template",
+      "kind": "index",
+      "path": "workspace-modes/modes/_template/context-index.json",
+      "summary": "_Template section",
+      "selectors": {
+        "path_terms": [
+          "template"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 137,
+      "content_digest": "sha256:de1b2b8253452df6dd96cb065981ec6c6698b8be53216fef1ad22c559f32f3ae"
+    }
+  ]
+}

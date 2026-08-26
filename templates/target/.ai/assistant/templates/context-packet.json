@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "packet_kind": "alatyr-context-packet",
+  "profile": "{SELECTED_TASK_PROFILE}",
+  "operation": "{SELECTED_OPERATION}",
+  "selected_items": [
+    {
+      "id": "{CONTEXT_ITEM_ID}",
+      "path": "{TARGET_RELATIVE_PATH}",
+      "content_digest": "sha256:{CONTENT_DIGEST}",
+      "reason": ["{EXACT_SELECTOR_OR_EXPANSION_TRIGGER}"]
+    }
+  ],
+  "semantic_terms": [
+    {
+      "id": "{ALATYR_OR_PROJECT_TERM_ID}",
+      "version": 1,
+      "definition": "{RESOLVED_DEFINITION}",
+      "canonical_owner": "{TARGET_RELATIVE_CANONICAL_OWNER}"
+    }
+  ],
+  "budget": {
+    "max_words": 1,
+    "selected_content_words": 0,
+    "semantic_definition_words": 0,
+    "total_words": 0
+  },
+  "packet_digest": "sha256:{PACKET_DIGEST}"
+}

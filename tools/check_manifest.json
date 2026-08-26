@@ -695,6 +695,55 @@
       ]
     },
     {
+      "id": "context-catalogs",
+      "command": [
+        "tools/check_context_catalogs.py"
+      ],
+      "profiles": [
+        "fast",
+        "full",
+        "platform"
+      ],
+      "depends_on": [
+        "context-router",
+        "framework-metadata"
+      ],
+      "contract_inputs": [
+        "framework/context-index.json",
+        "framework/catalog/**",
+        "framework/semantics/**",
+        "schemas/alatyr-context-*.schema.json",
+        "schemas/alatyr-semantic-codebook*.schema.json",
+        "templates/target/.ai/assistant/**/context-index.json",
+        "templates/target/.ai/project/**/context-index.json",
+        "templates/target/.ai/assistant/templates/context-packet.json"
+      ],
+      "implementation_paths": [
+        "tools/check_context_catalogs.py",
+        "tools/context_catalog.py",
+        "tools/render_context_catalogs.py",
+        "tools/render_installed_context_catalogs.py"
+      ],
+      "trigger_paths": [
+        "framework/**",
+        "framework/context-index.json",
+        "framework/catalog/**",
+        "framework/semantics/**",
+        "schemas/alatyr-context-*.schema.json",
+        "schemas/alatyr-semantic-codebook*.schema.json",
+        "templates/target/.ai/assistant/**",
+        "templates/target/.ai/project/**",
+        "templates/target/.ai/assistant/**/context-index.json",
+        "templates/target/.ai/project/**/context-index.json",
+        "templates/target/.ai/assistant/templates/context-packet.json",
+        "tests/test_context_catalog.py",
+        "tools/check_context_catalogs.py",
+        "tools/context_catalog.py",
+        "tools/render_context_catalogs.py",
+        "tools/render_installed_context_catalogs.py"
+      ]
+    },
+    {
       "id": "bootstrap-routing",
       "command": [
         "tools/check_bootstrap_routing.py"
@@ -705,7 +754,8 @@
         "platform"
       ],
       "depends_on": [
-        "context-router"
+        "context-router",
+        "context-catalogs"
       ],
       "contract_inputs": [
         "templates/target/.ai/README.md",
@@ -1438,19 +1488,22 @@
         "templates/target/.ai/assistant/module-profile.md",
         "templates/target/.ai/assistant/team/**",
         "tools/check_target_adapter_validator.py",
+        "tools/context_catalog.py",
         "tools/framework_packaging.py",
         "tools/scaffold_state.py",
         "tools/target_adapter_validation/**",
         "tools/validate_target_adapter.py"
       ],
       "depends_on": [
-        "target-validator-findings"
+        "target-validator-findings",
+        "context-catalogs"
       ],
       "contract_inputs": [
         "templates/target/**"
       ],
       "implementation_paths": [
         "tools/check_target_adapter_validator.py",
+        "tools/context_catalog.py",
         "tools/framework_packaging.py",
         "tools/scaffold_state.py",
         "tools/target_adapter_validation/**",
@@ -1777,6 +1830,8 @@
         "tools/bootstrap_index.py",
         "tools/check_lifecycle_conformance.py",
         "tools/plan_target_upgrade.py",
+        "tools/render_context_catalogs.py",
+        "tools/render_installed_context_catalogs.py",
         "tools/scaffold*.py",
         "tools/scaffold_target_structure.py",
         "tools/target_adapter_validation/**",
@@ -1789,6 +1844,8 @@
         "tools/bootstrap_index.py",
         "tools/check_lifecycle_conformance.py",
         "tools/plan_target_upgrade.py",
+        "tools/render_context_catalogs.py",
+        "tools/render_installed_context_catalogs.py",
         "tools/scaffold*.py",
         "tools/scaffold_target_structure.py",
         "tools/target_adapter_validation/**",
@@ -1830,13 +1887,16 @@
         "INSTALL.md",
         "README.md",
         "docs/source-worker-strategy.md",
+        "framework/context-index.json",
         "framework/file-inventory.json",
+        "framework/semantics/**",
         "installer/**",
         "tools/source_context_router.json"
       ],
       "implementation_paths": [
         "tools/check_all.py",
         "tools/check_source_context_routing.py",
+        "tools/context_catalog.py",
         "tools/render_framework_file_inventory.py"
       ],
       "trigger_paths": [
@@ -1845,10 +1905,13 @@
         "INSTALL.md",
         "README.md",
         "docs/source-worker-strategy.md",
+        "framework/context-index.json",
         "framework/file-inventory.json",
+        "framework/semantics/**",
         "installer/**",
         "tools/check_all.py",
         "tools/check_source_context_routing.py",
+        "tools/context_catalog.py",
         "tools/render_framework_file_inventory.py",
         "tools/source_context_router.json"
       ]

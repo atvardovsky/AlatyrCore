@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "project.testing",
+  "contour": "project",
+  "title": "Project Testing Context",
+  "summary": "Recursive navigation for the project contour at testing.",
+  "max_depth": 8,
+  "entries": [
+    {
+      "id": "project.content.testing-readme-md",
+      "kind": "content",
+      "path": "testing/README.md",
+      "summary": "Project Testing And Test-First Policy",
+      "selectors": {
+        "path_terms": [
+          "testing"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 245,
+      "content_digest": "sha256:784d77b2376cd113729f827a7f812efe9b0554ba9e9c6cf4261d0cfa3b878fc3"
+    },
+    {
+      "id": "project.content.testing-test-first-policy-json",
+      "kind": "content",
+      "path": "testing/test-first-policy.json",
+      "summary": "Test First Policy",
+      "selectors": {
+        "path_terms": [
+          "testing",
+          "test",
+          "first",
+          "policy"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 145,
+      "content_digest": "sha256:e0288a714e78d73228acc48757f0dba0689a5016a56d50d9c509a86fcfb9dd5c"
+    }
+  ]
+}

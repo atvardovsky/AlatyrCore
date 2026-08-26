@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "assistant.workers",
+  "contour": "assistant",
+  "title": "Assistant Workers Context",
+  "summary": "Recursive navigation for the assistant contour at workers.",
+  "max_depth": 8,
+  "entries": [
+    {
+      "id": "assistant.content.workers-role-catalog-json",
+      "kind": "content",
+      "path": "workers/role-catalog.json",
+      "summary": "Role Catalog",
+      "selectors": {
+        "path_terms": [
+          "workers",
+          "role",
+          "catalog"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 252,
+      "content_digest": "sha256:70763a7317d2ae0ad34f67098918cdce409102ee15c31eff6e7b0dfd0624e433"
+    },
+    {
+      "id": "assistant.section.workers-roles",
+      "kind": "index",
+      "path": "workers/roles/context-index.json",
+      "summary": "Roles section",
+      "selectors": {
+        "path_terms": [
+          "roles"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 376,
+      "content_digest": "sha256:139954f6a7be387d4a1b452f19f6f65bb13c9b1c1774b5da1b2ea5e6ce479d2b"
+    }
+  ]
+}

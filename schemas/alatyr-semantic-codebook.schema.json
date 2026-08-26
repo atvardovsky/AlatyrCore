@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/atvardovsky/AlatyrCore/schemas/alatyr-semantic-codebook.schema.json",
+  "title": "Alatyr semantic codebook shard",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "record_kind", "shard_id", "preload", "selectors", "terms"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "record_kind": {"const": "alatyr-semantic-codebook-shard"},
+    "shard_id": {"type": "string", "minLength": 1},
+    "preload": {"type": "boolean"},
+    "selectors": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "uniqueItems": true,
+        "items": {"type": "string", "minLength": 1}
+      }
+    },
+    "terms": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "version", "definition", "owner_rule_id", "canonical_owner", "scope", "non_meanings", "depends_on", "replaced_by"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^(alatyr|project):[a-z0-9][a-z0-9-]*(?:@[1-9][0-9]*)?$"},
+          "version": {"type": "integer", "minimum": 1},
+          "definition": {"type": "string", "minLength": 1},
+          "owner_rule_id": {"type": "string", "minLength": 1},
+          "canonical_owner": {"type": "string", "minLength": 1},
+          "scope": {"type": "string", "minLength": 1},
+          "non_meanings": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "depends_on": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "replaced_by": {"type": ["string", "null"]}
+        }
+      }
+    }
+  }
+}

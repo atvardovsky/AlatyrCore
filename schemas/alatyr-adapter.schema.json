@@ -59,17 +59,23 @@
     },
     "source_of_truth": {
       "type": "object",
-      "required": ["project_contour", "registry", "engineering_evidence_index", "assistant_contour", "context_router", "bootstrap_index", "context_profiles", "module_profile", "project_sources"],
+      "required": ["project_contour", "registry", "engineering_evidence_index", "assistant_contour", "context_router", "bootstrap_index", "framework_context_index", "project_context_index", "assistant_context_index", "semantic_codebook", "context_profiles", "module_profile", "project_sources"],
       "properties": {
         "project_sources": {"$ref": "#/definitions/nonEmptyStringArray"}
       }
     },
     "context_routing": {
       "type": "object",
-      "required": ["router_schema_version", "preloaded_context", "compact_bootstrap", "bootstrap_max_files", "bootstrap_max_words", "profile_default_max_files", "profile_default_max_total_words", "profile_default_max_portable_words", "profile_default_reserved_target_words", "budget_behavior"],
+      "required": ["router_schema_version", "preloaded_context", "compact_bootstrap", "bootstrap_max_files", "bootstrap_max_words", "profile_default_max_files", "profile_default_max_total_words", "profile_default_max_portable_words", "profile_default_reserved_target_words", "budget_behavior", "recursive_index_schema_version", "recursive_index_max_depth", "semantic_codebook_schema_version", "semantic_preload_policy", "context_packet_schema_version", "context_packet_template"],
       "properties": {
         "preloaded_context": {"$ref": "#/definitions/nonEmptyStringArray"},
-        "compact_bootstrap": {"$ref": "#/definitions/nonEmptyStringArray"}
+        "compact_bootstrap": {"$ref": "#/definitions/nonEmptyStringArray"},
+        "recursive_index_schema_version": {"const": 1},
+        "recursive_index_max_depth": {"type": "integer", "minimum": 1},
+        "semantic_codebook_schema_version": {"const": 1},
+        "semantic_preload_policy": {"type": "string", "minLength": 1},
+        "context_packet_schema_version": {"const": 1},
+        "context_packet_template": {"type": "string", "minLength": 1}
       }
     },
     "modules": {

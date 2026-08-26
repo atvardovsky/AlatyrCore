@@ -25,6 +25,9 @@ Entry points:
 - `.ai/assistant/policies/action-authorization.json`
 - `.ai/assistant/context-router.json`
 - `.ai/assistant/bootstrap-index.json`
+- `.ai/framework/context-index.json`, `.ai/project/context-index.json`, and
+  `.ai/assistant/context-index.json`
+- `.ai/framework/semantics/index.json`
 - `.ai/assistant/gates/index.json`
 - `.ai/assistant/context-profiles.md`
 - `.ai/assistant/module-profile.md`
@@ -53,7 +56,14 @@ Entry points:
 Future assistant bootstrap:
 - Do not rely on this chat message alone.
 - Treat `AGENTS.md` as preloaded; start from `.ai/assistant/bootstrap-index.json`.
-- Repair a stale generated index from its named manifest, project-map, and router sources; otherwise load profiles, module state, registries, blueprint, gate fragments, and the installation note only when routing or unclear adapter state requires them.
+- Use the bootstrap's resolved core semantic definitions once. Follow only
+  task-selected branches from the three contour context indexes; a parent
+  index does not authorize loading every child.
+- Repair stale recursive indexes and then the bootstrap from their named
+  sources; otherwise load profiles, module state, registries, blueprint, gate
+  fragments, and the installation note only when routing or unclear adapter
+  state requires them. Fall back to canonical owner prose when a compact term
+  cannot be resolved exactly.
 - Send `Alatyr` for compact actions or `Alatyr status` for a read-only adapter health check.
 - If the installation itself is unclear, run `recheck-after-installation` before editing files.
 - Re-evaluate the newest request at every action-phase boundary. A completed

@@ -24,7 +24,13 @@ Updated adapter surfaces:
 Future assistant bootstrap:
 - Do not rely on this chat message alone.
 - Treat `AGENTS.md` as preloaded; start from `.ai/assistant/bootstrap-index.json`.
-- Repair a stale generated index from `.ai/alatyr.yaml`, `.ai/README.md`, and `.ai/assistant/context-router.json`; otherwise load profiles, module state, registries, blueprint, gate fragments, and the installation note only when routing or unclear adapter state requires them.
+- Verify or rebuild the recursive framework, project, and assistant context
+  indexes from this branch's installed files, then repair the bootstrap from
+  `.ai/alatyr.yaml`, `.ai/README.md`, `.ai/assistant/context-router.json`, and
+  `.ai/framework/semantics/index.json` when stale.
+- Use the resolved core semantic definitions once, follow only selected index
+  branches, and load canonical owner prose for unresolved or conflicting terms.
+  Report stale entries, omitted live references, and fallback events.
 - Send `Alatyr` for compact actions or `Alatyr status` for a read-only adapter health check.
 - If migration impact is unclear, run `recheck-after-framework-update` before editing files.
 - Re-evaluate `.ai/assistant/policies/action-authorization.json` at every

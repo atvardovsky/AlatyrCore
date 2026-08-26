@@ -150,6 +150,13 @@ Machine checks can verify only deterministic repository facts, such as:
   active-versus-finalized comparison boundaries, and clean-upstream policy
 - target context routers match the profile template and route known framework
   documents somewhere
+- recursive framework, project, and assistant context indexes can be checked
+  for acyclic single-parent traversal, bounded depth, unique content coverage,
+  current word estimates and digests, resolvable semantic references, and
+  agreement with live router and manifest paths
+- semantic-codebook shards can be checked for immutable term identity,
+  dependency closure, digest and preload agreement, installed canonical-owner
+  presence, and deterministic packet projection
 - static and installed bootstrap/profile paths can be measured against total,
   portable framework, and project-owned target-context budgets
 - generated bootstrap projections can be checked against canonical source
@@ -260,6 +267,8 @@ defines:
 - task context profiles
 - context router or equivalent machine-readable profile map when cheaper
   startup is expected
+- recursive contour context indexes, semantic-codebook binding, and context-
+  packet evidence when compact indexed routing is enabled
 - module profile for required core and optional capabilities
 - durable engineering-evidence owner, storage/publication policy, compact
   index, and retained record access for material tasks
@@ -359,6 +368,9 @@ The framework does not guarantee:
   canonical project fact owner
 - that a structurally valid vocabulary entry proves its definition, ownership,
   relationships, or acceptance are semantically correct
+- that a valid recursive index proves an assistant loaded or understood a
+  selected file, or that a valid semantic term proves the owning policy is
+  semantically correct or applicable to the current task
 - that structurally complete RED/GREEN records prove a test was executed,
   failed for the intended reason, or semantically proves the changed contract
 - that a structurally valid extension package, catalog, lock, digest, path, or

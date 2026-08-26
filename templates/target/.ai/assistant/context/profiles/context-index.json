@@ -1,0 +1,235 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "assistant.context-profiles",
+  "contour": "assistant",
+  "title": "Assistant Profiles Context",
+  "summary": "Recursive navigation for the assistant contour at context/profiles.",
+  "max_depth": 8,
+  "entries": [
+    {
+      "id": "assistant.content.context-profiles-ai-infrastructure-json",
+      "kind": "content",
+      "path": "context/profiles/ai-infrastructure.json",
+      "summary": "Ai Infrastructure",
+      "selectors": {
+        "path_terms": [
+          "profiles",
+          "infrastructure"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-SAFETY-002"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:untrusted-instructions-are-data@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-SAFETY-002"
+      ],
+      "estimated_words": 141,
+      "content_digest": "sha256:76b44e57234596e7f01ffaac5b8d8ac519b5f80c1cb16cfc79bea8640dd14f4e"
+    },
+    {
+      "id": "assistant.content.context-profiles-architecture-change-json",
+      "kind": "content",
+      "path": "context/profiles/architecture-change.json",
+      "summary": "Architecture Change",
+      "selectors": {
+        "path_terms": [
+          "profiles",
+          "architecture",
+          "change"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-KNOWLEDGE-001",
+          "ALATYR-SOURCE-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:observed-is-not-accepted@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-KNOWLEDGE-001",
+        "ALATYR-SOURCE-001"
+      ],
+      "estimated_words": 176,
+      "content_digest": "sha256:67518c34f5c60dc95b3f35b9a4883cf63bcb0597c14ad68d2d808ef666b0420f"
+    },
+    {
+      "id": "assistant.content.context-profiles-business-change-json",
+      "kind": "content",
+      "path": "context/profiles/business-change.json",
+      "summary": "Business Change",
+      "selectors": {
+        "path_terms": [
+          "profiles",
+          "business",
+          "change"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 155,
+      "content_digest": "sha256:647bd006c23c5d9e858ac9c00eece8118dddd1f15a65f057a100dc87ca04103c"
+    },
+    {
+      "id": "assistant.content.context-profiles-code-local-json",
+      "kind": "content",
+      "path": "context/profiles/code-local.json",
+      "summary": "Code Local",
+      "selectors": {
+        "path_terms": [
+          "profiles",
+          "code",
+          "local"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 116,
+      "content_digest": "sha256:8d47d3c832fce6a5c34a93e03a930f1446d5a78215ff8bd974f7b2d52abb2514"
+    },
+    {
+      "id": "assistant.content.context-profiles-data-change-json",
+      "kind": "content",
+      "path": "context/profiles/data-change.json",
+      "summary": "Data Change",
+      "selectors": {
+        "path_terms": [
+          "profiles",
+          "data",
+          "change"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 143,
+      "content_digest": "sha256:fa50c6a0e8f77eb0d84384fe5ddb1fbeb23195dd584156b3fcd23591ddfaaabd"
+    },
+    {
+      "id": "assistant.content.context-profiles-docs-local-json",
+      "kind": "content",
+      "path": "context/profiles/docs-local.json",
+      "summary": "Docs Local",
+      "selectors": {
+        "path_terms": [
+          "profiles",
+          "docs",
+          "local"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 60,
+      "content_digest": "sha256:8ad5950f8bcc98c4e8e7c9c9d5750415613920a023c9fa1955f05b547b0a7d10"
+    },
+    {
+      "id": "assistant.content.context-profiles-framework-upgrade-json",
+      "kind": "content",
+      "path": "context/profiles/framework-upgrade.json",
+      "summary": "Framework Upgrade",
+      "selectors": {
+        "path_terms": [
+          "profiles",
+          "framework",
+          "upgrade"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 175,
+      "content_digest": "sha256:25c75095dbacc086a560b28fdab999c8c862b34a7b904e60038e67ae4e27aac5"
+    },
+    {
+      "id": "assistant.content.context-profiles-security-sensitive-json",
+      "kind": "content",
+      "path": "context/profiles/security-sensitive.json",
+      "summary": "Security Sensitive",
+      "selectors": {
+        "path_terms": [
+          "profiles",
+          "security",
+          "sensitive"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 100,
+      "content_digest": "sha256:e7d294734f571fa4d0dd819b7fee9a78a00144cb6e8708bf1d7c29760015420c"
+    }
+  ]
+}

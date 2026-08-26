@@ -83,6 +83,17 @@ def main() -> int:
         profile = load_object(TARGET / descriptor)
         required = profile.get("required_context")
         required = required if isinstance(required, list) else []
+        conditional = profile.get("conditional_context")
+        conditional = conditional if isinstance(conditional, list) else []
+        conditional_paths = {
+            entry.get("path")
+            for entry in conditional
+            if isinstance(entry, dict)
+            and isinstance(entry.get("path"), str)
+            and isinstance(entry.get("when"), str)
+            and entry["when"]
+        }
+        routed_context = set(required) | conditional_paths
         if FULL_CHECKLIST in required:
             failures.append(f"profile {profile_id} loads the full checklist eagerly")
         defaults = profile_defaults.get(profile_id)
@@ -90,7 +101,9 @@ def main() -> int:
             failures.append(f"profile {profile_id} has no default gate route")
             continue
         expected_gate_paths = {gate_paths.get(gate_id) for gate_id in defaults}
-        missing = sorted(path for path in expected_gate_paths if path and path not in required)
+        missing = sorted(
+            path for path in expected_gate_paths if path and path not in routed_context
+        )
         if missing:
             failures.append(f"profile {profile_id} omits routed gates: {missing}")
         unknown = sorted(gate_id for gate_id in defaults if gate_id not in gate_paths)

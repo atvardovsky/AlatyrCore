@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/atvardovsky/AlatyrCore/schemas/alatyr-context-packet.schema.json",
+  "title": "Alatyr resolved context packet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "packet_kind", "profile", "operation", "selected_items", "semantic_terms", "budget", "packet_digest"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "packet_kind": {"const": "alatyr-context-packet"},
+    "profile": {"type": "string", "minLength": 1},
+    "operation": {"type": "string", "minLength": 1},
+    "selected_items": {"type": "array"},
+    "semantic_terms": {"type": "array"},
+    "budget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max_words", "selected_content_words", "semantic_definition_words", "total_words"],
+      "properties": {
+        "max_words": {"type": "integer", "minimum": 1},
+        "selected_content_words": {"type": "integer", "minimum": 0},
+        "semantic_definition_words": {"type": "integer", "minimum": 0},
+        "total_words": {"type": "integer", "minimum": 0}
+      }
+    },
+    "packet_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+  }
+}

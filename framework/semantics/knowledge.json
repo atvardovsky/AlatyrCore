@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "record_kind": "alatyr-semantic-codebook-shard",
+  "shard_id": "knowledge",
+  "preload": false,
+  "selectors": {
+    "task_profiles": ["business-change", "architecture-change", "data-change"],
+    "operations": ["architecture-assistance", "engineering-evidence", "project-knowledge", "project-vocabulary"]
+  },
+  "terms": [
+    {
+      "id": "alatyr:accepted-current@1",
+      "version": 1,
+      "definition": "Only guidance accepted by the target decision owner, recorded by its registered canonical owner, applicable to the current scope, and supported by current freshness evidence may direct work as a current project constraint.",
+      "owner_rule_id": "ALATYR-KNOWLEDGE-001",
+      "canonical_owner": "project-knowledge.md",
+      "scope": "project-guidance delivery and material decisions",
+      "non_meanings": [
+        "frequently observed implementation",
+        "assistant recommendation",
+        "historical or stale guidance"
+      ],
+      "depends_on": ["alatyr:canonical-owner@1"],
+      "replaced_by": null
+    },
+    {
+      "id": "alatyr:observed-is-not-accepted@1",
+      "version": 1,
+      "definition": "Repository evidence may establish observed implementation, but observation, age, repetition, test coverage, or agent agreement does not establish accepted architectural or business intent without the target owner decision required for that fact type.",
+      "owner_rule_id": "ALATYR-KNOWLEDGE-001",
+      "canonical_owner": "project-knowledge.md",
+      "scope": "architecture, vocabulary, knowledge, and business-rule reasoning",
+      "non_meanings": ["ignore implementation evidence"],
+      "depends_on": ["alatyr:canonical-owner@1"],
+      "replaced_by": null
+    }
+  ]
+}

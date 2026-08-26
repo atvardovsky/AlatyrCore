@@ -26,6 +26,7 @@ EXPECTED_COMMANDS = {
     "check-source",
     "scaffold",
     "render-bootstrap",
+    "render-context",
     "validate-adapter",
     "doctor",
     "migration-report",

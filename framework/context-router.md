@@ -15,14 +15,17 @@ A target adapter can load:
 
 1. assistant instructions that the host already preloaded
 2. the generated `.ai/assistant/bootstrap-index.json` routing projection
-3. the compact workspace-mode catalog when that optional module is enabled
-4. one selected mode descriptor and applicable shared root context
-5. the selected profile's required context
-6. one or more project-area overlays when the task names affected areas
-7. task-scale overlays only when the task is large, resumable, team-active,
+3. the framework semantic-codebook preload closure and three contour root
+   context indexes named by that projection
+4. only matching recursive section indexes and selected content descriptors
+5. the compact workspace-mode catalog when that optional module is enabled
+6. one selected mode descriptor and applicable shared root context
+7. the selected profile's required context
+8. one or more project-area overlays when the task names affected areas
+9. task-scale overlays only when the task is large, resumable, team-active,
    explicitly debug-enabled, at material evidence finalization, or an enabled-
    team write preflight finds possible active-work overlap
-8. bounded project-knowledge routing after profile/area selection and again
+10. bounded project-knowledge routing after profile/area selection and again
    after concrete changed facts, paths, symbols, subsystem or architecture
    relationships, dependencies, contracts, or issue lineage become known
 
@@ -49,6 +52,10 @@ A target context router should define:
 - human reference file
 - preloaded context that must not be reread
 - generated bootstrap projection and its canonical source hashes
+- framework, project, and assistant recursive context-index roots
+- maximum recursive navigation depth and fail-closed index behavior
+- semantic-codebook index, preload term IDs, namespace boundary, version and
+  digest behavior, conditional shard loading, and canonical-prose fallback
 - bootstrap budget plus profile total, portable, and reserved target-context
   budgets
 - context receipt fields
@@ -75,15 +82,28 @@ A target context router should define:
 - validation or manual review
 - final evidence
 
-Schema changes that move owned fields between the index and descriptors must
+Schema 8 adds recursive contour indexes and semantic-codebook routing to
+schema 7's profile, overlay, and budget behavior. Schema changes that move
+owned fields between the index and descriptors must
 advance the target adapter schema and template version. Every indexed
 descriptor must exist in the selected support profile; disabled optional
 modules must not remain advertised through paths that scaffolding omitted.
+
+Resolve routing in this order: bootstrap projection, core semantic preload,
+contour index branch, profile and overlays, selected canonical owners, then
+bounded relationship expansion. Index summaries and codebook definitions do
+not replace the selected owner. Record missing indexes, stale digests, unknown
+semantic terms, exceeded depth, or budget expansion instead of silently
+loading the complete contour.
 
 The bootstrap should contain only enough target-owned context to select a
 profile and find project areas. Full blueprints, source-of-truth registries,
 operation catalogs, module profiles, policy files, and human profile explanations belong in
 selected profile or overlay context.
+
+Keep the bootstrap outside assistant catalog content ownership because it
+digests the assistant catalog itself. After installed target files change,
+rebuild recursive catalogs first and bootstrap second.
 
 Profile operation candidates make common routing cheap. Resolve exact IDs and
 aliases through a checked compact derivative of the operation catalog. Load
@@ -138,7 +158,7 @@ The router should use the same canonical profile names as
 `context-profiles.md` unless the target adapter records a deliberate local
 renaming.
 
-Budgets are routing controls, not safety limits. Schema 7 preserves schema 6's
+Budgets are routing controls, not safety limits. Schema 8 preserves schema 7's
 separate maximum total profile words, portable framework/adapter words, and
 capacity reserved for target-owned facts. Values must be positive, portable plus reserved must
 not exceed total, and source templates should retain meaningful target

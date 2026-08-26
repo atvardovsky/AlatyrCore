@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1080
+Catalog entries: 1090
 
 ## Families
 
@@ -24,6 +24,7 @@ Catalog entries: 1080
 - `CAPABILITY`: 7 codes.
 - `CODEDOC`: 32 codes.
 - `CONSISTENCY`: 32 codes.
+- `CONTEXT`: 10 codes.
 - `DEBUG`: 117 codes.
 - `DELEGATION`: 59 codes.
 - `DEPENDENCY`: 55 codes.
@@ -444,6 +445,26 @@ Catalog entries: 1080
   Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_REGISTRY_NODE_UNRESOLVED`
   Level: configured. Source: `tools/target_adapter_validation/consistency_map.py`.
+- `CONTEXT_CATALOG_CURRENT`
+  Level: info. Source: `tools/target_adapter_validation/context_catalogs.py`.
+- `CONTEXT_CATALOG_EVIDENCE_LIMIT`
+  Level: info. Source: `tools/target_adapter_validation/context_catalogs.py`.
+- `CONTEXT_CATALOG_INVALID`
+  Level: error. Source: `tools/target_adapter_validation/context_catalogs.py`.
+- `CONTEXT_CATALOG_MISSING`
+  Level: error. Source: `tools/target_adapter_validation/context_catalogs.py`.
+- `CONTEXT_CATALOG_REFERENCE_UNINDEXED`
+  Level: error. Source: `tools/target_adapter_validation/context_catalogs.py`.
+- `CONTEXT_CATALOG_ROUTER`
+  Level: error. Source: `tools/target_adapter_validation/context_catalogs.py`.
+- `CONTEXT_PACKET_TEMPLATE_INVALID`
+  Level: error. Source: `tools/target_adapter_validation/context_catalogs.py`.
+- `CONTEXT_SEMANTIC_CODEBOOK_INVALID`
+  Level: error. Source: `tools/target_adapter_validation/context_catalogs.py`.
+- `CONTEXT_SEMANTIC_OWNER_MISSING`
+  Level: error. Source: `tools/target_adapter_validation/context_catalogs.py`.
+- `CONTEXT_SEMANTIC_PRELOAD_DRIFT`
+  Level: error. Source: `tools/target_adapter_validation/context_catalogs.py`.
 - `DEBUG_MODE_ACTIVATION`
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_ACTIVE_COMPLETION_TIME`

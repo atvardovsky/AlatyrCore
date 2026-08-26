@@ -20,10 +20,13 @@
   "required_context": [
     ".ai/framework/ai-infrastructure-routing.md",
     ".ai/assistant/ai-infrastructure-router.json",
-    ".ai/assistant/gates/core.md",
-    ".ai/assistant/gates/final-evidence.md"
+    ".ai/assistant/gates/core.md"
   ],
   "conditional_context": [
+    {
+      "path": ".ai/assistant/gates/final-evidence.md",
+      "when": "preparing the final evidence report or resolving an evidence-contract conflict"
+    },
     {
       "path": ".ai/assistant/gates/security-approval.md",
       "when": "source import permission change live or destructive capability credential access protected integration or weakened governance is possible"

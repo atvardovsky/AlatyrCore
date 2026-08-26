@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "assistant.approvals",
+  "contour": "assistant",
+  "title": "Assistant Approvals Context",
+  "summary": "Recursive navigation for the assistant contour at approvals.",
+  "max_depth": 8,
+  "entries": [
+    {
+      "id": "assistant.content.approvals-approval-record-template-json",
+      "kind": "content",
+      "path": "approvals/approval-record-template.json",
+      "summary": "Approval Record Template",
+      "selectors": {
+        "path_terms": [
+          "approvals",
+          "approval",
+          "record",
+          "template"
+        ],
+        "rule_ids": [
+          "ALATYR-APPROVAL-001",
+          "ALATYR-AUTHORIZATION-001",
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:current-scope-authorization@1",
+        "alatyr:protected-change@1"
+      ],
+      "owner_refs": [
+        "ALATYR-APPROVAL-001",
+        "ALATYR-AUTHORIZATION-001",
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 108,
+      "content_digest": "sha256:a509c78ef72f5da2dab4cfa3ab5b294c895c80fed243a68791fbbc3f4b40f8d3"
+    },
+    {
+      "id": "assistant.content.approvals-approval-template-md",
+      "kind": "content",
+      "path": "approvals/approval-template.md",
+      "summary": "Approval Record",
+      "selectors": {
+        "path_terms": [
+          "approvals",
+          "approval",
+          "template"
+        ],
+        "rule_ids": [
+          "ALATYR-APPROVAL-001",
+          "ALATYR-AUTHORIZATION-001",
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:current-scope-authorization@1",
+        "alatyr:protected-change@1"
+      ],
+      "owner_refs": [
+        "ALATYR-APPROVAL-001",
+        "ALATYR-AUTHORIZATION-001",
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 199,
+      "content_digest": "sha256:a0330539bcf2c222ebefcbd288e3fd99c3bce7fce6211be9263138456adcba7c"
+    }
+  ]
+}

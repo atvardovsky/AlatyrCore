@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "assistant.skills-example",
+  "contour": "assistant",
+  "title": "Assistant Example Context",
+  "summary": "Recursive navigation for the assistant contour at skills/example.",
+  "max_depth": 8,
+  "entries": [
+    {
+      "id": "assistant.content.skills-example-skill-md",
+      "kind": "content",
+      "path": "skills/example/SKILL.md",
+      "summary": "Example Adapted Skill",
+      "selectors": {
+        "path_terms": [
+          "skills",
+          "example",
+          "skill"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 201,
+      "content_digest": "sha256:c3313071f3f8729d835a3f9042bee9df0091366417b5a18e44167c0c0f773783"
+    }
+  ]
+}

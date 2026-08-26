@@ -1,0 +1,1320 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "assistant.templates",
+  "contour": "assistant",
+  "title": "Assistant Templates Context",
+  "summary": "Recursive navigation for the assistant contour at templates.",
+  "max_depth": 8,
+  "entries": [
+    {
+      "id": "assistant.content.templates-adapter-maintenance-evidence-json",
+      "kind": "content",
+      "path": "templates/adapter-maintenance-evidence.json",
+      "summary": "Adapter Maintenance Evidence",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "adapter",
+          "maintenance",
+          "evidence"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 88,
+      "content_digest": "sha256:e163ad4eed87877829c559060566b359da1be100ba4d811381df99042d98b337"
+    },
+    {
+      "id": "assistant.content.templates-adapter-output-contracts-md",
+      "kind": "content",
+      "path": "templates/adapter-output-contracts.md",
+      "summary": "Alatyr Adapter Output Contracts",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "adapter",
+          "output",
+          "contracts"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 1117,
+      "content_digest": "sha256:42856fa4dbae61eab28fbd6b2888f499ad3fd5cbe60e1e1f91e0880e89d5f7ee"
+    },
+    {
+      "id": "assistant.content.templates-ai-infrastructure-adaptation-record-md",
+      "kind": "content",
+      "path": "templates/ai-infrastructure-adaptation-record.md",
+      "summary": "AI Infrastructure Adaptation Record",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "infrastructure",
+          "adaptation",
+          "record"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-SAFETY-002"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:untrusted-instructions-are-data@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-SAFETY-002"
+      ],
+      "estimated_words": 277,
+      "content_digest": "sha256:389eda84d1e9f1a386b085c7dd3eb7a2d7a94f6ff85b867567f6866498b99e0c"
+    },
+    {
+      "id": "assistant.content.templates-ai-infrastructure-inventory-md",
+      "kind": "content",
+      "path": "templates/ai-infrastructure-inventory.md",
+      "summary": "AI Infrastructure Inventory",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "infrastructure",
+          "inventory"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-SAFETY-002"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:untrusted-instructions-are-data@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-SAFETY-002"
+      ],
+      "estimated_words": 290,
+      "content_digest": "sha256:94b2bd3ff4698743c759d374d0ea4a27437ac622cde272076c45a01e34baff0f"
+    },
+    {
+      "id": "assistant.content.templates-ai-infrastructure-recommendation-md",
+      "kind": "content",
+      "path": "templates/ai-infrastructure-recommendation.md",
+      "summary": "AI Infrastructure Recommendation",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "infrastructure",
+          "recommendation"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-SAFETY-002"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:untrusted-instructions-are-data@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-SAFETY-002"
+      ],
+      "estimated_words": 336,
+      "content_digest": "sha256:5cc2fc727680ffefb0c611a81ddaa30374ae7abdaed48bfe67584bdae7da0df6"
+    },
+    {
+      "id": "assistant.content.templates-architecture-area-md",
+      "kind": "content",
+      "path": "templates/architecture-area.md",
+      "summary": "Architecture Area Record",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "architecture",
+          "area"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-KNOWLEDGE-001",
+          "ALATYR-SOURCE-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:observed-is-not-accepted@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-KNOWLEDGE-001",
+        "ALATYR-SOURCE-001"
+      ],
+      "estimated_words": 119,
+      "content_digest": "sha256:00e57f6ca8f2e9bb98dd8f7f5b3bda565b07508bb06580ac3c4c064b781592b6"
+    },
+    {
+      "id": "assistant.content.templates-architecture-discussion-result-md",
+      "kind": "content",
+      "path": "templates/architecture-discussion-result.md",
+      "summary": "Architecture Discussion Result",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "architecture",
+          "discussion",
+          "result"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-KNOWLEDGE-001",
+          "ALATYR-SOURCE-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:observed-is-not-accepted@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-KNOWLEDGE-001",
+        "ALATYR-SOURCE-001"
+      ],
+      "estimated_words": 161,
+      "content_digest": "sha256:fad58bb9fbccd1cd360775caddd05d9220cde4b7556e6cbce2afaeaab2e45130"
+    },
+    {
+      "id": "assistant.content.templates-architecture-pattern-md",
+      "kind": "content",
+      "path": "templates/architecture-pattern.md",
+      "summary": "Architecture Pattern Record",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "architecture",
+          "pattern"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-KNOWLEDGE-001",
+          "ALATYR-SOURCE-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:observed-is-not-accepted@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-KNOWLEDGE-001",
+        "ALATYR-SOURCE-001"
+      ],
+      "estimated_words": 178,
+      "content_digest": "sha256:f4c985d1b910fd7c17d9358348b9cf738d018403b506b1830de1bafe0ef895de"
+    },
+    {
+      "id": "assistant.content.templates-ascii-diagram-md",
+      "kind": "content",
+      "path": "templates/ascii-diagram.md",
+      "summary": "ASCII Diagram Presentation",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "ascii",
+          "diagram"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 153,
+      "content_digest": "sha256:a56dd3db27b7b25238b1013773e70edbe11708a958e43a933134dc83786b55de"
+    },
+    {
+      "id": "assistant.content.templates-change-package-record-json",
+      "kind": "content",
+      "path": "templates/change-package-record.json",
+      "summary": "Change Package Record",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "change",
+          "package",
+          "record"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-INTEGRITY-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:logical-integrity@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-INTEGRITY-001"
+      ],
+      "estimated_words": 247,
+      "content_digest": "sha256:84a199a5401157321614ff17a338f6c36a7847a93d60a0ea2015163f7b7db03f"
+    },
+    {
+      "id": "assistant.content.templates-change-package-report-md",
+      "kind": "content",
+      "path": "templates/change-package-report.md",
+      "summary": "Change Package Report",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "change",
+          "package",
+          "report"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-INTEGRITY-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:logical-integrity@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-INTEGRITY-001"
+      ],
+      "estimated_words": 177,
+      "content_digest": "sha256:26abdf90ead705bb9f840c722201f7df439cd9f760680c22242ac0660a279072"
+    },
+    {
+      "id": "assistant.content.templates-code-documentation-profile-review-md",
+      "kind": "content",
+      "path": "templates/code-documentation-profile-review.md",
+      "summary": "Code Documentation Profile Review",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "code",
+          "documentation",
+          "profile",
+          "review"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 165,
+      "content_digest": "sha256:a4b83a72a3ca2bcf023f15df797b697d11809c1df73402108b09aad6fdfafd43"
+    },
+    {
+      "id": "assistant.content.templates-context-packet-json",
+      "kind": "content",
+      "path": "templates/context-packet.json",
+      "summary": "Context Packet",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "packet"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 49,
+      "content_digest": "sha256:6f7720a98f717c160fd578333a670b1b79570cb9b120ee4b0ea46d61c4049e75"
+    },
+    {
+      "id": "assistant.content.templates-debug-session-record-json",
+      "kind": "content",
+      "path": "templates/debug-session-record.json",
+      "summary": "Debug Session Record",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "debug",
+          "session",
+          "record"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 554,
+      "content_digest": "sha256:14ff5b919ffd90a164818196dee36dc182b76f0ce61ad41ef460ef29fa927784"
+    },
+    {
+      "id": "assistant.content.templates-debug-summary-md",
+      "kind": "content",
+      "path": "templates/debug-summary.md",
+      "summary": "Alatyr Debug Summary",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "debug",
+          "summary"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 130,
+      "content_digest": "sha256:527288636491073c0e5388834e2017b86ab2341c7a6c1067d7cf6de613cfdc43"
+    },
+    {
+      "id": "assistant.content.templates-delayed-outcome-evidence-json",
+      "kind": "content",
+      "path": "templates/delayed-outcome-evidence.json",
+      "summary": "Delayed Outcome Evidence",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "delayed",
+          "outcome",
+          "evidence"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 60,
+      "content_digest": "sha256:3ce3fde5fef45b14321b217d79e985844bb6858ba3ffd025952a3f8f1b2c7b85"
+    },
+    {
+      "id": "assistant.content.templates-dependency-knowledge-sync-report-md",
+      "kind": "content",
+      "path": "templates/dependency-knowledge-sync-report.md",
+      "summary": "Dependency Knowledge Sync Report",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "dependency",
+          "knowledge",
+          "sync",
+          "report"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-KNOWLEDGE-001",
+          "ALATYR-SAFETY-002",
+          "ALATYR-SOURCE-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:observed-is-not-accepted@1",
+        "alatyr:untrusted-instructions-are-data@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-KNOWLEDGE-001",
+        "ALATYR-SAFETY-002",
+        "ALATYR-SOURCE-001"
+      ],
+      "estimated_words": 88,
+      "content_digest": "sha256:4fa9a0edbe05046f6dbcfcc6d140ad004a562fecae6a90818078b0292b3ed42b"
+    },
+    {
+      "id": "assistant.content.templates-diagram-presentation-md",
+      "kind": "content",
+      "path": "templates/diagram-presentation.md",
+      "summary": "Diagram Presentation",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "diagram",
+          "presentation"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 283,
+      "content_digest": "sha256:7ef5d55523ac3fefd80842b9f43667144c70bb55b490d9bcd35ee29354e7bee6"
+    },
+    {
+      "id": "assistant.content.templates-effectiveness-report-md",
+      "kind": "content",
+      "path": "templates/effectiveness-report.md",
+      "summary": "Alatyr Effectiveness Report",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "effectiveness",
+          "report"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 352,
+      "content_digest": "sha256:81ef402f0d8e40945f2cc96cf19ede88a60abc34b6776e2a2c1bfaa95e7fffaf"
+    },
+    {
+      "id": "assistant.content.templates-engineering-evidence-record-json",
+      "kind": "content",
+      "path": "templates/engineering-evidence-record.json",
+      "summary": "Engineering Evidence Record",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "engineering",
+          "evidence",
+          "record"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 176,
+      "content_digest": "sha256:a80bbfb732ca02673e7070b6888fe39e038eb6de06373ce82d6fcdb7f671ebe0"
+    },
+    {
+      "id": "assistant.content.templates-extension-lifecycle-record-md",
+      "kind": "content",
+      "path": "templates/extension-lifecycle-record.md",
+      "summary": "Extension Lifecycle Record",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "extension",
+          "lifecycle",
+          "record"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-SAFETY-002"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:untrusted-instructions-are-data@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-SAFETY-002"
+      ],
+      "estimated_words": 151,
+      "content_digest": "sha256:7c8fce65c04b8d978cb9614f16dd26131144a4fa23feeea25a1c33a2e299ed21"
+    },
+    {
+      "id": "assistant.content.templates-extension-review-md",
+      "kind": "content",
+      "path": "templates/extension-review.md",
+      "summary": "Extension Review",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "extension",
+          "review"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-SAFETY-002"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:untrusted-instructions-are-data@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-SAFETY-002"
+      ],
+      "estimated_words": 111,
+      "content_digest": "sha256:1846d72678d8d45fe8b27beb766c40236ef040e411f4e99ef834e0bdc3be3bd7"
+    },
+    {
+      "id": "assistant.content.templates-installation-note-md",
+      "kind": "content",
+      "path": "templates/installation-note.md",
+      "summary": "Alatyr Core Installation Note",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "installation",
+          "note"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 727,
+      "content_digest": "sha256:db17a919a2902afec2db7de372155afe03f6d6a0c966bd99195e1d84389779ea"
+    },
+    {
+      "id": "assistant.content.templates-large-task-operation-packet-md",
+      "kind": "content",
+      "path": "templates/large-task-operation-packet.md",
+      "summary": "Large-Task Operation Packet",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "large",
+          "task",
+          "operation",
+          "packet"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 636,
+      "content_digest": "sha256:f539ac02c7475d71c5e529f14254c1c09fe6fa1885d2d5566f6c6825d8f6cb8e"
+    },
+    {
+      "id": "assistant.content.templates-migration-note-md",
+      "kind": "content",
+      "path": "templates/migration-note.md",
+      "summary": "Alatyr Migration Note",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "migration",
+          "note"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 250,
+      "content_digest": "sha256:648737b641b5342e3992f892b51f02a1dcd167e198dfb50a6c73dec09c34a90e"
+    },
+    {
+      "id": "assistant.content.templates-native-worker-binding-md",
+      "kind": "content",
+      "path": "templates/native-worker-binding.md",
+      "summary": "Native Worker Binding",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "native",
+          "worker",
+          "binding"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 175,
+      "content_digest": "sha256:f0a2546bd252e9271317e6e8eb4f5834a4f646ecedcf980118b150cce8dced34"
+    },
+    {
+      "id": "assistant.content.templates-operation-request-md",
+      "kind": "content",
+      "path": "templates/operation-request.md",
+      "summary": "Installed Alatyr Operation Request",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "operation",
+          "request"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 1236,
+      "content_digest": "sha256:5d2783cc4623dba52e40c4aa27a8afd60783f84de9c202de2b849fdf6bd95fdf"
+    },
+    {
+      "id": "assistant.content.templates-post-install-message-md",
+      "kind": "content",
+      "path": "templates/post-install-message.md",
+      "summary": "Post-Install Assistant Chat Message",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "post",
+          "install",
+          "message"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 1275,
+      "content_digest": "sha256:bd8e136cf6f4ed6b36e9f6d58059bec4260a36c488ebec9adb1f667ee80df106"
+    },
+    {
+      "id": "assistant.content.templates-post-update-message-md",
+      "kind": "content",
+      "path": "templates/post-update-message.md",
+      "summary": "Post-Update Assistant Chat Message",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "post",
+          "update",
+          "message"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 1161,
+      "content_digest": "sha256:1a4ef6d1425ddd3c30f7ef44c48094faae027433878ff81ca9934e22c89a4eef"
+    },
+    {
+      "id": "assistant.content.templates-pre-change-preview-md",
+      "kind": "content",
+      "path": "templates/pre-change-preview.md",
+      "summary": "Alatyr Pre-Change Preview",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "pre",
+          "change",
+          "preview"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 202,
+      "content_digest": "sha256:2fb389f4792027130958bb7a9ba79eb986b516c0876ef1d1e52c05c462a79ace"
+    },
+    {
+      "id": "assistant.content.templates-project-knowledge-promotion-json",
+      "kind": "content",
+      "path": "templates/project-knowledge-promotion.json",
+      "summary": "Project Knowledge Promotion",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "project",
+          "knowledge",
+          "promotion"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-KNOWLEDGE-001",
+          "ALATYR-SOURCE-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:observed-is-not-accepted@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-KNOWLEDGE-001",
+        "ALATYR-SOURCE-001"
+      ],
+      "estimated_words": 109,
+      "content_digest": "sha256:0156da79f51148e09a59ed2c06c88a58b339326f59b87c0accecbfe3766807d4"
+    },
+    {
+      "id": "assistant.content.templates-project-knowledge-route-shard-json",
+      "kind": "content",
+      "path": "templates/project-knowledge-route-shard.json",
+      "summary": "Project Knowledge Route Shard",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "project",
+          "knowledge",
+          "route",
+          "shard"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-KNOWLEDGE-001",
+          "ALATYR-SOURCE-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:observed-is-not-accepted@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-KNOWLEDGE-001",
+        "ALATYR-SOURCE-001"
+      ],
+      "estimated_words": 26,
+      "content_digest": "sha256:7467db6dc253e9360357d1b2eb3da4bdf25ae5d70f2cc3f689c7aee6c322e231"
+    },
+    {
+      "id": "assistant.content.templates-subagent-task-packet-md",
+      "kind": "content",
+      "path": "templates/subagent-task-packet.md",
+      "summary": "Subagent Task Packet",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "subagent",
+          "task",
+          "packet"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 261,
+      "content_digest": "sha256:44e1918d3f873aebcd3dfc642540ec4abe88bb9436b02898eb063b1f56d4a9b8"
+    },
+    {
+      "id": "assistant.content.templates-team-checkpoint-md",
+      "kind": "content",
+      "path": "templates/team-checkpoint.md",
+      "summary": "Team Checkpoint",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "team",
+          "checkpoint"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 156,
+      "content_digest": "sha256:53010688fcd3265b108da596c5506022330b5c48292fab2affa1915d14b6cc78"
+    },
+    {
+      "id": "assistant.content.templates-team-collaboration-review-md",
+      "kind": "content",
+      "path": "templates/team-collaboration-review.md",
+      "summary": "Team Collaboration Review",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "team",
+          "collaboration",
+          "review"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 195,
+      "content_digest": "sha256:7beeaa5d444d87ab7aad3892972985094b0fbbd27f24be4a7d557e7f687de8a9"
+    },
+    {
+      "id": "assistant.content.templates-team-decision-record-md",
+      "kind": "content",
+      "path": "templates/team-decision-record.md",
+      "summary": "Team Decision Record",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "team",
+          "decision",
+          "record"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 156,
+      "content_digest": "sha256:996b3c7673bf68ce65c4ce820ca4931c92b85e17e2dde70d7a97755dd9e41ff5"
+    },
+    {
+      "id": "assistant.content.templates-team-handoff-md",
+      "kind": "content",
+      "path": "templates/team-handoff.md",
+      "summary": "Team Handoff",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "team",
+          "handoff"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 164,
+      "content_digest": "sha256:cb23c9394642f973c0519c020c481f8f1af933a68a2d3063afe95cc9a3ff9779"
+    },
+    {
+      "id": "assistant.content.templates-team-identity-example-json",
+      "kind": "content",
+      "path": "templates/team-identity.example.json",
+      "summary": "Team Identity.Example",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "team",
+          "identity",
+          "example"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 18,
+      "content_digest": "sha256:f59808b0f97fec673d7a593d24aea9431ef1b45223f5c36b3304d42e87bb9723"
+    },
+    {
+      "id": "assistant.content.templates-test-first-evidence-md",
+      "kind": "content",
+      "path": "templates/test-first-evidence.md",
+      "summary": "Test-First Evidence",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "test",
+          "first",
+          "evidence"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 103,
+      "content_digest": "sha256:55b7b8a3c96af3b8b5bb05569925443b97e767accd14aec65cd5e82a210e199f"
+    },
+    {
+      "id": "assistant.content.templates-vocabulary-term-review-md",
+      "kind": "content",
+      "path": "templates/vocabulary-term-review.md",
+      "summary": "Vocabulary Term Review",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "vocabulary",
+          "term",
+          "review"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-KNOWLEDGE-001",
+          "ALATYR-SOURCE-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:observed-is-not-accepted@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-KNOWLEDGE-001",
+        "ALATYR-SOURCE-001"
+      ],
+      "estimated_words": 111,
+      "content_digest": "sha256:d9cf96efa1d31f7b742b6fc117d23f93179b29c79c1c408ebbc8146846b2f963"
+    },
+    {
+      "id": "assistant.content.templates-worker-execution-plan-md",
+      "kind": "content",
+      "path": "templates/worker-execution-plan.md",
+      "summary": "Worker Execution Plan",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "worker",
+          "execution",
+          "plan"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 130,
+      "content_digest": "sha256:df6d54546b5f4f9d443576ed3595b5ddb2327380f0898b62bad15bcb66bd0a15"
+    },
+    {
+      "id": "assistant.content.templates-worker-result-md",
+      "kind": "content",
+      "path": "templates/worker-result.md",
+      "summary": "Worker Result",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "worker",
+          "result"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 102,
+      "content_digest": "sha256:64cb063a02941d8059ca3b486b80f005be67e03986ebeb5655bdb804b16bf59c"
+    },
+    {
+      "id": "assistant.content.templates-workspace-mode-preflight-md",
+      "kind": "content",
+      "path": "templates/workspace-mode-preflight.md",
+      "summary": "Workspace Mode Preflight",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "workspace",
+          "mode",
+          "preflight"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 53,
+      "content_digest": "sha256:15503d7885e511fb0ea034d62ef6e09b9ab655d758dc0deb644c6cf919d86907"
+    },
+    {
+      "id": "assistant.content.templates-workspace-mode-suggestion-md",
+      "kind": "content",
+      "path": "templates/workspace-mode-suggestion.md",
+      "summary": "Workspace Mode Suggestion",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "workspace",
+          "mode",
+          "suggestion"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 82,
+      "content_digest": "sha256:6bd78856a138b429725f18acbf298a89bc39c337303967dc49ca06ad8fd1b5d6"
+    }
+  ]
+}

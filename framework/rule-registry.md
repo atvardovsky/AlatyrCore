@@ -58,19 +58,24 @@ the changelog and release migration note.
 Rule ID: `ALATYR-CONTEXT-001`
 Source owner: `framework/context-profiles.md`
 Installed owner: `.ai/framework/context-profiles.md`
-Commitment: Use a generated hash-bound bootstrap index, routed gate fragments,
-and the smallest task profile through an aligned context router; route the
-target registry and consistency map together for semantic work while keeping
-redundant portable explanation conditional; apply bounded two-stage
-project-guidance delivery from profile plus a stronger area, dependency, fact,
-contract, path, symbol, or issue signal; record planned, resolved, and
-observably delivered ordered guidance identities with deterministic bundle
-digests while never claiming model comprehension; revalidate changed bundles
-before protected implementation, material decisions, final validation, and
-final evidence; separate total, portable, and reserved target context budgets;
-record expansion only when boundaries or conflicts require it; and keep
-unrelated knowledge, optional modules, evidence history, debug records,
-delegated execution, complete checklists, and full team detail lazy.
+Commitment: Use a generated hash-bound bootstrap index, recursively navigated
+contour indexes, a small context-loaded semantic codebook, routed gate
+fragments, and the smallest task profile through an aligned context router;
+keep bootstrap outside assistant catalog content ownership and rebuild
+installed catalogs before bootstrap to prevent circular digests; resolve
+compact terms losslessly with versioned owner-linked definitions and
+canonical-prose fallback; route the target registry and consistency map
+together for semantic work while keeping redundant portable explanation
+conditional; apply bounded two-stage project-guidance delivery from profile
+plus a stronger area, dependency, fact, contract, path, symbol, or issue
+signal; record packet identity plus planned, resolved, and observably delivered
+ordered guidance identities with deterministic digests while never claiming
+model comprehension; revalidate changed bundles before protected
+implementation, material decisions, final validation, and final evidence;
+separate total, portable, and reserved target context budgets; record expansion
+only when boundaries or conflicts require it; and keep unrelated branches,
+knowledge, optional modules, evidence history, debug records, delegated
+execution, complete checklists, and full team detail lazy.
 Applies to: all installed adapter tasks.
 Enforcement: required.
 
@@ -275,10 +280,12 @@ Rule ID: `ALATYR-VOCABULARY-001`
 Source owner: `framework/project-vocabulary.md`
 Installed owner: `.ai/framework/project-vocabulary.md`
 Commitment: When the optional project-vocabulary module is enabled, keep a
-compact project-owned catalog and scoped term records that distinguish
-observed, proposed, accepted, deprecated, contradicted, and unknown meanings;
-resolve aliases and acronyms lazily; link rather than replace canonical data
-and project fact owners; and require target authority before normalization.
+compact project-owned catalog and scoped project:* term records that
+distinguish observed, proposed, accepted, deprecated, contradicted, and unknown
+meanings; resolve aliases and acronyms lazily; keep target meanings separate
+from framework-owned alatyr:* semantic-codebook terms; link rather than replace
+canonical data and project fact owners; and require target authority before
+normalization.
 Applies to: project term lookup, acronym and alias resolution, vocabulary
 proposal and review, terminology checks, accepted terminology changes.
 Enforcement: required when module enabled.
@@ -360,7 +367,8 @@ Commitment: Keep framework core, project facts, and repository adapter facts
 separated and rewritten from target evidence; distinguish source-repository
 rule owners from their installed .ai/framework projections; record the
 installed framework pack and its projected registry, inventory, bootstrap
-index, gate index, capability closure, installation state and transition
+index, recursive contour indexes, semantic-codebook binding, context-packet
+contract, gate index, capability closure, installation state and transition
 evidence, and current-scope action policy; reject live support placeholders,
 manifest/profile module disagreement, invalid installation-state history, and
 machine/human policy drift before acceptance; and preserve durable task
@@ -454,15 +462,17 @@ Installed owner: `.ai/framework/lifecycle.md`
 Commitment: Record framework version, adapter schema version, template version,
 installed framework pack, baseline, deviations, migration notes, and hash-bound
 upgrade impact; bind releases to v<VERSION>, shipped schemas, contract-tree
-evidence, and the checked-out target branch/revision; preserve current-scope
-authorization, Project Development Model guidance and coverage, durable
-engineering evidence, delayed outcomes and adapter-maintenance evidence,
-non-canonical Debug Mode records and their migration-limited legacy
-attribution, and enabled target package/module state; bind installation states
-to a continuous operation/revision/authorization/approval/validation transition
-record; distinguish migration staging from strict acceptance; expand context
-from affected owners and migrate schemas atomically without replacing active
-state with placeholders or inferring missing historical evidence.
+evidence, and the checked-out target branch/revision; rebuild recursive context
+indexes and semantic-codebook/bootstrap bindings from the exact checked-out
+installation; preserve current-scope authorization, Project Development Model
+guidance and coverage, durable engineering evidence, delayed outcomes and
+adapter-maintenance evidence, non-canonical Debug Mode records and their
+migration-limited legacy attribution, and enabled target package/module state;
+bind installation states to a continuous
+operation/revision/authorization/approval/validation transition record;
+distinguish migration staging from strict acceptance; expand context from
+affected owners and migrate schemas atomically without replacing active state
+with placeholders or inferring missing historical evidence.
 Applies to: installation, framework upgrades.
 Enforcement: required.
 

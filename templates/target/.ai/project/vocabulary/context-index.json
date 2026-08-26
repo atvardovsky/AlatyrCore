@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "project.vocabulary",
+  "contour": "project",
+  "title": "Project Vocabulary Context",
+  "summary": "Recursive navigation for the project contour at vocabulary.",
+  "max_depth": 8,
+  "entries": [
+    {
+      "id": "project.content.vocabulary-catalog-json",
+      "kind": "content",
+      "path": "vocabulary/catalog.json",
+      "summary": "Catalog",
+      "selectors": {
+        "path_terms": [
+          "vocabulary",
+          "catalog"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-KNOWLEDGE-001",
+          "ALATYR-SOURCE-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:observed-is-not-accepted@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-KNOWLEDGE-001",
+        "ALATYR-SOURCE-001"
+      ],
+      "estimated_words": 53,
+      "content_digest": "sha256:11c02a42dc2b9d0915c532db105d7ccc6e74b01ba2f12f9d0092c0b38ac83ede"
+    },
+    {
+      "id": "project.content.vocabulary-data-dictionary-links-json",
+      "kind": "content",
+      "path": "vocabulary/data-dictionary-links.json",
+      "summary": "Data Dictionary Links",
+      "selectors": {
+        "path_terms": [
+          "vocabulary",
+          "data",
+          "dictionary",
+          "links"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-KNOWLEDGE-001",
+          "ALATYR-SOURCE-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:observed-is-not-accepted@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-KNOWLEDGE-001",
+        "ALATYR-SOURCE-001"
+      ],
+      "estimated_words": 35,
+      "content_digest": "sha256:54cd088f6b030765ee4f56bbdda27aab679b74fac94e0886deeefa8d5d497a97"
+    },
+    {
+      "id": "project.content.vocabulary-readme-md",
+      "kind": "content",
+      "path": "vocabulary/README.md",
+      "summary": "Project Vocabulary",
+      "selectors": {
+        "path_terms": [
+          "vocabulary"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-KNOWLEDGE-001",
+          "ALATYR-SOURCE-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:observed-is-not-accepted@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-KNOWLEDGE-001",
+        "ALATYR-SOURCE-001"
+      ],
+      "estimated_words": 281,
+      "content_digest": "sha256:be407f4544b7d3d614aa2b723d1e921f9fcf72e0802a788f5690a247185c512c"
+    },
+    {
+      "id": "project.content.vocabulary-terms-json",
+      "kind": "content",
+      "path": "vocabulary/terms.json",
+      "summary": "Terms",
+      "selectors": {
+        "path_terms": [
+          "vocabulary",
+          "terms"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-KNOWLEDGE-001",
+          "ALATYR-SOURCE-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:observed-is-not-accepted@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-KNOWLEDGE-001",
+        "ALATYR-SOURCE-001"
+      ],
+      "estimated_words": 67,
+      "content_digest": "sha256:d57c69ebb80942d268d21a9fe9eb2a7599d27aa0b42757186de1df9a29519525"
+    }
+  ]
+}

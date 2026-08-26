@@ -3,7 +3,28 @@
   "router_kind": "alatyr-source-context-router",
   "canonical_rule": "ALATYR-CONTEXT-001",
   "preloaded_context": ["AGENTS.md"],
-  "bootstrap_context": ["tools/source_context_router.json"],
+  "bootstrap_context": [
+    "tools/source_context_router.json",
+    "framework/semantics/core.json"
+  ],
+  "recursive_context": {
+    "schema_version": 1,
+    "framework_index": "framework/context-index.json",
+    "max_depth": 8,
+    "selection": "follow only entries matched by the selected profile, rule owner, path, contract, dependency, risk, conflict, or failed check"
+  },
+  "semantic_codebook": {
+    "schema_version": 1,
+    "index": "framework/semantics/index.json",
+    "preload_terms": [
+      "alatyr:current-scope-authorization@1",
+      "alatyr:canonical-owner@1",
+      "alatyr:protected-change@1",
+      "alatyr:logical-integrity@1",
+      "alatyr:bounded-context-expansion@1"
+    ],
+    "fallback": "load canonical owner prose and stop compact interpretation"
+  },
   "budgets": {
     "bootstrap_max_words": 2000,
     "on_exceed": "stop and repair or report routing drift"
@@ -23,10 +44,7 @@
       "checks": ["markdown-links", "framework-consistency"]
     },
     "framework-rule": {
-      "required_context": [
-        "framework/rule-registry.json",
-        "framework/rule-ownership.md"
-      ],
+      "required_context": ["framework/context-index.json"],
       "conditional_context": [
         "canonical owner selected by rule ID",
         "owner dependency selected from alatyr_doc metadata",

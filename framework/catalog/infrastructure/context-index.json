@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "framework.infrastructure",
+  "contour": "framework",
+  "title": "Infrastructure Framework Context",
+  "summary": "Bounded infrastructure framework rules and supporting guidance.",
+  "max_depth": 8,
+  "entries": [
+    {
+      "id": "framework.infrastructure.ai-infrastructure-recommendations-md",
+      "kind": "content",
+      "path": "ai-infrastructure-recommendations.md",
+      "summary": "AI Infrastructure Recommendations",
+      "selectors": {
+        "path_terms": [
+          "infrastructure",
+          "recommendations"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 1561,
+      "content_digest": "sha256:18a84d8c27d5b45a813759463026b3ff0c6ba8c4f8334186f4ad996e083d0892"
+    },
+    {
+      "id": "framework.infrastructure.ai-infrastructure-routing-md",
+      "kind": "content",
+      "path": "ai-infrastructure-routing.md",
+      "summary": "AI Infrastructure Routing",
+      "selectors": {
+        "path_terms": [
+          "infrastructure",
+          "routing"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 998,
+      "content_digest": "sha256:015a9ef3b1092962eca28af96abc1abdfa884cae4ecb2edf159c87a109fe192e"
+    },
+    {
+      "id": "framework.infrastructure.capabilities-json",
+      "kind": "content",
+      "path": "capabilities.json",
+      "summary": "Capabilities",
+      "selectors": {
+        "path_terms": [
+          "capabilities"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 578,
+      "content_digest": "sha256:c6de64859059d6c0d72f0213070422a978e23d6357dc441a2b31d347fb68d219"
+    },
+    {
+      "id": "framework.infrastructure.dependency-knowledge-md",
+      "kind": "content",
+      "path": "dependency-knowledge.md",
+      "summary": "Dependency Knowledge",
+      "selectors": {
+        "path_terms": [
+          "dependency",
+          "knowledge"
+        ],
+        "rule_ids": [
+          "ALATYR-DEPENDENCY-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:one-active-adapter@1"
+      ],
+      "owner_refs": [
+        "ALATYR-DEPENDENCY-001"
+      ],
+      "estimated_words": 1888,
+      "content_digest": "sha256:166f1fa32229bbc8455b6edfa4a629a25b93bc321839a78034c6ef0fbf4d58cf"
+    },
+    {
+      "id": "framework.infrastructure.extensions-md",
+      "kind": "content",
+      "path": "extensions.md",
+      "summary": "Alatyr Extensions",
+      "selectors": {
+        "path_terms": [
+          "extensions"
+        ],
+        "rule_ids": [
+          "ALATYR-EXTENSION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [
+        "ALATYR-EXTENSION-001"
+      ],
+      "estimated_words": 1490,
+      "content_digest": "sha256:f256c58309605c0553729d5df1f4a5f16e80ee36f95cd665ac62732cce33d38f"
+    },
+    {
+      "id": "framework.infrastructure.skill-adaptation-md",
+      "kind": "content",
+      "path": "skill-adaptation.md",
+      "summary": "AI Framework Skill And Assistant Infrastructure Adaptation",
+      "selectors": {
+        "path_terms": [
+          "skill",
+          "adaptation"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 1366,
+      "content_digest": "sha256:ce8efd3f52a04b83dbc500a7a1faa732d7a34555adfd8b66b0e924e6b3568d91"
+    }
+  ]
+}

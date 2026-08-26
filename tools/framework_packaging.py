@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from render_rule_registry_docs import render_ownership, render_registry
+from render_context_catalogs import build_framework_catalog_contents
 from target_adapter_validation.framework_baseline import render_pack_readme
 
 
@@ -17,6 +18,7 @@ PACK_CATALOG = FRAMEWORK_ROOT / "framework-packs.json"
 REGISTRY = FRAMEWORK_ROOT / "rule-registry.json"
 PROJECTED_FILES = {
     "README.md",
+    "context-index.json",
     "file-inventory.json",
     "rule-ownership.md",
     "rule-registry.json",
@@ -82,7 +84,7 @@ def resolve_framework_files(pack: str) -> set[str]:
     rule_ids, files, include_remaining = _resolve_pack_contract(pack)
     registry = load_object(REGISTRY)
     sources = {
-        rule["id"]: Path(rule["canonical_source"]).name
+        rule["id"]: str(rule["canonical_source"])[len("framework/"):]
         for rule in registry.get("rules", [])
         if isinstance(rule, dict)
         and isinstance(rule.get("id"), str)
@@ -95,10 +97,15 @@ def resolve_framework_files(pack: str) -> set[str]:
     files.update(PROJECTED_FILES)
     if include_remaining:
         files.update(
-            path.name
-            for path in FRAMEWORK_ROOT.iterdir()
-            if path.is_file() and path.suffix in {".md", ".json"}
+            path.relative_to(FRAMEWORK_ROOT).as_posix()
+            for path in FRAMEWORK_ROOT.rglob("*")
+            if path.is_file()
+            and path.suffix in {".md", ".json"}
+            and not path.relative_to(FRAMEWORK_ROOT).as_posix().startswith("catalog/")
+            and path.name != "context-index.json"
         )
+    catalog_contents = build_framework_catalog_contents(files)
+    files.update(catalog_contents)
     return files
 
 
@@ -109,7 +116,8 @@ def project_registry(pack: str) -> dict[str, Any]:
         rule
         for rule in data.get("rules", [])
         if isinstance(rule, dict)
-        and Path(str(rule.get("canonical_source", ""))).name in selected_files
+        and str(rule.get("canonical_source", "")).startswith("framework/")
+        and str(rule.get("canonical_source", ""))[len("framework/"):] in selected_files
     ]
     selected_ids = {rule["id"] for rule in selected_rules}
     owners: list[dict[str, Any]] = []
@@ -139,6 +147,16 @@ def projected_framework_contents(pack: str) -> dict[str, str | None]:
     contents["rule-registry.json"] = json.dumps(projected_registry, indent=2) + "\n"
     contents["rule-registry.md"] = render_registry(projected_registry)
     contents["rule-ownership.md"] = render_ownership(projected_registry)
+
+    catalog_contents = build_framework_catalog_contents(
+        selected_files,
+        content_overrides={
+            name: content
+            for name, content in contents.items()
+            if content is not None and name != "file-inventory.json"
+        },
+    )
+    contents.update(catalog_contents)
 
     inventory_files: list[dict[str, Any]] = []
     rules_by_source: dict[str, list[str]] = {}

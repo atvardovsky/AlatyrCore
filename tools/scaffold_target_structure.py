@@ -48,6 +48,8 @@ from framework_packaging import (
     projected_framework_contents,
     resolve_framework_files,
 )
+from context_catalog import load_codebook
+from render_context_catalogs import INDEX_NAME, build_directory_catalog_contents
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -232,10 +234,13 @@ class ProjectionContext:
     catalog: dict[str, Any] | None
     operation_ids: frozenset[str]
     enabled_modules: frozenset[str]
+    context_catalogs: dict[Path, str]
 
 
 def build_projection_context(
-    selected: set[Path], enabled_modules: set[str]
+    selected: set[Path],
+    enabled_modules: set[str],
+    context_catalogs: dict[Path, str] | None = None,
 ) -> ProjectionContext:
     catalog_rel = Path(".ai/assistant/operation-catalog.json")
     catalog = None
@@ -250,7 +255,41 @@ def build_projection_context(
         catalog=catalog,
         operation_ids=operation_ids,
         enabled_modules=frozenset(enabled_modules),
+        context_catalogs=context_catalogs or {},
     )
+
+
+def build_target_context_catalogs(
+    selected: set[Path],
+    content_overrides: dict[Path, str] | None = None,
+) -> dict[Path, str]:
+    """Project recursive target indexes over the selected scaffold files."""
+
+    projected: dict[Path, str] = {}
+    for prefix, contour in [
+        (Path(".ai/project"), "project"),
+        (Path(".ai/assistant"), "assistant"),
+    ]:
+        selected_files = {
+            path.relative_to(prefix).as_posix()
+            for path in selected
+            if path != prefix
+            and prefix in path.parents
+            and path.name != INDEX_NAME
+        }
+        overrides = {
+            path.relative_to(prefix).as_posix(): text
+            for path, text in (content_overrides or {}).items()
+            if path != prefix and prefix in path.parents and path.name != INDEX_NAME
+        }
+        contents = build_directory_catalog_contents(
+            TEMPLATE_ROOT / prefix,
+            contour,
+            selected_files=selected_files,
+            content_overrides=overrides,
+        )
+        projected.update({prefix / relpath: text for relpath, text in contents.items()})
+    return projected
 
 
 def projected_template_content(
@@ -261,6 +300,8 @@ def projected_template_content(
     context: ProjectionContext,
 ) -> str | None:
     src = TEMPLATE_ROOT / rel
+    if rel in context.context_catalogs:
+        return context.context_catalogs[rel]
     if rel == Path("AGENTS.md") and framework_pack != "complete":
         rule_ids = [rule["id"] for rule in project_registry(framework_pack)["rules"]]
         return project_agent_rule_ids(src.read_text(encoding="utf-8"), rule_ids)
@@ -307,8 +348,16 @@ def projected_template_content(
         project_map_text = (TEMPLATE_ROOT / ".ai/README.md").read_text(
             encoding="utf-8"
         )
+        semantic_index = FRAMEWORK_ROOT / "semantics" / "index.json"
+        semantic_terms = load_codebook(semantic_index, root=semantic_index.parent)
         return render_bootstrap_index(
-            build_bootstrap_index(manifest_text, project_map_text, router_text)
+            build_bootstrap_index(
+                manifest_text,
+                project_map_text,
+                router_text,
+                semantic_index_text=semantic_index.read_text(encoding="utf-8"),
+                semantic_terms=semantic_terms,
+            )
         )
     if rel == Path(".ai/assistant/ai-infrastructure-router.json"):
         return render_json(project_ai_infrastructure_router(load_object(src), selected))
@@ -346,11 +395,30 @@ def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
     selected_templates = project_assistant_bridges(
         resolve_profile_paths(profile, enabled_modules), selected_assistant_surfaces
     )
+    # Discover the recursive index paths before projecting the router. Its
+    # contour entries must describe the exact support profile being installed.
+    context_catalogs = build_target_context_catalogs(selected_templates)
+    selected_templates.update(context_catalogs)
     framework_files = resolve_framework_files(framework_pack)
     selected = selected_templates | {
         Path(".ai") / "framework" / name for name in framework_files
     }
-    projection_context = build_projection_context(selected, enabled_modules)
+    initial_context = build_projection_context(selected, enabled_modules)
+    projected_target_contents: dict[Path, str] = {}
+    for rel in selected_templates:
+        if rel.name == INDEX_NAME:
+            continue
+        content = projected_template_content(
+            rel, profile, framework_pack, selected, initial_context
+        )
+        if content is not None:
+            projected_target_contents[rel] = content
+    context_catalogs = build_target_context_catalogs(
+        selected_templates, projected_target_contents
+    )
+    projection_context = build_projection_context(
+        selected, enabled_modules, context_catalogs
+    )
     framework_contents = projected_framework_contents(framework_pack)
     actions: list[str] = []
     blocked: list[str] = []
@@ -388,13 +456,15 @@ def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
         )
 
     for src in iter_framework_files(framework_pack):
-        rel = Path(".ai") / "framework" / src.name
+        framework_rel = src.relative_to(FRAMEWORK_ROOT)
+        key = framework_rel.as_posix()
+        rel = Path(".ai") / "framework" / framework_rel
         dst = target / rel
         if dst.exists() and not args.overwrite_existing:
             blocked.append(f"exists, would not overwrite: {dst}")
             continue
-        copy_file(src, dst, write=args.write, content=framework_contents[src.name])
-        actions.append(f"framework: {src.name} -> {dst}")
+        copy_file(src, dst, write=args.write, content=framework_contents[key])
+        actions.append(f"framework: {key} -> {dst}")
 
     return actions, blocked
 

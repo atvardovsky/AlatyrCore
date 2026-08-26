@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/atvardovsky/AlatyrCore/schemas/alatyr-context-index.schema.json",
+  "title": "Alatyr recursive context index",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "index_kind", "index_id", "contour", "title", "summary", "max_depth", "entries"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "index_kind": {"const": "alatyr-context-index"},
+    "index_id": {"type": "string", "minLength": 1},
+    "contour": {"enum": ["framework", "project", "assistant"]},
+    "title": {"type": "string", "minLength": 1},
+    "summary": {"type": "string", "minLength": 1},
+    "max_depth": {"type": "integer", "minimum": 1},
+    "entries": {
+      "type": "array",
+      "items": {"$ref": "#/definitions/entry"}
+    }
+  },
+  "definitions": {
+    "strings": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "path", "summary", "selectors", "load_when", "semantic_refs", "owner_refs", "estimated_words", "content_digest"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "kind": {"enum": ["index", "content"]},
+        "path": {"type": "string", "minLength": 1},
+        "summary": {"type": "string", "minLength": 1},
+        "selectors": {
+          "type": "object",
+          "additionalProperties": {"$ref": "#/definitions/strings"}
+        },
+        "load_when": {"allOf": [{"$ref": "#/definitions/strings"}, {"minItems": 1}]},
+        "semantic_refs": {"$ref": "#/definitions/strings"},
+        "owner_refs": {"$ref": "#/definitions/strings"},
+        "estimated_words": {"type": "integer", "minimum": 1},
+        "content_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+      }
+    }
+  }
+}

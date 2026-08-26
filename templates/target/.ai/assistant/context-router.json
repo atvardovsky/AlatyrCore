@@ -1,5 +1,5 @@
 {
-  "schema_version": 7,
+  "schema_version": 8,
   "router_kind": "target-context-router",
   "human_reference": ".ai/assistant/context-profiles.md",
   "preloaded_context": [
@@ -11,8 +11,8 @@
   "context_budgets": {
     "bootstrap": {
       "max_files": 2,
-      "max_words": 1400,
-      "soft_max_words": 1200
+      "max_words": 1800,
+      "soft_max_words": 1700
     },
     "profile_default": {
       "max_files": 12,
@@ -34,11 +34,58 @@
       "selected task scale overlay",
       "selected project areas",
       "selected project knowledge and routing stage",
+      "traversed context index chain",
+      "selected context item IDs and digests",
+      "resolved semantic term IDs and versions",
+      "context packet digest",
+      "semantic fallback or dictionary expansion",
       "loaded files and reasons",
       "approximate context volume",
       "expansion triggers",
       "intentionally omitted context",
       "residual risk"
+    ]
+  },
+  "recursive_context": {
+    "schema_version": 1,
+    "contour_indexes": {
+      "framework": ".ai/framework/context-index.json",
+      "project": ".ai/project/context-index.json",
+      "assistant": ".ai/assistant/context-index.json"
+    },
+    "max_depth": 8,
+    "selection_order": [
+      "task profile and operation",
+      "workspace mode and project area",
+      "fact path symbol contract and dependency selectors",
+      "risk conflict and failed-validation expansion"
+    ],
+    "on_failure": "stop compact interpretation, load the named canonical owner when safe, and report index drift; never load the complete contour by default"
+  },
+  "semantic_codebook": {
+    "schema_version": 1,
+    "index": ".ai/framework/semantics/index.json",
+    "framework_namespace": "alatyr:*",
+    "project_namespace": "project:*",
+    "preload_terms": [
+      "alatyr:current-scope-authorization@1",
+      "alatyr:canonical-owner@1",
+      "alatyr:protected-change@1",
+      "alatyr:logical-integrity@1",
+      "alatyr:bounded-context-expansion@1"
+    ],
+    "conditional_loading": "load only shards referenced by selected context items, then resolve their acyclic dependency closure once",
+    "fallback": "load the referenced canonical owner and do not infer a missing stale conflicting cyclic or unsupported compact term"
+  },
+  "context_packet": {
+    "schema_version": 1,
+    "template": ".ai/assistant/templates/context-packet.json",
+    "receipt_required_for": [
+      "budget exceeded",
+      "multiple project areas",
+      "cross-boundary work",
+      "semantic codebook fallback",
+      "material or protected change"
     ]
   },
   "operation_routing": {

@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/atvardovsky/AlatyrCore/schemas/alatyr-semantic-codebook-index.schema.json",
+  "title": "Alatyr semantic codebook index",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "index_kind", "codebook_id", "namespace_policy", "fallback", "shards"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "index_kind": {"const": "alatyr-semantic-codebook-index"},
+    "codebook_id": {"type": "string", "minLength": 1},
+    "namespace_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["framework", "target", "override"],
+      "properties": {
+        "framework": {"const": "alatyr:*"},
+        "target": {"const": "project:*"},
+        "override": {"type": "string", "minLength": 1}
+      }
+    },
+    "fallback": {"type": "string", "minLength": 1},
+    "shards": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "path", "preload", "selectors", "term_ids", "content_digest"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "path": {"type": "string", "minLength": 1},
+          "preload": {"type": "boolean"},
+          "selectors": {"type": "object"},
+          "term_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "content_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+        }
+      }
+    }
+  }
+}

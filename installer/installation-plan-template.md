@@ -80,6 +80,12 @@ List what must not be changed.
   validation, and post-install/update suggestion behavior:
 - Context router schema and lazy descriptors:
 - Generated bootstrap index, source hashes, and regeneration owner:
+- Recursive framework/project/assistant context-index roots, maximum depth,
+  projection scope, generator owner, and stale-entry repair policy:
+- Semantic-codebook schema, installed shards, bounded preload term IDs,
+  canonical prose fallback, and target `project:*` namespace policy:
+- Context-packet schema, required triggers, storage/retention policy, and digest
+  evidence:
 - Routed gate index and default profile fragments:
 - Context profiles:
 - Context-router bootstrap references:

@@ -176,8 +176,8 @@ def main() -> int:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
 
-    if router.get("schema_version") != 7:
-        failures.append("context-router.json schema_version must be 7")
+    if router.get("schema_version") != 8:
+        failures.append("context-router.json schema_version must be 8")
     if router.get("router_kind") != "target-context-router":
         failures.append("context-router.json router_kind must be target-context-router")
     if router.get("human_reference") != ".ai/assistant/context-profiles.md":
@@ -250,6 +250,11 @@ def main() -> int:
             "selected intent overlays",
             "selected task scale overlay",
             "selected project areas",
+            "traversed context index chain",
+            "selected context item IDs and digests",
+            "resolved semantic term IDs and versions",
+            "context packet digest",
+            "semantic fallback or dictionary expansion",
             "loaded files and reasons",
             "approximate context volume",
             "expansion triggers",
@@ -257,6 +262,61 @@ def main() -> int:
         ]:
             if required not in receipt_fields:
                 failures.append(f"context_receipt.fields missing {required}")
+
+    recursive = router.get("recursive_context")
+    if not isinstance(recursive, dict):
+        failures.append("recursive_context must be an object")
+    else:
+        if recursive.get("schema_version") != 1:
+            failures.append("recursive_context.schema_version must be 1")
+        expected_indexes = {
+            "framework": ".ai/framework/context-index.json",
+            "project": ".ai/project/context-index.json",
+            "assistant": ".ai/assistant/context-index.json",
+        }
+        if recursive.get("contour_indexes") != expected_indexes:
+            failures.append("recursive_context.contour_indexes are invalid")
+        if recursive.get("max_depth") != 8:
+            failures.append("recursive_context.max_depth must be 8")
+        if "complete contour" not in str(recursive.get("on_failure", "")):
+            failures.append("recursive_context.on_failure must reject broad fallback")
+
+    semantic = router.get("semantic_codebook")
+    if not isinstance(semantic, dict):
+        failures.append("semantic_codebook must be an object")
+    else:
+        if semantic.get("schema_version") != 1:
+            failures.append("semantic_codebook.schema_version must be 1")
+        if semantic.get("index") != ".ai/framework/semantics/index.json":
+            failures.append("semantic_codebook.index is invalid")
+        if semantic.get("framework_namespace") != "alatyr:*":
+            failures.append("semantic codebook framework namespace is invalid")
+        if semantic.get("project_namespace") != "project:*":
+            failures.append("semantic codebook project namespace is invalid")
+        expected_preload = [
+            "alatyr:current-scope-authorization@1",
+            "alatyr:canonical-owner@1",
+            "alatyr:protected-change@1",
+            "alatyr:logical-integrity@1",
+            "alatyr:bounded-context-expansion@1",
+        ]
+        if semantic.get("preload_terms") != expected_preload:
+            failures.append("semantic_codebook.preload_terms are invalid")
+        if "canonical owner" not in str(semantic.get("fallback", "")):
+            failures.append("semantic_codebook.fallback must name canonical owner fallback")
+
+    packet = router.get("context_packet")
+    if not isinstance(packet, dict):
+        failures.append("context_packet must be an object")
+    else:
+        if packet.get("schema_version") != 1:
+            failures.append("context_packet.schema_version must be 1")
+        if packet.get("template") != ".ai/assistant/templates/context-packet.json":
+            failures.append("context_packet.template is invalid")
+        required_for = packet.get("receipt_required_for")
+        for trigger in ["semantic codebook fallback", "material or protected change"]:
+            if not isinstance(required_for, list) or trigger not in required_for:
+                failures.append(f"context_packet receipt trigger missing {trigger}")
 
     operation_routing = router.get("operation_routing")
     if not isinstance(operation_routing, dict):
@@ -914,7 +974,8 @@ def main() -> int:
         failures.append("framework-upgrade required_context must remain migration-first")
 
     framework_paths = {
-        f".ai/framework/{path.name}" for path in (ROOT / "framework").glob("*.md")
+        f".ai/framework/{path.relative_to(ROOT / 'framework').as_posix()}"
+        for path in (ROOT / "framework").rglob("*.md")
     }
     routed_framework_paths = {
         value

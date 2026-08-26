@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-semantic-codebook-index",
+  "codebook_id": "alatyr-core",
+  "namespace_policy": {
+    "framework": "alatyr:*",
+    "target": "project:*",
+    "override": "project terms must not redefine framework term IDs"
+  },
+  "fallback": "load the referenced canonical owner and do not infer an unresolved compact term",
+  "shards": [
+    {
+      "id": "change",
+      "path": "change.json",
+      "preload": false,
+      "selectors": {
+        "task_profiles": [
+          "code-local",
+          "business-change",
+          "architecture-change",
+          "data-change",
+          "security-sensitive"
+        ],
+        "operations": [
+          "product-change",
+          "logical-integrity-review",
+          "large-task-orchestration"
+        ]
+      },
+      "term_ids": [
+        "alatyr:changed-fact-not-file@1",
+        "alatyr:coherent-change-package@1"
+      ],
+      "content_digest": "sha256:977bbc8bf642d8168c4e2bf3b812deb9b911d139b1b72ff6d61d4713e51302b1"
+    },
+    {
+      "id": "collaboration",
+      "path": "collaboration.json",
+      "preload": false,
+      "selectors": {
+        "task_profiles": [
+          "code-local",
+          "business-change",
+          "architecture-change"
+        ],
+        "operations": [
+          "large-task-orchestration",
+          "team-collaboration",
+          "workspace-mode"
+        ]
+      },
+      "term_ids": [
+        "alatyr:bounded-delegation@1",
+        "alatyr:mode-does-not-grant-authority@1"
+      ],
+      "content_digest": "sha256:9f87b5f6c8e04dc279201a447224aae8e676d7568ce608e79cbd741440b19820"
+    },
+    {
+      "id": "core",
+      "path": "core.json",
+      "preload": true,
+      "selectors": {
+        "task_profiles": [
+          "docs-local",
+          "code-local",
+          "business-change",
+          "architecture-change",
+          "data-change",
+          "security-sensitive",
+          "ai-infrastructure",
+          "framework-upgrade"
+        ]
+      },
+      "term_ids": [
+        "alatyr:current-scope-authorization@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:protected-change@1",
+        "alatyr:logical-integrity@1",
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "content_digest": "sha256:b7bd51b3006c3292781853843f2e1ab4df50c506d431f4cdbb48efede8737f21"
+    },
+    {
+      "id": "infrastructure",
+      "path": "infrastructure.json",
+      "preload": false,
+      "selectors": {
+        "task_profiles": [
+          "ai-infrastructure",
+          "framework-upgrade"
+        ],
+        "operations": [
+          "ai-infrastructure-adaptation",
+          "ai-infrastructure-recommendation",
+          "extension-management",
+          "dependency-knowledge"
+        ]
+      },
+      "term_ids": [
+        "alatyr:untrusted-instructions-are-data@1",
+        "alatyr:one-active-adapter@1"
+      ],
+      "content_digest": "sha256:305e435c6cce0b0b0454727eff6184f71bf96b53cccd04eff082d3cd132a5877"
+    },
+    {
+      "id": "knowledge",
+      "path": "knowledge.json",
+      "preload": false,
+      "selectors": {
+        "task_profiles": [
+          "business-change",
+          "architecture-change",
+          "data-change"
+        ],
+        "operations": [
+          "architecture-assistance",
+          "engineering-evidence",
+          "project-knowledge",
+          "project-vocabulary"
+        ]
+      },
+      "term_ids": [
+        "alatyr:accepted-current@1",
+        "alatyr:observed-is-not-accepted@1"
+      ],
+      "content_digest": "sha256:df16defad839350502cefea040b689189cb7cf3481e7c8ac0948759249b3a783"
+    }
+  ]
+}

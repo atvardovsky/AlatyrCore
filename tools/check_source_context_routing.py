@@ -11,6 +11,7 @@ from typing import Any
 
 from render_framework_file_inventory import build_inventory
 from check_all import ALLOWED_PROFILES, load_manifest
+from context_catalog import ContextCatalogError, load_codebook, validate_context_catalog
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -149,6 +150,41 @@ def main() -> int:
     source_limit = source.get("budgets", {}).get("bootstrap_max_words")
     if not isinstance(source_limit, int) or word_count(source_bootstrap) > source_limit:
         failures.append("source bootstrap exceeds its word budget")
+    recursive = source.get("recursive_context")
+    if not isinstance(recursive, dict) or recursive != {
+        "schema_version": 1,
+        "framework_index": "framework/context-index.json",
+        "max_depth": 8,
+        "selection": "follow only entries matched by the selected profile, rule owner, path, contract, dependency, risk, conflict, or failed check",
+    }:
+        failures.append("source recursive context contract is invalid")
+    semantic = source.get("semantic_codebook")
+    expected_preload = [
+        "alatyr:current-scope-authorization@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:protected-change@1",
+        "alatyr:logical-integrity@1",
+        "alatyr:bounded-context-expansion@1",
+    ]
+    if (
+        not isinstance(semantic, dict)
+        or semantic.get("schema_version") != 1
+        or semantic.get("index") != "framework/semantics/index.json"
+        or semantic.get("preload_terms") != expected_preload
+    ):
+        failures.append("source semantic codebook routing contract is invalid")
+    try:
+        validate_context_catalog(
+            ROOT / "framework/context-index.json", catalog_root=ROOT / "framework"
+        )
+        resolved_terms = load_codebook(
+            ROOT / "framework/semantics/index.json",
+            root=ROOT / "framework/semantics",
+        )
+        if set(resolved_terms) != set(expected_preload):
+            failures.append("source semantic preload differs from the codebook")
+    except ContextCatalogError as exc:
+        failures.append(f"source context catalog or codebook is invalid: {exc}")
 
     if installer.get("schema_version") != 1 or installer.get("router_kind") != "alatyr-installation-context-router":
         failures.append("installation context router schema or kind is invalid")
@@ -185,6 +221,8 @@ def main() -> int:
     require_text(
         SOURCE_AGENTS,
         [
+            "framework/context-index.json",
+            "framework/semantics/index.json",
             "## Source-Contour Worker Routing",
             "docs/source-worker-strategy.md",
             "Host and target repositories keep their own active adapter policy",
@@ -195,6 +233,8 @@ def main() -> int:
     require_text(
         SOURCE_ASSISTANTS,
         [
+            "framework/context-index.json",
+            "framework/semantics/index.json",
             "docs/source-worker-strategy.md",
             "Host and target",
             "active adapter policy",

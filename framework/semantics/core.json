@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "record_kind": "alatyr-semantic-codebook-shard",
+  "shard_id": "core",
+  "preload": true,
+  "selectors": {
+    "task_profiles": [
+      "docs-local",
+      "code-local",
+      "business-change",
+      "architecture-change",
+      "data-change",
+      "security-sensitive",
+      "ai-infrastructure",
+      "framework-upgrade"
+    ]
+  },
+  "terms": [
+    {
+      "id": "alatyr:current-scope-authorization@1",
+      "version": 1,
+      "definition": "Inspect, modify, commit, publish, and live-external actions are separate authorization phases for the current logical task. A completed, redirected, ambiguous, discussion-only, or analysis-only request does not authorize a later state-changing phase.",
+      "owner_rule_id": "ALATYR-AUTHORIZATION-001",
+      "canonical_owner": "action-authorization.md",
+      "scope": "every request and action transition",
+      "non_meanings": [
+        "permission inherited from an earlier completed task",
+        "permission to commit or publish because modification was authorized"
+      ],
+      "depends_on": [],
+      "replaced_by": null
+    },
+    {
+      "id": "alatyr:canonical-owner@1",
+      "version": 1,
+      "definition": "Use the target-registered canonical owner for a fact type, preserve its conflict resolver and synchronization direction, and treat routing records, summaries, evidence, frequency, and recency as non-authoritative unless that owner says otherwise.",
+      "owner_rule_id": "ALATYR-SOURCE-001",
+      "canonical_owner": "source-of-truth-registry.md",
+      "scope": "fact lookup, decisions, changes, conflicts, and synchronization",
+      "non_meanings": [
+        "the nearest file",
+        "the newest statement",
+        "an Alatyr routing projection"
+      ],
+      "depends_on": [],
+      "replaced_by": null
+    },
+    {
+      "id": "alatyr:protected-change@1",
+      "version": 1,
+      "definition": "A change that crosses a target-recorded protected category requires a current scoped approval whose semantic and path surfaces cover the actual change; changing the plan or scope invalidates approval as defined by the target policy.",
+      "owner_rule_id": "ALATYR-APPROVAL-001",
+      "canonical_owner": "approval-records.md",
+      "scope": "protected architecture, business, data, security, dependency, permission, destructive, and live-external changes",
+      "non_meanings": [
+        "general permission to modify the repository",
+        "approval reusable for a different task"
+      ],
+      "depends_on": [
+        "alatyr:current-scope-authorization@1"
+      ],
+      "replaced_by": null
+    },
+    {
+      "id": "alatyr:logical-integrity@1",
+      "version": 1,
+      "definition": "Name changed semantic facts, re-derive their invariants, identify canonical owners and directly dependent surfaces, reconcile related findings as one repair set, validate the result, and report unresolved relationships and residual risk.",
+      "owner_rule_id": "ALATYR-INTEGRITY-001",
+      "canonical_owner": "logical-integrity.md",
+      "scope": "semantic changes, contradiction review, and material repair",
+      "non_meanings": [
+        "reviewing only files named in a request",
+        "assuming structural validation proves domain correctness"
+      ],
+      "depends_on": [
+        "alatyr:canonical-owner@1"
+      ],
+      "replaced_by": null
+    },
+    {
+      "id": "alatyr:bounded-context-expansion@1",
+      "version": 1,
+      "definition": "Start from the smallest matching profile and selected index branch. Expand only for an applicable owner, safety or approval boundary, named dependency, changed-fact relationship, conflict, failed validation, or explicit broader audit, and record why the expansion occurred.",
+      "owner_rule_id": "ALATYR-CONTEXT-001",
+      "canonical_owner": "context-profiles.md",
+      "scope": "bootstrap, task routing, module overlays, and context receipts",
+      "non_meanings": [
+        "omit required safety or owner evidence to remain under budget",
+        "load every related file before selecting a route"
+      ],
+      "depends_on": [
+        "alatyr:canonical-owner@1"
+      ],
+      "replaced_by": null
+    }
+  ]
+}

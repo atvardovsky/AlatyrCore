@@ -90,7 +90,9 @@ for the next `accepted` transition.
 
 Before upgrading framework files in a target project:
 
-1. Load the compact bootstrap and the generated upgrade impact only.
+1. Load the compact bootstrap and the generated upgrade impact only. Verify
+   the installed semantic-codebook index and resolve the bootstrap preload;
+   then use recursive contour indexes for every additional migration surface.
 2. Inspect the current target manifest, installed framework pack and baseline,
    projected inventory, local deviations, and adapter owner evidence.
 3. Prepare or review a migration assessment before changing target files. It
@@ -103,6 +105,12 @@ Before upgrading framework files in a target project:
    capabilities to select additional context. Load the full framework corpus
    only when impact is ambiguous, validation disproves the boundary, or a full
    compatibility audit is explicitly requested.
+   Rebuild affected framework, project, and assistant context indexes from the
+   installed result, not from an unrelated branch or unprojected source
+   template. Verify indexed paths, content digests, word estimates, parentage,
+   depth, semantic references, and codebook shard digests before accepting the
+   update. Preserve target-owned `project:*` terms and do not silently redefine
+   installed `alatyr:*` term versions.
 5. Identify framework-core changes versus target-adapter changes.
 6. Preserve target project facts.
 7. Compare supported assistant bridge needs and limitations. Merge source
@@ -173,6 +181,9 @@ Before upgrading framework files in a target project:
 11. Require approval before overwriting existing target AI instructions.
 12. Recheck the installed adapter for framework references, bridge files, gates,
    prompts, skills, lifecycle notes, and maturity gaps.
+    Recheck recursive contour-index coverage, semantic-codebook resolution,
+    compact preload limits, context-packet compatibility, and the absence of
+    stale index entries left by removed or moved files.
 13. Recheck adapter owners, review cadence, CODEOWNERS or equivalent owner
     map, operation catalog, help, routing/health/preview flows, and post-update
     chat message

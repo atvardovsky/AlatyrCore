@@ -209,6 +209,18 @@ def main() -> int:
     if migration["initial"]["declared_files"] > 8:
         failures.append("migration-first initial context exceeds eight files")
 
+    primitives = report["routing_primitives"]
+    recursive_reduction = primitives["recursive_selection"][
+        "word_reduction_percent"
+    ]
+    if not isinstance(recursive_reduction, (int, float)) or recursive_reduction < 50:
+        failures.append(
+            "recursive selected route should reduce framework candidate words by at least 50%"
+        )
+    semantic_reduction = primitives["semantic_codebook"]["word_reduction_percent"]
+    if not isinstance(semantic_reduction, (int, float)) or semantic_reduction <= 0:
+        failures.append("semantic codebook should reduce repeated definition words")
+
     if failures:
         for failure in failures:
             print(f"FAIL: {failure}", file=sys.stderr)
@@ -224,6 +236,8 @@ def main() -> int:
         f"; dependency-knowledge route reduction is {dependency_reduction}%"
         f"; workspace-mode route reduction is {workspace_mode_reduction}%"
         f"; team preflight reduction is {team_reduction}%"
+        f"; recursive route reduction is {recursive_reduction}%"
+        f"; semantic definition reduction is {semantic_reduction}%"
     )
     return 0
 

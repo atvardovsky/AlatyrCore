@@ -10,7 +10,9 @@ Before completion, report:
 - invariant/review reconciliation
 - validation outcomes/unresolved checks
 - approval scope and avoided protected actions
-- context expansions and task/package/team/delegation evidence
+- context index chain, selected item IDs/digests, semantic term IDs/versions,
+  packet digest or canonical-prose fallback, budget expansions, and
+  task/package/team/delegation evidence
 - `durable_engineering_evidence`: captured/skipped/blocked,
   ID/path/repository binding, or reason
 - `debug_lifecycle_coverage`: state, phases, continuation,

@@ -141,14 +141,19 @@ Constraints:
   ALATYR-TDD-001, ALATYR-EXTENSION-001, ALATYR-DEPENDENCY-001, ALATYR-MODE-001, ALATYR-ADAPTER-001,
   ALATYR-MODULE-001, ALATYR-OPERATION-001, ALATYR-DIAGRAM-001,
   ALATYR-TEAM-001, ALATYR-EVIDENCE-001.
-- Treat the target `AGENTS.md` as preloaded, then read `.ai/alatyr.yaml`,
-  `.ai/README.md`, and `.ai/assistant/context-router.json` first.
+- Treat the target `AGENTS.md` as preloaded, then read only
+  `.ai/assistant/bootstrap-index.json`. Use its resolved core semantic terms,
+  choose the smallest profile/areas, and follow only matching entries from the
+  framework, project, and assistant root `context-index.json` files. Load the
+  bootstrap's canonical sources only for drift, ambiguity, or repair.
 - Select the smallest matching context profile and project-area overlays from
   the router. Read human profiles, registries, blueprints, module profiles,
   gates, policies, and validation files only when selected or required by
   conflicting evidence.
 - Record context budget exceptions and expansion reasons in the operation
-  context receipt.
+  context receipt. For non-trivial, expanded, handed-off, or resumed work also
+  record the index chain, selected item IDs/digests/reasons, semantic term
+  IDs/versions/definitions, fallback state, and deterministic packet digest.
 - For large, cross-boundary, multi-workstream, budget-exceeding, or resumable
   work, activate the `large-or-resumable` task-scale overlay and use
   `.ai/assistant/flows/large-task-orchestration.flow.md` with

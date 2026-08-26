@@ -49,23 +49,33 @@ source_of_truth:
   assistant_contour: ".ai/assistant/contour.md"
   context_router: ".ai/assistant/context-router.json"
   bootstrap_index: ".ai/assistant/bootstrap-index.json"
+  framework_context_index: ".ai/framework/context-index.json"
+  project_context_index: ".ai/project/context-index.json"
+  assistant_context_index: ".ai/assistant/context-index.json"
+  semantic_codebook: ".ai/framework/semantics/index.json"
   context_profiles: ".ai/assistant/context-profiles.md"
   module_profile: ".ai/assistant/module-profile.md"
   project_sources:
     - "{TARGET_PROJECT_SOURCE_OF_TRUTH}"
 context_routing:
-  router_schema_version: 7
+  router_schema_version: 8
   preloaded_context:
     - "AGENTS.md"
   compact_bootstrap:
     - ".ai/assistant/bootstrap-index.json"
   bootstrap_max_files: 2
-  bootstrap_max_words: 1400
+  bootstrap_max_words: 1800
   profile_default_max_files: 12
   profile_default_max_total_words: 8000
   profile_default_max_portable_words: 5600
   profile_default_reserved_target_words: 2400
   budget_behavior: "load required safety and owner evidence, then record measured expansion"
+  recursive_index_schema_version: 1
+  recursive_index_max_depth: 8
+  semantic_codebook_schema_version: 1
+  semantic_preload_policy: "core definitions are embedded in the generated bootstrap; domain and project term shards remain conditional"
+  context_packet_schema_version: 1
+  context_packet_template: ".ai/assistant/templates/context-packet.json"
 modules:
   core_profile: "{COMPLETE_OR_MISSING_GAPS}"
   enabled:

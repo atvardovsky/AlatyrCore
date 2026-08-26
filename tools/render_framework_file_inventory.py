@@ -36,7 +36,7 @@ def build_inventory() -> dict[str, Any]:
             rules_by_source.setdefault(source, []).append(rule_id)
 
     files: list[dict[str, Any]] = []
-    for path in sorted(FRAMEWORK.iterdir()):
+    for path in sorted(FRAMEWORK.rglob("*")):
         if not path.is_file() or path == OUTPUT or path.suffix not in {".md", ".json"}:
             continue
         relpath = path.relative_to(ROOT).as_posix()

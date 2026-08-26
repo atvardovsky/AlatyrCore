@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "project.engineering-evidence-records",
+  "contour": "project",
+  "title": "Project Records Context",
+  "summary": "Recursive navigation for the project contour at engineering-evidence/records.",
+  "max_depth": 8,
+  "entries": [
+    {
+      "id": "project.content.engineering-evidence-records-readme-md",
+      "kind": "content",
+      "path": "engineering-evidence/records/README.md",
+      "summary": "Engineering Evidence Records",
+      "selectors": {
+        "path_terms": [
+          "engineering",
+          "evidence",
+          "records"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 108,
+      "content_digest": "sha256:9f5c3611414e5ae80c2ca85a09ccea95482c355d64b197719686e956fedf0634"
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "framework.root",
+  "contour": "framework",
+  "title": "Alatyr Framework Context",
+  "summary": "Root navigation for portable framework rules and supporting guidance.",
+  "max_depth": 8,
+  "entries": [
+    {
+      "id": "framework.section.change",
+      "kind": "index",
+      "path": "catalog/change/context-index.json",
+      "summary": "Change framework section",
+      "selectors": {
+        "sections": [
+          "change"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 225,
+      "content_digest": "sha256:0cab37ab461a01c3d1f34702e5124798d2ff0bebb3638176adc6493045b5b3cf"
+    },
+    {
+      "id": "framework.section.collaboration",
+      "kind": "index",
+      "path": "catalog/collaboration/context-index.json",
+      "summary": "Collaboration framework section",
+      "selectors": {
+        "sections": [
+          "collaboration"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 230,
+      "content_digest": "sha256:b6b8dc27745346491f121e7ac571fabe5df05e71eb5ea9ae2aa68eaed265cd0a"
+    },
+    {
+      "id": "framework.section.core",
+      "kind": "index",
+      "path": "catalog/core/context-index.json",
+      "summary": "Core framework section",
+      "selectors": {
+        "sections": [
+          "core"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 1351,
+      "content_digest": "sha256:d27cf5450a356ff4910de5ff3046050b7b1c640c142dcea956a7952b49a2f200"
+    },
+    {
+      "id": "framework.section.infrastructure",
+      "kind": "index",
+      "path": "catalog/infrastructure/context-index.json",
+      "summary": "Infrastructure framework section",
+      "selectors": {
+        "sections": [
+          "infrastructure"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 315,
+      "content_digest": "sha256:94a2c9626627204d1ef36039fdcbf3920009075949d41ecc1b484147118d2a34"
+    },
+    {
+      "id": "framework.section.knowledge",
+      "kind": "index",
+      "path": "catalog/knowledge/context-index.json",
+      "summary": "Knowledge framework section",
+      "selectors": {
+        "sections": [
+          "knowledge"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 398,
+      "content_digest": "sha256:76265e6657606546de25a1e24b67cbfa06c5c5ba7272e0f106aeeface1b9d7a0"
+    },
+    {
+      "id": "framework.section.lifecycle",
+      "kind": "index",
+      "path": "catalog/lifecycle/context-index.json",
+      "summary": "Lifecycle framework section",
+      "selectors": {
+        "sections": [
+          "lifecycle"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 304,
+      "content_digest": "sha256:988d558f86f7fc40475c7dc2b0c5f690652a56b4bf3943277ff2446011e39ac5"
+    },
+    {
+      "id": "framework.section.support",
+      "kind": "index",
+      "path": "catalog/support/context-index.json",
+      "summary": "Support framework section",
+      "selectors": {
+        "sections": [
+          "support"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 170,
+      "content_digest": "sha256:9e1cebbf9e38deb9c221ebc4f1095ee85475b1be99de4038f195966d305a1e05"
+    }
+  ]
+}

@@ -1,0 +1,921 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "assistant.flows",
+  "contour": "assistant",
+  "title": "Assistant Flows Context",
+  "summary": "Recursive navigation for the assistant contour at flows.",
+  "max_depth": 8,
+  "entries": [
+    {
+      "id": "assistant.content.flows-adapter-health-flow-md",
+      "kind": "content",
+      "path": "flows/adapter-health.flow.md",
+      "summary": "Adapter Health Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "adapter",
+          "health",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 585,
+      "content_digest": "sha256:de7062a34f0be7be474a2433fd31cdf5ab0f8177d3bcb44d3a78f1a0aa7226a2"
+    },
+    {
+      "id": "assistant.content.flows-adapter-recheck-flow-md",
+      "kind": "content",
+      "path": "flows/adapter-recheck.flow.md",
+      "summary": "Adapter Recheck Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "adapter",
+          "recheck",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 1751,
+      "content_digest": "sha256:dd1873974cbc47be59e78a7cd16ead7b7e49ebe621acb0bb976c654755d4c289"
+    },
+    {
+      "id": "assistant.content.flows-ai-infrastructure-inventory-flow-md",
+      "kind": "content",
+      "path": "flows/ai-infrastructure-inventory.flow.md",
+      "summary": "AI Infrastructure Inventory Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "infrastructure",
+          "inventory",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-SAFETY-002"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:untrusted-instructions-are-data@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-SAFETY-002"
+      ],
+      "estimated_words": 587,
+      "content_digest": "sha256:5054ce7a077910f3563ec7576a00c28f42c96d40040be54139f67b76a5e59aa7"
+    },
+    {
+      "id": "assistant.content.flows-ai-infrastructure-recommendation-flow-md",
+      "kind": "content",
+      "path": "flows/ai-infrastructure-recommendation.flow.md",
+      "summary": "AI Infrastructure Recommendation Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "infrastructure",
+          "recommendation",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-SAFETY-002"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:untrusted-instructions-are-data@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-SAFETY-002"
+      ],
+      "estimated_words": 793,
+      "content_digest": "sha256:6cbba5465288e05364335609f6b264a0bcb529c2e4f7f1dfd9bc710b5c953d6c"
+    },
+    {
+      "id": "assistant.content.flows-architecture-assistance-flow-md",
+      "kind": "content",
+      "path": "flows/architecture-assistance.flow.md",
+      "summary": "Architecture Assistance Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "architecture",
+          "assistance",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-KNOWLEDGE-001",
+          "ALATYR-SOURCE-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:observed-is-not-accepted@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-KNOWLEDGE-001",
+        "ALATYR-SOURCE-001"
+      ],
+      "estimated_words": 721,
+      "content_digest": "sha256:844ca87939914abafd642a3b6bf8a4226643bb4ddc46496862a406877252030e"
+    },
+    {
+      "id": "assistant.content.flows-blueprint-driven-change-flow-md",
+      "kind": "content",
+      "path": "flows/blueprint-driven-change.flow.md",
+      "summary": "Blueprint-Driven Change Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "blueprint",
+          "driven",
+          "change",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 550,
+      "content_digest": "sha256:7d94b789cbfda8a574aba52a4700a38b8596514e400df6e2ad1df2277ac1f8f6"
+    },
+    {
+      "id": "assistant.content.flows-change-package-flow-md",
+      "kind": "content",
+      "path": "flows/change-package.flow.md",
+      "summary": "Change Package Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "change",
+          "package",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-INTEGRITY-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:logical-integrity@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-INTEGRITY-001"
+      ],
+      "estimated_words": 433,
+      "content_digest": "sha256:25086def8f2f4d55d0dd098f42c32c283ab8ef7794b3b118839f6ebd7a5c35f2"
+    },
+    {
+      "id": "assistant.content.flows-debug-mode-flow-md",
+      "kind": "content",
+      "path": "flows/debug-mode.flow.md",
+      "summary": "Alatyr Debug Mode Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "debug",
+          "mode",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 902,
+      "content_digest": "sha256:28f2cb1e0ac210d514bcad46a4900dad1e527f758e29446853470ad708487efb"
+    },
+    {
+      "id": "assistant.content.flows-dependency-knowledge-sync-flow-md",
+      "kind": "content",
+      "path": "flows/dependency-knowledge-sync.flow.md",
+      "summary": "Dependency Knowledge Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "dependency",
+          "knowledge",
+          "sync",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-KNOWLEDGE-001",
+          "ALATYR-SAFETY-002",
+          "ALATYR-SOURCE-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:observed-is-not-accepted@1",
+        "alatyr:untrusted-instructions-are-data@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-KNOWLEDGE-001",
+        "ALATYR-SAFETY-002",
+        "ALATYR-SOURCE-001"
+      ],
+      "estimated_words": 698,
+      "content_digest": "sha256:b16be86328eabf001f27f850ef53a9e73fe15e3036b3fb7701fbe86473b44bf3"
+    },
+    {
+      "id": "assistant.content.flows-development-evidence-capture-flow-md",
+      "kind": "content",
+      "path": "flows/development-evidence-capture.flow.md",
+      "summary": "Development Evidence Capture Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "development",
+          "evidence",
+          "capture",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 516,
+      "content_digest": "sha256:abc877ec1332da6176d779d6e8f912b41d53cdf9f86f98fcee5a110da9d38c70"
+    },
+    {
+      "id": "assistant.content.flows-diagram-discussion-flow-md",
+      "kind": "content",
+      "path": "flows/diagram-discussion.flow.md",
+      "summary": "Diagram Discussion Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "diagram",
+          "discussion",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 840,
+      "content_digest": "sha256:72d0b032aa1978675113176b0708e0ab9e93b6f9d85e5d3d65f104fe5a76c5df"
+    },
+    {
+      "id": "assistant.content.flows-documentation-sync-flow-md",
+      "kind": "content",
+      "path": "flows/documentation-sync.flow.md",
+      "summary": "Documentation Sync Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "documentation",
+          "sync",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 665,
+      "content_digest": "sha256:a27f5fa077d29db5ee3d331c00a3224ff4ac40ebf493f849f6f5f2ebe78f9671"
+    },
+    {
+      "id": "assistant.content.flows-engineering-evidence-capture-flow-md",
+      "kind": "content",
+      "path": "flows/engineering-evidence-capture.flow.md",
+      "summary": "Durable Engineering Evidence Capture Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "engineering",
+          "evidence",
+          "capture",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 513,
+      "content_digest": "sha256:7d95e0ea03d9a2b6e2ebf716032654cf2eec8ebceefb4ec698cb22ec0fb0a0a8"
+    },
+    {
+      "id": "assistant.content.flows-extension-lifecycle-flow-md",
+      "kind": "content",
+      "path": "flows/extension-lifecycle.flow.md",
+      "summary": "Extension Lifecycle Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "extension",
+          "lifecycle",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-SAFETY-002"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:untrusted-instructions-are-data@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-SAFETY-002"
+      ],
+      "estimated_words": 681,
+      "content_digest": "sha256:e933e86a735506613a2a89d55af1b9580a58c38d1770dd50f25b582ba8f46961"
+    },
+    {
+      "id": "assistant.content.flows-large-task-orchestration-flow-md",
+      "kind": "content",
+      "path": "flows/large-task-orchestration.flow.md",
+      "summary": "Large-Task Orchestration Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "large",
+          "task",
+          "orchestration",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 735,
+      "content_digest": "sha256:abebf3fdcdddca77d17d73f87e95cb75636653b59f25ede16e7ceb726e55be96"
+    },
+    {
+      "id": "assistant.content.flows-logical-integrity-review-flow-md",
+      "kind": "content",
+      "path": "flows/logical-integrity-review.flow.md",
+      "summary": "Logical Integrity Review Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "logical",
+          "integrity",
+          "review",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-INTEGRITY-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:logical-integrity@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-INTEGRITY-001"
+      ],
+      "estimated_words": 409,
+      "content_digest": "sha256:5c265c6093d44d48ac7028bd882297cb03b0bef75b44f48b904e73e1317037aa"
+    },
+    {
+      "id": "assistant.content.flows-operation-routing-flow-md",
+      "kind": "content",
+      "path": "flows/operation-routing.flow.md",
+      "summary": "Operation Routing Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "operation",
+          "routing",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 1414,
+      "content_digest": "sha256:a5abc99f0607fcbc5adbbbb1bb74109eef47a1c51d9ea4ea857ac8bf6a1a5076"
+    },
+    {
+      "id": "assistant.content.flows-project-blueprint-creation-flow-md",
+      "kind": "content",
+      "path": "flows/project-blueprint-creation.flow.md",
+      "summary": "Project Blueprint Creation Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "project",
+          "blueprint",
+          "creation",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 250,
+      "content_digest": "sha256:36211aafb517360af360cd895bf2d8e6a01ec68ea3ad3a60d77b1d30f26289e6"
+    },
+    {
+      "id": "assistant.content.flows-project-knowledge-flow-md",
+      "kind": "content",
+      "path": "flows/project-knowledge.flow.md",
+      "summary": "Project Knowledge Promotion And Delivery Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "project",
+          "knowledge",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-KNOWLEDGE-001",
+          "ALATYR-SOURCE-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:observed-is-not-accepted@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-KNOWLEDGE-001",
+        "ALATYR-SOURCE-001"
+      ],
+      "estimated_words": 674,
+      "content_digest": "sha256:fb9250ea0fe2cd69f02da0e5cb89e05beb94e2c340310191f585f4a69f68ecf0"
+    },
+    {
+      "id": "assistant.content.flows-project-vocabulary-flow-md",
+      "kind": "content",
+      "path": "flows/project-vocabulary.flow.md",
+      "summary": "Project Vocabulary Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "project",
+          "vocabulary",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-KNOWLEDGE-001",
+          "ALATYR-SOURCE-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:observed-is-not-accepted@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-KNOWLEDGE-001",
+        "ALATYR-SOURCE-001"
+      ],
+      "estimated_words": 519,
+      "content_digest": "sha256:602ff6dff445c79a84114efb64acd3986a4edc375ea1dbba644a858746c7e705"
+    },
+    {
+      "id": "assistant.content.flows-skill-adaptation-flow-md",
+      "kind": "content",
+      "path": "flows/skill-adaptation.flow.md",
+      "summary": "Skill Adaptation Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "skill",
+          "adaptation",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 651,
+      "content_digest": "sha256:6e6444ec3774c0f8a4f6f8339fa11ee0949ca3a1e0d8f22f080df6ef4ca147aa"
+    },
+    {
+      "id": "assistant.content.flows-subagent-delegation-flow-md",
+      "kind": "content",
+      "path": "flows/subagent-delegation.flow.md",
+      "summary": "Subagent Delegation Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "subagent",
+          "delegation",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 729,
+      "content_digest": "sha256:c628ceddccfc61dcc38607dc27bbd14902ff7c83347f473dc0cb5ec35bcf7463"
+    },
+    {
+      "id": "assistant.content.flows-team-decision-flow-md",
+      "kind": "content",
+      "path": "flows/team-decision.flow.md",
+      "summary": "Team Decision Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "team",
+          "decision",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 393,
+      "content_digest": "sha256:06164e107418cd09b77afeed075a886c1691152e9a855bf3262778358459e2ca"
+    },
+    {
+      "id": "assistant.content.flows-team-handoff-flow-md",
+      "kind": "content",
+      "path": "flows/team-handoff.flow.md",
+      "summary": "Team Handoff Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "team",
+          "handoff",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 342,
+      "content_digest": "sha256:afe4bd79708fdef19caccdf8186d68b5dc006218fcb041968c83e1936ae88c51"
+    },
+    {
+      "id": "assistant.content.flows-team-identity-flow-md",
+      "kind": "content",
+      "path": "flows/team-identity.flow.md",
+      "summary": "Team Identity Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "team",
+          "identity",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 283,
+      "content_digest": "sha256:b23ba34740dc58ffe262e1d56b67a4f6239992d4fb456b47e0c53a3c2e5f747f"
+    },
+    {
+      "id": "assistant.content.flows-team-review-flow-md",
+      "kind": "content",
+      "path": "flows/team-review.flow.md",
+      "summary": "Team Review And Merge Check Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "team",
+          "review",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 429,
+      "content_digest": "sha256:cf2e73fca2230e98f97dbc6a2aca1d40963031cb3021edf4869c0382efc64f55"
+    },
+    {
+      "id": "assistant.content.flows-team-task-coordination-flow-md",
+      "kind": "content",
+      "path": "flows/team-task-coordination.flow.md",
+      "summary": "Team Task Coordination Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "team",
+          "task",
+          "coordination",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 712,
+      "content_digest": "sha256:7303777853123d728b900fd42353ff4a7acec3d133092e7aee93154caf4f1d88"
+    },
+    {
+      "id": "assistant.content.flows-test-first-change-flow-md",
+      "kind": "content",
+      "path": "flows/test-first-change.flow.md",
+      "summary": "Test-First Change Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "test",
+          "first",
+          "change",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 328,
+      "content_digest": "sha256:24f6f187dae25ed716bea615b5a9e582fa8dd07213f0f1df347b9215a132ce79"
+    },
+    {
+      "id": "assistant.content.flows-test-first-configuration-flow-md",
+      "kind": "content",
+      "path": "flows/test-first-configuration.flow.md",
+      "summary": "Test-First Configuration Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "test",
+          "first",
+          "configuration",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 350,
+      "content_digest": "sha256:f23c0ed782cb376c8890ae895a64e3a1d85c3f963ec8b28c3e0f0de9f16cbac3"
+    },
+    {
+      "id": "assistant.content.flows-workspace-mode-flow-md",
+      "kind": "content",
+      "path": "flows/workspace-mode.flow.md",
+      "summary": "Workspace Mode Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "workspace",
+          "mode",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 436,
+      "content_digest": "sha256:72aef5fd0810068ac49d66d93f13f8569e601d59aeeb1850d7b1e6968a0af99e"
+    }
+  ]
+}

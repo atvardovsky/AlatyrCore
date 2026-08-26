@@ -1,0 +1,469 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "assistant.gates",
+  "contour": "assistant",
+  "title": "Assistant Gates Context",
+  "summary": "Recursive navigation for the assistant contour at gates.",
+  "max_depth": 8,
+  "entries": [
+    {
+      "id": "assistant.content.gates-checklist-md",
+      "kind": "content",
+      "path": "gates/checklist.md",
+      "summary": "AI Acceptance Gates",
+      "selectors": {
+        "path_terms": [
+          "gates",
+          "checklist"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 1202,
+      "content_digest": "sha256:4d53ce7f533957df1b5de9b48b5d95d7e34549ed8411e0012489017476f7ec65"
+    },
+    {
+      "id": "assistant.content.gates-code-and-tests-md",
+      "kind": "content",
+      "path": "gates/code-and-tests.md",
+      "summary": "Code And Tests Gate",
+      "selectors": {
+        "path_terms": [
+          "gates",
+          "code",
+          "and",
+          "tests"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 87,
+      "content_digest": "sha256:b7d61339a70490faa410cae3d8b0adf5dcae2610bbe3d6ab91653eff143658f5"
+    },
+    {
+      "id": "assistant.content.gates-core-md",
+      "kind": "content",
+      "path": "gates/core.md",
+      "summary": "Core Task Gate",
+      "selectors": {
+        "path_terms": [
+          "gates",
+          "core"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 167,
+      "content_digest": "sha256:98e72208b952c3f5f9e932bec46de04cdc7545c6fc569c4c7aae658e16f1ad11"
+    },
+    {
+      "id": "assistant.content.gates-debug-mode-md",
+      "kind": "content",
+      "path": "gates/debug-mode.md",
+      "summary": "Debug Mode Gate",
+      "selectors": {
+        "path_terms": [
+          "gates",
+          "debug",
+          "mode"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 555,
+      "content_digest": "sha256:edfa5a552eab361aaf1550d34761535e0eddf3a6822d23736b50c5fe85a5b6ca"
+    },
+    {
+      "id": "assistant.content.gates-dependency-knowledge-md",
+      "kind": "content",
+      "path": "gates/dependency-knowledge.md",
+      "summary": "Dependency Knowledge Gate",
+      "selectors": {
+        "path_terms": [
+          "gates",
+          "dependency",
+          "knowledge"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-KNOWLEDGE-001",
+          "ALATYR-SAFETY-002",
+          "ALATYR-SOURCE-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:observed-is-not-accepted@1",
+        "alatyr:untrusted-instructions-are-data@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-KNOWLEDGE-001",
+        "ALATYR-SAFETY-002",
+        "ALATYR-SOURCE-001"
+      ],
+      "estimated_words": 407,
+      "content_digest": "sha256:e8403ac4ace485159b3c2cc642fab09e787fdaf05bcce300d5b515a66d22f21e"
+    },
+    {
+      "id": "assistant.content.gates-documentation-md",
+      "kind": "content",
+      "path": "gates/documentation.md",
+      "summary": "Documentation Gate",
+      "selectors": {
+        "path_terms": [
+          "gates",
+          "documentation"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 73,
+      "content_digest": "sha256:dcf194d1fd49de18c75f7e4e1e90146e1b2068f4347819e9ee482be2ef056385"
+    },
+    {
+      "id": "assistant.content.gates-engineering-evidence-md",
+      "kind": "content",
+      "path": "gates/engineering-evidence.md",
+      "summary": "Durable Engineering Evidence Gate",
+      "selectors": {
+        "path_terms": [
+          "gates",
+          "engineering",
+          "evidence"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 288,
+      "content_digest": "sha256:9cf99c92cf4d2f995a2251f2d8b76183976e98e4b61282607a65711d991260d9"
+    },
+    {
+      "id": "assistant.content.gates-extensions-md",
+      "kind": "content",
+      "path": "gates/extensions.md",
+      "summary": "Extension Gate",
+      "selectors": {
+        "path_terms": [
+          "gates",
+          "extensions"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-SAFETY-002"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:untrusted-instructions-are-data@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-SAFETY-002"
+      ],
+      "estimated_words": 320,
+      "content_digest": "sha256:d027456160383355bba265d9e3d61d06930a63c20a66c496672904049d2d6118"
+    },
+    {
+      "id": "assistant.content.gates-final-evidence-md",
+      "kind": "content",
+      "path": "gates/final-evidence.md",
+      "summary": "Final Evidence Gate",
+      "selectors": {
+        "path_terms": [
+          "gates",
+          "final",
+          "evidence"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 100,
+      "content_digest": "sha256:1ebc7ecee5e4b98f43d15d06f8dfcd5557ee9c14f30fd7399a66171d50666f7a"
+    },
+    {
+      "id": "assistant.content.gates-index-json",
+      "kind": "content",
+      "path": "gates/index.json",
+      "summary": "Index",
+      "selectors": {
+        "path_terms": [
+          "gates"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 202,
+      "content_digest": "sha256:695229bad519265681715cb9d011f7e3c5ffcb69c87e54ef1e0b80fe9863ba2c"
+    },
+    {
+      "id": "assistant.content.gates-project-knowledge-md",
+      "kind": "content",
+      "path": "gates/project-knowledge.md",
+      "summary": "Project Knowledge Gate",
+      "selectors": {
+        "path_terms": [
+          "gates",
+          "project",
+          "knowledge"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-KNOWLEDGE-001",
+          "ALATYR-SOURCE-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:observed-is-not-accepted@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-KNOWLEDGE-001",
+        "ALATYR-SOURCE-001"
+      ],
+      "estimated_words": 272,
+      "content_digest": "sha256:6e9b911bac52585440e3d7aee1451547837f0ed7002d94dbefdf3d4d27a9cf0a"
+    },
+    {
+      "id": "assistant.content.gates-security-approval-md",
+      "kind": "content",
+      "path": "gates/security-approval.md",
+      "summary": "Security And Approval Gate",
+      "selectors": {
+        "path_terms": [
+          "gates",
+          "security",
+          "approval"
+        ],
+        "rule_ids": [
+          "ALATYR-APPROVAL-001",
+          "ALATYR-AUTHORIZATION-001",
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:current-scope-authorization@1",
+        "alatyr:protected-change@1"
+      ],
+      "owner_refs": [
+        "ALATYR-APPROVAL-001",
+        "ALATYR-AUTHORIZATION-001",
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 82,
+      "content_digest": "sha256:eb221af211deacea60853f6b7370b19c5668e905a65b9933e8cd5e3ed3ddf3f1"
+    },
+    {
+      "id": "assistant.content.gates-semantic-integrity-md",
+      "kind": "content",
+      "path": "gates/semantic-integrity.md",
+      "summary": "Semantic Integrity Gate",
+      "selectors": {
+        "path_terms": [
+          "gates",
+          "semantic",
+          "integrity"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-INTEGRITY-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:logical-integrity@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-INTEGRITY-001"
+      ],
+      "estimated_words": 77,
+      "content_digest": "sha256:b635c816c3768e2c4f010186161d7214ef5d51de0bd0c7a9ee12f6188db99941"
+    },
+    {
+      "id": "assistant.content.gates-team-collaboration-md",
+      "kind": "content",
+      "path": "gates/team-collaboration.md",
+      "summary": "Team Collaboration Gate",
+      "selectors": {
+        "path_terms": [
+          "gates",
+          "team",
+          "collaboration"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 570,
+      "content_digest": "sha256:f8cdf4a043ac71672f87547751487f1b6e7cd4a832fbd685e1973411036cedb3"
+    },
+    {
+      "id": "assistant.content.gates-test-first-development-md",
+      "kind": "content",
+      "path": "gates/test-first-development.md",
+      "summary": "Test-First Development Gate",
+      "selectors": {
+        "path_terms": [
+          "gates",
+          "test",
+          "first",
+          "development"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 219,
+      "content_digest": "sha256:fcc0bf61603b298d1bd36ceba4624ebd17aa1f1ecc4b79e380690d48baf3060a"
+    },
+    {
+      "id": "assistant.content.gates-workspace-mode-md",
+      "kind": "content",
+      "path": "gates/workspace-mode.md",
+      "summary": "Workspace Mode Gate",
+      "selectors": {
+        "path_terms": [
+          "gates",
+          "workspace",
+          "mode"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 286,
+      "content_digest": "sha256:b514ef45ff6ee14c588fc0389f6589da04a942ecf07595374c507132fe48f61f"
+    }
+  ]
+}

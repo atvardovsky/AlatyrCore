@@ -1,0 +1,195 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "assistant.workers-roles",
+  "contour": "assistant",
+  "title": "Assistant Roles Context",
+  "summary": "Recursive navigation for the assistant contour at workers/roles.",
+  "max_depth": 8,
+  "entries": [
+    {
+      "id": "assistant.content.workers-roles-documentation-worker-md",
+      "kind": "content",
+      "path": "workers/roles/documentation-worker.md",
+      "summary": "Documentation Worker",
+      "selectors": {
+        "path_terms": [
+          "workers",
+          "roles",
+          "documentation",
+          "worker"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 48,
+      "content_digest": "sha256:c5561572ac594ac7b9efecfaf6373a9b3d1497c6ec4311fd7c937968aa5ece6e"
+    },
+    {
+      "id": "assistant.content.workers-roles-explorer-md",
+      "kind": "content",
+      "path": "workers/roles/explorer.md",
+      "summary": "Explorer Worker",
+      "selectors": {
+        "path_terms": [
+          "workers",
+          "roles",
+          "explorer"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 59,
+      "content_digest": "sha256:1375922be6899a411f8aed57dd9df63bf8f966508d03a5cce9c0fa80034a0b2e"
+    },
+    {
+      "id": "assistant.content.workers-roles-fast-focused-worker-md",
+      "kind": "content",
+      "path": "workers/roles/fast-focused-worker.md",
+      "summary": "Fast Focused Worker",
+      "selectors": {
+        "path_terms": [
+          "workers",
+          "roles",
+          "fast",
+          "focused",
+          "worker"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 61,
+      "content_digest": "sha256:ebfef09dc330eca51e8e4c3a6e2de7c603db72ae043bec4407cc9cd1110da8fa"
+    },
+    {
+      "id": "assistant.content.workers-roles-implementer-md",
+      "kind": "content",
+      "path": "workers/roles/implementer.md",
+      "summary": "Implementer Worker",
+      "selectors": {
+        "path_terms": [
+          "workers",
+          "roles",
+          "implementer"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 62,
+      "content_digest": "sha256:5b908c0d9a28fd2d11d69e17dd40b47ad4c6a1ca64101513896e3e32dbe46d1f"
+    },
+    {
+      "id": "assistant.content.workers-roles-reviewer-md",
+      "kind": "content",
+      "path": "workers/roles/reviewer.md",
+      "summary": "Reviewer Worker",
+      "selectors": {
+        "path_terms": [
+          "workers",
+          "roles",
+          "reviewer"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 48,
+      "content_digest": "sha256:556f8a05bf26e34d0b32783f903c3449952b19bab36ff41b893b539c92c4298b"
+    },
+    {
+      "id": "assistant.content.workers-roles-test-runner-md",
+      "kind": "content",
+      "path": "workers/roles/test-runner.md",
+      "summary": "Test Runner Worker",
+      "selectors": {
+        "path_terms": [
+          "workers",
+          "roles",
+          "test",
+          "runner"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 53,
+      "content_digest": "sha256:1397d7f6e12810bb86c823bc3e7c3c0ce6bae15298f50a1be387f116c2735001"
+    }
+  ]
+}

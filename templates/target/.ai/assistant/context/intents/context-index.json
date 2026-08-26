@@ -1,0 +1,254 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "assistant.context-intents",
+  "contour": "assistant",
+  "title": "Assistant Intents Context",
+  "summary": "Recursive navigation for the assistant contour at context/intents.",
+  "max_depth": 8,
+  "entries": [
+    {
+      "id": "assistant.content.context-intents-architecture-request-json",
+      "kind": "content",
+      "path": "context/intents/architecture-request.json",
+      "summary": "Architecture Request",
+      "selectors": {
+        "path_terms": [
+          "intents",
+          "architecture",
+          "request"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-KNOWLEDGE-001",
+          "ALATYR-SOURCE-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:observed-is-not-accepted@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-KNOWLEDGE-001",
+        "ALATYR-SOURCE-001"
+      ],
+      "estimated_words": 141,
+      "content_digest": "sha256:683884690f73aa7c93536a252b84ad3adf632b0a86a2af3fb30f79a79185b8f4"
+    },
+    {
+      "id": "assistant.content.context-intents-code-documentation-json",
+      "kind": "content",
+      "path": "context/intents/code-documentation.json",
+      "summary": "Code Documentation",
+      "selectors": {
+        "path_terms": [
+          "intents",
+          "code",
+          "documentation"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 170,
+      "content_digest": "sha256:0f772405d8e9b0b1801b81ce31f64c8f1188070528bf3756a7295aa543aeb9aa"
+    },
+    {
+      "id": "assistant.content.context-intents-dependency-knowledge-request-json",
+      "kind": "content",
+      "path": "context/intents/dependency-knowledge-request.json",
+      "summary": "Dependency Knowledge Request",
+      "selectors": {
+        "path_terms": [
+          "intents",
+          "dependency",
+          "knowledge",
+          "request"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-KNOWLEDGE-001",
+          "ALATYR-SAFETY-002",
+          "ALATYR-SOURCE-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:observed-is-not-accepted@1",
+        "alatyr:untrusted-instructions-are-data@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-KNOWLEDGE-001",
+        "ALATYR-SAFETY-002",
+        "ALATYR-SOURCE-001"
+      ],
+      "estimated_words": 206,
+      "content_digest": "sha256:172b938ab7246090c3bbafbeef0db274ed1a4c4ca063be079457d4d3d806a26b"
+    },
+    {
+      "id": "assistant.content.context-intents-diagram-request-json",
+      "kind": "content",
+      "path": "context/intents/diagram-request.json",
+      "summary": "Diagram Request",
+      "selectors": {
+        "path_terms": [
+          "intents",
+          "diagram",
+          "request"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 99,
+      "content_digest": "sha256:70413dae9a6715966c097f95655a6121b196c67e9d547e89afa25891cf0ab4c4"
+    },
+    {
+      "id": "assistant.content.context-intents-extension-request-json",
+      "kind": "content",
+      "path": "context/intents/extension-request.json",
+      "summary": "Extension Request",
+      "selectors": {
+        "path_terms": [
+          "intents",
+          "extension",
+          "request"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-SAFETY-002"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:untrusted-instructions-are-data@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-SAFETY-002"
+      ],
+      "estimated_words": 195,
+      "content_digest": "sha256:21de422bbd4f19aef79cd57d940fba8421a1ac59c2b52ee94a1bd81e1f030946"
+    },
+    {
+      "id": "assistant.content.context-intents-test-first-request-json",
+      "kind": "content",
+      "path": "context/intents/test-first-request.json",
+      "summary": "Test First Request",
+      "selectors": {
+        "path_terms": [
+          "intents",
+          "test",
+          "first",
+          "request"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 217,
+      "content_digest": "sha256:f6cad4e9f518150e0338802d645fd68f8d2366a515fe5088e2e5e134218c33e9"
+    },
+    {
+      "id": "assistant.content.context-intents-vocabulary-request-json",
+      "kind": "content",
+      "path": "context/intents/vocabulary-request.json",
+      "summary": "Vocabulary Request",
+      "selectors": {
+        "path_terms": [
+          "intents",
+          "vocabulary",
+          "request"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-KNOWLEDGE-001",
+          "ALATYR-SOURCE-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:observed-is-not-accepted@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-KNOWLEDGE-001",
+        "ALATYR-SOURCE-001"
+      ],
+      "estimated_words": 169,
+      "content_digest": "sha256:77409286d40063bea07d8fd116aac13eddeb224e14e7990370b3f39fe244192d"
+    },
+    {
+      "id": "assistant.content.context-intents-workspace-mode-request-json",
+      "kind": "content",
+      "path": "context/intents/workspace-mode-request.json",
+      "summary": "Workspace Mode Request",
+      "selectors": {
+        "path_terms": [
+          "intents",
+          "workspace",
+          "mode",
+          "request"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 159,
+      "content_digest": "sha256:2a81312c1eae1512a03f867e72abb3592e96d0f2b6012f161ea773e37e071980"
+    }
+  ]
+}

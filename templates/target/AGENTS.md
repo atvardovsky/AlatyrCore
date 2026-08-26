@@ -13,6 +13,21 @@ If the hash-bound bootstrap projection is stale, repair it from
 Select the smallest profile/areas. Load `.ai/assistant/context-profiles.md`
 only for ambiguity, conflict, or repair; record a context receipt on expansion.
 
+Use the semantic definitions embedded in the bootstrap as the meaning of their
+exact versioned term IDs. Resolve other term IDs lazily through
+`.ai/framework/semantics/index.json`; if a term is missing, stale, ambiguous,
+or conflicts with its canonical owner, load the owner prose and stop using the
+compressed term. Semantic terms abbreviate repeated rules but never replace
+their authority.
+
+Start content discovery from the selected contour root `context-index.json`.
+Follow only index entries matched by the task, operation, owner, path, fact,
+contract, dependency, risk, or conflict signal. A child index may lead to
+another child index; do not list or load a whole directory merely because its
+index was selected. Verify entry digest and word estimate before relying on
+content, and stop on a cycle, duplicate content path, depth violation, or stale
+digest.
+
 For non-trivial work, route project knowledge after profile/area selection and
 once more after concrete source evidence appears. Profile-only matching is
 invalid. Use area, subsystem, architecture-item, dependency, fact, contract,
@@ -93,8 +108,10 @@ approval and require reapproval for protected semantic expansion.
 
 ## Final Evidence
 
-Report profile/areas, facts/files, integrity/sync, validation/skips, approval,
-authorization, context expansion, task evidence, `durable_engineering_evidence`
+Report profile/areas, context index chain, selected item IDs/digests, resolved
+semantic term IDs/versions, packet digest or fallback, facts/files,
+integrity/sync, validation/skips, approval, authorization, context expansion,
+task evidence, `durable_engineering_evidence`
 as captured/skipped/blocked with binding or reason, preview, and risk. For non-trivial work also report initial/refined
 knowledge selectors, selected/omitted IDs, owners reverified, warnings,
 contradictions, and packet-limit results.

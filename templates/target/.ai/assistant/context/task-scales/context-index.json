@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "assistant.context-task-scales",
+  "contour": "assistant",
+  "title": "Assistant Task Scales Context",
+  "summary": "Recursive navigation for the assistant contour at context/task-scales.",
+  "max_depth": 8,
+  "entries": [
+    {
+      "id": "assistant.content.context-task-scales-change-package-json",
+      "kind": "content",
+      "path": "context/task-scales/change-package.json",
+      "summary": "Change Package",
+      "selectors": {
+        "path_terms": [
+          "task",
+          "scales",
+          "change",
+          "package"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-INTEGRITY-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:logical-integrity@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-INTEGRITY-001"
+      ],
+      "estimated_words": 143,
+      "content_digest": "sha256:41a7185d07ae3b06962c356d9ebe3f48cfe72cdbf967e6ade2958b0a3058197d"
+    },
+    {
+      "id": "assistant.content.context-task-scales-debug-mode-json",
+      "kind": "content",
+      "path": "context/task-scales/debug-mode.json",
+      "summary": "Debug Mode",
+      "selectors": {
+        "path_terms": [
+          "task",
+          "scales",
+          "debug",
+          "mode"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 314,
+      "content_digest": "sha256:0516dfac94184319e68124789e144f0e2de4d314282ad8d76dc8de7c82f97da3"
+    },
+    {
+      "id": "assistant.content.context-task-scales-delegated-execution-json",
+      "kind": "content",
+      "path": "context/task-scales/delegated-execution.json",
+      "summary": "Delegated Execution",
+      "selectors": {
+        "path_terms": [
+          "task",
+          "scales",
+          "delegated",
+          "execution"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 116,
+      "content_digest": "sha256:edb73e069bd3806803f9911596874f583e5580c2e091902b85b134aaab66e174"
+    },
+    {
+      "id": "assistant.content.context-task-scales-engineering-evidence-json",
+      "kind": "content",
+      "path": "context/task-scales/engineering-evidence.json",
+      "summary": "Engineering Evidence",
+      "selectors": {
+        "path_terms": [
+          "task",
+          "scales",
+          "engineering",
+          "evidence"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 166,
+      "content_digest": "sha256:b11b954d021f59881c9fdd9e28f52ee5dc51887243615c5109cadf125a84de82"
+    },
+    {
+      "id": "assistant.content.context-task-scales-large-or-resumable-json",
+      "kind": "content",
+      "path": "context/task-scales/large-or-resumable.json",
+      "summary": "Large Or Resumable",
+      "selectors": {
+        "path_terms": [
+          "task",
+          "scales",
+          "large",
+          "resumable"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 203,
+      "content_digest": "sha256:73e3cfa78cab8d4da3759fcf8fe0f838e161178c1ef73c6804d0b37802fafb7f"
+    }
+  ]
+}

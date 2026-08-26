@@ -9,6 +9,8 @@ from typing import Any
 
 import yaml
 
+from context_catalog import load_codebook
+
 
 BOOTSTRAP_PATH = Path(".ai/assistant/bootstrap-index.json")
 SOURCE_PATHS = {
@@ -16,6 +18,8 @@ SOURCE_PATHS = {
     "project_map": Path(".ai/README.md"),
     "context_router": Path(".ai/assistant/context-router.json"),
 }
+SEMANTIC_INDEX_PATH = Path(".ai/framework/semantics/index.json")
+SOURCE_SEMANTIC_INDEX = Path(__file__).resolve().parents[1] / "framework" / "semantics" / "index.json"
 
 
 def _sha256(text: str) -> str:
@@ -65,6 +69,9 @@ def build_bootstrap_index(
     manifest_text: str,
     project_map_text: str,
     router_text: str,
+    *,
+    semantic_index_text: str | None = None,
+    semantic_terms: dict[str, dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Return a deterministic routing projection from canonical target sources."""
 
@@ -84,16 +91,38 @@ def build_bootstrap_index(
     modules = modules if isinstance(modules, dict) else {}
     operation_routing = operation_routing if isinstance(operation_routing, dict) else {}
 
+    derived_from = {
+        name: {"path": path.as_posix(), "sha256": _sha256(text)}
+        for (name, path), text in zip(
+            SOURCE_PATHS.items(),
+            [manifest_text, project_map_text, router_text],
+        )
+    }
+    if semantic_index_text is not None:
+        derived_from["semantic_codebook"] = {
+            "path": SEMANTIC_INDEX_PATH.as_posix(),
+            "sha256": _sha256(semantic_index_text),
+        }
+    recursive_context = router.get("recursive_context")
+    recursive_context = recursive_context if isinstance(recursive_context, dict) else {}
+    semantic_codebook = router.get("semantic_codebook")
+    semantic_codebook = semantic_codebook if isinstance(semantic_codebook, dict) else {}
+    context_packet = router.get("context_packet")
+    context_packet = context_packet if isinstance(context_packet, dict) else {}
+    preload_ids = _string_list(semantic_codebook.get("preload_terms"))
+    ordered_semantic_ids = [
+        term_id for term_id in preload_ids if term_id in (semantic_terms or {})
+    ]
+    ordered_semantic_ids.extend(
+        term_id
+        for term_id in (semantic_terms or {})
+        if term_id not in ordered_semantic_ids
+    )
+
     return {
         "schema_version": 1,
         "index_kind": "target-bootstrap-index",
-        "derived_from": {
-            name: {"path": path.as_posix(), "sha256": _sha256(text)}
-            for (name, path), text in zip(
-                SOURCE_PATHS.items(),
-                [manifest_text, project_map_text, router_text],
-            )
-        },
+        "derived_from": derived_from,
         "installation": {
             "framework_version": _string(framework.get("version")),
             "adapter_schema_version": _string(manifest.get("schema_version")),
@@ -103,6 +132,31 @@ def build_bootstrap_index(
         },
         "project_map": SOURCE_PATHS["project_map"].as_posix(),
         "context_router": SOURCE_PATHS["context_router"].as_posix(),
+        "recursive_context": {
+            "contour_indexes": recursive_context.get("contour_indexes", {}),
+            "max_depth": recursive_context.get("max_depth", "unknown"),
+            "on_failure": _string(recursive_context.get("on_failure")),
+        },
+        "semantic_preload": {
+            "index": _string(semantic_codebook.get("index"), SEMANTIC_INDEX_PATH.as_posix()),
+            "codebook_schema_version": semantic_codebook.get("schema_version", "unknown"),
+            "terms": [
+                {
+                    "id": term_id,
+                    "version": term.get("version"),
+                    "definition": term.get("definition"),
+                    "canonical_owner": f".ai/framework/{term.get('canonical_owner')}",
+                }
+                for term_id in ordered_semantic_ids
+                for term in [(semantic_terms or {})[term_id]]
+            ],
+            "fallback": _string(semantic_codebook.get("fallback")),
+        },
+        "context_packet": {
+            "schema_version": context_packet.get("schema_version", "unknown"),
+            "template": _string(context_packet.get("template")),
+            "receipt_required_for": _string_list(context_packet.get("receipt_required_for")),
+        },
         "routing_order": _string_list(router.get("routing_order")),
         "profiles": _route_projection(router.get("profile_index")),
         "intent_overlays": _route_projection(router.get("intent_overlays")),
@@ -136,8 +190,15 @@ def build_from_target(target: Path) -> dict[str, Any]:
         if not path.is_file():
             raise ValueError(f"bootstrap source is missing: {relpath.as_posix()}")
         texts[name] = path.read_text(encoding="utf-8")
+    installed_index = target / SEMANTIC_INDEX_PATH
+    semantic_index = installed_index if installed_index.is_file() else SOURCE_SEMANTIC_INDEX
+    semantic_terms = load_codebook(semantic_index, root=semantic_index.parent)
     return build_bootstrap_index(
-        texts["manifest"], texts["project_map"], texts["context_router"]
+        texts["manifest"],
+        texts["project_map"],
+        texts["context_router"],
+        semantic_index_text=semantic_index.read_text(encoding="utf-8"),
+        semantic_terms=semantic_terms,
     )
 
 

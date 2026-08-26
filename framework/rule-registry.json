@@ -5,7 +5,7 @@
       "category": "CONTEXT",
       "owner": "framework/context-profiles.md",
       "rule_ids": ["ALATYR-CONTEXT-001"],
-      "derived_surfaces": ["README source context", "installation source context", "target context profiles", "target context router", "task-scale overlays", "operation packet context receipts", "ordered semantic-guidance identity and bundle receipts", "long-task semantic revalidation", "consistency relationship routing", "session bootstrap instructions", "AI infrastructure capability and recommendation routing"]
+      "derived_surfaces": ["README source context", "installation source context", "target context profiles", "target context router", "recursive contour context indexes", "semantic codebook and resolved context packets", "task-scale overlays", "operation packet context receipts", "ordered semantic-guidance identity and bundle receipts", "long-task semantic revalidation", "consistency relationship routing", "session bootstrap instructions", "AI infrastructure capability and recommendation routing"]
     },
     {
       "category": "SOURCE",
@@ -71,7 +71,7 @@
       "category": "VOCABULARY",
       "owner": "framework/project-vocabulary.md",
       "rule_ids": ["ALATYR-VOCABULARY-001"],
-      "derived_surfaces": ["target vocabulary catalog", "term records", "data-dictionary link records", "vocabulary intent routing", "project-vocabulary operation flow", "project-adapted vocabulary skill", "term review template", "installation and update planning", "target gates", "structural validation"]
+      "derived_surfaces": ["target vocabulary catalog", "term records", "data-dictionary link records", "project semantic-term namespace", "vocabulary intent routing", "project-vocabulary operation flow", "project-adapted vocabulary skill", "term review template", "installation and update planning", "target gates", "structural validation"]
     },
     {
       "category": "TDD",
@@ -107,7 +107,7 @@
       "category": "ADAPTER",
       "owner": "framework/project-adapter-contract.md",
       "rule_ids": ["ALATYR-ADAPTER-001"],
-      "derived_surfaces": ["installation plan", "readiness checklist", "manifest template", "adapter recheck flow", "target development-pattern evidence", "framework pack and projected inventory", "AI infrastructure router", "AI infrastructure recommendation contract", "AI infrastructure item contracts"]
+      "derived_surfaces": ["installation plan", "readiness checklist", "manifest template", "adapter recheck flow", "target development-pattern evidence", "framework pack and projected inventory", "recursive target context indexes", "semantic codebook binding", "context packet template", "AI infrastructure router", "AI infrastructure recommendation contract", "AI infrastructure item contracts"]
     },
     {
       "category": "MODULE",
@@ -143,7 +143,7 @@
       "category": "LIFECYCLE",
       "owner": "framework/lifecycle.md",
       "rule_ids": ["ALATYR-LIFECYCLE-001"],
-      "derived_surfaces": ["version files", "installed framework pack", "migration notes", "framework update recheck", "project-guidance contract migration", "Debug attribution migration", "effectiveness and maintenance evidence migration", "changelog"]
+      "derived_surfaces": ["version files", "installed framework pack", "migration notes", "framework update recheck", "recursive context-index rebuild", "semantic-codebook migration", "project-guidance contract migration", "Debug attribution migration", "effectiveness and maintenance evidence migration", "changelog"]
     },
     {
       "category": "ENGINEERING_EVIDENCE",
@@ -175,7 +175,7 @@
       "id": "ALATYR-CONTEXT-001",
       "category": "CONTEXT",
       "canonical_source": "framework/context-profiles.md",
-      "summary": "Use a generated hash-bound bootstrap index, routed gate fragments, and the smallest task profile through an aligned context router; route the target registry and consistency map together for semantic work while keeping redundant portable explanation conditional; apply bounded two-stage project-guidance delivery from profile plus a stronger area, dependency, fact, contract, path, symbol, or issue signal; record planned, resolved, and observably delivered ordered guidance identities with deterministic bundle digests while never claiming model comprehension; revalidate changed bundles before protected implementation, material decisions, final validation, and final evidence; separate total, portable, and reserved target context budgets; record expansion only when boundaries or conflicts require it; and keep unrelated knowledge, optional modules, evidence history, debug records, delegated execution, complete checklists, and full team detail lazy.",
+      "summary": "Use a generated hash-bound bootstrap index, recursively navigated contour indexes, a small context-loaded semantic codebook, routed gate fragments, and the smallest task profile through an aligned context router; keep bootstrap outside assistant catalog content ownership and rebuild installed catalogs before bootstrap to prevent circular digests; resolve compact terms losslessly with versioned owner-linked definitions and canonical-prose fallback; route the target registry and consistency map together for semantic work while keeping redundant portable explanation conditional; apply bounded two-stage project-guidance delivery from profile plus a stronger area, dependency, fact, contract, path, symbol, or issue signal; record packet identity plus planned, resolved, and observably delivered ordered guidance identities with deterministic digests while never claiming model comprehension; revalidate changed bundles before protected implementation, material decisions, final validation, and final evidence; separate total, portable, and reserved target context budgets; record expansion only when boundaries or conflicts require it; and keep unrelated branches, knowledge, optional modules, evidence history, debug records, delegated execution, complete checklists, and full team detail lazy.",
       "applies_to": ["all installed adapter tasks"],
       "enforcement": "required"
     },
@@ -295,7 +295,7 @@
       "id": "ALATYR-VOCABULARY-001",
       "category": "VOCABULARY",
       "canonical_source": "framework/project-vocabulary.md",
-      "summary": "When the optional project-vocabulary module is enabled, keep a compact project-owned catalog and scoped term records that distinguish observed, proposed, accepted, deprecated, contradicted, and unknown meanings; resolve aliases and acronyms lazily; link rather than replace canonical data and project fact owners; and require target authority before normalization.",
+      "summary": "When the optional project-vocabulary module is enabled, keep a compact project-owned catalog and scoped project:* term records that distinguish observed, proposed, accepted, deprecated, contradicted, and unknown meanings; resolve aliases and acronyms lazily; keep target meanings separate from framework-owned alatyr:* semantic-codebook terms; link rather than replace canonical data and project fact owners; and require target authority before normalization.",
       "applies_to": ["project term lookup", "acronym and alias resolution", "vocabulary proposal and review", "terminology checks", "accepted terminology changes"],
       "enforcement": "required when module enabled"
     },
@@ -343,7 +343,7 @@
       "id": "ALATYR-ADAPTER-001",
       "category": "ADAPTER",
       "canonical_source": "framework/project-adapter-contract.md",
-      "summary": "Keep framework core, project facts, and repository adapter facts separated and rewritten from target evidence; distinguish source-repository rule owners from their installed .ai/framework projections; record the installed framework pack and its projected registry, inventory, bootstrap index, gate index, capability closure, installation state and transition evidence, and current-scope action policy; reject live support placeholders, manifest/profile module disagreement, invalid installation-state history, and machine/human policy drift before acceptance; and preserve durable task engineering evidence, structured and non-canonical Debug Mode evidence, development-pattern evidence, routed AI infrastructure items, recommendation/adaptation records, and optional project-owned module state.",
+      "summary": "Keep framework core, project facts, and repository adapter facts separated and rewritten from target evidence; distinguish source-repository rule owners from their installed .ai/framework projections; record the installed framework pack and its projected registry, inventory, bootstrap index, recursive contour indexes, semantic-codebook binding, context-packet contract, gate index, capability closure, installation state and transition evidence, and current-scope action policy; reject live support placeholders, manifest/profile module disagreement, invalid installation-state history, and machine/human policy drift before acceptance; and preserve durable task engineering evidence, structured and non-canonical Debug Mode evidence, development-pattern evidence, routed AI infrastructure items, recommendation/adaptation records, and optional project-owned module state.",
       "applies_to": ["installation", "framework update", "adapter maintenance"],
       "enforcement": "required"
     },
@@ -391,7 +391,7 @@
       "id": "ALATYR-LIFECYCLE-001",
       "category": "LIFECYCLE",
       "canonical_source": "framework/lifecycle.md",
-      "summary": "Record framework version, adapter schema version, template version, installed framework pack, baseline, deviations, migration notes, and hash-bound upgrade impact; bind releases to v<VERSION>, shipped schemas, contract-tree evidence, and the checked-out target branch/revision; preserve current-scope authorization, Project Development Model guidance and coverage, durable engineering evidence, delayed outcomes and adapter-maintenance evidence, non-canonical Debug Mode records and their migration-limited legacy attribution, and enabled target package/module state; bind installation states to a continuous operation/revision/authorization/approval/validation transition record; distinguish migration staging from strict acceptance; expand context from affected owners and migrate schemas atomically without replacing active state with placeholders or inferring missing historical evidence.",
+      "summary": "Record framework version, adapter schema version, template version, installed framework pack, baseline, deviations, migration notes, and hash-bound upgrade impact; bind releases to v<VERSION>, shipped schemas, contract-tree evidence, and the checked-out target branch/revision; rebuild recursive context indexes and semantic-codebook/bootstrap bindings from the exact checked-out installation; preserve current-scope authorization, Project Development Model guidance and coverage, durable engineering evidence, delayed outcomes and adapter-maintenance evidence, non-canonical Debug Mode records and their migration-limited legacy attribution, and enabled target package/module state; bind installation states to a continuous operation/revision/authorization/approval/validation transition record; distinguish migration staging from strict acceptance; expand context from affected owners and migrate schemas atomically without replacing active state with placeholders or inferring missing historical evidence.",
       "applies_to": ["installation", "framework upgrades"],
       "enforcement": "required"
     },

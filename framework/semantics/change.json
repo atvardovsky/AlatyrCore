@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "record_kind": "alatyr-semantic-codebook-shard",
+  "shard_id": "change",
+  "preload": false,
+  "selectors": {
+    "task_profiles": ["code-local", "business-change", "architecture-change", "data-change", "security-sensitive"],
+    "operations": ["product-change", "logical-integrity-review", "large-task-orchestration"]
+  },
+  "terms": [
+    {
+      "id": "alatyr:changed-fact-not-file@1",
+      "version": 1,
+      "definition": "Classify and plan a change by the semantic facts, invariants, identities, owners, contracts, and dependency relationships that change, not merely by the initially named files or review comments.",
+      "owner_rule_id": "ALATYR-INTEGRITY-001",
+      "canonical_owner": "logical-integrity.md",
+      "scope": "change analysis, review repair, and workstream decomposition",
+      "non_meanings": ["ignore path scope or approval file boundaries"],
+      "depends_on": ["alatyr:logical-integrity@1"],
+      "replaced_by": null
+    },
+    {
+      "id": "alatyr:coherent-change-package@1",
+      "version": 1,
+      "definition": "When its activation gate passes, treat one material outcome and its implementation, tests, contracts, documentation, diagrams, approvals, corrections, validation, and evidence as one bounded change package without replacing their canonical owners.",
+      "owner_rule_id": "ALATYR-PACKAGE-001",
+      "canonical_owner": "change-packages.md",
+      "scope": "activated material multi-surface changes",
+      "non_meanings": ["create a package for every local edit", "make the package a source of project truth"],
+      "depends_on": ["alatyr:logical-integrity@1", "alatyr:protected-change@1"],
+      "replaced_by": null
+    }
+  ]
+}

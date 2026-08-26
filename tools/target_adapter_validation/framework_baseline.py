@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+from render_context_catalogs import build_framework_catalog_contents
 from render_rule_registry_docs import render_ownership, render_registry
 
 
@@ -43,9 +44,9 @@ def load_object(path: Path) -> dict[str, Any]:
     return data
 
 
-def source_pack_expectation(
+def source_pack_projection(
     source_framework: Path, pack: str
-) -> tuple[set[str], dict[str, Any], dict[str, str]]:
+) -> tuple[set[str], dict[str, Any], dict[str, bytes]]:
     catalog = load_object(source_framework / "framework-packs.json")
     registry = load_object(source_framework / "rule-registry.json")
     packs = catalog.get("packs")
@@ -95,7 +96,8 @@ def source_pack_expectation(
     if unknown:
         raise ValueError(f"source framework pack has unknown rules: {sorted(unknown)}")
     files.update(
-        Path(rules_by_id[rule_id]["canonical_source"]).name for rule_id in rule_ids
+        str(rules_by_id[rule_id]["canonical_source"])[len("framework/"):]
+        for rule_id in rule_ids
     )
     projected_files = catalog.get("projected_files")
     if not isinstance(projected_files, list) or not all(
@@ -105,16 +107,21 @@ def source_pack_expectation(
     files.update(projected_files)
     if include_remaining:
         files.update(
-            path.name
-            for path in source_framework.iterdir()
-            if path.is_file() and path.suffix in {".md", ".json"}
+            path.relative_to(source_framework).as_posix()
+            for path in source_framework.rglob("*")
+            if path.is_file()
+            and path.suffix in {".md", ".json"}
+            and not path.relative_to(source_framework).as_posix().startswith("catalog/")
+            and path.name != "context-index.json"
         )
+    files.update(build_framework_catalog_contents(files, root=source_framework))
 
     selected_rules = [
         rule
         for rule in registry.get("rules", [])
         if isinstance(rule, dict)
-        and Path(str(rule.get("canonical_source", ""))).name in files
+        and str(rule.get("canonical_source", "")).startswith("framework/")
+        and str(rule.get("canonical_source", ""))[len("framework/"):] in files
     ]
     selected_ids = {rule["id"] for rule in selected_rules}
     owners: list[dict[str, Any]] = []
@@ -135,11 +142,11 @@ def source_pack_expectation(
     }
 
     if include_remaining:
-        expected_hashes = {
-            name: hashlib.sha256((source_framework / name).read_bytes()).hexdigest()
+        contents = {
+            name: (source_framework / name).read_bytes()
             for name in files
         }
-        return files, projected_registry, expected_hashes
+        return files, projected_registry, contents
 
     contents: dict[str, bytes] = {}
     projected_content = {
@@ -150,6 +157,20 @@ def source_pack_expectation(
         "rule-registry.md": render_registry(projected_registry).encode("utf-8"),
         "rule-ownership.md": render_ownership(projected_registry).encode("utf-8"),
     }
+    projected_content.update(
+        {
+            name: content.encode("utf-8")
+            for name, content in build_framework_catalog_contents(
+                files,
+                root=source_framework,
+                content_overrides={
+                    name: content.decode("utf-8")
+                    for name, content in projected_content.items()
+                    if name != "file-inventory.json"
+                },
+            ).items()
+        }
+    )
     for name in files - {"file-inventory.json"}:
         contents[name] = projected_content.get(name, (source_framework / name).read_bytes())
 
@@ -186,6 +207,15 @@ def source_pack_expectation(
     contents["file-inventory.json"] = (
         json.dumps(inventory, indent=2, sort_keys=True) + "\n"
     ).encode("utf-8")
+    return files, projected_registry, contents
+
+
+def source_pack_expectation(
+    source_framework: Path, pack: str
+) -> tuple[set[str], dict[str, Any], dict[str, str]]:
+    files, projected_registry, contents = source_pack_projection(
+        source_framework, pack
+    )
     expected_hashes = {
         name: hashlib.sha256(payload).hexdigest() for name, payload in contents.items()
     }

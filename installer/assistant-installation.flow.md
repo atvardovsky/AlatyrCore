@@ -211,6 +211,15 @@ Classify every proposed target file:
     Route the human registry and machine map together for semantic work, keep
     redundant portable explanation conditional, and measure the composed
     semantic route before accepting its context budget.
+    Generate the framework, project, and assistant recursive context indexes
+    from the exact selected and projected installation. Validate acyclic
+    single-parent traversal, bounded depth, one content entry per installed
+    routable file, exact word estimates and digests, resolvable owner and
+    semantic references, and no entries for omitted profile files. Install the
+    versioned framework semantic codebook, resolve only its bounded core
+    preload into the bootstrap, and keep domain shards lazy. Record canonical
+    prose fallback for unresolved or conflicting terms. Add the context-packet
+    template for non-trivial, expanded, handed-off, or resumed work.
     Add `.ai/project/architecture/README.md` and
     `.ai/project/architecture/catalog.json` only when architecture knowledge is
     enabled. Derive owner, decision authority, item states, selected evidence,

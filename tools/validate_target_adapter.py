@@ -61,6 +61,9 @@ from target_validation_support import (
     should_skip_path,
 )
 from target_adapter_validation.context import TargetPathEscapeError, ValidationContext
+from target_adapter_validation.context_catalogs import (
+    validate_context_catalog_contract,
+)
 from target_adapter_validation.capability import CapabilityValidationContext
 from target_adapter_validation.ai_infrastructure import (
     AI_INFRASTRUCTURE_ROUTER_MODULE,
@@ -104,6 +107,11 @@ CORE_REQUIRED_FILES = [
     ".ai/alatyr.yaml",
     ".ai/README.md",
     ".ai/assistant/bootstrap-index.json",
+    ".ai/framework/context-index.json",
+    ".ai/project/context-index.json",
+    ".ai/assistant/context-index.json",
+    ".ai/framework/semantics/index.json",
+    ".ai/assistant/templates/context-packet.json",
     ".ai/project/contour.md",
     ".ai/project/source-of-truth-registry.md",
     ".ai/project/engineering-evidence/README.md",
@@ -224,9 +232,19 @@ MANIFEST_REQUIRED_SCALARS: set[PathKey] = {
     ("source_of_truth", "assistant_contour"),
     ("source_of_truth", "context_router"),
     ("source_of_truth", "bootstrap_index"),
+    ("source_of_truth", "framework_context_index"),
+    ("source_of_truth", "project_context_index"),
+    ("source_of_truth", "assistant_context_index"),
+    ("source_of_truth", "semantic_codebook"),
     ("source_of_truth", "context_profiles"),
     ("source_of_truth", "module_profile"),
     ("context_routing", "router_schema_version"),
+    ("context_routing", "recursive_index_schema_version"),
+    ("context_routing", "recursive_index_max_depth"),
+    ("context_routing", "semantic_codebook_schema_version"),
+    ("context_routing", "semantic_preload_policy"),
+    ("context_routing", "context_packet_schema_version"),
+    ("context_routing", "context_packet_template"),
     ("context_routing", "bootstrap_max_files"),
     ("context_routing", "bootstrap_max_words"),
     ("context_routing", "profile_default_max_files"),
@@ -783,6 +801,7 @@ class Validator:
         self.check_action_authorization_contract()
         enabled_modules = self.enabled_modules(manifest)
         self.check_router(enabled_modules)
+        validate_context_catalog_contract(self, manifest)
         if support_profile in {"standard", "full"} or self.target_path(
             ".ai/assistant/operation-catalog.json"
         ).is_file():
@@ -1272,6 +1291,10 @@ class Validator:
 
         numeric_context_fields = [
             ("context_routing", "router_schema_version"),
+            ("context_routing", "recursive_index_schema_version"),
+            ("context_routing", "recursive_index_max_depth"),
+            ("context_routing", "semantic_codebook_schema_version"),
+            ("context_routing", "context_packet_schema_version"),
             ("context_routing", "bootstrap_max_files"),
             ("context_routing", "bootstrap_max_words"),
             ("context_routing", "profile_default_max_files"),
@@ -1302,10 +1325,10 @@ class Validator:
             numeric_values[key] = value
 
         router_schema = numeric_values.get(("context_routing", "router_schema_version"))
-        if router_schema not in {2, 3, 4, 5, 6, 7}:
+        if router_schema not in {2, 3, 4, 5, 6, 7, 8}:
             self.error(
                 "MANIFEST_CONTEXT_SCHEMA",
-                "context_routing.router_schema_version must be 2, 3, 4, 5, 6, or 7",
+                "context_routing.router_schema_version must be 2 through 8",
                 ".ai/alatyr.yaml",
             )
         total = numeric_values.get(("context_routing", "profile_default_max_total_words"))
@@ -1501,13 +1524,13 @@ class Validator:
         if schema_version == 1:
             self.warn(
                 "ROUTER_SCHEMA_LEGACY",
-                "context router schema 1 should migrate to generated-bootstrap routing schema 7",
+                "context router schema 1 should migrate to recursive-index routing schema 8",
                 ".ai/assistant/context-router.json",
             )
-        elif schema_version not in {2, 3, 4, 5, 6, 7}:
+        elif schema_version not in {2, 3, 4, 5, 6, 7, 8}:
             self.error(
                 "ROUTER_SCHEMA",
-                "context router schema_version should be 2, 3, 4, 5, 6, or 7",
+                "context router schema_version should be 2 through 8",
                 ".ai/assistant/context-router.json",
             )
         manifest_path = self.target_path(".ai/alatyr.yaml")
@@ -1530,7 +1553,7 @@ class Validator:
                 ".ai/assistant/context-router.json",
             )
 
-        if schema_version in {2, 3, 4, 5, 6, 7}:
+        if schema_version in {2, 3, 4, 5, 6, 7, 8}:
             preloaded = expect_string_list(
                 router.get("preloaded_context"),
                 self,
@@ -1558,7 +1581,7 @@ class Validator:
                     ".ai/assistant/context-router.json",
                 )
             required_bootstrap = (
-                REQUIRED_BOOTSTRAP if schema_version in {5, 6, 7} else LEGACY_REQUIRED_BOOTSTRAP
+                REQUIRED_BOOTSTRAP if schema_version in {5, 6, 7, 8} else LEGACY_REQUIRED_BOOTSTRAP
             )
             for required in required_bootstrap:
                 if required not in bootstrap:
@@ -1567,7 +1590,7 @@ class Validator:
                         f"bootstrap_context missing {required}",
                         ".ai/assistant/context-router.json",
                     )
-            deferred = sorted(set(bootstrap) & DEFERRED_BOOTSTRAP) if schema_version in {5, 6, 7} else []
+            deferred = sorted(set(bootstrap) & DEFERRED_BOOTSTRAP) if schema_version in {5, 6, 7, 8} else []
             if deferred:
                 self.warn(
                     "ROUTER_BOOTSTRAP_BROAD",
@@ -1580,21 +1603,21 @@ class Validator:
             if not isinstance(budgets, dict):
                 self.error(
                     "ROUTER_BUDGETS_MISSING",
-                    "schema 2, 3, 4, 5, 6, or 7 router must define context_budgets",
+                    "schema 2 through 8 router must define context_budgets",
                     ".ai/assistant/context-router.json",
                 )
                 budgets = {}
-            elif schema_version in {4, 5, 6, 7}:
+            elif schema_version in {4, 5, 6, 7, 8}:
                 self.check_router_budget_shape(budgets)
             if not isinstance(router.get("context_receipt"), dict):
                 self.error(
                     "ROUTER_RECEIPT_MISSING",
-                    "schema 2, 3, 4, 5, 6, or 7 router must define context_receipt",
+                    "schema 2 through 8 router must define context_receipt",
                     ".ai/assistant/context-router.json",
                 )
             migration_entry = router.get("migration_routing")
             migration = migration_entry
-            if schema_version in {3, 4, 5, 6, 7} and isinstance(migration_entry, dict):
+            if schema_version in {3, 4, 5, 6, 7, 8} and isinstance(migration_entry, dict):
                 migration = self.load_context_descriptor(
                     migration_entry,
                     "target-migration-routing",
@@ -1603,7 +1626,7 @@ class Validator:
             if not isinstance(migration, dict):
                 self.error(
                     "ROUTER_MIGRATION_MISSING",
-                    "schema 2, 3, 4, 5, 6, or 7 router must define migration-first routing",
+                    "schema 2 through 8 router must define migration-first routing",
                     ".ai/assistant/context-router.json",
                 )
             else:
@@ -1732,12 +1755,12 @@ class Validator:
                             ".ai/assistant/context-router.json",
                         )
 
-        if schema_version == 7:
+        if schema_version in {7, 8}:
             knowledge_entry = router.get("project_knowledge_routing")
             if not isinstance(knowledge_entry, dict):
                 self.error(
                     "ROUTER_PROJECT_KNOWLEDGE_MISSING",
-                    "schema 7 requires project_knowledge_routing",
+                    "schema 7 or 8 requires project_knowledge_routing",
                     ".ai/assistant/context-router.json",
                 )
             else:
@@ -1863,7 +1886,7 @@ class Validator:
                                 "conditional_context",
                             )
 
-        if schema_version in {4, 5, 6, 7} and isinstance(budgets, dict):
+        if schema_version in {4, 5, 6, 7, 8} and isinstance(budgets, dict):
             self.check_installed_context_costs(router, profiles, budgets)
 
         upgrade = profiles.get("framework-upgrade")
@@ -1936,14 +1959,14 @@ class Validator:
         return data
 
     def router_profiles(self, router: dict[str, Any]) -> dict[str, Any]:
-        if router.get("schema_version") not in {3, 4, 5, 6, 7}:
+        if router.get("schema_version") not in {3, 4, 5, 6, 7, 8}:
             profiles = router.get("profiles")
             return profiles if isinstance(profiles, dict) else {}
         index = router.get("profile_index")
         if not isinstance(index, dict):
             self.error(
                 "ROUTER_PROFILE_INDEX",
-                "schema 3, 4, 5, 6, or 7 router must define profile_index",
+                "schema 3 through 8 router must define profile_index",
                 ".ai/assistant/context-router.json",
             )
             return {}
@@ -8215,7 +8238,11 @@ class Validator:
             for pattern in ("*.md", "*.json")
             for path in directory.glob(pattern)
             if path.name
-            not in {"approval-template.md", "approval-record-template.json"}
+            not in {
+                "approval-template.md",
+                "approval-record-template.json",
+                "context-index.json",
+            }
         )
 
     def load_approval_scope(self, record: Path) -> ApprovalScope | None:
@@ -9577,10 +9604,17 @@ class Validator:
                     continue
                 relpath = entry.get("path")
                 digest = entry.get("sha256")
+                framework_relpath = (
+                    relpath[len("framework/") :]
+                    if isinstance(relpath, str) and relpath.startswith("framework/")
+                    else None
+                )
                 if (
-                    not isinstance(relpath, str)
-                    or not relpath.startswith("framework/")
-                    or Path(relpath).name != relpath[len("framework/") :]
+                    not isinstance(framework_relpath, str)
+                    or not framework_relpath
+                    or "\\" in framework_relpath
+                    or Path(framework_relpath).is_absolute()
+                    or any(part in {"", ".", ".."} for part in framework_relpath.split("/"))
                     or not isinstance(digest, str)
                     or len(digest) != 64
                 ):
@@ -9590,7 +9624,14 @@ class Validator:
                         ".ai/framework/file-inventory.json",
                     )
                     continue
-                expected[Path(relpath).name] = entry
+                if framework_relpath in expected:
+                    self.error(
+                        "FRAMEWORK_PACK_INVENTORY_ENTRY",
+                        f"framework pack inventory entry {index} duplicates {framework_relpath}",
+                        ".ai/framework/file-inventory.json",
+                    )
+                    continue
+                expected[framework_relpath] = entry
             expected_names = set(expected) | {"file-inventory.json"}
             try:
                 source_expected_names, source_projected_registry, source_expected_hashes = (
@@ -9632,8 +9673,8 @@ class Validator:
                     ".ai/framework/rule-registry.json",
                 )
             target_names = {
-                path.name
-                for path in target_framework.iterdir()
+                path.relative_to(target_framework).as_posix()
+                for path in target_framework.rglob("*")
                 if path.is_file() and path.suffix in {".md", ".json"}
             }
             for name in sorted(expected_names - target_names):
@@ -9685,13 +9726,13 @@ class Validator:
             return
 
         source_files = {
-            path.name: path
-            for path in source_framework.iterdir()
+            path.relative_to(source_framework).as_posix(): path
+            for path in source_framework.rglob("*")
             if path.is_file() and path.suffix in {".md", ".json"}
         }
         target_files = {
-            path.name: path
-            for path in target_framework.iterdir()
+            path.relative_to(target_framework).as_posix(): path
+            for path in target_framework.rglob("*")
             if path.is_file() and path.suffix in {".md", ".json"}
         }
         for name in sorted(set(source_files) - set(target_files)):

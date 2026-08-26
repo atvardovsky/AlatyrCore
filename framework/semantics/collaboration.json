@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "record_kind": "alatyr-semantic-codebook-shard",
+  "shard_id": "collaboration",
+  "preload": false,
+  "selectors": {
+    "task_profiles": ["code-local", "business-change", "architecture-change"],
+    "operations": ["large-task-orchestration", "team-collaboration", "workspace-mode"]
+  },
+  "terms": [
+    {
+      "id": "alatyr:bounded-delegation@1",
+      "version": 1,
+      "definition": "Delegate only bounded, dependency-aware work with explicit inputs, output contract, permissions, write isolation, validation, and lead-agent reconciliation; a worker cannot expand authority or approve, commit, publish, or perform live-external actions for the lead.",
+      "owner_rule_id": "ALATYR-DELEGATION-001",
+      "canonical_owner": "subagent-delegation.md",
+      "scope": "worker and subagent execution",
+      "non_meanings": ["parallelize tightly coupled writes", "delegate final integration authority"],
+      "depends_on": ["alatyr:current-scope-authorization@1"],
+      "replaced_by": null
+    },
+    {
+      "id": "alatyr:mode-does-not-grant-authority@1",
+      "version": 1,
+      "definition": "A user-selected workspace mode changes bounded routing and supporting project information only; it cannot activate nested adapters or grant write scope, approval, permissions, authority, tools, or gate bypass.",
+      "owner_rule_id": "ALATYR-MODE-001",
+      "canonical_owner": "workspace-modes.md",
+      "scope": "workspace mode selection and execution",
+      "non_meanings": ["application mode selects a dependency adapter", "framework mode authorizes framework changes"],
+      "depends_on": ["alatyr:current-scope-authorization@1"],
+      "replaced_by": null
+    }
+  ]
+}

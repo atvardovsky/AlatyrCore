@@ -110,9 +110,19 @@ REQUIRED_SCALARS: set[PathKey] = {
     ("source_of_truth", "assistant_contour"),
     ("source_of_truth", "context_router"),
     ("source_of_truth", "bootstrap_index"),
+    ("source_of_truth", "framework_context_index"),
+    ("source_of_truth", "project_context_index"),
+    ("source_of_truth", "assistant_context_index"),
+    ("source_of_truth", "semantic_codebook"),
     ("source_of_truth", "context_profiles"),
     ("source_of_truth", "module_profile"),
     ("context_routing", "router_schema_version"),
+    ("context_routing", "recursive_index_schema_version"),
+    ("context_routing", "recursive_index_max_depth"),
+    ("context_routing", "semantic_codebook_schema_version"),
+    ("context_routing", "semantic_preload_policy"),
+    ("context_routing", "context_packet_schema_version"),
+    ("context_routing", "context_packet_template"),
     ("context_routing", "bootstrap_max_files"),
     ("context_routing", "bootstrap_max_words"),
     ("context_routing", "profile_default_max_files"),
@@ -273,8 +283,14 @@ PATH_SCALARS: set[PathKey] = {
     ("source_of_truth", "test_first_policy"),
     ("source_of_truth", "assistant_contour"),
     ("source_of_truth", "context_router"),
+    ("source_of_truth", "bootstrap_index"),
+    ("source_of_truth", "framework_context_index"),
+    ("source_of_truth", "project_context_index"),
+    ("source_of_truth", "assistant_context_index"),
+    ("source_of_truth", "semantic_codebook"),
     ("source_of_truth", "context_profiles"),
     ("source_of_truth", "module_profile"),
+    ("context_routing", "context_packet_template"),
     ("ai_infrastructure", "router"),
     ("ai_infrastructure", "inventory"),
     ("ai_infrastructure", "recommendation"),
@@ -362,8 +378,9 @@ def has_placeholder(value: str) -> bool:
 def target_reference_exists(value: str) -> bool:
     if value == ".ai/framework":
         return (ROOT / "framework").is_dir()
-    if value == ".ai/framework/rule-registry.json":
-        return (ROOT / "framework" / "rule-registry.json").is_file()
+    framework_prefix = ".ai/framework/"
+    if value.startswith(framework_prefix):
+        return (ROOT / "framework" / value[len(framework_prefix):]).exists()
     return (TARGET / value).exists()
 
 

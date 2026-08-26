@@ -20,6 +20,12 @@
       "write_scope": "target-structure-with-explicit-write"
     },
     {
+      "name": "render-context",
+      "script": "render_installed_context_catalogs.py",
+      "purpose": "check or explicitly regenerate installed recursive context indexes",
+      "write_scope": "target-structure-with-explicit-write"
+    },
+    {
       "name": "validate-adapter",
       "script": "validate_target_adapter.py",
       "purpose": "validate adapter structure and optionally enforce machine-readable approval scope",

@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "project.knowledge-routes",
+  "contour": "project",
+  "title": "Project Routes Context",
+  "summary": "Recursive navigation for the project contour at knowledge/routes.",
+  "max_depth": 8,
+  "entries": [
+    {
+      "id": "project.content.knowledge-routes-readme-md",
+      "kind": "content",
+      "path": "knowledge/routes/README.md",
+      "summary": "Project Knowledge Route Shards",
+      "selectors": {
+        "path_terms": [
+          "knowledge",
+          "routes"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-KNOWLEDGE-001",
+          "ALATYR-SOURCE-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:observed-is-not-accepted@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-KNOWLEDGE-001",
+        "ALATYR-SOURCE-001"
+      ],
+      "estimated_words": 76,
+      "content_digest": "sha256:516f019c82a1761fed3883008368ea9c740e69f403d0d47ca89df10b24f0299a"
+    }
+  ]
+}

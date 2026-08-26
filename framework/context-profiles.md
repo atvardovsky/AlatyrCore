@@ -29,6 +29,61 @@ Load only the selected descriptor. Intent, migration, consistency, and
 task-scale descriptors compose with that profile when their trigger applies;
 they do not belong inline in every profile or in mandatory bootstrap.
 
+## Recursive Context Navigation
+
+Every substantial framework, project, and assistant contour should expose a
+recursive `context-index.json` tree. Treat it like site navigation: start from
+the contour root, open only the matching section index, continue through
+matching child indexes, and load selected content only after an exact task,
+operation, owner, area, fact, path, symbol, contract, dependency, risk, or
+conflict signal selects it.
+
+Each index entry must retain a stable ID, content or child-index path, bounded
+summary, selectors, explicit load condition, semantic references, owner
+references, static word estimate, and content digest. Index paths are relative
+to one contour root. Navigation must be acyclic, depth-bounded, repository-
+contained, and free of duplicate content ownership. Cross-area relationships
+belong in consistency or knowledge graphs; they must not create recursive
+navigation loops.
+
+The index is a generated routing projection, not a source of project or
+framework truth. Human `README.md` files may explain a section, while the
+machine index points to canonical owners. A folder may contain further
+subfolders without imposing a universal physical depth, but routine traversal
+must stop at the router's configured depth and context budgets.
+
+The generated bootstrap is the preloaded entry point and must not be indexed
+as assistant content: it digests the assistant catalog, so indexing it would
+create a circular digest dependency. Rebuild project and assistant catalogs
+before rebuilding bootstrap whenever installed target files change.
+
+## Context-Loaded Semantic Codebook
+
+Compact machine records may reference versioned semantic terms instead of
+repeating stable framework sentences. Resolve those references through the
+installed framework semantic-codebook index before interpreting the compact
+record. Load the small `preload` closure before other compact records and load
+domain shards only when selected records reference their terms.
+
+Framework terms use the `alatyr:*` namespace. Target project vocabulary uses
+the `project:*` namespace and cannot replace or redefine a framework term.
+Every semantic term must provide a complete definition, version, owning rule,
+canonical owner, scope, explicit non-meanings when needed, dependency IDs, and
+replacement state. Dependencies must resolve once in acyclic order.
+
+Semantic compression is lossless only when every referenced term resolves at
+the expected version and digest. On a missing, stale, conflicting, cyclic, or
+unsupported term, load the named canonical owner and do not infer the compact
+meaning. Keep canonical human policies complete and readable; use compact
+terms primarily in indexes, descriptors, gates, records, and resolved context
+packets where repeated definitions produce measured savings.
+
+The resolved packet should contain selected item identities and digests,
+required semantic definitions once, budget accounting, and a deterministic
+packet digest. A term name is not assumed to be one provider token. Measure
+word or provider-token effects and retain compression only when the definition
+plus resolution overhead costs less than the repeated prose it replaces.
+
 Architecture inventory, explanation, pattern discussion, comparison, review,
 and documentation use an intent overlay over the smallest base profile. Start
 with the compact project architecture catalog and selected item evidence. Do
@@ -104,6 +159,11 @@ Every installed adapter should keep a compact bootstrap set:
 - target root assistant entry point as host-preloaded context
 - generated `.ai/assistant/bootstrap-index.json`
 
+The bootstrap index points to the three contour context indexes and the
+semantic-codebook index. Its projected `preload` term IDs are resolved before
+selected compact records; the complete project vocabulary and non-applicable
+domain codebooks remain lazy.
+
 The generated index must carry source hashes for `.ai/alatyr.yaml`,
 `.ai/README.md`, and `.ai/assistant/context-router.json`. Those canonical files
 are recovery and audit inputs, not routine bootstrap. A stale or missing index
@@ -137,6 +197,12 @@ Use one normalized context receipt with separate layers:
 - `planned`: paths selected before loading and their static word estimate
 - `resolved`: paths actually resolved by routing and their static word estimate
 - `observed`: files and tokens exposed by host or provider telemetry
+
+For a resolved context packet, also record the traversed index chain, selected
+item IDs and digests, resolved semantic term IDs and versions, packet digest,
+dictionary fallback or expansion events, and intentionally omitted branches.
+This evidence proves packet identity and routing behavior, not model
+comprehension.
 
 When selected project guidance can affect changed facts, approval, validation,
 or a material decision, extend that receipt with `semantic_guidance` schema 1.

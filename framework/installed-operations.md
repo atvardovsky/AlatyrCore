@@ -193,17 +193,23 @@ For installed operations:
 
 1. Treat the target assistant entry point as preloaded, then read only
    `.ai/assistant/bootstrap-index.json` as compact bootstrap. If its canonical
-   source hashes differ, repair it from the named manifest, project map, and
-   context router before routine operation routing.
+   source hashes differ, repair it from the named manifest, project map,
+   context router, and semantic-codebook index before routine operation
+   routing. Use the embedded core semantic definitions by exact ID and version.
 2. Read the installation note and post-install/update message templates when
    the request follows an installation, framework update, or unclear adapter
    state.
 3. Select the smallest matching context profile and project-area overlays from
    the bootstrap projection and context router, then read their required
    framework, project, assistant, flow, routed gate fragments, policy, and
-   validation context. Load the complete gate checklist and human rationale
-   only for ambiguity or drift and record budget exceptions in the context
-   receipt.
+   validation context. Resolve them from the applicable contour root
+   `context-index.json`, following only selected child entries and rejecting
+   stale digests, cycles, duplicate paths, or depth violations. Resolve lazy
+   semantic references through the installed codebook and use canonical prose
+   fallback when resolution is not exact. Load the complete gate checklist and
+   human rationale only for ambiguity or drift and record index chains, item
+   IDs/digests, term IDs/versions, packet digest, and budget exceptions in the
+   context receipt.
    When workspace modes are enabled, read the compact mode catalog before this
    selection, resolve at most one accepted mode, and load only that descriptor
    plus applicable shared root context. Ask the user when selection is

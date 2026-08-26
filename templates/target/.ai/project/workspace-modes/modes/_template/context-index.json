@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "project.workspace-modes-modes-template",
+  "contour": "project",
+  "title": "Project _Template Context",
+  "summary": "Recursive navigation for the project contour at workspace-modes/modes/_template.",
+  "max_depth": 8,
+  "entries": [
+    {
+      "id": "project.content.workspace-modes-modes-template-mode-json",
+      "kind": "content",
+      "path": "workspace-modes/modes/_template/mode.json",
+      "summary": "Mode",
+      "selectors": {
+        "path_terms": [
+          "workspace",
+          "modes",
+          "template",
+          "mode"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 92,
+      "content_digest": "sha256:11d83afe353f07e2d8f1bc2965933af575dd3821b91e4f7d89f6b7644e00abca"
+    },
+    {
+      "id": "project.content.workspace-modes-modes-template-readme-md",
+      "kind": "content",
+      "path": "workspace-modes/modes/_template/README.md",
+      "summary": "Workspace Mode: `{MODE_TITLE}`",
+      "selectors": {
+        "path_terms": [
+          "workspace",
+          "modes",
+          "template"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 59,
+      "content_digest": "sha256:b96aa312665a04c4fbdfc2fb0bba74377f7a9a720220f1b6a1d93e9e799662fc"
+    }
+  ]
+}

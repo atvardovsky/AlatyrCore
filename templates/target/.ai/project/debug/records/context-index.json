@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "project.debug-records",
+  "contour": "project",
+  "title": "Project Records Context",
+  "summary": "Recursive navigation for the project contour at debug/records.",
+  "max_depth": 8,
+  "entries": [
+    {
+      "id": "project.content.debug-records-readme-md",
+      "kind": "content",
+      "path": "debug/records/README.md",
+      "summary": "Debug Records",
+      "selectors": {
+        "path_terms": [
+          "debug",
+          "records"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 310,
+      "content_digest": "sha256:046f8ab3012d8486297187de286b1073503b1b839a3192266c8468eb362d1953"
+    }
+  ]
+}

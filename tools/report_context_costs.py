@@ -10,6 +10,9 @@ import re
 from pathlib import Path
 from typing import Any
 
+from context_catalog import load_codebook
+from render_context_catalogs import framework_base_files
+
 
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "templates" / "target"
@@ -126,6 +129,63 @@ def reduction_percent(initial: int, full: int) -> float | str:
     if full <= 0:
         return "unknown"
     return round((1 - initial / full) * 100, 1)
+
+
+def routing_primitive_costs() -> dict[str, Any]:
+    selected_route = measure(
+        [
+            ".ai/framework/context-index.json",
+            ".ai/framework/catalog/core/context-index.json",
+            ".ai/framework/logical-integrity.md",
+        ]
+    )
+    full_framework = measure(
+        [f".ai/framework/{path}" for path in sorted(framework_base_files())]
+    )
+
+    semantic_references: list[str] = []
+    for root in [ROOT / "framework", TARGET / ".ai/project", TARGET / ".ai/assistant"]:
+        for index_path in root.rglob("context-index.json"):
+            data = json.loads(index_path.read_text(encoding="utf-8"))
+            for entry in data.get("entries", []):
+                if isinstance(entry, dict):
+                    semantic_references.extend(
+                        term_id
+                        for term_id in entry.get("semantic_refs", [])
+                        if isinstance(term_id, str)
+                    )
+    codebook = ROOT / "framework/semantics/index.json"
+    terms = load_codebook(
+        codebook,
+        root=codebook.parent,
+        required_terms=semantic_references,
+    )
+    definition_words = {
+        term_id: len(re.findall(r"\S+", term["definition"]))
+        for term_id, term in terms.items()
+    }
+    expanded_words = sum(
+        definition_words[term_id]
+        for term_id in semantic_references
+        if term_id in definition_words
+    )
+    compact_words = sum(definition_words.values()) + len(semantic_references)
+    return {
+        "recursive_selection": {
+            "selected_route": selected_route,
+            "full_framework_candidate_union": full_framework,
+            "word_reduction_percent": reduction_percent(
+                selected_route["words"], full_framework["words"]
+            ),
+        },
+        "semantic_codebook": {
+            "reference_count": len(semantic_references),
+            "resolved_term_count": len(terms),
+            "expanded_definition_words": expanded_words,
+            "compact_definition_and_reference_words": compact_words,
+            "word_reduction_percent": reduction_percent(compact_words, expanded_words),
+        },
+    }
 
 
 def build_report() -> dict[str, Any]:
@@ -583,6 +643,7 @@ def build_report() -> dict[str, Any]:
         "intent_overlays": intent_overlays,
         "task_scale_overlays": task_scale_overlays,
         "consistency_routing": consistency_routing,
+        "routing_primitives": routing_primitive_costs(),
         "task_overlay_compositions": {
             "large-or-resumable+team-active": team_large_composition,
         },
@@ -672,6 +733,7 @@ def build_report() -> dict[str, Any]:
             "runtime clients may preload hidden context not represented by repository paths",
             "placeholder target-owned context is unresolved",
             "runtime expansion depends on task evidence",
+            "semantic-codebook savings model repeated definitions as words and each exact term reference as one word",
         ],
     }
 

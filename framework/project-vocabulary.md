@@ -45,6 +45,14 @@ An enabled project-vocabulary module should help a target project:
 The module is not a general dictionary and should not inventory every word,
 identifier, class, field, or abbreviation in a repository.
 
+Project vocabulary is distinct from the framework semantic codebook owned by
+`ALATYR-CONTEXT-001`. The codebook supplies compact `alatyr:*` protocol
+concepts to an assistant context packet. This module supplies target-owned
+`project:*` business, product, architecture, operational, and technical
+meanings. A target term may be selected through the same bounded resolution
+mechanism, but it cannot redefine a framework term or use semantic compression
+to bypass project acceptance, ambiguity, freshness, or canonical ownership.
+
 ## Vocabulary Boundaries
 
 Keep these responsibilities distinct:

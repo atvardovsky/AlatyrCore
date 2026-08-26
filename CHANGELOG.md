@@ -2,6 +2,36 @@
 
 ## Unreleased
 
+- No unreleased changes.
+
+## 0.1.0-alpha.32 - 2026-08-26
+
+- Increased the framework version to `0.1.0-alpha.32`, adapter schema version
+  to `30`, and target template version to `30` for recursive context indexes,
+  versioned semantic compression, deterministic context packets, and installed
+  catalog validation and repair.
+- Added generated, digest-bound framework, project, and assistant
+  `context-index.json` trees with acyclic single-parent traversal, bounded
+  depth, exact content coverage, selectors, owner references, word estimates,
+  and profile-projected scaffold output.
+- Added a versioned `alatyr:*` semantic codebook with a bounded core preload,
+  lazy domain shards, dependency closure, target `project:*` namespace
+  separation, canonical-owner fallback, and deterministic packet identity.
+- Added cross-platform `render-context` tooling and installed target-validator
+  checks for stale indexes, unindexed live references, invalid codebooks,
+  missing semantic owners, bootstrap preload drift, and packet-template drift.
+  Repair remains read-only by default and requires explicit `--write`.
+- Extended static cost evidence with recursive selected-route and semantic
+  definition-reuse measurements. These are repository word estimates, not
+  provider token telemetry or billing claims.
+- Updated installation, update, operation, assistant entry, post-install,
+  post-update, evidence, and source-maintenance routes so every supported
+  assistant receives the same recursive navigation and term-resolution
+  contract.
+- Changed `ALATYR-CONTEXT-001`, `ALATYR-ADAPTER-001`,
+  `ALATYR-VOCABULARY-001`, and `ALATYR-LIFECYCLE-001`; no rule IDs were added
+  or removed.
+
 - Fixed cross-platform evidence contract digests so Git-normalized text has
   one identity across LF and CRLF checkouts while binary and symlink content
   remains byte-exact.

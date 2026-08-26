@@ -149,13 +149,19 @@ Before accepting a change, check:
 - `python3 tools/check_context_router.py` passes when target context-router
   schema, lazy descriptors, profile names, required context, approval gates,
   validation, final evidence, or framework-routing coverage changes.
+- `python3 tools/check_context_catalogs.py` passes when recursive framework,
+  project, or assistant indexes; semantic-codebook shards; packet contracts;
+  generators; digests; selectors; or coverage rules change. Regenerate source
+  projections with `python3 tools/render_semantic_codebook.py` and
+  `python3 tools/render_context_catalogs.py` only after reviewing their owners.
 - `python3 tools/check_bootstrap_routing.py` passes when generated bootstrap,
   gate fragments, profile defaults, or core scaffold routing changes. Refresh
   the target projection with `python3 tools/render_target_bootstrap_index.py
   --target templates/target --write` only after reviewing canonical sources.
 - `python3 tools/check_context_costs.py` passes when bootstrap/profile paths,
   consistency composition, context budgets, or routed source word counts
-  change; refresh the golden baseline only after reviewing the cost difference.
+  change, including recursive-route and semantic-definition savings; refresh
+  the golden baseline only after reviewing the cost difference.
   The installed validator must enforce the same total, portable, reserved-
   target, and file limits over profile-plus-consistency composition.
 - `python3 tools/check_consistency_map.py` passes when consistency levels,

@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "project.engineering-evidence",
+  "contour": "project",
+  "title": "Project Engineering Evidence Context",
+  "summary": "Recursive navigation for the project contour at engineering-evidence.",
+  "max_depth": 8,
+  "entries": [
+    {
+      "id": "project.content.engineering-evidence-index-json",
+      "kind": "content",
+      "path": "engineering-evidence/index.json",
+      "summary": "Index",
+      "selectors": {
+        "path_terms": [
+          "engineering",
+          "evidence"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 20,
+      "content_digest": "sha256:0aa86004e52b5a37a67156ab1c00dcf6f9e4d07a485ef184a12fb623f029f51d"
+    },
+    {
+      "id": "project.content.engineering-evidence-readme-md",
+      "kind": "content",
+      "path": "engineering-evidence/README.md",
+      "summary": "Durable Engineering Evidence",
+      "selectors": {
+        "path_terms": [
+          "engineering",
+          "evidence"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 137,
+      "content_digest": "sha256:8de4ca59c874297cd0c5f34fc21aff630a7e00884ac8db110b8e669194046281"
+    },
+    {
+      "id": "project.section.engineering-evidence-records",
+      "kind": "index",
+      "path": "engineering-evidence/records/context-index.json",
+      "summary": "Records section",
+      "selectors": {
+        "path_terms": [
+          "records"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 83,
+      "content_digest": "sha256:73fb4dcf76338a34469982e7be05d1f1d4ab0076fc972de97f94c27193d6430f"
+    }
+  ]
+}

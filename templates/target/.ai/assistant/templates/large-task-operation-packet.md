@@ -23,6 +23,10 @@ evidence, not a source of truth for project facts.
 - Selected task profile: `{TASK_PROFILE}`
 - Task-scale overlay: `large-or-resumable`
 - Selected project areas: `{PROJECT_AREA_OVERLAYS}`
+- Traversed context indexes: `{ORDERED_INDEX_IDS_PATHS_AND_DIGESTS}`
+- Selected context items: `{ITEM_IDS_PATHS_DIGESTS_AND_EXACT_REASONS}`
+- Resolved semantic terms: `{TERM_IDS_VERSIONS_DEFINITIONS_AND_CANONICAL_OWNERS}`
+- Context packet digest: `{SHA256_DIGEST_OR_FALLBACK_REASON}`
 - Context budget: `{CONTEXT_BUDGET}`
 - Loaded files and reasons: `{LOADED_FILES_AND_REASONS}`
 - Approximate context volume: `{APPROXIMATE_CONTEXT_VOLUME}`

@@ -19,7 +19,12 @@ Human readers should start with the [public overview](README.md) or
 
 Treat the root `AGENTS.md` as host-preloaded context. Read
 `tools/source_context_router.json`, select the smallest matching source task
-profile, and follow only that profile's required paths and checks. Do not load
+profile, resolve its bounded semantic preload, and follow only that profile's
+required paths and checks. Use `framework/context-index.json` as recursive
+navigation for selected framework owners and
+`framework/semantics/index.json` for lazy compact definitions. A parent index
+does not select all children, and unresolved terms fall back to canonical
+owner prose. Do not load
 the full framework corpus unless the task explicitly requires a repository
 audit or a named dependency, boundary, conflict, or failed check requires
 expansion.

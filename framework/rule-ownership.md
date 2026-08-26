@@ -22,10 +22,11 @@ Source routing owner: `framework/context-profiles.md`
 Installed routing owner: `.ai/framework/context-profiles.md`
 Rule IDs: `ALATYR-CONTEXT-001`
 Derived surfaces: README source context, installation source context, target
-context profiles, target context router, task-scale overlays, operation packet
-context receipts, ordered semantic-guidance identity and bundle receipts,
-long-task semantic revalidation, consistency relationship routing, session
-bootstrap instructions, AI infrastructure capability and recommendation
+context profiles, target context router, recursive contour context indexes,
+semantic codebook and resolved context packets, task-scale overlays, operation
+packet context receipts, ordered semantic-guidance identity and bundle
+receipts, long-task semantic revalidation, consistency relationship routing,
+session bootstrap instructions, AI infrastructure capability and recommendation
 routing.
 
 Category: `SOURCE`
@@ -113,9 +114,10 @@ Source routing owner: `framework/project-vocabulary.md`
 Installed routing owner: `.ai/framework/project-vocabulary.md`
 Rule IDs: `ALATYR-VOCABULARY-001`
 Derived surfaces: target vocabulary catalog, term records, data-dictionary link
-records, vocabulary intent routing, project-vocabulary operation flow,
-project-adapted vocabulary skill, term review template, installation and update
-planning, target gates, structural validation.
+records, project semantic-term namespace, vocabulary intent routing,
+project-vocabulary operation flow, project-adapted vocabulary skill, term
+review template, installation and update planning, target gates, structural
+validation.
 
 Category: `TDD`
 Source routing owner: `framework/test-first-development.md`
@@ -170,8 +172,9 @@ Installed routing owner: `.ai/framework/project-adapter-contract.md`
 Rule IDs: `ALATYR-ADAPTER-001`
 Derived surfaces: installation plan, readiness checklist, manifest template,
 adapter recheck flow, target development-pattern evidence, framework pack and
-projected inventory, AI infrastructure router, AI infrastructure recommendation
-contract, AI infrastructure item contracts.
+projected inventory, recursive target context indexes, semantic codebook
+binding, context packet template, AI infrastructure router, AI infrastructure
+recommendation contract, AI infrastructure item contracts.
 
 Category: `MODULE`
 Source routing owner: `framework/module-profile.md`
@@ -221,9 +224,9 @@ Source routing owner: `framework/lifecycle.md`
 Installed routing owner: `.ai/framework/lifecycle.md`
 Rule IDs: `ALATYR-LIFECYCLE-001`
 Derived surfaces: version files, installed framework pack, migration notes,
-framework update recheck, project-guidance contract migration, Debug
-attribution migration, effectiveness and maintenance evidence migration,
-changelog.
+framework update recheck, recursive context-index rebuild, semantic-codebook
+migration, project-guidance contract migration, Debug attribution migration,
+effectiveness and maintenance evidence migration, changelog.
 
 Category: `ENGINEERING_EVIDENCE`
 Source routing owner: `framework/engineering-evidence.md`
