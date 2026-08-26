@@ -2,14 +2,19 @@
 
 ## Unreleased
 
-- Fixed target health validation so an explicitly unsupported, unselected
-  assistant bridge is not treated as an active placeholder surface, while a
-  manifest-selected bridge remains active and strictly validated.
-- Stopped ordinary current-health checks from auto-selecting every historical
-  approval record; explicitly selected approvals retain full validation.
-- Fixed Windows source checks by normalizing repository-relative scaffold paths
-  independently of host separators and by writing lifecycle hash fixtures as
-  canonical UTF-8 bytes.
+- Fixed target health validation so generated bridge ownership, rather than a
+  duplicate hard-coded vendor map, controls unsupported bridge filtering.
+  Neutral, selected, partial, malformed, and unknown surfaces remain active
+  fail-safe.
+- Separated historical approval archive health from current-operation scope:
+  ordinary health checks audit stored records without applying them to the
+  current diff, while explicitly selected approvals retain full enforcement.
+- Fixed Windows source checks by normalizing repository-relative scaffold
+  paths, keeping lifecycle inventory hashes synchronized with checkout bytes,
+  resolving upgrade-impact evidence to a real fixture path, and enforcing
+  canonical LF text checkouts for deterministic generated hashes.
+- Made historical evidence contract digests independent of current checkout
+  attributes by reading the referenced Git tree and blobs directly.
 - Fixed schema-7 target routers so descriptor-backed profiles participate in
   validator coverage, cost, and operation-routing checks.
 - Updated pinned diagnostic artifact uploads to official

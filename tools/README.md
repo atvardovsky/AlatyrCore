@@ -775,10 +775,19 @@ provided together, changed-file scope enforcement is automatic. The explicit
 `--enforce-approval-scope` flag remains available for callers that want a
 hard failure when either required input is absent.
 
-Approval records are historical evidence and are validated only when selected
-with `--approval-record`; an ordinary current-health or doctor run does not
-auto-select every record in `.ai/assistant/approvals`. Explicitly selected
-records retain their full shape, hash, result, and scope validation.
+An ordinary current-health or doctor run audits records in
+`.ai/assistant/approvals` as historical archive evidence, including record
+shape, target-relative scope, result declarations, and verifiable plan hashes.
+It does not apply those records to the current diff. Only records selected with
+`--approval-record` can participate in current-operation scope and patch-hash
+validation.
+
+Placeholder scanning always includes neutral `AGENTS.md` and
+`AI_ASSISTANTS.md` entry points. Other assistant bridges are omitted only when
+the generated capability index maps every owning surface to that bridge, every
+owner is represented, every route is explicitly `unsupported`, and none is
+selected in the target manifest. Missing, malformed, partial, or unknown
+capability evidence remains active fail-safe.
 
 Reusable manifest parsing, Git diff, hashing, and approval-scope primitives
 live in `target_validation_support.py`; the validator remains the reporting and
@@ -864,7 +873,8 @@ tools\validate_target_adapter.cmd --target C:\path\to\target-repo
 
 `check_target_adapter_validator.py` exercises the source validator's schema
 compatibility, exact registry/map identity findings, consistency and AI-router
-routing, enabled-module status drift, explicit approval-scope matching, broken
+routing, generated bridge ownership and fail-safe activation, enabled-module
+status drift, approval-archive health, explicit approval-scope matching, broken
 team merge-readiness findings, and current-state evidence classification. It
 validates AlatyrCore source tooling only.
 
@@ -1275,6 +1285,9 @@ captured benchmark results. It binds current evidence to a deterministic digest
 of assistant-facing framework, installer, template, schema, fixture, prompt,
 preparation, execution, and validation contracts. A run from the same framework
 version becomes historical when that contract digest changes.
+Historical digests read the referenced Git tree and blob objects directly, so
+current checkout attributes and line-ending policy cannot rewrite the identity
+of earlier evidence.
 
 Individual benchmark results must keep `broad_cost_claim_supported` false. A
 reviewed result may set `aggregate_coverage_eligible` true only when all modes

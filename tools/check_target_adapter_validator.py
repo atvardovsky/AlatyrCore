@@ -199,6 +199,9 @@ def main() -> int:
         (inactive_bridge_target / "AGENTS.md").write_text(
             "# Active instructions\n", encoding="utf-8"
         )
+        (inactive_bridge_target / "AI_ASSISTANTS.md").write_text(
+            "Neutral example: size={24}\n", encoding="utf-8"
+        )
         (inactive_bridge_target / "CLAUDE.md").write_text(
             "Legacy example: size={24}\n", encoding="utf-8"
         )
@@ -214,6 +217,10 @@ def main() -> int:
                 "surfaces": {
                     "codex": ".ai/assistant/assistant-capabilities/codex.json",
                     "claude": ".ai/assistant/assistant-capabilities/claude.json",
+                },
+                "bridge_paths": {
+                    "codex": ["AGENTS.md", "AI_ASSISTANTS.md"],
+                    "claude": ["CLAUDE.md"],
                 },
             },
         )
@@ -243,6 +250,38 @@ def main() -> int:
                 "explicitly unsupported unselected assistant bridges must not be "
                 "scanned as active adapter surfaces"
             )
+        if not any(
+            finding.code == "PLACEHOLDER_UNRESOLVED"
+            and finding.path == "AI_ASSISTANTS.md:1"
+            for finding in inactive_bridge_validator.findings
+        ):
+            failures.append(
+                "neutral assistant entry points must remain active regardless of "
+                "surface capability routes"
+            )
+
+        capability_index_path = (
+            inactive_bridge_target / ".ai/assistant/assistant-capabilities.json"
+        )
+        partial_index = json.loads(capability_index_path.read_text(encoding="utf-8"))
+        partial_index["bridge_paths"]["unrepresented"] = ["CLAUDE.md"]
+        write_json(capability_index_path, partial_index)
+        partial_index_validator = validator(
+            inactive_bridge_target, validation_phase="acceptance"
+        )
+        partial_index_validator.check_placeholders(
+            inactive_manifest, "core", set()
+        )
+        if not any(
+            finding.code == "PLACEHOLDER_UNRESOLVED"
+            and finding.path == "CLAUDE.md:1"
+            for finding in partial_index_validator.findings
+        ):
+            failures.append(
+                "partially represented bridge ownership must remain active fail-safe"
+            )
+        partial_index["bridge_paths"].pop("unrepresented")
+        write_json(capability_index_path, partial_index)
 
         inactive_manifest_path.write_text(
             "supported_assistants:\n  - claude\n", encoding="utf-8"
@@ -2494,15 +2533,39 @@ Excluded files or surfaces:
             historical_target, validation_phase="acceptance"
         )
         ordinary_health.check_approval_scope()
-        ordinary_codes = {finding.code for finding in ordinary_health.findings}
-        if ordinary_codes & {
+        ordinary_findings = {
+            finding.code: finding.level for finding in ordinary_health.findings
+        }
+        for expected_archive_warning in {
             "APPROVAL_RECORD_SCOPE_INVALID",
             "APPROVAL_PATCH_CHANGED",
         }:
+            if ordinary_findings.get(expected_archive_warning) != "warning":
+                failures.append(
+                    "ordinary health must audit historical approval archives without "
+                    f"promoting {expected_archive_warning} to current-scope enforcement"
+                )
+        if "APPROVAL_SCOPE_MISMATCH" in ordinary_findings:
             failures.append(
-                "ordinary current-health validation must not auto-select historical "
-                "approval records"
+                "ordinary current-health validation must not apply historical approval "
+                "scope to the current diff"
             )
+        if ordinary_findings.get("APPROVAL_ARCHIVE_CHECKED") != "info":
+            failures.append("ordinary health must report historical approval archive audit")
+
+        malformed_history = historical_path.with_name("malformed.json")
+        malformed_history.write_text("{invalid\n", encoding="utf-8")
+        malformed_health = validator(
+            historical_target, validation_phase="acceptance"
+        )
+        malformed_health.check_approval_scope()
+        if not any(
+            finding.code == "APPROVAL_RECORD_INVALID_JSON"
+            and finding.level == "warning"
+            and finding.path.endswith("malformed.json")
+            for finding in malformed_health.findings
+        ):
+            failures.append("ordinary health must detect malformed archived approvals")
 
         explicit_history = Validator(
             historical_target,

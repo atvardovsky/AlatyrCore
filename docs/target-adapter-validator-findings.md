@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1051
+Catalog entries: 1052
 
 ## Codes
 
@@ -46,6 +46,8 @@ Catalog entries: 1051
   Level: error. Source: `tools/target_adapter_validation/ai_infrastructure.py`.
 - `AI_ROUTER_SCHEMA`
   Level: error. Source: `tools/target_adapter_validation/ai_infrastructure.py`.
+- `APPROVAL_ARCHIVE_CHECKED`
+  Level: info. Source: `tools/validate_target_adapter.py`.
 - `APPROVAL_DIFF_BASE_MISMATCH`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `APPROVAL_DIFF_REF_REQUIRED`
@@ -79,9 +81,9 @@ Catalog entries: 1051
 - `APPROVAL_RECORD_FIELD_MISSING`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `APPROVAL_RECORD_INVALID_JSON`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: dynamic, error. Source: `tools/validate_target_adapter.py`.
 - `APPROVAL_RECORD_INVALID_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: dynamic, error. Source: `tools/validate_target_adapter.py`.
 - `APPROVAL_RECORD_KIND`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `APPROVAL_RECORD_MACHINE_READABLE_REQUIRED`

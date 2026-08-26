@@ -236,19 +236,7 @@ BRIDGE_FILES = [
     ".rules",
 ]
 
-BRIDGE_FILE_SURFACES = {
-    "AI_ASSISTANTS.md": {"generic", "codex"},
-    "CLAUDE.md": {"claude"},
-    "GEMINI.md": {"gemini"},
-    ".github/copilot-instructions.md": {"github-copilot"},
-    ".cursorrules": {"cursor"},
-    ".cursor/rules/alatyr-core.mdc": {"cursor"},
-    ".devin/rules/alatyr-core.md": {"devin-cascade"},
-    ".windsurfrules": {"windsurf"},
-    ".windsurf/rules/alatyr-core.md": {"windsurf"},
-    ".roo/rules/alatyr-core.md": {"roo-code"},
-    ".rules": {"zed-agent"},
-}
+NEUTRAL_ASSISTANT_ENTRY_FILES = {"AGENTS.md", "AI_ASSISTANTS.md"}
 
 MANIFEST_REQUIRED_SCALARS: set[PathKey] = {
     ("schema_version",),
@@ -7881,8 +7869,20 @@ class Validator:
         if error or not isinstance(index, dict):
             return set(BRIDGE_FILES)
         surfaces = index.get("surfaces")
-        if not isinstance(surfaces, dict):
+        bridge_paths = index.get("bridge_paths")
+        if not isinstance(surfaces, dict) or not isinstance(bridge_paths, dict):
             return set(BRIDGE_FILES)
+
+        bridge_surfaces: dict[str, set[str]] = {}
+        for surface_id, paths in bridge_paths.items():
+            if (
+                not isinstance(surface_id, str)
+                or not isinstance(paths, list)
+                or not all(isinstance(path, str) and path for path in paths)
+            ):
+                return set(BRIDGE_FILES)
+            for path in paths:
+                bridge_surfaces.setdefault(path, set()).add(surface_id)
 
         routes: dict[str, str | None] = {}
         for surface_id, relpath in surfaces.items():
@@ -7900,17 +7900,17 @@ class Validator:
                 else None
             )
 
-        active: set[str] = set()
+        active = set(NEUTRAL_ASSISTANT_ENTRY_FILES) & set(BRIDGE_FILES)
         indexed = set(routes)
         for relpath in BRIDGE_FILES:
-            associated = BRIDGE_FILE_SURFACES.get(relpath, set())
+            if relpath in NEUTRAL_ASSISTANT_ENTRY_FILES:
+                continue
+            associated = bridge_surfaces.get(relpath, set())
             if not associated or selected & associated:
                 active.add(relpath)
                 continue
-            represented = associated & indexed
-            if not represented or any(
-                routes.get(surface_id) != "unsupported"
-                for surface_id in represented
+            if not associated.issubset(indexed) or any(
+                routes.get(surface_id) != "unsupported" for surface_id in associated
             ):
                 active.add(relpath)
         return active
@@ -8101,6 +8101,21 @@ class Validator:
 
     def check_approval_scope(self) -> None:
         approval_records = self.resolve_approval_records()
+        archive_records = [
+            record
+            for record in self.discover_approval_archive_records()
+            if record not in approval_records
+        ]
+        if archive_records:
+            self.check_approval_record_shape(archive_records)
+            self.check_approval_hash_evidence(
+                archive_records, compare_current_patch=False
+            )
+            self.info(
+                "APPROVAL_ARCHIVE_CHECKED",
+                f"checked {len(archive_records)} historical approval record(s) "
+                "without applying them to the current operation",
+            )
         if approval_records:
             self.check_approval_record_shape(approval_records)
 
@@ -8232,6 +8247,16 @@ class Validator:
         # be validated for the current operation.
         return []
 
+    def discover_approval_archive_records(self) -> list[Path]:
+        directory = self.target_path(".ai/assistant/approvals")
+        return sorted(
+            path
+            for pattern in ("*.md", "*.json")
+            for path in directory.glob(pattern)
+            if path.name
+            not in {"approval-template.md", "approval-record-template.json"}
+        )
+
     def load_approval_scope(self, record: Path) -> ApprovalScope | None:
         if record.suffix.lower() == ".json":
             try:
@@ -8283,9 +8308,19 @@ class Validator:
             if record.suffix.lower() == ".json":
                 try:
                     data = json.loads(self.read_text(record))
-                except json.JSONDecodeError:
+                except json.JSONDecodeError as exc:
+                    finding(
+                        "APPROVAL_RECORD_INVALID_JSON",
+                        str(exc),
+                        relpath,
+                    )
                     continue
                 if not isinstance(data, dict):
+                    finding(
+                        "APPROVAL_RECORD_INVALID_SHAPE",
+                        "machine-readable approval record must be a JSON object",
+                        relpath,
+                    )
                     continue
                 required_scalars = [
                     ("schema_version",),
@@ -8424,7 +8459,12 @@ class Validator:
                             relpath,
                         )
 
-    def check_approval_hash_evidence(self, approval_records: list[Path]) -> None:
+    def check_approval_hash_evidence(
+        self,
+        approval_records: list[Path],
+        *,
+        compare_current_patch: bool = True,
+    ) -> None:
         for record in approval_records:
             text = self.read_text(record)
             relpath = self.rel(record)
@@ -8528,10 +8568,10 @@ class Validator:
                         relpath,
                     )
                 continue
-            if not self.diff_ref:
+            if not compare_current_patch or not self.diff_ref:
                 self.info(
                     "APPROVAL_PATCH_HASH_SKIPPED",
-                    "patch hash recorded but --diff-ref was not provided",
+                    "patch hash recorded but current-diff comparison was not requested",
                     relpath,
                 )
                 continue

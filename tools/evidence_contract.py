@@ -3,10 +3,8 @@
 from __future__ import annotations
 
 import hashlib
-import io
 import os
 import subprocess
-import tarfile
 from pathlib import Path
 from typing import Iterable
 
@@ -120,7 +118,7 @@ def contract_digest_at(commit: str, root: Path = ROOT) -> str | None:
     if not valid_source_commit(commit):
         return None
     result = subprocess.run(
-        ["git", "archive", "--format=tar", commit],
+        ["git", "ls-tree", "-rz", "--full-tree", commit],
         cwd=root,
         check=False,
         capture_output=True,
@@ -128,19 +126,60 @@ def contract_digest_at(commit: str, root: Path = ROOT) -> str | None:
     if result.returncode != 0:
         return None
 
-    entries: list[tuple[str, str, bytes]] = []
-    try:
-        with tarfile.open(fileobj=io.BytesIO(result.stdout), mode="r:") as archive:
-            for member in archive.getmembers():
-                relpath = member.name.rstrip("/")
-                if not is_contract_path(relpath):
-                    continue
-                if member.issym():
-                    entries.append((relpath, "symlink", member.linkname.encode("utf-8")))
-                elif member.isfile():
-                    extracted = archive.extractfile(member)
-                    if extracted is not None:
-                        entries.append((relpath, "file", extracted.read()))
-    except tarfile.TarError:
+    selected: list[tuple[str, str, bytes]] = []
+    for raw_entry in result.stdout.split(b"\0"):
+        if not raw_entry:
+            continue
+        try:
+            metadata, raw_path = raw_entry.split(b"\t", 1)
+            mode, object_type, object_id = metadata.split(b" ", 2)
+        except ValueError:
+            return None
+        relpath = raw_path.decode("utf-8", errors="surrogateescape")
+        if object_type != b"blob" or not is_contract_path(relpath):
+            continue
+        selected.append(
+            (relpath, "symlink" if mode == b"120000" else "file", object_id)
+        )
+
+    object_ids = sorted({object_id for _, _, object_id in selected})
+    blobs_result = subprocess.run(
+        ["git", "cat-file", "--batch"],
+        cwd=root,
+        input=b"".join(object_id + b"\n" for object_id in object_ids),
+        check=False,
+        capture_output=True,
+    )
+    if blobs_result.returncode != 0:
+        return None
+
+    blobs: dict[bytes, bytes] = {}
+    offset = 0
+    for requested_id in object_ids:
+        header_end = blobs_result.stdout.find(b"\n", offset)
+        if header_end < 0:
+            return None
+        header = blobs_result.stdout[offset:header_end].split()
+        if len(header) != 3 or header[1] != b"blob":
+            return None
+        try:
+            size = int(header[2])
+        except ValueError:
+            return None
+        content_start = header_end + 1
+        content_end = content_start + size
+        if content_end >= len(blobs_result.stdout):
+            return None
+        blobs[requested_id] = blobs_result.stdout[content_start:content_end]
+        if blobs_result.stdout[content_end:content_end + 1] != b"\n":
+            return None
+        offset = content_end + 1
+
+    entries = [
+        (relpath, kind, blobs[object_id])
+        for relpath, kind, object_id in selected
+        if object_id in blobs
+    ]
+    if len(entries) != len(selected):
         return None
     return digest_entries(entries)

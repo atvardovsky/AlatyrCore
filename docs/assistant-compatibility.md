@@ -250,6 +250,11 @@ assistant surface from `conformance/runs/assistant-surfaces.json` with bridge
 paths, loading behavior, permission model, help alias routing, limitations,
 and conformance evidence fields.
 
+`python3 tools/render_assistant_capability_index.py` projects the canonical
+surface IDs, target capability-record paths, and bridge-path ownership into the
+portable target index. Target validation consumes that generated ownership;
+it does not maintain a second vendor-to-file mapping in validator code.
+
 Maintainers can run `python3 tools/check_discussion_diagrams.py` to validate
 the source rule, target operation, flow, presentation template, manifest,
 ASCII grammar and width limits, module profile, help, routing, and all

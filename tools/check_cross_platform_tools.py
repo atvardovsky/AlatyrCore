@@ -14,6 +14,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 TOOLS = ROOT / "tools"
+GIT_ATTRIBUTES = ROOT / ".gitattributes"
 MANIFEST = TOOLS / "tool_commands.json"
 NATIVE_WORKFLOW = ROOT / ".github" / "workflows" / "cross-platform-source-checks.yml"
 RELEASE_WORKFLOW = ROOT / ".github" / "workflows" / "release-source-checks.yml"
@@ -69,6 +70,13 @@ def tree_hashes(root: Path) -> dict[str, str]:
 
 def main() -> int:
     failures: list[str] = []
+    if not GIT_ATTRIBUTES.is_file() or "* text=auto eol=lf" not in (
+        GIT_ATTRIBUTES.read_text(encoding="utf-8").splitlines()
+    ):
+        failures.append(
+            ".gitattributes must enforce canonical LF text checkouts for "
+            "deterministic cross-platform hashes"
+        )
     try:
         data = json.loads(MANIFEST.read_text(encoding="utf-8"))
         runtime = json.loads(RUNTIME_COMPATIBILITY.read_text(encoding="utf-8"))

@@ -27,21 +27,29 @@ def build_index() -> dict[str, object]:
     if not isinstance(surface_data, list):
         raise ValueError("assistant surfaces must be a list")
     surface_paths: dict[str, str] = {}
+    bridge_paths: dict[str, list[str]] = {}
     for item in surface_data:
         surface_id = item.get("id") if isinstance(item, dict) else None
         if not isinstance(surface_id, str) or not surface_id:
             raise ValueError("assistant surface has no valid ID")
+        surface_bridge_paths = item.get("bridge_paths")
+        if not isinstance(surface_bridge_paths, list) or not all(
+            isinstance(path, str) and path for path in surface_bridge_paths
+        ):
+            raise ValueError(f"assistant surface {surface_id} has no valid bridge paths")
         relpath = f".ai/assistant/assistant-capabilities/{surface_id}.json"
         record = load_object(ROOT / "templates/target" / relpath)
         if record.get("assistant_surface") != surface_id:
             raise ValueError(f"capability record identity differs for {surface_id}")
         surface_paths[surface_id] = relpath
+        bridge_paths[surface_id] = surface_bridge_paths
     return {
         "schema_version": 2,
         "capability_kind": "target-assistant-capability-index",
         "human_reference": ".ai/assistant/bridge-capability-matrix.md",
         "default_surface": "generic",
         "surfaces": surface_paths,
+        "bridge_paths": bridge_paths,
     }
 
 

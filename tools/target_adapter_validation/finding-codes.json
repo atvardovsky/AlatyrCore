@@ -160,6 +160,15 @@
       ]
     },
     {
+      "code": "APPROVAL_ARCHIVE_CHECKED",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "APPROVAL_DIFF_BASE_MISMATCH",
       "levels": [
         "error"
@@ -306,6 +315,7 @@
     {
       "code": "APPROVAL_RECORD_INVALID_JSON",
       "levels": [
+        "dynamic",
         "error"
       ],
       "sources": [
@@ -315,6 +325,7 @@
     {
       "code": "APPROVAL_RECORD_INVALID_SHAPE",
       "levels": [
+        "dynamic",
         "error"
       ],
       "sources": [

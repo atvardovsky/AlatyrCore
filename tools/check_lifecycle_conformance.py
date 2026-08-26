@@ -64,6 +64,7 @@ def replacement(name: str) -> str:
         "TARGET_ITEM_ALLOWED_ACTION": "read-only",
         "SKILL_PROMPT_GATE_CHECKER_FLOW_TOOL_MCP_BRIDGE_WRAPPER_RULE_TEMPLATE_OR_OTHER": "skill",
         "ACTIVE_BLOCKED_DEPRECATED_OR_UNRESOLVED": "blocked",
+        "TARGET_UPGRADE_IMPACT_REPORT": ".ai/assistant/migrations/upgrade-impact.json",
     }
     if name in exact:
         return exact[name]
@@ -93,6 +94,23 @@ def resolve_adapter(repo: Path, support_profile: str = "core") -> None:
             continue
         resolved = PLACEHOLDER.sub(lambda match: replacement(match.group(0)[1:-1]), text)
         path.write_text(resolved, encoding="utf-8")
+
+    upgrade_impact_path = (
+        repo / ".ai" / "assistant" / "migrations" / "upgrade-impact.json"
+    )
+    upgrade_impact_path.parent.mkdir(parents=True, exist_ok=True)
+    upgrade_impact_path.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "impact_kind": "alatyr-upgrade-impact",
+                "status": "fixture-no-update-pending",
+            },
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
 
     manifest_path = repo / ".ai" / "alatyr.yaml"
     manifest = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
@@ -481,8 +499,12 @@ def exercise_profile(
     source_inventory = json.loads(source_inventory_path.read_text(encoding="utf-8"))
     source_inventory["framework_version"] = "0.1.0-lifecycle-fixture"
     for entry in source_inventory.get("files", []):
-        if entry.get("path") == "framework/context-profiles.md":
-            entry["sha256"] = hashlib.sha256(context_path.read_bytes()).hexdigest()
+        entry_path = entry.get("path")
+        if not isinstance(entry_path, str):
+            continue
+        framework_path = source / entry_path
+        if framework_path.is_file():
+            entry["sha256"] = hashlib.sha256(framework_path.read_bytes()).hexdigest()
     source_inventory_path.write_bytes(
         (json.dumps(source_inventory, indent=2, sort_keys=True) + "\n").encode(
             "utf-8"

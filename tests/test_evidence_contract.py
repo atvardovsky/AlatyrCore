@@ -63,6 +63,47 @@ class EvidenceContractTests(unittest.TestCase):
     def test_contract_digest_rejects_git_option_as_commit(self) -> None:
         self.assertIsNone(contract_digest_at("--output=/tmp/untrusted.tar"))
 
+    def test_historical_digest_ignores_current_checkout_attributes(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            subprocess.run(
+                ["git", "config", "user.email", "test@example.invalid"],
+                cwd=root,
+                check=True,
+            )
+            subprocess.run(
+                ["git", "config", "user.name", "Test"], cwd=root, check=True
+            )
+            (root / "framework").mkdir()
+            (root / "framework" / "rule.md").write_bytes(b"rule\r\n")
+            subprocess.run(["git", "add", "."], cwd=root, check=True)
+            subprocess.run(
+                ["git", "commit", "-qm", "historical fixture"],
+                cwd=root,
+                check=True,
+            )
+            historical = subprocess.run(
+                ["git", "rev-parse", "HEAD"],
+                cwd=root,
+                check=True,
+                capture_output=True,
+                text=True,
+            ).stdout.strip()
+            digest_before = contract_digest_at(historical, root)
+
+            (root / ".gitattributes").write_text(
+                "* text=auto eol=lf\n", encoding="utf-8"
+            )
+            subprocess.run(["git", "add", ".gitattributes"], cwd=root, check=True)
+            subprocess.run(
+                ["git", "commit", "-qm", "add checkout policy"],
+                cwd=root,
+                check=True,
+            )
+
+            self.assertEqual(contract_digest_at(historical, root), digest_before)
+
 
 if __name__ == "__main__":
     unittest.main()

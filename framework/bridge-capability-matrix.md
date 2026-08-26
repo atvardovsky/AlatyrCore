@@ -93,8 +93,17 @@ surface IDs to separate target-owned records under
 `.ai/assistant/assistant-capabilities/`. Each record must use capability schema
 2 and constrained values. It records instruction loading, skill routing, tool-
 permission separation, diagrams, and delegation with client version,
-verification, expiry or review-trigger freshness evidence. Derive the index
-from those records; do not maintain duplicate capability claims in the index.
+verification, expiry or review-trigger freshness evidence. The source template
+generator also projects bridge-path ownership from the canonical source surface
+registry so an installed validator can distinguish unsupported bridges without
+hard-coded vendor mappings. Derive the index from those sources; do not
+manually maintain duplicate capability claims or bridge ownership.
+
+Neutral project entry points remain active validation surfaces regardless of
+assistant selection. A vendor-specific bridge may be treated as inactive only
+when every owning surface is represented, explicitly unsupported, and
+unselected. Missing, malformed, partial, or unknown ownership and capability
+evidence remains active fail-safe.
 
 ## Baseline Template Surfaces
 

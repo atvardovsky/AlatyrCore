@@ -853,6 +853,7 @@
         "platform"
       ],
       "contract_inputs": [
+        ".gitattributes",
         ".github/workflows/**",
         "constraints-ci.txt",
         "requirements*.txt",
@@ -866,6 +867,7 @@
         "tools/plan_target_upgrade.py"
       ],
       "trigger_paths": [
+        ".gitattributes",
         ".github/workflows/**",
         "constraints-ci.txt",
         "requirements*.txt",

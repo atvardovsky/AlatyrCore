@@ -102,6 +102,13 @@ Strict scope validation should:
 - fail when any changed path matches an excluded scope
 - report unavailable Git or record evidence instead of treating it as a pass
 
+Repository health checks may audit every stored approval as historical archive
+evidence for parseability, required fields, safe target-relative scope, result
+declarations, and verifiable plan references. That archive audit must remain
+separate from current-operation enforcement: an unselected historical record
+must never authorize, constrain, or be compared with the current operation
+diff.
+
 The source target-adapter validator enters strict scope mode automatically
 when a caller supplies both a diff base and one or more explicit approval
 records. A caller that supplies only a diff base receives advisory protected-

@@ -19,5 +19,57 @@
     "cursor": ".ai/assistant/assistant-capabilities/cursor.json",
     "devin-cascade": ".ai/assistant/assistant-capabilities/devin-cascade.json",
     "windsurf": ".ai/assistant/assistant-capabilities/windsurf.json"
+  },
+  "bridge_paths": {
+    "generic": [
+      "AI_ASSISTANTS.md"
+    ],
+    "agents": [
+      "AGENTS.md"
+    ],
+    "codex": [
+      "AGENTS.md",
+      "AI_ASSISTANTS.md"
+    ],
+    "junie": [
+      "AGENTS.md"
+    ],
+    "cline": [
+      "AGENTS.md"
+    ],
+    "roo-code": [
+      ".roo/rules/alatyr-core.md",
+      "AGENTS.md"
+    ],
+    "kiro": [
+      "AGENTS.md"
+    ],
+    "zed-agent": [
+      ".rules"
+    ],
+    "opencode": [
+      "AGENTS.md"
+    ],
+    "claude": [
+      "CLAUDE.md"
+    ],
+    "gemini": [
+      "GEMINI.md"
+    ],
+    "github-copilot": [
+      ".github/copilot-instructions.md",
+      ".github/prompts/gate-review.prompt.md"
+    ],
+    "cursor": [
+      ".cursor/rules/alatyr-core.mdc",
+      ".cursorrules"
+    ],
+    "devin-cascade": [
+      ".devin/rules/alatyr-core.md"
+    ],
+    "windsurf": [
+      ".windsurf/rules/alatyr-core.md",
+      ".windsurfrules"
+    ]
   }
 }
