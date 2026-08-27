@@ -57,6 +57,9 @@ source_of_truth:
   module_profile: ".ai/assistant/module-profile.md"
   project_sources:
     - "{TARGET_PROJECT_SOURCE_OF_TRUTH}"
+support_information:
+  policy: ".ai/project/support-policy.json"
+  state: ".ai/support-state.json"
 context_routing:
   router_schema_version: 8
   preloaded_context:

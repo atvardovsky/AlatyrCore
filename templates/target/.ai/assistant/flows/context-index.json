@@ -488,8 +488,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-INTEGRITY-001"
       ],
-      "estimated_words": 409,
-      "content_digest": "sha256:5c265c6093d44d48ac7028bd882297cb03b0bef75b44f48b904e73e1317037aa"
+      "estimated_words": 461,
+      "content_digest": "sha256:477b947c2b5e6039fa0ba21340cca6909c79f25839114f3d213c897548d58bb9"
     },
     {
       "id": "assistant.content.flows-operation-routing-flow-md",
@@ -674,6 +674,34 @@
       ],
       "estimated_words": 729,
       "content_digest": "sha256:c628ceddccfc61dcc38607dc27bbd14902ff7c83347f473dc0cb5ec35bcf7463"
+    },
+    {
+      "id": "assistant.content.flows-support-generation-flow-md",
+      "kind": "content",
+      "path": "flows/support-generation.flow.md",
+      "summary": "Support Generation Flow",
+      "selectors": {
+        "path_terms": [
+          "flows",
+          "support",
+          "generation",
+          "flow"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 125,
+      "content_digest": "sha256:9710d2b23fcf8d77db3b88feb772d2c823e11a1f25d65b1c1eb07a50a3090cb2"
     },
     {
       "id": "assistant.content.flows-team-decision-flow-md",

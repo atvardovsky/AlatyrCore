@@ -82,6 +82,7 @@ from target_adapter_validation.installation_state import validate_installation_s
 from target_adapter_validation.project_knowledge import (
     validate_project_knowledge_contract,
 )
+from target_adapter_validation.support_state import validate_support_state
 from scaffold_state import validate_installation_state_record
 from target_adapter_validation.modules import dispatch_capability_checks
 from target_adapter_validation.router_costs import (
@@ -114,6 +115,8 @@ CORE_REQUIRED_FILES = [
     ".ai/assistant/templates/context-packet.json",
     ".ai/project/contour.md",
     ".ai/project/source-of-truth-registry.md",
+    ".ai/project/support-policy.json",
+    ".ai/support-state.json",
     ".ai/project/engineering-evidence/README.md",
     ".ai/project/engineering-evidence/index.json",
     ".ai/project/knowledge/README.md",
@@ -802,6 +805,7 @@ class Validator:
         enabled_modules = self.enabled_modules(manifest)
         self.check_router(enabled_modules)
         validate_context_catalog_contract(self, manifest)
+        validate_support_state(self.capability_validation_context(), manifest)
         if support_profile in {"standard", "full"} or self.target_path(
             ".ai/assistant/operation-catalog.json"
         ).is_file():
@@ -6265,8 +6269,12 @@ class Validator:
             "workspace-mode structural checks do not prove strategic correctness, complete workspace discovery, ownership truth, semantic consistency, or assistant compliance",
         )
 
-    def check_consistency_map(self) -> None:
-        CONSISTENCY_MAP_MODULE.validate(self.capability_validation_context(), None)
+    def check_consistency_map(
+        self, manifest: ManifestData | None = None
+    ) -> None:
+        CONSISTENCY_MAP_MODULE.validate(
+            self.capability_validation_context(), manifest
+        )
 
     def check_enabled_module_status_claims(
         self, enabled_modules: set[str]

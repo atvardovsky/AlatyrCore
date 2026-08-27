@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "shard_kind": "target-consistency-map-shard",
+  "id": "{TARGET_PROJECT_AREA_ID}",
+  "project_area": "{TARGET_PROJECT_AREA}",
+  "nodes": [
+    {
+      "id": "{FACT_ID}",
+      "fact_type": "{FACT_TYPE}",
+      "level": "{FACT_CONTRACT_AREA_SYSTEM_ADAPTER_OR_SURFACE}",
+      "project_area": "{TARGET_PROJECT_AREA}",
+      "canonical_owner": "{CANONICAL_OWNER_OR_MISSING}",
+      "coverage_state": "known-gap",
+      "coverage_evidence": [
+        "{RELATIONSHIP_COVERAGE_EVIDENCE_OR_GAP}"
+      ],
+      "bindings": [
+        {
+          "id": "{BINDING_ID}",
+          "surface_kind": "{CODE_TEST_DOC_DIAGRAM_CONFIG_PROMPT_SKILL_GATE_OR_OTHER}",
+          "path": "{TARGET_RELATIVE_PATH_OR_GLOB}",
+          "selector_kind": "{FILE_GLOB_JSON_POINTER_YAML_PATH_MARKDOWN_SECTION_CONFIG_KEY_OR_SYMBOL}",
+          "selector": "{SELECTOR_OR_WHOLE_FILE}",
+          "authority": "{CANONICAL_DERIVED_EVIDENCE_OR_OBSERVED}",
+          "context_ids": [
+            "{RECURSIVE_CONTEXT_ITEM_ID}"
+          ]
+        }
+      ],
+      "relationships": []
+    }
+  ]
+}

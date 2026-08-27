@@ -37,6 +37,7 @@ Each installed framework should identify:
 - required core profile and optional module states
 - known deviations from the source framework
 - unresolved adapter gaps
+- support-information policy and current support-state digest
 
 The source repository may store these facts in simple files such as `VERSION`,
 `ADAPTER_SCHEMA_VERSION`, and `TEMPLATE_VERSION`. Installed adapters should
@@ -134,6 +135,11 @@ Before upgrading framework files in a target project:
    backend contract, lazy overlay, operation routes, and operating model.
    When `change-packages` is enabled, compare its record schema, semantic
    approval fields, provenance policy, lazy route, and validator support.
+   Compare the required support policy and state contract. Preserve target-owned
+   classifications, exclusions, accepted relationships, relationship
+   candidates, and generator bindings. Rebuild affected context indexes,
+   consistency reverse index, and optional support-generation index before
+   generating support state last.
    For required durable engineering evidence, compare its policy, compact
    index, contract version, authoring-template record schema, lazy route,
    capture gate, repository binding state/lineage, Git object and ancestry
@@ -309,6 +315,9 @@ Framework lifecycle notes should record:
 - changed logical integrity, blueprint-driven change, or skill-adaptation
   guidance
 - changed approval, safety, testing, diagram, or validation expectations
+- support-information rule, policy/state schemas, consistency-map shards and
+  reverse index, relationship-candidate lifecycle, impact planner, optional
+  generation registry/index, and validator migration
 - bridge or supported-assistant compatibility changes
 - migration actions required by project adapters
 - migration-note requirements for installed adapters

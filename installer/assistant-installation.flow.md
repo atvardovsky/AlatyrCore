@@ -211,6 +211,11 @@ Classify every proposed target file:
     Route the human registry and machine map together for semantic work, keep
     redundant portable explanation conditional, and measure the composed
     semantic route before accepting its context budget.
+    Adapt the required support policy from target evidence. Preserve target-
+    owned classifications, exclusions, accepted relationships, candidates,
+    and generator bindings during updates. Rebuild the optional consistency
+    reverse index and support-generation index after their owners are final,
+    then generate support state last.
     Generate the framework, project, and assistant recursive context indexes
     from the exact selected and projected installation. Validate acyclic
     single-parent traversal, bounded depth, one content entry per installed
@@ -498,10 +503,12 @@ accepted or ready. Before reporting installation or update completion:
 2. Synchronize manifest `modules.enabled` with exactly one matching human
    module-profile block in `enabled` or `required` state.
 3. Synchronize machine policy indexes and their human README projections.
-4. Run strict `acceptance` validation on the checked-out target branch and
+4. Rebuild recursive context indexes, optional reverse/generation indexes, and
+   the generated support state in that order.
+5. Run strict `acceptance` validation on the checked-out target branch and
    record that branch and exact revision. Repeat this final step separately on
    any other branch whose adapter state is to be accepted.
-5. Update the manifest installation state and its machine-readable transition
+6. Update the manifest installation state and its machine-readable transition
    record together. Require a continuous previous-state chain, the current
    operation and revision, current-scope authorization evidence, approval
    evidence when applicable, and the strict validation result. A failed or

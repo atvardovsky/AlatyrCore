@@ -11,7 +11,8 @@
     "documentation-sync",
     "drift-review",
     "logical-integrity-review",
-    "project-knowledge"
+    "project-knowledge",
+    "support-generation"
   ],
   "required_context": [
     ".ai/framework/context-discovery.md",
@@ -19,6 +20,12 @@
     ".ai/assistant/gates/documentation.md",
     ".ai/assistant/gates/final-evidence.md",
     "{TARGET_DOC_SOURCE_OF_TRUTH}"
+  ],
+  "conditional_context": [
+    {
+      "path": ".ai/framework/support-information.md",
+      "when": "support diff generation ownership or relationship-candidate semantics are disputed"
+    }
   ],
   "expand_when": [
     "semantic_fact_changes",

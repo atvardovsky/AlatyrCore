@@ -21,6 +21,7 @@ from plan_target_upgrade import add_validation_impact
 from scaffold_target_structure import plan as scaffold_plan
 from render_context_catalogs import build_framework_catalog_contents
 from render_installed_context_catalogs import expected_outputs as installed_context_outputs
+from support_state import STATE_PATH, build_support_state, render_state
 from target_adapter_validation.framework_baseline import (
     source_pack_projection,
 )
@@ -226,8 +227,10 @@ def refresh_bootstrap(repo: Path) -> None:
 def refresh_context_and_bootstrap(repo: Path) -> None:
     for path, content in installed_context_outputs(repo).items():
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(content, encoding="utf-8")
+        path.write_bytes(content.encode("utf-8"))
     refresh_bootstrap(repo)
+    support_state = build_support_state(repo)
+    (repo / STATE_PATH).write_bytes(render_state(support_state).encode("utf-8"))
 
 
 def approval_record(base: str, support_profile: str) -> dict[str, Any]:
@@ -346,7 +349,7 @@ def apply_synthetic_framework_update(repo: Path, source: Path, pack: str) -> Non
     manifest_path.write_text(
         yaml.safe_dump(manifest, sort_keys=False, allow_unicode=False), encoding="utf-8"
     )
-    refresh_bootstrap(repo)
+    refresh_context_and_bootstrap(repo)
 
 
 def exercise_profile(
@@ -509,7 +512,7 @@ def exercise_profile(
     ).items():
         destination = source / "framework" / relpath
         destination.parent.mkdir(parents=True, exist_ok=True)
-        destination.write_text(content, encoding="utf-8")
+        destination.write_bytes(content.encode("utf-8"))
     source_inventory_path = source / "framework" / "file-inventory.json"
     source_inventory = json.loads(source_inventory_path.read_text(encoding="utf-8"))
     source_inventory["framework_version"] = "0.1.0-lifecycle-fixture"

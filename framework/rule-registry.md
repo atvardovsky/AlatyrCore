@@ -48,6 +48,7 @@ Registered categories:
 - `ENGINEERING_EVIDENCE`
 - `PROJECT_KNOWLEDGE`
 - `DEBUG`
+- `SUPPORT`
 - `EVIDENCE`
 
 Do not reuse an ID for a different meaning. Record material rule changes in
@@ -64,18 +65,19 @@ fragments, and the smallest task profile through an aligned context router;
 keep bootstrap outside assistant catalog content ownership and rebuild
 installed catalogs before bootstrap to prevent circular digests; resolve
 compact terms losslessly with versioned owner-linked definitions and
-canonical-prose fallback; route the target registry and consistency map
-together for semantic work while keeping redundant portable explanation
-conditional; apply bounded two-stage project-guidance delivery from profile
-plus a stronger area, dependency, fact, contract, path, symbol, or issue
-signal; record packet identity plus planned, resolved, and observably delivered
-ordered guidance identities with deterministic digests while never claiming
-model comprehension; revalidate changed bundles before protected
-implementation, material decisions, final validation, and final evidence;
-separate total, portable, and reserved target context budgets; record expansion
-only when boundaries or conflicts require it; and keep unrelated branches,
-knowledge, optional modules, evidence history, debug records, delegated
-execution, complete checklists, and full team detail lazy.
+canonical-prose fallback; use support-state differences and the consistency
+reverse index to select only relevant graph shards while keeping redundant
+portable explanation conditional; apply bounded two-stage project-guidance
+delivery from profile plus a stronger area, dependency, fact, contract, path,
+symbol, or issue signal; record packet identity plus planned, resolved, and
+observably delivered ordered guidance identities with deterministic digests
+while never claiming model comprehension; revalidate changed bundles before
+protected implementation, material decisions, final validation, and final
+evidence; separate total, portable, and reserved target context budgets; record
+expansion only when boundaries or conflicts require it; and keep unrelated
+branches, knowledge, optional modules, evidence history, relationship
+candidates, debug records, delegated execution, complete checklists, and full
+team detail lazy.
 Applies to: all installed adapter tasks.
 Enforcement: required.
 
@@ -85,6 +87,7 @@ Installed owner: `.ai/framework/source-of-truth-registry.md`
 Commitment: Choose fact owners from the target source-of-truth registry, record
 invariant and dependency constraints, require every live registry Fact Type to
 reference one unique exact-matching node when consistency mapping is enabled,
+keep detected relationships non-authoritative until target owner acceptance,
 keep Project Development Model guidance routes and decision records derived
 from registered owners with fact-type-specific exception authority, preserve
 bounded code-comment ownership, generated-output boundaries, vocabulary links,
@@ -153,11 +156,24 @@ Installed owner: `.ai/framework/logical-integrity.md`
 Commitment: Name changed facts, re-derive testable invariants, reconcile
 related review items, identify owners and repair sets, validate, decide
 proportional durable engineering-evidence capture, and report residual risk,
-using mapped or manual impact closure, global multi-workstream convergence,
-active package scope, selected code-documentation profile and generator
-reconciliation, changed project term IDs and data links, and activated
-test-first evidence as applicable.
+using support-state changes plus bounded accepted relationships or manual
+impact closure without treating hashes or inferred relationships as semantic
+proof, global multi-workstream convergence, active package scope, selected
+code-documentation profile and generator reconciliation, changed project term
+IDs and data links, and activated test-first evidence as applicable.
 Applies to: semantic fact changes, drift reviews.
+Enforcement: required.
+
+Rule ID: `ALATYR-SUPPORT-001`
+Source owner: `framework/support-information.md`
+Installed owner: `.ai/framework/support-information.md`
+Commitment: Classify and hash every managed support surface, route changed
+paths and facts through bounded accepted relationships, keep detected
+relationships as non-authoritative candidates until target acceptance, and plan
+or apply declared generation without replacing canonical owners, bypassing
+current-scope authorization, or loading unrelated project context.
+Applies to: all installed adapter tasks that change code or support
+information.
 Enforcement: required.
 
 Rule ID: `ALATYR-CHANGE-001`
@@ -368,13 +384,15 @@ separated and rewritten from target evidence; distinguish source-repository
 rule owners from their installed .ai/framework projections; record the
 installed framework pack and its projected registry, inventory, bootstrap
 index, recursive contour indexes, semantic-codebook binding, context-packet
-contract, gate index, capability closure, installation state and transition
-evidence, and current-scope action policy; reject live support placeholders,
-manifest/profile module disagreement, invalid installation-state history, and
-machine/human policy drift before acceptance; and preserve durable task
-engineering evidence, structured and non-canonical Debug Mode evidence,
-development-pattern evidence, routed AI infrastructure items,
-recommendation/adaptation records, and optional project-owned module state.
+contract, gate index, support policy/state, capability closure, installation
+state and transition evidence, and current-scope action policy; reject
+unclassified or stale support, live support placeholders, manifest/profile
+module disagreement, invalid installation-state history, and machine/human
+policy drift before acceptance; and preserve target-owned classifications,
+relationships, candidates, generator bindings, durable task engineering
+evidence, structured and non-canonical Debug Mode evidence, development-pattern
+evidence, routed AI infrastructure items, recommendation/adaptation records,
+and optional project-owned module state.
 Applies to: installation, framework update, adapter maintenance.
 Enforcement: required.
 
@@ -382,17 +400,17 @@ Rule ID: `ALATYR-MODULE-001`
 Source owner: `framework/module-profile.md`
 Installed owner: `.ai/framework/module-profile.md`
 Commitment: Establish the required core profile, including current-scope action
-authorization and proportional durable engineering evidence, before optional
-modules; scaffold only selected dependency-closed capabilities, including Debug
-Mode only with effectiveness and installed-operation dependencies plus
-structured supervision, causal direction replacement, durable-evidence
-reference, and completed-comparison contracts; select a compatible framework
-pack; preserve existing target-owned shared surfaces for their declared
-adapter-aware merge strategy, retain shared output while producers or
-preservation policy require it, and record create/retain/merge/remove outcomes;
-and enforce optional-module dependency, rule, required-file,
-deterministic-check, manifest/profile state agreement, and module-gated
-validator closure before claiming a target module is enabled.
+authorization, proportional durable engineering evidence, and current support
+policy/state, before optional modules; scaffold only selected dependency-closed
+capabilities, including guarded support generation and Debug Mode with their
+declared dependencies and contracts; select a compatible framework pack;
+preserve existing target-owned shared surfaces for their declared adapter-aware
+merge strategy, retain shared output while producers or preservation policy
+require it, and record create/retain/merge/remove outcomes; rebuild optional
+relationship and generation indexes before support state; and enforce
+optional-module dependency, rule, required-file, deterministic-check,
+manifest/profile state agreement, and module-gated validator closure before
+claiming a target module is enabled.
 Applies to: installation, framework update, adapter maturity, framework
 upgrades.
 Enforcement: required.
@@ -405,10 +423,11 @@ automatically through a canonical target operation catalog and checked compact
 exact-alias index, bind common help, status, discussion, change, backlog,
 update, commit, and publish request shapes to provider-neutral static protocol
 expectations, enforce current-scope action phases independently of routing and
-allowed-action mode, expose lazy durable engineering-evidence capture/lookup
-and explicitly scoped Debug Mode operations, compose bounded capability-gated
-delegation, provide read-only adapter health, and show a pre-change preview
-only when risk, approval, or scope uncertainty requires it.
+allowed-action mode, expose bounded support-diff/impact review and guarded
+optional support generation alongside lazy durable engineering-evidence and
+Debug Mode operations, compose bounded capability-gated delegation, provide
+read-only adapter health, and show a pre-change preview only when risk,
+approval, or scope uncertainty requires it.
 Applies to: installed operation routing, adapter health, changes requiring
 preview.
 Enforcement: required.
@@ -462,13 +481,12 @@ Installed owner: `.ai/framework/lifecycle.md`
 Commitment: Record framework version, adapter schema version, template version,
 installed framework pack, baseline, deviations, migration notes, and hash-bound
 upgrade impact; bind releases to v<VERSION>, shipped schemas, contract-tree
-evidence, and the checked-out target branch/revision; rebuild recursive context
-indexes and semantic-codebook/bootstrap bindings from the exact checked-out
-installation; preserve current-scope authorization, Project Development Model
-guidance and coverage, durable engineering evidence, delayed outcomes and
-adapter-maintenance evidence, non-canonical Debug Mode records and their
-migration-limited legacy attribution, and enabled target package/module state;
-bind installation states to a continuous
+evidence, and the checked-out target branch/revision; preserve target-owned
+support classifications, relationships, candidates, and generator bindings;
+rebuild recursive context, reverse relationship, optional generation,
+semantic-codebook, and bootstrap bindings from the exact checked-out
+installation before generating support state last; preserve current-scope
+authorization and project evidence; bind installation states to a continuous
 operation/revision/authorization/approval/validation transition record;
 distinguish migration staging from strict acceptance; expand context from
 affected owners and migrate schemas atomically without replacing active state
@@ -481,14 +499,17 @@ Source owner: `framework/guarantees.md`
 Installed owner: `.ai/framework/guarantees.md`
 Commitment: Distinguish process commitments, machine-checkable expectations,
 target-dependent guarantees, and non-guarantees in final claims; report
-current-scope authorization and actions; classify durable engineering evidence
-without exposing raw reasoning; keep optional Debug Mode observability
-non-canonical and evidence-qualified; qualify human attention, review cycles,
-interventions, and executor active time as observed, manual, estimated, or
-unavailable; record delayed outcomes as immutable later-linked evidence and
-adapter maintenance separately from product effort; reject false productivity
-precision; and separate declared from verified scope, validation, quality,
-latency, cost, attribution, and supervision evidence.
+current-scope authorization and actions; report support-state freshness,
+changed support, bounded impact, relationship-candidate dispositions, and
+generation outcomes without treating hashes or graph routes as semantic proof;
+classify durable engineering evidence without exposing raw reasoning; keep
+optional Debug Mode observability non-canonical and evidence-qualified; qualify
+human attention, review cycles, interventions, and executor active time as
+observed, manual, estimated, or unavailable; record delayed outcomes as
+immutable later-linked evidence and adapter maintenance separately from product
+effort; reject false productivity precision; and separate declared from
+verified scope, validation, quality, latency, cost, attribution, and
+supervision evidence.
 Applies to: final evidence, framework positioning.
 Enforcement: required.
 

@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1090
+Catalog entries: 1105
 
 ## Families
 
@@ -23,7 +23,7 @@ Catalog entries: 1090
 - `BOOTSTRAP`: 8 codes.
 - `CAPABILITY`: 7 codes.
 - `CODEDOC`: 32 codes.
-- `CONSISTENCY`: 32 codes.
+- `CONSISTENCY`: 37 codes.
 - `CONTEXT`: 10 codes.
 - `DEBUG`: 117 codes.
 - `DELEGATION`: 59 codes.
@@ -53,6 +53,7 @@ Catalog entries: 1090
 - `ROUTING`: 2 codes.
 - `RULE`: 1 codes.
 - `STALE`: 2 codes.
+- `SUPPORT`: 10 codes.
 - `TARGET`: 6 codes.
 - `TDD`: 44 codes.
 - `TEAM`: 98 codes.
@@ -393,6 +394,8 @@ Catalog entries: 1090
   Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_EDGE_TYPE`
   Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
+- `CONSISTENCY_MAP_GRAPH`
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_IMPACT_POLICY`
   Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_KIND`
@@ -431,6 +434,10 @@ Catalog entries: 1090
   Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_SCHEMA_LEGACY`
   Level: warning. Source: `tools/target_adapter_validation/consistency_map.py`.
+- `CONSISTENCY_MAP_SCHEMA_MIGRATION_REQUIRED`
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
+- `CONSISTENCY_MAP_SHARDS`
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_TARGET_LEVEL`
   Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_REGISTRY_FACT_TYPE_DRIFT`
@@ -444,6 +451,10 @@ Catalog entries: 1090
 - `CONSISTENCY_REGISTRY_NODE_REUSED`
   Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_REGISTRY_NODE_UNRESOLVED`
+  Level: configured. Source: `tools/target_adapter_validation/consistency_map.py`.
+- `CONSISTENCY_RELATIONSHIP_CANDIDATES`
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
+- `CONSISTENCY_REVERSE_INDEX_STALE`
   Level: configured. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONTEXT_CATALOG_CURRENT`
   Level: info. Source: `tools/target_adapter_validation/context_catalogs.py`.
@@ -1775,6 +1786,26 @@ Catalog entries: 1090
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `STALE_CHECKER_REFERENCE`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `SUPPORT_GENERATION_CURRENT`
+  Level: info. Source: `tools/target_adapter_validation/support_generation.py`.
+- `SUPPORT_GENERATION_INDEX_STALE`
+  Level: error. Source: `tools/target_adapter_validation/support_generation.py`.
+- `SUPPORT_GENERATION_INVALID`
+  Level: error. Source: `tools/target_adapter_validation/support_generation.py`.
+- `SUPPORT_GENERATION_UNRESOLVED`
+  Level: configured. Source: `tools/target_adapter_validation/support_generation.py`.
+- `SUPPORT_POLICY_INVALID`
+  Level: error. Source: `tools/target_adapter_validation/support_state.py`.
+- `SUPPORT_STATE_BUILD`
+  Level: error. Source: `tools/target_adapter_validation/support_state.py`.
+- `SUPPORT_STATE_CONTRACT`
+  Level: error. Source: `tools/target_adapter_validation/support_state.py`.
+- `SUPPORT_STATE_CURRENT`
+  Level: info. Source: `tools/target_adapter_validation/support_state.py`.
+- `SUPPORT_STATE_STALE`
+  Level: configured. Source: `tools/target_adapter_validation/support_state.py`.
+- `SUPPORT_STATE_UNRESOLVED`
+  Level: configured. Source: `tools/target_adapter_validation/support_state.py`.
 - `TARGET_CHECKER_COVERAGE_GAP`
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `TARGET_CHECKER_FOUND`

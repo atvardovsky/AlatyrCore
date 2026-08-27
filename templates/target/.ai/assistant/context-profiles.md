@@ -363,7 +363,10 @@ Use when: local wording, README, or non-semantic documentation changes do not
 alter accepted project behavior.
 
 Operation candidates: `documentation-sync`, `drift-review`,
-`logical-integrity-review`.
+`logical-integrity-review`, `support-generation` when enabled.
+
+Load `.ai/framework/support-information.md` only when support diff, generation
+ownership, or relationship-candidate semantics are disputed.
 
 Required context:
 
@@ -390,11 +393,13 @@ without changing accepted behavior, architecture, data model, external
 contract, security posture, or AI infrastructure.
 
 Operation candidates: `logical-integrity-review`, `drift-review`,
-`product-change`, `test-first-change` when enabled.
+`product-change`, `test-first-change`, `support-generation` when enabled.
+
+Load `.ai/framework/support-information.md` only for support-state, bounded
+impact, candidate, or generation-contract ambiguity.
 
 Required context:
 
-- `.ai/framework/context-discovery.md`
 - `.ai/framework/change-risk-model.md`
 - `.ai/framework/logical-integrity.md`
 - `.ai/assistant/gates/core.md`
@@ -497,8 +502,9 @@ Required context:
 - `.ai/assistant/gates/final-evidence.md`
 - `{TARGET_DATA_SOURCE_OF_TRUTH}`
 
-Load security, testing, security-approval, or complete-checklist context only
-when migration, privacy, destructive, live, or audit boundaries require it.
+Load context-discovery, security, testing, security-approval, or complete-
+checklist context only when source selection, migration, privacy, destructive,
+live, or audit boundaries require it.
 
 Approval gates: explicit approval for destructive, data-loss, live-service,
 privacy, or migration-risk changes.
@@ -518,7 +524,6 @@ Operation candidates: `product-change`, `logical-integrity-review`,
 
 Required context:
 
-- `.ai/framework/change-risk-model.md`
 - `.ai/framework/security-safety-guidance.md`
 - `.ai/framework/logical-integrity.md`
 - `.ai/framework/approval-records.md`
@@ -528,6 +533,10 @@ Required context:
 - `.ai/assistant/gates/security-approval.md`
 - `.ai/assistant/gates/final-evidence.md`
 - `{TARGET_SECURITY_SOURCE_OF_TRUTH}`
+
+Load the full change-risk owner only when classification or escalation
+semantics are disputed; the routed security gate carries the routine compact
+obligation.
 
 Approval gates: explicit approval before protected changes; use approval
 records when scope or plan evidence matters.
@@ -583,8 +592,11 @@ reviewing maturity, or repairing drift after framework changes.
 
 Operation candidates: `adapter-health`, `recheck-after-framework-update`,
 `recheck-after-installation`, `adapter-maturity-review`,
-`extension-management` when installed extension compatibility or drift is in
-scope.
+`support-generation`, and `extension-management` when the corresponding
+optional module or installed extension compatibility is in scope.
+
+Load `.ai/framework/support-information.md` when the migration impact selects
+support policy, state, relationship, or generation contracts.
 
 Required context:
 

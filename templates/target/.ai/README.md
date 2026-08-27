@@ -62,6 +62,10 @@ facts, or target skill infrastructure.
 - source-of-truth registry entries
 - optional machine-readable consistency relationships for bounded impact
   traversal
+- required support collection/classification policy and canonical state for
+  locating changed support surfaces without loading them all
+- optional dependency-ordered generation registry for target-selected derived
+  support artifacts
 - use cases or workflows
 - business/domain rules
 - data model

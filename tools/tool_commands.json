@@ -26,6 +26,30 @@
       "write_scope": "target-structure-with-explicit-write"
     },
     {
+      "name": "snapshot-support",
+      "script": "snapshot_target_support.py",
+      "purpose": "check or explicitly refresh the target support-surface digest state",
+      "write_scope": "target-structure-with-explicit-write"
+    },
+    {
+      "name": "support-diff",
+      "script": "report_support_diff.py",
+      "purpose": "report support-surface changes against the recorded target state",
+      "write_scope": "explicit-report-output-only"
+    },
+    {
+      "name": "impact",
+      "script": "plan_support_impact.py",
+      "purpose": "route changed paths and facts through the bounded target impact graph",
+      "write_scope": "explicit-report-output-only"
+    },
+    {
+      "name": "generate-support",
+      "script": "manage_support_generation.py",
+      "purpose": "plan, check, record, or guardedly apply declared support-generation artifacts",
+      "write_scope": "target-generated-surfaces-with-explicit-apply"
+    },
+    {
       "name": "validate-adapter",
       "script": "validate_target_adapter.py",
       "purpose": "validate adapter structure and optionally enforce machine-readable approval scope",

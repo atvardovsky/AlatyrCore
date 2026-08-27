@@ -258,6 +258,15 @@ routing, capture-quality and timing evidence, event-derived supervision
 metrics, clean upstream projection, compact debug summary, target validation,
 installation and migration planning.
 
+Category: `SUPPORT`
+Source routing owner: `framework/support-information.md`
+Installed routing owner: `.ai/framework/support-information.md`
+Rule IDs: `ALATYR-SUPPORT-001`
+Derived surfaces: target support policy and state, consistency-map shards and
+reverse index, relationship candidate records, bounded impact reports, optional
+support-generation registry and index, logical-integrity and final evidence,
+installation update and target validation.
+
 Category: `EVIDENCE`
 Source routing owner: `framework/guarantees.md`
 Installed routing owner: `.ai/framework/guarantees.md`
@@ -299,6 +308,10 @@ Installed canonical owner: `.ai/framework/prompt-injection.md`
 Rule: `ALATYR-INTEGRITY-001`
 Source canonical owner: `framework/logical-integrity.md`
 Installed canonical owner: `.ai/framework/logical-integrity.md`
+
+Rule: `ALATYR-SUPPORT-001`
+Source canonical owner: `framework/support-information.md`
+Installed canonical owner: `.ai/framework/support-information.md`
 
 Rule: `ALATYR-CHANGE-001`
 Source canonical owner: `framework/blueprint-driven-change.md`

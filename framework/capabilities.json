@@ -44,6 +44,9 @@
       "target_files": [
         ".ai/project/source-of-truth-registry.md",
         ".ai/project/consistency-map.json",
+        ".ai/project/consistency/areas/_template.json",
+        ".ai/project/consistency/relationship-candidates.json",
+        ".ai/assistant/consistency-reverse-index.json",
         ".ai/assistant/context/consistency-routing.json",
         ".ai/assistant/context/cost-scenarios.json"
       ],
@@ -358,6 +361,19 @@
         ".ai/assistant/templates/debug-summary.md"
       ],
       "check_ids": ["debug-mode", "target-adapter-validator"]
+    },
+    "support-generation": {
+      "min_framework_pack": "complete",
+      "requires": [],
+      "rule_ids": ["ALATYR-SUPPORT-001"],
+      "framework_files": ["support-information.md"],
+      "target_files": [
+        ".ai/project/support-generation/registry.json",
+        ".ai/assistant/support-generation-index.json",
+        ".ai/assistant/flows/support-generation.flow.md",
+        ".ai/assistant/gates/support-generation.md"
+      ],
+      "check_ids": ["support-information"]
     },
     "scaffolding": {
       "min_framework_pack": "complete",

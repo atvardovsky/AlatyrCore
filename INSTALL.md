@@ -292,6 +292,10 @@ In a typical target repository:
    digests match installed bytes. Resolve the small core codebook preload into
    the bootstrap; keep domain shards lazy and retain canonical prose fallback.
    Neither an index nor a semantic term becomes a source of truth.
+   Adapt `.ai/project/support-policy.json` from target evidence. Rebuild the
+   optional consistency reverse index and support-generation index after their
+   owners are final, then generate `.ai/support-state.json` last. Do not include
+   ignored local files or treat the resulting digests as semantic validation.
    When team collaboration is enabled, route `team-active` through
    `.ai/assistant/team/context-overlay.json`. Check only the compact active-work
    index before state-changing operations and keep full team state outside

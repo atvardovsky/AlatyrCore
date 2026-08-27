@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "registry_kind": "target-support-generation-registry",
+  "artifacts": [
+    {
+      "id": "{SUPPORT_ARTIFACT_ID}",
+      "owner": "{CANONICAL_GENERATOR_POLICY_OWNER}",
+      "mode": "{DETERMINISTIC_DERIVED_ASSISTANT_PROPOSED_OR_OWNER_MAINTAINED}",
+      "inputs": [
+        {
+          "path": "{TARGET_INPUT_PATH_OR_GLOB}",
+          "selector_kind": "{FILE_GLOB_JSON_POINTER_MARKDOWN_SECTION_OR_OTHER}",
+          "selector": "{SELECTOR_OR_WHOLE_FILE}"
+        }
+      ],
+      "outputs": [
+        "{TARGET_OUTPUT_PATH}"
+      ],
+      "depends_on": [],
+      "generator": {
+        "execution_contract": "{STAGED_OUTPUT_ONLY_OR_NOT_EXECUTABLE}",
+        "command": [
+          "{TARGET_GENERATOR_COMMAND_PART}",
+          "{OUTPUT_DIR}"
+        ]
+      },
+      "validation": [
+        "{TARGET_VALIDATION_OR_MANUAL_REVIEW}"
+      ],
+      "approval_trigger": "{APPROVAL_TRIGGER_OR_NONE}"
+    }
+  ]
+}

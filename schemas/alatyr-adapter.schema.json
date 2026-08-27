@@ -11,6 +11,7 @@
     "supported_assistants",
     "contours",
     "source_of_truth",
+    "support_information",
     "context_routing",
     "modules",
     "validation",
@@ -62,6 +63,15 @@
       "required": ["project_contour", "registry", "engineering_evidence_index", "assistant_contour", "context_router", "bootstrap_index", "framework_context_index", "project_context_index", "assistant_context_index", "semantic_codebook", "context_profiles", "module_profile", "project_sources"],
       "properties": {
         "project_sources": {"$ref": "#/definitions/nonEmptyStringArray"}
+      }
+    },
+    "support_information": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["policy", "state"],
+      "properties": {
+        "policy": {"const": ".ai/project/support-policy.json"},
+        "state": {"const": ".ai/support-state.json"}
       }
     },
     "context_routing": {

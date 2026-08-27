@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "policy_kind": "target-support-policy",
+  "managed_roots": [
+    ".ai"
+  ],
+  "optional_entrypoints": [
+    "AGENTS.md",
+    "AI_ASSISTANTS.md",
+    "CLAUDE.md",
+    "GEMINI.md",
+    ".cursor/rules/alatyr-core.mdc",
+    ".cursorrules",
+    ".devin/rules/alatyr-core.md",
+    ".github/copilot-instructions.md",
+    ".github/prompts/gate-review.prompt.md",
+    ".windsurf/rules/alatyr-core.md",
+    ".windsurfrules",
+    ".roo/rules/alatyr-core.md",
+    ".rules"
+  ],
+  "exclusions": [
+    {
+      "pattern": ".ai/support-state.json",
+      "reason": "generated state cannot include its own digest"
+    },
+    {
+      "pattern": ".ai/local/**",
+      "reason": "per-user local state is ignored and must not enter committed support evidence"
+    }
+  ],
+  "classifications": [
+    {
+      "id": "adapter-support",
+      "classification": "exact-contract",
+      "patterns": [
+        ".ai/**"
+      ]
+    },
+    {
+      "id": "assistant-entrypoints",
+      "classification": "exact-contract",
+      "patterns": [
+        "AGENTS.md",
+        "AI_ASSISTANTS.md",
+        "CLAUDE.md",
+        "GEMINI.md",
+        ".cursor/rules/alatyr-core.mdc",
+        ".cursorrules",
+        ".devin/rules/alatyr-core.md",
+        ".github/copilot-instructions.md",
+        ".github/prompts/gate-review.prompt.md",
+        ".windsurf/rules/alatyr-core.md",
+        ".windsurfrules",
+        ".roo/rules/alatyr-core.md",
+        ".rules"
+      ]
+    }
+  ]
+}

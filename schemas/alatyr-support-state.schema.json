@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/atvardovsky/AlatyrCore/schemas/alatyr-support-state.schema.json",
+  "title": "Alatyr generated target support state",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "state_kind",
+    "digest_contract",
+    "policy",
+    "policy_digest",
+    "source_revision",
+    "groups",
+    "files",
+    "root_digest"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "state_kind": {"const": "target-support-state"},
+    "digest_contract": {"const": "alatyr-support-state-v1"},
+    "policy": {"const": ".ai/project/support-policy.json"},
+    "policy_digest": {"type": "string", "minLength": 1},
+    "source_revision": {"type": "string", "minLength": 1},
+    "root_digest": {"type": "string", "minLength": 1},
+    "groups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "file_count", "digest"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "file_count": {"type": "integer", "minimum": 0},
+          "digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "kind", "classification", "classification_id", "group", "digest", "canonical_size"],
+        "properties": {
+          "path": {"type": "string", "minLength": 1},
+          "kind": {"enum": ["file", "symlink"]},
+          "classification": {"enum": ["exact-contract", "derived", "append-only-evidence", "local-transient"]},
+          "classification_id": {"type": "string", "minLength": 1},
+          "group": {"type": "string", "minLength": 1},
+          "digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+          "canonical_size": {"type": "integer", "minimum": 0}
+        }
+      }
+    }
+  }
+}

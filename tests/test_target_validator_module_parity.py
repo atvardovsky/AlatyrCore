@@ -14,6 +14,7 @@ from target_adapter_validation.ai_infrastructure import (  # noqa: E402
     AI_INFRASTRUCTURE_ITEM_TYPES,
     AI_INFRASTRUCTURE_ROUTES_V1,
 )
+from target_validation_support import parse_manifest  # noqa: E402
 from validate_target_adapter import AdapterValidatorConfig, Validator  # noqa: E402
 
 
@@ -47,6 +48,40 @@ def finding_snapshot(instance: Validator) -> list[tuple[str, str, str | None, st
 
 
 class TargetValidatorModuleParityTests(unittest.TestCase):
+    def test_adapter_schema_31_requires_sharded_consistency_map(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            manifest_path = target / ".ai/alatyr.yaml"
+            manifest_path.parent.mkdir(parents=True, exist_ok=True)
+            manifest_path.write_text("schema_version: 31\n", encoding="utf-8")
+            write_json(
+                target / ".ai/project/consistency-map.json",
+                {
+                    "schema_version": 2,
+                    "map_kind": "target-consistency-map",
+                    "levels": ["fact", "contract", "area", "system", "adapter"],
+                    "relationship_types": [
+                        "implements",
+                        "verifies",
+                        "documents",
+                        "visualizes",
+                        "generates",
+                        "constrains",
+                        "depends-on",
+                        "routes",
+                    ],
+                    "nodes": [],
+                },
+            )
+
+            instance = validator(target)
+            instance.check_consistency_map(parse_manifest(manifest_path))
+
+            self.assertIn(
+                "CONSISTENCY_MAP_SCHEMA_MIGRATION_REQUIRED",
+                {finding.code for finding in instance.findings},
+            )
+
     def test_consistency_map_preserves_locked_finding_order(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             target = Path(directory)

@@ -173,6 +173,11 @@ The target installation must define or adapt:
   derived surfaces, sync direction, validation, and conflict resolvers
 - optional consistency map: stable fact IDs, levels, project areas,
   relationships, impact traversal, staleness handling, and missing coverage
+- required support policy/state: complete classification, justified
+  exclusions, ignored-file handling, cross-platform canonical digests, and
+  current generated state after all other support projections
+- optional support generation: unique owners, acyclic dependencies, artifact
+  modes, staged execution, validation, approval triggers, and current index
 - context profiles: task-specific required context, approval, validation, and
   evidence rules
 - current-scope action authorization: phase definitions, scope invalidation,
@@ -445,6 +450,9 @@ Final evidence must say:
 - contours created or updated
 - source-of-truth registry created or updated
 - consistency-map module enabled, deferred, disabled, or blocked with reason
+- support-information policy adapted and support state generated last
+- consistency reverse index and optional support-generation index rebuilt from
+  the final target-owned contracts
 - context profiles created or updated
 - context router index and lazy descriptor references checked against the
   selected support profile, compact bootstrap, gates, operation routing, root

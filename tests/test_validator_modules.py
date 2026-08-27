@@ -83,7 +83,11 @@ class ValidatorModuleDispatchTests(unittest.TestCase):
     def test_extracted_registry_is_incrementally_extensible(self) -> None:
         self.assertEqual(
             set(MODULE_IMPLEMENTATIONS),
-            {"check_ai_infrastructure_router", "check_consistency_map"},
+            {
+                "check_ai_infrastructure_router",
+                "check_consistency_map",
+                "check_support_generation",
+            },
         )
         self.assertEqual(
             MODULE_IMPLEMENTATIONS["check_consistency_map"].check_id,

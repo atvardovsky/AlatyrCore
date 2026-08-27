@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "index_kind": "alatyr-context-index",
+  "index_id": "project.consistency",
+  "contour": "project",
+  "title": "Project Consistency Context",
+  "summary": "Recursive navigation for the project contour at consistency.",
+  "max_depth": 8,
+  "entries": [
+    {
+      "id": "project.content.consistency-relationship-candidates-json",
+      "kind": "content",
+      "path": "consistency/relationship-candidates.json",
+      "summary": "Relationship Candidates",
+      "selectors": {
+        "path_terms": [
+          "consistency",
+          "relationship",
+          "candidates"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-INTEGRITY-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:logical-integrity@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-INTEGRITY-001"
+      ],
+      "estimated_words": 8,
+      "content_digest": "sha256:a210c6e869c2382011d67f4a512cb8502fd9574ea12ee996ec4789019232b039"
+    },
+    {
+      "id": "project.section.consistency-areas",
+      "kind": "index",
+      "path": "consistency/areas/context-index.json",
+      "summary": "Areas section",
+      "selectors": {
+        "path_terms": [
+          "areas"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 85,
+      "content_digest": "sha256:f902fc8d27e86e3421c5744b7ecb8e156b8f20484cc5b9d27bbba67364d5461f"
+    }
+  ]
+}

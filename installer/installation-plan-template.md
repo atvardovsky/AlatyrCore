@@ -82,6 +82,11 @@ List what must not be changed.
 - Generated bootstrap index, source hashes, and regeneration owner:
 - Recursive framework/project/assistant context-index roots, maximum depth,
   projection scope, generator owner, and stale-entry repair policy:
+- Support-information managed roots, classifications, exclusions, canonical
+  state owner, relationship-candidate owner, reverse-index limits, and
+  generate-last ordering:
+- Optional support-generation artifact owners, modes, dependencies, staged
+  generators, validation, approval triggers, or reason deferred:
 - Semantic-codebook schema, installed shards, bounded preload term IDs,
   canonical prose fallback, and target `project:*` namespace policy:
 - Context-packet schema, required triggers, storage/retention policy, and digest

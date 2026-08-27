@@ -472,7 +472,7 @@ def main() -> int:
         path.unlink()
     for path, text in expected.items():
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(text, encoding="utf-8")
+        path.write_bytes(text.encode("utf-8"))
     print(f"Wrote {len(expected)} recursive context indexes")
     return 0
 

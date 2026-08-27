@@ -389,6 +389,15 @@ packet records the chosen index chain, content identities, resolved semantic
 definitions, budget, and fallback state. These records prove routing identity,
 not that a model understood or followed the content.
 
+A target-owned support policy classifies the adapter and assistant entry
+surfaces, while a canonical cross-platform support state records which of them
+changed. For projects that enable a consistency map, changed paths and fact IDs
+select only relevant relationship shards and concrete companion surfaces.
+Hashes and graph routes reduce repeated scanning; people and assistants still
+derive the invariant, decide whether a newly observed relationship is valid,
+and approve the coherent repair set. See
+[support information](framework/support-information.md).
+
 Optional modules can add architecture knowledge, project vocabulary, generated
 code-reference documentation, test-first development, team coordination,
 large-task orchestration, capability-gated worker delegation with project-
@@ -396,6 +405,9 @@ owned roles and provider-specific thin bindings, diagrams, and adapted AI
 infrastructure. A passive dependency-knowledge module can also bind
 framework or library documentation to exact installed package artifacts while
 keeping one active project adapter and project-owned deviations. Optional
+support generation can coordinate target-declared deterministic derivatives,
+assistant proposals, and owner-maintained artifacts without turning generated
+output into a new source of truth. Optional
 modules are enabled only when the target project needs and can maintain them.
 Workspace modes can additionally separate application, framework, library,
 skeleton, dependency, or workspace perspectives. The assistant proposes modes
@@ -522,7 +534,7 @@ tasks from loading the complete framework or project corpus.
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.32`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.33`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural

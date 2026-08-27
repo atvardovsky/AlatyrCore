@@ -14,7 +14,8 @@
     "project-knowledge",
     "drift-review",
     "product-change",
-    "test-first-change"
+    "test-first-change",
+    "support-generation"
   ],
   "required_context": [
     ".ai/framework/context-discovery.md",
@@ -37,6 +38,10 @@
     {
       "path": ".ai/assistant/gates/security-approval.md",
       "when": "the repair crosses a protected or security-sensitive boundary"
+    },
+    {
+      "path": ".ai/framework/support-information.md",
+      "when": "support-state impact routing relationship candidates or generation semantics are disputed"
     }
   ],
   "expand_when": [

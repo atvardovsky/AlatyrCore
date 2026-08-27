@@ -120,8 +120,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 116,
-      "content_digest": "sha256:8d47d3c832fce6a5c34a93e03a930f1446d5a78215ff8bd974f7b2d52abb2514"
+      "estimated_words": 132,
+      "content_digest": "sha256:ba648e657f8af92d55c6ee8111dbcfc7f14cd45b87d74efe061fc8576d79aa92"
     },
     {
       "id": "assistant.content.context-profiles-data-change-json",
@@ -147,8 +147,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 143,
-      "content_digest": "sha256:fa50c6a0e8f77eb0d84384fe5ddb1fbeb23195dd584156b3fcd23591ddfaaabd"
+      "estimated_words": 154,
+      "content_digest": "sha256:08754486df771b9dd8ae32c619177625837d4d957f9fb8a6d7686f4212faa0be"
     },
     {
       "id": "assistant.content.context-profiles-docs-local-json",
@@ -174,8 +174,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 60,
-      "content_digest": "sha256:8ad5950f8bcc98c4e8e7c9c9d5750415613920a023c9fa1955f05b547b0a7d10"
+      "estimated_words": 78,
+      "content_digest": "sha256:cba0292ef1f7666dac84d4001a6926910fda9ff4964fabaf1f0e5a5c28e13e43"
     },
     {
       "id": "assistant.content.context-profiles-framework-upgrade-json",
@@ -201,8 +201,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 175,
-      "content_digest": "sha256:25c75095dbacc086a560b28fdab999c8c862b34a7b904e60038e67ae4e27aac5"
+      "estimated_words": 187,
+      "content_digest": "sha256:734d44da587cb21c980ff0e15b776d3398e7f5f902c3ecf8c995cb420bbbfdd0"
     },
     {
       "id": "assistant.content.context-profiles-security-sensitive-json",
@@ -228,8 +228,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 100,
-      "content_digest": "sha256:e7d294734f571fa4d0dd819b7fee9a78a00144cb6e8708bf1d7c29760015420c"
+      "estimated_words": 109,
+      "content_digest": "sha256:514e892b8245d836e01ba6b08ae09a9c630d5856acebb34ed85b2b41e551c516"
     }
   ]
 }

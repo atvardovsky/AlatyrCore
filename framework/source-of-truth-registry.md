@@ -74,12 +74,15 @@ registry entries may claim the same node. The map may contain additional
 contract, area, system, or adapter nodes that do not own registry facts.
 
 A missing or stale relationship remains an adapter gap; it does not justify
-scanning every project surface or inventing an edge. Update the human
+scanning every project surface or inventing an accepted edge. Deterministic
+detectors and assistants may record an evidence-bound relationship candidate,
+but the candidate remains non-authoritative until the target decision owner
+accepts it and updates the owning registry or graph surface. Update the human
 registry, machine map, consistency-routing descriptor, measured semantic
 context scenario, and generated bootstrap evidence as one reviewed adapter
 change. Deterministic tooling may validate or regenerate derived routing and
 bootstrap surfaces, but it must not infer canonical owners or relationship
-edges.
+accepted edges.
 
 ## Common Fact Types
 

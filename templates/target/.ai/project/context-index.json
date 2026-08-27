@@ -33,8 +33,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-INTEGRITY-001"
       ],
-      "estimated_words": 142,
-      "content_digest": "sha256:69eda85b5053f7aca86dc81a3bdba0c9c4dae3ccbae64452243982e8f98c4e9a"
+      "estimated_words": 127,
+      "content_digest": "sha256:eaf10ece0fc9287288a50bf72492c38d3d3598835d2f98ec79bcccc0128b384b"
     },
     {
       "id": "project.content.contour-md",
@@ -111,8 +111,34 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1115,
-      "content_digest": "sha256:d1fad3d92d3b4560cf3e7a2bf3217bee7b55f67a5b30c54bd968648407e53916"
+      "estimated_words": 1137,
+      "content_digest": "sha256:1d8a6a7a6d89b7751e7e4c2975602f79927e5f5f9e5b4b9e7a8541d9a7b84442"
+    },
+    {
+      "id": "project.content.support-policy-json",
+      "kind": "content",
+      "path": "support-policy.json",
+      "summary": "Support Policy",
+      "selectors": {
+        "path_terms": [
+          "support",
+          "policy"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 93,
+      "content_digest": "sha256:fe458d4305f7236f4e5e974cb58461e2308ec30299eeb51841fbf5e594d2ea7a"
     },
     {
       "id": "project.content.team-operating-model-md",
@@ -190,6 +216,24 @@
       "owner_refs": [],
       "estimated_words": 145,
       "content_digest": "sha256:34d2038158eec9d27b2df2ab776c6ea55f857bc8e700d7971e1a2495386cbbde"
+    },
+    {
+      "id": "project.section.consistency",
+      "kind": "index",
+      "path": "consistency/context-index.json",
+      "summary": "Consistency section",
+      "selectors": {
+        "path_terms": [
+          "consistency"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 129,
+      "content_digest": "sha256:b8c9865871ee9df816c5ba0c5639cbd741fdbc1a8a6985e47e1602d8ddb4eed5"
     },
     {
       "id": "project.section.debug",
@@ -280,6 +324,24 @@
       "owner_refs": [],
       "estimated_words": 232,
       "content_digest": "sha256:3cea669c9182fe0e47b552e20cf07b27db9d550527e7f2e9d2b667edd4f6a0aa"
+    },
+    {
+      "id": "project.section.support-generation",
+      "kind": "index",
+      "path": "support-generation/context-index.json",
+      "summary": "Support Generation section",
+      "selectors": {
+        "path_terms": [
+          "support-generation"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 82,
+      "content_digest": "sha256:e5a77657d0e3d8c4072a42c9f9387fb6622ad96cfbb5d55ea5361244f5d22b61"
     },
     {
       "id": "project.section.testing",

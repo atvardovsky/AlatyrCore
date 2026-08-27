@@ -13,7 +13,9 @@ have competing owners or derived surfaces.
 When the `consistency-map` module is enabled, every live Fact Type entry must
 name one resolved, unique `Consistency map node`. The referenced node's
 `fact_type` must match the Fact Type heading exactly. Additional map nodes may
-represent derived contracts, areas, systems, or adapter surfaces.
+represent derived contracts, areas, systems, adapter surfaces, or concrete
+support surfaces. A detected relationship candidate is evidence for owner
+review, not an accepted edge or a new source of truth.
 
 ### Fact Type: `product behavior`
 

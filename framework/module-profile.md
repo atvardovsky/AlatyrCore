@@ -57,6 +57,8 @@ Every accepted installation should provide:
   promotion review, canonical-owner update, explicit exception and precedence
   evidence, compact sharded routing index, coverage states, two-stage bounded
   delivery, freshness, conflict, supersession, and paired reuse evidence
+- support-information policy, canonical cross-platform state, changed-surface
+  evidence, and bounded impact routing that never replaces semantic review
 
 If any required core item is missing, the adapter can still exist, but it must
 report the missing item as a gap before claiming maturity.
@@ -138,6 +140,9 @@ maintain them:
   evidence references, completed-record comparison, clean-upstream projection,
   and non-canonical storage. It depends on `effectiveness-metrics` and
   `installed-operations`.
+- `support-generation`: dependency-ordered target support artifacts with
+  deterministic-derived, assistant-proposed, and owner-maintained modes;
+  guarded staged apply; validation; and stale-output evidence.
 - `scaffolding`: optional source-repository scaffolding helpers used only to
   create placeholder structure.
 
@@ -203,6 +208,8 @@ During installation or update:
 7. Resolve shared surfaces from the complete enabled-module set. Apply the
    catalog merge strategy and retain any surface required by another enabled
    producer or marked `preserve_on_disable`.
+8. Rebuild optional relationship and generation indexes, then generate the
+   required support state last so acceptance represents the final adapter.
 
 Optional modules must not add target project facts from guesses or from another
 repository.

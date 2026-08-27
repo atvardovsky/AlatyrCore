@@ -248,7 +248,20 @@ Use when: reviewing whether code, docs, tests, diagrams, prompts, skills,
 gates, and bridges agree.
 Flow: `.ai/assistant/flows/logical-integrity-review.flow.md`
 Minimum input: changed fact or fact ID, suspected drift, or files to inspect.
-When enabled, the consistency map bounds the first impact traversal.
+When enabled, the support diff and consistency reverse index select only
+matching graph shards before semantic/invariant review.
+Aliases: `check integrity`, `logical integrity review`, `Alatyr impact`,
+`Alatyr support diff`.
+
+Operation: `support-generation`
+Use when: target-owned derived support is stale and the optional module is
+enabled.
+Flow: `.ai/assistant/flows/support-generation.flow.md`
+Minimum input: artifact or bounded scope and plan/check/apply intent.
+Planning and checking are read-only. Apply requires current `modify`
+authorization, an exact current plan digest, unchanged repository state,
+staged deterministic output, and protected approval when triggered.
+Aliases: `Alatyr generate support`, `Alatyr check generated support`.
 
 Operation: `diagram-discussion`
 Use when: showing, sketching, comparing, explaining, or revising a diagram in

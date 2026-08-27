@@ -56,7 +56,7 @@ surfaces through bootstrap/module state; do not load histories by default.
 Use installed owners for `ALATYR-CONTEXT-001`, `ALATYR-SOURCE-001`,
 `ALATYR-RISK-001`, `ALATYR-APPROVAL-001`, `ALATYR-AUTHORIZATION-001`, `ALATYR-SAFETY-001`,
 `ALATYR-SAFETY-002`, `ALATYR-INTEGRITY-001`, `ALATYR-CHANGE-001`,
-`ALATYR-PACKAGE-001`, `ALATYR-ENGINEERING-EVIDENCE-001`, `ALATYR-KNOWLEDGE-001`, `ALATYR-DEBUG-001`, `ALATYR-CODEDOC-001`,
+`ALATYR-PACKAGE-001`, `ALATYR-ENGINEERING-EVIDENCE-001`, `ALATYR-KNOWLEDGE-001`, `ALATYR-SUPPORT-001`, `ALATYR-DEBUG-001`, `ALATYR-CODEDOC-001`,
 `ALATYR-VOCABULARY-001`, `ALATYR-TDD-001`, `ALATYR-EXTENSION-001`,
 `ALATYR-DEPENDENCY-001`, `ALATYR-MODE-001`,
 `ALATYR-ADAPTER-001`, `ALATYR-MODULE-001`, `ALATYR-OPERATION-001`,
@@ -66,7 +66,11 @@ facts belong to project contour; local AI infrastructure to assistant contour.
 Do not invent facts or copy policy into bridges.
 
 For semantic changes, re-derive invariants and reconcile reviews sharing a
-fact or contract. Use the consistency map when enabled. Select one route through
+fact or contract. Compare current Git/support changes with
+`.ai/support-state.json`, use the consistency-map reverse index when enabled,
+and load only selected relationship shards. Hashes locate change; they never
+replace semantic review. Record newly detected relationships as candidates
+until the target decision owner accepts them. Select one route through
 `.ai/assistant/ai-infrastructure-router.json` and the smallest AI item set. Run
 only validation that exists.
 
@@ -110,6 +114,7 @@ approval and require reapproval for protected semantic expansion.
 
 Report profile/areas, context index chain, selected item IDs/digests, resolved
 semantic term IDs/versions, packet digest or fallback, facts/files,
+support-state and impact closure, relationship candidates and generation state,
 integrity/sync, validation/skips, approval, authorization, context expansion,
 task evidence, `durable_engineering_evidence`
 as captured/skipped/blocked with binding or reason, preview, and risk. For non-trivial work also report initial/refined

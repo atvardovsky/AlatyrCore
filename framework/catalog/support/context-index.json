@@ -46,6 +46,30 @@
       "content_digest": "sha256:1b40dfe7964b099a2d37a4e395bf429c92b963f22bb3e2035180e877ecab5758"
     },
     {
+      "id": "framework.support.support-information-md",
+      "kind": "content",
+      "path": "support-information.md",
+      "summary": "Support Information",
+      "selectors": {
+        "path_terms": [
+          "support",
+          "information"
+        ],
+        "rule_ids": [
+          "ALATYR-SUPPORT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [],
+      "owner_refs": [
+        "ALATYR-SUPPORT-001"
+      ],
+      "estimated_words": 920,
+      "content_digest": "sha256:398f3dc636c2a6ca3bcef965e6df02fd95458db77ca706775aacae63a757610e"
+    },
+    {
       "id": "framework.support.test-first-development-md",
       "kind": "content",
       "path": "test-first-development.md",

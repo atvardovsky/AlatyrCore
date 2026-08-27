@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/atvardovsky/AlatyrCore/schemas/alatyr-consistency-map.schema.json",
+  "title": "Alatyr sharded target consistency map",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "map_kind", "human_registry", "registry_sync_policy", "levels", "relationship_types", "relationship_states", "impact_policy", "node_shards", "reverse_index", "relationship_candidates"],
+  "properties": {
+    "schema_version": {"const": 3},
+    "map_kind": {"const": "target-consistency-map"},
+    "human_registry": {"const": ".ai/project/source-of-truth-registry.md"},
+    "registry_sync_policy": {"type": "object"},
+    "levels": {"type": "array", "contains": {"const": "surface"}},
+    "relationship_types": {"type": "array", "minItems": 1, "uniqueItems": true},
+    "relationship_states": {"type": "array", "minItems": 1, "uniqueItems": true},
+    "impact_policy": {"type": "object"},
+    "node_shards": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "path"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "path": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "reverse_index": {"type": "string", "minLength": 1},
+    "relationship_candidates": {"type": "string", "minLength": 1}
+  }
+}

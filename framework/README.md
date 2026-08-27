@@ -151,6 +151,9 @@ Those belong to a project contour or repository adapter.
 - `.ai/framework/source-of-truth-registry.md`: portable registry model for
   fact ownership, derived surfaces, sync direction, validation, and conflict
   resolution.
+- `.ai/framework/support-information.md`: required support-surface inventory,
+  canonical cross-platform state, bounded impact routing, relationship
+  candidate review, and optional safe generation contracts.
 - `.ai/framework/consistency-model.md`: portable relationship model for
   bounded impact closure across fact, contract, area, system, and adapter
   levels.

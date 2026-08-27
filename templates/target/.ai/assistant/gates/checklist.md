@@ -30,6 +30,11 @@ commands from another project.
 - When enabled, consistency map checked from changed fact IDs through
   applicable relationship edges; selected/skipped edges, reached levels and
   areas, stale links, and missing coverage recorded.
+- Support policy/state checked after code or support changes; changed surfaces
+  seed bounded impact routing, ignored files remain excluded, and digest
+  equality is not reported as semantic correctness.
+- Newly discovered relationships remain candidates until target authority
+  accepts them; rejected or stale candidates do not enter impact traversal.
 - Task context profile selected and required framework, project, assistant,
   flow, gate, policy, and validation files loaded.
 - Large-task scale overlay and operation packet used only when activation
@@ -138,6 +143,9 @@ commands from another project.
   risk, including loaded context and budget expansion when measured, changed
   fact IDs, selected/skipped relationships, companion surfaces, and unresolved
   consistency gaps, plus `current_user_authorization` and actions performed.
+- Final evidence reports support-state freshness, changed support paths,
+  bounded impact closure, candidate dispositions, and optional generation
+  actions or explicit skips.
 - Durable engineering evidence is classified as `captured`, `skipped`, or
   `blocked`; captured records bind task, repository result, invariant,
   root-cause, solution, regression rationale, validation, privacy, and

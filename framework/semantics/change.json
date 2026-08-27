@@ -5,7 +5,7 @@
   "preload": false,
   "selectors": {
     "task_profiles": ["code-local", "business-change", "architecture-change", "data-change", "security-sensitive"],
-    "operations": ["product-change", "logical-integrity-review", "large-task-orchestration"]
+    "operations": ["product-change", "logical-integrity-review", "large-task-orchestration", "support-generation"]
   },
   "terms": [
     {
@@ -28,6 +28,39 @@
       "scope": "activated material multi-surface changes",
       "non_meanings": ["create a package for every local edit", "make the package a source of project truth"],
       "depends_on": ["alatyr:logical-integrity@1", "alatyr:protected-change@1"],
+      "replaced_by": null
+    },
+    {
+      "id": "alatyr:support-state-is-a-locator@1",
+      "version": 1,
+      "definition": "A canonical support-state digest identifies which managed support surfaces changed across platforms; it does not determine the semantic meaning, correctness, or required repair set of those changes.",
+      "owner_rule_id": "ALATYR-SUPPORT-001",
+      "canonical_owner": "support-information.md",
+      "scope": "support-information comparison and context selection",
+      "non_meanings": ["digest equality proves semantic consistency", "load every support file"],
+      "depends_on": ["alatyr:logical-integrity@1"],
+      "replaced_by": null
+    },
+    {
+      "id": "alatyr:relationship-candidate-is-not-authority@1",
+      "version": 1,
+      "definition": "A relationship detected from code, support changes, or tooling remains non-authoritative evidence until the target decision owner accepts it into the owning registry or consistency graph.",
+      "owner_rule_id": "ALATYR-SUPPORT-001",
+      "canonical_owner": "support-information.md",
+      "scope": "relationship discovery and impact routing",
+      "non_meanings": ["ignore observed dependencies", "automatically promote inferred architecture"],
+      "depends_on": ["alatyr:canonical-owner@1"],
+      "replaced_by": null
+    },
+    {
+      "id": "alatyr:bounded-impact-closure@1",
+      "version": 1,
+      "definition": "Start from changed paths or fact IDs, select matching graph shards, and traverse only accepted relationships within target-owned limits before reasoning over the resulting concrete surfaces and residual gaps.",
+      "owner_rule_id": "ALATYR-SUPPORT-001",
+      "canonical_owner": "support-information.md",
+      "scope": "large-project change impact and context economy",
+      "non_meanings": ["the graph replaces invariant derivation", "unmapped paths are safe to ignore"],
+      "depends_on": ["alatyr:changed-fact-not-file@1", "alatyr:support-state-is-a-locator@1"],
       "replaced_by": null
     }
   ]

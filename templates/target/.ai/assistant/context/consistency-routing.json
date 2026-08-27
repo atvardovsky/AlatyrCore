@@ -7,7 +7,8 @@
   ],
   "required_context": [
     ".ai/project/source-of-truth-registry.md",
-    ".ai/project/consistency-map.json"
+    ".ai/project/consistency-map.json",
+    ".ai/assistant/consistency-reverse-index.json"
   ],
   "conditional_context": [
     {
@@ -16,9 +17,10 @@
     }
   ],
   "lookup_order": [
-    "changed fact ids",
+    "changed paths through the generated reverse index",
+    "changed fact ids and selected area shards",
     "canonical owners",
-    "applicable direct relationships",
+    "applicable accepted direct relationships",
     "dependent contracts when propagation is possible",
     "selected target surfaces and validation"
   ],
@@ -32,6 +34,7 @@
     "selected and skipped edges with reasons",
     "levels and project areas reached",
     "missing or stale relationships",
+    "unmapped paths and non-authoritative relationship candidates",
     "candidate and applied repair sets"
   ]
 }

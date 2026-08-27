@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "index_kind": "target-support-generation-index",
+  "registry": ".ai/project/support-generation/registry.json",
+  "registry_digest": "sha256:a380cb128526f31860a83ba55f7b9b1d60b325d931680343c20f7cc0f7ef820f",
+  "order": [
+    "{SUPPORT_ARTIFACT_ID}"
+  ],
+  "artifacts": [
+    {
+      "id": "{SUPPORT_ARTIFACT_ID}",
+      "mode": "{DETERMINISTIC_DERIVED_ASSISTANT_PROPOSED_OR_OWNER_MAINTAINED}",
+      "owner": "{CANONICAL_GENERATOR_POLICY_OWNER}",
+      "input_paths": [],
+      "input_digest": "sha256:0531a9b9e8890c942641cbc28b7951af33f382ab6f4b12c785cca97330339e4b",
+      "output_paths": [],
+      "output_digest": "sha256:b1eaf65c2bea0d0d25fb8b82ec8ed42e6f8a850853c2a845c0020e01156a190a",
+      "missing_outputs": [
+        "{TARGET_OUTPUT_PATH}"
+      ]
+    }
+  ]
+}

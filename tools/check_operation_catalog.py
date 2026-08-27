@@ -50,6 +50,7 @@ EXPECTED_OPERATIONS = {
     "project-knowledge",
     "debug-mode",
     "logical-integrity-review",
+    "support-generation",
     "diagram-discussion",
     "ai-infrastructure-inventory",
     "ai-infrastructure-recommendation",
@@ -106,6 +107,7 @@ ALLOWED_MODULES = {
     "dependency-knowledge",
     "workspace-modes",
     "debug-mode",
+    "support-generation",
 }
 ALLOWED_PREVIEW = {"never", "risk-gated"}
 ALLOWED_PROFILES = {

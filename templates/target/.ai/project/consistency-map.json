@@ -1,19 +1,20 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "map_kind": "target-consistency-map",
   "human_registry": ".ai/project/source-of-truth-registry.md",
   "registry_sync_policy": {
     "coverage": "every-live-registry-fact-type",
     "node_reference": "registry-consistency-map-node-id",
     "fact_type_match": "exact",
-    "extra_nodes": "allowed-for-derived-contract-area-system-and-adapter-surfaces"
+    "extra_nodes": "allowed-for-derived-contract-area-system-adapter-and-surface-nodes"
   },
   "levels": [
     "fact",
     "contract",
     "area",
     "system",
-    "adapter"
+    "adapter",
+    "surface"
   ],
   "relationship_types": [
     "implements",
@@ -25,8 +26,19 @@
     "depends-on",
     "routes"
   ],
+  "relationship_states": [
+    "observed",
+    "proposed",
+    "accepted",
+    "rejected",
+    "stale",
+    "contradicted",
+    "removed"
+  ],
   "impact_policy": {
-    "default_mode": "owner-and-applicable-direct-relationships",
+    "default_mode": "owner-and-applicable-accepted-relationships",
+    "max_depth": 4,
+    "max_nodes": 100,
     "transitive_expand_when": [
       "dependent fact or contract can change",
       "cross-area contract changes",
@@ -35,38 +47,19 @@
       "approval trigger is reached"
     ],
     "required_evidence": [
-      "changed fact ids and canonical owners",
-      "selected edges and reasons",
-      "skipped edges and reasons",
-      "levels and project areas reached",
-      "missing or stale relationships",
+      "changed fact IDs and canonical owners",
+      "selected and skipped accepted edges",
+      "levels areas and concrete surfaces reached",
+      "unmapped changes and relationship candidates",
       "validation approvals and residual risk"
     ]
   },
-  "nodes": [
+  "node_shards": [
     {
-      "id": "{FACT_ID}",
-      "fact_type": "{FACT_TYPE}",
-      "level": "{FACT_CONTRACT_AREA_SYSTEM_OR_ADAPTER}",
-      "project_area": "{TARGET_PROJECT_AREA}",
-      "canonical_owner": "{CANONICAL_OWNER_OR_MISSING}",
-      "relationships": [
-        {
-          "id": "{RELATIONSHIP_ID}",
-          "type": "{IMPLEMENTS_VERIFIES_DOCUMENTS_VISUALIZES_GENERATES_CONSTRAINS_DEPENDS_ON_OR_ROUTES}",
-          "target": "{TARGET_FACT_ID_OR_SURFACE}",
-          "target_level": "{FACT_CONTRACT_AREA_SYSTEM_OR_ADAPTER}",
-          "target_area": "{TARGET_PROJECT_AREA}",
-          "direction": "outbound",
-          "required_when": [
-            "{RELATIONSHIP_CHANGE_TRIGGER}"
-          ],
-          "validation": [
-            "{TARGET_VALIDATION_OR_MANUAL_REVIEW}"
-          ],
-          "approval_trigger": "{APPROVAL_TRIGGER_OR_NONE}"
-        }
-      ]
+      "id": "{TARGET_PROJECT_AREA_ID}",
+      "path": ".ai/project/consistency/areas/_template.json"
     }
-  ]
+  ],
+  "reverse_index": ".ai/assistant/consistency-reverse-index.json",
+  "relationship_candidates": ".ai/project/consistency/relationship-candidates.json"
 }

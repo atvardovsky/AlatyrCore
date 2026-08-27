@@ -77,11 +77,6 @@ Operation: `product-change`
 Use when: accepted behavior, architecture, data, runtime, or a public contract may change.
 Flow: `.ai/assistant/flows/blueprint-driven-change.flow.md`
 Minimum input: change intent, non-goals, and approval constraints.
-Operation: `workspace-mode`
-Use when: the user asks to inspect, select, define, or change workspace modes.
-Flow: `.ai/assistant/flows/workspace-mode.flow.md`
-Minimum input: action or question; accepted-state changes need a mode ID and user decision.
-
 Use `Alatyr architecture` for architecture discussion, `Alatyr diagram` for a
 diagram, `Alatyr team status` for team state, and `Alatyr set actor
 <actor-id-or-name>` for attribution. These route through
@@ -94,6 +89,11 @@ Use `Alatyr enable test-first` to assess and configure the optional policy, or
 `Alatyr test first` for an enabled policy. The assistant may suggest this once
 when defect, invariant, contract, refactor, or recurring-regression evidence
 supports it; a suggestion is not mandatory unless target policy says so.
+Use `Alatyr impact` or `Alatyr support diff` to route changed support/code
+paths into bounded logical-integrity review. When `support-generation` is
+enabled, `Alatyr check generated support` is read-only and `Alatyr generate
+support` uses the guarded generation flow; neither command accepts inferred
+relationships as architecture facts.
 Use `Alatyr extensions` to list compact state, `Alatyr inspect extension
 <source>` for read-only source review, and `Alatyr add/update/disable/remove
 extension <source-or-id>` for an approval-aware lifecycle request. These are

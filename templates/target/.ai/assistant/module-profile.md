@@ -160,6 +160,19 @@ Validation or review: `{PROJECT_KNOWLEDGE_VALIDATION_OR_REVIEW}`
 Approval needs: `{PROJECT_KNOWLEDGE_PROMOTION_EXCEPTION_AND_OWNER_UPDATE_APPROVAL_NEEDS}`
 Residual risk: `{PROJECT_KNOWLEDGE_RESIDUAL_RISK}`
 
+Core item: `support-information-state`
+State: `{REQUIRED_ENABLED_OR_BLOCKED}`
+Owner or file: `.ai/project/support-policy.json`
+Required files:
+
+- `.ai/project/support-policy.json`
+- `.ai/support-state.json`
+
+Evidence: `{SUPPORT_POLICY_STATE_AND_CHANGED_SURFACE_EVIDENCE_OR_GAP}`
+Validation or review: `{SUPPORT_STATE_VALIDATION_OR_REVIEW}`
+Approval needs: `{SUPPORT_STATE_APPROVAL_NEEDS}`
+Residual risk: `{UNCLASSIFIED_UNMAPPED_OR_STALE_SUPPORT_RISK}`
+
 ## Optional Modules
 
 Module: `blueprint-change`
@@ -183,6 +196,9 @@ Required files:
 
 - `.ai/project/source-of-truth-registry.md`
 - `.ai/project/consistency-map.json`
+- `.ai/project/consistency/areas/_template.json`
+- `.ai/project/consistency/relationship-candidates.json`
+- `.ai/assistant/consistency-reverse-index.json`
 - `.ai/assistant/context/consistency-routing.json`
 - `.ai/assistant/context/cost-scenarios.json`
 
@@ -577,6 +593,22 @@ Validation or review: `{VALIDATION_OR_REVIEW}`
 Approval needs: `{DEBUG_MODE_APPROVAL_NEEDS}`
 Residual risk: `{DEBUG_MODE_RESIDUAL_RISK}`
 Next action: `{DEBUG_MODE_NEXT_ACTION}`
+
+Module: `support-generation`
+State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+Owner or file: `.ai/project/support-generation/registry.json`
+Required files:
+
+- `.ai/project/support-generation/registry.json`
+- `.ai/assistant/support-generation-index.json`
+- `.ai/assistant/flows/support-generation.flow.md`
+- `.ai/assistant/gates/support-generation.md`
+
+Reason: `{REASON}`
+Validation or review: `{SUPPORT_GENERATION_VALIDATION_OR_REVIEW}`
+Approval needs: `{SUPPORT_GENERATION_APPROVAL_NEEDS}`
+Residual risk: `{SUPPORT_GENERATION_RESIDUAL_RISK}`
+Next action: `{SUPPORT_GENERATION_NEXT_ACTION}`
 
 Module: `scaffolding`
 State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`

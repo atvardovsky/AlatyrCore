@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "index_kind": "target-consistency-reverse-index",
+  "graph_digest": "sha256:82f423bb6350670502b9324d75ab0e782a752926248bab4754b83fb1ad9f64ff",
+  "exact_paths": {},
+  "patterns": []
+}

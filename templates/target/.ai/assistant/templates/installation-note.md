@@ -31,6 +31,11 @@ Installation id: `{INSTALLATION_ID}`
 - Generated bootstrap index: `.ai/assistant/bootstrap-index.json`
 - Recursive context indexes: `.ai/framework/context-index.json`,
   `.ai/project/context-index.json`, `.ai/assistant/context-index.json`
+- Support-information policy/state: `.ai/project/support-policy.json`,
+  `.ai/support-state.json`
+- Optional impact/generation derivatives:
+  `.ai/assistant/consistency-reverse-index.json`,
+  `.ai/assistant/support-generation-index.json`
 - Semantic codebook: `.ai/framework/semantics/index.json`
 - Context packet template: `.ai/assistant/templates/context-packet.json`
 - Routed gate index: `.ai/assistant/gates/index.json`

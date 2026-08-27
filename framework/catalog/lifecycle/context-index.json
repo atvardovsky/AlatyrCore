@@ -42,8 +42,8 @@
       ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 118,
-      "content_digest": "sha256:a192b0a2a9b9e12cee8c03d49dd03ba754b4e47a8715dc85c29ffac8ea679f07"
+      "estimated_words": 120,
+      "content_digest": "sha256:7ace1bba535b8065f73e2ff550caaedbd0e3635e9b8321146856be6791fd81cc"
     },
     {
       "id": "framework.lifecycle.lifecycle-md",
@@ -65,8 +65,8 @@
       "owner_refs": [
         "ALATYR-LIFECYCLE-001"
       ],
-      "estimated_words": 2831,
-      "content_digest": "sha256:048b49ed03c82b30080fe4548a14d51b09b26a1a722f69af7c9c63c5ac048922"
+      "estimated_words": 2893,
+      "content_digest": "sha256:e5f144682b5ae151cc166ecd7357dcd9bceb9d8312358a03bced93bf85e9756c"
     },
     {
       "id": "framework.lifecycle.migration-diff-md",

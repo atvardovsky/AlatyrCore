@@ -57,6 +57,8 @@
         ".ai/project/knowledge/promotions/README.md",
         ".ai/project/knowledge/routes/README.md",
         ".ai/project/source-of-truth-registry.md",
+        ".ai/project/support-policy.json",
+        ".ai/support-state.json",
         "AGENTS.md",
         "CODEOWNERS"
       ]

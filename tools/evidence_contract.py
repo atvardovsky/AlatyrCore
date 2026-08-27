@@ -6,7 +6,7 @@ import hashlib
 import os
 import subprocess
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, Sequence
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -172,6 +172,58 @@ def _canonical_worktree_content(
     return content.replace(b"\r\n", b"\n") if normalize else content
 
 
+def canonical_worktree_entries(
+    root: Path,
+    relpaths: Sequence[str],
+) -> list[tuple[str, str, bytes]]:
+    """Return path-bound content using Git's cross-platform text contract.
+
+    The fallback is intentionally conservative for repositories that have not
+    been initialized yet: UTF-8-like text receives LF normalization while
+    binary content remains byte exact.
+    """
+
+    normalized = sorted(set(relpaths))
+    try:
+        attributes = _git_attributes(root, normalized)
+        core_autocrlf = _core_autocrlf_enabled(root)
+    except ValueError:
+        attributes = {}
+        core_autocrlf = False
+
+    entries: list[tuple[str, str, bytes]] = []
+    for relpath in normalized:
+        path = root / relpath
+        try:
+            if path.is_symlink():
+                content = os.readlink(path).encode(
+                    "utf-8", errors="surrogateescape"
+                )
+                entries.append((relpath, "symlink", content))
+                continue
+            if not path.is_file():
+                continue
+            content = path.read_bytes()
+            if attributes:
+                content = _canonical_worktree_content(
+                    relpath,
+                    content,
+                    attributes.get(relpath, {}),
+                    core_autocrlf=core_autocrlf,
+                )
+            elif b"\0" not in content[:8000]:
+                try:
+                    content.decode("utf-8")
+                except UnicodeDecodeError:
+                    pass
+                else:
+                    content = content.replace(b"\r\n", b"\n")
+            entries.append((relpath, "file", content))
+        except FileNotFoundError:
+            continue
+    return entries
+
+
 def current_contract_digest(root: Path = ROOT) -> str:
     result = subprocess.run(
         ["git", "ls-files", "-c", "-o", "--exclude-standard", "-z"],
@@ -190,26 +242,7 @@ def current_contract_digest(root: Path = ROOT) -> str:
         ).split("\0")
         if relpath and is_contract_path(relpath)
     ]
-    attributes = _git_attributes(root, relpaths)
-    core_autocrlf = _core_autocrlf_enabled(root)
-    entries: list[tuple[str, str, bytes]] = []
-    for relpath in relpaths:
-        path = root / relpath
-        try:
-            if path.is_symlink():
-                content = os.readlink(path).encode("utf-8", errors="surrogateescape")
-                entries.append((relpath, "symlink", content))
-            elif path.is_file():
-                content = _canonical_worktree_content(
-                    relpath,
-                    path.read_bytes(),
-                    attributes.get(relpath, {}),
-                    core_autocrlf=core_autocrlf,
-                )
-                entries.append((relpath, "file", content))
-        except FileNotFoundError:
-            continue
-    return digest_entries(entries)
+    return digest_entries(canonical_worktree_entries(root, relpaths))
 
 
 def contract_digest_at(commit: str, root: Path = ROOT) -> str | None:

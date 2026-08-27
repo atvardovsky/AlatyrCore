@@ -13,9 +13,16 @@ from target_validation_support import (
     is_target_relative_path,
     is_unresolved_value,
 )
+from impact_graph import (
+    ImpactGraphError,
+    build_reverse_index,
+    load_impact_graph,
+    validate_graph,
+)
 
 
 CONSISTENCY_LEVELS = ["fact", "contract", "area", "system", "adapter"]
+CONSISTENCY_LEVELS_V3 = [*CONSISTENCY_LEVELS, "surface"]
 CONSISTENCY_RELATIONSHIPS = {
     "implements",
     "verifies",
@@ -31,6 +38,12 @@ CONSISTENCY_REGISTRY_SYNC_POLICY = {
     "node_reference": "registry-consistency-map-node-id",
     "fact_type_match": "exact",
     "extra_nodes": "allowed-for-derived-contract-area-system-and-adapter-surfaces",
+}
+CONSISTENCY_REGISTRY_SYNC_POLICY_V3 = {
+    "coverage": "every-live-registry-fact-type",
+    "node_reference": "registry-consistency-map-node-id",
+    "fact_type_match": "exact",
+    "extra_nodes": "allowed-for-derived-contract-area-system-adapter-and-surface-nodes",
 }
 REGISTRY_ENTRY_HEADING_RE = re.compile(
     r"^### Fact Type: `([^`]+)`\s*$", re.MULTILINE
@@ -97,23 +110,40 @@ class ConsistencyMapModule:
         context: CapabilityValidationContext,
         manifest: Any,
     ) -> None:
-        del manifest
         relpath = ".ai/project/consistency-map.json"
         path = context.target_path(relpath)
         data = context.load_json_object(path, "CONSISTENCY_MAP")
         if data is None:
             return
         schema_version = data.get("schema_version")
+        adapter_schema_version: int | None = None
+        if manifest is not None:
+            scalar = manifest.scalars.get(("schema_version",))
+            if scalar is not None:
+                try:
+                    adapter_schema_version = int(scalar.value)
+                except ValueError:
+                    adapter_schema_version = None
+        if (
+            adapter_schema_version is not None
+            and adapter_schema_version >= 31
+            and schema_version != 3
+        ):
+            context.error(
+                "CONSISTENCY_MAP_SCHEMA_MIGRATION_REQUIRED",
+                "adapter schema 31 requires sharded consistency-map schema version 3",
+                relpath,
+            )
         if schema_version == 1:
             context.warn(
                 "CONSISTENCY_MAP_SCHEMA_LEGACY",
                 "schema_version 1 should migrate to schema 2 registry-sync policy",
                 relpath,
             )
-        elif schema_version != 2:
+        elif schema_version not in {2, 3}:
             context.error(
                 "CONSISTENCY_MAP_SCHEMA",
-                "schema_version should be 1 or 2",
+                "schema_version should be 1, 2, or 3",
                 relpath,
             )
         if data.get("map_kind") != "target-consistency-map":
@@ -128,18 +158,20 @@ class ConsistencyMapModule:
                 "human_registry should point to the target source-of-truth registry",
                 relpath,
             )
-        if (
-            schema_version == 2
-            and data.get("registry_sync_policy")
-            != CONSISTENCY_REGISTRY_SYNC_POLICY
-        ):
+        expected_sync_policy = (
+            CONSISTENCY_REGISTRY_SYNC_POLICY_V3
+            if schema_version == 3
+            else CONSISTENCY_REGISTRY_SYNC_POLICY
+        )
+        if schema_version in {2, 3} and data.get("registry_sync_policy") != expected_sync_policy:
             context.error(
                 "CONSISTENCY_MAP_REGISTRY_SYNC_POLICY",
                 "registry_sync_policy must require exact coverage while allowing "
                 "extra derived nodes",
                 relpath,
             )
-        if data.get("levels") != CONSISTENCY_LEVELS:
+        expected_levels = CONSISTENCY_LEVELS_V3 if schema_version == 3 else CONSISTENCY_LEVELS
+        if data.get("levels") != expected_levels:
             context.error(
                 "CONSISTENCY_MAP_LEVELS",
                 "levels must match the portable consistency level order",
@@ -173,7 +205,49 @@ class ConsistencyMapModule:
                     label=f"impact_policy.{field}",
                 )
 
-        nodes = data.get("nodes")
+        graph = None
+        if schema_version == 3:
+            try:
+                graph = load_impact_graph(context.target_path(".ai").parent, relpath)
+            except ImpactGraphError as exc:
+                context.error("CONSISTENCY_MAP_SHARDS", str(exc), relpath)
+            else:
+                for failure in validate_graph(
+                    graph, allow_placeholders=context.allow_placeholders
+                ):
+                    context.error("CONSISTENCY_MAP_GRAPH", failure, relpath)
+                reverse_relpath = data.get("reverse_index")
+                if isinstance(reverse_relpath, str):
+                    reverse = context.load_json_object(
+                        context.target_path(reverse_relpath), "CONSISTENCY_REVERSE_INDEX"
+                    )
+                    expected_reverse = build_reverse_index(graph)
+                    if reverse is not None and reverse != expected_reverse:
+                        unresolved = isinstance(reverse.get("graph_digest"), str) and is_placeholder(reverse.get("graph_digest"))
+                        report = context.warn if context.allow_placeholders and unresolved else context.error
+                        report(
+                            "CONSISTENCY_REVERSE_INDEX_STALE",
+                            "generated reverse index differs from consistency-map shards",
+                            reverse_relpath,
+                        )
+                candidates_relpath = data.get("relationship_candidates")
+                if isinstance(candidates_relpath, str):
+                    candidates = context.load_json_object(
+                        context.target_path(candidates_relpath),
+                        "CONSISTENCY_RELATIONSHIP_CANDIDATES",
+                    )
+                    if candidates is not None and (
+                        candidates.get("schema_version") != 1
+                        or candidates.get("record_kind")
+                        != "target-consistency-relationship-candidates"
+                        or not isinstance(candidates.get("records"), list)
+                    ):
+                        context.error(
+                            "CONSISTENCY_RELATIONSHIP_CANDIDATES",
+                            "relationship candidates must use the non-authoritative schema-1 record",
+                            candidates_relpath,
+                        )
+        nodes = list(graph.nodes.values()) if graph is not None else data.get("nodes")
         if not isinstance(nodes, list) or not nodes:
             context.error(
                 "CONSISTENCY_MAP_NODES", "nodes must be a non-empty list", relpath
@@ -221,7 +295,7 @@ class ConsistencyMapModule:
                     relpath,
                 )
             level = node.get("level")
-            if not is_placeholder(level) and level not in CONSISTENCY_LEVELS:
+            if not is_placeholder(level) and level not in expected_levels:
                 context.error(
                     "CONSISTENCY_MAP_NODE_LEVEL",
                     f"{label}.level is invalid: {level}",
@@ -259,7 +333,14 @@ class ConsistencyMapModule:
                         relpath,
                     )
             edges = node.get("relationships")
-            if not isinstance(edges, list) or not edges:
+            if not isinstance(edges, list):
+                context.error(
+                    "CONSISTENCY_MAP_EDGES",
+                    f"{label}.relationships must be a list",
+                    relpath,
+                )
+                continue
+            if not edges and schema_version != 3:
                 context.error(
                     "CONSISTENCY_MAP_EDGES",
                     f"{label}.relationships must be non-empty",
@@ -303,7 +384,7 @@ class ConsistencyMapModule:
                 target_level = edge.get("target_level")
                 if (
                     not is_placeholder(target_level)
-                    and target_level not in CONSISTENCY_LEVELS
+                    and target_level not in expected_levels
                 ):
                     context.error(
                         "CONSISTENCY_MAP_TARGET_LEVEL",

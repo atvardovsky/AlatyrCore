@@ -30,8 +30,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1202,
-      "content_digest": "sha256:4d53ce7f533957df1b5de9b48b5d95d7e34549ed8411e0012489017476f7ec65"
+      "estimated_words": 1271,
+      "content_digest": "sha256:211a64fd310569816d0d770eaa2a4c1f6d659e416f7147754dade319f2719f6c"
     },
     {
       "id": "assistant.content.gates-code-and-tests-md",
@@ -256,8 +256,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 100,
-      "content_digest": "sha256:1ebc7ecee5e4b98f43d15d06f8dfcd5557ee9c14f30fd7399a66171d50666f7a"
+      "estimated_words": 115,
+      "content_digest": "sha256:97773af0ff2438223a709ac8a38623d1115d3a5c1206d0b0fb017a14d761bb4b"
     },
     {
       "id": "assistant.content.gates-index-json",
@@ -379,6 +379,33 @@
       ],
       "estimated_words": 77,
       "content_digest": "sha256:b635c816c3768e2c4f010186161d7214ef5d51de0bd0c7a9ee12f6188db99941"
+    },
+    {
+      "id": "assistant.content.gates-support-generation-md",
+      "kind": "content",
+      "path": "gates/support-generation.md",
+      "summary": "Support Generation Gate",
+      "selectors": {
+        "path_terms": [
+          "gates",
+          "support",
+          "generation"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 83,
+      "content_digest": "sha256:a4d810e170dd40ebc1e958184c6dd6313f80fb0d8732149c26362911ae5152e5"
     },
     {
       "id": "assistant.content.gates-team-collaboration-md",

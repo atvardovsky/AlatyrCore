@@ -5,6 +5,8 @@ Owner: `ALATYR-EVIDENCE-001`.
 Before completion, report:
 
 - profile/areas, facts/files, and synchronized surfaces
+- support-state freshness/root digest, changed support paths, bounded impact
+  closure, relationship-candidate dispositions, and generated-support actions
 - `current_user_authorization`: source/scope, allowed phases, invalidation,
   latest commit/publish/live confirmation/effects
 - invariant/review reconciliation

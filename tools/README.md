@@ -18,6 +18,9 @@ python3 tools/alatyr.py doctor --target /path/to/target-repo
 python3 tools/alatyr.py validate-adapter --target /path/to/target-repo
 python3 tools/alatyr.py render-context --target /path/to/target-repo
 python3 tools/alatyr.py render-context --target /path/to/target-repo --write
+python3 tools/alatyr.py support-diff --target /path/to/target-repo
+python3 tools/alatyr.py impact --target /path/to/target-repo --diff-ref HEAD~1
+python3 tools/alatyr.py generate-support --target /path/to/target-repo --check
 python3 tools/alatyr.py assess-upgrade --target /path/to/target-repo --framework-source . --output-dir tmp/upgrade-assessment
 python3 tools/alatyr.py inspect-extension --package /path/to/local-extension-checkout
 python3 tools/alatyr.py inspect-extension --package /path/to/local-extension-checkout --target /path/to/target-repo
@@ -34,6 +37,9 @@ Windows PowerShell:
 .\tools\alatyr.ps1 validate-adapter --target C:\path\to\target-repo
 .\tools\alatyr.ps1 render-context --target C:\path\to\target-repo
 .\tools\alatyr.ps1 render-context --target C:\path\to\target-repo --write
+.\tools\alatyr.ps1 support-diff --target C:\path\to\target-repo
+.\tools\alatyr.ps1 impact --target C:\path\to\target-repo --diff-ref HEAD~1
+.\tools\alatyr.ps1 generate-support --target C:\path\to\target-repo --check
 .\tools\alatyr.ps1 assess-upgrade --target C:\path\to\target-repo --framework-source . --output-dir tmp\upgrade-assessment
 .\tools\alatyr.ps1 inspect-extension --package C:\path\to\local-extension-checkout
 .\tools\alatyr.ps1 inspect-extension --package C:\path\to\local-extension-checkout --target C:\path\to\target-repo
@@ -49,6 +55,9 @@ tools\alatyr.cmd doctor --target C:\path\to\target-repo
 tools\alatyr.cmd validate-adapter --target C:\path\to\target-repo
 tools\alatyr.cmd render-context --target C:\path\to\target-repo
 tools\alatyr.cmd render-context --target C:\path\to\target-repo --write
+tools\alatyr.cmd support-diff --target C:\path\to\target-repo
+tools\alatyr.cmd impact --target C:\path\to\target-repo --diff-ref HEAD~1
+tools\alatyr.cmd generate-support --target C:\path\to\target-repo --check
 tools\alatyr.cmd inspect-extension --package C:\path\to\local-extension-checkout
 tools\alatyr.cmd inspect-extension --package C:\path\to\local-extension-checkout --target C:\path\to\target-repo
 tools\alatyr.cmd inspect-dependency-knowledge --source C:\path\to\local-package-export
@@ -62,6 +71,14 @@ The stable command set is:
 - `render-bootstrap`: target bootstrap regeneration only with `--write`
 - `render-context`: installed recursive context-index regeneration only with
   `--write`; check mode is read-only
+- `snapshot-support`: check support-state freshness or refresh it with explicit
+  `--write`; generate this state after other support derivatives
+- `support-diff`: read-only created/modified/removed support-surface report
+- `impact`: bounded changed-path/fact traversal through accepted target
+  relationships; machine routing does not replace invariant reasoning
+- `generate-support`: read-only plan/check by default; guarded apply is limited
+  to declared staged deterministic outputs with current authorization and plan
+  binding
 - `validate-adapter`: optional explicit report output only
 - `doctor`: read-only adapter health with at most three repair operation routes;
   no file output (use `validate-adapter` for an explicit report file)

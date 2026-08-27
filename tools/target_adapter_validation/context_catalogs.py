@@ -21,6 +21,7 @@ CODEBOOK = ".ai/framework/semantics/index.json"
 PACKET_TEMPLATE = ".ai/assistant/templates/context-packet.json"
 DERIVED_ROUTING_REFERENCES = {
     ".ai/assistant/bootstrap-index.json",
+    ".ai/support-state.json",
 }
 
 

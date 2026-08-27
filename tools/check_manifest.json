@@ -882,15 +882,27 @@
       ],
       "contract_inputs": [
         "framework/logical-integrity.md",
-        "templates/target/.ai/project/consistency-map.json"
+        "schemas/alatyr-consistency-map*.json",
+        "schemas/alatyr-relationship-candidates.schema.json",
+        "templates/target/.ai/project/consistency-map.json",
+        "templates/target/.ai/project/consistency/**",
+        "templates/target/.ai/assistant/consistency-reverse-index.json"
       ],
       "implementation_paths": [
-        "tools/check_consistency_map.py"
+        "tools/check_consistency_map.py",
+        "tools/impact_graph.py",
+        "tools/render_consistency_reverse_index.py"
       ],
       "trigger_paths": [
         "framework/logical-integrity.md",
+        "schemas/alatyr-consistency-map*.json",
+        "schemas/alatyr-relationship-candidates.schema.json",
         "templates/target/.ai/project/consistency-map.json",
-        "tools/check_consistency_map.py"
+        "templates/target/.ai/project/consistency/**",
+        "templates/target/.ai/assistant/consistency-reverse-index.json",
+        "tools/check_consistency_map.py",
+        "tools/impact_graph.py",
+        "tools/render_consistency_reverse_index.py"
       ]
     },
     {
@@ -1391,6 +1403,75 @@
       ]
     },
     {
+      "id": "support-information",
+      "command": [
+        "tools/check_support_information.py"
+      ],
+      "profiles": [
+        "fast",
+        "full",
+        "platform"
+      ],
+      "contract_inputs": [
+        "framework/support-information.md",
+        "framework/capabilities.json",
+        "framework/framework-packs.json",
+        "framework/rule-registry.json",
+        "schemas/alatyr-consistency-map*.json",
+        "schemas/alatyr-relationship-candidates.schema.json",
+        "schemas/alatyr-support-*.json",
+        "templates/target/.ai/project/support-policy.json",
+        "templates/target/.ai/support-state.json",
+        "templates/target/.ai/project/consistency/**",
+        "templates/target/.ai/assistant/consistency-reverse-index.json",
+        "templates/target/.ai/project/support-generation/**",
+        "templates/target/.ai/assistant/support-generation-index.json"
+      ],
+      "implementation_paths": [
+        "tools/check_support_information.py",
+        "tools/impact_graph.py",
+        "tools/manage_support_generation.py",
+        "tools/plan_support_impact.py",
+        "tools/render_consistency_reverse_index.py",
+        "tools/report_support_diff.py",
+        "tools/snapshot_target_support.py",
+        "tools/support_generation.py",
+        "tools/support_state.py",
+        "tools/target_adapter_validation/consistency_map.py",
+        "tools/target_adapter_validation/support_generation.py",
+        "tools/target_adapter_validation/support_state.py"
+      ],
+      "trigger_paths": [
+        "framework/support-information.md",
+        "framework/capabilities.json",
+        "framework/framework-packs.json",
+        "framework/rule-registry.json",
+        "schemas/alatyr-consistency-map*.json",
+        "schemas/alatyr-relationship-candidates.schema.json",
+        "schemas/alatyr-support-*.json",
+        "templates/target/.ai/project/support-policy.json",
+        "templates/target/.ai/support-state.json",
+        "templates/target/.ai/project/consistency/**",
+        "templates/target/.ai/assistant/consistency-reverse-index.json",
+        "templates/target/.ai/project/support-generation/**",
+        "templates/target/.ai/assistant/support-generation-index.json",
+        "tools/check_lifecycle_conformance.py",
+        "tools/render_context_catalogs.py",
+        "tools/check_support_information.py",
+        "tools/impact_graph.py",
+        "tools/manage_support_generation.py",
+        "tools/plan_support_impact.py",
+        "tools/render_consistency_reverse_index.py",
+        "tools/report_support_diff.py",
+        "tools/snapshot_target_support.py",
+        "tools/support_generation.py",
+        "tools/support_state.py",
+        "tools/target_adapter_validation/consistency_map.py",
+        "tools/target_adapter_validation/support_generation.py",
+        "tools/target_adapter_validation/support_state.py"
+      ]
+    },
+    {
       "id": "target-contract-compatibility",
       "command": [
         "tools/render_target_contract_compatibility.py",
@@ -1834,6 +1915,7 @@
         "tools/render_installed_context_catalogs.py",
         "tools/scaffold*.py",
         "tools/scaffold_target_structure.py",
+        "tools/support_state.py",
         "tools/target_adapter_validation/**",
         "tools/validate_target_adapter.py"
       ],
@@ -1848,6 +1930,7 @@
         "tools/render_installed_context_catalogs.py",
         "tools/scaffold*.py",
         "tools/scaffold_target_structure.py",
+        "tools/support_state.py",
         "tools/target_adapter_validation/**",
         "tools/validate_target_adapter.py"
       ]

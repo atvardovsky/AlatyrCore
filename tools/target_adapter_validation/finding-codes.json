@@ -18,7 +18,9 @@
     "tools/target_adapter_validation/installation_state.py",
     "tools/target_adapter_validation/modules.py",
     "tools/target_adapter_validation/project_knowledge.py",
-    "tools/target_adapter_validation/router_costs.py"
+    "tools/target_adapter_validation/router_costs.py",
+    "tools/target_adapter_validation/support_generation.py",
+    "tools/target_adapter_validation/support_state.py"
   ],
   "families": [
     {
@@ -59,7 +61,7 @@
     },
     {
       "id": "CONSISTENCY",
-      "code_count": 32
+      "code_count": 37
     },
     {
       "id": "CONTEXT",
@@ -176,6 +178,10 @@
     {
       "id": "STALE",
       "code_count": 2
+    },
+    {
+      "id": "SUPPORT",
+      "code_count": 10
     },
     {
       "id": "TARGET",
@@ -1695,6 +1701,15 @@
       ]
     },
     {
+      "code": "CONSISTENCY_MAP_GRAPH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/consistency_map.py"
+      ]
+    },
+    {
       "code": "CONSISTENCY_MAP_IMPACT_POLICY",
       "levels": [
         "error"
@@ -1866,6 +1881,24 @@
       ]
     },
     {
+      "code": "CONSISTENCY_MAP_SCHEMA_MIGRATION_REQUIRED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/consistency_map.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_MAP_SHARDS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/consistency_map.py"
+      ]
+    },
+    {
       "code": "CONSISTENCY_MAP_TARGET_LEVEL",
       "levels": [
         "error"
@@ -1921,6 +1954,24 @@
     },
     {
       "code": "CONSISTENCY_REGISTRY_NODE_UNRESOLVED",
+      "levels": [
+        "configured"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/consistency_map.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_RELATIONSHIP_CANDIDATES",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/consistency_map.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_REVERSE_INDEX_STALE",
       "levels": [
         "configured"
       ],
@@ -7912,6 +7963,96 @@
       ],
       "sources": [
         "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "SUPPORT_GENERATION_CURRENT",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/support_generation.py"
+      ]
+    },
+    {
+      "code": "SUPPORT_GENERATION_INDEX_STALE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/support_generation.py"
+      ]
+    },
+    {
+      "code": "SUPPORT_GENERATION_INVALID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/support_generation.py"
+      ]
+    },
+    {
+      "code": "SUPPORT_GENERATION_UNRESOLVED",
+      "levels": [
+        "configured"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/support_generation.py"
+      ]
+    },
+    {
+      "code": "SUPPORT_POLICY_INVALID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/support_state.py"
+      ]
+    },
+    {
+      "code": "SUPPORT_STATE_BUILD",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/support_state.py"
+      ]
+    },
+    {
+      "code": "SUPPORT_STATE_CONTRACT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/support_state.py"
+      ]
+    },
+    {
+      "code": "SUPPORT_STATE_CURRENT",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/support_state.py"
+      ]
+    },
+    {
+      "code": "SUPPORT_STATE_STALE",
+      "levels": [
+        "configured"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/support_state.py"
+      ]
+    },
+    {
+      "code": "SUPPORT_STATE_UNRESOLVED",
+      "levels": [
+        "configured"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/support_state.py"
       ]
     },
     {

@@ -13,6 +13,7 @@ from target_adapter_validation.capability import (
     CapabilityValidationContext,
 )
 from target_adapter_validation.consistency_map import CONSISTENCY_MAP_MODULE
+from target_adapter_validation.support_generation import SUPPORT_GENERATION_MODULE
 
 
 CAPABILITY_CHECKS: dict[str, tuple[str, ...]] = {
@@ -28,6 +29,7 @@ CAPABILITY_CHECKS: dict[str, tuple[str, ...]] = {
     "debug-mode": ("check_debug_mode",),
     "extensions": ("check_extensions",),
     "project-vocabulary": ("check_project_vocabulary",),
+    "support-generation": ("check_support_generation",),
     "subagent-delegation": ("check_subagent_delegation",),
     "team-collaboration": ("check_team_collaboration",),
     "test-first-development": ("check_test_first_development",),
@@ -48,6 +50,7 @@ class ModuleValidator(Protocol):
 MODULE_IMPLEMENTATIONS: dict[str, CapabilityModule] = {
     AI_INFRASTRUCTURE_ROUTER_MODULE.check_id: AI_INFRASTRUCTURE_ROUTER_MODULE,
     CONSISTENCY_MAP_MODULE.check_id: CONSISTENCY_MAP_MODULE,
+    SUPPORT_GENERATION_MODULE.check_id: SUPPORT_GENERATION_MODULE,
 }
 
 

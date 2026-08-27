@@ -57,6 +57,10 @@
     "Alatyr compare debug": "debug-mode",
     "check integrity": "logical-integrity-review",
     "logical integrity review": "logical-integrity-review",
+    "Alatyr impact": "logical-integrity-review",
+    "Alatyr support diff": "logical-integrity-review",
+    "Alatyr generate support": "support-generation",
+    "Alatyr check generated support": "support-generation",
     "Alatyr diagram": "diagram-discussion",
     "show as a diagram": "diagram-discussion",
     "visualize architecture": "diagram-discussion",
@@ -242,6 +246,14 @@
       "docs-only",
       "adapter-only",
       "code-and-tests",
+      "full-with-approval"
+    ],
+    "support-generation": [
+      "support-generation",
+      ".ai/assistant/flows/support-generation.flow.md",
+      "read-only",
+      "docs-only",
+      "adapter-only",
       "full-with-approval"
     ],
     "diagram-discussion": [

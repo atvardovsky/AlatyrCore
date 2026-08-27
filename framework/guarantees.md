@@ -39,6 +39,11 @@ The framework commits to giving an assistant a defined process for:
   skills
 - traversing adapted fact relationships to bound multi-level impact review in
   large repositories
+- classifying and hashing target support surfaces with cross-platform text
+  normalization, then routing only changed support and accepted relationships
+  into semantic review
+- preserving newly detected relationships as non-authoritative candidates
+  until a target decision owner accepts or rejects them
 - carrying accepted product changes through blueprint-equivalent docs, flows,
   implementation, validation, diagrams, and final evidence
 - coordinating large or resumable changes through bounded workstreams,
@@ -204,6 +209,15 @@ Machine checks can verify only deterministic repository facts, such as:
 - explicitly selected change packages can be checked for record shape,
   resolvable revisions, plan hashes, declared semantic and path scope,
   companion decisions, correction impact, and evidence-quality prerequisites
+- target support policy and state can be checked for complete classification,
+  ignored-file exclusion, case collisions, canonical digests, and current
+  managed-surface coverage
+- consistency-map shards, reverse indexes, relationship lifecycle state, and
+  bounded traversal limits can be checked structurally without treating the
+  graph as proof of architectural correctness
+- optional support-generation registries can be checked for unique producers,
+  acyclic dependencies, stale inputs or outputs, guarded execution mode, and a
+  repository-bound plan digest
 - durable engineering-evidence indexes and selected records can be checked for
   shape, identity, task and repository binding, invariant and regression
   evidence, Git object type, ancestry, binding state and lineage, historical
@@ -231,6 +245,11 @@ Machine-readable validator output can make adapter evidence cheaper to reuse in
 CI, assistant rechecks, or final reports, but it remains structural evidence.
 It does not decide source-of-truth correctness or replace logical integrity
 review.
+
+Support hashes and generated impact closures likewise do not prove what a
+changed fact means, whether a newly observed dependency is architecturally
+valid, or whether the selected repair set preserves every invariant. Those
+remain project reasoning and decision-owner responsibilities.
 
 Project-knowledge checks can validate promotion linkage, route selectors,
 authority/freshness states, canonical-owner digests, reciprocal conflict or

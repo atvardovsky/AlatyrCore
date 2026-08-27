@@ -110,6 +110,13 @@ relationship edges, traverse dependent contracts only when they can propagate
 the change, and record skipped or missing edges. The map routes review; the
 human source-of-truth registry still owns ownership decisions.
 
+Start that closure from the target support diff and reverse relationship index
+when they are current. Treat hashes as change-location evidence only. Re-derive
+the semantic fact and invariant before accepting the routed repair set. If a
+code or support change exposes a new relationship, record a candidate for the
+target decision owner; do not traverse it as accepted architecture until that
+owner accepts it.
+
 For multi-workstream operations, perform local review within each workstream
 and one global review over the combined repair set before completion. The
 global review reconciles shared facts, canonical owners, approvals,

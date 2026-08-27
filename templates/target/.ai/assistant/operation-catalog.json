@@ -308,8 +308,22 @@
       "minimum_inputs": ["changed fact, suspected drift, or files to inspect"],
       "allowed_actions": ["read-only", "docs-only", "adapter-only", "code-and-tests", "full-with-approval"],
       "preview": "risk-gated",
-      "aliases": ["check integrity", "logical integrity review"],
-      "final_evidence": ["invariants", "repair set", "validation and residual risk"]
+      "aliases": ["check integrity", "logical integrity review", "Alatyr impact", "Alatyr support diff"],
+      "final_evidence": ["support diff and impact closure", "invariants and relationship candidates", "repair set", "validation and residual risk"]
+    },
+    {
+      "id": "support-generation",
+      "title": "Support generation",
+      "summary": "Plan, check, or guardedly apply target-owned support artifact generation.",
+      "use_when": ["derived support is stale", "support generator review", "generated documentation or index refresh"],
+      "context_profiles": ["docs-local", "code-local", "framework-upgrade"],
+      "required_module": "support-generation",
+      "flow": ".ai/assistant/flows/support-generation.flow.md",
+      "minimum_inputs": ["artifact or bounded scope", "plan/check/apply intent", "current authorization for apply"],
+      "allowed_actions": ["read-only", "docs-only", "adapter-only", "full-with-approval"],
+      "preview": "risk-gated",
+      "aliases": ["Alatyr generate support", "Alatyr check generated support"],
+      "final_evidence": ["plan digest and repository binding", "artifact modes and stale reasons", "applied or skipped outputs", "validation approval and residual risk"]
     },
     {
       "id": "diagram-discussion",

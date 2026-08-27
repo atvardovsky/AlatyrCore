@@ -18,7 +18,6 @@
     "test-first-change"
   ],
   "required_context": [
-    ".ai/framework/change-risk-model.md",
     ".ai/framework/security-safety-guidance.md",
     ".ai/framework/logical-integrity.md",
     ".ai/project/source-of-truth-registry.md",
@@ -29,6 +28,7 @@
     "{TARGET_SECURITY_SOURCE_OF_TRUTH}"
   ],
   "conditional_context": [
+    {"path": ".ai/framework/change-risk-model.md", "when": "risk classification or escalation semantics are disputed"},
     {"path": ".ai/framework/approval-records.md", "when": "a protected change requires a scoped approval record"},
     {"path": ".ai/assistant/policies/prompt-injection.md", "when": "imported AI infrastructure or untrusted instruction-bearing content is involved"}
   ],

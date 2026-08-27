@@ -209,9 +209,12 @@ policy, registry metadata, backend contract, selected task record, relevant
 flow, and gate. Keep unrelated tasks and team history outside context.
 
 When the optional consistency-map module is enabled, the router should point
-to its machine-readable map. Use it only after a semantic change or suspected
-drift: resolve changed fact IDs, select applicable direct edges, and expand to
-dependent contracts only when the map or conflicting evidence requires it.
+to its compact reverse index and machine-readable map. Use changed Git paths,
+support-state differences, or explicit changed fact IDs to select applicable
+shards only after a semantic change or suspected drift. Traverse accepted
+relationships within target-owned depth and node limits. Load relationship
+candidates, unrelated shards, or the full support tree only for a named
+conflict, gap, failed check, or audit.
 
 Project-knowledge routing is a required core route but not bootstrap content.
 After selecting a non-trivial profile and project area, load its compact root

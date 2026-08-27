@@ -115,6 +115,13 @@ Resolve the current owner through the
 when the target enables the corresponding module or the selected operation
 requires them.
 
+For code or support-information changes, use the target support diff as a
+compact locator and the optional consistency reverse index to choose graph
+shards. Then re-derive semantic facts and invariants from canonical project
+owners. A matching hash is not semantic proof, and a detected relationship is
+only a candidate until target authority accepts it. Canonical guidance:
+[support information](framework/support-information.md).
+
 ## Installed Conversation
 
 `Alatyr` is the single conversational entry across supported assistant

@@ -27,6 +27,10 @@ EXPECTED_COMMANDS = {
     "scaffold",
     "render-bootstrap",
     "render-context",
+    "snapshot-support",
+    "support-diff",
+    "impact",
+    "generate-support",
     "validate-adapter",
     "doctor",
     "migration-report",
@@ -47,6 +51,7 @@ ALLOWED_WRITE_SCOPES = {
     "explicit-report-output-only",
     "explicit-evidence-output-only",
     "local-source-artifacts-with-explicit-apply",
+    "target-generated-surfaces-with-explicit-apply",
 }
 
 
@@ -269,7 +274,10 @@ def main() -> int:
             "--allow-placeholders",
         )
         if assessment.returncode != 0:
-            failures.append("fresh scaffold upgrade assessment reported structural errors")
+            failures.append(
+                "fresh scaffold upgrade assessment reported structural errors: "
+                + (assessment.stderr.strip() or assessment.stdout.strip() or "no diagnostic")
+            )
         after = tree_hashes(target)
         if before != after:
             failures.append("upgrade assessment modified target repository files")
@@ -281,22 +289,33 @@ def main() -> int:
         ]:
             if not (output / filename).is_file():
                 failures.append(f"upgrade assessment missing output: {filename}")
-        plan = (output / "upgrade-assessment.md").read_text(encoding="utf-8")
-        for required in [
-            "Evidence basis: `current-state`",
-            "Observed target branch: `feature/adapter-upgrade`",
-            "This assessment does not apply an upgrade",
-            "affected canonical sources",
-            "Validation phase: `migration-staging`",
-            "Acceptance eligible: `false`",
-        ]:
-            if required not in plan:
-                failures.append(f"upgrade assessment missing safety text: {required}")
-        payload = json.loads((output / "adapter-validation.json").read_text(encoding="utf-8"))
+        plan_path = output / "upgrade-assessment.md"
+        if plan_path.is_file():
+            plan = plan_path.read_text(encoding="utf-8")
+            for required in [
+                "Evidence basis: `current-state`",
+                "Observed target branch: `feature/adapter-upgrade`",
+                "This assessment does not apply an upgrade",
+                "affected canonical sources",
+                "Validation phase: `migration-staging`",
+                "Acceptance eligible: `false`",
+            ]:
+                if required not in plan:
+                    failures.append(f"upgrade assessment missing safety text: {required}")
+        payload_path = output / "adapter-validation.json"
+        payload = json.loads(payload_path.read_text(encoding="utf-8")) if payload_path.is_file() else {}
         if payload.get("evidence", {}).get("basis") != "current-state-structural":
             failures.append("upgrade assessment validator evidence is not current-state")
         if payload.get("counts", {}).get("errors") != 0:
-            failures.append("fresh scaffold validator evidence contains errors")
+            error_findings = [
+                f"{item.get('code')}:{item.get('message')}"
+                for item in payload.get("findings", [])
+                if isinstance(item, dict) and item.get("level") == "error"
+            ]
+            failures.append(
+                "fresh scaffold validator evidence contains errors: "
+                + "; ".join(error_findings[:8])
+            )
         if payload.get("status") != "staged":
             failures.append("placeholder-tolerant upgrade assessment must remain staged")
         if payload.get("adapter_health", {}).get("state") != "unverified":
@@ -305,7 +324,8 @@ def main() -> int:
             failures.append("staging assessment must not be acceptance eligible")
         if payload.get("evidence", {}).get("observed_branch") != "feature/adapter-upgrade":
             failures.append("validator evidence must bind the checked-out target branch")
-        impact = json.loads((output / "upgrade-impact.json").read_text(encoding="utf-8"))
+        impact_path = output / "upgrade-impact.json"
+        impact = json.loads(impact_path.read_text(encoding="utf-8")) if impact_path.is_file() else {}
         if impact.get("target", {}).get("branch") != "feature/adapter-upgrade":
             failures.append("upgrade impact must bind the checked-out target branch")
         if impact.get("impact_kind") != "alatyr-upgrade-impact":

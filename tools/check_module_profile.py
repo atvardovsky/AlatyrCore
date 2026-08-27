@@ -23,6 +23,8 @@ CORE_ITEMS = [
     "current-scope-action-authorization",
     "validation-and-final-evidence",
     "durable-engineering-evidence",
+    "project-knowledge-delivery",
+    "support-information-state",
 ]
 CORE_FIELDS = [
     "State:",

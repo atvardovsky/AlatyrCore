@@ -83,6 +83,7 @@ policy wording.
 - Coherent material change packages: `ALATYR-PACKAGE-001`
 - Durable engineering evidence: `ALATYR-ENGINEERING-EVIDENCE-001`
 - Project knowledge promotion and delivery: `ALATYR-KNOWLEDGE-001`
+- Support information state and impact routing: `ALATYR-SUPPORT-001`
 - Optional Debug Mode: `ALATYR-DEBUG-001`
 - Lifecycle and versioning: `ALATYR-LIFECYCLE-001`
 - Installed operation control surface: `ALATYR-OPERATION-001`
@@ -211,6 +212,7 @@ python3 tools/check_release_drift.py
 python3 tools/check_rule_ownership.py
 python3 tools/check_scaffold_profiles.py
 python3 tools/check_source_of_truth_registry.py
+python3 tools/check_support_information.py
 python3 tools/check_target_adapter_validator.py
 python3 tools/check_check_manifest.py
 python3 tools/check_team_collaboration.py

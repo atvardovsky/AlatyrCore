@@ -17,7 +17,6 @@
     "test-first-change"
   ],
   "required_context": [
-    ".ai/framework/context-discovery.md",
     ".ai/framework/change-risk-model.md",
     ".ai/project/source-of-truth-registry.md",
     ".ai/framework/logical-integrity.md",
@@ -28,6 +27,7 @@
     "{TARGET_DATA_SOURCE_OF_TRUTH}"
   ],
   "conditional_context": [
+    {"path": ".ai/framework/context-discovery.md", "when": "source selection expansion rules or missing-context handling are disputed"},
     {"path": ".ai/framework/source-of-truth-registry.md", "when": "registry ownership semantics are disputed or the target registry requires repair"},
     {"path": ".ai/framework/security-safety-guidance.md", "when": "privacy credentials destructive live-service or retention boundaries are affected"},
     {"path": ".ai/framework/testing-guidance.md", "when": "a migration implementation rollback or validation plan is prepared"},

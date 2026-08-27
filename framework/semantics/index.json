@@ -24,14 +24,18 @@
         "operations": [
           "product-change",
           "logical-integrity-review",
-          "large-task-orchestration"
+          "large-task-orchestration",
+          "support-generation"
         ]
       },
       "term_ids": [
         "alatyr:changed-fact-not-file@1",
-        "alatyr:coherent-change-package@1"
+        "alatyr:coherent-change-package@1",
+        "alatyr:support-state-is-a-locator@1",
+        "alatyr:relationship-candidate-is-not-authority@1",
+        "alatyr:bounded-impact-closure@1"
       ],
-      "content_digest": "sha256:977bbc8bf642d8168c4e2bf3b812deb9b911d139b1b72ff6d61d4713e51302b1"
+      "content_digest": "sha256:5e0ac188c902ba8cb6514c94e7067f8097e74b47adcb0d1e5d39e35950c7922c"
     },
     {
       "id": "collaboration",

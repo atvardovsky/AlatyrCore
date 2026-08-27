@@ -28,6 +28,9 @@ Future assistant bootstrap:
   indexes from this branch's installed files, then repair the bootstrap from
   `.ai/alatyr.yaml`, `.ai/README.md`, `.ai/assistant/context-router.json`, and
   `.ai/framework/semantics/index.json` when stale.
+- Preserve target-owned support classifications, accepted relationships,
+  candidates, and generator bindings. Rebuild optional reverse/generation
+  indexes, then generate `.ai/support-state.json` last.
 - Use the resolved core semantic definitions once, follow only selected index
   branches, and load canonical owner prose for unresolved or conflicting terms.
   Report stale entries, omitted live references, and fallback events.

@@ -4,6 +4,54 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.33 - 2026-08-27
+
+- Increased the framework version to `0.1.0-alpha.33`, adapter schema version
+  to `31`, and target template version to `31` for required support-surface
+  state, sharded impact routing, relationship candidates, and optional guarded
+  support generation.
+- Added `ALATYR-SUPPORT-001` and `framework/support-information.md` as the
+  canonical contract for complete target support classification, canonical
+  cross-platform digests, changed-surface evidence, bounded impact closure,
+  non-authoritative relationship discovery, and context-economical review.
+- Added `.ai/project/support-policy.json` and generated
+  `.ai/support-state.json`. The state uses Git-visible, non-ignored paths,
+  canonical LF text identity, byte-exact binary/symlink identity, case-collision
+  rejection, grouped digests, and source revision as evidence rather than drift.
+- Upgraded the optional consistency map to a sharded version-3 graph with
+  accepted/proposed/rejected/stale relationship states, target-owned traversal
+  limits, coverage states, a generated reverse index, and explicit relationship
+  candidates that cannot direct work before owner acceptance.
+- Added read-only support diff and impact planning commands. Changed paths,
+  support-state differences, and explicit fact IDs now select bounded graph
+  shards and concrete companion surfaces while semantic fact and invariant
+  reasoning remains human/assistant work.
+- Added the optional `support-generation` capability with unique artifact
+  producers, acyclic dependencies, deterministic-derived, assistant-proposed,
+  and owner-maintained modes, stale-input/output detection, repository-bound
+  plans, staged output, current-scope authorization, protected approval, and
+  rollback-safe apply behavior.
+- Updated installation and framework-update ordering to preserve target-owned
+  policies, accepted relationships, candidates, and generator bindings; rebuild
+  context/reverse/generation indexes; and generate support state last before
+  strict acceptance.
+- Reduced required context in composed consistency routes by moving redundant
+  portable guidance behind conflict-based expansion. The static data-change
+  route fell from 4,239 to 3,612 words and security-sensitive from 3,961 to
+  3,435; these are deterministic whitespace-word estimates, not token or cost
+  guarantees.
+- Fixed the Windows lifecycle workflow failure caused by newline translation
+  after digest calculation. Generated context catalogs now use exact UTF-8 byte
+  writes on Linux, macOS, and Windows, with a platform conformance regression
+  check.
+- Added source tests for support-state drift, ignored files, case collisions,
+  LF/CRLF equivalence, graph traversal and limits, generation dependency
+  cycles, and stale generator inputs.
+- Added rule `ALATYR-SUPPORT-001`; changed `ALATYR-ADAPTER-001`,
+  `ALATYR-CONTEXT-001`, `ALATYR-EVIDENCE-001`, `ALATYR-INTEGRITY-001`,
+  `ALATYR-LIFECYCLE-001`, `ALATYR-MODULE-001`, `ALATYR-OPERATION-001`, and
+  `ALATYR-SOURCE-001`; no rule IDs were removed or deprecated.
+
 ## 0.1.0-alpha.32 - 2026-08-26
 
 - Increased the framework version to `0.1.0-alpha.32`, adapter schema version

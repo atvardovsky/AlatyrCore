@@ -1,159 +1,76 @@
 #!/usr/bin/env python3
-"""Validate the target multi-level consistency-map template contract."""
+"""Validate the sharded target consistency-map template contract."""
 
 from __future__ import annotations
 
 import json
 import sys
 from pathlib import Path
-from typing import Any
+
+from impact_graph import (
+    GRAPH_LEVELS,
+    ImpactGraphError,
+    build_reverse_index,
+    load_impact_graph,
+    validate_graph,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "templates" / "target"
-MAP = TARGET / ".ai" / "project" / "consistency-map.json"
-REGISTRY = TARGET / ".ai" / "project" / "source-of-truth-registry.md"
-MANIFEST = TARGET / ".ai" / "alatyr.yaml"
-ROUTER = TARGET / ".ai" / "assistant" / "context-router.json"
-
-LEVELS = ["fact", "contract", "area", "system", "adapter"]
-RELATIONSHIPS = [
-    "implements",
-    "verifies",
-    "documents",
-    "visualizes",
-    "generates",
-    "constrains",
-    "depends-on",
-    "routes",
-]
-NODE_FIELDS = [
-    "id",
-    "fact_type",
-    "level",
-    "project_area",
-    "canonical_owner",
-    "relationships",
-]
-EDGE_FIELDS = [
-    "id",
-    "type",
-    "target",
-    "target_level",
-    "target_area",
-    "direction",
-    "required_when",
-    "validation",
-    "approval_trigger",
-]
-
-
-def is_placeholder(value: Any) -> bool:
-    return isinstance(value, str) and "{" in value and "}" in value
-
-
-def non_empty_strings(value: Any) -> bool:
-    return (
-        isinstance(value, list)
-        and bool(value)
-        and all(isinstance(item, str) and item for item in value)
-    )
+MAP = TARGET / ".ai/project/consistency-map.json"
+REGISTRY = TARGET / ".ai/project/source-of-truth-registry.md"
+MANIFEST = TARGET / ".ai/alatyr.yaml"
+ROUTER = TARGET / ".ai/assistant/context-router.json"
 
 
 def main() -> int:
     failures: list[str] = []
     try:
-        data = json.loads(MAP.read_text(encoding="utf-8"))
-    except FileNotFoundError:
-        print(f"FAIL: missing {MAP.relative_to(ROOT)}", file=sys.stderr)
+        graph = load_impact_graph(TARGET)
+    except ImpactGraphError as exc:
+        print(f"FAIL: {exc}", file=sys.stderr)
         return 1
-    except json.JSONDecodeError as exc:
-        print(f"FAIL: invalid {MAP.relative_to(ROOT)}: {exc}", file=sys.stderr)
-        return 1
+    data = graph.root
+    if data.get("schema_version") != 3:
+        failures.append("consistency-map template must use schema version 3")
+    if data.get("levels") != GRAPH_LEVELS:
+        failures.append("consistency-map levels must include concrete surfaces")
+    if data.get("registry_sync_policy", {}).get("coverage") != "every-live-registry-fact-type":
+        failures.append("consistency-map must retain exact registry coverage")
+    for failure in validate_graph(graph, allow_placeholders=True):
+        failures.append(failure)
 
-    if data.get("schema_version") != 2:
-        failures.append("consistency-map schema_version must be 2")
-    if data.get("map_kind") != "target-consistency-map":
-        failures.append("consistency-map map_kind must be target-consistency-map")
-    if data.get("human_registry") != ".ai/project/source-of-truth-registry.md":
-        failures.append("consistency-map human_registry path is incorrect")
-    if data.get("registry_sync_policy") != {
-        "coverage": "every-live-registry-fact-type",
-        "node_reference": "registry-consistency-map-node-id",
-        "fact_type_match": "exact",
-        "extra_nodes": "allowed-for-derived-contract-area-system-and-adapter-surfaces",
-    }:
-        failures.append("consistency-map registry_sync_policy is incorrect")
-    if data.get("levels") != LEVELS:
-        failures.append("consistency-map levels must match the portable level order")
-    if data.get("relationship_types") != RELATIONSHIPS:
-        failures.append(
-            "consistency-map relationship_types must match portable relationship types"
-        )
-
-    policy = data.get("impact_policy")
-    if not isinstance(policy, dict):
-        failures.append("consistency-map impact_policy must be an object")
+    reverse_relpath = data.get("reverse_index")
+    if not isinstance(reverse_relpath, str):
+        failures.append("consistency-map reverse_index is missing")
     else:
-        if policy.get("default_mode") != "owner-and-applicable-direct-relationships":
-            failures.append("consistency-map impact_policy.default_mode is incorrect")
-        for field in ["transitive_expand_when", "required_evidence"]:
-            if not non_empty_strings(policy.get(field)):
-                failures.append(f"consistency-map impact_policy.{field} is invalid")
+        reverse = json.loads((TARGET / reverse_relpath).read_text(encoding="utf-8"))
+        expected = build_reverse_index(graph)
+        if reverse.get("schema_version") != 1 or reverse.get("index_kind") != expected["index_kind"]:
+            failures.append("consistency reverse-index contract is invalid")
+        if reverse.get("exact_paths") != expected["exact_paths"] or reverse.get("patterns") != expected["patterns"]:
+            failures.append("consistency reverse-index routing differs from graph bindings")
 
-    nodes = data.get("nodes")
-    if not isinstance(nodes, list) or not nodes:
-        failures.append("consistency-map nodes must be a non-empty list")
-        nodes = []
-    for node_index, node in enumerate(nodes):
-        if not isinstance(node, dict):
-            failures.append(f"nodes[{node_index}] must be an object")
-            continue
-        for field in NODE_FIELDS:
-            if field not in node:
-                failures.append(f"nodes[{node_index}] missing {field}")
-        for field in ["id", "fact_type", "level", "project_area", "canonical_owner"]:
-            if field in node and not is_placeholder(node[field]):
-                failures.append(f"nodes[{node_index}].{field} must be placeholder-based")
-        edges = node.get("relationships")
-        if not isinstance(edges, list) or not edges:
-            failures.append(f"nodes[{node_index}].relationships must be non-empty")
-            continue
-        for edge_index, edge in enumerate(edges):
-            label = f"nodes[{node_index}].relationships[{edge_index}]"
-            if not isinstance(edge, dict):
-                failures.append(f"{label} must be an object")
-                continue
-            for field in EDGE_FIELDS:
-                if field not in edge:
-                    failures.append(f"{label} missing {field}")
-            for field in [
-                "id",
-                "type",
-                "target",
-                "target_level",
-                "target_area",
-                "approval_trigger",
-            ]:
-                if field in edge and not is_placeholder(edge[field]):
-                    failures.append(f"{label}.{field} must be placeholder-based")
-            if edge.get("direction") != "outbound":
-                failures.append(f"{label}.direction must be outbound")
-            for field in ["required_when", "validation"]:
-                values = edge.get(field)
-                if not non_empty_strings(values) or not all(
-                    is_placeholder(value) for value in values
-                ):
-                    failures.append(f"{label}.{field} must use placeholder items")
+    candidates_relpath = data.get("relationship_candidates")
+    try:
+        candidates = json.loads((TARGET / candidates_relpath).read_text(encoding="utf-8"))
+    except (OSError, TypeError, json.JSONDecodeError) as exc:
+        failures.append(f"relationship-candidate record is invalid: {exc}")
+    else:
+        if (
+            candidates.get("schema_version") != 1
+            or candidates.get("record_kind") != "target-consistency-relationship-candidates"
+            or candidates.get("records") != []
+        ):
+            failures.append("template relationship candidates must start empty and non-authoritative")
 
     registry_text = REGISTRY.read_text(encoding="utf-8")
     for required in [
-        "Consistency level:",
-        "Project area:",
         "Consistency map node:",
         "Relationship coverage:",
         "every live Fact Type entry",
-        "`fact_type` must match the Fact Type heading exactly",
+        "relationship candidate",
     ]:
         if required not in registry_text:
             failures.append(f"source-of-truth registry missing {required}")
@@ -166,39 +83,25 @@ def main() -> int:
         router = json.loads(ROUTER.read_text(encoding="utf-8"))
         descriptor = router["consistency_routing"]["descriptor"]
         routing = json.loads((TARGET / descriptor).read_text(encoding="utf-8"))
-        routing_context = routing["required_context"]
+        required_context = routing["required_context"]
     except (OSError, json.JSONDecodeError, KeyError, TypeError) as exc:
-        failures.append(f"invalid context-router consistency routing: {exc}")
+        failures.append(f"invalid consistency routing: {exc}")
     else:
         for required in [
             ".ai/project/source-of-truth-registry.md",
             ".ai/project/consistency-map.json",
+            ".ai/assistant/consistency-reverse-index.json",
         ]:
-            if required not in routing_context:
+            if required not in required_context:
                 failures.append(f"consistency routing missing {required}")
-        conditional = routing.get("conditional_context")
-        portable = next(
-            (
-                item
-                for item in conditional
-                if isinstance(item, dict)
-                and item.get("path") == ".ai/framework/consistency-model.md"
-            ),
-            None,
-        ) if isinstance(conditional, list) else None
-        if not isinstance(portable, dict) or not isinstance(portable.get("when"), str):
-            failures.append(
-                "consistency routing must load portable consistency-model guidance conditionally"
-            )
 
     if failures:
         for failure in failures:
             print(f"FAIL: {failure}", file=sys.stderr)
         return 1
-
     print(
-        "OK: checked consistency-map template with "
-        f"{len(nodes)} placeholder node(s)"
+        "OK: checked sharded consistency-map template with "
+        f"{len(graph.nodes)} placeholder node(s)"
     )
     return 0
 
