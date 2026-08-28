@@ -315,6 +315,8 @@ MANIFEST_FULL_REQUIRED_SCALARS: set[PathKey] = {
     ("source_of_truth", "code_documentation_profiles"),
     ("operations", "documentation_sync"),
     ("operations", "code_documentation_profile_review"),
+    ("operations", "contract_artifact_review"),
+    ("operations", "visual_validation_review"),
     ("code_documentation", "catalog"),
     ("code_documentation", "profiles"),
     ("code_documentation", "intent"),
@@ -393,6 +395,8 @@ MANIFEST_PATH_SCALARS: set[PathKey] = {
     ("operations", "development_evidence_capture"),
     ("operations", "documentation_sync"),
     ("operations", "code_documentation_profile_review"),
+    ("operations", "contract_artifact_review"),
+    ("operations", "visual_validation_review"),
     ("operations", "project_vocabulary"),
     ("operations", "vocabulary_term_review"),
     ("operations", "change_package_flow"),
@@ -718,6 +722,8 @@ class Validator:
         config: AdapterValidatorConfig,
         initial_findings: list[Finding] | None = None,
         validation_phase: str | None = None,
+        debug_git_state: bool = False,
+        debug_remote_ref: str | None = None,
     ) -> None:
         self.target = target.resolve()
         self.context = ValidationContext(self.target)
@@ -735,6 +741,8 @@ class Validator:
         )
         self.enforce_change_package = enforce_change_package
         self.migration_diff = migration_diff.resolve() if migration_diff else None
+        self.debug_git_state = debug_git_state
+        self.debug_remote_ref = debug_remote_ref
         self.validation_phase = validation_phase or (
             "migration-staging" if allow_placeholders else "acceptance"
         )
@@ -10286,6 +10294,21 @@ def main() -> int:
         ),
     )
     parser.add_argument(
+        "--debug-git-state",
+        action="store_true",
+        help=(
+            "Reconcile Debug Mode records with the current Git branch, HEAD, "
+            "working tree, and optional --debug-remote-ref evidence."
+        ),
+    )
+    parser.add_argument(
+        "--debug-remote-ref",
+        help=(
+            "Optional remote or local ref used as explicit publication evidence "
+            "for Debug Mode reconciliation."
+        ),
+    )
+    parser.add_argument(
         "--config",
         type=Path,
         help=(
@@ -10351,6 +10374,8 @@ def main() -> int:
         change_packages=args.change_package,
         enforce_change_package=args.enforce_change_package,
         migration_diff=args.migration_diff,
+        debug_git_state=args.debug_git_state,
+        debug_remote_ref=args.debug_remote_ref,
         allow_placeholders=args.allow_placeholders,
         allow_local_paths=args.allow_local_path,
         config=config,

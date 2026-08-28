@@ -29,7 +29,7 @@ explicit read-only configuration review.
    Activation grants no code, commit, publish, live-external, protected-change,
    or tool permission.
 4. During the task, capture only material normalized events at checkpoints.
-   For new schema-version-5 records, classify actor role, target-local actor
+   For schema-version-5 and newer records, classify actor role, target-local actor
    identity, observed/declared/unavailable provenance, causal class,
    intervention kind, correction disposition, contribution kind, and then
    category. Preserve causal links and evidence. Keep provider, product, model,
@@ -80,8 +80,12 @@ explicit read-only configuration review.
    rejection, or a blocker.
 11. Classify validation fidelity as exact reproducer, representative, partial,
     unavailable, or not applicable. Name the claim and evidence for exact,
-    representative, or partial results. Keep partial and unavailable gaps in
-    residual uncertainty.
+    representative, or partial results. For schema-version-6 records, record
+    each validation result as a structured claim with evidence class
+    `declared`, `locally-observed`, `tool-verified`, `ci-verified`,
+    `reviewer-verified`, or `production-verified`. Do not mark local command
+    output as CI, reviewer, or production evidence without that source record.
+    Keep partial and unavailable gaps in residual uncertainty.
 12. Bind the engineering result as provisional or final. Final commit and
     pull-request ranges use immutable object IDs and valid ancestry; tree
     results resolve as Git trees. Preserve every replaced binding in
@@ -91,14 +95,21 @@ explicit read-only configuration review.
     complete. Name covered and omitted phases, whether continuation is
     expected, and the next phase. Never present analysis-only evidence as the
     completed implementation lifecycle.
-14. Record clean-upstream projection evidence, validate the record, synchronize
+14. For schema-version-6 records, classify repository lifecycle as active,
+    validated, committed, published, finalized, or abandoned. A commit or push
+    while Debug Mode is active requires Debug/Git reconciliation before final
+    completion evidence. Record the last verified revision, transition
+    evidence, and next permitted action. Committed or published implementation
+    work must not stay active, provisional, or stale unless finalization is
+    explicitly blocked with the next safe action.
+15. Record clean-upstream projection evidence, validate the record, synchronize
     the index, and render the compact summary. Later worktree drift may make a
     finalized snapshot not currently reproducible, but does not corrupt its
     historical value.
-15. Expire activation when the scope completes, changes, is abandoned, or is
+16. Expire activation when the scope completes, changes, is abandoned, or is
    explicitly disabled. A later task requires a new explicit activation and,
    when related, explicit continuation lineage.
-16. For `compare`, use comparable completed records, attribution schema,
+17. For `compare`, use comparable completed records, attribution schema,
     evidence kinds, capture
     quality, task class, and independent quality review. Do not infer framework
     improvement from lower intervention count alone. Versions 1 through 4 keep
@@ -112,6 +123,7 @@ Report activation/expiry, record ID and path, timing evidence, capture quality,
 role/identity/provenance attribution, correction dispositions, event-derived
 metrics, materiality and durable engineering-evidence decision,
 claim-validation fidelity, lifecycle coverage, candidate dispositions,
-reciprocal evidence links, continuation and result-binding lineage, external
+repository lifecycle state, validation evidence classes, reciprocal evidence
+links, continuation and result-binding lineage, external
 projection, privacy and publication result, validation, and residual
 uncertainty.

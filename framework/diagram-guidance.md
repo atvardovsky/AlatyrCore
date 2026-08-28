@@ -200,6 +200,8 @@ When diagram-relevant facts change:
 - update the owning project or assistant-process diagram source
 - update or regenerate the visual artifact according to the adapter policy
 - update public diagram indexes when the diagram set changes
+- run or record the target visual validation method for changed generated
+  artifacts or discussion diagrams that are promoted beyond transient chat
 - explain why no diagram update was needed when facts are unchanged
 
 ## Rejection Criteria

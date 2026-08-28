@@ -1,5 +1,5 @@
 {
-  "schema_version": 5,
+  "schema_version": 6,
   "record_kind": "alatyr-debug-session",
   "evidence_classification": "non-canonical-observability",
   "debug_id": "{DEBUG_ID}",
@@ -90,6 +90,16 @@
       "continuation_expected": false,
       "next_phase": "analysis",
       "reason": "The active Debug scope has not finalized lifecycle coverage."
+    },
+    "repository_lifecycle": {
+      "state": "active",
+      "completed_transitions": [],
+      "last_verified_revision": "{CURRENT_REVISION_OR_UNAVAILABLE}",
+      "last_verified_at": {"value": null, "evidence_kind": "unknown"},
+      "commit_evidence": [],
+      "publish_evidence": [],
+      "finalization_evidence": [],
+      "next_permitted_action": "Continue the authorized current task phase or finalize/abandon this Debug record before leaving scope."
     },
     "engineering_evidence_ids": [],
     "engineering_evidence_decision": {

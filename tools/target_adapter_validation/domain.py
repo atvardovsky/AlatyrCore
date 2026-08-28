@@ -11,6 +11,8 @@ class DomainValidationHost(Protocol):
 
     target: Path
     allow_placeholders: bool
+    debug_git_state: bool
+    debug_remote_ref: str | None
 
     def target_path(self, relpath: str) -> Path: ...
 

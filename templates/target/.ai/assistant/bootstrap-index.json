@@ -4,7 +4,7 @@
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "9e97754c13bb6f10d976d567832ddb79d7e459be5e3092b4b7126d4ccfa709a5"
+      "sha256": "2f1eef97057649dbd80fa9cf2937e434de00434356a1c2b650324a8b0d43229e"
     },
     "project_map": {
       "path": ".ai/README.md",

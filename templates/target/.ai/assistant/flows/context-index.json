@@ -185,8 +185,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 550,
-      "content_digest": "sha256:7d94b789cbfda8a574aba52a4700a38b8596514e400df6e2ad1df2277ac1f8f6"
+      "estimated_words": 634,
+      "content_digest": "sha256:c2ebca2465a284a6e330c3b540cd71997117d964e73a17e14f81dcf6772bfe2a"
     },
     {
       "id": "assistant.content.flows-change-package-flow-md",
@@ -244,8 +244,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 902,
-      "content_digest": "sha256:28f2cb1e0ac210d514bcad46a4900dad1e527f758e29446853470ad708487efb"
+      "estimated_words": 1010,
+      "content_digest": "sha256:232894ace7c1faae4b5928ac0462077d14dbc276e34ac800d2fa0aa8b8b27d7a"
     },
     {
       "id": "assistant.content.flows-dependency-knowledge-sync-flow-md",
@@ -339,8 +339,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 840,
-      "content_digest": "sha256:72d0b032aa1978675113176b0708e0ab9e93b6f9d85e5d3d65f104fe5a76c5df"
+      "estimated_words": 871,
+      "content_digest": "sha256:06d598a376c37b57375a817d2de7c5d5227495bcd362d1135e05d17b0e8eee3a"
     },
     {
       "id": "assistant.content.flows-documentation-sync-flow-md",
@@ -367,8 +367,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 665,
-      "content_digest": "sha256:a27f5fa077d29db5ee3d331c00a3224ff4ac40ebf493f849f6f5f2ebe78f9671"
+      "estimated_words": 706,
+      "content_digest": "sha256:5e3113638a4b18e41ff8902c367ed4e3264d20fc2f6a6a5cb20b96c42452d6de"
     },
     {
       "id": "assistant.content.flows-engineering-evidence-capture-flow-md",
@@ -488,8 +488,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-INTEGRITY-001"
       ],
-      "estimated_words": 461,
-      "content_digest": "sha256:477b947c2b5e6039fa0ba21340cca6909c79f25839114f3d213c897548d58bb9"
+      "estimated_words": 538,
+      "content_digest": "sha256:54091f94c588839c5e2e6030a859f6dba2c618e7f071011c0e1e8a7416f41c33"
     },
     {
       "id": "assistant.content.flows-operation-routing-flow-md",
@@ -885,8 +885,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 328,
-      "content_digest": "sha256:24f6f187dae25ed716bea615b5a9e582fa8dd07213f0f1df347b9215a132ce79"
+      "estimated_words": 364,
+      "content_digest": "sha256:e6e18fd33b60b84ff3b2c3531ccc276b9becfd1b2d04a1d57b8225784988c43c"
     },
     {
       "id": "assistant.content.flows-test-first-configuration-flow-md",

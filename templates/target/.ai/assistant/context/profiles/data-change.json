@@ -31,6 +31,7 @@
     {"path": ".ai/framework/source-of-truth-registry.md", "when": "registry ownership semantics are disputed or the target registry requires repair"},
     {"path": ".ai/framework/security-safety-guidance.md", "when": "privacy credentials destructive live-service or retention boundaries are affected"},
     {"path": ".ai/framework/testing-guidance.md", "when": "a migration implementation rollback or validation plan is prepared"},
+    {"path": ".ai/assistant/gates/contract-artifacts.md", "when": "the data change affects API schema event generated-reference fixture persistence public-interface or external-boundary artifacts"},
     {"path": ".ai/assistant/gates/security-approval.md", "when": "the data change reaches a protected destructive privacy live or approval boundary"},
     {"path": ".ai/assistant/gates/checklist.md", "when": "adapter ambiguity or a full acceptance audit requires the complete checklist"}
   ],
@@ -55,6 +56,7 @@
     "re_derived_invariants",
     "external_failure_distinction",
     "derived_surfaces",
+    "contract_artifact_result",
     "migration_or_rollback_notes",
     "validation",
     "unresolved_risk"

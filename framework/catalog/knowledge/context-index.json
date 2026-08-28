@@ -78,8 +78,8 @@
       "owner_refs": [
         "ALATYR-DEBUG-001"
       ],
-      "estimated_words": 3070,
-      "content_digest": "sha256:0ac04014ba441e8d54689fd4b2ed11314b6390eed5c136b54290d76c2cf78209"
+      "estimated_words": 3289,
+      "content_digest": "sha256:290b99df87baebe2701124647bb069eb479b68ed9eba7db861fc666ec8d0b69a"
     },
     {
       "id": "framework.knowledge.diagram-guidance-md",
@@ -102,8 +102,8 @@
       "owner_refs": [
         "ALATYR-DIAGRAM-001"
       ],
-      "estimated_words": 1437,
-      "content_digest": "sha256:aa63daf895e17036f48feca1215fb76653ccd4fdfaeef600f16be3883bc4091f"
+      "estimated_words": 1459,
+      "content_digest": "sha256:017c40d26ee1889ec09d29bbef4ed02dda84960b6ce461dfda0113316dec626f"
     },
     {
       "id": "framework.knowledge.engineering-evidence-md",
@@ -126,8 +126,8 @@
       "owner_refs": [
         "ALATYR-ENGINEERING-EVIDENCE-001"
       ],
-      "estimated_words": 1436,
-      "content_digest": "sha256:a4aa8dbc200f1ceef74857c311019c1fd0b3f8455f87cafcd1061b2669302374"
+      "estimated_words": 1486,
+      "content_digest": "sha256:7163c63e3eb66a0b5314d68388b45d87f9218e913abf2287179b40b6c40da208"
     },
     {
       "id": "framework.knowledge.project-knowledge-md",

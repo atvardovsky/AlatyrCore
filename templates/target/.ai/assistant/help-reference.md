@@ -251,7 +251,10 @@ Minimum input: changed fact or fact ID, suspected drift, or files to inspect.
 When enabled, the support diff and consistency reverse index select only
 matching graph shards before semantic/invariant review.
 Aliases: `check integrity`, `logical integrity review`, `Alatyr impact`,
-`Alatyr support diff`.
+`Alatyr support diff`, `Alatyr change cost`.
+Final evidence should include support/product change cost when measured,
+contract artifact results for cross-boundary contracts, visual validation
+results for visual or diagram surfaces, and residual semantic risk.
 
 Operation: `support-generation`
 Use when: target-owned derived support is stale and the optional module is
@@ -276,6 +279,8 @@ Presentation: always provide bounded pure ASCII; use the current compact
 assistant capability only to add native inline or a local rendered artifact.
 Preserve stable revision lineage, classify or redact sensitive content, and
 hand off external rendering.
+When the result is persisted or promoted beyond transient chat, apply the
+visual-validation gate and report evidence or skipped visual risk.
 
 Operation: `ai-infrastructure-inventory`
 Use when: checking what AI infrastructure already exists and what can be kept,
@@ -325,6 +330,9 @@ Minimum input: changed fact and owning source, or bounded source area and
 documentation goal.
 Aliases: `document code`, `propose comment style`, `generate code docs`,
 `review code documentation`.
+Apply contract-artifacts and visual-validation gates when documentation sync
+changes generated references, API/schema/event artifacts, diagram output, or
+UI/visual explanatory surfaces.
 
 Operation: `project-vocabulary`
 Use when: explaining a project term, resolving an alias or acronym, proposing

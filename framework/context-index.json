@@ -23,7 +23,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 225,
-      "content_digest": "sha256:0cab37ab461a01c3d1f34702e5124798d2ff0bebb3638176adc6493045b5b3cf"
+      "content_digest": "sha256:98c73fa6de2387305e951265bcde61154888f5ad8c67cf26d258b86641a30d28"
     },
     {
       "id": "framework.section.collaboration",
@@ -59,7 +59,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 1351,
-      "content_digest": "sha256:6744e6546e873d1a9f63ea0ee41a76d50ceef84b5077997b774a9d37f69bf91b"
+      "content_digest": "sha256:0f8030a08bedde3a9993434baa150089d6abf79946c4efc397202c82d7393f97"
     },
     {
       "id": "framework.section.infrastructure",
@@ -95,7 +95,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 398,
-      "content_digest": "sha256:76265e6657606546de25a1e24b67cbfa06c5c5ba7272e0f106aeeface1b9d7a0"
+      "content_digest": "sha256:dcd3098553438ccd62e7a1f311685bb4e6d094e9cbc8352bc7155a74b3d29d4c"
     },
     {
       "id": "framework.section.lifecycle",
@@ -131,7 +131,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 221,
-      "content_digest": "sha256:4c6d263caaeb7ac0aa61a041f0d06d5392a66fbbeb80f2c85dbaeddc8ab8c980"
+      "content_digest": "sha256:ae21783bea7915b47fc3f3b1e4f5f85cd78ab5809dbb5006b440922ab629e056"
     }
   ]
 }

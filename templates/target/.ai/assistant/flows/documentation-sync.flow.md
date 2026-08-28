@@ -74,11 +74,18 @@ Route clear requests automatically. The user does not need to name a mode.
     - `unresolved`: do not claim generation readiness
 11. Update other companion docs, tests, diagrams, prompts, gates, skills,
     bridge files, or checker rules when selected relationships require them.
-12. Run target comment lint, generation, link, example, build, or manual review
-    recorded by the selected profile.
-13. Report selected and skipped relationships, selected profile and state,
+12. Apply `.ai/assistant/gates/contract-artifacts.md` when documentation sync
+    changes API, schema, event, generated-reference, fixture, persistence, or
+    public-interface artifacts.
+13. Apply `.ai/assistant/gates/visual-validation.md` when documentation sync
+    changes diagram output, rendered visual artifacts, UI/visual explanatory
+    surfaces, or accessibility-relevant examples.
+14. Run target comment lint, generation, link, example, build, visual, or
+    manual review recorded by the selected profile.
+15. Report selected and skipped relationships, selected profile and state,
     comments changed, symbols skipped, generated output, direct-edit result,
-    validation, skipped checks, approvals, and residual risk.
+    contract artifact result, visual validation result, validation, skipped
+    checks, approvals, and residual risk.
 
 ## Rejection Criteria
 

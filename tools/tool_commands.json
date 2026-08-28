@@ -38,6 +38,12 @@
       "write_scope": "explicit-report-output-only"
     },
     {
+      "name": "change-cost",
+      "script": "report_change_cost.py",
+      "purpose": "report support/product file and line-change cost for a target diff",
+      "write_scope": "explicit-report-output-only"
+    },
+    {
       "name": "impact",
       "script": "plan_support_impact.py",
       "purpose": "route changed paths and facts through the bounded target impact graph",

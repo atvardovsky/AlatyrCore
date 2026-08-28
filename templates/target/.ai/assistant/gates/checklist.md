@@ -72,11 +72,19 @@ commands from another project.
 - Documentation sync checked.
 - Tests or validation selected from target stack and risk.
 - Diagram sync checked when diagram-relevant facts changed.
+- Contract artifacts checked when API, data, event, generated-reference,
+  public interface, or external-boundary contract facts changed; source,
+  derived consumers, generated output, validation, skips, and residual
+  compatibility risk recorded.
 - Diagram discussion uses the current compact assistant capability with fresh
   evidence, preserves stable ID/revision lineage, labels draft/source status,
   requires revision evidence for accepted/derived views, classifies/redacts
   sensitive content, gates external rendering and artifact policy, provides a
   readable fallback, and creates no files under `read-only`.
+- Visual validation checked when UI, layout, diagram rendering, visual
+  artifact, screenshot-relevant, accessibility-relevant, or discussion diagram
+  presentation facts changed; evidence or explicit skipped-check risk
+  recorded.
 - Security/live-service policy checked when sensitive surfaces changed.
 - Skill/provenance/safety policy checked when prompts, skills, wrappers, or
   third-party assistant infrastructure changed.

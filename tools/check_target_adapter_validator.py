@@ -2835,7 +2835,7 @@ Excluded files or surfaces:
             "engineering_evidence:\n  contract_version: 3",
             "engineering_evidence:\n  contract_version: 1",
         ).replace(
-            "debug_mode:\n  contract_version: 5",
+            "debug_mode:\n  contract_version: 6",
             "debug_mode:\n  contract_version: 1",
         )
         manifest_path.write_text(manifest_text, encoding="utf-8")

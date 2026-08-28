@@ -143,6 +143,8 @@ operations:
   architecture_discussion_result: ".ai/assistant/templates/architecture-discussion-result.md"
   documentation_sync: ".ai/assistant/flows/documentation-sync.flow.md"
   code_documentation_profile_review: ".ai/assistant/templates/code-documentation-profile-review.md"
+  contract_artifact_review: ".ai/assistant/templates/contract-artifact-review.md"
+  visual_validation_review: ".ai/assistant/templates/visual-validation-review.md"
   project_vocabulary: ".ai/assistant/flows/project-vocabulary.flow.md"
   vocabulary_term_review: ".ai/assistant/templates/vocabulary-term-review.md"
   test_first_configuration: ".ai/assistant/flows/test-first-configuration.flow.md"
@@ -240,7 +242,7 @@ project_knowledge:
   retention_policy: "{TARGET_PROJECT_KNOWLEDGE_RETENTION_POLICY}"
   redaction_policy: "{TARGET_PROJECT_KNOWLEDGE_REDACTION_POLICY}"
 debug_mode:
-  contract_version: 5
+  contract_version: 6
   index: ".ai/project/debug/index.json"
   records: ".ai/project/debug/records"
   overlay: ".ai/assistant/context/task-scales/debug-mode.json"

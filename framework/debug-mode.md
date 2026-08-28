@@ -73,6 +73,18 @@ continuation is expected, and the next phase. A completed analysis-only record
 must not imply that implementation or validation was observed. A full-task
 record covers all four phases and cannot claim an expected continuation.
 
+Schema-version-6 records also declare repository lifecycle state. Use
+`active`, `validated`, `committed`, `published`, `finalized`, or `abandoned`
+to describe the strongest Git or publication transition that the record can
+evidence. Record completed transitions, the last verified revision and time,
+commit evidence, publish evidence, finalization evidence, and the next
+permitted action. When Debug Mode is active, a commit or publish action must
+be followed by Debug/Git reconciliation before the task is reported complete.
+Published or committed implementation work must not remain represented by an
+active record, provisional binding, stale result revision, or pending durable
+engineering-evidence decision unless the record explicitly blocks finalization
+with a next safe action.
+
 When implementation evidence later shares task or issue lineage with a closed
 phase-complete record, create a separately authorized continuation with a new
 scope ID. The continuation shares at least one durable task reference with its
@@ -158,17 +170,19 @@ values `alatyr`, `human`, and `external-maintainer` and the legacy
 `alatyr_independent_*` metric names. Those values are migration-limited and do
 not distinguish executor activity from Alatyr system behavior. Do not silently
 rewrite or reinterpret them. Version 4 retains the separated actor model but
-does not prove phase coverage or structured candidate closure. New records use
-schema version 5, and comparisons across versions must identify both the
-attribution and lifecycle-evidence differences.
+does not prove phase coverage or structured candidate closure. Version 5 adds
+lifecycle and candidate-closure evidence. New records use schema version 6, and
+comparisons across versions must identify attribution, lifecycle,
+repository-state, and validation-evidence differences.
 
-When a schema-version-5 index retains an older record, project the new
+When a schema-version-5-or-newer index retains an older record, project the new
 lifecycle scope as `legacy`, keep covered phases and candidate IDs empty, and
 set continuation expectation to `false`. Do not synthesize lifecycle or
-candidate evidence for the historical record. New schema-version-5 records
-require the schema-version-5 index so these projections cannot be omitted.
+candidate evidence for the historical record. New schema-version-6 records
+require the schema-version-6 index so lifecycle and validation projections
+cannot be omitted.
 
-Schema-version-5 finalization records every new reusable project-knowledge
+Schema-version-5 and newer finalization records every new reusable project-knowledge
 candidate with a stable candidate ID, source event IDs, statement, disposition,
 references, and reason. A candidate must resolve to an indexed promotion
 proposal, linked durable engineering evidence, an existing canonical owner, a
@@ -339,6 +353,14 @@ Every non-empty durable engineering-evidence ID must resolve exactly once in
 the target Engineering Evidence index. A Debug event ID is not a durable
 evidence ID.
 
+For schema-version-6 records, every validation result is a structured claim.
+Classify each claim as `declared`, `locally-observed`, `tool-verified`,
+`ci-verified`, `reviewer-verified`, or `production-verified`, and name the
+source, observed revision, observed time, and limitations. Do not label a
+claim CI-verified, reviewer-verified, or production-verified without evidence
+from that source. Local command output remains local or tool evidence unless a
+CI or reviewer record confirms it.
+
 Every versioned Debug result records an Engineering Evidence decision as
 `pending`, `captured`, `skipped`, or `blocked`. Completion cannot leave it
 pending.
@@ -417,7 +439,9 @@ role/identity/provenance separation, correction dispositions and required
 known-guidance references, causal attribution, typed evidence-event roles,
 complete materiality
 evaluation, canonical skip references, claim-fidelity evidence, continuation
-lineage and cycle freedom, lifecycle phase partition, reciprocal Debug-to-
+lineage and cycle freedom, lifecycle phase partition, repository lifecycle
+state, Debug/Git reconciliation when requested, validation evidence class,
+reciprocal Debug-to-
 Engineering-Evidence links, project-knowledge candidate closure, structured architectural-impact consistency, direction-change
 hypothesis transitions, metric derivation, timing consistency, privacy
 declarations, Debug-to-Engineering-Evidence reference integrity, index/record
@@ -460,6 +484,10 @@ Reject or repair Debug Mode use that:
 - appends events after completion instead of opening a linked continuation
 - presents phase-complete analysis as full-task implementation evidence, reuses
   a predecessor scope ID, or creates cyclic continuation lineage
+- leaves committed or published implementation work represented as active,
+  provisional, or stale Debug evidence after a Debug/Git reconciliation check
+- claims CI, reviewer, or production validation strength from local or
+  declared evidence
 - labels an evidence event with a role inconsistent with that event
 - skips applicable materiality without registry-backed canonical preservation
 - claims an exact reproducer from only representative or partial validation

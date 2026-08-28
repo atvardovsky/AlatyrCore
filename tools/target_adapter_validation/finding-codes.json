@@ -69,7 +69,7 @@
     },
     {
       "id": "DEBUG",
-      "code_count": 117
+      "code_count": 130
     },
     {
       "id": "DELEGATION",
@@ -2088,6 +2088,15 @@
       ]
     },
     {
+      "code": "DEBUG_MODE_ACTIVE_RESULT_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/debug_mode.py"
+      ]
+    },
+    {
       "code": "DEBUG_MODE_AGENT_CLASSIFICATION",
       "levels": [
         "error"
@@ -2503,6 +2512,15 @@
     },
     {
       "code": "DEBUG_MODE_EXTERNAL_RECORD_UNCHECKED",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/debug_mode.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_GIT_STATE_UNAVAILABLE",
       "levels": [
         "warning"
       ],
@@ -2961,7 +2979,25 @@
       ]
     },
     {
+      "code": "DEBUG_MODE_PROVISIONAL_BINDING_AFTER_COMMIT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/debug_mode.py"
+      ]
+    },
+    {
       "code": "DEBUG_MODE_PUBLICATION_SCOPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/debug_mode.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_PUBLISHED_BUT_UNFINALIZED",
       "levels": [
         "error"
       ],
@@ -2998,6 +3034,69 @@
     },
     {
       "code": "DEBUG_MODE_RECORD_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/debug_mode.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_REMOTE_STATE_UNAVAILABLE",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/debug_mode.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_REPOSITORY_LIFECYCLE_COMMIT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/debug_mode.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_REPOSITORY_LIFECYCLE_FINAL",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/debug_mode.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_REPOSITORY_LIFECYCLE_FINALIZATION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/debug_mode.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_REPOSITORY_LIFECYCLE_PUBLISH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/debug_mode.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_REPOSITORY_LIFECYCLE_STATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/debug_mode.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_RESULT_REVISION_STALE",
       "levels": [
         "error"
       ],
@@ -3117,6 +3216,24 @@
       "code": "DEBUG_MODE_V2_CONTRACT",
       "levels": [
         "warning"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/debug_mode.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_VALIDATION_EVIDENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/debug_mode.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_VALIDATION_EVIDENCE_CLASS",
+      "levels": [
+        "error"
       ],
       "sources": [
         "tools/target_adapter_validation/debug_mode.py"

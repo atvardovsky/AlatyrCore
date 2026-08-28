@@ -66,8 +66,8 @@
         "ALATYR-KNOWLEDGE-001",
         "ALATYR-SOURCE-001"
       ],
-      "estimated_words": 176,
-      "content_digest": "sha256:67518c34f5c60dc95b3f35b9a4883cf63bcb0597c14ad68d2d808ef666b0420f"
+      "estimated_words": 207,
+      "content_digest": "sha256:a6da5eca0dc3785f71ea375dbeeac081d677b1c08610f57439cf8f778d084fc3"
     },
     {
       "id": "assistant.content.context-profiles-business-change-json",
@@ -93,8 +93,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 155,
-      "content_digest": "sha256:647bd006c23c5d9e858ac9c00eece8118dddd1f15a65f057a100dc87ca04103c"
+      "estimated_words": 171,
+      "content_digest": "sha256:3d41b42928854d81384ba9cf599540fac52cc73e5e00e9a2438908d84819ed7a"
     },
     {
       "id": "assistant.content.context-profiles-code-local-json",
@@ -120,8 +120,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 132,
-      "content_digest": "sha256:ba648e657f8af92d55c6ee8111dbcfc7f14cd45b87d74efe061fc8576d79aa92"
+      "estimated_words": 172,
+      "content_digest": "sha256:dec52ecc41608e4f27dfc35ebb8c1da9aeb7b5d7a58649ab4934f5d17cc4851e"
     },
     {
       "id": "assistant.content.context-profiles-data-change-json",
@@ -147,8 +147,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 154,
-      "content_digest": "sha256:08754486df771b9dd8ae32c619177625837d4d957f9fb8a6d7686f4212faa0be"
+      "estimated_words": 172,
+      "content_digest": "sha256:3ae2e21ee19879a6ce6313123fcb770f9187f85c326d34b9f7e41d0f404b1fd6"
     },
     {
       "id": "assistant.content.context-profiles-docs-local-json",

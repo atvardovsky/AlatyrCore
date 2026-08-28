@@ -63,6 +63,19 @@ Prefer the smallest test level that proves the changed contract. Add broader
 tests only when behavior crosses process, persistence, network, UI, or
 integration boundaries.
 
+When the changed behavior crosses a public interface, API, schema, event,
+generated reference, fixture, persistence contract, or external boundary, the
+target adapter should also apply a contract-artifact review. The review names
+the canonical owner, derived consumers, artifact source, generated output when
+applicable, validation, explicit skips, and residual compatibility risk. This
+artifact gate complements tests; it does not replace logical integrity review.
+
+When a change has UI, layout, accessibility-relevant, rendered diagram, or
+visual artifact impact, select a visual validation method owned by the target
+adapter. Screenshot review, component interaction tests, accessibility checks,
+local render checks, or manual review are evidence classes, not universal
+framework commands.
+
 ## Stack-Aware Structure Advice
 
 Adapt structure to the target stack instead of copying another project:

@@ -7,6 +7,12 @@ Before completion, report:
 - profile/areas, facts/files, and synchronized surfaces
 - support-state freshness/root digest, changed support paths, bounded impact
   closure, relationship-candidate dispositions, and generated-support actions
+- support/product change cost when measured, including file and line ratios
+  plus the structural/semantic reasoning boundary
+- contract artifact result when API, schema, event, persistence, generated
+  reference, public-interface, or external-boundary contract facts changed
+- visual validation result when UI, layout, accessibility-relevant, rendered
+  diagram, visual artifact, or discussion diagram presentation facts changed
 - `current_user_authorization`: source/scope, allowed phases, invalidation,
   latest commit/publish/live confirmation/effects
 - invariant/review reconciliation
@@ -19,6 +25,11 @@ Before completion, report:
   ID/path/repository binding, or reason
 - `debug_lifecycle_coverage`: state, phases, continuation,
   `project_knowledge_candidates` dispositions, and reciprocal evidence
+- `debug_repository_lifecycle`: state, transition evidence, commit/publish
+  evidence, next permitted action, and Debug/Git reconciliation when active
+- `validation_evidence_classes`: declared, locally observed, tool verified,
+  CI verified, reviewer verified, production verified, or explicit skipped
+  evidence without overclaiming stronger classes
 - project-knowledge adoption/reuse state or enabled-empty limitation
 - residual risk and next owner/action
 

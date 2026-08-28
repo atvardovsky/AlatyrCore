@@ -1,5 +1,5 @@
 {
-  "adapter_schema_version": 31,
+  "adapter_schema_version": 32,
   "files": [
     {
       "path": "framework/README.md",
@@ -69,7 +69,7 @@
     {
       "path": "framework/catalog/change/context-index.json",
       "rule_ids": [],
-      "sha256": "0cab37ab461a01c3d1f34702e5124798d2ff0bebb3638176adc6493045b5b3cf"
+      "sha256": "98c73fa6de2387305e951265bcde61154888f5ad8c67cf26d258b86641a30d28"
     },
     {
       "path": "framework/catalog/collaboration/context-index.json",
@@ -79,7 +79,7 @@
     {
       "path": "framework/catalog/core/context-index.json",
       "rule_ids": [],
-      "sha256": "6744e6546e873d1a9f63ea0ee41a76d50ceef84b5077997b774a9d37f69bf91b"
+      "sha256": "0f8030a08bedde3a9993434baa150089d6abf79946c4efc397202c82d7393f97"
     },
     {
       "path": "framework/catalog/infrastructure/context-index.json",
@@ -89,7 +89,7 @@
     {
       "path": "framework/catalog/knowledge/context-index.json",
       "rule_ids": [],
-      "sha256": "76265e6657606546de25a1e24b67cbfa06c5c5ba7272e0f106aeeface1b9d7a0"
+      "sha256": "dcd3098553438ccd62e7a1f311685bb4e6d094e9cbc8352bc7155a74b3d29d4c"
     },
     {
       "path": "framework/catalog/lifecycle/context-index.json",
@@ -99,7 +99,7 @@
     {
       "path": "framework/catalog/support/context-index.json",
       "rule_ids": [],
-      "sha256": "4c6d263caaeb7ac0aa61a041f0d06d5392a66fbbeb80f2c85dbaeddc8ab8c980"
+      "sha256": "ae21783bea7915b47fc3f3b1e4f5f85cd78ab5809dbb5006b440922ab629e056"
     },
     {
       "path": "framework/change-packages.md",
@@ -135,7 +135,7 @@
     {
       "path": "framework/context-index.json",
       "rule_ids": [],
-      "sha256": "7f1f151d2b73cd880b5678579d94e22e179c80cfc444c62b81a0aba3a78837fb"
+      "sha256": "6afc5b61fd9a4e518758eca6774e00d08788422e017f751d65c05ef9c5930534"
     },
     {
       "path": "framework/context-profiles.md",
@@ -159,7 +159,7 @@
       "rule_ids": [
         "ALATYR-DEBUG-001"
       ],
-      "sha256": "0ac04014ba441e8d54689fd4b2ed11314b6390eed5c136b54290d76c2cf78209"
+      "sha256": "290b99df87baebe2701124647bb069eb479b68ed9eba7db861fc666ec8d0b69a"
     },
     {
       "path": "framework/dependency-knowledge.md",
@@ -173,7 +173,7 @@
       "rule_ids": [
         "ALATYR-DIAGRAM-001"
       ],
-      "sha256": "aa63daf895e17036f48feca1215fb76653ccd4fdfaeef600f16be3883bc4091f"
+      "sha256": "017c40d26ee1889ec09d29bbef4ed02dda84960b6ce461dfda0113316dec626f"
     },
     {
       "path": "framework/effectiveness-metrics.md",
@@ -185,7 +185,7 @@
       "rule_ids": [
         "ALATYR-ENGINEERING-EVIDENCE-001"
       ],
-      "sha256": "a4aa8dbc200f1ceef74857c311019c1fd0b3f8455f87cafcd1061b2669302374"
+      "sha256": "7163c63e3eb66a0b5314d68388b45d87f9218e913abf2287179b40b6c40da208"
     },
     {
       "path": "framework/extensions.md",
@@ -204,7 +204,7 @@
       "rule_ids": [
         "ALATYR-EVIDENCE-001"
       ],
-      "sha256": "f44fe75feaaaeb3082eb96047e1324b72b217abc0ca7ffc3ab16b992421fa147"
+      "sha256": "949ce854542d9e9d0f87c56f1e1bf4a33b1a7426af07b9f6a2e1818b222f2311"
     },
     {
       "path": "framework/installed-operations.md",
@@ -247,7 +247,7 @@
       "rule_ids": [
         "ALATYR-OPERATION-001"
       ],
-      "sha256": "9c433d0ecb5bc30ec152df503fcd0f6021dd9c503fa98175a2e13da54c2a0497"
+      "sha256": "271999979378f8eeb89d0a66d891955686afb8748cb50f9b1680ecc8dd6b16b9"
     },
     {
       "path": "framework/portability.md",
@@ -363,7 +363,7 @@
       "rule_ids": [
         "ALATYR-SUPPORT-001"
       ],
-      "sha256": "398f3dc636c2a6ca3bcef965e6df02fd95458db77ca706775aacae63a757610e"
+      "sha256": "df1f3ff42833ba85ad1d6e749787cf247ed78ee213a529a4ec31392c47f83ce1"
     },
     {
       "path": "framework/team-collaboration.md",
@@ -382,7 +382,7 @@
     {
       "path": "framework/testing-guidance.md",
       "rule_ids": [],
-      "sha256": "c27c8cdf2fe52e07e8e975833db98368bcb9d5e3f9fe5c7be11bb6dd9f6332aa"
+      "sha256": "1644d1848c3b1cdbfaa0f3b3f3ed79ad153fa3b1a4b54c9ebc8a0bac99f00b93"
     },
     {
       "path": "framework/workspace-modes.md",
@@ -392,8 +392,8 @@
       "sha256": "dc1b84f72ca465f735d51ee5de02d3c26fd8054688556b4f11c1663eddc239da"
     }
   ],
-  "framework_version": "0.1.0-alpha.33",
+  "framework_version": "0.1.0-alpha.34",
   "inventory_kind": "alatyr-framework-files",
   "schema_version": 1,
-  "template_version": 31
+  "template_version": 32
 }

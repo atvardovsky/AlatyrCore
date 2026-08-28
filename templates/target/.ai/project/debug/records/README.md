@@ -7,7 +7,7 @@ policy.
 
 Do not create records by copying raw conversations or private reasoning.
 
-New records use schema version 5. Events separate role, target-local identity,
+New records use schema version 6. Events separate role, target-local identity,
 provenance, causality, and correction classification:
 
 ```json
@@ -54,12 +54,19 @@ before skipping, classify validation fidelity, distinguish phase completion
 from full-task completion, and close every project-knowledge candidate with a
 reviewable disposition.
 
+Schema-version-6 records also classify validation evidence strength and record
+repository lifecycle state. A commit or publish transition must be reconciled
+with the actual Git revision before the record is treated as complete.
+Committed or published implementation work must not remain represented by an
+active record, stale result revision, or provisional binding.
+
 Schema versions 1 through 4 remain migration-limited evidence with their
 original contracts. Versions 2 and 3 keep legacy `actor` values and
 `alatyr_independent_*` metric names, which do not distinguish the executor from
 Alatyr system behavior. Do not infer, rewrite, or reinterpret historical
 attribution, materiality, claim fidelity, continuation lineage, phase coverage,
-or candidate dispositions. A schema-version-5 index projects these records with
-`legacy` lifecycle scope, empty covered phases and candidate IDs, and no
-expected continuation. New completed records close the durable Engineering
+repository lifecycle, validation evidence classes, or candidate dispositions.
+A schema-version-6 index projects these records with `legacy` lifecycle scope,
+empty covered phases and candidate IDs, legacy validation evidence class, and
+no expected continuation. New completed records close the durable Engineering
 Evidence decision and use a final repository binding with lineage.

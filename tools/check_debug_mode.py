@@ -558,6 +558,7 @@ def validate_v4_fixture(schema: dict[str, Any], failures: list[str]) -> None:
     record["schema_version"] = 4
     record["final_result"].pop("lifecycle_coverage")
     record["final_result"].pop("project_knowledge_candidates")
+    record["final_result"].pop("repository_lifecycle")
     record["events"] = fixture_v4_events()
     record["metrics"] = fixture_v4_metrics(record["events"])
     errors = validate_v4_semantics(record, schema)
@@ -805,7 +806,9 @@ def fixture_index(record: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def run_validator(repo: Path) -> list[Any]:
+def run_validator(
+    repo: Path, *, debug_git_state: bool = False, debug_remote_ref: str | None = None
+) -> list[Any]:
     validator = Validator(
         repo,
         framework_source=None,
@@ -818,6 +821,8 @@ def run_validator(repo: Path) -> list[Any]:
         allow_placeholders=False,
         allow_local_paths=[],
         config=AdapterValidatorConfig(),
+        debug_git_state=debug_git_state,
+        debug_remote_ref=debug_remote_ref,
     )
     validator.check_debug_mode(None)
     return validator.findings
@@ -910,6 +915,19 @@ def fixture_v5_record(revision: str) -> dict[str, Any]:
             "next_phase": "implementation",
             "reason": "The current authorization covered analysis only.",
         },
+        "repository_lifecycle": {
+            "state": "finalized",
+            "completed_transitions": ["analysis", "finalization"],
+            "last_verified_revision": revision,
+            "last_verified_at": {
+                "value": "2026-08-21T13:05:00Z",
+                "evidence_kind": "observed",
+            },
+            "commit_evidence": [],
+            "publish_evidence": [],
+            "finalization_evidence": ["fixture Debug summary rendered"],
+            "next_permitted_action": "Open a separately authorized continuation for implementation.",
+        },
         "engineering_evidence_ids": [],
         "engineering_evidence_decision": {
             "status": "blocked",
@@ -956,8 +974,18 @@ def fixture_v5_index(record: dict[str, Any]) -> dict[str, Any]:
     binding = record["final_result"]["repository_binding"]
     lifecycle = record["final_result"]["lifecycle_coverage"]
     candidates = record["final_result"]["project_knowledge_candidates"]
+    repository_lifecycle = record["final_result"].get("repository_lifecycle", {})
+    validation = record["final_result"].get("validation", {})
+    validation_results = validation.get("results", []) if isinstance(validation, dict) else []
+    validation_classes = sorted(
+        {
+            item["evidence_class"]
+            for item in validation_results
+            if isinstance(item, dict) and isinstance(item.get("evidence_class"), str)
+        }
+    )
     return {
-        "schema_version": 5,
+        "schema_version": 6,
         "index_kind": "target-alatyr-debug-index",
         "project": "fixture",
         "owner": "engineering",
@@ -986,6 +1014,8 @@ def fixture_v5_index(record: dict[str, Any]) -> dict[str, Any]:
                 "covered_phases": lifecycle["covered_phases"],
                 "continuation_expected": lifecycle["continuation_expected"],
                 "knowledge_candidate_ids": [item["candidate_id"] for item in candidates],
+                "repository_lifecycle_state": repository_lifecycle.get("state", "legacy"),
+                "validation_evidence_classes": validation_classes,
                 "result_revision": binding["result_revision"],
                 "event_coverage": record["capture_quality"]["event_coverage"],
                 "observer_effect": record["capture_quality"]["observer_effect"],
@@ -1040,7 +1070,7 @@ def validate_v5_fixture(failures: list[str]) -> None:
         errors = [item for item in run_validator(repo) if item.level == "error"]
         if errors:
             failures.append(
-                "valid schema-version-5 fixture failed: "
+                "valid schema-version-6 fixture failed: "
                 + "; ".join(f"{item.code}: {item.message}" for item in errors)
             )
 
@@ -1049,6 +1079,7 @@ def validate_v5_fixture(failures: list[str]) -> None:
         historical["debug_id"] = "DEBUG-V4-HISTORICAL"
         historical["final_result"].pop("lifecycle_coverage")
         historical["final_result"].pop("project_knowledge_candidates")
+        historical["final_result"].pop("repository_lifecycle")
         historical["metrics"]["new_guidance_candidates"] = {
             "value": 0,
             "evidence_kind": "event-derived",
@@ -1070,6 +1101,8 @@ def validate_v5_fixture(failures: list[str]) -> None:
             covered_phases=[],
             continuation_expected=False,
             knowledge_candidate_ids=[],
+            repository_lifecycle_state="legacy",
+            validation_evidence_classes=["legacy"],
             metrics={
                 name: historical["metrics"][name]["value"]
                 for name in V4_METRIC_NAMES
@@ -1083,7 +1116,7 @@ def validate_v5_fixture(failures: list[str]) -> None:
         ]
         if historical_errors:
             failures.append(
-                "schema-version-5 index rejected a preserved version-4 record: "
+                "schema-version-6 index rejected a preserved version-4 record: "
                 + "; ".join(
                     f"{item.code}: {item.message}" for item in historical_errors
                 )
@@ -1096,6 +1129,8 @@ def validate_v5_fixture(failures: list[str]) -> None:
             "covered_phases",
             "continuation_expected",
             "knowledge_candidate_ids",
+            "repository_lifecycle_state",
+            "validation_evidence_classes",
         ]:
             downlevel_index["records"][0].pop(field)
         record_path.write_text(
@@ -1109,7 +1144,7 @@ def validate_v5_fixture(failures: list[str]) -> None:
             and item.code == "DEBUG_MODE_INDEX_RECORD_VERSION"
             for item in run_validator(repo)
         ):
-            failures.append("schema-version-5 Debug record accepted a downlevel index")
+            failures.append("schema-version-6 Debug record accepted a downlevel index")
 
         invalid_lifecycle = copy.deepcopy(record)
         invalid_lifecycle["final_result"]["implementation_surfaces"] = ["src/change.php"]
@@ -1118,7 +1153,7 @@ def validate_v5_fixture(failures: list[str]) -> None:
             item.level == "error" and item.code == "DEBUG_MODE_LIFECYCLE_IMPLEMENTATION"
             for item in run_validator(repo)
         ):
-            failures.append("schema-version-5 lifecycle omitted implementation evidence")
+            failures.append("schema-version-6 lifecycle omitted implementation evidence")
 
         invalid_candidate_metric = copy.deepcopy(record)
         invalid_candidate_metric["metrics"]["new_guidance_candidates"].update(value=0, event_ids=[])
@@ -1127,7 +1162,7 @@ def validate_v5_fixture(failures: list[str]) -> None:
             item.level == "error" and item.code == "DEBUG_MODE_METRIC_DRIFT"
             for item in run_validator(repo)
         ):
-            failures.append("schema-version-5 candidate disposition drift was not rejected")
+            failures.append("schema-version-6 candidate disposition drift was not rejected")
 
         invalid_promotion = copy.deepcopy(record)
         invalid_promotion["final_result"]["project_knowledge_candidates"][0][
@@ -1140,6 +1175,115 @@ def validate_v5_fixture(failures: list[str]) -> None:
             for item in run_validator(repo)
         ):
             failures.append("unindexed Debug knowledge promotion was not rejected")
+
+        schema6_invalid_cases: list[
+            tuple[str, Callable[[dict[str, Any]], None], set[str]]
+        ] = [
+            (
+                "completed record retains active repository lifecycle",
+                lambda value: value["final_result"]["repository_lifecycle"].update(
+                    state="active"
+                ),
+                {"DEBUG_MODE_REPOSITORY_LIFECYCLE_STATE"},
+            ),
+            (
+                "finalized lifecycle omits finalization evidence",
+                lambda value: value["final_result"]["repository_lifecycle"].update(
+                    finalization_evidence=[]
+                ),
+                {"DEBUG_MODE_REPOSITORY_LIFECYCLE_FINALIZATION"},
+            ),
+            (
+                "local validation overclaims CI evidence",
+                lambda value: value["final_result"]["validation"].update(
+                    results=[
+                        {
+                            "claim": "Fixture validation passed.",
+                            "evidence_class": "ci-verified",
+                            "source": "local npm test output",
+                            "observed_at": {
+                                "value": "2026-08-21T13:04:00Z",
+                                "evidence_kind": "observed",
+                            },
+                            "revision": revision,
+                            "limitations": [],
+                        }
+                    ]
+                ),
+                {"DEBUG_MODE_VALIDATION_EVIDENCE_CLASS"},
+            ),
+        ]
+        for label, mutate, expected_codes in schema6_invalid_cases:
+            invalid = copy.deepcopy(record)
+            mutate(invalid)
+            write(invalid)
+            findings = run_validator(repo)
+            if not any(
+                finding.level == "error" and finding.code in expected_codes
+                for finding in findings
+            ):
+                failures.append(f"validator did not reject {label}")
+
+        git_state_record = copy.deepcopy(record)
+        (repo / "src").mkdir(exist_ok=True)
+        (repo / "src/example.txt").write_text("implemented\n", encoding="utf-8")
+        git(repo, "add", "src/example.txt")
+        git(repo, "commit", "-qm", "implement fixture surface")
+        implementation_revision = git(repo, "rev-parse", "HEAD")
+        git(repo, "branch", "published-fixture", implementation_revision)
+        git_state_record.update(status="active")
+        git_state_record["activation"].update(ended_by="active")
+        git_state_record["timing"]["completed_at"] = {
+            "value": None,
+            "evidence_kind": "unknown",
+        }
+        git_state_record["timing"]["elapsed_seconds"] = {
+            "value": None,
+            "evidence_kind": "unknown",
+        }
+        git_state_record["final_result"]["repository_binding"].update(
+            binding_state="provisional",
+            result_revision=revision,
+        )
+        git_state_record["final_result"]["implementation_surfaces"] = [
+            "src/example.txt"
+        ]
+        git_state_record["final_result"]["lifecycle_coverage"].update(
+            completion_scope="active",
+            covered_phases=["analysis", "implementation"],
+            omitted_phases=["validation", "finalization"],
+            continuation_expected=True,
+            next_phase="validation",
+        )
+        git_state_record["final_result"]["repository_lifecycle"].update(
+            state="active",
+            completed_transitions=["analysis", "implementation"],
+            last_verified_revision=revision,
+            finalization_evidence=[],
+            next_permitted_action="Finalize or abandon before reporting completion.",
+        )
+        git_state_record["final_result"]["engineering_evidence_decision"].update(
+            status="pending",
+            next_safe_action="Finalize the active Debug record.",
+        )
+        write(git_state_record)
+        git_state_findings = run_validator(
+            repo,
+            debug_git_state=True,
+            debug_remote_ref="published-fixture",
+        )
+        for expected_code in {
+            "DEBUG_MODE_ACTIVE_RESULT_DRIFT",
+            "DEBUG_MODE_PROVISIONAL_BINDING_AFTER_COMMIT",
+            "DEBUG_MODE_PUBLISHED_BUT_UNFINALIZED",
+        }:
+            if not any(
+                item.level == "error" and item.code == expected_code
+                for item in git_state_findings
+            ):
+                failures.append(
+                    f"Debug/Git reconciliation did not report {expected_code}"
+                )
 
         chain_records: list[dict[str, Any]] = []
         for debug_id, previous_id, scope_id, covered_phases in [
@@ -1922,13 +2066,15 @@ def main() -> int:
             "`materiality_evaluations`",
             "`exact-reproducer`",
             "`phase-complete`",
+            "Schema-version-6 records",
+            "validation result is a structured claim",
             "project-knowledge candidate",
         ],
         failures,
     )
-    require_text(FLOW, ["## Modes", "explicit current user request", "actor role", "correction disposition", "known-guidance-routing-failure", "derived-from-human", "contribution kind", "rejected-hypothesis", "prior_bindings", "continued investigation", "materiality", "exact reproducer"], failures)
-    require_text(GATE, ["non-canonical observability evidence", "logical scope", "actor role", "correction", "known-guidance", "Engineering Evidence decision", "direction-changing correction", "continued work", "materiality", "validation fidelity"], failures)
-    require_text(SUMMARY, ["# Alatyr Debug Summary", "Record schema and attribution model", "Human architectural interventions", "Final result binding", "Durable engineering evidence", "External projection", "Claim-validation fidelity", "Continuation lineage"], failures)
+    require_text(FLOW, ["## Modes", "explicit current user request", "actor role", "correction disposition", "known-guidance-routing-failure", "derived-from-human", "contribution kind", "rejected-hypothesis", "prior_bindings", "continued investigation", "materiality", "exact reproducer", "Debug/Git reconciliation", "evidence class"], failures)
+    require_text(GATE, ["non-canonical observability evidence", "logical scope", "actor role", "correction", "known-guidance", "Engineering Evidence decision", "direction-changing correction", "continued work", "materiality", "validation fidelity", "repository lifecycle state", "Debug/Git reconciliation"], failures)
+    require_text(SUMMARY, ["# Alatyr Debug Summary", "Record schema and attribution model", "Human architectural interventions", "Final result binding", "Durable engineering evidence", "External projection", "Claim-validation fidelity", "Continuation lineage", "Repository lifecycle", "Validation evidence classes"], failures)
     require_text(
         POLICY,
         ["Owner:", "Storage mode:", "Visibility:", "Retention policy:", "Redaction policy:", "External patch policy:"],
@@ -1936,7 +2082,7 @@ def main() -> int:
     )
     require_text(
         RECORD_POLICY,
-        ["actor_role", "actor_identity", "actor_provenance", "correction_disposition", "migration-limited", "schema version 5", "continuation", "validation fidelity", "phase completion"],
+        ["actor_role", "actor_identity", "actor_provenance", "correction_disposition", "migration-limited", "schema version 6", "continuation", "validation fidelity", "phase completion"],
         failures,
     )
 
@@ -1952,20 +2098,20 @@ def main() -> int:
     else:
         if index.get("records") != []:
             failures.append("source Debug Mode index must start empty")
-        if index.get("schema_version") != 5 or "redaction_policy" not in index:
-            failures.append("source Debug Mode index must use lifecycle-projection schema 5")
+        if index.get("schema_version") != 6 or "redaction_policy" not in index:
+            failures.append("source Debug Mode index must use lifecycle-projection schema 6")
         if record.get("record_kind") != "alatyr-debug-session":
             failures.append("debug record template kind is invalid")
         if record.get("evidence_classification") != "non-canonical-observability":
             failures.append("debug record template must be non-canonical")
-        if record.get("schema_version") != 5:
-            failures.append("debug record template must use lifecycle and knowledge-closure schema 5")
+        if record.get("schema_version") != 6:
+            failures.append("debug record template must use lifecycle and knowledge-closure schema 6")
         template_schema_errors = list(
             jsonschema.Draft7Validator(schema).iter_errors(record)
         )
         if template_schema_errors:
             failures.append(
-                "debug record template does not match schema version 5: "
+                "debug record template does not match schema version 6: "
                 + "; ".join(error.message for error in template_schema_errors)
             )
         if "continuation" not in record:
@@ -1978,6 +2124,8 @@ def main() -> int:
             failures.append("debug record template must expose lifecycle coverage")
         if "project_knowledge_candidates" not in record.get("final_result", {}):
             failures.append("debug record template must expose project-knowledge candidate closure")
+        if "repository_lifecycle" not in record.get("final_result", {}):
+            failures.append("debug record template must expose repository lifecycle evidence")
         if overlay.get("overlay") != "debug-mode":
             failures.append("Debug Mode overlay identity is invalid")
         modes = {

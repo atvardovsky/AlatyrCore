@@ -86,6 +86,8 @@ Record:
 - changed facts, code and companion surfaces, and knowledge-owner updates
 - regression cases, each tied to the invariant or risk that justifies it
 - validation results, skipped checks, and residual uncertainty
+- validation evidence class for each material claim when the active operation
+  exposes structured validation evidence
 - links to an active change package, approval, architecture decision, or
   development-evidence pattern when applicable
 - Debug session IDs when the evidence was produced under Debug Mode
@@ -183,6 +185,10 @@ Before completion:
 Deterministic validation can check record shape, references, revision syntax,
 index synchronization, and prohibited fields. It cannot prove the invariant,
 root cause, solution quality, regression sufficiency, or semantic completeness.
+When validation evidence is classified, local command output, CI, reviewer,
+and production evidence remain separate evidence strengths. Do not summarize
+local validation as CI-verified or reviewer-verified without an actual source
+record from that class.
 
 ## Rejection Criteria
 

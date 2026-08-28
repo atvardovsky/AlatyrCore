@@ -29,9 +29,15 @@ fact, defect, invariant, contract, or refactor.
 11. Run broader target validation selected by changed-fact risk and boundary
     crossings. Do not invent commands or call live services without policy and
     approval.
-12. Apply logical integrity review and synchronize required docs, diagrams,
+12. Apply `.ai/assistant/gates/contract-artifacts.md` when the selected
+    contract is represented by API, schema, event, generated-reference,
+    fixture, persistence, public-interface, or external-boundary artifacts.
+13. Apply `.ai/assistant/gates/visual-validation.md` when the behavior has UI,
+    layout, accessibility-relevant, rendered diagram, or visual artifact
+    effects.
+14. Apply logical integrity review and synchronize required docs, diagrams,
     contracts, prompts, skills, gates, and project vocabulary.
-13. Complete `.ai/assistant/templates/test-first-evidence.md` and report
+15. Complete `.ai/assistant/templates/test-first-evidence.md` and report
     approvals, skipped checks, exceptions, and residual risk.
 
 ## Exception Path

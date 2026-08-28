@@ -15,9 +15,17 @@
       "path": ".ai/assistant/gates/code-and-tests.md",
       "use_when": ["implementation or test changes"]
     },
+    "contract-artifacts": {
+      "path": ".ai/assistant/gates/contract-artifacts.md",
+      "use_when": ["API data event generated-reference or external-boundary contract changes"]
+    },
     "semantic-integrity": {
       "path": ".ai/assistant/gates/semantic-integrity.md",
       "use_when": ["semantic fact or accepted contract may change"]
+    },
+    "visual-validation": {
+      "path": ".ai/assistant/gates/visual-validation.md",
+      "use_when": ["UI visual layout diagram rendering or discussion diagram presentation changes"]
     },
     "security-approval": {
       "path": ".ai/assistant/gates/security-approval.md",
@@ -50,10 +58,10 @@
   },
   "profile_defaults": {
     "docs-local": ["core", "documentation", "final-evidence"],
-    "code-local": ["core", "code-and-tests", "final-evidence"],
-    "business-change": ["core", "semantic-integrity", "final-evidence"],
-    "architecture-change": ["core", "semantic-integrity", "final-evidence"],
-    "data-change": ["core", "semantic-integrity", "code-and-tests", "final-evidence"],
+    "code-local": ["core", "code-and-tests", "contract-artifacts", "visual-validation", "final-evidence"],
+    "business-change": ["core", "semantic-integrity", "contract-artifacts", "final-evidence"],
+    "architecture-change": ["core", "semantic-integrity", "contract-artifacts", "visual-validation", "final-evidence"],
+    "data-change": ["core", "semantic-integrity", "code-and-tests", "contract-artifacts", "final-evidence"],
     "security-sensitive": ["core", "semantic-integrity", "security-approval", "final-evidence"],
     "ai-infrastructure": ["core", "final-evidence"],
     "framework-upgrade": ["core", "final-evidence"]

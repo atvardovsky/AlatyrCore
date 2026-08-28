@@ -29,6 +29,7 @@ EXPECTED_COMMANDS = {
     "render-context",
     "snapshot-support",
     "support-diff",
+    "change-cost",
     "impact",
     "generate-support",
     "validate-adapter",

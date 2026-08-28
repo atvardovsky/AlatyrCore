@@ -162,7 +162,7 @@
       "additionalProperties": false,
       "required": ["contract_version", "index", "records", "overlay", "flow", "gate", "record_template", "summary_template"],
       "properties": {
-        "contract_version": {"const": 5},
+        "contract_version": {"const": 6},
         "index": {"type": "string", "minLength": 1},
         "records": {"type": "string", "minLength": 1},
         "overlay": {"type": "string", "minLength": 1},

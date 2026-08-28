@@ -150,8 +150,9 @@ Machine checks can verify only deterministic repository facts, such as:
   derivation, privacy declarations, typed evidence-event roles, complete
   materiality evaluation, registry-backed canonical skip references, claim-
   validation fidelity, exact durable engineering-evidence decision and
-  reference resolution, index synchronization, Git object type, ancestry,
-  binding state and lineage,
+  reference resolution, structured validation evidence classes, index
+  synchronization, Git object type, ancestry, binding state and lineage,
+  repository lifecycle state and optional Debug/Git reconciliation,
   active-versus-finalized comparison boundaries, and clean-upstream policy
 - target context routers match the profile template and route known framework
   documents somewhere
@@ -212,6 +213,9 @@ Machine checks can verify only deterministic repository facts, such as:
 - target support policy and state can be checked for complete classification,
   ignored-file exclusion, case collisions, canonical digests, and current
   managed-surface coverage
+- support/product diff reports can measure changed product files, changed
+  support files, changed line counts, and support-to-product ratios without
+  treating overhead as proof of quality or waste by itself
 - consistency-map shards, reverse indexes, relationship lifecycle state, and
   bounded traversal limits can be checked structurally without treating the
   graph as proof of architectural correctness

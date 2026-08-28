@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1105
+Catalog entries: 1118
 
 ## Families
 
@@ -25,7 +25,7 @@ Catalog entries: 1105
 - `CODEDOC`: 32 codes.
 - `CONSISTENCY`: 37 codes.
 - `CONTEXT`: 10 codes.
-- `DEBUG`: 117 codes.
+- `DEBUG`: 130 codes.
 - `DELEGATION`: 59 codes.
 - `DEPENDENCY`: 55 codes.
 - `DEVELOPMENT`: 15 codes.
@@ -480,6 +480,8 @@ Catalog entries: 1105
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_ACTIVE_COMPLETION_TIME`
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
+- `DEBUG_MODE_ACTIVE_RESULT_DRIFT`
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_AGENT_CLASSIFICATION`
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_ARCHITECTURAL_IMPACT_MISSING`
@@ -573,6 +575,8 @@ Catalog entries: 1105
 - `DEBUG_MODE_EXPIRY`
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_EXTERNAL_RECORD_UNCHECKED`
+  Level: warning. Source: `tools/target_adapter_validation/debug_mode.py`.
+- `DEBUG_MODE_GIT_STATE_UNAVAILABLE`
   Level: warning. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_IMPLEMENTATION_CONTINUATION_MISSING`
   Level: warning. Source: `tools/target_adapter_validation/debug_mode.py`.
@@ -674,7 +678,11 @@ Catalog entries: 1105
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_PROHIBITED_CONTENT_FIELD`
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
+- `DEBUG_MODE_PROVISIONAL_BINDING_AFTER_COMMIT`
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_PUBLICATION_SCOPE`
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
+- `DEBUG_MODE_PUBLISHED_BUT_UNFINALIZED`
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_RECORD_DUPLICATE`
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
@@ -683,6 +691,20 @@ Catalog entries: 1105
 - `DEBUG_MODE_RECORD_PATH`
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_RECORD_SCHEMA`
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
+- `DEBUG_MODE_REMOTE_STATE_UNAVAILABLE`
+  Level: warning. Source: `tools/target_adapter_validation/debug_mode.py`.
+- `DEBUG_MODE_REPOSITORY_LIFECYCLE_COMMIT`
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
+- `DEBUG_MODE_REPOSITORY_LIFECYCLE_FINAL`
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
+- `DEBUG_MODE_REPOSITORY_LIFECYCLE_FINALIZATION`
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
+- `DEBUG_MODE_REPOSITORY_LIFECYCLE_PUBLISH`
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
+- `DEBUG_MODE_REPOSITORY_LIFECYCLE_STATE`
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
+- `DEBUG_MODE_RESULT_REVISION_STALE`
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_REVIEW_CORRECTION_UNASSESSED`
   Level: warning. Source: `tools/target_adapter_validation/debug_mode.py`.
@@ -710,6 +732,10 @@ Catalog entries: 1105
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_V2_CONTRACT`
   Level: warning. Source: `tools/target_adapter_validation/debug_mode.py`.
+- `DEBUG_MODE_VALIDATION_EVIDENCE`
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
+- `DEBUG_MODE_VALIDATION_EVIDENCE_CLASS`
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DELEGATION_CAPABILITY_FIELDS`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DELEGATION_CAPABILITY_MISSING`

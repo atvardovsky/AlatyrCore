@@ -131,7 +131,7 @@ class ConsistencyMapModule:
         ):
             context.error(
                 "CONSISTENCY_MAP_SCHEMA_MIGRATION_REQUIRED",
-                "adapter schema 31 requires sharded consistency-map schema version 3",
+                "adapter schema 31 and newer require sharded consistency-map schema version 3",
                 relpath,
             )
         if schema_version == 1:

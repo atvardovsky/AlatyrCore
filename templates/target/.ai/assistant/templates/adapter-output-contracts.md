@@ -66,6 +66,9 @@ Use after the initial Alatyr Core installation or a scoped adapter expansion.
 - Development-pattern evidence result: `{INDEX_OWNER_RETENTION_CAPTURE_AND_FRAMEWORK_BOUNDARY_OR_SKIPPED}`
 - AI infrastructure router result: `{AI_INFRASTRUCTURE_ROUTER_RESULT_OR_SKIPPED}`
 - AI infrastructure adaptation-record result: `{AI_INFRASTRUCTURE_ADAPTATION_RECORD_RESULT_OR_SKIPPED}`
+- Support/product change cost: `{SUPPORT_PRODUCT_FILE_AND_LINE_RATIO_OR_SKIPPED}`
+- Contract artifact result: `{CONTRACT_ARTIFACT_UPDATED_PROPOSED_SKIPPED_OR_NOT_APPLICABLE}`
+- Visual validation result: `{VISUAL_VALIDATION_EVIDENCE_OR_SKIPPED}`
 - Validation run: `{TARGET_VALIDATION_RUN_OR_MANUAL_REVIEW}`
 - Validation phase: `{ACCEPTANCE_OR_MIGRATION_STAGING}`
 - Active unresolved placeholders: `{COUNT_AND_PATHS_OR_NONE}`
@@ -146,6 +149,9 @@ Core baseline.
 - AI infrastructure recommendation result: `{PROJECT_EVIDENCE_EXISTING_ITEM_COMPARISON_COST_QUALITY_ACCEPTANCE_AND_NEXT_ROUTE_OR_SKIPPED}`
 - Development-pattern evidence result: `{INDEX_OWNER_RETENTION_CAPTURE_AND_FRAMEWORK_BOUNDARY_OR_SKIPPED}`
 - AI infrastructure adaptation-record result: `{AI_INFRASTRUCTURE_ADAPTATION_RECORD_RESULT_OR_SKIPPED}`
+- Support/product change cost: `{SUPPORT_PRODUCT_FILE_AND_LINE_RATIO_OR_SKIPPED}`
+- Contract artifact result: `{CONTRACT_ARTIFACT_UPDATED_PROPOSED_SKIPPED_OR_NOT_APPLICABLE}`
+- Visual validation result: `{VISUAL_VALIDATION_EVIDENCE_OR_SKIPPED}`
 - Validation run: `{TARGET_VALIDATION_RUN_OR_MANUAL_REVIEW}`
 - Validation phase: `{ACCEPTANCE_OR_MIGRATION_STAGING}`
 - Active unresolved placeholders: `{COUNT_AND_PATHS_OR_NONE}`
@@ -220,6 +226,9 @@ adapter.
 - AI infrastructure router result: `{AI_INFRASTRUCTURE_ROUTER_RESULT_OR_SKIPPED}`
 - AI infrastructure adaptation-record result: `{AI_INFRASTRUCTURE_ADAPTATION_RECORD_RESULT_OR_SKIPPED}`
 - Prompt-injection policy result: `{PROMPT_INJECTION_POLICY_RESULT}`
+- Support/product change cost: `{SUPPORT_PRODUCT_FILE_AND_LINE_RATIO_OR_SKIPPED}`
+- Contract artifact result: `{CONTRACT_ARTIFACT_UPDATED_PROPOSED_SKIPPED_OR_NOT_APPLICABLE}`
+- Visual validation result: `{VISUAL_VALIDATION_EVIDENCE_OR_SKIPPED}`
 - Validation run: `{TARGET_VALIDATION_RUN_OR_MANUAL_REVIEW}`
 - Validation phase: `{ACCEPTANCE_OR_MIGRATION_STAGING}`
 - Active unresolved placeholders: `{COUNT_AND_PATHS_OR_NONE}`

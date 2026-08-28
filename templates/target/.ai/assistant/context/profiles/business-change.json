@@ -32,6 +32,7 @@
     {"path": ".ai/framework/approval-records.md", "when": "accepted behavior or another protected category changes"},
     {"path": ".ai/framework/testing-guidance.md", "when": "the decision enters implementation planning or validation"},
     {"path": ".ai/assistant/flows/blueprint-driven-change.flow.md", "when": "the accepted change is implemented through the product workflow"},
+    {"path": ".ai/assistant/gates/contract-artifacts.md", "when": "the change affects API data event generated-reference public-interface persistence or external-boundary artifacts"},
     {"path": ".ai/assistant/gates/security-approval.md", "when": "the change reaches a protected approval or security boundary"},
     {"path": ".ai/assistant/gates/checklist.md", "when": "adapter ambiguity or a full acceptance audit requires the complete checklist"}
   ],
@@ -54,6 +55,7 @@
     "review_item_reconciliation",
     "owning_blueprint_or_source_of_truth",
     "implementation_test_doc_sync",
+    "contract_artifact_result",
     "approvals",
     "logical_integrity_result"
   ]

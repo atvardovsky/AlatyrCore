@@ -37,21 +37,29 @@ This flow adapts `.ai/framework/logical-integrity.md` to `{PROJECT_NAME}`.
    - use cases or workflows
    - architecture levels or module boundaries
    - object/data contracts
+   - API, event, persistence, fixture, generated-reference, and public
+     interface contract artifacts
    - diagrams
    - tests and validation
    - prompts, gates, skills, and bridge files
-8. Compare only the selected code, docs, tests, diagrams, prompts, skills,
-   bridge files, gates,
-   generated artifacts, and assistant rules.
+8. Compare only the selected code, docs, tests, contract artifacts, diagrams,
+   prompts, skills, bridge files, gates, generated artifacts, and assistant
+   rules.
 9. Choose the source of truth.
 10. Repair the smallest coherent set of files that preserves the re-derived
    invariants across all related review items.
-11. Run target validation that exists, including observable failure-class
+11. Apply `.ai/assistant/gates/contract-artifacts.md` when the changed fact
+    crosses a public or generated contract. Apply
+    `.ai/assistant/gates/visual-validation.md` when visual, UI, rendered
+    diagram, or presentation evidence is part of the fact.
+12. Record support/product change cost when relevant tooling exists and the
+    patch mixes project support surfaces with product surfaces.
+13. Run target validation that exists, including observable failure-class
     distinctions when external callers or operators depend on them.
-12. For multi-workstream operations, reconcile the combined repair set in one
-   global review after local workstream checks. Confirm shared fact owners,
-   dependency order, approval scope, and generated artifacts agree.
-12. Before completion, apply
+14. For multi-workstream operations, reconcile the combined repair set in one
+    global review after local workstream checks. Confirm shared fact owners,
+    dependency order, approval scope, and generated artifacts agree.
+15. Before completion, apply
     `.ai/assistant/gates/engineering-evidence.md`. Capture compact reusable
     engineering conclusions when triggered and authorized, or report a
     fact-specific skip or blocker. Do not turn capture alone into a change
@@ -68,6 +76,9 @@ Expected contract: <which target source says otherwise>
 Conflict: <what disagrees with what>
 Source of truth: <code/docs/proposal/manifest and why>
 Impact closure: <selected/skipped edges, levels, areas, and missing links>
+Support/product cost: <measured ratio or not applicable>
+Contract artifact result: <updated/proposed/skipped/not applicable>
+Visual validation result: <evidence/skipped/not applicable>
 External failure distinction: <typed/result/status/other contract or not applicable>
 Repair: <files or behavior to change>
 Gate: <target validation or manual review>

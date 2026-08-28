@@ -72,6 +72,19 @@ The impact report is a routing artifact. The assistant or reviewer must still
 identify semantic facts, re-derive invariants, classify risk, resolve canonical
 owners, and decide the coherent repair set.
 
+## Change-Cost Reporting
+
+A target adapter may report support/product change cost from Git evidence
+before deeper review. The report should classify changed files and line changes
+as project support surfaces or product surfaces, then record the ratio and
+limitations. This helps identify heavy adapter churn, mixed support/product
+patches, and unusually large documentation synchronization work.
+
+Cost reporting is a deterministic measurement aid. It does not prove that the
+right files changed, that a semantic fact is consistent, or that a support
+update is valuable. The assistant still performs logical integrity review,
+approval-scope enforcement, and target validation.
+
 ## Relationship Discovery
 
 Code and support changes can reveal a previously unrecorded relationship.
@@ -144,6 +157,7 @@ Changed support: <created/modified/removed paths>
 Impact closure: <facts, areas, selected/skipped edges, concrete surfaces>
 Relationship candidates: <created/reviewed/disposition or none>
 Generated support: <planned/checked/applied/skipped artifacts>
+Support/product cost: <file and line ratios or not measured>
 Context selected: <item IDs and bounded expansions>
 Authorization and approvals: <current evidence>
 Validation: <target checks and manual review>

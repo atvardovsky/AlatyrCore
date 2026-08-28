@@ -33,6 +33,8 @@
     {"path": ".ai/framework/security-safety-guidance.md", "when": "security privacy external service production or permission boundaries are affected"},
     {"path": ".ai/framework/testing-guidance.md", "when": "the accepted decision enters implementation planning or validation"},
     {"path": ".ai/assistant/flows/blueprint-driven-change.flow.md", "when": "the accepted decision is implemented through the blueprint workflow"},
+    {"path": ".ai/assistant/gates/contract-artifacts.md", "when": "the change affects API data event generated-reference public-interface persistence or external-boundary artifacts"},
+    {"path": ".ai/assistant/gates/visual-validation.md", "when": "the change affects diagrams visual artifacts UI layout or presentation evidence"},
     {"path": ".ai/assistant/gates/security-approval.md", "when": "the change reaches a protected approval or security boundary"},
     {"path": ".ai/assistant/gates/checklist.md", "when": "adapter ambiguity or a full acceptance audit requires the complete checklist"}
   ],
@@ -58,6 +60,8 @@
     "affected_areas",
     "validation",
     "diagram_result",
+    "contract_artifact_result",
+    "visual_validation_result",
     "residual_risk"
   ]
 }

@@ -80,7 +80,13 @@ def main() -> int:
         commands = {
             item.get("name") for item in load(ROOT / "tools/tool_commands.json")["commands"]
         }
-        for name in ["snapshot-support", "support-diff", "impact", "generate-support"]:
+        for name in [
+            "snapshot-support",
+            "support-diff",
+            "change-cost",
+            "impact",
+            "generate-support",
+        ]:
             if name not in commands:
                 failures.append(f"tool command manifest omits {name}")
     except (OSError, KeyError, StopIteration, TypeError, AssertionError) as exc:
@@ -102,6 +108,64 @@ def main() -> int:
                 failures.append("generated support state is unexpectedly empty")
     except (OSError, subprocess.CalledProcessError, ValueError, jsonschema.ValidationError) as exc:
         failures.append(f"support-state fixture failed: {exc}")
+
+    try:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            subprocess.run(["git", "init", "-q"], cwd=target, check=True)
+            (target / "README.md").write_text("fixture\n", encoding="utf-8")
+            subprocess.run(["git", "add", "."], cwd=target, check=True)
+            subprocess.run(
+                [
+                    "git",
+                    "-c",
+                    "user.email=alatyr@example.invalid",
+                    "-c",
+                    "user.name=Alatyr Check",
+                    "commit",
+                    "-qm",
+                    "base",
+                ],
+                cwd=target,
+                check=True,
+            )
+            (target / "AGENTS.md").write_text(
+                "# Agent Instructions\n\nSupport change.\n",
+                encoding="utf-8",
+            )
+            (target / "src").mkdir()
+            (target / "src/example.py").write_text(
+                "print('product change')\n",
+                encoding="utf-8",
+            )
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "tools/report_change_cost.py"),
+                    "--target",
+                    str(target),
+                    "--diff-ref",
+                    "HEAD",
+                    "--json",
+                ],
+                cwd=ROOT,
+                check=False,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+            if result.returncode != 0:
+                failures.append(f"change-cost fixture failed: {result.stderr.strip()}")
+            else:
+                report = json.loads(result.stdout)
+                summary = report.get("summary", {})
+                files = summary.get("files", {}) if isinstance(summary, dict) else {}
+                if files.get("support") != 1 or files.get("product") != 1:
+                    failures.append("change-cost did not split support/product files")
+                if report.get("report_kind") != "target-change-cost":
+                    failures.append("change-cost report kind is invalid")
+    except (OSError, subprocess.CalledProcessError, json.JSONDecodeError) as exc:
+        failures.append(f"change-cost fixture failed: {exc}")
 
     lifecycle = (ROOT / "tools/check_lifecycle_conformance.py").read_text(encoding="utf-8")
     renderer = (ROOT / "tools/render_context_catalogs.py").read_text(encoding="utf-8")

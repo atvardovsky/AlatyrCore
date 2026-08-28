@@ -8,17 +8,17 @@ It does not replace portable framework rules or target-owned project facts.
 ## debug-mode
 
 Manifest key: `debug_mode.contract_version`.
-Current contract version: `5`.
+Current contract version: `6`.
 
 Artifact: `index`
-Current version: `5`.
-Supported versions: `2`, `3`, `4`, `5`.
-Migration-limited versions: `2`, `3`, `4`.
+Current version: `6`.
+Supported versions: `2`, `3`, `4`, `5`, `6`.
+Migration-limited versions: `2`, `3`, `4`, `5`.
 
 Artifact: `record`
-Current version: `5`.
-Supported versions: `1`, `2`, `3`, `4`, `5`.
-Migration-limited versions: `1`, `2`, `3`, `4`.
+Current version: `6`.
+Supported versions: `1`, `2`, `3`, `4`, `5`, `6`.
+Migration-limited versions: `1`, `2`, `3`, `4`, `5`.
 
 ## engineering-evidence
 

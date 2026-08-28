@@ -4,6 +4,29 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.34 - 2026-08-28
+
+- Increased the framework version to `0.1.0-alpha.34`, adapter schema version
+  to `32`, and target template version to `32` for Debug repository lifecycle
+  evidence, typed validation-evidence classes, support/product change-cost
+  reporting, contract-artifact checks, and visual-validation gates.
+- Added Debug schema version 6. Active, committed, published, finalized, and
+  abandoned states now have explicit repository lifecycle evidence; local,
+  tool, CI, reviewer, and production validation claims remain separate.
+- Extended the target adapter validator with optional Debug/Git reconciliation
+  so active or provisional Debug records can be checked against committed or
+  published Git state when the target supplies current refs.
+- Added a read-only `change-cost` source tool that reports support/product file
+  and line-change ratios from Git evidence without replacing semantic review.
+- Added target contract-artifact and visual-validation gate fragments plus
+  report templates, and wired them into product-change, logical-integrity,
+  documentation-sync, diagram-discussion, and test-first flows.
+- Updated operation help, output contracts, support-information, testing, and
+  diagram guidance so final evidence distinguishes structural cost evidence,
+  contract artifacts, visual evidence, and semantic integrity.
+- Added a reviewed source-release checkpoint for `0.1.0-alpha.33`; no rule IDs
+  were added, removed, or deprecated.
+
 ## 0.1.0-alpha.33 - 2026-08-27
 
 - Increased the framework version to `0.1.0-alpha.33`, adapter schema version

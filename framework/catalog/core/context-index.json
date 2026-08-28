@@ -208,8 +208,8 @@
       "owner_refs": [
         "ALATYR-EVIDENCE-001"
       ],
-      "estimated_words": 3219,
-      "content_digest": "sha256:f44fe75feaaaeb3082eb96047e1324b72b217abc0ca7ffc3ab16b992421fa147"
+      "estimated_words": 3259,
+      "content_digest": "sha256:949ce854542d9e9d0f87c56f1e1bf4a33b1a7426af07b9f6a2e1818b222f2311"
     },
     {
       "id": "framework.core.installed-operations-md",
@@ -301,8 +301,8 @@
       "owner_refs": [
         "ALATYR-OPERATION-001"
       ],
-      "estimated_words": 3306,
-      "content_digest": "sha256:9c433d0ecb5bc30ec152df503fcd0f6021dd9c503fa98175a2e13da54c2a0497"
+      "estimated_words": 3344,
+      "content_digest": "sha256:271999979378f8eeb89d0a66d891955686afb8748cb50f9b1680ecc8dd6b16b9"
     },
     {
       "id": "framework.core.project-adapter-contract-md",

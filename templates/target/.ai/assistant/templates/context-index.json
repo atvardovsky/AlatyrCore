@@ -60,8 +60,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1117,
-      "content_digest": "sha256:42856fa4dbae61eab28fbd6b2888f499ad3fd5cbe60e1e1f91e0880e89d5f7ee"
+      "estimated_words": 1162,
+      "content_digest": "sha256:d9d6c1d5f3a459d171de9c8eb70915aa4cce6d615bb9f3f3e1f6962e5953721f"
     },
     {
       "id": "assistant.content.templates-ai-infrastructure-adaptation-record-md",
@@ -399,6 +399,34 @@
       "content_digest": "sha256:6f7720a98f717c160fd578333a670b1b79570cb9b120ee4b0ea46d61c4049e75"
     },
     {
+      "id": "assistant.content.templates-contract-artifact-review-md",
+      "kind": "content",
+      "path": "templates/contract-artifact-review.md",
+      "summary": "Contract Artifact Review",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "contract",
+          "artifact",
+          "review"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 49,
+      "content_digest": "sha256:709350bcb1b3fc282e63b932e4a062777728b723b1606bb3baa7d453e9c90c80"
+    },
+    {
       "id": "assistant.content.templates-debug-session-record-json",
       "kind": "content",
       "path": "templates/debug-session-record.json",
@@ -423,8 +451,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 554,
-      "content_digest": "sha256:14ff5b919ffd90a164818196dee36dc182b76f0ce61ad41ef460ef29fa927784"
+      "estimated_words": 589,
+      "content_digest": "sha256:d1cdb676c46269431e069dc154a7dcfed41ff1b799f4d6ab0f918c283ab4e122"
     },
     {
       "id": "assistant.content.templates-debug-summary-md",
@@ -450,8 +478,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 130,
-      "content_digest": "sha256:527288636491073c0e5388834e2017b86ab2341c7a6c1067d7cf6de613cfdc43"
+      "estimated_words": 137,
+      "content_digest": "sha256:85d98e87a07409c37a9a5b7426ed5910711429da6a7caf5dae53f1fed732f329"
     },
     {
       "id": "assistant.content.templates-delayed-outcome-evidence-json",
@@ -1164,6 +1192,34 @@
       ],
       "estimated_words": 103,
       "content_digest": "sha256:55b7b8a3c96af3b8b5bb05569925443b97e767accd14aec65cd5e82a210e199f"
+    },
+    {
+      "id": "assistant.content.templates-visual-validation-review-md",
+      "kind": "content",
+      "path": "templates/visual-validation-review.md",
+      "summary": "Visual Validation Review",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "visual",
+          "validation",
+          "review"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 36,
+      "content_digest": "sha256:de3288a98ca01e913d3e0486e889d03734fc3585dd54378eb36c74e9d1a9e812"
     },
     {
       "id": "assistant.content.templates-vocabulary-term-review-md",

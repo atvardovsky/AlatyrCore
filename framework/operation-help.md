@@ -75,6 +75,9 @@ Operation help exists to:
   authority or carrying activation across logical scopes; finalization closes
   the durable Engineering Evidence decision and reports attribution-contract
   and repository-binding lineage
+- route cheap support/product change-cost evidence so large support updates,
+  product changes, and mixed patches can be measured before deeper semantic
+  review
 
 ## Canonical Operation Catalog
 
@@ -265,6 +268,8 @@ Typical operation categories include:
   items
 - skill, prompt, wrapper, or third-party assistant infrastructure adaptation
 - documentation, diagram, gate, or bridge synchronization
+- support/product change-cost review, contract-artifact review, and visual
+  validation evidence when applicable to the selected operation
 - source-set code-comment style proposal, structured-comment maintenance, and
   generated-reference documentation when the optional module is enabled
 - project term lookup, acronym and alias resolution, vocabulary proposal and

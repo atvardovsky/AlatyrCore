@@ -11,7 +11,7 @@
     "privacy", "residual_uncertainty", "limitations"
   ],
   "properties": {
-    "schema_version": {"enum": [1, 2, 3, 4, 5]},
+    "schema_version": {"enum": [1, 2, 3, 4, 5, 6]},
     "record_kind": {"const": "alatyr-debug-session"},
     "evidence_classification": {"const": "non-canonical-observability"},
     "debug_id": {"type": "string", "minLength": 1},
@@ -167,6 +167,18 @@
           "events": {"items": {"$ref": "#/definitions/eventV4"}},
           "metrics": {"$ref": "#/definitions/metricsV4"},
           "final_result": {"$ref": "#/definitions/finalResultV5"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"schema_version": {"const": 6}}},
+      "then": {
+        "required": ["continuation"],
+        "properties": {
+          "continuation": {"$ref": "#/definitions/continuationV3"},
+          "events": {"items": {"$ref": "#/definitions/eventV4"}},
+          "metrics": {"$ref": "#/definitions/metricsV4"},
+          "final_result": {"$ref": "#/definitions/finalResultV6"}
         }
       }
     }
@@ -532,6 +544,40 @@
         "skipped": {"$ref": "#/definitions/strings"}
       }
     },
+    "validationEvidenceClassV6": {
+      "enum": [
+        "declared", "locally-observed", "tool-verified", "ci-verified",
+        "reviewer-verified", "production-verified"
+      ]
+    },
+    "validationClaimV6": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "claim", "evidence_class", "source", "observed_at",
+        "revision", "limitations"
+      ],
+      "properties": {
+        "claim": {"type": "string", "minLength": 1},
+        "evidence_class": {"$ref": "#/definitions/validationEvidenceClassV6"},
+        "source": {"type": "string", "minLength": 1},
+        "observed_at": {"$ref": "#/definitions/timeValue"},
+        "revision": {"type": "string", "minLength": 1},
+        "limitations": {"$ref": "#/definitions/strings"}
+      }
+    },
+    "validationResultV6": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["results", "skipped"],
+      "properties": {
+        "results": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/validationClaimV6"}
+        },
+        "skipped": {"$ref": "#/definitions/strings"}
+      }
+    },
     "upstreamProjection": {
       "type": "object",
       "additionalProperties": false,
@@ -694,6 +740,39 @@
         "reason": {"type": "string", "minLength": 1}
       }
     },
+    "repositoryLifecycleV6": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state", "completed_transitions", "last_verified_revision",
+        "last_verified_at", "commit_evidence", "publish_evidence",
+        "finalization_evidence", "next_permitted_action"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "active", "validated", "committed", "published",
+            "finalized", "abandoned"
+          ]
+        },
+        "completed_transitions": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "analysis", "implementation", "validation", "commit",
+              "publish", "finalization", "abandonment"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "last_verified_revision": {"type": "string", "minLength": 1},
+        "last_verified_at": {"$ref": "#/definitions/timeValue"},
+        "commit_evidence": {"$ref": "#/definitions/strings"},
+        "publish_evidence": {"$ref": "#/definitions/strings"},
+        "finalization_evidence": {"$ref": "#/definitions/strings"},
+        "next_permitted_action": {"type": "string", "minLength": 1}
+      }
+    },
     "projectKnowledgeCandidateV5": {
       "type": "object",
       "additionalProperties": false,
@@ -777,6 +856,33 @@
         "validation": {"$ref": "#/definitions/validationResult"},
         "claim_validation": {"$ref": "#/definitions/claimValidationV3"},
         "lifecycle_coverage": {"$ref": "#/definitions/lifecycleCoverageV5"},
+        "engineering_evidence_ids": {"$ref": "#/definitions/strings"},
+        "engineering_evidence_decision": {"$ref": "#/definitions/engineeringEvidenceDecisionV3"},
+        "project_knowledge_candidates": {
+          "type": "array",
+          "items": {"$ref": "#/definitions/projectKnowledgeCandidateV5"}
+        },
+        "upstream_projection": {"$ref": "#/definitions/upstreamProjection"}
+      }
+    },
+    "finalResultV6": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "summary", "repository_binding", "implementation_surfaces",
+        "validation", "claim_validation", "lifecycle_coverage",
+        "repository_lifecycle", "engineering_evidence_ids",
+        "engineering_evidence_decision", "project_knowledge_candidates",
+        "upstream_projection"
+      ],
+      "properties": {
+        "summary": {"type": "string", "minLength": 1},
+        "repository_binding": {"$ref": "#/definitions/repositoryBindingV2"},
+        "implementation_surfaces": {"$ref": "#/definitions/strings"},
+        "validation": {"$ref": "#/definitions/validationResultV6"},
+        "claim_validation": {"$ref": "#/definitions/claimValidationV3"},
+        "lifecycle_coverage": {"$ref": "#/definitions/lifecycleCoverageV5"},
+        "repository_lifecycle": {"$ref": "#/definitions/repositoryLifecycleV6"},
         "engineering_evidence_ids": {"$ref": "#/definitions/strings"},
         "engineering_evidence_decision": {"$ref": "#/definitions/engineeringEvidenceDecisionV3"},
         "project_knowledge_candidates": {

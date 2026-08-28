@@ -80,10 +80,10 @@
   },
   "cost_scenarios": {
     "architecture-discussion": {
-      "bytes": 30882,
-      "characters": 30882,
+      "bytes": 31663,
+      "characters": 31663,
       "declared_files": 11,
-      "estimated_tokens_4_chars": 7721,
+      "estimated_tokens_4_chars": 7916,
       "expected_budget_state": "compact",
       "missing_paths": [],
       "portable_paths": [
@@ -114,17 +114,17 @@
         ".ai/assistant/flows/architecture-assistance.flow.md",
         ".ai/assistant/templates/architecture-discussion-result.md"
       ],
-      "target_words": 1532,
+      "target_words": 1619,
       "unresolved_references": [
         "{TARGET_DOC_SOURCE_OF_TRUTH}"
       ],
-      "words": 3510
+      "words": 3597
     },
     "architecture-implementation": {
-      "bytes": 77443,
-      "characters": 77443,
+      "bytes": 78621,
+      "characters": 78621,
       "declared_files": 18,
-      "estimated_tokens_4_chars": 19361,
+      "estimated_tokens_4_chars": 19656,
       "expected_budget_state": "expansion-receipt-required",
       "missing_paths": [],
       "portable_paths": [
@@ -169,17 +169,17 @@
         ".ai/assistant/change-packages/index.json",
         ".ai/assistant/flows/change-package.flow.md"
       ],
-      "target_words": 3355,
+      "target_words": 3473,
       "unresolved_references": [
         "{TARGET_ARCHITECTURE_SOURCE_OF_TRUTH}"
       ],
-      "words": 8486
+      "words": 8604
     },
     "framework-upgrade": {
-      "bytes": 7479,
-      "characters": 7479,
+      "bytes": 8260,
+      "characters": 8260,
       "declared_files": 5,
-      "estimated_tokens_4_chars": 1870,
+      "estimated_tokens_4_chars": 2065,
       "expected_budget_state": "compact",
       "missing_paths": [],
       "portable_paths": [],
@@ -197,17 +197,17 @@
         ".ai/assistant/gates/core.md",
         ".ai/assistant/gates/final-evidence.md"
       ],
-      "target_words": 600,
+      "target_words": 687,
       "unresolved_references": [
         "{TARGET_UPGRADE_IMPACT_REPORT}"
       ],
-      "words": 600
+      "words": 687
     },
     "semantic-consistency-review": {
-      "bytes": 44550,
-      "characters": 44550,
+      "bytes": 46097,
+      "characters": 46097,
       "declared_files": 12,
-      "estimated_tokens_4_chars": 11138,
+      "estimated_tokens_4_chars": 11525,
       "expected_budget_state": "compact",
       "missing_paths": [],
       "portable_paths": [
@@ -240,17 +240,17 @@
         ".ai/project/consistency-map.json",
         ".ai/assistant/consistency-reverse-index.json"
       ],
-      "target_words": 1908,
+      "target_words": 2074,
       "unresolved_references": [
         "{TARGET_CODE_SOURCE_OF_TRUTH}"
       ],
-      "words": 4522
+      "words": 4688
     },
     "team-large-change": {
-      "bytes": 69937,
-      "characters": 69937,
+      "bytes": 70934,
+      "characters": 70934,
       "declared_files": 15,
-      "estimated_tokens_4_chars": 17485,
+      "estimated_tokens_4_chars": 17734,
       "expected_budget_state": "expansion-receipt-required",
       "missing_paths": [],
       "portable_paths": [
@@ -289,17 +289,17 @@
         ".ai/assistant/team/context-overlay.json",
         ".ai/assistant/team/active-work-index.json"
       ],
-      "target_words": 3520,
+      "target_words": 3623,
       "unresolved_references": [
         "{TARGET_BLUEPRINT_OR_PRODUCT_SOURCE_OF_TRUTH}"
       ],
-      "words": 7526
+      "words": 7629
     },
     "test-first-code-change": {
-      "bytes": 41572,
-      "characters": 41572,
+      "bytes": 43913,
+      "characters": 43913,
       "declared_files": 11,
-      "estimated_tokens_4_chars": 10393,
+      "estimated_tokens_4_chars": 10979,
       "expected_budget_state": "expansion-receipt-required",
       "missing_paths": [],
       "portable_paths": [
@@ -309,7 +309,7 @@
         ".ai/framework/testing-guidance.md",
         ".ai/framework/test-first-development.md"
       ],
-      "portable_words": 4711,
+      "portable_words": 4815,
       "resolved_files": 10,
       "resolved_paths": [
         ".ai/assistant/context/profiles/code-local.json",
@@ -330,17 +330,17 @@
         ".ai/assistant/gates/final-evidence.md",
         ".ai/assistant/context/intents/test-first-request.json"
       ],
-      "target_words": 718,
+      "target_words": 884,
       "unresolved_references": [
         "{TARGET_CODE_SOURCE_OF_TRUTH}"
       ],
-      "words": 5429
+      "words": 5699
     },
     "workspace-mode-selection": {
-      "bytes": 37264,
-      "characters": 37264,
+      "bytes": 38811,
+      "characters": 38811,
       "declared_files": 11,
-      "estimated_tokens_4_chars": 9316,
+      "estimated_tokens_4_chars": 9703,
       "expected_budget_state": "compact",
       "missing_paths": [],
       "portable_paths": [
@@ -371,11 +371,11 @@
         ".ai/assistant/context/intents/workspace-mode-request.json",
         ".ai/project/workspace-modes/catalog.json"
       ],
-      "target_words": 719,
+      "target_words": 885,
       "unresolved_references": [
         "{TARGET_CODE_SOURCE_OF_TRUTH}"
       ],
-      "words": 4715
+      "words": 4881
     }
   },
   "intent_overlays": {
@@ -408,10 +408,10 @@
       "words": 2338
     },
     "code-documentation": {
-      "bytes": 23550,
-      "characters": 23550,
+      "bytes": 24006,
+      "characters": 24006,
       "declared_files": 5,
-      "estimated_tokens_4_chars": 5888,
+      "estimated_tokens_4_chars": 6002,
       "missing_paths": [],
       "portable_paths": [
         ".ai/framework/code-documentation.md"
@@ -431,9 +431,9 @@
         ".ai/project/documentation/profiles.json",
         ".ai/assistant/flows/documentation-sync.flow.md"
       ],
-      "target_words": 1030,
+      "target_words": 1071,
       "unresolved_references": [],
-      "words": 2616
+      "words": 2657
     },
     "dependency-knowledge-request": {
       "bytes": 18471,
@@ -462,15 +462,15 @@
       "words": 2195
     },
     "diagram-request": {
-      "bytes": 27855,
-      "characters": 27855,
+      "bytes": 28259,
+      "characters": 28259,
       "declared_files": 6,
-      "estimated_tokens_4_chars": 6964,
+      "estimated_tokens_4_chars": 7065,
       "missing_paths": [],
       "portable_paths": [
         ".ai/framework/diagram-guidance.md"
       ],
-      "portable_words": 1437,
+      "portable_words": 1459,
       "resolved_files": 6,
       "resolved_paths": [
         ".ai/assistant/context/intents/diagram-request.json",
@@ -487,9 +487,9 @@
         ".ai/assistant/assistant-capabilities.json",
         ".ai/assistant/assistant-capabilities/generic.json"
       ],
-      "target_words": 1544,
+      "target_words": 1575,
       "unresolved_references": [],
-      "words": 2981
+      "words": 3034
     },
     "extension-request": {
       "bytes": 21632,
@@ -520,16 +520,16 @@
       "words": 2704
     },
     "test-first-request": {
-      "bytes": 17409,
-      "characters": 17409,
+      "bytes": 18203,
+      "characters": 18203,
       "declared_files": 3,
-      "estimated_tokens_4_chars": 4353,
+      "estimated_tokens_4_chars": 4551,
       "missing_paths": [],
       "portable_paths": [
         ".ai/framework/testing-guidance.md",
         ".ai/framework/test-first-development.md"
       ],
-      "portable_words": 2097,
+      "portable_words": 2201,
       "resolved_files": 3,
       "resolved_paths": [
         ".ai/assistant/context/intents/test-first-request.json",
@@ -541,7 +541,7 @@
       ],
       "target_words": 217,
       "unresolved_references": [],
-      "words": 2314
+      "words": 2418
     },
     "vocabulary-request": {
       "bytes": 16999,
@@ -604,10 +604,10 @@
   "measurement": "whitespace-delimited words in resolved source templates",
   "migration_routing": {
     "full_candidate_union": {
-      "bytes": 409227,
-      "characters": 409227,
+      "bytes": 410952,
+      "characters": 410952,
       "declared_files": 36,
-      "estimated_tokens_4_chars": 102307,
+      "estimated_tokens_4_chars": 102738,
       "missing_paths": [],
       "portable_paths": [
         ".ai/framework/README.md",
@@ -644,7 +644,7 @@
         ".ai/framework/team-collaboration.md",
         ".ai/framework/testing-guidance.md"
       ],
-      "portable_words": 50238,
+      "portable_words": 50442,
       "resolved_files": 35,
       "resolved_paths": [
         ".ai/assistant/context/migration-routing.json",
@@ -687,17 +687,17 @@
         ".ai/assistant/context/migration-routing.json",
         ".ai/alatyr.yaml"
       ],
-      "target_words": 678,
+      "target_words": 682,
       "unresolved_references": [
         "{TARGET_UPGRADE_IMPACT_REPORT}"
       ],
-      "words": 50916
+      "words": 51124
     },
     "initial": {
-      "bytes": 17066,
-      "characters": 17066,
+      "bytes": 17230,
+      "characters": 17230,
       "declared_files": 3,
-      "estimated_tokens_4_chars": 4267,
+      "estimated_tokens_4_chars": 4308,
       "missing_paths": [],
       "portable_paths": [],
       "portable_words": 0,
@@ -710,21 +710,21 @@
         ".ai/assistant/context/migration-routing.json",
         ".ai/alatyr.yaml"
       ],
-      "target_words": 678,
+      "target_words": 682,
       "unresolved_references": [
         "{TARGET_UPGRADE_IMPACT_REPORT}"
       ],
-      "words": 678
+      "words": 682
     },
     "initial_word_reduction_percent": 98.7
   },
   "operation_routes": {
     "architecture-assistance": {
       "compact": {
-        "bytes": 32709,
-        "characters": 32709,
+        "bytes": 32763,
+        "characters": 32763,
         "declared_files": 6,
-        "estimated_tokens_4_chars": 8178,
+        "estimated_tokens_4_chars": 8191,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/architecture-knowledge.md"
@@ -746,22 +746,22 @@
           ".ai/assistant/flows/architecture-assistance.flow.md",
           ".ai/assistant/templates/architecture-discussion-result.md"
         ],
-        "target_words": 1774,
+        "target_words": 1778,
         "unresolved_references": [],
-        "words": 3013
+        "words": 3017
       },
       "full_reference_union": {
-        "bytes": 121390,
-        "characters": 121390,
+        "bytes": 121904,
+        "characters": 121904,
         "declared_files": 14,
-        "estimated_tokens_4_chars": 30348,
+        "estimated_tokens_4_chars": 30476,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/architecture-knowledge.md",
           ".ai/framework/diagram-guidance.md",
           ".ai/framework/blueprint-driven-change.md"
         ],
-        "portable_words": 3461,
+        "portable_words": 3483,
         "resolved_files": 14,
         "resolved_paths": [
           ".ai/assistant/operation-catalog.json",
@@ -792,18 +792,18 @@
           ".ai/assistant/templates/architecture-pattern.md",
           ".ai/assistant/templates/architecture-area.md"
         ],
-        "target_words": 8475,
+        "target_words": 8516,
         "unresolved_references": [],
-        "words": 11936
+        "words": 11999
       },
-      "word_reduction_percent": 74.8
+      "word_reduction_percent": 74.9
     },
     "code-documentation": {
       "compact": {
-        "bytes": 35087,
-        "characters": 35087,
+        "bytes": 35597,
+        "characters": 35597,
         "declared_files": 6,
-        "estimated_tokens_4_chars": 8772,
+        "estimated_tokens_4_chars": 8900,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/code-documentation.md"
@@ -825,15 +825,15 @@
           ".ai/project/documentation/profiles.json",
           ".ai/assistant/flows/documentation-sync.flow.md"
         ],
-        "target_words": 1705,
+        "target_words": 1750,
         "unresolved_references": [],
-        "words": 3291
+        "words": 3336
       },
       "full_reference_union": {
-        "bytes": 123967,
-        "characters": 123967,
+        "bytes": 124788,
+        "characters": 124788,
         "declared_files": 14,
-        "estimated_tokens_4_chars": 30992,
+        "estimated_tokens_4_chars": 31197,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/code-documentation.md",
@@ -871,18 +871,18 @@
           ".ai/assistant/templates/code-documentation-profile-review.md",
           ".ai/assistant/skills/code-documentation/SKILL.md"
         ],
-        "target_words": 8480,
+        "target_words": 8562,
         "unresolved_references": [],
-        "words": 12217
+        "words": 12299
       },
-      "word_reduction_percent": 73.1
+      "word_reduction_percent": 72.9
     },
     "dependency-knowledge": {
       "compact": {
-        "bytes": 30008,
-        "characters": 30008,
+        "bytes": 30062,
+        "characters": 30062,
         "declared_files": 5,
-        "estimated_tokens_4_chars": 7502,
+        "estimated_tokens_4_chars": 7516,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/dependency-knowledge.md"
@@ -902,15 +902,15 @@
           ".ai/project/dependencies/policy.json",
           ".ai/project/dependencies/catalog.json"
         ],
-        "target_words": 982,
+        "target_words": 986,
         "unresolved_references": [],
-        "words": 2870
+        "words": 2874
       },
       "full_reference_union": {
-        "bytes": 104590,
-        "characters": 104590,
+        "bytes": 104955,
+        "characters": 104955,
         "declared_files": 13,
-        "estimated_tokens_4_chars": 26148,
+        "estimated_tokens_4_chars": 26239,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/dependency-knowledge.md"
@@ -944,25 +944,25 @@
           ".ai/assistant/flows/dependency-knowledge-sync.flow.md",
           ".ai/assistant/gates/dependency-knowledge.md"
         ],
-        "target_words": 8226,
+        "target_words": 8267,
         "unresolved_references": [
           ".ai/project/dependencies/snapshots/{PACKAGE_INSTANCE_ID}/"
         ],
-        "words": 10114
+        "words": 10155
       },
-      "word_reduction_percent": 71.6
+      "word_reduction_percent": 71.7
     },
     "diagram-discussion": {
       "compact": {
-        "bytes": 39392,
-        "characters": 39392,
+        "bytes": 39850,
+        "characters": 39850,
         "declared_files": 7,
-        "estimated_tokens_4_chars": 9848,
+        "estimated_tokens_4_chars": 9963,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/diagram-guidance.md"
         ],
-        "portable_words": 1437,
+        "portable_words": 1459,
         "resolved_files": 7,
         "resolved_paths": [
           ".ai/assistant/operation-index.json",
@@ -981,20 +981,20 @@
           ".ai/assistant/assistant-capabilities.json",
           ".ai/assistant/assistant-capabilities/generic.json"
         ],
-        "target_words": 2219,
+        "target_words": 2254,
         "unresolved_references": [],
-        "words": 3656
+        "words": 3713
       },
       "full_reference_union": {
-        "bytes": 133754,
-        "characters": 133754,
+        "bytes": 134523,
+        "characters": 134523,
         "declared_files": 11,
-        "estimated_tokens_4_chars": 33439,
+        "estimated_tokens_4_chars": 33631,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/diagram-guidance.md"
         ],
-        "portable_words": 1437,
+        "portable_words": 1459,
         "resolved_files": 11,
         "resolved_paths": [
           ".ai/assistant/operation-catalog.json",
@@ -1021,18 +1021,18 @@
           ".ai/assistant/assistant-capabilities.json",
           ".ai/assistant/assistant-capabilities/generic.json"
         ],
-        "target_words": 10273,
+        "target_words": 10345,
         "unresolved_references": [],
-        "words": 11710
+        "words": 11804
       },
-      "word_reduction_percent": 68.8
+      "word_reduction_percent": 68.5
     },
     "extension-management": {
       "compact": {
-        "bytes": 33169,
-        "characters": 33169,
+        "bytes": 33223,
+        "characters": 33223,
         "declared_files": 6,
-        "estimated_tokens_4_chars": 8293,
+        "estimated_tokens_4_chars": 8306,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/extensions.md",
@@ -1054,15 +1054,15 @@
           ".ai/assistant/policies/ai-infrastructure-source-access.md",
           ".ai/assistant/extensions/catalog.json"
         ],
-        "target_words": 1383,
+        "target_words": 1387,
         "unresolved_references": [],
-        "words": 3379
+        "words": 3383
       },
       "full_reference_union": {
-        "bytes": 110581,
-        "characters": 110581,
+        "bytes": 110946,
+        "characters": 110946,
         "declared_files": 16,
-        "estimated_tokens_4_chars": 27646,
+        "estimated_tokens_4_chars": 27737,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/extensions.md",
@@ -1100,21 +1100,21 @@
           ".ai/assistant/templates/extension-review.md",
           ".ai/assistant/templates/extension-lifecycle-record.md"
         ],
-        "target_words": 8784,
+        "target_words": 8825,
         "unresolved_references": [
           ".ai/assistant/extensions/{EXTENSION_ID}/manifest.json",
           ".ai/assistant/extensions/{EXTENSION_ID}/bindings.json"
         ],
-        "words": 10780
+        "words": 10821
       },
       "word_reduction_percent": 68.7
     },
     "project-vocabulary": {
       "compact": {
-        "bytes": 28536,
-        "characters": 28536,
+        "bytes": 28590,
+        "characters": 28590,
         "declared_files": 5,
-        "estimated_tokens_4_chars": 7134,
+        "estimated_tokens_4_chars": 7148,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/project-vocabulary.md"
@@ -1134,15 +1134,15 @@
           ".ai/project/vocabulary/catalog.json",
           ".ai/assistant/flows/project-vocabulary.flow.md"
         ],
-        "target_words": 1416,
+        "target_words": 1420,
         "unresolved_references": [],
-        "words": 2774
+        "words": 2778
       },
       "full_reference_union": {
-        "bytes": 102597,
-        "characters": 102597,
+        "bytes": 102962,
+        "characters": 102962,
         "declared_files": 13,
-        "estimated_tokens_4_chars": 25650,
+        "estimated_tokens_4_chars": 25741,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/project-vocabulary.md"
@@ -1178,18 +1178,18 @@
           ".ai/assistant/templates/vocabulary-term-review.md",
           ".ai/assistant/skills/project-vocabulary/SKILL.md"
         ],
-        "target_words": 8264,
+        "target_words": 8305,
         "unresolved_references": [],
-        "words": 9622
+        "words": 9663
       },
-      "word_reduction_percent": 71.2
+      "word_reduction_percent": 71.3
     },
     "team-collaboration": {
       "compact": {
-        "bytes": 14527,
-        "characters": 14527,
+        "bytes": 14581,
+        "characters": 14581,
         "declared_files": 3,
-        "estimated_tokens_4_chars": 3632,
+        "estimated_tokens_4_chars": 3646,
         "missing_paths": [],
         "portable_paths": [],
         "portable_words": 0,
@@ -1204,15 +1204,15 @@
           ".ai/assistant/team/context-overlay.json",
           ".ai/assistant/team/active-work-index.json"
         ],
-        "target_words": 970,
+        "target_words": 974,
         "unresolved_references": [],
-        "words": 970
+        "words": 974
       },
       "full_reference_union": {
-        "bytes": 129419,
-        "characters": 129419,
+        "bytes": 129784,
+        "characters": 129784,
         "declared_files": 17,
-        "estimated_tokens_4_chars": 32355,
+        "estimated_tokens_4_chars": 32446,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/team-collaboration.md"
@@ -1256,24 +1256,24 @@
           ".ai/assistant/flows/team-decision.flow.md",
           ".ai/assistant/flows/team-review.flow.md"
         ],
-        "target_words": 10467,
+        "target_words": 10508,
         "unresolved_references": [],
-        "words": 12926
+        "words": 12967
       },
       "word_reduction_percent": 92.5
     },
     "test-first-development": {
       "compact": {
-        "bytes": 28946,
-        "characters": 28946,
+        "bytes": 29794,
+        "characters": 29794,
         "declared_files": 4,
-        "estimated_tokens_4_chars": 7237,
+        "estimated_tokens_4_chars": 7449,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/testing-guidance.md",
           ".ai/framework/test-first-development.md"
         ],
-        "portable_words": 2097,
+        "portable_words": 2201,
         "resolved_files": 4,
         "resolved_paths": [
           ".ai/assistant/operation-index.json",
@@ -1285,21 +1285,21 @@
           ".ai/assistant/operation-index.json",
           ".ai/assistant/context/intents/test-first-request.json"
         ],
-        "target_words": 892,
+        "target_words": 896,
         "unresolved_references": [],
-        "words": 2989
+        "words": 3097
       },
       "full_reference_union": {
-        "bytes": 108609,
-        "characters": 108609,
+        "bytes": 110153,
+        "characters": 110153,
         "declared_files": 14,
-        "estimated_tokens_4_chars": 27153,
+        "estimated_tokens_4_chars": 27539,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/testing-guidance.md",
           ".ai/framework/test-first-development.md"
         ],
-        "portable_words": 2097,
+        "portable_words": 2201,
         "resolved_files": 14,
         "resolved_paths": [
           ".ai/assistant/operation-catalog.json",
@@ -1331,18 +1331,18 @@
           ".ai/assistant/skills/test-first-development/SKILL.md",
           ".ai/assistant/templates/test-first-evidence.md"
         ],
-        "target_words": 8589,
+        "target_words": 8666,
         "unresolved_references": [],
-        "words": 10686
+        "words": 10867
       },
-      "word_reduction_percent": 72.0
+      "word_reduction_percent": 71.5
     },
     "workspace-mode": {
       "compact": {
-        "bytes": 24638,
-        "characters": 24638,
+        "bytes": 24692,
+        "characters": 24692,
         "declared_files": 4,
-        "estimated_tokens_4_chars": 6160,
+        "estimated_tokens_4_chars": 6173,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/workspace-modes.md"
@@ -1360,15 +1360,15 @@
           ".ai/assistant/context/intents/workspace-mode-request.json",
           ".ai/project/workspace-modes/catalog.json"
         ],
-        "target_words": 893,
+        "target_words": 897,
         "unresolved_references": [],
-        "words": 2275
+        "words": 2279
       },
       "full_reference_union": {
-        "bytes": 95531,
-        "characters": 95531,
+        "bytes": 95896,
+        "characters": 95896,
         "declared_files": 11,
-        "estimated_tokens_4_chars": 23883,
+        "estimated_tokens_4_chars": 23974,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/workspace-modes.md"
@@ -1398,11 +1398,11 @@
           ".ai/assistant/flows/workspace-mode.flow.md",
           ".ai/assistant/gates/workspace-mode.md"
         ],
-        "target_words": 7748,
+        "target_words": 7789,
         "unresolved_references": [
           ".ai/project/workspace-modes/modes/{MODE_ID}/mode.json"
         ],
-        "words": 9130
+        "words": 9171
       },
       "word_reduction_percent": 75.1
     }
@@ -1412,10 +1412,10 @@
       "bytes": 19875,
       "characters": 19875,
       "conditional_context": {
-        "bytes": 1825,
-        "characters": 1825,
+        "bytes": 2606,
+        "characters": 2606,
         "declared_files": 2,
-        "estimated_tokens_4_chars": 457,
+        "estimated_tokens_4_chars": 652,
         "missing_paths": [],
         "portable_paths": [],
         "portable_words": 0,
@@ -1428,17 +1428,17 @@
           ".ai/assistant/gates/final-evidence.md",
           ".ai/assistant/gates/security-approval.md"
         ],
-        "target_words": 197,
+        "target_words": 284,
         "unresolved_references": [],
-        "words": 197
+        "words": 284
       },
       "declared_files": 4,
       "estimated_tokens_4_chars": 4969,
       "full_candidate_union": {
-        "bytes": 21700,
-        "characters": 21700,
+        "bytes": 22481,
+        "characters": 22481,
         "declared_files": 6,
-        "estimated_tokens_4_chars": 5425,
+        "estimated_tokens_4_chars": 5621,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/ai-infrastructure-routing.md"
@@ -1460,9 +1460,9 @@
           ".ai/assistant/gates/final-evidence.md",
           ".ai/assistant/gates/security-approval.md"
         ],
-        "target_words": 1154,
+        "target_words": 1241,
         "unresolved_references": [],
-        "words": 2152
+        "words": 2239
       },
       "missing_paths": [],
       "portable_paths": [
@@ -1486,13 +1486,13 @@
       "words": 1955
     },
     "architecture-change": {
-      "bytes": 41721,
-      "characters": 41721,
+      "bytes": 42899,
+      "characters": 42899,
       "conditional_context": {
-        "bytes": 47495,
-        "characters": 47495,
-        "declared_files": 8,
-        "estimated_tokens_4_chars": 11874,
+        "bytes": 51843,
+        "characters": 51843,
+        "declared_files": 10,
+        "estimated_tokens_4_chars": 12961,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/source-of-truth-registry.md",
@@ -1501,34 +1501,164 @@
           ".ai/framework/security-safety-guidance.md",
           ".ai/framework/testing-guidance.md"
         ],
-        "portable_words": 4398,
+        "portable_words": 4502,
+        "resolved_files": 10,
+        "resolved_paths": [
+          ".ai/framework/source-of-truth-registry.md",
+          ".ai/framework/blueprint-driven-change.md",
+          ".ai/framework/approval-records.md",
+          ".ai/framework/security-safety-guidance.md",
+          ".ai/framework/testing-guidance.md",
+          ".ai/assistant/flows/blueprint-driven-change.flow.md",
+          ".ai/assistant/gates/contract-artifacts.md",
+          ".ai/assistant/gates/visual-validation.md",
+          ".ai/assistant/gates/security-approval.md",
+          ".ai/assistant/gates/checklist.md"
+        ],
+        "target_paths": [
+          ".ai/assistant/flows/blueprint-driven-change.flow.md",
+          ".ai/assistant/gates/contract-artifacts.md",
+          ".ai/assistant/gates/visual-validation.md",
+          ".ai/assistant/gates/security-approval.md",
+          ".ai/assistant/gates/checklist.md"
+        ],
+        "target_words": 2348,
+        "unresolved_references": [],
+        "words": 6850
+      },
+      "declared_files": 9,
+      "estimated_tokens_4_chars": 10725,
+      "full_candidate_union": {
+        "bytes": 94742,
+        "characters": 94742,
+        "declared_files": 19,
+        "estimated_tokens_4_chars": 23686,
+        "missing_paths": [],
+        "portable_paths": [
+          ".ai/framework/context-discovery.md",
+          ".ai/framework/change-risk-model.md",
+          ".ai/framework/logical-integrity.md",
+          ".ai/framework/source-of-truth-registry.md",
+          ".ai/framework/blueprint-driven-change.md",
+          ".ai/framework/approval-records.md",
+          ".ai/framework/security-safety-guidance.md",
+          ".ai/framework/testing-guidance.md"
+        ],
+        "portable_words": 7116,
+        "resolved_files": 18,
+        "resolved_paths": [
+          ".ai/assistant/context/profiles/architecture-change.json",
+          ".ai/framework/context-discovery.md",
+          ".ai/framework/change-risk-model.md",
+          ".ai/project/source-of-truth-registry.md",
+          ".ai/framework/logical-integrity.md",
+          ".ai/assistant/gates/core.md",
+          ".ai/assistant/gates/semantic-integrity.md",
+          ".ai/assistant/gates/final-evidence.md",
+          ".ai/framework/source-of-truth-registry.md",
+          ".ai/framework/blueprint-driven-change.md",
+          ".ai/framework/approval-records.md",
+          ".ai/framework/security-safety-guidance.md",
+          ".ai/framework/testing-guidance.md",
+          ".ai/assistant/flows/blueprint-driven-change.flow.md",
+          ".ai/assistant/gates/contract-artifacts.md",
+          ".ai/assistant/gates/visual-validation.md",
+          ".ai/assistant/gates/security-approval.md",
+          ".ai/assistant/gates/checklist.md"
+        ],
+        "target_paths": [
+          ".ai/assistant/context/profiles/architecture-change.json",
+          ".ai/project/source-of-truth-registry.md",
+          ".ai/assistant/gates/core.md",
+          ".ai/assistant/gates/semantic-integrity.md",
+          ".ai/assistant/gates/final-evidence.md",
+          ".ai/assistant/flows/blueprint-driven-change.flow.md",
+          ".ai/assistant/gates/contract-artifacts.md",
+          ".ai/assistant/gates/visual-validation.md",
+          ".ai/assistant/gates/security-approval.md",
+          ".ai/assistant/gates/checklist.md"
+        ],
+        "target_words": 4138,
+        "unresolved_references": [
+          "{TARGET_ARCHITECTURE_SOURCE_OF_TRUTH}"
+        ],
+        "words": 11254
+      },
+      "missing_paths": [],
+      "portable_paths": [
+        ".ai/framework/context-discovery.md",
+        ".ai/framework/change-risk-model.md",
+        ".ai/framework/logical-integrity.md"
+      ],
+      "portable_words": 2614,
+      "resolved_files": 8,
+      "resolved_paths": [
+        ".ai/assistant/context/profiles/architecture-change.json",
+        ".ai/framework/context-discovery.md",
+        ".ai/framework/change-risk-model.md",
+        ".ai/project/source-of-truth-registry.md",
+        ".ai/framework/logical-integrity.md",
+        ".ai/assistant/gates/core.md",
+        ".ai/assistant/gates/semantic-integrity.md",
+        ".ai/assistant/gates/final-evidence.md"
+      ],
+      "target_paths": [
+        ".ai/assistant/context/profiles/architecture-change.json",
+        ".ai/project/source-of-truth-registry.md",
+        ".ai/assistant/gates/core.md",
+        ".ai/assistant/gates/semantic-integrity.md",
+        ".ai/assistant/gates/final-evidence.md"
+      ],
+      "target_words": 1790,
+      "unresolved_references": [
+        "{TARGET_ARCHITECTURE_SOURCE_OF_TRUTH}"
+      ],
+      "words": 4404
+    },
+    "business-change": {
+      "bytes": 42483,
+      "characters": 42483,
+      "conditional_context": {
+        "bytes": 46904,
+        "characters": 46904,
+        "declared_files": 8,
+        "estimated_tokens_4_chars": 11726,
+        "missing_paths": [],
+        "portable_paths": [
+          ".ai/framework/source-of-truth-registry.md",
+          ".ai/framework/blueprint-driven-change.md",
+          ".ai/framework/approval-records.md",
+          ".ai/framework/testing-guidance.md"
+        ],
+        "portable_words": 3993,
         "resolved_files": 8,
         "resolved_paths": [
           ".ai/framework/source-of-truth-registry.md",
           ".ai/framework/blueprint-driven-change.md",
           ".ai/framework/approval-records.md",
-          ".ai/framework/security-safety-guidance.md",
           ".ai/framework/testing-guidance.md",
           ".ai/assistant/flows/blueprint-driven-change.flow.md",
+          ".ai/assistant/gates/contract-artifacts.md",
           ".ai/assistant/gates/security-approval.md",
           ".ai/assistant/gates/checklist.md"
         ],
         "target_paths": [
           ".ai/assistant/flows/blueprint-driven-change.flow.md",
+          ".ai/assistant/gates/contract-artifacts.md",
           ".ai/assistant/gates/security-approval.md",
           ".ai/assistant/gates/checklist.md"
         ],
-        "target_words": 1903,
+        "target_words": 2202,
         "unresolved_references": [],
-        "words": 6301
+        "words": 6195
       },
       "declared_files": 9,
-      "estimated_tokens_4_chars": 10431,
+      "estimated_tokens_4_chars": 10621,
       "full_candidate_union": {
-        "bytes": 89216,
-        "characters": 89216,
+        "bytes": 89387,
+        "characters": 89387,
         "declared_files": 17,
-        "estimated_tokens_4_chars": 22304,
+        "estimated_tokens_4_chars": 22347,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/context-discovery.md",
@@ -1537,131 +1667,11 @@
           ".ai/framework/source-of-truth-registry.md",
           ".ai/framework/blueprint-driven-change.md",
           ".ai/framework/approval-records.md",
-          ".ai/framework/security-safety-guidance.md",
           ".ai/framework/testing-guidance.md"
         ],
-        "portable_words": 7012,
+        "portable_words": 6607,
         "resolved_files": 16,
         "resolved_paths": [
-          ".ai/assistant/context/profiles/architecture-change.json",
-          ".ai/framework/context-discovery.md",
-          ".ai/framework/change-risk-model.md",
-          ".ai/project/source-of-truth-registry.md",
-          ".ai/framework/logical-integrity.md",
-          ".ai/assistant/gates/core.md",
-          ".ai/assistant/gates/semantic-integrity.md",
-          ".ai/assistant/gates/final-evidence.md",
-          ".ai/framework/source-of-truth-registry.md",
-          ".ai/framework/blueprint-driven-change.md",
-          ".ai/framework/approval-records.md",
-          ".ai/framework/security-safety-guidance.md",
-          ".ai/framework/testing-guidance.md",
-          ".ai/assistant/flows/blueprint-driven-change.flow.md",
-          ".ai/assistant/gates/security-approval.md",
-          ".ai/assistant/gates/checklist.md"
-        ],
-        "target_paths": [
-          ".ai/assistant/context/profiles/architecture-change.json",
-          ".ai/project/source-of-truth-registry.md",
-          ".ai/assistant/gates/core.md",
-          ".ai/assistant/gates/semantic-integrity.md",
-          ".ai/assistant/gates/final-evidence.md",
-          ".ai/assistant/flows/blueprint-driven-change.flow.md",
-          ".ai/assistant/gates/security-approval.md",
-          ".ai/assistant/gates/checklist.md"
-        ],
-        "target_words": 3575,
-        "unresolved_references": [
-          "{TARGET_ARCHITECTURE_SOURCE_OF_TRUTH}"
-        ],
-        "words": 10587
-      },
-      "missing_paths": [],
-      "portable_paths": [
-        ".ai/framework/context-discovery.md",
-        ".ai/framework/change-risk-model.md",
-        ".ai/framework/logical-integrity.md"
-      ],
-      "portable_words": 2614,
-      "resolved_files": 8,
-      "resolved_paths": [
-        ".ai/assistant/context/profiles/architecture-change.json",
-        ".ai/framework/context-discovery.md",
-        ".ai/framework/change-risk-model.md",
-        ".ai/project/source-of-truth-registry.md",
-        ".ai/framework/logical-integrity.md",
-        ".ai/assistant/gates/core.md",
-        ".ai/assistant/gates/semantic-integrity.md",
-        ".ai/assistant/gates/final-evidence.md"
-      ],
-      "target_paths": [
-        ".ai/assistant/context/profiles/architecture-change.json",
-        ".ai/project/source-of-truth-registry.md",
-        ".ai/assistant/gates/core.md",
-        ".ai/assistant/gates/semantic-integrity.md",
-        ".ai/assistant/gates/final-evidence.md"
-      ],
-      "target_words": 1672,
-      "unresolved_references": [
-        "{TARGET_ARCHITECTURE_SOURCE_OF_TRUTH}"
-      ],
-      "words": 4286
-    },
-    "business-change": {
-      "bytes": 41486,
-      "characters": 41486,
-      "conditional_context": {
-        "bytes": 43657,
-        "characters": 43657,
-        "declared_files": 7,
-        "estimated_tokens_4_chars": 10915,
-        "missing_paths": [],
-        "portable_paths": [
-          ".ai/framework/source-of-truth-registry.md",
-          ".ai/framework/blueprint-driven-change.md",
-          ".ai/framework/approval-records.md",
-          ".ai/framework/testing-guidance.md"
-        ],
-        "portable_words": 3889,
-        "resolved_files": 7,
-        "resolved_paths": [
-          ".ai/framework/source-of-truth-registry.md",
-          ".ai/framework/blueprint-driven-change.md",
-          ".ai/framework/approval-records.md",
-          ".ai/framework/testing-guidance.md",
-          ".ai/assistant/flows/blueprint-driven-change.flow.md",
-          ".ai/assistant/gates/security-approval.md",
-          ".ai/assistant/gates/checklist.md"
-        ],
-        "target_paths": [
-          ".ai/assistant/flows/blueprint-driven-change.flow.md",
-          ".ai/assistant/gates/security-approval.md",
-          ".ai/assistant/gates/checklist.md"
-        ],
-        "target_words": 1903,
-        "unresolved_references": [],
-        "words": 5792
-      },
-      "declared_files": 9,
-      "estimated_tokens_4_chars": 10372,
-      "full_candidate_union": {
-        "bytes": 85143,
-        "characters": 85143,
-        "declared_files": 16,
-        "estimated_tokens_4_chars": 21286,
-        "missing_paths": [],
-        "portable_paths": [
-          ".ai/framework/context-discovery.md",
-          ".ai/framework/change-risk-model.md",
-          ".ai/framework/logical-integrity.md",
-          ".ai/framework/source-of-truth-registry.md",
-          ".ai/framework/blueprint-driven-change.md",
-          ".ai/framework/approval-records.md",
-          ".ai/framework/testing-guidance.md"
-        ],
-        "portable_words": 6503,
-        "resolved_files": 15,
-        "resolved_paths": [
           ".ai/assistant/context/profiles/business-change.json",
           ".ai/framework/context-discovery.md",
           ".ai/framework/change-risk-model.md",
@@ -1675,6 +1685,7 @@
           ".ai/framework/approval-records.md",
           ".ai/framework/testing-guidance.md",
           ".ai/assistant/flows/blueprint-driven-change.flow.md",
+          ".ai/assistant/gates/contract-artifacts.md",
           ".ai/assistant/gates/security-approval.md",
           ".ai/assistant/gates/checklist.md"
         ],
@@ -1685,14 +1696,15 @@
           ".ai/assistant/gates/semantic-integrity.md",
           ".ai/assistant/gates/final-evidence.md",
           ".ai/assistant/flows/blueprint-driven-change.flow.md",
+          ".ai/assistant/gates/contract-artifacts.md",
           ".ai/assistant/gates/security-approval.md",
           ".ai/assistant/gates/checklist.md"
         ],
-        "target_words": 3554,
+        "target_words": 3956,
         "unresolved_references": [
           "{TARGET_BLUEPRINT_OR_PRODUCT_SOURCE_OF_TRUTH}"
         ],
-        "words": 10057
+        "words": 10563
       },
       "missing_paths": [],
       "portable_paths": [
@@ -1719,48 +1731,52 @@
         ".ai/assistant/gates/semantic-integrity.md",
         ".ai/assistant/gates/final-evidence.md"
       ],
-      "target_words": 1651,
+      "target_words": 1754,
       "unresolved_references": [
         "{TARGET_BLUEPRINT_OR_PRODUCT_SOURCE_OF_TRUTH}"
       ],
-      "words": 4265
+      "words": 4368
     },
     "code-local": {
-      "bytes": 24163,
-      "characters": 24163,
+      "bytes": 25710,
+      "characters": 25710,
       "conditional_context": {
-        "bytes": 15074,
-        "characters": 15074,
-        "declared_files": 4,
-        "estimated_tokens_4_chars": 3769,
+        "bytes": 18902,
+        "characters": 18902,
+        "declared_files": 6,
+        "estimated_tokens_4_chars": 4726,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/testing-guidance.md",
           ".ai/framework/support-information.md"
         ],
-        "portable_words": 1864,
-        "resolved_files": 4,
+        "portable_words": 2072,
+        "resolved_files": 6,
         "resolved_paths": [
           ".ai/framework/testing-guidance.md",
           ".ai/assistant/gates/semantic-integrity.md",
           ".ai/assistant/gates/security-approval.md",
+          ".ai/assistant/gates/contract-artifacts.md",
+          ".ai/assistant/gates/visual-validation.md",
           ".ai/framework/support-information.md"
         ],
         "target_paths": [
           ".ai/assistant/gates/semantic-integrity.md",
-          ".ai/assistant/gates/security-approval.md"
+          ".ai/assistant/gates/security-approval.md",
+          ".ai/assistant/gates/contract-artifacts.md",
+          ".ai/assistant/gates/visual-validation.md"
         ],
-        "target_words": 159,
+        "target_words": 467,
         "unresolved_references": [],
-        "words": 2023
+        "words": 2539
       },
       "declared_files": 8,
-      "estimated_tokens_4_chars": 6041,
+      "estimated_tokens_4_chars": 6428,
       "full_candidate_union": {
-        "bytes": 39237,
-        "characters": 39237,
-        "declared_files": 12,
-        "estimated_tokens_4_chars": 9810,
+        "bytes": 44612,
+        "characters": 44612,
+        "declared_files": 14,
+        "estimated_tokens_4_chars": 11153,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/context-discovery.md",
@@ -1769,8 +1785,8 @@
           ".ai/framework/testing-guidance.md",
           ".ai/framework/support-information.md"
         ],
-        "portable_words": 4478,
-        "resolved_files": 11,
+        "portable_words": 4686,
+        "resolved_files": 13,
         "resolved_paths": [
           ".ai/assistant/context/profiles/code-local.json",
           ".ai/framework/context-discovery.md",
@@ -1782,6 +1798,8 @@
           ".ai/framework/testing-guidance.md",
           ".ai/assistant/gates/semantic-integrity.md",
           ".ai/assistant/gates/security-approval.md",
+          ".ai/assistant/gates/contract-artifacts.md",
+          ".ai/assistant/gates/visual-validation.md",
           ".ai/framework/support-information.md"
         ],
         "target_paths": [
@@ -1790,13 +1808,15 @@
           ".ai/assistant/gates/code-and-tests.md",
           ".ai/assistant/gates/final-evidence.md",
           ".ai/assistant/gates/semantic-integrity.md",
-          ".ai/assistant/gates/security-approval.md"
+          ".ai/assistant/gates/security-approval.md",
+          ".ai/assistant/gates/contract-artifacts.md",
+          ".ai/assistant/gates/visual-validation.md"
         ],
-        "target_words": 660,
+        "target_words": 1134,
         "unresolved_references": [
           "{TARGET_CODE_SOURCE_OF_TRUTH}"
         ],
-        "words": 5138
+        "words": 5820
       },
       "missing_paths": [],
       "portable_paths": [
@@ -1821,20 +1841,20 @@
         ".ai/assistant/gates/code-and-tests.md",
         ".ai/assistant/gates/final-evidence.md"
       ],
-      "target_words": 501,
+      "target_words": 667,
       "unresolved_references": [
         "{TARGET_CODE_SOURCE_OF_TRUTH}"
       ],
-      "words": 3115
+      "words": 3281
     },
     "data-change": {
-      "bytes": 36670,
-      "characters": 36670,
+      "bytes": 38002,
+      "characters": 38002,
       "conditional_context": {
-        "bytes": 35264,
-        "characters": 35264,
-        "declared_files": 6,
-        "estimated_tokens_4_chars": 8816,
+        "bytes": 37733,
+        "characters": 37733,
+        "declared_files": 7,
+        "estimated_tokens_4_chars": 9434,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/context-discovery.md",
@@ -1842,31 +1862,33 @@
           ".ai/framework/security-safety-guidance.md",
           ".ai/framework/testing-guidance.md"
         ],
-        "portable_words": 3328,
-        "resolved_files": 6,
+        "portable_words": 3432,
+        "resolved_files": 7,
         "resolved_paths": [
           ".ai/framework/context-discovery.md",
           ".ai/framework/source-of-truth-registry.md",
           ".ai/framework/security-safety-guidance.md",
           ".ai/framework/testing-guidance.md",
+          ".ai/assistant/gates/contract-artifacts.md",
           ".ai/assistant/gates/security-approval.md",
           ".ai/assistant/gates/checklist.md"
         ],
         "target_paths": [
+          ".ai/assistant/gates/contract-artifacts.md",
           ".ai/assistant/gates/security-approval.md",
           ".ai/assistant/gates/checklist.md"
         ],
-        "target_words": 1353,
+        "target_words": 1568,
         "unresolved_references": [],
-        "words": 4681
+        "words": 5000
       },
       "declared_files": 9,
-      "estimated_tokens_4_chars": 9168,
+      "estimated_tokens_4_chars": 9501,
       "full_candidate_union": {
-        "bytes": 71934,
-        "characters": 71934,
-        "declared_files": 15,
-        "estimated_tokens_4_chars": 17984,
+        "bytes": 75735,
+        "characters": 75735,
+        "declared_files": 16,
+        "estimated_tokens_4_chars": 18934,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/change-risk-model.md",
@@ -1876,8 +1898,8 @@
           ".ai/framework/security-safety-guidance.md",
           ".ai/framework/testing-guidance.md"
         ],
-        "portable_words": 5203,
-        "resolved_files": 14,
+        "portable_words": 5307,
+        "resolved_files": 15,
         "resolved_paths": [
           ".ai/assistant/context/profiles/data-change.json",
           ".ai/framework/change-risk-model.md",
@@ -1891,6 +1913,7 @@
           ".ai/framework/source-of-truth-registry.md",
           ".ai/framework/security-safety-guidance.md",
           ".ai/framework/testing-guidance.md",
+          ".ai/assistant/gates/contract-artifacts.md",
           ".ai/assistant/gates/security-approval.md",
           ".ai/assistant/gates/checklist.md"
         ],
@@ -1901,14 +1924,15 @@
           ".ai/assistant/gates/semantic-integrity.md",
           ".ai/assistant/gates/code-and-tests.md",
           ".ai/assistant/gates/final-evidence.md",
+          ".ai/assistant/gates/contract-artifacts.md",
           ".ai/assistant/gates/security-approval.md",
           ".ai/assistant/gates/checklist.md"
         ],
-        "target_words": 3090,
+        "target_words": 3449,
         "unresolved_references": [
           "{TARGET_DATA_SOURCE_OF_TRUTH}"
         ],
-        "words": 8293
+        "words": 8756
       },
       "missing_paths": [],
       "portable_paths": [
@@ -1935,25 +1959,25 @@
         ".ai/assistant/gates/code-and-tests.md",
         ".ai/assistant/gates/final-evidence.md"
       ],
-      "target_words": 1737,
+      "target_words": 1881,
       "unresolved_references": [
         "{TARGET_DATA_SOURCE_OF_TRUTH}"
       ],
-      "words": 3612
+      "words": 3756
     },
     "docs-local": {
-      "bytes": 9710,
-      "characters": 9710,
+      "bytes": 10491,
+      "characters": 10491,
       "conditional_context": {
-        "bytes": 7072,
-        "characters": 7072,
+        "bytes": 7810,
+        "characters": 7810,
         "declared_files": 1,
-        "estimated_tokens_4_chars": 1768,
+        "estimated_tokens_4_chars": 1953,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/support-information.md"
         ],
-        "portable_words": 920,
+        "portable_words": 1024,
         "resolved_files": 1,
         "resolved_paths": [
           ".ai/framework/support-information.md"
@@ -1961,21 +1985,21 @@
         "target_paths": [],
         "target_words": 0,
         "unresolved_references": [],
-        "words": 920
+        "words": 1024
       },
       "declared_files": 6,
-      "estimated_tokens_4_chars": 2428,
+      "estimated_tokens_4_chars": 2623,
       "full_candidate_union": {
-        "bytes": 16782,
-        "characters": 16782,
+        "bytes": 18301,
+        "characters": 18301,
         "declared_files": 7,
-        "estimated_tokens_4_chars": 4196,
+        "estimated_tokens_4_chars": 4576,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/context-discovery.md",
           ".ai/framework/support-information.md"
         ],
-        "portable_words": 1659,
+        "portable_words": 1763,
         "resolved_files": 6,
         "resolved_paths": [
           ".ai/assistant/context/profiles/docs-local.json",
@@ -1991,11 +2015,11 @@
           ".ai/assistant/gates/documentation.md",
           ".ai/assistant/gates/final-evidence.md"
         ],
-        "target_words": 433,
+        "target_words": 520,
         "unresolved_references": [
           "{TARGET_DOC_SOURCE_OF_TRUTH}"
         ],
-        "words": 2092
+        "words": 2283
       },
       "missing_paths": [],
       "portable_paths": [
@@ -2016,20 +2040,20 @@
         ".ai/assistant/gates/documentation.md",
         ".ai/assistant/gates/final-evidence.md"
       ],
-      "target_words": 433,
+      "target_words": 520,
       "unresolved_references": [
         "{TARGET_DOC_SOURCE_OF_TRUTH}"
       ],
-      "words": 1172
+      "words": 1259
     },
     "framework-upgrade": {
-      "bytes": 7479,
-      "characters": 7479,
+      "bytes": 8260,
+      "characters": 8260,
       "conditional_context": {
-        "bytes": 112499,
-        "characters": 112499,
+        "bytes": 113237,
+        "characters": 113237,
         "declared_files": 9,
-        "estimated_tokens_4_chars": 28125,
+        "estimated_tokens_4_chars": 28310,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/action-authorization.md",
@@ -2038,7 +2062,7 @@
           ".ai/framework/support-information.md",
           ".ai/framework/rule-registry.json"
         ],
-        "portable_words": 9305,
+        "portable_words": 9409,
         "resolved_files": 9,
         "resolved_paths": [
           ".ai/framework/action-authorization.md",
@@ -2059,15 +2083,15 @@
         ],
         "target_words": 2821,
         "unresolved_references": [],
-        "words": 12126
+        "words": 12230
       },
       "declared_files": 5,
-      "estimated_tokens_4_chars": 1870,
+      "estimated_tokens_4_chars": 2065,
       "full_candidate_union": {
-        "bytes": 119978,
-        "characters": 119978,
+        "bytes": 121497,
+        "characters": 121497,
         "declared_files": 14,
-        "estimated_tokens_4_chars": 29995,
+        "estimated_tokens_4_chars": 30375,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/action-authorization.md",
@@ -2076,7 +2100,7 @@
           ".ai/framework/support-information.md",
           ".ai/framework/rule-registry.json"
         ],
-        "portable_words": 9305,
+        "portable_words": 9409,
         "resolved_files": 13,
         "resolved_paths": [
           ".ai/assistant/context/profiles/framework-upgrade.json",
@@ -2103,11 +2127,11 @@
           ".ai/assistant/templates/migration-note.md",
           ".ai/assistant/gates/security-approval.md"
         ],
-        "target_words": 3421,
+        "target_words": 3508,
         "unresolved_references": [
           "{TARGET_UPGRADE_IMPACT_REPORT}"
         ],
-        "words": 12726
+        "words": 12917
       },
       "missing_paths": [],
       "portable_paths": [],
@@ -2125,15 +2149,15 @@
         ".ai/assistant/gates/core.md",
         ".ai/assistant/gates/final-evidence.md"
       ],
-      "target_words": 600,
+      "target_words": 687,
       "unresolved_references": [
         "{TARGET_UPGRADE_IMPACT_REPORT}"
       ],
-      "words": 600
+      "words": 687
     },
     "security-sensitive": {
-      "bytes": 35212,
-      "characters": 35212,
+      "bytes": 35993,
+      "characters": 35993,
       "conditional_context": {
         "bytes": 14633,
         "characters": 14633,
@@ -2159,12 +2183,12 @@
         "words": 2005
       },
       "declared_files": 9,
-      "estimated_tokens_4_chars": 8803,
+      "estimated_tokens_4_chars": 8999,
       "full_candidate_union": {
-        "bytes": 49845,
-        "characters": 49845,
+        "bytes": 50626,
+        "characters": 50626,
         "declared_files": 12,
-        "estimated_tokens_4_chars": 12462,
+        "estimated_tokens_4_chars": 12657,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/security-safety-guidance.md",
@@ -2196,11 +2220,11 @@
           ".ai/assistant/gates/final-evidence.md",
           ".ai/assistant/policies/prompt-injection.md"
         ],
-        "target_words": 2032,
+        "target_words": 2119,
         "unresolved_references": [
           "{TARGET_SECURITY_SOURCE_OF_TRUTH}"
         ],
-        "words": 5440
+        "words": 5527
       },
       "missing_paths": [],
       "portable_paths": [
@@ -2227,21 +2251,21 @@
         ".ai/assistant/gates/security-approval.md",
         ".ai/assistant/gates/final-evidence.md"
       ],
-      "target_words": 1687,
+      "target_words": 1774,
       "unresolved_references": [
         "{TARGET_SECURITY_SOURCE_OF_TRUTH}"
       ],
-      "words": 3435
+      "words": 3522
     }
   },
   "report_kind": "static-target-context-cost",
   "routing_primitives": {
     "recursive_selection": {
       "full_framework_candidate_union": {
-        "bytes": 646307,
-        "characters": 646307,
+        "bytes": 650714,
+        "characters": 650714,
         "declared_files": 58,
-        "estimated_tokens_4_chars": 161577,
+        "estimated_tokens_4_chars": 162679,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/README.md",
@@ -2303,7 +2327,7 @@
           ".ai/framework/testing-guidance.md",
           ".ai/framework/workspace-modes.md"
         ],
-        "portable_words": 80257,
+        "portable_words": 80834,
         "resolved_files": 58,
         "resolved_paths": [
           ".ai/framework/README.md",
@@ -2368,7 +2392,7 @@
         "target_paths": [],
         "target_words": 0,
         "unresolved_references": [],
-        "words": 80257
+        "words": 80834
       },
       "selected_route": {
         "bytes": 31186,
@@ -2393,12 +2417,12 @@
         "unresolved_references": [],
         "words": 2934
       },
-      "word_reduction_percent": 96.3
+      "word_reduction_percent": 96.4
     },
     "semantic_codebook": {
-      "compact_definition_and_reference_words": 728,
-      "expanded_definition_words": 12929,
-      "reference_count": 363,
+      "compact_definition_and_reference_words": 732,
+      "expanded_definition_words": 13077,
+      "reference_count": 367,
       "resolved_term_count": 11,
       "word_reduction_percent": 94.4
     }
@@ -2465,15 +2489,15 @@
       "words": 1862
     },
     "debug-mode": {
-      "bytes": 31523,
-      "characters": 31523,
+      "bytes": 33802,
+      "characters": 33802,
       "declared_files": 4,
-      "estimated_tokens_4_chars": 7881,
+      "estimated_tokens_4_chars": 8451,
       "missing_paths": [],
       "portable_paths": [
         ".ai/framework/debug-mode.md"
       ],
-      "portable_words": 3070,
+      "portable_words": 3289,
       "resolved_files": 4,
       "resolved_paths": [
         ".ai/assistant/context/task-scales/debug-mode.json",
@@ -2486,9 +2510,9 @@
         ".ai/assistant/gates/debug-mode.md",
         ".ai/project/debug/index.json"
       ],
-      "target_words": 891,
+      "target_words": 954,
       "unresolved_references": [],
-      "words": 3961
+      "words": 4243
     },
     "delegated-execution": {
       "bytes": 37689,
@@ -2529,15 +2553,15 @@
       "words": 3924
     },
     "engineering-evidence": {
-      "bytes": 14456,
-      "characters": 14456,
+      "bytes": 14830,
+      "characters": 14830,
       "declared_files": 4,
-      "estimated_tokens_4_chars": 3614,
+      "estimated_tokens_4_chars": 3708,
       "missing_paths": [],
       "portable_paths": [
         ".ai/framework/engineering-evidence.md"
       ],
-      "portable_words": 1436,
+      "portable_words": 1486,
       "resolved_files": 4,
       "resolved_paths": [
         ".ai/assistant/context/task-scales/engineering-evidence.json",
@@ -2552,7 +2576,7 @@
       ],
       "target_words": 474,
       "unresolved_references": [],
-      "words": 1910
+      "words": 1960
     },
     "large-or-resumable": {
       "bytes": 25461,

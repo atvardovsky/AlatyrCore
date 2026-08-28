@@ -59,6 +59,7 @@
     "logical integrity review": "logical-integrity-review",
     "Alatyr impact": "logical-integrity-review",
     "Alatyr support diff": "logical-integrity-review",
+    "Alatyr change cost": "logical-integrity-review",
     "Alatyr generate support": "support-generation",
     "Alatyr check generated support": "support-generation",
     "Alatyr diagram": "diagram-discussion",

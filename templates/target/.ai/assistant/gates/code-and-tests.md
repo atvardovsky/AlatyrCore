@@ -8,5 +8,10 @@ levels, isolation, or cross-boundary validation.
 - Prefer the smallest deterministic test level that proves that contract.
 - Cover relevant failure, boundary, ownership, idempotency, persistence, or
   external-error behavior; expand only for applicable risks.
+- Apply the contract-artifacts gate when the changed behavior affects a public
+  interface, schema, fixture, generated reference, event, API, or external
+  boundary.
+- Apply the visual-validation gate when UI layout, diagram rendering, visual
+  artifact, screenshot-relevant, or accessibility-relevant behavior changes.
 - Use target-owned commands, fixtures, isolation, and CI evidence.
 - Do not weaken assertions or delete useful coverage to make a change pass.

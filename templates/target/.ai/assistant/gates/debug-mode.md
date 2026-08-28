@@ -11,7 +11,7 @@ When Debug Mode is requested or active, verify:
 - events are material, normalized, evidenced, ordered, and causally attributable
 - the initial task request remains activation metadata and is not counted as a
   human intervention without a specific investigative effect
-- new schema-version-5 records separate actor role, target-local identity,
+- schema-version-5 and newer records separate actor role, target-local identity,
   provenance, causal class, intervention kind, correction disposition,
   contribution kind, and category
 - actor roles distinguish `human`, `executor`, `alatyr-system`,
@@ -52,12 +52,20 @@ When Debug Mode is requested or active, verify:
   a skip has registry-backed canonical preservation for each applicable result
 - validation fidelity distinguishes exact reproduction from representative,
   partial, unavailable, or not-applicable evidence and retains unresolved gaps
+- schema-version-6 validation results classify each claim as declared,
+  locally-observed, tool-verified, CI-verified, reviewer-verified, or
+  production-verified with source, revision, time, and limitations
 - completed records are immutable; continued work uses a newly activated record
   with one closed predecessor, shared task lineage, a distinct scope ID, and no
   continuation cycle
 - phase-complete records name omitted phases and do not imply full-task
   completion; full-task records cover analysis, implementation, validation, and
   finalization
+- schema-version-6 repository lifecycle state agrees with Debug status,
+  repository binding, commit evidence, publish evidence, finalization evidence,
+  and the last verified revision
+- when Debug/Git reconciliation is requested, active or provisional records do
+  not contradict actual committed or published implementation work
 - every durable engineering-evidence ID resolves exactly once in the target
   Engineering Evidence index and schema-version-3 evidence links back to the
   Debug ID; Debug event IDs and temporary IDs are not used

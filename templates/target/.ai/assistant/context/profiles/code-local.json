@@ -40,6 +40,14 @@
       "when": "the repair crosses a protected or security-sensitive boundary"
     },
     {
+      "path": ".ai/assistant/gates/contract-artifacts.md",
+      "when": "the repair changes a public interface schema fixture generated reference event API or external boundary"
+    },
+    {
+      "path": ".ai/assistant/gates/visual-validation.md",
+      "when": "the repair changes UI layout accessibility rendered diagrams visual artifacts or presentation evidence"
+    },
+    {
       "path": ".ai/framework/support-information.md",
       "when": "support-state impact routing relationship candidates or generation semantics are disputed"
     }
@@ -63,6 +71,8 @@
     "changed_files",
     "re_derived_invariants",
     "review_item_reconciliation",
+    "contract_artifact_result",
+    "visual_validation_result",
     "validation",
     "doc_sync_result",
     "residual_risk"

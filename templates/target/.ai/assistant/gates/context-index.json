@@ -30,8 +30,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1271,
-      "content_digest": "sha256:211a64fd310569816d0d770eaa2a4c1f6d659e416f7147754dade319f2719f6c"
+      "estimated_words": 1324,
+      "content_digest": "sha256:865fac3c166c7cdca337fba51e501693b37e0798cbcc771e8f6fbe75305c0bf9"
     },
     {
       "id": "assistant.content.gates-code-and-tests-md",
@@ -58,8 +58,35 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 87,
-      "content_digest": "sha256:b7d61339a70490faa410cae3d8b0adf5dcae2610bbe3d6ab91653eff143658f5"
+      "estimated_words": 126,
+      "content_digest": "sha256:80c492b0fac047422d02ffc9c8d0f163cb661cc25650efc91e8e25c122b8eff1"
+    },
+    {
+      "id": "assistant.content.gates-contract-artifacts-md",
+      "kind": "content",
+      "path": "gates/contract-artifacts.md",
+      "summary": "Contract Artifacts Gate",
+      "selectors": {
+        "path_terms": [
+          "gates",
+          "contract",
+          "artifacts"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 162,
+      "content_digest": "sha256:41aa3ba36641b4168e4b819fc94def6ad312b982c09db1de0b12c60d84f827f2"
     },
     {
       "id": "assistant.content.gates-core-md",
@@ -111,8 +138,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 555,
-      "content_digest": "sha256:edfa5a552eab361aaf1550d34761535e0eddf3a6822d23736b50c5fe85a5b6ca"
+      "estimated_words": 618,
+      "content_digest": "sha256:e726045d73b02f67696baf519c0023c596053ad40df628763ab1d0cd3f6c609c"
     },
     {
       "id": "assistant.content.gates-dependency-knowledge-md",
@@ -256,8 +283,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 115,
-      "content_digest": "sha256:97773af0ff2438223a709ac8a38623d1115d3a5c1206d0b0fb017a14d761bb4b"
+      "estimated_words": 202,
+      "content_digest": "sha256:e51d3d7b0decc54729a583c16231cd308910581a6aec2c4b512318a77dc46479"
     },
     {
       "id": "assistant.content.gates-index-json",
@@ -281,8 +308,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 202,
-      "content_digest": "sha256:695229bad519265681715cb9d011f7e3c5ffcb69c87e54ef1e0b80fe9863ba2c"
+      "estimated_words": 238,
+      "content_digest": "sha256:c14145c9a307e37bad5d64ca1e0b3308e1f0353e71834f2de575c501352c1464"
     },
     {
       "id": "assistant.content.gates-project-knowledge-md",
@@ -464,6 +491,33 @@
       ],
       "estimated_words": 219,
       "content_digest": "sha256:fcc0bf61603b298d1bd36ceba4624ebd17aa1f1ecc4b79e380690d48baf3060a"
+    },
+    {
+      "id": "assistant.content.gates-visual-validation-md",
+      "kind": "content",
+      "path": "gates/visual-validation.md",
+      "summary": "Visual Validation Gate",
+      "selectors": {
+        "path_terms": [
+          "gates",
+          "visual",
+          "validation"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 146,
+      "content_digest": "sha256:166450ba45fe05e447ff8b02f3c2d459568bebb210fa0e8bc5d6afb496c8b0ee"
     },
     {
       "id": "assistant.content.gates-workspace-mode-md",

@@ -89,11 +89,10 @@ Use `Alatyr enable test-first` to assess and configure the optional policy, or
 `Alatyr test first` for an enabled policy. The assistant may suggest this once
 when defect, invariant, contract, refactor, or recurring-regression evidence
 supports it; a suggestion is not mandatory unless target policy says so.
-Use `Alatyr impact` or `Alatyr support diff` to route changed support/code
-paths into bounded logical-integrity review. When `support-generation` is
-enabled, `Alatyr check generated support` is read-only and `Alatyr generate
-support` uses the guarded generation flow; neither command accepts inferred
-relationships as architecture facts.
+Use `Alatyr impact`, `Alatyr support diff`, or `Alatyr change cost` for bounded
+integrity routing and support/product patch-size evidence. With
+`support-generation`, check is read-only and generate uses the guarded flow;
+neither accepts inferred relationships as architecture facts.
 Use `Alatyr extensions` to list compact state, `Alatyr inspect extension
 <source>` for read-only source review, and `Alatyr add/update/disable/remove
 extension <source-or-id>` for an approval-aware lifecycle request. These are

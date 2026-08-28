@@ -68,13 +68,16 @@ documentation-sync, or product-change operation.
 10. Under `read-only`, keep all draft content in the assistant response. Under
    `docs-only`, write only target-owned diagram source and allowed derived
    visual artifacts, then run the target render or manual-review process.
-11. If discussion accepts a new business, architecture, data, runtime,
+11. Apply `.ai/assistant/gates/visual-validation.md` when the diagram is
+    persisted, rendered, promoted, used as evidence, or likely to be reused
+    outside the transient chat response.
+12. If discussion accepts a new business, architecture, data, runtime,
    security, or public-contract fact, stop treating the diagram as the change
    mechanism. Route the accepted fact to its owner and the applicable decision
    or product-change flow.
-12. Present the result using the diagram presentation template. Include the
+13. Present the result using the diagram presentation template. Include the
    ASCII block and its readability check even when a richer view is available.
-13. Require repository revision and source revision or content hash for
+14. Require repository revision and source revision or content hash for
     `accepted-source` and `derived-view`. Otherwise keep the result `draft`.
     Report validation, omitted detail, unresolved facts, and stale-view risk.
 
@@ -92,6 +95,7 @@ ASCII view: <included, width, direction, and readability result>
 Assumptions and unresolved facts: <items>
 Security and external rendering: <classification, redactions, action, policy>
 Validation or manual review: <result>
+Visual validation: <evidence, skipped reason, or not applicable>
 Next operation: <continue discussion, persist, decision, sync, or product change>
 ```
 

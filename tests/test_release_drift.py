@@ -28,7 +28,7 @@ class ReleaseBaselineTests(unittest.TestCase):
 
         baseline, intervening = nearest_release_baseline(version)
 
-        self.assertEqual(baseline.label, "release-checkpoint:0.1.0-alpha.32")
+        self.assertEqual(baseline.label, "release-checkpoint:0.1.0-alpha.33")
         self.assertEqual(baseline.kind, "checkpoint")
         self.assertEqual(intervening, [])
 

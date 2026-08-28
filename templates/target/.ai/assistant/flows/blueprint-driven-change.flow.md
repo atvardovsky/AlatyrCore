@@ -33,7 +33,8 @@ Replace placeholders with target facts before accepting installation.
 6. Update project flow, use-case, data, runtime, architecture, or public docs
    when those facts change.
 7. Prepare an implementation plan that names affected boundaries, tests,
-   diagrams, approvals, machine-readable scope records, and validation.
+   contract artifacts, diagrams, visual validation, approvals,
+   machine-readable scope records, and validation.
    Apply `.ai/assistant/flows/change-package.flow.md` when coherent material
    outcome, semantic multi-surface approval, audit, or publishable provenance
    needs pass its activation gate.
@@ -42,18 +43,28 @@ Replace placeholders with target facts before accepting installation.
    `.ai/assistant/flows/test-first-change.flow.md` and preserve valid
    RED/GREEN/refactor evidence before completing implementation. Otherwise
    record why test-first was not indicated or was declined when material.
-9. Change remaining code, tests, diagrams, prompts, skills, bridge files,
-   gates, or checker rules as required by the accepted fact change.
-10. Run target validation that exists. Do not invent commands.
-11. When approval was used, compare the complete Git change set with the
+9. Apply `.ai/assistant/gates/contract-artifacts.md` when the changed fact
+   crosses API, data, event, generated-reference, public-interface,
+   persistence, or external-boundary contracts.
+10. Change remaining code, tests, contract artifacts, diagrams, prompts,
+    skills, bridge files, gates, or checker rules as required by the accepted
+    fact change.
+11. Apply `.ai/assistant/gates/visual-validation.md` when UI, layout,
+    accessibility-relevant, rendered diagram, visual artifact, or discussion
+    diagram presentation facts changed.
+12. Run target validation that exists. Do not invent commands.
+13. When relevant tooling exists, record support/product change cost for mixed
+    support and product changes; treat it as structural cost evidence, not
+    semantic proof.
+14. When approval was used, compare the complete Git change set with the
     explicitly selected machine-readable approval scope and fail on uncovered
     or excluded paths.
-12. Perform a final consistency check across changed surfaces and related
+15. Perform a final consistency check across changed surfaces and related
     review-item clusters.
-13. Apply `.ai/assistant/gates/engineering-evidence.md` and preserve compact
+16. Apply `.ai/assistant/gates/engineering-evidence.md` and preserve compact
     reusable task knowledge when triggered and authorized, or record a
     fact-specific skip or blocker.
-14. Report final evidence, skipped checks, approvals, and residual risk.
+17. Report final evidence, skipped checks, approvals, and residual risk.
 
 For large or resumable changes, use
 `.ai/assistant/flows/large-task-orchestration.flow.md` and maintain one packet
@@ -80,8 +91,12 @@ Report:
 - re-derived invariants and reconciled review-item clusters
 - relationship impact closure, missing links, and areas reached
 - source-of-truth or blueprint updates
-- implementation, test, diagram, prompt, skill, gate, bridge, or checker updates
+- implementation, test, contract-artifact, diagram, prompt, skill, gate,
+  bridge, or checker updates
 - validation run or unresolved
+- support/product change cost when measured
+- contract artifact review result when applicable
+- visual validation result when applicable
 - test-first policy result, RED/GREEN/refactor evidence, accepted exception, or
   reason not indicated when the recommendation gate was materially evaluated
 - approvals used

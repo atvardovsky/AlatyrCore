@@ -22,9 +22,14 @@ from target_adapter_validation.domain import DomainValidationHost
 from target_validation_support import (
     ManifestData,
     dotted,
+    git_head_revision,
+    git_is_ancestor,
+    git_range_changed_files,
+    git_resolve_object,
     is_placeholder,
     is_target_relative_path,
     is_unresolved_value,
+    scope_entries_cover,
 )
 
 
@@ -100,6 +105,134 @@ DEBUG_MATERIALITY_KINDS = {
 }
 
 
+def _concrete(value: Any) -> bool:
+    return (
+        isinstance(value, str)
+        and bool(value.strip())
+        and not is_placeholder(value)
+        and not is_unresolved_value(value)
+    )
+
+
+def _surface_covers(changed_path: str, surfaces: list[str]) -> bool:
+    for surface in surfaces:
+        if not _concrete(surface):
+            continue
+        normalized = surface.rstrip("/")
+        if changed_path == normalized or changed_path.startswith(normalized + "/"):
+            return True
+        if scope_entries_cover(changed_path, [surface]):
+            return True
+    return False
+
+
+def reconcile_debug_git_state(
+    *,
+    self: DomainValidationHost,
+    record: dict[str, Any],
+    record_ref: str,
+    status: str,
+    implementation_surfaces: list[str],
+    binding: dict[str, Any],
+    binding_kind: str | None,
+    repository_lifecycle_state: str,
+) -> None:
+    """Compare selected Debug record claims with current Git evidence."""
+
+    head = git_head_revision(self.target)
+    if not head:
+        self.warn(
+            "DEBUG_MODE_GIT_STATE_UNAVAILABLE",
+            "cannot resolve current Git HEAD for Debug reconciliation",
+            record_ref,
+        )
+        return
+
+    activation = record.get("activation")
+    activation = activation if isinstance(activation, dict) else {}
+    base_revision = (
+        binding.get("base_revision")
+        if _concrete(binding.get("base_revision"))
+        else activation.get("initial_revision")
+    )
+    result_revision = binding.get("result_revision")
+    binding_state = binding.get("binding_state")
+    committed_touching_surfaces: list[str] = []
+    if _concrete(base_revision) and git_resolve_object(
+        self.target, str(base_revision), "commit"
+    ):
+        changed = git_range_changed_files(self.target, str(base_revision), head)
+        if changed is None:
+            self.warn(
+                "DEBUG_MODE_GIT_STATE_UNAVAILABLE",
+                f"cannot compute Debug Git range {base_revision}..{head}",
+                record_ref,
+            )
+        else:
+            committed_touching_surfaces = [
+                path
+                for path in changed
+                if _surface_covers(path, implementation_surfaces)
+            ]
+
+    if status == "active" and committed_touching_surfaces:
+        self.error(
+            "DEBUG_MODE_ACTIVE_RESULT_DRIFT",
+            "active Debug record has committed changes touching implementation surfaces: "
+            + ", ".join(committed_touching_surfaces[:12]),
+            record_ref,
+        )
+    if (
+        committed_touching_surfaces
+        and binding_state == "provisional"
+        and status != "abandoned"
+    ):
+        self.error(
+            "DEBUG_MODE_PROVISIONAL_BINDING_AFTER_COMMIT",
+            "committed implementation work requires a final binding or an explicit finalization blocker",
+            record_ref,
+        )
+    result_resolved = (
+        git_resolve_object(self.target, str(result_revision), "commit")
+        if _concrete(result_revision) and binding_kind in {"commit", "pull-request"}
+        else None
+    )
+    if (
+        status == "active"
+        and committed_touching_surfaces
+        and result_resolved
+        and result_resolved != head
+    ):
+        self.error(
+            "DEBUG_MODE_RESULT_REVISION_STALE",
+            f"active Debug result_revision {result_resolved} does not match current HEAD {head}",
+            record_ref,
+        )
+
+    remote_ref = getattr(self, "debug_remote_ref", None)
+    if not remote_ref:
+        return
+    remote = git_resolve_object(self.target, str(remote_ref), "commit")
+    if remote is None:
+        self.warn(
+            "DEBUG_MODE_REMOTE_STATE_UNAVAILABLE",
+            f"cannot resolve Debug publication evidence ref {remote_ref}",
+            record_ref,
+        )
+        return
+    published = remote == head or git_is_ancestor(self.target, head, remote) is True
+    if published and (
+        status == "active"
+        or binding_state == "provisional"
+        or repository_lifecycle_state not in {"published", "finalized"}
+    ):
+        self.error(
+            "DEBUG_MODE_PUBLISHED_BUT_UNFINALIZED",
+            f"Debug record is not finalized against published ref {remote_ref}",
+            record_ref,
+        )
+
+
 def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | None) -> None:
     index_relpath = ".ai/project/debug/index.json"
     expected_manifest = {
@@ -138,12 +271,12 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
         if template.get("schema_version") != DEBUG_RECORD["current"]:
             self.error("DEBUG_MODE_TEMPLATE_VERSION", f"authoring template schema_version must be {DEBUG_RECORD['current']}", template_relpath)
         if not isinstance(template_binding, dict) or not {"binding_state", "prior_bindings"}.issubset(template_binding):
-            self.error("DEBUG_MODE_TEMPLATE_BINDING", "version-5 authoring template must expose binding_state and prior_bindings", template_relpath)
+            self.error("DEBUG_MODE_TEMPLATE_BINDING", "version-6 authoring template must expose binding_state and prior_bindings", template_relpath)
         if not isinstance(template_final, dict) or not {
             "claim_validation", "engineering_evidence_decision",
             "lifecycle_coverage", "project_knowledge_candidates"
         }.issubset(template_final):
-            self.error("DEBUG_MODE_TEMPLATE_EVIDENCE_DECISION", "version-5 authoring template must expose lifecycle, claim, engineering-evidence, and project-knowledge closure", template_relpath)
+            self.error("DEBUG_MODE_TEMPLATE_EVIDENCE_DECISION", "version-6 authoring template must expose lifecycle, claim, engineering-evidence, and project-knowledge closure", template_relpath)
         if not isinstance(template.get("continuation"), dict):
             self.error("DEBUG_MODE_TEMPLATE_CONTINUATION", "version-3 authoring template must expose continuation lineage", template_relpath)
 
@@ -158,7 +291,7 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
         supported = ", ".join(str(value) for value in sorted(supported_index_versions))
         self.error("DEBUG_MODE_INDEX_SCHEMA", f"schema_version must be one of: {supported}", index_relpath)
     elif index_schema_version in set(DEBUG_INDEX["migration_limited"]):
-        self.warn("DEBUG_MODE_INDEX_LEGACY", "legacy Debug index omits schema-version-5 lifecycle or knowledge-candidate projections", index_relpath)
+        self.warn("DEBUG_MODE_INDEX_LEGACY", "legacy Debug index omits schema-version-6 lifecycle, validation, or knowledge-candidate projections", index_relpath)
     if index.get("index_kind") != "target-alatyr-debug-index":
         self.error(
             "DEBUG_MODE_INDEX_KIND",
@@ -314,7 +447,7 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
         required_index_fields.update(
             {"record_schema_version", "repository_binding_state", "engineering_evidence_status"}
         )
-    elif index_schema_version in {4, 5}:
+    elif index_schema_version in {4, 5, 6}:
         required_index_fields.update(
             {
                 "record_schema_version",
@@ -325,13 +458,20 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
                 "claim_validation_fidelity",
             }
         )
-    if index_schema_version == 5:
+    if index_schema_version in {5, 6}:
         required_index_fields.update(
             {
                 "lifecycle_completion_scope",
                 "covered_phases",
                 "continuation_expected",
                 "knowledge_candidate_ids",
+            }
+        )
+    if index_schema_version == 6:
+        required_index_fields.update(
+            {
+                "repository_lifecycle_state",
+                "validation_evidence_classes",
             }
         )
     indexed_entries = [entry for entry in records if isinstance(entry, dict)]
@@ -342,7 +482,7 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
         if isinstance(indexed_debug_id, str) and indexed_debug_id:
             indexed_id_counts[indexed_debug_id] = indexed_id_counts.get(indexed_debug_id, 0) + 1
             indexed_entries_by_id.setdefault(indexed_debug_id, indexed_entry)
-    if index_schema_version in {4, 5}:
+    if index_schema_version in {4, 5, 6}:
         for indexed_debug_id in indexed_entries_by_id:
             visited: set[str] = set()
             current_id = indexed_debug_id
@@ -398,7 +538,7 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
         elapsed_index = entry.get("elapsed_seconds")
         if elapsed_index is not None and (not isinstance(elapsed_index, int) or elapsed_index < 0):
             self.error("DEBUG_MODE_INDEX_FIELD", f"{label}.elapsed_seconds must be a non-negative integer or null", index_relpath)
-        if index_schema_version in {4, 5}:
+        if index_schema_version in {4, 5, 6}:
             if entry.get("continuation_kind") not in {"initial", "continued", "legacy"}:
                 self.error("DEBUG_MODE_INDEX_FIELD", f"{label}.continuation_kind is invalid", index_relpath)
             if not isinstance(entry.get("continued_from_debug_id"), str) or not entry["continued_from_debug_id"].strip():
@@ -409,7 +549,7 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
             }:
                 self.error("DEBUG_MODE_INDEX_FIELD", f"{label}.claim_validation_fidelity is invalid", index_relpath)
         indexed_record_version = entry.get("record_schema_version", 1)
-        if index_schema_version == 5:
+        if index_schema_version in {5, 6}:
             lifecycle_scopes = (
                 {"legacy"}
                 if isinstance(indexed_record_version, int)
@@ -436,6 +576,34 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
                 or not all(concrete(value) for value in candidate_ids)
             ):
                 self.error("DEBUG_MODE_INDEX_FIELD", f"{label}.knowledge_candidate_ids must be a unique resolved string list", index_relpath)
+        if index_schema_version == 6:
+            if entry.get("repository_lifecycle_state") not in {
+                "active",
+                "validated",
+                "committed",
+                "published",
+                "finalized",
+                "abandoned",
+                "legacy",
+            }:
+                self.error("DEBUG_MODE_INDEX_FIELD", f"{label}.repository_lifecycle_state is invalid", index_relpath)
+            validation_classes = entry.get("validation_evidence_classes")
+            if (
+                not isinstance(validation_classes, list)
+                or len(validation_classes) != len(set(validation_classes))
+                or not set(validation_classes).issubset(
+                    {
+                        "declared",
+                        "locally-observed",
+                        "tool-verified",
+                        "ci-verified",
+                        "reviewer-verified",
+                        "production-verified",
+                        "legacy",
+                    }
+                )
+            ):
+                self.error("DEBUG_MODE_INDEX_FIELD", f"{label}.validation_evidence_classes is invalid", index_relpath)
         for field in ["task_references", "residual_uncertainty"]:
             values = entry.get(field)
             if not isinstance(values, list) or not all(concrete(value) for value in values):
@@ -1234,6 +1402,8 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
         covered_phases: list[str] = []
         continuation_expected = False
         project_candidate_ids: list[str] = []
+        repository_lifecycle_state = "legacy"
+        validation_evidence_classes: list[str] = []
         if record_schema_version >= 5:
             all_phases = {
                 "analysis", "implementation", "validation", "finalization"
@@ -1690,6 +1860,129 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
                             record_ref,
                         )
 
+        if record_schema_version >= 6:
+            repository_lifecycle = final_result.get("repository_lifecycle")
+            repository_lifecycle = (
+                repository_lifecycle
+                if isinstance(repository_lifecycle, dict)
+                else {}
+            )
+            repository_lifecycle_state = str(
+                repository_lifecycle.get("state", "")
+            )
+            completed_transitions = repository_lifecycle.get(
+                "completed_transitions"
+            )
+            completed_transitions = (
+                completed_transitions
+                if isinstance(completed_transitions, list)
+                else []
+            )
+            validation_value = final_result.get("validation")
+            validation_value = (
+                validation_value if isinstance(validation_value, dict) else {}
+            )
+            validation_items = validation_value.get("results")
+            validation_items = (
+                validation_items if isinstance(validation_items, list) else []
+            )
+            class_counts: dict[str, int] = {}
+            for validation_index, validation_item in enumerate(validation_items):
+                if not isinstance(validation_item, dict):
+                    continue
+                evidence_class = validation_item.get("evidence_class")
+                if isinstance(evidence_class, str) and evidence_class:
+                    class_counts[evidence_class] = class_counts.get(evidence_class, 0) + 1
+                source = validation_item.get("source")
+                revision = validation_item.get("revision")
+                if not concrete(source) or not concrete(revision):
+                    self.error(
+                        "DEBUG_MODE_VALIDATION_EVIDENCE",
+                        f"validation.results[{validation_index}] must name resolved source and revision",
+                        record_ref,
+                    )
+                if evidence_class in {
+                    "ci-verified",
+                    "reviewer-verified",
+                    "production-verified",
+                } and not any(
+                    marker in str(source).casefold()
+                    for marker in {
+                        "ci",
+                        "workflow",
+                        "actions",
+                        "review",
+                        "reviewer",
+                        "production",
+                        "deployment",
+                    }
+                ):
+                    self.error(
+                        "DEBUG_MODE_VALIDATION_EVIDENCE_CLASS",
+                        f"{evidence_class} validation requires matching source evidence",
+                        record_ref,
+                    )
+            validation_evidence_classes = sorted(class_counts)
+            if (
+                status == "active"
+                and repository_lifecycle_state != "active"
+            ):
+                self.error(
+                    "DEBUG_MODE_REPOSITORY_LIFECYCLE_STATE",
+                    "active Debug record requires active repository lifecycle state",
+                    record_ref,
+                )
+            if (
+                status in {"completed", "abandoned"}
+                and repository_lifecycle_state == "active"
+            ):
+                self.error(
+                    "DEBUG_MODE_REPOSITORY_LIFECYCLE_STATE",
+                    "closed Debug record cannot retain active repository lifecycle state",
+                    record_ref,
+                )
+            if (
+                status == "completed"
+                and lifecycle_completion_scope == "full-task-complete"
+                and repository_lifecycle_state != "finalized"
+            ):
+                self.error(
+                    "DEBUG_MODE_REPOSITORY_LIFECYCLE_FINAL",
+                    "full-task completed Debug record requires finalized repository lifecycle state",
+                    record_ref,
+                )
+            if (
+                repository_lifecycle_state in {"committed", "published"}
+                or "commit" in completed_transitions
+                or "publish" in completed_transitions
+            ) and "commit" not in completed_transitions:
+                self.error(
+                    "DEBUG_MODE_REPOSITORY_LIFECYCLE_COMMIT",
+                    "committed or published lifecycle state requires commit transition evidence",
+                    record_ref,
+                )
+            if (
+                (
+                    repository_lifecycle_state == "published"
+                    or "publish" in completed_transitions
+                )
+                and not repository_lifecycle.get("publish_evidence")
+            ):
+                self.error(
+                    "DEBUG_MODE_REPOSITORY_LIFECYCLE_PUBLISH",
+                    "published lifecycle state requires publish evidence",
+                    record_ref,
+                )
+            if repository_lifecycle_state == "finalized" and (
+                "finalization" not in completed_transitions
+                or not repository_lifecycle.get("finalization_evidence")
+            ):
+                self.error(
+                    "DEBUG_MODE_REPOSITORY_LIFECYCLE_FINALIZATION",
+                    "finalized lifecycle state requires finalization transition evidence",
+                    record_ref,
+                )
+
         binding = final_result.get("repository_binding")
         binding_kind, result_revision = self.check_repository_binding(
             binding=binding,
@@ -1699,6 +1992,40 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
             schema_version=record_schema_version,
             implementation_surfaces=implementation_surfaces,
         )
+        binding_value = binding if isinstance(binding, dict) else {}
+        if record_schema_version >= 6:
+            binding_state = binding_value.get("binding_state")
+            if (
+                repository_lifecycle_state in {"committed", "published"}
+                and (
+                    binding_kind == "unverified"
+                    or binding_state == "provisional"
+                )
+            ):
+                self.error(
+                    "DEBUG_MODE_PROVISIONAL_BINDING_AFTER_COMMIT",
+                    "committed, published, or finalized Debug lifecycle requires a final reproducible repository binding",
+                    record_ref,
+                )
+            if repository_lifecycle_state == "published" and not final_result.get(
+                "upstream_projection"
+            ):
+                self.error(
+                    "DEBUG_MODE_PUBLISHED_BUT_UNFINALIZED",
+                    "published Debug lifecycle requires external projection evidence",
+                    record_ref,
+                )
+        if getattr(self, "debug_git_state", False):
+            reconcile_debug_git_state(
+                self=self,
+                record=record,
+                record_ref=record_ref,
+                status=str(status or ""),
+                implementation_surfaces=implementation_surfaces,
+                binding=binding_value,
+                binding_kind=binding_kind,
+                repository_lifecycle_state=repository_lifecycle_state,
+            )
 
         projection = final_result.get("upstream_projection") if isinstance(final_result.get("upstream_projection"), dict) else {}
         projected_paths = projection.get("projected_paths") if isinstance(projection.get("projected_paths"), list) else []
@@ -1745,7 +2072,7 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
                     "engineering_evidence_status": evidence_status,
                 }
             )
-        if index_schema_version in {4, 5}:
+        if index_schema_version in {4, 5, 6}:
             comparisons.update(
                 {
                     "continuation_kind": continuation_kind,
@@ -1753,13 +2080,22 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
                     "claim_validation_fidelity": claim_fidelity,
                 }
             )
-        if index_schema_version == 5:
+        if index_schema_version in {5, 6}:
             comparisons.update(
                 {
                     "lifecycle_completion_scope": lifecycle_completion_scope,
                     "covered_phases": covered_phases,
                     "continuation_expected": continuation_expected,
                     "knowledge_candidate_ids": project_candidate_ids,
+                }
+            )
+        if index_schema_version == 6:
+            if record_schema_version < 6:
+                validation_evidence_classes = ["legacy"]
+            comparisons.update(
+                {
+                    "repository_lifecycle_state": repository_lifecycle_state,
+                    "validation_evidence_classes": validation_evidence_classes,
                 }
             )
         for field, record_value in comparisons.items():
@@ -1849,7 +2185,8 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
         lifecycle = final_value.get("lifecycle_coverage")
         lifecycle = lifecycle if isinstance(lifecycle, dict) else {}
         if (
-            record.get("schema_version") == 5
+            isinstance(record.get("schema_version"), int)
+            and record.get("schema_version") >= 5
             and record.get("status") == "completed"
             and lifecycle.get("completion_scope") == "phase-complete"
             and lifecycle.get("continuation_expected") is True

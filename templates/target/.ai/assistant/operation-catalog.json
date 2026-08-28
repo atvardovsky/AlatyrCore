@@ -109,7 +109,7 @@
       "allowed_actions": ["read-only", "docs-only", "code-and-tests", "full-with-approval"],
       "preview": "risk-gated",
       "aliases": ["change business rule", "product change"],
-      "final_evidence": ["changed facts and owners", "repair set", "validation and residual risk"]
+      "final_evidence": ["changed facts and owners", "repair set", "contract artifact result when applicable", "visual validation result when applicable", "support/product change cost when measured", "validation and residual risk"]
     },
     {
       "id": "large-task",
@@ -308,8 +308,8 @@
       "minimum_inputs": ["changed fact, suspected drift, or files to inspect"],
       "allowed_actions": ["read-only", "docs-only", "adapter-only", "code-and-tests", "full-with-approval"],
       "preview": "risk-gated",
-      "aliases": ["check integrity", "logical integrity review", "Alatyr impact", "Alatyr support diff"],
-      "final_evidence": ["support diff and impact closure", "invariants and relationship candidates", "repair set", "validation and residual risk"]
+      "aliases": ["check integrity", "logical integrity review", "Alatyr impact", "Alatyr support diff", "Alatyr change cost"],
+      "final_evidence": ["support diff and impact closure", "support/product change cost when measured", "invariants and relationship candidates", "contract artifact result when applicable", "visual validation result when applicable", "repair set", "validation and residual risk"]
     },
     {
       "id": "support-generation",
@@ -337,7 +337,7 @@
       "allowed_actions": ["read-only", "docs-only"],
       "preview": "never",
       "aliases": ["Alatyr diagram", "show as a diagram", "visualize architecture"],
-      "final_evidence": ["stable diagram ID revision and source status", "ASCII width direction readability and optional rich-presentation evidence", "classification redaction external action source revision validation and stale risk"]
+      "final_evidence": ["stable diagram ID revision and source status", "ASCII width direction readability and optional rich-presentation evidence", "visual validation result when applicable", "classification redaction external action source revision validation and stale risk"]
     },
     {
       "id": "ai-infrastructure-inventory",
@@ -449,7 +449,7 @@
       "allowed_actions": ["read-only", "docs-only", "adapter-only", "code-and-tests", "full-with-approval"],
       "preview": "risk-gated",
       "aliases": ["sync documentation", "sync diagrams", "document code", "propose comment style", "generate code docs", "review code documentation"],
-      "final_evidence": ["selected documentation profile and canonical owners", "comments and derived surfaces", "generator and output policy", "validation and residual risk"]
+      "final_evidence": ["selected documentation profile and canonical owners", "comments and derived surfaces", "contract artifact result when applicable", "visual validation result when applicable", "generator and output policy", "validation and residual risk"]
     },
     {
       "id": "project-vocabulary",
