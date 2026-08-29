@@ -68,8 +68,9 @@
     "source-tooling": {
       "required_context": ["tools/README.md", "docs/framework-maintenance.md"],
       "conditional_context": ["tool being changed", "contract validated by the tool"],
-      "check_selection": "select focused check IDs from tools/check_manifest.json by trigger_paths",
-      "checks": ["check-manifest", "source-unit-tests", "framework-consistency"]
+      "check_profile": "quick",
+      "check_selection": "start with quick routing and support-cost checks, then select focused check IDs from tools/check_manifest.json by trigger_paths",
+      "checks": ["check-manifest", "support-costs", "source-unit-tests", "framework-consistency"]
     },
     "release-versioning": {
       "required_context": [

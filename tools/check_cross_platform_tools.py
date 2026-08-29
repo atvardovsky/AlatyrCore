@@ -30,6 +30,7 @@ EXPECTED_COMMANDS = {
     "snapshot-support",
     "support-diff",
     "change-cost",
+    "support-costs",
     "impact",
     "generate-support",
     "validate-adapter",

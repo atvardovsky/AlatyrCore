@@ -19,6 +19,8 @@ python3 tools/alatyr.py validate-adapter --target /path/to/target-repo
 python3 tools/alatyr.py render-context --target /path/to/target-repo
 python3 tools/alatyr.py render-context --target /path/to/target-repo --write
 python3 tools/alatyr.py support-diff --target /path/to/target-repo
+python3 tools/alatyr.py support-costs
+python3 tools/alatyr.py support-costs --target /path/to/target-repo
 python3 tools/alatyr.py impact --target /path/to/target-repo --diff-ref HEAD~1
 python3 tools/alatyr.py generate-support --target /path/to/target-repo --check
 python3 tools/alatyr.py assess-upgrade --target /path/to/target-repo --framework-source . --output-dir tmp/upgrade-assessment
@@ -38,6 +40,8 @@ Windows PowerShell:
 .\tools\alatyr.ps1 render-context --target C:\path\to\target-repo
 .\tools\alatyr.ps1 render-context --target C:\path\to\target-repo --write
 .\tools\alatyr.ps1 support-diff --target C:\path\to\target-repo
+.\tools\alatyr.ps1 support-costs
+.\tools\alatyr.ps1 support-costs --target C:\path\to\target-repo
 .\tools\alatyr.ps1 impact --target C:\path\to\target-repo --diff-ref HEAD~1
 .\tools\alatyr.ps1 generate-support --target C:\path\to\target-repo --check
 .\tools\alatyr.ps1 assess-upgrade --target C:\path\to\target-repo --framework-source . --output-dir tmp\upgrade-assessment
@@ -56,6 +60,8 @@ tools\alatyr.cmd validate-adapter --target C:\path\to\target-repo
 tools\alatyr.cmd render-context --target C:\path\to\target-repo
 tools\alatyr.cmd render-context --target C:\path\to\target-repo --write
 tools\alatyr.cmd support-diff --target C:\path\to\target-repo
+tools\alatyr.cmd support-costs
+tools\alatyr.cmd support-costs --target C:\path\to\target-repo
 tools\alatyr.cmd impact --target C:\path\to\target-repo --diff-ref HEAD~1
 tools\alatyr.cmd generate-support --target C:\path\to\target-repo --check
 tools\alatyr.cmd inspect-extension --package C:\path\to\local-extension-checkout
@@ -74,6 +80,8 @@ The stable command set is:
 - `snapshot-support`: check support-state freshness or refresh it with explicit
   `--write`; generate this state after other support derivatives
 - `support-diff`: read-only created/modified/removed support-surface report
+- `support-costs`: read-only standing support-surface footprint report for a
+  scaffold profile or installed target adapter
 - `impact`: bounded changed-path/fact traversal through accepted target
   relationships; machine routing does not replace invariant reasoning
 - `generate-support`: read-only plan/check by default; guarded apply is limited
@@ -105,12 +113,15 @@ The stable command set is:
 
 `check_all.py` loads the schema-version-2 `tools/check_manifest.json` and runs dependency-aware
 source validation. The default `full` profile remains the acceptance gate.
-With `fast --changed-from`, explicit `trigger_paths` select focused checks while
-a small invariant set always runs; unmatched paths retain the conservative
-full-suite fallback. `release` adds tag-baseline migration
-checks. `platform` runs the portable tooling contract slice used on macOS and
-Windows. It validates this repository only; it is not a portable framework
-requirement for target projects.
+`quick` checks routing, bootstrap, scaffold, and standing support-cost
+guardrails without running the source unit suite. With `fast --changed-from`,
+explicit `trigger_paths` select focused checks while a small invariant set
+always runs; unmatched paths retain the conservative full-suite fallback.
+`change --changed-from <ref>` uses the same ref as the release-drift baseline
+when `--from-ref` is omitted. `release` adds tag-baseline migration checks.
+`platform` runs the portable tooling contract slice used on macOS and Windows.
+It validates this repository only; it is not a portable framework requirement
+for target projects.
 
 Each manifest check declares four separate concerns:
 
@@ -170,7 +181,9 @@ Linux or macOS:
 
 ```sh
 python3 tools/check_all.py
+python3 tools/check_all.py --profile quick
 python3 tools/check_all.py --profile fast --changed-from HEAD
+python3 tools/check_all.py --profile change --changed-from HEAD~1
 python3 tools/check_all.py --profile release
 python3 tools/check_all.py --profile platform
 python3 tools/check_all.py --profile full --report /tmp/alatyr-source-checks.json
@@ -181,7 +194,9 @@ Windows PowerShell or Command Prompt:
 
 ```powershell
 py -3 .\tools\check_all.py
+py -3 .\tools\check_all.py --profile quick
 py -3 .\tools\check_all.py --profile fast --changed-from HEAD
+py -3 .\tools\check_all.py --profile change --changed-from HEAD~1
 py -3 .\tools\check_all.py --profile release
 py -3 .\tools\check_all.py --profile platform
 py -3 .\tools\check_all.py --profile full --report C:\Temp\alatyr-source-checks.json
@@ -942,6 +957,21 @@ not model token usage.
 python3 tools/alatyr.py context-costs
 python3 tools/report_context_costs.py --output tmp/context-costs.json
 python3 tools/check_context_costs.py
+```
+
+`report_support_costs.py` measures standing Alatyr support-surface footprint
+for a scaffold profile or installed target adapter. Use it before enabling a
+large profile or optional module so the assistant can discuss support cost from
+evidence instead of loading broad directories. It reports files, words,
+estimated tokens at four characters per token, largest groups, optional module
+costs, projected operation count, and assistant-surface duplication signals.
+It does not replace logical integrity review or prove model billing.
+
+```sh
+python3 tools/alatyr.py support-costs
+python3 tools/alatyr.py support-costs --profile standard --format text
+python3 tools/alatyr.py support-costs --target /path/to/target-repo --format text
+python3 tools/check_support_costs.py
 ```
 
 `check_assistant_surface_conformance.py` checks compact bridge routing and

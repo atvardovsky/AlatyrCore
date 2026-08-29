@@ -2,7 +2,11 @@
 
 ## Unreleased
 
-- No unreleased changes.
+- Added a `quick` source-check profile for routing, bootstrap, scaffold, and
+  standing support-cost guardrails without running the source unit suite.
+- Added a read-only `support-costs` source tool that measures scaffold-profile
+  and installed-target Alatyr support-surface footprint separately from runtime
+  context cost.
 
 ## 0.1.0-alpha.34 - 2026-08-28
 

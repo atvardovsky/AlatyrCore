@@ -20,6 +20,7 @@
         "tools/check_framework_metadata.py"
       ],
       "profiles": [
+        "quick",
         "fast",
         "full"
       ],
@@ -700,6 +701,7 @@
         "tools/check_context_catalogs.py"
       ],
       "profiles": [
+        "quick",
         "fast",
         "full",
         "platform"
@@ -749,6 +751,7 @@
         "tools/check_bootstrap_routing.py"
       ],
       "profiles": [
+        "quick",
         "fast",
         "full",
         "platform"
@@ -790,6 +793,7 @@
         "tools/check_context_costs.py"
       ],
       "profiles": [
+        "quick",
         "fast",
         "full"
       ],
@@ -814,6 +818,40 @@
         "tools/check_context_costs.py",
         "tools/report_context_costs.py"
       ]
+    },
+    {
+      "id": "support-costs",
+      "command": [
+        "tools/check_support_costs.py"
+      ],
+      "profiles": [
+        "quick",
+        "fast",
+        "full"
+      ],
+      "depends_on": [
+        "scaffold-profiles",
+        "framework-packs"
+      ],
+      "contract_inputs": [
+        "framework/capabilities.json",
+        "framework/framework-packs.json",
+        "templates/target/**",
+        "tools/scaffold_profiles.json"
+      ],
+      "implementation_paths": [
+        "tools/check_support_costs.py",
+        "tools/report_support_costs.py"
+      ],
+      "trigger_paths": [
+        "framework/capabilities.json",
+        "framework/framework-packs.json",
+        "templates/target/**",
+        "tools/check_support_costs.py",
+        "tools/report_support_costs.py",
+        "tools/scaffold_profiles.json"
+      ],
+      "resource_class": "light"
     },
     {
       "id": "discussion-diagrams",
@@ -1143,6 +1181,7 @@
         "tools/check_framework_packs.py"
       ],
       "profiles": [
+        "quick",
         "fast",
         "full"
       ],
@@ -1358,6 +1397,7 @@
         "tools/check_scaffold_profiles.py"
       ],
       "profiles": [
+        "quick",
         "fast",
         "full"
       ],
@@ -1961,6 +2001,7 @@
         "tools/check_source_context_routing.py"
       ],
       "profiles": [
+        "quick",
         "fast",
         "full"
       ],
@@ -2033,6 +2074,7 @@
         "tools/check_check_manifest.py"
       ],
       "profiles": [
+        "quick",
         "fast",
         "full"
       ],

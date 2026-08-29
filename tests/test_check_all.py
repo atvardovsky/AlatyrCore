@@ -14,6 +14,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 from check_all import (  # noqa: E402
     RunnerResult,
+    effective_baseline,
     execute_checks,
     load_manifest,
     render_report,
@@ -130,6 +131,17 @@ class CheckGraphTests(unittest.TestCase):
 
         self.assertFalse(fell_back)
         self.assertEqual([entry["id"] for entry in selected], ["implementation"])
+
+    def test_change_profile_uses_changed_from_as_default_baseline(self) -> None:
+        self.assertEqual(
+            effective_baseline("change", "HEAD~1", None),
+            "HEAD~1",
+        )
+        self.assertEqual(
+            effective_baseline("change", "HEAD~1", "main"),
+            "main",
+        )
+        self.assertIsNone(effective_baseline("fast", "HEAD~1", None))
 
     def test_dependency_runs_only_after_successful_prerequisite(self) -> None:
         completed: list[str] = []

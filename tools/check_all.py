@@ -22,7 +22,7 @@ from source_state import snapshot_changes, source_snapshot
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "tools" / "check_manifest.json"
-ALLOWED_PROFILES = {"fast", "full", "change", "platform", "release"}
+ALLOWED_PROFILES = {"quick", "fast", "full", "change", "platform", "release"}
 ALLOWED_WRITE_SCOPES = {"none"}
 ALLOWED_PLATFORMS = {"all", "linux", "macos", "windows"}
 ALLOWED_RESOURCE_CLASSES = {"light", "standard", "heavy"}
@@ -348,6 +348,18 @@ def run_check(check: dict[str, Any], baseline: str | None) -> RunnerResult:
     return RunnerResult((result.returncode, result.stdout, result.stderr, command))
 
 
+def effective_baseline(
+    profile: str, changed_from: str | None, from_ref: str | None
+) -> str | None:
+    """Use changed-file baseline as the change-drift baseline when unambiguous."""
+
+    if from_ref:
+        return from_ref
+    if profile == "change":
+        return changed_from
+    return None
+
+
 def environment_report() -> dict[str, Any]:
     dependencies: dict[str, str] = {}
     for dependency in ["jsonschema", "PyYAML"]:
@@ -568,7 +580,13 @@ def execute_checks(
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--profile", choices=sorted(ALLOWED_PROFILES), default="full")
-    parser.add_argument("--changed-from", help="Select matching checks for a fast profile.")
+    parser.add_argument(
+        "--changed-from",
+        help=(
+            "Select checks from changed paths for focused profiles. For the "
+            "change profile, this also acts as --from-ref when --from-ref is omitted."
+        ),
+    )
     parser.add_argument("--from-ref", help="Baseline substituted into change checks.")
     parser.add_argument("--jobs", type=int, default=min(4, os.cpu_count() or 1))
     parser.add_argument("--list", action="store_true")
@@ -583,8 +601,9 @@ def main() -> int:
 
     try:
         checks = load_manifest()
+        baseline = effective_baseline(args.profile, args.changed_from, args.from_ref)
         selected, fell_back = select_checks(checks, args.profile, args.changed_from)
-        commands = [resolved_command(check, args.from_ref) for check in selected]
+        commands = [resolved_command(check, baseline) for check in selected]
         report_path = resolve_report_path(args.report) if args.report else None
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
@@ -601,7 +620,7 @@ def main() -> int:
         before = source_snapshot(ROOT)
         telemetry: dict[str, dict[str, Any]] = {}
         results, blocked = execute_checks(
-            selected, args.from_ref, args.jobs, telemetry=telemetry
+            selected, baseline, args.jobs, telemetry=telemetry
         )
         source_changes = snapshot_changes(before, source_snapshot(ROOT))
     except (OSError, ValueError) as exc:

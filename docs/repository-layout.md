@@ -237,7 +237,8 @@ Source tool dependencies are declared in `requirements.txt`; source acceptance
 and CI dependencies are routed through `requirements-dev.txt`.
 
 `tools/check_manifest.json` is the dependency-aware source-check catalog used
-by `tools/check_all.py` for fast, full, change, platform, and release profiles.
+by `tools/check_all.py` for quick, fast, full, change, platform, and release
+profiles.
 `tools/source_context_router.json` and `installer/context-router.json` keep
 source maintenance and installation bootstrap bounded. The generated
 `framework/file-inventory.json` and `framework/framework-packs.json` define the
