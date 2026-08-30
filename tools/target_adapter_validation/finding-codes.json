@@ -100,6 +100,10 @@
       "code_count": 41
     },
     {
+      "id": "ENTRY",
+      "code_count": 8
+    },
+    {
       "id": "EVIDENCE",
       "code_count": 1
     },
@@ -125,7 +129,7 @@
     },
     {
       "id": "MANIFEST",
-      "code_count": 11
+      "code_count": 12
     },
     {
       "id": "MIGRATION",
@@ -5094,6 +5098,78 @@
       ]
     },
     {
+      "code": "ENTRY_PACKET_CURRENT",
+      "levels": [
+        "info"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ENTRY_PACKET_INVALID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ENTRY_PACKET_LAZY_REFERENCES",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ENTRY_PACKET_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ENTRY_PACKET_PROFILE_RECOMMENDATION",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ENTRY_PACKET_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ENTRY_PACKET_STALE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ENTRY_PACKET_SUPPORT_DELTA",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "EVIDENCE_SCOPE_CURRENT_STATE",
       "levels": [
         "info"
@@ -5878,6 +5954,15 @@
     },
     {
       "code": "MANIFEST_CONTEXT_BUDGET",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "MANIFEST_CONTEXT_PATH",
       "levels": [
         "error"
       ],

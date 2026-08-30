@@ -58,7 +58,7 @@
     },
     "source_of_truth": {
       "type": "object",
-      "required": ["project_contour", "registry", "assistant_contour", "context_router", "bootstrap_index", "framework_context_index", "project_context_index", "assistant_context_index", "semantic_codebook", "context_profiles", "module_profile", "project_sources"],
+      "required": ["project_contour", "registry", "assistant_contour", "context_router", "bootstrap_index", "framework_context_index", "project_context_index", "assistant_context_index", "semantic_codebook", "agent_entry_packet", "context_profiles", "module_profile", "project_sources"],
       "properties": {
         "project_sources": {"$ref": "#/definitions/nonEmptyStringArray"}
       }
@@ -74,10 +74,12 @@
     },
     "context_routing": {
       "type": "object",
-      "required": ["router_schema_version", "preloaded_context", "compact_bootstrap", "bootstrap_max_files", "bootstrap_max_words", "profile_default_max_files", "profile_default_max_total_words", "profile_default_max_portable_words", "profile_default_reserved_target_words", "budget_behavior", "recursive_index_schema_version", "recursive_index_max_depth", "semantic_codebook_schema_version", "semantic_preload_policy", "context_packet_schema_version", "context_packet_template"],
+      "required": ["router_schema_version", "preloaded_context", "compact_bootstrap", "agent_entry_packet_schema_version", "agent_entry_packet", "bootstrap_max_files", "bootstrap_max_words", "profile_default_max_files", "profile_default_max_total_words", "profile_default_max_portable_words", "profile_default_reserved_target_words", "budget_behavior", "recursive_index_schema_version", "recursive_index_max_depth", "semantic_codebook_schema_version", "semantic_preload_policy", "context_packet_schema_version", "context_packet_template"],
       "properties": {
         "preloaded_context": {"$ref": "#/definitions/nonEmptyStringArray"},
         "compact_bootstrap": {"$ref": "#/definitions/nonEmptyStringArray"},
+        "agent_entry_packet_schema_version": {"const": 1},
+        "agent_entry_packet": {"const": ".ai/assistant/entry-packet.json"},
         "recursive_index_schema_version": {"const": 1},
         "recursive_index_max_depth": {"type": "integer", "minimum": 1},
         "semantic_codebook_schema_version": {"const": 1},

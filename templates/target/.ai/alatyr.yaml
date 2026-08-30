@@ -53,6 +53,7 @@ source_of_truth:
   project_context_index: ".ai/project/context-index.json"
   assistant_context_index: ".ai/assistant/context-index.json"
   semantic_codebook: ".ai/framework/semantics/index.json"
+  agent_entry_packet: ".ai/assistant/entry-packet.json"
   context_profiles: ".ai/assistant/context-profiles.md"
   module_profile: ".ai/assistant/module-profile.md"
   project_sources:
@@ -61,11 +62,13 @@ support_information:
   policy: ".ai/project/support-policy.json"
   state: ".ai/support-state.json"
 context_routing:
-  router_schema_version: 8
+  router_schema_version: 9
   preloaded_context:
     - "AGENTS.md"
   compact_bootstrap:
     - ".ai/assistant/bootstrap-index.json"
+  agent_entry_packet_schema_version: 1
+  agent_entry_packet: ".ai/assistant/entry-packet.json"
   bootstrap_max_files: 2
   bootstrap_max_words: 1800
   profile_default_max_files: 12

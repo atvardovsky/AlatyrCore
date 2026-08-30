@@ -176,8 +176,8 @@ def main() -> int:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
 
-    if router.get("schema_version") != 8:
-        failures.append("context-router.json schema_version must be 8")
+    if router.get("schema_version") != 9:
+        failures.append("context-router.json schema_version must be 9")
     if router.get("router_kind") != "target-context-router":
         failures.append("context-router.json router_kind must be target-context-router")
     if router.get("human_reference") != ".ai/assistant/context-profiles.md":
@@ -317,6 +317,24 @@ def main() -> int:
         for trigger in ["semantic codebook fallback", "material or protected change"]:
             if not isinstance(required_for, list) or trigger not in required_for:
                 failures.append(f"context_packet receipt trigger missing {trigger}")
+
+    entry_packet = router.get("agent_entry_packet")
+    if not isinstance(entry_packet, dict):
+        failures.append("agent_entry_packet must be an object")
+    else:
+        expected_entry_packet = {
+            "schema_version": 1,
+            "path": ".ai/assistant/entry-packet.json",
+            "load_after": ".ai/assistant/bootstrap-index.json",
+        }
+        for field, expected in expected_entry_packet.items():
+            if entry_packet.get(field) != expected:
+                failures.append(f"agent_entry_packet.{field} must be {expected}")
+        if "exact installed profile files" not in str(entry_packet.get("purpose", "")):
+            failures.append("agent_entry_packet.purpose must describe exact profile files")
+        load_reasons = entry_packet.get("load_human_references_when")
+        if not isinstance(load_reasons, list) or "ambiguity" not in load_reasons:
+            failures.append("agent_entry_packet must define human-reference load reasons")
 
     operation_routing = router.get("operation_routing")
     if not isinstance(operation_routing, dict):

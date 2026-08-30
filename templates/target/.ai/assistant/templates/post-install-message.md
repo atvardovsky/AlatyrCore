@@ -56,7 +56,9 @@ Entry points:
 
 Future assistant bootstrap:
 - Do not rely on this chat message alone.
-- Treat `AGENTS.md` as preloaded; start from `.ai/assistant/bootstrap-index.json`.
+- Treat `AGENTS.md` as preloaded; start from
+  `.ai/assistant/bootstrap-index.json`, then
+  `.ai/assistant/entry-packet.json`.
 - Use the bootstrap's resolved core semantic definitions once. Follow only
   task-selected branches from the three contour context indexes; a parent
   index does not authorize loading every child.
@@ -65,9 +67,10 @@ Future assistant bootstrap:
   fragments, and the installation note only when routing or unclear adapter
   state requires them. Fall back to canonical owner prose when a compact term
   cannot be resolved exactly.
-- Rebuild optional consistency/generation indexes before refreshing support
-  state. Use support differences to select context; do not infer semantic
-  correctness from matching hashes.
+- Rebuild the entry packet, optional consistency/generation indexes, and
+  recursive context indexes before refreshing support state. Use support
+  differences to select context; do not infer semantic correctness from
+  matching hashes.
 - Send `Alatyr` for compact actions or `Alatyr status` for a read-only adapter health check.
 - If the installation itself is unclear, run `recheck-after-installation` before editing files.
 - Re-evaluate the newest request at every action-phase boundary. A completed

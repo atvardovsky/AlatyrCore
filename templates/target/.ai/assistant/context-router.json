@@ -1,5 +1,5 @@
 {
-  "schema_version": 8,
+  "schema_version": 9,
   "router_kind": "target-context-router",
   "human_reference": ".ai/assistant/context-profiles.md",
   "preloaded_context": [
@@ -86,6 +86,18 @@
       "cross-boundary work",
       "semantic codebook fallback",
       "material or protected change"
+    ]
+  },
+  "agent_entry_packet": {
+    "schema_version": 1,
+    "path": ".ai/assistant/entry-packet.json",
+    "load_after": ".ai/assistant/bootstrap-index.json",
+    "purpose": "compact first-use route containing exact installed profile files, gate fragments, operation routes, allowed-action modes, and delta-first support review entry points",
+    "load_human_references_when": [
+      "ambiguity",
+      "conflict",
+      "adapter repair",
+      "human rationale requested"
     ]
   },
   "operation_routing": {

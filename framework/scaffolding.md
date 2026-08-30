@@ -55,7 +55,8 @@ A source scaffolder may expose bounded support profiles when their contents are
 deterministic and machine-checked:
 
 - `kernel`: minimal adapter, bootstrap, routing, ownership, integrity,
-  authorization, support-state, and final-evidence surfaces
+  authorization, generated entry packet, support-state, and final-evidence
+  surfaces
 - `core`: kernel plus durable engineering evidence, project knowledge,
   change-impact, and common documentation support surfaces
 - `standard`: core plus common blueprint, recheck, help, and lifecycle
@@ -77,12 +78,20 @@ does not enable modules, choose supported assistants, resolve target facts, or
 prove installation maturity. Enabling a module whose rule owner is absent
 requires an explicit pack expansion and normal framework-update evidence.
 
+Installation and update planning should start from the cheapest sufficient
+profile. Use `kernel` unless target evidence names a needed capability,
+operation surface, native bridge, or validation failure that requires `core`,
+`standard`, or `full`. The generated entry packet must record that profile
+decision and the escalation reason so routine agents do not load full support
+prose just to discover what profile was installed.
+
 ## Final Evidence
 
 If scaffolding was used, installation evidence should report:
 
 - helper name and mode
 - selected scaffold profile
+- generated entry-packet freshness
 - selected framework pack and projected inventory
 - target path
 - files created

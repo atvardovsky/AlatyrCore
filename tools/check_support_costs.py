@@ -27,6 +27,16 @@ def main() -> int:
         profile: build_scaffold_report(profile)
         for profile in PROFILE_ORDER
     }
+    default_report = build_scaffold_report()
+    recommendation = default_report.get("profile_recommendation", {})
+    if default_report.get("profile") != "kernel":
+        failures.append("default support-cost report must start from kernel profile")
+    if recommendation.get("default") != "kernel":
+        failures.append("support-cost recommendation must name kernel as default")
+    if recommendation.get("escalation_order") != PROFILE_ORDER:
+        failures.append("support-cost recommendation escalation order is invalid")
+    if "cheapest sufficient profile" not in str(recommendation.get("policy", "")):
+        failures.append("support-cost recommendation must name cheapest sufficient profile")
     words = {
         profile: report["combined_support"]["words"]
         for profile, report in reports.items()

@@ -84,6 +84,7 @@ def main() -> int:
         for name in [
             "snapshot-support",
             "support-diff",
+            "support-delta",
             "change-cost",
             "impact",
             "generate-support",
@@ -167,6 +168,92 @@ def main() -> int:
                     failures.append("change-cost report kind is invalid")
     except (OSError, subprocess.CalledProcessError, json.JSONDecodeError) as exc:
         failures.append(f"change-cost fixture failed: {exc}")
+
+    try:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            subprocess.run(["git", "init", "-q"], cwd=target, check=True)
+            (target / ".ai/project").mkdir(parents=True)
+            (target / ".ai/project/support-policy.json").write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "policy_kind": "target-support-policy",
+                        "managed_roots": [".ai"],
+                        "optional_entrypoints": ["AGENTS.md"],
+                        "exclusions": [
+                            {
+                                "pattern": ".ai/support-state.json",
+                                "reason": "self exclusion",
+                            }
+                        ],
+                        "classifications": [
+                            {
+                                "id": "adapter",
+                                "classification": "exact-contract",
+                                "patterns": [".ai/**", "AGENTS.md"],
+                            }
+                        ],
+                    },
+                    indent=2,
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            (target / ".ai/project/rule.md").write_text("rule\n", encoding="utf-8")
+            (target / "AGENTS.md").write_text("agent\n", encoding="utf-8")
+            state = build_support_state(target)
+            (target / ".ai/support-state.json").write_text(
+                json.dumps(state, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            subprocess.run(["git", "add", "."], cwd=target, check=True)
+            subprocess.run(
+                [
+                    "git",
+                    "-c",
+                    "user.email=alatyr@example.invalid",
+                    "-c",
+                    "user.name=Alatyr Check",
+                    "commit",
+                    "-qm",
+                    "base",
+                ],
+                cwd=target,
+                check=True,
+            )
+            (target / ".ai/project/rule.md").write_text("changed\n", encoding="utf-8")
+            (target / "src").mkdir()
+            (target / "src/example.py").write_text("print('x')\n", encoding="utf-8")
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(ROOT / "tools/report_support_delta.py"),
+                    "--target",
+                    str(target),
+                    "--diff-ref",
+                    "HEAD",
+                ],
+                cwd=ROOT,
+                check=False,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+            if result.returncode != 0:
+                failures.append(f"support-delta fixture failed: {result.stderr.strip()}")
+            else:
+                report = json.loads(result.stdout)
+                if report.get("report_kind") != "target-support-delta":
+                    failures.append("support-delta report kind is invalid")
+                if ".ai/project/rule.md" not in report.get("changed_support_paths", []):
+                    failures.append("support-delta omitted changed support path")
+                if "src/example.py" not in report.get("changed_product_paths", []):
+                    failures.append("support-delta omitted changed product path")
+                if "framework/support-information.md" in json.dumps(report):
+                    failures.append("support-delta should not load portable prose directly")
+    except (OSError, subprocess.CalledProcessError, ValueError, json.JSONDecodeError) as exc:
+        failures.append(f"support-delta fixture failed: {exc}")
 
     lifecycle = (ROOT / "tools/check_lifecycle_conformance.py").read_text(encoding="utf-8")
     renderer = (ROOT / "tools/render_context_catalogs.py").read_text(encoding="utf-8")

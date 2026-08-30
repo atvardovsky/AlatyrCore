@@ -4,22 +4,22 @@
   "digest_contract": "alatyr-support-state-v1",
   "policy": ".ai/project/support-policy.json",
   "policy_digest": "sha256:fe458d4305f7236f4e5e974cb58461e2308ec30299eeb51841fbf5e594d2ea7a",
-  "source_revision": "81a3b5481142dd1de79f354879298a42571e37bb",
+  "source_revision": "876024c458ff28df67fc8bdd8a311794c95c7545",
   "groups": [
     {
       "id": "adapter-root",
       "file_count": 3,
-      "digest": "sha256:cab68ccce9c81e508e8f118fda60e6da6000d64cb9148322b53130e223bbfdab"
+      "digest": "sha256:b0103c83569226d7f2b39a1ee8dc626f937f400e0998bdb4fdce4809678d098e"
     },
     {
       "id": "assistant",
-      "file_count": 205,
-      "digest": "sha256:c9feff0d2da53e64fcec904dfe412625a189d7ca336f9dd278783393c1966ab5"
+      "file_count": 206,
+      "digest": "sha256:119956173b1b8ac47bd7bbe8fb53c465390a08c2e80cf7884ceb7081a25fb9cb"
     },
     {
       "id": "entrypoints",
       "file_count": 13,
-      "digest": "sha256:269603d5ff0ecd210396df20d8f85f2ac6f2625c495e7c1244c566fadad9b195"
+      "digest": "sha256:9c3402cd3e8c459c5d790ae33dacff8682547dbd5316edb7cd835583766fbdbf"
     },
     {
       "id": "project",
@@ -52,8 +52,8 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "adapter-root",
-      "digest": "sha256:504ab664185797e55bc21b9cdf46a2bb9cbf6578bde711814ef2c6ae698060eb",
-      "canonical_size": 14886
+      "digest": "sha256:02d3c854306009ae74d60e72a9e415eeb98971da933b02f26a30dacf9f618226",
+      "canonical_size": 15037
     },
     {
       "path": ".ai/assistant/ai-infrastructure-router.json",
@@ -250,8 +250,8 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:915ecb8315f261964b2f9f9f71b6e14196dc9c4ab419ceacfba5df8ae7ec370f",
-      "canonical_size": 12316
+      "digest": "sha256:ea5c62a91b9fe905d72fe6d051f68c03a6841be110ba5c55a37bb7a779fa3095",
+      "canonical_size": 12474
     },
     {
       "path": ".ai/assistant/bridge-capability-matrix.md",
@@ -313,8 +313,8 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:c2d5c56b6d4b71ae032e33e636123a01face894f57b845602112a1cec99d0b3d",
-      "canonical_size": 20594
+      "digest": "sha256:8a2a214594d9f62dff066bab0ec993939582bf5b55bd00b65d74a0dfa6cc4ed2",
+      "canonical_size": 21329
     },
     {
       "path": ".ai/assistant/context-profiles.md",
@@ -331,8 +331,8 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:8bc8052496ee57d02aff499c60ebdf3b9f4fae83bff41de8d40f6c94db85116f",
-      "canonical_size": 12637
+      "digest": "sha256:8d3856694f6cd3f3e8857ec6e2e7910b1f02d525e6b6932bc8938223e3aeaa02",
+      "canonical_size": 13117
     },
     {
       "path": ".ai/assistant/context/consistency-routing.json",
@@ -612,6 +612,15 @@
       "group": "assistant",
       "digest": "sha256:9d9b8a92935194b17f8f6d8aa2a8a3465297b5acae7304f858fd677de9bbb2e5",
       "canonical_size": 2603
+    },
+    {
+      "path": ".ai/assistant/entry-packet.json",
+      "kind": "file",
+      "classification": "exact-contract",
+      "classification_id": "adapter-support",
+      "group": "assistant",
+      "digest": "sha256:827d8f0b14efd5fd0c70041b559e1fcfbe1d53fdff7845fe3184b5eaeb634b45",
+      "canonical_size": 28319
     },
     {
       "path": ".ai/assistant/extensions/README.md",
@@ -1132,8 +1141,8 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:37ef1a6c27a6cb939ae81ae0e9e1ba2479ee08bfed8f350aa0f3eca8902f3a6d",
-      "canonical_size": 8648
+      "digest": "sha256:bfd5b871476e4b5d8826697483546e99f0746bba8bd1f31379e81d88e20cf641",
+      "canonical_size": 4429
     },
     {
       "path": ".ai/assistant/installation-state.json",
@@ -1510,7 +1519,7 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:96ef7cd818f7160f81325aa597b30730a2e077f830542a681e894dfd10f15d3e",
+      "digest": "sha256:2d19371404779f59afc9ba25564892f8de167e6b88f29e27e7376960a5258091",
       "canonical_size": 41411
     },
     {
@@ -1618,8 +1627,8 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:02edc48b2e1f9e86527975f14cb17dfcf98235b0ce29d1d31c8e4fe962d397f4",
-      "canonical_size": 8590
+      "digest": "sha256:cd3e5d4f708a8b6b782b5bde7f79679e67161fe508f345c6e5b24326c2ac4c1c",
+      "canonical_size": 8660
     },
     {
       "path": ".ai/assistant/templates/large-task-operation-packet.md",
@@ -1663,8 +1672,8 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:770de2806158c0622f608d0752613578e3ec2e7557ad93c0e71f366e2c6058ca",
-      "canonical_size": 11664
+      "digest": "sha256:4dc2b2b6fb4efe42ad65f1d8ed68cae3a4e8fd6bda49c1374a1c69d51d033481",
+      "canonical_size": 11759
     },
     {
       "path": ".ai/assistant/templates/post-update-message.md",
@@ -1672,8 +1681,8 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:e95c9b6921ce047ec6fb0633f8c37ab098a07952e2ae1900783e662f5b2562fb",
-      "canonical_size": 10204
+      "digest": "sha256:b3c1f03c896d99b22a6740e7435a6a7c88431651768ad7614bd562a3f74d2f5c",
+      "canonical_size": 10268
     },
     {
       "path": ".ai/assistant/templates/pre-change-preview.md",
@@ -2482,8 +2491,8 @@
       "classification": "exact-contract",
       "classification_id": "assistant-entrypoints",
       "group": "entrypoints",
-      "digest": "sha256:beeb557c82bb64d17e636c4aebd92e5858c7783a8532d4b223ab4373c834fab7",
-      "canonical_size": 878
+      "digest": "sha256:1b2d708f00bc521b5ceb10c2e807524e45c8b20ef0c0fa9d21fa9ff6e34bd75e",
+      "canonical_size": 918
     },
     {
       "path": ".cursorrules",
@@ -2491,8 +2500,8 @@
       "classification": "exact-contract",
       "classification_id": "assistant-entrypoints",
       "group": "entrypoints",
-      "digest": "sha256:7628fa732e8b9e6686283a805d7391a65757ff7e8117abb554be8691a4efa6d3",
-      "canonical_size": 666
+      "digest": "sha256:ba0ede2e1afd62b9613d5455eee35c11025735d913067b426efadb4524356e51",
+      "canonical_size": 700
     },
     {
       "path": ".devin/rules/alatyr-core.md",
@@ -2500,8 +2509,8 @@
       "classification": "exact-contract",
       "classification_id": "assistant-entrypoints",
       "group": "entrypoints",
-      "digest": "sha256:817c56be8049f7eb73835ac4ec0601e5f26e48dbe528ff4facba962ea03c6d9d",
-      "canonical_size": 827
+      "digest": "sha256:4d3c91ba52960ecf30e68754a7bc8d6523d0460d84dc7f6de188a4eb19427c64",
+      "canonical_size": 867
     },
     {
       "path": ".github/copilot-instructions.md",
@@ -2509,8 +2518,8 @@
       "classification": "exact-contract",
       "classification_id": "assistant-entrypoints",
       "group": "entrypoints",
-      "digest": "sha256:40a532a97734f2b0e6208ff14f5879bf75c4e2513b3cabd70094eab5b838bdbb",
-      "canonical_size": 902
+      "digest": "sha256:f5d163145ffa327599f430fd17bdbac347c4a2f069fd75b3f5250fe654269132",
+      "canonical_size": 942
     },
     {
       "path": ".github/prompts/gate-review.prompt.md",
@@ -2518,8 +2527,8 @@
       "classification": "exact-contract",
       "classification_id": "assistant-entrypoints",
       "group": "entrypoints",
-      "digest": "sha256:e4926f675e0c22e8389d0d15e9fbef53b5aaa5a313cac55da5164b36fd2b4849",
-      "canonical_size": 1210
+      "digest": "sha256:dd44d4d07311764e45b541d918de72a905f3a0ad517d1576bc0e289dd4652595",
+      "canonical_size": 1246
     },
     {
       "path": ".roo/rules/alatyr-core.md",
@@ -2527,8 +2536,8 @@
       "classification": "exact-contract",
       "classification_id": "assistant-entrypoints",
       "group": "entrypoints",
-      "digest": "sha256:64d8f8d8c84b6f88fe6bbb368c4553b0440429d8229245fd42174ef52a92613a",
-      "canonical_size": 723
+      "digest": "sha256:422d2b51e111838e05121c4927e62ed0c6c0cb25d7d9cfeca1fe5df4c19b470f",
+      "canonical_size": 763
     },
     {
       "path": ".rules",
@@ -2536,8 +2545,8 @@
       "classification": "exact-contract",
       "classification_id": "assistant-entrypoints",
       "group": "entrypoints",
-      "digest": "sha256:659940b8a23c429e33892f77a08eeceb9abd07aa12ac13845faad3b86ebbe9bc",
-      "canonical_size": 650
+      "digest": "sha256:24b87877c7c2be2b3fa88fdf4d5c3994a35613f1c39baac836203d5a13879585",
+      "canonical_size": 684
     },
     {
       "path": ".windsurf/rules/alatyr-core.md",
@@ -2545,8 +2554,8 @@
       "classification": "exact-contract",
       "classification_id": "assistant-entrypoints",
       "group": "entrypoints",
-      "digest": "sha256:34a17bdc2b5487083893c9209ec0c4033b2bae62220609831535f3cdffbdf6f1",
-      "canonical_size": 834
+      "digest": "sha256:b287444641e6ca23b8661294614c3452b91acf7f47d153441836aed988e4eaac",
+      "canonical_size": 874
     },
     {
       "path": ".windsurfrules",
@@ -2554,8 +2563,8 @@
       "classification": "exact-contract",
       "classification_id": "assistant-entrypoints",
       "group": "entrypoints",
-      "digest": "sha256:9361a62f2c8292c39800c15a9e1965e9131446ae2cdff953c5ee038b3c19796a",
-      "canonical_size": 668
+      "digest": "sha256:a2b9a6b6985f0e6947ca179bf86cd8af36598b05634b1cfe965412cb5c03dca6",
+      "canonical_size": 702
     },
     {
       "path": "AGENTS.md",
@@ -2563,8 +2572,8 @@
       "classification": "exact-contract",
       "classification_id": "assistant-entrypoints",
       "group": "entrypoints",
-      "digest": "sha256:1cc8e43f8570fdab12b2a9a4eb0f063064a24ef108ba32e5c8a7d4070861475b",
-      "canonical_size": 6310
+      "digest": "sha256:26db540f34984ea61ad40e56e59dcd7d3073364f22e2a02327d72754b9d281fd",
+      "canonical_size": 6043
     },
     {
       "path": "AI_ASSISTANTS.md",
@@ -2572,8 +2581,8 @@
       "classification": "exact-contract",
       "classification_id": "assistant-entrypoints",
       "group": "entrypoints",
-      "digest": "sha256:f21c0659910ffb92788b30b8d7bd69dc78af0a5a05851a5459981c557cd3b49e",
-      "canonical_size": 1971
+      "digest": "sha256:acf629f7cbaa1c56bab3c1c53630b66e609ece209344adca0f1ce983bd9a1979",
+      "canonical_size": 2011
     },
     {
       "path": "CLAUDE.md",
@@ -2581,8 +2590,8 @@
       "classification": "exact-contract",
       "classification_id": "assistant-entrypoints",
       "group": "entrypoints",
-      "digest": "sha256:7f83e0cdbd4603bac6825c37983734297b6a39b793fed93cd3bdfa2da657f215",
-      "canonical_size": 824
+      "digest": "sha256:acf5d7e002bcdcf4f9f3529acf2d608cf79b9f11b4e9f60e522431f6c7810143",
+      "canonical_size": 864
     },
     {
       "path": "GEMINI.md",
@@ -2590,9 +2599,9 @@
       "classification": "exact-contract",
       "classification_id": "assistant-entrypoints",
       "group": "entrypoints",
-      "digest": "sha256:fa24312b02dc67cfbd7f499a413668fff8725fa6bc58dd0ae24548add0fb3003",
-      "canonical_size": 824
+      "digest": "sha256:9821e64460631b34faac2ddccb5ecb04b13bd62d9d1e7f5c2c50797cd1557190",
+      "canonical_size": 864
     }
   ],
-  "root_digest": "sha256:9ef06b2b0fb5413877a8804e779526e60a78bc5a46354bb25465d03cbb7e6f1b"
+  "root_digest": "sha256:73e3d1eaa223873a8f796cc962d4e327c86928615db06702fdebf513693abb56"
 }

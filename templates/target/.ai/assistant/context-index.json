@@ -165,8 +165,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 962,
-      "content_digest": "sha256:8bc8052496ee57d02aff499c60ebdf3b9f4fae83bff41de8d40f6c94db85116f"
+      "estimated_words": 1002,
+      "content_digest": "sha256:8d3856694f6cd3f3e8857ec6e2e7910b1f02d525e6b6932bc8938223e3aeaa02"
     },
     {
       "id": "assistant.content.contour-md",
@@ -223,6 +223,32 @@
       "content_digest": "sha256:9d9b8a92935194b17f8f6d8aa2a8a3465297b5acae7304f858fd677de9bbb2e5"
     },
     {
+      "id": "assistant.content.entry-packet-json",
+      "kind": "content",
+      "path": "entry-packet.json",
+      "summary": "Entry Packet",
+      "selectors": {
+        "path_terms": [
+          "entry",
+          "packet"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 1512,
+      "content_digest": "sha256:827d8f0b14efd5fd0c70041b559e1fcfbe1d53fdff7845fe3184b5eaeb634b45"
+    },
+    {
       "id": "assistant.content.help-md",
       "kind": "content",
       "path": "help.md",
@@ -244,8 +270,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1129,
-      "content_digest": "sha256:37ef1a6c27a6cb939ae81ae0e9e1ba2479ee08bfed8f350aa0f3eca8902f3a6d"
+      "estimated_words": 550,
+      "content_digest": "sha256:bfd5b871476e4b5d8826697483546e99f0746bba8bd1f31379e81d88e20cf641"
     },
     {
       "id": "assistant.content.help-reference-md",
@@ -660,7 +686,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 2682,
-      "content_digest": "sha256:96ef7cd818f7160f81325aa597b30730a2e077f830542a681e894dfd10f15d3e"
+      "content_digest": "sha256:2d19371404779f59afc9ba25564892f8de167e6b88f29e27e7376960a5258091"
     },
     {
       "id": "assistant.section.workers",

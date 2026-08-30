@@ -195,7 +195,7 @@ def module_costs() -> list[dict[str, Any]]:
 
 
 def build_scaffold_report(
-    profile: str = "core",
+    profile: str = "kernel",
     enabled_modules: Iterable[str] | None = None,
     framework_pack: str = "matched",
     assistant_surfaces: Iterable[str] | None = None,
@@ -223,6 +223,15 @@ def build_scaffold_report(
         "report_kind": "alatyr-standing-support-cost",
         "measurement": "whitespace-delimited words in installed support files or source templates",
         "profile": profile,
+        "profile_recommendation": {
+            "default": "kernel",
+            "escalation_order": ["kernel", "core", "standard", "full"],
+            "policy": (
+                "start from the cheapest sufficient profile and escalate only "
+                "for target evidence, a named module dependency, an assistant "
+                "surface requirement, or failed validation"
+            ),
+        },
         "enabled_modules": sorted(enabled),
         "selected_assistant_surfaces": sorted(selected_surfaces),
         "framework_pack": selected_pack,
@@ -296,6 +305,14 @@ def build_installed_report(target: Path) -> dict[str, Any]:
         "schema_version": 1,
         "report_kind": "installed-alatyr-standing-support-cost",
         "target": str(target),
+        "review_recommendation": {
+            "entry_point": ".ai/assistant/entry-packet.json",
+            "policy": (
+                "route through the generated entry packet when present, then "
+                "use support-delta for changed support surfaces before loading "
+                "large human reference files"
+            ),
+        },
         "support_policy_present": policy is not None,
         "support_surfaces": measured,
         "classifications": dict(sorted(classifications.items())),
@@ -313,6 +330,7 @@ def render_text(report: dict[str, Any]) -> str:
         lines = [
             "Alatyr installed support cost",
             f"Target: {report['target']}",
+            f"Recommended entry point: {report['review_recommendation']['entry_point']}",
             f"Files: {support['files']}",
             f"Words: {support['words']}",
             f"Estimated tokens at 4 chars/token: {support['estimated_tokens_4_chars']}",
@@ -325,6 +343,7 @@ def render_text(report: dict[str, Any]) -> str:
         lines = [
             "Alatyr scaffold support cost",
             f"Profile: {report['profile']}",
+            f"Recommended default: {report['profile_recommendation']['default']}",
             f"Framework pack: {report['framework_pack']}",
             f"Files: {support['files']}",
             f"Words: {support['words']}",
@@ -356,7 +375,7 @@ def main() -> int:
     parser.add_argument(
         "--profile",
         choices=["kernel", "core", "standard", "full"],
-        default="core",
+        default="kernel",
     )
     parser.add_argument(
         "--enable-module",

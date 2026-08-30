@@ -29,6 +29,7 @@ Installation id: `{INSTALLATION_ID}`
   `.ai/assistant/policies/action-authorization.json`
 - Context router: `.ai/assistant/context-router.json`
 - Generated bootstrap index: `.ai/assistant/bootstrap-index.json`
+- Generated first-use entry packet: `.ai/assistant/entry-packet.json`
 - Recursive context indexes: `.ai/framework/context-index.json`,
   `.ai/project/context-index.json`, `.ai/assistant/context-index.json`
 - Support-information policy/state: `.ai/project/support-policy.json`,

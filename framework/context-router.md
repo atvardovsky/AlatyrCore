@@ -15,17 +15,18 @@ A target adapter can load:
 
 1. assistant instructions that the host already preloaded
 2. the generated `.ai/assistant/bootstrap-index.json` routing projection
-3. the framework semantic-codebook preload closure and three contour root
+3. the generated `.ai/assistant/entry-packet.json` first-use routing packet
+4. the framework semantic-codebook preload closure and three contour root
    context indexes named by that projection
-4. only matching recursive section indexes and selected content descriptors
-5. the compact workspace-mode catalog when that optional module is enabled
-6. one selected mode descriptor and applicable shared root context
-7. the selected profile's required context
-8. one or more project-area overlays when the task names affected areas
-9. task-scale overlays only when the task is large, resumable, team-active,
+5. only matching recursive section indexes and selected content descriptors
+6. the compact workspace-mode catalog when that optional module is enabled
+7. one selected mode descriptor and applicable shared root context
+8. the selected profile's required context
+9. one or more project-area overlays when the task names affected areas
+10. task-scale overlays only when the task is large, resumable, team-active,
    explicitly debug-enabled, at material evidence finalization, or an enabled-
    team write preflight finds possible active-work overlap
-10. bounded project-knowledge routing after profile/area selection and again
+11. bounded project-knowledge routing after profile/area selection and again
    after concrete changed facts, paths, symbols, subsystem or architecture
    relationships, dependencies, contracts, or issue lineage become known
 
@@ -44,6 +45,13 @@ profile, intent, migration, consistency, and task-scale instructions in lazy
 descriptor files. The router may retain short `use_when` signals needed to
 choose a descriptor without opening every profile.
 
+The entry packet is generated metadata, not another policy owner. It should
+summarize exact installed profile routes, gate fragments, operation routes
+when present, allowed-action modes, and support-delta entry points. If the
+packet is missing or stale, repair it from canonical adapter sources before
+routine routing or fall back to the named owners with an explicit context
+receipt.
+
 ## Router Contract
 
 A target context router should define:
@@ -52,6 +60,7 @@ A target context router should define:
 - human reference file
 - preloaded context that must not be reread
 - generated bootstrap projection and its canonical source hashes
+- generated first-use entry packet path and schema version
 - framework, project, and assistant recursive context-index roots
 - maximum recursive navigation depth and fail-closed index behavior
 - semantic-codebook index, preload term IDs, namespace boundary, version and

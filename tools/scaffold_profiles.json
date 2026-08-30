@@ -7,6 +7,7 @@
         ".ai/README.md",
         ".ai/alatyr.yaml",
         ".ai/assistant/bootstrap-index.json",
+        ".ai/assistant/entry-packet.json",
         ".ai/assistant/context-profiles.md",
         ".ai/assistant/context-router.json",
         ".ai/assistant/context/profiles/architecture-change.json",

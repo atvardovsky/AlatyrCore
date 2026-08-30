@@ -6,62 +6,42 @@ local command in `{TARGET_VALIDATION_OR_LOCAL_COMMANDS}`.
 
 These aliases are chat/request shortcuts, not shell commands.
 
+First-use packet: `.ai/assistant/entry-packet.json`.
 Full operation reference: `.ai/assistant/help-reference.md`.
 Compact operation index: `.ai/assistant/operation-index.json`.
 Canonical operation catalog: `.ai/assistant/operation-catalog.json`.
 
-Send `Alatyr` by itself for a compact adapter state and up to three relevant
-actions. Send `Alatyr status` or `Alatyr doctor` for a read-only adapter health
-check. A clear ordinary task is routed automatically; an operation ID is not
-required.
+Send `Alatyr` by itself for compact adapter state and up to three relevant
+actions. Send `Alatyr status` or `Alatyr doctor` for read-only adapter health.
+A clear ordinary task is routed automatically; an operation ID is not required.
 
 Default routing:
 
-- If the operation is clear and low risk, choose the matching operation and
-  report the chosen route.
-- If the request is `Alatyr` alone, do not edit files. Report whether health
-  evidence is fresh or unchecked and show at most three available actions.
+- Treat `AGENTS.md` as preloaded, then load
+  `.ai/assistant/bootstrap-index.json` and `.ai/assistant/entry-packet.json`.
+- If the operation is clear and low risk, choose the matching route and report
+  the selected profile, gates, and allowed-action ceiling.
+- If the request is `Alatyr` alone, do not edit files. Report fresh or
+  unchecked health evidence and show at most three available actions.
 - If the request asks for status or doctor, route to `adapter-health` and keep
   allowed actions `read-only`.
-- If the request is unclear, show only the two or three closest operations and
-  ask for the smallest missing decision.
 - If the request only returns to an issue, backlog item, report, or discussion,
   or asks for status, analysis, a plan, or what comes next, keep the operation
   read-only. Do not reuse implementation, commit, or push authorization from a
   completed task.
-- Use `.ai/assistant/context-router.json` to choose task context before
-  expanding the reading set, and use `.ai/assistant/context-profiles.md` when
-  human rationale or conflict resolution is needed.
-- Use `.ai/assistant/module-profile.md` to avoid routing to blocked or
-  disabled optional modules.
-- When `workspace-modes` is enabled, read its compact catalog before selecting
-  task profile or project area. Prefer an explicit accepted mode, select
-  automatically only on one unambiguous match, and ask before edits otherwise.
+- If the request is unclear, show only the two or three closest operations and
+  ask for the smallest missing decision.
+- Use `.ai/assistant/context-profiles.md` only when routing rationale,
+  ambiguity, conflict, or adapter repair requires human-readable detail.
+- Use `.ai/assistant/module-profile.md` only when module state is missing from
+  the packet, disputed, or under repair.
 - Load `.ai/assistant/operation-index.json` for an exact operation ID or alias.
-  Load the full catalog only for the bare `Alatyr` entry, ambiguity, or
-  operation/adapter repair.
-- Show `.ai/assistant/templates/pre-change-preview.md` before edits only when
-  semantic or protected risk, boundary crossing, external effects, or unclear
-  allowed-action scope triggers it.
-- Add the `large-or-resumable` task-scale overlay only for multi-workstream,
-  cross-boundary, budget-exceeding, or resumable work. Small tasks should not
-  create operation packets.
-- In an enabled team project, check the compact active-work index before a
-  state-changing operation. Expand `team-active` only for explicit team work,
-  a selected task/branch match, possible logical overlap, or unresolved index
-  evidence. Keep unrelated tasks and team history out of context.
-- Before completing material semantic, architectural, or non-obvious repair
-  work, apply the lazy durable engineering-evidence gate. Small local work may
-  skip with a specific reason; do not load unrelated evidence records.
-- For non-trivial work, apply bounded project-knowledge routing after profile
-  and area selection, then refine it after concrete facts are known. Read
-  canonical owners, deliver only accepted-current constraints, and block on
-  contradictions. Promotion requires target review; direct guidance also needs
-  registered decision-owner authority, ownership, and exception scope.
-- When the optional `debug-mode` module is enabled, activate it only from an
-  explicit current-task or current-session request. Checkpoint material events,
-  classify architectural impacts and direction replacements structurally, and
-  expire activation with the scope. Resolve durable evidence links lazily.
+  Load the full catalog only for bare `Alatyr`, ambiguity, or operation repair.
+- For support changes, start with support-state delta evidence. Load only
+  changed support owners, selected relationship shards, and affected target
+  source owners; hashes locate change and do not prove semantics.
+- Before edits, apply `.ai/assistant/policies/action-authorization.json` to the
+  newest request and current logical scope.
 
 ## Quick Operations
 
@@ -69,59 +49,28 @@ Operation: `help`
 Use when: the user asks what Alatyr can do or the request is unclear.
 Flow: `.ai/assistant/flows/operation-routing.flow.md`
 Minimum input: goal or suspected task area.
+
 Operation: `adapter-health`
 Use when: the user asks for Alatyr status, doctor, or current adapter health.
 Flow: `.ai/assistant/flows/adapter-health.flow.md`
 Minimum input: optional health scope. Allowed actions are `read-only`.
+
 Operation: `product-change`
 Use when: accepted behavior, architecture, data, runtime, or a public contract may change.
 Flow: `.ai/assistant/flows/blueprint-driven-change.flow.md`
 Minimum input: change intent, non-goals, and approval constraints.
-Use `Alatyr architecture` for architecture discussion, `Alatyr diagram` for a
-diagram, `Alatyr team status` for team state, and `Alatyr set actor
-<actor-id-or-name>` for attribution. These route through
-`architecture-assistance` and `diagram-discussion`. When `code-documentation` is enabled, use
-`propose comment style`, `document code`, `generate code docs`, or
-`review code documentation`; the assistant selects a bounded accepted profile.
-When `project-vocabulary` is enabled, use `Alatyr glossary`, `Alatyr define
-term`, or `check terminology`; the assistant starts from the compact catalog.
-Use `Alatyr enable test-first` to assess and configure the optional policy, or
-`Alatyr test first` for an enabled policy. The assistant may suggest this once
-when defect, invariant, contract, refactor, or recurring-regression evidence
-supports it; a suggestion is not mandatory unless target policy says so.
-Use `Alatyr impact`, `Alatyr support diff`, or `Alatyr change cost` for bounded
-integrity routing and support/product patch-size evidence. With
-`support-generation`, check is read-only and generate uses the guarded flow;
-neither accepts inferred relationships as architecture facts.
-Use `Alatyr extensions` to list compact state, `Alatyr inspect extension
-<source>` for read-only source review, and `Alatyr add/update/disable/remove
-extension <source-or-id>` for an approval-aware lifecycle request. These are
-chat shortcuts, not shell commands. `Alatyr suggest extensions <scope>` remains
-read-only and does not fetch or install a package.
-When `dependency-knowledge` is enabled, use `Alatyr dependencies` for compact
-state, `Alatyr sync dependencies` to compare and update only the reviewed
-project projection, `Alatyr explain dependency <package>` for selected current
-facts, or `Alatyr dependency impact <package-or-change>` for bounded impact.
-These requests never activate nested adapters or update software packages.
-When `workspace-modes` is enabled, use `Alatyr modes` for compact state,
-`Alatyr suggest modes` for evidence-bound proposals, `Alatyr mode <id>` for a
-per-task selection preview, `Alatyr define mode` to draft a mode, or `Alatyr
-accept mode <id>` for an explicit acceptance request. Suggestions remain
-proposed, and a mode never grants permissions or activates nested adapters.
-Use `Alatyr evidence` to inspect compact historical evidence, `Alatyr capture
-evidence` to request capture for the current task, or `Alatyr explain decision
-<evidence-id>` to reconstruct why a prior change was made. These records store
-normalized conclusions and references, never raw assistant reasoning.
-Use `Alatyr knowledge` for routed knowledge, `Alatyr remember this` to propose
-review, `Alatyr what do we know <subject>` for lookup, or `Alatyr revalidate
-knowledge <id>` for freshness. Only accepted canonical-owner updates become
-project authority.
-When `debug-mode` is enabled, use `Enable Alatyr Debug Mode for this task` to
-start explicit task-local observation, `Alatyr debug status` for read-only
-state, `Alatyr debug checkpoint` for a material event checkpoint, `Alatyr debug
-summary` to finalize or summarize, and `Disable Alatyr Debug Mode` to stop.
-Debug records measure execution, Alatyr-system activity, and supervision; they
-are not authority and never grant code, commit, publish, or live permission.
+
+Common shortcuts:
+
+- `Alatyr architecture` (`architecture-assistance`)
+- `Alatyr diagram` (`diagram-discussion`)
+- `Alatyr team status`
+- `Alatyr support diff`, `Alatyr impact`, `Alatyr change cost`
+- `Alatyr glossary`, `Alatyr dependencies`, `Alatyr modes`
+- `Alatyr evidence`, `Alatyr knowledge`, `Alatyr debug status`
+- `propose comment style`, `document code`, `Alatyr test first`
+- `alatyr-ai-inventory`, `alatyr-suggest-ai`, `alatyr-adaptation`
+
 Detailed operations and aliases are in
 `.ai/assistant/help-reference.md`.
 

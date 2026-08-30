@@ -503,15 +503,21 @@ The scaffolder is Python-based and can be run on Linux, macOS, and Windows.
 Windows users may use the provided Command Prompt or PowerShell wrappers under
 `tools/`.
 
+Start from the cheapest sufficient support profile. Use `kernel` unless target
+evidence shows that durable evidence/project knowledge (`core`), common
+lifecycle/product operations (`standard`), or complete template/native-bridge
+coverage (`full`) is required.
+
 The selected support profile and compatible framework pack must be recorded in
 `.ai/alatyr.yaml`. Scaffold projection must remove manifest, router, operation,
 capability, and framework-rule claims for omitted optional surfaces; a smaller
 profile or pack is not a complete installation with unexplained missing files.
 Use `kernel` when the target only needs low-cost bootstrap, routing,
-authorization, integrity, support-state, and final-evidence support. Use
-`core` when the target also needs durable engineering evidence and
-project-knowledge delivery. Use `standard` for common lifecycle/product
-operations and `full` only when the complete template surface is justified.
+authorization, integrity, generated entry packet, support-state, and
+final-evidence support. Use `core` when the target also needs durable
+engineering evidence and project-knowledge delivery. Use `standard` for
+common lifecycle/product operations and `full` only when the complete template
+surface is justified.
 Use repeatable `--enable-module <capability-id>` options to add only reviewed
 capabilities and their dependency closure. The scaffolder raises the matched
 framework pack when a selected capability requires a broader canonical owner.
@@ -521,6 +527,20 @@ the target actually uses. The helper resolves aliases through the canonical
 surface registry and rejects native bridge selections under profiles that do
 not contain their complete support context. Selection is static source
 scaffolding, not evidence that the client loaded the bridge.
+
+After scaffolding or updating adapter sources, regenerate and check the compact
+entry packet before broad manual review:
+
+```sh
+python3 tools/render_target_entry_packet.py --target /path/to/target-repo --check
+```
+
+On Windows use `tools\alatyr.cmd render-entry` or
+`tools\alatyr.ps1 render-entry` when the target exposes those wrappers. The
+entry packet records exact installed profile files, gate fragments, operation
+routes when installed, allowed-action modes, and support-delta entry points.
+If it is missing or stale, repair it before trusting help, module, or
+context-profile summaries.
 
 Scaffolding does not replace target inspection, installation planning,
 approval gates, adapter rewriting, validation, logical integrity review, or

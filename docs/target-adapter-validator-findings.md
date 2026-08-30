@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1118
+Catalog entries: 1127
 
 ## Families
 
@@ -33,13 +33,14 @@ Catalog entries: 1118
 - `DIFF`: 3 codes.
 - `ENABLED`: 1 codes.
 - `ENGINEERING`: 41 codes.
+- `ENTRY`: 8 codes.
 - `EVIDENCE`: 1 codes.
 - `EXTENSION`: 65 codes.
 - `FRAMEWORK`: 16 codes.
 - `GATE`: 1 codes.
 - `INSTALLATION`: 3 codes.
 - `LOCAL`: 1 codes.
-- `MANIFEST`: 11 codes.
+- `MANIFEST`: 12 codes.
 - `MIGRATION`: 8 codes.
 - `MODULE`: 5 codes.
 - `OPERATION`: 29 codes.
@@ -1148,6 +1149,22 @@ Catalog entries: 1118
   Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_TEMPLATE_VERSION`
   Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
+- `ENTRY_PACKET_CURRENT`
+  Level: info. Source: `tools/validate_target_adapter.py`.
+- `ENTRY_PACKET_INVALID`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENTRY_PACKET_LAZY_REFERENCES`
+  Level: warning. Source: `tools/validate_target_adapter.py`.
+- `ENTRY_PACKET_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENTRY_PACKET_PROFILE_RECOMMENDATION`
+  Level: warning. Source: `tools/validate_target_adapter.py`.
+- `ENTRY_PACKET_SCHEMA`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENTRY_PACKET_STALE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ENTRY_PACKET_SUPPORT_DELTA`
+  Level: warning. Source: `tools/validate_target_adapter.py`.
 - `EVIDENCE_SCOPE_CURRENT_STATE`
   Level: info. Source: `tools/validate_target_adapter.py`.
 - `EXTENSION_APPROVAL_MISSING`
@@ -1323,6 +1340,8 @@ Catalog entries: 1118
 - `LOCAL_PATH_LEAKAGE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `MANIFEST_CONTEXT_BUDGET`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `MANIFEST_CONTEXT_PATH`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `MANIFEST_CONTEXT_SCHEMA`
   Level: error. Source: `tools/validate_target_adapter.py`.

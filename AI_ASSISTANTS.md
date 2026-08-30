@@ -161,8 +161,9 @@ source guide when the target adapter says otherwise.
 ## Context And Cost Discipline
 
 Start from `.ai/assistant/bootstrap-index.json` after the target entry point,
-verify or repair its canonical source hashes when stale, and route by task and
-project area. Load only:
+then load `.ai/assistant/entry-packet.json` when present. Verify or repair
+canonical source hashes when stale, and route by task and project area. Load
+only:
 
 - the selected operation or task profile
 - the relevant project-area source

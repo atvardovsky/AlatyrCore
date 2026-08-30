@@ -23,6 +23,7 @@ changes.
 - Existing CODEOWNERS or equivalent owner map:
 - Existing adapter owner, backup owner, review cadence, and last review:
 - Existing context profiles:
+- Existing generated entry packet:
 - Existing intent overlays:
 - Existing module profile:
 - Existing task-specific maturity profile:

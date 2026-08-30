@@ -11,6 +11,11 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
+from agent_entry_packet import (
+    PACKET_PATH,
+    build_from_target as build_entry_packet,
+    render as render_entry_packet,
+)
 from bootstrap_index import BOOTSTRAP_PATH, build_from_target, render
 
 
@@ -47,6 +52,26 @@ def main() -> int:
         failures.append(f"missing generated bootstrap index: {BOOTSTRAP_PATH.as_posix()}")
     elif bootstrap_path.read_text(encoding="utf-8") != expected:
         failures.append("bootstrap index differs from its canonical source projection")
+    else:
+        bootstrap_index = load_object(bootstrap_path)
+        entry_packet = bootstrap_index.get("agent_entry_packet")
+        if (
+            not isinstance(entry_packet, dict)
+            or entry_packet.get("path") != PACKET_PATH.as_posix()
+            or entry_packet.get("load_after") != BOOTSTRAP_PATH.as_posix()
+        ):
+            failures.append("bootstrap index does not route the agent entry packet")
+
+    packet_path = TARGET / PACKET_PATH
+    try:
+        expected_packet = render_entry_packet(build_entry_packet(TARGET))
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        failures.append(f"cannot derive agent entry packet: {exc}")
+        expected_packet = ""
+    if not packet_path.is_file():
+        failures.append(f"missing generated agent entry packet: {PACKET_PATH.as_posix()}")
+    elif expected_packet and packet_path.read_text(encoding="utf-8") != expected_packet:
+        failures.append("agent entry packet differs from its canonical source projection")
 
     bootstrap = router.get("bootstrap_context")
     if bootstrap != [BOOTSTRAP_PATH.as_posix()]:
@@ -138,14 +163,19 @@ def main() -> int:
             failures.append(f"core scaffold failed: {result.stderr.strip() or result.stdout.strip()}")
         elif not (target / BOOTSTRAP_PATH).is_file():
             failures.append("core scaffold did not generate bootstrap-index.json")
+        elif not (target / PACKET_PATH).is_file():
+            failures.append("core scaffold did not generate entry-packet.json")
         else:
             try:
                 scaffold_expected = render(build_from_target(target))
+                scaffold_packet_expected = render_entry_packet(build_entry_packet(target))
             except (OSError, ValueError, json.JSONDecodeError) as exc:
                 failures.append(f"scaffold bootstrap sources are invalid: {exc}")
             else:
                 if (target / BOOTSTRAP_PATH).read_text(encoding="utf-8") != scaffold_expected:
                     failures.append("core scaffold bootstrap is not deterministic")
+                if (target / PACKET_PATH).read_text(encoding="utf-8") != scaffold_packet_expected:
+                    failures.append("core scaffold entry packet is not deterministic")
 
     if failures:
         for failure in failures:

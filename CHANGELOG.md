@@ -4,6 +4,36 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.36 - 2026-08-30
+
+- Increased the framework version to `0.1.0-alpha.36`, adapter schema version
+  to `34`, and target template version to `34` for generated first-use entry
+  packets, router schema version `9`, projected gate indexes, support-delta
+  routing, and cheap-profile recommendation evidence.
+- Added generated `.ai/assistant/entry-packet.json` as the compact first-use
+  target packet after bootstrap. The packet binds exact profile routes, routed
+  gate fragments, operation candidates, allowed-action modes, support-delta
+  entry points, lazy human-reference fallbacks, and the default
+  `kernel -> core -> standard -> full` escalation policy.
+- Updated the target manifest, bootstrap index, context router, scaffold
+  profiles, target adapter validator, and schema contract so installed adapters
+  can validate entry-packet freshness and avoid loading large reference
+  surfaces for routine task routing.
+- Shortened the target `help.md` surface and kept full operation details in
+  lazy `help-reference.md`; all supported assistant bridge templates now route
+  through bootstrap plus the generated entry packet before broad prose.
+- Added read-only `support-delta` tooling and tests so support-surface changes
+  can be reviewed from changed paths and owner hints before loading heavy
+  support-state, context-profile, module-profile, or help-reference files.
+- Updated support-cost reporting to recommend the cheapest sufficient profile
+  from machine-readable evidence and default scaffold cost reports to `kernel`.
+- Fixed shared Git changed-path normalization for target adapters installed in
+  a subdirectory of a larger repository, preventing unrelated source-root
+  changes from appearing as target product changes.
+- Regenerated the reviewed source-release checkpoint for `0.1.0-alpha.35`
+  because its committed migration report had drifted from the alpha.35 contract
+  digest. No rule IDs were added, removed, or deprecated.
+
 ## 0.1.0-alpha.35 - 2026-08-29
 
 - Increased the framework version to `0.1.0-alpha.35`, adapter schema version

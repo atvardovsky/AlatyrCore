@@ -61,6 +61,13 @@ means or whether architecture remains correct.
 
 ## Bounded Impact Routing
 
+Start review from a support delta whenever support information may have
+changed. Compare the recorded support state with current support files and, if
+a Git base is known, classify changed paths as support or product surfaces
+before loading broad support prose. The delta should return changed support
+paths, changed product paths, candidate support-owner context, heavy fallback
+surfaces that changed, and the next impact or refresh step.
+
 When the optional consistency map is enabled, use changed Git paths, support
 state differences, explicit changed fact IDs, and the generated reverse index
 to select only applicable graph shards. Traverse accepted relationships within
@@ -139,9 +146,15 @@ During installation or update:
 1. Adapt support collections and exclusions from target evidence.
 2. Preserve target-owned owners, accepted relationships, candidates, and
    generator bindings.
-3. Rebuild recursive context indexes and optional reverse/generation indexes.
+3. Rebuild generated entry packets, recursive context indexes, and optional
+   reverse/generation indexes from their canonical owners.
 4. Generate support state last.
 5. Run strict validation before claiming acceptance.
+
+For framework updates, use migration evidence plus the support delta before
+opening the full support layer. Load changed owners and selected relationship
+shards first, then expand only for conflicts, missing state, failed checks, or
+protected adapter behavior changes.
 
 Branch-specific evidence cannot establish support state on another branch.
 Migration tooling may propose schema or shard changes but must not overwrite

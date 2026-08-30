@@ -26,6 +26,7 @@ from scaffold_projection import (
     project_ai_infrastructure_router,
     project_catalog,
     project_context_descriptor,
+    project_gate_index,
     project_manifest,
     project_module_profile,
     project_router,
@@ -33,6 +34,11 @@ from scaffold_projection import (
     render_json,
 )
 from scaffold_state import INITIAL_INSTALLATION_STATE
+from agent_entry_packet import (
+    PACKET_PATH,
+    build_agent_entry_packet,
+    render as render_agent_entry_packet,
+)
 from bootstrap_index import build_bootstrap_index, render as render_bootstrap_index
 from capability_catalog import (
     PACK_ORDER,
@@ -324,14 +330,73 @@ def projected_template_content(
     catalog_rel = Path(".ai/assistant/operation-catalog.json")
     index_rel = Path(".ai/assistant/operation-index.json")
     router_rel = Path(".ai/assistant/context-router.json")
+    gate_index_rel = Path(".ai/assistant/gates/index.json")
     catalog = context.catalog
     if rel == catalog_rel and catalog is not None:
         return render_json(catalog)
     if rel == index_rel and catalog is not None:
         return render_json(build_operation_index(catalog))
+    if rel == gate_index_rel:
+        return render_json(project_gate_index(load_object(src), selected))
     if rel == router_rel:
         return render_json(
             project_router(load_object(src), selected, set(context.operation_ids))
+        )
+    if rel == PACKET_PATH:
+        manifest_text = project_manifest(
+            (TEMPLATE_ROOT / ".ai/alatyr.yaml").read_text(encoding="utf-8"),
+            profile,
+            framework_pack,
+            selected,
+            set(context.enabled_modules),
+        )
+        router_text = render_json(
+            project_router(
+                load_object(TEMPLATE_ROOT / router_rel),
+                selected,
+                set(context.operation_ids),
+            )
+        )
+        gate_index_text = render_json(
+            project_gate_index(load_object(TEMPLATE_ROOT / gate_index_rel), selected)
+        )
+        projected_router = load_object(TEMPLATE_ROOT / router_rel)
+        projected_router = project_router(
+            projected_router,
+            selected,
+            set(context.operation_ids),
+        )
+        profile_descriptors: dict[str, dict[str, Any]] = {}
+        profile_index = projected_router.get("profile_index")
+        if isinstance(profile_index, dict):
+            for profile_id, entry in profile_index.items():
+                descriptor = entry.get("descriptor") if isinstance(entry, dict) else None
+                if isinstance(profile_id, str) and isinstance(descriptor, str):
+                    profile_descriptors[profile_id] = project_context_descriptor(
+                        load_object(TEMPLATE_ROOT / descriptor),
+                        selected,
+                        set(context.operation_ids),
+                    )
+        operation_index_text = (
+            render_json(build_operation_index(catalog)) if catalog is not None else None
+        )
+        operation_catalog_text = render_json(catalog) if catalog is not None else None
+        return render_agent_entry_packet(
+            build_agent_entry_packet(
+                manifest_text,
+                router_text,
+                gate_index_text,
+                (TEMPLATE_ROOT / ".ai/assistant/policies/action-authorization.json").read_text(
+                    encoding="utf-8"
+                ),
+                (TEMPLATE_ROOT / ".ai/project/support-policy.json").read_text(
+                    encoding="utf-8"
+                ),
+                operation_index_text=operation_index_text,
+                operation_catalog_text=operation_catalog_text,
+                target=TEMPLATE_ROOT,
+                profile_descriptors=profile_descriptors,
+            )
         )
     if rel == Path(".ai/assistant/bootstrap-index.json"):
         manifest_text = project_manifest(

@@ -4,7 +4,7 @@
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "504ab664185797e55bc21b9cdf46a2bb9cbf6578bde711814ef2c6ae698060eb"
+      "sha256": "02d3c854306009ae74d60e72a9e415eeb98971da933b02f26a30dacf9f618226"
     },
     "project_map": {
       "path": ".ai/README.md",
@@ -12,7 +12,7 @@
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",
-      "sha256": "8bc8052496ee57d02aff499c60ebdf3b9f4fae83bff41de8d40f6c94db85116f"
+      "sha256": "8d3856694f6cd3f3e8857ec6e2e7910b1f02d525e6b6932bc8938223e3aeaa02"
     },
     "semantic_codebook": {
       "path": ".ai/framework/semantics/index.json",
@@ -84,6 +84,11 @@
       "semantic codebook fallback",
       "material or protected change"
     ]
+  },
+  "agent_entry_packet": {
+    "schema_version": 1,
+    "path": ".ai/assistant/entry-packet.json",
+    "load_after": ".ai/assistant/bootstrap-index.json"
   },
   "routing_order": [
     "docs-local",

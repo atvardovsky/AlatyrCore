@@ -4,7 +4,7 @@ This repository uses Alatyr Core. All assistants should treat `AGENTS.md` as the
 Before making changes:
 
 1. Ensure `AGENTS.md` is loaded once; if it was not preloaded by the host, read it.
-   Then read `.ai/assistant/bootstrap-index.json`.
+   Then read `.ai/assistant/bootstrap-index.json`, then `.ai/assistant/entry-packet.json`.
    Repair a stale index from `.ai/alatyr.yaml`, `.ai/README.md`, and `.ai/assistant/context-router.json`.
 2. Load its semantic preload once; resolve lazy IDs through the semantic index, falling back to canonical owner prose on missing, stale, or conflicting terms.
 3. Select the smallest task profile and follow only matching `context-index.json`

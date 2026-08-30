@@ -10,7 +10,7 @@
         "Before making changes:",
         "",
         "1. Ensure `AGENTS.md` is loaded once; if it was not preloaded by the host, read it.",
-        "   Then read `.ai/assistant/bootstrap-index.json`.",
+        "   Then read `.ai/assistant/bootstrap-index.json`, then `.ai/assistant/entry-packet.json`.",
         "   Repair a stale index from `.ai/alatyr.yaml`, `.ai/README.md`, and `.ai/assistant/context-router.json`.",
         "2. Load its semantic preload once; resolve lazy IDs through the semantic index, falling back to canonical owner prose on missing, stale, or conflicting terms.",
         "3. Select the smallest task profile and follow only matching `context-index.json`",
@@ -36,7 +36,7 @@
         "# Claude Instructions",
         "",
         "Ensure `AGENTS.md` is loaded once; if it was not preloaded by the host, read it now.",
-        "Then read `AI_ASSISTANTS.md` and `.ai/assistant/bootstrap-index.json`.",
+        "Then read `AI_ASSISTANTS.md` and `.ai/assistant/bootstrap-index.json`, then `.ai/assistant/entry-packet.json`.",
         "If the derived index is missing or stale, repair it from its named canonical sources.",
         "Select the smallest profile before reading the matching task flow.",
         "",
@@ -54,7 +54,7 @@
         "# Gemini Instructions",
         "",
         "Ensure `AGENTS.md` is loaded once; if it was not preloaded by the host, read it now.",
-        "Then read `AI_ASSISTANTS.md` and `.ai/assistant/bootstrap-index.json`.",
+        "Then read `AI_ASSISTANTS.md` and `.ai/assistant/bootstrap-index.json`, then `.ai/assistant/entry-packet.json`.",
         "If the derived index is missing or stale, repair it from its named canonical sources.",
         "Select the smallest profile before reading the matching task flow.",
         "",
@@ -75,7 +75,7 @@
         "---",
         "",
         "Ensure `AGENTS.md` is loaded once; if it was not preloaded by the host, read it now.",
-        "Then read `AI_ASSISTANTS.md` and `.ai/assistant/bootstrap-index.json`.",
+        "Then read `AI_ASSISTANTS.md` and `.ai/assistant/bootstrap-index.json`, then `.ai/assistant/entry-packet.json`.",
         "If the derived index is missing or stale, repair it from its named canonical",
         "sources. Select the smallest",
         "profile before reading the matching task flow.",
@@ -91,7 +91,7 @@
     {
       "path": "templates/target/.cursorrules",
       "lines": [
-        "Ensure AGENTS.md is loaded once; if it was not preloaded by the host, read it now. Then read AI_ASSISTANTS.md and .ai/assistant/bootstrap-index.json. Repair a missing or stale derived index from its named canonical sources. This file is a legacy bridge for Cursor-compatible tools.",
+        "Ensure AGENTS.md is loaded once; if it was not preloaded by the host, read it now. Then read AI_ASSISTANTS.md, .ai/assistant/bootstrap-index.json, and .ai/assistant/entry-packet.json. Repair a missing or stale derived index from its named canonical sources. This file is a legacy bridge for Cursor-compatible tools.",
         "For an exact operation ID or alias, read .ai/assistant/operation-index.json. For bare Alatyr, ambiguity, or repair, read .ai/assistant/operation-catalog.json, .ai/assistant/help.md, and .ai/assistant/flows/operation-routing.flow.md.",
         "When delegation is selected, use .ai/assistant/prompts/worker-orchestration.md and the selected capability record; do not infer native worker support."
       ]
@@ -102,7 +102,7 @@
         "# Devin / Cascade Instructions",
         "",
         "Ensure `AGENTS.md` is loaded once; if it was not preloaded by the host, read it now.",
-        "Then read `AI_ASSISTANTS.md` and `.ai/assistant/bootstrap-index.json`.",
+        "Then read `AI_ASSISTANTS.md` and `.ai/assistant/bootstrap-index.json`, then `.ai/assistant/entry-packet.json`.",
         "If the derived index is missing or stale, repair it from its named canonical",
         "sources. Select the smallest",
         "profile before reading the matching task flow.",
@@ -123,7 +123,7 @@
         "This repository uses Alatyr Core.",
         "",
         "Ensure `AGENTS.md` is loaded once; if it was not preloaded by the host, read it now.",
-        "Then read `AI_ASSISTANTS.md` and `.ai/assistant/bootstrap-index.json`.",
+        "Then read `AI_ASSISTANTS.md` and `.ai/assistant/bootstrap-index.json`, then `.ai/assistant/entry-packet.json`.",
         "If the derived index is missing or stale, repair it from its named canonical sources.",
         "Select the smallest profile before reading task-owned context or flows.",
         "",
@@ -146,7 +146,7 @@
         "",
         "This prompt is a bridge, not the source of truth. Ensure `AGENTS.md` is loaded",
         "once; if it was not preloaded by the host, read it now. Then read",
-        "`AI_ASSISTANTS.md` and `.ai/assistant/bootstrap-index.json` before selecting",
+        "`AI_ASSISTANTS.md`, `.ai/assistant/bootstrap-index.json`, and `.ai/assistant/entry-packet.json` before selecting",
         "gate-review context. Repair a missing or stale derived index from its named",
         "canonical sources. Then use `.ai/assistant/gates/index.json` to select the",
         "smallest applicable gate fragments. Load `.ai/assistant/gates/checklist.md`",
@@ -166,7 +166,7 @@
         "# Windsurf Legacy Instructions",
         "",
         "Ensure `AGENTS.md` is loaded once; if it was not preloaded by the host, read it now.",
-        "Then read `AI_ASSISTANTS.md` and `.ai/assistant/bootstrap-index.json`.",
+        "Then read `AI_ASSISTANTS.md` and `.ai/assistant/bootstrap-index.json`, then `.ai/assistant/entry-packet.json`.",
         "If the derived index is missing or stale, repair it from its named canonical",
         "sources. Select the smallest",
         "profile before reading the matching task flow.",
@@ -182,7 +182,7 @@
     {
       "path": "templates/target/.windsurfrules",
       "lines": [
-        "Ensure AGENTS.md is loaded once; if it was not preloaded by the host, read it now. Then read AI_ASSISTANTS.md and .ai/assistant/bootstrap-index.json. Repair a missing or stale derived index from its named canonical sources. This file is a legacy bridge for Windsurf-compatible tools.",
+        "Ensure AGENTS.md is loaded once; if it was not preloaded by the host, read it now. Then read AI_ASSISTANTS.md, .ai/assistant/bootstrap-index.json, and .ai/assistant/entry-packet.json. Repair a missing or stale derived index from its named canonical sources. This file is a legacy bridge for Windsurf-compatible tools.",
         "For an exact operation ID or alias, read .ai/assistant/operation-index.json. For bare Alatyr, ambiguity, or repair, read .ai/assistant/operation-catalog.json, .ai/assistant/help.md, and .ai/assistant/flows/operation-routing.flow.md.",
         "When delegation is selected, use .ai/assistant/prompts/worker-orchestration.md and the selected capability record; do not infer native worker support."
       ]
@@ -193,7 +193,7 @@
         "# Roo Code Legacy Instructions",
         "",
         "Ensure `AGENTS.md` is loaded once; if it was not preloaded by the host, read it now.",
-        "Then read `AI_ASSISTANTS.md` and `.ai/assistant/bootstrap-index.json`.",
+        "Then read `AI_ASSISTANTS.md` and `.ai/assistant/bootstrap-index.json`, then `.ai/assistant/entry-packet.json`.",
         "For an exact operation ID or alias, read `.ai/assistant/operation-index.json`.",
         "For bare `Alatyr`, ambiguity, or repair, read `.ai/assistant/operation-catalog.json`,",
         "`.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.",
@@ -207,7 +207,7 @@
     {
       "path": "templates/target/.rules",
       "lines": [
-        "Ensure AGENTS.md is loaded once; if it was not preloaded by the host, read it now. Then read AI_ASSISTANTS.md and .ai/assistant/bootstrap-index.json. This is the Zed Agent first-match bridge, not the source of truth.",
+        "Ensure AGENTS.md is loaded once; if it was not preloaded by the host, read it now. Then read AI_ASSISTANTS.md, .ai/assistant/bootstrap-index.json, and .ai/assistant/entry-packet.json. This is the Zed Agent first-match bridge, not the source of truth.",
         "For an exact operation ID or alias, read .ai/assistant/operation-index.json. For bare Alatyr, ambiguity, or repair, read .ai/assistant/operation-catalog.json, .ai/assistant/help.md, and .ai/assistant/flows/operation-routing.flow.md.",
         "When delegation is selected, use .ai/assistant/prompts/worker-orchestration.md and the selected capability record; do not infer native worker support or treat Zed permissions as Alatyr authorization."
       ]

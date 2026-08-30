@@ -149,8 +149,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 2793,
-      "content_digest": "sha256:a9e0f372f7f39247b64113f4f42cd29d7d61e7212e70e088b412760626ae24d7"
+      "estimated_words": 2892,
+      "content_digest": "sha256:af8e73bdba41d72323da0e723282318bada0f84aefdf82b47def022e1ac09898"
     },
     {
       "id": "framework.core.context-router-md",
@@ -167,8 +167,8 @@
       ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 2121,
-      "content_digest": "sha256:b7aeada61c36b7e0272664fa88243cf7a6d1bccd69df903ca5535950f19e5889"
+      "estimated_words": 2194,
+      "content_digest": "sha256:22cc5f511c94bfa2f6008ae38d25db068adccfdc70cbf9cfbcde0f893d11af2c"
     },
     {
       "id": "framework.core.contour-md",
@@ -227,8 +227,8 @@
       ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 4092,
-      "content_digest": "sha256:92decd2afa89902bd6fd46d6f4160d8467f455a37f8669e25f5298e0c767ce2c"
+      "estimated_words": 4110,
+      "content_digest": "sha256:5351344fa5350774dc797699b84bbf4ee56bae51aadceeff954331319f60fafb"
     },
     {
       "id": "framework.core.logical-integrity-md",
@@ -301,8 +301,8 @@
       "owner_refs": [
         "ALATYR-OPERATION-001"
       ],
-      "estimated_words": 3344,
-      "content_digest": "sha256:271999979378f8eeb89d0a66d891955686afb8748cb50f9b1680ecc8dd6b16b9"
+      "estimated_words": 3396,
+      "content_digest": "sha256:97077c66fbfbcee62e5f779a3758222aeda98ed223dd726c9c1eebb95ecbfff3"
     },
     {
       "id": "framework.core.project-adapter-contract-md",

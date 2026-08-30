@@ -29,6 +29,16 @@ Load only the selected descriptor. Intent, migration, consistency, and
 task-scale descriptors compose with that profile when their trigger applies;
 they do not belong inline in every profile or in mandatory bootstrap.
 
+After the generated bootstrap, an installed adapter may provide a generated
+`.ai/assistant/entry-packet.json`. This first-use packet is the routine
+machine surface for exact installed profile descriptors, default gate
+fragments, operation routes when installed, allowed-action modes, support
+delta entry points, and the cheapest sufficient support-profile policy. It is
+generated from canonical adapter sources and must be checked or regenerated
+after install or update. Human prose such as context profiles, module
+profiles, help references, and full support state remains lazy unless the
+packet is missing, stale, disputed, or insufficient for the selected task.
+
 ## Recursive Context Navigation
 
 Every substantial framework, project, and assistant contour should expose a
@@ -158,6 +168,8 @@ Every installed adapter should keep a compact bootstrap set:
 
 - target root assistant entry point as host-preloaded context
 - generated `.ai/assistant/bootstrap-index.json`
+- generated `.ai/assistant/entry-packet.json` as the first post-bootstrap
+  routing packet
 
 The bootstrap index points to the three contour context indexes and the
 semantic-codebook index. Its projected `preload` term IDs are resolved before

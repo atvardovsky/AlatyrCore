@@ -23,11 +23,14 @@ Updated adapter surfaces:
 
 Future assistant bootstrap:
 - Do not rely on this chat message alone.
-- Treat `AGENTS.md` as preloaded; start from `.ai/assistant/bootstrap-index.json`.
-- Verify or rebuild the recursive framework, project, and assistant context
-  indexes from this branch's installed files, then repair the bootstrap from
-  `.ai/alatyr.yaml`, `.ai/README.md`, `.ai/assistant/context-router.json`, and
-  `.ai/framework/semantics/index.json` when stale.
+- Treat `AGENTS.md` as preloaded; start from
+  `.ai/assistant/bootstrap-index.json`, then
+  `.ai/assistant/entry-packet.json`.
+- Verify or rebuild the entry packet plus recursive framework, project, and
+  assistant context indexes from this branch's installed files, then repair the
+  bootstrap from `.ai/alatyr.yaml`, `.ai/README.md`,
+  `.ai/assistant/context-router.json`, and `.ai/framework/semantics/index.json`
+  when stale.
 - Preserve target-owned support classifications, accepted relationships,
   candidates, and generator bindings. Rebuild optional reverse/generation
   indexes, then generate `.ai/support-state.json` last.

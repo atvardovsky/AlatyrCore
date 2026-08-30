@@ -179,6 +179,35 @@ def build_operation_index(catalog: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def project_gate_index(gates: dict[str, Any], selected: set[Path]) -> dict[str, Any]:
+    """Keep only gate index entries whose fragment files are installed."""
+
+    projected = copy.deepcopy(gates)
+    gate_entries = projected.get("gates")
+    if not isinstance(gate_entries, dict):
+        raise ValueError("gate index must define a gates object")
+    available: dict[str, Any] = {}
+    for gate_id, entry in gate_entries.items():
+        if not isinstance(gate_id, str) or not isinstance(entry, dict):
+            continue
+        path = entry.get("path")
+        if isinstance(path, str) and path_available(path, selected):
+            available[gate_id] = entry
+    projected["gates"] = available
+    profile_defaults = projected.get("profile_defaults")
+    if isinstance(profile_defaults, dict):
+        projected["profile_defaults"] = {
+            profile: [
+                gate_id
+                for gate_id in gate_ids
+                if isinstance(gate_id, str) and gate_id in available
+            ]
+            for profile, gate_ids in profile_defaults.items()
+            if isinstance(gate_ids, list)
+        }
+    return projected
+
+
 def _filter_paths(value: Any, selected: set[Path]) -> Any:
     if isinstance(value, list):
         return [

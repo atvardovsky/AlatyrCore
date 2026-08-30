@@ -16,9 +16,11 @@ Linux or macOS:
 python3 tools/alatyr.py --help
 python3 tools/alatyr.py doctor --target /path/to/target-repo
 python3 tools/alatyr.py validate-adapter --target /path/to/target-repo
+python3 tools/alatyr.py render-entry --target /path/to/target-repo
 python3 tools/alatyr.py render-context --target /path/to/target-repo
 python3 tools/alatyr.py render-context --target /path/to/target-repo --write
 python3 tools/alatyr.py support-diff --target /path/to/target-repo
+python3 tools/alatyr.py support-delta --target /path/to/target-repo --diff-ref HEAD~1
 python3 tools/alatyr.py support-costs
 python3 tools/alatyr.py support-costs --target /path/to/target-repo
 python3 tools/alatyr.py impact --target /path/to/target-repo --diff-ref HEAD~1
@@ -37,9 +39,11 @@ Windows PowerShell:
 .\tools\alatyr.ps1 --help
 .\tools\alatyr.ps1 doctor --target C:\path\to\target-repo
 .\tools\alatyr.ps1 validate-adapter --target C:\path\to\target-repo
+.\tools\alatyr.ps1 render-entry --target C:\path\to\target-repo
 .\tools\alatyr.ps1 render-context --target C:\path\to\target-repo
 .\tools\alatyr.ps1 render-context --target C:\path\to\target-repo --write
 .\tools\alatyr.ps1 support-diff --target C:\path\to\target-repo
+.\tools\alatyr.ps1 support-delta --target C:\path\to\target-repo --diff-ref HEAD~1
 .\tools\alatyr.ps1 support-costs
 .\tools\alatyr.ps1 support-costs --target C:\path\to\target-repo
 .\tools\alatyr.ps1 impact --target C:\path\to\target-repo --diff-ref HEAD~1
@@ -57,9 +61,11 @@ Windows Command Prompt:
 tools\alatyr.cmd --help
 tools\alatyr.cmd doctor --target C:\path\to\target-repo
 tools\alatyr.cmd validate-adapter --target C:\path\to\target-repo
+tools\alatyr.cmd render-entry --target C:\path\to\target-repo
 tools\alatyr.cmd render-context --target C:\path\to\target-repo
 tools\alatyr.cmd render-context --target C:\path\to\target-repo --write
 tools\alatyr.cmd support-diff --target C:\path\to\target-repo
+tools\alatyr.cmd support-delta --target C:\path\to\target-repo --diff-ref HEAD~1
 tools\alatyr.cmd support-costs
 tools\alatyr.cmd support-costs --target C:\path\to\target-repo
 tools\alatyr.cmd impact --target C:\path\to\target-repo --diff-ref HEAD~1
@@ -75,11 +81,14 @@ The stable command set is:
 - `check-source`: no writes
 - `scaffold`: target structure writes only with `--write`
 - `render-bootstrap`: target bootstrap regeneration only with `--write`
+- `render-entry`: target first-use packet regeneration only with `--write`
 - `render-context`: installed recursive context-index regeneration only with
   `--write`; check mode is read-only
 - `snapshot-support`: check support-state freshness or refresh it with explicit
   `--write`; generate this state after other support derivatives
 - `support-diff`: read-only created/modified/removed support-surface report
+- `support-delta`: read-only support/product path delta for first-pass review
+  routing
 - `support-costs`: read-only standing support-surface footprint report for a
   scaffold profile or installed target adapter
 - `impact`: bounded changed-path/fact traversal through accepted target
@@ -630,6 +639,10 @@ py -3 .\tools\check_context_router.py
 the adapter manifest, compact project map, and context router.
 `render_target_bootstrap_index.py` checks it by default and rewrites it only
 with `--write`; use `--stdout` for a non-writing preview.
+`agent_entry_packet.py` builds the deterministic first-use packet from the
+manifest, router, gate index, action-authorization policy, support policy, and
+operation index when installed. `render_target_entry_packet.py` checks it by
+default and rewrites it only with `--write`.
 `check_bootstrap_routing.py` verifies source hashes,
 gate-index/profile coverage, budget headroom, and deterministic core scaffold
 generation.
@@ -637,7 +650,10 @@ generation.
 ```sh
 python3 tools/render_target_bootstrap_index.py --target /path/to/target-repo --check
 python3 tools/render_target_bootstrap_index.py --target /path/to/target-repo --write
+python3 tools/render_target_entry_packet.py --target /path/to/target-repo --check
+python3 tools/render_target_entry_packet.py --target /path/to/target-repo --write
 python3 tools/check_bootstrap_routing.py
+python3 tools/check_agent_entry_packet.py
 ```
 
 ## Operation Catalog Check
@@ -966,19 +982,31 @@ python3 tools/check_context_costs.py
 `report_support_costs.py` measures standing Alatyr support-surface footprint
 for a scaffold profile or installed target adapter. Use it before enabling a
 broader profile or optional module so the assistant can discuss support cost
-from evidence instead of loading broad directories. The `kernel` profile is
-the lowest-cost scaffold option; broader profiles add surfaces only when the
-target needs the extra lifecycle, evidence, or operation support. It reports
-files, words,
+from evidence instead of loading broad directories. The default report uses the
+`kernel` profile and carries the kernel -> core -> standard -> full escalation
+recommendation. Broader profiles add surfaces only when the target needs the
+extra lifecycle, evidence, or operation support. It reports files, words,
 estimated tokens at four characters per token, largest groups, optional module
-costs, projected operation count, and assistant-surface duplication signals.
-It does not replace logical integrity review or prove model billing.
+costs, projected operation count, entry-packet review guidance, and
+assistant-surface duplication signals. It does not replace logical integrity
+review or prove model billing.
 
 ```sh
 python3 tools/alatyr.py support-costs
 python3 tools/alatyr.py support-costs --profile standard --format text
 python3 tools/alatyr.py support-costs --target /path/to/target-repo --format text
 python3 tools/check_support_costs.py
+```
+
+`report_support_delta.py` compares the recorded support state with current
+support files and, when a Git base is supplied, separates changed support paths
+from product paths. Use it as the first review step after adapter or code
+changes to select affected support owners before opening broad support prose.
+When a target consistency map is enabled, follow it with `plan_support_impact.py`.
+
+```sh
+python3 tools/alatyr.py support-delta --target /path/to/target-repo --diff-ref HEAD~1
+python3 tools/report_support_delta.py --target /path/to/target-repo --diff-ref HEAD~1 --output tmp/support-delta.json
 ```
 
 `check_assistant_surface_conformance.py` checks compact bridge routing and

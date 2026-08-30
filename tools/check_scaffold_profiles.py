@@ -24,6 +24,7 @@ KERNEL_REQUIRED = {
     Path(".ai/README.md"),
     Path(".ai/alatyr.yaml"),
     Path(".ai/assistant/bootstrap-index.json"),
+    Path(".ai/assistant/entry-packet.json"),
     Path(".ai/assistant/context-router.json"),
     Path(".ai/assistant/context-profiles.md"),
     Path(".ai/assistant/installation-state.json"),

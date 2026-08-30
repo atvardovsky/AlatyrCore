@@ -156,7 +156,7 @@ def validate_committed_report(
     text = report_path.read_text(encoding="utf-8")
     required = [
         f"From manifest: `{baseline}:framework/rule-registry.json`",
-        "To manifest: `framework/rule-registry.json`",
+        "To manifest: `source-tree:framework/rule-registry.json`",
         f"From framework version: `{from_version}`",
         f"To framework version: `{to_version}`",
         f"From adapter schema version: `{from_adapter}`",

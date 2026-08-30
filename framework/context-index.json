@@ -59,7 +59,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 1351,
-      "content_digest": "sha256:17a1d854c05f526b71a2a75e1a10662f122a6dc340df0c6816c0b054dcb0f378"
+      "content_digest": "sha256:e20c2d09b7c85c6d51975d6d18c8508a4acbf33f6ae9623cf5e3f62ca77aae18"
     },
     {
       "id": "framework.section.infrastructure",
@@ -113,7 +113,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 304,
-      "content_digest": "sha256:95deab1b1f8f728f4ecfb83e4967c47728f90601339e40a47549be0bbe259d7f"
+      "content_digest": "sha256:054b14f650679d43dded47b89e6c08c9fa024f7145d582c22af4b06162a4bf85"
     },
     {
       "id": "framework.section.support",
@@ -131,7 +131,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 221,
-      "content_digest": "sha256:ae21783bea7915b47fc3f3b1e4f5f85cd78ab5809dbb5006b440922ab629e056"
+      "content_digest": "sha256:1452f52bd15027abba87100ddd4ac9f0e56fc3d34e4f126974481c0d6634325c"
     }
   ]
 }

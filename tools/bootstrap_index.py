@@ -109,6 +109,8 @@ def build_bootstrap_index(
     semantic_codebook = semantic_codebook if isinstance(semantic_codebook, dict) else {}
     context_packet = router.get("context_packet")
     context_packet = context_packet if isinstance(context_packet, dict) else {}
+    agent_entry_packet = router.get("agent_entry_packet")
+    agent_entry_packet = agent_entry_packet if isinstance(agent_entry_packet, dict) else {}
     preload_ids = _string_list(semantic_codebook.get("preload_terms"))
     ordered_semantic_ids = [
         term_id for term_id in preload_ids if term_id in (semantic_terms or {})
@@ -156,6 +158,11 @@ def build_bootstrap_index(
             "schema_version": context_packet.get("schema_version", "unknown"),
             "template": _string(context_packet.get("template")),
             "receipt_required_for": _string_list(context_packet.get("receipt_required_for")),
+        },
+        "agent_entry_packet": {
+            "schema_version": agent_entry_packet.get("schema_version", "unknown"),
+            "path": _string(agent_entry_packet.get("path")),
+            "load_after": _string(agent_entry_packet.get("load_after")),
         },
         "routing_order": _string_list(router.get("routing_order")),
         "profiles": _route_projection(router.get("profile_index")),

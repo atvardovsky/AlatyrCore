@@ -229,7 +229,7 @@ def git_changed_files(target: Path, diff_ref: str) -> list[str] | None:
         changed.update(worktree_result)
 
     untracked = subprocess.run(
-        ["git", "ls-files", "--others", "--exclude-standard", "-z"],
+        ["git", "ls-files", "--others", "--exclude-standard", "-z", "--", "."],
         cwd=target,
         check=False,
         stdout=subprocess.PIPE,
@@ -243,7 +243,15 @@ def git_changed_files(target: Path, diff_ref: str) -> list[str] | None:
 
 def git_name_status_paths(target: Path, *comparison: str) -> list[str] | None:
     result = subprocess.run(
-        ["git", "diff", "--name-status", "-z", "--find-renames", *comparison],
+        [
+            "git",
+            "diff",
+            "--relative",
+            "--name-status",
+            "-z",
+            "--find-renames",
+            *comparison,
+        ],
         cwd=target,
         check=False,
         stdout=subprocess.PIPE,

@@ -20,6 +20,12 @@
       "write_scope": "target-structure-with-explicit-write"
     },
     {
+      "name": "render-entry",
+      "script": "render_target_entry_packet.py",
+      "purpose": "check or explicitly regenerate a target first-use agent entry packet",
+      "write_scope": "target-structure-with-explicit-write"
+    },
+    {
       "name": "render-context",
       "script": "render_installed_context_catalogs.py",
       "purpose": "check or explicitly regenerate installed recursive context indexes",
@@ -35,6 +41,12 @@
       "name": "support-diff",
       "script": "report_support_diff.py",
       "purpose": "report support-surface changes against the recorded target state",
+      "write_scope": "explicit-report-output-only"
+    },
+    {
+      "name": "support-delta",
+      "script": "report_support_delta.py",
+      "purpose": "report changed support and product paths for delta-first review routing",
       "write_scope": "explicit-report-output-only"
     },
     {

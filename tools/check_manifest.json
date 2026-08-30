@@ -764,13 +764,19 @@
         "templates/target/.ai/README.md",
         "templates/target/.ai/alatyr.yaml",
         "templates/target/.ai/assistant/bootstrap-index.json",
+        "templates/target/.ai/assistant/entry-packet.json",
         "templates/target/.ai/assistant/context*/**",
         "templates/target/.ai/assistant/gates/**",
+        "templates/target/.ai/assistant/operation*.json",
+        "templates/target/.ai/assistant/policies/action-authorization.json",
+        "templates/target/.ai/project/support-policy.json",
         "templates/target/AGENTS.md"
       ],
       "implementation_paths": [
+        "tools/agent_entry_packet.py",
         "tools/bootstrap_index.py",
         "tools/check_bootstrap_routing.py",
+        "tools/render_target_entry_packet.py",
         "tools/render_target_bootstrap_index.py",
         "tools/scaffold*.py"
       ],
@@ -778,12 +784,62 @@
         "templates/target/.ai/README.md",
         "templates/target/.ai/alatyr.yaml",
         "templates/target/.ai/assistant/bootstrap-index.json",
+        "templates/target/.ai/assistant/entry-packet.json",
         "templates/target/.ai/assistant/context*/**",
         "templates/target/.ai/assistant/gates/**",
+        "templates/target/.ai/assistant/operation*.json",
+        "templates/target/.ai/assistant/policies/action-authorization.json",
+        "templates/target/.ai/project/support-policy.json",
         "templates/target/AGENTS.md",
+        "tools/agent_entry_packet.py",
         "tools/bootstrap_index.py",
         "tools/check_bootstrap_routing.py",
+        "tools/render_target_entry_packet.py",
         "tools/render_target_bootstrap_index.py",
+        "tools/scaffold*.py"
+      ]
+    },
+    {
+      "id": "agent-entry-packet",
+      "command": [
+        "tools/check_agent_entry_packet.py"
+      ],
+      "profiles": [
+        "quick",
+        "fast",
+        "full",
+        "platform"
+      ],
+      "depends_on": [
+        "bootstrap-routing",
+        "scaffold-profiles"
+      ],
+      "contract_inputs": [
+        "templates/target/.ai/alatyr.yaml",
+        "templates/target/.ai/assistant/context-router.json",
+        "templates/target/.ai/assistant/entry-packet.json",
+        "templates/target/.ai/assistant/gates/index.json",
+        "templates/target/.ai/assistant/operation*.json",
+        "templates/target/.ai/assistant/policies/action-authorization.json",
+        "templates/target/.ai/project/support-policy.json"
+      ],
+      "implementation_paths": [
+        "tools/agent_entry_packet.py",
+        "tools/check_agent_entry_packet.py",
+        "tools/render_target_entry_packet.py",
+        "tools/scaffold*.py"
+      ],
+      "trigger_paths": [
+        "templates/target/.ai/alatyr.yaml",
+        "templates/target/.ai/assistant/context-router.json",
+        "templates/target/.ai/assistant/entry-packet.json",
+        "templates/target/.ai/assistant/gates/index.json",
+        "templates/target/.ai/assistant/operation*.json",
+        "templates/target/.ai/assistant/policies/action-authorization.json",
+        "templates/target/.ai/project/support-policy.json",
+        "tools/agent_entry_packet.py",
+        "tools/check_agent_entry_packet.py",
+        "tools/render_target_entry_packet.py",
         "tools/scaffold*.py"
       ]
     },
@@ -1474,6 +1530,7 @@
         "tools/manage_support_generation.py",
         "tools/plan_support_impact.py",
         "tools/render_consistency_reverse_index.py",
+        "tools/report_support_delta.py",
         "tools/report_support_diff.py",
         "tools/snapshot_target_support.py",
         "tools/support_generation.py",
@@ -1504,6 +1561,7 @@
         "tools/manage_support_generation.py",
         "tools/plan_support_impact.py",
         "tools/render_consistency_reverse_index.py",
+        "tools/report_support_delta.py",
         "tools/report_support_diff.py",
         "tools/snapshot_target_support.py",
         "tools/support_generation.py",
@@ -1950,6 +2008,7 @@
         "templates/target/**"
       ],
       "implementation_paths": [
+        "tools/agent_entry_packet.py",
         "tools/bootstrap_index.py",
         "tools/check_lifecycle_conformance.py",
         "tools/plan_target_upgrade.py",
@@ -1965,6 +2024,7 @@
         "conformance/golden/lifecycle/**",
         "framework/**",
         "templates/target/**",
+        "tools/agent_entry_packet.py",
         "tools/bootstrap_index.py",
         "tools/check_lifecycle_conformance.py",
         "tools/plan_target_upgrade.py",

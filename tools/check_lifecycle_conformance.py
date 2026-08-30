@@ -17,6 +17,11 @@ from typing import Any
 import yaml
 
 from bootstrap_index import BOOTSTRAP_PATH, build_from_target, render
+from agent_entry_packet import (
+    PACKET_PATH,
+    build_from_target as build_entry_packet,
+    render as render_entry_packet,
+)
 from plan_target_upgrade import add_validation_impact
 from scaffold_target_structure import plan as scaffold_plan
 from render_context_catalogs import build_framework_catalog_contents
@@ -137,6 +142,15 @@ def resolve_adapter(repo: Path, support_profile: str = "core") -> None:
         yaml.safe_dump(manifest, sort_keys=False, allow_unicode=False),
         encoding="utf-8",
     )
+    checker_path = repo / "tools" / "check-alatyr.sh"
+    checker_path.parent.mkdir(parents=True, exist_ok=True)
+    checker_path.write_text(
+        "#!/bin/sh\n"
+        "# Fixture target-local Alatyr checker coverage.\n"
+        "# Checks: context-router, placeholder, local path, stale, manifest.\n"
+        "exit 0\n",
+        encoding="utf-8",
+    )
     state_path = repo / ".ai" / "assistant" / "installation-state.json"
     state_path.write_text(
         json.dumps(
@@ -231,7 +245,14 @@ def refresh_bootstrap(repo: Path) -> None:
     output.write_bytes(render(build_from_target(repo)).encode("utf-8"))
 
 
+def refresh_entry_packet(repo: Path) -> None:
+    output = repo / PACKET_PATH
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_bytes(render_entry_packet(build_entry_packet(repo)).encode("utf-8"))
+
+
 def refresh_context_and_bootstrap(repo: Path) -> None:
+    refresh_entry_packet(repo)
     for path, content in installed_context_outputs(repo).items():
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(content.encode("utf-8"))
@@ -289,6 +310,7 @@ def approval_record(base: str, support_profile: str) -> dict[str, Any]:
                 "CLAUDE.md",
                 "CODEOWNERS",
                 "GEMINI.md",
+                "tools/check-alatyr.sh",
             ],
             "excluded_files_or_surfaces": ["src/**"],
             "excluded_actions": ["project source changes"],

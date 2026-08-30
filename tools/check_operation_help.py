@@ -22,6 +22,7 @@ OPERATION_HEADING = re.compile(r"^Operation: `([^`]+)`\s*$", re.MULTILINE)
 SHORT_HELP_REQUIRED = [
     "# Alatyr Help",
     "These aliases are chat/request shortcuts, not shell commands.",
+    "First-use packet: `.ai/assistant/entry-packet.json`.",
     "Full operation reference: `.ai/assistant/help-reference.md`.",
     "Compact operation index: `.ai/assistant/operation-index.json`.",
     "Canonical operation catalog: `.ai/assistant/operation-catalog.json`.",

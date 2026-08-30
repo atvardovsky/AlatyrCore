@@ -107,7 +107,7 @@ command.
 
 For a bare `Alatyr` request:
 
-1. Read only the compact target bootstrap and operation-routing metadata.
+1. Read only the compact target bootstrap and generated entry packet.
 2. Report whether adapter health has fresh evidence or remains unchecked.
 3. Show at most three available operations relevant to current evidence.
 4. Ask only the smallest question needed, or wait for a task.
@@ -212,6 +212,13 @@ Show operation help when:
 
 Do not show the full operation reference merely because a clear low-risk task
 did not use a formal operation name.
+
+Routine help should prefer `.ai/assistant/entry-packet.json`,
+`.ai/assistant/help.md`, and `.ai/assistant/operation-index.json`. Load the
+full help reference, module profile, operation catalog, or context-profile
+prose only for bare `Alatyr`, ambiguity, conflict, missing module state, or
+adapter repair. The packet is generated metadata; if it is stale, repair or
+report that first rather than trusting copied summaries.
 
 An issue, backlog, report, or discussion transition with no clear action must
 route to read-only analysis even when an earlier completed task included
