@@ -8,6 +8,13 @@ import json
 import sys
 from pathlib import Path
 
+from target_adapter_validation.assistant_capabilities import (
+    CAPABILITY_INDEX_KIND,
+    CAPABILITY_INDEX_SCHEMA_VERSION,
+    capability_record_path,
+    expected_index_state_evidence,
+)
+
 
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "templates/target/.ai/assistant"
@@ -37,25 +44,18 @@ def build_index() -> dict[str, object]:
             isinstance(path, str) and path for path in surface_bridge_paths
         ):
             raise ValueError(f"assistant surface {surface_id} has no valid bridge paths")
-        relpath = f".ai/assistant/assistant-capabilities/{surface_id}.json"
+        relpath = capability_record_path(surface_id)
         record = load_object(ROOT / "templates/target" / relpath)
         if record.get("assistant_surface") != surface_id:
             raise ValueError(f"capability record identity differs for {surface_id}")
         surface_paths[surface_id] = relpath
         bridge_paths[surface_id] = surface_bridge_paths
     return {
-        "schema_version": 3,
-        "capability_kind": "target-assistant-capability-index",
+        "schema_version": CAPABILITY_INDEX_SCHEMA_VERSION,
+        "capability_kind": CAPABILITY_INDEX_KIND,
         "human_reference": ".ai/assistant/bridge-capability-matrix.md",
         "default_surface": "generic",
-        "state_evidence": {
-            "state_model": "supported|limited|unsupported|unknown plus selected and freshness evidence",
-            "selected_surface": "{TARGET_SELECTED_ASSISTANT_SURFACE_OR_GENERIC}",
-            "selected_surface_evidence": "{TARGET_SELECTED_SURFACE_EVIDENCE_OR_UNKNOWN}",
-            "capability_records_are_authoritative": True,
-            "unknown_means_not_verified": True,
-            "stale_or_expired_evidence_requires_recheck": True,
-        },
+        "state_evidence": expected_index_state_evidence(),
         "surfaces": surface_paths,
         "bridge_paths": bridge_paths,
     }

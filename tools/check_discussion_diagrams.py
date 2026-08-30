@@ -13,6 +13,13 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from target_adapter_validation.assistant_capabilities import (
+    CAPABILITY_INDEX_KIND,
+    CAPABILITY_INDEX_SCHEMA_VERSION,
+    SURFACE_CAPABILITY_KIND,
+    capability_record_path,
+)
+
 
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "templates" / "target"
@@ -240,9 +247,12 @@ def main() -> int:
     )
     entries = matrix_entries(read(MATRIX))
     capability_surfaces = capabilities.get("surfaces")
-    if capabilities.get("schema_version") != 3:
-        failures.append("assistant capability index schema_version must be 3")
-    if capabilities.get("capability_kind") != "target-assistant-capability-index":
+    if capabilities.get("schema_version") != CAPABILITY_INDEX_SCHEMA_VERSION:
+        failures.append(
+            "assistant capability index schema_version must be "
+            f"{CAPABILITY_INDEX_SCHEMA_VERSION}"
+        )
+    if capabilities.get("capability_kind") != CAPABILITY_INDEX_KIND:
         failures.append("assistant capabilities kind is invalid")
     if not isinstance(capability_surfaces, dict):
         failures.append("assistant capabilities surfaces must be an object")
@@ -265,12 +275,12 @@ def main() -> int:
             continue
         expected_reference = (
             "Diagram capability record: "
-            f"`.ai/assistant/assistant-capabilities/{surface_id}.json`"
+            f"`{capability_record_path(surface_id)}`"
         )
         if expected_reference not in block:
             failures.append(f"{surface_id} bridge matrix capability reference is invalid")
         entry = capability_surfaces.get(surface_id)
-        expected_path = f".ai/assistant/assistant-capabilities/{surface_id}.json"
+        expected_path = capability_record_path(surface_id)
         if entry != expected_path:
             failures.append(f"assistant capability index path is invalid for {surface_id}")
             continue
@@ -279,7 +289,7 @@ def main() -> int:
         except AssertionError as exc:
             failures.append(str(exc))
             continue
-        if record.get("capability_kind") != "target-assistant-surface-capabilities":
+        if record.get("capability_kind") != SURFACE_CAPABILITY_KIND:
             failures.append(f"{surface_id} capability record kind is invalid")
         if record.get("assistant_surface") != surface_id:
             failures.append(f"{surface_id} capability record identity is invalid")

@@ -566,12 +566,18 @@ py -3 .\tools\check_bridge_capability_matrix.py
 ## Assistant Capability And Admission Checks
 
 `check_assistant_capability_contract.py` validates every target surface record
-against the schema-2 instruction-loading, skill, client-permission, diagram,
+against the schema-3 instruction-loading, skill, client-permission, diagram,
 and delegation evidence contract. `check_assistant_surface_audits.py` then
 checks all canonical surfaces against source lifecycle, official instruction
 paths, precedence risks, static bridge controls, provider-neutral conformance,
 and explicit runtime limits. These checks prove source integration readiness,
 not that an external client followed Alatyr.
+
+Assistant capability schema versions, capability kinds, state vocabulary, and
+per-surface record paths are centralized in
+`tools/target_adapter_validation/assistant_capabilities.py`. Update that helper
+first when the capability contract changes, then rerun the source renderer and
+focused checks.
 
 ```sh
 python3 tools/check_assistant_capability_contract.py

@@ -4,6 +4,17 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.44 - 2026-08-30
+
+- Increased the framework version to `0.1.0-alpha.44`; adapter schema version
+  remains `38` and target template version remains `40` because no installed
+  adapter schema or target template contract changed.
+- Centralized assistant-capability schema versions, capability kinds, state
+  vocabulary, and per-surface record paths for the source renderer, focused
+  source checks, and target adapter validator.
+- Tightened assistant capability validation so installed indexes must route
+  each surface to the canonical per-surface capability record path.
+
 ## 0.1.0-alpha.43 - 2026-08-30
 
 - Increased the framework version to `0.1.0-alpha.43`; adapter schema version

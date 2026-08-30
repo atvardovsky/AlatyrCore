@@ -137,7 +137,7 @@ surfaces and required bridge path, loading, priority, skill/prompt,
 permission, routing, limitation, and conformance fields.
 
 `schemas/alatyr-assistant-surface-capability.schema.json` defines target
-schema-2 evidence for instruction loading, skills, client permissions,
+schema-3 evidence for instruction loading, skills, client permissions,
 diagrams, and delegation. `tools/check_assistant_capability_contract.py`
 validates every source template record, while
 `tools/check_assistant_surface_audits.py` checks lifecycle, official loading

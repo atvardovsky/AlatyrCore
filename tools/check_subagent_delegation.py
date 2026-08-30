@@ -8,6 +8,11 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from target_adapter_validation.assistant_capabilities import (
+    CAPABILITY_INDEX_SCHEMA_VERSION,
+    capability_record_path,
+)
+
 
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "templates" / "target"
@@ -292,8 +297,11 @@ def main() -> int:
         failures.append("delegation policy schema_version must be 2")
     if policy.get("policy_kind") != "target-subagent-delegation-policy":
         failures.append("delegation policy kind is incorrect")
-    if capability_index.get("schema_version") != 3:
-        failures.append("assistant capability index schema_version must be 3")
+    if capability_index.get("schema_version") != CAPABILITY_INDEX_SCHEMA_VERSION:
+        failures.append(
+            "assistant capability index schema_version must be "
+            f"{CAPABILITY_INDEX_SCHEMA_VERSION}"
+        )
     if policy.get("role_catalog") != ".ai/assistant/workers/role-catalog.json":
         failures.append("delegation policy role_catalog path is incorrect")
     for field in [
@@ -448,7 +456,7 @@ def main() -> int:
     }
     for surface_id in sorted(surface_ids):
         path = CAPABILITIES / f"{surface_id}.json"
-        expected_path = f".ai/assistant/assistant-capabilities/{surface_id}.json"
+        expected_path = capability_record_path(surface_id)
         if indexed_surfaces.get(surface_id) != expected_path:
             failures.append(
                 f"assistant capability index has an invalid path for {surface_id}"

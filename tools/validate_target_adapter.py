@@ -73,6 +73,20 @@ from target_adapter_validation.capability import CapabilityValidationContext
 from target_adapter_validation.ai_infrastructure import (
     AI_INFRASTRUCTURE_ROUTER_MODULE,
 )
+from target_adapter_validation.assistant_capabilities import (
+    CAPABILITY_INDEX_KIND,
+    CAPABILITY_INDEX_SCHEMA_VERSION,
+    EVIDENCE_STATES,
+    INDEX_STATE_EVIDENCE_STRING_FIELDS,
+    INDEX_STATE_EVIDENCE_TRUE_FIELDS,
+    OVERALL_STATES,
+    SURFACE_CAPABILITY_KIND,
+    SURFACE_CAPABILITY_SCHEMA_VERSION,
+    SURFACE_STATE_FIELDS,
+    YES_NO_UNKNOWN,
+    capability_record_path,
+    is_concrete_capability_value,
+)
 from target_adapter_validation.consistency_map import (
     CONSISTENCY_MAP_MODULE,
     RegistryFactEntry,
@@ -936,15 +950,6 @@ class Validator:
     def check_assistant_instruction_capabilities(
         self, manifest: ManifestData | None
     ) -> None:
-        def concrete(value: Any) -> bool:
-            return (
-                isinstance(value, str)
-                and bool(value.strip())
-                and not is_placeholder(value)
-                and not is_unresolved_value(value)
-                and "_OR_" not in value
-            )
-
         index_relpath = ".ai/assistant/assistant-capabilities.json"
         if not self.target_path(index_relpath).is_file():
             return
@@ -952,10 +957,11 @@ class Validator:
             self.target_path(index_relpath), "ASSISTANT_CAPABILITY_INDEX"
         )
         if isinstance(index, dict):
-            if index.get("schema_version") != 3:
+            if index.get("schema_version") != CAPABILITY_INDEX_SCHEMA_VERSION:
                 self.error(
                     "ASSISTANT_CAPABILITY_INDEX_SCHEMA",
-                    "assistant capability index schema_version should be 3",
+                    "assistant capability index schema_version should be "
+                    f"{CAPABILITY_INDEX_SCHEMA_VERSION}",
                     index_relpath,
                 )
             state_evidence = index.get("state_evidence")
@@ -966,11 +972,7 @@ class Validator:
                     index_relpath,
                 )
             else:
-                for field in [
-                    "state_model",
-                    "selected_surface",
-                    "selected_surface_evidence",
-                ]:
+                for field in sorted(INDEX_STATE_EVIDENCE_STRING_FIELDS):
                     value = state_evidence.get(field)
                     if not isinstance(value, str) or not value.strip():
                         self.error(
@@ -978,11 +980,7 @@ class Validator:
                             f"assistant capability index state_evidence.{field} must be recorded",
                             index_relpath,
                         )
-                for field in [
-                    "capability_records_are_authoritative",
-                    "unknown_means_not_verified",
-                    "stale_or_expired_evidence_requires_recheck",
-                ]:
+                for field in sorted(INDEX_STATE_EVIDENCE_TRUE_FIELDS):
                     if state_evidence.get(field) is not True:
                         self.error(
                             "ASSISTANT_CAPABILITY_INDEX_STATE",
@@ -1001,8 +999,7 @@ class Validator:
         selected = {
             scalar.value
             for scalar in manifest.lists.get(("supported_assistants",), [])
-            if not is_placeholder(scalar.value)
-            and not is_unresolved_value(scalar.value)
+            if is_concrete_capability_value(scalar.value)
         } if manifest is not None else set()
         unknown_selected = sorted(selected - set(surfaces))
         if unknown_selected:
@@ -1049,15 +1046,23 @@ class Validator:
                     index_relpath,
                 )
                 continue
+            expected_relpath = capability_record_path(surface_id)
+            if relpath != expected_relpath:
+                self.error(
+                    "ASSISTANT_CAPABILITY_INDEX_ENTRY",
+                    f"assistant capability index entry for {surface_id} must be {expected_relpath}",
+                    index_relpath,
+                )
             record = self.load_json_object(
                 self.target_path(relpath), "ASSISTANT_SURFACE_CAPABILITIES"
             )
             if record is None:
                 continue
-            if record.get("schema_version") != 3:
+            if record.get("schema_version") != SURFACE_CAPABILITY_SCHEMA_VERSION:
                 self.error(
                     "ASSISTANT_CAPABILITY_SCHEMA",
-                    f"assistant surface {surface_id} must use capability schema 3",
+                    f"assistant surface {surface_id} must use capability schema "
+                    f"{SURFACE_CAPABILITY_SCHEMA_VERSION}",
                     relpath,
                 )
             if record.get("assistant_surface") != surface_id:
@@ -1074,16 +1079,7 @@ class Validator:
                     relpath,
                 )
             else:
-                required_state_fields = {
-                    "overall",
-                    "selected_for_target",
-                    "evidence_state",
-                    "advertised_by_surface",
-                    "verified_for_target",
-                    "limitations",
-                    "review_triggers",
-                }
-                missing_state = sorted(required_state_fields - set(surface_state))
+                missing_state = sorted(SURFACE_STATE_FIELDS - set(surface_state))
                 if missing_state:
                     self.error(
                         "ASSISTANT_CAPABILITY_STATE_FIELDS",
@@ -1095,12 +1091,13 @@ class Validator:
                 evidence_state = surface_state.get("evidence_state")
                 verified_for_target = surface_state.get("verified_for_target")
                 advertised_by_surface = surface_state.get("advertised_by_surface")
-                if concrete(overall) and str(overall).casefold() not in {
-                    "supported",
-                    "limited",
-                    "unsupported",
-                    "unknown",
-                }:
+                overall_state = str(overall).casefold()
+                selected_state = str(selected_for_target).casefold()
+                evidence_state_value = str(evidence_state).casefold()
+                if (
+                    is_concrete_capability_value(overall)
+                    and overall_state not in OVERALL_STATES
+                ):
                     self.error(
                         "ASSISTANT_CAPABILITY_STATE_VALUE",
                         f"assistant surface {surface_id} overall state is invalid",
@@ -1111,23 +1108,19 @@ class Validator:
                     ("advertised_by_surface", advertised_by_surface),
                     ("verified_for_target", verified_for_target),
                 ]:
-                    if concrete(value) and str(value).casefold() not in {
-                        "yes",
-                        "no",
-                        "unknown",
-                    }:
+                    if (
+                        is_concrete_capability_value(value)
+                        and str(value).casefold() not in YES_NO_UNKNOWN
+                    ):
                         self.error(
                             "ASSISTANT_CAPABILITY_STATE_VALUE",
                             f"assistant surface {surface_id} {label} must be yes, no, or unknown",
                             relpath,
                         )
-                if concrete(evidence_state) and str(evidence_state).casefold() not in {
-                    "current",
-                    "stale",
-                    "expired",
-                    "unverified",
-                    "unknown",
-                }:
+                if (
+                    is_concrete_capability_value(evidence_state)
+                    and evidence_state_value not in EVIDENCE_STATES
+                ):
                     self.error(
                         "ASSISTANT_CAPABILITY_STATE_VALUE",
                         f"assistant surface {surface_id} evidence_state is invalid",
@@ -1142,19 +1135,19 @@ class Validator:
                             relpath,
                         )
                 if surface_id in selected:
-                    if selected_for_target == "no":
+                    if selected_state == "no":
                         self.error(
                             "ASSISTANT_SELECTED_STATE_CONFLICT",
                             f"selected assistant {surface_id} is marked not selected in capability state",
                             relpath,
                         )
-                    if overall == "unsupported":
+                    if overall_state == "unsupported":
                         self.error(
                             "ASSISTANT_SELECTED_UNSUPPORTED",
                             f"selected assistant {surface_id} has unsupported capability state",
                             relpath,
                         )
-                    if concrete(evidence_state) and evidence_state in {
+                    if is_concrete_capability_value(evidence_state) and evidence_state_value in {
                         "stale",
                         "expired",
                         "unverified",
@@ -1162,7 +1155,7 @@ class Validator:
                     }:
                         self.warn(
                             "ASSISTANT_CAPABILITY_STATE_UNVERIFIED",
-                            f"selected assistant {surface_id} capability evidence is {evidence_state}",
+                            f"selected assistant {surface_id} capability evidence is {evidence_state_value}",
                             relpath,
                         )
             for section_name, required in sections.items():
@@ -1199,20 +1192,24 @@ class Validator:
             loading = record.get("instruction_loading")
             if isinstance(loading, dict):
                 route = loading.get("route")
-                if concrete(route) and route not in {"supported", "unsupported", "unknown"}:
+                route_state = str(route).casefold()
+                if (
+                    is_concrete_capability_value(route)
+                    and route_state not in {"supported", "unsupported", "unknown"}
+                ):
                     self.error(
                         "ASSISTANT_INSTRUCTION_ROUTE",
                         f"assistant surface {surface_id} instruction route is invalid",
                         relpath,
                     )
                 if surface_id in selected:
-                    if route == "unsupported":
+                    if route_state == "unsupported":
                         self.error(
                             "ASSISTANT_SELECTED_UNSUPPORTED",
                             f"selected assistant {surface_id} has an unsupported instruction route",
                             relpath,
                         )
-                    elif route != "supported":
+                    elif route_state != "supported":
                         self.warn(
                             "ASSISTANT_INSTRUCTION_LOADING_UNVERIFIED",
                             f"selected assistant {surface_id} has no verified instruction-loading evidence",
@@ -1221,7 +1218,10 @@ class Validator:
                     else:
                         entry = loading.get("selected_entry_path")
                         observed = str(loading.get("auto_load_observed", "")).casefold()
-                        if not concrete(entry) or not self.target_path(str(entry)).is_file():
+                        if (
+                            not is_concrete_capability_value(entry)
+                            or not self.target_path(str(entry)).is_file()
+                        ):
                             self.error(
                                 "ASSISTANT_SELECTED_ENTRY_MISSING",
                                 f"selected assistant {surface_id} has no existing instruction entry",
@@ -3702,18 +3702,17 @@ class Validator:
             capabilities.get("surfaces") if isinstance(capabilities, dict) else None
         )
         if isinstance(capabilities, dict):
-            if capabilities.get("schema_version") != 3:
+            if capabilities.get("schema_version") != CAPABILITY_INDEX_SCHEMA_VERSION:
                 self.error(
                     "DIAGRAM_CAPABILITY_SCHEMA",
-                    "capability index schema_version should be 3",
+                    "capability index schema_version should be "
+                    f"{CAPABILITY_INDEX_SCHEMA_VERSION}",
                     capability_relpath,
                 )
-            if capabilities.get("capability_kind") != (
-                "target-assistant-capability-index"
-            ):
+            if capabilities.get("capability_kind") != CAPABILITY_INDEX_KIND:
                 self.error(
                     "DIAGRAM_CAPABILITY_KIND",
-                    "capability_kind should be target-assistant-capability-index",
+                    f"capability_kind should be {CAPABILITY_INDEX_KIND}",
                     capability_relpath,
                 )
         if not isinstance(capability_surfaces, dict) or not capability_surfaces:
@@ -3743,9 +3742,10 @@ class Validator:
             )
             block = matrix_text[match.end():end]
             surface_id = match.group(1)
+            surface_relpath = capability_record_path(surface_id)
             expected_reference = (
                 "Diagram capability record: "
-                f"`.ai/assistant/assistant-capabilities/{surface_id}.json`"
+                f"`{surface_relpath}`"
             )
             if expected_reference not in block:
                 self.error(
@@ -3753,9 +3753,6 @@ class Validator:
                     f"assistant surface {surface_id} has no compact capability reference",
                     matrix_relpath,
                 )
-            surface_relpath = (
-                f".ai/assistant/assistant-capabilities/{surface_id}.json"
-            )
             if capability_surfaces.get(surface_id) != surface_relpath:
                 self.error(
                     "DIAGRAM_CAPABILITY_INDEX_PATH",
@@ -3768,15 +3765,14 @@ class Validator:
             )
             if surface is None:
                 continue
-            if surface.get("schema_version") != 3:
+            if surface.get("schema_version") != SURFACE_CAPABILITY_SCHEMA_VERSION:
                 self.error(
                     "DIAGRAM_SURFACE_CAPABILITY_SCHEMA",
-                    "surface capability schema_version should be 3",
+                    "surface capability schema_version should be "
+                    f"{SURFACE_CAPABILITY_SCHEMA_VERSION}",
                     surface_relpath,
                 )
-            if surface.get("capability_kind") != (
-                "target-assistant-surface-capabilities"
-            ):
+            if surface.get("capability_kind") != SURFACE_CAPABILITY_KIND:
                 self.error(
                     "DIAGRAM_SURFACE_CAPABILITY_KIND",
                     "surface capability kind is invalid",
@@ -8217,22 +8213,29 @@ class Validator:
                 routes[surface_id] = None
                 continue
             loading = record.get("instruction_loading")
+            route_value = loading.get("route") if isinstance(loading, dict) else None
             route = (
-                str(loading.get("route"))
-                if isinstance(loading, dict) and loading.get("route") is not None
+                str(route_value).casefold()
+                if is_concrete_capability_value(route_value)
                 else None
             )
             surface_state = record.get("surface_state")
-            overall = (
-                str(surface_state.get("overall"))
+            overall_value = (
+                surface_state.get("overall") if isinstance(surface_state, dict) else None
+            )
+            selected_value = (
+                surface_state.get("selected_for_target")
                 if isinstance(surface_state, dict)
-                and surface_state.get("overall") is not None
+                else None
+            )
+            overall = (
+                str(overall_value).casefold()
+                if is_concrete_capability_value(overall_value)
                 else None
             )
             selected_for_target = (
-                str(surface_state.get("selected_for_target"))
-                if isinstance(surface_state, dict)
-                and surface_state.get("selected_for_target") is not None
+                str(selected_value).casefold()
+                if is_concrete_capability_value(selected_value)
                 else None
             )
             routes[surface_id] = (

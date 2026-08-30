@@ -14,6 +14,11 @@ from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
 
+from target_adapter_validation.assistant_capabilities import (
+    SURFACE_CAPABILITY_SCHEMA_VERSION,
+    SURFACE_STATE_SCALAR_FIELDS,
+)
+
 
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "templates" / "target"
@@ -265,19 +270,16 @@ def validate_contracts(
             )
             if capability.get("assistant_surface") != audit_id:
                 failures.append(f"{audit_id} capability record identity differs")
-            if capability.get("schema_version") != 3:
-                failures.append(f"{audit_id} capability record must use schema 3")
+            if capability.get("schema_version") != SURFACE_CAPABILITY_SCHEMA_VERSION:
+                failures.append(
+                    f"{audit_id} capability record must use schema "
+                    f"{SURFACE_CAPABILITY_SCHEMA_VERSION}"
+                )
             state = capability.get("surface_state")
             if not isinstance(state, dict):
                 failures.append(f"{audit_id} capability record lacks surface_state")
             else:
-                for field in [
-                    "overall",
-                    "selected_for_target",
-                    "evidence_state",
-                    "advertised_by_surface",
-                    "verified_for_target",
-                ]:
+                for field in sorted(SURFACE_STATE_SCALAR_FIELDS):
                     value = state.get(field)
                     if not isinstance(value, str) or "{" not in value:
                         failures.append(

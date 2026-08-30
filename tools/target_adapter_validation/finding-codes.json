@@ -6,6 +6,7 @@
     "tools/project_knowledge.py",
     "tools/target_adapter_validation/__init__.py",
     "tools/target_adapter_validation/ai_infrastructure.py",
+    "tools/target_adapter_validation/assistant_capabilities.py",
     "tools/target_adapter_validation/capability.py",
     "tools/target_adapter_validation/consistency_map.py",
     "tools/target_adapter_validation/context.py",

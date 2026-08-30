@@ -28,6 +28,14 @@ from validate_target_adapter import (
 from target_adapter_validation.context_catalogs import (
     validate_context_catalog_contract,
 )
+from target_adapter_validation.assistant_capabilities import (
+    CAPABILITY_INDEX_KIND,
+    CAPABILITY_INDEX_SCHEMA_VERSION,
+    STATE_EVIDENCE_TEXT,
+    SURFACE_CAPABILITY_KIND,
+    SURFACE_CAPABILITY_SCHEMA_VERSION,
+    capability_record_path,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -156,23 +164,24 @@ def main() -> int:
             "schema_version: 27\nsupported_assistants:\n  - generic\n",
             encoding="utf-8",
         )
+        instruction_index = {
+            "schema_version": CAPABILITY_INDEX_SCHEMA_VERSION,
+            "capability_kind": CAPABILITY_INDEX_KIND,
+            "state_evidence": {
+                "state_model": STATE_EVIDENCE_TEXT,
+                "selected_surface": "generic",
+                "selected_surface_evidence": "fixture manifest",
+                "capability_records_are_authoritative": True,
+                "unknown_means_not_verified": True,
+                "stale_or_expired_evidence_requires_recheck": True,
+            },
+            "surfaces": {
+                "generic": capability_record_path("generic")
+            },
+        }
         write_json(
             instruction_target / ".ai/assistant/assistant-capabilities.json",
-            {
-                "schema_version": 3,
-                "capability_kind": "target-assistant-capability-index",
-                "state_evidence": {
-                    "state_model": "supported|limited|unsupported|unknown plus selected and freshness evidence",
-                    "selected_surface": "generic",
-                    "selected_surface_evidence": "fixture manifest",
-                    "capability_records_are_authoritative": True,
-                    "unknown_means_not_verified": True,
-                    "stale_or_expired_evidence_requires_recheck": True,
-                },
-                "surfaces": {
-                    "generic": ".ai/assistant/assistant-capabilities/generic.json"
-                },
-            },
+            instruction_index,
         )
         evidence = {
             "verified_at": "2026-08-25",
@@ -182,8 +191,8 @@ def main() -> int:
             "review_triggers": ["client changed"],
         }
         instruction_record = {
-            "schema_version": 3,
-            "capability_kind": "target-assistant-surface-capabilities",
+            "schema_version": SURFACE_CAPABILITY_SCHEMA_VERSION,
+            "capability_kind": SURFACE_CAPABILITY_KIND,
             "assistant_surface": "generic",
             "surface_state": {
                 "overall": "supported",
@@ -243,6 +252,27 @@ def main() -> int:
                 + ", ".join(sorted(instruction_errors))
             )
 
+        invalid_index = dict(instruction_index)
+        invalid_index["surfaces"] = {
+            "generic": ".ai/assistant/assistant-capabilities/wrong.json"
+        }
+        write_json(
+            instruction_target / ".ai/assistant/assistant-capabilities.json",
+            invalid_index,
+        )
+        invalid_index_validator = validator(instruction_target)
+        invalid_index_validator.check_assistant_instruction_capabilities(
+            instruction_manifest
+        )
+        if "ASSISTANT_CAPABILITY_INDEX_ENTRY" not in {
+            finding.code for finding in invalid_index_validator.findings
+        }:
+            failures.append("assistant capability index path drift must be rejected")
+        write_json(
+            instruction_target / ".ai/assistant/assistant-capabilities.json",
+            instruction_index,
+        )
+
         instruction_record["instruction_loading"]["auto_load_observed"] = "no"
         write_json(instruction_path, instruction_record)
         unproven_validator = validator(instruction_target)
@@ -288,10 +318,10 @@ def main() -> int:
         write_json(
             inactive_bridge_target / ".ai/assistant/assistant-capabilities.json",
             {
-                "schema_version": 3,
-                "capability_kind": "target-assistant-capability-index",
+                "schema_version": CAPABILITY_INDEX_SCHEMA_VERSION,
+                "capability_kind": CAPABILITY_INDEX_KIND,
                 "state_evidence": {
-                    "state_model": "supported|limited|unsupported|unknown plus selected and freshness evidence",
+                    "state_model": STATE_EVIDENCE_TEXT,
                     "selected_surface": "codex",
                     "selected_surface_evidence": "fixture manifest",
                     "capability_records_are_authoritative": True,
@@ -299,8 +329,8 @@ def main() -> int:
                     "stale_or_expired_evidence_requires_recheck": True,
                 },
                 "surfaces": {
-                    "codex": ".ai/assistant/assistant-capabilities/codex.json",
-                    "claude": ".ai/assistant/assistant-capabilities/claude.json",
+                    "codex": capability_record_path("codex"),
+                    "claude": capability_record_path("claude"),
                 },
                 "bridge_paths": {
                     "codex": ["AGENTS.md", "AI_ASSISTANTS.md"],
@@ -1075,10 +1105,10 @@ def main() -> int:
         write_json(
             target / ".ai" / "assistant" / "assistant-capabilities.json",
             {
-                "schema_version": 3,
-                "capability_kind": "target-assistant-capability-index",
+                "schema_version": CAPABILITY_INDEX_SCHEMA_VERSION,
+                "capability_kind": CAPABILITY_INDEX_KIND,
                 "state_evidence": {
-                    "state_model": "supported|limited|unsupported|unknown plus selected and freshness evidence",
+                    "state_model": STATE_EVIDENCE_TEXT,
                     "selected_surface": "generic",
                     "selected_surface_evidence": "fixture",
                     "capability_records_are_authoritative": True,
@@ -1086,7 +1116,7 @@ def main() -> int:
                     "stale_or_expired_evidence_requires_recheck": True,
                 },
                 "surfaces": {
-                    "generic": ".ai/assistant/assistant-capabilities/generic.json"
+                    "generic": capability_record_path("generic")
                 },
             },
         )
@@ -1094,7 +1124,7 @@ def main() -> int:
             target / ".ai" / "assistant" / "assistant-capabilities" / "generic.json",
             {
                 "schema_version": 1,
-                "capability_kind": "target-assistant-surface-capabilities",
+                "capability_kind": SURFACE_CAPABILITY_KIND,
                 "assistant_surface": "generic",
                 "diagram_discussion": {
                     "route": "maybe",

@@ -138,6 +138,10 @@ Before accepting a change, check:
   draft/source status, ASCII grammar/width, inline or artifact presentation,
   source-revision evidence, security/privacy, stable lineage, compact routing,
   conformance fixture, or assistant capability fields change.
+- Update `tools/target_adapter_validation/assistant_capabilities.py` first when
+  assistant capability schema versions, capability kinds, state vocabulary, or
+  per-surface record paths change; focused assistant-capability checks and the
+  target validator import that shared contract.
 - `python3 tools/check_diagram_conformance_results.py` passes when captured
   diagram result, selected capability, loaded-context, read-only, ASCII
   readability, or residual-risk evidence changes.

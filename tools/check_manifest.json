@@ -213,13 +213,15 @@
         "templates/target/.ai/assistant/assistant-capabilities/**"
       ],
       "implementation_paths": [
-        "tools/check_assistant_capability_contract.py"
+        "tools/check_assistant_capability_contract.py",
+        "tools/target_adapter_validation/**"
       ],
       "trigger_paths": [
         "conformance/runs/assistant-surfaces.json",
         "schemas/alatyr-assistant-surface-capability.schema.json",
         "templates/target/.ai/assistant/assistant-capabilities/**",
-        "tools/check_assistant_capability_contract.py"
+        "tools/check_assistant_capability_contract.py",
+        "tools/target_adapter_validation/**"
       ]
     },
     {
@@ -255,7 +257,8 @@
         "templates/target/.ai/assistant/bridge-capability-matrix.md"
       ],
       "implementation_paths": [
-        "tools/check_assistant_surface_audits.py"
+        "tools/check_assistant_surface_audits.py",
+        "tools/target_adapter_validation/**"
       ],
       "trigger_paths": [
         "conformance/assistant-surface-integration-audits.json",
@@ -265,7 +268,8 @@
         "templates/target/.ai/assistant/assistant-capabilities.json",
         "templates/target/.ai/assistant/assistant-capabilities/**",
         "templates/target/.ai/assistant/bridge-capability-matrix.md",
-        "tools/check_assistant_surface_audits.py"
+        "tools/check_assistant_surface_audits.py",
+        "tools/target_adapter_validation/**"
       ],
       "depends_on": [
         "assistant-capability-contract",
@@ -522,12 +526,14 @@
         "templates/target/.ai/assistant/assistant-capabilities.json"
       ],
       "implementation_paths": [
-        "tools/render_assistant_capability_index.py"
+        "tools/render_assistant_capability_index.py",
+        "tools/target_adapter_validation/**"
       ],
       "trigger_paths": [
         "docs/assistant-compatibility.md",
         "templates/target/.ai/assistant/assistant-capabilities.json",
-        "tools/render_assistant_capability_index.py"
+        "tools/render_assistant_capability_index.py",
+        "tools/target_adapter_validation/**"
       ],
       "resource_class": "light"
     },
@@ -929,12 +935,14 @@
         "templates/target/.ai/assistant/**/*diagram*"
       ],
       "implementation_paths": [
-        "tools/check_discussion_diagrams.py"
+        "tools/check_discussion_diagrams.py",
+        "tools/target_adapter_validation/**"
       ],
       "trigger_paths": [
         "framework/diagram*.md",
         "templates/target/.ai/assistant/**/*diagram*",
-        "tools/check_discussion_diagrams.py"
+        "tools/check_discussion_diagrams.py",
+        "tools/target_adapter_validation/**"
       ]
     },
     {
@@ -1098,7 +1106,8 @@
         "templates/target/.ai/assistant/workers/**"
       ],
       "implementation_paths": [
-        "tools/check_subagent_delegation.py"
+        "tools/check_subagent_delegation.py",
+        "tools/target_adapter_validation/**"
       ],
       "trigger_paths": [
         "conformance/operations/worker-delegation.json",
@@ -1116,7 +1125,8 @@
         "templates/target/.ai/assistant/templates/worker-execution-plan.md",
         "templates/target/.ai/assistant/templates/worker-result.md",
         "templates/target/.ai/assistant/workers/**",
-        "tools/check_subagent_delegation.py"
+        "tools/check_subagent_delegation.py",
+        "tools/target_adapter_validation/**"
       ]
     },
     {
