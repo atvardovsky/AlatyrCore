@@ -178,7 +178,12 @@ before failure. When required owner, safety, approval, or validation context
 exceeds a budget, load it and record the reason, boundary, added files,
 measured or explicitly estimated volume, and intentionally omitted context.
 Static source estimates are benchmark evidence, not a claim about hidden
-client context or an actual assistant run.
+client context, billed tokens, exact semantic delivery, or an actual assistant
+run. A context packet that supports a cost or context-delivery claim should
+separate planned context, repository-resolved context, and observed host or
+provider evidence. Provider usage can support token accounting when exposed by
+the provider, but only host delivery telemetry can prove the exact semantic
+guidance bundle reached the model.
 
 Workspace-mode routing is a separate dimension from task profiles, intent,
 project areas, gates, and task scale. When enabled, read the compact mode

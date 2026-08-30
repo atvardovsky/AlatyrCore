@@ -25,5 +25,49 @@
     "semantic_definition_words": 0,
     "total_words": 0
   },
+  "receipt": {
+    "schema_version": 1,
+    "receipt_kind": "alatyr-context-receipt",
+    "measurement_state": "{PLANNED_RESOLVED_OR_OBSERVED}",
+    "planned": {
+      "paths": [
+        "{PLANNED_CONTEXT_PATH}"
+      ],
+      "approximate_words": "{COUNT_OR_UNKNOWN}"
+    },
+    "resolved": {
+      "status": "{RECORDED_OR_UNAVAILABLE}",
+      "paths": [
+        "{RESOLVED_CONTEXT_PATH}"
+      ],
+      "approximate_words": "{COUNT_OR_UNKNOWN}"
+    },
+    "observed": {
+      "evidence_level": "{EXACT_PARTIAL_OR_UNAVAILABLE}",
+      "source": "{HOST_TELEMETRY_PROVIDER_USAGE_ASSISTANT_REPORTED_MANUAL_OR_UNAVAILABLE}",
+      "files_loaded": "{COUNT_OR_UNKNOWN}",
+      "input_tokens": "{COUNT_OR_UNKNOWN}",
+      "output_tokens": "{COUNT_OR_UNKNOWN}",
+      "evidence": "{EVIDENCE_REFERENCE_OR_UNAVAILABLE}"
+    },
+    "semantic_guidance": {
+      "schema_version": 1,
+      "planned": "{RECORDED_IDENTITIES_AND_BUNDLE_DIGEST_OR_UNAVAILABLE}",
+      "resolved": "{RECORDED_IDENTITIES_AND_BUNDLE_DIGEST_OR_UNAVAILABLE}",
+      "observed": "{EXACT_PARTIAL_OR_UNAVAILABLE_SEMANTIC_DELIVERY_EVIDENCE}"
+    }
+  },
+  "cost_claim": {
+    "classification": "{STATIC_ESTIMATE_PROVIDER_USAGE_HOST_TELEMETRY_MANUAL_OR_UNAVAILABLE}",
+    "exact_billing_claim": false,
+    "exact_context_delivery_claim": false,
+    "basis": "{STATIC_ROUTER_MEASUREMENT_HOST_USAGE_RECEIPT_PROVIDER_USAGE_MANUAL_REVIEW_OR_UNAVAILABLE}",
+    "limitation": "{HIDDEN_CLIENT_CONTEXT_AND_BILLING_LIMITATION}"
+  },
+  "limitations": [
+    "Static source estimates are not billed tokens.",
+    "Provider usage alone does not prove exact semantic guidance delivery.",
+    "Hidden client context may exist outside repository-visible evidence."
+  ],
   "packet_digest": "sha256:{PACKET_DIGEST}"
 }

@@ -124,8 +124,8 @@
       ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 739,
-      "content_digest": "sha256:3dcf71e3f3c2369e110237ce4c14fe7d9c951b246f4bf4089876197f74549efb"
+      "estimated_words": 769,
+      "content_digest": "sha256:1e80ed312865f2e32e2ce130af279eee601744e0dc0e39ccaddf323a232d6ff8"
     },
     {
       "id": "framework.core.context-profiles-md",
@@ -167,8 +167,8 @@
       ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 2194,
-      "content_digest": "sha256:22cc5f511c94bfa2f6008ae38d25db068adccfdc70cbf9cfbcde0f893d11af2c"
+      "estimated_words": 2247,
+      "content_digest": "sha256:7404b9d14f8b133fb2f205a13cad61dfd4262d79e5db480091e4ffc8c3f0f89d"
     },
     {
       "id": "framework.core.contour-md",

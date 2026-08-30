@@ -4,6 +4,19 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.41 - 2026-08-30
+
+- Increased the framework version to `0.1.0-alpha.41`, adapter schema version
+  to `37`, and target template version to `39` for context packet receipt and
+  cost-truth evidence.
+- Expanded the target context-packet template so installed adapters can record
+  planned, resolved, and observed context separately, classify token/cost
+  evidence, and state hidden client-context limitations without claiming exact
+  billing or semantic delivery from static estimates.
+- Tightened context-router and target-adapter validation so context receipts
+  include measurement state, evidence source, cost claim classification, and
+  hidden-context limitations.
+
 ## 0.1.0-alpha.40 - 2026-08-30
 
 - Increased the framework version to `0.1.0-alpha.40` and target template

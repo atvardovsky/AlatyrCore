@@ -105,6 +105,10 @@ For large projects:
   an adapted consistency map exists
 - record loaded paths, expansion reasons, approximate volume, and omissions in
   a context receipt for large or cross-boundary work
+- separate planned, repository-resolved, and observed context evidence before
+  making token, cost, or exact-delivery claims
+- state hidden client-context limitations when only repository-visible files or
+  static router estimates were measured
 
 ## Rejection Criteria
 

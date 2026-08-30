@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "templates" / "target"
 ROUTER = TARGET / ".ai" / "assistant" / "context-router.json"
 PROFILES_MD = TARGET / ".ai" / "assistant" / "context-profiles.md"
+CONTEXT_PACKET = TARGET / ".ai" / "assistant" / "templates" / "context-packet.json"
 
 CANONICAL_PROFILES = [
     "docs-local",
@@ -250,6 +251,7 @@ def main() -> int:
             "selected intent overlays",
             "selected task scale overlay",
             "selected project areas",
+            "measurement state",
             "traversed context index chain",
             "selected context item IDs and digests",
             "resolved semantic term IDs and versions",
@@ -257,6 +259,9 @@ def main() -> int:
             "semantic fallback or dictionary expansion",
             "loaded files and reasons",
             "approximate context volume",
+            "observed evidence source",
+            "token or cost claim classification",
+            "hidden client context limitation",
             "expansion triggers",
             "residual risk",
         ]:
@@ -314,9 +319,63 @@ def main() -> int:
         if packet.get("template") != ".ai/assistant/templates/context-packet.json":
             failures.append("context_packet.template is invalid")
         required_for = packet.get("receipt_required_for")
-        for trigger in ["semantic codebook fallback", "material or protected change"]:
+        for trigger in [
+            "semantic codebook fallback",
+            "material or protected change",
+            "token or cost claim",
+        ]:
             if not isinstance(required_for, list) or trigger not in required_for:
                 failures.append(f"context_packet receipt trigger missing {trigger}")
+        packet_template = load_json(CONTEXT_PACKET)
+        required_packet_fields = {
+            "schema_version",
+            "packet_kind",
+            "profile",
+            "operation",
+            "selected_items",
+            "semantic_terms",
+            "budget",
+            "receipt",
+            "cost_claim",
+            "limitations",
+            "packet_digest",
+        }
+        if set(packet_template) != required_packet_fields:
+            failures.append("context packet template fields are invalid")
+        receipt_shape = packet_template.get("receipt")
+        if not isinstance(receipt_shape, dict):
+            failures.append("context packet template must include receipt object")
+        else:
+            for field in [
+                "receipt_kind",
+                "measurement_state",
+                "planned",
+                "resolved",
+                "observed",
+                "semantic_guidance",
+            ]:
+                if field not in receipt_shape:
+                    failures.append(f"context packet receipt missing {field}")
+        cost_claim = packet_template.get("cost_claim")
+        if not isinstance(cost_claim, dict):
+            failures.append("context packet template must include cost_claim object")
+        else:
+            if cost_claim.get("exact_billing_claim") is not False:
+                failures.append("context packet exact_billing_claim must default false")
+            if cost_claim.get("exact_context_delivery_claim") is not False:
+                failures.append(
+                    "context packet exact_context_delivery_claim must default false"
+                )
+        limitations = packet_template.get("limitations")
+        for required_limitation in [
+            "Static source estimates are not billed tokens.",
+            "Provider usage alone does not prove exact semantic guidance delivery.",
+            "Hidden client context may exist outside repository-visible evidence.",
+        ]:
+            if not isinstance(limitations, list) or required_limitation not in limitations:
+                failures.append(
+                    f"context packet limitations missing {required_limitation}"
+                )
 
     entry_packet = router.get("agent_entry_packet")
     if not isinstance(entry_packet, dict):

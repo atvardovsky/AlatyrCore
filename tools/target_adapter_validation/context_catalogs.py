@@ -196,6 +196,9 @@ def validate_context_catalog_contract(sink: FindingSink, manifest: Any) -> None:
             "selected_items",
             "semantic_terms",
             "budget",
+            "receipt",
+            "cost_claim",
+            "limitations",
             "packet_digest",
         }
         if (
@@ -206,6 +209,57 @@ def validate_context_catalog_contract(sink: FindingSink, manifest: Any) -> None:
             sink.error(
                 "CONTEXT_PACKET_TEMPLATE_INVALID",
                 "context packet template has an unsupported contract",
+                PACKET_TEMPLATE,
+            )
+        receipt = packet.get("receipt")
+        if not isinstance(receipt, dict):
+            sink.error(
+                "CONTEXT_PACKET_TEMPLATE_INVALID",
+                "context packet template must include context receipt evidence",
+                PACKET_TEMPLATE,
+            )
+        else:
+            for field in [
+                "receipt_kind",
+                "measurement_state",
+                "planned",
+                "resolved",
+                "observed",
+                "semantic_guidance",
+            ]:
+                if field not in receipt:
+                    sink.error(
+                        "CONTEXT_PACKET_TEMPLATE_INVALID",
+                        f"context packet receipt missing {field}",
+                        PACKET_TEMPLATE,
+                    )
+        cost_claim = packet.get("cost_claim")
+        if not isinstance(cost_claim, dict):
+            sink.error(
+                "CONTEXT_PACKET_TEMPLATE_INVALID",
+                "context packet template must include cost claim classification",
+                PACKET_TEMPLATE,
+            )
+        else:
+            if cost_claim.get("exact_billing_claim") is not False:
+                sink.error(
+                    "CONTEXT_PACKET_TEMPLATE_INVALID",
+                    "context packet exact_billing_claim must default false",
+                    PACKET_TEMPLATE,
+                )
+            if cost_claim.get("exact_context_delivery_claim") is not False:
+                sink.error(
+                    "CONTEXT_PACKET_TEMPLATE_INVALID",
+                    "context packet exact_context_delivery_claim must default false",
+                    PACKET_TEMPLATE,
+                )
+        limitations = packet.get("limitations")
+        if not isinstance(limitations, list) or not all(
+            isinstance(item, str) and item for item in limitations
+        ):
+            sink.error(
+                "CONTEXT_PACKET_TEMPLATE_INVALID",
+                "context packet template must state context/cost limitations",
                 PACKET_TEMPLATE,
             )
 

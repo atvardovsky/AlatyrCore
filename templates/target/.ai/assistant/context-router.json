@@ -34,6 +34,7 @@
       "selected task scale overlay",
       "selected project areas",
       "selected project knowledge and routing stage",
+      "measurement state",
       "traversed context index chain",
       "selected context item IDs and digests",
       "resolved semantic term IDs and versions",
@@ -41,6 +42,9 @@
       "semantic fallback or dictionary expansion",
       "loaded files and reasons",
       "approximate context volume",
+      "observed evidence source",
+      "token or cost claim classification",
+      "hidden client context limitation",
       "expansion triggers",
       "intentionally omitted context",
       "residual risk"
@@ -85,7 +89,8 @@
       "multiple project areas",
       "cross-boundary work",
       "semantic codebook fallback",
-      "material or protected change"
+      "material or protected change",
+      "token or cost claim"
     ]
   },
   "agent_entry_packet": {

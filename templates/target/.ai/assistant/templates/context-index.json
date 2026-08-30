@@ -395,8 +395,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 49,
-      "content_digest": "sha256:6f7720a98f717c160fd578333a670b1b79570cb9b120ee4b0ea46d61c4049e75"
+      "estimated_words": 145,
+      "content_digest": "sha256:06a4ccc8c394758d8db6773d62b71a78f267433366d8c284bff7bed47248f9fe"
     },
     {
       "id": "assistant.content.templates-contract-artifact-review-md",

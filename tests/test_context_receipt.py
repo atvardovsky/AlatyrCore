@@ -178,6 +178,21 @@ class ContextReceiptTests(unittest.TestCase):
         self.assertTrue(any("exact evidence" in failure for failure in failures))
         self.assertFalse(supports_observed_context_claim(receipt))
 
+    def test_provider_usage_can_count_tokens_but_not_semantic_delivery(self) -> None:
+        receipt = exact_receipt()
+        receipt["observed"] = copy.deepcopy(receipt["observed"])
+        receipt["observed"]["source"] = "provider-usage"
+        self.assertEqual(validate_context_receipt(receipt), [])
+        self.assertTrue(supports_observed_context_claim(receipt))
+
+        semantic_receipt = with_semantic_guidance(receipt)
+        semantic_receipt["semantic_guidance"]["observed"]["source"] = "provider-usage"
+        failures = validate_context_receipt(
+            semantic_receipt,
+            require_semantic_guidance=True,
+        )
+        self.assertTrue(any("host delivery telemetry" in failure for failure in failures))
+
     def test_context_paths_cannot_escape_repository(self) -> None:
         receipt = exact_receipt()
         receipt["planned"] = {"paths": ["../secret"], "approximate_words": 1}
