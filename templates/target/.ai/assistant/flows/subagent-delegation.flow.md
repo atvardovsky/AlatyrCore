@@ -37,6 +37,10 @@ Selected task-scale overlay: `delegated-execution`
    more than primary execution.
 5. Keep semantic, architecture, security, migration, approval, external-
    effect, and final-convergence work with the primary assistant.
+6. Read the selected surface `surface_state`. Proceed only when the state is
+   selected for the target, not unsupported, and backed by current evidence.
+   Unknown, stale, expired, or unverified state falls back to primary
+   execution or explicit user review.
 
 ## Capability And Role Selection
 

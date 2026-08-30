@@ -27,8 +27,10 @@ SURFACES = ROOT / "conformance" / "runs" / "assistant-surfaces.json"
 REQUIRED_FIELDS = [
     "Assistant:",
     "Surface id:",
+    "Capability state:",
     "Bridge paths:",
     "Auto-load behavior:",
+    "Capability state:",
     "Instruction priority:",
     "Supported rule/prompt/skill surfaces:",
     "Tool permission model:",

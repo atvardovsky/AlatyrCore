@@ -240,8 +240,8 @@ def main() -> int:
     )
     entries = matrix_entries(read(MATRIX))
     capability_surfaces = capabilities.get("surfaces")
-    if capabilities.get("schema_version") != 2:
-        failures.append("assistant capability index schema_version must be 2")
+    if capabilities.get("schema_version") != 3:
+        failures.append("assistant capability index schema_version must be 3")
     if capabilities.get("capability_kind") != "target-assistant-capability-index":
         failures.append("assistant capabilities kind is invalid")
     if not isinstance(capability_surfaces, dict):

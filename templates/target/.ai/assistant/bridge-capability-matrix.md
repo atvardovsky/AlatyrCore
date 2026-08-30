@@ -31,6 +31,7 @@ unsupported or not applicable with the reason.
 
 Assistant: `Generic assistant`
 Surface id: `generic`
+Capability state: {GENERIC_CAPABILITY_STATE}
 Bridge paths:
 
 - `AI_ASSISTANTS.md`
@@ -65,6 +66,7 @@ Conformance check: `{GENERIC_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
 
 Assistant: `AGENTS-aware assistant`
 Surface id: `agents`
+Capability state: {AGENTS_CAPABILITY_STATE}
 Bridge paths:
 
 - `AGENTS.md`
@@ -99,6 +101,7 @@ Conformance check: `{AGENTS_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
 
 Assistant: `Codex`
 Surface id: `codex`
+Capability state: {CODEX_CAPABILITY_STATE}
 Bridge paths:
 
 - `AGENTS.md`
@@ -134,6 +137,7 @@ Conformance check: `{CODEX_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
 
 Assistant: `JetBrains Junie`
 Surface id: `junie`
+Capability state: {JUNIE_CAPABILITY_STATE}
 Bridge paths:
 
 - `AGENTS.md`
@@ -168,6 +172,7 @@ Conformance check: `{JUNIE_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
 
 Assistant: `Cline`
 Surface id: `cline`
+Capability state: {CLINE_CAPABILITY_STATE}
 Bridge paths:
 
 - `AGENTS.md`
@@ -202,6 +207,7 @@ Conformance check: `{CLINE_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
 
 Assistant: `Roo Code (legacy)`
 Surface id: `roo-code`
+Capability state: {ROO_CODE_CAPABILITY_STATE}
 Bridge paths:
 
 - `.roo/rules/alatyr-core.md`
@@ -237,6 +243,7 @@ Conformance check: `{ROO_CODE_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
 
 Assistant: `Kiro`
 Surface id: `kiro`
+Capability state: {KIRO_CAPABILITY_STATE}
 Bridge paths:
 
 - `AGENTS.md`
@@ -271,6 +278,7 @@ Conformance check: `{KIRO_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
 
 Assistant: `Zed Agent`
 Surface id: `zed-agent`
+Capability state: {ZED_AGENT_CAPABILITY_STATE}
 Bridge paths:
 
 - `.rules`
@@ -305,6 +313,7 @@ Conformance check: `{ZED_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
 
 Assistant: `OpenCode`
 Surface id: `opencode`
+Capability state: {OPENCODE_CAPABILITY_STATE}
 Bridge paths:
 
 - `AGENTS.md`
@@ -339,6 +348,7 @@ Conformance check: `{OPENCODE_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
 
 Assistant: `Claude`
 Surface id: `claude`
+Capability state: {CLAUDE_CAPABILITY_STATE}
 Bridge paths:
 
 - `CLAUDE.md`
@@ -373,6 +383,7 @@ Conformance check: `{CLAUDE_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
 
 Assistant: `Gemini`
 Surface id: `gemini`
+Capability state: {GEMINI_CAPABILITY_STATE}
 Bridge paths:
 
 - `GEMINI.md`
@@ -407,6 +418,7 @@ Conformance check: `{GEMINI_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
 
 Assistant: `GitHub Copilot`
 Surface id: `github-copilot`
+Capability state: {GITHUB_COPILOT_CAPABILITY_STATE}
 Bridge paths:
 
 - `.github/copilot-instructions.md`
@@ -442,6 +454,7 @@ Conformance check: `{GITHUB_COPILOT_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
 
 Assistant: `Cursor`
 Surface id: `cursor`
+Capability state: {CURSOR_CAPABILITY_STATE}
 Bridge paths:
 
 - `.cursor/rules/alatyr-core.mdc`
@@ -477,6 +490,7 @@ Conformance check: `{CURSOR_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
 
 Assistant: `Devin/Cascade`
 Surface id: `devin-cascade`
+Capability state: {DEVIN_CASCADE_CAPABILITY_STATE}
 Bridge paths:
 
 - `.devin/rules/alatyr-core.md`
@@ -511,6 +525,7 @@ Conformance check: `{DEVIN_CASCADE_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
 
 Assistant: `Windsurf`
 Surface id: `windsurf`
+Capability state: {WINDSURF_CAPABILITY_STATE}
 Bridge paths:
 
 - `.windsurf/rules/alatyr-core.md`

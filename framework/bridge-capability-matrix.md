@@ -24,6 +24,7 @@ For each supported assistant, record:
 
 - assistant surface ID and display label
 - bridge file path
+- explicit advertised, selected, supported, verified, and freshness state
 - product lifecycle and source-support status
 - exact client/runtime variant, selected instruction entry path, competing
   sources, rule-toggle/configuration state, observed auto-load, precedence
@@ -90,14 +91,31 @@ The human bridge matrix owns explanatory precedence and limitation notes.
 `.ai/assistant/assistant-capabilities.json` is its compact runtime projection
 for selecting one assistant surface without loading the whole matrix. It maps
 surface IDs to separate target-owned records under
-`.ai/assistant/assistant-capabilities/`. Each record must use capability schema
-2 and constrained values. It records instruction loading, skill routing, tool-
-permission separation, diagrams, and delegation with client version,
-verification, expiry or review-trigger freshness evidence. The source template
-generator also projects bridge-path ownership from the canonical source surface
-registry so an installed validator can distinguish unsupported bridges without
-hard-coded vendor mappings. Derive the index from those sources; do not
-manually maintain duplicate capability claims or bridge ownership.
+`.ai/assistant/assistant-capabilities/`. The compact index must record the
+selected-surface evidence model and treat the per-surface records as
+authoritative. Each record must use capability schema 3 and constrained
+values. It records the explicit surface state, instruction loading, skill
+routing, tool-permission separation, diagrams, and delegation with client
+version, verification, expiry, or review-trigger freshness evidence. The
+source template generator also projects bridge-path ownership from the
+canonical source surface registry so an installed validator can distinguish
+unsupported bridges without hard-coded vendor mappings. Derive the index from
+those sources; do not manually maintain duplicate capability claims or bridge
+ownership.
+
+Surface state has four separate meanings that must not collapse into one
+claim:
+
+- `advertised_by_surface`: the vendor or client appears in the target support
+  set.
+- `selected_for_target`: the target adapter is currently using that surface.
+- `overall`: the target's current support judgment for that surface.
+- `evidence_state` and `verified_for_target`: whether the judgment is backed
+  by current target evidence.
+
+Unknown, stale, expired, or unverified evidence is not support evidence. It
+should route to recheck or manual review before an assistant relies on native
+skills, workers, diagrams, permissions, or auto-loaded instructions.
 
 Neutral project entry points remain active validation surfaces regardless of
 assistant selection. A vendor-specific bridge may be treated as inactive only

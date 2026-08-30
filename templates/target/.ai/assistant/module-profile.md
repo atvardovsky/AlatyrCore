@@ -7,6 +7,18 @@ Replace placeholders with target facts before accepting installation.
 An optional module owner may be absent from a selective framework pack; install
 it through reviewed pack expansion before enabling that module.
 
+## Module State Evidence
+
+Manifest source: `.ai/alatyr.yaml`
+Capability catalog source: `.ai/framework/capabilities.json`
+Human profile source: `.ai/assistant/module-profile.md`
+Selected support profile: `{TARGET_SUPPORT_PROFILE}`
+Enabled modules from manifest: `{TARGET_ENABLED_MODULE_IDS_OR_NONE}`
+Manifest/profile agreement: `{MATCH_DRIFT_OR_UNKNOWN_WITH_EVIDENCE}`
+Required surfaces checked: `{YES_NO_OR_UNKNOWN_WITH_REASON}`
+Unknown or stale module evidence: `{NONE_OR_MODULE_IDS_AND_REASON}`
+Last module-state validation: `{VALIDATION_COMMAND_OR_MANUAL_REVIEW}`
+
 ## Shared Capability Surfaces
 
 Use `.ai/framework/capabilities.json` as the lifecycle owner for target paths

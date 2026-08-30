@@ -44,10 +44,18 @@ def build_index() -> dict[str, object]:
         surface_paths[surface_id] = relpath
         bridge_paths[surface_id] = surface_bridge_paths
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "capability_kind": "target-assistant-capability-index",
         "human_reference": ".ai/assistant/bridge-capability-matrix.md",
         "default_surface": "generic",
+        "state_evidence": {
+            "state_model": "supported|limited|unsupported|unknown plus selected and freshness evidence",
+            "selected_surface": "{TARGET_SELECTED_ASSISTANT_SURFACE_OR_GENERIC}",
+            "selected_surface_evidence": "{TARGET_SELECTED_SURFACE_EVIDENCE_OR_UNKNOWN}",
+            "capability_records_are_authoritative": True,
+            "unknown_means_not_verified": True,
+            "stale_or_expired_evidence_requires_recheck": True,
+        },
         "surfaces": surface_paths,
         "bridge_paths": bridge_paths,
     }

@@ -265,8 +265,24 @@ def validate_contracts(
             )
             if capability.get("assistant_surface") != audit_id:
                 failures.append(f"{audit_id} capability record identity differs")
-            if capability.get("schema_version") != 2:
-                failures.append(f"{audit_id} capability record must use schema 2")
+            if capability.get("schema_version") != 3:
+                failures.append(f"{audit_id} capability record must use schema 3")
+            state = capability.get("surface_state")
+            if not isinstance(state, dict):
+                failures.append(f"{audit_id} capability record lacks surface_state")
+            else:
+                for field in [
+                    "overall",
+                    "selected_for_target",
+                    "evidence_state",
+                    "advertised_by_surface",
+                    "verified_for_target",
+                ]:
+                    value = state.get(field)
+                    if not isinstance(value, str) or "{" not in value:
+                        failures.append(
+                            f"{audit_id} capability surface_state.{field} must remain placeholder-based"
+                        )
             for section_name in ["instruction_loading", "skills", "tool_permissions"]:
                 if not isinstance(capability.get(section_name), dict):
                     failures.append(f"{audit_id} capability record lacks {section_name}")

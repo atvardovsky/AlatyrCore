@@ -292,6 +292,8 @@ def main() -> int:
         failures.append("delegation policy schema_version must be 2")
     if policy.get("policy_kind") != "target-subagent-delegation-policy":
         failures.append("delegation policy kind is incorrect")
+    if capability_index.get("schema_version") != 3:
+        failures.append("assistant capability index schema_version must be 3")
     if policy.get("role_catalog") != ".ai/assistant/workers/role-catalog.json":
         failures.append("delegation policy role_catalog path is incorrect")
     for field in [

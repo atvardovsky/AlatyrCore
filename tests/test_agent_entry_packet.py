@@ -15,10 +15,10 @@ from agent_entry_packet import build_agent_entry_packet  # noqa: E402
 class AgentEntryPacketTests(unittest.TestCase):
     def base_inputs(self) -> dict[str, str]:
         manifest = """\
-schema_version: 37
+schema_version: 38
 framework:
-  version: 0.1.0-alpha.41
-  template_version: 39
+  version: 0.1.0-alpha.42
+  template_version: 40
   pack: kernel
 installation:
   support_profile: kernel

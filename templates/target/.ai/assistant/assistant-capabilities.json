@@ -1,8 +1,16 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "capability_kind": "target-assistant-capability-index",
   "human_reference": ".ai/assistant/bridge-capability-matrix.md",
   "default_surface": "generic",
+  "state_evidence": {
+    "state_model": "supported|limited|unsupported|unknown plus selected and freshness evidence",
+    "selected_surface": "{TARGET_SELECTED_ASSISTANT_SURFACE_OR_GENERIC}",
+    "selected_surface_evidence": "{TARGET_SELECTED_SURFACE_EVIDENCE_OR_UNKNOWN}",
+    "capability_records_are_authoritative": true,
+    "unknown_means_not_verified": true,
+    "stale_or_expired_evidence_requires_recheck": true
+  },
   "surfaces": {
     "generic": ".ai/assistant/assistant-capabilities/generic.json",
     "agents": ".ai/assistant/assistant-capabilities/agents.json",

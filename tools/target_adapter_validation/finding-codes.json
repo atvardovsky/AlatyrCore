@@ -37,7 +37,7 @@
     },
     {
       "id": "ASSISTANT",
-      "code_count": 15
+      "code_count": 23
     },
     {
       "id": "AUTHORIZATION",
@@ -976,6 +976,24 @@
       ]
     },
     {
+      "code": "ASSISTANT_CAPABILITY_INDEX_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ASSISTANT_CAPABILITY_INDEX_STATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "ASSISTANT_CAPABILITY_LIST",
       "levels": [
         "error"
@@ -1021,6 +1039,51 @@
       ]
     },
     {
+      "code": "ASSISTANT_CAPABILITY_STATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ASSISTANT_CAPABILITY_STATE_FIELDS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ASSISTANT_CAPABILITY_STATE_LIST",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ASSISTANT_CAPABILITY_STATE_UNVERIFIED",
+      "levels": [
+        "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ASSISTANT_CAPABILITY_STATE_VALUE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "ASSISTANT_CAPABILITY_SURFACES",
       "levels": [
         "error"
@@ -1058,6 +1121,15 @@
     },
     {
       "code": "ASSISTANT_SELECTED_ENTRY_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ASSISTANT_SELECTED_STATE_CONFLICT",
       "levels": [
         "error"
       ],

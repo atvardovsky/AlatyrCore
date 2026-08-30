@@ -81,8 +81,8 @@
       "owner_refs": [
         "ALATYR-BRIDGE-001"
       ],
-      "estimated_words": 1597,
-      "content_digest": "sha256:e0e25e7e228919e427e5f79a810df9c730f2f8f56c4fa3d940b29249d5a4f911"
+      "estimated_words": 1714,
+      "content_digest": "sha256:612c082bcf664320d921ac46ad5f63c69c0cf703cf4213c67292456bd2d3f07a"
     },
     {
       "id": "framework.core.change-risk-model-md",
@@ -277,8 +277,8 @@
       "owner_refs": [
         "ALATYR-MODULE-001"
       ],
-      "estimated_words": 1823,
-      "content_digest": "sha256:e5f67eafd035461e8399f1ab71d2d396c6e91cffe5cd1f87671d591fb2335c15"
+      "estimated_words": 1922,
+      "content_digest": "sha256:f02bd2377d62c04e4ba2446b9a8c3214d98cda48d6349e600a701cb7f4276622"
     },
     {
       "id": "framework.core.operation-help-md",

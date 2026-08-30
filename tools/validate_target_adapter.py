@@ -942,6 +942,7 @@ class Validator:
                 and bool(value.strip())
                 and not is_placeholder(value)
                 and not is_unresolved_value(value)
+                and "_OR_" not in value
             )
 
         index_relpath = ".ai/assistant/assistant-capabilities.json"
@@ -950,6 +951,44 @@ class Validator:
         index = self.load_json_object(
             self.target_path(index_relpath), "ASSISTANT_CAPABILITY_INDEX"
         )
+        if isinstance(index, dict):
+            if index.get("schema_version") != 3:
+                self.error(
+                    "ASSISTANT_CAPABILITY_INDEX_SCHEMA",
+                    "assistant capability index schema_version should be 3",
+                    index_relpath,
+                )
+            state_evidence = index.get("state_evidence")
+            if not isinstance(state_evidence, dict):
+                self.error(
+                    "ASSISTANT_CAPABILITY_INDEX_STATE",
+                    "assistant capability index requires state_evidence",
+                    index_relpath,
+                )
+            else:
+                for field in [
+                    "state_model",
+                    "selected_surface",
+                    "selected_surface_evidence",
+                ]:
+                    value = state_evidence.get(field)
+                    if not isinstance(value, str) or not value.strip():
+                        self.error(
+                            "ASSISTANT_CAPABILITY_INDEX_STATE",
+                            f"assistant capability index state_evidence.{field} must be recorded",
+                            index_relpath,
+                        )
+                for field in [
+                    "capability_records_are_authoritative",
+                    "unknown_means_not_verified",
+                    "stale_or_expired_evidence_requires_recheck",
+                ]:
+                    if state_evidence.get(field) is not True:
+                        self.error(
+                            "ASSISTANT_CAPABILITY_INDEX_STATE",
+                            f"assistant capability index state_evidence.{field} must be true",
+                            index_relpath,
+                        )
         surfaces = index.get("surfaces") if isinstance(index, dict) else None
         if not isinstance(surfaces, dict) or not surfaces:
             self.error(
@@ -1015,10 +1054,10 @@ class Validator:
             )
             if record is None:
                 continue
-            if record.get("schema_version") != 2:
+            if record.get("schema_version") != 3:
                 self.error(
                     "ASSISTANT_CAPABILITY_SCHEMA",
-                    f"assistant surface {surface_id} must use capability schema 2",
+                    f"assistant surface {surface_id} must use capability schema 3",
                     relpath,
                 )
             if record.get("assistant_surface") != surface_id:
@@ -1027,6 +1066,105 @@ class Validator:
                     f"assistant surface record identity must be {surface_id}",
                     relpath,
                 )
+            surface_state = record.get("surface_state")
+            if not isinstance(surface_state, dict):
+                self.error(
+                    "ASSISTANT_CAPABILITY_STATE",
+                    f"assistant surface {surface_id} lacks surface_state",
+                    relpath,
+                )
+            else:
+                required_state_fields = {
+                    "overall",
+                    "selected_for_target",
+                    "evidence_state",
+                    "advertised_by_surface",
+                    "verified_for_target",
+                    "limitations",
+                    "review_triggers",
+                }
+                missing_state = sorted(required_state_fields - set(surface_state))
+                if missing_state:
+                    self.error(
+                        "ASSISTANT_CAPABILITY_STATE_FIELDS",
+                        f"assistant surface {surface_id} surface_state is missing {missing_state}",
+                        relpath,
+                    )
+                overall = surface_state.get("overall")
+                selected_for_target = surface_state.get("selected_for_target")
+                evidence_state = surface_state.get("evidence_state")
+                verified_for_target = surface_state.get("verified_for_target")
+                advertised_by_surface = surface_state.get("advertised_by_surface")
+                if concrete(overall) and str(overall).casefold() not in {
+                    "supported",
+                    "limited",
+                    "unsupported",
+                    "unknown",
+                }:
+                    self.error(
+                        "ASSISTANT_CAPABILITY_STATE_VALUE",
+                        f"assistant surface {surface_id} overall state is invalid",
+                        relpath,
+                    )
+                for label, value in [
+                    ("selected_for_target", selected_for_target),
+                    ("advertised_by_surface", advertised_by_surface),
+                    ("verified_for_target", verified_for_target),
+                ]:
+                    if concrete(value) and str(value).casefold() not in {
+                        "yes",
+                        "no",
+                        "unknown",
+                    }:
+                        self.error(
+                            "ASSISTANT_CAPABILITY_STATE_VALUE",
+                            f"assistant surface {surface_id} {label} must be yes, no, or unknown",
+                            relpath,
+                        )
+                if concrete(evidence_state) and str(evidence_state).casefold() not in {
+                    "current",
+                    "stale",
+                    "expired",
+                    "unverified",
+                    "unknown",
+                }:
+                    self.error(
+                        "ASSISTANT_CAPABILITY_STATE_VALUE",
+                        f"assistant surface {surface_id} evidence_state is invalid",
+                        relpath,
+                    )
+                for list_field in ["limitations", "review_triggers"]:
+                    value = surface_state.get(list_field)
+                    if not isinstance(value, list) or not value:
+                        self.error(
+                            "ASSISTANT_CAPABILITY_STATE_LIST",
+                            f"assistant surface {surface_id} surface_state.{list_field} must be a list",
+                            relpath,
+                        )
+                if surface_id in selected:
+                    if selected_for_target == "no":
+                        self.error(
+                            "ASSISTANT_SELECTED_STATE_CONFLICT",
+                            f"selected assistant {surface_id} is marked not selected in capability state",
+                            relpath,
+                        )
+                    if overall == "unsupported":
+                        self.error(
+                            "ASSISTANT_SELECTED_UNSUPPORTED",
+                            f"selected assistant {surface_id} has unsupported capability state",
+                            relpath,
+                        )
+                    if concrete(evidence_state) and evidence_state in {
+                        "stale",
+                        "expired",
+                        "unverified",
+                        "unknown",
+                    }:
+                        self.warn(
+                            "ASSISTANT_CAPABILITY_STATE_UNVERIFIED",
+                            f"selected assistant {surface_id} capability evidence is {evidence_state}",
+                            relpath,
+                        )
             for section_name, required in sections.items():
                 section = record.get(section_name)
                 if not isinstance(section, dict):
@@ -3564,10 +3702,10 @@ class Validator:
             capabilities.get("surfaces") if isinstance(capabilities, dict) else None
         )
         if isinstance(capabilities, dict):
-            if capabilities.get("schema_version") != 2:
+            if capabilities.get("schema_version") != 3:
                 self.error(
                     "DIAGRAM_CAPABILITY_SCHEMA",
-                    "capability index schema_version should be 2",
+                    "capability index schema_version should be 3",
                     capability_relpath,
                 )
             if capabilities.get("capability_kind") != (
@@ -3630,10 +3768,10 @@ class Validator:
             )
             if surface is None:
                 continue
-            if surface.get("schema_version") != 2:
+            if surface.get("schema_version") != 3:
                 self.error(
                     "DIAGRAM_SURFACE_CAPABILITY_SCHEMA",
-                    "surface capability schema_version should be 2",
+                    "surface capability schema_version should be 3",
                     surface_relpath,
                 )
             if surface.get("capability_kind") != (
@@ -8079,9 +8217,29 @@ class Validator:
                 routes[surface_id] = None
                 continue
             loading = record.get("instruction_loading")
-            routes[surface_id] = (
+            route = (
                 str(loading.get("route"))
                 if isinstance(loading, dict) and loading.get("route") is not None
+                else None
+            )
+            surface_state = record.get("surface_state")
+            overall = (
+                str(surface_state.get("overall"))
+                if isinstance(surface_state, dict)
+                and surface_state.get("overall") is not None
+                else None
+            )
+            selected_for_target = (
+                str(surface_state.get("selected_for_target"))
+                if isinstance(surface_state, dict)
+                and surface_state.get("selected_for_target") is not None
+                else None
+            )
+            routes[surface_id] = (
+                "unsupported"
+                if route == "unsupported"
+                and overall == "unsupported"
+                and selected_for_target == "no"
                 else None
             )
 

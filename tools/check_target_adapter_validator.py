@@ -159,8 +159,16 @@ def main() -> int:
         write_json(
             instruction_target / ".ai/assistant/assistant-capabilities.json",
             {
-                "schema_version": 2,
+                "schema_version": 3,
                 "capability_kind": "target-assistant-capability-index",
+                "state_evidence": {
+                    "state_model": "supported|limited|unsupported|unknown plus selected and freshness evidence",
+                    "selected_surface": "generic",
+                    "selected_surface_evidence": "fixture manifest",
+                    "capability_records_are_authoritative": True,
+                    "unknown_means_not_verified": True,
+                    "stale_or_expired_evidence_requires_recheck": True,
+                },
                 "surfaces": {
                     "generic": ".ai/assistant/assistant-capabilities/generic.json"
                 },
@@ -174,9 +182,18 @@ def main() -> int:
             "review_triggers": ["client changed"],
         }
         instruction_record = {
-            "schema_version": 2,
+            "schema_version": 3,
             "capability_kind": "target-assistant-surface-capabilities",
             "assistant_surface": "generic",
+            "surface_state": {
+                "overall": "supported",
+                "selected_for_target": "yes",
+                "evidence_state": "current",
+                "advertised_by_surface": "yes",
+                "verified_for_target": "yes",
+                "limitations": ["fixture-only capability evidence"],
+                "review_triggers": ["client changed"],
+            },
             "instruction_loading": {
                 **evidence,
                 "route": "supported",
@@ -271,8 +288,16 @@ def main() -> int:
         write_json(
             inactive_bridge_target / ".ai/assistant/assistant-capabilities.json",
             {
-                "schema_version": 2,
+                "schema_version": 3,
                 "capability_kind": "target-assistant-capability-index",
+                "state_evidence": {
+                    "state_model": "supported|limited|unsupported|unknown plus selected and freshness evidence",
+                    "selected_surface": "codex",
+                    "selected_surface_evidence": "fixture manifest",
+                    "capability_records_are_authoritative": True,
+                    "unknown_means_not_verified": True,
+                    "stale_or_expired_evidence_requires_recheck": True,
+                },
                 "surfaces": {
                     "codex": ".ai/assistant/assistant-capabilities/codex.json",
                     "claude": ".ai/assistant/assistant-capabilities/claude.json",
@@ -286,12 +311,30 @@ def main() -> int:
         write_json(
             inactive_bridge_target
             / ".ai/assistant/assistant-capabilities/codex.json",
-            {"instruction_loading": {"route": "supported"}},
+            {
+                "surface_state": {
+                    "overall": "supported",
+                    "selected_for_target": "yes",
+                    "evidence_state": "current",
+                    "advertised_by_surface": "yes",
+                    "verified_for_target": "yes",
+                },
+                "instruction_loading": {"route": "supported"},
+            },
         )
         write_json(
             inactive_bridge_target
             / ".ai/assistant/assistant-capabilities/claude.json",
-            {"instruction_loading": {"route": "unsupported"}},
+            {
+                "surface_state": {
+                    "overall": "unsupported",
+                    "selected_for_target": "no",
+                    "evidence_state": "current",
+                    "advertised_by_surface": "yes",
+                    "verified_for_target": "yes",
+                },
+                "instruction_loading": {"route": "unsupported"},
+            },
         )
         inactive_manifest = parse_manifest(inactive_manifest_path)
         inactive_bridge_validator = validator(
@@ -1032,8 +1075,16 @@ def main() -> int:
         write_json(
             target / ".ai" / "assistant" / "assistant-capabilities.json",
             {
-                "schema_version": 2,
+                "schema_version": 3,
                 "capability_kind": "target-assistant-capability-index",
+                "state_evidence": {
+                    "state_model": "supported|limited|unsupported|unknown plus selected and freshness evidence",
+                    "selected_surface": "generic",
+                    "selected_surface_evidence": "fixture",
+                    "capability_records_are_authoritative": True,
+                    "unknown_means_not_verified": True,
+                    "stale_or_expired_evidence_requires_recheck": True,
+                },
                 "surfaces": {
                     "generic": ".ai/assistant/assistant-capabilities/generic.json"
                 },

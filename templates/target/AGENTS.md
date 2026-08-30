@@ -88,7 +88,9 @@ changes.
 
 Before delegation or diagrams, read
 `.ai/assistant/assistant-capabilities.json`; route selected delegation through
-`.ai/assistant/prompts/worker-orchestration.md`. Unknown presentation uses ASCII.
+the selected surface record and `.ai/assistant/prompts/worker-orchestration.md`.
+Unknown, stale, or unverified surface state means no native capability claim;
+unknown presentation uses ASCII.
 
 Before state changes, apply
 `.ai/assistant/policies/action-authorization.json` to the newest request and

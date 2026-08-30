@@ -193,6 +193,21 @@ Use these states in target adapters:
 
 Do not hide missing adapter facts by marking a needed module as disabled.
 
+Module state evidence must also stay explicit. An installed adapter should
+record:
+
+- the target manifest path that owns enabled modules and the selected support
+  profile
+- the installed capability catalog path that owns module-required surfaces
+- the human module-profile path that explains state, owner, reason, approval,
+  validation, and residual risk
+- the checked result of manifest/module-profile agreement
+- unknown, stale, or unverified module evidence before claiming maturity
+
+An enabled module is not accepted merely because its files exist. Acceptance
+requires manifest state, human profile state, required surfaces, validation
+evidence, and residual risk to agree for the current target.
+
 ## Installation Use
 
 During installation or update:

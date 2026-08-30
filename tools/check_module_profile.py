@@ -103,6 +103,9 @@ def main() -> int:
     module_blocks = parse_blocks(text, MODULE_HEADING)
 
     for required_text in [
+        "## Module State Evidence",
+        "Manifest/profile agreement:",
+        "Unknown or stale module evidence:",
         "## Shared Capability Surfaces",
         "## Kernel And Core Profiles",
         ".ai/framework/capabilities.json",

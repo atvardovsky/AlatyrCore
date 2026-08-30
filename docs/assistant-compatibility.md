@@ -49,9 +49,11 @@ plan exist.
 
 Static admission and actual support are separate. A selected target surface
 records instruction loading, skill source and activation, client permissions,
-diagram behavior, and delegation in its schema-2 capability record. Client
-permissions and auto-approval never grant Alatyr action authorization. Exact-
-client evidence is required before changing an unknown route to supported.
+diagram behavior, and delegation in its schema-3 capability record. That record
+also separates whether the surface is advertised, selected, supported,
+verified, and fresh for the target. Client permissions and auto-approval never
+grant Alatyr action authorization. Exact-client evidence is required before
+changing an unknown route to supported.
 
 Captured runs keep lifecycle evidence beside their reports. Static routing and
 delivery fixtures are protocol expectations only, separate from captured
@@ -171,10 +173,10 @@ and equivalent clear requests to the canonical diagram discussion flow. The
 bridge matrix points to `.ai/assistant/assistant-capabilities.json`, whose
 selected path identifies a separate surface record. That record owns native
 inline syntaxes, rendered-artifact link or attachment support, client version,
-verification time, expiry or review triggers, and
-evidence. The index is generated from those records. An assistant must not
-infer rendering support from another client, use stale evidence silently, or
-claim that a source block was rendered.
+verification time, expiry or review triggers, evidence, and explicit
+surface-state freshness. The index is generated from those records. An
+assistant must not infer rendering support from another client, use stale
+evidence silently, or claim that a source block was rendered.
 
 Every surface also provides the same pure-ASCII diagram baseline in a fenced
 `text` block. ASCII presentation does not depend on capability evidence;

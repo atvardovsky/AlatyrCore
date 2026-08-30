@@ -6,6 +6,7 @@
     "schema_version",
     "capability_kind",
     "assistant_surface",
+    "surface_state",
     "instruction_loading",
     "skills",
     "tool_permissions",
@@ -13,9 +14,10 @@
     "subagent_delegation"
   ],
   "properties": {
-    "schema_version": {"const": 2},
+    "schema_version": {"const": 3},
     "capability_kind": {"const": "target-assistant-surface-capabilities"},
     "assistant_surface": {"type": "string", "minLength": 1},
+    "surface_state": {"$ref": "#/definitions/surfaceState"},
     "instruction_loading": {"$ref": "#/definitions/instructionLoading"},
     "skills": {"$ref": "#/definitions/skills"},
     "tool_permissions": {"$ref": "#/definitions/toolPermissions"},
@@ -38,6 +40,28 @@
         "expires_at": {"type": "string", "minLength": 1},
         "review_triggers": {"$ref": "#/definitions/stringArray"}
       }
+    },
+    "surfaceState": {
+      "type": "object",
+      "required": [
+        "overall",
+        "selected_for_target",
+        "evidence_state",
+        "advertised_by_surface",
+        "verified_for_target",
+        "limitations",
+        "review_triggers"
+      ],
+      "properties": {
+        "overall": {"type": "string", "minLength": 1},
+        "selected_for_target": {"type": "string", "minLength": 1},
+        "evidence_state": {"type": "string", "minLength": 1},
+        "advertised_by_surface": {"type": "string", "minLength": 1},
+        "verified_for_target": {"type": "string", "minLength": 1},
+        "limitations": {"$ref": "#/definitions/stringArray"},
+        "review_triggers": {"$ref": "#/definitions/stringArray"}
+      },
+      "additionalProperties": false
     },
     "instructionLoading": {
       "allOf": [

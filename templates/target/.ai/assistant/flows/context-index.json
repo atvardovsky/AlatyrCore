@@ -339,8 +339,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 871,
-      "content_digest": "sha256:06d598a376c37b57375a817d2de7c5d5227495bcd362d1135e05d17b0e8eee3a"
+      "estimated_words": 904,
+      "content_digest": "sha256:590b28d09ae5ea1e361c5a27b5c79a672f948568532715bff387df2bd0953b13"
     },
     {
       "id": "assistant.content.flows-documentation-sync-flow-md",
@@ -672,8 +672,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-DELEGATION-001"
       ],
-      "estimated_words": 729,
-      "content_digest": "sha256:c628ceddccfc61dcc38607dc27bbd14902ff7c83347f473dc0cb5ec35bcf7463"
+      "estimated_words": 767,
+      "content_digest": "sha256:f60442e2cefb18cb72f4c5a5d996c5a24e66406503f37d953137ebdf9b13026a"
     },
     {
       "id": "assistant.content.flows-support-generation-flow-md",

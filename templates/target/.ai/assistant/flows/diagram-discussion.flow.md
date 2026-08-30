@@ -13,6 +13,8 @@ Replace placeholders with target facts before accepting installation.
   evidence
 - Presentation contract: `.ai/assistant/templates/diagram-presentation.md`
 - Current assistant entry in `.ai/assistant/assistant-capabilities.json`
+- Selected surface state and diagram capability:
+  `.ai/assistant/assistant-capabilities/{SELECTED_ASSISTANT_SURFACE}.json`
 - Diagram owner or policy: `{TARGET_DIAGRAM_SOURCE_VISUAL_AND_RENDER_POLICY}`
 - Relevant fact owners: `{TARGET_FACT_OWNERS_FOR_DIAGRAM_SCOPE}`
 
@@ -25,6 +27,10 @@ Load `.ai/framework/ascii-diagrams.md` for dense, quantitative, or ambiguous
 layouts. Load `.ai/assistant/templates/ascii-diagram.md` when persisting or
 reusing an ASCII diagram. Simple discussion diagrams use the bounded rules in
 this flow and the presentation contract without those extra files.
+
+Unknown, stale, expired, unsupported, or unverified surface state still permits
+the portable ASCII baseline, but it does not permit a native rendering or
+artifact-delivery claim.
 
 ## Allowed Actions
 

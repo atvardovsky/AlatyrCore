@@ -10,14 +10,14 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1130
+Catalog entries: 1138
 
 ## Families
 
 - `AI`: 16 codes.
 - `APPROVAL`: 31 codes.
 - `ARCHITECTURE`: 33 codes.
-- `ASSISTANT`: 15 codes.
+- `ASSISTANT`: 23 codes.
 - `AUTHORIZATION`: 16 codes.
 - `BACKUP`: 1 codes.
 - `BOOTSTRAP`: 9 codes.
@@ -233,6 +233,10 @@ Catalog entries: 1130
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ASSISTANT_CAPABILITY_INDEX_ENTRY`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_CAPABILITY_INDEX_SCHEMA`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_CAPABILITY_INDEX_STATE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `ASSISTANT_CAPABILITY_LIST`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ASSISTANT_CAPABILITY_REVIEW_TRIGGERS`
@@ -243,6 +247,16 @@ Catalog entries: 1130
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ASSISTANT_CAPABILITY_SELECTED_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_CAPABILITY_STATE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_CAPABILITY_STATE_FIELDS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_CAPABILITY_STATE_LIST`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_CAPABILITY_STATE_UNVERIFIED`
+  Level: warning. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_CAPABILITY_STATE_VALUE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `ASSISTANT_CAPABILITY_SURFACES`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ASSISTANT_INSTRUCTION_LOADING_UNVERIFIED`
@@ -252,6 +266,8 @@ Catalog entries: 1130
 - `ASSISTANT_PERMISSION_AUTHORIZATION_CONFLICT`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ASSISTANT_SELECTED_ENTRY_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_SELECTED_STATE_CONFLICT`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ASSISTANT_SELECTED_UNSUPPORTED`
   Level: error. Source: `tools/validate_target_adapter.py`.

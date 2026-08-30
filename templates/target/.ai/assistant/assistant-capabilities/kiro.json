@@ -1,12 +1,29 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "capability_kind": "target-assistant-surface-capabilities",
   "assistant_surface": "kiro",
+  "surface_state": {
+    "overall": "{SUPPORTED_LIMITED_UNSUPPORTED_OR_UNKNOWN}",
+    "selected_for_target": "{YES_NO_OR_UNKNOWN}",
+    "evidence_state": "{CURRENT_STALE_EXPIRED_UNVERIFIED_OR_UNKNOWN}",
+    "advertised_by_surface": "{YES_NO_OR_UNKNOWN}",
+    "verified_for_target": "{YES_NO_OR_UNKNOWN}",
+    "limitations": [
+      "{TARGET_SURFACE_LIMITATION_OR_NONE}"
+    ],
+    "review_triggers": [
+      "client version or assistant bridge changed",
+      "selected assistant surface changed",
+      "{TARGET_SURFACE_STATE_REVIEW_TRIGGER}"
+    ]
+  },
   "instruction_loading": {
     "route": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
     "runtime_variant": "{TARGET_RUNTIME_VARIANT_OR_UNKNOWN}",
     "selected_entry_path": "{TARGET_SELECTED_INSTRUCTION_PATH_OR_UNKNOWN}",
-    "competing_sources": ["{TARGET_COMPETING_INSTRUCTION_SOURCE_OR_NONE}"],
+    "competing_sources": [
+      "{TARGET_COMPETING_INSTRUCTION_SOURCE_OR_NONE}"
+    ],
     "auto_load_observed": "{YES_NO_OR_UNKNOWN_WITH_REASON}",
     "precedence_evidence": "{TARGET_PRECEDENCE_EVIDENCE_OR_MANUAL_REVIEW}",
     "configuration_state": "{TARGET_RULE_TOGGLE_OR_CONFIGURATION_STATE}",
@@ -14,18 +31,27 @@
     "client_version": "{CLIENT_VERSION_OR_UNKNOWN_WITH_REASON}",
     "evidence": "{TARGET_EVIDENCE_OR_MANUAL_REVIEW}",
     "expires_at": "{ISO_DATE_OR_REVIEW_TRIGGER_WITH_REASON}",
-    "review_triggers": ["client or runtime variant changed", "instruction files or toggles changed", "{TARGET_INSTRUCTION_LOADING_REVIEW_TRIGGER}"]
+    "review_triggers": [
+      "client or runtime variant changed",
+      "instruction files or toggles changed",
+      "{TARGET_INSTRUCTION_LOADING_REVIEW_TRIGGER}"
+    ]
   },
   "skills": {
     "route": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
-    "discovery_paths": ["{TARGET_SKILL_DISCOVERY_PATH_OR_NONE}"],
+    "discovery_paths": [
+      "{TARGET_SKILL_DISCOVERY_PATH_OR_NONE}"
+    ],
     "selected_source": "{TARGET_SELECTED_SKILL_SOURCE_OR_NONE_OR_UNKNOWN}",
     "activation_mode": "{AUTOMATIC_EXPLICIT_DISABLED_OR_UNKNOWN}",
     "verified_at": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}",
     "client_version": "{CLIENT_VERSION_OR_UNKNOWN_WITH_REASON}",
     "evidence": "{TARGET_EVIDENCE_OR_MANUAL_REVIEW}",
     "expires_at": "{ISO_DATE_OR_REVIEW_TRIGGER_WITH_REASON}",
-    "review_triggers": ["client or skill configuration changed", "{TARGET_SKILL_CAPABILITY_REVIEW_TRIGGER}"]
+    "review_triggers": [
+      "client or skill configuration changed",
+      "{TARGET_SKILL_CAPABILITY_REVIEW_TRIGGER}"
+    ]
   },
   "tool_permissions": {
     "client_permission_mode": "{TARGET_PERMISSION_OR_AUTO_APPROVAL_MODE_OR_UNKNOWN}",
@@ -35,18 +61,27 @@
     "client_version": "{CLIENT_VERSION_OR_UNKNOWN_WITH_REASON}",
     "evidence": "{TARGET_EVIDENCE_OR_MANUAL_REVIEW}",
     "expires_at": "{ISO_DATE_OR_REVIEW_TRIGGER_WITH_REASON}",
-    "review_triggers": ["client permissions, autonomy, or tool configuration changed", "{TARGET_PERMISSION_REVIEW_TRIGGER}"]
+    "review_triggers": [
+      "client permissions, autonomy, or tool configuration changed",
+      "{TARGET_PERMISSION_REVIEW_TRIGGER}"
+    ]
   },
   "diagram_discussion": {
     "route": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
-    "native_inline_syntaxes": ["{SYNTAX_NONE_OR_UNKNOWN}"],
+    "native_inline_syntaxes": [
+      "{SYNTAX_NONE_OR_UNKNOWN}"
+    ],
     "artifact_presentation": "{LINK_ATTACHMENT_BOTH_UNSUPPORTED_OR_UNKNOWN}",
     "readable_fallback": "ascii",
     "verified_at": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}",
     "client_version": "{CLIENT_VERSION_OR_UNKNOWN_WITH_REASON}",
     "evidence": "{TARGET_EVIDENCE_OR_MANUAL_REVIEW}",
     "expires_at": "{ISO_DATE_OR_REVIEW_TRIGGER_WITH_REASON}",
-    "review_triggers": ["client version changed", "assistant bridge changed", "{TARGET_CAPABILITY_REVIEW_TRIGGER}"]
+    "review_triggers": [
+      "client version changed",
+      "assistant bridge changed",
+      "{TARGET_CAPABILITY_REVIEW_TRIGGER}"
+    ]
   },
   "subagent_delegation": {
     "route": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
@@ -59,7 +94,9 @@
     "explicit_delegation": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
     "project_worker_definitions": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
     "worker_definition_format": "{TARGET_NATIVE_FORMAT_NONE_OR_UNKNOWN}",
-    "worker_definition_paths": ["{TARGET_NATIVE_WORKER_DEFINITION_PATH_OR_NONE}"],
+    "worker_definition_paths": [
+      "{TARGET_NATIVE_WORKER_DEFINITION_PATH_OR_NONE}"
+    ],
     "tool_restrictions": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
     "write_isolation": "{SHARED_WORKSPACE_NATIVE_ISOLATED_EXTERNAL_ISOLATED_UNSUPPORTED_OR_UNKNOWN}",
     "background_execution": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
@@ -67,11 +104,25 @@
     "model_override": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
     "parallel_dispatch": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
     "actual_model_evidence": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
-    "role_bindings": [{"role_id": "{TARGET_ENABLED_WORKER_ROLE_ID}", "selection_mode": "{EXPLICIT_MODEL_INHERIT_OR_CLIENT_DEFAULT}", "model": "{VERIFIED_MODEL_ID_OR_INHERIT}", "reasoning": "{TARGET_REASONING_SETTING_OR_CLIENT_DEFAULT}", "availability": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}", "evidence": "{TARGET_ROLE_BINDING_EVIDENCE_OR_MANUAL_REVIEW}", "expires_at": "{ISO_DATE_OR_REVIEW_TRIGGER_WITH_REASON}"}],
+    "role_bindings": [
+      {
+        "role_id": "{TARGET_ENABLED_WORKER_ROLE_ID}",
+        "selection_mode": "{EXPLICIT_MODEL_INHERIT_OR_CLIENT_DEFAULT}",
+        "model": "{VERIFIED_MODEL_ID_OR_INHERIT}",
+        "reasoning": "{TARGET_REASONING_SETTING_OR_CLIENT_DEFAULT}",
+        "availability": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+        "evidence": "{TARGET_ROLE_BINDING_EVIDENCE_OR_MANUAL_REVIEW}",
+        "expires_at": "{ISO_DATE_OR_REVIEW_TRIGGER_WITH_REASON}"
+      }
+    ],
     "verified_at": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}",
     "client_version": "{CLIENT_VERSION_OR_UNKNOWN_WITH_REASON}",
     "evidence": "{TARGET_EVIDENCE_OR_MANUAL_REVIEW}",
     "expires_at": "{ISO_DATE_OR_REVIEW_TRIGGER_WITH_REASON}",
-    "review_triggers": ["client version or assistant bridge changed", "subagent or model-selection behavior changed", "{TARGET_DELEGATION_CAPABILITY_REVIEW_TRIGGER}"]
+    "review_triggers": [
+      "client version or assistant bridge changed",
+      "subagent or model-selection behavior changed",
+      "{TARGET_DELEGATION_CAPABILITY_REVIEW_TRIGGER}"
+    ]
   }
 }

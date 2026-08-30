@@ -4,6 +4,19 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.42 - 2026-08-30
+
+- Increased the framework version to `0.1.0-alpha.42`, adapter schema version
+  to `38`, and target template version to `40` for explicit assistant-surface
+  state evidence and module-state evidence.
+- Upgraded assistant capability records to schema 3 so installed adapters
+  distinguish advertised, selected, supported, verified, and stale assistant
+  surface states before claiming native diagrams, delegation, skills, tool
+  permissions, or instruction-loading support.
+- Added module-state evidence to the target module profile and tightened
+  source and target checks so module enablement cannot rely on file presence
+  without manifest/profile agreement and validation evidence.
+
 ## 0.1.0-alpha.41 - 2026-08-30
 
 - Increased the framework version to `0.1.0-alpha.41`, adapter schema version
