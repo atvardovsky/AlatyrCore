@@ -20,6 +20,7 @@ from check_all import (  # noqa: E402
     render_report,
     resolve_report_path,
     run_check,
+    select_check_plan,
     select_checks,
 )
 from source_state import snapshot_changes, source_snapshot  # noqa: E402
@@ -116,6 +117,22 @@ class CheckGraphTests(unittest.TestCase):
         self.assertEqual(
             [entry["id"] for entry in selected], ["contract-owner", "fallback"]
         )
+
+    def test_fast_profile_records_unmatched_fallback_paths(self) -> None:
+        item = {**check("matched"), "profiles": ["full"], "platforms": ["all"]}
+
+        from unittest.mock import patch
+
+        with patch(
+            "check_all.git_changed_paths",
+            return_value=["area/matched/file.md", "unrouted/file.md"],
+        ):
+            plan = select_check_plan([item], "fast", "HEAD~1", platform="linux")
+
+        self.assertTrue(plan.fell_back_to_full)
+        self.assertEqual(plan.changed_paths, ["area/matched/file.md", "unrouted/file.md"])
+        self.assertEqual(plan.unmatched_changed_paths, ["unrouted/file.md"])
+        self.assertEqual([entry["id"] for entry in plan.selected], ["matched"])
 
     def test_implementation_change_triggers_its_check(self) -> None:
         item = {**check("implementation"), "profiles": ["full"], "platforms": ["all"]}
@@ -329,6 +346,8 @@ class CheckGraphTests(unittest.TestCase):
         self.assertEqual(report["schema_version"], 2)
         self.assertEqual(report["checks"][0]["resource_class"], "standard")
         self.assertFalse(report["source_write_scope"]["preserved"])
+        self.assertFalse(report["selection"]["fell_back_to_full"])
+        self.assertEqual(report["selection"]["selected_check_ids"], ["failed"])
 
     def test_live_manifest_declares_complete_trigger_inputs(self) -> None:
         for item in load_manifest():

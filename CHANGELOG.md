@@ -4,6 +4,15 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.43 - 2026-08-30
+
+- Increased the framework version to `0.1.0-alpha.43`; adapter schema version
+  remains `38` and target template version remains `40` because no installed
+  adapter schema or target template contract changed.
+- Added focused source-check selection diagnostics so `fast --changed-from`
+  reports changed paths, unmatched routes, selected check IDs, and conservative
+  full-profile fallback in machine-readable run reports and CLI output.
+
 ## 0.1.0-alpha.42 - 2026-08-30
 
 - Increased the framework version to `0.1.0-alpha.42`, adapter schema version

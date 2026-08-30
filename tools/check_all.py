@@ -38,6 +38,17 @@ class RunnerResult:
     timed_out: bool = False
 
 
+@dataclass(frozen=True)
+class SelectionResult:
+    """Selected checks plus focused-route diagnostics."""
+
+    selected: list[dict[str, Any]]
+    fell_back_to_full: bool
+    changed_paths: list[str]
+    unmatched_changed_paths: list[str]
+    platform: str
+
+
 def _valid_manifest_path(value: str) -> bool:
     """Accept portable repository-relative literal or glob path declarations."""
 
@@ -228,7 +239,7 @@ def supports_platform(check: dict[str, Any], platform: str) -> bool:
     return "all" in check["platforms"] or platform in check["platforms"]
 
 
-def select_checks(
+def select_check_plan(
     checks: list[dict[str, Any]],
     profile: str,
     changed_from: str | None,
@@ -236,6 +247,8 @@ def select_checks(
     platform: str | None = None,
 ) -> tuple[list[dict[str, Any]], bool]:
     selected_platform = platform or current_platform()
+    changed: list[str] = []
+    unmatched: list[str] = []
     if profile == "release":
         selected_ids = {
             check["id"]
@@ -294,7 +307,43 @@ def select_checks(
 
     for check_id in list(selected_ids):
         add_dependencies(check_id)
-    return [check for check in checks if check["id"] in selected_ids], fell_back_to_full
+    return SelectionResult(
+        selected=[check for check in checks if check["id"] in selected_ids],
+        fell_back_to_full=fell_back_to_full,
+        changed_paths=changed,
+        unmatched_changed_paths=unmatched,
+        platform=selected_platform,
+    )
+
+
+def select_checks(
+    checks: list[dict[str, Any]],
+    profile: str,
+    changed_from: str | None,
+    *,
+    platform: str | None = None,
+) -> tuple[list[dict[str, Any]], bool]:
+    """Backward-compatible check selection API for tests and callers."""
+
+    plan = select_check_plan(checks, profile, changed_from, platform=platform)
+    return plan.selected, plan.fell_back_to_full
+
+
+def selection_report(
+    *,
+    profile: str,
+    changed_from: str | None,
+    plan: SelectionResult,
+) -> dict[str, Any]:
+    return {
+        "profile": profile,
+        "platform": plan.platform,
+        "changed_from": changed_from,
+        "changed_path_count": len(plan.changed_paths),
+        "unmatched_changed_paths": plan.unmatched_changed_paths,
+        "fell_back_to_full": plan.fell_back_to_full,
+        "selected_check_ids": [check["id"] for check in plan.selected],
+    }
 
 
 def resolved_command(check: dict[str, Any], baseline: str | None) -> list[str]:
@@ -384,6 +433,7 @@ def render_report(
     blocked: dict[str, list[str]],
     source_changes: list[str],
     telemetry: dict[str, dict[str, Any]] | None = None,
+    selection: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     checks: list[dict[str, Any]] = []
     telemetry = telemetry or {}
@@ -422,6 +472,15 @@ def render_report(
         "schema_version": 2,
         "report_kind": "alatyr-source-check-run",
         "profile": profile,
+        "selection": selection or {
+            "profile": profile,
+            "platform": current_platform(),
+            "changed_from": None,
+            "changed_path_count": 0,
+            "unmatched_changed_paths": [],
+            "fell_back_to_full": False,
+            "selected_check_ids": [check["id"] for check in selected],
+        },
         "environment": environment_report(),
         "source_write_scope": {
             "declared": "none",
@@ -602,7 +661,8 @@ def main() -> int:
     try:
         checks = load_manifest()
         baseline = effective_baseline(args.profile, args.changed_from, args.from_ref)
-        selected, fell_back = select_checks(checks, args.profile, args.changed_from)
+        plan = select_check_plan(checks, args.profile, args.changed_from)
+        selected = plan.selected
         commands = [resolved_command(check, baseline) for check in selected]
         report_path = resolve_report_path(args.report) if args.report else None
     except (OSError, ValueError, json.JSONDecodeError) as exc:
@@ -613,8 +673,10 @@ def main() -> int:
         for command in commands:
             print(" ".join(command))
         return 0
-    if fell_back:
+    if plan.fell_back_to_full:
         print("INFO: unmatched changed paths selected the full check profile", flush=True)
+        for path in plan.unmatched_changed_paths:
+            print(f"INFO: unmatched changed path: {path}", flush=True)
 
     try:
         before = source_snapshot(ROOT)
@@ -657,6 +719,11 @@ def main() -> int:
                     blocked=blocked,
                     source_changes=source_changes,
                     telemetry=telemetry,
+                    selection=selection_report(
+                        profile=args.profile,
+                        changed_from=args.changed_from,
+                        plan=plan,
+                    ),
                 ),
             )
         except OSError as exc:
@@ -682,6 +749,11 @@ def main() -> int:
                         blocked=blocked,
                         source_changes=source_changes,
                         telemetry=telemetry,
+                        selection=selection_report(
+                            profile=args.profile,
+                            changed_from=args.changed_from,
+                            plan=plan,
+                        ),
                     ),
                 )
             except OSError as exc:

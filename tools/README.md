@@ -141,6 +141,11 @@ when `--from-ref` is omitted. `release` adds tag-baseline migration checks.
 It validates this repository only; it is not a portable framework requirement
 for target projects.
 
+Focused `fast` runs emit route diagnostics. If a changed path matches no
+declared trigger, the runner records the unmatched path and falls back to the
+full profile. The fallback is intentionally conservative, but the diagnostic
+shows which manifest route should be added when the cost spike is recurring.
+
 Each manifest check declares four separate concerns:
 
 - `contract_inputs`: repository facts, templates, schemas, fixtures, or other
@@ -166,10 +171,12 @@ freshness check instead of leaving older evidence apparently current.
 
 Machine-readable reports use schema version 2. Each selected check is emitted
 in manifest order with its resource class, timeout, elapsed duration, command,
-output, exit status, and timeout state. A report records a blocked check
-separately from a failed process so consumers can distinguish root failures
-from dependency fallout. Durations are local runner observations, not a
-cross-platform performance benchmark.
+output, exit status, and timeout state. A report also records selection
+evidence: selected profile, platform, changed-path baseline, unmatched
+changed paths, fallback state, and selected check IDs. A report records a
+blocked check separately from a failed process so consumers can distinguish
+root failures from dependency fallout. Durations are local runner observations,
+not a cross-platform performance benchmark.
 
 Machine-readable reports should normally be written outside the repository.
 A repository-local `--report` path is accepted only under `tmp/` when Git
