@@ -21,6 +21,9 @@
 - Split `status` and `doctor` command behavior into compact health versus
   repair-oriented read-only output, and added manifest routing coverage for
   every stable `tools/alatyr.py` command script.
+- Kept the portable macOS/Windows source-check profile focused on
+  cross-platform tooling, scaffold, and lifecycle smoke validation while
+  leaving the full source unit suite on the Linux Python-version matrix.
 
 ## 0.1.0-alpha.45 - 2026-08-30
 

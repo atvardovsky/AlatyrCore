@@ -62,6 +62,31 @@ class CheckGraphTests(unittest.TestCase):
 
         self.assertEqual([item["id"] for item in selected], ["portable"])
 
+    def test_live_platform_profile_omits_full_source_unit_suite(self) -> None:
+        checks = load_manifest()
+
+        platform_ids = {
+            item["id"]
+            for item in select_check_plan(
+                checks,
+                "platform",
+                None,
+                platform="windows",
+            ).selected
+        }
+        full_ids = {
+            item["id"]
+            for item in select_check_plan(
+                checks,
+                "full",
+                None,
+                platform="linux",
+            ).selected
+        }
+
+        self.assertNotIn("source-unit-tests", platform_ids)
+        self.assertIn("source-unit-tests", full_ids)
+
     def test_changed_fast_profile_selects_invariants_and_matching_routes(self) -> None:
         checks = [
             {

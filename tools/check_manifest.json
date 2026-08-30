@@ -2288,8 +2288,7 @@
       ],
       "profiles": [
         "fast",
-        "full",
-        "platform"
+        "full"
       ],
       "always_for_changed": true,
       "contract_inputs": [

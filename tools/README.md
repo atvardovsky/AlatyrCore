@@ -150,9 +150,10 @@ tooling change cannot be mapped safely.
 `change --changed-from <ref>` uses the same ref as the release-drift baseline
 when `--from-ref` is omitted. `release` adds tag-baseline migration checks.
 `platform` runs the portable tooling contract slice used on macOS and Windows.
-It uses a lightweight lifecycle smoke proof for portability; the full
-multi-profile lifecycle matrix remains part of the `full` and release
-acceptance path.
+It uses a lightweight lifecycle smoke proof for portability and intentionally
+does not rerun the full source unit suite; Linux full-profile CI on Python 3.10
+and 3.13 remains the complete unit-test gate. The full multi-profile lifecycle
+matrix remains part of the `full` and release acceptance path.
 
 Machine-readable reports include per-check selection reasons, matched changed
 paths, broad-trigger diagnostics, queued time, run duration, and wall-clock
