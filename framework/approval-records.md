@@ -114,6 +114,11 @@ when a caller supplies both a diff base and one or more explicit approval
 records. A caller that supplies only a diff base receives advisory protected-
 surface review because no operation-specific approval was selected.
 
+The source helper `tools/alatyr.py approval-check --target <target-repo>
+--diff-ref <base-ref> --approval-record <record.json>` is the compact
+read-only route for this strict check when the AlatyrCore source tools are
+available.
+
 When semantic scope fields are present, deterministic validation should also
 compare declared actual fact IDs, areas, behavior categories, and external
 effects with the approved lists. This detects declared scope drift; it does

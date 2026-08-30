@@ -17,6 +17,7 @@ python3 tools/alatyr.py --help
 python3 tools/alatyr.py status --target /path/to/target-repo
 python3 tools/alatyr.py doctor --target /path/to/target-repo
 python3 tools/alatyr.py validate-adapter --target /path/to/target-repo
+python3 tools/alatyr.py approval-check --target /path/to/target-repo --diff-ref HEAD~1 --approval-record .ai/assistant/approvals/approval.json
 python3 tools/alatyr.py render-entry --target /path/to/target-repo
 python3 tools/alatyr.py render-context --target /path/to/target-repo
 python3 tools/alatyr.py render-context --target /path/to/target-repo --write
@@ -41,6 +42,7 @@ Windows PowerShell:
 .\tools\alatyr.ps1 status --target C:\path\to\target-repo
 .\tools\alatyr.ps1 doctor --target C:\path\to\target-repo
 .\tools\alatyr.ps1 validate-adapter --target C:\path\to\target-repo
+.\tools\alatyr.ps1 approval-check --target C:\path\to\target-repo --diff-ref HEAD~1 --approval-record .ai\assistant\approvals\approval.json
 .\tools\alatyr.ps1 render-entry --target C:\path\to\target-repo
 .\tools\alatyr.ps1 render-context --target C:\path\to\target-repo
 .\tools\alatyr.ps1 render-context --target C:\path\to\target-repo --write
@@ -64,6 +66,7 @@ tools\alatyr.cmd --help
 tools\alatyr.cmd status --target C:\path\to\target-repo
 tools\alatyr.cmd doctor --target C:\path\to\target-repo
 tools\alatyr.cmd validate-adapter --target C:\path\to\target-repo
+tools\alatyr.cmd approval-check --target C:\path\to\target-repo --diff-ref HEAD~1 --approval-record .ai\assistant\approvals\approval.json
 tools\alatyr.cmd render-entry --target C:\path\to\target-repo
 tools\alatyr.cmd render-context --target C:\path\to\target-repo
 tools\alatyr.cmd render-context --target C:\path\to\target-repo --write
@@ -100,6 +103,8 @@ The stable command set is:
   to declared staged deterministic outputs with current authorization and plan
   binding
 - `validate-adapter`: optional explicit report output only
+- `approval-check`: read-only strict diff-to-approval scope check with optional
+  change-package enforcement
 - `status`: compact read-only adapter health; no file output
 - `doctor`: read-only adapter health with at most three repair operation routes;
   no file output (use `validate-adapter` for an explicit report file)

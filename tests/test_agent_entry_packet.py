@@ -17,8 +17,8 @@ class AgentEntryPacketTests(unittest.TestCase):
         manifest = """\
 schema_version: 36
 framework:
-  version: 0.1.0-alpha.38
-  template_version: 36
+  version: 0.1.0-alpha.39
+  template_version: 37
   pack: kernel
 installation:
   support_profile: kernel
@@ -129,6 +129,14 @@ modules:
         self.assertIn(
             "tools/alatyr.py support-delta",
             packet["support_delta_first"]["support_delta_tool"],
+        )
+        self.assertIn(
+            "tools/alatyr.py approval-check",
+            packet["support_delta_first"]["approval_scope_check_tool"],
+        )
+        self.assertIn(
+            "--approval-record <target-approval-json>",
+            packet["support_delta_first"]["approval_scope_check_tool"],
         )
 
     def test_packet_omits_operation_routes_when_index_is_absent(self) -> None:

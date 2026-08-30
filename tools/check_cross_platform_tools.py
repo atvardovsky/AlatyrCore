@@ -36,6 +36,7 @@ EXPECTED_COMMANDS = {
     "impact",
     "generate-support",
     "validate-adapter",
+    "approval-check",
     "status",
     "doctor",
     "migration-report",

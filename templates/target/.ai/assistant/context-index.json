@@ -245,8 +245,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1515,
-      "content_digest": "sha256:6c966d6c11160a3a4032845e321462e194537f83c6586fae02c4dd7c12ea5ee4"
+      "estimated_words": 1524,
+      "content_digest": "sha256:4ba238b1a9b794cd3bb1d27e129c45cafcd7bdbe6cc32fde7bd5e31c75895459"
     },
     {
       "id": "assistant.content.help-md",

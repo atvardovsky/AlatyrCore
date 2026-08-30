@@ -1028,6 +1028,7 @@
       ],
       "implementation_paths": [
         "tools/alatyr.*",
+        "tools/report_approval_scope.py",
         "tools/check_cross_platform_tools.py",
         "tools/clean_local_artifacts.py",
         "tools/plan_target_upgrade.py",
@@ -1039,6 +1040,7 @@
         "constraints-ci.txt",
         "requirements*.txt",
         "tools/alatyr.*",
+        "tools/report_approval_scope.py",
         "tools/check_cross_platform_tools.py",
         "tools/clean_local_artifacts.py",
         "tools/plan_target_upgrade.py",
@@ -1682,6 +1684,7 @@
         "templates/target/.ai/assistant/gates/**",
         "templates/target/.ai/assistant/module-profile.md",
         "templates/target/.ai/assistant/team/**",
+        "tools/report_approval_scope.py",
         "tools/check_target_adapter_validator.py",
         "tools/context_catalog.py",
         "tools/framework_packaging.py",
@@ -1698,6 +1701,7 @@
       ],
       "implementation_paths": [
         "tools/check_target_adapter_validator.py",
+        "tools/report_approval_scope.py",
         "tools/context_catalog.py",
         "tools/framework_packaging.py",
         "tools/scaffold_state.py",
@@ -2193,6 +2197,7 @@
       ],
       "implementation_paths": [
         "tools/check_all.py",
+        "tools/report_approval_scope.py",
         "tools/check_source_unit_tests.py",
         "tools/evidence_contract.py",
         "tools/report_adapter_health.py",
@@ -2202,6 +2207,7 @@
       "trigger_paths": [
         "tests/**",
         "tools/check_all.py",
+        "tools/report_approval_scope.py",
         "tools/check_source_unit_tests.py",
         "tools/evidence_contract.py",
         "tools/report_adapter_health.py",

@@ -4,6 +4,15 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.39 - 2026-08-30
+
+- Increased the framework version to `0.1.0-alpha.39` and target template
+  version to `37`; adapter schema version remains `36` because no adapter
+  schema fields changed.
+- Added the read-only `tools/alatyr.py approval-check` helper so agents can
+  cheaply enforce one operation diff against explicit machine-readable
+  approval records and optional change-package records.
+
 ## 0.1.0-alpha.38 - 2026-08-30
 
 - Increased the framework version to `0.1.0-alpha.38`, adapter schema version

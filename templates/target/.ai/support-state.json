@@ -5,98 +5,68 @@
   "generated_by": {
     "schema_version": 1,
     "tool": "snapshot_target_support.py",
-    "source_revision": "521f8caff0cb5df3ec23e9d3709d965cb2240e73",
+    "source_revision": "16e7375678b0e10e104ff185074d521505bcf5e3",
     "source_worktree_state": "dirty",
     "source_dirty_paths": [
-      "ADAPTER_SCHEMA_VERSION",
       "CHANGELOG.md",
       "README.md",
       "TEMPLATE_VERSION",
       "VERSION",
       "conformance/evidence-status.json",
       "conformance/golden/context-cost-baseline.json",
-      "conformance/operations/request-routing-protocol-expectations.json",
-      "docs/framework-maintenance.md",
       "docs/human/faq.md",
+      "framework/approval-records.md",
       "framework/catalog/core/context-index.json",
       "framework/context-index.json",
       "framework/file-inventory.json",
-      "framework/operation-help.md",
-      "templates/target/.ai/assistant/bootstrap-index.json",
       "templates/target/.ai/assistant/context-index.json",
       "templates/target/.ai/assistant/entry-packet.json",
-      "templates/target/.ai/assistant/flows/adapter-health.flow.md",
-      "templates/target/.ai/assistant/flows/context-index.json",
-      "templates/target/.ai/assistant/operation-catalog.json",
-      "templates/target/.ai/assistant/templates/adapter-output-contracts.md",
-      "templates/target/.ai/assistant/templates/context-index.json",
-      "templates/target/.ai/assistant/templates/post-install-message.md",
-      "templates/target/.ai/assistant/templates/post-update-message.md",
-      "templates/target/.ai/support-state.json",
       "tests/test_agent_entry_packet.py",
-      "tests/test_target_validator_installation_state.py",
       "tools/README.md",
+      "tools/agent_entry_packet.py",
+      "tools/check_agent_entry_packet.py",
       "tools/check_cross_platform_tools.py",
       "tools/check_manifest.json",
-      "tools/check_operation_catalog.py",
-      "tools/check_output_contracts.py",
       "tools/tool_commands.json",
-      "tools/validate_target_adapter.py",
-      "docs/releases/0.1.0-alpha.38-migration.md",
-      "docs/releases/baselines/0.1.0-alpha.37.json",
-      "tests/test_adapter_health_report.py",
-      "tools/report_adapter_health.py"
+      "docs/releases/baselines/0.1.0-alpha.38.json",
+      "tests/test_approval_scope_command.py",
+      "tools/report_approval_scope.py"
     ],
     "target_manifest": ".ai/alatyr.yaml",
     "target_manifest_digest": "sha256:02d3c854306009ae74d60e72a9e415eeb98971da933b02f26a30dacf9f618226",
     "target_worktree_state": "dirty",
     "target_dirty_paths": [
-      "../../ADAPTER_SCHEMA_VERSION",
       "../../CHANGELOG.md",
       "../../README.md",
       "../../TEMPLATE_VERSION",
       "../../VERSION",
       "../../conformance/evidence-status.json",
       "../../conformance/golden/context-cost-baseline.json",
-      "../../conformance/operations/request-routing-protocol-expectations.json",
-      "../../docs/framework-maintenance.md",
       "../../docs/human/faq.md",
+      "../../framework/approval-records.md",
       "../../framework/catalog/core/context-index.json",
       "../../framework/context-index.json",
       "../../framework/file-inventory.json",
-      "../../framework/operation-help.md",
-      ".ai/assistant/bootstrap-index.json",
       ".ai/assistant/context-index.json",
       ".ai/assistant/entry-packet.json",
-      ".ai/assistant/flows/adapter-health.flow.md",
-      ".ai/assistant/flows/context-index.json",
-      ".ai/assistant/operation-catalog.json",
-      ".ai/assistant/templates/adapter-output-contracts.md",
-      ".ai/assistant/templates/context-index.json",
-      ".ai/assistant/templates/post-install-message.md",
-      ".ai/assistant/templates/post-update-message.md",
-      ".ai/support-state.json",
       "../../tests/test_agent_entry_packet.py",
-      "../../tests/test_target_validator_installation_state.py",
       "../../tools/README.md",
+      "../../tools/agent_entry_packet.py",
+      "../../tools/check_agent_entry_packet.py",
       "../../tools/check_cross_platform_tools.py",
       "../../tools/check_manifest.json",
-      "../../tools/check_operation_catalog.py",
-      "../../tools/check_output_contracts.py",
       "../../tools/tool_commands.json",
-      "../../tools/validate_target_adapter.py",
-      "../../docs/releases/0.1.0-alpha.38-migration.md",
-      "../../docs/releases/baselines/0.1.0-alpha.37.json",
-      "../../tests/test_adapter_health_report.py",
-      "../../tools/report_adapter_health.py"
+      "../../docs/releases/baselines/0.1.0-alpha.38.json",
+      "../../tests/test_approval_scope_command.py",
+      "../../tools/report_approval_scope.py"
     ],
-    "framework_version": "0.1.0-alpha.38",
+    "framework_version": "0.1.0-alpha.39",
     "adapter_schema_version": "36",
-    "template_version": "36"
+    "template_version": "37"
   },
   "policy": ".ai/project/support-policy.json",
   "policy_digest": "sha256:fe458d4305f7236f4e5e974cb58461e2308ec30299eeb51841fbf5e594d2ea7a",
-  "source_revision": "521f8caff0cb5df3ec23e9d3709d965cb2240e73",
+  "source_revision": "16e7375678b0e10e104ff185074d521505bcf5e3",
   "groups": [
     {
       "id": "adapter-root",
@@ -106,7 +76,7 @@
     {
       "id": "assistant",
       "file_count": 206,
-      "digest": "sha256:12ecd5e42f1cbc28f6a3c1bb3d8cae6af464d73d19ba34d7e07593b44649a4e5"
+      "digest": "sha256:3165e2d6f7d836332369b17f67b8afc90e9cdfd53fca073c212a26d5a09e20bd"
     },
     {
       "id": "entrypoints",
@@ -342,8 +312,8 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "canonical_size": 0
+      "digest": "sha256:694061cb340356dbba52e6282de77137a9c52b73a5630f710191417174f6537b",
+      "canonical_size": 16595
     },
     {
       "path": ".ai/assistant/bridge-capability-matrix.md",
@@ -405,7 +375,7 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:1894931951a542a924bda653e3b0bc77f637e4d75adfb6ad0206dc65a290ebc9",
+      "digest": "sha256:dc52aa9382dfce7f5dcfb503abfc0413e8cba73311a181e586cac7190035e80f",
       "canonical_size": 21329
     },
     {
@@ -711,8 +681,8 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:32e148e99f8162b728c703976e6ed5a2f0a6808b79fdf5885a7cb29621b44113",
-      "canonical_size": 32323
+      "digest": "sha256:2abacd76ccf75cf6b4327e2f5ae29e0390d5cb04f0a9d39559c8713e65836672",
+      "canonical_size": 30223
     },
     {
       "path": ".ai/assistant/extensions/README.md",
@@ -2695,5 +2665,5 @@
       "canonical_size": 864
     }
   ],
-  "root_digest": "sha256:c1565084a8d8c4fd3091701e4a56c1ffe0cc0554155142eaf8ad0642c2f89565"
+  "root_digest": "sha256:9c0595fbdef6a4039f232f99f3734f823f9d13c7bc5934d7eae43bf77ea171ed"
 }

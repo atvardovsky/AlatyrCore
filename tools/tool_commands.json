@@ -74,6 +74,12 @@
       "write_scope": "explicit-report-output-only"
     },
     {
+      "name": "approval-check",
+      "script": "report_approval_scope.py",
+      "purpose": "check one target diff against explicitly selected approval records and optional change packages",
+      "write_scope": "none"
+    },
+    {
       "name": "status",
       "script": "report_adapter_health.py",
       "purpose": "report compact read-only installed adapter health",

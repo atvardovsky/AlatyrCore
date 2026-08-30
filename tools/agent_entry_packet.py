@@ -317,6 +317,10 @@ def build_agent_entry_packet(
                 "tools/alatyr.py impact --target <target-repo> "
                 "--diff-ref <base-ref>"
             ),
+            "approval_scope_check_tool": (
+                "tools/alatyr.py approval-check --target <target-repo> "
+                "--diff-ref <base-ref> --approval-record <target-approval-json>"
+            ),
             "routing_policy": (
                 "compare support-state hashes and Git changed paths first, "
                 "then load only selected support owners, relationship shards, "

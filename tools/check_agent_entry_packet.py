@@ -151,6 +151,7 @@ def check_packet(
         for required in [
             "tools/alatyr.py support-delta",
             "tools/alatyr.py impact",
+            "tools/alatyr.py approval-check",
             ".ai/support-state.json",
         ]:
             if required not in json.dumps(delta, sort_keys=True):
