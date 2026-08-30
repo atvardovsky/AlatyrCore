@@ -61,7 +61,8 @@ deterministic and machine-checked:
   change-impact, and common documentation support surfaces
 - `standard`: core plus common blueprint, recheck, help, and lifecycle
   operation surfaces
-- `full`: all target templates, optional modules, and assistant bridges
+- `full`: all target templates and optional module placeholders; native
+  assistant bridges still require explicit reviewed surface selection
 
 The selected scaffold support profile limits target placeholder files. A
 matching portable framework pack may also limit the copied framework corpus:

@@ -13,6 +13,7 @@ from target_validation_support import is_placeholder, load_manifest_object
 
 
 ROOT = Path(__file__).resolve().parents[1]
+SOURCE_TEMPLATE_TARGET = ROOT / "templates" / "target"
 
 
 def source_revision(source_root: Path = ROOT) -> str:
@@ -72,6 +73,15 @@ def source_versions(source_root: Path = ROOT) -> dict[str, str]:
     }
 
 
+def source_template_target(target: Path, *, source_root: Path = ROOT) -> bool:
+    """Return true for committed target templates in this source repository."""
+
+    try:
+        return target.resolve() == (source_root / "templates" / "target").resolve()
+    except OSError:
+        return False
+
+
 def target_versions(target: Path) -> dict[str, str]:
     manifest = load_manifest_object(target / ".ai" / "alatyr.yaml")
     framework = manifest.get("framework")
@@ -119,6 +129,22 @@ def generation_provenance(
 ) -> dict[str, Any]:
     manifest_path = target / ".ai" / "alatyr.yaml"
     versions = source_versions(source_root)
+    if source_template_target(target, source_root=source_root):
+        return {
+            "schema_version": 1,
+            "provenance_kind": "source-template",
+            "tool": tool_name,
+            "source_revision": "source-template",
+            "source_worktree_state": "clean",
+            "source_dirty_paths": [],
+            "target_manifest": ".ai/alatyr.yaml",
+            "target_manifest_digest": file_sha256(manifest_path)
+            if manifest_path.is_file()
+            else "unavailable",
+            "target_worktree_state": "clean",
+            "target_dirty_paths": [],
+            **versions,
+        }
     return {
         "schema_version": 1,
         "tool": tool_name,
@@ -142,6 +168,20 @@ def generation_provenance_from_manifest_text(
     manifest_text: str,
     source_root: Path = ROOT,
 ) -> dict[str, Any]:
+    if source_template_target(target, source_root=source_root):
+        return {
+            "schema_version": 1,
+            "provenance_kind": "source-template",
+            "tool": tool_name,
+            "source_revision": "source-template",
+            "source_worktree_state": "clean",
+            "source_dirty_paths": [],
+            "target_manifest": ".ai/alatyr.yaml",
+            "target_manifest_digest": text_sha256(manifest_text),
+            "target_worktree_state": "clean",
+            "target_dirty_paths": [],
+            **source_versions(source_root),
+        }
     provenance = generation_provenance(
         target,
         tool_name=tool_name,
@@ -220,4 +260,29 @@ def generation_provenance_errors(
             isinstance(path, str) and path for path in paths
         ):
             errors.append(f"generated_by.{field} must be a string list")
+    return errors
+
+
+def source_template_provenance_errors(
+    value: Any,
+    *,
+    expected_tool: str | None = None,
+) -> list[str]:
+    """Validate stable provenance for committed source template artifacts."""
+
+    errors = generation_provenance_errors(value, expected_tool=expected_tool)
+    if not isinstance(value, dict):
+        return errors
+    if value.get("provenance_kind") != "source-template":
+        errors.append("generated_by.provenance_kind must be source-template")
+    if value.get("source_revision") != "source-template":
+        errors.append("generated_by.source_revision must be source-template")
+    if value.get("source_dirty_paths") != []:
+        errors.append("generated_by.source_dirty_paths must be empty in source templates")
+    if value.get("target_dirty_paths") != []:
+        errors.append("generated_by.target_dirty_paths must be empty in source templates")
+    if value.get("source_worktree_state") != "clean":
+        errors.append("generated_by.source_worktree_state must be clean in source templates")
+    if value.get("target_worktree_state") != "clean":
+        errors.append("generated_by.target_worktree_state must be clean in source templates")
     return errors

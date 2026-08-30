@@ -11,7 +11,11 @@ from pathlib import Path
 from typing import Any
 
 from agent_entry_packet import PACKET_PATH, build_from_target, render
-from target_tool_compat import generated_json_equivalent, generation_provenance_errors
+from target_tool_compat import (
+    generated_json_equivalent,
+    generation_provenance_errors,
+    source_template_provenance_errors,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -30,6 +34,7 @@ def check_packet(
     *,
     operation_index_expected: bool,
     expected_tool: str | None = "render_target_entry_packet.py",
+    source_template: bool = False,
 ) -> list[str]:
     failures: list[str] = []
     if packet.get("schema_version") != 1:
@@ -38,11 +43,13 @@ def check_packet(
         failures.append("entry packet kind must be target-agent-entry-packet")
     if packet.get("path") != PACKET_PATH.as_posix():
         failures.append("entry packet path is invalid")
+    provenance_errors = (
+        source_template_provenance_errors
+        if source_template
+        else generation_provenance_errors
+    )
     failures.extend(
-        generation_provenance_errors(
-            packet.get("generated_by"),
-            expected_tool=expected_tool,
-        )
+        provenance_errors(packet.get("generated_by"), expected_tool=expected_tool)
     )
 
     required_sources = {
@@ -188,7 +195,13 @@ def main() -> int:
         ):
             failures.append("entry packet differs from canonical source projection")
         packet = json.loads(expected)
-        failures.extend(check_packet(packet, operation_index_expected=True))
+        failures.extend(
+            check_packet(
+                packet,
+                operation_index_expected=True,
+                source_template=True,
+            )
+        )
     except (OSError, UnicodeError, ValueError, json.JSONDecodeError, AssertionError) as exc:
         failures.append(str(exc))
 

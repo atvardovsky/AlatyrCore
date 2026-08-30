@@ -10,7 +10,11 @@ import sys
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from target_tool_compat import assert_write_compatible  # noqa: E402
+from target_tool_compat import (  # noqa: E402
+    assert_write_compatible,
+    generation_provenance_from_manifest_text,
+    source_template_provenance_errors,
+)
 
 
 class TargetToolCompatTests(unittest.TestCase):
@@ -53,6 +57,27 @@ framework:
         )
 
         assert_write_compatible(target, tool_name="fixture.py")
+
+    def test_source_template_provenance_is_stable(self) -> None:
+        manifest_text = (ROOT / "templates/target/.ai/alatyr.yaml").read_text(
+            encoding="utf-8",
+        )
+
+        provenance = generation_provenance_from_manifest_text(
+            ROOT / "templates/target",
+            tool_name="fixture.py",
+            manifest_text=manifest_text,
+        )
+
+        self.assertEqual(
+            source_template_provenance_errors(
+                provenance,
+                expected_tool="fixture.py",
+            ),
+            [],
+        )
+        self.assertEqual(provenance["source_revision"], "source-template")
+        self.assertEqual(provenance["source_dirty_paths"], [])
 
 
 if __name__ == "__main__":

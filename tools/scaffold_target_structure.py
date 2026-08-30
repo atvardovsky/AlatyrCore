@@ -56,6 +56,7 @@ from framework_packaging import (
 )
 from context_catalog import load_codebook
 from render_context_catalogs import INDEX_NAME, build_directory_catalog_contents
+from support_state import STATE_PATH, SupportStateError, build_support_state, render_state
 from target_tool_compat import generation_provenance_from_manifest_text
 
 
@@ -136,7 +137,12 @@ def project_assistant_bridges(
             isinstance(path, str) and path for path in bridge_paths
         ):
             raise ValueError("assistant surface registry contains invalid bridge paths")
-        surface_paths = {Path(path) for path in bridge_paths}
+        support_paths = surface.get("optional_support_paths", [])
+        if not isinstance(support_paths, list) or not all(
+            isinstance(path, str) and path for path in support_paths
+        ):
+            raise ValueError("assistant surface registry contains invalid support paths")
+        surface_paths = {Path(path) for path in [*bridge_paths, *support_paths]}
         surface_native_paths = surface_paths - NEUTRAL_ASSISTANT_ENTRY_PATHS
         native_paths.update(surface_native_paths)
         if surface_id in selected_surfaces:
@@ -315,7 +321,11 @@ def projected_template_content(
         return context.context_catalogs[rel]
     if rel == Path("AGENTS.md") and framework_pack != "complete":
         rule_ids = [rule["id"] for rule in project_registry(framework_pack)["rules"]]
-        return project_agent_rule_ids(src.read_text(encoding="utf-8"), rule_ids)
+        return project_agent_rule_ids(
+            src.read_text(encoding="utf-8"),
+            rule_ids,
+            selected,
+        )
     if rel == Path(".ai/alatyr.yaml"):
         return project_manifest(
             src.read_text(encoding="utf-8"),
@@ -472,7 +482,7 @@ def projected_template_content(
 
 def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
     target = args.target.resolve()
-    profile = getattr(args, "profile", "full")
+    profile = getattr(args, "profile", "kernel")
     requested_pack = getattr(args, "framework_pack", "matched")
     requested_modules = set(getattr(args, "enable_module", []) or [])
     selected_assistant_surfaces = resolve_assistant_surfaces(
@@ -523,7 +533,10 @@ def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
         blocked.append(f"target is not a directory: {target}")
         return actions, blocked
 
+    support_state_rel = Path(STATE_PATH)
     for rel in sorted(selected_templates):
+        if rel == support_state_rel:
+            continue
         src = TEMPLATE_ROOT / rel
         dst = target / rel
         merge_strategy = shared_surface_merge_requirement(rel)
@@ -563,6 +576,25 @@ def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
             continue
         copy_file(src, dst, write=args.write, content=framework_contents[key])
         actions.append(f"framework: {key} -> {dst}")
+
+    if support_state_rel in selected_templates:
+        dst = target / support_state_rel
+        if dst.exists() and not args.overwrite_existing:
+            blocked.append(f"exists, would not overwrite: {dst}")
+        else:
+            if args.write:
+                try:
+                    current = build_support_state(target)
+                except SupportStateError as exc:
+                    blocked.append(f"support state generation failed: {exc}")
+                else:
+                    copy_file(
+                        TEMPLATE_ROOT / support_state_rel,
+                        dst,
+                        write=True,
+                        content=render_state(current),
+                    )
+            actions.append(f"generated: {STATE_PATH} -> {dst}")
 
     return actions, blocked
 
@@ -627,7 +659,7 @@ def main() -> int:
     parser.add_argument(
         "--profile",
         choices=profile_names(),
-        default="full",
+        default="kernel",
         help=(
             "Target adapter support profile. kernel installs minimal adapter "
             "surfaces, core adds durable evidence and project knowledge, "

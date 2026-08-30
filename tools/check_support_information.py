@@ -14,6 +14,7 @@ import jsonschema
 
 from framework_packaging import resolve_framework_files
 from support_state import build_support_state, validate_policy
+from target_tool_compat import source_template_provenance_errors
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -45,6 +46,13 @@ def main() -> int:
         jsonschema.validate(
             policy,
             load(ROOT / "schemas/alatyr-support-policy.schema.json"),
+        )
+        support_state = load(TARGET / ".ai/support-state.json")
+        failures.extend(
+            source_template_provenance_errors(
+                support_state.get("generated_by"),
+                expected_tool="snapshot_target_support.py",
+            )
         )
     except (OSError, ValueError, AssertionError, jsonschema.SchemaError, jsonschema.ValidationError) as exc:
         failures.append(f"support schema or policy contract is invalid: {exc}")

@@ -61,6 +61,7 @@ The `core` support profile adds:
 - project-knowledge candidate or registered decision-owner guidance intake,
   promotion review, canonical-owner update, explicit exception and precedence
   evidence, compact sharded routing index, coverage states, two-stage bounded
+  delivery, contradiction handling, retention, redaction, and reuse evidence
 
 If any required item for the selected support profile is missing, the adapter
 can still exist, but it must report the missing item as a gap before claiming

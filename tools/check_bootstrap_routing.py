@@ -17,7 +17,10 @@ from agent_entry_packet import (
 )
 from bootstrap_index import BOOTSTRAP_PATH, build_from_target, render
 from context_catalog import word_count
-from target_tool_compat import generated_json_equivalent, generation_provenance_errors
+from target_tool_compat import (
+    generated_json_equivalent,
+    source_template_provenance_errors,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -55,7 +58,7 @@ def main() -> int:
     else:
         bootstrap_index = load_object(bootstrap_path)
         failures.extend(
-            generation_provenance_errors(
+            source_template_provenance_errors(
                 bootstrap_index.get("generated_by"),
                 expected_tool="render_target_bootstrap_index.py",
             )

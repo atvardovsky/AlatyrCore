@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import ast
 import fnmatch
+import json
 import sys
 from pathlib import Path
 from typing import Any
@@ -92,6 +93,27 @@ def evidence_contract_routing_failures(checks: list[dict[str, Any]]) -> list[str
     return failures
 
 
+def tool_command_routing_failures(checks: list[dict[str, Any]]) -> list[str]:
+    """Require every stable tool command script to be routed by source checks."""
+
+    path = ROOT / "tools" / "tool_commands.json"
+    data = json.loads(path.read_text(encoding="utf-8"))
+    commands = data.get("commands") if isinstance(data, dict) else None
+    if not isinstance(commands, list):
+        return ["tool command manifest must define commands"]
+    failures: list[str] = []
+    for command in commands:
+        if not isinstance(command, dict) or not isinstance(command.get("script"), str):
+            failures.append("tool command manifest contains an invalid script entry")
+            continue
+        script = f"tools/{command['script']}"
+        if not any(declared_implementation_path(check, script) for check in checks):
+            failures.append(f"tool command script lacks implementation owner: {script}")
+        if not any(routes(check, script) for check in checks):
+            failures.append(f"tool command script lacks trigger route: {script}")
+    return failures
+
+
 def main() -> int:
     failures: list[str] = []
     try:
@@ -137,6 +159,7 @@ def main() -> int:
             failures.append(f"release-only helper is not an approved release gate: {check['id']}")
 
     failures.extend(evidence_contract_routing_failures(checks))
+    failures.extend(tool_command_routing_failures(checks))
 
     drift_commands = [
         command for command in commands if command[0] == "tools/check_release_drift.py"

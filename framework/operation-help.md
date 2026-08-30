@@ -155,7 +155,9 @@ they do not prove that a client interpreted an actual conversation correctly.
 ## Adapter Health
 
 `Alatyr status` and `Alatyr doctor` route to the same read-only adapter-health
-operation. The operation should inspect available target evidence for:
+operation with different detail levels. Status should return compact health
+and counts. Doctor should include prioritized repair routes and focused
+finding details. The operation should inspect available target evidence for:
 
 - compact bootstrap and context-router agreement
 - manifest, catalog, module, and version consistency
@@ -168,9 +170,9 @@ Health must remain separate from adapter maturity. Health is a current
 structural state: `ready`, `attention`, `blocked`, or `unverified`. Maturity is
 task-specific capability. A health result must identify evidence time or
 commit when known, the validated installation state, acceptance eligibility,
-checks run or unavailable, and at most three prioritized repair operations. It
-must not edit files, fetch sources, install dependencies, or silently repair
-findings.
+and checks run or unavailable. Doctor mode may include at most three
+prioritized repair operations. Neither mode may edit files, fetch sources,
+install dependencies, or silently repair findings.
 
 Each actionable finding should include severity, stable finding code, owning
 surface, evidence, proposed repair operation, approval need, and whether the

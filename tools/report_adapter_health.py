@@ -62,7 +62,7 @@ def finding_line(finding: dict[str, Any]) -> str:
     return f"- {code}: {message}{suffix}"
 
 
-def render_text(payload: dict[str, Any]) -> str:
+def render_text(payload: dict[str, Any], *, mode: str = "doctor") -> str:
     health = payload.get("adapter_health", {})
     evidence = payload.get("evidence", {})
     counts = payload.get("counts", {})
@@ -102,12 +102,25 @@ def render_text(payload: dict[str, Any]) -> str:
             f"warnings={counts.get('warnings', 0)} "
             f"info={counts.get('info', 0)}"
         ),
-        "Repair operations: " + (", ".join(repairs[:3]) if repairs else "none"),
+        (
+            "Repair operations: "
+            + (
+                ", ".join(repairs[:3])
+                if repairs and mode == "doctor"
+                else "run doctor for prioritized repair routes"
+                if repairs
+                else "none"
+            )
+        ),
         "Automatic repair performed: false",
     ]
     limitation = evidence.get("limitation")
     if isinstance(limitation, str) and limitation:
         lines.append(f"Limitation: {limitation}")
+    if mode == "status" and findings:
+        lines.append("Finding details: run doctor for prioritized findings")
+        return "\n".join(lines) + "\n"
+
     if blocking:
         lines.append("")
         lines.append("Blocking findings:")
@@ -140,6 +153,12 @@ def main() -> int:
     parser.add_argument("--strict-warnings", action="store_true")
     parser.add_argument("--config", type=Path)
     parser.add_argument("--json", action="store_true")
+    parser.add_argument(
+        "--mode",
+        choices=["status", "doctor"],
+        default="doctor",
+        help="status emits compact health only; doctor includes repair routes and findings.",
+    )
     args = parser.parse_args()
 
     payload = health_payload(
@@ -154,7 +173,7 @@ def main() -> int:
     if args.json:
         print(json.dumps(payload, indent=2, sort_keys=True))
     else:
-        print(render_text(payload), end="")
+        print(render_text(payload, mode=args.mode), end="")
     return int(payload.get("exit_code", 1))
 
 

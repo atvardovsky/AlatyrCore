@@ -162,7 +162,7 @@ Classify every proposed target file:
    framework version, adapter schema version, template version, owner,
    backup owner, review cadence, CODEOWNERS or equivalent owner map,
    source-of-truth, validation, known gaps, and local deviations.
-   Create one schema-2 assistant capability record per registered surface.
+   Create one schema-3 assistant capability record per registered surface.
    Resolve instruction loading, skill source and activation, client permission
    mode, diagrams, and delegation from exact-client evidence. A selected but
    untested surface remains unknown; client permissions or auto-approval never

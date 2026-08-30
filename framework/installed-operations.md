@@ -149,8 +149,9 @@ If a request says `Alatyr`, "ask Alatyr", or similar, interpret that as "ask an
 assistant to use the installed Alatyr Core adapter in this repository." A bare
 `Alatyr` request returns compact adapter state and up to three relevant
 operations. `Alatyr status` and `Alatyr doctor` route to read-only adapter
-health. Do not assume a runtime service, CLI, agent daemon, or universal
-command exists.
+health; status returns compact state and counts, while doctor may include
+prioritized repair routes. Do not assume a runtime service, CLI, agent daemon,
+or universal command exists.
 
 Route a clear request automatically through the target operation catalog and
 enabled module profile; do not require the user to provide an operation ID. If

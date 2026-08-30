@@ -36,15 +36,19 @@ REQUIRED_SCAFFOLD_FILES = [
     ".ai/alatyr.yaml",
     ".ai/framework/README.md",
     ".ai/framework/rule-registry.json",
+    ".ai/assistant/bootstrap-index.json",
+    ".ai/assistant/entry-packet.json",
+    ".ai/assistant/context-router.json",
     ".ai/assistant/context-profiles.md",
     ".ai/assistant/module-profile.md",
     ".ai/assistant/help.md",
-    ".ai/assistant/operation-index.json",
-    ".ai/assistant/operation-catalog.json",
-    ".ai/assistant/assistant-capabilities.json",
-    ".ai/assistant/flows/adapter-health.flow.md",
-    ".ai/assistant/templates/pre-change-preview.md",
+    ".ai/assistant/gates/index.json",
+    ".ai/assistant/gates/core.md",
+    ".ai/assistant/gates/final-evidence.md",
+    ".ai/assistant/flows/logical-integrity-review.flow.md",
     ".ai/project/source-of-truth-registry.md",
+    ".ai/project/support-policy.json",
+    ".ai/support-state.json",
 ]
 
 PLACEHOLDER_FILES = [
@@ -52,8 +56,6 @@ PLACEHOLDER_FILES = [
     ".ai/assistant/context-profiles.md",
     ".ai/assistant/module-profile.md",
     ".ai/assistant/help.md",
-    ".ai/assistant/assistant-capabilities.json",
-    ".ai/assistant/operation-catalog.json",
     ".ai/project/source-of-truth-registry.md",
 ]
 

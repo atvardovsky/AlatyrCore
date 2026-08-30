@@ -38,6 +38,13 @@ def load_commands() -> list[dict[str, Any]]:
             raise SystemExit(
                 f"tool command entry has invalid forbidden_arguments: {command['name']}"
             )
+        default_arguments = command.get("default_arguments", [])
+        if not isinstance(default_arguments, list) or not all(
+            isinstance(argument, str) and argument for argument in default_arguments
+        ):
+            raise SystemExit(
+                f"tool command entry has invalid default_arguments: {command['name']}"
+            )
         names.add(command["name"])
     return commands
 
@@ -93,7 +100,11 @@ def main() -> int:
         )
         return 2
 
-    result = subprocess.run([sys.executable, str(script), *sys.argv[2:]], check=False)
+    default_arguments = command.get("default_arguments", [])
+    result = subprocess.run(
+        [sys.executable, str(script), *default_arguments, *sys.argv[2:]],
+        check=False,
+    )
     return result.returncode
 
 

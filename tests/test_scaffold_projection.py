@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import sys
 import tempfile
 import unittest
@@ -136,6 +137,83 @@ class ScaffoldProjectionTests(unittest.TestCase):
                     for item in blocked
                 )
             )
+
+    def test_missing_profile_defaults_to_kernel(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+
+            actions, blocked = plan(
+                SimpleNamespace(
+                    target=target,
+                    write=True,
+                    overwrite_existing=False,
+                    framework_pack="matched",
+                    enable_module=[],
+                )
+            )
+
+            self.assertFalse(blocked)
+            self.assertTrue(actions)
+            self.assertTrue((target / ".ai/assistant/entry-packet.json").is_file())
+            self.assertFalse((target / ".ai/assistant/operation-catalog.json").exists())
+            self.assertFalse(
+                (target / ".ai/assistant/assistant-capabilities.json").exists()
+            )
+            agents_text = (target / "AGENTS.md").read_text(encoding="utf-8")
+            self.assertNotIn(".ai/assistant/operation-index.json", agents_text)
+            self.assertNotIn(".ai/assistant/ai-infrastructure-router.json", agents_text)
+            self.assertNotIn(".ai/assistant/assistant-capabilities.json", agents_text)
+
+    def test_kernel_scaffold_generates_profile_specific_support_state(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+
+            _actions, blocked = plan(
+                SimpleNamespace(
+                    target=target,
+                    write=True,
+                    overwrite_existing=False,
+                    profile="kernel",
+                    framework_pack="matched",
+                    enable_module=[],
+                    assistant_surface=[],
+                )
+            )
+
+            self.assertFalse(blocked)
+            state = json.loads(
+                (target / ".ai/support-state.json").read_text(encoding="utf-8")
+            )
+            paths = {item["path"] for item in state["files"]}
+            self.assertIn(".ai/assistant/bootstrap-index.json", paths)
+            self.assertNotIn(".ai/assistant/operation-catalog.json", paths)
+            self.assertNotIn(".agents/skills/README.md", paths)
+
+    def test_kernel_agents_surface_projects_optional_agents_skill_path(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+
+            actions, blocked = plan(
+                SimpleNamespace(
+                    target=target,
+                    write=True,
+                    overwrite_existing=False,
+                    profile="full",
+                    framework_pack="matched",
+                    enable_module=[],
+                    assistant_surface=["agents"],
+                )
+            )
+
+            self.assertFalse(blocked)
+            self.assertTrue(
+                any(".agents/skills/README.md" in action for action in actions)
+            )
+            state = json.loads(
+                (target / ".ai/support-state.json").read_text(encoding="utf-8")
+            )
+            paths = {item["path"] for item in state["files"]}
+            self.assertIn(".agents/skills/README.md", paths)
 
 
 if __name__ == "__main__":

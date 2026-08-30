@@ -15,6 +15,7 @@
       "label": "AGENTS-aware assistant",
       "aliases": ["agents-aware"],
       "bridge_paths": ["AGENTS.md"],
+      "optional_support_paths": [".agents/skills/README.md"],
       "admission_audit": "agents",
       "product_lifecycle": "protocol",
       "support_status": "protocol-static-admission-runtime-unverified"

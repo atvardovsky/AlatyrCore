@@ -95,8 +95,45 @@ def project_manifest(
     return "\n".join(rendered) + "\n"
 
 
-def project_agent_rule_ids(text: str, rule_ids: list[str]) -> str:
-    """Limit the root rule summary to IDs present in a selective pack."""
+OPERATION_ROUTING_PARAGRAPH = """Route IDs/aliases through `.ai/assistant/operation-index.json`; use profile
+candidates otherwise. For `Alatyr`, help, ambiguity, or repair, use
+`.ai/assistant/help.md`, `.ai/assistant/operation-catalog.json`, and
+`.ai/assistant/flows/operation-routing.flow.md`. Status is read-only."""
+
+KERNEL_OPERATION_ROUTING_PARAGRAPH = """Use profile candidates from `.ai/assistant/entry-packet.json` for operation
+routing. The installed operation catalog is absent in this support profile;
+for `Alatyr`, help, ambiguity, or repair, use `.ai/assistant/help.md` and
+report missing operation-catalog support before relying on aliases. Status is
+read-only."""
+
+AI_INFRASTRUCTURE_ROUTING_SENTENCE = (
+    "Select one\n"
+    "`.ai/assistant/ai-infrastructure-router.json` route and the smallest AI item\n"
+    "set. Run only existing validation."
+)
+
+KERNEL_AI_INFRASTRUCTURE_ROUTING_SENTENCE = (
+    "When the AI infrastructure router is installed, select one route and the\n"
+    "smallest AI item set. Run only existing validation."
+)
+
+ASSISTANT_CAPABILITY_PARAGRAPH = """Before delegation or diagrams, read
+`.ai/assistant/assistant-capabilities.json`; route selected delegation through
+the selected surface record and `.ai/assistant/prompts/worker-orchestration.md`.
+Unknown, stale, or unverified surface state means no native capability claim;
+unknown presentation uses ASCII."""
+
+KERNEL_ASSISTANT_CAPABILITY_PARAGRAPH = """Before delegation or diagrams, use `.ai/assistant/entry-packet.json` and
+module state. If assistant capability records or worker orchestration prompts
+are absent, make no native capability claim; unknown presentation uses ASCII."""
+
+
+def project_agent_rule_ids(
+    text: str,
+    rule_ids: list[str],
+    selected: set[Path] | None = None,
+) -> str:
+    """Limit root instructions to installed rule owners and support surfaces."""
 
     rendered_ids = ", ".join(f"`{rule_id}`" for rule_id in rule_ids)
     pattern = re.compile(
@@ -107,6 +144,23 @@ def project_agent_rule_ids(text: str, rule_ids: list[str]) -> str:
     rendered, count = pattern.subn(replacement, text, count=1)
     if count != 1:
         raise ValueError("cannot project AGENTS.md registered rule IDs")
+    if selected is None:
+        return rendered
+    if not path_available(".ai/assistant/operation-index.json", selected):
+        rendered = rendered.replace(
+            OPERATION_ROUTING_PARAGRAPH,
+            KERNEL_OPERATION_ROUTING_PARAGRAPH,
+        )
+    if not path_available(".ai/assistant/ai-infrastructure-router.json", selected):
+        rendered = rendered.replace(
+            AI_INFRASTRUCTURE_ROUTING_SENTENCE,
+            KERNEL_AI_INFRASTRUCTURE_ROUTING_SENTENCE,
+        )
+    if not path_available(".ai/assistant/assistant-capabilities.json", selected):
+        rendered = rendered.replace(
+            ASSISTANT_CAPABILITY_PARAGRAPH,
+            KERNEL_ASSISTANT_CAPABILITY_PARAGRAPH,
+        )
     return rendered
 
 

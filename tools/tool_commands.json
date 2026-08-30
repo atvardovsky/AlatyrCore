@@ -84,14 +84,16 @@
       "script": "report_adapter_health.py",
       "purpose": "report compact read-only installed adapter health",
       "write_scope": "none",
-      "forbidden_arguments": ["--output"]
+      "default_arguments": ["--mode", "status"],
+      "forbidden_arguments": ["--output", "--mode"]
     },
     {
       "name": "doctor",
       "script": "report_adapter_health.py",
       "purpose": "report read-only installed adapter health and prioritized repair operations",
       "write_scope": "none",
-      "forbidden_arguments": ["--output"]
+      "default_arguments": ["--mode", "doctor"],
+      "forbidden_arguments": ["--output", "--mode"]
     },
     {
       "name": "migration-report",

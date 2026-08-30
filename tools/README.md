@@ -95,6 +95,7 @@ The stable command set is:
 - `support-diff`: read-only created/modified/removed support-surface report
 - `support-delta`: read-only support/product path delta for first-pass review
   routing; includes a deterministic delta digest for cheap rerun comparison
+- `change-cost`: read-only support/product file and line-change cost report
 - `support-costs`: read-only standing support-surface footprint report for a
   scaffold profile or installed target adapter
 - `impact`: bounded changed-path/fact traversal through accepted target
@@ -106,7 +107,7 @@ The stable command set is:
 - `validate-adapter`: optional explicit report output only
 - `approval-check`: read-only strict diff-to-approval scope check with optional
   change-package enforcement
-- `status`: compact read-only adapter health; no file output
+- `status`: compact read-only adapter health and counts; no file output
 - `doctor`: read-only adapter health with at most three repair operation routes;
   no file output (use `validate-adapter` for an explicit report file)
 - `migration-report`: optional explicit report output only
@@ -810,7 +811,9 @@ py -3 .\tools\check_subagent_delegation.py
 ## Scaffold Target Structure
 
 `scaffold_target_structure.py` copies placeholder target templates and
-framework files into an existing target directory. It is dry-run by default.
+framework files into an existing target directory. It is dry-run by default
+and uses the `kernel` support profile unless `--profile` selects a broader
+profile.
 Use `kernel` for the minimal bootstrap, routing, authorization, integrity,
 support-state, and final-evidence surface. Use `core` when durable
 engineering evidence and project-knowledge delivery are needed, `standard` for
@@ -818,9 +821,10 @@ common lifecycle/product operations, and `full` for the complete
 support-template set. Assistant-native bridge files remain opt-in. Use
 repeatable
 `--assistant-surface <id-or-alias>` selections only for clients the target
-actually uses; no native bridge is scaffolded by default. Native bridge
-selection currently requires `--profile full` because those compact bridges
-route to the complete assistant support layer. By default,
+actually uses; no native bridge or `.agents/skills/README.md` placeholder is
+scaffolded by default. Native bridge selection currently requires
+`--profile full` because those compact bridges route to the complete assistant
+support layer. By default,
 `--framework-pack matched` selects the
 `kernel`, `core`, `standard`, or `complete` portable pack that matches the
 support profile. Selective packs project their rule registry, ownership map, and file

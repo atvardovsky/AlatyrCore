@@ -48,6 +48,22 @@ class AdapterHealthReportTests(unittest.TestCase):
         self.assertIn("Blocking findings:", text)
         self.assertIn("MANIFEST_SCHEMA: invalid manifest [.ai/alatyr.yaml]", text)
 
+    def test_status_mode_omits_detailed_repair_findings(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            payload = findings_payload(
+                [Finding("error", "MANIFEST_SCHEMA", "invalid manifest", ".ai/alatyr.yaml")],
+                target=Path(directory),
+                strict_warnings=False,
+                installation_state="accepted",
+            )
+
+        text = render_text(payload, mode="status")
+
+        self.assertIn("Alatyr adapter health: blocked", text)
+        self.assertIn("Repair operations: run doctor for prioritized repair routes", text)
+        self.assertIn("Finding details: run doctor for prioritized findings", text)
+        self.assertNotIn("Blocking findings:", text)
+
 
 if __name__ == "__main__":
     unittest.main()

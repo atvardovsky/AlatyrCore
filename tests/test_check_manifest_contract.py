@@ -15,6 +15,7 @@ import check_all  # noqa: E402
 from check_check_manifest import (  # noqa: E402
     direct_local_tool_dependencies,
     evidence_contract_routing_failures,
+    tool_command_routing_failures,
 )
 
 
@@ -94,6 +95,41 @@ class CheckManifestContractTests(unittest.TestCase):
         checks = check_all.load_manifest()
 
         self.assertEqual(evidence_contract_routing_failures(checks), [])
+
+    def test_tool_command_scripts_require_source_check_routes(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            command_manifest = Path(directory) / "tools" / "tool_commands.json"
+            command_manifest.parent.mkdir()
+            command_manifest.write_text(
+                json.dumps(
+                    {
+                        "commands": [
+                            {
+                                "name": "example",
+                                "script": "unrouted_tool.py",
+                                "purpose": "fixture",
+                                "write_scope": "none",
+                            }
+                        ]
+                    }
+                ),
+                encoding="utf-8",
+            )
+            with patch(
+                "check_check_manifest.ROOT",
+                Path(directory),
+            ):
+                failures = tool_command_routing_failures(
+                    [manifest_entry(implementation_paths=["tools/check_all.py"])]
+                )
+
+        self.assertEqual(
+            failures,
+            [
+                "tool command script lacks implementation owner: tools/unrouted_tool.py",
+                "tool command script lacks trigger route: tools/unrouted_tool.py",
+            ],
+        )
 
 
 if __name__ == "__main__":

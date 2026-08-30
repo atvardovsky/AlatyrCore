@@ -278,7 +278,7 @@ assistant surface is supported or bridge behavior may differ.
 Include `.ai/assistant/assistant-capabilities.json` as the compact runtime
 index. Store instruction loading, skills, tool-permission separation, rich
 diagram enums, ASCII baseline, delegation, client version, verification,
-expiry or review triggers, and evidence in one schema-2 record per installed
+expiry or review triggers, and evidence in one schema-3 record per installed
 assistant surface. Generate or check the index from those records. New source
 surfaces start unknown until exact-client target evidence is reviewed.
 

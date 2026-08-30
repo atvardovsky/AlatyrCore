@@ -4,6 +4,24 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.46 - 2026-08-30
+
+- Increased the framework version to `0.1.0-alpha.46` and target template
+  version to `42`; adapter schema version remains `38` because no installed
+  adapter schema fields changed.
+- Changed source scaffolding to default to the `kernel` support profile,
+  generate `.ai/support-state.json` after profile projection, and keep
+  omitted operation, capability, and AI-infrastructure routes out of projected
+  root instructions.
+- Added stable source-template provenance for committed generated template
+  artifacts so bootstrap, entry-packet, and support-state checks do not carry
+  stale local dirty-worktree evidence.
+- Fixed `change-cost --diff-ref` line accounting so pure working-tree or
+  staged changes from `HEAD` are not double counted.
+- Split `status` and `doctor` command behavior into compact health versus
+  repair-oriented read-only output, and added manifest routing coverage for
+  every stable `tools/alatyr.py` command script.
+
 ## 0.1.0-alpha.45 - 2026-08-30
 
 - Increased the framework version to `0.1.0-alpha.45` and target template

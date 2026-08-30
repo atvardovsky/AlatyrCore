@@ -61,6 +61,7 @@ FULL_ONLY_BRIDGES = {
     Path("GEMINI.md"),
     Path(".github/copilot-instructions.md"),
     Path(".github/prompts/gate-review.prompt.md"),
+    Path(".agents/skills/README.md"),
     Path(".cursor/rules/alatyr-core.mdc"),
     Path(".cursorrules"),
     Path(".roo/rules/alatyr-core.md"),
@@ -130,6 +131,13 @@ def main() -> int:
         if selected_zed_bridges != {Path(".rules")}:
             failures.append(
                 "Zed alias selection must add only the .rules native bridge"
+            )
+        selected_agents_bridges = FULL_ONLY_BRIDGES & project_assistant_bridges(
+            full, resolve_assistant_surfaces(["agents"])
+        )
+        if selected_agents_bridges != {Path(".agents/skills/README.md")}:
+            failures.append(
+                "AGENTS-aware surface selection must add only .agents/skills/README.md"
             )
         try:
             project_assistant_bridges(

@@ -43,7 +43,14 @@ def main() -> int:
         and isinstance(item.get("path"), str)
         and item["path"].startswith("templates/target/")
     }
-    known_paths = bridge_paths | {"AGENTS.md"}
+    optional_support_paths = {
+        relpath
+        for surface in surface_data.get("surfaces", [])
+        if isinstance(surface, dict)
+        for relpath in surface.get("optional_support_paths", [])
+        if isinstance(relpath, str)
+    }
+    known_paths = bridge_paths | optional_support_paths | {"AGENTS.md"}
     seen_ids: set[str] = set()
     seen_aliases: set[str] = set()
 
@@ -77,6 +84,21 @@ def main() -> int:
             if not isinstance(paths, list) or not paths:
                 failures.append(f"assistant surface {surface_id} has no bridge paths")
                 paths = []
+            support_paths = surface.get("optional_support_paths", [])
+            if not isinstance(support_paths, list):
+                failures.append(
+                    f"assistant surface {surface_id} optional_support_paths must be a list"
+                )
+                support_paths = []
+            for relpath in support_paths:
+                if not isinstance(relpath, str) or relpath not in known_paths:
+                    failures.append(
+                        f"assistant surface {surface_id} has untracked optional support {relpath}"
+                    )
+                elif not (TARGET / relpath).is_file():
+                    failures.append(
+                        f"assistant surface optional support is missing: {relpath}"
+                    )
             for relpath in paths:
                 if relpath not in known_paths:
                     failures.append(

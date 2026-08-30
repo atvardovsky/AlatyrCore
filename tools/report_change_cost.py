@@ -66,7 +66,7 @@ def changed_paths(target: Path, diff_ref: str | None) -> list[str] | None:
     return sorted(changed)
 
 
-def git_numstat(target: Path, *arguments: str) -> dict[str, dict[str, int]]:
+def git_numstat(target: Path, *arguments: str) -> dict[str, dict[str, int]] | None:
     result = subprocess.run(
         ["git", "diff", "--numstat", "-z", *arguments],
         cwd=target,
@@ -75,7 +75,7 @@ def git_numstat(target: Path, *arguments: str) -> dict[str, dict[str, int]]:
         stderr=subprocess.DEVNULL,
     )
     if result.returncode != 0:
-        return {}
+        return None
     values = result.stdout.split(b"\0")
     totals: dict[str, dict[str, int]] = {}
     index = 0
@@ -127,18 +127,28 @@ def count_untracked_lines(target: Path, paths: list[str]) -> dict[str, dict[str,
 
 def line_changes(target: Path, diff_ref: str | None, paths: list[str]) -> dict[str, dict[str, int]]:
     totals: dict[str, dict[str, int]] = {}
+    include_index_and_worktree = True
     if diff_ref:
-        for comparison in (f"{diff_ref}...HEAD", diff_ref):
-            base = git_numstat(target, comparison)
-            if base:
-                for path, change in base.items():
-                    totals[path] = change.copy()
-                break
-    for arguments in [(), ("--cached",)]:
-        for path, change in git_numstat(target, *arguments).items():
+        base = git_numstat(target, f"{diff_ref}...HEAD")
+        if base is None:
+            base = git_numstat(target, diff_ref)
+            include_index_and_worktree = False
+        if base is not None:
+            for path, change in base.items():
+                totals[path] = change.copy()
+    if include_index_and_worktree:
+        for arguments in [(), ("--cached",)]:
+            diff = git_numstat(target, *arguments) or {}
+            for path, change in diff.items():
+                current = totals.setdefault(path, {"added": 0, "deleted": 0})
+                current["added"] += change["added"]
+                current["deleted"] += change["deleted"]
+    elif diff_ref:
+        diff = git_numstat(target, diff_ref) or {}
+        for path, change in diff.items():
             current = totals.setdefault(path, {"added": 0, "deleted": 0})
-            current["added"] += change["added"]
-            current["deleted"] += change["deleted"]
+            current["added"] = max(current["added"], change["added"])
+            current["deleted"] = max(current["deleted"], change["deleted"])
     untracked = sorted(set(paths) - set(totals))
     for path, change in count_untracked_lines(target, untracked).items():
         totals[path] = change

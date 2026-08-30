@@ -275,7 +275,7 @@ In a typical target repository:
    profile descriptors, operation catalog and its checked compact index,
    context profiles, module profile, task-specific maturity profile, bridge
    capability matrix, generated assistant-capability index and installed-
-   surface schema-2 records, and target workflows/gates. For every selected
+   surface schema-3 records, and target workflows/gates. For every selected
    assistant, record the exact runtime, instruction entry path, competing
    sources, toggle/configuration state, observed loading, skills, client
    permissions, diagrams, delegation, and freshness evidence. Keep unknown

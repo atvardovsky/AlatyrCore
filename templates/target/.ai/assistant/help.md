@@ -12,7 +12,8 @@ Compact operation index: `.ai/assistant/operation-index.json`.
 Canonical operation catalog: `.ai/assistant/operation-catalog.json`.
 
 Send `Alatyr` by itself for compact adapter state and up to three relevant
-actions. Send `Alatyr status` or `Alatyr doctor` for read-only adapter health.
+actions. Send `Alatyr status` for compact read-only adapter health. Send
+`Alatyr doctor` for read-only adapter health with prioritized repair routes.
 A clear ordinary task is routed automatically; an operation ID is not required.
 
 Default routing:
