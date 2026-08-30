@@ -12,7 +12,7 @@
     "bootstrap": {
       "max_files": 2,
       "max_words": 1800,
-      "soft_max_words": 1700
+      "soft_max_words": 1750
     },
     "profile_default": {
       "max_files": 12,

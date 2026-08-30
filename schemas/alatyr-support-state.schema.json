@@ -8,6 +8,7 @@
     "schema_version",
     "state_kind",
     "digest_contract",
+    "generated_by",
     "policy",
     "policy_digest",
     "source_revision",
@@ -19,6 +20,47 @@
     "schema_version": {"const": 1},
     "state_kind": {"const": "target-support-state"},
     "digest_contract": {"const": "alatyr-support-state-v1"},
+    "generated_by": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "tool",
+        "source_revision",
+        "source_worktree_state",
+        "source_dirty_paths",
+        "target_manifest",
+        "target_manifest_digest",
+        "target_worktree_state",
+        "target_dirty_paths",
+        "framework_version",
+        "adapter_schema_version",
+        "template_version"
+      ],
+      "properties": {
+        "schema_version": {"const": 1},
+        "tool": {"type": "string", "minLength": 1},
+        "source_revision": {"type": "string", "minLength": 1},
+        "source_worktree_state": {"enum": ["clean", "dirty"]},
+        "source_dirty_paths": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        },
+        "target_manifest": {"const": ".ai/alatyr.yaml"},
+        "target_manifest_digest": {
+          "type": "string",
+          "pattern": "^(sha256:[0-9a-f]{64}|unavailable)$"
+        },
+        "target_worktree_state": {"enum": ["clean", "dirty"]},
+        "target_dirty_paths": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        },
+        "framework_version": {"type": "string", "minLength": 1},
+        "adapter_schema_version": {"type": "string", "minLength": 1},
+        "template_version": {"type": "string", "minLength": 1}
+      }
+    },
     "policy": {"const": ".ai/project/support-policy.json"},
     "policy_digest": {"type": "string", "minLength": 1},
     "source_revision": {"type": "string", "minLength": 1},

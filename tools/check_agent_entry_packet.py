@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any
 
 from agent_entry_packet import PACKET_PATH, build_from_target, render
+from target_tool_compat import generated_json_equivalent, generation_provenance_errors
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -24,7 +25,12 @@ def load(path: Path) -> dict[str, Any]:
     return data
 
 
-def check_packet(packet: dict[str, Any], *, operation_index_expected: bool) -> list[str]:
+def check_packet(
+    packet: dict[str, Any],
+    *,
+    operation_index_expected: bool,
+    expected_tool: str | None = "render_target_entry_packet.py",
+) -> list[str]:
     failures: list[str] = []
     if packet.get("schema_version") != 1:
         failures.append("entry packet schema_version must be 1")
@@ -32,6 +38,12 @@ def check_packet(packet: dict[str, Any], *, operation_index_expected: bool) -> l
         failures.append("entry packet kind must be target-agent-entry-packet")
     if packet.get("path") != PACKET_PATH.as_posix():
         failures.append("entry packet path is invalid")
+    failures.extend(
+        generation_provenance_errors(
+            packet.get("generated_by"),
+            expected_tool=expected_tool,
+        )
+    )
 
     required_sources = {
         "manifest",
@@ -137,8 +149,8 @@ def check_packet(packet: dict[str, Any], *, operation_index_expected: bool) -> l
         failures.append("entry packet must include support_delta_first")
     else:
         for required in [
-            "tools/report_support_delta.py",
-            "tools/plan_support_impact.py",
+            "tools/alatyr.py support-delta",
+            "tools/alatyr.py impact",
             ".ai/support-state.json",
         ]:
             if required not in json.dumps(delta, sort_keys=True):
@@ -169,7 +181,10 @@ def main() -> int:
         packet_path = TARGET / PACKET_PATH
         if not packet_path.is_file():
             failures.append(f"missing {packet_path.relative_to(ROOT)}")
-        elif packet_path.read_text(encoding="utf-8") != expected:
+        elif not generated_json_equivalent(
+            expected,
+            packet_path.read_text(encoding="utf-8"),
+        ):
             failures.append("entry packet differs from canonical source projection")
         packet = json.loads(expected)
         failures.extend(check_packet(packet, operation_index_expected=True))
@@ -200,7 +215,13 @@ def main() -> int:
                 )
             else:
                 packet = load(target / PACKET_PATH)
-                failures.extend(check_packet(packet, operation_index_expected=False))
+                failures.extend(
+                    check_packet(
+                        packet,
+                        operation_index_expected=False,
+                        expected_tool="scaffold_target_structure.py",
+                    )
+                )
                 gates = load(target / ".ai/assistant/gates/index.json")
                 gate_entries = gates.get("gates")
                 if not isinstance(gate_entries, dict):

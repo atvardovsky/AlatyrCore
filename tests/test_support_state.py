@@ -85,7 +85,20 @@ class SupportStateTests(unittest.TestCase):
         before = build_support_state(target)
         after = json.loads(render_state(before))
         after["source_revision"] = "different-revision"
+        after["generated_by"]["source_revision"] = "different-source"
+        after["generated_by"]["source_worktree_state"] = "dirty"
+        after["generated_by"]["source_dirty_paths"] = ["tools/support_state.py"]
         self.assertTrue(state_is_current(before, after))
+
+    def test_state_records_generation_provenance(self) -> None:
+        target = self.make_target()
+        state = build_support_state(target)
+        generated_by = state["generated_by"]
+        self.assertEqual(generated_by["schema_version"], 1)
+        self.assertEqual(generated_by["tool"], "snapshot_target_support.py")
+        self.assertEqual(generated_by["target_manifest"], ".ai/alatyr.yaml")
+        self.assertIn(generated_by["source_worktree_state"], {"clean", "dirty"})
+        self.assertIn(generated_by["target_worktree_state"], {"clean", "dirty"})
 
     def test_unclassified_file_fails_closed(self) -> None:
         target = self.make_target()

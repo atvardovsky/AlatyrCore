@@ -10,6 +10,7 @@ from typing import Any
 import yaml
 
 from context_catalog import load_codebook
+from target_tool_compat import generation_provenance
 
 
 BOOTSTRAP_PATH = Path(".ai/assistant/bootstrap-index.json")
@@ -72,6 +73,7 @@ def build_bootstrap_index(
     *,
     semantic_index_text: str | None = None,
     semantic_terms: dict[str, dict[str, Any]] | None = None,
+    generated_by: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Return a deterministic routing projection from canonical target sources."""
 
@@ -124,6 +126,7 @@ def build_bootstrap_index(
     return {
         "schema_version": 1,
         "index_kind": "target-bootstrap-index",
+        "generated_by": generated_by or {},
         "derived_from": derived_from,
         "installation": {
             "framework_version": _string(framework.get("version")),
@@ -206,6 +209,10 @@ def build_from_target(target: Path) -> dict[str, Any]:
         texts["context_router"],
         semantic_index_text=semantic_index.read_text(encoding="utf-8"),
         semantic_terms=semantic_terms,
+        generated_by=generation_provenance(
+            target,
+            tool_name="render_target_bootstrap_index.py",
+        ),
     )
 
 

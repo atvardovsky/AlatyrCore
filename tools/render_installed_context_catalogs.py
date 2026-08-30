@@ -14,6 +14,7 @@ from render_context_catalogs import (
     build_framework_catalog_contents,
     framework_base_files,
 )
+from target_tool_compat import assert_write_compatible
 
 
 def expected_outputs(target: Path) -> dict[Path, str]:
@@ -67,6 +68,11 @@ def main() -> int:
         action="store_true",
         help="Regenerate adapter-owned catalog files; otherwise check only.",
     )
+    parser.add_argument(
+        "--migration-staging",
+        action="store_true",
+        help="Allow writes while an explicit target adapter migration is in progress.",
+    )
     args = parser.parse_args()
     target = args.target.resolve()
     try:
@@ -82,6 +88,15 @@ def main() -> int:
         if not path.is_file() or path.read_text(encoding="utf-8") != text
     ]
     if args.write:
+        try:
+            assert_write_compatible(
+                target,
+                tool_name="render_installed_context_catalogs.py",
+                migration_staging=args.migration_staging,
+            )
+        except (OSError, ValueError) as exc:
+            print(f"FAIL: {exc}", file=sys.stderr)
+            return 2
         for path in stale:
             path.unlink()
         for path, text in expected.items():

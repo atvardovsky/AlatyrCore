@@ -11,6 +11,7 @@ from pathlib import Path, PurePosixPath
 from typing import Any, Iterable
 
 from evidence_contract import canonical_worktree_entries, digest_entries
+from target_tool_compat import generation_provenance
 
 
 SCHEMA_VERSION = 1
@@ -290,6 +291,10 @@ def build_support_state(target: Path, policy: dict[str, Any] | None = None) -> d
         "schema_version": SCHEMA_VERSION,
         "state_kind": STATE_KIND,
         "digest_contract": DIGEST_CONTRACT,
+        "generated_by": generation_provenance(
+            target,
+            tool_name="snapshot_target_support.py",
+        ),
         "policy": POLICY_PATH,
         "policy_digest": f"sha256:{policy_digest}",
         "source_revision": _git_revision(target),

@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1127
+Catalog entries: 1130
 
 ## Families
 
@@ -20,7 +20,7 @@ Catalog entries: 1127
 - `ASSISTANT`: 15 codes.
 - `AUTHORIZATION`: 16 codes.
 - `BACKUP`: 1 codes.
-- `BOOTSTRAP`: 8 codes.
+- `BOOTSTRAP`: 9 codes.
 - `CAPABILITY`: 7 codes.
 - `CODEDOC`: 32 codes.
 - `CONSISTENCY`: 37 codes.
@@ -33,7 +33,7 @@ Catalog entries: 1127
 - `DIFF`: 3 codes.
 - `ENABLED`: 1 codes.
 - `ENGINEERING`: 41 codes.
-- `ENTRY`: 8 codes.
+- `ENTRY`: 9 codes.
 - `EVIDENCE`: 1 codes.
 - `EXTENSION`: 65 codes.
 - `FRAMEWORK`: 16 codes.
@@ -54,7 +54,7 @@ Catalog entries: 1127
 - `ROUTING`: 2 codes.
 - `RULE`: 1 codes.
 - `STALE`: 2 codes.
-- `SUPPORT`: 10 codes.
+- `SUPPORT`: 11 codes.
 - `TARGET`: 6 codes.
 - `TDD`: 44 codes.
 - `TEAM`: 98 codes.
@@ -300,6 +300,8 @@ Catalog entries: 1127
 - `BOOTSTRAP_INDEX_INVALID`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `BOOTSTRAP_INDEX_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `BOOTSTRAP_INDEX_PROVENANCE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `BOOTSTRAP_INDEX_REFERENCE_MISSING`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
@@ -1159,6 +1161,8 @@ Catalog entries: 1127
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ENTRY_PACKET_PROFILE_RECOMMENDATION`
   Level: warning. Source: `tools/validate_target_adapter.py`.
+- `ENTRY_PACKET_PROVENANCE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `ENTRY_PACKET_SCHEMA`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ENTRY_PACKET_STALE`
@@ -1830,7 +1834,7 @@ Catalog entries: 1127
 - `STALE_CHECKER_MISSING_CLAIM`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `STALE_CHECKER_REFERENCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: configured. Source: `tools/validate_target_adapter.py`.
 - `SUPPORT_GENERATION_CURRENT`
   Level: info. Source: `tools/target_adapter_validation/support_generation.py`.
 - `SUPPORT_GENERATION_INDEX_STALE`
@@ -1847,6 +1851,8 @@ Catalog entries: 1127
   Level: error. Source: `tools/target_adapter_validation/support_state.py`.
 - `SUPPORT_STATE_CURRENT`
   Level: info. Source: `tools/target_adapter_validation/support_state.py`.
+- `SUPPORT_STATE_PROVENANCE`
+  Level: error. Source: `tools/target_adapter_validation/support_state.py`.
 - `SUPPORT_STATE_STALE`
   Level: configured. Source: `tools/target_adapter_validation/support_state.py`.
 - `SUPPORT_STATE_UNRESOLVED`

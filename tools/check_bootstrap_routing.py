@@ -17,6 +17,7 @@ from agent_entry_packet import (
     render as render_entry_packet,
 )
 from bootstrap_index import BOOTSTRAP_PATH, build_from_target, render
+from target_tool_compat import generated_json_equivalent, generation_provenance_errors
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -50,10 +51,19 @@ def main() -> int:
     bootstrap_path = TARGET / BOOTSTRAP_PATH
     if not bootstrap_path.is_file():
         failures.append(f"missing generated bootstrap index: {BOOTSTRAP_PATH.as_posix()}")
-    elif bootstrap_path.read_text(encoding="utf-8") != expected:
+    elif not generated_json_equivalent(
+        expected,
+        bootstrap_path.read_text(encoding="utf-8"),
+    ):
         failures.append("bootstrap index differs from its canonical source projection")
     else:
         bootstrap_index = load_object(bootstrap_path)
+        failures.extend(
+            generation_provenance_errors(
+                bootstrap_index.get("generated_by"),
+                expected_tool="render_target_bootstrap_index.py",
+            )
+        )
         entry_packet = bootstrap_index.get("agent_entry_packet")
         if (
             not isinstance(entry_packet, dict)
@@ -70,7 +80,10 @@ def main() -> int:
         expected_packet = ""
     if not packet_path.is_file():
         failures.append(f"missing generated agent entry packet: {PACKET_PATH.as_posix()}")
-    elif expected_packet and packet_path.read_text(encoding="utf-8") != expected_packet:
+    elif expected_packet and not generated_json_equivalent(
+        expected_packet,
+        packet_path.read_text(encoding="utf-8"),
+    ):
         failures.append("agent entry packet differs from its canonical source projection")
 
     bootstrap = router.get("bootstrap_context")
@@ -172,9 +185,15 @@ def main() -> int:
             except (OSError, ValueError, json.JSONDecodeError) as exc:
                 failures.append(f"scaffold bootstrap sources are invalid: {exc}")
             else:
-                if (target / BOOTSTRAP_PATH).read_text(encoding="utf-8") != scaffold_expected:
+                if not generated_json_equivalent(
+                    scaffold_expected,
+                    (target / BOOTSTRAP_PATH).read_text(encoding="utf-8"),
+                ):
                     failures.append("core scaffold bootstrap is not deterministic")
-                if (target / PACKET_PATH).read_text(encoding="utf-8") != scaffold_packet_expected:
+                if not generated_json_equivalent(
+                    scaffold_packet_expected,
+                    (target / PACKET_PATH).read_text(encoding="utf-8"),
+                ):
                     failures.append("core scaffold entry packet is not deterministic")
 
     if failures:

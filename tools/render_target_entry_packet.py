@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 
 from agent_entry_packet import PACKET_PATH, build_from_target, render
+from target_tool_compat import assert_write_compatible, generated_json_equivalent
 
 
 def main() -> int:
@@ -17,6 +18,11 @@ def main() -> int:
     mode.add_argument("--write", action="store_true")
     mode.add_argument("--check", action="store_true")
     mode.add_argument("--stdout", action="store_true")
+    parser.add_argument(
+        "--migration-staging",
+        action="store_true",
+        help="Allow writes while an explicit target adapter migration is in progress.",
+    )
     args = parser.parse_args()
 
     target = args.target.resolve()
@@ -28,6 +34,15 @@ def main() -> int:
 
     output = target / PACKET_PATH
     if args.write:
+        try:
+            assert_write_compatible(
+                target,
+                tool_name="render_target_entry_packet.py",
+                migration_staging=args.migration_staging,
+            )
+        except (OSError, ValueError) as exc:
+            print(f"FAIL: {exc}", file=sys.stderr)
+            return 2
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_bytes(expected.encode("utf-8"))
         print(f"Wrote agent entry packet: {output}")
@@ -38,7 +53,7 @@ def main() -> int:
         except OSError as exc:
             print(f"FAIL: cannot read {output}: {exc}", file=sys.stderr)
             return 1
-        if actual != expected.encode("utf-8"):
+        if not generated_json_equivalent(expected, actual.decode("utf-8")):
             print(f"FAIL: agent entry packet is stale: {output}", file=sys.stderr)
             return 1
         print(f"OK: agent entry packet matches canonical sources: {output}")

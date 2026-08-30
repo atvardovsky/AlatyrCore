@@ -724,7 +724,8 @@
         "tools/check_context_catalogs.py",
         "tools/context_catalog.py",
         "tools/render_context_catalogs.py",
-        "tools/render_installed_context_catalogs.py"
+        "tools/render_installed_context_catalogs.py",
+        "tools/target_tool_compat.py"
       ],
       "trigger_paths": [
         "framework/**",
@@ -742,7 +743,8 @@
         "tools/check_context_catalogs.py",
         "tools/context_catalog.py",
         "tools/render_context_catalogs.py",
-        "tools/render_installed_context_catalogs.py"
+        "tools/render_installed_context_catalogs.py",
+        "tools/target_tool_compat.py"
       ]
     },
     {
@@ -778,7 +780,8 @@
         "tools/check_bootstrap_routing.py",
         "tools/render_target_entry_packet.py",
         "tools/render_target_bootstrap_index.py",
-        "tools/scaffold*.py"
+        "tools/scaffold*.py",
+        "tools/target_tool_compat.py"
       ],
       "trigger_paths": [
         "templates/target/.ai/README.md",
@@ -796,7 +799,8 @@
         "tools/check_bootstrap_routing.py",
         "tools/render_target_entry_packet.py",
         "tools/render_target_bootstrap_index.py",
-        "tools/scaffold*.py"
+        "tools/scaffold*.py",
+        "tools/target_tool_compat.py"
       ]
     },
     {
@@ -827,7 +831,8 @@
         "tools/agent_entry_packet.py",
         "tools/check_agent_entry_packet.py",
         "tools/render_target_entry_packet.py",
-        "tools/scaffold*.py"
+        "tools/scaffold*.py",
+        "tools/target_tool_compat.py"
       ],
       "trigger_paths": [
         "templates/target/.ai/alatyr.yaml",
@@ -840,7 +845,8 @@
         "tools/agent_entry_packet.py",
         "tools/check_agent_entry_packet.py",
         "tools/render_target_entry_packet.py",
-        "tools/scaffold*.py"
+        "tools/scaffold*.py",
+        "tools/target_tool_compat.py"
       ]
     },
     {
@@ -1537,7 +1543,8 @@
         "tools/support_state.py",
         "tools/target_adapter_validation/consistency_map.py",
         "tools/target_adapter_validation/support_generation.py",
-        "tools/target_adapter_validation/support_state.py"
+        "tools/target_adapter_validation/support_state.py",
+        "tools/target_tool_compat.py"
       ],
       "trigger_paths": [
         "framework/support-information.md",
@@ -1568,7 +1575,8 @@
         "tools/support_state.py",
         "tools/target_adapter_validation/consistency_map.py",
         "tools/target_adapter_validation/support_generation.py",
-        "tools/target_adapter_validation/support_state.py"
+        "tools/target_adapter_validation/support_state.py",
+        "tools/target_tool_compat.py"
       ]
     },
     {
@@ -1965,6 +1973,8 @@
       "command": [
         "tools/run_conformance_scaffold.py"
       ],
+      "resource_class": "heavy",
+      "timeout_seconds": 300,
       "depends_on": [
         "scaffold-profiles",
         "target-adapter-validator"
@@ -1993,6 +2003,8 @@
       "command": [
         "tools/check_lifecycle_conformance.py"
       ],
+      "resource_class": "heavy",
+      "timeout_seconds": 300,
       "profiles": [
         "full",
         "platform"
@@ -2175,14 +2187,16 @@
         "tools/check_all.py",
         "tools/check_source_unit_tests.py",
         "tools/evidence_contract.py",
-        "tools/source_state.py"
+        "tools/source_state.py",
+        "tools/target_tool_compat.py"
       ],
       "trigger_paths": [
         "tests/**",
         "tools/check_all.py",
         "tools/check_source_unit_tests.py",
         "tools/evidence_contract.py",
-        "tools/source_state.py"
+        "tools/source_state.py",
+        "tools/target_tool_compat.py"
       ],
       "resource_class": "heavy",
       "timeout_seconds": 300

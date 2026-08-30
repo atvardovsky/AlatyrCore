@@ -56,6 +56,7 @@ from framework_packaging import (
 )
 from context_catalog import load_codebook
 from render_context_catalogs import INDEX_NAME, build_directory_catalog_contents
+from target_tool_compat import generation_provenance_from_manifest_text
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -307,6 +308,7 @@ def projected_template_content(
     framework_pack: str,
     selected: set[Path],
     context: ProjectionContext,
+    target: Path,
 ) -> str | None:
     src = TEMPLATE_ROOT / rel
     if rel in context.context_catalogs:
@@ -396,6 +398,11 @@ def projected_template_content(
                 operation_catalog_text=operation_catalog_text,
                 target=TEMPLATE_ROOT,
                 profile_descriptors=profile_descriptors,
+                generated_by=generation_provenance_from_manifest_text(
+                    target,
+                    tool_name="scaffold_target_structure.py",
+                    manifest_text=manifest_text,
+                ),
             )
         )
     if rel == Path(".ai/assistant/bootstrap-index.json"):
@@ -433,6 +440,11 @@ def projected_template_content(
                 router_text,
                 semantic_index_text=semantic_index_text,
                 semantic_terms=semantic_terms,
+                generated_by=generation_provenance_from_manifest_text(
+                    target,
+                    tool_name="scaffold_target_structure.py",
+                    manifest_text=manifest_text,
+                ),
             )
         )
     if rel == Path(".ai/assistant/ai-infrastructure-router.json"):
@@ -485,7 +497,12 @@ def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
         if rel.name == INDEX_NAME:
             continue
         content = projected_template_content(
-            rel, profile, framework_pack, selected, initial_context
+            rel,
+            profile,
+            framework_pack,
+            selected,
+            initial_context,
+            target,
         )
         if content is not None:
             projected_target_contents[rel] = content
@@ -524,7 +541,12 @@ def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
             dst,
             write=args.write,
             content=projected_template_content(
-                rel, profile, framework_pack, selected, projection_context
+                rel,
+                profile,
+                framework_pack,
+                selected,
+                projection_context,
+                target,
             ),
         )
         actions.append(

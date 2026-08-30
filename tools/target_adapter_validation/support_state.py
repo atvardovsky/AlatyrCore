@@ -12,6 +12,7 @@ from support_state import (
     state_is_current,
     validate_policy,
 )
+from target_tool_compat import generation_provenance_errors
 from target_adapter_validation.capability import CapabilityValidationContext
 from target_validation_support import is_placeholder
 
@@ -42,6 +43,11 @@ def validate_support_state(
             STATE_PATH,
         )
         return
+    for error in generation_provenance_errors(
+        state.get("generated_by"),
+        expected_tool="snapshot_target_support.py",
+    ):
+        context.error("SUPPORT_STATE_PROVENANCE", error, STATE_PATH)
     placeholder_state = any(
         is_placeholder(state.get(field))
         for field in ["policy_digest", "source_revision", "root_digest"]

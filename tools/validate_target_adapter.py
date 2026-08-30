@@ -94,6 +94,10 @@ from target_adapter_validation.router_costs import (
     validate_budget_shape,
     validate_installed_costs,
 )
+from target_tool_compat import (
+    generated_json_equivalent,
+    generation_provenance_errors,
+)
 ROOT = Path(__file__).resolve().parents[1]
 ADAPTER_MANIFEST_SCHEMA = ROOT / "schemas" / "alatyr-adapter.schema.json"
 
@@ -1596,7 +1600,11 @@ class Validator:
                 relpath,
             )
             return
-        if actual != expected:
+        for error in generation_provenance_errors(
+            actual.get("generated_by"),
+        ):
+            self.error("BOOTSTRAP_INDEX_PROVENANCE", error, relpath)
+        if not generated_json_equivalent(json.dumps(expected), json.dumps(actual)):
             self.error(
                 "BOOTSTRAP_INDEX_DRIFT",
                 "compact bootstrap index differs from its canonical manifest, project map, or router sources",
@@ -1626,7 +1634,11 @@ class Validator:
         except (OSError, UnicodeError, ValueError, json.JSONDecodeError) as exc:
             self.error("ENTRY_PACKET_INVALID", str(exc), relpath)
             return
-        if actual_text != expected_text:
+        for error in generation_provenance_errors(
+            actual.get("generated_by"),
+        ):
+            self.error("ENTRY_PACKET_PROVENANCE", error, relpath)
+        if not generated_json_equivalent(expected_text, actual_text):
             self.error(
                 "ENTRY_PACKET_STALE",
                 "compact agent entry packet differs from canonical target sources",
@@ -1655,7 +1667,7 @@ class Validator:
                 relpath,
             )
         delta = actual.get("support_delta_first")
-        if not isinstance(delta, dict) or "tools/report_support_delta.py" not in json.dumps(
+        if not isinstance(delta, dict) or "tools/alatyr.py support-delta" not in json.dumps(
             delta,
             sort_keys=True,
         ):
@@ -8245,7 +8257,8 @@ class Validator:
             if CHECKER_REFERENCE_RE.search(self.read_text(path))
         ]
         if referenced and not checker_exists:
-            self.error(
+            report = self.warn if self.allow_placeholders else self.error
+            report(
                 "STALE_CHECKER_REFERENCE",
                 "adapter references an Alatyr checker but no checker command or file was found",
             )

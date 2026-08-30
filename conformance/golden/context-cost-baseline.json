@@ -1,9 +1,9 @@
 {
   "bootstrap": {
-    "bytes": 18517,
-    "characters": 18517,
+    "bytes": 21860,
+    "characters": 21860,
     "declared_files": 2,
-    "estimated_tokens_4_chars": 4630,
+    "estimated_tokens_4_chars": 5465,
     "missing_paths": [],
     "portable_paths": [],
     "portable_words": 0,
@@ -16,15 +16,15 @@
       "AGENTS.md",
       ".ai/assistant/bootstrap-index.json"
     ],
-    "target_words": 1647,
+    "target_words": 1738,
     "unresolved_references": [],
-    "words": 1647
+    "words": 1738
   },
   "budgets": {
     "bootstrap": {
       "max_files": 2,
       "max_words": 1800,
-      "soft_max_words": 1700
+      "soft_max_words": 1750
     },
     "on_exceed": "load required safety and owner evidence, record expansion reason, measured context, and intentionally omitted context",
     "profile_default": {

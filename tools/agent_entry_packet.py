@@ -9,6 +9,8 @@ from typing import Any
 
 import yaml
 
+from target_tool_compat import generation_provenance
+
 
 PACKET_PATH = Path(".ai/assistant/entry-packet.json")
 SOURCE_PATHS = {
@@ -181,6 +183,7 @@ def build_agent_entry_packet(
     operation_catalog_text: str | None = None,
     target: Path | None = None,
     profile_descriptors: dict[str, dict[str, Any]] | None = None,
+    generated_by: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Return a deterministic compact routing packet from target sources."""
 
@@ -219,6 +222,7 @@ def build_agent_entry_packet(
         "schema_version": 1,
         "packet_kind": "target-agent-entry-packet",
         "path": PACKET_PATH.as_posix(),
+        "generated_by": generated_by or {},
         "derived_from": _derived_from(
             {
                 "manifest": manifest_text,
@@ -304,13 +308,13 @@ def build_agent_entry_packet(
         "support_delta_first": {
             "policy": SOURCE_PATHS["support_policy"].as_posix(),
             "state": ".ai/support-state.json",
-            "support_diff_tool": "tools/report_support_diff.py --target <target-repo>",
+            "support_diff_tool": "tools/alatyr.py support-diff --target <target-repo>",
             "support_delta_tool": (
-                "tools/report_support_delta.py --target <target-repo> "
+                "tools/alatyr.py support-delta --target <target-repo> "
                 "--diff-ref <base-ref>"
             ),
             "impact_plan_tool": (
-                "tools/plan_support_impact.py --target <target-repo> "
+                "tools/alatyr.py impact --target <target-repo> "
                 "--diff-ref <base-ref>"
             ),
             "routing_policy": (
@@ -352,6 +356,10 @@ def build_from_target(target: Path) -> dict[str, Any]:
         operation_index_text=optional_texts.get("operation_index"),
         operation_catalog_text=optional_texts.get("operation_catalog"),
         target=target,
+        generated_by=generation_provenance(
+            target,
+            tool_name="render_target_entry_packet.py",
+        ),
     )
 
 

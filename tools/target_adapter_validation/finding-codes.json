@@ -49,7 +49,7 @@
     },
     {
       "id": "BOOTSTRAP",
-      "code_count": 8
+      "code_count": 9
     },
     {
       "id": "CAPABILITY",
@@ -101,7 +101,7 @@
     },
     {
       "id": "ENTRY",
-      "code_count": 8
+      "code_count": 9
     },
     {
       "id": "EVIDENCE",
@@ -185,7 +185,7 @@
     },
     {
       "id": "SUPPORT",
-      "code_count": 10
+      "code_count": 11
     },
     {
       "id": "TARGET",
@@ -1274,6 +1274,15 @@
     },
     {
       "code": "BOOTSTRAP_INDEX_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "BOOTSTRAP_INDEX_PROVENANCE",
       "levels": [
         "error"
       ],
@@ -5143,6 +5152,15 @@
       ]
     },
     {
+      "code": "ENTRY_PACKET_PROVENANCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "ENTRY_PACKET_SCHEMA",
       "levels": [
         "error"
@@ -8161,7 +8179,7 @@
     {
       "code": "STALE_CHECKER_REFERENCE",
       "levels": [
-        "error"
+        "configured"
       ],
       "sources": [
         "tools/validate_target_adapter.py"
@@ -8234,6 +8252,15 @@
       "code": "SUPPORT_STATE_CURRENT",
       "levels": [
         "info"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/support_state.py"
+      ]
+    },
+    {
+      "code": "SUPPORT_STATE_PROVENANCE",
+      "levels": [
+        "error"
       ],
       "sources": [
         "tools/target_adapter_validation/support_state.py"

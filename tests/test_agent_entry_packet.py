@@ -15,10 +15,10 @@ from agent_entry_packet import build_agent_entry_packet  # noqa: E402
 class AgentEntryPacketTests(unittest.TestCase):
     def base_inputs(self) -> dict[str, str]:
         manifest = """\
-schema_version: 34
+schema_version: 35
 framework:
-  version: 0.1.0-alpha.36
-  template_version: 34
+  version: 0.1.0-alpha.37
+  template_version: 35
   pack: kernel
 installation:
   support_profile: kernel
@@ -127,7 +127,7 @@ modules:
         self.assertEqual(operation["allowed_actions"], ["read-only", "code-and-tests"])
         self.assertIn("read-only", packet["authorization"]["allowed_action_modes"])
         self.assertIn(
-            "tools/report_support_delta.py",
+            "tools/alatyr.py support-delta",
             packet["support_delta_first"]["support_delta_tool"],
         )
 

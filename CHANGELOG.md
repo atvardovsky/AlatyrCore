@@ -4,6 +4,23 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.37 - 2026-08-30
+
+- Increased the framework version to `0.1.0-alpha.37`, adapter schema version
+  to `35`, and target template version to `35` for generated adapter-surface
+  provenance, version-aware target-mutating source tools, and stable
+  `tools/alatyr.py` support-command routing.
+- Added shared target-tool compatibility checks so source renderers refuse to
+  mutate installed adapters with resolved framework, schema, or template
+  version drift unless an explicit migration-staging operation is in progress.
+- Added `generated_by` provenance to generated bootstrap, entry-packet, and
+  support-state surfaces while keeping freshness comparisons stable across
+  source commit changes.
+- Updated target adapter validation and conformance checks to verify generated
+  provenance, tolerate checker references as migration-staging warnings for
+  placeholder installs, and preserve strict acceptance behavior for real
+  adapters.
+
 ## 0.1.0-alpha.36 - 2026-08-30
 
 - Increased the framework version to `0.1.0-alpha.36`, adapter schema version

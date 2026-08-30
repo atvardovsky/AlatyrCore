@@ -16,6 +16,7 @@ from support_state import (
     state_differences,
     state_is_current,
 )
+from target_tool_compat import assert_write_compatible
 
 
 def main() -> int:
@@ -26,6 +27,11 @@ def main() -> int:
         action="store_true",
         help="Refresh the generated state; otherwise perform a read-only check.",
     )
+    parser.add_argument(
+        "--migration-staging",
+        action="store_true",
+        help="Allow writes while an explicit target adapter migration is in progress.",
+    )
     args = parser.parse_args()
     target = args.target.resolve()
     try:
@@ -35,6 +41,15 @@ def main() -> int:
         return 1
     state_path = target / STATE_PATH
     if args.write:
+        try:
+            assert_write_compatible(
+                target,
+                tool_name="snapshot_target_support.py",
+                migration_staging=args.migration_staging,
+            )
+        except (OSError, ValueError) as exc:
+            print(f"FAIL: {exc}", file=sys.stderr)
+            return 2
         state_path.parent.mkdir(parents=True, exist_ok=True)
         state_path.write_bytes(render_state(current).encode("utf-8"))
         print(
