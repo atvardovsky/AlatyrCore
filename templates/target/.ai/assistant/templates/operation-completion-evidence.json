@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "record_kind": "alatyr-operation-completion-evidence",
+  "operation": {
+    "id": "{OPERATION_ID}",
+    "type": "{OPERATION_TYPE}",
+    "status": "{COMPLETED_PARTIAL_BLOCKED_OR_NOT_STARTED}",
+    "completion_claim": "{COMPLETE_PARTIAL_BLOCKED_OR_UNVERIFIED}"
+  },
+  "current_user_authorization": {
+    "scope": "{CURRENT_LOGICAL_SCOPE}",
+    "authorized_phases": [
+      "{INSPECT_MODIFY_COMMIT_PUBLISH_OR_LIVE_EXTERNAL}"
+    ],
+    "authorization_source": "{CURRENT_USER_MESSAGE_OR_APPROVAL_RECORD}",
+    "state_changing_actions_performed": [
+      "{ACTION_OR_NONE}"
+    ],
+    "prior_authorization_invalidated": "{YES_NO_OR_NOT_APPLICABLE}"
+  },
+  "changed_facts": [
+    {
+      "id": "{FACT_ID_OR_NONE}",
+      "statement": "{CHANGED_FACT_OR_NOT_APPLICABLE}",
+      "owner": "{TARGET_RELATIVE_OWNER_OR_NOT_APPLICABLE}",
+      "status": "{ACCEPTED_OBSERVED_PROPOSED_UNKNOWN_OR_NOT_APPLICABLE}"
+    }
+  ],
+  "validation": {
+    "completion_basis": "{VALIDATED_WITH_REQUIRED_CHECKS_BLOCKED_PARTIAL_OR_UNVERIFIED}",
+    "tests": [
+      {
+        "command_or_check": "{TARGET_COMMAND_CHECK_OR_NOT_APPLICABLE}",
+        "level": "{UNIT_INTEGRATION_CONTRACT_E2E_STATIC_VISUAL_MANUAL_OR_OTHER}",
+        "result": "{PASSED_FAILED_SKIPPED_UNAVAILABLE_OR_NOT_APPLICABLE}",
+        "evidence": "{SUMMARY_OR_TARGET_RELATIVE_EVIDENCE}",
+        "semantic_scope": "{WHAT_THIS_PROVES}"
+      }
+    ],
+    "required_checks": [
+      {
+        "name": "{CHECK_NAME}",
+        "result": "{PASSED_FAILED_SKIPPED_UNAVAILABLE_OR_NOT_APPLICABLE}",
+        "reason": "{REASON}"
+      }
+    ],
+    "skipped_checks": [
+      {
+        "name": "{CHECK_NAME_OR_NONE}",
+        "reason": "{TARGET_POLICY_REASON_OR_NOT_APPLICABLE}",
+        "residual_risk": "{RESIDUAL_RISK_OR_NONE}"
+      }
+    ],
+    "limitations": [
+      "Structural checks and passing tests prove only the declared semantic scope."
+    ]
+  },
+  "consistency": {
+    "logical_integrity_result": "{PASSED_FAILED_BLOCKED_OR_UNVERIFIED}",
+    "companion_surfaces": [
+      {
+        "surface": "{SURFACE}",
+        "decision": "{UPDATED_NOT_REQUIRED_MISSING_OR_UNVERIFIED}",
+        "evidence": "{EVIDENCE_OR_REASON}"
+      }
+    ],
+    "approval_scope_result": "{PASSED_FAILED_NOT_REQUIRED_OR_UNVERIFIED}",
+    "residual_risks": [
+      "{RISK_OR_NONE}"
+    ]
+  },
+  "completion_gate": {
+    "may_claim_complete": "{TRUE_ONLY_WHEN_REQUIRED_EVIDENCE_PASSED_OR_IS_NOT_APPLICABLE}",
+    "blocking_reasons": [
+      "{BLOCKING_REASON_OR_NONE}"
+    ],
+    "next_owner_or_action": "{OWNER_ACTION_OR_NONE}"
+  }
+}

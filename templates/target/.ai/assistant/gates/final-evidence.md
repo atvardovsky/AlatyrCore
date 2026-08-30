@@ -33,5 +33,21 @@ Before completion, report:
 - project-knowledge adoption/reuse state or enabled-empty limitation
 - residual risk and next owner/action
 
+For material operations that change files, commit, publish, use live-external
+actions, or close a large package, fill
+`.ai/assistant/templates/operation-completion-evidence.json` or report the same
+fields.
+
+Completion semantics:
+
+- Report `complete` only when current authorization covers performed phases,
+  required validation passed or is target-not-applicable, logical integrity and
+  required approval scope are resolved, and no owner-decision risk remains.
+- Report `partial`, `blocked`, or `unverified` when validation failed, was
+  skipped or unavailable, authorization/approval is missing, or evidence is
+  narrower than the changed facts.
+- Tie every test/check to the semantic scope it proves; structural success does
+  not prove unrelated invariants.
+
 Structural checks do not prove semantics; unverified capabilities are not
 observed evidence.

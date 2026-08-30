@@ -58,8 +58,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 126,
-      "content_digest": "sha256:80c492b0fac047422d02ffc9c8d0f163cb661cc25650efc91e8e25c122b8eff1"
+      "estimated_words": 221,
+      "content_digest": "sha256:414c1c11e9480bd5616acf1c77d2cbbebd5b6b6f72d878d1b47efada5ce1eb27"
     },
     {
       "id": "assistant.content.gates-contract-artifacts-md",
@@ -283,8 +283,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 202,
-      "content_digest": "sha256:e51d3d7b0decc54729a583c16231cd308910581a6aec2c4b512318a77dc46479"
+      "estimated_words": 297,
+      "content_digest": "sha256:7f89eb9715a5db1423b962106b0510cc54b1ceb615098d6032adbb4e603b4f5c"
     },
     {
       "id": "assistant.content.gates-index-json",

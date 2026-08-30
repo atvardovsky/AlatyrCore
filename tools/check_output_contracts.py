@@ -7,6 +7,7 @@ framework requirement for target projects.
 
 from __future__ import annotations
 
+import json
 import re
 import sys
 from pathlib import Path
@@ -32,15 +33,88 @@ INSTALL_NOTE = (
     / "templates"
     / "installation-note.md"
 )
+COMPLETION_TEMPLATE = (
+    ROOT
+    / "templates"
+    / "target"
+    / ".ai"
+    / "assistant"
+    / "templates"
+    / "operation-completion-evidence.json"
+)
+FINAL_EVIDENCE_GATE = (
+    ROOT / "templates" / "target" / ".ai" / "assistant" / "gates" / "final-evidence.md"
+)
+CODE_AND_TESTS_GATE = (
+    ROOT / "templates" / "target" / ".ai" / "assistant" / "gates" / "code-and-tests.md"
+)
+TESTING_GUIDANCE = ROOT / "framework" / "testing-guidance.md"
 
 CONTRACT_HEADING = re.compile(r"^## Contract: `([^`]+)`\s*$", re.MULTILINE)
 
 REQUIRED_CONTRACTS = {
+    "operation-completion-evidence",
     "adapter-health-output",
     "installation-output",
     "framework-update-output",
     "adapter-recheck-output",
 }
+
+COMPLETION_CONTRACT_FIELDS = [
+    "Template path:",
+    "Operation id:",
+    "Operation type:",
+    "Operation status:",
+    "Completion claim:",
+    "Current user authorization:",
+    "Changed facts:",
+    "Validation completion basis:",
+    "Tests run:",
+    "Required checks:",
+    "Skipped or unavailable checks:",
+    "Logical integrity result:",
+    "Companion surfaces:",
+    "Approval scope result:",
+    "Residual risks:",
+    "May claim complete:",
+    "Blocking reasons:",
+    "Next owner or action:",
+]
+
+COMPLETION_TEMPLATE_FIELDS = [
+    "record_kind",
+    "operation",
+    "current_user_authorization",
+    "changed_facts",
+    "validation",
+    "consistency",
+    "completion_gate",
+]
+
+FINAL_EVIDENCE_TEXT = [
+    "operation-completion-evidence.json",
+    "Completion semantics:",
+    "Report `complete` only when current authorization covers performed phases",
+    "Report `partial`, `blocked`, or `unverified`",
+    "semantic scope it proves",
+]
+
+CODE_AND_TESTS_TEXT = [
+    "Test evidence classes:",
+    "`passed`",
+    "`failed`",
+    "`skipped`",
+    "`unavailable`",
+    "`not-applicable`",
+    "Completion guard:",
+    "Code changes without runnable or explicitly not-applicable target validation",
+]
+
+TESTING_GUIDANCE_TEXT = [
+    "## Completion Evidence",
+    "Testing evidence is scoped evidence.",
+    "partial`, `blocked`, or `unverified`",
+]
 
 REQUIRED_FIELDS = [
     "Operation id:",
@@ -183,7 +257,51 @@ def main() -> int:
     if missing_contracts:
         failures.append(f"missing output contract(s): {missing_contracts}")
 
-    for contract in sorted(REQUIRED_CONTRACTS - {"adapter-health-output"}):
+    completion_block = blocks.get("operation-completion-evidence", "")
+    for field in COMPLETION_CONTRACT_FIELDS:
+        if field not in completion_block:
+            failures.append(f"operation-completion-evidence missing field {field}")
+            continue
+        line = line_for(completion_block, field)
+        if field != "Template path:" and "{" not in line:
+            failures.append(
+                f"operation-completion-evidence field {field} must remain placeholder-based"
+            )
+    for required in [
+        "Do not report `complete`",
+        "current authorization is missing",
+        "approval scope is required but unverified",
+    ]:
+        if required not in completion_block:
+            failures.append(f"operation-completion-evidence missing {required}")
+
+    try:
+        completion_data = json.loads(read(COMPLETION_TEMPLATE))
+    except (OSError, json.JSONDecodeError) as exc:
+        failures.append(f"invalid {COMPLETION_TEMPLATE.relative_to(ROOT)}: {exc}")
+        completion_data = {}
+    if not isinstance(completion_data, dict):
+        failures.append(
+            f"{COMPLETION_TEMPLATE.relative_to(ROOT)} must contain a JSON object"
+        )
+        completion_data = {}
+    if completion_data.get("schema_version") != 1:
+        failures.append("operation-completion evidence schema_version must be 1")
+    if completion_data.get("record_kind") != "alatyr-operation-completion-evidence":
+        failures.append("operation-completion evidence record_kind is invalid")
+    for field in COMPLETION_TEMPLATE_FIELDS:
+        if field not in completion_data:
+            failures.append(f"operation-completion evidence missing {field}")
+    if "{" not in read(COMPLETION_TEMPLATE):
+        failures.append("operation-completion evidence template must remain placeholder-based")
+    if completion_data.get("completion_gate", {}).get("may_claim_complete") != (
+        "{TRUE_ONLY_WHEN_REQUIRED_EVIDENCE_PASSED_OR_IS_NOT_APPLICABLE}"
+    ):
+        failures.append("operation-completion evidence must gate complete claims")
+
+    for contract in sorted(
+        REQUIRED_CONTRACTS - {"adapter-health-output", "operation-completion-evidence"}
+    ):
         block = blocks.get(contract, "")
         for field in REQUIRED_FIELDS:
             if field not in block:
@@ -220,6 +338,16 @@ def main() -> int:
     for contract in ["framework-update-output", "adapter-recheck-output"]:
         if "Migration assessment result/path:" not in blocks.get(contract, ""):
             failures.append(f"{contract} missing migration assessment evidence")
+
+    for path, required_items in [
+        (FINAL_EVIDENCE_GATE, FINAL_EVIDENCE_TEXT),
+        (CODE_AND_TESTS_GATE, CODE_AND_TESTS_TEXT),
+        (TESTING_GUIDANCE, TESTING_GUIDANCE_TEXT),
+    ]:
+        text = read(path)
+        for required_text in required_items:
+            if required_text not in text:
+                failures.append(f"{path.relative_to(ROOT)} missing {required_text}")
 
     installation_note_text = read(INSTALL_NOTE)
     for required_text in REQUIRED_INSTALLATION_TEXT:

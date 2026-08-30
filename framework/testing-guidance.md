@@ -148,3 +148,23 @@ Each project adapter must translate this guidance into concrete local facts:
 When those facts are missing, the assistant should propose adapter
 documentation or ask for direction instead of inventing project-specific
 commands.
+
+## Completion Evidence
+
+Testing evidence is scoped evidence. Passing tests prove only the observable
+contract, fixture, level, and environment that were actually exercised. A final
+answer must not treat unrelated invariants as verified because a structural
+checker or broad test suite passed.
+
+For material code changes, final evidence should include:
+
+- every test or check selected for the changed fact
+- the command/check, level, result, and semantic scope
+- checks skipped by target policy, with reason and residual risk
+- unavailable checks, with the missing dependency, permission, or environment
+- the relationship between validation evidence, logical integrity review,
+  approval-scope enforcement, and remaining owner decisions
+
+If a required local command or convention is missing from the adapter, the
+result is `partial`, `blocked`, or `unverified` until the target records an
+accepted reason that the evidence is not applicable.

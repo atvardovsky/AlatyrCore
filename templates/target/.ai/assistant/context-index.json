@@ -596,7 +596,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 1098,
-      "content_digest": "sha256:9ee506f129867e2c4c654625149b1fc97b4e1f0b091822743a01b48590bea277"
+      "content_digest": "sha256:5622eb1ea18cc2ee0281f885e4a27f25bfee5e1fac2b079f1c8ac8fe8b37c791"
     },
     {
       "id": "assistant.section.policies",
@@ -685,8 +685,8 @@
       ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 2682,
-      "content_digest": "sha256:3bc87f47e2d698eebee77c69b94758bc8951e9c484a81b4a7b25cc584d8be63b"
+      "estimated_words": 2738,
+      "content_digest": "sha256:b72c0126fe7bec4c01a26eefde06f1a00c5f5971e4d3a214a991b7ce9df08f1d"
     },
     {
       "id": "assistant.section.workers",

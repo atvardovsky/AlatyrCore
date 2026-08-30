@@ -60,8 +60,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1276,
-      "content_digest": "sha256:5f69126ac4d228f73f0b615e1302bc0cb1cceeb3fa9819bde92c127648c09c09"
+      "estimated_words": 1424,
+      "content_digest": "sha256:d0f595b432ff468c3f42578e25adcd0c689cf31ece2d43eb379448d0aed5b4bf"
     },
     {
       "id": "assistant.content.templates-ai-infrastructure-adaptation-record-md",
@@ -803,6 +803,34 @@
       ],
       "estimated_words": 175,
       "content_digest": "sha256:f0a2546bd252e9271317e6e8eb4f5834a4f646ecedcf980118b150cce8dced34"
+    },
+    {
+      "id": "assistant.content.templates-operation-completion-evidence-json",
+      "kind": "content",
+      "path": "templates/operation-completion-evidence.json",
+      "summary": "Operation Completion Evidence",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "operation",
+          "completion",
+          "evidence"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 136,
+      "content_digest": "sha256:e50dca040532e70e1fcd5d873553c039f43fbb183c1ba49ca6a4b9a53dbf4d1c"
     },
     {
       "id": "assistant.content.templates-operation-request-md",

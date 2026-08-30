@@ -5,6 +5,36 @@ must report after installation, framework update, or adapter recheck work.
 
 Replace placeholders with target facts before accepting installation.
 
+## Contract: `operation-completion-evidence`
+
+Use after any material operation where the assistant intends to report a final
+status, especially after modifying files, committing, publishing, or completing
+a large task package.
+
+- Template path: `.ai/assistant/templates/operation-completion-evidence.json`
+- Operation id: `{OPERATION_ID}`
+- Operation type: `{OPERATION_TYPE}`
+- Operation status: `{COMPLETED_PARTIAL_BLOCKED_OR_NOT_STARTED}`
+- Completion claim: `{COMPLETE_PARTIAL_BLOCKED_OR_UNVERIFIED}`
+- Current user authorization: `{CURRENT_SCOPE_SOURCE_AUTHORIZED_PHASES_INVALIDATION_AND_ACTIONS_PERFORMED}`
+- Changed facts: `{FACT_IDS_STATEMENTS_OWNERS_AND_STATUS_OR_NOT_APPLICABLE}`
+- Validation completion basis: `{VALIDATED_WITH_REQUIRED_CHECKS_BLOCKED_PARTIAL_OR_UNVERIFIED}`
+- Tests run: `{COMMAND_LEVEL_RESULT_EVIDENCE_AND_SEMANTIC_SCOPE_OR_NOT_APPLICABLE}`
+- Required checks: `{CHECKS_RESULTS_AND_REASONS}`
+- Skipped or unavailable checks: `{CHECKS_REASONS_AND_RESIDUAL_RISK_OR_NONE}`
+- Logical integrity result: `{PASSED_FAILED_BLOCKED_OR_UNVERIFIED}`
+- Companion surfaces: `{SURFACES_DECISIONS_AND_EVIDENCE}`
+- Approval scope result: `{PASSED_FAILED_NOT_REQUIRED_OR_UNVERIFIED}`
+- Residual risks: `{RESIDUAL_RISKS_OR_NONE}`
+- May claim complete: `{TRUE_ONLY_WHEN_REQUIRED_EVIDENCE_PASSED_OR_IS_NOT_APPLICABLE}`
+- Blocking reasons: `{BLOCKING_REASONS_OR_NONE}`
+- Next owner or action: `{OWNER_ACTION_OR_NONE}`
+
+Do not report `complete` when current authorization is missing, required
+validation failed or was unavailable without an accepted target reason, logical
+integrity is unresolved, approval scope is required but unverified, or residual
+risk needs a target owner decision.
+
 ## Contract: `adapter-health-output`
 
 Use after `Alatyr status`, `Alatyr doctor`, or another read-only adapter

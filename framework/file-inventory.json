@@ -69,7 +69,7 @@
     {
       "path": "framework/catalog/change/context-index.json",
       "rule_ids": [],
-      "sha256": "98c73fa6de2387305e951265bcde61154888f5ad8c67cf26d258b86641a30d28"
+      "sha256": "3991f13a658b543859fd18877538f7231968f39e2776fa519781eac45c01ba37"
     },
     {
       "path": "framework/catalog/collaboration/context-index.json",
@@ -135,7 +135,7 @@
     {
       "path": "framework/context-index.json",
       "rule_ids": [],
-      "sha256": "b447c59b63bfd6d70ce54bc00153e42e976135b8be3206f55ade0fea3ff22378"
+      "sha256": "58ccd41fe6399c283c34d24cddd53d705cea9f84a2f175b341a5332bda023611"
     },
     {
       "path": "framework/context-profiles.md",
@@ -382,7 +382,7 @@
     {
       "path": "framework/testing-guidance.md",
       "rule_ids": [],
-      "sha256": "1644d1848c3b1cdbfaa0f3b3f3ed79ad153fa3b1a4b54c9ebc8a0bac99f00b93"
+      "sha256": "20a08a0bce49ce71a4a2c9fac70f6d3f72bb5229fb6b36f77a89d0091f1ed242"
     },
     {
       "path": "framework/workspace-modes.md",
@@ -392,8 +392,8 @@
       "sha256": "dc1b84f72ca465f735d51ee5de02d3c26fd8054688556b4f11c1663eddc239da"
     }
   ],
-  "framework_version": "0.1.0-alpha.39",
+  "framework_version": "0.1.0-alpha.40",
   "inventory_kind": "alatyr-framework-files",
   "schema_version": 1,
-  "template_version": 37
+  "template_version": 38
 }

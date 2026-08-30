@@ -4,6 +4,19 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.40 - 2026-08-30
+
+- Increased the framework version to `0.1.0-alpha.40` and target template
+  version to `38`; adapter schema version remains `36` because no adapter
+  schema fields changed.
+- Added a target operation-completion evidence template and output contract so
+  assistants must separate complete, partial, blocked, and unverified results
+  using current authorization, validation, logical integrity, approval scope,
+  skipped-check reasons, and residual risk.
+- Tightened final-evidence, code-and-tests, and testing guidance so passing
+  tests are tied to the semantic scope they prove and missing validation cannot
+  be presented as a complete result.
+
 ## 0.1.0-alpha.39 - 2026-08-30
 
 - Increased the framework version to `0.1.0-alpha.39` and target template
