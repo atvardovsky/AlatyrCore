@@ -277,8 +277,8 @@
       "owner_refs": [
         "ALATYR-MODULE-001"
       ],
-      "estimated_words": 1788,
-      "content_digest": "sha256:c9810db9964c18cb6645f231a38ee0b89a70dd0a9c84655e7930eef8959a6421"
+      "estimated_words": 1823,
+      "content_digest": "sha256:e5f67eafd035461e8399f1ab71d2d396c6e91cffe5cd1f87671d591fb2335c15"
     },
     {
       "id": "framework.core.operation-help-md",
@@ -368,8 +368,8 @@
       ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 1578,
-      "content_digest": "sha256:ee59382fa1a98935e754fe170c960c8e7d60a8fa6c7b90e2fd72891da769208a"
+      "estimated_words": 1583,
+      "content_digest": "sha256:79512c2826680c81b7845328635f5372c05b950f462ee43b00f1289101f32789"
     },
     {
       "id": "framework.core.rule-ownership-md",

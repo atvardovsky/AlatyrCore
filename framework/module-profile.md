@@ -14,9 +14,9 @@ alatyr_doc:
 Module profiles keep Alatyr Core from treating every capability as mandatory
 for every target repository.
 
-The framework has a required core profile and optional modules. A target
-adapter records which modules are enabled, deferred, disabled, or not
-applicable from target evidence.
+The framework has a minimal `kernel` support profile, a richer `core` support
+profile, and optional modules. A target adapter records which modules are
+enabled, deferred, disabled, or not applicable from target evidence.
 
 The installed `capabilities.json` catalog is the machine-readable owner for
 optional-module dependencies, minimum framework packs, required target files,
@@ -29,9 +29,9 @@ deep optional checks only for enabled modules or explicit module evidence.
 Universal manifest, contour, routing, safety, framework-drift, and final-
 evidence checks remain independent of optional module selection.
 
-## Required Core Profile
+## Kernel And Core Profiles
 
-Every accepted installation should provide:
+Every accepted installation should provide the `kernel` support profile:
 
 - contour separation for framework, project, and repository adapter facts
 - adapter manifest with framework version, adapter schema version, template
@@ -51,17 +51,20 @@ Every accepted installation should provide:
 - logical integrity review for changed semantic or logical facts
 - validation or manual-review evidence, including unresolved checks
 - final evidence format
+- support-information policy, canonical cross-platform state, changed-surface
+  evidence, and bounded impact routing that never replaces semantic review
+
+The `core` support profile adds:
+
 - durable engineering-evidence capture decision, compact index, target storage
   policy, and record validation for material tasks
 - project-knowledge candidate or registered decision-owner guidance intake,
   promotion review, canonical-owner update, explicit exception and precedence
   evidence, compact sharded routing index, coverage states, two-stage bounded
-  delivery, freshness, conflict, supersession, and paired reuse evidence
-- support-information policy, canonical cross-platform state, changed-surface
-  evidence, and bounded impact routing that never replaces semantic review
 
-If any required core item is missing, the adapter can still exist, but it must
-report the missing item as a gap before claiming maturity.
+If any required item for the selected support profile is missing, the adapter
+can still exist, but it must report the missing item as a gap before claiming
+maturity.
 
 ## Optional Modules
 
@@ -180,7 +183,8 @@ surface was created, retained, merged, or left blocked.
 
 Use these states in target adapters:
 
-- `required`: part of the required core profile.
+- `required`: part of the selected required support profile, including
+  `kernel` items and any required `core`, `standard`, or `full` additions.
 - `enabled`: installed and maintained for the target.
 - `deferred`: useful, but intentionally postponed with a recorded reason.
 - `disabled`: not used by the target.
@@ -193,13 +197,15 @@ Do not hide missing adapter facts by marking a needed module as disabled.
 
 During installation or update:
 
-1. Establish the required core profile first.
+1. Establish the smallest support profile that can safely support the target's
+   current use of Alatyr.
 2. Select optional modules from target needs, not from source-repository
    availability.
 3. Record module states in the target adapter manifest and module profile.
-4. Select and record the `core`, `standard`, or `full` support profile, then
-   create only the target templates needed for enabled or required modules.
-5. Select a compatible `core`, `standard`, or `complete` framework pack. The
+4. Select and record the `kernel`, `core`, `standard`, or `full` support
+   profile, then create only the target templates needed for enabled or
+   required modules.
+5. Select a compatible `kernel`, `core`, `standard`, or `complete` framework pack. The
    pack controls installed portable files, while context routing controls what
    is loaded for a task. A smaller pack must never be used to claim support for
    a broader profile or enabled module.
@@ -221,7 +227,7 @@ A module profile review should report:
 ```text
 Core profile state: <complete/missing gaps>
 Adapter ownership: <owner/cadence/CODEOWNERS or equivalent/gaps>
-Framework pack: <core/standard/complete and expansion needs>
+Framework pack: <kernel/core/standard/complete and expansion needs>
 Enabled modules: <modules>
 Deferred modules: <modules and reasons>
 Blocked modules: <modules and missing owners/policies/validation>

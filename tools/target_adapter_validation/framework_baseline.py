@@ -44,6 +44,30 @@ def load_object(path: Path) -> dict[str, Any]:
     return data
 
 
+def project_semantic_index(source_framework: Path, selected_files: set[str]) -> str:
+    """Render a semantic-codebook index that references only installed shards."""
+
+    semantic_index_path = source_framework / "semantics" / "index.json"
+    index = load_object(semantic_index_path)
+    shards = index.get("shards")
+    if not isinstance(shards, list):
+        raise ValueError("source semantic codebook index has invalid shards")
+    selected_shards: list[dict[str, Any]] = []
+    for shard in shards:
+        if not isinstance(shard, dict):
+            raise ValueError("source semantic codebook index has invalid shard entry")
+        path = shard.get("path")
+        if not isinstance(path, str) or not path:
+            raise ValueError("source semantic codebook shard path is invalid")
+        if f"semantics/{path}" in selected_files:
+            selected_shards.append(dict(shard))
+    if not selected_shards:
+        raise ValueError("projected semantic codebook index would be empty")
+    projected = dict(index)
+    projected["shards"] = selected_shards
+    return json.dumps(projected, indent=2, ensure_ascii=True) + "\n"
+
+
 def source_pack_projection(
     source_framework: Path, pack: str
 ) -> tuple[set[str], dict[str, Any], dict[str, bytes]]:
@@ -157,6 +181,10 @@ def source_pack_projection(
         "rule-registry.md": render_registry(projected_registry).encode("utf-8"),
         "rule-ownership.md": render_ownership(projected_registry).encode("utf-8"),
     }
+    if "semantics/index.json" in files:
+        projected_content["semantics/index.json"] = project_semantic_index(
+            source_framework, files
+        ).encode("utf-8")
     projected_content.update(
         {
             name: content.encode("utf-8")

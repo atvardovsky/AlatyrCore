@@ -2,6 +2,10 @@
   "schema_version": 2,
   "evidence_kind": "deterministic-lifecycle-contract",
   "support_profiles": {
+    "kernel": {
+      "framework_pack": "kernel",
+      "enabled_optional_modules": []
+    },
     "core": {
       "framework_pack": "core",
       "enabled_optional_modules": []

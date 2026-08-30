@@ -2,6 +2,26 @@
 
 ## Unreleased
 
+- No unreleased changes.
+
+## 0.1.0-alpha.35 - 2026-08-29
+
+- Increased the framework version to `0.1.0-alpha.35`, adapter schema version
+  to `33`, and target template version to `33` for the low-cost `kernel`
+  support profile, profile-aware adapter validation, and support-cost checks.
+- Added an explicit `kernel` target support profile below `core`. Kernel
+  installs bootstrap, routing, ownership, authorization, logical integrity,
+  support-state, and final-evidence surfaces while deferring durable
+  engineering evidence, project knowledge, and broader operation surfaces until
+  `core` or a larger profile is selected.
+- Added an explicit `kernel` portable framework pack below `core`. Matched
+  kernel scaffolds now install only the framework rule owners and semantic
+  shards needed by the minimal target support surface, while optional
+  capabilities still raise the required pack through dependency closure.
+- Updated scaffold profile validation, target adapter validation, lifecycle
+  conformance, schema validation, and support-cost reporting to recognize
+  `kernel`, enforce monotonic profile growth, and keep omitted router and
+  manifest claims out of smaller installs.
 - Added a `quick` source-check profile for routing, bootstrap, scaffold, and
   standing support-cost guardrails without running the source unit suite.
 - Added a read-only `support-costs` source tool that measures scaffold-profile

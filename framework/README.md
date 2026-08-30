@@ -121,7 +121,8 @@ Those belong to a project contour or repository adapter.
 - `.ai/framework/rule-registry.json`: machine-readable rule manifest used by
   source-repository migration and consistency helpers.
 - `.ai/framework/framework-packs.json`: checked portable file packs used to
-  keep smaller support profiles from copying unused optional rule owners.
+  keep smaller support profiles, including the minimal `kernel` profile, from
+  copying unused optional rule owners.
 - `.ai/framework/capabilities.json`: canonical optional-module dependencies,
   minimum framework packs, target surfaces, rule IDs, and source check IDs.
 - `.ai/framework/file-inventory.json`: deterministic complete-baseline file

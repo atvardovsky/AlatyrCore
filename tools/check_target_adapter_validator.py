@@ -878,6 +878,16 @@ def main() -> int:
         }:
             failures.append("surface bindings must reject unknown worker roles")
 
+        migration_descriptor_path = (
+            target / ".ai" / "assistant" / "context" / "migration-routing.json"
+        )
+        write_json(
+            migration_descriptor_path,
+            {
+                "schema_version": 1,
+                "descriptor_kind": "target-migration-routing",
+            },
+        )
         write_json(
             router_path,
             {

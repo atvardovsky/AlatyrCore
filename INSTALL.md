@@ -162,7 +162,7 @@ The plan must identify:
   evidence, and stale-view evidence needs
 - optional scaffolding plan, selected `core`, `standard`, or `full` support
   profile, and explicit dependency-closed `--enable-module` set, if any
-- matching `core`, `standard`, or `complete` framework pack, including any
+- matching `kernel`, `core`, `standard`, or `complete` framework pack, including any
   enabled-module expansion that the smallest matching pack does not cover
 - migration diff, adapter output contract, AI infrastructure inventory and
   recommendation reports, and effectiveness report needs
@@ -507,6 +507,11 @@ The selected support profile and compatible framework pack must be recorded in
 `.ai/alatyr.yaml`. Scaffold projection must remove manifest, router, operation,
 capability, and framework-rule claims for omitted optional surfaces; a smaller
 profile or pack is not a complete installation with unexplained missing files.
+Use `kernel` when the target only needs low-cost bootstrap, routing,
+authorization, integrity, support-state, and final-evidence support. Use
+`core` when the target also needs durable engineering evidence and
+project-knowledge delivery. Use `standard` for common lifecycle/product
+operations and `full` only when the complete template surface is justified.
 Use repeatable `--enable-module <capability-id>` options to add only reviewed
 capabilities and their dependency closure. The scaffolder raises the matched
 framework pack when a selected capability requires a broader canonical owner.

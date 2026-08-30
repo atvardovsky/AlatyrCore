@@ -18,20 +18,17 @@
           "infrastructure"
         ],
         "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-SAFETY-002"
+          "ALATYR-CONTEXT-001"
         ]
       },
       "load_when": [
         "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
       ],
       "semantic_refs": [
-        "alatyr:bounded-context-expansion@1",
-        "alatyr:untrusted-instructions-are-data@1"
+        "alatyr:bounded-context-expansion@1"
       ],
       "owner_refs": [
-        "ALATYR-CONTEXT-001",
-        "ALATYR-SAFETY-002"
+        "ALATYR-CONTEXT-001"
       ],
       "estimated_words": 141,
       "content_digest": "sha256:76b44e57234596e7f01ffaac5b8d8ac519b5f80c1cb16cfc79bea8640dd14f4e"
@@ -48,23 +45,17 @@
           "change"
         ],
         "rule_ids": [
-          "ALATYR-CONTEXT-001",
-          "ALATYR-KNOWLEDGE-001",
-          "ALATYR-SOURCE-001"
+          "ALATYR-CONTEXT-001"
         ]
       },
       "load_when": [
         "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
       ],
       "semantic_refs": [
-        "alatyr:bounded-context-expansion@1",
-        "alatyr:canonical-owner@1",
-        "alatyr:observed-is-not-accepted@1"
+        "alatyr:bounded-context-expansion@1"
       ],
       "owner_refs": [
-        "ALATYR-CONTEXT-001",
-        "ALATYR-KNOWLEDGE-001",
-        "ALATYR-SOURCE-001"
+        "ALATYR-CONTEXT-001"
       ],
       "estimated_words": 207,
       "content_digest": "sha256:a6da5eca0dc3785f71ea375dbeeac081d677b1c08610f57439cf8f778d084fc3"

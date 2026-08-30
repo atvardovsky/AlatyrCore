@@ -16,8 +16,6 @@
     "modules",
     "validation",
     "operations",
-    "engineering_evidence",
-    "project_knowledge",
     "maturity",
     "known_gaps",
     "local_deviations"
@@ -60,7 +58,7 @@
     },
     "source_of_truth": {
       "type": "object",
-      "required": ["project_contour", "registry", "engineering_evidence_index", "assistant_contour", "context_router", "bootstrap_index", "framework_context_index", "project_context_index", "assistant_context_index", "semantic_codebook", "context_profiles", "module_profile", "project_sources"],
+      "required": ["project_contour", "registry", "assistant_contour", "context_router", "bootstrap_index", "framework_context_index", "project_context_index", "assistant_context_index", "semantic_codebook", "context_profiles", "module_profile", "project_sources"],
       "properties": {
         "project_sources": {"$ref": "#/definitions/nonEmptyStringArray"}
       }
@@ -118,7 +116,7 @@
     },
     "operations": {
       "type": "object",
-      "required": ["gate_index", "help", "operation_request", "output_contracts", "action_authorization_policy", "engineering_evidence_capture", "engineering_evidence_record", "project_knowledge", "project_knowledge_promotion", "project_knowledge_route_shard"]
+      "required": ["gate_index", "help", "operation_request", "output_contracts", "action_authorization_policy"]
     },
     "engineering_evidence": {
       "type": "object",

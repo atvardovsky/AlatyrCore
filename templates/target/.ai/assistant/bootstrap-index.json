@@ -4,7 +4,7 @@
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "2f1eef97057649dbd80fa9cf2937e434de00434356a1c2b650324a8b0d43229e"
+      "sha256": "504ab664185797e55bc21b9cdf46a2bb9cbf6578bde711814ef2c6ae698060eb"
     },
     "project_map": {
       "path": ".ai/README.md",
@@ -23,8 +23,8 @@
     "framework_version": "{ALATYR_CORE_VERSION}",
     "adapter_schema_version": "{ALATYR_ADAPTER_SCHEMA_VERSION}",
     "template_version": "{ALATYR_TEMPLATE_VERSION}",
-    "support_profile": "{CORE_STANDARD_OR_FULL}",
-    "framework_pack": "{CORE_STANDARD_OR_COMPLETE}"
+    "support_profile": "{KERNEL_CORE_STANDARD_OR_FULL}",
+    "framework_pack": "{KERNEL_CORE_STANDARD_OR_COMPLETE}"
   },
   "project_map": ".ai/README.md",
   "context_router": ".ai/assistant/context-router.json",

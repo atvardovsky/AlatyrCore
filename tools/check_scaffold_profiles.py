@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate deterministic core, standard, and full scaffold profiles."""
+"""Validate deterministic kernel, core, standard, and full scaffold profiles."""
 
 from __future__ import annotations
 
@@ -19,8 +19,8 @@ from scaffold_target_structure import (
 from framework_packaging import resolve_framework_files
 
 
-EXPECTED_PROFILES = ["core", "standard", "full"]
-CORE_REQUIRED = {
+EXPECTED_PROFILES = ["kernel", "core", "standard", "full"]
+KERNEL_REQUIRED = {
     Path(".ai/README.md"),
     Path(".ai/alatyr.yaml"),
     Path(".ai/assistant/bootstrap-index.json"),
@@ -34,6 +34,19 @@ CORE_REQUIRED = {
     Path(".ai/assistant/flows/logical-integrity-review.flow.md"),
     Path(".ai/project/source-of-truth-registry.md"),
     Path("AGENTS.md"),
+}
+CORE_REQUIRED = {
+    Path(".ai/assistant/context/project-knowledge-routing.json"),
+    Path(".ai/assistant/context/cost-scenarios.json"),
+    Path(".ai/assistant/context/migration-routing.json"),
+    Path(".ai/assistant/flows/engineering-evidence-capture.flow.md"),
+    Path(".ai/assistant/flows/project-knowledge.flow.md"),
+    Path(".ai/assistant/gates/engineering-evidence.md"),
+    Path(".ai/assistant/gates/project-knowledge.md"),
+    Path(".ai/assistant/templates/engineering-evidence-record.json"),
+    Path(".ai/assistant/templates/project-knowledge-promotion.json"),
+    Path(".ai/project/engineering-evidence/index.json"),
+    Path(".ai/project/knowledge/index.json"),
 }
 STANDARD_REQUIRED = {
     Path(".ai/assistant/operation-index.json"),
@@ -72,10 +85,14 @@ def main() -> int:
             for path in TEMPLATE_ROOT.rglob("*")
             if path.is_file()
         }
+        kernel = resolve_profile_paths("kernel")
         core = resolve_profile_paths("core")
         standard = resolve_profile_paths("standard")
         full = resolve_profile_paths("full")
 
+        missing_kernel = sorted(KERNEL_REQUIRED - kernel)
+        if missing_kernel:
+            failures.append(f"kernel profile missing required paths: {missing_kernel}")
         missing_core = sorted(CORE_REQUIRED - core)
         if missing_core:
             failures.append(f"core profile missing required paths: {missing_core}")
@@ -84,6 +101,8 @@ def main() -> int:
             failures.append(
                 f"standard profile missing operation surfaces: {missing_standard}"
             )
+        if not kernel < core:
+            failures.append("kernel profile must be a strict subset of core")
         if not core < standard:
             failures.append("core profile must be a strict subset of standard")
         if not standard < full:
@@ -125,8 +144,15 @@ def main() -> int:
             profile: resolved_framework_pack(profile, "matched")
             for profile in EXPECTED_PROFILES
         }
-        if matched_packs != {"core": "core", "standard": "standard", "full": "complete"}:
+        if matched_packs != {
+            "kernel": "kernel",
+            "core": "core",
+            "standard": "standard",
+            "full": "complete",
+        }:
             failures.append(f"support-profile framework pack mapping drifted: {matched_packs}")
+        if not resolve_framework_files("kernel") < resolve_framework_files("core"):
+            failures.append("kernel framework pack must be smaller than core")
         if not resolve_framework_files("core") < resolve_framework_files("standard"):
             failures.append("core framework pack must be smaller than standard")
         ai_infrastructure = resolve_profile_paths("core", {"ai-infrastructure"})
@@ -152,7 +178,8 @@ def main() -> int:
 
     print(
         "OK: checked scaffold profiles "
-        f"core={len(core)} standard={len(standard)} full={len(full)}"
+        f"kernel={len(kernel)} core={len(core)} standard={len(standard)} "
+        f"full={len(full)}"
     )
     return 0
 

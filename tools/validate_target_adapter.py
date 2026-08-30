@@ -103,8 +103,9 @@ CANONICAL_PROFILES = [
     "framework-upgrade",
 ]
 
-CORE_REQUIRED_FILES = [
+KERNEL_REQUIRED_FILES = [
     "AGENTS.md",
+    "CODEOWNERS",
     ".ai/alatyr.yaml",
     ".ai/README.md",
     ".ai/assistant/bootstrap-index.json",
@@ -117,32 +118,55 @@ CORE_REQUIRED_FILES = [
     ".ai/project/source-of-truth-registry.md",
     ".ai/project/support-policy.json",
     ".ai/support-state.json",
-    ".ai/project/engineering-evidence/README.md",
-    ".ai/project/engineering-evidence/index.json",
-    ".ai/project/knowledge/README.md",
-    ".ai/project/knowledge/index.json",
-    ".ai/project/knowledge/routes/README.md",
-    ".ai/project/knowledge/promotions/README.md",
     ".ai/assistant/contour.md",
     ".ai/assistant/context-router.json",
     ".ai/assistant/context-profiles.md",
+    ".ai/assistant/context/profiles/architecture-change.json",
+    ".ai/assistant/context/profiles/business-change.json",
+    ".ai/assistant/context/profiles/code-local.json",
+    ".ai/assistant/context/profiles/data-change.json",
+    ".ai/assistant/context/profiles/docs-local.json",
+    ".ai/assistant/context/profiles/framework-upgrade.json",
+    ".ai/assistant/context/profiles/security-sensitive.json",
     ".ai/assistant/installation-state.json",
     ".ai/assistant/module-profile.md",
     ".ai/assistant/maturity-profile.md",
     ".ai/assistant/gates/index.json",
     ".ai/assistant/gates/core.md",
+    ".ai/assistant/gates/code-and-tests.md",
+    ".ai/assistant/gates/documentation.md",
     ".ai/assistant/gates/final-evidence.md",
-    ".ai/assistant/gates/engineering-evidence.md",
-    ".ai/assistant/gates/project-knowledge.md",
-    ".ai/assistant/gates/checklist.md",
+    ".ai/assistant/gates/security-approval.md",
+    ".ai/assistant/gates/semantic-integrity.md",
+    ".ai/assistant/help.md",
     ".ai/assistant/policies/action-authorization.json",
     ".ai/assistant/templates/adapter-output-contracts.md",
+    ".ai/assistant/templates/installation-note.md",
+    ".ai/assistant/templates/operation-request.md",
+    ".ai/assistant/flows/logical-integrity-review.flow.md",
+]
+
+CORE_REQUIRED_FILES = [
+    ".ai/assistant/checklists/change-impact.md",
+    ".ai/project/engineering-evidence/README.md",
+    ".ai/project/engineering-evidence/index.json",
+    ".ai/project/engineering-evidence/records/README.md",
+    ".ai/project/knowledge/README.md",
+    ".ai/project/knowledge/index.json",
+    ".ai/project/knowledge/routes/README.md",
+    ".ai/project/knowledge/promotions/README.md",
+    ".ai/assistant/flows/documentation-sync.flow.md",
+    ".ai/assistant/flows/engineering-evidence-capture.flow.md",
+    ".ai/assistant/flows/project-knowledge.flow.md",
+    ".ai/assistant/gates/checklist.md",
+    ".ai/assistant/gates/engineering-evidence.md",
+    ".ai/assistant/gates/project-knowledge.md",
     ".ai/assistant/templates/engineering-evidence-record.json",
     ".ai/assistant/templates/project-knowledge-promotion.json",
     ".ai/assistant/templates/project-knowledge-route-shard.json",
-    ".ai/assistant/flows/engineering-evidence-capture.flow.md",
-    ".ai/assistant/flows/project-knowledge.flow.md",
     ".ai/assistant/context/project-knowledge-routing.json",
+    ".ai/assistant/context/cost-scenarios.json",
+    ".ai/assistant/context/migration-routing.json",
     ".ai/assistant/context/task-scales/engineering-evidence.json",
 ]
 
@@ -155,9 +179,25 @@ STANDARD_REQUIRED_FILES = [
     ".ai/assistant/templates/pre-change-preview.md",
 ]
 
-SUPPORT_PROFILES = {"core", "standard", "full"}
+SUPPORT_PROFILES = {"kernel", "core", "standard", "full"}
+PROFILE_MIN_PACK = {
+    "kernel": "kernel",
+    "core": "core",
+    "standard": "standard",
+    "full": "complete",
+}
+FRAMEWORK_PACK_RANK = {"kernel": 0, "core": 1, "standard": 2, "complete": 3}
 VALIDATION_PHASES = {"acceptance", "migration-staging"}
 INSTALLATION_STATES = {"scaffolded", "staged", "accepted", "degraded"}
+
+
+def required_files_for_support_profile(support_profile: str) -> list[str]:
+    required = list(KERNEL_REQUIRED_FILES)
+    if support_profile in {"core", "standard", "full"}:
+        required.extend(CORE_REQUIRED_FILES)
+    if support_profile in {"standard", "full"}:
+        required.extend(STANDARD_REQUIRED_FILES)
+    return required
 
 AUTHORING_FILE_PATTERNS = (
     re.compile(r"^\.ai/assistant/templates/"),
@@ -360,6 +400,38 @@ MANIFEST_FULL_REQUIRED_SCALARS: set[PathKey] = {
     ("operations", "extension_review"),
     ("operations", "extension_lifecycle_record"),
 }
+
+CORE_PLUS_MANIFEST_SCALARS: set[PathKey] = {
+    ("source_of_truth", "engineering_evidence_index"),
+    ("operations", "engineering_evidence_capture"),
+    ("operations", "engineering_evidence_record"),
+    ("operations", "project_knowledge"),
+    ("operations", "project_knowledge_promotion"),
+    ("operations", "project_knowledge_route_shard"),
+    ("engineering_evidence", "index"),
+    ("engineering_evidence", "records"),
+    ("engineering_evidence", "flow"),
+    ("engineering_evidence", "gate"),
+    ("engineering_evidence", "machine_template"),
+    ("engineering_evidence", "storage_mode"),
+    ("engineering_evidence", "external_patch_policy"),
+    ("engineering_evidence", "retention_policy"),
+    ("engineering_evidence", "redaction_policy"),
+    ("project_knowledge", "contract_version"),
+    ("project_knowledge", "index"),
+    ("project_knowledge", "route_shards"),
+    ("project_knowledge", "promotions"),
+    ("project_knowledge", "routing"),
+    ("project_knowledge", "flow"),
+    ("project_knowledge", "gate"),
+    ("project_knowledge", "promotion_template"),
+    ("project_knowledge", "route_shard_template"),
+    ("project_knowledge", "owner"),
+    ("project_knowledge", "review_policy"),
+    ("project_knowledge", "retention_policy"),
+    ("project_knowledge", "redaction_policy"),
+}
+KERNEL_MANIFEST_REQUIRED_SCALARS = MANIFEST_REQUIRED_SCALARS - CORE_PLUS_MANIFEST_SCALARS
 
 MANIFEST_PATH_SCALARS: set[PathKey] = {
     ("framework", "rule_registry"),
@@ -827,8 +899,14 @@ class Validator:
         checker_files, checker_commands = self.discover_checkers(manifest)
         self.check_checker_claims(checker_files, checker_commands)
         self.check_approval_scope()
-        self.check_engineering_evidence(manifest)
-        self.check_project_knowledge(manifest)
+        if support_profile != "kernel" or self.target_path(
+            ".ai/project/engineering-evidence/index.json"
+        ).is_file():
+            self.check_engineering_evidence(manifest)
+        if support_profile != "kernel" or self.target_path(
+            ".ai/project/knowledge/index.json"
+        ).is_file():
+            self.check_project_knowledge(manifest)
         self.check_change_package_index()
         self.check_change_packages()
         self.check_framework_baseline()
@@ -1187,10 +1265,7 @@ class Validator:
                 )
 
     def check_required_files(self, support_profile: str) -> None:
-        required = list(CORE_REQUIRED_FILES)
-        if support_profile in {"standard", "full"}:
-            required.extend(STANDARD_REQUIRED_FILES)
-        for relpath in required:
+        for relpath in required_files_for_support_profile(support_profile):
             if not self.target_path(relpath).exists():
                 self.error("REQUIRED_FILE_MISSING", "required adapter file is missing", relpath)
 
@@ -1244,7 +1319,9 @@ class Validator:
 
         support_scalar = manifest.scalars.get(("installation", "support_profile"))
         support_profile = support_scalar.value if support_scalar else "full"
-        required_scalars = set(MANIFEST_REQUIRED_SCALARS)
+        required_scalars = set(KERNEL_MANIFEST_REQUIRED_SCALARS)
+        if support_profile in {"core", "standard", "full"}:
+            required_scalars.update(CORE_PLUS_MANIFEST_SCALARS)
         if support_profile in {"standard", "full"}:
             required_scalars.update(MANIFEST_STANDARD_REQUIRED_SCALARS)
         if support_profile == "full":
@@ -1271,7 +1348,7 @@ class Validator:
             if support_scalar.value not in SUPPORT_PROFILES:
                 self.error(
                     "MANIFEST_SUPPORT_PROFILE",
-                    "installation.support_profile must be core, standard, or full",
+                    "installation.support_profile must be kernel, core, standard, or full",
                     f".ai/alatyr.yaml:{support_scalar.line}",
                 )
 
@@ -1285,16 +1362,18 @@ class Validator:
 
         pack_scalar = manifest.scalars.get(("framework", "pack"))
         if pack_scalar and not is_unresolved_value(pack_scalar.value):
-            if pack_scalar.value not in {"core", "standard", "complete"}:
+            if pack_scalar.value not in {"kernel", "core", "standard", "complete"}:
                 self.error(
                     "MANIFEST_FRAMEWORK_PACK",
-                    "framework.pack must be core, standard, or complete",
+                    "framework.pack must be kernel, core, standard, or complete",
                     f".ai/alatyr.yaml:{pack_scalar.line}",
                 )
             elif support_scalar and support_scalar.value in SUPPORT_PROFILES:
-                pack_rank = {"core": 0, "standard": 1, "complete": 2}
-                profile_rank = {"core": 0, "standard": 1, "full": 2}
-                if pack_rank[pack_scalar.value] < profile_rank[support_scalar.value]:
+                minimum_pack = PROFILE_MIN_PACK[support_scalar.value]
+                if (
+                    FRAMEWORK_PACK_RANK[pack_scalar.value]
+                    < FRAMEWORK_PACK_RANK[minimum_pack]
+                ):
                     self.error(
                         "MANIFEST_FRAMEWORK_PACK",
                         "framework.pack is too small for installation.support_profile",
@@ -1635,13 +1714,15 @@ class Validator:
                     "target-migration-routing",
                     "migration_routing",
                 )
-            if not isinstance(migration, dict):
+            if not isinstance(migration, dict) and self.target_path(
+                ".ai/assistant/context/migration-routing.json"
+            ).is_file():
                 self.error(
                     "ROUTER_MIGRATION_MISSING",
                     "schema 2 through 8 router must define migration-first routing",
                     ".ai/assistant/context-router.json",
                 )
-            else:
+            elif isinstance(migration, dict):
                 assessment_source = (
                     migration_entry if isinstance(migration_entry, dict) else migration
                 )
@@ -1769,13 +1850,15 @@ class Validator:
 
         if schema_version in {7, 8}:
             knowledge_entry = router.get("project_knowledge_routing")
-            if not isinstance(knowledge_entry, dict):
+            if not isinstance(knowledge_entry, dict) and self.target_path(
+                ".ai/assistant/context/project-knowledge-routing.json"
+            ).is_file():
                 self.error(
                     "ROUTER_PROJECT_KNOWLEDGE_MISSING",
                     "schema 7 or 8 requires project_knowledge_routing",
                     ".ai/assistant/context-router.json",
                 )
-            else:
+            elif isinstance(knowledge_entry, dict):
                 if knowledge_entry.get("profile_only_match_allowed") is not False:
                     self.error(
                         "ROUTER_PROJECT_KNOWLEDGE_PROFILE_ONLY",
@@ -7832,9 +7915,7 @@ class Validator:
         support_profile: str,
         enabled_modules: set[str],
     ) -> list[Path]:
-        relpaths = set(CORE_REQUIRED_FILES)
-        if support_profile in {"standard", "full"}:
-            relpaths.update(STANDARD_REQUIRED_FILES)
+        relpaths = set(required_files_for_support_profile(support_profile))
         relpaths.add("AGENTS.md")
         relpaths.update(self.active_assistant_bridge_files(manifest))
         for module_id in enabled_modules:
@@ -9585,7 +9666,7 @@ class Validator:
         manifest = parse_manifest(self.target_path(".ai/alatyr.yaml"))
         pack_scalar = manifest.scalars.get(("framework", "pack"))
         framework_pack = pack_scalar.value if pack_scalar else "complete"
-        if framework_pack in {"core", "standard"}:
+        if framework_pack in {"kernel", "core", "standard"}:
             inventory_path = target_framework / "file-inventory.json"
             inventory = self.load_json_object(inventory_path, "FRAMEWORK_INVENTORY")
             if inventory is None:

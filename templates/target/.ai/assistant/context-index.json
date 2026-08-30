@@ -348,8 +348,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1405,
-      "content_digest": "sha256:66068ceb498932f8852120eef0bd49c07361cfc3a517439ca719ab08318ba556"
+      "estimated_words": 1458,
+      "content_digest": "sha256:1dc9afc034e072206ad9e9564c287870d6d09b2d806cb6c92cabfa2dd57cafd8"
     },
     {
       "id": "assistant.content.operation-catalog-json",
@@ -516,7 +516,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 384,
-      "content_digest": "sha256:c27503031bae055789dc83e3768219a72548b96c8bbe561a86110899e379ed74"
+      "content_digest": "sha256:f8a78a96b5383507b8016dd16f1181615c610bad850ec69e44fb4a371050f59c"
     },
     {
       "id": "assistant.section.extensions",

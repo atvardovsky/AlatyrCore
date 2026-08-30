@@ -73,8 +73,12 @@ def project_manifest(
             continue
         if current_top_level == "installation" and INSTALLATION_STATE_RE.match(line):
             line = f'  state: "{INITIAL_INSTALLATION_STATE}"'
+        if "{KERNEL_CORE_STANDARD_OR_FULL}" in line:
+            line = line.replace("{KERNEL_CORE_STANDARD_OR_FULL}", profile)
         if "{CORE_STANDARD_OR_FULL}" in line:
             line = line.replace("{CORE_STANDARD_OR_FULL}", profile)
+        if "{KERNEL_CORE_STANDARD_OR_COMPLETE}" in line:
+            line = line.replace("{KERNEL_CORE_STANDARD_OR_COMPLETE}", framework_pack)
         if "{CORE_STANDARD_OR_COMPLETE}" in line:
             line = line.replace("{CORE_STANDARD_OR_COMPLETE}", framework_pack)
         match = TARGET_PATH_RE.match(line)
@@ -272,8 +276,14 @@ def project_router(
             )
         }
 
-    if not path_available(".ai/project/consistency-map.json", selected):
-        projected.pop("consistency_routing", None)
+    descriptor_routes = {
+        "consistency_routing": ".ai/project/consistency-map.json",
+        "migration_routing": ".ai/assistant/context/migration-routing.json",
+        "project_knowledge_routing": ".ai/assistant/context/project-knowledge-routing.json",
+    }
+    for route, required_path in descriptor_routes.items():
+        if not path_available(required_path, selected):
+            projected.pop(route, None)
     return _filter_paths(projected, selected)
 
 

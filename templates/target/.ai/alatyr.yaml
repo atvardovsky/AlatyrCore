@@ -4,13 +4,13 @@ framework:
   version: "{ALATYR_CORE_VERSION}"
   source: "{ALATYR_CORE_SOURCE}"
   template_version: "{ALATYR_TEMPLATE_VERSION}"
-  pack: "{CORE_STANDARD_OR_COMPLETE}"
+  pack: "{KERNEL_CORE_STANDARD_OR_COMPLETE}"
   rule_registry: ".ai/framework/rule-registry.json"
 installation:
   id: "{INSTALLATION_ID}"
   date: "{INSTALLATION_DATE}"
   mode: "{NEW_INSTALL_OR_UPGRADE}"
-  support_profile: "{CORE_STANDARD_OR_FULL}"
+  support_profile: "{KERNEL_CORE_STANDARD_OR_FULL}"
   state: "scaffolded"
   state_record: ".ai/assistant/installation-state.json"
 owner:

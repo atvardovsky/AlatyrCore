@@ -198,9 +198,12 @@ def iter_template_files(
 def resolved_framework_pack(
     profile: str, requested: str, enabled_modules: set[str] | None = None
 ) -> str:
-    profile_pack = {"core": "core", "standard": "standard", "full": "complete"}[
-        profile
-    ]
+    profile_pack = {
+        "kernel": "kernel",
+        "core": "core",
+        "standard": "standard",
+        "full": "complete",
+    }[profile]
     module_pack = minimum_pack(enabled_modules or set())
     required = max([profile_pack, module_pack], key=PACK_ORDER.__getitem__)
     if requested == "matched":
@@ -349,13 +352,21 @@ def projected_template_content(
             encoding="utf-8"
         )
         semantic_index = FRAMEWORK_ROOT / "semantics" / "index.json"
+        projected_semantic_index = projected_framework_contents(framework_pack).get(
+            "semantics/index.json"
+        )
+        semantic_index_text = (
+            semantic_index.read_text(encoding="utf-8")
+            if projected_semantic_index is None
+            else projected_semantic_index
+        )
         semantic_terms = load_codebook(semantic_index, root=semantic_index.parent)
         return render_bootstrap_index(
             build_bootstrap_index(
                 manifest_text,
                 project_map_text,
                 router_text,
-                semantic_index_text=semantic_index.read_text(encoding="utf-8"),
+                semantic_index_text=semantic_index_text,
                 semantic_terms=semantic_terms,
             )
         )
@@ -506,8 +517,9 @@ def main() -> int:
         choices=["matched", *pack_names()],
         default="matched",
         help=(
-            "Portable framework pack. matched selects core, standard, or "
-            "complete from the target support profile; a broader pack is allowed."
+            "Portable framework pack. matched selects kernel, core, standard, "
+            "or complete from the target support profile; a broader pack is "
+            "allowed."
         ),
     )
     parser.add_argument(
@@ -530,9 +542,10 @@ def main() -> int:
         choices=profile_names(),
         default="full",
         help=(
-            "Target adapter support profile. core installs required adapter "
-            "surfaces, standard adds common lifecycle/product operations, and "
-            "full preserves the historical all-template behavior."
+            "Target adapter support profile. kernel installs minimal adapter "
+            "surfaces, core adds durable evidence and project knowledge, "
+            "standard adds common lifecycle/product operations, and full "
+            "preserves the historical all-template behavior."
         ),
     )
     parser.add_argument(

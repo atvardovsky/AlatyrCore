@@ -297,7 +297,7 @@ def main() -> int:
     framework_pack = manifest_value(target, ("framework", "pack"))
     if framework_pack == "unknown":
         framework_pack = "complete"
-    if framework_pack not in {"core", "standard", "complete"}:
+    if framework_pack not in {"kernel", "core", "standard", "complete"}:
         print(
             f"Unsupported target framework.pack: {framework_pack}",
             file=sys.stderr,
@@ -316,9 +316,11 @@ def main() -> int:
         to_framework = source / "framework"
         if framework_pack != "complete":
             projection_target = Path(directory)
-            support_profile = {"core": "core", "standard": "standard"}[
-                framework_pack
-            ]
+            support_profile = {
+                "kernel": "kernel",
+                "core": "core",
+                "standard": "standard",
+            }[framework_pack]
             projection = run(
                 [
                     sys.executable,

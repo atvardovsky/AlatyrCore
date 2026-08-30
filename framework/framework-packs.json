@@ -2,18 +2,15 @@
   "schema_version": 1,
   "pack_kind": "alatyr-framework-pack-catalog",
   "packs": {
-    "core": {
-      "description": "Portable rule owners and supporting guidance required by the core target scaffold.",
+    "kernel": {
+      "description": "Smallest portable rule-owner pack for low-cost target bootstrap, ownership, integrity, authorization, support-state, and final-evidence surfaces.",
       "rule_ids": [
         "ALATYR-ADAPTER-001",
         "ALATYR-APPROVAL-001",
         "ALATYR-AUTHORIZATION-001",
-        "ALATYR-BRIDGE-001",
         "ALATYR-CONTEXT-001",
-        "ALATYR-ENGINEERING-EVIDENCE-001",
         "ALATYR-EVIDENCE-001",
         "ALATYR-INTEGRITY-001",
-        "ALATYR-KNOWLEDGE-001",
         "ALATYR-LIFECYCLE-001",
         "ALATYR-MODULE-001",
         "ALATYR-OPERATION-001",
@@ -27,23 +24,34 @@
         "README.md",
         "semantics/index.json",
         "semantics/core.json",
-        "semantics/change.json",
-        "semantics/knowledge.json",
-        "semantics/collaboration.json",
         "semantics/infrastructure.json",
-        "adapter-maturity.md",
-        "ai-infrastructure-recommendations.md",
-        "ai-infrastructure-routing.md",
         "capabilities.json",
-        "consistency-model.md",
         "context-discovery.md",
         "context-router.md",
         "contour.md",
         "framework-packs.json",
-        "installed-operations.md",
         "portability.md",
+        "support-information.md"
+      ]
+    },
+    "core": {
+      "description": "Kernel framework plus durable evidence, project knowledge, bridge, AI infrastructure, and common support guidance.",
+      "extends": "kernel",
+      "rule_ids": [
+        "ALATYR-BRIDGE-001",
+        "ALATYR-ENGINEERING-EVIDENCE-001",
+        "ALATYR-KNOWLEDGE-001"
+      ],
+      "additional_files": [
+        "semantics/change.json",
+        "semantics/knowledge.json",
+        "semantics/collaboration.json",
+        "adapter-maturity.md",
+        "ai-infrastructure-recommendations.md",
+        "ai-infrastructure-routing.md",
+        "consistency-model.md",
+        "installed-operations.md",
         "skill-adaptation.md",
-        "support-information.md",
         "testing-guidance.md"
       ]
     },

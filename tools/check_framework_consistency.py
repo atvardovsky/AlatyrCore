@@ -517,14 +517,18 @@ def main() -> int:
 
     module_profile = read_text("templates/target/.ai/assistant/module-profile.md")
     for required_module_text in [
-        "## Required Core Profile",
-        "Core item: `contours`",
-        "Core item: `manifest-and-versioning`",
-        "Core item: `adapter-ownership`",
-        "Core item: `context-profiles`",
-        "Core item: `source-of-truth-registry`",
-        "Core item: `risk-approval-integrity`",
-        "Core item: `validation-and-final-evidence`",
+        "## Kernel And Core Profiles",
+        "Kernel item: `contours`",
+        "Kernel item: `manifest-and-versioning`",
+        "Kernel item: `adapter-ownership`",
+        "Kernel item: `context-profiles`",
+        "Kernel item: `source-of-truth-registry`",
+        "Kernel item: `risk-approval-integrity`",
+        "Kernel item: `current-scope-action-authorization`",
+        "Kernel item: `validation-and-final-evidence`",
+        "Kernel item: `support-information-state`",
+        "Core profile addition: `durable-engineering-evidence`",
+        "Core profile addition: `project-knowledge-delivery`",
         "Module: `blueprint-change`",
         "Module: `diagrams`",
         "Module: `ai-infrastructure`",
@@ -1305,7 +1309,7 @@ def main() -> int:
         module_profile_tool_text = read_text("tools/check_module_profile.py")
         for required_module_profile_tool_text in [
             "module profile template",
-            "CORE_ITEMS",
+            "PROFILE_ITEMS",
             "capabilities.json",
             "OK: checked",
         ]:

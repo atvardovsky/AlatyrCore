@@ -1469,6 +1469,7 @@
       ],
       "implementation_paths": [
         "tools/check_support_information.py",
+        "tools/framework_packaging.py",
         "tools/impact_graph.py",
         "tools/manage_support_generation.py",
         "tools/plan_support_impact.py",
@@ -1498,6 +1499,7 @@
         "tools/check_lifecycle_conformance.py",
         "tools/render_context_catalogs.py",
         "tools/check_support_information.py",
+        "tools/framework_packaging.py",
         "tools/impact_graph.py",
         "tools/manage_support_generation.py",
         "tools/plan_support_impact.py",

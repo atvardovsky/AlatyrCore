@@ -18,7 +18,7 @@ from framework_packaging import (
 )
 
 
-EXPECTED_PACKS = ["core", "standard", "complete"]
+EXPECTED_PACKS = ["kernel", "core", "standard", "complete"]
 REQUIRED_PROJECTED = {
     "README.md",
     "context-index.json",
@@ -49,6 +49,8 @@ def main() -> int:
             if path.is_file() and path.suffix in {".md", ".json"}
         }
         selections = {name: resolve_framework_files(name) for name in EXPECTED_PACKS}
+        if not selections["kernel"] < selections["core"]:
+            failures.append("kernel framework pack must be a strict subset of core")
         if not selections["core"] < selections["standard"]:
             failures.append("core framework pack must be a strict subset of standard")
         if not selections["standard"] < selections["complete"]:
@@ -70,7 +72,7 @@ def main() -> int:
                 continue
             for rule_id in metadata.get("owns_rules", []):
                 dependencies[rule_id] = set(metadata.get("depends_on", []))
-        for name in ["core", "standard"]:
+        for name in ["kernel", "core", "standard"]:
             registry = project_registry(name)
             rule_ids = {rule["id"] for rule in registry["rules"]}
             for rule_id in sorted(rule_ids):

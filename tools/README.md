@@ -755,16 +755,19 @@ py -3 .\tools\check_subagent_delegation.py
 
 `scaffold_target_structure.py` copies placeholder target templates and
 framework files into an existing target directory. It is dry-run by default.
-The `full` profile exposes the complete support-template set, while
-assistant-native bridge files remain opt-in. Use repeatable
+Use `kernel` for the minimal bootstrap, routing, authorization, integrity,
+support-state, and final-evidence surface. Use `core` when durable
+engineering evidence and project-knowledge delivery are needed, `standard` for
+common lifecycle/product operations, and `full` for the complete
+support-template set. Assistant-native bridge files remain opt-in. Use
+repeatable
 `--assistant-surface <id-or-alias>` selections only for clients the target
 actually uses; no native bridge is scaffolded by default. Native bridge
 selection currently requires `--profile full` because those compact bridges
-route to the complete assistant support layer. Use `core` for required adapter
-support surfaces or `standard` for common product and lifecycle operations. By
-default, `--framework-pack matched` selects the
-`core`, `standard`, or `complete` portable pack that matches the support
-profile. Selective packs project their rule registry, ownership map, and file
+route to the complete assistant support layer. By default,
+`--framework-pack matched` selects the
+`kernel`, `core`, `standard`, or `complete` portable pack that matches the
+support profile. Selective packs project their rule registry, ownership map, and file
 inventory so omitted optional owners are explicit. The projection layer also
 removes path claims for omitted surfaces, filters operation routes to installed
 flows, derives the compact operation index and bootstrap index, and accepts
@@ -780,6 +783,7 @@ Linux or macOS:
 
 ```sh
 python3 tools/scaffold_target_structure.py --target /path/to/target-repo
+python3 tools/scaffold_target_structure.py --target /path/to/target-repo --profile kernel --write
 python3 tools/scaffold_target_structure.py --target /path/to/target-repo --profile core --write
 python3 tools/scaffold_target_structure.py --target /path/to/target-repo --profile core --enable-module ai-infrastructure --write
 python3 tools/scaffold_target_structure.py --target /path/to/target-repo --profile core --framework-pack complete --write
@@ -808,8 +812,8 @@ instruction sources, client version/configuration, and runtime loading
 evidence. Use `--overwrite-existing` only after explicit approval for the exact
 target path and protected surfaces.
 
-`check_scaffold_profiles.py` verifies profile inheritance, required core
-surfaces, full-template coverage, bridge isolation, and profile-to-pack
+`check_scaffold_profiles.py` verifies profile inheritance, required kernel and
+core surfaces, full-template coverage, bridge isolation, and profile-to-pack
 mapping. `check_framework_packs.py` validates pack inheritance, rule dependency
 closure, projected registries, and inventories.
 
@@ -961,8 +965,11 @@ python3 tools/check_context_costs.py
 
 `report_support_costs.py` measures standing Alatyr support-surface footprint
 for a scaffold profile or installed target adapter. Use it before enabling a
-large profile or optional module so the assistant can discuss support cost from
-evidence instead of loading broad directories. It reports files, words,
+broader profile or optional module so the assistant can discuss support cost
+from evidence instead of loading broad directories. The `kernel` profile is
+the lowest-cost scaffold option; broader profiles add surfaces only when the
+target needs the extra lifecycle, evidence, or operation support. It reports
+files, words,
 estimated tokens at four characters per token, largest groups, optional module
 costs, projected operation count, and assistant-surface duplication signals.
 It does not replace logical integrity review or prove model billing.

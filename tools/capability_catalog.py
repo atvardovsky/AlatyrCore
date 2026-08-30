@@ -9,7 +9,7 @@ from typing import Any, Iterable
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG_PATH = ROOT / "framework" / "capabilities.json"
-PACK_ORDER = {"core": 0, "standard": 1, "complete": 2}
+PACK_ORDER = {"kernel": 0, "core": 1, "standard": 2, "complete": 3}
 
 
 def load_catalog(path: Path = CATALOG_PATH) -> dict[str, Any]:
@@ -142,7 +142,7 @@ def removable_target_files(
 
 def minimum_pack(selected: Iterable[str]) -> str:
     modules = load_modules()
-    required = "core"
+    required = "kernel"
     for module_id in dependency_closure(selected, modules):
         pack = modules[module_id].get("min_framework_pack")
         if pack not in PACK_ORDER:

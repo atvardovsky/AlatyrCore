@@ -42,8 +42,8 @@
       ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 120,
-      "content_digest": "sha256:7ace1bba535b8065f73e2ff550caaedbd0e3635e9b8321146856be6791fd81cc"
+      "estimated_words": 149,
+      "content_digest": "sha256:6b81ec764fe66cc058fcfeeefff56c15f232ab33cec8635cf440b607f7dbb730"
     },
     {
       "id": "framework.lifecycle.lifecycle-md",
@@ -120,8 +120,8 @@
       ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 502,
-      "content_digest": "sha256:c245c21731e2de644a52e508693d77e718b94625aa30ee5b5fc7c6114abb5594"
+      "estimated_words": 527,
+      "content_digest": "sha256:700465094056abe1435f672b7bc97fb7efcc959ce560b6ccf8f169fc8fded035"
     }
   ]
 }

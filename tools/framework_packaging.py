@@ -9,7 +9,10 @@ from typing import Any
 
 from render_rule_registry_docs import render_ownership, render_registry
 from render_context_catalogs import build_framework_catalog_contents
-from target_adapter_validation.framework_baseline import render_pack_readme
+from target_adapter_validation.framework_baseline import (
+    project_semantic_index,
+    render_pack_readme,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -143,6 +146,10 @@ def projected_framework_contents(pack: str) -> dict[str, str | None]:
         return {name: None for name in selected_files}
     projected_registry = project_registry(pack)
     contents: dict[str, str | None] = {name: None for name in selected_files}
+    if "semantics/index.json" in selected_files:
+        contents["semantics/index.json"] = project_semantic_index(
+            FRAMEWORK_ROOT, selected_files
+        )
     contents["README.md"] = render_pack_readme(pack, selected_files)
     contents["rule-registry.json"] = json.dumps(projected_registry, indent=2) + "\n"
     contents["rule-registry.md"] = render_registry(projected_registry)

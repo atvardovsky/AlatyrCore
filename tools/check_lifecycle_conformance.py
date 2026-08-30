@@ -35,7 +35,12 @@ from validate_target_adapter import (
 
 ROOT = Path(__file__).resolve().parents[1]
 GOLDEN = ROOT / "conformance" / "golden" / "lifecycle" / "accepted-profiles.json"
-PROFILE_PACKS = {"core": "core", "standard": "standard", "full": "complete"}
+PROFILE_PACKS = {
+    "kernel": "kernel",
+    "core": "core",
+    "standard": "standard",
+    "full": "complete",
+}
 PLACEHOLDER = re.compile(r"\{[A-Z0-9_]+(?:_[A-Z0-9_]+)*\}")
 
 
@@ -56,7 +61,9 @@ def replacement(name: str) -> str:
         "ALATYR_CORE_VERSION": (ROOT / "VERSION").read_text(encoding="utf-8").strip(),
         "ALATYR_TEMPLATE_VERSION": (ROOT / "TEMPLATE_VERSION").read_text(encoding="utf-8").strip(),
         "CORE_STANDARD_OR_COMPLETE": "core",
+        "KERNEL_CORE_STANDARD_OR_COMPLETE": "core",
         "CORE_STANDARD_OR_FULL": "core",
+        "KERNEL_CORE_STANDARD_OR_FULL": "core",
         "COMPLETE_OR_MISSING_GAPS": "complete",
         "SUPPORTED_ASSISTANT": "codex",
         "SUPPORTED_UNSUPPORTED_OR_UNKNOWN": "unknown",
@@ -614,8 +621,8 @@ def main() -> int:
             print(f"FAIL: {failure}", file=sys.stderr)
         return 1
     print(
-        "OK: accepted core, standard, and full profile installation, approval scope, "
-        "drift, and update cycles passed"
+        "OK: accepted kernel, core, standard, and full profile installation, "
+        "approval scope, drift, and update cycles passed"
     )
     return 0
 

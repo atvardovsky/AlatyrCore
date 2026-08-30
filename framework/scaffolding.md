@@ -54,8 +54,10 @@ must not duplicate installation logic.
 A source scaffolder may expose bounded support profiles when their contents are
 deterministic and machine-checked:
 
-- `core`: required adapter, routing, ownership, integrity, evidence, and
-  manifest-referenced support surfaces
+- `kernel`: minimal adapter, bootstrap, routing, ownership, integrity,
+  authorization, support-state, and final-evidence surfaces
+- `core`: kernel plus durable engineering evidence, project knowledge,
+  change-impact, and common documentation support surfaces
 - `standard`: core plus common blueprint, recheck, help, and lifecycle
   operation surfaces
 - `full`: all target templates, optional modules, and assistant bridges
@@ -63,6 +65,7 @@ deterministic and machine-checked:
 The selected scaffold support profile limits target placeholder files. A
 matching portable framework pack may also limit the copied framework corpus:
 
+- `kernel` support maps to the `kernel` framework pack
 - `core` support maps to the `core` framework pack
 - `standard` support maps to the `standard` framework pack
 - `full` support maps to the `complete` framework pack

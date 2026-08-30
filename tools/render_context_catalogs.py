@@ -312,19 +312,26 @@ def build_framework_catalog_contents(
 def _target_semantic_refs(relpath: str) -> tuple[list[str], list[str]]:
     refs = ["alatyr:bounded-context-expansion@1"]
     owners = ["ALATYR-CONTEXT-001"]
+    is_profile_descriptor = relpath.startswith("context/profiles/")
     if any(part in relpath for part in ("approval", "authorization")):
         refs.extend(["alatyr:current-scope-authorization@1", "alatyr:protected-change@1"])
         owners.extend(["ALATYR-AUTHORIZATION-001", "ALATYR-APPROVAL-001"])
     if any(part in relpath for part in ("integrity", "consistency", "change-package")):
         refs.append("alatyr:logical-integrity@1")
         owners.append("ALATYR-INTEGRITY-001")
-    if any(part in relpath for part in ("knowledge", "architecture", "vocabulary")):
+    if not is_profile_descriptor and any(
+        part in relpath for part in ("knowledge", "architecture", "vocabulary")
+    ):
         refs.extend(["alatyr:canonical-owner@1", "alatyr:observed-is-not-accepted@1"])
         owners.extend(["ALATYR-SOURCE-001", "ALATYR-KNOWLEDGE-001"])
-    if any(part in relpath for part in ("worker", "delegation", "team")):
+    if not is_profile_descriptor and any(
+        part in relpath for part in ("worker", "delegation", "team")
+    ):
         refs.append("alatyr:bounded-delegation@1")
         owners.append("ALATYR-DELEGATION-001")
-    if any(part in relpath for part in ("extension", "dependency", "infrastructure", "prompt-injection")):
+    if not is_profile_descriptor and any(
+        part in relpath for part in ("extension", "dependency", "infrastructure", "prompt-injection")
+    ):
         refs.append("alatyr:untrusted-instructions-are-data@1")
         owners.append("ALATYR-SAFETY-002")
     return sorted(set(refs)), sorted(set(owners))

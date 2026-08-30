@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PROFILE = ROOT / "templates" / "target" / ".ai" / "assistant" / "module-profile.md"
 CATALOG = ROOT / "framework" / "capabilities.json"
 
-CORE_ITEMS = [
+PROFILE_ITEMS = [
     "contours",
     "manifest-and-versioning",
     "adapter-ownership",
@@ -26,7 +26,7 @@ CORE_ITEMS = [
     "project-knowledge-delivery",
     "support-information-state",
 ]
-CORE_FIELDS = [
+PROFILE_ITEM_FIELDS = [
     "State:",
     "Owner or file:",
     "Required files:",
@@ -45,7 +45,9 @@ MODULE_FIELDS = [
     "Residual risk:",
     "Next action:",
 ]
-CORE_HEADING = re.compile(r"^Core item: `([^`]+)`\s*$", re.MULTILINE)
+PROFILE_ITEM_HEADING = re.compile(
+    r"^(?:Kernel item|Core profile addition): `([^`]+)`\s*$", re.MULTILINE
+)
 MODULE_HEADING = re.compile(r"^Module: `([^`]+)`\s*$", re.MULTILINE)
 
 
@@ -97,11 +99,12 @@ def main() -> int:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
 
-    core_blocks = parse_blocks(text, CORE_HEADING)
+    profile_blocks = parse_blocks(text, PROFILE_ITEM_HEADING)
     module_blocks = parse_blocks(text, MODULE_HEADING)
 
     for required_text in [
         "## Shared Capability Surfaces",
+        "## Kernel And Core Profiles",
         ".ai/framework/capabilities.json",
         "preserve_on_disable",
         "another enabled producer",
@@ -109,16 +112,16 @@ def main() -> int:
         if required_text not in text:
             failures.append(f"module profile missing shared-surface rule: {required_text}")
 
-    for core_item in CORE_ITEMS:
-        block = core_blocks.get(core_item)
+    for profile_item in PROFILE_ITEMS:
+        block = profile_blocks.get(profile_item)
         if block is None:
-            failures.append(f"missing core item {core_item}")
+            failures.append(f"missing profile item {profile_item}")
             continue
         check_block(
             failures,
-            f"core item {core_item}",
+            f"profile item {profile_item}",
             block,
-            CORE_FIELDS,
+            PROFILE_ITEM_FIELDS,
             {
                 "State:",
                 "Evidence:",
@@ -156,8 +159,8 @@ def main() -> int:
             if required not in block:
                 failures.append(f"module {module_id} missing required file {required}")
 
-    for item in sorted(duplicate_values(CORE_HEADING.findall(text))):
-        failures.append(f"duplicate core item {item}")
+    for item in sorted(duplicate_values(PROFILE_ITEM_HEADING.findall(text))):
+        failures.append(f"duplicate profile item {item}")
     for module in sorted(duplicate_values(MODULE_HEADING.findall(text))):
         failures.append(f"duplicate optional module {module}")
 
@@ -167,7 +170,7 @@ def main() -> int:
         return 1
     print(
         "OK: checked module profile template with "
-        f"{len(CORE_ITEMS)} core items and {len(modules)} catalog modules"
+        f"{len(PROFILE_ITEMS)} profile items and {len(modules)} catalog modules"
     )
     return 0
 

@@ -16,16 +16,16 @@ another enabled producer. Preserve a target-owned shared surface when
 `preserve_on_disable` is true; any later cleanup requires explicit scope and
 evidence that no target facts or active capability output will be lost.
 
-## Required Core Profile
+## Kernel And Core Profiles
 
-Core profile state: `{COMPLETE_OR_MISSING_GAPS}`
+Selected support profile state: `{COMPLETE_OR_MISSING_GAPS}`
 Framework pack: `{CORE_STANDARD_OR_COMPLETE}`
 Pack inventory: `.ai/framework/file-inventory.json`
 Required pack expansion: `{NONE_OR_MODULE_OWNERS_TO_ADD}`
 Last reviewed: `{LAST_REVIEW_DATE}`
 Reviewed by: `{REVIEWER_OR_ROLE}`
 
-Core item: `contours`
+Kernel item: `contours`
 State: `{REQUIRED_ENABLED_OR_BLOCKED}`
 Owner or file: `{TARGET_OWNER_OR_FILE}`
 Required files:
@@ -37,7 +37,7 @@ Validation or review: `{CONTOURS_VALIDATION_OR_REVIEW}`
 Approval needs: `{CONTOURS_APPROVAL_NEEDS}`
 Residual risk: `{CONTOURS_RESIDUAL_RISK}`
 
-Core item: `manifest-and-versioning`
+Kernel item: `manifest-and-versioning`
 State: `{REQUIRED_ENABLED_OR_BLOCKED}`
 Owner or file: `.ai/alatyr.yaml`
 Required files:
@@ -49,7 +49,7 @@ Validation or review: `{MANIFEST_VERSIONING_VALIDATION_OR_REVIEW}`
 Approval needs: `{MANIFEST_VERSIONING_APPROVAL_NEEDS}`
 Residual risk: `{MANIFEST_VERSIONING_RESIDUAL_RISK}`
 
-Core item: `adapter-ownership`
+Kernel item: `adapter-ownership`
 State: `{REQUIRED_ENABLED_OR_BLOCKED}`
 Owner or file: `.ai/alatyr.yaml` and `{CODEOWNERS_OR_EQUIVALENT_OWNER_MAP}`
 Required files:
@@ -62,7 +62,7 @@ Validation or review: `{ADAPTER_OWNERSHIP_VALIDATION_OR_REVIEW}`
 Approval needs: `{ADAPTER_OWNERSHIP_APPROVAL_NEEDS}`
 Residual risk: `{ADAPTER_OWNERSHIP_RESIDUAL_RISK}`
 
-Core item: `context-profiles`
+Kernel item: `context-profiles`
 State: `{REQUIRED_ENABLED_OR_BLOCKED}`
 Owner or file: `.ai/assistant/context-profiles.md`
 Required files:
@@ -74,7 +74,7 @@ Validation or review: `{CONTEXT_PROFILES_VALIDATION_OR_REVIEW}`
 Approval needs: `{CONTEXT_PROFILES_APPROVAL_NEEDS}`
 Residual risk: `{CONTEXT_PROFILES_RESIDUAL_RISK}`
 
-Core item: `source-of-truth-registry`
+Kernel item: `source-of-truth-registry`
 State: `{REQUIRED_ENABLED_OR_BLOCKED}`
 Owner or file: `.ai/project/source-of-truth-registry.md`
 Required files:
@@ -86,7 +86,7 @@ Validation or review: `{SOURCE_OF_TRUTH_REGISTRY_VALIDATION_OR_REVIEW}`
 Approval needs: `{SOURCE_OF_TRUTH_REGISTRY_APPROVAL_NEEDS}`
 Residual risk: `{SOURCE_OF_TRUTH_REGISTRY_RESIDUAL_RISK}`
 
-Core item: `risk-approval-integrity`
+Kernel item: `risk-approval-integrity`
 State: `{REQUIRED_ENABLED_OR_BLOCKED}`
 Owner or file: `{TARGET_RISK_APPROVAL_INTEGRITY_OWNER}`
 Required files:
@@ -98,7 +98,7 @@ Validation or review: `{RISK_APPROVAL_INTEGRITY_VALIDATION_OR_REVIEW}`
 Approval needs: `{RISK_APPROVAL_INTEGRITY_APPROVAL_NEEDS}`
 Residual risk: `{RISK_APPROVAL_INTEGRITY_RESIDUAL_RISK}`
 
-Core item: `current-scope-action-authorization`
+Kernel item: `current-scope-action-authorization`
 State: `{REQUIRED_ENABLED_OR_BLOCKED}`
 Owner or file: `.ai/assistant/policies/action-authorization.json`
 Required files:
@@ -110,7 +110,7 @@ Validation or review: `{ACTION_AUTHORIZATION_VALIDATION_OR_REVIEW}`
 Approval needs: `{ACTION_AUTHORIZATION_APPROVAL_NEEDS}`
 Residual risk: `{ACTION_AUTHORIZATION_RESIDUAL_RISK}`
 
-Core item: `validation-and-final-evidence`
+Kernel item: `validation-and-final-evidence`
 State: `{REQUIRED_ENABLED_OR_BLOCKED}`
 Owner or file: `{TARGET_VALIDATION_OR_EVIDENCE_OWNER}`
 Required files:
@@ -122,7 +122,11 @@ Validation or review: `{VALIDATION_AND_EVIDENCE_VALIDATION_OR_REVIEW}`
 Approval needs: `{VALIDATION_AND_EVIDENCE_APPROVAL_NEEDS}`
 Residual risk: `{VALIDATION_AND_EVIDENCE_RESIDUAL_RISK}`
 
-Core item: `durable-engineering-evidence`
+Core and broader support profiles add the following durable evidence and
+project-knowledge surfaces. A `kernel` installation may defer them only with an
+explicit recorded reason and residual risk.
+
+Core profile addition: `durable-engineering-evidence`
 State: `{REQUIRED_ENABLED_OR_BLOCKED}`
 Owner or file: `.ai/project/engineering-evidence/README.md`
 Required files:
@@ -139,7 +143,7 @@ Validation or review: `{ENGINEERING_EVIDENCE_VALIDATION_OR_REVIEW}`
 Approval needs: `{ENGINEERING_EVIDENCE_STORAGE_OR_CAPTURE_APPROVAL_NEEDS}`
 Residual risk: `{ENGINEERING_EVIDENCE_RESIDUAL_RISK}`
 
-Core item: `project-knowledge-delivery`
+Core profile addition: `project-knowledge-delivery`
 State: `{REQUIRED_ENABLED_OR_BLOCKED}`
 Adoption state: `{ENABLED_EMPTY_POPULATED_OR_REUSE_OBSERVED}`
 Owner or file: `.ai/project/knowledge/README.md`
@@ -160,7 +164,10 @@ Validation or review: `{PROJECT_KNOWLEDGE_VALIDATION_OR_REVIEW}`
 Approval needs: `{PROJECT_KNOWLEDGE_PROMOTION_EXCEPTION_AND_OWNER_UPDATE_APPROVAL_NEEDS}`
 Residual risk: `{PROJECT_KNOWLEDGE_RESIDUAL_RISK}`
 
-Core item: `support-information-state`
+Support information remains part of the `kernel` baseline because it lets
+agents classify changed support surfaces without loading the full adapter.
+
+Kernel item: `support-information-state`
 State: `{REQUIRED_ENABLED_OR_BLOCKED}`
 Owner or file: `.ai/project/support-policy.json`
 Required files:

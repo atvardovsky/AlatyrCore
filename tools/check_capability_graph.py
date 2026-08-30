@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / "framework" / "capabilities.json"
 SCHEMA = ROOT / "schemas" / "alatyr-capabilities.schema.json"
 TARGET = ROOT / "templates" / "target"
-PACK_ORDER = {"core": 0, "standard": 1, "complete": 2}
+PACK_ORDER = {"kernel": 0, "core": 1, "standard": 2, "complete": 3}
 
 
 def load_object(path: Path) -> dict[str, Any]:

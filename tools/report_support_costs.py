@@ -353,7 +353,11 @@ def main() -> int:
     parser.add_argument("--target", type=Path)
     parser.add_argument("--output", type=Path)
     parser.add_argument("--format", choices=["json", "text"], default="json")
-    parser.add_argument("--profile", choices=["core", "standard", "full"], default="core")
+    parser.add_argument(
+        "--profile",
+        choices=["kernel", "core", "standard", "full"],
+        default="core",
+    )
     parser.add_argument(
         "--enable-module",
         action="append",

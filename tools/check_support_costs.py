@@ -13,17 +13,19 @@ from report_support_costs import build_installed_report, build_scaffold_report
 
 ROOT = Path(__file__).resolve().parents[1]
 MAX_PROFILE_WORDS = {
+    "kernel": 95_000,
     "core": 105_000,
     "standard": 125_000,
     "full": 200_000,
 }
+PROFILE_ORDER = ["kernel", "core", "standard", "full"]
 
 
 def main() -> int:
     failures: list[str] = []
     reports = {
         profile: build_scaffold_report(profile)
-        for profile in ["core", "standard", "full"]
+        for profile in PROFILE_ORDER
     }
     words = {
         profile: report["combined_support"]["words"]
@@ -33,9 +35,15 @@ def main() -> int:
         profile: report["combined_support"]["files"]
         for profile, report in reports.items()
     }
-    if not (files["core"] < files["standard"] < files["full"]):
+    if not all(
+        files[left] < files[right]
+        for left, right in zip(PROFILE_ORDER, PROFILE_ORDER[1:])
+    ):
         failures.append(f"support profile file counts are not monotonic: {files}")
-    if not (words["core"] < words["standard"] < words["full"]):
+    if not all(
+        words[left] < words[right]
+        for left, right in zip(PROFILE_ORDER, PROFILE_ORDER[1:])
+    ):
         failures.append(f"support profile word counts are not monotonic: {words}")
     for profile, maximum in MAX_PROFILE_WORDS.items():
         if words[profile] > maximum:
@@ -100,7 +108,8 @@ def main() -> int:
         return 1
     print(
         "OK: checked standing support-cost reports "
-        f"core={files['core']} standard={files['standard']} full={files['full']}"
+        f"kernel={files['kernel']} core={files['core']} "
+        f"standard={files['standard']} full={files['full']}"
     )
     return 0
 

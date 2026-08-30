@@ -522,11 +522,12 @@ The full installed-operation and assistant workflow is documented in
 
 ## Start With The Smallest Profile
 
-Do not install every optional capability by default. Establish the required
-core profile first, then enable optional modules only when the target needs and
-can maintain them. The source scaffolder exposes `core`, `standard`, and `full`
-support profiles, repeatable `--enable-module` capability selection, and
-dependency-closed `core`, `standard`, and `complete` framework packs.
+Do not install every optional capability by default. Establish the smallest
+support profile that safely covers the target's current use of Alatyr, then
+enable optional modules only when the target needs and can maintain them. The
+source scaffolder exposes `kernel`, `core`, `standard`, and `full` support
+profiles, repeatable `--enable-module` capability selection, and
+dependency-closed `kernel`, `core`, `standard`, and `complete` framework packs.
 
 The [module profile](framework/module-profile.md) defines required and optional
 capabilities. The [context router](framework/context-router.md) keeps routine
@@ -534,7 +535,7 @@ tasks from loading the complete framework or project corpus.
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.34`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.35`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural

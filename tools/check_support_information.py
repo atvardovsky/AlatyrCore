@@ -12,6 +12,7 @@ from pathlib import Path
 
 import jsonschema
 
+from framework_packaging import resolve_framework_files
 from support_state import build_support_state, validate_policy
 
 
@@ -71,8 +72,8 @@ def main() -> int:
         )
         if support_rule.get("canonical_source") != "framework/support-information.md":
             failures.append("ALATYR-SUPPORT-001 canonical owner drifted")
-        packs = load(ROOT / "framework/framework-packs.json")
-        if "ALATYR-SUPPORT-001" not in packs["packs"]["core"]["rule_ids"]:
+        core_pack_files = resolve_framework_files("core")
+        if "support-information.md" not in core_pack_files:
             failures.append("core framework pack omits ALATYR-SUPPORT-001")
         capabilities = load(ROOT / "framework/capabilities.json")["modules"]
         if "support-generation" not in capabilities:

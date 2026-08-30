@@ -12,7 +12,7 @@ Installation id: `ALATYR-YYYYMMDD-short-name`
 - Existing CODEOWNERS or equivalent owner map:
 - Existing adapter owner, backup owner, review cadence, and last review:
 - Scaffolding helper used or planned:
-- Scaffold profile (`core` / `standard` / `full` / not used):
+- Scaffold profile (`kernel` / `core` / `standard` / `full` / not used):
 - Supported assistants:
 - Current logical installation scope:
 - Current user authorization (`inspect` / `modify` / `commit` / `publish` /
@@ -184,7 +184,7 @@ List what must not be changed.
 List reusable framework files to create or adapt in target `.ai/framework`,
 including Markdown framework docs and `framework/rule-registry.json`.
 
-Record the selected framework pack: `core`, `standard`, or `complete`. Explain
+Record the selected framework pack: `kernel`, `core`, `standard`, or `complete`. Explain
 any expansion required by enabled modules. A selective pack must include a
 projected rule registry, ownership map, and file inventory and must not claim
 rules whose canonical owner is absent.
