@@ -47,6 +47,7 @@ class SelectionResult:
     changed_paths: list[str]
     unmatched_changed_paths: list[str]
     platform: str
+    selection_details: dict[str, dict[str, Any]]
 
 
 def _valid_manifest_path(value: str) -> bool:
@@ -239,16 +240,66 @@ def supports_platform(check: dict[str, Any], platform: str) -> bool:
     return "all" in check["platforms"] or platform in check["platforms"]
 
 
+def _broad_trigger_patterns(check: dict[str, Any]) -> list[str]:
+    """Return trigger globs whose breadth should be visible in run reports."""
+
+    broad: list[str] = []
+    for pattern in check["trigger_paths"]:
+        if pattern == "**":
+            broad.append(pattern)
+            continue
+        if not pattern.endswith("/**"):
+            continue
+        prefix = pattern[:-3].rstrip("/")
+        if len(Path(prefix).parts) <= 2:
+            broad.append(pattern)
+    return broad
+
+
+def _selected_check(
+    check: dict[str, Any],
+    *,
+    profile: str,
+    changed_paths: list[str],
+    fell_back_to_full: bool,
+    details: dict[str, dict[str, Any]],
+) -> dict[str, Any]:
+    """Return a manifest check decorated with non-contract runner metadata."""
+
+    check_id = check["id"]
+    detail = details.get(check_id, {"reasons": [], "matched_changed_paths": []})
+    metadata = {
+        "profile": profile,
+        "changed_paths": changed_paths,
+        "changed_path_count": len(changed_paths),
+        "fell_back_to_full": fell_back_to_full,
+        "reasons": sorted(set(detail.get("reasons", []))),
+        "matched_changed_paths": sorted(set(detail.get("matched_changed_paths", []))),
+        "broad_trigger_patterns": _broad_trigger_patterns(check),
+    }
+    return {**check, "_selection": metadata}
+
+
 def select_check_plan(
     checks: list[dict[str, Any]],
     profile: str,
     changed_from: str | None,
     *,
     platform: str | None = None,
-) -> tuple[list[dict[str, Any]], bool]:
+) -> SelectionResult:
     selected_platform = platform or current_platform()
     changed: list[str] = []
     unmatched: list[str] = []
+    details: dict[str, dict[str, Any]] = {}
+
+    def note(check_id: str, reason: str, paths: list[str] | None = None) -> None:
+        detail = details.setdefault(
+            check_id, {"reasons": [], "matched_changed_paths": []}
+        )
+        detail["reasons"].append(reason)
+        if paths:
+            detail["matched_changed_paths"].extend(paths)
+
     if profile == "release":
         selected_ids = {
             check["id"]
@@ -256,6 +307,8 @@ def select_check_plan(
             if "full" in check["profiles"] or "release" in check["profiles"]
             if supports_platform(check, selected_platform)
         }
+        for check_id in selected_ids:
+            note(check_id, "release-profile")
     elif profile == "fast" and changed_from:
         selected_ids = {
             check["id"]
@@ -263,12 +316,16 @@ def select_check_plan(
             if check.get("always_for_changed", False)
             and supports_platform(check, selected_platform)
         }
+        for check_id in selected_ids:
+            note(check_id, "always-for-changed")
     else:
         selected_ids = {
             check["id"]
             for check in checks
             if profile in check["profiles"] and supports_platform(check, selected_platform)
         }
+        for check_id in selected_ids:
+            note(check_id, f"profile:{profile}")
 
     fell_back_to_full = False
     if profile == "fast" and changed_from:
@@ -285,12 +342,15 @@ def select_check_plan(
         if unmatched:
             fell_back_to_full = True
             selected_ids.update(check["id"] for check in full_checks)
+            for check in full_checks:
+                matched_paths = [path for path in changed if routes(check, path)]
+                note(check["id"], "full-fallback-unmatched", matched_paths)
         else:
-            selected_ids.update(
-                check["id"]
-                for check in full_checks
-                if any(routes(check, path) for path in changed)
-            )
+            for check in full_checks:
+                matched_paths = [path for path in changed if routes(check, path)]
+                if matched_paths:
+                    selected_ids.add(check["id"])
+                    note(check["id"], "changed-path-trigger", matched_paths)
 
     by_id = {check["id"]: check for check in checks}
 
@@ -300,19 +360,32 @@ def select_check_plan(
                 raise ValueError(
                     f"{check_id} depends on {dependency}, which does not support "
                     f"platform {selected_platform}"
-                )
+            )
             if dependency not in selected_ids:
                 selected_ids.add(dependency)
+                note(dependency, f"dependency-of:{check_id}")
                 add_dependencies(dependency)
 
     for check_id in list(selected_ids):
         add_dependencies(check_id)
+    selected = [
+        _selected_check(
+            check,
+            profile=profile,
+            changed_paths=changed,
+            fell_back_to_full=fell_back_to_full,
+            details=details,
+        )
+        for check in checks
+        if check["id"] in selected_ids
+    ]
     return SelectionResult(
-        selected=[check for check in checks if check["id"] in selected_ids],
+        selected=selected,
         fell_back_to_full=fell_back_to_full,
         changed_paths=changed,
         unmatched_changed_paths=unmatched,
         platform=selected_platform,
+        selection_details={check_id: details[check_id] for check_id in selected_ids if check_id in details},
     )
 
 
@@ -335,14 +408,43 @@ def selection_report(
     changed_from: str | None,
     plan: SelectionResult,
 ) -> dict[str, Any]:
+    checks: list[dict[str, Any]] = []
+    broad_triggered: list[dict[str, Any]] = []
+    resource_classes: dict[str, int] = {}
+    for check in plan.selected:
+        check_id = check["id"]
+        metadata = check.get("_selection", {})
+        resource_class = check.get("resource_class", "standard")
+        resource_classes[resource_class] = resource_classes.get(resource_class, 0) + 1
+        entry = {
+            "id": check_id,
+            "resource_class": resource_class,
+            "selection_reasons": metadata.get("reasons", []),
+            "matched_changed_paths": metadata.get("matched_changed_paths", []),
+            "broad_trigger_patterns": metadata.get("broad_trigger_patterns", []),
+        }
+        checks.append(entry)
+        if entry["broad_trigger_patterns"] and entry["selection_reasons"]:
+            broad_triggered.append(entry)
     return {
         "profile": profile,
         "platform": plan.platform,
         "changed_from": changed_from,
         "changed_path_count": len(plan.changed_paths),
+        "changed_paths": plan.changed_paths,
         "unmatched_changed_paths": plan.unmatched_changed_paths,
         "fell_back_to_full": plan.fell_back_to_full,
         "selected_check_ids": [check["id"] for check in plan.selected],
+        "resource_class_counts": dict(sorted(resource_classes.items())),
+        "checks": checks,
+        "broad_trigger_diagnostics": {
+            "selected_count": len(broad_triggered),
+            "checks": broad_triggered,
+            "limitation": (
+                "Broad triggers are allowed for source-owned contracts, but "
+                "large focused-run fanout should be reviewed before adding more."
+            ),
+        },
     }
 
 
@@ -370,6 +472,18 @@ def run_check(check: dict[str, Any], baseline: str | None) -> RunnerResult:
     command = resolved_command(check, baseline)
     environment = os.environ.copy()
     environment["PYTHONDONTWRITEBYTECODE"] = "1"
+    selection = check.get("_selection", {})
+    environment["ALATYR_CHECK_ID"] = str(check.get("id", ""))
+    environment["ALATYR_SOURCE_CHECK_PROFILE"] = str(selection.get("profile", ""))
+    environment["ALATYR_CHANGED_PATHS_JSON"] = json.dumps(
+        selection.get("changed_paths", []), ensure_ascii=True
+    )
+    environment["ALATYR_MATCHED_CHANGED_PATHS_JSON"] = json.dumps(
+        selection.get("matched_changed_paths", []), ensure_ascii=True
+    )
+    environment["ALATYR_SELECTION_REASONS_JSON"] = json.dumps(
+        selection.get("reasons", []), ensure_ascii=True
+    )
     try:
         result = subprocess.run(
             command,
@@ -440,11 +554,17 @@ def render_report(
     for check in selected:
         check_id = check["id"]
         observation = telemetry.get(check_id, {})
+        selected_metadata = check.get("_selection", {})
         common = {
             "resource_class": check.get("resource_class", "standard"),
             "timeout_seconds": check.get("timeout_seconds"),
             "duration_seconds": observation.get("duration_seconds", 0.0),
+            "queued_seconds": observation.get("queued_seconds", 0.0),
+            "completed_after_seconds": observation.get("completed_after_seconds", 0.0),
             "timed_out": observation.get("timed_out", False),
+            "selection_reasons": selected_metadata.get("reasons", []),
+            "matched_changed_paths": selected_metadata.get("matched_changed_paths", []),
+            "broad_trigger_patterns": selected_metadata.get("broad_trigger_patterns", []),
         }
         if check_id in blocked:
             checks.append(
@@ -472,14 +592,41 @@ def render_report(
         "schema_version": 2,
         "report_kind": "alatyr-source-check-run",
         "profile": profile,
+        "timing": telemetry.get(
+            "_summary",
+            {
+                "wall_seconds": 0.0,
+                "sum_check_duration_seconds": sum(
+                    item.get("duration_seconds", 0.0)
+                    for key, item in telemetry.items()
+                    if key != "_summary"
+                ),
+                "critical_path_candidate_seconds": max(
+                    [
+                        item.get("completed_after_seconds", 0.0)
+                        for key, item in telemetry.items()
+                        if key != "_summary"
+                    ]
+                    or [0.0]
+                ),
+            },
+        ),
         "selection": selection or {
             "profile": profile,
             "platform": current_platform(),
             "changed_from": None,
             "changed_path_count": 0,
+            "changed_paths": [],
             "unmatched_changed_paths": [],
             "fell_back_to_full": False,
             "selected_check_ids": [check["id"] for check in selected],
+            "resource_class_counts": {},
+            "checks": [],
+            "broad_trigger_diagnostics": {
+                "selected_count": 0,
+                "checks": [],
+                "limitation": "selection details unavailable",
+            },
         },
         "environment": environment_report(),
         "source_write_scope": {
@@ -547,6 +694,8 @@ def execute_checks(
     blocked: dict[str, list[str]] = {}
 
     observations = telemetry if telemetry is not None else {}
+    run_started = time.monotonic()
+    queued_since = {check["id"]: run_started for check in checks}
 
     def run_with_observation(
         check: dict[str, Any],
@@ -571,22 +720,43 @@ def execute_checks(
         return min(RESOURCE_CLASS_WEIGHTS[check.get("resource_class", "standard")], jobs)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=jobs) as executor:
-        while remaining:
-            newly_blocked: list[str] = []
-            for check_id, check in remaining.items():
-                failed_dependencies = [
-                    dependency
-                    for dependency in check["depends_on"]
-                    if dependency in blocked
-                    or (dependency in results and results[dependency][0] != 0)
-                ]
-                if failed_dependencies:
-                    blocked[check_id] = sorted(failed_dependencies)
-                    newly_blocked.append(check_id)
-            for check_id in newly_blocked:
-                remaining.pop(check_id)
+        running: dict[concurrent.futures.Future[Any], dict[str, Any]] = {}
+        running_weights: dict[concurrent.futures.Future[Any], int] = {}
+        running_weight = 0
 
-            ready = [
+        def block_failed_dependents() -> None:
+            changed = True
+            while changed:
+                changed = False
+                for check_id, check in list(remaining.items()):
+                    if any(
+                        dependency not in selected_ids
+                        for dependency in check["depends_on"]
+                    ):
+                        continue
+                    failed_dependencies = [
+                        dependency
+                        for dependency in check["depends_on"]
+                        if dependency in blocked
+                        or (dependency in results and results[dependency][0] != 0)
+                    ]
+                    if failed_dependencies:
+                        blocked[check_id] = sorted(failed_dependencies)
+                        remaining.pop(check_id)
+                        observations[check_id] = {
+                            "duration_seconds": 0.0,
+                            "queued_seconds": round(
+                                time.monotonic() - queued_since[check_id], 6
+                            ),
+                            "completed_after_seconds": round(
+                                time.monotonic() - run_started, 6
+                            ),
+                            "timed_out": False,
+                        }
+                        changed = True
+
+        def ready_checks() -> list[dict[str, Any]]:
+            return [
                 check
                 for check in checks
                 if check["id"] in remaining
@@ -596,42 +766,87 @@ def execute_checks(
                     for dependency in check["depends_on"]
                 )
             ]
-            if not ready:
+
+        def submit_ready() -> bool:
+            nonlocal running_weight
+            submitted = False
+            for check in ready_checks():
+                weight = resource_weight(check)
+                if running and running_weight + weight > jobs:
+                    continue
+                future = executor.submit(run_with_observation, check)
+                running[future] = check
+                running_weights[future] = weight
+                running_weight += weight
+                remaining.pop(check["id"])
+                observations[check["id"]] = {
+                    "queued_seconds": round(time.monotonic() - queued_since[check["id"]], 6)
+                }
+                submitted = True
+            return submitted
+
+        while remaining or running:
+            block_failed_dependents()
+            submit_ready()
+            if not running:
                 if remaining:
                     unresolved = ", ".join(sorted(remaining))
                     raise ValueError(f"unresolvable selected check dependencies: {unresolved}")
                 break
 
-            batch: list[dict[str, Any]] = []
-            remaining_capacity = jobs
-            for check in ready:
-                weight = resource_weight(check)
-                if weight <= remaining_capacity:
-                    batch.append(check)
-                    remaining_capacity -= weight
-            if not batch:
-                batch = [ready[0]]
-
-            futures = {
-                executor.submit(run_with_observation, check): check for check in batch
-            }
-            for future in concurrent.futures.as_completed(futures):
-                check = futures[future]
+            done, _pending = concurrent.futures.wait(
+                running, return_when=concurrent.futures.FIRST_COMPLETED
+            )
+            for future in done:
+                check = running.pop(future)
+                running_weight -= running_weights.pop(future)
                 check_id = check["id"]
                 try:
                     result, timed_out, duration_seconds = future.result()
                     results[check_id] = result
-                    observations[check_id] = {
-                        "duration_seconds": duration_seconds,
-                        "timed_out": timed_out,
-                    }
+                    observations[check_id].update(
+                        {
+                            "duration_seconds": duration_seconds,
+                            "completed_after_seconds": round(
+                                time.monotonic() - run_started, 6
+                            ),
+                            "timed_out": timed_out,
+                        }
+                    )
                 except Exception as exc:  # pragma: no cover - executor boundary
                     results[check_id] = (1, "", str(exc), [])
-                    observations[check_id] = {
-                        "duration_seconds": 0.0,
-                        "timed_out": False,
-                    }
-                remaining.pop(check_id)
+                    observations[check_id].update(
+                        {
+                            "duration_seconds": 0.0,
+                            "completed_after_seconds": round(
+                                time.monotonic() - run_started, 6
+                            ),
+                            "timed_out": False,
+                        }
+                    )
+        observations["_summary"] = {
+            "wall_seconds": round(time.monotonic() - run_started, 6),
+            "sum_check_duration_seconds": round(
+                sum(
+                    observation.get("duration_seconds", 0.0)
+                    for key, observation in observations.items()
+                    if key != "_summary"
+                ),
+                6,
+            ),
+            "critical_path_candidate_seconds": round(
+                max(
+                    [
+                        observation.get("completed_after_seconds", 0.0)
+                        for key, observation in observations.items()
+                        if key != "_summary"
+                    ]
+                    or [0.0]
+                ),
+                6,
+            ),
+            "jobs": jobs,
+        }
 
     return results, blocked
 

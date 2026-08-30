@@ -4,6 +4,23 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.45 - 2026-08-30
+
+- Increased the framework version to `0.1.0-alpha.45` and target template
+  version to `41`; adapter schema version remains `38` because no installed
+  adapter schema fields changed.
+- Added focused source-check selection telemetry, changed-path attribution,
+  dynamic scheduler backfill, and source unit-test narrowing so routine source
+  checks can run cheaper while preserving conservative fallback behavior.
+- Added support-delta and impact-plan digests, process-local support-cost
+  caches, lifecycle platform smoke validation, and a tool-complexity guardrail
+  for source helper maintenance.
+- Tightened target output contracts so installed operation-completion evidence
+  records context receipt, loaded files, expansion reasons, intentional
+  omissions, and residual context risk.
+- Added a reviewed source-release checkpoint for `0.1.0-alpha.44`; no rule
+  IDs were added, removed, or deprecated.
+
 ## 0.1.0-alpha.44 - 2026-08-30
 
 - Increased the framework version to `0.1.0-alpha.44`; adapter schema version

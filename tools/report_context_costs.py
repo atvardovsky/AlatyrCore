@@ -17,6 +17,7 @@ from render_context_catalogs import framework_base_files
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "templates" / "target"
 ROUTER = TARGET / ".ai" / "assistant" / "context-router.json"
+TEXT_CACHE: dict[Path, str] = {}
 
 
 def source_path(reference: str) -> Path | None:
@@ -42,7 +43,12 @@ def installed_path(target: Path, reference: str) -> Path | None:
 
 
 def _measure_text(path: Path) -> str:
-    return catalog_content_bytes(path).decode("utf-8")
+    resolved = path.resolve()
+    cached = TEXT_CACHE.get(resolved)
+    if cached is None:
+        cached = catalog_content_bytes(resolved).decode("utf-8")
+        TEXT_CACHE[resolved] = cached
+    return cached
 
 
 def measure_installed(target: Path, references: list[str]) -> dict[str, Any]:
@@ -58,11 +64,11 @@ def measure_installed(target: Path, references: list[str]) -> dict[str, Any]:
             missing.append(reference)
         else:
             resolved.append((reference, path))
-    texts = [_measure_text(path) for _, path in resolved]
-    characters = sum(len(value) for value in texts)
+    text_by_reference = {reference: _measure_text(path) for reference, path in resolved}
+    characters = sum(len(value) for value in text_by_reference.values())
     word_counts = {
-        reference: len(re.findall(r"\S+", _measure_text(path)))
-        for reference, path in resolved
+        reference: len(re.findall(r"\S+", text))
+        for reference, text in text_by_reference.items()
     }
     portable_paths = [
         reference for reference, _ in resolved if reference.startswith(".ai/framework/")
@@ -73,11 +79,11 @@ def measure_installed(target: Path, references: list[str]) -> dict[str, Any]:
     return {
         "declared_files": len(unique),
         "resolved_files": len(resolved),
-        "words": sum(len(re.findall(r"\S+", value)) for value in texts),
+        "words": sum(word_counts.values()),
         "portable_words": sum(word_counts[path] for path in portable_paths),
         "target_words": sum(word_counts[path] for path in target_paths),
         "characters": characters,
-        "bytes": sum(len(value.encode("utf-8")) for value in texts),
+        "bytes": sum(len(value.encode("utf-8")) for value in text_by_reference.values()),
         "estimated_tokens_4_chars": math.ceil(characters / 4),
         "resolved_paths": [reference for reference, _ in resolved],
         "portable_paths": portable_paths,
@@ -100,11 +106,11 @@ def measure(references: list[str]) -> dict[str, Any]:
             missing.append(reference)
         else:
             resolved.append((reference, path))
-    texts = [_measure_text(path) for _, path in resolved]
-    characters = sum(len(value) for value in texts)
+    text_by_reference = {reference: _measure_text(path) for reference, path in resolved}
+    characters = sum(len(value) for value in text_by_reference.values())
     word_counts = {
-        reference: len(re.findall(r"\S+", _measure_text(path)))
-        for reference, path in resolved
+        reference: len(re.findall(r"\S+", text))
+        for reference, text in text_by_reference.items()
     }
     portable_paths = [
         reference for reference, _ in resolved if reference.startswith(".ai/framework/")
@@ -115,11 +121,11 @@ def measure(references: list[str]) -> dict[str, Any]:
     return {
         "declared_files": len(unique),
         "resolved_files": len(resolved),
-        "words": sum(len(re.findall(r"\S+", value)) for value in texts),
+        "words": sum(word_counts.values()),
         "portable_words": sum(word_counts[path] for path in portable_paths),
         "target_words": sum(word_counts[path] for path in target_paths),
         "characters": characters,
-        "bytes": sum(len(value.encode("utf-8")) for value in texts),
+        "bytes": sum(len(value.encode("utf-8")) for value in text_by_reference.values()),
         "estimated_tokens_4_chars": math.ceil(characters / 4),
         "resolved_paths": [reference for reference, _ in resolved],
         "portable_paths": portable_paths,

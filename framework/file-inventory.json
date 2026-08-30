@@ -99,7 +99,7 @@
     {
       "path": "framework/catalog/support/context-index.json",
       "rule_ids": [],
-      "sha256": "1452f52bd15027abba87100ddd4ac9f0e56fc3d34e4f126974481c0d6634325c"
+      "sha256": "b25a40062346190af13969c79a0b0ba0bf82e57a402f4ee2faf28e158c9666d5"
     },
     {
       "path": "framework/change-packages.md",
@@ -135,7 +135,7 @@
     {
       "path": "framework/context-index.json",
       "rule_ids": [],
-      "sha256": "176ae2c90faf333707a5472d4e16c2c9fb2690907221a5a41e48ec9b9050c239"
+      "sha256": "fc5dcd70a4ad766d92e21f199304c534a21cb4b8796b2199e29e3d389c44fcda"
     },
     {
       "path": "framework/context-profiles.md",
@@ -363,7 +363,7 @@
       "rule_ids": [
         "ALATYR-SUPPORT-001"
       ],
-      "sha256": "2495d154740916089cf04dee8db2707ce93bdfed354e563fc63f2a3e681f42f4"
+      "sha256": "71aaf91f8d61b27b29d27d10c0345c06d9b19878c3cf826ddb5a7318b14122eb"
     },
     {
       "path": "framework/team-collaboration.md",
@@ -392,8 +392,8 @@
       "sha256": "dc1b84f72ca465f735d51ee5de02d3c26fd8054688556b4f11c1663eddc239da"
     }
   ],
-  "framework_version": "0.1.0-alpha.44",
+  "framework_version": "0.1.0-alpha.45",
   "inventory_kind": "alatyr-framework-files",
   "schema_version": 1,
-  "template_version": 40
+  "template_version": 41
 }

@@ -66,14 +66,17 @@ changed. Compare the recorded support state with current support files and, if
 a Git base is known, classify changed paths as support or product surfaces
 before loading broad support prose. The delta should return changed support
 paths, changed product paths, candidate support-owner context, heavy fallback
-surfaces that changed, and the next impact or refresh step.
+surfaces that changed, a deterministic delta digest, and the next impact or
+refresh step. The digest lets an assistant compare repeated runs cheaply; it
+does not prove that the changed set is correct or complete.
 
 When the optional consistency map is enabled, use changed Git paths, support
 state differences, explicit changed fact IDs, and the generated reverse index
 to select only applicable graph shards. Traverse accepted relationships within
 the target-owned depth and node limits. Return concrete surfaces, context item
 IDs, selected and skipped edges, required checks, unmapped paths, and residual
-gaps.
+gaps. Record the impact-plan digest so a later reviewer can see whether the
+same graph, changed paths, fact IDs, and selected relationships were evaluated.
 
 The impact report is a routing artifact. The assistant or reviewer must still
 identify semantic facts, re-derive invariants, classify risk, resolve canonical

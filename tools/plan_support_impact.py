@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -36,6 +37,16 @@ RELATIONSHIP_DISCOVERY_MARKERS = {
     ".graphql",
     ".proto",
 }
+
+
+def _digest_payload(value: dict[str, Any]) -> str:
+    payload = json.dumps(
+        value,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=True,
+    ).encode("utf-8")
+    return "sha256:" + hashlib.sha256(payload).hexdigest()
 
 
 def _changed_paths(target: Path, diff_ref: str | None) -> list[str]:
@@ -137,11 +148,35 @@ def main() -> int:
         for path in unmapped
         if Path(path).suffix.casefold() in RELATIONSHIP_DISCOVERY_MARKERS
     ]
+    changed_path_summary = {
+        "changed_path_count": len(all_changed_paths),
+        "support_difference_count": len(support_changes),
+        "mapped_path_count": sum(1 for node_ids in path_matches.values() if node_ids),
+        "unmapped_path_count": len(unmapped),
+        "digest": _digest_payload(
+            {
+                "changed_paths": all_changed_paths,
+                "path_matches": path_matches,
+                "explicit_fact_ids": sorted(set(args.fact_id)),
+            }
+        ),
+    }
     report = {
         "schema_version": 1,
         "report_kind": "target-support-impact-plan",
         "diff_ref": args.diff_ref,
         "graph_digest": graph.graph_digest,
+        "impact_plan_digest": _digest_payload(
+            {
+                "graph_digest": graph.graph_digest,
+                "changed_paths": all_changed_paths,
+                "explicit_fact_ids": sorted(set(args.fact_id)),
+                "selected_node_ids": selected,
+                "selected_edges": selected_edges,
+                "skipped_edges": skipped_edges,
+            }
+        ),
+        "changed_path_summary": changed_path_summary,
         "changed_paths": all_changed_paths,
         "support_changes": support_changes,
         "path_matches": path_matches,

@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import re
@@ -624,6 +625,13 @@ def exercise_profile(
         )
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--smoke",
+        action="store_true",
+        help="Run the lightweight kernel lifecycle proof for platform checks.",
+    )
+    args = parser.parse_args()
     failures: list[str] = []
     try:
         golden = json.loads(GOLDEN.read_text(encoding="utf-8"))
@@ -642,7 +650,8 @@ def main() -> int:
 
     with tempfile.TemporaryDirectory(prefix="alatyr-lifecycle-") as directory:
         root = Path(directory)
-        for support_profile, expected_pack in PROFILE_PACKS.items():
+        profiles = {"kernel": PROFILE_PACKS["kernel"]} if args.smoke else PROFILE_PACKS
+        for support_profile, expected_pack in profiles.items():
             exercise_profile(root, support_profile, expected_pack, failures)
 
     if failures:
@@ -650,8 +659,9 @@ def main() -> int:
             print(f"FAIL: {failure}", file=sys.stderr)
         return 1
     print(
-        "OK: accepted kernel, core, standard, and full profile installation, "
-        "approval scope, drift, and update cycles passed"
+        "OK: accepted "
+        + (", ".join(profiles))
+        + " profile installation, approval scope, drift, and update cycles passed"
     )
     return 0
 

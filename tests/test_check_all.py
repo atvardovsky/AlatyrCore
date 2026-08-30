@@ -20,6 +20,7 @@ from check_all import (  # noqa: E402
     render_report,
     resolve_report_path,
     run_check,
+    selection_report,
     select_check_plan,
     select_checks,
 )
@@ -266,6 +267,40 @@ class CheckGraphTests(unittest.TestCase):
         self.assertEqual(report["checks"][1]["status"], "blocked")
         self.assertFalse(report["checks"][1]["timed_out"])
         self.assertIsInstance(report["checks"][0]["duration_seconds"], float)
+        self.assertIn("queued_seconds", report["checks"][0])
+
+    def test_dynamic_scheduler_backfills_ready_dependents(self) -> None:
+        events: list[tuple[str, str, float]] = []
+        lock = threading.Lock()
+
+        def record(check_id: str, event: str) -> None:
+            with lock:
+                events.append((check_id, event, time.monotonic()))
+
+        def runner(item: dict[str, Any], _baseline: str | None):
+            check_id = item["id"]
+            record(check_id, "start")
+            if check_id == "first":
+                time.sleep(0.03)
+            elif check_id == "independent":
+                time.sleep(0.15)
+            else:
+                time.sleep(0.01)
+            record(check_id, "end")
+            return 0, "", "", [check_id]
+
+        selected = [
+            check("first"),
+            check("dependent", "first"),
+            check("independent"),
+        ]
+        execute_checks(selected, None, 2, runner=runner)
+
+        timestamps = {(check_id, event): value for check_id, event, value in events}
+        self.assertLess(
+            timestamps[("dependent", "start")],
+            timestamps[("independent", "end")],
+        )
 
     def test_runner_exception_is_recorded_as_a_failed_check(self) -> None:
         telemetry: dict[str, dict[str, Any]] = {}
@@ -348,6 +383,21 @@ class CheckGraphTests(unittest.TestCase):
         self.assertFalse(report["source_write_scope"]["preserved"])
         self.assertFalse(report["selection"]["fell_back_to_full"])
         self.assertEqual(report["selection"]["selected_check_ids"], ["failed"])
+        self.assertIn("timing", report)
+
+    def test_selection_report_explains_changed_path_routing(self) -> None:
+        item = {**check("matched"), "profiles": ["full"], "platforms": ["all"]}
+
+        from unittest.mock import patch
+
+        with patch("check_all.git_changed_paths", return_value=["area/matched/file.md"]):
+            plan = select_check_plan([item], "fast", "HEAD~1", platform="linux")
+
+        report = selection_report(profile="fast", changed_from="HEAD~1", plan=plan)
+
+        self.assertEqual(report["changed_paths"], ["area/matched/file.md"])
+        self.assertEqual(report["checks"][0]["selection_reasons"], ["changed-path-trigger"])
+        self.assertEqual(report["checks"][0]["matched_changed_paths"], ["area/matched/file.md"])
 
     def test_live_manifest_declares_complete_trigger_inputs(self) -> None:
         for item in load_manifest():

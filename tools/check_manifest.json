@@ -2034,7 +2034,59 @@
       "resource_class": "heavy",
       "timeout_seconds": 300,
       "profiles": [
-        "full",
+        "full"
+      ],
+      "depends_on": [
+        "capability-graph",
+        "scaffold-profiles",
+        "target-adapter-validator"
+      ],
+      "contract_inputs": [
+        "conformance/golden/lifecycle/**",
+        "framework/**",
+        "templates/target/**"
+      ],
+      "implementation_paths": [
+        "tools/agent_entry_packet.py",
+        "tools/bootstrap_index.py",
+        "tools/context_catalog.py",
+        "tools/check_lifecycle_conformance.py",
+        "tools/plan_target_upgrade.py",
+        "tools/render_context_catalogs.py",
+        "tools/render_installed_context_catalogs.py",
+        "tools/scaffold*.py",
+        "tools/scaffold_target_structure.py",
+        "tools/support_state.py",
+        "tools/target_adapter_validation/**",
+        "tools/validate_target_adapter.py"
+      ],
+      "trigger_paths": [
+        "conformance/golden/lifecycle/**",
+        "framework/**",
+        "templates/target/**",
+        "tools/agent_entry_packet.py",
+        "tools/bootstrap_index.py",
+        "tools/context_catalog.py",
+        "tools/check_lifecycle_conformance.py",
+        "tools/plan_target_upgrade.py",
+        "tools/render_context_catalogs.py",
+        "tools/render_installed_context_catalogs.py",
+        "tools/scaffold*.py",
+        "tools/scaffold_target_structure.py",
+        "tools/support_state.py",
+        "tools/target_adapter_validation/**",
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "id": "lifecycle-platform-smoke",
+      "command": [
+        "tools/check_lifecycle_conformance.py",
+        "--smoke"
+      ],
+      "resource_class": "standard",
+      "timeout_seconds": 180,
+      "profiles": [
         "platform"
       ],
       "depends_on": [
@@ -2196,6 +2248,32 @@
         "tools/check_check_manifest.py",
         "tools/evidence_contract.py",
         "tools/check_manifest.json"
+      ],
+      "resource_class": "light"
+    },
+    {
+      "id": "tool-complexity",
+      "command": [
+        "tools/check_tool_complexity.py"
+      ],
+      "profiles": [
+        "quick",
+        "fast",
+        "full"
+      ],
+      "contract_inputs": [
+        "tools/tool_complexity_allowlist.json"
+      ],
+      "implementation_paths": [
+        "tools/check_tool_complexity.py",
+        "tools/*.py",
+        "tools/**/*.py"
+      ],
+      "trigger_paths": [
+        "tools/check_tool_complexity.py",
+        "tools/*.py",
+        "tools/**/*.py",
+        "tools/tool_complexity_allowlist.json"
       ],
       "resource_class": "light"
     },

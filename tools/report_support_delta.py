@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import fnmatch
+import hashlib
 import json
 import sys
 from pathlib import Path, PurePosixPath
@@ -34,6 +35,16 @@ HEAVY_FALLBACKS = {
     ".ai/assistant/help-reference.md",
     STATE_PATH,
 }
+
+
+def _digest_payload(value: dict[str, Any]) -> str:
+    payload = json.dumps(
+        value,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=True,
+    ).encode("utf-8")
+    return "sha256:" + hashlib.sha256(payload).hexdigest()
 
 
 def _matches(path: str, pattern: str) -> bool:
@@ -130,15 +141,37 @@ def build_report(target: Path, diff_ref: str | None) -> dict[str, Any]:
     )
     heavy_changed = sorted(path for path in support_paths if path in HEAVY_FALLBACKS)
 
+    delta_identity = {
+        "diff_ref": diff_ref,
+        "baseline_digest": recorded.get("root_digest"),
+        "current_digest": current.get("root_digest"),
+        "changed_support_paths": support_paths,
+        "changed_product_paths": git_product,
+        "support_differences": support_differences,
+    }
+
     return {
         "schema_version": 1,
         "report_kind": "target-support-delta",
         "target": str(target),
         "diff_ref": diff_ref,
+        "delta_digest": _digest_payload(delta_identity),
         "baseline_digest": recorded.get("root_digest"),
         "current_digest": current.get("root_digest"),
         "support_state_current": recorded.get("root_digest") == current.get("root_digest")
         and recorded.get("policy_digest") == current.get("policy_digest"),
+        "changed_path_summary": {
+            "support_count": len(support_paths),
+            "product_count": len(git_product),
+            "support_difference_count": len(support_differences),
+            "digest": _digest_payload(
+                {
+                    "changed_support_paths": support_paths,
+                    "changed_product_paths": git_product,
+                    "support_differences": support_differences,
+                }
+            ),
+        },
         "changed_support_paths": support_paths,
         "changed_product_paths": git_product,
         "support_differences": support_differences,

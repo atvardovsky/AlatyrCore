@@ -76,8 +76,14 @@ class SupportDeltaTests(unittest.TestCase):
 
         self.assertEqual(report["report_kind"], "target-support-delta")
         self.assertFalse(report["support_state_current"])
+        self.assertRegex(report["delta_digest"], r"^sha256:[0-9a-f]{64}$")
         self.assertIn(".ai/project/rule.md", report["changed_support_paths"])
         self.assertIn("src/example.py", report["changed_product_paths"])
+        self.assertEqual(report["changed_path_summary"]["support_count"], 1)
+        self.assertEqual(report["changed_path_summary"]["product_count"], 1)
+        self.assertRegex(
+            report["changed_path_summary"]["digest"], r"^sha256:[0-9a-f]{64}$"
+        )
         self.assertEqual(
             report["changed_support_groups"],
             {"project": [".ai/project/rule.md"]},

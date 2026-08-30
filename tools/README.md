@@ -94,11 +94,12 @@ The stable command set is:
   `--write`; generate this state after other support derivatives
 - `support-diff`: read-only created/modified/removed support-surface report
 - `support-delta`: read-only support/product path delta for first-pass review
-  routing
+  routing; includes a deterministic delta digest for cheap rerun comparison
 - `support-costs`: read-only standing support-surface footprint report for a
   scaffold profile or installed target adapter
 - `impact`: bounded changed-path/fact traversal through accepted target
-  relationships; machine routing does not replace invariant reasoning
+  relationships; includes an impact-plan digest, but machine routing does not
+  replace invariant reasoning
 - `generate-support`: read-only plan/check by default; guarded apply is limited
   to declared staged deterministic outputs with current authorization and plan
   binding
@@ -127,6 +128,11 @@ The stable command set is:
 - `clean-artifacts`: dry-run report by default; removes old ignored `tmp/`
   entries only with `--apply`
 
+Source validation also includes `tool-complexity`, a no-growth guardrail for
+known oversized Python functions. It does not claim the validator is already
+optimally modular; it prevents new large functions or unreviewed growth while
+the legacy validators are extracted incrementally.
+
 ## Source Validation Runner
 
 `check_all.py` loads the schema-version-2 `tools/check_manifest.json` and runs dependency-aware
@@ -135,9 +141,21 @@ source validation. The default `full` profile remains the acceptance gate.
 guardrails without running the source unit suite. With `fast --changed-from`,
 explicit `trigger_paths` select focused checks while a small invariant set
 always runs; unmatched paths retain the conservative full-suite fallback.
+The runner passes changed-path and selection-reason metadata to checks. The
+source unit-test wrapper uses that metadata to run directly affected test
+modules for routed Python/tooling changes, skips unit tests for non-Python
+documentation-only fast changes, and falls back to the full unit suite when a
+tooling change cannot be mapped safely.
 `change --changed-from <ref>` uses the same ref as the release-drift baseline
 when `--from-ref` is omitted. `release` adds tag-baseline migration checks.
 `platform` runs the portable tooling contract slice used on macOS and Windows.
+It uses a lightweight lifecycle smoke proof for portability; the full
+multi-profile lifecycle matrix remains part of the `full` and release
+acceptance path.
+
+Machine-readable reports include per-check selection reasons, matched changed
+paths, broad-trigger diagnostics, queued time, run duration, and wall-clock
+timing. Use those fields to find over-broad routes before weakening checks.
 It validates this repository only; it is not a portable framework requirement
 for target projects.
 

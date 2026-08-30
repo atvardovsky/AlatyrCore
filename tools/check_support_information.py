@@ -246,6 +246,15 @@ def main() -> int:
                 report = json.loads(result.stdout)
                 if report.get("report_kind") != "target-support-delta":
                     failures.append("support-delta report kind is invalid")
+                if not isinstance(report.get("delta_digest"), str) or not report[
+                    "delta_digest"
+                ].startswith("sha256:"):
+                    failures.append("support-delta omitted deterministic delta digest")
+                summary = report.get("changed_path_summary")
+                if not isinstance(summary, dict) or not isinstance(
+                    summary.get("digest"), str
+                ):
+                    failures.append("support-delta omitted changed-path digest")
                 if ".ai/project/rule.md" not in report.get("changed_support_paths", []):
                     failures.append("support-delta omitted changed support path")
                 if "src/example.py" not in report.get("changed_product_paths", []):

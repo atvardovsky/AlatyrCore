@@ -1,0 +1,163 @@
+{
+  "schema_version": 1,
+  "allowlist_kind": "alatyr-source-tool-complexity-allowlist",
+  "max_function_lines": 300,
+  "known_large_functions": [
+    {
+      "path": "tools/check_context_router.py",
+      "qualname": "main",
+      "max_lines": 1000,
+      "reason": "legacy multi-contract checker; split by router contract area"
+    },
+    {
+      "path": "tools/check_debug_mode.py",
+      "qualname": "validate_fixture",
+      "max_lines": 666,
+      "reason": "legacy debug-mode fixture validator; split by fixture generation and assertions"
+    },
+    {
+      "path": "tools/check_debug_mode.py",
+      "qualname": "validate_v5_fixture",
+      "max_lines": 348,
+      "reason": "legacy debug-mode v5 fixture validator; split after fixture contract stabilizes"
+    },
+    {
+      "path": "tools/check_effectiveness_benchmark.py",
+      "qualname": "source_self_check",
+      "max_lines": 302,
+      "reason": "legacy benchmark self-check; extract report schema checks"
+    },
+    {
+      "path": "tools/check_framework_consistency.py",
+      "qualname": "main",
+      "max_lines": 2146,
+      "reason": "legacy broad framework checker; replace with focused owners over time"
+    },
+    {
+      "path": "tools/check_subagent_delegation.py",
+      "qualname": "main",
+      "max_lines": 416,
+      "reason": "legacy delegation checker; split provider-neutral and fixture checks"
+    },
+    {
+      "path": "tools/check_target_adapter_validator.py",
+      "qualname": "main",
+      "max_lines": 2882,
+      "reason": "validator regression harness; split into fixture builders and focused suites"
+    },
+    {
+      "path": "tools/check_team_collaboration.py",
+      "qualname": "main",
+      "max_lines": 315,
+      "reason": "legacy team collaboration checker; extract scenario assertions"
+    },
+    {
+      "path": "tools/project_knowledge.py",
+      "qualname": "validate_project_knowledge",
+      "max_lines": 465,
+      "reason": "project-knowledge schema validator; split route, promotion, and evidence checks"
+    },
+    {
+      "path": "tools/report_context_costs.py",
+      "qualname": "build_report",
+      "max_lines": 548,
+      "reason": "context-cost projection builder; split profile, overlay, and scenario measures"
+    },
+    {
+      "path": "tools/report_migration_diff.py",
+      "qualname": "render_report",
+      "max_lines": 466,
+      "reason": "migration report renderer; extract release, rule, and target action sections"
+    },
+    {
+      "path": "tools/target_adapter_validation/consistency_map.py",
+      "qualname": "ConsistencyMapModule.validate",
+      "max_lines": 378,
+      "reason": "consistency-map validator; split node, shard, and registry sync checks"
+    },
+    {
+      "path": "tools/target_adapter_validation/debug_mode.py",
+      "qualname": "validate_debug_mode",
+      "max_lines": 1998,
+      "reason": "debug-mode target validator; split lifecycle, record, policy, and evidence checks"
+    },
+    {
+      "path": "tools/target_adapter_validation/engineering_evidence.py",
+      "qualname": "validate_engineering_evidence",
+      "max_lines": 533,
+      "reason": "engineering-evidence validator; split index, record, binding, and privacy checks"
+    },
+    {
+      "path": "tools/validate_target_adapter.py",
+      "qualname": "Validator.check_architecture_knowledge",
+      "max_lines": 437,
+      "reason": "target validator method; extract architecture catalog and flow checks"
+    },
+    {
+      "path": "tools/validate_target_adapter.py",
+      "qualname": "Validator.check_change_packages",
+      "max_lines": 599,
+      "reason": "target validator method; extract change-package schema and retention checks"
+    },
+    {
+      "path": "tools/validate_target_adapter.py",
+      "qualname": "Validator.check_dependency_knowledge",
+      "max_lines": 337,
+      "reason": "target validator method; extract dependency export and catalog checks"
+    },
+    {
+      "path": "tools/validate_target_adapter.py",
+      "qualname": "Validator.check_discussion_diagrams",
+      "max_lines": 418,
+      "reason": "target validator method; extract diagram policy and presentation checks"
+    },
+    {
+      "path": "tools/validate_target_adapter.py",
+      "qualname": "Validator.check_extensions",
+      "max_lines": 390,
+      "reason": "target validator method; extract extension lifecycle and lock checks"
+    },
+    {
+      "path": "tools/validate_target_adapter.py",
+      "qualname": "Validator.check_operation_catalog",
+      "max_lines": 342,
+      "reason": "target validator method; extract operation catalog and alias checks"
+    },
+    {
+      "path": "tools/validate_target_adapter.py",
+      "qualname": "Validator.check_project_vocabulary",
+      "max_lines": 389,
+      "reason": "target validator method; extract term, alias, and dictionary checks"
+    },
+    {
+      "path": "tools/validate_target_adapter.py",
+      "qualname": "Validator.check_router",
+      "max_lines": 424,
+      "reason": "target validator method; extract context router sections"
+    },
+    {
+      "path": "tools/validate_target_adapter.py",
+      "qualname": "Validator.check_subagent_delegation",
+      "max_lines": 690,
+      "reason": "target validator method; extract delegation capability checks"
+    },
+    {
+      "path": "tools/validate_target_adapter.py",
+      "qualname": "Validator.check_team_collaboration",
+      "max_lines": 1153,
+      "reason": "target validator method; extract team policy, task, handoff, and review checks"
+    },
+    {
+      "path": "tools/validate_target_adapter.py",
+      "qualname": "Validator.check_test_first_development",
+      "max_lines": 349,
+      "reason": "target validator method; extract TDD policy and flow checks"
+    },
+    {
+      "path": "tools/validate_target_adapter.py",
+      "qualname": "Validator.check_workspace_modes",
+      "max_lines": 454,
+      "reason": "target validator method; extract workspace-mode routing and state checks"
+    }
+  ]
+}

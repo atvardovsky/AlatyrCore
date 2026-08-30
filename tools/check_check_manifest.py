@@ -57,6 +57,19 @@ def declaration_matches_source(path: str) -> bool:
     return any(item.exists() for item in matches)
 
 
+def broad_trigger_patterns(check: dict[str, Any]) -> list[str]:
+    patterns: list[str] = []
+    for pattern in check["trigger_paths"]:
+        if pattern == "**":
+            patterns.append(pattern)
+            continue
+        if pattern.endswith("/**"):
+            prefix = pattern[:-3].rstrip("/")
+            if len(Path(prefix).parts) <= 2:
+                patterns.append(pattern)
+    return patterns
+
+
 def evidence_contract_routing_failures(checks: list[dict[str, Any]]) -> list[str]:
     """Require evidence-status routing to cover every digest input.
 
@@ -137,6 +150,16 @@ def main() -> int:
         for failure in failures:
             print(f"FAIL: {failure}", file=sys.stderr)
         return 1
+    broad = {
+        check["id"]: broad_trigger_patterns(check)
+        for check in checks
+        if broad_trigger_patterns(check)
+    }
+    if broad:
+        print(
+            "INFO: broad trigger diagnostics are report-visible for "
+            f"{len(broad)} check entries"
+        )
     print(f"OK: checked {len(checks)} manifest check entries and checker coverage")
     return 0
 

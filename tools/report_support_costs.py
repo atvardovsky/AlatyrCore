@@ -48,10 +48,16 @@ ROOT_ENTRYPOINTS = {
     ".windsurfrules",
     "CODEOWNERS",
 }
+TEXT_CACHE: dict[Path, str] = {}
 
 
 def read_text(path: Path) -> str:
-    return path.read_text(encoding="utf-8", errors="replace")
+    resolved = path.resolve()
+    cached = TEXT_CACHE.get(resolved)
+    if cached is None:
+        cached = resolved.read_text(encoding="utf-8", errors="replace")
+        TEXT_CACHE[resolved] = cached
+    return cached
 
 
 def group_key(label: str) -> str:

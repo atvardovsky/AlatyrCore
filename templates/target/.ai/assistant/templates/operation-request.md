@@ -101,22 +101,25 @@ an AI infrastructure alias is used.
 
 ## Required Context
 
-- `AGENTS.md`
-- `AI_ASSISTANTS.md`
-- `.ai/alatyr.yaml`
-- `.ai/README.md`
-- `.ai/assistant/context-router.json`
-- `.ai/assistant/context-profiles.md`
-- `.ai/project/contour.md`
-- `.ai/project/source-of-truth-registry.md`
-- `.ai/assistant/contour.md`
-- `.ai/assistant/help.md`
-- `.ai/assistant/gates/checklist.md`
-- `{TARGET_PROJECT_SOURCE_OF_TRUTH}`
+Treat the target assistant entry point as already loaded by the host. Start
+with the micro-bootstrap route:
 
-Then select the smallest matching context profile and read the
-profile-required framework, project, assistant, flow, gate, policy, and
-validation files.
+- `.ai/assistant/bootstrap-index.json`
+- `.ai/assistant/entry-packet.json`
+
+Use `.ai/alatyr.yaml`, `.ai/README.md`, and
+`.ai/assistant/context-router.json` only when the bootstrap or entry packet is
+missing, stale, ambiguous, or under repair. Do not load the full source-of-
+truth registry, project contour, assistant contour, complete gate checklist,
+human context profile reference, or target source files before the selected
+profile, operation, area, fact, path, symbol, dependency, contract, risk, or
+conflict requires them.
+
+Then select the smallest matching context profile from the generated packet
+and read only the profile-required framework, project, assistant, flow, routed
+gate fragment, policy, and validation files. Record a context receipt for any
+expansion, material/protected operation, budget exception, or explicit
+context/cost claim.
 
 For large, multi-workstream, cross-boundary, budget-exceeding, or resumable
 work, add the `large-or-resumable` task-scale overlay and use

@@ -18,6 +18,19 @@
     ],
     "prior_authorization_invalidated": "{YES_NO_OR_NOT_APPLICABLE}"
   },
+  "context_receipt": {
+    "expected_route": "{CONTEXT_ROUTER_PROFILE_OPERATION_AND_OVERLAYS}",
+    "loaded_files": [
+      "{TARGET_RELATIVE_PATH_OR_NONE}"
+    ],
+    "expansion_reasons": [
+      "{BOUNDARY_CONFLICT_FAILED_CHECK_OR_NONE}"
+    ],
+    "intentionally_omitted": [
+      "{OMITTED_PATH_OR_SECTION_AND_REASON_OR_NONE}"
+    ],
+    "residual_context_risk": "{NONE_OR_RESIDUAL_RISK}"
+  },
   "changed_facts": [
     {
       "id": "{FACT_ID_OR_NONE}",

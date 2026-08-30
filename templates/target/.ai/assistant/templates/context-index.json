@@ -60,8 +60,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1424,
-      "content_digest": "sha256:d0f595b432ff468c3f42578e25adcd0c689cf31ece2d43eb379448d0aed5b4bf"
+      "estimated_words": 1429,
+      "content_digest": "sha256:de40cb6028a12f93226ab16e425c4d714ba3bf2039a9001d32bfbc72ec049201"
     },
     {
       "id": "assistant.content.templates-ai-infrastructure-adaptation-record-md",
@@ -829,8 +829,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 136,
-      "content_digest": "sha256:e50dca040532e70e1fcd5d873553c039f43fbb183c1ba49ca6a4b9a53dbf4d1c"
+      "estimated_words": 155,
+      "content_digest": "sha256:9914f903c66b7991b76a75b6dba3c7261fc0a66cef2c8a6691f955c37d7950e4"
     },
     {
       "id": "assistant.content.templates-operation-request-md",
@@ -856,8 +856,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1236,
-      "content_digest": "sha256:5d2783cc4623dba52e40c4aa27a8afd60783f84de9c202de2b849fdf6bd95fdf"
+      "estimated_words": 1313,
+      "content_digest": "sha256:144dcd004b8a88a1a65abddb6f3d5fa10e6c40f18bde457797d041767074601c"
     },
     {
       "id": "assistant.content.templates-post-install-message-md",
