@@ -17,6 +17,11 @@ CONTEXT_INDEX_KIND = "alatyr-context-index"
 CODEBOOK_INDEX_KIND = "alatyr-semantic-codebook-index"
 CODEBOOK_SHARD_KIND = "alatyr-semantic-codebook-shard"
 PACKET_KIND = "alatyr-context-packet"
+PROVENANCE_NEUTRAL_JSON_FILES = {
+    "bootstrap-index.json",
+    "entry-packet.json",
+    "support-state.json",
+}
 SHA256_RE = re.compile(r"sha256:[0-9a-f]{64}")
 TERM_ID_RE = re.compile(r"(?:alatyr|project):[a-z0-9][a-z0-9-]*(?:@[1-9][0-9]*)?")
 INDEX_ENTRY_KINDS = {"index", "content"}
@@ -57,12 +62,39 @@ def load_object(path: Path) -> dict[str, Any]:
     return data
 
 
+def catalog_content_bytes_for_name(name: str, raw: bytes) -> bytes:
+    """Return content bytes used for context-catalog word and digest checks."""
+
+    if Path(name).name not in PROVENANCE_NEUTRAL_JSON_FILES:
+        return raw
+    try:
+        data = json.loads(raw.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        return raw
+    if not isinstance(data, dict) or "generated_by" not in data:
+        return raw
+    normalized = dict(data)
+    normalized.pop("generated_by", None)
+    return (
+        json.dumps(normalized, ensure_ascii=True, indent=2, sort_keys=True)
+        + "\n"
+    ).encode("utf-8")
+
+
+def catalog_content_bytes(path: Path) -> bytes:
+    """Return file content bytes after context-catalog normalization."""
+
+    return catalog_content_bytes_for_name(path.name, path.read_bytes())
+
+
 def file_digest(path: Path) -> str:
-    return f"sha256:{hashlib.sha256(path.read_bytes()).hexdigest()}"
+    return f"sha256:{hashlib.sha256(catalog_content_bytes(path)).hexdigest()}"
 
 
 def word_count(path: Path) -> int:
-    return len(re.findall(r"\S+", path.read_text(encoding="utf-8")))
+    return len(
+        re.findall(r"\S+", catalog_content_bytes(path).decode("utf-8"))
+    )
 
 
 def _safe_relative(value: Any, label: str) -> str:

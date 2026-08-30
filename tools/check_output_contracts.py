@@ -36,6 +36,7 @@ INSTALL_NOTE = (
 CONTRACT_HEADING = re.compile(r"^## Contract: `([^`]+)`\s*$", re.MULTILINE)
 
 REQUIRED_CONTRACTS = {
+    "adapter-health-output",
     "installation-output",
     "framework-update-output",
     "adapter-recheck-output",
@@ -103,7 +104,35 @@ DELIVERY_FIELDS = {
     ],
 }
 
+HEALTH_REQUIRED_FIELDS = [
+    "Operation id:",
+    "Operation type:",
+    "Current user authorization:",
+    "Evidence basis:",
+    "Observed at:",
+    "Observed repository branch:",
+    "Observed repository revision:",
+    "Manifest path:",
+    "Health state:",
+    "Installation state:",
+    "Installation transition record:",
+    "Validation phase:",
+    "Acceptance eligible:",
+    "Required final strict rerun:",
+    "Checks run:",
+    "Checks unavailable:",
+    "Finding counts:",
+    "Blocking findings:",
+    "Attention findings:",
+    "Repair operations:",
+    "Automatic repair performed:",
+    "Files changed:",
+    "Residual risk:",
+]
+
 REQUIRED_MESSAGE_TEXT = [
+    "Adapter health:",
+    "{READY_ATTENTION_BLOCKED_OR_UNVERIFIED",
     "Delivery status: `{SENT_SKIPPED_OR_BLOCKED}`",
     "Delivery mechanism: `{CHAT_SURFACE_OR_UNAVAILABLE}`",
     "Delivery reason: `{WHY_SENT_SKIPPED_OR_BLOCKED}`",
@@ -154,7 +183,7 @@ def main() -> int:
     if missing_contracts:
         failures.append(f"missing output contract(s): {missing_contracts}")
 
-    for contract in sorted(REQUIRED_CONTRACTS):
+    for contract in sorted(REQUIRED_CONTRACTS - {"adapter-health-output"}):
         block = blocks.get(contract, "")
         for field in REQUIRED_FIELDS:
             if field not in block:
@@ -168,6 +197,25 @@ def main() -> int:
         for field in DELIVERY_FIELDS.get(contract, []):
             if field not in block:
                 failures.append(f"{contract} missing delivery field {field}")
+
+    health_block = blocks.get("adapter-health-output", "")
+    for field in HEALTH_REQUIRED_FIELDS:
+        if field not in health_block:
+            failures.append(f"adapter-health-output missing field {field}")
+            continue
+        line = line_for(health_block, field)
+        if field not in {"Manifest path:", "Operation type:", "Automatic repair performed:", "Files changed:"} and "{" not in line:
+            failures.append(
+                f"adapter-health-output field {field} must remain placeholder-based"
+            )
+    for required in [
+        "adapter-health",
+        "{READY_ATTENTION_BLOCKED_OR_UNVERIFIED}",
+        "`false`",
+        "`none`",
+    ]:
+        if required not in health_block:
+            failures.append(f"adapter-health-output missing {required}")
 
     for contract in ["framework-update-output", "adapter-recheck-output"]:
         if "Migration assessment result/path:" not in blocks.get(contract, ""):

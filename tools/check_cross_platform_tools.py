@@ -36,6 +36,7 @@ EXPECTED_COMMANDS = {
     "impact",
     "generate-support",
     "validate-adapter",
+    "status",
     "doctor",
     "migration-report",
     "assess-upgrade",
@@ -156,6 +157,9 @@ def main() -> int:
     doctor_output = run("doctor", "--output", "should-not-exist.json")
     if doctor_output.returncode != 2 or "does not permit" not in doctor_output.stderr:
         failures.append("doctor must reject report-file output and remain read-only")
+    status_output = run("status", "--output", "should-not-exist.json")
+    if status_output.returncode != 2 or "does not permit" not in status_output.stderr:
+        failures.append("status must reject report-file output and remain read-only")
 
     extension_output = run(
         "inspect-extension",

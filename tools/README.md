@@ -14,6 +14,7 @@ Linux or macOS:
 
 ```sh
 python3 tools/alatyr.py --help
+python3 tools/alatyr.py status --target /path/to/target-repo
 python3 tools/alatyr.py doctor --target /path/to/target-repo
 python3 tools/alatyr.py validate-adapter --target /path/to/target-repo
 python3 tools/alatyr.py render-entry --target /path/to/target-repo
@@ -37,6 +38,7 @@ Windows PowerShell:
 
 ```powershell
 .\tools\alatyr.ps1 --help
+.\tools\alatyr.ps1 status --target C:\path\to\target-repo
 .\tools\alatyr.ps1 doctor --target C:\path\to\target-repo
 .\tools\alatyr.ps1 validate-adapter --target C:\path\to\target-repo
 .\tools\alatyr.ps1 render-entry --target C:\path\to\target-repo
@@ -59,6 +61,7 @@ Windows Command Prompt:
 
 ```bat
 tools\alatyr.cmd --help
+tools\alatyr.cmd status --target C:\path\to\target-repo
 tools\alatyr.cmd doctor --target C:\path\to\target-repo
 tools\alatyr.cmd validate-adapter --target C:\path\to\target-repo
 tools\alatyr.cmd render-entry --target C:\path\to\target-repo
@@ -97,6 +100,7 @@ The stable command set is:
   to declared staged deterministic outputs with current authorization and plan
   binding
 - `validate-adapter`: optional explicit report output only
+- `status`: compact read-only adapter health; no file output
 - `doctor`: read-only adapter health with at most three repair operation routes;
   no file output (use `validate-adapter` for an explicit report file)
 - `migration-report`: optional explicit report output only

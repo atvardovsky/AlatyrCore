@@ -10,7 +10,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-from context_catalog import load_codebook
+from context_catalog import catalog_content_bytes, load_codebook
 from render_context_catalogs import framework_base_files
 
 
@@ -41,6 +41,10 @@ def installed_path(target: Path, reference: str) -> Path | None:
     return target / reference
 
 
+def _measure_text(path: Path) -> str:
+    return catalog_content_bytes(path).decode("utf-8")
+
+
 def measure_installed(target: Path, references: list[str]) -> dict[str, Any]:
     unique = list(dict.fromkeys(references))
     resolved: list[tuple[str, Path]] = []
@@ -54,10 +58,10 @@ def measure_installed(target: Path, references: list[str]) -> dict[str, Any]:
             missing.append(reference)
         else:
             resolved.append((reference, path))
-    texts = [path.read_text(encoding="utf-8") for _, path in resolved]
+    texts = [_measure_text(path) for _, path in resolved]
     characters = sum(len(value) for value in texts)
     word_counts = {
-        reference: len(re.findall(r"\S+", path.read_text(encoding="utf-8")))
+        reference: len(re.findall(r"\S+", _measure_text(path)))
         for reference, path in resolved
     }
     portable_paths = [
@@ -96,10 +100,10 @@ def measure(references: list[str]) -> dict[str, Any]:
             missing.append(reference)
         else:
             resolved.append((reference, path))
-    texts = [path.read_text(encoding="utf-8") for _, path in resolved]
+    texts = [_measure_text(path) for _, path in resolved]
     characters = sum(len(value) for value in texts)
     word_counts = {
-        reference: len(re.findall(r"\S+", path.read_text(encoding="utf-8")))
+        reference: len(re.findall(r"\S+", _measure_text(path)))
         for reference, path in resolved
     }
     portable_paths = [

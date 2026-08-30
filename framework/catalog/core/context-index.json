@@ -301,8 +301,8 @@
       "owner_refs": [
         "ALATYR-OPERATION-001"
       ],
-      "estimated_words": 3396,
-      "content_digest": "sha256:97077c66fbfbcee62e5f779a3758222aeda98ed223dd726c9c1eebb95ecbfff3"
+      "estimated_words": 3405,
+      "content_digest": "sha256:9d554d4be23c78ed973b70845fd233f800a9f2f19bc1b8a1f731660646dec2e0"
     },
     {
       "id": "framework.core.project-adapter-contract-md",

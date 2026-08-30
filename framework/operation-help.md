@@ -166,9 +166,11 @@ operation. The operation should inspect available target evidence for:
 
 Health must remain separate from adapter maturity. Health is a current
 structural state: `ready`, `attention`, `blocked`, or `unverified`. Maturity is
-task-specific capability. A health result must identify evidence time or commit
-when known and return at most three prioritized repair operations. It must not
-edit files, fetch sources, install dependencies, or silently repair findings.
+task-specific capability. A health result must identify evidence time or
+commit when known, the validated installation state, acceptance eligibility,
+checks run or unavailable, and at most three prioritized repair operations. It
+must not edit files, fetch sources, install dependencies, or silently repair
+findings.
 
 Each actionable finding should include severity, stable finding code, owning
 surface, evidence, proposed repair operation, approval need, and whether the

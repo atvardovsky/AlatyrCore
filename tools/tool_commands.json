@@ -74,8 +74,15 @@
       "write_scope": "explicit-report-output-only"
     },
     {
+      "name": "status",
+      "script": "report_adapter_health.py",
+      "purpose": "report compact read-only installed adapter health",
+      "write_scope": "none",
+      "forbidden_arguments": ["--output"]
+    },
+    {
       "name": "doctor",
-      "script": "validate_target_adapter.py",
+      "script": "report_adapter_health.py",
       "purpose": "report read-only installed adapter health and prioritized repair operations",
       "write_scope": "none",
       "forbidden_arguments": ["--output"]

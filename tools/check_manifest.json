@@ -778,6 +778,7 @@
         "tools/agent_entry_packet.py",
         "tools/bootstrap_index.py",
         "tools/check_bootstrap_routing.py",
+        "tools/context_catalog.py",
         "tools/render_target_entry_packet.py",
         "tools/render_target_bootstrap_index.py",
         "tools/scaffold*.py",
@@ -797,6 +798,7 @@
         "tools/agent_entry_packet.py",
         "tools/bootstrap_index.py",
         "tools/check_bootstrap_routing.py",
+        "tools/context_catalog.py",
         "tools/render_target_entry_packet.py",
         "tools/render_target_bootstrap_index.py",
         "tools/scaffold*.py",
@@ -868,6 +870,7 @@
         "templates/target/.ai/assistant/context*/**"
       ],
       "implementation_paths": [
+        "tools/context_catalog.py",
         "tools/*context_costs.py",
         "tools/check_context_costs.py",
         "tools/report_context_costs.py"
@@ -876,6 +879,7 @@
         "conformance/golden/context-cost-baseline.json",
         "framework/context-*.md",
         "templates/target/.ai/assistant/context*/**",
+        "tools/context_catalog.py",
         "tools/*context_costs.py",
         "tools/check_context_costs.py",
         "tools/report_context_costs.py"
@@ -1026,7 +1030,8 @@
         "tools/alatyr.*",
         "tools/check_cross_platform_tools.py",
         "tools/clean_local_artifacts.py",
-        "tools/plan_target_upgrade.py"
+        "tools/plan_target_upgrade.py",
+        "tools/report_adapter_health.py"
       ],
       "trigger_paths": [
         ".gitattributes",
@@ -1037,6 +1042,7 @@
         "tools/check_cross_platform_tools.py",
         "tools/clean_local_artifacts.py",
         "tools/plan_target_upgrade.py",
+        "tools/report_adapter_health.py",
         "tools/runtime-compatibility.json",
         "tools/tool_commands.json"
       ]
@@ -2022,6 +2028,7 @@
       "implementation_paths": [
         "tools/agent_entry_packet.py",
         "tools/bootstrap_index.py",
+        "tools/context_catalog.py",
         "tools/check_lifecycle_conformance.py",
         "tools/plan_target_upgrade.py",
         "tools/render_context_catalogs.py",
@@ -2038,6 +2045,7 @@
         "templates/target/**",
         "tools/agent_entry_packet.py",
         "tools/bootstrap_index.py",
+        "tools/context_catalog.py",
         "tools/check_lifecycle_conformance.py",
         "tools/plan_target_upgrade.py",
         "tools/render_context_catalogs.py",
@@ -2187,6 +2195,7 @@
         "tools/check_all.py",
         "tools/check_source_unit_tests.py",
         "tools/evidence_contract.py",
+        "tools/report_adapter_health.py",
         "tools/source_state.py",
         "tools/target_tool_compat.py"
       ],
@@ -2195,6 +2204,7 @@
         "tools/check_all.py",
         "tools/check_source_unit_tests.py",
         "tools/evidence_contract.py",
+        "tools/report_adapter_health.py",
         "tools/source_state.py",
         "tools/target_tool_compat.py"
       ],

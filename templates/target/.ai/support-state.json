@@ -5,40 +5,47 @@
   "generated_by": {
     "schema_version": 1,
     "tool": "snapshot_target_support.py",
-    "source_revision": "89d67f58019c863db55254c988e25cd1e3216b38",
+    "source_revision": "521f8caff0cb5df3ec23e9d3709d965cb2240e73",
     "source_worktree_state": "dirty",
     "source_dirty_paths": [
       "ADAPTER_SCHEMA_VERSION",
       "CHANGELOG.md",
+      "README.md",
       "TEMPLATE_VERSION",
       "VERSION",
       "conformance/evidence-status.json",
       "conformance/golden/context-cost-baseline.json",
-      "docs/target-adapter-validator-findings.md",
-      "schemas/alatyr-support-state.schema.json",
+      "conformance/operations/request-routing-protocol-expectations.json",
+      "docs/framework-maintenance.md",
+      "docs/human/faq.md",
+      "framework/catalog/core/context-index.json",
+      "framework/context-index.json",
+      "framework/file-inventory.json",
+      "framework/operation-help.md",
       "templates/target/.ai/assistant/bootstrap-index.json",
       "templates/target/.ai/assistant/context-index.json",
-      "templates/target/.ai/assistant/context-router.json",
       "templates/target/.ai/assistant/entry-packet.json",
+      "templates/target/.ai/assistant/flows/adapter-health.flow.md",
+      "templates/target/.ai/assistant/flows/context-index.json",
+      "templates/target/.ai/assistant/operation-catalog.json",
+      "templates/target/.ai/assistant/templates/adapter-output-contracts.md",
+      "templates/target/.ai/assistant/templates/context-index.json",
+      "templates/target/.ai/assistant/templates/post-install-message.md",
+      "templates/target/.ai/assistant/templates/post-update-message.md",
       "templates/target/.ai/support-state.json",
       "tests/test_agent_entry_packet.py",
-      "tests/test_support_state.py",
-      "tools/agent_entry_packet.py",
-      "tools/bootstrap_index.py",
-      "tools/check_agent_entry_packet.py",
-      "tools/check_bootstrap_routing.py",
+      "tests/test_target_validator_installation_state.py",
+      "tools/README.md",
+      "tools/check_cross_platform_tools.py",
       "tools/check_manifest.json",
-      "tools/render_installed_context_catalogs.py",
-      "tools/render_target_bootstrap_index.py",
-      "tools/render_target_entry_packet.py",
-      "tools/scaffold_target_structure.py",
-      "tools/snapshot_target_support.py",
-      "tools/support_state.py",
-      "tools/target_adapter_validation/finding-codes.json",
-      "tools/target_adapter_validation/support_state.py",
+      "tools/check_operation_catalog.py",
+      "tools/check_output_contracts.py",
+      "tools/tool_commands.json",
       "tools/validate_target_adapter.py",
-      "tests/test_target_tool_compat.py",
-      "tools/target_tool_compat.py"
+      "docs/releases/0.1.0-alpha.38-migration.md",
+      "docs/releases/baselines/0.1.0-alpha.37.json",
+      "tests/test_adapter_health_report.py",
+      "tools/report_adapter_health.py"
     ],
     "target_manifest": ".ai/alatyr.yaml",
     "target_manifest_digest": "sha256:02d3c854306009ae74d60e72a9e415eeb98971da933b02f26a30dacf9f618226",
@@ -46,43 +53,50 @@
     "target_dirty_paths": [
       "../../ADAPTER_SCHEMA_VERSION",
       "../../CHANGELOG.md",
+      "../../README.md",
       "../../TEMPLATE_VERSION",
       "../../VERSION",
       "../../conformance/evidence-status.json",
       "../../conformance/golden/context-cost-baseline.json",
-      "../../docs/target-adapter-validator-findings.md",
-      "../../schemas/alatyr-support-state.schema.json",
+      "../../conformance/operations/request-routing-protocol-expectations.json",
+      "../../docs/framework-maintenance.md",
+      "../../docs/human/faq.md",
+      "../../framework/catalog/core/context-index.json",
+      "../../framework/context-index.json",
+      "../../framework/file-inventory.json",
+      "../../framework/operation-help.md",
       ".ai/assistant/bootstrap-index.json",
       ".ai/assistant/context-index.json",
-      ".ai/assistant/context-router.json",
       ".ai/assistant/entry-packet.json",
+      ".ai/assistant/flows/adapter-health.flow.md",
+      ".ai/assistant/flows/context-index.json",
+      ".ai/assistant/operation-catalog.json",
+      ".ai/assistant/templates/adapter-output-contracts.md",
+      ".ai/assistant/templates/context-index.json",
+      ".ai/assistant/templates/post-install-message.md",
+      ".ai/assistant/templates/post-update-message.md",
       ".ai/support-state.json",
       "../../tests/test_agent_entry_packet.py",
-      "../../tests/test_support_state.py",
-      "../../tools/agent_entry_packet.py",
-      "../../tools/bootstrap_index.py",
-      "../../tools/check_agent_entry_packet.py",
-      "../../tools/check_bootstrap_routing.py",
+      "../../tests/test_target_validator_installation_state.py",
+      "../../tools/README.md",
+      "../../tools/check_cross_platform_tools.py",
       "../../tools/check_manifest.json",
-      "../../tools/render_installed_context_catalogs.py",
-      "../../tools/render_target_bootstrap_index.py",
-      "../../tools/render_target_entry_packet.py",
-      "../../tools/scaffold_target_structure.py",
-      "../../tools/snapshot_target_support.py",
-      "../../tools/support_state.py",
-      "../../tools/target_adapter_validation/finding-codes.json",
-      "../../tools/target_adapter_validation/support_state.py",
+      "../../tools/check_operation_catalog.py",
+      "../../tools/check_output_contracts.py",
+      "../../tools/tool_commands.json",
       "../../tools/validate_target_adapter.py",
-      "../../tests/test_target_tool_compat.py",
-      "../../tools/target_tool_compat.py"
+      "../../docs/releases/0.1.0-alpha.38-migration.md",
+      "../../docs/releases/baselines/0.1.0-alpha.37.json",
+      "../../tests/test_adapter_health_report.py",
+      "../../tools/report_adapter_health.py"
     ],
-    "framework_version": "0.1.0-alpha.37",
-    "adapter_schema_version": "35",
-    "template_version": "35"
+    "framework_version": "0.1.0-alpha.38",
+    "adapter_schema_version": "36",
+    "template_version": "36"
   },
   "policy": ".ai/project/support-policy.json",
   "policy_digest": "sha256:fe458d4305f7236f4e5e974cb58461e2308ec30299eeb51841fbf5e594d2ea7a",
-  "source_revision": "89d67f58019c863db55254c988e25cd1e3216b38",
+  "source_revision": "521f8caff0cb5df3ec23e9d3709d965cb2240e73",
   "groups": [
     {
       "id": "adapter-root",
@@ -92,7 +106,7 @@
     {
       "id": "assistant",
       "file_count": 206,
-      "digest": "sha256:bacc105fad42d5186c596af15619b7e8b91a003eb585b9733ae60997a1ae82d5"
+      "digest": "sha256:12ecd5e42f1cbc28f6a3c1bb3d8cae6af464d73d19ba34d7e07593b44649a4e5"
     },
     {
       "id": "entrypoints",
@@ -328,8 +342,8 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:77ecbd650e745f6843553cec9a5c6b7013f9807ca8abb53b5f700cac17ca321e",
-      "canonical_size": 14802
+      "digest": "sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "canonical_size": 0
     },
     {
       "path": ".ai/assistant/bridge-capability-matrix.md",
@@ -391,7 +405,7 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:8d079aff47407f9ceb9940ebe0d1e2cc70006a1e8c06adfcbafa99b5ca7a8e04",
+      "digest": "sha256:1894931951a542a924bda653e3b0bc77f637e4d75adfb6ad0206dc65a290ebc9",
       "canonical_size": 21329
     },
     {
@@ -697,8 +711,8 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:b27f9220e3080cb3d9a78bcd5779bf3ccdd88cab305e87d7de835a1eb26b011f",
-      "canonical_size": 30638
+      "digest": "sha256:32e148e99f8162b728c703976e6ed5a2f0a6808b79fdf5885a7cb29621b44113",
+      "canonical_size": 32323
     },
     {
       "path": ".ai/assistant/extensions/README.md",
@@ -742,8 +756,8 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:de7062a34f0be7be474a2433fd31cdf5ab0f8177d3bcb44d3a78f1a0aa7226a2",
-      "canonical_size": 4582
+      "digest": "sha256:6f42e6ea65a510d1c90859d05c3a410ce7a8299617d0e9c8d1fc9c279cdfc71d",
+      "canonical_size": 4662
     },
     {
       "path": ".ai/assistant/flows/adapter-recheck.flow.md",
@@ -805,7 +819,7 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:07455806ea4f8610fc0390e491117d5e5ab0fb43f43abed5d412258939cf501c",
+      "digest": "sha256:2b9c60598198e196ca62f9fc17ffd6c4db5769da5357655ac5f9a5b98801125e",
       "canonical_size": 28097
     },
     {
@@ -1255,8 +1269,8 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:1255716b0fe4ce8d46b38dc31a3b96c9e956cd7be904e67f6b8833e13dc0f45e",
-      "canonical_size": 33684
+      "digest": "sha256:7c96c34e40e85c5c613f50f63e2284215fcf10a2357b04126714e3074c180789",
+      "canonical_size": 33758
     },
     {
       "path": ".ai/assistant/operation-index.json",
@@ -1498,8 +1512,8 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:d9d6c1d5f3a459d171de9c8eb70915aa4cce6d615bb9f3f3e1f6962e5953721f",
-      "canonical_size": 16169
+      "digest": "sha256:5f69126ac4d228f73f0b615e1302bc0cb1cceeb3fa9819bde92c127648c09c09",
+      "canonical_size": 17631
     },
     {
       "path": ".ai/assistant/templates/ai-infrastructure-adaptation-record.md",
@@ -1597,7 +1611,7 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:2d19371404779f59afc9ba25564892f8de167e6b88f29e27e7376960a5258091",
+      "digest": "sha256:3bc87f47e2d698eebee77c69b94758bc8951e9c484a81b4a7b25cc584d8be63b",
       "canonical_size": 41411
     },
     {
@@ -1750,8 +1764,8 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:4dc2b2b6fb4efe42ad65f1d8ed68cae3a4e8fd6bda49c1374a1c69d51d033481",
-      "canonical_size": 11759
+      "digest": "sha256:959200e6de0bac5e83c85aaf25a2a33ae7b344b319b7897edb76dc9778096f7b",
+      "canonical_size": 12101
     },
     {
       "path": ".ai/assistant/templates/post-update-message.md",
@@ -1759,8 +1773,8 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:b3c1f03c896d99b22a6740e7435a6a7c88431651768ad7614bd562a3f74d2f5c",
-      "canonical_size": 10268
+      "digest": "sha256:d69f827177114701803ee1e0be6e7807dbebc5305c755df2365c89ae60d5a162",
+      "canonical_size": 10498
     },
     {
       "path": ".ai/assistant/templates/pre-change-preview.md",
@@ -2681,5 +2695,5 @@
       "canonical_size": 864
     }
   ],
-  "root_digest": "sha256:3bfdfe5f867a87f47bba9f560f1f606e61ae223c4c84ccafbf5c75b3caa4b321"
+  "root_digest": "sha256:c1565084a8d8c4fd3091701e4a56c1ffe0cc0554155142eaf8ad0642c2f89565"
 }

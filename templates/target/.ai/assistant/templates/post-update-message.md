@@ -163,9 +163,16 @@ Validation phase and branch/revision:
 Acceptance status:
 `{ACCEPTED_OR_STAGED_WITH_ACTIVE_PLACEHOLDERS_AND_REQUIRED_STRICT_RERUN}`
 
+Adapter health:
+`{READY_ATTENTION_BLOCKED_OR_UNVERIFIED_WITH_REASON}`
+
 Do not describe the update as complete when validation used migration staging,
 active adapter placeholders remain, enabled manifest modules disagree with the
 module profile, or evidence belongs to another branch or revision.
+
+Do not report adapter health as `ready` unless installation state is
+`accepted` and current strict acceptance validation passed for this branch and
+revision.
 
 Known adapter gaps or migrations:
 `{KNOWN_GAPS_OR_MIGRATIONS}`

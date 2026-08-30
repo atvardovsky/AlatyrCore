@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import json
-import re
 import subprocess
 import sys
 import tempfile
@@ -17,6 +16,7 @@ from agent_entry_packet import (
     render as render_entry_packet,
 )
 from bootstrap_index import BOOTSTRAP_PATH, build_from_target, render
+from context_catalog import word_count
 from target_tool_compat import generated_json_equivalent, generation_provenance_errors
 
 
@@ -32,10 +32,6 @@ def load_object(path: Path) -> dict[str, Any]:
     if not isinstance(data, dict):
         raise ValueError(f"{path} must contain an object")
     return data
-
-
-def word_count(path: Path) -> int:
-    return len(re.findall(r"\S+", path.read_text(encoding="utf-8")))
 
 
 def main() -> int:

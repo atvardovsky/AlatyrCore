@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from context_catalog import file_digest, word_count
+from context_catalog import catalog_content_bytes_for_name, file_digest, word_count
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -136,7 +136,8 @@ def _entry_from_bytes(
     owner_refs: list[str],
     payload: bytes,
 ) -> dict[str, Any]:
-    text = payload.decode("utf-8")
+    normalized = catalog_content_bytes_for_name(path, payload)
+    text = normalized.decode("utf-8")
     return {
         "id": item_id,
         "kind": kind,
@@ -147,7 +148,7 @@ def _entry_from_bytes(
         "semantic_refs": sorted(set(semantic_refs)),
         "owner_refs": sorted(set(owner_refs)),
         "estimated_words": len(re.findall(r"\S+", text)),
-        "content_digest": f"sha256:{hashlib.sha256(payload).hexdigest()}",
+        "content_digest": f"sha256:{hashlib.sha256(normalized).hexdigest()}",
     }
 
 

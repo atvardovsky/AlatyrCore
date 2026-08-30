@@ -39,7 +39,7 @@
       "allowed_actions": ["read-only"],
       "preview": "never",
       "aliases": ["Alatyr status", "Alatyr doctor"],
-      "final_evidence": ["health state", "evidence revision or time", "up to three repair operations"]
+      "final_evidence": ["health state enum", "installation state", "acceptance eligibility", "checks run and unavailable", "up to three repair operations", "no files changed"]
     },
     {
       "id": "create-project-blueprint",

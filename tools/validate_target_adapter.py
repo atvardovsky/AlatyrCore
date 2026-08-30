@@ -889,6 +889,7 @@ class Validator:
 
         manifest = self.check_manifest()
         validate_installation_state(self.capability_validation_context(), manifest)
+        self.installation_state = target_installation_state(self.target)
         support_profile = self.manifest_support_profile(manifest)
         self.check_required_files(support_profile)
         self.check_capability_closure(manifest)

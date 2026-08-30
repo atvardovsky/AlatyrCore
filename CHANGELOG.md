@@ -4,6 +4,26 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.38 - 2026-08-30
+
+- Increased the framework version to `0.1.0-alpha.38`, adapter schema version
+  to `36`, and target template version to `36` for compact read-only adapter
+  health reporting, dedicated health output evidence, and stricter
+  installation-state truthfulness.
+- Added `tools/report_adapter_health.py` and the stable `tools/alatyr.py
+  status` alias so target adapter health can be reported compactly without
+  writing files. `doctor` now uses the same evidence-backed health reporter.
+- Added a dedicated `adapter-health-output` contract requiring health state,
+  validated installation state, acceptance eligibility, checks run or
+  unavailable, repair routes, `automatic repair performed: false`, and `files
+  changed: none`.
+- Fixed target validation payloads so final installation state is rebound from
+  machine-readable transition evidence after validation, preventing an
+  unverified manifest `accepted` scalar from surfacing as accepted health.
+- Updated post-install and post-update chat templates, operation catalog
+  routing evidence, and source checks so `ready` requires accepted state plus
+  current strict acceptance validation.
+
 ## 0.1.0-alpha.37 - 2026-08-30
 
 - Increased the framework version to `0.1.0-alpha.37`, adapter schema version

@@ -5,6 +5,35 @@ must report after installation, framework update, or adapter recheck work.
 
 Replace placeholders with target facts before accepting installation.
 
+## Contract: `adapter-health-output`
+
+Use after `Alatyr status`, `Alatyr doctor`, or another read-only adapter
+health request.
+
+- Operation id: `{OPERATION_ID}`
+- Operation type: `adapter-health`
+- Current user authorization: `{CURRENT_SCOPE_SOURCE_AUTHORIZED_READ_ONLY_PHASE}`
+- Evidence basis: `{CURRENT_STATE_STRUCTURAL_OR_UNAVAILABLE}`
+- Observed at: `{OBSERVATION_DATE_TIME_OR_UNKNOWN}`
+- Observed repository branch: `{REPOSITORY_BRANCH_OR_DETACHED_HEAD_OR_NOT_AVAILABLE}`
+- Observed repository revision: `{REPOSITORY_REVISION_OR_NOT_AVAILABLE}`
+- Manifest path: `.ai/alatyr.yaml`
+- Health state: `{READY_ATTENTION_BLOCKED_OR_UNVERIFIED}`
+- Installation state: `{SCAFFOLDED_STAGED_ACCEPTED_DEGRADED_OR_INVALID}`
+- Installation transition record: `{PATH_FINAL_SEQUENCE_REVISION_VALIDATION_AND_CONTINUITY_RESULT}`
+- Validation phase: `{ACCEPTANCE_OR_MIGRATION_STAGING}`
+- Acceptance eligible: `{YES_OR_NO_WITH_REASON}`
+- Required final strict rerun: `{COMMAND_OR_NOT_REQUIRED}`
+- Checks run: `{COMMANDS_AND_MANUAL_CHECKS_OR_NONE}`
+- Checks unavailable: `{CHECKS_AND_REASONS_OR_NONE}`
+- Finding counts: `{ERRORS_WARNINGS_BLOCKING_WARNINGS_INFO}`
+- Blocking findings: `{SEVERITY_CODE_OWNER_EVIDENCE_REPAIR_APPROVAL_OR_NONE}`
+- Attention findings: `{SEVERITY_CODE_OWNER_EVIDENCE_REPAIR_APPROVAL_OR_NONE}`
+- Repair operations: `{UP_TO_THREE_OPERATION_IDS_OR_NONE}`
+- Automatic repair performed: `false`
+- Files changed: `none`
+- Residual risk: `{RESIDUAL_RISK}`
+
 ## Contract: `installation-output`
 
 Use after the initial Alatyr Core installation or a scoped adapter expansion.

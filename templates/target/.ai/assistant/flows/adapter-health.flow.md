@@ -26,6 +26,7 @@ Replace placeholders with target facts before accepting installation.
 - Bridge matrix: `.ai/assistant/bridge-capability-matrix.md`
 - Assistant capabilities: `.ai/assistant/assistant-capabilities.json`
 - Adapter recheck flow: `.ai/assistant/flows/adapter-recheck.flow.md`
+- Health output contract: `.ai/assistant/templates/adapter-output-contracts.md`
 - Target validation: `{TARGET_VALIDATION_OR_MANUAL_REVIEW}`
 
 ## Steps

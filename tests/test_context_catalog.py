@@ -15,6 +15,7 @@ from context_catalog import (
     CatalogItem,
     ContextCatalogError,
     build_context_packet,
+    catalog_content_bytes,
     file_digest,
     load_codebook,
     validate_context_catalog,
@@ -48,6 +49,84 @@ def entry(root: Path, item_id: str, kind: str, path: str) -> dict[str, object]:
 
 
 class ContextCatalogTests(unittest.TestCase):
+    def test_generated_json_catalog_content_ignores_provenance(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            first = root / "entry-packet.json"
+            second = root / "nested" / "entry-packet.json"
+            write_json(
+                first,
+                {
+                    "packet_kind": "target-agent-entry-packet",
+                    "value": {"stable": True},
+                    "generated_by": {"source_dirty_paths": ["first.md"]},
+                },
+            )
+            write_json(
+                second,
+                {
+                    "packet_kind": "target-agent-entry-packet",
+                    "value": {"stable": True},
+                    "generated_by": {"source_dirty_paths": ["second.md"]},
+                },
+            )
+
+            self.assertEqual(catalog_content_bytes(first), catalog_content_bytes(second))
+            self.assertEqual(file_digest(first), file_digest(second))
+            self.assertEqual(word_count(first), word_count(second))
+
+    def test_non_generated_json_catalog_content_keeps_provenance_exact(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            first = root / "ordinary.json"
+            second = root / "nested" / "ordinary.json"
+            write_json(first, {"value": True, "generated_by": {"revision": "a"}})
+            write_json(second, {"value": True, "generated_by": {"revision": "b"}})
+
+            self.assertNotEqual(catalog_content_bytes(first), catalog_content_bytes(second))
+            self.assertNotEqual(file_digest(first), file_digest(second))
+
+    def test_directory_catalog_normalizes_generated_payload_overrides(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "entry-packet.json").write_text(
+                "{}\n", encoding="utf-8"
+            )
+            outputs = build_directory_catalog_contents(
+                root,
+                "assistant",
+                selected_files={"entry-packet.json"},
+                content_overrides={
+                    "entry-packet.json": json.dumps(
+                        {
+                            "packet_kind": "target-agent-entry-packet",
+                            "stable": True,
+                            "generated_by": {"source_dirty_paths": ["one.md"]},
+                        },
+                        indent=2,
+                    )
+                    + "\n"
+                },
+            )
+            root_index = json.loads(outputs["context-index.json"])
+            entry_digest = root_index["entries"][0]["content_digest"]
+            entry_words = root_index["entries"][0]["estimated_words"]
+            (root / "entry-packet.json").write_text(
+                json.dumps(
+                    {
+                        "packet_kind": "target-agent-entry-packet",
+                        "stable": True,
+                        "generated_by": {"source_dirty_paths": ["two.md"]},
+                    },
+                    indent=2,
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            self.assertEqual(entry_digest, file_digest(root / "entry-packet.json"))
+            self.assertEqual(entry_words, word_count(root / "entry-packet.json"))
+
     def test_assistant_catalog_excludes_generated_bootstrap(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

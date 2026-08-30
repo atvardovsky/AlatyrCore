@@ -292,8 +292,9 @@ Before accepting a change, check:
   The deprecated `--allow-placeholders` flag is a staging alias and cannot
   produce ready or acceptance-eligible evidence. It is optional target-adapter validation, not a
   source-template check and not proof of project business truth.
-  The equivalent `python3 tools/alatyr.py doctor --target <target-repo>` alias
-  remains read-only and returns prioritized repair operation IDs.
+  The equivalent `python3 tools/alatyr.py status --target <target-repo>` and
+  `python3 tools/alatyr.py doctor --target <target-repo>` aliases remain
+  read-only and return compact health plus prioritized repair operation IDs.
 - `framework/` contains no target business facts.
 - `framework/` contains no required local commands, scripts, package managers,
   CI jobs, test folders, fixture helpers, security policies, or diagram tools.

@@ -172,6 +172,30 @@ class TargetValidatorInstallationStateTests(unittest.TestCase):
             self.assertEqual(payload["installation_state"], "unverified")
             self.assertEqual(payload["adapter_health"]["state"], "unverified")
 
+    def test_run_payload_uses_validated_installation_state(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            write_state(target, "accepted")
+            checked = validator(target)
+
+            findings = checked.run()
+            payload = findings_payload(
+                findings,
+                target=target,
+                strict_warnings=False,
+                installation_state=checked.installation_state,
+            )
+
+            self.assertEqual(payload["installation_state"], "unverified")
+            self.assertEqual(payload["evidence"]["installation_state"], "unverified")
+            self.assertEqual(payload["adapter_health"]["state"], "blocked")
+            self.assertTrue(
+                any(
+                    finding.code == "INSTALLATION_STATE_RECORD_MISSING"
+                    for finding in findings
+                )
+            )
+
     def test_blocking_findings_take_precedence_over_installation_state(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             target = Path(directory)

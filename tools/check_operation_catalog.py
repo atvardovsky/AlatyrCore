@@ -365,6 +365,29 @@ def main() -> int:
             f"extra={sorted(operation_ids - EXPECTED_OPERATIONS)}"
         )
 
+    operations_by_id = {
+        operation["id"]: operation
+        for operation in operations
+        if isinstance(operation, dict) and isinstance(operation.get("id"), str)
+    }
+    health_evidence = operations_by_id.get("adapter-health", {}).get("final_evidence")
+    if not isinstance(health_evidence, list):
+        failures.append("adapter-health final_evidence must be a list")
+    else:
+        required_health_evidence = {
+            "health state enum",
+            "installation state",
+            "acceptance eligibility",
+            "checks run and unavailable",
+            "up to three repair operations",
+            "no files changed",
+        }
+        missing = sorted(required_health_evidence - set(health_evidence))
+        if missing:
+            failures.append(
+                f"adapter-health final_evidence missing {missing}"
+            )
+
     validate_request_routing_protocol(
         [operation for operation in operations if isinstance(operation, dict)], failures
     )

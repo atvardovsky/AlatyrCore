@@ -12,6 +12,14 @@ The presence of this file never proves that a chat message reached a user.
 ```text
 Alatyr Core is installed for `{PROJECT_NAME}`.
 
+Installation state: `{SCAFFOLDED_STAGED_ACCEPTED_DEGRADED_OR_INVALID}`
+Adapter health: `{READY_ATTENTION_BLOCKED_OR_UNVERIFIED}`
+Acceptance eligible: `{YES_OR_NO_WITH_REASON}`
+
+`scaffolded`, `staged`, and `degraded` installations are not `ready`.
+Only `accepted` installation state with current strict validation can be
+reported as `ready`.
+
 Entry points:
 - `AGENTS.md`
 - `AI_ASSISTANTS.md`

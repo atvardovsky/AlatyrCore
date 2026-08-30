@@ -32,8 +32,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 585,
-      "content_digest": "sha256:de7062a34f0be7be474a2433fd31cdf5ab0f8177d3bcb44d3a78f1a0aa7226a2"
+      "estimated_words": 590,
+      "content_digest": "sha256:6f42e6ea65a510d1c90859d05c3a410ce7a8299617d0e9c8d1fc9c279cdfc71d"
     },
     {
       "id": "assistant.content.flows-adapter-recheck-flow-md",

@@ -20,7 +20,7 @@
       "expected_operation": "adapter-health",
       "expected_action_phase": "inspect",
       "expected_context_profiles": ["framework-upgrade"],
-      "minimum_evidence": ["health state", "evidence revision or time", "up to three repair operations"]
+      "minimum_evidence": ["health state enum", "installation state", "acceptance eligibility", "checks run and unavailable", "up to three repair operations", "no files changed"]
     },
     {
       "id": "architecture-discussion",
