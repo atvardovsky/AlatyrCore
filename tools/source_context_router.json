@@ -29,6 +29,31 @@
     "bootstrap_max_words": 2000,
     "on_exceed": "stop and repair or report routing drift"
   },
+  "task_classification": {
+    "schema_version": 1,
+    "classification_order": [
+      "protected-or-sensitive",
+      "large-or-resumable",
+      "small-task",
+      "standard-task"
+    ],
+    "default_class": "standard-task",
+    "ambiguity_behavior": "stay read-only, choose the smallest plausible source profile, and ask for the missing fact before edits",
+    "small_task_use_when": [
+      "one source profile is sufficient",
+      "one local file or directly linked neighbor set is affected",
+      "no framework rule, adapter schema, target template contract, release, approval, or security boundary changes",
+      "focused source checks can prove the result"
+    ],
+    "expansion_triggers": [
+      "framework rule or lifecycle behavior changes",
+      "adapter schema or target template contract changes",
+      "source-of-truth conflict or ownership ambiguity",
+      "approval, authorization, safety, security, release, or assistant-infrastructure boundary appears",
+      "focused validation fails or selected check coverage is ambiguous",
+      "explicit repository audit, release readiness review, or full corpus comparison"
+    ]
+  },
   "conditional_overlays": {
     "source-worker-strategy": {
       "activate_when": "worker delegation is available and likely to improve wall-clock time or independent review quality",

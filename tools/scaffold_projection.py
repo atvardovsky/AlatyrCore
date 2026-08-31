@@ -95,8 +95,8 @@ def project_manifest(
     return "\n".join(rendered) + "\n"
 
 
-OPERATION_ROUTING_PARAGRAPH = """Route IDs/aliases through `.ai/assistant/operation-index.json`; use profile
-candidates otherwise. For `Alatyr`, help, ambiguity, or repair, use
+OPERATION_ROUTING_PARAGRAPH = """Route IDs/aliases through `.ai/assistant/operation-index.json`; otherwise use
+profile candidates. For `Alatyr`, help, ambiguity, or repair, use
 `.ai/assistant/help.md`, `.ai/assistant/operation-catalog.json`, and
 `.ai/assistant/flows/operation-routing.flow.md`. Status is read-only."""
 
@@ -117,11 +117,10 @@ KERNEL_AI_INFRASTRUCTURE_ROUTING_SENTENCE = (
     "smallest AI item set. Run only existing validation."
 )
 
-ASSISTANT_CAPABILITY_PARAGRAPH = """Before delegation or diagrams, read
-`.ai/assistant/assistant-capabilities.json`; route selected delegation through
-the selected surface record and `.ai/assistant/prompts/worker-orchestration.md`.
-Unknown, stale, or unverified surface state means no native capability claim;
-unknown presentation uses ASCII."""
+ASSISTANT_CAPABILITY_PARAGRAPH = """Before delegation or diagrams, read `.ai/assistant/assistant-capabilities.json`;
+route selected delegation through its surface record and
+`.ai/assistant/prompts/worker-orchestration.md`. Unknown, stale, or unverified
+state means no native capability claim; unknown presentation uses ASCII."""
 
 KERNEL_ASSISTANT_CAPABILITY_PARAGRAPH = """Before delegation or diagrams, use `.ai/assistant/entry-packet.json` and
 module state. If assistant capability records or worker orchestration prompts

@@ -38,6 +38,12 @@ EXPECTED_INSTALL_STAGES = [
     "validation",
     "handoff",
 ]
+EXPECTED_TASK_CLASSES = [
+    "protected-or-sensitive",
+    "large-or-resumable",
+    "small-task",
+    "standard-task",
+]
 
 
 def load_object(path: Path) -> dict[str, Any]:
@@ -132,6 +138,40 @@ def main() -> int:
         source_tooling = profiles.get("source-tooling", {})
         if "by trigger_paths" not in source_tooling.get("check_selection", ""):
             failures.append("source-tooling must document trigger_paths selection")
+    classification = source.get("task_classification")
+    if not isinstance(classification, dict):
+        failures.append("source context router has no task_classification")
+    else:
+        if classification.get("schema_version") != 1:
+            failures.append("source task classification schema is invalid")
+        if classification.get("classification_order") != EXPECTED_TASK_CLASSES:
+            failures.append("source task classification order is invalid")
+        if classification.get("default_class") != "standard-task":
+            failures.append("source task classification default is invalid")
+        if "read-only" not in str(classification.get("ambiguity_behavior", "")):
+            failures.append("source task classification ambiguity must stay read-only")
+        small_use = classification.get("small_task_use_when")
+        if not isinstance(small_use, list) or not all(
+            isinstance(item, str) and item for item in small_use
+        ):
+            failures.append("source task classification has no small-task triggers")
+        elif not any("focused source checks" in item for item in small_use):
+            failures.append("source small-task triggers must require focused source checks")
+        expansion = classification.get("expansion_triggers")
+        if not isinstance(expansion, list) or not all(
+            isinstance(item, str) and item for item in expansion
+        ):
+            failures.append("source task classification has no expansion triggers")
+        else:
+            for required in [
+                "framework rule or lifecycle behavior changes",
+                "adapter schema or target template contract changes",
+                "focused validation fails or selected check coverage is ambiguous",
+            ]:
+                if required not in expansion:
+                    failures.append(
+                        f"source task classification missing expansion trigger {required}"
+                    )
     overlays = source.get("conditional_overlays")
     worker_overlay = overlays.get("source-worker-strategy") if isinstance(overlays, dict) else None
     if not isinstance(worker_overlay, dict):
@@ -223,6 +263,7 @@ def main() -> int:
         [
             "framework/context-index.json",
             "framework/semantics/index.json",
+            "classify task scale before expansion",
             "## Source-Contour Worker Routing",
             "docs/source-worker-strategy.md",
             "Host and target repositories keep their own active adapter policy",
@@ -235,6 +276,7 @@ def main() -> int:
         [
             "framework/context-index.json",
             "framework/semantics/index.json",
+            "classify task scale before expansion",
             "docs/source-worker-strategy.md",
             "Host and target",
             "active adapter policy",

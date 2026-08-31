@@ -125,6 +125,13 @@ CANONICAL_PROFILES = [
     "ai-infrastructure",
     "framework-upgrade",
 ]
+ROUTER_SCHEMA_VERSIONS = {2, 3, 4, 5, 6, 7, 8, 9, 10}
+TASK_CLASSES = [
+    "protected-or-sensitive",
+    "large-or-resumable",
+    "small-task",
+    "standard-task",
+]
 
 KERNEL_REQUIRED_FILES = [
     "AGENTS.md",
@@ -152,6 +159,7 @@ KERNEL_REQUIRED_FILES = [
     ".ai/assistant/context/profiles/docs-local.json",
     ".ai/assistant/context/profiles/framework-upgrade.json",
     ".ai/assistant/context/profiles/security-sensitive.json",
+    ".ai/assistant/context/task-scales/small-task.json",
     ".ai/assistant/installation-state.json",
     ".ai/assistant/module-profile.md",
     ".ai/assistant/maturity-profile.md",
@@ -167,6 +175,7 @@ KERNEL_REQUIRED_FILES = [
     ".ai/assistant/templates/adapter-output-contracts.md",
     ".ai/assistant/templates/installation-note.md",
     ".ai/assistant/templates/operation-request.md",
+    ".ai/assistant/templates/small-task-evidence.md",
     ".ai/assistant/flows/logical-integrity-review.flow.md",
 ]
 
@@ -1570,10 +1579,10 @@ class Validator:
             numeric_values[key] = value
 
         router_schema = numeric_values.get(("context_routing", "router_schema_version"))
-        if router_schema not in {2, 3, 4, 5, 6, 7, 8, 9}:
+        if router_schema not in ROUTER_SCHEMA_VERSIONS:
             self.error(
                 "MANIFEST_CONTEXT_SCHEMA",
-                "context_routing.router_schema_version must be 2 through 9",
+                "context_routing.router_schema_version must be 2 through 10",
                 ".ai/alatyr.yaml",
             )
         expected_context_paths = {
@@ -1846,7 +1855,6 @@ class Validator:
                 ".ai/assistant/context-router.json",
             )
             return
-
         if router.get("router_kind") != "target-context-router":
             self.error(
                 "ROUTER_KIND",
@@ -1857,13 +1865,13 @@ class Validator:
         if schema_version == 1:
             self.warn(
                 "ROUTER_SCHEMA_LEGACY",
-                "context router schema 1 should migrate to recursive-index routing schema 9",
+                "context router schema 1 should migrate to task-classification routing schema 10",
                 ".ai/assistant/context-router.json",
             )
-        elif schema_version not in {2, 3, 4, 5, 6, 7, 8, 9}:
+        elif schema_version not in ROUTER_SCHEMA_VERSIONS:
             self.error(
                 "ROUTER_SCHEMA",
-                "context router schema_version should be 2 through 9",
+                "context router schema_version should be 2 through 10",
                 ".ai/assistant/context-router.json",
             )
         manifest_path = self.target_path(".ai/alatyr.yaml")
@@ -1886,7 +1894,7 @@ class Validator:
                 ".ai/assistant/context-router.json",
             )
 
-        if schema_version in {2, 3, 4, 5, 6, 7, 8, 9}:
+        if schema_version in ROUTER_SCHEMA_VERSIONS:
             preloaded = expect_string_list(
                 router.get("preloaded_context"),
                 self,
@@ -1914,7 +1922,9 @@ class Validator:
                     ".ai/assistant/context-router.json",
                 )
             required_bootstrap = (
-                REQUIRED_BOOTSTRAP if schema_version in {5, 6, 7, 8, 9} else LEGACY_REQUIRED_BOOTSTRAP
+                REQUIRED_BOOTSTRAP
+                if schema_version in {5, 6, 7, 8, 9, 10}
+                else LEGACY_REQUIRED_BOOTSTRAP
             )
             for required in required_bootstrap:
                 if required not in bootstrap:
@@ -1923,7 +1933,11 @@ class Validator:
                         f"bootstrap_context missing {required}",
                         ".ai/assistant/context-router.json",
                     )
-            deferred = sorted(set(bootstrap) & DEFERRED_BOOTSTRAP) if schema_version in {5, 6, 7, 8, 9} else []
+            deferred = (
+                sorted(set(bootstrap) & DEFERRED_BOOTSTRAP)
+                if schema_version in {5, 6, 7, 8, 9, 10}
+                else []
+            )
             if deferred:
                 self.warn(
                     "ROUTER_BOOTSTRAP_BROAD",
@@ -1936,21 +1950,21 @@ class Validator:
             if not isinstance(budgets, dict):
                 self.error(
                     "ROUTER_BUDGETS_MISSING",
-                    "schema 2 through 9 router must define context_budgets",
+                    "schema 2 through 10 router must define context_budgets",
                     ".ai/assistant/context-router.json",
                 )
                 budgets = {}
-            elif schema_version in {4, 5, 6, 7, 8, 9}:
+            elif schema_version in {4, 5, 6, 7, 8, 9, 10}:
                 self.check_router_budget_shape(budgets)
             if not isinstance(router.get("context_receipt"), dict):
                 self.error(
                     "ROUTER_RECEIPT_MISSING",
-                    "schema 2 through 9 router must define context_receipt",
+                    "schema 2 through 10 router must define context_receipt",
                     ".ai/assistant/context-router.json",
                 )
             migration_entry = router.get("migration_routing")
             migration = migration_entry
-            if schema_version in {3, 4, 5, 6, 7, 8, 9} and isinstance(migration_entry, dict):
+            if schema_version in {3, 4, 5, 6, 7, 8, 9, 10} and isinstance(migration_entry, dict):
                 migration = self.load_context_descriptor(
                     migration_entry,
                     "target-migration-routing",
@@ -1961,7 +1975,7 @@ class Validator:
             ).is_file():
                 self.error(
                     "ROUTER_MIGRATION_MISSING",
-                    "schema 2 through 9 router must define migration-first routing",
+                    "schema 2 through 10 router must define migration-first routing",
                     ".ai/assistant/context-router.json",
                 )
             elif isinstance(migration, dict):
@@ -1992,18 +2006,10 @@ class Validator:
                         for value in values:
                             self.check_router_path(value, "migration_routing", field)
 
-        routing_order = expect_string_list(
-            router.get("routing_order"),
-            self,
-            "ROUTER_ROUTING_ORDER",
-            ".ai/assistant/context-router.json",
-        )
-        for duplicate in duplicates(routing_order):
-            self.error(
-                "ROUTER_DUPLICATE_PROFILE",
-                f"duplicate routing profile {duplicate}",
-                ".ai/assistant/context-router.json",
-            )
+            if schema_version == 10:
+                self.check_task_classification(router)
+
+        self.check_router_routing_order(router)
 
         profiles = self.router_profiles(router)
         if not isinstance(profiles, dict):
@@ -2090,14 +2096,17 @@ class Validator:
                             ".ai/assistant/context-router.json",
                         )
 
-        if schema_version in {7, 8, 9}:
+        if schema_version == 10:
+            self.check_small_task_overlay(router)
+
+        if schema_version in {7, 8, 9, 10}:
             knowledge_entry = router.get("project_knowledge_routing")
             if not isinstance(knowledge_entry, dict) and self.target_path(
                 ".ai/assistant/context/project-knowledge-routing.json"
             ).is_file():
                 self.error(
                     "ROUTER_PROJECT_KNOWLEDGE_MISSING",
-                    "schema 7, 8, or 9 requires project_knowledge_routing",
+                    "schema 7 through 10 requires project_knowledge_routing",
                     ".ai/assistant/context-router.json",
                 )
             elif isinstance(knowledge_entry, dict):
@@ -2223,7 +2232,7 @@ class Validator:
                                 "conditional_context",
                             )
 
-        if schema_version in {4, 5, 6, 7, 8, 9} and isinstance(budgets, dict):
+        if schema_version in {4, 5, 6, 7, 8, 9, 10} and isinstance(budgets, dict):
             self.check_installed_context_costs(router, profiles, budgets)
 
         upgrade = profiles.get("framework-upgrade")
@@ -2255,6 +2264,178 @@ class Validator:
 
     def check_router_budget_shape(self, budgets: dict[str, Any]) -> None:
         validate_budget_shape(self, budgets)
+
+    def check_router_routing_order(self, router: dict[str, Any]) -> None:
+        routing_order = expect_string_list(
+            router.get("routing_order"),
+            self,
+            "ROUTER_ROUTING_ORDER",
+            ".ai/assistant/context-router.json",
+        )
+        for duplicate in duplicates(routing_order):
+            self.error(
+                "ROUTER_DUPLICATE_PROFILE",
+                f"duplicate routing profile {duplicate}",
+                ".ai/assistant/context-router.json",
+            )
+
+    def check_task_classification(self, router: dict[str, Any]) -> None:
+        relpath = ".ai/assistant/context-router.json"
+        classification = router.get("task_classification")
+        if not isinstance(classification, dict):
+            self.error(
+                "ROUTER_TASK_CLASSIFICATION_MISSING",
+                "schema 10 router must define task_classification",
+                relpath,
+            )
+            return
+        if classification.get("schema_version") != 1:
+            self.error(
+                "ROUTER_TASK_CLASSIFICATION_SCHEMA",
+                "task_classification.schema_version must be 1",
+                relpath,
+            )
+        if classification.get("classification_order") != TASK_CLASSES:
+            self.error(
+                "ROUTER_TASK_CLASSIFICATION_ORDER",
+                "task classification order must match the canonical class order",
+                relpath,
+            )
+        if classification.get("default_class") != "standard-task":
+            self.error(
+                "ROUTER_TASK_CLASSIFICATION_DEFAULT",
+                "task_classification.default_class must be standard-task",
+                relpath,
+            )
+        if "read-only" not in str(classification.get("ambiguity_behavior", "")):
+            self.error(
+                "ROUTER_TASK_CLASSIFICATION_AMBIGUITY",
+                "ambiguous task classification must stay read-only",
+                relpath,
+            )
+        classes = classification.get("classes")
+        if not isinstance(classes, dict):
+            self.error(
+                "ROUTER_TASK_CLASSIFICATION_CLASSES",
+                "task_classification.classes must be an object",
+                relpath,
+            )
+            classes = {}
+        for task_class in TASK_CLASSES:
+            item = classes.get(task_class)
+            if not isinstance(item, dict):
+                self.error(
+                    "ROUTER_TASK_CLASSIFICATION_CLASS",
+                    f"task classification class {task_class} must be an object",
+                    relpath,
+                )
+                continue
+            expect_string_list(
+                item.get("use_when"),
+                self,
+                "ROUTER_TASK_CLASSIFICATION_USE_WHEN",
+                relpath,
+                label=f"task_classification.classes.{task_class}.use_when",
+            )
+        small = classes.get("small-task") if isinstance(classes, dict) else None
+        if isinstance(small, dict) and small.get("task_scale_overlay") != "small-task":
+            self.error(
+                "ROUTER_TASK_CLASSIFICATION_SMALL_OVERLAY",
+                "small-task class must map to the small-task overlay",
+                relpath,
+            )
+        triggers = expect_string_list(
+            classification.get("expansion_triggers"),
+            self,
+            "ROUTER_TASK_CLASSIFICATION_TRIGGERS",
+            relpath,
+            label="task_classification.expansion_triggers",
+        )
+        for required in [
+            "semantic or logical fact changes",
+            "source-of-truth owner is missing disputed or contradicted",
+            "focused validation fails or cannot prove the changed contract",
+        ]:
+            if required not in triggers:
+                self.error(
+                    "ROUTER_TASK_CLASSIFICATION_TRIGGER",
+                    f"task classification missing expansion trigger {required}",
+                    relpath,
+                )
+
+    def check_small_task_overlay(self, router: dict[str, Any]) -> None:
+        relpath = ".ai/assistant/context-router.json"
+        overlays = router.get("task_scale_overlays")
+        if not isinstance(overlays, dict):
+            self.error(
+                "ROUTER_TASK_SCALE_OVERLAYS",
+                "schema 10 router must define task_scale_overlays",
+                relpath,
+            )
+            return
+        small_entry = overlays.get("small-task")
+        if not isinstance(small_entry, dict):
+            self.error(
+                "ROUTER_SMALL_TASK_OVERLAY_MISSING",
+                "schema 10 router must define the small-task overlay",
+                relpath,
+            )
+            return
+        small_task = self.load_context_descriptor(
+            small_entry,
+            "target-task-scale-overlay",
+            "task_scale_overlays.small-task",
+        )
+        if not isinstance(small_task, dict):
+            return
+        descriptor_path = str(small_entry.get("descriptor"))
+        required_context = expect_string_list(
+            small_task.get("required_context"),
+            self,
+            "ROUTER_SMALL_TASK_CONTEXT",
+            descriptor_path,
+            label="task_scale_overlays.small-task.required_context",
+        )
+        for required in [
+            ".ai/assistant/gates/core.md",
+            ".ai/assistant/gates/final-evidence.md",
+        ]:
+            if required not in required_context:
+                self.error(
+                    "ROUTER_SMALL_TASK_CONTEXT",
+                    f"small-task overlay missing {required}",
+                    descriptor_path,
+                )
+        for reference in required_context:
+            self.check_router_path(
+                reference,
+                "task_scale_overlays.small-task",
+                "required_context",
+            )
+        triggers = expect_string_list(
+            small_task.get("expand_when"),
+            self,
+            "ROUTER_SMALL_TASK_EXPANSION",
+            descriptor_path,
+            label="task_scale_overlays.small-task.expand_when",
+        )
+        for required in [
+            "semantic or logical fact changes",
+            "source-of-truth owner is missing disputed or contradicted",
+            "focused validation fails or cannot prove the changed contract",
+        ]:
+            if required not in triggers:
+                self.error(
+                    "ROUTER_SMALL_TASK_EXPANSION",
+                    f"small-task overlay missing expansion trigger {required}",
+                    descriptor_path,
+                )
+        if "large-task" not in str(small_task.get("budget_behavior", "")):
+            self.error(
+                "ROUTER_SMALL_TASK_BUDGET",
+                "small-task overlay must keep large-task context lazy",
+                descriptor_path,
+            )
 
     def check_installed_context_costs(
         self,
@@ -2296,14 +2477,14 @@ class Validator:
         return data
 
     def router_profiles(self, router: dict[str, Any]) -> dict[str, Any]:
-        if router.get("schema_version") not in {3, 4, 5, 6, 7, 8, 9}:
+        if router.get("schema_version") not in {3, 4, 5, 6, 7, 8, 9, 10}:
             profiles = router.get("profiles")
             return profiles if isinstance(profiles, dict) else {}
         index = router.get("profile_index")
         if not isinstance(index, dict):
             self.error(
                 "ROUTER_PROFILE_INDEX",
-                "schema 3 through 9 router must define profile_index",
+                "schema 3 through 10 router must define profile_index",
                 ".ai/assistant/context-router.json",
             )
             return {}

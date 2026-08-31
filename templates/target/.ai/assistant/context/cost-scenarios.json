@@ -2,6 +2,12 @@
   "schema_version": 1,
   "descriptor_kind": "target-context-cost-scenarios",
   "scenarios": {
+    "small-docs-local": {
+      "profile": "docs-local",
+      "intent_overlays": [],
+      "task_scale_overlays": ["small-task"],
+      "expected_budget_state": "compact"
+    },
     "architecture-discussion": {
       "profile": "docs-local",
       "intent_overlays": ["architecture-request"],

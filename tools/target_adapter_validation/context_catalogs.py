@@ -193,6 +193,7 @@ def validate_context_catalog_contract(sink: FindingSink, manifest: Any) -> None:
             "packet_kind",
             "profile",
             "operation",
+            "task_classification",
             "selected_items",
             "semantic_terms",
             "budget",
@@ -226,6 +227,7 @@ def validate_context_catalog_contract(sink: FindingSink, manifest: Any) -> None:
                 "resolved",
                 "observed",
                 "semantic_guidance",
+                "task_classification",
             ]:
                 if field not in receipt:
                     sink.error(

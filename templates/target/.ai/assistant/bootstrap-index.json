@@ -9,17 +9,17 @@
     "source_worktree_state": "clean",
     "source_dirty_paths": [],
     "target_manifest": ".ai/alatyr.yaml",
-    "target_manifest_digest": "sha256:02d3c854306009ae74d60e72a9e415eeb98971da933b02f26a30dacf9f618226",
+    "target_manifest_digest": "sha256:01a45f13ff96aadf1b299a62d01387a647372078b8fdc512fa14b8eead7c2ccf",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.46",
-    "adapter_schema_version": "38",
-    "template_version": "42"
+    "framework_version": "0.1.0-alpha.47",
+    "adapter_schema_version": "39",
+    "template_version": "43"
   },
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "02d3c854306009ae74d60e72a9e415eeb98971da933b02f26a30dacf9f618226"
+      "sha256": "01a45f13ff96aadf1b299a62d01387a647372078b8fdc512fa14b8eead7c2ccf"
     },
     "project_map": {
       "path": ".ai/README.md",
@@ -27,7 +27,7 @@
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",
-      "sha256": "b47c49da8291b5850cccc147d04f36639c04518f0fda9357b1f7cc8c2e58f75a"
+      "sha256": "faab9ea5cfd0e0f3d3b4a3a06383ca1fdea6deaba157425005a77de1fa651d9b"
     },
     "semantic_codebook": {
       "path": ".ai/framework/semantics/index.json",
@@ -281,6 +281,12 @@
     }
   },
   "task_scale_overlays": {
+    "small-task": {
+      "signals": [
+        "classified small-task"
+      ],
+      "descriptor": ".ai/assistant/context/task-scales/small-task.json"
+    },
     "large-or-resumable": {
       "signals": [
         "explicitly large phased or resumable work",

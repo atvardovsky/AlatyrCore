@@ -162,6 +162,54 @@ Each target profile should define:
 The profile should list concrete target paths after installation. Placeholder
 paths are acceptable only before the adapter is accepted.
 
+## Task Classification
+
+Before loading profile-owned source files, classify the request by task scale.
+The classifier is a routing gate, not approval and not a substitute for
+logical review.
+
+Use these canonical classes unless a target adapter records an equivalent
+local naming map:
+
+- `small-task`: one base profile is sufficient, one local surface or directly
+  linked neighbor set is affected, no accepted semantic or logical fact
+  changes, no protected boundary is crossed, and focused validation can prove
+  the result.
+- `standard-task`: one base profile is sufficient, but semantic, validation,
+  source-of-truth, or non-obvious repair reasoning is needed.
+- `large-or-resumable`: multiple profiles, project areas, workstreams,
+  approval checkpoints, budget exceptions, or resumable phases are needed.
+- `protected-or-sensitive`: approval, safety, security, credential,
+  permission, destructive, spend, production, public-contract, or
+  live-external boundaries may apply.
+
+Classification happens after host preload and compact bootstrap, then before
+loading broad profile prose, operation catalogs, full gate checklists, change
+packages, or large-task packets. If classification is ambiguous, stay
+read-only, select the smallest plausible class for inspection, and ask for the
+missing fact before edits.
+
+The `small-task` class is the cheapest path. It must not load a large-task
+packet, change package, Debug Mode record, team history, full help reference,
+or full gate checklist unless one of these expansion triggers appears:
+
+- semantic or logical fact changes
+- source-of-truth owner is missing, disputed, or contradicted
+- approval, safety, security, data, architecture, public-contract, or
+  live-external boundary appears
+- multiple project areas, profiles, workstreams, or changed-fact owners are
+  required
+- focused validation fails or cannot prove the changed contract
+- the user asks for broad audit, large-task orchestration, change package, or
+  debug evidence
+
+When `small-task` remains valid through finalization, use compact evidence:
+classification, selected profile, direct owner or edited surface, loaded and
+intentionally omitted context, preview/package/large-task skip reasons,
+focused validation, broader checks skipped, and residual risk. If a trigger
+fires, stop using small-task evidence and route through the broader selected
+profile or overlay.
+
 ## Bootstrap Context
 
 Every installed adapter should keep a compact bootstrap set:

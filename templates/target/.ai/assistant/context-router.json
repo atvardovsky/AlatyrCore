@@ -1,5 +1,5 @@
 {
-  "schema_version": 9,
+  "schema_version": 10,
   "router_kind": "target-context-router",
   "human_reference": ".ai/assistant/context-profiles.md",
   "preloaded_context": [
@@ -31,6 +31,7 @@
     "fields": [
       "selected profiles",
       "selected intent overlays",
+      "task classification",
       "selected task scale overlay",
       "selected project areas",
       "selected project knowledge and routing stage",
@@ -91,6 +92,65 @@
       "semantic codebook fallback",
       "material or protected change",
       "token or cost claim"
+    ]
+  },
+  "task_classification": {
+    "schema_version": 1,
+    "classification_order": [
+      "protected-or-sensitive",
+      "large-or-resumable",
+      "small-task",
+      "standard-task"
+    ],
+    "default_class": "standard-task",
+    "ambiguity_behavior": "stay read-only, select the smallest plausible class, and ask for the missing fact before edits",
+    "classes": {
+      "small-task": {
+        "use_when": [
+          "one base profile is sufficient",
+          "one local surface or directly linked neighbor set is affected",
+          "no accepted semantic or logical fact changes",
+          "no approval safety data architecture public contract or live-external boundary is crossed",
+          "focused validation can prove the result"
+        ],
+        "task_scale_overlay": "small-task",
+        "pre_change_preview": "skip with short reason unless a trigger fires",
+        "evidence": "compact small-task evidence"
+      },
+      "standard-task": {
+        "use_when": [
+          "one base profile is selected but semantic or validation reasoning is needed",
+          "scope remains within one project area or owner set",
+          "work does not need separate workstreams"
+        ],
+        "task_scale_overlay": null,
+        "pre_change_preview": "risk-gated"
+      },
+      "large-or-resumable": {
+        "use_when": [
+          "multiple profiles project areas workstreams or approval checkpoints are needed",
+          "the selected context exceeds the profile budget",
+          "the user explicitly asks for phased or resumable work"
+        ],
+        "task_scale_overlay": "large-or-resumable",
+        "pre_change_preview": "required before edits"
+      },
+      "protected-or-sensitive": {
+        "use_when": [
+          "approval safety security credential permission destructive spend production or live-external boundary may apply",
+          "current user authorization or approval scope is unclear"
+        ],
+        "task_scale_overlay": null,
+        "pre_change_preview": "required before edits"
+      }
+    },
+    "expansion_triggers": [
+      "semantic or logical fact changes",
+      "source-of-truth owner is missing disputed or contradicted",
+      "approval safety security data architecture public contract or live-external boundary appears",
+      "multiple project areas profiles workstreams or changed-fact owners are required",
+      "focused validation fails or cannot prove the changed contract",
+      "user asks for broad audit large-task orchestration change package or debug evidence"
     ]
   },
   "agent_entry_packet": {
@@ -229,6 +289,12 @@
     "descriptor": ".ai/assistant/context/migration-routing.json"
   },
   "task_scale_overlays": {
+    "small-task": {
+      "use_when": [
+        "classified small-task"
+      ],
+      "descriptor": ".ai/assistant/context/task-scales/small-task.json"
+    },
     "large-or-resumable": {
       "use_when": [
         "explicitly large phased or resumable work",

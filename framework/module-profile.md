@@ -39,9 +39,9 @@ Every accepted installation should provide the `kernel` support profile:
 - adapter ownership metadata with responsible owner, backup owner, review
   cadence, last review date, and CODEOWNERS or equivalent file-owner map when
   supported
-- context profiles with a generated hash-bound bootstrap index, task-specific
-  expansion rules, routed gate fragments, a compact router, and selected lazy
-  profile descriptors
+- context profiles with explicit task classification, a generated hash-bound
+  bootstrap index, task-specific expansion rules, routed gate fragments, a
+  compact router, and selected lazy profile descriptors
 - source-of-truth registry or explicit missing owner records for important
   fact types
 - change-risk classification and approval triggers

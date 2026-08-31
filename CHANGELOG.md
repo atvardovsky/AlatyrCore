@@ -4,6 +4,22 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.47 - 2026-08-31
+
+- Increased the framework version to `0.1.0-alpha.47`, adapter schema version
+  to `39`, and target template version to `43` for explicit task
+  classification and a first-class small-task routing lane.
+- Added task classification before profile and overlay expansion so installed
+  adapters can distinguish small, standard, large/resumable, and
+  protected/sensitive tasks before loading wider context.
+- Added a `small-task` task-scale overlay and compact evidence contract so
+  routine one-profile local work can stay cheap while preserving strict
+  expansion triggers for semantic facts, approval, safety, ownership,
+  conflicts, and failed validation.
+- Narrowed fast changed-path source unit-test selection so documentation-only
+  small tasks do not launch the unit-test wrapper unless an explicit test or
+  tooling path requires it; full validation remains unchanged.
+
 ## 0.1.0-alpha.46 - 2026-08-30
 
 - Increased the framework version to `0.1.0-alpha.46` and target template

@@ -395,8 +395,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 145,
-      "content_digest": "sha256:06a4ccc8c394758d8db6773d62b71a78f267433366d8c284bff7bed47248f9fe"
+      "estimated_words": 160,
+      "content_digest": "sha256:ef8e3b2e3cdea5e5f1964a3876860c8a79cb7f7be332a7c71bcbafd4eef82e95"
     },
     {
       "id": "assistant.content.templates-contract-artifact-review-md",
@@ -856,8 +856,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1313,
-      "content_digest": "sha256:144dcd004b8a88a1a65abddb6f3d5fa10e6c40f18bde457797d041767074601c"
+      "estimated_words": 1428,
+      "content_digest": "sha256:5ef0559b4b10be64022c5c43ef126df232c25ab3effa797e6ad234b421670437"
     },
     {
       "id": "assistant.content.templates-post-install-message-md",
@@ -1011,6 +1011,34 @@
       ],
       "estimated_words": 26,
       "content_digest": "sha256:7467db6dc253e9360357d1b2eb3da4bdf25ae5d70f2cc3f689c7aee6c322e231"
+    },
+    {
+      "id": "assistant.content.templates-small-task-evidence-md",
+      "kind": "content",
+      "path": "templates/small-task-evidence.md",
+      "summary": "Small-Task Evidence",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "small",
+          "task",
+          "evidence"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 123,
+      "content_digest": "sha256:67716af85d526034d30ac915f3ab421e8619a334a53ef39782a310872517ffd5"
     },
     {
       "id": "assistant.content.templates-subagent-task-packet-md",

@@ -469,6 +469,7 @@ def projected_template_content(
         Path(".ai/assistant/context/intents/vocabulary-request.json"),
         Path(".ai/assistant/context/intents/test-first-request.json"),
         Path(".ai/assistant/context/intents/extension-request.json"),
+        Path(".ai/assistant/context/task-scales/small-task.json"),
         Path(".ai/assistant/context/task-scales/large-or-resumable.json"),
         Path(".ai/assistant/context/task-scales/change-package.json"),
     }:

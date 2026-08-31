@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1138
+Catalog entries: 1152
 
 ## Families
 
@@ -50,7 +50,7 @@ Catalog entries: 1138
 - `PROJECT`: 52 codes.
 - `REQUIRED`: 1 codes.
 - `ROUTED`: 1 codes.
-- `ROUTER`: 52 codes.
+- `ROUTER`: 66 codes.
 - `ROUTING`: 2 codes.
 - `RULE`: 1 codes.
 - `STALE`: 2 codes.
@@ -1839,6 +1839,34 @@ Catalog entries: 1138
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ROUTER_SCHEMA_LEGACY`
   Level: warning. Source: `tools/validate_target_adapter.py`.
+- `ROUTER_SMALL_TASK_BUDGET`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ROUTER_SMALL_TASK_CONTEXT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ROUTER_SMALL_TASK_EXPANSION`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ROUTER_SMALL_TASK_OVERLAY_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ROUTER_TASK_CLASSIFICATION_AMBIGUITY`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ROUTER_TASK_CLASSIFICATION_CLASS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ROUTER_TASK_CLASSIFICATION_CLASSES`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ROUTER_TASK_CLASSIFICATION_DEFAULT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ROUTER_TASK_CLASSIFICATION_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ROUTER_TASK_CLASSIFICATION_ORDER`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ROUTER_TASK_CLASSIFICATION_SCHEMA`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ROUTER_TASK_CLASSIFICATION_SMALL_OVERLAY`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ROUTER_TASK_CLASSIFICATION_TRIGGER`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ROUTER_TASK_SCALE_OVERLAYS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `ROUTER_UPGRADE_CONTEXT_BROAD`
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `ROUTING_BROAD_CONTEXT`

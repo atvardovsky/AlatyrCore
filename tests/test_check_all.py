@@ -87,6 +87,22 @@ class CheckGraphTests(unittest.TestCase):
         self.assertNotIn("source-unit-tests", platform_ids)
         self.assertIn("source-unit-tests", full_ids)
 
+    def test_live_fast_docs_change_omits_source_unit_suite(self) -> None:
+        from unittest.mock import patch
+
+        with patch("check_all.git_changed_paths", return_value=["docs/human/faq.md"]):
+            selected, fell_back = select_checks(
+                load_manifest(),
+                "fast",
+                "HEAD~1",
+                platform="linux",
+            )
+
+        selected_ids = {item["id"] for item in selected}
+        self.assertFalse(fell_back)
+        self.assertNotIn("source-unit-tests", selected_ids)
+        self.assertIn("markdown-links", selected_ids)
+
     def test_changed_fast_profile_selects_invariants_and_matching_routes(self) -> None:
         checks = [
             {

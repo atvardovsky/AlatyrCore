@@ -149,6 +149,33 @@
       ],
       "estimated_words": 203,
       "content_digest": "sha256:73e3cfa78cab8d4da3759fcf8fe0f838e161178c1ef73c6804d0b37802fafb7f"
+    },
+    {
+      "id": "assistant.content.context-task-scales-small-task-json",
+      "kind": "content",
+      "path": "context/task-scales/small-task.json",
+      "summary": "Small Task",
+      "selectors": {
+        "path_terms": [
+          "task",
+          "scales",
+          "small"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "load_when": [
+        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+      ],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 240,
+      "content_digest": "sha256:60ae1cfa6df1143baaa2059e54d9f04d2984191675afbd803f1fb9d125404075"
     }
   ]
 }

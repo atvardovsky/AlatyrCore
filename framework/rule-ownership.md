@@ -23,11 +23,11 @@ Installed routing owner: `.ai/framework/context-profiles.md`
 Rule IDs: `ALATYR-CONTEXT-001`
 Derived surfaces: README source context, installation source context, target
 context profiles, target context router, recursive contour context indexes,
-semantic codebook and resolved context packets, task-scale overlays, operation
-packet context receipts, ordered semantic-guidance identity and bundle
-receipts, long-task semantic revalidation, consistency relationship routing,
-session bootstrap instructions, AI infrastructure capability and recommendation
-routing.
+semantic codebook and resolved context packets, task classification and
+task-scale overlays, operation packet context receipts, ordered
+semantic-guidance identity and bundle receipts, long-task semantic
+revalidation, consistency relationship routing, session bootstrap instructions,
+AI infrastructure capability and recommendation routing.
 
 Category: `SOURCE`
 Source routing owner: `framework/source-of-truth-registry.md`

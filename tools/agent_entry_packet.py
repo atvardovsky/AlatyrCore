@@ -65,6 +65,39 @@ def _object(value: Any) -> dict[str, Any]:
     return value if isinstance(value, dict) else {}
 
 
+def _task_classification(value: Any) -> dict[str, Any]:
+    source = value if isinstance(value, dict) else {}
+    classes = source.get("classes")
+    projected_classes: dict[str, dict[str, Any]] = {}
+    if isinstance(classes, dict):
+        for class_id, class_data in classes.items():
+            if not isinstance(class_id, str) or not isinstance(class_data, dict):
+                continue
+            item: dict[str, Any] = {}
+            signals = _string_list(class_data.get("use_when"))
+            if signals:
+                item["signals"] = signals
+            overlay = class_data.get("task_scale_overlay")
+            if isinstance(overlay, str) and overlay:
+                item["task_scale_overlay"] = overlay
+            preview = class_data.get("pre_change_preview")
+            if isinstance(preview, str) and preview:
+                item["pre_change_preview"] = preview
+            evidence = class_data.get("evidence")
+            if isinstance(evidence, str) and evidence:
+                item["evidence"] = evidence
+            if item:
+                projected_classes[class_id] = item
+    return {
+        "schema_version": source.get("schema_version", "unknown"),
+        "classification_order": _string_list(source.get("classification_order")),
+        "default_class": _string(source.get("default_class")),
+        "ambiguity_behavior": _string(source.get("ambiguity_behavior")),
+        "classes": projected_classes,
+        "expansion_triggers": _string_list(source.get("expansion_triggers")),
+    }
+
+
 def _load_optional_text(target: Path, path: Path) -> str | None:
     source = target / path
     if not source.is_file():
@@ -281,6 +314,9 @@ def build_agent_entry_packet(
             gates,
             target,
             profile_descriptors,
+        ),
+        "task_classification": _task_classification(
+            router.get("task_classification")
         ),
         "operation_routing": {
             "index": _string(operation_routing.get("index"), "not installed"),

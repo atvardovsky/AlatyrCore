@@ -80,6 +80,9 @@ Owner or file: `.ai/assistant/context-profiles.md`
 Required files:
 
 - `.ai/assistant/context-profiles.md`
+- `.ai/assistant/context-router.json`
+- `.ai/assistant/context/task-scales/small-task.json`
+- `.ai/assistant/templates/small-task-evidence.md`
 
 Evidence: `{EVIDENCE_OR_GAP}`
 Validation or review: `{CONTEXT_PROFILES_VALIDATION_OR_REVIEW}`

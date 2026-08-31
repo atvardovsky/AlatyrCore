@@ -21,12 +21,15 @@ A target adapter can load:
 5. only matching recursive section indexes and selected content descriptors
 6. the compact workspace-mode catalog when that optional module is enabled
 7. one selected mode descriptor and applicable shared root context
-8. the selected profile's required context
-9. one or more project-area overlays when the task names affected areas
-10. task-scale overlays only when the task is large, resumable, team-active,
-   explicitly debug-enabled, at material evidence finalization, or an enabled-
-   team write preflight finds possible active-work overlap
-11. bounded project-knowledge routing after profile/area selection and again
+8. task classification from compact request, operation, risk, and scale
+   signals
+9. the selected profile's required context
+10. one or more project-area overlays when the task names affected areas
+11. task-scale overlays only when the classifier selects small-task for a
+   cheap evidence lane, the task is large, resumable, team-active, explicitly
+   debug-enabled, at material evidence finalization, or an enabled-team write
+   preflight finds possible active-work overlap
+12. bounded project-knowledge routing after profile/area selection and again
    after concrete changed facts, paths, symbols, subsystem or architecture
    relationships, dependencies, contracts, or issue lineage become known
 
@@ -68,6 +71,8 @@ A target context router should define:
 - bootstrap budget plus profile total, portable, and reserved target-context
   budgets
 - context receipt fields
+- task classification classes, order, ambiguity behavior, expansion triggers,
+  and their task-scale overlay mappings
 - routing order
 - canonical profile entries
 - bounded operation candidates per profile
@@ -91,12 +96,12 @@ A target context router should define:
 - validation or manual review
 - final evidence
 
-Schema 8 adds recursive contour indexes and semantic-codebook routing to
-schema 7's profile, overlay, and budget behavior. Schema changes that move
-owned fields between the index and descriptors must
-advance the target adapter schema and template version. Every indexed
-descriptor must exist in the selected support profile; disabled optional
-modules must not remain advertised through paths that scaffolding omitted.
+Schema 10 adds explicit task classification to schema 9's recursive-index,
+semantic-codebook, profile, overlay, and budget behavior. Schema changes that
+move owned fields between the index and descriptors must advance the target
+adapter schema and template version. Every indexed descriptor must exist in
+the selected support profile; disabled optional modules must not remain
+advertised through paths that scaffolding omitted.
 
 Resolve routing in this order: bootstrap projection, core semantic preload,
 contour index branch, profile and overlays, selected canonical owners, then
@@ -162,6 +167,24 @@ When an overlay needs a detailed reference only for a subset of requests, put
 the path and its load condition in `conditional_context` instead of the default
 `required_context`. Conditional paths must remain machine-visible to routing
 checks, but they do not count as loaded until their named condition is true.
+
+Task classification runs before broad context expansion. It should select one
+of `small-task`, `standard-task`, `large-or-resumable`, or
+`protected-or-sensitive` from compact request, operation, risk, changed-fact,
+approval, budget, and validation signals. Ambiguous classification is read-
+only: select the smallest plausible class for inspection, ask for the missing
+fact, and do not edit until the current scope is authorized.
+
+The `small-task` class is valid only while one base profile and one local
+surface or direct neighbor set are sufficient, no accepted semantic or logical
+fact changes, no protected boundary is crossed, and focused validation can
+prove the result. It maps to a lazy `small-task` task-scale overlay whose
+required context is limited to core/final gates and directly selected owner
+evidence. It must not load large-task packets, change packages, Debug Mode,
+team history, full help, full gate checklists, or broad project knowledge
+unless an expansion trigger appears. Expansion triggers include semantic fact
+changes, missing or contradicted owners, approval or safety boundaries,
+multi-area scope, failed focused validation, or explicit broad audit.
 
 The router should use the same canonical profile names as
 `context-profiles.md` unless the target adapter records a deliberate local

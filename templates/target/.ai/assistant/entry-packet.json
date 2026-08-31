@@ -10,21 +10,21 @@
     "source_worktree_state": "clean",
     "source_dirty_paths": [],
     "target_manifest": ".ai/alatyr.yaml",
-    "target_manifest_digest": "sha256:02d3c854306009ae74d60e72a9e415eeb98971da933b02f26a30dacf9f618226",
+    "target_manifest_digest": "sha256:01a45f13ff96aadf1b299a62d01387a647372078b8fdc512fa14b8eead7c2ccf",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.46",
-    "adapter_schema_version": "38",
-    "template_version": "42"
+    "framework_version": "0.1.0-alpha.47",
+    "adapter_schema_version": "39",
+    "template_version": "43"
   },
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "02d3c854306009ae74d60e72a9e415eeb98971da933b02f26a30dacf9f618226"
+      "sha256": "01a45f13ff96aadf1b299a62d01387a647372078b8fdc512fa14b8eead7c2ccf"
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",
-      "sha256": "b47c49da8291b5850cccc147d04f36639c04518f0fda9357b1f7cc8c2e58f75a"
+      "sha256": "faab9ea5cfd0e0f3d3b4a3a06383ca1fdea6deaba157425005a77de1fa651d9b"
     },
     "gate_index": {
       "path": ".ai/assistant/gates/index.json",
@@ -546,6 +546,63 @@
         "migration_actions"
       ]
     }
+  },
+  "task_classification": {
+    "schema_version": 1,
+    "classification_order": [
+      "protected-or-sensitive",
+      "large-or-resumable",
+      "small-task",
+      "standard-task"
+    ],
+    "default_class": "standard-task",
+    "ambiguity_behavior": "stay read-only, select the smallest plausible class, and ask for the missing fact before edits",
+    "classes": {
+      "small-task": {
+        "signals": [
+          "one base profile is sufficient",
+          "one local surface or directly linked neighbor set is affected",
+          "no accepted semantic or logical fact changes",
+          "no approval safety data architecture public contract or live-external boundary is crossed",
+          "focused validation can prove the result"
+        ],
+        "task_scale_overlay": "small-task",
+        "pre_change_preview": "skip with short reason unless a trigger fires",
+        "evidence": "compact small-task evidence"
+      },
+      "standard-task": {
+        "signals": [
+          "one base profile is selected but semantic or validation reasoning is needed",
+          "scope remains within one project area or owner set",
+          "work does not need separate workstreams"
+        ],
+        "pre_change_preview": "risk-gated"
+      },
+      "large-or-resumable": {
+        "signals": [
+          "multiple profiles project areas workstreams or approval checkpoints are needed",
+          "the selected context exceeds the profile budget",
+          "the user explicitly asks for phased or resumable work"
+        ],
+        "task_scale_overlay": "large-or-resumable",
+        "pre_change_preview": "required before edits"
+      },
+      "protected-or-sensitive": {
+        "signals": [
+          "approval safety security credential permission destructive spend production or live-external boundary may apply",
+          "current user authorization or approval scope is unclear"
+        ],
+        "pre_change_preview": "required before edits"
+      }
+    },
+    "expansion_triggers": [
+      "semantic or logical fact changes",
+      "source-of-truth owner is missing disputed or contradicted",
+      "approval safety security data architecture public contract or live-external boundary appears",
+      "multiple project areas profiles workstreams or changed-fact owners are required",
+      "focused validation fails or cannot prove the changed contract",
+      "user asks for broad audit large-task orchestration change package or debug evidence"
+    ]
   },
   "operation_routing": {
     "index": ".ai/assistant/operation-index.json",

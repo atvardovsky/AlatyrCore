@@ -14,8 +14,9 @@ Agents working here must preserve the separation between:
 
 Treat this file as host-preloaded context and do not reread it. Read
 `tools/source_context_router.json`, choose the smallest matching source task
-profile, resolve its bounded semantic preload, and load only that profile's
-required paths and rule owners. For framework context, start from
+profile, classify task scale before expansion, resolve its bounded semantic
+preload, and load only that profile's required paths and rule owners. For
+framework context, start from
 `framework/context-index.json` and follow only matching child entries; never
 load a directory because its parent index was selected. Resolve lazy semantic
 references through `framework/semantics/index.json`, with canonical-owner prose

@@ -77,6 +77,16 @@ def main() -> int:
             failures.append(f"task-scale overlay {name} exceeds the reserved target word budget")
         if overlay["missing_paths"]:
             failures.append(f"task-scale overlay {name} contains missing paths")
+    small_task = report["task_scale_overlays"].get("small-task")
+    if not isinstance(small_task, dict):
+        failures.append("small-task route is missing from task-scale overlays")
+    else:
+        if small_task["missing_paths"]:
+            failures.append("small-task compact route contains missing paths")
+        if small_task["declared_files"] > 4:
+            failures.append("small-task compact route should stay within four files")
+        if small_task["words"] > 1200:
+            failures.append("small-task compact route should stay below 1200 words")
 
     consistency = report["consistency_routing"]
     if consistency["declared_files"] > profile_budget["max_files"]:

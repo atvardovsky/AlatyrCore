@@ -62,7 +62,7 @@ support_information:
   policy: ".ai/project/support-policy.json"
   state: ".ai/support-state.json"
 context_routing:
-  router_schema_version: 9
+  router_schema_version: 10
   preloaded_context:
     - "AGENTS.md"
   compact_bootstrap:

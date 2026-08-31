@@ -2238,7 +2238,6 @@
         "fast",
         "full"
       ],
-      "always_for_changed": true,
       "contract_inputs": [
         "tools/check_manifest.json"
       ],
@@ -2290,7 +2289,7 @@
         "fast",
         "full"
       ],
-      "always_for_changed": true,
+      "always_for_changed": false,
       "contract_inputs": [
         "tests/**"
       ],

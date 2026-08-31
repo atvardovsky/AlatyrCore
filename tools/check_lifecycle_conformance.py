@@ -269,6 +269,41 @@ def refresh_context_and_bootstrap(repo: Path) -> None:
     (repo / STATE_PATH).write_bytes(render_state(support_state).encode("utf-8"))
 
 
+def mark_fixture_selected_assistant(repo: Path) -> None:
+    capability_path = repo / ".ai" / "assistant" / "assistant-capabilities" / "codex.json"
+    if not capability_path.is_file():
+        return
+    capability = json.loads(capability_path.read_text(encoding="utf-8"))
+    surface_state = capability.get("surface_state")
+    if isinstance(surface_state, dict):
+        surface_state.update(
+            {
+                "overall": "supported",
+                "selected_for_target": "yes",
+                "evidence_state": "current",
+                "advertised_by_surface": "yes",
+                "verified_for_target": "yes",
+                "limitations": ["fixture-only instruction-loading evidence"],
+            }
+        )
+    loading = capability.get("instruction_loading")
+    if isinstance(loading, dict):
+        loading.update(
+            {
+                "route": "supported",
+                "selected_entry_path": "AGENTS.md",
+                "auto_load_observed": "yes",
+                "precedence_evidence": "fixture selected bridge",
+                "configuration_state": "fixture default",
+                "verified_at": "2026-01-01",
+                "client_version": "fixture",
+                "evidence": "deterministic lifecycle fixture",
+                "expires_at": "client or bridge change",
+            }
+        )
+    capability_path.write_text(json.dumps(capability, indent=2) + "\n", encoding="utf-8")
+
+
 def approval_record(base: str, support_profile: str) -> dict[str, Any]:
     return {
         "schema_version": 2,
@@ -460,6 +495,7 @@ def exercise_profile(
             json.dumps(approval_record(base, support_profile), indent=2) + "\n",
             encoding="utf-8",
         )
+    mark_fixture_selected_assistant(repo)
     refresh_context_and_bootstrap(repo)
 
     approval_validator = make_validator(repo, ROOT, diff_ref=base, approval=approval_path)

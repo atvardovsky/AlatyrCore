@@ -246,6 +246,49 @@ gate only when the selected action needs them. Suggestions remain proposed;
 accepted-state changes require a user decision and preview. Do not infer a
 mode from paths alone or activate nested adapters.
 
+## Task Classification
+
+Classify task scale after compact bootstrap and before loading broad profile
+prose, full help, full gate checklist, large-task packets, change packages,
+Debug Mode records, or team history.
+
+Canonical classes:
+
+- `small-task`: one base profile, one local surface or directly linked
+  neighbor set, no semantic fact change, no protected boundary, and focused
+  validation can prove the result.
+- `standard-task`: one base profile, but semantic, validation, owner, or
+  non-obvious repair reasoning is needed.
+- `large-or-resumable`: multiple profiles, areas, workstreams, approval
+  checkpoints, budget exceptions, or resumable phases are needed.
+- `protected-or-sensitive`: approval, safety, security, credentials,
+  permissions, destructive action, spend, production, public-contract, or
+  live-external boundary may apply.
+
+Ambiguity stays read-only. Select the smallest plausible class for inspection,
+ask for the missing fact, and do not edit until the current action phase is
+authorized.
+
+The `small-task` class uses the `small-task` overlay only for compact evidence
+and explicit skip reasons. Stop using it and reclassify if semantic facts,
+source-of-truth ownership, approval, safety, data, architecture, public
+contract, live-external, multi-area, failed-validation, or broad-audit
+triggers appear.
+
+## Task-Scale Overlay: `small-task`
+
+Activate only when task classification selects `small-task`. Required compact
+context:
+
+- `.ai/assistant/gates/core.md`
+- `.ai/assistant/gates/final-evidence.md`
+
+Reuse the selected base profile and directly linked owner evidence. Do not
+load package, large-task, debug, team, full-help, or full-checklist surfaces.
+Record compact small-task evidence or a short final skip reason. If an
+expansion trigger fires, stop and route through the broader selected profile
+or overlay.
+
 ## Task-Scale Overlay: `large-or-resumable`
 
 Activate only for large, cross-boundary, multi-workstream,

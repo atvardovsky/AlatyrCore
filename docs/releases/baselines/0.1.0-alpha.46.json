@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "baseline_kind": "source-release-checkpoint",
+  "framework_version": "0.1.0-alpha.46",
+  "adapter_schema_version": "38",
+  "template_version": "42",
+  "source_commit": "a01d364faf2787ea6e9fe2b318191d445c5afb71",
+  "contract_sha256": "8466ec0c193f7da5f6caac35b32a980bb6eaffa9dd7df437600c3167d59f88c7",
+  "migration_report": "docs/releases/0.1.0-alpha.46-migration.md",
+  "publication_status": "untagged-release-checkpoint"
+}

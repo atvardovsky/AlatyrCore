@@ -118,6 +118,32 @@ def check_packet(
                 if not isinstance(values, list) or not values:
                     failures.append(f"code-local packet route missing {field}")
 
+    classification = packet.get("task_classification")
+    if not isinstance(classification, dict):
+        failures.append("entry packet must include task_classification")
+    else:
+        if classification.get("classification_order") != [
+            "protected-or-sensitive",
+            "large-or-resumable",
+            "small-task",
+            "standard-task",
+        ]:
+            failures.append("entry packet task classification order is invalid")
+        if classification.get("default_class") != "standard-task":
+            failures.append("entry packet task classification default is invalid")
+        if "read-only" not in str(classification.get("ambiguity_behavior", "")):
+            failures.append("entry packet task classification ambiguity must stay read-only")
+        classes = classification.get("classes")
+        if not isinstance(classes, dict) or "small-task" not in classes:
+            failures.append("entry packet task classification must expose small-task")
+        else:
+            small = classes["small-task"]
+            if not isinstance(small, dict) or small.get("task_scale_overlay") != "small-task":
+                failures.append("entry packet small-task class must route small-task overlay")
+        triggers = classification.get("expansion_triggers")
+        if not isinstance(triggers, list) or "semantic or logical fact changes" not in triggers:
+            failures.append("entry packet task classification expansion triggers are incomplete")
+
     operation = packet.get("operation_routing")
     if not isinstance(operation, dict):
         failures.append("entry packet must include operation_routing")

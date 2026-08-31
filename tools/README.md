@@ -143,10 +143,9 @@ guardrails without running the source unit suite. With `fast --changed-from`,
 explicit `trigger_paths` select focused checks while a small invariant set
 always runs; unmatched paths retain the conservative full-suite fallback.
 The runner passes changed-path and selection-reason metadata to checks. The
-source unit-test wrapper uses that metadata to run directly affected test
-modules for routed Python/tooling changes, skips unit tests for non-Python
-documentation-only fast changes, and falls back to the full unit suite when a
-tooling change cannot be mapped safely.
+source unit-test wrapper is selected only for tests or routed Python/tooling
+changes, uses that metadata to run directly affected test modules, and falls
+back to the full unit suite when a tooling change cannot be mapped safely.
 `change --changed-from <ref>` uses the same ref as the release-drift baseline
 when `--from-ref` is omitted. `release` adds tag-baseline migration checks.
 `platform` runs the portable tooling contract slice used on macOS and Windows.

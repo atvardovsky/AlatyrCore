@@ -140,8 +140,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 3092,
-      "content_digest": "sha256:e0bcec67f21fef8e71d4c14c7b045ecc11f05ed62b42a94e503f6a7f04df120c"
+      "estimated_words": 3326,
+      "content_digest": "sha256:5e81e8f0e1f0cf60ce48fff6990a2a8c34fcaf8222888de945097087ef04d621"
     },
     {
       "id": "assistant.content.context-router-json",
@@ -165,8 +165,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1020,
-      "content_digest": "sha256:b47c49da8291b5850cccc147d04f36639c04518f0fda9357b1f7cc8c2e58f75a"
+      "estimated_words": 1291,
+      "content_digest": "sha256:faab9ea5cfd0e0f3d3b4a3a06383ca1fdea6deaba157425005a77de1fa651d9b"
     },
     {
       "id": "assistant.content.contour-md",
@@ -245,8 +245,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1524,
-      "content_digest": "sha256:6104deadbc4e8155fe50627545929fcb616647daa1a37f4b44c83ec04ad08e30"
+      "estimated_words": 1779,
+      "content_digest": "sha256:3a464c4539738a39374b4102eb68c729e367a92178d0c2820b498349d2566b35"
     },
     {
       "id": "assistant.content.help-md",
@@ -374,8 +374,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1499,
-      "content_digest": "sha256:9c6acb00e12095b6dae255f6d554714ce02bd001bd679424d476d8303ec2c340"
+      "estimated_words": 1505,
+      "content_digest": "sha256:48889fb772cfe7ed379565306ff1e782d0dcd60d11cdcca2b36fa5c4828b0f0d"
     },
     {
       "id": "assistant.content.operation-catalog-json",
@@ -542,7 +542,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 384,
-      "content_digest": "sha256:f8a78a96b5383507b8016dd16f1181615c610bad850ec69e44fb4a371050f59c"
+      "content_digest": "sha256:bffb332434741161da992e3f110c78541ea587a38da012b499b5ee0aca4dec8a"
     },
     {
       "id": "assistant.section.extensions",
@@ -685,8 +685,8 @@
       ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 2738,
-      "content_digest": "sha256:183fa2e1a1f0400f92e3984dfece6e274ee929876edaa122c7468310b3173366"
+      "estimated_words": 2793,
+      "content_digest": "sha256:3636d805ff071ed3f7bbd4a9f1de2ee412190a57c8c7635b74bba9cc5a92bd4f"
     },
     {
       "id": "assistant.section.workers",

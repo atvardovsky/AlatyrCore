@@ -43,6 +43,12 @@ REQUIRED_PRELOADED = ["AGENTS.md"]
 REQUIRED_BOOTSTRAP = [
     ".ai/assistant/bootstrap-index.json",
 ]
+TASK_CLASSES = [
+    "protected-or-sensitive",
+    "large-or-resumable",
+    "small-task",
+    "standard-task",
+]
 FORBIDDEN_BOOTSTRAP = {
     "AGENTS.md",
     ".ai/alatyr.yaml",
@@ -169,6 +175,135 @@ def check_conditional_context(
     return paths
 
 
+def check_context_packet(router: dict[str, Any], failures: list[str]) -> None:
+    packet = router.get("context_packet")
+    if not isinstance(packet, dict):
+        failures.append("context_packet must be an object")
+        return
+    if packet.get("schema_version") != 1:
+        failures.append("context_packet.schema_version must be 1")
+    if packet.get("template") != ".ai/assistant/templates/context-packet.json":
+        failures.append("context_packet.template is invalid")
+    required_for = packet.get("receipt_required_for")
+    for trigger in [
+        "semantic codebook fallback",
+        "material or protected change",
+        "token or cost claim",
+    ]:
+        if not isinstance(required_for, list) or trigger not in required_for:
+            failures.append(f"context_packet receipt trigger missing {trigger}")
+
+    packet_template = load_json(CONTEXT_PACKET)
+    required_packet_fields = {
+        "schema_version",
+        "packet_kind",
+        "profile",
+        "operation",
+        "task_classification",
+        "selected_items",
+        "semantic_terms",
+        "budget",
+        "receipt",
+        "cost_claim",
+        "limitations",
+        "packet_digest",
+    }
+    if set(packet_template) != required_packet_fields:
+        failures.append("context packet template fields are invalid")
+    receipt_shape = packet_template.get("receipt")
+    if not isinstance(receipt_shape, dict):
+        failures.append("context packet template must include receipt object")
+    else:
+        for field in [
+            "receipt_kind",
+            "measurement_state",
+            "planned",
+            "resolved",
+            "observed",
+            "semantic_guidance",
+            "task_classification",
+        ]:
+            if field not in receipt_shape:
+                failures.append(f"context packet receipt missing {field}")
+
+    cost_claim = packet_template.get("cost_claim")
+    if not isinstance(cost_claim, dict):
+        failures.append("context packet template must include cost_claim object")
+    else:
+        if cost_claim.get("exact_billing_claim") is not False:
+            failures.append("context packet exact_billing_claim must default false")
+        if cost_claim.get("exact_context_delivery_claim") is not False:
+            failures.append("context packet exact_context_delivery_claim must default false")
+
+    limitations = packet_template.get("limitations")
+    for required_limitation in [
+        "Static source estimates are not billed tokens.",
+        "Provider usage alone does not prove exact semantic guidance delivery.",
+        "Hidden client context may exist outside repository-visible evidence.",
+    ]:
+        if not isinstance(limitations, list) or required_limitation not in limitations:
+            failures.append(f"context packet limitations missing {required_limitation}")
+
+
+def check_task_classification(router: dict[str, Any], failures: list[str]) -> None:
+    classification = router.get("task_classification")
+    if not isinstance(classification, dict):
+        failures.append("task_classification must be an object")
+        return
+    if classification.get("schema_version") != 1:
+        failures.append("task_classification.schema_version must be 1")
+    if classification.get("classification_order") != TASK_CLASSES:
+        failures.append("task_classification.classification_order is invalid")
+    if classification.get("default_class") != "standard-task":
+        failures.append("task_classification.default_class must be standard-task")
+    if "read-only" not in str(classification.get("ambiguity_behavior", "")):
+        failures.append("task_classification ambiguity must remain read-only")
+
+    classes = classification.get("classes")
+    if not isinstance(classes, dict):
+        failures.append("task_classification.classes must be an object")
+        classes = {}
+    for name in TASK_CLASSES:
+        item = classes.get(name)
+        if not isinstance(item, dict):
+            failures.append(f"task_classification.classes.{name} must be an object")
+            continue
+        require_string_list(
+            item,
+            "use_when",
+            f"task_classification.classes.{name}",
+            failures,
+        )
+        if name == "small-task":
+            if item.get("task_scale_overlay") != "small-task":
+                failures.append("small-task class must map to small-task overlay")
+            if "compact small-task evidence" not in str(item.get("evidence", "")):
+                failures.append("small-task class must name compact evidence")
+        if name == "large-or-resumable" and item.get("task_scale_overlay") != (
+            "large-or-resumable"
+        ):
+            failures.append("large-or-resumable class must map to large-or-resumable overlay")
+        if name == "protected-or-sensitive":
+            preview = str(item.get("pre_change_preview", ""))
+            if "required" not in preview:
+                failures.append("protected-or-sensitive class must require preview")
+
+    triggers = require_string_list(
+        classification,
+        "expansion_triggers",
+        "task_classification",
+        failures,
+    )
+    for required in [
+        "semantic or logical fact changes",
+        "source-of-truth owner is missing disputed or contradicted",
+        "approval safety security data architecture public contract or live-external boundary appears",
+        "focused validation fails or cannot prove the changed contract",
+    ]:
+        if required not in triggers:
+            failures.append(f"task_classification missing expansion trigger {required}")
+
+
 def main() -> int:
     failures: list[str] = []
     try:
@@ -177,8 +312,8 @@ def main() -> int:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
 
-    if router.get("schema_version") != 9:
-        failures.append("context-router.json schema_version must be 9")
+    if router.get("schema_version") != 10:
+        failures.append("context-router.json schema_version must be 10")
     if router.get("router_kind") != "target-context-router":
         failures.append("context-router.json router_kind must be target-context-router")
     if router.get("human_reference") != ".ai/assistant/context-profiles.md":
@@ -249,6 +384,7 @@ def main() -> int:
         for required in [
             "selected profiles",
             "selected intent overlays",
+            "task classification",
             "selected task scale overlay",
             "selected project areas",
             "measurement state",
@@ -310,72 +446,8 @@ def main() -> int:
         if "canonical owner" not in str(semantic.get("fallback", "")):
             failures.append("semantic_codebook.fallback must name canonical owner fallback")
 
-    packet = router.get("context_packet")
-    if not isinstance(packet, dict):
-        failures.append("context_packet must be an object")
-    else:
-        if packet.get("schema_version") != 1:
-            failures.append("context_packet.schema_version must be 1")
-        if packet.get("template") != ".ai/assistant/templates/context-packet.json":
-            failures.append("context_packet.template is invalid")
-        required_for = packet.get("receipt_required_for")
-        for trigger in [
-            "semantic codebook fallback",
-            "material or protected change",
-            "token or cost claim",
-        ]:
-            if not isinstance(required_for, list) or trigger not in required_for:
-                failures.append(f"context_packet receipt trigger missing {trigger}")
-        packet_template = load_json(CONTEXT_PACKET)
-        required_packet_fields = {
-            "schema_version",
-            "packet_kind",
-            "profile",
-            "operation",
-            "selected_items",
-            "semantic_terms",
-            "budget",
-            "receipt",
-            "cost_claim",
-            "limitations",
-            "packet_digest",
-        }
-        if set(packet_template) != required_packet_fields:
-            failures.append("context packet template fields are invalid")
-        receipt_shape = packet_template.get("receipt")
-        if not isinstance(receipt_shape, dict):
-            failures.append("context packet template must include receipt object")
-        else:
-            for field in [
-                "receipt_kind",
-                "measurement_state",
-                "planned",
-                "resolved",
-                "observed",
-                "semantic_guidance",
-            ]:
-                if field not in receipt_shape:
-                    failures.append(f"context packet receipt missing {field}")
-        cost_claim = packet_template.get("cost_claim")
-        if not isinstance(cost_claim, dict):
-            failures.append("context packet template must include cost_claim object")
-        else:
-            if cost_claim.get("exact_billing_claim") is not False:
-                failures.append("context packet exact_billing_claim must default false")
-            if cost_claim.get("exact_context_delivery_claim") is not False:
-                failures.append(
-                    "context packet exact_context_delivery_claim must default false"
-                )
-        limitations = packet_template.get("limitations")
-        for required_limitation in [
-            "Static source estimates are not billed tokens.",
-            "Provider usage alone does not prove exact semantic guidance delivery.",
-            "Hidden client context may exist outside repository-visible evidence.",
-        ]:
-            if not isinstance(limitations, list) or required_limitation not in limitations:
-                failures.append(
-                    f"context packet limitations missing {required_limitation}"
-                )
+    check_context_packet(router, failures)
+    check_task_classification(router, failures)
 
     entry_packet = router.get("agent_entry_packet")
     if not isinstance(entry_packet, dict):
@@ -876,6 +948,42 @@ def main() -> int:
     if not isinstance(scale_index, dict):
         failures.append("task_scale_overlays must be an object")
         scale_index = {}
+    small_entry = scale_index.get("small-task")
+    small_task = descriptor(
+        small_entry.get("descriptor") if isinstance(small_entry, dict) else None,
+        "target-task-scale-overlay",
+        "task_scale_overlays.small-task",
+        failures,
+    )
+    check_contract(
+        small_task,
+        ["use_when", "required_context", "expand_when", "final_evidence"],
+        "task_scale_overlays.small-task",
+        failures,
+        {"required_context"},
+    )
+    if ".ai/assistant/gates/core.md" not in small_task.get("required_context", []):
+        failures.append("small-task overlay must load the core gate fragment")
+    if ".ai/assistant/gates/final-evidence.md" not in small_task.get(
+        "required_context", []
+    ):
+        failures.append("small-task overlay must load final-evidence gate fragment")
+    if not isinstance(small_task.get("budget_behavior"), str):
+        failures.append("small-task overlay needs budget_behavior")
+    elif "large-task" not in small_task["budget_behavior"]:
+        failures.append("small-task overlay must keep large-task routing lazy")
+    small_task_conditional = check_conditional_context(
+        small_task, "task_scale_overlays.small-task", failures
+    )
+    if ".ai/assistant/templates/small-task-evidence.md" not in small_task_conditional:
+        failures.append("small-task overlay must route compact evidence template lazily")
+    for required in [
+        "semantic or logical fact changes",
+        "source-of-truth owner is missing disputed or contradicted",
+        "focused validation fails or cannot prove the changed contract",
+    ]:
+        if required not in small_task.get("expand_when", []):
+            failures.append(f"small-task overlay missing expansion trigger {required}")
     large_entry = scale_index.get("large-or-resumable")
     large_task = descriptor(
         large_entry.get("descriptor") if isinstance(large_entry, dict) else None,

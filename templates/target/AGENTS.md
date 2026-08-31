@@ -12,19 +12,18 @@ If the hash-bound bootstrap is stale, repair it from `.ai/alatyr.yaml`,
 `.ai/README.md`, and `.ai/assistant/context-router.json`. Select the smallest
 profile/areas. Load `.ai/assistant/context-profiles.md` only for ambiguity,
 conflict, or repair; record a context receipt on expansion. Then load
-`.ai/assistant/entry-packet.json` for exact profile files, gates, operations,
-allowed actions, and delta-first support review before human reference prose.
+`.ai/assistant/entry-packet.json` for exact files, gates, operations, actions,
+and delta-first support review.
 
 Use embedded semantic definitions as exact versioned term IDs. Resolve other
 term IDs lazily through `.ai/framework/semantics/index.json`; on missing,
 stale, ambiguous, or conflicting terms, load owner prose and stop using the
 compressed term. Terms abbreviate repeated rules but never replace authority.
 
-Start content discovery from the selected contour root `context-index.json`.
-Follow only entries matched by task, operation, owner, path, fact, contract,
-dependency, risk, or conflict. Child indexes may chain; never load a whole
-directory because its index matched. Verify digest/word estimate and stop on
-cycle, duplicate path, depth violation, or stale digest.
+Start from the selected contour root `context-index.json`. Follow entries
+matched by task, operation, owner, path, fact, contract, dependency, risk, or
+conflict. Child indexes may chain; never load a whole directory because its
+index matched. Stop on stale digest, cycle, duplicate path, or depth violation.
 
 For non-trivial work, route project knowledge after profile/area selection and
 again after source evidence appears. Profile-only matching is invalid. Use
@@ -32,8 +31,8 @@ area, subsystem, architecture-item, dependency, fact, contract, path, symbol, or
 issue signals. Read matching shards/owners only. Accepted current items
 constrain; stale items warn; contradictions block.
 
-Route IDs/aliases through `.ai/assistant/operation-index.json`; use profile
-candidates otherwise. For `Alatyr`, help, ambiguity, or repair, use
+Route IDs/aliases through `.ai/assistant/operation-index.json`; otherwise use
+profile candidates. For `Alatyr`, help, ambiguity, or repair, use
 `.ai/assistant/help.md`, `.ai/assistant/operation-catalog.json`, and
 `.ai/assistant/flows/operation-routing.flow.md`. Status is read-only.
 
@@ -46,7 +45,7 @@ Use `.ai/README.md` for installation/update recovery.
 Project/areas: `{PROJECT_NAME}`, `{TARGET_STACK_AND_AREA_MAP}`. Fact owners:
 `{TARGET_SOURCE_OF_TRUTH_REGISTRY}`. Checks: `{TARGET_VALIDATION}`. Safety:
 `{TARGET_SECURITY_POLICY}`. Diagrams: `{TARGET_DIAGRAM_POLICY}`. Route optional
-surfaces through bootstrap/module state; skip histories by default.
+surfaces through bootstrap/module state; skip histories.
 
 ## Canonical Rules
 
@@ -63,10 +62,10 @@ facts belong to project contour; local AI infrastructure to assistant contour.
 Do not invent facts or copy policy into bridges.
 
 For semantic changes, re-derive invariants and reconcile reviews sharing a fact
-or contract. Compare Git/support changes with `.ai/support-state.json`, use the
-consistency-map reverse index when enabled, and load selected relationship
-shards only. Hashes locate change; they never replace semantic review. Record
-new relationships as candidates until accepted. Select one
+or contract. Compare Git/support changes with `.ai/support-state.json`; when
+enabled, use the consistency-map reverse index and selected relationship shards.
+Hashes locate change; they never replace semantic review. Record new
+relationships as candidates until accepted. Select one
 `.ai/assistant/ai-infrastructure-router.json` route and the smallest AI item
 set. Run only existing validation.
 
@@ -86,11 +85,10 @@ Routing selects a flow; it does not grant approval or broaden allowed actions.
 A preview is not approval and becomes stale when material risk or scope
 changes.
 
-Before delegation or diagrams, read
-`.ai/assistant/assistant-capabilities.json`; route selected delegation through
-the selected surface record and `.ai/assistant/prompts/worker-orchestration.md`.
-Unknown, stale, or unverified surface state means no native capability claim;
-unknown presentation uses ASCII.
+Before delegation or diagrams, read `.ai/assistant/assistant-capabilities.json`;
+route selected delegation through its surface record and
+`.ai/assistant/prompts/worker-orchestration.md`. Unknown, stale, or unverified
+state means no native capability claim; unknown presentation uses ASCII.
 
 Before state changes, apply
 `.ai/assistant/policies/action-authorization.json` to the newest request and
@@ -104,16 +102,16 @@ Apply target approval policy before architecture, accepted behavior, security,
 permission, dependency, destructive, live, spend, production,
 imported-infrastructure, or weakened-gate changes. When path scope matters, use
 a JSON approval record bound to the Git diff base and reject uncovered or
-excluded paths. Active change packages must also reject declared fact,
-architecture-area, behavior-category, or external-effect scope outside approval
-and require reapproval for protected semantic expansion.
+excluded paths. Active packages also reject declared fact, architecture-area,
+behavior-category, or external-effect scope outside approval and require
+reapproval for protected semantic expansion.
 
 ## Final Evidence
 
 Report profile/areas, index chain, selected IDs/digests, semantic terms, packet
 digest/fallback, facts/files, support impact closure, relationship candidates,
 integrity/sync, validation/skips, approval, authorization, context expansion,
-task evidence, `durable_engineering_evidence` as captured/skipped/blocked with
-binding or reason, preview, and risk. For non-trivial work also report
-knowledge selectors, omitted IDs, owners reverified, warnings, contradictions,
-and packet-limit results.
+task evidence, `durable_engineering_evidence` as captured/skipped/blocked,
+preview, and risk. For non-trivial work also report knowledge selectors,
+omitted IDs, owners reverified, warnings, contradictions, and packet-limit
+results.

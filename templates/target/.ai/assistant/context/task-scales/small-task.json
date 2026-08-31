@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "descriptor_kind": "target-task-scale-overlay",
+  "overlay": "small-task",
+  "use_when": [
+    "task classifier selected small-task",
+    "one base profile is sufficient",
+    "one local surface or directly linked neighbor set is affected",
+    "no accepted semantic or logical fact changes",
+    "no approval safety data architecture public contract or live-external boundary is crossed",
+    "focused validation can prove the result"
+  ],
+  "required_context": [
+    ".ai/assistant/gates/core.md",
+    ".ai/assistant/gates/final-evidence.md"
+  ],
+  "conditional_context": [
+    {
+      "path": ".ai/framework/context-discovery.md",
+      "when": "the selected base profile did not already load the context rule owner or routing ambiguity remains"
+    },
+    {
+      "path": ".ai/framework/logical-integrity.md",
+      "when": "a semantic or logical fact may have changed"
+    },
+    {
+      "path": ".ai/framework/approval-records.md",
+      "when": "approval scope or protected-change status is unclear"
+    },
+    {
+      "path": ".ai/assistant/templates/small-task-evidence.md",
+      "when": "the target records compact small-task evidence"
+    }
+  ],
+  "expand_when": [
+    "semantic or logical fact changes",
+    "source-of-truth owner is missing disputed or contradicted",
+    "approval safety security data architecture public contract or live-external boundary appears",
+    "multiple project areas profiles workstreams or changed-fact owners are required",
+    "focused validation fails or cannot prove the changed contract",
+    "user asks for broad audit large-task orchestration change package or debug evidence"
+  ],
+  "budget_behavior": "reuse the selected base profile and direct owner evidence; do not load package large-task debug team full-help or full-checklist surfaces unless an expansion trigger fires",
+  "final_evidence": [
+    "task classification and selected profile",
+    "loaded direct owner and directly linked neighbor context",
+    "reason pre-change preview and large-task packet were skipped",
+    "focused validation and skipped broader checks",
+    "residual risk or expansion trigger if any"
+  ]
+}

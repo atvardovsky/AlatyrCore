@@ -125,17 +125,20 @@ Automatic routing should use this order:
 2. Match request intent against catalog signals and enabled modules.
 3. Select the smallest context profile and area overlays required by that
    operation.
-4. Classify changed facts and approval triggers using the owning risk and
+4. Classify task scale as `small-task`, `standard-task`,
+   `large-or-resumable`, or `protected-or-sensitive` before loading broader
+   profile prose or overlay details.
+5. Classify changed facts and approval triggers using the owning risk and
    approval rules.
-5. Classify the newest request under the current-scope action-authorization
+6. Classify the newest request under the current-scope action-authorization
    policy. A subject switch, issue or backlog return, status, discussion,
    report, analysis, plan, or ambiguous continuation remains `inspect` only.
-6. Proceed without a routing confirmation when one operation is clearly
+7. Proceed without a routing confirmation when one operation is clearly
    applicable, its allowed-action scope is sufficient, and the requested phase
    is explicitly authorized.
-7. Present two or three candidates and ask one bounded question when multiple
+8. Present two or three candidates and ask one bounded question when multiple
    operations remain plausible or the permitted scope is unclear.
-8. Route unsupported or disabled operations to help with the specific missing
+9. Route unsupported or disabled operations to help with the specific missing
    module or adapter fact.
 
 The assistant should state the selected operation and reason briefly before
@@ -417,39 +420,45 @@ When routing a request:
    Read the full catalog only for bare Alatyr, ambiguity, or repair.
 3. Read the full target help reference only when human explanation is needed.
 4. Classify the request by contour, task profile, and changed fact.
-5. Normalize documented operation aliases before selecting a flow.
-6. Choose the matching flow only when the operation is clear enough to proceed
+5. Classify task scale before loading large-task, package, debug, team, full
+   help, or full checklist surfaces.
+6. Normalize documented operation aliases before selecting a flow.
+7. Choose the matching flow only when the operation is clear enough to proceed
    safely.
-7. If the operation is unclear, show the operation menu with short
+8. If the operation is unclear, show the operation menu with short
    descriptions and ask for the smallest missing decision.
-8. If the user asks for commands, explain that Alatyr is used through assistant
+9. If the user asks for commands, explain that Alatyr is used through assistant
    requests over Markdown adapter files unless the target adapter defines local
    commands.
-9. If the request asks what already exists, route to AI infrastructure
+10. If the request asks what already exists, route to AI infrastructure
    inventory and do not import anything during inventory-only work.
-10. If the request supplies an external source, check target provenance,
+11. If the request supplies an external source, check target provenance,
    network, dependency, prompt-injection, and approval rules before fetching or
    importing it.
-11. Do not edit repository files while only presenting help or resolving
+12. Do not edit repository files while only presenting help or resolving
    operation ambiguity.
-12. Apply the pre-change preview trigger before a selected operation edits
+13. Apply the pre-change preview trigger before a selected operation edits
     files.
-13. Add a large-task scale overlay only when the work is cross-boundary,
+14. Use the `small-task` scale overlay only when one profile, one local
+    surface or direct neighbor set, no semantic fact change, no protected
+    boundary, and focused validation are enough. If an expansion trigger fires,
+    reclassify before continuing.
+15. Add a large-task scale overlay only when the work is cross-boundary,
     multi-workstream, budget-exceeding, or resumable. Keep small tasks on their
     normal flow without an operation packet.
-14. When subagent delegation is enabled, identify the primary critical-path
+16. When subagent delegation is enabled, identify the primary critical-path
     action first. Add delegated execution only for independently useful,
     locally verifiable packets with disjoint writes or read-only scope and
     current capability evidence. Use the target orchestration prompt, role
     catalog, execution plan, packet, and normalized result. Honor an explicit
     `forbid` preference.
-15. In an enabled team project, read the compact active-work index before a
+17. In an enabled team project, read the compact active-work index before a
     state-changing operation. Add the team-active overlay for explicit team
     coordination, a task/branch match, possible logical overlap, or unresolved
     index evidence. Load the selected task and relevant overlaps, not all team
     history. Route `set actor`, `who am I`, and `clear actor` through ignored
     local identity without treating selection as authentication.
-16. For diagram discussion, load the diagram policy and current compact
+18. For diagram discussion, load the diagram policy and current compact
     assistant-capability entry, then choose native inline, rendered artifact,
     plus a portable ASCII view without loading the full bridge matrix.
 
@@ -463,7 +472,8 @@ Matched operation: <operation or unresolved>
 Matching flow: <target flow or missing adapter fact>
 Reason: <why this operation was selected>
 Routing mode: <explicit, automatic, or ambiguity resolution>
-Context profile: <profile plus area and scale overlays>
+Task classification: <small-task, standard-task, large-or-resumable, protected-or-sensitive, or unresolved>
+Context profile: <profile plus area, intent, and scale overlays>
 Pre-change preview: <shown, refreshed, or skipped with reason>
 Presentation mode: <ascii, native-inline, rendered-artifact, or not applicable>
 Missing input: <facts needed before work can proceed>

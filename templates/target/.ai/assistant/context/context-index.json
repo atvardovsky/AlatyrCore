@@ -59,8 +59,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 89,
-      "content_digest": "sha256:a8318a9b194b12f0ffb1cd75e2e7f4c4231379e4a8cdaeae43f3a1631283d5b1"
+      "estimated_words": 100,
+      "content_digest": "sha256:b0cde099df675f0a1de362485e6e3de52cc4788f490789b556e3a4c8a1dbbfa8"
     },
     {
       "id": "assistant.content.context-migration-routing-json",
@@ -172,8 +172,8 @@
       ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 308,
-      "content_digest": "sha256:1b1cfab74ac571e5be01ecc4b4569c46c48b418abd53d95379c9b75ad699314f"
+      "estimated_words": 362,
+      "content_digest": "sha256:fd3632a3bc653f805500e9f02b23b3c62e8de96557013e7cb485cfe229e9bf97"
     }
   ]
 }

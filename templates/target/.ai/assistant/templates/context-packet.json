@@ -3,6 +3,7 @@
   "packet_kind": "alatyr-context-packet",
   "profile": "{SELECTED_TASK_PROFILE}",
   "operation": "{SELECTED_OPERATION}",
+  "task_classification": "{SMALL_TASK_STANDARD_TASK_LARGE_OR_RESUMABLE_PROTECTED_OR_SENSITIVE_OR_UNRESOLVED}",
   "selected_items": [
     {
       "id": "{CONTEXT_ITEM_ID}",
@@ -50,11 +51,19 @@
       "output_tokens": "{COUNT_OR_UNKNOWN}",
       "evidence": "{EVIDENCE_REFERENCE_OR_UNAVAILABLE}"
     },
-    "semantic_guidance": {
-      "schema_version": 1,
-      "planned": "{RECORDED_IDENTITIES_AND_BUNDLE_DIGEST_OR_UNAVAILABLE}",
-      "resolved": "{RECORDED_IDENTITIES_AND_BUNDLE_DIGEST_OR_UNAVAILABLE}",
-      "observed": "{EXACT_PARTIAL_OR_UNAVAILABLE_SEMANTIC_DELIVERY_EVIDENCE}"
+      "semantic_guidance": {
+        "schema_version": 1,
+        "planned": "{RECORDED_IDENTITIES_AND_BUNDLE_DIGEST_OR_UNAVAILABLE}",
+        "resolved": "{RECORDED_IDENTITIES_AND_BUNDLE_DIGEST_OR_UNAVAILABLE}",
+        "observed": "{EXACT_PARTIAL_OR_UNAVAILABLE_SEMANTIC_DELIVERY_EVIDENCE}"
+    },
+    "task_classification": {
+      "class": "{SMALL_TASK_STANDARD_TASK_LARGE_OR_RESUMABLE_PROTECTED_OR_SENSITIVE_OR_UNRESOLVED}",
+      "selected_task_scale_overlay": "{SMALL_TASK_OR_LARGE_OR_RESUMABLE_OR_OTHER_OR_NONE}",
+      "reason": "{CLASSIFICATION_REASON}",
+      "expansion_triggers": [
+        "{NONE_OR_TRIGGER}"
+      ]
     }
   },
   "cost_claim": {
