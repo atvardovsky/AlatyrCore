@@ -689,7 +689,8 @@
         "templates/target/.ai/assistant/context*/**",
         "tests/test_context_receipt.py",
         "tools/context_receipt.py",
-        "tools/check_context_router.py"
+        "tools/check_context_router.py",
+        "tools/task_classification_contract.py"
       ],
       "contract_inputs": [
         "framework/context-*.md",
@@ -698,7 +699,8 @@
       ],
       "implementation_paths": [
         "tools/context_receipt.py",
-        "tools/check_context_router.py"
+        "tools/check_context_router.py",
+        "tools/task_classification_contract.py"
       ]
     },
     {
@@ -840,6 +842,7 @@
         "tools/check_agent_entry_packet.py",
         "tools/render_target_entry_packet.py",
         "tools/scaffold*.py",
+        "tools/task_classification_contract.py",
         "tools/target_tool_compat.py"
       ],
       "trigger_paths": [
@@ -854,6 +857,7 @@
         "tools/check_agent_entry_packet.py",
         "tools/render_target_entry_packet.py",
         "tools/scaffold*.py",
+        "tools/task_classification_contract.py",
         "tools/target_tool_compat.py"
       ]
     },
@@ -1711,6 +1715,7 @@
         "tools/context_catalog.py",
         "tools/framework_packaging.py",
         "tools/scaffold_state.py",
+        "tools/task_classification_contract.py",
         "tools/target_adapter_validation/**",
         "tools/validate_target_adapter.py"
       ],
@@ -1727,6 +1732,7 @@
         "tools/context_catalog.py",
         "tools/framework_packaging.py",
         "tools/scaffold_state.py",
+        "tools/task_classification_contract.py",
         "tools/target_adapter_validation/**",
         "tools/validate_target_adapter.py"
       ],
@@ -2181,7 +2187,8 @@
         "tools/check_all.py",
         "tools/check_source_context_routing.py",
         "tools/context_catalog.py",
-        "tools/render_framework_file_inventory.py"
+        "tools/render_framework_file_inventory.py",
+        "tools/task_classification_contract.py"
       ],
       "trigger_paths": [
         "AGENTS.md",
@@ -2197,6 +2204,7 @@
         "tools/check_source_context_routing.py",
         "tools/context_catalog.py",
         "tools/render_framework_file_inventory.py",
+        "tools/task_classification_contract.py",
         "tools/source_context_router.json"
       ]
     },
@@ -2300,6 +2308,7 @@
         "tools/evidence_contract.py",
         "tools/report_adapter_health.py",
         "tools/source_state.py",
+        "tools/task_classification_contract.py",
         "tools/target_tool_compat.py"
       ],
       "trigger_paths": [
@@ -2310,6 +2319,7 @@
         "tools/evidence_contract.py",
         "tools/report_adapter_health.py",
         "tools/source_state.py",
+        "tools/task_classification_contract.py",
         "tools/target_tool_compat.py"
       ],
       "resource_class": "heavy",

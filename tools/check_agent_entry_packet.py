@@ -16,6 +16,15 @@ from target_tool_compat import (
     generation_provenance_errors,
     source_template_provenance_errors,
 )
+from task_classification_contract import (
+    AMBIGUITY_READ_ONLY_MARKER,
+    DEFAULT_TASK_CLASS,
+    SMALL_TASK_CLASS,
+    TARGET_REQUIRED_EXPANSION_TRIGGERS,
+    TASK_CLASSES,
+    TASK_CLASSIFICATION_SCHEMA_VERSION,
+    missing_required_values,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -122,26 +131,30 @@ def check_packet(
     if not isinstance(classification, dict):
         failures.append("entry packet must include task_classification")
     else:
-        if classification.get("classification_order") != [
-            "protected-or-sensitive",
-            "large-or-resumable",
-            "small-task",
-            "standard-task",
-        ]:
+        if classification.get("schema_version") != TASK_CLASSIFICATION_SCHEMA_VERSION:
+            failures.append("entry packet task classification schema is invalid")
+        if classification.get("classification_order") != TASK_CLASSES:
             failures.append("entry packet task classification order is invalid")
-        if classification.get("default_class") != "standard-task":
+        if classification.get("default_class") != DEFAULT_TASK_CLASS:
             failures.append("entry packet task classification default is invalid")
-        if "read-only" not in str(classification.get("ambiguity_behavior", "")):
+        if AMBIGUITY_READ_ONLY_MARKER not in str(
+            classification.get("ambiguity_behavior", "")
+        ):
             failures.append("entry packet task classification ambiguity must stay read-only")
         classes = classification.get("classes")
-        if not isinstance(classes, dict) or "small-task" not in classes:
+        if not isinstance(classes, dict) or SMALL_TASK_CLASS not in classes:
             failures.append("entry packet task classification must expose small-task")
         else:
-            small = classes["small-task"]
-            if not isinstance(small, dict) or small.get("task_scale_overlay") != "small-task":
+            small = classes[SMALL_TASK_CLASS]
+            if (
+                not isinstance(small, dict)
+                or small.get("task_scale_overlay") != SMALL_TASK_CLASS
+            ):
                 failures.append("entry packet small-task class must route small-task overlay")
         triggers = classification.get("expansion_triggers")
-        if not isinstance(triggers, list) or "semantic or logical fact changes" not in triggers:
+        if not isinstance(triggers, list) or missing_required_values(
+            triggers, TARGET_REQUIRED_EXPANSION_TRIGGERS
+        ):
             failures.append("entry packet task classification expansion triggers are incomplete")
 
     operation = packet.get("operation_routing")

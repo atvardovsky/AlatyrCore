@@ -13,6 +13,18 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from task_classification_contract import (
+    AMBIGUITY_READ_ONLY_MARKER,
+    DEFAULT_TASK_CLASS,
+    LARGE_TASK_CLASS,
+    SMALL_TASK_CLASS,
+    TARGET_REQUIRED_EXPANSION_TRIGGERS,
+    TARGET_REQUIRED_SMALL_TASK_EXPANSION_TRIGGERS,
+    TASK_CLASSES,
+    TASK_CLASSIFICATION_SCHEMA_VERSION,
+    missing_required_values,
+)
+
 
 ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "templates" / "target"
@@ -42,12 +54,6 @@ PROFILE_FIELDS = [
 REQUIRED_PRELOADED = ["AGENTS.md"]
 REQUIRED_BOOTSTRAP = [
     ".ai/assistant/bootstrap-index.json",
-]
-TASK_CLASSES = [
-    "protected-or-sensitive",
-    "large-or-resumable",
-    "small-task",
-    "standard-task",
 ]
 FORBIDDEN_BOOTSTRAP = {
     "AGENTS.md",
@@ -250,13 +256,15 @@ def check_task_classification(router: dict[str, Any], failures: list[str]) -> No
     if not isinstance(classification, dict):
         failures.append("task_classification must be an object")
         return
-    if classification.get("schema_version") != 1:
+    if classification.get("schema_version") != TASK_CLASSIFICATION_SCHEMA_VERSION:
         failures.append("task_classification.schema_version must be 1")
     if classification.get("classification_order") != TASK_CLASSES:
         failures.append("task_classification.classification_order is invalid")
-    if classification.get("default_class") != "standard-task":
+    if classification.get("default_class") != DEFAULT_TASK_CLASS:
         failures.append("task_classification.default_class must be standard-task")
-    if "read-only" not in str(classification.get("ambiguity_behavior", "")):
+    if AMBIGUITY_READ_ONLY_MARKER not in str(
+        classification.get("ambiguity_behavior", "")
+    ):
         failures.append("task_classification ambiguity must remain read-only")
 
     classes = classification.get("classes")
@@ -274,13 +282,13 @@ def check_task_classification(router: dict[str, Any], failures: list[str]) -> No
             f"task_classification.classes.{name}",
             failures,
         )
-        if name == "small-task":
-            if item.get("task_scale_overlay") != "small-task":
+        if name == SMALL_TASK_CLASS:
+            if item.get("task_scale_overlay") != SMALL_TASK_CLASS:
                 failures.append("small-task class must map to small-task overlay")
             if "compact small-task evidence" not in str(item.get("evidence", "")):
                 failures.append("small-task class must name compact evidence")
-        if name == "large-or-resumable" and item.get("task_scale_overlay") != (
-            "large-or-resumable"
+        if name == LARGE_TASK_CLASS and item.get("task_scale_overlay") != (
+            LARGE_TASK_CLASS
         ):
             failures.append("large-or-resumable class must map to large-or-resumable overlay")
         if name == "protected-or-sensitive":
@@ -294,14 +302,10 @@ def check_task_classification(router: dict[str, Any], failures: list[str]) -> No
         "task_classification",
         failures,
     )
-    for required in [
-        "semantic or logical fact changes",
-        "source-of-truth owner is missing disputed or contradicted",
-        "approval safety security data architecture public contract or live-external boundary appears",
-        "focused validation fails or cannot prove the changed contract",
-    ]:
-        if required not in triggers:
-            failures.append(f"task_classification missing expansion trigger {required}")
+    for required in missing_required_values(
+        triggers, TARGET_REQUIRED_EXPANSION_TRIGGERS
+    ):
+        failures.append(f"task_classification missing expansion trigger {required}")
 
 
 def main() -> int:
@@ -948,7 +952,7 @@ def main() -> int:
     if not isinstance(scale_index, dict):
         failures.append("task_scale_overlays must be an object")
         scale_index = {}
-    small_entry = scale_index.get("small-task")
+    small_entry = scale_index.get(SMALL_TASK_CLASS)
     small_task = descriptor(
         small_entry.get("descriptor") if isinstance(small_entry, dict) else None,
         "target-task-scale-overlay",
@@ -977,14 +981,12 @@ def main() -> int:
     )
     if ".ai/assistant/templates/small-task-evidence.md" not in small_task_conditional:
         failures.append("small-task overlay must route compact evidence template lazily")
-    for required in [
-        "semantic or logical fact changes",
-        "source-of-truth owner is missing disputed or contradicted",
-        "focused validation fails or cannot prove the changed contract",
-    ]:
-        if required not in small_task.get("expand_when", []):
-            failures.append(f"small-task overlay missing expansion trigger {required}")
-    large_entry = scale_index.get("large-or-resumable")
+    for required in missing_required_values(
+        small_task.get("expand_when", []),
+        TARGET_REQUIRED_SMALL_TASK_EXPANSION_TRIGGERS,
+    ):
+        failures.append(f"small-task overlay missing expansion trigger {required}")
+    large_entry = scale_index.get(LARGE_TASK_CLASS)
     large_task = descriptor(
         large_entry.get("descriptor") if isinstance(large_entry, dict) else None,
         "target-task-scale-overlay",

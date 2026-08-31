@@ -12,6 +12,15 @@ from typing import Any
 from render_framework_file_inventory import build_inventory
 from check_all import ALLOWED_PROFILES, load_manifest
 from context_catalog import ContextCatalogError, load_codebook, validate_context_catalog
+from task_classification_contract import (
+    AMBIGUITY_READ_ONLY_MARKER,
+    DEFAULT_TASK_CLASS,
+    SOURCE_REQUIRED_EXPANSION_TRIGGERS,
+    SOURCE_SMALL_TASK_FOCUSED_CHECKS_MARKER,
+    TASK_CLASSES,
+    TASK_CLASSIFICATION_SCHEMA_VERSION,
+    missing_required_values,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -37,12 +46,6 @@ EXPECTED_INSTALL_STAGES = [
     "adaptation",
     "validation",
     "handoff",
-]
-EXPECTED_TASK_CLASSES = [
-    "protected-or-sensitive",
-    "large-or-resumable",
-    "small-task",
-    "standard-task",
 ]
 
 
@@ -142,20 +145,24 @@ def main() -> int:
     if not isinstance(classification, dict):
         failures.append("source context router has no task_classification")
     else:
-        if classification.get("schema_version") != 1:
+        if classification.get("schema_version") != TASK_CLASSIFICATION_SCHEMA_VERSION:
             failures.append("source task classification schema is invalid")
-        if classification.get("classification_order") != EXPECTED_TASK_CLASSES:
+        if classification.get("classification_order") != TASK_CLASSES:
             failures.append("source task classification order is invalid")
-        if classification.get("default_class") != "standard-task":
+        if classification.get("default_class") != DEFAULT_TASK_CLASS:
             failures.append("source task classification default is invalid")
-        if "read-only" not in str(classification.get("ambiguity_behavior", "")):
+        if AMBIGUITY_READ_ONLY_MARKER not in str(
+            classification.get("ambiguity_behavior", "")
+        ):
             failures.append("source task classification ambiguity must stay read-only")
         small_use = classification.get("small_task_use_when")
         if not isinstance(small_use, list) or not all(
             isinstance(item, str) and item for item in small_use
         ):
             failures.append("source task classification has no small-task triggers")
-        elif not any("focused source checks" in item for item in small_use):
+        elif not any(
+            SOURCE_SMALL_TASK_FOCUSED_CHECKS_MARKER in item for item in small_use
+        ):
             failures.append("source small-task triggers must require focused source checks")
         expansion = classification.get("expansion_triggers")
         if not isinstance(expansion, list) or not all(
@@ -163,15 +170,12 @@ def main() -> int:
         ):
             failures.append("source task classification has no expansion triggers")
         else:
-            for required in [
-                "framework rule or lifecycle behavior changes",
-                "adapter schema or target template contract changes",
-                "focused validation fails or selected check coverage is ambiguous",
-            ]:
-                if required not in expansion:
-                    failures.append(
-                        f"source task classification missing expansion trigger {required}"
-                    )
+            for required in missing_required_values(
+                expansion, SOURCE_REQUIRED_EXPANSION_TRIGGERS
+            ):
+                failures.append(
+                    f"source task classification missing expansion trigger {required}"
+                )
     overlays = source.get("conditional_overlays")
     worker_overlay = overlays.get("source-worker-strategy") if isinstance(overlays, dict) else None
     if not isinstance(worker_overlay, dict):
