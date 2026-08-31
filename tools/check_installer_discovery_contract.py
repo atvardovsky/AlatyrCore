@@ -41,6 +41,39 @@ def main() -> int:
     if contract.get("contract_kind") != "alatyr-installation-discovery-contract":
         failures.append("discovery contract kind is invalid")
 
+    profile_selection = contract.get("profile_selection")
+    expected_profiles = ["kernel", "core", "standard", "full"]
+    if not isinstance(profile_selection, dict):
+        failures.append("discovery contract must define profile_selection")
+    else:
+        if profile_selection.get("default_profile") != "kernel":
+            failures.append("profile_selection.default_profile must be kernel")
+        expansion_rule = profile_selection.get("expansion_rule")
+        if not isinstance(expansion_rule, str) or "optional modules" not in expansion_rule:
+            failures.append("profile_selection.expansion_rule must cover optional modules")
+        profiles = profile_selection.get("profiles")
+        if not isinstance(profiles, list):
+            failures.append("profile_selection.profiles must be a list")
+        else:
+            observed_profiles: list[str] = []
+            for index, profile in enumerate(profiles):
+                if not isinstance(profile, dict):
+                    failures.append(f"profile_selection.profiles[{index}] must be an object")
+                    continue
+                profile_id = profile.get("id")
+                observed_profiles.append(profile_id if isinstance(profile_id, str) else "")
+                if not isinstance(profile.get("tier"), str) or not profile["tier"]:
+                    failures.append(f"profile_selection.profiles[{index}].tier is invalid")
+                use_when = profile.get("use_when")
+                if not isinstance(use_when, str) or len(use_when.split()) < 8:
+                    failures.append(
+                        f"profile_selection.profiles[{index}].use_when is too thin"
+                    )
+            if observed_profiles != expected_profiles:
+                failures.append(
+                    "profile_selection.profiles must be kernel, core, standard, full"
+                )
+
     categories = contract.get("base_categories")
     if not isinstance(categories, list) or not categories:
         failures.append("discovery contract must define base_categories")
@@ -103,6 +136,10 @@ def main() -> int:
         if "installer/discovery-contract.json" not in text:
             failures.append(
                 f"{path.relative_to(ROOT)} must reference installer/discovery-contract.json"
+            )
+        if "`kernel`" not in text:
+            failures.append(
+                f"{path.relative_to(ROOT)} must mention the kernel support profile"
             )
 
     if failures:

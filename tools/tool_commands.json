@@ -14,6 +14,12 @@
       "write_scope": "none"
     },
     {
+      "name": "compare-check-reports",
+      "script": "compare_source_check_reports.py",
+      "purpose": "compare two AlatyrCore source-check reports without rerunning checks",
+      "write_scope": "none"
+    },
+    {
       "name": "scaffold",
       "script": "scaffold_target_structure.py",
       "purpose": "plan or write placeholder target adapter structure",

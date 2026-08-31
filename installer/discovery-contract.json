@@ -13,6 +13,32 @@
     "missing_fact": "Record unresolved target facts as missing, blocked, deferred, disabled, or not applicable; do not invent them.",
     "detail_owner": "Detailed findings belong in the target installation plan and target adapter files, not in this source contract."
   },
+  "profile_selection": {
+    "default_profile": "kernel",
+    "expansion_rule": "Start with the smallest support profile that preserves safety, routing, source-of-truth ownership, authorization, logical integrity, and evidence. Treat optional modules as explicit expansion unless target evidence or the user request justifies them.",
+    "profiles": [
+      {
+        "id": "kernel",
+        "tier": "minimal-baseline",
+        "use_when": "The target needs low-cost bootstrap, routing, authorization, logical-integrity, generated entry-packet, support-state, and final-evidence support only."
+      },
+      {
+        "id": "core",
+        "tier": "baseline-plus-knowledge",
+        "use_when": "The target also needs durable engineering evidence, project-knowledge delivery, installed operations, durable approvals, AI infrastructure routing, or consistency-map support."
+      },
+      {
+        "id": "standard",
+        "tier": "common-product-change",
+        "use_when": "The target also needs common lifecycle, blueprint/product-change, large-task orchestration, or migration-diff support."
+      },
+      {
+        "id": "full",
+        "tier": "complete-support",
+        "use_when": "The target needs the complete template surface, selected native assistant bridges, or complete optional-module expansion justified by reviewed target evidence."
+      }
+    ]
+  },
   "base_categories": [
     {
       "id": "repository-identity",

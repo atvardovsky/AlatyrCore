@@ -96,6 +96,9 @@ Prepare an installation plan using
 The plan must identify:
 
 - target repository profile
+- selected installation tier from `installer/discovery-contract.json`: start
+  with the `kernel` support profile unless target evidence or the user request
+  justifies `core`, `standard`, or `full`
 - framework version, adapter schema version, and template version
 - adapter owner, backup owner, review cadence, and CODEOWNERS or equivalent
   owner map when the target supports file ownership metadata
@@ -115,7 +118,8 @@ The plan must identify:
   local identity and verification boundary, coordination backend capabilities,
   synchronization and write-conflict behavior, active-work preflight, per-task
   storage, conflict, handoff, decision, review, retention, and privacy needs
-- required core profile and optional modules needed for the target
+- minimal baseline needs and optional modules justified by target evidence or
+  the user request
 - optional Debug Mode need, owner, explicit task/session activation and expiry,
   non-canonical storage, privacy/retention, versioned actor/causality/
   intervention/contribution attribution, executor versus Alatyr-system roles,
@@ -164,7 +168,7 @@ The plan must identify:
 - diagram discussion, source/visual ownership, portable ASCII layout/width,
   per-assistant rich presentation, capability expiry/review triggers, captured-result
   evidence, and stale-view evidence needs
-- optional scaffolding plan, selected `core`, `standard`, or `full` support
+- optional scaffolding plan, selected `kernel`, `core`, `standard`, or `full` support
   profile, and explicit dependency-closed `--enable-module` set, if any
 - matching `kernel`, `core`, `standard`, or `complete` framework pack, including any
   enabled-module expansion that the smallest matching pack does not cover

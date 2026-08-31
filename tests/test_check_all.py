@@ -14,11 +14,13 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 from check_all import (  # noqa: E402
     RunnerResult,
+    default_changed_from,
     effective_baseline,
     execute_checks,
     load_manifest,
     render_report,
     resolve_report_path,
+    resolve_changed_from,
     run_check,
     selection_report,
     select_check_plan,
@@ -201,6 +203,19 @@ class CheckGraphTests(unittest.TestCase):
             "main",
         )
         self.assertIsNone(effective_baseline("fast", "HEAD~1", None))
+
+    def test_fast_profile_resolves_default_changed_from(self) -> None:
+        from unittest.mock import patch
+
+        with patch("check_all.git_ref_exists", return_value=True):
+            self.assertEqual(default_changed_from(), "origin/main")
+            self.assertEqual(resolve_changed_from("fast", None), "origin/main")
+        with patch("check_all.git_ref_exists", return_value=False):
+            self.assertEqual(default_changed_from(), "HEAD")
+            self.assertEqual(resolve_changed_from("fast", None), "HEAD")
+        self.assertEqual(resolve_changed_from("fast", "main"), "main")
+        self.assertIsNone(resolve_changed_from("fast", None, all_fast=True))
+        self.assertIsNone(resolve_changed_from("quick", None))
 
     def test_dependency_runs_only_after_successful_prerequisite(self) -> None:
         completed: list[str] = []
@@ -411,13 +426,32 @@ class CheckGraphTests(unittest.TestCase):
 
     def test_machine_report_preserves_exact_failure_evidence(self) -> None:
         selected = [{**check("failed"), "write_scope": "none"}]
-        report = render_report(
-            profile="full",
-            selected=selected,
-            results={"failed": (7, "partial output\n", "failure detail\n", ["python", "failed.py"])},
-            blocked={},
-            source_changes=["modified tracked.txt"],
-        )
+        from unittest.mock import patch
+
+        with patch(
+            "check_all.source_identity",
+            return_value={
+                "source_commit": "abc123",
+                "source_tree_dirty": True,
+                "manifest_path": "tools/check_manifest.json",
+                "manifest_sha256": "digest",
+                "check_manifest_schema_version": 2,
+            },
+        ):
+            report = render_report(
+                profile="full",
+                selected=selected,
+                results={
+                    "failed": (
+                        7,
+                        "partial output\n",
+                        "failure detail\n",
+                        ["python", "failed.py"],
+                    )
+                },
+                blocked={},
+                source_changes=["modified tracked.txt"],
+            )
 
         self.assertEqual(report["checks"][0]["status"], "failed")
         self.assertEqual(report["checks"][0]["exit_code"], 7)
@@ -428,6 +462,8 @@ class CheckGraphTests(unittest.TestCase):
         self.assertFalse(report["selection"]["fell_back_to_full"])
         self.assertEqual(report["selection"]["selected_check_ids"], ["failed"])
         self.assertIn("timing", report)
+        self.assertEqual(report["source"]["source_commit"], "abc123")
+        self.assertEqual(report["source"]["manifest_path"], "tools/check_manifest.json")
 
     def test_selection_report_explains_changed_path_routing(self) -> None:
         item = {**check("matched"), "profiles": ["full"], "platforms": ["all"]}

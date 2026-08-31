@@ -2079,7 +2079,7 @@
         "tools/check_lifecycle_conformance.py"
       ],
       "resource_class": "heavy",
-      "timeout_seconds": 300,
+      "timeout_seconds": 420,
       "profiles": [
         "full"
       ],
@@ -2289,11 +2289,13 @@
       "implementation_paths": [
         "tools/check_all.py",
         "tools/check_check_manifest.py",
+        "tools/compare_source_check_reports.py",
         "tools/evidence_contract.py"
       ],
       "trigger_paths": [
         "tools/check_all.py",
         "tools/check_check_manifest.py",
+        "tools/compare_source_check_reports.py",
         "tools/evidence_contract.py",
         "tools/check_manifest.json"
       ],

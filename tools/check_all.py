@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import concurrent.futures
 import fnmatch
+import hashlib
 import json
 import os
 import platform
@@ -211,6 +212,31 @@ def git_changed_paths(ref: str) -> list[str]:
         set(filter(None, result.stdout.splitlines()))
         | set(filter(None, untracked.stdout.splitlines()))
     )
+
+
+def git_ref_exists(ref: str) -> bool:
+    result = subprocess.run(
+        ["git", "rev-parse", "--verify", ref],
+        cwd=ROOT,
+        check=False,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    return result.returncode == 0
+
+
+def default_changed_from() -> str:
+    return "origin/main" if git_ref_exists("origin/main") else "HEAD"
+
+
+def resolve_changed_from(
+    profile: str, changed_from: str | None, *, all_fast: bool = False
+) -> str | None:
+    if profile != "fast":
+        return changed_from
+    if all_fast:
+        return None
+    return changed_from or default_changed_from()
 
 
 def matches(check: dict[str, Any], path: str) -> bool:
@@ -539,6 +565,32 @@ def environment_report() -> dict[str, Any]:
     }
 
 
+def source_identity() -> dict[str, Any]:
+    commit = subprocess.run(
+        ["git", "rev-parse", "HEAD"],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    status = subprocess.run(
+        ["git", "status", "--porcelain", "--untracked-files=normal"],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    manifest_digest = hashlib.sha256(MANIFEST.read_bytes()).hexdigest()
+    manifest_data = json.loads(MANIFEST.read_text(encoding="utf-8"))
+    return {
+        "source_commit": commit.stdout.strip() if commit.returncode == 0 else None,
+        "source_tree_dirty": bool(status.stdout.strip()) if status.returncode == 0 else None,
+        "manifest_path": MANIFEST.relative_to(ROOT).as_posix(),
+        "manifest_sha256": manifest_digest,
+        "check_manifest_schema_version": manifest_data.get("schema_version"),
+    }
+
+
 def render_report(
     *,
     profile: str,
@@ -632,6 +684,7 @@ def render_report(
         "schema_version": 2,
         "report_kind": "alatyr-source-check-run",
         "profile": profile,
+        "source": source_identity(),
         "timing": timing,
         "selection": selection or {
             "profile": profile,
@@ -879,9 +932,15 @@ def main() -> int:
     parser.add_argument(
         "--changed-from",
         help=(
-            "Select checks from changed paths for focused profiles. For the "
+            "Select checks from changed paths for focused profiles. For fast, "
+            "defaults to origin/main when available, otherwise HEAD. For the "
             "change profile, this also acts as --from-ref when --from-ref is omitted."
         ),
+    )
+    parser.add_argument(
+        "--all-fast",
+        action="store_true",
+        help="With --profile fast, run the complete fast profile without changed-path selection.",
     )
     parser.add_argument("--from-ref", help="Baseline substituted into change checks.")
     parser.add_argument("--jobs", type=int, default=min(4, os.cpu_count() or 1))
@@ -894,11 +953,18 @@ def main() -> int:
     args = parser.parse_args()
     if args.jobs <= 0:
         parser.error("--jobs must be positive")
+    if args.all_fast and args.profile != "fast":
+        parser.error("--all-fast is only valid with --profile fast")
+    if args.all_fast and args.changed_from:
+        parser.error("--all-fast cannot be combined with --changed-from")
 
     try:
         checks = load_manifest()
-        baseline = effective_baseline(args.profile, args.changed_from, args.from_ref)
-        plan = select_check_plan(checks, args.profile, args.changed_from)
+        changed_from = resolve_changed_from(
+            args.profile, args.changed_from, all_fast=args.all_fast
+        )
+        baseline = effective_baseline(args.profile, changed_from, args.from_ref)
+        plan = select_check_plan(checks, args.profile, changed_from)
         selected = plan.selected
         commands = [resolved_command(check, baseline) for check in selected]
         report_path = resolve_report_path(args.report) if args.report else None
@@ -958,7 +1024,7 @@ def main() -> int:
                     telemetry=telemetry,
                     selection=selection_report(
                         profile=args.profile,
-                        changed_from=args.changed_from,
+                        changed_from=changed_from,
                         plan=plan,
                     ),
                 ),
@@ -988,7 +1054,7 @@ def main() -> int:
                         telemetry=telemetry,
                         selection=selection_report(
                             profile=args.profile,
-                            changed_from=args.changed_from,
+                            changed_from=changed_from,
                             plan=plan,
                         ),
                     ),

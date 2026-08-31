@@ -13,6 +13,8 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 import check_all  # noqa: E402
 from check_check_manifest import (  # noqa: E402
+    SourcePathIndex,
+    declaration_matches_source,
     direct_local_tool_dependencies,
     evidence_contract_routing_failures,
     tool_command_routing_failures,
@@ -90,6 +92,24 @@ class CheckManifestContractTests(unittest.TestCase):
             dependencies,
             {"tools/check_all.py", "tools/evidence_contract.py"},
         )
+
+    def test_declaration_matching_uses_source_path_index(self) -> None:
+        index = SourcePathIndex.from_paths(
+            [
+                "framework/context-router.md",
+                "framework/catalog/core/context-index.json",
+                "tools/check_all.py",
+            ]
+        )
+
+        self.assertTrue(declaration_matches_source("framework", index))
+        self.assertTrue(declaration_matches_source("framework/**", index))
+        self.assertTrue(
+            declaration_matches_source("framework/catalog/**", index)
+        )
+        self.assertTrue(declaration_matches_source("tools/check_all.py", index))
+        self.assertFalse(declaration_matches_source("docs/**", index))
+        self.assertFalse(declaration_matches_source("tools/missing.py", index))
 
     def test_live_manifest_routes_every_evidence_contract_path(self) -> None:
         checks = check_all.load_manifest()

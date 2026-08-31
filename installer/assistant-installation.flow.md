@@ -133,17 +133,19 @@ Classify every proposed target file:
 
 1. Inspect the target repository before creating files.
 2. Optionally use source-repository scaffolding only to preview or create
-   placeholder structure. Select the smallest `core`, `standard`, or `full`
-   support profile justified by the installation plan, and record the
-   selection in the target manifest. Select the matching `core`, `standard`,
-   or `complete` framework pack, expanding it when enabled modules require
-   additional rule owners. Verify that projected manifest, router, operation,
-   capability, rule-registry, ownership, and inventory claims reference only
-   installed files. Do not treat scaffolding, profile selection, or pack
-   selection as installation or module enablement. Source scaffolding omits
-   vendor-native bridges by default. Under the `full` profile, pass one
-   `--assistant-surface` selection per reviewed target client; do not select
-   every registered surface merely because its template exists.
+   placeholder structure. Use the profile-selection matrix in
+   `installer/discovery-contract.json`; start with `kernel` unless target
+   evidence or the user request justifies `core`, `standard`, or `full`, and
+   record the selection in the target manifest. Select the matching `kernel`,
+   `core`, `standard`, or `complete` framework pack, expanding it when enabled
+   modules require additional rule owners. Verify that projected manifest,
+   router, operation, capability, rule-registry, ownership, and inventory
+   claims reference only installed files. Do not treat scaffolding, profile
+   selection, or pack selection as installation or module enablement. Source
+   scaffolding omits vendor-native bridges by default. Under the `full`
+   profile, pass one `--assistant-surface` selection per reviewed target
+   client; do not select every registered surface merely because its template
+   exists.
 3. Fill `installer/readiness-checklist.md` for the target.
 4. Prepare an installation plan from
    `installer/installation-plan-template.md`.
@@ -166,7 +168,9 @@ Classify every proposed target file:
    framework version, adapter schema version, template version, owner,
    backup owner, review cadence, CODEOWNERS or equivalent owner map,
    source-of-truth, validation, known gaps, and local deviations.
-   Create one schema-3 assistant capability record per registered surface.
+   Create detailed schema-3 assistant capability records for selected target
+   surfaces; represent unselected registered surfaces only as compact
+   unverified/unselected records unless target evidence requires deeper review.
    Resolve instruction loading, skill source and activation, client permission
    mode, diagrams, and delegation from exact-client evidence. A selected but
    untested surface remains unknown; client permissions or auto-approval never

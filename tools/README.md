@@ -15,6 +15,7 @@ Linux or macOS:
 ```sh
 python3 tools/alatyr.py --help
 python3 tools/alatyr.py check-source-focused
+python3 tools/alatyr.py compare-check-reports /tmp/base.json /tmp/candidate.json
 python3 tools/alatyr.py status --target /path/to/target-repo
 python3 tools/alatyr.py doctor --target /path/to/target-repo
 python3 tools/alatyr.py validate-adapter --target /path/to/target-repo
@@ -41,6 +42,7 @@ Windows PowerShell:
 ```powershell
 .\tools\alatyr.ps1 --help
 .\tools\alatyr.ps1 check-source-focused
+.\tools\alatyr.ps1 compare-check-reports C:\Temp\base.json C:\Temp\candidate.json
 .\tools\alatyr.ps1 status --target C:\path\to\target-repo
 .\tools\alatyr.ps1 doctor --target C:\path\to\target-repo
 .\tools\alatyr.ps1 validate-adapter --target C:\path\to\target-repo
@@ -66,6 +68,7 @@ Windows Command Prompt:
 ```bat
 tools\alatyr.cmd --help
 tools\alatyr.cmd check-source-focused
+tools\alatyr.cmd compare-check-reports C:\Temp\base.json C:\Temp\candidate.json
 tools\alatyr.cmd status --target C:\path\to\target-repo
 tools\alatyr.cmd doctor --target C:\path\to\target-repo
 tools\alatyr.cmd validate-adapter --target C:\path\to\target-repo
@@ -90,6 +93,9 @@ The stable command set is:
 - `check-source`: no writes
 - `check-source-focused`: no writes; runs the fast changed-path source-check
   profile from `origin/main` when available, otherwise `HEAD`
+- `compare-check-reports`: no writes; compares two schema-2 source-check
+  reports and labels source/manifest identity before interpreting timing
+  deltas
 - `scaffold`: target structure writes only with `--write`
 - `render-bootstrap`: target bootstrap regeneration only with `--write`
 - `render-entry`: target first-use packet regeneration only with `--write`
@@ -144,9 +150,12 @@ the legacy validators are extracted incrementally.
 `check_all.py` loads the schema-version-2 `tools/check_manifest.json` and runs dependency-aware
 source validation. The default `full` profile remains the acceptance gate.
 `quick` checks routing, bootstrap, scaffold, and standing support-cost
-guardrails without running the source unit suite. With `fast --changed-from`,
-explicit `trigger_paths` select focused checks while a small invariant set
-always runs; unmatched paths retain the conservative full-suite fallback.
+guardrails without running the source unit suite. `fast` resolves a default
+changed-path baseline from `origin/main` when available, otherwise `HEAD`.
+With `fast --changed-from`, explicit `trigger_paths` select focused checks
+while a small invariant set always runs; unmatched paths retain the
+conservative full-suite fallback. Use `fast --all-fast` only when intentionally
+running the whole fast profile without changed-path selection.
 `tools/alatyr.py check-source-focused` is the cheap small-task entry point for
 that route. It runs `check_all.py --profile fast --changed-from <baseline>`,
 selecting `origin/main` as the default baseline when available and `HEAD` when
@@ -238,6 +247,7 @@ Linux or macOS:
 python3 tools/check_all.py
 python3 tools/check_all.py --profile quick
 python3 tools/check_all.py --profile fast --changed-from HEAD
+python3 tools/check_all.py --profile fast --all-fast
 python3 tools/check_all.py --profile change --changed-from HEAD~1
 python3 tools/check_all.py --profile release
 python3 tools/check_all.py --profile platform
@@ -245,6 +255,7 @@ python3 tools/check_all.py --profile full --report /tmp/alatyr-source-checks.jso
 python3 tools/check_all.py --list
 python3 tools/alatyr.py check-source-focused
 python3 tools/alatyr.py check-source-focused --changed-from HEAD --list
+python3 tools/alatyr.py compare-check-reports /tmp/base.json /tmp/candidate.json
 ```
 
 Windows PowerShell or Command Prompt:
@@ -253,6 +264,7 @@ Windows PowerShell or Command Prompt:
 py -3 .\tools\check_all.py
 py -3 .\tools\check_all.py --profile quick
 py -3 .\tools\check_all.py --profile fast --changed-from HEAD
+py -3 .\tools\check_all.py --profile fast --all-fast
 py -3 .\tools\check_all.py --profile change --changed-from HEAD~1
 py -3 .\tools\check_all.py --profile release
 py -3 .\tools\check_all.py --profile platform

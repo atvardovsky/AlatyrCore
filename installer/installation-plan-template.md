@@ -15,6 +15,9 @@ Discovery category map: `installer/discovery-contract.json`
 - Existing adapter owner, backup owner, review cadence, and last review:
 - Scaffolding helper used or planned:
 - Scaffold profile (`kernel` / `core` / `standard` / `full` / not used):
+- Installation tier (`minimal-baseline` / `baseline-plus-knowledge` /
+  `common-product-change` / `complete-support`):
+- Optional module expansion justified by target evidence or user request:
 - Supported assistants:
 - Current logical installation scope:
 - Current user authorization (`inspect` / `modify` / `commit` / `publish` /
@@ -24,6 +27,10 @@ Discovery category map: `installer/discovery-contract.json`
 ## Goal
 
 Describe what the installation should enable.
+
+Start with the `kernel` support profile unless the target evidence or the
+current user request justifies `core`, `standard`, or `full`. Treat optional
+modules as explicit expansion, not as default installation requirements.
 
 ## Non-Goals
 

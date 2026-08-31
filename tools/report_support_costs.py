@@ -200,6 +200,25 @@ def module_costs() -> list[dict[str, Any]]:
     return sorted(costs, key=lambda item: (-item["target_words"], item["module"]))
 
 
+def support_state_inventory_summary(path: Path) -> dict[str, Any]:
+    if not path.is_file():
+        return {
+            "source": path.name,
+            "present": False,
+            "managed_files": 0,
+            "managed_groups": 0,
+        }
+    data = json.loads(path.read_text(encoding="utf-8"))
+    files = data.get("files") if isinstance(data, dict) else None
+    groups = data.get("groups") if isinstance(data, dict) else None
+    return {
+        "source": path.as_posix(),
+        "present": True,
+        "managed_files": len(files) if isinstance(files, list) else 0,
+        "managed_groups": len(groups) if isinstance(groups, list) else 0,
+    }
+
+
 def build_scaffold_report(
     profile: str = "kernel",
     enabled_modules: Iterable[str] | None = None,
@@ -246,6 +265,21 @@ def build_scaffold_report(
         "target_templates": target_measure,
         "framework_pack_files": framework_measure,
         "combined_support": combined_measure,
+        "cost_scopes": {
+            "selected_support_projection": {
+                "description": "Files selected by the scaffold profile, enabled modules, assistant surfaces, and framework pack.",
+                "files": combined_measure["files"],
+                "words": combined_measure["words"],
+                "estimated_tokens_4_chars": combined_measure["estimated_tokens_4_chars"],
+            },
+            "complete_managed_inventory": support_state_inventory_summary(
+                TEMPLATE_ROOT / ".ai" / "support-state.json"
+            ),
+            "runtime_context": {
+                "description": "Task-time context is selected through bootstrap/router/catalogs and measured by report_context_costs.py.",
+                "standing_support_cost_is_not_runtime_context": True,
+            },
+        },
         "operation_surface": {
             "operation_catalog_installed": projection.catalog is not None,
             "projected_operation_count": len(projection.operation_ids),
@@ -331,6 +365,21 @@ def build_installed_report(target: Path) -> dict[str, Any]:
         },
         "support_policy_present": policy is not None,
         "support_surfaces": measured,
+        "cost_scopes": {
+            "installed_support_files": {
+                "description": "Support files present in the target filesystem and measured by this report.",
+                "files": measured["files"],
+                "words": measured["words"],
+                "estimated_tokens_4_chars": measured["estimated_tokens_4_chars"],
+            },
+            "managed_inventory": support_state_inventory_summary(
+                target / ".ai" / "support-state.json"
+            ),
+            "runtime_context": {
+                "description": "Task-time context depends on the target router, selected profiles, and context receipts.",
+                "standing_support_cost_is_not_runtime_context": True,
+            },
+        },
         "classifications": dict(sorted(classifications.items())),
         "limitations": [
             "installed support cost is a filesystem measurement, not semantic correctness",
@@ -343,6 +392,7 @@ def build_installed_report(target: Path) -> dict[str, Any]:
 def render_text(report: dict[str, Any]) -> str:
     if report["report_kind"] == "installed-alatyr-standing-support-cost":
         support = report["support_surfaces"]
+        inventory = report["cost_scopes"]["managed_inventory"]
         lines = [
             "Alatyr installed support cost",
             f"Target: {report['target']}",
@@ -350,12 +400,19 @@ def render_text(report: dict[str, Any]) -> str:
             f"Files: {support['files']}",
             f"Words: {support['words']}",
             f"Estimated tokens at 4 chars/token: {support['estimated_tokens_4_chars']}",
+            (
+                "Managed inventory records: "
+                f"{inventory['managed_files']} files"
+                if inventory["present"]
+                else "Managed inventory records: unavailable"
+            ),
             "Classifications:",
         ]
         for name, count in report["classifications"].items():
             lines.append(f"- {name}: {count}")
     else:
         support = report["combined_support"]
+        inventory = report["cost_scopes"]["complete_managed_inventory"]
         lines = [
             "Alatyr scaffold support cost",
             f"Profile: {report['profile']}",
@@ -364,6 +421,12 @@ def render_text(report: dict[str, Any]) -> str:
             f"Files: {support['files']}",
             f"Words: {support['words']}",
             f"Estimated tokens at 4 chars/token: {support['estimated_tokens_4_chars']}",
+            (
+                "Complete managed inventory records: "
+                f"{inventory['managed_files']} files"
+                if inventory["present"]
+                else "Complete managed inventory records: unavailable"
+            ),
             f"Projected operations: {report['operation_surface']['projected_operation_count']}",
             "Largest groups:",
         ]

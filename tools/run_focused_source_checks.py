@@ -8,25 +8,14 @@ import subprocess
 import sys
 from pathlib import Path
 
+from check_all import default_changed_from as check_all_default_changed_from
 
 ROOT = Path(__file__).resolve().parents[1]
 TOOLS = ROOT / "tools"
 
 
-def git_ref_exists(ref: str) -> bool:
-    result = subprocess.run(
-        ["git", "rev-parse", "--verify", ref],
-        cwd=ROOT,
-        check=False,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-    )
-    return result.returncode == 0
-
-
 def default_changed_from() -> str:
-    return "origin/main" if git_ref_exists("origin/main") else "HEAD"
+    return check_all_default_changed_from()
 
 
 def parser() -> argparse.ArgumentParser:

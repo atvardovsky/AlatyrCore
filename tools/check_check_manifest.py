@@ -6,7 +6,9 @@ from __future__ import annotations
 import ast
 import fnmatch
 import json
+import subprocess
 import sys
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -16,6 +18,52 @@ from evidence_contract import CONTRACT_FILES, CONTRACT_PREFIXES
 
 ROOT = Path(__file__).resolve().parents[1]
 EXCLUDED_CHECKERS = {"check_all.py", "check_check_manifest.py"}
+
+
+@dataclass(frozen=True)
+class SourcePathIndex:
+    """Repository source paths used to resolve manifest declarations once."""
+
+    paths: frozenset[str]
+
+    @classmethod
+    def from_paths(cls, paths: list[str]) -> "SourcePathIndex":
+        indexed: set[str] = set()
+        for path in paths:
+            normalized = Path(path).as_posix()
+            if not normalized or normalized == ".":
+                continue
+            indexed.add(normalized)
+            parent = Path(normalized).parent
+            while parent.as_posix() not in {"", "."}:
+                indexed.add(parent.as_posix())
+                parent = parent.parent
+        return cls(frozenset(indexed))
+
+    @classmethod
+    def from_root(cls, root: Path = ROOT) -> "SourcePathIndex":
+        result = subprocess.run(
+            ["git", "ls-files", "-c", "-o", "--exclude-standard", "-z"],
+            cwd=root,
+            check=False,
+            capture_output=True,
+        )
+        if result.returncode != 0:
+            message = result.stderr.decode("utf-8", errors="replace").strip()
+            raise ValueError(message or "cannot enumerate source paths")
+        paths = [
+            path
+            for path in result.stdout.decode(
+                "utf-8", errors="surrogateescape"
+            ).split("\0")
+            if path
+        ]
+        return cls.from_paths(paths)
+
+    def matches_declaration(self, pattern: str) -> bool:
+        if any(character in pattern for character in "*?["):
+            return any(fnmatch.fnmatch(path, pattern) for path in self.paths)
+        return pattern in self.paths
 
 
 def declared_implementation_path(check: dict[str, Any], path: str) -> bool:
@@ -51,11 +99,13 @@ def direct_local_tool_dependencies(script: str) -> set[str]:
     return dependencies
 
 
-def declaration_matches_source(path: str) -> bool:
+def declaration_matches_source(
+    path: str, source_index: SourcePathIndex | None = None
+) -> bool:
     """Reject stale exact paths and glob declarations that match no source file."""
 
-    matches = list(ROOT.glob(path))
-    return any(item.exists() for item in matches)
+    index = source_index or SourcePathIndex.from_root(ROOT)
+    return index.matches_declaration(path)
 
 
 def broad_trigger_patterns(check: dict[str, Any]) -> list[str]:
@@ -118,6 +168,7 @@ def main() -> int:
     failures: list[str] = []
     try:
         checks = load_manifest()
+        source_index = SourcePathIndex.from_root(ROOT)
     except (OSError, ValueError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
@@ -143,7 +194,7 @@ def main() -> int:
             )
         for field in ["contract_inputs", "implementation_paths", "trigger_paths"]:
             for path in check[field]:
-                if not declaration_matches_source(path):
+                if not declaration_matches_source(path, source_index):
                     failures.append(
                         f"{check['id']}.{field} has no matching source path: {path}"
                     )

@@ -15,11 +15,11 @@ import run_focused_source_checks  # noqa: E402
 
 class CheckSourceFocusedTests(unittest.TestCase):
     def test_default_changed_from_prefers_origin_main(self) -> None:
-        with patch("run_focused_source_checks.git_ref_exists", return_value=True):
+        with patch("check_all.git_ref_exists", return_value=True):
             self.assertEqual(run_focused_source_checks.default_changed_from(), "origin/main")
 
     def test_default_changed_from_falls_back_to_head(self) -> None:
-        with patch("run_focused_source_checks.git_ref_exists", return_value=False):
+        with patch("check_all.git_ref_exists", return_value=False):
             self.assertEqual(run_focused_source_checks.default_changed_from(), "HEAD")
 
     def test_check_all_command_uses_fast_changed_path_profile(self) -> None:

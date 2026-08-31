@@ -3,6 +3,12 @@
 Use this prompt when a target repository already has Alatyr Core installed and
 you want an assistant to use that installed adapter.
 
+For ordinary clear requests, do not require every field below. Minimum useful
+input is target repository path, goal, non-goals if any, allowed actions, and
+current user authorization. Use the full structured shape for ambiguity,
+protected changes, resumable work, team coordination, delegation, imported AI
+infrastructure, or adapter repair.
+
 ```text
 Use the installed Alatyr Core adapter in the target repository.
 

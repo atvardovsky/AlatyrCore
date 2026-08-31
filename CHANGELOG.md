@@ -4,6 +4,31 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.49 - 2026-08-31
+
+- Increased the framework version to `0.1.0-alpha.49`; adapter schema version
+  remains `40` and target template version remains `44` because no installed
+  adapter schema or target template contract changed.
+- Added source-check report identity metadata, a fast-profile default baseline
+  of `origin/main` or `HEAD`, and an explicit `--all-fast` mode so quick local
+  checks avoid accidental broad runs while preserving an intentional complete
+  fast profile.
+- Cached source path indexing inside the manifest checker to avoid repeated
+  recursive filesystem glob resolution while preserving source-file coverage
+  validation.
+- Added the read-only `compare-check-reports` tool command so maintainers can
+  compare source-check timing, selection, status, and source identity without
+  rerunning expensive checks.
+- Added installer profile-selection evidence to the discovery contract and
+  aligned installer prose so new installations start from the `kernel` profile
+  unless target evidence or a user request justifies expansion.
+- Split support-cost reports into selected support projection, complete managed
+  inventory, and runtime-context scopes so standing support footprint is not
+  confused with task-time context cost.
+- Increased only the heavy lifecycle conformance source-check timeout to reduce
+  false timeout failures under full-suite load without removing the check from
+  the full validation profile.
+
 ## 0.1.0-alpha.48 - 2026-08-31
 
 - Increased the framework version to `0.1.0-alpha.48`, adapter schema version

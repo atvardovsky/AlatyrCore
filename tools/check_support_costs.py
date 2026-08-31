@@ -26,6 +26,24 @@ MAX_PROFILE_WORDS = {
 PROFILE_ORDER = ["kernel", "core", "standard", "full"]
 
 
+def require_runtime_scope(
+    failures: list[str], report: dict[str, object], label: str
+) -> None:
+    scopes = report.get("cost_scopes")
+    if not isinstance(scopes, dict):
+        failures.append(f"{label} report is missing cost_scopes")
+        return
+    runtime = scopes.get("runtime_context")
+    if not isinstance(runtime, dict):
+        failures.append(f"{label} report is missing runtime_context cost scope")
+        return
+    if runtime.get("standing_support_cost_is_not_runtime_context") is not True:
+        failures.append(
+            f"{label} runtime cost scope must state that standing support cost "
+            "is not runtime context"
+        )
+
+
 def main() -> int:
     failures: list[str] = []
     cached_assistant_surfaces = assistant_surface_summary()
@@ -48,6 +66,21 @@ def main() -> int:
         failures.append("support-cost recommendation escalation order is invalid")
     if "cheapest sufficient profile" not in str(recommendation.get("policy", "")):
         failures.append("support-cost recommendation must name cheapest sufficient profile")
+    require_runtime_scope(failures, default_report, "kernel scaffold")
+    selected_projection = default_report.get("cost_scopes", {}).get(
+        "selected_support_projection"
+    )
+    if not isinstance(selected_projection, dict):
+        failures.append("scaffold report is missing selected_support_projection")
+    elif selected_projection.get("files") != default_report["combined_support"]["files"]:
+        failures.append("selected support projection file count is out of sync")
+    managed_inventory = default_report.get("cost_scopes", {}).get(
+        "complete_managed_inventory"
+    )
+    if not isinstance(managed_inventory, dict):
+        failures.append("scaffold report is missing complete_managed_inventory")
+    elif managed_inventory.get("present") is not True:
+        failures.append("template managed inventory must be present")
     words = {
         profile: report["combined_support"]["words"]
         for profile, report in reports.items()
@@ -114,6 +147,21 @@ def main() -> int:
             )
         else:
             installed = build_installed_report(target)
+            require_runtime_scope(failures, installed, "installed")
+            installed_scope = installed.get("cost_scopes", {}).get(
+                "installed_support_files"
+            )
+            if not isinstance(installed_scope, dict):
+                failures.append("installed report is missing installed_support_files")
+            elif installed_scope.get("files") != installed["support_surfaces"]["files"]:
+                failures.append("installed support file scope is out of sync")
+            installed_inventory = installed.get("cost_scopes", {}).get(
+                "managed_inventory"
+            )
+            if not isinstance(installed_inventory, dict):
+                failures.append("installed report is missing managed_inventory")
+            elif installed_inventory.get("present") is not True:
+                failures.append("installed report did not find managed inventory")
             if not installed["support_policy_present"]:
                 failures.append("installed support-cost report did not find support policy")
             installed_files = installed["support_surfaces"]["files"]
