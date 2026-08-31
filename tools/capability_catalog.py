@@ -10,6 +10,11 @@ from typing import Any, Iterable
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG_PATH = ROOT / "framework" / "capabilities.json"
 PACK_ORDER = {"kernel": 0, "core": 1, "standard": 2, "complete": 3}
+ALLOWED_MODULE_KINDS = {
+    "project-facing",
+    "assistant-infrastructure",
+    "governance-support",
+}
 
 
 def load_catalog(path: Path = CATALOG_PATH) -> dict[str, Any]:
@@ -25,6 +30,13 @@ def load_modules(path: Path = CATALOG_PATH) -> dict[str, dict[str, Any]]:
         raise ValueError("invalid capability catalog")
     if not all(isinstance(key, str) and isinstance(value, dict) for key, value in modules.items()):
         raise ValueError("capability catalog modules must be objects")
+    invalid_kinds = {
+        key: value.get("module_kind")
+        for key, value in modules.items()
+        if value.get("module_kind") not in ALLOWED_MODULE_KINDS
+    }
+    if invalid_kinds:
+        raise ValueError(f"capability catalog modules have invalid kinds: {invalid_kinds}")
     return modules
 
 

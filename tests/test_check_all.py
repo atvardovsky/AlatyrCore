@@ -313,6 +313,7 @@ class CheckGraphTests(unittest.TestCase):
     def test_dynamic_scheduler_backfills_ready_dependents(self) -> None:
         events: list[tuple[str, str, float]] = []
         lock = threading.Lock()
+        dependent_started = threading.Event()
 
         def record(check_id: str, event: str) -> None:
             with lock:
@@ -324,8 +325,9 @@ class CheckGraphTests(unittest.TestCase):
             if check_id == "first":
                 time.sleep(0.03)
             elif check_id == "independent":
-                time.sleep(0.15)
+                dependent_started.wait(timeout=1.0)
             else:
+                dependent_started.set()
                 time.sleep(0.01)
             record(check_id, "end")
             return 0, "", "", [check_id]
@@ -338,6 +340,7 @@ class CheckGraphTests(unittest.TestCase):
         execute_checks(selected, None, 2, runner=runner)
 
         timestamps = {(check_id, event): value for check_id, event, value in events}
+        self.assertTrue(dependent_started.is_set())
         self.assertLess(
             timestamps[("dependent", "start")],
             timestamps[("independent", "end")],
@@ -464,6 +467,10 @@ class CheckGraphTests(unittest.TestCase):
         )
 
         self.assertEqual([item["id"] for item in report["checks"]], ["first", "second"])
+        self.assertEqual(
+            [item["id"] for item in report["timing"]["slowest_checks"]],
+            ["second", "first"],
+        )
 
     def test_report_output_cannot_bypass_source_write_scope(self) -> None:
         import subprocess

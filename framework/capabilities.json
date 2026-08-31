@@ -26,6 +26,7 @@
   },
   "modules": {
     "blueprint-change": {
+      "module_kind": "project-facing",
       "min_framework_pack": "standard",
       "requires": [],
       "rule_ids": ["ALATYR-CHANGE-001"],
@@ -37,6 +38,7 @@
       "check_ids": ["operation-contracts"]
     },
     "consistency-map": {
+      "module_kind": "project-facing",
       "min_framework_pack": "core",
       "requires": [],
       "rule_ids": ["ALATYR-INTEGRITY-001", "ALATYR-SOURCE-001"],
@@ -53,6 +55,7 @@
       "check_ids": ["consistency-map", "source-of-truth-registry"]
     },
     "architecture-knowledge": {
+      "module_kind": "project-facing",
       "min_framework_pack": "complete",
       "requires": [],
       "rule_ids": ["ALATYR-ARCHITECTURE-001"],
@@ -68,6 +71,7 @@
       "check_ids": ["architecture-knowledge"]
     },
     "code-documentation": {
+      "module_kind": "project-facing",
       "min_framework_pack": "complete",
       "requires": [],
       "rule_ids": ["ALATYR-CODEDOC-001"],
@@ -84,6 +88,7 @@
       "check_ids": ["code-documentation"]
     },
     "project-vocabulary": {
+      "module_kind": "project-facing",
       "min_framework_pack": "complete",
       "requires": [],
       "rule_ids": ["ALATYR-VOCABULARY-001"],
@@ -101,6 +106,7 @@
       "check_ids": ["project-vocabulary"]
     },
     "test-first-development": {
+      "module_kind": "project-facing",
       "min_framework_pack": "complete",
       "requires": [],
       "rule_ids": ["ALATYR-TDD-001"],
@@ -118,6 +124,7 @@
       "check_ids": ["test-first-development"]
     },
     "extensions": {
+      "module_kind": "assistant-infrastructure",
       "min_framework_pack": "complete",
       "requires": ["ai-infrastructure"],
       "rule_ids": ["ALATYR-EXTENSION-001", "ALATYR-SAFETY-002"],
@@ -135,6 +142,7 @@
       "check_ids": ["extensions"]
     },
     "dependency-knowledge": {
+      "module_kind": "project-facing",
       "min_framework_pack": "complete",
       "requires": [],
       "rule_ids": ["ALATYR-DEPENDENCY-001", "ALATYR-SAFETY-002", "ALATYR-SOURCE-001"],
@@ -154,6 +162,7 @@
       "check_ids": ["dependency-knowledge"]
     },
     "workspace-modes": {
+      "module_kind": "project-facing",
       "min_framework_pack": "complete",
       "requires": [],
       "rule_ids": ["ALATYR-MODE-001", "ALATYR-CONTEXT-001", "ALATYR-SOURCE-001"],
@@ -174,6 +183,7 @@
       "check_ids": ["workspace-modes"]
     },
     "diagrams": {
+      "module_kind": "project-facing",
       "min_framework_pack": "complete",
       "requires": [],
       "rule_ids": ["ALATYR-DIAGRAM-001"],
@@ -188,6 +198,7 @@
       "check_ids": ["discussion-diagrams", "assistant-capability-index"]
     },
     "ai-infrastructure": {
+      "module_kind": "assistant-infrastructure",
       "min_framework_pack": "core",
       "requires": [],
       "rule_ids": ["ALATYR-SAFETY-002"],
@@ -210,6 +221,7 @@
       "check_ids": ["ai-infrastructure-inventory", "ai-infrastructure-recommendations", "ai-infrastructure-router"]
     },
     "multi-assistant-bridges": {
+      "module_kind": "assistant-infrastructure",
       "min_framework_pack": "core",
       "requires": [],
       "rule_ids": ["ALATYR-BRIDGE-001"],
@@ -221,6 +233,7 @@
       "check_ids": ["assistant-surface-conformance", "bridge-capability-matrix"]
     },
     "installed-operations": {
+      "module_kind": "governance-support",
       "min_framework_pack": "core",
       "requires": [],
       "rule_ids": ["ALATYR-OPERATION-001", "ALATYR-AUTHORIZATION-001"],
@@ -238,6 +251,7 @@
       "check_ids": ["action-authorization", "operation-catalog", "operation-index", "operation-help"]
     },
     "large-task-orchestration": {
+      "module_kind": "project-facing",
       "min_framework_pack": "standard",
       "requires": ["installed-operations"],
       "rule_ids": ["ALATYR-CONTEXT-001"],
@@ -249,6 +263,7 @@
       "check_ids": ["large-task-orchestration"]
     },
     "subagent-delegation": {
+      "module_kind": "assistant-infrastructure",
       "min_framework_pack": "complete",
       "requires": ["ai-infrastructure", "multi-assistant-bridges"],
       "rule_ids": ["ALATYR-DELEGATION-001"],
@@ -275,6 +290,7 @@
       "check_ids": ["subagent-delegation", "assistant-capability-index", "bridge-capability-matrix"]
     },
     "change-packages": {
+      "module_kind": "governance-support",
       "min_framework_pack": "complete",
       "requires": ["durable-approvals"],
       "rule_ids": ["ALATYR-PACKAGE-001"],
@@ -289,6 +305,7 @@
       "check_ids": ["change-packages"]
     },
     "team-collaboration": {
+      "module_kind": "project-facing",
       "min_framework_pack": "complete",
       "requires": [],
       "rule_ids": ["ALATYR-TEAM-001"],
@@ -312,6 +329,7 @@
       "check_ids": ["team-collaboration", "team-collaboration-scenarios"]
     },
     "durable-approvals": {
+      "module_kind": "governance-support",
       "min_framework_pack": "core",
       "requires": [],
       "rule_ids": ["ALATYR-APPROVAL-001"],
@@ -323,6 +341,7 @@
       "check_ids": ["approval-template"]
     },
     "migration-diff": {
+      "module_kind": "governance-support",
       "min_framework_pack": "standard",
       "requires": [],
       "rule_ids": ["ALATYR-LIFECYCLE-001"],
@@ -334,6 +353,7 @@
       "check_ids": ["migration-diff-report"]
     },
     "effectiveness-metrics": {
+      "module_kind": "governance-support",
       "min_framework_pack": "complete",
       "requires": [],
       "rule_ids": ["ALATYR-EVIDENCE-001"],
@@ -346,6 +366,7 @@
       "check_ids": ["effectiveness-benchmark", "captured-effectiveness-results"]
     },
     "debug-mode": {
+      "module_kind": "governance-support",
       "min_framework_pack": "complete",
       "requires": ["effectiveness-metrics", "installed-operations"],
       "rule_ids": ["ALATYR-DEBUG-001", "ALATYR-AUTHORIZATION-001", "ALATYR-EVIDENCE-001"],
@@ -363,6 +384,7 @@
       "check_ids": ["debug-mode", "target-adapter-validator"]
     },
     "support-generation": {
+      "module_kind": "governance-support",
       "min_framework_pack": "complete",
       "requires": [],
       "rule_ids": ["ALATYR-SUPPORT-001"],
@@ -376,6 +398,7 @@
       "check_ids": ["support-information"]
     },
     "scaffolding": {
+      "module_kind": "governance-support",
       "min_framework_pack": "complete",
       "requires": [],
       "rule_ids": ["ALATYR-MODULE-001"],

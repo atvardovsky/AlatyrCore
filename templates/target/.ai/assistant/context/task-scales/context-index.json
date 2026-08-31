@@ -6,6 +6,11 @@
   "title": "Assistant Task Scales Context",
   "summary": "Recursive navigation for the assistant contour at context/task-scales.",
   "max_depth": 8,
+  "entry_defaults": {
+    "load_when": [
+      "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+    ]
+  },
   "entries": [
     {
       "id": "assistant.content.context-task-scales-change-package-json",
@@ -24,9 +29,6 @@
           "ALATYR-INTEGRITY-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:bounded-context-expansion@1",
         "alatyr:logical-integrity@1"
@@ -54,9 +56,6 @@
           "ALATYR-CONTEXT-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:bounded-context-expansion@1"
       ],
@@ -82,9 +81,6 @@
           "ALATYR-CONTEXT-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:bounded-context-expansion@1"
       ],
@@ -110,9 +106,6 @@
           "ALATYR-CONTEXT-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:bounded-context-expansion@1"
       ],
@@ -138,9 +131,6 @@
           "ALATYR-CONTEXT-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:bounded-context-expansion@1"
       ],
@@ -165,9 +155,6 @@
           "ALATYR-CONTEXT-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:bounded-context-expansion@1"
       ],

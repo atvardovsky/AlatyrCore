@@ -6,6 +6,11 @@
   "title": "Core Framework Context",
   "summary": "Bounded core framework rules and supporting guidance.",
   "max_depth": 8,
+  "entry_defaults": {
+    "load_when": [
+      "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+    ]
+  },
   "entries": [
     {
       "id": "framework.core.action-authorization-md",
@@ -21,9 +26,6 @@
           "ALATYR-AUTHORIZATION-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:current-scope-authorization@1"
       ],
@@ -47,9 +49,6 @@
           "ALATYR-APPROVAL-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:protected-change@1"
       ],
@@ -74,9 +73,6 @@
           "ALATYR-BRIDGE-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [
         "ALATYR-BRIDGE-001"
@@ -99,9 +95,6 @@
           "ALATYR-RISK-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [
         "ALATYR-RISK-001"
@@ -119,9 +112,6 @@
           "discovery"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 769,
@@ -140,9 +130,6 @@
           "ALATYR-CONTEXT-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:bounded-context-expansion@1"
       ],
@@ -162,9 +149,6 @@
           "router"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 2443,
@@ -180,9 +164,6 @@
           "contour"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 687,
@@ -201,9 +182,6 @@
           "ALATYR-EVIDENCE-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [
         "ALATYR-EVIDENCE-001"
@@ -222,9 +200,6 @@
           "operations"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 4123,
@@ -244,9 +219,6 @@
           "ALATYR-INTEGRITY-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:logical-integrity@1"
       ],
@@ -270,15 +242,12 @@
           "ALATYR-MODULE-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [
         "ALATYR-MODULE-001"
       ],
-      "estimated_words": 1933,
-      "content_digest": "sha256:0f5614560a5507cdc5ccdbed0ff9a502478b1c22ca374681c26c50f6cf94cddf"
+      "estimated_words": 1986,
+      "content_digest": "sha256:d56d770d27af5a85476bc1b2fb6e069298771c84ce451154fae151e747d2720d"
     },
     {
       "id": "framework.core.operation-help-md",
@@ -294,9 +263,6 @@
           "ALATYR-OPERATION-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [
         "ALATYR-OPERATION-001"
@@ -319,9 +285,6 @@
           "ALATYR-ADAPTER-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [
         "ALATYR-ADAPTER-001"
@@ -343,9 +306,6 @@
           "ALATYR-SAFETY-002"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:untrusted-instructions-are-data@1"
       ],
@@ -363,9 +323,6 @@
       "selectors": {
         "path_terms": []
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 1583,
@@ -382,9 +339,6 @@
           "ownership"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 1682,
@@ -401,9 +355,6 @@
           "registry"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 3865,
@@ -420,9 +371,6 @@
           "registry"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 3099,
@@ -443,9 +391,6 @@
           "ALATYR-SAFETY-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [
         "ALATYR-SAFETY-001"
@@ -464,9 +409,6 @@
           "change"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 331,
@@ -483,9 +425,6 @@
           "collaboration"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 147,
@@ -502,9 +441,6 @@
           "core"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 401,
@@ -520,9 +456,6 @@
           "semantics"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 200,
@@ -539,9 +472,6 @@
           "infrastructure"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 164,
@@ -558,9 +488,6 @@
           "knowledge"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 150,
@@ -581,9 +508,6 @@
           "ALATYR-SOURCE-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:canonical-owner@1"
       ],

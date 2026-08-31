@@ -6,6 +6,11 @@
   "title": "Project Modes Context",
   "summary": "Recursive navigation for the project contour at workspace-modes/modes.",
   "max_depth": 8,
+  "entry_defaults": {
+    "load_when": [
+      "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+    ]
+  },
   "entries": [
     {
       "id": "project.section.workspace-modes-modes-template",
@@ -17,13 +22,10 @@
           "template"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 137,
-      "content_digest": "sha256:de1b2b8253452df6dd96cb065981ec6c6698b8be53216fef1ad22c559f32f3ae"
+      "estimated_words": 122,
+      "content_digest": "sha256:3381b0e765eee133bbce71da84fbbab20c2419417a7c0158fb967fbf1571006a"
     }
   ]
 }

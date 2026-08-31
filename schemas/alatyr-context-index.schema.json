@@ -13,6 +13,14 @@
     "title": {"type": "string", "minLength": 1},
     "summary": {"type": "string", "minLength": 1},
     "max_depth": {"type": "integer", "minimum": 1},
+    "entry_defaults": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["load_when"],
+      "properties": {
+        "load_when": {"allOf": [{"$ref": "#/definitions/strings"}, {"minItems": 1}]}
+      }
+    },
     "entries": {
       "type": "array",
       "items": {"$ref": "#/definitions/entry"}
@@ -27,7 +35,7 @@
     "entry": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "kind", "path", "summary", "selectors", "load_when", "semantic_refs", "owner_refs", "estimated_words", "content_digest"],
+      "required": ["id", "kind", "path", "summary", "selectors", "semantic_refs", "owner_refs", "estimated_words", "content_digest"],
       "properties": {
         "id": {"type": "string", "minLength": 1},
         "kind": {"enum": ["index", "content"]},

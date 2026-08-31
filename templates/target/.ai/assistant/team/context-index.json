@@ -6,6 +6,11 @@
   "title": "Assistant Team Context",
   "summary": "Recursive navigation for the assistant contour at team.",
   "max_depth": 8,
+  "entry_defaults": {
+    "load_when": [
+      "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+    ]
+  },
   "entries": [
     {
       "id": "assistant.content.team-active-work-index-json",
@@ -23,9 +28,6 @@
           "ALATYR-DELEGATION-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:bounded-context-expansion@1",
         "alatyr:bounded-delegation@1"
@@ -53,9 +55,6 @@
           "ALATYR-DELEGATION-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:bounded-context-expansion@1",
         "alatyr:bounded-delegation@1"
@@ -82,9 +81,6 @@
           "ALATYR-DELEGATION-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:bounded-context-expansion@1",
         "alatyr:bounded-delegation@1"
@@ -113,9 +109,6 @@
           "ALATYR-DELEGATION-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:bounded-context-expansion@1",
         "alatyr:bounded-delegation@1"
@@ -143,9 +136,6 @@
           "ALATYR-DELEGATION-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:bounded-context-expansion@1",
         "alatyr:bounded-delegation@1"

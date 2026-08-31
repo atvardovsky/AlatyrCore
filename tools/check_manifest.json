@@ -36,6 +36,39 @@
       ]
     },
     {
+      "id": "installer-discovery-contract",
+      "command": [
+        "tools/check_installer_discovery_contract.py"
+      ],
+      "profiles": [
+        "quick",
+        "fast",
+        "full",
+        "platform"
+      ],
+      "resource_class": "light",
+      "contract_inputs": [
+        "INSTALL.md",
+        "framework/capabilities.json",
+        "installer/assistant-installation.flow.md",
+        "installer/discovery-contract.json",
+        "installer/installation-plan-template.md",
+        "installer/readiness-checklist.md"
+      ],
+      "implementation_paths": [
+        "tools/check_installer_discovery_contract.py"
+      ],
+      "trigger_paths": [
+        "INSTALL.md",
+        "framework/capabilities.json",
+        "installer/assistant-installation.flow.md",
+        "installer/discovery-contract.json",
+        "installer/installation-plan-template.md",
+        "installer/readiness-checklist.md",
+        "tools/check_installer_discovery_contract.py"
+      ]
+    },
+    {
       "id": "approval-template",
       "command": [
         "tools/check_approval_template.py"

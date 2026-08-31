@@ -192,6 +192,58 @@ class ContextCatalogTests(unittest.TestCase):
             result = validate_context_catalog(root_index)
             self.assertEqual([item.path for item in result.items], ["areas/payments/rules.md"])
 
+    def test_context_catalog_inherits_entry_default_load_when(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            content = root / "rule.md"
+            content.write_text("rule\n", encoding="utf-8")
+            item = entry(root, "rule", "content", "rule.md")
+            item.pop("load_when")
+            index = root / "context-index.json"
+            write_json(
+                index,
+                {
+                    "schema_version": 1,
+                    "index_kind": "alatyr-context-index",
+                    "index_id": "root",
+                    "contour": "framework",
+                    "title": "Root",
+                    "summary": "Root",
+                    "max_depth": 2,
+                    "entry_defaults": {"load_when": ["selected by default"]},
+                    "entries": [item],
+                },
+            )
+
+            result = validate_context_catalog(index)
+
+            self.assertEqual(result.items[0].load_when, ("selected by default",))
+
+    def test_context_catalog_rejects_missing_load_when_without_default(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            content = root / "rule.md"
+            content.write_text("rule\n", encoding="utf-8")
+            item = entry(root, "rule", "content", "rule.md")
+            item.pop("load_when")
+            index = root / "context-index.json"
+            write_json(
+                index,
+                {
+                    "schema_version": 1,
+                    "index_kind": "alatyr-context-index",
+                    "index_id": "root",
+                    "contour": "framework",
+                    "title": "Root",
+                    "summary": "Root",
+                    "max_depth": 2,
+                    "entries": [item],
+                },
+            )
+
+            with self.assertRaisesRegex(ContextCatalogError, "entry_defaults"):
+                validate_context_catalog(index)
+
     def test_recursive_catalog_rejects_cycle(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "contract_kind": "alatyr-installation-discovery-contract",
+  "canonical_scope": "target repository discovery categories used before Alatyr installation, update, or adapter repair",
+  "prose_surfaces": [
+    "INSTALL.md",
+    "installer/assistant-installation.flow.md",
+    "installer/readiness-checklist.md",
+    "installer/installation-plan-template.md"
+  ],
+  "usage": {
+    "default": "Use the smallest category set needed for the selected support profile and enabled modules.",
+    "missing_fact": "Record unresolved target facts as missing, blocked, deferred, disabled, or not applicable; do not invent them.",
+    "detail_owner": "Detailed findings belong in the target installation plan and target adapter files, not in this source contract."
+  },
+  "base_categories": [
+    {
+      "id": "repository-identity",
+      "summary": "Target path, install/update state, stack, package/build files, tests, CI, validation entry points, and ownership metadata."
+    },
+    {
+      "id": "existing-ai-surfaces",
+      "summary": "Existing assistant instructions, bridge files, skills, prompts, gates, tool/MCP configuration, source-access policies, and provenance notes."
+    },
+    {
+      "id": "project-sources-of-truth",
+      "summary": "Canonical project facts, architecture or design documents, decision records, blueprint equivalents, source-of-truth registry, and known conflicts."
+    },
+    {
+      "id": "risk-authorization-validation",
+      "summary": "Risk classes, approval triggers, current-scope action authorization, destructive/live/credential policies, target commands, and final evidence."
+    },
+    {
+      "id": "context-routing",
+      "summary": "Selected support profile, framework pack, context router, bootstrap index, recursive context indexes, semantic codebook, routed gates, budgets, and receipts."
+    },
+    {
+      "id": "support-state",
+      "summary": "Support policy, support-state snapshot, generated support surfaces, relationship candidates, reverse indexes, and stale-output handling."
+    }
+  ],
+  "module_categories": {
+    "ai-infrastructure": ["existing-ai-surfaces", "risk-authorization-validation"],
+    "architecture-knowledge": ["project-sources-of-truth", "context-routing"],
+    "blueprint-change": ["project-sources-of-truth", "risk-authorization-validation"],
+    "change-packages": ["project-sources-of-truth", "risk-authorization-validation", "support-state"],
+    "code-documentation": ["project-sources-of-truth", "context-routing"],
+    "consistency-map": ["project-sources-of-truth", "support-state"],
+    "debug-mode": ["risk-authorization-validation", "support-state"],
+    "dependency-knowledge": ["project-sources-of-truth", "risk-authorization-validation"],
+    "diagrams": ["project-sources-of-truth", "existing-ai-surfaces"],
+    "durable-approvals": ["risk-authorization-validation"],
+    "effectiveness-metrics": ["risk-authorization-validation", "support-state"],
+    "extensions": ["existing-ai-surfaces", "risk-authorization-validation"],
+    "installed-operations": ["existing-ai-surfaces", "risk-authorization-validation", "context-routing"],
+    "large-task-orchestration": ["context-routing", "risk-authorization-validation"],
+    "migration-diff": ["context-routing", "support-state"],
+    "multi-assistant-bridges": ["existing-ai-surfaces"],
+    "project-vocabulary": ["project-sources-of-truth", "context-routing"],
+    "scaffolding": ["repository-identity", "context-routing"],
+    "subagent-delegation": ["existing-ai-surfaces", "risk-authorization-validation"],
+    "support-generation": ["support-state"],
+    "team-collaboration": ["repository-identity", "risk-authorization-validation", "support-state"],
+    "test-first-development": ["repository-identity", "project-sources-of-truth", "risk-authorization-validation"],
+    "workspace-modes": ["repository-identity", "project-sources-of-truth", "context-routing"]
+  }
+}

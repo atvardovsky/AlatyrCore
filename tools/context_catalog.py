@@ -192,6 +192,18 @@ def validate_context_catalog(
         for field in ("title", "summary"):
             if not isinstance(data.get(field), str) or not data[field]:
                 raise ContextCatalogError(f"{index_path}.{field} must be non-empty")
+        default_load_when: tuple[str, ...] = ()
+        if "entry_defaults" in data:
+            defaults = data.get("entry_defaults")
+            if not isinstance(defaults, dict) or set(defaults) != {"load_when"}:
+                raise ContextCatalogError(
+                    f"{index_path}.entry_defaults must only define load_when"
+                )
+            default_load_when = _string_list(
+                defaults.get("load_when"),
+                f"{index_path}.entry_defaults.load_when",
+                non_empty=True,
+            )
         entries = data.get("entries")
         if not isinstance(entries, list):
             raise ContextCatalogError(f"{index_path}.entries must be a list")
@@ -215,9 +227,16 @@ def validate_context_catalog(
                 "estimated_words",
                 "content_digest",
             }
-            if set(entry) != required:
+            required_without_load_when = required - {"load_when"}
+            entry_fields = set(entry)
+            if entry_fields == required:
+                load_when_value = entry.get("load_when")
+            elif entry_fields == required_without_load_when and default_load_when:
+                load_when_value = list(default_load_when)
+            else:
                 raise ContextCatalogError(
-                    f"{label} must contain exactly {sorted(required)}"
+                    f"{label} must contain {sorted(required_without_load_when)} "
+                    "plus load_when or inherit index entry_defaults.load_when"
                 )
             item_id = entry.get("id")
             if not isinstance(item_id, str) or not item_id:
@@ -234,7 +253,9 @@ def validate_context_catalog(
             if not isinstance(summary, str) or not summary:
                 raise ContextCatalogError(f"{label}.summary must be non-empty")
             selectors = _validate_selectors(entry.get("selectors"), f"{label}.selectors")
-            load_when = _string_list(entry.get("load_when"), f"{label}.load_when", non_empty=True)
+            load_when = _string_list(
+                load_when_value, f"{label}.load_when", non_empty=True
+            )
             semantic_refs = _string_list(entry.get("semantic_refs"), f"{label}.semantic_refs")
             for term_id in semantic_refs:
                 if not TERM_ID_RE.fullmatch(term_id):

@@ -10,6 +10,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 from capability_catalog import (  # noqa: E402
     dependency_closure,
+    load_modules,
     removable_target_files,
     shared_surface_merge_requirement,
     target_files,
@@ -118,6 +119,28 @@ class CapabilityGraphTests(unittest.TestCase):
         self.assertIsNone(
             shared_surface_merge_requirement(".ai/not-shared.json", surfaces)
         )
+
+    def test_load_modules_requires_module_kind(self) -> None:
+        import json
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "capabilities.json"
+            path.write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "capability_kind": "alatyr-optional-module-catalog",
+                        "surfaces": {},
+                        "modules": {"feature": {"requires": []}},
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            with self.assertRaisesRegex(ValueError, "invalid kinds"):
+                load_modules(path)
 
 
 if __name__ == "__main__":

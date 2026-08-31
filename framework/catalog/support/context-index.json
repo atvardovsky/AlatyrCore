@@ -6,6 +6,11 @@
   "title": "Support Framework Context",
   "summary": "Bounded support framework rules and supporting guidance.",
   "max_depth": 8,
+  "entry_defaults": {
+    "load_when": [
+      "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+    ]
+  },
   "entries": [
     {
       "id": "framework.support.ascii-diagrams-md",
@@ -18,9 +23,6 @@
           "diagrams"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 771,
@@ -37,9 +39,6 @@
           "metrics"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 1275,
@@ -59,9 +58,6 @@
           "ALATYR-SUPPORT-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [
         "ALATYR-SUPPORT-001"
@@ -84,9 +80,6 @@
           "ALATYR-TDD-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [
         "ALATYR-TDD-001"

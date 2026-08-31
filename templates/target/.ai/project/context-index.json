@@ -6,6 +6,11 @@
   "title": "Project Root Context",
   "summary": "Recursive navigation for the project contour at ..",
   "max_depth": 8,
+  "entry_defaults": {
+    "load_when": [
+      "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+    ]
+  },
   "entries": [
     {
       "id": "project.content.consistency-map-json",
@@ -22,9 +27,6 @@
           "ALATYR-INTEGRITY-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:bounded-context-expansion@1",
         "alatyr:logical-integrity@1"
@@ -49,9 +51,6 @@
           "ALATYR-CONTEXT-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:bounded-context-expansion@1"
       ],
@@ -75,9 +74,6 @@
           "ALATYR-CONTEXT-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:bounded-context-expansion@1"
       ],
@@ -102,9 +98,6 @@
           "ALATYR-CONTEXT-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:bounded-context-expansion@1"
       ],
@@ -128,9 +121,6 @@
           "ALATYR-CONTEXT-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:bounded-context-expansion@1"
       ],
@@ -156,9 +146,6 @@
           "ALATYR-DELEGATION-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:bounded-context-expansion@1",
         "alatyr:bounded-delegation@1"
@@ -185,9 +172,6 @@
           "ALATYR-DELEGATION-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:bounded-context-expansion@1",
         "alatyr:bounded-delegation@1"
@@ -209,13 +193,10 @@
           "architecture"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 145,
-      "content_digest": "sha256:34d2038158eec9d27b2df2ab776c6ea55f857bc8e700d7971e1a2495386cbbde"
+      "estimated_words": 130,
+      "content_digest": "sha256:e33b685cadf24fc09902c8bf72b82045b5cadd561d89889e3168ba23c6d5d996"
     },
     {
       "id": "project.section.consistency",
@@ -227,13 +208,10 @@
           "consistency"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 129,
-      "content_digest": "sha256:b8c9865871ee9df816c5ba0c5639cbd741fdbc1a8a6985e47e1602d8ddb4eed5"
+      "estimated_words": 114,
+      "content_digest": "sha256:3438922b9bed095311c496a18fbdacb16df0f39f22dd037a8c8084544c54d9d2"
     },
     {
       "id": "project.section.debug",
@@ -245,13 +223,10 @@
           "debug"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 176,
-      "content_digest": "sha256:1199b9d8afe447fab20fbecb8061bab30479b699b7f7c293787242cc7d449f15"
+      "estimated_words": 143,
+      "content_digest": "sha256:f20322183384083d66551fc6281b35397eb7140515a9f30b79891b130a55d05f"
     },
     {
       "id": "project.section.dependencies",
@@ -263,13 +238,10 @@
           "dependencies"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 341,
-      "content_digest": "sha256:485a7706da13a8fd3e66fd783ac804b5e05af184b632bf63a68389098180e150"
+      "estimated_words": 254,
+      "content_digest": "sha256:53ca76366cefe4c23c59d6eaeb28f378c0af025ae0ed78dc6bd984803238f45a"
     },
     {
       "id": "project.section.documentation",
@@ -281,13 +253,10 @@
           "documentation"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 185,
-      "content_digest": "sha256:8ad53c869306d3c93ac40d37676226b140a2842716b7f903ae558bddbd131b4c"
+      "estimated_words": 152,
+      "content_digest": "sha256:df45875a76a7cc595a2e5b215535f5549cf789a4294c842bbbf2726c29a9f6b5"
     },
     {
       "id": "project.section.engineering-evidence",
@@ -299,13 +268,10 @@
           "engineering-evidence"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 179,
-      "content_digest": "sha256:87705bab88d2978450af7daf014a81c7d7502d3d60413dd9db5dd0cf68a470a8"
+      "estimated_words": 146,
+      "content_digest": "sha256:db6c7b76e50cfccc673bc9cf5e5db86ae70f7875c2dc86217acfebb7bf347d8f"
     },
     {
       "id": "project.section.knowledge",
@@ -317,13 +283,10 @@
           "knowledge"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 232,
-      "content_digest": "sha256:3cea669c9182fe0e47b552e20cf07b27db9d550527e7f2e9d2b667edd4f6a0aa"
+      "estimated_words": 181,
+      "content_digest": "sha256:374a9ed35f1b9ef97122c234c0f72246ba7ed0f495540ddb7d042cf19b501b6a"
     },
     {
       "id": "project.section.support-generation",
@@ -335,13 +298,10 @@
           "support-generation"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 82,
-      "content_digest": "sha256:e5a77657d0e3d8c4072a42c9f9387fb6622ad96cfbb5d55ea5361244f5d22b61"
+      "estimated_words": 85,
+      "content_digest": "sha256:a0d012c771a302da5d1a7b415fdff1a06eeaba2199941f5213e2a47b3c9b4663"
     },
     {
       "id": "project.section.testing",
@@ -353,13 +313,10 @@
           "testing"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 139,
-      "content_digest": "sha256:6cf797a84db0112cf936d56e3c876e97d3ae142f8f4c7d683fdcd267f474201e"
+      "estimated_words": 124,
+      "content_digest": "sha256:596f45aeb04dd0f587476c5670683dc5523fa673656b781e756f2e7c6df43a8e"
     },
     {
       "id": "project.section.vocabulary",
@@ -371,13 +328,10 @@
           "vocabulary"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 264,
-      "content_digest": "sha256:231ca7c4977ed3e9bec3b170826f90ddb283877fc71614bef498fff15a62dd52"
+      "estimated_words": 213,
+      "content_digest": "sha256:a33f8ae0a6ccfd5f2aaec88c598206149f90c04bbb07f39f7fc15a9e30b2dac6"
     },
     {
       "id": "project.section.workspace-modes",
@@ -389,13 +343,10 @@
           "workspace-modes"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 224,
-      "content_digest": "sha256:e750d9b2b7cb85ebd66bcc8886e8e3e46eb2df6dbffb0bb653b6dc596eaba822"
+      "estimated_words": 173,
+      "content_digest": "sha256:8ad0ded2ccfd921dada978f1f911b10d6ef80b7508e698ba9426178cd4ef749b"
     }
   ]
 }

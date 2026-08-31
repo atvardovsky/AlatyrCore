@@ -50,8 +50,15 @@
     },
     "module": {
       "type": "object",
-      "required": ["min_framework_pack", "requires", "rule_ids", "framework_files", "target_files", "check_ids"],
+      "required": ["module_kind", "min_framework_pack", "requires", "rule_ids", "framework_files", "target_files", "check_ids"],
       "properties": {
+        "module_kind": {
+          "enum": [
+            "project-facing",
+            "assistant-infrastructure",
+            "governance-support"
+          ]
+        },
         "min_framework_pack": {"enum": ["core", "standard", "complete"]},
         "requires": {"$ref": "#/definitions/stringArray"},
         "rule_ids": {"$ref": "#/definitions/stringArray"},

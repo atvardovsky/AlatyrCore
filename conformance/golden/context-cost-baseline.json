@@ -637,10 +637,10 @@
   "measurement": "whitespace-delimited words in resolved source templates",
   "migration_routing": {
     "full_candidate_union": {
-      "bytes": 422423,
-      "characters": 422423,
+      "bytes": 422888,
+      "characters": 422888,
       "declared_files": 36,
-      "estimated_tokens_4_chars": 105606,
+      "estimated_tokens_4_chars": 105722,
       "missing_paths": [],
       "portable_paths": [
         ".ai/framework/README.md",
@@ -677,7 +677,7 @@
         ".ai/framework/team-collaboration.md",
         ".ai/framework/testing-guidance.md"
       ],
-      "portable_words": 51946,
+      "portable_words": 51999,
       "resolved_files": 35,
       "resolved_paths": [
         ".ai/assistant/context/migration-routing.json",
@@ -724,7 +724,7 @@
       "unresolved_references": [
         "{TARGET_UPGRADE_IMPACT_REPORT}"
       ],
-      "words": 52634
+      "words": 52687
     },
     "initial": {
       "bytes": 17396,
@@ -2295,10 +2295,10 @@
   "routing_primitives": {
     "recursive_selection": {
       "full_framework_candidate_union": {
-        "bytes": 663459,
-        "characters": 663459,
+        "bytes": 664893,
+        "characters": 664893,
         "declared_files": 58,
-        "estimated_tokens_4_chars": 165865,
+        "estimated_tokens_4_chars": 166224,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/README.md",
@@ -2360,7 +2360,7 @@
           ".ai/framework/testing-guidance.md",
           ".ai/framework/workspace-modes.md"
         ],
-        "portable_words": 82532,
+        "portable_words": 82631,
         "resolved_files": 58,
         "resolved_paths": [
           ".ai/framework/README.md",
@@ -2425,20 +2425,20 @@
         "target_paths": [],
         "target_words": 0,
         "unresolved_references": [],
-        "words": 82532
+        "words": 82631
       },
       "selected_route": {
-        "bytes": 31186,
-        "characters": 31186,
+        "bytes": 26617,
+        "characters": 26617,
         "declared_files": 3,
-        "estimated_tokens_4_chars": 7797,
+        "estimated_tokens_4_chars": 6655,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/context-index.json",
           ".ai/framework/catalog/core/context-index.json",
           ".ai/framework/logical-integrity.md"
         ],
-        "portable_words": 2934,
+        "portable_words": 2364,
         "resolved_files": 3,
         "resolved_paths": [
           ".ai/framework/context-index.json",
@@ -2448,9 +2448,9 @@
         "target_paths": [],
         "target_words": 0,
         "unresolved_references": [],
-        "words": 2934
+        "words": 2364
       },
-      "word_reduction_percent": 96.4
+      "word_reduction_percent": 97.1
     },
     "semantic_codebook": {
       "compact_definition_and_reference_words": 733,

@@ -6,6 +6,11 @@
   "title": "Change Framework Context",
   "summary": "Bounded change framework rules and supporting guidance.",
   "max_depth": 8,
+  "entry_defaults": {
+    "load_when": [
+      "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+    ]
+  },
   "entries": [
     {
       "id": "framework.change.blueprint-driven-change-md",
@@ -22,9 +27,6 @@
           "ALATYR-CHANGE-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [
         "ALATYR-CHANGE-001"
@@ -46,9 +48,6 @@
           "ALATYR-PACKAGE-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [
         "ALATYR-PACKAGE-001"
@@ -67,9 +66,6 @@
           "model"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 893,
@@ -86,9 +82,6 @@
           "guidance"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 1184,

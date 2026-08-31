@@ -6,6 +6,11 @@
   "title": "Project Workspace Modes Context",
   "summary": "Recursive navigation for the project contour at workspace-modes.",
   "max_depth": 8,
+  "entry_defaults": {
+    "load_when": [
+      "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+    ]
+  },
   "entries": [
     {
       "id": "project.content.workspace-modes-catalog-json",
@@ -22,9 +27,6 @@
           "ALATYR-CONTEXT-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:bounded-context-expansion@1"
       ],
@@ -48,9 +50,6 @@
           "ALATYR-CONTEXT-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:bounded-context-expansion@1"
       ],
@@ -70,13 +69,10 @@
           "modes"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 72,
-      "content_digest": "sha256:814197b0fefbcb60f9566662a9f2dde3691e7068531c8493dba2f74b94317a57"
+      "estimated_words": 75,
+      "content_digest": "sha256:799efc2a1f663e8fbb4555c49ddd36c6df81849a712494121b61fa205f9f28c0"
     },
     {
       "id": "project.section.workspace-modes-root",
@@ -88,13 +84,10 @@
           "root"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 136,
-      "content_digest": "sha256:af55bc3c2681c9f888d02cb454950d98e2dfbd2cb8b38f13a4db46084068259c"
+      "estimated_words": 121,
+      "content_digest": "sha256:71c876b6e02de148846d7c9b40d5b747502ddf1489f1484149b2f962fd1311ec"
     }
   ]
 }

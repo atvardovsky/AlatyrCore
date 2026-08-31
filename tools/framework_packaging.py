@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -83,7 +84,8 @@ def _resolve_pack_contract(pack: str) -> tuple[set[str], set[str], bool]:
     return resolve(pack)
 
 
-def resolve_framework_files(pack: str) -> set[str]:
+@lru_cache(maxsize=None)
+def _resolved_framework_file_names(pack: str) -> tuple[str, ...]:
     rule_ids, files, include_remaining = _resolve_pack_contract(pack)
     registry = load_object(REGISTRY)
     sources = {
@@ -109,7 +111,11 @@ def resolve_framework_files(pack: str) -> set[str]:
         )
     catalog_contents = build_framework_catalog_contents(files)
     files.update(catalog_contents)
-    return files
+    return tuple(sorted(files))
+
+
+def resolve_framework_files(pack: str) -> set[str]:
+    return set(_resolved_framework_file_names(pack))
 
 
 def project_registry(pack: str) -> dict[str, Any]:
@@ -140,10 +146,11 @@ def project_registry(pack: str) -> dict[str, Any]:
     }
 
 
-def projected_framework_contents(pack: str) -> dict[str, str | None]:
-    selected_files = resolve_framework_files(pack)
+@lru_cache(maxsize=None)
+def _projected_framework_content_items(pack: str) -> tuple[tuple[str, str | None], ...]:
+    selected_files = set(_resolved_framework_file_names(pack))
     if pack == "complete":
-        return {name: None for name in selected_files}
+        return tuple(sorted((name, None) for name in selected_files))
     projected_registry = project_registry(pack)
     contents: dict[str, str | None] = {name: None for name in selected_files}
     if "semantics/index.json" in selected_files:
@@ -199,4 +206,8 @@ def projected_framework_contents(pack: str) -> dict[str, str | None]:
         "files": inventory_files,
     }
     contents["file-inventory.json"] = json.dumps(inventory, indent=2, sort_keys=True) + "\n"
-    return contents
+    return tuple(sorted(contents.items()))
+
+
+def projected_framework_contents(pack: str) -> dict[str, str | None]:
+    return dict(_projected_framework_content_items(pack))

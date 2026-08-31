@@ -6,6 +6,11 @@
   "title": "Assistant Workers Context",
   "summary": "Recursive navigation for the assistant contour at workers.",
   "max_depth": 8,
+  "entry_defaults": {
+    "load_when": [
+      "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+    ]
+  },
   "entries": [
     {
       "id": "assistant.content.workers-role-catalog-json",
@@ -23,9 +28,6 @@
           "ALATYR-DELEGATION-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:bounded-context-expansion@1",
         "alatyr:bounded-delegation@1"
@@ -47,13 +49,10 @@
           "roles"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 376,
-      "content_digest": "sha256:139954f6a7be387d4a1b452f19f6f65bb13c9b1c1774b5da1b2ea5e6ce479d2b"
+      "estimated_words": 289,
+      "content_digest": "sha256:2c1ecc2a31035cf3d83e087ea118cee5c73c13ba0e02e0577b668bb64b72bb14"
     }
   ]
 }

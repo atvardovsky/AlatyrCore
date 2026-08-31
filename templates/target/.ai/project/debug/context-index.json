@@ -6,6 +6,11 @@
   "title": "Project Debug Context",
   "summary": "Recursive navigation for the project contour at debug.",
   "max_depth": 8,
+  "entry_defaults": {
+    "load_when": [
+      "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+    ]
+  },
   "entries": [
     {
       "id": "project.content.debug-index-json",
@@ -20,9 +25,6 @@
           "ALATYR-CONTEXT-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:bounded-context-expansion@1"
       ],
@@ -45,9 +47,6 @@
           "ALATYR-CONTEXT-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:bounded-context-expansion@1"
       ],
@@ -67,13 +66,10 @@
           "records"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 81,
-      "content_digest": "sha256:cfdc9710c2a1d8a8f06c332e8dec3dc652c0a961346ef2faa541758f1c9ba2d4"
+      "estimated_words": 84,
+      "content_digest": "sha256:e88426ea1e5cb58254e1fd2d7b3d88a3a56af21362b8f13edd4b648e518f933b"
     }
   ]
 }

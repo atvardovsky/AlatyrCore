@@ -165,8 +165,9 @@ and 3.13 remains the complete unit-test gate. The full multi-profile lifecycle
 matrix remains part of the `full` and release acceptance path.
 
 Machine-readable reports include per-check selection reasons, matched changed
-paths, broad-trigger diagnostics, queued time, run duration, and wall-clock
-timing. Use those fields to find over-broad routes before weakening checks.
+paths, broad-trigger diagnostics, queued time, run duration, wall-clock timing,
+and the slowest selected checks. Use those fields to find over-broad routes
+before weakening checks.
 It validates this repository only; it is not a portable framework requirement
 for target projects.
 

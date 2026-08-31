@@ -551,6 +551,46 @@ def render_report(
 ) -> dict[str, Any]:
     checks: list[dict[str, Any]] = []
     telemetry = telemetry or {}
+    timing = dict(
+        telemetry.get(
+            "_summary",
+            {
+                "wall_seconds": 0.0,
+                "sum_check_duration_seconds": sum(
+                    item.get("duration_seconds", 0.0)
+                    for key, item in telemetry.items()
+                    if key != "_summary"
+                ),
+                "critical_path_candidate_seconds": max(
+                    [
+                        item.get("completed_after_seconds", 0.0)
+                        for key, item in telemetry.items()
+                        if key != "_summary"
+                    ]
+                    or [0.0]
+                ),
+            },
+        )
+    )
+    timing["slowest_checks"] = sorted(
+        [
+            {
+                "id": check["id"],
+                "resource_class": check.get("resource_class", "standard"),
+                "duration_seconds": telemetry.get(check["id"], {}).get(
+                    "duration_seconds", 0.0
+                ),
+                "queued_seconds": telemetry.get(check["id"], {}).get(
+                    "queued_seconds", 0.0
+                ),
+                "completed_after_seconds": telemetry.get(check["id"], {}).get(
+                    "completed_after_seconds", 0.0
+                ),
+            }
+            for check in selected
+        ],
+        key=lambda item: (-item["duration_seconds"], item["id"]),
+    )[:10]
     for check in selected:
         check_id = check["id"]
         observation = telemetry.get(check_id, {})
@@ -592,25 +632,7 @@ def render_report(
         "schema_version": 2,
         "report_kind": "alatyr-source-check-run",
         "profile": profile,
-        "timing": telemetry.get(
-            "_summary",
-            {
-                "wall_seconds": 0.0,
-                "sum_check_duration_seconds": sum(
-                    item.get("duration_seconds", 0.0)
-                    for key, item in telemetry.items()
-                    if key != "_summary"
-                ),
-                "critical_path_candidate_seconds": max(
-                    [
-                        item.get("completed_after_seconds", 0.0)
-                        for key, item in telemetry.items()
-                        if key != "_summary"
-                    ]
-                    or [0.0]
-                ),
-            },
-        ),
+        "timing": timing,
         "selection": selection or {
             "profile": profile,
             "platform": current_platform(),

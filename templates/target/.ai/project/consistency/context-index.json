@@ -6,6 +6,11 @@
   "title": "Project Consistency Context",
   "summary": "Recursive navigation for the project contour at consistency.",
   "max_depth": 8,
+  "entry_defaults": {
+    "load_when": [
+      "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+    ]
+  },
   "entries": [
     {
       "id": "project.content.consistency-relationship-candidates-json",
@@ -23,9 +28,6 @@
           "ALATYR-INTEGRITY-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:bounded-context-expansion@1",
         "alatyr:logical-integrity@1"
@@ -47,13 +49,10 @@
           "areas"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 85,
-      "content_digest": "sha256:f902fc8d27e86e3421c5744b7ecb8e156b8f20484cc5b9d27bbba67364d5461f"
+      "estimated_words": 88,
+      "content_digest": "sha256:8670dfc832190add9492646b8eeca84e15ed60253ec3c00f8643504fcb3fe92b"
     }
   ]
 }

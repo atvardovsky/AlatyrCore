@@ -2,12 +2,27 @@
 
 ## Unreleased
 
-- Added an opt-in `check-source-focused` source command that runs the existing
-  fast changed-path source-check route from `origin/main` when available, or
-  `HEAD` when no remote main reference exists.
-- Cached deterministic assistant-surface and optional-module support-cost
-  summaries across scaffold profile checks, preserving report content while
-  reducing repeated source scans.
+- No unreleased changes.
+
+## 0.1.0-alpha.48 - 2026-08-31
+
+- Increased the framework version to `0.1.0-alpha.48`, adapter schema version
+  to `40`, and target template version to `44` for compact context-index
+  defaults and explicit optional-module kinds.
+- Compacted generated recursive context indexes by moving the common
+  `load_when` rule into `entry_defaults` while keeping legacy per-entry
+  `load_when` catalogs valid.
+- Added `module_kind` classification to the optional capability catalog so
+  project-facing, assistant-infrastructure, and governance-support modules
+  can be routed and explained separately.
+- Added a source-owned installation discovery contract and validator so
+  installer docs, readiness prompts, and optional modules share one discovery
+  category map.
+- Added slowest-check timing summaries to source-check reports, cached
+  framework-pack projection internals without sharing mutable state, and
+  stabilized scheduler backfill validation.
+- Added a reviewed alpha.47 release checkpoint so release drift can compare
+  this version against a valid nearest baseline.
 
 ## 0.1.0-alpha.47 - 2026-08-31
 

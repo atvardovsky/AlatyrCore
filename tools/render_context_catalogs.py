@@ -19,6 +19,9 @@ FRAMEWORK = ROOT / "framework"
 TARGET = ROOT / "templates" / "target"
 MAX_DEPTH = 8
 INDEX_NAME = "context-index.json"
+DEFAULT_LOAD_WHEN = [
+    "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+]
 
 CATEGORY_SECTIONS = {
     "CONTEXT": "core",
@@ -144,7 +147,7 @@ def _entry_from_bytes(
         "path": path,
         "summary": summary,
         "selectors": selectors,
-        "load_when": ["selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"],
+        "load_when": DEFAULT_LOAD_WHEN,
         "semantic_refs": sorted(set(semantic_refs)),
         "owner_refs": sorted(set(owner_refs)),
         "estimated_words": len(re.findall(r"\S+", text)),
@@ -169,7 +172,7 @@ def _entry_from_file(
         "path": relpath,
         "summary": _title(path),
         "selectors": _selectors(relpath, owners),
-        "load_when": ["selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"],
+        "load_when": DEFAULT_LOAD_WHEN,
         "semantic_refs": sorted(set(semantic_refs or [])),
         "owner_refs": sorted(set(owners)),
         "estimated_words": word_count(path),
@@ -185,6 +188,12 @@ def _render_index(
     summary: str,
     entries: list[dict[str, Any]],
 ) -> str:
+    compact_entries: list[dict[str, Any]] = []
+    for entry in sorted(entries, key=lambda entry: entry["id"]):
+        compact = dict(entry)
+        if compact.get("load_when") == DEFAULT_LOAD_WHEN:
+            compact.pop("load_when")
+        compact_entries.append(compact)
     data = {
         "schema_version": 1,
         "index_kind": "alatyr-context-index",
@@ -193,7 +202,8 @@ def _render_index(
         "title": title,
         "summary": summary,
         "max_depth": MAX_DEPTH,
-        "entries": sorted(entries, key=lambda entry: entry["id"]),
+        "entry_defaults": {"load_when": DEFAULT_LOAD_WHEN},
+        "entries": compact_entries,
     }
     return json.dumps(data, indent=2, ensure_ascii=True) + "\n"
 

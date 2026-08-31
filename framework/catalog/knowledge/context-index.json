@@ -6,6 +6,11 @@
   "title": "Knowledge Framework Context",
   "summary": "Bounded knowledge framework rules and supporting guidance.",
   "max_depth": 8,
+  "entry_defaults": {
+    "load_when": [
+      "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+    ]
+  },
   "entries": [
     {
       "id": "framework.knowledge.architecture-knowledge-md",
@@ -21,9 +26,6 @@
           "ALATYR-ARCHITECTURE-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:observed-is-not-accepted@1"
       ],
@@ -47,9 +49,6 @@
           "ALATYR-CODEDOC-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [
         "ALATYR-CODEDOC-001"
@@ -71,9 +70,6 @@
           "ALATYR-DEBUG-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [
         "ALATYR-DEBUG-001"
@@ -95,9 +91,6 @@
           "ALATYR-DIAGRAM-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [
         "ALATYR-DIAGRAM-001"
@@ -119,9 +112,6 @@
           "ALATYR-ENGINEERING-EVIDENCE-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [
         "ALATYR-ENGINEERING-EVIDENCE-001"
@@ -143,9 +133,6 @@
           "ALATYR-KNOWLEDGE-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:accepted-current@1"
       ],
@@ -169,9 +156,6 @@
           "ALATYR-VOCABULARY-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [
         "ALATYR-VOCABULARY-001"

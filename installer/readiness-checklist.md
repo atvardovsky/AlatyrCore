@@ -5,6 +5,9 @@ Use this checklist before installing Alatyr Core into a target repository.
 This is an assistant reasoning aid. It is not a script and does not approve
 changes.
 
+Use `installer/discovery-contract.json` as the source-owned category map for
+the discovery prompts in this checklist.
+
 ## 1. Target Repository Profile
 
 - Target repository path:

@@ -6,6 +6,11 @@
   "title": "Project Knowledge Context",
   "summary": "Recursive navigation for the project contour at knowledge.",
   "max_depth": 8,
+  "entry_defaults": {
+    "load_when": [
+      "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+    ]
+  },
   "entries": [
     {
       "id": "project.content.knowledge-index-json",
@@ -22,9 +27,6 @@
           "ALATYR-SOURCE-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:bounded-context-expansion@1",
         "alatyr:canonical-owner@1",
@@ -53,9 +55,6 @@
           "ALATYR-SOURCE-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:bounded-context-expansion@1",
         "alatyr:canonical-owner@1",
@@ -79,13 +78,10 @@
           "promotions"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 89,
-      "content_digest": "sha256:4797aeee102234fa9b88e0944204c920059aef3f01209915a9fef758dd4516aa"
+      "estimated_words": 92,
+      "content_digest": "sha256:35268d65ff5fbe7b2018287e657a980e0af7f91054ab25214a4b0f35a702f947"
     },
     {
       "id": "project.section.knowledge-routes",
@@ -97,13 +93,10 @@
           "routes"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 89,
-      "content_digest": "sha256:4cbd47411755186472d341cef131bf7052e67aca5a2981ebad206b3707d01435"
+      "estimated_words": 92,
+      "content_digest": "sha256:13e0b3859f086aec982b9de6dfdf7ad9043f3864c7ff23b6b1144462e695cfaf"
     }
   ]
 }

@@ -51,6 +51,10 @@ semantic owner.
 
 ## Target Repository Inspection
 
+Use `installer/discovery-contract.json` as the source-owned category map for
+target repository discovery. The bullets below are examples and planning
+prompts within those categories; they do not replace the contract.
+
 Before creating files in the target repository, inspect:
 
 - existing AI instruction files

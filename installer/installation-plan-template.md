@@ -2,6 +2,8 @@
 
 Installation id: `ALATYR-YYYYMMDD-short-name`
 
+Discovery category map: `installer/discovery-contract.json`
+
 ## Target Repository
 
 - Path:

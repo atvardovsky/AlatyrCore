@@ -20,8 +20,19 @@ enabled, deferred, disabled, or not applicable from target evidence.
 
 The installed `capabilities.json` catalog is the machine-readable owner for
 optional-module dependencies, minimum framework packs, required target files,
-rule IDs, and deterministic check IDs. Human module profiles explain target
-state and evidence; they must not redefine that closure independently.
+module kind, rule IDs, and deterministic check IDs. Human module profiles
+explain target state and evidence; they must not redefine that closure
+independently.
+
+Module kind keeps the catalog from mixing user-facing product support with
+internal support plumbing:
+
+- `project-facing`: directly helps developers understand, discuss, change, or
+  validate the target project.
+- `assistant-infrastructure`: adapts AI assistant surfaces, external
+  infrastructure, or bounded worker delegation.
+- `governance-support`: supports approvals, evidence, lifecycle, metrics,
+  scaffolding, or other control-plane behavior.
 
 Scaffolding may begin with no optional modules and add an explicit dependency
 closure through selected capability IDs. The target validator should dispatch

@@ -7,6 +7,7 @@ framework requirement for target projects.
 
 from __future__ import annotations
 
+import json
 import re
 import sys
 from pathlib import Path
@@ -16,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "templates" / "target"
 HELP = TARGET / ".ai" / "assistant" / "help.md"
 REFERENCE = TARGET / ".ai" / "assistant" / "help-reference.md"
+CATALOG = TARGET / ".ai" / "assistant" / "operation-catalog.json"
 
 OPERATION_HEADING = re.compile(r"^Operation: `([^`]+)`\s*$", re.MULTILINE)
 
@@ -85,6 +87,13 @@ def read(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
+def load_json(path: Path) -> dict[str, object]:
+    data = json.loads(read(path))
+    if not isinstance(data, dict):
+        raise ValueError(f"{path.relative_to(ROOT)} must contain an object")
+    return data
+
+
 def parse_blocks(text: str) -> dict[str, str]:
     matches = list(OPERATION_HEADING.finditer(text))
     blocks: dict[str, str] = {}
@@ -100,6 +109,11 @@ def main() -> int:
 
     help_text = read(HELP)
     reference_text = read(REFERENCE)
+    try:
+        catalog = load_json(CATALOG)
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        failures.append(f"operation catalog cannot be loaded: {exc}")
+        catalog = {}
 
     if "| Operation |" in help_text:
         failures.append("help.md should use operation blocks, not a table")
@@ -117,6 +131,38 @@ def main() -> int:
     reference_blocks = parse_blocks(reference_text)
     if not reference_blocks:
         failures.append("help-reference.md has no operation blocks")
+    for path, text in [(HELP, help_text), (REFERENCE, reference_text)]:
+        previous = ""
+        for line_number, line in enumerate(text.splitlines(), start=1):
+            stripped = line.strip()
+            if stripped and stripped == previous:
+                failures.append(
+                    f"{path.relative_to(ROOT)} has adjacent duplicate line "
+                    f"{line_number}: {stripped}"
+                )
+            previous = stripped
+
+    operations = catalog.get("operations", [])
+    if isinstance(operations, list):
+        catalog_operations = {
+            operation.get("id"): operation
+            for operation in operations
+            if isinstance(operation, dict) and isinstance(operation.get("id"), str)
+        }
+        if set(reference_blocks) != set(catalog_operations):
+            failures.append(
+                "help-reference.md operation blocks must match operation catalog"
+            )
+        for operation_id, operation in catalog_operations.items():
+            flow = operation.get("flow")
+            block = reference_blocks.get(operation_id, "")
+            if isinstance(flow, str) and flow and f"Flow: `{flow}`" not in block:
+                failures.append(
+                    f"help-reference.md operation {operation_id} flow must match catalog"
+                )
+    else:
+        failures.append("operation catalog operations must be a list")
+
     for operation, block in reference_blocks.items():
         for field in OPERATION_FIELDS:
             if field not in block:

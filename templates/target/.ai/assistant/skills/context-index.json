@@ -6,6 +6,11 @@
   "title": "Assistant Skills Context",
   "summary": "Recursive navigation for the assistant contour at skills.",
   "max_depth": 8,
+  "entry_defaults": {
+    "load_when": [
+      "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+    ]
+  },
   "entries": [
     {
       "id": "assistant.section.skills-code-documentation",
@@ -17,13 +22,10 @@
           "code-documentation"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 86,
-      "content_digest": "sha256:dd4f08284c2056b20eed24cb3e260581ad5534543e398ce303dc60d4bb5e8553"
+      "estimated_words": 89,
+      "content_digest": "sha256:4ed02b3ca2e99dca648d14ebf7c0428a39c0a0fe9ff17ed3276360d0c603f277"
     },
     {
       "id": "assistant.section.skills-example",
@@ -35,13 +37,10 @@
           "example"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 83,
-      "content_digest": "sha256:0ab80a934b99f80caa808b9dc4ff26c65c57167ee01b79edd358cbac560fc327"
+      "estimated_words": 86,
+      "content_digest": "sha256:b7349707cf25d8a77c00b5dae78481c3ac7b938d11c119c26ff9e6d16b6a17e2"
     },
     {
       "id": "assistant.section.skills-project-vocabulary",
@@ -53,13 +52,10 @@
           "project-vocabulary"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 91,
-      "content_digest": "sha256:da928a3a72b38e4919f88dad5879ef5513055f0a15ac78cf4882478e2d3d7aa7"
+      "estimated_words": 94,
+      "content_digest": "sha256:230bfe1e1271250ce2fee0cd4449c6241fc2e4e036b3cb9576b1efce01e20421"
     },
     {
       "id": "assistant.section.skills-team-collaboration",
@@ -71,13 +67,10 @@
           "team-collaboration"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 88,
-      "content_digest": "sha256:450eedb485405d6bf7cfe88cd178f1afe6aba0ca6100938a1b133d983593bd59"
+      "estimated_words": 91,
+      "content_digest": "sha256:f7036098cb99ee887bb8772772af6755398ae99ca751794aa972140242ad03fc"
     },
     {
       "id": "assistant.section.skills-test-first-development",
@@ -89,13 +82,10 @@
           "test-first-development"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 87,
-      "content_digest": "sha256:19c8b34749582fec4db3b417a4511202b62b16921de6a7e9afd070dc2df5b152"
+      "estimated_words": 90,
+      "content_digest": "sha256:32ae482a20936aeb3e4892c8b48c8239871752e9adfb5f1a8f55d61e679b5c07"
     }
   ]
 }

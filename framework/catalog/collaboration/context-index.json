@@ -6,6 +6,11 @@
   "title": "Collaboration Framework Context",
   "summary": "Bounded collaboration framework rules and supporting guidance.",
   "max_depth": 8,
+  "entry_defaults": {
+    "load_when": [
+      "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+    ]
+  },
   "entries": [
     {
       "id": "framework.collaboration.large-task-orchestration-md",
@@ -19,9 +24,6 @@
           "orchestration"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 1392,
@@ -41,9 +43,6 @@
           "ALATYR-DELEGATION-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:bounded-delegation@1"
       ],
@@ -67,9 +66,6 @@
           "ALATYR-TEAM-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [
         "ALATYR-TEAM-001"
@@ -91,9 +87,6 @@
           "ALATYR-MODE-001"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [
         "alatyr:mode-does-not-grant-authority@1"
       ],

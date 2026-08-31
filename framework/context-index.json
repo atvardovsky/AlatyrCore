@@ -6,6 +6,11 @@
   "title": "Alatyr Framework Context",
   "summary": "Root navigation for portable framework rules and supporting guidance.",
   "max_depth": 8,
+  "entry_defaults": {
+    "load_when": [
+      "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
+    ]
+  },
   "entries": [
     {
       "id": "framework.section.change",
@@ -17,13 +22,10 @@
           "change"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 225,
-      "content_digest": "sha256:3991f13a658b543859fd18877538f7231968f39e2776fa519781eac45c01ba37"
+      "estimated_words": 174,
+      "content_digest": "sha256:e045421109986622c0f7356a22a03c7fbf4945933efee3e3e88b847365b0e483"
     },
     {
       "id": "framework.section.collaboration",
@@ -35,13 +37,10 @@
           "collaboration"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 230,
-      "content_digest": "sha256:b6b8dc27745346491f121e7ac571fabe5df05e71eb5ea9ae2aa68eaed265cd0a"
+      "estimated_words": 179,
+      "content_digest": "sha256:53ca4ae7256ade54d22521b2850c507d9c440d295c9ac589dd08b11b8b7dd728"
     },
     {
       "id": "framework.section.core",
@@ -53,13 +52,10 @@
           "core"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 1351,
-      "content_digest": "sha256:369611fbe6b43c1f936d35257ee4a578c530e7f431a3110441d27a207664bed9"
+      "estimated_words": 886,
+      "content_digest": "sha256:0efbd432e78f7de6aabd07e276d5ecc14d039f382aee9cd56f9c670a082fab94"
     },
     {
       "id": "framework.section.infrastructure",
@@ -71,13 +67,10 @@
           "infrastructure"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 315,
-      "content_digest": "sha256:903370c5e31ee4b42f8a13395893f2cb66fd98c6ee83f3d4ccea5e8fb3cc98b8"
+      "estimated_words": 228,
+      "content_digest": "sha256:c3ab568ca7098a56c11def8411aaa47da7105a5964d22e6c2cedc711b806b663"
     },
     {
       "id": "framework.section.knowledge",
@@ -89,13 +82,10 @@
           "knowledge"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 398,
-      "content_digest": "sha256:dcd3098553438ccd62e7a1f311685bb4e6d094e9cbc8352bc7155a74b3d29d4c"
+      "estimated_words": 293,
+      "content_digest": "sha256:9d3da7a2dfb88d53f2b40715a61c5281db50809de5e88f8cd8f69cfd63e89ef8"
     },
     {
       "id": "framework.section.lifecycle",
@@ -107,13 +97,10 @@
           "lifecycle"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 304,
-      "content_digest": "sha256:d656bced4775b1732cdbe7e4d3d7539b5be50d71187bb10139ee01234d72ff73"
+      "estimated_words": 217,
+      "content_digest": "sha256:00853ff663dab9666b075bad89e055f1752be44626c6f84fe234d69d65a9f33b"
     },
     {
       "id": "framework.section.support",
@@ -125,13 +112,10 @@
           "support"
         ]
       },
-      "load_when": [
-        "selected by an exact task, operation, owner, path, fact, contract, dependency, risk, or conflict signal"
-      ],
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 221,
-      "content_digest": "sha256:b25a40062346190af13969c79a0b0ba0bf82e57a402f4ee2faf28e158c9666d5"
+      "estimated_words": 170,
+      "content_digest": "sha256:dfd49504939d327da5fc923e1f5a56df6bc09c45b54e973f3759b4a5acfbc51f"
     }
   ]
 }

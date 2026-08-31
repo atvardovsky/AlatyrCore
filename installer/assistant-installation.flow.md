@@ -8,6 +8,10 @@ without relying on an installer script.
 The flow is portable and assistant-neutral. The target project adapter must be
 rewritten from target repository facts.
 
+Use `installer/discovery-contract.json` as the source-owned category map for
+target repository discovery before selecting support profiles, optional
+modules, or adapter surfaces.
+
 ## Use When
 
 Use this flow when:
