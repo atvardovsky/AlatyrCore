@@ -8,6 +8,12 @@
       "write_scope": "none"
     },
     {
+      "name": "check-source-focused",
+      "script": "run_focused_source_checks.py",
+      "purpose": "run focused AlatyrCore source checks from changed paths",
+      "write_scope": "none"
+    },
+    {
       "name": "scaffold",
       "script": "scaffold_target_structure.py",
       "purpose": "plan or write placeholder target adapter structure",

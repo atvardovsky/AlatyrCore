@@ -2,7 +2,12 @@
 
 ## Unreleased
 
-- No unreleased changes.
+- Added an opt-in `check-source-focused` source command that runs the existing
+  fast changed-path source-check route from `origin/main` when available, or
+  `HEAD` when no remote main reference exists.
+- Cached deterministic assistant-surface and optional-module support-cost
+  summaries across scaffold profile checks, preserving report content while
+  reducing repeated source scans.
 
 ## 0.1.0-alpha.47 - 2026-08-31
 

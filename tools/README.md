@@ -14,6 +14,7 @@ Linux or macOS:
 
 ```sh
 python3 tools/alatyr.py --help
+python3 tools/alatyr.py check-source-focused
 python3 tools/alatyr.py status --target /path/to/target-repo
 python3 tools/alatyr.py doctor --target /path/to/target-repo
 python3 tools/alatyr.py validate-adapter --target /path/to/target-repo
@@ -39,6 +40,7 @@ Windows PowerShell:
 
 ```powershell
 .\tools\alatyr.ps1 --help
+.\tools\alatyr.ps1 check-source-focused
 .\tools\alatyr.ps1 status --target C:\path\to\target-repo
 .\tools\alatyr.ps1 doctor --target C:\path\to\target-repo
 .\tools\alatyr.ps1 validate-adapter --target C:\path\to\target-repo
@@ -63,6 +65,7 @@ Windows Command Prompt:
 
 ```bat
 tools\alatyr.cmd --help
+tools\alatyr.cmd check-source-focused
 tools\alatyr.cmd status --target C:\path\to\target-repo
 tools\alatyr.cmd doctor --target C:\path\to\target-repo
 tools\alatyr.cmd validate-adapter --target C:\path\to\target-repo
@@ -85,6 +88,8 @@ tools\alatyr.cmd clean-artifacts --older-than-days 7
 The stable command set is:
 
 - `check-source`: no writes
+- `check-source-focused`: no writes; runs the fast changed-path source-check
+  profile from `origin/main` when available, otherwise `HEAD`
 - `scaffold`: target structure writes only with `--write`
 - `render-bootstrap`: target bootstrap regeneration only with `--write`
 - `render-entry`: target first-use packet regeneration only with `--write`
@@ -142,6 +147,11 @@ source validation. The default `full` profile remains the acceptance gate.
 guardrails without running the source unit suite. With `fast --changed-from`,
 explicit `trigger_paths` select focused checks while a small invariant set
 always runs; unmatched paths retain the conservative full-suite fallback.
+`tools/alatyr.py check-source-focused` is the cheap small-task entry point for
+that route. It runs `check_all.py --profile fast --changed-from <baseline>`,
+selecting `origin/main` as the default baseline when available and `HEAD` when
+the repository has no remote main reference. It is an optimization path, not a
+replacement for the full acceptance gate.
 The runner passes changed-path and selection-reason metadata to checks. The
 source unit-test wrapper is selected only for tests or routed Python/tooling
 changes, uses that metadata to run directly affected test modules, and falls
@@ -232,6 +242,8 @@ python3 tools/check_all.py --profile release
 python3 tools/check_all.py --profile platform
 python3 tools/check_all.py --profile full --report /tmp/alatyr-source-checks.json
 python3 tools/check_all.py --list
+python3 tools/alatyr.py check-source-focused
+python3 tools/alatyr.py check-source-focused --changed-from HEAD --list
 ```
 
 Windows PowerShell or Command Prompt:
@@ -245,6 +257,8 @@ py -3 .\tools\check_all.py --profile release
 py -3 .\tools\check_all.py --profile platform
 py -3 .\tools\check_all.py --profile full --report C:\Temp\alatyr-source-checks.json
 py -3 .\tools\check_all.py --list
+.\tools\alatyr.ps1 check-source-focused
+.\tools\alatyr.ps1 check-source-focused --changed-from HEAD --list
 ```
 
 ## Target Contract Compatibility

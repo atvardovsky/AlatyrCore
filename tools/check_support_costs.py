@@ -8,7 +8,12 @@ import sys
 import tempfile
 from pathlib import Path
 
-from report_support_costs import build_installed_report, build_scaffold_report
+from report_support_costs import (
+    assistant_surface_summary,
+    build_installed_report,
+    build_scaffold_report,
+    module_costs,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -23,11 +28,17 @@ PROFILE_ORDER = ["kernel", "core", "standard", "full"]
 
 def main() -> int:
     failures: list[str] = []
+    cached_assistant_surfaces = assistant_surface_summary()
+    cached_module_costs = module_costs()
     reports = {
-        profile: build_scaffold_report(profile)
+        profile: build_scaffold_report(
+            profile,
+            assistant_surface_report=cached_assistant_surfaces,
+            optional_module_cost_report=cached_module_costs,
+        )
         for profile in PROFILE_ORDER
     }
-    default_report = build_scaffold_report()
+    default_report = reports["kernel"]
     recommendation = default_report.get("profile_recommendation", {})
     if default_report.get("profile") != "kernel":
         failures.append("default support-cost report must start from kernel profile")

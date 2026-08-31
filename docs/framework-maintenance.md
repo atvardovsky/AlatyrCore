@@ -70,6 +70,9 @@ Before accepting a change, check:
 - `python3 tools/check_all.py` passes when the source validation wrapper is
   available. This is the preferred AlatyrCore source-repository check set, not
   a portable target-project requirement.
+- `python3 tools/alatyr.py check-source-focused` is available for cheap
+  small-task source checks. It uses the fast changed-path route and does not
+  replace `check_all.py` as the full acceptance gate.
 - `python3 tools/check_framework_consistency.py` passes when the helper is
   available.
 - `python3 tools/check_framework_metadata.py` passes when rule-owner framework
@@ -173,7 +176,9 @@ Before accepting a change, check:
   semantic routing, or map placeholders change.
 - `python3 tools/check_cross_platform_tools.py` passes when the unified tool
   manifest, platform launchers, write scopes, or migration-first upgrade
-  assessment changes. The source workflow must also run `check_all.py` on
+  assessment changes. New stable `tools/alatyr.py` command scripts must be
+  routed as implementation and trigger paths in `tools/check_manifest.json`.
+  The source workflow must also run `check_all.py` on
   native Linux, macOS, and Windows runners, cover the minimum and current
   supported Python versions, use pinned CI constraints and immutable action
   revisions, and retain machine-readable failure diagnostics.

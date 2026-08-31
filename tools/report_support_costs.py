@@ -205,6 +205,8 @@ def build_scaffold_report(
     enabled_modules: Iterable[str] | None = None,
     framework_pack: str = "matched",
     assistant_surfaces: Iterable[str] | None = None,
+    assistant_surface_report: dict[str, Any] | None = None,
+    optional_module_cost_report: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     enabled = set(enabled_modules or [])
     selected_surfaces = resolve_assistant_surfaces(list(assistant_surfaces or []))
@@ -248,8 +250,16 @@ def build_scaffold_report(
             "operation_catalog_installed": projection.catalog is not None,
             "projected_operation_count": len(projection.operation_ids),
         },
-        "assistant_surfaces": assistant_surface_summary(),
-        "optional_module_costs": module_costs(),
+        "assistant_surfaces": (
+            assistant_surface_report
+            if assistant_surface_report is not None
+            else assistant_surface_summary()
+        ),
+        "optional_module_costs": (
+            optional_module_cost_report
+            if optional_module_cost_report is not None
+            else module_costs()
+        ),
         "limitations": [
             "standing support cost is not runtime context cost",
             "word counts are deterministic source measurements, not provider billing",

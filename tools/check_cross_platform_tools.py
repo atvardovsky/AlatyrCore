@@ -24,6 +24,7 @@ FRAMEWORK_CHECKER = TOOLS / "check_framework_consistency.py"
 SCAFFOLD_CONFORMANCE = TOOLS / "run_conformance_scaffold.py"
 EXPECTED_COMMANDS = {
     "check-source",
+    "check-source-focused",
     "scaffold",
     "render-bootstrap",
     "render-entry",
