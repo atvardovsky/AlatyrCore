@@ -174,6 +174,15 @@ allowed-action mode set used by installed adapter validators.
 optional target module states, so capability validators can share one
 enabled/required interpretation without duplicating Markdown parsing.
 
+`tools/target_adapter_validation/values.py` owns reusable placeholder-aware
+value-shape checks, such as resolved target strings and string-list shape,
+used by multiple capability validators.
+
+`tools/target_adapter_validation/files.py` and
+`tools/target_adapter_validation/manifest_paths.py` own non-emitting helper
+queries for required-file presence and manifest path drift. Capability modules
+use those helpers, then emit their own stable literal finding codes.
+
 `tools/target_adapter_validation/diagrams.py`,
 `tools/target_adapter_validation/workspace_modes.py`, and
 `tools/target_adapter_validation/subagent_delegation.py` own extracted

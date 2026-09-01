@@ -5,7 +5,9 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from target_validation_support import is_placeholder, is_unresolved_value
+from target_validation_support import is_placeholder
+from target_adapter_validation.files import missing_target_files
+from target_adapter_validation.values import is_resolved_string
 
 
 REQUIRED_PATHS = (
@@ -165,23 +167,13 @@ def _manifest_enables_delegation(manifest: Any) -> bool:
     return "subagent-delegation" in enabled
 
 
-def _concrete(value: Any) -> bool:
-    return (
-        isinstance(value, str)
-        and bool(value.strip())
-        and not is_placeholder(value)
-        and not is_unresolved_value(value)
-    )
-
-
 def _validate_required_files(self: Any) -> None:
-    for relpath in REQUIRED_PATHS:
-        if not self.target_path(relpath).is_file():
-            self.error(
-                "DELEGATION_REQUIRED_FILE_MISSING",
-                "enabled subagent delegation is missing a required contract",
-                relpath,
-            )
+    for relpath in missing_target_files(self, REQUIRED_PATHS):
+        self.error(
+            "DELEGATION_REQUIRED_FILE_MISSING",
+            "enabled subagent delegation is missing a required contract",
+            relpath,
+        )
 
 
 def _validate_policy(self: Any, policy: dict[str, Any]) -> list[str]:
@@ -208,21 +200,21 @@ def _validate_policy_identity(self: Any, policy: dict[str, Any]) -> None:
             POLICY_RELPATH,
         )
     state = policy.get("state")
-    if _concrete(state) and state not in {"enabled", "suggest-only"}:
+    if is_resolved_string(state) and state not in {"enabled", "suggest-only"}:
         self.error(
             "DELEGATION_POLICY_STATE",
             "enabled module requires enabled or suggest-only policy state",
             POLICY_RELPATH,
         )
     decision_mode = policy.get("decision_mode")
-    if _concrete(decision_mode) and decision_mode not in {"automatic", "suggest-only"}:
+    if is_resolved_string(decision_mode) and decision_mode not in {"automatic", "suggest-only"}:
         self.error(
             "DELEGATION_DECISION_MODE",
             "enabled delegation decision_mode must be automatic or suggest-only",
             POLICY_RELPATH,
         )
     preference = policy.get("default_preference")
-    if _concrete(preference) and preference not in {
+    if is_resolved_string(preference) and preference not in {
         "auto",
         "allow",
         "forbid",
@@ -259,7 +251,7 @@ def _validate_policy_roles(self: Any, policy: dict[str, Any]) -> list[str]:
             POLICY_RELPATH,
         )
         enabled_role_ids = []
-    concrete_enabled_roles = [value for value in enabled_role_ids if _concrete(value)]
+    concrete_enabled_roles = [value for value in enabled_role_ids if is_resolved_string(value)]
     if len(concrete_enabled_roles) != len(set(concrete_enabled_roles)):
         self.error(
             "DELEGATION_ENABLED_ROLE_DUPLICATE",
@@ -384,7 +376,7 @@ def _load_ai_item_ids(self: Any) -> set[str]:
     return {
         item.get("id")
         for item in ai_items
-        if isinstance(item, dict) and _concrete(item.get("id"))
+        if isinstance(item, dict) and is_resolved_string(item.get("id"))
     }
 
 
@@ -425,7 +417,7 @@ def _validate_surface_capability(
         )
     for field in CAPABILITY_SUPPORT_FIELDS:
         value = delegation.get(field)
-        if _concrete(value) and value not in SUPPORT_VALUES:
+        if is_resolved_string(value) and value not in SUPPORT_VALUES:
             self.error(
                 "DELEGATION_CAPABILITY_VALUE",
                 f"assistant surface {surface_id} {field} is invalid",
@@ -444,7 +436,7 @@ def _validate_backend(
     ai_item_ids: set[str],
 ) -> None:
     backend = delegation.get("dispatch_backend")
-    if _concrete(backend) and backend not in DISPATCH_BACKENDS:
+    if is_resolved_string(backend) and backend not in DISPATCH_BACKENDS:
         self.error(
             "DELEGATION_DISPATCH_BACKEND",
             f"assistant surface {surface_id} dispatch_backend is invalid",
@@ -454,7 +446,7 @@ def _validate_backend(
     if backend == "native":
         _validate_native_backend(self, surface_id, relpath, delegation)
     if backend == "external":
-        if not _concrete(dispatcher) or dispatcher not in ai_item_ids:
+        if not is_resolved_string(dispatcher) or dispatcher not in ai_item_ids:
             self.error(
                 "DELEGATION_EXTERNAL_DISPATCHER",
                 f"assistant surface {surface_id} external dispatcher must reference a routed AI-infrastructure item",
@@ -504,7 +496,7 @@ def _validate_write_isolation(
     self: Any, surface_id: str, relpath: str, delegation: dict[str, Any]
 ) -> None:
     write_isolation = delegation.get("write_isolation")
-    if _concrete(write_isolation) and write_isolation not in WRITE_ISOLATION_VALUES:
+    if is_resolved_string(write_isolation) and write_isolation not in WRITE_ISOLATION_VALUES:
         self.error(
             "DELEGATION_WRITE_ISOLATION",
             f"assistant surface {surface_id} write_isolation is invalid",
@@ -523,9 +515,9 @@ def _validate_worker_definition_paths(
             relpath,
         )
         definition_paths = []
-    concrete_definition_paths = [value for value in definition_paths if _concrete(value)]
+    concrete_definition_paths = [value for value in definition_paths if is_resolved_string(value)]
     if delegation.get("project_worker_definitions") == "supported":
-        if not _concrete(delegation.get("worker_definition_format")):
+        if not is_resolved_string(delegation.get("worker_definition_format")):
             self.error(
                 "DELEGATION_WORKER_DEFINITION_FORMAT",
                 f"assistant surface {surface_id} supports project worker definitions but has no format",
@@ -608,7 +600,7 @@ def _validate_role(
     role_states: dict[str, str],
 ) -> None:
     role_id = role.get("id")
-    if _concrete(role_id):
+    if is_resolved_string(role_id):
         if role_id in role_ids:
             self.error(
                 "DELEGATION_ROLE_DUPLICATE",
@@ -617,29 +609,29 @@ def _validate_role(
             )
         role_ids.add(role_id)
     state_value = role.get("state")
-    if _concrete(state_value) and state_value not in ROLE_STATES:
+    if is_resolved_string(state_value) and state_value not in ROLE_STATES:
         self.error(
             "DELEGATION_ROLE_STATE",
             f"roles[{index}].state is invalid",
             ROLE_CATALOG_RELPATH,
         )
-    if _concrete(role_id) and _concrete(state_value):
+    if is_resolved_string(role_id) and is_resolved_string(state_value):
         role_states[role_id] = state_value
     action_ceiling = role.get("action_ceiling")
-    if _concrete(action_ceiling) and action_ceiling not in ROLE_ACTION_CEILINGS:
+    if is_resolved_string(action_ceiling) and action_ceiling not in ROLE_ACTION_CEILINGS:
         self.error(
             "DELEGATION_ROLE_ACTION_CEILING",
             f"roles[{index}].action_ceiling is invalid",
             ROLE_CATALOG_RELPATH,
         )
     write_mode = role.get("write_mode")
-    if _concrete(write_mode) and write_mode not in ROLE_WRITE_MODES:
+    if is_resolved_string(write_mode) and write_mode not in ROLE_WRITE_MODES:
         self.error(
             "DELEGATION_ROLE_WRITE_MODE",
             f"roles[{index}].write_mode is invalid",
             ROLE_CATALOG_RELPATH,
         )
-    if write_mode == "bounded" and _concrete(role_id):
+    if write_mode == "bounded" and is_resolved_string(role_id):
         writable_role_ids.add(role_id)
     if _role_write_ceiling_conflicts(action_ceiling, write_mode):
         self.error(
@@ -658,8 +650,8 @@ def _validate_role(
 
 def _role_write_ceiling_conflicts(action_ceiling: Any, write_mode: Any) -> bool:
     return (
-        _concrete(action_ceiling)
-        and _concrete(write_mode)
+        is_resolved_string(action_ceiling)
+        and is_resolved_string(write_mode)
         and (
             (action_ceiling == "read-only" and write_mode != "none")
             or (action_ceiling != "read-only" and write_mode != "bounded")
@@ -669,7 +661,7 @@ def _role_write_ceiling_conflicts(action_ceiling: Any, write_mode: Any) -> bool:
 
 def _validate_role_prompt(self: Any, index: int, role: dict[str, Any]) -> None:
     prompt = role.get("prompt")
-    if not _concrete(prompt):
+    if not is_resolved_string(prompt):
         return
     prompt_path = Path(prompt)
     if (
@@ -757,7 +749,7 @@ def _validate_role_binding(
         )
         return
     role_id = binding.get("role_id")
-    if _concrete(role_id):
+    if is_resolved_string(role_id):
         if role_id not in role_ids:
             self.error(
                 "DELEGATION_ROLE_BINDING_UNKNOWN",
@@ -782,14 +774,14 @@ def _validate_role_binding_mode(
     binding: dict[str, Any],
 ) -> None:
     selection_mode = binding.get("selection_mode")
-    if _concrete(selection_mode) and selection_mode not in SELECTION_MODES:
+    if is_resolved_string(selection_mode) and selection_mode not in SELECTION_MODES:
         self.error(
             "DELEGATION_MODEL_SELECTION_MODE",
             f"assistant surface {surface_id} role binding selection_mode is invalid",
             relpath,
         )
     availability = binding.get("availability")
-    if _concrete(availability) and availability not in SUPPORT_VALUES:
+    if is_resolved_string(availability) and availability not in SUPPORT_VALUES:
         self.error(
             "DELEGATION_ROLE_BINDING_AVAILABILITY",
             f"assistant surface {surface_id} role binding availability is invalid",
@@ -807,7 +799,7 @@ def _validate_role_binding_mode(
             f"assistant surface {surface_id} has an available role binding on an unsupported route",
             relpath,
         )
-    if selection_mode == "explicit-model" and not _concrete(binding.get("model")):
+    if selection_mode == "explicit-model" and not is_resolved_string(binding.get("model")):
         self.error(
             "DELEGATION_EXPLICIT_MODEL_MISSING",
             f"assistant surface {surface_id} explicit role binding has no model",

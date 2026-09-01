@@ -6,9 +6,11 @@
   guidance, and extracted reusable source-check manifest primitives from the
   CLI checker so future tooling refactors have a clearer modular boundary.
 - Split shared target-adapter validation helpers for allowed action modes,
-  optional module-profile state parsing, discussion diagrams, workspace modes,
-  and subagent delegation out of the monolithic validator while preserving the
-  stable validator entry points and generated finding catalog.
+  placeholder-aware value checks, optional module-profile state parsing,
+  non-emitting required-file and manifest-path comparisons, discussion
+  diagrams, workspace modes, and subagent delegation out of the monolithic
+  validator while preserving the stable validator entry points and generated
+  finding catalog.
 - Optimized source support-cost measurement by projecting profile-generated
   support state in memory instead of measuring the full template inventory for
   every scaffold profile.

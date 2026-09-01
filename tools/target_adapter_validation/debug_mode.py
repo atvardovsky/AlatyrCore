@@ -26,11 +26,10 @@ from target_validation_support import (
     git_is_ancestor,
     git_range_changed_files,
     git_resolve_object,
-    is_placeholder,
     is_target_relative_path,
-    is_unresolved_value,
     scope_entries_cover,
 )
+from target_adapter_validation.values import is_resolved_string
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -105,18 +104,9 @@ DEBUG_MATERIALITY_KINDS = {
 }
 
 
-def _concrete(value: Any) -> bool:
-    return (
-        isinstance(value, str)
-        and bool(value.strip())
-        and not is_placeholder(value)
-        and not is_unresolved_value(value)
-    )
-
-
 def _surface_covers(changed_path: str, surfaces: list[str]) -> bool:
     for surface in surfaces:
-        if not _concrete(surface):
+        if not is_resolved_string(surface):
             continue
         normalized = surface.rstrip("/")
         if changed_path == normalized or changed_path.startswith(normalized + "/"):
@@ -152,13 +142,13 @@ def reconcile_debug_git_state(
     activation = activation if isinstance(activation, dict) else {}
     base_revision = (
         binding.get("base_revision")
-        if _concrete(binding.get("base_revision"))
+        if is_resolved_string(binding.get("base_revision"))
         else activation.get("initial_revision")
     )
     result_revision = binding.get("result_revision")
     binding_state = binding.get("binding_state")
     committed_touching_surfaces: list[str] = []
-    if _concrete(base_revision) and git_resolve_object(
+    if is_resolved_string(base_revision) and git_resolve_object(
         self.target, str(base_revision), "commit"
     ):
         changed = git_range_changed_files(self.target, str(base_revision), head)
@@ -194,7 +184,7 @@ def reconcile_debug_git_state(
         )
     result_resolved = (
         git_resolve_object(self.target, str(result_revision), "commit")
-        if _concrete(result_revision) and binding_kind in {"commit", "pull-request"}
+        if is_resolved_string(result_revision) and binding_kind in {"commit", "pull-request"}
         else None
     )
     if (
@@ -298,15 +288,6 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
             "index_kind must be target-alatyr-debug-index",
             index_relpath,
         )
-
-    def concrete(value: Any) -> bool:
-        return (
-            isinstance(value, str)
-            and bool(value.strip())
-            and not is_placeholder(value)
-            and not is_unresolved_value(value)
-        )
-
     unresolved_report = self.warn if self.allow_placeholders else self.error
     for field in [
         "project",
@@ -324,7 +305,7 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
                 f"{field} must be a non-empty string",
                 index_relpath,
             )
-        elif not concrete(value):
+        elif not is_resolved_string(value):
             unresolved_report(
                 "DEBUG_MODE_INDEX_METADATA_UNRESOLVED",
                 f"{field} is unresolved",
@@ -515,7 +496,7 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
             self.error("DEBUG_MODE_INDEX_FIELD", f"{label} missing {missing}", index_relpath)
             continue
         debug_id = entry.get("debug_id")
-        if not concrete(debug_id):
+        if not is_resolved_string(debug_id):
             self.error("DEBUG_MODE_INDEX_ID", f"{label}.debug_id must be resolved", index_relpath)
             continue
         if debug_id in seen_ids:
@@ -573,7 +554,7 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
             if (
                 not isinstance(candidate_ids, list)
                 or len(candidate_ids) != len(set(candidate_ids))
-                or not all(concrete(value) for value in candidate_ids)
+                or not all(is_resolved_string(value) for value in candidate_ids)
             ):
                 self.error("DEBUG_MODE_INDEX_FIELD", f"{label}.knowledge_candidate_ids must be a unique resolved string list", index_relpath)
         if index_schema_version == 6:
@@ -606,7 +587,7 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
                 self.error("DEBUG_MODE_INDEX_FIELD", f"{label}.validation_evidence_classes is invalid", index_relpath)
         for field in ["task_references", "residual_uncertainty"]:
             values = entry.get(field)
-            if not isinstance(values, list) or not all(concrete(value) for value in values):
+            if not isinstance(values, list) or not all(is_resolved_string(value) for value in values):
                 self.error("DEBUG_MODE_INDEX_LIST", f"{label}.{field} must be a resolved string list", index_relpath)
         for field in ["scope_id", "task_class", "result_revision"]:
             if not isinstance(entry.get(field), str) or not entry[field].strip():
@@ -623,7 +604,7 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
             self.error("DEBUG_MODE_INDEX_METRICS", f"{label}.metrics values must be non-negative integers or null", index_relpath)
 
         record_ref = entry.get("record")
-        if not concrete(record_ref):
+        if not is_resolved_string(record_ref):
             self.error("DEBUG_MODE_INDEX_RECORD", f"{label}.record must be resolved", index_relpath)
             continue
         if record_ref.startswith(("https://", "http://", "external:")):
@@ -885,7 +866,7 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
             if not isinstance(event, dict):
                 continue
             event_id = event.get("event_id")
-            if not concrete(event_id):
+            if not is_resolved_string(event_id):
                 self.error("DEBUG_MODE_EVENT_ID", f"{event_label}.event_id must be resolved", record_ref)
                 continue
             if event_id in event_by_id:
@@ -900,7 +881,7 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
             if event_time is not None:
                 event_times[event_id] = event_time
             evidence = event.get("evidence")
-            if not isinstance(evidence, list) or not evidence or not all(concrete(item) for item in evidence):
+            if not isinstance(evidence, list) or not evidence or not all(is_resolved_string(item) for item in evidence):
                 self.error("DEBUG_MODE_EVENT_EVIDENCE", f"{event_label}.evidence must be a non-empty resolved string list", record_ref)
 
         for event_id, event in event_by_id.items():
@@ -1511,7 +1492,7 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
                 project_candidate_records_v5
             ):
                 candidate_id = candidate.get("candidate_id")
-                if not concrete(candidate_id):
+                if not is_resolved_string(candidate_id):
                     continue
                 project_candidate_ids.append(candidate_id)
                 if candidate_id in candidate_ids_seen:
@@ -1584,7 +1565,7 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
                 self.error("DEBUG_MODE_EVIDENCE_CAPTURE", "captured decision requires at least one engineering evidence ID", record_ref)
             if evidence_status in {"skipped", "blocked"} and evidence_ids:
                 self.error("DEBUG_MODE_EVIDENCE_DECISION", f"{evidence_status} decision cannot list captured engineering evidence IDs", record_ref)
-            if evidence_status == "blocked" and not concrete(evidence_decision.get("next_safe_action")):
+            if evidence_status == "blocked" and not is_resolved_string(evidence_decision.get("next_safe_action")):
                 self.error("DEBUG_MODE_EVIDENCE_BLOCKED", "blocked evidence decision requires a next safe action", record_ref)
 
             if record_schema_version == 2:
@@ -1895,7 +1876,7 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
                     class_counts[evidence_class] = class_counts.get(evidence_class, 0) + 1
                 source = validation_item.get("source")
                 revision = validation_item.get("revision")
-                if not concrete(source) or not concrete(revision):
+                if not is_resolved_string(source) or not is_resolved_string(revision):
                     self.error(
                         "DEBUG_MODE_VALIDATION_EVIDENCE",
                         f"validation.results[{validation_index}] must name resolved source and revision",

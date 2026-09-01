@@ -2356,8 +2356,11 @@
         "tools/task_classification_contract.py",
         "tools/target_adapter_validation/action_modes.py",
         "tools/target_adapter_validation/diagrams.py",
+        "tools/target_adapter_validation/files.py",
+        "tools/target_adapter_validation/manifest_paths.py",
         "tools/target_adapter_validation/module_profile.py",
         "tools/target_adapter_validation/subagent_delegation.py",
+        "tools/target_adapter_validation/values.py",
         "tools/target_adapter_validation/workspace_modes.py",
         "tools/target_tool_compat.py"
       ],
@@ -2374,8 +2377,11 @@
         "tools/task_classification_contract.py",
         "tools/target_adapter_validation/action_modes.py",
         "tools/target_adapter_validation/diagrams.py",
+        "tools/target_adapter_validation/files.py",
+        "tools/target_adapter_validation/manifest_paths.py",
         "tools/target_adapter_validation/module_profile.py",
         "tools/target_adapter_validation/subagent_delegation.py",
+        "tools/target_adapter_validation/values.py",
         "tools/target_adapter_validation/workspace_modes.py",
         "tools/target_tool_compat.py"
       ],

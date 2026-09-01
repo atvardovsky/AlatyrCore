@@ -14,12 +14,11 @@ from target_adapter_validation.contract_compatibility import (
     minimum_index_version,
 )
 from target_adapter_validation.domain import DomainValidationHost
+from target_adapter_validation.values import is_resolved_string
 from target_validation_support import (
     ManifestData,
     dotted,
-    is_placeholder,
     is_target_relative_path,
-    is_unresolved_value,
 )
 
 
@@ -95,15 +94,6 @@ def validate_engineering_evidence(self: DomainValidationHost, manifest: Manifest
             "index_kind must be target-engineering-evidence-index",
             index_relpath,
         )
-
-    def concrete(value: Any) -> bool:
-        return (
-            isinstance(value, str)
-            and bool(value.strip())
-            and not is_placeholder(value)
-            and not is_unresolved_value(value)
-        )
-
     unresolved_report = self.warn if self.allow_placeholders else self.error
     for field in [
         "project",
@@ -120,7 +110,7 @@ def validate_engineering_evidence(self: DomainValidationHost, manifest: Manifest
                 f"{field} must be a non-empty string",
                 index_relpath,
             )
-        elif not concrete(value):
+        elif not is_resolved_string(value):
             unresolved_report(
                 "ENGINEERING_EVIDENCE_INDEX_METADATA_UNRESOLVED",
                 f"{field} is unresolved",
@@ -218,7 +208,7 @@ def validate_engineering_evidence(self: DomainValidationHost, manifest: Manifest
             self.error("ENGINEERING_EVIDENCE_INDEX_FIELD", f"{label} missing {missing}", index_relpath)
             continue
         evidence_id = entry.get("evidence_id")
-        if not concrete(evidence_id):
+        if not is_resolved_string(evidence_id):
             self.error("ENGINEERING_EVIDENCE_INDEX_ID", f"{label}.evidence_id must be resolved", index_relpath)
             continue
         if evidence_id in seen_ids:
@@ -238,7 +228,7 @@ def validate_engineering_evidence(self: DomainValidationHost, manifest: Manifest
                 f"{label}.repository_binding_kind is invalid",
                 index_relpath,
             )
-        if not concrete(entry.get("result_revision")):
+        if not is_resolved_string(entry.get("result_revision")):
             self.error(
                 "ENGINEERING_EVIDENCE_INDEX_FIELD",
                 f"{label}.result_revision must be resolved",
@@ -246,7 +236,7 @@ def validate_engineering_evidence(self: DomainValidationHost, manifest: Manifest
             )
         for field in ["task_references", "changed_fact_ids", "architecture_areas", "residual_uncertainty"]:
             values = entry.get(field)
-            if not isinstance(values, list) or not all(concrete(value) for value in values):
+            if not isinstance(values, list) or not all(is_resolved_string(value) for value in values):
                 self.error("ENGINEERING_EVIDENCE_INDEX_LIST", f"{label}.{field} must be a resolved string list", index_relpath)
         if not entry.get("task_references"):
             self.error(
@@ -263,7 +253,7 @@ def validate_engineering_evidence(self: DomainValidationHost, manifest: Manifest
                 )
 
         record_ref = entry.get("record")
-        if not concrete(record_ref):
+        if not is_resolved_string(record_ref):
             self.error("ENGINEERING_EVIDENCE_INDEX_RECORD", f"{label}.record must be resolved", index_relpath)
             continue
         if record_ref.startswith(("https://", "http://", "external:")):
@@ -373,7 +363,7 @@ def validate_engineering_evidence(self: DomainValidationHost, manifest: Manifest
 
         def resolved_list(container: Any, field: str, *, required: bool = True) -> list[str]:
             values = container.get(field) if isinstance(container, dict) else None
-            if not isinstance(values, list) or (required and not values) or not all(concrete(value) for value in values):
+            if not isinstance(values, list) or (required and not values) or not all(is_resolved_string(value) for value in values):
                 self.error("ENGINEERING_EVIDENCE_RECORD_LIST", f"{field} must be a {'non-empty ' if required else ''}resolved string list", record_ref)
                 return []
             return values
@@ -447,7 +437,7 @@ def validate_engineering_evidence(self: DomainValidationHost, manifest: Manifest
                     self.error("ENGINEERING_EVIDENCE_INVARIANT", f"{invariant_label} must be an object", record_ref)
                     continue
                 for field in ["statement", "status", "canonical_owner"]:
-                    if not concrete(invariant.get(field)):
+                    if not is_resolved_string(invariant.get(field)):
                         self.error("ENGINEERING_EVIDENCE_INVARIANT", f"{invariant_label}.{field} must be resolved", record_ref)
                 if invariant.get("status") not in {"observed", "proposed", "accepted", "unknown"}:
                     self.error("ENGINEERING_EVIDENCE_INVARIANT_STATUS", f"{invariant_label}.status is invalid", record_ref)
@@ -461,7 +451,7 @@ def validate_engineering_evidence(self: DomainValidationHost, manifest: Manifest
                     self.error("ENGINEERING_EVIDENCE_HYPOTHESIS", f"{hypothesis_label} must be an object", record_ref)
                     continue
                 for field in ["statement", "outcome", "decision_impact"]:
-                    if not concrete(hypothesis.get(field)):
+                    if not is_resolved_string(hypothesis.get(field)):
                         self.error("ENGINEERING_EVIDENCE_HYPOTHESIS", f"{hypothesis_label}.{field} must be resolved", record_ref)
                 if hypothesis.get("outcome") not in {"confirmed", "rejected", "unresolved"}:
                     self.error("ENGINEERING_EVIDENCE_HYPOTHESIS_OUTCOME", f"{hypothesis_label}.outcome is invalid", record_ref)
@@ -474,7 +464,7 @@ def validate_engineering_evidence(self: DomainValidationHost, manifest: Manifest
             (solution, ["summary", "rationale"], "ENGINEERING_EVIDENCE_SOLUTION"),
         ]:
             for field in fields:
-                if not isinstance(container, dict) or not concrete(container.get(field)):
+                if not isinstance(container, dict) or not is_resolved_string(container.get(field)):
                     self.error(code, f"{field} must be resolved", record_ref)
         resolved_list(root_cause, "evidence")
 
@@ -484,7 +474,7 @@ def validate_engineering_evidence(self: DomainValidationHost, manifest: Manifest
         else:
             for alternative_index, alternative in enumerate(alternatives):
                 if not isinstance(alternative, dict) or not all(
-                    concrete(alternative.get(field)) for field in ["alternative", "reason"]
+                    is_resolved_string(alternative.get(field)) for field in ["alternative", "reason"]
                 ):
                     self.error("ENGINEERING_EVIDENCE_ALTERNATIVES", f"material_rejected_alternatives[{alternative_index}] must contain resolved alternative and reason", record_ref)
 
@@ -492,7 +482,7 @@ def validate_engineering_evidence(self: DomainValidationHost, manifest: Manifest
         if isinstance(matrix, list):
             for case_index, case in enumerate(matrix):
                 if not isinstance(case, dict) or not all(
-                    concrete(case.get(field))
+                    is_resolved_string(case.get(field))
                     for field in ["case", "protects", "expected_result", "validation_evidence"]
                 ):
                     self.error("ENGINEERING_EVIDENCE_REGRESSION", f"regression_matrix[{case_index}] must explain case, protected invariant/risk, expected result, and evidence", record_ref)
@@ -526,7 +516,7 @@ def validate_engineering_evidence(self: DomainValidationHost, manifest: Manifest
         areas = [
             area.get("area")
             for area in record.get("affected_architecture", [])
-            if isinstance(area, dict) and concrete(area.get("area"))
+            if isinstance(area, dict) and is_resolved_string(area.get("area"))
         ]
         residual = record.get("residual_uncertainty")
         residual = residual if isinstance(residual, list) else []

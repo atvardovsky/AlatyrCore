@@ -154,9 +154,10 @@ focused checks still cover the changed paths.
 Target-adapter validator capability checks should move out of
 `validate_target_adapter.py` into `tools/target_adapter_validation/` when a
 capability becomes large or needs reusable parsing. The current extracted
-modules cover shared action modes, optional module-profile parsing, discussion
-diagrams, workspace modes, and subagent delegation; the root validator remains
-the stable command and host interface.
+modules cover shared action modes, placeholder-aware value checks, optional
+module-profile parsing, non-emitting required-file and manifest-path helpers,
+discussion diagrams, workspace modes, and subagent delegation; the root
+validator remains the stable command and host interface.
 
 ## Source Validation Runner
 

@@ -107,6 +107,7 @@ from target_adapter_validation.project_knowledge import (
 from target_adapter_validation.subagent_delegation import validate_subagent_delegation
 from target_adapter_validation.support_state import validate_support_state
 from target_adapter_validation.workspace_modes import validate_workspace_modes
+from target_adapter_validation.values import is_resolved_string
 from scaffold_state import validate_installation_state_record
 from target_adapter_validation.modules import dispatch_capability_checks
 from target_adapter_validation.router_costs import (
@@ -3186,13 +3187,7 @@ class Validator:
                 catalog_relpath,
             )
 
-        def concrete(value: Any) -> bool:
-            return (
-                isinstance(value, str)
-                and bool(value.strip())
-                and not is_placeholder(value)
-                and not is_unresolved_value(value)
-            )
+        concrete = is_resolved_string
 
         def string_list(value: Any, label: str, *, non_empty: bool = True) -> list[str]:
             if not isinstance(value, list) or (non_empty and not value) or not all(
@@ -3579,13 +3574,7 @@ class Validator:
                         ".ai/alatyr.yaml",
                     )
 
-        def concrete(value: Any) -> bool:
-            return (
-                isinstance(value, str)
-                and bool(value.strip())
-                and not is_placeholder(value)
-                and not is_unresolved_value(value)
-            )
+        concrete = is_resolved_string
 
         def string_list(
             value: Any, label: str, relpath: str, *, non_empty: bool = True
@@ -3834,13 +3823,7 @@ class Validator:
                         ".ai/alatyr.yaml",
                     )
 
-        def concrete(value: Any) -> bool:
-            return (
-                isinstance(value, str)
-                and bool(value.strip())
-                and not is_placeholder(value)
-                and not is_unresolved_value(value)
-            )
+        concrete = is_resolved_string
 
         def string_list(
             value: Any, label: str, relpath: str, *, non_empty: bool = True
@@ -7542,13 +7525,7 @@ class Validator:
             self.error(f"{code_prefix}_BINDING", "repository_binding must be an object", record_relpath)
             return None, None
 
-        def concrete(value: Any) -> bool:
-            return (
-                isinstance(value, str)
-                and bool(value.strip())
-                and not is_placeholder(value)
-                and not is_unresolved_value(value)
-            )
+        concrete = is_resolved_string
 
         binding_kind = binding.get("kind")
         binding_state = binding.get("binding_state")

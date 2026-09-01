@@ -14,6 +14,9 @@ from target_adapter_validation.assistant_capabilities import (
     SURFACE_CAPABILITY_SCHEMA_VERSION,
     capability_record_path,
 )
+from target_adapter_validation.files import missing_target_files
+from target_adapter_validation.manifest_paths import manifest_path_mismatches
+from target_adapter_validation.values import is_string_list
 
 
 REQUIRED_PATHS = (
@@ -58,13 +61,12 @@ def validate_discussion_diagrams(validator: Any, manifest: Any) -> None:
 
 
 def _validate_required_files(self: Any) -> None:
-    for relpath in REQUIRED_PATHS:
-        if not self.target_path(relpath).is_file():
-            self.error(
-                "DIAGRAM_REQUIRED_FILE_MISSING",
-                "enabled diagrams module is missing a discussion contract",
-                relpath,
-            )
+    for relpath in missing_target_files(self, REQUIRED_PATHS):
+        self.error(
+            "DIAGRAM_REQUIRED_FILE_MISSING",
+            "enabled diagrams module is missing a discussion contract",
+            relpath,
+        )
 
 
 def _validate_manifest_paths(self: Any, manifest: Any) -> None:
@@ -75,14 +77,12 @@ def _validate_manifest_paths(self: Any, manifest: Any) -> None:
         ("operations", "diagram_presentation"): REQUIRED_PATHS[1],
         ("bridges", "capabilities"): REQUIRED_PATHS[3],
     }
-    for key, expected in expected_manifest.items():
-        scalar = manifest.scalars.get(key)
-        if scalar is None or scalar.value != expected:
-            self.error(
-                "DIAGRAM_MANIFEST_PATH",
-                f"{dotted(key)} must be {expected} when diagrams are enabled",
-                ".ai/alatyr.yaml",
-            )
+    for mismatch in manifest_path_mismatches(manifest, expected_manifest):
+        self.error(
+            "DIAGRAM_MANIFEST_PATH",
+            f"{dotted(mismatch.key)} must be {mismatch.expected} when diagrams are enabled",
+            ".ai/alatyr.yaml",
+        )
 
 
 def _validate_operation_catalog(self: Any) -> None:
@@ -319,18 +319,14 @@ def _validate_surface_lists(
     self: Any, surface_id: str, surface_relpath: str, diagram: dict[str, Any]
 ) -> None:
     syntaxes = diagram.get("native_inline_syntaxes")
-    if not isinstance(syntaxes, list) or not syntaxes or not all(
-        isinstance(value, str) and value for value in syntaxes
-    ):
+    if not is_string_list(syntaxes):
         self.error(
             "DIAGRAM_CAPABILITY_SYNTAXES",
             f"assistant surface {surface_id} native_inline_syntaxes must be a string list",
             surface_relpath,
         )
     review_triggers = diagram.get("review_triggers")
-    if not isinstance(review_triggers, list) or not review_triggers or not all(
-        isinstance(value, str) and value for value in review_triggers
-    ):
+    if not is_string_list(review_triggers):
         self.error(
             "DIAGRAM_CAPABILITY_REVIEW_TRIGGERS",
             f"assistant surface {surface_id} review_triggers must be a string list",

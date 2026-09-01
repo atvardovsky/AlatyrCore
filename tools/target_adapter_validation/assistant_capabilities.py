@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from target_validation_support import is_placeholder, is_unresolved_value
+from target_adapter_validation.values import is_resolved_string
 
 
 CAPABILITY_INDEX_SCHEMA_VERSION = 3
@@ -51,13 +51,7 @@ EVIDENCE_STATES = {"current", "stale", "expired", "unverified", "unknown"}
 def is_concrete_capability_value(value: Any) -> bool:
     """Whether a capability value is a resolved target claim."""
 
-    return (
-        isinstance(value, str)
-        and bool(value.strip())
-        and not is_placeholder(value)
-        and not is_unresolved_value(value)
-        and "_OR_" not in value
-    )
+    return is_resolved_string(value, reject_or_marker=True)
 
 
 def capability_record_path(surface_id: str) -> str:

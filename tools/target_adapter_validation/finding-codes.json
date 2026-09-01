@@ -17,8 +17,10 @@
     "tools/target_adapter_validation/diagrams.py",
     "tools/target_adapter_validation/domain.py",
     "tools/target_adapter_validation/engineering_evidence.py",
+    "tools/target_adapter_validation/files.py",
     "tools/target_adapter_validation/framework_baseline.py",
     "tools/target_adapter_validation/installation_state.py",
+    "tools/target_adapter_validation/manifest_paths.py",
     "tools/target_adapter_validation/module_profile.py",
     "tools/target_adapter_validation/modules.py",
     "tools/target_adapter_validation/project_knowledge.py",
@@ -26,6 +28,7 @@
     "tools/target_adapter_validation/subagent_delegation.py",
     "tools/target_adapter_validation/support_generation.py",
     "tools/target_adapter_validation/support_state.py",
+    "tools/target_adapter_validation/values.py",
     "tools/target_adapter_validation/workspace_modes.py"
   ],
   "families": [

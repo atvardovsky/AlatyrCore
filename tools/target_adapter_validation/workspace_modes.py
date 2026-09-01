@@ -5,13 +5,11 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from target_validation_support import (
-    dotted,
-    is_placeholder,
-    is_target_relative_path,
-    is_unresolved_value,
-)
+from target_validation_support import dotted, is_target_relative_path
 from target_adapter_validation.action_modes import ALLOWED_ACTION_MODES
+from target_adapter_validation.files import missing_target_files
+from target_adapter_validation.manifest_paths import manifest_path_mismatches
+from target_adapter_validation.values import is_resolved_string, is_string_list
 
 
 REQUIRED_PATHS = (
@@ -101,15 +99,6 @@ def validate_workspace_modes(validator: Any, manifest: Any) -> None:
     )
 
 
-def _resolved(value: Any) -> bool:
-    return (
-        isinstance(value, str)
-        and bool(value.strip())
-        and not is_placeholder(value)
-        and not is_unresolved_value(value)
-    )
-
-
 def _target_path_list(
     self: Any,
     value: Any,
@@ -125,7 +114,7 @@ def _target_path_list(
         return []
     result: list[str] = []
     for entry in value:
-        if not _resolved(entry) or not is_target_relative_path(entry):
+        if not is_resolved_string(entry) or not is_target_relative_path(entry):
             self.error(code, f"{label} must contain target-relative resolved paths", source)
             continue
         if require_exists and not self.target_path(entry).exists():
@@ -136,29 +125,25 @@ def _target_path_list(
 
 
 def _missing_required_files(self: Any) -> bool:
-    missing = False
-    for relpath in REQUIRED_PATHS:
-        if not self.target_path(relpath).is_file():
-            missing = True
-            self.error(
-                "WORKSPACE_MODE_REQUIRED_FILE_MISSING",
-                "enabled workspace-modes module is missing a contract",
-                relpath,
-            )
-    return missing
+    missing = missing_target_files(self, REQUIRED_PATHS)
+    for relpath in missing:
+        self.error(
+            "WORKSPACE_MODE_REQUIRED_FILE_MISSING",
+            "enabled workspace-modes module is missing a contract",
+            relpath,
+        )
+    return bool(missing)
 
 
 def _validate_manifest_paths(self: Any, manifest: Any) -> None:
     if manifest is None:
         return
-    for key, expected in EXPECTED_MANIFEST.items():
-        scalar = manifest.scalars.get(key)
-        if scalar is None or scalar.value != expected:
-            self.error(
-                "WORKSPACE_MODE_MANIFEST_PATH",
-                f"{dotted(key)} must be {expected} when workspace modes are enabled",
-                ".ai/alatyr.yaml",
-            )
+    for mismatch in manifest_path_mismatches(manifest, EXPECTED_MANIFEST):
+        self.error(
+            "WORKSPACE_MODE_MANIFEST_PATH",
+            f"{dotted(mismatch.key)} must be {mismatch.expected} when workspace modes are enabled",
+            ".ai/alatyr.yaml",
+        )
 
 
 def _validate_catalog(self: Any, catalog: dict[str, Any], catalog_relpath: str) -> str | None:
@@ -178,7 +163,7 @@ def _validate_catalog(self: Any, catalog: dict[str, Any], catalog_relpath: str) 
             catalog_relpath,
         )
     for field in ["owner", "decision_authority"]:
-        if not _resolved(catalog.get(field)):
+        if not is_resolved_string(catalog.get(field)):
             self.error(
                 "WORKSPACE_MODE_CATALOG_OWNER",
                 f"catalog {field} must be resolved",
@@ -207,7 +192,7 @@ def _validate_workspace(
         )
         return None
 
-    workspace_id = workspace.get("id") if _resolved(workspace.get("id")) else None
+    workspace_id = workspace.get("id") if is_resolved_string(workspace.get("id")) else None
     if workspace_id is None:
         self.error(
             "WORKSPACE_MODE_WORKSPACE",
@@ -307,7 +292,7 @@ def _validate_root_context(
             "root context state must be enabled or disabled",
             root_relpath,
         )
-    if not _resolved(root_context.get("owner")):
+    if not is_resolved_string(root_context.get("owner")):
         self.error(
             "WORKSPACE_MODE_ROOT_OWNER",
             "root context owner must be resolved",
@@ -350,9 +335,9 @@ def _validate_root_conditional_context(
     for index, entry in enumerate(root_conditional):
         if (
             not isinstance(entry, dict)
-            or not _resolved(entry.get("path"))
+            or not is_resolved_string(entry.get("path"))
             or not is_target_relative_path(entry["path"])
-            or not _resolved(entry.get("when"))
+            or not is_resolved_string(entry.get("when"))
         ):
             self.error(
                 "WORKSPACE_MODE_ROOT_CONTEXT",
@@ -428,7 +413,7 @@ def _validate_catalog_mode_entry(
             location,
         )
     for field in ["title", "summary", "evidence_revision"]:
-        if not _resolved(entry.get(field)):
+        if not is_resolved_string(entry.get(field)):
             self.error(
                 "WORKSPACE_MODE_CATALOG_ENTRY",
                 f"mode {field} must be resolved",
@@ -467,7 +452,7 @@ def _validate_catalog_mode_entry(
 
 def _valid_mode_id(value: Any) -> bool:
     return (
-        _resolved(value)
+        is_resolved_string(value)
         and re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", value) is not None
     )
 
@@ -509,7 +494,7 @@ def _validate_mode_descriptor(
         "last_reviewed",
         "evidence_revision",
     ]:
-        if not _resolved(descriptor.get(field)):
+        if not is_resolved_string(descriptor.get(field)):
             self.error(
                 "WORKSPACE_MODE_DESCRIPTOR_FIELD",
                 f"mode {field} must be resolved",
@@ -528,7 +513,7 @@ def _validate_mode_scope(
     scope = descriptor.get("workspace_scope")
     if (
         not isinstance(scope, dict)
-        or not _resolved(scope.get("root"))
+        or not is_resolved_string(scope.get("root"))
         or not is_target_relative_path(scope["root"])
     ):
         self.error(
@@ -563,7 +548,7 @@ def _validate_mode_scope(
 def _validate_mode_signals(self: Any, descriptor: dict[str, Any], expected_path: str) -> None:
     for field in ["use_when", "do_not_use_when"]:
         value = descriptor.get(field)
-        if not isinstance(value, list) or not value or not all(_resolved(item) for item in value):
+        if not is_string_list(value, resolved=True):
             self.error(
                 "WORKSPACE_MODE_SIGNALS",
                 f"{field} must be a non-empty resolved string list",
@@ -610,7 +595,7 @@ def _validate_relationship_entries(
         if not isinstance(relationship, dict):
             self.error("WORKSPACE_MODE_RELATIONSHIP", "relationship must be an object", rel_location)
             continue
-        if not _resolved(relationship.get("subject")):
+        if not is_resolved_string(relationship.get("subject")):
             self.error(
                 "WORKSPACE_MODE_RELATIONSHIP",
                 "relationship subject must be resolved",
@@ -721,9 +706,9 @@ def _validate_mode_conditional_context(
     for conditional_index, conditional_entry in enumerate(conditional):
         if (
             not isinstance(conditional_entry, dict)
-            or not _resolved(conditional_entry.get("path"))
+            or not is_resolved_string(conditional_entry.get("path"))
             or not is_target_relative_path(conditional_entry["path"])
-            or not _resolved(conditional_entry.get("when"))
+            or not is_resolved_string(conditional_entry.get("when"))
         ):
             self.error(
                 "WORKSPACE_MODE_CONTEXT",
@@ -745,7 +730,7 @@ def _validate_mode_lists_and_constraints(
 ) -> None:
     for field in ["source_of_truth_ids", "validation_entry_point_ids", "known_gaps"]:
         value = descriptor.get(field)
-        if not isinstance(value, list) or not all(_resolved(item) for item in value):
+        if not is_string_list(value, non_empty=False, resolved=True):
             self.error(
                 "WORKSPACE_MODE_DESCRIPTOR_FIELD",
                 f"{field} must be a resolved string list",
