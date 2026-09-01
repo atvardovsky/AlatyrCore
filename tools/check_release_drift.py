@@ -4,10 +4,12 @@
 from __future__ import annotations
 
 import argparse
+import io
 import json
 import re
 import subprocess
 import sys
+import tarfile
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
@@ -110,17 +112,38 @@ def changed_paths(ref: str) -> set[str]:
     return tracked | untracked
 
 
+def _safe_archive_path(destination: Path, name: str, *, root: Path | None = None) -> Path:
+    member_path = Path(name)
+    if member_path.is_absolute() or ".." in member_path.parts:
+        raise RuntimeError(f"unsafe archive member path: {name}")
+    output = (destination / member_path).resolve()
+    try:
+        output.relative_to(root or destination.resolve())
+    except ValueError as exc:
+        raise RuntimeError(f"unsafe archive member path: {name}") from exc
+    return output
+
+
 def materialize(ref: str, prefix: str, destination: Path) -> None:
-    (destination / prefix).mkdir(parents=True, exist_ok=True)
-    paths = require_git_text("ls-tree", "-r", "--name-only", ref, "--", prefix)
-    for relpath in filter(None, paths.splitlines()):
-        result = git("show", f"{ref}:{relpath}", text=False)
-        if result.returncode != 0:
-            error = result.stderr.decode("utf-8", errors="replace").strip()
-            raise RuntimeError(error or f"cannot read {ref}:{relpath}")
-        output = destination / relpath
-        output.parent.mkdir(parents=True, exist_ok=True)
-        output.write_bytes(result.stdout)
+    result = git("archive", "--format=tar", ref, prefix, text=False)
+    if result.returncode != 0:
+        error = result.stderr.decode("utf-8", errors="replace").strip()
+        raise RuntimeError(error or f"cannot archive {ref}:{prefix}")
+    root = destination.resolve()
+    with tarfile.open(fileobj=io.BytesIO(result.stdout), mode="r:*") as archive:
+        for member in archive:
+            output = _safe_archive_path(destination, member.name, root=root)
+            if member.isdir():
+                output.mkdir(parents=True, exist_ok=True)
+                continue
+            output.parent.mkdir(parents=True, exist_ok=True)
+            if member.issym() or member.islnk():
+                output.write_bytes(member.linkname.encode("utf-8"))
+                continue
+            extracted = archive.extractfile(member)
+            if extracted is None:
+                continue
+            output.write_bytes(extracted.read())
 
 
 def contract_digest(root: Path) -> str:

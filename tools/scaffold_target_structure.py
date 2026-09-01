@@ -16,7 +16,7 @@ import json
 import shutil
 import sys
 from dataclasses import dataclass
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 from scaffold_projection import (
@@ -32,6 +32,7 @@ from scaffold_projection import (
     project_router,
     portable_relative_path,
     render_json,
+    selected_path_index,
 )
 from scaffold_state import INITIAL_INSTALLATION_STATE
 from agent_entry_packet import (
@@ -251,6 +252,7 @@ class ProjectionContext:
     operation_ids: frozenset[str]
     enabled_modules: frozenset[str]
     context_catalogs: dict[Path, str]
+    selected_paths: frozenset[PurePosixPath]
 
 
 def build_projection_context(
@@ -272,6 +274,7 @@ def build_projection_context(
         operation_ids=operation_ids,
         enabled_modules=frozenset(enabled_modules),
         context_catalogs=context_catalogs or {},
+        selected_paths=selected_path_index(selected),
     )
 
 
@@ -317,6 +320,7 @@ def projected_template_content(
     target: Path,
 ) -> str | None:
     src = TEMPLATE_ROOT / rel
+    selected_paths = context.selected_paths
     if rel in context.context_catalogs:
         return context.context_catalogs[rel]
     if rel == Path("AGENTS.md") and framework_pack != "complete":
@@ -324,14 +328,14 @@ def projected_template_content(
         return project_agent_rule_ids(
             src.read_text(encoding="utf-8"),
             rule_ids,
-            selected,
+            selected_paths,
         )
     if rel == Path(".ai/alatyr.yaml"):
         return project_manifest(
             src.read_text(encoding="utf-8"),
             profile,
             framework_pack,
-            selected,
+            selected_paths,
             set(context.enabled_modules),
         )
     if rel == Path(".ai/assistant/module-profile.md"):
@@ -349,33 +353,33 @@ def projected_template_content(
     if rel == index_rel and catalog is not None:
         return render_json(build_operation_index(catalog))
     if rel == gate_index_rel:
-        return render_json(project_gate_index(load_object(src), selected))
+        return render_json(project_gate_index(load_object(src), selected_paths))
     if rel == router_rel:
         return render_json(
-            project_router(load_object(src), selected, set(context.operation_ids))
+            project_router(load_object(src), selected_paths, set(context.operation_ids))
         )
     if rel == PACKET_PATH:
         manifest_text = project_manifest(
             (TEMPLATE_ROOT / ".ai/alatyr.yaml").read_text(encoding="utf-8"),
             profile,
             framework_pack,
-            selected,
+            selected_paths,
             set(context.enabled_modules),
         )
         router_text = render_json(
             project_router(
                 load_object(TEMPLATE_ROOT / router_rel),
-                selected,
+                selected_paths,
                 set(context.operation_ids),
             )
         )
         gate_index_text = render_json(
-            project_gate_index(load_object(TEMPLATE_ROOT / gate_index_rel), selected)
+            project_gate_index(load_object(TEMPLATE_ROOT / gate_index_rel), selected_paths)
         )
         projected_router = load_object(TEMPLATE_ROOT / router_rel)
         projected_router = project_router(
             projected_router,
-            selected,
+            selected_paths,
             set(context.operation_ids),
         )
         profile_descriptors: dict[str, dict[str, Any]] = {}
@@ -386,7 +390,7 @@ def projected_template_content(
                 if isinstance(profile_id, str) and isinstance(descriptor, str):
                     profile_descriptors[profile_id] = project_context_descriptor(
                         load_object(TEMPLATE_ROOT / descriptor),
-                        selected,
+                        selected_paths,
                         set(context.operation_ids),
                     )
         operation_index_text = (
@@ -420,13 +424,13 @@ def projected_template_content(
             (TEMPLATE_ROOT / ".ai/alatyr.yaml").read_text(encoding="utf-8"),
             profile,
             framework_pack,
-            selected,
+            selected_paths,
             set(context.enabled_modules),
         )
         router_text = render_json(
             project_router(
                 load_object(TEMPLATE_ROOT / router_rel),
-                selected,
+                selected_paths,
                 set(context.operation_ids),
             )
         )
@@ -458,7 +462,7 @@ def projected_template_content(
             )
         )
     if rel == Path(".ai/assistant/ai-infrastructure-router.json"):
-        return render_json(project_ai_infrastructure_router(load_object(src), selected))
+        return render_json(project_ai_infrastructure_router(load_object(src), selected_paths))
     if rel.parts[:4] == (".ai", "assistant", "context", "profiles") or rel in {
         Path(".ai/assistant/context/migration-routing.json"),
         Path(".ai/assistant/context/cost-scenarios.json"),
@@ -475,7 +479,7 @@ def projected_template_content(
     }:
         return render_json(
             project_context_descriptor(
-                load_object(src), selected, set(context.operation_ids)
+                load_object(src), selected_paths, set(context.operation_ids)
             )
         )
     return None

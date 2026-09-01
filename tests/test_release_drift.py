@@ -12,6 +12,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 from check_release_drift import (  # noqa: E402
     SCHEMA_CONTRACT_PATHS,
     contract_digest,
+    materialize,
     nearest_release_baseline,
     nearest_tagged_baseline,
     prior_changelog_versions,
@@ -70,6 +71,14 @@ class ReleaseBaselineTests(unittest.TestCase):
             )
 
             self.assertNotEqual(contract_digest(root), before)
+
+    def test_materialize_restores_baseline_contract_tree(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+
+            materialize("HEAD", "framework", root)
+
+            self.assertTrue((root / "framework" / "rule-registry.json").is_file())
 
     def test_release_tag_must_match_version(self) -> None:
         self.assertEqual(validate_release_tag("1.2.3", "v1.2.3"), [])

@@ -1078,6 +1078,7 @@
         "tools/check_all.py",
         "tools/run_focused_source_checks.py",
         "tools/check_cross_platform_tools.py",
+        "tools/summarize_source_check_report.py",
         "tools/clean_local_artifacts.py",
         "tools/plan_target_upgrade.py",
         "tools/report_adapter_health.py"
@@ -1093,6 +1094,7 @@
         "tools/check_all.py",
         "tools/run_focused_source_checks.py",
         "tools/check_cross_platform_tools.py",
+        "tools/summarize_source_check_report.py",
         "tools/clean_local_artifacts.py",
         "tools/plan_target_upgrade.py",
         "tools/report_adapter_health.py",

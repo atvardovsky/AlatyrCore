@@ -9,10 +9,15 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   release-checks:
     name: Full and release checks
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - name: Check out complete release history
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -34,6 +39,9 @@ jobs:
         run: python tools/check_versioning.py --require-current-tag
       - name: Run full release profile
         run: python tools/check_all.py --profile release --report "${{ runner.temp }}/alatyr-release-source-checks.json"
+      - name: Summarize release-check diagnostics
+        if: always()
+        run: python tools/summarize_source_check_report.py "${{ runner.temp }}/alatyr-release-source-checks.json" --allow-missing --github-step-summary
       - name: Upload release-check diagnostics
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

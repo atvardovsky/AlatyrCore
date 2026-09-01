@@ -10,10 +10,15 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   linux-source-checks:
     name: Full source checks (Linux, Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
+    timeout-minutes: 35
     strategy:
       fail-fast: false
       matrix:
@@ -37,6 +42,9 @@ jobs:
         run: python -m pip check
       - name: Run full source checks
         run: python tools/check_all.py --profile full --report "${{ runner.temp }}/alatyr-source-checks-linux-${{ matrix.python-version }}.json"
+      - name: Summarize source-check diagnostics
+        if: always()
+        run: python tools/summarize_source_check_report.py "${{ runner.temp }}/alatyr-source-checks-linux-${{ matrix.python-version }}.json" --allow-missing --github-step-summary
       - name: Upload source-check diagnostics
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -55,6 +63,7 @@ jobs:
   portable-source-checks:
     name: Portable source checks (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
     strategy:
       fail-fast: false
       matrix:
@@ -80,6 +89,9 @@ jobs:
         run: python -m pip check
       - name: Run portable source checks
         run: python tools/check_all.py --profile platform --report "${{ runner.temp }}/alatyr-source-checks-${{ runner.os }}.json"
+      - name: Summarize source-check diagnostics
+        if: always()
+        run: python tools/summarize_source_check_report.py "${{ runner.temp }}/alatyr-source-checks-${{ runner.os }}.json" --allow-missing --github-step-summary
       - name: Upload source-check diagnostics
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1

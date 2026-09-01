@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 from capability_catalog import dependency_closure, load_modules, minimum_pack
-from framework_packaging import resolve_framework_files
+from framework_packaging import projected_framework_contents, resolve_framework_files
 from scaffold_target_structure import (
     FRAMEWORK_ROOT,
     TEMPLATE_ROOT,
@@ -24,10 +24,19 @@ from scaffold_target_structure import (
     build_projection_context,
     load_assistant_surfaces,
     project_assistant_bridges,
+    projected_template_content,
     resolve_assistant_surfaces,
     resolve_profile_paths,
     resolved_framework_pack,
 )
+from render_context_catalogs import INDEX_NAME
+from support_state import (
+    POLICY_PATH,
+    STATE_PATH,
+    build_support_state_from_contents,
+    render_state,
+)
+from target_tool_compat import generation_provenance_from_manifest_text
 
 
 WORD_RE = re.compile(r"\S+")
@@ -77,15 +86,10 @@ def group_key(label: str) -> str:
     return parts[0] if parts else "unknown"
 
 
-def measure_files(files: Iterable[tuple[str, Path]]) -> dict[str, Any]:
+def measure_text_entries(entries: Iterable[tuple[str, str]]) -> dict[str, Any]:
     records: list[dict[str, Any]] = []
-    missing: list[str] = []
     groups: dict[str, dict[str, int]] = {}
-    for label, path in sorted(files):
-        if not path.is_file():
-            missing.append(label)
-            continue
-        text = read_text(path)
+    for label, text in sorted(entries):
         lines = len(text.splitlines())
         words = len(WORD_RE.findall(text))
         characters = len(text)
@@ -130,7 +134,55 @@ def measure_files(files: Iterable[tuple[str, Path]]) -> dict[str, Any]:
         "largest_files": sorted(records, key=lambda item: item["words"], reverse=True)[
             :15
         ],
-        "missing_paths": missing,
+        "missing_paths": [],
+    }
+
+
+def measure_files(files: Iterable[tuple[str, Path]]) -> dict[str, Any]:
+    entries: list[tuple[str, str]] = []
+    missing: list[str] = []
+    for label, path in sorted(files):
+        if not path.is_file():
+            missing.append(label)
+            continue
+        entries.append((label, read_text(path)))
+    measured = measure_text_entries(entries)
+    measured["missing_paths"] = missing
+    return measured
+
+
+def combine_measurements(*measurements: dict[str, Any]) -> dict[str, Any]:
+    groups: dict[str, dict[str, int]] = {}
+    largest_files: list[dict[str, Any]] = []
+    missing_paths: list[str] = []
+    totals = {"files": 0, "lines": 0, "words": 0, "characters": 0, "bytes": 0}
+    for measurement in measurements:
+        for key in totals:
+            totals[key] += int(measurement.get(key, 0))
+        missing_paths.extend(measurement.get("missing_paths", []))
+        largest_files.extend(measurement.get("largest_files", []))
+        for group in measurement.get("groups", []):
+            if not isinstance(group, dict) or not isinstance(group.get("group"), str):
+                continue
+            merged = groups.setdefault(
+                group["group"],
+                {"files": 0, "lines": 0, "words": 0, "characters": 0, "bytes": 0},
+            )
+            for key in merged:
+                merged[key] += int(group.get(key, 0))
+    return {
+        **totals,
+        "estimated_tokens_4_chars": math.ceil(totals["characters"] / 4),
+        "groups": [
+            {"group": group, **values}
+            for group, values in sorted(
+                groups.items(), key=lambda item: (-item[1]["words"], item[0])
+            )
+        ],
+        "largest_files": sorted(
+            largest_files, key=lambda item: item["words"], reverse=True
+        )[:15],
+        "missing_paths": sorted(missing_paths),
     }
 
 
@@ -207,8 +259,11 @@ def support_state_inventory_summary(path: Path) -> dict[str, Any]:
             "present": False,
             "managed_files": 0,
             "managed_groups": 0,
+            "words": 0,
+            "bytes": 0,
         }
-    data = json.loads(path.read_text(encoding="utf-8"))
+    text = read_text(path)
+    data = json.loads(text)
     files = data.get("files") if isinstance(data, dict) else None
     groups = data.get("groups") if isinstance(data, dict) else None
     return {
@@ -216,7 +271,125 @@ def support_state_inventory_summary(path: Path) -> dict[str, Any]:
         "present": True,
         "managed_files": len(files) if isinstance(files, list) else 0,
         "managed_groups": len(groups) if isinstance(groups, list) else 0,
+        "words": len(WORD_RE.findall(text)),
+        "bytes": len(text.encode("utf-8")),
     }
+
+
+def projected_support_state_text(
+    *,
+    framework_pack: str,
+    target_contents: dict[str, str],
+    framework_contents: dict[str, str | None],
+) -> str:
+    policy_text = target_contents.get(POLICY_PATH)
+    if policy_text is None:
+        policy_text = read_text(TEMPLATE_ROOT / POLICY_PATH)
+    policy = json.loads(policy_text)
+    manifest_text = target_contents.get(".ai/alatyr.yaml")
+    if manifest_text is None:
+        manifest_text = read_text(TEMPLATE_ROOT / ".ai" / "alatyr.yaml")
+    contents = {
+        label: text.encode("utf-8")
+        for label, text in target_contents.items()
+        if label != STATE_PATH
+    }
+    for relpath in resolve_framework_files(framework_pack):
+        label = f".ai/framework/{relpath}"
+        content = framework_contents.get(relpath)
+        if content is None:
+            content = read_text(FRAMEWORK_ROOT / relpath)
+        contents[label] = content.encode("utf-8")
+    state = build_support_state_from_contents(
+        contents,
+        policy=policy,
+        generated_by=generation_provenance_from_manifest_text(
+            TEMPLATE_ROOT,
+            tool_name="scaffold_target_structure.py",
+            manifest_text=manifest_text,
+        ),
+        source_revision="source-template",
+    )
+    return render_state(state)
+
+
+def projected_scaffold_measurements(
+    *,
+    profile: str,
+    enabled_modules: set[str],
+    framework_pack: str,
+    selected_surfaces: set[str],
+) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], Any, dict[str, Any]]:
+    selected_template_paths = resolve_profile_paths(profile, enabled_modules)
+    selected_template_paths = project_assistant_bridges(
+        selected_template_paths, selected_surfaces
+    )
+    selected_template_paths.update(build_target_context_catalogs(selected_template_paths))
+    selected_framework_paths = resolve_framework_files(framework_pack)
+    selected = selected_template_paths | {
+        Path(".ai") / "framework" / name for name in selected_framework_paths
+    }
+    initial_context = build_projection_context(selected_template_paths, enabled_modules)
+    preliminary_contents: dict[Path, str] = {}
+    for rel in selected_template_paths:
+        if rel.name == INDEX_NAME or rel.as_posix() == STATE_PATH:
+            continue
+        content = projected_template_content(
+            rel,
+            profile,
+            framework_pack,
+            selected,
+            initial_context,
+            TEMPLATE_ROOT,
+        )
+        if content is not None:
+            preliminary_contents[rel] = content
+    context_catalogs = build_target_context_catalogs(
+        selected_template_paths, preliminary_contents
+    )
+    projection_context = build_projection_context(
+        selected, enabled_modules, context_catalogs
+    )
+    target_contents: dict[str, str] = {}
+    for rel in selected_template_paths:
+        if rel.as_posix() == STATE_PATH:
+            continue
+        content = projected_template_content(
+            rel,
+            profile,
+            framework_pack,
+            selected,
+            projection_context,
+            TEMPLATE_ROOT,
+        )
+        if content is None:
+            content = read_text(TEMPLATE_ROOT / rel)
+        target_contents[rel.as_posix()] = content
+    framework_contents = projected_framework_contents(framework_pack)
+    support_state_measure = measure_text_entries([])
+    if STATE_PATH in {path.as_posix() for path in selected_template_paths}:
+        support_state_text = projected_support_state_text(
+            framework_pack=framework_pack,
+            target_contents=target_contents,
+            framework_contents=framework_contents,
+        )
+        support_state_measure = measure_text_entries([(STATE_PATH, support_state_text)])
+        target_contents[STATE_PATH] = support_state_text
+    framework_texts = []
+    for relpath in selected_framework_paths:
+        content = framework_contents.get(relpath)
+        if content is None:
+            content = read_text(FRAMEWORK_ROOT / relpath)
+        framework_texts.append((f".ai/framework/{relpath}", content))
+    target_measure = measure_text_entries(target_contents.items())
+    framework_measure = measure_text_entries(framework_texts)
+    return (
+        target_measure,
+        framework_measure,
+        combine_measurements(target_measure, framework_measure),
+        projection_context,
+        support_state_measure,
+    )
 
 
 def build_scaffold_report(
@@ -229,26 +402,19 @@ def build_scaffold_report(
 ) -> dict[str, Any]:
     enabled = set(enabled_modules or [])
     selected_surfaces = resolve_assistant_surfaces(list(assistant_surfaces or []))
-    selected_template_paths = resolve_profile_paths(profile, enabled)
-    selected_template_paths = project_assistant_bridges(
-        selected_template_paths, selected_surfaces
-    )
-    selected_template_paths.update(build_target_context_catalogs(selected_template_paths))
     selected_pack = resolved_framework_pack(profile, framework_pack, enabled)
-    selected_framework_paths = resolve_framework_files(selected_pack)
-    target_measure = measure_files(target_template_pairs(selected_template_paths))
-    framework_measure = measure_files(framework_pairs(selected_framework_paths))
-    combined_measure = measure_files(
-        [
-            *target_template_pairs(selected_template_paths),
-            *framework_pairs(selected_framework_paths),
-        ]
+    target_measure, framework_measure, combined_measure, projection, state_measure = (
+        projected_scaffold_measurements(
+            profile=profile,
+            enabled_modules=enabled,
+            framework_pack=selected_pack,
+            selected_surfaces=selected_surfaces,
+        )
     )
-    projection = build_projection_context(selected_template_paths, enabled)
     return {
         "schema_version": 1,
         "report_kind": "alatyr-standing-support-cost",
-        "measurement": "whitespace-delimited words in installed support files or source templates",
+        "measurement": "whitespace-delimited words in projected installed support files",
         "profile": profile,
         "profile_recommendation": {
             "default": "kernel",
@@ -271,6 +437,14 @@ def build_scaffold_report(
                 "files": combined_measure["files"],
                 "words": combined_measure["words"],
                 "estimated_tokens_4_chars": combined_measure["estimated_tokens_4_chars"],
+            },
+            "profile_generated_support_state": {
+                "description": "Generated .ai/support-state.json projected for the selected profile, not the complete source template inventory.",
+                "present": state_measure["files"] == 1,
+                "files": state_measure["files"],
+                "words": state_measure["words"],
+                "bytes": state_measure["bytes"],
+                "estimated_tokens_4_chars": state_measure["estimated_tokens_4_chars"],
             },
             "complete_managed_inventory": support_state_inventory_summary(
                 TEMPLATE_ROOT / ".ai" / "support-state.json"
@@ -413,6 +587,7 @@ def render_text(report: dict[str, Any]) -> str:
     else:
         support = report["combined_support"]
         inventory = report["cost_scopes"]["complete_managed_inventory"]
+        state = report["cost_scopes"]["profile_generated_support_state"]
         lines = [
             "Alatyr scaffold support cost",
             f"Profile: {report['profile']}",
@@ -426,6 +601,12 @@ def render_text(report: dict[str, Any]) -> str:
                 f"{inventory['managed_files']} files"
                 if inventory["present"]
                 else "Complete managed inventory records: unavailable"
+            ),
+            (
+                "Profile generated support-state: "
+                f"{state['words']} words"
+                if state["present"]
+                else "Profile generated support-state: unavailable"
             ),
             f"Projected operations: {report['operation_surface']['projected_operation_count']}",
             "Largest groups:",

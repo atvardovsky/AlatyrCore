@@ -2,7 +2,12 @@
 
 ## Unreleased
 
-- No unreleased changes.
+- Optimized source support-cost measurement by projecting profile-generated
+  support state in memory instead of measuring the full template inventory for
+  every scaffold profile.
+- Added compact GitHub Actions source-check summaries, CI concurrency and
+  timeout guardrails, faster release-baseline materialization, and cached
+  manifest dependency inspection for source tooling.
 
 ## 0.1.0-alpha.49 - 2026-08-31
 

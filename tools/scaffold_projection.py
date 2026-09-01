@@ -11,6 +11,7 @@ from typing import Any
 
 from scaffold_state import INITIAL_INSTALLATION_STATE
 
+SelectedPaths = Any
 
 TARGET_PATH_RE = re.compile(
     r"^(?P<prefix>\s+[A-Za-z0-9_-]+:\s+)(?P<quote>[\"']?)(?P<path>\.ai/[^\"']+)(?P=quote)\s*$"
@@ -25,11 +26,25 @@ def portable_relative_path(value: str | PurePath) -> PurePosixPath:
     return PurePosixPath(text)
 
 
-def path_available(value: str, selected: set[Path]) -> bool:
+def selected_path_index(selected: SelectedPaths) -> frozenset[PurePosixPath]:
+    """Return normalized selected paths for repeated availability checks."""
+
+    if isinstance(selected, frozenset):
+        return selected
+    return frozenset(portable_relative_path(candidate) for candidate in selected)
+
+
+def path_available(value: str, selected: SelectedPaths) -> bool:
     if not value.startswith(".ai/"):
         return True
     path = portable_relative_path(value)
-    normalized = {portable_relative_path(candidate) for candidate in selected}
+    normalized = selected_path_index(selected)
+    return path in normalized or any(path in candidate.parents for candidate in normalized)
+
+
+def directory_available(value: str, selected: SelectedPaths) -> bool:
+    path = portable_relative_path(value)
+    normalized = selected_path_index(selected)
     return path in normalized or any(path in candidate.parents for candidate in normalized)
 
 
@@ -37,7 +52,7 @@ def project_manifest(
     text: str,
     profile: str,
     framework_pack: str,
-    selected: set[Path],
+    selected: SelectedPaths,
     enabled_modules: set[str] | None = None,
 ) -> str:
     """Remove manifest path claims for surfaces absent from the scaffold."""
@@ -84,8 +99,8 @@ def project_manifest(
         match = TARGET_PATH_RE.match(line)
         if match and not path_available(match.group("path"), selected):
             continue
-        if line == "approvals:" and not any(
-            Path(".ai/assistant/approvals") in path.parents for path in selected
+        if line == "approvals:" and not directory_available(
+            ".ai/assistant/approvals", selected
         ):
             continue
         if line.strip() == '- "{ENABLED_MODULE}"' and module_items:
@@ -130,7 +145,7 @@ are absent, make no native capability claim; unknown presentation uses ASCII."""
 def project_agent_rule_ids(
     text: str,
     rule_ids: list[str],
-    selected: set[Path] | None = None,
+    selected: SelectedPaths | None = None,
 ) -> str:
     """Limit root instructions to installed rule owners and support surfaces."""
 
@@ -186,7 +201,7 @@ def load_object(path: Path) -> dict[str, Any]:
     return data
 
 
-def project_catalog(catalog: dict[str, Any], selected: set[Path]) -> dict[str, Any]:
+def project_catalog(catalog: dict[str, Any], selected: SelectedPaths) -> dict[str, Any]:
     """Keep only operations whose flow and catalog support files are installed."""
 
     projected = copy.deepcopy(catalog)
@@ -232,7 +247,7 @@ def build_operation_index(catalog: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def project_gate_index(gates: dict[str, Any], selected: set[Path]) -> dict[str, Any]:
+def project_gate_index(gates: dict[str, Any], selected: SelectedPaths) -> dict[str, Any]:
     """Keep only gate index entries whose fragment files are installed."""
 
     projected = copy.deepcopy(gates)
@@ -261,7 +276,7 @@ def project_gate_index(gates: dict[str, Any], selected: set[Path]) -> dict[str, 
     return projected
 
 
-def _filter_paths(value: Any, selected: set[Path]) -> Any:
+def _filter_paths(value: Any, selected: SelectedPaths) -> Any:
     if isinstance(value, list):
         return [
             _filter_paths(item, selected)
@@ -285,7 +300,7 @@ def _filter_paths(value: Any, selected: set[Path]) -> Any:
     return value
 
 
-def _context_contract_available(contract: Any, selected: set[Path]) -> bool:
+def _context_contract_available(contract: Any, selected: SelectedPaths) -> bool:
     if not isinstance(contract, dict):
         return False
     references = contract.get("required_context", [])
@@ -299,13 +314,13 @@ def _context_contract_available(contract: Any, selected: set[Path]) -> bool:
 
 def project_router(
     router: dict[str, Any],
-    selected: set[Path],
+    selected: SelectedPaths,
     operation_ids: set[str],
 ) -> dict[str, Any]:
     """Remove routes and overlays that point outside the selected profile."""
 
     projected = copy.deepcopy(router)
-    has_catalog = Path(".ai/assistant/operation-catalog.json") in selected
+    has_catalog = path_available(".ai/assistant/operation-catalog.json", selected)
     if not has_catalog:
         projected.pop("operation_routing", None)
 
@@ -371,7 +386,7 @@ def project_router(
 
 def project_context_descriptor(
     descriptor: dict[str, Any],
-    selected: set[Path],
+    selected: SelectedPaths,
     operation_ids: set[str],
 ) -> dict[str, Any]:
     """Project one lazy context descriptor onto installed paths and operations."""
@@ -389,7 +404,7 @@ def project_context_descriptor(
 
 
 def project_ai_infrastructure_router(
-    router: dict[str, Any], selected: set[Path]
+    router: dict[str, Any], selected: SelectedPaths
 ) -> dict[str, Any]:
     """Remove routes whose concrete canonical context is not installed."""
 

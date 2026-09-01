@@ -237,9 +237,10 @@ versions.
 The workflow at `.github/workflows/cross-platform-source-checks.yml` runs the
 full suite on the minimum and current Python versions on Linux and the portable
 contract slice on macOS and Windows. Every job writes a machine-readable report
-with exact checker output, interpreter, platform, and dependency versions, then
-uploads it even when a check fails. It does not run paid assistant conformance
-or effectiveness benchmarks.
+with exact checker output, interpreter, platform, and dependency versions,
+appends a compact Markdown summary to the GitHub job, then uploads the report
+even when a check fails. It does not run paid assistant conformance or
+effectiveness benchmarks.
 
 Linux or macOS:
 
@@ -1061,6 +1062,9 @@ estimated tokens at four characters per token, largest groups, optional module
 costs, projected operation count, entry-packet review guidance, and
 assistant-surface duplication signals. It does not replace logical integrity
 review or prove model billing.
+For scaffold profiles, the report projects the generated
+`.ai/support-state.json` for that profile instead of charging the complete
+source template inventory to every installation.
 
 ```sh
 python3 tools/alatyr.py support-costs

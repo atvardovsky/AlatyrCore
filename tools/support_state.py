@@ -182,28 +182,12 @@ def _support_content(content: bytes) -> bytes:
     return content.replace(b"\r\n", b"\n")
 
 
-def build_support_state(target: Path, policy: dict[str, Any] | None = None) -> dict[str, Any]:
-    target = target.resolve()
-    policy = policy or load_policy(target)
+def select_support_paths(
+    candidates: Iterable[str], policy: dict[str, Any]
+) -> dict[str, tuple[str, str]]:
+    """Classify candidate support paths using one validated support policy."""
+
     validate_policy(policy)
-
-    visible = _git_visible_paths(target)
-    if visible is None:
-        candidates: set[str] = set()
-        for root in policy["managed_roots"]:
-            candidates.update(_enumerate_root(target, root))
-        for relpath in policy["optional_entrypoints"]:
-            path = target / relpath
-            if path.is_file() or path.is_symlink():
-                candidates.add(relpath)
-    else:
-        candidates = {
-            relpath
-            for relpath in visible
-            if any(_matches(relpath, root + "/**") for root in policy["managed_roots"])
-            or relpath in policy["optional_entrypoints"]
-        }
-
     casefolded: dict[str, str] = {}
     collisions: list[str] = []
     for relpath in sorted(candidates):
@@ -249,11 +233,24 @@ def build_support_state(target: Path, policy: dict[str, Any] | None = None) -> d
         raise SupportStateError(
             "conflicting support classifications: " + ", ".join(ambiguous[:20])
         )
+    return selected
 
-    bound = canonical_worktree_entries(target, list(selected))
+
+def build_support_state_from_bound_entries(
+    *,
+    policy: dict[str, Any],
+    selected: dict[str, tuple[str, str]],
+    bound: Iterable[tuple[str, str, bytes]],
+    generated_by: dict[str, Any],
+    source_revision: str,
+) -> dict[str, Any]:
+    """Build a support-state record from already canonical path-bound content."""
+
+    validate_policy(policy)
+    bound_entries = list(bound)
     files: list[dict[str, Any]] = []
     group_entries: dict[str, list[tuple[str, str, bytes]]] = {}
-    for relpath, kind, content in bound:
+    for relpath, kind, content in bound_entries:
         if kind == "file":
             content = _support_content(content)
         rule_id, classification = selected[relpath]
@@ -283,25 +280,89 @@ def build_support_state(target: Path, policy: dict[str, Any] | None = None) -> d
     root_entries = [
         (group["id"], "group", group["digest"].encode("ascii")) for group in groups
     ]
-    policy_entry = canonical_worktree_entries(target, [POLICY_PATH])
-    if len(policy_entry) != 1:
+    policy_content = None
+    for relpath, kind, content in bound_entries:
+        if relpath == POLICY_PATH and kind == "file":
+            policy_content = _support_content(content)
+            break
+    if policy_content is None:
         raise SupportStateError(f"support policy is missing: {POLICY_PATH}")
-    policy_digest = hashlib.sha256(_support_content(policy_entry[0][2])).hexdigest()
+    policy_digest = hashlib.sha256(policy_content).hexdigest()
     return {
         "schema_version": SCHEMA_VERSION,
         "state_kind": STATE_KIND,
         "digest_contract": DIGEST_CONTRACT,
-        "generated_by": generation_provenance(
-            target,
-            tool_name="snapshot_target_support.py",
-        ),
+        "generated_by": generated_by,
         "policy": POLICY_PATH,
         "policy_digest": f"sha256:{policy_digest}",
-        "source_revision": _git_revision(target),
+        "source_revision": source_revision,
         "groups": groups,
         "files": files,
         "root_digest": f"sha256:{digest_entries(root_entries)}",
     }
+
+
+def build_support_state_from_contents(
+    contents: dict[str, bytes],
+    *,
+    policy: dict[str, Any],
+    generated_by: dict[str, Any],
+    source_revision: str,
+) -> dict[str, Any]:
+    """Build support state from projected file contents without filesystem I/O."""
+
+    validate_policy(policy)
+    candidates = {
+        relpath
+        for relpath in contents
+        if any(_matches(relpath, root + "/**") for root in policy["managed_roots"])
+        or relpath in policy["optional_entrypoints"]
+    }
+    selected = select_support_paths(candidates, policy)
+    bound = [(relpath, "file", contents[relpath]) for relpath in sorted(selected)]
+    return build_support_state_from_bound_entries(
+        policy=policy,
+        selected=selected,
+        bound=bound,
+        generated_by=generated_by,
+        source_revision=source_revision,
+    )
+
+
+def build_support_state(target: Path, policy: dict[str, Any] | None = None) -> dict[str, Any]:
+    target = target.resolve()
+    policy = policy or load_policy(target)
+    validate_policy(policy)
+
+    visible = _git_visible_paths(target)
+    if visible is None:
+        candidates: set[str] = set()
+        for root in policy["managed_roots"]:
+            candidates.update(_enumerate_root(target, root))
+        for relpath in policy["optional_entrypoints"]:
+            path = target / relpath
+            if path.is_file() or path.is_symlink():
+                candidates.add(relpath)
+    else:
+        candidates = {
+            relpath
+            for relpath in visible
+            if any(_matches(relpath, root + "/**") for root in policy["managed_roots"])
+            or relpath in policy["optional_entrypoints"]
+        }
+
+    selected = select_support_paths(candidates, policy)
+    bound = canonical_worktree_entries(target, list(selected))
+    return build_support_state_from_bound_entries(
+        policy=policy,
+        selected=selected,
+        bound=bound,
+        generated_by=generation_provenance(
+            target,
+            tool_name="snapshot_target_support.py",
+        ),
+        source_revision=_git_revision(target),
+    )
 
 
 def load_state(target: Path, relpath: str = STATE_PATH) -> dict[str, Any]:

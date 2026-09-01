@@ -12,14 +12,29 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 from scaffold_projection import (  # noqa: E402
+    path_available,
     project_manifest,
     project_module_profile,
     project_router,
+    selected_path_index,
 )
 from scaffold_target_structure import plan  # noqa: E402
 
 
 class ScaffoldProjectionTests(unittest.TestCase):
+    def test_selected_path_index_preserves_path_availability_semantics(self) -> None:
+        selected = {
+            Path(".ai/assistant/context/profiles/docs-local.json"),
+            Path(".ai/project/contour.md"),
+        }
+        indexed = selected_path_index(selected)
+
+        self.assertTrue(
+            path_available(".ai/assistant/context/profiles/docs-local.json", indexed)
+        )
+        self.assertTrue(path_available(".ai/assistant/context/profiles", indexed))
+        self.assertFalse(path_available(".ai/assistant/operation-catalog.json", indexed))
+
     def test_optional_approval_mapping_is_omitted_without_surfaces(self) -> None:
         source = "framework:\n  version: x\napprovals:\n  index: .ai/assistant/approvals/index.json\n"
 

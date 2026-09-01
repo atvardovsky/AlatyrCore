@@ -18,6 +18,7 @@ from evidence_contract import CONTRACT_FILES, CONTRACT_PREFIXES
 
 ROOT = Path(__file__).resolve().parents[1]
 EXCLUDED_CHECKERS = {"check_all.py", "check_check_manifest.py"}
+TOOL_DEPENDENCY_CACHE: dict[str, frozenset[str]] = {}
 
 
 @dataclass(frozen=True)
@@ -80,6 +81,10 @@ def direct_local_tool_dependencies(script: str) -> set[str]:
     remain a maintainer declaration responsibility.
     """
 
+    cached = TOOL_DEPENDENCY_CACHE.get(script)
+    if cached is not None:
+        return set(cached)
+
     path = ROOT / script
     tree = ast.parse(path.read_text(encoding="utf-8"), filename=script)
     dependencies: set[str] = set()
@@ -96,6 +101,7 @@ def direct_local_tool_dependencies(script: str) -> set[str]:
                 dependencies.add(module_file.relative_to(ROOT).as_posix())
             elif (module_package / "__init__.py").is_file():
                 dependencies.add(module_package.relative_to(ROOT).as_posix() + "/**")
+    TOOL_DEPENDENCY_CACHE[script] = frozenset(dependencies)
     return dependencies
 
 

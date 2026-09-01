@@ -22,6 +22,7 @@ RUNTIME_COMPATIBILITY = TOOLS / "runtime-compatibility.json"
 CI_CONSTRAINTS = ROOT / "constraints-ci.txt"
 FRAMEWORK_CHECKER = TOOLS / "check_framework_consistency.py"
 SCAFFOLD_CONFORMANCE = TOOLS / "run_conformance_scaffold.py"
+SOURCE_CHECK_SUMMARY = TOOLS / "summarize_source_check_report.py"
 EXPECTED_COMMANDS = {
     "check-source",
     "check-source-focused",
@@ -209,6 +210,10 @@ def main() -> int:
     else:
         workflow = NATIVE_WORKFLOW.read_text(encoding="utf-8")
         for required in [
+            "concurrency:",
+            "cancel-in-progress: ${{ github.event_name == 'pull_request' }}",
+            "timeout-minutes: 35",
+            "timeout-minutes: 25",
             "ubuntu-latest",
             "macos-latest",
             "windows-latest",
@@ -222,6 +227,9 @@ def main() -> int:
             "-c constraints-ci.txt",
             "python -m pip check",
             "--report",
+            "tools/summarize_source_check_report.py",
+            "--github-step-summary",
+            "--allow-missing",
             "workflow_dispatch:",
             "contents: read",
         ]:
@@ -233,6 +241,9 @@ def main() -> int:
     else:
         release_workflow = RELEASE_WORKFLOW.read_text(encoding="utf-8")
         for required in [
+            "concurrency:",
+            "cancel-in-progress: false",
+            "timeout-minutes: 45",
             "actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1",
             "actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
             "actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a",
@@ -241,9 +252,14 @@ def main() -> int:
             "-c constraints-ci.txt",
             "python -m pip check",
             "--report",
+            "tools/summarize_source_check_report.py",
+            "--github-step-summary",
+            "--allow-missing",
         ]:
             if required not in release_workflow:
                 failures.append(f"release source workflow missing {required}")
+    if not SOURCE_CHECK_SUMMARY.is_file():
+        failures.append("source-check report summary helper is missing")
 
     with tempfile.TemporaryDirectory() as directory:
         base = Path(directory)
