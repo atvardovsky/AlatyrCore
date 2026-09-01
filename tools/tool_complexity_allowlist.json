@@ -90,7 +90,7 @@
     {
       "path": "tools/validate_target_adapter.py",
       "qualname": "Validator.check_architecture_knowledge",
-      "max_lines": 437,
+      "max_lines": 413,
       "reason": "target validator method; extract architecture catalog and flow checks"
     },
     {
@@ -107,14 +107,8 @@
     },
     {
       "path": "tools/validate_target_adapter.py",
-      "qualname": "Validator.check_discussion_diagrams",
-      "max_lines": 418,
-      "reason": "target validator method; extract diagram policy and presentation checks"
-    },
-    {
-      "path": "tools/validate_target_adapter.py",
       "qualname": "Validator.check_extensions",
-      "max_lines": 390,
+      "max_lines": 367,
       "reason": "target validator method; extract extension lifecycle and lock checks"
     },
     {
@@ -126,7 +120,7 @@
     {
       "path": "tools/validate_target_adapter.py",
       "qualname": "Validator.check_project_vocabulary",
-      "max_lines": 389,
+      "max_lines": 366,
       "reason": "target validator method; extract term, alias, and dictionary checks"
     },
     {
@@ -137,12 +131,6 @@
     },
     {
       "path": "tools/validate_target_adapter.py",
-      "qualname": "Validator.check_subagent_delegation",
-      "max_lines": 690,
-      "reason": "target validator method; extract delegation capability checks"
-    },
-    {
-      "path": "tools/validate_target_adapter.py",
       "qualname": "Validator.check_team_collaboration",
       "max_lines": 1153,
       "reason": "target validator method; extract team policy, task, handoff, and review checks"
@@ -150,14 +138,8 @@
     {
       "path": "tools/validate_target_adapter.py",
       "qualname": "Validator.check_test_first_development",
-      "max_lines": 349,
+      "max_lines": 326,
       "reason": "target validator method; extract TDD policy and flow checks"
-    },
-    {
-      "path": "tools/validate_target_adapter.py",
-      "qualname": "Validator.check_workspace_modes",
-      "max_lines": 454,
-      "reason": "target validator method; extract workspace-mode routing and state checks"
     }
   ]
 }

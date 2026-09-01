@@ -54,6 +54,11 @@ rule or target-project truth.
 Other docs explain how to work on this source repository without turning
 source repository details into framework requirements.
 
+`docs/source-architecture.md` defines the maintainer architecture model for
+AlatyrCore source changes: contracted modular monolith, capability modules,
+validation pipeline, pure helper extraction, and least-sufficient source
+context. It does not own portable framework behavior.
+
 `docs/release-process.md` defines the source repository release and versioning
 workflow. It is maintainer guidance, not a target adapter requirement.
 
@@ -156,6 +161,25 @@ Windows; actual client runs remain external evidence.
 
 `tools/check_markdown_links.py` validates local Markdown link destinations in
 source docs and templates.
+
+`tools/source_check_manifest.py` owns reusable source-check manifest primitives
+for path-index matching, direct local tool dependency discovery, and broad
+trigger diagnostics. `tools/check_check_manifest.py` remains the CLI wrapper
+for source manifest coverage.
+
+`tools/target_adapter_validation/action_modes.py` owns the shared target
+allowed-action mode set used by installed adapter validators.
+
+`tools/target_adapter_validation/module_profile.py` owns reusable parsing for
+optional target module states, so capability validators can share one
+enabled/required interpretation without duplicating Markdown parsing.
+
+`tools/target_adapter_validation/diagrams.py`,
+`tools/target_adapter_validation/workspace_modes.py`, and
+`tools/target_adapter_validation/subagent_delegation.py` own extracted
+capability validators for discussion diagrams, workspace modes, and worker
+delegation. `tools/validate_target_adapter.py` keeps the stable wrapper
+methods and shared validator host interface.
 
 `tools/check_maturity_profile.py` validates the target
 `.ai/assistant/maturity-profile.md` template baseline task areas and required

@@ -586,6 +586,7 @@ Technical entry points:
 - [Installation guide](INSTALL.md)
 - [Framework index](framework/README.md)
 - [Repository layout](docs/repository-layout.md)
+- [Source architecture](docs/source-architecture.md)
 - [Source tooling reference](tools/README.md)
 - [Assistant compatibility](docs/assistant-compatibility.md)
 - [Passive dependency knowledge](framework/dependency-knowledge.md)

@@ -145,6 +145,19 @@ known oversized Python functions. It does not claim the validator is already
 optimally modular; it prevents new large functions or unreviewed growth while
 the legacy validators are extracted incrementally.
 
+Structural source-tooling changes should follow the source architecture model
+in [`docs/source-architecture.md`](../docs/source-architecture.md). In
+practice, that means extracting pure helper logic before moving CLI behavior,
+keeping manifest routes current for new helper files, and validating that
+focused checks still cover the changed paths.
+
+Target-adapter validator capability checks should move out of
+`validate_target_adapter.py` into `tools/target_adapter_validation/` when a
+capability becomes large or needs reusable parsing. The current extracted
+modules cover shared action modes, optional module-profile parsing, discussion
+diagrams, workspace modes, and subagent delegation; the root validator remains
+the stable command and host interface.
+
 ## Source Validation Runner
 
 `check_all.py` loads the schema-version-2 `tools/check_manifest.json` and runs dependency-aware

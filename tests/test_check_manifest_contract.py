@@ -90,7 +90,11 @@ class CheckManifestContractTests(unittest.TestCase):
 
         self.assertEqual(
             dependencies,
-            {"tools/check_all.py", "tools/evidence_contract.py"},
+            {
+                "tools/check_all.py",
+                "tools/evidence_contract.py",
+                "tools/source_check_manifest.py",
+            },
         )
 
     def test_declaration_matching_uses_source_path_index(self) -> None:

@@ -2292,13 +2292,15 @@
         "tools/check_all.py",
         "tools/check_check_manifest.py",
         "tools/compare_source_check_reports.py",
-        "tools/evidence_contract.py"
+        "tools/evidence_contract.py",
+        "tools/source_check_manifest.py"
       ],
       "trigger_paths": [
         "tools/check_all.py",
         "tools/check_check_manifest.py",
         "tools/compare_source_check_reports.py",
         "tools/evidence_contract.py",
+        "tools/source_check_manifest.py",
         "tools/check_manifest.json"
       ],
       "resource_class": "light"
@@ -2350,7 +2352,13 @@
         "tools/evidence_contract.py",
         "tools/report_adapter_health.py",
         "tools/source_state.py",
+        "tools/source_check_manifest.py",
         "tools/task_classification_contract.py",
+        "tools/target_adapter_validation/action_modes.py",
+        "tools/target_adapter_validation/diagrams.py",
+        "tools/target_adapter_validation/module_profile.py",
+        "tools/target_adapter_validation/subagent_delegation.py",
+        "tools/target_adapter_validation/workspace_modes.py",
         "tools/target_tool_compat.py"
       ],
       "trigger_paths": [
@@ -2362,7 +2370,13 @@
         "tools/evidence_contract.py",
         "tools/report_adapter_health.py",
         "tools/source_state.py",
+        "tools/source_check_manifest.py",
         "tools/task_classification_contract.py",
+        "tools/target_adapter_validation/action_modes.py",
+        "tools/target_adapter_validation/diagrams.py",
+        "tools/target_adapter_validation/module_profile.py",
+        "tools/target_adapter_validation/subagent_delegation.py",
+        "tools/target_adapter_validation/workspace_modes.py",
         "tools/target_tool_compat.py"
       ],
       "resource_class": "heavy",

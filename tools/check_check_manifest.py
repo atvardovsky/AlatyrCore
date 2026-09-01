@@ -3,128 +3,24 @@
 
 from __future__ import annotations
 
-import ast
-import fnmatch
 import json
-import subprocess
 import sys
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 from check_all import load_manifest, matches, routes
 from evidence_contract import CONTRACT_FILES, CONTRACT_PREFIXES
+from source_check_manifest import (
+    SourcePathIndex,
+    broad_trigger_patterns,
+    declaration_matches_source,
+    declared_implementation_path,
+    direct_local_tool_dependencies,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
 EXCLUDED_CHECKERS = {"check_all.py", "check_check_manifest.py"}
-TOOL_DEPENDENCY_CACHE: dict[str, frozenset[str]] = {}
-
-
-@dataclass(frozen=True)
-class SourcePathIndex:
-    """Repository source paths used to resolve manifest declarations once."""
-
-    paths: frozenset[str]
-
-    @classmethod
-    def from_paths(cls, paths: list[str]) -> "SourcePathIndex":
-        indexed: set[str] = set()
-        for path in paths:
-            normalized = Path(path).as_posix()
-            if not normalized or normalized == ".":
-                continue
-            indexed.add(normalized)
-            parent = Path(normalized).parent
-            while parent.as_posix() not in {"", "."}:
-                indexed.add(parent.as_posix())
-                parent = parent.parent
-        return cls(frozenset(indexed))
-
-    @classmethod
-    def from_root(cls, root: Path = ROOT) -> "SourcePathIndex":
-        result = subprocess.run(
-            ["git", "ls-files", "-c", "-o", "--exclude-standard", "-z"],
-            cwd=root,
-            check=False,
-            capture_output=True,
-        )
-        if result.returncode != 0:
-            message = result.stderr.decode("utf-8", errors="replace").strip()
-            raise ValueError(message or "cannot enumerate source paths")
-        paths = [
-            path
-            for path in result.stdout.decode(
-                "utf-8", errors="surrogateescape"
-            ).split("\0")
-            if path
-        ]
-        return cls.from_paths(paths)
-
-    def matches_declaration(self, pattern: str) -> bool:
-        if any(character in pattern for character in "*?["):
-            return any(fnmatch.fnmatch(path, pattern) for path in self.paths)
-        return pattern in self.paths
-
-
-def declared_implementation_path(check: dict[str, Any], path: str) -> bool:
-    return any(
-        fnmatch.fnmatch(path, pattern) for pattern in check["implementation_paths"]
-    )
-
-
-def direct_local_tool_dependencies(script: str) -> set[str]:
-    """Find direct imports that resolve to repository-local tools modules.
-
-    This deliberately validates only imports that Python can resolve from the
-    checked-in `tools/` tree. Dynamic imports and runtime-computed data paths
-    remain a maintainer declaration responsibility.
-    """
-
-    cached = TOOL_DEPENDENCY_CACHE.get(script)
-    if cached is not None:
-        return set(cached)
-
-    path = ROOT / script
-    tree = ast.parse(path.read_text(encoding="utf-8"), filename=script)
-    dependencies: set[str] = set()
-    for node in ast.walk(tree):
-        modules: list[str] = []
-        if isinstance(node, ast.Import):
-            modules = [alias.name.split(".", 1)[0] for alias in node.names]
-        elif isinstance(node, ast.ImportFrom) and node.module:
-            modules = [node.module.split(".", 1)[0]]
-        for module in modules:
-            module_file = ROOT / "tools" / f"{module}.py"
-            module_package = ROOT / "tools" / module
-            if module_file.is_file():
-                dependencies.add(module_file.relative_to(ROOT).as_posix())
-            elif (module_package / "__init__.py").is_file():
-                dependencies.add(module_package.relative_to(ROOT).as_posix() + "/**")
-    TOOL_DEPENDENCY_CACHE[script] = frozenset(dependencies)
-    return dependencies
-
-
-def declaration_matches_source(
-    path: str, source_index: SourcePathIndex | None = None
-) -> bool:
-    """Reject stale exact paths and glob declarations that match no source file."""
-
-    index = source_index or SourcePathIndex.from_root(ROOT)
-    return index.matches_declaration(path)
-
-
-def broad_trigger_patterns(check: dict[str, Any]) -> list[str]:
-    patterns: list[str] = []
-    for pattern in check["trigger_paths"]:
-        if pattern == "**":
-            patterns.append(pattern)
-            continue
-        if pattern.endswith("/**"):
-            prefix = pattern[:-3].rstrip("/")
-            if len(Path(prefix).parts) <= 2:
-                patterns.append(pattern)
-    return patterns
 
 
 def evidence_contract_routing_failures(checks: list[dict[str, Any]]) -> list[str]:

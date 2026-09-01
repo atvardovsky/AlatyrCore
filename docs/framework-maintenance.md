@@ -48,6 +48,19 @@ Use this guide when changing Alatyr Core itself.
 - Wording-only change: update only the owning document when no behavior,
   installation step, or adapter requirement changes.
 
+## Source Architecture Model
+
+Before structural source-tooling refactors, use
+[`docs/source-architecture.md`](source-architecture.md). The source repository
+is maintained as a contracted modular monolith with capability modules and a
+validation pipeline: portable rules stay in `framework/`, generated or derived
+surfaces stay checked against their owners, and Python command wrappers should
+delegate reusable parsing and validation logic to focused helpers.
+
+This source architecture guide does not own portable framework behavior. It is
+the maintainer-facing boundary for reducing source-tool complexity without
+weakening checks.
+
 ## Self-Application Reviews
 
 When using Alatyr Core to inspect or improve this source repository, treat

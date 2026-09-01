@@ -756,123 +756,123 @@ Catalog entries: 1152
 - `DEBUG_MODE_VALIDATION_EVIDENCE_CLASS`
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DELEGATION_CAPABILITY_FIELDS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_CAPABILITY_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_CAPABILITY_SURFACES`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_CAPABILITY_VALUE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_CONFLICT_GUARDS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_DECISION_MODE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_DEFAULT_PREFERENCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_DISPATCH_BACKEND`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ENABLED_ROLES`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ENABLED_ROLE_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ENABLED_ROLE_INACTIVE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ENABLED_ROLE_UNBOUND`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ENABLED_ROLE_UNKNOWN`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_EXPLICIT_MODEL_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_EXTERNAL_DISPATCHER`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_EXTERNAL_ROUTE_UNSUPPORTED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_MODEL_OVERRIDE_UNSUPPORTED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_MODEL_SELECTION_MODE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_NATIVE_BACKEND_UNSUPPORTED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_NATIVE_INVOCATION_UNSUPPORTED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_NATIVE_ROUTE_UNSUPPORTED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_OVERLAY_CONTEXT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_OVERLAY_CONTRACT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_PARALLEL_LIMIT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_POLICY_KIND`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_POLICY_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_POLICY_STATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_REQUIRED_FILE_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_REQUIRED_GUARDS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_RESULT_GUARDS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_RETRY_LIMIT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_RETRY_POLICY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_RETRY_SCOPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ROLES_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ROLE_ACTION_CEILING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ROLE_BINDINGS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ROLE_BINDING_AVAILABILITY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ROLE_BINDING_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ROLE_BINDING_ROUTE_CONFLICT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ROLE_BINDING_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ROLE_BINDING_UNKNOWN`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ROLE_CATALOG_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ROLE_CATALOG_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ROLE_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ROLE_PROMPT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ROLE_RESULT_CONTRACT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ROLE_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ROLE_STATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ROLE_WRITE_CEILING_CONFLICT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ROLE_WRITE_MODE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_SHARED_WRITE_ISOLATION`
-  Level: warning. Source: `tools/validate_target_adapter.py`.
+  Level: warning. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_UNSUPPORTED_ROUTE_CONFLICT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_WORKER_DEFINITION_FORMAT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_WORKER_DEFINITION_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_WORKER_DEFINITION_NOT_THIN`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_WORKER_DEFINITION_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_WORKER_DEFINITION_PATHS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_WORKER_DEFINITION_STATE_CONFLICT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_WRITE_ISOLATION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DEPENDENCY_KNOWLEDGE_APPLICABILITY`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DEPENDENCY_KNOWLEDGE_AUTHORITY`
@@ -1014,69 +1014,69 @@ Catalog entries: 1152
 - `DEVELOPMENT_EVIDENCE_STATUS`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `DIAGRAM_BRIDGE_CAPABILITY_FIELD`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_BRIDGE_CAPABILITY_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_CAPABILITY_ARTIFACT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_CAPABILITY_ASCII_FALLBACK`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_CAPABILITY_CLIENT_VERSION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_CAPABILITY_EVIDENCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_CAPABILITY_EXPIRED`
-  Level: warning. Source: `tools/validate_target_adapter.py`.
+  Level: warning. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_CAPABILITY_EXPIRY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_CAPABILITY_FIELDS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_CAPABILITY_FRESHNESS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_CAPABILITY_INDEX_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_CAPABILITY_KIND`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_CAPABILITY_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_CAPABILITY_REVIEW_TRIGGERS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_CAPABILITY_ROUTE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_CAPABILITY_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_CAPABILITY_SURFACES`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_CAPABILITY_SURFACE_DRIFT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_CAPABILITY_SYNTAXES`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_CONTRACT_INCOMPLETE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_MANIFEST_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_MODULE_STATE_MISSING`
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `DIAGRAM_MODULE_UNDECLARED`
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `DIAGRAM_OPERATION_ACTIONS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_OPERATION_FLOW`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_OPERATION_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_OPERATION_MODULE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_OPERATION_UNROUTED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_REQUIRED_FILE_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_SURFACE_CAPABILITY_ID`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_SURFACE_CAPABILITY_KIND`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_SURFACE_CAPABILITY_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIFF_SCOPE_CLEAN`
   Level: info. Source: `tools/validate_target_adapter.py`.
 - `DIFF_SCOPE_SKIPPED`
@@ -2288,85 +2288,85 @@ Catalog entries: 1152
 - `VOCABULARY_TERM_UNINDEXED`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `WORKSPACE_MODE_ACTIVE_ROOT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_AUTO_ACCEPT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_CATALOG_ENTRY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_CATALOG_OWNER`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_CATALOG_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_CATALOG_STATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_CONSTRAINTS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_CONTEXT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_DEFAULT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_DESCRIPTOR_DRIFT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_DESCRIPTOR_FIELD`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_DESCRIPTOR_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_DESCRIPTOR_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_EMPTY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_EVIDENCE_LIMIT`
-  Level: info. Source: `tools/validate_target_adapter.py`.
+  Level: info. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_GRANT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_ID`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_INTENT_UNROUTED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_MANIFEST_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_NESTED_ADAPTER`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_OPERATION_UNROUTED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_README_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_RELATIONSHIP`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_RELATIONSHIPS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_REQUIRED_FILE_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_ROOT_CONTEXT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_ROOT_DISABLED_CONTENT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_ROOT_OWNER`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_ROOT_REFERENCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_ROOT_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_ROOT_STATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_ROUTER`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_SCOPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_SELECTION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_SELECTION_POLICY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_SIGNALS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_SUGGESTIONS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_WORKSPACE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `{prefix}_INVALID_JSON`
   Level: error. Source: `tools/validate_target_adapter.py`.
 

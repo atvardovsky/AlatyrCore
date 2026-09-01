@@ -38,11 +38,11 @@
       "standard-task"
     ],
     "default_class": "standard-task",
-    "ambiguity_behavior": "stay read-only, choose the smallest plausible source profile, and ask for the missing fact before edits",
+    "ambiguity_behavior": "stay read-only, choose the smallest plausible source profile, and ask for missing facts before edits",
     "small_task_use_when": [
       "one source profile is sufficient",
       "one local file or directly linked neighbor set is affected",
-      "no framework rule, adapter schema, target template contract, release, approval, or security boundary changes",
+      "no framework rule, adapter schema, target template, release, approval, or security boundary changes",
       "focused source checks can prove the result"
     ],
     "expansion_triggers": [
@@ -56,7 +56,7 @@
   },
   "conditional_overlays": {
     "source-worker-strategy": {
-      "activate_when": "worker delegation is available and likely to improve wall-clock time or independent review quality",
+      "activate_when": "worker delegation is available and likely to improve wall-clock time or review independence",
       "required_context": ["docs/source-worker-strategy.md"],
       "canonical_rule": "ALATYR-DELEGATION-001",
       "fallback": "continue with the primary assistant"
@@ -92,9 +92,13 @@
     },
     "source-tooling": {
       "required_context": ["tools/README.md", "docs/framework-maintenance.md"],
-      "conditional_context": ["tool being changed", "contract validated by the tool"],
+      "conditional_context": [
+        "tool being changed",
+        "contract validated by the tool",
+        "docs/source-architecture.md when refactoring or modularizing source tools"
+      ],
       "check_profile": "quick",
-      "check_selection": "start with quick routing and support-cost checks, then select focused check IDs from tools/check_manifest.json by trigger_paths",
+      "check_selection": "start with quick checks, then select focused IDs from tools/check_manifest.json by trigger_paths",
       "checks": ["check-manifest", "support-costs", "source-unit-tests", "framework-consistency"]
     },
     "release-versioning": {

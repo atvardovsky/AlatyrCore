@@ -73,6 +73,7 @@ from target_adapter_validation.capability import CapabilityValidationContext
 from target_adapter_validation.ai_infrastructure import (
     AI_INFRASTRUCTURE_ROUTER_MODULE,
 )
+from target_adapter_validation.action_modes import ALLOWED_ACTION_MODES
 from target_adapter_validation.assistant_capabilities import (
     CAPABILITY_INDEX_KIND,
     CAPABILITY_INDEX_SCHEMA_VERSION,
@@ -93,15 +94,19 @@ from target_adapter_validation.consistency_map import (
     parse_registry_fact_entries,
 )
 from target_adapter_validation.debug_mode import validate_debug_mode
+from target_adapter_validation.diagrams import validate_discussion_diagrams
 from target_adapter_validation.engineering_evidence import (
     validate_engineering_evidence,
 )
 from target_adapter_validation.framework_baseline import source_pack_expectation
 from target_adapter_validation.installation_state import validate_installation_state
+from target_adapter_validation.module_profile import parse_module_profile_state
 from target_adapter_validation.project_knowledge import (
     validate_project_knowledge_contract,
 )
+from target_adapter_validation.subagent_delegation import validate_subagent_delegation
 from target_adapter_validation.support_state import validate_support_state
+from target_adapter_validation.workspace_modes import validate_workspace_modes
 from scaffold_state import validate_installation_state_record
 from target_adapter_validation.modules import dispatch_capability_checks
 from target_adapter_validation.router_costs import (
@@ -641,13 +646,6 @@ CONDITIONAL_STATUS_RE = re.compile(
     r"\b(?:if|when|unless|until|while|may|might|can|could|example|possible)\b",
     re.IGNORECASE,
 )
-ALLOWED_ACTION_MODES = {
-    "read-only",
-    "docs-only",
-    "adapter-only",
-    "code-and-tests",
-    "full-with-approval",
-}
 AUTHORIZATION_PHASES = ["inspect", "modify", "commit", "publish", "live-external"]
 
 
@@ -1307,6 +1305,76 @@ class Validator:
                 self.unsafe_target_paths.add(label)
                 self.error("TARGET_PATH_ESCAPE", str(exc), label)
             return ""
+
+    def module_validation_enabled(
+        self,
+        module_id: str,
+        undeclared_code: str,
+        state_missing_code: str,
+        display_name: str,
+    ) -> bool:
+        module_relpath = ".ai/assistant/module-profile.md"
+        module_path = self.target_path(module_relpath)
+        if not module_path.is_file():
+            return False
+        state = parse_module_profile_state(self.read_text(module_path), module_id)
+        if not state.declared:
+            self.module_profile_undeclared_warning(
+                module_id, undeclared_code, display_name, module_relpath
+            )
+            return False
+        if not state.has_parseable_state:
+            self.module_profile_state_missing_warning(
+                module_id, state_missing_code, display_name, module_relpath
+            )
+            return False
+        return state.validation_enabled
+
+    def module_profile_undeclared_warning(
+        self,
+        module_id: str,
+        fallback_code: str,
+        display_name: str,
+        module_relpath: str,
+    ) -> None:
+        message = f"module profile does not declare {display_name} state"
+        if module_id == "diagrams":
+            self.warn("DIAGRAM_MODULE_UNDECLARED", message, module_relpath)
+        elif module_id == "architecture-knowledge":
+            self.warn("ARCHITECTURE_MODULE_UNDECLARED", message, module_relpath)
+        elif module_id == "code-documentation":
+            self.warn("CODEDOC_MODULE_UNDECLARED", message, module_relpath)
+        elif module_id == "project-vocabulary":
+            self.warn("VOCABULARY_MODULE_UNDECLARED", message, module_relpath)
+        elif module_id == "test-first-development":
+            self.warn("TDD_MODULE_UNDECLARED", message, module_relpath)
+        elif module_id == "extensions":
+            self.warn("EXTENSION_MODULE_UNDECLARED", message, module_relpath)
+        else:
+            self.warn(fallback_code, message, module_relpath)
+
+    def module_profile_state_missing_warning(
+        self,
+        module_id: str,
+        fallback_code: str,
+        display_name: str,
+        module_relpath: str,
+    ) -> None:
+        message = f"{display_name} module has no parseable State field"
+        if module_id == "diagrams":
+            self.warn("DIAGRAM_MODULE_STATE_MISSING", message, module_relpath)
+        elif module_id == "architecture-knowledge":
+            self.warn("ARCHITECTURE_MODULE_STATE_MISSING", message, module_relpath)
+        elif module_id == "code-documentation":
+            self.warn("CODEDOC_MODULE_STATE_MISSING", message, module_relpath)
+        elif module_id == "project-vocabulary":
+            self.warn("VOCABULARY_MODULE_STATE_MISSING", message, module_relpath)
+        elif module_id == "test-first-development":
+            self.warn("TDD_MODULE_STATE_MISSING", message, module_relpath)
+        elif module_id == "extensions":
+            self.warn("EXTENSION_MODULE_STATE_MISSING", message, module_relpath)
+        else:
+            self.warn(fallback_code, message, module_relpath)
 
     def capability_validation_context(self) -> CapabilityValidationContext:
         """Expose the stable, narrow host interface used by capability modules."""
@@ -3036,1148 +3104,20 @@ class Validator:
             )
 
     def check_subagent_delegation(self, manifest: ManifestData | None) -> None:
-        if manifest is None:
-            return
-        enabled = {
-            scalar.value
-            for scalar in manifest.lists.get(("modules", "enabled"), [])
-        }
-        if "subagent-delegation" not in enabled:
-            return
-
-        required_paths = [
-            ".ai/framework/subagent-delegation.md",
-            ".ai/assistant/delegation-policy.json",
-            ".ai/assistant/context/task-scales/delegated-execution.json",
-            ".ai/assistant/flows/subagent-delegation.flow.md",
-            ".ai/assistant/prompts/worker-orchestration.md",
-            ".ai/assistant/templates/subagent-task-packet.md",
-            ".ai/assistant/templates/native-worker-binding.md",
-            ".ai/assistant/templates/worker-execution-plan.md",
-            ".ai/assistant/templates/worker-result.md",
-            ".ai/assistant/workers/role-catalog.json",
-            ".ai/assistant/workers/roles/explorer.md",
-            ".ai/assistant/workers/roles/implementer.md",
-            ".ai/assistant/workers/roles/test-runner.md",
-            ".ai/assistant/workers/roles/documentation-worker.md",
-            ".ai/assistant/workers/roles/reviewer.md",
-            ".ai/assistant/workers/roles/fast-focused-worker.md",
-            ".ai/assistant/assistant-capabilities.json",
-            ".ai/assistant/bridge-capability-matrix.md",
-        ]
-        for relpath in required_paths:
-            if not self.target_path(relpath).is_file():
-                self.error(
-                    "DELEGATION_REQUIRED_FILE_MISSING",
-                    "enabled subagent delegation is missing a required contract",
-                    relpath,
-                )
-
-        policy_relpath = ".ai/assistant/delegation-policy.json"
-        policy = self.load_json_object(
-            self.target_path(policy_relpath), "DELEGATION_POLICY"
-        )
-        if policy is None:
-            return
-
-        def concrete(value: Any) -> bool:
-            return (
-                isinstance(value, str)
-                and bool(value.strip())
-                and not is_placeholder(value)
-                and not is_unresolved_value(value)
-            )
-
-        if policy.get("schema_version") != 2:
-            self.error(
-                "DELEGATION_POLICY_SCHEMA",
-                "delegation policy schema_version must be 2",
-                policy_relpath,
-            )
-        if policy.get("policy_kind") != "target-subagent-delegation-policy":
-            self.error(
-                "DELEGATION_POLICY_KIND",
-                "delegation policy kind is invalid",
-                policy_relpath,
-            )
-        state = policy.get("state")
-        if concrete(state) and state not in {"enabled", "suggest-only"}:
-            self.error(
-                "DELEGATION_POLICY_STATE",
-                "enabled module requires enabled or suggest-only policy state",
-                policy_relpath,
-            )
-        decision_mode = policy.get("decision_mode")
-        if concrete(decision_mode) and decision_mode not in {
-            "automatic",
-            "suggest-only",
-        }:
-            self.error(
-                "DELEGATION_DECISION_MODE",
-                "enabled delegation decision_mode must be automatic or suggest-only",
-                policy_relpath,
-            )
-        preference = policy.get("default_preference")
-        if concrete(preference) and preference not in {
-            "auto",
-            "allow",
-            "forbid",
-            "require-supported",
-        }:
-            self.error(
-                "DELEGATION_DEFAULT_PREFERENCE",
-                "delegation default_preference is invalid",
-                policy_relpath,
-            )
-        parallel = policy.get("max_parallel_delegates")
-        if not is_placeholder(parallel) and (
-            not isinstance(parallel, int) or isinstance(parallel, bool) or parallel < 1
-        ):
-            self.error(
-                "DELEGATION_PARALLEL_LIMIT",
-                "max_parallel_delegates must be a positive integer",
-                policy_relpath,
-            )
-        if policy.get("role_catalog") != ".ai/assistant/workers/role-catalog.json":
-            self.error(
-                "DELEGATION_ROLE_CATALOG_PATH",
-                "delegation policy must select the canonical target role catalog",
-                policy_relpath,
-            )
-        enabled_role_ids = policy.get("enabled_role_ids")
-        if not isinstance(enabled_role_ids, list) or not enabled_role_ids:
-            self.error(
-                "DELEGATION_ENABLED_ROLES",
-                "enabled delegation requires a non-empty enabled_role_ids list",
-                policy_relpath,
-            )
-            enabled_role_ids = []
-        concrete_enabled_roles = [
-            value for value in enabled_role_ids if concrete(value)
-        ]
-        if len(concrete_enabled_roles) != len(set(concrete_enabled_roles)):
-            self.error(
-                "DELEGATION_ENABLED_ROLE_DUPLICATE",
-                "enabled_role_ids contains duplicates",
-                policy_relpath,
-            )
-
-        retry_policy = policy.get("retry_policy")
-        if not isinstance(retry_policy, dict):
-            self.error(
-                "DELEGATION_RETRY_POLICY",
-                "enabled delegation requires a retry policy",
-                policy_relpath,
-            )
-        else:
-            attempts = retry_policy.get("max_attempts_per_task")
-            if not is_placeholder(attempts) and (
-                not isinstance(attempts, int)
-                or isinstance(attempts, bool)
-                or attempts < 0
-            ):
-                self.error(
-                    "DELEGATION_RETRY_LIMIT",
-                    "max_attempts_per_task must be zero or a positive integer",
-                    policy_relpath,
-                )
-            if retry_policy.get("retry_only_when_scope_unchanged") is not True:
-                self.error(
-                    "DELEGATION_RETRY_SCOPE",
-                    "retry policy must forbid scope expansion",
-                    policy_relpath,
-                )
-
-        conflict_policy = policy.get("conflict_policy")
-        expected_conflicts = {
-            "overlapping_writes": "reject-concurrent-dispatch",
-            "contradictory_results": "return-to-primary",
-            "stale_baseline": "revalidate-before-integration",
-            "scope_violation": "reject-result",
-        }
-        if not isinstance(conflict_policy, dict) or any(
-            conflict_policy.get(field) != expected
-            for field, expected in expected_conflicts.items()
-        ):
-            self.error(
-                "DELEGATION_CONFLICT_GUARDS",
-                "delegation conflict policy weakens portable rejection rules",
-                policy_relpath,
-            )
-
-        requirements = policy.get("requirements")
-        required_guards = {
-            "primary_keeps_critical_path",
-            "independent_local_acceptance",
-            "disjoint_write_scope",
-            "primary_final_convergence",
-            "current_capability_evidence",
-        }
-        if not isinstance(requirements, dict) or any(
-            requirements.get(field) is not True for field in required_guards
-        ):
-            self.error(
-                "DELEGATION_REQUIRED_GUARDS",
-                "delegation policy must retain every primary and isolation guard",
-                policy_relpath,
-            )
-
-        result_policy = policy.get("result_policy")
-        expected_result_policy = {
-            "accept_out_of_scope_changes": False,
-            "accept_unvalidated_changes": False,
-            "require_primary_review": True,
-            "require_actual_model_or_unverified_status": True,
-            "require_normalized_worker_result": True,
-        }
-        if not isinstance(result_policy, dict) or any(
-            result_policy.get(field) is not expected
-            for field, expected in expected_result_policy.items()
-        ):
-            self.error(
-                "DELEGATION_RESULT_GUARDS",
-                "delegation result policy weakens primary review or scope evidence",
-                policy_relpath,
-            )
-
-        catalog_relpath = ".ai/assistant/workers/role-catalog.json"
-        catalog = self.load_json_object(
-            self.target_path(catalog_relpath), "DELEGATION_ROLE_CATALOG"
-        )
-        catalog_roles = catalog.get("roles") if isinstance(catalog, dict) else None
-        if not isinstance(catalog_roles, list) or not catalog_roles:
-            self.error(
-                "DELEGATION_ROLES_MISSING",
-                "enabled delegation requires a non-empty target worker role catalog",
-                catalog_relpath,
-            )
-            catalog_roles = []
-        if isinstance(catalog, dict) and (
-            catalog.get("schema_version") != 1
-            or catalog.get("catalog_kind") != "target-worker-role-catalog"
-        ):
-            self.error(
-                "DELEGATION_ROLE_CATALOG_SCHEMA",
-                "worker role catalog identity or schema is invalid",
-                catalog_relpath,
-            )
-
-        capability_index_relpath = ".ai/assistant/assistant-capabilities.json"
-        capability_index = self.load_json_object(
-            self.target_path(capability_index_relpath), "DELEGATION_CAPABILITY_INDEX"
-        )
-        surfaces = (
-            capability_index.get("surfaces")
-            if isinstance(capability_index, dict)
-            else None
-        )
-        if not isinstance(surfaces, dict) or not surfaces:
-            self.error(
-                "DELEGATION_CAPABILITY_SURFACES",
-                "enabled delegation requires assistant capability surface records",
-                capability_index_relpath,
-            )
-            surfaces = {}
-
-        capability_fields = {
-            "route",
-            "dispatch_backend",
-            "external_dispatcher",
-            "client_product",
-            "runtime_variant",
-            "native_subagents",
-            "automatic_delegation",
-            "explicit_delegation",
-            "project_worker_definitions",
-            "worker_definition_format",
-            "worker_definition_paths",
-            "tool_restrictions",
-            "write_isolation",
-            "background_execution",
-            "nested_delegation",
-            "model_override",
-            "parallel_dispatch",
-            "actual_model_evidence",
-            "role_bindings",
-            "verified_at",
-            "client_version",
-            "evidence",
-            "expires_at",
-            "review_triggers",
-        }
-        capability_records: dict[str, dict[str, Any]] = {}
-        ai_router = self.load_json_object(
-            self.target_path(".ai/assistant/ai-infrastructure-router.json"),
-            "DELEGATION_AI_ROUTER",
-        )
-        ai_items = ai_router.get("items") if isinstance(ai_router, dict) else []
-        ai_item_ids = {
-            item.get("id")
-            for item in ai_items
-            if isinstance(item, dict) and concrete(item.get("id"))
-        }
-        for surface_id, relpath in surfaces.items():
-            if not isinstance(surface_id, str) or not isinstance(relpath, str):
-                continue
-            record = self.load_json_object(
-                self.target_path(relpath), "DELEGATION_SURFACE_CAPABILITY"
-            )
-            delegation = record.get("subagent_delegation") if record else None
-            if not isinstance(delegation, dict):
-                self.error(
-                    "DELEGATION_CAPABILITY_MISSING",
-                    f"assistant surface {surface_id} has no delegation capability",
-                    relpath,
-                )
-                continue
-            missing = sorted(capability_fields - set(delegation))
-            if missing:
-                self.error(
-                    "DELEGATION_CAPABILITY_FIELDS",
-                    f"assistant surface {surface_id} is missing {missing}",
-                    relpath,
-                )
-            for field in [
-                "route",
-                "native_subagents",
-                "automatic_delegation",
-                "explicit_delegation",
-                "project_worker_definitions",
-                "tool_restrictions",
-                "background_execution",
-                "nested_delegation",
-                "model_override",
-                "parallel_dispatch",
-                "actual_model_evidence",
-            ]:
-                value = delegation.get(field)
-                if concrete(value) and value not in {
-                    "supported",
-                    "unsupported",
-                    "unknown",
-                }:
-                    self.error(
-                        "DELEGATION_CAPABILITY_VALUE",
-                        f"assistant surface {surface_id} {field} is invalid",
-                        relpath,
-                    )
-            backend = delegation.get("dispatch_backend")
-            if concrete(backend) and backend not in {
-                "native",
-                "external",
-                "suggestion-only",
-                "unsupported",
-                "unknown",
-            }:
-                self.error(
-                    "DELEGATION_DISPATCH_BACKEND",
-                    f"assistant surface {surface_id} dispatch_backend is invalid",
-                    relpath,
-                )
-            dispatcher = delegation.get("external_dispatcher")
-            if backend == "native":
-                if delegation.get("route") != "supported":
-                    self.error(
-                        "DELEGATION_NATIVE_ROUTE_UNSUPPORTED",
-                        f"assistant surface {surface_id} native dispatch requires a supported route",
-                        relpath,
-                    )
-                if delegation.get("native_subagents") != "supported":
-                    self.error(
-                        "DELEGATION_NATIVE_BACKEND_UNSUPPORTED",
-                        f"assistant surface {surface_id} selects native dispatch without native worker evidence",
-                        relpath,
-                    )
-                if not any(
-                    delegation.get(field) == "supported"
-                    for field in ["automatic_delegation", "explicit_delegation"]
-                ):
-                    self.error(
-                        "DELEGATION_NATIVE_INVOCATION_UNSUPPORTED",
-                        f"assistant surface {surface_id} selects native dispatch without a verified invocation mode",
-                        relpath,
-                    )
-            if backend == "external":
-                if not concrete(dispatcher) or dispatcher not in ai_item_ids:
-                    self.error(
-                        "DELEGATION_EXTERNAL_DISPATCHER",
-                        f"assistant surface {surface_id} external dispatcher must reference a routed AI-infrastructure item",
-                        relpath,
-                    )
-                if delegation.get("route") != "supported":
-                    self.error(
-                        "DELEGATION_EXTERNAL_ROUTE_UNSUPPORTED",
-                        f"assistant surface {surface_id} external dispatch requires a supported route",
-                        relpath,
-                    )
-            if backend == "unsupported" and delegation.get("route") == "supported":
-                self.error(
-                    "DELEGATION_UNSUPPORTED_ROUTE_CONFLICT",
-                    f"assistant surface {surface_id} cannot claim a supported route with an unsupported backend",
-                    relpath,
-                )
-            write_isolation = delegation.get("write_isolation")
-            if concrete(write_isolation) and write_isolation not in {
-                "shared-workspace",
-                "native-isolated",
-                "external-isolated",
-                "unsupported",
-                "unknown",
-            }:
-                self.error(
-                    "DELEGATION_WRITE_ISOLATION",
-                    f"assistant surface {surface_id} write_isolation is invalid",
-                    relpath,
-                )
-            definition_paths = delegation.get("worker_definition_paths")
-            if not isinstance(definition_paths, list):
-                self.error(
-                    "DELEGATION_WORKER_DEFINITION_PATHS",
-                    f"assistant surface {surface_id} worker_definition_paths must be a list",
-                    relpath,
-                )
-                definition_paths = []
-            concrete_definition_paths = [
-                value for value in definition_paths if concrete(value)
-            ]
-            if delegation.get("project_worker_definitions") == "supported":
-                if not concrete(delegation.get("worker_definition_format")):
-                    self.error(
-                        "DELEGATION_WORKER_DEFINITION_FORMAT",
-                        f"assistant surface {surface_id} supports project worker definitions but has no format",
-                        relpath,
-                    )
-                if not concrete_definition_paths:
-                    self.error(
-                        "DELEGATION_WORKER_DEFINITION_PATHS",
-                        f"assistant surface {surface_id} supports project worker definitions but has no target paths",
-                        relpath,
-                    )
-            elif concrete_definition_paths:
-                self.error(
-                    "DELEGATION_WORKER_DEFINITION_STATE_CONFLICT",
-                    f"assistant surface {surface_id} records native worker paths without supported project definitions",
-                    relpath,
-                )
-            for definition_path in concrete_definition_paths:
-                candidate = Path(definition_path)
-                if candidate.is_absolute() or ".." in candidate.parts:
-                    self.error(
-                        "DELEGATION_WORKER_DEFINITION_PATH",
-                        f"assistant surface {surface_id} has an unsafe native worker definition path",
-                        relpath,
-                    )
-                elif delegation.get("project_worker_definitions") == "supported" and not self.target_path(definition_path).is_file():
-                    self.error(
-                        "DELEGATION_WORKER_DEFINITION_MISSING",
-                        f"assistant surface {surface_id} native worker definition is missing",
-                        definition_path,
-                    )
-                elif delegation.get("project_worker_definitions") == "supported":
-                    native_text = self.read_text(self.target_path(definition_path))
-                    for canonical_reference in [
-                        ".ai/assistant/delegation-policy.json",
-                        ".ai/assistant/prompts/worker-orchestration.md",
-                        ".ai/assistant/workers/role-catalog.json",
-                    ]:
-                        if canonical_reference not in native_text:
-                            self.error(
-                                "DELEGATION_WORKER_DEFINITION_NOT_THIN",
-                                f"assistant surface {surface_id} native worker definition does not route to {canonical_reference}",
-                                definition_path,
-                            )
-            capability_records[surface_id] = delegation
-
-        role_ids: set[str] = set()
-        writable_role_ids: set[str] = set()
-        role_states: dict[str, str] = {}
-        for index, role in enumerate(catalog_roles):
-            if not isinstance(role, dict):
-                self.error(
-                    "DELEGATION_ROLE_SHAPE",
-                    f"roles[{index}] must be an object",
-                    catalog_relpath,
-                )
-                continue
-            role_id = role.get("id")
-            if concrete(role_id):
-                if role_id in role_ids:
-                    self.error(
-                        "DELEGATION_ROLE_DUPLICATE",
-                        f"duplicate delegation role {role_id}",
-                        catalog_relpath,
-                    )
-                role_ids.add(role_id)
-            state_value = role.get("state")
-            if concrete(state_value) and state_value not in {
-                "enabled",
-                "disabled",
-                "blocked",
-            }:
-                self.error(
-                    "DELEGATION_ROLE_STATE",
-                    f"roles[{index}].state is invalid",
-                    catalog_relpath,
-                )
-            if concrete(role_id) and concrete(state_value):
-                role_states[role_id] = state_value
-            action_ceiling = role.get("action_ceiling")
-            if concrete(action_ceiling) and action_ceiling not in {
-                "read-only",
-                "docs-only",
-                "adapter-only",
-                "code-and-tests",
-            }:
-                self.error(
-                    "DELEGATION_ROLE_ACTION_CEILING",
-                    f"roles[{index}].action_ceiling is invalid",
-                    catalog_relpath,
-                )
-            write_mode = role.get("write_mode")
-            if concrete(write_mode) and write_mode not in {"none", "bounded"}:
-                self.error(
-                    "DELEGATION_ROLE_WRITE_MODE",
-                    f"roles[{index}].write_mode is invalid",
-                    catalog_relpath,
-                )
-            if write_mode == "bounded" and concrete(role_id):
-                writable_role_ids.add(role_id)
-            if (
-                concrete(action_ceiling)
-                and concrete(write_mode)
-                and (
-                    (action_ceiling == "read-only" and write_mode != "none")
-                    or (action_ceiling != "read-only" and write_mode != "bounded")
-                )
-            ):
-                self.error(
-                    "DELEGATION_ROLE_WRITE_CEILING_CONFLICT",
-                    f"roles[{index}] action ceiling and write mode disagree",
-                    catalog_relpath,
-                )
-            prompt = role.get("prompt")
-            if concrete(prompt):
-                prompt_path = Path(prompt)
-                if (
-                    prompt_path.is_absolute()
-                    or ".." in prompt_path.parts
-                    or not self.target_path(prompt).is_file()
-                ):
-                    self.error(
-                        "DELEGATION_ROLE_PROMPT",
-                        f"roles[{index}] prompt is unsafe or missing",
-                        catalog_relpath,
-                    )
-            if role.get("required_output") != "normalized-worker-result":
-                self.error(
-                    "DELEGATION_ROLE_RESULT_CONTRACT",
-                    f"roles[{index}] must require normalized-worker-result",
-                    catalog_relpath,
-                )
-
-        for role_id in concrete_enabled_roles:
-            if role_id not in role_ids:
-                self.error(
-                    "DELEGATION_ENABLED_ROLE_UNKNOWN",
-                    f"enabled role {role_id} is absent from the role catalog",
-                    policy_relpath,
-                )
-            elif role_states.get(role_id) != "enabled":
-                self.error(
-                    "DELEGATION_ENABLED_ROLE_INACTIVE",
-                    f"enabled role {role_id} is not enabled in the role catalog",
-                    policy_relpath,
-                )
-
-        for surface_id, capability in capability_records.items():
-            relpath = surfaces.get(surface_id, ".ai/assistant/assistant-capabilities.json")
-            bindings = capability.get("role_bindings")
-            if not isinstance(bindings, list):
-                self.error(
-                    "DELEGATION_ROLE_BINDINGS",
-                    f"assistant surface {surface_id} role_bindings must be a list",
-                    relpath,
-                )
-                continue
-            bound_roles: set[str] = set()
-            for index, binding in enumerate(bindings):
-                if not isinstance(binding, dict):
-                    self.error(
-                        "DELEGATION_ROLE_BINDING_SHAPE",
-                        f"assistant surface {surface_id} role_bindings[{index}] must be an object",
-                        relpath,
-                    )
-                    continue
-                role_id = binding.get("role_id")
-                if concrete(role_id):
-                    if role_id not in role_ids:
-                        self.error(
-                            "DELEGATION_ROLE_BINDING_UNKNOWN",
-                            f"assistant surface {surface_id} binds unknown role {role_id}",
-                            relpath,
-                        )
-                    if role_id in bound_roles:
-                        self.error(
-                            "DELEGATION_ROLE_BINDING_DUPLICATE",
-                            f"assistant surface {surface_id} binds role {role_id} more than once",
-                            relpath,
-                        )
-                    bound_roles.add(role_id)
-                selection_mode = binding.get("selection_mode")
-                if concrete(selection_mode) and selection_mode not in {
-                    "explicit-model",
-                    "inherit",
-                    "client-default",
-                }:
-                    self.error(
-                        "DELEGATION_MODEL_SELECTION_MODE",
-                        f"assistant surface {surface_id} role binding selection_mode is invalid",
-                        relpath,
-                    )
-                availability = binding.get("availability")
-                if concrete(availability) and availability not in {
-                    "supported",
-                    "unsupported",
-                    "unknown",
-                }:
-                    self.error(
-                        "DELEGATION_ROLE_BINDING_AVAILABILITY",
-                        f"assistant surface {surface_id} role binding availability is invalid",
-                        relpath,
-                    )
-                if (
-                    selection_mode == "explicit-model"
-                    and capability.get("model_override") != "supported"
-                ):
-                    self.error(
-                        "DELEGATION_MODEL_OVERRIDE_UNSUPPORTED",
-                        f"assistant surface {surface_id} selects a model without supported override evidence",
-                        relpath,
-                    )
-                if (
-                    availability == "supported"
-                    and capability.get("route") != "supported"
-                ):
-                    self.error(
-                        "DELEGATION_ROLE_BINDING_ROUTE_CONFLICT",
-                        f"assistant surface {surface_id} has an available role binding on an unsupported route",
-                        relpath,
-                    )
-                if selection_mode == "explicit-model" and not concrete(
-                    binding.get("model")
-                ):
-                    self.error(
-                        "DELEGATION_EXPLICIT_MODEL_MISSING",
-                        f"assistant surface {surface_id} explicit role binding has no model",
-                        relpath,
-                    )
-            if (
-                capability.get("dispatch_backend") in {"native", "external"}
-                and capability.get("route") == "supported"
-                and concrete_enabled_roles
-                and not set(concrete_enabled_roles).intersection(bound_roles)
-            ):
-                self.error(
-                    "DELEGATION_ENABLED_ROLE_UNBOUND",
-                    f"assistant surface {surface_id} has no binding for an enabled worker role",
-                    relpath,
-                )
-            if (
-                capability.get("parallel_dispatch") == "supported"
-                and capability.get("write_isolation") == "shared-workspace"
-                and writable_role_ids.intersection(bound_roles)
-            ):
-                self.warn(
-                    "DELEGATION_SHARED_WRITE_ISOLATION",
-                    f"assistant surface {surface_id} can parallelize writable roles only with packet-level disjoint-write enforcement",
-                    relpath,
-                )
-
-        overlay_relpath = (
-            ".ai/assistant/context/task-scales/delegated-execution.json"
-        )
-        overlay = self.load_json_object(
-            self.target_path(overlay_relpath), "DELEGATION_OVERLAY"
-        )
-        if overlay is not None and (
-            overlay.get("id") != "delegated-execution"
-            or overlay.get("required_module") != "subagent-delegation"
-        ):
-            self.error(
-                "DELEGATION_OVERLAY_CONTRACT",
-                "delegated execution overlay identity or module is invalid",
-                overlay_relpath,
-            )
-        required_worker_context = {
-            ".ai/assistant/delegation-policy.json",
-            ".ai/assistant/workers/role-catalog.json",
-            ".ai/assistant/prompts/worker-orchestration.md",
-            ".ai/assistant/templates/worker-execution-plan.md",
-            ".ai/assistant/templates/subagent-task-packet.md",
-            ".ai/assistant/templates/worker-result.md",
-        }
-        overlay_context = overlay.get("required_context") if overlay else None
-        if not isinstance(overlay_context, list) or not required_worker_context.issubset(
-            set(overlay_context)
-        ):
-            self.error(
-                "DELEGATION_OVERLAY_CONTEXT",
-                "delegated execution overlay does not load the portable worker contracts",
-                overlay_relpath,
-            )
+        validate_subagent_delegation(self, manifest)
 
     def check_discussion_diagrams(self, manifest: ManifestData | None) -> None:
-        module_relpath = ".ai/assistant/module-profile.md"
-        module_path = self.target_path(module_relpath)
-        if not module_path.is_file():
-            return
-        module_text = self.read_text(module_path)
-        module_match = re.search(
-            r"^Module: `diagrams`\s*$([\s\S]*?)(?=^Module: `|\Z)",
-            module_text,
-            flags=re.MULTILINE,
-        )
-        if module_match is None:
-            self.warn(
-                "DIAGRAM_MODULE_UNDECLARED",
-                "module profile does not declare diagrams state",
-                module_relpath,
-            )
-            return
-        state_match = re.search(
-            r"^State:\s*`?([^`\n]+)`?\s*$",
-            module_match.group(1),
-            flags=re.MULTILINE,
-        )
-        if state_match is None:
-            self.warn(
-                "DIAGRAM_MODULE_STATE_MISSING",
-                "diagrams module has no parseable State field",
-                module_relpath,
-            )
-            return
-        state = state_match.group(1).strip().casefold()
-        if state not in {"enabled", "required"}:
-            return
-
-        required_paths = [
-            ".ai/assistant/flows/diagram-discussion.flow.md",
-            ".ai/assistant/templates/diagram-presentation.md",
-            ".ai/assistant/templates/ascii-diagram.md",
-            ".ai/assistant/assistant-capabilities.json",
-            ".ai/assistant/bridge-capability-matrix.md",
-            ".ai/framework/ascii-diagrams.md",
-        ]
-        for relpath in required_paths:
-            if not self.target_path(relpath).is_file():
-                self.error(
-                    "DIAGRAM_REQUIRED_FILE_MISSING",
-                    "enabled diagrams module is missing a discussion contract",
-                    relpath,
-                )
-
-        if manifest is not None:
-            expected_manifest = {
-                (
-                    "operations",
-                    "diagram_discussion",
-                ): ".ai/assistant/flows/diagram-discussion.flow.md",
-                (
-                    "operations",
-                    "diagram_presentation",
-                ): ".ai/assistant/templates/diagram-presentation.md",
-                (
-                    "bridges",
-                    "capabilities",
-                ): ".ai/assistant/assistant-capabilities.json",
-            }
-            for key, expected in expected_manifest.items():
-                scalar = manifest.scalars.get(key)
-                if scalar is None or scalar.value != expected:
-                    self.error(
-                        "DIAGRAM_MANIFEST_PATH",
-                        f"{dotted(key)} must be {expected} when diagrams are enabled",
-                        ".ai/alatyr.yaml",
-                    )
-
-        catalog = self.load_json_object(
-            self.target_path(".ai/assistant/operation-catalog.json"),
-            "OPERATION_CATALOG",
-        )
-        operations = catalog.get("operations") if isinstance(catalog, dict) else None
-        operation = None
-        if isinstance(operations, list):
-            operation = next(
-                (
-                    item
-                    for item in operations
-                    if isinstance(item, dict)
-                    and item.get("id") == "diagram-discussion"
-                ),
-                None,
-            )
-        if not isinstance(operation, dict):
-            self.error(
-                "DIAGRAM_OPERATION_MISSING",
-                "enabled diagrams module requires diagram-discussion operation",
-                ".ai/assistant/operation-catalog.json",
-            )
-        else:
-            if operation.get("required_module") != "diagrams":
-                self.error(
-                    "DIAGRAM_OPERATION_MODULE",
-                    "diagram-discussion must require the diagrams module",
-                    ".ai/assistant/operation-catalog.json",
-                )
-            if operation.get("flow") != required_paths[0]:
-                self.error(
-                    "DIAGRAM_OPERATION_FLOW",
-                    f"diagram-discussion must route to {required_paths[0]}",
-                    ".ai/assistant/operation-catalog.json",
-                )
-            if operation.get("allowed_actions") != ["read-only", "docs-only"]:
-                self.error(
-                    "DIAGRAM_OPERATION_ACTIONS",
-                    "diagram-discussion must allow only read-only and docs-only",
-                    ".ai/assistant/operation-catalog.json",
-                )
-
-        router = self.load_json_object(
-            self.target_path(".ai/assistant/context-router.json"), "ROUTER"
-        )
-        intent_overlays = (
-            router.get("intent_overlays") if isinstance(router, dict) else None
-        )
-        diagram_overlay = (
-            intent_overlays.get("diagram-request")
-            if isinstance(intent_overlays, dict)
-            else None
-        )
-        routed = isinstance(diagram_overlay, dict) and diagram_overlay.get(
-            "operation_candidates"
-        ) == ["diagram-discussion"]
-        if not routed:
-            self.error(
-                "DIAGRAM_OPERATION_UNROUTED",
-                "enabled diagram-discussion has no diagram-request intent overlay",
-                ".ai/assistant/context-router.json",
-            )
-
-        matrix_relpath = ".ai/assistant/bridge-capability-matrix.md"
-        matrix_text = self.read_text(self.target_path(matrix_relpath))
-        matches = list(
-            re.finditer(
-                r"^### Assistant Surface: `([^`]+)`\s*$",
-                matrix_text,
-                flags=re.MULTILINE,
-            )
-        )
-        if not matches:
-            self.error(
-                "DIAGRAM_BRIDGE_CAPABILITY_MISSING",
-                "enabled diagrams module has no assistant capability entries",
-                matrix_relpath,
-            )
-        capability_relpath = ".ai/assistant/assistant-capabilities.json"
-        capabilities = self.load_json_object(
-            self.target_path(capability_relpath), "ASSISTANT_CAPABILITIES"
-        )
-        capability_surfaces = (
-            capabilities.get("surfaces") if isinstance(capabilities, dict) else None
-        )
-        if isinstance(capabilities, dict):
-            if capabilities.get("schema_version") != CAPABILITY_INDEX_SCHEMA_VERSION:
-                self.error(
-                    "DIAGRAM_CAPABILITY_SCHEMA",
-                    "capability index schema_version should be "
-                    f"{CAPABILITY_INDEX_SCHEMA_VERSION}",
-                    capability_relpath,
-                )
-            if capabilities.get("capability_kind") != CAPABILITY_INDEX_KIND:
-                self.error(
-                    "DIAGRAM_CAPABILITY_KIND",
-                    f"capability_kind should be {CAPABILITY_INDEX_KIND}",
-                    capability_relpath,
-                )
-        if not isinstance(capability_surfaces, dict) or not capability_surfaces:
-            self.error(
-                "DIAGRAM_CAPABILITY_SURFACES",
-                "enabled diagrams require assistant capability surface entries",
-                capability_relpath,
-            )
-            capability_surfaces = {}
-
-        required_capability_fields = {
-            "route",
-            "native_inline_syntaxes",
-            "artifact_presentation",
-            "readable_fallback",
-            "verified_at",
-            "expires_at",
-            "review_triggers",
-            "client_version",
-            "evidence",
-        }
-        for index, match in enumerate(matches):
-            end = (
-                matches[index + 1].start()
-                if index + 1 < len(matches)
-                else len(matrix_text)
-            )
-            block = matrix_text[match.end():end]
-            surface_id = match.group(1)
-            surface_relpath = capability_record_path(surface_id)
-            expected_reference = (
-                "Diagram capability record: "
-                f"`{surface_relpath}`"
-            )
-            if expected_reference not in block:
-                self.error(
-                    "DIAGRAM_BRIDGE_CAPABILITY_FIELD",
-                    f"assistant surface {surface_id} has no compact capability reference",
-                    matrix_relpath,
-                )
-            if capability_surfaces.get(surface_id) != surface_relpath:
-                self.error(
-                    "DIAGRAM_CAPABILITY_INDEX_PATH",
-                    f"assistant surface {surface_id} must route to {surface_relpath}",
-                    capability_relpath,
-                )
-                continue
-            surface = self.load_json_object(
-                self.target_path(surface_relpath), "ASSISTANT_SURFACE_CAPABILITIES"
-            )
-            if surface is None:
-                continue
-            if surface.get("schema_version") != SURFACE_CAPABILITY_SCHEMA_VERSION:
-                self.error(
-                    "DIAGRAM_SURFACE_CAPABILITY_SCHEMA",
-                    "surface capability schema_version should be "
-                    f"{SURFACE_CAPABILITY_SCHEMA_VERSION}",
-                    surface_relpath,
-                )
-            if surface.get("capability_kind") != SURFACE_CAPABILITY_KIND:
-                self.error(
-                    "DIAGRAM_SURFACE_CAPABILITY_KIND",
-                    "surface capability kind is invalid",
-                    surface_relpath,
-                )
-            if surface.get("assistant_surface") != surface_id:
-                self.error(
-                    "DIAGRAM_SURFACE_CAPABILITY_ID",
-                    f"surface capability identity should be {surface_id}",
-                    surface_relpath,
-                )
-            diagram = surface.get("diagram_discussion")
-            if not isinstance(diagram, dict):
-                self.error(
-                    "DIAGRAM_CAPABILITY_MISSING",
-                    f"assistant surface {surface_id} has no diagram_discussion capability",
-                    surface_relpath,
-                )
-                continue
-            missing_fields = sorted(required_capability_fields - set(diagram))
-            if missing_fields:
-                self.error(
-                    "DIAGRAM_CAPABILITY_FIELDS",
-                    f"assistant surface {surface_id} is missing {missing_fields}",
-                    surface_relpath,
-                )
-            if diagram.get("route") not in {"supported", "unsupported", "unknown"}:
-                self.error(
-                    "DIAGRAM_CAPABILITY_ROUTE",
-                    f"assistant surface {surface_id} route must be supported, unsupported, or unknown",
-                    surface_relpath,
-                )
-            if diagram.get("artifact_presentation") not in {
-                "link",
-                "attachment",
-                "both",
-                "unsupported",
-                "unknown",
-            }:
-                self.error(
-                    "DIAGRAM_CAPABILITY_ARTIFACT",
-                    f"assistant surface {surface_id} artifact_presentation has an invalid enum",
-                    surface_relpath,
-                )
-            syntaxes = diagram.get("native_inline_syntaxes")
-            if not isinstance(syntaxes, list) or not syntaxes or not all(
-                isinstance(value, str) and value for value in syntaxes
-            ):
-                self.error(
-                    "DIAGRAM_CAPABILITY_SYNTAXES",
-                    f"assistant surface {surface_id} native_inline_syntaxes must be a string list",
-                    surface_relpath,
-                )
-            for field in [
-                "readable_fallback",
-                "verified_at",
-                "expires_at",
-                "client_version",
-                "evidence",
-            ]:
-                value = diagram.get(field)
-                if not isinstance(value, str) or not value.strip():
-                    self.error(
-                        "DIAGRAM_CAPABILITY_EVIDENCE",
-                        f"assistant surface {surface_id} {field} must be recorded",
-                        surface_relpath,
-                    )
-            for field in ["readable_fallback", "evidence"]:
-                value = diagram.get(field)
-                if isinstance(value, str) and value.strip().casefold() in UNRESOLVED_WORDS:
-                    self.error(
-                        "DIAGRAM_CAPABILITY_EVIDENCE",
-                        f"assistant surface {surface_id} {field} is unresolved",
-                        surface_relpath,
-                    )
-            if diagram.get("readable_fallback") != "ascii":
-                self.error(
-                    "DIAGRAM_CAPABILITY_ASCII_FALLBACK",
-                    f"assistant surface {surface_id} readable_fallback must be ascii",
-                    surface_relpath,
-                )
-            verified_at = diagram.get("verified_at")
-            if isinstance(verified_at, str) and not (
-                re.fullmatch(r"\d{4}-\d{2}-\d{2}(?:T[^\s]+)?", verified_at)
-                or verified_at.casefold().startswith("unknown:")
-            ):
-                self.error(
-                    "DIAGRAM_CAPABILITY_FRESHNESS",
-                    f"assistant surface {surface_id} verified_at must be an ISO date/time or unknown: reason",
-                    surface_relpath,
-                )
-            expires_at = diagram.get("expires_at")
-            if isinstance(expires_at, str):
-                expiry_is_date = re.fullmatch(
-                    r"\d{4}-\d{2}-\d{2}(?:T[^\s]+)?", expires_at
-                )
-                expiry_is_trigger = expires_at.casefold().startswith(
-                    ("review-trigger:", "unknown:")
-                )
-                if not expiry_is_date and not expiry_is_trigger:
-                    self.error(
-                        "DIAGRAM_CAPABILITY_EXPIRY",
-                        f"assistant surface {surface_id} expires_at needs an ISO date or review-trigger: reason",
-                        surface_relpath,
-                    )
-                elif expiry_is_date:
-                    expiry = datetime.strptime(expires_at[:10], "%Y-%m-%d").date()
-                    if expiry < datetime.now(timezone.utc).date():
-                        self.warn(
-                            "DIAGRAM_CAPABILITY_EXPIRED",
-                            f"assistant surface {surface_id} capability evidence expired",
-                            surface_relpath,
-                        )
-            review_triggers = diagram.get("review_triggers")
-            if not isinstance(review_triggers, list) or not review_triggers or not all(
-                isinstance(value, str) and value for value in review_triggers
-            ):
-                self.error(
-                    "DIAGRAM_CAPABILITY_REVIEW_TRIGGERS",
-                    f"assistant surface {surface_id} review_triggers must be a string list",
-                    surface_relpath,
-                )
-            client_version = diagram.get("client_version")
-            if isinstance(client_version, str) and client_version.casefold() in {
-                "unknown",
-                "n/a",
-            }:
-                self.error(
-                    "DIAGRAM_CAPABILITY_CLIENT_VERSION",
-                    f"assistant surface {surface_id} client_version needs a value or unknown: reason",
-                    surface_relpath,
-                )
-
-        matrix_surface_ids = {match.group(1) for match in matches}
-        extra_capabilities = sorted(set(capability_surfaces) - matrix_surface_ids)
-        if extra_capabilities:
-            self.error(
-                "DIAGRAM_CAPABILITY_SURFACE_DRIFT",
-                f"capability projection has surfaces absent from bridge matrix: {extra_capabilities}",
-                capability_relpath,
-            )
-
-        flow_text = self.read_text(self.target_path(required_paths[0]))
-        presentation_text = self.read_text(self.target_path(required_paths[1]))
-        for relpath, text, snippets in [
-            (
-                required_paths[0],
-                flow_text,
-                [
-                    "`read-only`",
-                    "current assistant surface record",
-                    "portable ASCII view",
-                    "hard maximum of 100 columns",
-                    "stable diagram ID",
-                    "Classify data sensitivity",
-                ],
-            ),
-            (
-                required_paths[1],
-                presentation_text,
-                [
-                    "Presentation mode:",
-                    "Portable ASCII presentation:",
-                    "ASCII readability check:",
-                    "Diagram ID:",
-                    "Data classification:",
-                    "External renderer or network action:",
-                    "is not project source of truth",
-                ],
-            ),
-            (
-                required_paths[2],
-                self.read_text(self.target_path(required_paths[2])),
-                [
-                    "Hard maximum width: `100`",
-                    "printable 7-bit ASCII plus line feeds",
-                    "Longest line at most 100 columns",
-                ],
-            ),
-        ]:
-            for snippet in snippets:
-                if snippet not in text:
-                    self.error(
-                        "DIAGRAM_CONTRACT_INCOMPLETE",
-                        f"discussion contract is missing {snippet}",
-                        relpath,
-                    )
+        validate_discussion_diagrams(self, manifest)
 
     def check_architecture_knowledge(
         self, manifest: ManifestData | None
     ) -> None:
-        module_relpath = ".ai/assistant/module-profile.md"
-        module_path = self.target_path(module_relpath)
-        if not module_path.is_file():
-            return
-        module_match = re.search(
-            r"^Module: `architecture-knowledge`\s*$([\s\S]*?)(?=^Module: `|\Z)",
-            self.read_text(module_path),
-            flags=re.MULTILINE,
-        )
-        if module_match is None:
-            self.warn(
-                "ARCHITECTURE_MODULE_UNDECLARED",
-                "module profile does not declare architecture-knowledge state",
-                module_relpath,
-            )
-            return
-        state_match = re.search(
-            r"^State:\s*`?([^`\n]+)`?\s*$",
-            module_match.group(1),
-            flags=re.MULTILINE,
-        )
-        if state_match is None:
-            self.warn(
-                "ARCHITECTURE_MODULE_STATE_MISSING",
-                "architecture-knowledge module has no parseable State field",
-                module_relpath,
-            )
-            return
-        state = state_match.group(1).strip().casefold()
-        if state not in {"enabled", "required"}:
+        if not self.module_validation_enabled(
+            "architecture-knowledge",
+            "ARCHITECTURE_MODULE_UNDECLARED",
+            "ARCHITECTURE_MODULE_STATE_MISSING",
+            "architecture-knowledge",
+        ):
             return
 
         required_paths = [
@@ -4586,35 +3526,12 @@ class Validator:
     def check_code_documentation(
         self, manifest: ManifestData | None
     ) -> None:
-        module_relpath = ".ai/assistant/module-profile.md"
-        module_path = self.target_path(module_relpath)
-        if not module_path.is_file():
-            return
-        module_match = re.search(
-            r"^Module: `code-documentation`\s*$([\s\S]*?)(?=^Module: `|\Z)",
-            self.read_text(module_path),
-            flags=re.MULTILINE,
-        )
-        if module_match is None:
-            self.warn(
-                "CODEDOC_MODULE_UNDECLARED",
-                "module profile does not declare code-documentation state",
-                module_relpath,
-            )
-            return
-        state_match = re.search(
-            r"^State:\s*`?([^`\n]+)`?\s*$",
-            module_match.group(1),
-            flags=re.MULTILINE,
-        )
-        if state_match is None:
-            self.warn(
-                "CODEDOC_MODULE_STATE_MISSING",
-                "code-documentation module has no parseable State field",
-                module_relpath,
-            )
-            return
-        if state_match.group(1).strip().casefold() not in {"enabled", "required"}:
+        if not self.module_validation_enabled(
+            "code-documentation",
+            "CODEDOC_MODULE_UNDECLARED",
+            "CODEDOC_MODULE_STATE_MISSING",
+            "code-documentation",
+        ):
             return
 
         required_paths = [
@@ -4861,35 +3778,12 @@ class Validator:
     def check_project_vocabulary(
         self, manifest: ManifestData | None
     ) -> None:
-        module_relpath = ".ai/assistant/module-profile.md"
-        module_path = self.target_path(module_relpath)
-        if not module_path.is_file():
-            return
-        module_match = re.search(
-            r"^Module: `project-vocabulary`\s*$([\s\S]*?)(?=^Module: `|\Z)",
-            self.read_text(module_path),
-            flags=re.MULTILINE,
-        )
-        if module_match is None:
-            self.warn(
-                "VOCABULARY_MODULE_UNDECLARED",
-                "module profile does not declare project-vocabulary state",
-                module_relpath,
-            )
-            return
-        state_match = re.search(
-            r"^State:\s*`?([^`\n]+)`?\s*$",
-            module_match.group(1),
-            flags=re.MULTILINE,
-        )
-        if state_match is None:
-            self.warn(
-                "VOCABULARY_MODULE_STATE_MISSING",
-                "project-vocabulary module has no parseable State field",
-                module_relpath,
-            )
-            return
-        if state_match.group(1).strip().casefold() not in {"enabled", "required"}:
+        if not self.module_validation_enabled(
+            "project-vocabulary",
+            "VOCABULARY_MODULE_UNDECLARED",
+            "VOCABULARY_MODULE_STATE_MISSING",
+            "project-vocabulary",
+        ):
             return
 
         required_paths = [
@@ -5251,35 +4145,12 @@ class Validator:
     def check_test_first_development(
         self, manifest: ManifestData | None
     ) -> None:
-        module_relpath = ".ai/assistant/module-profile.md"
-        module_path = self.target_path(module_relpath)
-        if not module_path.is_file():
-            return
-        module_match = re.search(
-            r"^Module: `test-first-development`\s*$([\s\S]*?)(?=^Module: `|\Z)",
-            self.read_text(module_path),
-            flags=re.MULTILINE,
-        )
-        if module_match is None:
-            self.warn(
-                "TDD_MODULE_UNDECLARED",
-                "module profile does not declare test-first-development state",
-                module_relpath,
-            )
-            return
-        state_match = re.search(
-            r"^State:\s*`?([^`\n]+)`?\s*$",
-            module_match.group(1),
-            flags=re.MULTILINE,
-        )
-        if state_match is None:
-            self.warn(
-                "TDD_MODULE_STATE_MISSING",
-                "test-first-development module has no parseable State field",
-                module_relpath,
-            )
-            return
-        if state_match.group(1).strip().casefold() not in {"enabled", "required"}:
+        if not self.module_validation_enabled(
+            "test-first-development",
+            "TDD_MODULE_UNDECLARED",
+            "TDD_MODULE_STATE_MISSING",
+            "test-first-development",
+        ):
             return
 
         required_paths = [
@@ -5599,35 +4470,12 @@ class Validator:
         )
 
     def check_extensions(self, manifest: ManifestData | None) -> None:
-        module_relpath = ".ai/assistant/module-profile.md"
-        module_path = self.target_path(module_relpath)
-        if not module_path.is_file():
-            return
-        module_match = re.search(
-            r"^Module: `extensions`\s*$([\s\S]*?)(?=^Module: `|\Z)",
-            self.read_text(module_path),
-            flags=re.MULTILINE,
-        )
-        if module_match is None:
-            self.warn(
-                "EXTENSION_MODULE_UNDECLARED",
-                "module profile does not declare extensions state",
-                module_relpath,
-            )
-            return
-        state_match = re.search(
-            r"^State:\s*`?([^`\n]+)`?\s*$",
-            module_match.group(1),
-            flags=re.MULTILINE,
-        )
-        if state_match is None:
-            self.warn(
-                "EXTENSION_MODULE_STATE_MISSING",
-                "extensions module has no parseable State field",
-                module_relpath,
-            )
-            return
-        if state_match.group(1).strip().casefold() not in {"enabled", "required"}:
+        if not self.module_validation_enabled(
+            "extensions",
+            "EXTENSION_MODULE_UNDECLARED",
+            "EXTENSION_MODULE_STATE_MISSING",
+            "extensions",
+        ):
             return
 
         required_paths = [
@@ -6328,459 +5176,7 @@ class Validator:
         )
 
     def check_workspace_modes(self, manifest: ManifestData | None) -> None:
-        required_paths = [
-            ".ai/framework/workspace-modes.md",
-            ".ai/project/workspace-modes/README.md",
-            ".ai/project/workspace-modes/catalog.json",
-            ".ai/project/workspace-modes/root/README.md",
-            ".ai/project/workspace-modes/root/context.json",
-            ".ai/project/workspace-modes/modes/_template/README.md",
-            ".ai/project/workspace-modes/modes/_template/mode.json",
-            ".ai/assistant/context/intents/workspace-mode-request.json",
-            ".ai/assistant/flows/workspace-mode.flow.md",
-            ".ai/assistant/gates/workspace-mode.md",
-            ".ai/assistant/templates/workspace-mode-suggestion.md",
-            ".ai/assistant/templates/workspace-mode-preflight.md",
-        ]
-        missing = False
-        for relpath in required_paths:
-            if not self.target_path(relpath).is_file():
-                missing = True
-                self.error(
-                    "WORKSPACE_MODE_REQUIRED_FILE_MISSING",
-                    "enabled workspace-modes module is missing a contract",
-                    relpath,
-                )
-        if missing:
-            return
-
-        expected_manifest = {
-            ("workspace_modes", "index"): required_paths[1],
-            ("workspace_modes", "catalog"): required_paths[2],
-            ("workspace_modes", "root_context"): required_paths[4],
-            ("workspace_modes", "modes"): ".ai/project/workspace-modes/modes",
-            ("workspace_modes", "mode_template"): required_paths[6],
-            ("workspace_modes", "intent"): required_paths[7],
-            ("workspace_modes", "flow"): required_paths[8],
-            ("workspace_modes", "gate"): required_paths[9],
-            ("workspace_modes", "suggestion"): required_paths[10],
-            ("workspace_modes", "preflight"): required_paths[11],
-            ("operations", "workspace_mode"): required_paths[8],
-            ("operations", "workspace_mode_preflight"): required_paths[11],
-        }
-        if manifest is not None:
-            for key, expected in expected_manifest.items():
-                scalar = manifest.scalars.get(key)
-                if scalar is None or scalar.value != expected:
-                    self.error(
-                        "WORKSPACE_MODE_MANIFEST_PATH",
-                        f"{dotted(key)} must be {expected} when workspace modes are enabled",
-                        ".ai/alatyr.yaml",
-                    )
-
-        catalog_relpath = required_paths[2]
-        root_relpath = required_paths[4]
-        catalog = self.load_json_object(
-            self.target_path(catalog_relpath), "WORKSPACE_MODE_CATALOG"
-        )
-        root_context = self.load_json_object(
-            self.target_path(root_relpath), "WORKSPACE_MODE_ROOT_CONTEXT"
-        )
-        if catalog is None or root_context is None:
-            return
-
-        def resolved(value: Any) -> bool:
-            return (
-                isinstance(value, str)
-                and bool(value.strip())
-                and not is_placeholder(value)
-                and not is_unresolved_value(value)
-            )
-
-        def target_path_list(
-            value: Any,
-            code: str,
-            label: str,
-            source: str,
-            *,
-            non_empty: bool = False,
-            require_exists: bool = False,
-        ) -> list[str]:
-            if not isinstance(value, list) or (non_empty and not value):
-                self.error(code, f"{label} must be a {'non-empty ' if non_empty else ''}list", source)
-                return []
-            result: list[str] = []
-            for entry in value:
-                if not resolved(entry) or not is_target_relative_path(entry):
-                    self.error(code, f"{label} must contain target-relative resolved paths", source)
-                    continue
-                if require_exists and not self.target_path(entry).exists():
-                    self.error(code, f"{label} points to missing target evidence {entry}", source)
-                    continue
-                result.append(entry)
-            return result
-
-        if (
-            catalog.get("schema_version") != 1
-            or catalog.get("catalog_kind") != "target-workspace-mode-catalog"
-        ):
-            self.error(
-                "WORKSPACE_MODE_CATALOG_SCHEMA",
-                "catalog schema or kind is invalid",
-                catalog_relpath,
-            )
-        if catalog.get("state") not in {"enabled", "required"}:
-            self.error(
-                "WORKSPACE_MODE_CATALOG_STATE",
-                "enabled module requires enabled or required catalog state",
-                catalog_relpath,
-            )
-        for field in ["owner", "decision_authority"]:
-            if not resolved(catalog.get(field)):
-                self.error(
-                    "WORKSPACE_MODE_CATALOG_OWNER",
-                    f"catalog {field} must be resolved",
-                    catalog_relpath,
-                )
-
-        workspace = catalog.get("workspace")
-        workspace_id: str | None = None
-        if not isinstance(workspace, dict):
-            self.error(
-                "WORKSPACE_MODE_WORKSPACE",
-                "catalog workspace must be an object",
-                catalog_relpath,
-            )
-        else:
-            workspace_id = workspace.get("id") if resolved(workspace.get("id")) else None
-            if workspace_id is None:
-                self.error("WORKSPACE_MODE_WORKSPACE", "workspace id must be resolved", catalog_relpath)
-            if workspace.get("kind") not in {
-                "application",
-                "framework",
-                "library",
-                "skeleton",
-                "tool",
-                "monorepo",
-                "mixed",
-            }:
-                self.error("WORKSPACE_MODE_WORKSPACE", "workspace kind is invalid", catalog_relpath)
-            if workspace.get("root") != "." or workspace.get("adapter_role") != "active":
-                self.error(
-                    "WORKSPACE_MODE_ACTIVE_ROOT",
-                    "catalog workspace must identify the selected root '.' and active adapter",
-                    catalog_relpath,
-                )
-            target_path_list(
-                workspace.get("evidence"),
-                "WORKSPACE_MODE_WORKSPACE_EVIDENCE",
-                "workspace.evidence",
-                catalog_relpath,
-                non_empty=True,
-                require_exists=True,
-            )
-
-        selection = catalog.get("selection")
-        if not isinstance(selection, dict):
-            self.error("WORKSPACE_MODE_SELECTION", "selection must be an object", catalog_relpath)
-            selection = {}
-        expected_selection = {
-            "automatic_selection": "accepted-unambiguous-only",
-            "ambiguity_behavior": "ask-user",
-            "no_match_behavior": "root-read-only",
-            "persistence": "per-task",
-            "local_preference_allowed": False,
-            "show_preflight_before_changes": True,
-        }
-        for field, expected in expected_selection.items():
-            if selection.get(field) != expected:
-                self.error(
-                    "WORKSPACE_MODE_SELECTION_POLICY",
-                    f"selection.{field} must be {expected!r}",
-                    catalog_relpath,
-                )
-        suggestions = catalog.get("suggestions")
-        if not isinstance(suggestions, dict):
-            self.error("WORKSPACE_MODE_SUGGESTIONS", "suggestions must be an object", catalog_relpath)
-        else:
-            for field in ["after_installation", "after_framework_update", "after_workspace_change"]:
-                if suggestions.get(field) is not True:
-                    self.error("WORKSPACE_MODE_SUGGESTIONS", f"suggestions.{field} must be true", catalog_relpath)
-            if suggestions.get("automatic_acceptance") is not False:
-                self.error("WORKSPACE_MODE_AUTO_ACCEPT", "mode suggestions must never be accepted automatically", catalog_relpath)
-        if catalog.get("root_context") != root_relpath:
-            self.error("WORKSPACE_MODE_ROOT_REFERENCE", "catalog root_context path is invalid", catalog_relpath)
-
-        if (
-            root_context.get("schema_version") != 1
-            or root_context.get("descriptor_kind") != "target-workspace-root-context"
-        ):
-            self.error("WORKSPACE_MODE_ROOT_SCHEMA", "root context schema or kind is invalid", root_relpath)
-        root_state = root_context.get("state")
-        if root_state not in {"enabled", "disabled"}:
-            self.error("WORKSPACE_MODE_ROOT_STATE", "root context state must be enabled or disabled", root_relpath)
-        if not resolved(root_context.get("owner")):
-            self.error("WORKSPACE_MODE_ROOT_OWNER", "root context owner must be resolved", root_relpath)
-        root_required = target_path_list(
-            root_context.get("required_context"),
-            "WORKSPACE_MODE_ROOT_CONTEXT",
-            "required_context",
-            root_relpath,
-            require_exists=root_state == "enabled",
-        )
-        root_conditional = root_context.get("conditional_context")
-        if not isinstance(root_conditional, list):
-            self.error("WORKSPACE_MODE_ROOT_CONTEXT", "conditional_context must be a list", root_relpath)
-        else:
-            for index, entry in enumerate(root_conditional):
-                if (
-                    not isinstance(entry, dict)
-                    or not resolved(entry.get("path"))
-                    or not is_target_relative_path(entry["path"])
-                    or not resolved(entry.get("when"))
-                ):
-                    self.error(
-                        "WORKSPACE_MODE_ROOT_CONTEXT",
-                        f"conditional_context[{index}] requires target-relative path and condition",
-                        root_relpath,
-                    )
-                elif root_state == "enabled" and not self.target_path(entry["path"]).exists():
-                    self.error(
-                        "WORKSPACE_MODE_ROOT_CONTEXT",
-                        f"conditional_context[{index}] points to missing target context",
-                        root_relpath,
-                    )
-        if root_state == "disabled" and (root_required or root_conditional):
-            self.error(
-                "WORKSPACE_MODE_ROOT_DISABLED_CONTENT",
-                "disabled root context must not route support paths",
-                root_relpath,
-            )
-
-        modes = catalog.get("modes")
-        if not isinstance(modes, list) or not modes:
-            self.error(
-                "WORKSPACE_MODE_EMPTY",
-                "enabled workspace-modes module requires at least one catalog mode",
-                catalog_relpath,
-            )
-            modes = []
-        seen_ids: set[str] = set()
-        seen_paths: set[str] = set()
-        accepted_ids: set[str] = set()
-        mode_kinds = {
-            "application-development",
-            "framework-development",
-            "library-development",
-            "skeleton-development",
-            "dependency-integration",
-            "dependency-contribution",
-            "skeleton-migration",
-            "workspace-coordination",
-            "custom",
-        }
-        states = {"proposed", "accepted", "disabled", "deprecated", "blocked"}
-        relationship_types = {
-            "workspace-root",
-            "workspace-member",
-            "dependency",
-            "scaffold-origin",
-            "vendored-source",
-        }
-        adapter_roles = {"active", "passive", "provenance-only"}
-        ownership_values = {"target", "upstream", "mixed"}
-
-        for index, entry in enumerate(modes):
-            location = f"{catalog_relpath}:modes[{index}]"
-            if not isinstance(entry, dict):
-                self.error("WORKSPACE_MODE_CATALOG_ENTRY", "mode entry must be an object", location)
-                continue
-            mode_id = entry.get("id")
-            state = entry.get("state")
-            mode_kind = entry.get("mode_kind")
-            path = entry.get("path")
-            if not resolved(mode_id) or re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", mode_id) is None:
-                self.error("WORKSPACE_MODE_ID", "mode ID must be resolved kebab-case", location)
-                continue
-            if mode_id in seen_ids:
-                self.error("WORKSPACE_MODE_DUPLICATE", f"duplicate mode ID {mode_id}", location)
-            seen_ids.add(mode_id)
-            if state not in states or mode_kind not in mode_kinds:
-                self.error("WORKSPACE_MODE_CATALOG_ENTRY", "mode state or kind is invalid", location)
-            for field in ["title", "summary", "evidence_revision"]:
-                if not resolved(entry.get(field)):
-                    self.error("WORKSPACE_MODE_CATALOG_ENTRY", f"mode {field} must be resolved", location)
-            expected_path = f".ai/project/workspace-modes/modes/{mode_id}/mode.json"
-            if path != expected_path or path in seen_paths or "_template" in str(path):
-                self.error("WORKSPACE_MODE_PATH", f"mode path must be unique and equal {expected_path}", location)
-            if isinstance(path, str):
-                seen_paths.add(path)
-            descriptor = self.load_json_object(self.target_path(expected_path), "WORKSPACE_MODE")
-            readme_path = f".ai/project/workspace-modes/modes/{mode_id}/README.md"
-            if not self.target_path(readme_path).is_file():
-                self.error("WORKSPACE_MODE_README_MISSING", "actual mode directory requires README.md", readme_path)
-            if descriptor is None:
-                self.error("WORKSPACE_MODE_DESCRIPTOR_MISSING", "catalog mode descriptor is missing", expected_path)
-                continue
-            if descriptor.get("schema_version") != 1 or descriptor.get("descriptor_kind") != "target-workspace-mode":
-                self.error("WORKSPACE_MODE_DESCRIPTOR_SCHEMA", "mode descriptor schema or kind is invalid", expected_path)
-            if descriptor.get("id") != mode_id or descriptor.get("state") != state or descriptor.get("mode_kind") != mode_kind:
-                self.error("WORKSPACE_MODE_DESCRIPTOR_DRIFT", "catalog and descriptor identity state or kind differ", expected_path)
-            if state == "accepted":
-                accepted_ids.add(mode_id)
-            for field in ["title", "purpose", "owner", "decision_authority", "last_reviewed", "evidence_revision"]:
-                if not resolved(descriptor.get(field)):
-                    self.error("WORKSPACE_MODE_DESCRIPTOR_FIELD", f"mode {field} must be resolved", expected_path)
-            scope = descriptor.get("workspace_scope")
-            if not isinstance(scope, dict) or not resolved(scope.get("root")) or not is_target_relative_path(scope["root"]):
-                self.error("WORKSPACE_MODE_SCOPE", "workspace_scope requires a target-relative root", expected_path)
-            else:
-                if state == "accepted" and not self.target_path(scope["root"]).exists():
-                    self.error(
-                        "WORKSPACE_MODE_SCOPE",
-                        f"accepted workspace_scope.root points to missing target scope {scope['root']}",
-                        expected_path,
-                    )
-                target_path_list(scope.get("include"), "WORKSPACE_MODE_SCOPE", "workspace_scope.include", expected_path, non_empty=state == "accepted")
-                target_path_list(scope.get("exclude"), "WORKSPACE_MODE_SCOPE", "workspace_scope.exclude", expected_path)
-            for field in ["use_when", "do_not_use_when"]:
-                value = descriptor.get(field)
-                if not isinstance(value, list) or not value or not all(resolved(item) for item in value):
-                    self.error("WORKSPACE_MODE_SIGNALS", f"{field} must be a non-empty resolved string list", expected_path)
-            relationships = descriptor.get("relationships")
-            active_roots = 0
-            if not isinstance(relationships, list) or not relationships:
-                self.error("WORKSPACE_MODE_RELATIONSHIPS", "relationships must be a non-empty list", expected_path)
-            else:
-                for relationship_index, relationship in enumerate(relationships):
-                    rel_location = f"{expected_path}:relationships[{relationship_index}]"
-                    if not isinstance(relationship, dict):
-                        self.error("WORKSPACE_MODE_RELATIONSHIP", "relationship must be an object", rel_location)
-                        continue
-                    if not resolved(relationship.get("subject")):
-                        self.error("WORKSPACE_MODE_RELATIONSHIP", "relationship subject must be resolved", rel_location)
-                    rel_type = relationship.get("relationship")
-                    role = relationship.get("adapter_role")
-                    if rel_type not in relationship_types or role not in adapter_roles or relationship.get("ownership") not in ownership_values:
-                        self.error("WORKSPACE_MODE_RELATIONSHIP", "relationship type adapter role or ownership is invalid", rel_location)
-                    target_path_list(
-                        relationship.get("evidence"),
-                        "WORKSPACE_MODE_RELATIONSHIP_EVIDENCE",
-                        "relationship.evidence",
-                        rel_location,
-                        non_empty=True,
-                        require_exists=True,
-                    )
-                    if role == "active":
-                        if rel_type != "workspace-root":
-                            self.error("WORKSPACE_MODE_NESTED_ADAPTER", "only workspace-root may have an active adapter role", rel_location)
-                        else:
-                            active_roots += 1
-                            if workspace_id is not None and relationship.get("subject") != workspace_id:
-                                self.error("WORKSPACE_MODE_ACTIVE_ROOT", "active root subject must match catalog workspace ID", rel_location)
-                    if rel_type in {"dependency", "scaffold-origin"} and role not in {"passive", "provenance-only"}:
-                        self.error("WORKSPACE_MODE_NESTED_ADAPTER", "dependency and scaffold adapters must remain passive or provenance-only", rel_location)
-            if state == "accepted" and active_roots != 1:
-                self.error("WORKSPACE_MODE_ACTIVE_ROOT", "accepted mode must define exactly one active workspace-root relationship", expected_path)
-            context = descriptor.get("context")
-            if not isinstance(context, dict) or context.get("root_context") not in {"inherit", "required", "skip"}:
-                self.error("WORKSPACE_MODE_CONTEXT", "context requires inherit required or skip root_context", expected_path)
-            else:
-                if (
-                    state == "accepted"
-                    and context.get("root_context") == "required"
-                    and root_state != "enabled"
-                ):
-                    self.error(
-                        "WORKSPACE_MODE_CONTEXT",
-                        "accepted mode cannot require disabled shared root context",
-                        expected_path,
-                    )
-                target_path_list(
-                    context.get("required_context"),
-                    "WORKSPACE_MODE_CONTEXT",
-                    "context.required_context",
-                    expected_path,
-                    require_exists=state == "accepted",
-                )
-                conditional = context.get("conditional_context")
-                if not isinstance(conditional, list):
-                    self.error("WORKSPACE_MODE_CONTEXT", "context.conditional_context must be a list", expected_path)
-                else:
-                    for conditional_index, conditional_entry in enumerate(conditional):
-                        if (
-                            not isinstance(conditional_entry, dict)
-                            or not resolved(conditional_entry.get("path"))
-                            or not is_target_relative_path(conditional_entry["path"])
-                            or not resolved(conditional_entry.get("when"))
-                        ):
-                            self.error("WORKSPACE_MODE_CONTEXT", f"conditional context {conditional_index} is invalid", expected_path)
-                        elif state == "accepted" and not self.target_path(
-                            conditional_entry["path"]
-                        ).exists():
-                            self.error(
-                                "WORKSPACE_MODE_CONTEXT",
-                                f"conditional context {conditional_index} points to missing target context",
-                                expected_path,
-                            )
-            for field in ["source_of_truth_ids", "validation_entry_point_ids", "known_gaps"]:
-                value = descriptor.get(field)
-                if not isinstance(value, list) or not all(resolved(item) for item in value):
-                    self.error("WORKSPACE_MODE_DESCRIPTOR_FIELD", f"{field} must be a resolved string list", expected_path)
-            constraints = descriptor.get("constraints")
-            if not isinstance(constraints, dict):
-                self.error("WORKSPACE_MODE_CONSTRAINTS", "constraints must be an object", expected_path)
-            else:
-                narrowing = constraints.get("narrows_allowed_actions")
-                if not isinstance(narrowing, list) or any(item not in ALLOWED_ACTION_MODES for item in narrowing):
-                    self.error("WORKSPACE_MODE_CONSTRAINTS", "narrows_allowed_actions contains an invalid mode", expected_path)
-                for field in [
-                    "grants_write_scope",
-                    "grants_approval",
-                    "grants_permissions",
-                    "grants_authority",
-                    "grants_tools",
-                    "activates_nested_adapters",
-                    "bypasses_gates",
-                ]:
-                    if constraints.get(field) is not False:
-                        self.error("WORKSPACE_MODE_GRANT", f"constraints.{field} must be false", expected_path)
-
-        default_mode = selection.get("default_mode_id")
-        if default_mode is not None and default_mode not in accepted_ids:
-            self.error("WORKSPACE_MODE_DEFAULT", "default_mode_id must reference an accepted mode", catalog_relpath)
-
-        operations = self.load_json_object(
-            self.target_path(".ai/assistant/operation-catalog.json"), "OPERATION_CATALOG"
-        )
-        operation = next(
-            (
-                item
-                for item in (operations.get("operations", []) if isinstance(operations, dict) else [])
-                if isinstance(item, dict) and item.get("id") == "workspace-mode"
-            ),
-            None,
-        )
-        if not isinstance(operation, dict) or operation.get("required_module") != "workspace-modes":
-            self.error("WORKSPACE_MODE_OPERATION_UNROUTED", "workspace-mode operation must require the enabled module", ".ai/assistant/operation-catalog.json")
-        router = self.load_json_object(self.target_path(".ai/assistant/context-router.json"), "ROUTER")
-        overlays = router.get("intent_overlays") if isinstance(router, dict) else None
-        route = overlays.get("workspace-mode-request") if isinstance(overlays, dict) else None
-        mode_routing = router.get("workspace_mode_routing") if isinstance(router, dict) else None
-        if not isinstance(route, dict) or route.get("operation_candidates") != ["workspace-mode"]:
-            self.error("WORKSPACE_MODE_INTENT_UNROUTED", "workspace mode intent must route the workspace-mode operation", ".ai/assistant/context-router.json")
-        if (
-            not isinstance(mode_routing, dict)
-            or mode_routing.get("catalog") != catalog_relpath
-            or mode_routing.get("root_context") != root_relpath
-            or mode_routing.get("ambiguity_behavior") != "ask-user-and-remain-read-only"
-        ):
-            self.error("WORKSPACE_MODE_ROUTER", "workspace mode routing must bind catalog root context and safe ambiguity behavior", ".ai/assistant/context-router.json")
-
-        self.info(
-            "WORKSPACE_MODE_EVIDENCE_LIMIT",
-            "workspace-mode structural checks do not prove strategic correctness, complete workspace discovery, ownership truth, semantic consistency, or assistant compliance",
-        )
+        validate_workspace_modes(self, manifest)
 
     def check_consistency_map(
         self, manifest: ManifestData | None = None

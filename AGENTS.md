@@ -158,77 +158,22 @@ source-repository helper:
 python3 tools/check_framework_consistency.py
 ```
 
-When relevant to the change, also run the focused source helpers:
-
-```sh
-python3 tools/check_framework_metadata.py
-python3 tools/check_architecture_knowledge.py
-python3 tools/check_action_authorization.py
-python3 tools/check_approval_template.py
-python3 tools/check_change_packages.py
-python3 tools/check_engineering_evidence.py
-python3 tools/check_project_knowledge.py
-python3 tools/check_debug_mode.py
-python3 tools/check_code_documentation.py
-python3 tools/check_project_vocabulary.py
-python3 tools/check_test_first_development.py
-python3 tools/check_extensions.py
-python3 tools/check_dependency_knowledge.py
-python3 tools/check_workspace_modes.py
-python3 tools/check_ai_infrastructure_inventory.py
-python3 tools/check_ai_infrastructure_recommendations.py
-python3 tools/check_ai_infrastructure_router.py
-python3 tools/check_assistant_surface_conformance.py
-python3 tools/check_assistant_capability_contract.py
-python3 tools/check_assistant_surface_audits.py
-python3 tools/check_bridge_capability_matrix.py
-python3 tools/check_captured_effectiveness_results.py
-python3 tools/render_evidence_status.py --check
-python3 tools/check_context_router.py
-python3 tools/check_bootstrap_routing.py
-python3 tools/check_agent_entry_packet.py
-python3 tools/check_context_costs.py
-python3 tools/check_source_context_routing.py
-python3 tools/check_diagram_conformance_results.py
-python3 tools/check_discussion_diagrams.py
-python3 tools/prepare_diagram_conformance_run.py --check
-python3 tools/check_consistency_map.py
-python3 tools/check_conformance_matrix.py
-python3 tools/check_conformance_summary.py
-python3 tools/check_effectiveness_benchmark.py
-python3 tools/check_cross_platform_tools.py
-python3 tools/check_large_task_orchestration.py
-python3 tools/check_subagent_delegation.py
-python3 tools/check_manifest_contract.py
-python3 tools/check_markdown_links.py
-python3 tools/check_maturity_profile.py
-python3 tools/check_module_profile.py
-python3 tools/check_framework_packs.py
-python3 tools/check_migration_diff_report.py
-python3 tools/check_operation_contracts.py
-python3 tools/check_operation_catalog.py
-python3 tools/check_operation_help.py
-python3 tools/check_output_contracts.py
-python3 tools/check_release_migration_template.py
-python3 tools/check_release_drift.py
-python3 tools/check_rule_ownership.py
-python3 tools/check_scaffold_profiles.py
-python3 tools/check_source_of_truth_registry.py
-python3 tools/check_support_information.py
-python3 tools/check_target_adapter_validator.py
-python3 tools/check_check_manifest.py
-python3 tools/check_team_collaboration.py
-python3 tools/check_team_collaboration_scenarios.py
-python3 tools/check_versioning.py
-python3 tools/render_assistant_capability_index.py
-python3 tools/render_framework_file_inventory.py --check
-python3 tools/render_operation_index.py
-python3 tools/render_rule_registry_docs.py --check
-python3 tools/render_target_bootstrap_index.py --target templates/target --check
-python3 tools/render_target_validator_findings.py --check
-python3 tools/render_target_contract_compatibility.py --check
-python3 tools/summarize_effectiveness_benchmark.py
-```
+When relevant to the change, select focused source helpers from
+`tools/check_manifest.json`, `tools/README.md`, and
+`docs/framework-maintenance.md`. Do not duplicate the full helper inventory in
+bootstrap instructions; the manifest owns check IDs, routes, dependencies,
+profiles, and platform scope.
+Bootstrap discoverability must retain these focused helper names:
+`check_framework_metadata.py`, `check_approval_template.py`,
+`check_change_packages.py`, `check_bridge_capability_matrix.py`,
+`check_discussion_diagrams.py`, `check_context_router.py`,
+`check_manifest_contract.py`, `check_maturity_profile.py`,
+`check_module_profile.py`, `check_operation_help.py`,
+`check_output_contracts.py`, `check_ai_infrastructure_inventory.py`,
+`check_ai_infrastructure_recommendations.py`, `check_rule_ownership.py`,
+`check_source_of_truth_registry.py`, `check_versioning.py`,
+`check_release_migration_template.py`, and
+`check_migration_diff_report.py`.
 
 This helper validates the AlatyrCore repository itself. It is not a portable
 framework requirement for target projects.
