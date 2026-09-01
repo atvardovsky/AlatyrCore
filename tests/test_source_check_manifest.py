@@ -15,6 +15,7 @@ from source_check_manifest import (  # noqa: E402
     declaration_matches_source,
     declared_implementation_path,
     load_manifest,
+    micro_routes,
     valid_manifest_path,
 )
 
@@ -62,6 +63,53 @@ class SourceCheckManifestTests(unittest.TestCase):
         }
 
         self.assertEqual(broad_trigger_patterns(check), ["docs/**"])
+
+    def test_micro_routes_use_explicit_micro_trigger_paths(self) -> None:
+        check = {
+            "trigger_paths": ["**/*.md"],
+            "micro_trigger_paths": ["docs/human/**"],
+        }
+
+        self.assertTrue(micro_routes(check, "docs/human/faq.md"))
+        self.assertFalse(micro_routes(check, "README.md"))
+
+    def test_micro_profile_requires_explicit_micro_trigger_paths(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            tools = root / "tools"
+            tools.mkdir()
+            (tools / "example.py").write_text("print('ok')\n", encoding="utf-8")
+            manifest = tools / "check_manifest.json"
+            manifest.write_text(
+                """
+{
+  "schema_version": 2,
+  "manifest_kind": "alatyr-source-checks",
+  "defaults": {
+    "profiles": ["full"],
+    "platforms": ["all"],
+    "write_scope": "none",
+    "depends_on": [],
+    "timeout_seconds": 30,
+    "resource_class": "standard"
+  },
+  "checks": [
+    {
+      "id": "example",
+      "command": ["tools/example.py"],
+      "profiles": ["micro", "full"],
+      "contract_inputs": ["tools/check_manifest.json"],
+      "implementation_paths": ["tools/example.py"],
+      "trigger_paths": ["tools/check_manifest.json", "tools/example.py"]
+    }
+  ]
+}
+""",
+                encoding="utf-8",
+            )
+
+            with self.assertRaisesRegex(ValueError, "micro_trigger_paths"):
+                load_manifest(manifest, root=root)
 
     def test_load_manifest_normalizes_defaults_and_dependencies(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

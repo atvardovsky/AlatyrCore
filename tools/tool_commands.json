@@ -14,6 +14,12 @@
       "write_scope": "none"
     },
     {
+      "name": "plan-work",
+      "script": "plan_minimum_work.py",
+      "purpose": "plan the smallest quality-preserving source work route",
+      "write_scope": "none"
+    },
+    {
       "name": "compare-check-reports",
       "script": "compare_source_check_reports.py",
       "purpose": "compare two AlatyrCore source-check reports without rerunning checks",

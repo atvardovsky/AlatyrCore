@@ -83,6 +83,11 @@ Before accepting a change, check:
 - `python3 tools/check_all.py` passes when the source validation wrapper is
   available. This is the preferred AlatyrCore source-repository check set, not
   a portable target-project requirement.
+- `python3 tools/alatyr.py plan-work --summary` is available as the read-only
+  minimum-work preflight. It should report the selected effective profile,
+  micro escalation reasons, heavy checks, and recommended check command before
+  routine source-tooling work. It is routing evidence, not edit, commit,
+  publish, or semantic approval.
 - `python3 tools/alatyr.py check-source-focused` is available for cheap
   small-task source checks. It uses the fast changed-path route and does not
   replace `check_all.py` as the full acceptance gate.
@@ -387,8 +392,10 @@ Before accepting a change, check:
   current source baseline.
 - source entry points use bootstrap plus task-specific context routing instead
   of requiring every task to read the full framework corpus.
-- `tools/check_manifest.json` keeps fast, full, change-baseline, and release
-  validation explicit; fast checks never replace the full acceptance gate.
+- `tools/check_manifest.json` keeps micro, fast, full, change-baseline, and
+  release validation explicit. Micro checks require explicit
+  `micro_trigger_paths` and must escalate to fast when coverage is ambiguous;
+  fast checks never replace the full acceptance gate.
 - derived installer docs, target templates, request templates, and entry
   points reference canonical rule IDs instead of owning repeated policy text.
 - `README.md` still gives an assistant enough context to install the

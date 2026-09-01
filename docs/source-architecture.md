@@ -59,6 +59,12 @@ Use pipeline validation instead of one broad checker whenever a capability can
 be checked in stages. A cheap structural check should run before expensive
 fixtures or broad source scans.
 
+Use a minimum-work planning step before routine source changes. The planner
+should resolve changed paths, explicit micro eligibility, selected checks,
+context hints, heavy checks, and optional hash-bound reuse candidates before
+implementation starts. It is a routing surface only; it does not approve edits,
+commit, publish, or replace semantic review.
+
 Use a strategy boundary for provider-specific or capability-specific behavior.
 Assistant surfaces, operating systems, optional modules, and target profiles
 should be data-driven or isolated behind small modules instead of hard-coded
@@ -91,11 +97,16 @@ task actually needs.
 The expected source-tooling flow is:
 
 1. Classify the source change and choose the smallest context route.
-2. Run cheap structural checks first.
-3. Run changed-path focused checks when the route is unambiguous.
-4. Expand to full validation when a broad route, failed check, contract change,
+2. Generate a read-only minimum-work plan when the scope is not already
+   obvious from the selected profile.
+3. Run cheap structural checks first.
+4. Run changed-path focused checks when the route is unambiguous.
+5. Reuse a previous passed check only when its manifest, command, runtime, and
+   declared input fingerprint match the current run.
+6. Expand to full validation when a broad route, failed check, contract change,
    release change, or ownership conflict appears.
-5. Record final evidence with the checks that actually ran and any residual
+7. Record final evidence with the checks that actually ran, reused, or were
+   explicitly skipped and any residual
    risk.
 
 This preserves quality while reducing routine task cost. The optimization is
@@ -105,6 +116,8 @@ the owning checks.
 ## Current Refactoring Priorities
 
 - Keep extracting reusable source-check manifest primitives from CLI wrappers.
+- Use `tools/plan_minimum_work.py` and the `micro` profile to identify cheap
+  source routes before adding broader default checks.
 - Split `tools/validate_target_adapter.py` by optional capability modules after
   behavior is covered by focused regression tests.
 - Split large target validation methods into schema parsing, relationship

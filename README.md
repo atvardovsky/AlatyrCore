@@ -625,6 +625,10 @@ Before changing AlatyrCore, read [CONTRIBUTING.md](CONTRIBUTING.md),
 framework rules, installation material, target templates, and explanatory docs
 separate. Source-repository commands and checker details are owned by the
 [tooling reference](tools/README.md), not by the portable framework.
+For routine source changes, use the read-only minimum-work preflight
+(`python3 tools/alatyr.py plan-work --summary`) before choosing a broader
+validation route. The `micro` and reuse paths are optimization aids only; the
+full source-check profile remains the acceptance gate.
 
 Security reports follow [SECURITY.md](SECURITY.md). Do not place credentials,
 private target-project facts, or exploit details in public issues.

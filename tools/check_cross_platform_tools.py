@@ -26,6 +26,7 @@ SOURCE_CHECK_SUMMARY = TOOLS / "summarize_source_check_report.py"
 EXPECTED_COMMANDS = {
     "check-source",
     "check-source-focused",
+    "plan-work",
     "compare-check-reports",
     "scaffold",
     "render-bootstrap",

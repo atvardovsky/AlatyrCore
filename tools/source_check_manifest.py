@@ -12,7 +12,7 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
-ALLOWED_PROFILES = {"quick", "fast", "full", "change", "platform", "release"}
+ALLOWED_PROFILES = {"micro", "quick", "fast", "full", "change", "platform", "release"}
 ALLOWED_WRITE_SCOPES = {"none"}
 ALLOWED_PLATFORMS = {"all", "linux", "macos", "windows"}
 ALLOWED_RESOURCE_CLASSES = {"light", "standard", "heavy"}
@@ -40,6 +40,12 @@ def validate_path_list(check_id: str, field: str, value: Any) -> list[str]:
     if len(value) != len(set(value)):
         raise ValueError(f"{check_id}.{field} contains duplicate paths")
     return value
+
+
+def validate_optional_path_list(check_id: str, field: str, value: Any) -> list[str]:
+    if value is None:
+        return []
+    return validate_path_list(check_id, field, value)
 
 
 def load_manifest(
@@ -101,6 +107,13 @@ def load_manifest(
             or not set(profiles) <= ALLOWED_PROFILES
         ):
             raise ValueError(f"{check_id}.profiles is invalid")
+        micro_trigger_paths = validate_optional_path_list(
+            check_id, "micro_trigger_paths", check.get("micro_trigger_paths")
+        )
+        if "micro" in profiles and not micro_trigger_paths:
+            raise ValueError(
+                f"{check_id}.micro_trigger_paths is required for micro profile checks"
+            )
         if (
             not isinstance(platforms, list)
             or not platforms
@@ -146,6 +159,7 @@ def load_manifest(
         check["contract_inputs"] = contract_inputs
         check["implementation_paths"] = implementation_paths
         check["trigger_paths"] = trigger_paths
+        check["micro_trigger_paths"] = micro_trigger_paths
         check["always_for_changed"] = check.get("always_for_changed", False)
         normalized.append(check)
 
@@ -183,6 +197,14 @@ def matches(check: dict[str, Any], path: str) -> bool:
 
 def routes(check: dict[str, Any], path: str) -> bool:
     return any(fnmatch.fnmatch(path, pattern) for pattern in check["trigger_paths"])
+
+
+def micro_routes(check: dict[str, Any], path: str) -> bool:
+    """Whether a path is explicitly allowed to use this check in micro mode."""
+
+    return any(
+        fnmatch.fnmatch(path, pattern) for pattern in check.get("micro_trigger_paths", [])
+    )
 
 
 @dataclass(frozen=True)

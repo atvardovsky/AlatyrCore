@@ -163,9 +163,13 @@ Windows; actual client runs remain external evidence.
 source docs and templates.
 
 `tools/source_check_manifest.py` owns reusable source-check manifest primitives
-for path-index matching, direct local tool dependency discovery, and broad
-trigger diagnostics. `tools/check_check_manifest.py` remains the CLI wrapper
-for source manifest coverage.
+for path-index matching, direct local tool dependency discovery, explicit
+micro routes, and broad trigger diagnostics. `tools/source_check_reuse.py`
+owns hash-bound source-check input fingerprints and reuse decisions.
+`tools/plan_minimum_work.py` uses those primitives to report the smallest
+quality-preserving source work route before checks run.
+`tools/check_check_manifest.py` remains the CLI wrapper for source manifest
+coverage.
 
 `tools/target_adapter_validation/action_modes.py` owns the shared target
 allowed-action mode set used by installed adapter validators.
@@ -270,8 +274,8 @@ Source tool dependencies are declared in `requirements.txt`; source acceptance
 and CI dependencies are routed through `requirements-dev.txt`.
 
 `tools/check_manifest.json` is the dependency-aware source-check catalog used
-by `tools/check_all.py` for quick, fast, full, change, platform, and release
-profiles.
+by `tools/check_all.py` for micro, quick, fast, full, change, platform, and
+release profiles.
 `tools/source_context_router.json` and `installer/context-router.json` keep
 source maintenance and installation bootstrap bounded. The generated
 `framework/file-inventory.json` and `framework/framework-packs.json` define the

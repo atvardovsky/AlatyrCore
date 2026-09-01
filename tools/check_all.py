@@ -26,7 +26,13 @@ from source_check_manifest import (
     broad_trigger_patterns as _broad_trigger_patterns,
     load_manifest as load_source_check_manifest,
     matches,
+    micro_routes,
     routes,
+)
+from source_check_reuse import (
+    check_input_fingerprint,
+    load_reuse_report,
+    reuse_decisions,
 )
 
 
@@ -54,6 +60,9 @@ class SelectionResult:
     unmatched_changed_paths: list[str]
     platform: str
     selection_details: dict[str, dict[str, Any]]
+    effective_profile: str
+    escalated_from_micro: bool = False
+    micro_escalation_reasons: list[str] | None = None
 
 
 def load_manifest() -> list[dict[str, Any]]:
@@ -103,7 +112,7 @@ def default_changed_from() -> str:
 def resolve_changed_from(
     profile: str, changed_from: str | None, *, all_fast: bool = False
 ) -> str | None:
-    if profile != "fast":
+    if profile not in {"fast", "micro"}:
         return changed_from
     if all_fast:
         return None
@@ -159,6 +168,7 @@ def select_check_plan(
     changed: list[str] = []
     unmatched: list[str] = []
     details: dict[str, dict[str, Any]] = {}
+    selected_ids: set[str] = set()
 
     def note(check_id: str, reason: str, paths: list[str] | None = None) -> None:
         detail = details.setdefault(
@@ -177,6 +187,47 @@ def select_check_plan(
         }
         for check_id in selected_ids:
             note(check_id, "release-profile")
+    elif profile == "micro":
+        changed = git_changed_paths(changed_from or default_changed_from())
+        full_checks = [
+            check
+            for check in checks
+            if "full" in check["profiles"]
+            and supports_platform(check, selected_platform)
+        ]
+        escalation_reasons: list[str] = []
+        for path in changed:
+            matching_checks = [check for check in full_checks if routes(check, path)]
+            micro_checks = [
+                check
+                for check in matching_checks
+                if "micro" in check["profiles"] and micro_routes(check, path)
+            ]
+            if not matching_checks:
+                unmatched.append(path)
+                escalation_reasons.append(f"unmatched changed path: {path}")
+                continue
+            if not micro_checks:
+                escalation_reasons.append(f"path requires non-micro checks: {path}")
+                continue
+            for check in micro_checks:
+                selected_ids.add(check["id"])
+                note(check["id"], "micro-changed-path-trigger", [path])
+        if escalation_reasons:
+            fast_plan = select_check_plan(
+                checks, "fast", changed_from or default_changed_from(), platform=selected_platform
+            )
+            return SelectionResult(
+                selected=fast_plan.selected,
+                fell_back_to_full=fast_plan.fell_back_to_full,
+                changed_paths=fast_plan.changed_paths,
+                unmatched_changed_paths=fast_plan.unmatched_changed_paths,
+                platform=selected_platform,
+                selection_details=fast_plan.selection_details,
+                effective_profile=fast_plan.effective_profile,
+                escalated_from_micro=True,
+                micro_escalation_reasons=sorted(set(escalation_reasons)),
+            )
     elif profile == "fast" and changed_from:
         selected_ids = {
             check["id"]
@@ -236,6 +287,30 @@ def select_check_plan(
 
     for check_id in list(selected_ids):
         add_dependencies(check_id)
+    if profile == "micro":
+        non_micro_dependencies = sorted(
+            check_id
+            for check_id in selected_ids
+            if "micro" not in by_id[check_id]["profiles"]
+        )
+        if non_micro_dependencies:
+            fast_plan = select_check_plan(
+                checks, "fast", changed_from or default_changed_from(), platform=selected_platform
+            )
+            return SelectionResult(
+                selected=fast_plan.selected,
+                fell_back_to_full=fast_plan.fell_back_to_full,
+                changed_paths=fast_plan.changed_paths,
+                unmatched_changed_paths=fast_plan.unmatched_changed_paths,
+                platform=selected_platform,
+                selection_details=fast_plan.selection_details,
+                effective_profile=fast_plan.effective_profile,
+                escalated_from_micro=True,
+                micro_escalation_reasons=[
+                    "micro check dependency is not micro-eligible: " + check_id
+                    for check_id in non_micro_dependencies
+                ],
+            )
     selected = [
         _selected_check(
             check,
@@ -254,6 +329,9 @@ def select_check_plan(
         unmatched_changed_paths=unmatched,
         platform=selected_platform,
         selection_details={check_id: details[check_id] for check_id in selected_ids if check_id in details},
+        effective_profile=profile,
+        escalated_from_micro=False,
+        micro_escalation_reasons=[],
     )
 
 
@@ -296,12 +374,15 @@ def selection_report(
             broad_triggered.append(entry)
     return {
         "profile": profile,
+        "effective_profile": plan.effective_profile,
         "platform": plan.platform,
         "changed_from": changed_from,
         "changed_path_count": len(plan.changed_paths),
         "changed_paths": plan.changed_paths,
         "unmatched_changed_paths": plan.unmatched_changed_paths,
         "fell_back_to_full": plan.fell_back_to_full,
+        "escalated_from_micro": plan.escalated_from_micro,
+        "micro_escalation_reasons": plan.micro_escalation_reasons or [],
         "selected_check_ids": [check["id"] for check in plan.selected],
         "resource_class_counts": dict(sorted(resource_classes.items())),
         "checks": checks,
@@ -379,6 +460,26 @@ def run_check(check: dict[str, Any], baseline: str | None) -> RunnerResult:
     return RunnerResult((result.returncode, result.stdout, result.stderr, command))
 
 
+def reusable_results(
+    *,
+    selected: list[dict[str, Any]],
+    decisions: dict[str, dict[str, Any]],
+    commands_by_id: dict[str, list[str]],
+) -> dict[str, tuple[int, str, str, list[str]]]:
+    results: dict[str, tuple[int, str, str, list[str]]] = {}
+    for check in selected:
+        check_id = check["id"]
+        decision = decisions.get(check_id, {})
+        if decision.get("reusable") is True:
+            results[check_id] = (
+                0,
+                f"REUSED: {decision.get('reason', 'previous result reused')}\n",
+                "",
+                commands_by_id[check_id],
+            )
+    return results
+
+
 def effective_baseline(
     profile: str, changed_from: str | None, from_ref: str | None
 ) -> str | None:
@@ -442,9 +543,13 @@ def render_report(
     source_changes: list[str],
     telemetry: dict[str, dict[str, Any]] | None = None,
     selection: dict[str, Any] | None = None,
+    input_fingerprints: dict[str, dict[str, Any]] | None = None,
+    reuse: dict[str, dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     checks: list[dict[str, Any]] = []
     telemetry = telemetry or {}
+    input_fingerprints = input_fingerprints or {}
+    reuse = reuse or {}
     timing = dict(
         telemetry.get(
             "_summary",
@@ -499,6 +604,8 @@ def render_report(
             "selection_reasons": selected_metadata.get("reasons", []),
             "matched_changed_paths": selected_metadata.get("matched_changed_paths", []),
             "broad_trigger_patterns": selected_metadata.get("broad_trigger_patterns", []),
+            "input_fingerprint": input_fingerprints.get(check_id),
+            "reuse": reuse.get(check_id),
         }
         if check_id in blocked:
             checks.append(
@@ -511,10 +618,13 @@ def render_report(
             )
             continue
         code, stdout, stderr, command = results[check_id]
+        status = "passed" if code == 0 else "failed"
+        if observation.get("reused") is True and code == 0:
+            status = "reused-pass"
         checks.append(
             {
                 "id": check_id,
-                "status": "passed" if code == 0 else "failed",
+                "status": status,
                 "exit_code": code,
                 "command": command,
                 "stdout": stdout,
@@ -536,6 +646,8 @@ def render_report(
             "changed_paths": [],
             "unmatched_changed_paths": [],
             "fell_back_to_full": False,
+            "escalated_from_micro": False,
+            "micro_escalation_reasons": [],
             "selected_check_ids": [check["id"] for check in selected],
             "resource_class_counts": {},
             "checks": [],
@@ -599,6 +711,7 @@ def execute_checks(
     *,
     runner: Any = run_check,
     telemetry: dict[str, dict[str, Any]] | None = None,
+    initial_results: dict[str, tuple[int, str, str, list[str]]] | None = None,
 ) -> tuple[
     dict[str, tuple[int, str, str, list[str]]],
     dict[str, list[str]],
@@ -606,13 +719,23 @@ def execute_checks(
     """Run a selected dependency graph and block checks after failed prerequisites."""
 
     selected_ids = {check["id"] for check in checks}
-    remaining = {check["id"]: check for check in checks}
-    results: dict[str, tuple[int, str, str, list[str]]] = {}
+    results: dict[str, tuple[int, str, str, list[str]]] = dict(initial_results or {})
+    remaining = {
+        check["id"]: check for check in checks if check["id"] not in results
+    }
     blocked: dict[str, list[str]] = {}
 
     observations = telemetry if telemetry is not None else {}
     run_started = time.monotonic()
     queued_since = {check["id"]: run_started for check in checks}
+    for check_id in results:
+        observations[check_id] = {
+            "duration_seconds": 0.0,
+            "queued_seconds": 0.0,
+            "completed_after_seconds": 0.0,
+            "timed_out": False,
+            "reused": True,
+        }
 
     def run_with_observation(
         check: dict[str, Any],
@@ -792,6 +915,14 @@ def main() -> int:
         type=Path,
         help="Write a machine-readable run report to this explicit output path.",
     )
+    parser.add_argument(
+        "--reuse-report",
+        type=Path,
+        help=(
+            "Optionally reuse passed checks from a previous source-check report "
+            "when manifest, command, runtime, and input fingerprints match."
+        ),
+    )
     args = parser.parse_args()
     if args.jobs <= 0:
         parser.error("--jobs must be positive")
@@ -809,7 +940,11 @@ def main() -> int:
         plan = select_check_plan(checks, args.profile, changed_from)
         selected = plan.selected
         commands = [resolved_command(check, baseline) for check in selected]
+        commands_by_id = {
+            check["id"]: command for check, command in zip(selected, commands)
+        }
         report_path = resolve_report_path(args.report) if args.report else None
+        previous_report = load_reuse_report(args.reuse_report) if args.reuse_report else None
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 2
@@ -822,12 +957,38 @@ def main() -> int:
         print("INFO: unmatched changed paths selected the full check profile", flush=True)
         for path in plan.unmatched_changed_paths:
             print(f"INFO: unmatched changed path: {path}", flush=True)
+    if plan.escalated_from_micro:
+        print("INFO: micro profile escalated to fast", flush=True)
+        for reason in plan.micro_escalation_reasons or []:
+            print(f"INFO: micro escalation: {reason}", flush=True)
 
     try:
         before = source_snapshot(ROOT)
+        input_fingerprints = {
+            check["id"]: check_input_fingerprint(check, before) for check in selected
+        }
+        current_source = source_identity()
+        current_environment = environment_report()
+        reuse = reuse_decisions(
+            selected=selected,
+            previous_report=previous_report,
+            current_source=current_source,
+            current_environment=current_environment,
+            input_fingerprints=input_fingerprints,
+            commands_by_id=commands_by_id,
+        )
+        initial_results = reusable_results(
+            selected=selected,
+            decisions=reuse,
+            commands_by_id=commands_by_id,
+        )
         telemetry: dict[str, dict[str, Any]] = {}
         results, blocked = execute_checks(
-            selected, baseline, args.jobs, telemetry=telemetry
+            selected,
+            baseline,
+            args.jobs,
+            telemetry=telemetry,
+            initial_results=initial_results,
         )
         source_changes = snapshot_changes(before, source_snapshot(ROOT))
     except (OSError, ValueError) as exc:
@@ -845,7 +1006,10 @@ def main() -> int:
             failures.append(check["id"])
             continue
         code, stdout, stderr, command = results[check["id"]]
-        print("$ " + " ".join(command), flush=True)
+        if telemetry.get(check["id"], {}).get("reused") is True:
+            print("REUSED " + check["id"], flush=True)
+        else:
+            print("$ " + " ".join(command), flush=True)
         if stdout:
             print(stdout, end="" if stdout.endswith("\n") else "\n")
         if stderr:
@@ -864,6 +1028,8 @@ def main() -> int:
                     blocked=blocked,
                     source_changes=source_changes,
                     telemetry=telemetry,
+                    input_fingerprints=input_fingerprints,
+                    reuse=reuse,
                     selection=selection_report(
                         profile=args.profile,
                         changed_from=changed_from,
@@ -894,6 +1060,8 @@ def main() -> int:
                         blocked=blocked,
                         source_changes=source_changes,
                         telemetry=telemetry,
+                        input_fingerprints=input_fingerprints,
+                        reuse=reuse,
                         selection=selection_report(
                             profile=args.profile,
                             changed_from=changed_from,
@@ -916,7 +1084,10 @@ def main() -> int:
         for check_id in failures:
             print(f"- {check_id}", file=sys.stderr)
         return 1
-    print(f"\nOK: ran {len(selected)} source checks from profile {args.profile}")
+    profile_label = args.profile
+    if plan.effective_profile != args.profile:
+        profile_label = f"{args.profile} (effective {plan.effective_profile})"
+    print(f"\nOK: ran {len(selected)} source checks from profile {profile_label}")
     return 0
 
 

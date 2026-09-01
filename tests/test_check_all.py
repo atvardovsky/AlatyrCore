@@ -22,6 +22,7 @@ from check_all import (  # noqa: E402
     resolve_report_path,
     resolve_changed_from,
     run_check,
+    reusable_results,
     selection_report,
     select_check_plan,
     select_checks,
@@ -134,6 +135,88 @@ class CheckGraphTests(unittest.TestCase):
 
         self.assertFalse(fell_back)
         self.assertEqual([item["id"] for item in selected], ["invariant", "matched"])
+
+    def test_micro_profile_selects_explicit_micro_routes(self) -> None:
+        checks = [
+            {
+                **check("markdown"),
+                "profiles": ["micro", "full"],
+                "platforms": ["all"],
+                "trigger_paths": ["**/*.md"],
+                "micro_trigger_paths": ["docs/human/**"],
+            }
+        ]
+
+        from unittest.mock import patch
+
+        with patch("check_all.git_changed_paths", return_value=["docs/human/faq.md"]):
+            plan = select_check_plan(checks, "micro", "HEAD~1", platform="linux")
+
+        self.assertFalse(plan.escalated_from_micro)
+        self.assertEqual(plan.effective_profile, "micro")
+        self.assertEqual([entry["id"] for entry in plan.selected], ["markdown"])
+        self.assertEqual(
+            plan.selection_details["markdown"]["reasons"],
+            ["micro-changed-path-trigger"],
+        )
+
+    def test_micro_profile_escalates_to_fast_for_non_micro_route(self) -> None:
+        checks = [
+            {
+                **check("markdown"),
+                "profiles": ["micro", "full"],
+                "platforms": ["all"],
+                "trigger_paths": ["**/*.md"],
+                "micro_trigger_paths": ["docs/human/**"],
+            },
+            {
+                **check("framework"),
+                "profiles": ["fast", "full"],
+                "platforms": ["all"],
+                "trigger_paths": ["README.md", "tools/framework.py"],
+            },
+        ]
+
+        from unittest.mock import patch
+
+        with patch("check_all.git_changed_paths", return_value=["README.md"]):
+            plan = select_check_plan(checks, "micro", "HEAD~1", platform="linux")
+
+        self.assertTrue(plan.escalated_from_micro)
+        self.assertEqual(plan.effective_profile, "fast")
+        self.assertEqual([entry["id"] for entry in plan.selected], ["framework"])
+        self.assertEqual(
+            plan.micro_escalation_reasons,
+            ["path requires non-micro checks: README.md"],
+        )
+
+    def test_micro_profile_escalates_for_non_micro_dependency(self) -> None:
+        checks = [
+            {
+                **check("micro", "owner"),
+                "profiles": ["micro", "full"],
+                "platforms": ["all"],
+                "trigger_paths": ["docs/human/**"],
+                "micro_trigger_paths": ["docs/human/**"],
+            },
+            {
+                **check("owner"),
+                "profiles": ["fast", "full"],
+                "platforms": ["all"],
+            },
+        ]
+
+        from unittest.mock import patch
+
+        with patch("check_all.git_changed_paths", return_value=["docs/human/faq.md"]):
+            plan = select_check_plan(checks, "micro", "HEAD~1", platform="linux")
+
+        self.assertTrue(plan.escalated_from_micro)
+        self.assertEqual(plan.effective_profile, "fast")
+        self.assertEqual(
+            plan.micro_escalation_reasons,
+            ["micro check dependency is not micro-eligible: owner"],
+        )
 
     def test_contract_inputs_always_trigger_focused_validation(self) -> None:
         item = {
@@ -375,6 +458,40 @@ class CheckGraphTests(unittest.TestCase):
         self.assertEqual(results["unavailable"][0], 1)
         self.assertIn("runner unavailable", results["unavailable"][2])
         self.assertGreaterEqual(telemetry["unavailable"]["duration_seconds"], 0.0)
+
+    def test_reused_check_satisfies_dependencies_and_is_reported(self) -> None:
+        telemetry: dict[str, dict[str, Any]] = {}
+        initial = reusable_results(
+            selected=[check("cached"), check("dependent", "cached")],
+            decisions={
+                "cached": {
+                    "reusable": True,
+                    "reason": "previous passed result is hash-bound to current inputs",
+                }
+            },
+            commands_by_id={"cached": ["python", "cached.py"]},
+        )
+
+        results, blocked = execute_checks(
+            [check("cached"), check("dependent", "cached")],
+            None,
+            1,
+            telemetry=telemetry,
+            initial_results=initial,
+            runner=lambda item, _baseline: (0, "", "", [item["id"]]),
+        )
+        report = render_report(
+            profile="micro",
+            selected=[check("cached"), check("dependent", "cached")],
+            results=results,
+            blocked=blocked,
+            source_changes=[],
+            telemetry=telemetry,
+        )
+
+        self.assertEqual(blocked, {})
+        self.assertEqual(report["checks"][0]["status"], "reused-pass")
+        self.assertEqual(report["checks"][1]["status"], "passed")
 
     def test_process_timeout_is_a_typed_runner_failure(self) -> None:
         from unittest.mock import patch

@@ -14,6 +14,7 @@ Linux or macOS:
 
 ```sh
 python3 tools/alatyr.py --help
+python3 tools/alatyr.py plan-work --summary
 python3 tools/alatyr.py check-source-focused
 python3 tools/alatyr.py compare-check-reports /tmp/base.json /tmp/candidate.json
 python3 tools/alatyr.py status --target /path/to/target-repo
@@ -41,6 +42,7 @@ Windows PowerShell:
 
 ```powershell
 .\tools\alatyr.ps1 --help
+.\tools\alatyr.ps1 plan-work --summary
 .\tools\alatyr.ps1 check-source-focused
 .\tools\alatyr.ps1 compare-check-reports C:\Temp\base.json C:\Temp\candidate.json
 .\tools\alatyr.ps1 status --target C:\path\to\target-repo
@@ -67,6 +69,7 @@ Windows Command Prompt:
 
 ```bat
 tools\alatyr.cmd --help
+tools\alatyr.cmd plan-work --summary
 tools\alatyr.cmd check-source-focused
 tools\alatyr.cmd compare-check-reports C:\Temp\base.json C:\Temp\candidate.json
 tools\alatyr.cmd status --target C:\path\to\target-repo
@@ -93,6 +96,9 @@ The stable command set is:
 - `check-source`: no writes
 - `check-source-focused`: no writes; runs the fast changed-path source-check
   profile from `origin/main` when available, otherwise `HEAD`
+- `plan-work`: no writes; emits the smallest quality-preserving source work
+  route, selected checks, context packet, micro escalation reasons, and
+  optional hash-bound reuse candidates before checks run
 - `compare-check-reports`: no writes; compares two schema-2 source-check
   reports and labels source/manifest identity before interpreting timing
   deltas
@@ -161,15 +167,24 @@ validator remains the stable command and host interface.
 
 ## Source Validation Runner
 
-`check_all.py` loads the schema-version-2 `tools/check_manifest.json` and runs dependency-aware
-source validation. The default `full` profile remains the acceptance gate.
-`quick` checks routing, bootstrap, scaffold, and standing support-cost
-guardrails without running the source unit suite. `fast` resolves a default
-changed-path baseline from `origin/main` when available, otherwise `HEAD`.
-With `fast --changed-from`, explicit `trigger_paths` select focused checks
-while a small invariant set always runs; unmatched paths retain the
-conservative full-suite fallback. Use `fast --all-fast` only when intentionally
-running the whole fast profile without changed-path selection.
+`check_all.py` loads the schema-version-2 `tools/check_manifest.json` and runs
+dependency-aware source validation. The default `full` profile remains the
+acceptance gate. `quick` checks routing, bootstrap, scaffold, and standing
+support-cost guardrails without running the source unit suite. `micro` is an
+opt-in changed-path profile for very small local work. A check can participate
+only when it lists explicit `micro_trigger_paths`; otherwise `micro` escalates
+to `fast` and reports the reason. `fast` resolves a default changed-path
+baseline from `origin/main` when available, otherwise `HEAD`. With
+`fast --changed-from`, explicit `trigger_paths` select focused checks while a
+small invariant set always runs; unmatched paths retain the conservative
+full-suite fallback. Use `fast --all-fast` only when intentionally running the
+whole fast profile without changed-path selection.
+`tools/alatyr.py plan-work --summary` is the cheapest first pass for source
+changes. It reports the effective profile, selected checks, heavy checks,
+micro escalation reasons, the source-tooling context packet, and the
+recommended check command before implementation or validation. It also names
+the target-adapter `support-delta` and `impact` route for installed projects,
+but it does not replace target logical integrity review.
 `tools/alatyr.py check-source-focused` is the cheap small-task entry point for
 that route. It runs `check_all.py --profile fast --changed-from <baseline>`,
 selecting `origin/main` as the default baseline when available and `HEAD` when
@@ -179,6 +194,10 @@ The runner passes changed-path and selection-reason metadata to checks. The
 source unit-test wrapper is selected only for tests or routed Python/tooling
 changes, uses that metadata to run directly affected test modules, and falls
 back to the full unit suite when a tooling change cannot be mapped safely.
+When `--reuse-report <report.json>` is provided, the runner may mark a
+previously passed check as `reused-pass` only if the manifest digest, command,
+platform, Python runtime, and exact declared input fingerprint match. Reuse is
+opt-in and evidence-bound; normal runs execute checks as before.
 `change --changed-from <ref>` uses the same ref as the release-drift baseline
 when `--from-ref` is omitted. `release` adds tag-baseline migration checks.
 `platform` runs the portable tooling contract slice used on macOS and Windows.

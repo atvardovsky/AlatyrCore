@@ -5,6 +5,10 @@
 - Added a source architecture guide, compacted duplicate bootstrap validation
   guidance, and extracted reusable source-check manifest primitives from the
   CLI checker so future tooling refactors have a clearer modular boundary.
+- Added a read-only minimum-work planner, explicit `micro` source-check
+  routing, and opt-in hash-bound source-check result reuse so small safe
+  changes can avoid broad validation without weakening the full acceptance
+  gate.
 - Split shared target-adapter validation helpers for allowed action modes,
   placeholder-aware value checks, optional module-profile state parsing,
   non-emitting required-file and manifest-path comparisons, discussion

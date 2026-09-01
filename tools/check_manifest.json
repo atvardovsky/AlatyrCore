@@ -1077,6 +1077,8 @@
         "tools/report_change_cost.py",
         "tools/check_all.py",
         "tools/run_focused_source_checks.py",
+        "tools/plan_minimum_work.py",
+        "tools/source_check_reuse.py",
         "tools/check_cross_platform_tools.py",
         "tools/summarize_source_check_report.py",
         "tools/clean_local_artifacts.py",
@@ -1093,6 +1095,8 @@
         "tools/report_change_cost.py",
         "tools/check_all.py",
         "tools/run_focused_source_checks.py",
+        "tools/plan_minimum_work.py",
+        "tools/source_check_reuse.py",
         "tools/check_cross_platform_tools.py",
         "tools/summarize_source_check_report.py",
         "tools/clean_local_artifacts.py",
@@ -1211,8 +1215,12 @@
         "tools/check_markdown_links.py"
       ],
       "profiles": [
+        "micro",
         "fast",
         "full"
+      ],
+      "micro_trigger_paths": [
+        "docs/human/**"
       ],
       "contract_inputs": [
         "**/*.md"
@@ -2281,9 +2289,13 @@
         "tools/check_check_manifest.py"
       ],
       "profiles": [
+        "micro",
         "quick",
         "fast",
         "full"
+      ],
+      "micro_trigger_paths": [
+        "tools/check_manifest.json"
       ],
       "contract_inputs": [
         "tools/check_manifest.json"
@@ -2293,6 +2305,8 @@
         "tools/check_check_manifest.py",
         "tools/compare_source_check_reports.py",
         "tools/evidence_contract.py",
+        "tools/plan_minimum_work.py",
+        "tools/source_check_reuse.py",
         "tools/source_check_manifest.py"
       ],
       "trigger_paths": [
@@ -2300,6 +2314,8 @@
         "tools/check_check_manifest.py",
         "tools/compare_source_check_reports.py",
         "tools/evidence_contract.py",
+        "tools/plan_minimum_work.py",
+        "tools/source_check_reuse.py",
         "tools/source_check_manifest.py",
         "tools/check_manifest.json"
       ],
@@ -2337,8 +2353,12 @@
         "tools/check_source_unit_tests.py"
       ],
       "profiles": [
+        "micro",
         "fast",
         "full"
+      ],
+      "micro_trigger_paths": [
+        "tests/**"
       ],
       "always_for_changed": false,
       "contract_inputs": [
@@ -2348,10 +2368,12 @@
         "tools/check_all.py",
         "tools/report_approval_scope.py",
         "tools/run_focused_source_checks.py",
+        "tools/plan_minimum_work.py",
         "tools/check_source_unit_tests.py",
         "tools/evidence_contract.py",
         "tools/report_adapter_health.py",
         "tools/source_state.py",
+        "tools/source_check_reuse.py",
         "tools/source_check_manifest.py",
         "tools/task_classification_contract.py",
         "tools/target_adapter_validation/action_modes.py",
@@ -2369,10 +2391,12 @@
         "tools/check_all.py",
         "tools/report_approval_scope.py",
         "tools/run_focused_source_checks.py",
+        "tools/plan_minimum_work.py",
         "tools/check_source_unit_tests.py",
         "tools/evidence_contract.py",
         "tools/report_adapter_health.py",
         "tools/source_state.py",
+        "tools/source_check_reuse.py",
         "tools/source_check_manifest.py",
         "tools/task_classification_contract.py",
         "tools/target_adapter_validation/action_modes.py",
