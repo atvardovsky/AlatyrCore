@@ -6,6 +6,7 @@
   "decision_mode": "{AUTOMATIC_SUGGEST_ONLY_OR_DISABLED}",
   "default_preference": "{AUTO_ALLOW_FORBID_OR_REQUIRE_SUPPORTED}",
   "max_parallel_delegates": "{POSITIVE_INTEGER_OR_TARGET_LIMIT}",
+  "decomposition_policy": ".ai/assistant/task-decomposition.json",
   "role_catalog": ".ai/assistant/workers/role-catalog.json",
   "enabled_role_ids": [
     "{TARGET_ENABLED_WORKER_ROLE_ID}"

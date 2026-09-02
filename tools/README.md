@@ -810,6 +810,11 @@ workstream completion.
 
 ## Subagent Delegation Check
 
+`check_task_decomposition.py` validates the required decomposition rule,
+target decomposition policy, implementation levels, operation routing,
+completion evidence, and worker eligibility links. It proves the contract is
+wired consistently; it does not prove that a real task was split optimally.
+
 `check_subagent_delegation.py` validates the optional delegation rule, target
 policy, six-role catalog, orchestration prompt, deterministic task plan,
 bounded packet, normalized result, unsafe-decomposition fixtures, operation
@@ -859,6 +864,7 @@ Linux or macOS:
 
 ```sh
 python3 tools/check_large_task_orchestration.py
+python3 tools/check_task_decomposition.py
 python3 tools/check_subagent_delegation.py
 ```
 
@@ -866,6 +872,7 @@ Windows PowerShell or Command Prompt:
 
 ```powershell
 py -3 .\tools\check_large_task_orchestration.py
+py -3 .\tools\check_task_decomposition.py
 py -3 .\tools\check_subagent_delegation.py
 ```
 

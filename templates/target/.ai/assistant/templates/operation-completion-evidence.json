@@ -31,6 +31,32 @@
     ],
     "residual_context_risk": "{NONE_OR_RESIDUAL_RISK}"
   },
+  "task_decomposition": {
+    "policy": ".ai/assistant/task-decomposition.json",
+    "plan_id": "{TASK_DECOMPOSITION_PLAN_ID_OR_ONE_NODE_INLINE}",
+    "plan_path": "{TASK_DECOMPOSITION_PLAN_PATH_OR_NONE}",
+    "tasks": [
+      {
+        "id": "{TASK_ID}",
+        "implementation_level": "{L0_L1_L2_L3_L4_L5_L6_OR_L7}",
+        "executor": "{PRIMARY_WORKER_SUGGESTION_ONLY_OR_BLOCKED}",
+        "dependencies": [
+          "{TASK_ID_OR_NONE}"
+        ],
+        "selected_context": [
+          "{TARGET_RELATIVE_PATH_AND_REASON_OR_NONE}"
+        ],
+        "omitted_context": [
+          "{OMITTED_PATH_AND_REASON_OR_NONE}"
+        ],
+        "validation": "{PASSED_FAILED_SKIPPED_BLOCKED_OR_NOT_APPLICABLE}",
+        "acceptance": "{PASSED_FAILED_BLOCKED_OR_NOT_APPLICABLE}"
+      }
+    ],
+    "primary_convergence": "{PASSED_FAILED_BLOCKED_OR_NOT_APPLICABLE}",
+    "delegation_used": "{YES_NO}",
+    "residual_risk": "{NONE_OR_RESIDUAL_RISK}"
+  },
   "changed_facts": [
     {
       "id": "{FACT_ID_OR_NONE}",

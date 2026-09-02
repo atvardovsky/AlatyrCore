@@ -38,6 +38,28 @@ from target_adapter_validation.assistant_capabilities import (
 )
 
 ROOT = Path(__file__).resolve().parents[1]
+DELEGATION_FIXTURE_PATHS = (
+    ".ai/framework/task-decomposition.md",
+    ".ai/framework/subagent-delegation.md",
+    ".ai/assistant/task-decomposition.json",
+    ".ai/assistant/delegation-policy.json",
+    ".ai/assistant/context/task-scales/delegated-execution.json",
+    ".ai/assistant/flows/subagent-delegation.flow.md",
+    ".ai/assistant/prompts/worker-orchestration.md",
+    ".ai/assistant/templates/subagent-task-packet.md",
+    ".ai/assistant/templates/native-worker-binding.md",
+    ".ai/assistant/templates/worker-execution-plan.md",
+    ".ai/assistant/templates/worker-result.md",
+    ".ai/assistant/workers/role-catalog.json",
+    ".ai/assistant/workers/roles/explorer.md",
+    ".ai/assistant/workers/roles/implementer.md",
+    ".ai/assistant/workers/roles/test-runner.md",
+    ".ai/assistant/workers/roles/documentation-worker.md",
+    ".ai/assistant/workers/roles/reviewer.md",
+    ".ai/assistant/workers/roles/fast-focused-worker.md",
+    ".ai/assistant/assistant-capabilities.json",
+    ".ai/assistant/bridge-capability-matrix.md",
+)
 
 
 def validator(
@@ -790,26 +812,7 @@ def main() -> int:
             "schema_version: 11\nmodules:\n  enabled:\n    - subagent-delegation\n",
             encoding="utf-8",
         )
-        delegation_paths = [
-            ".ai/framework/subagent-delegation.md",
-            ".ai/assistant/delegation-policy.json",
-            ".ai/assistant/context/task-scales/delegated-execution.json",
-            ".ai/assistant/flows/subagent-delegation.flow.md",
-            ".ai/assistant/prompts/worker-orchestration.md",
-            ".ai/assistant/templates/subagent-task-packet.md",
-            ".ai/assistant/templates/native-worker-binding.md",
-            ".ai/assistant/templates/worker-execution-plan.md",
-            ".ai/assistant/templates/worker-result.md",
-            ".ai/assistant/workers/role-catalog.json",
-            ".ai/assistant/workers/roles/explorer.md",
-            ".ai/assistant/workers/roles/implementer.md",
-            ".ai/assistant/workers/roles/test-runner.md",
-            ".ai/assistant/workers/roles/documentation-worker.md",
-            ".ai/assistant/workers/roles/reviewer.md",
-            ".ai/assistant/workers/roles/fast-focused-worker.md",
-            ".ai/assistant/assistant-capabilities.json",
-            ".ai/assistant/bridge-capability-matrix.md",
-        ]
+        delegation_paths = list(DELEGATION_FIXTURE_PATHS)
         capability_index = json.loads(
             (
                 ROOT

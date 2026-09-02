@@ -11,7 +11,9 @@ from target_adapter_validation.values import is_resolved_string
 
 
 REQUIRED_PATHS = (
+    ".ai/framework/task-decomposition.md",
     ".ai/framework/subagent-delegation.md",
+    ".ai/assistant/task-decomposition.json",
     ".ai/assistant/delegation-policy.json",
     ".ai/assistant/context/task-scales/delegated-execution.json",
     ".ai/assistant/flows/subagent-delegation.flow.md",
@@ -32,6 +34,7 @@ REQUIRED_PATHS = (
 )
 
 POLICY_RELPATH = ".ai/assistant/delegation-policy.json"
+TASK_DECOMPOSITION_RELPATH = ".ai/assistant/task-decomposition.json"
 ROLE_CATALOG_RELPATH = ".ai/assistant/workers/role-catalog.json"
 CAPABILITY_INDEX_RELPATH = ".ai/assistant/assistant-capabilities.json"
 AI_ROUTER_RELPATH = ".ai/assistant/ai-infrastructure-router.json"
@@ -96,6 +99,7 @@ WRITE_ISOLATION_VALUES = {
 ROLE_ACTION_CEILINGS = {"read-only", "docs-only", "adapter-only", "code-and-tests"}
 ROLE_STATES = {"enabled", "disabled", "blocked"}
 ROLE_WRITE_MODES = {"none", "bounded"}
+WORKER_ELIGIBLE_LEVELS = {"L1", "L2", "L3", "L4", "L5"}
 SELECTION_MODES = {"explicit-model", "inherit", "client-default"}
 EXPECTED_CONFLICTS = {
     "overlapping_writes": "reject-concurrent-dispatch",
@@ -118,11 +122,13 @@ EXPECTED_RESULT_POLICY = {
     "require_normalized_worker_result": True,
 }
 CANONICAL_WORKER_REFERENCES = (
+    ".ai/assistant/task-decomposition.json",
     ".ai/assistant/delegation-policy.json",
     ".ai/assistant/prompts/worker-orchestration.md",
     ".ai/assistant/workers/role-catalog.json",
 )
 REQUIRED_WORKER_CONTEXT = {
+    ".ai/assistant/task-decomposition.json",
     ".ai/assistant/delegation-policy.json",
     ".ai/assistant/workers/role-catalog.json",
     ".ai/assistant/prompts/worker-orchestration.md",
@@ -240,6 +246,12 @@ def _validate_policy_identity(self: Any, policy: dict[str, Any]) -> None:
             "delegation policy must select the canonical target role catalog",
             POLICY_RELPATH,
         )
+    if policy.get("decomposition_policy") != TASK_DECOMPOSITION_RELPATH:
+        self.error(
+            "DELEGATION_DECOMPOSITION_POLICY",
+            "delegation policy must reference the task-decomposition policy",
+            POLICY_RELPATH,
+        )
 
 
 def _validate_policy_roles(self: Any, policy: dict[str, Any]) -> list[str]:
@@ -344,6 +356,12 @@ def _load_and_validate_role_catalog(self: Any) -> list[Any]:
         self.error(
             "DELEGATION_ROLE_CATALOG_SCHEMA",
             "worker role catalog identity or schema is invalid",
+            ROLE_CATALOG_RELPATH,
+        )
+    if isinstance(catalog, dict) and catalog.get("decomposition_policy") != TASK_DECOMPOSITION_RELPATH:
+        self.error(
+            "DELEGATION_ROLE_CATALOG_DECOMPOSITION_POLICY",
+            "worker role catalog must reference the task-decomposition policy",
             ROLE_CATALOG_RELPATH,
         )
     return catalog_roles
@@ -646,6 +664,27 @@ def _validate_role(
             f"roles[{index}] must require normalized-worker-result",
             ROLE_CATALOG_RELPATH,
         )
+    levels = role.get("implementation_levels")
+    if not isinstance(levels, list) or not levels:
+        self.error(
+            "DELEGATION_ROLE_IMPLEMENTATION_LEVELS",
+            f"roles[{index}] must declare worker-eligible implementation levels",
+            ROLE_CATALOG_RELPATH,
+        )
+    else:
+        invalid_levels = sorted(
+            {
+                level
+                for level in levels
+                if not isinstance(level, str) or level not in WORKER_ELIGIBLE_LEVELS
+            }
+        )
+        if invalid_levels:
+            self.error(
+                "DELEGATION_ROLE_IMPLEMENTATION_LEVEL",
+                f"roles[{index}] has invalid implementation levels {invalid_levels}",
+                ROLE_CATALOG_RELPATH,
+            )
 
 
 def _role_write_ceiling_conflicts(action_ceiling: Any, write_mode: Any) -> bool:

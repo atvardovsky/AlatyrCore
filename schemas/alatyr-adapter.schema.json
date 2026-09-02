@@ -118,7 +118,7 @@
     },
     "operations": {
       "type": "object",
-      "required": ["gate_index", "help", "operation_request", "output_contracts", "action_authorization_policy"]
+      "required": ["gate_index", "help", "operation_request", "output_contracts", "action_authorization_policy", "task_decomposition", "task_decomposition_plan"]
     },
     "engineering_evidence": {
       "type": "object",

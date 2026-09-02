@@ -46,6 +46,7 @@ CATEGORY_SECTIONS = {
     "DEBUG": "knowledge",
     "DIAGRAM": "knowledge",
     "TEAM": "collaboration",
+    "DECOMPOSITION": "collaboration",
     "DELEGATION": "collaboration",
     "MODE": "collaboration",
     "EXTENSION": "infrastructure",
@@ -340,6 +341,8 @@ def _target_semantic_refs(relpath: str) -> tuple[list[str], list[str]]:
     ):
         refs.append("alatyr:bounded-delegation@1")
         owners.append("ALATYR-DELEGATION-001")
+    if not is_profile_descriptor and "task-decomposition" in relpath:
+        owners.append("ALATYR-DECOMPOSITION-001")
     if not is_profile_descriptor and any(
         part in relpath for part in ("extension", "dependency", "infrastructure", "prompt-injection")
     ):

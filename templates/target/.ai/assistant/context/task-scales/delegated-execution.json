@@ -10,16 +10,17 @@
   ],
   "required_context": [
     ".ai/framework/subagent-delegation.md",
+    ".ai/assistant/task-decomposition.json",
     ".ai/assistant/delegation-policy.json",
     ".ai/assistant/workers/role-catalog.json",
     ".ai/assistant/prompts/worker-orchestration.md",
-    ".ai/assistant/flows/subagent-delegation.flow.md",
     ".ai/assistant/templates/worker-execution-plan.md",
     ".ai/assistant/templates/subagent-task-packet.md",
     ".ai/assistant/templates/worker-result.md",
     ".ai/assistant/assistant-capabilities.json"
   ],
   "expand_when": [
+    "subagent delegation flow semantics are ambiguous or under repair",
     "selected assistant capability record is required",
     "parent large-task operation packet exists",
     "changed-fact owner approval or target validation must be reconciled",
@@ -27,6 +28,7 @@
   ],
   "budget_behavior": "keep packets bounded; fall back to primary execution when delegation overhead or context exceeds target policy",
   "final_evidence": [
+    "parent task decomposition plan and worker-eligible implementation levels",
     "delegation decision and packets",
     "requested and actual model or unverified status",
     "scope capability validation fallback and primary convergence"

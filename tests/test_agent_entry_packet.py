@@ -68,12 +68,35 @@ modules:
             "exclusions": [],
             "classifications": [],
         }
+        task_decomposition = {
+            "schema_version": 1,
+            "policy_kind": "target-task-decomposition-policy",
+            "plan_template": ".ai/assistant/templates/task-decomposition.md",
+            "default_behavior": "decompose every non-trivial request",
+            "small_task_behavior": "one local task",
+            "levels": [
+                {"id": "L0", "worker_roles": []},
+                {"id": "L1", "worker_roles": ["explorer"]},
+                {"id": "L2", "worker_roles": ["documentation-worker"]},
+                {"id": "L3", "worker_roles": ["test-runner"]},
+                {"id": "L4", "worker_roles": ["implementer"]},
+                {"id": "L5", "worker_roles": ["reviewer"]},
+                {"id": "L6", "worker_roles": []},
+                {"id": "L7", "worker_roles": []},
+            ],
+            "executor_selection": {
+                "default": "primary",
+                "selection_order": ["primary first"],
+                "fallback": "primary execution",
+            },
+        }
         return {
             "manifest": manifest,
             "router": json.dumps(router),
             "gates": json.dumps(gates),
             "authorization": json.dumps(authorization),
             "support_policy": json.dumps(support_policy),
+            "task_decomposition": json.dumps(task_decomposition),
         }
 
     def test_packet_records_profile_gates_and_actions(self) -> None:
@@ -84,6 +107,7 @@ modules:
             inputs["gates"],
             inputs["authorization"],
             inputs["support_policy"],
+            inputs["task_decomposition"],
             operation_index_text=json.dumps(
                 {
                     "operations": {
@@ -138,6 +162,22 @@ modules:
             "--approval-record <target-approval-json>",
             packet["support_delta_first"]["approval_scope_check_tool"],
         )
+        decomposition = packet["task_decomposition"]
+        self.assertEqual(
+            decomposition["policy"],
+            ".ai/assistant/task-decomposition.json",
+        )
+        self.assertEqual(
+            decomposition["plan_template"],
+            ".ai/assistant/templates/task-decomposition.md",
+        )
+        self.assertEqual(
+            decomposition["level_order"],
+            [f"L{index}" for index in range(8)],
+        )
+        self.assertEqual(decomposition["executor_selection"]["default"], "primary")
+        self.assertIn("L6", decomposition["non_delegable_levels"])
+        self.assertIn("L7", decomposition["non_delegable_levels"])
 
     def test_packet_omits_operation_routes_when_index_is_absent(self) -> None:
         inputs = self.base_inputs()
@@ -147,6 +187,7 @@ modules:
             inputs["gates"],
             inputs["authorization"],
             inputs["support_policy"],
+            inputs["task_decomposition"],
         )
 
         self.assertEqual(packet["operation_routing"]["operation_routes"], {})

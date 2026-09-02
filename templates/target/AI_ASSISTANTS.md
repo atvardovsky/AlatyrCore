@@ -18,7 +18,8 @@ Before making changes:
 6. For an exact operation ID or alias, read `.ai/assistant/operation-index.json`;
    for bare `Alatyr`, ambiguity, or repair, read `.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.
 7. Route AI infrastructure through `.ai/assistant/ai-infrastructure-router.json`.
-8. Before state changes, use `.ai/assistant/policies/action-authorization.json`; a topic switch or backlog/issue return is read-only.
+8. For non-trivial work, use `.ai/assistant/task-decomposition.json` and `.ai/assistant/templates/task-decomposition.md` before implementation or delegation.
+9. Before state changes, use `.ai/assistant/policies/action-authorization.json`; a topic switch or backlog/issue return is read-only.
    Implementation does not imply commit; commit does not imply push; prior authorization expires.
-9. Delegate only through `.ai/assistant/prompts/worker-orchestration.md` and the selected capability record.
+10. Delegate only through the primary-owned decomposition plan, `.ai/assistant/prompts/worker-orchestration.md`, and the selected capability record.
 Assistant-specific bridge files must stay short and point back to canonical target files.

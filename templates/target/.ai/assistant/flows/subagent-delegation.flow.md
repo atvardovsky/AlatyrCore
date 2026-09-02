@@ -9,6 +9,9 @@ Selected task-scale overlay: `delegated-execution`
 ## Target Sources
 
 - Portable rule: `.ai/framework/subagent-delegation.md`
+- Task decomposition policy: `.ai/assistant/task-decomposition.json`
+- Task decomposition template:
+  `.ai/assistant/templates/task-decomposition.md`
 - Target policy: `.ai/assistant/delegation-policy.json`
 - Role catalog: `.ai/assistant/workers/role-catalog.json`
 - Orchestration prompt: `.ai/assistant/prompts/worker-orchestration.md`
@@ -25,14 +28,16 @@ Selected task-scale overlay: `delegated-execution`
 ## Activation Gate
 
 1. Select the parent operation, task profile, changed facts, risk, source-of-
-   truth owners, allowed actions, and primary critical-path next action first.
+   truth owners, allowed actions, task decomposition, and primary critical-path
+   next action first.
    Record the parent's current logical scope and authorized phases. A delegated
    packet can narrow but never broaden them.
 2. Respect request preference `auto`, `allow`, `forbid`, or
    `require-supported`. `require-supported` still does not bypass capability,
    permission, approval, or safety gates.
-3. Confirm the candidate is independently useful, non-blocking, locally
-   verifiable, and disjoint from concurrent writes and semantic ownership.
+3. Confirm the candidate has an implementation level that permits worker
+   execution, is independently useful, non-blocking, locally verifiable, and
+   disjoint from concurrent writes and semantic ownership.
 4. Skip delegation when preparation, coordination, or review is likely to cost
    more than primary execution.
 5. Keep semantic, architecture, security, migration, approval, external-
@@ -44,8 +49,8 @@ Selected task-scale overlay: `delegated-execution`
 
 ## Capability And Role Selection
 
-1. Load the target policy and capability index, then only the current
-   assistant-surface record.
+1. Load the target decomposition policy, delegation policy, and capability
+   index, then only the current assistant-surface record.
 2. Select the surface's verified dispatch backend: `native`, `external`,
    `suggestion-only`, or `unsupported`. An external backend must reference an
    approved target AI-infrastructure dispatcher with provenance, permissions,
@@ -70,6 +75,8 @@ Selected task-scale overlay: `delegated-execution`
    semantic owners in a primary-owned convergence task.
 4. Mark a task `READY` only after dependencies, context, scope, role,
    acceptance, validation, capability, and authorization are resolved.
+5. Keep `L6` and `L7` work primary-only. Split evidence collection into
+   separate `L1` subtasks when useful.
 
 ## Packet And Dispatch
 
@@ -111,6 +118,7 @@ Selected task-scale overlay: `delegated-execution`
 Report:
 
 - activation decision and expected benefit
+- parent decomposition plan, selected implementation levels, and ready tasks
 - packets dispatched or skipped and why
 - assistant surface, selected role, requested model, actual model or
   unverified status, and capability freshness

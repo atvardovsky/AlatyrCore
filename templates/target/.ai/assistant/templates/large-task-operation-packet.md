@@ -17,11 +17,13 @@ evidence, not a source of truth for project facts.
 - Packet owner: `{TARGET_OPERATION_OWNER}`
 - Storage and retention policy: `{TARGET_OPERATION_PACKET_POLICY}`
 - Change package: `{CHANGE_PACKAGE_ID_OR_NOT_ACTIVE}`
+- Task decomposition plan: `{TASK_DECOMPOSITION_PLAN_ID_OR_PATH}`
 
 ## Routed Context
 
 - Selected task profile: `{TASK_PROFILE}`
 - Task-scale overlay: `large-or-resumable`
+- Task decomposition policy: `.ai/assistant/task-decomposition.json`
 - Selected project areas: `{PROJECT_AREA_OVERLAYS}`
 - Traversed context indexes: `{ORDERED_INDEX_IDS_PATHS_AND_DIGESTS}`
 - Selected context items: `{ITEM_IDS_PATHS_DIGESTS_AND_EXACT_REASONS}`
@@ -74,6 +76,8 @@ Repeat this block for each coherent workstream.
 ### Workstream `{WORKSTREAM_ID}`
 
 - Goal: `{WORKSTREAM_GOAL}`
+- Implementation level: `{L1_L2_L3_L4_L5_L6_OR_L7}`
+- Executor decision: `{PRIMARY_WORKER_SUGGESTION_ONLY_OR_BLOCKED}`
 - Project area: `{PROJECT_AREA}`
 - Changed facts: `{FACT_IDS}`
 - Re-derived invariants: `{INVARIANT_STATEMENTS}`
@@ -123,6 +127,8 @@ context reset.
 
 - Completed workstreams: `{COMPLETED_WORKSTREAMS}`
 - Unresolved workstreams: `{UNRESOLVED_WORKSTREAMS_OR_NONE}`
+- Implementation levels and executor decisions: `{TASK_LEVELS_AND_EXECUTOR_DECISIONS}`
+- Blocked or escalated tasks: `{TASK_IDS_REASONS_OR_NONE}`
 - Changed-fact reconciliation: `{FACT_RECONCILIATION_RESULT}`
 - Relationship impact closure: `{LEVELS_AREAS_EDGES_AND_MISSING_LINKS}`
 - Source-of-truth synchronization: `{SOURCE_OF_TRUTH_SYNC_RESULT}`

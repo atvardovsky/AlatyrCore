@@ -673,8 +673,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 636,
-      "content_digest": "sha256:f539ac02c7475d71c5e529f14254c1c09fe6fa1885d2d5566f6c6825d8f6cb8e"
+      "estimated_words": 667,
+      "content_digest": "sha256:729856f2c34eb0daf5b6d032f7b6f3d5801bdaf0f079909c738dde89b0c7d477"
     },
     {
       "id": "assistant.content.templates-migration-note-md",
@@ -750,8 +750,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 155,
-      "content_digest": "sha256:9914f903c66b7991b76a75b6dba3c7261fc0a66cef2c8a6691f955c37d7950e4"
+      "estimated_words": 197,
+      "content_digest": "sha256:b8cabf05ed0084e3e34aeebec261c35c29026abfeb2938567766dfa22ad4a701"
     },
     {
       "id": "assistant.content.templates-operation-request-md",
@@ -774,8 +774,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1428,
-      "content_digest": "sha256:5ef0559b4b10be64022c5c43ef126df232c25ab3effa797e6ad234b421670437"
+      "estimated_words": 1491,
+      "content_digest": "sha256:e0329d1d77a4e245b09aafc96e8b631cb04ed97e82d05c7718b84002a0a12689"
     },
     {
       "id": "assistant.content.templates-post-install-message-md",
@@ -937,8 +937,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 123,
-      "content_digest": "sha256:67716af85d526034d30ac915f3ab421e8619a334a53ef39782a310872517ffd5"
+      "estimated_words": 131,
+      "content_digest": "sha256:912066cfcb3af56f596e539b5f76609867d96d9c7dc3c8af7a2f0d93bed3d907"
     },
     {
       "id": "assistant.content.templates-subagent-task-packet-md",
@@ -962,8 +962,34 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 261,
-      "content_digest": "sha256:44e1918d3f873aebcd3dfc642540ec4abe88bb9436b02898eb063b1f56d4a9b8"
+      "estimated_words": 268,
+      "content_digest": "sha256:48f6fabbbf59c42de265bb932b2e175d0b53565af0b7195b3df432158e217a26"
+    },
+    {
+      "id": "assistant.content.templates-task-decomposition-md",
+      "kind": "content",
+      "path": "templates/task-decomposition.md",
+      "summary": "Task Decomposition",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "task",
+          "decomposition"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DECOMPOSITION-001"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DECOMPOSITION-001"
+      ],
+      "estimated_words": 208,
+      "content_digest": "sha256:72857eda9260ad76f71c6849cc00e26ef58be7d85abf7e1d77f6a155f3d45eba"
     },
     {
       "id": "assistant.content.templates-team-checkpoint-md",
@@ -1209,8 +1235,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-DELEGATION-001"
       ],
-      "estimated_words": 130,
-      "content_digest": "sha256:df6d54546b5f4f9d443576ed3595b5ddb2327380f0898b62bad15bcb66bd0a15"
+      "estimated_words": 141,
+      "content_digest": "sha256:c80f25e369068b5747970cc62aefd74ddb68fd3e7bc125c81f62c2127770ed9f"
     },
     {
       "id": "assistant.content.templates-worker-result-md",

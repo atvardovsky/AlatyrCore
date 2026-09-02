@@ -32,6 +32,7 @@
       "selected profiles",
       "selected intent overlays",
       "task classification",
+      "task decomposition id and implementation levels",
       "selected task scale overlay",
       "selected project areas",
       "selected project knowledge and routing stage",
@@ -153,11 +154,35 @@
       "user asks for broad audit large-task orchestration change package or debug evidence"
     ]
   },
+  "task_decomposition": {
+    "schema_version": 1,
+    "policy": ".ai/assistant/task-decomposition.json",
+    "plan_template": ".ai/assistant/templates/task-decomposition.md",
+    "load_after": [
+      "task classification",
+      "operation routing",
+      "profile and area selection",
+      "changed-fact risk authorization and support-delta signals"
+    ],
+    "use_when": [
+      "non-trivial request",
+      "standard large protected or delegated task",
+      "small-task one-node evidence cannot prove enough"
+    ],
+    "conditional_context": [
+      {
+        "path": ".ai/framework/task-decomposition.md",
+        "when": "task splitting implementation levels dependency ordering executor selection or policy repair is ambiguous"
+      }
+    ],
+    "small_task_behavior": "one local task may be recorded from the entry packet without loading the full policy",
+    "executor_selection": "primary first; worker only through enabled delegation policy and selected capability record"
+  },
   "agent_entry_packet": {
     "schema_version": 1,
     "path": ".ai/assistant/entry-packet.json",
     "load_after": ".ai/assistant/bootstrap-index.json",
-    "purpose": "compact first-use route containing exact installed profile files, gate fragments, operation routes, allowed-action modes, and delta-first support review entry points",
+    "purpose": "compact first-use route containing exact installed profile files, task classification and decomposition cues, gate fragments, operation routes, allowed-action modes, and delta-first support review entry points",
     "load_human_references_when": [
       "ambiguity",
       "conflict",

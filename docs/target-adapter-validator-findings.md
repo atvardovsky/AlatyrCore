@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1152
+Catalog entries: 1184
 
 ## Families
 
@@ -26,7 +26,7 @@ Catalog entries: 1152
 - `CONSISTENCY`: 37 codes.
 - `CONTEXT`: 10 codes.
 - `DEBUG`: 130 codes.
-- `DELEGATION`: 59 codes.
+- `DELEGATION`: 63 codes.
 - `DEPENDENCY`: 55 codes.
 - `DEVELOPMENT`: 15 codes.
 - `DIAGRAM`: 32 codes.
@@ -50,12 +50,13 @@ Catalog entries: 1152
 - `PROJECT`: 52 codes.
 - `REQUIRED`: 1 codes.
 - `ROUTED`: 1 codes.
-- `ROUTER`: 66 codes.
+- `ROUTER`: 71 codes.
 - `ROUTING`: 2 codes.
 - `RULE`: 1 codes.
 - `STALE`: 2 codes.
 - `SUPPORT`: 11 codes.
 - `TARGET`: 6 codes.
+- `TASK`: 23 codes.
 - `TDD`: 44 codes.
 - `TEAM`: 98 codes.
 - `UNRESOLVED`: 1 codes.
@@ -767,6 +768,8 @@ Catalog entries: 1152
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_DECISION_MODE`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_DECOMPOSITION_POLICY`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_DEFAULT_PREFERENCE`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_DISPATCH_BACKEND`
@@ -837,11 +840,17 @@ Catalog entries: 1152
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ROLE_BINDING_UNKNOWN`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_ROLE_CATALOG_DECOMPOSITION_POLICY`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ROLE_CATALOG_PATH`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ROLE_CATALOG_SCHEMA`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ROLE_DUPLICATE`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_ROLE_IMPLEMENTATION_LEVEL`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_ROLE_IMPLEMENTATION_LEVELS`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ROLE_PROMPT`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
@@ -1865,6 +1874,16 @@ Catalog entries: 1152
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ROUTER_TASK_CLASSIFICATION_TRIGGER`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `ROUTER_TASK_DECOMPOSITION_MISSING`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `ROUTER_TASK_DECOMPOSITION_POLICY`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `ROUTER_TASK_DECOMPOSITION_RECEIPT`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `ROUTER_TASK_DECOMPOSITION_SCHEMA`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `ROUTER_TASK_DECOMPOSITION_TEMPLATE`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
 - `ROUTER_TASK_SCALE_OVERLAYS`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ROUTER_UPGRADE_CONTEXT_BROAD`
@@ -1913,6 +1932,52 @@ Catalog entries: 1152
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `TARGET_PATH_ESCAPE`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `TASK_DECOMPOSITION_COMPLETION_EVIDENCE`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `TASK_DECOMPOSITION_DEFAULT_BEHAVIOR`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `TASK_DECOMPOSITION_DEFAULT_EXECUTOR`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `TASK_DECOMPOSITION_DELEGATION_POLICY`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `TASK_DECOMPOSITION_LEVELS`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `TASK_DECOMPOSITION_LEVEL_FIELDS`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `TASK_DECOMPOSITION_LEVEL_ORDER`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `TASK_DECOMPOSITION_LEVEL_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `TASK_DECOMPOSITION_PLAN_TEMPLATE`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `TASK_DECOMPOSITION_POLICY_KIND`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `TASK_DECOMPOSITION_POLICY_SCHEMA`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `TASK_DECOMPOSITION_PORTABLE_RULE`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `TASK_DECOMPOSITION_PRIMARY_ONLY_LEVEL`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `TASK_DECOMPOSITION_PROTECTED_DELEGATION`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `TASK_DECOMPOSITION_QUALITY_GATE`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `TASK_DECOMPOSITION_QUALITY_GATES`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `TASK_DECOMPOSITION_REQUIRED_FILE_MISSING`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `TASK_DECOMPOSITION_ROLE_CATALOG`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `TASK_DECOMPOSITION_ROLE_LEVEL`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `TASK_DECOMPOSITION_ROLE_LEVELS`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `TASK_DECOMPOSITION_TEXT`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `TASK_DECOMPOSITION_WORKER_ROLES`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `TASK_DECOMPOSITION_WORKER_ROLE_UNKNOWN`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
 - `TDD_COMMAND_EXTERNAL_ACTIONS`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `TDD_COMMAND_REFERENCE`

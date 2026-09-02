@@ -42,6 +42,7 @@ Registered categories:
 - `MODULE`
 - `OPERATION`
 - `TEAM`
+- `DECOMPOSITION`
 - `DELEGATION`
 - `BRIDGE`
 - `LIFECYCLE`
@@ -444,6 +445,21 @@ source of truth, approvals, trackers, or target validation.
 Applies to: actor selection, state-changing work, concurrent work, team
 handoffs, team review, merge readiness.
 Enforcement: required when module enabled.
+
+Rule ID: `ALATYR-DECOMPOSITION-001`
+Source owner: `framework/task-decomposition.md`
+Installed owner: `.ai/framework/task-decomposition.md`
+Commitment: Before non-trivial execution, decompose the request by changed
+fact, canonical owner, contract, area, dependency, validation, and
+support-surface impact; assign exactly one implementation level, bounded
+context, allowed actions, validation, dependencies, and primary-or-worker
+executor decision per task; keep small work as one local task when sufficient;
+escalate only on named risk or relationship triggers; and keep semantic
+decisions, approval, protected phases, integration, and final convergence with
+the primary assistant.
+Applies to: all installed adapter tasks, large tasks, delegated execution, team
+coordination, final evidence.
+Enforcement: required.
 
 Rule ID: `ALATYR-DELEGATION-001`
 Source owner: `framework/subagent-delegation.md`

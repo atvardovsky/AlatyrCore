@@ -9,6 +9,9 @@ Replace placeholders with target facts before accepting installation.
 ## Target Sources
 
 - Context router: `.ai/assistant/context-router.json`
+- Task decomposition policy: `.ai/assistant/task-decomposition.json`
+- Task decomposition template:
+  `.ai/assistant/templates/task-decomposition.md`
 - Operation packet template:
   `.ai/assistant/templates/large-task-operation-packet.md`
 - Project source-of-truth registry:
@@ -29,9 +32,9 @@ create a packet.
 
 When the optional `subagent-delegation` module is enabled, apply
 `.ai/assistant/flows/subagent-delegation.flow.md` only to independently useful,
-locally verifiable workstreams with disjoint writes or read-only scope. Keep
-the primary assistant on the immediate critical path and in control of final
-convergence.
+locally verifiable workstreams whose implementation levels permit worker
+execution, with disjoint writes or read-only scope. Keep the primary assistant
+on the immediate critical path and in control of final convergence.
 
 ## Steps
 
@@ -48,8 +51,9 @@ convergence.
    relationship impact closure when enabled, approvals, and the initial
    context receipt. Include planned, resolved, and observed ordered semantic
    guidance identities and each bundle digest's algorithm and schema version.
-5. Split work into coherent workstreams with explicit dependencies, allowed
-   surfaces, outputs, validation, and completion evidence.
+5. Split work into coherent workstreams from the task-decomposition plan with
+   explicit implementation levels, dependencies, allowed surfaces, executor
+   decisions, outputs, validation, and completion evidence.
 6. Load only the active workstream's context and its owner/dependency context.
 7. Update status and create checkpoints after local validation, approval
    boundaries, handoffs, or before a context reset.
@@ -87,6 +91,8 @@ Report:
 
 - packet path or target-approved non-persistent disposition
 - activation reason, selected profile, scale overlay, and project areas
+- task decomposition plan, implementation levels, executor decisions, and
+  blocked tasks
 - changed facts and canonical owners
 - relationship closure, selected/skipped edges, and missing coverage
 - workstream status and dependency result

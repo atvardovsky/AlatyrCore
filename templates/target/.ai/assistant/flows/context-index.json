@@ -416,8 +416,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 735,
-      "content_digest": "sha256:abebf3fdcdddca77d17d73f87e95cb75636653b59f25ede16e7ceb726e55be96"
+      "estimated_words": 770,
+      "content_digest": "sha256:9a96c1866053d764f676cb144cfb3a0610a6b1754a893fbd3bffd4b218448c90"
     },
     {
       "id": "assistant.content.flows-logical-integrity-review-flow-md",
@@ -470,8 +470,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1414,
-      "content_digest": "sha256:a5abc99f0607fcbc5adbbbb1bb74109eef47a1c51d9ea4ea857ac8bf6a1a5076"
+      "estimated_words": 1518,
+      "content_digest": "sha256:4b22ace0e57882b363b5ab0cf3c6a75c19a94c669085091a1e8317e3da46fc2d"
     },
     {
       "id": "assistant.content.flows-project-blueprint-creation-flow-md",
@@ -611,8 +611,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-DELEGATION-001"
       ],
-      "estimated_words": 767,
-      "content_digest": "sha256:f60442e2cefb18cb72f4c5a5d996c5a24e66406503f37d953137ebdf9b13026a"
+      "estimated_words": 816,
+      "content_digest": "sha256:81cd946a4c52bc84c69179a8285eb848146c009445ac299f16e4b903da1eca88"
     },
     {
       "id": "assistant.content.flows-support-generation-flow-md",

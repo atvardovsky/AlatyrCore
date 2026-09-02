@@ -24,9 +24,10 @@
         "6. For an exact operation ID or alias, read `.ai/assistant/operation-index.json`;",
         "   for bare `Alatyr`, ambiguity, or repair, read `.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.",
         "7. Route AI infrastructure through `.ai/assistant/ai-infrastructure-router.json`.",
-        "8. Before state changes, use `.ai/assistant/policies/action-authorization.json`; a topic switch or backlog/issue return is read-only.",
+        "8. For non-trivial work, use `.ai/assistant/task-decomposition.json` and `.ai/assistant/templates/task-decomposition.md` before implementation or delegation.",
+        "9. Before state changes, use `.ai/assistant/policies/action-authorization.json`; a topic switch or backlog/issue return is read-only.",
         "   Implementation does not imply commit; commit does not imply push; prior authorization expires.",
-        "9. Delegate only through `.ai/assistant/prompts/worker-orchestration.md` and the selected capability record.",
+        "10. Delegate only through the primary-owned decomposition plan, `.ai/assistant/prompts/worker-orchestration.md`, and the selected capability record.",
         "Assistant-specific bridge files must stay short and point back to canonical target files."
       ]
     },
@@ -43,7 +44,7 @@
         "For an exact operation ID or alias, including diagram, team, or AI aliases, read",
         "`.ai/assistant/operation-index.json`; for bare `Alatyr`, ambiguity, or repair, read",
         "`.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.",
-        "When delegation is selected, use `.ai/assistant/prompts/worker-orchestration.md` and the selected capability record; do not infer native worker support.",
+        "When delegation is selected, use `.ai/assistant/task-decomposition.json`, `.ai/assistant/prompts/worker-orchestration.md`, and the selected capability record; do not infer native worker support.",
         "",
         "Do not treat this bridge file as the source of truth."
       ]
@@ -61,7 +62,7 @@
         "For an exact operation ID or alias, including diagram, team, or AI aliases, read",
         "`.ai/assistant/operation-index.json`; for bare `Alatyr`, ambiguity, or repair, read",
         "`.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.",
-        "When delegation is selected, use `.ai/assistant/prompts/worker-orchestration.md` and the selected capability record; do not infer native worker support.",
+        "When delegation is selected, use `.ai/assistant/task-decomposition.json`, `.ai/assistant/prompts/worker-orchestration.md`, and the selected capability record; do not infer native worker support.",
         "",
         "Do not treat this bridge file as the source of truth."
       ]
@@ -83,7 +84,7 @@
         "For an exact operation ID or alias, including diagram, team, or AI aliases, read",
         "`.ai/assistant/operation-index.json`; for bare `Alatyr`, ambiguity, or repair, read",
         "`.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.",
-        "When delegation is selected, use `.ai/assistant/prompts/worker-orchestration.md` and the selected capability record; do not infer native worker support.",
+        "When delegation is selected, use `.ai/assistant/task-decomposition.json`, `.ai/assistant/prompts/worker-orchestration.md`, and the selected capability record; do not infer native worker support.",
         "",
         "This Cursor rule is a bridge, not the source of truth."
       ]
@@ -93,7 +94,7 @@
       "lines": [
         "Ensure AGENTS.md is loaded once; if it was not preloaded by the host, read it now. Then read AI_ASSISTANTS.md, .ai/assistant/bootstrap-index.json, and .ai/assistant/entry-packet.json. Repair a missing or stale derived index from its named canonical sources. This file is a legacy bridge for Cursor-compatible tools.",
         "For an exact operation ID or alias, read .ai/assistant/operation-index.json. For bare Alatyr, ambiguity, or repair, read .ai/assistant/operation-catalog.json, .ai/assistant/help.md, and .ai/assistant/flows/operation-routing.flow.md.",
-        "When delegation is selected, use .ai/assistant/prompts/worker-orchestration.md and the selected capability record; do not infer native worker support."
+        "When delegation is selected, use .ai/assistant/task-decomposition.json, .ai/assistant/prompts/worker-orchestration.md, and the selected capability record; do not infer native worker support."
       ]
     },
     {
@@ -110,7 +111,7 @@
         "For an exact operation ID or alias, including diagram, team, or AI aliases, read",
         "`.ai/assistant/operation-index.json`; for bare `Alatyr`, ambiguity, or repair, read",
         "`.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.",
-        "When delegation is selected, use `.ai/assistant/prompts/worker-orchestration.md` and the selected capability record; do not infer native worker support.",
+        "When delegation is selected, use `.ai/assistant/task-decomposition.json`, `.ai/assistant/prompts/worker-orchestration.md`, and the selected capability record; do not infer native worker support.",
         "",
         "This file is a bridge, not the source of truth."
       ]
@@ -130,7 +131,7 @@
         "For an exact operation ID or alias, including diagram, team, or AI aliases, read",
         "`.ai/assistant/operation-index.json`; for bare `Alatyr`, ambiguity, or repair, read",
         "`.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.",
-        "When delegation is selected, use `.ai/assistant/prompts/worker-orchestration.md` and the selected capability record; do not infer native worker support.",
+        "When delegation is selected, use `.ai/assistant/task-decomposition.json`, `.ai/assistant/prompts/worker-orchestration.md`, and the selected capability record; do not infer native worker support.",
         "",
         "Keep this file as a bridge. Do not duplicate full project or framework policy",
         "here."
@@ -156,7 +157,7 @@
         "For an exact operation ID or alias, including diagram, team, or AI aliases, read",
         "`.ai/assistant/operation-index.json`; for bare `Alatyr`, ambiguity, or repair, read",
         "`.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.",
-        "When delegation is selected, use `.ai/assistant/prompts/worker-orchestration.md` and the selected capability record; do not infer native worker support.",
+        "When delegation is selected, use `.ai/assistant/task-decomposition.json`, `.ai/assistant/prompts/worker-orchestration.md`, and the selected capability record; do not infer native worker support.",
         "Return blockers first, then final evidence."
       ]
     },
@@ -174,7 +175,7 @@
         "For an exact operation ID or alias, including diagram, team, or AI aliases, read",
         "`.ai/assistant/operation-index.json`; for bare `Alatyr`, ambiguity, or repair, read",
         "`.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.",
-        "When delegation is selected, use `.ai/assistant/prompts/worker-orchestration.md` and the selected capability record; do not infer native worker support.",
+        "When delegation is selected, use `.ai/assistant/task-decomposition.json`, `.ai/assistant/prompts/worker-orchestration.md`, and the selected capability record; do not infer native worker support.",
         "",
         "This file is a legacy bridge, not the source of truth."
       ]
@@ -184,7 +185,7 @@
       "lines": [
         "Ensure AGENTS.md is loaded once; if it was not preloaded by the host, read it now. Then read AI_ASSISTANTS.md, .ai/assistant/bootstrap-index.json, and .ai/assistant/entry-packet.json. Repair a missing or stale derived index from its named canonical sources. This file is a legacy bridge for Windsurf-compatible tools.",
         "For an exact operation ID or alias, read .ai/assistant/operation-index.json. For bare Alatyr, ambiguity, or repair, read .ai/assistant/operation-catalog.json, .ai/assistant/help.md, and .ai/assistant/flows/operation-routing.flow.md.",
-        "When delegation is selected, use .ai/assistant/prompts/worker-orchestration.md and the selected capability record; do not infer native worker support."
+        "When delegation is selected, use .ai/assistant/task-decomposition.json, .ai/assistant/prompts/worker-orchestration.md, and the selected capability record; do not infer native worker support."
       ]
     },
     {
@@ -197,8 +198,8 @@
         "For an exact operation ID or alias, read `.ai/assistant/operation-index.json`.",
         "For bare `Alatyr`, ambiguity, or repair, read `.ai/assistant/operation-catalog.json`,",
         "`.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.",
-        "When delegation is selected, use `.ai/assistant/prompts/worker-orchestration.md`",
-        "and the selected capability record; do not infer native worker support.",
+        "When delegation is selected, use `.ai/assistant/task-decomposition.json`,",
+        "`.ai/assistant/prompts/worker-orchestration.md`, and the selected capability record; do not infer native worker support.",
         "",
         "This legacy bridge does not claim maintained Roo runtime support or override",
         "Alatyr authorization with Roo mode or auto-approve settings."
@@ -209,7 +210,7 @@
       "lines": [
         "Ensure AGENTS.md is loaded once; if it was not preloaded by the host, read it now. Then read AI_ASSISTANTS.md, .ai/assistant/bootstrap-index.json, and .ai/assistant/entry-packet.json. This is the Zed Agent first-match bridge, not the source of truth.",
         "For an exact operation ID or alias, read .ai/assistant/operation-index.json. For bare Alatyr, ambiguity, or repair, read .ai/assistant/operation-catalog.json, .ai/assistant/help.md, and .ai/assistant/flows/operation-routing.flow.md.",
-        "When delegation is selected, use .ai/assistant/prompts/worker-orchestration.md and the selected capability record; do not infer native worker support or treat Zed permissions as Alatyr authorization."
+        "When delegation is selected, use .ai/assistant/task-decomposition.json, .ai/assistant/prompts/worker-orchestration.md, and the selected capability record; do not infer native worker support or treat Zed permissions as Alatyr authorization."
       ]
     }
   ]

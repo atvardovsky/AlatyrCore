@@ -30,11 +30,13 @@ KERNEL_REQUIRED = {
     Path(".ai/assistant/context/task-scales/small-task.json"),
     Path(".ai/assistant/installation-state.json"),
     Path(".ai/assistant/module-profile.md"),
+    Path(".ai/assistant/task-decomposition.json"),
     Path(".ai/assistant/gates/index.json"),
     Path(".ai/assistant/gates/core.md"),
     Path(".ai/assistant/gates/final-evidence.md"),
     Path(".ai/assistant/flows/logical-integrity-review.flow.md"),
     Path(".ai/assistant/templates/small-task-evidence.md"),
+    Path(".ai/assistant/templates/task-decomposition.md"),
     Path(".ai/project/source-of-truth-registry.md"),
     Path("AGENTS.md"),
 }

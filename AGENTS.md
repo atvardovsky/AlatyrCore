@@ -98,6 +98,7 @@ policy wording.
 - Discussion diagram presentation: `ALATYR-DIAGRAM-001`
 - Optional team collaboration: `ALATYR-TEAM-001`
 - Optional subagent delegation: `ALATYR-DELEGATION-001`
+- Task decomposition: `ALATYR-DECOMPOSITION-001`
 
 ## Operating Rules
 
@@ -167,7 +168,8 @@ Bootstrap discoverability must retain these focused helper names:
 `check_framework_metadata.py`, `check_approval_template.py`,
 `check_change_packages.py`, `check_bridge_capability_matrix.py`,
 `check_discussion_diagrams.py`, `check_context_router.py`,
-`check_manifest_contract.py`, `check_maturity_profile.py`,
+`check_task_decomposition.py`, `check_manifest_contract.py`,
+`check_maturity_profile.py`,
 `check_module_profile.py`, `check_operation_help.py`,
 `check_output_contracts.py`, `check_ai_infrastructure_inventory.py`,
 `check_ai_infrastructure_recommendations.py`, `check_rule_ownership.py`,

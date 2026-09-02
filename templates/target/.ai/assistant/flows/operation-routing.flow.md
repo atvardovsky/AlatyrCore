@@ -14,6 +14,9 @@ placeholders with target facts before accepting installation.
 - Compact help: `.ai/assistant/help.md`
 - Full help reference: `.ai/assistant/help-reference.md`
 - Module profile: `.ai/assistant/module-profile.md`
+- Task decomposition policy: `.ai/assistant/task-decomposition.json`
+- Task decomposition template:
+  `.ai/assistant/templates/task-decomposition.md`
 - Team operating model: `.ai/project/team-operating-model.md` when enabled
 - Team work registry: `.ai/assistant/team/work-registry.json` when enabled
 - Pre-change preview: `.ai/assistant/templates/pre-change-preview.md`
@@ -76,27 +79,35 @@ For `Alatyr status` or `Alatyr doctor`, route directly to `adapter-health` with
    planning, recommendations, and ambiguous continuation authorize only
    `inspect`. A clear implementation request may authorize `modify`, but not
    `commit` or `publish`. Prior completed-scope authorization is invalid.
-8. When exactly one operation fits, its allowed-action scope is sufficient,
+8. For non-trivial work, create a one-node or multi-node task decomposition
+   from `.ai/assistant/task-decomposition.json` and
+   `.ai/assistant/templates/task-decomposition.md` before implementation or
+   delegation. Assign exactly one implementation level, bounded context,
+   dependency state, validation, allowed files or surfaces, and executor
+   decision to each subtask. For a small task, compact one-node evidence is
+   enough unless an expansion trigger fires.
+9. When exactly one operation fits, its allowed-action scope is sufficient,
    and the next phase is authorized, state the operation and reason briefly,
    then continue without asking the user to confirm routing.
-9. When two or more operations remain plausible, load compact help or the full
+10. When two or more operations remain plausible, load compact help or the full
    help reference, present only the closest two or three choices, and ask the
    smallest missing question. Do not edit while ambiguity remains material.
-10. Use the `large-task` operation only for genuinely multi-workstream,
+11. Use the `large-task` operation only for genuinely multi-workstream,
    cross-boundary, budget-exceeding, or resumable work.
-11. When team collaboration is enabled, run the compact active-work preflight
+12. When team collaboration is enabled, run the compact active-work preflight
     before every state-changing operation. Read only the active index first.
     Expand `team-active` for an explicit team operation, a task/backend/branch
     match, possible changed-fact/owner/contract/dependency/surface overlap, or
     unresolved index evidence. Load the selected task, relevant overlaps, and
     one team flow; do not load unrelated records or infer unavailable tracker
     state.
-12. When subagent delegation is enabled and not forbidden by the request,
-    identify the primary critical-path next action first. Add the
+13. When subagent delegation is enabled and not forbidden by the request,
+    consume the primary-owned decomposition plan. Add the
     `delegated-execution` overlay only for independently useful, locally
-    verifiable packets with disjoint writes or read-only scope and current
-    assistant capability evidence. Keep decisions, approval, integration, and
-    final convergence with the primary assistant.
+    verifiable tasks whose implementation level permits worker execution, with
+    disjoint writes or read-only scope and current assistant capability
+    evidence. Keep decisions, approval, integration, and final convergence with
+    the primary assistant.
 
 ## Pre-Change Decision
 
@@ -166,6 +177,8 @@ Report:
 - matched operation or unresolved candidates
 - routing mode: explicit, automatic, or ambiguity resolution
 - selected context profile and overlays
+- task decomposition plan ID, implementation levels, dependencies, and
+  executor decisions
 - matching flow and required module state
 - reason for selection
 - allowed actions and approval needs
@@ -202,6 +215,10 @@ Reject or revise routing that:
 - carries commit or publish authorization from a completed or redirected scope
 - infers publish from commit, protected approval, allowed actions, or tool access
 - treats the pre-change preview as approval
+- edits, delegates, or claims completion for non-trivial work without task
+  decomposition evidence
+- assigns architecture, business, approval, commit, publish, or live-external
+  authority to a worker
 - claims adapter health without fresh evidence
 - claims target validation exists without target evidence
 - claims a diagram was rendered without current surface capability evidence

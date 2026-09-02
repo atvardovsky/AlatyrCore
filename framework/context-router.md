@@ -23,13 +23,15 @@ A target adapter can load:
 7. one selected mode descriptor and applicable shared root context
 8. task classification from compact request, operation, risk, and scale
    signals
-9. the selected profile's required context
-10. one or more project-area overlays when the task names affected areas
-11. task-scale overlays only when the classifier selects small-task for a
+9. task decomposition cues for non-trivial work, using one local task for
+   small work when compact evidence is enough
+10. the selected profile's required context
+11. one or more project-area overlays when the task names affected areas
+12. task-scale overlays only when the classifier selects small-task for a
    cheap evidence lane, the task is large, resumable, team-active, explicitly
    debug-enabled, at material evidence finalization, or an enabled-team write
    preflight finds possible active-work overlap
-12. bounded project-knowledge routing after profile/area selection and again
+13. bounded project-knowledge routing after profile/area selection and again
    after concrete changed facts, paths, symbols, subsystem or architecture
    relationships, dependencies, contracts, or issue lineage become known
 
@@ -73,6 +75,8 @@ A target context router should define:
 - context receipt fields
 - task classification classes, order, ambiguity behavior, expansion triggers,
   and their task-scale overlay mappings
+- task decomposition policy path, plan template, load triggers, small-task
+  behavior, and executor-selection summary
 - routing order
 - canonical profile entries
 - bounded operation candidates per profile
@@ -174,6 +178,31 @@ of `small-task`, `standard-task`, `large-or-resumable`, or
 approval, budget, and validation signals. Ambiguous classification is read-
 only: select the smallest plausible class for inspection, ask for the missing
 fact, and do not edit until the current scope is authorized.
+
+## Task Decomposition Routing
+
+After task classification, operation routing, profile/area selection,
+changed-fact review, risk, authorization, and support-delta signals are known,
+select task decomposition for non-trivial work. The router should point to the
+target task-decomposition policy and plan template instead of embedding the
+full decomposition rule in bootstrap.
+
+For small tasks, record one local task from compact entry-packet cues when one
+profile, one local surface or direct neighbor set, and focused validation are
+sufficient. Standard, large, protected, or delegated work should load the
+target decomposition policy and plan template before implementation or worker
+dispatch.
+
+The decomposition plan assigns each subtask one implementation level,
+dependencies, bounded context, allowed files or surfaces, validation,
+acceptance criteria, and executor decision. Delegation consumes the
+primary-owned plan only after task readiness is known; it cannot create
+broader authority, approval, or context.
+
+When a new owner, relationship, policy boundary, approval, or validation
+failure appears, load only that triggering context and revise the affected
+task. Do not respond to one escalation by loading every profile, module, role,
+or relationship shard.
 
 The `small-task` class is valid only while one base profile and one local
 surface or direct neighbor set are sufficient, no accepted semantic or logical

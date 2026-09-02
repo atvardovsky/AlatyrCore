@@ -4,6 +4,7 @@ Use this compact evidence only when the task classifier selected `small-task`
 and no expansion trigger fired.
 
 - Task classification: `small-task`
+- Task decomposition: `one-node` with implementation level `{L0_L1_L2_L3_OR_L4}`
 - Selected operation: `{SELECTED_OPERATION}`
 - Selected profile: `{SELECTED_PROFILE}`
 - Direct owner or edited surface: `{DIRECT_OWNER_OR_EDITED_SURFACE}`

@@ -87,8 +87,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 116,
-      "content_digest": "sha256:edb73e069bd3806803f9911596874f583e5580c2e091902b85b134aaab66e174"
+      "estimated_words": 133,
+      "content_digest": "sha256:4d365622ed40d10a7ccdb13da1c07f535aa5fed138696f4eb7bad8bed7b63666"
     },
     {
       "id": "assistant.content.context-task-scales-engineering-evidence-json",

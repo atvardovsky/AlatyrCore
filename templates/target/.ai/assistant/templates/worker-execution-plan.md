@@ -7,6 +7,7 @@ Primary assistant/session: `{PRIMARY_ASSISTANT_REFERENCE}`
 Current logical scope: `{CURRENT_LOGICAL_SCOPE}`
 Authorized action phases: `{CURRENT_AUTHORIZED_PHASES}`
 Delegation policy revision: `{POLICY_REVISION_OR_HASH}`
+Task decomposition policy revision: `{TASK_DECOMPOSITION_POLICY_REVISION_OR_HASH}`
 
 ## Task Graph
 
@@ -16,10 +17,12 @@ Use statuses `PLANNED`, `BLOCKED`, `READY`, `RUNNING`, `REVIEW_REQUIRED`,
 Task ID: `{TASK_ID}`
 Status: `{TASK_STATUS}`
 Goal: `{ONE_BOUNDED_GOAL}`
+Implementation level: `{L1_L2_L3_L4_OR_L5_FOR_WORKER_ELIGIBLE_TASKS}`
 Dependencies: `{TASK_IDS_OR_NONE}`
 Changed facts: `{FACT_IDS_OR_NONE}`
 Expected write scope: `{DISJOINT_PATHS_SURFACES_OR_NONE}`
 Role: `{ENABLED_ROLE_ID_OR_PRIMARY}`
+Executor decision: `{PRIMARY_WORKER_SUGGESTION_ONLY_OR_BLOCKED}`
 Required context: `{PATHS_AND_REASONS}`
 Acceptance criteria: `{OBJECTIVE_LOCAL_CRITERIA}`
 Validation: `{TARGET_VALIDATION_OR_MANUAL_REVIEW}`

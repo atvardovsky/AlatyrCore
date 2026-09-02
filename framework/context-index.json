@@ -39,8 +39,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 179,
-      "content_digest": "sha256:53ca4ae7256ade54d22521b2850c507d9c440d295c9ac589dd08b11b8b7dd728"
+      "estimated_words": 212,
+      "content_digest": "sha256:18a67be7e8c54b340952aad1f52e36135fc0c9bc41b40159d88474169f11a9db"
     },
     {
       "id": "framework.section.core",
@@ -55,7 +55,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 886,
-      "content_digest": "sha256:0efbd432e78f7de6aabd07e276d5ecc14d039f382aee9cd56f9c670a082fab94"
+      "content_digest": "sha256:80d0f7fa9e888862fe0c99c2b1bbf7f599e512433388e5df449e5cef89e02265"
     },
     {
       "id": "framework.section.infrastructure",
@@ -100,7 +100,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 217,
-      "content_digest": "sha256:00853ff663dab9666b075bad89e055f1752be44626c6f84fe234d69d65a9f33b"
+      "content_digest": "sha256:b608608d3a7210bf9ef52c2104552b7d8d6f70b7e0e413df26867d480a2d5eac"
     },
     {
       "id": "framework.section.support",

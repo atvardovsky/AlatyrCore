@@ -67,6 +67,7 @@ def check_packet(
         "gate_index",
         "action_authorization_policy",
         "support_policy",
+        "task_decomposition",
     }
     derived = packet.get("derived_from")
     if not isinstance(derived, dict) or not required_sources <= set(derived):
@@ -167,6 +168,38 @@ def check_packet(
                 failures.append("entry packet omitted installed operation routes")
         elif routes != {}:
             failures.append("entry packet should omit operation routes when index is absent")
+
+    decomposition = packet.get("task_decomposition")
+    if not isinstance(decomposition, dict):
+        failures.append("entry packet must include task_decomposition")
+    else:
+        if decomposition.get("schema_version") != 1:
+            failures.append("entry packet task decomposition schema is invalid")
+        if decomposition.get("policy") != ".ai/assistant/task-decomposition.json":
+            failures.append("entry packet task decomposition policy path is invalid")
+        if (
+            decomposition.get("plan_template")
+            != ".ai/assistant/templates/task-decomposition.md"
+        ):
+            failures.append("entry packet task decomposition plan template is invalid")
+        if decomposition.get("level_order") != [
+            "L0",
+            "L1",
+            "L2",
+            "L3",
+            "L4",
+            "L5",
+            "L6",
+            "L7",
+        ]:
+            failures.append("entry packet task decomposition levels are invalid")
+        if "L6" not in decomposition.get("non_delegable_levels", []) or "L7" not in decomposition.get("non_delegable_levels", []):
+            failures.append("entry packet must mark L6 and L7 non-delegable")
+        if "non-trivial" not in str(decomposition.get("default_behavior", "")):
+            failures.append("entry packet task decomposition default must name non-trivial work")
+        executor = decomposition.get("executor_selection")
+        if not isinstance(executor, dict) or executor.get("default") != "primary":
+            failures.append("entry packet task decomposition executor default must be primary")
 
     authorization = packet.get("authorization")
     if not isinstance(authorization, dict):

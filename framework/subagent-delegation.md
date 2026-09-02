@@ -11,6 +11,7 @@ alatyr_doc:
     - ALATYR-AUTHORIZATION-001
     - ALATYR-INTEGRITY-001
     - ALATYR-BRIDGE-001
+    - ALATYR-DECOMPOSITION-001
   applies_to:
     - code-local
     - ai-infrastructure
@@ -18,8 +19,8 @@ alatyr_doc:
 # Subagent Delegation
 
 This file defines how an installed Alatyr adapter may let a primary assistant
-decompose work and delegate bounded packets to subagents or faster models
-without transferring project authority or final responsibility.
+delegate tasks from the primary-owned decomposition plan to subagents or faster
+models without transferring project authority or final responsibility.
 
 Subagent delegation is optional and capability-gated. The target adapter owns
 the delegation policy, supported assistant surfaces, verified model bindings,
@@ -81,10 +82,11 @@ more than doing the work locally.
 
 ## Task Planning Contract
 
-Before dispatch, the primary assistant creates a deterministic task graph for
-the work it may delegate. Each task records one bounded goal, dependencies,
-changed facts, expected write scope, required context, objective acceptance,
-validation, selected role, and current status.
+Before dispatch, the primary assistant creates or reuses the target
+task-decomposition plan. Each worker-eligible task records one implementation
+level, one bounded goal, dependencies, changed facts, expected write scope,
+required context, objective acceptance, validation, selected role, and current
+status.
 
 Use the following portable statuses: `PLANNED`, `BLOCKED`, `READY`, `RUNNING`,
 `REVIEW_REQUIRED`, `DONE`, `FAILED`, and `CANCELLED`. Only the primary

@@ -27,6 +27,13 @@ Exact aliases route through `.ai/assistant/operation-index.json`, which is a
 checked compact derivative of the catalog. Do not edit the index without
 updating the canonical catalog.
 
+Task decomposition is not a user-facing operation ID. For non-trivial work,
+route through `.ai/assistant/task-decomposition.json` and
+`.ai/assistant/templates/task-decomposition.md` to assign implementation
+levels, dependencies, bounded context, validation, and primary/worker executor
+decisions. Small local work may stay as one compact task; delegation consumes
+the primary-owned plan.
+
 ## Supported Request Aliases
 
 - `Alatyr architecture`, `Alatyr architecture inventory`,
@@ -141,6 +148,8 @@ assistant capability permit it.
 Minimum input: goal, non-goals, affected project areas, allowed actions, and
 known approval or validation checkpoints, including diff base and explicit
 JSON approval records when scoped.
+Task decomposition: required before implementation or delegation; record one
+implementation level and executor decision per task.
 
 Operation: `team-status`
 Use when: reporting active, blocked, stale, handed-off, review, or merge-ready

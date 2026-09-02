@@ -6,16 +6,17 @@ into one assistant context.
 
 It composes `ALATYR-CONTEXT-001`, `ALATYR-SOURCE-001`,
 `ALATYR-APPROVAL-001`, `ALATYR-INTEGRITY-001`, `ALATYR-CHANGE-001`, and
-`ALATYR-EVIDENCE-001`. It does not replace their canonical owner documents.
+`ALATYR-DECOMPOSITION-001`, and `ALATYR-EVIDENCE-001`. It does not replace
+their canonical owner documents.
 
 Concrete project areas, owners, commands, packet storage policy, and
 validation belong to the target adapter.
 
 When `team-collaboration` is also enabled, compose the
-`large-or-resumable` and `team-active` overlays. The operation packet owns
-workstream decomposition; the team registry owns current actor assignment,
-claim, overlap, handoff, and review evidence. Cross-reference stable IDs
-instead of copying either record.
+`large-or-resumable` and `team-active` overlays. The operation packet records
+the primary task-decomposition plan and workstream state; the team registry
+owns current actor assignment, claim, overlap, handoff, and review evidence.
+Cross-reference stable IDs instead of copying either record.
 
 ## Activation
 
@@ -49,6 +50,7 @@ packet coordinates one operation and records:
 - selected and skipped consistency relationships when the optional target map
   is enabled
 - workstreams, dependencies, required context, outputs, and validation
+- implementation levels and primary/worker executor decisions per workstream
 - context receipts, ordered semantic-guidance bundle identities and digests,
   and reasons for budget expansion
 - resumable checkpoints, unresolved decisions, and the next ready action

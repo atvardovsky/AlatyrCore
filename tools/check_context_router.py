@@ -31,6 +31,9 @@ TARGET = ROOT / "templates" / "target"
 ROUTER = TARGET / ".ai" / "assistant" / "context-router.json"
 PROFILES_MD = TARGET / ".ai" / "assistant" / "context-profiles.md"
 CONTEXT_PACKET = TARGET / ".ai" / "assistant" / "templates" / "context-packet.json"
+DECOMPOSITION_POLICY = ".ai/assistant/task-decomposition.json"
+DECOMPOSITION_PLAN = ".ai/assistant/templates/task-decomposition.md"
+TASK_DECOMPOSITION_LEVELS = ["L0", "L1", "L2", "L3", "L4", "L5", "L6", "L7"]
 
 CANONICAL_PROFILES = [
     "docs-local",
@@ -308,6 +311,59 @@ def check_task_classification(router: dict[str, Any], failures: list[str]) -> No
         failures.append(f"task_classification missing expansion trigger {required}")
 
 
+def check_task_decomposition(router: dict[str, Any], failures: list[str]) -> None:
+    decomposition = router.get("task_decomposition")
+    if not isinstance(decomposition, dict):
+        failures.append("task_decomposition must be an object")
+        return
+    if decomposition.get("schema_version") != 1:
+        failures.append("task_decomposition.schema_version must be 1")
+    if decomposition.get("policy") != DECOMPOSITION_POLICY:
+        failures.append("task_decomposition.policy is invalid")
+    if decomposition.get("plan_template") != DECOMPOSITION_PLAN:
+        failures.append("task_decomposition.plan_template is invalid")
+    for field in ["load_after", "use_when"]:
+        values = require_string_list(
+            decomposition,
+            field,
+            "task_decomposition",
+            failures,
+        )
+        duplicates = sorted({value for value in values if values.count(value) > 1})
+        if duplicates:
+            failures.append(f"task_decomposition.{field} repeats {duplicates}")
+    conditional_context = check_conditional_context(
+        decomposition, "task_decomposition", failures
+    )
+    if ".ai/framework/task-decomposition.md" not in conditional_context:
+        failures.append(
+            "task_decomposition conditional_context must route the portable rule owner"
+        )
+    for field in ["small_task_behavior", "executor_selection"]:
+        if not isinstance(decomposition.get(field), str) or not decomposition[field]:
+            failures.append(f"task_decomposition.{field} must be a non-empty string")
+    for relpath in [DECOMPOSITION_POLICY, DECOMPOSITION_PLAN]:
+        if not target_reference_exists(relpath):
+            failures.append(f"task_decomposition points to missing path: {relpath}")
+
+    try:
+        policy = load_json(TARGET / DECOMPOSITION_POLICY)
+    except AssertionError as exc:
+        failures.append(str(exc))
+        return
+    levels = policy.get("levels")
+    if not isinstance(levels, list):
+        failures.append("task decomposition policy levels must be a list")
+        return
+    level_ids = [
+        level.get("id")
+        for level in levels
+        if isinstance(level, dict) and isinstance(level.get("id"), str)
+    ]
+    if level_ids != TASK_DECOMPOSITION_LEVELS:
+        failures.append("task decomposition policy levels must be L0 through L7")
+
+
 def main() -> int:
     failures: list[str] = []
     try:
@@ -389,6 +445,7 @@ def main() -> int:
             "selected profiles",
             "selected intent overlays",
             "task classification",
+            "task decomposition id and implementation levels",
             "selected task scale overlay",
             "selected project areas",
             "measurement state",
@@ -452,6 +509,7 @@ def main() -> int:
 
     check_context_packet(router, failures)
     check_task_classification(router, failures)
+    check_task_decomposition(router, failures)
 
     entry_packet = router.get("agent_entry_packet")
     if not isinstance(entry_packet, dict):
@@ -1175,6 +1233,15 @@ def main() -> int:
         for value in profile_conditional_context
         if value.startswith(".ai/framework/")
     )
+    task_decomposition = router.get("task_decomposition", {})
+    if isinstance(task_decomposition, dict):
+        routed_framework_paths.update(
+            entry["path"]
+            for entry in task_decomposition.get("conditional_context", [])
+            if isinstance(entry, dict)
+            and isinstance(entry.get("path"), str)
+            and entry["path"].startswith(".ai/framework/")
+        )
     for contract, field in [
         (consistency, "required_context"),
         (migration, "candidate_context"),

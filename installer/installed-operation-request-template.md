@@ -48,6 +48,12 @@ Review comments or defect reports to reconcile:
 Task scale:
 <normal/large/resumable>
 
+Task decomposition preference:
+<auto/one-task/multi-task/require-plan/none>
+
+Existing task decomposition plan:
+<target-approved plan path or none>
+
 Delegation preference:
 <auto/allow/forbid/require-supported>
 
@@ -144,7 +150,8 @@ Constraints:
 - Rule references: ALATYR-CONTEXT-001, ALATYR-SOURCE-001,
   ALATYR-RISK-001, ALATYR-APPROVAL-001, ALATYR-AUTHORIZATION-001, ALATYR-SAFETY-001,
   ALATYR-SAFETY-002, ALATYR-INTEGRITY-001, ALATYR-CHANGE-001,
-  ALATYR-TDD-001, ALATYR-EXTENSION-001, ALATYR-DEPENDENCY-001, ALATYR-MODE-001, ALATYR-ADAPTER-001,
+  ALATYR-DECOMPOSITION-001, ALATYR-TDD-001, ALATYR-EXTENSION-001,
+  ALATYR-DEPENDENCY-001, ALATYR-MODE-001, ALATYR-ADAPTER-001,
   ALATYR-MODULE-001, ALATYR-OPERATION-001, ALATYR-DIAGRAM-001,
   ALATYR-TEAM-001, ALATYR-EVIDENCE-001.
 - Treat the target `AGENTS.md` as preloaded, then read only
@@ -165,6 +172,11 @@ Constraints:
   `.ai/assistant/flows/large-task-orchestration.flow.md` with
   `.ai/assistant/templates/large-task-operation-packet.md`. Do not create a
   packet for a small task.
+- For non-trivial work, use `.ai/assistant/task-decomposition.json` and
+  `.ai/assistant/templates/task-decomposition.md` before implementation or
+  delegation. Assign one implementation level, bounded context, dependency
+  state, validation, allowed files or surfaces, and executor decision per
+  subtask. Small local work may use one-node decomposition evidence.
 - For enabled team collaboration, read the compact active-work index before
   state-changing operations. Expand `team-active` only for an explicit team
   request, task/branch match, possible logical overlap, or unresolved index,

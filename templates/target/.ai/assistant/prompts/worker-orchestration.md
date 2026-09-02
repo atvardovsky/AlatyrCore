@@ -1,15 +1,18 @@
 # Worker Orchestration Prompt
 
 Use this prompt only after the parent operation, context profile, changed
-facts, risk, current-scope authorization, and primary critical path are known.
+facts, risk, current-scope authorization, task decomposition, and primary
+critical path are known.
 The primary assistant remains responsible for all decisions and convergence.
 
-1. Load `.ai/assistant/delegation-policy.json`,
+1. Load `.ai/assistant/task-decomposition.json`,
+   `.ai/assistant/delegation-policy.json`,
    `.ai/assistant/workers/role-catalog.json`, and only the selected assistant
    capability record.
 2. Create or update `.ai/assistant/templates/worker-execution-plan.md`. Mark a
-   task `READY` only when its dependencies are complete, its context and
-   acceptance criteria are bounded, and its write scope is disjoint.
+   task `READY` only when its implementation level permits worker execution,
+   dependencies are complete, its context and acceptance criteria are bounded,
+   and its write scope is disjoint.
 3. Prefer primary execution when packet and review overhead outweigh likely
    benefit. Never delegate non-delegable work.
 4. Select an enabled role whose action ceiling contains the packet action.

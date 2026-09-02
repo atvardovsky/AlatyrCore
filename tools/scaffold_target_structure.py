@@ -408,6 +408,9 @@ def projected_template_content(
                 (TEMPLATE_ROOT / ".ai/project/support-policy.json").read_text(
                     encoding="utf-8"
                 ),
+                (TEMPLATE_ROOT / ".ai/assistant/task-decomposition.json").read_text(
+                    encoding="utf-8"
+                ),
                 operation_index_text=operation_index_text,
                 operation_catalog_text=operation_catalog_text,
                 target=TEMPLATE_ROOT,

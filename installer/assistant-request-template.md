@@ -20,7 +20,8 @@ Current user authorization:
 Constraints:
 - Rule references: ALATYR-CONTEXT-001, ALATYR-ADAPTER-001,
   ALATYR-APPROVAL-001, ALATYR-AUTHORIZATION-001, ALATYR-SAFETY-001, ALATYR-SAFETY-002,
-  ALATYR-OPERATION-001, ALATYR-TEAM-001, ALATYR-EVIDENCE-001.
+  ALATYR-DECOMPOSITION-001, ALATYR-OPERATION-001, ALATYR-TEAM-001,
+  ALATYR-EVIDENCE-001.
 - Do not use an installer script.
 - Inspect the target repository before creating files.
 - Prepare an installation plan from Alatyr Core's installer template.

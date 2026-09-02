@@ -12,6 +12,7 @@ agents, and time change.
 - Project-owned development rules for human and AI engineering
 - Recorded architectural intent and reviewed engineering knowledge
 - Bounded task-specific delivery of applicable rules and context
+- Task decomposition with implementation levels and executor selection
 - Target-designated authority and approval boundaries
 - Project-specific validation and evidence expectations
 - Continuity across developers, compatible agents, tools, and sessions
@@ -82,6 +83,9 @@ AlatyrCore gives supported assistants the same project-owned starting point.
 It routes a request to a bounded task-relevant context packet, identifies fact
 owners, separates observed implementation from accepted intent, and requires
 validation and residual-risk evidence before consistency is claimed.
+For non-trivial work, it also decomposes the request into bounded subtasks with
+implementation levels, dependencies, selected context, validation, and primary
+or worker executor decisions.
 
 This is the practical distinction:
 
@@ -609,7 +613,7 @@ selected or changed canonical framework owners.
 
 Apply canonical rule references rather than copying policy text into bridge
 files: `ALATYR-ADAPTER-001`, `ALATYR-APPROVAL-001`, `ALATYR-AUTHORIZATION-001`, `ALATYR-SAFETY-001`,
-`ALATYR-SAFETY-002`, `ALATYR-INTEGRITY-001`, `ALATYR-EVIDENCE-001`,
+`ALATYR-SAFETY-002`, `ALATYR-INTEGRITY-001`, `ALATYR-DECOMPOSITION-001`, `ALATYR-EVIDENCE-001`,
 `ALATYR-ENGINEERING-EVIDENCE-001`, `ALATYR-KNOWLEDGE-001`, and
 `ALATYR-OPERATION-001`. Load
 `ALATYR-DEPENDENCY-001` only when the optional

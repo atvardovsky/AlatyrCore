@@ -55,6 +55,7 @@ in the owning framework documents and use these IDs for installation routing:
 - `ALATYR-APPROVAL-001`
 - `ALATYR-SAFETY-001`
 - `ALATYR-SAFETY-002`
+- `ALATYR-DECOMPOSITION-001`
 - `ALATYR-ADAPTER-001`
 - `ALATYR-MODULE-001`
 - `ALATYR-OPERATION-001`

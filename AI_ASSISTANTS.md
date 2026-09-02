@@ -60,6 +60,9 @@ For a non-trivial target task, run the installed project-knowledge preflight
 after task-profile and project-area selection. Use its initial and refined
 selectors, read selected canonical owners, and apply only accepted/current
 constraints. Historical evidence and promotion records are not authority.
+Then use the installed task-decomposition policy to assign implementation
+levels, dependencies, bounded context, validation, and primary/worker executor
+decisions before implementation or delegation.
 
 ## Installation Workflow
 
@@ -97,6 +100,7 @@ file or into assistant-specific bridges:
 - Safety boundaries: `ALATYR-SAFETY-001`
 - Imported AI infrastructure: `ALATYR-SAFETY-002`
 - Logical integrity: `ALATYR-INTEGRITY-001`
+- Task decomposition: `ALATYR-DECOMPOSITION-001`
 - Project knowledge promotion and delivery: `ALATYR-KNOWLEDGE-001`
 - Optional Debug Mode: `ALATYR-DEBUG-001`
 - Installed operations: `ALATYR-OPERATION-001`

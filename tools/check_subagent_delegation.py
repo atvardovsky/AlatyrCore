@@ -18,6 +18,9 @@ ROOT = Path(__file__).resolve().parents[1]
 TARGET = ROOT / "templates" / "target"
 ASSISTANT = TARGET / ".ai" / "assistant"
 FRAMEWORK = ROOT / "framework" / "subagent-delegation.md"
+DECOMPOSITION_FRAMEWORK = ROOT / "framework" / "task-decomposition.md"
+DECOMPOSITION_POLICY = ASSISTANT / "task-decomposition.json"
+DECOMPOSITION_PLAN = ASSISTANT / "templates" / "task-decomposition.md"
 POLICY = ASSISTANT / "delegation-policy.json"
 ROLE_CATALOG = ASSISTANT / "workers" / "role-catalog.json"
 ROLE_DIR = ASSISTANT / "workers" / "roles"
@@ -44,6 +47,7 @@ ROLE_IDS = {
     "reviewer",
     "fast-focused-worker",
 }
+WORKER_ELIGIBLE_LEVELS = {"L1", "L2", "L3", "L4", "L5"}
 POLICY_FIELDS = {
     "schema_version",
     "policy_kind",
@@ -52,6 +56,7 @@ POLICY_FIELDS = {
     "decision_mode",
     "default_preference",
     "max_parallel_delegates",
+    "decomposition_policy",
     "role_catalog",
     "enabled_role_ids",
     "requirements",
@@ -69,6 +74,7 @@ ROLE_FIELDS = {
     "state",
     "prompt",
     "use_when",
+    "implementation_levels",
     "action_ceiling",
     "write_mode",
     "max_files",
@@ -123,6 +129,17 @@ PROVIDER_TERMS = {
     "windsurf",
     "gpt-",
 }
+EXPECTED_DELEGATED_CONTEXT = {
+    ".ai/framework/subagent-delegation.md",
+    ".ai/assistant/task-decomposition.json",
+    ".ai/assistant/delegation-policy.json",
+    ".ai/assistant/workers/role-catalog.json",
+    ".ai/assistant/prompts/worker-orchestration.md",
+    ".ai/assistant/templates/worker-execution-plan.md",
+    ".ai/assistant/templates/subagent-task-packet.md",
+    ".ai/assistant/templates/worker-result.md",
+    ".ai/assistant/assistant-capabilities.json",
+}
 
 
 def load_object(path: Path) -> dict[str, Any]:
@@ -152,6 +169,94 @@ def require_placeholder(owner: str, value: object, failures: list[str]) -> None:
         failures.append(f"{owner} must remain placeholder-based")
 
 
+def validate_role_catalog(catalog: dict[str, Any], failures: list[str]) -> None:
+    if (
+        catalog.get("schema_version") != 1
+        or catalog.get("catalog_kind") != "target-worker-role-catalog"
+    ):
+        failures.append("worker role catalog identity is invalid")
+    if catalog.get("result_template") != ".ai/assistant/templates/worker-result.md":
+        failures.append("worker role catalog result template is invalid")
+    if catalog.get("decomposition_policy") != ".ai/assistant/task-decomposition.json":
+        failures.append("worker role catalog decomposition policy is invalid")
+    roles = catalog.get("roles")
+    seen_roles: set[str] = set()
+    if not isinstance(roles, list):
+        failures.append("worker role catalog roles must be a list")
+        roles = []
+    for role in roles:
+        if not isinstance(role, dict):
+            failures.append("worker role catalog contains a non-object role")
+            continue
+        missing = sorted(ROLE_FIELDS - set(role))
+        if missing:
+            failures.append(
+                f"worker role {role.get('id', '<unknown>')} missing {missing}"
+            )
+        role_id = role.get("id")
+        if not isinstance(role_id, str) or role_id in seen_roles:
+            failures.append(f"invalid or duplicate worker role ID {role_id}")
+            continue
+        seen_roles.add(role_id)
+        expected_prompt = f".ai/assistant/workers/roles/{role_id}.md"
+        if (
+            role.get("prompt") != expected_prompt
+            or not (TARGET / expected_prompt).is_file()
+        ):
+            failures.append(f"worker role {role_id} has no matching prompt")
+        if role.get("required_output") != "normalized-worker-result":
+            failures.append(
+                f"worker role {role_id} must require normalized-worker-result"
+            )
+        levels = role.get("implementation_levels")
+        if not isinstance(levels, list) or not levels:
+            failures.append(f"worker role {role_id} must declare implementation levels")
+            continue
+        invalid_levels = sorted(
+            {
+                level
+                for level in levels
+                if not isinstance(level, str) or level not in WORKER_ELIGIBLE_LEVELS
+            }
+        )
+        if invalid_levels:
+            failures.append(
+                f"worker role {role_id} has invalid implementation levels {invalid_levels}"
+            )
+    if seen_roles != ROLE_IDS:
+        failures.append(
+            "worker role catalog IDs differ: "
+            f"expected {sorted(ROLE_IDS)}, got {sorted(seen_roles)}"
+        )
+
+
+def validate_delegated_overlay(
+    overlay: dict[str, Any], router: dict[str, Any], failures: list[str]
+) -> None:
+    overlay_context = overlay.get("required_context")
+    if (
+        overlay.get("id") != "delegated-execution"
+        or overlay.get("required_module") != "subagent-delegation"
+    ):
+        failures.append("delegated execution overlay identity is incorrect")
+    if not isinstance(overlay_context, list) or not EXPECTED_DELEGATED_CONTEXT.issubset(
+        set(overlay_context)
+    ):
+        failures.append("delegated execution overlay required_context is incomplete")
+    task_scale_overlays = router.get("task_scale_overlays")
+    route = (
+        task_scale_overlays.get("delegated-execution")
+        if isinstance(task_scale_overlays, dict)
+        else None
+    )
+    if (
+        not isinstance(route, dict)
+        or route.get("descriptor")
+        != ".ai/assistant/context/task-scales/delegated-execution.json"
+    ):
+        failures.append("context router does not select delegated-execution overlay")
+
+
 def main() -> int:
     failures: list[str] = []
 
@@ -168,6 +273,8 @@ def main() -> int:
             "primary assistant",
             "actual model",
             "thin execution",
+            "ALATYR-DECOMPOSITION-001",
+            "task-decomposition plan",
         ],
         failures,
     )
@@ -179,6 +286,7 @@ def main() -> int:
             "## Task Graph And Readiness",
             "## Packet And Dispatch",
             "## Result Review And Convergence",
+            ".ai/assistant/task-decomposition.json",
             ".ai/assistant/prompts/worker-orchestration.md",
             ".ai/assistant/templates/worker-result.md",
         ],
@@ -188,6 +296,7 @@ def main() -> int:
         ORCHESTRATION,
         [
             "primary assistant remains responsible",
+            "task decomposition",
             "worker-execution-plan.md",
             "capability record",
             "Normalize every return",
@@ -200,8 +309,10 @@ def main() -> int:
         [
             "Base revision:",
             "Authorized action phases:",
+            "Task decomposition policy revision:",
             "## Task Graph",
             "Only the primary assistant computes readiness",
+            "Implementation level:",
             "Expected write scope:",
             "## Conflict Review",
             "## Primary Convergence",
@@ -216,6 +327,8 @@ def main() -> int:
             "Execution plan ID:",
             "Base revision:",
             "Allowed actions:",
+            "Implementation level:",
+            "Task decomposition plan:",
             "Allowed files or surfaces:",
             "Role prompt:",
             "Capability evidence:",
@@ -253,6 +366,9 @@ def main() -> int:
 
     portable_paths = [
         FRAMEWORK,
+        DECOMPOSITION_FRAMEWORK,
+        DECOMPOSITION_POLICY,
+        DECOMPOSITION_PLAN,
         POLICY,
         ROLE_CATALOG,
         ORCHESTRATION,
@@ -304,6 +420,8 @@ def main() -> int:
         )
     if policy.get("role_catalog") != ".ai/assistant/workers/role-catalog.json":
         failures.append("delegation policy role_catalog path is incorrect")
+    if policy.get("decomposition_policy") != ".ai/assistant/task-decomposition.json":
+        failures.append("delegation policy decomposition_policy path is incorrect")
     for field in [
         "state",
         "owner",
@@ -354,81 +472,8 @@ def main() -> int:
     ):
         failures.append("delegation result policy guards are incomplete")
 
-    if (
-        catalog.get("schema_version") != 1
-        or catalog.get("catalog_kind") != "target-worker-role-catalog"
-    ):
-        failures.append("worker role catalog identity is invalid")
-    if catalog.get("result_template") != ".ai/assistant/templates/worker-result.md":
-        failures.append("worker role catalog result template is invalid")
-    roles = catalog.get("roles")
-    seen_roles: set[str] = set()
-    if not isinstance(roles, list):
-        failures.append("worker role catalog roles must be a list")
-        roles = []
-    for role in roles:
-        if not isinstance(role, dict):
-            failures.append("worker role catalog contains a non-object role")
-            continue
-        missing = sorted(ROLE_FIELDS - set(role))
-        if missing:
-            failures.append(
-                f"worker role {role.get('id', '<unknown>')} missing {missing}"
-            )
-        role_id = role.get("id")
-        if not isinstance(role_id, str) or role_id in seen_roles:
-            failures.append(f"invalid or duplicate worker role ID {role_id}")
-            continue
-        seen_roles.add(role_id)
-        expected_prompt = f".ai/assistant/workers/roles/{role_id}.md"
-        if (
-            role.get("prompt") != expected_prompt
-            or not (TARGET / expected_prompt).is_file()
-        ):
-            failures.append(f"worker role {role_id} has no matching prompt")
-        if role.get("required_output") != "normalized-worker-result":
-            failures.append(
-                f"worker role {role_id} must require normalized-worker-result"
-            )
-    if seen_roles != ROLE_IDS:
-        failures.append(
-            "worker role catalog IDs differ: "
-            f"expected {sorted(ROLE_IDS)}, got {sorted(seen_roles)}"
-        )
-
-    expected_context = {
-        ".ai/framework/subagent-delegation.md",
-        ".ai/assistant/delegation-policy.json",
-        ".ai/assistant/workers/role-catalog.json",
-        ".ai/assistant/prompts/worker-orchestration.md",
-        ".ai/assistant/flows/subagent-delegation.flow.md",
-        ".ai/assistant/templates/worker-execution-plan.md",
-        ".ai/assistant/templates/subagent-task-packet.md",
-        ".ai/assistant/templates/worker-result.md",
-        ".ai/assistant/assistant-capabilities.json",
-    }
-    overlay_context = overlay.get("required_context")
-    if (
-        overlay.get("id") != "delegated-execution"
-        or overlay.get("required_module") != "subagent-delegation"
-    ):
-        failures.append("delegated execution overlay identity is incorrect")
-    if not isinstance(overlay_context, list) or not expected_context.issubset(
-        set(overlay_context)
-    ):
-        failures.append("delegated execution overlay required_context is incomplete")
-    task_scale_overlays = router.get("task_scale_overlays")
-    route = (
-        task_scale_overlays.get("delegated-execution")
-        if isinstance(task_scale_overlays, dict)
-        else None
-    )
-    if (
-        not isinstance(route, dict)
-        or route.get("descriptor")
-        != ".ai/assistant/context/task-scales/delegated-execution.json"
-    ):
-        failures.append("context router does not select delegated-execution overlay")
+    validate_role_catalog(catalog, failures)
+    validate_delegated_overlay(overlay, router, failures)
 
     try:
         matrix_text = MATRIX.read_text(encoding="utf-8")

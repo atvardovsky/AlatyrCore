@@ -36,6 +36,8 @@ semantic owner.
 - Adapter separation: `ALATYR-ADAPTER-001`
 - Module selection: `ALATYR-MODULE-001`
 - Installed operation control surface: `ALATYR-OPERATION-001`
+- Required task decomposition and implementation levels:
+  `ALATYR-DECOMPOSITION-001`
 - Project Development Model guidance intake, promotion, and bounded delivery:
   `ALATYR-KNOWLEDGE-001`
 - Optional architecture knowledge and pattern discussion:
@@ -109,6 +111,9 @@ The plan must identify:
 - generated bootstrap index, compact context router, routed gate fragments,
   selected lazy profile descriptors, and human context profiles needed for
   the target
+- target task-decomposition policy and plan template for assigning
+  implementation levels, dependencies, bounded context, validation, allowed
+  surfaces, and primary/worker executor decisions
 - large-task task-scale routing, packet, checkpoint, and storage needs
 - worker launch/model-selection support, target delegation policy, role
   catalog, orchestration prompt, task-plan and result contracts, native worker

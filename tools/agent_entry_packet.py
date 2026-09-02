@@ -21,6 +21,7 @@ SOURCE_PATHS = {
         ".ai/assistant/policies/action-authorization.json"
     ),
     "support_policy": Path(".ai/project/support-policy.json"),
+    "task_decomposition": Path(".ai/assistant/task-decomposition.json"),
 }
 OPTIONAL_SOURCE_PATHS = {
     "operation_index": Path(".ai/assistant/operation-index.json"),
@@ -95,6 +96,45 @@ def _task_classification(value: Any) -> dict[str, Any]:
         "ambiguity_behavior": _string(source.get("ambiguity_behavior")),
         "classes": projected_classes,
         "expansion_triggers": _string_list(source.get("expansion_triggers")),
+    }
+
+
+def _task_decomposition_summary(value: Any) -> dict[str, Any]:
+    source = value if isinstance(value, dict) else {}
+    levels = source.get("levels")
+    level_order: list[str] = []
+    non_delegable_levels: list[str] = []
+    worker_eligible_levels: list[str] = []
+    if isinstance(levels, list):
+        for level in levels:
+            if not isinstance(level, dict):
+                continue
+            level_id = level.get("id")
+            if not isinstance(level_id, str) or not level_id:
+                continue
+            level_order.append(level_id)
+            roles = level.get("worker_roles")
+            if isinstance(roles, list) and any(
+                isinstance(role, str) and role for role in roles
+            ):
+                worker_eligible_levels.append(level_id)
+            else:
+                non_delegable_levels.append(level_id)
+    executor_selection = _object(source.get("executor_selection"))
+    return {
+        "schema_version": source.get("schema_version", "unknown"),
+        "policy": SOURCE_PATHS["task_decomposition"].as_posix(),
+        "plan_template": _string(source.get("plan_template")),
+        "default_behavior": _string(source.get("default_behavior")),
+        "level_order": level_order,
+        "worker_eligible_levels": worker_eligible_levels,
+        "non_delegable_levels": non_delegable_levels,
+        "small_task_behavior": _string(source.get("small_task_behavior")),
+        "executor_selection": {
+            "default": _string(executor_selection.get("default"), "primary"),
+            "selection_order": _string_list(executor_selection.get("selection_order")),
+            "fallback": _string(executor_selection.get("fallback")),
+        },
     }
 
 
@@ -211,6 +251,7 @@ def build_agent_entry_packet(
     gate_index_text: str,
     action_authorization_text: str,
     support_policy_text: str,
+    task_decomposition_text: str,
     *,
     operation_index_text: str | None = None,
     operation_catalog_text: str | None = None,
@@ -230,6 +271,10 @@ def build_agent_entry_packet(
     support_policy = _load_json_text(
         support_policy_text,
         ".ai/project/support-policy.json",
+    )
+    task_decomposition = _load_json_text(
+        task_decomposition_text,
+        ".ai/assistant/task-decomposition.json",
     )
     operation_index = (
         _load_json_text(operation_index_text, ".ai/assistant/operation-index.json")
@@ -263,6 +308,7 @@ def build_agent_entry_packet(
                 "gate_index": gate_index_text,
                 "action_authorization_policy": action_authorization_text,
                 "support_policy": support_policy_text,
+                "task_decomposition": task_decomposition_text,
             },
             optional_texts,
         ),
@@ -318,6 +364,7 @@ def build_agent_entry_packet(
         "task_classification": _task_classification(
             router.get("task_classification")
         ),
+        "task_decomposition": _task_decomposition_summary(task_decomposition),
         "operation_routing": {
             "index": _string(operation_routing.get("index"), "not installed"),
             "catalog": _string(operation_routing.get("catalog"), "not installed"),
@@ -393,6 +440,7 @@ def build_from_target(target: Path) -> dict[str, Any]:
         source_texts["gate_index"],
         source_texts["action_authorization_policy"],
         source_texts["support_policy"],
+        source_texts["task_decomposition"],
         operation_index_text=optional_texts.get("operation_index"),
         operation_catalog_text=optional_texts.get("operation_catalog"),
         target=target,

@@ -37,6 +37,10 @@ trigger applies. Do not load all descriptors to classify one task.
 Load `.ai/framework/action-authorization.md` only when phase semantics are
 disputed or the target policy requires repair; routine phase decisions use the
 preloaded root rule, core gate, and target policy.
+Load `.ai/framework/task-decomposition.md` only when non-trivial task splitting,
+implementation levels, dependency ordering, or executor selection is ambiguous
+or the target task-decomposition policy needs repair. Routine routing uses
+`.ai/assistant/task-decomposition.json`.
 The generated bootstrap index is repaired from `.ai/alatyr.yaml`,
 `.ai/README.md`, `.ai/assistant/context-router.json`, and
 `.ai/framework/semantics/index.json` when its hashes drift.

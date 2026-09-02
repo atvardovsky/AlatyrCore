@@ -140,6 +140,8 @@ operations:
   health: ".ai/assistant/flows/adapter-health.flow.md"
   pre_change_preview: ".ai/assistant/templates/pre-change-preview.md"
   action_authorization_policy: ".ai/assistant/policies/action-authorization.json"
+  task_decomposition: ".ai/assistant/task-decomposition.json"
+  task_decomposition_plan: ".ai/assistant/templates/task-decomposition.md"
   diagram_discussion: ".ai/assistant/flows/diagram-discussion.flow.md"
   diagram_presentation: ".ai/assistant/templates/diagram-presentation.md"
   architecture_assistance: ".ai/assistant/flows/architecture-assistance.flow.md"

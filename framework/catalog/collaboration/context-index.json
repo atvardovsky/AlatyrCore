@@ -26,8 +26,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 1392,
-      "content_digest": "sha256:6f15a750f25d9dcd917e0962f28da823abfdef5f3f20becd78e56b6cf737347e"
+      "estimated_words": 1408,
+      "content_digest": "sha256:3f7a2370163471f1ab43bc264075b57e0415b6c4184f2fc3b7436a01ea2300eb"
     },
     {
       "id": "framework.collaboration.subagent-delegation-md",
@@ -49,8 +49,29 @@
       "owner_refs": [
         "ALATYR-DELEGATION-001"
       ],
-      "estimated_words": 1833,
-      "content_digest": "sha256:fd86a0db7333d6b33e34f80247c02da45929c00ec337ae153072dfc7a6582e32"
+      "estimated_words": 1836,
+      "content_digest": "sha256:6c47fda3c4e96a1d89fbf1c1e11541d64356a6624b0d2e3f0e5d33ec54f71100"
+    },
+    {
+      "id": "framework.collaboration.task-decomposition-md",
+      "kind": "content",
+      "path": "task-decomposition.md",
+      "summary": "Task Decomposition",
+      "selectors": {
+        "path_terms": [
+          "task",
+          "decomposition"
+        ],
+        "rule_ids": [
+          "ALATYR-DECOMPOSITION-001"
+        ]
+      },
+      "semantic_refs": [],
+      "owner_refs": [
+        "ALATYR-DECOMPOSITION-001"
+      ],
+      "estimated_words": 1213,
+      "content_digest": "sha256:5a6f2d946d2e053d97c8bc8ae6d8cf1c31446183ed8a518b49ce18d4aae0df75"
     },
     {
       "id": "framework.collaboration.team-collaboration-md",

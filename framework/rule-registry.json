@@ -128,6 +128,12 @@
       "derived_surfaces": ["structured target team policy", "human team operating model", "ignored local actor selection", "active-work index", "work registry metadata", "per-task records", "backend contract", "task claims", "conflict review", "checkpoints", "handoffs", "decision records", "team review", "merge-readiness evidence", "operation routes", "team-active context overlay", "adapted team skill"]
     },
     {
+      "category": "DECOMPOSITION",
+      "owner": "framework/task-decomposition.md",
+      "rule_ids": ["ALATYR-DECOMPOSITION-001"],
+      "derived_surfaces": ["target task-decomposition policy", "task-decomposition plan template", "operation routing", "context router", "entry packet summary", "large-task workstreams", "subagent worker packet selection", "operation request and completion evidence", "target structural validation"]
+    },
+    {
       "category": "DELEGATION",
       "owner": "framework/subagent-delegation.md",
       "rule_ids": ["ALATYR-DELEGATION-001"],
@@ -386,6 +392,14 @@
       "summary": "When the optional team module is enabled, coordinate structured actor policy, ignored local attribution, active-work preflight, conflict-safe task records, backend capabilities, priorities, changed-fact overlap, claims, checkpoints, handoffs, decisions, reviews, and revision-bound merge readiness without replacing authentication, current-scope action authorization, project source of truth, approvals, trackers, or target validation.",
       "applies_to": ["actor selection", "state-changing work", "concurrent work", "team handoffs", "team review", "merge readiness"],
       "enforcement": "required when module enabled"
+    },
+    {
+      "id": "ALATYR-DECOMPOSITION-001",
+      "category": "DECOMPOSITION",
+      "canonical_source": "framework/task-decomposition.md",
+      "summary": "Before non-trivial execution, decompose the request by changed fact, canonical owner, contract, area, dependency, validation, and support-surface impact; assign exactly one implementation level, bounded context, allowed actions, validation, dependencies, and primary-or-worker executor decision per task; keep small work as one local task when sufficient; escalate only on named risk or relationship triggers; and keep semantic decisions, approval, protected phases, integration, and final convergence with the primary assistant.",
+      "applies_to": ["all installed adapter tasks", "large tasks", "delegated execution", "team coordination", "final evidence"],
+      "enforcement": "required"
     },
     {
       "id": "ALATYR-DELEGATION-001",

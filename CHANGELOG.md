@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Added required task decomposition with implementation levels, dependency
+  ordering, bounded context, and primary/worker executor selection before
+  non-trivial implementation or delegation; updated target templates,
+  scaffolding, entry packets, schema references, and validator coverage.
 - Added a source architecture guide, compacted duplicate bootstrap validation
   guidance, and extracted reusable source-check manifest primitives from the
   CLI checker so future tooling refactors have a clearer modular boundary.

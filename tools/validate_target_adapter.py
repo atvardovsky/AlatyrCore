@@ -105,6 +105,7 @@ from target_adapter_validation.project_knowledge import (
     validate_project_knowledge_contract,
 )
 from target_adapter_validation.subagent_delegation import validate_subagent_delegation
+from target_adapter_validation.task_decomposition import validate_task_decomposition
 from target_adapter_validation.support_state import validate_support_state
 from target_adapter_validation.workspace_modes import validate_workspace_modes
 from target_adapter_validation.values import is_resolved_string
@@ -173,6 +174,7 @@ KERNEL_REQUIRED_FILES = [
     ".ai/assistant/installation-state.json",
     ".ai/assistant/module-profile.md",
     ".ai/assistant/maturity-profile.md",
+    ".ai/assistant/task-decomposition.json",
     ".ai/assistant/gates/index.json",
     ".ai/assistant/gates/core.md",
     ".ai/assistant/gates/code-and-tests.md",
@@ -186,6 +188,7 @@ KERNEL_REQUIRED_FILES = [
     ".ai/assistant/templates/installation-note.md",
     ".ai/assistant/templates/operation-request.md",
     ".ai/assistant/templates/small-task-evidence.md",
+    ".ai/assistant/templates/task-decomposition.md",
     ".ai/assistant/flows/logical-integrity-review.flow.md",
 ]
 
@@ -346,6 +349,8 @@ MANIFEST_REQUIRED_SCALARS: set[PathKey] = {
     ("operations", "operation_request"),
     ("operations", "output_contracts"),
     ("operations", "action_authorization_policy"),
+    ("operations", "task_decomposition"),
+    ("operations", "task_decomposition_plan"),
     ("operations", "engineering_evidence_capture"),
     ("operations", "engineering_evidence_record"),
     ("operations", "project_knowledge"),
@@ -505,6 +510,8 @@ MANIFEST_PATH_SCALARS: set[PathKey] = {
     ("operations", "health"),
     ("operations", "pre_change_preview"),
     ("operations", "action_authorization_policy"),
+    ("operations", "task_decomposition"),
+    ("operations", "task_decomposition_plan"),
     ("operations", "engineering_evidence_capture"),
     ("operations", "engineering_evidence_record"),
     ("operations", "debug_mode"),
@@ -925,6 +932,7 @@ class Validator:
         self.check_action_authorization_contract()
         enabled_modules = self.enabled_modules(manifest)
         self.check_router(enabled_modules)
+        validate_task_decomposition(self, manifest)
         validate_context_catalog_contract(self, manifest)
         validate_support_state(self.capability_validation_context(), manifest)
         if support_profile in {"standard", "full"} or self.target_path(

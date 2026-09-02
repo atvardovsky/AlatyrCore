@@ -17,6 +17,127 @@ from check_bridge_templates import BRIDGE_FILES, REQUIRED_BRIDGE_REFS
 
 ROOT = Path(__file__).resolve().parents[1]
 
+BASE_RULE_REFS = (
+    "ALATYR-ADAPTER-001",
+    "ALATYR-APPROVAL-001",
+    "ALATYR-SAFETY-001",
+    "ALATYR-SAFETY-002",
+    "ALATYR-DECOMPOSITION-001",
+    "ALATYR-EVIDENCE-001",
+    "ALATYR-OPERATION-001",
+)
+CONTEXT_RULE_REFS = ("ALATYR-CONTEXT-001",)
+SOURCE_RULE_REFS = ("ALATYR-SOURCE-001",)
+RISK_RULE_REFS = ("ALATYR-RISK-001",)
+INTEGRITY_RULE_REFS = ("ALATYR-INTEGRITY-001",)
+CHANGE_RULE_REFS = ("ALATYR-CHANGE-001",)
+LIFECYCLE_RULE_REFS = ("ALATYR-LIFECYCLE-001",)
+MODULE_RULE_REFS = ("ALATYR-MODULE-001",)
+
+DERIVED_RULE_REFERENCE_DOCS = {
+    "AGENTS.md": (
+        *CONTEXT_RULE_REFS,
+        "ALATYR-ADAPTER-001",
+        "ALATYR-APPROVAL-001",
+        "ALATYR-SAFETY-001",
+        "ALATYR-SAFETY-002",
+        *INTEGRITY_RULE_REFS,
+        "ALATYR-DECOMPOSITION-001",
+        *LIFECYCLE_RULE_REFS,
+        "ALATYR-OPERATION-001",
+    ),
+    "README.md": (
+        "ALATYR-ADAPTER-001",
+        "ALATYR-APPROVAL-001",
+        "ALATYR-SAFETY-001",
+        "ALATYR-SAFETY-002",
+        *INTEGRITY_RULE_REFS,
+        "ALATYR-DECOMPOSITION-001",
+        "ALATYR-EVIDENCE-001",
+        "ALATYR-OPERATION-001",
+    ),
+    "INSTALL.md": (
+        *CONTEXT_RULE_REFS,
+        *SOURCE_RULE_REFS,
+        *RISK_RULE_REFS,
+        "ALATYR-APPROVAL-001",
+        "ALATYR-SAFETY-001",
+        "ALATYR-SAFETY-002",
+        "ALATYR-DECOMPOSITION-001",
+        "ALATYR-ADAPTER-001",
+        *MODULE_RULE_REFS,
+        *LIFECYCLE_RULE_REFS,
+        "ALATYR-OPERATION-001",
+    ),
+    "AI_ASSISTANTS.md": (
+        *CONTEXT_RULE_REFS,
+        *BASE_RULE_REFS,
+    ),
+    "installer/assistant-installation.flow.md": (
+        *CONTEXT_RULE_REFS,
+        *SOURCE_RULE_REFS,
+        *RISK_RULE_REFS,
+        "ALATYR-APPROVAL-001",
+        "ALATYR-SAFETY-001",
+        "ALATYR-SAFETY-002",
+        "ALATYR-DECOMPOSITION-001",
+        "ALATYR-ADAPTER-001",
+        *MODULE_RULE_REFS,
+        *LIFECYCLE_RULE_REFS,
+        "ALATYR-EVIDENCE-001",
+        "ALATYR-OPERATION-001",
+    ),
+    "installer/assistant-request-template.md": (
+        *CONTEXT_RULE_REFS,
+        *BASE_RULE_REFS,
+    ),
+    "installer/installed-operation-request-template.md": (
+        *CONTEXT_RULE_REFS,
+        *SOURCE_RULE_REFS,
+        *RISK_RULE_REFS,
+        "ALATYR-APPROVAL-001",
+        "ALATYR-SAFETY-001",
+        "ALATYR-SAFETY-002",
+        *INTEGRITY_RULE_REFS,
+        *CHANGE_RULE_REFS,
+        "ALATYR-DECOMPOSITION-001",
+        "ALATYR-ADAPTER-001",
+        *MODULE_RULE_REFS,
+        "ALATYR-EVIDENCE-001",
+        "ALATYR-OPERATION-001",
+    ),
+    "templates/target/AGENTS.md": (
+        *CONTEXT_RULE_REFS,
+        *SOURCE_RULE_REFS,
+        *RISK_RULE_REFS,
+        "ALATYR-APPROVAL-001",
+        "ALATYR-SAFETY-001",
+        "ALATYR-SAFETY-002",
+        *INTEGRITY_RULE_REFS,
+        *CHANGE_RULE_REFS,
+        "ALATYR-DECOMPOSITION-001",
+        "ALATYR-ADAPTER-001",
+        *MODULE_RULE_REFS,
+        "ALATYR-EVIDENCE-001",
+        "ALATYR-OPERATION-001",
+    ),
+    "templates/target/.ai/assistant/gates/checklist.md": (
+        *CONTEXT_RULE_REFS,
+        *SOURCE_RULE_REFS,
+        *RISK_RULE_REFS,
+        "ALATYR-APPROVAL-001",
+        "ALATYR-SAFETY-001",
+        "ALATYR-SAFETY-002",
+        *INTEGRITY_RULE_REFS,
+        *CHANGE_RULE_REFS,
+        "ALATYR-DECOMPOSITION-001",
+        "ALATYR-ADAPTER-001",
+        *MODULE_RULE_REFS,
+        "ALATYR-EVIDENCE-001",
+        "ALATYR-OPERATION-001",
+    ),
+}
+
 
 def read_text(relpath: str) -> str:
     return (ROOT / relpath).read_text(encoding="utf-8")
@@ -113,114 +234,7 @@ def main() -> int:
         if all(relpath in text for relpath in fw_files):
             failures.append(f"{doc} reintroduces a full framework reading list")
 
-    derived_rule_reference_docs = {
-        "AGENTS.md": [
-            "ALATYR-CONTEXT-001",
-            "ALATYR-ADAPTER-001",
-            "ALATYR-APPROVAL-001",
-            "ALATYR-SAFETY-001",
-            "ALATYR-SAFETY-002",
-            "ALATYR-INTEGRITY-001",
-            "ALATYR-LIFECYCLE-001",
-            "ALATYR-OPERATION-001",
-        ],
-        "README.md": [
-            "ALATYR-ADAPTER-001",
-            "ALATYR-APPROVAL-001",
-            "ALATYR-SAFETY-001",
-            "ALATYR-SAFETY-002",
-            "ALATYR-INTEGRITY-001",
-            "ALATYR-EVIDENCE-001",
-            "ALATYR-OPERATION-001",
-        ],
-        "INSTALL.md": [
-            "ALATYR-CONTEXT-001",
-            "ALATYR-SOURCE-001",
-            "ALATYR-RISK-001",
-            "ALATYR-APPROVAL-001",
-            "ALATYR-SAFETY-001",
-            "ALATYR-SAFETY-002",
-            "ALATYR-ADAPTER-001",
-            "ALATYR-MODULE-001",
-            "ALATYR-LIFECYCLE-001",
-            "ALATYR-OPERATION-001",
-        ],
-        "AI_ASSISTANTS.md": [
-            "ALATYR-CONTEXT-001",
-            "ALATYR-ADAPTER-001",
-            "ALATYR-APPROVAL-001",
-            "ALATYR-SAFETY-001",
-            "ALATYR-SAFETY-002",
-            "ALATYR-EVIDENCE-001",
-            "ALATYR-OPERATION-001",
-        ],
-        "installer/assistant-installation.flow.md": [
-            "ALATYR-CONTEXT-001",
-            "ALATYR-SOURCE-001",
-            "ALATYR-RISK-001",
-            "ALATYR-APPROVAL-001",
-            "ALATYR-SAFETY-001",
-            "ALATYR-SAFETY-002",
-            "ALATYR-ADAPTER-001",
-            "ALATYR-MODULE-001",
-            "ALATYR-LIFECYCLE-001",
-            "ALATYR-EVIDENCE-001",
-            "ALATYR-OPERATION-001",
-        ],
-        "installer/assistant-request-template.md": [
-            "ALATYR-CONTEXT-001",
-            "ALATYR-ADAPTER-001",
-            "ALATYR-APPROVAL-001",
-            "ALATYR-SAFETY-001",
-            "ALATYR-SAFETY-002",
-            "ALATYR-EVIDENCE-001",
-            "ALATYR-OPERATION-001",
-        ],
-        "installer/installed-operation-request-template.md": [
-            "ALATYR-CONTEXT-001",
-            "ALATYR-SOURCE-001",
-            "ALATYR-RISK-001",
-            "ALATYR-APPROVAL-001",
-            "ALATYR-SAFETY-001",
-            "ALATYR-SAFETY-002",
-            "ALATYR-INTEGRITY-001",
-            "ALATYR-CHANGE-001",
-            "ALATYR-ADAPTER-001",
-            "ALATYR-MODULE-001",
-            "ALATYR-EVIDENCE-001",
-            "ALATYR-OPERATION-001",
-            "ALATYR-OPERATION-001",
-        ],
-        "templates/target/AGENTS.md": [
-            "ALATYR-CONTEXT-001",
-            "ALATYR-SOURCE-001",
-            "ALATYR-RISK-001",
-            "ALATYR-APPROVAL-001",
-            "ALATYR-SAFETY-001",
-            "ALATYR-SAFETY-002",
-            "ALATYR-INTEGRITY-001",
-            "ALATYR-CHANGE-001",
-            "ALATYR-ADAPTER-001",
-            "ALATYR-MODULE-001",
-            "ALATYR-EVIDENCE-001",
-            "ALATYR-OPERATION-001",
-        ],
-        "templates/target/.ai/assistant/gates/checklist.md": [
-            "ALATYR-CONTEXT-001",
-            "ALATYR-SOURCE-001",
-            "ALATYR-RISK-001",
-            "ALATYR-APPROVAL-001",
-            "ALATYR-SAFETY-001",
-            "ALATYR-SAFETY-002",
-            "ALATYR-INTEGRITY-001",
-            "ALATYR-CHANGE-001",
-            "ALATYR-ADAPTER-001",
-            "ALATYR-MODULE-001",
-            "ALATYR-EVIDENCE-001",
-            "ALATYR-OPERATION-001",
-        ],
-    }
-    for doc, rule_ids in derived_rule_reference_docs.items():
+    for doc, rule_ids in DERIVED_RULE_REFERENCE_DOCS.items():
         text = read_text(doc)
         for rule_id in rule_ids:
             if rule_id not in text:

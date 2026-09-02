@@ -4,7 +4,7 @@
     {
       "path": "framework/README.md",
       "rule_ids": [],
-      "sha256": "79512c2826680c81b7845328635f5372c05b950f462ee43b00f1289101f32789"
+      "sha256": "f501ab9c926256cd902e9cebe429554a3d71c4d1b242b44092340e79948bf9e9"
     },
     {
       "path": "framework/action-authorization.md",
@@ -74,12 +74,12 @@
     {
       "path": "framework/catalog/collaboration/context-index.json",
       "rule_ids": [],
-      "sha256": "53ca4ae7256ade54d22521b2850c507d9c440d295c9ac589dd08b11b8b7dd728"
+      "sha256": "18a67be7e8c54b340952aad1f52e36135fc0c9bc41b40159d88474169f11a9db"
     },
     {
       "path": "framework/catalog/core/context-index.json",
       "rule_ids": [],
-      "sha256": "0efbd432e78f7de6aabd07e276d5ecc14d039f382aee9cd56f9c670a082fab94"
+      "sha256": "80d0f7fa9e888862fe0c99c2b1bbf7f599e512433388e5df449e5cef89e02265"
     },
     {
       "path": "framework/catalog/infrastructure/context-index.json",
@@ -94,7 +94,7 @@
     {
       "path": "framework/catalog/lifecycle/context-index.json",
       "rule_ids": [],
-      "sha256": "00853ff663dab9666b075bad89e055f1752be44626c6f84fe234d69d65a9f33b"
+      "sha256": "b608608d3a7210bf9ef52c2104552b7d8d6f70b7e0e413df26867d480a2d5eac"
     },
     {
       "path": "framework/catalog/support/context-index.json",
@@ -135,7 +135,7 @@
     {
       "path": "framework/context-index.json",
       "rule_ids": [],
-      "sha256": "3e7716b3a3e49833f515aac2e5fd207c9ab554712e39ee897fb49f9d569ae202"
+      "sha256": "da6ba6b8957493f0914d81e05b7b114822cf5519945cb0b3cea3f79f6def21e9"
     },
     {
       "path": "framework/context-profiles.md",
@@ -147,7 +147,7 @@
     {
       "path": "framework/context-router.md",
       "rule_ids": [],
-      "sha256": "07297d09742185cb491b2f666d68374fdfcf03312f1efc0244915317d5bbd03f"
+      "sha256": "dedf110c03a5d66f220eae1c68d8fdc49e6a65ee19e6418a4601e0a19508f783"
     },
     {
       "path": "framework/contour.md",
@@ -197,7 +197,7 @@
     {
       "path": "framework/framework-packs.json",
       "rule_ids": [],
-      "sha256": "6b81ec764fe66cc058fcfeeefff56c15f232ab33cec8635cf440b607f7dbb730"
+      "sha256": "6fb0994c8403aabe244087f1b543cc8fb590cff01c283709e770c624a27b468b"
     },
     {
       "path": "framework/guarantees.md",
@@ -214,7 +214,7 @@
     {
       "path": "framework/large-task-orchestration.md",
       "rule_ids": [],
-      "sha256": "6f15a750f25d9dcd917e0962f28da823abfdef5f3f20becd78e56b6cf737347e"
+      "sha256": "3f7a2370163471f1ab43bc264075b57e0415b6c4184f2fc3b7436a01ea2300eb"
     },
     {
       "path": "framework/lifecycle.md",
@@ -285,17 +285,17 @@
     {
       "path": "framework/rule-ownership.md",
       "rule_ids": [],
-      "sha256": "ff6c02ee37d6c2f31982195c906b3d3755c8e9d778447071ae8038af514859ec"
+      "sha256": "23b4247d96b2f26b3bf8bf604e0725c4516f29bbdd429e4811eb1c88a2835fa0"
     },
     {
       "path": "framework/rule-registry.json",
       "rule_ids": [],
-      "sha256": "455babd976d87b61c3cbe221ec0379f3c8f7b7dd03bab52c4f06a1ff78df0744"
+      "sha256": "7a9950e40c0a6da5b03b5a1a9830a6eaefd8b98f2a168b733fe4150953aa9fde"
     },
     {
       "path": "framework/rule-registry.md",
       "rule_ids": [],
-      "sha256": "fd0ab76418659563e4b403f1e2783a148e067e8a71880046c7b4bc7d1db6e6d9"
+      "sha256": "440816cdfc8ebe4d0fb2377d422ab33084e12d75e0857ebb301a62f4c4812887"
     },
     {
       "path": "framework/scaffolding.md",
@@ -356,7 +356,7 @@
       "rule_ids": [
         "ALATYR-DELEGATION-001"
       ],
-      "sha256": "fd86a0db7333d6b33e34f80247c02da45929c00ec337ae153072dfc7a6582e32"
+      "sha256": "6c47fda3c4e96a1d89fbf1c1e11541d64356a6624b0d2e3f0e5d33ec54f71100"
     },
     {
       "path": "framework/support-information.md",
@@ -364,6 +364,13 @@
         "ALATYR-SUPPORT-001"
       ],
       "sha256": "71aaf91f8d61b27b29d27d10c0345c06d9b19878c3cf826ddb5a7318b14122eb"
+    },
+    {
+      "path": "framework/task-decomposition.md",
+      "rule_ids": [
+        "ALATYR-DECOMPOSITION-001"
+      ],
+      "sha256": "5a6f2d946d2e053d97c8bc8ae6d8cf1c31446183ed8a518b49ce18d4aae0df75"
     },
     {
       "path": "framework/team-collaboration.md",

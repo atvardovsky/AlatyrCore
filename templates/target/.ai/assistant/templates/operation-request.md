@@ -20,6 +20,10 @@ installed Alatyr Core adapter.
 - Known context: `{KNOWN_CONTEXT}`
 - Review comments or defect reports to reconcile: `{REVIEW_ITEMS_OR_NONE}`
 - Task scale: `{NORMAL_OR_LARGE_OR_RESUMABLE}`
+- Task decomposition preference:
+  `{AUTO_ONE_TASK_MULTI_TASK_REQUIRE_PLAN_OR_NONE}`
+- Existing task decomposition plan:
+  `{TASK_DECOMPOSITION_PLAN_PATH_OR_NONE}`
 - Delegation preference: `{AUTO_ALLOW_FORBID_OR_REQUIRE_SUPPORTED}`
 - Existing operation packet: `{PACKET_PATH_OR_NONE}`
 - Team task id: `{TEAM_TASK_ID_OR_NONE}`
@@ -138,6 +142,13 @@ If classification is ambiguous, remain read-only and ask for the smallest
 missing fact. A `small-task` may use compact evidence and must not create a
 large-task packet, change package, Debug Mode record, or team overlay unless
 an expansion trigger fires.
+
+For non-trivial work, use `.ai/assistant/task-decomposition.json` and
+`.ai/assistant/templates/task-decomposition.md` before implementation or
+delegation. Assign exactly one implementation level, dependency state, bounded
+context, allowed files or surfaces, validation, and executor decision to each
+subtask. Small local work may use a one-node decomposition; broader work must
+record the plan path or inline evidence in final output.
 
 For large, multi-workstream, cross-boundary, budget-exceeding, or resumable
 work, add the `large-or-resumable` task-scale overlay and use

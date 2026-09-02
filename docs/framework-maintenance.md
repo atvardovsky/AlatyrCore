@@ -203,6 +203,9 @@ Before accepting a change, check:
 - `python3 tools/check_large_task_orchestration.py` passes when large-task
   activation, task-scale routing, workstream, packet, checkpoint, resume, or
   convergence contracts change.
+- `python3 tools/check_task_decomposition.py` passes when task decomposition,
+  implementation levels, executor selection, primary convergence, or worker
+  eligibility contracts change.
 - `python3 tools/check_subagent_delegation.py` passes when delegation policy,
   worker roles/prompts, task/packet/result contracts, lazy overlay,
   model/native-definition capability evidence, bridge routing,

@@ -202,6 +202,15 @@ per-task records, backend contract, task claims, conflict review, checkpoints,
 handoffs, decision records, team review, merge-readiness evidence, operation
 routes, team-active context overlay, adapted team skill.
 
+Category: `DECOMPOSITION`
+Source routing owner: `framework/task-decomposition.md`
+Installed routing owner: `.ai/framework/task-decomposition.md`
+Rule IDs: `ALATYR-DECOMPOSITION-001`
+Derived surfaces: target task-decomposition policy, task-decomposition plan
+template, operation routing, context router, entry packet summary, large-task
+workstreams, subagent worker packet selection, operation request and completion
+evidence, target structural validation.
+
 Category: `DELEGATION`
 Source routing owner: `framework/subagent-delegation.md`
 Installed routing owner: `.ai/framework/subagent-delegation.md`
@@ -380,6 +389,10 @@ Installed canonical owner: `.ai/framework/operation-help.md`
 Rule: `ALATYR-TEAM-001`
 Source canonical owner: `framework/team-collaboration.md`
 Installed canonical owner: `.ai/framework/team-collaboration.md`
+
+Rule: `ALATYR-DECOMPOSITION-001`
+Source canonical owner: `framework/task-decomposition.md`
+Installed canonical owner: `.ai/framework/task-decomposition.md`
 
 Rule: `ALATYR-DELEGATION-001`
 Source canonical owner: `framework/subagent-delegation.md`

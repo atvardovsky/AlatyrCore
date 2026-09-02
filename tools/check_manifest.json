@@ -718,8 +718,11 @@
       ],
       "trigger_paths": [
         "framework/context-*.md",
+        "framework/task-decomposition.md",
         "schemas/alatyr-context-receipt.schema.json",
         "templates/target/.ai/assistant/context*/**",
+        "templates/target/.ai/assistant/task-decomposition.json",
+        "templates/target/.ai/assistant/templates/task-decomposition.md",
         "tests/test_context_receipt.py",
         "tools/context_receipt.py",
         "tools/check_context_router.py",
@@ -727,13 +730,66 @@
       ],
       "contract_inputs": [
         "framework/context-*.md",
+        "framework/task-decomposition.md",
         "schemas/alatyr-context-receipt.schema.json",
-        "templates/target/.ai/assistant/context*/**"
+        "templates/target/.ai/assistant/context*/**",
+        "templates/target/.ai/assistant/task-decomposition.json",
+        "templates/target/.ai/assistant/templates/task-decomposition.md"
       ],
       "implementation_paths": [
         "tools/context_receipt.py",
         "tools/check_context_router.py",
         "tools/task_classification_contract.py"
+      ]
+    },
+    {
+      "id": "task-decomposition",
+      "command": [
+        "tools/check_task_decomposition.py"
+      ],
+      "profiles": [
+        "quick",
+        "fast",
+        "full",
+        "platform"
+      ],
+      "depends_on": [
+        "context-router",
+        "subagent-delegation"
+      ],
+      "contract_inputs": [
+        "framework/task-decomposition.md",
+        "framework/subagent-delegation.md",
+        "templates/target/.ai/assistant/context-router.json",
+        "templates/target/.ai/assistant/task-decomposition.json",
+        "templates/target/.ai/assistant/templates/task-decomposition.md",
+        "templates/target/.ai/assistant/templates/operation-request.md",
+        "templates/target/.ai/assistant/templates/operation-completion-evidence.json",
+        "templates/target/.ai/assistant/flows/operation-routing.flow.md",
+        "templates/target/.ai/assistant/flows/large-task-orchestration.flow.md",
+        "templates/target/.ai/assistant/flows/subagent-delegation.flow.md",
+        "templates/target/.ai/assistant/delegation-policy.json",
+        "templates/target/.ai/assistant/workers/**"
+      ],
+      "implementation_paths": [
+        "tools/check_task_decomposition.py",
+        "tools/target_adapter_validation/task_decomposition.py"
+      ],
+      "trigger_paths": [
+        "framework/task-decomposition.md",
+        "framework/subagent-delegation.md",
+        "templates/target/.ai/assistant/context-router.json",
+        "templates/target/.ai/assistant/task-decomposition.json",
+        "templates/target/.ai/assistant/templates/task-decomposition.md",
+        "templates/target/.ai/assistant/templates/operation-request.md",
+        "templates/target/.ai/assistant/templates/operation-completion-evidence.json",
+        "templates/target/.ai/assistant/flows/operation-routing.flow.md",
+        "templates/target/.ai/assistant/flows/large-task-orchestration.flow.md",
+        "templates/target/.ai/assistant/flows/subagent-delegation.flow.md",
+        "templates/target/.ai/assistant/delegation-policy.json",
+        "templates/target/.ai/assistant/workers/**",
+        "tools/check_task_decomposition.py",
+        "tools/target_adapter_validation/task_decomposition.py"
       ]
     },
     {
@@ -868,6 +924,7 @@
         "templates/target/.ai/assistant/gates/index.json",
         "templates/target/.ai/assistant/operation*.json",
         "templates/target/.ai/assistant/policies/action-authorization.json",
+        "templates/target/.ai/assistant/task-decomposition.json",
         "templates/target/.ai/project/support-policy.json"
       ],
       "implementation_paths": [
@@ -885,6 +942,7 @@
         "templates/target/.ai/assistant/gates/index.json",
         "templates/target/.ai/assistant/operation*.json",
         "templates/target/.ai/assistant/policies/action-authorization.json",
+        "templates/target/.ai/assistant/task-decomposition.json",
         "templates/target/.ai/project/support-policy.json",
         "tools/agent_entry_packet.py",
         "tools/check_agent_entry_packet.py",
@@ -1142,10 +1200,13 @@
         "framework/bridge-capability-matrix.md",
         "framework/large-task-orchestration.md",
         "framework/subagent-delegation.md",
+        "framework/task-decomposition.md",
         "templates/target/.ai/assistant/assistant-capabilities/**",
         "templates/target/.ai/assistant/bridge-capability-matrix.md",
         "templates/target/.ai/assistant/context/task-scales/delegated-execution.json",
         "templates/target/.ai/assistant/delegation-policy.json",
+        "templates/target/.ai/assistant/task-decomposition.json",
+        "templates/target/.ai/assistant/templates/task-decomposition.md",
         "templates/target/.ai/assistant/flows/subagent-delegation.flow.md",
         "templates/target/.ai/assistant/prompts/worker-orchestration.md",
         "templates/target/.ai/assistant/templates/native-worker-binding.md",
@@ -1163,10 +1224,13 @@
         "framework/bridge-capability-matrix.md",
         "framework/large-task-orchestration.md",
         "framework/subagent-delegation.md",
+        "framework/task-decomposition.md",
         "templates/target/.ai/assistant/assistant-capabilities/**",
         "templates/target/.ai/assistant/bridge-capability-matrix.md",
         "templates/target/.ai/assistant/context/task-scales/delegated-execution.json",
         "templates/target/.ai/assistant/delegation-policy.json",
+        "templates/target/.ai/assistant/task-decomposition.json",
+        "templates/target/.ai/assistant/templates/task-decomposition.md",
         "templates/target/.ai/assistant/flows/subagent-delegation.flow.md",
         "templates/target/.ai/assistant/prompts/worker-orchestration.md",
         "templates/target/.ai/assistant/templates/native-worker-binding.md",

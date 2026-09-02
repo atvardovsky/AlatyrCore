@@ -28,6 +28,7 @@
     "tools/target_adapter_validation/subagent_delegation.py",
     "tools/target_adapter_validation/support_generation.py",
     "tools/target_adapter_validation/support_state.py",
+    "tools/target_adapter_validation/task_decomposition.py",
     "tools/target_adapter_validation/values.py",
     "tools/target_adapter_validation/workspace_modes.py"
   ],
@@ -82,7 +83,7 @@
     },
     {
       "id": "DELEGATION",
-      "code_count": 59
+      "code_count": 63
     },
     {
       "id": "DEPENDENCY",
@@ -178,7 +179,7 @@
     },
     {
       "id": "ROUTER",
-      "code_count": 66
+      "code_count": 71
     },
     {
       "id": "ROUTING",
@@ -199,6 +200,10 @@
     {
       "id": "TARGET",
       "code_count": 6
+    },
+    {
+      "id": "TASK",
+      "code_count": 23
     },
     {
       "id": "TDD",
@@ -3388,6 +3393,15 @@
       ]
     },
     {
+      "code": "DELEGATION_DECOMPOSITION_POLICY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
       "code": "DELEGATION_DEFAULT_PREFERENCE",
       "levels": [
         "error"
@@ -3703,6 +3717,15 @@
       ]
     },
     {
+      "code": "DELEGATION_ROLE_CATALOG_DECOMPOSITION_POLICY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
       "code": "DELEGATION_ROLE_CATALOG_PATH",
       "levels": [
         "error"
@@ -3722,6 +3745,24 @@
     },
     {
       "code": "DELEGATION_ROLE_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_ROLE_IMPLEMENTATION_LEVEL",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_ROLE_IMPLEMENTATION_LEVELS",
       "levels": [
         "error"
       ],
@@ -8330,6 +8371,51 @@
       ]
     },
     {
+      "code": "ROUTER_TASK_DECOMPOSITION_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "ROUTER_TASK_DECOMPOSITION_POLICY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "ROUTER_TASK_DECOMPOSITION_RECEIPT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "ROUTER_TASK_DECOMPOSITION_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "ROUTER_TASK_DECOMPOSITION_TEMPLATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
       "code": "ROUTER_TASK_SCALE_OVERLAYS",
       "levels": [
         "error"
@@ -8543,6 +8629,213 @@
       ],
       "sources": [
         "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TASK_DECOMPOSITION_COMPLETION_EVIDENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "TASK_DECOMPOSITION_DEFAULT_BEHAVIOR",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "TASK_DECOMPOSITION_DEFAULT_EXECUTOR",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "TASK_DECOMPOSITION_DELEGATION_POLICY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "TASK_DECOMPOSITION_LEVELS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "TASK_DECOMPOSITION_LEVEL_FIELDS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "TASK_DECOMPOSITION_LEVEL_ORDER",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "TASK_DECOMPOSITION_LEVEL_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "TASK_DECOMPOSITION_PLAN_TEMPLATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "TASK_DECOMPOSITION_POLICY_KIND",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "TASK_DECOMPOSITION_POLICY_SCHEMA",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "TASK_DECOMPOSITION_PORTABLE_RULE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "TASK_DECOMPOSITION_PRIMARY_ONLY_LEVEL",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "TASK_DECOMPOSITION_PROTECTED_DELEGATION",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "TASK_DECOMPOSITION_QUALITY_GATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "TASK_DECOMPOSITION_QUALITY_GATES",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "TASK_DECOMPOSITION_REQUIRED_FILE_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "TASK_DECOMPOSITION_ROLE_CATALOG",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "TASK_DECOMPOSITION_ROLE_LEVEL",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "TASK_DECOMPOSITION_ROLE_LEVELS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "TASK_DECOMPOSITION_TEXT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "TASK_DECOMPOSITION_WORKER_ROLES",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "TASK_DECOMPOSITION_WORKER_ROLE_UNKNOWN",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
       ]
     },
     {

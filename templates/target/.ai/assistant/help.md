@@ -22,6 +22,10 @@ Default routing:
   `.ai/assistant/bootstrap-index.json` and `.ai/assistant/entry-packet.json`.
 - If the operation is clear and low risk, choose the matching route and report
   the selected profile, gates, and allowed-action ceiling.
+- For non-trivial work, create a one-task or multi-task decomposition with
+  `.ai/assistant/task-decomposition.json`; record implementation levels,
+  dependencies, bounded context, validation, and primary/worker executor
+  decisions. Small local work may stay as one compact task.
 - If the request is `Alatyr` alone, do not edit files. Report fresh or
   unchecked health evidence and show at most three available actions.
 - If the request asks for status or doctor, route to `adapter-health` and keep
