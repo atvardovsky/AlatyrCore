@@ -82,7 +82,11 @@ Before accepting a change, check:
 
 - `python3 tools/check_all.py` passes when the source validation wrapper is
   available. This is the preferred AlatyrCore source-repository check set, not
-  a portable target-project requirement.
+  a portable target-project requirement. Its default `full` profile includes
+  change-aware release drift against `origin/main`, or `HEAD` when no remote
+  baseline is available; pass `--from-ref <ref>` for another integration
+  baseline. Run it before commit and publication so contract changes cannot
+  omit required version and migration evidence.
 - `python3 tools/alatyr.py plan-work --summary` is available as the read-only
   minimum-work preflight. It should report the selected effective profile,
   micro escalation reasons, heavy checks, and recommended check command before

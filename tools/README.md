@@ -1375,6 +1375,12 @@ three versions, and contract-tree SHA-256 values. Use `--from-ref` for an
 explicit baseline or `--report-output` to write generated evidence for review.
 The check requires Git tags to be available in CI.
 
+The default `check_all.py --profile full` route also runs change-mode release
+drift against `origin/main`, or `HEAD` when that remote ref is unavailable.
+This makes the documented full pre-push gate fail locally when contract files
+change without the required version and migration evidence. Pass
+`--from-ref <ref>` when another integration baseline owns the change.
+
 Linux or macOS:
 
 ```sh

@@ -27,6 +27,12 @@ python3 tools/check_all.py --profile full
 git diff --check
 ```
 
+The full profile resolves `origin/main` (or `HEAD` when no remote baseline is
+available) and includes change-aware release drift. Run it before committing
+and pushing so framework, adapter-schema, and target-template changes cannot
+leave their version and migration evidence behind. Use `--from-ref <ref>` when
+the intended integration baseline differs from `origin/main`.
+
 The supported source-tooling runtime and pinned CI dependency set are recorded
 in `tools/runtime-compatibility.json` and `constraints-ci.txt`. External
 assistant conformance and effectiveness benchmarks incur real model usage and

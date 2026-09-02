@@ -2529,7 +2529,8 @@
         "{baseline}"
       ],
       "profiles": [
-        "change"
+        "change",
+        "full"
       ],
       "contract_inputs": [
         "ADAPTER_SCHEMA_VERSION",

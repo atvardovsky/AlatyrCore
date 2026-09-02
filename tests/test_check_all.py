@@ -276,7 +276,7 @@ class CheckGraphTests(unittest.TestCase):
         self.assertFalse(fell_back)
         self.assertEqual([entry["id"] for entry in selected], ["implementation"])
 
-    def test_change_profile_uses_changed_from_as_default_baseline(self) -> None:
+    def test_change_and_full_profiles_use_changed_from_as_default_baseline(self) -> None:
         self.assertEqual(
             effective_baseline("change", "HEAD~1", None),
             "HEAD~1",
@@ -285,20 +285,33 @@ class CheckGraphTests(unittest.TestCase):
             effective_baseline("change", "HEAD~1", "main"),
             "main",
         )
+        self.assertEqual(
+            effective_baseline("full", "origin/main", None),
+            "origin/main",
+        )
         self.assertIsNone(effective_baseline("fast", "HEAD~1", None))
 
-    def test_fast_profile_resolves_default_changed_from(self) -> None:
+    def test_fast_and_full_profiles_resolve_default_changed_from(self) -> None:
         from unittest.mock import patch
 
         with patch("check_all.git_ref_exists", return_value=True):
             self.assertEqual(default_changed_from(), "origin/main")
             self.assertEqual(resolve_changed_from("fast", None), "origin/main")
+            self.assertEqual(resolve_changed_from("full", None), "origin/main")
         with patch("check_all.git_ref_exists", return_value=False):
             self.assertEqual(default_changed_from(), "HEAD")
             self.assertEqual(resolve_changed_from("fast", None), "HEAD")
+            self.assertEqual(resolve_changed_from("full", None), "HEAD")
         self.assertEqual(resolve_changed_from("fast", "main"), "main")
         self.assertIsNone(resolve_changed_from("fast", None, all_fast=True))
         self.assertIsNone(resolve_changed_from("quick", None))
+
+    def test_live_full_profile_includes_change_release_drift(self) -> None:
+        selected = select_check_plan(
+            load_manifest(), "full", "origin/main", platform="linux"
+        ).selected
+
+        self.assertIn("release-drift-change", {item["id"] for item in selected})
 
     def test_dependency_runs_only_after_successful_prerequisite(self) -> None:
         completed: list[str] = []

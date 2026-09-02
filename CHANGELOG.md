@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- No unreleased changes.
+
+## 0.1.0-alpha.50 - 2026-09-02
+
+- Increased the framework version to `0.1.0-alpha.50`, adapter schema version
+  to `41`, and target template version to `45` for required task decomposition
+  and its installed adapter contracts.
 - Added required task decomposition with implementation levels, dependency
   ordering, bounded context, and primary/worker executor selection before
   non-trivial implementation or delegation; updated target templates,
@@ -25,6 +32,13 @@
 - Added compact GitHub Actions source-check summaries, CI concurrency and
   timeout guardrails, faster release-baseline materialization, and cached
   manifest dependency inspection for source tooling.
+- Added the change-aware release-drift gate to the default full source-check
+  profile, with an `origin/main` or `HEAD` baseline, so the documented local
+  acceptance command detects missing version and migration evidence before a
+  commit is published.
+- Added the reviewed alpha.49 source release checkpoint so later releases use
+  the nearest valid framework baseline without implying that a Git tag was
+  published.
 
 ## 0.1.0-alpha.49 - 2026-08-31
 

@@ -112,7 +112,7 @@ def default_changed_from() -> str:
 def resolve_changed_from(
     profile: str, changed_from: str | None, *, all_fast: bool = False
 ) -> str | None:
-    if profile not in {"fast", "micro"}:
+    if profile not in {"fast", "micro", "full"}:
         return changed_from
     if all_fast:
         return None
@@ -487,7 +487,7 @@ def effective_baseline(
 
     if from_ref:
         return from_ref
-    if profile == "change":
+    if profile in {"change", "full"}:
         return changed_from
     return None
 
