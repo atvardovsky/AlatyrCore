@@ -277,7 +277,11 @@ and CI dependencies are routed through `requirements-dev.txt`.
 by `tools/check_all.py` for micro, quick, fast, full, change, platform, and
 release profiles.
 `tools/source_context_router.json` and `installer/context-router.json` keep
-source maintenance and installation bootstrap bounded. The generated
+source maintenance and installation bootstrap bounded.
+`tools/source_worker_policy.json` defines provider-neutral, read-only source
+audit workstreams; the active assistant supplies current runtime capability
+evidence and the primary assistant retains final decisions and integration.
+The generated
 `framework/file-inventory.json` and `framework/framework-packs.json` define the
 complete source baseline and dependency-closed selective installation packs.
 

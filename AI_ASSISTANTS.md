@@ -30,6 +30,11 @@ the full framework corpus unless the task explicitly requires a repository
 audit or a named dependency, boundary, conflict, or failed check requires
 expansion.
 
+The changed-path `plan-work` default is a validation-cost hint; it does not
+infer user intent. Pass an explicit source profile for a named operation such
+as `repository-audit`. That profile owns context, validation, decomposition,
+and delegation evaluation even when the worktree is clean.
+
 ### Installing AlatyrCore Into A Target Project
 
 Use the [installation guide](INSTALL.md) and
@@ -227,8 +232,14 @@ primary execution or a stronger verified model when subagents, model override,
 parallelism, or actual-model reporting is unsupported or stale.
 
 When AlatyrCore itself is the active project contour, follow the lazy source
-route in `AGENTS.md` and `docs/source-worker-strategy.md`. Host and target
-projects continue to use their own active adapter policy.
+route in `AGENTS.md`, `tools/source_worker_policy.json`, and
+`docs/source-worker-strategy.md`. An explicit repository audit uses bounded
+read-only workers when the current runtime is verified and at least two
+independent audit areas exist. If an eligible area stays local, record a
+concrete skip reason. The primary assistant still owns authorization,
+decisions, integration, final synthesis and validation, and every modifying,
+commit, publish, or live-external phase. Host and target projects continue to
+use their own active adapter policy.
 
 ## AI Infrastructure And Extensions
 

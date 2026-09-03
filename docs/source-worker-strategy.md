@@ -14,12 +14,58 @@ evidence outside the AlatyrCore source contour.
 
 ## Activation
 
-Evaluate worker delegation only after selecting the source task profile and
-identifying the primary assistant's immediate critical-path action. Use a
-worker when a bounded independent packet is likely to reduce wall-clock time
-or provide materially stronger review after accounting for preparation,
-review, and integration cost. Keep work local when coordination cost is likely
-to exceed the benefit.
+Select the source task profile before evaluating delegation. The machine-
+readable source policy is `tools/source_worker_policy.json`; this document
+explains how the active assistant applies it. The policy is provider-neutral
+and does not prove that the current client can launch workers.
+
+For ordinary source work, use a worker when a bounded independent packet is
+likely to reduce wall-clock time or provide materially stronger review after
+accounting for preparation, review, and integration cost. Keep work local when
+coordination cost is likely to exceed the benefit and record that concrete
+reason when the packet was otherwise eligible.
+
+For an explicit `repository-audit`, delegation evaluation is deterministic:
+
+1. Select the profile directly from user intent. Do not let a clean worktree or
+   automatic changed-path plan downgrade the audit.
+2. Load the reusable candidate workstreams from
+   `tools/source_worker_policy.json`.
+3. Verify whether the active runtime can launch and receive workers now.
+4. Select at least two independent read-only workstreams with bounded context.
+5. Dispatch eligible packets, or record why each eligible packet stayed local.
+6. Keep authoritative checks, conflict resolution, final synthesis, and final
+   validation with the primary assistant.
+
+Runtime verification and multiple independent candidates do not make
+delegation optional by silence. Use the workers unless a concrete capability,
+dependency, overlap, coordination-cost, client-policy, or user-scope reason is
+recorded.
+
+## Capability And Decision Evidence
+
+The active assistant owns runtime capability verification because only the
+current client knows whether native workers, parallel execution, model routing,
+and result delivery are available. Do not hard-code a provider, client,
+backend, executable, or model in source policy.
+
+Record the evaluation status, runtime capability status, selected workstream
+IDs, decision, and reason. When workers are unavailable or unverified, state
+that explicitly and continue with the primary assistant. When workers are
+available but an eligible packet remains local, use one policy reason ID and
+task-specific evidence; a generic statement that delegation was not useful is
+not sufficient.
+
+`tools/alatyr.py plan-work` accepts a provider-neutral current-session
+capability record plus workstream, kept-local, skip-reason, and concrete-reason
+inputs after the active assistant performs runtime verification. Those inputs
+create reviewable preflight evidence; they do not probe a client, launch
+workers, claim past dispatch, or prove that a worker result was delivered.
+
+Every packet must carry its workstream ID, objective, bounded context,
+non-goals, `inspect`-only action mode, no-write scope, and expected evidence.
+Workers may expand only through the packet's conditional context or return a
+request for primary review.
 
 ## Model Routing
 
@@ -40,11 +86,17 @@ verified fallback or keep the work with the primary assistant.
 ## Responsibility
 
 The primary assistant retains project decisions, current-scope authorization,
-integration, logical integrity review, final validation, and completion
-evidence.
+source-profile selection, capability verification, packet review, integration,
+logical integrity review, conflict resolution, final synthesis, final
+validation, and completion evidence. Modification, commit, publication, and
+live external actions remain primary-owned and separately authorized.
 
 Every worker packet must define bounded context, explicit non-goals, allowed
 actions, write ownership, and objective validation. A worker must not broaden
 permissions, approval, action phases, or repository scope. Do not dispatch
 concurrent overlapping writes. Reject results without inspectable file or
 symbol evidence and required validation.
+
+Delegation is an execution choice, not authorization. Worker availability does
+not grant a new action phase, protected approval, tool permission, file scope,
+or authority to accept architectural conclusions.

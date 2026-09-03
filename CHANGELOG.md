@@ -2,7 +2,12 @@
 
 ## Unreleased
 
-- No unreleased changes.
+- Fixed source-contour planning so explicit repository audits select their
+  full validation route even on a clean worktree, while zero changed paths no
+  longer imply a small task.
+- Added provider-neutral source audit workstreams, runtime delegation
+  assessment, concrete local-execution reasons, and behavioral checker/test
+  coverage without changing portable target delegation contracts.
 
 ## 0.1.0-alpha.50 - 2026-09-02
 

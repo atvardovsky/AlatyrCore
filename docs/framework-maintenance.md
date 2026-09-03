@@ -88,10 +88,12 @@ Before accepting a change, check:
   baseline. Run it before commit and publication so contract changes cannot
   omit required version and migration evidence.
 - `python3 tools/alatyr.py plan-work --summary` is available as the read-only
-  minimum-work preflight. It should report the selected effective profile,
-  micro escalation reasons, heavy checks, and recommended check command before
-  routine source-tooling work. It is routing evidence, not edit, commit,
-  publish, or semantic approval.
+  minimum-work preflight. Pass `--source-profile` for an explicit named source
+  operation; automatic changed-path planning does not infer user intent. The
+  planner reports source and validation profiles, task class, decomposition,
+  delegation assessment, micro escalation reasons, heavy checks, and the
+  recommended command. Runtime worker capability remains active-assistant
+  evidence. The plan is not edit, commit, publish, or semantic approval.
 - `python3 tools/alatyr.py check-source-focused` is available for cheap
   small-task source checks. It uses the fast changed-path route and does not
   replace `check_all.py` as the full acceptance gate.

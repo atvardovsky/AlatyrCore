@@ -1,0 +1,202 @@
+{
+  "schema_version": 1,
+  "policy_kind": "alatyr-source-worker-policy",
+  "scope": "source-repository",
+  "provider_neutral": true,
+  "canonical_rule": "ALATYR-DELEGATION-001",
+  "runtime_capability_owner": "active-assistant",
+  "fallback_executor": "primary-assistant",
+  "runtime_capability_contract": {
+    "required_fields": [
+      "schema_version",
+      "status",
+      "surface_id",
+      "runtime_id",
+      "backend_kind",
+      "role_ids",
+      "max_parallelism",
+      "write_isolation",
+      "result_delivery",
+      "model_binding",
+      "verified_at",
+      "freshness",
+      "evidence"
+    ],
+    "schema_version": 1,
+    "status": "available",
+    "backend_kinds": [
+      "native-worker",
+      "approved-external-dispatcher"
+    ],
+    "required_role_id": "read-only-auditor",
+    "write_isolation": "read-only",
+    "result_delivery": true,
+    "freshness": "current-session",
+    "minimum_parallelism": 2
+  },
+  "activation": {
+    "evaluate_for": [
+      "repository-audit",
+      "large-or-resumable work with at least two bounded independent areas"
+    ],
+    "delegate_when_all": [
+      "the active assistant verifies worker capability in the current runtime",
+      "at least two selected workstreams are independent and read-only",
+      "each worker packet has bounded context and objective output evidence",
+      "delegation preserves current-scope authorization and primary ownership"
+    ],
+    "explicit_repository_audit": "delegate eligible workstreams when all delegate_when_all conditions hold unless a concrete skip reason is recorded",
+    "no_capability_probe": "do not infer a provider, model, dispatch backend, or client feature from this policy"
+  },
+  "decision_evidence": {
+    "required_fields": [
+      "evaluation_status",
+      "runtime_capability_status",
+      "selected_workstream_ids",
+      "decision",
+      "reason"
+    ],
+    "preflight_decisions": [
+      "runtime-verification-required",
+      "delegation-recommended",
+      "kept-local",
+      "primary-assistant"
+    ],
+    "completion_decisions": [
+      "delegated",
+      "kept-local"
+    ],
+    "skip_reason_ids": [
+      "capability-unavailable",
+      "capability-unverified",
+      "insufficient-independent-work",
+      "dependency-ordering",
+      "overlapping-scope",
+      "coordination-cost-exceeds-benefit",
+      "client-policy-prohibits",
+      "user-restricted"
+    ],
+    "skip_reason_requirement": "A kept-local decision for an otherwise eligible workstream must name a reason ID and concrete task evidence. Silence is not evidence."
+  },
+  "worker_packet_contract": {
+    "required_fields": [
+      "workstream_id",
+      "role_id",
+      "objective",
+      "bounded_context",
+      "conditional_context",
+      "non_goals",
+      "allowed_actions",
+      "write_scope",
+      "expected_evidence"
+    ],
+    "allowed_actions": [
+      "inspect"
+    ],
+    "role_id": "read-only-auditor",
+    "write_scope": "none",
+    "result_requirement": "Return findings with inspectable file, symbol, rule, or check evidence; do not decide integration or mutate repository state."
+  },
+  "workstreams": {
+    "framework-rules": {
+      "objective": "Review portable rules, canonical ownership, semantic references, and framework indexes for contradictions or drift.",
+      "mode": "read-only",
+      "independent": true,
+      "required_context": [
+        "framework/context-index.json",
+        "framework/rule-registry.json",
+        "framework/rule-ownership.md",
+        "framework/semantics/index.json"
+      ],
+      "conditional_context": [
+        "canonical owners selected by a relevant rule ID",
+        "direct dependencies selected by framework metadata"
+      ],
+      "non_goals": [
+        "editing framework rules",
+        "resolving cross-owner conflicts",
+        "changing target templates"
+      ],
+      "expected_evidence": "Severity-ranked findings with canonical-owner and path references."
+    },
+    "installation-surfaces": {
+      "objective": "Review installer routing, target projections, assistant bridges, and adapter-contract alignment.",
+      "mode": "read-only",
+      "independent": true,
+      "required_context": [
+        "INSTALL.md",
+        "installer/context-router.json",
+        "installer/assistant-installation.flow.md",
+        "templates/target/.ai/README.md"
+      ],
+      "conditional_context": [
+        "selected target template or bridge",
+        "canonical framework owner for a detected mismatch"
+      ],
+      "non_goals": [
+        "installing AlatyrCore",
+        "rewriting target-project facts",
+        "changing portable contracts"
+      ],
+      "expected_evidence": "Findings that distinguish source, installer, template, and target-owned responsibilities."
+    },
+    "source-tooling": {
+      "objective": "Review source tools, check routing, manifests, validators, and generated-evidence contracts.",
+      "mode": "read-only",
+      "independent": true,
+      "required_context": [
+        "tools/check_manifest.json",
+        "tools/README.md",
+        "docs/source-architecture.md"
+      ],
+      "conditional_context": [
+        "checker selected by a failed check ID",
+        "implementation helper listed by the manifest route"
+      ],
+      "non_goals": [
+        "weakening validation",
+        "editing generated evidence",
+        "running live external actions"
+      ],
+      "expected_evidence": "Checker, route, dependency, and coverage findings with reproducible commands where useful."
+    },
+    "public-and-release": {
+      "objective": "Review public documentation, maintainer guidance, versions, changelog, and release evidence for consistent claims.",
+      "mode": "read-only",
+      "independent": true,
+      "required_context": [
+        "README.md",
+        "VERSION",
+        "CHANGELOG.md",
+        "docs/release-process.md"
+      ],
+      "conditional_context": [
+        "release note or migration evidence selected by a detected version mismatch",
+        "canonical rule owner for a disputed public claim"
+      ],
+      "non_goals": [
+        "publishing a release",
+        "changing repository settings",
+        "making unsupported product claims"
+      ],
+      "expected_evidence": "Claim, version, lifecycle, and discoverability findings with exact source references."
+    }
+  },
+  "primary_owned_actions": [
+    "task-profile-selection",
+    "runtime-capability-verification",
+    "worker-packet-approval",
+    "architecture-decisions",
+    "conflict-resolution",
+    "logical-integrity-review",
+    "result-verification",
+    "final-synthesis",
+    "final-validation",
+    "current-scope-authorization",
+    "modify",
+    "commit",
+    "publish",
+    "live-external"
+  ],
+  "authorization_boundary": "Worker capability and delegation do not grant inspect, modify, commit, publish, live-external, approval, permission, or scope authority beyond the current user request."
+}

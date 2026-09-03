@@ -15,6 +15,7 @@ Linux or macOS:
 ```sh
 python3 tools/alatyr.py --help
 python3 tools/alatyr.py plan-work --summary
+python3 tools/alatyr.py plan-work --source-profile repository-audit --summary
 python3 tools/alatyr.py check-source-focused
 python3 tools/alatyr.py compare-check-reports /tmp/base.json /tmp/candidate.json
 python3 tools/alatyr.py status --target /path/to/target-repo
@@ -43,6 +44,7 @@ Windows PowerShell:
 ```powershell
 .\tools\alatyr.ps1 --help
 .\tools\alatyr.ps1 plan-work --summary
+.\tools\alatyr.ps1 plan-work --source-profile repository-audit --summary
 .\tools\alatyr.ps1 check-source-focused
 .\tools\alatyr.ps1 compare-check-reports C:\Temp\base.json C:\Temp\candidate.json
 .\tools\alatyr.ps1 status --target C:\path\to\target-repo
@@ -70,6 +72,7 @@ Windows Command Prompt:
 ```bat
 tools\alatyr.cmd --help
 tools\alatyr.cmd plan-work --summary
+tools\alatyr.cmd plan-work --source-profile repository-audit --summary
 tools\alatyr.cmd check-source-focused
 tools\alatyr.cmd compare-check-reports C:\Temp\base.json C:\Temp\candidate.json
 tools\alatyr.cmd status --target C:\path\to\target-repo
@@ -96,9 +99,10 @@ The stable command set is:
 - `check-source`: no writes
 - `check-source-focused`: no writes; runs the fast changed-path source-check
   profile from `origin/main` when available, otherwise `HEAD`
-- `plan-work`: no writes; emits the smallest quality-preserving source work
-  route, selected checks, context packet, micro escalation reasons, and
-  optional hash-bound reuse candidates before checks run
+- `plan-work`: no writes; accepts an explicit source task profile and emits its
+  validation route, task class, context packet, decomposition and delegation
+  assessment, micro escalation reasons, and optional hash-bound reuse
+  candidates before checks run
 - `compare-check-reports`: no writes; compares two schema-2 source-check
   reports and labels source/manifest identity before interpreting timing
   deltas
@@ -181,10 +185,34 @@ full-suite fallback. Use `fast --all-fast` only when intentionally running the
 whole fast profile without changed-path selection.
 `tools/alatyr.py plan-work --summary` is the cheapest first pass for source
 changes. It reports the effective profile, selected checks, heavy checks,
-micro escalation reasons, the source-tooling context packet, and the
-recommended check command before implementation or validation. It also names
-the target-adapter `support-delta` and `impact` route for installed projects,
-but it does not replace target logical integrity review.
+micro escalation reasons, the selected source context packet, decomposition,
+delegation assessment, and the recommended check command before implementation
+or validation. Automatic changed-path planning estimates validation work; it
+does not infer user intent. For an explicit operation, pass its source profile,
+for example `--source-profile repository-audit`. A clean worktree does not
+downgrade that profile. The repository-audit route selects the full validation
+profile and the reusable read-only workstreams in
+`tools/source_worker_policy.json`. The active assistant verifies current worker
+capability and records either dispatch or a concrete skip reason. The primary
+assistant retains authorization, decisions, integration, final validation, and
+all state-changing phases. The plan also names the target-adapter
+`support-delta` and `impact` route for installed projects, but it does not
+replace target logical integrity review.
+
+After checking the current client, the active assistant may rerun the plan with
+`--worker-capability available` plus
+`--worker-capability-record <current-session.json>`, or with
+`--worker-capability unavailable`. The record follows
+`tools/source_worker_policy.json` and captures the current surface, runtime,
+backend kind, read-only role, parallelism, isolation, result delivery, model
+binding, verification time, freshness, and evidence. Available repository-
+audit workers produce `delegation-recommended` and select two candidate
+workstreams by default; repeated `--worker-workstream` arguments may choose a
+different bounded set within verified parallelism. An explicit
+`--delegation-decision kept-local` requires both a policy
+`--delegation-skip-reason` and concrete `--delegation-reason`. These arguments
+record reported runtime evidence; they do not probe a provider, launch a
+worker, claim completed delegation, or grant worker permissions.
 `tools/alatyr.py check-source-focused` is the cheap small-task entry point for
 that route. It runs `check_all.py --profile fast --changed-from <baseline>`,
 selecting `origin/main` as the default baseline when available and `HEAD` when

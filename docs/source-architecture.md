@@ -33,6 +33,10 @@ changes cheap.
 - Schemas under `schemas/` own machine-readable target adapter contracts.
 - Source tools under `tools/` validate this repository and optional installed
   target adapters; they do not create portable runtime requirements.
+- `tools/source_context_router.json` owns source task routing, while
+  `tools/source_worker_policy.json` owns provider-neutral source workstream
+  decomposition. The active assistant owns current-runtime capability evidence
+  and the primary assistant owns integration and action authorization.
 - Target adapter validation modules under `tools/target_adapter_validation/`
   should own capability-specific checks when the legacy validator is split.
 - Conformance files under `conformance/` own captured or prepared evidence, not
@@ -64,6 +68,19 @@ should resolve changed paths, explicit micro eligibility, selected checks,
 context hints, heavy checks, and optional hash-bound reuse candidates before
 implementation starts. It is a routing surface only; it does not approve edits,
 commit, publish, or replace semantic review.
+
+Keep user intent, source task profile, task scale, validation profile, and
+executor selection as separate decisions. Changed-path automation can reduce
+validation cost after scope is known, but it cannot infer that an explicit
+repository audit is a small task merely because no files have changed.
+
+Use source worker decomposition as a strategy boundary. Reusable workstreams
+remain provider-neutral and read-only; the active assistant verifies runtime
+capability. Explicit repository audits should dispatch at least two independent
+eligible workstreams when capability is verified, unless the primary assistant
+records a concrete skip reason. Architecture decisions, conflict resolution,
+logical integrity, integration, final validation, and state-changing phases
+remain primary-owned.
 
 Use a strategy boundary for provider-specific or capability-specific behavior.
 Assistant surfaces, operating systems, optional modules, and target profiles
@@ -97,17 +114,22 @@ task actually needs.
 The expected source-tooling flow is:
 
 1. Classify the source change and choose the smallest context route.
-2. Generate a read-only minimum-work plan when the scope is not already
+2. For a named operation, select its explicit source profile before consulting
+   changed-path automation.
+3. Generate a read-only minimum-work plan when the scope is not already
    obvious from the selected profile.
-3. Run cheap structural checks first.
-4. Run changed-path focused checks when the route is unambiguous.
-5. Reuse a previous passed check only when its manifest, command, runtime, and
+4. Evaluate bounded worker decomposition and verify runtime capability when the
+   selected profile requires it.
+5. Dispatch eligible independent read-only packets or record concrete skip
+   reasons while the primary assistant runs the authoritative critical path.
+6. Run cheap structural checks first.
+7. Run changed-path focused checks when the route is unambiguous.
+8. Reuse a previous passed check only when its manifest, command, runtime, and
    declared input fingerprint match the current run.
-6. Expand to full validation when a broad route, failed check, contract change,
+9. Expand to full validation when a broad route, failed check, contract change,
    release change, or ownership conflict appears.
-7. Record final evidence with the checks that actually ran, reused, or were
-   explicitly skipped and any residual
-   risk.
+10. Record final evidence with worker decisions, checks that actually ran,
+    reused or explicitly skipped, and any residual risk.
 
 This preserves quality while reducing routine task cost. The optimization is
 valid only when the focused route proves that the changed files are covered by

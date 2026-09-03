@@ -26,7 +26,8 @@
     "fallback": "load canonical owner prose and stop compact interpretation"
   },
   "budgets": {
-    "bootstrap_max_words": 2000,
+    "bootstrap_max_words": 2100,
+    "minimum_headroom_words": 100,
     "on_exceed": "stop and repair or report routing drift"
   },
   "task_classification": {
@@ -56,9 +57,12 @@
   },
   "conditional_overlays": {
     "source-worker-strategy": {
-      "activate_when": "worker delegation is available and likely to improve wall-clock time or review independence",
+      "activate_when": "profile-required or beneficial bounded delegation",
       "required_context": ["docs/source-worker-strategy.md"],
+      "worker_policy": "tools/source_worker_policy.json",
       "canonical_rule": "ALATYR-DELEGATION-001",
+      "runtime_capability_owner": "active-assistant",
+      "skip_evidence": "required for eligible local work",
       "fallback": "continue with the primary assistant"
     }
   },
@@ -66,6 +70,7 @@
     "docs-local": {
       "required_context": ["docs/framework-maintenance.md"],
       "conditional_context": ["edited file", "directly linked neighbor"],
+      "check_profile": "fast",
       "checks": ["markdown-links", "framework-consistency"]
     },
     "framework-rule": {
@@ -75,6 +80,7 @@
         "owner dependency selected from alatyr_doc metadata",
         "affected installer or target template surface"
       ],
+      "check_profile": "fast",
       "checks": ["framework-metadata", "rule-ownership", "framework-consistency"]
     },
     "installer-template": {
@@ -88,6 +94,7 @@
         "selected target template",
         "owning framework rule"
       ],
+      "check_profile": "fast",
       "checks": ["source-context-routing", "scaffold-profiles", "framework-consistency"]
     },
     "source-tooling": {
@@ -97,8 +104,8 @@
         "contract validated by the tool",
         "docs/source-architecture.md when refactoring or modularizing source tools"
       ],
-      "check_profile": "quick",
-      "check_selection": "start with quick checks, then select focused IDs from tools/check_manifest.json by trigger_paths",
+      "check_profile": "fast",
+      "check_selection": "start with fast changed-path checks selected from tools/check_manifest.json by trigger_paths",
       "checks": ["check-manifest", "support-costs", "source-unit-tests", "framework-consistency"]
     },
     "release-versioning": {
@@ -112,6 +119,8 @@
         "framework/migration-diff.md"
       ],
       "conditional_context": ["release migration report", "changed rule owners and templates"],
+      "check_profile": "full",
+      "additional_check_profiles": ["release"],
       "checks": ["versioning", "release-drift-release", "migration-diff-report"]
     },
     "ai-infrastructure-bridge": {
@@ -127,6 +136,7 @@
         "import policy when an external source is involved",
         "operation help when routing changes"
       ],
+      "check_profile": "full",
       "checks": [
         "assistant-surface-conformance",
         "assistant-capability-contract",
@@ -138,14 +148,27 @@
       "required_context": [
         "tools/check_manifest.json",
         "tools/README.md",
-        "docs/framework-maintenance.md"
+        "docs/framework-maintenance.md",
+        "docs/source-worker-strategy.md",
+        "tools/source_worker_policy.json"
       ],
       "conditional_context": [
+        "bounded context listed by each selected audit workstream",
         "canonical owners selected by failed check IDs",
         "affected installer or target template surfaces",
         "release context only when release checks fail"
       ],
       "check_profile": "full",
+      "decomposition": {
+        "required": true,
+        "worker_policy": "tools/source_worker_policy.json",
+        "candidate_workstreams": [
+          "framework-rules",
+          "installation-surfaces",
+          "source-tooling",
+          "public-and-release"
+        ]
+      },
       "checks": ["check-manifest", "source-unit-tests", "framework-consistency"]
     }
   },

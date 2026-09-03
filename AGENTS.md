@@ -49,10 +49,10 @@ Use `ai-infrastructure-bridge` for assistant compatibility, bridge, skill,
 prompt, MCP/tool, operation-help, or imported-source changes.
 
 Use `repository-audit` only for an explicit whole-repository consistency or
-release-readiness review. Read `tools/check_manifest.json`, `tools/README.md`,
-and `docs/framework-maintenance.md`, run the manifest `full` profile, and load
-additional canonical owners only for failed check IDs. Do not turn a local
-task into a repository audit by default.
+release-readiness review. Follow its router-owned context, run the manifest
+`full` profile, and expand only for selected workstreams or failed check IDs.
+Explicit intent overrides changed-path classification. Do not promote a local
+task to a repository audit.
 
 Expand beyond the selected profile only when the change crosses framework,
 installer, template, tool, release, security, assistant-infrastructure, or
@@ -62,9 +62,13 @@ rebaseline the full framework set.
 
 ## Source-Contour Worker Routing
 
-When AlatyrCore itself is the active project contour, evaluate whether bounded
-worker delegation is beneficial. If it is, load
-`docs/source-worker-strategy.md` through `tools/source_context_router.json`.
+When AlatyrCore is active, select the source profile first and follow
+`tools/source_worker_policy.json` and `docs/source-worker-strategy.md`. For an
+explicit audit, dispatch two eligible read-only workstreams when runtime
+capability is verified, or record a policy skip reason. The primary retains
+authorization, decisions, integration, synthesis, validation, and state
+changes. Delegation never broadens scope.
+
 Host and target repositories keep their own active adapter policy. This local
 route composes `ALATYR-DELEGATION-001` without changing portable target rules.
 

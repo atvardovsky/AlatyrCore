@@ -2292,12 +2292,14 @@
         "framework/file-inventory.json",
         "framework/semantics/**",
         "installer/**",
-        "tools/source_context_router.json"
+        "tools/source_context_router.json",
+        "tools/source_worker_policy.json"
       ],
       "implementation_paths": [
         "tools/check_all.py",
         "tools/check_source_context_routing.py",
         "tools/context_catalog.py",
+        "tools/plan_minimum_work.py",
         "tools/render_framework_file_inventory.py",
         "tools/task_classification_contract.py"
       ],
@@ -2314,9 +2316,11 @@
         "tools/check_all.py",
         "tools/check_source_context_routing.py",
         "tools/context_catalog.py",
+        "tools/plan_minimum_work.py",
         "tools/render_framework_file_inventory.py",
         "tools/task_classification_contract.py",
-        "tools/source_context_router.json"
+        "tools/source_context_router.json",
+        "tools/source_worker_policy.json"
       ]
     },
     {
@@ -2426,7 +2430,9 @@
       ],
       "always_for_changed": false,
       "contract_inputs": [
-        "tests/**"
+        "tests/**",
+        "tools/source_context_router.json",
+        "tools/source_worker_policy.json"
       ],
       "implementation_paths": [
         "tools/check_all.py",
@@ -2452,6 +2458,8 @@
       ],
       "trigger_paths": [
         "tests/**",
+        "tools/source_context_router.json",
+        "tools/source_worker_policy.json",
         "tools/check_all.py",
         "tools/report_approval_scope.py",
         "tools/run_focused_source_checks.py",
