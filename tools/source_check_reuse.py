@@ -1,4 +1,4 @@
-"""Hash-bound reuse helpers for AlatyrCore source-check results."""
+"""Fail-closed, hash-bound reuse helpers for source-check results."""
 
 from __future__ import annotations
 
@@ -11,10 +11,14 @@ from typing import Any
 from source_state import SourceEntry
 
 
-FINGERPRINT_CONTRACT = "alatyr-source-check-inputs-v1"
+FINGERPRINT_CONTRACT = "alatyr-source-check-inputs-v2"
+REUSE_CONTRACT = "alatyr-source-check-reuse-v1"
+RUN_IDENTITY_CONTRACT = "alatyr-source-check-run-identity-v1"
 
 
-def _digest_payload(value: dict[str, Any]) -> str:
+def canonical_digest(value: Any) -> str:
+    """Return a stable digest for JSON-compatible execution evidence."""
+
     payload = json.dumps(
         value,
         sort_keys=True,
@@ -24,34 +28,103 @@ def _digest_payload(value: dict[str, Any]) -> str:
     return "sha256:" + hashlib.sha256(payload).hexdigest()
 
 
+class SourceSnapshotIndex:
+    """Immutable run-scoped source index with cached pattern matches."""
+
+    def __init__(self, snapshot: dict[str, SourceEntry]) -> None:
+        self._entries = tuple(sorted(snapshot.items()))
+        self._by_path = dict(self._entries)
+        self._pattern_matches: dict[str, tuple[str, ...]] = {}
+        self.sha256 = canonical_digest(
+            {
+                "contract": "alatyr-source-snapshot-v1",
+                "entries": [
+                    {
+                        "path": relpath,
+                        "kind": entry.kind,
+                        "mode": entry.mode,
+                        "digest": entry.digest,
+                    }
+                    for relpath, entry in self._entries
+                ],
+            }
+        )
+
+    def matching_paths(self, pattern: str) -> tuple[str, ...]:
+        cached = self._pattern_matches.get(pattern)
+        if cached is not None:
+            return cached
+        if not any(character in pattern for character in "*?["):
+            matched = (pattern,) if pattern in self._by_path else ()
+        else:
+            matched = tuple(
+                relpath
+                for relpath, _entry in self._entries
+                if fnmatch.fnmatch(relpath, pattern)
+            )
+        self._pattern_matches[pattern] = matched
+        return matched
+
+    def fingerprint(self, check: dict[str, Any]) -> dict[str, Any]:
+        patterns = list(
+            dict.fromkeys([*check["contract_inputs"], *check["implementation_paths"]])
+        )
+        matched_paths = sorted(
+            {
+                relpath
+                for pattern in patterns
+                for relpath in self.matching_paths(pattern)
+            }
+        )
+        entries = [
+            {
+                "path": relpath,
+                "kind": self._by_path[relpath].kind,
+                "mode": self._by_path[relpath].mode,
+                "digest": self._by_path[relpath].digest,
+            }
+            for relpath in matched_paths
+        ]
+        unsupported_inputs = [
+            entry["path"] for entry in entries if entry["kind"] != "file"
+        ]
+        payload = {
+            "contract": FINGERPRINT_CONTRACT,
+            "check_id": check["id"],
+            "patterns": patterns,
+            "entries": entries,
+        }
+        return {
+            **payload,
+            "matched_path_count": len(entries),
+            "reuse_eligible": not unsupported_inputs,
+            "unsupported_inputs": unsupported_inputs,
+            "sha256": canonical_digest(payload),
+        }
+
+
 def check_input_fingerprint(
     check: dict[str, Any],
-    snapshot: dict[str, SourceEntry],
+    snapshot: dict[str, SourceEntry] | SourceSnapshotIndex,
 ) -> dict[str, Any]:
-    """Return a deterministic digest of the source inputs declared by one check."""
+    """Return a deterministic digest of one check's declared source inputs."""
 
-    patterns = list(dict.fromkeys([*check["contract_inputs"], *check["implementation_paths"]]))
-    entries = [
-        {
-            "path": relpath,
-            "kind": entry.kind,
-            "mode": entry.mode,
-            "digest": entry.digest,
-        }
-        for relpath, entry in sorted(snapshot.items())
-        if any(fnmatch.fnmatch(relpath, pattern) for pattern in patterns)
-    ]
+    index = (
+        snapshot
+        if isinstance(snapshot, SourceSnapshotIndex)
+        else SourceSnapshotIndex(snapshot)
+    )
+    return index.fingerprint(check)
+
+
+def environment_fingerprint(environment: dict[str, Any]) -> dict[str, Any]:
+    """Bind reuse to the complete environment contract recorded by the runner."""
+
     payload = {
-        "contract": FINGERPRINT_CONTRACT,
-        "check_id": check["id"],
-        "patterns": patterns,
-        "entries": entries,
+        "contract": "alatyr-source-check-environment-v1",
+        "environment": environment,
     }
-    return {
-        **payload,
-        "matched_path_count": len(entries),
-        "sha256": _digest_payload(payload),
-    }
+    return {**payload, "sha256": canonical_digest(payload)}
 
 
 def load_reuse_report(path: Path) -> dict[str, Any]:
@@ -74,6 +147,70 @@ def _previous_checks(report: dict[str, Any]) -> dict[str, dict[str, Any]]:
     }
 
 
+def _report_reuse_rejection(
+    report: dict[str, Any],
+    *,
+    current_run_identity: dict[str, Any] | None,
+    current_environment: dict[str, Any],
+) -> str | None:
+    contract = report.get("reuse_contract")
+    if not isinstance(contract, dict) or contract.get("contract") != REUSE_CONTRACT:
+        return "previous report is timing-only under the legacy reuse contract"
+    if current_run_identity is None:
+        return "current execution identity is unavailable"
+    if contract.get("completed") is not True:
+        return "previous run was incomplete"
+    if contract.get("successful") is not True:
+        return "previous run was not successful"
+    checks = report.get("checks")
+    run_identity = contract.get("run_identity")
+    if not isinstance(checks, list) or not isinstance(run_identity, dict):
+        return "previous run completion evidence is invalid"
+    expected_check_ids = run_identity.get("selected_check_ids")
+    observed_check_ids = [
+        item.get("id") for item in checks if isinstance(item, dict)
+    ]
+    if (
+        not isinstance(expected_check_ids, list)
+        or observed_check_ids != expected_check_ids
+        or len(observed_check_ids) != len(checks)
+    ):
+        return "previous run completion evidence is invalid"
+    if any(
+        item.get("status") not in {"passed", "reused-pass"}
+        or item.get("timed_out") is True
+        for item in checks
+        if isinstance(item, dict)
+    ):
+        return "previous run was not successful"
+    write_scope = report.get("source_write_scope")
+    if (
+        not isinstance(write_scope, dict)
+        or write_scope.get("declared") != "none"
+        or write_scope.get("preserved") is not True
+        or write_scope.get("changes") != []
+    ):
+        return "previous run did not preserve source write scope"
+    previous_environment = report.get("environment")
+    if not isinstance(previous_environment, dict):
+        return "previous execution environment evidence is invalid"
+    previous_environment_sha256 = environment_fingerprint(previous_environment)[
+        "sha256"
+    ]
+    if contract.get("environment_sha256") != previous_environment_sha256:
+        return "previous execution environment evidence is inconsistent"
+    if previous_environment_sha256 != environment_fingerprint(current_environment)[
+        "sha256"
+    ]:
+        return "execution environment changed"
+    current_identity_digest = canonical_digest(current_run_identity)
+    if contract.get("run_identity_sha256") != current_identity_digest:
+        return "execution scope or resolved ref identity changed"
+    if contract.get("run_identity") != current_run_identity:
+        return "execution identity evidence is inconsistent"
+    return None
+
+
 def reuse_decisions(
     *,
     selected: list[dict[str, Any]],
@@ -82,45 +219,69 @@ def reuse_decisions(
     current_environment: dict[str, Any],
     input_fingerprints: dict[str, dict[str, Any]],
     commands_by_id: dict[str, list[str]],
+    current_run_identity: dict[str, Any] | None = None,
 ) -> dict[str, dict[str, Any]]:
-    """Explain whether each selected check can reuse a previous passed result."""
+    """Explain whether each selected check can reuse an executed passed result."""
 
     decisions: dict[str, dict[str, Any]] = {}
-    previous_checks = _previous_checks(previous_report or {})
-    previous_source = (
-        previous_report.get("source", {}) if isinstance(previous_report, dict) else {}
+    report = previous_report or {}
+    previous_checks = _previous_checks(report)
+    previous_source = report.get("source", {}) if isinstance(report, dict) else {}
+    report_rejection = (
+        _report_reuse_rejection(
+            report,
+            current_run_identity=current_run_identity,
+            current_environment=current_environment,
+        )
+        if previous_report is not None
+        else "no reuse report"
     )
-    previous_environment = (
-        previous_report.get("environment", {}) if isinstance(previous_report, dict) else {}
+    current_identity_digest = (
+        canonical_digest(current_run_identity)
+        if current_run_identity is not None
+        else None
     )
     for check in selected:
         check_id = check["id"]
         previous = previous_checks.get(check_id)
-        reason = "no reuse report"
+        fingerprint = input_fingerprints[check_id]
+        reason = report_rejection or "previous report has no matching check"
         reusable = False
-        if previous_report is not None and previous is None:
+        if report_rejection is not None:
+            pass
+        elif previous is None:
             reason = "previous report has no matching check"
-        elif previous is not None and previous.get("status") not in {"passed", "reused-pass"}:
-            reason = "previous check did not pass"
-        elif previous is not None and previous.get("timed_out") is True:
+        elif fingerprint.get("reuse_eligible") is not True:
+            reason = "current check inputs include unsupported non-file paths"
+        elif previous.get("status") != "passed":
+            reason = "previous check was not an executed pass"
+        elif previous.get("timed_out") is True:
             reason = "previous check timed out"
-        elif previous is not None and previous_source.get("manifest_sha256") != current_source.get("manifest_sha256"):
+        elif previous.get("result_provenance") != {
+            "kind": "executed",
+            "run_identity_sha256": current_identity_digest,
+        }:
+            reason = "previous check lacks direct executed-result provenance"
+        elif previous_source.get("manifest_sha256") != current_source.get(
+            "manifest_sha256"
+        ):
             reason = "check manifest digest changed"
-        elif previous is not None and previous_environment.get("platform") != current_environment.get("platform"):
-            reason = "platform changed"
-        elif previous is not None and previous_environment.get("python") != current_environment.get("python"):
-            reason = "python runtime changed"
-        elif previous is not None and previous.get("command") != commands_by_id.get(check_id):
+        elif previous.get("command") != commands_by_id.get(check_id):
             reason = "check command changed"
-        elif previous is not None and previous.get("input_fingerprint", {}).get("sha256") != input_fingerprints[check_id]["sha256"]:
+        elif (
+            previous.get("input_fingerprint", {}).get("sha256")
+            != fingerprint["sha256"]
+        ):
             reason = "check input fingerprint changed"
-        elif previous is not None:
-            reason = "previous passed result is hash-bound to current inputs"
+        else:
+            reason = (
+                "previous executed pass is bound to the current execution identity"
+            )
             reusable = True
         decisions[check_id] = {
             "reusable": reusable,
             "reason": reason,
             "previous_status": previous.get("status") if previous else None,
-            "input_fingerprint": input_fingerprints[check_id],
+            "input_fingerprint": fingerprint,
         }
     return decisions

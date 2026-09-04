@@ -14,6 +14,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 from check_all import (  # noqa: E402
     RunnerResult,
+    build_run_identity,
     default_changed_from,
     effective_baseline,
     execute_checks,
@@ -115,6 +116,38 @@ class CheckGraphTests(unittest.TestCase):
 
         self.assertNotIn("source-unit-tests", platform_ids)
         self.assertIn("source-unit-tests", full_ids)
+
+    def test_shared_dependency_selection_reason_is_deterministic(self) -> None:
+        dependency = {
+            **check("dependency"),
+            "profiles": ["full"],
+            "platforms": ["all"],
+        }
+        alpha = {
+            **check("alpha", "dependency"),
+            "profiles": ["quick"],
+            "platforms": ["all"],
+        }
+        omega = {
+            **check("omega", "dependency"),
+            "profiles": ["quick"],
+            "platforms": ["all"],
+        }
+
+        plan = select_check_plan(
+            [dependency, omega, alpha],
+            "quick",
+            None,
+            platform="linux",
+        )
+        selected_dependency = next(
+            item for item in plan.selected if item["id"] == "dependency"
+        )
+
+        self.assertEqual(
+            selected_dependency["_selection"]["reasons"],
+            ["dependency-of:alpha"],
+        )
 
     def test_live_fast_docs_change_omits_source_unit_suite(self) -> None:
         from unittest.mock import patch
@@ -331,6 +364,40 @@ class CheckGraphTests(unittest.TestCase):
         self.assertEqual(resolve_changed_from("fast", "main"), "main")
         self.assertIsNone(resolve_changed_from("fast", None, all_fast=True))
         self.assertIsNone(resolve_changed_from("quick", None))
+
+    def test_run_identity_resolves_each_relevant_ref_once(self) -> None:
+        from unittest.mock import patch
+
+        selection = {
+            "effective_profile": "full",
+            "platform": "linux",
+            "selected_check_ids": ["example"],
+            "changed_paths": ["docs/example.md"],
+            "unmatched_changed_paths": [],
+            "fell_back_to_full": False,
+            "escalated_from_micro": False,
+            "micro_escalation_reasons": [],
+            "checks": [],
+        }
+        with patch("check_all.resolve_ref_oid", return_value="resolved-oid") as resolve:
+            identity = build_run_identity(
+                requested_profile="full",
+                selection=selection,
+                changed_from="main",
+                baseline="main",
+                source={
+                    "source_commit": "head-oid",
+                    "source_snapshot_sha256": "snapshot",
+                    "manifest_sha256": "manifest",
+                },
+                jobs=4,
+            )
+
+        resolve.assert_called_once_with("main")
+        self.assertEqual(identity["changed_from"]["commit_oid"], "resolved-oid")
+        self.assertEqual(identity["baseline"]["commit_oid"], "resolved-oid")
+        self.assertEqual(identity["jobs"], 4)
+        self.assertEqual(identity["source_snapshot_sha256"], "snapshot")
 
     def test_live_full_profile_includes_change_release_drift(self) -> None:
         selected = select_check_plan(
@@ -586,7 +653,19 @@ class CheckGraphTests(unittest.TestCase):
 
         self.assertEqual(blocked, {})
         self.assertEqual(report["checks"][0]["status"], "reused-pass")
+        self.assertEqual(
+            report["checks"][0]["result_provenance"]["kind"], "reused"
+        )
         self.assertEqual(report["checks"][1]["status"], "passed")
+        self.assertEqual(
+            report["checks"][1]["result_provenance"]["kind"], "executed"
+        )
+        self.assertTrue(report["reuse_contract"]["successful"])
+        self.assertFalse(report["acceptance_evidence"]["eligible"])
+        self.assertEqual(
+            report["acceptance_evidence"]["mode"], "local-result-reuse"
+        )
+        self.assertEqual(report["acceptance_evidence"]["reused_check_ids"], ["cached"])
 
     def test_process_timeout_is_a_typed_runner_failure(self) -> None:
         from unittest.mock import patch
@@ -671,6 +750,10 @@ class CheckGraphTests(unittest.TestCase):
         self.assertEqual(report["schema_version"], 3)
         self.assertEqual(report["checks"][0]["resource_class"], "standard")
         self.assertFalse(report["source_write_scope"]["preserved"])
+        self.assertTrue(report["reuse_contract"]["completed"])
+        self.assertFalse(report["reuse_contract"]["successful"])
+        self.assertFalse(report["acceptance_evidence"]["eligible"])
+        self.assertEqual(report["acceptance_evidence"]["mode"], "cold-execution")
         self.assertFalse(report["selection"]["fell_back_to_full"])
         self.assertEqual(report["selection"]["selected_check_ids"], ["failed"])
         self.assertIn("timing", report)

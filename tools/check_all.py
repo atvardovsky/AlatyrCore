@@ -7,6 +7,7 @@ import argparse
 import concurrent.futures
 import hashlib
 import json
+import locale
 import os
 import platform
 import subprocess
@@ -30,7 +31,12 @@ from source_check_manifest import (
     routes,
 )
 from source_check_reuse import (
+    REUSE_CONTRACT,
+    RUN_IDENTITY_CONTRACT,
+    SourceSnapshotIndex,
+    canonical_digest,
     check_input_fingerprint,
+    environment_fingerprint,
     load_reuse_report,
     reuse_decisions,
 )
@@ -104,6 +110,23 @@ def git_ref_exists(ref: str) -> bool:
         stderr=subprocess.DEVNULL,
     )
     return result.returncode == 0
+
+
+def resolve_ref_oid(ref: str | None) -> str | None:
+    """Resolve a relevant Git reference to the commit identity used by this run."""
+
+    if ref is None:
+        return None
+    result = subprocess.run(
+        ["git", "rev-parse", "--verify", f"{ref}^{{commit}}"],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        raise ValueError(result.stderr.strip() or f"cannot resolve Git ref {ref}")
+    return result.stdout.strip()
 
 
 def default_changed_from() -> str:
@@ -286,7 +309,7 @@ def select_check_plan(
                 note(dependency, f"dependency-of:{check_id}")
                 add_dependencies(dependency)
 
-    for check_id in list(selected_ids):
+    for check_id in sorted(selected_ids):
         add_dependencies(check_id)
     if profile == "micro":
         non_micro_dependencies = sorted(
@@ -398,6 +421,56 @@ def selection_report(
     }
 
 
+def build_run_identity(
+    *,
+    requested_profile: str,
+    selection: dict[str, Any],
+    changed_from: str | None,
+    baseline: str | None,
+    source: dict[str, Any],
+    jobs: int | None = None,
+) -> dict[str, Any]:
+    """Bind a reusable result to exact selection scope and resolved Git refs."""
+
+    refs: dict[str, str | None] = {}
+    for ref in [changed_from, baseline]:
+        if ref is not None and ref not in refs:
+            refs[ref] = resolve_ref_oid(ref)
+    return {
+        "contract": RUN_IDENTITY_CONTRACT,
+        "requested_profile": requested_profile,
+        "effective_profile": selection.get("effective_profile", requested_profile),
+        "platform": selection.get("platform"),
+        "jobs": jobs,
+        "selected_check_ids": selection.get("selected_check_ids", []),
+        "changed_paths": selection.get("changed_paths", []),
+        "unmatched_changed_paths": selection.get("unmatched_changed_paths", []),
+        "fell_back_to_full": selection.get("fell_back_to_full", False),
+        "escalated_from_micro": selection.get("escalated_from_micro", False),
+        "micro_escalation_reasons": selection.get("micro_escalation_reasons", []),
+        "check_scope": [
+            {
+                "id": item.get("id"),
+                "selection_reasons": item.get("selection_reasons", []),
+                "matched_changed_paths": item.get("matched_changed_paths", []),
+            }
+            for item in selection.get("checks", [])
+            if isinstance(item, dict)
+        ],
+        "changed_from": {
+            "name": changed_from,
+            "commit_oid": refs.get(changed_from),
+        },
+        "baseline": {
+            "name": baseline,
+            "commit_oid": refs.get(baseline),
+        },
+        "source_commit": source.get("source_commit"),
+        "source_snapshot_sha256": source.get("source_snapshot_sha256"),
+        "manifest_sha256": source.get("manifest_sha256"),
+    }
+
+
 def resolved_command(check: dict[str, Any], baseline: str | None) -> list[str]:
     command: list[str] = []
     for value in check["command"]:
@@ -503,12 +576,39 @@ def environment_report() -> dict[str, Any]:
             dependencies[dependency] = package_version(dependency)
         except PackageNotFoundError:
             dependencies[dependency] = "not-installed"
+    git_version = subprocess.run(
+        ["git", "--version"],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    visible_environment = {
+        name: os.environ.get(name)
+        for name in [
+            "LANG",
+            "LC_ALL",
+            "PYTHONHASHSEED",
+            "PYTHONIOENCODING",
+            "TZ",
+        ]
+    }
     return {
         "platform": current_platform(),
         "platform_detail": platform.platform(),
         "python": sys.version,
         "python_executable": sys.executable,
+        "python_implementation": platform.python_implementation(),
+        "filesystem_encoding": sys.getfilesystemencoding(),
+        "preferred_encoding": locale.getpreferredencoding(False),
         "dependencies": dependencies,
+        "external_tools": {
+            "git": (
+                git_version.stdout.strip()
+                if git_version.returncode == 0
+                else "unavailable"
+            )
+        },
+        "visible_environment": visible_environment,
     }
 
 
@@ -589,11 +689,62 @@ def render_report(
     selection: dict[str, Any] | None = None,
     input_fingerprints: dict[str, dict[str, Any]] | None = None,
     reuse: dict[str, dict[str, Any]] | None = None,
+    source: dict[str, Any] | None = None,
+    environment: dict[str, Any] | None = None,
+    run_identity: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     checks: list[dict[str, Any]] = []
     telemetry = telemetry or {}
     input_fingerprints = input_fingerprints or {}
     reuse = reuse or {}
+    resolved_source = source or source_identity()
+    resolved_environment = environment or environment_report()
+    resolved_selection = selection or {
+        "profile": profile,
+        "effective_profile": profile,
+        "platform": current_platform(),
+        "changed_from": None,
+        "changed_path_count": 0,
+        "changed_paths": [],
+        "unmatched_changed_paths": [],
+        "fell_back_to_full": False,
+        "escalated_from_micro": False,
+        "micro_escalation_reasons": [],
+        "selected_check_ids": [check["id"] for check in selected],
+        "resource_class_counts": {},
+        "checks": [],
+        "broad_trigger_diagnostics": {
+            "selected_count": 0,
+            "checks": [],
+            "limitation": "selection details unavailable",
+        },
+    }
+    resolved_run_identity = run_identity or {
+        "contract": RUN_IDENTITY_CONTRACT,
+        "requested_profile": profile,
+        "effective_profile": resolved_selection.get("effective_profile", profile),
+        "platform": resolved_selection.get("platform"),
+        "jobs": None,
+        "selected_check_ids": resolved_selection.get("selected_check_ids", []),
+        "changed_paths": resolved_selection.get("changed_paths", []),
+        "unmatched_changed_paths": resolved_selection.get(
+            "unmatched_changed_paths", []
+        ),
+        "fell_back_to_full": resolved_selection.get("fell_back_to_full", False),
+        "escalated_from_micro": resolved_selection.get(
+            "escalated_from_micro", False
+        ),
+        "micro_escalation_reasons": resolved_selection.get(
+            "micro_escalation_reasons", []
+        ),
+        "check_scope": [],
+        "changed_from": {"name": None, "commit_oid": None},
+        "baseline": {"name": None, "commit_oid": None},
+        "source_commit": resolved_source.get("source_commit"),
+        "source_snapshot_sha256": resolved_source.get("source_snapshot_sha256"),
+        "manifest_sha256": resolved_source.get("manifest_sha256"),
+    }
+    run_identity_sha256 = canonical_digest(resolved_run_identity)
     def catalog_key(entry: dict[str, Any]) -> tuple[str, str, int, str | None]:
         return (
             str(entry.get("path")),
@@ -697,6 +848,10 @@ def render_report(
                     "id": check_id,
                     "status": "blocked",
                     "blocked_by": blocked[check_id],
+                    "result_provenance": {
+                        "kind": "not-executed",
+                        "run_identity_sha256": run_identity_sha256,
+                    },
                     **common,
                 }
             )
@@ -705,6 +860,9 @@ def render_report(
         status = "passed" if code == 0 else "failed"
         if observation.get("reused") is True and code == 0:
             status = "reused-pass"
+        provenance_kind = (
+            "reused" if observation.get("reused") is True else "executed"
+        )
         checks.append(
             {
                 "id": check_id,
@@ -713,35 +871,48 @@ def render_report(
                 "command": command,
                 "stdout": stdout,
                 "stderr": stderr,
+                "result_provenance": {
+                    "kind": provenance_kind,
+                    "run_identity_sha256": run_identity_sha256,
+                },
                 **common,
             }
         )
+    completed = len(checks) == len(selected)
+    successful = completed and not source_changes and all(
+        item.get("status") in {"passed", "reused-pass"} for item in checks
+    )
+    reused_check_ids = [
+        item["id"] for item in checks if item.get("status") == "reused-pass"
+    ]
     return {
         "schema_version": 3,
         "report_kind": "alatyr-source-check-run",
         "profile": profile,
-        "source": source_identity(),
+        "source": resolved_source,
         "timing": timing,
-        "selection": selection or {
-            "profile": profile,
-            "platform": current_platform(),
-            "changed_from": None,
-            "changed_path_count": 0,
-            "changed_paths": [],
-            "unmatched_changed_paths": [],
-            "fell_back_to_full": False,
-            "escalated_from_micro": False,
-            "micro_escalation_reasons": [],
-            "selected_check_ids": [check["id"] for check in selected],
-            "resource_class_counts": {},
-            "checks": [],
-            "broad_trigger_diagnostics": {
-                "selected_count": 0,
-                "checks": [],
-                "limitation": "selection details unavailable",
-            },
+        "selection": resolved_selection,
+        "reuse_contract": {
+            "contract": REUSE_CONTRACT,
+            "completed": completed,
+            "successful": successful,
+            "run_identity": resolved_run_identity,
+            "run_identity_sha256": run_identity_sha256,
+            "environment_sha256": environment_fingerprint(resolved_environment)[
+                "sha256"
+            ],
         },
-        "environment": environment_report(),
+        "acceptance_evidence": {
+            "eligible": successful and not reused_check_ids,
+            "mode": "cold-execution" if not reused_check_ids else "local-result-reuse",
+            "reused_check_ids": reused_check_ids,
+            "limitation": (
+                None
+                if not reused_check_ids
+                else "reused local results are optimization evidence, not cold release evidence"
+            ),
+        },
+        "environment": resolved_environment,
         "source_write_scope": {
             "declared": "none",
             "preserved": not source_changes,
@@ -1089,6 +1260,8 @@ def main() -> int:
         parser.error("--all-fast is only valid with --profile fast")
     if args.all_fast and args.changed_from:
         parser.error("--all-fast cannot be combined with --changed-from")
+    if args.profile == "release" and args.reuse_report is not None:
+        parser.error("--reuse-report is not permitted for release validation")
 
     try:
         checks = load_manifest()
@@ -1102,6 +1275,11 @@ def main() -> int:
         commands_by_id = {
             check["id"]: command for check, command in zip(selected, commands)
         }
+        selection = selection_report(
+            profile=args.profile,
+            changed_from=changed_from,
+            plan=plan,
+        )
         report_path = resolve_report_path(args.report) if args.report else None
         previous_report = load_reuse_report(args.reuse_report) if args.reuse_report else None
     except (OSError, ValueError, json.JSONDecodeError) as exc:
@@ -1123,16 +1301,28 @@ def main() -> int:
 
     try:
         before = source_snapshot(ROOT)
+        snapshot_index = SourceSnapshotIndex(before)
         input_fingerprints = (
             {
-                check["id"]: check_input_fingerprint(check, before)
+                check["id"]: check_input_fingerprint(check, snapshot_index)
                 for check in selected
             }
             if report_path is not None or previous_report is not None
             else {}
         )
-        current_source = source_identity()
+        current_source = {
+            **source_identity(),
+            "source_snapshot_sha256": snapshot_index.sha256,
+        }
         current_environment = environment_report()
+        run_identity = build_run_identity(
+            requested_profile=args.profile,
+            selection=selection,
+            changed_from=changed_from,
+            baseline=baseline,
+            source=current_source,
+            jobs=args.jobs,
+        )
         reuse = (
             reuse_decisions(
                 selected=selected,
@@ -1141,6 +1331,7 @@ def main() -> int:
                 current_environment=current_environment,
                 input_fingerprints=input_fingerprints,
                 commands_by_id=commands_by_id,
+                current_run_identity=run_identity,
             )
             if previous_report is not None
             else {}
@@ -1164,7 +1355,24 @@ def main() -> int:
             initial_results=initial_results,
             duration_estimates=duration_estimates,
         )
-        source_changes = snapshot_changes(before, source_snapshot(ROOT))
+        after_snapshot = source_snapshot(ROOT)
+        source_changes = snapshot_changes(before, after_snapshot)
+        after_index = SourceSnapshotIndex(after_snapshot)
+        after_identity = build_run_identity(
+            requested_profile=args.profile,
+            selection=selection,
+            changed_from=changed_from,
+            baseline=baseline,
+            source={
+                **source_identity(),
+                "source_snapshot_sha256": after_index.sha256,
+            },
+            jobs=args.jobs,
+        )
+        if after_identity != run_identity:
+            source_changes = sorted(
+                {*source_changes, "execution identity changed during source checks"}
+            )
     except (OSError, ValueError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 2
@@ -1204,11 +1412,10 @@ def main() -> int:
                     telemetry=telemetry,
                     input_fingerprints=input_fingerprints,
                     reuse=reuse,
-                    selection=selection_report(
-                        profile=args.profile,
-                        changed_from=changed_from,
-                        plan=plan,
-                    ),
+                    selection=selection,
+                    source=current_source,
+                    environment=current_environment,
+                    run_identity=run_identity,
                 ),
             )
         except OSError as exc:
@@ -1216,7 +1423,27 @@ def main() -> int:
             failures.append("source-check-report")
 
     try:
-        final_source_changes = snapshot_changes(before, source_snapshot(ROOT))
+        final_snapshot = source_snapshot(ROOT)
+        final_source_changes = snapshot_changes(before, final_snapshot)
+        final_index = SourceSnapshotIndex(final_snapshot)
+        final_identity = build_run_identity(
+            requested_profile=args.profile,
+            selection=selection,
+            changed_from=changed_from,
+            baseline=baseline,
+            source={
+                **source_identity(),
+                "source_snapshot_sha256": final_index.sha256,
+            },
+            jobs=args.jobs,
+        )
+        if final_identity != run_identity:
+            final_source_changes = sorted(
+                {
+                    *final_source_changes,
+                    "execution identity changed during source checks",
+                }
+            )
     except (OSError, ValueError) as exc:
         print(f"FAIL: cannot verify final source write scope: {exc}", file=sys.stderr)
         failures.append("source-write-scope")
@@ -1236,11 +1463,10 @@ def main() -> int:
                         telemetry=telemetry,
                         input_fingerprints=input_fingerprints,
                         reuse=reuse,
-                        selection=selection_report(
-                            profile=args.profile,
-                            changed_from=changed_from,
-                            plan=plan,
-                        ),
+                        selection=selection,
+                        source=current_source,
+                        environment=current_environment,
+                        run_identity=run_identity,
                     ),
                 )
             except OSError as exc:
@@ -1261,7 +1487,18 @@ def main() -> int:
     profile_label = args.profile
     if plan.effective_profile != args.profile:
         profile_label = f"{args.profile} (effective {plan.effective_profile})"
-    print(f"\nOK: ran {len(selected)} source checks from profile {profile_label}")
+    reused_count = sum(
+        telemetry.get(check["id"], {}).get("reused") is True
+        for check in selected
+    )
+    suffix = (
+        "; local reused results are not cold release evidence"
+        if reused_count
+        else ""
+    )
+    print(
+        f"\nOK: ran {len(selected)} source checks from profile {profile_label}{suffix}"
+    )
     return 0
 
 
