@@ -4,6 +4,30 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.53 - 2026-09-04
+
+- Reduced scaffold projection time by indexing exact and ancestor paths once,
+  reusing Git provenance reads, and selecting source unit tests through the
+  transitive local-import graph.
+- Made partial framework packs semantically closed by projecting only terms
+  whose canonical owner, rule, and dependency terms are installed, with
+  deterministic digest validation for every projected shard.
+- Added a shared assistant runtime-capability module and made explicit native
+  assistant selection a dependency-closed overlay on any support profile,
+  without installing unselected capability records or leaving dangling index
+  references.
+- Replaced the large schema-1 first-use entry packet with schema 2 routing
+  pointers and compact task/decomposition cues; first-use bootstrap plus packet
+  now has an explicit deterministic context budget.
+- Added selector-aware semantic loading, exact root-index ownership references,
+  critical-path-aware source-check scheduling, and schema-3 reports with a
+  deduplicated input fingerprint catalog.
+- Removed unused entry-packet route construction and aligned installation
+  guidance with profile-conditional project knowledge, engineering evidence,
+  operation, capability, and assistant bridge surfaces.
+- Increased the adapter schema version to `43` and target template version to
+  `48` for the entry-packet and capability-projection contract changes.
+
 ## 0.1.0-alpha.52 - 2026-09-04
 
 - Added provider-neutral context-caching capability evidence to every supported

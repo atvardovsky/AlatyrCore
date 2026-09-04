@@ -553,15 +553,15 @@ def main() -> int:
         failures.append("agent_entry_packet must be an object")
     else:
         expected_entry_packet = {
-            "schema_version": 1,
+            "schema_version": 2,
             "path": ".ai/assistant/entry-packet.json",
             "load_after": ".ai/assistant/bootstrap-index.json",
         }
         for field, expected in expected_entry_packet.items():
             if entry_packet.get(field) != expected:
                 failures.append(f"agent_entry_packet.{field} must be {expected}")
-        if "exact installed profile files" not in str(entry_packet.get("purpose", "")):
-            failures.append("agent_entry_packet.purpose must describe exact profile files")
+        if "routing source pointers" not in str(entry_packet.get("purpose", "")):
+            failures.append("agent_entry_packet.purpose must describe routing source pointers")
         load_reasons = entry_packet.get("load_human_references_when")
         if not isinstance(load_reasons, list) or "ambiguity" not in load_reasons:
             failures.append("agent_entry_packet must define human-reference load reasons")

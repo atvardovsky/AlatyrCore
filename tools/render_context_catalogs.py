@@ -299,6 +299,22 @@ def build_framework_catalog_contents(
             entries=entries,
         )
         contents[section_path] = section_text
+        section_owner_refs = sorted(
+            {
+                owner_ref
+                for entry in entries
+                for owner_ref in entry.get("owner_refs", [])
+                if isinstance(owner_ref, str)
+            }
+        )
+        section_semantic_refs = sorted(
+            {
+                semantic_ref
+                for entry in entries
+                for semantic_ref in entry.get("semantic_refs", [])
+                if isinstance(semantic_ref, str)
+            }
+        )
         root_entries.append(
             _entry_from_bytes(
                 item_id=f"framework.section.{section}",
@@ -306,8 +322,8 @@ def build_framework_catalog_contents(
                 path=section_path,
                 summary=f"{section.title()} framework section",
                 selectors={"sections": [section]},
-                semantic_refs=[],
-                owner_refs=[],
+                semantic_refs=section_semantic_refs,
+                owner_refs=section_owner_refs,
                 payload=section_text.encode("utf-8"),
             )
         )

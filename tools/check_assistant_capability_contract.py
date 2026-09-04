@@ -56,6 +56,8 @@ def main() -> int:
             for path in CAPABILITIES.glob("*.json")
             if path.name != "context-index.json"
         }
+        generic_shape = load_object(records["generic"])
+        generic_shape.pop("assistant_surface", None)
         if set(records) != surface_ids:
             failures.append(
                 "assistant capability records differ from surfaces: "
@@ -93,6 +95,12 @@ def main() -> int:
             failures.append("assistant capability index contains an invalid surface path")
         for surface_id, path in sorted(records.items()):
             record = load_object(path)
+            shared_shape = dict(record)
+            shared_shape.pop("assistant_surface", None)
+            if shared_shape != generic_shape:
+                failures.append(
+                    f"{surface_id} capability shape drifted from the generic template"
+                )
             errors = sorted(
                 validator.iter_errors(record),
                 key=lambda error: list(error.absolute_path),

@@ -56,8 +56,8 @@ def check_input_fingerprint(
 
 def load_reuse_report(path: Path) -> dict[str, Any]:
     data = json.loads(path.read_text(encoding="utf-8"))
-    if not isinstance(data, dict) or data.get("schema_version") != 2:
-        raise ValueError("--reuse-report must point to a source-check report schema 2")
+    if not isinstance(data, dict) or data.get("schema_version") not in {2, 3}:
+        raise ValueError("--reuse-report must point to a source-check report schema 2 or 3")
     if data.get("report_kind") != "alatyr-source-check-run":
         raise ValueError("--reuse-report must point to an alatyr-source-check-run report")
     return data

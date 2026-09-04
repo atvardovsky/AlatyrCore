@@ -120,36 +120,19 @@ modules:
                     }
                 }
             ),
-            profile_descriptors={
-                "code-local": {
-                    "operation_candidates": ["logical-integrity-review"],
-                    "required_context": [".ai/framework/logical-integrity.md"],
-                    "approval_gates": ["protected_category_crossed"],
-                    "validation": ["pytest"],
-                    "final_evidence": ["validation"],
-                }
-            },
         )
 
+        self.assertEqual(packet["schema_version"], 2)
         self.assertEqual(
-            packet["profile_recommendation"]["default_install_profile"],
-            "kernel",
-        )
-        self.assertIn("code-local", packet["profile_routes"])
-        code_route = packet["profile_routes"]["code-local"]
-        self.assertEqual(
-            code_route["default_gate_paths"],
-            [".ai/assistant/gates/core.md", ".ai/assistant/gates/final-evidence.md"],
+            packet["routing_sources"]["installed_profile_routes"],
+            ".ai/assistant/bootstrap-index.json",
         )
         self.assertEqual(
-            code_route["required_context"],
-            [".ai/framework/logical-integrity.md"],
+            packet["operation_routing"]["index"],
+            ".ai/assistant/operation-index.json",
         )
-        operation = packet["operation_routing"]["operation_routes"][
-            "logical-integrity-review"
-        ]
-        self.assertEqual(operation["allowed_actions"], ["read-only", "code-and-tests"])
-        self.assertIn("read-only", packet["authorization"]["allowed_action_modes"])
+        self.assertNotIn("profile_routes", packet)
+        self.assertNotIn("allowed_action_modes", packet["authorization"])
         self.assertIn(
             "tools/alatyr.py support-delta",
             packet["support_delta_first"]["support_delta_tool"],
@@ -190,7 +173,7 @@ modules:
             inputs["task_decomposition"],
         )
 
-        self.assertEqual(packet["operation_routing"]["operation_routes"], {})
+        self.assertNotIn("operation_routes", packet["operation_routing"])
 
 
 if __name__ == "__main__":

@@ -279,14 +279,21 @@ contract with the `evidence-status` routes. Changing an executor contract,
 context receipt, benchmark input, or other digest owner therefore selects the
 freshness check instead of leaving older evidence apparently current.
 
-Machine-readable reports use schema version 2. Each selected check is emitted
+Machine-readable reports use schema version 3. Each selected check is emitted
 in manifest order with its resource class, timeout, elapsed duration, command,
 output, exit status, and timeout state. A report also records selection
 evidence: selected profile, platform, changed-path baseline, unmatched
 changed paths, fallback state, and selected check IDs. A report records a
 blocked check separately from a failed process so consumers can distinguish
 root failures from dependency fallout. Durations are local runner observations,
-not a cross-platform performance benchmark.
+not a cross-platform performance benchmark. Input fingerprints reference one
+deduplicated report-level input catalog, avoiding repeated path and digest
+payloads without weakening hash-bound reuse decisions.
+
+Ready checks are ordered by dependency impact and active-chain depth before
+resource weight and manifest order. This starts prerequisite checks that unlock
+more downstream validation earlier while preserving dependency, capacity, and
+failure-blocking behavior.
 
 Machine-readable reports should normally be written outside the repository.
 A repository-local `--report` path is accepted only under `tmp/` when Git

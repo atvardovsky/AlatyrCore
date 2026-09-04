@@ -69,6 +69,25 @@ class SourceUnitTestSelectionTests(unittest.TestCase):
                 [expected],
             )
 
+    def test_tool_change_selects_tests_through_reverse_dependency(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "tools").mkdir()
+            (root / "tests").mkdir()
+            (root / "tools/core.py").write_text("VALUE = 1\n", encoding="utf-8")
+            (root / "tools/wrapper.py").write_text(
+                "from core import VALUE\n", encoding="utf-8"
+            )
+            expected = root / "tests/test_wrapper.py"
+            expected.write_text(
+                "from wrapper import VALUE\n", encoding="utf-8"
+            )
+
+            self.assertEqual(
+                focused_test_paths(["tools/core.py"], root=root),
+                [expected],
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

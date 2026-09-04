@@ -14,6 +14,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 from scaffold_projection import (  # noqa: E402
     path_available,
+    project_assistant_capability_index,
     project_manifest,
     project_markdown_fragments,
     project_module_profile,
@@ -67,6 +68,40 @@ class ScaffoldProjectionTests(unittest.TestCase):
         )
         self.assertTrue(path_available(".ai/assistant/context/profiles", indexed))
         self.assertFalse(path_available(".ai/assistant/operation-catalog.json", indexed))
+
+    def test_selected_path_index_normalizes_windows_separators_once(self) -> None:
+        indexed = selected_path_index(
+            {Path(".ai/project/contour.md"), ".ai\\assistant\\help.md"}
+        )
+
+        self.assertTrue(path_available(".ai/assistant/help.md", indexed))
+        self.assertTrue(path_available(".ai/assistant", indexed))
+        self.assertFalse(path_available(".ai/assistant/help-reference.md", indexed))
+
+    def test_assistant_capability_index_keeps_only_installed_records_and_bridges(self) -> None:
+        source = {
+            "default_surface": "generic",
+            "surfaces": {
+                "generic": ".ai/assistant/assistant-capabilities/generic.json",
+                "codex": ".ai/assistant/assistant-capabilities/codex.json",
+            },
+            "bridge_paths": {
+                "generic": ["AI_ASSISTANTS.md"],
+                "codex": ["AGENTS.md", "AI_ASSISTANTS.md"],
+            },
+        }
+        selected = {
+            Path(".ai/assistant/assistant-capabilities/generic.json"),
+            Path("AGENTS.md"),
+        }
+
+        projected = project_assistant_capability_index(source, selected)
+
+        self.assertEqual(
+            projected["surfaces"],
+            {"generic": ".ai/assistant/assistant-capabilities/generic.json"},
+        )
+        self.assertEqual(projected["bridge_paths"], {"generic": []})
 
     def test_optional_approval_mapping_is_omitted_without_surfaces(self) -> None:
         source = "framework:\n  version: x\napprovals:\n  index: .ai/assistant/approvals/index.json\n"
@@ -245,6 +280,38 @@ class ScaffoldProjectionTests(unittest.TestCase):
             self.assertEqual(
                 bootstrap["derived_from"]["project_map"]["sha256"],
                 hashlib.sha256(readme.encode("utf-8")).hexdigest(),
+            )
+
+    def test_partial_profile_capability_module_installs_closed_generic_index(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            _actions, blocked = plan(
+                SimpleNamespace(
+                    target=target,
+                    write=True,
+                    overwrite_existing=False,
+                    profile="core",
+                    framework_pack="matched",
+                    enable_module=["multi-assistant-bridges"],
+                    assistant_surface=[],
+                )
+            )
+
+            self.assertFalse(blocked)
+            index = json.loads(
+                (target / ".ai/assistant/assistant-capabilities.json").read_text(
+                    encoding="utf-8"
+                )
+            )
+            self.assertEqual(
+                index["surfaces"],
+                {"generic": ".ai/assistant/assistant-capabilities/generic.json"},
+            )
+            self.assertTrue(
+                (target / ".ai/assistant/assistant-capabilities/generic.json").is_file()
+            )
+            self.assertFalse(
+                (target / ".ai/assistant/assistant-capabilities/codex.json").exists()
             )
 
     def test_kernel_agents_surface_projects_optional_agents_skill_path(self) -> None:

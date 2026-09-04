@@ -28,14 +28,6 @@ OPTIONAL_SOURCE_PATHS = {
     "operation_catalog": Path(".ai/assistant/operation-catalog.json"),
 }
 
-ALLOWED_ACTION_MODES = {
-    "read-only": "inspect analyze discuss review plan explain compare or report without file or external-state changes",
-    "docs-only": "change documentation blueprint diagram source or support explanation only; do not change product code",
-    "adapter-only": "change Alatyr adapter, assistant bridge, prompt, gate, or template surfaces only",
-    "code-and-tests": "change product code and tests with synchronized docs as needed; no publish or live-external action",
-    "full-with-approval": "perform protected or broad state-changing work only within explicit current approval scope",
-}
-
 LAZY_HEAVY_SURFACES = [
     ".ai/assistant/context-profiles.md",
     ".ai/assistant/module-profile.md",
@@ -173,78 +165,6 @@ def _derived_from(
     return entries
 
 
-def _gate_paths(gates: dict[str, Any], gate_ids: list[str]) -> list[str]:
-    gate_index = _object(gates.get("gates"))
-    paths: list[str] = []
-    for gate_id in gate_ids:
-        entry = _object(gate_index.get(gate_id))
-        path = entry.get("path")
-        if isinstance(path, str) and path:
-            paths.append(path)
-    return paths
-
-
-def _operation_routes(operation_index: dict[str, Any] | None) -> dict[str, dict[str, Any]]:
-    if operation_index is None:
-        return {}
-    operations = _object(operation_index.get("operations"))
-    routes: dict[str, dict[str, Any]] = {}
-    for operation_id, route in operations.items():
-        if not isinstance(operation_id, str) or not isinstance(route, list):
-            continue
-        values = [item for item in route if isinstance(item, str) and item]
-        if len(values) < 2:
-            continue
-        routes[operation_id] = {
-            "required_module": values[0],
-            "flow": values[1],
-            "allowed_actions": values[2:],
-        }
-    return routes
-
-
-def _profile_routes(
-    router: dict[str, Any],
-    gates: dict[str, Any],
-    target: Path | None,
-    profile_descriptors: dict[str, dict[str, Any]] | None = None,
-) -> dict[str, dict[str, Any]]:
-    profiles = _object(router.get("profile_index"))
-    defaults = _object(gates.get("profile_defaults"))
-    routes: dict[str, dict[str, Any]] = {}
-    for profile_id, entry in profiles.items():
-        if not isinstance(profile_id, str) or not isinstance(entry, dict):
-            continue
-        descriptor = entry.get("descriptor")
-        descriptor_data: dict[str, Any] = (profile_descriptors or {}).get(
-            profile_id,
-            {},
-        )
-        if not descriptor_data and isinstance(descriptor, str) and target is not None:
-            descriptor_path = target / descriptor
-            if descriptor_path.is_file():
-                descriptor_data = _load_json_text(
-                    descriptor_path.read_text(encoding="utf-8"),
-                    descriptor,
-                )
-        default_gate_ids = _string_list(defaults.get(profile_id))
-        routes[profile_id] = {
-            "signals": _string_list(entry.get("use_when")),
-            "descriptor": _string(descriptor),
-            "operations": _string_list(
-                descriptor_data.get("operation_candidates")
-                or entry.get("operation_candidates")
-            ),
-            "required_context": _string_list(descriptor_data.get("required_context")),
-            "default_gates": default_gate_ids,
-            "default_gate_paths": _gate_paths(gates, default_gate_ids),
-            "approval_gates": _string_list(descriptor_data.get("approval_gates")),
-            "validation": _string_list(descriptor_data.get("validation")),
-            "final_evidence": _string_list(descriptor_data.get("final_evidence")),
-        }
-    return routes
-
-
 def build_agent_entry_packet(
     manifest_text: str,
     router_text: str,
@@ -255,15 +175,13 @@ def build_agent_entry_packet(
     *,
     operation_index_text: str | None = None,
     operation_catalog_text: str | None = None,
-    target: Path | None = None,
-    profile_descriptors: dict[str, dict[str, Any]] | None = None,
     generated_by: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Return a deterministic compact routing packet from target sources."""
 
     manifest = _load_yaml_text(manifest_text, ".ai/alatyr.yaml")
     router = _load_json_text(router_text, ".ai/assistant/context-router.json")
-    gates = _load_json_text(gate_index_text, ".ai/assistant/gates/index.json")
+    _load_json_text(gate_index_text, ".ai/assistant/gates/index.json")
     authorization = _load_json_text(
         action_authorization_text,
         ".ai/assistant/policies/action-authorization.json",
@@ -276,11 +194,10 @@ def build_agent_entry_packet(
         task_decomposition_text,
         ".ai/assistant/task-decomposition.json",
     )
-    operation_index = (
+    if operation_index_text is not None:
         _load_json_text(operation_index_text, ".ai/assistant/operation-index.json")
-        if operation_index_text is not None
-        else None
-    )
+    if operation_catalog_text is not None:
+        _load_json_text(operation_catalog_text, ".ai/assistant/operation-catalog.json")
 
     framework = _object(manifest.get("framework"))
     installation = _object(manifest.get("installation"))
@@ -295,9 +212,32 @@ def build_agent_entry_packet(
         }.items()
         if text is not None
     }
+    classification = _task_classification(router.get("task_classification"))
+    compact_classes = {
+        class_id: {
+            key: value
+            for key, value in class_data.items()
+            if key in {"task_scale_overlay", "pre_change_preview", "evidence"}
+        }
+        for class_id, class_data in _object(classification.get("classes")).items()
+        if isinstance(class_id, str) and isinstance(class_data, dict)
+    }
+    decomposition = _task_decomposition_summary(task_decomposition)
+    cache_delivery = _object(router.get("cache_aware_delivery"))
+    compact_classification = {
+        key: classification.get(key)
+        for key in [
+            "schema_version",
+            "classification_order",
+            "default_class",
+            "ambiguity_behavior",
+            "expansion_triggers",
+        ]
+    }
+    compact_classification["classes"] = compact_classes
 
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "packet_kind": "target-agent-entry-packet",
         "path": PACKET_PATH.as_posix(),
         "generated_by": generated_by or {},
@@ -335,37 +275,45 @@ def build_agent_entry_packet(
                 "paths": [PACKET_PATH.as_posix()],
             },
         ],
-        "cache_aware_delivery": _object(router.get("cache_aware_delivery")),
+        "cache_aware_delivery": {
+            key: cache_delivery.get(key)
+            for key in [
+                "schema_version",
+                "provider_capability_index",
+                "stable_prefix_order",
+                "dynamic_tail_order",
+                "cache_hit_required",
+                "context_window_reduction",
+                "fallback",
+            ]
+        },
         "budget_summary": {
             "bootstrap": _object(context_budgets.get("bootstrap")),
             "profile_default": _object(context_budgets.get("profile_default")),
             "on_exceed": _string(context_budgets.get("on_exceed")),
         },
-        "profile_recommendation": {
-            "default_install_profile": "kernel",
-            "escalation_order": ["kernel", "core", "standard", "full"],
-            "select_core_when": [
-                "durable engineering evidence or project knowledge is needed",
-                "optional capability dependency closure requires core or broader",
-            ],
-            "select_standard_when": [
-                "common lifecycle, product-change, operation catalog, or post-update operations are required",
-            ],
-            "select_full_when": [
-                "native assistant bridges, all optional support templates, or full-profile conformance are explicitly required",
-            ],
-            "decision_policy": "install or update the cheapest sufficient profile from target evidence; escalate only for a named missing surface, module dependency, assistant bridge, or failed validation",
+        "routing_sources": {
+            "installed_profile_routes": ".ai/assistant/bootstrap-index.json",
+            "profile_descriptors": "profiles",
+            "gate_index": SOURCE_PATHS["gate_index"].as_posix(),
+            "operation_index": _string(operation_routing.get("index"), "not installed"),
+            "operation_catalog": _string(operation_routing.get("catalog"), "not installed"),
+            "full_router": SOURCE_PATHS["context_router"].as_posix(),
+            "selection_policy": "use bootstrap profile candidates first; load a selected descriptor or canonical owner only for the current task",
         },
-        "profile_routes": _profile_routes(
-            router,
-            gates,
-            target,
-            profile_descriptors,
-        ),
-        "task_classification": _task_classification(
-            router.get("task_classification")
-        ),
-        "task_decomposition": _task_decomposition_summary(task_decomposition),
+        "task_classification": compact_classification,
+        "task_decomposition": {
+            key: decomposition.get(key)
+            for key in [
+                "schema_version",
+                "policy",
+                "plan_template",
+                "level_order",
+                "non_delegable_levels",
+                "default_behavior",
+                "executor_selection",
+            ]
+        },
         "operation_routing": {
             "index": _string(operation_routing.get("index"), "not installed"),
             "catalog": _string(operation_routing.get("catalog"), "not installed"),
@@ -373,15 +321,11 @@ def build_agent_entry_packet(
                 operation_routing.get("fallback_operation"),
                 "help",
             ),
-            "load_index_when": _string_list(operation_routing.get("load_index_when")),
             "load_catalog_when": _string_list(operation_routing.get("load_catalog_when")),
-            "operation_routes": _operation_routes(operation_index),
         },
         "authorization": {
             "policy": SOURCE_PATHS["action_authorization_policy"].as_posix(),
             "default_phase": _string(authorization.get("default_phase"), "inspect"),
-            "phases": _string_list(authorization.get("phases")),
-            "allowed_action_modes": ALLOWED_ACTION_MODES,
             "current_scope_required_for": [
                 "modify",
                 "commit",
@@ -444,7 +388,6 @@ def build_from_target(target: Path) -> dict[str, Any]:
         source_texts["task_decomposition"],
         operation_index_text=optional_texts.get("operation_index"),
         operation_catalog_text=optional_texts.get("operation_catalog"),
-        target=target,
         generated_by=generation_provenance(
             target,
             tool_name="render_target_entry_packet.py",

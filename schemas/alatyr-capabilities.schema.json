@@ -56,10 +56,11 @@
           "enum": [
             "project-facing",
             "assistant-infrastructure",
-            "governance-support"
+            "governance-support",
+            "source-repository"
           ]
         },
-        "min_framework_pack": {"enum": ["core", "standard", "complete"]},
+        "min_framework_pack": {"enum": ["kernel", "core", "standard", "complete"]},
         "requires": {"$ref": "#/definitions/stringArray"},
         "rule_ids": {"$ref": "#/definitions/stringArray"},
         "framework_files": {"$ref": "#/definitions/stringArray"},

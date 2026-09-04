@@ -5,6 +5,7 @@
     ".ai/assistant/assistant-capabilities.json": {
       "ownership": "target-adapter-shared",
       "producers": [
+        "assistant-runtime-capabilities",
         "diagrams",
         "multi-assistant-bridges",
         "subagent-delegation"
@@ -15,6 +16,7 @@
     ".ai/assistant/bridge-capability-matrix.md": {
       "ownership": "target-adapter-shared",
       "producers": [
+        "assistant-runtime-capabilities",
         "ai-infrastructure",
         "diagrams",
         "multi-assistant-bridges",
@@ -185,7 +187,7 @@
     "diagrams": {
       "module_kind": "project-facing",
       "min_framework_pack": "complete",
-      "requires": [],
+      "requires": ["assistant-runtime-capabilities"],
       "rule_ids": ["ALATYR-DIAGRAM-001"],
       "framework_files": ["diagram-guidance.md", "ascii-diagrams.md"],
       "target_files": [
@@ -197,10 +199,22 @@
       ],
       "check_ids": ["discussion-diagrams", "assistant-capability-index"]
     },
-    "ai-infrastructure": {
+    "assistant-runtime-capabilities": {
       "module_kind": "assistant-infrastructure",
       "min_framework_pack": "core",
       "requires": [],
+      "rule_ids": ["ALATYR-BRIDGE-001"],
+      "framework_files": ["bridge-capability-matrix.md"],
+      "target_files": [
+        ".ai/assistant/assistant-capabilities.json",
+        ".ai/assistant/bridge-capability-matrix.md"
+      ],
+      "check_ids": ["assistant-capability-index", "bridge-capability-matrix"]
+    },
+    "ai-infrastructure": {
+      "module_kind": "assistant-infrastructure",
+      "min_framework_pack": "core",
+      "requires": ["assistant-runtime-capabilities"],
       "rule_ids": ["ALATYR-SAFETY-002"],
       "framework_files": ["ai-infrastructure-routing.md", "ai-infrastructure-recommendations.md", "prompt-injection.md", "skill-adaptation.md"],
       "target_files": [
@@ -223,7 +237,7 @@
     "multi-assistant-bridges": {
       "module_kind": "assistant-infrastructure",
       "min_framework_pack": "core",
-      "requires": [],
+      "requires": ["assistant-runtime-capabilities"],
       "rule_ids": ["ALATYR-BRIDGE-001"],
       "framework_files": ["bridge-capability-matrix.md"],
       "target_files": [
@@ -265,7 +279,7 @@
     "subagent-delegation": {
       "module_kind": "assistant-infrastructure",
       "min_framework_pack": "complete",
-      "requires": ["ai-infrastructure", "multi-assistant-bridges"],
+      "requires": ["assistant-runtime-capabilities"],
       "rule_ids": ["ALATYR-DELEGATION-001"],
       "framework_files": ["subagent-delegation.md"],
       "target_files": [
@@ -385,7 +399,7 @@
     },
     "support-generation": {
       "module_kind": "governance-support",
-      "min_framework_pack": "complete",
+      "min_framework_pack": "kernel",
       "requires": [],
       "rule_ids": ["ALATYR-SUPPORT-001"],
       "framework_files": ["support-information.md"],
@@ -398,7 +412,7 @@
       "check_ids": ["support-information"]
     },
     "scaffolding": {
-      "module_kind": "governance-support",
+      "module_kind": "source-repository",
       "min_framework_pack": "complete",
       "requires": [],
       "rule_ids": ["ALATYR-MODULE-001"],

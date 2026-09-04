@@ -20,7 +20,13 @@ from scaffold_target_structure import (
     resolved_framework_pack,
 )
 from framework_packaging import resolve_framework_files
-from scaffold_projection import path_available, project_markdown_fragments
+from capability_catalog import dependency_closure, load_modules
+from scaffold_projection import (
+    load_object,
+    path_available,
+    project_assistant_capability_index,
+    project_markdown_fragments,
+)
 
 
 EXPECTED_PROFILES = ["kernel", "core", "standard", "full"]
@@ -177,15 +183,12 @@ def main() -> int:
             failures.append(
                 "AGENTS-aware surface selection must add only .agents/skills/README.md"
             )
-        try:
-            project_assistant_bridges(
-                standard, resolve_assistant_surfaces(["claude"])
-            )
-        except ValueError:
-            pass
-        else:
+        standard_claude = project_assistant_bridges(
+            standard, resolve_assistant_surfaces(["claude"])
+        )
+        if Path("CLAUDE.md") not in standard_claude:
             failures.append(
-                "standard profile must reject an unavailable Claude native bridge"
+                "explicit Claude selection must overlay its native bridge"
             )
         matched_packs = {
             profile: resolved_framework_pack(profile, "matched")
@@ -215,6 +218,38 @@ def main() -> int:
             != "complete"
         ):
             failures.append("architecture capability must raise the matched framework pack")
+        capability_index_path = Path(".ai/assistant/assistant-capabilities.json")
+        capability_index_source = load_object(TEMPLATE_ROOT / capability_index_path)
+        for profile in EXPECTED_PROFILES:
+            for module_id in load_modules():
+                modules = dependency_closure({module_id})
+                selected_templates = project_assistant_bridges(
+                    resolve_profile_paths(profile, modules), set()
+                )
+                if capability_index_path not in selected_templates:
+                    continue
+                projected_index = project_assistant_capability_index(
+                    capability_index_source, selected_templates
+                )
+                default_surface = projected_index.get("default_surface")
+                surfaces = projected_index.get("surfaces", {})
+                if default_surface not in surfaces:
+                    failures.append(
+                        f"{profile}+{module_id} capability default has no record"
+                    )
+                for surface_id, record_path in surfaces.items():
+                    if Path(record_path) not in selected_templates:
+                        failures.append(
+                            f"{profile}+{module_id} capability {surface_id} misses {record_path}"
+                        )
+                    for bridge_path in projected_index.get("bridge_paths", {}).get(
+                        surface_id, []
+                    ):
+                        if Path(bridge_path) not in selected_templates:
+                            failures.append(
+                                f"{profile}+{module_id} capability {surface_id} "
+                                f"misses bridge {bridge_path}"
+                            )
         for profile, selected_templates in [
             ("kernel", kernel),
             ("core", core),

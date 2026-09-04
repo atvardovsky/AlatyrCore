@@ -246,8 +246,8 @@
       "owner_refs": [
         "ALATYR-MODULE-001"
       ],
-      "estimated_words": 1986,
-      "content_digest": "sha256:d56d770d27af5a85476bc1b2fb6e069298771c84ce451154fae151e747d2720d"
+      "estimated_words": 2044,
+      "content_digest": "sha256:728067aa15ad7e3764e8a5e9c975c519c58afe29fdf1d3f1793bdf47ab42c0e3"
     },
     {
       "id": "framework.core.operation-help-md",

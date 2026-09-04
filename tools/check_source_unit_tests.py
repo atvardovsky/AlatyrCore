@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import json
 import os
-import re
+import ast
 import sys
 import unittest
 from pathlib import Path
@@ -42,34 +42,37 @@ def _test_module_name(path: Path, *, root: Path = ROOT) -> str:
     return ".".join(relpath.parts)
 
 
-def _tool_import_names(relpath: str) -> set[str]:
-    if not relpath.startswith("tools/") or not relpath.endswith(".py"):
-        return set()
-    parts = Path(relpath).with_suffix("").parts
-    if len(parts) == 2:
-        return {parts[1]}
-    if len(parts) >= 3:
-        return {parts[1], ".".join(parts[1:])}
-    return set()
+def _module_name(path: Path, *, root: Path) -> str:
+    relpath = path.relative_to(root / "tools")
+    parts = relpath.with_suffix("").parts
+    return ".".join(parts[:-1] if parts[-1] == "__init__" else parts)
 
 
-def _test_imports_any(path: Path, import_names: set[str]) -> bool:
-    if not import_names:
-        return False
+def _local_module_paths(root: Path) -> dict[str, Path]:
+    modules: dict[str, Path] = {}
+    for path in sorted((root / "tools").rglob("*.py")):
+        modules[_module_name(path, root=root)] = path
+    return modules
+
+
+def _local_imports(path: Path, modules: dict[str, Path]) -> set[Path] | None:
     try:
-        text = path.read_text(encoding="utf-8")
-    except OSError:
-        return False
-    for name in import_names:
-        root_name = name.split(".", 1)[0]
-        patterns = [
-            rf"^\s*import\s+{re.escape(name)}(?:\s|$|,)",
-            rf"^\s*from\s+{re.escape(name)}\s+import\s+",
-            rf"^\s*from\s+{re.escape(root_name)}\s+import\s+",
-        ]
-        if any(re.search(pattern, text, flags=re.MULTILINE) for pattern in patterns):
-            return True
-    return False
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+    except (OSError, SyntaxError):
+        return None
+    imported: set[Path] = set()
+    for node in ast.walk(tree):
+        names: list[str] = []
+        if isinstance(node, ast.Import):
+            names.extend(alias.name for alias in node.names)
+        elif isinstance(node, ast.ImportFrom) and node.module:
+            names.append(node.module)
+            names.extend(f"{node.module}.{alias.name}" for alias in node.names)
+        for name in names:
+            candidate = modules.get(name)
+            if candidate is not None:
+                imported.add(candidate)
+    return imported
 
 
 def _all_test_paths(root: Path = ROOT) -> list[Path]:
@@ -81,7 +84,7 @@ def focused_test_paths(changed_paths: list[str], *, root: Path = ROOT) -> list[P
 
     selected: set[Path] = set()
     requires_full = False
-    tool_imports: set[str] = set()
+    changed_tools: set[Path] = set()
 
     for relpath in changed_paths:
         path = Path(relpath)
@@ -99,8 +102,11 @@ def focused_test_paths(changed_paths: list[str], *, root: Path = ROOT) -> list[P
                 requires_full = True
             continue
         if relpath.startswith("tools/") and path.suffix == ".py":
-            imports = _tool_import_names(relpath)
-            tool_imports.update(imports)
+            tool_path = root / path
+            if not tool_path.is_file():
+                requires_full = True
+                continue
+            changed_tools.add(tool_path)
             direct_name = path.with_suffix("").name
             direct_test = root / "tests" / f"test_{direct_name}.py"
             if direct_test.is_file():
@@ -109,9 +115,28 @@ def focused_test_paths(changed_paths: list[str], *, root: Path = ROOT) -> list[P
         if relpath.endswith(".py"):
             requires_full = True
 
-    if tool_imports:
+    if changed_tools:
+        modules = _local_module_paths(root)
+        dependency_graph: dict[Path, set[Path]] = {}
+        for tool_path in modules.values():
+            imports = _local_imports(tool_path, modules)
+            if imports is None:
+                requires_full = True
+                continue
+            dependency_graph[tool_path] = imports
+        impacted = set(changed_tools)
+        changed = True
+        while changed:
+            changed = False
+            for importer, dependencies in dependency_graph.items():
+                if importer not in impacted and dependencies & impacted:
+                    impacted.add(importer)
+                    changed = True
         for test_path in _all_test_paths(root):
-            if _test_imports_any(test_path, tool_imports):
+            imports = _local_imports(test_path, modules)
+            if imports is None:
+                requires_full = True
+            elif imports & impacted:
                 selected.add(test_path)
         if not selected:
             requires_full = True
@@ -138,7 +163,7 @@ def main() -> int:
     changed_paths = _environment_changed_paths()
     selected_paths = (
         focused_test_paths(changed_paths)
-        if profile == "fast" and changed_paths
+        if profile in {"micro", "fast"} and changed_paths
         else None
     )
     if selected_paths == []:

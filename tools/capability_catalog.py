@@ -14,6 +14,7 @@ ALLOWED_MODULE_KINDS = {
     "project-facing",
     "assistant-infrastructure",
     "governance-support",
+    "source-repository",
 }
 
 

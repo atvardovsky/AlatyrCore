@@ -336,6 +336,12 @@ class ContextCatalogTests(unittest.TestCase):
             resolved = load_codebook(index, required_terms=["alatyr:integrity"])
             self.assertEqual(list(resolved), ["alatyr:owner", "alatyr:integrity"])
 
+            selected = load_codebook(index, selectors={"tasks": "test"})
+            self.assertEqual(list(selected), ["alatyr:owner", "alatyr:integrity"])
+
+            unselected = load_codebook(index, selectors={"tasks": "other"})
+            self.assertEqual(unselected, {})
+
     def test_codebook_rejects_dependency_cycle(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

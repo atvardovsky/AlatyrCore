@@ -397,6 +397,20 @@ Approval needs: `{DIAGRAM_MODULE_APPROVAL_NEEDS}`
 Residual risk: `{DIAGRAM_MODULE_RESIDUAL_RISK}`
 Next action: `{DIAGRAM_MODULE_NEXT_ACTION}`
 
+Module: `assistant-runtime-capabilities`
+State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+Owner or file: `.ai/assistant/assistant-capabilities.json`
+Required files:
+
+- `.ai/assistant/assistant-capabilities.json`
+- `.ai/assistant/bridge-capability-matrix.md`
+
+Reason: `{REASON}`
+Validation or review: `{VALIDATION_OR_REVIEW}`
+Approval needs: `{ASSISTANT_RUNTIME_CAPABILITIES_APPROVAL_NEEDS}`
+Residual risk: `{ASSISTANT_RUNTIME_CAPABILITIES_RESIDUAL_RISK}`
+Next action: `{ASSISTANT_RUNTIME_CAPABILITIES_NEXT_ACTION}`
+
 Module: `ai-infrastructure`
 State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `{TARGET_AI_INFRASTRUCTURE_MODULE_OWNER_OR_FILE}`

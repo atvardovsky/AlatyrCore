@@ -135,6 +135,18 @@ def measure(references: list[str]) -> dict[str, Any]:
     }
 
 
+def first_use_references(router: dict[str, Any]) -> list[str]:
+    entry_packet = router.get("agent_entry_packet", {})
+    entry_packet_path = (
+        entry_packet.get("path") if isinstance(entry_packet, dict) else None
+    )
+    return [
+        *router.get("preloaded_context", []),
+        *router.get("bootstrap_context", []),
+        *([entry_packet_path] if isinstance(entry_packet_path, str) else []),
+    ]
+
+
 def reduction_percent(initial: int, full: int) -> float | str:
     if full <= 0:
         return "unknown"
@@ -205,6 +217,7 @@ def build_report() -> dict[str, Any]:
         *router.get("bootstrap_context", []),
     ]
     bootstrap = measure(bootstrap_refs)
+    first_use = measure(first_use_references(router))
     def descriptor(entry: Any) -> tuple[str | None, dict[str, Any]]:
         reference = entry.get("descriptor") if isinstance(entry, dict) else None
         path = source_path(reference) if isinstance(reference, str) else None
@@ -212,7 +225,6 @@ def build_report() -> dict[str, Any]:
             return reference, {}
         data = json.loads(path.read_text(encoding="utf-8"))
         return reference, data if isinstance(data, dict) else {}
-
     profiles: dict[str, dict[str, Any]] = {}
     profile_contracts: dict[str, tuple[str | None, dict[str, Any]]] = {}
     for name, entry in router.get("profile_index", {}).items():
@@ -641,7 +653,6 @@ def build_report() -> dict[str, Any]:
             "expected_budget_state"
         )
         cost_scenarios[name] = scenario_measure
-
     return {
         "schema_version": 1,
         "report_kind": "static-target-context-cost",
@@ -649,6 +660,7 @@ def build_report() -> dict[str, Any]:
         "measurement": "whitespace-delimited words in resolved source templates",
         "budgets": router.get("context_budgets", {}),
         "bootstrap": bootstrap,
+        "first_use": first_use,
         "profiles": profiles,
         "intent_overlays": intent_overlays,
         "task_scale_overlays": task_scale_overlays,
@@ -761,6 +773,7 @@ def build_installed_report(target: Path) -> dict[str, Any]:
             *router.get("bootstrap_context", []),
         ],
     )
+    first_use = measure_installed(target, first_use_references(router))
     profiles: dict[str, dict[str, Any]] = {}
     for name, entry in router.get("profile_index", {}).items():
         if not isinstance(entry, dict) or not isinstance(entry.get("descriptor"), str):
@@ -809,6 +822,7 @@ def build_installed_report(target: Path) -> dict[str, Any]:
         "target": str(target),
         "budgets": router.get("context_budgets", {}),
         "bootstrap": bootstrap,
+        "first_use": first_use,
         "profiles": profiles,
         "consistency_routing": consistency_routing,
         "limitations": [

@@ -78,7 +78,7 @@
       "properties": {
         "preloaded_context": {"$ref": "#/definitions/nonEmptyStringArray"},
         "compact_bootstrap": {"$ref": "#/definitions/nonEmptyStringArray"},
-        "agent_entry_packet_schema_version": {"const": 1},
+        "agent_entry_packet_schema_version": {"const": 2},
         "agent_entry_packet": {"const": ".ai/assistant/entry-packet.json"},
         "recursive_index_schema_version": {"const": 1},
         "recursive_index_max_depth": {"type": "integer", "minimum": 1},

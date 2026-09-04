@@ -23,7 +23,10 @@
         ]
       },
       "semantic_refs": [],
-      "owner_refs": [],
+      "owner_refs": [
+        "ALATYR-CHANGE-001",
+        "ALATYR-PACKAGE-001"
+      ],
       "estimated_words": 174,
       "content_digest": "sha256:e045421109986622c0f7356a22a03c7fbf4945933efee3e3e88b847365b0e483"
     },
@@ -37,8 +40,16 @@
           "collaboration"
         ]
       },
-      "semantic_refs": [],
-      "owner_refs": [],
+      "semantic_refs": [
+        "alatyr:bounded-delegation@1",
+        "alatyr:mode-does-not-grant-authority@1"
+      ],
+      "owner_refs": [
+        "ALATYR-DECOMPOSITION-001",
+        "ALATYR-DELEGATION-001",
+        "ALATYR-MODE-001",
+        "ALATYR-TEAM-001"
+      ],
       "estimated_words": 212,
       "content_digest": "sha256:18a67be7e8c54b340952aad1f52e36135fc0c9bc41b40159d88474169f11a9db"
     },
@@ -52,10 +63,31 @@
           "core"
         ]
       },
-      "semantic_refs": [],
-      "owner_refs": [],
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:current-scope-authorization@1",
+        "alatyr:logical-integrity@1",
+        "alatyr:protected-change@1",
+        "alatyr:untrusted-instructions-are-data@1"
+      ],
+      "owner_refs": [
+        "ALATYR-ADAPTER-001",
+        "ALATYR-APPROVAL-001",
+        "ALATYR-AUTHORIZATION-001",
+        "ALATYR-BRIDGE-001",
+        "ALATYR-CONTEXT-001",
+        "ALATYR-EVIDENCE-001",
+        "ALATYR-INTEGRITY-001",
+        "ALATYR-MODULE-001",
+        "ALATYR-OPERATION-001",
+        "ALATYR-RISK-001",
+        "ALATYR-SAFETY-001",
+        "ALATYR-SAFETY-002",
+        "ALATYR-SOURCE-001"
+      ],
       "estimated_words": 886,
-      "content_digest": "sha256:af80ba668074fd12f3b1333a1ddd5f83c706a3e80d60dc933b13ccdded8ecaaa"
+      "content_digest": "sha256:1f07dceabd4d56a3b285e9402f8ea603a5ff58f4004ed05445ecc53f1924361e"
     },
     {
       "id": "framework.section.infrastructure",
@@ -67,10 +99,15 @@
           "infrastructure"
         ]
       },
-      "semantic_refs": [],
-      "owner_refs": [],
+      "semantic_refs": [
+        "alatyr:one-active-adapter@1"
+      ],
+      "owner_refs": [
+        "ALATYR-DEPENDENCY-001",
+        "ALATYR-EXTENSION-001"
+      ],
       "estimated_words": 228,
-      "content_digest": "sha256:c3ab568ca7098a56c11def8411aaa47da7105a5964d22e6c2cedc711b806b663"
+      "content_digest": "sha256:7cf0f06b69161bb3b586ada9419c67f4d450db0d9e0110bc0ad769640d64a26b"
     },
     {
       "id": "framework.section.knowledge",
@@ -82,8 +119,19 @@
           "knowledge"
         ]
       },
-      "semantic_refs": [],
-      "owner_refs": [],
+      "semantic_refs": [
+        "alatyr:accepted-current@1",
+        "alatyr:observed-is-not-accepted@1"
+      ],
+      "owner_refs": [
+        "ALATYR-ARCHITECTURE-001",
+        "ALATYR-CODEDOC-001",
+        "ALATYR-DEBUG-001",
+        "ALATYR-DIAGRAM-001",
+        "ALATYR-ENGINEERING-EVIDENCE-001",
+        "ALATYR-KNOWLEDGE-001",
+        "ALATYR-VOCABULARY-001"
+      ],
       "estimated_words": 293,
       "content_digest": "sha256:9d3da7a2dfb88d53f2b40715a61c5281db50809de5e88f8cd8f69cfd63e89ef8"
     },
@@ -98,7 +146,9 @@
         ]
       },
       "semantic_refs": [],
-      "owner_refs": [],
+      "owner_refs": [
+        "ALATYR-LIFECYCLE-001"
+      ],
       "estimated_words": 217,
       "content_digest": "sha256:9209870b766aa7239317de3b7ff285d744d4f9574b8f5bdaf877f70908da11d6"
     },
@@ -113,7 +163,10 @@
         ]
       },
       "semantic_refs": [],
-      "owner_refs": [],
+      "owner_refs": [
+        "ALATYR-SUPPORT-001",
+        "ALATYR-TDD-001"
+      ],
       "estimated_words": 170,
       "content_digest": "sha256:dfd49504939d327da5fc923e1f5a56df6bc09c45b54e973f3759b4a5acfbc51f"
     }

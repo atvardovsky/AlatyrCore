@@ -309,6 +309,7 @@ def load_codebook(
     *,
     root: Path | None = None,
     required_terms: Iterable[str] | None = None,
+    selectors: dict[str, str] | None = None,
 ) -> dict[str, dict[str, Any]]:
     """Load a semantic codebook and return the bounded required closure."""
 
@@ -414,6 +415,17 @@ def load_codebook(
         term_id
         for descriptor in shards
         if descriptor.get("preload") is True
+        for term_id in descriptor["term_ids"]
+    )
+    selected_values = selectors or {}
+    requested.update(
+        term_id
+        for descriptor in shards
+        if any(
+            isinstance(value, str)
+            and value in descriptor.get("selectors", {}).get(selector, [])
+            for selector, value in selected_values.items()
+        )
         for term_id in descriptor["term_ids"]
     )
     unknown = sorted(requested - set(terms))

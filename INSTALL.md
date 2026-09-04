@@ -224,7 +224,8 @@ effects. Reapproval is required for protected semantic or path expansion.
 
 In a typical target repository:
 
-1. Create or adapt `AGENTS.md` and `AI_ASSISTANTS.md`.
+1. Create or adapt `AGENTS.md`. Add `AI_ASSISTANTS.md` only when the selected
+   support profile or an explicitly selected assistant surface includes it.
 2. Create or preserve `CODEOWNERS` or an equivalent owner map when the target
    repository uses file ownership metadata.
 3. Create `.ai/alatyr.yaml` or an equivalent manifest.
@@ -243,15 +244,16 @@ In a typical target repository:
    registry, ownership map, and file inventory; use `complete` when all
    `framework/*.md` and JSON files are installed.
 6. Create `.ai/project/contour.md` and target project source-of-truth docs.
-   Always create the Project Development Model guidance policy, empty compact index, promotion
-   directory, and route-shard directory. Resolve target owner, decision
+   For `core` or broader, create the Project Development Model guidance policy,
+   empty compact index, promotion directory, and route-shard directory. Resolve target owner, decision
    authority, accepted guidance kinds, canonical owner registry, freshness,
    target-owned narrowing and exception semantics, coverage gaps, retention,
    redaction, and packet limits. Do not promote historical evidence during
    installation or treat an arbitrary human message as a decision-owner
    directive.
-   Always create `.ai/project/engineering-evidence/README.md` and `index.json`
-   for the required core capture decision. Resolve the target owner, retained
+   For `core` or broader, create
+   `.ai/project/engineering-evidence/README.md` and `index.json` for the core
+   capture decision. Resolve the target owner, retained
    storage mode, redaction policy, external-contribution boundary, and access
    path. Start empty unless bounded historical records were explicitly
    validated.
@@ -281,14 +283,16 @@ In a typical target repository:
    distinct context. Propose zero or more evidence-bound modes after
    inspection, but keep them proposed until a separate user decision accepts
    them. Installation approval is not mode acceptance.
-7. Create `.ai/assistant/contour.md`, a generated hash-bound bootstrap index,
-   compact context router, recursive framework/project/assistant
-   `context-index.json` trees, the versioned framework semantic codebook, a
-   context-packet template, routed gate index/fragments, and selected lazy
-   profile descriptors, operation catalog and its checked compact index,
-   context profiles, module profile, task-specific maturity profile, bridge
-   capability matrix, generated assistant-capability index and installed-
-   surface schema-4 records, and target workflows/gates. For every selected
+7. Create the `kernel` assistant surfaces: `.ai/assistant/contour.md`, a
+   generated hash-bound bootstrap index, compact context router, recursive
+   framework/project/assistant `context-index.json` trees, the projected
+   semantic codebook, context-packet template, routed gate fragments, selected
+   lazy profile descriptors, context profiles, module profile, maturity
+   profile, and minimal workflows/gates. Add the operation catalog and compact
+   operation index only with `standard` or an enabling module. Add the bridge
+   capability matrix, projected assistant-capability index, and exactly the
+   generic plus explicitly selected schema-4 records only when an enabled
+   module requires those surfaces. For every selected
    assistant, record the exact runtime, instruction entry path, competing
    sources, toggle/configuration state, observed loading, skills, client
    permissions, model provider, context-cache mode and client exposure,
@@ -540,12 +544,13 @@ surface is justified.
 Use repeatable `--enable-module <capability-id>` options to add only reviewed
 capabilities and their dependency closure. The scaffolder raises the matched
 framework pack when a selected capability requires a broader canonical owner.
-Vendor-native bridges are omitted by default. With the `full` support profile,
-use repeatable `--assistant-surface <id-or-alias>` options only for assistants
-the target actually uses. The helper resolves aliases through the canonical
-surface registry and rejects native bridge selections under profiles that do
-not contain their complete support context. Selection is static source
-scaffolding, not evidence that the client loaded the bridge.
+Vendor-native bridges are omitted by default. Use repeatable
+`--assistant-surface <id-or-alias>` options only for assistants the target
+actually uses. An explicit selection enables the bridge capability dependency
+closure and may raise the matched framework pack without expanding unrelated
+target support. The helper resolves aliases through the canonical surface
+registry. Selection is static source scaffolding, not evidence that the client
+loaded the bridge.
 
 After scaffolding or updating adapter sources, regenerate and check the compact
 entry packet before broad manual review:

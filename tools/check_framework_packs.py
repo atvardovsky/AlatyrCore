@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -92,6 +93,60 @@ def main() -> int:
                 failures.append(f"framework pack {name} inventory projection drifted")
             if inventory.get("framework_pack") != name:
                 failures.append(f"framework pack {name} inventory does not identify its pack")
+            semantic_index = json.loads(contents["semantics/index.json"] or "{}")
+            semantic_terms: dict[str, dict[str, object]] = {}
+            for descriptor in semantic_index.get("shards", []):
+                if not isinstance(descriptor, dict) or not isinstance(
+                    descriptor.get("path"), str
+                ):
+                    failures.append(f"framework pack {name} has an invalid semantic shard")
+                    continue
+                shard_name = f"semantics/{descriptor['path']}"
+                if shard_name not in selections[name]:
+                    failures.append(
+                        f"framework pack {name} semantic index references absent {shard_name}"
+                    )
+                    continue
+                shard_text = contents.get(shard_name)
+                if shard_text is None:
+                    shard_text = (FRAMEWORK_ROOT / shard_name).read_text(encoding="utf-8")
+                expected_digest = "sha256:" + hashlib.sha256(
+                    shard_text.encode("utf-8")
+                ).hexdigest()
+                if descriptor.get("content_digest") != expected_digest:
+                    failures.append(
+                        f"framework pack {name} semantic shard digest drifted for {shard_name}"
+                    )
+                shard = json.loads(shard_text)
+                terms = shard.get("terms", [])
+                actual_ids = [term.get("id") for term in terms if isinstance(term, dict)]
+                if descriptor.get("term_ids") != actual_ids:
+                    failures.append(
+                        f"framework pack {name} semantic term IDs drifted for {shard_name}"
+                    )
+                for term in terms:
+                    if isinstance(term, dict) and isinstance(term.get("id"), str):
+                        semantic_terms[term["id"]] = term
+            for term_id, term in semantic_terms.items():
+                owner = term.get("canonical_owner")
+                owner_rule = term.get("owner_rule_id")
+                if owner not in selections[name]:
+                    failures.append(
+                        f"framework pack {name} semantic term {term_id} misses owner {owner}"
+                    )
+                if owner_rule not in rule_ids:
+                    failures.append(
+                        f"framework pack {name} semantic term {term_id} misses rule {owner_rule}"
+                    )
+                missing_terms = sorted(
+                    dependency
+                    for dependency in term.get("depends_on", [])
+                    if dependency not in semantic_terms
+                )
+                if missing_terms:
+                    failures.append(
+                        f"framework pack {name} semantic term {term_id} misses terms {missing_terms}"
+                    )
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         failures.append(str(exc))
 

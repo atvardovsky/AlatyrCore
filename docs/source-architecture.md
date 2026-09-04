@@ -138,9 +138,10 @@ the owning checks.
 
 ## Current Refactoring Priorities
 
-- Keep extracting reusable source-check manifest primitives from CLI wrappers.
-- Use `tools/plan_minimum_work.py` and the `micro` profile to identify cheap
-  source routes before adding broader default checks.
+- Keep target capability checks moving behind the existing module registry one
+  behavior-preserving extraction at a time.
+- Keep generated entry, capability, semantic, and report projections compact;
+  their canonical source contracts must retain strict closure checks.
 - Split `tools/validate_target_adapter.py` by optional capability modules after
   behavior is covered by focused regression tests.
 - Split large target validation methods into schema parsing, relationship

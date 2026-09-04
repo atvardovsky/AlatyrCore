@@ -14,10 +14,10 @@ def load_report(path: Path) -> dict[str, Any]:
     data = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(data, dict):
         raise ValueError(f"{path} must contain an object")
-    if data.get("schema_version") != 2:
+    if data.get("schema_version") not in {2, 3}:
         raise ValueError(
             f"{path} uses report schema {data.get('schema_version')}; "
-            "only schema 2 reports are comparable"
+            "only schema 2 or 3 reports are comparable"
         )
     if data.get("report_kind") != "alatyr-source-check-run":
         raise ValueError(f"{path} is not an Alatyr source-check report")

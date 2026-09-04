@@ -147,10 +147,11 @@ Classify every proposed target file:
    router, operation, capability, rule-registry, ownership, and inventory
    claims reference only installed files. Do not treat scaffolding, profile
    selection, or pack selection as installation or module enablement. Source
-   scaffolding omits vendor-native bridges by default. Under the `full`
-   profile, pass one `--assistant-surface` selection per reviewed target
-   client; do not select every registered surface merely because its template
-   exists.
+   scaffolding omits vendor-native bridges by default. Pass one
+   `--assistant-surface` selection per reviewed target client; the selection
+   enables only its capability dependency closure and may raise the matched
+   framework pack. Do not select every registered surface merely because its
+   template exists.
 3. Fill `installer/readiness-checklist.md` for the target.
 4. Prepare an installation plan from
    `installer/installation-plan-template.md`.
@@ -160,7 +161,9 @@ Classify every proposed target file:
    `ALATYR-AUTHORIZATION-001` before each state-changing phase.
 6. Identify protected changes and required approvals.
 7. If approval is required, stop until the programmer confirms it.
-8. Create or adapt target `AGENTS.md` and `AI_ASSISTANTS.md`. For every
+8. Create or adapt target `AGENTS.md`. Add `AI_ASSISTANTS.md` only when the
+   selected support profile or an explicitly selected assistant surface
+   includes it. For every
    selected assistant, inspect all native and compatibility instruction paths,
    bind the exact client/runtime variant, and choose the bridge that actually
    wins precedence. Use `.rules` for Zed Agent's first-match bridge. Do not add
@@ -173,9 +176,10 @@ Classify every proposed target file:
    framework version, adapter schema version, template version, owner,
    backup owner, review cadence, CODEOWNERS or equivalent owner map,
    source-of-truth, validation, known gaps, and local deviations.
-   Create detailed schema-4 assistant capability records for selected target
-   surfaces; represent unselected registered surfaces only as compact
-   unverified/unselected records unless target evidence requires deeper review.
+   When an enabled module requires assistant capability evidence, create the
+   projected capability index and detailed schema-4 records for the generic
+   fallback plus explicitly selected target surfaces. Omit unselected records;
+   do not leave index references to files that were not installed.
    Resolve instruction loading, skill source and activation, client permission
    mode, context caching, diagrams, and delegation from exact-client evidence.
    Record the selected model provider separately from the assistant surface;
@@ -189,8 +193,9 @@ Classify every proposed target file:
     portable Markdown and JSON files are installed.
 13. Create target `.ai/project/contour.md` and target project
    source-of-truth docs from target facts.
-    Create the required Project Development Model guidance policy, empty routing index, empty
-    promotion directory, and route-shard directory. Resolve canonical owner,
+    For `core` or broader, create the Project Development Model guidance
+    policy, empty routing index, empty promotion directory, and route-shard
+    directory. Resolve canonical owner,
     decision authority, guidance kinds, target-owned narrowing and exception
     semantics, coverage gaps, retention, redaction, review cadence, and
     freshness policy from target evidence. Do not promote historical records,
@@ -200,8 +205,9 @@ Classify every proposed target file:
     and a compact derived route shard. Initialize adoption as `enabled-empty`;
     move it to `populated` or `reuse-observed` only from reviewed route and
     later-task evidence.
-    Create `.ai/project/engineering-evidence/README.md` and `index.json` as
-    required core surfaces. Resolve the target owner, retained storage mode,
+    For `core` or broader, create
+    `.ai/project/engineering-evidence/README.md` and `index.json` as core
+    surfaces. Resolve the target owner, retained storage mode,
     external-contribution policy, redaction policy, and record access. Start
     with an empty index unless bounded historical records are explicitly
     reviewed; never infer past engineering decisions from the current tree.
@@ -269,12 +275,14 @@ Classify every proposed target file:
     target enables team collaboration. Derive actor IDs, display names and
     aliases, authority, priorities, transitions, review, identity verification,
     backend, synchronization, storage, retention, and privacy from evidence.
-14. Create target `.ai/assistant/contour.md`, generated hash-bound bootstrap
-    index, compact context router, routed gate index/fragments, and selected
-    lazy descriptors, operation catalog and checked compact operation
-    index, context profiles, module profile, task-specific maturity profile,
-    bridge capability matrix, generated assistant-capability index, installed-
-    surface capability records, and minimal workflows/gates from target facts.
+14. Create the target `kernel` assistant contour, generated hash-bound
+    bootstrap index, compact context router, routed gate fragments, selected
+    lazy descriptors, context profiles, module profile, task-specific maturity
+    profile, and minimal workflows/gates from target facts. Add operation,
+    bridge, capability-record, and optional workflow surfaces only when the
+    selected profile or enabled module includes them. Generate every derived
+    index from that final installed set rather than from the complete template
+    tree.
     Route enabled team operations and matched state-changing work through the
     lazy `.ai/assistant/team/context-overlay.json`. Read the compact active-work
     index first; do not put full team state in bootstrap.

@@ -550,6 +550,46 @@ def render_report(
     telemetry = telemetry or {}
     input_fingerprints = input_fingerprints or {}
     reuse = reuse or {}
+    def catalog_key(entry: dict[str, Any]) -> tuple[str, str, int, str | None]:
+        return (
+            str(entry.get("path")),
+            str(entry.get("kind")),
+            int(entry.get("mode", 0)),
+            entry.get("digest") if isinstance(entry.get("digest"), str) else None,
+        )
+
+    catalog_entries: dict[tuple[str, str, int, str | None], dict[str, Any]] = {}
+    for fingerprint in input_fingerprints.values():
+        for entry in fingerprint.get("entries", []):
+            if not isinstance(entry, dict):
+                continue
+            catalog_entries[catalog_key(entry)] = entry
+    ordered_catalog = [catalog_entries[key] for key in sorted(catalog_entries)]
+    catalog_ids = {
+        catalog_key(entry): index for index, entry in enumerate(ordered_catalog)
+    }
+
+    def compact_fingerprint(check_id: str) -> dict[str, Any] | None:
+        fingerprint = input_fingerprints.get(check_id)
+        if not isinstance(fingerprint, dict):
+            return None
+        compact = {
+            key: value
+            for key, value in fingerprint.items()
+            if key != "entries"
+        }
+        compact["entry_ids"] = [
+            catalog_ids[catalog_key(entry)]
+            for entry in fingerprint.get("entries", [])
+            if isinstance(entry, dict) and catalog_key(entry) in catalog_ids
+        ]
+        return compact
+
+    def compact_reuse(check_id: str) -> dict[str, Any] | None:
+        decision = reuse.get(check_id)
+        if not isinstance(decision, dict):
+            return None
+        return {key: value for key, value in decision.items() if key != "input_fingerprint"}
     timing = dict(
         telemetry.get(
             "_summary",
@@ -604,8 +644,8 @@ def render_report(
             "selection_reasons": selected_metadata.get("reasons", []),
             "matched_changed_paths": selected_metadata.get("matched_changed_paths", []),
             "broad_trigger_patterns": selected_metadata.get("broad_trigger_patterns", []),
-            "input_fingerprint": input_fingerprints.get(check_id),
-            "reuse": reuse.get(check_id),
+            "input_fingerprint": compact_fingerprint(check_id),
+            "reuse": compact_reuse(check_id),
         }
         if check_id in blocked:
             checks.append(
@@ -633,7 +673,7 @@ def render_report(
             }
         )
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "report_kind": "alatyr-source-check-run",
         "profile": profile,
         "source": source_identity(),
@@ -662,6 +702,10 @@ def render_report(
             "declared": "none",
             "preserved": not source_changes,
             "changes": source_changes,
+        },
+        "input_catalog": {
+            "contract": "alatyr-source-check-input-catalog-v1",
+            "entries": ordered_catalog,
         },
         "checks": checks,
     }
@@ -759,6 +803,47 @@ def execute_checks(
     def resource_weight(check: dict[str, Any]) -> int:
         return min(RESOURCE_CLASS_WEIGHTS[check.get("resource_class", "standard")], jobs)
 
+    direct_dependents: dict[str, set[str]] = {check_id: set() for check_id in selected_ids}
+    for check in checks:
+        for dependency in check["depends_on"]:
+            if dependency in direct_dependents:
+                direct_dependents[dependency].add(check["id"])
+
+    descendant_counts: dict[str, int] = {}
+
+    def descendant_count(check_id: str) -> int:
+        cached = descendant_counts.get(check_id)
+        if cached is not None:
+            return cached
+        descendants: set[str] = set()
+        pending = list(direct_dependents[check_id])
+        while pending:
+            dependent = pending.pop()
+            if dependent in descendants:
+                continue
+            descendants.add(dependent)
+            pending.extend(direct_dependents[dependent])
+        descendant_counts[check_id] = len(descendants)
+        return len(descendants)
+
+    manifest_order = {check["id"]: index for index, check in enumerate(checks)}
+    dependency_depths: dict[str, int] = {}
+
+    def dependency_depth(check_id: str) -> int:
+        cached = dependency_depths.get(check_id)
+        if cached is not None:
+            return cached
+        dependencies = [
+            dependency
+            for dependency in remaining.get(check_id, {}).get("depends_on", [])
+            if dependency in selected_ids
+        ]
+        depth = 0 if not dependencies else 1 + max(
+            dependency_depth(dependency) for dependency in dependencies
+        )
+        dependency_depths[check_id] = depth
+        return depth
+
     with concurrent.futures.ThreadPoolExecutor(max_workers=jobs) as executor:
         running: dict[concurrent.futures.Future[Any], dict[str, Any]] = {}
         running_weights: dict[concurrent.futures.Future[Any], int] = {}
@@ -796,7 +881,7 @@ def execute_checks(
                         changed = True
 
         def ready_checks() -> list[dict[str, Any]]:
-            return [
+            ready = [
                 check
                 for check in checks
                 if check["id"] in remaining
@@ -806,6 +891,15 @@ def execute_checks(
                     for dependency in check["depends_on"]
                 )
             ]
+            return sorted(
+                ready,
+                key=lambda check: (
+                    -descendant_count(check["id"]),
+                    -dependency_depth(check["id"]),
+                    resource_weight(check),
+                    manifest_order[check["id"]],
+                ),
+            )
 
         def submit_ready() -> bool:
             nonlocal running_weight
@@ -964,18 +1058,27 @@ def main() -> int:
 
     try:
         before = source_snapshot(ROOT)
-        input_fingerprints = {
-            check["id"]: check_input_fingerprint(check, before) for check in selected
-        }
+        input_fingerprints = (
+            {
+                check["id"]: check_input_fingerprint(check, before)
+                for check in selected
+            }
+            if report_path is not None or previous_report is not None
+            else {}
+        )
         current_source = source_identity()
         current_environment = environment_report()
-        reuse = reuse_decisions(
-            selected=selected,
-            previous_report=previous_report,
-            current_source=current_source,
-            current_environment=current_environment,
-            input_fingerprints=input_fingerprints,
-            commands_by_id=commands_by_id,
+        reuse = (
+            reuse_decisions(
+                selected=selected,
+                previous_report=previous_report,
+                current_source=current_source,
+                current_environment=current_environment,
+                input_fingerprints=input_fingerprints,
+                commands_by_id=commands_by_id,
+            )
+            if previous_report is not None
+            else {}
         )
         initial_results = reusable_results(
             selected=selected,

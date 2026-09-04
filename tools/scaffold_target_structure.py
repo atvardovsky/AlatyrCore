@@ -24,6 +24,7 @@ from scaffold_projection import (
     load_object,
     project_agent_rule_ids,
     project_ai_infrastructure_router,
+    project_assistant_capability_index,
     project_catalog,
     project_context_descriptor,
     project_gate_index,
@@ -33,6 +34,7 @@ from scaffold_projection import (
     project_router,
     portable_relative_path,
     render_json,
+    SelectedPathIndex,
     selected_path_index,
 )
 from scaffold_state import INITIAL_INSTALLATION_STATE
@@ -138,6 +140,7 @@ def project_assistant_bridges(
 
     native_paths: set[Path] = set()
     selected_native_paths: set[Path] = set()
+    selected_neutral_paths: set[Path] = set()
     for surface in load_assistant_surfaces():
         surface_id = surface.get("id")
         bridge_paths = surface.get("bridge_paths")
@@ -155,15 +158,26 @@ def project_assistant_bridges(
         native_paths.update(surface_native_paths)
         if surface_id in selected_surfaces:
             selected_native_paths.update(surface_native_paths)
+            selected_neutral_paths.update(surface_paths & NEUTRAL_ASSISTANT_ENTRY_PATHS)
 
-    unavailable = selected_native_paths - paths
+    unavailable = {
+        path for path in selected_native_paths if not (TEMPLATE_ROOT / path).is_file()
+    }
     if unavailable:
         unavailable_text = ", ".join(path.as_posix() for path in sorted(unavailable))
         raise ValueError(
-            "selected assistant bridge paths are unavailable in this scaffold "
-            f"profile: {unavailable_text}; use --profile full"
+            "selected assistant bridge templates are unavailable: "
+            f"{unavailable_text}"
         )
-    return (paths - native_paths) | selected_native_paths
+    projected = (paths - native_paths) | selected_native_paths | selected_neutral_paths
+    capability_index = Path(".ai/assistant/assistant-capabilities.json")
+    if capability_index in projected:
+        records = {"generic", *selected_surfaces}
+        projected.update(
+            Path(f".ai/assistant/assistant-capabilities/{surface_id}.json")
+            for surface_id in records
+        )
+    return projected
 
 
 def resolve_profile_paths(
@@ -259,13 +273,15 @@ class ProjectionContext:
     operation_ids: frozenset[str]
     enabled_modules: frozenset[str]
     context_catalogs: dict[Path, str]
-    selected_paths: frozenset[PurePosixPath]
+    selected_paths: SelectedPathIndex
+    generated_by: dict[str, Any] | None
 
 
 def build_projection_context(
     selected: set[Path],
     enabled_modules: set[str],
     context_catalogs: dict[Path, str] | None = None,
+    generated_by: dict[str, Any] | None = None,
 ) -> ProjectionContext:
     catalog_rel = Path(".ai/assistant/operation-catalog.json")
     catalog = None
@@ -282,6 +298,7 @@ def build_projection_context(
         enabled_modules=frozenset(enabled_modules),
         context_catalogs=context_catalogs or {},
         selected_paths=selected_path_index(selected),
+        generated_by=generated_by,
     )
 
 
@@ -367,6 +384,10 @@ def projected_template_content(
         return render_json(build_operation_index(catalog))
     if rel == gate_index_rel:
         return render_json(project_gate_index(load_object(src), selected_paths))
+    if rel == Path(".ai/assistant/assistant-capabilities.json"):
+        return render_json(
+            project_assistant_capability_index(load_object(src), selected_paths)
+        )
     if rel == router_rel:
         return render_json(
             project_router(load_object(src), selected_paths, set(context.operation_ids))
@@ -395,17 +416,6 @@ def projected_template_content(
             selected_paths,
             set(context.operation_ids),
         )
-        profile_descriptors: dict[str, dict[str, Any]] = {}
-        profile_index = projected_router.get("profile_index")
-        if isinstance(profile_index, dict):
-            for profile_id, entry in profile_index.items():
-                descriptor = entry.get("descriptor") if isinstance(entry, dict) else None
-                if isinstance(profile_id, str) and isinstance(descriptor, str):
-                    profile_descriptors[profile_id] = project_context_descriptor(
-                        load_object(TEMPLATE_ROOT / descriptor),
-                        selected_paths,
-                        set(context.operation_ids),
-                    )
         operation_index_text = (
             render_json(build_operation_index(catalog)) if catalog is not None else None
         )
@@ -426,9 +436,8 @@ def projected_template_content(
                 ),
                 operation_index_text=operation_index_text,
                 operation_catalog_text=operation_catalog_text,
-                target=TEMPLATE_ROOT,
-                profile_descriptors=profile_descriptors,
-                generated_by=generation_provenance_from_manifest_text(
+                generated_by=context.generated_by
+                or generation_provenance_from_manifest_text(
                     target,
                     tool_name="scaffold_target_structure.py",
                     manifest_text=manifest_text,
@@ -472,7 +481,8 @@ def projected_template_content(
                 router_text,
                 semantic_index_text=semantic_index_text,
                 semantic_terms=semantic_terms,
-                generated_by=generation_provenance_from_manifest_text(
+                generated_by=context.generated_by
+                or generation_provenance_from_manifest_text(
                     target,
                     tool_name="scaffold_target_structure.py",
                     manifest_text=manifest_text,
@@ -511,6 +521,8 @@ def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
     selected_assistant_surfaces = resolve_assistant_surfaces(
         getattr(args, "assistant_surface", []) or []
     )
+    if selected_assistant_surfaces:
+        requested_modules.add("multi-assistant-bridges")
     enabled_modules = dependency_closure(requested_modules)
     framework_pack = resolved_framework_pack(profile, requested_pack, enabled_modules)
     selected_templates = project_assistant_bridges(
@@ -524,7 +536,21 @@ def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
     selected = selected_templates | {
         Path(".ai") / "framework" / name for name in framework_files
     }
-    initial_context = build_projection_context(selected, enabled_modules)
+    projected_manifest_text = project_manifest(
+        (TEMPLATE_ROOT / ".ai/alatyr.yaml").read_text(encoding="utf-8"),
+        profile,
+        framework_pack,
+        selected_path_index(selected),
+        enabled_modules,
+    )
+    projection_provenance = generation_provenance_from_manifest_text(
+        target,
+        tool_name="scaffold_target_structure.py",
+        manifest_text=projected_manifest_text,
+    )
+    initial_context = build_projection_context(
+        selected, enabled_modules, generated_by=projection_provenance
+    )
     projected_target_contents: dict[Path, str] = {}
     for rel in selected_templates:
         if rel.name == INDEX_NAME:
@@ -543,7 +569,10 @@ def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
         selected_templates, projected_target_contents
     )
     projection_context = build_projection_context(
-        selected, enabled_modules, context_catalogs
+        selected,
+        enabled_modules,
+        context_catalogs,
+        generated_by=projection_provenance,
     )
     framework_contents = projected_framework_contents(framework_pack)
     actions: list[str] = []

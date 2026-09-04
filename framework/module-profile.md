@@ -33,6 +33,8 @@ internal support plumbing:
   infrastructure, or bounded worker delegation.
 - `governance-support`: supports approvals, evidence, lifecycle, metrics,
   scaffolding, or other control-plane behavior.
+- `source-repository`: provides optional maintenance tooling for the AlatyrCore
+  source repository and is not projected as a target-project capability.
 
 Scaffolding may begin with no optional modules and add an explicit dependency
 closure through selected capability IDs. The target validator should dispatch
@@ -118,12 +120,16 @@ maintain them:
   capability/freshness records, captured result conformance, security/privacy,
   stable revision lineage, portable ASCII layout/width, and optional rich
   presentation policy.
+- `assistant-runtime-capabilities`: the compact assistant capability index and
+  bridge matrix shared by diagrams, AI infrastructure, multi-assistant bridges,
+  and worker delegation.
 - `ai-infrastructure`: inventory, source access, prompt-injection handling,
   evidence-based recommendations, routed skill/prompt/gate/checker/tool/MCP/
   bridge selection, target development-pattern evidence and lazy capture,
   adaptation records, wrappers, permissions, output contracts, and provenance.
 - `multi-assistant-bridges`: bridge capability matrix and assistant-specific
-  wrappers for multiple supported assistants.
+  wrappers for explicitly selected assistants. It depends on
+  `assistant-runtime-capabilities`.
 - `installed-operations`: post-install operation requests, machine-readable
   catalog, single entry, automatic routing, read-only health, risk-gated
   preview, adapter recheck, help, and chat-message templates.
@@ -134,6 +140,8 @@ maintain them:
   independently verifiable tasks, target-owned worker roles/prompts and
   assistant role/model/native bindings, deterministic readiness, normalized
   results, disjoint writes, retry/conflict fallbacks, and primary convergence.
+  It depends only on `assistant-runtime-capabilities`; external dispatchers and
+  additional assistant bridges remain separate optional capabilities.
 - `change-packages`: coherent material-change evidence with semantic approval
   scope, companion-surface decisions, implementation corrections, compact
   architecture discussion, and before-to-after repository provenance.

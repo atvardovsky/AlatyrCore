@@ -129,11 +129,15 @@
       "checks": ["source-context-routing", "scaffold-profiles", "framework-consistency"]
     },
     "source-tooling": {
-      "required_context": ["tools/README.md", "docs/framework-maintenance.md"],
+      "required_context": [
+        "tools/check_manifest.json",
+        "docs/source-architecture.md"
+      ],
       "conditional_context": [
         "tool being changed",
         "contract validated by the tool",
-        "docs/source-architecture.md when refactoring or modularizing source tools"
+        "selected tools/README.md section for CLI usage",
+        "docs/framework-maintenance.md for ambiguous acceptance or lifecycle routing"
       ],
       "check_profile": "fast",
       "check_selection": "select fast changed-path checks by trigger_paths",
@@ -144,12 +148,15 @@
         "VERSION",
         "ADAPTER_SCHEMA_VERSION",
         "TEMPLATE_VERSION",
-        "CHANGELOG.md",
         "docs/release-process.md",
         "framework/lifecycle.md",
         "framework/migration-diff.md"
       ],
-      "conditional_context": ["release migration report", "changed rule owners and templates"],
+      "conditional_context": [
+        "CHANGELOG.md Unreleased and latest version sections",
+        "release migration report",
+        "changed rule owners and templates"
+      ],
       "check_profile": "full",
       "additional_check_profiles": ["release"],
       "checks": ["versioning", "release-drift-release", "migration-diff-report"]
@@ -178,8 +185,8 @@
     "repository-audit": {
       "required_context": [
         "tools/check_manifest.json",
-        "tools/README.md",
         "docs/framework-maintenance.md",
+        "docs/source-architecture.md",
         "docs/source-worker-strategy.md",
         "tools/source_worker_policy.json"
       ],

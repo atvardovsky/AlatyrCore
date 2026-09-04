@@ -6,10 +6,19 @@ from __future__ import annotations
 import copy
 import json
 import re
+from dataclasses import dataclass
 from pathlib import Path, PurePath, PurePosixPath
 from typing import Any
 
 from scaffold_state import INITIAL_INSTALLATION_STATE
+
+@dataclass(frozen=True)
+class SelectedPathIndex:
+    """Immutable exact-path and ancestor index for one target projection."""
+
+    exact: frozenset[PurePosixPath]
+    ancestors: frozenset[PurePosixPath]
+
 
 SelectedPaths = Any
 
@@ -35,26 +44,28 @@ def portable_relative_path(value: str | PurePath) -> PurePosixPath:
     return PurePosixPath(text)
 
 
-def selected_path_index(selected: SelectedPaths) -> frozenset[PurePosixPath]:
-    """Return normalized selected paths for repeated availability checks."""
+def selected_path_index(selected: SelectedPaths) -> SelectedPathIndex:
+    """Return a reusable O(1) availability index for selected paths."""
 
-    if isinstance(selected, frozenset):
+    if isinstance(selected, SelectedPathIndex):
         return selected
-    return frozenset(portable_relative_path(candidate) for candidate in selected)
+    exact = frozenset(portable_relative_path(candidate) for candidate in selected)
+    ancestors = frozenset(parent for candidate in exact for parent in candidate.parents)
+    return SelectedPathIndex(exact=exact, ancestors=ancestors)
 
 
 def path_available(value: str, selected: SelectedPaths) -> bool:
     if not value.startswith(".ai/"):
         return True
     path = portable_relative_path(value)
-    normalized = selected_path_index(selected)
-    return path in normalized or any(path in candidate.parents for candidate in normalized)
+    index = selected_path_index(selected)
+    return path in index.exact or path in index.ancestors
 
 
 def directory_available(value: str, selected: SelectedPaths) -> bool:
     path = portable_relative_path(value)
-    normalized = selected_path_index(selected)
-    return path in normalized or any(path in candidate.parents for candidate in normalized)
+    index = selected_path_index(selected)
+    return path in index.exact or path in index.ancestors
 
 
 def project_markdown_fragments(
@@ -377,6 +388,41 @@ def project_gate_index(gates: dict[str, Any], selected: SelectedPaths) -> dict[s
             for profile, gate_ids in profile_defaults.items()
             if isinstance(gate_ids, list)
         }
+    return projected
+
+
+def project_assistant_capability_index(
+    capabilities: dict[str, Any], selected: SelectedPaths
+) -> dict[str, Any]:
+    """Keep only installed assistant records and bridge paths in the index."""
+
+    projected = copy.deepcopy(capabilities)
+    index = selected_path_index(selected)
+    surfaces = projected.get("surfaces")
+    bridges = projected.get("bridge_paths")
+    if not isinstance(surfaces, dict) or not isinstance(bridges, dict):
+        raise ValueError("assistant capability index must define surfaces and bridge_paths")
+    projected_surfaces = {
+        surface_id: path
+        for surface_id, path in surfaces.items()
+        if isinstance(surface_id, str)
+        and isinstance(path, str)
+        and portable_relative_path(path) in index.exact
+    }
+    if not projected_surfaces:
+        raise ValueError("assistant capability index projection has no installed records")
+    projected["surfaces"] = projected_surfaces
+    projected["bridge_paths"] = {
+        surface_id: [
+            path
+            for path in bridges.get(surface_id, [])
+            if isinstance(path, str) and portable_relative_path(path) in index.exact
+        ]
+        for surface_id in projected_surfaces
+    }
+    default_surface = projected.get("default_surface")
+    if default_surface not in projected_surfaces:
+        projected["default_surface"] = next(iter(projected_surfaces))
     return projected
 
 

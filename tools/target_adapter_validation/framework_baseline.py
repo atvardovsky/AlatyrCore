@@ -44,28 +44,101 @@ def load_object(path: Path) -> dict[str, Any]:
     return data
 
 
-def project_semantic_index(source_framework: Path, selected_files: set[str]) -> str:
-    """Render a semantic-codebook index that references only installed shards."""
+def project_semantic_codebook(
+    source_framework: Path,
+    selected_files: set[str],
+    installed_rule_ids: set[str],
+) -> dict[str, str]:
+    """Render semantic shards whose terms have installed owners and dependencies."""
 
     semantic_index_path = source_framework / "semantics" / "index.json"
     index = load_object(semantic_index_path)
     shards = index.get("shards")
     if not isinstance(shards, list):
         raise ValueError("source semantic codebook index has invalid shards")
-    selected_shards: list[dict[str, Any]] = []
+    candidate_shards: list[tuple[dict[str, Any], dict[str, Any], str]] = []
+    terms: dict[str, tuple[dict[str, Any], str]] = {}
     for shard in shards:
         if not isinstance(shard, dict):
             raise ValueError("source semantic codebook index has invalid shard entry")
         path = shard.get("path")
         if not isinstance(path, str) or not path:
             raise ValueError("source semantic codebook shard path is invalid")
-        if f"semantics/{path}" in selected_files:
-            selected_shards.append(dict(shard))
+        relpath = f"semantics/{path}"
+        if relpath not in selected_files:
+            continue
+        shard_data = load_object(source_framework / relpath)
+        shard_terms = shard_data.get("terms")
+        if not isinstance(shard_terms, list):
+            raise ValueError(f"source semantic shard {path} has invalid terms")
+        candidate_shards.append((dict(shard), shard_data, relpath))
+        for term in shard_terms:
+            if not isinstance(term, dict) or not isinstance(term.get("id"), str):
+                raise ValueError(f"source semantic shard {path} has an invalid term")
+            owner = term.get("canonical_owner")
+            owner_rule = term.get("owner_rule_id")
+            if owner in selected_files and owner_rule in installed_rule_ids:
+                terms[term["id"]] = (term, relpath)
+
+    eligible = set(terms)
+    changed = True
+    while changed:
+        changed = False
+        for term_id in sorted(eligible):
+            dependencies = terms[term_id][0].get("depends_on")
+            if not isinstance(dependencies, list) or not all(
+                isinstance(value, str) for value in dependencies
+            ):
+                raise ValueError(f"source semantic term {term_id} has invalid dependencies")
+            if any(dependency not in eligible for dependency in dependencies):
+                eligible.remove(term_id)
+                changed = True
+
+    projected_content: dict[str, str] = {}
+    selected_shards: list[dict[str, Any]] = []
+    for descriptor, shard_data, relpath in candidate_shards:
+        projected_terms = [
+            term
+            for term in shard_data["terms"]
+            if isinstance(term, dict) and term.get("id") in eligible
+        ]
+        if not projected_terms:
+            continue
+        projected_shard = dict(shard_data)
+        projected_shard["terms"] = projected_terms
+        rendered = json.dumps(projected_shard, indent=2, ensure_ascii=True) + "\n"
+        projected_descriptor = dict(descriptor)
+        projected_descriptor["term_ids"] = [term["id"] for term in projected_terms]
+        projected_descriptor["content_digest"] = (
+            "sha256:" + hashlib.sha256(rendered.encode("utf-8")).hexdigest()
+        )
+        selected_shards.append(projected_descriptor)
+        projected_content[relpath] = rendered
     if not selected_shards:
         raise ValueError("projected semantic codebook index would be empty")
     projected = dict(index)
     projected["shards"] = selected_shards
-    return json.dumps(projected, indent=2, ensure_ascii=True) + "\n"
+    projected_content["semantics/index.json"] = (
+        json.dumps(projected, indent=2, ensure_ascii=True) + "\n"
+    )
+    return projected_content
+
+
+def project_semantic_index(source_framework: Path, selected_files: set[str]) -> str:
+    """Compatibility wrapper that projects shards against their declared owners."""
+
+    registry = load_object(source_framework / "rule-registry.json")
+    installed_rule_ids = {
+        rule["id"]
+        for rule in registry.get("rules", [])
+        if isinstance(rule, dict)
+        and isinstance(rule.get("id"), str)
+        and isinstance(rule.get("canonical_source"), str)
+        and rule["canonical_source"].removeprefix("framework/") in selected_files
+    }
+    return project_semantic_codebook(
+        source_framework, selected_files, installed_rule_ids
+    )["semantics/index.json"]
 
 
 def source_pack_projection(
@@ -138,8 +211,6 @@ def source_pack_projection(
             and not path.relative_to(source_framework).as_posix().startswith("catalog/")
             and path.name != "context-index.json"
         )
-    files.update(build_framework_catalog_contents(files, root=source_framework))
-
     selected_rules = [
         rule
         for rule in registry.get("rules", [])
@@ -165,6 +236,20 @@ def source_pack_projection(
         "rules": selected_rules,
     }
 
+    semantic_content: dict[str, str] = {}
+    if not include_remaining and "semantics/index.json" in files:
+        semantic_candidates = {
+            name
+            for name in files
+            if name.startswith("semantics/") and name != "semantics/index.json"
+        }
+        semantic_content = project_semantic_codebook(
+            source_framework, files, selected_ids
+        )
+        files.difference_update(semantic_candidates)
+        files.update(semantic_content)
+    files.update(build_framework_catalog_contents(files, root=source_framework))
+
     if include_remaining:
         contents = {
             name: (source_framework / name).read_bytes()
@@ -181,10 +266,9 @@ def source_pack_projection(
         "rule-registry.md": render_registry(projected_registry).encode("utf-8"),
         "rule-ownership.md": render_ownership(projected_registry).encode("utf-8"),
     }
-    if "semantics/index.json" in files:
-        projected_content["semantics/index.json"] = project_semantic_index(
-            source_framework, files
-        ).encode("utf-8")
+    projected_content.update(
+        {name: content.encode("utf-8") for name, content in semantic_content.items()}
+    )
     projected_content.update(
         {
             name: content.encode("utf-8")

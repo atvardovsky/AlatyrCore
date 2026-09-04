@@ -11,7 +11,7 @@ from typing import Any
 from render_rule_registry_docs import render_ownership, render_registry
 from render_context_catalogs import build_framework_catalog_contents
 from target_adapter_validation.framework_baseline import (
-    project_semantic_index,
+    project_semantic_codebook,
     render_pack_readme,
 )
 
@@ -109,6 +109,22 @@ def _resolved_framework_file_names(pack: str) -> tuple[str, ...]:
             and not path.relative_to(FRAMEWORK_ROOT).as_posix().startswith("catalog/")
             and path.name != "context-index.json"
         )
+    elif "semantics/index.json" in files:
+        installed_rule_ids = {
+            rule_id
+            for rule_id, source in sources.items()
+            if source in files
+        }
+        semantic_candidates = {
+            name
+            for name in files
+            if name.startswith("semantics/") and name != "semantics/index.json"
+        }
+        semantic_contents = project_semantic_codebook(
+            FRAMEWORK_ROOT, files, installed_rule_ids
+        )
+        files.difference_update(semantic_candidates)
+        files.update(semantic_contents)
     catalog_contents = build_framework_catalog_contents(files)
     files.update(catalog_contents)
     return tuple(sorted(files))
@@ -154,9 +170,12 @@ def _projected_framework_content_items(pack: str) -> tuple[tuple[str, str | None
     projected_registry = project_registry(pack)
     contents: dict[str, str | None] = {name: None for name in selected_files}
     if "semantics/index.json" in selected_files:
-        contents["semantics/index.json"] = project_semantic_index(
-            FRAMEWORK_ROOT, selected_files
+        semantic_contents = project_semantic_codebook(
+            FRAMEWORK_ROOT,
+            selected_files,
+            {rule["id"] for rule in projected_registry["rules"]},
         )
+        contents.update(semantic_contents)
     contents["README.md"] = render_pack_readme(pack, selected_files)
     contents["rule-registry.json"] = json.dumps(projected_registry, indent=2) + "\n"
     contents["rule-registry.md"] = render_registry(projected_registry)

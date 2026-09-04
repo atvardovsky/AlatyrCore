@@ -1976,7 +1976,7 @@ class Validator:
             return
         if (
             not isinstance(actual, dict)
-            or actual.get("schema_version") != 1
+            or actual.get("schema_version") != 2
             or actual.get("packet_kind") != "target-agent-entry-packet"
         ):
             self.error(
@@ -1985,14 +1985,13 @@ class Validator:
                 relpath,
             )
             return
-        recommendation = actual.get("profile_recommendation")
-        if (
-            not isinstance(recommendation, dict)
-            or recommendation.get("default_install_profile") != "kernel"
-        ):
+        routing_sources = actual.get("routing_sources")
+        if not isinstance(routing_sources, dict) or routing_sources.get(
+            "installed_profile_routes"
+        ) != ".ai/assistant/bootstrap-index.json":
             self.warn(
                 "ENTRY_PACKET_PROFILE_RECOMMENDATION",
-                "entry packet should recommend the cheapest kernel profile by default",
+                "entry packet should route installed profiles through the bootstrap index",
                 relpath,
             )
         delta = actual.get("support_delta_first")

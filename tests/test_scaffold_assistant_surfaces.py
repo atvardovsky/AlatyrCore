@@ -79,10 +79,21 @@ class ScaffoldAssistantSurfaceTests(unittest.TestCase):
         self.assertIn(".roo/rules/alatyr-core.md", paths)
         self.assertNotIn(".rules", paths)
 
-    def test_profile_without_native_bridge_support_is_rejected(self) -> None:
+    def test_explicit_surface_expands_a_partial_profile(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
-            with self.assertRaisesRegex(ValueError, "use --profile full"):
-                plan(scaffold_args(Path(directory), "claude", profile="standard"))
+            actions, _blocked = plan(
+                scaffold_args(Path(directory), "claude", profile="standard")
+            )
+
+        paths = action_paths(actions)
+        self.assertIn("CLAUDE.md", paths)
+        self.assertIn(".ai/assistant/assistant-capabilities.json", paths)
+        self.assertIn(
+            ".ai/assistant/assistant-capabilities/generic.json", paths
+        )
+        self.assertIn(
+            ".ai/assistant/assistant-capabilities/claude.json", paths
+        )
 
     def test_unknown_surface_is_rejected(self) -> None:
         with self.assertRaisesRegex(ValueError, "unknown assistant surface"):

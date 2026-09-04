@@ -145,18 +145,26 @@ def generation_provenance(
             "target_dirty_paths": [],
             **versions,
         }
+    source_dirty_paths = dirty_paths(source_root)
+    try:
+        same_repository = target.resolve() == source_root.resolve()
+    except OSError:
+        same_repository = False
+    target_dirty_paths = (
+        source_dirty_paths if same_repository else dirty_paths(target)
+    )
     return {
         "schema_version": 1,
         "tool": tool_name,
         "source_revision": source_revision(source_root),
-        "source_worktree_state": worktree_state(source_root),
-        "source_dirty_paths": dirty_paths(source_root),
+        "source_worktree_state": "dirty" if source_dirty_paths else "clean",
+        "source_dirty_paths": source_dirty_paths,
         "target_manifest": ".ai/alatyr.yaml",
         "target_manifest_digest": file_sha256(manifest_path)
         if manifest_path.is_file()
         else "unavailable",
-        "target_worktree_state": worktree_state(target),
-        "target_dirty_paths": dirty_paths(target),
+        "target_worktree_state": "dirty" if target_dirty_paths else "clean",
+        "target_dirty_paths": target_dirty_paths,
         **versions,
     }
 

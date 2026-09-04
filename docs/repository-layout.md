@@ -172,6 +172,11 @@ quality-preserving source work route before checks run.
 `tools/check_check_manifest.py` remains the CLI wrapper for source manifest
 coverage.
 
+Schema-3 source-check reports deduplicate input fingerprint entries into one
+report-level catalog. Check-local fingerprints retain their aggregate digest
+and catalog references, so reuse remains exact while large full-run reports do
+not repeat the same file metadata for every check.
+
 `tools/target_adapter_validation/action_modes.py` owns the shared target
 allowed-action mode set used by installed adapter validators.
 

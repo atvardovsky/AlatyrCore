@@ -1,5 +1,5 @@
 {
-  "adapter_schema_version": 42,
+  "adapter_schema_version": 43,
   "files": [
     {
       "path": "framework/README.md",
@@ -64,7 +64,7 @@
     {
       "path": "framework/capabilities.json",
       "rule_ids": [],
-      "sha256": "0ceff99e0a574028555effb43347f78b5d45edbbe09a3d434ad79bdd81e90e68"
+      "sha256": "3013408d4d85bab1265f69f230432f5757515a1c3fb942eea8c52641a8ae313f"
     },
     {
       "path": "framework/catalog/change/context-index.json",
@@ -79,12 +79,12 @@
     {
       "path": "framework/catalog/core/context-index.json",
       "rule_ids": [],
-      "sha256": "af80ba668074fd12f3b1333a1ddd5f83c706a3e80d60dc933b13ccdded8ecaaa"
+      "sha256": "1f07dceabd4d56a3b285e9402f8ea603a5ff58f4004ed05445ecc53f1924361e"
     },
     {
       "path": "framework/catalog/infrastructure/context-index.json",
       "rule_ids": [],
-      "sha256": "c3ab568ca7098a56c11def8411aaa47da7105a5964d22e6c2cedc711b806b663"
+      "sha256": "7cf0f06b69161bb3b586ada9419c67f4d450db0d9e0110bc0ad769640d64a26b"
     },
     {
       "path": "framework/catalog/knowledge/context-index.json",
@@ -135,7 +135,7 @@
     {
       "path": "framework/context-index.json",
       "rule_ids": [],
-      "sha256": "de705b20e83fe74a7767fed8182dd6f82dcf6f7dc07f7b43dd1e3d56b5af282a"
+      "sha256": "2dcd88eae769d73dace0f8aebc99236c1cd4748beaedcb8dde1e2704466b3c8f"
     },
     {
       "path": "framework/context-profiles.md",
@@ -240,7 +240,7 @@
       "rule_ids": [
         "ALATYR-MODULE-001"
       ],
-      "sha256": "d56d770d27af5a85476bc1b2fb6e069298771c84ce451154fae151e747d2720d"
+      "sha256": "728067aa15ad7e3764e8a5e9c975c519c58afe29fdf1d3f1793bdf47ab42c0e3"
     },
     {
       "path": "framework/operation-help.md",
@@ -399,8 +399,8 @@
       "sha256": "dc1b84f72ca465f735d51ee5de02d3c26fd8054688556b4f11c1663eddc239da"
     }
   ],
-  "framework_version": "0.1.0-alpha.52",
+  "framework_version": "0.1.0-alpha.53",
   "inventory_kind": "alatyr-framework-files",
   "schema_version": 1,
-  "template_version": 47
+  "template_version": 48
 }

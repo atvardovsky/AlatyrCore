@@ -36,6 +36,20 @@ def main() -> int:
     if bootstrap["words"] > bootstrap_budget["soft_max_words"]:
         failures.append("bootstrap word count exceeds its soft headroom budget")
 
+    first_use = report["first_use"]
+    first_use_budget = report["budgets"]["first_use"]
+    if first_use["declared_files"] > first_use_budget["max_files"]:
+        failures.append("first-use declared file count exceeds its budget")
+    if first_use["words"] > first_use_budget["max_words"]:
+        failures.append("first-use word count exceeds its budget")
+    for path in [
+        "AGENTS.md",
+        ".ai/assistant/bootstrap-index.json",
+        ".ai/assistant/entry-packet.json",
+    ]:
+        if path not in first_use["resolved_paths"]:
+            failures.append(f"first-use measurement omits mandatory {path}")
+
     profile_budget = report["budgets"]["profile_default"]
     max_total_words = profile_budget["max_total_words"]
     max_portable_words = profile_budget["max_portable_words"]

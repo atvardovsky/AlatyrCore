@@ -66,6 +66,7 @@
     }
   ],
   "module_categories": {
+    "assistant-runtime-capabilities": ["existing-ai-surfaces", "context-routing"],
     "ai-infrastructure": ["existing-ai-surfaces", "risk-authorization-validation"],
     "architecture-knowledge": ["project-sources-of-truth", "context-routing"],
     "blueprint-change": ["project-sources-of-truth", "risk-authorization-validation"],

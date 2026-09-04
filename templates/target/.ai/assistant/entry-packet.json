@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "packet_kind": "target-agent-entry-packet",
   "path": ".ai/assistant/entry-packet.json",
   "generated_by": {
@@ -10,21 +10,21 @@
     "source_worktree_state": "clean",
     "source_dirty_paths": [],
     "target_manifest": ".ai/alatyr.yaml",
-    "target_manifest_digest": "sha256:830360ccedc483ac336f87c0fafb9690d458478f5109586f4fd6c90ff105db54",
+    "target_manifest_digest": "sha256:0b889a908ee133452191efb48a89067000587cb295887693ac61b0345be3cd6d",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.52",
-    "adapter_schema_version": "42",
-    "template_version": "47"
+    "framework_version": "0.1.0-alpha.53",
+    "adapter_schema_version": "43",
+    "template_version": "48"
   },
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "830360ccedc483ac336f87c0fafb9690d458478f5109586f4fd6c90ff105db54"
+      "sha256": "0b889a908ee133452191efb48a89067000587cb295887693ac61b0345be3cd6d"
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",
-      "sha256": "d57d18b1d1e1c072a6c980f0898f2163fa8e8ae587fa7bebe6726a85e5b0731f"
+      "sha256": "2a2d7da4aab0de852af7d3081cd8fe2315e8c8bfa311754bb01215b451398d46"
     },
     "gate_index": {
       "path": ".ai/assistant/gates/index.json",
@@ -96,8 +96,6 @@
       "current task operation and changed facts",
       "volatile revisions hashes timestamps and runtime evidence"
     ],
-    "provider_controls": "use only when the selected assistant capability record has current evidence that the client exposes them",
-    "telemetry_policy": "claim cache hits or exact savings only from observed host or provider usage fields",
     "cache_hit_required": false,
     "context_window_reduction": false,
     "fallback": "bounded-context-routing"
@@ -116,460 +114,14 @@
     },
     "on_exceed": "load required safety and owner evidence, record expansion reason, measured context, and intentionally omitted context"
   },
-  "profile_recommendation": {
-    "default_install_profile": "kernel",
-    "escalation_order": [
-      "kernel",
-      "core",
-      "standard",
-      "full"
-    ],
-    "select_core_when": [
-      "durable engineering evidence or project knowledge is needed",
-      "optional capability dependency closure requires core or broader"
-    ],
-    "select_standard_when": [
-      "common lifecycle, product-change, operation catalog, or post-update operations are required"
-    ],
-    "select_full_when": [
-      "native assistant bridges, all optional support templates, or full-profile conformance are explicitly required"
-    ],
-    "decision_policy": "install or update the cheapest sufficient profile from target evidence; escalate only for a named missing surface, module dependency, assistant bridge, or failed validation"
-  },
-  "profile_routes": {
-    "docs-local": {
-      "signals": [
-        "local wording",
-        "README or documentation text",
-        "non-semantic documentation change"
-      ],
-      "descriptor": ".ai/assistant/context/profiles/docs-local.json",
-      "operations": [
-        "documentation-sync",
-        "drift-review",
-        "logical-integrity-review",
-        "project-knowledge",
-        "support-generation"
-      ],
-      "required_context": [
-        ".ai/framework/context-discovery.md",
-        ".ai/assistant/gates/core.md",
-        ".ai/assistant/gates/documentation.md",
-        ".ai/assistant/gates/final-evidence.md",
-        "{TARGET_DOC_SOURCE_OF_TRUTH}"
-      ],
-      "default_gates": [
-        "core",
-        "documentation",
-        "final-evidence"
-      ],
-      "default_gate_paths": [
-        ".ai/assistant/gates/core.md",
-        ".ai/assistant/gates/documentation.md",
-        ".ai/assistant/gates/final-evidence.md"
-      ],
-      "approval_gates": [
-        "accepted_behavior_change",
-        "security_posture_change",
-        "public_contract_change",
-        "approval_rule_change"
-      ],
-      "validation": [
-        "{TARGET_DOC_VALIDATION_OR_MANUAL_REVIEW}"
-      ],
-      "final_evidence": [
-        "changed_docs",
-        "source_of_truth",
-        "skipped_checks",
-        "why_no_logical_integrity_expansion"
-      ]
-    },
-    "code-local": {
-      "signals": [
-        "implementation change",
-        "test change",
-        "no accepted behavior change",
-        "review comments or defect fixes"
-      ],
-      "descriptor": ".ai/assistant/context/profiles/code-local.json",
-      "operations": [
-        "logical-integrity-review",
-        "engineering-evidence",
-        "project-knowledge",
-        "drift-review",
-        "product-change",
-        "test-first-change",
-        "support-generation"
-      ],
-      "required_context": [
-        ".ai/framework/context-discovery.md",
-        ".ai/framework/change-risk-model.md",
-        ".ai/framework/logical-integrity.md",
-        ".ai/assistant/gates/core.md",
-        ".ai/assistant/gates/code-and-tests.md",
-        ".ai/assistant/gates/final-evidence.md",
-        "{TARGET_CODE_SOURCE_OF_TRUTH}"
-      ],
-      "default_gates": [
-        "core",
-        "code-and-tests",
-        "contract-artifacts",
-        "visual-validation",
-        "final-evidence"
-      ],
-      "default_gate_paths": [
-        ".ai/assistant/gates/core.md",
-        ".ai/assistant/gates/code-and-tests.md",
-        ".ai/assistant/gates/contract-artifacts.md",
-        ".ai/assistant/gates/visual-validation.md",
-        ".ai/assistant/gates/final-evidence.md"
-      ],
-      "approval_gates": [
-        "protected_category_crossed"
-      ],
-      "validation": [
-        "{TARGET_CODE_VALIDATION_OR_MANUAL_REVIEW}"
-      ],
-      "final_evidence": [
-        "changed_files",
-        "re_derived_invariants",
-        "review_item_reconciliation",
-        "contract_artifact_result",
-        "visual_validation_result",
-        "validation",
-        "doc_sync_result",
-        "residual_risk"
-      ]
-    },
-    "business-change": {
-      "signals": [
-        "accepted behavior change",
-        "domain rule change",
-        "product policy change",
-        "workflow or public contract change"
-      ],
-      "descriptor": ".ai/assistant/context/profiles/business-change.json",
-      "operations": [
-        "product-change",
-        "create-project-blueprint",
-        "logical-integrity-review",
-        "engineering-evidence",
-        "project-knowledge",
-        "test-first-change"
-      ],
-      "required_context": [
-        ".ai/framework/context-discovery.md",
-        ".ai/framework/change-risk-model.md",
-        ".ai/project/source-of-truth-registry.md",
-        ".ai/framework/logical-integrity.md",
-        ".ai/assistant/gates/core.md",
-        ".ai/assistant/gates/semantic-integrity.md",
-        ".ai/assistant/gates/final-evidence.md",
-        "{TARGET_BLUEPRINT_OR_PRODUCT_SOURCE_OF_TRUTH}"
-      ],
-      "default_gates": [
-        "core",
-        "semantic-integrity",
-        "contract-artifacts",
-        "final-evidence"
-      ],
-      "default_gate_paths": [
-        ".ai/assistant/gates/core.md",
-        ".ai/assistant/gates/semantic-integrity.md",
-        ".ai/assistant/gates/contract-artifacts.md",
-        ".ai/assistant/gates/final-evidence.md"
-      ],
-      "approval_gates": [
-        "accepted_business_behavior_change"
-      ],
-      "validation": [
-        "{TARGET_BUSINESS_VALIDATION_OR_MANUAL_REVIEW}"
-      ],
-      "final_evidence": [
-        "changed_fact",
-        "re_derived_invariants",
-        "review_item_reconciliation",
-        "owning_blueprint_or_source_of_truth",
-        "implementation_test_doc_sync",
-        "contract_artifact_result",
-        "approvals",
-        "logical_integrity_result"
-      ]
-    },
-    "architecture-change": {
-      "signals": [
-        "module boundary change",
-        "dependency direction change",
-        "runtime topology change",
-        "public API or cross-component contract change"
-      ],
-      "descriptor": ".ai/assistant/context/profiles/architecture-change.json",
-      "operations": [
-        "product-change",
-        "create-project-blueprint",
-        "logical-integrity-review",
-        "engineering-evidence",
-        "project-knowledge",
-        "test-first-change"
-      ],
-      "required_context": [
-        ".ai/framework/context-discovery.md",
-        ".ai/framework/change-risk-model.md",
-        ".ai/project/source-of-truth-registry.md",
-        ".ai/framework/logical-integrity.md",
-        ".ai/assistant/gates/core.md",
-        ".ai/assistant/gates/semantic-integrity.md",
-        ".ai/assistant/gates/final-evidence.md",
-        "{TARGET_ARCHITECTURE_SOURCE_OF_TRUTH}"
-      ],
-      "default_gates": [
-        "core",
-        "semantic-integrity",
-        "contract-artifacts",
-        "visual-validation",
-        "final-evidence"
-      ],
-      "default_gate_paths": [
-        ".ai/assistant/gates/core.md",
-        ".ai/assistant/gates/semantic-integrity.md",
-        ".ai/assistant/gates/contract-artifacts.md",
-        ".ai/assistant/gates/visual-validation.md",
-        ".ai/assistant/gates/final-evidence.md"
-      ],
-      "approval_gates": [
-        "architecture_change",
-        "new_production_dependency_or_service"
-      ],
-      "validation": [
-        "{TARGET_ARCHITECTURE_VALIDATION_OR_MANUAL_REVIEW}"
-      ],
-      "final_evidence": [
-        "architecture_owner_update",
-        "re_derived_invariants",
-        "review_item_reconciliation",
-        "affected_areas",
-        "validation",
-        "diagram_result",
-        "contract_artifact_result",
-        "visual_validation_result",
-        "residual_risk"
-      ]
-    },
-    "data-change": {
-      "signals": [
-        "schema change",
-        "persistence change",
-        "migration or backfill",
-        "data ownership or retention change"
-      ],
-      "descriptor": ".ai/assistant/context/profiles/data-change.json",
-      "operations": [
-        "product-change",
-        "logical-integrity-review",
-        "engineering-evidence",
-        "project-knowledge",
-        "drift-review",
-        "test-first-change"
-      ],
-      "required_context": [
-        ".ai/framework/change-risk-model.md",
-        ".ai/project/source-of-truth-registry.md",
-        ".ai/framework/logical-integrity.md",
-        ".ai/assistant/gates/core.md",
-        ".ai/assistant/gates/semantic-integrity.md",
-        ".ai/assistant/gates/code-and-tests.md",
-        ".ai/assistant/gates/final-evidence.md",
-        "{TARGET_DATA_SOURCE_OF_TRUTH}"
-      ],
-      "default_gates": [
-        "core",
-        "semantic-integrity",
-        "code-and-tests",
-        "contract-artifacts",
-        "final-evidence"
-      ],
-      "default_gate_paths": [
-        ".ai/assistant/gates/core.md",
-        ".ai/assistant/gates/semantic-integrity.md",
-        ".ai/assistant/gates/code-and-tests.md",
-        ".ai/assistant/gates/contract-artifacts.md",
-        ".ai/assistant/gates/final-evidence.md"
-      ],
-      "approval_gates": [
-        "destructive_data_change",
-        "privacy_change",
-        "migration_risk_change",
-        "live_service_data_change"
-      ],
-      "validation": [
-        "{TARGET_DATA_VALIDATION_OR_MANUAL_REVIEW}"
-      ],
-      "final_evidence": [
-        "canonical_data_owner",
-        "re_derived_invariants",
-        "external_failure_distinction",
-        "derived_surfaces",
-        "contract_artifact_result",
-        "migration_or_rollback_notes",
-        "validation",
-        "unresolved_risk"
-      ]
-    },
-    "security-sensitive": {
-      "signals": [
-        "secrets or credentials",
-        "permissions or authentication",
-        "network or external services",
-        "destructive actions",
-        "production or spend boundary"
-      ],
-      "descriptor": ".ai/assistant/context/profiles/security-sensitive.json",
-      "operations": [
-        "product-change",
-        "logical-integrity-review",
-        "engineering-evidence",
-        "project-knowledge",
-        "skill-adaptation",
-        "test-first-change"
-      ],
-      "required_context": [
-        ".ai/framework/security-safety-guidance.md",
-        ".ai/framework/logical-integrity.md",
-        ".ai/project/source-of-truth-registry.md",
-        ".ai/assistant/gates/core.md",
-        ".ai/assistant/gates/semantic-integrity.md",
-        ".ai/assistant/gates/security-approval.md",
-        ".ai/assistant/gates/final-evidence.md",
-        "{TARGET_SECURITY_SOURCE_OF_TRUTH}"
-      ],
-      "default_gates": [
-        "core",
-        "semantic-integrity",
-        "security-approval",
-        "final-evidence"
-      ],
-      "default_gate_paths": [
-        ".ai/assistant/gates/core.md",
-        ".ai/assistant/gates/semantic-integrity.md",
-        ".ai/assistant/gates/security-approval.md",
-        ".ai/assistant/gates/final-evidence.md"
-      ],
-      "approval_gates": [
-        "protected_security_change",
-        "destructive_action",
-        "live_service_access",
-        "permission_broadening"
-      ],
-      "validation": [
-        "{TARGET_SECURITY_VALIDATION_OR_MANUAL_REVIEW}"
-      ],
-      "final_evidence": [
-        "security_owner_evidence",
-        "actions_avoided",
-        "approvals",
-        "validation",
-        "residual_risk"
-      ]
-    },
-    "ai-infrastructure": {
-      "signals": [
-        "AI infrastructure inventory, recommendation, or item improvement",
-        "prompt or skill change",
-        "assistant wrapper or bridge change",
-        "MCP or tool config change",
-        "checker gate flow or template change",
-        "third-party assistant infrastructure review"
-      ],
-      "descriptor": ".ai/assistant/context/profiles/ai-infrastructure.json",
-      "operations": [
-        "ai-infrastructure-inventory",
-        "ai-infrastructure-recommendation",
-        "skill-adaptation",
-        "extension-management"
-      ],
-      "required_context": [
-        ".ai/framework/ai-infrastructure-routing.md",
-        ".ai/assistant/ai-infrastructure-router.json",
-        ".ai/assistant/gates/core.md"
-      ],
-      "default_gates": [
-        "core",
-        "final-evidence"
-      ],
-      "default_gate_paths": [
-        ".ai/assistant/gates/core.md",
-        ".ai/assistant/gates/final-evidence.md"
-      ],
-      "approval_gates": [
-        "third_party_infrastructure_import",
-        "tool_permission_change",
-        "live_or_destructive_capability",
-        "weakened_gate_or_approval_rule"
-      ],
-      "validation": [
-        "{TARGET_AI_INFRASTRUCTURE_VALIDATION_OR_MANUAL_REVIEW}"
-      ],
-      "final_evidence": [
-        "inventory",
-        "provenance",
-        "source_hash_or_commit",
-        "license_status",
-        "normalization",
-        "compatibility_review",
-        "approval_evidence"
-      ]
-    },
-    "framework-upgrade": {
-      "signals": [
-        "installing Alatyr",
-        "updating Alatyr Core",
-        "adapter recheck",
-        "adapter maturity review",
-        "framework drift repair"
-      ],
-      "descriptor": ".ai/assistant/context/profiles/framework-upgrade.json",
-      "operations": [
-        "adapter-health",
-        "recheck-after-framework-update",
-        "recheck-after-installation",
-        "adapter-maturity-review",
-        "extension-management",
-        "support-generation"
-      ],
-      "required_context": [
-        ".ai/assistant/context/migration-routing.json",
-        "{TARGET_UPGRADE_IMPACT_REPORT}",
-        ".ai/assistant/gates/core.md",
-        ".ai/assistant/gates/final-evidence.md"
-      ],
-      "default_gates": [
-        "core",
-        "final-evidence"
-      ],
-      "default_gate_paths": [
-        ".ai/assistant/gates/core.md",
-        ".ai/assistant/gates/final-evidence.md"
-      ],
-      "approval_gates": [
-        "overwriting_existing_instructions",
-        "protected_adapter_behavior_change",
-        "third_party_assistant_infrastructure_adoption"
-      ],
-      "validation": [
-        "{TARGET_ADAPTER_RECHECK_OR_MANUAL_REVIEW}"
-      ],
-      "final_evidence": [
-        "adapter_version_schema_state",
-        "changed_framework_baseline",
-        "migration_assessment",
-        "selected_and_omitted_canonical_sources",
-        "affected_target_files",
-        "gaps",
-        "local_deviations",
-        "validation",
-        "migration_actions"
-      ]
-    }
+  "routing_sources": {
+    "installed_profile_routes": ".ai/assistant/bootstrap-index.json",
+    "profile_descriptors": "profiles",
+    "gate_index": ".ai/assistant/gates/index.json",
+    "operation_index": ".ai/assistant/operation-index.json",
+    "operation_catalog": ".ai/assistant/operation-catalog.json",
+    "full_router": ".ai/assistant/context-router.json",
+    "selection_policy": "use bootstrap profile candidates first; load a selected descriptor or canonical owner only for the current task"
   },
   "task_classification": {
     "schema_version": 1,
@@ -581,44 +133,6 @@
     ],
     "default_class": "standard-task",
     "ambiguity_behavior": "stay read-only, select the smallest plausible class, and ask for the missing fact before edits",
-    "classes": {
-      "small-task": {
-        "signals": [
-          "one base profile is sufficient",
-          "one local surface or directly linked neighbor set is affected",
-          "no accepted semantic or logical fact changes",
-          "no approval safety data architecture public contract or live-external boundary is crossed",
-          "focused validation can prove the result"
-        ],
-        "task_scale_overlay": "small-task",
-        "pre_change_preview": "skip with short reason unless a trigger fires",
-        "evidence": "compact small-task evidence"
-      },
-      "standard-task": {
-        "signals": [
-          "one base profile is selected but semantic or validation reasoning is needed",
-          "scope remains within one project area or owner set",
-          "work does not need separate workstreams"
-        ],
-        "pre_change_preview": "risk-gated"
-      },
-      "large-or-resumable": {
-        "signals": [
-          "multiple profiles project areas workstreams or approval checkpoints are needed",
-          "the selected context exceeds the profile budget",
-          "the user explicitly asks for phased or resumable work"
-        ],
-        "task_scale_overlay": "large-or-resumable",
-        "pre_change_preview": "required before edits"
-      },
-      "protected-or-sensitive": {
-        "signals": [
-          "approval safety security credential permission destructive spend production or live-external boundary may apply",
-          "current user authorization or approval scope is unclear"
-        ],
-        "pre_change_preview": "required before edits"
-      }
-    },
     "expansion_triggers": [
       "semantic or logical fact changes",
       "source-of-truth owner is missing disputed or contradicted",
@@ -626,13 +140,29 @@
       "multiple project areas profiles workstreams or changed-fact owners are required",
       "focused validation fails or cannot prove the changed contract",
       "user asks for broad audit large-task orchestration change package or debug evidence"
-    ]
+    ],
+    "classes": {
+      "small-task": {
+        "task_scale_overlay": "small-task",
+        "pre_change_preview": "skip with short reason unless a trigger fires",
+        "evidence": "compact small-task evidence"
+      },
+      "standard-task": {
+        "pre_change_preview": "risk-gated"
+      },
+      "large-or-resumable": {
+        "task_scale_overlay": "large-or-resumable",
+        "pre_change_preview": "required before edits"
+      },
+      "protected-or-sensitive": {
+        "pre_change_preview": "required before edits"
+      }
+    }
   },
   "task_decomposition": {
     "schema_version": 1,
     "policy": ".ai/assistant/task-decomposition.json",
     "plan_template": ".ai/assistant/templates/task-decomposition.md",
-    "default_behavior": "decompose every non-trivial request; use one local task for small work when one task profile and focused validation are sufficient",
     "level_order": [
       "L0",
       "L1",
@@ -643,19 +173,12 @@
       "L6",
       "L7"
     ],
-    "worker_eligible_levels": [
-      "L1",
-      "L2",
-      "L3",
-      "L4",
-      "L5"
-    ],
     "non_delegable_levels": [
       "L0",
       "L6",
       "L7"
     ],
-    "small_task_behavior": "one local task with compact small-task evidence; load the full decomposition policy only when an expansion trigger fires",
+    "default_behavior": "decompose every non-trivial request; use one local task for small work when one task profile and focused validation are sufficient",
     "executor_selection": {
       "default": "primary",
       "selection_order": [
@@ -671,332 +194,15 @@
     "index": ".ai/assistant/operation-index.json",
     "catalog": ".ai/assistant/operation-catalog.json",
     "fallback_operation": "help",
-    "load_index_when": [
-      "exact operation ID or request alias",
-      "clear operation handoff"
-    ],
     "load_catalog_when": [
       "bare Alatyr entry",
       "ambiguity",
       "operation or adapter repair"
-    ],
-    "operation_routes": {
-      "help": {
-        "required_module": "core-profile",
-        "flow": ".ai/assistant/flows/operation-routing.flow.md",
-        "allowed_actions": [
-          "read-only"
-        ]
-      },
-      "adapter-health": {
-        "required_module": "core-profile",
-        "flow": ".ai/assistant/flows/adapter-health.flow.md",
-        "allowed_actions": [
-          "read-only"
-        ]
-      },
-      "create-project-blueprint": {
-        "required_module": "blueprint-change",
-        "flow": ".ai/assistant/flows/project-blueprint-creation.flow.md",
-        "allowed_actions": [
-          "read-only",
-          "docs-only",
-          "full-with-approval"
-        ]
-      },
-      "architecture-assistance": {
-        "required_module": "architecture-knowledge",
-        "flow": ".ai/assistant/flows/architecture-assistance.flow.md",
-        "allowed_actions": [
-          "read-only",
-          "docs-only",
-          "full-with-approval"
-        ]
-      },
-      "recheck-after-installation": {
-        "required_module": "core-profile",
-        "flow": ".ai/assistant/flows/adapter-recheck.flow.md",
-        "allowed_actions": [
-          "read-only",
-          "adapter-only",
-          "full-with-approval"
-        ]
-      },
-      "recheck-after-framework-update": {
-        "required_module": "core-profile",
-        "flow": ".ai/assistant/flows/adapter-recheck.flow.md",
-        "allowed_actions": [
-          "read-only",
-          "adapter-only",
-          "full-with-approval"
-        ]
-      },
-      "product-change": {
-        "required_module": "blueprint-change",
-        "flow": ".ai/assistant/flows/blueprint-driven-change.flow.md",
-        "allowed_actions": [
-          "read-only",
-          "docs-only",
-          "code-and-tests",
-          "full-with-approval"
-        ]
-      },
-      "large-task": {
-        "required_module": "large-task-orchestration",
-        "flow": ".ai/assistant/flows/large-task-orchestration.flow.md",
-        "allowed_actions": [
-          "read-only",
-          "docs-only",
-          "adapter-only",
-          "code-and-tests",
-          "full-with-approval"
-        ]
-      },
-      "team-identity": {
-        "required_module": "team-collaboration",
-        "flow": ".ai/assistant/flows/team-identity.flow.md",
-        "allowed_actions": [
-          "read-only",
-          "adapter-only"
-        ]
-      },
-      "team-status": {
-        "required_module": "team-collaboration",
-        "flow": ".ai/assistant/flows/team-task-coordination.flow.md",
-        "allowed_actions": [
-          "read-only"
-        ]
-      },
-      "team-task": {
-        "required_module": "team-collaboration",
-        "flow": ".ai/assistant/flows/team-task-coordination.flow.md",
-        "allowed_actions": [
-          "read-only",
-          "adapter-only"
-        ]
-      },
-      "team-conflict-review": {
-        "required_module": "team-collaboration",
-        "flow": ".ai/assistant/flows/team-task-coordination.flow.md",
-        "allowed_actions": [
-          "read-only"
-        ]
-      },
-      "team-handoff": {
-        "required_module": "team-collaboration",
-        "flow": ".ai/assistant/flows/team-handoff.flow.md",
-        "allowed_actions": [
-          "read-only",
-          "adapter-only"
-        ]
-      },
-      "team-decision": {
-        "required_module": "team-collaboration",
-        "flow": ".ai/assistant/flows/team-decision.flow.md",
-        "allowed_actions": [
-          "read-only",
-          "docs-only",
-          "full-with-approval"
-        ]
-      },
-      "team-review": {
-        "required_module": "team-collaboration",
-        "flow": ".ai/assistant/flows/team-review.flow.md",
-        "allowed_actions": [
-          "read-only"
-        ]
-      },
-      "team-merge-check": {
-        "required_module": "team-collaboration",
-        "flow": ".ai/assistant/flows/team-review.flow.md",
-        "allowed_actions": [
-          "read-only"
-        ]
-      },
-      "engineering-evidence": {
-        "required_module": "core-profile",
-        "flow": ".ai/assistant/flows/engineering-evidence-capture.flow.md",
-        "allowed_actions": [
-          "read-only",
-          "docs-only",
-          "adapter-only",
-          "code-and-tests",
-          "full-with-approval"
-        ]
-      },
-      "project-knowledge": {
-        "required_module": "core-profile",
-        "flow": ".ai/assistant/flows/project-knowledge.flow.md",
-        "allowed_actions": [
-          "read-only",
-          "docs-only",
-          "adapter-only",
-          "code-and-tests",
-          "full-with-approval"
-        ]
-      },
-      "debug-mode": {
-        "required_module": "debug-mode",
-        "flow": ".ai/assistant/flows/debug-mode.flow.md",
-        "allowed_actions": [
-          "read-only",
-          "adapter-only"
-        ]
-      },
-      "logical-integrity-review": {
-        "required_module": "core-profile",
-        "flow": ".ai/assistant/flows/logical-integrity-review.flow.md",
-        "allowed_actions": [
-          "read-only",
-          "docs-only",
-          "adapter-only",
-          "code-and-tests",
-          "full-with-approval"
-        ]
-      },
-      "support-generation": {
-        "required_module": "support-generation",
-        "flow": ".ai/assistant/flows/support-generation.flow.md",
-        "allowed_actions": [
-          "read-only",
-          "docs-only",
-          "adapter-only",
-          "full-with-approval"
-        ]
-      },
-      "diagram-discussion": {
-        "required_module": "diagrams",
-        "flow": ".ai/assistant/flows/diagram-discussion.flow.md",
-        "allowed_actions": [
-          "read-only",
-          "docs-only"
-        ]
-      },
-      "ai-infrastructure-inventory": {
-        "required_module": "ai-infrastructure",
-        "flow": ".ai/assistant/flows/ai-infrastructure-inventory.flow.md",
-        "allowed_actions": [
-          "read-only"
-        ]
-      },
-      "ai-infrastructure-recommendation": {
-        "required_module": "ai-infrastructure",
-        "flow": ".ai/assistant/flows/ai-infrastructure-recommendation.flow.md",
-        "allowed_actions": [
-          "read-only"
-        ]
-      },
-      "skill-adaptation": {
-        "required_module": "ai-infrastructure",
-        "flow": ".ai/assistant/flows/skill-adaptation.flow.md",
-        "allowed_actions": [
-          "read-only",
-          "adapter-only",
-          "full-with-approval"
-        ]
-      },
-      "extension-management": {
-        "required_module": "core-profile",
-        "flow": ".ai/assistant/flows/extension-lifecycle.flow.md",
-        "allowed_actions": [
-          "read-only",
-          "adapter-only",
-          "full-with-approval"
-        ]
-      },
-      "dependency-knowledge": {
-        "required_module": "dependency-knowledge",
-        "flow": ".ai/assistant/flows/dependency-knowledge-sync.flow.md",
-        "allowed_actions": [
-          "read-only",
-          "adapter-only",
-          "full-with-approval"
-        ]
-      },
-      "workspace-mode": {
-        "required_module": "workspace-modes",
-        "flow": ".ai/assistant/flows/workspace-mode.flow.md",
-        "allowed_actions": [
-          "read-only",
-          "adapter-only",
-          "full-with-approval"
-        ]
-      },
-      "drift-review": {
-        "required_module": "core-profile",
-        "flow": ".ai/assistant/flows/logical-integrity-review.flow.md",
-        "allowed_actions": [
-          "read-only",
-          "docs-only",
-          "adapter-only",
-          "code-and-tests",
-          "full-with-approval"
-        ]
-      },
-      "documentation-sync": {
-        "required_module": "core-profile",
-        "flow": ".ai/assistant/flows/documentation-sync.flow.md",
-        "allowed_actions": [
-          "read-only",
-          "docs-only",
-          "adapter-only",
-          "code-and-tests",
-          "full-with-approval"
-        ]
-      },
-      "project-vocabulary": {
-        "required_module": "project-vocabulary",
-        "flow": ".ai/assistant/flows/project-vocabulary.flow.md",
-        "allowed_actions": [
-          "read-only",
-          "docs-only",
-          "full-with-approval"
-        ]
-      },
-      "test-first-configuration": {
-        "required_module": "core-profile",
-        "flow": ".ai/assistant/flows/test-first-configuration.flow.md",
-        "allowed_actions": [
-          "read-only",
-          "adapter-only",
-          "full-with-approval"
-        ]
-      },
-      "test-first-change": {
-        "required_module": "test-first-development",
-        "flow": ".ai/assistant/flows/test-first-change.flow.md",
-        "allowed_actions": [
-          "read-only",
-          "code-and-tests",
-          "full-with-approval"
-        ]
-      },
-      "adapter-maturity-review": {
-        "required_module": "core-profile",
-        "flow": ".ai/assistant/flows/adapter-recheck.flow.md",
-        "allowed_actions": [
-          "read-only"
-        ]
-      }
-    }
+    ]
   },
   "authorization": {
     "policy": ".ai/assistant/policies/action-authorization.json",
     "default_phase": "inspect",
-    "phases": [
-      "inspect",
-      "modify",
-      "commit",
-      "publish",
-      "live-external"
-    ],
-    "allowed_action_modes": {
-      "read-only": "inspect analyze discuss review plan explain compare or report without file or external-state changes",
-      "docs-only": "change documentation blueprint diagram source or support explanation only; do not change product code",
-      "adapter-only": "change Alatyr adapter, assistant bridge, prompt, gate, or template surfaces only",
-      "code-and-tests": "change product code and tests with synchronized docs as needed; no publish or live-external action",
-      "full-with-approval": "perform protected or broad state-changing work only within explicit current approval scope"
-    },
     "current_scope_required_for": [
       "modify",
       "commit",

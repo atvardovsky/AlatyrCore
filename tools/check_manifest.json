@@ -1615,6 +1615,7 @@
         "tools/scaffold_profiles.json"
       ],
       "implementation_paths": [
+        "tools/capability_catalog.py",
         "tools/check_scaffold_profiles.py",
         "tools/framework_packaging.py",
         "tools/scaffold*.py",
@@ -1622,6 +1623,7 @@
       ],
       "trigger_paths": [
         "templates/target/**",
+        "tools/capability_catalog.py",
         "tools/check_scaffold_profiles.py",
         "tools/framework_packaging.py",
         "tools/scaffold*.py",
@@ -2463,6 +2465,7 @@
       ],
       "trigger_paths": [
         "tests/**",
+        "tools/**",
         "tools/source_context_router.json",
         "tools/source_worker_policy.json",
         "tools/check_all.py",

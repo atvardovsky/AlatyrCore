@@ -457,6 +457,23 @@ class CheckGraphTests(unittest.TestCase):
             timestamps[("independent", "end")],
         )
 
+    def test_scheduler_prioritizes_checks_that_unlock_more_work(self) -> None:
+        started: list[str] = []
+
+        def runner(item: dict[str, Any], _baseline: str | None):
+            started.append(item["id"])
+            return 0, "", "", [item["id"]]
+
+        selected = [
+            check("independent"),
+            check("root"),
+            check("child", "root"),
+            check("grandchild", "child"),
+        ]
+        execute_checks(selected, None, 1, runner=runner)
+
+        self.assertEqual(started, ["root", "child", "grandchild", "independent"])
+
     def test_runner_exception_is_recorded_as_a_failed_check(self) -> None:
         telemetry: dict[str, dict[str, Any]] = {}
 
@@ -586,7 +603,7 @@ class CheckGraphTests(unittest.TestCase):
         self.assertEqual(report["checks"][0]["status"], "failed")
         self.assertEqual(report["checks"][0]["exit_code"], 7)
         self.assertEqual(report["checks"][0]["stderr"], "failure detail\n")
-        self.assertEqual(report["schema_version"], 2)
+        self.assertEqual(report["schema_version"], 3)
         self.assertEqual(report["checks"][0]["resource_class"], "standard")
         self.assertFalse(report["source_write_scope"]["preserved"])
         self.assertFalse(report["selection"]["fell_back_to_full"])
@@ -594,6 +611,38 @@ class CheckGraphTests(unittest.TestCase):
         self.assertIn("timing", report)
         self.assertEqual(report["source"]["source_commit"], "abc123")
         self.assertEqual(report["source"]["manifest_path"], "tools/check_manifest.json")
+
+    def test_report_catalog_keeps_distinct_entries_for_the_same_path(self) -> None:
+        selected = [check("first"), check("second")]
+        fingerprints = {
+            "first": {
+                "sha256": "first",
+                "entries": [
+                    {"path": "shared", "kind": "file", "mode": 33188, "digest": "a"}
+                ],
+            },
+            "second": {
+                "sha256": "second",
+                "entries": [
+                    {"path": "shared", "kind": "symlink", "mode": 40960, "digest": "b"}
+                ],
+            },
+        }
+
+        report = render_report(
+            profile="full",
+            selected=selected,
+            results={item["id"]: (0, "", "", [item["id"]]) for item in selected},
+            blocked={},
+            source_changes=[],
+            input_fingerprints=fingerprints,
+        )
+
+        self.assertEqual(len(report["input_catalog"]["entries"]), 2)
+        self.assertNotEqual(
+            report["checks"][0]["input_fingerprint"]["entry_ids"],
+            report["checks"][1]["input_fingerprint"]["entry_ids"],
+        )
 
     def test_selection_report_explains_changed_path_routing(self) -> None:
         item = {**check("matched"), "profiles": ["full"], "platforms": ["all"]}

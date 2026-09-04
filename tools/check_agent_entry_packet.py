@@ -47,8 +47,8 @@ def check_packet(
     source_template: bool = False,
 ) -> list[str]:
     failures: list[str] = []
-    if packet.get("schema_version") != 1:
-        failures.append("entry packet schema_version must be 1")
+    if packet.get("schema_version") != 2:
+        failures.append("entry packet schema_version must be 2")
     if packet.get("packet_kind") != "target-agent-entry-packet":
         failures.append("entry packet kind must be target-agent-entry-packet")
     if packet.get("path") != PACKET_PATH.as_posix():
@@ -98,23 +98,14 @@ def check_packet(
         if sequence[2].get("paths") != [PACKET_PATH.as_posix()]:
             failures.append("entry packet first-use phase must load itself")
 
-    recommendation = packet.get("profile_recommendation")
-    if not isinstance(recommendation, dict):
-        failures.append("entry packet must include profile_recommendation")
+    routing_sources = packet.get("routing_sources")
+    if not isinstance(routing_sources, dict):
+        failures.append("entry packet must include compact routing_sources")
     else:
-        if recommendation.get("default_install_profile") != "kernel":
-            failures.append("entry packet must recommend kernel by default")
-        if recommendation.get("escalation_order") != [
-            "kernel",
-            "core",
-            "standard",
-            "full",
-        ]:
-            failures.append("entry packet profile escalation order is invalid")
-        if "cheapest sufficient profile" not in str(
-            recommendation.get("decision_policy", "")
-        ):
-            failures.append("entry packet recommendation must name cheapest sufficient profile")
+        if routing_sources.get("installed_profile_routes") != ".ai/assistant/bootstrap-index.json":
+            failures.append("entry packet must route installed profiles through bootstrap")
+        if routing_sources.get("full_router") != ".ai/assistant/context-router.json":
+            failures.append("entry packet full-router fallback is invalid")
 
     cache_delivery = packet.get("cache_aware_delivery")
     if not isinstance(cache_delivery, dict):
@@ -132,19 +123,6 @@ def check_packet(
             failures.append("entry packet must not claim context-window reduction")
         if cache_delivery.get("fallback") != "bounded-context-routing":
             failures.append("entry packet cache fallback must use bounded routing")
-
-    profile_routes = packet.get("profile_routes")
-    if not isinstance(profile_routes, dict) or "code-local" not in profile_routes:
-        failures.append("entry packet must include bounded profile routes")
-    else:
-        code = profile_routes["code-local"]
-        if not isinstance(code, dict):
-            failures.append("code-local packet route must be an object")
-        else:
-            for field in ["required_context", "default_gate_paths", "final_evidence"]:
-                values = code.get(field)
-                if not isinstance(values, list) or not values:
-                    failures.append(f"code-local packet route missing {field}")
 
     classification = packet.get("task_classification")
     if not isinstance(classification, dict):
@@ -180,12 +158,11 @@ def check_packet(
     if not isinstance(operation, dict):
         failures.append("entry packet must include operation_routing")
     else:
-        routes = operation.get("operation_routes")
         if operation_index_expected:
-            if not isinstance(routes, dict) or "adapter-health" not in routes:
-                failures.append("entry packet omitted installed operation routes")
-        elif routes != {}:
-            failures.append("entry packet should omit operation routes when index is absent")
+            if operation.get("index") != ".ai/assistant/operation-index.json":
+                failures.append("entry packet omitted installed operation index")
+        elif operation.get("index") != "not installed":
+            failures.append("entry packet should mark absent operation index")
 
     decomposition = packet.get("task_decomposition")
     if not isinstance(decomposition, dict):
@@ -223,16 +200,8 @@ def check_packet(
     if not isinstance(authorization, dict):
         failures.append("entry packet must include authorization")
     else:
-        modes = authorization.get("allowed_action_modes")
-        for mode in [
-            "read-only",
-            "docs-only",
-            "adapter-only",
-            "code-and-tests",
-            "full-with-approval",
-        ]:
-            if not isinstance(modes, dict) or mode not in modes:
-                failures.append(f"entry packet missing allowed action mode {mode}")
+        if authorization.get("policy") != ".ai/assistant/policies/action-authorization.json":
+            failures.append("entry packet authorization policy path is invalid")
         if authorization.get("current_scope_required_for") != [
             "modify",
             "commit",
@@ -334,13 +303,6 @@ def main() -> int:
                 else:
                     if "contract-artifacts" in gate_entries:
                         failures.append("kernel gate index should omit absent contract-artifacts gate")
-                    for route in packet.get("profile_routes", {}).values():
-                        if isinstance(route, dict):
-                            for gate_path in route.get("default_gate_paths", []):
-                                if isinstance(gate_path, str) and not (target / gate_path).is_file():
-                                    failures.append(
-                                        f"kernel packet routes missing gate path {gate_path}"
-                                    )
     except (OSError, json.JSONDecodeError, AssertionError) as exc:
         failures.append(f"kernel scaffold packet fixture failed: {exc}")
 
