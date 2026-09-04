@@ -64,11 +64,10 @@ ZERO_CHANGE_TEXT = [
 ]
 
 
-def run_reporter() -> tuple[str, dict[str, object]]:
+def run_reporter(*, completed_validation: bool = False) -> tuple[str, dict[str, object]]:
     with tempfile.TemporaryDirectory(prefix="alatyr-impact-") as directory:
         json_output = Path(directory) / "upgrade-impact.json"
-        result = subprocess.run(
-            [
+        command = [
                 sys.executable,
                 "tools/report_migration_diff.py",
                 "--from-rules",
@@ -105,7 +104,24 @@ def run_reporter() -> tuple[str, dict[str, object]]:
                 "templates/target",
                 "--json-output",
                 str(json_output),
-            ],
+            ]
+        if completed_validation:
+            command.extend(
+                [
+                    "--source-validation-status",
+                    "passed",
+                    "--source-validation-command",
+                    "python3 tools/check_all.py --profile full",
+                    "--source-validation-result",
+                    "all selected checks passed",
+                    "--source-validation-revision",
+                    "fixture-tree",
+                    "--source-validation-completed-at",
+                    "2026-09-04T12:00:00+00:00",
+                ]
+            )
+        result = subprocess.run(
+            command,
             cwd=ROOT,
             check=False,
             text=True,
@@ -121,6 +137,7 @@ def main() -> int:
     failures: list[str] = []
     try:
         output, impact = run_reporter()
+        completed_output, _completed_impact = run_reporter(completed_validation=True)
     except (RuntimeError, OSError, json.JSONDecodeError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
@@ -128,6 +145,26 @@ def main() -> int:
     for required_text in REQUIRED_OUTPUT_TEXT:
         if required_text not in output:
             failures.append(f"migration diff output missing {required_text}")
+    for required_text in [
+        "Source validation: `pending`",
+        "Source validation commands:\n- none",
+        "Source validation result: `not recorded`",
+    ]:
+        if required_text not in output:
+            failures.append(
+                f"default migration diff output missing pending evidence {required_text}"
+            )
+    for required_text in [
+        "Source validation: `passed`",
+        "- `python3 tools/check_all.py --profile full`",
+        "Source validation result: `all selected checks passed`",
+        "Source validation revision: `fixture-tree`",
+        "Source validation completed at: `2026-09-04T12:00:00+00:00`",
+    ]:
+        if required_text not in completed_output:
+            failures.append(
+                f"completed migration diff output missing evidence {required_text}"
+            )
     for required_text in ZERO_CHANGE_TEXT:
         if required_text not in output:
             failures.append(f"self-compare output missing {required_text}")

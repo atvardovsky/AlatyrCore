@@ -11,6 +11,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "installer" / "discovery-contract.json"
+ROUTER = ROOT / "installer" / "context-router.json"
 CAPABILITIES = ROOT / "framework" / "capabilities.json"
 PROSE_SURFACES = [
     ROOT / "INSTALL.md",
@@ -32,6 +33,7 @@ def main() -> int:
     try:
         contract = load(CONTRACT)
         capabilities = load(CAPABILITIES)
+        router = load(ROUTER)
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
@@ -40,6 +42,33 @@ def main() -> int:
         failures.append("discovery contract schema_version must be 1")
     if contract.get("contract_kind") != "alatyr-installation-discovery-contract":
         failures.append("discovery contract kind is invalid")
+
+    stages = router.get("stages")
+    if not isinstance(stages, dict):
+        failures.append("installer context router must define stages")
+        stages = {}
+    discovery = stages.get("discovery")
+    scope_selection = stages.get("scope-selection")
+    for stage_id, stage in [
+        ("discovery", discovery),
+        ("scope-selection", scope_selection),
+    ]:
+        if not isinstance(stage, dict):
+            failures.append(f"installer context router misses {stage_id} stage")
+            continue
+        if "installer/discovery-contract.json" not in stage.get("required_context", []):
+            failures.append(
+                f"installer {stage_id} stage must require installer/discovery-contract.json"
+            )
+        evidence = stage.get("required_evidence")
+        if not isinstance(evidence, list) or not evidence or not all(
+            isinstance(item, str) and item for item in evidence
+        ):
+            failures.append(f"installer {stage_id} stage must require evidence")
+    if isinstance(scope_selection, dict) and "discovery" not in scope_selection.get(
+        "depends_on", []
+    ):
+        failures.append("installer scope-selection stage must depend on discovery")
 
     profile_selection = contract.get("profile_selection")
     expected_profiles = ["kernel", "core", "standard", "full"]

@@ -539,7 +539,7 @@ tasks from loading the complete framework or project corpus.
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.50`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.51`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural
@@ -592,6 +592,8 @@ Technical entry points:
 - [Repository layout](docs/repository-layout.md)
 - [Source architecture](docs/source-architecture.md)
 - [Source tooling reference](tools/README.md)
+- [Release process](docs/release-process.md)
+- [Changelog](CHANGELOG.md)
 - [Assistant compatibility](docs/assistant-compatibility.md)
 - [Passive dependency knowledge](framework/dependency-knowledge.md)
 - [User-owned workspace modes](framework/workspace-modes.md)

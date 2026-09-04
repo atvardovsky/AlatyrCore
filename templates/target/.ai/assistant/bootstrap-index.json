@@ -12,9 +12,9 @@
     "target_manifest_digest": "sha256:1bbf819e5d3b42bd24859949fdcb9878b33ccf66a29bccb1ae39682d9ec3526a",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.49",
-    "adapter_schema_version": "40",
-    "template_version": "44"
+    "framework_version": "0.1.0-alpha.51",
+    "adapter_schema_version": "41",
+    "template_version": "46"
   },
   "derived_from": {
     "manifest": {
@@ -23,7 +23,7 @@
     },
     "project_map": {
       "path": ".ai/README.md",
-      "sha256": "947bdcaab7c2c6a47c19e0348b93d96417e5d2f31aa15843677c09b79d3dd62c"
+      "sha256": "9f0f17c105e2331fab75e9bc37d876765b007f3ca7cbe2df641a9f23037746ee"
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",

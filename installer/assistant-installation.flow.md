@@ -25,9 +25,13 @@ Use this flow when:
 ## Source Bootstrap
 
 Treat root `AGENTS.md` as preloaded. Read `installer/context-router.json` and
-the source version files, then choose the current installation stage. Inspect
-the target before loading stage-specific sources. The router names required
-rule owners, installer documents, templates, checks, and expansion triggers.
+the source version files, then choose the current installation stage. The
+router owns stage order, required and conditional context, stage dependencies,
+required evidence, and prohibited actions. Both discovery and scope selection
+require `installer/discovery-contract.json`; that contract owns the discovery
+categories and support-profile selection matrix. Inspect the target and record
+category-based discovery evidence before selecting a support profile or
+loading later stage-specific sources.
 
 For a new installation or upgrade, compare
 `framework/file-inventory.json`, file hashes, and rule registries first. Read

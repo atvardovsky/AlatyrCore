@@ -97,11 +97,14 @@ checkpoint for that version.
 Store the reviewed report for a tagged version at
 `docs/releases/<VERSION>-migration.md`. The report must name the compared
 source baseline, all three version values, schema changes, required target
-actions, validation, residual risks, and deterministic SHA-256 values for the
+actions, completed source-validation status, commands, result, validated
+revision, completion time, target-validation expectation, residual risks, and deterministic SHA-256 values for the
 baseline and destination contract trees. Release validation recomputes those
 digests across `framework/`, `schemas/`, `templates/target/`, and the three
 version files. Generated output is a starting point; replace temporary paths
-and unresolved version labels before accepting it as release evidence.
+and unresolved version labels before accepting it as release evidence. A
+generated `pending` validation block is not release evidence and must not be
+changed to `passed` until the named commands complete against the bound tree.
 
 ## Pre-Release Checklist
 

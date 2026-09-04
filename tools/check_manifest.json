@@ -2301,6 +2301,8 @@
         "tools/context_catalog.py",
         "tools/plan_minimum_work.py",
         "tools/render_framework_file_inventory.py",
+        "tools/source_check_manifest.py",
+        "tools/source_worker_contract.py",
         "tools/task_classification_contract.py"
       ],
       "trigger_paths": [
@@ -2318,6 +2320,8 @@
         "tools/context_catalog.py",
         "tools/plan_minimum_work.py",
         "tools/render_framework_file_inventory.py",
+        "tools/source_check_manifest.py",
+        "tools/source_worker_contract.py",
         "tools/task_classification_contract.py",
         "tools/source_context_router.json",
         "tools/source_worker_policy.json"
@@ -2445,6 +2449,7 @@
         "tools/source_state.py",
         "tools/source_check_reuse.py",
         "tools/source_check_manifest.py",
+        "tools/source_worker_contract.py",
         "tools/task_classification_contract.py",
         "tools/target_adapter_validation/action_modes.py",
         "tools/target_adapter_validation/diagrams.py",
@@ -2470,6 +2475,7 @@
         "tools/source_state.py",
         "tools/source_check_reuse.py",
         "tools/source_check_manifest.py",
+        "tools/source_worker_contract.py",
         "tools/task_classification_contract.py",
         "tools/target_adapter_validation/action_modes.py",
         "tools/target_adapter_validation/diagrams.py",

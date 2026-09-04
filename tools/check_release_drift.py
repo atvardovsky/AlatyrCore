@@ -12,6 +12,7 @@ import sys
 import tarfile
 import tempfile
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 
 try:
@@ -188,12 +189,56 @@ def validate_committed_report(
         f"To template version: `{to_template}`",
         f"From contract SHA-256: `{from_digest}`",
         f"To contract SHA-256: `{to_digest}`",
+        "Source validation: `passed`",
+        "Source validation commands:",
+        "Source validation result: `",
+        "Source validation revision: `",
+        "Source validation completed at: `",
     ]
-    return [
+    failures = [
         f"{report_path.relative_to(ROOT)} missing release binding {item}"
         for item in required
         if item not in text
     ]
+    report_label = report_path.relative_to(ROOT)
+    command_block = re.search(
+        r"Source validation commands:\n(?P<commands>.*?)\nSource validation result:",
+        text,
+        flags=re.DOTALL,
+    )
+    commands = (
+        re.findall(r"^- `(?P<command>[^`]+)`$", command_block.group("commands"), re.MULTILINE)
+        if command_block
+        else []
+    )
+    if not commands or any(command.strip().lower() == "none" for command in commands):
+        failures.append(f"{report_label} has no concrete source validation command")
+
+    evidence: dict[str, str] = {}
+    for field in ["result", "revision", "completed at"]:
+        match = re.search(rf"^Source validation {field}: `(?P<value>[^`]+)`$", text, re.MULTILINE)
+        if match is None or match.group("value").strip().lower() in {
+            "not recorded",
+            "pending",
+            "none",
+        }:
+            failures.append(
+                f"{report_label} has incomplete source validation {field}"
+            )
+        else:
+            evidence[field] = match.group("value").strip()
+
+    completed_at = evidence.get("completed at")
+    if completed_at is not None:
+        try:
+            parsed = datetime.fromisoformat(completed_at.replace("Z", "+00:00"))
+        except ValueError:
+            parsed = None
+        if parsed is None or parsed.tzinfo is None or parsed.utcoffset() is None:
+            failures.append(
+                f"{report_label} source validation completed at must be a timezone-aware ISO-8601 timestamp"
+            )
+    return failures
 
 
 def report_has_changes(report: str) -> bool:

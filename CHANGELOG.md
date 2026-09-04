@@ -2,12 +2,29 @@
 
 ## Unreleased
 
+- No unreleased changes.
+
+## 0.1.0-alpha.51 - 2026-09-04
+
 - Fixed source-contour planning so explicit repository audits select their
-  full validation route even on a clean worktree, while zero changed paths no
-  longer imply a small task.
-- Added provider-neutral source audit workstreams, runtime delegation
-  assessment, concrete local-execution reasons, and behavioral checker/test
-  coverage without changing portable target delegation contracts.
+  full validation route even on a clean worktree, while small tasks now require
+  bounded paths, focused-check coverage, and no routing or boundary fallback.
+- Added a provider-neutral source worker contract with inspect-only task
+  packets, session-bound expiring capability evidence, decision-specific skip
+  reasons, symlink containment, and non-audit large-task decomposition without
+  changing portable target delegation contracts.
+- Made installation discovery and profile selection depend on the canonical
+  discovery contract, and made scaffolded Markdown remove claims for optional
+  support surfaces that are absent from the selected profile.
+- Added structured source-validation evidence to migration reports and made
+  the release gate reject pending or placeholder validation claims; backfilled
+  the reviewed alpha.50 checkpoint and validation record.
+- Documented and checked the intentional exclusion of the generated framework
+  inventory from recursive context catalogs, and linked public release
+  documentation from the README.
+- Increased the target template version to `46` for profile-aware projected
+  documentation. Adapter schema version remains `41` because no target
+  manifest or record schema changed.
 
 ## 0.1.0-alpha.50 - 2026-09-02
 

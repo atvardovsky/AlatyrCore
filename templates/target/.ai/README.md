@@ -43,43 +43,67 @@ facts, or target skill infrastructure.
 
 - product purpose
 - architecture facts
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/project/architecture/catalog.json"]} -->
 - optional architecture knowledge index and compact catalog for selected
   patterns, areas, states, owners, evidence revisions, and documentation routes
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/project/documentation/catalog.json"]} -->
 - optional code-documentation index, compact catalog, and source-set profiles
   for selected comment styles, generators, outputs, owners, and evidence
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/project/vocabulary/catalog.json"]} -->
 - optional project-vocabulary catalog, scoped terms, and canonical data links
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/project/testing/test-first-policy.json"]} -->
 - optional project-owned test-first policy with bounded recommendation,
   explicit enablement, target commands, and RED/GREEN/refactor evidence
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/extensions/catalog.json"]} -->
 - optional declarative external extensions with compact catalog, immutable
   source and installed-file lock, target bindings, permissions, and lifecycle
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/project/dependencies/policy.json"]} -->
 - optional passive dependency knowledge with exact resolved-artifact binding,
   target-owned trust/freshness/authority/applicability state, deviations,
   retention, bounded synchronization, lazy explanation, and impact routing
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/project/workspace-modes/catalog.json"]} -->
 - optional user-owned workspace modes with an explicit active root, artifact
   relationships, one directory per actual mode, and optional shared root
   support outside routine bootstrap
+<!-- /alatyr:scaffold-fragment -->
 - blueprint or equivalent source-of-truth facts
 - source-of-truth registry entries
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/project/consistency-map.json"]} -->
 - optional machine-readable consistency relationships for bounded impact
   traversal
+<!-- /alatyr:scaffold-fragment -->
 - required support collection/classification policy and canonical state for
   locating changed support surfaces without loading them all
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/project/support-generation/registry.json"]} -->
 - optional dependency-ordered generation registry for target-selected derived
   support artifacts
+<!-- /alatyr:scaffold-fragment -->
 - use cases or workflows
 - business/domain rules
 - data model
 - runtime flows
 - project terminology and decisions
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/project/engineering-evidence/index.json"]} -->
 - compact durable engineering evidence for material task invariants, root
   causes, solution rationale, regression intent, validation, and repository
   binding; these historical records link to but do not replace canonical owners
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/project/knowledge/index.json"]} -->
 - reviewed engineering-discovery and verified direct decision-owner guidance
   records with a compact sharded routing projection that delivers only bounded
   accepted-current facts from canonical owners to later related tasks
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/project/debug/index.json"]} -->
 - optional non-canonical Debug Mode evidence that separates executor,
   Alatyr-system, automation, and human contributions in explicitly selected
   task/session scopes
+<!-- /alatyr:scaffold-fragment -->
 
 Replace this section with the actual target project map.
 
@@ -93,51 +117,94 @@ Replace this section with the actual target project map.
 - deterministic context-packet evidence for non-trivial or expanded routes
 - context profiles for task-specific context loading
 - module profile for required core and optional Alatyr capabilities
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/project/workspace-modes/catalog.json"]} -->
 - compact workspace-mode routing and per-mode support when application,
   framework, library, skeleton, dependency, or workspace perspectives differ
+<!-- /alatyr:scaffold-fragment -->
 - task-specific maturity profile
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/assistant-capabilities.json"]} -->
 - bridge matrix and indexed per-assistant capability evidence
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/templates/ascii-diagram.md"]} -->
 - portable ASCII diagram layout and readability rules
+<!-- /alatyr:scaffold-fragment -->
 - flows
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/flows/architecture-assistance.flow.md"]} -->
 - architecture-assistance flow and pattern/area/result record templates when
   the project architecture-knowledge module is enabled
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/skills/code-documentation/SKILL.md"]} -->
 - code-documentation intent, profile-review template, adapted skill, and
   generated-reference flow when the project code-documentation module is
   enabled
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/skills/project-vocabulary/SKILL.md"]} -->
 - vocabulary route, review template, flow, and skill when enabled
+<!-- /alatyr:scaffold-fragment -->
 - gates
 - a compact gate index and phase-specific gate fragments; the complete
   checklist remains lazy for audits and repair
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/prompts/worker-orchestration.md"]} -->
 - prompts
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/skills/project-vocabulary/SKILL.md"]} -->
 - skills
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/flows/skill-adaptation.flow.md"]} -->
 - skill adaptation and provenance rules
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/policies/prompt-injection.md"]} -->
 - prompt-injection rules for imported AI infrastructure
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/approvals/approval-record-template.json"]} -->
 - human and machine-readable approval records, diff-base binding, and strict
   changed-path scope enforcement
+<!-- /alatyr:scaffold-fragment -->
 - current-scope action authorization separating inspection, repository edits,
   commits, publication, and live external effects
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/bridge-capability-matrix.md"]} -->
 - bridge-file policy
+<!-- /alatyr:scaffold-fragment -->
 - validation evidence expectations
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/flows/documentation-sync.flow.md"]} -->
 - documentation-sync rules
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/operation-catalog.json"]} -->
 - installed-operation requests and adapter rechecks
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/context/task-scales/large-or-resumable.json"]} -->
 - optional large-task operation packets, bounded workstreams, checkpoints,
   and resume evidence under a target-owned storage policy
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/change-packages/index.json"]} -->
 - optional change packages for coherent material outcomes, semantic approval
   scope, companion decisions, implementation corrections, and before-to-after
   repository provenance
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/flows/engineering-evidence-capture.flow.md"]} -->
 - lazy durable engineering-evidence capture and validation that preserves
   normalized conclusions without raw chat or assistant reasoning traces
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/flows/project-knowledge.flow.md"]} -->
 - target-authorized project guidance intake, two-stage task routing, guidance
   kinds, exception and coverage semantics, freshness checks, contradiction
   handling, and supersession lineage
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/flows/debug-mode.flow.md"]} -->
 - optional task-local Debug Mode activation, normalized event capture,
   evidence-based supervision metrics, clean-upstream projection, and compact
   summaries without making debug records project authority
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/templates/migration-note.md"]} -->
 - migration notes for framework updates
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/operation-catalog.json"]} -->
 - operation help, operation routing, and post-install/update assistant chat
   messages
 - canonical operation catalog, checked compact alias index, single `Alatyr`
   entry point, read-only adapter health, and risk-gated pre-change preview
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/ai-infrastructure-router.json"]} -->
 - AI infrastructure inventory, project-evidenced recommendation, source access,
   adaptation, and compatibility review
 - AI infrastructure router entries for selecting target skills, prompts,
@@ -145,6 +212,7 @@ Replace this section with the actual target project map.
   validation, and output contracts
 - durable AI infrastructure adaptation records for imported or materially
   changed items
+<!-- /alatyr:scaffold-fragment -->
 
 Target commands and manual checks belong here or in linked target docs. They
 are not framework core.

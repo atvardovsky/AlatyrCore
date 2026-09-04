@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+from fnmatch import fnmatchcase
 import json
 import shlex
 import subprocess
@@ -13,6 +14,7 @@ from pathlib import Path
 from typing import Any
 
 from check_all import (
+    SelectionResult,
     default_changed_from,
     effective_baseline,
     environment_report,
@@ -25,6 +27,13 @@ from check_all import (
 )
 from source_check_reuse import check_input_fingerprint, load_reuse_report, reuse_decisions
 from source_state import source_snapshot
+from source_worker_contract import (
+    load_source_worker_policy,
+    make_builtin_packet,
+    validate_decision_evidence,
+    validate_runtime_capability,
+    validate_worker_packet,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -32,7 +41,6 @@ SOURCE_ROUTER = ROOT / "tools" / "source_context_router.json"
 SOURCE_WORKER_POLICY = ROOT / "tools" / "source_worker_policy.json"
 RUNTIME_CAPABILITY_STATES = ["unknown", "available", "unavailable"]
 DELEGATION_DECISIONS = ["kept-local"]
-SMALL_SOURCE_PROFILES = {"docs-local", "source-tooling"}
 
 
 def _load_source_router() -> dict[str, Any]:
@@ -43,22 +51,7 @@ def _load_source_router() -> dict[str, Any]:
 
 
 def _load_source_worker_policy() -> dict[str, Any]:
-    policy = json.loads(SOURCE_WORKER_POLICY.read_text(encoding="utf-8"))
-    if (
-        not isinstance(policy, dict)
-        or policy.get("schema_version") != 1
-        or policy.get("policy_kind") != "alatyr-source-worker-policy"
-    ):
-        raise ValueError("source worker policy schema or kind is invalid")
-    for field in [
-        "workstreams",
-        "worker_packet_contract",
-        "decision_evidence",
-        "runtime_capability_contract",
-    ]:
-        if not isinstance(policy.get(field), dict):
-            raise ValueError(f"source worker policy must define {field}")
-    return policy
+    return load_source_worker_policy(SOURCE_WORKER_POLICY, root=ROOT)
 
 
 def _load_source_tooling_context() -> dict[str, Any]:
@@ -93,8 +86,11 @@ def _recommended_command(
     command = [sys.executable, "tools/check_all.py", "--profile", effective_profile]
     if effective_profile in {"micro", "fast"} and changed_from:
         command.extend(["--changed-from", changed_from])
-    if from_ref:
-        command.extend(["--from-ref", from_ref])
+    command_baseline = from_ref
+    if effective_profile == "release" and command_baseline is None:
+        command_baseline = changed_from
+    if command_baseline:
+        command.extend(["--from-ref", command_baseline])
     if reuse_report:
         command.extend(["--reuse-report", str(reuse_report)])
     command.extend(
@@ -103,28 +99,90 @@ def _recommended_command(
     return command
 
 
-def _task_class(
-    effective_profile: str,
-    changed_paths: list[str],
+def _matches_any(path: str, patterns: list[str]) -> bool:
+    return any(fnmatchcase(path, pattern) for pattern in patterns)
+
+
+def _task_classification(
+    selection: SelectionResult,
     *,
     source_profile: str,
     explicit_small_scope: bool,
-) -> str:
+) -> dict[str, Any]:
+    router = _load_source_router()
+    contract = router["task_classification"]["small_task_eligibility"]
+    changed_paths = selection.changed_paths
+    reasons: list[str] = []
     if source_profile in {"repository-audit", "release-versioning"}:
-        return "large-or-resumable"
-    if (
-        source_profile in SMALL_SOURCE_PROFILES
-        and effective_profile in {"micro", "fast"}
-        and changed_paths
+        return {
+            "task_class": "large-or-resumable",
+            "small_task_eligible": False,
+            "reasons": [f"{source_profile} is always large-or-resumable"],
+        }
+
+    boundary_paths = [
+        path
+        for path in changed_paths
+        if _matches_any(path, contract["boundary_path_patterns"])
+    ]
+    if boundary_paths:
+        return {
+            "task_class": "large-or-resumable",
+            "small_task_eligible": False,
+            "reasons": [f"boundary paths require expansion: {boundary_paths}"],
+        }
+    if selection.effective_profile not in {"micro", "fast"}:
+        return {
+            "task_class": "large-or-resumable",
+            "small_task_eligible": False,
+            "reasons": [
+                f"validation profile {selection.effective_profile} is not bounded"
+            ],
+        }
+
+    profile_contract = contract["profiles"].get(source_profile)
+    if not isinstance(profile_contract, dict):
+        reasons.append(f"source profile {source_profile} is not small-task enabled")
+    if not changed_paths:
+        reasons.append("no changed path proves a bounded task")
+    if len(changed_paths) > contract["maximum_changed_paths"]:
+        reasons.append("changed path count exceeds the small-task limit")
+    if contract.get("requires_no_unmatched_paths") is True and (
+        selection.unmatched_changed_paths
     ):
-        return "small-task"
-    if effective_profile == "micro" and (changed_paths or explicit_small_scope):
-        return "small-task"
-    if effective_profile == "micro":
-        return "standard-task"
-    if effective_profile in {"quick", "fast"}:
-        return "standard-task"
-    return "large-or-resumable"
+        reasons.append("unmatched changed paths require conservative routing")
+    if contract.get("requires_no_full_fallback") is True and selection.fell_back_to_full:
+        reasons.append("full-profile fallback prevents small-task classification")
+    if selection.escalated_from_micro:
+        reasons.append("micro escalation prevents small-task classification")
+    if isinstance(profile_contract, dict):
+        disallowed = [
+            path
+            for path in changed_paths
+            if not _matches_any(path, profile_contract["allowed_path_patterns"])
+        ]
+        if disallowed:
+            reasons.append(f"paths are outside the selected source profile: {disallowed}")
+    if contract.get("requires_focused_check_coverage") is True:
+        covered_paths = {
+            path
+            for detail in selection.selection_details.values()
+            if isinstance(detail, dict)
+            for path in detail.get("matched_changed_paths", [])
+            if isinstance(path, str)
+        }
+        uncovered = sorted(set(changed_paths) - covered_paths)
+        if changed_paths and uncovered:
+            reasons.append(f"focused checks do not cover changed paths: {uncovered}")
+    if explicit_small_scope and not changed_paths:
+        reasons.append("explicit micro scope lacks changed-path evidence")
+
+    eligible = not reasons
+    return {
+        "task_class": "small-task" if eligible else "standard-task",
+        "small_task_eligible": eligible,
+        "reasons": reasons or ["all structured small-task predicates passed"],
+    }
 
 
 def _requested_validation_profiles(
@@ -164,7 +222,12 @@ def _requested_validation_profiles(
     return requested_profile, remaining
 
 
-def _decomposition(source_profile: str, task_class: str) -> dict[str, Any]:
+def _decomposition(
+    source_profile: str,
+    task_class: str,
+    *,
+    task_worker_packets: list[dict[str, Any]] | None,
+) -> dict[str, Any]:
     if source_profile == "repository-audit":
         router = _load_source_router()
         profile = router["profiles"][source_profile]
@@ -175,34 +238,16 @@ def _decomposition(source_profile: str, task_class: str) -> dict[str, Any]:
         if not isinstance(candidate_ids, list) or not candidate_ids:
             raise ValueError("repository-audit must define candidate workstreams")
         policy = _load_source_worker_policy()
-        policy_workstreams = policy["workstreams"]
-        packet_contract = policy["worker_packet_contract"]
-        workstreams: list[dict[str, Any]] = []
-        for workstream_id in candidate_ids:
-            workstream = policy_workstreams.get(workstream_id)
-            if not isinstance(workstream_id, str) or not isinstance(workstream, dict):
-                raise ValueError(
-                    f"repository-audit references unknown workstream: {workstream_id}"
-                )
-            workstreams.append(
-                {
-                    "workstream_id": workstream_id,
-                    "role_id": packet_contract["role_id"],
-                    "objective": workstream["objective"],
-                    "bounded_context": workstream["required_context"],
-                    "conditional_context": workstream["conditional_context"],
-                    "non_goals": workstream["non_goals"],
-                    "allowed_actions": packet_contract["allowed_actions"],
-                    "write_scope": packet_contract["write_scope"],
-                    "expected_evidence": workstream["expected_evidence"],
-                }
-            )
+        if task_worker_packets:
+            raise ValueError("repository-audit uses policy workstreams, not task packets")
+        workstreams = [make_builtin_packet(policy, item) for item in candidate_ids]
         return {
             "required": True,
             "strategy": "bounded-independent-read-only-review",
             "candidate_workstreams": workstreams,
             "independent_worker_candidates": candidate_ids,
             "decision_contract": policy["decision_evidence"],
+            "workstream_identification_required": False,
             "primary_critical_path": [
                 "run authoritative source validation",
                 "resolve conflicting findings",
@@ -210,56 +255,57 @@ def _decomposition(source_profile: str, task_class: str) -> dict[str, Any]:
             ],
         }
 
+    if task_worker_packets and task_class != "large-or-resumable":
+        raise ValueError("task worker packets are accepted only for large-or-resumable work")
+    if task_class == "large-or-resumable":
+        policy = _load_source_worker_policy()
+        packet_contract = policy["worker_packet_contract"]
+        workstreams = [
+            validate_worker_packet(packet, packet_contract, root=ROOT)
+            for packet in (task_worker_packets or [])
+        ]
+        workstream_ids = [packet["workstream_id"] for packet in workstreams]
+        independence_keys = [packet["independence_key"] for packet in workstreams]
+        if len(workstream_ids) != len(set(workstream_ids)):
+            raise ValueError("task worker packet workstream IDs must be unique")
+        if len(independence_keys) != len(set(independence_keys)):
+            raise ValueError("task worker packet independence keys must be unique")
+        return {
+            "required": True,
+            "strategy": (
+                "bounded-independent-read-only-review"
+                if len(workstreams) >= policy["activation"]["minimum_independent_packets"]
+                else "workstream-identification-required"
+            ),
+            "candidate_workstreams": workstreams,
+            "independent_worker_candidates": workstream_ids,
+            "decision_contract": policy["decision_evidence"],
+            "workstream_identification_required": len(workstreams)
+            < policy["activation"]["minimum_independent_packets"],
+            "primary_critical_path": [
+                "identify bounded independent workstreams when fewer than two are supplied",
+                "retain all decisions, synthesis, mutations, and validation",
+            ],
+        }
+
     return {
-        "required": task_class == "large-or-resumable",
-        "strategy": "primary-owned-until-bounded-workstreams-are-identified",
+        "required": False,
+        "strategy": "primary-assistant",
         "candidate_workstreams": [],
         "independent_worker_candidates": [],
+        "workstream_identification_required": False,
         "primary_critical_path": ["plan and validate the selected source task"],
     }
 
 
 def _validate_runtime_capability_record(
     record: dict[str, Any],
+    *,
+    session_id: str,
+    now: datetime | None,
 ) -> dict[str, Any]:
     policy = _load_source_worker_policy()["runtime_capability_contract"]
-    required_fields = policy["required_fields"]
-    missing = [field for field in required_fields if field not in record]
-    if missing:
-        raise ValueError(f"worker capability record is missing fields: {missing}")
-    expected_scalars = {
-        "schema_version": policy["schema_version"],
-        "status": policy["status"],
-        "write_isolation": policy["write_isolation"],
-        "result_delivery": policy["result_delivery"],
-        "freshness": policy["freshness"],
-    }
-    for field, expected in expected_scalars.items():
-        if record.get(field) != expected:
-            raise ValueError(f"worker capability record requires {field}={expected!r}")
-    for field in ["surface_id", "runtime_id", "model_binding", "evidence"]:
-        if not isinstance(record.get(field), str) or not record[field].strip():
-            raise ValueError(f"worker capability record has invalid {field}")
-    if record.get("backend_kind") not in policy["backend_kinds"]:
-        raise ValueError("worker capability record has unsupported backend_kind")
-    role_ids = record.get("role_ids")
-    if not isinstance(role_ids, list) or policy["required_role_id"] not in role_ids:
-        raise ValueError("worker capability record lacks the read-only audit role")
-    max_parallelism = record.get("max_parallelism")
-    if (
-        not isinstance(max_parallelism, int)
-        or isinstance(max_parallelism, bool)
-        or max_parallelism < policy["minimum_parallelism"]
-    ):
-        raise ValueError("worker capability record has insufficient parallelism")
-    verified_at = record.get("verified_at")
-    if not isinstance(verified_at, str):
-        raise ValueError("worker capability record has invalid verified_at")
-    try:
-        datetime.fromisoformat(verified_at.replace("Z", "+00:00"))
-    except ValueError as exc:
-        raise ValueError("worker capability record has invalid verified_at") from exc
-    return record
+    return validate_runtime_capability(record, policy, session_id=session_id, now=now)
 
 
 def _delegation_assessment(
@@ -271,9 +317,12 @@ def _delegation_assessment(
     reason: str | None,
     selected_workstream_ids: list[str] | None,
     runtime_capability_record: dict[str, Any] | None,
+    worker_session_id: str | None,
+    now: datetime | None,
 ) -> dict[str, Any]:
     candidates = decomposition["independent_worker_candidates"]
-    evaluation_required = len(candidates) >= 2
+    has_independent_set = len(candidates) >= 2
+    evaluation_required = bool(decomposition["required"])
     if runtime_capability not in RUNTIME_CAPABILITY_STATES:
         raise ValueError(f"invalid worker runtime capability: {runtime_capability}")
     if decision_override not in {None, *DELEGATION_DECISIONS}:
@@ -296,17 +345,29 @@ def _delegation_assessment(
         if runtime_capability == "unavailable":
             raise ValueError("unavailable capability conflicts with an available record")
         verified_capability = _validate_runtime_capability_record(
-            runtime_capability_record
+            runtime_capability_record,
+            session_id=worker_session_id or "",
+            now=now,
         )
         runtime_capability = "available"
     elif runtime_capability == "available":
         raise ValueError("available worker capability requires a capability record")
+    elif worker_session_id is not None:
+        raise ValueError("worker session binding requires a capability record")
     if runtime_capability != "available" and selected_ids:
         raise ValueError("worker workstreams require verified available capability")
     if decision_override == "kept-local" and selected_ids:
         raise ValueError("kept-local work cannot select worker workstreams")
 
-    if not evaluation_required:
+    if decomposition["required"] and not has_independent_set:
+        if decision_override is not None or selected_ids:
+            raise ValueError(
+                "large work without two independent packets requires workstream identification"
+            )
+        decision = "workstream-identification-required"
+        resolved_reason = "identify at least two bounded independent read-only workstreams"
+        resolved_skip_reason = "insufficient-independent-work"
+    elif not evaluation_required:
         if decision_override == "delegated" or selected_ids:
             raise ValueError("delegation requires at least two independent workstreams")
         decision = "primary-assistant"
@@ -352,18 +413,18 @@ def _delegation_assessment(
         if not selected_ids:
             selected_ids = list(candidates[:2])
         if len(selected_ids) < 2:
-            raise ValueError("repository-audit delegation requires at least two workstreams")
+            raise ValueError("delegation requires at least two independent workstreams")
         max_parallelism = verified_capability["max_parallelism"]
         if len(selected_ids) > max_parallelism:
             raise ValueError("selected workstreams exceed verified worker parallelism")
         decision = "delegation-recommended"
-        resolved_reason = reason or "verified workers can execute independent audit workstreams"
+        resolved_reason = reason or "verified workers can execute independent workstreams"
         resolved_skip_reason = None
 
     reasons = [resolved_reason]
-    if evaluation_required:
+    if has_independent_set:
         reasons.insert(0, "multiple bounded independent workstreams are available")
-    return {
+    evidence = {
         "evaluation_status": "required" if evaluation_required else "not-required",
         "evaluation_required": evaluation_required,
         "candidate": bool(candidates),
@@ -379,6 +440,9 @@ def _delegation_assessment(
         "fallback": "primary-assistant",
         "provider_probe_performed": False,
     }
+    if decision_contract:
+        validate_decision_evidence(evidence, decision_contract)
+    return evidence
 
 
 def build_plan(
@@ -395,6 +459,9 @@ def build_plan(
     delegation_reason: str | None = None,
     worker_workstream_ids: list[str] | None = None,
     runtime_capability_record: dict[str, Any] | None = None,
+    worker_session_id: str | None = None,
+    task_worker_packets: list[dict[str, Any]] | None = None,
+    now: datetime | None = None,
 ) -> dict[str, Any]:
     checks = load_manifest()
     selected_profile, additional_profiles = _requested_validation_profiles(
@@ -444,13 +511,17 @@ def build_plan(
         check["id"] for check in selected if check.get("resource_class") == "heavy"
     ]
     resolved_source_profile = source_profile or "source-tooling"
-    task_class = _task_class(
-        plan.effective_profile,
-        plan.changed_paths,
+    classification = _task_classification(
+        plan,
         source_profile=resolved_source_profile,
         explicit_small_scope=requested_profile == "micro",
     )
-    decomposition = _decomposition(resolved_source_profile, task_class)
+    task_class = classification["task_class"]
+    decomposition = _decomposition(
+        resolved_source_profile,
+        task_class,
+        task_worker_packets=task_worker_packets,
+    )
     return {
         "schema_version": 1,
         "report_kind": "alatyr-source-minimum-work-plan",
@@ -461,6 +532,7 @@ def build_plan(
         "requested_profile": requested_profile,
         "effective_profile": plan.effective_profile,
         "task_class": task_class,
+        "task_classification": classification,
         "changed_from": resolved_changed_from,
         "changed_paths": plan.changed_paths,
         "selection": selection,
@@ -478,6 +550,8 @@ def build_plan(
             reason=delegation_reason,
             selected_workstream_ids=worker_workstream_ids,
             runtime_capability_record=runtime_capability_record,
+            worker_session_id=worker_session_id,
+            now=now,
         ),
         "check_plan": {
             "declared_check_ids": (
@@ -597,6 +671,17 @@ def main() -> int:
         help="Provider-neutral current-session worker capability evidence JSON.",
     )
     parser.add_argument(
+        "--worker-session-id",
+        help="Opaque current-session binding shared with the capability record.",
+    )
+    parser.add_argument(
+        "--worker-packet",
+        action="append",
+        type=Path,
+        default=[],
+        help="Task-specific inspect-only worker packet JSON; repeat for large work.",
+    )
+    parser.add_argument(
         "--changed-from",
         help="Baseline for changed-path planning. Defaults to origin/main or HEAD for micro/fast.",
     )
@@ -612,6 +697,12 @@ def main() -> int:
             )
             if not isinstance(capability_record, dict):
                 raise ValueError("worker capability record must contain an object")
+        task_worker_packets = []
+        for packet_path in args.worker_packet:
+            packet = json.loads(packet_path.read_text(encoding="utf-8"))
+            if not isinstance(packet, dict):
+                raise ValueError(f"worker packet must contain an object: {packet_path}")
+            task_worker_packets.append(packet)
         changed_from = args.changed_from
         if args.profile == "auto" and changed_from is None:
             changed_from = default_changed_from()
@@ -627,8 +718,16 @@ def main() -> int:
             delegation_reason=args.delegation_reason,
             worker_workstream_ids=args.worker_workstream,
             runtime_capability_record=capability_record,
+            worker_session_id=args.worker_session_id,
+            task_worker_packets=task_worker_packets,
         )
-    except (OSError, ValueError, KeyError, TypeError, json.JSONDecodeError) as exc:
+    except (
+        OSError,
+        ValueError,
+        KeyError,
+        TypeError,
+        json.JSONDecodeError,
+    ) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 2
     if args.summary:

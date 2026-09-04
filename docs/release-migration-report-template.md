@@ -137,7 +137,14 @@ Approval scope: `{APPROVAL_SCOPE_OR_NOT_REQUIRED}`
 
 ## Validation Run
 
-Source validation: `{SOURCE_VALIDATION_RUN_OR_SKIPPED}`
+Source validation: `{PENDING_PASSED_FAILED_OR_SKIPPED}`
+Source validation commands:
+
+- `{SOURCE_VALIDATION_COMMAND_OR_NONE}`
+
+Source validation result: `{SOURCE_VALIDATION_RESULT_OR_NOT_RECORDED}`
+Source validation revision: `{SOURCE_VALIDATION_REVISION_OR_NOT_RECORDED}`
+Source validation completed at: `{SOURCE_VALIDATION_COMPLETED_AT_OR_NOT_RECORDED}`
 Target validation: `{TARGET_VALIDATION_EXPECTATION_OR_UNRESOLVED}`
 
 ## Residual Risks

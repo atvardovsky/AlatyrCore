@@ -637,10 +637,10 @@
   "measurement": "whitespace-delimited words in resolved source templates",
   "migration_routing": {
     "full_candidate_union": {
-      "bytes": 426536,
-      "characters": 426536,
+      "bytes": 426883,
+      "characters": 426883,
       "declared_files": 36,
-      "estimated_tokens_4_chars": 106634,
+      "estimated_tokens_4_chars": 106721,
       "missing_paths": [],
       "portable_paths": [
         ".ai/framework/README.md",
@@ -677,7 +677,7 @@
         ".ai/framework/team-collaboration.md",
         ".ai/framework/testing-guidance.md"
       ],
-      "portable_words": 52407,
+      "portable_words": 52448,
       "resolved_files": 35,
       "resolved_paths": [
         ".ai/assistant/context/migration-routing.json",
@@ -724,7 +724,7 @@
       "unresolved_references": [
         "{TARGET_UPGRADE_IMPACT_REPORT}"
       ],
-      "words": 53099
+      "words": 53140
     },
     "initial": {
       "bytes": 17533,
@@ -2295,10 +2295,10 @@
   "routing_primitives": {
     "recursive_selection": {
       "full_framework_candidate_union": {
-        "bytes": 678796,
-        "characters": 678796,
+        "bytes": 679143,
+        "characters": 679143,
         "declared_files": 59,
-        "estimated_tokens_4_chars": 169699,
+        "estimated_tokens_4_chars": 169786,
         "missing_paths": [],
         "portable_paths": [
           ".ai/framework/README.md",
@@ -2361,7 +2361,7 @@
           ".ai/framework/testing-guidance.md",
           ".ai/framework/workspace-modes.md"
         ],
-        "portable_words": 84383,
+        "portable_words": 84424,
         "resolved_files": 59,
         "resolved_paths": [
           ".ai/framework/README.md",
@@ -2427,7 +2427,7 @@
         "target_paths": [],
         "target_words": 0,
         "unresolved_references": [],
-        "words": 84383
+        "words": 84424
       },
       "selected_route": {
         "bytes": 26617,

@@ -35,8 +35,9 @@ changes cheap.
   target adapters; they do not create portable runtime requirements.
 - `tools/source_context_router.json` owns source task routing, while
   `tools/source_worker_policy.json` owns provider-neutral source workstream
-  decomposition. The active assistant owns current-runtime capability evidence
-  and the primary assistant owns integration and action authorization.
+  decomposition and `tools/source_worker_contract.py` owns its executable
+  validation contract. The active assistant owns current-session capability
+  evidence and the primary assistant owns integration and action authorization.
 - Target adapter validation modules under `tools/target_adapter_validation/`
   should own capability-specific checks when the legacy validator is split.
 - Conformance files under `conformance/` own captured or prepared evidence, not

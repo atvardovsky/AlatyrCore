@@ -67,6 +67,12 @@ as assistant content: it digests the assistant catalog, so indexing it would
 create a circular digest dependency. Rebuild project and assistant catalogs
 before rebuilding bootstrap whenever installed target files change.
 
+The generated `framework/file-inventory.json` is packaging and upgrade
+evidence, not recursively routed framework content. It hashes
+`framework/context-index.json`; indexing the inventory from that tree would
+create the same circular digest dependency. Load the inventory explicitly only
+for installation, update, packaging, or drift comparison.
+
 ## Context-Loaded Semantic Codebook
 
 Compact machine records may reference versioned semantic terms instead of

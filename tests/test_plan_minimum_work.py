@@ -5,6 +5,7 @@ import subprocess
 import sys
 import unittest
 from contextlib import ExitStack
+from datetime import datetime, timezone
 from pathlib import Path
 from unittest.mock import patch
 
@@ -16,6 +17,10 @@ from check_all import SelectionResult  # noqa: E402
 import plan_minimum_work  # noqa: E402
 from plan_minimum_work import build_plan, render_summary  # noqa: E402
 from source_state import SourceEntry  # noqa: E402
+
+
+NOW = datetime(2026, 9, 3, 12, 5, tzinfo=timezone.utc)
+SESSION_ID = "test-session-opaque-id"
 
 
 def check() -> dict[str, object]:
@@ -36,7 +41,7 @@ def check() -> dict[str, object]:
 
 def capability_record(max_parallelism: int = 2) -> dict[str, object]:
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "status": "available",
         "surface_id": "test-surface",
         "runtime_id": "test-runtime",
@@ -47,8 +52,28 @@ def capability_record(max_parallelism: int = 2) -> dict[str, object]:
         "result_delivery": True,
         "model_binding": "client-default",
         "verified_at": "2026-09-03T12:00:00Z",
+        "expires_at": "2026-09-03T12:20:00Z",
         "freshness": "current-session",
+        "session_id": SESSION_ID,
         "evidence": "fixture capability",
+    }
+
+
+def worker_packet(workstream_id: str, context: str) -> dict[str, object]:
+    return {
+        "schema_version": 1,
+        "packet_kind": "source-read-only-workstream",
+        "workstream_id": workstream_id,
+        "role_id": "read-only-auditor",
+        "objective": f"Inspect {workstream_id}",
+        "bounded_context": [context],
+        "conditional_context": [],
+        "non_goals": ["modify repository state"],
+        "allowed_actions": ["inspect"],
+        "write_scope": "none",
+        "independent": True,
+        "independence_key": f"area-{workstream_id}",
+        "expected_evidence": "Path-specific findings",
     }
 
 
@@ -65,6 +90,10 @@ class MinimumWorkPlanTests(unittest.TestCase):
         delegation_skip_reason: str | None = None,
         delegation_reason: str | None = None,
         runtime_capability_record: dict[str, object] | None = None,
+        task_worker_packets: list[dict[str, object]] | None = None,
+        worker_workstream_ids: list[str] | None = None,
+        worker_session_id: str | None = None,
+        now: datetime = NOW,
     ) -> dict[str, object]:
         item = check()
         with ExitStack() as stack:
@@ -104,6 +133,14 @@ class MinimumWorkPlanTests(unittest.TestCase):
                 delegation_skip_reason=delegation_skip_reason,
                 delegation_reason=delegation_reason,
                 runtime_capability_record=runtime_capability_record,
+                task_worker_packets=task_worker_packets,
+                worker_workstream_ids=worker_workstream_ids,
+                worker_session_id=(
+                    worker_session_id
+                    if worker_session_id is not None
+                    else SESSION_ID if runtime_capability_record is not None else None
+                ),
+                now=now,
             )
         self.assertEqual(select_plan.call_args.args[1], expected_validation_profile)
         self.assertEqual(baseline.call_args.args[0], selection.effective_profile)
@@ -333,6 +370,35 @@ class MinimumWorkPlanTests(unittest.TestCase):
                 runtime_capability="available",
             )
 
+    def test_planner_enforces_capability_time_and_session_binding(self) -> None:
+        selection = SelectionResult(
+            selected=[check()],
+            fell_back_to_full=False,
+            changed_paths=[],
+            unmatched_changed_paths=[],
+            platform="linux",
+            selection_details={"docs": {"reasons": ["full-profile"]}},
+            effective_profile="full",
+        )
+        cases = [
+            ({"verified_at": "2026-09-03T11:00:00Z"}, SESSION_ID, "stale"),
+            ({"session_id": "other-session"}, SESSION_ID, "session_id"),
+            ({}, "", "session_id"),
+        ]
+        for updates, session_id, error in cases:
+            with self.subTest(error=error):
+                record = capability_record()
+                record.update(updates)
+                with self.assertRaisesRegex(ValueError, error):
+                    self.build_test_plan(
+                        selection=selection,
+                        expected_validation_profile="full",
+                        source_profile="repository-audit",
+                        runtime_capability="available",
+                        runtime_capability_record=record,
+                        worker_session_id=session_id,
+                    )
+
     def test_preflight_cannot_claim_workers_were_delegated(self) -> None:
         selection = SelectionResult(
             selected=[check()],
@@ -374,6 +440,10 @@ class MinimumWorkPlanTests(unittest.TestCase):
         self.assertEqual(plan["validation_profiles"], ["full", "release"])
         self.assertEqual(len(plan["check_plan"]["additional_commands"]), 1)
         self.assertIn(
+            "--from-ref",
+            plan["check_plan"]["additional_commands"][0],
+        )
+        self.assertIn(
             "--profile release",
             render_summary(plan),
         )
@@ -397,6 +467,242 @@ class MinimumWorkPlanTests(unittest.TestCase):
         rendered_command = subprocess.list2cmdline(plan["check_plan"]["command"])
 
         self.assertIn(rendered_command, render_summary(plan))
+
+    def test_small_task_requires_one_covered_profile_path(self) -> None:
+        cases = [
+            (
+                ["docs/human/faq.md", "docs/human/quick-demo.md"],
+                [],
+                False,
+                {
+                    "docs": {
+                        "reasons": ["changed-path-trigger"],
+                        "matched_changed_paths": [
+                            "docs/human/faq.md",
+                            "docs/human/quick-demo.md",
+                        ],
+                    }
+                },
+            ),
+            (
+                ["unrouted.file"],
+                ["unrouted.file"],
+                True,
+                {"docs": {"reasons": ["full-fallback-unmatched"], "matched_changed_paths": []}},
+            ),
+            (
+                ["tools/check_docs.py"],
+                [],
+                False,
+                {
+                    "docs": {
+                        "reasons": ["changed-path-trigger"],
+                        "matched_changed_paths": ["tools/check_docs.py"],
+                    }
+                },
+            ),
+            (
+                ["docs/human/faq.md"],
+                [],
+                False,
+                {"docs": {"reasons": ["always-for-changed"], "matched_changed_paths": []}},
+            ),
+        ]
+        for changed, unmatched, fallback, details in cases:
+            with self.subTest(changed=changed, unmatched=unmatched, fallback=fallback):
+                selection = SelectionResult(
+                    selected=[check()],
+                    fell_back_to_full=fallback,
+                    changed_paths=changed,
+                    unmatched_changed_paths=unmatched,
+                    platform="linux",
+                    selection_details=details,
+                    effective_profile="fast",
+                )
+                plan = self.build_test_plan(
+                    selection=selection,
+                    expected_validation_profile="fast",
+                    source_profile="docs-local",
+                )
+                self.assertEqual(plan["task_class"], "standard-task")
+                self.assertFalse(plan["task_classification"]["small_task_eligible"])
+
+    def test_boundary_path_is_large_even_on_fast_route(self) -> None:
+        selection = SelectionResult(
+            selected=[check()],
+            fell_back_to_full=False,
+            changed_paths=["framework/action-authorization.md"],
+            unmatched_changed_paths=[],
+            platform="linux",
+            selection_details={
+                "docs": {
+                    "reasons": ["changed-path-trigger"],
+                    "matched_changed_paths": ["framework/action-authorization.md"],
+                }
+            },
+            effective_profile="fast",
+        )
+        plan = self.build_test_plan(
+            selection=selection,
+            expected_validation_profile="fast",
+            source_profile="docs-local",
+        )
+        self.assertEqual(plan["task_class"], "large-or-resumable")
+        self.assertEqual(
+            plan["delegation_assessment"]["decision"],
+            "workstream-identification-required",
+        )
+
+    def test_one_covered_source_tool_path_remains_small(self) -> None:
+        selection = SelectionResult(
+            selected=[check()],
+            fell_back_to_full=False,
+            changed_paths=["tools/check_docs.py"],
+            unmatched_changed_paths=[],
+            platform="linux",
+            selection_details={
+                "docs": {
+                    "reasons": ["changed-path-trigger"],
+                    "matched_changed_paths": ["tools/check_docs.py"],
+                }
+            },
+            effective_profile="fast",
+        )
+        plan = self.build_test_plan(
+            selection=selection,
+            expected_validation_profile="fast",
+            source_profile="source-tooling",
+        )
+        self.assertEqual(plan["task_class"], "small-task")
+
+    def test_micro_escalation_cannot_remain_a_small_task(self) -> None:
+        selection = SelectionResult(
+            selected=[check()],
+            fell_back_to_full=False,
+            changed_paths=["docs/human/faq.md"],
+            unmatched_changed_paths=[],
+            platform="linux",
+            selection_details={
+                "docs": {
+                    "reasons": ["changed-path-trigger"],
+                    "matched_changed_paths": ["docs/human/faq.md"],
+                }
+            },
+            effective_profile="fast",
+            escalated_from_micro=True,
+            micro_escalation_reasons=["path requires non-micro checks"],
+        )
+        plan = self.build_test_plan(
+            selection=selection,
+            expected_validation_profile="fast",
+            source_profile="docs-local",
+        )
+        self.assertEqual(plan["task_class"], "standard-task")
+        self.assertTrue(
+            any(
+                "micro escalation" in reason
+                for reason in plan["task_classification"]["reasons"]
+            )
+        )
+
+    def test_large_non_audit_task_requires_explicit_workstream_identification(self) -> None:
+        selection = SelectionResult(
+            selected=[check()],
+            fell_back_to_full=False,
+            changed_paths=[],
+            unmatched_changed_paths=[],
+            platform="linux",
+            selection_details={"docs": {"reasons": ["full-profile"]}},
+            effective_profile="full",
+        )
+        plan = self.build_test_plan(
+            selection=selection,
+            expected_validation_profile="full",
+            source_profile="ai-infrastructure-bridge",
+        )
+        self.assertEqual(
+            plan["delegation_assessment"]["decision"],
+            "workstream-identification-required",
+        )
+        self.assertEqual(plan["decomposition"]["candidate_workstreams"], [])
+        self.assertTrue(plan["delegation_assessment"]["evaluation_required"])
+        self.assertEqual(
+            plan["delegation_assessment"]["skip_reason_id"],
+            "insufficient-independent-work",
+        )
+
+    def test_one_large_task_packet_still_requires_workstream_identification(self) -> None:
+        selection = SelectionResult(
+            selected=[check()],
+            fell_back_to_full=False,
+            changed_paths=[],
+            unmatched_changed_paths=[],
+            platform="linux",
+            selection_details={"docs": {"reasons": ["full-profile"]}},
+            effective_profile="full",
+        )
+        plan = self.build_test_plan(
+            selection=selection,
+            expected_validation_profile="full",
+            source_profile="ai-infrastructure-bridge",
+            task_worker_packets=[
+                worker_packet("router", "tools/source_context_router.json")
+            ],
+        )
+        self.assertEqual(
+            plan["delegation_assessment"]["decision"],
+            "workstream-identification-required",
+        )
+        self.assertTrue(plan["decomposition"]["workstream_identification_required"])
+
+    def test_large_non_audit_task_can_recommend_two_explicit_packets(self) -> None:
+        selection = SelectionResult(
+            selected=[check()],
+            fell_back_to_full=False,
+            changed_paths=[],
+            unmatched_changed_paths=[],
+            platform="linux",
+            selection_details={"docs": {"reasons": ["full-profile"]}},
+            effective_profile="full",
+        )
+        packets = [
+            worker_packet("router", "tools/source_context_router.json"),
+            worker_packet("policy", "tools/source_worker_policy.json"),
+        ]
+        plan = self.build_test_plan(
+            selection=selection,
+            expected_validation_profile="full",
+            source_profile="ai-infrastructure-bridge",
+            task_worker_packets=packets,
+            runtime_capability="available",
+            runtime_capability_record=capability_record(),
+        )
+        assessment = plan["delegation_assessment"]
+        self.assertEqual(assessment["decision"], "delegation-recommended")
+        self.assertEqual(assessment["selected_workstream_ids"], ["router", "policy"])
+
+    def test_large_task_rejects_non_independent_packets(self) -> None:
+        selection = SelectionResult(
+            selected=[check()],
+            fell_back_to_full=False,
+            changed_paths=[],
+            unmatched_changed_paths=[],
+            platform="linux",
+            selection_details={"docs": {"reasons": ["full-profile"]}},
+            effective_profile="full",
+        )
+        packets = [
+            worker_packet("router", "tools/source_context_router.json"),
+            worker_packet("policy", "tools/source_worker_policy.json"),
+        ]
+        packets[1]["independence_key"] = packets[0]["independence_key"]
+        with self.assertRaisesRegex(ValueError, "independence keys must be unique"):
+            self.build_test_plan(
+                selection=selection,
+                expected_validation_profile="full",
+                source_profile="ai-infrastructure-bridge",
+                task_worker_packets=packets,
+            )
 
     def test_small_task_planning_does_not_load_optional_worker_policy(self) -> None:
         selection = SelectionResult(

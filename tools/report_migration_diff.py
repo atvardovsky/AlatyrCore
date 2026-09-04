@@ -327,6 +327,51 @@ def build_impact_data(
     }
 
 
+def source_validation_lines(
+    status: str,
+    commands: list[str] | None,
+    result: str,
+    revision: str,
+    completed_at: str,
+) -> list[str]:
+    """Render explicit draft or completed source-validation evidence."""
+
+    return [
+        f"Source validation: `{status}`",
+        "Source validation commands:",
+        *bullet_list(commands or []),
+        f"Source validation result: `{result}`",
+        f"Source validation revision: `{revision}`",
+        f"Source validation completed at: `{completed_at}`",
+    ]
+
+
+def approval_and_validation_lines(
+    status: str,
+    commands: list[str] | None,
+    result: str,
+    revision: str,
+    completed_at: str,
+) -> list[str]:
+    """Render approval and validation headings shared by migration reports."""
+
+    return [
+        "",
+        "## Approval Needs",
+        "",
+        "Approval needed: `target-dependent`",
+        "Approval scope: `required before overwriting existing AI instructions or protected adapter behavior`",
+        "",
+        "## Validation Run",
+        "",
+        *source_validation_lines(status, commands, result, revision, completed_at),
+        "Target validation: `target adapter decides local validation or unresolved checks`",
+        "",
+        "## Residual Risks",
+        "",
+    ]
+
+
 def render_report(
     from_path: Path,
     to_path: Path,
@@ -354,6 +399,11 @@ def render_report(
     to_template_files: dict[str, str] | None,
     from_source_label: str | None = None,
     to_source_label: str | None = None,
+    source_validation_status: str = "pending",
+    source_validation_commands: list[str] | None = None,
+    source_validation_result: str = "not recorded",
+    source_validation_revision: str = "not recorded",
+    source_validation_completed_at: str = "not recorded",
 ) -> str:
     from_ids = set(from_rules)
     to_ids = set(to_rules)
@@ -757,21 +807,13 @@ def render_report(
         lines.append("- none")
 
     lines.extend(
-        [
-            "",
-            "## Approval Needs",
-            "",
-            "Approval needed: `target-dependent`",
-            "Approval scope: `required before overwriting existing AI instructions or protected adapter behavior`",
-            "",
-            "## Validation Run",
-            "",
-            "Source validation: `run source-repository checks before release`",
-            "Target validation: `target adapter decides local validation or unresolved checks`",
-            "",
-            "## Residual Risks",
-            "",
-        ]
+        approval_and_validation_lines(
+            source_validation_status,
+            source_validation_commands,
+            source_validation_result,
+            source_validation_revision,
+            source_validation_completed_at,
+        )
     )
     if has_changes:
         lines.extend(
@@ -858,6 +900,33 @@ def main() -> int:
         type=Path,
         help="Optional path for a machine-readable upgrade impact projection.",
     )
+    parser.add_argument(
+        "--source-validation-status",
+        choices=["pending", "passed", "failed", "skipped"],
+        default="pending",
+        help="Source validation state recorded in the Markdown report.",
+    )
+    parser.add_argument(
+        "--source-validation-command",
+        action="append",
+        default=[],
+        help="Source validation command; repeat to record multiple commands.",
+    )
+    parser.add_argument(
+        "--source-validation-result",
+        default="not recorded",
+        help="Concise source validation result.",
+    )
+    parser.add_argument(
+        "--source-validation-revision",
+        default="not recorded",
+        help="Revision or tree identity validated by the source checks.",
+    )
+    parser.add_argument(
+        "--source-validation-completed-at",
+        default="not recorded",
+        help="Timezone-aware validation completion timestamp.",
+    )
     args = parser.parse_args()
 
     from_path = args.from_rules.resolve()
@@ -908,6 +977,11 @@ def main() -> int:
         to_template_files,
         args.from_source_label,
         args.to_source_label,
+        args.source_validation_status,
+        args.source_validation_command,
+        args.source_validation_result,
+        args.source_validation_revision,
+        args.source_validation_completed_at,
     )
     impact = build_impact_data(
         from_rules=from_rules,

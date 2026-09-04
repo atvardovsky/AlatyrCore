@@ -19,11 +19,15 @@ readable source policy is `tools/source_worker_policy.json`; this document
 explains how the active assistant applies it. The policy is provider-neutral
 and does not prove that the current client can launch workers.
 
-For ordinary source work, use a worker when a bounded independent packet is
-likely to reduce wall-clock time or provide materially stronger review after
-accounting for preparation, review, and integration cost. Keep work local when
-coordination cost is likely to exceed the benefit and record that concrete
-reason when the packet was otherwise eligible.
+For ordinary source work, first classify the task. Small and standard tasks
+remain with the primary assistant unless an independently justified route says
+otherwise. For `large-or-resumable` work, identify at least two bounded,
+independent, read-only packets. Until those packets exist, record
+`workstream-identification-required`; do not treat a broad task description as
+a dispatchable packet. Use workers when the packets are likely to reduce
+wall-clock time or provide materially stronger review after accounting for
+preparation, review, and integration cost. Keep eligible work local only with
+a policy reason ID and concrete task evidence.
 
 For an explicit `repository-audit`, delegation evaluation is deterministic:
 
@@ -50,22 +54,29 @@ and result delivery are available. Do not hard-code a provider, client,
 backend, executable, or model in source policy.
 
 Record the evaluation status, runtime capability status, selected workstream
-IDs, decision, and reason. When workers are unavailable or unverified, state
-that explicitly and continue with the primary assistant. When workers are
-available but an eligible packet remains local, use one policy reason ID and
-task-specific evidence; a generic statement that delegation was not useful is
-not sufficient.
+IDs, decision, reason, and `skip_reason_id`. The policy defines which decisions
+require or forbid a skip reason. When workers are unavailable or unverified,
+state that explicitly and continue with the primary assistant. When workers
+are available but an eligible packet remains local, use one applicable policy
+reason ID and task-specific evidence; a generic statement that delegation was
+not useful is not sufficient.
 
 `tools/alatyr.py plan-work` accepts a provider-neutral current-session
 capability record plus workstream, kept-local, skip-reason, and concrete-reason
-inputs after the active assistant performs runtime verification. Those inputs
+inputs after the active assistant performs runtime verification. Capability
+evidence is bound to the caller-supplied opaque session ID, includes timezone-
+aware verification and expiry timestamps, and is rejected when stale,
+future-dated, expired, overlong, or bound to another session. Those inputs
 create reviewable preflight evidence; they do not probe a client, launch
 workers, claim past dispatch, or prove that a worker result was delivered.
 
-Every packet must carry its workstream ID, objective, bounded context,
-non-goals, `inspect`-only action mode, no-write scope, and expected evidence.
-Workers may expand only through the packet's conditional context or return a
-request for primary review.
+Every packet must carry its workstream ID, role, objective, bounded and
+conditional context, non-goals, `inspect`-only action mode, no-write scope,
+independence evidence, and expected evidence. Task-specific packets are passed
+with repeatable `--worker-packet` arguments. Their bounded paths must be
+repository-relative, exist inside the repository, and not escape through a
+symlink. Workers may expand only through the packet's conditional context or
+return a request for primary review.
 
 ## Model Routing
 

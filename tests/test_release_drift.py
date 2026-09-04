@@ -4,6 +4,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -16,6 +17,7 @@ from check_release_drift import (  # noqa: E402
     nearest_release_baseline,
     nearest_tagged_baseline,
     prior_changelog_versions,
+    validate_committed_report,
 )
 from check_versioning import (  # noqa: E402
     validate_current_release_binding,
@@ -24,6 +26,71 @@ from check_versioning import (  # noqa: E402
 
 
 class ReleaseBaselineTests(unittest.TestCase):
+    def test_committed_report_requires_completed_source_validation(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            report = root / "docs/releases/2.0.0-migration.md"
+            report.parent.mkdir(parents=True)
+            report.write_text(
+                "\n".join(
+                    [
+                        "From manifest: `baseline:framework/rule-registry.json`",
+                        "To manifest: `source-tree:framework/rule-registry.json`",
+                        "From framework version: `1.0.0`",
+                        "To framework version: `2.0.0`",
+                        "From adapter schema version: `1`",
+                        "To adapter schema version: `1`",
+                        "From template version: `1`",
+                        "To template version: `2`",
+                        "From contract SHA-256: `from-digest`",
+                        "To contract SHA-256: `to-digest`",
+                        "Source validation: `passed`",
+                        "Source validation commands:",
+                        "- `python3 tools/check_all.py --profile full`",
+                        "Source validation result: `all checks passed`",
+                        "Source validation revision: `fixture-tree`",
+                        "Source validation completed at: `2026-09-04T12:00:00+00:00`",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            args = {
+                "baseline": "baseline",
+                "from_version": "1.0.0",
+                "to_version": "2.0.0",
+                "from_adapter": "1",
+                "to_adapter": "1",
+                "from_template": "1",
+                "to_template": "2",
+                "from_digest": "from-digest",
+                "to_digest": "to-digest",
+            }
+            with patch("check_release_drift.ROOT", root):
+                self.assertEqual(validate_committed_report(**args), [])
+                report.write_text(
+                    report.read_text(encoding="utf-8").replace(
+                        "Source validation: `passed`",
+                        "Source validation: `pending`",
+                    ),
+                    encoding="utf-8",
+                )
+                self.assertTrue(validate_committed_report(**args))
+
+                report.write_text(
+                    report.read_text(encoding="utf-8")
+                    .replace("Source validation: `pending`", "Source validation: `passed`")
+                    .replace(
+                        "Source validation completed at: `2026-09-04T12:00:00+00:00`",
+                        "Source validation completed at: `2026-09-04 12:00:00`",
+                    ),
+                    encoding="utf-8",
+                )
+                failures = validate_committed_report(**args)
+                self.assertTrue(
+                    any("timezone-aware ISO-8601" in failure for failure in failures)
+                )
+
     def test_prefers_reviewed_incremental_checkpoint_over_distant_tag(self) -> None:
         version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
 

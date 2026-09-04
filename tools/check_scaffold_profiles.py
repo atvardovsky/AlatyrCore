@@ -4,12 +4,15 @@
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
 from scaffold_target_structure import (
+    PROJECTED_MARKDOWN_PATHS,
     PROFILE_MANIFEST,
     TEMPLATE_ROOT,
+    build_target_context_catalogs,
     project_assistant_bridges,
     profile_names,
     resolve_assistant_surfaces,
@@ -17,6 +20,7 @@ from scaffold_target_structure import (
     resolved_framework_pack,
 )
 from framework_packaging import resolve_framework_files
+from scaffold_projection import path_available, project_markdown_fragments
 
 
 EXPECTED_PROFILES = ["kernel", "core", "standard", "full"]
@@ -74,6 +78,36 @@ FULL_ONLY_BRIDGES = {
     Path(".windsurf/rules/alatyr-core.md"),
     Path(".windsurfrules"),
 }
+MARKDOWN_PATH_CLAIM_RE = re.compile(r"`(?P<path>\.ai/[A-Za-z0-9_./-]+)`")
+
+
+def check_projected_markdown_claims(
+    profile: str,
+    selected_templates: set[Path],
+    framework_pack: str,
+) -> list[str]:
+    """Return unsupported concrete path claims in projected Markdown."""
+
+    generated_indexes = set(build_target_context_catalogs(selected_templates))
+    selected = selected_templates | generated_indexes | {
+        Path(".ai/framework") / path
+        for path in resolve_framework_files(framework_pack)
+    }
+    failures: list[str] = []
+    for relpath in sorted(PROJECTED_MARKDOWN_PATHS & selected_templates):
+        rendered = project_markdown_fragments(
+            (TEMPLATE_ROOT / relpath).read_text(encoding="utf-8"),
+            selected,
+        )
+        if "alatyr:scaffold-fragment" in rendered:
+            failures.append(f"{profile} {relpath} retained scaffold fragment markers")
+        for match in MARKDOWN_PATH_CLAIM_RE.finditer(rendered):
+            claim = match.group("path")
+            if not path_available(claim, selected):
+                failures.append(
+                    f"{profile} {relpath} claims absent scaffold path: {claim}"
+                )
+    return failures
 
 
 def main() -> int:
@@ -181,6 +215,19 @@ def main() -> int:
             != "complete"
         ):
             failures.append("architecture capability must raise the matched framework pack")
+        for profile, selected_templates in [
+            ("kernel", kernel),
+            ("core", core),
+            ("standard", standard),
+            ("full", full),
+        ]:
+            failures.extend(
+                check_projected_markdown_claims(
+                    profile,
+                    selected_templates,
+                    resolved_framework_pack(profile, "matched"),
+                )
+            )
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         failures.append(str(exc))
 

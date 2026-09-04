@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "policy_kind": "alatyr-source-worker-policy",
   "scope": "source-repository",
   "provider_neutral": true,
@@ -19,10 +19,12 @@
       "result_delivery",
       "model_binding",
       "verified_at",
+      "expires_at",
       "freshness",
+      "session_id",
       "evidence"
     ],
-    "schema_version": 1,
+    "schema_version": 2,
     "status": "available",
     "backend_kinds": [
       "native-worker",
@@ -32,21 +34,19 @@
     "write_isolation": "read-only",
     "result_delivery": true,
     "freshness": "current-session",
-    "minimum_parallelism": 2
+    "minimum_parallelism": 2,
+    "maximum_age_seconds": 900,
+    "maximum_validity_seconds": 1800,
+    "maximum_future_skew_seconds": 60
   },
   "activation": {
-    "evaluate_for": [
-      "repository-audit",
-      "large-or-resumable work with at least two bounded independent areas"
-    ],
-    "delegate_when_all": [
-      "the active assistant verifies worker capability in the current runtime",
-      "at least two selected workstreams are independent and read-only",
-      "each worker packet has bounded context and objective output evidence",
-      "delegation preserves current-scope authorization and primary ownership"
-    ],
-    "explicit_repository_audit": "delegate eligible workstreams when all delegate_when_all conditions hold unless a concrete skip reason is recorded",
-    "no_capability_probe": "do not infer a provider, model, dispatch backend, or client feature from this policy"
+    "task_classes": ["large-or-resumable"],
+    "minimum_independent_packets": 2,
+    "repository_audit_candidate_source": "built-in-workstreams",
+    "task_specific_candidate_source": "explicit-worker-packets",
+    "missing_large_task_packets_decision": "workstream-identification-required",
+    "audit_default": "evaluate",
+    "fallback_executor": "primary-assistant"
   },
   "decision_evidence": {
     "required_fields": [
@@ -54,10 +54,12 @@
       "runtime_capability_status",
       "selected_workstream_ids",
       "decision",
-      "reason"
+      "reason",
+      "skip_reason_id"
     ],
     "preflight_decisions": [
       "runtime-verification-required",
+      "workstream-identification-required",
       "delegation-recommended",
       "kept-local",
       "primary-assistant"
@@ -76,10 +78,43 @@
       "client-policy-prohibits",
       "user-restricted"
     ],
-    "skip_reason_requirement": "A kept-local decision for an otherwise eligible workstream must name a reason ID and concrete task evidence. Silence is not evidence."
+    "decision_rules": {
+      "runtime-verification-required": {
+        "skip_reason": "forbidden",
+        "allowed_skip_reason_ids": []
+      },
+      "workstream-identification-required": {
+        "skip_reason": "required",
+        "allowed_skip_reason_ids": ["insufficient-independent-work"]
+      },
+      "delegation-recommended": {
+        "skip_reason": "forbidden",
+        "allowed_skip_reason_ids": []
+      },
+      "kept-local": {
+        "skip_reason": "required",
+        "allowed_skip_reason_ids": [
+          "capability-unavailable",
+          "capability-unverified",
+          "dependency-ordering",
+          "overlapping-scope",
+          "coordination-cost-exceeds-benefit",
+          "client-policy-prohibits",
+          "user-restricted"
+        ]
+      },
+      "primary-assistant": {
+        "skip_reason": "required",
+        "allowed_skip_reason_ids": ["insufficient-independent-work"]
+      }
+    }
   },
   "worker_packet_contract": {
+    "schema_version": 1,
+    "packet_kinds": ["source-read-only-workstream"],
     "required_fields": [
+      "schema_version",
+      "packet_kind",
       "workstream_id",
       "role_id",
       "objective",
@@ -88,6 +123,8 @@
       "non_goals",
       "allowed_actions",
       "write_scope",
+      "independent",
+      "independence_key",
       "expected_evidence"
     ],
     "allowed_actions": [
@@ -102,6 +139,7 @@
       "objective": "Review portable rules, canonical ownership, semantic references, and framework indexes for contradictions or drift.",
       "mode": "read-only",
       "independent": true,
+      "independence_key": "portable-framework-rules",
       "required_context": [
         "framework/context-index.json",
         "framework/rule-registry.json",
@@ -123,6 +161,7 @@
       "objective": "Review installer routing, target projections, assistant bridges, and adapter-contract alignment.",
       "mode": "read-only",
       "independent": true,
+      "independence_key": "installation-and-target-projections",
       "required_context": [
         "INSTALL.md",
         "installer/context-router.json",
@@ -144,6 +183,7 @@
       "objective": "Review source tools, check routing, manifests, validators, and generated-evidence contracts.",
       "mode": "read-only",
       "independent": true,
+      "independence_key": "source-tools-and-validation",
       "required_context": [
         "tools/check_manifest.json",
         "tools/README.md",
@@ -164,6 +204,7 @@
       "objective": "Review public documentation, maintainer guidance, versions, changelog, and release evidence for consistent claims.",
       "mode": "read-only",
       "independent": true,
+      "independence_key": "public-and-release-evidence",
       "required_context": [
         "README.md",
         "VERSION",

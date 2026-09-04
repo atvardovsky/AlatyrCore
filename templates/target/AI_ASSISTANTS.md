@@ -17,9 +17,9 @@ Before making changes:
 5. After installation/update or unclear state, read post-install/update message templates.
 6. For an exact operation ID or alias, read `.ai/assistant/operation-index.json`;
    for bare `Alatyr`, ambiguity, or repair, read `.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.
-7. Route AI infrastructure through `.ai/assistant/ai-infrastructure-router.json`.
-8. For non-trivial work, use `.ai/assistant/task-decomposition.json` and `.ai/assistant/templates/task-decomposition.md` before implementation or delegation.
-9. Before state changes, use `.ai/assistant/policies/action-authorization.json`; a topic switch or backlog/issue return is read-only.
+7. For non-trivial work, use `.ai/assistant/task-decomposition.json` and `.ai/assistant/templates/task-decomposition.md` before implementation or delegation.
+8. Before state changes, use `.ai/assistant/policies/action-authorization.json`; a topic switch or backlog/issue return is read-only.
    Implementation does not imply commit; commit does not imply push; prior authorization expires.
-10. Delegate only through the primary-owned decomposition plan, `.ai/assistant/prompts/worker-orchestration.md`, and the selected capability record.
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/ai-infrastructure-router.json"]} -->9. Route AI infrastructure through `.ai/assistant/ai-infrastructure-router.json`.<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/assistant-capabilities.json",".ai/assistant/prompts/worker-orchestration.md"]} -->10. Delegate only through the primary-owned decomposition plan, `.ai/assistant/prompts/worker-orchestration.md`, and the selected capability record.<!-- /alatyr:scaffold-fragment -->
 Assistant-specific bridge files must stay short and point back to canonical target files.

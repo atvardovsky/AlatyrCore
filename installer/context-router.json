@@ -24,16 +24,20 @@
   ],
   "stages": {
     "discovery": {
-      "required_context": ["INSTALL.md"],
+      "required_context": ["INSTALL.md", "installer/discovery-contract.json"],
       "target_context": ["root assistant instructions", "repository structure", "existing project validation and ownership evidence"],
+      "required_evidence": ["target findings classified by discovery-contract category", "missing target facts recorded without invention"],
       "prohibited_actions": ["create files", "overwrite instructions", "invent target facts or commands"]
     },
     "scope-selection": {
       "required_context": [
+        "installer/discovery-contract.json",
         "framework/module-profile.md",
         "framework/rule-registry.json",
         "tools/scaffold_profiles.json"
       ],
+      "depends_on": ["discovery"],
+      "required_evidence": ["selected support profile justified by classified target findings", "optional module expansion tied to target evidence or the user request"],
       "conditional_context": ["rule owners for selected core and optional modules"],
       "prohibited_actions": ["enable an optional module without target need owner and validation"]
     },

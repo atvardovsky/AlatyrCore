@@ -199,13 +199,23 @@ all state-changing phases. The plan also names the target-adapter
 `support-delta` and `impact` route for installed projects, but it does not
 replace target logical integrity review.
 
+For non-audit `large-or-resumable` work, first create at least two independent
+inspect-only packet JSON files and pass each with `--worker-packet <packet>`.
+Without that bounded set the planner returns
+`workstream-identification-required`; it does not invent workstreams from a
+broad task description. Repository audits continue to use the built-in policy
+workstreams.
+
 After checking the current client, the active assistant may rerun the plan with
-`--worker-capability available` plus
-`--worker-capability-record <current-session.json>`, or with
+`--worker-capability available`,
+`--worker-capability-record <current-session.json>`, and
+`--worker-session-id <opaque-current-session-id>`, or with
 `--worker-capability unavailable`. The record follows
 `tools/source_worker_policy.json` and captures the current surface, runtime,
 backend kind, read-only role, parallelism, isolation, result delivery, model
-binding, verification time, freshness, and evidence. Available repository-
+binding, verification and expiry times, session binding, freshness, and
+evidence. Stale, future-dated, expired, overlong, or differently bound records
+are rejected. Available repository-
 audit workers produce `delegation-recommended` and select two candidate
 workstreams by default; repeated `--worker-workstream` arguments may choose a
 different bounded set within verified parallelism. An explicit

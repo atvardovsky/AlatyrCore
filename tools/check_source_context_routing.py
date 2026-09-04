@@ -12,6 +12,7 @@ from typing import Any
 from render_framework_file_inventory import build_inventory
 from check_all import ALLOWED_PROFILES, load_manifest
 from context_catalog import ContextCatalogError, load_codebook, validate_context_catalog
+from source_check_manifest import valid_manifest_path
 from task_classification_contract import (
     AMBIGUITY_READ_ONLY_MARKER,
     DEFAULT_TASK_CLASS,
@@ -20,6 +21,10 @@ from task_classification_contract import (
     TASK_CLASSES,
     TASK_CLASSIFICATION_SCHEMA_VERSION,
     missing_required_values,
+)
+from source_worker_contract import (
+    SourceWorkerContractError,
+    load_source_worker_policy,
 )
 
 
@@ -48,60 +53,21 @@ EXPECTED_INSTALL_STAGES = [
     "validation",
     "handoff",
 ]
-EXPECTED_PRIMARY_OWNED_ACTIONS = {
-    "architecture-decisions",
-    "conflict-resolution",
-    "current-scope-authorization",
-    "final-synthesis",
-    "final-validation",
-    "logical-integrity-review",
-    "modify",
-    "commit",
-    "publish",
-    "live-external",
-}
-EXPECTED_DECISION_FIELDS = {
-    "evaluation_status",
-    "runtime_capability_status",
-    "selected_workstream_ids",
-    "decision",
-    "reason",
-}
-EXPECTED_SKIP_REASONS = {
-    "capability-unavailable",
-    "capability-unverified",
-    "insufficient-independent-work",
-    "dependency-ordering",
-    "overlapping-scope",
-    "coordination-cost-exceeds-benefit",
-    "client-policy-prohibits",
-    "user-restricted",
-}
-EXPECTED_CAPABILITY_FIELDS = {
-    "schema_version",
-    "status",
-    "surface_id",
-    "runtime_id",
-    "backend_kind",
-    "role_ids",
-    "max_parallelism",
-    "write_isolation",
-    "result_delivery",
-    "model_binding",
-    "verified_at",
-    "freshness",
-    "evidence",
-}
-EXPECTED_PACKET_FIELDS = {
-    "workstream_id",
-    "role_id",
-    "objective",
-    "bounded_context",
-    "conditional_context",
-    "non_goals",
-    "allowed_actions",
-    "write_scope",
-    "expected_evidence",
+EXPECTED_SMALL_TASK_PROFILES = {"docs-local", "source-tooling"}
+REQUIRED_SMALL_TASK_BOUNDARIES = {
+    "AGENTS.md",
+    "AI_ASSISTANTS.md",
+    "INSTALL.md",
+    "CHANGELOG.md",
+    "VERSION",
+    "ADAPTER_SCHEMA_VERSION",
+    "TEMPLATE_VERSION",
+    "framework/**",
+    "installer/**",
+    "templates/**",
+    "tools/check_manifest.json",
+    "tools/source_context_router.json",
+    "tools/source_worker_policy.json",
 }
 
 
@@ -159,6 +125,62 @@ def require_text(path: Path, values: list[str], failures: list[str]) -> None:
             failures.append(f"{path.relative_to(ROOT)} missing {value}")
 
 
+def validate_small_task_eligibility(
+    classification: dict[str, Any],
+    failures: list[str],
+) -> None:
+    contract = classification.get("small_task_eligibility")
+    if not isinstance(contract, dict):
+        failures.append("source task classification has no small-task eligibility contract")
+        return
+    if contract.get("default_enabled") is not False:
+        failures.append("source small-task eligibility must be disabled by default")
+    maximum = contract.get("maximum_changed_paths")
+    if not isinstance(maximum, int) or isinstance(maximum, bool) or maximum != 1:
+        failures.append("source small-task eligibility must allow exactly one changed path")
+    profiles = contract.get("profiles")
+    if not isinstance(profiles, dict) or set(profiles) != EXPECTED_SMALL_TASK_PROFILES:
+        failures.append("source small-task eligibility profile set is invalid")
+    else:
+        for profile_id, profile in profiles.items():
+            patterns = (
+                profile.get("allowed_path_patterns")
+                if isinstance(profile, dict)
+                else None
+            )
+            if (
+                not isinstance(patterns, list)
+                or not patterns
+                or len(patterns) != len(set(patterns))
+                or not all(
+                    isinstance(item, str) and valid_manifest_path(item)
+                    for item in patterns
+                )
+            ):
+                failures.append(
+                    f"source small-task profile {profile_id} has invalid path patterns"
+                )
+    boundaries = contract.get("boundary_path_patterns")
+    if (
+        not isinstance(boundaries, list)
+        or len(boundaries) != len(set(boundaries))
+        or not all(
+            isinstance(item, str) and valid_manifest_path(item)
+            for item in boundaries
+        )
+    ):
+        failures.append("source small-task boundary path patterns are invalid")
+    elif not REQUIRED_SMALL_TASK_BOUNDARIES <= set(boundaries):
+        failures.append("source small-task boundary path patterns are incomplete")
+    for field in [
+        "requires_no_unmatched_paths",
+        "requires_no_full_fallback",
+        "requires_focused_check_coverage",
+    ]:
+        if contract.get(field) is not True:
+            failures.append(f"source small-task eligibility must require {field}")
+
+
 def validate_source_worker_policy(
     source: dict[str, Any],
     failures: list[str],
@@ -189,26 +211,10 @@ def validate_source_worker_policy(
             candidates = raw_candidates
 
     try:
-        policy = load_object(SOURCE_WORKER_POLICY)
-    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        policy = load_source_worker_policy(SOURCE_WORKER_POLICY, root=ROOT)
+    except SourceWorkerContractError as exc:
         failures.append(f"source worker policy is missing or invalid: {exc}")
         return
-
-    if (
-        policy.get("schema_version") != 1
-        or policy.get("policy_kind") != "alatyr-source-worker-policy"
-    ):
-        failures.append("source worker policy schema or kind is invalid")
-    if policy.get("scope") != "source-repository":
-        failures.append("source worker policy must be scoped to the source repository")
-    if policy.get("provider_neutral") is not True:
-        failures.append("source worker policy must declare provider-neutral routing")
-    if policy.get("runtime_capability_owner") != "active-assistant":
-        failures.append(
-            "source worker runtime capability must be verified by the active assistant"
-        )
-    if policy.get("fallback_executor") != "primary-assistant":
-        failures.append("source worker fallback must remain the primary assistant")
     authorization_boundary = policy.get("authorization_boundary")
     if (
         not isinstance(authorization_boundary, str)
@@ -243,134 +249,8 @@ def validate_source_worker_policy(
             f"{sorted(present_bindings)}"
         )
 
-    decision_evidence = policy.get("decision_evidence")
-    if not isinstance(decision_evidence, dict):
-        failures.append("source worker policy has no decision-evidence contract")
-    else:
-        required_fields = decision_evidence.get("required_fields")
-        if not isinstance(required_fields, list) or not EXPECTED_DECISION_FIELDS <= set(
-            required_fields
-        ):
-            failures.append("source worker decision evidence is incomplete")
-        skip_reasons = decision_evidence.get("skip_reason_ids")
-        if not isinstance(skip_reasons, list) or not EXPECTED_SKIP_REASONS <= set(
-            skip_reasons
-        ):
-            failures.append("source worker skip-reason contract is incomplete")
-        if not isinstance(decision_evidence.get("skip_reason_requirement"), str):
-            failures.append("source worker policy does not require concrete skip evidence")
-        decisions = decision_evidence.get("preflight_decisions")
-        if not isinstance(decisions, list) or not {
-            "runtime-verification-required",
-            "delegation-recommended",
-            "kept-local",
-            "primary-assistant",
-        } <= set(decisions):
-            failures.append("source worker preflight decision vocabulary is incomplete")
-        completion = decision_evidence.get("completion_decisions")
-        if not isinstance(completion, list) or not {"delegated", "kept-local"} <= set(
-            completion
-        ):
-            failures.append("source worker completion decision vocabulary is incomplete")
-
-    capability = policy.get("runtime_capability_contract")
-    if not isinstance(capability, dict):
-        failures.append("source worker policy has no runtime capability contract")
-    else:
-        capability_fields = capability.get("required_fields")
-        if not isinstance(capability_fields, list) or not EXPECTED_CAPABILITY_FIELDS <= set(
-            capability_fields
-        ):
-            failures.append("source worker runtime capability contract is incomplete")
-        if capability.get("minimum_parallelism") != 2:
-            failures.append("source worker audit capability must require two workers")
-        if capability.get("write_isolation") != "read-only":
-            failures.append("source worker capability must require read-only isolation")
-        if capability.get("result_delivery") is not True:
-            failures.append("source worker capability must require result delivery")
-        if capability.get("freshness") != "current-session":
-            failures.append("source worker capability evidence must be current-session")
-
-    packet_contract = policy.get("worker_packet_contract")
-    if not isinstance(packet_contract, dict):
-        failures.append("source worker policy has no worker packet contract")
-    else:
-        packet_fields = packet_contract.get("required_fields")
-        if not isinstance(packet_fields, list) or not EXPECTED_PACKET_FIELDS <= set(
-            packet_fields
-        ):
-            failures.append("source worker packet contract is incomplete")
-        if packet_contract.get("allowed_actions") != ["inspect"]:
-            failures.append("source worker packets must be inspect-only")
-        if packet_contract.get("write_scope") != "none":
-            failures.append("source worker packets must have no write scope")
-        if packet_contract.get("role_id") != "read-only-auditor":
-            failures.append("source worker packets must use the read-only audit role")
-
-    workstreams = policy.get("workstreams")
-    if not isinstance(workstreams, dict) or len(workstreams) < 2:
-        failures.append("source worker policy must define at least two bounded workstreams")
-        workstreams = {}
-    else:
-        for workstream_id, workstream in workstreams.items():
-            if not isinstance(workstream_id, str) or not workstream_id:
-                failures.append("source worker policy contains an invalid workstream ID")
-                continue
-            if not isinstance(workstream, dict):
-                failures.append(
-                    f"source worker workstream {workstream_id} must be an object"
-                )
-                continue
-            if workstream.get("mode") != "read-only":
-                failures.append(
-                    f"source worker workstream {workstream_id} must stay read-only"
-                )
-            if workstream.get("independent") is not True:
-                failures.append(
-                    f"source worker workstream {workstream_id} must be independently reviewable"
-                )
-            required_context = workstream.get("required_context")
-            if not isinstance(required_context, list) or not required_context or not all(
-                isinstance(item, str) and item for item in required_context
-            ):
-                failures.append(
-                    f"source worker workstream {workstream_id} has no bounded required context"
-                )
-            else:
-                missing_context = [
-                    relpath
-                    for relpath in required_context
-                    if not (ROOT / relpath).is_file()
-                ]
-                if missing_context:
-                    failures.append(
-                        f"source worker workstream {workstream_id} references missing "
-                        f"context: {missing_context}"
-                    )
-            for field in ["objective", "expected_evidence"]:
-                if not isinstance(workstream.get(field), str) or not workstream[field]:
-                    failures.append(
-                        f"source worker workstream {workstream_id} has no {field}"
-                    )
-            non_goals = workstream.get("non_goals")
-            if not isinstance(non_goals, list) or not non_goals:
-                failures.append(
-                    f"source worker workstream {workstream_id} has no non-goals"
-                )
-
-    primary_owned = policy.get("primary_owned_actions")
-    if not isinstance(primary_owned, list):
-        failures.append("source worker policy has no primary-owned action list")
-    else:
-        missing = sorted(EXPECTED_PRIMARY_OWNED_ACTIONS - set(primary_owned))
-        if missing:
-            failures.append(
-                "source worker policy does not keep required actions primary-owned: "
-                f"{missing}"
-            )
-
     if candidates:
-        unknown = sorted(set(candidates) - set(workstreams))
+        unknown = sorted(set(candidates) - set(policy["workstreams"]))
         if unknown:
             failures.append(
                 "repository-audit references unknown source worker workstreams: "
@@ -449,6 +329,7 @@ def main() -> int:
     else:
         if classification.get("schema_version") != TASK_CLASSIFICATION_SCHEMA_VERSION:
             failures.append("source task classification schema is invalid")
+        validate_small_task_eligibility(classification, failures)
         if classification.get("classification_order") != TASK_CLASSES:
             failures.append("source task classification order is invalid")
         if classification.get("default_class") != DEFAULT_TASK_CLASS:

@@ -71,14 +71,18 @@ Operation help:
   clear request may authorize multiple named phases together.
 - Risky or cross-boundary changes show a pre-change preview before edits.
 - Use `.ai/assistant/help.md`, `.ai/assistant/help-reference.md`, and `.ai/assistant/templates/operation-request.md` for structured requests.
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/flows/large-task-orchestration.flow.md"]} -->
 - Use `large-task` only for cross-boundary or resumable work, and resume an existing packet when one is named.
+<!-- /alatyr:scaffold-fragment -->
 - Use `Alatyr what do we know <subject>` for bounded accepted/current project
   knowledge, `Alatyr remember this` for a review proposal, and `Alatyr
   revalidate knowledge <id>` after freshness triggers. Historical evidence is
   not promoted during update.
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/change-packages/index.json"]} -->
 - Recheck change-package records, semantic approval fields, provenance grades,
   and validator support when the optional module or schema changed. Preserve
   historical target records.
+<!-- /alatyr:scaffold-fragment -->
 - Preserve durable engineering-evidence IDs and records. Recheck compact index
   synchronization, contract/template versions, task/revision binding state,
   Git object type/ancestry, prior-binding lineage, canonical-owner links, privacy,
@@ -91,6 +95,7 @@ Operation help:
   accepted facts against canonical owners and rebuild derived routes when
   needed; do not promote historical evidence or source placeholders during
   update.
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/project/debug/index.json"]} -->
 - Preserve Debug Mode IDs, records, active-scope evidence, normalized events,
   timing, metrics, and publication policy when the module is enabled. Recheck
   versioned actor/causality/intervention/contribution attribution, structured
@@ -104,29 +109,43 @@ Operation help:
   evidence; do not reactivate or append to a closed scope or include debug
   files in a clean external patch. Use schema version 3 only for new records;
   do not silently invent historical attribution or materiality.
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/project/documentation/catalog.json"]} -->
 - When code documentation is enabled, preserve target profiles and recheck
   source-set matching, accepted state, canonical owners, generator/output
   policy, adapted skill, and validation before generation.
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/project/vocabulary/catalog.json"]} -->
 - When project vocabulary is enabled, preserve term IDs, definitions, states,
   aliases, acronyms, owners, canonical sources, and data links; recheck lookup,
   ambiguity, normalization, adapted skill, and validation before use.
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/project/testing/test-first-policy.json"]} -->
 - When test-first development is enabled, preserve target policy ownership,
   triggers, modes, commands, isolation, exceptions, adapted skill, and
   historical evidence; recheck recommendation and RED/GREEN routing before use.
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/extensions/catalog.json"]} -->
 - When extensions are enabled, preserve catalog/lock entries, immutable source
   provenance, target bindings, permissions, approvals, file ownership, local
   deviations, and lifecycle history; recheck compatibility and drift without
   automatically updating, activating, or removing any extension.
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/project/dependencies/policy.json"]} -->
 - When dependency knowledge is enabled, preserve target policy, reviewed
   package instances, independent semantic state, deviations, retention
   decisions, and permitted snapshots; recheck export API, artifact identity,
   fingerprints, routing, and drift without running package managers,
   activating nested adapters, or presenting stale claims as current.
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/project/workspace-modes/catalog.json"]} -->
 - When workspace modes are enabled, preserve user-accepted mode IDs,
   per-mode directories, shared root context, relationships, ownership, and
   decision evidence. Recheck them against the revised contract and present
   migrations as proposals; never accept, replace, or activate a mode solely
   because Alatyr was updated.
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/project/team-policy.json"]} -->
 - When team collaboration is enabled, recheck the structured policy, ignored
   identity boundary, active index, registry/task schemas, backend contract,
   optimistic concurrency, active task IDs, claims, handoffs, decisions,
@@ -135,6 +154,8 @@ Operation help:
 - Use `Alatyr set actor <actor>` for local attribution, `Alatyr who am I` to
   inspect it, `Alatyr team status` for coordination evidence, and the specific
   team aliases for task, conflict, handoff, decision, review, or merge work.
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/delegation-policy.json"]} -->
 - When subagent delegation is enabled, preserve the target policy, role
   catalog/prompts, execution plans, packet/result evidence, privacy, and
   retry/conflict rules. Recheck each surface's exact client/runtime, native
@@ -142,17 +163,26 @@ Operation help:
   nested behavior, role/model bindings, and freshness. Remove or migrate stale
   thin native bindings only from target evidence; never infer support from the
   updated framework templates.
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/ai-infrastructure-router.json"]} -->
 - Recheck AI infrastructure router entries and adaptation records when skills, prompts, gates, tools, or bridge contracts changed.
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/flows/diagram-discussion.flow.md",".ai/assistant/assistant-capabilities.json"]} -->
 - Recheck `diagram-discussion`, stable diagram lineage, security/privacy and
   external-renderer policy, and each selected compact assistant capability's
   enums, client version, verification time, and evidence when diagram or
   bridge contracts changed.
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/project/architecture/catalog.json"]} -->
 - Recheck the architecture catalog owner, decision authority, item states,
   selected evidence paths, validation, and evidence revision when
   `architecture-knowledge` or project architecture contracts changed. Use
   `Alatyr architecture` for a bounded inventory, explanation, comparison, or
   review.
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/ai-infrastructure-router.json"]} -->
 - Use `alatyr-suggest-ai <scope>` or `alatyr-improve-ai <item-id>` for a read-only recommendation when project needs or existing item outcomes changed.
+<!-- /alatyr:scaffold-fragment -->
 
 Validation run:
 `{VALIDATION_RUN_OR_UNRESOLVED}`

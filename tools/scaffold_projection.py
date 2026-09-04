@@ -17,6 +17,15 @@ TARGET_PATH_RE = re.compile(
     r"^(?P<prefix>\s+[A-Za-z0-9_-]+:\s+)(?P<quote>[\"']?)(?P<path>\.ai/[^\"']+)(?P=quote)\s*$"
 )
 INSTALLATION_STATE_RE = re.compile(r'^(\s{2}state:\s+)["\']?[^"\']+["\']?\s*$')
+MARKDOWN_FRAGMENT_OPEN_RE = re.compile(
+    r"^<!-- alatyr:scaffold-fragment (?P<condition>\{.*\}) -->\s*$"
+)
+MARKDOWN_FRAGMENT_CLOSE = "<!-- /alatyr:scaffold-fragment -->"
+MARKDOWN_FRAGMENT_INLINE_RE = re.compile(
+    r"^<!-- alatyr:scaffold-fragment (?P<condition>\{.*\}) -->"
+    r"(?P<content>.*)<!-- /alatyr:scaffold-fragment -->\s*$"
+)
+MARKDOWN_FRAGMENT_KEYS = {"requires_paths", "requires_modules"}
 
 
 def portable_relative_path(value: str | PurePath) -> PurePosixPath:
@@ -46,6 +55,101 @@ def directory_available(value: str, selected: SelectedPaths) -> bool:
     path = portable_relative_path(value)
     normalized = selected_path_index(selected)
     return path in normalized or any(path in candidate.parents for candidate in normalized)
+
+
+def project_markdown_fragments(
+    text: str,
+    selected: SelectedPaths,
+    enabled_modules: set[str] | None = None,
+) -> str:
+    """Render source-readable Markdown fragments for installed support only."""
+
+    rendered: list[str] = []
+    fragment_lines: list[str] | None = None
+    include_fragment = False
+    modules = enabled_modules or set()
+
+    def condition_matches(condition_text: str, line_number: int) -> bool:
+        try:
+            condition = json.loads(condition_text)
+        except json.JSONDecodeError as exc:
+            raise ValueError(
+                f"invalid scaffold Markdown fragment at line {line_number}: {exc.msg}"
+            ) from exc
+        if not isinstance(condition, dict) or not condition:
+            raise ValueError(
+                f"scaffold Markdown fragment at line {line_number} needs conditions"
+            )
+        unknown_keys = sorted(set(condition) - MARKDOWN_FRAGMENT_KEYS)
+        if unknown_keys:
+            raise ValueError(
+                "scaffold Markdown fragment at line "
+                f"{line_number} has unknown conditions: {unknown_keys}"
+            )
+        required_paths = condition.get("requires_paths", [])
+        required_modules = condition.get("requires_modules", [])
+        if not all(
+            isinstance(values, list)
+            and values
+            and all(isinstance(value, str) and value for value in values)
+            for values in [required_paths, required_modules]
+            if values
+        ):
+            raise ValueError(
+                f"scaffold Markdown fragment at line {line_number} has invalid conditions"
+            )
+        if not required_paths and not required_modules:
+            raise ValueError(
+                f"scaffold Markdown fragment at line {line_number} needs requirements"
+            )
+        if any(not value.startswith(".ai/") for value in required_paths):
+            raise ValueError(
+                f"scaffold Markdown fragment at line {line_number} has a non-.ai path"
+            )
+        return all(
+            path_available(value, selected) for value in required_paths
+        ) and set(required_modules).issubset(modules)
+
+    for line_number, line in enumerate(text.splitlines(keepends=True), start=1):
+        marker = line.rstrip("\r\n")
+        inline_match = MARKDOWN_FRAGMENT_INLINE_RE.match(marker)
+        if inline_match:
+            if fragment_lines is not None:
+                raise ValueError(
+                    f"nested scaffold Markdown fragment at line {line_number}"
+                )
+            if condition_matches(inline_match.group("condition"), line_number):
+                rendered.append(inline_match.group("content") + line[len(marker) :])
+            continue
+        open_match = MARKDOWN_FRAGMENT_OPEN_RE.match(marker)
+        if open_match:
+            if fragment_lines is not None:
+                raise ValueError(
+                    f"nested scaffold Markdown fragment at line {line_number}"
+                )
+            include_fragment = condition_matches(
+                open_match.group("condition"), line_number
+            )
+            fragment_lines = []
+            continue
+        if marker == MARKDOWN_FRAGMENT_CLOSE:
+            if fragment_lines is None:
+                raise ValueError(
+                    f"unmatched scaffold Markdown fragment close at line {line_number}"
+                )
+            if include_fragment:
+                rendered.extend(fragment_lines)
+            fragment_lines = None
+            include_fragment = False
+            continue
+        if fragment_lines is not None:
+            fragment_lines.append(line)
+        else:
+            rendered.append(line)
+
+    if fragment_lines is not None:
+        raise ValueError("unclosed scaffold Markdown fragment")
+    return "".join(rendered)
 
 
 def project_manifest(

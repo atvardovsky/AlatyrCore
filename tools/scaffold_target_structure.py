@@ -28,6 +28,7 @@ from scaffold_projection import (
     project_context_descriptor,
     project_gate_index,
     project_manifest,
+    project_markdown_fragments,
     project_module_profile,
     project_router,
     portable_relative_path,
@@ -67,6 +68,12 @@ FRAMEWORK_ROOT = ROOT / "framework"
 PROFILE_MANIFEST = ROOT / "tools" / "scaffold_profiles.json"
 ASSISTANT_SURFACES = ROOT / "conformance" / "runs" / "assistant-surfaces.json"
 NEUTRAL_ASSISTANT_ENTRY_PATHS = {Path("AGENTS.md"), Path("AI_ASSISTANTS.md")}
+PROJECTED_MARKDOWN_PATHS = {
+    Path(".ai/README.md"),
+    Path("AI_ASSISTANTS.md"),
+    Path(".ai/assistant/templates/post-install-message.md"),
+    Path(".ai/assistant/templates/post-update-message.md"),
+}
 
 
 def load_profile_manifest() -> dict[str, Any]:
@@ -342,6 +349,12 @@ def projected_template_content(
         return project_module_profile(
             src.read_text(encoding="utf-8"), set(context.enabled_modules)
         )
+    if rel in PROJECTED_MARKDOWN_PATHS:
+        return project_markdown_fragments(
+            src.read_text(encoding="utf-8"),
+            selected_paths,
+            set(context.enabled_modules),
+        )
 
     catalog_rel = Path(".ai/assistant/operation-catalog.json")
     index_rel = Path(".ai/assistant/operation-index.json")
@@ -437,8 +450,10 @@ def projected_template_content(
                 set(context.operation_ids),
             )
         )
-        project_map_text = (TEMPLATE_ROOT / ".ai/README.md").read_text(
-            encoding="utf-8"
+        project_map_text = project_markdown_fragments(
+            (TEMPLATE_ROOT / ".ai/README.md").read_text(encoding="utf-8"),
+            selected_paths,
+            set(context.enabled_modules),
         )
         semantic_index = FRAMEWORK_ROOT / "semantics" / "index.json"
         projected_semantic_index = projected_framework_contents(framework_pack).get(

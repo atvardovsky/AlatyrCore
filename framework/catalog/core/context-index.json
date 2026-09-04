@@ -136,8 +136,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 3210,
-      "content_digest": "sha256:ac6b7a82c6fdbe14aff9062eb1d79320dbd01eebc6adc70e25779224e4e2edcc"
+      "estimated_words": 3251,
+      "content_digest": "sha256:f1b990b18fe54d3fc03c6eed9ba9731992245e59ff1a4ed92545d462de491724"
     },
     {
       "id": "framework.core.context-router-md",

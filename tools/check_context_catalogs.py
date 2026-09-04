@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[1]
 FRAMEWORK = ROOT / "framework"
 TARGET = ROOT / "templates" / "target"
 CODEBOOK = FRAMEWORK / "semantics" / "index.json"
+CONTEXT_OWNER = FRAMEWORK / "context-profiles.md"
 REQUIRED_PRELOAD_TERMS = {
     "alatyr:current-scope-authorization@1",
     "alatyr:canonical-owner@1",
@@ -68,6 +69,29 @@ def main() -> int:
             failures.append(f"{contour} context catalog misses files: {missing}")
         if extra:
             failures.append(f"{contour} context catalog has extra files: {extra}")
+
+    framework_resolution = resolutions.get("framework")
+    if framework_resolution is not None and any(
+        item.path == "file-inventory.json" for item in framework_resolution.items
+    ):
+        failures.append(
+            "framework file inventory must stay outside its recursive digest catalog"
+        )
+    try:
+        context_owner = CONTEXT_OWNER.read_text(encoding="utf-8")
+    except OSError as exc:
+        failures.append(f"framework inventory context exception: {exc}")
+    else:
+        for marker in [
+            "`framework/file-inventory.json`",
+            "circular digest dependency",
+            "packaging and upgrade",
+        ]:
+            if marker not in context_owner:
+                failures.append(
+                    "framework context owner does not explain the file-inventory "
+                    f"routing exception: {marker}"
+                )
 
     requested_terms = {
         term_id
