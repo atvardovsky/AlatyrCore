@@ -9,7 +9,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from check_source_unit_tests import focused_test_paths, test_shards  # noqa: E402
+from check_source_unit_tests import (  # noqa: E402
+    focused_test_paths,
+    load_duration_hints,
+    test_shards,
+)
 
 
 class SourceUnitTestSelectionTests(unittest.TestCase):
@@ -136,6 +140,64 @@ class SourceUnitTestSelectionTests(unittest.TestCase):
 
             self.assertEqual(sorted(flattened), sorted(paths))
             self.assertEqual(len(flattened), len(set(flattened)))
+
+    def test_test_shards_overdecompose_for_dynamic_queueing(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            paths = []
+            for index in range(12):
+                path = root / f"test_{index}.py"
+                path.write_text("x", encoding="utf-8")
+                paths.append(path)
+
+            shards = test_shards(paths, 2)
+
+            self.assertEqual(len(shards), 8)
+            self.assertEqual(
+                sorted(path for shard in shards for path in shard), sorted(paths)
+            )
+
+    def test_test_shards_cap_overdecomposition_at_four_per_worker(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            paths = []
+            for index in range(20):
+                path = Path(directory) / f"test_{index}.py"
+                path.write_text("x", encoding="utf-8")
+                paths.append(path)
+
+            self.assertEqual(len(test_shards(paths, 2, shard_multiplier=10)), 8)
+
+    def test_test_shards_prefer_duration_hints_over_file_size(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            slow = root / "test_slow.py"
+            large = root / "test_large.py"
+            small = root / "test_small.py"
+            slow.write_text("x", encoding="utf-8")
+            large.write_text("x" * 100, encoding="utf-8")
+            small.write_text("x", encoding="utf-8")
+
+            shards = test_shards(
+                [large, small, slow],
+                2,
+                duration_hints={slow.as_posix(): 1000.0},
+                shard_multiplier=1,
+            )
+
+            self.assertIn(slow, shards[0])
+            self.assertIn(large, shards[1])
+
+    def test_duration_hints_ignore_invalid_or_non_positive_values(self) -> None:
+        self.assertEqual(
+            load_duration_hints(
+                '{"tests/slow.py": 2.5, "zero": 0, "bool": true, '
+                '"nan": "NaN", "negative": -1}'
+            ),
+            {"tests/slow.py": 2.5},
+        )
+
+    def test_invalid_duration_hint_payload_falls_back_safely(self) -> None:
+        self.assertEqual(load_duration_hints("not-json"), {})
 
 
 if __name__ == "__main__":

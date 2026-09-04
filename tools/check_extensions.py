@@ -42,7 +42,12 @@ TARGET_VALIDATOR = ROOT / "tools/validate_target_adapter.py"
 TARGET_VALIDATOR_IMPLEMENTATION = (
     ROOT / "tools/target_adapter_validation/extensions.py"
 )
-TARGET_VALIDATOR_CHECK = ROOT / "tools/check_target_adapter_validator.py"
+TARGET_VALIDATOR_EXTENSION_SCENARIO = (
+    ROOT / "tools/target_adapter_validation/harness_scenarios/extensions.py"
+)
+TARGET_VALIDATOR_WORKSPACE_SCENARIO = (
+    ROOT / "tools/target_adapter_validation/harness_scenarios/workspace_modes.py"
+)
 TOOL_COMMANDS = ROOT / "tools/tool_commands.json"
 
 
@@ -147,7 +152,8 @@ def main() -> int:
         POST_INSTALL,
         POST_UPDATE,
         TARGET_VALIDATOR,
-        TARGET_VALIDATOR_CHECK,
+        TARGET_VALIDATOR_EXTENSION_SCENARIO,
+        TARGET_VALIDATOR_WORKSPACE_SCENARIO,
         TOOL_COMMANDS,
     ]
     for path in required_files:
@@ -236,8 +242,13 @@ def main() -> int:
         failures,
     )
     require(
-        TARGET_VALIDATOR_CHECK,
-        ["enabled extensions must report missing contracts", "extension lock must detect installed-file drift"],
+        TARGET_VALIDATOR_WORKSPACE_SCENARIO,
+        ["enabled extensions must report missing contracts"],
+        failures,
+    )
+    require(
+        TARGET_VALIDATOR_EXTENSION_SCENARIO,
+        ["extension lock must detect installed-file drift"],
         failures,
     )
 

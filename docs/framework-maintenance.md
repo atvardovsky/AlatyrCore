@@ -88,6 +88,11 @@ Before accepting a change, check:
   baseline is available; pass `--from-ref <ref>` for another integration
   baseline. Run it before commit and publication so contract changes cannot
   omit required version and migration evidence.
+  Use `--jobs auto` for capacity-aware local parallelism. Optional
+  `--cache-mode timing` stores disposable Git-local scheduling hints only;
+  `--cache-mode local` also attempts exact fail-closed result reuse and is
+  rejected by the release profile. Cache hits never replace cold release
+  evidence.
 - `python3 tools/alatyr.py plan-work --summary` is available as the read-only
   minimum-work preflight. Pass `--source-profile` for an explicit named source
   operation; automatic changed-path planning does not infer user intent. The
@@ -186,6 +191,11 @@ Before accepting a change, check:
   generators; digests; selectors; or coverage rules change. Regenerate source
   projections with `python3 tools/render_semantic_codebook.py` and
   `python3 tools/render_context_catalogs.py` only after reviewing their owners.
+  Use `python3 tools/alatyr.py context-plan --target <target> --profile
+  <profile> --operation <operation>` to inspect the resolved target route
+  without loading file contents or modifying the target. Changed-path and fact
+  inputs require current consistency evidence and fail closed when the route is
+  incomplete.
 - `python3 tools/check_bootstrap_routing.py` passes when generated bootstrap,
   gate fragments, profile defaults, or core scaffold routing changes. Refresh
   the target projection with `python3 tools/render_target_bootstrap_index.py

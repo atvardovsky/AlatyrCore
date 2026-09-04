@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import contextlib
+import io
 import sys
 import tempfile
 import threading
@@ -14,15 +16,19 @@ sys.path.insert(0, str(ROOT / "tools"))
 
 from check_all import (  # noqa: E402
     RunnerResult,
+    available_cpu_count,
     build_run_identity,
     default_changed_from,
     effective_baseline,
     execute_checks,
     historical_duration_estimates,
     load_manifest,
+    print_check_result,
     render_report,
+    render_timed_report,
     resolve_report_path,
     resolve_changed_from,
+    resolve_job_count,
     run_check,
     reusable_results,
     selection_report,
@@ -72,6 +78,113 @@ class CheckGraphTests(unittest.TestCase):
             ),
             {},
         )
+
+    def test_historical_duration_hint_survives_a_reused_result(self) -> None:
+        report = {
+            "schema_version": 3,
+            "source": {"check_manifest_schema_version": 4},
+            "environment": {"platform": "linux", "python": "3.13.1 build"},
+            "checks": [
+                {
+                    "id": "one",
+                    "status": "reused-pass",
+                    "duration_seconds": 0.0,
+                    "duration_hint_seconds": 2.5,
+                }
+            ],
+        }
+
+        self.assertEqual(
+            historical_duration_estimates(
+                report,
+                current_source={"check_manifest_schema_version": 4},
+                current_environment={"platform": "linux", "python": "3.13.2 build"},
+            ),
+            {"one": 2.5},
+        )
+
+    def test_auto_jobs_respect_host_affinity_and_quota(self) -> None:
+        from unittest.mock import patch
+
+        with patch("check_all.os.cpu_count", return_value=16):
+            with patch(
+                "check_all.os.sched_getaffinity",
+                return_value=set(range(6)),
+                create=True,
+            ):
+                with patch("check_all._cpu_quota_count", return_value=4):
+                    self.assertEqual(available_cpu_count(), 4)
+                    self.assertEqual(resolve_job_count("auto"), 4)
+
+    def test_numeric_jobs_remain_exact_and_invalid_values_fail(self) -> None:
+        self.assertEqual(resolve_job_count(3), 3)
+        self.assertEqual(resolve_job_count("7"), 7)
+        with self.assertRaisesRegex(ValueError, "positive"):
+            resolve_job_count(0)
+        with self.assertRaisesRegex(ValueError, "positive integer"):
+            resolve_job_count("many")
+
+    def test_concise_success_keeps_warnings_and_suppresses_routine_output(self) -> None:
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+            print_check_result(
+                check_id="example",
+                result=(0, "OK detail\nWARN: review this\n", "", ["python", "check.py"]),
+                observation={"duration_seconds": 1.25},
+                verbose=False,
+            )
+
+        self.assertIn("PASS example (1.250s)", stdout.getvalue())
+        self.assertIn("WARN: review this", stdout.getvalue())
+        self.assertNotIn("OK detail", stdout.getvalue())
+        self.assertEqual(stderr.getvalue(), "")
+
+    def test_failure_output_is_complete_even_when_not_verbose(self) -> None:
+        stdout = io.StringIO()
+        stderr = io.StringIO()
+        with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+            print_check_result(
+                check_id="example",
+                result=(1, "partial\n", "failure\n", ["python", "check.py"]),
+                observation={"duration_seconds": 0.5},
+                verbose=False,
+            )
+
+        self.assertIn("$ python check.py", stdout.getvalue())
+        self.assertIn("partial", stdout.getvalue())
+        self.assertIn("failure", stderr.getvalue())
+
+    def test_timed_report_preserves_phase_telemetry(self) -> None:
+        selected = [check("example")]
+        report = render_timed_report(
+            profile="full",
+            selected=selected,
+            results={"example": (0, "detail", "", ["python", "check.py"])},
+            blocked={},
+            source_changes=[],
+            telemetry={
+                "example": {"duration_seconds": 0.2},
+                "_summary": {
+                    "wall_seconds": 0.2,
+                    "setup_seconds": 0.1,
+                    "fingerprint_seconds": 0.05,
+                    "execution_seconds": 0.2,
+                },
+            },
+            input_fingerprints={},
+            reuse={},
+            selection={"selected_check_ids": ["example"]},
+            source={"source_commit": "abc", "manifest_sha256": "digest"},
+            environment={"platform": "linux", "python": "3.13"},
+            run_identity={"selected_check_ids": ["example"]},
+        )
+
+        self.assertEqual(report["timing"]["setup_seconds"], 0.1)
+        self.assertEqual(report["timing"]["fingerprint_seconds"], 0.05)
+        self.assertEqual(report["timing"]["execution_seconds"], 0.2)
+        self.assertGreaterEqual(report["timing"]["report_preparation_seconds"], 0)
+        self.assertIn("before final JSON", report["timing"]["report_timing_scope"])
     def test_profile_selection_respects_platform_contract(self) -> None:
         checks = [
             {

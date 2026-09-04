@@ -33,6 +33,7 @@ class ParallelExecutionTests(unittest.TestCase):
         self.assertEqual([result.item_id for result in results], ["slow", "fast"])
         self.assertEqual([result.stdout.strip() for result in results], ["slow", "fast"])
         self.assertTrue(all(result.returncode == 0 for result in results))
+        self.assertTrue(all(result.duration_seconds >= 0 for result in results))
 
     def test_duplicate_item_ids_are_rejected_before_dispatch(self) -> None:
         with self.assertRaisesRegex(ValueError, "must be unique"):

@@ -20,6 +20,12 @@
       "write_scope": "none"
     },
     {
+      "name": "context-plan",
+      "script": "plan_target_context.py",
+      "purpose": "plan bounded read-only context for an installed target task",
+      "write_scope": "explicit-report-output-only"
+    },
+    {
       "name": "compare-check-reports",
       "script": "compare_source_check_reports.py",
       "purpose": "compare two AlatyrCore source-check reports without rerunning checks",

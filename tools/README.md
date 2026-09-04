@@ -16,6 +16,7 @@ Linux or macOS:
 python3 tools/alatyr.py --help
 python3 tools/alatyr.py plan-work --summary
 python3 tools/alatyr.py plan-work --source-profile repository-audit --summary
+python3 tools/alatyr.py context-plan --target /path/to/target-repo --profile code-local --operation logical-integrity-review
 python3 tools/alatyr.py check-source-focused
 python3 tools/alatyr.py compare-check-reports /tmp/base.json /tmp/candidate.json
 python3 tools/alatyr.py status --target /path/to/target-repo
@@ -234,8 +235,13 @@ changes, uses that metadata to run directly affected test modules, and falls
 back to the full unit suite when a tooling change cannot be mapped safely.
 When `--reuse-report <report.json>` is provided, the runner may mark a
 previously passed check as `reused-pass` only if the manifest digest, command,
-platform, Python runtime, and exact declared input fingerprint match. Reuse is
-opt-in and evidence-bound; normal runs execute checks as before.
+platform, Python runtime, full run identity, source state, and exact declared
+input fingerprint match. Reuse is opt-in and evidence-bound; normal runs
+execute checks as before. `--cache-mode timing` stores Git-local duration hints
+that can change scheduling only. `--cache-mode local` additionally attempts the
+same fail-closed result reuse without requiring an explicit report path. Cache
+records live below Git's local metadata, are disposable, and never become
+repository or release evidence. Release validation rejects local result reuse.
 `change --changed-from <ref>` uses the same ref as the release-drift baseline
 when `--from-ref` is omitted. `release` adds tag-baseline migration checks.
 `platform` runs the portable tooling contract slice used on macOS and Windows.
@@ -291,9 +297,14 @@ deduplicated report-level input catalog, avoiding repeated path and digest
 payloads without weakening hash-bound reuse decisions.
 
 Ready checks are ordered by historical critical-path duration when a compatible
-`--reuse-report` is supplied, then by dependency impact, active-chain depth,
-resource weight, and manifest order. Historical timing changes order only; it
-cannot change selection, dependencies, reuse eligibility, or pass/fail results.
+`--reuse-report` or timing cache is available, then by dependency impact,
+active-chain depth, resource weight, and manifest order. Historical timing
+changes order only; it cannot change selection, dependencies, reuse eligibility,
+or pass/fail results. `--jobs auto` opts into conservative capacity detection
+bounded by host CPUs, process affinity, cgroup quotas, and an eight-worker cap.
+Explicit numeric `--jobs` values and the existing default remain deterministic.
+Successful checks print concise timing lines by default; `--verbose` restores
+their complete captured output, while failures always retain complete output.
 
 The top-level runner owns concurrency. It assigns each process a bounded
 `ALATYR_CHILD_CAPACITY`; lifecycle, scaffold-conformance, and source-unit checks
@@ -338,6 +349,8 @@ python3 tools/check_all.py --profile change --changed-from HEAD~1
 python3 tools/check_all.py --profile release
 python3 tools/check_all.py --profile platform
 python3 tools/check_all.py --profile full --report /tmp/alatyr-source-checks.json
+python3 tools/check_all.py --profile fast --jobs auto --cache-mode timing
+python3 tools/check_all.py --profile fast --cache-mode local
 python3 tools/check_all.py --list
 python3 tools/alatyr.py check-source-focused
 python3 tools/alatyr.py check-source-focused --changed-from HEAD --list
@@ -355,6 +368,8 @@ py -3 .\tools\check_all.py --profile change --changed-from HEAD~1
 py -3 .\tools\check_all.py --profile release
 py -3 .\tools\check_all.py --profile platform
 py -3 .\tools\check_all.py --profile full --report C:\Temp\alatyr-source-checks.json
+py -3 .\tools\check_all.py --profile fast --jobs auto --cache-mode timing
+py -3 .\tools\check_all.py --profile fast --cache-mode local
 py -3 .\tools\check_all.py --list
 .\tools\alatyr.ps1 check-source-focused
 .\tools\alatyr.ps1 check-source-focused --changed-from HEAD --list
@@ -802,11 +817,25 @@ default and rewrites it only with `--write`.
 gate-index/profile coverage, budget headroom, and deterministic core scaffold
 generation.
 
+`plan_target_context.py` is a read-only source helper that turns one installed
+target operation, profile, and optional changed-path or fact signals into a
+deterministic bounded context plan. It consumes the target's existing router,
+profile descriptors, recursive indexes, semantic codebook, operation catalog,
+and consistency graph; it does not introduce another routing policy. The JSON
+output contains paths, IDs, digests, reasons, impact evidence, and budget
+accounting, but no selected file contents.
+
+Unknown paths or facts, stale catalogs, unresolved placeholders, invalid
+operation/profile combinations, missing canonical owners, and budget overflow
+return structured non-ready evidence. Existing incomplete adapters are not
+modified. An optional report path must be outside the target repository.
+
 ```sh
 python3 tools/render_target_bootstrap_index.py --target /path/to/target-repo --check
 python3 tools/render_target_bootstrap_index.py --target /path/to/target-repo --write
 python3 tools/render_target_entry_packet.py --target /path/to/target-repo --check
 python3 tools/render_target_entry_packet.py --target /path/to/target-repo --write
+python3 tools/alatyr.py context-plan --target /path/to/target-repo --profile code-local --operation logical-integrity-review --changed-path src/example.py
 python3 tools/check_bootstrap_routing.py
 python3 tools/check_agent_entry_packet.py
 ```

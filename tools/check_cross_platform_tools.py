@@ -27,6 +27,7 @@ EXPECTED_COMMANDS = {
     "check-source",
     "check-source-focused",
     "plan-work",
+    "context-plan",
     "compare-check-reports",
     "scaffold",
     "render-bootstrap",

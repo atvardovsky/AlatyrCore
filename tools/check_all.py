@@ -41,12 +41,15 @@ from source_check_reuse import (
     reuse_decisions,
 )
 from parallel_execution import CHILD_CAPACITY_ENV
+from source_check_cache import SourceCheckCache, cache_key
 
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / "tools" / "check_manifest.json"
 RESOURCE_CLASS_WEIGHTS = {"light": 1, "standard": 1, "heavy": 2}
 TIMEOUT_EXIT_CODE = 124
+DEFAULT_JOBS = min(4, os.cpu_count() or 1)
+MAX_AUTO_JOBS = 8
 
 
 @dataclass(frozen=True)
@@ -70,6 +73,81 @@ class SelectionResult:
     effective_profile: str
     escalated_from_micro: bool = False
     micro_escalation_reasons: list[str] | None = None
+
+
+@dataclass
+class CompletedSourceCheckRun:
+    """State passed from execution into verification and evidence publication."""
+
+    args: argparse.Namespace
+    jobs: int
+    changed_from: str | None
+    baseline: str | None
+    plan: SelectionResult
+    selected: list[dict[str, Any]]
+    results: dict[str, tuple[int, str, str, list[str]]]
+    blocked: dict[str, list[str]]
+    telemetry: dict[str, dict[str, Any]]
+    before: dict[str, Any]
+    source_changes: list[str]
+    input_fingerprints: dict[str, dict[str, Any]]
+    reuse: dict[str, dict[str, Any]]
+    selection: dict[str, Any]
+    current_source: dict[str, Any]
+    current_environment: dict[str, Any]
+    run_identity: dict[str, Any]
+    report_path: Path | None
+    cache: SourceCheckCache | None
+    cache_events: list[str]
+
+
+def _cpu_quota_count() -> int | None:
+    """Return a conservative Linux cgroup CPU quota when one is available."""
+
+    try:
+        quota, period = (Path("/sys/fs/cgroup/cpu.max").read_text().strip().split())
+        if quota != "max":
+            return max(1, int(quota) // int(period))
+    except (OSError, ValueError, ZeroDivisionError):
+        pass
+    try:
+        quota = int(Path("/sys/fs/cgroup/cpu/cpu.cfs_quota_us").read_text().strip())
+        period = int(Path("/sys/fs/cgroup/cpu/cpu.cfs_period_us").read_text().strip())
+        if quota > 0:
+            return max(1, quota // period)
+    except (OSError, ValueError, ZeroDivisionError):
+        pass
+    return None
+
+
+def available_cpu_count() -> int:
+    """Return CPU capacity bounded by host, affinity, and portable quota evidence."""
+
+    candidates = [max(1, os.cpu_count() or 1)]
+    affinity = getattr(os, "sched_getaffinity", None)
+    if affinity is not None:
+        try:
+            candidates.append(max(1, len(affinity(0))))
+        except OSError:
+            pass
+    quota = _cpu_quota_count()
+    if quota is not None:
+        candidates.append(quota)
+    return min(candidates)
+
+
+def resolve_job_count(value: int | str) -> int:
+    """Resolve an explicit worker count or the conservative opt-in auto mode."""
+
+    if isinstance(value, str) and value.strip().lower() == "auto":
+        return min(MAX_AUTO_JOBS, available_cpu_count())
+    try:
+        jobs = int(value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError("--jobs must be a positive integer or 'auto'") from exc
+    if jobs <= 0:
+        raise ValueError("--jobs must be positive")
+    return jobs
 
 
 def load_manifest() -> list[dict[str, Any]]:
@@ -510,6 +588,7 @@ def run_check(check: dict[str, Any], baseline: str | None) -> RunnerResult:
     environment[CHILD_CAPACITY_ENV] = str(
         max(1, int(check.get("_child_capacity", 1)))
     )
+    environment["ALATYR_CHECK_VERBOSE"] = "1" if check.get("_verbose") else "0"
     try:
         result = subprocess.run(
             command,
@@ -668,13 +747,18 @@ def historical_duration_estimates(
     if previous_python.split(".")[:2] != current_python.split(".")[:2]:
         return {}
     return {
-        item["id"]: float(item["duration_seconds"])
+        item["id"]: float(
+            item.get("duration_hint_seconds", item.get("duration_seconds", 0.0))
+        )
         for item in previous_report.get("checks", [])
         if isinstance(item, dict)
         and isinstance(item.get("id"), str)
         and item.get("status") in {"passed", "reused-pass"}
-        and isinstance(item.get("duration_seconds"), (int, float))
-        and item["duration_seconds"] > 0
+        and isinstance(
+            item.get("duration_hint_seconds", item.get("duration_seconds")),
+            (int, float),
+        )
+        and item.get("duration_hint_seconds", item.get("duration_seconds", 0.0)) > 0
     }
 
 
@@ -833,6 +917,9 @@ def render_report(
             "resource_class": check.get("resource_class", "standard"),
             "timeout_seconds": check.get("timeout_seconds"),
             "duration_seconds": observation.get("duration_seconds", 0.0),
+            "duration_hint_seconds": observation.get(
+                "duration_hint_seconds", observation.get("duration_seconds", 0.0)
+            ),
             "queued_seconds": observation.get("queued_seconds", 0.0),
             "completed_after_seconds": observation.get("completed_after_seconds", 0.0),
             "timed_out": observation.get("timed_out", False),
@@ -931,6 +1018,47 @@ def write_report(path: Path, report: dict[str, Any]) -> None:
     path.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
+def render_timed_report(
+    *,
+    profile: str,
+    selected: list[dict[str, Any]],
+    results: dict[str, tuple[int, str, str, list[str]]],
+    blocked: dict[str, list[str]],
+    source_changes: list[str],
+    telemetry: dict[str, dict[str, Any]],
+    input_fingerprints: dict[str, dict[str, Any]],
+    reuse: dict[str, dict[str, Any]],
+    selection: dict[str, Any],
+    source: dict[str, Any],
+    environment: dict[str, Any],
+    run_identity: dict[str, Any],
+) -> dict[str, Any]:
+    """Build a report and state the timing boundary it can measure honestly."""
+
+    started = time.monotonic()
+    report = render_report(
+        profile=profile,
+        selected=selected,
+        results=results,
+        blocked=blocked,
+        source_changes=source_changes,
+        telemetry=telemetry,
+        input_fingerprints=input_fingerprints,
+        reuse=reuse,
+        selection=selection,
+        source=source,
+        environment=environment,
+        run_identity=run_identity,
+    )
+    report["timing"]["report_preparation_seconds"] = round(
+        time.monotonic() - started, 6
+    )
+    report["timing"]["report_timing_scope"] = (
+        "report construction before final JSON serialization"
+    )
+    return report
+
+
 def resolve_report_path(path: Path, *, root: Path = ROOT) -> Path:
     resolved = path.resolve()
     source_root = root.resolve()
@@ -988,9 +1116,11 @@ def execute_checks(
     observations = telemetry if telemetry is not None else {}
     run_started = time.monotonic()
     queued_since = {check["id"]: run_started for check in checks}
+    estimates = duration_estimates or {}
     for check_id in results:
         observations[check_id] = {
             "duration_seconds": 0.0,
+            "duration_hint_seconds": max(0.0, float(estimates.get(check_id, 0.0))),
             "queued_seconds": 0.0,
             "completed_after_seconds": 0.0,
             "timed_out": False,
@@ -1025,7 +1155,6 @@ def execute_checks(
             if dependency in direct_dependents:
                 direct_dependents[dependency].add(check["id"])
 
-    estimates = duration_estimates or {}
     descendant_counts: dict[str, int] = {}
 
     def descendant_count(check_id: str) -> int:
@@ -1101,6 +1230,9 @@ def execute_checks(
                         remaining.pop(check_id)
                         observations[check_id] = {
                             "duration_seconds": 0.0,
+                            "duration_hint_seconds": max(
+                                0.0, float(estimates.get(check_id, 0.0))
+                            ),
                             "queued_seconds": round(
                                 time.monotonic() - queued_since[check_id], 6
                             ),
@@ -1174,6 +1306,7 @@ def execute_checks(
                     observations[check_id].update(
                         {
                             "duration_seconds": duration_seconds,
+                            "duration_hint_seconds": duration_seconds,
                             "completed_after_seconds": round(
                                 time.monotonic() - run_started, 6
                             ),
@@ -1185,6 +1318,9 @@ def execute_checks(
                     observations[check_id].update(
                         {
                             "duration_seconds": 0.0,
+                            "duration_hint_seconds": max(
+                                0.0, float(estimates.get(check_id, 0.0))
+                            ),
                             "completed_after_seconds": round(
                                 time.monotonic() - run_started, 6
                             ),
@@ -1221,7 +1357,168 @@ def execute_checks(
     return results, blocked
 
 
-def main() -> int:
+def _warning_lines(text: str) -> list[str]:
+    return [
+        line
+        for line in text.splitlines()
+        if line.lstrip().upper().startswith(("WARN", "WARNING"))
+    ]
+
+
+def print_check_result(
+    *,
+    check_id: str,
+    result: tuple[int, str, str, list[str]],
+    observation: dict[str, Any],
+    verbose: bool,
+) -> None:
+    """Render concise successful output while retaining complete failure evidence."""
+
+    code, stdout, stderr, command = result
+    if observation.get("reused") is True:
+        print(f"REUSED {check_id}", flush=True)
+        return
+    if verbose or code != 0:
+        print("$ " + " ".join(command), flush=True)
+        if stdout:
+            print(stdout, end="" if stdout.endswith("\n") else "\n")
+        if stderr:
+            print(stderr, end="" if stderr.endswith("\n") else "\n", file=sys.stderr)
+        return
+    duration = float(observation.get("duration_seconds", 0.0))
+    print(f"PASS {check_id} ({duration:.3f}s)", flush=True)
+    for line in _warning_lines(stdout):
+        print(line)
+    for line in _warning_lines(stderr):
+        print(line, file=sys.stderr)
+
+
+def finalize_run(run: CompletedSourceCheckRun) -> int:
+    """Verify write scope, publish evidence, and report the completed run."""
+
+    failures: list[str] = []
+    for check in run.selected:
+        if check["id"] in run.blocked:
+            dependencies = ", ".join(run.blocked[check["id"]])
+            print(
+                f"SKIPPED {check['id']}: blocked by failed dependencies: {dependencies}",
+                file=sys.stderr,
+            )
+            failures.append(check["id"])
+            continue
+        result = run.results[check["id"]]
+        print_check_result(
+            check_id=check["id"],
+            result=result,
+            observation=run.telemetry.get(check["id"], {}),
+            verbose=run.args.verbose,
+        )
+        if result[0] != 0:
+            failures.append(check["id"])
+
+    try:
+        final_snapshot = source_snapshot(ROOT)
+        final_source_changes = snapshot_changes(run.before, final_snapshot)
+        final_index = SourceSnapshotIndex(final_snapshot)
+        final_identity = build_run_identity(
+            requested_profile=run.args.profile,
+            selection=run.selection,
+            changed_from=run.changed_from,
+            baseline=run.baseline,
+            source={
+                **source_identity(),
+                "source_snapshot_sha256": final_index.sha256,
+            },
+            jobs=run.jobs,
+        )
+        if final_identity != run.run_identity:
+            final_source_changes = sorted(
+                {
+                    *final_source_changes,
+                    "execution identity changed during source checks",
+                }
+            )
+    except (OSError, ValueError) as exc:
+        print(f"FAIL: cannot verify final source write scope: {exc}", file=sys.stderr)
+        failures.append("source-write-scope")
+        final_source_changes = run.source_changes
+    source_changes = final_source_changes
+    if source_changes:
+        print("\nFAILED read-only source-check write scope:", file=sys.stderr)
+        for change in source_changes:
+            print(f"- {change}", file=sys.stderr)
+        failures.append("source-write-scope")
+
+    generated_report: dict[str, Any] | None = None
+    if run.report_path is not None or run.cache is not None:
+        generated_report = render_timed_report(
+            profile=run.args.profile,
+            selected=run.selected,
+            results=run.results,
+            blocked=run.blocked,
+            source_changes=source_changes,
+            telemetry=run.telemetry,
+            input_fingerprints=run.input_fingerprints,
+            reuse=run.reuse,
+            selection=run.selection,
+            source=run.current_source,
+            environment=run.current_environment,
+            run_identity=run.run_identity,
+        )
+    if run.report_path is not None and generated_report is not None:
+        try:
+            write_report(run.report_path, generated_report)
+        except OSError as exc:
+            print(f"FAIL: cannot write source-check report: {exc}", file=sys.stderr)
+            failures.append("source-check-report")
+
+    if run.cache is not None and generated_report is not None and not failures:
+        try:
+            run.cache.store(
+                "timing",
+                cache_key(run.args.profile, include_profile=False),
+                generated_report,
+            )
+            run.cache_events.append("timing:stored")
+            if (
+                run.args.cache_mode == "local"
+                and generated_report["acceptance_evidence"]["eligible"] is True
+            ):
+                run.cache.store(
+                    "results", cache_key(run.args.profile), generated_report
+                )
+                run.cache_events.append("results:stored")
+        except (OSError, ValueError) as exc:
+            run.cache_events.append(f"store-skipped:{exc}")
+
+    for event in run.cache_events:
+        if event.startswith(("disabled:", "store-skipped:")):
+            print(f"WARNING: source-check cache {event}", file=sys.stderr)
+    if failures:
+        print("\nFAILED source checks:", file=sys.stderr)
+        for check_id in failures:
+            print(f"- {check_id}", file=sys.stderr)
+        return 1
+
+    profile_label = run.args.profile
+    if run.plan.effective_profile != run.args.profile:
+        profile_label = f"{run.args.profile} (effective {run.plan.effective_profile})"
+    reused_count = sum(
+        run.telemetry.get(check["id"], {}).get("reused") is True
+        for check in run.selected
+    )
+    suffix = (
+        "; local reused results are not cold release evidence"
+        if reused_count
+        else ""
+    )
+    print(
+        f"\nOK: ran {len(run.selected)} source checks from profile {profile_label}{suffix}"
+    )
+    return 0
+
+
+def argument_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--profile", choices=sorted(ALLOWED_PROFILES), default="full")
     parser.add_argument(
@@ -1235,10 +1532,22 @@ def main() -> int:
     parser.add_argument(
         "--all-fast",
         action="store_true",
-        help="With --profile fast, run the complete fast profile without changed-path selection.",
+        help="With --profile fast, run all fast checks without changed-path selection.",
     )
     parser.add_argument("--from-ref", help="Baseline substituted into change checks.")
-    parser.add_argument("--jobs", type=int, default=min(4, os.cpu_count() or 1))
+    parser.add_argument(
+        "--jobs",
+        default=DEFAULT_JOBS,
+        help=(
+            "Parallel source-check capacity. Use a positive integer, or opt in "
+            "to affinity/quota-aware sizing with 'auto'."
+        ),
+    )
+    parser.add_argument(
+        "--verbose",
+        action="store_true",
+        help="Print complete output for successful checks as well as failures.",
+    )
     parser.add_argument("--list", action="store_true")
     parser.add_argument(
         "--report",
@@ -1253,16 +1562,38 @@ def main() -> int:
             "when manifest, command, runtime, and input fingerprints match."
         ),
     )
+    parser.add_argument(
+        "--cache-mode",
+        choices=("off", "timing", "local"),
+        default="off",
+        help=(
+            "Optional Git-local optimization cache: 'timing' changes scheduling "
+            "only; 'local' also attempts exact result reuse."
+        ),
+    )
+    return parser
+
+
+def main() -> int:
+    process_started = time.monotonic()
+    parser = argument_parser()
     args = parser.parse_args()
-    if args.jobs <= 0:
-        parser.error("--jobs must be positive")
+    try:
+        jobs = resolve_job_count(args.jobs)
+    except ValueError as exc:
+        parser.error(str(exc))
+    jobs_mode = "auto" if str(args.jobs).lower() == "auto" else "fixed"
     if args.all_fast and args.profile != "fast":
         parser.error("--all-fast is only valid with --profile fast")
     if args.all_fast and args.changed_from:
         parser.error("--all-fast cannot be combined with --changed-from")
     if args.profile == "release" and args.reuse_report is not None:
         parser.error("--reuse-report is not permitted for release validation")
+    if args.profile == "release" and args.cache_mode == "local":
+        parser.error("--cache-mode local is not permitted for release validation")
 
+    cache: SourceCheckCache | None = None
+    cache_events: list[str] = []
     try:
         checks = load_manifest()
         changed_from = resolve_changed_from(
@@ -1270,7 +1601,7 @@ def main() -> int:
         )
         baseline = effective_baseline(args.profile, changed_from, args.from_ref)
         plan = select_check_plan(checks, args.profile, changed_from)
-        selected = plan.selected
+        selected = [{**check, "_verbose": args.verbose} for check in plan.selected]
         commands = [resolved_command(check, baseline) for check in selected]
         commands_by_id = {
             check["id"]: command for check, command in zip(selected, commands)
@@ -1282,6 +1613,24 @@ def main() -> int:
         )
         report_path = resolve_report_path(args.report) if args.report else None
         previous_report = load_reuse_report(args.reuse_report) if args.reuse_report else None
+        timing_report = previous_report
+        if args.cache_mode != "off":
+            try:
+                cache = SourceCheckCache(ROOT)
+                timing_load = cache.load(
+                    "timing", cache_key(args.profile, include_profile=False)
+                )
+                cache_events.append(f"timing:{timing_load.status}")
+                if timing_report is None and timing_load.status == "hit":
+                    timing_report = timing_load.value
+                if args.cache_mode == "local" and previous_report is None:
+                    result_load = cache.load("results", cache_key(args.profile))
+                    cache_events.append(f"results:{result_load.status}")
+                    if result_load.status == "hit":
+                        previous_report = result_load.value
+            except (OSError, ValueError) as exc:
+                cache_events.append(f"disabled:{exc}")
+                cache = None
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 2
@@ -1302,14 +1651,18 @@ def main() -> int:
     try:
         before = source_snapshot(ROOT)
         snapshot_index = SourceSnapshotIndex(before)
+        fingerprint_started = time.monotonic()
         input_fingerprints = (
             {
                 check["id"]: check_input_fingerprint(check, snapshot_index)
                 for check in selected
             }
-            if report_path is not None or previous_report is not None
+            if report_path is not None
+            or previous_report is not None
+            or args.cache_mode == "local"
             else {}
         )
+        fingerprint_seconds = time.monotonic() - fingerprint_started
         current_source = {
             **source_identity(),
             "source_snapshot_sha256": snapshot_index.sha256,
@@ -1321,7 +1674,7 @@ def main() -> int:
             changed_from=changed_from,
             baseline=baseline,
             source=current_source,
-            jobs=args.jobs,
+            jobs=jobs,
         )
         reuse = (
             reuse_decisions(
@@ -1343,18 +1696,20 @@ def main() -> int:
         )
         telemetry: dict[str, dict[str, Any]] = {}
         duration_estimates = historical_duration_estimates(
-            previous_report,
+            timing_report,
             current_source=current_source,
             current_environment=current_environment,
         )
+        execution_started = time.monotonic()
         results, blocked = execute_checks(
             selected,
             baseline,
-            args.jobs,
+            jobs,
             telemetry=telemetry,
             initial_results=initial_results,
             duration_estimates=duration_estimates,
         )
+        execution_finished = time.monotonic()
         after_snapshot = source_snapshot(ROOT)
         source_changes = snapshot_changes(before, after_snapshot)
         after_index = SourceSnapshotIndex(after_snapshot)
@@ -1367,139 +1722,62 @@ def main() -> int:
                 **source_identity(),
                 "source_snapshot_sha256": after_index.sha256,
             },
-            jobs=args.jobs,
+            jobs=jobs,
         )
         if after_identity != run_identity:
             source_changes = sorted(
                 {*source_changes, "execution identity changed during source checks"}
             )
+        verification_finished = time.monotonic()
+        telemetry.setdefault("_summary", {}).update(
+            {
+                "setup_seconds": round(
+                    max(
+                        0.0,
+                        execution_started - process_started - fingerprint_seconds,
+                    ),
+                    6,
+                ),
+                "fingerprint_seconds": round(fingerprint_seconds, 6),
+                "execution_seconds": round(execution_finished - execution_started, 6),
+                "post_execution_verification_seconds": round(
+                    verification_finished - execution_finished, 6
+                ),
+                "elapsed_before_reporting_seconds": round(
+                    verification_finished - process_started, 6
+                ),
+                "jobs_mode": jobs_mode,
+                "resolved_jobs": jobs,
+            }
+        )
     except (OSError, ValueError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 2
 
-    failures: list[str] = []
-    for check in selected:
-        if check["id"] in blocked:
-            dependencies = ", ".join(blocked[check["id"]])
-            print(
-                f"SKIPPED {check['id']}: blocked by failed dependencies: {dependencies}",
-                file=sys.stderr,
-            )
-            failures.append(check["id"])
-            continue
-        code, stdout, stderr, command = results[check["id"]]
-        if telemetry.get(check["id"], {}).get("reused") is True:
-            print("REUSED " + check["id"], flush=True)
-        else:
-            print("$ " + " ".join(command), flush=True)
-        if stdout:
-            print(stdout, end="" if stdout.endswith("\n") else "\n")
-        if stderr:
-            print(stderr, end="" if stderr.endswith("\n") else "\n", file=sys.stderr)
-        if code != 0:
-            failures.append(check["id"])
-
-    if report_path:
-        try:
-            write_report(
-                report_path,
-                render_report(
-                    profile=args.profile,
-                    selected=selected,
-                    results=results,
-                    blocked=blocked,
-                    source_changes=source_changes,
-                    telemetry=telemetry,
-                    input_fingerprints=input_fingerprints,
-                    reuse=reuse,
-                    selection=selection,
-                    source=current_source,
-                    environment=current_environment,
-                    run_identity=run_identity,
-                ),
-            )
-        except OSError as exc:
-            print(f"FAIL: cannot write source-check report: {exc}", file=sys.stderr)
-            failures.append("source-check-report")
-
-    try:
-        final_snapshot = source_snapshot(ROOT)
-        final_source_changes = snapshot_changes(before, final_snapshot)
-        final_index = SourceSnapshotIndex(final_snapshot)
-        final_identity = build_run_identity(
-            requested_profile=args.profile,
-            selection=selection,
+    return finalize_run(
+        CompletedSourceCheckRun(
+            args=args,
+            jobs=jobs,
             changed_from=changed_from,
             baseline=baseline,
-            source={
-                **source_identity(),
-                "source_snapshot_sha256": final_index.sha256,
-            },
-            jobs=args.jobs,
+            plan=plan,
+            selected=selected,
+            results=results,
+            blocked=blocked,
+            telemetry=telemetry,
+            before=before,
+            source_changes=source_changes,
+            input_fingerprints=input_fingerprints,
+            reuse=reuse,
+            selection=selection,
+            current_source=current_source,
+            current_environment=current_environment,
+            run_identity=run_identity,
+            report_path=report_path,
+            cache=cache,
+            cache_events=cache_events,
         )
-        if final_identity != run_identity:
-            final_source_changes = sorted(
-                {
-                    *final_source_changes,
-                    "execution identity changed during source checks",
-                }
-            )
-    except (OSError, ValueError) as exc:
-        print(f"FAIL: cannot verify final source write scope: {exc}", file=sys.stderr)
-        failures.append("source-write-scope")
-        final_source_changes = source_changes
-    if final_source_changes != source_changes:
-        source_changes = final_source_changes
-        if report_path:
-            try:
-                write_report(
-                    report_path,
-                    render_report(
-                        profile=args.profile,
-                        selected=selected,
-                        results=results,
-                        blocked=blocked,
-                        source_changes=source_changes,
-                        telemetry=telemetry,
-                        input_fingerprints=input_fingerprints,
-                        reuse=reuse,
-                        selection=selection,
-                        source=current_source,
-                        environment=current_environment,
-                        run_identity=run_identity,
-                    ),
-                )
-            except OSError as exc:
-                print(f"FAIL: cannot refresh source-check report: {exc}", file=sys.stderr)
-                failures.append("source-check-report")
-
-    if source_changes:
-        print("\nFAILED read-only source-check write scope:", file=sys.stderr)
-        for change in source_changes:
-            print(f"- {change}", file=sys.stderr)
-        failures.append("source-write-scope")
-
-    if failures:
-        print("\nFAILED source checks:", file=sys.stderr)
-        for check_id in failures:
-            print(f"- {check_id}", file=sys.stderr)
-        return 1
-    profile_label = args.profile
-    if plan.effective_profile != args.profile:
-        profile_label = f"{args.profile} (effective {plan.effective_profile})"
-    reused_count = sum(
-        telemetry.get(check["id"], {}).get("reused") is True
-        for check in selected
     )
-    suffix = (
-        "; local reused results are not cold release evidence"
-        if reused_count
-        else ""
-    )
-    print(
-        f"\nOK: ran {len(selected)} source checks from profile {profile_label}{suffix}"
-    )
-    return 0
 
 
 if __name__ == "__main__":

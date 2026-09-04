@@ -5,6 +5,7 @@ from __future__ import annotations
 import concurrent.futures
 import os
 import subprocess
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
@@ -19,6 +20,7 @@ class CommandResult:
     returncode: int
     stdout: str
     stderr: str
+    duration_seconds: float = 0.0
 
 
 def child_capacity(default: int = 1) -> int:
@@ -53,6 +55,7 @@ def run_commands(
         item_id, command = item
         environment = os.environ.copy()
         environment[CHILD_CAPACITY_ENV] = "1"
+        started = time.monotonic()
         try:
             completed = subprocess.run(
                 command,
@@ -63,12 +66,19 @@ def run_commands(
                 text=True,
             )
         except OSError as exc:
-            return CommandResult(item_id, 127, "", str(exc))
+            return CommandResult(
+                item_id,
+                127,
+                "",
+                str(exc),
+                round(time.monotonic() - started, 6),
+            )
         return CommandResult(
             item_id=item_id,
             returncode=completed.returncode,
             stdout=completed.stdout,
             stderr=completed.stderr,
+            duration_seconds=round(time.monotonic() - started, 6),
         )
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:

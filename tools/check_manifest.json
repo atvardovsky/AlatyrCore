@@ -487,7 +487,11 @@
       "contract_inputs": [
         "framework/extensions.md",
         "templates/extension/**",
-        "templates/target/.ai/assistant/extensions/**"
+        "templates/target/.ai/assistant/extensions/**",
+        "tools/target_adapter_validation/extensions.py",
+        "tools/target_adapter_validation/harness_scenarios/extensions.py",
+        "tools/target_adapter_validation/harness_scenarios/workspace_modes.py",
+        "tools/validate_target_adapter.py"
       ],
       "implementation_paths": [
         "tools/check_extensions.py",
@@ -498,6 +502,10 @@
         "templates/extension/**",
         "templates/target/.ai/assistant/extensions/**",
         "tools/check_extensions.py",
+        "tools/target_adapter_validation/extensions.py",
+        "tools/target_adapter_validation/harness_scenarios/extensions.py",
+        "tools/target_adapter_validation/harness_scenarios/workspace_modes.py",
+        "tools/validate_target_adapter.py",
         "tools/validate_extension_package.py"
       ]
     },
@@ -1136,6 +1144,9 @@
         "tools/check_all.py",
         "tools/run_focused_source_checks.py",
         "tools/plan_minimum_work.py",
+        "tools/context_planning.py",
+        "tools/plan_target_context.py",
+        "tools/source_check_cache.py",
         "tools/source_check_reuse.py",
         "tools/check_cross_platform_tools.py",
         "tools/summarize_source_check_report.py",
@@ -1154,6 +1165,9 @@
         "tools/check_all.py",
         "tools/run_focused_source_checks.py",
         "tools/plan_minimum_work.py",
+        "tools/context_planning.py",
+        "tools/plan_target_context.py",
+        "tools/source_check_cache.py",
         "tools/source_check_reuse.py",
         "tools/check_cross_platform_tools.py",
         "tools/summarize_source_check_report.py",
@@ -2460,6 +2474,9 @@
         "tools/report_approval_scope.py",
         "tools/run_focused_source_checks.py",
         "tools/plan_minimum_work.py",
+        "tools/context_planning.py",
+        "tools/plan_target_context.py",
+        "tools/source_check_cache.py",
         "tools/check_source_unit_tests.py",
         "tools/evidence_contract.py",
         "tools/report_adapter_health.py",
@@ -2488,6 +2505,9 @@
         "tools/report_approval_scope.py",
         "tools/run_focused_source_checks.py",
         "tools/plan_minimum_work.py",
+        "tools/context_planning.py",
+        "tools/plan_target_context.py",
+        "tools/source_check_cache.py",
         "tools/check_source_unit_tests.py",
         "tools/evidence_contract.py",
         "tools/report_adapter_health.py",
