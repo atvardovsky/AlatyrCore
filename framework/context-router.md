@@ -16,22 +16,24 @@ A target adapter can load:
 1. assistant instructions that the host already preloaded
 2. the generated `.ai/assistant/bootstrap-index.json` routing projection
 3. the generated `.ai/assistant/entry-packet.json` first-use routing packet
-4. the framework semantic-codebook preload closure and three contour root
+4. the selected assistant capability record when provider cache controls or
+   cache telemetry are relevant
+5. the framework semantic-codebook preload closure and three contour root
    context indexes named by that projection
-5. only matching recursive section indexes and selected content descriptors
-6. the compact workspace-mode catalog when that optional module is enabled
-7. one selected mode descriptor and applicable shared root context
-8. task classification from compact request, operation, risk, and scale
+6. only matching recursive section indexes and selected content descriptors
+7. the compact workspace-mode catalog when that optional module is enabled
+8. one selected mode descriptor and applicable shared root context
+9. task classification from compact request, operation, risk, and scale
    signals
-9. task decomposition cues for non-trivial work, using one local task for
+10. task decomposition cues for non-trivial work, using one local task for
    small work when compact evidence is enough
-10. the selected profile's required context
-11. one or more project-area overlays when the task names affected areas
-12. task-scale overlays only when the classifier selects small-task for a
+11. the selected profile's required context
+12. one or more project-area overlays when the task names affected areas
+13. task-scale overlays only when the classifier selects small-task for a
    cheap evidence lane, the task is large, resumable, team-active, explicitly
    debug-enabled, at material evidence finalization, or an enabled-team write
    preflight finds possible active-work overlap
-13. bounded project-knowledge routing after profile/area selection and again
+14. bounded project-knowledge routing after profile/area selection and again
    after concrete changed facts, paths, symbols, subsystem or architecture
    relationships, dependencies, contracts, or issue lineage become known
 
@@ -73,6 +75,9 @@ A target context router should define:
 - bootstrap budget plus profile total, portable, and reserved target-context
   budgets
 - context receipt fields
+- cache-aware stable-prefix and dynamic-tail ordering, selected assistant
+  capability path, optional provider-control policy, observed-telemetry policy,
+  and bounded-context fallback
 - task classification classes, order, ambiguity behavior, expansion triggers,
   and their task-scale overlay mappings
 - task decomposition policy path, plan template, load triggers, small-task
@@ -107,12 +112,16 @@ adapter schema and template version. Every indexed descriptor must exist in
 the selected support profile; disabled optional modules must not remain
 advertised through paths that scaffolding omitted.
 
-Resolve routing in this order: bootstrap projection, core semantic preload,
-contour index branch, profile and overlays, selected canonical owners, then
-bounded relationship expansion. Index summaries and codebook definitions do
-not replace the selected owner. Record missing indexes, stale digests, unknown
-semantic terms, exceeded depth, or budget expansion instead of silently
-loading the complete contour.
+Resolve delivery in this order: host-preloaded instructions, bootstrap
+projection, core semantic preload, selected stable framework/project policy,
+contour index branch, profile and overlays, selected canonical owners, current
+task state, then volatile revisions and runtime evidence. Relationship
+expansion remains bounded. This stable-prefix-first order permits provider
+caching when the host preserves it, but routing correctness never depends on a
+cache hit. Index summaries and codebook definitions do not replace the
+selected owner. Record missing indexes, stale digests, unknown semantic terms,
+exceeded depth, or budget expansion instead of silently loading the complete
+contour.
 
 The bootstrap should contain only enough target-owned context to select a
 profile and find project areas. Full blueprints, source-of-truth registries,
@@ -236,6 +245,21 @@ separate planned context, repository-resolved context, and observed host or
 provider evidence. Provider usage can support token accounting when exposed by
 the provider, but only host delivery telemetry can prove the exact semantic
 guidance bundle reached the model.
+
+Prompt or context caching reduces repeated provider computation, latency, or
+billed input cost when the exact provider and client support it. It does not
+remove cached tokens from the context window and does not justify broader
+packets. Read only the selected assistant capability record, keep the provider
+and model separate from the assistant surface, and use explicit controls only
+when current client evidence says they are exposed. Record cache reads or exact
+savings only from observed host/provider telemetry. Otherwise record caching
+as unknown or unavailable and continue through bounded context routing.
+
+Context-packet schema 2 places resolved semantic definitions before selected
+task items and records stable-prefix and dynamic-tail digests. Those digests
+prove deterministic packet identity, not a provider cache write or hit. Keep
+current task text, changed facts, timestamps, source revisions, and runtime
+measurements after reusable policy/context whenever the host permits ordering.
 
 Workspace-mode routing is a separate dimension from task profiles, intent,
 project areas, gates, and task scale. When enabled, read the compact mode

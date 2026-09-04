@@ -42,6 +42,7 @@ def check_packet(
     packet: dict[str, Any],
     *,
     operation_index_expected: bool,
+    cache_capability_expected: bool = True,
     expected_tool: str | None = "render_target_entry_packet.py",
     source_template: bool = False,
 ) -> list[str]:
@@ -114,6 +115,23 @@ def check_packet(
             recommendation.get("decision_policy", "")
         ):
             failures.append("entry packet recommendation must name cheapest sufficient profile")
+
+    cache_delivery = packet.get("cache_aware_delivery")
+    if not isinstance(cache_delivery, dict):
+        failures.append("entry packet must include cache_aware_delivery")
+    else:
+        capability_index = cache_delivery.get("provider_capability_index")
+        if cache_capability_expected:
+            if capability_index != ".ai/assistant/assistant-capabilities.json":
+                failures.append("entry packet cache capability index is invalid")
+        elif capability_index is not None:
+            failures.append("kernel packet must not route an absent cache capability index")
+        if cache_delivery.get("cache_hit_required") is not False:
+            failures.append("entry packet must not require a cache hit")
+        if cache_delivery.get("context_window_reduction") is not False:
+            failures.append("entry packet must not claim context-window reduction")
+        if cache_delivery.get("fallback") != "bounded-context-routing":
+            failures.append("entry packet cache fallback must use bounded routing")
 
     profile_routes = packet.get("profile_routes")
     if not isinstance(profile_routes, dict) or "code-local" not in profile_routes:
@@ -305,6 +323,7 @@ def main() -> int:
                     check_packet(
                         packet,
                         operation_index_expected=False,
+                        cache_capability_expected=False,
                         expected_tool="scaffold_target_structure.py",
                     )
                 )

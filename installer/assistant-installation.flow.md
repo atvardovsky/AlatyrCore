@@ -173,13 +173,15 @@ Classify every proposed target file:
    framework version, adapter schema version, template version, owner,
    backup owner, review cadence, CODEOWNERS or equivalent owner map,
    source-of-truth, validation, known gaps, and local deviations.
-   Create detailed schema-3 assistant capability records for selected target
+   Create detailed schema-4 assistant capability records for selected target
    surfaces; represent unselected registered surfaces only as compact
    unverified/unselected records unless target evidence requires deeper review.
    Resolve instruction loading, skill source and activation, client permission
-   mode, diagrams, and delegation from exact-client evidence. A selected but
-   untested surface remains unknown; client permissions or auto-approval never
-   grant Alatyr action authorization.
+   mode, context caching, diagrams, and delegation from exact-client evidence.
+   Record the selected model provider separately from the assistant surface;
+   preserve bounded context routing when caching is unavailable or unverified.
+   A selected but untested surface remains unknown; client permissions or
+   auto-approval never grant Alatyr action authorization.
 11. Create or adapt target `.ai/README.md`.
 12. Copy or adapt the selected portable framework pack into target
     `.ai/framework`. Record the pack in the manifest and preserve its projected
@@ -294,6 +296,11 @@ Classify every proposed target file:
     Add the `team-active` overlay only when team collaboration is enabled. Run
     its compact index preflight before state-changing operations, then keep the
     full registry, policy, and unrelated tasks outside routine bootstrap.
+    Add cache-aware delivery to the context router and context-packet template:
+    stable framework/project guidance first, selected task context next, and
+    volatile task/revision/runtime evidence last. Record provider and client
+    capability in the selected assistant surface record. Do not require a cache
+    hit or count cached tokens as removed from the context window.
     Add the `code-documentation` intent overlay only when the optional module
     is enabled. Keep its full profiles, selected source, generator
     configuration, and generated output outside routine bootstrap.
@@ -370,6 +377,10 @@ Classify every proposed target file:
     retry/conflict fallback, privacy, validation, and primary convergence.
     Generate provider-native definitions only after support is verified and
     keep them as thin target bindings to portable worker contracts.
+    For every selected surface, separately record model provider/model,
+    automatic or explicit cache mode, client control and telemetry exposure,
+    retention/minimum-size evidence, and freshness. Keep hidden capability
+    unknown and retain bounded-context fallback without savings claims.
     Add the change-package index, flow, machine record, and redacted report
     template when the target needs semantic multi-surface approval, architecture
     segment/capability evidence, audit, pilot, or publishable provenance. Record
@@ -562,6 +573,8 @@ Report:
 - consistency map enabled, skipped, or blocked with relationship gaps recorded
 - existing files preserved, skipped, or overwritten with approval
 - supported assistant bridges added or skipped
+- selected assistant provider/cache capabilities resolved, explicitly unknown,
+  or unsupported; stable-prefix ordering and bounded-context fallback checked
 - operation catalog and checked compact index, installed-operation,
   operation-help, automatic routing, current-scope action authorization,
   read-only health, risk-gated preview,

@@ -47,7 +47,7 @@
     },
     {
       "id": "ASSISTANT",
-      "code_count": 23
+      "code_count": 29
     },
     {
       "id": "AUTHORIZATION",
@@ -1099,6 +1099,60 @@
     },
     {
       "code": "ASSISTANT_CAPABILITY_SURFACES",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ASSISTANT_CONTEXT_CACHE_CONTROL",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ASSISTANT_CONTEXT_CACHE_FALLBACK",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ASSISTANT_CONTEXT_CACHE_PREFIX",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ASSISTANT_CONTEXT_CACHE_STATE_CONFLICT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ASSISTANT_CONTEXT_CACHE_VALUE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ASSISTANT_CONTEXT_CACHE_WINDOW_CLAIM",
       "levels": [
         "error"
       ],

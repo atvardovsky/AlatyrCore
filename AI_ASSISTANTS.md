@@ -205,6 +205,13 @@ project policy or claim capabilities that lack target evidence.
 See [assistant compatibility](docs/assistant-compatibility.md) and the
 [bridge capability matrix](framework/bridge-capability-matrix.md).
 
+Provider context caching is capability-gated for every supported surface.
+Preserve the target router's stable-prefix-first delivery order, then inspect
+only the selected surface record before using explicit controls or reporting
+telemetry. Assistant surface and model provider are separate facts. When
+support is hidden, stale, or unavailable, use bounded context routing normally
+and do not claim a cache hit, token saving, or smaller model context.
+
 ## Subagent Delegation
 
 When the target enables `subagent-delegation`, the primary assistant may keep

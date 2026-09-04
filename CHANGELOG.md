@@ -4,6 +4,23 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.52 - 2026-09-04
+
+- Added provider-neutral context-caching capability evidence to every supported
+  assistant surface without coupling an assistant client to one model provider.
+- Added cache-aware context-packet delivery with deterministic stable-prefix
+  and dynamic-tail digests, semantic-first ordering, and bounded-routing
+  fallback when caching or telemetry is unavailable.
+- Documented current OpenAI, Anthropic, Gemini/Vertex AI, Azure OpenAI, and
+  Amazon Bedrock caching families while keeping exact client, model, account,
+  region, control, retention, and telemetry claims target-owned and evidence-
+  gated.
+- Extended installation, upgrade, bridge, lifecycle, and target validation
+  contracts so cache support cannot be inferred from static templates and
+  cannot be represented as reducing model context-window occupancy.
+- Increased the adapter schema version to `42` and target template version to
+  `47` for assistant capability schema 4 and context-packet schema 2.
+
 ## 0.1.0-alpha.51 - 2026-09-04
 
 - Fixed source-contour planning so explicit repository audits select their

@@ -123,7 +123,8 @@ Replace this section with the actual target project map.
 <!-- /alatyr:scaffold-fragment -->
 - task-specific maturity profile
 <!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/assistant-capabilities.json"]} -->
-- bridge matrix and indexed per-assistant capability evidence
+- bridge matrix and indexed per-assistant instruction, permission, provider-
+  cache, diagram, and delegation capability evidence
 <!-- /alatyr:scaffold-fragment -->
 <!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/templates/ascii-diagram.md"]} -->
 - portable ASCII diagram layout and readability rules

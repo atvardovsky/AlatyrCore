@@ -395,6 +395,8 @@ List commands or manual checks:
 - source-of-truth registry review:
 - task-specific maturity review:
 - bridge capability matrix review:
+- per-surface provider/model, context-cache mode, exposed controls/telemetry,
+  stable-prefix ordering, fallback, and freshness review:
 - migration-diff review:
 - migration assessment completed before target upgrade changes:
 - machine-readable upgrade-impact projection reviewed before broad upgrade
@@ -506,6 +508,9 @@ Final evidence must say:
   catalog, states, selected-source routing, validation, and known gaps
 - task-specific maturity profile created or updated
 - bridge capability matrix created or updated
+- every selected assistant has schema-4 context-cache capability evidence or an
+  explicit unknown/unsupported state; no cache or context-reduction claim is
+  inferred from the assistant name
 - portable ASCII baseline plus per-assistant inline/artifact capabilities,
   client version, verification time, and evidence resolved or explicitly
   unknown with reason

@@ -10,21 +10,21 @@
     "source_worktree_state": "clean",
     "source_dirty_paths": [],
     "target_manifest": ".ai/alatyr.yaml",
-    "target_manifest_digest": "sha256:1bbf819e5d3b42bd24859949fdcb9878b33ccf66a29bccb1ae39682d9ec3526a",
+    "target_manifest_digest": "sha256:830360ccedc483ac336f87c0fafb9690d458478f5109586f4fd6c90ff105db54",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.51",
-    "adapter_schema_version": "41",
-    "template_version": "46"
+    "framework_version": "0.1.0-alpha.52",
+    "adapter_schema_version": "42",
+    "template_version": "47"
   },
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "1bbf819e5d3b42bd24859949fdcb9878b33ccf66a29bccb1ae39682d9ec3526a"
+      "sha256": "830360ccedc483ac336f87c0fafb9690d458478f5109586f4fd6c90ff105db54"
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",
-      "sha256": "d3a7c4347c21eb5321a6d5c3a0e4e60314d35f07dfcb6601051fd0557054ad8e"
+      "sha256": "d57d18b1d1e1c072a6c980f0898f2163fa8e8ae587fa7bebe6726a85e5b0731f"
     },
     "gate_index": {
       "path": ".ai/assistant/gates/index.json",
@@ -82,6 +82,26 @@
       ]
     }
   ],
+  "cache_aware_delivery": {
+    "schema_version": 1,
+    "provider_capability_index": ".ai/assistant/assistant-capabilities.json",
+    "stable_prefix_order": [
+      "host-preloaded assistant instructions",
+      ".ai/assistant/bootstrap-index.json",
+      "resolved semantic preload definitions",
+      "selected stable framework and project policy"
+    ],
+    "dynamic_tail_order": [
+      "selected canonical owner evidence",
+      "current task operation and changed facts",
+      "volatile revisions hashes timestamps and runtime evidence"
+    ],
+    "provider_controls": "use only when the selected assistant capability record has current evidence that the client exposes them",
+    "telemetry_policy": "claim cache hits or exact savings only from observed host or provider usage fields",
+    "cache_hit_required": false,
+    "context_window_reduction": false,
+    "fallback": "bounded-context-routing"
+  },
   "budget_summary": {
     "bootstrap": {
       "max_files": 2,

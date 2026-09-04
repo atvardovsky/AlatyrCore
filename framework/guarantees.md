@@ -98,6 +98,10 @@ The framework commits to giving an assistant a defined process for:
   files and wrappers
 - recording bridge capability differences when supported assistant behavior can
   diverge
+- ordering reusable semantic definitions before task-specific context so a
+  provider or client may reuse stable prefixes when its reviewed capability
+  supports caching, while preserving bounded context routing as the mandatory
+  fallback
 - adapting skills, prompts, wrappers, and third-party assistant infrastructure
   without letting them bypass framework or target adapter rules
 - inventorying existing AI infrastructure before adding, replacing, or
@@ -196,6 +200,10 @@ Machine checks can verify only deterministic repository facts, such as:
 - normalized context receipts distinguish planned and resolved source estimates
   from observed host/provider telemetry, and reject exact context or token
   claims when that observed evidence is partial or unavailable
+- schema-versioned assistant capability records separate assistant surface,
+  model provider, cache mode, exposed controls, exposed telemetry, retention,
+  and minimum cacheable input; checks reject caching as a correctness or
+  context-window requirement
 - provider-neutral conformance execution records prepare, invocation or manual
   import, collection, and validation separately, while post-install/update
   delivery evidence records `sent`, `skipped`, or `blocked`; neither static
@@ -302,7 +310,8 @@ defines:
 - approval rules and approval records when durable evidence is needed
 - adapter output contracts for installation, framework update, and recheck
   evidence when the target wants durable operation records
-- bridge capability matrix for supported assistants
+- bridge capability matrix and selected-provider context-caching evidence for
+  supported assistants
 - task-specific maturity and blocking criteria
 - migration notes for framework upgrades
 - prompt-injection and source-access policies for imported AI infrastructure
@@ -334,8 +343,9 @@ defines:
   and drift checks when diagrams exist
 - project-specific framework baseline, local deviations, maturity gaps, and
   upgrade notes
-- supported assistant bridge files and bridge capability matrix when multiple
-  assistant surfaces are supported
+- supported assistant bridge files, bridge capability matrix, and selected
+  provider/client caching evidence when multiple assistant surfaces are
+  supported; unknown or unsupported caching must fall back to bounded routing
 - AI infrastructure inventory, recommendation, source access, provenance,
   adaptation, wrapper, and approval rules when skills or third-party assistant
   infrastructure are used

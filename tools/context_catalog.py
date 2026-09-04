@@ -12,7 +12,7 @@ from typing import Any, Iterable
 
 CONTEXT_INDEX_SCHEMA_VERSION = 1
 CODEBOOK_SCHEMA_VERSION = 1
-PACKET_SCHEMA_VERSION = 1
+PACKET_SCHEMA_VERSION = 2
 CONTEXT_INDEX_KIND = "alatyr-context-index"
 CODEBOOK_INDEX_KIND = "alatyr-semantic-codebook-index"
 CODEBOOK_SHARD_KIND = "alatyr-semantic-codebook-shard"
@@ -448,6 +448,7 @@ def build_context_packet(
     selected_items: Iterable[CatalogItem],
     semantic_terms: dict[str, dict[str, Any]],
     max_words: int,
+    assistant_surface: str = "generic",
 ) -> dict[str, Any]:
     """Build a deterministic packet projection from selected catalog items."""
 
@@ -457,38 +458,79 @@ def build_context_packet(
     if missing:
         raise ContextCatalogError(f"context packet has unresolved semantic terms: {missing}")
     selected_words = sum(item.estimated_words for item in items)
+    ordered_term_ids = sorted(semantic_terms)
     semantic_words = sum(
         len(re.findall(r"\S+", semantic_terms[term_id]["definition"]))
-        for term_id in semantic_terms
+        for term_id in ordered_term_ids
     )
     total_words = selected_words + semantic_words
     if total_words > max_words:
         raise ContextCatalogError(
             f"context packet uses {total_words} words and exceeds budget {max_words}"
         )
+    semantic_payload = [
+        {
+            "id": term_id,
+            "version": semantic_terms[term_id]["version"],
+            "definition": semantic_terms[term_id]["definition"],
+            "canonical_owner": semantic_terms[term_id]["canonical_owner"],
+        }
+        for term_id in ordered_term_ids
+    ]
+    selected_payload = [
+        {
+            "id": item.item_id,
+            "path": item.path,
+            "content_digest": item.content_digest,
+            "reason": list(item.load_when),
+        }
+        for item in items
+    ]
+    stable_canonical = json.dumps(
+        semantic_payload, ensure_ascii=True, separators=(",", ":"), sort_keys=True
+    )
+    dynamic_canonical = json.dumps(
+        {
+            "profile": profile,
+            "operation": operation,
+            "selected_items": selected_payload,
+        },
+        ensure_ascii=True,
+        separators=(",", ":"),
+        sort_keys=True,
+    )
     payload = {
         "schema_version": PACKET_SCHEMA_VERSION,
         "packet_kind": PACKET_KIND,
+        "cache_delivery": {
+            "schema_version": 1,
+            "assistant_surface": assistant_surface,
+            "capability_record": (
+                ".ai/assistant/assistant-capabilities/"
+                f"{assistant_surface}.json"
+            ),
+            "stable_prefix_sections": ["semantic_terms"],
+            "dynamic_tail_sections": [
+                "profile",
+                "operation",
+                "selected_items",
+                "budget",
+                "receipt",
+            ],
+            "stable_prefix_digest": (
+                "sha256:" + hashlib.sha256(stable_canonical.encode()).hexdigest()
+            ),
+            "dynamic_tail_digest": (
+                "sha256:" + hashlib.sha256(dynamic_canonical.encode()).hexdigest()
+            ),
+            "cache_hit_required": False,
+            "context_window_reduction": False,
+            "fallback": "bounded-context-routing",
+        },
+        "semantic_terms": semantic_payload,
         "profile": profile,
         "operation": operation,
-        "selected_items": [
-            {
-                "id": item.item_id,
-                "path": item.path,
-                "content_digest": item.content_digest,
-                "reason": list(item.load_when),
-            }
-            for item in items
-        ],
-        "semantic_terms": [
-            {
-                "id": term_id,
-                "version": semantic_terms[term_id]["version"],
-                "definition": semantic_terms[term_id]["definition"],
-                "canonical_owner": semantic_terms[term_id]["canonical_owner"],
-            }
-            for term_id in semantic_terms
-        ],
+        "selected_items": selected_payload,
         "budget": {
             "max_words": max_words,
             "selected_content_words": selected_words,

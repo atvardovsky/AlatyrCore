@@ -18,6 +18,8 @@ Replace placeholders with target facts before accepting installation.
 - Module profile: `.ai/assistant/module-profile.md`
 - Maturity profile: `.ai/assistant/maturity-profile.md`
 - Bridge capability matrix: `.ai/assistant/bridge-capability-matrix.md`
+- Selected assistant capability record, including provider cache evidence:
+  `.ai/assistant/assistant-capabilities/{SELECTED_ASSISTANT_SURFACE}.json`
 - Target validation: `{TARGET_VALIDATION}`
 - Supported assistants: `{SUPPORTED_ASSISTANTS}`
 - Operation index, catalog, help, routing, health, and preview:
@@ -145,6 +147,11 @@ Replace placeholders with target facts before accepting installation.
 12. Check task-specific maturity using `.ai/assistant/maturity-profile.md` when
    it exists.
 13. Check bridge behavior using `.ai/assistant/bridge-capability-matrix.md`.
+    Recheck the selected model provider/model, automatic or explicit cache
+    mode, client control and telemetry exposure, retention/minimum-size facts,
+    stable-prefix behavior, and evidence freshness. Keep caching unknown or
+    unsupported when hidden, preserve bounded context routing, and reject cache
+    hit, exact saving, or context-window reduction claims without evidence.
     When diagrams are enabled, verify discussion routing, source/visual
     ownership, inline or artifact capability claims, portable ASCII, and
     stale-view evidence for every supported assistant.

@@ -75,6 +75,10 @@ from target_adapter_validation.ai_infrastructure import (
 )
 from target_adapter_validation.action_modes import ALLOWED_ACTION_MODES
 from target_adapter_validation.assistant_capabilities import (
+    CACHE_EXPOSURE_STATES,
+    CACHE_FALLBACK,
+    CACHE_PROVIDER_MODES,
+    CACHE_ROUTE_STATES,
     CAPABILITY_INDEX_KIND,
     CAPABILITY_INDEX_SCHEMA_VERSION,
     EVIDENCE_STATES,
@@ -1057,6 +1061,19 @@ class Validator:
                 "effective_restrictions",
                 "alatyr_authorization_separate",
             },
+            "context_caching": {
+                "route",
+                "provider",
+                "model",
+                "provider_cache_mode",
+                "client_control_exposure",
+                "client_telemetry_exposure",
+                "retention",
+                "minimum_cacheable_tokens",
+                "stable_prefix_ordering",
+                "context_window_reduction",
+                "fallback",
+            },
         }
         for surface_id, relpath in surfaces.items():
             if not isinstance(surface_id, str) or not isinstance(relpath, str):
@@ -1180,34 +1197,13 @@ class Validator:
                         )
             for section_name, required in sections.items():
                 section = record.get(section_name)
-                if not isinstance(section, dict):
-                    self.error(
-                        "ASSISTANT_CAPABILITY_SECTION",
-                        f"assistant surface {surface_id} lacks {section_name}",
-                        relpath,
-                    )
-                    continue
-                missing = sorted((required | evidence_fields) - set(section))
-                if missing:
-                    self.error(
-                        "ASSISTANT_CAPABILITY_FIELDS",
-                        f"assistant surface {surface_id} {section_name} is missing {missing}",
-                        relpath,
-                    )
-                review_triggers = section.get("review_triggers")
-                if not isinstance(review_triggers, list) or not review_triggers:
-                    self.error(
-                        "ASSISTANT_CAPABILITY_REVIEW_TRIGGERS",
-                        f"assistant surface {surface_id} {section_name} needs review triggers",
-                        relpath,
-                    )
-                for list_field in ["competing_sources", "discovery_paths"]:
-                    if list_field in section and not isinstance(section.get(list_field), list):
-                        self.error(
-                            "ASSISTANT_CAPABILITY_LIST",
-                            f"assistant surface {surface_id} {list_field} must be a list",
-                            relpath,
-                        )
+                self.check_assistant_capability_section(
+                    surface_id,
+                    section_name,
+                    section,
+                    required | evidence_fields,
+                    relpath,
+                )
 
             loading = record.get("instruction_loading")
             if isinstance(loading, dict):
@@ -1262,6 +1258,110 @@ class Validator:
                     f"assistant surface {surface_id} must keep client permissions separate from Alatyr authorization",
                     relpath,
                 )
+            caching = record.get("context_caching")
+            if isinstance(caching, dict):
+                self.check_context_caching_capability(surface_id, caching, relpath)
+
+    def check_assistant_capability_section(
+        self,
+        surface_id: str,
+        section_name: str,
+        section: Any,
+        required: set[str],
+        relpath: str,
+    ) -> None:
+        if not isinstance(section, dict):
+            self.error(
+                "ASSISTANT_CAPABILITY_SECTION",
+                f"assistant surface {surface_id} lacks {section_name}",
+                relpath,
+            )
+            return
+        missing = sorted(required - set(section))
+        if missing:
+            self.error(
+                "ASSISTANT_CAPABILITY_FIELDS",
+                f"assistant surface {surface_id} {section_name} is missing {missing}",
+                relpath,
+            )
+        review_triggers = section.get("review_triggers")
+        if not isinstance(review_triggers, list) or not review_triggers:
+            self.error(
+                "ASSISTANT_CAPABILITY_REVIEW_TRIGGERS",
+                f"assistant surface {surface_id} {section_name} needs review triggers",
+                relpath,
+            )
+        for list_field in ["competing_sources", "discovery_paths"]:
+            if list_field in section and not isinstance(section.get(list_field), list):
+                self.error(
+                    "ASSISTANT_CAPABILITY_LIST",
+                    f"assistant surface {surface_id} {list_field} must be a list",
+                    relpath,
+                )
+
+    def check_context_caching_capability(
+        self, surface_id: str, caching: dict[str, Any], relpath: str
+    ) -> None:
+        cache_route = caching.get("route")
+        provider_mode = caching.get("provider_cache_mode")
+        control_exposure = caching.get("client_control_exposure")
+        telemetry_exposure = caching.get("client_telemetry_exposure")
+        for label, value, allowed in [
+            ("route", cache_route, CACHE_ROUTE_STATES),
+            ("provider_cache_mode", provider_mode, CACHE_PROVIDER_MODES),
+            ("client_control_exposure", control_exposure, CACHE_EXPOSURE_STATES),
+            ("client_telemetry_exposure", telemetry_exposure, CACHE_EXPOSURE_STATES),
+        ]:
+            if (
+                is_concrete_capability_value(value)
+                and str(value).casefold() not in allowed
+            ):
+                self.error(
+                    "ASSISTANT_CONTEXT_CACHE_VALUE",
+                    f"assistant surface {surface_id} context_caching.{label} is invalid",
+                    relpath,
+                )
+        if caching.get("stable_prefix_ordering") is not True:
+            self.error(
+                "ASSISTANT_CONTEXT_CACHE_PREFIX",
+                f"assistant surface {surface_id} must preserve stable-prefix ordering",
+                relpath,
+            )
+        if caching.get("context_window_reduction") is not False:
+            self.error(
+                "ASSISTANT_CONTEXT_CACHE_WINDOW_CLAIM",
+                f"assistant surface {surface_id} must not claim caching reduces context-window occupancy",
+                relpath,
+            )
+        if caching.get("fallback") != CACHE_FALLBACK:
+            self.error(
+                "ASSISTANT_CONTEXT_CACHE_FALLBACK",
+                f"assistant surface {surface_id} must use {CACHE_FALLBACK} when caching is unavailable",
+                relpath,
+            )
+        if (
+            str(cache_route).casefold() == "supported"
+            and str(provider_mode).casefold() == "explicit"
+            and str(control_exposure).casefold() != "supported"
+        ):
+            self.error(
+                "ASSISTANT_CONTEXT_CACHE_CONTROL",
+                f"assistant surface {surface_id} cannot claim explicit-only caching without client controls",
+                relpath,
+            )
+        route_state = str(cache_route).casefold()
+        mode_state = str(provider_mode).casefold()
+        if (
+            route_state == "supported" and mode_state in {"unsupported", "unknown"}
+        ) or (
+            route_state == "unsupported"
+            and mode_state in {"automatic", "explicit", "both"}
+        ):
+            self.error(
+                "ASSISTANT_CONTEXT_CACHE_STATE_CONFLICT",
+                f"assistant surface {surface_id} cache route and provider mode conflict",
+                relpath,
+            )
 
     def target_path(self, relpath: str) -> Path:
         candidate = self.target / relpath

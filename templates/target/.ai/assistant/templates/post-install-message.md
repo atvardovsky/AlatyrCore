@@ -72,6 +72,11 @@ Entry points:
 <!-- /alatyr:scaffold-fragment -->
 <!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/assistant-capabilities.json"]} -->
 - `.ai/assistant/assistant-capabilities.json`
+- For the selected assistant surface, resolve its provider/model cache mode,
+  exposed controls, telemetry, and freshness from the indexed capability
+  record. Keep stable semantic context before task-specific context, but use
+  bounded routing normally when caching is unsupported or unknown. Do not
+  treat cached input as removed from the model context window.
 <!-- /alatyr:scaffold-fragment -->
 <!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/delegation-policy.json",".ai/assistant/workers/role-catalog.json",".ai/assistant/prompts/worker-orchestration.md"]} -->
 - `.ai/assistant/delegation-policy.json`, `.ai/assistant/workers/role-catalog.json`, and `.ai/assistant/prompts/worker-orchestration.md` when subagent delegation is enabled

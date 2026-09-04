@@ -34,6 +34,11 @@ Future assistant bootstrap:
 - Preserve target-owned support classifications, accepted relationships,
   candidates, and generator bindings. Rebuild optional reverse/generation
   indexes, then generate `.ai/support-state.json` last.
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/assistant-capabilities.json"]} -->
+- Preserve selected assistant/provider capability evidence. Recheck provider
+  cache mode, exposed client controls and telemetry, and freshness before
+  using or reporting caching; otherwise retain bounded-routing fallback.
+<!-- /alatyr:scaffold-fragment -->
 - Use the resolved core semantic definitions once, follow only selected index
   branches, and load canonical owner prose for unresolved or conflicting terms.
   Report stale entries, omitted live references, and fallback events.

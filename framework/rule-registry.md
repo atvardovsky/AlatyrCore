@@ -66,9 +66,14 @@ fragments, explicit task classification, and the smallest task profile through
 an aligned context router; keep bootstrap outside assistant catalog content
 ownership and rebuild installed catalogs before bootstrap to prevent circular
 digests; resolve compact terms losslessly with versioned owner-linked
-definitions and canonical-prose fallback; use support-state differences and the
-consistency reverse index to select only relevant graph shards while keeping
-redundant portable explanation conditional; apply bounded two-stage
+definitions and canonical-prose fallback; order reusable framework and project
+guidance before selected task context and volatile state, record stable-prefix
+and dynamic-tail packet digests, use provider caching only from current
+selected-client evidence, and preserve bounded routing when caching is hidden
+or unavailable; never treat caching as context-window reduction or claim cache
+savings without observed host/provider telemetry; use support-state differences
+and the consistency reverse index to select only relevant graph shards while
+keeping redundant portable explanation conditional; apply bounded two-stage
 project-guidance delivery from profile plus a stronger area, dependency, fact,
 contract, path, symbol, or issue signal; record packet identity plus planned,
 resolved, and observably delivered ordered guidance identities with
@@ -483,8 +488,12 @@ Installed owner: `.ai/framework/bridge-capability-matrix.md`
 Commitment: Keep bridge files thin, route every supported assistant through the
 generated bootstrap and gate indexes plus current-scope action authorization,
 record loading behavior, permission model, alias routing, subagent
-launch/model-override/parallelism capability, limitations, and conformance
-checks, use a provider-neutral prepare/invoke-or-manual-import/collect/validate
+launch/model-override/parallelism capability, and per-surface
+model-provider/cache mode, client control/telemetry exposure, stable-prefix,
+fallback, freshness, limitations, and conformance evidence; keep assistant
+surface separate from provider, preserve bounded routing when caching is
+unavailable, and reject unsupported cache-hit, savings, or context-reduction
+claims; use a provider-neutral prepare/invoke-or-manual-import/collect/validate
 evidence lifecycle without representing static or manual fixtures as vendor
 execution, and route selected AI infrastructure items plus enabled project,
 team, and delegation behavior through canonical target routing.

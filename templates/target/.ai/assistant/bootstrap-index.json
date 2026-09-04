@@ -9,25 +9,25 @@
     "source_worktree_state": "clean",
     "source_dirty_paths": [],
     "target_manifest": ".ai/alatyr.yaml",
-    "target_manifest_digest": "sha256:1bbf819e5d3b42bd24859949fdcb9878b33ccf66a29bccb1ae39682d9ec3526a",
+    "target_manifest_digest": "sha256:830360ccedc483ac336f87c0fafb9690d458478f5109586f4fd6c90ff105db54",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.51",
-    "adapter_schema_version": "41",
-    "template_version": "46"
+    "framework_version": "0.1.0-alpha.52",
+    "adapter_schema_version": "42",
+    "template_version": "47"
   },
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "1bbf819e5d3b42bd24859949fdcb9878b33ccf66a29bccb1ae39682d9ec3526a"
+      "sha256": "830360ccedc483ac336f87c0fafb9690d458478f5109586f4fd6c90ff105db54"
     },
     "project_map": {
       "path": ".ai/README.md",
-      "sha256": "9f0f17c105e2331fab75e9bc37d876765b007f3ca7cbe2df641a9f23037746ee"
+      "sha256": "732f1e3b2ae8531850463670521036a9703cc5f50ecffe118f90705450f98b4d"
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",
-      "sha256": "d3a7c4347c21eb5321a6d5c3a0e4e60314d35f07dfcb6601051fd0557054ad8e"
+      "sha256": "d57d18b1d1e1c072a6c980f0898f2163fa8e8ae587fa7bebe6726a85e5b0731f"
     },
     "semantic_codebook": {
       "path": ".ai/framework/semantics/index.json",
@@ -90,7 +90,7 @@
     "fallback": "load the referenced canonical owner and do not infer a missing stale conflicting cyclic or unsupported compact term"
   },
   "context_packet": {
-    "schema_version": 1,
+    "schema_version": 2,
     "template": ".ai/assistant/templates/context-packet.json",
     "receipt_required_for": [
       "budget exceeded",

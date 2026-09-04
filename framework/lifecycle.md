@@ -274,11 +274,13 @@ Before upgrading framework files in a target project:
     historical plan/packet/result evidence. Never replace them with source
     placeholders or assume a newly documented model or worker format is
     available on the installed client.
-    Preserve target instruction-loading, skill, permission, diagram, and
-    delegation evidence by assistant ID. Migrate capability records to the
-    current schema and add new source surfaces as unknown; never replace
-    selected client/runtime facts with template placeholders or evidence from
-    another branch, client, or runtime variant.
+    Preserve target instruction-loading, skill, permission, context-caching,
+    diagram, and delegation evidence by assistant ID. Migrate capability
+    records to the current schema and add new source surfaces as unknown;
+    never replace selected assistant, provider, model, client/runtime, cache
+    control, or telemetry facts with template placeholders or evidence from
+    another branch, client, account, or runtime variant. If caching cannot be
+    reverified, keep the bounded-routing fallback and mark caching unknown.
 14. Recheck root assistant entry points and supported bridge files so future
     sessions can find the installation note, operation catalog, health, help,
     and routing flow.
@@ -398,6 +400,8 @@ Reject lifecycle changes that:
 - copy source project commands or business facts into framework core
 - omit migration notes for supported assistants or bridge files
 - omit bridge capability changes from upgrade evidence
+- preserve stale or unsupported provider-cache claims after the selected
+  assistant, model, account, or client changes
 - overwrite active team records from a source template or omit enabled-team
   migration evidence
 - claim upgrade success without validation or residual-risk evidence

@@ -10,14 +10,14 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1184
+Catalog entries: 1190
 
 ## Families
 
 - `AI`: 16 codes.
 - `APPROVAL`: 31 codes.
 - `ARCHITECTURE`: 33 codes.
-- `ASSISTANT`: 23 codes.
+- `ASSISTANT`: 29 codes.
 - `AUTHORIZATION`: 16 codes.
 - `BACKUP`: 1 codes.
 - `BOOTSTRAP`: 9 codes.
@@ -259,6 +259,18 @@ Catalog entries: 1184
 - `ASSISTANT_CAPABILITY_STATE_VALUE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ASSISTANT_CAPABILITY_SURFACES`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_CONTEXT_CACHE_CONTROL`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_CONTEXT_CACHE_FALLBACK`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_CONTEXT_CACHE_PREFIX`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_CONTEXT_CACHE_STATE_CONFLICT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_CONTEXT_CACHE_VALUE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_CONTEXT_CACHE_WINDOW_CLAIM`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ASSISTANT_INSTRUCTION_LOADING_UNVERIFIED`
   Level: warning. Source: `tools/validate_target_adapter.py`.

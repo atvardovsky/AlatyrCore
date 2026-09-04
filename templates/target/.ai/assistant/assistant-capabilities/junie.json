@@ -1,5 +1,5 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "capability_kind": "target-assistant-surface-capabilities",
   "assistant_surface": "junie",
   "surface_state": {
@@ -64,6 +64,29 @@
     "review_triggers": [
       "client permissions, autonomy, or tool configuration changed",
       "{TARGET_PERMISSION_REVIEW_TRIGGER}"
+    ]
+  },
+  "context_caching": {
+    "route": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "provider": "{TARGET_MODEL_PROVIDER_OR_UNKNOWN}",
+    "model": "{TARGET_MODEL_OR_UNKNOWN}",
+    "provider_cache_mode": "{AUTOMATIC_EXPLICIT_BOTH_UNSUPPORTED_OR_UNKNOWN}",
+    "client_control_exposure": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "client_telemetry_exposure": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "retention": "{TARGET_CACHE_RETENTION_OR_UNKNOWN}",
+    "minimum_cacheable_tokens": "{TARGET_MINIMUM_CACHEABLE_TOKENS_OR_UNKNOWN}",
+    "stable_prefix_ordering": true,
+    "context_window_reduction": false,
+    "fallback": "bounded-context-routing",
+    "verified_at": "{ISO_DATE_OR_UNKNOWN_WITH_REASON}",
+    "client_version": "{CLIENT_VERSION_OR_UNKNOWN_WITH_REASON}",
+    "evidence": "{TARGET_PROVIDER_OR_CLIENT_EVIDENCE_OR_MANUAL_REVIEW}",
+    "expires_at": "{ISO_DATE_OR_REVIEW_TRIGGER_WITH_REASON}",
+    "review_triggers": [
+      "provider model or API changed",
+      "client cache controls or telemetry changed",
+      "stable-prefix delivery behavior changed",
+      "{TARGET_CONTEXT_CACHE_REVIEW_TRIGGER}"
     ]
   },
   "diagram_discussion": {

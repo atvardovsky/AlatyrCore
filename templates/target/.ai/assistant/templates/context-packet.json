@@ -1,6 +1,40 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "packet_kind": "alatyr-context-packet",
+  "cache_delivery": {
+    "schema_version": 1,
+    "assistant_surface": "{SELECTED_ASSISTANT_SURFACE_OR_GENERIC}",
+    "capability_record": ".ai/assistant/assistant-capabilities/{SELECTED_ASSISTANT_SURFACE_OR_GENERIC}.json",
+    "route": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "provider": "{TARGET_MODEL_PROVIDER_OR_UNKNOWN}",
+    "model": "{TARGET_MODEL_OR_UNKNOWN}",
+    "provider_cache_mode": "{AUTOMATIC_EXPLICIT_BOTH_UNSUPPORTED_OR_UNKNOWN}",
+    "client_control_exposure": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "client_telemetry_exposure": "{SUPPORTED_UNSUPPORTED_OR_UNKNOWN}",
+    "stable_prefix_sections": [
+      "semantic_terms"
+    ],
+    "dynamic_tail_sections": [
+      "profile",
+      "operation",
+      "selected_items",
+      "budget",
+      "receipt"
+    ],
+    "stable_prefix_digest": "sha256:{STABLE_PREFIX_DIGEST}",
+    "dynamic_tail_digest": "sha256:{DYNAMIC_TAIL_DIGEST}",
+    "cache_hit_required": false,
+    "context_window_reduction": false,
+    "fallback": "bounded-context-routing"
+  },
+  "semantic_terms": [
+    {
+      "id": "{ALATYR_OR_PROJECT_TERM_ID}",
+      "version": 1,
+      "definition": "{RESOLVED_DEFINITION}",
+      "canonical_owner": "{TARGET_RELATIVE_CANONICAL_OWNER}"
+    }
+  ],
   "profile": "{SELECTED_TASK_PROFILE}",
   "operation": "{SELECTED_OPERATION}",
   "task_classification": "{SMALL_TASK_STANDARD_TASK_LARGE_OR_RESUMABLE_PROTECTED_OR_SENSITIVE_OR_UNRESOLVED}",
@@ -10,14 +44,6 @@
       "path": "{TARGET_RELATIVE_PATH}",
       "content_digest": "sha256:{CONTENT_DIGEST}",
       "reason": ["{EXACT_SELECTOR_OR_EXPANSION_TRIGGER}"]
-    }
-  ],
-  "semantic_terms": [
-    {
-      "id": "{ALATYR_OR_PROJECT_TERM_ID}",
-      "version": 1,
-      "definition": "{RESOLVED_DEFINITION}",
-      "canonical_owner": "{TARGET_RELATIVE_CANONICAL_OWNER}"
     }
   ],
   "budget": {
@@ -48,14 +74,15 @@
       "source": "{HOST_TELEMETRY_PROVIDER_USAGE_ASSISTANT_REPORTED_MANUAL_OR_UNAVAILABLE}",
       "files_loaded": "{COUNT_OR_UNKNOWN}",
       "input_tokens": "{COUNT_OR_UNKNOWN}",
+      "cached_input_tokens": "{COUNT_OR_UNKNOWN}",
       "output_tokens": "{COUNT_OR_UNKNOWN}",
       "evidence": "{EVIDENCE_REFERENCE_OR_UNAVAILABLE}"
     },
-      "semantic_guidance": {
-        "schema_version": 1,
-        "planned": "{RECORDED_IDENTITIES_AND_BUNDLE_DIGEST_OR_UNAVAILABLE}",
-        "resolved": "{RECORDED_IDENTITIES_AND_BUNDLE_DIGEST_OR_UNAVAILABLE}",
-        "observed": "{EXACT_PARTIAL_OR_UNAVAILABLE_SEMANTIC_DELIVERY_EVIDENCE}"
+    "semantic_guidance": {
+      "schema_version": 1,
+      "planned": "{RECORDED_IDENTITIES_AND_BUNDLE_DIGEST_OR_UNAVAILABLE}",
+      "resolved": "{RECORDED_IDENTITIES_AND_BUNDLE_DIGEST_OR_UNAVAILABLE}",
+      "observed": "{EXACT_PARTIAL_OR_UNAVAILABLE_SEMANTIC_DELIVERY_EVIDENCE}"
     },
     "task_classification": {
       "class": "{SMALL_TASK_STANDARD_TASK_LARGE_OR_RESUMABLE_PROTECTED_OR_SENSITIVE_OR_UNRESOLVED}",

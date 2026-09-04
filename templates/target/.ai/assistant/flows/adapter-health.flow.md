@@ -49,6 +49,9 @@ Replace placeholders with target facts before accepting installation.
    checker claims, and missing referenced files.
 7. Check that supported assistant bridges route to the same compact help,
    operation index/catalog, context router, and health operation.
+   For the selected surface, report context caching as supported, unsupported,
+   or unknown from its current provider/client evidence. Do not probe a provider
+   or infer cache hits during this read-only health operation.
 8. Run a recorded target-local adapter validator when it exists and read-only
    execution is permitted. Otherwise record the check as unavailable; do not
    invent a command.

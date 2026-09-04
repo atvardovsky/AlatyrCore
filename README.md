@@ -537,9 +537,16 @@ The [module profile](framework/module-profile.md) defines required and optional
 capabilities. The [context router](framework/context-router.md) keeps routine
 tasks from loading the complete framework or project corpus.
 
+Alatyr also orders reusable guidance before task-specific and volatile context
+so OpenAI, Anthropic, Google Gemini/Vertex AI, Azure OpenAI, Amazon Bedrock, or
+another selected provider can reuse a prompt prefix when the exact model and
+client support it. Caching is optional: every supported assistant retains the
+same bounded-context fallback, and cached tokens still occupy the model context
+window. See the [bridge capability matrix](framework/bridge-capability-matrix.md).
+
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.51`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.52`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural
@@ -561,6 +568,9 @@ Important limits:
   prove actual provider behavior.
 - Context receipts separate planned and resolved source estimates from observed
   host/provider telemetry; estimates are not presented as actual token savings.
+- Provider cache support is recorded separately from assistant support. Alatyr
+  cannot claim a cache hit, exposed control, or exact saving when a client hides
+  that evidence.
 - Onboarding, quality, rework, and cost benefits require broader validation in
   real teams and projects.
 - The generated [evidence status](conformance/evidence-status.json) records

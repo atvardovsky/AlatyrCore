@@ -89,6 +89,61 @@ def write_json(path: Path, data: object) -> None:
     path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
 
 
+def check_context_cache_regressions(
+    target: Path,
+    manifest: object,
+    record_path: Path,
+    record: dict[str, object],
+    failures: list[str],
+) -> None:
+    permissions = record["tool_permissions"]
+    assert isinstance(permissions, dict)
+    permissions["alatyr_authorization_separate"] = False
+    write_json(record_path, record)
+    permission_validator = validator(target)
+    permission_validator.check_assistant_instruction_capabilities(manifest)
+    if "ASSISTANT_PERMISSION_AUTHORIZATION_CONFLICT" not in {
+        finding.code for finding in permission_validator.findings
+    }:
+        failures.append("client permissions must not grant Alatyr authorization")
+    permissions["alatyr_authorization_separate"] = True
+
+    caching = record["context_caching"]
+    assert isinstance(caching, dict)
+    caching["provider_cache_mode"] = "explicit"
+    write_json(record_path, record)
+    cache_control_validator = validator(target)
+    cache_control_validator.check_assistant_instruction_capabilities(manifest)
+    if "ASSISTANT_CONTEXT_CACHE_CONTROL" not in {
+        finding.code for finding in cache_control_validator.findings
+    }:
+        failures.append(
+            "explicit-only provider caching must require exposed client controls"
+        )
+
+    caching["provider_cache_mode"] = "automatic"
+    caching["context_window_reduction"] = True
+    write_json(record_path, record)
+    cache_claim_validator = validator(target)
+    cache_claim_validator.check_assistant_instruction_capabilities(manifest)
+    if "ASSISTANT_CONTEXT_CACHE_WINDOW_CLAIM" not in {
+        finding.code for finding in cache_claim_validator.findings
+    }:
+        failures.append("context caching must not claim context-window reduction")
+    caching["context_window_reduction"] = False
+
+    caching["provider_cache_mode"] = "unsupported"
+    write_json(record_path, record)
+    cache_state_validator = validator(target)
+    cache_state_validator.check_assistant_instruction_capabilities(manifest)
+    if "ASSISTANT_CONTEXT_CACHE_STATE_CONFLICT" not in {
+        finding.code for finding in cache_state_validator.findings
+    }:
+        failures.append("supported cache routes must reject unsupported provider mode")
+    caching["provider_cache_mode"] = "automatic"
+    write_json(record_path, record)
+
+
 def main() -> int:
     failures: list[str] = []
     parsed_registry = parse_registry_fact_entries(
@@ -248,6 +303,20 @@ def main() -> int:
                 "effective_restrictions": "fixture read/write prompt",
                 "alatyr_authorization_separate": True,
             },
+            "context_caching": {
+                **evidence,
+                "route": "supported",
+                "provider": "fixture-provider",
+                "model": "fixture-model",
+                "provider_cache_mode": "automatic",
+                "client_control_exposure": "unsupported",
+                "client_telemetry_exposure": "supported",
+                "retention": "fixture-session",
+                "minimum_cacheable_tokens": "1",
+                "stable_prefix_ordering": True,
+                "context_window_reduction": False,
+                "fallback": "bounded-context-routing",
+            },
             "diagram_discussion": {},
             "subagent_delegation": {},
         }
@@ -307,18 +376,14 @@ def main() -> int:
             failures.append("supported assistant route must require observed auto-load")
 
         instruction_record["instruction_loading"]["auto_load_observed"] = "yes"
-        instruction_record["tool_permissions"][
-            "alatyr_authorization_separate"
-        ] = False
-        write_json(instruction_path, instruction_record)
-        permission_validator = validator(instruction_target)
-        permission_validator.check_assistant_instruction_capabilities(
-            instruction_manifest
+        instruction_record["tool_permissions"]["alatyr_authorization_separate"] = True
+        check_context_cache_regressions(
+            instruction_target,
+            instruction_manifest,
+            instruction_path,
+            instruction_record,
+            failures,
         )
-        if "ASSISTANT_PERMISSION_AUTHORIZATION_CONFLICT" not in {
-            finding.code for finding in permission_validator.findings
-        }:
-            failures.append("client permissions must not grant Alatyr authorization")
 
         inactive_bridge_target = target / "inactive-assistant-bridge"
         (inactive_bridge_target / ".ai/assistant/assistant-capabilities").mkdir(

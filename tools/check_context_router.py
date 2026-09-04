@@ -189,8 +189,8 @@ def check_context_packet(router: dict[str, Any], failures: list[str]) -> None:
     if not isinstance(packet, dict):
         failures.append("context_packet must be an object")
         return
-    if packet.get("schema_version") != 1:
-        failures.append("context_packet.schema_version must be 1")
+    if packet.get("schema_version") != 2:
+        failures.append("context_packet.schema_version must be 2")
     if packet.get("template") != ".ai/assistant/templates/context-packet.json":
         failures.append("context_packet.template is invalid")
     required_for = packet.get("receipt_required_for")
@@ -206,6 +206,7 @@ def check_context_packet(router: dict[str, Any], failures: list[str]) -> None:
     required_packet_fields = {
         "schema_version",
         "packet_kind",
+        "cache_delivery",
         "profile",
         "operation",
         "task_classification",
@@ -219,6 +220,16 @@ def check_context_packet(router: dict[str, Any], failures: list[str]) -> None:
     }
     if set(packet_template) != required_packet_fields:
         failures.append("context packet template fields are invalid")
+    cache_delivery = packet_template.get("cache_delivery")
+    if not isinstance(cache_delivery, dict):
+        failures.append("context packet template must include cache_delivery")
+    else:
+        if cache_delivery.get("cache_hit_required") is not False:
+            failures.append("context caching must not be required for correctness")
+        if cache_delivery.get("context_window_reduction") is not False:
+            failures.append("context caching must not claim context-window reduction")
+        if cache_delivery.get("fallback") != "bounded-context-routing":
+            failures.append("context caching must fall back to bounded routing")
     receipt_shape = packet_template.get("receipt")
     if not isinstance(receipt_shape, dict):
         failures.append("context packet template must include receipt object")
@@ -252,6 +263,31 @@ def check_context_packet(router: dict[str, Any], failures: list[str]) -> None:
     ]:
         if not isinstance(limitations, list) or required_limitation not in limitations:
             failures.append(f"context packet limitations missing {required_limitation}")
+
+
+def check_cache_aware_delivery(router: dict[str, Any], failures: list[str]) -> None:
+    cache_delivery = router.get("cache_aware_delivery")
+    if not isinstance(cache_delivery, dict):
+        failures.append("cache_aware_delivery must be an object")
+        return
+    expected_values = {
+        "schema_version": 1,
+        "provider_capability_index": ".ai/assistant/assistant-capabilities.json",
+        "cache_hit_required": False,
+        "context_window_reduction": False,
+        "fallback": "bounded-context-routing",
+    }
+    for field, expected in expected_values.items():
+        if cache_delivery.get(field) != expected:
+            failures.append(f"cache_aware_delivery.{field} must be {expected}")
+    for field in ["stable_prefix_order", "dynamic_tail_order"]:
+        value = cache_delivery.get(field)
+        if not isinstance(value, list) or not value:
+            failures.append(f"cache_aware_delivery.{field} must be a non-empty list")
+    if "observed host or provider" not in str(
+        cache_delivery.get("telemetry_policy", "")
+    ):
+        failures.append("cache_aware_delivery telemetry must require observed evidence")
 
 
 def check_task_classification(router: dict[str, Any], failures: list[str]) -> None:
@@ -508,6 +544,7 @@ def main() -> int:
             failures.append("semantic_codebook.fallback must name canonical owner fallback")
 
     check_context_packet(router, failures)
+    check_cache_aware_delivery(router, failures)
     check_task_classification(router, failures)
     check_task_decomposition(router, failures)
 

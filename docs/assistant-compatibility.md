@@ -49,7 +49,8 @@ plan exist.
 
 Static admission and actual support are separate. A selected target surface
 records instruction loading, skill source and activation, client permissions,
-diagram behavior, and delegation in its schema-3 capability record. That record
+provider context caching, diagram behavior, and delegation in its schema-4
+capability record. That record
 also separates whether the surface is advertised, selected, supported,
 verified, and fresh for the target. Client permissions and auto-approval never
 grant Alatyr action authorization. Exact-client evidence is required before
@@ -151,6 +152,23 @@ registry. Execution mechanics differ, and no capability is copied from one
 product, runtime variant, or client version to another.
 The portable term `subagent` means a bounded worker packet, not a dependency
 on an OpenAI API or client feature.
+
+## Context Caching Across Providers
+
+Alatyr applies one portable strategy to every supported assistant: preserve a
+stable instruction/policy prefix, append selected task context and volatile
+state, and keep bounded context routing as the required fallback. The selected
+assistant capability record separately identifies its model provider and model.
+It records automatic or explicit provider support, whether the client exposes
+controls and usage telemetry, retention/minimum-size evidence, and freshness.
+
+The capability shape covers OpenAI, Anthropic, Google Gemini/Vertex AI,
+Microsoft Azure OpenAI, Amazon Bedrock, and other evidence-backed providers.
+This does not claim that every model, API, subscription, region, or coding-agent
+client exposes caching. A client that hides provider behavior remains
+`unknown`; Alatyr still routes compact context and makes no cache-hit or exact
+savings claim. Caching never reduces context-window occupancy and never replaces
+logical-integrity reasoning.
 
 Provider-native worker definitions are installed only after target evidence
 confirms that exact client supports project-owned definitions. They remain

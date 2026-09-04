@@ -335,6 +335,7 @@ def build_agent_entry_packet(
                 "paths": [PACKET_PATH.as_posix()],
             },
         ],
+        "cache_aware_delivery": _object(router.get("cache_aware_delivery")),
         "budget_summary": {
             "bootstrap": _object(context_budgets.get("bootstrap")),
             "profile_default": _object(context_budgets.get("profile_default")),

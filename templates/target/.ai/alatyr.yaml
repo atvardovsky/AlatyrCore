@@ -80,7 +80,7 @@ context_routing:
   recursive_index_max_depth: 8
   semantic_codebook_schema_version: 1
   semantic_preload_policy: "core definitions are embedded in the generated bootstrap; domain and project term shards remain conditional"
-  context_packet_schema_version: 1
+  context_packet_schema_version: 2
   context_packet_template: ".ai/assistant/templates/context-packet.json"
 modules:
   core_profile: "{COMPLETE_OR_MISSING_GAPS}"

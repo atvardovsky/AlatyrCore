@@ -684,8 +684,9 @@ py -3 .\tools\check_bridge_capability_matrix.py
 ## Assistant Capability And Admission Checks
 
 `check_assistant_capability_contract.py` validates every target surface record
-against the schema-3 instruction-loading, skill, client-permission, diagram,
-and delegation evidence contract. `check_assistant_surface_audits.py` then
+against the schema-4 instruction-loading, skill, client-permission, context-
+caching, diagram, and delegation evidence contract.
+`check_assistant_surface_audits.py` then
 checks all canonical surfaces against source lifecycle, official instruction
 paths, precedence risks, static bridge controls, provider-neutral conformance,
 and explicit runtime limits. These checks prove source integration readiness,

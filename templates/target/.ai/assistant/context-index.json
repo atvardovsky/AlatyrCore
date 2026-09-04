@@ -82,8 +82,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1982,
-      "content_digest": "sha256:ec8f74c0ae6a9b364d2478cdabb292310e34ff291950bbcc6e10b444fcec5cc6"
+      "estimated_words": 2146,
+      "content_digest": "sha256:5fa488fac846a35cb75005643353e3071796dfe470bc3bc3a255302d09f7d3ef"
     },
     {
       "id": "assistant.content.consistency-reverse-index-json",
@@ -152,8 +152,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1395,
-      "content_digest": "sha256:d3a7c4347c21eb5321a6d5c3a0e4e60314d35f07dfcb6601051fd0557054ad8e"
+      "estimated_words": 1494,
+      "content_digest": "sha256:d57d18b1d1e1c072a6c980f0898f2163fa8e8ae587fa7bebe6726a85e5b0731f"
     },
     {
       "id": "assistant.content.contour-md",
@@ -223,8 +223,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1932,
-      "content_digest": "sha256:f2abd49bb0e7a80f2bc36161c64a938a11b1854a5e8da5e303537a5c827d1baf"
+      "estimated_words": 2014,
+      "content_digest": "sha256:aa0de1a33ac1b60b1d26893f05bd283e4aae245ae84b8acbbf3bc8e4c257df72"
     },
     {
       "id": "assistant.content.help-md",
@@ -461,7 +461,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 583,
-      "content_digest": "sha256:19c8533d48d5fcec4ba874895384be77005b952e0bec71c52d75bdaa4430668a"
+      "content_digest": "sha256:c28c2df3288f8b27343de2e7a7d29c897293994f229d171aa2cf1d0251b3d7dc"
     },
     {
       "id": "assistant.section.change-packages",
@@ -536,7 +536,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 1312,
-      "content_digest": "sha256:710ec8a10952a707759560d335df2cd75a55620c8b365c1d315b50d4ae3e21cd"
+      "content_digest": "sha256:07895ed710f4827b25fd85a0fceb36bcb56f987aacd9c26fc934c7a27ba57356"
     },
     {
       "id": "assistant.section.gates",
@@ -626,7 +626,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 1988,
-      "content_digest": "sha256:5fb5ddaaec1e90edaf9f48ea3d249c5d73e09710128a302196d0f9f9dd9fe362"
+      "content_digest": "sha256:2944239af2d3fba87d86a74e0423acf956840327e9d6be5b843a1af45bfd13d3"
     },
     {
       "id": "assistant.section.workers",

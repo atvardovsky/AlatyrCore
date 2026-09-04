@@ -286,10 +286,17 @@ Include `.ai/assistant/bridge-capability-matrix.md` when more than one
 assistant surface is supported or bridge behavior may differ.
 Include `.ai/assistant/assistant-capabilities.json` as the compact runtime
 index. Store instruction loading, skills, tool-permission separation, rich
-diagram enums, ASCII baseline, delegation, client version, verification,
-expiry or review triggers, and evidence in one schema-3 record per installed
+diagram enums, ASCII baseline, delegation, context-cache provider/client
+separation, client version, verification, expiry or review triggers, and
+evidence in one schema-4 record per installed
 assistant surface. Generate or check the index from those records. New source
 surfaces start unknown until exact-client target evidence is reviewed.
+
+For context caching, record the selected provider/model, automatic or explicit
+provider mode, client control and telemetry exposure, retention/minimum-size
+evidence, and freshness. Preserve stable-prefix-first ordering and bounded
+context routing for every surface. Do not claim that caching reduces context
+window use or report exact savings without observed telemetry.
 
 Include `.ai/assistant/templates/ascii-diagram.md` for the required portable
 view. Record preferred and hard width limits, connector meanings, chart scale
@@ -503,6 +510,8 @@ metadata.
 - Blocking criteria:
 - Maturity gaps:
 - Bridge capability matrix:
+- Selected provider/model and context-cache capability evidence:
+- Stable-prefix ordering and bounded-context fallback:
 - Framework baseline or source:
 - Framework version:
 - Adapter schema version:

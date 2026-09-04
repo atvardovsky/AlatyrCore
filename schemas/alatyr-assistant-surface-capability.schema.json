@@ -10,17 +10,19 @@
     "instruction_loading",
     "skills",
     "tool_permissions",
+    "context_caching",
     "diagram_discussion",
     "subagent_delegation"
   ],
   "properties": {
-    "schema_version": {"const": 3},
+    "schema_version": {"const": 4},
     "capability_kind": {"const": "target-assistant-surface-capabilities"},
     "assistant_surface": {"type": "string", "minLength": 1},
     "surface_state": {"$ref": "#/definitions/surfaceState"},
     "instruction_loading": {"$ref": "#/definitions/instructionLoading"},
     "skills": {"$ref": "#/definitions/skills"},
     "tool_permissions": {"$ref": "#/definitions/toolPermissions"},
+    "context_caching": {"$ref": "#/definitions/contextCaching"},
     "diagram_discussion": {"type": "object"},
     "subagent_delegation": {"type": "object"}
   },
@@ -106,6 +108,40 @@
             "client_permission_mode": {"type": "string", "minLength": 1},
             "effective_restrictions": {"type": "string", "minLength": 1},
             "alatyr_authorization_separate": {"const": true}
+          }
+        }
+      ]
+    },
+    "contextCaching": {
+      "allOf": [
+        {"$ref": "#/definitions/evidence"},
+        {
+          "type": "object",
+          "required": [
+            "route",
+            "provider",
+            "model",
+            "provider_cache_mode",
+            "client_control_exposure",
+            "client_telemetry_exposure",
+            "retention",
+            "minimum_cacheable_tokens",
+            "stable_prefix_ordering",
+            "context_window_reduction",
+            "fallback"
+          ],
+          "properties": {
+            "route": {"type": "string", "minLength": 1},
+            "provider": {"type": "string", "minLength": 1},
+            "model": {"type": "string", "minLength": 1},
+            "provider_cache_mode": {"type": "string", "minLength": 1},
+            "client_control_exposure": {"type": "string", "minLength": 1},
+            "client_telemetry_exposure": {"type": "string", "minLength": 1},
+            "retention": {"type": "string", "minLength": 1},
+            "minimum_cacheable_tokens": {"type": "string", "minLength": 1},
+            "stable_prefix_ordering": {"const": true},
+            "context_window_reduction": {"const": false},
+            "fallback": {"const": "bounded-context-routing"}
           }
         }
       ]

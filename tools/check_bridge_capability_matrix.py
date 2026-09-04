@@ -43,6 +43,8 @@ REQUIRED_FIELDS = [
     "Routes code-documentation aliases:",
     "Routes project-vocabulary aliases:",
     "Routes test-first aliases:",
+    "Context caching:",
+    "Context caching capability record:",
     "Routes subagent delegation:",
     "Subagent delegation capability record:",
     "Diagram capability record:",
@@ -70,6 +72,7 @@ PLACEHOLDER_FIELDS = [
     "Routes code-documentation aliases:",
     "Routes project-vocabulary aliases:",
     "Routes test-first aliases:",
+    "Context caching:",
     "Routes subagent delegation:",
     "Routes `alatyr-ai-inventory`:",
     "Routes `alatyr-suggest-ai`:",
@@ -178,6 +181,12 @@ def main() -> int:
         if capability_line != f"Diagram capability record: `{expected_capability}`":
             failures.append(
                 f"{surface_id} diagram capability record must be {expected_capability}"
+            )
+        cache_line = field_line(block, "Context caching capability record:")
+        if cache_line != f"Context caching capability record: `{expected_capability}`":
+            failures.append(
+                f"{surface_id} context caching capability record must be "
+                f"{expected_capability}"
             )
         delegation_line = field_line(
             block, "Subagent delegation capability record:"

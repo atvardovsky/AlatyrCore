@@ -245,6 +245,26 @@ through the selected task profile instead of being mandatory for every task.
 The complete gate checklist remains lazy unless ambiguity or a full audit
 requires it.
 
+## Cache-Aware Delivery
+
+Every selected profile uses the same provider-neutral delivery order: stable
+assistant/framework/project guidance first, selected canonical evidence next,
+and volatile task, revision, timestamp, and runtime data last. This order makes
+repeated prefixes eligible for provider caching where the selected client and
+model support it. It does not enlarge a profile to reach a provider minimum and
+does not make a cache hit part of correctness.
+
+Read context-cache capability only from the selected surface record under
+`.ai/assistant/assistant-capabilities/`. The record separates assistant client,
+model provider, model, provider cache mode, exposed controls, exposed telemetry,
+retention, and minimum cacheable size. Unknown or stale evidence uses the same
+bounded context route without cache claims. Cached tokens still count as model
+context, so profile budgets and lazy expansion remain unchanged.
+
+Resolved context packets record stable-prefix and dynamic-tail digests. Exact
+cache-hit, token, latency, or monetary claims require observed host/provider
+telemetry; deterministic digests alone are only identity evidence.
+
 ## Context Budgets And Receipts
 
 The router should define maximum bootstrap files/words and default profile

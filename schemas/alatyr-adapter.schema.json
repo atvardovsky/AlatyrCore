@@ -84,7 +84,7 @@
         "recursive_index_max_depth": {"type": "integer", "minimum": 1},
         "semantic_codebook_schema_version": {"const": 1},
         "semantic_preload_policy": {"type": "string", "minLength": 1},
-        "context_packet_schema_version": {"const": 1},
+        "context_packet_schema_version": {"const": 2},
         "context_packet_template": {"type": "string", "minLength": 1}
       }
     },

@@ -288,10 +288,11 @@ In a typical target repository:
    profile descriptors, operation catalog and its checked compact index,
    context profiles, module profile, task-specific maturity profile, bridge
    capability matrix, generated assistant-capability index and installed-
-   surface schema-3 records, and target workflows/gates. For every selected
+   surface schema-4 records, and target workflows/gates. For every selected
    assistant, record the exact runtime, instruction entry path, competing
    sources, toggle/configuration state, observed loading, skills, client
-   permissions, diagrams, delegation, and freshness evidence. Keep unknown
+   permissions, model provider, context-cache mode and client exposure,
+   diagrams, delegation, and freshness evidence. Keep unknown
    runtime facts unknown and keep client permissions separate from Alatyr
    authorization. Keep the catalog outside routine routing and resolve exact
    aliases through the compact index. Include the
@@ -299,6 +300,11 @@ In a typical target repository:
    promotion and route-shard templates, semantic-guidance receipt fields, and
    mapped/known-gap/unknown coverage in every accepted core profile. Keep route
    shards lazy.
+   Preserve stable-prefix-first context order for every surface. Use provider
+   cache controls only when the exact selected client exposes them, and require
+   observed host/provider telemetry before reporting cache hits or exact
+   savings. Bounded context routing remains the fallback and cached tokens do
+   not reduce the context budget.
    Generate recursive indexes from the exact projected installation: every
    installed routable file appears once, child indexes form an acyclic
    single-parent tree within the configured depth, and word estimates and

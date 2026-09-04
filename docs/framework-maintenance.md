@@ -25,8 +25,9 @@ Use this guide when changing Alatyr Core itself.
 - Module-profile contract change: update `framework/`,
   `templates/target/.ai/assistant/module-profile.md`, installer docs,
   manifest template, checker rules, README, and changelog when affected.
-- Source-of-truth registry, task-specific maturity, bridge capability, or
-  migration-note contract change: update `framework/`, `installer/`,
+- Source-of-truth registry, task-specific maturity, bridge capability,
+  provider context-caching capability, or migration-note contract change:
+  update `framework/`, `installer/`,
   `templates/target`, assistant compatibility docs, checker rules, README, and
   changelog when affected.
 - Rule registry, framework pack, scaffolding helper, conformance fixture,
@@ -381,8 +382,9 @@ Before accepting a change, check:
   and final evidence fields.
 - target bridge capability matrix baseline entries include assistant surface,
   bridge paths, auto-load behavior, instruction priority, supported surfaces,
-  tool permission model, help, team-operation, and AI-infrastructure alias
-  routing, known limitations, and conformance check fields.
+  tool permission model, selected provider/model cache behavior and capability
+  record, help, team-operation, and AI-infrastructure alias routing, known
+  limitations, and conformance check fields.
 - optional team rule, policy, local identity, active-work index, registry/task
   schemas, backend contract, optimistic concurrency, lazy overlay, flows,
   records, gate, skill, catalog, module profile, installation/update migration,

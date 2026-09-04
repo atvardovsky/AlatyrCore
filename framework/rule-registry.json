@@ -5,7 +5,7 @@
       "category": "CONTEXT",
       "owner": "framework/context-profiles.md",
       "rule_ids": ["ALATYR-CONTEXT-001"],
-      "derived_surfaces": ["README source context", "installation source context", "target context profiles", "target context router", "recursive contour context indexes", "semantic codebook and resolved context packets", "task classification and task-scale overlays", "operation packet context receipts", "ordered semantic-guidance identity and bundle receipts", "long-task semantic revalidation", "consistency relationship routing", "session bootstrap instructions", "AI infrastructure capability and recommendation routing"]
+      "derived_surfaces": ["README source context", "installation source context", "target context profiles", "target context router", "recursive contour context indexes", "semantic codebook and resolved context packets", "cache-aware stable-prefix and dynamic-tail delivery", "task classification and task-scale overlays", "operation packet context receipts", "ordered semantic-guidance identity and bundle receipts", "long-task semantic revalidation", "consistency relationship routing", "session bootstrap instructions", "AI infrastructure capability and recommendation routing"]
     },
     {
       "category": "SOURCE",
@@ -143,7 +143,7 @@
       "category": "BRIDGE",
       "owner": "framework/bridge-capability-matrix.md",
       "rule_ids": ["ALATYR-BRIDGE-001"],
-      "derived_surfaces": ["assistant bridge templates", "bridge renderer", "bridge capability target template", "cross-assistant AI item routing"]
+      "derived_surfaces": ["assistant bridge templates", "bridge renderer", "bridge capability target template", "per-surface provider cache capability evidence", "cross-assistant AI item routing"]
     },
     {
       "category": "LIFECYCLE",
@@ -187,7 +187,7 @@
       "id": "ALATYR-CONTEXT-001",
       "category": "CONTEXT",
       "canonical_source": "framework/context-profiles.md",
-      "summary": "Use a generated hash-bound bootstrap index, recursively navigated contour indexes, a small context-loaded semantic codebook, routed gate fragments, explicit task classification, and the smallest task profile through an aligned context router; keep bootstrap outside assistant catalog content ownership and rebuild installed catalogs before bootstrap to prevent circular digests; resolve compact terms losslessly with versioned owner-linked definitions and canonical-prose fallback; use support-state differences and the consistency reverse index to select only relevant graph shards while keeping redundant portable explanation conditional; apply bounded two-stage project-guidance delivery from profile plus a stronger area, dependency, fact, contract, path, symbol, or issue signal; record packet identity plus planned, resolved, and observably delivered ordered guidance identities with deterministic digests while never claiming model comprehension; revalidate changed bundles before protected implementation, material decisions, final validation, and final evidence; separate total, portable, and reserved target context budgets; record expansion only when boundaries or conflicts require it; and keep unrelated branches, knowledge, optional modules, evidence history, relationship candidates, debug records, delegated execution, complete checklists, and full team detail lazy.",
+      "summary": "Use a generated hash-bound bootstrap index, recursively navigated contour indexes, a small context-loaded semantic codebook, routed gate fragments, explicit task classification, and the smallest task profile through an aligned context router; keep bootstrap outside assistant catalog content ownership and rebuild installed catalogs before bootstrap to prevent circular digests; resolve compact terms losslessly with versioned owner-linked definitions and canonical-prose fallback; order reusable framework and project guidance before selected task context and volatile state, record stable-prefix and dynamic-tail packet digests, use provider caching only from current selected-client evidence, and preserve bounded routing when caching is hidden or unavailable; never treat caching as context-window reduction or claim cache savings without observed host/provider telemetry; use support-state differences and the consistency reverse index to select only relevant graph shards while keeping redundant portable explanation conditional; apply bounded two-stage project-guidance delivery from profile plus a stronger area, dependency, fact, contract, path, symbol, or issue signal; record packet identity plus planned, resolved, and observably delivered ordered guidance identities with deterministic digests while never claiming model comprehension; revalidate changed bundles before protected implementation, material decisions, final validation, and final evidence; separate total, portable, and reserved target context budgets; record expansion only when boundaries or conflicts require it; and keep unrelated branches, knowledge, optional modules, evidence history, relationship candidates, debug records, delegated execution, complete checklists, and full team detail lazy.",
       "applies_to": ["all installed adapter tasks"],
       "enforcement": "required"
     },
@@ -413,7 +413,7 @@
       "id": "ALATYR-BRIDGE-001",
       "category": "BRIDGE",
       "canonical_source": "framework/bridge-capability-matrix.md",
-      "summary": "Keep bridge files thin, route every supported assistant through the generated bootstrap and gate indexes plus current-scope action authorization, record loading behavior, permission model, alias routing, subagent launch/model-override/parallelism capability, limitations, and conformance checks, use a provider-neutral prepare/invoke-or-manual-import/collect/validate evidence lifecycle without representing static or manual fixtures as vendor execution, and route selected AI infrastructure items plus enabled project, team, and delegation behavior through canonical target routing.",
+      "summary": "Keep bridge files thin, route every supported assistant through the generated bootstrap and gate indexes plus current-scope action authorization, record loading behavior, permission model, alias routing, subagent launch/model-override/parallelism capability, and per-surface model-provider/cache mode, client control/telemetry exposure, stable-prefix, fallback, freshness, limitations, and conformance evidence; keep assistant surface separate from provider, preserve bounded routing when caching is unavailable, and reject unsupported cache-hit, savings, or context-reduction claims; use a provider-neutral prepare/invoke-or-manual-import/collect/validate evidence lifecycle without representing static or manual fixtures as vendor execution, and route selected AI infrastructure items plus enabled project, team, and delegation behavior through canonical target routing.",
       "applies_to": ["supported assistant surfaces"],
       "enforcement": "required"
     },

@@ -11,6 +11,7 @@ from typing import Any
 import jsonschema
 
 from target_adapter_validation.assistant_capabilities import (
+    CACHE_FALLBACK,
     CAPABILITY_INDEX_SCHEMA_VERSION,
     INDEX_STATE_EVIDENCE_STRING_FIELDS,
     INDEX_STATE_EVIDENCE_TRUE_FIELDS,
@@ -123,7 +124,12 @@ def main() -> int:
                         failures.append(
                             f"{surface_id} surface_state.{field} must be a non-empty list"
                         )
-            for section_name in ["instruction_loading", "skills", "tool_permissions"]:
+            for section_name in [
+                "instruction_loading",
+                "skills",
+                "tool_permissions",
+                "context_caching",
+            ]:
                 section = record.get(section_name)
                 if not isinstance(section, dict):
                     continue
@@ -136,6 +142,33 @@ def main() -> int:
                 failures.append(
                     f"{surface_id} client permissions must remain separate from Alatyr authorization"
                 )
+            caching = record.get("context_caching")
+            if isinstance(caching, dict):
+                for field in [
+                    "route",
+                    "provider",
+                    "model",
+                    "provider_cache_mode",
+                    "client_control_exposure",
+                    "client_telemetry_exposure",
+                    "retention",
+                    "minimum_cacheable_tokens",
+                ]:
+                    value = caching.get(field)
+                    if not isinstance(value, str) or "{" not in value:
+                        failures.append(
+                            f"{surface_id} context_caching.{field} must remain placeholder-based"
+                        )
+                if caching.get("stable_prefix_ordering") is not True:
+                    failures.append(f"{surface_id} must preserve stable-prefix ordering")
+                if caching.get("context_window_reduction") is not False:
+                    failures.append(
+                        f"{surface_id} must not claim cache-based context-window reduction"
+                    )
+                if caching.get("fallback") != CACHE_FALLBACK:
+                    failures.append(
+                        f"{surface_id} context-cache fallback must be {CACHE_FALLBACK}"
+                    )
     except (OSError, ValueError, json.JSONDecodeError, jsonschema.SchemaError) as exc:
         failures.append(str(exc))
 
@@ -144,8 +177,8 @@ def main() -> int:
             print(f"FAIL: {failure}", file=sys.stderr)
         return 1
     print(
-        "OK: checked assistant surface state plus instruction, skill, "
-        f"permission, diagram, and delegation evidence for {len(records)} surfaces"
+        "OK: checked assistant surface state plus instruction, skill, permission, "
+        f"context-cache, diagram, and delegation evidence for {len(records)} surfaces"
     )
     return 0
 

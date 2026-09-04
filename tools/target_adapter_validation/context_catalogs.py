@@ -7,6 +7,7 @@ from typing import Any, Protocol
 
 from context_catalog import (
     ContextCatalogError,
+    PACKET_SCHEMA_VERSION,
     load_codebook,
     validate_context_catalog,
 )
@@ -191,6 +192,7 @@ def validate_context_catalog_contract(sink: FindingSink, manifest: Any) -> None:
         required_packet_fields = {
             "schema_version",
             "packet_kind",
+            "cache_delivery",
             "profile",
             "operation",
             "task_classification",
@@ -204,7 +206,7 @@ def validate_context_catalog_contract(sink: FindingSink, manifest: Any) -> None:
         }
         if (
             set(packet) != required_packet_fields
-            or packet.get("schema_version") != 1
+            or packet.get("schema_version") != PACKET_SCHEMA_VERSION
             or packet.get("packet_kind") != "alatyr-context-packet"
         ):
             sink.error(
@@ -212,6 +214,56 @@ def validate_context_catalog_contract(sink: FindingSink, manifest: Any) -> None:
                 "context packet template has an unsupported contract",
                 PACKET_TEMPLATE,
             )
+        cache_delivery = packet.get("cache_delivery")
+        if not isinstance(cache_delivery, dict):
+            sink.error(
+                "CONTEXT_PACKET_TEMPLATE_INVALID",
+                "context packet template must include cache delivery evidence",
+                PACKET_TEMPLATE,
+            )
+        else:
+            required_cache_fields = {
+                "schema_version",
+                "assistant_surface",
+                "capability_record",
+                "route",
+                "provider",
+                "model",
+                "provider_cache_mode",
+                "client_control_exposure",
+                "client_telemetry_exposure",
+                "stable_prefix_sections",
+                "dynamic_tail_sections",
+                "stable_prefix_digest",
+                "dynamic_tail_digest",
+                "cache_hit_required",
+                "context_window_reduction",
+                "fallback",
+            }
+            if set(cache_delivery) != required_cache_fields:
+                sink.error(
+                    "CONTEXT_PACKET_TEMPLATE_INVALID",
+                    "context packet cache delivery fields are incomplete",
+                    PACKET_TEMPLATE,
+                )
+            if cache_delivery.get("cache_hit_required") is not False:
+                sink.error(
+                    "CONTEXT_PACKET_TEMPLATE_INVALID",
+                    "context packet must not require a provider cache hit",
+                    PACKET_TEMPLATE,
+                )
+            if cache_delivery.get("context_window_reduction") is not False:
+                sink.error(
+                    "CONTEXT_PACKET_TEMPLATE_INVALID",
+                    "context packet must not claim context-window reduction",
+                    PACKET_TEMPLATE,
+                )
+            if cache_delivery.get("fallback") != "bounded-context-routing":
+                sink.error(
+                    "CONTEXT_PACKET_TEMPLATE_INVALID",
+                    "context packet must preserve bounded context routing fallback",
+                    PACKET_TEMPLATE,
+                )
         receipt = packet.get("receipt")
         if not isinstance(receipt, dict):
             sink.error(

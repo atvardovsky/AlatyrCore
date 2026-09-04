@@ -399,6 +399,17 @@ class ContextCatalogTests(unittest.TestCase):
             max_words=20,
         )
         self.assertEqual(packet["budget"]["total_words"], 14)
+        self.assertEqual(packet["schema_version"], 2)
+        self.assertEqual(
+            packet["cache_delivery"]["capability_record"],
+            ".ai/assistant/assistant-capabilities/generic.json",
+        )
+        self.assertFalse(packet["cache_delivery"]["cache_hit_required"])
+        self.assertFalse(packet["cache_delivery"]["context_window_reduction"])
+        self.assertRegex(
+            packet["cache_delivery"]["stable_prefix_digest"],
+            r"^sha256:[0-9a-f]{64}$",
+        )
         with self.assertRaisesRegex(ContextCatalogError, "exceeds budget"):
             build_context_packet(
                 profile="code-local",
@@ -407,6 +418,46 @@ class ContextCatalogTests(unittest.TestCase):
                 semantic_terms=terms,
                 max_words=13,
             )
+
+    def test_packet_cache_prefix_is_order_independent_and_surface_specific(self) -> None:
+        terms = {
+            "alatyr:second": {
+                "version": 1,
+                "definition": "Second stable definition.",
+                "canonical_owner": "framework/second.md",
+            },
+            "alatyr:first": {
+                "version": 1,
+                "definition": "First stable definition.",
+                "canonical_owner": "framework/first.md",
+            },
+        }
+        first = build_context_packet(
+            profile="docs-local",
+            operation="review",
+            selected_items=[],
+            semantic_terms=terms,
+            max_words=20,
+            assistant_surface="codex",
+        )
+        second = build_context_packet(
+            profile="docs-local",
+            operation="review",
+            selected_items=[],
+            semantic_terms=dict(reversed(list(terms.items()))),
+            max_words=20,
+            assistant_surface="codex",
+        )
+
+        self.assertEqual(first["semantic_terms"], second["semantic_terms"])
+        self.assertEqual(
+            first["cache_delivery"]["stable_prefix_digest"],
+            second["cache_delivery"]["stable_prefix_digest"],
+        )
+        self.assertEqual(
+            first["cache_delivery"]["capability_record"],
+            ".ai/assistant/assistant-capabilities/codex.json",
+        )
 
 
 if __name__ == "__main__":

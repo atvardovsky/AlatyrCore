@@ -41,6 +41,9 @@
       "selected context item IDs and digests",
       "resolved semantic term IDs and versions",
       "context packet digest",
+      "stable prefix and dynamic tail digests",
+      "selected assistant provider cache capability",
+      "observed cache read or unavailable telemetry",
       "semantic fallback or dictionary expansion",
       "loaded files and reasons",
       "approximate context volume",
@@ -84,7 +87,7 @@
     "fallback": "load the referenced canonical owner and do not infer a missing stale conflicting cyclic or unsupported compact term"
   },
   "context_packet": {
-    "schema_version": 1,
+    "schema_version": 2,
     "template": ".ai/assistant/templates/context-packet.json",
     "receipt_required_for": [
       "budget exceeded",
@@ -94,6 +97,26 @@
       "material or protected change",
       "token or cost claim"
     ]
+  },
+  "cache_aware_delivery": {
+    "schema_version": 1,
+    "provider_capability_index": ".ai/assistant/assistant-capabilities.json",
+    "stable_prefix_order": [
+      "host-preloaded assistant instructions",
+      ".ai/assistant/bootstrap-index.json",
+      "resolved semantic preload definitions",
+      "selected stable framework and project policy"
+    ],
+    "dynamic_tail_order": [
+      "selected canonical owner evidence",
+      "current task operation and changed facts",
+      "volatile revisions hashes timestamps and runtime evidence"
+    ],
+    "provider_controls": "use only when the selected assistant capability record has current evidence that the client exposes them",
+    "telemetry_policy": "claim cache hits or exact savings only from observed host or provider usage fields",
+    "cache_hit_required": false,
+    "context_window_reduction": false,
+    "fallback": "bounded-context-routing"
   },
   "task_classification": {
     "schema_version": 1,

@@ -74,6 +74,7 @@ def replacement(name: str) -> str:
         "SUPPORTED_ASSISTANT": "codex",
         "SUPPORTED_LIMITED_UNSUPPORTED_OR_UNKNOWN": "unknown",
         "SUPPORTED_UNSUPPORTED_OR_UNKNOWN": "unknown",
+        "AUTOMATIC_EXPLICIT_BOTH_UNSUPPORTED_OR_UNKNOWN": "unknown",
         "CURRENT_STALE_EXPIRED_UNVERIFIED_OR_UNKNOWN": "unknown",
         "YES_NO_OR_UNKNOWN": "unknown",
         "TARGET_SELECTED_ASSISTANT_SURFACE_OR_GENERIC": "codex",

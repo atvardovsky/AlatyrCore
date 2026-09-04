@@ -21,6 +21,12 @@ task, packet, and result contracts. Native worker definitions are thin target
 bindings whose verified format and paths belong to the selected capability
 record; no surface inherits support claims from another.
 
+Each schema-4 surface record also separates assistant client from model
+provider and records context-cache mode, exposed controls and telemetry,
+retention/minimum-size evidence, freshness, stable-prefix ordering, and the
+bounded-context fallback. Unknown provider or client behavior remains unknown.
+Caching is optional and does not reduce context-window occupancy.
+
 ## Supported Assistant Surfaces
 
 Resolve these entries from target evidence before claiming a bridge is
@@ -50,6 +56,8 @@ Routes code-documentation aliases: `{GENERIC_ROUTES_CODE_DOCUMENTATION}`
 Routes project-vocabulary aliases: `{GENERIC_ROUTES_PROJECT_VOCABULARY}`
 Routes test-first aliases: `{GENERIC_ROUTES_TEST_FIRST}`
 Routes extension aliases: `{GENERIC_ROUTES_EXTENSIONS}`
+Context caching: `{TARGET_SURFACE_CONTEXT_CACHE_SUPPORT_AND_CLIENT_EXPOSURE}`
+Context caching capability record: `.ai/assistant/assistant-capabilities/generic.json`
 Routes subagent delegation: `{GENERIC_ROUTES_SUBAGENT_DELEGATION}`
 Subagent delegation capability record: `.ai/assistant/assistant-capabilities/generic.json`
 Diagram capability record: `.ai/assistant/assistant-capabilities/generic.json`
@@ -85,6 +93,8 @@ Routes code-documentation aliases: `{AGENTS_ROUTES_CODE_DOCUMENTATION}`
 Routes project-vocabulary aliases: `{AGENTS_ROUTES_PROJECT_VOCABULARY}`
 Routes test-first aliases: `{AGENTS_ROUTES_TEST_FIRST}`
 Routes extension aliases: `{AGENTS_ROUTES_EXTENSIONS}`
+Context caching: `{TARGET_SURFACE_CONTEXT_CACHE_SUPPORT_AND_CLIENT_EXPOSURE}`
+Context caching capability record: `.ai/assistant/assistant-capabilities/agents.json`
 Routes subagent delegation: `{AGENTS_ROUTES_SUBAGENT_DELEGATION}`
 Subagent delegation capability record: `.ai/assistant/assistant-capabilities/agents.json`
 Diagram capability record: `.ai/assistant/assistant-capabilities/agents.json`
@@ -121,6 +131,8 @@ Routes code-documentation aliases: `{CODEX_ROUTES_CODE_DOCUMENTATION}`
 Routes project-vocabulary aliases: `{CODEX_ROUTES_PROJECT_VOCABULARY}`
 Routes test-first aliases: `{CODEX_ROUTES_TEST_FIRST}`
 Routes extension aliases: `{CODEX_ROUTES_EXTENSIONS}`
+Context caching: `{TARGET_SURFACE_CONTEXT_CACHE_SUPPORT_AND_CLIENT_EXPOSURE}`
+Context caching capability record: `.ai/assistant/assistant-capabilities/codex.json`
 Routes subagent delegation: `{CODEX_ROUTES_SUBAGENT_DELEGATION}`
 Subagent delegation capability record: `.ai/assistant/assistant-capabilities/codex.json`
 Diagram capability record: `.ai/assistant/assistant-capabilities/codex.json`
@@ -156,6 +168,8 @@ Routes code-documentation aliases: `{JUNIE_ROUTES_CODE_DOCUMENTATION}`
 Routes project-vocabulary aliases: `{JUNIE_ROUTES_PROJECT_VOCABULARY}`
 Routes test-first aliases: `{JUNIE_ROUTES_TEST_FIRST}`
 Routes extension aliases: `{JUNIE_ROUTES_EXTENSIONS}`
+Context caching: `{TARGET_SURFACE_CONTEXT_CACHE_SUPPORT_AND_CLIENT_EXPOSURE}`
+Context caching capability record: `.ai/assistant/assistant-capabilities/junie.json`
 Routes subagent delegation: `{JUNIE_ROUTES_SUBAGENT_DELEGATION}`
 Subagent delegation capability record: `.ai/assistant/assistant-capabilities/junie.json`
 Diagram capability record: `.ai/assistant/assistant-capabilities/junie.json`
@@ -191,6 +205,8 @@ Routes code-documentation aliases: `{CLINE_ROUTES_CODE_DOCUMENTATION}`
 Routes project-vocabulary aliases: `{CLINE_ROUTES_PROJECT_VOCABULARY}`
 Routes test-first aliases: `{CLINE_ROUTES_TEST_FIRST}`
 Routes extension aliases: `{CLINE_ROUTES_EXTENSIONS}`
+Context caching: `{TARGET_SURFACE_CONTEXT_CACHE_SUPPORT_AND_CLIENT_EXPOSURE}`
+Context caching capability record: `.ai/assistant/assistant-capabilities/cline.json`
 Routes subagent delegation: `{CLINE_ROUTES_SUBAGENT_DELEGATION}`
 Subagent delegation capability record: `.ai/assistant/assistant-capabilities/cline.json`
 Diagram capability record: `.ai/assistant/assistant-capabilities/cline.json`
@@ -227,6 +243,8 @@ Routes code-documentation aliases: `{ROO_CODE_ROUTES_CODE_DOCUMENTATION}`
 Routes project-vocabulary aliases: `{ROO_CODE_ROUTES_PROJECT_VOCABULARY}`
 Routes test-first aliases: `{ROO_CODE_ROUTES_TEST_FIRST}`
 Routes extension aliases: `{ROO_CODE_ROUTES_EXTENSIONS}`
+Context caching: `{TARGET_SURFACE_CONTEXT_CACHE_SUPPORT_AND_CLIENT_EXPOSURE}`
+Context caching capability record: `.ai/assistant/assistant-capabilities/roo-code.json`
 Routes subagent delegation: `{ROO_CODE_ROUTES_SUBAGENT_DELEGATION}`
 Subagent delegation capability record: `.ai/assistant/assistant-capabilities/roo-code.json`
 Diagram capability record: `.ai/assistant/assistant-capabilities/roo-code.json`
@@ -262,6 +280,8 @@ Routes code-documentation aliases: `{KIRO_ROUTES_CODE_DOCUMENTATION}`
 Routes project-vocabulary aliases: `{KIRO_ROUTES_PROJECT_VOCABULARY}`
 Routes test-first aliases: `{KIRO_ROUTES_TEST_FIRST}`
 Routes extension aliases: `{KIRO_ROUTES_EXTENSIONS}`
+Context caching: `{TARGET_SURFACE_CONTEXT_CACHE_SUPPORT_AND_CLIENT_EXPOSURE}`
+Context caching capability record: `.ai/assistant/assistant-capabilities/kiro.json`
 Routes subagent delegation: `{KIRO_ROUTES_SUBAGENT_DELEGATION}`
 Subagent delegation capability record: `.ai/assistant/assistant-capabilities/kiro.json`
 Diagram capability record: `.ai/assistant/assistant-capabilities/kiro.json`
@@ -297,6 +317,8 @@ Routes code-documentation aliases: `{ZED_ROUTES_CODE_DOCUMENTATION}`
 Routes project-vocabulary aliases: `{ZED_ROUTES_PROJECT_VOCABULARY}`
 Routes test-first aliases: `{ZED_ROUTES_TEST_FIRST}`
 Routes extension aliases: `{ZED_ROUTES_EXTENSIONS}`
+Context caching: `{TARGET_SURFACE_CONTEXT_CACHE_SUPPORT_AND_CLIENT_EXPOSURE}`
+Context caching capability record: `.ai/assistant/assistant-capabilities/zed-agent.json`
 Routes subagent delegation: `{ZED_ROUTES_SUBAGENT_DELEGATION}`
 Subagent delegation capability record: `.ai/assistant/assistant-capabilities/zed-agent.json`
 Diagram capability record: `.ai/assistant/assistant-capabilities/zed-agent.json`
@@ -332,6 +354,8 @@ Routes code-documentation aliases: `{OPENCODE_ROUTES_CODE_DOCUMENTATION}`
 Routes project-vocabulary aliases: `{OPENCODE_ROUTES_PROJECT_VOCABULARY}`
 Routes test-first aliases: `{OPENCODE_ROUTES_TEST_FIRST}`
 Routes extension aliases: `{OPENCODE_ROUTES_EXTENSIONS}`
+Context caching: `{TARGET_SURFACE_CONTEXT_CACHE_SUPPORT_AND_CLIENT_EXPOSURE}`
+Context caching capability record: `.ai/assistant/assistant-capabilities/opencode.json`
 Routes subagent delegation: `{OPENCODE_ROUTES_SUBAGENT_DELEGATION}`
 Subagent delegation capability record: `.ai/assistant/assistant-capabilities/opencode.json`
 Diagram capability record: `.ai/assistant/assistant-capabilities/opencode.json`
@@ -367,6 +391,8 @@ Routes code-documentation aliases: `{CLAUDE_ROUTES_CODE_DOCUMENTATION}`
 Routes project-vocabulary aliases: `{CLAUDE_ROUTES_PROJECT_VOCABULARY}`
 Routes test-first aliases: `{CLAUDE_ROUTES_TEST_FIRST}`
 Routes extension aliases: `{CLAUDE_ROUTES_EXTENSIONS}`
+Context caching: `{TARGET_SURFACE_CONTEXT_CACHE_SUPPORT_AND_CLIENT_EXPOSURE}`
+Context caching capability record: `.ai/assistant/assistant-capabilities/claude.json`
 Routes subagent delegation: `{CLAUDE_ROUTES_SUBAGENT_DELEGATION}`
 Subagent delegation capability record: `.ai/assistant/assistant-capabilities/claude.json`
 Diagram capability record: `.ai/assistant/assistant-capabilities/claude.json`
@@ -402,6 +428,8 @@ Routes code-documentation aliases: `{GEMINI_ROUTES_CODE_DOCUMENTATION}`
 Routes project-vocabulary aliases: `{GEMINI_ROUTES_PROJECT_VOCABULARY}`
 Routes test-first aliases: `{GEMINI_ROUTES_TEST_FIRST}`
 Routes extension aliases: `{GEMINI_ROUTES_EXTENSIONS}`
+Context caching: `{TARGET_SURFACE_CONTEXT_CACHE_SUPPORT_AND_CLIENT_EXPOSURE}`
+Context caching capability record: `.ai/assistant/assistant-capabilities/gemini.json`
 Routes subagent delegation: `{GEMINI_ROUTES_SUBAGENT_DELEGATION}`
 Subagent delegation capability record: `.ai/assistant/assistant-capabilities/gemini.json`
 Diagram capability record: `.ai/assistant/assistant-capabilities/gemini.json`
@@ -438,6 +466,8 @@ Routes code-documentation aliases: `{GITHUB_COPILOT_ROUTES_CODE_DOCUMENTATION}`
 Routes project-vocabulary aliases: `{GITHUB_COPILOT_ROUTES_PROJECT_VOCABULARY}`
 Routes test-first aliases: `{GITHUB_COPILOT_ROUTES_TEST_FIRST}`
 Routes extension aliases: `{GITHUB_COPILOT_ROUTES_EXTENSIONS}`
+Context caching: `{TARGET_SURFACE_CONTEXT_CACHE_SUPPORT_AND_CLIENT_EXPOSURE}`
+Context caching capability record: `.ai/assistant/assistant-capabilities/github-copilot.json`
 Routes subagent delegation: `{GITHUB_COPILOT_ROUTES_SUBAGENT_DELEGATION}`
 Subagent delegation capability record: `.ai/assistant/assistant-capabilities/github-copilot.json`
 Diagram capability record: `.ai/assistant/assistant-capabilities/github-copilot.json`
@@ -474,6 +504,8 @@ Routes code-documentation aliases: `{CURSOR_ROUTES_CODE_DOCUMENTATION}`
 Routes project-vocabulary aliases: `{CURSOR_ROUTES_PROJECT_VOCABULARY}`
 Routes test-first aliases: `{CURSOR_ROUTES_TEST_FIRST}`
 Routes extension aliases: `{CURSOR_ROUTES_EXTENSIONS}`
+Context caching: `{TARGET_SURFACE_CONTEXT_CACHE_SUPPORT_AND_CLIENT_EXPOSURE}`
+Context caching capability record: `.ai/assistant/assistant-capabilities/cursor.json`
 Routes subagent delegation: `{CURSOR_ROUTES_SUBAGENT_DELEGATION}`
 Subagent delegation capability record: `.ai/assistant/assistant-capabilities/cursor.json`
 Diagram capability record: `.ai/assistant/assistant-capabilities/cursor.json`
@@ -509,6 +541,8 @@ Routes code-documentation aliases: `{DEVIN_CASCADE_ROUTES_CODE_DOCUMENTATION}`
 Routes project-vocabulary aliases: `{DEVIN_CASCADE_ROUTES_PROJECT_VOCABULARY}`
 Routes test-first aliases: `{DEVIN_CASCADE_ROUTES_TEST_FIRST}`
 Routes extension aliases: `{DEVIN_CASCADE_ROUTES_EXTENSIONS}`
+Context caching: `{TARGET_SURFACE_CONTEXT_CACHE_SUPPORT_AND_CLIENT_EXPOSURE}`
+Context caching capability record: `.ai/assistant/assistant-capabilities/devin-cascade.json`
 Routes subagent delegation: `{DEVIN_CASCADE_ROUTES_SUBAGENT_DELEGATION}`
 Subagent delegation capability record: `.ai/assistant/assistant-capabilities/devin-cascade.json`
 Diagram capability record: `.ai/assistant/assistant-capabilities/devin-cascade.json`
@@ -545,6 +579,8 @@ Routes code-documentation aliases: `{WINDSURF_ROUTES_CODE_DOCUMENTATION}`
 Routes project-vocabulary aliases: `{WINDSURF_ROUTES_PROJECT_VOCABULARY}`
 Routes test-first aliases: `{WINDSURF_ROUTES_TEST_FIRST}`
 Routes extension aliases: `{WINDSURF_ROUTES_EXTENSIONS}`
+Context caching: `{TARGET_SURFACE_CONTEXT_CACHE_SUPPORT_AND_CLIENT_EXPOSURE}`
+Context caching capability record: `.ai/assistant/assistant-capabilities/windsurf.json`
 Routes subagent delegation: `{WINDSURF_ROUTES_SUBAGENT_DELEGATION}`
 Subagent delegation capability record: `.ai/assistant/assistant-capabilities/windsurf.json`
 Diagram capability record: `.ai/assistant/assistant-capabilities/windsurf.json`
