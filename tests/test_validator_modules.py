@@ -12,6 +12,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 from target_adapter_validation.modules import (  # noqa: E402
     MODULE_IMPLEMENTATIONS,
     dispatch_capability_checks,
+    registry_contract_errors,
 )
 
 
@@ -30,10 +31,13 @@ class RecordingValidator:
 
 
 class RecordingModule:
-    check_id = "check_ai_infrastructure_router"
-
-    def __init__(self, calls: list[tuple[str, object | None]]) -> None:
+    def __init__(
+        self,
+        calls: list[tuple[str, object | None]],
+        check_id: str = "check_ai_infrastructure_router",
+    ) -> None:
         self.calls = calls
+        self.check_id = check_id
 
     def validate(self, context: object, manifest: object | None) -> None:
         self.calls.append((self.check_id, (context, manifest)))
@@ -56,7 +60,14 @@ class ValidatorModuleDispatchTests(unittest.TestCase):
 
         with patch.dict(
             MODULE_IMPLEMENTATIONS,
-            {"check_ai_infrastructure_router": RecordingModule(calls)},
+            {
+                check_id: RecordingModule(calls, check_id)
+                for check_id in {
+                    "check_ai_infrastructure_router",
+                    "check_development_evidence",
+                    "check_extensions",
+                }
+            },
         ):
             dispatched = dispatch_capability_checks(
                 validator,
@@ -75,8 +86,11 @@ class ValidatorModuleDispatchTests(unittest.TestCase):
                     "check_ai_infrastructure_router",
                     ("capability-context", manifest),
                 ),
-                ("check_development_evidence", manifest),
-                ("check_extensions", manifest),
+                (
+                    "check_development_evidence",
+                    ("capability-context", manifest),
+                ),
+                ("check_extensions", ("capability-context", manifest)),
             ],
         )
 
@@ -85,14 +99,53 @@ class ValidatorModuleDispatchTests(unittest.TestCase):
             set(MODULE_IMPLEMENTATIONS),
             {
                 "check_ai_infrastructure_router",
+                "check_architecture_knowledge",
+                "check_code_documentation",
                 "check_consistency_map",
+                "check_dependency_knowledge",
+                "check_development_evidence",
+                "check_extensions",
+                "check_project_vocabulary",
                 "check_support_generation",
+                "check_team_collaboration",
+                "check_test_first_development",
             },
         )
         self.assertEqual(
             MODULE_IMPLEMENTATIONS["check_consistency_map"].check_id,
             "check_consistency_map",
         )
+        self.assertEqual(registry_contract_errors(), [])
+
+    def test_registry_contract_rejects_an_undeclared_check(self) -> None:
+        from target_adapter_validation.modules import CAPABILITY_CHECKS
+
+        with patch.dict(
+            CAPABILITY_CHECKS,
+            {"fixture": ("check_typo",)},
+            clear=True,
+        ):
+            self.assertEqual(
+                registry_contract_errors(),
+                [
+                    "capability check has no implementation or compatibility fallback: check_typo",
+                    *[
+                        f"module implementation is not declared by a capability: {check_id}"
+                        for check_id in sorted(MODULE_IMPLEMENTATIONS)
+                    ],
+                    *[
+                        f"compatibility fallback is not declared by a capability: {check_id}"
+                        for check_id in sorted(
+                            {
+                                "check_debug_mode",
+                                "check_discussion_diagrams",
+                                "check_subagent_delegation",
+                                "check_workspace_modes",
+                            }
+                        )
+                    ],
+                ],
+            )
 
 
 if __name__ == "__main__":

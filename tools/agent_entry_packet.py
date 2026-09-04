@@ -7,9 +7,8 @@ import json
 from pathlib import Path
 from typing import Any
 
-import yaml
-
 from target_tool_compat import generation_provenance
+from yaml_support import safe_load
 
 
 PACKET_PATH = Path(".ai/assistant/entry-packet.json")
@@ -145,7 +144,7 @@ def _load_json_text(text: str, label: str) -> dict[str, Any]:
 
 
 def _load_yaml_text(text: str, label: str) -> dict[str, Any]:
-    value = yaml.safe_load(text)
+    value = safe_load(text)
     if not isinstance(value, dict):
         raise ValueError(f"{label} must contain a YAML mapping")
     return value

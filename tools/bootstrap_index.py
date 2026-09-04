@@ -7,10 +7,9 @@ import json
 from pathlib import Path
 from typing import Any
 
-import yaml
-
 from context_catalog import load_codebook
 from target_tool_compat import generation_provenance
+from yaml_support import safe_load
 
 
 BOOTSTRAP_PATH = Path(".ai/assistant/bootstrap-index.json")
@@ -77,7 +76,7 @@ def build_bootstrap_index(
 ) -> dict[str, Any]:
     """Return a deterministic routing projection from canonical target sources."""
 
-    manifest = yaml.safe_load(manifest_text)
+    manifest = safe_load(manifest_text)
     router = json.loads(router_text)
     if not isinstance(manifest, dict):
         raise ValueError(".ai/alatyr.yaml must contain a mapping")

@@ -15,6 +15,7 @@ from target_adapter_validation.contract_compatibility import (
     CATALOG_PATH,
     load_contract_compatibility,
 )
+from yaml_support import safe_load
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -46,7 +47,7 @@ def validate(catalog: dict[str, Any]) -> list[str]:
         return ["compatibility catalog requires contracts"]
 
     adapter_schema = load_object(ADAPTER_SCHEMA)
-    manifest = yaml.safe_load(TARGET_MANIFEST.read_text(encoding="utf-8"))
+    manifest = safe_load(TARGET_MANIFEST.read_text(encoding="utf-8"))
     if not isinstance(manifest, dict):
         return ["target manifest template must contain a mapping"]
 

@@ -6,6 +6,7 @@ import copy
 import hashlib
 import json
 import subprocess
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -16,36 +17,69 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE_TEMPLATE_TARGET = ROOT / "templates" / "target"
 
 
-def source_revision(source_root: Path = ROOT) -> str:
-    result = subprocess.run(
-        ["git", "rev-parse", "HEAD"],
-        cwd=source_root,
-        check=False,
-        capture_output=True,
-        text=True,
-    )
-    return result.stdout.strip() if result.returncode == 0 else "unavailable"
+@dataclass(frozen=True)
+class RepositoryState:
+    available: bool
+    revision: str
+    dirty_paths: tuple[str, ...]
 
 
-def dirty_paths(root: Path, *, limit: int = 50) -> list[str]:
+def repository_state(root: Path, *, limit: int = 50) -> RepositoryState:
+    """Read revision and dirty paths from one cross-platform Git status call."""
+
     result = subprocess.run(
-        ["git", "status", "--short", "--untracked-files=all"],
+        ["git", "status", "--porcelain=v2", "--branch", "-z", "--untracked-files=all"],
         cwd=root,
         check=False,
         capture_output=True,
-        text=True,
     )
     if result.returncode != 0:
-        return []
+        return RepositoryState(False, "unavailable", ())
+
+    revision = "unavailable"
     paths: list[str] = []
-    for line in result.stdout.splitlines():
-        value = line[3:] if len(line) > 3 else line.strip()
-        value = value.strip()
-        if value:
-            paths.append(value)
-        if len(paths) >= limit:
-            break
-    return paths
+    records = result.stdout.split(b"\0")
+    expect_original_path = False
+    for record in records:
+        if expect_original_path:
+            paths.append(record.decode("utf-8", errors="surrogateescape"))
+            expect_original_path = False
+            if len(paths) >= limit:
+                break
+            continue
+        if not record:
+            continue
+        if record.startswith(b"# branch.oid "):
+            revision = record[len(b"# branch.oid ") :].decode(
+                "utf-8", errors="replace"
+            )
+            continue
+        path: bytes | None = None
+        if record.startswith((b"? ", b"! ")):
+            path = record[2:]
+        elif record.startswith(b"1 "):
+            fields = record.split(b" ", 8)
+            path = fields[8] if len(fields) == 9 else None
+        elif record.startswith(b"2 "):
+            fields = record.split(b" ", 9)
+            path = fields[9] if len(fields) == 10 else None
+            expect_original_path = path is not None
+        elif record.startswith(b"u "):
+            fields = record.split(b" ", 10)
+            path = fields[10] if len(fields) == 11 else None
+        if path is not None:
+            paths.append(path.decode("utf-8", errors="surrogateescape"))
+            if len(paths) >= limit:
+                break
+    return RepositoryState(True, revision, tuple(paths))
+
+
+def source_revision(source_root: Path = ROOT) -> str:
+    return repository_state(source_root, limit=1).revision
+
+
+def dirty_paths(root: Path, *, limit: int = 50) -> list[str]:
+    return list(repository_state(root, limit=limit).dirty_paths)
 
 
 def worktree_state(root: Path) -> str:
@@ -145,18 +179,26 @@ def generation_provenance(
             "target_dirty_paths": [],
             **versions,
         }
-    source_dirty_paths = dirty_paths(source_root)
+    source_state = repository_state(source_root)
+    source_dirty_paths = (
+        list(source_state.dirty_paths)
+        if source_state.available
+        else ["<git-state-unavailable>"]
+    )
     try:
         same_repository = target.resolve() == source_root.resolve()
     except OSError:
         same_repository = False
+    target_state = source_state if same_repository else repository_state(target)
     target_dirty_paths = (
-        source_dirty_paths if same_repository else dirty_paths(target)
+        list(target_state.dirty_paths)
+        if target_state.available
+        else ["<git-state-unavailable>"]
     )
     return {
         "schema_version": 1,
         "tool": tool_name,
-        "source_revision": source_revision(source_root),
+        "source_revision": source_state.revision,
         "source_worktree_state": "dirty" if source_dirty_paths else "clean",
         "source_dirty_paths": source_dirty_paths,
         "target_manifest": ".ai/alatyr.yaml",

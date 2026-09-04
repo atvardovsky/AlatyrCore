@@ -162,71 +162,71 @@ Catalog entries: 1192
 - `APPROVAL_SCOPE_MISMATCH`
   Level: dynamic. Source: `tools/validate_target_adapter.py`.
 - `ARCHITECTURE_ACCEPTED_EVIDENCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_AREAS_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_AREA_FIELDS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_AREA_ID_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_AREA_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_CATALOG_INDEX`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_CATALOG_KIND`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_CATALOG_LIST`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_CATALOG_METADATA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_CATALOG_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_CONTRACT_INCOMPLETE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_ENABLED_METADATA_UNRESOLVED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_ITEM_EVIDENCE_UNRESOLVED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_ITEM_FIELD_UNRESOLVED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_ITEM_IDENTITY_UNRESOLVED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_ITEM_STATUS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_KNOWN_GAP_UNRESOLVED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_MANIFEST_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_MODULE_STATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_MODULE_STATE_MISSING`
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `ARCHITECTURE_MODULE_UNDECLARED`
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `ARCHITECTURE_OPERATION_ACTIONS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_OPERATION_FLOW`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_OPERATION_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_OPERATION_MODULE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_OPERATION_UNROUTED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_PATTERNS_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_PATTERN_FIELDS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_PATTERN_ID_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_PATTERN_KIND`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_PATTERN_REFERENCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_PATTERN_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_REQUIRED_FILE_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ASSISTANT_AUTO_LOAD_UNPROVEN`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ASSISTANT_CAPABILITY_FIELDS`
@@ -356,69 +356,69 @@ Catalog entries: 1192
 - `CHANGED_VALIDATION_SCOPE`
   Level: info. Source: `tools/validate_target_adapter.py`.
 - `CODEDOC_ACCEPTED_AMBIGUITY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_ACCEPTED_UNRESOLVED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_AREAS_EMPTY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_AREA_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_CATALOG_INDEX`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_CATALOG_KIND`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_CATALOG_PROFILES`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_CATALOG_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_COMMENT_CONTRACT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_CONTRACT_INCOMPLETE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_DIRECT_EDIT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_ENABLED_METADATA_UNRESOLVED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_EVIDENCE_LIMIT`
-  Level: info. Source: `tools/validate_target_adapter.py`.
+  Level: info. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_GENERATION_CONTRACT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_LIST_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_MANIFEST_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_MODULE_STATE_MISSING`
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `CODEDOC_MODULE_UNDECLARED`
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `CODEDOC_NO_ACCEPTED_PROFILE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_OPERATION_UNROUTED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_OUTPUT_POLICY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_PROFILES_EMPTY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_PROFILE_FIELDS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_PROFILE_ID_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_PROFILE_KIND`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_PROFILE_MATCH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_PROFILE_REFERENCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_PROFILE_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_PROFILE_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_PROFILE_STATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_REQUIRED_FILE_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_SELECTION_POLICY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CONSISTENCY_MAP_DIRECTION`
   Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_EDGES`
@@ -900,145 +900,145 @@ Catalog entries: 1192
 - `DELEGATION_WRITE_ISOLATION`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DEPENDENCY_KNOWLEDGE_APPLICABILITY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_AUTHORITY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_CATALOG_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_CATALOG_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_DEVIATIONS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_DEVIATION_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_DEVIATION_EXPORT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_DEVIATION_EXPORTS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_DEVIATION_INSTANCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_DEVIATION_RECORD`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_DEVIATION_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_DEVIATION_SOURCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_DEVIATION_STATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_DEVIATION_TYPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_DISCOVERY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_EVIDENCE_LIMIT`
-  Level: info. Source: `tools/validate_target_adapter.py`.
+  Level: info. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_EXPORT_DIGEST`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_EXPORT_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_EXPORT_EVIDENCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_EXPORT_RECORD`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_EXPORT_SET_DRIFT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_EXPORT_STATUS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_FINGERPRINT_DRIFT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_FRESHNESS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_GRAPH_RECORD`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_GRAPH_REFERENCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_INSTANCES`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_INSTANCE_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_INSTANCE_RECORD`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_INTENT_UNROUTED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_LIMIT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_LIMITS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_LOCK_EXPORT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_LOCK_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_LOCK_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_MANIFEST_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_MANIFEST_RECORD`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_METADATA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_MODIFICATIONS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_OPERATION_UNROUTED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_PACKAGES`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_PACKAGE_RECORD`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_POLICY_OWNER`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_POLICY_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_POLICY_STATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_REQUIRED_FILE_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_ROUTING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_SOURCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_SOURCES`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_SOURCE_LOCATOR`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_SOURCE_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_SOURCE_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_STABILITY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_TRUST`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_TRUST_STATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEVELOPMENT_EVIDENCE_CONTENT_POLICY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/development_evidence.py`.
 - `DEVELOPMENT_EVIDENCE_KIND`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/development_evidence.py`.
 - `DEVELOPMENT_EVIDENCE_METADATA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/development_evidence.py`.
 - `DEVELOPMENT_EVIDENCE_METADATA_UNRESOLVED`
-  Level: configured. Source: `tools/validate_target_adapter.py`.
+  Level: configured. Source: `tools/target_adapter_validation/development_evidence.py`.
 - `DEVELOPMENT_EVIDENCE_MISSING`
-  Level: warning. Source: `tools/validate_target_adapter.py`.
+  Level: warning. Source: `tools/target_adapter_validation/development_evidence.py`.
 - `DEVELOPMENT_EVIDENCE_OCCURRENCE_COUNT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/development_evidence.py`.
 - `DEVELOPMENT_EVIDENCE_PATTERNS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/development_evidence.py`.
 - `DEVELOPMENT_EVIDENCE_PATTERN_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/development_evidence.py`.
 - `DEVELOPMENT_EVIDENCE_PATTERN_FIELD`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/development_evidence.py`.
 - `DEVELOPMENT_EVIDENCE_PATTERN_LIST`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/development_evidence.py`.
 - `DEVELOPMENT_EVIDENCE_PATTERN_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/development_evidence.py`.
 - `DEVELOPMENT_EVIDENCE_QUALITY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/development_evidence.py`.
 - `DEVELOPMENT_EVIDENCE_REFERENCE_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/development_evidence.py`.
 - `DEVELOPMENT_EVIDENCE_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/development_evidence.py`.
 - `DEVELOPMENT_EVIDENCE_STATUS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/development_evidence.py`.
 - `DIAGRAM_BRIDGE_CAPABILITY_FIELD`
   Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `DIAGRAM_BRIDGE_CAPABILITY_MISSING`
@@ -1214,135 +1214,135 @@ Catalog entries: 1192
 - `EVIDENCE_SCOPE_CURRENT_STATE`
   Level: info. Source: `tools/validate_target_adapter.py`.
 - `EXTENSION_APPROVAL_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_APPROVAL_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_BINDING_CONTRACT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_BINDING_ENTRIES`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_BINDING_ENTRY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_BINDING_ID`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_BINDING_IDENTITY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_BINDING_UNRESOLVED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_CATALOG_API`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_CATALOG_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_CATALOG_ENTRIES`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_CATALOG_ENTRY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_CATALOG_KIND`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_CATALOG_LIST`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_CATALOG_LOCK_DRIFT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_CATALOG_METADATA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_CATALOG_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_CATALOG_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_CATALOG_STATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_CATALOG_UNRESOLVED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_COMPATIBILITY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_EVIDENCE_LIMIT`
-  Level: info. Source: `tools/validate_target_adapter.py`.
+  Level: info. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_FILE_DRIFT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_FILE_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_FILE_HASH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_FILE_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_FILE_OWNER`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_FILE_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_FILE_RECORD`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_FILE_SYMLINK`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_ID`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_INSTALLED_DEPENDENCIES`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_INSTALLED_FILES`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_INSTALLED_HOOK`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_INSTALLED_ITEM`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_INSTALLED_ITEMS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_INSTALLED_ITEM_ID`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_INSTALLED_ITEM_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_INSTALLED_MANIFEST_IDENTITY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_INSTALLED_MANIFEST_KIND`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_INTEGRATION_SURFACES`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_ITEM_INDEX_DRIFT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_ITEM_UNLOCKED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_LOCK_API`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_LOCK_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_LOCK_ENTRIES`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_LOCK_ENTRY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_LOCK_KIND`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_LOCK_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_LOCK_PATH_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_LOCK_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_LOCK_STATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_LOCK_UNRESOLVED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_MANIFEST_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_MODULE_STATE_MISSING`
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `EXTENSION_MODULE_UNDECLARED`
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `EXTENSION_NAMESPACE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_OPERATION_UNROUTED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_PACKAGE_DIGEST`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_REQUIRED_BINDING_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_REQUIRED_FILE_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_SOURCE_TYPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_TARGET_BASELINE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_TARGET_BASELINE_DRIFT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_VALIDATION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `FRAMEWORK_COMPARE_SKIPPED`
   Level: info. Source: `tools/validate_target_adapter.py`.
 - `FRAMEWORK_DIR_MISSING`
@@ -1996,379 +1996,379 @@ Catalog entries: 1192
 - `TASK_DECOMPOSITION_WORKER_ROLE_UNKNOWN`
   Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
 - `TDD_COMMAND_EXTERNAL_ACTIONS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_COMMAND_REFERENCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_COMMAND_UNRESOLVED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_CONFIGURATION_UNROUTED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_EVIDENCE_LIMIT`
-  Level: info. Source: `tools/validate_target_adapter.py`.
+  Level: info. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_EVIDENCE_REQUIREMENTS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_EXCEPTIONS_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_EXCEPTION_REASON`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_EXCEPTION_REFERENCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_EXCEPTION_UNRESOLVED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_EXECUTION_UNROUTED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_INTENT_UNROUTED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_ISOLATION_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_ISOLATION_UNRESOLVED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_KNOWN_GAPS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_MANIFEST_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_MODES_INVALID`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_MODULE_STATE_MISSING`
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `TDD_MODULE_UNDECLARED`
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `TDD_POLICY_KIND`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_POLICY_LIST_EMPTY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_POLICY_METADATA_UNRESOLVED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_POLICY_NOT_ENABLED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_POLICY_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_RECORD_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_RECORD_ID`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_REQUIRED_FILE_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_SUGGESTION_BOUNDS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_SUGGESTION_COST`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_SUGGESTION_MODE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_SUGGESTION_RESULT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_SUGGESTION_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_TEST_LEVEL_LIST`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_TEST_LEVEL_REFERENCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_TEST_LEVEL_UNRESOLVED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_TRIGGERS_EMPTY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_TRIGGER_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_TRIGGER_EXCEPTIONS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_TRIGGER_LIST`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_TRIGGER_MODE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_TRIGGER_MODE_UNAVAILABLE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_TRIGGER_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_TRIGGER_STATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_TRIGGER_UNRESOLVED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TEAM_ACTIVE_CLAIM_INCOMPLETE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_ACTIVE_INDEX_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_ACTIVE_INDEX_ENTRIES`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_ACTIVE_INDEX_ENTRY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_ACTIVE_INDEX_FIELD`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_ACTIVE_INDEX_INCOMPLETE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_ACTIVE_INDEX_KIND`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_ACTIVE_INDEX_LIST`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_ACTIVE_INDEX_REGISTRY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_ACTIVE_INDEX_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_ACTIVE_INDEX_STALE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_ACTIVE_INDEX_TASK_ID`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_ACTIVE_OVERLAP_BLOCKED`
-  Level: configured. Source: `tools/validate_target_adapter.py`.
+  Level: configured. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_ACTIVE_TASK_WITHOUT_CLAIM`
-  Level: warning. Source: `tools/validate_target_adapter.py`.
+  Level: warning. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_ACTORS_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_ACTOR_ALIAS_AMBIGUOUS`
-  Level: warning. Source: `tools/validate_target_adapter.py`.
+  Level: warning. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_ACTOR_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_ACTOR_ID`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_ACTOR_LIST`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_ACTOR_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_ACTOR_UNKNOWN`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_BACKEND_CAPABILITIES`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_BACKEND_FIELD`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_BACKEND_KIND`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_BACKEND_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_CLAIM_FIELD`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_CLAIM_MODE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_CLAIM_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_CLAIM_STATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_CONTEXT_OVERLAY_CONDITIONAL`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_CONTEXT_OVERLAY_DESCRIPTOR`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_CONTEXT_OVERLAY_ID`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_CONTEXT_OVERLAY_KIND`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_CONTEXT_OVERLAY_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_CONTEXT_OVERLAY_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_CONTEXT_OVERLAY_PREFLIGHT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_CONTEXT_OVERLAY_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_CONTEXT_OVERLAY_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_ENABLED_METADATA_UNRESOLVED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_GIT_IDENTITY_AUTHORITY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_HANDOFF_STATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_IDENTITY_POLICY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_LOCAL_IDENTITY_INACTIVE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_LOCAL_IDENTITY_KIND`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_LOCAL_IDENTITY_NOT_IGNORED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_LOCAL_IDENTITY_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_LOCAL_IDENTITY_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_LOCAL_IDENTITY_SELECTION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_LOCAL_IDENTITY_STALE`
-  Level: warning. Source: `tools/validate_target_adapter.py`.
+  Level: warning. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_LOCAL_IDENTITY_UNKNOWN`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_MERGE_READY_OVERLAP`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_MERGE_READY_REVIEW`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_MERGE_READY_REVIEWERS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_MERGE_READY_REVIEW_EVIDENCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_MERGE_READY_REVIEW_REVISIONS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_MERGE_READY_REVIEW_STALE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_MERGE_READY_REVISION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_MERGE_READY_STALE`
-  Level: warning. Source: `tools/validate_target_adapter.py`.
+  Level: warning. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_MERGE_READY_VALIDATION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_MODULE_STATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_OPERATING_MODEL_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_OVERLAP_FIELD`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_OVERLAP_LIST`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_OVERLAP_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_OVERLAP_STATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_POLICY_KIND`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_POLICY_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_POLICY_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_PRIORITIES_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_PRIORITY_AUTHORITY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_PRIORITY_UNKNOWN`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_REGISTRY_KIND`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_REGISTRY_METADATA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_REGISTRY_MIGRATION_REQUIRED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_REGISTRY_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_REGISTRY_MONOLITHIC_TASKS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_REGISTRY_OPERATING_MODEL`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_REGISTRY_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_REGISTRY_REVISION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_REGISTRY_REVISION_STALE`
-  Level: warning. Source: `tools/validate_target_adapter.py`.
+  Level: warning. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_REGISTRY_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_REVIEWER_SEPARATION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_REVIEW_STATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_TASK_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_TASK_EXPECTED_REVISION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_TASK_FIELD`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_TASK_KIND`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_TASK_LIST`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_TASK_RECORD_REVISION`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_TASK_REVISION_CONFLICT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_TASK_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_TASK_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_TASK_STATUS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_TERMINAL_TASK_ACTIVE_CLAIM`
-  Level: warning. Source: `tools/validate_target_adapter.py`.
+  Level: warning. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_TRANSITION_NOT_ALLOWED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_TRANSITION_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_TRANSITION_STATUS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_VALIDATION_STATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `UNRESOLVED_NOT_DEFINED`
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `VOCABULARY_ACCEPTED_AMBIGUITY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_ACCEPTED_UNRESOLVED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_CATALOG_DRIFT`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_CATALOG_EMPTY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_CATALOG_ENTRY_FIELDS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_CATALOG_ENTRY_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_CATALOG_ID_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_CATALOG_KIND`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_CATALOG_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_CATALOG_RECORD`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_CATALOG_REFERENCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_CATALOG_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_CONTRACT_INCOMPLETE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_DATA_REFERENCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_ENABLED_METADATA_UNRESOLVED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_EVIDENCE_LIMIT`
-  Level: info. Source: `tools/validate_target_adapter.py`.
+  Level: info. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_LINKS_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_LINK_FIELDS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_LINK_ID_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_LINK_KIND`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_LINK_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_LINK_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_LINK_TERM_REFERENCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_LINK_UNRESOLVED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_MANIFEST_PATH`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_MODULE_STATE_MISSING`
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `VOCABULARY_MODULE_UNDECLARED`
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `VOCABULARY_NO_ACCEPTED_TERM`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_OPERATION_ACTIONS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_OPERATION_FLOW`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_OPERATION_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_OPERATION_MODULE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_OPERATION_UNROUTED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_REQUIRED_FILE_MISSING`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_STRING_LIST`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_TERMS_EMPTY`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_TERM_FIELDS`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_TERM_ID_DUPLICATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_TERM_KIND`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_TERM_REFERENCE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_TERM_SCHEMA`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_TERM_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_TERM_STATE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_TERM_UNINDEXED`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `WORKSPACE_MODE_ACTIVE_ROOT`
   Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_AUTO_ACCEPT`

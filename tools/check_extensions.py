@@ -39,6 +39,9 @@ LIFECYCLE = ROOT / "framework/lifecycle.md"
 POST_INSTALL = TARGET / ".ai/assistant/templates/post-install-message.md"
 POST_UPDATE = TARGET / ".ai/assistant/templates/post-update-message.md"
 TARGET_VALIDATOR = ROOT / "tools/validate_target_adapter.py"
+TARGET_VALIDATOR_IMPLEMENTATION = (
+    ROOT / "tools/target_adapter_validation/extensions.py"
+)
 TARGET_VALIDATOR_CHECK = ROOT / "tools/check_target_adapter_validator.py"
 TOOL_COMMANDS = ROOT / "tools/tool_commands.json"
 
@@ -217,8 +220,13 @@ def main() -> int:
     )
     require(
         TARGET_VALIDATOR,
+        ["def check_extensions", "validate_extensions"],
+        failures,
+    )
+    require(
+        TARGET_VALIDATOR_IMPLEMENTATION,
         [
-            "def check_extensions",
+            "def validate_extensions",
             "EXTENSION_CATALOG_LOCK_DRIFT",
             "EXTENSION_FILE_OWNER",
             "EXTENSION_FILE_DRIFT",

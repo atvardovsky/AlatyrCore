@@ -31,12 +31,21 @@ class CapabilityValidationContext:
     load_target_json_object: Callable[[Path, str], dict[str, Any] | None]
     check_target_reference: Callable[[str, str, str], None]
     check_action_modes: Callable[[list[str], str, str], None]
+    relative_target_path: Callable[[Path], str]
+    module_enabled: Callable[[str, str, str, str], bool]
+
+    @property
+    def target(self) -> Path:
+        return self.filesystem.target
 
     def target_path(self, relpath: str) -> Path:
         return self.resolve_target_path(relpath)
 
     def read_text(self, path: Path) -> str:
         return self.read_target_text(path)
+
+    def rel(self, path: Path) -> str:
+        return self.relative_target_path(path)
 
     def load_json_object(
         self, path: Path, code_prefix: str
@@ -52,6 +61,20 @@ class CapabilityValidationContext:
         self, values: list[str], source: str, label: str
     ) -> None:
         self.check_action_modes(values, source, label)
+
+    def module_validation_enabled(
+        self,
+        module_id: str,
+        undeclared_code: str,
+        state_missing_code: str,
+        display_name: str,
+    ) -> bool:
+        return self.module_enabled(
+            module_id,
+            undeclared_code,
+            state_missing_code,
+            display_name,
+        )
 
     def error(self, code: str, message: str, path: str | None = None) -> None:
         self.findings.error(code, message, path)
@@ -73,3 +96,18 @@ class CapabilityModule(Protocol):
         context: CapabilityValidationContext,
         manifest: Any,
     ) -> None: ...
+
+
+@dataclass(frozen=True)
+class FunctionCapabilityModule:
+    """Bind one capability check function to the module dispatch contract."""
+
+    check_id: str
+    validator: Callable[[CapabilityValidationContext, Any], None]
+
+    def validate(
+        self,
+        context: CapabilityValidationContext,
+        manifest: Any,
+    ) -> None:
+        self.validator(context, manifest)

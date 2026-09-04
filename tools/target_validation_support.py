@@ -14,6 +14,8 @@ from typing import Any, Tuple
 import yaml
 from yaml.nodes import MappingNode, Node, ScalarNode, SequenceNode
 
+from yaml_support import safe_compose, safe_load
+
 
 PathKey = Tuple[str, ...]
 
@@ -52,7 +54,7 @@ class ManifestData:
 
 
 def load_manifest_object(path: Path) -> dict[str, Any]:
-    value = yaml.safe_load(path.read_text(encoding="utf-8"))
+    value = safe_load(path.read_text(encoding="utf-8"))
     if not isinstance(value, dict):
         raise ValueError("manifest root must be a mapping")
     return value
@@ -64,7 +66,7 @@ def parse_manifest(path: Path) -> ManifestData:
     lists: dict[PathKey, list[Scalar]] = {}
     failures: list[str] = []
     try:
-        root = yaml.compose(path.read_text(encoding="utf-8"))
+        root = safe_compose(path.read_text(encoding="utf-8"))
     except yaml.YAMLError as exc:
         mark = getattr(exc, "problem_mark", None)
         location = f"line {mark.line + 1}: " if mark is not None else ""

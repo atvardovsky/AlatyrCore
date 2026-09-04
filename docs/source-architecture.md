@@ -138,12 +138,17 @@ the owning checks.
 
 ## Current Refactoring Priorities
 
-- Keep target capability checks moving behind the existing module registry one
-  behavior-preserving extraction at a time.
+- Keep the extracted team collaboration, architecture knowledge, code
+  documentation, project vocabulary, test-first development, extension,
+  dependency knowledge, and development-evidence checks behind the
+  contract-closed capability registry. Preserve the stable target-validator
+  CLI facade and finding contract while reducing the remaining no-growth
+  functions internally.
 - Keep generated entry, capability, semantic, and report projections compact;
   their canonical source contracts must retain strict closure checks.
-- Split `tools/validate_target_adapter.py` by optional capability modules after
-  behavior is covered by focused regression tests.
+- Move the remaining compatibility fallbacks for Debug Mode, diagrams,
+  delegation, and workspace modes to the narrow capability context after their
+  broad host dependencies have focused parity coverage.
 - Split large target validation methods into schema parsing, relationship
   traversal, fixture checks, and diagnostic rendering.
 - Convert repeated source-tool read, parse, path, and subprocess patterns into
@@ -158,6 +163,10 @@ the owning checks.
   universal validator core always runs; optional module routing may reduce
   development-loop work, while installation, update, and release evidence stays
   full-scope.
+- Prefer C-backed safe YAML parsing when the installed PyYAML build provides it,
+  but retain the safe portable loader fallback and identical node-mark behavior.
+  Reuse parsed content and file inventories only within one immutable validator
+  run; never cache target-boundary resolution across filesystem accesses.
 
 ## Non-Goals
 

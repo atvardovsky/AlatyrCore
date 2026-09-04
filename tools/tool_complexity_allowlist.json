@@ -88,10 +88,10 @@
       "reason": "engineering-evidence validator; split index, record, binding, and privacy checks"
     },
     {
-      "path": "tools/validate_target_adapter.py",
-      "qualname": "Validator.check_architecture_knowledge",
-      "max_lines": 413,
-      "reason": "target validator method; extract architecture catalog and flow checks"
+      "path": "tools/target_adapter_validation/architecture_knowledge.py",
+      "qualname": "validate_architecture_knowledge",
+      "max_lines": 408,
+      "reason": "extracted architecture validator; split catalog, profile, and flow checks"
     },
     {
       "path": "tools/validate_target_adapter.py",
@@ -100,16 +100,16 @@
       "reason": "target validator method; extract change-package schema and retention checks"
     },
     {
-      "path": "tools/validate_target_adapter.py",
-      "qualname": "Validator.check_dependency_knowledge",
-      "max_lines": 337,
-      "reason": "target validator method; extract dependency export and catalog checks"
+      "path": "tools/target_adapter_validation/dependency_knowledge.py",
+      "qualname": "validate_dependency_knowledge",
+      "max_lines": 340,
+      "reason": "extracted dependency validator; split catalog, export, and routing checks"
     },
     {
-      "path": "tools/validate_target_adapter.py",
-      "qualname": "Validator.check_extensions",
-      "max_lines": 367,
-      "reason": "target validator method; extract extension lifecycle and lock checks"
+      "path": "tools/target_adapter_validation/extensions.py",
+      "qualname": "validate_extensions",
+      "max_lines": 370,
+      "reason": "extracted extension validator; split catalog, lock, and lifecycle checks"
     },
     {
       "path": "tools/validate_target_adapter.py",
@@ -118,10 +118,10 @@
       "reason": "target validator method; extract operation catalog and alias checks"
     },
     {
-      "path": "tools/validate_target_adapter.py",
-      "qualname": "Validator.check_project_vocabulary",
-      "max_lines": 366,
-      "reason": "target validator method; extract term, alias, and dictionary checks"
+      "path": "tools/target_adapter_validation/project_vocabulary.py",
+      "qualname": "validate_project_vocabulary",
+      "max_lines": 361,
+      "reason": "extracted vocabulary validator; split term, alias, and generation checks"
     },
     {
       "path": "tools/validate_target_adapter.py",
@@ -130,16 +130,16 @@
       "reason": "target validator method; extract context router sections"
     },
     {
-      "path": "tools/validate_target_adapter.py",
-      "qualname": "Validator.check_team_collaboration",
-      "max_lines": 1153,
-      "reason": "target validator method; extract team policy, task, handoff, and review checks"
+      "path": "tools/target_adapter_validation/team_collaboration.py",
+      "qualname": "validate_team_collaboration",
+      "max_lines": 1156,
+      "reason": "extracted team validator; split policy, task, index, identity, and overlay checks"
     },
     {
-      "path": "tools/validate_target_adapter.py",
-      "qualname": "Validator.check_test_first_development",
-      "max_lines": 326,
-      "reason": "target validator method; extract TDD policy and flow checks"
+      "path": "tools/target_adapter_validation/test_first_development.py",
+      "qualname": "validate_test_first_development",
+      "max_lines": 327,
+      "reason": "extracted TDD validator; split policy, profile, and flow checks"
     }
   ]
 }

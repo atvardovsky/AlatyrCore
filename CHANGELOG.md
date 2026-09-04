@@ -2,7 +2,20 @@
 
 ## Unreleased
 
-- No unreleased changes.
+- Accelerated safe YAML loading with a LibYAML-backed loader when available and
+  a portable safe-loader fallback, including line-aware manifest composition.
+- Reduced target-validator and lifecycle cost through run-scoped content and
+  file-inventory reuse, single-pass local-path scanning, one Git status probe
+  per repository provenance snapshot, one manifest parse per validator run,
+  and batching of lifecycle refreshes that have no intermediate consumer.
+- Extracted team collaboration, architecture knowledge, code documentation,
+  project vocabulary, test-first development, extensions, dependency
+  knowledge, and development-evidence checks from the target-validator CLI
+  facade into capability-owned modules with contract-closed dispatch.
+- Preserved all 1,192 target-validator finding IDs and severity sets while
+  regenerating their source-ownership catalog after modular extraction.
+- Strengthened target path and Git provenance handling for symlink swaps,
+  staged renames, paths containing spaces, and unavailable repository state.
 
 ## 0.1.0-alpha.54 - 2026-09-04
 

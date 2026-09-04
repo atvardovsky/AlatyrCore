@@ -38,6 +38,7 @@ from validate_target_adapter import (
     findings_payload,
     result_code,
 )
+from yaml_support import safe_load
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -140,7 +141,7 @@ def resolve_adapter(repo: Path, support_profile: str = "core") -> None:
     )
 
     manifest_path = repo / ".ai" / "alatyr.yaml"
-    manifest = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
+    manifest = safe_load(manifest_path.read_text(encoding="utf-8"))
     manifest["framework"]["pack"] = PROFILE_PACKS[support_profile]
     manifest["installation"]["support_profile"] = support_profile
     manifest["installation"]["state"] = "staged"
@@ -206,9 +207,6 @@ def resolve_adapter(repo: Path, support_profile: str = "core") -> None:
         + "\n",
         encoding="utf-8",
     )
-    refresh_context_and_bootstrap(repo)
-
-
 def transition_installation_state(
     repo: Path,
     *,
@@ -217,10 +215,11 @@ def transition_installation_state(
     operation_id: str,
     validation_status: str,
     validation_evidence: str,
+    refresh: bool = True,
 ) -> None:
     manifest_path = repo / ".ai" / "alatyr.yaml"
     state_path = repo / ".ai" / "assistant" / "installation-state.json"
-    manifest = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
+    manifest = safe_load(manifest_path.read_text(encoding="utf-8"))
     record = json.loads(state_path.read_text(encoding="utf-8"))
     previous_state = record["current_state"]
     record["transitions"].append(
@@ -247,7 +246,8 @@ def transition_installation_state(
         yaml.safe_dump(manifest, sort_keys=False, allow_unicode=False),
         encoding="utf-8",
     )
-    refresh_context_and_bootstrap(repo)
+    if refresh:
+        refresh_context_and_bootstrap(repo)
 
 
 def refresh_bootstrap(repo: Path) -> None:
@@ -418,7 +418,7 @@ def apply_synthetic_framework_update(repo: Path, source: Path, pack: str) -> Non
         (target_framework / "file-inventory.json").read_text(encoding="utf-8")
     )
     manifest_path = repo / ".ai" / "alatyr.yaml"
-    manifest = yaml.safe_load(manifest_path.read_text(encoding="utf-8"))
+    manifest = safe_load(manifest_path.read_text(encoding="utf-8"))
     manifest["framework"]["version"] = inventory["framework_version"]
     manifest_path.write_text(
         yaml.safe_dump(manifest, sort_keys=False, allow_unicode=False), encoding="utf-8"
@@ -486,7 +486,7 @@ def exercise_profile(
     if not actions or blocked:
         failures.append(f"{support_profile} scaffold failed: {blocked}")
     resolve_adapter(repo, support_profile)
-    manifest = yaml.safe_load((repo / ".ai" / "alatyr.yaml").read_text(encoding="utf-8"))
+    manifest = safe_load((repo / ".ai" / "alatyr.yaml").read_text(encoding="utf-8"))
     if manifest.get("framework", {}).get("pack") != expected_pack:
         failures.append(f"{support_profile} scaffold resolved unexpected framework pack")
     if manifest.get("installation", {}).get("support_profile") != support_profile:
@@ -619,6 +619,7 @@ def exercise_profile(
         operation_id="fixture-update",
         validation_status="failed",
         validation_evidence="framework baseline drift detected",
+        refresh=False,
     )
     transition_installation_state(
         repo,
@@ -627,6 +628,7 @@ def exercise_profile(
         operation_id="fixture-update",
         validation_status="not-run",
         validation_evidence="controlled repair started",
+        refresh=False,
     )
 
     apply_synthetic_framework_update(repo, source, expected_pack)

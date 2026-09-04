@@ -30,24 +30,26 @@ class ValidationContext:
         return resolved
 
     def read_text(self, path: Path) -> str:
+        if path in self._text_cache:
+            return self._text_cache[path]
         resolved = self.resolve_path(path)
-        if resolved not in self._text_cache:
-            try:
-                self._text_cache[resolved] = resolved.read_text(encoding="utf-8")
-            except (OSError, UnicodeError):
-                self._text_cache[resolved] = ""
-        return self._text_cache[resolved]
+        try:
+            text = resolved.read_text(encoding="utf-8")
+        except (OSError, UnicodeError):
+            return ""
+        self._text_cache[path] = text
+        return text
 
     def read_json(self, path: Path) -> tuple[Any | None, str | None]:
+        if path in self._json_cache:
+            return self._json_cache[path]
         try:
             resolved = self.resolve_path(path)
         except (OSError, TargetPathEscapeError) as exc:
             return None, str(exc)
-        if resolved not in self._json_cache:
-            try:
-                data = json.loads(resolved.read_text(encoding="utf-8"))
-            except (OSError, UnicodeError, json.JSONDecodeError) as exc:
-                self._json_cache[resolved] = (None, str(exc))
-            else:
-                self._json_cache[resolved] = (data, None)
-        return self._json_cache[resolved]
+        try:
+            data = json.loads(resolved.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+            return None, str(exc)
+        self._json_cache[path] = (data, None)
+        return self._json_cache[path]

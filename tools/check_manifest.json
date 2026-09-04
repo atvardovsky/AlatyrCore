@@ -1757,7 +1757,8 @@
       ],
       "implementation_paths": [
         "tools/render_target_contract_compatibility.py",
-        "tools/target_adapter_validation/**"
+        "tools/target_adapter_validation/**",
+        "tools/yaml_support.py"
       ],
       "trigger_paths": [
         "docs/target-adapter-contract-compatibility.md",
@@ -1777,7 +1778,8 @@
         "templates/target/.ai/project/knowledge/index.json",
         "tools/render_target_contract_compatibility.py",
         "tools/target-adapter-contract-compatibility.json",
-        "tools/target_adapter_validation/**"
+        "tools/target_adapter_validation/**",
+        "tools/yaml_support.py"
       ],
       "resource_class": "light"
     },
@@ -2184,7 +2186,8 @@
         "tools/scaffold_target_structure.py",
         "tools/support_state.py",
         "tools/target_adapter_validation/**",
-        "tools/validate_target_adapter.py"
+        "tools/validate_target_adapter.py",
+        "tools/yaml_support.py"
       ],
       "trigger_paths": [
         "conformance/golden/lifecycle/**",
@@ -2202,7 +2205,8 @@
         "tools/scaffold_target_structure.py",
         "tools/support_state.py",
         "tools/target_adapter_validation/**",
-        "tools/validate_target_adapter.py"
+        "tools/validate_target_adapter.py",
+        "tools/yaml_support.py"
       ]
     },
     {
@@ -2239,7 +2243,8 @@
         "tools/scaffold_target_structure.py",
         "tools/support_state.py",
         "tools/target_adapter_validation/**",
-        "tools/validate_target_adapter.py"
+        "tools/validate_target_adapter.py",
+        "tools/yaml_support.py"
       ],
       "trigger_paths": [
         "conformance/golden/lifecycle/**",
@@ -2257,7 +2262,8 @@
         "tools/scaffold_target_structure.py",
         "tools/support_state.py",
         "tools/target_adapter_validation/**",
-        "tools/validate_target_adapter.py"
+        "tools/validate_target_adapter.py",
+        "tools/yaml_support.py"
       ]
     },
     {

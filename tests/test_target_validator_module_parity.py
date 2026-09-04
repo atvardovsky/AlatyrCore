@@ -15,6 +15,13 @@ from target_adapter_validation.ai_infrastructure import (  # noqa: E402
     AI_INFRASTRUCTURE_ITEM_TYPES,
     AI_INFRASTRUCTURE_ROUTES_V1,
 )
+from target_adapter_validation.team_collaboration import (  # noqa: E402
+    TEAM_COLLABORATION_MODULE,
+)
+from target_adapter_validation.modules import (  # noqa: E402
+    CAPABILITY_CHECKS,
+    dispatch_capability_checks,
+)
 from target_validation_support import parse_manifest  # noqa: E402
 from validate_target_adapter import AdapterValidatorConfig, Validator  # noqa: E402
 
@@ -49,6 +56,42 @@ def finding_snapshot(instance: Validator) -> list[tuple[str, str, str | None, st
 
 
 class TargetValidatorModuleParityTests(unittest.TestCase):
+    def test_every_capability_route_dispatches_its_registered_checks(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            for module_id, expected in CAPABILITY_CHECKS.items():
+                instance = validator(target)
+
+                dispatched = dispatch_capability_checks(
+                    instance,
+                    [module_id],
+                    None,
+                )
+
+                self.assertEqual(dispatched, tuple(dict.fromkeys(expected)))
+
+    def test_team_collaboration_real_module_dispatches_with_locked_finding(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            write_json(target / ".ai/project/team-policy.json", {})
+            instance = validator(target)
+
+            TEAM_COLLABORATION_MODULE.validate(
+                instance.capability_validation_context(), None
+            )
+
+            self.assertEqual(
+                finding_snapshot(instance),
+                [
+                    (
+                        "error",
+                        "TEAM_OPERATING_MODEL_MISSING",
+                        ".ai/project/team-operating-model.md",
+                        "team work registry exists without its target-owned operating model",
+                    )
+                ],
+            )
+
     def test_changed_scope_routes_module_and_declared_dependencies(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             instance = validator(Path(directory))

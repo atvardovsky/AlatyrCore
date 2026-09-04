@@ -18,7 +18,10 @@ class ToolComplexityTests(unittest.TestCase):
 
         self.assertGreaterEqual(threshold, 1)
         self.assertIn(
-            ("tools/validate_target_adapter.py", "Validator.check_team_collaboration"),
+            (
+                "tools/target_adapter_validation/team_collaboration.py",
+                "validate_team_collaboration",
+            ),
             allowlist,
         )
 

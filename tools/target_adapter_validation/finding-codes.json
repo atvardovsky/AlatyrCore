@@ -7,16 +7,21 @@
     "tools/target_adapter_validation/__init__.py",
     "tools/target_adapter_validation/action_modes.py",
     "tools/target_adapter_validation/ai_infrastructure.py",
+    "tools/target_adapter_validation/architecture_knowledge.py",
     "tools/target_adapter_validation/assistant_capabilities.py",
     "tools/target_adapter_validation/capability.py",
+    "tools/target_adapter_validation/code_documentation.py",
     "tools/target_adapter_validation/consistency_map.py",
     "tools/target_adapter_validation/context.py",
     "tools/target_adapter_validation/context_catalogs.py",
     "tools/target_adapter_validation/contract_compatibility.py",
     "tools/target_adapter_validation/debug_mode.py",
+    "tools/target_adapter_validation/dependency_knowledge.py",
+    "tools/target_adapter_validation/development_evidence.py",
     "tools/target_adapter_validation/diagrams.py",
     "tools/target_adapter_validation/domain.py",
     "tools/target_adapter_validation/engineering_evidence.py",
+    "tools/target_adapter_validation/extensions.py",
     "tools/target_adapter_validation/files.py",
     "tools/target_adapter_validation/framework_baseline.py",
     "tools/target_adapter_validation/installation_state.py",
@@ -24,11 +29,14 @@
     "tools/target_adapter_validation/module_profile.py",
     "tools/target_adapter_validation/modules.py",
     "tools/target_adapter_validation/project_knowledge.py",
+    "tools/target_adapter_validation/project_vocabulary.py",
     "tools/target_adapter_validation/router_costs.py",
     "tools/target_adapter_validation/subagent_delegation.py",
     "tools/target_adapter_validation/support_generation.py",
     "tools/target_adapter_validation/support_state.py",
     "tools/target_adapter_validation/task_decomposition.py",
+    "tools/target_adapter_validation/team_collaboration.py",
+    "tools/target_adapter_validation/test_first_development.py",
     "tools/target_adapter_validation/values.py",
     "tools/target_adapter_validation/workspace_modes.py"
   ],
@@ -666,7 +674,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -675,7 +683,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -684,7 +692,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -693,7 +701,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -702,7 +710,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -711,7 +719,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -720,7 +728,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -729,7 +737,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -738,7 +746,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -747,7 +755,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -756,7 +764,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -765,7 +773,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -774,7 +782,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -783,7 +791,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -792,7 +800,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -801,7 +809,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -810,7 +818,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -819,7 +827,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -828,7 +836,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -855,7 +863,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -864,7 +872,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -873,7 +881,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -882,7 +890,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -891,7 +899,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -900,7 +908,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -909,7 +917,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -918,7 +926,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -927,7 +935,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -936,7 +944,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -945,7 +953,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -954,7 +962,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/architecture_knowledge.py"
       ]
     },
     {
@@ -1539,7 +1547,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -1548,7 +1556,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -1557,7 +1565,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -1566,7 +1574,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -1575,7 +1583,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -1584,7 +1592,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -1593,7 +1601,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -1602,7 +1610,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -1611,7 +1619,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -1620,7 +1628,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -1629,7 +1637,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -1638,7 +1646,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -1647,7 +1655,7 @@
         "info"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -1656,7 +1664,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -1665,7 +1673,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -1674,7 +1682,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -1701,7 +1709,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -1710,7 +1718,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -1719,7 +1727,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -1728,7 +1736,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -1737,7 +1745,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -1746,7 +1754,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -1755,7 +1763,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -1764,7 +1772,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -1773,7 +1781,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -1782,7 +1790,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -1791,7 +1799,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -1800,7 +1808,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -1809,7 +1817,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -1818,7 +1826,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/code_documentation.py"
       ]
     },
     {
@@ -3987,7 +3995,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -3996,7 +4004,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4005,7 +4013,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4014,7 +4022,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4023,7 +4031,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4032,7 +4040,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4041,7 +4049,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4050,7 +4058,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4059,7 +4067,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4068,7 +4076,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4077,7 +4085,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4086,7 +4094,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4095,7 +4103,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4104,7 +4112,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4113,7 +4121,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4122,7 +4130,7 @@
         "info"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4131,7 +4139,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4140,7 +4148,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4149,7 +4157,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4158,7 +4166,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4167,7 +4175,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4176,7 +4184,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4185,7 +4193,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4194,7 +4202,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4203,7 +4211,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4212,7 +4220,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4221,7 +4229,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4230,7 +4238,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4239,7 +4247,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4248,7 +4256,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4257,7 +4265,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4266,7 +4274,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4275,7 +4283,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4284,7 +4292,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4293,7 +4301,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4302,7 +4310,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4311,7 +4319,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4320,7 +4328,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4329,7 +4337,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4338,7 +4346,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4347,7 +4355,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4356,7 +4364,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4365,7 +4373,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4374,7 +4382,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4383,7 +4391,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4392,7 +4400,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4401,7 +4409,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4410,7 +4418,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4419,7 +4427,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4428,7 +4436,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4437,7 +4445,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4446,7 +4454,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4455,7 +4463,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4464,7 +4472,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4473,7 +4481,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/dependency_knowledge.py"
       ]
     },
     {
@@ -4482,7 +4490,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/development_evidence.py"
       ]
     },
     {
@@ -4491,7 +4499,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/development_evidence.py"
       ]
     },
     {
@@ -4500,7 +4508,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/development_evidence.py"
       ]
     },
     {
@@ -4509,7 +4517,7 @@
         "configured"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/development_evidence.py"
       ]
     },
     {
@@ -4518,7 +4526,7 @@
         "warning"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/development_evidence.py"
       ]
     },
     {
@@ -4527,7 +4535,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/development_evidence.py"
       ]
     },
     {
@@ -4536,7 +4544,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/development_evidence.py"
       ]
     },
     {
@@ -4545,7 +4553,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/development_evidence.py"
       ]
     },
     {
@@ -4554,7 +4562,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/development_evidence.py"
       ]
     },
     {
@@ -4563,7 +4571,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/development_evidence.py"
       ]
     },
     {
@@ -4572,7 +4580,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/development_evidence.py"
       ]
     },
     {
@@ -4581,7 +4589,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/development_evidence.py"
       ]
     },
     {
@@ -4590,7 +4598,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/development_evidence.py"
       ]
     },
     {
@@ -4599,7 +4607,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/development_evidence.py"
       ]
     },
     {
@@ -4608,7 +4616,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/development_evidence.py"
       ]
     },
     {
@@ -5400,7 +5408,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5409,7 +5417,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5418,7 +5426,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5427,7 +5435,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5436,7 +5444,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5445,7 +5453,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5454,7 +5462,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5463,7 +5471,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5472,7 +5480,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5481,7 +5489,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5490,7 +5498,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5499,7 +5507,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5508,7 +5516,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5517,7 +5525,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5526,7 +5534,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5535,7 +5543,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5544,7 +5552,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5553,7 +5561,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5562,7 +5570,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5571,7 +5579,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5580,7 +5588,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5589,7 +5597,7 @@
         "info"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5598,7 +5606,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5607,7 +5615,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5616,7 +5624,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5625,7 +5633,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5634,7 +5642,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5643,7 +5651,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5652,7 +5660,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5661,7 +5669,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5670,7 +5678,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5679,7 +5687,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5688,7 +5696,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5697,7 +5705,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5706,7 +5714,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5715,7 +5723,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5724,7 +5732,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5733,7 +5741,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5742,7 +5750,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5751,7 +5759,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5760,7 +5768,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5769,7 +5777,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5778,7 +5786,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5787,7 +5795,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5796,7 +5804,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5805,7 +5813,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5814,7 +5822,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5823,7 +5831,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5832,7 +5840,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5841,7 +5849,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5850,7 +5858,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5859,7 +5867,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5868,7 +5876,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5877,7 +5885,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5904,7 +5912,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5913,7 +5921,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5922,7 +5930,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5931,7 +5939,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5940,7 +5948,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5949,7 +5957,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5958,7 +5966,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5967,7 +5975,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -5976,7 +5984,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/extensions.py"
       ]
     },
     {
@@ -8920,7 +8928,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -8929,7 +8937,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -8938,7 +8946,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -8947,7 +8955,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -8956,7 +8964,7 @@
         "info"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -8965,7 +8973,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -8974,7 +8982,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -8983,7 +8991,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -8992,7 +9000,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9001,7 +9009,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9010,7 +9018,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9019,7 +9027,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9028,7 +9036,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9037,7 +9045,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9046,7 +9054,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9055,7 +9063,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9064,7 +9072,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9091,7 +9099,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9100,7 +9108,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9109,7 +9117,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9118,7 +9126,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9127,7 +9135,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9136,7 +9144,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9145,7 +9153,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9154,7 +9162,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9163,7 +9171,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9172,7 +9180,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9181,7 +9189,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9190,7 +9198,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9199,7 +9207,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9208,7 +9216,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9217,7 +9225,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9226,7 +9234,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9235,7 +9243,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9244,7 +9252,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9253,7 +9261,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9262,7 +9270,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9271,7 +9279,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9280,7 +9288,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9289,7 +9297,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9298,7 +9306,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9307,7 +9315,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/test_first_development.py"
       ]
     },
     {
@@ -9316,7 +9324,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9325,7 +9333,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9334,7 +9342,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9343,7 +9351,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9352,7 +9360,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9361,7 +9369,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9370,7 +9378,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9379,7 +9387,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9388,7 +9396,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9397,7 +9405,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9406,7 +9414,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9415,7 +9423,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9424,7 +9432,7 @@
         "configured"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9433,7 +9441,7 @@
         "warning"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9442,7 +9450,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9451,7 +9459,7 @@
         "warning"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9460,7 +9468,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9469,7 +9477,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9478,7 +9486,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9487,7 +9495,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9496,7 +9504,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9505,7 +9513,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9514,7 +9522,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9523,7 +9531,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9532,7 +9540,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9541,7 +9549,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9550,7 +9558,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9559,7 +9567,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9568,7 +9576,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9577,7 +9585,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9586,7 +9594,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9595,7 +9603,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9604,7 +9612,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9613,7 +9621,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9622,7 +9630,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9631,7 +9639,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9640,7 +9648,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9649,7 +9657,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9658,7 +9666,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9667,7 +9675,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9676,7 +9684,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9685,7 +9693,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9694,7 +9702,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9703,7 +9711,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9712,7 +9720,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9721,7 +9729,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9730,7 +9738,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9739,7 +9747,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9748,7 +9756,7 @@
         "warning"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9757,7 +9765,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9766,7 +9774,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9775,7 +9783,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9784,7 +9792,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9793,7 +9801,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9802,7 +9810,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9811,7 +9819,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9820,7 +9828,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9829,7 +9837,7 @@
         "warning"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9838,7 +9846,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9847,7 +9855,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9856,7 +9864,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9865,7 +9873,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9874,7 +9882,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9883,7 +9891,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9892,7 +9900,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9901,7 +9909,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9910,7 +9918,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9919,7 +9927,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9928,7 +9936,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9937,7 +9945,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9946,7 +9954,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9955,7 +9963,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9964,7 +9972,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9973,7 +9981,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9982,7 +9990,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -9991,7 +9999,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -10000,7 +10008,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -10009,7 +10017,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -10018,7 +10026,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -10027,7 +10035,7 @@
         "warning"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -10036,7 +10044,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -10045,7 +10053,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -10054,7 +10062,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -10063,7 +10071,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -10072,7 +10080,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -10081,7 +10089,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -10090,7 +10098,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -10099,7 +10107,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -10108,7 +10116,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -10117,7 +10125,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -10126,7 +10134,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -10135,7 +10143,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -10144,7 +10152,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -10153,7 +10161,7 @@
         "warning"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -10162,7 +10170,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -10171,7 +10179,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -10180,7 +10188,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -10189,7 +10197,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/team_collaboration.py"
       ]
     },
     {
@@ -10207,7 +10215,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10216,7 +10224,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10225,7 +10233,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10234,7 +10242,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10243,7 +10251,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10252,7 +10260,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10261,7 +10269,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10270,7 +10278,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10279,7 +10287,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10288,7 +10296,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10297,7 +10305,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10306,7 +10314,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10315,7 +10323,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10324,7 +10332,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10333,7 +10341,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10342,7 +10350,7 @@
         "info"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10351,7 +10359,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10360,7 +10368,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10369,7 +10377,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10378,7 +10386,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10387,7 +10395,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10396,7 +10404,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10405,7 +10413,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10414,7 +10422,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10423,7 +10431,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10450,7 +10458,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10459,7 +10467,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10468,7 +10476,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10477,7 +10485,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10486,7 +10494,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10495,7 +10503,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10504,7 +10512,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10513,7 +10521,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10522,7 +10530,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10531,7 +10539,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10540,7 +10548,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10549,7 +10557,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10558,7 +10566,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10567,7 +10575,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10576,7 +10584,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10585,7 +10593,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
@@ -10594,7 +10602,7 @@
         "error"
       ],
       "sources": [
-        "tools/validate_target_adapter.py"
+        "tools/target_adapter_validation/project_vocabulary.py"
       ]
     },
     {
