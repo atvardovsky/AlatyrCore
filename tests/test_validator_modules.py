@@ -10,6 +10,10 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 from target_adapter_validation.modules import (  # noqa: E402
+    CAPABILITY_CHECKS,
+    CAPABILITY_ROUTES,
+    CapabilityRoute,
+    CapabilityRouteKind,
     MODULE_IMPLEMENTATIONS,
     dispatch_capability_checks,
     registry_contract_errors,
@@ -49,6 +53,16 @@ class ValidatorModuleDispatchTests(unittest.TestCase):
         validator = RecordingValidator(calls)
 
         dispatched = dispatch_capability_checks(validator, [], {"manifest": True})
+
+        self.assertEqual(dispatched, ())
+        self.assertEqual(calls, [])
+
+    def test_unknown_target_capability_does_not_truncate_other_findings(self) -> None:
+        calls: list[tuple[str, object | None]] = []
+
+        dispatched = dispatch_capability_checks(
+            RecordingValidator(calls), ["target-only-unknown"], {"manifest": True}
+        )
 
         self.assertEqual(dispatched, ())
         self.assertEqual(calls, [])
@@ -112,38 +126,54 @@ class ValidatorModuleDispatchTests(unittest.TestCase):
             },
         )
         self.assertEqual(
+            set(CAPABILITY_CHECKS),
+            {
+                capability_id
+                for capability_id, route in CAPABILITY_ROUTES.items()
+                if route.checks
+            },
+        )
+        self.assertEqual(
             MODULE_IMPLEMENTATIONS["check_consistency_map"].check_id,
             "check_consistency_map",
         )
         self.assertEqual(registry_contract_errors(), [])
 
-    def test_registry_contract_rejects_an_undeclared_check(self) -> None:
-        from target_adapter_validation.modules import CAPABILITY_CHECKS
+    def test_registry_contract_rejects_a_catalog_capability_without_route(self) -> None:
+        with patch(
+            "target_adapter_validation.modules.load_modules",
+            return_value={**{key: {} for key in CAPABILITY_ROUTES}, "new-capability": {}},
+        ):
+            self.assertEqual(
+                registry_contract_errors(),
+                ["catalog capability has no validation route: new-capability"],
+            )
 
+    def test_registry_contract_rejects_a_route_without_catalog_capability(self) -> None:
+        with patch(
+            "target_adapter_validation.modules.load_modules",
+            return_value={key: {} for key in CAPABILITY_ROUTES if key != "diagrams"},
+        ):
+            self.assertEqual(
+                registry_contract_errors(),
+                ["validation route has no catalog capability: diagrams"],
+            )
+
+    def test_registry_contract_rejects_mismatched_route_semantics(self) -> None:
+        replacement = CapabilityRoute(
+            "consistency-map",
+            CapabilityRouteKind.UNIVERSAL,
+            ("check_consistency_map",),
+        )
         with patch.dict(
-            CAPABILITY_CHECKS,
-            {"fixture": ("check_typo",)},
-            clear=True,
+            CAPABILITY_ROUTES,
+            {"consistency-map": replacement},
         ):
             self.assertEqual(
                 registry_contract_errors(),
                 [
-                    "capability check has no implementation or compatibility fallback: check_typo",
-                    *[
-                        f"module implementation is not declared by a capability: {check_id}"
-                        for check_id in sorted(MODULE_IMPLEMENTATIONS)
-                    ],
-                    *[
-                        f"compatibility fallback is not declared by a capability: {check_id}"
-                        for check_id in sorted(
-                            {
-                                "check_debug_mode",
-                                "check_discussion_diagrams",
-                                "check_subagent_delegation",
-                                "check_workspace_modes",
-                            }
-                        )
-                    ],
+                    "universal capability must not declare dispatch checks: consistency-map",
+                    "module implementation is not declared by a modular capability: check_consistency_map",
                 ],
             )
 

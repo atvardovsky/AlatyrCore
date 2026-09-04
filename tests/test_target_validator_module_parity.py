@@ -19,7 +19,7 @@ from target_adapter_validation.team_collaboration import (  # noqa: E402
     TEAM_COLLABORATION_MODULE,
 )
 from target_adapter_validation.modules import (  # noqa: E402
-    CAPABILITY_CHECKS,
+    CAPABILITY_ROUTES,
     dispatch_capability_checks,
 )
 from target_validation_support import parse_manifest  # noqa: E402
@@ -59,7 +59,7 @@ class TargetValidatorModuleParityTests(unittest.TestCase):
     def test_every_capability_route_dispatches_its_registered_checks(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             target = Path(directory)
-            for module_id, expected in CAPABILITY_CHECKS.items():
+            for module_id, route in CAPABILITY_ROUTES.items():
                 instance = validator(target)
 
                 dispatched = dispatch_capability_checks(
@@ -68,7 +68,7 @@ class TargetValidatorModuleParityTests(unittest.TestCase):
                     None,
                 )
 
-                self.assertEqual(dispatched, tuple(dict.fromkeys(expected)))
+                self.assertEqual(dispatched, tuple(dict.fromkeys(route.checks)))
 
     def test_team_collaboration_real_module_dispatches_with_locked_finding(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

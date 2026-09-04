@@ -3,8 +3,11 @@
 from __future__ import annotations
 
 from collections.abc import Iterable
+from dataclasses import dataclass
+from enum import Enum
 from typing import Any, Protocol
 
+from capability_catalog import load_modules
 from target_adapter_validation.ai_infrastructure import (
     AI_INFRASTRUCTURE_ROUTER_MODULE,
 )
@@ -24,25 +27,30 @@ from target_adapter_validation.team_collaboration import TEAM_COLLABORATION_MODU
 from target_adapter_validation.test_first_development import TEST_FIRST_DEVELOPMENT_MODULE
 
 
-CAPABILITY_CHECKS: dict[str, tuple[str, ...]] = {
-    "ai-infrastructure": (
-        "check_ai_infrastructure_router",
-        "check_development_evidence",
-    ),
-    "architecture-knowledge": ("check_architecture_knowledge",),
-    "code-documentation": ("check_code_documentation",),
-    "consistency-map": ("check_consistency_map",),
-    "diagrams": ("check_discussion_diagrams",),
-    "dependency-knowledge": ("check_dependency_knowledge",),
-    "debug-mode": ("check_debug_mode",),
-    "extensions": ("check_extensions",),
-    "project-vocabulary": ("check_project_vocabulary",),
-    "support-generation": ("check_support_generation",),
-    "subagent-delegation": ("check_subagent_delegation",),
-    "team-collaboration": ("check_team_collaboration",),
-    "test-first-development": ("check_test_first_development",),
-    "workspace-modes": ("check_workspace_modes",),
-}
+class CapabilityRouteKind(str, Enum):
+    """How an enabled capability reaches target adapter validation."""
+
+    MODULAR = "modular"
+    UNIVERSAL = "universal"
+    STRUCTURAL_ONLY = "structural-only"
+    COMPATIBILITY = "compatibility"
+
+
+@dataclass(frozen=True)
+class CapabilityRoute:
+    """Closed routing declaration for one capability catalog entry."""
+
+    capability_id: str
+    kind: CapabilityRouteKind
+    checks: tuple[str, ...] = ()
+
+
+def _route(
+    capability_id: str,
+    kind: CapabilityRouteKind,
+    *checks: str,
+) -> CapabilityRoute:
+    return CapabilityRoute(capability_id, kind, tuple(checks))
 
 
 class ModuleValidator(Protocol):
@@ -69,32 +77,163 @@ MODULE_IMPLEMENTATIONS: dict[str, CapabilityModule] = {
     TEST_FIRST_DEVELOPMENT_MODULE.check_id: TEST_FIRST_DEVELOPMENT_MODULE,
 }
 
+CAPABILITY_ROUTES: dict[str, CapabilityRoute] = {
+    "ai-infrastructure": _route(
+        "ai-infrastructure",
+        CapabilityRouteKind.MODULAR,
+        "check_ai_infrastructure_router",
+        "check_development_evidence",
+    ),
+    "architecture-knowledge": _route(
+        "architecture-knowledge",
+        CapabilityRouteKind.MODULAR,
+        "check_architecture_knowledge",
+    ),
+    "assistant-runtime-capabilities": _route(
+        "assistant-runtime-capabilities", CapabilityRouteKind.UNIVERSAL
+    ),
+    "blueprint-change": _route(
+        "blueprint-change", CapabilityRouteKind.UNIVERSAL
+    ),
+    "change-packages": _route(
+        "change-packages", CapabilityRouteKind.UNIVERSAL
+    ),
+    "code-documentation": _route(
+        "code-documentation",
+        CapabilityRouteKind.MODULAR,
+        "check_code_documentation",
+    ),
+    "consistency-map": _route(
+        "consistency-map", CapabilityRouteKind.MODULAR, "check_consistency_map"
+    ),
+    "debug-mode": _route(
+        "debug-mode", CapabilityRouteKind.COMPATIBILITY, "check_debug_mode"
+    ),
+    "dependency-knowledge": _route(
+        "dependency-knowledge",
+        CapabilityRouteKind.MODULAR,
+        "check_dependency_knowledge",
+    ),
+    "diagrams": _route(
+        "diagrams",
+        CapabilityRouteKind.COMPATIBILITY,
+        "check_discussion_diagrams",
+    ),
+    "durable-approvals": _route(
+        "durable-approvals", CapabilityRouteKind.UNIVERSAL
+    ),
+    "effectiveness-metrics": _route(
+        "effectiveness-metrics", CapabilityRouteKind.STRUCTURAL_ONLY
+    ),
+    "extensions": _route(
+        "extensions", CapabilityRouteKind.MODULAR, "check_extensions"
+    ),
+    "installed-operations": _route(
+        "installed-operations", CapabilityRouteKind.UNIVERSAL
+    ),
+    "large-task-orchestration": _route(
+        "large-task-orchestration", CapabilityRouteKind.UNIVERSAL
+    ),
+    "migration-diff": _route(
+        "migration-diff", CapabilityRouteKind.UNIVERSAL
+    ),
+    "multi-assistant-bridges": _route(
+        "multi-assistant-bridges", CapabilityRouteKind.UNIVERSAL
+    ),
+    "project-vocabulary": _route(
+        "project-vocabulary",
+        CapabilityRouteKind.MODULAR,
+        "check_project_vocabulary",
+    ),
+    "scaffolding": _route(
+        "scaffolding", CapabilityRouteKind.STRUCTURAL_ONLY
+    ),
+    "subagent-delegation": _route(
+        "subagent-delegation",
+        CapabilityRouteKind.COMPATIBILITY,
+        "check_subagent_delegation",
+    ),
+    "support-generation": _route(
+        "support-generation",
+        CapabilityRouteKind.MODULAR,
+        "check_support_generation",
+    ),
+    "team-collaboration": _route(
+        "team-collaboration",
+        CapabilityRouteKind.MODULAR,
+        "check_team_collaboration",
+    ),
+    "test-first-development": _route(
+        "test-first-development",
+        CapabilityRouteKind.MODULAR,
+        "check_test_first_development",
+    ),
+    "workspace-modes": _route(
+        "workspace-modes",
+        CapabilityRouteKind.COMPATIBILITY,
+        "check_workspace_modes",
+    ),
+}
+
+# Compatibility views remain derived from the typed registry while callers migrate.
+CAPABILITY_CHECKS: dict[str, tuple[str, ...]] = {
+    capability_id: route.checks
+    for capability_id, route in CAPABILITY_ROUTES.items()
+    if route.checks
+}
 COMPATIBILITY_FALLBACKS = {
-    "check_debug_mode",
-    "check_discussion_diagrams",
-    "check_subagent_delegation",
-    "check_workspace_modes",
+    check_id
+    for route in CAPABILITY_ROUTES.values()
+    if route.kind is CapabilityRouteKind.COMPATIBILITY
+    for check_id in route.checks
 }
 
 
 def registry_contract_errors() -> list[str]:
-    """Return capability dispatch entries without an explicit implementation path."""
+    """Return catalog and dispatch declarations that are not exactly closed."""
 
-    declared = {
-        check_id for check_ids in CAPABILITY_CHECKS.values() for check_id in check_ids
-    }
-    covered = set(MODULE_IMPLEMENTATIONS) | COMPATIBILITY_FALLBACKS
+    catalog_ids = set(load_modules())
+    route_ids = set(CAPABILITY_ROUTES)
     errors = [
-        f"capability check has no implementation or compatibility fallback: {check_id}"
-        for check_id in sorted(declared - covered)
+        f"catalog capability has no validation route: {capability_id}"
+        for capability_id in sorted(catalog_ids - route_ids)
     ]
     errors.extend(
-        f"module implementation is not declared by a capability: {check_id}"
-        for check_id in sorted(set(MODULE_IMPLEMENTATIONS) - declared)
+        f"validation route has no catalog capability: {capability_id}"
+        for capability_id in sorted(route_ids - catalog_ids)
+    )
+    modular_checks: set[str] = set()
+    compatibility_checks: set[str] = set()
+    for capability_id, route in CAPABILITY_ROUTES.items():
+        if route.capability_id != capability_id:
+            errors.append(
+                f"capability route key {capability_id} declares id {route.capability_id}"
+            )
+        if route.kind is CapabilityRouteKind.MODULAR:
+            if not route.checks:
+                errors.append(f"modular capability has no checks: {capability_id}")
+            modular_checks.update(route.checks)
+        elif route.kind is CapabilityRouteKind.COMPATIBILITY:
+            if not route.checks:
+                errors.append(f"compatibility capability has no checks: {capability_id}")
+            compatibility_checks.update(route.checks)
+        elif route.checks:
+            errors.append(
+                f"{route.kind.value} capability must not declare dispatch checks: "
+                f"{capability_id}"
+            )
+
+    errors.extend(
+        f"modular capability check has no implementation: {check_id}"
+        for check_id in sorted(modular_checks - set(MODULE_IMPLEMENTATIONS))
     )
     errors.extend(
-        f"compatibility fallback is not declared by a capability: {check_id}"
-        for check_id in sorted(COMPATIBILITY_FALLBACKS - declared)
+        f"module implementation is not declared by a modular capability: {check_id}"
+        for check_id in sorted(set(MODULE_IMPLEMENTATIONS) - modular_checks)
+    )
+    errors.extend(
+        f"capability check cannot be both modular and compatibility: {check_id}"
+        for check_id in sorted(modular_checks & compatibility_checks)
     )
     return errors
 
@@ -111,7 +250,10 @@ def dispatch_capability_checks(
         raise RuntimeError("; ".join(contract_errors))
     dispatched: list[str] = []
     for module_id in sorted(set(enabled_modules)):
-        for method_name in CAPABILITY_CHECKS.get(module_id, ()):
+        route = CAPABILITY_ROUTES.get(module_id)
+        if route is None:
+            continue
+        for method_name in route.checks:
             if method_name in dispatched:
                 continue
             implementation = MODULE_IMPLEMENTATIONS.get(method_name)

@@ -15,9 +15,22 @@ from capability_catalog import (  # noqa: E402
     shared_surface_merge_requirement,
     target_files,
 )
+from target_adapter_validation.modules import (  # noqa: E402
+    CAPABILITY_ROUTES,
+    CapabilityRouteKind,
+    registry_contract_errors,
+)
 
 
 class CapabilityGraphTests(unittest.TestCase):
+    def test_validation_routes_cover_the_complete_capability_catalog(self) -> None:
+        self.assertEqual(set(CAPABILITY_ROUTES), set(load_modules()))
+        self.assertEqual(registry_contract_errors(), [])
+        self.assertEqual(
+            {route.kind for route in CAPABILITY_ROUTES.values()},
+            set(CapabilityRouteKind),
+        )
+
     def test_returns_transitive_dependency_closure(self) -> None:
         modules = {
             "base": {"requires": []},
