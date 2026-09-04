@@ -290,10 +290,17 @@ not a cross-platform performance benchmark. Input fingerprints reference one
 deduplicated report-level input catalog, avoiding repeated path and digest
 payloads without weakening hash-bound reuse decisions.
 
-Ready checks are ordered by dependency impact and active-chain depth before
-resource weight and manifest order. This starts prerequisite checks that unlock
-more downstream validation earlier while preserving dependency, capacity, and
-failure-blocking behavior.
+Ready checks are ordered by historical critical-path duration when a compatible
+`--reuse-report` is supplied, then by dependency impact, active-chain depth,
+resource weight, and manifest order. Historical timing changes order only; it
+cannot change selection, dependencies, reuse eligibility, or pass/fail results.
+
+The top-level runner owns concurrency. It assigns each process a bounded
+`ALATYR_CHILD_CAPACITY`; lifecycle, scaffold-conformance, and source-unit checks
+may use only that reservation for isolated child processes. This avoids nested
+CPU oversubscription. Child output is collected in declaration order, lifecycle
+and scaffold scenarios use private temporary repositories, and unit-test shards
+must cover every selected test file exactly once before execution begins.
 
 Machine-readable reports should normally be written outside the repository.
 A repository-local `--report` path is accepted only under `tmp/` when Git
@@ -1006,6 +1013,15 @@ target-local checker coverage, optional team actor/registry/claim/overlap and
 revision-bound merge-readiness structure, optional approval scope against a
 supplied git diff, and optional `.ai/framework` drift against an AlatyrCore
 source checkout.
+
+`--validation-scope changed --diff-ref <ref>` keeps universal manifest,
+authorization, path-safety, framework-baseline, source-of-truth, and evidence
+checks active while selecting optional module validators from changed target
+surfaces and declared module dependencies. Product-source changes conservatively
+select every enabled project-facing module. This mode is a development-loop
+optimization only: its report is never acceptance eligible. Installation,
+framework update, release, and final adapter evidence must use the default
+`--validation-scope full`.
 
 When `--diff-ref` and one or more explicit `--approval-record` values are
 provided together, changed-file scope enforcement is automatic. The explicit

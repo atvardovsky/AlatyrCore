@@ -610,7 +610,12 @@ python3 tools/validate_target_adapter.py --target /path/to/target-repo --change-
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --framework-source /path/to/AlatyrCore --migration-diff /path/to/migration-report.md
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --validation-phase migration-staging
 python3 tools/validate_target_adapter.py --target /path/to/target-repo --validation-phase acceptance
+python3 tools/validate_target_adapter.py --target /path/to/target-repo --validation-scope changed --diff-ref HEAD~1
 ```
+
+The changed validation scope is a bounded development-loop check and cannot
+produce final acceptance evidence. Always rerun the default full scope before
+accepting an installation or update.
 
 Windows users may run the same helper through `py -3` or the provided
 Command Prompt and PowerShell wrappers under `tools/`.

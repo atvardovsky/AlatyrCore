@@ -45,3 +45,28 @@ def parse_module_profile_state(text: str, module_id: str) -> ModuleProfileState:
         declared=True,
         state=state_match.group(1).strip().casefold(),
     )
+
+
+def parse_module_profile(text: str) -> dict[str, list[ModuleProfileState]]:
+    """Parse every module block once while preserving duplicate declarations."""
+
+    states: dict[str, list[ModuleProfileState]] = {}
+    for match in re.finditer(
+        r"^Module: `([^`]+)`\s*$([\s\S]*?)(?=^Module: `|\Z)",
+        text,
+        flags=re.MULTILINE,
+    ):
+        module_id = match.group(1)
+        state_match = re.search(
+            r"^State:\s*`?([^`\n]+)`?\s*$",
+            match.group(2),
+            flags=re.MULTILINE,
+        )
+        states.setdefault(module_id, []).append(
+            ModuleProfileState(
+                module_id=module_id,
+                declared=True,
+                state=(state_match.group(1).strip().casefold() if state_match else None),
+            )
+        )
+    return states

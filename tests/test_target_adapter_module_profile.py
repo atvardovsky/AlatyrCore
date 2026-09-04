@@ -9,11 +9,25 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 from target_adapter_validation.module_profile import (  # noqa: E402
+    parse_module_profile,
     parse_module_profile_state,
 )
 
 
 class TargetAdapterModuleProfileTests(unittest.TestCase):
+    def test_parse_all_preserves_duplicate_declarations(self) -> None:
+        states = parse_module_profile(
+            "Module: `diagrams`\nState: enabled\n\n"
+            "Module: `diagrams`\nState: deferred\n\n"
+            "Module: `code-documentation`\n"
+        )
+
+        self.assertEqual(
+            [state.state for state in states["diagrams"]],
+            ["enabled", "deferred"],
+        )
+        self.assertIsNone(states["code-documentation"][0].state)
+
     def test_parse_enabled_module_state(self) -> None:
         text = """
 Module: `code-documentation`

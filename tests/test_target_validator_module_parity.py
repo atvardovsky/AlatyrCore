@@ -5,6 +5,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -48,6 +49,36 @@ def finding_snapshot(instance: Validator) -> list[tuple[str, str, str | None, st
 
 
 class TargetValidatorModuleParityTests(unittest.TestCase):
+    def test_changed_scope_routes_module_and_declared_dependencies(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            instance = validator(Path(directory))
+            instance.validation_scope = "changed"
+            instance.diff_ref = "HEAD"
+            instance.capability_modules = {
+                "project-vocabulary": {
+                    "module_kind": "project-facing",
+                    "target_files": [".ai/project/vocabulary/terms.json"],
+                    "requires": ["support-generation"],
+                },
+                "support-generation": {
+                    "module_kind": "assistant-infrastructure",
+                    "target_files": [".ai/support-state.json"],
+                    "requires": [],
+                },
+                "debug-mode": {
+                    "module_kind": "assistant-infrastructure",
+                    "target_files": [".ai/assistant/debug/session.json"],
+                    "requires": [],
+                },
+            }
+            with patch(
+                "validate_target_adapter.git_changed_files",
+                return_value=[".ai/project/vocabulary/terms.json"],
+            ):
+                selected = instance.changed_scope_modules(set(instance.capability_modules))
+
+        self.assertEqual(selected, {"project-vocabulary", "support-generation"})
+
     def test_adapter_schema_31_requires_sharded_consistency_map(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             target = Path(directory)

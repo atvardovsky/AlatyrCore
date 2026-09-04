@@ -14,6 +14,19 @@ from validate_target_adapter import Finding, findings_payload  # noqa: E402
 
 
 class AdapterHealthReportTests(unittest.TestCase):
+    def test_changed_scope_never_produces_acceptance_evidence(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            payload = findings_payload(
+                [],
+                target=Path(directory),
+                strict_warnings=False,
+                installation_state="accepted",
+                validation_scope="changed",
+            )
+
+        self.assertFalse(payload["placeholder_validation"]["acceptance_eligible"])
+        self.assertEqual(payload["adapter_health"]["state"], "unverified")
+
     def test_staging_health_is_unverified_and_not_acceptance_eligible(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             payload = findings_payload(

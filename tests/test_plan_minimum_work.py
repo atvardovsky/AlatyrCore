@@ -175,6 +175,12 @@ class MinimumWorkPlanTests(unittest.TestCase):
             "docs/framework-maintenance.md",
             plan["context_packet"]["required_context"],
         )
+        self.assertEqual(
+            plan["context_packet"]["selectors"]["changed_paths"],
+            ["docs/human/faq.md"],
+        )
+        self.assertEqual(plan["context_packet"]["selectors"]["check_ids"], ["docs"])
+        self.assertTrue(plan["context_packet"]["omitted_candidates"])
         self.assertIn("logical integrity review", plan["quality_boundary"])
         self.assertEqual(plan["reuse"]["reusable_check_count"], 0)
         self.assertIn("--profile fast", render_summary(plan))

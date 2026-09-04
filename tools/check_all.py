@@ -34,6 +34,7 @@ from source_check_reuse import (
     load_reuse_report,
     reuse_decisions,
 )
+from parallel_execution import CHILD_CAPACITY_ENV
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -433,6 +434,9 @@ def run_check(check: dict[str, Any], baseline: str | None) -> RunnerResult:
     environment["ALATYR_SELECTION_REASONS_JSON"] = json.dumps(
         selection.get("reasons", []), ensure_ascii=True
     )
+    environment[CHILD_CAPACITY_ENV] = str(
+        max(1, int(check.get("_child_capacity", 1)))
+    )
     try:
         result = subprocess.run(
             command,
@@ -531,6 +535,46 @@ def source_identity() -> dict[str, Any]:
         "manifest_path": MANIFEST.relative_to(ROOT).as_posix(),
         "manifest_sha256": manifest_digest,
         "check_manifest_schema_version": manifest_data.get("schema_version"),
+    }
+
+
+def historical_duration_estimates(
+    previous_report: dict[str, Any] | None,
+    *,
+    current_source: dict[str, Any],
+    current_environment: dict[str, Any],
+) -> dict[str, float]:
+    """Return ordering hints only for a compatible report/runtime contract."""
+
+    if (
+        not isinstance(previous_report, dict)
+        or previous_report.get("schema_version") != 3
+    ):
+        return {}
+    previous_source = previous_report.get("source")
+    previous_environment = previous_report.get("environment")
+    if not isinstance(previous_source, dict) or not isinstance(
+        previous_environment, dict
+    ):
+        return {}
+    if previous_source.get("check_manifest_schema_version") != current_source.get(
+        "check_manifest_schema_version"
+    ):
+        return {}
+    if previous_environment.get("platform") != current_environment.get("platform"):
+        return {}
+    previous_python = str(previous_environment.get("python", "")).split()[0]
+    current_python = str(current_environment.get("python", "")).split()[0]
+    if previous_python.split(".")[:2] != current_python.split(".")[:2]:
+        return {}
+    return {
+        item["id"]: float(item["duration_seconds"])
+        for item in previous_report.get("checks", [])
+        if isinstance(item, dict)
+        and isinstance(item.get("id"), str)
+        and item.get("status") in {"passed", "reused-pass"}
+        and isinstance(item.get("duration_seconds"), (int, float))
+        and item["duration_seconds"] > 0
     }
 
 
@@ -756,6 +800,7 @@ def execute_checks(
     runner: Any = run_check,
     telemetry: dict[str, dict[str, Any]] | None = None,
     initial_results: dict[str, tuple[int, str, str, list[str]]] | None = None,
+    duration_estimates: dict[str, float] | None = None,
 ) -> tuple[
     dict[str, tuple[int, str, str, list[str]]],
     dict[str, list[str]],
@@ -809,6 +854,7 @@ def execute_checks(
             if dependency in direct_dependents:
                 direct_dependents[dependency].add(check["id"])
 
+    estimates = duration_estimates or {}
     descendant_counts: dict[str, int] = {}
 
     def descendant_count(check_id: str) -> int:
@@ -843,6 +889,20 @@ def execute_checks(
         )
         dependency_depths[check_id] = depth
         return depth
+
+    remaining_duration: dict[str, float] = {}
+
+    def critical_path_duration(check_id: str) -> float:
+        cached = remaining_duration.get(check_id)
+        if cached is not None:
+            return cached
+        own = max(0.001, float(estimates.get(check_id, 0.0)))
+        downstream = [
+            critical_path_duration(item) for item in direct_dependents[check_id]
+        ]
+        value = own + (max(downstream) if downstream else 0.0)
+        remaining_duration[check_id] = value
+        return value
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=jobs) as executor:
         running: dict[concurrent.futures.Future[Any], dict[str, Any]] = {}
@@ -894,6 +954,7 @@ def execute_checks(
             return sorted(
                 ready,
                 key=lambda check: (
+                    -critical_path_duration(check["id"]),
                     -descendant_count(check["id"]),
                     -dependency_depth(check["id"]),
                     resource_weight(check),
@@ -908,7 +969,8 @@ def execute_checks(
                 weight = resource_weight(check)
                 if running and running_weight + weight > jobs:
                     continue
-                future = executor.submit(run_with_observation, check)
+                scheduled_check = {**check, "_child_capacity": weight}
+                future = executor.submit(run_with_observation, scheduled_check)
                 running[future] = check
                 running_weights[future] = weight
                 running_weight += weight
@@ -980,6 +1042,9 @@ def execute_checks(
                 6,
             ),
             "jobs": jobs,
+            "schedule": (
+                "historical-critical-path" if estimates else "dependency-critical-path"
+            ),
         }
 
     return results, blocked
@@ -1086,12 +1151,18 @@ def main() -> int:
             commands_by_id=commands_by_id,
         )
         telemetry: dict[str, dict[str, Any]] = {}
+        duration_estimates = historical_duration_estimates(
+            previous_report,
+            current_source=current_source,
+            current_environment=current_environment,
+        )
         results, blocked = execute_checks(
             selected,
             baseline,
             args.jobs,
             telemetry=telemetry,
             initial_results=initial_results,
+            duration_estimates=duration_estimates,
         )
         source_changes = snapshot_changes(before, source_snapshot(ROOT))
     except (OSError, ValueError) as exc:

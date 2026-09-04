@@ -58,18 +58,35 @@ def _load_source_tooling_context() -> dict[str, Any]:
     return _load_source_profile_context("source-tooling")
 
 
-def _load_source_profile_context(source_profile: str) -> dict[str, Any]:
+def _load_source_profile_context(
+    source_profile: str,
+    *,
+    changed_paths: list[str] | None = None,
+    selection_details: dict[str, dict[str, Any]] | None = None,
+) -> dict[str, Any]:
     router = _load_source_router()
     profiles = router.get("profiles", {})
     profile = profiles.get(source_profile)
     if not isinstance(profile, dict):
         raise ValueError(f"unknown source profile: {source_profile}")
+    required = [*router.get("preloaded_context", []), *router.get("bootstrap_context", []), *profile.get("required_context", [])]
+    selectors = {
+        "changed_paths": sorted(changed_paths or []),
+        "check_ids": sorted((selection_details or {}).keys()),
+    }
     return {
         "source_profile": source_profile,
         "preloaded_context": router.get("preloaded_context", []),
         "bootstrap_context": router.get("bootstrap_context", []),
         "required_context": profile.get("required_context", []),
         "conditional_context": profile.get("conditional_context", []),
+        "selected_items": [
+            {"path": path, "reason": ["source-profile:" + source_profile]}
+            for path in dict.fromkeys(required)
+        ],
+        "selectors": selectors,
+        "omitted_candidates": profile.get("conditional_context", []),
+        "unresolved_selector_behavior": "load the canonical owner and report the routing gap",
         "expansion_triggers": router.get("task_classification", {}).get(
             "expansion_triggers", []
         ),
@@ -537,9 +554,17 @@ def build_plan(
         "changed_paths": plan.changed_paths,
         "selection": selection,
         "context_packet": (
-            _load_source_tooling_context()
+            _load_source_profile_context(
+                "source-tooling",
+                changed_paths=plan.changed_paths,
+                selection_details=plan.selection_details,
+            )
             if source_profile is None
-            else _load_source_profile_context(source_profile)
+            else _load_source_profile_context(
+                source_profile,
+                changed_paths=plan.changed_paths,
+                selection_details=plan.selection_details,
+            )
         ),
         "decomposition": decomposition,
         "delegation_assessment": _delegation_assessment(

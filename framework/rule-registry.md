@@ -75,14 +75,15 @@ savings without observed host/provider telemetry; use support-state differences
 and the consistency reverse index to select only relevant graph shards while
 keeping redundant portable explanation conditional; apply bounded two-stage
 project-guidance delivery from profile plus a stronger area, dependency, fact,
-contract, path, symbol, or issue signal; record packet identity plus planned,
-resolved, and observably delivered ordered guidance identities with
-deterministic digests while never claiming model comprehension; revalidate
-changed bundles before protected implementation, material decisions, final
-validation, and final evidence; separate total, portable, and reserved target
-context budgets; record expansion only when boundaries or conflicts require it;
-and keep unrelated branches, knowledge, optional modules, evidence history,
-relationship candidates, debug records, delegated execution, complete
+contract, path, symbol, or issue signal; record exact selector reasons, omitted
+candidates, expansion triggers, fail-closed canonical-owner fallback, packet
+identity, and planned, resolved, and observably delivered ordered guidance
+identities with deterministic digests while never claiming model comprehension;
+revalidate changed bundles before protected implementation, material decisions,
+final validation, and final evidence; separate total, portable, and reserved
+target context budgets; record expansion only when boundaries or conflicts
+require it; and keep unrelated branches, knowledge, optional modules, evidence
+history, relationship candidates, debug records, delegated execution, complete
 checklists, and full team detail lazy.
 Applies to: all installed adapter tasks.
 Enforcement: required.

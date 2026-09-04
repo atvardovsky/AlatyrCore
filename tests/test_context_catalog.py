@@ -7,6 +7,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+import jsonschema
+
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
@@ -403,6 +405,10 @@ class ContextCatalogTests(unittest.TestCase):
             selected_items=[item],
             semantic_terms=terms,
             max_words=20,
+            selection_reasons={"rule": ["rule-id:ALATYR-SOURCE-001"]},
+            task_classification="small-task",
+            expansion_triggers=["owner conflict"],
+            omitted_item_ids=["unrelated"],
         )
         self.assertEqual(packet["budget"]["total_words"], 14)
         self.assertEqual(packet["schema_version"], 2)
@@ -412,6 +418,15 @@ class ContextCatalogTests(unittest.TestCase):
         )
         self.assertFalse(packet["cache_delivery"]["cache_hit_required"])
         self.assertFalse(packet["cache_delivery"]["context_window_reduction"])
+        self.assertEqual(packet["selected_items"][0]["reason"], ["rule-id:ALATYR-SOURCE-001"])
+        self.assertEqual(packet["routing"]["omitted_item_ids"], ["unrelated"])
+        self.assertEqual(packet["receipt"]["planned"]["approximate_words"], 14)
+        schema = json.loads(
+            (ROOT / "schemas/alatyr-context-packet.schema.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        jsonschema.validate(packet, schema)
         self.assertRegex(
             packet["cache_delivery"]["stable_prefix_digest"],
             r"^sha256:[0-9a-f]{64}$",

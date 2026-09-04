@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1190
+Catalog entries: 1192
 
 ## Families
 
@@ -22,6 +22,7 @@ Catalog entries: 1190
 - `BACKUP`: 1 codes.
 - `BOOTSTRAP`: 9 codes.
 - `CAPABILITY`: 7 codes.
+- `CHANGED`: 2 codes.
 - `CODEDOC`: 32 codes.
 - `CONSISTENCY`: 37 codes.
 - `CONTEXT`: 10 codes.
@@ -350,6 +351,10 @@ Catalog entries: 1190
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `CAPABILITY_TARGET_FILE_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `CHANGED_VALIDATION_DIFF_UNAVAILABLE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `CHANGED_VALIDATION_SCOPE`
+  Level: info. Source: `tools/validate_target_adapter.py`.
 - `CODEDOC_ACCEPTED_AMBIGUITY`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `CODEDOC_ACCEPTED_UNRESOLVED`

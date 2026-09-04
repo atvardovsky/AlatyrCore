@@ -150,6 +150,14 @@ the owning checks.
   shared helpers only when at least one caller and test prove the abstraction.
 - Review broad trigger routes after each new helper so small documentation or
   tooling changes do not accidentally select heavy checks.
+- Keep source-check concurrency parent-owned. Heavy checks receive an explicit
+  child capacity and may parallelize only independent subprocesses with private
+  mutable state. Scheduling history may optimize order but never validation
+  coverage.
+- Keep changed-surface target validation fail-closed and non-acceptance. The
+  universal validator core always runs; optional module routing may reduce
+  development-loop work, while installation, update, and release evidence stays
+  full-scope.
 
 ## Non-Goals
 

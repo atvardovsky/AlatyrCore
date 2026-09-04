@@ -461,6 +461,10 @@ def build_context_packet(
     semantic_terms: dict[str, dict[str, Any]],
     max_words: int,
     assistant_surface: str = "generic",
+    selection_reasons: dict[str, list[str]] | None = None,
+    task_classification: str = "standard-task",
+    expansion_triggers: Iterable[str] = (),
+    omitted_item_ids: Iterable[str] = (),
 ) -> dict[str, Any]:
     """Build a deterministic packet projection from selected catalog items."""
 
@@ -494,7 +498,7 @@ def build_context_packet(
             "id": item.item_id,
             "path": item.path,
             "content_digest": item.content_digest,
-            "reason": list(item.load_when),
+            "reason": list((selection_reasons or {}).get(item.item_id, item.load_when)),
         }
         for item in items
     ]
@@ -542,12 +546,30 @@ def build_context_packet(
         "semantic_terms": semantic_payload,
         "profile": profile,
         "operation": operation,
+        "task_classification": task_classification,
         "selected_items": selected_payload,
+        "routing": {
+            "selection_basis": "exact catalog selectors and declared owner dependencies",
+            "omitted_item_ids": sorted(set(omitted_item_ids)),
+            "expansion_triggers": sorted(set(expansion_triggers)),
+            "unresolved_selector_behavior": "load the canonical owner and report the routing gap",
+        },
         "budget": {
             "max_words": max_words,
             "selected_content_words": selected_words,
             "semantic_definition_words": semantic_words,
             "total_words": total_words,
+        },
+        "receipt": {
+            "schema_version": 1,
+            "receipt_kind": "alatyr-context-receipt",
+            "measurement_state": "planned",
+            "planned": {
+                "paths": [item.path for item in items],
+                "approximate_words": total_words,
+            },
+            "resolved": {"status": "unavailable", "paths": []},
+            "observed": {"evidence_level": "unavailable"},
         },
     }
     canonical = json.dumps(payload, ensure_ascii=True, separators=(",", ":"), sort_keys=True)

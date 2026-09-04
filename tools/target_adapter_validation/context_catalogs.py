@@ -197,6 +197,7 @@ def validate_context_catalog_contract(sink: FindingSink, manifest: Any) -> None:
             "operation",
             "task_classification",
             "selected_items",
+            "routing",
             "semantic_terms",
             "budget",
             "receipt",
@@ -215,6 +216,24 @@ def validate_context_catalog_contract(sink: FindingSink, manifest: Any) -> None:
                 PACKET_TEMPLATE,
             )
         cache_delivery = packet.get("cache_delivery")
+        routing = packet.get("routing")
+        if not isinstance(routing, dict) or set(routing) != {
+            "selection_basis",
+            "omitted_item_ids",
+            "expansion_triggers",
+            "unresolved_selector_behavior",
+        }:
+            sink.error(
+                "CONTEXT_PACKET_TEMPLATE_INVALID",
+                "context packet routing evidence is incomplete",
+                PACKET_TEMPLATE,
+            )
+        elif "canonical owner" not in str(routing.get("unresolved_selector_behavior")):
+            sink.error(
+                "CONTEXT_PACKET_TEMPLATE_INVALID",
+                "unresolved selectors must fall back to the canonical owner",
+                PACKET_TEMPLATE,
+            )
         if not isinstance(cache_delivery, dict):
             sink.error(
                 "CONTEXT_PACKET_TEMPLATE_INVALID",

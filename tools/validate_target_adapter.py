@@ -104,7 +104,7 @@ from target_adapter_validation.engineering_evidence import (
 )
 from target_adapter_validation.framework_baseline import source_pack_expectation
 from target_adapter_validation.installation_state import validate_installation_state
-from target_adapter_validation.module_profile import parse_module_profile_state
+from target_adapter_validation.module_profile import ModuleProfileState, parse_module_profile
 from target_adapter_validation.project_knowledge import (
     validate_project_knowledge_contract,
 )
@@ -846,6 +846,7 @@ class Validator:
         validation_phase: str | None = None,
         debug_git_state: bool = False,
         debug_remote_ref: str | None = None,
+        validation_scope: str = "full",
     ) -> None:
         self.target = target.resolve()
         self.context = ValidationContext(self.target)
@@ -865,6 +866,9 @@ class Validator:
         self.migration_diff = migration_diff.resolve() if migration_diff else None
         self.debug_git_state = debug_git_state
         self.debug_remote_ref = debug_remote_ref
+        if validation_scope not in {"full", "changed"}:
+            raise ValueError(f"unsupported validation scope: {validation_scope}")
+        self.validation_scope = validation_scope
         self.validation_phase = validation_phase or (
             "migration-staging" if allow_placeholders else "acceptance"
         )
@@ -876,6 +880,7 @@ class Validator:
         self.capability_modules: dict[str, Any] = {}
         self.allow_local_paths = allow_local_paths + config.local_path_patterns()
         self.framework_drift_detected = False
+        self._module_profile_cache: dict[str, list[ModuleProfileState]] | None = None
 
     def error(self, code: str, message: str, path: str | None = None) -> None:
         self.add_finding("error", code, message, path)
@@ -943,7 +948,8 @@ class Validator:
             ".ai/assistant/operation-catalog.json"
         ).is_file():
             self.check_operation_catalog()
-        dispatch_capability_checks(self, enabled_modules, manifest)
+        routed_modules = self.changed_scope_modules(enabled_modules)
+        dispatch_capability_checks(self, routed_modules, manifest)
         self.check_enabled_module_status_claims(enabled_modules)
         self.check_bootstrap_references()
         self.check_assistant_instruction_capabilities(manifest)
@@ -970,6 +976,55 @@ class Validator:
             "require dated operation, approval, or migration records",
         )
         return self.findings
+
+    def changed_scope_modules(self, enabled_modules: set[str]) -> set[str]:
+        """Select optional module validators; universal checks always run."""
+
+        if self.validation_scope == "full":
+            return enabled_modules
+        changed = git_changed_files(self.target, self.diff_ref)
+        if changed is None:
+            self.error(
+                "CHANGED_VALIDATION_DIFF_UNAVAILABLE",
+                "changed validation requires a resolvable Git diff; all modules were selected",
+            )
+            return enabled_modules
+        universal_boundaries = {
+            ".ai/alatyr.yaml",
+            ".ai/assistant/module-profile.md",
+            ".ai/assistant/context-router.json",
+        }
+        if any(path in universal_boundaries or path.startswith(".ai/framework/") for path in changed):
+            selected = set(enabled_modules)
+        else:
+            selected: set[str] = set()
+            product_changed = any(not path.startswith(".ai/") for path in changed)
+            for module_id in enabled_modules:
+                capability = self.capability_modules.get(module_id, {})
+                target_files = capability.get("target_files", []) if isinstance(capability, dict) else []
+                if product_changed and capability.get("module_kind") == "project-facing":
+                    selected.add(module_id)
+                elif any(
+                    path == declared or path.startswith(str(declared).rstrip("/") + "/")
+                    for path in changed
+                    for declared in target_files
+                    if isinstance(declared, str)
+                ):
+                    selected.add(module_id)
+            pending = list(selected)
+            while pending:
+                module_id = pending.pop()
+                capability = self.capability_modules.get(module_id, {})
+                for dependency in capability.get("requires", []) if isinstance(capability, dict) else []:
+                    if dependency in enabled_modules and dependency not in selected:
+                        selected.add(dependency)
+                        pending.append(dependency)
+        self.info(
+            "CHANGED_VALIDATION_SCOPE",
+            "focused validation selected optional modules: "
+            + (", ".join(sorted(selected)) if selected else "none"),
+        )
+        return selected
 
     def check_assistant_instruction_capabilities(
         self, manifest: ManifestData | None
@@ -1426,7 +1481,8 @@ class Validator:
         module_path = self.target_path(module_relpath)
         if not module_path.is_file():
             return False
-        state = parse_module_profile_state(self.read_text(module_path), module_id)
+        declarations = self._parsed_module_profile().get(module_id, [])
+        state = declarations[0] if declarations else ModuleProfileState(module_id, False, None)
         if not state.declared:
             self.module_profile_undeclared_warning(
                 module_id, undeclared_code, display_name, module_relpath
@@ -1438,6 +1494,17 @@ class Validator:
             )
             return False
         return state.validation_enabled
+
+    def _parsed_module_profile(self) -> dict[str, list[ModuleProfileState]]:
+        if self._module_profile_cache is not None:
+            return self._module_profile_cache
+        module_path = self.target_path(".ai/assistant/module-profile.md")
+        self._module_profile_cache = (
+            parse_module_profile(self.read_text(module_path))
+            if module_path.is_file()
+            else {}
+        )
+        return self._module_profile_cache
 
     def module_profile_undeclared_warning(
         self,
@@ -1521,40 +1588,19 @@ class Validator:
         profile_path = self.target_path(".ai/assistant/module-profile.md")
         if not profile_path.is_file():
             return enabled
-        text = self.read_text(profile_path)
-        for match in re.finditer(
-            r"^Module: `([^`]+)`\s*$([\s\S]*?)(?=^Module: `|\Z)",
-            text,
-            flags=re.MULTILINE,
-        ):
-            state = re.search(
-                r"^State:\s*`?([^`\n]+)`?\s*$",
-                match.group(2),
-                flags=re.MULTILINE,
-            )
-            if state and state.group(1).strip().casefold() in {"enabled", "required"}:
-                enabled.add(match.group(1))
+        for module_id, declarations in self._parsed_module_profile().items():
+            if declarations and declarations[0].validation_enabled:
+                enabled.add(module_id)
         return enabled
 
     def module_profile_states(self) -> dict[str, list[str]]:
         profile_path = self.target_path(".ai/assistant/module-profile.md")
         if not profile_path.is_file():
             return {}
-        states: dict[str, list[str]] = {}
-        text = self.read_text(profile_path)
-        for match in re.finditer(
-            r"^Module: `([^`]+)`\s*$([\s\S]*?)(?=^Module: `|\Z)",
-            text,
-            flags=re.MULTILINE,
-        ):
-            state_match = re.search(
-                r"^State:\s*`?([^`\n]+)`?\s*$",
-                match.group(2),
-                flags=re.MULTILINE,
-            )
-            state = state_match.group(1).strip().casefold() if state_match else "missing"
-            states.setdefault(match.group(1), []).append(state)
-        return states
+        return {
+            module_id: [declaration.state or "missing" for declaration in declarations]
+            for module_id, declarations in self._parsed_module_profile().items()
+        }
 
     def check_module_profile_sync(self, manifest: ManifestData | None) -> None:
         if manifest is None:
@@ -9019,12 +9065,17 @@ def adapter_health_state(
     *,
     validation_phase: str = "acceptance",
     installation_state: str = "unverified",
+    validation_scope: str = "full",
 ) -> str:
     if any(finding.code in {"TARGET_MISSING", "TARGET_NOT_DIRECTORY"} for finding in findings):
         return "unverified"
     if any(is_blocking_finding(finding) for finding in findings):
         return "blocked"
-    if installation_state != "accepted" or validation_phase != "acceptance":
+    if (
+        installation_state != "accepted"
+        or validation_phase != "acceptance"
+        or validation_scope != "full"
+    ):
         return "unverified"
     if any(finding.level == "warning" for finding in findings):
         return "attention"
@@ -9080,6 +9131,7 @@ def render_summary(
     strict_warnings: bool,
     validation_phase: str,
     installation_state: str = "unverified",
+    validation_scope: str = "full",
 ) -> int:
     order = {"error": 0, "warning": 1, "info": 2}
     for finding in sorted(findings, key=lambda item: (order[item.level], item.code, item.path or "")):
@@ -9097,6 +9149,7 @@ def render_summary(
         findings,
         validation_phase=validation_phase,
         installation_state=installation_state,
+        validation_scope=validation_scope,
     )
     print(
         f"\nSummary: errors={errors} warnings={warnings} "
@@ -9104,8 +9157,11 @@ def render_summary(
     )
     print(f"Alatyr adapter health: {health}")
     print(f"Validation phase: {validation_phase}")
+    print(f"Validation scope: {validation_scope}")
     if validation_phase == "migration-staging":
         print("Acceptance eligible: no; rerun in acceptance phase after resolving active placeholders")
+    elif validation_scope == "changed":
+        print("Acceptance eligible: no; rerun with --validation-scope full for final evidence")
     repairs = prioritized_repair_operations(findings)
     if repairs:
         print("Suggested repair operations: " + ", ".join(repairs))
@@ -9134,6 +9190,7 @@ def findings_payload(
     strict_warnings: bool,
     validation_phase: str = "acceptance",
     installation_state: str | None = None,
+    validation_scope: str = "full",
 ) -> dict[str, Any]:
     errors = sum(1 for finding in findings if finding.level == "error")
     warnings = sum(1 for finding in findings if finding.level == "warning")
@@ -9156,6 +9213,7 @@ def findings_payload(
     acceptance_eligible = (
         resolved_installation_state == "accepted"
         and validation_phase == "acceptance"
+        and validation_scope == "full"
         and exit_code == 0
     )
     return {
@@ -9182,18 +9240,21 @@ def findings_payload(
             else "passed"
         ),
         "validation_phase": validation_phase,
+        "validation_scope": validation_scope,
         "installation_state": resolved_installation_state,
         "placeholder_validation": {
             "mode": "staging-only" if validation_phase == "migration-staging" else "strict",
             "unresolved_active": unresolved_active,
             "acceptance_eligible": acceptance_eligible,
             "required_final_phase": "acceptance",
+            "required_final_scope": "full",
         },
         "adapter_health": {
             "state": adapter_health_state(
                 findings,
                 validation_phase=validation_phase,
                 installation_state=resolved_installation_state,
+                validation_scope=validation_scope,
             ),
             "observed_at": observed_at,
             "observed_revision": observed_revision,
@@ -9337,6 +9398,15 @@ def main() -> int:
         ),
     )
     parser.add_argument(
+        "--validation-scope",
+        choices=["full", "changed"],
+        default="full",
+        help=(
+            "Run every validator or a non-acceptance changed-surface route. "
+            "Changed scope requires --diff-ref and never qualifies as final evidence."
+        ),
+    )
+    parser.add_argument(
         "--allow-placeholders",
         action="store_true",
         help=(
@@ -9366,6 +9436,8 @@ def main() -> int:
         help="Write machine-readable JSON findings to this file.",
     )
     args = parser.parse_args()
+    if args.validation_scope == "changed" and not args.diff_ref:
+        parser.error("--validation-scope changed requires --diff-ref")
     validation_phase = (
         "migration-staging" if args.allow_placeholders else args.validation_phase
     )
@@ -9392,6 +9464,7 @@ def main() -> int:
         config=config,
         initial_findings=config_findings,
         validation_phase=validation_phase,
+        validation_scope=args.validation_scope,
     )
     findings = validator.run()
     payload = findings_payload(
@@ -9400,6 +9473,7 @@ def main() -> int:
         strict_warnings=args.strict_warnings,
         validation_phase=validation_phase,
         installation_state=validator.installation_state,
+        validation_scope=args.validation_scope,
     )
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
@@ -9415,6 +9489,7 @@ def main() -> int:
         strict_warnings=args.strict_warnings,
         validation_phase=validation_phase,
         installation_state=validator.installation_state,
+        validation_scope=args.validation_scope,
     )
 
 

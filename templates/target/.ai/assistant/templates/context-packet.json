@@ -46,6 +46,16 @@
       "reason": ["{EXACT_SELECTOR_OR_EXPANSION_TRIGGER}"]
     }
   ],
+  "routing": {
+    "selection_basis": "exact catalog selectors and declared owner dependencies",
+    "omitted_item_ids": [
+      "{OMITTED_CONTEXT_ITEM_ID_OR_NONE}"
+    ],
+    "expansion_triggers": [
+      "{NONE_OR_TRIGGER}"
+    ],
+    "unresolved_selector_behavior": "load the canonical owner and report the routing gap"
+  },
   "budget": {
     "max_words": 1,
     "selected_content_words": 0,

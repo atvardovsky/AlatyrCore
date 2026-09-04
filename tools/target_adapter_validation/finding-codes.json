@@ -66,6 +66,10 @@
       "code_count": 7
     },
     {
+      "id": "CHANGED",
+      "code_count": 2
+    },
+    {
       "id": "CODEDOC",
       "code_count": 32
     },
@@ -1506,6 +1510,24 @@
       "code": "CAPABILITY_TARGET_FILE_MISSING",
       "levels": [
         "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CHANGED_VALIDATION_DIFF_UNAVAILABLE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CHANGED_VALIDATION_SCOPE",
+      "levels": [
+        "info"
       ],
       "sources": [
         "tools/validate_target_adapter.py"

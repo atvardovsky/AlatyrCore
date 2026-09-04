@@ -211,6 +211,7 @@ def check_context_packet(router: dict[str, Any], failures: list[str]) -> None:
         "operation",
         "task_classification",
         "selected_items",
+        "routing",
         "semantic_terms",
         "budget",
         "receipt",
@@ -220,6 +221,16 @@ def check_context_packet(router: dict[str, Any], failures: list[str]) -> None:
     }
     if set(packet_template) != required_packet_fields:
         failures.append("context packet template fields are invalid")
+    routing = packet_template.get("routing")
+    if not isinstance(routing, dict) or set(routing) != {
+        "selection_basis",
+        "omitted_item_ids",
+        "expansion_triggers",
+        "unresolved_selector_behavior",
+    }:
+        failures.append("context packet routing evidence is incomplete")
+    elif "canonical owner" not in str(routing.get("unresolved_selector_behavior")):
+        failures.append("unresolved context selectors must load the canonical owner")
     cache_delivery = packet_template.get("cache_delivery")
     if not isinstance(cache_delivery, dict):
         failures.append("context packet template must include cache_delivery")

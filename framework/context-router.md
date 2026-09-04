@@ -246,6 +246,14 @@ provider evidence. Provider usage can support token accounting when exposed by
 the provider, but only host delivery telemetry can prove the exact semantic
 guidance bundle reached the model.
 
+Resolved context packets should record the exact selector reason for each
+selected item, omitted candidate IDs, expansion triggers, and fail-closed
+behavior for unresolved selectors. Their planned receipt records selected paths
+and the static word estimate. Resolved or observed receipt fields may be used
+only when corresponding host or provider evidence exists. These packet fields
+route canonical owners; they do not create a second policy owner or prove that
+the model understood the delivered material.
+
 Prompt or context caching reduces repeated provider computation, latency, or
 billed input cost when the exact provider and client support it. It does not
 remove cached tokens from the context window and does not justify broader

@@ -17,6 +17,7 @@ from check_all import (  # noqa: E402
     default_changed_from,
     effective_baseline,
     execute_checks,
+    historical_duration_estimates,
     load_manifest,
     render_report,
     resolve_report_path,
@@ -45,6 +46,31 @@ def check(check_id: str, *dependencies: str) -> dict[str, Any]:
 
 
 class CheckGraphTests(unittest.TestCase):
+    def test_historical_durations_require_matching_platform_and_python_family(self) -> None:
+        report = {
+            "schema_version": 3,
+            "source": {"check_manifest_schema_version": 4},
+            "environment": {"platform": "linux", "python": "3.13.1 build"},
+            "checks": [{"id": "one", "status": "passed", "duration_seconds": 2.5}],
+        }
+        current_source = {"check_manifest_schema_version": 4}
+
+        self.assertEqual(
+            historical_duration_estimates(
+                report,
+                current_source=current_source,
+                current_environment={"platform": "linux", "python": "3.13.2 build"},
+            ),
+            {"one": 2.5},
+        )
+        self.assertEqual(
+            historical_duration_estimates(
+                report,
+                current_source=current_source,
+                current_environment={"platform": "windows", "python": "3.13.2 build"},
+            ),
+            {},
+        )
     def test_profile_selection_respects_platform_contract(self) -> None:
         checks = [
             {
@@ -473,6 +499,45 @@ class CheckGraphTests(unittest.TestCase):
         execute_checks(selected, None, 1, runner=runner)
 
         self.assertEqual(started, ["root", "child", "grandchild", "independent"])
+
+    def test_scheduler_uses_historical_critical_path_without_changing_coverage(self) -> None:
+        started: list[str] = []
+
+        def runner(item: dict[str, Any], _baseline: str | None):
+            started.append(item["id"])
+            return 0, "", "", [item["id"]]
+
+        selected = [check("short"), check("long")]
+        results, blocked = execute_checks(
+            selected,
+            None,
+            1,
+            runner=runner,
+            duration_estimates={"short": 1.0, "long": 20.0},
+        )
+
+        self.assertEqual(started, ["long", "short"])
+        self.assertEqual(set(results), {"short", "long"})
+        self.assertEqual(blocked, {})
+
+    def test_scheduler_assigns_only_reserved_child_capacity(self) -> None:
+        observed: dict[str, int] = {}
+
+        def runner(item: dict[str, Any], _baseline: str | None):
+            observed[item["id"]] = item["_child_capacity"]
+            return 0, "", "", [item["id"]]
+
+        execute_checks(
+            [
+                {**check("heavy"), "resource_class": "heavy"},
+                check("standard"),
+            ],
+            None,
+            3,
+            runner=runner,
+        )
+
+        self.assertEqual(observed, {"heavy": 2, "standard": 1})
 
     def test_runner_exception_is_recorded_as_a_failed_check(self) -> None:
         telemetry: dict[str, dict[str, Any]] = {}

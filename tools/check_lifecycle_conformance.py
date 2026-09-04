@@ -24,6 +24,7 @@ from agent_entry_packet import (
     render as render_entry_packet,
 )
 from plan_target_upgrade import add_validation_impact
+from parallel_execution import child_capacity, run_commands
 from scaffold_target_structure import plan as scaffold_plan
 from render_context_catalogs import build_framework_catalog_contents
 from render_installed_context_catalogs import expected_outputs as installed_context_outputs
@@ -668,7 +669,38 @@ def main() -> int:
         action="store_true",
         help="Run the lightweight kernel lifecycle proof for platform checks.",
     )
+    parser.add_argument(
+        "--profile",
+        choices=sorted(PROFILE_PACKS),
+        help=argparse.SUPPRESS,
+    )
     args = parser.parse_args()
+
+    if not args.smoke and args.profile is None and child_capacity() > 1:
+        commands = [
+            (
+                profile,
+                [sys.executable, str(Path(__file__).resolve()), "--profile", profile],
+            )
+            for profile in PROFILE_PACKS
+        ]
+        results = run_commands(commands, cwd=ROOT)
+        failed = False
+        for result in results:
+            if result.stdout:
+                print(result.stdout, end="" if result.stdout.endswith("\n") else "\n")
+            if result.stderr:
+                print(
+                    result.stderr,
+                    end="" if result.stderr.endswith("\n") else "\n",
+                    file=sys.stderr,
+                )
+            failed = failed or result.returncode != 0
+        if failed:
+            return 1
+        print("OK: lifecycle profiles passed in bounded isolated workers")
+        return 0
+
     failures: list[str] = []
     try:
         golden = json.loads(GOLDEN.read_text(encoding="utf-8"))
@@ -687,7 +719,13 @@ def main() -> int:
 
     with tempfile.TemporaryDirectory(prefix="alatyr-lifecycle-") as directory:
         root = Path(directory)
-        profiles = {"kernel": PROFILE_PACKS["kernel"]} if args.smoke else PROFILE_PACKS
+        profiles = (
+            {args.profile: PROFILE_PACKS[args.profile]}
+            if args.profile
+            else (
+                {"kernel": PROFILE_PACKS["kernel"]} if args.smoke else PROFILE_PACKS
+            )
+        )
         for support_profile, expected_pack in profiles.items():
             exercise_profile(root, support_profile, expected_pack, failures)
 

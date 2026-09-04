@@ -3,12 +3,15 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import ast
 import sys
 import unittest
 from pathlib import Path
+
+from parallel_execution import child_capacity, run_commands
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -61,13 +64,61 @@ def _local_imports(path: Path, modules: dict[str, Path]) -> set[Path] | None:
     except (OSError, SyntaxError):
         return None
     imported: set[Path] = set()
+    current_module = next(
+        (name for name, candidate in modules.items() if candidate == path), None
+    )
+    current_package = ""
+    if current_module:
+        current_package = (
+            current_module
+            if path.name == "__init__.py"
+            else current_module.rpartition(".")[0]
+        )
+
+    def resolve_relative(module: str | None, level: int) -> str | None:
+        if level == 0:
+            return module or ""
+        package_parts = current_package.split(".") if current_package else []
+        remove = level - 1
+        if remove > len(package_parts):
+            return None
+        base = package_parts[: len(package_parts) - remove]
+        if module:
+            base.extend(module.split("."))
+        return ".".join(base)
+
     for node in ast.walk(tree):
         names: list[str] = []
         if isinstance(node, ast.Import):
             names.extend(alias.name for alias in node.names)
-        elif isinstance(node, ast.ImportFrom) and node.module:
-            names.append(node.module)
-            names.extend(f"{node.module}.{alias.name}" for alias in node.names)
+        elif isinstance(node, ast.ImportFrom):
+            base = resolve_relative(node.module, node.level)
+            if base is None:
+                return None
+            if base:
+                names.append(base)
+            names.extend(
+                f"{base}.{alias.name}" if base else alias.name
+                for alias in node.names
+                if alias.name != "*"
+            )
+        elif isinstance(node, ast.Call):
+            is_dynamic = (
+                isinstance(node.func, ast.Name) and node.func.id == "__import__"
+            ) or (
+                isinstance(node.func, ast.Attribute)
+                and node.func.attr == "import_module"
+                and isinstance(node.func.value, ast.Name)
+                and node.func.value.id == "importlib"
+            )
+            if is_dynamic:
+                if (
+                    not node.args
+                    or not isinstance(node.args[0], ast.Constant)
+                    or not isinstance(node.args[0].value, str)
+                ):
+                    return None
+                names.append(node.args[0].value)
         for name in names:
             candidate = modules.get(name)
             if candidate is not None:
@@ -158,17 +209,83 @@ def load_suite(paths: list[Path] | None, *, root: Path = ROOT) -> unittest.TestS
     return suite
 
 
+def test_shards(paths: list[Path], capacity: int) -> list[list[Path]]:
+    """Partition every test file exactly once using stable largest-first balancing."""
+
+    shard_count = min(max(1, capacity), len(paths))
+    shards: list[list[Path]] = [[] for _ in range(shard_count)]
+    weights = [0] * shard_count
+    ordered = sorted(paths, key=lambda path: (-path.stat().st_size, path.as_posix()))
+    for path in ordered:
+        index = min(range(shard_count), key=lambda item: (weights[item], item))
+        shards[index].append(path)
+        weights[index] += path.stat().st_size
+    return [sorted(shard) for shard in shards if shard]
+
+
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--test-file", action="append", default=[], help=argparse.SUPPRESS
+    )
+    args = parser.parse_args()
     profile = os.environ.get("ALATYR_SOURCE_CHECK_PROFILE")
     changed_paths = _environment_changed_paths()
     selected_paths = (
-        focused_test_paths(changed_paths)
-        if profile in {"micro", "fast"} and changed_paths
-        else None
+        [ROOT / path for path in args.test_file]
+        if args.test_file
+        else (
+            focused_test_paths(changed_paths)
+            if profile in {"micro", "fast"} and changed_paths
+            else None
+        )
     )
     if selected_paths == []:
         print("OK: no focused source unit tests required for changed paths")
         return 0
+    all_paths = _all_test_paths() if selected_paths is None else selected_paths
+    capacity = child_capacity()
+    if not args.test_file and capacity > 1 and len(all_paths) > 1:
+        shards = test_shards(all_paths, capacity)
+        flattened = [path for shard in shards for path in shard]
+        if sorted(flattened) != sorted(all_paths) or len(flattened) != len(
+            set(flattened)
+        ):
+            print(
+                "FAIL: unit-test shard coverage is incomplete or duplicated",
+                file=sys.stderr,
+            )
+            return 1
+        commands = [
+            (
+                f"shard-{index + 1}",
+                [
+                    sys.executable,
+                    str(Path(__file__).resolve()),
+                    *[
+                        argument
+                        for path in shard
+                        for argument in ("--test-file", path.relative_to(ROOT).as_posix())
+                    ],
+                ],
+            )
+            for index, shard in enumerate(shards)
+        ]
+        results = run_commands(commands, cwd=ROOT, capacity=capacity)
+        failed = False
+        for result in results:
+            index = int(result.item_id.split("-")[1]) - 1
+            print(f"INFO: {result.item_id} ({len(shards[index])} files)")
+            if result.stdout:
+                print(result.stdout, end="" if result.stdout.endswith("\n") else "\n")
+            if result.stderr:
+                print(
+                    result.stderr,
+                    end="" if result.stderr.endswith("\n") else "\n",
+                    file=sys.stderr,
+                )
+            failed = failed or result.returncode != 0
+        return 1 if failed else 0
     suite = load_suite(selected_paths)
     if selected_paths is not None:
         relpaths = ", ".join(path.relative_to(ROOT).as_posix() for path in selected_paths)

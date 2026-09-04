@@ -6,12 +6,25 @@
   "additionalProperties": false,
   "required": ["schema_version", "packet_kind", "profile", "operation", "selected_items", "semantic_terms", "budget", "packet_digest"],
   "properties": {
-    "schema_version": {"const": 1},
+    "schema_version": {"const": 2},
     "packet_kind": {"const": "alatyr-context-packet"},
     "profile": {"type": "string", "minLength": 1},
     "operation": {"type": "string", "minLength": 1},
+    "task_classification": {"type": "string", "minLength": 1},
     "selected_items": {"type": "array"},
     "semantic_terms": {"type": "array"},
+    "cache_delivery": {"type": "object"},
+    "routing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["selection_basis", "omitted_item_ids", "expansion_triggers", "unresolved_selector_behavior"],
+      "properties": {
+        "selection_basis": {"type": "string", "minLength": 1},
+        "omitted_item_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "expansion_triggers": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "unresolved_selector_behavior": {"type": "string", "minLength": 1}
+      }
+    },
     "budget": {
       "type": "object",
       "additionalProperties": false,
@@ -23,6 +36,9 @@
         "total_words": {"type": "integer", "minimum": 0}
       }
     },
+    "receipt": {"type": "object"},
+    "cost_claim": {"type": "object"},
+    "limitations": {"type": "array", "items": {"type": "string"}},
     "packet_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
   }
 }

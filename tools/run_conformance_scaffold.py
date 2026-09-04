@@ -25,6 +25,7 @@ from typing import Any
 
 from scaffold_target_structure import plan as scaffold_plan, profile_names
 from validate_target_adapter import AdapterValidatorConfig, Validator
+from parallel_execution import child_capacity, run_commands
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -240,10 +241,21 @@ def fixture_dirs(selected: list[str]) -> list[Path]:
     return result
 
 
-def validate_support_profiles(work_root: Path) -> list[str]:
-    failures: list[str] = []
+def support_profile_scenarios() -> list[tuple[str, str, list[str]]]:
     scenarios = [(profile, profile, []) for profile in profile_names()]
     scenarios.append(("core-ai-infrastructure", "core", ["ai-infrastructure"]))
+    return scenarios
+
+
+def validate_support_profiles(
+    work_root: Path, selected_label: str | None = None
+) -> list[str]:
+    failures: list[str] = []
+    scenarios = support_profile_scenarios()
+    if selected_label is not None:
+        scenarios = [scenario for scenario in scenarios if scenario[0] == selected_label]
+        if not scenarios:
+            raise ValueError(f"unknown support profile scenario: {selected_label}")
     for label, profile, enabled_modules in scenarios:
         repo = work_root / f"support-profile-{label}"
         repo.mkdir(parents=True, exist_ok=False)
@@ -307,14 +319,72 @@ def main() -> int:
         action="store_true",
         help="Refresh golden scaffolded-adapter snapshots after review.",
     )
+    parser.add_argument("--support-profile", help=argparse.SUPPRESS)
+    parser.add_argument("--fixture-only", help=argparse.SUPPRESS)
     args = parser.parse_args()
+
+    if (
+        not args.fixture
+        and not args.support_profile
+        and not args.fixture_only
+        and not args.keep_temp
+        and not args.write_golden_snapshots
+        and child_capacity() > 1
+    ):
+        commands = [
+            (
+                f"support:{label}",
+                [
+                    sys.executable,
+                    str(Path(__file__).resolve()),
+                    "--support-profile",
+                    label,
+                ],
+            )
+            for label, _profile, _modules in support_profile_scenarios()
+        ]
+        commands.extend(
+            (
+                f"fixture:{fixture.name}",
+                [
+                    sys.executable,
+                    str(Path(__file__).resolve()),
+                    "--fixture-only",
+                    fixture.name,
+                ],
+            )
+            for fixture in fixture_dirs([])
+        )
+        results = run_commands(commands, cwd=ROOT)
+        failed = False
+        for result in results:
+            if result.stdout:
+                print(result.stdout, end="" if result.stdout.endswith("\n") else "\n")
+            if result.stderr:
+                print(
+                    result.stderr,
+                    end="" if result.stderr.endswith("\n") else "\n",
+                    file=sys.stderr,
+                )
+            failed = failed or result.returncode != 0
+        if failed:
+            return 1
+        print("OK: scaffold conformance scenarios passed in bounded isolated workers")
+        return 0
 
     work_root = Path(tempfile.mkdtemp(prefix="alatyr-conformance-")).resolve()
     failures: list[str] = []
 
     try:
-        failures.extend(validate_support_profiles(work_root))
-        for fixture_dir in fixture_dirs(args.fixture):
+        if not args.fixture_only:
+            failures.extend(validate_support_profiles(work_root, args.support_profile))
+        if args.support_profile:
+            fixture_paths: list[Path] = []
+        elif args.fixture_only:
+            fixture_paths = fixture_dirs([args.fixture_only])
+        else:
+            fixture_paths = fixture_dirs(args.fixture)
+        for fixture_dir in fixture_paths:
             name, actions, blocked, fixture_failures, snapshot = run_fixture(
                 fixture_dir, work_root
             )

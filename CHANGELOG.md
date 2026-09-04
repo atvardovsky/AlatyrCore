@@ -4,6 +4,25 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.54 - 2026-09-04
+
+- Added parent-owned child capacity and deterministic isolated parallelism for
+  lifecycle profiles, scaffold-conformance scenarios, and source-unit shards,
+  while retaining complete scenario and test-file coverage.
+- Added duration-informed critical-path scheduling from compatible prior reports
+  without allowing historical timing to change validation selection or results.
+- Strengthened focused unit-test routing for relative and dynamic imports, with
+  full-suite fallback when import dependencies cannot be resolved safely.
+- Extended context packets with exact selection reasons, omitted candidates,
+  expansion triggers, canonical-owner fallback, and planned receipt evidence.
+- Added non-accepting changed-surface target validation that keeps universal
+  checks active and routes optional module checks through capability ownership
+  and dependency closure.
+- Parsed target module profiles once per validator run instead of repeatedly
+  scanning the same support document.
+- Increased the adapter schema version to `44` and target template version to
+  `49` for the context-packet routing evidence contract.
+
 ## 0.1.0-alpha.53 - 2026-09-04
 
 - Reduced scaffold projection time by indexing exact and ancestor paths once,
