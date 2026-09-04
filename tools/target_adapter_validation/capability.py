@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Protocol
 
-from target_adapter_validation.context import ValidationContext
+from target_adapter_validation.context import TargetFileStatus, ValidationContext
 
 
 class FindingSink(Protocol):
@@ -43,6 +43,15 @@ class CapabilityValidationContext:
 
     def read_text(self, path: Path) -> str:
         return self.read_target_text(path)
+
+    def read_bytes(self, path: Path) -> bytes:
+        return self.filesystem.read_bytes(path)
+
+    def content_digest(self, path: Path) -> str | None:
+        return self.filesystem.content_digest(path)
+
+    def status(self, path: Path) -> TargetFileStatus:
+        return self.filesystem.status(path)
 
     def rel(self, path: Path) -> str:
         return self.relative_target_path(path)

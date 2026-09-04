@@ -65,7 +65,11 @@ from target_validation_support import (
     sha256,
     should_skip_path,
 )
-from target_adapter_validation.context import TargetPathEscapeError, ValidationContext
+from target_adapter_validation.context import (
+    TargetMutation,
+    TargetPathEscapeError,
+    ValidationContext,
+)
 from target_adapter_validation.context_catalogs import (
     validate_context_catalog_contract,
 )
@@ -845,7 +849,7 @@ def validate_router_manifest_schema(
 ) -> None:
     manifest_path = validator.target_path(".ai/alatyr.yaml")
     if manifest is None and manifest_path.is_file():
-        manifest = parse_manifest(manifest_path)
+        manifest = parse_manifest(validator.context.text_source(manifest_path))
     if manifest is None:
         return
     manifest_schema = manifest.scalars.get(
@@ -916,6 +920,7 @@ class Validator:
         self.capability_modules: dict[str, Any] = {}
         self.allow_local_paths = allow_local_paths + config.local_path_patterns()
         self.framework_drift_detected = False
+        self.target_mutations: tuple[TargetMutation, ...] = ()
         self._module_profile_cache: dict[str, list[ModuleProfileState]] | None = None
         self._scan_text_files_cache: tuple[Path, ...] | None = None
 
@@ -968,7 +973,11 @@ class Validator:
 
         manifest = self.check_manifest()
         validate_installation_state(self.capability_validation_context(), manifest)
-        self.installation_state = target_installation_state(self.target, manifest)
+        self.installation_state = target_installation_state(
+            self.target,
+            manifest,
+            context=self.context,
+        )
         support_profile = self.manifest_support_profile(manifest)
         self.check_required_files(support_profile)
         self.check_capability_closure(manifest)
@@ -1007,6 +1016,13 @@ class Validator:
         self.check_change_packages()
         self.check_framework_baseline(manifest)
         self.check_migration_diff_evidence()
+        self.target_mutations = self.context.finalize()
+        for mutation in self.target_mutations:
+            self.error(
+                "TARGET_INPUT_MUTATED",
+                "target input changed during validation; discard these findings and rerun",
+                self.rel(mutation.path),
+            )
         self.info(
             "EVIDENCE_SCOPE_CURRENT_STATE",
             "validator findings describe current structural state; historical actions "
@@ -1507,6 +1523,16 @@ class Validator:
                 self.error("TARGET_PATH_ESCAPE", str(exc), label)
             return ""
 
+    def read_bytes(self, path: Path) -> bytes:
+        try:
+            return self.context.read_bytes(path)
+        except (OSError, TargetPathEscapeError) as exc:
+            label = self.rel(path)
+            if label not in self.unsafe_target_paths:
+                self.unsafe_target_paths.add(label)
+                self.error("TARGET_PATH_ESCAPE", str(exc), label)
+            return b""
+
     def module_validation_enabled(
         self,
         module_id: str,
@@ -1716,11 +1742,12 @@ class Validator:
         if not path.is_file():
             return None
 
-        manifest = parse_manifest(path)
+        manifest_source = self.context.text_source(path)
+        manifest = parse_manifest(manifest_source)
         for failure in manifest.parse_failures:
             self.error("MANIFEST_PARSE", failure, ".ai/alatyr.yaml")
         try:
-            manifest_object = load_manifest_object(path)
+            manifest_object = load_manifest_object(manifest_source)
             schema = json.loads(ADAPTER_MANIFEST_SCHEMA.read_text(encoding="utf-8"))
             schema_errors = sorted(
                 jsonschema.Draft7Validator(schema).iter_errors(manifest_object),
@@ -2042,7 +2069,7 @@ class Validator:
             )
             return
         try:
-            actual_text = path.read_text(encoding="utf-8")
+            actual_text = self.read_text(path)
             actual = json.loads(actual_text)
             expected_text = render_entry_packet(build_entry_packet(self.target))
         except (OSError, UnicodeError, ValueError, json.JSONDecodeError) as exc:
@@ -2112,10 +2139,13 @@ class Validator:
         if not router_path.is_file():
             return
 
-        try:
-            router = json.loads(router_path.read_text(encoding="utf-8"))
-        except json.JSONDecodeError as exc:
-            self.error("ROUTER_INVALID_JSON", str(exc), ".ai/assistant/context-router.json")
+        router, router_error = self.context.read_json(router_path)
+        if router_error is not None:
+            self.error(
+                "ROUTER_INVALID_JSON",
+                router_error,
+                ".ai/assistant/context-router.json",
+            )
             return
         if not isinstance(router, dict):
             self.error(
@@ -2506,7 +2536,7 @@ class Validator:
             markdown_profiles = set(
                 re.findall(
                     r"^## Profile: `([^`]+)`",
-                    profiles_path.read_text(encoding="utf-8"),
+                    self.read_text(profiles_path),
                     flags=re.MULTILINE,
                 )
             )
@@ -3458,7 +3488,7 @@ class Validator:
                 )
 
     def check_markdown_required_context_duplicates(self, path: Path) -> None:
-        text = path.read_text(encoding="utf-8")
+        text = self.read_text(path)
         current_profile = None
         in_required_context = False
         values: list[str] = []
@@ -3786,9 +3816,8 @@ class Validator:
         checker_commands: list[str] = []
         package_json = self.target_path("package.json")
         if package_json.is_file():
-            try:
-                package = json.loads(package_json.read_text(encoding="utf-8"))
-            except json.JSONDecodeError:
+            package, package_error = self.context.read_json(package_json)
+            if package_error is not None:
                 package = {}
             scripts = package.get("scripts") if isinstance(package, dict) else {}
             if isinstance(scripts, dict):
@@ -4312,7 +4341,7 @@ class Validator:
                             f"approved plan file is missing: {plan_file}",
                             relpath,
                         )
-                    elif sha256(plan_path).lower() != plan_hash:
+                    elif self.context.content_digest(plan_path) != plan_hash:
                         self.warn(
                             "APPROVAL_PLAN_HASH_MISMATCH",
                             f"approved plan file hash does not match Plan hash: {plan_file}",
@@ -4457,7 +4486,7 @@ class Validator:
                     continue
                 digest.update(str(selected_path).replace("\\", "/").encode("utf-8"))
                 digest.update(b"\0")
-                digest.update(selected_file.read_bytes())
+                digest.update(self.read_bytes(selected_file))
                 digest.update(b"\0")
             recorded_digest = binding.get("snapshot_sha256")
             digest_matches = current_snapshot_valid and concrete(recorded_digest) and recorded_digest.casefold() == digest.hexdigest()
@@ -4550,10 +4579,13 @@ class Validator:
         path = self.target_path(relpath)
         if not path.exists():
             return
-        try:
-            data = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError) as exc:
-            self.error("PACKAGE_INDEX_JSON", f"invalid change-package index: {exc}", relpath)
+        data, data_error = self.context.read_json(path)
+        if data_error is not None:
+            self.error(
+                "PACKAGE_INDEX_JSON",
+                f"invalid change-package index: {data_error}",
+                relpath,
+            )
             return
         if not isinstance(data, dict):
             self.error("PACKAGE_INDEX_ROOT", "change-package index must be an object", relpath)
@@ -4713,15 +4745,15 @@ class Validator:
                 return None
             digest.update(relpath.replace("\\", "/").encode("utf-8"))
             digest.update(b"\0")
-            try:
-                digest.update(path.read_bytes())
-            except OSError as exc:
+            content = self.context.read_bytes_result(path)
+            if content.value is None:
                 self.change_package_finding(
                     "PACKAGE_SNAPSHOT_READ",
-                    f"cannot read snapshot path {relpath}: {exc}",
+                    f"cannot read snapshot path {relpath}: {content.error}",
                     source,
                 )
                 return None
+            digest.update(content.value)
             digest.update(b"\0")
         return digest.hexdigest()
 
@@ -4743,9 +4775,8 @@ class Validator:
         index_path = self.target_path(".ai/assistant/change-packages/index.json")
         indexed_records: set[str] = set()
         if index_path.is_file():
-            try:
-                index_data = json.loads(index_path.read_text(encoding="utf-8"))
-            except (OSError, json.JSONDecodeError):
+            index_data, index_error = self.context.read_json(index_path)
+            if index_error is not None:
                 index_data = {}
             if isinstance(index_data, dict):
                 for entry in index_data.get("records", []):
@@ -4764,11 +4795,10 @@ class Validator:
             ".ai/project/engineering-evidence/index.json"
         )
         if engineering_index_path.is_file():
-            try:
-                engineering_index = json.loads(
-                    engineering_index_path.read_text(encoding="utf-8")
-                )
-            except (OSError, json.JSONDecodeError):
+            engineering_index, engineering_error = self.context.read_json(
+                engineering_index_path
+            )
+            if engineering_error is not None:
                 engineering_index = {}
             if isinstance(engineering_index, dict):
                 engineering_evidence_ids = {
@@ -4785,11 +4815,12 @@ class Validator:
                     "strictly selected change package is not present in the compact index",
                     source,
                 )
-            try:
-                data = json.loads(package.read_text(encoding="utf-8"))
-            except (OSError, json.JSONDecodeError) as exc:
+            data, package_error = self.context.read_json(package)
+            if package_error is not None:
                 self.change_package_finding(
-                    "PACKAGE_INVALID_JSON", f"invalid change package: {exc}", source
+                    "PACKAGE_INVALID_JSON",
+                    f"invalid change package: {package_error}",
+                    source,
                 )
                 continue
             if not isinstance(data, dict):
@@ -4977,7 +5008,7 @@ class Validator:
                         self.change_package_finding(
                             "PACKAGE_PLAN_MISSING", f"plan file does not exist: {plan_file}", source
                         )
-                    elif plan_hash and sha256(plan_path) != plan_hash:
+                    elif plan_hash and self.context.content_digest(plan_path) != plan_hash:
                         self.change_package_finding(
                             "PACKAGE_PLAN_HASH", "plan SHA-256 does not match plan file", source
                         )
@@ -4999,11 +5030,12 @@ class Validator:
                     )
                     continue
                 approval_path = self.target_path(relpath)
-                try:
-                    approval = json.loads(approval_path.read_text(encoding="utf-8"))
-                except (OSError, json.JSONDecodeError) as exc:
+                approval, approval_error = self.context.read_json(approval_path)
+                if approval_error is not None:
                     self.change_package_finding(
-                        "PACKAGE_APPROVAL_RECORD", f"cannot load approval {relpath}: {exc}", source
+                        "PACKAGE_APPROVAL_RECORD",
+                        f"cannot load approval {relpath}: {approval_error}",
+                        source,
                     )
                     continue
                 if not isinstance(approval, dict):
@@ -5347,7 +5379,8 @@ class Validator:
             return
 
         if manifest is None:
-            manifest = parse_manifest(self.target_path(".ai/alatyr.yaml"))
+            manifest_path = self.target_path(".ai/alatyr.yaml")
+            manifest = parse_manifest(self.context.text_source(manifest_path))
         pack_scalar = manifest.scalars.get(("framework", "pack"))
         framework_pack = pack_scalar.value if pack_scalar else "complete"
         if framework_pack in {"kernel", "core", "standard"}:
@@ -5476,7 +5509,7 @@ class Validator:
                 target_path = target_framework / name
                 if not target_path.is_file():
                     continue
-                actual_digest = sha256(target_path)
+                actual_digest = self.context.content_digest(target_path)
                 source_digest = source_expected_hashes.get(name)
                 if source_digest is not None and entry["sha256"] != source_digest:
                     self.framework_drift_detected = True
@@ -5496,7 +5529,8 @@ class Validator:
             source_inventory_digest = source_expected_hashes.get("file-inventory.json")
             if (
                 source_inventory_digest is not None
-                and sha256(inventory_path) != source_inventory_digest
+                and self.context.content_digest(inventory_path)
+                != source_inventory_digest
             ):
                 self.framework_drift_detected = True
                 self.warn(
@@ -5531,7 +5565,9 @@ class Validator:
                 f".ai/framework/{name}",
             )
         for name in sorted(set(source_files) & set(target_files)):
-            if sha256(source_files[name]) != sha256(target_files[name]):
+            if sha256(source_files[name]) != self.context.content_digest(
+                target_files[name]
+            ):
                 self.framework_drift_detected = True
                 self.warn(
                     "FRAMEWORK_FILE_DRIFT",
@@ -5793,15 +5829,18 @@ def adapter_health_state(
 def target_installation_state(
     target: Path,
     manifest: ManifestData | None = None,
+    *,
+    context: ValidationContext | None = None,
 ) -> str:
     """Read installation state only when its transition evidence is valid."""
 
+    context = context or ValidationContext(target)
     manifest_path = target / ".ai" / "alatyr.yaml"
     if not manifest_path.is_file():
         return "unverified"
     if manifest is None:
         try:
-            manifest = parse_manifest(manifest_path)
+            manifest = parse_manifest(context.text_source(manifest_path))
         except (OSError, UnicodeError, ValueError):
             return "unverified"
     scalar = manifest.scalars.get(("installation", "state"))
@@ -5810,12 +5849,11 @@ def target_installation_state(
     record_scalar = manifest.scalars.get(("installation", "state_record"))
     if record_scalar is None or not is_target_relative_path(record_scalar.value):
         return "unverified"
-    root = target.resolve()
     try:
-        record_path = (target / record_scalar.value).resolve()
-        if record_path != root and root not in record_path.parents:
+        record_path = context.resolve_path(target / record_scalar.value)
+        record, record_error = context.read_json(record_path)
+        if record_error is not None:
             return "unverified"
-        record = json.loads(record_path.read_text(encoding="utf-8"))
     except (OSError, UnicodeError, ValueError, json.JSONDecodeError):
         return "unverified"
     if validate_installation_state_record(record, manifest_state=scalar.value):

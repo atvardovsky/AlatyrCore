@@ -343,11 +343,10 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
     engineering_index_relpath = ".ai/project/engineering-evidence/index.json"
     engineering_index_path = self.target_path(engineering_index_relpath)
     if engineering_index_path.is_file():
-        try:
-            engineering_index = json.loads(
-                engineering_index_path.read_text(encoding="utf-8")
-            )
-        except (OSError, json.JSONDecodeError):
+        engineering_index, engineering_index_error = self.context.read_json(
+            engineering_index_path
+        )
+        if engineering_index_error is not None:
             engineering_index = None
         if isinstance(engineering_index, dict):
             for evidence_entry in engineering_index.get("records", []):
@@ -367,11 +366,10 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
         ".ai/project/knowledge/index.json"
     )
     if project_knowledge_index_path.is_file():
-        try:
-            project_knowledge_index = json.loads(
-                project_knowledge_index_path.read_text(encoding="utf-8")
-            )
-        except (OSError, json.JSONDecodeError):
+        project_knowledge_index, knowledge_index_error = self.context.read_json(
+            project_knowledge_index_path
+        )
+        if knowledge_index_error is not None:
             project_knowledge_index = None
         if isinstance(project_knowledge_index, dict):
             for promotion_entry in project_knowledge_index.get(

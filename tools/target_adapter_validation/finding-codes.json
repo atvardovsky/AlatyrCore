@@ -211,7 +211,7 @@
     },
     {
       "id": "TARGET",
-      "code_count": 6
+      "code_count": 7
     },
     {
       "id": "TASK",
@@ -8683,6 +8683,15 @@
       "code": "TARGET_CHECKER_MISSING",
       "levels": [
         "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TARGET_INPUT_MUTATED",
+      "levels": [
+        "error"
       ],
       "sources": [
         "tools/validate_target_adapter.py"

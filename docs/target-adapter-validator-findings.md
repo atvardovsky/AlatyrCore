@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1192
+Catalog entries: 1193
 
 ## Families
 
@@ -56,7 +56,7 @@ Catalog entries: 1192
 - `RULE`: 1 codes.
 - `STALE`: 2 codes.
 - `SUPPORT`: 11 codes.
-- `TARGET`: 6 codes.
+- `TARGET`: 7 codes.
 - `TASK`: 23 codes.
 - `TDD`: 44 codes.
 - `TEAM`: 98 codes.
@@ -1943,6 +1943,8 @@ Catalog entries: 1192
   Level: info. Source: `tools/validate_target_adapter.py`.
 - `TARGET_CHECKER_MISSING`
   Level: warning. Source: `tools/validate_target_adapter.py`.
+- `TARGET_INPUT_MUTATED`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `TARGET_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `TARGET_NOT_DIRECTORY`

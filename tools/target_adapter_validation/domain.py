@@ -5,11 +5,14 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Protocol
 
+from target_adapter_validation.context import ValidationContext
+
 
 class DomainValidationHost(Protocol):
     """Operations domain validators may use from the validator orchestrator."""
 
     target: Path
+    context: ValidationContext
     allow_placeholders: bool
     debug_git_state: bool
     debug_remote_ref: str | None
@@ -17,6 +20,8 @@ class DomainValidationHost(Protocol):
     def target_path(self, relpath: str) -> Path: ...
 
     def read_text(self, path: Path) -> str: ...
+
+    def read_bytes(self, path: Path) -> bytes: ...
 
     def load_json_object(
         self, path: Path, code_prefix: str

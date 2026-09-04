@@ -167,9 +167,8 @@ def validate_engineering_evidence(self: DomainValidationHost, manifest: Manifest
     debug_entries_by_id: dict[str, list[dict[str, Any]]] = {}
     debug_index_path = self.target_path(".ai/project/debug/index.json")
     if debug_index_path.is_file():
-        try:
-            debug_index = json.loads(debug_index_path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError):
+        debug_index, debug_index_error = self.context.read_json(debug_index_path)
+        if debug_index_error is not None:
             debug_index = None
         if isinstance(debug_index, dict):
             for debug_entry in debug_index.get("records", []):

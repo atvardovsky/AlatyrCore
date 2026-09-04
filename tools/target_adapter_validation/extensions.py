@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import hashlib
 import re
 from typing import Any
 from target_validation_support import ManifestData, dotted, is_placeholder, is_target_relative_path, is_unresolved_value
@@ -254,7 +253,7 @@ def validate_extensions(
                 context.error("EXTENSION_FILE_SYMLINK", "installed extension files must not be symlinks", relpath)
             elif not path.is_file():
                 context.error("EXTENSION_FILE_MISSING", "locked installed extension file is missing", relpath)
-            elif hashlib.sha256(path.read_bytes()).hexdigest() != expected_hash:
+            elif context.content_digest(path) != expected_hash:
                 context.error("EXTENSION_FILE_DRIFT", "installed extension file differs from its lock hash", relpath)
 
         required_binding_ids: set[str] = set()

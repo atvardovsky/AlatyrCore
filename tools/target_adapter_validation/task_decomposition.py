@@ -374,7 +374,7 @@ def _require_template_text(
                 relpath,
             )
         return
-    text = path.read_text(encoding="utf-8")
+    text = self.read_text(path)
     for value in required_text:
         if value not in text:
             self.error(
