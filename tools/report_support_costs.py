@@ -8,7 +8,6 @@ It does not judge semantic correctness, model billing, or project value.
 from __future__ import annotations
 
 import argparse
-import fnmatch
 import json
 import math
 import re
@@ -16,6 +15,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 from capability_catalog import dependency_closure, load_modules, minimum_pack
+from path_spec import PathDialect, PathSpec
 from framework_packaging import projected_framework_contents, resolve_framework_files
 from scaffold_target_structure import (
     FRAMEWORK_ROOT,
@@ -489,7 +489,9 @@ def classify_path(relpath: str, policy: dict[str, Any] | None) -> str:
     if not policy:
         return "unclassified"
     for exclusion in policy.get("exclusions", []):
-        if isinstance(exclusion, dict) and fnmatch.fnmatch(relpath, exclusion.get("pattern", "")):
+        if isinstance(exclusion, dict) and PathSpec(
+            exclusion.get("pattern", ""), PathDialect.SOURCE_HOST_V1
+        ).matches(relpath):
             return "excluded"
     for entry in policy.get("classifications", []):
         if not isinstance(entry, dict):
@@ -497,7 +499,11 @@ def classify_path(relpath: str, policy: dict[str, Any] | None) -> str:
         classification = entry.get("classification")
         patterns = entry.get("patterns")
         if isinstance(classification, str) and isinstance(patterns, list):
-            if any(isinstance(pattern, str) and fnmatch.fnmatch(relpath, pattern) for pattern in patterns):
+            if any(
+                isinstance(pattern, str)
+                and PathSpec(pattern, PathDialect.SOURCE_HOST_V1).matches(relpath)
+                for pattern in patterns
+            ):
                 return classification
     return "unclassified"
 

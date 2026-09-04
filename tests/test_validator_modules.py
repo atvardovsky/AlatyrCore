@@ -118,11 +118,14 @@ class ValidatorModuleDispatchTests(unittest.TestCase):
                 "check_consistency_map",
                 "check_dependency_knowledge",
                 "check_development_evidence",
+                "check_discussion_diagrams",
                 "check_extensions",
                 "check_project_vocabulary",
                 "check_support_generation",
+                "check_subagent_delegation",
                 "check_team_collaboration",
                 "check_test_first_development",
+                "check_workspace_modes",
             },
         )
         self.assertEqual(

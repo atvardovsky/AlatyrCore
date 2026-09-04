@@ -7,6 +7,7 @@ from typing import Any
 
 from target_validation_support import is_placeholder
 from target_adapter_validation.files import missing_target_files
+from target_adapter_validation.capability import FunctionCapabilityModule
 from target_adapter_validation.values import is_resolved_string
 
 
@@ -166,6 +167,11 @@ def validate_subagent_delegation(validator: Any, manifest: Any) -> None:
         concrete_enabled_roles,
     )
     _validate_overlay(self)
+
+
+SUBAGENT_DELEGATION_MODULE = FunctionCapabilityModule(
+    "check_subagent_delegation", validate_subagent_delegation
+)
 
 
 def _manifest_enables_delegation(manifest: Any) -> bool:

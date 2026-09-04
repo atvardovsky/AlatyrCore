@@ -20,11 +20,14 @@ from target_adapter_validation.consistency_map import CONSISTENCY_MAP_MODULE
 from target_adapter_validation.code_documentation import CODE_DOCUMENTATION_MODULE
 from target_adapter_validation.dependency_knowledge import DEPENDENCY_KNOWLEDGE_MODULE
 from target_adapter_validation.development_evidence import DEVELOPMENT_EVIDENCE_MODULE
+from target_adapter_validation.diagrams import DISCUSSION_DIAGRAMS_MODULE
 from target_adapter_validation.extensions import EXTENSIONS_MODULE
 from target_adapter_validation.project_vocabulary import PROJECT_VOCABULARY_MODULE
 from target_adapter_validation.support_generation import SUPPORT_GENERATION_MODULE
+from target_adapter_validation.subagent_delegation import SUBAGENT_DELEGATION_MODULE
 from target_adapter_validation.team_collaboration import TEAM_COLLABORATION_MODULE
 from target_adapter_validation.test_first_development import TEST_FIRST_DEVELOPMENT_MODULE
+from target_adapter_validation.workspace_modes import WORKSPACE_MODES_MODULE
 
 
 class CapabilityRouteKind(str, Enum):
@@ -70,11 +73,14 @@ MODULE_IMPLEMENTATIONS: dict[str, CapabilityModule] = {
     CONSISTENCY_MAP_MODULE.check_id: CONSISTENCY_MAP_MODULE,
     DEPENDENCY_KNOWLEDGE_MODULE.check_id: DEPENDENCY_KNOWLEDGE_MODULE,
     DEVELOPMENT_EVIDENCE_MODULE.check_id: DEVELOPMENT_EVIDENCE_MODULE,
+    DISCUSSION_DIAGRAMS_MODULE.check_id: DISCUSSION_DIAGRAMS_MODULE,
     EXTENSIONS_MODULE.check_id: EXTENSIONS_MODULE,
     PROJECT_VOCABULARY_MODULE.check_id: PROJECT_VOCABULARY_MODULE,
     SUPPORT_GENERATION_MODULE.check_id: SUPPORT_GENERATION_MODULE,
+    SUBAGENT_DELEGATION_MODULE.check_id: SUBAGENT_DELEGATION_MODULE,
     TEAM_COLLABORATION_MODULE.check_id: TEAM_COLLABORATION_MODULE,
     TEST_FIRST_DEVELOPMENT_MODULE.check_id: TEST_FIRST_DEVELOPMENT_MODULE,
+    WORKSPACE_MODES_MODULE.check_id: WORKSPACE_MODES_MODULE,
 }
 
 CAPABILITY_ROUTES: dict[str, CapabilityRoute] = {
@@ -116,7 +122,7 @@ CAPABILITY_ROUTES: dict[str, CapabilityRoute] = {
     ),
     "diagrams": _route(
         "diagrams",
-        CapabilityRouteKind.COMPATIBILITY,
+        CapabilityRouteKind.MODULAR,
         "check_discussion_diagrams",
     ),
     "durable-approvals": _route(
@@ -150,7 +156,7 @@ CAPABILITY_ROUTES: dict[str, CapabilityRoute] = {
     ),
     "subagent-delegation": _route(
         "subagent-delegation",
-        CapabilityRouteKind.COMPATIBILITY,
+        CapabilityRouteKind.MODULAR,
         "check_subagent_delegation",
     ),
     "support-generation": _route(
@@ -170,7 +176,7 @@ CAPABILITY_ROUTES: dict[str, CapabilityRoute] = {
     ),
     "workspace-modes": _route(
         "workspace-modes",
-        CapabilityRouteKind.COMPATIBILITY,
+        CapabilityRouteKind.MODULAR,
         "check_workspace_modes",
     ),
 }
@@ -186,6 +192,9 @@ COMPATIBILITY_FALLBACKS = {
     for route in CAPABILITY_ROUTES.values()
     if route.kind is CapabilityRouteKind.COMPATIBILITY
     for check_id in route.checks
+}
+COMPATIBILITY_DISPATCH = {
+    "check_debug_mode": lambda validator, manifest: validator.check_debug_mode(manifest),
 }
 
 
@@ -262,7 +271,11 @@ def dispatch_capability_checks(
                     validator.capability_validation_context(), manifest
                 )
             else:
-                method = getattr(validator, method_name)
-                method(manifest)
+                fallback = COMPATIBILITY_DISPATCH.get(method_name)
+                if fallback is None:
+                    raise RuntimeError(
+                        f"capability check has no explicit implementation: {method_name}"
+                    )
+                fallback(validator, manifest)
             dispatched.append(method_name)
     return tuple(dispatched)

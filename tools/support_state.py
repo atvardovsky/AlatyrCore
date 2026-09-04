@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import fnmatch
 import hashlib
 import json
 import subprocess
@@ -11,6 +10,7 @@ from pathlib import Path, PurePosixPath
 from typing import Any, Iterable
 
 from evidence_contract import canonical_worktree_entries, digest_entries
+from path_spec import PathDialect, PathSpec
 from target_tool_compat import generation_provenance
 
 
@@ -115,10 +115,7 @@ def load_policy(target: Path, relpath: str = POLICY_PATH) -> dict[str, Any]:
 
 
 def _matches(path: str, pattern: str) -> bool:
-    if pattern.endswith("/**"):
-        prefix = pattern[:-3].rstrip("/")
-        return path == prefix or path.startswith(prefix + "/")
-    return fnmatch.fnmatchcase(path, pattern)
+    return PathSpec(pattern, PathDialect.SUPPORT_TREE_V1).matches(path)
 
 
 def _git_revision(target: Path) -> str:

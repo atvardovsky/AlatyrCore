@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-from fnmatch import fnmatchcase
 import json
 import shlex
 import subprocess
@@ -12,6 +11,8 @@ import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Any
+
+from path_spec import PathDialect, matches_any
 
 from check_all import (
     SelectionResult,
@@ -117,7 +118,7 @@ def _recommended_command(
 
 
 def _matches_any(path: str, patterns: list[str]) -> bool:
-    return any(fnmatchcase(path, pattern) for pattern in patterns)
+    return matches_any(path, patterns, dialect=PathDialect.PORTABLE_FNMATCH_V1)
 
 
 def _task_classification(

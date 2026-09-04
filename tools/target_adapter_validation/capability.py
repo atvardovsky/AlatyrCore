@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Protocol
 
-from target_adapter_validation.context import TargetFileStatus, ValidationContext
+from target_adapter_validation.context import TargetFileStatus, TargetRepositoryView
 
 
 class FindingSink(Protocol):
@@ -23,7 +23,7 @@ class FindingSink(Protocol):
 class CapabilityValidationContext:
     """Narrow host surface shared by extracted capability implementations."""
 
-    filesystem: ValidationContext
+    filesystem: TargetRepositoryView
     findings: FindingSink
     allow_placeholders: bool
     resolve_target_path: Callable[[str], Path]

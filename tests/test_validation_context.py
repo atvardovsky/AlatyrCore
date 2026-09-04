@@ -13,6 +13,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 from target_adapter_validation.context import (  # noqa: E402
     TargetFileState,
     TargetPathEscapeError,
+    TargetRepositoryView,
     ValidationContext,
 )
 from validate_target_adapter import AdapterValidatorConfig, Validator  # noqa: E402
@@ -20,6 +21,43 @@ import validate_target_adapter  # noqa: E402
 
 
 class ValidationContextTests(unittest.TestCase):
+    def test_validator_phase_plan_is_closed_and_stably_ordered(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            validator = Validator(
+                Path(directory),
+                framework_source=None,
+                diff_ref=None,
+                approval_records=[],
+                enforce_approval_scope=False,
+                change_packages=[],
+                enforce_change_package=False,
+                migration_diff=None,
+                allow_placeholders=True,
+                allow_local_paths=[],
+                config=AdapterValidatorConfig(),
+            )
+
+            phases = validator.validation_phases(None, "full", set())
+            phase_ids = [phase.phase_id for phase in phases]
+
+            self.assertEqual(phase_ids[0], "installation-state")
+            self.assertEqual(phase_ids[-1], "finalize-inputs")
+            self.assertEqual(len(phase_ids), len(set(phase_ids)))
+            self.assertTrue(
+                all(
+                    dependency in phase_ids[:index]
+                    for index, phase in enumerate(phases)
+                    for dependency in phase.dependencies
+                )
+            )
+            self.assertEqual(
+                next(phase for phase in phases if phase.phase_id == "capabilities").cost_class,
+                "heavy",
+            )
+
+    def test_legacy_name_preserves_repository_view_contract(self) -> None:
+        self.assertTrue(issubclass(ValidationContext, TargetRepositoryView))
+
     def test_exposes_coherent_bytes_text_json_and_digest_apis(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             target = Path(directory).resolve()

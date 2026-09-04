@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import os
 import re
 import subprocess
@@ -15,7 +16,9 @@ from typing import Any
 
 CACHE_SCHEMA_VERSION = 1
 CACHE_KIND = "alatyr-source-check-local-cache"
+CHECK_RESULT_CONTRACT = "alatyr-source-check-result-cache-v1"
 MAX_CACHE_RECORD_BYTES = 10 * 1024 * 1024
+MAX_CHECK_CACHE_RECORDS = 512
 SAFE_KEY = re.compile(r"[a-zA-Z0-9][a-zA-Z0-9._-]*")
 
 
@@ -51,6 +54,17 @@ def cache_key(profile: str, *, include_profile: bool = True) -> str:
     return f"{profile}-{runtime}" if include_profile else runtime
 
 
+def check_result_key(check_id: str, identity: dict[str, Any]) -> str:
+    """Return a content-addressed key for one independently reusable check."""
+
+    payload = json.dumps(
+        identity, sort_keys=True, separators=(",", ":"), ensure_ascii=True
+    ).encode("utf-8")
+    digest = hashlib.sha256(payload).hexdigest()
+    safe_id = re.sub(r"[^a-zA-Z0-9._-]", "-", check_id)
+    return f"{safe_id}-{digest}"
+
+
 class SourceCheckCache:
     """Store disposable timing hints and local result reports atomically."""
 
@@ -58,7 +72,7 @@ class SourceCheckCache:
         self.root = resolve_cache_root(repository)
 
     def _path(self, namespace: str, key: str) -> Path:
-        if namespace not in {"timing", "results"}:
+        if namespace not in {"timing", "results", "checks"}:
             raise ValueError(f"unsupported source-check cache namespace: {namespace}")
         if not SAFE_KEY.fullmatch(key):
             raise ValueError(f"unsafe source-check cache key: {key}")
@@ -130,3 +144,29 @@ class SourceCheckCache:
                 except OSError:
                     pass
         return path
+
+    def prune(self, namespace: str, *, max_records: int) -> tuple[Path, ...]:
+        """Remove oldest disposable records after validating the cache boundary."""
+
+        if max_records < 1:
+            raise ValueError("source-check cache retention must be positive")
+        directory = self._path(namespace, "retention-sentinel").parent
+        try:
+            candidates = [
+                path
+                for path in directory.iterdir()
+                if path.is_file() and not path.is_symlink() and path.suffix == ".json"
+            ]
+        except FileNotFoundError:
+            return ()
+        if len(candidates) <= max_records:
+            return ()
+        candidates.sort(key=lambda path: (path.stat().st_mtime_ns, path.name))
+        removed: list[Path] = []
+        for path in candidates[: len(candidates) - max_records]:
+            try:
+                path.unlink()
+            except FileNotFoundError:
+                continue
+            removed.append(path)
+        return tuple(removed)

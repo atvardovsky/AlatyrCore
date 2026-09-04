@@ -52,6 +52,12 @@ class CatalogResolution:
     items: tuple[CatalogItem, ...]
 
 
+@dataclass(frozen=True)
+class CatalogContentStats:
+    words: int
+    digest: str
+
+
 def load_object(path: Path) -> dict[str, Any]:
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
@@ -87,14 +93,22 @@ def catalog_content_bytes(path: Path) -> bytes:
     return catalog_content_bytes_for_name(path.name, path.read_bytes())
 
 
+def catalog_content_stats(path: Path) -> CatalogContentStats:
+    """Calculate normalized catalog metadata from one physical file read."""
+
+    content = catalog_content_bytes(path)
+    return CatalogContentStats(
+        words=len(re.findall(r"\S+", content.decode("utf-8"))),
+        digest=f"sha256:{hashlib.sha256(content).hexdigest()}",
+    )
+
+
 def file_digest(path: Path) -> str:
-    return f"sha256:{hashlib.sha256(catalog_content_bytes(path)).hexdigest()}"
+    return catalog_content_stats(path).digest
 
 
 def word_count(path: Path) -> int:
-    return len(
-        re.findall(r"\S+", catalog_content_bytes(path).decode("utf-8"))
-    )
+    return catalog_content_stats(path).words
 
 
 def _safe_relative(value: Any, label: str) -> str:
@@ -274,12 +288,19 @@ def validate_context_catalog(
             if not target.is_file():
                 raise ContextCatalogError(f"{label}.path does not exist: {relpath}")
             if verify_content:
-                if word_count(target) != estimated_words:
+                content_stats = catalog_content_stats(target)
+                if content_stats.words != estimated_words:
                     raise ContextCatalogError(f"{label}.estimated_words is stale")
-                if file_digest(target) != digest:
+                if content_stats.digest != digest:
                     raise ContextCatalogError(f"{label}.content_digest is stale")
             if kind == "index":
                 visit(target, depth + 1)
+                if not verify_content:
+                    content_stats = catalog_content_stats(target)
+                    if content_stats.words != estimated_words:
+                        raise ContextCatalogError(f"{label}.estimated_words is stale")
+                    if content_stats.digest != digest:
+                        raise ContextCatalogError(f"{label}.content_digest is stale")
                 continue
             if relpath in seen_content_paths:
                 raise ContextCatalogError(f"content path is indexed more than once: {relpath}")
@@ -324,7 +345,8 @@ def load_codebook(
     if not isinstance(shards, list) or not shards:
         raise ContextCatalogError("semantic codebook index shards must be non-empty")
 
-    terms: dict[str, dict[str, Any]] = {}
+    descriptors: dict[str, tuple[dict[str, Any], Path, tuple[str, ...], dict[str, tuple[str, ...]]]] = {}
+    term_shards: dict[str, str] = {}
     shard_ids: set[str] = set()
     for position, descriptor in enumerate(shards):
         label = f"semantic codebook shards[{position}]"
@@ -343,12 +365,60 @@ def load_codebook(
         shard_ids.add(shard_id)
         relpath = _safe_relative(descriptor.get("path"), f"{label}.path")
         shard_path = _resolve_under(root, relpath, f"{label}.path")
-        if not shard_path.is_file() or file_digest(shard_path) != descriptor.get("content_digest"):
-            raise ContextCatalogError(f"{label} is missing or has stale digest")
-        _validate_selectors(descriptor.get("selectors"), f"{label}.selectors")
+        if not shard_path.is_file():
+            raise ContextCatalogError(f"{label} is missing")
+        descriptor_selectors = _validate_selectors(
+            descriptor.get("selectors"), f"{label}.selectors"
+        )
         declared_ids = _string_list(descriptor.get("term_ids"), f"{label}.term_ids", non_empty=True)
         if not isinstance(descriptor.get("preload"), bool):
             raise ContextCatalogError(f"{label}.preload must be boolean")
+        for term_id in declared_ids:
+            if not TERM_ID_RE.fullmatch(term_id):
+                raise ContextCatalogError(f"{label} has invalid term ID {term_id}")
+            if term_id in term_shards:
+                raise ContextCatalogError(f"duplicate semantic term descriptor: {term_id}")
+            term_shards[term_id] = shard_id
+        descriptors[shard_id] = (
+            descriptor,
+            shard_path,
+            declared_ids,
+            descriptor_selectors,
+        )
+
+    requested = set(required_terms or ())
+    requested.update(
+        term_id
+        for descriptor in shards
+        if descriptor.get("preload") is True
+        for term_id in descriptor["term_ids"]
+    )
+    selected_values = selectors or {}
+    requested.update(
+        term_id
+        for descriptor in shards
+        if any(
+            isinstance(value, str)
+            and value in descriptor.get("selectors", {}).get(selector, [])
+            for selector, value in selected_values.items()
+        )
+        for term_id in descriptor["term_ids"]
+    )
+    unknown = sorted(requested - set(term_shards))
+    if unknown:
+        raise ContextCatalogError(f"unknown semantic terms: {unknown}")
+
+    terms: dict[str, dict[str, Any]] = {}
+    loaded_shards: set[str] = set()
+
+    def load_shard(shard_id: str) -> None:
+        if shard_id in loaded_shards:
+            return
+        descriptor, shard_path, declared_ids, descriptor_selectors = descriptors[shard_id]
+        if file_digest(shard_path) != descriptor.get("content_digest"):
+            raise ContextCatalogError(
+                f"semantic codebook shard {shard_id} has stale digest"
+            )
         shard = load_object(shard_path)
         if shard.get("schema_version") != CODEBOOK_SCHEMA_VERSION:
             raise ContextCatalogError(f"{shard_path} schema_version is invalid")
@@ -361,9 +431,7 @@ def load_codebook(
         shard_selectors = _validate_selectors(
             shard.get("selectors"), f"{shard_path}.selectors"
         )
-        if shard_selectors != _validate_selectors(
-            descriptor.get("selectors"), f"{label}.selectors"
-        ):
+        if shard_selectors != descriptor_selectors:
             raise ContextCatalogError(f"{shard_path}.selectors differ from its index")
         entries = shard.get("terms")
         if not isinstance(entries, list) or not entries:
@@ -408,29 +476,10 @@ def load_codebook(
             actual_ids.append(term_id)
             terms[term_id] = term
         if list(declared_ids) != actual_ids:
-            raise ContextCatalogError(f"{label}.term_ids differ from shard order")
-
-    requested = set(required_terms or ())
-    requested.update(
-        term_id
-        for descriptor in shards
-        if descriptor.get("preload") is True
-        for term_id in descriptor["term_ids"]
-    )
-    selected_values = selectors or {}
-    requested.update(
-        term_id
-        for descriptor in shards
-        if any(
-            isinstance(value, str)
-            and value in descriptor.get("selectors", {}).get(selector, [])
-            for selector, value in selected_values.items()
-        )
-        for term_id in descriptor["term_ids"]
-    )
-    unknown = sorted(requested - set(terms))
-    if unknown:
-        raise ContextCatalogError(f"unknown semantic terms: {unknown}")
+            raise ContextCatalogError(
+                f"semantic codebook shard {shard_id}.term_ids differ from shard order"
+            )
+        loaded_shards.add(shard_id)
 
     resolved: dict[str, dict[str, Any]] = {}
     active: set[str] = set()
@@ -440,9 +489,14 @@ def load_codebook(
             raise ContextCatalogError(f"semantic term dependency cycle reaches {term_id}")
         if term_id in resolved:
             return
+        if term_id not in terms:
+            shard_id = term_shards.get(term_id)
+            if shard_id is None:
+                raise ContextCatalogError(f"unknown semantic term: {term_id}")
+            load_shard(shard_id)
         active.add(term_id)
         for dependency in terms[term_id]["depends_on"]:
-            if dependency not in terms:
+            if dependency not in term_shards:
                 raise ContextCatalogError(f"{term_id} depends on unknown term {dependency}")
             include(dependency)
         active.remove(term_id)

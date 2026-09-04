@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import fnmatch
 import hashlib
 import json
 from dataclasses import dataclass
@@ -11,6 +10,8 @@ from pathlib import Path
 from typing import Any, Iterable
 
 import jsonschema
+
+from path_spec import PathDialect, PathSpec
 
 
 CANONICAL_PROFILES = {
@@ -604,7 +605,11 @@ def _entry_score(entry: dict[str, Any], route: dict[str, Any], stage: str) -> in
             score += 5
             strong += 1
         paths = route.get("paths", [])
-        if any(fnmatch.fnmatchcase(path, pattern) for path in paths for pattern in applicability["path_globs"]):
+        if any(
+            PathSpec(pattern, PathDialect.PORTABLE_FNMATCH_V1).matches(path)
+            for path in paths
+            for pattern in applicability["path_globs"]
+        ):
             score += 5
             strong += 1
     return score if strong else 0

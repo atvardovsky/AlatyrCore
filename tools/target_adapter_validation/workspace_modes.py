@@ -7,6 +7,7 @@ from typing import Any
 
 from target_validation_support import dotted, is_target_relative_path
 from target_adapter_validation.action_modes import ALLOWED_ACTION_MODES
+from target_adapter_validation.capability import FunctionCapabilityModule
 from target_adapter_validation.files import missing_target_files
 from target_adapter_validation.manifest_paths import manifest_path_mismatches
 from target_adapter_validation.values import is_resolved_string, is_string_list
@@ -97,6 +98,11 @@ def validate_workspace_modes(validator: Any, manifest: Any) -> None:
         "WORKSPACE_MODE_EVIDENCE_LIMIT",
         "workspace-mode structural checks do not prove strategic correctness, complete workspace discovery, ownership truth, semantic consistency, or assistant compliance",
     )
+
+
+WORKSPACE_MODES_MODULE = FunctionCapabilityModule(
+    "check_workspace_modes", validate_workspace_modes
+)
 
 
 def _target_path_list(

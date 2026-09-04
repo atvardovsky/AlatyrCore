@@ -56,7 +56,8 @@
         "installer/readiness-checklist.md"
       ],
       "implementation_paths": [
-        "tools/check_installer_discovery_contract.py"
+        "tools/check_installer_discovery_contract.py",
+        "tools/installer_stage_model.py"
       ],
       "trigger_paths": [
         "INSTALL.md",
@@ -65,7 +66,8 @@
         "installer/discovery-contract.json",
         "installer/installation-plan-template.md",
         "installer/readiness-checklist.md",
-        "tools/check_installer_discovery_contract.py"
+        "tools/check_installer_discovery_contract.py",
+        "tools/installer_stage_model.py"
       ]
     },
     {

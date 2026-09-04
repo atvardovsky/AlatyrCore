@@ -8,6 +8,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
+from installer_stage_model import load_installer_stage_plan
+
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "installer" / "discovery-contract.json"
@@ -34,6 +36,7 @@ def main() -> int:
         contract = load(CONTRACT)
         capabilities = load(CAPABILITIES)
         router = load(ROUTER)
+        stage_plan = load_installer_stage_plan(ROUTER)
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
@@ -69,6 +72,8 @@ def main() -> int:
         "depends_on", []
     ):
         failures.append("installer scope-selection stage must depend on discovery")
+    if [stage.stage_id for stage in stage_plan.stages] != router.get("routing_order"):
+        failures.append("installer stage read model differs from routing_order")
 
     profile_selection = contract.get("profile_selection")
     expected_profiles = ["kernel", "core", "standard", "full"]

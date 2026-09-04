@@ -35,13 +35,21 @@ from source_check_reuse import (
     RUN_IDENTITY_CONTRACT,
     SourceSnapshotIndex,
     canonical_digest,
+    cached_check_decision,
+    check_cache_identity,
     check_input_fingerprint,
     environment_fingerprint,
     load_reuse_report,
     reuse_decisions,
 )
 from parallel_execution import CHILD_CAPACITY_ENV
-from source_check_cache import SourceCheckCache, cache_key
+from source_check_cache import (
+    CHECK_RESULT_CONTRACT,
+    MAX_CHECK_CACHE_RECORDS,
+    SourceCheckCache,
+    cache_key,
+    check_result_key,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -706,8 +714,9 @@ def source_identity() -> dict[str, Any]:
         capture_output=True,
         text=True,
     )
-    manifest_digest = hashlib.sha256(MANIFEST.read_bytes()).hexdigest()
-    manifest_data = json.loads(MANIFEST.read_text(encoding="utf-8"))
+    manifest_bytes = MANIFEST.read_bytes()
+    manifest_digest = hashlib.sha256(manifest_bytes).hexdigest()
+    manifest_data = json.loads(manifest_bytes.decode("utf-8"))
     return {
         "source_commit": commit.stdout.strip() if commit.returncode == 0 else None,
         "source_tree_dirty": bool(status.stdout.strip()) if status.returncode == 0 else None,
@@ -1474,6 +1483,39 @@ def finalize_run(run: CompletedSourceCheckRun) -> int:
 
     if run.cache is not None and generated_report is not None and not failures:
         try:
+            stored_checks = 0
+            for check in run.selected:
+                check_id = check["id"]
+                fingerprint = run.input_fingerprints.get(check_id, {})
+                observation = run.telemetry.get(check_id, {})
+                result = run.results.get(check_id)
+                if (
+                    result is None
+                    or result[0] != 0
+                    or observation.get("reused") is True
+                    or fingerprint.get("reuse_eligible") is not True
+                ):
+                    continue
+                identity = check_cache_identity(
+                    check=check,
+                    command=result[3],
+                    input_fingerprint=fingerprint,
+                    environment=run.current_environment,
+                    run_identity=run.run_identity,
+                )
+                run.cache.store(
+                    "checks",
+                    check_result_key(check_id, identity),
+                    {
+                        "contract": CHECK_RESULT_CONTRACT,
+                        "identity": identity,
+                        "status": "passed",
+                        "timed_out": False,
+                    },
+                )
+                stored_checks += 1
+            run.cache_events.append(f"checks:stored={stored_checks}")
+            run.cache.prune("checks", max_records=MAX_CHECK_CACHE_RECORDS)
             run.cache.store(
                 "timing",
                 cache_key(run.args.profile, include_profile=False),
@@ -1623,11 +1665,6 @@ def main() -> int:
                 cache_events.append(f"timing:{timing_load.status}")
                 if timing_report is None and timing_load.status == "hit":
                     timing_report = timing_load.value
-                if args.cache_mode == "local" and previous_report is None:
-                    result_load = cache.load("results", cache_key(args.profile))
-                    cache_events.append(f"results:{result_load.status}")
-                    if result_load.status == "hit":
-                        previous_report = result_load.value
             except (OSError, ValueError) as exc:
                 cache_events.append(f"disabled:{exc}")
                 cache = None
@@ -1676,8 +1713,8 @@ def main() -> int:
             source=current_source,
             jobs=jobs,
         )
-        reuse = (
-            reuse_decisions(
+        if previous_report is not None:
+            reuse = reuse_decisions(
                 selected=selected,
                 previous_report=previous_report,
                 current_source=current_source,
@@ -1686,9 +1723,37 @@ def main() -> int:
                 commands_by_id=commands_by_id,
                 current_run_identity=run_identity,
             )
-            if previous_report is not None
-            else {}
-        )
+        elif cache is not None and args.cache_mode == "local":
+            reuse = {}
+            cache_hits = 0
+            cache_misses = 0
+            for check in selected:
+                check_id = check["id"]
+                identity = check_cache_identity(
+                    check=check,
+                    command=commands_by_id[check_id],
+                    input_fingerprint=input_fingerprints[check_id],
+                    environment=current_environment,
+                    run_identity=run_identity,
+                )
+                loaded = cache.load(
+                    "checks", check_result_key(check_id, identity)
+                )
+                decision = cached_check_decision(
+                    record=loaded.value if loaded.status == "hit" else None,
+                    identity=identity,
+                    input_fingerprint=input_fingerprints[check_id],
+                )
+                reuse[check_id] = decision
+                if decision["reusable"]:
+                    cache_hits += 1
+                else:
+                    cache_misses += 1
+            cache_events.append(
+                f"checks:hits={cache_hits},misses={cache_misses}"
+            )
+        else:
+            reuse = {}
         initial_results = reusable_results(
             selected=selected,
             decisions=reuse,
@@ -1710,25 +1775,8 @@ def main() -> int:
             duration_estimates=duration_estimates,
         )
         execution_finished = time.monotonic()
-        after_snapshot = source_snapshot(ROOT)
-        source_changes = snapshot_changes(before, after_snapshot)
-        after_index = SourceSnapshotIndex(after_snapshot)
-        after_identity = build_run_identity(
-            requested_profile=args.profile,
-            selection=selection,
-            changed_from=changed_from,
-            baseline=baseline,
-            source={
-                **source_identity(),
-                "source_snapshot_sha256": after_index.sha256,
-            },
-            jobs=jobs,
-        )
-        if after_identity != run_identity:
-            source_changes = sorted(
-                {*source_changes, "execution identity changed during source checks"}
-            )
-        verification_finished = time.monotonic()
+        source_changes: list[str] = []
+        verification_finished = execution_finished
         telemetry.setdefault("_summary", {}).update(
             {
                 "setup_seconds": round(

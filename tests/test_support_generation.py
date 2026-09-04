@@ -5,6 +5,9 @@ import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
+
+import support_generation
 
 from support_generation import (
     INDEX_PATH,
@@ -96,6 +99,16 @@ class SupportGenerationTests(unittest.TestCase):
         action = next(item for item in plan["actions"] if item["id"] == "api-reference")
         self.assertEqual(action["status"], "stale")
         self.assertIn("inputs-changed", action["reasons"])
+
+    def test_generation_index_enumerates_repository_once(self) -> None:
+        target = self.make_target()
+        original = support_generation._repository_paths
+        with patch(
+            "support_generation._repository_paths", wraps=original
+        ) as repository_paths:
+            build_generation_index(target)
+
+        repository_paths.assert_called_once_with(target.resolve())
 
     def test_cycle_is_rejected(self) -> None:
         value = registry()

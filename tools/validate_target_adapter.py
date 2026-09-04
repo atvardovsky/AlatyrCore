@@ -20,7 +20,7 @@ import sys
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 import jsonschema
 
@@ -68,6 +68,7 @@ from target_validation_support import (
 from target_adapter_validation.context import (
     TargetMutation,
     TargetPathEscapeError,
+    TargetRepositoryView,
     ValidationContext,
 )
 from target_adapter_validation.context_catalogs import (
@@ -743,6 +744,16 @@ def repair_operation_for(code: str) -> str:
 
 
 @dataclass(frozen=True)
+class ValidationPhase:
+    """One ordered target-validation phase with explicit execution metadata."""
+
+    phase_id: str
+    run: Callable[[], None]
+    dependencies: tuple[str, ...] = ()
+    cost_class: str = "light"
+
+
+@dataclass(frozen=True)
 class Finding:
     level: str
     code: str
@@ -889,7 +900,7 @@ class Validator:
         validation_scope: str = "full",
     ) -> None:
         self.target = target.resolve()
-        self.context = ValidationContext(self.target)
+        self.context = TargetRepositoryView(self.target)
         self.unsafe_target_paths: set[str] = set()
         self.findings: list[Finding] = list(initial_findings or [])
         self.config = config
@@ -972,63 +983,118 @@ class Validator:
             return self.findings
 
         manifest = self.check_manifest()
-        validate_installation_state(self.capability_validation_context(), manifest)
-        self.installation_state = target_installation_state(
-            self.target,
-            manifest,
-            context=self.context,
-        )
         support_profile = self.manifest_support_profile(manifest)
-        self.check_required_files(support_profile)
-        self.check_capability_closure(manifest)
-        self.check_module_profile_sync(manifest)
-        self.check_bootstrap_index()
-        self.check_agent_entry_packet()
-        self.check_action_authorization_contract()
         enabled_modules = self.enabled_modules(manifest)
-        self.check_router(enabled_modules, manifest)
-        validate_task_decomposition(self, manifest)
-        validate_context_catalog_contract(self, manifest)
-        validate_support_state(self.capability_validation_context(), manifest)
-        if support_profile in {"standard", "full"} or self.target_path(
-            ".ai/assistant/operation-catalog.json"
-        ).is_file():
-            self.check_operation_catalog()
-        routed_modules = self.changed_scope_modules(enabled_modules)
-        dispatch_capability_checks(self, routed_modules, manifest)
-        self.check_enabled_module_status_claims(enabled_modules)
-        self.check_bootstrap_references()
-        self.check_assistant_instruction_capabilities(manifest)
-        self.check_placeholders(manifest, support_profile, enabled_modules)
-        self.check_local_paths()
-        checker_files, checker_commands = self.discover_checkers(manifest)
-        self.check_checker_claims(checker_files, checker_commands)
-        self.check_approval_scope()
-        if support_profile != "kernel" or self.target_path(
-            ".ai/project/engineering-evidence/index.json"
-        ).is_file():
-            self.check_engineering_evidence(manifest)
-        if support_profile != "kernel" or self.target_path(
-            ".ai/project/knowledge/index.json"
-        ).is_file():
-            self.check_project_knowledge(manifest)
-        self.check_change_package_index()
-        self.check_change_packages()
-        self.check_framework_baseline(manifest)
-        self.check_migration_diff_evidence()
-        self.target_mutations = self.context.finalize()
-        for mutation in self.target_mutations:
-            self.error(
-                "TARGET_INPUT_MUTATED",
-                "target input changed during validation; discard these findings and rerun",
-                self.rel(mutation.path),
-            )
-        self.info(
-            "EVIDENCE_SCOPE_CURRENT_STATE",
-            "validator findings describe current structural state; historical actions "
-            "require dated operation, approval, or migration records",
-        )
+        for phase in self.validation_phases(
+            manifest, support_profile, enabled_modules
+        ):
+            phase.run()
         return self.findings
+
+    def validation_phases(
+        self,
+        manifest: ManifestData | None,
+        support_profile: str,
+        enabled_modules: set[str],
+    ) -> tuple[ValidationPhase, ...]:
+        """Build the sequential phase plan without changing finding semantics."""
+
+        def installation_state() -> None:
+            validate_installation_state(self.capability_validation_context(), manifest)
+            self.installation_state = target_installation_state(
+                self.target, manifest, context=self.context
+            )
+
+        def operation_catalog() -> None:
+            if support_profile in {"standard", "full"} or self.target_path(
+                ".ai/assistant/operation-catalog.json"
+            ).is_file():
+                self.check_operation_catalog()
+
+        def capabilities() -> None:
+            routed_modules = self.changed_scope_modules(enabled_modules)
+            dispatch_capability_checks(self, routed_modules, manifest)
+
+        def checker_claims() -> None:
+            checker_files, checker_commands = self.discover_checkers(manifest)
+            self.check_checker_claims(checker_files, checker_commands)
+
+        def engineering_evidence() -> None:
+            if support_profile != "kernel" or self.target_path(
+                ".ai/project/engineering-evidence/index.json"
+            ).is_file():
+                self.check_engineering_evidence(manifest)
+
+        def project_knowledge() -> None:
+            if support_profile != "kernel" or self.target_path(
+                ".ai/project/knowledge/index.json"
+            ).is_file():
+                self.check_project_knowledge(manifest)
+
+        def finalize_inputs() -> None:
+            self.target_mutations = self.context.finalize()
+            for mutation in self.target_mutations:
+                self.error(
+                    "TARGET_INPUT_MUTATED",
+                    "target input changed during validation; discard these findings and rerun",
+                    self.rel(mutation.path),
+                )
+            self.info(
+                "EVIDENCE_SCOPE_CURRENT_STATE",
+                "validator findings describe current structural state; historical actions "
+                "require dated operation, approval, or migration records",
+            )
+
+        phases = (
+            ValidationPhase("installation-state", installation_state),
+            ValidationPhase("required-files", lambda: self.check_required_files(support_profile), ("installation-state",)),
+            ValidationPhase("capability-closure", lambda: self.check_capability_closure(manifest), ("required-files",)),
+            ValidationPhase("module-profile", lambda: self.check_module_profile_sync(manifest), ("capability-closure",)),
+            ValidationPhase("bootstrap-index", self.check_bootstrap_index, ("required-files",)),
+            ValidationPhase("agent-entry-packet", self.check_agent_entry_packet, ("bootstrap-index",)),
+            ValidationPhase("action-authorization", self.check_action_authorization_contract, ("agent-entry-packet",)),
+            ValidationPhase("context-router", lambda: self.check_router(enabled_modules, manifest), ("module-profile",)),
+            ValidationPhase("task-decomposition", lambda: validate_task_decomposition(self, manifest), ("context-router",)),
+            ValidationPhase("context-catalogs", lambda: validate_context_catalog_contract(self, manifest), ("context-router",)),
+            ValidationPhase("support-state", lambda: validate_support_state(self.capability_validation_context(), manifest), ("installation-state",)),
+            ValidationPhase("operation-catalog", operation_catalog, ("required-files",)),
+            ValidationPhase("capabilities", capabilities, ("capability-closure",), "heavy"),
+            ValidationPhase("module-status", lambda: self.check_enabled_module_status_claims(enabled_modules), ("capabilities",)),
+            ValidationPhase("bootstrap-references", self.check_bootstrap_references, ("bootstrap-index",)),
+            ValidationPhase("assistant-instructions", lambda: self.check_assistant_instruction_capabilities(manifest), ("bootstrap-references",)),
+            ValidationPhase("placeholders", lambda: self.check_placeholders(manifest, support_profile, enabled_modules), ("required-files",)),
+            ValidationPhase("local-paths", self.check_local_paths, ("required-files",)),
+            ValidationPhase("checker-claims", checker_claims, ("required-files",), "standard"),
+            ValidationPhase("approval-scope", self.check_approval_scope, ("action-authorization",)),
+            ValidationPhase("engineering-evidence", engineering_evidence, ("capabilities",)),
+            ValidationPhase("project-knowledge", project_knowledge, ("capabilities",)),
+            ValidationPhase("change-package-index", self.check_change_package_index, ("approval-scope",)),
+            ValidationPhase("change-packages", self.check_change_packages, ("change-package-index",), "standard"),
+            ValidationPhase("framework-baseline", lambda: self.check_framework_baseline(manifest), ("installation-state",), "standard"),
+            ValidationPhase("migration-evidence", self.check_migration_diff_evidence, ("framework-baseline",)),
+            ValidationPhase("finalize-inputs", finalize_inputs, tuple(), "standard"),
+        )
+        known = {phase.phase_id for phase in phases}
+        if len(known) != len(phases):
+            raise ValueError("target validation phase IDs must be unique")
+        positions = {phase.phase_id: index for index, phase in enumerate(phases)}
+        for index, phase in enumerate(phases):
+            unknown = set(phase.dependencies) - known
+            if unknown:
+                raise ValueError(
+                    f"target validation phase {phase.phase_id} has unknown dependencies: {sorted(unknown)}"
+                )
+            unordered = {
+                dependency
+                for dependency in phase.dependencies
+                if positions[dependency] >= index
+            }
+            if unordered:
+                raise ValueError(
+                    f"target validation phase {phase.phase_id} depends on non-prior phases: "
+                    f"{sorted(unordered)}"
+                )
+        return phases
 
     def changed_scope_modules(self, enabled_modules: set[str]) -> set[str]:
         """Select optional module validators; universal checks always run."""

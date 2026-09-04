@@ -12,7 +12,9 @@ from source_check_reuse import (  # noqa: E402
     REUSE_CONTRACT,
     RUN_IDENTITY_CONTRACT,
     SourceSnapshotIndex,
+    cached_check_decision,
     canonical_digest,
+    check_cache_identity,
     check_input_fingerprint,
     environment_fingerprint,
     reuse_decisions,
@@ -157,6 +159,64 @@ def decision(
 
 
 class SourceCheckReuseTests(unittest.TestCase):
+    def test_per_check_cache_identity_ignores_unrelated_source_snapshot(self) -> None:
+        selected = {
+            **check(),
+            "_selection": {
+                "profile": "fast",
+                "changed_paths": ["docs/example.md"],
+                "matched_changed_paths": ["docs/example.md"],
+                "reasons": ["changed-path-trigger"],
+            },
+            "_child_capacity": 1,
+        }
+        first = check_cache_identity(
+            check=selected,
+            command=["python", "tools/example.py"],
+            input_fingerprint=fingerprint(),
+            environment=environment(),
+            run_identity=run_identity(snapshot_sha256="first"),
+        )
+        second = check_cache_identity(
+            check=selected,
+            command=["python", "tools/example.py"],
+            input_fingerprint=fingerprint(),
+            environment=environment(),
+            run_identity=run_identity(snapshot_sha256="second"),
+        )
+        self.assertEqual(first, second)
+
+    def test_per_check_cache_rejects_identity_or_contract_changes(self) -> None:
+        selected = {**check(), "_selection": {}, "_child_capacity": 1}
+        identity = check_cache_identity(
+            check=selected,
+            command=["python", "tools/example.py"],
+            input_fingerprint=fingerprint(),
+            environment=environment(),
+            run_identity=run_identity(),
+        )
+        record = {
+            "contract": "alatyr-source-check-result-cache-v1",
+            "identity": identity,
+            "status": "passed",
+            "timed_out": False,
+        }
+        self.assertTrue(
+            cached_check_decision(
+                record=record,
+                identity=identity,
+                input_fingerprint=fingerprint(),
+            )["reusable"]
+        )
+        changed = {**identity, "child_capacity": 2}
+        self.assertFalse(
+            cached_check_decision(
+                record=record,
+                identity=changed,
+                input_fingerprint=fingerprint(),
+            )["reusable"]
+        )
+
     def test_input_fingerprint_changes_with_declared_content(self) -> None:
         first = {
             "docs/example.md": SourceEntry("file", 0o644, "aaa"),

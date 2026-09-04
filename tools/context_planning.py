@@ -13,6 +13,7 @@ from context_catalog import (
     CatalogItem,
     ContextCatalogError,
     build_context_packet,
+    catalog_content_stats,
     file_digest,
     load_codebook,
     validate_context_catalog,
@@ -303,7 +304,7 @@ def _load_catalogs(target: Path, router: dict[str, Any]) -> _Catalogs:
             root_index = _target_path(target, relpath, f"{contour} context index")
             catalog_root = root_index.parent
             resolution = validate_context_catalog(
-                root_index, catalog_root=catalog_root, verify_content=True
+                root_index, catalog_root=catalog_root, verify_content=False
             )
             prefix = root_index.parent.relative_to(target).as_posix()
             items.extend(
@@ -692,6 +693,31 @@ def _add_owner_closure(
             )
 
 
+def _verify_selected_content(
+    target: Path, selected: Iterable[CatalogItem]
+) -> None:
+    """Verify only the content leaves selected by the bounded routing plan."""
+
+    try:
+        for item in selected:
+            stats = catalog_content_stats(target / item.path)
+            if stats.words != item.estimated_words:
+                raise ContextCatalogError(
+                    f"{item.path}.estimated_words is stale"
+                )
+            if stats.digest != item.content_digest:
+                raise ContextCatalogError(
+                    f"{item.path}.content_digest is stale"
+                )
+    except (ContextCatalogError, OSError, UnicodeError) as exc:
+        raise ContextPlanningError(
+            "CONTEXT_CATALOG_STALE",
+            f"selected context content is unavailable or stale: {exc}",
+            upgrade_required=True,
+            actions=("regenerate the selected context catalog branch",),
+        ) from exc
+
+
 def _resolve_surface(
     target: Path, router: dict[str, Any], requested: str | None
 ) -> tuple[str, dict[str, str]]:
@@ -925,6 +951,7 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
         request, target, router, catalogs, selected, reasons
     )
     _add_owner_closure(catalogs, selected, reasons)
+    _verify_selected_content(target, selected.values())
     terms, semantic_index_path = _semantic_terms(
         target, router, selected.values(), request.profile, operation_id
     )

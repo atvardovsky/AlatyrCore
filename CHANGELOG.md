@@ -6,14 +6,24 @@
   operations, recursive indexes, semantic owners, consistency impact, assistant
   capability evidence, and budgets into a deterministic content-free plan.
 - Added opt-in Git-local timing and exact-result source-check caches, with
-  atomic bounded storage, fail-open cache faults, fail-closed reuse identity,
-  and a release prohibition on cached result evidence.
+  atomic bounded per-check storage, transitive local implementation identity,
+  fail-open cache faults, fail-closed reuse decisions, and a release
+  prohibition on cached result evidence.
 - Added affinity- and quota-aware `--jobs auto`, dynamic unit-test shard queues,
   concise successful output, complete failure output, and phase timing so local
   validation spends less time and attention without weakening selected checks.
 - Split the target-validator regression harness into focused scenario modules,
-  enforced complete typed routing for all target capabilities, and made target
-  validation detect inputs that mutate during one run.
+  enforced complete typed routing for all target capabilities, introduced an
+  explicit ordered validation-phase model, and made target validation detect
+  inputs that mutate during one run.
+- Added an immutable composition read model, typed projection graph, named path
+  dialects, content-addressed sparse projection, and a typed installer-stage
+  model. Active scaffolding now resolves profile, capability, framework-pack,
+  and assistant-surface choices once and leaves identical projected files
+  untouched.
+- Reduced context-catalog I/O by sharing content statistics, validating index
+  structure before selected leaf content, and loading semantic codebook shards
+  only when selectors or dependencies require them.
 - Strengthened source-check result reuse with complete environment, source,
   selection, fingerprint, provenance, completion, and write-scope identity.
 - Accelerated safe YAML loading with a LibYAML-backed loader when available and
@@ -26,6 +36,9 @@
   project vocabulary, test-first development, extensions, dependency
   knowledge, and development-evidence checks from the target-validator CLI
   facade into capability-owned modules with contract-closed dispatch.
+- Moved diagrams, delegation, and workspace-mode validation to the same narrow
+  capability context and replaced reflective compatibility dispatch with one
+  explicit Debug Mode route.
 - Preserved all 1,193 target-validator finding IDs and severity sets while
   regenerating their source-ownership catalog after modular extraction.
 - Strengthened target path and Git provenance handling for symlink swaps,

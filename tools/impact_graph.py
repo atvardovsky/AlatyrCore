@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
-import fnmatch
 import hashlib
 import json
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from typing import Any, Iterable
+
+from path_spec import PathDialect, PathSpec
 
 
 GRAPH_KIND = "target-consistency-map"
@@ -236,7 +237,11 @@ def matching_node_ids(reverse_index: dict[str, Any], relpath: str) -> set[str]:
             continue
         pattern = item.get("pattern")
         node_id = item.get("node_id")
-        if isinstance(pattern, str) and isinstance(node_id, str) and fnmatch.fnmatchcase(relpath, pattern):
+        if (
+            isinstance(pattern, str)
+            and isinstance(node_id, str)
+            and PathSpec(pattern, PathDialect.PORTABLE_FNMATCH_V1).matches(relpath)
+        ):
             matches.add(node_id)
     return matches
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -11,7 +12,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from source_check_cache import SourceCheckCache, cache_key  # noqa: E402
+from source_check_cache import (  # noqa: E402
+    SourceCheckCache,
+    cache_key,
+    check_result_key,
+)
 
 
 class SourceCheckCacheTests(unittest.TestCase):
@@ -36,11 +41,49 @@ class SourceCheckCacheTests(unittest.TestCase):
                 {"status": "passed"},
             )
 
+    def test_round_trips_content_addressed_check_record(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            cache = SourceCheckCache(self.repository(directory))
+            identity = {"contract": "test", "input": "sha256:value"}
+            key = check_result_key("example-check", identity)
+            cache.store("checks", key, {"status": "passed"})
+
+            self.assertEqual(
+                cache.load("checks", key).value,
+                {"status": "passed"},
+            )
+            self.assertEqual(key, check_result_key("example-check", identity))
+
     def test_runtime_cache_keys_partition_result_profiles_only(self) -> None:
         timing = cache_key("full", include_profile=False)
 
         self.assertNotIn("full", timing)
         self.assertEqual(cache_key("full"), f"full-{timing}")
+
+    def test_prune_keeps_newest_bounded_records(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            cache = SourceCheckCache(self.repository(directory))
+            paths = [
+                cache.store("checks", f"check-{index}", {"index": index})
+                for index in range(4)
+            ]
+            for index, path in enumerate(paths):
+                os.utime(path, ns=(index + 1, index + 1))
+
+            removed = cache.prune("checks", max_records=2)
+
+            self.assertEqual(removed, tuple(paths[:2]))
+            self.assertEqual(
+                sorted(path.name for path in paths if path.exists()),
+                ["check-2.json", "check-3.json"],
+            )
+
+    def test_prune_rejects_non_positive_retention(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            cache = SourceCheckCache(self.repository(directory))
+
+            with self.assertRaisesRegex(ValueError, "retention must be positive"):
+                cache.prune("checks", max_records=0)
 
     def test_corruption_fails_open_as_a_cache_miss(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

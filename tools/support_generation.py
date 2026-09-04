@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import fnmatch
 import hashlib
 import json
 import subprocess
@@ -10,6 +9,7 @@ from pathlib import Path, PurePosixPath
 from typing import Any, Iterable
 
 from evidence_contract import canonical_worktree_entries, digest_entries
+from path_spec import PathDialect, select_paths
 
 
 REGISTRY_PATH = ".ai/project/support-generation/registry.json"
@@ -113,19 +113,22 @@ def topological_order(registry: dict[str, Any]) -> list[str]:
     return ordered
 
 
-def _matching_paths(target: Path, patterns: Iterable[str]) -> list[str]:
-    all_files = [
+def _repository_paths(target: Path) -> tuple[str, ...]:
+    return tuple(
         path.relative_to(target).as_posix()
         for path in target.rglob("*")
         if (path.is_file() or path.is_symlink()) and ".git" not in path.parts
-    ]
-    selected: set[str] = set()
-    for pattern in patterns:
-        if any(marker in pattern for marker in "*?["):
-            selected.update(path for path in all_files if fnmatch.fnmatchcase(path, pattern))
-        elif (target / pattern).is_file() or (target / pattern).is_symlink():
-            selected.add(pattern)
-    return sorted(selected)
+    )
+
+
+def _matching_paths(paths: tuple[str, ...], patterns: Iterable[str]) -> list[str]:
+    return list(
+        select_paths(
+            paths,
+            list(patterns),
+            dialect=PathDialect.PORTABLE_FNMATCH_V1,
+        )
+    )
 
 
 def _path_digest(target: Path, relpaths: Iterable[str], prefix: bytes) -> str:
@@ -175,11 +178,12 @@ def build_generation_index(target: Path, registry: dict[str, Any] | None = None)
     registry = registry or load_registry(target)
     order = topological_order(registry)
     artifacts = {item["id"]: item for item in registry["artifacts"]}
+    repository_paths = _repository_paths(target)
     states: list[dict[str, Any]] = []
     for artifact_id in order:
         artifact = artifacts[artifact_id]
-        input_paths = _matching_paths(target, [item["path"] for item in artifact["inputs"]])
-        output_paths = _matching_paths(target, artifact["outputs"])
+        input_paths = _matching_paths(repository_paths, [item["path"] for item in artifact["inputs"]])
+        output_paths = _matching_paths(repository_paths, artifact["outputs"])
         missing_outputs = sorted(set(artifact["outputs"]) - set(output_paths))
         states.append(
             {

@@ -6,6 +6,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 import jsonschema
 
@@ -18,6 +19,7 @@ from context_catalog import (
     ContextCatalogError,
     build_context_packet,
     catalog_content_bytes,
+    catalog_content_stats,
     file_digest,
     load_codebook,
     validate_context_catalog,
@@ -51,6 +53,19 @@ def entry(root: Path, item_id: str, kind: str, path: str) -> dict[str, object]:
 
 
 class ContextCatalogTests(unittest.TestCase):
+    def test_catalog_content_stats_reads_source_once(self) -> None:
+        path = Path("entry-packet.json")
+        raw = b'{"value": true}\n'
+        with patch.object(Path, "read_bytes", return_value=raw) as read_bytes:
+            stats = catalog_content_stats(path)
+
+        self.assertEqual(stats.words, 2)
+        self.assertEqual(
+            stats.digest,
+            "sha256:" + hashlib.sha256(raw).hexdigest(),
+        )
+        read_bytes.assert_called_once_with()
+
     def test_generated_json_catalog_content_ignores_provenance(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -343,6 +358,107 @@ class ContextCatalogTests(unittest.TestCase):
 
             unselected = load_codebook(index, selectors={"tasks": "other"})
             self.assertEqual(unselected, {})
+
+    def test_codebook_does_not_open_unselected_shards(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            selected = root / "selected.json"
+            ignored = root / "ignored.json"
+            term = {
+                "id": "alatyr:selected",
+                "version": 1,
+                "definition": "Selected definition.",
+                "owner_rule_id": "ALATYR-CONTEXT-001",
+                "canonical_owner": "framework/context.md",
+                "scope": "test",
+                "non_meanings": [],
+                "depends_on": [],
+                "replaced_by": None,
+            }
+            write_json(
+                selected,
+                {
+                    "schema_version": 1,
+                    "record_kind": "alatyr-semantic-codebook-shard",
+                    "shard_id": "selected",
+                    "preload": False,
+                    "selectors": {},
+                    "terms": [term],
+                },
+            )
+            ignored.write_text("not-json\n", encoding="utf-8")
+            index = root / "index.json"
+            write_json(
+                index,
+                {
+                    "schema_version": 1,
+                    "index_kind": "alatyr-semantic-codebook-index",
+                    "codebook_id": "test",
+                    "shards": [
+                        {
+                            "id": "selected",
+                            "path": "selected.json",
+                            "preload": False,
+                            "selectors": {},
+                            "term_ids": ["alatyr:selected"],
+                            "content_digest": file_digest(selected),
+                        },
+                        {
+                            "id": "ignored",
+                            "path": "ignored.json",
+                            "preload": False,
+                            "selectors": {},
+                            "term_ids": ["alatyr:ignored"],
+                            "content_digest": file_digest(ignored),
+                        },
+                    ],
+                },
+            )
+
+            resolved = load_codebook(index, required_terms=["alatyr:selected"])
+
+            self.assertEqual(list(resolved), ["alatyr:selected"])
+
+    def test_metadata_only_catalog_validation_still_binds_child_indexes(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            content = root / "content.md"
+            content.write_text("content\n", encoding="utf-8")
+            child = root / "child.json"
+            write_json(
+                child,
+                {
+                    "schema_version": 1,
+                    "index_kind": "alatyr-context-index",
+                    "index_id": "child",
+                    "contour": "project",
+                    "title": "Child",
+                    "summary": "Child",
+                    "max_depth": 2,
+                    "entries": [entry(root, "content", "content", "content.md")],
+                },
+            )
+            root_index = root / "context-index.json"
+            write_json(
+                root_index,
+                {
+                    "schema_version": 1,
+                    "index_kind": "alatyr-context-index",
+                    "index_id": "root",
+                    "contour": "project",
+                    "title": "Root",
+                    "summary": "Root",
+                    "max_depth": 2,
+                    "entries": [entry(root, "child-entry", "index", "child.json")],
+                },
+            )
+            content.write_text("stale leaf\n", encoding="utf-8")
+            validate_context_catalog(root_index, verify_content=False)
+            child_data = json.loads(child.read_text(encoding="utf-8"))
+            child_data["summary"] = "Changed child"
+            write_json(child, child_data)
+            with self.assertRaisesRegex(ContextCatalogError, "stale"):
+                validate_context_catalog(root_index, verify_content=False)
 
     def test_codebook_rejects_dependency_cycle(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

@@ -55,6 +55,13 @@ Use contract-first design for every generated or machine-checked surface. The
 contract can be Markdown, JSON, YAML, or a schema, but it must identify the
 owner, consumers, validation command, and synchronization direction.
 
+Resolve installation and scaffold choices through one immutable composition
+model. Support-profile inheritance, capability closure, framework-pack
+selection, and assistant-surface aliases are separate inputs whose resolved
+paths retain origin evidence. Existing catalogs remain canonical; the
+composition object is a derived read model and must not become a competing
+source of truth.
+
 Prefer a functional-core and imperative-shell shape for Python tools. Parsing,
 classification, matching, and validation helpers should be pure functions or
 small data classes. CLI entry points should collect input, call those helpers,
@@ -92,6 +99,20 @@ Keep documentation in a CQRS-like split: canonical owner documents define
 rules and contracts; generated indexes and human guides explain or summarize
 them. Derived surfaces must be reproducible or explicitly checked for drift.
 
+Model generated surfaces as an acyclic projection graph when one output feeds
+another. Each node declares its owner, inputs, outputs, generator, and checker.
+Generated indexes must not select their own inputs, and validators must never
+silently repair outputs while checking them.
+
+Use named path dialects at policy boundaries. Source-host matching, portable
+manifest matching, support-tree matching, and approval-scope matching have
+different compatibility semantics; sharing a parser must not silently make
+those contracts equivalent.
+
+Use content-addressed sparse writes for deterministic projections. An
+unchanged desired byte stream is not rewritten. Omission and deletion remain
+separate ownership decisions and are never inferred from a sparse overlay.
+
 Apply least sufficient context to the source repository itself. Add indexes,
 manifests, and narrow trigger paths so agents and checks load only what the
 task actually needs.
@@ -125,8 +146,10 @@ The expected source-tooling flow is:
    reasons while the primary assistant runs the authoritative critical path.
 6. Run cheap structural checks first.
 7. Run changed-path focused checks when the route is unambiguous.
-8. Reuse a previous passed check only when its manifest, command, runtime, and
-   declared input fingerprint match the current run.
+8. Reuse a previous passed check only when its command, runtime, transitive
+   local implementation closure, declared contract inputs, and run identity
+   match the current run. Reuse is per check, locally bounded, and never release
+   evidence.
 9. Expand to full validation when a broad route, failed check, contract change,
    release change, or ownership conflict appears.
 10. Record final evidence with worker decisions, checks that actually ran,
@@ -146,9 +169,17 @@ the owning checks.
   functions internally.
 - Keep generated entry, capability, semantic, and report projections compact;
   their canonical source contracts must retain strict closure checks.
-- Move the remaining compatibility fallbacks for Debug Mode, diagrams,
-  delegation, and workspace modes to the narrow capability context after their
-  broad host dependencies have focused parity coverage.
+- Keep diagrams, delegation, and workspace modes on the narrow capability
+  context. Debug Mode remains an explicit compatibility route until its Git
+  history and repository-binding dependencies can be extracted with finding
+  parity; dispatch must never depend on reflective method lookup.
+- Keep target validation as an ordered phase pipeline with unique IDs,
+  declared dependencies, and cost classes. Execution remains sequential until
+  phase isolation proves that parallel reads preserve finding order and input
+  mutation detection.
+- Keep the typed installer stage model bound to the canonical context router.
+  A stage checkpoint is disposable optimization evidence only; it cannot grant
+  approval, authorize an action, or establish semantic correctness.
 - Split large target validation methods into schema parsing, relationship
   traversal, fixture checks, and diagnostic rendering.
 - Convert repeated source-tool read, parse, path, and subprocess patterns into

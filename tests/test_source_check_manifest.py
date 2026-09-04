@@ -16,11 +16,19 @@ from source_check_manifest import (  # noqa: E402
     declared_implementation_path,
     load_manifest,
     micro_routes,
+    transitive_local_tool_dependencies,
     valid_manifest_path,
 )
 
 
 class SourceCheckManifestTests(unittest.TestCase):
+    def test_transitive_dependency_closure_reaches_shared_path_contract(self) -> None:
+        dependencies = transitive_local_tool_dependencies(
+            "tools/check_check_manifest.py"
+        )
+        self.assertIn("tools/source_check_manifest.py", dependencies)
+        self.assertIn("tools/path_spec.py", dependencies)
+
     def test_source_path_index_tracks_parent_directories(self) -> None:
         index = SourcePathIndex.from_paths(
             [

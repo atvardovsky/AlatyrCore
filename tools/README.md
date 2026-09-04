@@ -238,10 +238,14 @@ previously passed check as `reused-pass` only if the manifest digest, command,
 platform, Python runtime, full run identity, source state, and exact declared
 input fingerprint match. Reuse is opt-in and evidence-bound; normal runs
 execute checks as before. `--cache-mode timing` stores Git-local duration hints
-that can change scheduling only. `--cache-mode local` additionally attempts the
-same fail-closed result reuse without requiring an explicit report path. Cache
-records live below Git's local metadata, are disposable, and never become
-repository or release evidence. Release validation rejects local result reuse.
+that can change scheduling only. `--cache-mode local` additionally resolves an
+independent content-addressed identity for each check from its command,
+runtime, run identity, declared contract inputs, and transitive local Python
+implementation closure. Unrelated repository changes therefore do not
+invalidate a reusable check, while any relevant helper change does. Individual
+records are bounded to the newest 512 entries. Cache records live below Git's
+local metadata, are disposable, and never become repository or release
+evidence. Release validation rejects local result reuse.
 `change --changed-from <ref>` uses the same ref as the release-drift baseline
 when `--from-ref` is omitted. `release` adds tag-baseline migration checks.
 `platform` runs the portable tooling contract slice used on macOS and Windows.
@@ -981,7 +985,12 @@ support profile. Selective packs project their rule registry, ownership map, and
 inventory so omitted optional owners are explicit. The projection layer also
 removes path claims for omitted surfaces, filters operation routes to installed
 flows, derives the compact operation index and bootstrap index, and accepts
-repeatable `--enable-module` capability IDs with dependency closure.
+repeatable `--enable-module` capability IDs with dependency closure. Profile,
+capability, framework-pack, and assistant-surface choices are resolved once
+through an immutable composition read model. Generated operation surfaces use
+a typed acyclic projection order. In overwrite mode, content-addressed sparse
+projection leaves byte-identical files untouched; it never infers that an
+omitted file should be deleted.
 
 It does not inspect target facts, complete installation, approve overwrites, or
 validate an installed adapter.
@@ -1026,6 +1035,11 @@ target path and protected surfaces.
 core surfaces, full-template coverage, bridge isolation, and profile-to-pack
 mapping. `check_framework_packs.py` validates pack inheritance, rule dependency
 closure, projected registries, and inventories.
+
+`installer_stage_model.py` validates the canonical installer context router as
+an ordered dependency graph and can derive a content-bound checkpoint identity
+for completed stages. That identity is local optimization evidence only: it
+does not authorize writes, satisfy an approval gate, or prove target facts.
 
 ## Target Adapter Validator
 
@@ -1074,6 +1088,12 @@ capability evidence remains active fail-safe.
 Reusable manifest parsing, Git diff, hashing, and approval-scope primitives
 live in `target_validation_support.py`; the validator remains the reporting and
 contract orchestration surface.
+
+The validator executes an explicit ordered phase plan. Capability closure and
+module routing remain data-driven; diagrams, delegation, and workspace modes
+use the narrow capability context. Debug Mode retains one explicit broad-host
+compatibility route because its Git history and repository-binding checks need
+operations outside that context. There is no reflective fallback dispatch.
 
 It does not install Alatyr Core, inspect project business truth, approve
 protected changes, run target validation, or replace assistant logical

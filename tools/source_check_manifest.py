@@ -3,12 +3,13 @@
 from __future__ import annotations
 
 import ast
-import fnmatch
 import json
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
+
+from path_spec import PathDialect, PathSpec, matches_any
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -17,6 +18,7 @@ ALLOWED_WRITE_SCOPES = {"none"}
 ALLOWED_PLATFORMS = {"all", "linux", "macos", "windows"}
 ALLOWED_RESOURCE_CLASSES = {"light", "standard", "heavy"}
 TOOL_DEPENDENCY_CACHE: dict[str, frozenset[str]] = {}
+TOOL_DEPENDENCY_CLOSURE_CACHE: dict[str, frozenset[str]] = {}
 
 
 def valid_manifest_path(value: str) -> bool:
@@ -192,18 +194,22 @@ def matches(check: dict[str, Any], path: str) -> bool:
     """Whether a path is declared as a checked contract or implementation input."""
 
     candidates = [*check["contract_inputs"], *check["implementation_paths"]]
-    return any(fnmatch.fnmatch(path, pattern) for pattern in candidates)
+    return matches_any(path, candidates, dialect=PathDialect.SOURCE_HOST_V1)
 
 
 def routes(check: dict[str, Any], path: str) -> bool:
-    return any(fnmatch.fnmatch(path, pattern) for pattern in check["trigger_paths"])
+    return matches_any(
+        path, check["trigger_paths"], dialect=PathDialect.SOURCE_HOST_V1
+    )
 
 
 def micro_routes(check: dict[str, Any], path: str) -> bool:
     """Whether a path is explicitly allowed to use this check in micro mode."""
 
-    return any(
-        fnmatch.fnmatch(path, pattern) for pattern in check.get("micro_trigger_paths", [])
+    return matches_any(
+        path,
+        check.get("micro_trigger_paths", []),
+        dialect=PathDialect.SOURCE_HOST_V1,
     )
 
 
@@ -249,13 +255,16 @@ class SourcePathIndex:
 
     def matches_declaration(self, pattern: str) -> bool:
         if any(character in pattern for character in "*?["):
-            return any(fnmatch.fnmatch(path, pattern) for path in self.paths)
+            spec = PathSpec(pattern, PathDialect.SOURCE_HOST_V1)
+            return any(spec.matches(path) for path in self.paths)
         return pattern in self.paths
 
 
 def declared_implementation_path(check: dict[str, Any], path: str) -> bool:
-    return any(
-        fnmatch.fnmatch(path, pattern) for pattern in check["implementation_paths"]
+    return matches_any(
+        path,
+        check["implementation_paths"],
+        dialect=PathDialect.SOURCE_HOST_V1,
     )
 
 
@@ -289,6 +298,43 @@ def direct_local_tool_dependencies(script: str) -> set[str]:
                 dependencies.add(module_package.relative_to(ROOT).as_posix() + "/**")
     TOOL_DEPENDENCY_CACHE[script] = frozenset(dependencies)
     return dependencies
+
+
+def transitive_local_tool_dependencies(script: str) -> set[str]:
+    """Return the complete statically discoverable local import closure."""
+
+    cached = TOOL_DEPENDENCY_CLOSURE_CACHE.get(script)
+    if cached is not None:
+        return set(cached)
+    closure: set[str] = set()
+    visiting: set[str] = set()
+
+    def visit(current: str) -> None:
+        if current in visiting:
+            return
+        if not (ROOT / current).is_file():
+            return
+        visiting.add(current)
+        for dependency in direct_local_tool_dependencies(current):
+            candidates = (
+                sorted(
+                    path.relative_to(ROOT).as_posix()
+                    for path in (ROOT / dependency[:-3]).rglob("*.py")
+                    if path.is_file()
+                )
+                if dependency.endswith("/**")
+                else [dependency]
+            )
+            for candidate in candidates:
+                if candidate == script or candidate in closure:
+                    continue
+                closure.add(candidate)
+                visit(candidate)
+        visiting.remove(current)
+
+    visit(script)
+    TOOL_DEPENDENCY_CLOSURE_CACHE[script] = frozenset(closure)
+    return closure
 
 
 def declaration_matches_source(

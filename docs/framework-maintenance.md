@@ -90,9 +90,10 @@ Before accepting a change, check:
   omit required version and migration evidence.
   Use `--jobs auto` for capacity-aware local parallelism. Optional
   `--cache-mode timing` stores disposable Git-local scheduling hints only;
-  `--cache-mode local` also attempts exact fail-closed result reuse and is
-  rejected by the release profile. Cache hits never replace cold release
-  evidence.
+  `--cache-mode local` also attempts bounded, per-check, content-addressed,
+  fail-closed result reuse and is rejected by the release profile. Check
+  identities include transitive local Python implementation dependencies.
+  Cache hits never replace cold release evidence.
 - `python3 tools/alatyr.py plan-work --summary` is available as the read-only
   minimum-work preflight. Pass `--source-profile` for an explicit named source
   operation; automatic changed-path planning does not infer user intent. The

@@ -2,18 +2,20 @@
 
 from __future__ import annotations
 
-import fnmatch
 import hashlib
 import json
 from pathlib import Path
 from typing import Any
 
+from path_spec import PathDialect, PathSpec
+from source_check_manifest import transitive_local_tool_dependencies
 from source_state import SourceEntry
 
 
-FINGERPRINT_CONTRACT = "alatyr-source-check-inputs-v2"
+FINGERPRINT_CONTRACT = "alatyr-source-check-inputs-v3"
 REUSE_CONTRACT = "alatyr-source-check-reuse-v1"
 RUN_IDENTITY_CONTRACT = "alatyr-source-check-run-identity-v1"
+CHECK_CACHE_IDENTITY_CONTRACT = "alatyr-source-check-cache-identity-v1"
 
 
 def canonical_digest(value: Any) -> str:
@@ -57,17 +59,27 @@ class SourceSnapshotIndex:
         if not any(character in pattern for character in "*?["):
             matched = (pattern,) if pattern in self._by_path else ()
         else:
+            spec = PathSpec(pattern, PathDialect.SOURCE_HOST_V1)
             matched = tuple(
                 relpath
                 for relpath, _entry in self._entries
-                if fnmatch.fnmatch(relpath, pattern)
+                if spec.matches(relpath)
             )
         self._pattern_matches[pattern] = matched
         return matched
 
     def fingerprint(self, check: dict[str, Any]) -> dict[str, Any]:
+        transitive_dependencies = transitive_local_tool_dependencies(
+            check["command"][0]
+        )
         patterns = list(
-            dict.fromkeys([*check["contract_inputs"], *check["implementation_paths"]])
+            dict.fromkeys(
+                [
+                    *check["contract_inputs"],
+                    *check["implementation_paths"],
+                    *sorted(transitive_dependencies),
+                ]
+            )
         )
         matched_paths = sorted(
             {
@@ -125,6 +137,64 @@ def environment_fingerprint(environment: dict[str, Any]) -> dict[str, Any]:
         "environment": environment,
     }
     return {**payload, "sha256": canonical_digest(payload)}
+
+
+def check_cache_identity(
+    *,
+    check: dict[str, Any],
+    command: list[str],
+    input_fingerprint: dict[str, Any],
+    environment: dict[str, Any],
+    run_identity: dict[str, Any],
+) -> dict[str, Any]:
+    """Bind one check result to only the execution inputs it can observe."""
+
+    selection = check.get("_selection", {})
+    payload = {
+        "contract": CHECK_CACHE_IDENTITY_CONTRACT,
+        "check_id": check["id"],
+        "command": command,
+        "input_fingerprint_sha256": input_fingerprint.get("sha256"),
+        "environment_sha256": environment_fingerprint(environment)["sha256"],
+        "selection": {
+            "profile": selection.get("profile"),
+            "changed_paths": selection.get("changed_paths", []),
+            "matched_changed_paths": selection.get("matched_changed_paths", []),
+            "reasons": selection.get("reasons", []),
+        },
+        "changed_from": run_identity.get("changed_from"),
+        "baseline": run_identity.get("baseline"),
+        "child_capacity": check.get("_child_capacity", 1),
+    }
+    return {**payload, "sha256": canonical_digest(payload)}
+
+
+def cached_check_decision(
+    *,
+    record: dict[str, Any] | None,
+    identity: dict[str, Any],
+    input_fingerprint: dict[str, Any],
+) -> dict[str, Any]:
+    """Validate one disposable cached pass without trusting its file name."""
+
+    reusable = (
+        isinstance(record, dict)
+        and record.get("contract") == "alatyr-source-check-result-cache-v1"
+        and record.get("identity") == identity
+        and record.get("status") == "passed"
+        and record.get("timed_out") is False
+    )
+    return {
+        "reusable": reusable and input_fingerprint.get("reuse_eligible") is True,
+        "reason": (
+            "content-addressed executed pass matches this check input closure"
+            if reusable and input_fingerprint.get("reuse_eligible") is True
+            else "no matching content-addressed executed pass"
+        ),
+        "previous_status": record.get("status") if isinstance(record, dict) else None,
+        "input_fingerprint": input_fingerprint,
+        "reuse_source": "per-check-cache",
+    }
 
 
 def load_reuse_report(path: Path) -> dict[str, Any]:

@@ -3,7 +3,6 @@
 
 from __future__ import annotations
 
-import fnmatch
 import hashlib
 import re
 import subprocess
@@ -14,6 +13,7 @@ from typing import Any, Tuple
 import yaml
 from yaml.nodes import MappingNode, Node, ScalarNode, SequenceNode
 
+from path_spec import PathDialect, PathSpec
 from yaml_support import safe_compose, safe_load
 
 
@@ -381,7 +381,9 @@ def scope_entries_cover(path: str, entries: list[str]) -> bool:
         if is_placeholder(entry) or not is_target_scope_pattern(entry):
             continue
         pattern = entry.replace("\\", "/")
-        if normalized == pattern or fnmatch.fnmatchcase(normalized, pattern):
+        if normalized == pattern or PathSpec(
+            pattern, PathDialect.APPROVAL_SCOPE_V1
+        ).matches(normalized):
             return True
     return False
 

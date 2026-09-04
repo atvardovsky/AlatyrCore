@@ -4,13 +4,13 @@
 from __future__ import annotations
 
 import argparse
-import fnmatch
 import hashlib
 import json
 import sys
 from pathlib import Path, PurePosixPath
 from typing import Any
 
+from path_spec import PathDialect, PathSpec
 from support_state import (
     STATE_PATH,
     SupportStateError,
@@ -48,10 +48,7 @@ def _digest_payload(value: dict[str, Any]) -> str:
 
 
 def _matches(path: str, pattern: str) -> bool:
-    if pattern.endswith("/**"):
-        prefix = pattern[:-3].rstrip("/")
-        return path == prefix or path.startswith(prefix + "/")
-    return fnmatch.fnmatchcase(path, pattern)
+    return PathSpec(pattern, PathDialect.SUPPORT_TREE_V1).matches(path)
 
 
 def _normalize_path(value: str) -> str:

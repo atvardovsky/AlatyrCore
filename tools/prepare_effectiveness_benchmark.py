@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import fnmatch
 import hashlib
 import json
 import shutil
@@ -14,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from evidence_contract import current_contract_digest
+from path_spec import PathDialect, matches_any
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -103,8 +103,8 @@ def relative_to(path: Path, parent: Path) -> bool:
 
 
 def excluded(relpath: str, patterns: list[str]) -> bool:
-    return relpath == ".git" or relpath.startswith(".git/") or any(
-        fnmatch.fnmatchcase(relpath, pattern) for pattern in patterns
+    return relpath == ".git" or relpath.startswith(".git/") or matches_any(
+        relpath, patterns, dialect=PathDialect.PORTABLE_FNMATCH_V1
     )
 
 

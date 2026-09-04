@@ -14,6 +14,7 @@ from target_adapter_validation.assistant_capabilities import (
     SURFACE_CAPABILITY_SCHEMA_VERSION,
     capability_record_path,
 )
+from target_adapter_validation.capability import FunctionCapabilityModule
 from target_adapter_validation.files import missing_target_files
 from target_adapter_validation.manifest_paths import manifest_path_mismatches
 from target_adapter_validation.values import is_string_list
@@ -58,6 +59,11 @@ def validate_discussion_diagrams(validator: Any, manifest: Any) -> None:
     matrix_matches, capability_surfaces = _validate_capability_index_and_matrix(self)
     _validate_surface_capabilities(self, matrix_matches, capability_surfaces)
     _validate_contract_text(self)
+
+
+DISCUSSION_DIAGRAMS_MODULE = FunctionCapabilityModule(
+    "check_discussion_diagrams", validate_discussion_diagrams
+)
 
 
 def _validate_required_files(self: Any) -> None:

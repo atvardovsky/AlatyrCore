@@ -108,7 +108,7 @@ class _ContentSnapshot:
 class _ContextTextSource:
     """Path-like parser input whose content is owned by ValidationContext."""
 
-    context: "ValidationContext"
+    context: "TargetRepositoryView"
     path: Path
 
     def read_text(self, encoding: str = "utf-8") -> str:
@@ -120,8 +120,8 @@ class _ContextTextSource:
         return str(self.path)
 
 
-class ValidationContext:
-    """Provide a verified, run-scoped content snapshot for target validation."""
+class TargetRepositoryView:
+    """Provide one verified, run-scoped view of target repository inputs."""
 
     def __init__(self, target: Path) -> None:
         self.target = target.resolve()
@@ -407,3 +407,7 @@ class ValidationContext:
                     )
                 )
         return tuple(mutations)
+
+
+class ValidationContext(TargetRepositoryView):
+    """Backward-compatible name for the target repository view."""

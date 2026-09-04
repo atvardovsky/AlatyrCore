@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import shutil
 import sys
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
@@ -59,8 +58,11 @@ from framework_packaging import (
     resolve_framework_files,
 )
 from context_catalog import load_codebook
+from composition_model import CompositionRequest, resolve_composition
+from projection_graph import operation_projection_nodes, validate_projection_graph
 from render_context_catalogs import INDEX_NAME, build_directory_catalog_contents
 from support_state import STATE_PATH, SupportStateError, build_support_state, render_state
+from sparse_overlay import overlay_decision
 from target_tool_compat import generation_provenance_from_manifest_text
 
 
@@ -255,16 +257,17 @@ def iter_framework_files(pack: str = "complete") -> list[Path]:
     return sorted(FRAMEWORK_ROOT / name for name in resolve_framework_files(pack))
 
 
-def copy_file(src: Path, dst: Path, *, write: bool, content: str | None = None) -> None:
+def copy_file(src: Path, dst: Path, *, write: bool, content: str | None = None) -> bool:
+    """Write one projected file only when its desired bytes differ."""
+
+    desired = src.read_bytes() if content is None else content.encode("utf-8")
+    if not overlay_decision(dst, desired).changed:
+        return False
     if write:
         dst.parent.mkdir(parents=True, exist_ok=True)
-        if content is None:
-            shutil.copyfile(src, dst)
-        else:
-            # Projected framework hashes are defined over canonical UTF-8 bytes.
-            # Text-mode writes translate LF to CRLF on Windows and invalidate
-            # the generated file inventory.
-            dst.write_bytes(content.encode("utf-8"))
+        # Byte writes preserve canonical LF content on Windows.
+        dst.write_bytes(desired)
+    return True
 
 
 @dataclass(frozen=True)
@@ -283,6 +286,7 @@ def build_projection_context(
     context_catalogs: dict[Path, str] | None = None,
     generated_by: dict[str, Any] | None = None,
 ) -> ProjectionContext:
+    validate_projection_graph(operation_projection_nodes())
     catalog_rel = Path(".ai/assistant/operation-catalog.json")
     catalog = None
     if catalog_rel in selected:
@@ -518,21 +522,27 @@ def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
     profile = getattr(args, "profile", "kernel")
     requested_pack = getattr(args, "framework_pack", "matched")
     requested_modules = set(getattr(args, "enable_module", []) or [])
-    selected_assistant_surfaces = resolve_assistant_surfaces(
+    requested_assistant_surfaces = tuple(
         getattr(args, "assistant_surface", []) or []
     )
-    if selected_assistant_surfaces:
+    if requested_assistant_surfaces:
         requested_modules.add("multi-assistant-bridges")
-    enabled_modules = dependency_closure(requested_modules)
-    framework_pack = resolved_framework_pack(profile, requested_pack, enabled_modules)
-    selected_templates = project_assistant_bridges(
-        resolve_profile_paths(profile, enabled_modules), selected_assistant_surfaces
+    composition = resolve_composition(
+        CompositionRequest(
+            support_profile=profile,
+            framework_pack_request=requested_pack,
+            requested_capabilities=tuple(sorted(requested_modules)),
+            requested_assistant_surfaces=requested_assistant_surfaces,
+        )
     )
+    enabled_modules = set(composition.enabled_capabilities)
+    framework_pack = composition.framework_pack
+    selected_templates = {Path(path) for path in composition.selected_target_paths}
     # Discover the recursive index paths before projecting the router. Its
     # contour entries must describe the exact support profile being installed.
     context_catalogs = build_target_context_catalogs(selected_templates)
     selected_templates.update(context_catalogs)
-    framework_files = resolve_framework_files(framework_pack)
+    framework_files = composition.framework_paths
     selected = selected_templates | {
         Path(".ai") / "framework" / name for name in framework_files
     }
