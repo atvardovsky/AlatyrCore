@@ -40,12 +40,6 @@
       "reason": "legacy delegation checker; split provider-neutral and fixture checks"
     },
     {
-      "path": "tools/check_target_adapter_validator.py",
-      "qualname": "main",
-      "max_lines": 2882,
-      "reason": "validator regression harness; split into fixture builders and focused suites"
-    },
-    {
       "path": "tools/check_team_collaboration.py",
       "qualname": "main",
       "max_lines": 315,
