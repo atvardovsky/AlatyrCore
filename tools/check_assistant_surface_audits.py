@@ -55,12 +55,10 @@ REQUIRED_BRIDGE_REFS = {
     ".ai/assistant/help.md",
     ".ai/assistant/flows/operation-routing.flow.md",
 }
-REQUIRED_ROOT_REFS = REQUIRED_BRIDGE_REFS | {
+REQUIRED_ROOT_REFS = {
     ".ai/assistant/bootstrap-index.json",
+    ".ai/assistant/entry-packet.json",
     ".ai/assistant/policies/action-authorization.json",
-    ".ai/assistant/ai-infrastructure-router.json",
-    ".ai/assistant/assistant-capabilities.json",
-    ".ai/assistant/prompts/worker-orchestration.md",
 }
 OFFICIAL_HOSTS = {
     "agents": {"agents.md"},
@@ -248,7 +246,10 @@ def validate_contracts(
             text = path.read_text(encoding="utf-8")
             if relpath != "AGENTS.md" and "AGENTS.md" not in text:
                 failures.append(f"{audit_id} bridge {relpath} does not route root AGENTS.md")
-            for required in REQUIRED_BRIDGE_REFS:
+            required_refs = (
+                REQUIRED_ROOT_REFS if relpath == "AGENTS.md" else REQUIRED_BRIDGE_REFS
+            )
+            for required in required_refs:
                 if required not in text:
                     failures.append(f"{audit_id} bridge {relpath} omits {required}")
 

@@ -211,7 +211,7 @@
     "executor_selection": "primary first; worker only through enabled delegation policy and selected capability record"
   },
   "agent_entry_packet": {
-    "schema_version": 2,
+    "schema_version": 3,
     "path": ".ai/assistant/entry-packet.json",
     "load_after": ".ai/assistant/bootstrap-index.json",
     "purpose": "compact first-use route containing installation state, task classification and decomposition cues, routing source pointers, authorization boundaries, and delta-first support review entry points",

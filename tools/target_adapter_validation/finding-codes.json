@@ -211,7 +211,7 @@
     },
     {
       "id": "TARGET",
-      "code_count": 7
+      "code_count": 8
     },
     {
       "id": "TASK",
@@ -1389,7 +1389,7 @@
       ]
     },
     {
-      "code": "BOOTSTRAP_CONTEXT_ROUTER_MISSING",
+      "code": "BOOTSTRAP_ENTRY_PACKET_MISSING",
       "levels": [
         "error"
       ],
@@ -8683,6 +8683,15 @@
       "code": "TARGET_CHECKER_MISSING",
       "levels": [
         "warning"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "TARGET_GIT_STATE_MUTATED",
+      "levels": [
+        "error"
       ],
       "sources": [
         "tools/validate_target_adapter.py"

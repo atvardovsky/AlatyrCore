@@ -11,8 +11,12 @@ then adapts the framework into the target.
 Treat root `AGENTS.md` as preloaded, then read
 `installer/context-router.json` and the three source version files. Use the
 router to select the current installation stage before opening installer,
-framework, or template prose. Inspect the target repository before selecting
-optional modules or creating files.
+framework, or template prose. Each schema-2 stage owns its context budget,
+dependencies, required evidence and outputs, completion checks, authorization
+ceiling, and prohibited actions. A reusable stage checkpoint is valid only
+when its source inputs, target revision, resolved composition, output digests,
+and validation evidence still match. Inspect the target repository before
+selecting optional modules or creating files.
 
 Use `framework/file-inventory.json` to identify and hash unchanged framework
 files. Copying an unchanged file does not require loading its prose. Read only
@@ -528,8 +532,10 @@ Windows users may use the provided Command Prompt or PowerShell wrappers under
 
 Start from the cheapest sufficient support profile. Use `kernel` unless target
 evidence shows that durable evidence/project knowledge (`core`), common
-lifecycle/product operations (`standard`), or complete template/native-bridge
-coverage (`full`) is required.
+lifecycle/product operations (`standard`), or the complete portable framework
+pack and explicitly selected native bridges (`full`) are required. Optional
+modules remain opt-in in every target profile; exhaustive template projection
+is reserved for isolated source conformance fixtures.
 
 The selected support profile and compatible framework pack must be recorded in
 `.ai/alatyr.yaml`. Scaffold projection must remove manifest, router, operation,
@@ -539,8 +545,9 @@ Use `kernel` when the target only needs low-cost bootstrap, routing,
 authorization, integrity, generated entry packet, support-state, and
 final-evidence support. Use `core` when the target also needs durable
 engineering evidence and project-knowledge delivery. Use `standard` for
-common lifecycle/product operations and `full` only when the complete template
-surface is justified.
+common lifecycle/product operations and `full` only when the complete portable
+framework pack is justified. Do not treat `full` as permission to install or
+enable every optional module.
 Use repeatable `--enable-module <capability-id>` options to add only reviewed
 capabilities and their dependency closure. The scaffolder raises the matched
 framework pack when a selected capability requires a broader canonical owner.

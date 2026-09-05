@@ -204,6 +204,7 @@ class ScaffoldProjectionTests(unittest.TestCase):
                     write=True,
                     overwrite_existing=True,
                     profile="full",
+                    projection_purpose="conformance",
                     framework_pack="matched",
                     enable_module=[],
                 )
@@ -411,6 +412,7 @@ class ScaffoldProjectionTests(unittest.TestCase):
                     write=True,
                     overwrite_existing=False,
                     profile="full",
+                    projection_purpose="conformance",
                     framework_pack="matched",
                     enable_module=[],
                     assistant_surface=[],

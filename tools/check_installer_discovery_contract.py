@@ -74,6 +74,13 @@ def main() -> int:
         failures.append("installer scope-selection stage must depend on discovery")
     if [stage.stage_id for stage in stage_plan.stages] != router.get("routing_order"):
         failures.append("installer stage read model differs from routing_order")
+    for stage in stage_plan.stages:
+        if not stage.required_outputs or not stage.completion_checks:
+            failures.append(f"installer stage {stage.stage_id} lacks output or completion contracts")
+        if stage.authorization_ceiling == "modify" and stage.stage_id != "adaptation":
+            failures.append(
+                f"installer stage {stage.stage_id} unexpectedly permits modification"
+            )
 
     profile_selection = contract.get("profile_selection")
     expected_profiles = ["kernel", "core", "standard", "full"]

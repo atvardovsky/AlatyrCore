@@ -537,6 +537,9 @@ enable optional modules only when the target needs and can maintain them. The
 source scaffolder exposes `kernel`, `core`, `standard`, and `full` support
 profiles, repeatable `--enable-module` capability selection, and
 dependency-closed `kernel`, `core`, `standard`, and `complete` framework packs.
+The `full` target profile carries the complete portable framework pack but does
+not install every optional module. Exhaustive template projection exists only
+for isolated source conformance fixtures.
 
 The [module profile](framework/module-profile.md) defines required and optional
 capabilities. The [context router](framework/context-router.md) keeps routine
@@ -551,7 +554,7 @@ window. See the [bridge capability matrix](framework/bridge-capability-matrix.md
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.54`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.55`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural

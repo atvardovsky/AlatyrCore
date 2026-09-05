@@ -61,8 +61,14 @@ deterministic and machine-checked:
   change-impact, and common documentation support surfaces
 - `standard`: core plus common blueprint, recheck, help, and lifecycle
   operation surfaces
-- `full`: all target templates and optional module placeholders; native
-  assistant bridges still require explicit reviewed surface selection
+- `full`: the `standard` target support surface with the complete portable
+  framework pack; optional modules remain explicit, and native assistant
+  bridges still require reviewed surface selection
+
+Exhaustive materialization of every target template is a source conformance
+purpose, not an installation profile. Source tooling may select that purpose
+for isolated fixtures, but a target installation must not use it as evidence
+that every optional capability is enabled or maintained.
 
 The selected scaffold support profile limits target placeholder files. A
 matching portable framework pack may also limit the copied framework corpus:

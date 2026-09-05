@@ -122,7 +122,7 @@ modules:
             ),
         )
 
-        self.assertEqual(packet["schema_version"], 2)
+        self.assertEqual(packet["schema_version"], 3)
         self.assertEqual(
             packet["routing_sources"]["installed_profile_routes"],
             ".ai/assistant/bootstrap-index.json",
@@ -155,10 +155,10 @@ modules:
             ".ai/assistant/templates/task-decomposition.md",
         )
         self.assertEqual(
-            decomposition["level_order"],
-            [f"L{index}" for index in range(8)],
+            decomposition["level_range"],
+            "L0-L7",
         )
-        self.assertEqual(decomposition["executor_selection"]["default"], "primary")
+        self.assertEqual(decomposition["executor_default"], "primary")
         self.assertIn("L6", decomposition["non_delegable_levels"])
         self.assertIn("L7", decomposition["non_delegable_levels"])
 

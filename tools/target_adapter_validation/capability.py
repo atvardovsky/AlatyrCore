@@ -4,9 +4,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Protocol
+from typing import TYPE_CHECKING, Any, Callable, Protocol
 
 from target_adapter_validation.context import TargetFileStatus, TargetRepositoryView
+
+if TYPE_CHECKING:
+    from target_validation_support import GitEvidenceView
 
 
 class FindingSink(Protocol):
@@ -24,6 +27,7 @@ class CapabilityValidationContext:
     """Narrow host surface shared by extracted capability implementations."""
 
     filesystem: TargetRepositoryView
+    git: "GitEvidenceView"
     findings: FindingSink
     allow_placeholders: bool
     resolve_target_path: Callable[[str], Path]

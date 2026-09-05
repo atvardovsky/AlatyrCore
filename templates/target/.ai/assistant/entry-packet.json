@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "packet_kind": "target-agent-entry-packet",
   "path": ".ai/assistant/entry-packet.json",
   "generated_by": {
@@ -10,21 +10,21 @@
     "source_worktree_state": "clean",
     "source_dirty_paths": [],
     "target_manifest": ".ai/alatyr.yaml",
-    "target_manifest_digest": "sha256:0b889a908ee133452191efb48a89067000587cb295887693ac61b0345be3cd6d",
+    "target_manifest_digest": "sha256:fc742e2a03af5730c1b4ebe5773e1f7c23c3e0ba0b1a3d41122953d777a8f616",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.53",
-    "adapter_schema_version": "43",
-    "template_version": "48"
+    "framework_version": "0.1.0-alpha.55",
+    "adapter_schema_version": "45",
+    "template_version": "50"
   },
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "0b889a908ee133452191efb48a89067000587cb295887693ac61b0345be3cd6d"
+      "sha256": "fc742e2a03af5730c1b4ebe5773e1f7c23c3e0ba0b1a3d41122953d777a8f616"
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",
-      "sha256": "2a2d7da4aab0de852af7d3081cd8fe2315e8c8bfa311754bb01215b451398d46"
+      "sha256": "85038c4c17ad4375503529907074c9b0c3648d562f0d10cfc5ca95a1c9d32c88"
     },
     "gate_index": {
       "path": ".ai/assistant/gates/index.json",
@@ -83,36 +83,16 @@
     }
   ],
   "cache_aware_delivery": {
-    "schema_version": 1,
+    "policy": ".ai/assistant/context-router.json#cache_aware_delivery",
     "provider_capability_index": ".ai/assistant/assistant-capabilities.json",
-    "stable_prefix_order": [
-      "host-preloaded assistant instructions",
-      ".ai/assistant/bootstrap-index.json",
-      "resolved semantic preload definitions",
-      "selected stable framework and project policy"
-    ],
-    "dynamic_tail_order": [
-      "selected canonical owner evidence",
-      "current task operation and changed facts",
-      "volatile revisions hashes timestamps and runtime evidence"
-    ],
     "cache_hit_required": false,
     "context_window_reduction": false,
     "fallback": "bounded-context-routing"
   },
   "budget_summary": {
-    "bootstrap": {
-      "max_files": 2,
-      "max_words": 1800,
-      "soft_max_words": 1750
-    },
-    "profile_default": {
-      "max_files": 12,
-      "max_total_words": 8000,
-      "max_portable_words": 5600,
-      "reserved_target_words": 2400
-    },
-    "on_exceed": "load required safety and owner evidence, record expansion reason, measured context, and intentionally omitted context"
+    "policy": ".ai/assistant/context-router.json#context_budgets",
+    "bootstrap_max_words": null,
+    "profile_max_words": 8000
   },
   "routing_sources": {
     "installed_profile_routes": ".ai/assistant/bootstrap-index.json",
@@ -121,7 +101,7 @@
     "operation_index": ".ai/assistant/operation-index.json",
     "operation_catalog": ".ai/assistant/operation-catalog.json",
     "full_router": ".ai/assistant/context-router.json",
-    "selection_policy": "use bootstrap profile candidates first; load a selected descriptor or canonical owner only for the current task"
+    "selection_policy": "bootstrap-selector-then-selected-owner"
   },
   "task_classification": {
     "schema_version": 1,
@@ -132,63 +112,22 @@
       "standard-task"
     ],
     "default_class": "standard-task",
-    "ambiguity_behavior": "stay read-only, select the smallest plausible class, and ask for the missing fact before edits",
-    "expansion_triggers": [
-      "semantic or logical fact changes",
-      "source-of-truth owner is missing disputed or contradicted",
-      "approval safety security data architecture public contract or live-external boundary appears",
-      "multiple project areas profiles workstreams or changed-fact owners are required",
-      "focused validation fails or cannot prove the changed contract",
-      "user asks for broad audit large-task orchestration change package or debug evidence"
-    ],
-    "classes": {
-      "small-task": {
-        "task_scale_overlay": "small-task",
-        "pre_change_preview": "skip with short reason unless a trigger fires",
-        "evidence": "compact small-task evidence"
-      },
-      "standard-task": {
-        "pre_change_preview": "risk-gated"
-      },
-      "large-or-resumable": {
-        "task_scale_overlay": "large-or-resumable",
-        "pre_change_preview": "required before edits"
-      },
-      "protected-or-sensitive": {
-        "pre_change_preview": "required before edits"
-      }
-    }
+    "ambiguity_behavior": "read-only-on-ambiguity",
+    "small_task_overlay": "small-task",
+    "expansion_policy": ".ai/assistant/context-router.json#task_classification.expansion_triggers"
   },
   "task_decomposition": {
     "schema_version": 1,
     "policy": ".ai/assistant/task-decomposition.json",
     "plan_template": ".ai/assistant/templates/task-decomposition.md",
-    "level_order": [
-      "L0",
-      "L1",
-      "L2",
-      "L3",
-      "L4",
-      "L5",
-      "L6",
-      "L7"
-    ],
+    "level_range": "L0-L7",
     "non_delegable_levels": [
       "L0",
       "L6",
       "L7"
     ],
-    "default_behavior": "decompose every non-trivial request; use one local task for small work when one task profile and focused validation are sufficient",
-    "executor_selection": {
-      "default": "primary",
-      "selection_order": [
-        "primary for semantic decision approval conflict final convergence and protected actions",
-        "verified worker only for bounded ready subtasks whose level and role allow it",
-        "suggestion-only when capability exists conceptually but execution is unavailable or not trusted",
-        "blocked when required owner authorization approval validation or context is missing"
-      ],
-      "fallback": "continue with primary execution or ask the user when capability authorization approval or validation is unresolved"
-    }
+    "default_behavior": "non-trivial-decompose",
+    "executor_default": "primary"
   },
   "operation_routing": {
     "index": ".ai/assistant/operation-index.json",
@@ -217,9 +156,14 @@
     "support_delta_tool": "tools/alatyr.py support-delta --target <target-repo> --diff-ref <base-ref>",
     "impact_plan_tool": "tools/alatyr.py impact --target <target-repo> --diff-ref <base-ref>",
     "approval_scope_check_tool": "tools/alatyr.py approval-check --target <target-repo> --diff-ref <base-ref> --approval-record <target-approval-json>",
-    "routing_policy": "compare support-state hashes and Git changed paths first, then load only selected support owners, relationship shards, or target source owners; hashes locate change and never prove semantic correctness",
-    "review_after_code_change": "rerun delta/impact routing for changed code paths before final evidence when support information may need sync",
-    "fallback_when_missing_state": "repair or regenerate support-state with explicit adapter-write authorization before trusting broad support claims"
+    "routing_order": [
+      "support-delta",
+      "impact",
+      "selected-owners"
+    ],
+    "semantic_correctness_proven": false,
+    "review_after_code_change": true,
+    "missing_state": "repair-with-current-modify-authorization"
   },
   "lazy_human_fallbacks": [
     ".ai/assistant/context-profiles.md",
@@ -227,5 +171,10 @@
     ".ai/assistant/help-reference.md",
     ".ai/support-state.json"
   ],
-  "reasoning_boundary": "This packet selects bounded files, gates, operations, and allowed-action ceilings. Logical integrity, invariant derivation, and final correctness still require assistant and human reasoning."
+  "reasoning_boundary": {
+    "logical_integrity": "required",
+    "invariant_derivation": "required",
+    "deterministic_checks": "evidence-only",
+    "final_correctness": "assistant-and-human-reasoning"
+  }
 }

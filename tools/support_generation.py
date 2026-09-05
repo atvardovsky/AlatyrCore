@@ -10,6 +10,7 @@ from typing import Any, Iterable
 
 from evidence_contract import canonical_worktree_entries, digest_entries
 from path_spec import PathDialect, select_paths
+from repository_inventory import RepositoryInventory, RepositoryInventoryError
 
 
 REGISTRY_PATH = ".ai/project/support-generation/registry.json"
@@ -114,11 +115,10 @@ def topological_order(registry: dict[str, Any]) -> list[str]:
 
 
 def _repository_paths(target: Path) -> tuple[str, ...]:
-    return tuple(
-        path.relative_to(target).as_posix()
-        for path in target.rglob("*")
-        if (path.is_file() or path.is_symlink()) and ".git" not in path.parts
-    )
+    try:
+        return RepositoryInventory.load(target).paths
+    except RepositoryInventoryError as exc:
+        raise SupportGenerationError(str(exc)) from exc
 
 
 def _matching_paths(paths: tuple[str, ...], patterns: Iterable[str]) -> list[str]:

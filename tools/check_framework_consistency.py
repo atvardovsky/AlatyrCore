@@ -106,21 +106,6 @@ DERIVED_RULE_REFERENCE_DOCS = {
         "ALATYR-EVIDENCE-001",
         "ALATYR-OPERATION-001",
     ),
-    "templates/target/AGENTS.md": (
-        *CONTEXT_RULE_REFS,
-        *SOURCE_RULE_REFS,
-        *RISK_RULE_REFS,
-        "ALATYR-APPROVAL-001",
-        "ALATYR-SAFETY-001",
-        "ALATYR-SAFETY-002",
-        *INTEGRITY_RULE_REFS,
-        *CHANGE_RULE_REFS,
-        "ALATYR-DECOMPOSITION-001",
-        "ALATYR-ADAPTER-001",
-        *MODULE_RULE_REFS,
-        "ALATYR-EVIDENCE-001",
-        "ALATYR-OPERATION-001",
-    ),
     "templates/target/.ai/assistant/gates/checklist.md": (
         *CONTEXT_RULE_REFS,
         *SOURCE_RULE_REFS,
@@ -267,14 +252,16 @@ def main() -> int:
 
     target_agents = read_text("templates/target/AGENTS.md")
     for required_target_agent_ref in [
-        "## Compact Bootstrap",
-        "## Session Recovery",
-        ".ai/alatyr.yaml",
-        ".ai/README.md",
-        ".ai/assistant/context-router.json",
-        ".ai/assistant/context-profiles.md",
+        "## Bootstrap",
+        "## Authority",
+        "## Work",
+        "## Evidence",
+        ".ai/assistant/bootstrap-index.json",
+        ".ai/assistant/entry-packet.json",
+        ".ai/assistant/policies/action-authorization.json",
+        ".ai/assistant/task-decomposition.json",
         "Treat this file as host-preloaded context",
-        "context receipt",
+        "Use bootstrap-selected rule owners",
     ]:
         if required_target_agent_ref not in target_agents:
             failures.append(
@@ -389,7 +376,6 @@ def main() -> int:
             failures.append(f"missing target template: {relpath}")
 
     placeholder_templates = [
-        "templates/target/AGENTS.md",
         "templates/target/CODEOWNERS",
         "templates/target/.ai/alatyr.yaml",
         "templates/target/.ai/README.md",

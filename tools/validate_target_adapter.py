@@ -17,6 +17,7 @@ import hashlib
 import json
 import re
 import sys
+import time
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -31,6 +32,7 @@ from agent_entry_packet import (
 )
 from bootstrap_index import BOOTSTRAP_PATH, build_from_target
 from target_validation_support import (
+    GitEvidenceView,
     ManifestData,
     PathKey,
     UNRESOLVED_WORDS,
@@ -39,15 +41,9 @@ from target_validation_support import (
     expect_string_list,
     extract_field,
     extract_list_field,
-    git_changed_files,
     git_branch_name,
-    git_diff_patch,
+    git_changed_files,
     git_head_revision,
-    git_is_ancestor,
-    git_range_changed_files,
-    git_resolve_object,
-    git_resolve_ref,
-    git_snapshot_sha256,
     is_placeholder,
     is_protected_surface,
     is_target_relative_path,
@@ -59,7 +55,6 @@ from target_validation_support import (
     nested_json_value,
     normalize_hash_field,
     parse_manifest,
-    refs_match,
     scope_entries_cover,
     section_items,
     sha256,
@@ -404,69 +399,6 @@ MANIFEST_STANDARD_REQUIRED_SCALARS: set[PathKey] = {
     ("operations", "routing"),
     ("operations", "health"),
     ("operations", "pre_change_preview"),
-}
-
-MANIFEST_FULL_REQUIRED_SCALARS: set[PathKey] = {
-    ("operations", "diagram_discussion"),
-    ("operations", "diagram_presentation"),
-    ("bridges", "capability_matrix"),
-    ("bridges", "capabilities"),
-    ("operations", "change_package_flow"),
-    ("operations", "change_package_index"),
-    ("operations", "change_package_record"),
-    ("operations", "change_package_report"),
-    ("change_packages", "index"),
-    ("change_packages", "machine_template"),
-    ("change_packages", "human_report_template"),
-    ("source_of_truth", "code_documentation_index"),
-    ("source_of_truth", "code_documentation_catalog"),
-    ("source_of_truth", "code_documentation_profiles"),
-    ("operations", "documentation_sync"),
-    ("operations", "code_documentation_profile_review"),
-    ("operations", "contract_artifact_review"),
-    ("operations", "visual_validation_review"),
-    ("code_documentation", "catalog"),
-    ("code_documentation", "profiles"),
-    ("code_documentation", "intent"),
-    ("code_documentation", "flow"),
-    ("code_documentation", "skill"),
-    ("code_documentation", "profile_review"),
-    ("source_of_truth", "vocabulary_index"),
-    ("source_of_truth", "vocabulary_catalog"),
-    ("source_of_truth", "vocabulary_terms"),
-    ("source_of_truth", "vocabulary_data_dictionary_links"),
-    ("operations", "project_vocabulary"),
-    ("operations", "vocabulary_term_review"),
-    ("project_vocabulary", "catalog"),
-    ("project_vocabulary", "terms"),
-    ("project_vocabulary", "data_dictionary_links"),
-    ("project_vocabulary", "intent"),
-    ("project_vocabulary", "flow"),
-    ("project_vocabulary", "skill"),
-    ("project_vocabulary", "term_review"),
-    ("source_of_truth", "testing_index"),
-    ("source_of_truth", "test_first_policy"),
-    ("operations", "test_first_configuration"),
-    ("operations", "test_first_change"),
-    ("operations", "test_first_evidence"),
-    ("test_first_development", "policy"),
-    ("test_first_development", "intent"),
-    ("test_first_development", "configuration_flow"),
-    ("test_first_development", "change_flow"),
-    ("test_first_development", "gate"),
-    ("test_first_development", "skill"),
-    ("test_first_development", "evidence"),
-    ("extensions", "index"),
-    ("extensions", "catalog"),
-    ("extensions", "lock"),
-    ("extensions", "intent"),
-    ("extensions", "flow"),
-    ("extensions", "gate"),
-    ("extensions", "review"),
-    ("extensions", "lifecycle_record"),
-    ("operations", "extension_management"),
-    ("operations", "extension_review"),
-    ("operations", "extension_lifecycle_record"),
 }
 
 CORE_PLUS_MANIFEST_SCALARS: set[PathKey] = {
@@ -901,6 +833,7 @@ class Validator:
     ) -> None:
         self.target = target.resolve()
         self.context = TargetRepositoryView(self.target)
+        self.git = GitEvidenceView(self.target)
         self.unsafe_target_paths: set[str] = set()
         self.findings: list[Finding] = list(initial_findings or [])
         self.config = config
@@ -932,6 +865,7 @@ class Validator:
         self.allow_local_paths = allow_local_paths + config.local_path_patterns()
         self.framework_drift_detected = False
         self.target_mutations: tuple[TargetMutation, ...] = ()
+        self.phase_telemetry: list[dict[str, Any]] = []
         self._module_profile_cache: dict[str, list[ModuleProfileState]] | None = None
         self._scan_text_files_cache: tuple[Path, ...] | None = None
 
@@ -988,7 +922,17 @@ class Validator:
         for phase in self.validation_phases(
             manifest, support_profile, enabled_modules
         ):
+            finding_count = len(self.findings)
+            started = time.perf_counter()
             phase.run()
+            self.phase_telemetry.append(
+                {
+                    "phase_id": phase.phase_id,
+                    "duration_seconds": round(time.perf_counter() - started, 6),
+                    "findings_added": len(self.findings) - finding_count,
+                    "cost_class": phase.cost_class,
+                }
+            )
         return self.findings
 
     def validation_phases(
@@ -1039,13 +983,19 @@ class Validator:
                     "target input changed during validation; discard these findings and rerun",
                     self.rel(mutation.path),
                 )
+            if not self.git.finalize():
+                self.error(
+                    "TARGET_GIT_STATE_MUTATED",
+                    "Git HEAD, branch, or worktree state changed during validation; "
+                    "discard these findings and rerun",
+                )
             self.info(
                 "EVIDENCE_SCOPE_CURRENT_STATE",
                 "validator findings describe current structural state; historical actions "
                 "require dated operation, approval, or migration records",
             )
 
-        phases = (
+        core_phases = (
             ValidationPhase("installation-state", installation_state),
             ValidationPhase("required-files", lambda: self.check_required_files(support_profile), ("installation-state",)),
             ValidationPhase("capability-closure", lambda: self.check_capability_closure(manifest), ("required-files",)),
@@ -1072,7 +1022,14 @@ class Validator:
             ValidationPhase("change-packages", self.check_change_packages, ("change-package-index",), "standard"),
             ValidationPhase("framework-baseline", lambda: self.check_framework_baseline(manifest), ("installation-state",), "standard"),
             ValidationPhase("migration-evidence", self.check_migration_diff_evidence, ("framework-baseline",)),
-            ValidationPhase("finalize-inputs", finalize_inputs, tuple(), "standard"),
+        )
+        phases = core_phases + (
+            ValidationPhase(
+                "finalize-inputs",
+                finalize_inputs,
+                tuple(phase.phase_id for phase in core_phases),
+                "standard",
+            ),
         )
         known = {phase.phase_id for phase in phases}
         if len(known) != len(phases):
@@ -1101,7 +1058,7 @@ class Validator:
 
         if self.validation_scope == "full":
             return enabled_modules
-        changed = git_changed_files(self.target, self.diff_ref)
+        changed = self.git.changed_files(self.diff_ref)
         if changed is None:
             self.error(
                 "CHANGED_VALIDATION_DIFF_UNAVAILABLE",
@@ -1686,6 +1643,7 @@ class Validator:
 
         return CapabilityValidationContext(
             filesystem=self.context,
+            git=self.git,
             findings=self,
             allow_placeholders=self.allow_placeholders,
             resolve_target_path=self.target_path,
@@ -1845,8 +1803,6 @@ class Validator:
             required_scalars.update(CORE_PLUS_MANIFEST_SCALARS)
         if support_profile in {"standard", "full"}:
             required_scalars.update(MANIFEST_STANDARD_REQUIRED_SCALARS)
-        if support_profile == "full":
-            required_scalars.update(MANIFEST_FULL_REQUIRED_SCALARS)
 
         for key in sorted(required_scalars):
             scalar = manifest.scalars.get(key)
@@ -2154,7 +2110,7 @@ class Validator:
             return
         if (
             not isinstance(actual, dict)
-            or actual.get("schema_version") != 2
+            or actual.get("schema_version") != 3
             or actual.get("packet_kind") != "target-agent-entry-packet"
         ):
             self.error(
@@ -3610,10 +3566,10 @@ class Validator:
                     "bootstrap references do not include .ai/assistant/bootstrap-index.json",
                     relpath,
                 )
-            if relpath == "AGENTS.md" and ".ai/assistant/context-router.json" not in text:
+            if relpath == "AGENTS.md" and ".ai/assistant/entry-packet.json" not in text:
                 self.error(
-                    "BOOTSTRAP_CONTEXT_ROUTER_MISSING",
-                    "bootstrap recovery references do not include .ai/assistant/context-router.json",
+                    "BOOTSTRAP_ENTRY_PACKET_MISSING",
+                    "bootstrap references do not include .ai/assistant/entry-packet.json",
                     relpath,
                 )
             if relpath == "AGENTS.md" and ".ai/README.md" not in text:
@@ -4004,7 +3960,7 @@ class Validator:
             )
             return
 
-        changed_files = git_changed_files(self.target, self.diff_ref)
+        changed_files = self.git.changed_files(self.diff_ref)
         if changed_files is None:
             self.warn(
                 "DIFF_SCOPE_UNAVAILABLE",
@@ -4045,7 +4001,7 @@ class Validator:
                         "strict approval enforcement requires a JSON approval record",
                         self.rel(record),
                     )
-                if not refs_match(self.target, scope.diff_base, self.diff_ref):
+                if not self.git.refs_match(scope.diff_base, self.diff_ref):
                     self.error(
                         "APPROVAL_DIFF_BASE_MISMATCH",
                         f"approval diff base {scope.diff_base or '<missing>'} does not "
@@ -4441,7 +4397,7 @@ class Validator:
                     relpath,
                 )
                 continue
-            patch_text = git_diff_patch(self.target, self.diff_ref)
+            patch_text = self.git.diff_patch(self.diff_ref)
             if patch_text is None:
                 self.warn(
                     "APPROVAL_PATCH_HASH_UNAVAILABLE",
@@ -4501,10 +4457,10 @@ class Validator:
             )
 
         if binding_kind in {"commit", "pull-request", "tree"}:
-            base_resolved = git_resolve_object(self.target, str(base_revision), "commit") if concrete(base_revision) else None
+            base_resolved = self.git.resolve_object(str(base_revision), "commit") if concrete(base_revision) else None
             result_object_kind = "tree" if binding_kind == "tree" else "commit"
             result_resolved = (
-                git_resolve_object(self.target, str(result_revision), result_object_kind)
+                self.git.resolve_object(str(result_revision), result_object_kind)
                 if concrete(result_revision)
                 else None
             )
@@ -4519,7 +4475,7 @@ class Validator:
             if binding_kind == "pull-request" and not concrete(binding.get("review_reference")):
                 self.error(f"{code_prefix}_REVIEW_REFERENCE", "pull-request binding requires a stable review reference", record_relpath)
             if binding_kind in {"commit", "pull-request"} and base_resolved and result_resolved:
-                ancestry = git_is_ancestor(self.target, base_resolved, result_resolved)
+                ancestry = self.git.is_ancestor(base_resolved, result_resolved)
                 if ancestry is False:
                     self.error(f"{code_prefix}_REVISION_ANCESTRY", "base_revision is not an ancestor of result_revision", record_relpath)
                 elif ancestry is None:
@@ -4564,8 +4520,8 @@ class Validator:
                     record_relpath,
                 )
             if historical_binding and not digest_matches and concrete(recorded_digest):
-                head = git_head_revision(self.target)
-                head_digest = git_snapshot_sha256(self.target, head or "", [str(path) for path in paths])
+                head = self.git.head_revision()
+                head_digest = self.git.snapshot_sha256(head or "", [str(path) for path in paths])
                 if head and head_digest and head_digest.casefold() == str(recorded_digest).casefold():
                     self.info(
                         f"{code_prefix}_SNAPSHOT_COMMIT_CANDIDATE",
@@ -5260,8 +5216,8 @@ class Validator:
                 allow_unavailable=True,
             )
             if quality in {"git-range", "pull-request"}:
-                before_resolved = git_resolve_ref(self.target, before)
-                after_resolved = git_resolve_ref(self.target, after)
+                before_resolved = self.git.resolve_ref(before)
+                after_resolved = self.git.resolve_ref(after)
                 if before_resolved is None:
                     self.change_package_finding(
                         "PACKAGE_BEFORE_REF", f"before revision does not resolve: {before}", source
@@ -5271,14 +5227,14 @@ class Validator:
                         "PACKAGE_AFTER_REF", f"after revision does not resolve: {after}", source
                     )
                 if before_resolved and after_resolved:
-                    ancestry = git_is_ancestor(self.target, before_resolved, after_resolved)
+                    ancestry = self.git.is_ancestor(before_resolved, after_resolved)
                     if ancestry is not True:
                         self.change_package_finding(
                             "PACKAGE_REVISION_ANCESTRY",
                             "before_revision must be an ancestor of after_revision",
                             source,
                         )
-                range_paths = git_range_changed_files(self.target, before, after)
+                range_paths = self.git.range_changed_files(before, after)
                 if range_paths is None:
                     self.change_package_finding(
                         "PACKAGE_GIT_RANGE", "cannot compute declared Git range", source
@@ -6007,6 +5963,8 @@ def findings_payload(
     validation_phase: str = "acceptance",
     installation_state: str | None = None,
     validation_scope: str = "full",
+    git_evidence: GitEvidenceView | None = None,
+    phase_telemetry: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     errors = sum(1 for finding in findings if finding.level == "error")
     warnings = sum(1 for finding in findings if finding.level == "warning")
@@ -6017,8 +5975,9 @@ def findings_payload(
         if finding.level == "warning" and is_blocking_finding(finding)
     )
     exit_code = result_code(findings, strict_warnings=strict_warnings)
-    observed_revision = git_head_revision(target)
-    observed_branch = git_branch_name(target)
+    git_view = git_evidence or GitEvidenceView(target)
+    observed_revision = git_view.head_revision()
+    observed_branch = git_view.branch_name()
     observed_at = datetime.now(timezone.utc).isoformat()
     resolved_installation_state = installation_state or target_installation_state(target)
     unresolved_active = sum(
@@ -6079,6 +6038,10 @@ def findings_payload(
             "automatic_repair_performed": False,
         },
         "strict_warnings": strict_warnings,
+        "execution": {
+            "phase_telemetry": phase_telemetry or [],
+            "git_evidence": git_view.telemetry(),
+        },
         "counts": {
             "errors": errors,
             "warnings": warnings,
@@ -6290,6 +6253,8 @@ def main() -> int:
         validation_phase=validation_phase,
         installation_state=validator.installation_state,
         validation_scope=args.validation_scope,
+        git_evidence=validator.git,
+        phase_telemetry=validator.phase_telemetry,
     )
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)

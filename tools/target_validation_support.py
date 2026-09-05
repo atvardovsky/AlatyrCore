@@ -518,6 +518,113 @@ def git_branch_name(target: Path) -> str | None:
     return branch or "detached HEAD"
 
 
+class GitEvidenceView:
+    """Cache immutable Git queries and detect repository-state mutation per run."""
+
+    def __init__(self, target: Path) -> None:
+        self.target = target.resolve()
+        self._cache: dict[tuple[Any, ...], Any] = {}
+        self.query_misses = 0
+        self.cache_hits = 0
+        target_is_directory = self.target.is_dir()
+        self.initial_head = git_head_revision(self.target) if target_is_directory else None
+        self.initial_branch = git_branch_name(self.target) if target_is_directory else None
+        self.initial_status = self._status_snapshot() if target_is_directory else None
+
+    def _status_snapshot(self) -> bytes | None:
+        try:
+            result = subprocess.run(
+                ["git", "status", "--porcelain=v1", "-z", "--untracked-files=all"],
+                cwd=self.target,
+                check=False,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL,
+            )
+        except OSError:
+            return None
+        return result.stdout if result.returncode == 0 else None
+
+    def _cached(self, key: tuple[Any, ...], loader: Any) -> Any:
+        if key in self._cache:
+            self.cache_hits += 1
+            return self._cache[key]
+        self.query_misses += 1
+        value = loader()
+        self._cache[key] = value
+        return value
+
+    def head_revision(self) -> str | None:
+        return self.initial_head
+
+    def branch_name(self) -> str | None:
+        return self.initial_branch
+
+    def resolve_object(self, ref: str, object_kind: str = "commit") -> str | None:
+        return self._cached(
+            ("resolve-object", ref, object_kind),
+            lambda: git_resolve_object(self.target, ref, object_kind),
+        )
+
+    def resolve_ref(self, ref: str) -> str | None:
+        return self.resolve_object(ref, "commit")
+
+    def changed_files(self, diff_ref: str) -> list[str] | None:
+        return self._cached(
+            ("changed-files", diff_ref),
+            lambda: git_changed_files(self.target, diff_ref),
+        )
+
+    def range_changed_files(self, before: str, after: str) -> list[str] | None:
+        return self._cached(
+            ("range-changed-files", before, after),
+            lambda: git_range_changed_files(self.target, before, after),
+        )
+
+    def diff_patch(self, diff_ref: str) -> str | None:
+        return self._cached(
+            ("diff-patch", diff_ref),
+            lambda: git_diff_patch(self.target, diff_ref),
+        )
+
+    def is_ancestor(self, base: str, result: str) -> bool | None:
+        return self._cached(
+            ("is-ancestor", base, result),
+            lambda: git_is_ancestor(self.target, base, result),
+        )
+
+    def snapshot_sha256(self, revision: str, paths: list[str]) -> str | None:
+        normalized = tuple(sorted(set(paths)))
+        return self._cached(
+            ("snapshot-sha256", revision, normalized),
+            lambda: git_snapshot_sha256(self.target, revision, list(normalized)),
+        )
+
+    def refs_match(self, approved: str, selected: str) -> bool:
+        approved_revision = self.resolve_ref(approved)
+        selected_revision = self.resolve_ref(selected)
+        if approved_revision and selected_revision:
+            return approved_revision == selected_revision
+        return approved == selected
+
+    def finalize(self) -> bool:
+        """Return true only when HEAD, branch, and worktree state stayed stable."""
+
+        if not self.target.is_dir():
+            return False
+        return (
+            self.initial_head == git_head_revision(self.target)
+            and self.initial_branch == git_branch_name(self.target)
+            and self.initial_status == self._status_snapshot()
+        )
+
+    def telemetry(self) -> dict[str, int]:
+        return {
+            "query_misses": self.query_misses,
+            "cache_hits": self.cache_hits,
+            "cached_queries": len(self._cache),
+        }
+
+
 def markdown_sections(text: str) -> dict[str, list[str]]:
     sections: dict[str, list[str]] = {}
     current: str | None = None

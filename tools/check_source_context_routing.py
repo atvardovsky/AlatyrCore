@@ -423,7 +423,7 @@ def main() -> int:
     except ContextCatalogError as exc:
         failures.append(f"source context catalog or codebook is invalid: {exc}")
 
-    if installer.get("schema_version") != 1 or installer.get("router_kind") != "alatyr-installation-context-router":
+    if installer.get("schema_version") != 2 or installer.get("router_kind") != "alatyr-installation-context-router":
         failures.append("installation context router schema or kind is invalid")
     if installer.get("routing_order") != EXPECTED_INSTALL_STAGES:
         failures.append("installation context router stage order is invalid")

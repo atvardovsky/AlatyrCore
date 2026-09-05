@@ -402,6 +402,7 @@
       "command": [
         "tools/check_debug_mode.py"
       ],
+      "duration_hint_seconds": 6,
       "profiles": [
         "fast",
         "full"
@@ -1127,6 +1128,7 @@
       "command": [
         "tools/check_cross_platform_tools.py"
       ],
+      "duration_hint_seconds": 5,
       "profiles": [
         "full",
         "platform"
@@ -1144,6 +1146,7 @@
         "tools/report_approval_scope.py",
         "tools/report_change_cost.py",
         "tools/check_all.py",
+        "tools/parallel_execution.py",
         "tools/run_focused_source_checks.py",
         "tools/plan_minimum_work.py",
         "tools/context_planning.py",
@@ -1165,6 +1168,7 @@
         "tools/report_approval_scope.py",
         "tools/report_change_cost.py",
         "tools/check_all.py",
+        "tools/parallel_execution.py",
         "tools/run_focused_source_checks.py",
         "tools/plan_minimum_work.py",
         "tools/context_planning.py",
@@ -1633,6 +1637,7 @@
       "implementation_paths": [
         "tools/capability_catalog.py",
         "tools/check_scaffold_profiles.py",
+        "tools/composition_model.py",
         "tools/framework_packaging.py",
         "tools/scaffold*.py",
         "tools/scaffold_target_structure.py"
@@ -1641,6 +1646,7 @@
         "templates/target/**",
         "tools/capability_catalog.py",
         "tools/check_scaffold_profiles.py",
+        "tools/composition_model.py",
         "tools/framework_packaging.py",
         "tools/scaffold*.py",
         "tools/scaffold_profiles.json",
@@ -1832,6 +1838,7 @@
       "command": [
         "tools/check_target_adapter_validator.py"
       ],
+      "duration_hint_seconds": 3,
       "trigger_paths": [
         "templates/target/**",
         "templates/target/.ai/alatyr.yaml",
@@ -2143,6 +2150,8 @@
         "tools/run_conformance_scaffold.py"
       ],
       "resource_class": "heavy",
+      "child_capacity_max": 4,
+      "duration_hint_seconds": 7,
       "timeout_seconds": 300,
       "depends_on": [
         "scaffold-profiles",
@@ -2175,6 +2184,8 @@
         "tools/check_lifecycle_conformance.py"
       ],
       "resource_class": "heavy",
+      "child_capacity_max": 4,
+      "duration_hint_seconds": 18,
       "timeout_seconds": 420,
       "profiles": [
         "full"
@@ -2409,6 +2420,7 @@
         "tools/check_check_manifest.py",
         "tools/compare_source_check_reports.py",
         "tools/evidence_contract.py",
+        "tools/local_python_import_graph.py",
         "tools/plan_minimum_work.py",
         "tools/source_check_reuse.py",
         "tools/source_check_manifest.py"
@@ -2418,6 +2430,7 @@
         "tools/check_check_manifest.py",
         "tools/compare_source_check_reports.py",
         "tools/evidence_contract.py",
+        "tools/local_python_import_graph.py",
         "tools/plan_minimum_work.py",
         "tools/source_check_reuse.py",
         "tools/source_check_manifest.py",
@@ -2473,6 +2486,7 @@
       "implementation_paths": [
         "tools/check_all.py",
         "tools/parallel_execution.py",
+        "tools/repository_inventory.py",
         "tools/report_approval_scope.py",
         "tools/run_focused_source_checks.py",
         "tools/plan_minimum_work.py",
@@ -2481,6 +2495,7 @@
         "tools/source_check_cache.py",
         "tools/check_source_unit_tests.py",
         "tools/evidence_contract.py",
+        "tools/local_python_import_graph.py",
         "tools/report_adapter_health.py",
         "tools/source_state.py",
         "tools/source_check_reuse.py",
@@ -2504,6 +2519,7 @@
         "tools/source_worker_policy.json",
         "tools/check_all.py",
         "tools/parallel_execution.py",
+        "tools/repository_inventory.py",
         "tools/report_approval_scope.py",
         "tools/run_focused_source_checks.py",
         "tools/plan_minimum_work.py",
@@ -2512,6 +2528,7 @@
         "tools/source_check_cache.py",
         "tools/check_source_unit_tests.py",
         "tools/evidence_contract.py",
+        "tools/local_python_import_graph.py",
         "tools/report_adapter_health.py",
         "tools/source_state.py",
         "tools/source_check_reuse.py",
@@ -2529,6 +2546,8 @@
         "tools/target_tool_compat.py"
       ],
       "resource_class": "heavy",
+      "child_capacity_max": 4,
+      "duration_hint_seconds": 15,
       "timeout_seconds": 300
     },
     {

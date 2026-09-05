@@ -59,7 +59,11 @@ from framework_packaging import (
 )
 from context_catalog import load_codebook
 from composition_model import CompositionRequest, resolve_composition
-from projection_graph import operation_projection_nodes, validate_projection_graph
+from projection_graph import (
+    MARKDOWN_PROJECTION_PATHS,
+    target_projection_nodes,
+    validate_projection_graph,
+)
 from render_context_catalogs import INDEX_NAME, build_directory_catalog_contents
 from support_state import STATE_PATH, SupportStateError, build_support_state, render_state
 from sparse_overlay import overlay_decision
@@ -72,12 +76,7 @@ FRAMEWORK_ROOT = ROOT / "framework"
 PROFILE_MANIFEST = ROOT / "tools" / "scaffold_profiles.json"
 ASSISTANT_SURFACES = ROOT / "conformance" / "runs" / "assistant-surfaces.json"
 NEUTRAL_ASSISTANT_ENTRY_PATHS = {Path("AGENTS.md"), Path("AI_ASSISTANTS.md")}
-PROJECTED_MARKDOWN_PATHS = {
-    Path(".ai/README.md"),
-    Path("AI_ASSISTANTS.md"),
-    Path(".ai/assistant/templates/post-install-message.md"),
-    Path(".ai/assistant/templates/post-update-message.md"),
-}
+PROJECTED_MARKDOWN_TARGET_PATHS = {Path(path) for path in MARKDOWN_PROJECTION_PATHS}
 
 
 def load_profile_manifest() -> dict[str, Any]:
@@ -286,7 +285,9 @@ def build_projection_context(
     context_catalogs: dict[Path, str] | None = None,
     generated_by: dict[str, Any] | None = None,
 ) -> ProjectionContext:
-    validate_projection_graph(operation_projection_nodes())
+    validate_projection_graph(
+        target_projection_nodes(path.as_posix() for path in selected)
+    )
     catalog_rel = Path(".ai/assistant/operation-catalog.json")
     catalog = None
     if catalog_rel in selected:
@@ -370,7 +371,7 @@ def projected_template_content(
         return project_module_profile(
             src.read_text(encoding="utf-8"), set(context.enabled_modules)
         )
-    if rel in PROJECTED_MARKDOWN_PATHS:
+    if rel in PROJECTED_MARKDOWN_TARGET_PATHS:
         return project_markdown_fragments(
             src.read_text(encoding="utf-8"),
             selected_paths,
@@ -478,11 +479,20 @@ def projected_template_content(
             else projected_semantic_index
         )
         semantic_terms = load_codebook(semantic_index, root=semantic_index.parent)
+        projected_registry_text = projected_framework_contents(framework_pack).get(
+            "rule-registry.json"
+        )
+        rule_registry_text = (
+            (FRAMEWORK_ROOT / "rule-registry.json").read_text(encoding="utf-8")
+            if projected_registry_text is None
+            else projected_registry_text
+        )
         return render_bootstrap_index(
             build_bootstrap_index(
                 manifest_text,
                 project_map_text,
                 router_text,
+                rule_registry_text=rule_registry_text,
                 semantic_index_text=semantic_index_text,
                 semantic_terms=semantic_terms,
                 generated_by=context.generated_by
@@ -525,6 +535,7 @@ def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
     requested_assistant_surfaces = tuple(
         getattr(args, "assistant_surface", []) or []
     )
+    projection_purpose = getattr(args, "projection_purpose", "target")
     if requested_assistant_surfaces:
         requested_modules.add("multi-assistant-bridges")
     composition = resolve_composition(
@@ -533,6 +544,7 @@ def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
             framework_pack_request=requested_pack,
             requested_capabilities=tuple(sorted(requested_modules)),
             requested_assistant_surfaces=requested_assistant_surfaces,
+            projection_purpose=projection_purpose,
         )
     )
     enabled_modules = set(composition.enabled_capabilities)
@@ -730,6 +742,15 @@ def main() -> int:
         ),
     )
     parser.add_argument(
+        "--projection-purpose",
+        choices=["target", "conformance"],
+        default="target",
+        help=(
+            "Materialize selected target support by default. conformance is "
+            "source-maintainer-only and includes the complete template corpus."
+        ),
+    )
+    parser.add_argument(
         "--overwrite-existing",
         action="store_true",
         help=(
@@ -743,13 +764,18 @@ def main() -> int:
 
     try:
         actions, blocked = plan(args)
-        enabled_modules = dependency_closure(set(args.enable_module))
-        selected_assistant_surfaces = resolve_assistant_surfaces(
-            args.assistant_surface
+        composition = resolve_composition(
+            CompositionRequest(
+                support_profile=args.profile,
+                framework_pack_request=args.framework_pack,
+                requested_capabilities=tuple(sorted(set(args.enable_module))),
+                requested_assistant_surfaces=tuple(args.assistant_surface),
+                projection_purpose=args.projection_purpose,
+            )
         )
-        framework_pack = resolved_framework_pack(
-            args.profile, args.framework_pack, enabled_modules
-        )
+        enabled_modules = set(composition.enabled_capabilities)
+        selected_assistant_surfaces = set(composition.assistant_surfaces)
+        framework_pack = composition.framework_pack
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1

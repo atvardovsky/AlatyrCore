@@ -9,17 +9,17 @@
     "source_worktree_state": "clean",
     "source_dirty_paths": [],
     "target_manifest": ".ai/alatyr.yaml",
-    "target_manifest_digest": "sha256:0b889a908ee133452191efb48a89067000587cb295887693ac61b0345be3cd6d",
+    "target_manifest_digest": "sha256:fc742e2a03af5730c1b4ebe5773e1f7c23c3e0ba0b1a3d41122953d777a8f616",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.53",
-    "adapter_schema_version": "43",
-    "template_version": "48"
+    "framework_version": "0.1.0-alpha.55",
+    "adapter_schema_version": "45",
+    "template_version": "50"
   },
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "0b889a908ee133452191efb48a89067000587cb295887693ac61b0345be3cd6d"
+      "sha256": "fc742e2a03af5730c1b4ebe5773e1f7c23c3e0ba0b1a3d41122953d777a8f616"
     },
     "project_map": {
       "path": ".ai/README.md",
@@ -27,11 +27,15 @@
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",
-      "sha256": "2a2d7da4aab0de852af7d3081cd8fe2315e8c8bfa311754bb01215b451398d46"
+      "sha256": "85038c4c17ad4375503529907074c9b0c3648d562f0d10cfc5ca95a1c9d32c88"
     },
     "semantic_codebook": {
       "path": ".ai/framework/semantics/index.json",
       "sha256": "c9b656837e72b8075fc5fac9cba8b7ea97db03c6a5c7165ac01b7517ef71d994"
+    },
+    "rule_registry": {
+      "path": ".ai/framework/rule-registry.json",
+      "sha256": "5f87b7335bb89f0b579d26c2b6c65357260125e3ed14c4fb22f865f356f561ad"
     }
   },
   "installation": {
@@ -89,6 +93,193 @@
     ],
     "fallback": "load the referenced canonical owner and do not infer a missing stale conflicting cyclic or unsupported compact term"
   },
+  "rule_selector": {
+    "registry_sha256": "5f87b7335bb89f0b579d26c2b6c65357260125e3ed14c4fb22f865f356f561ad",
+    "categories": {
+      "CONTEXT": {
+        "owner": ".ai/framework/context-profiles.md",
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "SOURCE": {
+        "owner": ".ai/framework/source-of-truth-registry.md",
+        "rule_ids": [
+          "ALATYR-SOURCE-001"
+        ]
+      },
+      "RISK": {
+        "owner": ".ai/framework/change-risk-model.md",
+        "rule_ids": [
+          "ALATYR-RISK-001"
+        ]
+      },
+      "APPROVAL": {
+        "owner": ".ai/framework/approval-records.md",
+        "rule_ids": [
+          "ALATYR-APPROVAL-001"
+        ]
+      },
+      "AUTHORIZATION": {
+        "owner": ".ai/framework/action-authorization.md",
+        "rule_ids": [
+          "ALATYR-AUTHORIZATION-001"
+        ]
+      },
+      "SAFETY": {
+        "owner": ".ai/framework/security-safety-guidance.md",
+        "rule_ids": [
+          "ALATYR-SAFETY-001",
+          "ALATYR-SAFETY-002"
+        ]
+      },
+      "INTEGRITY": {
+        "owner": ".ai/framework/logical-integrity.md",
+        "rule_ids": [
+          "ALATYR-INTEGRITY-001"
+        ]
+      },
+      "CHANGE": {
+        "owner": ".ai/framework/blueprint-driven-change.md",
+        "rule_ids": [
+          "ALATYR-CHANGE-001"
+        ]
+      },
+      "PACKAGE": {
+        "owner": ".ai/framework/change-packages.md",
+        "rule_ids": [
+          "ALATYR-PACKAGE-001"
+        ]
+      },
+      "ARCHITECTURE": {
+        "owner": ".ai/framework/architecture-knowledge.md",
+        "rule_ids": [
+          "ALATYR-ARCHITECTURE-001"
+        ]
+      },
+      "CODEDOC": {
+        "owner": ".ai/framework/code-documentation.md",
+        "rule_ids": [
+          "ALATYR-CODEDOC-001"
+        ]
+      },
+      "VOCABULARY": {
+        "owner": ".ai/framework/project-vocabulary.md",
+        "rule_ids": [
+          "ALATYR-VOCABULARY-001"
+        ]
+      },
+      "TDD": {
+        "owner": ".ai/framework/test-first-development.md",
+        "rule_ids": [
+          "ALATYR-TDD-001"
+        ]
+      },
+      "EXTENSION": {
+        "owner": ".ai/framework/extensions.md",
+        "rule_ids": [
+          "ALATYR-EXTENSION-001"
+        ]
+      },
+      "DEPENDENCY": {
+        "owner": ".ai/framework/dependency-knowledge.md",
+        "rule_ids": [
+          "ALATYR-DEPENDENCY-001"
+        ]
+      },
+      "MODE": {
+        "owner": ".ai/framework/workspace-modes.md",
+        "rule_ids": [
+          "ALATYR-MODE-001"
+        ]
+      },
+      "DIAGRAM": {
+        "owner": ".ai/framework/diagram-guidance.md",
+        "rule_ids": [
+          "ALATYR-DIAGRAM-001"
+        ]
+      },
+      "ADAPTER": {
+        "owner": ".ai/framework/project-adapter-contract.md",
+        "rule_ids": [
+          "ALATYR-ADAPTER-001"
+        ]
+      },
+      "MODULE": {
+        "owner": ".ai/framework/module-profile.md",
+        "rule_ids": [
+          "ALATYR-MODULE-001"
+        ]
+      },
+      "OPERATION": {
+        "owner": ".ai/framework/operation-help.md",
+        "rule_ids": [
+          "ALATYR-OPERATION-001"
+        ]
+      },
+      "TEAM": {
+        "owner": ".ai/framework/team-collaboration.md",
+        "rule_ids": [
+          "ALATYR-TEAM-001"
+        ]
+      },
+      "DECOMPOSITION": {
+        "owner": ".ai/framework/task-decomposition.md",
+        "rule_ids": [
+          "ALATYR-DECOMPOSITION-001"
+        ]
+      },
+      "DELEGATION": {
+        "owner": ".ai/framework/subagent-delegation.md",
+        "rule_ids": [
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "BRIDGE": {
+        "owner": ".ai/framework/bridge-capability-matrix.md",
+        "rule_ids": [
+          "ALATYR-BRIDGE-001"
+        ]
+      },
+      "LIFECYCLE": {
+        "owner": ".ai/framework/lifecycle.md",
+        "rule_ids": [
+          "ALATYR-LIFECYCLE-001"
+        ]
+      },
+      "ENGINEERING_EVIDENCE": {
+        "owner": ".ai/framework/engineering-evidence.md",
+        "rule_ids": [
+          "ALATYR-ENGINEERING-EVIDENCE-001"
+        ]
+      },
+      "PROJECT_KNOWLEDGE": {
+        "owner": ".ai/framework/project-knowledge.md",
+        "rule_ids": [
+          "ALATYR-KNOWLEDGE-001"
+        ]
+      },
+      "DEBUG": {
+        "owner": ".ai/framework/debug-mode.md",
+        "rule_ids": [
+          "ALATYR-DEBUG-001"
+        ]
+      },
+      "SUPPORT": {
+        "owner": ".ai/framework/support-information.md",
+        "rule_ids": [
+          "ALATYR-SUPPORT-001"
+        ]
+      },
+      "EVIDENCE": {
+        "owner": ".ai/framework/guarantees.md",
+        "rule_ids": [
+          "ALATYR-EVIDENCE-001"
+        ]
+      }
+    },
+    "dependency_resolution": "load-selected-owner-front-matter"
+  },
   "context_packet": {
     "schema_version": 2,
     "template": ".ai/assistant/templates/context-packet.json",
@@ -102,7 +293,7 @@
     ]
   },
   "agent_entry_packet": {
-    "schema_version": 2,
+    "schema_version": 3,
     "path": ".ai/assistant/entry-packet.json",
     "load_after": ".ai/assistant/bootstrap-index.json"
   },
@@ -118,86 +309,41 @@
   ],
   "profiles": {
     "docs-local": {
-      "signals": [
-        "local wording",
-        "README or documentation text",
-        "non-semantic documentation change"
-      ],
+      "selector": "docs-local",
       "descriptor": ".ai/assistant/context/profiles/docs-local.json"
     },
     "code-local": {
-      "signals": [
-        "implementation change",
-        "test change",
-        "no accepted behavior change",
-        "review comments or defect fixes"
-      ],
+      "selector": "code-local",
       "descriptor": ".ai/assistant/context/profiles/code-local.json"
     },
     "business-change": {
-      "signals": [
-        "accepted behavior change",
-        "domain rule change",
-        "product policy change",
-        "workflow or public contract change"
-      ],
+      "selector": "business-change",
       "descriptor": ".ai/assistant/context/profiles/business-change.json"
     },
     "architecture-change": {
-      "signals": [
-        "module boundary change",
-        "dependency direction change",
-        "runtime topology change",
-        "public API or cross-component contract change"
-      ],
+      "selector": "architecture-change",
       "descriptor": ".ai/assistant/context/profiles/architecture-change.json"
     },
     "data-change": {
-      "signals": [
-        "schema change",
-        "persistence change",
-        "migration or backfill",
-        "data ownership or retention change"
-      ],
+      "selector": "data-change",
       "descriptor": ".ai/assistant/context/profiles/data-change.json"
     },
     "security-sensitive": {
-      "signals": [
-        "secrets or credentials",
-        "permissions or authentication",
-        "network or external services",
-        "destructive actions",
-        "production or spend boundary"
-      ],
+      "selector": "security-sensitive",
       "descriptor": ".ai/assistant/context/profiles/security-sensitive.json"
     },
     "ai-infrastructure": {
-      "signals": [
-        "AI infrastructure inventory, recommendation, or item improvement",
-        "prompt or skill change",
-        "assistant wrapper or bridge change",
-        "MCP or tool config change",
-        "checker gate flow or template change",
-        "third-party assistant infrastructure review"
-      ],
+      "selector": "ai-infrastructure",
       "descriptor": ".ai/assistant/context/profiles/ai-infrastructure.json"
     },
     "framework-upgrade": {
-      "signals": [
-        "installing Alatyr",
-        "updating Alatyr Core",
-        "adapter recheck",
-        "adapter maturity review",
-        "framework drift repair"
-      ],
+      "selector": "framework-upgrade",
       "descriptor": ".ai/assistant/context/profiles/framework-upgrade.json"
     }
   },
   "intent_overlays": {
     "diagram-request": {
-      "signals": [
-        "diagram view explanation comparison or revision request"
-      ],
+      "selector": "diagram-request",
       "descriptor": ".ai/assistant/context/intents/diagram-request.json",
       "required_module": "diagrams",
       "operations": [
@@ -205,9 +351,7 @@
       ]
     },
     "architecture-request": {
-      "signals": [
-        "architecture inventory explanation pattern discussion comparison review or documentation request"
-      ],
+      "selector": "architecture-request",
       "descriptor": ".ai/assistant/context/intents/architecture-request.json",
       "required_module": "architecture-knowledge",
       "operations": [
@@ -215,9 +359,7 @@
       ]
     },
     "code-documentation": {
-      "signals": [
-        "code comment style proposal documentation profile review generated code reference or documentation synchronization request"
-      ],
+      "selector": "code-documentation",
       "descriptor": ".ai/assistant/context/intents/code-documentation.json",
       "required_module": "code-documentation",
       "operations": [
@@ -225,9 +367,7 @@
       ]
     },
     "vocabulary-request": {
-      "signals": [
-        "project term definition acronym alias ambiguity glossary vocabulary or terminology consistency request"
-      ],
+      "selector": "vocabulary-request",
       "descriptor": ".ai/assistant/context/intents/vocabulary-request.json",
       "required_module": "project-vocabulary",
       "operations": [
@@ -235,10 +375,7 @@
       ]
     },
     "test-first-request": {
-      "signals": [
-        "explicit test-first TDD regression-first characterization-first or contract-first request",
-        "bounded recommendation trigger or test-first configuration request"
-      ],
+      "selector": "test-first-request",
       "descriptor": ".ai/assistant/context/intents/test-first-request.json",
       "required_module": "core-profile",
       "operations": [
@@ -247,10 +384,7 @@
       ]
     },
     "extension-request": {
-      "signals": [
-        "extension list inspect plan install update disable remove or review request",
-        "explicit external extension source or installed extension ID"
-      ],
+      "selector": "extension-request",
       "descriptor": ".ai/assistant/context/intents/extension-request.json",
       "required_module": "core-profile",
       "operations": [
@@ -258,10 +392,7 @@
       ]
     },
     "dependency-knowledge-request": {
-      "signals": [
-        "dependency knowledge status discovery inspection planning synchronization explanation or impact request",
-        "package-manager lock change or selected dependency contract may affect the task"
-      ],
+      "selector": "dependency-knowledge-request",
       "descriptor": ".ai/assistant/context/intents/dependency-knowledge-request.json",
       "required_module": "dependency-knowledge",
       "operations": [
@@ -269,10 +400,7 @@
       ]
     },
     "workspace-mode-request": {
-      "signals": [
-        "workspace mode status suggestion selection definition lifecycle or review request",
-        "framework application skeleton dependency or workspace role is ambiguous"
-      ],
+      "selector": "workspace-mode-request",
       "descriptor": ".ai/assistant/context/intents/workspace-mode-request.json",
       "required_module": "workspace-modes",
       "operations": [
@@ -282,61 +410,37 @@
   },
   "task_scale_overlays": {
     "small-task": {
-      "signals": [
-        "classified small-task"
-      ],
+      "selector": "small-task",
       "descriptor": ".ai/assistant/context/task-scales/small-task.json"
     },
     "large-or-resumable": {
-      "signals": [
-        "explicitly large phased or resumable work",
-        "multiple independently verifiable workstreams",
-        "multiple project areas or task profiles",
-        "profile context budget exceeded",
-        "separate approval or validation checkpoints"
-      ],
+      "selector": "large-or-resumable",
       "descriptor": ".ai/assistant/context/task-scales/large-or-resumable.json"
     },
     "delegated-execution": {
-      "signals": [
-        "delegation"
-      ],
+      "selector": "delegated-execution",
       "descriptor": ".ai/assistant/context/task-scales/delegated-execution.json"
     },
     "change-package": {
-      "signals": [
-        "coherent material outcome across multiple project surfaces",
-        "semantic multi-surface approval",
-        "architecture segment capability migration or public contract package",
-        "audit pilot or publishable before-to-after provenance"
-      ],
+      "selector": "change-package",
       "descriptor": ".ai/assistant/context/task-scales/change-package.json"
     },
     "engineering-evidence": {
-      "signals": [
-        "material task finalization or explicit engineering-evidence request"
-      ],
+      "selector": "engineering-evidence",
       "descriptor": ".ai/assistant/context/task-scales/engineering-evidence.json"
     },
     "debug-mode": {
-      "signals": [
-        "explicit current-task or current-session Debug Mode activation",
-        "status checkpoint finalization disablement or comparison for selected debug evidence"
-      ],
+      "selector": "debug-mode",
       "descriptor": ".ai/assistant/context/task-scales/debug-mode.json"
     },
     "team-active": {
-      "signals": [
-        "team request active write operation or possible work overlap"
-      ],
+      "selector": "team-active",
       "descriptor": ".ai/assistant/team/context-overlay.json"
     }
   },
   "area_overlays": {
     "{TARGET_AREA_ID}": {
-      "signals": [
-        "{TARGET_AREA_TRIGGER}"
-      ]
+      "selector": "{TARGET_AREA_ID}"
     }
   },
   "project_knowledge_routing": ".ai/assistant/context/project-knowledge-routing.json",

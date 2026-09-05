@@ -277,12 +277,17 @@ Each manifest check declares four separate concerns:
   broad triggers are allowed only when they make selection safer.
 - `depends_on`: prerequisite checks that must pass before the check can run.
 
-The manifest also declares `timeout_seconds` and `resource_class`. The runner
-uses resource classes to avoid scheduling several heavy checks into the same
-worker capacity and treats a timeout as a failed check; dependent checks are
-reported as blocked. Current classes are `light`, `standard`, and `heavy`.
-The configured timeout is per process and does not replace CI-level job
-timeouts.
+The manifest also declares `timeout_seconds` and `resource_class`. Optional
+`scheduler_slots` set the minimum parent capacity needed to start a check,
+`child_capacity_max` bounds the isolated child work it may receive, and
+`duration_hint_seconds` provides a finite static ordering fallback when no
+compatible historical timing exists. The scheduler admits the maximum safe
+ready set at minimum capacity before distributing surplus capacity, so an
+expandable check cannot serialize unrelated work. Resource and timing metadata
+can change execution order and bounded parallelism only; it cannot change
+selection, dependencies, or pass/fail semantics. Invalid or excessive values
+are rejected by the manifest contract. The configured timeout is per process
+and does not replace CI-level job timeouts.
 
 The manifest checker also reconciles the dynamically computed captured-evidence
 contract with the `evidence-status` routes. Changing an executor contract,
@@ -316,6 +321,10 @@ may use only that reservation for isolated child processes. This avoids nested
 CPU oversubscription. Child output is collected in declaration order, lifecycle
 and scaffold scenarios use private temporary repositories, and unit-test shards
 must cover every selected test file exactly once before execution begins.
+Source-check dependency routing and focused unit-test selection share one
+cached static Python import graph. Literal dynamic imports are resolved;
+unresolved dynamic imports make focused unit selection fall back to the full
+suite rather than silently narrowing coverage.
 
 Machine-readable reports should normally be written outside the repository.
 A repository-local `--report` path is accepted only under `tmp/` when Git
@@ -971,8 +980,11 @@ profile.
 Use `kernel` for the minimal bootstrap, routing, authorization, integrity,
 support-state, and final-evidence surface. Use `core` when durable
 engineering evidence and project-knowledge delivery are needed, `standard` for
-common lifecycle/product operations, and `full` for the complete
-support-template set. Assistant-native bridge files remain opt-in. Use
+common lifecycle/product operations, and `full` for the same target surface
+with the complete portable framework pack. Optional modules and
+assistant-native bridge files remain opt-in. Source conformance checks use
+`--projection-purpose conformance` to materialize every template inside an
+isolated fixture; target scaffolding uses the default `target` purpose. Use
 repeatable
 `--assistant-surface <id-or-alias>` selections only for clients the target
 actually uses; no native bridge or `.agents/skills/README.md` placeholder is
@@ -987,8 +999,10 @@ removes path claims for omitted surfaces, filters operation routes to installed
 flows, derives the compact operation index and bootstrap index, and accepts
 repeatable `--enable-module` capability IDs with dependency closure. Profile,
 capability, framework-pack, and assistant-surface choices are resolved once
-through an immutable composition read model. Generated operation surfaces use
-a typed acyclic projection order. In overwrite mode, content-addressed sparse
+through an immutable composition read model. A typed acyclic shadow projection
+graph checks output ownership and dependencies; the existing
+`projected_template_content()` renderer remains the execution owner. In
+overwrite mode, content-addressed sparse
 projection leaves byte-identical files untouched; it never infers that an
 omitted file should be deleted.
 
@@ -1037,9 +1051,12 @@ mapping. `check_framework_packs.py` validates pack inheritance, rule dependency
 closure, projected registries, and inventories.
 
 `installer_stage_model.py` validates the canonical installer context router as
-an ordered dependency graph and can derive a content-bound checkpoint identity
-for completed stages. That identity is local optimization evidence only: it
-does not authorize writes, satisfy an approval gate, or prove target facts.
+an ordered dependency graph. Each stage declares bounded context, evidence,
+outputs, completion checks, an authorization ceiling, and prohibited actions.
+Its schema-2 checkpoint identity binds source inputs, target revision,
+composition digest, output digests, and validation evidence. That identity is
+local optimization evidence only: it does not authorize writes, satisfy an
+approval gate, or prove target facts.
 
 ## Target Adapter Validator
 
@@ -1085,11 +1102,16 @@ owner is represented, every route is explicitly `unsupported`, and none is
 selected in the target manifest. Missing, malformed, partial, or unknown
 capability evidence remains active fail-safe.
 
-Reusable manifest parsing, Git diff, hashing, and approval-scope primitives
-live in `target_validation_support.py`; the validator remains the reporting and
-contract orchestration surface.
+Reusable manifest parsing, hashing, and approval-scope primitives live in
+`target_validation_support.py`. One run-scoped Git evidence view caches
+immutable ref, range, patch, and snapshot queries and invalidates the result if
+HEAD, branch, or worktree state changes during validation. The validator
+remains the reporting and contract orchestration surface.
 
-The validator executes an explicit ordered phase plan. Capability closure and
+The validator executes an explicit ordered phase plan and emits per-phase
+duration, cost class, and finding-count telemetry in JSON. Phases remain
+sequential because several share finding state and derived adapter state;
+telemetry is diagnostic and does not change findings. Capability closure and
 module routing remain data-driven; diagrams, delegation, and workspace modes
 use the narrow capability context. Debug Mode retains one explicit broad-host
 compatibility route because its Git history and repository-binding checks need

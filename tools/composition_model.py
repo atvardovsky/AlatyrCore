@@ -31,6 +31,7 @@ class CompositionRequest:
     framework_pack_request: str = "matched"
     requested_capabilities: tuple[str, ...] = ()
     requested_assistant_surfaces: tuple[str, ...] = ()
+    projection_purpose: str = "target"
 
 
 @dataclass(frozen=True)
@@ -42,12 +43,15 @@ class PathOrigin:
 @dataclass(frozen=True)
 class ResolvedComposition:
     contract_version: int
+    projection_purpose: str
     support_profile: str
     support_profile_chain: tuple[str, ...]
     framework_pack_request: str
     framework_pack: str
     framework_pack_chain: tuple[str, ...]
     requested_capabilities: tuple[str, ...]
+    available_capabilities: tuple[str, ...]
+    installed_capabilities: tuple[str, ...]
     enabled_capabilities: tuple[str, ...]
     capability_edges: tuple[tuple[str, str], ...]
     requested_assistant_surfaces: tuple[str, ...]
@@ -99,7 +103,9 @@ def _inheritance_chain(
     return tuple(chain)
 
 
-def _profile_paths(profile: str) -> tuple[tuple[str, ...], tuple[str, ...]]:
+def _profile_paths(
+    profile: str, projection_purpose: str
+) -> tuple[tuple[str, ...], tuple[str, ...]]:
     profiles = _object(PROFILE_MANIFEST).get("profiles")
     if not isinstance(profiles, dict):
         raise ValueError("scaffold profile manifest must define profiles")
@@ -111,7 +117,13 @@ def _profile_paths(profile: str) -> tuple[tuple[str, ...], tuple[str, ...]]:
         if not isinstance(values, list) or not all(isinstance(item, str) for item in values):
             raise ValueError(f"invalid template_files for scaffold profile: {name}")
         paths.update(values)
-        if entry.get("include_remaining_template_files") is True:
+        include_remaining = entry.get("include_remaining_template_files") is True
+        conformance_remaining = (
+            entry.get("conformance_include_remaining_template_files") is True
+        )
+        if include_remaining or (
+            projection_purpose == "conformance" and conformance_remaining
+        ):
             paths.update(
                 path.relative_to(TEMPLATE_ROOT).as_posix()
                 for path in TEMPLATE_ROOT.rglob("*")
@@ -121,7 +133,7 @@ def _profile_paths(profile: str) -> tuple[tuple[str, ...], tuple[str, ...]]:
 
 
 def _assistant_selection(
-    requested: Iterable[str], selected_paths: set[str]
+    requested: Iterable[str], selected_paths: set[str], *, preserve_unselected: bool
 ) -> tuple[tuple[str, ...], tuple[tuple[str, str], ...], tuple[str, ...], set[str]]:
     data = _object(ASSISTANT_SURFACES)
     records = data.get("surfaces")
@@ -163,7 +175,8 @@ def _assistant_selection(
         surface_paths = paths_by_surface[surface_id]
         bridges.update(surface_paths - NEUTRAL_ASSISTANT_PATHS)
         neutral.update(surface_paths & NEUTRAL_ASSISTANT_PATHS)
-    selected_paths.difference_update(all_native)
+    if not preserve_unselected:
+        selected_paths.difference_update(all_native)
     selected_paths.update(bridges)
     selected_paths.update(neutral)
     capability_index = ".ai/assistant/assistant-capabilities.json"
@@ -199,7 +212,11 @@ def _resolved_pack(profile: str, requested: str, capabilities: tuple[str, ...]) 
 
 
 def resolve_composition(request: CompositionRequest) -> ResolvedComposition:
-    profile_chain, profile_paths = _profile_paths(request.support_profile)
+    if request.projection_purpose not in {"target", "conformance"}:
+        raise ValueError(f"unknown projection purpose: {request.projection_purpose}")
+    profile_chain, profile_paths = _profile_paths(
+        request.support_profile, request.projection_purpose
+    )
     modules = load_modules()
     enabled = tuple(sorted(dependency_closure(request.requested_capabilities, modules)))
     capability_paths = tuple(
@@ -213,7 +230,9 @@ def resolve_composition(request: CompositionRequest) -> ResolvedComposition:
     )
     selected_paths = set(profile_paths) | set(capability_paths)
     surfaces, aliases, bridges, selected_paths = _assistant_selection(
-        request.requested_assistant_surfaces, selected_paths
+        request.requested_assistant_surfaces,
+        selected_paths,
+        preserve_unselected=request.projection_purpose == "conformance",
     )
     pack = _resolved_pack(request.support_profile, request.framework_pack_request, enabled)
     pack_catalog = _object(ROOT / "framework" / "framework-packs.json").get("packs")
@@ -261,14 +280,25 @@ def resolve_composition(request: CompositionRequest) -> ResolvedComposition:
         ROOT / "framework" / "rule-registry.json",
         ASSISTANT_SURFACES,
     ]
+    installed_capabilities = tuple(
+        sorted(
+            module_id
+            for module_id, module in modules.items()
+            if module.get("target_files")
+            and set(module["target_files"]) <= selected_paths
+        )
+    )
     return ResolvedComposition(
-        contract_version=1,
+        contract_version=2,
+        projection_purpose=request.projection_purpose,
         support_profile=request.support_profile,
         support_profile_chain=profile_chain,
         framework_pack_request=request.framework_pack_request,
         framework_pack=pack,
         framework_pack_chain=pack_chain,
         requested_capabilities=tuple(sorted(set(request.requested_capabilities))),
+        available_capabilities=tuple(sorted(modules)),
+        installed_capabilities=installed_capabilities,
         enabled_capabilities=enabled,
         capability_edges=edges,
         requested_assistant_surfaces=tuple(sorted(set(request.requested_assistant_surfaces))),

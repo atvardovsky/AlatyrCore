@@ -153,7 +153,7 @@
         "ALATYR-CONTEXT-001"
       ],
       "estimated_words": 1508,
-      "content_digest": "sha256:2a2d7da4aab0de852af7d3081cd8fe2315e8c8bfa311754bb01215b451398d46"
+      "content_digest": "sha256:85038c4c17ad4375503529907074c9b0c3648d562f0d10cfc5ca95a1c9d32c88"
     },
     {
       "id": "assistant.content.contour-md",
@@ -223,8 +223,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 643,
-      "content_digest": "sha256:8ffbacba4e006e1a92e7aabbd4e97337118c8d0faecf56f81de26615222c19d7"
+      "estimated_words": 292,
+      "content_digest": "sha256:47f56281ed51bfb608cc22ffa5f687e2465c91760d922339d5a740967ec12142"
     },
     {
       "id": "assistant.content.help-md",
@@ -337,8 +337,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1534,
-      "content_digest": "sha256:c3df65c2bb0f21002025ebd4549904419842bc0e1ada9389ce9230679dd4ab2f"
+      "estimated_words": 1550,
+      "content_digest": "sha256:5023aee509e5b749d87e3a7627b0ff3a71c1f7c6b95c23d9c07f1d0768f6aba3"
     },
     {
       "id": "assistant.content.operation-catalog-json",

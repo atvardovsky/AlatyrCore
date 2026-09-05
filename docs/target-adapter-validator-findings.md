@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1193
+Catalog entries: 1194
 
 ## Families
 
@@ -56,7 +56,7 @@ Catalog entries: 1193
 - `RULE`: 1 codes.
 - `STALE`: 2 codes.
 - `SUPPORT`: 11 codes.
-- `TARGET`: 7 codes.
+- `TARGET`: 8 codes.
 - `TASK`: 23 codes.
 - `TDD`: 44 codes.
 - `TEAM`: 98 codes.
@@ -321,7 +321,7 @@ Catalog entries: 1193
   Level: configured. Source: `tools/validate_target_adapter.py`.
 - `BOOTSTRAP_AREA_MAP_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
-- `BOOTSTRAP_CONTEXT_ROUTER_MISSING`
+- `BOOTSTRAP_ENTRY_PACKET_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `BOOTSTRAP_INDEX_CURRENT`
   Level: info. Source: `tools/validate_target_adapter.py`.
@@ -1943,6 +1943,8 @@ Catalog entries: 1193
   Level: info. Source: `tools/validate_target_adapter.py`.
 - `TARGET_CHECKER_MISSING`
   Level: warning. Source: `tools/validate_target_adapter.py`.
+- `TARGET_GIT_STATE_MUTATED`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `TARGET_INPUT_MUTATED`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `TARGET_MISSING`

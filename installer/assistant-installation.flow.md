@@ -27,7 +27,10 @@ Use this flow when:
 Treat root `AGENTS.md` as preloaded. Read `installer/context-router.json` and
 the source version files, then choose the current installation stage. The
 router owns stage order, required and conditional context, stage dependencies,
-required evidence, and prohibited actions. Both discovery and scope selection
+required evidence and outputs, completion checks, context budgets,
+authorization ceilings, and prohibited actions. A stage checkpoint is an
+optimization only and must be discarded when its target revision, composition,
+outputs, or validation evidence changes. Both discovery and scope selection
 require `installer/discovery-contract.json`; that contract owns the discovery
 categories and support-profile selection matrix. Inspect the target and record
 category-based discovery evidence before selecting a support profile or

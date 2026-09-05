@@ -20,6 +20,7 @@ SOURCE_PATHS = {
 }
 SEMANTIC_INDEX_PATH = Path(".ai/framework/semantics/index.json")
 SOURCE_SEMANTIC_INDEX = Path(__file__).resolve().parents[1] / "framework" / "semantics" / "index.json"
+SOURCE_RULE_REGISTRY = Path(__file__).resolve().parents[1] / "framework" / "rule-registry.json"
 
 
 def _sha256(text: str) -> str:
@@ -48,8 +49,8 @@ def _route_projection(entries: Any) -> dict[str, dict[str, Any]]:
         if not isinstance(route_id, str) or not isinstance(entry, dict):
             continue
         route: dict[str, Any] = {}
+        route["selector"] = route_id
         for source, target in [
-            ("use_when", "signals"),
             ("descriptor", "descriptor"),
             ("required_module", "required_module"),
             ("operation_candidates", "operations"),
@@ -65,11 +66,38 @@ def _route_projection(entries: Any) -> dict[str, dict[str, Any]]:
     return projected
 
 
+def _rule_selector(registry_text: str | None) -> dict[str, Any]:
+    if registry_text is None:
+        return {"categories": {}, "dependency_resolution": "canonical-owner-front-matter"}
+    registry = json.loads(registry_text)
+    if not isinstance(registry, dict):
+        raise ValueError("rule registry must contain an object")
+    categories: dict[str, dict[str, Any]] = {}
+    for category in registry.get("category_owners", []):
+        if not isinstance(category, dict):
+            continue
+        category_id = category.get("category")
+        owner = category.get("owner")
+        rule_ids = _string_list(category.get("rule_ids"))
+        if not isinstance(category_id, str) or not isinstance(owner, str) or not rule_ids:
+            continue
+        categories[category_id] = {
+            "owner": ".ai/" + owner,
+            "rule_ids": rule_ids,
+        }
+    return {
+        "registry_sha256": _sha256(registry_text),
+        "categories": categories,
+        "dependency_resolution": "load-selected-owner-front-matter",
+    }
+
+
 def build_bootstrap_index(
     manifest_text: str,
     project_map_text: str,
     router_text: str,
     *,
+    rule_registry_text: str | None = None,
     semantic_index_text: str | None = None,
     semantic_terms: dict[str, dict[str, Any]] | None = None,
     generated_by: dict[str, Any] | None = None,
@@ -103,6 +131,11 @@ def build_bootstrap_index(
         derived_from["semantic_codebook"] = {
             "path": SEMANTIC_INDEX_PATH.as_posix(),
             "sha256": _sha256(semantic_index_text),
+        }
+    if rule_registry_text is not None:
+        derived_from["rule_registry"] = {
+            "path": ".ai/framework/rule-registry.json",
+            "sha256": _sha256(rule_registry_text),
         }
     recursive_context = router.get("recursive_context")
     recursive_context = recursive_context if isinstance(recursive_context, dict) else {}
@@ -156,6 +189,7 @@ def build_bootstrap_index(
             ],
             "fallback": _string(semantic_codebook.get("fallback")),
         },
+        "rule_selector": _rule_selector(rule_registry_text),
         "context_packet": {
             "schema_version": context_packet.get("schema_version", "unknown"),
             "template": _string(context_packet.get("template")),
@@ -201,11 +235,16 @@ def build_from_target(target: Path) -> dict[str, Any]:
         texts[name] = path.read_text(encoding="utf-8")
     installed_index = target / SEMANTIC_INDEX_PATH
     semantic_index = installed_index if installed_index.is_file() else SOURCE_SEMANTIC_INDEX
+    installed_registry = target / ".ai/framework/rule-registry.json"
+    rule_registry = (
+        installed_registry if installed_registry.is_file() else SOURCE_RULE_REGISTRY
+    )
     semantic_terms = load_codebook(semantic_index, root=semantic_index.parent)
     return build_bootstrap_index(
         texts["manifest"],
         texts["project_map"],
         texts["context_router"],
+        rule_registry_text=rule_registry.read_text(encoding="utf-8"),
         semantic_index_text=semantic_index.read_text(encoding="utf-8"),
         semantic_terms=semantic_terms,
         generated_by=generation_provenance(

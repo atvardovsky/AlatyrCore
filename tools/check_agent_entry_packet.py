@@ -20,10 +20,8 @@ from task_classification_contract import (
     AMBIGUITY_READ_ONLY_MARKER,
     DEFAULT_TASK_CLASS,
     SMALL_TASK_CLASS,
-    TARGET_REQUIRED_EXPANSION_TRIGGERS,
     TASK_CLASSES,
     TASK_CLASSIFICATION_SCHEMA_VERSION,
-    missing_required_values,
 )
 
 
@@ -47,8 +45,8 @@ def check_packet(
     source_template: bool = False,
 ) -> list[str]:
     failures: list[str] = []
-    if packet.get("schema_version") != 2:
-        failures.append("entry packet schema_version must be 2")
+    if packet.get("schema_version") != 3:
+        failures.append("entry packet schema_version must be 3")
     if packet.get("packet_kind") != "target-agent-entry-packet":
         failures.append("entry packet kind must be target-agent-entry-packet")
     if packet.get("path") != PACKET_PATH.as_posix():
@@ -138,21 +136,12 @@ def check_packet(
             classification.get("ambiguity_behavior", "")
         ):
             failures.append("entry packet task classification ambiguity must stay read-only")
-        classes = classification.get("classes")
-        if not isinstance(classes, dict) or SMALL_TASK_CLASS not in classes:
-            failures.append("entry packet task classification must expose small-task")
-        else:
-            small = classes[SMALL_TASK_CLASS]
-            if (
-                not isinstance(small, dict)
-                or small.get("task_scale_overlay") != SMALL_TASK_CLASS
-            ):
-                failures.append("entry packet small-task class must route small-task overlay")
-        triggers = classification.get("expansion_triggers")
-        if not isinstance(triggers, list) or missing_required_values(
-            triggers, TARGET_REQUIRED_EXPANSION_TRIGGERS
+        if classification.get("small_task_overlay") != SMALL_TASK_CLASS:
+            failures.append("entry packet small-task class must route small-task overlay")
+        if classification.get("expansion_policy") != (
+            ".ai/assistant/context-router.json#task_classification.expansion_triggers"
         ):
-            failures.append("entry packet task classification expansion triggers are incomplete")
+            failures.append("entry packet task classification expansion policy is invalid")
 
     operation = packet.get("operation_routing")
     if not isinstance(operation, dict):
@@ -177,23 +166,13 @@ def check_packet(
             != ".ai/assistant/templates/task-decomposition.md"
         ):
             failures.append("entry packet task decomposition plan template is invalid")
-        if decomposition.get("level_order") != [
-            "L0",
-            "L1",
-            "L2",
-            "L3",
-            "L4",
-            "L5",
-            "L6",
-            "L7",
-        ]:
+        if decomposition.get("level_range") != "L0-L7":
             failures.append("entry packet task decomposition levels are invalid")
         if "L6" not in decomposition.get("non_delegable_levels", []) or "L7" not in decomposition.get("non_delegable_levels", []):
             failures.append("entry packet must mark L6 and L7 non-delegable")
         if "non-trivial" not in str(decomposition.get("default_behavior", "")):
             failures.append("entry packet task decomposition default must name non-trivial work")
-        executor = decomposition.get("executor_selection")
-        if not isinstance(executor, dict) or executor.get("default") != "primary":
+        if decomposition.get("executor_default") != "primary":
             failures.append("entry packet task decomposition executor default must be primary")
 
     authorization = packet.get("authorization")
@@ -222,7 +201,7 @@ def check_packet(
         ]:
             if required not in json.dumps(delta, sort_keys=True):
                 failures.append(f"entry packet support delta route missing {required}")
-        if "never prove semantic correctness" not in str(delta.get("routing_policy", "")):
+        if delta.get("semantic_correctness_proven") is not False:
             failures.append("entry packet support delta route must keep semantic boundary")
 
     lazy = packet.get("lazy_human_fallbacks")
@@ -235,7 +214,8 @@ def check_packet(
         if not isinstance(lazy, list) or fallback not in lazy:
             failures.append(f"entry packet missing lazy fallback {fallback}")
 
-    if "Logical integrity" not in str(packet.get("reasoning_boundary", "")):
+    reasoning = packet.get("reasoning_boundary")
+    if not isinstance(reasoning, dict) or reasoning.get("logical_integrity") != "required":
         failures.append("entry packet must retain logical reasoning boundary")
 
     return failures

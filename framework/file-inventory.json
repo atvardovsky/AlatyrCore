@@ -1,5 +1,5 @@
 {
-  "adapter_schema_version": 44,
+  "adapter_schema_version": 45,
   "files": [
     {
       "path": "framework/README.md",
@@ -64,7 +64,7 @@
     {
       "path": "framework/capabilities.json",
       "rule_ids": [],
-      "sha256": "3013408d4d85bab1265f69f230432f5757515a1c3fb942eea8c52641a8ae313f"
+      "sha256": "6b2cd63850c2e605771c4c01fd72e657e2c36ec5eaed89cde57d4af6ad80bdd6"
     },
     {
       "path": "framework/catalog/change/context-index.json",
@@ -84,7 +84,7 @@
     {
       "path": "framework/catalog/infrastructure/context-index.json",
       "rule_ids": [],
-      "sha256": "7cf0f06b69161bb3b586ada9419c67f4d450db0d9e0110bc0ad769640d64a26b"
+      "sha256": "1ce8e15c65a94bc874af391a4c61b7dc49249fd7b11c663264fd1954ed476a88"
     },
     {
       "path": "framework/catalog/knowledge/context-index.json",
@@ -94,7 +94,7 @@
     {
       "path": "framework/catalog/lifecycle/context-index.json",
       "rule_ids": [],
-      "sha256": "9209870b766aa7239317de3b7ff285d744d4f9574b8f5bdaf877f70908da11d6"
+      "sha256": "850d72e89d75afdf4455ea962453efab105d4c0a31f96c349f4b8d72b5b9a3cb"
     },
     {
       "path": "framework/catalog/support/context-index.json",
@@ -135,7 +135,7 @@
     {
       "path": "framework/context-index.json",
       "rule_ids": [],
-      "sha256": "8f83bee8198045d0560cff3477ffa5a3d1363e2ecf68caba9610a4117175a172"
+      "sha256": "8136bf21ae0455adbd389d2ad7bd592605d1bdbc9b2735e6a7cb1b7b5119279b"
     },
     {
       "path": "framework/context-profiles.md",
@@ -300,7 +300,7 @@
     {
       "path": "framework/scaffolding.md",
       "rule_ids": [],
-      "sha256": "8f8f95b5c4876b6761c4ba12bafa750df0e854f593d079c866951701daacf25f"
+      "sha256": "aec25d3cc8ad01713bb135df75075834af29f1e9d4db65f3fc7b6593bfdf3b8f"
     },
     {
       "path": "framework/security-safety-guidance.md",
@@ -399,8 +399,8 @@
       "sha256": "dc1b84f72ca465f735d51ee5de02d3c26fd8054688556b4f11c1663eddc239da"
     }
   ],
-  "framework_version": "0.1.0-alpha.54",
+  "framework_version": "0.1.0-alpha.55",
   "inventory_kind": "alatyr-framework-files",
   "schema_version": 1,
-  "template_version": 49
+  "template_version": 50
 }

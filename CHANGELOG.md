@@ -2,6 +2,34 @@
 
 ## Unreleased
 
+- No unreleased changes.
+
+## 0.1.0-alpha.55 - 2026-09-05
+
+- Split target installation composition from exhaustive source conformance:
+  `full` now retains the standard target surface with the complete portable
+  framework pack, while optional modules and native bridges remain explicit.
+- Added one immutable composition result with available, installed, enabled,
+  and accepted capability boundaries, plus a typed shadow projection graph
+  covering every selected output, owner, dependency, and merge strategy.
+- Made installer stages machine-readable contracts for bounded context,
+  evidence, outputs, completion checks, authorization ceilings, and prohibited
+  actions; schema-2 checkpoints bind the target revision, composition, output
+  digests, and validation evidence.
+- Reduced target bootstrap and first-use context by routing compact selectors
+  and rule-owner digests instead of repeating full policy and classification
+  prose, while retaining fail-closed canonical-owner fallback.
+- Added one run-scoped Git evidence cache to target validation, invalidation on
+  HEAD, branch, or worktree mutation, and sequential per-phase telemetry
+  without changing acceptance or finding semantics.
+- Added a typed Git-aware repository inventory, a shared cached static Python
+  import graph, transitive source-check routing, bounded child-capacity
+  scheduling, and finite static duration hints. Unresolved dynamic imports
+  still force full unit-test selection.
+- Increased the adapter schema version to `45` and target template version to
+  `50` for the installer, composition, entry-packet, bootstrap, and validation
+  evidence migrations.
+
 - Added a read-only target context planner that resolves installed profiles,
   operations, recursive indexes, semantic owners, consistency impact, assistant
   capability evidence, and budgets into a deterministic content-free plan.

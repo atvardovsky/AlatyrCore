@@ -564,7 +564,7 @@ def main() -> int:
         failures.append("agent_entry_packet must be an object")
     else:
         expected_entry_packet = {
-            "schema_version": 2,
+            "schema_version": 3,
             "path": ".ai/assistant/entry-packet.json",
             "load_after": ".ai/assistant/bootstrap-index.json",
         }

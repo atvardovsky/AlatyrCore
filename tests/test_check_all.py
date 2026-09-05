@@ -719,6 +719,70 @@ class CheckGraphTests(unittest.TestCase):
 
         self.assertEqual(observed, {"heavy": 2, "standard": 1})
 
+    def test_scheduler_can_grant_bounded_idle_capacity_to_one_check(self) -> None:
+        observed: dict[str, int] = {}
+
+        def runner(item: dict[str, Any], _baseline: str | None):
+            observed[item["id"]] = item["_child_capacity"]
+            return 0, "", "", [item["id"]]
+
+        execute_checks(
+            [
+                {
+                    **check("expandable"),
+                    "scheduler_slots": 1,
+                    "child_capacity_max": 4,
+                }
+            ],
+            None,
+            4,
+            runner=runner,
+        )
+
+        self.assertEqual(observed, {"expandable": 4})
+
+    def test_scheduler_never_exceeds_available_capacity(self) -> None:
+        observed: dict[str, int] = {}
+        active_capacity = 0
+        peak_capacity = 0
+        lock = threading.Lock()
+        release = threading.Event()
+
+        def runner(item: dict[str, Any], _baseline: str | None):
+            nonlocal active_capacity, peak_capacity
+            observed[item["id"]] = item["_child_capacity"]
+            with lock:
+                active_capacity += item["_child_capacity"]
+                peak_capacity = max(peak_capacity, active_capacity)
+            release.wait(timeout=0.05)
+            release.set()
+            with lock:
+                active_capacity -= item["_child_capacity"]
+            return 0, "", "", [item["id"]]
+
+        execute_checks(
+            [
+                {
+                    **check("first"),
+                    "scheduler_slots": 2,
+                    "duration_hint_seconds": 2,
+                },
+                {
+                    **check("second"),
+                    "scheduler_slots": 1,
+                    "child_capacity_max": 4,
+                    "duration_hint_seconds": 1,
+                },
+            ],
+            None,
+            4,
+            runner=runner,
+        )
+
+        self.assertEqual(set(observed), {"first", "second"})
+        self.assertLessEqual(peak_capacity, 4)
+        self.assertGreaterEqual(observed["second"], 1)
+
     def test_runner_exception_is_recorded_as_a_failed_check(self) -> None:
         telemetry: dict[str, dict[str, Any]] = {}
 

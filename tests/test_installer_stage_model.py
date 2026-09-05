@@ -40,12 +40,32 @@ class InstallerStageModelTests(unittest.TestCase):
         plan = load_installer_stage_plan(ROOT / "installer/context-router.json")
 
         checkpoint = stage_checkpoint_identity(
-            plan, "scope-selection", source_root=ROOT
+            plan,
+            "scope-selection",
+            source_root=ROOT,
+            target_revision="abc123",
+            composition_digest="sha256:" + "1" * 64,
+            output_digests={".ai/alatyr.yaml": "sha256:" + "2" * 64},
+            validation_evidence={"composition": "sha256:" + "3" * 64},
         )
 
         self.assertEqual(checkpoint["completed_stage"], "scope-selection")
-        self.assertIn("INSTALL.md", checkpoint["required_input_digests"])
+        self.assertIn(
+            "installer/discovery-contract.json", checkpoint["required_input_digests"]
+        )
+        self.assertEqual(checkpoint["target_revision"], "abc123")
         self.assertIn("never approval", checkpoint["authority"])
+
+        changed = stage_checkpoint_identity(
+            plan,
+            "scope-selection",
+            source_root=ROOT,
+            target_revision="def456",
+            composition_digest="sha256:" + "1" * 64,
+            output_digests={".ai/alatyr.yaml": "sha256:" + "2" * 64},
+            validation_evidence={"composition": "sha256:" + "3" * 64},
+        )
+        self.assertNotEqual(checkpoint, changed)
 
     def test_rejects_dependency_on_a_later_stage(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -53,17 +73,25 @@ class InstallerStageModelTests(unittest.TestCase):
             path.write_text(
                 json.dumps(
                     {
-                        "schema_version": 1,
+                        "schema_version": 2,
                         "router_kind": "alatyr-installation-context-router",
                         "routing_order": ["first", "second"],
                         "stages": {
                             "first": {
                                 "required_context": ["one"],
                                 "depends_on": ["second"],
+                                "required_outputs": ["first output"],
+                                "completion_checks": ["first check"],
+                                "context_budget_words": 100,
+                                "authorization_ceiling": "inspect",
                                 "prohibited_actions": ["write"],
                             },
                             "second": {
                                 "required_context": ["two"],
+                                "required_outputs": ["second output"],
+                                "completion_checks": ["second check"],
+                                "context_budget_words": 100,
+                                "authorization_ceiling": "inspect",
                                 "prohibited_actions": ["write"],
                             },
                         },

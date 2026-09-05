@@ -19,15 +19,43 @@ from source_check_manifest import (  # noqa: E402
     transitive_local_tool_dependencies,
     valid_manifest_path,
 )
+from local_python_import_graph import LocalPythonImportGraph  # noqa: E402
 
 
 class SourceCheckManifestTests(unittest.TestCase):
+    def test_reverse_dependency_closure_reaches_transitive_importers(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            tools = root / "tools"
+            tools.mkdir()
+            leaf = tools / "leaf.py"
+            middle = tools / "middle.py"
+            top = tools / "top.py"
+            unrelated = tools / "unrelated.py"
+            leaf.write_text("VALUE = 1\n", encoding="utf-8")
+            middle.write_text("import leaf\n", encoding="utf-8")
+            top.write_text("import middle\n", encoding="utf-8")
+            unrelated.write_text("VALUE = 2\n", encoding="utf-8")
+
+            impacted = LocalPythonImportGraph(root).reverse_dependents({leaf})
+
+            self.assertEqual(
+                impacted,
+                {leaf.resolve(), middle.resolve(), top.resolve()},
+            )
+
     def test_transitive_dependency_closure_reaches_shared_path_contract(self) -> None:
         dependencies = transitive_local_tool_dependencies(
             "tools/check_check_manifest.py"
         )
         self.assertIn("tools/source_check_manifest.py", dependencies)
         self.assertIn("tools/path_spec.py", dependencies)
+
+    def test_transitive_dependency_closure_is_stable_across_repeated_reads(self) -> None:
+        first = transitive_local_tool_dependencies("tools/check_check_manifest.py")
+        second = transitive_local_tool_dependencies("tools/check_check_manifest.py")
+
+        self.assertEqual(first, second)
 
     def test_source_path_index_tracks_parent_directories(self) -> None:
         index = SourcePathIndex.from_paths(

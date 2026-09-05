@@ -114,8 +114,9 @@ class TargetValidatorModuleParityTests(unittest.TestCase):
                     "requires": [],
                 },
             }
-            with patch(
-                "validate_target_adapter.git_changed_files",
+            with patch.object(
+                instance.git,
+                "changed_files",
                 return_value=[".ai/project/vocabulary/terms.json"],
             ):
                 selected = instance.changed_scope_modules(set(instance.capability_modules))

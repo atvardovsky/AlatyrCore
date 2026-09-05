@@ -237,6 +237,7 @@ Required files:
 
 - `.ai/project/architecture/README.md`
 - `.ai/project/architecture/catalog.json`
+- `.ai/assistant/context/intents/architecture-request.json`
 - `.ai/assistant/flows/architecture-assistance.flow.md`
 - `.ai/assistant/templates/architecture-pattern.md`
 - `.ai/assistant/templates/architecture-area.md`
@@ -390,6 +391,9 @@ Required files:
 - `.ai/assistant/assistant-capabilities.json`
 - `.ai/assistant/assistant-capabilities/{SUPPORTED_ASSISTANT}.json`
 - `.ai/assistant/bridge-capability-matrix.md`
+- `.ai/assistant/context/intents/diagram-request.json`
+- `.ai/assistant/gates/visual-validation.md`
+- `.ai/assistant/templates/visual-validation-review.md`
 
 Reason: `{REASON}`
 Validation or review: `{VALIDATION_OR_REVIEW}`
@@ -478,6 +482,8 @@ Required files:
 
 - `.ai/assistant/flows/large-task-orchestration.flow.md`
 - `.ai/assistant/templates/large-task-operation-packet.md`
+- `.ai/assistant/context/task-scales/large-or-resumable.json`
+- `.ai/assistant/templates/operation-completion-evidence.json`
 
 Reason: `{REASON}`
 Validation or review: `{VALIDATION_OR_REVIEW}`
@@ -525,6 +531,8 @@ Required files:
 - `.ai/assistant/flows/change-package.flow.md`
 - `.ai/assistant/templates/change-package-record.json`
 - `.ai/assistant/templates/change-package-report.md`
+- `.ai/assistant/gates/contract-artifacts.md`
+- `.ai/assistant/templates/contract-artifact-review.md`
 
 Reason: `{REASON}`
 Validation or review: `{VALIDATION_OR_REVIEW}`

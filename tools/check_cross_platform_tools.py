@@ -8,8 +8,9 @@ import json
 import subprocess
 import sys
 import tempfile
-from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+
+from parallel_execution import run_commands
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -149,13 +150,19 @@ def main() -> int:
     if help_result.returncode != 0:
         failures.append("cross-platform tool help failed")
     command_names = sorted(EXPECTED_COMMANDS)
-    with ThreadPoolExecutor(max_workers=min(8, len(command_names))) as executor:
-        help_results = dict(
-            zip(
-                command_names,
-                executor.map(lambda command: run(command, "--help"), command_names),
-            )
+    help_results = {
+        result.item_id: result
+        for result in run_commands(
+            [
+                (
+                    command,
+                    [sys.executable, str(TOOLS / "alatyr.py"), command, "--help"],
+                )
+                for command in command_names
+            ],
+            cwd=ROOT,
         )
+    }
     for command, result in help_results.items():
         if result.returncode != 0:
             failures.append(f"tool command help failed: {command}")

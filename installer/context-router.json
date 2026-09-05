@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "router_kind": "alatyr-installation-context-router",
   "canonical_rule": "ALATYR-CONTEXT-001",
   "human_reference": "installer/assistant-installation.flow.md",
@@ -24,9 +24,14 @@
   ],
   "stages": {
     "discovery": {
-      "required_context": ["INSTALL.md", "installer/discovery-contract.json"],
+      "required_context": ["installer/discovery-contract.json"],
+      "conditional_context": ["INSTALL.md when discovery or installation boundaries are ambiguous"],
       "target_context": ["root assistant instructions", "repository structure", "existing project validation and ownership evidence"],
       "required_evidence": ["target findings classified by discovery-contract category", "missing target facts recorded without invention"],
+      "required_outputs": ["read-only discovery findings"],
+      "completion_checks": ["every discovery-contract category is classified or explicitly unresolved"],
+      "context_budget_words": 2400,
+      "authorization_ceiling": "inspect",
       "prohibited_actions": ["create files", "overwrite instructions", "invent target facts or commands"]
     },
     "scope-selection": {
@@ -39,6 +44,10 @@
       "depends_on": ["discovery"],
       "required_evidence": ["selected support profile justified by classified target findings", "optional module expansion tied to target evidence or the user request"],
       "conditional_context": ["rule owners for selected core and optional modules"],
+      "required_outputs": ["resolved composition with profile capability assistant and framework-pack selections"],
+      "completion_checks": ["composition dependency closure resolves", "every selected output has one projection owner"],
+      "context_budget_words": 5200,
+      "authorization_ceiling": "inspect",
       "prohibited_actions": ["enable an optional module without target need owner and validation"]
     },
     "plan-and-approval": {
@@ -47,23 +56,47 @@
         "framework/change-risk-model.md",
         "framework/approval-records.md"
       ],
+      "depends_on": ["scope-selection"],
       "conditional_context": ["security owner when a safety boundary is crossed", "import policy for external AI infrastructure"],
+      "required_evidence": ["current-scope authorization classified", "protected scope bound to a current plan when approval is required"],
+      "required_outputs": ["installation or update plan", "approval request or explicit non-protected classification"],
+      "completion_checks": ["planned files and actions are bounded", "approval evidence matches the current plan when protected"],
+      "context_budget_words": 4600,
+      "authorization_ceiling": "inspect",
       "prohibited_actions": ["apply protected changes before scoped approval"]
     },
     "adaptation": {
       "required_context": ["framework/file-inventory.json"],
+      "depends_on": ["plan-and-approval"],
       "conditional_context": ["selected canonical rule owners", "selected target templates", "changed framework files during upgrade"],
       "copy_policy": "compare deterministic paths and hashes; do not load unchanged prose merely to copy it",
+      "required_evidence": ["target revision and resolved composition digest", "current-scope modify authorization", "preserved target-owned and retained-unselected files"],
+      "required_outputs": ["staged adapter projection", "output digest inventory"],
+      "completion_checks": ["projection output matches the resolved composition", "no protected or target-owned surface changed outside scope"],
+      "context_budget_words": 3600,
+      "authorization_ceiling": "modify",
       "prohibited_actions": ["copy target facts from another project", "replace target state with placeholders"]
     },
     "validation": {
       "required_context": ["installer/readiness-checklist.md"],
+      "depends_on": ["adaptation"],
       "conditional_context": ["target validation discovered during inspection", "focused validator for each enabled module"],
+      "required_evidence": ["structural and target validation results", "logical integrity review", "residual risks and unavailable checks"],
+      "required_outputs": ["validation evidence bound to the staged output digests"],
+      "completion_checks": ["required checks ran or have explicit residual-risk records", "validation evidence still matches target inputs"],
+      "context_budget_words": 4200,
+      "authorization_ceiling": "inspect",
       "prohibited_actions": ["invent validation commands", "claim semantic correctness from structural checks"]
     },
     "handoff": {
       "required_context": ["templates/target/.ai/assistant/templates/post-install-message.md"],
+      "depends_on": ["validation"],
       "conditional_context": ["post-update message for upgrades", "unresolved gaps and residual risk"],
+      "required_evidence": ["accepted or non-accepted installation state", "current target output and validation bindings"],
+      "required_outputs": ["post-install or post-update assistant message", "installation state transition evidence"],
+      "completion_checks": ["message reports actual validation and limitations", "checkpoint does not claim approval or semantic authority"],
+      "context_budget_words": 1800,
+      "authorization_ceiling": "inspect",
       "prohibited_actions": ["claim installation success without evidence"]
     }
   }

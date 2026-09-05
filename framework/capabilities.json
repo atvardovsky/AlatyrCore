@@ -65,6 +65,7 @@
       "target_files": [
         ".ai/project/architecture/README.md",
         ".ai/project/architecture/catalog.json",
+        ".ai/assistant/context/intents/architecture-request.json",
         ".ai/assistant/flows/architecture-assistance.flow.md",
         ".ai/assistant/templates/architecture-pattern.md",
         ".ai/assistant/templates/architecture-area.md",
@@ -191,9 +192,12 @@
       "rule_ids": ["ALATYR-DIAGRAM-001"],
       "framework_files": ["diagram-guidance.md", "ascii-diagrams.md"],
       "target_files": [
+        ".ai/assistant/context/intents/diagram-request.json",
         ".ai/assistant/flows/diagram-discussion.flow.md",
+        ".ai/assistant/gates/visual-validation.md",
         ".ai/assistant/templates/diagram-presentation.md",
         ".ai/assistant/templates/ascii-diagram.md",
+        ".ai/assistant/templates/visual-validation-review.md",
         ".ai/assistant/assistant-capabilities.json",
         ".ai/assistant/bridge-capability-matrix.md"
       ],
@@ -271,8 +275,10 @@
       "rule_ids": ["ALATYR-CONTEXT-001"],
       "framework_files": ["large-task-orchestration.md"],
       "target_files": [
+        ".ai/assistant/context/task-scales/large-or-resumable.json",
         ".ai/assistant/flows/large-task-orchestration.flow.md",
-        ".ai/assistant/templates/large-task-operation-packet.md"
+        ".ai/assistant/templates/large-task-operation-packet.md",
+        ".ai/assistant/templates/operation-completion-evidence.json"
       ],
       "check_ids": ["large-task-orchestration"]
     },
@@ -313,6 +319,8 @@
         ".ai/assistant/change-packages/index.json",
         ".ai/assistant/context/task-scales/change-package.json",
         ".ai/assistant/flows/change-package.flow.md",
+        ".ai/assistant/gates/contract-artifacts.md",
+        ".ai/assistant/templates/contract-artifact-review.md",
         ".ai/assistant/templates/change-package-record.json",
         ".ai/assistant/templates/change-package-report.md"
       ],
@@ -338,7 +346,12 @@
         ".ai/assistant/flows/team-decision.flow.md",
         ".ai/assistant/flows/team-review.flow.md",
         ".ai/assistant/gates/team-collaboration.md",
-        ".ai/assistant/skills/team-collaboration/SKILL.md"
+        ".ai/assistant/skills/team-collaboration/SKILL.md",
+        ".ai/assistant/templates/team-checkpoint.md",
+        ".ai/assistant/templates/team-collaboration-review.md",
+        ".ai/assistant/templates/team-decision-record.md",
+        ".ai/assistant/templates/team-handoff.md",
+        ".ai/assistant/templates/team-identity.example.json"
       ],
       "check_ids": ["team-collaboration", "team-collaboration-scenarios"]
     },

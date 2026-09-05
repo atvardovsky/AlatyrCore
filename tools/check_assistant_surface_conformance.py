@@ -110,21 +110,23 @@ def main() -> int:
                     failures.append(f"assistant surface bridge is missing: {relpath}")
                     continue
                 text = path.read_text(encoding="utf-8")
-                for required in [
-                    "AGENTS.md",
-                    ".ai/assistant/bootstrap-index.json",
-                    ".ai/assistant/operation-index.json",
-                    ".ai/assistant/operation-catalog.json",
-                    ".ai/assistant/help.md",
-                    ".ai/assistant/flows/operation-routing.flow.md",
-                ]:
-                    if relpath == "AGENTS.md" and required == "AGENTS.md":
-                        continue
-                    if relpath == "AGENTS.md" and required in {
+                required_routes = (
+                    [
+                        ".ai/assistant/bootstrap-index.json",
+                        ".ai/assistant/entry-packet.json",
+                        ".ai/assistant/policies/action-authorization.json",
+                    ]
+                    if relpath == "AGENTS.md"
+                    else [
+                        "AGENTS.md",
+                        ".ai/assistant/bootstrap-index.json",
+                        ".ai/assistant/operation-index.json",
+                        ".ai/assistant/operation-catalog.json",
                         ".ai/assistant/help.md",
                         ".ai/assistant/flows/operation-routing.flow.md",
-                    }:
-                        continue
+                    ]
+                )
+                for required in required_routes:
                     if required not in text:
                         failures.append(
                             f"assistant surface {surface_id} bridge {relpath} "
@@ -135,7 +137,7 @@ def main() -> int:
                         f"assistant surface {surface_id} bridge {relpath} "
                         "does not preserve preloaded bootstrap"
                     )
-                health_aliases_routed = ".ai/assistant/operation-index.json" in text or "status/doctor" in text or (
+                health_aliases_routed = relpath == "AGENTS.md" or ".ai/assistant/operation-index.json" in text or "status/doctor" in text or (
                     "Alatyr status" in text and "Alatyr doctor" in text
                 )
                 if not health_aliases_routed:

@@ -4,9 +4,10 @@
   "snapshot_kind": "scaffolded-adapter",
   "conformance_scope": "Source scaffold output snapshot; not an assistant installation test and not a completed target adapter.",
   "claims_installation_complete": false,
-  "action_count": 85,
+  "action_count": 86,
   "blocked_count": 0,
   "created_paths": [
+    ".ai/.gitignore",
     ".ai/README.md",
     ".ai/alatyr.yaml",
     ".ai/assistant/bootstrap-index.json",
@@ -129,7 +130,6 @@
     ".ai/assistant/templates/task-decomposition.md",
     ".ai/project/contour.md",
     ".ai/project/source-of-truth-registry.md",
-    "AGENTS.md",
     "CODEOWNERS"
   ],
   "target_validation_claimed": false

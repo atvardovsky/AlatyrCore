@@ -66,9 +66,6 @@ def _task_classification(value: Any) -> dict[str, Any]:
             if not isinstance(class_id, str) or not isinstance(class_data, dict):
                 continue
             item: dict[str, Any] = {}
-            signals = _string_list(class_data.get("use_when"))
-            if signals:
-                item["signals"] = signals
             overlay = class_data.get("task_scale_overlay")
             if isinstance(overlay, str) and overlay:
                 item["task_scale_overlay"] = overlay
@@ -212,31 +209,22 @@ def build_agent_entry_packet(
         if text is not None
     }
     classification = _task_classification(router.get("task_classification"))
-    compact_classes = {
-        class_id: {
-            key: value
-            for key, value in class_data.items()
-            if key in {"task_scale_overlay", "pre_change_preview", "evidence"}
-        }
-        for class_id, class_data in _object(classification.get("classes")).items()
-        if isinstance(class_id, str) and isinstance(class_data, dict)
-    }
+    small_class = _object(classification.get("classes")).get("small-task")
+    small_class = small_class if isinstance(small_class, dict) else {}
     decomposition = _task_decomposition_summary(task_decomposition)
     cache_delivery = _object(router.get("cache_aware_delivery"))
     compact_classification = {
-        key: classification.get(key)
-        for key in [
-            "schema_version",
-            "classification_order",
-            "default_class",
-            "ambiguity_behavior",
-            "expansion_triggers",
-        ]
+        "schema_version": classification.get("schema_version"),
+        "classification_order": classification.get("classification_order"),
+        "default_class": classification.get("default_class"),
+        "ambiguity_behavior": "read-only-on-ambiguity",
+        "small_task_overlay": small_class.get("task_scale_overlay"),
     }
-    compact_classification["classes"] = compact_classes
-
+    compact_classification["expansion_policy"] = (
+        ".ai/assistant/context-router.json#task_classification.expansion_triggers"
+    )
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "packet_kind": "target-agent-entry-packet",
         "path": PACKET_PATH.as_posix(),
         "generated_by": generated_by or {},
@@ -275,21 +263,24 @@ def build_agent_entry_packet(
             },
         ],
         "cache_aware_delivery": {
-            key: cache_delivery.get(key)
-            for key in [
-                "schema_version",
-                "provider_capability_index",
-                "stable_prefix_order",
-                "dynamic_tail_order",
-                "cache_hit_required",
-                "context_window_reduction",
-                "fallback",
-            ]
+            "policy": ".ai/assistant/context-router.json#cache_aware_delivery",
+            "provider_capability_index": cache_delivery.get(
+                "provider_capability_index"
+            ),
+            "cache_hit_required": cache_delivery.get("cache_hit_required"),
+            "context_window_reduction": cache_delivery.get(
+                "context_window_reduction"
+            ),
+            "fallback": cache_delivery.get("fallback"),
         },
         "budget_summary": {
-            "bootstrap": _object(context_budgets.get("bootstrap")),
-            "profile_default": _object(context_budgets.get("profile_default")),
-            "on_exceed": _string(context_budgets.get("on_exceed")),
+            "policy": ".ai/assistant/context-router.json#context_budgets",
+            "bootstrap_max_words": _object(context_budgets.get("bootstrap")).get(
+                "hard_max_words"
+            ),
+            "profile_max_words": _object(
+                context_budgets.get("profile_default")
+            ).get("max_total_words"),
         },
         "routing_sources": {
             "installed_profile_routes": ".ai/assistant/bootstrap-index.json",
@@ -298,20 +289,19 @@ def build_agent_entry_packet(
             "operation_index": _string(operation_routing.get("index"), "not installed"),
             "operation_catalog": _string(operation_routing.get("catalog"), "not installed"),
             "full_router": SOURCE_PATHS["context_router"].as_posix(),
-            "selection_policy": "use bootstrap profile candidates first; load a selected descriptor or canonical owner only for the current task",
+            "selection_policy": "bootstrap-selector-then-selected-owner",
         },
         "task_classification": compact_classification,
         "task_decomposition": {
-            key: decomposition.get(key)
-            for key in [
-                "schema_version",
-                "policy",
-                "plan_template",
-                "level_order",
-                "non_delegable_levels",
-                "default_behavior",
-                "executor_selection",
-            ]
+            "schema_version": decomposition.get("schema_version"),
+            "policy": decomposition.get("policy"),
+            "plan_template": decomposition.get("plan_template"),
+            "level_range": "L0-L7",
+            "non_delegable_levels": decomposition.get("non_delegable_levels"),
+            "default_behavior": "non-trivial-decompose",
+            "executor_default": _object(
+                decomposition.get("executor_selection")
+            ).get("default"),
         },
         "operation_routing": {
             "index": _string(operation_routing.get("index"), "not installed"),
@@ -348,21 +338,18 @@ def build_agent_entry_packet(
                 "tools/alatyr.py approval-check --target <target-repo> "
                 "--diff-ref <base-ref> --approval-record <target-approval-json>"
             ),
-            "routing_policy": (
-                "compare support-state hashes and Git changed paths first, "
-                "then load only selected support owners, relationship shards, "
-                "or target source owners; hashes locate change and never prove "
-                "semantic correctness"
-            ),
-            "review_after_code_change": "rerun delta/impact routing for changed code paths before final evidence when support information may need sync",
-            "fallback_when_missing_state": "repair or regenerate support-state with explicit adapter-write authorization before trusting broad support claims",
+            "routing_order": ["support-delta", "impact", "selected-owners"],
+            "semantic_correctness_proven": False,
+            "review_after_code_change": True,
+            "missing_state": "repair-with-current-modify-authorization",
         },
         "lazy_human_fallbacks": LAZY_HEAVY_SURFACES,
-        "reasoning_boundary": (
-            "This packet selects bounded files, gates, operations, and "
-            "allowed-action ceilings. Logical integrity, invariant derivation, "
-            "and final correctness still require assistant and human reasoning."
-        ),
+        "reasoning_boundary": {
+            "logical_integrity": "required",
+            "invariant_derivation": "required",
+            "deterministic_checks": "evidence-only",
+            "final_correctness": "assistant-and-human-reasoning",
+        },
     }
 
 

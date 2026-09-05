@@ -271,7 +271,10 @@ def project_agent_rule_ids(
     )
     replacement = f"Use installed owners for {rendered_ids}. Project\nfacts belong"
     rendered, count = pattern.subn(replacement, text, count=1)
-    if count != 1:
+    compact_marker = "Use bootstrap-selected rule owners."
+    if count == 0 and compact_marker in text:
+        rendered = text
+    elif count != 1:
         raise ValueError("cannot project AGENTS.md registered rule IDs")
     if selected is None:
         return rendered

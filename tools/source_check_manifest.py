@@ -2,14 +2,15 @@
 
 from __future__ import annotations
 
-import ast
 import json
-import subprocess
+import math
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
 from path_spec import PathDialect, PathSpec, matches_any
+from local_python_import_graph import LocalPythonImportGraph
+from repository_inventory import RepositoryInventory
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -17,8 +18,10 @@ ALLOWED_PROFILES = {"micro", "quick", "fast", "full", "change", "platform", "rel
 ALLOWED_WRITE_SCOPES = {"none"}
 ALLOWED_PLATFORMS = {"all", "linux", "macos", "windows"}
 ALLOWED_RESOURCE_CLASSES = {"light", "standard", "heavy"}
-TOOL_DEPENDENCY_CACHE: dict[str, frozenset[str]] = {}
-TOOL_DEPENDENCY_CLOSURE_CACHE: dict[str, frozenset[str]] = {}
+RESOURCE_CLASS_DEFAULT_SLOTS = {"light": 1, "standard": 1, "heavy": 2}
+MAX_SCHEDULER_CAPACITY = 64
+MAX_DURATION_HINT_SECONDS = 86400
+LOCAL_IMPORT_GRAPH = LocalPythonImportGraph(ROOT)
 
 
 def valid_manifest_path(value: str) -> bool:
@@ -151,6 +154,33 @@ def load_manifest(
             raise ValueError(f"{check_id}.timeout_seconds is invalid")
         if check.get("resource_class") not in ALLOWED_RESOURCE_CLASSES:
             raise ValueError(f"{check_id}.resource_class is invalid")
+        for field in ("scheduler_slots", "child_capacity_max"):
+            value = check.get(field)
+            if value is not None and (
+                not isinstance(value, int)
+                or isinstance(value, bool)
+                or value <= 0
+                or value > MAX_SCHEDULER_CAPACITY
+            ):
+                raise ValueError(f"{check_id}.{field} is invalid")
+        scheduler_slots = check.get(
+            "scheduler_slots",
+            RESOURCE_CLASS_DEFAULT_SLOTS[check.get("resource_class", "standard")],
+        )
+        child_capacity_max = check.get("child_capacity_max", scheduler_slots)
+        if child_capacity_max < scheduler_slots:
+            raise ValueError(
+                f"{check_id}.child_capacity_max must be at least scheduler_slots"
+            )
+        duration_hint = check.get("duration_hint_seconds")
+        if duration_hint is not None and (
+            not isinstance(duration_hint, (int, float))
+            or isinstance(duration_hint, bool)
+            or duration_hint < 0
+            or not math.isfinite(duration_hint)
+            or duration_hint > MAX_DURATION_HINT_SECONDS
+        ):
+            raise ValueError(f"{check_id}.duration_hint_seconds is invalid")
         if not isinstance(check.get("always_for_changed", False), bool):
             raise ValueError(f"{check_id}.always_for_changed must be boolean")
         if not isinstance(dependencies, list) or not all(
@@ -198,9 +228,11 @@ def matches(check: dict[str, Any], path: str) -> bool:
 
 
 def routes(check: dict[str, Any], path: str) -> bool:
-    return matches_any(
+    if matches_any(
         path, check["trigger_paths"], dialect=PathDialect.SOURCE_HOST_V1
-    )
+    ):
+        return True
+    return path in transitive_local_tool_dependencies(check["command"][0])
 
 
 def micro_routes(check: dict[str, Any], path: str) -> bool:
@@ -235,23 +267,7 @@ class SourcePathIndex:
 
     @classmethod
     def from_root(cls, root: Path = ROOT) -> "SourcePathIndex":
-        result = subprocess.run(
-            ["git", "ls-files", "-c", "-o", "--exclude-standard", "-z"],
-            cwd=root,
-            check=False,
-            capture_output=True,
-        )
-        if result.returncode != 0:
-            message = result.stderr.decode("utf-8", errors="replace").strip()
-            raise ValueError(message or "cannot enumerate source paths")
-        paths = [
-            path
-            for path in result.stdout.decode(
-                "utf-8", errors="surrogateescape"
-            ).split("\0")
-            if path
-        ]
-        return cls.from_paths(paths)
+        return cls.from_paths(list(RepositoryInventory.load(root).paths))
 
     def matches_declaration(self, pattern: str) -> bool:
         if any(character in pattern for character in "*?["):
@@ -276,65 +292,24 @@ def direct_local_tool_dependencies(script: str) -> set[str]:
     remain a maintainer declaration responsibility.
     """
 
-    cached = TOOL_DEPENDENCY_CACHE.get(script)
-    if cached is not None:
-        return set(cached)
-
     path = ROOT / script
-    tree = ast.parse(path.read_text(encoding="utf-8"), filename=script)
     dependencies: set[str] = set()
-    for node in ast.walk(tree):
-        modules: list[str] = []
-        if isinstance(node, ast.Import):
-            modules = [alias.name.split(".", 1)[0] for alias in node.names]
-        elif isinstance(node, ast.ImportFrom) and node.module:
-            modules = [node.module.split(".", 1)[0]]
-        for module in modules:
-            module_file = ROOT / "tools" / f"{module}.py"
-            module_package = ROOT / "tools" / module
-            if module_file.is_file():
-                dependencies.add(module_file.relative_to(ROOT).as_posix())
-            elif (module_package / "__init__.py").is_file():
-                dependencies.add(module_package.relative_to(ROOT).as_posix() + "/**")
-    TOOL_DEPENDENCY_CACHE[script] = frozenset(dependencies)
+    for dependency in LOCAL_IMPORT_GRAPH.scan(path).dependencies:
+        relative = dependency.relative_to(ROOT)
+        if len(relative.parts) > 2:
+            dependencies.add(f"tools/{relative.parts[1]}/**")
+        else:
+            dependencies.add(relative.as_posix())
     return dependencies
 
 
 def transitive_local_tool_dependencies(script: str) -> set[str]:
     """Return the complete statically discoverable local import closure."""
 
-    cached = TOOL_DEPENDENCY_CLOSURE_CACHE.get(script)
-    if cached is not None:
-        return set(cached)
-    closure: set[str] = set()
-    visiting: set[str] = set()
-
-    def visit(current: str) -> None:
-        if current in visiting:
-            return
-        if not (ROOT / current).is_file():
-            return
-        visiting.add(current)
-        for dependency in direct_local_tool_dependencies(current):
-            candidates = (
-                sorted(
-                    path.relative_to(ROOT).as_posix()
-                    for path in (ROOT / dependency[:-3]).rglob("*.py")
-                    if path.is_file()
-                )
-                if dependency.endswith("/**")
-                else [dependency]
-            )
-            for candidate in candidates:
-                if candidate == script or candidate in closure:
-                    continue
-                closure.add(candidate)
-                visit(candidate)
-        visiting.remove(current)
-
-    visit(script)
-    TOOL_DEPENDENCY_CLOSURE_CACHE[script] = frozenset(closure)
-    return closure
+    return {
+        path.relative_to(ROOT).as_posix()
+        for path in LOCAL_IMPORT_GRAPH.transitive_dependencies(ROOT / script)
+    }
 
 
 def declaration_matches_source(

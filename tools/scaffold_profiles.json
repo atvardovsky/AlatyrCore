@@ -4,6 +4,7 @@
     "kernel": {
       "description": "Minimal adapter, bootstrap, routing, ownership, integrity, authorization, and final-evidence surfaces for low-cost installs.",
       "template_files": [
+        ".ai/.gitignore",
         ".ai/README.md",
         ".ai/alatyr.yaml",
         ".ai/assistant/bootstrap-index.json",
@@ -83,21 +84,25 @@
         ".ai/assistant/flows/blueprint-driven-change.flow.md",
         ".ai/assistant/flows/operation-routing.flow.md",
         ".ai/assistant/flows/project-blueprint-creation.flow.md",
+        ".ai/assistant/gates/contract-artifacts.md",
+        ".ai/assistant/gates/visual-validation.md",
         ".ai/assistant/help-reference.md",
         ".ai/assistant/operation-index.json",
         ".ai/assistant/operation-catalog.json",
         ".ai/assistant/templates/migration-note.md",
         ".ai/assistant/templates/pre-change-preview.md",
+        ".ai/assistant/templates/contract-artifact-review.md",
         ".ai/assistant/templates/post-install-message.md",
         ".ai/assistant/templates/post-update-message.md",
+        ".ai/assistant/templates/visual-validation-review.md",
         "AI_ASSISTANTS.md"
       ]
     },
     "full": {
-      "description": "Every target support template and optional module; native assistant bridges remain explicit scaffold selections.",
+      "description": "Standard target support with the complete portable framework pack; optional capabilities and native assistant bridges remain explicit target selections.",
       "extends": "standard",
       "template_files": [],
-      "include_remaining_template_files": true
+      "conformance_include_remaining_template_files": true
     }
   }
 }

@@ -9,16 +9,13 @@ import sys
 from pathlib import Path
 
 from scaffold_target_structure import (
-    PROJECTED_MARKDOWN_PATHS,
+    PROJECTED_MARKDOWN_TARGET_PATHS,
     PROFILE_MANIFEST,
     TEMPLATE_ROOT,
     build_target_context_catalogs,
-    project_assistant_bridges,
     profile_names,
-    resolve_assistant_surfaces,
-    resolve_profile_paths,
-    resolved_framework_pack,
 )
+from composition_model import CompositionRequest, resolve_composition
 from framework_packaging import resolve_framework_files
 from capability_catalog import dependency_closure, load_modules
 from scaffold_projection import (
@@ -84,6 +81,28 @@ FULL_ONLY_BRIDGES = {
     Path(".windsurf/rules/alatyr-core.md"),
     Path(".windsurfrules"),
 }
+
+
+def resolved(
+    profile: str,
+    capabilities: set[str] | None = None,
+    assistant_surfaces: tuple[str, ...] = (),
+    framework_pack: str = "matched",
+    projection_purpose: str = "target",
+):
+    return resolve_composition(
+        CompositionRequest(
+            support_profile=profile,
+            framework_pack_request=framework_pack,
+            requested_capabilities=tuple(sorted(capabilities or set())),
+            requested_assistant_surfaces=assistant_surfaces,
+            projection_purpose=projection_purpose,
+        )
+    )
+
+
+def target_paths(composition) -> set[Path]:
+    return {Path(path) for path in composition.selected_target_paths}
 MARKDOWN_PATH_CLAIM_RE = re.compile(r"`(?P<path>\.ai/[A-Za-z0-9_./-]+)`")
 
 
@@ -100,7 +119,7 @@ def check_projected_markdown_claims(
         for path in resolve_framework_files(framework_pack)
     }
     failures: list[str] = []
-    for relpath in sorted(PROJECTED_MARKDOWN_PATHS & selected_templates):
+    for relpath in sorted(PROJECTED_MARKDOWN_TARGET_PATHS & selected_templates):
         rendered = project_markdown_fragments(
             (TEMPLATE_ROOT / relpath).read_text(encoding="utf-8"),
             selected,
@@ -131,10 +150,13 @@ def main() -> int:
             for path in TEMPLATE_ROOT.rglob("*")
             if path.is_file()
         }
-        kernel = resolve_profile_paths("kernel")
-        core = resolve_profile_paths("core")
-        standard = resolve_profile_paths("standard")
-        full = resolve_profile_paths("full")
+        kernel = target_paths(resolved("kernel"))
+        core = target_paths(resolved("core"))
+        standard = target_paths(resolved("standard"))
+        full = target_paths(resolved("full"))
+        conformance_full = target_paths(
+            resolved("full", projection_purpose="conformance")
+        )
 
         missing_kernel = sorted(KERNEL_REQUIRED - kernel)
         if missing_kernel:
@@ -151,47 +173,50 @@ def main() -> int:
             failures.append("kernel profile must be a strict subset of core")
         if not core < standard:
             failures.append("core profile must be a strict subset of standard")
-        if not standard < full:
-            failures.append("standard profile must be a strict subset of full")
-        if full != all_templates:
-            failures.append("full profile must include every target template")
-        unknown = sorted(full - all_templates)
+        if standard != full:
+            failures.append(
+                "target full must retain the standard target surface; its "
+                "complete framework pack is the profile distinction"
+            )
+        if conformance_full != all_templates:
+            failures.append(
+                "conformance full profile must include every target template"
+            )
+        unknown = sorted(conformance_full - all_templates)
         if unknown:
             failures.append(f"scaffold profiles reference missing templates: {unknown}")
         leaked_bridges = sorted(FULL_ONLY_BRIDGES & standard)
         if leaked_bridges:
             failures.append(f"assistant-specific bridges leaked into standard: {leaked_bridges}")
-        default_bridges = sorted(
-            FULL_ONLY_BRIDGES & project_assistant_bridges(full, set())
-        )
+        default_bridges = sorted(FULL_ONLY_BRIDGES & full)
         if default_bridges:
             failures.append(
                 "assistant-specific bridges leaked into default full scaffold: "
                 f"{default_bridges}"
             )
-        selected_zed_bridges = FULL_ONLY_BRIDGES & project_assistant_bridges(
-            full, resolve_assistant_surfaces(["zed"])
+        selected_zed_bridges = FULL_ONLY_BRIDGES & target_paths(
+            resolved("full", assistant_surfaces=("zed",))
         )
         if selected_zed_bridges != {Path(".rules")}:
             failures.append(
                 "Zed alias selection must add only the .rules native bridge"
             )
-        selected_agents_bridges = FULL_ONLY_BRIDGES & project_assistant_bridges(
-            full, resolve_assistant_surfaces(["agents"])
+        selected_agents_bridges = FULL_ONLY_BRIDGES & target_paths(
+            resolved("full", assistant_surfaces=("agents",))
         )
         if selected_agents_bridges != {Path(".agents/skills/README.md")}:
             failures.append(
                 "AGENTS-aware surface selection must add only .agents/skills/README.md"
             )
-        standard_claude = project_assistant_bridges(
-            standard, resolve_assistant_surfaces(["claude"])
+        standard_claude = target_paths(
+            resolved("standard", assistant_surfaces=("claude",))
         )
         if Path("CLAUDE.md") not in standard_claude:
             failures.append(
                 "explicit Claude selection must overlay its native bridge"
             )
         matched_packs = {
-            profile: resolved_framework_pack(profile, "matched")
+            profile: resolved(profile).framework_pack
             for profile in EXPECTED_PROFILES
         }
         if matched_packs != {
@@ -205,17 +230,20 @@ def main() -> int:
             failures.append("kernel framework pack must be smaller than core")
         if not resolve_framework_files("core") < resolve_framework_files("standard"):
             failures.append("core framework pack must be smaller than standard")
-        ai_infrastructure = resolve_profile_paths("core", {"ai-infrastructure"})
+        ai_infrastructure = target_paths(
+            resolved("core", {"ai-infrastructure"})
+        )
         if not core < ai_infrastructure:
             failures.append("enabled ai-infrastructure capability must expand core")
         if Path(".ai/assistant/ai-infrastructure-router.json") not in ai_infrastructure:
             failures.append("ai-infrastructure capability misses its router")
-        architecture = resolve_profile_paths("core", {"architecture-knowledge"})
+        architecture = target_paths(
+            resolved("core", {"architecture-knowledge"})
+        )
         if Path(".ai/project/architecture/catalog.json") not in architecture:
             failures.append("architecture capability misses its compact catalog")
         if (
-            resolved_framework_pack("core", "matched", {"architecture-knowledge"})
-            != "complete"
+            resolved("core", {"architecture-knowledge"}).framework_pack != "complete"
         ):
             failures.append("architecture capability must raise the matched framework pack")
         capability_index_path = Path(".ai/assistant/assistant-capabilities.json")
@@ -223,9 +251,7 @@ def main() -> int:
         for profile in EXPECTED_PROFILES:
             for module_id in load_modules():
                 modules = dependency_closure({module_id})
-                selected_templates = project_assistant_bridges(
-                    resolve_profile_paths(profile, modules), set()
-                )
+                selected_templates = target_paths(resolved(profile, modules))
                 if capability_index_path not in selected_templates:
                     continue
                 projected_index = project_assistant_capability_index(
@@ -260,7 +286,7 @@ def main() -> int:
                 check_projected_markdown_claims(
                     profile,
                     selected_templates,
-                    resolved_framework_pack(profile, "matched"),
+                    resolved(profile).framework_pack,
                 )
             )
     except (OSError, ValueError, json.JSONDecodeError) as exc:

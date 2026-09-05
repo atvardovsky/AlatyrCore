@@ -3,9 +3,12 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Protocol
+from typing import TYPE_CHECKING, Any, Protocol
 
 from target_adapter_validation.context import ValidationContext
+
+if TYPE_CHECKING:
+    from target_validation_support import GitEvidenceView
 
 
 class DomainValidationHost(Protocol):
@@ -13,6 +16,7 @@ class DomainValidationHost(Protocol):
 
     target: Path
     context: ValidationContext
+    git: "GitEvidenceView"
     allow_placeholders: bool
     debug_git_state: bool
     debug_remote_ref: str | None

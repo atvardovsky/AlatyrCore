@@ -107,7 +107,7 @@
         "ALATYR-EXTENSION-001"
       ],
       "estimated_words": 228,
-      "content_digest": "sha256:7cf0f06b69161bb3b586ada9419c67f4d450db0d9e0110bc0ad769640d64a26b"
+      "content_digest": "sha256:1ce8e15c65a94bc874af391a4c61b7dc49249fd7b11c663264fd1954ed476a88"
     },
     {
       "id": "framework.section.knowledge",
@@ -150,7 +150,7 @@
         "ALATYR-LIFECYCLE-001"
       ],
       "estimated_words": 217,
-      "content_digest": "sha256:9209870b766aa7239317de3b7ff285d744d4f9574b8f5bdaf877f70908da11d6"
+      "content_digest": "sha256:850d72e89d75afdf4455ea962453efab105d4c0a31f96c349f4b8d72b5b9a3cb"
     },
     {
       "id": "framework.section.support",

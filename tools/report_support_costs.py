@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 from capability_catalog import dependency_closure, load_modules, minimum_pack
+from composition_model import CompositionRequest, ResolvedComposition, resolve_composition
 from path_spec import PathDialect, PathSpec
 from framework_packaging import projected_framework_contents, resolve_framework_files
 from scaffold_target_structure import (
@@ -23,11 +24,7 @@ from scaffold_target_structure import (
     build_target_context_catalogs,
     build_projection_context,
     load_assistant_surfaces,
-    project_assistant_bridges,
     projected_template_content,
-    resolve_assistant_surfaces,
-    resolve_profile_paths,
-    resolved_framework_pack,
 )
 from render_context_catalogs import INDEX_NAME
 from support_state import (
@@ -315,15 +312,14 @@ def projected_support_state_text(
 
 def projected_scaffold_measurements(
     *,
-    profile: str,
-    enabled_modules: set[str],
-    framework_pack: str,
-    selected_surfaces: set[str],
+    composition: ResolvedComposition,
 ) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], Any, dict[str, Any]]:
-    selected_template_paths = resolve_profile_paths(profile, enabled_modules)
-    selected_template_paths = project_assistant_bridges(
-        selected_template_paths, selected_surfaces
-    )
+    profile = composition.support_profile
+    enabled_modules = set(composition.enabled_capabilities)
+    framework_pack = composition.framework_pack
+    selected_template_paths = {
+        Path(path) for path in composition.selected_target_paths
+    }
     selected_template_paths.update(build_target_context_catalogs(selected_template_paths))
     selected_framework_paths = resolve_framework_files(framework_pack)
     selected = selected_template_paths | {
@@ -400,15 +396,21 @@ def build_scaffold_report(
     assistant_surface_report: dict[str, Any] | None = None,
     optional_module_cost_report: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
-    enabled = set(enabled_modules or [])
-    selected_surfaces = resolve_assistant_surfaces(list(assistant_surfaces or []))
-    selected_pack = resolved_framework_pack(profile, framework_pack, enabled)
+    requested_modules = tuple(sorted(set(enabled_modules or [])))
+    composition = resolve_composition(
+        CompositionRequest(
+            support_profile=profile,
+            framework_pack_request=framework_pack,
+            requested_capabilities=requested_modules,
+            requested_assistant_surfaces=tuple(assistant_surfaces or ()),
+        )
+    )
+    enabled = set(composition.enabled_capabilities)
+    selected_surfaces = set(composition.assistant_surfaces)
+    selected_pack = composition.framework_pack
     target_measure, framework_measure, combined_measure, projection, state_measure = (
         projected_scaffold_measurements(
-            profile=profile,
-            enabled_modules=enabled,
-            framework_pack=selected_pack,
-            selected_surfaces=selected_surfaces,
+            composition=composition,
         )
     )
     return {
@@ -426,6 +428,16 @@ def build_scaffold_report(
             ),
         },
         "enabled_modules": sorted(enabled),
+        "capability_state": {
+            "available": list(composition.available_capabilities),
+            "installed": list(composition.installed_capabilities),
+            "enabled": list(composition.enabled_capabilities),
+            "accepted": [],
+            "acceptance_boundary": (
+                "Scaffold and cost projection do not accept capabilities; "
+                "acceptance remains target installation-state validation evidence."
+            ),
+        },
         "selected_assistant_surfaces": sorted(selected_surfaces),
         "framework_pack": selected_pack,
         "target_templates": target_measure,

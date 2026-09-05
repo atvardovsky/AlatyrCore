@@ -4,9 +4,10 @@
   "snapshot_kind": "scaffolded-adapter",
   "conformance_scope": "Source scaffold output snapshot; not an assistant installation test and not a completed target adapter.",
   "claims_installation_complete": false,
-  "action_count": 84,
+  "action_count": 85,
   "blocked_count": 1,
   "created_paths": [
+    ".ai/.gitignore",
     ".ai/README.md",
     ".ai/alatyr.yaml",
     ".ai/assistant/bootstrap-index.json",

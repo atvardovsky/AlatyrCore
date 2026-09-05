@@ -22,10 +22,6 @@ from target_adapter_validation.domain import DomainValidationHost
 from target_validation_support import (
     ManifestData,
     dotted,
-    git_head_revision,
-    git_is_ancestor,
-    git_range_changed_files,
-    git_resolve_object,
     is_target_relative_path,
     scope_entries_cover,
 )
@@ -129,7 +125,7 @@ def reconcile_debug_git_state(
 ) -> None:
     """Compare selected Debug record claims with current Git evidence."""
 
-    head = git_head_revision(self.target)
+    head = self.git.head_revision()
     if not head:
         self.warn(
             "DEBUG_MODE_GIT_STATE_UNAVAILABLE",
@@ -148,10 +144,10 @@ def reconcile_debug_git_state(
     result_revision = binding.get("result_revision")
     binding_state = binding.get("binding_state")
     committed_touching_surfaces: list[str] = []
-    if is_resolved_string(base_revision) and git_resolve_object(
-        self.target, str(base_revision), "commit"
+    if is_resolved_string(base_revision) and self.git.resolve_object(
+        str(base_revision), "commit"
     ):
-        changed = git_range_changed_files(self.target, str(base_revision), head)
+        changed = self.git.range_changed_files(str(base_revision), head)
         if changed is None:
             self.warn(
                 "DEBUG_MODE_GIT_STATE_UNAVAILABLE",
@@ -183,7 +179,7 @@ def reconcile_debug_git_state(
             record_ref,
         )
     result_resolved = (
-        git_resolve_object(self.target, str(result_revision), "commit")
+        self.git.resolve_object(str(result_revision), "commit")
         if is_resolved_string(result_revision) and binding_kind in {"commit", "pull-request"}
         else None
     )
@@ -202,7 +198,7 @@ def reconcile_debug_git_state(
     remote_ref = getattr(self, "debug_remote_ref", None)
     if not remote_ref:
         return
-    remote = git_resolve_object(self.target, str(remote_ref), "commit")
+    remote = self.git.resolve_object(str(remote_ref), "commit")
     if remote is None:
         self.warn(
             "DEBUG_MODE_REMOTE_STATE_UNAVAILABLE",
@@ -210,7 +206,7 @@ def reconcile_debug_git_state(
             record_ref,
         )
         return
-    published = remote == head or git_is_ancestor(self.target, head, remote) is True
+    published = remote == head or self.git.is_ancestor(head, remote) is True
     if published and (
         status == "active"
         or binding_state == "provisional"

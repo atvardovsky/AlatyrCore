@@ -90,8 +90,16 @@ class TaskClassificationContractTests(unittest.TestCase):
             AMBIGUITY_READ_ONLY_MARKER,
             str(classification["ambiguity_behavior"]),
         )
+        self.assertEqual(
+            classification["expansion_policy"],
+            ".ai/assistant/context-router.json#task_classification.expansion_triggers",
+        )
+        router = load_json(TARGET_ROUTER)
         for trigger in TARGET_REQUIRED_EXPANSION_TRIGGERS:
-            self.assertIn(trigger, classification["expansion_triggers"])
+            self.assertIn(
+                trigger,
+                router["task_classification"]["expansion_triggers"],
+            )
 
     def test_source_router_uses_shared_task_classification_contract(self) -> None:
         router = load_json(SOURCE_ROUTER)

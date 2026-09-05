@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -17,6 +18,7 @@ from target_adapter_validation.context import (  # noqa: E402
     ValidationContext,
 )
 from validate_target_adapter import AdapterValidatorConfig, Validator  # noqa: E402
+from target_validation_support import GitEvidenceView  # noqa: E402
 import validate_target_adapter  # noqa: E402
 
 
@@ -53,6 +55,73 @@ class ValidationContextTests(unittest.TestCase):
             self.assertEqual(
                 next(phase for phase in phases if phase.phase_id == "capabilities").cost_class,
                 "heavy",
+            )
+            self.assertEqual(
+                set(phases[-1].dependencies),
+                set(phase_ids[:-1]),
+            )
+
+    def test_git_evidence_view_caches_queries_and_detects_mutation(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            subprocess.run(["git", "init", "-q"], cwd=target, check=True)
+            tracked = target / "tracked.txt"
+            tracked.write_text("before\n", encoding="utf-8")
+            subprocess.run(["git", "add", "tracked.txt"], cwd=target, check=True)
+            subprocess.run(
+                [
+                    "git",
+                    "-c",
+                    "user.name=Alatyr Tests",
+                    "-c",
+                    "user.email=tests@example.invalid",
+                    "commit",
+                    "-qm",
+                    "Create fixture",
+                ],
+                cwd=target,
+                check=True,
+            )
+            evidence = GitEvidenceView(target)
+
+            first = evidence.resolve_ref("HEAD")
+            second = evidence.resolve_ref("HEAD")
+
+            self.assertEqual(first, second)
+            self.assertEqual(evidence.telemetry()["query_misses"], 1)
+            self.assertEqual(evidence.telemetry()["cache_hits"], 1)
+            self.assertTrue(evidence.finalize())
+
+            tracked.write_text("after\n", encoding="utf-8")
+
+            self.assertFalse(evidence.finalize())
+
+    def test_validator_records_sequential_phase_telemetry(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            validator = Validator(
+                Path(directory),
+                framework_source=None,
+                diff_ref=None,
+                approval_records=[],
+                enforce_approval_scope=False,
+                change_packages=[],
+                enforce_change_package=False,
+                migration_diff=None,
+                allow_placeholders=True,
+                allow_local_paths=[],
+                config=AdapterValidatorConfig(),
+            )
+
+            validator.run()
+
+            phase_ids = [item["phase_id"] for item in validator.phase_telemetry]
+            self.assertEqual(phase_ids[0], "installation-state")
+            self.assertEqual(phase_ids[-1], "finalize-inputs")
+            self.assertTrue(
+                all(item["duration_seconds"] >= 0 for item in validator.phase_telemetry)
+            )
+            self.assertEqual(
+                validator.phase_telemetry[-1]["cost_class"], "standard"
             )
 
     def test_legacy_name_preserves_repository_view_contract(self) -> None:

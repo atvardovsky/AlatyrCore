@@ -10,10 +10,8 @@ from target_adapter_validation.capability import (
 )
 from target_validation_support import (
     ManifestData,
-    git_head_revision,
     is_placeholder,
     is_unresolved_value,
-    refs_match,
 )
 
 
@@ -487,7 +485,7 @@ def validate_team_collaboration(
         "residual_risks",
     ]
     task_ids: set[str] = set()
-    current_head = git_head_revision(context.target)
+    current_head = context.git.head_revision()
 
     def concrete(value: Any) -> bool:
         return (
@@ -909,7 +907,7 @@ def validate_team_collaboration(
             if (
                 current_head
                 and concrete(task_revision)
-                and not refs_match(context.target, str(task_revision), current_head)
+                and not context.git.refs_match(str(task_revision), current_head)
             ):
                 context.warn(
                     "TEAM_MERGE_READY_STALE",
@@ -1077,7 +1075,7 @@ def validate_team_collaboration(
     if (
         current_head
         and concrete(registry_revision)
-        and not refs_match(context.target, str(registry_revision), current_head)
+        and not context.git.refs_match(str(registry_revision), current_head)
     ):
         context.warn(
             "TEAM_REGISTRY_REVISION_STALE",

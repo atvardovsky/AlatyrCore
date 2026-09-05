@@ -1120,6 +1120,7 @@ def execute_checks(
     remaining = {
         check["id"]: check for check in checks if check["id"] not in results
     }
+    check_by_id = {check["id"]: check for check in checks}
     blocked: dict[str, list[str]] = {}
 
     observations = telemetry if telemetry is not None else {}
@@ -1156,7 +1157,15 @@ def execute_checks(
         return outcome, False, duration_seconds
 
     def resource_weight(check: dict[str, Any]) -> int:
-        return min(RESOURCE_CLASS_WEIGHTS[check.get("resource_class", "standard")], jobs)
+        requested = check.get("scheduler_slots")
+        if requested is None:
+            requested = RESOURCE_CLASS_WEIGHTS[check.get("resource_class", "standard")]
+        return min(int(requested), jobs)
+
+    def child_capacity_max(check: dict[str, Any]) -> int:
+        return min(
+            int(check.get("child_capacity_max", resource_weight(check))), jobs
+        )
 
     direct_dependents: dict[str, set[str]] = {check_id: set() for check_id in selected_ids}
     for check in checks:
@@ -1205,7 +1214,9 @@ def execute_checks(
         cached = remaining_duration.get(check_id)
         if cached is not None:
             return cached
-        own = max(0.001, float(estimates.get(check_id, 0.0)))
+        check = check_by_id[check_id]
+        static_hint = float(check.get("duration_hint_seconds", 0.0))
+        own = max(0.001, float(estimates.get(check_id, static_hint)))
         downstream = [
             critical_path_duration(item) for item in direct_dependents[check_id]
         ]
@@ -1276,11 +1287,30 @@ def execute_checks(
 
         def submit_ready() -> bool:
             nonlocal running_weight
-            submitted = False
+            available = jobs - running_weight
+            admitted: list[dict[str, Any]] = []
+            reserved = 0
             for check in ready_checks():
-                weight = resource_weight(check)
-                if running and running_weight + weight > jobs:
+                minimum_weight = resource_weight(check)
+                if minimum_weight > available - reserved:
                     continue
+                admitted.append(check)
+                reserved += minimum_weight
+
+            surplus = available - reserved
+            allocations: dict[str, int] = {}
+            for check in admitted:
+                minimum_weight = resource_weight(check)
+                extra = min(
+                    child_capacity_max(check) - minimum_weight,
+                    surplus,
+                )
+                allocations[check["id"]] = minimum_weight + extra
+                surplus -= extra
+
+            submitted = False
+            for check in admitted:
+                weight = allocations[check["id"]]
                 scheduled_check = {**check, "_child_capacity": weight}
                 future = executor.submit(run_with_observation, scheduled_check)
                 running[future] = check
@@ -1288,7 +1318,9 @@ def execute_checks(
                 running_weight += weight
                 remaining.pop(check["id"])
                 observations[check["id"]] = {
-                    "queued_seconds": round(time.monotonic() - queued_since[check["id"]], 6)
+                    "queued_seconds": round(time.monotonic() - queued_since[check["id"]], 6),
+                    "scheduler_slots": resource_weight(check),
+                    "child_capacity": weight,
                 }
                 submitted = True
             return submitted
