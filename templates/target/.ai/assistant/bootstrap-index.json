@@ -1,42 +1,9 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "index_kind": "target-bootstrap-index",
-  "generated_by": {
-    "schema_version": 1,
-    "provenance_kind": "source-template",
-    "tool": "render_target_bootstrap_index.py",
-    "source_revision": "source-template",
-    "source_worktree_state": "clean",
-    "source_dirty_paths": [],
-    "target_manifest": ".ai/alatyr.yaml",
-    "target_manifest_digest": "sha256:5a07ec918a18a564ef30d0fa17ddfcb44b5cea529c90a46dbcb2de33a997c558",
-    "target_worktree_state": "clean",
-    "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.57",
-    "adapter_schema_version": "47",
-    "template_version": "52"
-  },
-  "derived_from": {
-    "manifest": {
-      "path": ".ai/alatyr.yaml",
-      "sha256": "5a07ec918a18a564ef30d0fa17ddfcb44b5cea529c90a46dbcb2de33a997c558"
-    },
-    "project_map": {
-      "path": ".ai/README.md",
-      "sha256": "732f1e3b2ae8531850463670521036a9703cc5f50ecffe118f90705450f98b4d"
-    },
-    "context_router": {
-      "path": ".ai/assistant/context-router.json",
-      "sha256": "85038c4c17ad4375503529907074c9b0c3648d562f0d10cfc5ca95a1c9d32c88"
-    },
-    "semantic_codebook": {
-      "path": ".ai/framework/semantics/index.json",
-      "sha256": "c9b656837e72b8075fc5fac9cba8b7ea97db03c6a5c7165ac01b7517ef71d994"
-    },
-    "rule_registry": {
-      "path": ".ai/framework/rule-registry.json",
-      "sha256": "ccf8715fb18af8e3b0adeee4806b075f18ae0da6f5ebfd658628355ec9fb83a6"
-    }
+  "integrity": {
+    "path": ".ai/assistant/bootstrap-integrity.json",
+    "on_failure": "load integrity evidence and canonical sources; do not trust compact routing"
   },
   "installation": {
     "framework_version": "{ALATYR_CORE_VERSION}",
@@ -58,7 +25,7 @@
   },
   "semantic_preload": {
     "index": ".ai/framework/semantics/index.json",
-    "codebook_schema_version": 1,
+    "codebook_schema_version": 2,
     "terms": [
       {
         "id": "alatyr:current-scope-authorization@1",
@@ -71,6 +38,12 @@
         "version": 1,
         "definition": "Use the target-registered canonical owner for a fact type, preserve its conflict resolver and synchronization direction, and treat routing records, summaries, evidence, frequency, and recency as non-authoritative unless that owner says otherwise.",
         "canonical_owner": ".ai/framework/source-of-truth-registry.md"
+      },
+      {
+        "id": "alatyr:risk-by-fact@1",
+        "version": 1,
+        "definition": "Classify risk from changed facts, affected boundaries, reversibility, external effects, and target policy rather than from file count or apparent patch size; expand to the applicable owner, approval, safety, and validation evidence before acting.",
+        "canonical_owner": ".ai/framework/change-risk-model.md"
       },
       {
         "id": "alatyr:protected-change@1",
@@ -93,195 +66,9 @@
     ],
     "fallback": "load the referenced canonical owner and do not infer a missing stale conflicting cyclic or unsupported compact term"
   },
-  "rule_selector": {
-    "registry_sha256": "ccf8715fb18af8e3b0adeee4806b075f18ae0da6f5ebfd658628355ec9fb83a6",
-    "categories": {
-      "CONTEXT": {
-        "owner": ".ai/framework/context-profiles.md",
-        "rule_ids": [
-          "ALATYR-CONTEXT-001"
-        ]
-      },
-      "SOURCE": {
-        "owner": ".ai/framework/source-of-truth-registry.md",
-        "rule_ids": [
-          "ALATYR-SOURCE-001"
-        ]
-      },
-      "RISK": {
-        "owner": ".ai/framework/change-risk-model.md",
-        "rule_ids": [
-          "ALATYR-RISK-001"
-        ]
-      },
-      "APPROVAL": {
-        "owner": ".ai/framework/approval-records.md",
-        "rule_ids": [
-          "ALATYR-APPROVAL-001"
-        ]
-      },
-      "AUTHORIZATION": {
-        "owner": ".ai/framework/action-authorization.md",
-        "rule_ids": [
-          "ALATYR-AUTHORIZATION-001"
-        ]
-      },
-      "SAFETY": {
-        "owner": ".ai/framework/security-safety-guidance.md",
-        "rule_ids": [
-          "ALATYR-SAFETY-001",
-          "ALATYR-SAFETY-002"
-        ]
-      },
-      "INTEGRITY": {
-        "owner": ".ai/framework/logical-integrity.md",
-        "rule_ids": [
-          "ALATYR-INTEGRITY-001"
-        ]
-      },
-      "CHANGE": {
-        "owner": ".ai/framework/blueprint-driven-change.md",
-        "rule_ids": [
-          "ALATYR-CHANGE-001"
-        ]
-      },
-      "PACKAGE": {
-        "owner": ".ai/framework/change-packages.md",
-        "rule_ids": [
-          "ALATYR-PACKAGE-001"
-        ]
-      },
-      "ARCHITECTURE": {
-        "owner": ".ai/framework/architecture-knowledge.md",
-        "rule_ids": [
-          "ALATYR-ARCHITECTURE-001"
-        ]
-      },
-      "CODEDOC": {
-        "owner": ".ai/framework/code-documentation.md",
-        "rule_ids": [
-          "ALATYR-CODEDOC-001"
-        ]
-      },
-      "VOCABULARY": {
-        "owner": ".ai/framework/project-vocabulary.md",
-        "rule_ids": [
-          "ALATYR-VOCABULARY-001"
-        ]
-      },
-      "TDD": {
-        "owner": ".ai/framework/test-first-development.md",
-        "rule_ids": [
-          "ALATYR-TDD-001"
-        ]
-      },
-      "EXTENSION": {
-        "owner": ".ai/framework/extensions.md",
-        "rule_ids": [
-          "ALATYR-EXTENSION-001"
-        ]
-      },
-      "DEPENDENCY": {
-        "owner": ".ai/framework/dependency-knowledge.md",
-        "rule_ids": [
-          "ALATYR-DEPENDENCY-001"
-        ]
-      },
-      "MODE": {
-        "owner": ".ai/framework/workspace-modes.md",
-        "rule_ids": [
-          "ALATYR-MODE-001"
-        ]
-      },
-      "DIAGRAM": {
-        "owner": ".ai/framework/diagram-guidance.md",
-        "rule_ids": [
-          "ALATYR-DIAGRAM-001"
-        ]
-      },
-      "ADAPTER": {
-        "owner": ".ai/framework/project-adapter-contract.md",
-        "rule_ids": [
-          "ALATYR-ADAPTER-001"
-        ]
-      },
-      "MODULE": {
-        "owner": ".ai/framework/module-profile.md",
-        "rule_ids": [
-          "ALATYR-MODULE-001"
-        ]
-      },
-      "OPERATION": {
-        "owner": ".ai/framework/operation-help.md",
-        "rule_ids": [
-          "ALATYR-OPERATION-001"
-        ]
-      },
-      "TEAM": {
-        "owner": ".ai/framework/team-collaboration.md",
-        "rule_ids": [
-          "ALATYR-TEAM-001"
-        ]
-      },
-      "DECOMPOSITION": {
-        "owner": ".ai/framework/task-decomposition.md",
-        "rule_ids": [
-          "ALATYR-DECOMPOSITION-001"
-        ]
-      },
-      "DELEGATION": {
-        "owner": ".ai/framework/subagent-delegation.md",
-        "rule_ids": [
-          "ALATYR-DELEGATION-001"
-        ]
-      },
-      "BRIDGE": {
-        "owner": ".ai/framework/bridge-capability-matrix.md",
-        "rule_ids": [
-          "ALATYR-BRIDGE-001"
-        ]
-      },
-      "LIFECYCLE": {
-        "owner": ".ai/framework/lifecycle.md",
-        "rule_ids": [
-          "ALATYR-LIFECYCLE-001"
-        ]
-      },
-      "ENGINEERING_EVIDENCE": {
-        "owner": ".ai/framework/engineering-evidence.md",
-        "rule_ids": [
-          "ALATYR-ENGINEERING-EVIDENCE-001"
-        ]
-      },
-      "PROJECT_KNOWLEDGE": {
-        "owner": ".ai/framework/project-knowledge.md",
-        "rule_ids": [
-          "ALATYR-KNOWLEDGE-001"
-        ]
-      },
-      "DEBUG": {
-        "owner": ".ai/framework/debug-mode.md",
-        "rule_ids": [
-          "ALATYR-DEBUG-001"
-        ]
-      },
-      "SUPPORT": {
-        "owner": ".ai/framework/support-information.md",
-        "rule_ids": [
-          "ALATYR-SUPPORT-001"
-        ]
-      },
-      "EVIDENCE": {
-        "owner": ".ai/framework/guarantees.md",
-        "rule_ids": [
-          "ALATYR-EVIDENCE-001"
-        ]
-      }
-    },
-    "dependency_resolution": "load-selected-owner-front-matter"
-  },
+  "rule_selector": ".ai/framework/rule-registry.json",
   "context_packet": {
-    "schema_version": 2,
+    "schema_version": 3,
     "template": ".ai/assistant/templates/context-packet.json",
     "receipt_required_for": [
       "budget exceeded",
@@ -292,11 +79,7 @@
       "token or cost claim"
     ]
   },
-  "agent_entry_packet": {
-    "schema_version": 3,
-    "path": ".ai/assistant/entry-packet.json",
-    "load_after": ".ai/assistant/bootstrap-index.json"
-  },
+  "recovery_entry_packet": ".ai/assistant/entry-packet.json",
   "routing_order": [
     "docs-local",
     "code-local",
@@ -341,73 +124,7 @@
       "descriptor": ".ai/assistant/context/profiles/framework-upgrade.json"
     }
   },
-  "intent_overlays": {
-    "diagram-request": {
-      "selector": "diagram-request",
-      "descriptor": ".ai/assistant/context/intents/diagram-request.json",
-      "required_module": "diagrams",
-      "operations": [
-        "diagram-discussion"
-      ]
-    },
-    "architecture-request": {
-      "selector": "architecture-request",
-      "descriptor": ".ai/assistant/context/intents/architecture-request.json",
-      "required_module": "architecture-knowledge",
-      "operations": [
-        "architecture-assistance"
-      ]
-    },
-    "code-documentation": {
-      "selector": "code-documentation",
-      "descriptor": ".ai/assistant/context/intents/code-documentation.json",
-      "required_module": "code-documentation",
-      "operations": [
-        "documentation-sync"
-      ]
-    },
-    "vocabulary-request": {
-      "selector": "vocabulary-request",
-      "descriptor": ".ai/assistant/context/intents/vocabulary-request.json",
-      "required_module": "project-vocabulary",
-      "operations": [
-        "project-vocabulary"
-      ]
-    },
-    "test-first-request": {
-      "selector": "test-first-request",
-      "descriptor": ".ai/assistant/context/intents/test-first-request.json",
-      "required_module": "core-profile",
-      "operations": [
-        "test-first-configuration",
-        "test-first-change"
-      ]
-    },
-    "extension-request": {
-      "selector": "extension-request",
-      "descriptor": ".ai/assistant/context/intents/extension-request.json",
-      "required_module": "core-profile",
-      "operations": [
-        "extension-management"
-      ]
-    },
-    "dependency-knowledge-request": {
-      "selector": "dependency-knowledge-request",
-      "descriptor": ".ai/assistant/context/intents/dependency-knowledge-request.json",
-      "required_module": "dependency-knowledge",
-      "operations": [
-        "dependency-knowledge"
-      ]
-    },
-    "workspace-mode-request": {
-      "selector": "workspace-mode-request",
-      "descriptor": ".ai/assistant/context/intents/workspace-mode-request.json",
-      "required_module": "workspace-modes",
-      "operations": [
-        "workspace-mode"
-      ]
-    }
-  },
+  "intent_index": ".ai/assistant/context/intents/context-index.json",
   "task_scale_overlays": {
     "small-task": {
       "selector": "small-task",
@@ -437,6 +154,16 @@
       "selector": "team-active",
       "descriptor": ".ai/assistant/team/context-overlay.json"
     }
+  },
+  "task_classification": {
+    "order": [
+      "protected-or-sensitive",
+      "large-or-resumable",
+      "small-task",
+      "standard-task"
+    ],
+    "default": "standard-task",
+    "ambiguity": "inspect-only"
   },
   "area_overlays": {
     "{TARGET_AREA_ID}": {

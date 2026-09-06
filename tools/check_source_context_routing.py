@@ -400,13 +400,14 @@ def main() -> int:
     expected_preload = [
         "alatyr:current-scope-authorization@1",
         "alatyr:canonical-owner@1",
+        "alatyr:risk-by-fact@1",
         "alatyr:protected-change@1",
         "alatyr:logical-integrity@1",
         "alatyr:bounded-context-expansion@1",
     ]
     if (
         not isinstance(semantic, dict)
-        or semantic.get("schema_version") != 1
+        or semantic.get("schema_version") != 2
         or semantic.get("index") != "framework/semantics/index.json"
         or semantic.get("preload_terms") != expected_preload
     ):

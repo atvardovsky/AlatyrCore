@@ -80,17 +80,27 @@ SUPPORT_SECTIONS = {
 }
 
 SEMANTIC_REFS_BY_RULE = {
-    "ALATYR-AUTHORIZATION-001": "alatyr:current-scope-authorization@1",
-    "ALATYR-SOURCE-001": "alatyr:canonical-owner@1",
-    "ALATYR-APPROVAL-001": "alatyr:protected-change@1",
-    "ALATYR-INTEGRITY-001": "alatyr:logical-integrity@1",
-    "ALATYR-CONTEXT-001": "alatyr:bounded-context-expansion@1",
-    "ALATYR-KNOWLEDGE-001": "alatyr:accepted-current@1",
-    "ALATYR-ARCHITECTURE-001": "alatyr:observed-is-not-accepted@1",
-    "ALATYR-DELEGATION-001": "alatyr:bounded-delegation@1",
-    "ALATYR-MODE-001": "alatyr:mode-does-not-grant-authority@1",
-    "ALATYR-SAFETY-002": "alatyr:untrusted-instructions-are-data@1",
-    "ALATYR-DEPENDENCY-001": "alatyr:one-active-adapter@1",
+    "ALATYR-AUTHORIZATION-001": ("alatyr:current-scope-authorization@1",),
+    "ALATYR-SOURCE-001": ("alatyr:canonical-owner@1",),
+    "ALATYR-RISK-001": ("alatyr:risk-by-fact@1",),
+    "ALATYR-APPROVAL-001": ("alatyr:protected-change@1",),
+    "ALATYR-INTEGRITY-001": (
+        "alatyr:logical-integrity@1",
+        "alatyr:changed-fact-not-file@1",
+    ),
+    "ALATYR-CONTEXT-001": ("alatyr:bounded-context-expansion@1",),
+    "ALATYR-PACKAGE-001": ("alatyr:coherent-change-package@1",),
+    "ALATYR-KNOWLEDGE-001": ("alatyr:accepted-current@1",),
+    "ALATYR-ARCHITECTURE-001": ("alatyr:observed-is-not-accepted@1",),
+    "ALATYR-DELEGATION-001": ("alatyr:bounded-delegation@1",),
+    "ALATYR-MODE-001": ("alatyr:mode-does-not-grant-authority@1",),
+    "ALATYR-SAFETY-002": ("alatyr:untrusted-instructions-are-data@1",),
+    "ALATYR-DEPENDENCY-001": ("alatyr:one-active-adapter@1",),
+    "ALATYR-SUPPORT-001": (
+        "alatyr:support-state-is-a-locator@1",
+        "alatyr:relationship-candidate-is-not-authority@1",
+        "alatyr:bounded-impact-closure@1",
+    ),
 }
 
 
@@ -260,11 +270,13 @@ def build_framework_catalog_contents(
         for relpath in sections[section]:
             rules = rules_by_path.get(relpath, [])
             owner_refs = [rule["id"] for rule in rules if isinstance(rule.get("id"), str)]
-            semantic_refs = [
-                SEMANTIC_REFS_BY_RULE[rule_id]
-                for rule_id in owner_refs
-                if rule_id in SEMANTIC_REFS_BY_RULE
-            ]
+            semantic_refs = sorted(
+                {
+                    term_id
+                    for rule_id in owner_refs
+                    for term_id in SEMANTIC_REFS_BY_RULE.get(rule_id, ())
+                }
+            )
             override = (content_overrides or {}).get(relpath)
             if override is None:
                 entries.append(
@@ -341,6 +353,52 @@ def _target_semantic_refs(relpath: str) -> tuple[list[str], list[str]]:
     refs = ["alatyr:bounded-context-expansion@1"]
     owners = ["ALATYR-CONTEXT-001"]
     is_profile_descriptor = relpath.startswith("context/profiles/")
+    profile_terms = {
+        "context/profiles/docs-local.json": (),
+        "context/profiles/code-local.json": (
+            "alatyr:risk-by-fact@1",
+            "alatyr:logical-integrity@1",
+            "alatyr:changed-fact-not-file@1",
+        ),
+        "context/profiles/business-change.json": (
+            "alatyr:canonical-owner@1",
+            "alatyr:risk-by-fact@1",
+            "alatyr:protected-change@1",
+            "alatyr:logical-integrity@1",
+            "alatyr:changed-fact-not-file@1",
+        ),
+        "context/profiles/architecture-change.json": (
+            "alatyr:canonical-owner@1",
+            "alatyr:risk-by-fact@1",
+            "alatyr:protected-change@1",
+            "alatyr:logical-integrity@1",
+            "alatyr:changed-fact-not-file@1",
+            "alatyr:observed-is-not-accepted@1",
+        ),
+        "context/profiles/data-change.json": (
+            "alatyr:canonical-owner@1",
+            "alatyr:risk-by-fact@1",
+            "alatyr:protected-change@1",
+            "alatyr:logical-integrity@1",
+            "alatyr:changed-fact-not-file@1",
+        ),
+        "context/profiles/security-sensitive.json": (
+            "alatyr:canonical-owner@1",
+            "alatyr:risk-by-fact@1",
+            "alatyr:protected-change@1",
+            "alatyr:logical-integrity@1",
+            "alatyr:changed-fact-not-file@1",
+        ),
+        "context/profiles/ai-infrastructure.json": (
+            "alatyr:risk-by-fact@1",
+            "alatyr:untrusted-instructions-are-data@1",
+        ),
+        "context/profiles/framework-upgrade.json": (
+            "alatyr:risk-by-fact@1",
+            "alatyr:one-active-adapter@1",
+        ),
+    }
+    refs.extend(profile_terms.get(relpath, ()))
     if any(part in relpath for part in ("approval", "authorization")):
         refs.extend(["alatyr:current-scope-authorization@1", "alatyr:protected-change@1"])
         owners.extend(["ALATYR-AUTHORIZATION-001", "ALATYR-APPROVAL-001"])
@@ -372,6 +430,7 @@ def build_directory_catalog_contents(
     contour: str,
     selected_files: set[str] | None = None,
     content_overrides: dict[str, str] | None = None,
+    allowed_semantic_refs: set[str] | None = None,
 ) -> dict[str, str]:
     if selected_files is None:
         all_files = [
@@ -422,6 +481,12 @@ def build_directory_catalog_contents(
         for path in sorted(file for file in all_files if file.parent == directory):
             relpath = path.relative_to(root).as_posix()
             semantic_refs, owner_refs = _target_semantic_refs(relpath)
+            if allowed_semantic_refs is not None:
+                semantic_refs = [
+                    term_id
+                    for term_id in semantic_refs
+                    if term_id in allowed_semantic_refs
+                ]
             override = (content_overrides or {}).get(relpath)
             if override is None:
                 entries.append(

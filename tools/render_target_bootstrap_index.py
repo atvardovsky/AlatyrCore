@@ -7,7 +7,12 @@ import argparse
 import sys
 from pathlib import Path
 
-from bootstrap_index import BOOTSTRAP_PATH, build_from_target, render
+from bootstrap_index import (
+    BOOTSTRAP_INTEGRITY_PATH,
+    BOOTSTRAP_PATH,
+    build_bundle_from_target,
+    render,
+)
 from target_tool_compat import assert_write_compatible, generated_json_equivalent
 
 
@@ -27,12 +32,15 @@ def main() -> int:
 
     target = args.target.resolve()
     try:
-        expected = render(build_from_target(target))
+        bootstrap, integrity = build_bundle_from_target(target)
+        expected = render(bootstrap)
+        expected_integrity = render(integrity)
     except (OSError, UnicodeError, ValueError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 2
 
     output = target / BOOTSTRAP_PATH
+    integrity_output = target / BOOTSTRAP_INTEGRITY_PATH
     if args.write:
         try:
             assert_write_compatible(
@@ -45,7 +53,8 @@ def main() -> int:
             return 2
         output.parent.mkdir(parents=True, exist_ok=True)
         output.write_bytes(expected.encode("utf-8"))
-        print(f"Wrote bootstrap index: {output}")
+        integrity_output.write_bytes(expected_integrity.encode("utf-8"))
+        print(f"Wrote bootstrap index and integrity evidence: {output}")
         return 0
     if args.check or not args.stdout:
         try:
@@ -55,6 +64,14 @@ def main() -> int:
             return 1
         if not generated_json_equivalent(expected, actual.decode("utf-8")):
             print(f"FAIL: bootstrap index is stale: {output}", file=sys.stderr)
+            return 1
+        try:
+            actual_integrity = integrity_output.read_text(encoding="utf-8")
+        except OSError as exc:
+            print(f"FAIL: cannot read {integrity_output}: {exc}", file=sys.stderr)
+            return 1
+        if not generated_json_equivalent(expected_integrity, actual_integrity):
+            print(f"FAIL: bootstrap integrity is stale: {integrity_output}", file=sys.stderr)
             return 1
         print(f"OK: bootstrap index matches canonical sources: {output}")
         return 0

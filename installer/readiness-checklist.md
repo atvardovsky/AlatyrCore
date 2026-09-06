@@ -109,6 +109,7 @@ Check whether the target already has:
 - `.ai/assistant/policies`
 - `.ai/assistant/context-router.json`
 - `.ai/assistant/bootstrap-index.json`
+- `.ai/assistant/bootstrap-integrity.json`
 - `.ai/framework/context-index.json`
 - `.ai/project/context-index.json`
 - `.ai/assistant/context-index.json`
@@ -385,7 +386,7 @@ List commands or manual checks:
 - adapter output contract review:
 - context-profile review:
 - context-router bootstrap reference review:
-- generated bootstrap source-hash and deterministic projection review:
+- generated bootstrap integrity, source-hash, and deterministic projection review:
 - routed gate-index/profile-fragment review:
 - preloaded versus compact-bootstrap review:
 - context total/portable/reserved-target budget and receipt review:
@@ -464,7 +465,8 @@ Final evidence must say:
 - context router index and lazy descriptor references checked against the
   selected support profile, compact bootstrap, gates, operation routing, root
   entry points, and bridge files
-- generated bootstrap index matches the manifest, project map, and router
+- generated bootstrap index matches its lazy integrity record; that record
+  matches manifest, project map, router, semantic index, and rule-registry
   source hashes; bridges load the projection and retain canonical repair paths
 - profile default gate fragments match the gate index; the complete checklist
   remains lazy outside ambiguity, repair, or full audit

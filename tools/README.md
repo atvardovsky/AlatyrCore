@@ -108,8 +108,9 @@ The stable command set is:
   reports and labels source/manifest identity before interpreting timing
   deltas
 - `scaffold`: target structure writes only with `--write`
-- `render-bootstrap`: target bootstrap regeneration only with `--write`
-- `render-entry`: target first-use packet regeneration only with `--write`
+- `render-bootstrap`: target bootstrap and lazy integrity regeneration only
+  with `--write`
+- `render-entry`: target recovery packet regeneration only with `--write`
 - `render-context`: installed recursive context-index regeneration only with
   `--write`; check mode is read-only
 - `snapshot-support`: check support-state freshness or refresh it with explicit
@@ -818,15 +819,16 @@ Windows PowerShell or Command Prompt:
 py -3 .\tools\check_context_router.py
 ```
 
-`bootstrap_index.py` builds the deterministic target bootstrap projection from
-the adapter manifest, compact project map, and context router.
-`render_target_bootstrap_index.py` checks it by default and rewrites it only
-with `--write`; use `--stdout` for a non-writing preview.
-`agent_entry_packet.py` builds the deterministic first-use packet from the
+`bootstrap_index.py` builds the deterministic target bootstrap projection and
+its source-bound lazy integrity record from the adapter manifest, compact
+project map, context router, semantic index, and rule registry.
+`render_target_bootstrap_index.py` checks both by default and rewrites them only
+with `--write`; use `--stdout` for a non-writing bootstrap preview.
+`agent_entry_packet.py` builds the deterministic recovery packet from the
 manifest, router, gate index, action-authorization policy, support policy, and
 operation index when installed. `render_target_entry_packet.py` checks it by
 default and rewrites it only with `--write`.
-`check_bootstrap_routing.py` verifies source hashes,
+`check_bootstrap_routing.py` verifies the bootstrap's lazy integrity evidence,
 gate-index/profile coverage, budget headroom, and deterministic core scaffold
 generation.
 

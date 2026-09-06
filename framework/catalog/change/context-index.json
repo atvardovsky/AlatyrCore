@@ -48,7 +48,9 @@
           "ALATYR-PACKAGE-001"
         ]
       },
-      "semantic_refs": [],
+      "semantic_refs": [
+        "alatyr:coherent-change-package@1"
+      ],
       "owner_refs": [
         "ALATYR-PACKAGE-001"
       ],

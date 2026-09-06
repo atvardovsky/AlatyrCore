@@ -4,33 +4,23 @@ Owner: `ALATYR-EVIDENCE-001`.
 
 Before completion, report:
 
-- profile/areas, facts/files, and synchronized surfaces
-- support-state freshness/root digest, changed support paths, bounded impact
-  closure, relationship-candidate dispositions, and generated-support actions
-- support/product change cost when measured, including file and line ratios
-  plus the structural/semantic reasoning boundary
-- contract artifact result when API, schema, event, persistence, generated
-  reference, public-interface, or external-boundary contract facts changed
-- visual validation result when UI, layout, accessibility-relevant, rendered
-  diagram, visual artifact, or discussion diagram presentation facts changed
+- profile, task class, areas, facts/files, owners, selected gates, and
+  synchronized surfaces
 - `current_user_authorization`: source/scope, allowed phases, invalidation,
   latest commit/publish/live confirmation/effects
 - invariant/review reconciliation
 - validation outcomes/unresolved checks
 - approval scope and avoided protected actions
-- context index chain, selected item IDs/digests, semantic term IDs/versions,
-  packet digest or canonical-prose fallback, budget expansions, and
-  task/package/team/delegation evidence
+- context index chain, required obligation IDs, selected item IDs/digests,
+  semantic term IDs/versions, packet digest or canonical-prose fallback, and
+  budget expansions
 - `durable_engineering_evidence`: captured/skipped/blocked,
   ID/path/repository binding, or reason
-- `debug_lifecycle_coverage`: state, phases, continuation,
-  `project_knowledge_candidates` dispositions, and reciprocal evidence
-- `debug_repository_lifecycle`: state, transition evidence, commit/publish
-  evidence, next permitted action, and Debug/Git reconciliation when active
 - `validation_evidence_classes`: declared, locally observed, tool verified,
   CI verified, reviewer verified, production verified, or explicit skipped
   evidence without overclaiming stronger classes
-- project-knowledge adoption/reuse state or enabled-empty limitation
+- every selected gate's gate-specific final evidence; do not report evidence
+  for an unselected optional module as though it ran
 - residual risk and next owner/action
 
 For material operations that change files, commit, publish, use live-external

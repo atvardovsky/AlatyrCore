@@ -27,13 +27,15 @@
         ]
       },
       "semantic_refs": [
-        "alatyr:bounded-context-expansion@1"
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:risk-by-fact@1",
+        "alatyr:untrusted-instructions-are-data@1"
       ],
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 141,
-      "content_digest": "sha256:76b44e57234596e7f01ffaac5b8d8ac519b5f80c1cb16cfc79bea8640dd14f4e"
+      "estimated_words": 127,
+      "content_digest": "sha256:d52aff7b9e78e7d2300c1c1ae1a3402bba11e9edb51aef964a0b48efc89e069f"
     },
     {
       "id": "assistant.content.context-profiles-architecture-change-json",
@@ -51,13 +53,19 @@
         ]
       },
       "semantic_refs": [
-        "alatyr:bounded-context-expansion@1"
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:changed-fact-not-file@1",
+        "alatyr:logical-integrity@1",
+        "alatyr:observed-is-not-accepted@1",
+        "alatyr:protected-change@1",
+        "alatyr:risk-by-fact@1"
       ],
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 207,
-      "content_digest": "sha256:a6da5eca0dc3785f71ea375dbeeac081d677b1c08610f57439cf8f778d084fc3"
+      "estimated_words": 237,
+      "content_digest": "sha256:e990adca960b283a1f7ebea37e847e22d80e7c35943c9a24547a9f7d381385fb"
     },
     {
       "id": "assistant.content.context-profiles-business-change-json",
@@ -75,13 +83,18 @@
         ]
       },
       "semantic_refs": [
-        "alatyr:bounded-context-expansion@1"
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:changed-fact-not-file@1",
+        "alatyr:logical-integrity@1",
+        "alatyr:protected-change@1",
+        "alatyr:risk-by-fact@1"
       ],
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 171,
-      "content_digest": "sha256:3d41b42928854d81384ba9cf599540fac52cc73e5e00e9a2438908d84819ed7a"
+      "estimated_words": 201,
+      "content_digest": "sha256:034d19d11b420e3a07cf954dd28a2bee2f161b8648c97673c83527e55b4d6192"
     },
     {
       "id": "assistant.content.context-profiles-code-local-json",
@@ -99,13 +112,16 @@
         ]
       },
       "semantic_refs": [
-        "alatyr:bounded-context-expansion@1"
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:changed-fact-not-file@1",
+        "alatyr:logical-integrity@1",
+        "alatyr:risk-by-fact@1"
       ],
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 172,
-      "content_digest": "sha256:dec52ecc41608e4f27dfc35ebb8c1da9aeb7b5d7a58649ab4934f5d17cc4851e"
+      "estimated_words": 208,
+      "content_digest": "sha256:432e59af67227daa2cf26e70b0e8f39db27d63f6fcc6ee08ff2a7cd157b80d32"
     },
     {
       "id": "assistant.content.context-profiles-data-change-json",
@@ -123,13 +139,18 @@
         ]
       },
       "semantic_refs": [
-        "alatyr:bounded-context-expansion@1"
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:changed-fact-not-file@1",
+        "alatyr:logical-integrity@1",
+        "alatyr:protected-change@1",
+        "alatyr:risk-by-fact@1"
       ],
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 172,
-      "content_digest": "sha256:3ae2e21ee19879a6ce6313123fcb770f9187f85c326d34b9f7e41d0f404b1fd6"
+      "estimated_words": 192,
+      "content_digest": "sha256:f5308337fe295d07e85bb33c0cf470874c18b8392ee5227982175ac2f47a3c97"
     },
     {
       "id": "assistant.content.context-profiles-docs-local-json",
@@ -152,8 +173,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 78,
-      "content_digest": "sha256:cba0292ef1f7666dac84d4001a6926910fda9ff4964fabaf1f0e5a5c28e13e43"
+      "estimated_words": 90,
+      "content_digest": "sha256:06d20a8e1c8d0712f18f59377d19eaf2ff1965059cf5a1928d507b54184942a2"
     },
     {
       "id": "assistant.content.context-profiles-framework-upgrade-json",
@@ -171,7 +192,9 @@
         ]
       },
       "semantic_refs": [
-        "alatyr:bounded-context-expansion@1"
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:one-active-adapter@1",
+        "alatyr:risk-by-fact@1"
       ],
       "owner_refs": [
         "ALATYR-CONTEXT-001"
@@ -195,13 +218,18 @@
         ]
       },
       "semantic_refs": [
-        "alatyr:bounded-context-expansion@1"
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:changed-fact-not-file@1",
+        "alatyr:logical-integrity@1",
+        "alatyr:protected-change@1",
+        "alatyr:risk-by-fact@1"
       ],
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 109,
-      "content_digest": "sha256:514e892b8245d836e01ba6b08ae09a9c630d5856acebb34ed85b2b41e551c516"
+      "estimated_words": 120,
+      "content_digest": "sha256:93c0609c613a71f05bc42ffc348a662b150cd7c61d33b22ae8ff6eb6ea6b8521"
     }
   ]
 }

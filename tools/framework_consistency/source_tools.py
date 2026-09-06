@@ -371,7 +371,6 @@ def check_core_source_tools(context: CheckContext) -> list[str]:
                     f"{required_framework_metadata_text}"
                 )
     for relpath in [
-        "AGENTS.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -403,7 +402,6 @@ def check_core_source_tools(context: CheckContext) -> list[str]:
 def check_context_source_tools(context: CheckContext) -> list[str]:
     failures: list[str] = []
     for relpath in [
-        "AGENTS.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -412,7 +410,6 @@ def check_context_source_tools(context: CheckContext) -> list[str]:
             failures.append(f"{relpath} missing check_approval_template.py")
 
     for relpath in [
-        "AGENTS.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -441,7 +438,6 @@ def check_context_source_tools(context: CheckContext) -> list[str]:
                     f"{required_bridge_capability_tool_text}"
                 )
     for relpath in [
-        "AGENTS.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -469,7 +465,6 @@ def check_context_source_tools(context: CheckContext) -> list[str]:
                     f"{required_discussion_diagram_text}"
                 )
     for relpath in [
-        "AGENTS.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -496,7 +491,6 @@ def check_context_source_tools(context: CheckContext) -> list[str]:
                     f"{required_context_router_tool_text}"
                 )
     for relpath in [
-        "AGENTS.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -523,7 +517,6 @@ def check_context_source_tools(context: CheckContext) -> list[str]:
                     f"{required_manifest_contract_text}"
                 )
     for relpath in [
-        "AGENTS.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -573,7 +566,6 @@ def check_context_source_tools(context: CheckContext) -> list[str]:
                     f"{required_maturity_profile_tool_text}"
                 )
     for relpath in [
-        "AGENTS.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -603,7 +595,6 @@ def check_context_source_tools(context: CheckContext) -> list[str]:
 def check_operation_source_tools(context: CheckContext) -> list[str]:
     failures: list[str] = []
     for relpath in [
-        "AGENTS.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -654,7 +645,6 @@ def check_operation_source_tools(context: CheckContext) -> list[str]:
                     f"{required_operation_help_text}"
                 )
     for relpath in [
-        "AGENTS.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -680,7 +670,6 @@ def check_operation_source_tools(context: CheckContext) -> list[str]:
                     f"{required_output_contracts_text}"
                 )
     for relpath in [
-        "AGENTS.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -706,7 +695,6 @@ def check_operation_source_tools(context: CheckContext) -> list[str]:
                     f"{required_ai_inventory_text}"
                 )
     for relpath in [
-        "AGENTS.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -738,7 +726,6 @@ def check_operation_source_tools(context: CheckContext) -> list[str]:
                     f"{required_ai_recommendation_text}"
                 )
     for relpath in [
-        "AGENTS.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -766,7 +753,6 @@ def check_operation_source_tools(context: CheckContext) -> list[str]:
                     f"{required_rule_ownership_tool_text}"
                 )
     for relpath in [
-        "AGENTS.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -792,7 +778,6 @@ def check_operation_source_tools(context: CheckContext) -> list[str]:
                     f"{required_source_registry_tool_text}"
                 )
     for relpath in [
-        "AGENTS.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -821,4 +806,3 @@ def check_operation_source_tools(context: CheckContext) -> list[str]:
                     f"{required_versioning_tool_text}"
                 )
     return failures
-

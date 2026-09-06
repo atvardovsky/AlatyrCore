@@ -10,25 +10,25 @@
     "source_worktree_state": "clean",
     "source_dirty_paths": [],
     "target_manifest": ".ai/alatyr.yaml",
-    "target_manifest_digest": "sha256:5a07ec918a18a564ef30d0fa17ddfcb44b5cea529c90a46dbcb2de33a997c558",
+    "target_manifest_digest": "sha256:a1bd95b493a9d1df9cb4eb86c661613c857c7cdb358e8e0d18020f0487d12c63",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.57",
-    "adapter_schema_version": "47",
-    "template_version": "52"
+    "framework_version": "0.1.0-alpha.58",
+    "adapter_schema_version": "48",
+    "template_version": "53"
   },
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "5a07ec918a18a564ef30d0fa17ddfcb44b5cea529c90a46dbcb2de33a997c558"
+      "sha256": "a1bd95b493a9d1df9cb4eb86c661613c857c7cdb358e8e0d18020f0487d12c63"
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",
-      "sha256": "85038c4c17ad4375503529907074c9b0c3648d562f0d10cfc5ca95a1c9d32c88"
+      "sha256": "a9380310cfe36f1a1b568ba661ecbcc53f9538324e1fc1489412b78eeba96721"
     },
     "gate_index": {
       "path": ".ai/assistant/gates/index.json",
-      "sha256": "c14145c9a307e37bad5d64ca1e0b3308e1f0353e71834f2de575c501352c1464"
+      "sha256": "9f666806856b50bf4c30e3cecc2a198decc252e555f6ccd95ed022549249e2b5"
     },
     "action_authorization_policy": {
       "path": ".ai/assistant/policies/action-authorization.json",
@@ -74,7 +74,7 @@
       ]
     },
     {
-      "phase": "first-use-packet",
+      "phase": "recovery-packet",
       "paths": [
         ".ai/assistant/entry-packet.json"
       ]

@@ -84,7 +84,7 @@ def check_packet(
                 failures.append(f"entry packet source digest is invalid: {source_id}")
 
     sequence = packet.get("entry_sequence")
-    expected_sequence = ["host-preloaded", "bootstrap", "first-use-packet"]
+    expected_sequence = ["host-preloaded", "bootstrap", "recovery-packet"]
     if (
         not isinstance(sequence, list)
         or [item.get("phase") for item in sequence if isinstance(item, dict)]
@@ -95,7 +95,7 @@ def check_packet(
         if sequence[1].get("paths") != [".ai/assistant/bootstrap-index.json"]:
             failures.append("entry packet bootstrap phase must load bootstrap-index only")
         if sequence[2].get("paths") != [PACKET_PATH.as_posix()]:
-            failures.append("entry packet first-use phase must load itself")
+            failures.append("entry packet recovery phase must identify itself")
 
     routing_sources = packet.get("routing_sources")
     if not isinstance(routing_sources, dict):

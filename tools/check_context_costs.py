@@ -45,10 +45,14 @@ def main() -> int:
     for path in [
         "AGENTS.md",
         ".ai/assistant/bootstrap-index.json",
-        ".ai/assistant/entry-packet.json",
     ]:
         if path not in first_use["resolved_paths"]:
             failures.append(f"first-use measurement omits mandatory {path}")
+    if ".ai/assistant/entry-packet.json" in first_use["resolved_paths"]:
+        failures.append("routine first-use measurement must keep the recovery packet lazy")
+    recovery = report["recovery"]
+    if ".ai/assistant/entry-packet.json" not in recovery["resolved_paths"]:
+        failures.append("recovery measurement omits entry-packet.json")
 
     profile_budget = report["budgets"]["profile_default"]
     max_total_words = profile_budget["max_total_words"]
@@ -244,6 +248,11 @@ def main() -> int:
     semantic_reduction = primitives["semantic_codebook"]["word_reduction_percent"]
     if not isinstance(semantic_reduction, (int, float)) or semantic_reduction <= 0:
         failures.append("semantic codebook should reduce repeated definition words")
+    estimated_token_reduction = primitives["semantic_codebook"].get(
+        "estimated_token_reduction_percent"
+    )
+    if not isinstance(estimated_token_reduction, (int, float)) or estimated_token_reduction <= 0:
+        failures.append("semantic codebook serialized estimate should reduce repeated definition characters")
 
     if failures:
         for failure in failures:

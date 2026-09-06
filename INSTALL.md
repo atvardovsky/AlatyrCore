@@ -567,7 +567,13 @@ registry. Selection is static source scaffolding, not evidence that the client
 loaded the bridge or that the capability is enabled.
 
 After scaffolding or updating adapter sources, regenerate and check the compact
-entry packet before broad manual review:
+bootstrap plus its lazy integrity evidence before broad manual review:
+
+```sh
+python3 tools/render_target_bootstrap_index.py --target /path/to/target-repo --check
+```
+
+Also check the recovery entry packet:
 
 ```sh
 python3 tools/render_target_entry_packet.py --target /path/to/target-repo --check
@@ -575,10 +581,11 @@ python3 tools/render_target_entry_packet.py --target /path/to/target-repo --chec
 
 On Windows use `tools\alatyr.cmd render-entry` or
 `tools\alatyr.ps1 render-entry` when the target exposes those wrappers. The
-entry packet records exact installed profile files, gate fragments, operation
-routes when installed, allowed-action modes, and support-delta entry points.
-If it is missing or stale, repair it before trusting help, module, or
-context-profile summaries.
+entry packet records recovery routes, installed profile files, gate fragments,
+operation routes when installed, allowed-action modes, and support-delta entry
+points. It is not routine first-use context. If selected for recovery or audit
+and missing or stale, repair it before trusting help, module, or context-profile
+summaries.
 
 Scaffolding does not replace target inspection, installation planning,
 approval gates, adapter rewriting, validation, logical integrity review, or

@@ -1,4 +1,4 @@
-"""Build the compact installed-adapter first-use routing packet."""
+"""Build the compact installed-adapter recovery routing packet."""
 
 from __future__ import annotations
 
@@ -259,7 +259,7 @@ def build_agent_entry_packet(
                 "paths": _string_list(router.get("bootstrap_context")),
             },
             {
-                "phase": "first-use-packet",
+                "phase": "recovery-packet",
                 "paths": [PACKET_PATH.as_posix()],
             },
         ],

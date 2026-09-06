@@ -35,7 +35,6 @@ def check_release_tools(context: CheckContext) -> list[str]:
                     f"docs/release-process.md missing {required_release_text}"
                 )
     for relpath in [
-        "AGENTS.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -97,7 +96,6 @@ def check_release_tools(context: CheckContext) -> list[str]:
                     f"{required_release_template_text}"
                 )
     for relpath in [
-        "AGENTS.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -154,7 +152,6 @@ def check_release_tools(context: CheckContext) -> list[str]:
                     f"{required_migration_diff_report_text}"
                 )
     for relpath in [
-        "AGENTS.md",
         "tools/README.md",
         "docs/framework-maintenance.md",
         "docs/repository-layout.md",
@@ -511,4 +508,3 @@ def check_evidence_and_messages(context: CheckContext) -> list[str]:
             failures.append(f"{relpath} missing chat-history bootstrap warning")
 
     return failures
-

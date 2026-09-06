@@ -104,15 +104,16 @@ class ReleaseBaselineTests(unittest.TestCase):
                     any("timezone-aware ISO-8601" in failure for failure in failures)
                 )
 
-    def test_prefers_reviewed_incremental_checkpoint_over_distant_tag(self) -> None:
+    def test_prefers_nearest_available_checkpoint_over_distant_tag(self) -> None:
         version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
 
         baseline, intervening = nearest_release_baseline(version)
-        nearest_prior = prior_changelog_versions(version)[0]
+        prior_versions = prior_changelog_versions(version)
 
-        self.assertEqual(baseline.label, f"release-checkpoint:{nearest_prior}")
+        self.assertEqual(baseline.label, f"release-checkpoint:{baseline.version}")
         self.assertEqual(baseline.kind, "checkpoint")
-        self.assertEqual(intervening, [])
+        self.assertIn(baseline.version, prior_versions)
+        self.assertEqual(intervening, prior_versions[: prior_versions.index(baseline.version)])
 
     def test_uses_nearest_real_tag_and_preserves_intervening_report_chain(self) -> None:
         version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()

@@ -19,6 +19,7 @@ CONTEXT_OWNER = FRAMEWORK / "context-profiles.md"
 REQUIRED_PRELOAD_TERMS = {
     "alatyr:current-scope-authorization@1",
     "alatyr:canonical-owner@1",
+    "alatyr:risk-by-fact@1",
     "alatyr:protected-change@1",
     "alatyr:logical-integrity@1",
     "alatyr:bounded-context-expansion@1",

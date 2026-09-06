@@ -136,13 +136,24 @@ def measure(references: list[str]) -> dict[str, Any]:
 
 
 def first_use_references(router: dict[str, Any]) -> list[str]:
+    """Return context required before task-specific routing.
+
+    The recovery entry packet is intentionally excluded from routine first use.
+    """
+
+    return [
+        *router.get("preloaded_context", []),
+        *router.get("bootstrap_context", []),
+    ]
+
+
+def recovery_references(router: dict[str, Any]) -> list[str]:
     entry_packet = router.get("agent_entry_packet", {})
     entry_packet_path = (
         entry_packet.get("path") if isinstance(entry_packet, dict) else None
     )
     return [
-        *router.get("preloaded_context", []),
-        *router.get("bootstrap_context", []),
+        *first_use_references(router),
         *([entry_packet_path] if isinstance(entry_packet_path, str) else []),
     ]
 
@@ -192,6 +203,20 @@ def routing_primitive_costs() -> dict[str, Any]:
         if term_id in definition_words
     )
     compact_words = sum(definition_words.values()) + len(semantic_references)
+    expanded_text = " ".join(
+        terms[term_id]["definition"]
+        for term_id in semantic_references
+        if term_id in terms
+    )
+    compact_text = json.dumps(
+        {
+            "terms": [terms[term_id] for term_id in sorted(terms)],
+            "references": semantic_references,
+        },
+        ensure_ascii=True,
+        separators=(",", ":"),
+        sort_keys=True,
+    )
     return {
         "recursive_selection": {
             "selected_route": selected_route,
@@ -206,8 +231,24 @@ def routing_primitive_costs() -> dict[str, Any]:
             "expanded_definition_words": expanded_words,
             "compact_definition_and_reference_words": compact_words,
             "word_reduction_percent": reduction_percent(compact_words, expanded_words),
+            "expanded_characters": len(expanded_text),
+            "compact_serialized_characters": len(compact_text),
+            "estimated_token_reduction_percent": reduction_percent(
+                math.ceil(len(compact_text) / 4),
+                math.ceil(len(expanded_text) / 4),
+            ),
+            "measurement_limit": "synthetic repeated-definition comparison; not provider telemetry or billing evidence",
         },
     }
+
+
+def descriptor(entry: Any) -> tuple[str | None, dict[str, Any]]:
+    reference = entry.get("descriptor") if isinstance(entry, dict) else None
+    path = source_path(reference) if isinstance(reference, str) else None
+    if path is None or not path.is_file():
+        return reference, {}
+    data = json.loads(path.read_text(encoding="utf-8"))
+    return reference, data if isinstance(data, dict) else {}
 
 
 def build_report() -> dict[str, Any]:
@@ -218,13 +259,7 @@ def build_report() -> dict[str, Any]:
     ]
     bootstrap = measure(bootstrap_refs)
     first_use = measure(first_use_references(router))
-    def descriptor(entry: Any) -> tuple[str | None, dict[str, Any]]:
-        reference = entry.get("descriptor") if isinstance(entry, dict) else None
-        path = source_path(reference) if isinstance(reference, str) else None
-        if path is None or not path.is_file():
-            return reference, {}
-        data = json.loads(path.read_text(encoding="utf-8"))
-        return reference, data if isinstance(data, dict) else {}
+    recovery = measure(recovery_references(router))
     profiles: dict[str, dict[str, Any]] = {}
     profile_contracts: dict[str, tuple[str | None, dict[str, Any]]] = {}
     for name, entry in router.get("profile_index", {}).items():
@@ -654,13 +689,14 @@ def build_report() -> dict[str, Any]:
         )
         cost_scenarios[name] = scenario_measure
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "report_kind": "static-target-context-cost",
         "source": "templates/target/.ai/assistant/context-router.json",
         "measurement": "whitespace-delimited words in resolved source templates",
         "budgets": router.get("context_budgets", {}),
         "bootstrap": bootstrap,
         "first_use": first_use,
+        "recovery": recovery,
         "profiles": profiles,
         "intent_overlays": intent_overlays,
         "task_scale_overlays": task_scale_overlays,
@@ -755,7 +791,8 @@ def build_report() -> dict[str, Any]:
             "runtime clients may preload hidden context not represented by repository paths",
             "placeholder target-owned context is unresolved",
             "runtime expansion depends on task evidence",
-            "semantic-codebook savings model repeated definitions as words and each exact term reference as one word",
+            "semantic-codebook savings compare a synthetic repeated-definition baseline with compact serialized definitions and references",
+            "estimated tokens use characters divided by four and are not provider tokenizer output",
         ],
     }
 
@@ -774,6 +811,7 @@ def build_installed_report(target: Path) -> dict[str, Any]:
         ],
     )
     first_use = measure_installed(target, first_use_references(router))
+    recovery = measure_installed(target, recovery_references(router))
     profiles: dict[str, dict[str, Any]] = {}
     for name, entry in router.get("profile_index", {}).items():
         if not isinstance(entry, dict) or not isinstance(entry.get("descriptor"), str):
@@ -817,12 +855,13 @@ def build_installed_report(target: Path) -> dict[str, Any]:
         ],
     )
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "report_kind": "installed-target-context-cost",
         "target": str(target),
         "budgets": router.get("context_budgets", {}),
         "bootstrap": bootstrap,
         "first_use": first_use,
+        "recovery": recovery,
         "profiles": profiles,
         "consistency_routing": consistency_routing,
         "limitations": [

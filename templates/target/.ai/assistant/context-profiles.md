@@ -12,9 +12,10 @@ bootstrap context for every task is only:
 
 - `.ai/assistant/bootstrap-index.json`
 
-The generated bootstrap embeds the required core semantic definitions and is
-hash-bound to `.ai/alatyr.yaml`, `.ai/README.md`,
-`.ai/assistant/context-router.json`, and the installed semantic-codebook index.
+The generated bootstrap embeds the required core semantic definitions. Its
+lazy integrity record binds it to `.ai/alatyr.yaml`, `.ai/README.md`,
+`.ai/assistant/context-router.json`, the installed semantic-codebook index, and
+the rule registry without adding those hashes to routine model context.
 
 After bootstrap, choose one profile and affected project-area overlays before
 editing files. This file is the human rationale surface; load it only when

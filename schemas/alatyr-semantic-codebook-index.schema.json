@@ -4,11 +4,12 @@
   "title": "Alatyr semantic codebook index",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "index_kind", "codebook_id", "namespace_policy", "fallback", "shards"],
+  "required": ["schema_version", "index_kind", "codebook_id", "selection_mode", "namespace_policy", "fallback", "shards"],
   "properties": {
-    "schema_version": {"const": 1},
+    "schema_version": {"const": 2},
     "index_kind": {"const": "alatyr-semantic-codebook-index"},
     "codebook_id": {"type": "string", "minLength": 1},
+    "selection_mode": {"const": "explicit-references"},
     "namespace_policy": {
       "type": "object",
       "additionalProperties": false,
@@ -26,13 +27,17 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "path", "preload", "selectors", "term_ids", "content_digest"],
+        "required": ["id", "path", "preload", "selectors", "term_ids", "canonical_owner_digests", "content_digest"],
         "properties": {
           "id": {"type": "string", "minLength": 1},
           "path": {"type": "string", "minLength": 1},
           "preload": {"type": "boolean"},
           "selectors": {"type": "object"},
           "term_ids": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "canonical_owner_digests": {
+            "type": "object",
+            "additionalProperties": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+          },
           "content_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
         }
       }

@@ -58,7 +58,7 @@
     },
     "source_of_truth": {
       "type": "object",
-      "required": ["project_contour", "registry", "assistant_contour", "context_router", "bootstrap_index", "framework_context_index", "project_context_index", "assistant_context_index", "semantic_codebook", "agent_entry_packet", "context_profiles", "module_profile", "project_sources"],
+      "required": ["project_contour", "registry", "assistant_contour", "context_router", "bootstrap_index", "bootstrap_integrity", "framework_context_index", "project_context_index", "assistant_context_index", "semantic_codebook", "agent_entry_packet", "context_profiles", "module_profile", "project_sources"],
       "properties": {
         "project_sources": {"$ref": "#/definitions/nonEmptyStringArray"}
       }
@@ -82,9 +82,9 @@
         "agent_entry_packet": {"const": ".ai/assistant/entry-packet.json"},
         "recursive_index_schema_version": {"const": 1},
         "recursive_index_max_depth": {"type": "integer", "minimum": 1},
-        "semantic_codebook_schema_version": {"const": 1},
+        "semantic_codebook_schema_version": {"const": 2},
         "semantic_preload_policy": {"type": "string", "minLength": 1},
-        "context_packet_schema_version": {"const": 2},
+        "context_packet_schema_version": {"const": 3},
         "context_packet_template": {"type": "string", "minLength": 1}
       }
     },

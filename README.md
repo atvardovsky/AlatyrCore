@@ -361,13 +361,15 @@ The framework implements that model through these repository surfaces:
    architecture states, validation, and known gaps.
 2. A repository-aware project adapter connects those facts to portable
    AlatyrCore rules and supported assistant surfaces.
-3. A generated, hash-bound bootstrap index and compact router select the
-   bounded task profile, gate fragments, and project-area context for a
-   question or change. Recursive contour indexes then expose only matching
-   branches instead of whole support directories.
-4. A small versioned semantic codebook resolves repeated framework concepts
-   once per context packet. Compact terms retain complete definitions and
-   canonical-owner fallback; they never replace project facts or policy.
+3. A generated compact bootstrap index and router select the bounded task
+   profile, gate fragments, and project-area context for a question or change.
+   Lazy integrity evidence binds that projection to its sources without adding
+   provenance data to routine model context. Recursive contour indexes then
+   expose only matching branches instead of whole support directories.
+4. A small versioned semantic codebook resolves only the terms explicitly
+   required by selected context. Compact terms retain complete definitions,
+   owning-rule obligations, and canonical-owner fallback; they never replace
+   project facts or policy.
 5. The assistant explains the project or follows the matching workflow,
    including approvals for protected changes.
 6. Deterministic checks validate structural contracts where possible; human
@@ -556,7 +558,7 @@ window. See the [bridge capability matrix](framework/bridge-capability-matrix.md
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.57`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.58`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural

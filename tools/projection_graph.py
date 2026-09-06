@@ -68,6 +68,7 @@ EXACT_GENERATORS = {
     ".ai/assistant/context-router.json": "project-context-router",
     ".ai/assistant/entry-packet.json": "project-entry-packet",
     ".ai/assistant/bootstrap-index.json": "project-bootstrap-index",
+    ".ai/assistant/bootstrap-integrity.json": "project-bootstrap-integrity",
     ".ai/assistant/ai-infrastructure-router.json": "project-ai-infrastructure-router",
     ".ai/support-state.json": "project-support-state",
 }
@@ -99,6 +100,7 @@ GENERATOR_OWNERS = {
     "project-context-router": "tools/scaffold_projection.py",
     "project-entry-packet": "tools/agent_entry_packet.py",
     "project-bootstrap-index": "tools/bootstrap_index.py",
+    "project-bootstrap-integrity": "tools/bootstrap_index.py",
     "project-ai-infrastructure-router": "tools/scaffold_projection.py",
     "project-support-state": "tools/support_state.py",
     "copy-framework": "tools/framework_packaging.py",
@@ -113,6 +115,7 @@ GENERATOR_CHECKERS = {
     "project-context-router": ("context-router",),
     "project-entry-packet": ("agent-entry-packet",),
     "project-bootstrap-index": ("bootstrap-routing",),
+    "project-bootstrap-integrity": ("bootstrap-routing",),
     "project-support-state": ("support-information",),
 }
 
@@ -159,6 +162,12 @@ def target_projection_nodes(paths: Iterable[str]) -> tuple[ProjectionNode, ...]:
         ".ai/assistant/bootstrap-index.json": (
             ".ai/README.md",
             ".ai/alatyr.yaml",
+            ".ai/assistant/context-router.json",
+        ),
+        ".ai/assistant/bootstrap-integrity.json": (
+            ".ai/README.md",
+            ".ai/alatyr.yaml",
+            ".ai/assistant/bootstrap-index.json",
             ".ai/assistant/context-router.json",
         ),
     }

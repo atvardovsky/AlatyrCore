@@ -4,6 +4,24 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.58 - 2026-09-06
+
+- Reduced routine assistant context by separating compact bootstrap routing
+  from lazy integrity and recovery evidence; assistant bridges now load only
+  the bootstrap unless validation, recovery, audit, or conflict requires more.
+- Added semantic-codebook schema 2 exact-reference resolution with
+  canonical-owner content digests and retained schema-1 compatibility for
+  staged target upgrades.
+- Added context-packet schema 3 semantic and owner obligation sets so compact
+  profile routing remains auditable after repeated policy prose moves to lazy
+  context.
+- Reduced eager portable context and conditional gates for common task
+  profiles while preserving risk, integrity, source, approval, and safety
+  obligations through exact semantic references and canonical fallback.
+- Strengthened source checks for bootstrap integrity, profile semantic
+  obligations, exact eager-gate composition, honest recovery costs, and
+  deterministic scaffold output.
+
 ## 0.1.0-alpha.57 - 2026-09-06
 
 - Separated optional capability selection, scaffolding, and activation through

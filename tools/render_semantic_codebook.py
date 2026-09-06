@@ -17,11 +17,12 @@ SEMANTICS = ROOT / "framework" / "semantics"
 OUTPUT = SEMANTICS / "index.json"
 
 
-def build() -> dict[str, Any]:
+def build(semantics: Path = SEMANTICS) -> dict[str, Any]:
+    output = semantics / "index.json"
     shards: list[dict[str, Any]] = []
     seen_terms: set[str] = set()
-    for path in sorted(SEMANTICS.glob("*.json")):
-        if path == OUTPUT:
+    for path in sorted(semantics.glob("*.json")):
+        if path == output:
             continue
         data = load_object(path)
         terms = data.get("terms")
@@ -34,6 +35,17 @@ def build() -> dict[str, Any]:
         if duplicates:
             raise ValueError(f"duplicate semantic terms: {duplicates}")
         seen_terms.update(term_ids)
+        owner_digests: dict[str, str] = {}
+        for term in terms:
+            owner = term.get("canonical_owner")
+            if not isinstance(owner, str) or not owner:
+                raise ValueError(f"{path.relative_to(ROOT)} has an invalid canonical owner")
+            owner_path = (semantics.parent / owner).resolve()
+            if owner_path.parent != semantics.parent.resolve() or not owner_path.is_file():
+                raise ValueError(
+                    f"{path.relative_to(ROOT)} has a missing or escaping canonical owner: {owner}"
+                )
+            owner_digests[term["id"]] = file_digest(owner_path)
         shards.append(
             {
                 "id": data.get("shard_id"),
@@ -41,13 +53,15 @@ def build() -> dict[str, Any]:
                 "preload": data.get("preload"),
                 "selectors": data.get("selectors"),
                 "term_ids": term_ids,
+                "canonical_owner_digests": owner_digests,
                 "content_digest": file_digest(path),
             }
         )
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "index_kind": "alatyr-semantic-codebook-index",
         "codebook_id": "alatyr-core",
+        "selection_mode": "explicit-references",
         "namespace_policy": {
             "framework": "alatyr:*",
             "target": "project:*",
@@ -58,8 +72,8 @@ def build() -> dict[str, Any]:
     }
 
 
-def render() -> str:
-    return json.dumps(build(), indent=2, ensure_ascii=True) + "\n"
+def render(semantics: Path = SEMANTICS) -> str:
+    return json.dumps(build(semantics), indent=2, ensure_ascii=True) + "\n"
 
 
 def main() -> int:

@@ -557,11 +557,11 @@ def build_installed_report(target: Path) -> dict[str, Any]:
         "report_kind": "installed-alatyr-standing-support-cost",
         "target": str(target),
         "review_recommendation": {
-            "entry_point": ".ai/assistant/entry-packet.json",
+            "entry_point": ".ai/assistant/bootstrap-index.json",
             "policy": (
-                "route through the generated entry packet when present, then "
-                "use support-delta for changed support surfaces before loading "
-                "large human reference files"
+                "route through the compact bootstrap, use support-delta for "
+                "changed support surfaces, and load integrity or recovery "
+                "metadata only after failed validation or routing conflict"
             ),
         },
         "support_policy_present": policy is not None,

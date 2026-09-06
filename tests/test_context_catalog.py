@@ -419,6 +419,69 @@ class ContextCatalogTests(unittest.TestCase):
 
             self.assertEqual(list(resolved), ["alatyr:selected"])
 
+    def test_codebook_v2_uses_exact_references_and_binds_owner_digest(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            semantics = root / "semantics"
+            semantics.mkdir()
+            owner = root / "source.md"
+            owner.write_text("# Canonical owner\n", encoding="utf-8")
+            shard = semantics / "core.json"
+            term = {
+                "id": "alatyr:selected@1",
+                "version": 1,
+                "definition": "Selected definition.",
+                "owner_rule_id": "ALATYR-CONTEXT-001",
+                "canonical_owner": "source.md",
+                "scope": "test",
+                "non_meanings": [],
+                "depends_on": [],
+                "replaced_by": None,
+            }
+            write_json(
+                shard,
+                {
+                    "schema_version": 1,
+                    "record_kind": "alatyr-semantic-codebook-shard",
+                    "shard_id": "core",
+                    "preload": False,
+                    "selectors": {"tasks": ["test"]},
+                    "terms": [term],
+                },
+            )
+            index = semantics / "index.json"
+            write_json(
+                index,
+                {
+                    "schema_version": 2,
+                    "index_kind": "alatyr-semantic-codebook-index",
+                    "codebook_id": "test",
+                    "selection_mode": "explicit-references",
+                    "shards": [
+                        {
+                            "id": "core",
+                            "path": "core.json",
+                            "preload": False,
+                            "selectors": {"tasks": ["test"]},
+                            "term_ids": [term["id"]],
+                            "canonical_owner_digests": {
+                                term["id"]: file_digest(owner)
+                            },
+                            "content_digest": file_digest(shard),
+                        }
+                    ],
+                },
+            )
+
+            self.assertEqual(load_codebook(index, selectors={"tasks": "test"}), {})
+            self.assertEqual(
+                list(load_codebook(index, required_terms=[term["id"]])),
+                [term["id"]],
+            )
+            owner.write_text("# Changed owner\n", encoding="utf-8")
+            with self.assertRaisesRegex(ContextCatalogError, "owner digest is stale"):
+                load_codebook(index, required_terms=[term["id"]])
+
     def test_metadata_only_catalog_validation_still_binds_child_indexes(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -512,6 +575,7 @@ class ContextCatalogTests(unittest.TestCase):
             "alatyr:owner": {
                 "version": 1,
                 "definition": "Read the canonical owner.",
+                "owner_rule_id": "ALATYR-SOURCE-001",
                 "canonical_owner": "framework/source.md",
             }
         }
@@ -527,7 +591,7 @@ class ContextCatalogTests(unittest.TestCase):
             omitted_item_ids=["unrelated"],
         )
         self.assertEqual(packet["budget"]["total_words"], 14)
-        self.assertEqual(packet["schema_version"], 2)
+        self.assertEqual(packet["schema_version"], 3)
         self.assertEqual(
             packet["cache_delivery"]["capability_record"],
             ".ai/assistant/assistant-capabilities/generic.json",
@@ -535,6 +599,11 @@ class ContextCatalogTests(unittest.TestCase):
         self.assertFalse(packet["cache_delivery"]["cache_hit_required"])
         self.assertFalse(packet["cache_delivery"]["context_window_reduction"])
         self.assertEqual(packet["selected_items"][0]["reason"], ["rule-id:ALATYR-SOURCE-001"])
+        self.assertEqual(packet["selected_items"][0]["semantic_refs"], ["alatyr:owner"])
+        self.assertEqual(
+            packet["required_obligations"]["owner_rule_ids"],
+            ["ALATYR-SOURCE-001"],
+        )
         self.assertEqual(packet["routing"]["omitted_item_ids"], ["unrelated"])
         self.assertEqual(packet["receipt"]["planned"]["approximate_words"], 14)
         schema = json.loads(
@@ -561,11 +630,13 @@ class ContextCatalogTests(unittest.TestCase):
             "alatyr:second": {
                 "version": 1,
                 "definition": "Second stable definition.",
+                "owner_rule_id": "ALATYR-CONTEXT-001",
                 "canonical_owner": "framework/second.md",
             },
             "alatyr:first": {
                 "version": 1,
                 "definition": "First stable definition.",
+                "owner_rule_id": "ALATYR-CONTEXT-001",
                 "canonical_owner": "framework/first.md",
             },
         }

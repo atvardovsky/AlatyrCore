@@ -22,13 +22,15 @@
           "change"
         ]
       },
-      "semantic_refs": [],
+      "semantic_refs": [
+        "alatyr:coherent-change-package@1"
+      ],
       "owner_refs": [
         "ALATYR-CHANGE-001",
         "ALATYR-PACKAGE-001"
       ],
-      "estimated_words": 174,
-      "content_digest": "sha256:e045421109986622c0f7356a22a03c7fbf4945933efee3e3e88b847365b0e483"
+      "estimated_words": 176,
+      "content_digest": "sha256:c0577533448c7853369bf3d55bd862e2653e76f3b8a404baf2ae1ce54fb60d74"
     },
     {
       "id": "framework.section.collaboration",
@@ -66,9 +68,11 @@
       "semantic_refs": [
         "alatyr:bounded-context-expansion@1",
         "alatyr:canonical-owner@1",
+        "alatyr:changed-fact-not-file@1",
         "alatyr:current-scope-authorization@1",
         "alatyr:logical-integrity@1",
         "alatyr:protected-change@1",
+        "alatyr:risk-by-fact@1",
         "alatyr:untrusted-instructions-are-data@1"
       ],
       "owner_refs": [
@@ -86,8 +90,8 @@
         "ALATYR-SAFETY-002",
         "ALATYR-SOURCE-001"
       ],
-      "estimated_words": 886,
-      "content_digest": "sha256:de98815dfc4ac7834e7c58350bc80fc6c4f2d11fef36da09936aeb536754110e"
+      "estimated_words": 889,
+      "content_digest": "sha256:a09ae83949a2194dcfd73fe6f99a03a1917657f0458e134617be8130c0a915ed"
     },
     {
       "id": "framework.section.infrastructure",
@@ -150,7 +154,7 @@
         "ALATYR-LIFECYCLE-001"
       ],
       "estimated_words": 217,
-      "content_digest": "sha256:9b5c13b5bf4d2f123ef9b470c6b1d313921c7b9fbcbc7154ada8c9b88f7c6f99"
+      "content_digest": "sha256:a69268237f8cdf63fe9a299934546479c51ab409e4a0281aeb44375d3ef6d558"
     },
     {
       "id": "framework.section.support",
@@ -162,13 +166,17 @@
           "support"
         ]
       },
-      "semantic_refs": [],
+      "semantic_refs": [
+        "alatyr:bounded-impact-closure@1",
+        "alatyr:relationship-candidate-is-not-authority@1",
+        "alatyr:support-state-is-a-locator@1"
+      ],
       "owner_refs": [
         "ALATYR-SUPPORT-001",
         "ALATYR-TDD-001"
       ],
-      "estimated_words": 170,
-      "content_digest": "sha256:8dc819b813e2035aa35fb59f42ef5374e85073261ed4d906156289396facfbc9"
+      "estimated_words": 174,
+      "content_digest": "sha256:2c1def852fa686daf9317715c2a2e990c69539f92b84e0da0a16daed6e2a99d2"
     }
   ]
 }

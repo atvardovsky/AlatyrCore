@@ -361,8 +361,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 234,
-      "content_digest": "sha256:33f1a14cc5e42a6171df1a7e8eab2aa6cbcffd5ef51bd2af83b27b531e54eb8d"
+      "estimated_words": 247,
+      "content_digest": "sha256:dd1d6f82511b9ae2f62c3728a546872cf2a100b7453b8f88f6c10ad81f63da7b"
     },
     {
       "id": "assistant.content.templates-contract-artifact-review-md",
@@ -647,8 +647,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 744,
-      "content_digest": "sha256:cd3e5d4f708a8b6b782b5bde7f79679e67161fe508f345c6e5b24326c2ac4c1c"
+      "estimated_words": 774,
+      "content_digest": "sha256:e5f314f6ce9e82b7c45ee65b901f6a2f63bbce12999ae2c443d154c1f54849a9"
     },
     {
       "id": "assistant.content.templates-large-task-operation-packet-md",
@@ -774,8 +774,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1491,
-      "content_digest": "sha256:e0329d1d77a4e245b09aafc96e8b631cb04ed97e82d05c7718b84002a0a12689"
+      "estimated_words": 1494,
+      "content_digest": "sha256:4e235e2710ae1a7eb6d8ab780c9e96aa210edb756d28436b87b03e054ab20f76"
     },
     {
       "id": "assistant.content.templates-post-install-message-md",
@@ -799,8 +799,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1638,
-      "content_digest": "sha256:a18d32b48a1b4124ca6b67c22eea3c019de6c93f91bf57c185f9d260a371aceb"
+      "estimated_words": 1654,
+      "content_digest": "sha256:2c3e0101073ef77e4de506802c25625cce770ed878392e74c118f4d9acc95ce2"
     },
     {
       "id": "assistant.content.templates-post-update-message-md",
@@ -824,8 +824,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1356,
-      "content_digest": "sha256:4a35447b55527fd17437fc8a98d98ef4fcb4bf4d2121ea1b5572903a8c120738"
+      "estimated_words": 1375,
+      "content_digest": "sha256:ee10cd97aa0760eb3836958013c4e5511b6180350667fb4ae178266f38156746"
     },
     {
       "id": "assistant.content.templates-pre-change-preview-md",

@@ -32,8 +32,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1325,
-      "content_digest": "sha256:b81a1ebc3906fd79ca496f5141c5922946f135369e72f5fbf6edabe73e8e3c61"
+      "estimated_words": 1327,
+      "content_digest": "sha256:68b7460446762af2b748d35217ee30d0cda98c9a69399716ef04a0f7d12ef953"
     },
     {
       "id": "assistant.content.gates-code-and-tests-md",
@@ -258,8 +258,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 297,
-      "content_digest": "sha256:7f89eb9715a5db1423b962106b0510cc54b1ceb615098d6032adbb4e603b4f5c"
+      "estimated_words": 226,
+      "content_digest": "sha256:044358d36dedcc5934c9c317c9be33de417f967cd6a9e36ae0ad900284114dee"
     },
     {
       "id": "assistant.content.gates-index-json",
@@ -280,8 +280,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 238,
-      "content_digest": "sha256:c14145c9a307e37bad5d64ca1e0b3308e1f0353e71834f2de575c501352c1464"
+      "estimated_words": 232,
+      "content_digest": "sha256:9f666806856b50bf4c30e3cecc2a198decc252e555f6ccd95ed022549249e2b5"
     },
     {
       "id": "assistant.content.gates-project-knowledge-md",
@@ -391,8 +391,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 83,
-      "content_digest": "sha256:a4d810e170dd40ebc1e958184c6dd6313f80fb0d8732149c26362911ae5152e5"
+      "estimated_words": 110,
+      "content_digest": "sha256:2a45f374bb6f224fda7691965b165a8b3a907fd98993f0ba88e92074cc50b4bc"
     },
     {
       "id": "assistant.content.gates-team-collaboration-md",

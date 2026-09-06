@@ -50,6 +50,27 @@ def _target_references(value: Any) -> set[str]:
     return references
 
 
+def _validate_packet_obligations(
+    sink: FindingSink, packet: dict[str, Any]
+) -> None:
+    obligations = packet.get("required_obligations")
+    fields = ["semantic_term_ids", "owner_rule_ids"]
+    if (
+        not isinstance(obligations, dict)
+        or set(obligations) != set(fields)
+        or not all(
+            isinstance(obligations.get(field), list)
+            and all(isinstance(value, str) and value for value in obligations[field])
+            for field in fields
+        )
+    ):
+        sink.error(
+            "CONTEXT_PACKET_TEMPLATE_INVALID",
+            "context packet semantic and owner obligations are incomplete",
+            PACKET_TEMPLATE,
+        )
+
+
 def validate_context_catalog_contract(sink: FindingSink, manifest: Any) -> None:
     resolutions = {}
     indexed_paths: set[str] = set()
@@ -199,6 +220,7 @@ def validate_context_catalog_contract(sink: FindingSink, manifest: Any) -> None:
             "selected_items",
             "routing",
             "semantic_terms",
+            "required_obligations",
             "budget",
             "receipt",
             "cost_claim",
@@ -215,6 +237,7 @@ def validate_context_catalog_contract(sink: FindingSink, manifest: Any) -> None:
                 "context packet template has an unsupported contract",
                 PACKET_TEMPLATE,
             )
+        _validate_packet_obligations(sink, packet)
         cache_delivery = packet.get("cache_delivery")
         routing = packet.get("routing")
         if not isinstance(routing, dict) or set(routing) != {

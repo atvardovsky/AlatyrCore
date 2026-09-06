@@ -40,13 +40,13 @@
     {
       "name": "render-bootstrap",
       "script": "render_target_bootstrap_index.py",
-      "purpose": "check or explicitly regenerate a target bootstrap index",
+      "purpose": "check or explicitly regenerate a target bootstrap and lazy integrity record",
       "write_scope": "target-structure-with-explicit-write"
     },
     {
       "name": "render-entry",
       "script": "render_target_entry_packet.py",
-      "purpose": "check or explicitly regenerate a target first-use agent entry packet",
+      "purpose": "check or explicitly regenerate a target recovery entry packet",
       "write_scope": "target-structure-with-explicit-write"
     },
     {

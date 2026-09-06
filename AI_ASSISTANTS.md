@@ -170,10 +170,11 @@ source guide when the target adapter says otherwise.
 
 ## Context And Cost Discipline
 
-Start from `.ai/assistant/bootstrap-index.json` after the target entry point,
-then load `.ai/assistant/entry-packet.json` when present. Verify or repair
-canonical source hashes when stale, and route by task and project area. Load
-only:
+Start from `.ai/assistant/bootstrap-index.json` after the target entry point.
+Validate its lazy integrity record deterministically when tooling permits;
+load that evidence and `.ai/assistant/entry-packet.json` only for failed
+validation, recovery, audit, or routing conflict. Route by task and project
+area, then load only:
 
 - the selected operation or task profile
 - the relevant project-area source

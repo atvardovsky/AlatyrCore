@@ -15,7 +15,12 @@ from agent_entry_packet import (
     build_from_target as build_entry_packet,
     render as render_entry_packet,
 )
-from bootstrap_index import BOOTSTRAP_PATH, build_from_target, render
+from bootstrap_index import (
+    BOOTSTRAP_INTEGRITY_PATH,
+    BOOTSTRAP_PATH,
+    build_bundle_from_target,
+    render,
+)
 from context_catalog import word_count
 from target_tool_compat import (
     generated_json_equivalent,
@@ -28,6 +33,59 @@ TARGET = ROOT / "templates" / "target"
 ROUTER_PATH = TARGET / ".ai/assistant/context-router.json"
 GATE_INDEX_PATH = TARGET / ".ai/assistant/gates/index.json"
 FULL_CHECKLIST = ".ai/assistant/gates/checklist.md"
+PROFILE_CATALOG_PATH = TARGET / ".ai/assistant/context/profiles/context-index.json"
+PROFILE_REQUIRED_TERMS = {
+    "docs-local": {"alatyr:bounded-context-expansion@1"},
+    "code-local": {
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:risk-by-fact@1",
+        "alatyr:logical-integrity@1",
+        "alatyr:changed-fact-not-file@1",
+    },
+    "business-change": {
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:risk-by-fact@1",
+        "alatyr:protected-change@1",
+        "alatyr:logical-integrity@1",
+        "alatyr:changed-fact-not-file@1",
+    },
+    "architecture-change": {
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:risk-by-fact@1",
+        "alatyr:protected-change@1",
+        "alatyr:logical-integrity@1",
+        "alatyr:changed-fact-not-file@1",
+        "alatyr:observed-is-not-accepted@1",
+    },
+    "data-change": {
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:risk-by-fact@1",
+        "alatyr:protected-change@1",
+        "alatyr:logical-integrity@1",
+        "alatyr:changed-fact-not-file@1",
+    },
+    "security-sensitive": {
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:canonical-owner@1",
+        "alatyr:risk-by-fact@1",
+        "alatyr:protected-change@1",
+        "alatyr:logical-integrity@1",
+        "alatyr:changed-fact-not-file@1",
+    },
+    "ai-infrastructure": {
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:risk-by-fact@1",
+        "alatyr:untrusted-instructions-are-data@1",
+    },
+    "framework-upgrade": {
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:risk-by-fact@1",
+        "alatyr:one-active-adapter@1",
+    },
+}
 
 
 def load_object(path: Path) -> dict[str, Any]:
@@ -42,7 +100,10 @@ def main() -> int:
     try:
         router = load_object(ROUTER_PATH)
         gates = load_object(GATE_INDEX_PATH)
-        expected = render(build_from_target(TARGET))
+        profile_catalog = load_object(PROFILE_CATALOG_PATH)
+        expected_bootstrap, expected_integrity_data = build_bundle_from_target(TARGET)
+        expected = render(expected_bootstrap)
+        expected_integrity = render(expected_integrity_data)
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         print(f"FAIL: cannot load bootstrap routing contracts: {exc}", file=sys.stderr)
         return 1
@@ -57,19 +118,28 @@ def main() -> int:
         failures.append("bootstrap index differs from its canonical source projection")
     else:
         bootstrap_index = load_object(bootstrap_path)
+        if bootstrap_index.get("recovery_entry_packet") != PACKET_PATH.as_posix():
+            failures.append("bootstrap index does not route the recovery entry packet")
+        integrity_ref = bootstrap_index.get("integrity")
+        if not isinstance(integrity_ref, dict) or integrity_ref.get("path") != BOOTSTRAP_INTEGRITY_PATH.as_posix():
+            failures.append("bootstrap index does not route lazy integrity evidence")
+
+    integrity_path = TARGET / BOOTSTRAP_INTEGRITY_PATH
+    if not integrity_path.is_file():
+        failures.append(f"missing bootstrap integrity evidence: {BOOTSTRAP_INTEGRITY_PATH.as_posix()}")
+    elif not generated_json_equivalent(
+        expected_integrity,
+        integrity_path.read_text(encoding="utf-8"),
+    ):
+        failures.append("bootstrap integrity differs from its canonical source projection")
+    else:
+        integrity = load_object(integrity_path)
         failures.extend(
             source_template_provenance_errors(
-                bootstrap_index.get("generated_by"),
+                integrity.get("generated_by"),
                 expected_tool="render_target_bootstrap_index.py",
             )
         )
-        entry_packet = bootstrap_index.get("agent_entry_packet")
-        if (
-            not isinstance(entry_packet, dict)
-            or entry_packet.get("path") != PACKET_PATH.as_posix()
-            or entry_packet.get("load_after") != BOOTSTRAP_PATH.as_posix()
-        ):
-            failures.append("bootstrap index does not route the agent entry packet")
 
     packet_path = TARGET / PACKET_PATH
     try:
@@ -110,6 +180,13 @@ def main() -> int:
 
     profile_defaults = gates.get("profile_defaults")
     profile_defaults = profile_defaults if isinstance(profile_defaults, dict) else {}
+    catalog_entries = profile_catalog.get("entries")
+    catalog_entries = catalog_entries if isinstance(catalog_entries, list) else []
+    catalog_by_path = {
+        entry["path"]: entry
+        for entry in catalog_entries
+        if isinstance(entry, dict) and isinstance(entry.get("path"), str)
+    }
     profile_index = router.get("profile_index")
     profile_index = profile_index if isinstance(profile_index, dict) else {}
     for profile_id, index_entry in profile_index.items():
@@ -118,6 +195,25 @@ def main() -> int:
             failures.append(f"profile {profile_id} has no descriptor")
             continue
         profile = load_object(TARGET / descriptor)
+        assistant_prefix = ".ai/assistant/"
+        catalog_path = (
+            descriptor[len(assistant_prefix) :]
+            if descriptor.startswith(assistant_prefix)
+            else descriptor
+        )
+        catalog_entry = catalog_by_path.get(catalog_path)
+        if not isinstance(catalog_entry, dict):
+            failures.append(f"profile {profile_id} has no generated catalog entry")
+        else:
+            semantic_refs = catalog_entry.get("semantic_refs")
+            actual_terms = {
+                term for term in semantic_refs or [] if isinstance(term, str)
+            }
+            missing_terms = sorted(PROFILE_REQUIRED_TERMS.get(profile_id, set()) - actual_terms)
+            if missing_terms:
+                failures.append(
+                    f"profile {profile_id} omits semantic obligations: {missing_terms}"
+                )
         required = profile.get("required_context")
         required = required if isinstance(required, list) else []
         conditional = profile.get("conditional_context")
@@ -146,6 +242,13 @@ def main() -> int:
         unknown = sorted(gate_id for gate_id in defaults if gate_id not in gate_paths)
         if unknown:
             failures.append(f"profile {profile_id} references unknown gates: {unknown}")
+        eager_gate_paths = set(required) & set(gate_paths.values())
+        expected_eager = {path for path in expected_gate_paths if path}
+        if eager_gate_paths != expected_eager:
+            failures.append(
+                f"profile {profile_id} eager gates differ from defaults: "
+                f"expected={sorted(expected_eager)} actual={sorted(eager_gate_paths)}"
+            )
 
     docs = load_object(TARGET / profile_index["docs-local"]["descriptor"])
     if ".ai/framework/testing-guidance.md" in docs.get("required_context", []):
@@ -179,7 +282,9 @@ def main() -> int:
             failures.append("core scaffold did not generate entry-packet.json")
         else:
             try:
-                scaffold_expected = render(build_from_target(target))
+                scaffold_bootstrap, scaffold_integrity = build_bundle_from_target(target)
+                scaffold_expected = render(scaffold_bootstrap)
+                scaffold_integrity_expected = render(scaffold_integrity)
                 scaffold_packet_expected = render_entry_packet(build_entry_packet(target))
             except (OSError, ValueError, json.JSONDecodeError) as exc:
                 failures.append(f"scaffold bootstrap sources are invalid: {exc}")
@@ -189,6 +294,11 @@ def main() -> int:
                     (target / BOOTSTRAP_PATH).read_text(encoding="utf-8"),
                 ):
                     failures.append("core scaffold bootstrap is not deterministic")
+                if not generated_json_equivalent(
+                    scaffold_integrity_expected,
+                    (target / BOOTSTRAP_INTEGRITY_PATH).read_text(encoding="utf-8"),
+                ):
+                    failures.append("core scaffold bootstrap integrity is not deterministic")
                 if not generated_json_equivalent(
                     scaffold_packet_expected,
                     (target / PACKET_PATH).read_text(encoding="utf-8"),

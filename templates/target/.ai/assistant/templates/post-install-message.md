@@ -33,6 +33,7 @@ Entry points:
 - `.ai/assistant/policies/action-authorization.json`
 - `.ai/assistant/context-router.json`
 - `.ai/assistant/bootstrap-index.json`
+- `.ai/assistant/bootstrap-integrity.json`
 - `.ai/framework/context-index.json`, `.ai/project/context-index.json`, and
   `.ai/assistant/context-index.json`
 - `.ai/project/support-policy.json` and final `.ai/support-state.json`
@@ -102,13 +103,15 @@ Entry points:
 Future assistant bootstrap:
 - Do not rely on this chat message alone.
 - Treat `AGENTS.md` as preloaded; start from
-  `.ai/assistant/bootstrap-index.json`, then
-  `.ai/assistant/entry-packet.json`.
+  `.ai/assistant/bootstrap-index.json`. Keep
+  `.ai/assistant/bootstrap-integrity.json` and
+  `.ai/assistant/entry-packet.json` lazy unless validation fails, recovery or
+  audit is requested, or routing conflicts.
 - Use the bootstrap's resolved core semantic definitions once. Follow only
   task-selected branches from the three contour context indexes; a parent
   index does not authorize loading every child.
-- Repair stale recursive indexes and then the bootstrap from their named
-  sources; otherwise load profiles, module state, registries, blueprint, gate
+- Repair stale recursive indexes, bootstrap integrity, and bootstrap from their
+  named sources; otherwise load profiles, module state, registries, blueprint, gate
   fragments, and the installation note only when routing or unclear adapter
   state requires them. Fall back to canonical owner prose when a compact term
   cannot be resolved exactly.

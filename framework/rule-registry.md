@@ -60,31 +60,21 @@ the changelog and release migration note.
 Rule ID: `ALATYR-CONTEXT-001`
 Source owner: `framework/context-profiles.md`
 Installed owner: `.ai/framework/context-profiles.md`
-Commitment: Use a generated hash-bound bootstrap index, recursively navigated
-contour indexes, a small context-loaded semantic codebook, routed gate
-fragments, explicit task classification, and the smallest task profile through
-an aligned context router; keep bootstrap outside assistant catalog content
-ownership and rebuild installed catalogs before bootstrap to prevent circular
-digests; resolve compact terms losslessly with versioned owner-linked
-definitions and canonical-prose fallback; order reusable framework and project
-guidance before selected task context and volatile state, record stable-prefix
-and dynamic-tail packet digests, use provider caching only from current
-selected-client evidence, and preserve bounded routing when caching is hidden
-or unavailable; never treat caching as context-window reduction or claim cache
-savings without observed host/provider telemetry; use support-state differences
-and the consistency reverse index to select only relevant graph shards while
-keeping redundant portable explanation conditional; apply bounded two-stage
-project-guidance delivery from profile plus a stronger area, dependency, fact,
-contract, path, symbol, or issue signal; record exact selector reasons, omitted
-candidates, expansion triggers, fail-closed canonical-owner fallback, packet
-identity, and planned, resolved, and observably delivered ordered guidance
-identities with deterministic digests while never claiming model comprehension;
-revalidate changed bundles before protected implementation, material decisions,
-final validation, and final evidence; separate total, portable, and reserved
-target context budgets; record expansion only when boundaries or conflicts
-require it; and keep unrelated branches, knowledge, optional modules, evidence
-history, relationship candidates, debug records, delegated execution, complete
-checklists, and full team detail lazy.
+Commitment: Use the smallest task profile through an aligned context router.
+Keep routine bootstrap compact; bind it to canonical sources through lazy
+integrity evidence and reserve the entry packet for recovery, audit, or
+conflict. Follow only selected recursive-index branches. Resolve schema-2
+semantic terms by exact reference and dependency closure, verify their
+canonical-owner digests, emit required term and owner-rule obligations in
+schema-3 packets, and fail closed to canonical prose. Compose eager gates
+exactly from profile defaults and load conditional policy only on its trigger.
+Keep stable reusable guidance before volatile task state, but treat provider
+caching as optional and claim savings only from observed telemetry. Use changed
+support state and accepted relationships for bounded impact routing without
+treating hashes or candidates as authority. Record selector reasons, omissions,
+expansion, packet identity, context budgets, and honest planned, resolved, or
+observed evidence. Never skip required owner, approval, safety, integrity, or
+validation context to meet a budget.
 Applies to: all installed adapter tasks.
 Enforcement: required.
 

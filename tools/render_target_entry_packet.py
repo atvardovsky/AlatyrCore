@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render or check the compact first-use agent entry packet for a target adapter."""
+"""Render or check the compact recovery entry packet for a target adapter."""
 
 from __future__ import annotations
 

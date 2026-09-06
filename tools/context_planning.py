@@ -169,10 +169,10 @@ def _load_router(target: Path) -> dict[str, Any]:
     router = _load_json(
         target, ".ai/assistant/context-router.json", "context router"
     )
-    if router.get("schema_version") != 10 or router.get("router_kind") != "target-context-router":
+    if router.get("schema_version") not in {10, 11} or router.get("router_kind") != "target-context-router":
         raise ContextPlanningError(
             "CONTEXT_ROUTER_UNSUPPORTED",
-            "target context router must use schema 10 and target-context-router",
+            "target context router must use supported schema 10 or 11 and target-context-router",
             upgrade_required=True,
             actions=("run the Alatyr framework-update assessment",),
         )

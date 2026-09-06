@@ -1,5 +1,5 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "packet_kind": "alatyr-context-packet",
   "cache_delivery": {
     "schema_version": 1,
@@ -32,6 +32,7 @@
       "id": "{ALATYR_OR_PROJECT_TERM_ID}",
       "version": 1,
       "definition": "{RESOLVED_DEFINITION}",
+      "owner_rule_id": "{ALATYR_OR_PROJECT_OWNER_RULE_ID}",
       "canonical_owner": "{TARGET_RELATIVE_CANONICAL_OWNER}"
     }
   ],
@@ -43,9 +44,15 @@
       "id": "{CONTEXT_ITEM_ID}",
       "path": "{TARGET_RELATIVE_PATH}",
       "content_digest": "sha256:{CONTENT_DIGEST}",
-      "reason": ["{EXACT_SELECTOR_OR_EXPANSION_TRIGGER}"]
+      "reason": ["{EXACT_SELECTOR_OR_EXPANSION_TRIGGER}"],
+      "semantic_refs": ["{REQUIRED_SEMANTIC_TERM_ID}"],
+      "owner_refs": ["{REQUIRED_OWNER_RULE_ID}"]
     }
   ],
+  "required_obligations": {
+    "semantic_term_ids": ["{REQUIRED_SEMANTIC_TERM_ID}"],
+    "owner_rule_ids": ["{REQUIRED_OWNER_RULE_ID}"]
+  },
   "routing": {
     "selection_basis": "exact catalog selectors and declared owner dependencies",
     "omitted_item_ids": [

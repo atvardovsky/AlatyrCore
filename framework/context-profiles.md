@@ -29,15 +29,12 @@ Load only the selected descriptor. Intent, migration, consistency, and
 task-scale descriptors compose with that profile when their trigger applies;
 they do not belong inline in every profile or in mandatory bootstrap.
 
-After the generated bootstrap, an installed adapter may provide a generated
-`.ai/assistant/entry-packet.json`. This first-use packet is the routine
-machine surface for exact installed profile descriptors, default gate
-fragments, operation routes when installed, allowed-action modes, support
-delta entry points, and the cheapest sufficient support-profile policy. It is
-generated from canonical adapter sources and must be checked or regenerated
-after install or update. Human prose such as context profiles, module
-profiles, help references, and full support state remains lazy unless the
-packet is missing, stale, disputed, or insufficient for the selected task.
+An installed adapter may provide generated recovery metadata in
+`.ai/assistant/entry-packet.json`. It remains lazy during routine first use and
+is loaded only for bootstrap recovery, adapter audit, or routing conflict.
+Human prose such as context profiles, module profiles, help references, and
+full support state remains lazy unless selected routing is missing, stale,
+disputed, or insufficient for the task.
 
 ## Recursive Context Navigation
 
@@ -81,6 +78,11 @@ installed framework semantic-codebook index before interpreting the compact
 record. Load the small `preload` closure before other compact records and load
 domain shards only when selected records reference their terms.
 
+Semantic-codebook schema 2 resolves only explicit term references and their
+dependency closure. Shard selectors remain discovery metadata and must not
+expand a schema-2 packet. Schema-1 indexes retain selector expansion only as a
+bounded migration compatibility path.
+
 Framework terms use the `alatyr:*` namespace. Target project vocabulary uses
 the `project:*` namespace and cannot replace or redefine a framework term.
 Every semantic term must provide a complete definition, version, owning rule,
@@ -95,10 +97,11 @@ terms primarily in indexes, descriptors, gates, records, and resolved context
 packets where repeated definitions produce measured savings.
 
 The resolved packet should contain selected item identities and digests,
-required semantic definitions once, budget accounting, and a deterministic
-packet digest. A term name is not assumed to be one provider token. Measure
-word or provider-token effects and retain compression only when the definition
-plus resolution overhead costs less than the repeated prose it replaces.
+required semantic definitions once, their owning rule IDs as an explicit
+obligation set, budget accounting, and a deterministic packet digest. A term
+name is not assumed to be one provider token. Measure word or provider-token
+effects and retain compression only when the serialized definition and
+resolution overhead costs less than the repeated prose it replaces.
 
 Architecture inventory, explanation, pattern discussion, comparison, review,
 and documentation use an intent overlay over the smallest base profile. Start
@@ -222,18 +225,19 @@ Every installed adapter should keep a compact bootstrap set:
 
 - target root assistant entry point as host-preloaded context
 - generated `.ai/assistant/bootstrap-index.json`
-- generated `.ai/assistant/entry-packet.json` as the first post-bootstrap
-  routing packet
+- generated `.ai/assistant/bootstrap-integrity.json` as lazy validation
+  evidence, not routine model context
 
 The bootstrap index points to the three contour context indexes and the
 semantic-codebook index. Its projected `preload` term IDs are resolved before
 selected compact records; the complete project vocabulary and non-applicable
 domain codebooks remain lazy.
 
-The generated index must carry source hashes for `.ai/alatyr.yaml`,
-`.ai/README.md`, and `.ai/assistant/context-router.json`. Those canonical files
-are recovery and audit inputs, not routine bootstrap. A stale or missing index
-must be repaired before it is trusted for routing.
+The generated integrity sidecar must carry source hashes for
+`.ai/alatyr.yaml`, `.ai/README.md`, and
+`.ai/assistant/context-router.json`. Those canonical files and the sidecar are
+recovery and audit inputs, not routine bootstrap. A bootstrap with missing or
+invalid integrity evidence must be repaired before it is trusted for routing.
 
 Do not put the full blueprint, source-of-truth registry, operation catalog,
 module profile, project contour, assistant contour, human context profiles, or

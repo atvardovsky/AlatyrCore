@@ -4,15 +4,24 @@
   "title": "Alatyr resolved context packet",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema_version", "packet_kind", "profile", "operation", "selected_items", "semantic_terms", "budget", "packet_digest"],
+  "required": ["schema_version", "packet_kind", "profile", "operation", "selected_items", "semantic_terms", "required_obligations", "budget", "packet_digest"],
   "properties": {
-    "schema_version": {"const": 2},
+    "schema_version": {"const": 3},
     "packet_kind": {"const": "alatyr-context-packet"},
     "profile": {"type": "string", "minLength": 1},
     "operation": {"type": "string", "minLength": 1},
     "task_classification": {"type": "string", "minLength": 1},
     "selected_items": {"type": "array"},
     "semantic_terms": {"type": "array"},
+    "required_obligations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["semantic_term_ids", "owner_rule_ids"],
+      "properties": {
+        "semantic_term_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "owner_rule_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true}
+      }
+    },
     "cache_delivery": {"type": "object"},
     "routing": {
       "type": "object",

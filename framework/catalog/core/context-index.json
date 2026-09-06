@@ -95,7 +95,9 @@
           "ALATYR-RISK-001"
         ]
       },
-      "semantic_refs": [],
+      "semantic_refs": [
+        "alatyr:risk-by-fact@1"
+      ],
       "owner_refs": [
         "ALATYR-RISK-001"
       ],
@@ -136,8 +138,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 3403,
-      "content_digest": "sha256:aabfcb4dce1e2eac2847430447301ea5cb7d07f7ffab71070a1c909a15744d04"
+      "estimated_words": 3425,
+      "content_digest": "sha256:7125b68f8c3792dcba0e09036884f0c0c0b387644b708ac221dfdfa678233940"
     },
     {
       "id": "framework.core.context-router-md",
@@ -151,8 +153,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 2930,
-      "content_digest": "sha256:9721287390a107591978b3458f6aa4d2096524ff99b625a624b132fa20999f0a"
+      "estimated_words": 2996,
+      "content_digest": "sha256:b55920a1bb298923e6f85eb67d2f2824ba6a9d0147675d18b7b1e5d33b4e1cd9"
     },
     {
       "id": "framework.core.contour-md",
@@ -186,8 +188,8 @@
       "owner_refs": [
         "ALATYR-EVIDENCE-001"
       ],
-      "estimated_words": 3339,
-      "content_digest": "sha256:0ab5226d6ff7d78fbd3f9aca641b40b5b8b1edd6e7997f37823ef5d17ee98a1e"
+      "estimated_words": 3347,
+      "content_digest": "sha256:e3e6d7379d3cbe2fcd471fd6887118da21a242bb5932bfdb00b3c283fc307dfa"
     },
     {
       "id": "framework.core.installed-operations-md",
@@ -202,8 +204,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 4123,
-      "content_digest": "sha256:727e94872391c9294b5254f96fec9fc1bd3a8d13b1ae26d3b2e97cf0fc6b9bdd"
+      "estimated_words": 4121,
+      "content_digest": "sha256:2a66d55286a105ff671a91f033d58ddd98f15cea50f7e312876a7c01dcc1579b"
     },
     {
       "id": "framework.core.logical-integrity-md",
@@ -220,6 +222,7 @@
         ]
       },
       "semantic_refs": [
+        "alatyr:changed-fact-not-file@1",
         "alatyr:logical-integrity@1"
       ],
       "owner_refs": [
@@ -267,8 +270,8 @@
       "owner_refs": [
         "ALATYR-OPERATION-001"
       ],
-      "estimated_words": 3510,
-      "content_digest": "sha256:751ac6659be67c51455d0f164f4023be76de1186036d5d42e7a06cfc51baf71c"
+      "estimated_words": 3522,
+      "content_digest": "sha256:e6ddb13e89e7632ad2a52bba6bef105cea0b656149856201fb47149af1f1165f"
     },
     {
       "id": "framework.core.project-adapter-contract-md",
@@ -357,8 +360,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 4163,
-      "content_digest": "sha256:ccf8715fb18af8e3b0adeee4806b075f18ae0da6f5ebfd658628355ec9fb83a6"
+      "estimated_words": 4083,
+      "content_digest": "sha256:72d54f0efb43fd0c3db5212a2e9b0c40e62224d32abc9d7988ea4c019bfe5671"
     },
     {
       "id": "framework.core.rule-registry-md",
@@ -373,8 +376,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 3355,
-      "content_digest": "sha256:636ded316346c84b7289710d8c07ad3e22c9fc61dd2ba3b613f2972ccb4b94d2"
+      "estimated_words": 3275,
+      "content_digest": "sha256:e981287d3cd54e53ab330e24d4b375a8a4505895521c276706e1e27fa2b490bb"
     },
     {
       "id": "framework.core.security-safety-guidance-md",
@@ -443,8 +446,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 401,
-      "content_digest": "sha256:b7bd51b3006c3292781853843f2e1ab4df50c506d431f4cdbb48efede8737f21"
+      "estimated_words": 474,
+      "content_digest": "sha256:c483c0badb5db983d135a2ae84913da1c6c17293b36d49179b367c76581ac3c3"
     },
     {
       "id": "framework.core.semantics-index-json",
@@ -458,8 +461,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 200,
-      "content_digest": "sha256:c9b656837e72b8075fc5fac9cba8b7ea97db03c6a5c7165ac01b7517ef71d994"
+      "estimated_words": 252,
+      "content_digest": "sha256:eeafc7eb930a94dfce51734730e82032d7144bc38d97c5539e59b32c265d5ea5"
     },
     {
       "id": "framework.core.semantics-infrastructure-json",

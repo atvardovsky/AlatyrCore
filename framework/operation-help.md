@@ -107,7 +107,8 @@ command.
 
 For a bare `Alatyr` request:
 
-1. Read only the compact target bootstrap and generated entry packet.
+1. Read only the compact target bootstrap; keep integrity evidence and the
+   generated entry packet lazy unless health is stale, disputed, or unchecked.
 2. Report whether adapter health has fresh evidence or remains unchecked.
 3. Show at most three available operations relevant to current evidence.
 4. Ask only the smallest question needed, or wait for a task.

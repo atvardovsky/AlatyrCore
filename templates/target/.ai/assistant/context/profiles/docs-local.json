@@ -15,13 +15,16 @@
     "support-generation"
   ],
   "required_context": [
-    ".ai/framework/context-discovery.md",
     ".ai/assistant/gates/core.md",
     ".ai/assistant/gates/documentation.md",
     ".ai/assistant/gates/final-evidence.md",
     "{TARGET_DOC_SOURCE_OF_TRUTH}"
   ],
   "conditional_context": [
+    {
+      "path": ".ai/framework/context-discovery.md",
+      "when": "context selection expansion or missing-context handling is disputed"
+    },
     {
       "path": ".ai/framework/support-information.md",
       "when": "support diff generation ownership or relationship-candidate semantics are disputed"

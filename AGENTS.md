@@ -27,26 +27,12 @@ loading the full framework corpus by default.
 
 ## Context Expansion Profiles
 
-The machine-readable source router owns concrete required-path and check lists.
-The summaries below explain profile intent without replacing that router.
-
-Use `docs-local` for wording, index, changelog, or maintainer-doc changes that
-do not alter framework behavior.
-
-Use `framework-rule` for portable rule, contour, risk, integrity, safety,
-approval, lifecycle, operation, module, context-router, or source-of-truth
-changes.
-
-Use `installer-template` for installation flow, readiness, request template,
-target adapter template, bridge template, or post-install/update behavior.
-
-Use `source-tooling` for source-repository helper or checker changes.
-
-Use `release-versioning` for version files, changelog, release process,
-migration diff, or release migration evidence changes.
-
-Use `ai-infrastructure-bridge` for assistant compatibility, bridge, skill,
-prompt, MCP/tool, operation-help, or imported-source changes.
+The source router owns paths and checks. Select `docs-local` for non-behavioral
+docs; `framework-rule` for portable policy; `installer-template` for installer,
+target-template, bridge-template, or post-install/update behavior;
+`source-tooling` for helpers and checkers; `release-versioning` for versions,
+changelog, release, or migration evidence; and `ai-infrastructure-bridge` for
+assistant compatibility, skills, prompts, tools, help, or imported sources.
 
 Use `repository-audit` only for an explicit whole-repository consistency or
 release-readiness review. Follow its router-owned context, run the manifest
@@ -163,23 +149,9 @@ source-repository helper:
 python3 tools/check_framework_consistency.py
 ```
 
-When relevant to the change, select focused source helpers from
-`tools/check_manifest.json`, `tools/README.md`, and
-`docs/framework-maintenance.md`. Do not duplicate the full helper inventory in
-bootstrap instructions; the manifest owns check IDs, routes, dependencies,
-profiles, and platform scope.
-Bootstrap discoverability must retain these focused helper names:
-`check_framework_metadata.py`, `check_approval_template.py`,
-`check_change_packages.py`, `check_bridge_capability_matrix.py`,
-`check_discussion_diagrams.py`, `check_context_router.py`,
-`check_task_decomposition.py`, `check_manifest_contract.py`,
-`check_maturity_profile.py`,
-`check_module_profile.py`, `check_operation_help.py`,
-`check_output_contracts.py`, `check_ai_infrastructure_inventory.py`,
-`check_ai_infrastructure_recommendations.py`, `check_rule_ownership.py`,
-`check_source_of_truth_registry.py`, `check_versioning.py`,
-`check_release_migration_template.py`, and
-`check_migration_diff_report.py`.
+Select focused helpers through `tools/check_manifest.json`, `tools/README.md`,
+and `docs/framework-maintenance.md`. The manifest owns check IDs, routes,
+dependencies, profiles, triggers, and platform scope.
 
 This helper validates the AlatyrCore repository itself. It is not a portable
 framework requirement for target projects.

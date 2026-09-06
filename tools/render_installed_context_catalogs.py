@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
@@ -24,6 +25,18 @@ def expected_outputs(target: Path) -> dict[Path, str]:
     for required in [framework, project, assistant]:
         if not required.is_dir():
             raise ValueError(f"installed contour is missing: {required}")
+    semantic_index = json.loads(
+        (framework / "semantics" / "index.json").read_text(encoding="utf-8")
+    )
+    if not isinstance(semantic_index, dict):
+        raise ValueError("installed semantic index must contain an object")
+    allowed_semantic_refs = {
+        term_id
+        for shard in semantic_index.get("shards", [])
+        if isinstance(shard, dict)
+        for term_id in shard.get("term_ids", [])
+        if isinstance(term_id, str)
+    }
     outputs = {
         framework / relpath: text
         for relpath, text in build_framework_catalog_contents(
@@ -35,7 +48,7 @@ def expected_outputs(target: Path) -> dict[Path, str]:
             {
                 root / relpath: text
                 for relpath, text in build_directory_catalog_contents(
-                    root, contour
+                    root, contour, allowed_semantic_refs=allowed_semantic_refs
                 ).items()
             }
         )

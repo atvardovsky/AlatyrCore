@@ -1,5 +1,5 @@
 {
-  "schema_version": 10,
+  "schema_version": 11,
   "router_kind": "target-context-router",
   "human_reference": ".ai/assistant/context-profiles.md",
   "preloaded_context": [
@@ -11,16 +11,15 @@
   "context_budgets": {
     "bootstrap": {
       "max_files": 2,
-      "max_words": 1800,
-      "soft_max_words": 1750
+      "max_words": 900,
+      "soft_max_words": 850
     },
     "first_use": {
-      "max_files": 3,
-      "max_words": 2300,
+      "max_files": 2,
+      "max_words": 900,
       "includes": [
         "host-preloaded instructions",
-        "bootstrap index",
-        "agent entry packet"
+        "bootstrap index"
       ]
     },
     "profile_default": {
@@ -81,22 +80,23 @@
     "on_failure": "stop compact interpretation, load the named canonical owner when safe, and report index drift; never load the complete contour by default"
   },
   "semantic_codebook": {
-    "schema_version": 1,
+    "schema_version": 2,
     "index": ".ai/framework/semantics/index.json",
     "framework_namespace": "alatyr:*",
     "project_namespace": "project:*",
     "preload_terms": [
       "alatyr:current-scope-authorization@1",
       "alatyr:canonical-owner@1",
+      "alatyr:risk-by-fact@1",
       "alatyr:protected-change@1",
       "alatyr:logical-integrity@1",
       "alatyr:bounded-context-expansion@1"
     ],
-    "conditional_loading": "load only shards referenced by selected context items, then resolve their acyclic dependency closure once",
+    "conditional_loading": "load only terms explicitly referenced by selected context items, then resolve their acyclic dependency closure once; legacy schema version 1 indexes retain shard-selector compatibility during migration",
     "fallback": "load the referenced canonical owner and do not infer a missing stale conflicting cyclic or unsupported compact term"
   },
   "context_packet": {
-    "schema_version": 2,
+    "schema_version": 3,
     "template": ".ai/assistant/templates/context-packet.json",
     "receipt_required_for": [
       "budget exceeded",
@@ -213,8 +213,8 @@
   "agent_entry_packet": {
     "schema_version": 3,
     "path": ".ai/assistant/entry-packet.json",
-    "load_after": ".ai/assistant/bootstrap-index.json",
-    "purpose": "compact first-use route containing installation state, task classification and decomposition cues, routing source pointers, authorization boundaries, and delta-first support review entry points",
+    "load_when": "bootstrap recovery adapter audit or routing conflict",
+    "purpose": "lazy recovery route containing installation state, decomposition cues, routing source pointers, authorization boundaries, and delta-first support review entry points",
     "load_human_references_when": [
       "ambiguity",
       "conflict",

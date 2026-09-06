@@ -3,19 +3,21 @@
 This directory is split by ownership.
 
 For routine routing, treat root `AGENTS.md` as preloaded and read only
-`.ai/assistant/bootstrap-index.json`. That file is a generated, hash-bound
-projection of this project map, `.ai/alatyr.yaml`, and
-`.ai/assistant/context-router.json`; load those canonical sources when the
-projection is stale, routing is ambiguous, or adapter repair is required. Load
+`.ai/assistant/bootstrap-index.json`. Its lazy
+`.ai/assistant/bootstrap-integrity.json` record binds the projection to this
+project map, `.ai/alatyr.yaml`, `.ai/assistant/context-router.json`, the
+semantic index, and rule registry. Load integrity evidence and canonical
+sources only when validation fails, routing is ambiguous, or adapter repair is required. Load
 the blueprint, registries, contours, module profile, and human context profiles
 only when the selected task profile, task-scale overlay, or project-area
 overlay requires them.
 
-The bootstrap embeds the small core semantic codebook once. After routing,
+The bootstrap embeds the small core semantic preload once. After routing,
 start from the selected contour's `context-index.json` and follow only matching
 child indexes or content entries. The indexes are derived navigation and cost
-metadata, not project authority. Domain codebook shards are lazy; every compact
-term resolves to versioned prose and its canonical owner before use.
+metadata, not project authority. Resolve only terms explicitly referenced by
+selected entries and their dependency closure. Domain codebook shards are lazy;
+every compact term resolves to versioned prose and its canonical owner before use.
 
 ## Installation State
 

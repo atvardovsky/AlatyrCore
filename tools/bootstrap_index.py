@@ -13,6 +13,7 @@ from yaml_support import safe_load
 
 
 BOOTSTRAP_PATH = Path(".ai/assistant/bootstrap-index.json")
+BOOTSTRAP_INTEGRITY_PATH = Path(".ai/assistant/bootstrap-integrity.json")
 SOURCE_PATHS = {
     "manifest": Path(".ai/alatyr.yaml"),
     "project_map": Path(".ai/README.md"),
@@ -120,31 +121,12 @@ def build_bootstrap_index(
     modules = modules if isinstance(modules, dict) else {}
     operation_routing = operation_routing if isinstance(operation_routing, dict) else {}
 
-    derived_from = {
-        name: {"path": path.as_posix(), "sha256": _sha256(text)}
-        for (name, path), text in zip(
-            SOURCE_PATHS.items(),
-            [manifest_text, project_map_text, router_text],
-        )
-    }
-    if semantic_index_text is not None:
-        derived_from["semantic_codebook"] = {
-            "path": SEMANTIC_INDEX_PATH.as_posix(),
-            "sha256": _sha256(semantic_index_text),
-        }
-    if rule_registry_text is not None:
-        derived_from["rule_registry"] = {
-            "path": ".ai/framework/rule-registry.json",
-            "sha256": _sha256(rule_registry_text),
-        }
     recursive_context = router.get("recursive_context")
     recursive_context = recursive_context if isinstance(recursive_context, dict) else {}
     semantic_codebook = router.get("semantic_codebook")
     semantic_codebook = semantic_codebook if isinstance(semantic_codebook, dict) else {}
     context_packet = router.get("context_packet")
     context_packet = context_packet if isinstance(context_packet, dict) else {}
-    agent_entry_packet = router.get("agent_entry_packet")
-    agent_entry_packet = agent_entry_packet if isinstance(agent_entry_packet, dict) else {}
     preload_ids = _string_list(semantic_codebook.get("preload_terms"))
     ordered_semantic_ids = [
         term_id for term_id in preload_ids if term_id in (semantic_terms or {})
@@ -156,10 +138,12 @@ def build_bootstrap_index(
     )
 
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "index_kind": "target-bootstrap-index",
-        "generated_by": generated_by or {},
-        "derived_from": derived_from,
+        "integrity": {
+            "path": BOOTSTRAP_INTEGRITY_PATH.as_posix(),
+            "on_failure": "load integrity evidence and canonical sources; do not trust compact routing",
+        },
         "installation": {
             "framework_version": _string(framework.get("version")),
             "adapter_schema_version": _string(manifest.get("schema_version")),
@@ -189,21 +173,30 @@ def build_bootstrap_index(
             ],
             "fallback": _string(semantic_codebook.get("fallback")),
         },
-        "rule_selector": _rule_selector(rule_registry_text),
+        "rule_selector": ".ai/framework/rule-registry.json",
         "context_packet": {
             "schema_version": context_packet.get("schema_version", "unknown"),
             "template": _string(context_packet.get("template")),
             "receipt_required_for": _string_list(context_packet.get("receipt_required_for")),
         },
-        "agent_entry_packet": {
-            "schema_version": agent_entry_packet.get("schema_version", "unknown"),
-            "path": _string(agent_entry_packet.get("path")),
-            "load_after": _string(agent_entry_packet.get("load_after")),
-        },
+        "recovery_entry_packet": ".ai/assistant/entry-packet.json",
         "routing_order": _string_list(router.get("routing_order")),
         "profiles": _route_projection(router.get("profile_index")),
-        "intent_overlays": _route_projection(router.get("intent_overlays")),
+        "intent_index": ".ai/assistant/context/intents/context-index.json",
         "task_scale_overlays": _route_projection(router.get("task_scale_overlays")),
+        "task_classification": {
+            "order": _string_list(
+                (router.get("task_classification") or {}).get("classification_order")
+                if isinstance(router.get("task_classification"), dict)
+                else None
+            ),
+            "default": _string(
+                (router.get("task_classification") or {}).get("default_class")
+                if isinstance(router.get("task_classification"), dict)
+                else None
+            ),
+            "ambiguity": "inspect-only",
+        },
         "area_overlays": _route_projection(router.get("area_overlays")),
         "project_knowledge_routing": _string(
             router.get("project_knowledge_routing", {}).get("descriptor")
@@ -226,7 +219,48 @@ def build_bootstrap_index(
     }
 
 
-def build_from_target(target: Path) -> dict[str, Any]:
+def build_bootstrap_integrity(
+    manifest_text: str,
+    project_map_text: str,
+    router_text: str,
+    *,
+    bootstrap: dict[str, Any],
+    rule_registry_text: str | None = None,
+    semantic_index_text: str | None = None,
+    generated_by: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Return lazy provenance and source-binding evidence for the bootstrap."""
+
+    derived_from = {
+        name: {"path": path.as_posix(), "sha256": _sha256(text)}
+        for (name, path), text in zip(
+            SOURCE_PATHS.items(),
+            [manifest_text, project_map_text, router_text],
+        )
+    }
+    if semantic_index_text is not None:
+        derived_from["semantic_codebook"] = {
+            "path": SEMANTIC_INDEX_PATH.as_posix(),
+            "sha256": _sha256(semantic_index_text),
+        }
+    if rule_registry_text is not None:
+        derived_from["rule_registry"] = {
+            "path": ".ai/framework/rule-registry.json",
+            "sha256": _sha256(rule_registry_text),
+        }
+    canonical = json.dumps(bootstrap, ensure_ascii=True, separators=(",", ":"), sort_keys=True)
+    return {
+        "schema_version": 1,
+        "record_kind": "target-bootstrap-integrity",
+        "bootstrap": BOOTSTRAP_PATH.as_posix(),
+        "bootstrap_digest": f"sha256:{_sha256(canonical)}",
+        "generated_by": generated_by or {},
+        "derived_from": derived_from,
+        "rule_selector": _rule_selector(rule_registry_text),
+    }
+
+
+def build_bundle_from_target(target: Path) -> tuple[dict[str, Any], dict[str, Any]]:
     texts: dict[str, str] = {}
     for name, relpath in SOURCE_PATHS.items():
         path = target / relpath
@@ -240,18 +274,37 @@ def build_from_target(target: Path) -> dict[str, Any]:
         installed_registry if installed_registry.is_file() else SOURCE_RULE_REGISTRY
     )
     semantic_terms = load_codebook(semantic_index, root=semantic_index.parent)
-    return build_bootstrap_index(
+    provenance = generation_provenance(
+        target,
+        tool_name="render_target_bootstrap_index.py",
+    )
+    bootstrap = build_bootstrap_index(
         texts["manifest"],
         texts["project_map"],
         texts["context_router"],
         rule_registry_text=rule_registry.read_text(encoding="utf-8"),
         semantic_index_text=semantic_index.read_text(encoding="utf-8"),
         semantic_terms=semantic_terms,
-        generated_by=generation_provenance(
-            target,
-            tool_name="render_target_bootstrap_index.py",
-        ),
+        generated_by=provenance,
     )
+    integrity = build_bootstrap_integrity(
+        texts["manifest"],
+        texts["project_map"],
+        texts["context_router"],
+        bootstrap=bootstrap,
+        rule_registry_text=rule_registry.read_text(encoding="utf-8"),
+        semantic_index_text=semantic_index.read_text(encoding="utf-8"),
+        generated_by=provenance,
+    )
+    return bootstrap, integrity
+
+
+def build_from_target(target: Path) -> dict[str, Any]:
+    return build_bundle_from_target(target)[0]
+
+
+def build_integrity_from_target(target: Path) -> dict[str, Any]:
+    return build_bundle_from_target(target)[1]
 
 
 def render(data: dict[str, Any]) -> str:

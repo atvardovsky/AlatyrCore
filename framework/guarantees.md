@@ -165,12 +165,14 @@ Machine checks can verify only deterministic repository facts, such as:
   current word estimates and digests, resolvable semantic references, and
   agreement with live router and manifest paths
 - semantic-codebook shards can be checked for immutable term identity,
-  dependency closure, digest and preload agreement, installed canonical-owner
-  presence, and deterministic packet projection
+  dependency closure, exact-reference selection, digest and preload agreement,
+  installed canonical-owner content binding, and deterministic packet
+  projection
 - static and installed bootstrap/profile paths can be measured against total,
   portable framework, and project-owned target-context budgets
-- generated bootstrap projections can be checked against canonical source
-  hashes, routed gate fragments can be checked for profile coverage, optional
+- generated bootstrap projections can be checked through lazy integrity
+  evidence against canonical source hashes, routed gate fragments can be
+  checked for exact profile-default coverage, optional
   validator work can be dispatched from declared capability state, and source
   checks can be selected from explicit changed-path triggers
 - a deterministic source walking skeleton can prove scaffold, Git-diff

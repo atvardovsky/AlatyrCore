@@ -25,7 +25,8 @@ A clear ordinary task is routed automatically; an operation ID is not required.
 Default routing:
 
 - Treat `AGENTS.md` as preloaded, then load
-  `.ai/assistant/bootstrap-index.json` and `.ai/assistant/entry-packet.json`.
+  `.ai/assistant/bootstrap-index.json`. Load integrity evidence and the recovery
+  entry packet only after failed validation or for recovery, audit, or conflict.
 - If the operation is clear and low risk, choose the matching route and report
   the selected profile, gates, and allowed-action ceiling.
 - For non-trivial work, create a one-task or multi-task decomposition with

@@ -43,7 +43,13 @@ from agent_entry_packet import (
     build_agent_entry_packet,
     render as render_agent_entry_packet,
 )
-from bootstrap_index import build_bootstrap_index, render as render_bootstrap_index
+from bootstrap_index import (
+    BOOTSTRAP_INTEGRITY_PATH,
+    BOOTSTRAP_PATH,
+    build_bootstrap_index,
+    build_bootstrap_integrity,
+    render as render_bootstrap_index,
+)
 from capability_catalog import (
     load_modules,
     shared_surface_merge_requirement,
@@ -157,6 +163,7 @@ def build_projection_context(
 def build_target_context_catalogs(
     selected: set[Path],
     content_overrides: dict[Path, str] | None = None,
+    allowed_semantic_refs: set[str] | None = None,
 ) -> dict[Path, str]:
     """Project recursive target indexes over the selected scaffold files."""
 
@@ -182,6 +189,7 @@ def build_target_context_catalogs(
             contour,
             selected_files=selected_files,
             content_overrides=overrides,
+            allowed_semantic_refs=allowed_semantic_refs,
         )
         projected.update({prefix / relpath: text for relpath, text in contents.items()})
     return projected
@@ -305,7 +313,7 @@ def projected_template_content(
                 available_paths={path.as_posix() for path in selected_paths.exact},
             )
         )
-    if rel == Path(".ai/assistant/bootstrap-index.json"):
+    if rel in {BOOTSTRAP_PATH, BOOTSTRAP_INTEGRITY_PATH}:
         manifest_text = project_manifest(
             (TEMPLATE_ROOT / ".ai/alatyr.yaml").read_text(encoding="utf-8"),
             profile,
@@ -343,20 +351,31 @@ def projected_template_content(
             if projected_registry_text is None
             else projected_registry_text
         )
+        provenance = context.generated_by or generation_provenance_from_manifest_text(
+            target,
+            tool_name="scaffold_target_structure.py",
+            manifest_text=manifest_text,
+        )
+        bootstrap = build_bootstrap_index(
+            manifest_text,
+            project_map_text,
+            router_text,
+            rule_registry_text=rule_registry_text,
+            semantic_index_text=semantic_index_text,
+            semantic_terms=semantic_terms,
+            generated_by=provenance,
+        )
+        if rel == BOOTSTRAP_PATH:
+            return render_bootstrap_index(bootstrap)
         return render_bootstrap_index(
-            build_bootstrap_index(
+            build_bootstrap_integrity(
                 manifest_text,
                 project_map_text,
                 router_text,
+                bootstrap=bootstrap,
                 rule_registry_text=rule_registry_text,
                 semantic_index_text=semantic_index_text,
-                semantic_terms=semantic_terms,
-                generated_by=context.generated_by
-                or generation_provenance_from_manifest_text(
-                    target,
-                    tool_name="scaffold_target_structure.py",
-                    manifest_text=manifest_text,
-                ),
+                generated_by=provenance,
             )
         )
     if rel == Path(".ai/assistant/ai-infrastructure-router.json"):
@@ -404,9 +423,25 @@ def run_scaffold(args: argparse.Namespace) -> ScaffoldRun:
     enabled_modules = set(composition.staged_capabilities)
     framework_pack = composition.framework_pack
     selected_templates = {Path(path) for path in composition.selected_target_paths}
+    semantic_projection = projected_framework_contents(framework_pack)
+    projected_semantic_text = semantic_projection["semantics/index.json"]
+    if projected_semantic_text is None:
+        projected_semantic_text = (
+            FRAMEWORK_ROOT / "semantics/index.json"
+        ).read_text(encoding="utf-8")
+    projected_semantic_index = json.loads(projected_semantic_text)
+    allowed_semantic_refs = {
+        term_id
+        for shard in projected_semantic_index.get("shards", [])
+        if isinstance(shard, dict)
+        for term_id in shard.get("term_ids", [])
+        if isinstance(term_id, str)
+    }
     # Discover the recursive index paths before projecting the router. Its
     # contour entries must describe the exact support profile being installed.
-    context_catalogs = build_target_context_catalogs(selected_templates)
+    context_catalogs = build_target_context_catalogs(
+        selected_templates, allowed_semantic_refs=allowed_semantic_refs
+    )
     selected_templates.update(context_catalogs)
     framework_files = composition.framework_paths
     selected = selected_templates | {
@@ -452,7 +487,9 @@ def run_scaffold(args: argparse.Namespace) -> ScaffoldRun:
         if content is not None:
             projected_target_contents[rel] = content
     context_catalogs = build_target_context_catalogs(
-        selected_templates, projected_target_contents
+        selected_templates,
+        projected_target_contents,
+        allowed_semantic_refs=allowed_semantic_refs,
     )
     projection_context = build_projection_context(
         selected,

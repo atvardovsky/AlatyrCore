@@ -1,7 +1,7 @@
 # Claude Instructions
 
 Ensure `AGENTS.md` is loaded once; if it was not preloaded by the host, read it now.
-Then read `AI_ASSISTANTS.md` and `.ai/assistant/bootstrap-index.json`, then `.ai/assistant/entry-packet.json`.
+Then read `.ai/assistant/bootstrap-index.json`. Load `AI_ASSISTANTS.md` or `.ai/assistant/entry-packet.json` only for compatibility, recovery, audit, or routing conflict.
 If the derived index is missing or stale, repair it from its named canonical sources.
 Select the smallest profile before reading the matching task flow.
 

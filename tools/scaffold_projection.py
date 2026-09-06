@@ -237,7 +237,7 @@ profile candidates. For `Alatyr`, help, ambiguity, or repair, use
 `.ai/assistant/help.md`, `.ai/assistant/operation-catalog.json`, and
 `.ai/assistant/flows/operation-routing.flow.md`. Status is read-only."""
 
-KERNEL_OPERATION_ROUTING_PARAGRAPH = """Use profile candidates from `.ai/assistant/entry-packet.json` for operation
+KERNEL_OPERATION_ROUTING_PARAGRAPH = """Use profile candidates from `.ai/assistant/bootstrap-index.json` for operation
 routing. The installed operation catalog is absent in this support profile;
 for `Alatyr`, help, ambiguity, or repair, use `.ai/assistant/help.md` and
 report missing operation-catalog support before relying on aliases. Status is
@@ -259,8 +259,8 @@ route selected delegation through its surface record and
 `.ai/assistant/prompts/worker-orchestration.md`. Unknown, stale, or unverified
 state means no native capability claim; unknown presentation uses ASCII."""
 
-KERNEL_ASSISTANT_CAPABILITY_PARAGRAPH = """Before delegation or diagrams, use `.ai/assistant/entry-packet.json` and
-module state. If assistant capability records or worker orchestration prompts
+KERNEL_ASSISTANT_CAPABILITY_PARAGRAPH = """Before delegation or diagrams, use compact bootstrap routing and module
+state. If assistant capability records or worker orchestration prompts
 are absent, make no native capability claim; unknown presentation uses ASCII."""
 
 
@@ -278,7 +278,7 @@ def project_agent_rule_ids(
     )
     replacement = f"Use installed owners for {rendered_ids}. Project\nfacts belong"
     rendered, count = pattern.subn(replacement, text, count=1)
-    compact_marker = "Use bootstrap-selected rule owners."
+    compact_marker = "Use bootstrap-selected owners."
     if count == 0 and compact_marker in text:
         rendered = text
     elif count != 1:

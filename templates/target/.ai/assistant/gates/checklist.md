@@ -20,9 +20,9 @@ commands from another project.
   `ALATYR-DIAGRAM-001`, `ALATYR-TEAM-001`,
   `ALATYR-ENGINEERING-EVIDENCE-001`, and `ALATYR-EVIDENCE-001`.
 - `AGENTS.md` treated as preloaded; compact bootstrap loaded from
-  `.ai/assistant/bootstrap-index.json`; canonical manifest, project map, and
-  `.ai/assistant/context-router.json` loaded only for stale-index repair,
-  ambiguity, or audit.
+  `.ai/assistant/bootstrap-index.json`; lazy integrity evidence and canonical
+  sources loaded only for failed validation, stale-index repair, ambiguity, or
+  audit.
 - Gate fragments selected through `.ai/assistant/gates/index.json`; this full
   checklist loaded only for ambiguity, repair, or explicit acceptance audit.
 - Source-of-truth registry checked when a changed fact has multiple possible

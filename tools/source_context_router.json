@@ -14,11 +14,12 @@
     "selection": "follow only entries matched by the selected profile, rule owner, path, contract, dependency, risk, conflict, or failed check"
   },
   "semantic_codebook": {
-    "schema_version": 1,
+    "schema_version": 2,
     "index": "framework/semantics/index.json",
     "preload_terms": [
       "alatyr:current-scope-authorization@1",
       "alatyr:canonical-owner@1",
+      "alatyr:risk-by-fact@1",
       "alatyr:protected-change@1",
       "alatyr:logical-integrity@1",
       "alatyr:bounded-context-expansion@1"

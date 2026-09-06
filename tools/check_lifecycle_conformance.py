@@ -17,7 +17,12 @@ from typing import Any
 
 import yaml
 
-from bootstrap_index import BOOTSTRAP_PATH, build_from_target, render
+from bootstrap_index import (
+    BOOTSTRAP_INTEGRITY_PATH,
+    BOOTSTRAP_PATH,
+    build_bundle_from_target,
+    render,
+)
 from agent_entry_packet import (
     PACKET_PATH,
     build_from_target as build_entry_packet,
@@ -28,6 +33,7 @@ from parallel_execution import child_capacity, run_commands
 from scaffold_target_structure import plan as scaffold_plan
 from render_context_catalogs import build_framework_catalog_contents
 from render_installed_context_catalogs import expected_outputs as installed_context_outputs
+from render_semantic_codebook import render as render_semantic_codebook
 from support_state import STATE_PATH, build_support_state, render_state
 from target_adapter_validation.framework_baseline import (
     source_pack_projection,
@@ -253,8 +259,11 @@ def transition_installation_state(
 
 
 def refresh_bootstrap(repo: Path) -> None:
-    output = repo / BOOTSTRAP_PATH
-    output.write_bytes(render(build_from_target(repo)).encode("utf-8"))
+    bootstrap, integrity = build_bundle_from_target(repo)
+    (repo / BOOTSTRAP_PATH).write_bytes(render(bootstrap).encode("utf-8"))
+    (repo / BOOTSTRAP_INTEGRITY_PATH).write_bytes(
+        render(integrity).encode("utf-8")
+    )
 
 
 def refresh_entry_packet(repo: Path) -> None:
@@ -265,10 +274,10 @@ def refresh_entry_packet(repo: Path) -> None:
 
 def refresh_context_and_bootstrap(repo: Path) -> None:
     refresh_entry_packet(repo)
+    refresh_bootstrap(repo)
     for path, content in installed_context_outputs(repo).items():
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(content.encode("utf-8"))
-    refresh_bootstrap(repo)
     support_state = build_support_state(repo)
     (repo / STATE_PATH).write_bytes(render_state(support_state).encode("utf-8"))
 
@@ -583,6 +592,10 @@ def exercise_profile(
     context_path = source / "framework" / "context-profiles.md"
     context_path.write_bytes(
         context_path.read_bytes() + b"\nLifecycle fixture update.\n"
+    )
+    semantic_index = source / "framework" / "semantics" / "index.json"
+    semantic_index.write_text(
+        render_semantic_codebook(semantic_index.parent), encoding="utf-8"
     )
     for relpath, content in build_framework_catalog_contents(
         root=source / "framework"

@@ -95,9 +95,9 @@ requires an explicit pack expansion and normal framework-update evidence.
 Installation and update planning should start from the cheapest sufficient
 profile. Use `kernel` unless target evidence names a needed capability,
 operation surface, native bridge, or validation failure that requires `core`,
-`standard`, or `full`. The generated entry packet must record that profile
-decision and the escalation reason so routine agents do not load full support
-prose just to discover what profile was installed.
+`standard`, or `full`. The compact bootstrap records the selected profile;
+the generated recovery entry packet records its escalation reason without
+becoming routine model context.
 
 Selecting an assistant-native surface must also select the portable bridge
 and installed-operation support needed by that surface. It must not implicitly

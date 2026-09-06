@@ -193,13 +193,12 @@ and infer inventory, explain, discuss, compare, review, or document mode.
 For installed operations:
 
 1. Treat the target assistant entry point as preloaded, then read only
-   `.ai/assistant/bootstrap-index.json` as compact bootstrap and
-   `.ai/assistant/entry-packet.json` as the first-use routing packet. If their
-   canonical source hashes differ, repair the stale derived file from the named
-   manifest, project map, context router, gate index, support policy, action
-   policy, operation index, and semantic-codebook index before routine
-   operation routing. Use the embedded core semantic definitions by exact ID
-   and version.
+   `.ai/assistant/bootstrap-index.json` as compact bootstrap. Validate its lazy
+   integrity record without adding it to routine model context when tooling
+   permits. Load `.ai/assistant/bootstrap-integrity.json`, the recovery
+   `.ai/assistant/entry-packet.json`, and named canonical sources only after a
+   failed check, during adapter audit, or for a routing conflict. Use embedded
+   semantic definitions and selected obligation sets by exact ID and version.
 2. Read the installation note and post-install/update message templates when
    the request follows an installation, framework update, or unclear adapter
    state.

@@ -58,7 +58,11 @@
           "ALATYR-SUPPORT-001"
         ]
       },
-      "semantic_refs": [],
+      "semantic_refs": [
+        "alatyr:bounded-impact-closure@1",
+        "alatyr:relationship-candidate-is-not-authority@1",
+        "alatyr:support-state-is-a-locator@1"
+      ],
       "owner_refs": [
         "ALATYR-SUPPORT-001"
       ],

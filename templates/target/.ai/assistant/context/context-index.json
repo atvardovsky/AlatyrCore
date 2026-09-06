@@ -141,8 +141,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 336,
-      "content_digest": "sha256:a2f4a29e8acfc2bb4745dcbe5fce743be98510e772c3ad90756a6c342517f316"
+      "estimated_words": 364,
+      "content_digest": "sha256:7b14d72692ef8ccf7ab9119c0cf88909bab79873afeac39fb6c272ce7e5e011c"
     },
     {
       "id": "assistant.section.context-task-scales",

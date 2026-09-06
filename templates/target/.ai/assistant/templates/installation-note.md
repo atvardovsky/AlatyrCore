@@ -29,7 +29,8 @@ Installation id: `{INSTALLATION_ID}`
   `.ai/assistant/policies/action-authorization.json`
 - Context router: `.ai/assistant/context-router.json`
 - Generated bootstrap index: `.ai/assistant/bootstrap-index.json`
-- Generated first-use entry packet: `.ai/assistant/entry-packet.json`
+- Generated lazy bootstrap integrity: `.ai/assistant/bootstrap-integrity.json`
+- Generated recovery entry packet: `.ai/assistant/entry-packet.json`
 - Recursive context indexes: `.ai/framework/context-index.json`,
   `.ai/project/context-index.json`, `.ai/assistant/context-index.json`
 - Support-information policy/state: `.ai/project/support-policy.json`,
@@ -129,6 +130,8 @@ not select every child. Resolve lazy semantic references through
 on missing, stale, ambiguous, or conflicting terms. Repair stale recursive
 indexes before regenerating the bootstrap from `.ai/alatyr.yaml`,
 `.ai/README.md`, `.ai/assistant/context-router.json`, and the semantic index.
+Keep bootstrap integrity and recovery entry metadata out of routine context;
+load them only after failed validation, for recovery or audit, or on conflict.
 Load this note after
 installation/update or when adapter state is unclear. Load human profiles,
 module state, registries, help, and operation routing only when selected by the

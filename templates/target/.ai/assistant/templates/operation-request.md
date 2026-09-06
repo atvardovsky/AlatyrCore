@@ -109,11 +109,11 @@ Treat the target assistant entry point as already loaded by the host. Start
 with the micro-bootstrap route:
 
 - `.ai/assistant/bootstrap-index.json`
-- `.ai/assistant/entry-packet.json`
 
 Use `.ai/alatyr.yaml`, `.ai/README.md`, and
-`.ai/assistant/context-router.json` only when the bootstrap or entry packet is
-missing, stale, ambiguous, or under repair. Do not load the full source-of-
+`.ai/assistant/context-router.json`, bootstrap integrity, and the recovery
+entry packet only when compact routing is missing, stale, ambiguous, disputed,
+or under repair. Do not load the full source-of-
 truth registry, project contour, assistant contour, complete gate checklist,
 human context profile reference, or target source files before the selected
 profile, operation, area, fact, path, symbol, dependency, contract, risk, or

@@ -312,13 +312,13 @@ class ScaffoldProjectionTests(unittest.TestCase):
             self.assertNotIn(".ai/assistant/operation-catalog.json", paths)
             self.assertNotIn(".agents/skills/README.md", paths)
             readme = (target / ".ai/README.md").read_text(encoding="utf-8")
-            bootstrap = json.loads(
-                (target / ".ai/assistant/bootstrap-index.json").read_text(
+            integrity = json.loads(
+                (target / ".ai/assistant/bootstrap-integrity.json").read_text(
                     encoding="utf-8"
                 )
             )
             self.assertEqual(
-                bootstrap["derived_from"]["project_map"]["sha256"],
+                integrity["derived_from"]["project_map"]["sha256"],
                 hashlib.sha256(readme.encode("utf-8")).hexdigest(),
             )
 

@@ -189,8 +189,8 @@ def check_context_packet(router: dict[str, Any], failures: list[str]) -> None:
     if not isinstance(packet, dict):
         failures.append("context_packet must be an object")
         return
-    if packet.get("schema_version") != 2:
-        failures.append("context_packet.schema_version must be 2")
+    if packet.get("schema_version") != 3:
+        failures.append("context_packet.schema_version must be 3")
     if packet.get("template") != ".ai/assistant/templates/context-packet.json":
         failures.append("context_packet.template is invalid")
     required_for = packet.get("receipt_required_for")
@@ -213,6 +213,7 @@ def check_context_packet(router: dict[str, Any], failures: list[str]) -> None:
         "selected_items",
         "routing",
         "semantic_terms",
+        "required_obligations",
         "budget",
         "receipt",
         "cost_claim",
@@ -419,8 +420,8 @@ def main() -> int:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
 
-    if router.get("schema_version") != 10:
-        failures.append("context-router.json schema_version must be 10")
+    if router.get("schema_version") != 11:
+        failures.append("context-router.json schema_version must be 11")
     if router.get("router_kind") != "target-context-router":
         failures.append("context-router.json router_kind must be target-context-router")
     if router.get("human_reference") != ".ai/assistant/context-profiles.md":
@@ -534,8 +535,8 @@ def main() -> int:
     if not isinstance(semantic, dict):
         failures.append("semantic_codebook must be an object")
     else:
-        if semantic.get("schema_version") != 1:
-            failures.append("semantic_codebook.schema_version must be 1")
+        if semantic.get("schema_version") != 2:
+            failures.append("semantic_codebook.schema_version must be 2")
         if semantic.get("index") != ".ai/framework/semantics/index.json":
             failures.append("semantic_codebook.index is invalid")
         if semantic.get("framework_namespace") != "alatyr:*":
@@ -545,6 +546,7 @@ def main() -> int:
         expected_preload = [
             "alatyr:current-scope-authorization@1",
             "alatyr:canonical-owner@1",
+            "alatyr:risk-by-fact@1",
             "alatyr:protected-change@1",
             "alatyr:logical-integrity@1",
             "alatyr:bounded-context-expansion@1",
@@ -566,13 +568,16 @@ def main() -> int:
         expected_entry_packet = {
             "schema_version": 3,
             "path": ".ai/assistant/entry-packet.json",
-            "load_after": ".ai/assistant/bootstrap-index.json",
         }
         for field, expected in expected_entry_packet.items():
             if entry_packet.get(field) != expected:
                 failures.append(f"agent_entry_packet.{field} must be {expected}")
         if "routing source pointers" not in str(entry_packet.get("purpose", "")):
             failures.append("agent_entry_packet.purpose must describe routing source pointers")
+        load_when = str(entry_packet.get("load_when", ""))
+        for reason in ["recovery", "audit", "routing conflict"]:
+            if reason not in load_when:
+                failures.append(f"agent_entry_packet.load_when missing {reason}")
         load_reasons = entry_packet.get("load_human_references_when")
         if not isinstance(load_reasons, list) or "ambiguity" not in load_reasons:
             failures.append("agent_entry_packet must define human-reference load reasons")

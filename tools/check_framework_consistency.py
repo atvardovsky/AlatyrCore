@@ -248,8 +248,8 @@ def main() -> int:
         ".ai/assistant/entry-packet.json",
         ".ai/assistant/policies/action-authorization.json",
         ".ai/assistant/task-decomposition.json",
-        "Treat this file as host-preloaded context",
-        "Use bootstrap-selected rule owners",
+        "This file is host-preloaded",
+        "canonical owner",
     ]:
         if required_target_agent_ref not in target_agents:
             failures.append(

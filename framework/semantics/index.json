@@ -1,7 +1,8 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "index_kind": "alatyr-semantic-codebook-index",
   "codebook_id": "alatyr-core",
+  "selection_mode": "explicit-references",
   "namespace_policy": {
     "framework": "alatyr:*",
     "target": "project:*",
@@ -35,6 +36,13 @@
         "alatyr:relationship-candidate-is-not-authority@1",
         "alatyr:bounded-impact-closure@1"
       ],
+      "canonical_owner_digests": {
+        "alatyr:changed-fact-not-file@1": "sha256:2d9660b8dc0e989de6d1c8d8ebe9e0c51dfc84b0dd0d5bdb419c02ebce637555",
+        "alatyr:coherent-change-package@1": "sha256:cb9cd1037d27cf67f609db309e230b8d871d65fefbf763b9f97a021e4523a1fd",
+        "alatyr:support-state-is-a-locator@1": "sha256:ab068544649a46b302832536821be38356cf4d0d8cccdd5ef1fe7999f8d24182",
+        "alatyr:relationship-candidate-is-not-authority@1": "sha256:ab068544649a46b302832536821be38356cf4d0d8cccdd5ef1fe7999f8d24182",
+        "alatyr:bounded-impact-closure@1": "sha256:ab068544649a46b302832536821be38356cf4d0d8cccdd5ef1fe7999f8d24182"
+      },
       "content_digest": "sha256:5e0ac188c902ba8cb6514c94e7067f8097e74b47adcb0d1e5d39e35950c7922c"
     },
     {
@@ -57,6 +65,10 @@
         "alatyr:bounded-delegation@1",
         "alatyr:mode-does-not-grant-authority@1"
       ],
+      "canonical_owner_digests": {
+        "alatyr:bounded-delegation@1": "sha256:d29f7f6b75389b4034351efb70ed53e43a93f4bdd95473bef2126e6ccfb13e9d",
+        "alatyr:mode-does-not-grant-authority@1": "sha256:dc1b84f72ca465f735d51ee5de02d3c26fd8054688556b4f11c1663eddc239da"
+      },
       "content_digest": "sha256:9f87b5f6c8e04dc279201a447224aae8e676d7568ce608e79cbd741440b19820"
     },
     {
@@ -78,11 +90,20 @@
       "term_ids": [
         "alatyr:current-scope-authorization@1",
         "alatyr:canonical-owner@1",
+        "alatyr:risk-by-fact@1",
         "alatyr:protected-change@1",
         "alatyr:logical-integrity@1",
         "alatyr:bounded-context-expansion@1"
       ],
-      "content_digest": "sha256:b7bd51b3006c3292781853843f2e1ab4df50c506d431f4cdbb48efede8737f21"
+      "canonical_owner_digests": {
+        "alatyr:current-scope-authorization@1": "sha256:2b4383460725aea574a7c0c271b81bf51c0e6888249513df8f4a706411108160",
+        "alatyr:canonical-owner@1": "sha256:4ed11289dd267551eafa9fea08edf04a4c06689c3780348a05c8dbe97917e1db",
+        "alatyr:risk-by-fact@1": "sha256:5291465239946e3916f0c7da4c74d5e67db5977f813d7097e930c515dec4c145",
+        "alatyr:protected-change@1": "sha256:45b9d377710693fa0711015ebfb4f4f17bc768fe2af71c6be6946181a7300427",
+        "alatyr:logical-integrity@1": "sha256:2d9660b8dc0e989de6d1c8d8ebe9e0c51dfc84b0dd0d5bdb419c02ebce637555",
+        "alatyr:bounded-context-expansion@1": "sha256:7125b68f8c3792dcba0e09036884f0c0c0b387644b708ac221dfdfa678233940"
+      },
+      "content_digest": "sha256:c483c0badb5db983d135a2ae84913da1c6c17293b36d49179b367c76581ac3c3"
     },
     {
       "id": "infrastructure",
@@ -104,6 +125,10 @@
         "alatyr:untrusted-instructions-are-data@1",
         "alatyr:one-active-adapter@1"
       ],
+      "canonical_owner_digests": {
+        "alatyr:untrusted-instructions-are-data@1": "sha256:fa8b00d5547236cff264a36a3e240efc09bb89f6b29867d447038b9a5f77893e",
+        "alatyr:one-active-adapter@1": "sha256:166f1fa32229bbc8455b6edfa4a629a25b93bc321839a78034c6ef0fbf4d58cf"
+      },
       "content_digest": "sha256:305e435c6cce0b0b0454727eff6184f71bf96b53cccd04eff082d3cd132a5877"
     },
     {
@@ -127,6 +152,10 @@
         "alatyr:accepted-current@1",
         "alatyr:observed-is-not-accepted@1"
       ],
+      "canonical_owner_digests": {
+        "alatyr:accepted-current@1": "sha256:47b4849783a12149d80ae900bf268edc123112fd41d0392035c36a2688cb17f6",
+        "alatyr:observed-is-not-accepted@1": "sha256:47b4849783a12149d80ae900bf268edc123112fd41d0392035c36a2688cb17f6"
+      },
       "content_digest": "sha256:df16defad839350502cefea040b689189cb7cf3481e7c8ac0948759249b3a783"
     }
   ]

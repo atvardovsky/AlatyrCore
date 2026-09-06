@@ -30,7 +30,11 @@ from agent_entry_packet import (
     build_from_target as build_entry_packet,
     render as render_entry_packet,
 )
-from bootstrap_index import BOOTSTRAP_PATH, build_from_target
+from bootstrap_index import (
+    BOOTSTRAP_INTEGRITY_PATH,
+    BOOTSTRAP_PATH,
+    build_bundle_from_target,
+)
 from target_validation_support import (
     CANONICAL_CHANGE_SET_HASH_CONTRACT,
     GitEvidenceState,
@@ -156,7 +160,7 @@ CANONICAL_PROFILES = [
     "ai-infrastructure",
     "framework-upgrade",
 ]
-ROUTER_SCHEMA_VERSIONS = {2, 3, 4, 5, 6, 7, 8, 9, 10}
+ROUTER_SCHEMA_VERSIONS = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11}
 
 KERNEL_REQUIRED_FILES = [
     "AGENTS.md",
@@ -335,6 +339,7 @@ MANIFEST_REQUIRED_SCALARS: set[PathKey] = {
     ("source_of_truth", "assistant_contour"),
     ("source_of_truth", "context_router"),
     ("source_of_truth", "bootstrap_index"),
+    ("source_of_truth", "bootstrap_integrity"),
     ("source_of_truth", "framework_context_index"),
     ("source_of_truth", "project_context_index"),
     ("source_of_truth", "assistant_context_index"),
@@ -1974,10 +1979,11 @@ class Validator:
         if router_schema not in ROUTER_SCHEMA_VERSIONS:
             self.error(
                 "MANIFEST_CONTEXT_SCHEMA",
-                "context_routing.router_schema_version must be 2 through 10",
+                "context_routing.router_schema_version must be 2 through 11",
                 ".ai/alatyr.yaml",
             )
         expected_context_paths = {
+            ("source_of_truth", "bootstrap_integrity"): ".ai/assistant/bootstrap-integrity.json",
             ("source_of_truth", "agent_entry_packet"): PACKET_PATH.as_posix(),
             ("context_routing", "agent_entry_packet"): PACKET_PATH.as_posix(),
         }
@@ -2168,7 +2174,7 @@ class Validator:
             )
             return
         try:
-            expected = build_from_target(self.target)
+            expected, expected_integrity = build_bundle_from_target(self.target)
         except (OSError, UnicodeError, ValueError, json.JSONDecodeError) as exc:
             self.error(
                 "BOOTSTRAP_INDEX_SOURCE_INVALID",
@@ -2176,15 +2182,32 @@ class Validator:
                 relpath,
             )
             return
-        for error in generation_provenance_errors(
-            actual.get("generated_by"),
-        ):
-            self.error("BOOTSTRAP_INDEX_PROVENANCE", error, relpath)
         if not generated_json_equivalent(json.dumps(expected), json.dumps(actual)):
             self.error(
                 "BOOTSTRAP_INDEX_DRIFT",
                 "compact bootstrap index differs from its canonical manifest, project map, or router sources",
                 relpath,
+            )
+            return
+        integrity_relpath = BOOTSTRAP_INTEGRITY_PATH.as_posix()
+        integrity_path = self.target_path(integrity_relpath)
+        integrity, integrity_error = self.context.read_json(integrity_path)
+        if integrity_error is not None or not isinstance(integrity, dict):
+            self.error(
+                "BOOTSTRAP_INDEX_PROVENANCE",
+                f"bootstrap integrity evidence is invalid: {integrity_error or 'root is not an object'}",
+                integrity_relpath,
+            )
+            return
+        for error in generation_provenance_errors(integrity.get("generated_by")):
+            self.error("BOOTSTRAP_INDEX_PROVENANCE", error, integrity_relpath)
+        if not generated_json_equivalent(
+            json.dumps(expected_integrity), json.dumps(integrity)
+        ):
+            self.error(
+                "BOOTSTRAP_INDEX_DRIFT",
+                "bootstrap integrity evidence differs from canonical target sources",
+                integrity_relpath,
             )
             return
         self.info(
@@ -2252,7 +2275,11 @@ class Validator:
                 relpath,
             )
         lazy = actual.get("lazy_human_fallbacks")
-        if not isinstance(lazy, list) or ".ai/assistant/help-reference.md" not in lazy:
+        help_reference = ".ai/assistant/help-reference.md"
+        if (
+            self.target_path(help_reference).is_file()
+            and (not isinstance(lazy, list) or help_reference not in lazy)
+        ):
             self.warn(
                 "ENTRY_PACKET_LAZY_REFERENCES",
                 "entry packet should keep full human references lazy",
@@ -2299,13 +2326,13 @@ class Validator:
         if schema_version == 1:
             self.warn(
                 "ROUTER_SCHEMA_LEGACY",
-                "context router schema 1 should migrate to task-classification routing schema 10",
+                "context router schema 1 should migrate to current routing schema 11",
                 ".ai/assistant/context-router.json",
             )
         elif schema_version not in ROUTER_SCHEMA_VERSIONS:
             self.error(
                 "ROUTER_SCHEMA",
-                "context router schema_version should be 2 through 10",
+                "context router schema_version should be 2 through 11",
                 ".ai/assistant/context-router.json",
             )
         validate_router_manifest_schema(self, manifest, schema_version)
@@ -2345,7 +2372,7 @@ class Validator:
                 )
             required_bootstrap = (
                 REQUIRED_BOOTSTRAP
-                if schema_version in {5, 6, 7, 8, 9, 10}
+                if schema_version in {5, 6, 7, 8, 9, 10, 11}
                 else LEGACY_REQUIRED_BOOTSTRAP
             )
             for required in required_bootstrap:
@@ -2357,7 +2384,7 @@ class Validator:
                     )
             deferred = (
                 sorted(set(bootstrap) & DEFERRED_BOOTSTRAP)
-                if schema_version in {5, 6, 7, 8, 9, 10}
+                if schema_version in {5, 6, 7, 8, 9, 10, 11}
                 else []
             )
             if deferred:
@@ -2372,21 +2399,21 @@ class Validator:
             if not isinstance(budgets, dict):
                 self.error(
                     "ROUTER_BUDGETS_MISSING",
-                    "schema 2 through 10 router must define context_budgets",
+                    "schema 2 through 11 router must define context_budgets",
                     ".ai/assistant/context-router.json",
                 )
                 budgets = {}
-            elif schema_version in {4, 5, 6, 7, 8, 9, 10}:
+            elif schema_version in {4, 5, 6, 7, 8, 9, 10, 11}:
                 self.check_router_budget_shape(budgets)
             if not isinstance(router.get("context_receipt"), dict):
                 self.error(
                     "ROUTER_RECEIPT_MISSING",
-                    "schema 2 through 10 router must define context_receipt",
+                    "schema 2 through 11 router must define context_receipt",
                     ".ai/assistant/context-router.json",
                 )
             migration_entry = router.get("migration_routing")
             migration = migration_entry
-            if schema_version in {3, 4, 5, 6, 7, 8, 9, 10} and isinstance(migration_entry, dict):
+            if schema_version in {3, 4, 5, 6, 7, 8, 9, 10, 11} and isinstance(migration_entry, dict):
                 migration = self.load_context_descriptor(
                     migration_entry,
                     "target-migration-routing",
@@ -2397,7 +2424,7 @@ class Validator:
             ).is_file():
                 self.error(
                     "ROUTER_MIGRATION_MISSING",
-                    "schema 2 through 10 router must define migration-first routing",
+                    "schema 2 through 11 router must define migration-first routing",
                     ".ai/assistant/context-router.json",
                 )
             elif isinstance(migration, dict):
@@ -2428,7 +2455,7 @@ class Validator:
                         for value in values:
                             self.check_router_path(value, "migration_routing", field)
 
-            if schema_version == 10:
+            if schema_version in {10, 11}:
                 self.check_task_classification(router)
 
         self.check_router_routing_order(router)
@@ -2518,17 +2545,17 @@ class Validator:
                             ".ai/assistant/context-router.json",
                         )
 
-        if schema_version == 10:
+        if schema_version in {10, 11}:
             self.check_small_task_overlay(router)
 
-        if schema_version in {7, 8, 9, 10}:
+        if schema_version in {7, 8, 9, 10, 11}:
             knowledge_entry = router.get("project_knowledge_routing")
             if not isinstance(knowledge_entry, dict) and self.target_path(
                 ".ai/assistant/context/project-knowledge-routing.json"
             ).is_file():
                 self.error(
                     "ROUTER_PROJECT_KNOWLEDGE_MISSING",
-                    "schema 7 through 10 requires project_knowledge_routing",
+                    "schema 7 through 11 requires project_knowledge_routing",
                     ".ai/assistant/context-router.json",
                 )
             elif isinstance(knowledge_entry, dict):
@@ -2654,7 +2681,7 @@ class Validator:
                                 "conditional_context",
                             )
 
-        if schema_version in {4, 5, 6, 7, 8, 9, 10} and isinstance(budgets, dict):
+        if schema_version in {4, 5, 6, 7, 8, 9, 10, 11} and isinstance(budgets, dict):
             self.check_installed_context_costs(router, profiles, budgets)
 
         upgrade = profiles.get("framework-upgrade")
@@ -2707,7 +2734,7 @@ class Validator:
         if not isinstance(classification, dict):
             self.error(
                 "ROUTER_TASK_CLASSIFICATION_MISSING",
-                "schema 10 router must define task_classification",
+                "schema 10 or newer router must define task_classification",
                 relpath,
             )
             return
@@ -2793,7 +2820,7 @@ class Validator:
         if not isinstance(overlays, dict):
             self.error(
                 "ROUTER_TASK_SCALE_OVERLAYS",
-                "schema 10 router must define task_scale_overlays",
+                "schema 10 or newer router must define task_scale_overlays",
                 relpath,
             )
             return
@@ -2801,7 +2828,7 @@ class Validator:
         if not isinstance(small_entry, dict):
             self.error(
                 "ROUTER_SMALL_TASK_OVERLAY_MISSING",
-                "schema 10 router must define the small-task overlay",
+                "schema 10 or newer router must define the small-task overlay",
                 relpath,
             )
             return
@@ -2898,14 +2925,14 @@ class Validator:
         return data
 
     def router_profiles(self, router: dict[str, Any]) -> dict[str, Any]:
-        if router.get("schema_version") not in {3, 4, 5, 6, 7, 8, 9, 10}:
+        if router.get("schema_version") not in {3, 4, 5, 6, 7, 8, 9, 10, 11}:
             profiles = router.get("profiles")
             return profiles if isinstance(profiles, dict) else {}
         index = router.get("profile_index")
         if not isinstance(index, dict):
             self.error(
                 "ROUTER_PROFILE_INDEX",
-                "schema 3 through 10 router must define profile_index",
+                "schema 3 through 11 router must define profile_index",
                 ".ai/assistant/context-router.json",
             )
             return {}

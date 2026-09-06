@@ -11,14 +11,16 @@ from typing import Any, Iterable
 
 
 CONTEXT_INDEX_SCHEMA_VERSION = 1
-CODEBOOK_SCHEMA_VERSION = 1
-PACKET_SCHEMA_VERSION = 2
+CODEBOOK_SCHEMA_VERSION = 2
+LEGACY_CODEBOOK_SCHEMA_VERSION = 1
+PACKET_SCHEMA_VERSION = 3
 CONTEXT_INDEX_KIND = "alatyr-context-index"
 CODEBOOK_INDEX_KIND = "alatyr-semantic-codebook-index"
 CODEBOOK_SHARD_KIND = "alatyr-semantic-codebook-shard"
 PACKET_KIND = "alatyr-context-packet"
 PROVENANCE_NEUTRAL_JSON_FILES = {
     "bootstrap-index.json",
+    "bootstrap-integrity.json",
     "entry-packet.json",
     "support-state.json",
 }
@@ -337,7 +339,8 @@ def load_codebook(
     index_path = index_path.resolve()
     root = (root or index_path.parent).resolve()
     index = load_object(index_path)
-    if index.get("schema_version") != CODEBOOK_SCHEMA_VERSION:
+    index_schema = index.get("schema_version")
+    if index_schema not in {LEGACY_CODEBOOK_SCHEMA_VERSION, CODEBOOK_SCHEMA_VERSION}:
         raise ContextCatalogError("semantic codebook index schema_version is invalid")
     if index.get("index_kind") != CODEBOOK_INDEX_KIND:
         raise ContextCatalogError("semantic codebook index kind is invalid")
@@ -345,19 +348,25 @@ def load_codebook(
     if not isinstance(shards, list) or not shards:
         raise ContextCatalogError("semantic codebook index shards must be non-empty")
 
-    descriptors: dict[str, tuple[dict[str, Any], Path, tuple[str, ...], dict[str, tuple[str, ...]]]] = {}
+    if index_schema == CODEBOOK_SCHEMA_VERSION and index.get("selection_mode") != "explicit-references":
+        raise ContextCatalogError("semantic codebook selection_mode is invalid")
+
+    descriptors: dict[str, tuple[dict[str, Any], Path, tuple[str, ...], dict[str, tuple[str, ...]], dict[str, str]]] = {}
     term_shards: dict[str, str] = {}
     shard_ids: set[str] = set()
     for position, descriptor in enumerate(shards):
         label = f"semantic codebook shards[{position}]"
-        if not isinstance(descriptor, dict) or set(descriptor) != {
+        expected_fields = {
             "id",
             "path",
             "preload",
             "selectors",
             "term_ids",
             "content_digest",
-        }:
+        }
+        if index_schema == CODEBOOK_SCHEMA_VERSION:
+            expected_fields.add("canonical_owner_digests")
+        if not isinstance(descriptor, dict) or set(descriptor) != expected_fields:
             raise ContextCatalogError(f"{label} has invalid fields")
         shard_id = descriptor.get("id")
         if not isinstance(shard_id, str) or not shard_id or shard_id in shard_ids:
@@ -371,6 +380,17 @@ def load_codebook(
             descriptor.get("selectors"), f"{label}.selectors"
         )
         declared_ids = _string_list(descriptor.get("term_ids"), f"{label}.term_ids", non_empty=True)
+        owner_digests = descriptor.get("canonical_owner_digests", {})
+        if not isinstance(owner_digests, dict) or (
+            index_schema == CODEBOOK_SCHEMA_VERSION
+            and set(owner_digests) != set(declared_ids)
+        ):
+            raise ContextCatalogError(f"{label}.canonical_owner_digests is invalid")
+        if any(
+            not isinstance(value, str) or not SHA256_RE.fullmatch(value)
+            for value in owner_digests.values()
+        ):
+            raise ContextCatalogError(f"{label}.canonical_owner_digests has invalid values")
         if not isinstance(descriptor.get("preload"), bool):
             raise ContextCatalogError(f"{label}.preload must be boolean")
         for term_id in declared_ids:
@@ -384,6 +404,7 @@ def load_codebook(
             shard_path,
             declared_ids,
             descriptor_selectors,
+            owner_digests,
         )
 
     requested = set(required_terms or ())
@@ -394,16 +415,17 @@ def load_codebook(
         for term_id in descriptor["term_ids"]
     )
     selected_values = selectors or {}
-    requested.update(
-        term_id
-        for descriptor in shards
-        if any(
-            isinstance(value, str)
-            and value in descriptor.get("selectors", {}).get(selector, [])
-            for selector, value in selected_values.items()
+    if index_schema == LEGACY_CODEBOOK_SCHEMA_VERSION:
+        requested.update(
+            term_id
+            for descriptor in shards
+            if any(
+                isinstance(value, str)
+                and value in descriptor.get("selectors", {}).get(selector, [])
+                for selector, value in selected_values.items()
+            )
+            for term_id in descriptor["term_ids"]
         )
-        for term_id in descriptor["term_ids"]
-    )
     unknown = sorted(requested - set(term_shards))
     if unknown:
         raise ContextCatalogError(f"unknown semantic terms: {unknown}")
@@ -414,13 +436,13 @@ def load_codebook(
     def load_shard(shard_id: str) -> None:
         if shard_id in loaded_shards:
             return
-        descriptor, shard_path, declared_ids, descriptor_selectors = descriptors[shard_id]
+        descriptor, shard_path, declared_ids, descriptor_selectors, owner_digests = descriptors[shard_id]
         if file_digest(shard_path) != descriptor.get("content_digest"):
             raise ContextCatalogError(
                 f"semantic codebook shard {shard_id} has stale digest"
             )
         shard = load_object(shard_path)
-        if shard.get("schema_version") != CODEBOOK_SCHEMA_VERSION:
+        if shard.get("schema_version") != LEGACY_CODEBOOK_SCHEMA_VERSION:
             raise ContextCatalogError(f"{shard_path} schema_version is invalid")
         if shard.get("record_kind") != CODEBOOK_SHARD_KIND:
             raise ContextCatalogError(f"{shard_path} record_kind is invalid")
@@ -463,7 +485,16 @@ def load_codebook(
                     raise ContextCatalogError(f"{term_id}.{field} must be non-empty")
             if not isinstance(term.get("version"), int) or term["version"] < 1:
                 raise ContextCatalogError(f"{term_id}.version must be positive")
+            version_suffix = term_id.rsplit("@", 1)[1] if "@" in term_id else None
+            if index_schema == CODEBOOK_SCHEMA_VERSION and version_suffix != str(term["version"]):
+                raise ContextCatalogError(f"{term_id}.version differs from its ID")
             _safe_relative(term["canonical_owner"], f"{term_id}.canonical_owner")
+            if index_schema == CODEBOOK_SCHEMA_VERSION:
+                owner_path = _resolve_under(root.parent, term["canonical_owner"], f"{term_id}.canonical_owner")
+                if not owner_path.is_file():
+                    raise ContextCatalogError(f"{term_id}.canonical_owner is missing")
+                if file_digest(owner_path) != owner_digests.get(term_id):
+                    raise ContextCatalogError(f"{term_id}.canonical_owner digest is stale")
             _string_list(term.get("non_meanings"), f"{term_id}.non_meanings")
             dependencies = _string_list(term.get("depends_on"), f"{term_id}.depends_on")
             if any(not TERM_ID_RE.fullmatch(item) for item in dependencies):
@@ -543,6 +574,7 @@ def build_context_packet(
             "id": term_id,
             "version": semantic_terms[term_id]["version"],
             "definition": semantic_terms[term_id]["definition"],
+            "owner_rule_id": semantic_terms[term_id]["owner_rule_id"],
             "canonical_owner": semantic_terms[term_id]["canonical_owner"],
         }
         for term_id in ordered_term_ids
@@ -553,9 +585,22 @@ def build_context_packet(
             "path": item.path,
             "content_digest": item.content_digest,
             "reason": list((selection_reasons or {}).get(item.item_id, item.load_when)),
+            "semantic_refs": list(item.semantic_refs),
+            "owner_refs": list(item.owner_refs),
         }
         for item in items
     ]
+    required_obligations = {
+        "semantic_term_ids": required_refs,
+        "owner_rule_ids": sorted(
+            {owner for item in items for owner in item.owner_refs}
+            | {
+                term["owner_rule_id"]
+                for term in semantic_terms.values()
+                if isinstance(term.get("owner_rule_id"), str)
+            }
+        ),
+    }
     stable_canonical = json.dumps(
         semantic_payload, ensure_ascii=True, separators=(",", ":"), sort_keys=True
     )
@@ -564,6 +609,7 @@ def build_context_packet(
             "profile": profile,
             "operation": operation,
             "selected_items": selected_payload,
+            "required_obligations": required_obligations,
         },
         ensure_ascii=True,
         separators=(",", ":"),
@@ -602,6 +648,7 @@ def build_context_packet(
         "operation": operation,
         "task_classification": task_classification,
         "selected_items": selected_payload,
+        "required_obligations": required_obligations,
         "routing": {
             "selection_basis": "exact catalog selectors and declared owner dependencies",
             "omitted_item_ids": sorted(set(omitted_item_ids)),

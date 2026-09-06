@@ -46,6 +46,22 @@
       "replaced_by": null
     },
     {
+      "id": "alatyr:risk-by-fact@1",
+      "version": 1,
+      "definition": "Classify risk from changed facts, affected boundaries, reversibility, external effects, and target policy rather than from file count or apparent patch size; expand to the applicable owner, approval, safety, and validation evidence before acting.",
+      "owner_rule_id": "ALATYR-RISK-001",
+      "canonical_owner": "change-risk-model.md",
+      "scope": "task classification, change planning, implementation, and review",
+      "non_meanings": [
+        "a small diff is automatically low risk",
+        "risk classification grants approval"
+      ],
+      "depends_on": [
+        "alatyr:canonical-owner@1"
+      ],
+      "replaced_by": null
+    },
+    {
       "id": "alatyr:protected-change@1",
       "version": 1,
       "definition": "A change that crosses a target-recorded protected category requires a current scoped approval whose semantic and path surfaces cover the actual change; changing the plan or scope invalidates approval as defined by the target policy.",

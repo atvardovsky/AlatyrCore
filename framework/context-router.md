@@ -15,49 +15,47 @@ A target adapter can load:
 
 1. assistant instructions that the host already preloaded
 2. the generated `.ai/assistant/bootstrap-index.json` routing projection
-3. the generated `.ai/assistant/entry-packet.json` first-use routing packet
-4. the selected assistant capability record when provider cache controls or
+3. the selected assistant capability record when provider cache controls or
    cache telemetry are relevant
-5. the framework semantic-codebook preload closure and three contour root
+4. the framework semantic-codebook preload closure and three contour root
    context indexes named by that projection
-6. only matching recursive section indexes and selected content descriptors
-7. the compact workspace-mode catalog when that optional module is enabled
-8. one selected mode descriptor and applicable shared root context
-9. task classification from compact request, operation, risk, and scale
+5. only matching recursive section indexes and selected content descriptors
+6. the compact workspace-mode catalog when that optional module is enabled
+7. one selected mode descriptor and applicable shared root context
+8. task classification from compact request, operation, risk, and scale
    signals
-10. task decomposition cues for non-trivial work, using one local task for
+9. task decomposition cues for non-trivial work, using one local task for
    small work when compact evidence is enough
-11. the selected profile's required context
-12. one or more project-area overlays when the task names affected areas
-13. task-scale overlays only when the classifier selects small-task for a
+10. the selected profile's required context
+11. one or more project-area overlays when the task names affected areas
+12. task-scale overlays only when the classifier selects small-task for a
    cheap evidence lane, the task is large, resumable, team-active, explicitly
    debug-enabled, at material evidence finalization, or an enabled-team write
    preflight finds possible active-work overlap
-14. bounded project-knowledge routing after profile/area selection and again
+13. bounded project-knowledge routing after profile/area selection and again
    after concrete changed facts, paths, symbols, subsystem or architecture
    relationships, dependencies, contracts, or issue lineage become known
 
 Then it expands only when the router or human profile names a boundary,
 conflict, approval trigger, or missing source-of-truth fact.
 
-The bootstrap index is a deterministic, hash-bound projection of the target
-manifest, compact project map, and context router. It exposes only routing,
-operation, gate, enabled-module, version, and known-gap metadata. If a source
-hash differs, repair or regenerate the projection before routine routing; load
-the named canonical sources only for that repair, ambiguity, or explicit
-audit.
+The bootstrap index is a deterministic compact projection of the target
+manifest, project map, router, semantic preload, and routing roots. Its lazy
+integrity sidecar owns generation provenance, source hashes, and the complete
+rule selector. Validate that sidecar deterministically without loading it into
+routine model context. If validation is unavailable or fails, load the sidecar
+and named canonical sources, then repair before trusting compact routing.
 
 The compact router should be an index, not a second policy corpus. Keep full
 profile, intent, migration, consistency, and task-scale instructions in lazy
 descriptor files. The router may retain short `use_when` signals needed to
 choose a descriptor without opening every profile.
 
-The entry packet is generated metadata, not another policy owner. It should
-summarize exact installed profile routes, gate fragments, operation routes
-when present, allowed-action modes, and support-delta entry points. If the
-packet is missing or stale, repair it from canonical adapter sources before
-routine routing or fall back to the named owners with an explicit context
-receipt.
+The entry packet is generated recovery metadata, not another policy owner or
+routine first-use requirement. Load it only for bootstrap recovery, adapter
+audit, or routing conflict. If it is missing or stale when selected, repair it
+from canonical adapter sources or fall back to named owners with an explicit
+context receipt.
 
 ## Router Contract
 
@@ -66,8 +64,8 @@ A target context router should define:
 - schema version
 - human reference file
 - preloaded context that must not be reread
-- generated bootstrap projection and its canonical source hashes
-- generated first-use entry packet path and schema version
+- generated bootstrap projection and lazy integrity evidence
+- generated recovery entry packet path and schema version
 - framework, project, and assistant recursive context-index roots
 - maximum recursive navigation depth and fail-closed index behavior
 - semantic-codebook index, preload term IDs, namespace boundary, version and
@@ -106,11 +104,13 @@ A target context router should define:
 - final evidence
 
 Schema 10 adds explicit task classification to schema 9's recursive-index,
-semantic-codebook, profile, overlay, and budget behavior. Schema changes that
-move owned fields between the index and descriptors must advance the target
-adapter schema and template version. Every indexed descriptor must exist in
-the selected support profile; disabled optional modules must not remain
-advertised through paths that scaffolding omitted.
+semantic-codebook, profile, overlay, and budget behavior. Schema 11 separates
+the routine bootstrap projection from lazy integrity and recovery evidence and
+binds exact semantic obligations to context-packet schema 3. Schema changes
+that move owned fields between the index and descriptors must advance the
+target adapter schema and template version. Every indexed descriptor must
+exist in the selected support profile; disabled optional modules must not
+remain advertised through paths that scaffolding omitted.
 
 Resolve delivery in this order: host-preloaded instructions, bootstrap
 projection, core semantic preload, selected stable framework/project policy,
@@ -128,9 +128,12 @@ profile and find project areas. Full blueprints, source-of-truth registries,
 operation catalogs, module profiles, policy files, and human profile explanations belong in
 selected profile or overlay context.
 
-Keep the bootstrap outside assistant catalog content ownership because it
-digests the assistant catalog itself. After installed target files change,
-rebuild recursive catalogs first and bootstrap second.
+Keep the compact bootstrap outside assistant catalog content ownership. The
+lazy integrity sidecar is cataloged so discovery can verify that it exists,
+but neither bootstrap artifact depends on recursive catalog output. After
+installed target files change, rebuild the recovery entry packet, then the
+bootstrap and integrity sidecar, and finally the recursive catalogs so their
+content digests bind the completed generated surfaces.
 
 Profile operation candidates make common routing cheap. Resolve exact IDs and
 aliases through a checked compact derivative of the operation catalog. Load
@@ -196,7 +199,7 @@ select task decomposition for non-trivial work. The router should point to the
 target task-decomposition policy and plan template instead of embedding the
 full decomposition rule in bootstrap.
 
-For small tasks, record one local task from compact entry-packet cues when one
+For small tasks, record one local task from compact bootstrap cues when one
 profile, one local surface or direct neighbor set, and focused validation are
 sufficient. Standard, large, protected, or delegated work should load the
 target decomposition policy and plan template before implementation or worker
@@ -263,11 +266,13 @@ when current client evidence says they are exposed. Record cache reads or exact
 savings only from observed host/provider telemetry. Otherwise record caching
 as unknown or unavailable and continue through bounded context routing.
 
-Context-packet schema 2 places resolved semantic definitions before selected
-task items and records stable-prefix and dynamic-tail digests. Those digests
-prove deterministic packet identity, not a provider cache write or hit. Keep
-current task text, changed facts, timestamps, source revisions, and runtime
-measurements after reusable policy/context whenever the host permits ordering.
+Context-packet schema 3 places resolved semantic definitions before selected
+task items, records each item's semantic and owner references, emits the union
+as a required obligation set, and records stable-prefix and dynamic-tail
+digests. Those digests prove deterministic packet identity, not a provider
+cache write or hit. Keep current task text, changed facts, timestamps, source
+revisions, and runtime measurements after reusable policy/context whenever the
+host permits ordering.
 
 Workspace-mode routing is a separate dimension from task profiles, intent,
 project areas, gates, and task scale. When enabled, read the compact mode

@@ -1,24 +1,26 @@
 # Agent Instructions
 
-This repository uses Alatyr Core. Treat this file as host-preloaded context.
+This project uses Alatyr Core. This file is host-preloaded.
 
 ## Bootstrap
 
-Load `.ai/assistant/bootstrap-index.json`, verify its source digests, and select
-the smallest matching profile, intent, scale, area, operation, and gates. Load
-`.ai/assistant/entry-packet.json`. Follow matched child indexes only; never load
-a directory from a parent match.
+Load `.ai/assistant/bootstrap-index.json` and select the smallest matching
+profile, intent, scale, area, operation, and gates. Trust routing after
+deterministic integrity validation; load its evidence and owners only on
+failure. Load `.ai/assistant/entry-packet.json` only for repair, audit, or
+conflict. Follow matched child indexes; never load a directory from a parent
+match.
 
-Use the referenced canonical owner when a selector, digest, term, relationship,
-or fact is missing, stale, ambiguous, cyclic, or contradictory. Use
+On missing, stale, ambiguous, cyclic, or contradictory selectors, digests,
+terms, relationships, or facts, use the canonical owner. Use
 `.ai/README.md` only for installation or update recovery.
 
 ## Authority
 
-Use bootstrap-selected rule owners.
+Use bootstrap-selected owners.
 
-Project facts belong to `.ai/project`; portable rules belong to
-`.ai/framework`; assistant routing belongs to `.ai/assistant`. Derived aids
+Project facts belong to `.ai/project`, portable rules to `.ai/framework`, and
+assistant routing to `.ai/assistant`. Derived aids
 locate evidence; they never create authority or prove semantics.
 
 Before state changes, apply `ALATYR-AUTHORIZATION-001` through
@@ -28,9 +30,9 @@ separate. Discussion, planning, issue return, and ambiguity are inspect-only.
 Implementation does not imply commit; commit does not imply push. Prior
 authorization never carries into a new or completed scope.
 
-Protected architecture, behavior, security, permission, dependency,
-destructive, live, spend, production, imported-infrastructure, or weakened-gate
-changes require target approval bound to the plan and Git diff.
+Protected architecture, behavior, security, permissions, dependencies,
+destructive/live/production actions, spend, infrastructure import, or weaker
+gates require target approval bound to the plan and Git diff.
 
 ## Work
 
@@ -46,6 +48,6 @@ that exists.
 
 ## Evidence
 
-Report routes, owners, facts, support impact, integrity, validation,
-authorization, approval, expansion, worker evidence, and residual risk.
+Report routing, owners, facts, support impact, integrity, validation,
+authorization/approval, expansion, workers, and residual risk.
 Report `durable_engineering_evidence` as `captured/skipped/blocked`.

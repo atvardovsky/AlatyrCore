@@ -65,8 +65,6 @@ def project_semantic_codebook(
         if not isinstance(path, str) or not path:
             raise ValueError("source semantic codebook shard path is invalid")
         relpath = f"semantics/{path}"
-        if relpath not in selected_files:
-            continue
         shard_data = load_object(source_framework / relpath)
         shard_terms = shard_data.get("terms")
         if not isinstance(shard_terms, list):
@@ -109,6 +107,16 @@ def project_semantic_codebook(
         rendered = json.dumps(projected_shard, indent=2, ensure_ascii=True) + "\n"
         projected_descriptor = dict(descriptor)
         projected_descriptor["term_ids"] = [term["id"] for term in projected_terms]
+        if "canonical_owner_digests" in projected_descriptor:
+            owner_digests = projected_descriptor["canonical_owner_digests"]
+            if not isinstance(owner_digests, dict):
+                raise ValueError(
+                    f"source semantic shard {relpath} has invalid owner digests"
+                )
+            projected_descriptor["canonical_owner_digests"] = {
+                term["id"]: owner_digests[term["id"]]
+                for term in projected_terms
+            }
         projected_descriptor["content_digest"] = (
             "sha256:" + hashlib.sha256(rendered.encode("utf-8")).hexdigest()
         )
@@ -134,7 +142,7 @@ def project_semantic_index(source_framework: Path, selected_files: set[str]) -> 
         if isinstance(rule, dict)
         and isinstance(rule.get("id"), str)
         and isinstance(rule.get("canonical_source"), str)
-        and rule["canonical_source"].removeprefix("framework/") in selected_files
+        and rule["canonical_source"][len("framework/") :] in selected_files
     }
     return project_semantic_codebook(
         source_framework, selected_files, installed_rule_ids
