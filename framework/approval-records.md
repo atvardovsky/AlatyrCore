@@ -143,12 +143,20 @@ stored outside the repository.
 
 ## Hash Guidance
 
-When a deterministic hash is practical, hash the approved plan text or proposed
-patch. If hashing is not practical, record the exact plan version and the
-reason hash evidence is unavailable.
+When a deterministic hash is practical, hash the approved plan text or the
+validator's canonical Git change-set payload. The canonical payload binds one
+resolved merge base, committed changes through the observed HEAD, staged and
+unstaged layers, changed paths, and content digests for untracked files. The
+same payload must own both approval-scope paths and content identity. If
+hashing is not practical, record the exact plan version and the reason hash
+evidence is unavailable.
 
 When an installed adapter uses a validator, it may verify the recorded plan
-hash against an approved plan file and the patch hash against the current diff.
+hash against an approved plan file and the legacy-named `patch_sha256` field
+against the canonical Git change-set payload for the recorded diff base.
+New records must declare `canonical-git-change-set-v1` as the patch hash
+contract. A validator must not silently compare a legacy or unknown hash under
+the canonical contract.
 If either hash cannot be verified, final evidence should say why rather than
 claiming cryptographic approval binding.
 
@@ -159,10 +167,10 @@ local paths.
 Do not include secrets in approval records or hash inputs that must remain
 private.
 
-Patch hashes and path-scope validation are different controls. A scope check
-does not prove content approval, and a patch hash that omits untracked content
-does not prove the complete working tree. Report which control was actually
-verified.
+Content hashes and path-scope validation are different controls. A scope check
+does not prove content approval. A hash implementation that omits committed,
+index, worktree, or untracked layers does not prove the complete selected
+change set. Report the exact contract that was verified.
 
 ## Final Evidence
 

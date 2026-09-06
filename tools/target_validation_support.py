@@ -41,6 +41,7 @@ UNAVAILABLE_HASH_MARKERS = {
     "not recorded",
     "none",
 }
+CANONICAL_CHANGE_SET_HASH_CONTRACT = "canonical-git-change-set-v1"
 
 
 class GitEvidenceState(str, Enum):

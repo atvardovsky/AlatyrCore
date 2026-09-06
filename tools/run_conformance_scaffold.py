@@ -4,7 +4,8 @@
 This source-repository helper materializes temporary fixture repositories from
 `conformance/fixtures/*/fixture.json` and checks that the AlatyrCore
 scaffolder preserves existing files while creating placeholder adapter
-structure.
+structure. A fixture with an existing protected surface proves that preflight
+blocks the complete write before creating partial adapter output.
 
 It is not an assistant installation test and not a portable target validation
 requirement.
@@ -210,10 +211,7 @@ def run_fixture(
     )
 
     failures = []
-    if not write_actions:
-        failures.append("write mode produced no actions")
     failures.extend(assert_seed_files_preserved(seed_hashes))
-    failures.extend(assert_required_scaffold(repo))
 
     expected_existing = {
         seed["path"]
@@ -224,6 +222,24 @@ def run_fixture(
     for relpath in expected_existing:
         if relpath not in actual_existing:
             failures.append(f"expected existing protected surface to be skipped: {relpath}")
+
+    if expected_existing:
+        if write_actions:
+            failures.append("blocked preflight wrote partial scaffold actions")
+        unexpected_outputs = [
+            path
+            for path in REQUIRED_SCAFFOLD_FILES
+            if (repo / path).exists()
+        ]
+        if unexpected_outputs:
+            failures.append(
+                "blocked preflight created scaffold outputs: "
+                + ", ".join(unexpected_outputs)
+            )
+    else:
+        if not write_actions:
+            failures.append("write mode produced no actions")
+        failures.extend(assert_required_scaffold(repo))
 
     snapshot = build_snapshot(fixture, repo, write_actions, write_blocked)
     return fixture_name, len(write_actions), len(write_blocked), failures, snapshot

@@ -4,6 +4,38 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.56 - 2026-09-06
+
+- Made writable scaffolding preflight the complete immutable composition,
+  reject writable conformance projection, use projection-graph ordering, and
+  fail whenever a selected output remains blocked instead of accepting a
+  partial result.
+- Closed profile and assistant-surface composition dependencies so native
+  bridges receive installed-operation support while optional references are
+  removed from smaller projections.
+- Added stable seven-stage installer contracts with reserved target-context
+  capacity and versioned checkpoints bound to exact cumulative output,
+  evidence, composition, source, and validation identities.
+- Unified changed-file approval scope and content hashing through one
+  merge-base-bound Git change set covering committed, staged, unstaged, and
+  untracked repository layers; unavailable required Git evidence now blocks
+  acceptance without being misreported as mutation.
+- Made validator configuration fail closed on unsupported schemas, unreadable
+  content, and reasonless deviations, and made source-check reports reject
+  malformed or unresolved execution evidence.
+- Fixed release-profile selection and strengthened untagged release
+  checkpoints by requiring their bound commit to have an empty `Unreleased`
+  section.
+- Reduced exhaustive scaffold-profile validation from tens of seconds to
+  roughly two seconds by indexing selected paths and caching immutable
+  composition inputs without removing any profile or assistant coverage.
+- Split the source framework-consistency checker into bounded context,
+  release/conformance, source-tool, and target-template modules while
+  preserving diagnostics, ordering, and exit behavior.
+- Increased the adapter schema version to `46` and target template version to
+  `51` for installer checkpoint, composition, bridge, and validation contract
+  changes.
+
 ## 0.1.0-alpha.55 - 2026-09-05
 
 - Split target installation composition from exhaustive source conformance:

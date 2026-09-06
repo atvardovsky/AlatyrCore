@@ -13,10 +13,12 @@ Treat root `AGENTS.md` as preloaded, then read
 router to select the current installation stage before opening installer,
 framework, or template prose. Each schema-2 stage owns its context budget,
 dependencies, required evidence and outputs, completion checks, authorization
-ceiling, and prohibited actions. A reusable stage checkpoint is valid only
-when its source inputs, target revision, resolved composition, output digests,
-and validation evidence still match. Inspect the target repository before
-selecting optional modules or creating files.
+ceiling, and prohibited actions. Required stage context reserves at least 20
+percent of the declared budget for target evidence and bounded expansion. A
+reusable stage checkpoint is valid only when its source inputs, target
+revision, resolved composition, cumulative output and evidence IDs, canonical
+digests, and validation evidence still match. Inspect the target repository
+before selecting optional modules or creating files.
 
 Use `framework/file-inventory.json` to identify and hash unchanged framework
 files. Copying an unchanged file does not require loading its prose. Read only
@@ -529,6 +531,11 @@ for placeholder files.
 The scaffolder is Python-based and can be run on Linux, macOS, and Windows.
 Windows users may use the provided Command Prompt or PowerShell wrappers under
 `tools/`.
+
+Writable scaffolding preflights the complete resolved composition before the
+first file change. A known overwrite or shared-surface conflict blocks the
+whole write instead of leaving a partial scaffold. The target CLI rejects
+writable source-conformance projection.
 
 Start from the cheapest sufficient support profile. Use `kernel` unless target
 evidence shows that durable evidence/project knowledge (`core`), common

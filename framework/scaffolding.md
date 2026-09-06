@@ -20,6 +20,12 @@ A safe scaffolder may:
 - refuse to overwrite existing files by default
 - report skipped files and protected surfaces
 
+Before a writable run, the scaffolder must resolve the complete composition
+and detect every known overwrite or shared-surface blocker. If preflight finds
+a blocker, it must not write a partial scaffold. A write run that cannot
+produce every selected output must fail even when some earlier outputs were
+already unchanged or successfully projected.
+
 ## Forbidden Scaffolder Behavior
 
 A scaffolder must not:
@@ -69,6 +75,7 @@ Exhaustive materialization of every target template is a source conformance
 purpose, not an installation profile. Source tooling may select that purpose
 for isolated fixtures, but a target installation must not use it as evidence
 that every optional capability is enabled or maintained.
+The target-facing CLI must reject writable conformance projection.
 
 The selected scaffold support profile limits target placeholder files. A
 matching portable framework pack may also limit the copied framework corpus:
@@ -91,6 +98,11 @@ operation surface, native bridge, or validation failure that requires `core`,
 `standard`, or `full`. The generated entry packet must record that profile
 decision and the escalation reason so routine agents do not load full support
 prose just to discover what profile was installed.
+
+Selecting an assistant-native surface must also select the portable bridge
+and installed-operation support needed by that surface. It must not implicitly
+enable unrelated optional modules. Every rendered bridge and help surface must
+refer only to installed paths; optional references require projection guards.
 
 ## Final Evidence
 

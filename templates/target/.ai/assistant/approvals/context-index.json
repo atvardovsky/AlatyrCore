@@ -40,8 +40,8 @@
         "ALATYR-AUTHORIZATION-001",
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 108,
-      "content_digest": "sha256:a509c78ef72f5da2dab4cfa3ab5b294c895c80fed243a68791fbbc3f4b40f8d3"
+      "estimated_words": 110,
+      "content_digest": "sha256:747dafe392d073500d2ba90e74bfa09fea154353976eef8e614d09172abdcbe6"
     },
     {
       "id": "assistant.content.approvals-approval-template-md",
@@ -70,8 +70,8 @@
         "ALATYR-AUTHORIZATION-001",
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 199,
-      "content_digest": "sha256:a0330539bcf2c222ebefcbd288e3fd99c3bce7fce6211be9263138456adcba7c"
+      "estimated_words": 203,
+      "content_digest": "sha256:b6bba8246afd5786bf97f6b5852f4a505d37692804439e25717feffa3f01a3b4"
     }
   ]
 }

@@ -148,6 +148,46 @@ class GitChangeSetTests(unittest.TestCase):
 
 
 class ValidatorTrustBoundaryTests(unittest.TestCase):
+    def test_unknown_approval_hash_contract_is_not_reinterpreted(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            approval = target / "approval.json"
+            write_json(
+                approval,
+                {
+                    "diff": {
+                        "hash_contract": "legacy-patch-v0",
+                        "patch_sha256": "a" * 64,
+                    },
+                    "plan": {},
+                    "use_result": {},
+                },
+            )
+            validator = Validator(
+                target,
+                framework_source=None,
+                diff_ref="HEAD",
+                approval_records=[approval],
+                enforce_approval_scope=False,
+                change_packages=[],
+                enforce_change_package=False,
+                migration_diff=None,
+                allow_placeholders=True,
+                allow_local_paths=[],
+                config=AdapterValidatorConfig(),
+            )
+
+            validator.check_approval_hash_evidence([approval])
+
+            findings = [
+                finding
+                for finding in validator.findings
+                if finding.code == "APPROVAL_PATCH_HASH_UNAVAILABLE"
+            ]
+            self.assertEqual(len(findings), 1)
+            self.assertIn("legacy-patch-v0", findings[0].message)
+            self.assertTrue(is_blocking_finding(findings[0]))
+
     def test_non_git_diff_evidence_is_blocking_without_false_mutation(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             validator = Validator(

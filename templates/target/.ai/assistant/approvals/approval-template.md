@@ -11,6 +11,7 @@ Plan version: `{PLAN_VERSION}`
 Plan hash: `{PLAN_HASH_OR_NOT_AVAILABLE_WITH_REASON}`
 Approved plan file: `{APPROVED_PLAN_FILE_OR_NOT_AVAILABLE_WITH_REASON}`
 Approved diff base: `{APPROVED_DIFF_BASE_OR_NOT_AVAILABLE_WITH_REASON}`
+Patch hash contract: `canonical-git-change-set-v1`
 Patch hash: `{PATCH_HASH_OR_NOT_AVAILABLE_WITH_REASON}`
 Requested by: `{REQUESTED_BY}`
 Approved by: `{APPROVED_BY}`

@@ -41,6 +41,7 @@ def check_packet(
     *,
     operation_index_expected: bool,
     cache_capability_expected: bool = True,
+    help_reference_expected: bool = True,
     expected_tool: str | None = "render_target_entry_packet.py",
     source_template: bool = False,
 ) -> list[str]:
@@ -205,14 +206,22 @@ def check_packet(
             failures.append("entry packet support delta route must keep semantic boundary")
 
     lazy = packet.get("lazy_human_fallbacks")
-    for fallback in [
+    expected_fallbacks = [
         ".ai/assistant/context-profiles.md",
         ".ai/assistant/module-profile.md",
-        ".ai/assistant/help-reference.md",
         ".ai/support-state.json",
-    ]:
+    ]
+    if help_reference_expected:
+        expected_fallbacks.append(".ai/assistant/help-reference.md")
+    for fallback in expected_fallbacks:
         if not isinstance(lazy, list) or fallback not in lazy:
             failures.append(f"entry packet missing lazy fallback {fallback}")
+    if (
+        not help_reference_expected
+        and isinstance(lazy, list)
+        and ".ai/assistant/help-reference.md" in lazy
+    ):
+        failures.append("kernel packet advertises absent help-reference fallback")
 
     reasoning = packet.get("reasoning_boundary")
     if not isinstance(reasoning, dict) or reasoning.get("logical_integrity") != "required":
@@ -273,6 +282,7 @@ def main() -> int:
                         packet,
                         operation_index_expected=False,
                         cache_capability_expected=False,
+                        help_reference_expected=False,
                         expected_tool="scaffold_target_structure.py",
                     )
                 )

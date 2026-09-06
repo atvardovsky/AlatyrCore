@@ -55,8 +55,8 @@
       "owner_refs": [
         "ALATYR-APPROVAL-001"
       ],
-      "estimated_words": 1051,
-      "content_digest": "sha256:07c8b42ef6c5863cbcc302ad497cf56a3da47478a0fca59512bb7a73e723afe5"
+      "estimated_words": 1130,
+      "content_digest": "sha256:45b9d377710693fa0711015ebfb4f4f17bc768fe2af71c6be6946181a7300427"
     },
     {
       "id": "framework.core.bridge-capability-matrix-md",
@@ -246,8 +246,8 @@
       "owner_refs": [
         "ALATYR-MODULE-001"
       ],
-      "estimated_words": 2044,
-      "content_digest": "sha256:728067aa15ad7e3764e8a5e9c975c519c58afe29fdf1d3f1793bdf47ab42c0e3"
+      "estimated_words": 2057,
+      "content_digest": "sha256:343fc5680a58c26b54084f235534c6ff380de78d3006ce7d5ad0e2942cb9c7c4"
     },
     {
       "id": "framework.core.operation-help-md",

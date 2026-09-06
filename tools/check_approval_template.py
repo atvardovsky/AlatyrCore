@@ -127,6 +127,8 @@ def main() -> int:
 
     if "Plan hash:" in text and "Scope invalidation rule:" not in text:
         failures.append("plan hash requires a scope invalidation rule")
+    if "Patch hash contract: `canonical-git-change-set-v1`" not in text:
+        failures.append("approval template must declare its canonical patch hash contract")
     if "Evidence classification: `historical-record`" not in text:
         failures.append("approval template must classify itself as historical evidence")
     if "approval-record-template.json" not in text:
@@ -146,6 +148,12 @@ def main() -> int:
             failures.append("machine approval template record_kind is invalid")
         if data.get("evidence_classification") != "historical-record":
             failures.append("machine approval template evidence class is invalid")
+        diff_contract = data.get("diff")
+        if (
+            not isinstance(diff_contract, dict)
+            or diff_contract.get("hash_contract") != "canonical-git-change-set-v1"
+        ):
+            failures.append("machine approval template hash contract is invalid")
         for container in ["operation", "plan", "diff", "scope", "approval", "use_result"]:
             if not isinstance(data.get(container), dict):
                 failures.append(f"machine approval template missing object {container}")

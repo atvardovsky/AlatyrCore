@@ -1000,10 +1000,11 @@ removes path claims for omitted surfaces, filters operation routes to installed
 flows, derives the compact operation index and bootstrap index, and accepts
 repeatable `--enable-module` capability IDs with dependency closure. Profile,
 capability, framework-pack, and assistant-surface choices are resolved once
-through an immutable composition read model. A typed acyclic shadow projection
-graph checks output ownership and dependencies; the existing
-`projected_template_content()` renderer remains the execution owner. In
-overwrite mode, content-addressed sparse
+through an immutable composition read model. A typed acyclic projection graph
+checks output ownership and dependencies and supplies the deterministic
+topological write order; path-specific renderers remain the content owners. A
+writable run preflights known blockers before the first output and returns
+failure for any blocked selected output. In overwrite mode, content-addressed sparse
 projection leaves byte-identical files untouched; it never infers that an
 omitted file should be deleted.
 

@@ -32,6 +32,7 @@ from agent_entry_packet import (
 )
 from bootstrap_index import BOOTSTRAP_PATH, build_from_target
 from target_validation_support import (
+    CANONICAL_CHANGE_SET_HASH_CONTRACT,
     GitEvidenceState,
     GitEvidenceView,
     ManifestData,
@@ -4322,6 +4323,9 @@ class Validator:
                 patch_hash = normalize_hash_field(
                     str(nested_json_value(data, ("diff", "patch_sha256")) or "")
                 )
+                patch_hash_contract = str(
+                    nested_json_value(data, ("diff", "hash_contract")) or ""
+                ).strip()
                 patch_changed = str(
                     nested_json_value(data, ("use_result", "patch_changed_after_approval"))
                     or ""
@@ -4338,6 +4342,7 @@ class Validator:
                 plan_hash = normalize_hash_field(extract_field(text, "Plan hash:"))
                 plan_file = extract_field(text, "Approved plan file:")
                 patch_hash = normalize_hash_field(extract_field(text, "Patch hash:"))
+                patch_hash_contract = extract_field(text, "Patch hash contract:")
                 patch_changed = extract_field(
                     text, "Patch changed after approval:"
                 ).lower()
@@ -4414,6 +4419,15 @@ class Validator:
                 self.info(
                     "APPROVAL_PATCH_HASH_SKIPPED",
                     "patch hash recorded but current-diff comparison was not requested",
+                    relpath,
+                )
+                continue
+            if patch_hash_contract != CANONICAL_CHANGE_SET_HASH_CONTRACT:
+                self.warn(
+                    "APPROVAL_PATCH_HASH_UNAVAILABLE",
+                    "Patch hash requires the supported canonical change-set "
+                    f"contract {CANONICAL_CHANGE_SET_HASH_CONTRACT}; got "
+                    f"{patch_hash_contract or 'no contract'}",
                     relpath,
                 )
                 continue
