@@ -405,8 +405,9 @@ List commands or manual checks:
   validation evidence:
 - migration-staging output classified as non-accepting, with active unresolved
   placeholders listed and an acceptance-phase rerun required:
-- manifest `modules.enabled` and human module-profile enabled/required blocks
-  agree one-to-one:
+- manifest `modules.selected`, `modules.staged`, and `modules.enabled` agree
+  with dependency closure and human module-profile states; scaffolding does not
+  imply enablement, and no live staged capability remains at acceptance:
 - effectiveness metrics review:
 - Debug Mode dependency, explicit activation/expiry, non-canonical authority,
   privacy, event attribution, structured architectural impacts, direction-

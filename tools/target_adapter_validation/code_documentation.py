@@ -12,6 +12,48 @@ from target_adapter_validation.capability import (
 )
 
 
+def _pattern_prefix(pattern: str) -> str:
+    """Return the literal path prefix used for conservative overlap checks."""
+
+    wildcard_positions = [
+        position for token in "*?[" if (position := pattern.find(token)) >= 0
+    ]
+    end = min(wildcard_positions) if wildcard_positions else len(pattern)
+    return pattern[:end].rstrip("/")
+
+
+def documentation_selectors_overlap(
+    left: dict[str, Any], right: dict[str, Any]
+) -> bool:
+    """Detect profiles that can select the same source with equal precedence."""
+
+    left_include = left.get("include", [])
+    right_include = right.get("include", [])
+    if not isinstance(left_include, list) or not isinstance(right_include, list):
+        return False
+    left_patterns = [item for item in left_include if isinstance(item, str)]
+    right_patterns = [item for item in right_include if isinstance(item, str)]
+    include_overlap = any(
+        (
+            a == b
+            or _pattern_prefix(a).startswith(_pattern_prefix(b))
+            or _pattern_prefix(b).startswith(_pattern_prefix(a))
+        )
+        for a in left_patterns
+        for b in right_patterns
+        if _pattern_prefix(a) and _pattern_prefix(b)
+    )
+    if not include_overlap:
+        return False
+
+    def dimensions_overlap(name: str) -> bool:
+        left_values = set(left.get(name, []))
+        right_values = set(right.get(name, []))
+        return not left_values or not right_values or bool(left_values & right_values)
+
+    return dimensions_overlap("languages") and dimensions_overlap("frameworks")
+
+
 def validate_code_documentation(
     context: CapabilityValidationContext,
     manifest: ManifestData | None,
@@ -135,7 +177,7 @@ def validate_code_documentation(
     valid_outputs = {"ci-artifact", "committed-generated", "local-only", "external-publish", "unresolved"}
     profile_ids: set[str] = set()
     accepted_count = 0
-    accepted_selectors: dict[tuple[Any, ...], str] = {}
+    accepted_selectors: list[tuple[str, int, dict[str, Any]]] = []
     required_fields = {
         "id", "state", "owner", "priority", "match", "audiences",
         "visibility", "purpose", "evidence", "comment_contract",
@@ -158,6 +200,17 @@ def validate_code_documentation(
         state = profile.get("state")
         if not concrete(state) or state not in valid_states:
             context.error("CODEDOC_PROFILE_STATE", f"{label}.state is invalid or unresolved", profiles_relpath)
+        priority = profile.get("priority")
+        if (
+            not isinstance(priority, int)
+            or isinstance(priority, bool)
+            or not 0 <= priority <= 1000
+        ):
+            context.error(
+                "CODEDOC_PROFILE_PRIORITY",
+                f"{label}.priority must be an integer from 0 through 1000",
+                profiles_relpath,
+            )
         match = profile.get("match")
         if not isinstance(match, dict):
             context.error("CODEDOC_PROFILE_MATCH", f"{label}.match must be an object", profiles_relpath)
@@ -195,20 +248,23 @@ def validate_code_documentation(
             for values, field in [(include, "include"), (languages, "languages"), (audiences, "audiences"), (validation, "validation")]:
                 if not any(concrete(item) for item in values):
                     context.error("CODEDOC_ACCEPTED_UNRESOLVED", f"{label}.{field} needs concrete values", profiles_relpath)
-            selector = (
-                tuple(sorted(include)), tuple(sorted(exclude)),
-                tuple(sorted(languages)), tuple(sorted(frameworks)),
-                profile.get("priority"),
-            )
-            prior = accepted_selectors.get(selector)
-            if prior is not None:
-                context.error(
-                    "CODEDOC_ACCEPTED_AMBIGUITY",
-                    f"accepted profiles {prior} and {profile_id} have equal selectors and priority",
-                    profiles_relpath,
-                )
-            elif concrete(profile_id):
-                accepted_selectors[selector] = profile_id
+            selector = {
+                "include": include,
+                "exclude": exclude,
+                "languages": languages,
+                "frameworks": frameworks,
+            }
+            if concrete(profile_id) and isinstance(priority, int) and not isinstance(priority, bool):
+                for prior_id, prior_priority, prior_selector in accepted_selectors:
+                    if priority == prior_priority and documentation_selectors_overlap(
+                        selector, prior_selector
+                    ):
+                        context.error(
+                            "CODEDOC_ACCEPTED_AMBIGUITY",
+                            f"accepted profiles {prior_id} and {profile_id} have overlapping selectors and equal priority",
+                            profiles_relpath,
+                        )
+                accepted_selectors.append((profile_id, priority, selector))
     if accepted_count == 0:
         context.error(
             "CODEDOC_NO_ACCEPTED_PROFILE",

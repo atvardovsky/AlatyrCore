@@ -60,6 +60,21 @@ def main() -> int:
             rule.get("id") for rule in registry.get("rules", []) if isinstance(rule, dict)
         }
         check_ids = {check["id"] for check in load_manifest()}
+        operation_catalog = load_object(
+            TARGET / ".ai" / "assistant" / "operation-catalog.json"
+        )
+        operations_by_module: dict[str, set[str]] = {}
+        for operation in operation_catalog.get("operations", []):
+            if not isinstance(operation, dict):
+                continue
+            module_id = operation.get("required_module")
+            operation_id = operation.get("id")
+            if (
+                isinstance(module_id, str)
+                and module_id in modules
+                and isinstance(operation_id, str)
+            ):
+                operations_by_module.setdefault(module_id, set()).add(operation_id)
         known_modules = set(modules)
 
         for module_id, module in modules.items():
@@ -76,6 +91,17 @@ def main() -> int:
             unknown_checks = sorted(set(module.get("check_ids", [])) - check_ids)
             if unknown_checks:
                 failures.append(f"{module_id} has unknown check IDs {unknown_checks}")
+            declared_operations = set(module.get("operation_ids", []))
+            expected_operations = operations_by_module.get(module_id, set())
+            if declared_operations != expected_operations:
+                failures.append(
+                    f"{module_id} operation IDs mismatch: declared={sorted(declared_operations)} "
+                    f"expected={sorted(expected_operations)}"
+                )
+            if declared_operations and module_id != "installed-operations" and "installed-operations" not in module.get("requires", []):
+                failures.append(
+                    f"{module_id} exposes operations without requiring installed-operations"
+                )
 
             pack = module.get("min_framework_pack")
             if pack not in PACK_ORDER:

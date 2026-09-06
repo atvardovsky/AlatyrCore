@@ -97,8 +97,13 @@ Before upgrading framework files in a target project:
 2. Inspect the current target manifest, installed framework pack and baseline,
    projected inventory, local deviations, and adapter owner evidence.
 3. Prepare or review a migration assessment before changing target files. It
-   should compare rule registries, framework files, versions, and structural
-   adapter state and emit a hash-bound machine-readable impact projection.
+   should compare rule registries, framework files, versions, shipped schemas,
+   target templates, and structural adapter state and emit a hash-bound
+   machine-readable impact projection. Resolve historical schema and template
+   trees only from an exact reachable source version or reviewed release
+   baseline; otherwise report those surfaces as `not compared`. Generate the
+   complete assessment in staging and replace prior assessment outputs only
+   after all required outputs are valid.
    Bind the assessment to the checked-out target branch and revision. Evidence
    for one branch does not establish adapter state on another branch.
 4. Use the impact projection's changed rule IDs, categories, task profiles,
@@ -181,7 +186,9 @@ Before upgrading framework files in a target project:
    assistant capability records, role catalog/prompts, role/model and native-
    definition bindings, client/runtime freshness, task-plan, packet, result,
    and overlay contracts, write isolation, retries/conflicts, fallbacks,
-   privacy, validation, and primary convergence.
+   privacy, validation, primary-owned dispatch tree, depth/worker/context/retry
+   budgets, coverage keys, evidence-saturation, child-proposal boundary, stop
+   reasons, and primary convergence.
 10. Prepare a target migration note or installation plan from reviewed
     assessment evidence.
 11. Require approval before overwriting existing target AI instructions.

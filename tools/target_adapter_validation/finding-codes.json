@@ -9,6 +9,7 @@
     "tools/target_adapter_validation/ai_infrastructure.py",
     "tools/target_adapter_validation/architecture_knowledge.py",
     "tools/target_adapter_validation/assistant_capabilities.py",
+    "tools/target_adapter_validation/blueprint_change.py",
     "tools/target_adapter_validation/capability.py",
     "tools/target_adapter_validation/code_documentation.py",
     "tools/target_adapter_validation/consistency_map.py",
@@ -66,12 +67,16 @@
       "code_count": 1
     },
     {
+      "id": "BLUEPRINT",
+      "code_count": 5
+    },
+    {
       "id": "BOOTSTRAP",
       "code_count": 9
     },
     {
       "id": "CAPABILITY",
-      "code_count": 7
+      "code_count": 8
     },
     {
       "id": "CHANGED",
@@ -79,7 +84,7 @@
     },
     {
       "id": "CODEDOC",
-      "code_count": 32
+      "code_count": 33
     },
     {
       "id": "CONSISTENCY",
@@ -95,7 +100,7 @@
     },
     {
       "id": "DELEGATION",
-      "code_count": 63
+      "code_count": 66
     },
     {
       "id": "DEPENDENCY",
@@ -159,7 +164,7 @@
     },
     {
       "id": "MODULE",
-      "code_count": 5
+      "code_count": 11
     },
     {
       "id": "OPERATION",
@@ -231,7 +236,7 @@
     },
     {
       "id": "VOCABULARY",
-      "code_count": 44
+      "code_count": 46
     },
     {
       "id": "WORKSPACE",
@@ -1380,6 +1385,51 @@
       ]
     },
     {
+      "code": "BLUEPRINT_CHANGE_OPERATION_CATALOG",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/blueprint_change.py"
+      ]
+    },
+    {
+      "code": "BLUEPRINT_CHANGE_OPERATION_FLOW",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/blueprint_change.py"
+      ]
+    },
+    {
+      "code": "BLUEPRINT_CHANGE_OPERATION_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/blueprint_change.py"
+      ]
+    },
+    {
+      "code": "BLUEPRINT_CHANGE_OPERATION_MODULE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/blueprint_change.py"
+      ]
+    },
+    {
+      "code": "BLUEPRINT_CHANGE_REQUIRED_FILE_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/blueprint_change.py"
+      ]
+    },
+    {
       "code": "BOOTSTRAP_AREA_MAP_MISSING",
       "levels": [
         "error"
@@ -1507,6 +1557,15 @@
     },
     {
       "code": "CAPABILITY_PACK_TOO_SMALL",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CAPABILITY_STAGED_DEPENDENCY_MISSING",
       "levels": [
         "error"
       ],
@@ -1768,6 +1827,15 @@
     },
     {
       "code": "CODEDOC_PROFILE_MATCH",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/code_documentation.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_PROFILE_PRIORITY",
       "levels": [
         "error"
       ],
@@ -3912,6 +3980,33 @@
       "code": "DELEGATION_SHARED_WRITE_ISOLATION",
       "levels": [
         "warning"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_STOP_POLICY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_TREE_LIMIT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_TREE_POLICY",
+      "levels": [
+        "error"
       ],
       "sources": [
         "tools/target_adapter_validation/subagent_delegation.py"
@@ -6366,6 +6461,15 @@
       ]
     },
     {
+      "code": "MODULE_MANIFEST_STAGED_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "MODULE_PROFILE_DUPLICATE",
       "levels": [
         "error"
@@ -6384,6 +6488,24 @@
       ]
     },
     {
+      "code": "MODULE_PROFILE_STAGED_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "MODULE_PROFILE_STAGED_MISSING",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "MODULE_PROFILE_STATE_DRIFT",
       "levels": [
         "error"
@@ -6394,6 +6516,33 @@
     },
     {
       "code": "MODULE_PROFILE_UNKNOWN",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "MODULE_SELECTED_UNKNOWN",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "MODULE_STAGED_AT_ACCEPTANCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "MODULE_STATE_OVERLAP",
       "levels": [
         "error"
       ],
@@ -10517,6 +10666,24 @@
     },
     {
       "code": "VOCABULARY_OPERATION_UNROUTED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/project_vocabulary.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_REPLACEMENT_REFERENCE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/project_vocabulary.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_REPLACEMENT_SELF_REFERENCE",
       "levels": [
         "error"
       ],

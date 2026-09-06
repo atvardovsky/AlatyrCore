@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -43,6 +44,105 @@ def run(command: list[str], cwd: Path) -> subprocess.CompletedProcess[str]:
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )
+
+
+def source_commit_for_version(source: Path, version: str) -> str | None:
+    """Resolve the nearest reachable source commit that owns an exact VERSION."""
+
+    if version in {"", "unknown"}:
+        return None
+    history = run(["git", "log", "--format=%H", "--", "VERSION"], source)
+    if history.returncode != 0:
+        return None
+    for commit in history.stdout.splitlines():
+        value = run(["git", "show", f"{commit}:VERSION"], source)
+        if value.returncode == 0 and value.stdout.strip() == version:
+            return commit
+    return None
+
+
+def materialize_git_subtree(
+    source: Path, commit: str, relpath: str, destination: Path
+) -> bool:
+    """Materialize one historical contract subtree without archive extraction."""
+
+    listing = run(
+        ["git", "ls-tree", "-r", "--name-only", commit, "--", relpath], source
+    )
+    if listing.returncode != 0:
+        return False
+    paths = [value for value in listing.stdout.splitlines() if value]
+    if not paths:
+        return False
+    for value in paths:
+        path = Path(value)
+        if path.is_absolute() or ".." in path.parts or not value.startswith(relpath + "/"):
+            return False
+        content = subprocess.run(
+            ["git", "show", f"{commit}:{value}"],
+            cwd=source,
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        if content.returncode != 0:
+            return False
+        output = destination / path.relative_to(relpath)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        output.write_bytes(content.stdout)
+    return True
+
+
+def replace_assessment_outputs(
+    staged_paths: list[Path], destination_paths: list[Path]
+) -> None:
+    """Replace one assessment set and restore the previous set on failure."""
+
+    if len(staged_paths) != len(destination_paths) or not destination_paths:
+        raise ValueError("assessment output sets must be non-empty and equal")
+    output_dir = destination_paths[0].parent
+    if any(path.parent != output_dir for path in destination_paths):
+        raise ValueError("assessment outputs must share one directory")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(
+        prefix=".alatyr-assessment-backup-", dir=output_dir.parent
+    ) as directory:
+        backup_dir = Path(directory)
+        backups: list[tuple[Path, Path]] = []
+        installed: list[Path] = []
+        try:
+            for destination in destination_paths:
+                if destination.is_symlink() or (
+                    destination.exists() and not destination.is_file()
+                ):
+                    raise OSError(
+                        f"assessment output is not a regular file: {destination}"
+                    )
+                if destination.is_file():
+                    backup = backup_dir / destination.name
+                    os.replace(destination, backup)
+                    backups.append((destination, backup))
+            for staged, destination in zip(staged_paths, destination_paths):
+                os.replace(staged, destination)
+                installed.append(destination)
+        except OSError as exc:
+            rollback_errors: list[str] = []
+            for destination in reversed(installed):
+                try:
+                    destination.unlink(missing_ok=True)
+                except OSError as rollback_exc:
+                    rollback_errors.append(str(rollback_exc))
+            for destination, backup in reversed(backups):
+                try:
+                    os.replace(backup, destination)
+                except OSError as rollback_exc:
+                    rollback_errors.append(str(rollback_exc))
+            if rollback_errors:
+                raise OSError(
+                    f"assessment replacement failed ({exc}); rollback also failed: "
+                    + "; ".join(rollback_errors)
+                ) from exc
+            raise
 
 
 def sha256(path: Path) -> str:
@@ -231,7 +331,7 @@ adapter as updated.
 """
 
 
-def main() -> int:
+def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description=(
             "Prepare migration and structural evidence before an installed "
@@ -258,19 +358,20 @@ def main() -> int:
         action="store_true",
         help="Replace existing assessment outputs in --output-dir.",
     )
-    args = parser.parse_args()
-    validation_phase = (
-        "migration-staging" if args.allow_placeholders else args.validation_phase
-    )
+    return parser.parse_args()
+
+
+def execute_assessment(args: argparse.Namespace, validation_phase: str) -> int:
 
     target = args.target.resolve()
     source = args.framework_source.resolve()
     output_dir = args.output_dir.resolve()
-    migration_report = output_dir / "migration-report.md"
-    impact_report = output_dir / "upgrade-impact.json"
-    validation_report = output_dir / "adapter-validation.json"
-    assessment_plan = output_dir / "upgrade-assessment.md"
-    outputs = [migration_report, impact_report, validation_report, assessment_plan]
+    final_outputs = [
+        output_dir / "migration-report.md",
+        output_dir / "upgrade-impact.json",
+        output_dir / "adapter-validation.json",
+        output_dir / "upgrade-assessment.md",
+    ]
 
     if not target.is_dir():
         print(f"Target repository does not exist: {target}", file=sys.stderr)
@@ -278,16 +379,20 @@ def main() -> int:
     if not (source / "framework" / "rule-registry.json").is_file():
         print(f"Framework source is incomplete: {source}", file=sys.stderr)
         return 2
-    existing = [path for path in outputs if path.exists()]
+    existing = [path for path in final_outputs if path.exists()]
     if existing and not args.overwrite:
         names = ", ".join(path.name for path in existing)
         print(f"Assessment output already exists: {names}; pass --overwrite", file=sys.stderr)
         return 2
-    if args.overwrite:
-        for path in existing:
-            if path.is_file():
-                path.unlink()
-    output_dir.mkdir(parents=True, exist_ok=True)
+    output_dir.parent.mkdir(parents=True, exist_ok=True)
+    staging = tempfile.TemporaryDirectory(
+        prefix=f".{output_dir.name}-assessment-", dir=output_dir.parent
+    )
+    staging_dir = Path(staging.name)
+    migration_report = staging_dir / "migration-report.md"
+    impact_report = staging_dir / "upgrade-impact.json"
+    validation_report = staging_dir / "adapter-validation.json"
+    assessment_plan = staging_dir / "upgrade-assessment.md"
 
     from_versions = (
         manifest_value(target, ("framework", "version")),
@@ -302,6 +407,7 @@ def main() -> int:
             f"Unsupported target framework.pack: {framework_pack}",
             file=sys.stderr,
         )
+        staging.cleanup()
         return 2
     to_versions = (
         source_version(source, "VERSION"),
@@ -313,9 +419,11 @@ def main() -> int:
     old_framework = target / ".ai" / "framework"
     reporter = source / "tools" / "report_migration_diff.py"
     with tempfile.TemporaryDirectory(prefix="alatyr-upgrade-pack-") as directory:
+        working = Path(directory)
         to_framework = source / "framework"
         if framework_pack != "complete":
-            projection_target = Path(directory)
+            projection_target = working / "next-pack"
+            projection_target.mkdir()
             support_profile = {
                 "kernel": "kernel",
                 "core": "core",
@@ -342,6 +450,7 @@ def main() -> int:
                     or "framework pack projection failed",
                     file=sys.stderr,
                 )
+                staging.cleanup()
                 return 2
             to_framework = projection_target / ".ai" / "framework"
 
@@ -373,6 +482,43 @@ def main() -> int:
             "--json-output",
             str(impact_report),
         ]
+        previous_commit = source_commit_for_version(source, from_versions[0])
+        if previous_commit is not None:
+            previous_schema_dir = working / "previous-schemas"
+            previous_template_dir = working / "previous-templates"
+            schemas_available = materialize_git_subtree(
+                source, previous_commit, "schemas", previous_schema_dir
+            )
+            templates_available = materialize_git_subtree(
+                source,
+                previous_commit,
+                "templates/target",
+                previous_template_dir,
+            )
+            if schemas_available:
+                migration_command.extend(
+                    [
+                        "--from-schema-dir",
+                        str(previous_schema_dir),
+                        "--to-schema-dir",
+                        str(source / "schemas"),
+                    ]
+                )
+            if templates_available:
+                migration_command.extend(
+                    [
+                        "--from-template-dir",
+                        str(previous_template_dir),
+                        "--to-template-dir",
+                        str(source / "templates" / "target"),
+                    ]
+                )
+            migration_command.extend(
+                ["--from-source-label", f"source-version:{from_versions[0]}@{previous_commit}"]
+            )
+        migration_command.extend(
+            ["--to-source-label", f"source-version:{to_versions[0]}"]
+        )
         migration = run(migration_command, source)
     migration_status = "generated" if migration.returncode == 0 else "failed"
 
@@ -471,13 +617,32 @@ def main() -> int:
 
     if migration.returncode != 0:
         print(migration.stderr.strip() or migration.stdout.strip(), file=sys.stderr)
-        print(f"Wrote partial assessment: {assessment_plan}")
+        print("Upgrade assessment failed; existing outputs were preserved", file=sys.stderr)
+        staging.cleanup()
         return 1
-    print(f"Wrote migration report: {migration_report}")
-    print(f"Wrote upgrade impact: {impact_report}")
-    print(f"Wrote validator report: {validation_report}")
-    print(f"Wrote upgrade assessment: {assessment_plan}")
+    try:
+        replace_assessment_outputs(
+            [migration_report, impact_report, validation_report, assessment_plan],
+            final_outputs,
+        )
+    except (OSError, ValueError) as exc:
+        print(f"Upgrade assessment replacement failed: {exc}", file=sys.stderr)
+        staging.cleanup()
+        return 1
+    staging.cleanup()
+    print(f"Wrote migration report: {final_outputs[0]}")
+    print(f"Wrote upgrade impact: {final_outputs[1]}")
+    print(f"Wrote validator report: {final_outputs[2]}")
+    print(f"Wrote upgrade assessment: {final_outputs[3]}")
     return validation_code
+
+
+def main() -> int:
+    args = parse_args()
+    validation_phase = (
+        "migration-staging" if args.allow_placeholders else args.validation_phase
+    )
+    return execute_assessment(args, validation_phase)
 
 
 if __name__ == "__main__":

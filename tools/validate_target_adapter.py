@@ -1715,6 +1715,16 @@ class Validator:
     def check_module_profile_sync(self, manifest: ManifestData | None) -> None:
         if manifest is None:
             return
+        manifest_selected = {
+            scalar.value
+            for scalar in manifest.lists.get(("modules", "selected"), [])
+            if not is_unresolved_value(scalar.value)
+        }
+        manifest_staged = {
+            scalar.value
+            for scalar in manifest.lists.get(("modules", "staged"), [])
+            if not is_unresolved_value(scalar.value)
+        }
         manifest_enabled = {
             scalar.value
             for scalar in manifest.lists.get(("modules", "enabled"), [])
@@ -1730,12 +1740,36 @@ class Validator:
                 )
             if (
                 states
-                and states[0] in {"enabled", "required"}
+                and states[0] in {"staged", "enabled", "required"}
                 and module_id not in self.capability_modules
             ):
                 self.error(
                     "MODULE_PROFILE_UNKNOWN",
                     f"module profile names unknown capability {module_id}",
+                    ".ai/assistant/module-profile.md",
+                )
+
+        overlapping_states = sorted(manifest_staged & manifest_enabled)
+        if overlapping_states:
+            self.error(
+                "MODULE_STATE_OVERLAP",
+                "modules cannot be staged and enabled simultaneously: "
+                + ", ".join(overlapping_states),
+                ".ai/alatyr.yaml",
+            )
+
+        for module_id in sorted(manifest_staged):
+            states = profile_states.get(module_id, [])
+            if not states:
+                self.error(
+                    "MODULE_PROFILE_STAGED_MISSING",
+                    f"manifest-staged module {module_id} has no module-profile block",
+                    ".ai/assistant/module-profile.md",
+                )
+            elif states[0] != "staged":
+                self.error(
+                    "MODULE_PROFILE_STAGED_DRIFT",
+                    f"manifest stages {module_id}, but module profile state is {states[0]}",
                     ".ai/assistant/module-profile.md",
                 )
 
@@ -1762,6 +1796,28 @@ class Validator:
                     f"module profile enables {module_id}, but manifest modules.enabled does not",
                     ".ai/alatyr.yaml",
                 )
+            if states and states[0] == "staged" and module_id not in manifest_staged:
+                self.error(
+                    "MODULE_MANIFEST_STAGED_MISSING",
+                    f"module profile stages {module_id}, but manifest modules.staged does not",
+                    ".ai/alatyr.yaml",
+                )
+
+        if not self.allow_placeholders and manifest_staged:
+            self.error(
+                "MODULE_STAGED_AT_ACCEPTANCE",
+                "accepted adapters must enable, defer, disable, or block every staged module",
+                ".ai/alatyr.yaml",
+            )
+
+        unknown_selected = sorted(manifest_selected - set(self.capability_modules))
+        if unknown_selected:
+            self.error(
+                "MODULE_SELECTED_UNKNOWN",
+                "selected modules are absent from the capability catalog: "
+                + ", ".join(unknown_selected),
+                ".ai/alatyr.yaml",
+            )
 
     def check_required_files(self, support_profile: str) -> None:
         for relpath in required_files_for_support_profile(support_profile):
@@ -1977,12 +2033,17 @@ class Validator:
     def check_capability_closure(self, manifest: ManifestData | None) -> None:
         if manifest is None:
             return
+        staged = [
+            scalar.value
+            for scalar in manifest.lists.get(("modules", "staged"), [])
+            if not is_unresolved_value(scalar.value)
+        ]
         enabled = [
             scalar.value
             for scalar in manifest.lists.get(("modules", "enabled"), [])
             if not is_unresolved_value(scalar.value)
         ]
-        if not enabled:
+        if not enabled and not staged:
             return
 
         catalog_path = self.target_path(".ai/framework/capabilities.json")
@@ -2009,9 +2070,40 @@ class Validator:
         self.capability_modules = modules
 
         enabled_set = set(enabled)
+        staged_set = set(staged)
+        available_set = enabled_set | staged_set
         pack_scalar = manifest.scalars.get(("framework", "pack"))
         selected_pack = pack_scalar.value if pack_scalar else "complete"
         pack_rank = {"core": 0, "standard": 1, "complete": 2}
+        for module_id in sorted(staged_set):
+            contract = modules.get(module_id)
+            if not isinstance(contract, dict):
+                self.error(
+                    "CAPABILITY_MODULE_UNKNOWN",
+                    f"staged module is absent from capability catalog: {module_id}",
+                    ".ai/alatyr.yaml",
+                )
+                continue
+            missing_dependencies = sorted(
+                set(contract.get("requires", [])) - available_set
+            )
+            if missing_dependencies:
+                self.error(
+                    "CAPABILITY_STAGED_DEPENDENCY_MISSING",
+                    f"staged module {module_id} requires {missing_dependencies}",
+                    ".ai/alatyr.yaml",
+                )
+            minimum_pack = contract.get("min_framework_pack")
+            if (
+                selected_pack in pack_rank
+                and minimum_pack in pack_rank
+                and pack_rank[selected_pack] < pack_rank[minimum_pack]
+            ):
+                self.error(
+                    "CAPABILITY_PACK_TOO_SMALL",
+                    f"staged module {module_id} requires framework pack {minimum_pack}",
+                    ".ai/alatyr.yaml",
+                )
         for module_id in sorted(enabled_set):
             contract = modules.get(module_id)
             if not isinstance(contract, dict):

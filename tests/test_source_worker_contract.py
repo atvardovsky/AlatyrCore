@@ -53,8 +53,13 @@ def capability_fixture() -> dict[str, object]:
 
 def packet_fixture() -> dict[str, object]:
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "packet_kind": "source-read-only-workstream",
+        "parent_packet_id": None,
+        "depth": 1,
+        "remaining_worker_budget": 7,
+        "coverage_key": "source-worker-contract",
+        "child_proposal_policy": "propose-only",
         "workstream_id": "source-contract",
         "role_id": "read-only-auditor",
         "objective": "Inspect the source worker contract",
@@ -217,6 +222,8 @@ class WorkerPacketTests(unittest.TestCase):
             "traversal context": {"bounded_context": ["../outside.md"]},
             "missing context": {"bounded_context": ["tools/not-present.py"]},
             "extra field": {"tools": ["shell"]},
+            "recursive depth": {"depth": 2},
+            "autonomous child": {"child_proposal_policy": "dispatch"},
         }
         for label, updates in cases.items():
             with self.subTest(label=label):
@@ -224,6 +231,20 @@ class WorkerPacketTests(unittest.TestCase):
                 packet.update(updates)
                 with self.assertRaises(SourceWorkerContractError):
                     self.validate(packet)
+
+    def test_tree_policy_limits_and_stop_reasons_fail_closed(self) -> None:
+        cases = {
+            "autonomous dispatch": ("tree_policy", "worker_child_behavior", "dispatch"),
+            "excess depth": ("tree_policy", "hard_max_depth", 3),
+            "zero worker budget": ("tree_policy", "max_total_delegates", 0),
+            "missing stop reason": ("stop_policy", "stop_reason_ids", ["scope-covered"]),
+        }
+        for label, (section, field, value) in cases.items():
+            with self.subTest(label=label):
+                policy = policy_fixture()
+                policy[section][field] = value
+                with self.assertRaises(SourceWorkerContractError):
+                    validate_source_worker_policy(policy, root=ROOT)
 
     def test_packet_context_cannot_escape_through_a_symlink(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

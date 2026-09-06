@@ -491,7 +491,9 @@ files do not need to be loaded as prose.
 Optional scaffolding can create placeholder structure, but it does not inspect
 the target, resolve project facts, approve changes, or complete installation.
 It can scaffold an explicit dependency-closed capability set instead of
-copying every optional target surface.
+copying every optional target surface. Scaffolded optional capabilities remain
+`staged` until target facts are resolved and their capability checks pass;
+selection does not silently activate them.
 
 To our knowledge, AlatyrCore is among the first publicly documented AI
 engineering frameworks whose primary installation model is repository-aware
@@ -535,7 +537,7 @@ Do not install every optional capability by default. Establish the smallest
 support profile that safely covers the target's current use of Alatyr, then
 enable optional modules only when the target needs and can maintain them. The
 source scaffolder exposes `kernel`, `core`, `standard`, and `full` support
-profiles, repeatable `--enable-module` capability selection, and
+profiles, repeatable `--enable-module` capability staging, and
 dependency-closed `kernel`, `core`, `standard`, and `complete` framework packs.
 The `full` target profile carries the complete portable framework pack but does
 not install every optional module. Exhaustive template projection exists only
@@ -554,7 +556,7 @@ window. See the [bridge capability matrix](framework/bridge-capability-matrix.md
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.56`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.57`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural

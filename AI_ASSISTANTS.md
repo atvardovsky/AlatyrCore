@@ -222,6 +222,12 @@ task/packet/result contracts, and selected assistant-capability record. The
 primary assistant retains task readiness, project decisions, approval, result
 review, integration, logical integrity, and final validation.
 
+Delegation is a primary-owned bounded tree. Workers may propose child packets,
+but they do not dispatch them autonomously. The primary enforces depth, total
+worker, child, retry, context, and disjoint-coverage limits and stops when the
+required acceptance evidence is complete or coordination no longer pays for
+itself.
+
 This strategy applies equally to every surface in the canonical conformance
 registry. `Subagent` is a portable role: the selected surface may use native
 workers, an approved external dispatcher, suggestion-only packet handoff, or

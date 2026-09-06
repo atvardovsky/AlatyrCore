@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "registry_kind": "target-support-generation-registry",
   "artifacts": [
     {
@@ -25,7 +25,14 @@
         ]
       },
       "validation": [
-        "{TARGET_VALIDATION_OR_MANUAL_REVIEW}"
+        {
+          "kind": "{COMMAND_OR_MANUAL}",
+          "required": true,
+          "command": [
+            "{TARGET_VALIDATION_COMMAND_PART}",
+            "{OUTPUT_DIR}"
+          ]
+        }
       ],
       "approval_trigger": "{APPROVAL_TRIGGER_OR_NONE}"
     }

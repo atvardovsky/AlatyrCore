@@ -103,6 +103,35 @@ primary-owned convergence stream even when their mechanical work is separate.
 Do not turn the task graph into an autonomous scheduler: dispatch still passes
 through capability, authorization, approval, and cost gates.
 
+## Delegation Tree And Stop Contract
+
+The primary assistant owns the complete delegation tree and every dispatch.
+A worker may return a bounded child-packet proposal, but it must not dispatch,
+authorize, or recursively create workers itself. The primary rechecks the
+proposal against current scope, dependencies, coverage, capability, and the
+remaining tree budget before deciding whether to dispatch it.
+
+Use depth `0` for the primary plan and depth `1` for ordinary workers. The
+portable default maximum worker depth is `1`; a target may permit depth `2`
+only through an explicit policy value not above the portable hard maximum of
+`2`. Deeper delegation is invalid. The target policy also sets hard limits for
+total delegates, children per parent, aggregate delegated context, total
+retries, and parallel delegates. The minimum independent-packet threshold is
+an activation condition, not a default fan-out target.
+
+Give every packet a unique coverage key. Reject concurrent or descendant
+packets whose coverage duplicates or overlaps work already assigned unless the
+primary records a specific reconciliation reason. Stop expansion as soon as
+acceptance criteria and required evidence are covered; do not seek additional
+workers merely because budget remains.
+
+Every completed, blocked, rejected, or undispatched branch records one
+normalized stop reason: scope covered, evidence sufficient, coordination cost
+exceeds benefit, maximum depth reached, worker/context/retry budget reached,
+semantic decision required, overlapping scope, primary critical path,
+capability unavailable, or user restricted. Missing stop evidence is a failed
+delegation record, not permission to continue.
+
 ## Worker Role Catalog
 
 The target role catalog owns reusable semantic roles such as explorer,
@@ -188,7 +217,8 @@ mechanics remain target-verified for each surface.
 
 Every dispatched task uses a bounded target packet that records:
 
-- packet, operation, workstream, and parent-assistant identifiers
+- packet, parent-packet, operation, workstream, and parent-assistant identifiers
+- depth, remaining worker and context budget, and a unique coverage key
 - goal, non-goals, expected output, and local acceptance criteria
 - changed facts or explicit confirmation that no semantic fact is owned
 - required and excluded context
@@ -196,6 +226,7 @@ Every dispatched task uses a bounded target packet that records:
 - selected assistant surface, role, model binding, and capability evidence
 - dependency state, concurrency/write-isolation decision, and fallback
 - validation to run and the result/evidence shape to return
+- child proposals as suggestions for primary review only
 
 Do not send the full project context by default. Do not split one semantic fact
 across independent delegates unless one primary-owned workstream performs
@@ -208,7 +239,8 @@ It records task and packet identity, observed base revision, status, actual
 surface/role/model or unverified status, touched surfaces, commands/tools,
 validation, acceptance criteria, scope violations, semantic or architecture
 deviations, unexpected repository state, authorization concerns, unresolved
-findings, follow-up, and residual risk.
+findings, follow-up, residual risk, depth, coverage key, child proposals, and a
+normalized stop reason.
 
 Provider-native prose is not accepted directly as completion evidence. The
 primary assistant must normalize it first. A missing identity, stale baseline,
@@ -249,9 +281,11 @@ After a delegate returns, the primary assistant must:
 
 A delegate result is evidence for primary review, not operation completion.
 
-Nested delegation is disabled unless the selected surface capability and
-target policy explicitly support it. Even when enabled, a child packet may
-only narrow its parent's context, action ceiling, write scope, and authority.
+Provider-native nested delegation never grants autonomous recursion. A target
+may use verified nested transport for a primary-approved child packet only
+when the policy permits depth `2`; the primary still owns dispatch. Every child
+packet may only narrow its parent's context, action ceiling, write scope, and
+authority.
 
 ## Cost And Performance Evidence
 

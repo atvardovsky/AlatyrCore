@@ -9,6 +9,7 @@ Current logical scope: `{CURRENT_LOGICAL_SCOPE}`
 Current user authorization: `{CURRENT_AUTHORIZED_PHASES}`
 Allowed actions ceiling: `{ALLOWED_ACTIONS}`
 Delegation preference: `{AUTO_ALLOW_FORBID_REQUIRE_SUPPORTED_OR_NONE}`
+Delegation tree decision: `{PRIMARY_ONLY_OR_POLICY_BOUNDED_TREE}`
 
 ## Request Classification
 
@@ -44,6 +45,8 @@ Selected worker role: `{ROLE_ID_OR_NONE}`
 Why this executor: `{EXECUTOR_SELECTION_REASON}`
 Delegation packet: `{PACKET_ID_OR_NONE}`
 Result: `{RESULT_ID_OR_NONE}`
+Parent packet, depth, and coverage key: `{TREE_POSITION_OR_NONE}`
+Stop reason: `{TARGET_STOP_REASON_ID_OR_NONE}`
 Blocker or readiness evidence: `{EVIDENCE_OR_NONE}`
 
 ## Dependency And Scope Review

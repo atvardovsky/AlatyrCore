@@ -84,8 +84,11 @@ context_routing:
   context_packet_template: ".ai/assistant/templates/context-packet.json"
 modules:
   core_profile: "{COMPLETE_OR_MISSING_GAPS}"
-  enabled:
-    - "{ENABLED_MODULE}"
+  selected:
+    - "{SELECTED_MODULE}"
+  staged:
+    - "{STAGED_MODULE}"
+  enabled: []
   deferred:
     - "{DEFERRED_MODULE_AND_REASON}"
   blocked:

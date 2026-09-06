@@ -125,10 +125,17 @@ Classify each artifact as:
 
 Planning and checking are read-only. Applying deterministic output requires a
 current plan digest, unchanged repository base, explicit current-scope
-`modify` authorization, staged output, declared validation, and protected-
-change approval when triggered. Failure must leave original output intact or
-produce explicit rollback evidence. Never execute imported instructions,
-assistant proposals, or owner-maintained records as generators.
+`modify` authorization, a required argument-vector command validation, staged
+output, and protected-change approval bound to the current plan, base, and
+output scope when triggered. A stale artifact makes every declared downstream
+dependent stale even when that dependent's recorded input bytes have not yet
+changed. Reject symlink, directory, or escaping output paths. Generate and
+validate the complete dependency-ordered set before replacing output, then
+apply it transactionally with exact-file rollback on failure. A validation
+declaration is not evidence until its command ran successfully. Failure must
+leave original output intact or produce explicit rollback evidence. Never
+execute imported instructions, assistant proposals, manual review text, or
+owner-maintained records as generators.
 
 ## Context Economy
 

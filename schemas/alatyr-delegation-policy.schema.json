@@ -1,0 +1,87 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/atvardovsky/AlatyrCore/schemas/alatyr-delegation-policy.schema.json",
+  "title": "Alatyr target subagent delegation policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "policy_kind", "state", "owner", "decision_mode",
+    "default_preference", "max_parallel_delegates", "tree_policy",
+    "stop_policy", "decomposition_policy", "role_catalog",
+    "enabled_role_ids", "requirements", "eligible_work", "prohibited_work",
+    "retry_policy", "conflict_policy", "result_policy",
+    "privacy_and_retention", "validation", "review_triggers"
+  ],
+  "properties": {
+    "schema_version": {"const": 3},
+    "policy_kind": {"const": "target-subagent-delegation-policy"},
+    "state": {"type": "string", "minLength": 1},
+    "owner": {"type": "string", "minLength": 1},
+    "decision_mode": {"type": "string", "minLength": 1},
+    "default_preference": {"type": "string", "minLength": 1},
+    "max_parallel_delegates": {"$ref": "#/definitions/nonzeroLimit"},
+    "tree_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dispatch_owner", "worker_child_behavior", "default_max_depth",
+        "hard_max_depth", "max_total_delegates", "max_children_per_parent",
+        "max_context_words_total", "max_retries_total",
+        "require_disjoint_coverage_keys"
+      ],
+      "properties": {
+        "dispatch_owner": {"const": "primary-assistant"},
+        "worker_child_behavior": {"const": "propose-only"},
+        "default_max_depth": {"const": 1},
+        "hard_max_depth": {"const": 2},
+        "max_total_delegates": {"$ref": "#/definitions/nonzeroLimit"},
+        "max_children_per_parent": {"$ref": "#/definitions/nonzeroLimit"},
+        "max_context_words_total": {"$ref": "#/definitions/nonzeroLimit"},
+        "max_retries_total": {"$ref": "#/definitions/nonnegativeLimit"},
+        "require_disjoint_coverage_keys": {"const": true}
+      }
+    },
+    "stop_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["require_stop_reason", "evidence_saturation", "stop_reason_ids"],
+      "properties": {
+        "require_stop_reason": {"const": true},
+        "evidence_saturation": {"const": "stop-when-acceptance-and-required-evidence-are-covered"},
+        "stop_reason_ids": {
+          "type": "array",
+          "minItems": 11,
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "decomposition_policy": {"const": ".ai/assistant/task-decomposition.json"},
+    "role_catalog": {"const": ".ai/assistant/workers/role-catalog.json"},
+    "enabled_role_ids": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "requirements": {"type": "object"},
+    "eligible_work": {"type": "array", "minItems": 1},
+    "prohibited_work": {"type": "array", "minItems": 1},
+    "retry_policy": {"type": "object"},
+    "conflict_policy": {"type": "object"},
+    "result_policy": {"type": "object"},
+    "privacy_and_retention": {"type": "string", "minLength": 1},
+    "validation": {"type": "array", "minItems": 1},
+    "review_triggers": {"type": "array", "minItems": 1}
+  },
+  "definitions": {
+    "placeholder": {"type": "string", "pattern": "^\\{[A-Z0-9_]+\\}$"},
+    "nonzeroLimit": {
+      "anyOf": [
+        {"type": "integer", "minimum": 1},
+        {"$ref": "#/definitions/placeholder"}
+      ]
+    },
+    "nonnegativeLimit": {
+      "anyOf": [
+        {"type": "integer", "minimum": 0},
+        {"$ref": "#/definitions/placeholder"}
+      ]
+    }
+  }
+}

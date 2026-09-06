@@ -1,6 +1,11 @@
 # Subagent Task Packet
 
 Packet ID: `{PACKET_ID}`
+Parent packet ID: `{PARENT_PACKET_ID_OR_NONE}`
+Depth: `{NON_NEGATIVE_INTEGER}`
+Remaining worker budget: `{NON_NEGATIVE_INTEGER}`
+Coverage key: `{UNIQUE_BOUNDED_COVERAGE_KEY}`
+Child proposal policy: `propose-only`
 Task ID: `{TASK_ID}`
 Execution plan ID: `{PLAN_ID}`
 Parent operation ID: `{OPERATION_ID}`
@@ -32,6 +37,7 @@ Excluded context:
 - `{EXCLUDED_CONTEXT_OR_NOT_NEEDED}`
 
 Context budget: `{TARGET_PACKET_CONTEXT_BUDGET}`
+Tree context budget remaining: `{TARGET_TREE_CONTEXT_BUDGET_REMAINING}`
 
 ## Authority Boundary
 
@@ -91,6 +97,8 @@ Validation result: `{RESULT_OR_NOT_RUN_WITH_REASON}`
 Acceptance result: `{PASS_FAIL_OR_BLOCKED}`
 Unexpected scope or conflicts: `{DETAILS_OR_NONE}`
 Residual risk: `{RESIDUAL_RISK}`
+Stop reason ID: `{TARGET_STOP_REASON_ID}`
+Proposed child packets: `{BOUNDED_CHILD_PACKET_PROPOSALS_OR_NONE}`
 
 ## Primary Review
 

@@ -53,6 +53,7 @@ class ResolvedComposition:
     requested_capabilities: tuple[str, ...]
     available_capabilities: tuple[str, ...]
     installed_capabilities: tuple[str, ...]
+    staged_capabilities: tuple[str, ...]
     enabled_capabilities: tuple[str, ...]
     capability_edges: tuple[tuple[str, str], ...]
     requested_assistant_surfaces: tuple[str, ...]
@@ -303,7 +304,7 @@ def resolve_composition(request: CompositionRequest) -> ResolvedComposition:
         )
     )
     return ResolvedComposition(
-        contract_version=2,
+        contract_version=3,
         projection_purpose=request.projection_purpose,
         support_profile=request.support_profile,
         support_profile_chain=profile_chain,
@@ -313,7 +314,8 @@ def resolve_composition(request: CompositionRequest) -> ResolvedComposition:
         requested_capabilities=tuple(sorted(set(request.requested_capabilities))),
         available_capabilities=tuple(sorted(modules)),
         installed_capabilities=installed_capabilities,
-        enabled_capabilities=enabled,
+        staged_capabilities=enabled,
+        enabled_capabilities=(),
         capability_edges=edges,
         requested_assistant_surfaces=tuple(sorted(set(request.requested_assistant_surfaces))),
         assistant_surfaces=surfaces,

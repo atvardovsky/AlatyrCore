@@ -13,6 +13,7 @@ The primary assistant remains responsible for all decisions and convergence.
    task `READY` only when its implementation level permits worker execution,
    dependencies are complete, its context and acceptance criteria are bounded,
    and its write scope is disjoint.
+   Assign its parent, depth, unique coverage key, and remaining tree budget.
 3. Prefer primary execution when packet and review overhead outweigh likely
    benefit. Never delegate non-delegable work.
 4. Select an enabled role whose action ceiling contains the packet action.
@@ -21,6 +22,8 @@ The primary assistant remains responsible for all decisions and convergence.
 5. Dispatch the task packet through the verified native or approved external
    backend. A provider-specific worker definition is a thin binding to these
    project-owned contracts, not a new policy owner.
+   The primary assistant owns every dispatch. Workers may propose bounded
+   children but must never launch or authorize them.
 6. Normalize every return with `.ai/assistant/templates/worker-result.md`.
    Reject scope violations, stale baselines, unsupported claims, and missing
    validation. Retry only under the target retry policy without expanding
@@ -28,6 +31,9 @@ The primary assistant remains responsible for all decisions and convergence.
 7. Integrate accepted evidence or changes against current repository state.
    Re-run combined validation and perform primary-owned logical integrity,
    authorization, approval, commit, and publish gates.
+8. Stop when acceptance and required evidence are covered or when a depth,
+   worker, context, retry, overlap, capability, authority, or cost boundary is
+   reached. Record the policy stop-reason ID for every branch.
 
 Do not claim parallelism, model identity, speed, cost, or quality unless the
 selected capability record and result contain matching evidence.

@@ -64,6 +64,7 @@ EXACT_GENERATORS = {
     ".ai/assistant/operation-index.json": "project-operation-index",
     ".ai/assistant/gates/index.json": "project-gate-index",
     ".ai/assistant/assistant-capabilities.json": "project-assistant-capabilities",
+    ".ai/assistant/bridge-capability-matrix.md": "project-bridge-capability-matrix",
     ".ai/assistant/context-router.json": "project-context-router",
     ".ai/assistant/entry-packet.json": "project-entry-packet",
     ".ai/assistant/bootstrap-index.json": "project-bootstrap-index",

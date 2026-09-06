@@ -4,9 +4,12 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import subprocess
 from pathlib import Path, PurePosixPath
 from typing import Any, Iterable
+
+import jsonschema
 
 from evidence_contract import canonical_worktree_entries, digest_entries
 from path_spec import PathDialect, select_paths
@@ -16,6 +19,7 @@ from repository_inventory import RepositoryInventory, RepositoryInventoryError
 REGISTRY_PATH = ".ai/project/support-generation/registry.json"
 INDEX_PATH = ".ai/assistant/support-generation-index.json"
 MODES = {"deterministic-derived", "assistant-proposed", "owner-maintained"}
+SCHEMA_PATH = Path(__file__).resolve().parents[1] / "schemas" / "alatyr-support-generation.schema.json"
 
 
 class SupportGenerationError(ValueError):
@@ -41,10 +45,52 @@ def _safe_path(value: Any, label: str) -> str:
     return value
 
 
+def safe_destination(target: Path, relpath: str) -> Path:
+    """Resolve an output beneath target without traversing links or junctions."""
+    target = target.resolve()
+    relative = PurePosixPath(_safe_path(relpath, "support output"))
+    current = target
+    for part in relative.parts[:-1]:
+        candidate = current / part
+        if candidate.is_symlink():
+            raise SupportGenerationError(f"support output traverses a symlink: {relpath}")
+        if candidate.exists() and not candidate.is_dir():
+            raise SupportGenerationError(f"support output parent is not a directory: {relpath}")
+        resolved = Path(os.path.realpath(candidate))
+        try:
+            resolved.relative_to(target)
+        except ValueError as exc:
+            raise SupportGenerationError(f"support output escapes target: {relpath}") from exc
+        current = candidate
+    destination = current / relative.name
+    if destination.is_symlink():
+        raise SupportGenerationError(f"support output is a symlink: {relpath}")
+    if destination.exists() and not destination.is_file():
+        raise SupportGenerationError(
+            f"support output is not a regular file: {relpath}"
+        )
+    resolved_parent = Path(os.path.realpath(destination.parent))
+    try:
+        resolved_parent.relative_to(target)
+    except ValueError as exc:
+        raise SupportGenerationError(f"support output escapes target: {relpath}") from exc
+    return destination
+
+
 def load_registry(target: Path) -> dict[str, Any]:
     registry = _load(target / REGISTRY_PATH)
-    if registry.get("schema_version") != 1 or registry.get("registry_kind") != "target-support-generation-registry":
-        raise SupportGenerationError("support-generation registry contract is invalid")
+    try:
+        schema = _load(SCHEMA_PATH)
+        errors = sorted(
+            jsonschema.Draft7Validator(schema).iter_errors(registry),
+            key=lambda error: list(error.absolute_path),
+        )
+    except (OSError, json.JSONDecodeError, jsonschema.SchemaError) as exc:
+        raise SupportGenerationError(f"cannot validate support-generation registry: {exc}") from exc
+    if errors:
+        error = errors[0]
+        location = ".".join(str(item) for item in error.absolute_path) or "root"
+        raise SupportGenerationError(f"support-generation registry {location}: {error.message}")
     artifacts = registry.get("artifacts")
     if not isinstance(artifacts, list):
         raise SupportGenerationError("support-generation artifacts must be a list")
@@ -79,6 +125,14 @@ def load_registry(target: Path) -> dict[str, Any]:
         dependencies = artifact.get("depends_on")
         if not isinstance(dependencies, list) or not all(isinstance(item, str) for item in dependencies):
             raise SupportGenerationError(f"artifact {artifact_id} depends_on must be a string list")
+        validations = artifact.get("validation", [])
+        if artifact.get("mode") == "deterministic-derived" and not any(
+            isinstance(item, dict) and item.get("kind") == "command" and item.get("required") is True
+            for item in validations
+        ):
+            raise SupportGenerationError(
+                f"deterministic artifact {artifact_id} needs required command validation"
+            )
     unknown = sorted(
         dependency
         for artifact in artifacts
@@ -223,6 +277,7 @@ def generation_plan(target: Path) -> dict[str, Any]:
     }
     actions: list[dict[str, Any]] = []
     artifacts = {item["id"]: item for item in registry["artifacts"]}
+    stale_ids: set[str] = set()
     for state in current["artifacts"]:
         previous = recorded_states.get(state["id"])
         stale_reasons: list[str] = []
@@ -236,6 +291,10 @@ def generation_plan(target: Path) -> dict[str, Any]:
         if state["missing_outputs"]:
             stale_reasons.append("outputs-missing")
         artifact = artifacts[state["id"]]
+        if any(dependency in stale_ids for dependency in artifact["depends_on"]):
+            stale_reasons.append("dependency-stale")
+        if stale_reasons:
+            stale_ids.add(state["id"])
         actions.append(
             {
                 "id": state["id"],

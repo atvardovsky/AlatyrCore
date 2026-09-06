@@ -62,6 +62,7 @@
         },
         "min_framework_pack": {"enum": ["kernel", "core", "standard", "complete"]},
         "requires": {"$ref": "#/definitions/stringArray"},
+        "operation_ids": {"$ref": "#/definitions/stringArray"},
         "rule_ids": {"$ref": "#/definitions/stringArray"},
         "framework_files": {"$ref": "#/definitions/stringArray"},
         "target_files": {"$ref": "#/definitions/stringArray"},

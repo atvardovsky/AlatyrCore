@@ -12,6 +12,29 @@ from target_adapter_validation.capability import (
 )
 
 
+def validate_architecture_text_contracts(
+    context: CapabilityValidationContext, required_paths: list[str]
+) -> None:
+    required_text = {
+        required_paths[0]: ["## Status Meanings", "## Architecture Patterns And Items", "Evidence revision:"],
+        required_paths[3]: ["## Routing Modes", "no-change baseline", "reuse of an accepted project pattern", "adaptation of an existing pattern", "new pattern", "`docs-only`", "`full-with-approval`"],
+        required_paths[4]: ["Pattern ID:", "Problem addressed:", "Rules and invariants:", "Do not use when:", "Last verified revision:"],
+        required_paths[5]: ["Area ID:", "Responsibilities:", "Pattern IDs:", "Validation or fitness checks:"],
+        required_paths[6]: ["No-change baseline:", "Reuse accepted project pattern:", "Adapt existing project pattern:", "Introduce new pattern:", "Pattern-proliferation result:"],
+    }
+    for relpath, snippets in required_text.items():
+        normalized_text = " ".join(
+            context.read_text(context.target_path(relpath)).split()
+        )
+        for snippet in snippets:
+            if " ".join(snippet.split()) not in normalized_text:
+                context.error(
+                    "ARCHITECTURE_CONTRACT_INCOMPLETE",
+                    f"architecture contract is missing {snippet}",
+                    relpath,
+                )
+
+
 def validate_architecture_knowledge(
     context: CapabilityValidationContext,
     manifest: ManifestData | None,
@@ -404,22 +427,7 @@ def validate_architecture_knowledge(
             ".ai/assistant/context-router.json",
         )
 
-    required_text = {
-        required_paths[0]: ["## Status Meanings", "## Architecture Patterns And Items", "Evidence revision:"],
-        required_paths[3]: ["## Routing Modes", "no-change baseline", "reuse of an accepted project pattern", "adaptation of an existing pattern", "new pattern", "`docs-only`", "`full-with-approval`"],
-        required_paths[4]: ["Pattern ID:", "Problem addressed:", "Rules and invariants:", "Do not use when:", "Last verified revision:"],
-        required_paths[5]: ["Area ID:", "Responsibilities:", "Pattern IDs:", "Validation or fitness checks:"],
-        required_paths[6]: ["No-change baseline:", "Reuse accepted project pattern:", "Adapt existing project pattern:", "Introduce new pattern:", "Pattern-proliferation result:"],
-    }
-    for relpath, snippets in required_text.items():
-        text = context.read_text(context.target_path(relpath))
-        for snippet in snippets:
-            if snippet not in text:
-                context.error(
-                    "ARCHITECTURE_CONTRACT_INCOMPLETE",
-                    f"architecture contract is missing {snippet}",
-                    relpath,
-                )
+    validate_architecture_text_contracts(context, required_paths)
 
 
 ARCHITECTURE_KNOWLEDGE_MODULE = FunctionCapabilityModule(

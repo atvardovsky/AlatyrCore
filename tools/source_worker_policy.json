@@ -1,11 +1,39 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "policy_kind": "alatyr-source-worker-policy",
   "scope": "source-repository",
   "provider_neutral": true,
   "canonical_rule": "ALATYR-DELEGATION-001",
   "runtime_capability_owner": "active-assistant",
   "fallback_executor": "primary-assistant",
+  "tree_policy": {
+    "dispatch_owner": "primary-assistant",
+    "worker_child_behavior": "propose-only",
+    "default_max_depth": 1,
+    "hard_max_depth": 2,
+    "max_total_delegates": 8,
+    "max_children_per_parent": 4,
+    "max_context_words_total": 24000,
+    "max_retries_total": 2,
+    "require_disjoint_coverage_keys": true
+  },
+  "stop_policy": {
+    "require_stop_reason": true,
+    "evidence_saturation": "stop-when-acceptance-and-required-evidence-are-covered",
+    "stop_reason_ids": [
+      "scope-covered",
+      "evidence-sufficient",
+      "coordination-cost-exceeds-benefit",
+      "maximum-depth-reached",
+      "worker-budget-reached",
+      "context-budget-reached",
+      "semantic-decision-required",
+      "overlapping-scope",
+      "primary-critical-path",
+      "capability-unavailable",
+      "user-restricted"
+    ]
+  },
   "runtime_capability_contract": {
     "required_fields": [
       "schema_version",
@@ -110,11 +138,16 @@
     }
   },
   "worker_packet_contract": {
-    "schema_version": 1,
+    "schema_version": 2,
     "packet_kinds": ["source-read-only-workstream"],
     "required_fields": [
       "schema_version",
       "packet_kind",
+      "parent_packet_id",
+      "depth",
+      "remaining_worker_budget",
+      "coverage_key",
+      "child_proposal_policy",
       "workstream_id",
       "role_id",
       "objective",
@@ -132,6 +165,7 @@
     ],
     "role_id": "read-only-auditor",
     "write_scope": "none",
+    "child_proposal_policy": "propose-only",
     "result_requirement": "Return findings with inspectable file, symbol, rule, or check evidence; do not decide integration or mutate repository state."
   },
   "workstreams": {

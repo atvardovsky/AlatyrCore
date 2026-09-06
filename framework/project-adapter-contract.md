@@ -57,10 +57,11 @@ Every project using this framework must define these structural bindings:
 - **Installed framework projection:** a dependency-closed selected pack whose
   installed rule registry, ownership map, file inventory, and framework files
   agree with the source projection.
-- **Capability state:** required core state plus enabled, deferred, disabled,
-  not-applicable, and blocked optional capabilities with reasons. Enabled
-  capabilities must satisfy the catalog's dependency and required-surface
-  closure.
+- **Capability state:** directly selected requests, dependency-closed staged
+  installation work, and enabled, deferred, disabled, not-applicable, or
+  blocked optional capabilities with reasons. Staged files are not active.
+  Enabled capabilities must satisfy the catalog's dependency and required-
+  surface closure.
 - **Assistant routing:** bounded context selection, supported assistant entry
   points, bridge pointers, operation routing, recursive framework, project,
   and assistant context indexes, semantic-codebook binding, resolved packet

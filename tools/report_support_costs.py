@@ -323,7 +323,7 @@ def projected_scaffold_measurements(
     composition: ResolvedComposition,
 ) -> tuple[dict[str, Any], dict[str, Any], dict[str, Any], Any, dict[str, Any]]:
     profile = composition.support_profile
-    enabled_modules = set(composition.enabled_capabilities)
+    enabled_modules = set(composition.staged_capabilities)
     framework_pack = composition.framework_pack
     selected_template_paths = {
         Path(path) for path in composition.selected_target_paths
@@ -413,7 +413,7 @@ def build_scaffold_report(
             requested_assistant_surfaces=tuple(assistant_surfaces or ()),
         )
     )
-    enabled = set(composition.enabled_capabilities)
+    enabled = set(composition.staged_capabilities)
     selected_surfaces = set(composition.assistant_surfaces)
     selected_pack = composition.framework_pack
     target_measure, framework_measure, combined_measure, projection, state_measure = (
@@ -439,6 +439,7 @@ def build_scaffold_report(
         "capability_state": {
             "available": list(composition.available_capabilities),
             "installed": list(composition.installed_capabilities),
+            "staged": list(composition.staged_capabilities),
             "enabled": list(composition.enabled_capabilities),
             "accepted": [],
             "acceptance_boundary": (

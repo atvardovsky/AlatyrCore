@@ -9,9 +9,9 @@ from pathlib import Path
 from typing import Any
 
 
-POLICY_SCHEMA_VERSION = 2
+POLICY_SCHEMA_VERSION = 3
 CAPABILITY_SCHEMA_VERSION = 2
-PACKET_SCHEMA_VERSION = 1
+PACKET_SCHEMA_VERSION = 2
 POLICY_KIND = "alatyr-source-worker-policy"
 CANONICAL_RULE = "ALATYR-DELEGATION-001"
 TASK_CLASSES = {"small-task", "standard-task", "large-or-resumable"}
@@ -34,6 +34,11 @@ DECISION_FIELDS = {
 PACKET_FIELDS = {
     "schema_version",
     "packet_kind",
+    "parent_packet_id",
+    "depth",
+    "remaining_worker_budget",
+    "coverage_key",
+    "child_proposal_policy",
     "workstream_id",
     "role_id",
     "objective",
@@ -70,6 +75,8 @@ POLICY_FIELDS = {
     "canonical_rule",
     "runtime_capability_owner",
     "fallback_executor",
+    "tree_policy",
+    "stop_policy",
     "runtime_capability_contract",
     "activation",
     "decision_evidence",
@@ -77,6 +84,19 @@ POLICY_FIELDS = {
     "workstreams",
     "primary_owned_actions",
     "authorization_boundary",
+}
+STOP_REASON_IDS = {
+    "scope-covered",
+    "evidence-sufficient",
+    "coordination-cost-exceeds-benefit",
+    "maximum-depth-reached",
+    "worker-budget-reached",
+    "context-budget-reached",
+    "semantic-decision-required",
+    "overlapping-scope",
+    "primary-critical-path",
+    "capability-unavailable",
+    "user-restricted",
 }
 WORKSTREAM_FIELDS = {
     "objective",
@@ -180,12 +200,30 @@ def validate_worker_packet(
         raise SourceWorkerContractError("worker packet must be an object")
     required = set(_string_list(contract.get("required_fields"), label="packet required_fields"))
     if required != PACKET_FIELDS:
-        raise SourceWorkerContractError("packet required_fields do not match schema v1")
+        raise SourceWorkerContractError("packet required_fields do not match schema v2")
     _require_exact_fields(packet, required, "worker packet")
     if packet.get("schema_version") != PACKET_SCHEMA_VERSION:
         raise SourceWorkerContractError("worker packet schema_version is invalid")
     if packet.get("packet_kind") not in contract["packet_kinds"]:
         raise SourceWorkerContractError("worker packet_kind is invalid")
+    if packet.get("parent_packet_id") is not None and not _nonempty_string(
+        packet.get("parent_packet_id")
+    ):
+        raise SourceWorkerContractError("worker packet parent_packet_id is invalid")
+    depth = packet.get("depth")
+    if not isinstance(depth, int) or isinstance(depth, bool) or depth != 1:
+        raise SourceWorkerContractError("source worker packet depth must be 1")
+    remaining = packet.get("remaining_worker_budget")
+    if not isinstance(remaining, int) or isinstance(remaining, bool) or remaining < 0:
+        raise SourceWorkerContractError(
+            "worker packet remaining_worker_budget must be non-negative"
+        )
+    if not _nonempty_string(packet.get("coverage_key")):
+        raise SourceWorkerContractError("worker packet coverage_key is invalid")
+    if packet.get("child_proposal_policy") != contract["child_proposal_policy"]:
+        raise SourceWorkerContractError(
+            "worker packet child_proposal_policy must be propose-only"
+        )
     for field in ["workstream_id", "objective", "independence_key", "expected_evidence"]:
         if not _nonempty_string(packet.get(field)):
             raise SourceWorkerContractError(f"worker packet has invalid {field}")
@@ -313,6 +351,69 @@ def _validate_activation(activation: Any) -> None:
     for field, value in expected.items():
         if activation.get(field) != value:
             raise SourceWorkerContractError(f"activation requires {field}={value!r}")
+
+
+def _validate_tree_and_stop_policy(tree: Any, stop: Any) -> None:
+    if not isinstance(tree, dict):
+        raise SourceWorkerContractError("tree_policy must be an object")
+    _require_exact_fields(
+        tree,
+        {
+            "dispatch_owner",
+            "worker_child_behavior",
+            "default_max_depth",
+            "hard_max_depth",
+            "max_total_delegates",
+            "max_children_per_parent",
+            "max_context_words_total",
+            "max_retries_total",
+            "require_disjoint_coverage_keys",
+        },
+        "tree_policy",
+    )
+    expected = {
+        "dispatch_owner": "primary-assistant",
+        "worker_child_behavior": "propose-only",
+        "default_max_depth": 1,
+        "hard_max_depth": 2,
+        "require_disjoint_coverage_keys": True,
+    }
+    for field, value in expected.items():
+        if tree.get(field) != value:
+            raise SourceWorkerContractError(
+                f"tree_policy requires {field}={value!r}"
+            )
+    for field, minimum in {
+        "max_total_delegates": 1,
+        "max_children_per_parent": 1,
+        "max_context_words_total": 1,
+        "max_retries_total": 0,
+    }.items():
+        value = tree.get(field)
+        if not isinstance(value, int) or isinstance(value, bool) or value < minimum:
+            raise SourceWorkerContractError(
+                f"tree_policy {field} must be an integer >= {minimum}"
+            )
+    if tree["max_children_per_parent"] > tree["max_total_delegates"]:
+        raise SourceWorkerContractError(
+            "tree_policy max_children_per_parent exceeds total delegates"
+        )
+
+    if not isinstance(stop, dict):
+        raise SourceWorkerContractError("stop_policy must be an object")
+    _require_exact_fields(
+        stop,
+        {"require_stop_reason", "evidence_saturation", "stop_reason_ids"},
+        "stop_policy",
+    )
+    if stop.get("require_stop_reason") is not True:
+        raise SourceWorkerContractError("stop_policy must require a stop reason")
+    if stop.get("evidence_saturation") != (
+        "stop-when-acceptance-and-required-evidence-are-covered"
+    ):
+        raise SourceWorkerContractError("stop_policy evidence_saturation is invalid")
+    if set(_string_list(stop.get("stop_reason_ids"), label="stop reason IDs")) != STOP_REASON_IDS:
+        raise SourceWorkerContractError("stop_policy stop_reason_ids are incomplete")
 
 
 def _validate_decision_contract(contract: Any) -> None:
@@ -478,6 +579,9 @@ def validate_source_worker_policy(
         )
 
     _validate_runtime_contract(policy.get("runtime_capability_contract"))
+    _validate_tree_and_stop_policy(
+        policy.get("tree_policy"), policy.get("stop_policy")
+    )
     _validate_activation(policy.get("activation"))
     _validate_decision_contract(policy.get("decision_evidence"))
 
@@ -493,12 +597,13 @@ def validate_source_worker_policy(
             "allowed_actions",
             "role_id",
             "write_scope",
+            "child_proposal_policy",
             "result_requirement",
         },
         "worker_packet_contract",
     )
     if set(_string_list(packet_contract.get("required_fields"), label="packet required_fields")) != PACKET_FIELDS:
-        raise SourceWorkerContractError("packet required_fields do not match schema v1")
+        raise SourceWorkerContractError("packet required_fields do not match schema v2")
     if packet_contract.get("schema_version") != PACKET_SCHEMA_VERSION:
         raise SourceWorkerContractError("worker packet contract schema_version is invalid")
     if packet_contract.get("packet_kinds") != ["source-read-only-workstream"]:
@@ -509,6 +614,10 @@ def validate_source_worker_policy(
         raise SourceWorkerContractError("worker packet contract role_id is invalid")
     if packet_contract.get("write_scope") != "none":
         raise SourceWorkerContractError("worker packet contract must have no write scope")
+    if packet_contract.get("child_proposal_policy") != "propose-only":
+        raise SourceWorkerContractError(
+            "worker packet child_proposal_policy must be propose-only"
+        )
     if not _nonempty_string(packet_contract.get("result_requirement")):
         raise SourceWorkerContractError("worker packet result_requirement is invalid")
 
@@ -571,6 +680,13 @@ def make_builtin_packet(policy: dict[str, Any], workstream_id: str) -> dict[str,
     return {
         "schema_version": contract["schema_version"],
         "packet_kind": contract["packet_kinds"][0],
+        "parent_packet_id": None,
+        "depth": 1,
+        "remaining_worker_budget": max(
+            policy["tree_policy"]["max_total_delegates"] - 1, 0
+        ),
+        "coverage_key": workstream.get("independence_key"),
+        "child_proposal_policy": contract["child_proposal_policy"],
         "workstream_id": workstream_id,
         "role_id": contract["role_id"],
         "objective": workstream.get("objective"),

@@ -96,7 +96,7 @@ def replacement(name: str) -> str:
     }
     if name in exact:
         return exact[name]
-    if "ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED" in name:
+    if "STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED" in name:
         return "deferred"
     if "REQUIRED_ENABLED_OR_BLOCKED" in name:
         return "required"
@@ -145,6 +145,8 @@ def resolve_adapter(repo: Path, support_profile: str = "core") -> None:
     manifest["framework"]["pack"] = PROFILE_PACKS[support_profile]
     manifest["installation"]["support_profile"] = support_profile
     manifest["installation"]["state"] = "staged"
+    manifest["modules"]["selected"] = []
+    manifest["modules"]["staged"] = []
     manifest["modules"]["enabled"] = []
     manifest["modules"]["deferred"] = ["all optional modules: fixture does not require them"]
     manifest["modules"]["blocked"] = []

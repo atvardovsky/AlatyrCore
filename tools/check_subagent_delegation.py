@@ -8,6 +8,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
+import jsonschema
+
 from target_adapter_validation.assistant_capabilities import (
     CAPABILITY_INDEX_SCHEMA_VERSION,
     capability_record_path,
@@ -22,6 +24,7 @@ DECOMPOSITION_FRAMEWORK = ROOT / "framework" / "task-decomposition.md"
 DECOMPOSITION_POLICY = ASSISTANT / "task-decomposition.json"
 DECOMPOSITION_PLAN = ASSISTANT / "templates" / "task-decomposition.md"
 POLICY = ASSISTANT / "delegation-policy.json"
+POLICY_SCHEMA = ROOT / "schemas" / "alatyr-delegation-policy.schema.json"
 ROLE_CATALOG = ASSISTANT / "workers" / "role-catalog.json"
 ROLE_DIR = ASSISTANT / "workers" / "roles"
 ORCHESTRATION = ASSISTANT / "prompts" / "worker-orchestration.md"
@@ -56,6 +59,8 @@ POLICY_FIELDS = {
     "decision_mode",
     "default_preference",
     "max_parallel_delegates",
+    "tree_policy",
+    "stop_policy",
     "decomposition_policy",
     "role_catalog",
     "enabled_role_ids",
@@ -257,6 +262,17 @@ def validate_delegated_overlay(
         failures.append("context router does not select delegated-execution overlay")
 
 
+def policy_schema_failures(policy: object, schema: object) -> list[str]:
+    try:
+        errors = sorted(
+            jsonschema.Draft7Validator(schema).iter_errors(policy),
+            key=lambda error: list(error.absolute_path),
+        )
+    except jsonschema.SchemaError as exc:
+        return [f"delegation policy schema is invalid: {exc}"]
+    return [f"delegation policy schema: {error.message}" for error in errors]
+
+
 def main() -> int:
     failures: list[str] = []
 
@@ -265,6 +281,7 @@ def main() -> int:
         [
             "## Responsibility Boundary",
             "## Task Planning Contract",
+            "## Delegation Tree And Stop Contract",
             "## Worker Role Catalog",
             "## Capability Negotiation",
             "## Normalized Result Contract",
@@ -314,6 +331,8 @@ def main() -> int:
             "Only the primary assistant computes readiness",
             "Implementation level:",
             "Expected write scope:",
+            "## Delegation Tree Budget",
+            "Maximum total delegates:",
             "## Conflict Review",
             "## Primary Convergence",
         ],
@@ -323,6 +342,10 @@ def main() -> int:
         PACKET,
         [
             "Packet ID:",
+            "Parent packet ID:",
+            "Depth:",
+            "Coverage key:",
+            "Child proposal policy: `propose-only`",
             "Task ID:",
             "Execution plan ID:",
             "Base revision:",
@@ -341,6 +364,10 @@ def main() -> int:
         RESULT,
         [
             "Result ID:",
+            "Parent packet ID:",
+            "Depth:",
+            "Coverage key:",
+            "Stop reason ID:",
             "Task ID:",
             "Base revision observed:",
             "Actual assistant surface:",
@@ -394,6 +421,7 @@ def main() -> int:
 
     try:
         policy = load_object(POLICY)
+        policy_schema = load_object(POLICY_SCHEMA)
         catalog = load_object(ROLE_CATALOG)
         overlay = load_object(OVERLAY)
         router = load_object(ROUTER)
@@ -403,14 +431,16 @@ def main() -> int:
         bridge_manifest = load_object(BRIDGE_MANIFEST)
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         failures.append(str(exc))
-        policy, catalog, overlay, router, capability_index, conformance, bridge_manifest = ({},) * 7
+        policy, policy_schema, catalog, overlay, router, capability_index, conformance, bridge_manifest = ({},) * 8
         surfaces = []
+
+    failures.extend(policy_schema_failures(policy, policy_schema))
 
     missing_policy = sorted(POLICY_FIELDS - set(policy))
     if missing_policy:
         failures.append(f"delegation policy missing fields {missing_policy}")
-    if policy.get("schema_version") != 2:
-        failures.append("delegation policy schema_version must be 2")
+    if policy.get("schema_version") != 3:
+        failures.append("delegation policy schema_version must be 3")
     if policy.get("policy_kind") != "target-subagent-delegation-policy":
         failures.append("delegation policy kind is incorrect")
     if capability_index.get("schema_version") != CAPABILITY_INDEX_SCHEMA_VERSION:
@@ -422,6 +452,38 @@ def main() -> int:
         failures.append("delegation policy role_catalog path is incorrect")
     if policy.get("decomposition_policy") != ".ai/assistant/task-decomposition.json":
         failures.append("delegation policy decomposition_policy path is incorrect")
+    tree_policy = policy.get("tree_policy")
+    expected_tree = {
+        "dispatch_owner": "primary-assistant",
+        "worker_child_behavior": "propose-only",
+        "default_max_depth": 1,
+        "hard_max_depth": 2,
+        "require_disjoint_coverage_keys": True,
+    }
+    if not isinstance(tree_policy, dict) or any(
+        tree_policy.get(key) != value for key, value in expected_tree.items()
+    ):
+        failures.append("delegation policy tree ownership and hard limits are invalid")
+    stop_policy = policy.get("stop_policy")
+    required_stop_reasons = {
+        "scope-covered",
+        "evidence-sufficient",
+        "coordination-cost-exceeds-benefit",
+        "maximum-depth-reached",
+        "worker-budget-reached",
+        "context-budget-reached",
+        "semantic-decision-required",
+        "overlapping-scope",
+        "primary-critical-path",
+        "capability-unavailable",
+        "user-restricted",
+    }
+    if (
+        not isinstance(stop_policy, dict)
+        or stop_policy.get("require_stop_reason") is not True
+        or set(stop_policy.get("stop_reason_ids", [])) != required_stop_reasons
+    ):
+        failures.append("delegation policy stop contract is incomplete")
     for field in [
         "state",
         "owner",

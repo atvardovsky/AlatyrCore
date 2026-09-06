@@ -24,6 +24,7 @@ from scaffold_projection import (
     project_agent_rule_ids,
     project_ai_infrastructure_router,
     project_assistant_capability_index,
+    project_bridge_capability_matrix,
     project_catalog,
     project_context_descriptor,
     project_gate_index,
@@ -239,6 +240,14 @@ def projected_template_content(
         return render_json(
             project_assistant_capability_index(load_object(src), selected_paths)
         )
+    if rel == Path(".ai/assistant/bridge-capability-matrix.md"):
+        capability_index = project_assistant_capability_index(
+            load_object(TEMPLATE_ROOT / ".ai/assistant/assistant-capabilities.json"),
+            selected_paths,
+        )
+        return project_bridge_capability_matrix(
+            src.read_text(encoding="utf-8"), set(capability_index["surfaces"])
+        )
     if rel == router_rel:
         return render_json(
             project_router(load_object(src), selected_paths, set(context.operation_ids))
@@ -392,7 +401,7 @@ def run_scaffold(args: argparse.Namespace) -> ScaffoldRun:
             projection_purpose=projection_purpose,
         )
     )
-    enabled_modules = set(composition.enabled_capabilities)
+    enabled_modules = set(composition.staged_capabilities)
     framework_pack = composition.framework_pack
     selected_templates = {Path(path) for path in composition.selected_target_paths}
     # Discover the recursive index paths before projecting the router. Its
@@ -671,7 +680,7 @@ def main() -> int:
         actions = list(result.actions)
         blocked = list(result.blocked)
         composition = result.composition
-        enabled_modules = set(composition.enabled_capabilities)
+        enabled_modules = set(composition.staged_capabilities)
         selected_assistant_surfaces = set(composition.assistant_surfaces)
         framework_pack = composition.framework_pack
     except (OSError, ValueError, json.JSONDecodeError) as exc:
@@ -684,7 +693,7 @@ def main() -> int:
     print(f"Alatyr framework pack: {framework_pack}")
     print(f"Alatyr adapter installation state: {INITIAL_INSTALLATION_STATE}")
     print(
-        "Enabled optional capabilities: "
+        "Staged optional capabilities: "
         + (", ".join(sorted(enabled_modules)) if enabled_modules else "none")
     )
     print(

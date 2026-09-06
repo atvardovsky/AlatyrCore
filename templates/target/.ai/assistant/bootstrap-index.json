@@ -9,17 +9,17 @@
     "source_worktree_state": "clean",
     "source_dirty_paths": [],
     "target_manifest": ".ai/alatyr.yaml",
-    "target_manifest_digest": "sha256:fc742e2a03af5730c1b4ebe5773e1f7c23c3e0ba0b1a3d41122953d777a8f616",
+    "target_manifest_digest": "sha256:5a07ec918a18a564ef30d0fa17ddfcb44b5cea529c90a46dbcb2de33a997c558",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.55",
-    "adapter_schema_version": "45",
-    "template_version": "50"
+    "framework_version": "0.1.0-alpha.57",
+    "adapter_schema_version": "47",
+    "template_version": "52"
   },
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "fc742e2a03af5730c1b4ebe5773e1f7c23c3e0ba0b1a3d41122953d777a8f616"
+      "sha256": "5a07ec918a18a564ef30d0fa17ddfcb44b5cea529c90a46dbcb2de33a997c558"
     },
     "project_map": {
       "path": ".ai/README.md",
@@ -35,7 +35,7 @@
     },
     "rule_registry": {
       "path": ".ai/framework/rule-registry.json",
-      "sha256": "5f87b7335bb89f0b579d26c2b6c65357260125e3ed14c4fb22f865f356f561ad"
+      "sha256": "ccf8715fb18af8e3b0adeee4806b075f18ae0da6f5ebfd658628355ec9fb83a6"
     }
   },
   "installation": {
@@ -94,7 +94,7 @@
     "fallback": "load the referenced canonical owner and do not infer a missing stale conflicting cyclic or unsupported compact term"
   },
   "rule_selector": {
-    "registry_sha256": "5f87b7335bb89f0b579d26c2b6c65357260125e3ed14c4fb22f865f356f561ad",
+    "registry_sha256": "ccf8715fb18af8e3b0adeee4806b075f18ae0da6f5ebfd658628355ec9fb83a6",
     "categories": {
       "CONTEXT": {
         "owner": ".ai/framework/context-profiles.md",
@@ -447,9 +447,7 @@
   "operation_index": ".ai/assistant/operation-index.json",
   "operation_catalog": ".ai/assistant/operation-catalog.json",
   "gate_index": ".ai/assistant/gates/index.json",
-  "enabled_modules": [
-    "{ENABLED_MODULE}"
-  ],
+  "enabled_modules": [],
   "known_gaps": [
     "{KNOWN_GAP}"
   ],

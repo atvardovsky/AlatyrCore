@@ -4,6 +4,34 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.57 - 2026-09-06
+
+- Separated optional capability selection, scaffolding, and activation through
+  explicit `selected`, `staged`, and `enabled` states; staged adapters now fail
+  acceptance until target facts and capability checks are resolved.
+- Closed capability-to-operation dependencies, added a dedicated blueprint
+  validator, and expanded scaffold conformance to every optional capability at
+  its minimum legal framework pack.
+- Added primary-owned bounded delegation trees with depth, worker, child,
+  context, retry, coverage, and evidence-saturation stop contracts for both
+  portable target adapters and this source repository.
+- Hardened deterministic support generation with dependency-propagated
+  staleness, typed argument-vector validators, plan/base/scope-bound approvals,
+  regular-file path-containment checks, complete-set staging, and exact-file
+  transactional rollback.
+- Made upgrade assessment outputs transactional and added exact historical
+  schema and target-template comparison when the installed version is
+  reachable in source history.
+- Strengthened code-documentation selector and project-vocabulary ambiguity
+  validation, including cross-scope term collisions and replacement-reference
+  integrity.
+- Closed source-check trigger and contract inputs for capability-owned
+  validators, regenerated compact routing projections, and added the missing
+  `0.1.0-alpha.56` untagged release checkpoint.
+- Increased the adapter schema version to `47` and target template version to
+  `52` for staged module, delegation, support-generation, and validation
+  contract changes.
+
 ## 0.1.0-alpha.56 - 2026-09-06
 
 - Made writable scaffolding preflight the complete immutable composition,

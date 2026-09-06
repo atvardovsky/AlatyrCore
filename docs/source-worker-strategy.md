@@ -29,6 +29,14 @@ wall-clock time or provide materially stronger review after accounting for
 preparation, review, and integration cost. Keep eligible work local only with
 a policy reason ID and concrete task evidence.
 
+The two-packet minimum is an activation threshold, not a preferred fan-out.
+The primary assistant owns the complete tree and every dispatch. Source workers
+are depth-1 read-only auditors; they may propose narrower follow-up packets but
+cannot launch them. Apply the policy limits for parallel workers, total
+workers, children, aggregate context, and retries. Stop at evidence saturation
+or at the first depth, budget, overlap, capability, authority, or cost boundary
+and record the corresponding normalized stop-reason ID.
+
 For an explicit `repository-audit`, delegation evaluation is deterministic:
 
 1. Select the profile directly from user intent. Do not let a clean worktree or
@@ -70,13 +78,14 @@ future-dated, expired, overlong, or bound to another session. Those inputs
 create reviewable preflight evidence; they do not probe a client, launch
 workers, claim past dispatch, or prove that a worker result was delivered.
 
-Every packet must carry its workstream ID, role, objective, bounded and
+Every packet must carry its parent, depth, remaining worker budget, unique
+coverage key, workstream ID, role, objective, bounded and
 conditional context, non-goals, `inspect`-only action mode, no-write scope,
 independence evidence, and expected evidence. Task-specific packets are passed
 with repeatable `--worker-packet` arguments. Their bounded paths must be
 repository-relative, exist inside the repository, and not escape through a
 symlink. Workers may expand only through the packet's conditional context or
-return a request for primary review.
+return a child proposal for primary review. They never dispatch descendants.
 
 ## Model Routing
 

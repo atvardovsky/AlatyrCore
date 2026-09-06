@@ -12,6 +12,69 @@ from target_adapter_validation.capability import (
 )
 
 
+def vocabulary_scopes_overlap(
+    left_domains: set[str],
+    left_usage_scopes: set[str],
+    right_domains: set[str],
+    right_usage_scopes: set[str],
+) -> bool:
+    """Return whether two accepted term lookups can apply in one context."""
+
+    return bool(left_domains & right_domains) and bool(
+        left_usage_scopes & right_usage_scopes
+    )
+
+
+def validate_vocabulary_routing_and_text(
+    context: CapabilityValidationContext, required_paths: list[str]
+) -> None:
+    operation_catalog = context.load_json_object(
+        context.target_path(".ai/assistant/operation-catalog.json"),
+        "OPERATION_CATALOG",
+    )
+    operations = operation_catalog.get("operations") if isinstance(operation_catalog, dict) else None
+    operation = next(
+        (item for item in operations
+         if isinstance(item, dict) and item.get("id") == "project-vocabulary"),
+        None,
+    ) if isinstance(operations, list) else None
+    if not isinstance(operation, dict):
+        context.error("VOCABULARY_OPERATION_MISSING", "enabled vocabulary requires project-vocabulary operation", ".ai/assistant/operation-catalog.json")
+    else:
+        if operation.get("required_module") != "project-vocabulary":
+            context.error("VOCABULARY_OPERATION_MODULE", "project-vocabulary operation module is invalid", ".ai/assistant/operation-catalog.json")
+        if operation.get("flow") != required_paths[5]:
+            context.error("VOCABULARY_OPERATION_FLOW", f"project-vocabulary must route to {required_paths[5]}", ".ai/assistant/operation-catalog.json")
+        if operation.get("allowed_actions") != ["read-only", "docs-only", "full-with-approval"]:
+            context.error("VOCABULARY_OPERATION_ACTIONS", "project-vocabulary allowed actions are invalid", ".ai/assistant/operation-catalog.json")
+
+    router = context.load_json_object(
+        context.target_path(".ai/assistant/context-router.json"), "ROUTER"
+    )
+    overlays = router.get("intent_overlays") if isinstance(router, dict) else None
+    route = overlays.get("vocabulary-request") if isinstance(overlays, dict) else None
+    if not isinstance(route, dict) or route.get("operation_candidates") != ["project-vocabulary"]:
+        context.error("VOCABULARY_OPERATION_UNROUTED", "enabled vocabulary has no vocabulary-request intent route", ".ai/assistant/context-router.json")
+
+    required_text = {
+        required_paths[0]: ["## Term States", "## Vocabulary Boundaries", "## Lookup Behavior"],
+        required_paths[5]: ["## Routing Modes", "`lookup`", "`terminology-check`", "Do not mark observed or proposed records accepted"],
+        required_paths[6]: ["Selected term IDs:", "Data dictionary links:", "Acceptance state:"],
+        required_paths[7]: ["Preserve `observed`, `proposed`, `accepted`", "Do not activate this placeholder"],
+        required_paths[8]: ["ALATYR-VOCABULARY-001", "## Compact Catalog And Lookup", "## Data Dictionary Links"],
+    }
+    for relpath, snippets in required_text.items():
+        text = context.read_text(context.target_path(relpath))
+        for snippet in snippets:
+            if snippet not in text:
+                context.error("VOCABULARY_CONTRACT_INCOMPLETE", f"project-vocabulary contract is missing {snippet}", relpath)
+
+    context.info(
+        "VOCABULARY_EVIDENCE_LIMIT",
+        "project-vocabulary structural checks do not prove term meaning, ownership, relationship, acceptance, or semantic consistency",
+    )
+
+
 def validate_project_vocabulary(
     context: CapabilityValidationContext,
     manifest: ManifestData | None,
@@ -151,8 +214,9 @@ def validate_project_vocabulary(
     term_ids: set[str] = set()
     term_by_id: dict[str, dict[str, Any]] = {}
     accepted_count = 0
-    accepted_lookup: dict[tuple[str, tuple[str, ...]], str] = {}
+    accepted_lookup: dict[str, list[tuple[str, set[str], set[str]]]] = {}
     pending_term_refs: list[tuple[str, str, str]] = []
+    pending_replacement_refs: list[tuple[str, str]] = []
     pending_data_refs: list[tuple[str, str]] = []
     for index, term in enumerate(terms):
         label = f"terms[{index}]"
@@ -172,6 +236,9 @@ def validate_project_vocabulary(
         if not concrete(state) or state not in valid_states:
             context.error("VOCABULARY_TERM_STATE", f"{label}.state is invalid or unresolved", terms_relpath)
         domains = string_list(term.get("domains"), f"{label}.domains", terms_relpath)
+        usage_scopes = string_list(
+            term.get("usage_scopes"), f"{label}.usage_scopes", terms_relpath
+        )
         aliases = string_list(term.get("aliases"), f"{label}.aliases", terms_relpath, non_empty=False)
         acronyms = string_list(term.get("acronyms"), f"{label}.acronyms", terms_relpath, non_empty=False)
         string_list(term.get("acronym_expansions"), f"{label}.acronym_expansions", terms_relpath, non_empty=False)
@@ -180,6 +247,13 @@ def validate_project_vocabulary(
         for ref in related:
             if concrete(ref) and concrete(term_id):
                 pending_term_refs.append((term_id, ref, "related_term_ids"))
+        replacement = term.get("replacement_term_id")
+        if (
+            concrete(replacement)
+            and replacement.casefold() not in {"none", "n/a", "not-applicable"}
+            and concrete(term_id)
+        ):
+            pending_replacement_refs.append((term_id, replacement))
         for ref in data_refs:
             if concrete(ref) and concrete(term_id):
                 pending_data_refs.append((term_id, ref))
@@ -202,20 +276,26 @@ def validate_project_vocabulary(
                 if not any(concrete(value) for value in values):
                     context.error("VOCABULARY_ACCEPTED_UNRESOLVED", f"{label}.{field} needs concrete values", terms_relpath)
             lookup_values = [term.get("normalized_term"), *aliases, *acronyms]
-            domain_key = tuple(sorted(value.casefold() for value in domains if concrete(value)))
+            domain_set = {value.casefold() for value in domains if concrete(value)}
+            usage_scope_set = {
+                value.casefold() for value in usage_scopes if concrete(value)
+            }
             for lookup in lookup_values:
                 if not concrete(lookup) or not concrete(term_id):
                     continue
-                key = (lookup.casefold(), domain_key)
-                prior = accepted_lookup.get(key)
-                if prior is not None and prior != term_id:
-                    context.error(
-                        "VOCABULARY_ACCEPTED_AMBIGUITY",
-                        f"accepted terms {prior} and {term_id} share lookup {lookup} in the same domains",
-                        terms_relpath,
-                    )
-                else:
-                    accepted_lookup[key] = term_id
+                key = lookup.casefold()
+                for prior_id, prior_domains, prior_scopes in accepted_lookup.get(key, []):
+                    if vocabulary_scopes_overlap(
+                        domain_set, usage_scope_set, prior_domains, prior_scopes
+                    ):
+                        context.error(
+                            "VOCABULARY_ACCEPTED_AMBIGUITY",
+                            f"accepted terms {prior_id} and {term_id} share lookup {lookup} in intersecting domain and usage scopes",
+                            terms_relpath,
+                        )
+                accepted_lookup.setdefault(key, []).append(
+                    (term_id, domain_set, usage_scope_set)
+                )
     if accepted_count == 0:
         context.error(
             "VOCABULARY_NO_ACCEPTED_TERM",
@@ -225,6 +305,19 @@ def validate_project_vocabulary(
     for source_id, ref, field in pending_term_refs:
         if ref not in term_ids:
             context.error("VOCABULARY_TERM_REFERENCE", f"{source_id}.{field} references unknown term {ref}", terms_relpath)
+    for source_id, ref in pending_replacement_refs:
+        if ref == source_id:
+            context.error(
+                "VOCABULARY_REPLACEMENT_SELF_REFERENCE",
+                f"term {source_id} cannot replace itself",
+                terms_relpath,
+            )
+        elif ref not in term_ids:
+            context.error(
+                "VOCABULARY_REPLACEMENT_REFERENCE",
+                f"term {source_id} references unknown replacement term {ref}",
+                terms_relpath,
+            )
 
     catalog_entries = catalog.get("entries")
     if not isinstance(catalog_entries, list) or not catalog_entries:
@@ -328,51 +421,7 @@ def validate_project_vocabulary(
         if ref not in link_ids:
             context.error("VOCABULARY_DATA_REFERENCE", f"term {term_id} references unknown data link {ref}", terms_relpath)
 
-    operation_catalog = context.load_json_object(
-        context.target_path(".ai/assistant/operation-catalog.json"),
-        "OPERATION_CATALOG",
-    )
-    operations = operation_catalog.get("operations") if isinstance(operation_catalog, dict) else None
-    operation = next(
-        (item for item in operations
-         if isinstance(item, dict) and item.get("id") == "project-vocabulary"),
-        None,
-    ) if isinstance(operations, list) else None
-    if not isinstance(operation, dict):
-        context.error("VOCABULARY_OPERATION_MISSING", "enabled vocabulary requires project-vocabulary operation", ".ai/assistant/operation-catalog.json")
-    else:
-        if operation.get("required_module") != "project-vocabulary":
-            context.error("VOCABULARY_OPERATION_MODULE", "project-vocabulary operation module is invalid", ".ai/assistant/operation-catalog.json")
-        if operation.get("flow") != required_paths[5]:
-            context.error("VOCABULARY_OPERATION_FLOW", f"project-vocabulary must route to {required_paths[5]}", ".ai/assistant/operation-catalog.json")
-        if operation.get("allowed_actions") != ["read-only", "docs-only", "full-with-approval"]:
-            context.error("VOCABULARY_OPERATION_ACTIONS", "project-vocabulary allowed actions are invalid", ".ai/assistant/operation-catalog.json")
-
-    router = context.load_json_object(
-        context.target_path(".ai/assistant/context-router.json"), "ROUTER"
-    )
-    overlays = router.get("intent_overlays") if isinstance(router, dict) else None
-    route = overlays.get("vocabulary-request") if isinstance(overlays, dict) else None
-    if not isinstance(route, dict) or route.get("operation_candidates") != ["project-vocabulary"]:
-        context.error("VOCABULARY_OPERATION_UNROUTED", "enabled vocabulary has no vocabulary-request intent route", ".ai/assistant/context-router.json")
-
-    required_text = {
-        required_paths[0]: ["## Term States", "## Vocabulary Boundaries", "## Lookup Behavior"],
-        required_paths[5]: ["## Routing Modes", "`lookup`", "`terminology-check`", "Do not mark observed or proposed records accepted"],
-        required_paths[6]: ["Selected term IDs:", "Data dictionary links:", "Acceptance state:"],
-        required_paths[7]: ["Preserve `observed`, `proposed`, `accepted`", "Do not activate this placeholder"],
-        required_paths[8]: ["ALATYR-VOCABULARY-001", "## Compact Catalog And Lookup", "## Data Dictionary Links"],
-    }
-    for relpath, snippets in required_text.items():
-        text = context.read_text(context.target_path(relpath))
-        for snippet in snippets:
-            if snippet not in text:
-                context.error("VOCABULARY_CONTRACT_INCOMPLETE", f"project-vocabulary contract is missing {snippet}", relpath)
-
-    context.info(
-        "VOCABULARY_EVIDENCE_LIMIT",
-        "project-vocabulary structural checks do not prove term meaning, ownership, relationship, acceptance, or semantic consistency",
-    )
+    validate_vocabulary_routing_and_text(context, required_paths)
 
 
 PROJECT_VOCABULARY_MODULE = FunctionCapabilityModule(

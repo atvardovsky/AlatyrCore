@@ -10,17 +10,17 @@
     "source_worktree_state": "clean",
     "source_dirty_paths": [],
     "target_manifest": ".ai/alatyr.yaml",
-    "target_manifest_digest": "sha256:fc742e2a03af5730c1b4ebe5773e1f7c23c3e0ba0b1a3d41122953d777a8f616",
+    "target_manifest_digest": "sha256:5a07ec918a18a564ef30d0fa17ddfcb44b5cea529c90a46dbcb2de33a997c558",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.55",
-    "adapter_schema_version": "45",
-    "template_version": "50"
+    "framework_version": "0.1.0-alpha.57",
+    "adapter_schema_version": "47",
+    "template_version": "52"
   },
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "fc742e2a03af5730c1b4ebe5773e1f7c23c3e0ba0b1a3d41122953d777a8f616"
+      "sha256": "5a07ec918a18a564ef30d0fa17ddfcb44b5cea529c90a46dbcb2de33a997c558"
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",
@@ -40,7 +40,7 @@
     },
     "task_decomposition": {
       "path": ".ai/assistant/task-decomposition.json",
-      "sha256": "edcb28887c8e860d6996b12696c9579276217589aa6881677bd0583738090a89"
+      "sha256": "519cfc041c0d90012371652586b0ba356dfa91afac144d87bd0f44a39c1288e7"
     },
     "operation_index": {
       "path": ".ai/assistant/operation-index.json",
@@ -58,9 +58,7 @@
     "support_profile": "{KERNEL_CORE_STANDARD_OR_FULL}",
     "framework_pack": "{KERNEL_CORE_STANDARD_OR_COMPLETE}",
     "installation_state": "scaffolded",
-    "enabled_modules": [
-      "{ENABLED_MODULE}"
-    ]
+    "enabled_modules": []
   },
   "entry_sequence": [
     {

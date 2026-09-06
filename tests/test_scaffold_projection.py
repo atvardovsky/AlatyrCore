@@ -15,6 +15,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 from scaffold_projection import (  # noqa: E402
     path_available,
     project_assistant_capability_index,
+    project_bridge_capability_matrix,
     project_manifest,
     project_markdown_fragments,
     project_module_profile,
@@ -103,6 +104,18 @@ class ScaffoldProjectionTests(unittest.TestCase):
         )
         self.assertEqual(projected["bridge_paths"], {"generic": []})
 
+    def test_bridge_matrix_keeps_only_selected_assistant_sections(self) -> None:
+        source = (
+            "# Matrix\n\n"
+            "### Assistant Surface: `generic`\n\ngeneric facts\n\n"
+            "### Assistant Surface: `codex`\n\ncodex facts\n"
+        )
+
+        rendered = project_bridge_capability_matrix(source, {"generic"})
+
+        self.assertIn("Assistant Surface: `generic`", rendered)
+        self.assertNotIn("Assistant Surface: `codex`", rendered)
+
     def test_optional_approval_mapping_is_omitted_without_surfaces(self) -> None:
         source = "framework:\n  version: x\napprovals:\n  index: .ai/assistant/approvals/index.json\n"
 
@@ -174,20 +187,20 @@ class ScaffoldProjectionTests(unittest.TestCase):
         self.assertEqual(list(projected["profile_index"]), ["docs-local"])
         self.assertEqual(projected["routing_order"], ["docs-local"])
 
-    def test_enabled_modules_are_projected_into_human_profile(self) -> None:
+    def test_selected_modules_are_projected_as_staged(self) -> None:
         source = (
             "Module: `ai-infrastructure`\n"
-            "State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`\n\n"
+            "State: `{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`\n\n"
             "Module: `debug-mode`\n"
-            "State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`\n"
+            "State: `{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`\n"
         )
 
         rendered = project_module_profile(source, {"ai-infrastructure"})
 
-        self.assertIn("Module: `ai-infrastructure`\nState: `enabled`", rendered)
+        self.assertIn("Module: `ai-infrastructure`\nState: `staged`", rendered)
         self.assertIn(
             "Module: `debug-mode`\n"
-            "State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`",
+            "State: `{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`",
             rendered,
         )
 

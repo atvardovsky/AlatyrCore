@@ -12,6 +12,7 @@ from target_adapter_validation.ai_infrastructure import (
     AI_INFRASTRUCTURE_ROUTER_MODULE,
 )
 from target_adapter_validation.architecture_knowledge import ARCHITECTURE_KNOWLEDGE_MODULE
+from target_adapter_validation.blueprint_change import BLUEPRINT_CHANGE_MODULE
 from target_adapter_validation.capability import (
     CapabilityModule,
     CapabilityValidationContext,
@@ -69,6 +70,7 @@ class ModuleValidator(Protocol):
 MODULE_IMPLEMENTATIONS: dict[str, CapabilityModule] = {
     AI_INFRASTRUCTURE_ROUTER_MODULE.check_id: AI_INFRASTRUCTURE_ROUTER_MODULE,
     ARCHITECTURE_KNOWLEDGE_MODULE.check_id: ARCHITECTURE_KNOWLEDGE_MODULE,
+    BLUEPRINT_CHANGE_MODULE.check_id: BLUEPRINT_CHANGE_MODULE,
     CODE_DOCUMENTATION_MODULE.check_id: CODE_DOCUMENTATION_MODULE,
     CONSISTENCY_MAP_MODULE.check_id: CONSISTENCY_MAP_MODULE,
     DEPENDENCY_KNOWLEDGE_MODULE.check_id: DEPENDENCY_KNOWLEDGE_MODULE,
@@ -99,7 +101,9 @@ CAPABILITY_ROUTES: dict[str, CapabilityRoute] = {
         "assistant-runtime-capabilities", CapabilityRouteKind.UNIVERSAL
     ),
     "blueprint-change": _route(
-        "blueprint-change", CapabilityRouteKind.UNIVERSAL
+        "blueprint-change",
+        CapabilityRouteKind.MODULAR,
+        "check_blueprint_change",
     ),
     "change-packages": _route(
         "change-packages", CapabilityRouteKind.UNIVERSAL

@@ -114,6 +114,7 @@ class ValidatorModuleDispatchTests(unittest.TestCase):
             {
                 "check_ai_infrastructure_router",
                 "check_architecture_knowledge",
+                "check_blueprint_change",
                 "check_code_documentation",
                 "check_consistency_map",
                 "check_dependency_knowledge",

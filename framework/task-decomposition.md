@@ -165,6 +165,12 @@ module, policy, role catalog, and selected assistant capability record permit
 it. A worker receives a task packet after the primary assistant assigns the
 implementation level, context, scope, dependencies, and validation.
 
+When a worker identifies useful descendant work, it returns a bounded child
+proposal. The primary assistant alone decides whether to add and dispatch that
+task. Apply the target delegation-tree depth, total-worker, child, context,
+retry, parallelism, coverage, and stop limits. The minimum number of
+independent candidates is an activation threshold, not a desired worker count.
+
 ## Quality Guard
 
 Escalate the level or return work to the primary assistant when:
@@ -191,6 +197,7 @@ For material work, final evidence should include:
 - dependencies and readiness/blocker state
 - context selected and intentionally omitted for each task
 - worker packet and result IDs when delegation was used
+- delegation-tree depth, coverage, budget use, child proposals, and stop reason
 - validation and acceptance evidence per task
 - primary convergence result and residual risk
 

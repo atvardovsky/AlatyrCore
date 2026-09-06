@@ -115,6 +115,19 @@ REQUIRED_GUARDS = {
     "primary_final_convergence",
     "current_capability_evidence",
 }
+REQUIRED_STOP_REASONS = {
+    "scope-covered",
+    "evidence-sufficient",
+    "coordination-cost-exceeds-benefit",
+    "maximum-depth-reached",
+    "worker-budget-reached",
+    "context-budget-reached",
+    "semantic-decision-required",
+    "overlapping-scope",
+    "primary-critical-path",
+    "capability-unavailable",
+    "user-restricted",
+}
 EXPECTED_RESULT_POLICY = {
     "accept_out_of_scope_changes": False,
     "accept_unvalidated_changes": False,
@@ -190,6 +203,7 @@ def _validate_required_files(self: Any) -> None:
 
 def _validate_policy(self: Any, policy: dict[str, Any]) -> list[str]:
     _validate_policy_identity(self, policy)
+    _validate_tree_and_stop_policy(self, policy)
     concrete_enabled_roles = _validate_policy_roles(self, policy)
     _validate_retry_policy(self, policy)
     _validate_conflict_policy(self, policy)
@@ -199,10 +213,10 @@ def _validate_policy(self: Any, policy: dict[str, Any]) -> list[str]:
 
 
 def _validate_policy_identity(self: Any, policy: dict[str, Any]) -> None:
-    if policy.get("schema_version") != 2:
+    if policy.get("schema_version") != 3:
         self.error(
             "DELEGATION_POLICY_SCHEMA",
-            "delegation policy schema_version must be 2",
+            "delegation policy schema_version must be 3",
             POLICY_RELPATH,
         )
     if policy.get("policy_kind") != "target-subagent-delegation-policy":
@@ -256,6 +270,62 @@ def _validate_policy_identity(self: Any, policy: dict[str, Any]) -> None:
         self.error(
             "DELEGATION_DECOMPOSITION_POLICY",
             "delegation policy must reference the task-decomposition policy",
+            POLICY_RELPATH,
+        )
+
+
+def _validate_tree_and_stop_policy(self: Any, policy: dict[str, Any]) -> None:
+    tree = policy.get("tree_policy")
+    expected = {
+        "dispatch_owner": "primary-assistant",
+        "worker_child_behavior": "propose-only",
+        "default_max_depth": 1,
+        "hard_max_depth": 2,
+        "require_disjoint_coverage_keys": True,
+    }
+    if not isinstance(tree, dict):
+        self.error(
+            "DELEGATION_TREE_POLICY",
+            "enabled delegation requires a bounded tree policy",
+            POLICY_RELPATH,
+        )
+    else:
+        for field, expected_value in expected.items():
+            if tree.get(field) != expected_value:
+                self.error(
+                    "DELEGATION_TREE_POLICY",
+                    f"tree_policy.{field} must be {expected_value!r}",
+                    POLICY_RELPATH,
+                )
+        for field, minimum in {
+            "max_total_delegates": 1,
+            "max_children_per_parent": 1,
+            "max_context_words_total": 1,
+            "max_retries_total": 0,
+        }.items():
+            value = tree.get(field)
+            if not is_placeholder(value) and (
+                not isinstance(value, int)
+                or isinstance(value, bool)
+                or value < minimum
+            ):
+                self.error(
+                    "DELEGATION_TREE_LIMIT",
+                    f"tree_policy.{field} must be an integer >= {minimum}",
+                    POLICY_RELPATH,
+                )
+
+    stop = policy.get("stop_policy")
+    if (
+        not isinstance(stop, dict)
+        or stop.get("require_stop_reason") is not True
+        or stop.get("evidence_saturation")
+        != "stop-when-acceptance-and-required-evidence-are-covered"
+        or set(stop.get("stop_reason_ids", [])) != REQUIRED_STOP_REASONS
+    ):
+        self.error(
+            "DELEGATION_STOP_POLICY",
+            "enabled delegation requires the canonical evidence-saturation and stop-reason contract",
             POLICY_RELPATH,
         )
 

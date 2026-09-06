@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -16,6 +17,7 @@ from support_generation import (
     build_generation_index,
     generation_plan,
     render_json,
+    safe_destination,
     topological_order,
 )
 
@@ -27,7 +29,7 @@ def write_json(path: Path, value: object) -> None:
 
 def registry() -> dict[str, object]:
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "registry_kind": "target-support-generation-registry",
         "artifacts": [
             {
@@ -41,7 +43,7 @@ def registry() -> dict[str, object]:
                     "execution_contract": "staged-output-only",
                     "command": ["generator", "{OUTPUT_DIR}"],
                 },
-                "validation": ["manual review"],
+                "validation": [{"kind": "command", "required": True, "command": ["validator", "{OUTPUT_DIR}"]}],
                 "approval_trigger": "none",
             },
             {
@@ -52,7 +54,7 @@ def registry() -> dict[str, object]:
                 "outputs": ["docs/guide.txt"],
                 "depends_on": ["api-reference"],
                 "generator": {"execution_contract": "not-executable", "command": []},
-                "validation": ["owner review"],
+                "validation": [{"kind": "manual", "required": True, "evidence": "owner review"}],
                 "approval_trigger": "none",
             },
         ],
@@ -100,6 +102,12 @@ class SupportGenerationTests(unittest.TestCase):
         self.assertEqual(action["status"], "stale")
         self.assertIn("inputs-changed", action["reasons"])
 
+        dependent = next(
+            item for item in plan["actions"] if item["id"] == "public-guide"
+        )
+        self.assertEqual(dependent["status"], "stale")
+        self.assertIn("dependency-stale", dependent["reasons"])
+
     def test_generation_index_enumerates_repository_once(self) -> None:
         target = self.make_target()
         original = support_generation._repository_paths
@@ -115,6 +123,119 @@ class SupportGenerationTests(unittest.TestCase):
         value["artifacts"][0]["depends_on"] = ["public-guide"]
         with self.assertRaisesRegex(SupportGenerationError, "cycle"):
             topological_order(value)
+
+    def test_registry_rejects_unknown_fields(self) -> None:
+        target = self.make_target()
+        value = registry()
+        value["unexpected"] = True
+        write_json(target / REGISTRY_PATH, value)
+        with self.assertRaisesRegex(SupportGenerationError, "Additional properties"):
+            build_generation_index(target)
+
+    def test_output_cannot_traverse_symlink(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            target = base / "target"
+            outside = base / "outside"
+            target.mkdir()
+            outside.mkdir()
+            try:
+                (target / "link").symlink_to(outside, target_is_directory=True)
+            except OSError as exc:
+                self.skipTest(f"symlink creation unavailable: {exc}")
+            with self.assertRaisesRegex(SupportGenerationError, "symlink|escapes"):
+                safe_destination(target, "link/out.txt")
+
+    def test_output_cannot_replace_a_directory(self) -> None:
+        target = self.make_target()
+        (target / "docs/directory-output").mkdir()
+        with self.assertRaisesRegex(SupportGenerationError, "not a regular file"):
+            safe_destination(target, "docs/directory-output")
+
+    def test_apply_runs_validation_before_writing_output(self) -> None:
+        target = self.make_target()
+        value = registry()
+        artifact = value["artifacts"][0]
+        artifact["generator"]["command"] = [
+            sys.executable,
+            "-c",
+            "from pathlib import Path; import sys; p=Path(sys.argv[1])/'docs/api.txt'; p.parent.mkdir(parents=True, exist_ok=True); p.write_text('new\\n')",
+            "{OUTPUT_DIR}",
+        ]
+        artifact["validation"] = [
+            {
+                "kind": "command",
+                "required": True,
+                "command": [
+                    sys.executable,
+                    "-c",
+                    "from pathlib import Path; import sys; raise SystemExit(0 if (Path(sys.argv[1])/'docs/api.txt').read_text() == 'new\\n' else 1)",
+                    "{OUTPUT_DIR}",
+                ],
+            }
+        ]
+        value["artifacts"] = [artifact]
+        write_json(target / REGISTRY_PATH, value)
+        index = build_generation_index(target)
+        (target / INDEX_PATH).parent.mkdir(parents=True, exist_ok=True)
+        (target / INDEX_PATH).write_bytes(render_json(index).encode("utf-8"))
+        (target / "src/api.txt").write_text("changed\n", encoding="utf-8")
+        plan = generation_plan(target)
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(Path(__file__).resolve().parents[1] / "tools/manage_support_generation.py"),
+                "--target",
+                str(target),
+                "--apply",
+                "--authorization",
+                "modify",
+                "--plan-digest",
+                plan["plan_digest"],
+            ],
+            text=True,
+            capture_output=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual((target / "docs/api.txt").read_text(encoding="utf-8"), "new\n")
+
+    def test_failed_validation_preserves_existing_output(self) -> None:
+        target = self.make_target()
+        value = registry()
+        artifact = value["artifacts"][0]
+        artifact["generator"]["command"] = [
+            sys.executable,
+            "-c",
+            "from pathlib import Path; import sys; p=Path(sys.argv[1])/'docs/api.txt'; p.parent.mkdir(parents=True, exist_ok=True); p.write_text('unsafe\\n')",
+            "{OUTPUT_DIR}",
+        ]
+        artifact["validation"] = [
+            {"kind": "command", "required": True, "command": [sys.executable, "-c", "raise SystemExit(1)"]}
+        ]
+        value["artifacts"] = [artifact]
+        write_json(target / REGISTRY_PATH, value)
+        index = build_generation_index(target)
+        (target / INDEX_PATH).parent.mkdir(parents=True, exist_ok=True)
+        (target / INDEX_PATH).write_bytes(render_json(index).encode("utf-8"))
+        (target / "src/api.txt").write_text("changed\n", encoding="utf-8")
+        plan = generation_plan(target)
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(Path(__file__).resolve().parents[1] / "tools/manage_support_generation.py"),
+                "--target",
+                str(target),
+                "--apply",
+                "--authorization",
+                "modify",
+                "--plan-digest",
+                plan["plan_digest"],
+            ],
+            text=True,
+            capture_output=True,
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual((target / "docs/api.txt").read_text(encoding="utf-8"), "derived\n")
 
 
 if __name__ == "__main__":

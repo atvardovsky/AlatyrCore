@@ -24,6 +24,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
 
+from capability_catalog import load_modules, minimum_pack
 from scaffold_target_structure import plan as scaffold_plan, profile_names
 from validate_target_adapter import AdapterValidatorConfig, Validator
 from parallel_execution import child_capacity, run_commands
@@ -259,7 +260,21 @@ def fixture_dirs(selected: list[str]) -> list[Path]:
 
 def support_profile_scenarios() -> list[tuple[str, str, list[str]]]:
     scenarios = [(profile, profile, []) for profile in profile_names()]
-    scenarios.append(("core-ai-infrastructure", "core", ["ai-infrastructure"]))
+    profile_for_pack = {
+        "kernel": "kernel",
+        "core": "core",
+        "standard": "standard",
+        "complete": "full",
+    }
+    scenarios.extend(
+        (
+            f"module-{module_id}",
+            profile_for_pack[minimum_pack([module_id])],
+            [module_id],
+        )
+        for module_id, module in sorted(load_modules().items())
+        if module.get("module_kind") != "source-repository"
+    )
     return scenarios
 
 

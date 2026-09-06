@@ -201,6 +201,13 @@ def project_manifest(
             current_top_level = top_level.group(1)
         if current_top_level in disabled_sections:
             continue
+        if (
+            current_top_level == "modules"
+            and line.strip() in {"selected:", "staged:"}
+            and not module_items
+        ):
+            rendered.append(line + " []")
+            continue
         if current_top_level == "installation" and INSTALLATION_STATE_RE.match(line):
             line = f'  state: "{INITIAL_INSTALLATION_STATE}"'
         if "{KERNEL_CORE_STANDARD_OR_FULL}" in line:
@@ -218,7 +225,7 @@ def project_manifest(
             ".ai/assistant/approvals", selected
         ):
             continue
-        if line.strip() == '- "{ENABLED_MODULE}"' and module_items:
+        if line.strip() in {'- "{SELECTED_MODULE}"', '- "{STAGED_MODULE}"'}:
             rendered.extend(f'    - "{module_id}"' for module_id in module_items)
         else:
             rendered.append(line)
@@ -296,19 +303,19 @@ def project_agent_rule_ids(
     return rendered
 
 
-def project_module_profile(text: str, enabled_modules: set[str]) -> str:
-    """Project scaffold-selected capabilities into the human module profile."""
+def project_module_profile(text: str, selected_modules: set[str]) -> str:
+    """Project scaffold-selected capabilities as staged, not active, modules."""
 
     rendered = text
-    for module_id in sorted(enabled_modules):
+    for module_id in sorted(selected_modules):
         pattern = re.compile(
             rf"(^Module: `{re.escape(module_id)}`\s*$[\s\S]*?^State:\s*)"
-            r"`?\{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED\}`?\s*$",
+            r"`?\{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED\}`?\s*$",
             flags=re.MULTILINE,
         )
-        rendered, count = pattern.subn(r"\1`enabled`", rendered, count=1)
+        rendered, count = pattern.subn(r"\1`staged`", rendered, count=1)
         if count != 1:
-            raise ValueError(f"cannot project enabled module {module_id} into module profile")
+            raise ValueError(f"cannot project staged module {module_id} into module profile")
     return rendered
 
 
@@ -427,6 +434,30 @@ def project_assistant_capability_index(
     if default_surface not in projected_surfaces:
         projected["default_surface"] = next(iter(projected_surfaces))
     return projected
+
+
+def project_bridge_capability_matrix(text: str, selected_surfaces: set[str]) -> str:
+    """Keep only assistant sections backed by projected capability records."""
+
+    pattern = re.compile(
+        r"^### Assistant Surface: `(?P<surface>[^`]+)`\s*$[\s\S]*?"
+        r"(?=^### Assistant Surface: `|\Z)",
+        flags=re.MULTILINE,
+    )
+    first = pattern.search(text)
+    if first is None:
+        raise ValueError("bridge capability matrix has no assistant sections")
+    rendered = [text[: first.start()]]
+    observed: set[str] = set()
+    for match in pattern.finditer(text):
+        surface_id = match.group("surface")
+        if surface_id in selected_surfaces:
+            observed.add(surface_id)
+            rendered.append(match.group(0))
+    missing = sorted(selected_surfaces - observed)
+    if missing:
+        raise ValueError(f"bridge capability matrix misses selected surfaces {missing}")
+    return "".join(rendered).rstrip() + "\n"
 
 
 def _filter_paths(value: Any, selected: SelectedPaths) -> Any:

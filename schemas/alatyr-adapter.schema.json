@@ -90,8 +90,10 @@
     },
     "modules": {
       "type": "object",
-      "required": ["core_profile", "enabled", "deferred", "blocked"],
+      "required": ["core_profile", "selected", "staged", "enabled", "deferred", "blocked"],
       "properties": {
+        "selected": {"$ref": "#/definitions/stringArray"},
+        "staged": {"$ref": "#/definitions/stringArray"},
         "enabled": {"$ref": "#/definitions/stringArray"},
         "deferred": {"$ref": "#/definitions/stringArray"},
         "blocked": {"$ref": "#/definitions/stringArray"}

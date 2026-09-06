@@ -16,7 +16,8 @@ for every target repository.
 
 The framework has a minimal `kernel` support profile, a richer `core` support
 profile, and optional modules. A target adapter records which modules are
-enabled, deferred, disabled, or not applicable from target evidence.
+selected, staged, enabled, deferred, disabled, or not applicable from target
+evidence.
 
 The installed `capabilities.json` catalog is the machine-readable owner for
 optional-module dependencies, minimum framework packs, required target files,
@@ -85,6 +86,22 @@ maturity.
 Optional modules are enabled only when the target repository needs and can
 maintain them:
 
+Capability state is explicit and ordered:
+
+- `selected`: capabilities requested directly for this installation or update
+- `staged`: the dependency-closed set whose placeholder surfaces were
+  scaffolded but are not yet adapted, validated, or active
+- `enabled`: adapted capabilities accepted by the target with resolved facts,
+  profile state, and required validation
+- `deferred` or `blocked`: capabilities intentionally left inactive with a
+  target-owned reason
+
+Scaffolding must write selected capabilities and their dependency closure to
+`modules.selected` and `modules.staged`, while leaving `modules.enabled` empty.
+Installation or update work may move a capability from staged to enabled only
+after its target facts, dependencies, operation routes, required files, and
+checks pass. Merely copying a module's files never enables it.
+
 - `blueprint-change`: blueprint-driven product-change workflow and project
   blueprint creation or repair.
 - `consistency-map`: machine-readable changed-fact relationships and bounded
@@ -140,9 +157,11 @@ maintain them:
 - `subagent-delegation`: capability-gated decomposition into bounded,
   independently verifiable tasks, target-owned worker roles/prompts and
   assistant role/model/native bindings, deterministic readiness, normalized
-  results, disjoint writes, retry/conflict fallbacks, and primary convergence.
-  It depends only on `assistant-runtime-capabilities`; external dispatchers and
-  additional assistant bridges remain separate optional capabilities.
+  results, bounded primary-owned delegation trees, explicit stop reasons,
+  disjoint writes, retry/conflict fallbacks, and primary convergence. It
+  depends on `assistant-runtime-capabilities` and `installed-operations`;
+  external dispatchers and additional assistant bridges remain separate
+  optional capabilities.
 - `change-packages`: coherent material-change evidence with semantic approval
   scope, companion-surface decisions, implementation corrections, compact
   architecture discussion, and before-to-after repository provenance.
@@ -176,8 +195,11 @@ required files, validation, and residual risk.
 The manifest and human module profile are one projected contract. Every module
 listed in `modules.enabled` must have exactly one matching profile block in
 `enabled` or `required` state. A profile block in either state must be listed
-in the manifest. Migration staging may expose disagreement as repair work, but
-strict adapter acceptance must reject it.
+in the manifest. Every module in `modules.staged` must have a `staged` profile
+block and must not be described as active. Migration staging may expose
+disagreement as repair work, but strict adapter acceptance must reject active
+state drift. An accepted adapter must resolve or intentionally defer/disable
+every staged capability; it must not retain a live `staged` claim.
 
 ## Shared Capability Surfaces
 
@@ -204,6 +226,8 @@ surface was created, retained, merged, or left blocked.
 
 Use these states in target adapters:
 
+- `staged`: selected structure exists but target adaptation, activation, or
+  validation is incomplete; this state is never accepted as active.
 - `required`: part of the selected required support profile, including
   `kernel` items and any required `core`, `standard`, or `full` additions.
 - `enabled`: installed and maintained for the target.
@@ -237,10 +261,11 @@ During installation or update:
    current use of Alatyr.
 2. Select optional modules from target needs, not from source-repository
    availability.
-3. Record module states in the target adapter manifest and module profile.
+3. Record directly requested modules, staged dependency closure, and module
+   states in the target adapter manifest and module profile.
 4. Select and record the `kernel`, `core`, `standard`, or `full` support
-   profile, then create only the target templates needed for enabled or
-   required modules.
+   profile, then create only the target templates needed for staged, enabled,
+   or required modules. Keep staged modules inactive until adaptation passes.
 5. Select a compatible `kernel`, `core`, `standard`, or `complete` framework pack. The
    pack controls installed portable files, while context routing controls what
    is loaded for a task. A smaller pack must never be used to claim support for

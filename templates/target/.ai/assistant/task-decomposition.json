@@ -117,6 +117,9 @@
     "reject_overlapping_parallel_writes": true,
     "primary_owns_semantic_decisions": true,
     "primary_owns_final_convergence": true,
+    "primary_owns_all_worker_dispatch": true,
+    "workers_propose_children_only": true,
+    "stop_at_evidence_saturation": true,
     "delegation_cannot_broaden_authorization": true,
     "escalate_on_new_relationship": true,
     "escalate_on_failed_validation": true,
@@ -127,6 +130,7 @@
     "task IDs implementation levels dependencies and executor decisions",
     "context selected and intentionally omitted per task",
     "worker packet and result IDs when delegation was used",
+    "delegation tree depth coverage budget child proposals and stop reasons",
     "validation acceptance and primary convergence result",
     "escalations residual risk and cost or latency measurement only when captured"
   ],

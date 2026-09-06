@@ -29,9 +29,10 @@ Caching is optional and does not reduce context-window occupancy.
 
 ## Supported Assistant Surfaces
 
-Resolve these entries from target evidence before claiming a bridge is
-supported. If the target does not use a surface, keep the entry and mark it
-unsupported or not applicable with the reason.
+Resolve selected entries from target evidence before claiming a bridge is
+supported. Scaffolding projects this matrix to the selected assistant surfaces;
+an accepted adapter may retain an unselected entry only when it explicitly
+records why that target-owned evidence remains useful.
 
 ### Assistant Surface: `generic`
 

@@ -1,11 +1,39 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "policy_kind": "target-subagent-delegation-policy",
   "state": "{ENABLED_SUGGEST_ONLY_DISABLED_OR_BLOCKED}",
   "owner": "{TARGET_DELEGATION_POLICY_OWNER}",
   "decision_mode": "{AUTOMATIC_SUGGEST_ONLY_OR_DISABLED}",
   "default_preference": "{AUTO_ALLOW_FORBID_OR_REQUIRE_SUPPORTED}",
   "max_parallel_delegates": "{POSITIVE_INTEGER_OR_TARGET_LIMIT}",
+  "tree_policy": {
+    "dispatch_owner": "primary-assistant",
+    "worker_child_behavior": "propose-only",
+    "default_max_depth": 1,
+    "hard_max_depth": 2,
+    "max_total_delegates": "{POSITIVE_INTEGER_OR_TARGET_LIMIT}",
+    "max_children_per_parent": "{POSITIVE_INTEGER_OR_TARGET_LIMIT}",
+    "max_context_words_total": "{POSITIVE_INTEGER_OR_TARGET_LIMIT}",
+    "max_retries_total": "{POSITIVE_INTEGER_OR_ZERO}",
+    "require_disjoint_coverage_keys": true
+  },
+  "stop_policy": {
+    "require_stop_reason": true,
+    "evidence_saturation": "stop-when-acceptance-and-required-evidence-are-covered",
+    "stop_reason_ids": [
+      "scope-covered",
+      "evidence-sufficient",
+      "coordination-cost-exceeds-benefit",
+      "maximum-depth-reached",
+      "worker-budget-reached",
+      "context-budget-reached",
+      "semantic-decision-required",
+      "overlapping-scope",
+      "primary-critical-path",
+      "capability-unavailable",
+      "user-restricted"
+    ]
+  },
   "decomposition_policy": ".ai/assistant/task-decomposition.json",
   "role_catalog": ".ai/assistant/workers/role-catalog.json",
   "enabled_role_ids": [

@@ -176,9 +176,12 @@ Source owner: `framework/support-information.md`
 Installed owner: `.ai/framework/support-information.md`
 Commitment: Classify and hash every managed support surface, route changed
 paths and facts through bounded accepted relationships, keep detected
-relationships as non-authoritative candidates until target acceptance, and plan
-or apply declared generation without replacing canonical owners, bypassing
-current-scope authorization, or loading unrelated project context.
+relationships as non-authoritative candidates until target acceptance,
+propagate generation staleness through declared dependencies, and keep
+generation owner-bound, plan/base/output-approved when protected, regular-file
+and non-escaping, complete-set staged, command-validated, and transactionally
+restorable without bypassing current-scope authorization or loading unrelated
+project context.
 Applies to: all installed adapter tasks that change code or support
 information.
 Enforcement: required.
@@ -408,16 +411,16 @@ Source owner: `framework/module-profile.md`
 Installed owner: `.ai/framework/module-profile.md`
 Commitment: Establish the required core profile, including current-scope action
 authorization, proportional durable engineering evidence, and current support
-policy/state, before optional modules; scaffold only selected dependency-closed
-capabilities, including guarded support generation and Debug Mode with their
-declared dependencies and contracts; select a compatible framework pack;
+policy/state, before optional modules; separate directly selected capabilities,
+dependency-closed staged structure, and target-validated enabled state so
+scaffolding never implies activation; select a compatible framework pack;
 preserve existing target-owned shared surfaces for their declared adapter-aware
 merge strategy, retain shared output while producers or preservation policy
 require it, and record create/retain/merge/remove outcomes; rebuild optional
 relationship and generation indexes before support state; and enforce
-optional-module dependency, rule, required-file, deterministic-check,
-manifest/profile state agreement, and module-gated validator closure before
-claiming a target module is enabled.
+optional-module dependency, operation, rule, required-file,
+deterministic-check, manifest/profile state agreement, and module-gated
+validator closure before claiming a target module is enabled.
 Applies to: installation, framework update, adapter maturity, framework
 upgrades.
 Enforcement: required.
@@ -460,9 +463,10 @@ fact, canonical owner, contract, area, dependency, validation, and
 support-surface impact; assign exactly one implementation level, bounded
 context, allowed actions, validation, dependencies, and primary-or-worker
 executor decision per task; keep small work as one local task when sufficient;
-escalate only on named risk or relationship triggers; and keep semantic
-decisions, approval, protected phases, integration, and final convergence with
-the primary assistant.
+keep worker expansion inside a primary-owned bounded tree with coverage and
+stop evidence; escalate only on named risk or relationship triggers; and keep
+semantic decisions, approval, protected phases, integration, and final
+convergence with the primary assistant.
 Applies to: all installed adapter tasks, large tasks, delegated execution, team
 coordination, final evidence.
 Enforcement: required.
@@ -471,14 +475,16 @@ Rule ID: `ALATYR-DELEGATION-001`
 Source owner: `framework/subagent-delegation.md`
 Installed owner: `.ai/framework/subagent-delegation.md`
 Commitment: When optional subagent delegation is enabled, keep task readiness,
-project decisions, approval, integration, and final evidence with the primary
-assistant; use target-owned roles, deterministic dependency and write-scope
-planning, bounded packets, normalized results, scoped retries, and primary
-convergence for target-verified native workers, external dispatchers, and
-suggestion-only handoff; keep provider-native definitions as thin target
-bindings; preserve context, action, tool, write, privacy, validation, model,
-runtime-capability, and concurrency boundaries; and fall back without
-unsupported quality, latency, or cost claims.
+every dispatch, project decisions, approval, integration, and final evidence
+with the primary assistant; use target-owned roles, deterministic dependency
+and write-scope planning, bounded packets, unique coverage keys,
+depth/worker/context/retry limits, evidence-saturation and normalized stop
+reasons, scoped retries, and primary convergence for target-verified native
+workers, external dispatchers, and suggestion-only handoff; allow workers to
+propose but never autonomously dispatch child packets; keep provider-native
+definitions as thin target bindings; preserve context, action, tool, write,
+privacy, validation, model, runtime-capability, and concurrency boundaries; and
+fall back without unsupported quality, latency, or cost claims.
 Applies to: delegated execution, parallel workstreams, fast focused coding,
 large tasks.
 Enforcement: required when module enabled or delegated execution is attempted.
@@ -507,16 +513,18 @@ Installed owner: `.ai/framework/lifecycle.md`
 Commitment: Record framework version, adapter schema version, template version,
 installed framework pack, baseline, deviations, migration notes, and hash-bound
 upgrade impact; bind releases to v<VERSION>, shipped schemas, contract-tree
-evidence, and the checked-out target branch/revision; preserve target-owned
-support classifications, relationships, candidates, and generator bindings;
-rebuild recursive context, reverse relationship, optional generation,
-semantic-codebook, and bootstrap bindings from the exact checked-out
-installation before generating support state last; preserve current-scope
-authorization and project evidence; bind installation states to a continuous
-operation/revision/authorization/approval/validation transition record;
-distinguish migration staging from strict acceptance; expand context from
-affected owners and migrate schemas atomically without replacing active state
-with placeholders or inferring missing historical evidence.
+evidence, and the checked-out target branch/revision; compare historical schema
+and template trees from exact reachable source-version evidence when available
+and otherwise report them as not compared; publish upgrade-assessment outputs
+transactionally; preserve target-owned support classifications, relationships,
+candidates, and generator bindings; rebuild recursive context, reverse
+relationship, optional generation, semantic-codebook, and bootstrap bindings
+from the exact checked-out installation before generating support state last;
+preserve current-scope authorization and project evidence; bind installation
+states to a continuous operation/revision/authorization/approval/validation
+transition record; distinguish migration staging from strict acceptance; expand
+context from affected owners and migrate schemas atomically without replacing
+active state with placeholders or inferring missing historical evidence.
 Applies to: installation, framework upgrades.
 Enforcement: required.
 

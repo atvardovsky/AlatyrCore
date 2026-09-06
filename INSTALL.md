@@ -555,16 +555,16 @@ engineering evidence and project-knowledge delivery. Use `standard` for
 common lifecycle/product operations and `full` only when the complete portable
 framework pack is justified. Do not treat `full` as permission to install or
 enable every optional module.
-Use repeatable `--enable-module <capability-id>` options to add only reviewed
+Use repeatable `--enable-module <capability-id>` options to stage only reviewed
 capabilities and their dependency closure. The scaffolder raises the matched
 framework pack when a selected capability requires a broader canonical owner.
 Vendor-native bridges are omitted by default. Use repeatable
 `--assistant-surface <id-or-alias>` options only for assistants the target
-actually uses. An explicit selection enables the bridge capability dependency
+actually uses. An explicit selection stages the bridge capability dependency
 closure and may raise the matched framework pack without expanding unrelated
 target support. The helper resolves aliases through the canonical surface
 registry. Selection is static source scaffolding, not evidence that the client
-loaded the bridge.
+loaded the bridge or that the capability is enabled.
 
 After scaffolding or updating adapter sources, regenerate and check the compact
 entry packet before broad manual review:

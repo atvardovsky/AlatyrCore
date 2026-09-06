@@ -151,6 +151,16 @@
       ],
       "contract_inputs": [
         "framework/architecture-knowledge.md",
+        "templates/target/.ai/alatyr.yaml",
+        "templates/target/.ai/assistant/context-router.json",
+        "templates/target/.ai/assistant/context/intents/architecture-request.json",
+        "templates/target/.ai/assistant/flows/architecture-assistance.flow.md",
+        "templates/target/.ai/assistant/gates/checklist.md",
+        "templates/target/.ai/assistant/help*.md",
+        "templates/target/.ai/assistant/module-profile.md",
+        "templates/target/.ai/assistant/operation-catalog.json",
+        "templates/target/.ai/assistant/templates/architecture-*.md",
+        "templates/target/.ai/project/source-of-truth-registry.md",
         "templates/target/.ai/project/architecture/**"
       ],
       "implementation_paths": [
@@ -158,6 +168,16 @@
       ],
       "trigger_paths": [
         "framework/architecture-knowledge.md",
+        "templates/target/.ai/alatyr.yaml",
+        "templates/target/.ai/assistant/context-router.json",
+        "templates/target/.ai/assistant/context/intents/architecture-request.json",
+        "templates/target/.ai/assistant/flows/architecture-assistance.flow.md",
+        "templates/target/.ai/assistant/gates/checklist.md",
+        "templates/target/.ai/assistant/help*.md",
+        "templates/target/.ai/assistant/module-profile.md",
+        "templates/target/.ai/assistant/operation-catalog.json",
+        "templates/target/.ai/assistant/templates/architecture-*.md",
+        "templates/target/.ai/project/source-of-truth-registry.md",
         "templates/target/.ai/project/architecture/**",
         "tools/check_architecture_knowledge.py"
       ]
@@ -436,6 +456,16 @@
       ],
       "contract_inputs": [
         "framework/code-documentation.md",
+        "templates/target/.ai/alatyr.yaml",
+        "templates/target/.ai/assistant/context-router.json",
+        "templates/target/.ai/assistant/context/intents/code-documentation.json",
+        "templates/target/.ai/assistant/flows/documentation-sync.flow.md",
+        "templates/target/.ai/assistant/gates/checklist.md",
+        "templates/target/.ai/assistant/module-profile.md",
+        "templates/target/.ai/assistant/operation-catalog.json",
+        "templates/target/.ai/assistant/skills/code-documentation/**",
+        "templates/target/.ai/assistant/templates/code-documentation-*.md",
+        "templates/target/.ai/project/source-of-truth-registry.md",
         "templates/target/.ai/project/documentation/**"
       ],
       "implementation_paths": [
@@ -443,6 +473,16 @@
       ],
       "trigger_paths": [
         "framework/code-documentation.md",
+        "templates/target/.ai/alatyr.yaml",
+        "templates/target/.ai/assistant/context-router.json",
+        "templates/target/.ai/assistant/context/intents/code-documentation.json",
+        "templates/target/.ai/assistant/flows/documentation-sync.flow.md",
+        "templates/target/.ai/assistant/gates/checklist.md",
+        "templates/target/.ai/assistant/module-profile.md",
+        "templates/target/.ai/assistant/operation-catalog.json",
+        "templates/target/.ai/assistant/skills/code-documentation/**",
+        "templates/target/.ai/assistant/templates/code-documentation-*.md",
+        "templates/target/.ai/project/source-of-truth-registry.md",
         "templates/target/.ai/project/documentation/**",
         "tools/check_code_documentation.py"
       ]
@@ -453,14 +493,52 @@
         "tools/check_project_vocabulary.py"
       ],
       "contract_inputs": [
+        "INSTALL.md",
+        "conformance/runs/assistant-surfaces.json",
+        "framework/lifecycle.md",
         "framework/project-vocabulary.md",
+        "installer/assistant-installation.flow.md",
+        "installer/installation-plan-template.md",
+        "installer/readiness-checklist.md",
+        "templates/target/.ai/alatyr.yaml",
+        "templates/target/.ai/assistant/bridge-capability-matrix.md",
+        "templates/target/.ai/assistant/context-router.json",
+        "templates/target/.ai/assistant/context/intents/vocabulary-request.json",
+        "templates/target/.ai/assistant/flows/adapter-recheck.flow.md",
+        "templates/target/.ai/assistant/flows/project-vocabulary.flow.md",
+        "templates/target/.ai/assistant/gates/checklist.md",
+        "templates/target/.ai/assistant/module-profile.md",
+        "templates/target/.ai/assistant/operation-catalog.json",
+        "templates/target/.ai/assistant/skills/project-vocabulary/**",
+        "templates/target/.ai/assistant/templates/post-*.md",
+        "templates/target/.ai/assistant/templates/vocabulary-*.md",
+        "templates/target/.ai/project/source-of-truth-registry.md",
         "templates/target/.ai/project/vocabulary/**"
       ],
       "implementation_paths": [
         "tools/check_project_vocabulary.py"
       ],
       "trigger_paths": [
+        "INSTALL.md",
+        "conformance/runs/assistant-surfaces.json",
+        "framework/lifecycle.md",
         "framework/project-vocabulary.md",
+        "installer/assistant-installation.flow.md",
+        "installer/installation-plan-template.md",
+        "installer/readiness-checklist.md",
+        "templates/target/.ai/alatyr.yaml",
+        "templates/target/.ai/assistant/bridge-capability-matrix.md",
+        "templates/target/.ai/assistant/context-router.json",
+        "templates/target/.ai/assistant/context/intents/vocabulary-request.json",
+        "templates/target/.ai/assistant/flows/adapter-recheck.flow.md",
+        "templates/target/.ai/assistant/flows/project-vocabulary.flow.md",
+        "templates/target/.ai/assistant/gates/checklist.md",
+        "templates/target/.ai/assistant/module-profile.md",
+        "templates/target/.ai/assistant/operation-catalog.json",
+        "templates/target/.ai/assistant/skills/project-vocabulary/**",
+        "templates/target/.ai/assistant/templates/post-*.md",
+        "templates/target/.ai/assistant/templates/vocabulary-*.md",
+        "templates/target/.ai/project/source-of-truth-registry.md",
         "templates/target/.ai/project/vocabulary/**",
         "tools/check_project_vocabulary.py"
       ]
@@ -471,14 +549,52 @@
         "tools/check_test_first_development.py"
       ],
       "contract_inputs": [
+        "INSTALL.md",
+        "conformance/runs/assistant-surfaces.json",
+        "framework/lifecycle.md",
         "framework/test-first-development.md",
+        "framework/testing-guidance.md",
+        "installer/assistant-installation.flow.md",
+        "installer/installation-plan-template.md",
+        "installer/readiness-checklist.md",
+        "templates/target/.ai/alatyr.yaml",
+        "templates/target/.ai/assistant/bridge-capability-matrix.md",
+        "templates/target/.ai/assistant/context-router.json",
+        "templates/target/.ai/assistant/context/intents/test-first-request.json",
+        "templates/target/.ai/assistant/flows/adapter-recheck.flow.md",
+        "templates/target/.ai/assistant/flows/test-first-*.flow.md",
+        "templates/target/.ai/assistant/gates/test-first-development.md",
+        "templates/target/.ai/assistant/module-profile.md",
+        "templates/target/.ai/assistant/operation-catalog.json",
+        "templates/target/.ai/assistant/skills/test-first-development/**",
+        "templates/target/.ai/assistant/templates/post-*.md",
+        "templates/target/.ai/assistant/templates/test-first-*.md",
         "templates/target/.ai/project/testing/**"
       ],
       "implementation_paths": [
         "tools/check_test_first_development.py"
       ],
       "trigger_paths": [
+        "INSTALL.md",
+        "conformance/runs/assistant-surfaces.json",
+        "framework/lifecycle.md",
         "framework/test-first-development.md",
+        "framework/testing-guidance.md",
+        "installer/assistant-installation.flow.md",
+        "installer/installation-plan-template.md",
+        "installer/readiness-checklist.md",
+        "templates/target/.ai/alatyr.yaml",
+        "templates/target/.ai/assistant/bridge-capability-matrix.md",
+        "templates/target/.ai/assistant/context-router.json",
+        "templates/target/.ai/assistant/context/intents/test-first-request.json",
+        "templates/target/.ai/assistant/flows/adapter-recheck.flow.md",
+        "templates/target/.ai/assistant/flows/test-first-*.flow.md",
+        "templates/target/.ai/assistant/gates/test-first-development.md",
+        "templates/target/.ai/assistant/module-profile.md",
+        "templates/target/.ai/assistant/operation-catalog.json",
+        "templates/target/.ai/assistant/skills/test-first-development/**",
+        "templates/target/.ai/assistant/templates/post-*.md",
+        "templates/target/.ai/assistant/templates/test-first-*.md",
         "templates/target/.ai/project/testing/**",
         "tools/check_test_first_development.py"
       ]
@@ -1105,7 +1221,10 @@
         "schemas/alatyr-relationship-candidates.schema.json",
         "templates/target/.ai/project/consistency-map.json",
         "templates/target/.ai/project/consistency/**",
-        "templates/target/.ai/assistant/consistency-reverse-index.json"
+        "templates/target/.ai/assistant/consistency-reverse-index.json",
+        "templates/target/.ai/assistant/context-router.json",
+        "templates/target/.ai/project/source-of-truth-registry.md",
+        "templates/target/.ai/alatyr.yaml"
       ],
       "implementation_paths": [
         "tools/check_consistency_map.py",
@@ -1119,6 +1238,9 @@
         "templates/target/.ai/project/consistency-map.json",
         "templates/target/.ai/project/consistency/**",
         "templates/target/.ai/assistant/consistency-reverse-index.json",
+        "templates/target/.ai/assistant/context-router.json",
+        "templates/target/.ai/project/source-of-truth-registry.md",
+        "templates/target/.ai/alatyr.yaml",
         "tools/check_consistency_map.py",
         "tools/impact_graph.py",
         "tools/render_consistency_reverse_index.py"
@@ -1222,6 +1344,7 @@
         "framework/large-task-orchestration.md",
         "framework/subagent-delegation.md",
         "framework/task-decomposition.md",
+        "schemas/alatyr-delegation-policy.schema.json",
         "templates/target/.ai/assistant/assistant-capabilities/**",
         "templates/target/.ai/assistant/bridge-capability-matrix.md",
         "templates/target/.ai/assistant/context/task-scales/delegated-execution.json",
@@ -1246,6 +1369,7 @@
         "framework/large-task-orchestration.md",
         "framework/subagent-delegation.md",
         "framework/task-decomposition.md",
+        "schemas/alatyr-delegation-policy.schema.json",
         "templates/target/.ai/assistant/assistant-capabilities/**",
         "templates/target/.ai/assistant/bridge-capability-matrix.md",
         "templates/target/.ai/assistant/context/task-scales/delegated-execution.json",
@@ -1373,6 +1497,7 @@
         "framework/framework-packs.json",
         "schemas/alatyr-capabilities.schema.json",
         "templates/target/.ai/assistant/module-profile.md",
+        "templates/target/.ai/assistant/operation-catalog.json",
         "tools/check_manifest.json"
       ],
       "implementation_paths": [
@@ -1386,6 +1511,7 @@
         "framework/framework-packs.json",
         "schemas/alatyr-capabilities.schema.json",
         "templates/target/.ai/assistant/module-profile.md",
+        "templates/target/.ai/assistant/operation-catalog.json",
         "tools/capability_catalog.py",
         "tools/check_all.py",
         "tools/check_capability_graph.py",
@@ -1453,6 +1579,9 @@
       ],
       "contract_inputs": [
         "framework/installed-operations.md",
+        "installer/installed-operation-request-template.md",
+        "templates/target/.ai/assistant/help*.md",
+        "templates/target/.ai/assistant/templates/operation-request.md",
         "templates/target/.ai/assistant/flows/**"
       ],
       "implementation_paths": [
@@ -1460,6 +1589,9 @@
       ],
       "trigger_paths": [
         "framework/installed-operations.md",
+        "installer/installed-operation-request-template.md",
+        "templates/target/.ai/assistant/help*.md",
+        "templates/target/.ai/assistant/templates/operation-request.md",
         "templates/target/.ai/assistant/flows/**",
         "tools/check_operation_contracts.py"
       ]
@@ -2163,6 +2295,7 @@
         "templates/target/**"
       ],
       "implementation_paths": [
+        "tools/capability_catalog.py",
         "tools/parallel_execution.py",
         "tools/run_conformance_scaffold.py",
         "tools/scaffold*.py",
@@ -2172,6 +2305,7 @@
       "trigger_paths": [
         "conformance/fixtures/**",
         "templates/target/**",
+        "tools/capability_catalog.py",
         "tools/parallel_execution.py",
         "tools/run_conformance_scaffold.py",
         "tools/scaffold*.py",

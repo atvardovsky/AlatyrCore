@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1194
+Catalog entries: 1212
 
 ## Families
 
@@ -20,14 +20,15 @@ Catalog entries: 1194
 - `ASSISTANT`: 29 codes.
 - `AUTHORIZATION`: 16 codes.
 - `BACKUP`: 1 codes.
+- `BLUEPRINT`: 5 codes.
 - `BOOTSTRAP`: 9 codes.
-- `CAPABILITY`: 7 codes.
+- `CAPABILITY`: 8 codes.
 - `CHANGED`: 2 codes.
-- `CODEDOC`: 32 codes.
+- `CODEDOC`: 33 codes.
 - `CONSISTENCY`: 37 codes.
 - `CONTEXT`: 10 codes.
 - `DEBUG`: 130 codes.
-- `DELEGATION`: 63 codes.
+- `DELEGATION`: 66 codes.
 - `DEPENDENCY`: 55 codes.
 - `DEVELOPMENT`: 15 codes.
 - `DIAGRAM`: 32 codes.
@@ -43,7 +44,7 @@ Catalog entries: 1194
 - `LOCAL`: 1 codes.
 - `MANIFEST`: 12 codes.
 - `MIGRATION`: 8 codes.
-- `MODULE`: 5 codes.
+- `MODULE`: 11 codes.
 - `OPERATION`: 29 codes.
 - `PACKAGE`: 78 codes.
 - `PLACEHOLDERS`: 1 codes.
@@ -61,7 +62,7 @@ Catalog entries: 1194
 - `TDD`: 44 codes.
 - `TEAM`: 98 codes.
 - `UNRESOLVED`: 1 codes.
-- `VOCABULARY`: 44 codes.
+- `VOCABULARY`: 46 codes.
 - `WORKSPACE`: 40 codes.
 - `{prefix}`: 1 codes.
 
@@ -319,6 +320,16 @@ Catalog entries: 1194
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `BACKUP_OWNER_UNRESOLVED`
   Level: configured. Source: `tools/validate_target_adapter.py`.
+- `BLUEPRINT_CHANGE_OPERATION_CATALOG`
+  Level: error. Source: `tools/target_adapter_validation/blueprint_change.py`.
+- `BLUEPRINT_CHANGE_OPERATION_FLOW`
+  Level: error. Source: `tools/target_adapter_validation/blueprint_change.py`.
+- `BLUEPRINT_CHANGE_OPERATION_MISSING`
+  Level: error. Source: `tools/target_adapter_validation/blueprint_change.py`.
+- `BLUEPRINT_CHANGE_OPERATION_MODULE`
+  Level: error. Source: `tools/target_adapter_validation/blueprint_change.py`.
+- `BLUEPRINT_CHANGE_REQUIRED_FILE_MISSING`
+  Level: error. Source: `tools/target_adapter_validation/blueprint_change.py`.
 - `BOOTSTRAP_AREA_MAP_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `BOOTSTRAP_ENTRY_PACKET_MISSING`
@@ -348,6 +359,8 @@ Catalog entries: 1194
 - `CAPABILITY_MODULE_UNKNOWN`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `CAPABILITY_PACK_TOO_SMALL`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `CAPABILITY_STAGED_DEPENDENCY_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `CAPABILITY_TARGET_FILE_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
@@ -406,6 +419,8 @@ Catalog entries: 1194
 - `CODEDOC_PROFILE_KIND`
   Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_PROFILE_MATCH`
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
+- `CODEDOC_PROFILE_PRIORITY`
   Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_PROFILE_REFERENCE`
   Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
@@ -883,6 +898,12 @@ Catalog entries: 1194
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_SHARED_WRITE_ISOLATION`
   Level: warning. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_STOP_POLICY`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_TREE_LIMIT`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_TREE_POLICY`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_UNSUPPORTED_ROUTE_CONFLICT`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_WORKER_DEFINITION_FORMAT`
@@ -1427,13 +1448,25 @@ Catalog entries: 1194
   Level: info. Source: `tools/validate_target_adapter.py`.
 - `MODULE_MANIFEST_ENABLED_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `MODULE_MANIFEST_STAGED_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `MODULE_PROFILE_DUPLICATE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `MODULE_PROFILE_ENABLED_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `MODULE_PROFILE_STAGED_DRIFT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `MODULE_PROFILE_STAGED_MISSING`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `MODULE_PROFILE_STATE_DRIFT`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `MODULE_PROFILE_UNKNOWN`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `MODULE_SELECTED_UNKNOWN`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `MODULE_STAGED_AT_ACCEPTANCE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `MODULE_STATE_OVERLAP`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `OPERATION_CANDIDATES_MISSING`
   Level: warning. Source: `tools/validate_target_adapter.py`.
@@ -2350,6 +2383,10 @@ Catalog entries: 1194
 - `VOCABULARY_OPERATION_MODULE`
   Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_OPERATION_UNROUTED`
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
+- `VOCABULARY_REPLACEMENT_REFERENCE`
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
+- `VOCABULARY_REPLACEMENT_SELF_REFERENCE`
   Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_REQUIRED_FILE_MISSING`
   Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.

@@ -998,11 +998,14 @@ support profile. Selective packs project their rule registry, ownership map, and
 inventory so omitted optional owners are explicit. The projection layer also
 removes path claims for omitted surfaces, filters operation routes to installed
 flows, derives the compact operation index and bootstrap index, and accepts
-repeatable `--enable-module` capability IDs with dependency closure. Profile,
-capability, framework-pack, and assistant-surface choices are resolved once
-through an immutable composition read model. A typed acyclic projection graph
-checks output ownership and dependencies and supplies the deterministic
-topological write order; path-specific renderers remain the content owners. A
+repeatable `--enable-module` capability IDs with dependency closure. Selected
+optional capabilities are written as `staged`, not `enabled`; target fact
+resolution and capability validation own the later activation transition.
+Profile, capability, framework-pack, and assistant-surface choices are
+resolved once through an immutable composition read model. A typed acyclic
+projection graph checks output ownership and dependencies and supplies the
+deterministic topological write order; path-specific renderers remain the
+content owners. A
 writable run preflights known blockers before the first output and returns
 failure for any blocked selected output. In overwrite mode, content-addressed sparse
 projection leaves byte-identical files untouched; it never infers that an
@@ -1567,11 +1570,14 @@ py -3 .\tools\report_migration_diff.py --from-rules old-rule-registry.json --fro
 impact file is the first upgrade-routing input and records evidence hashes,
 installed pack/modules, affected owners, changed installed framework/template
 surfaces, removals to review, and the full-corpus expansion trigger.
-The helper compares the
-installed framework baseline with the selected AlatyrCore source and runs the
-structural validator before any upgrade edits. A non-zero result means the
-assessment contains findings that require review; generated evidence remains
-available. Use `--overwrite` only to replace an existing assessment directory.
+The helper compares the installed framework baseline with the selected
+AlatyrCore source and runs the structural validator before any upgrade edits.
+When the installed framework version is reachable in source history, it also
+materializes that exact version's schema and target-template trees for the
+comparison. All four outputs are staged and replaced together only after
+migration evidence succeeds, so `--overwrite` preserves the previous complete
+assessment on a preflight or migration failure. A non-zero validator result
+still leaves the newly generated review evidence available.
 
 `check_migration_diff_report.py` executes the reporter against the current
 source baseline and validates the generated report shape. It is not a

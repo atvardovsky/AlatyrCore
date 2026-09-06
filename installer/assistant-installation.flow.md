@@ -545,20 +545,26 @@ For adapter structure, use `migration-staging` only as an intermediate rewrite
 check. It may retain target placeholders and exit zero, but it is never
 accepted or ready. Before reporting installation or update completion:
 
-1. Resolve placeholders on required core surfaces and every live surface owned
+1. Treat source scaffolding as structure only. Record directly requested
+   capabilities in `modules.selected`, their dependency closure in
+   `modules.staged`, and no inferred `modules.enabled` entries. Move a staged
+   capability to enabled only after target adaptation and validation.
+2. Resolve placeholders on required core surfaces and every live surface owned
    by an enabled capability. Preserve placeholders only in explicit reusable
    authoring templates.
-2. Synchronize manifest `modules.enabled` with exactly one matching human
+3. Synchronize manifest `modules.enabled` with exactly one matching human
    module-profile block in `enabled` or `required` state.
-3. Synchronize machine policy indexes and their human README projections.
-4. Rebuild recursive context indexes, optional reverse/generation indexes, and
+   Synchronize `modules.staged` with `staged` profile blocks, and resolve every
+   staged item before acceptance.
+4. Synchronize machine policy indexes and their human README projections.
+5. Rebuild recursive context indexes, optional reverse/generation indexes, and
    the generated support state in that order.
-5. Run strict `acceptance` validation on the checked-out target branch and
+6. Run strict `acceptance` validation on the checked-out target branch and
    record that branch and exact revision. Repeat this final step separately on
    any other branch whose adapter state is to be accepted.
-6. End the inspect-only validation stage. Do not mutate installation state as
+7. End the inspect-only validation stage. Do not mutate installation state as
    part of validation.
-7. Enter the explicit `acceptance-recording` stage only with current-scope
+8. Enter the explicit `acceptance-recording` stage only with current-scope
    `modify` authorization for the state records. Update the manifest
    installation state and its machine-readable transition record together.
    Require a continuous previous-state chain, the current operation and
@@ -569,7 +575,7 @@ accepted or ready. Before reporting installation or update completion:
    When upgrading a pre-transition-record adapter, initialize the record at
    `staged` with `legacy-migration-baseline` and an explicit unavailable prior-
    history explanation instead of reconstructing unobserved events.
-8. Enter the inspect-only `handoff` stage after acceptance recording. Read the
+9. Enter the inspect-only `handoff` stage after acceptance recording. Read the
    resulting state and current output/validation bindings, then produce the
    post-install or post-update message without changing repository state.
 

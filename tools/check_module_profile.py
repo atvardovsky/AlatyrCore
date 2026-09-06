@@ -104,6 +104,9 @@ def main() -> int:
 
     for required_text in [
         "## Module State Evidence",
+        "Selected modules from manifest:",
+        "Staged modules from manifest:",
+        "Enabled modules from manifest:",
         "Manifest/profile agreement:",
         "Unknown or stale module evidence:",
         "## Shared Capability Surfaces",

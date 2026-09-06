@@ -70,7 +70,7 @@ class CompositionModelTests(unittest.TestCase):
             set(resolve_composition(CompositionRequest("kernel")).available_capabilities),
         )
         self.assertTrue(
-            set(target.enabled_capabilities) <= set(target.installed_capabilities)
+            set(target.staged_capabilities) <= set(target.installed_capabilities)
         )
 
     def test_resolution_preserves_capability_and_alias_facts(self) -> None:
@@ -84,8 +84,9 @@ class CompositionModelTests(unittest.TestCase):
         self.assertEqual(set(resolved.assistant_surfaces), {"codex"})
         self.assertIn("AI_ASSISTANTS.md", resolved.selected_target_paths)
         self.assertNotIn("CLAUDE.md", resolved.selected_target_paths)
-        self.assertIn("multi-assistant-bridges", resolved.enabled_capabilities)
-        self.assertIn("installed-operations", resolved.enabled_capabilities)
+        self.assertIn("multi-assistant-bridges", resolved.staged_capabilities)
+        self.assertIn("installed-operations", resolved.staged_capabilities)
+        self.assertEqual(resolved.enabled_capabilities, ())
 
     def test_projection_graph_orders_operation_outputs(self) -> None:
         self.assertEqual(

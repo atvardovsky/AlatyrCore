@@ -234,7 +234,9 @@ Include `.ai/assistant/context-profiles.md` to explain task profiles,
 expansion triggers, approvals, validation, and final evidence for humans.
 
 Include `.ai/assistant/module-profile.md` to record required core status,
-enabled optional modules, deferred modules, blocked modules, and reasons.
+directly selected modules, dependency-closed staged modules, enabled optional
+modules, deferred modules, blocked modules, and reasons. Scaffolded files do
+not establish enabled state.
 
 Include `.ai/project/source-of-truth-registry.md` when multiple files or
 surfaces can describe the same project fact.

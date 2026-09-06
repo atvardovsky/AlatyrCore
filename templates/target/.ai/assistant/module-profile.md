@@ -1,7 +1,7 @@
 # Alatyr Module Profile
 
 Use this file in `{PROJECT_NAME}` to record which Alatyr Core capabilities are
-required, enabled, deferred, disabled, not applicable, or blocked.
+required, staged, enabled, deferred, disabled, not applicable, or blocked.
 
 Replace placeholders with target facts before accepting installation.
 An optional module owner may be absent from a selective framework pack; install
@@ -13,6 +13,8 @@ Manifest source: `.ai/alatyr.yaml`
 Capability catalog source: `.ai/framework/capabilities.json`
 Human profile source: `.ai/assistant/module-profile.md`
 Selected support profile: `{TARGET_SUPPORT_PROFILE}`
+Selected modules from manifest: `{TARGET_SELECTED_MODULE_IDS_OR_NONE}`
+Staged modules from manifest: `{TARGET_STAGED_MODULE_IDS_OR_NONE}`
 Enabled modules from manifest: `{TARGET_ENABLED_MODULE_IDS_OR_NONE}`
 Manifest/profile agreement: `{MATCH_DRIFT_OR_UNKNOWN_WITH_EVIDENCE}`
 Required surfaces checked: `{YES_NO_OR_UNKNOWN_WITH_REASON}`
@@ -31,7 +33,7 @@ evidence that no target facts or active capability output will be lost.
 ## Kernel And Core Profiles
 
 Selected support profile state: `{COMPLETE_OR_MISSING_GAPS}`
-Framework pack: `{CORE_STANDARD_OR_COMPLETE}`
+Framework pack: `{KERNEL_CORE_STANDARD_OR_COMPLETE}`
 Pack inventory: `.ai/framework/file-inventory.json`
 Required pack expansion: `{NONE_OR_MODULE_OWNERS_TO_ADD}`
 Last reviewed: `{LAST_REVIEW_DATE}`
@@ -198,7 +200,7 @@ Residual risk: `{UNCLASSIFIED_UNMAPPED_OR_STALE_SUPPORT_RISK}`
 ## Optional Modules
 
 Module: `blueprint-change`
-State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+State: `{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `{TARGET_BLUEPRINT_MODULE_OWNER_OR_FILE}`
 Required files:
 
@@ -212,7 +214,7 @@ Residual risk: `{BLUEPRINT_CHANGE_RESIDUAL_RISK}`
 Next action: `{BLUEPRINT_CHANGE_NEXT_ACTION}`
 
 Module: `consistency-map`
-State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+State: `{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `.ai/project/consistency-map.json`
 Required files:
 
@@ -231,7 +233,7 @@ Residual risk: `{CONSISTENCY_MAP_RESIDUAL_RISK}`
 Next action: `{CONSISTENCY_MAP_NEXT_ACTION}`
 
 Module: `architecture-knowledge`
-State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+State: `{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `.ai/project/architecture/README.md`
 Required files:
 
@@ -250,7 +252,7 @@ Residual risk: `{ARCHITECTURE_KNOWLEDGE_RESIDUAL_RISK}`
 Next action: `{ARCHITECTURE_KNOWLEDGE_NEXT_ACTION}`
 
 Module: `code-documentation`
-State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+State: `{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `.ai/project/documentation/README.md`
 Required files:
 
@@ -270,7 +272,7 @@ Residual risk: `{CODE_DOCUMENTATION_RESIDUAL_RISK}`
 Next action: `{CODE_DOCUMENTATION_NEXT_ACTION}`
 
 Module: `project-vocabulary`
-State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+State: `{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `.ai/project/vocabulary/README.md`
 Required files:
 
@@ -291,7 +293,7 @@ Residual risk: `{PROJECT_VOCABULARY_RESIDUAL_RISK}`
 Next action: `{PROJECT_VOCABULARY_NEXT_ACTION}`
 
 Module: `test-first-development`
-State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+State: `{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `.ai/project/testing/test-first-policy.json`
 Required files:
 
@@ -312,7 +314,7 @@ Residual risk: `{TEST_FIRST_DEVELOPMENT_RESIDUAL_RISK}`
 Next action: `{TEST_FIRST_DEVELOPMENT_NEXT_ACTION}`
 
 Module: `extensions`
-State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+State: `{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `.ai/assistant/extensions/README.md`
 Required files:
 
@@ -333,7 +335,7 @@ Residual risk: `{EXTENSIONS_RESIDUAL_RISK}`
 Next action: `{EXTENSIONS_NEXT_ACTION}`
 
 Module: `dependency-knowledge`
-State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+State: `{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `.ai/project/dependencies/policy.json`
 Required files:
 
@@ -356,7 +358,7 @@ Residual risk: `{DEPENDENCY_KNOWLEDGE_RESIDUAL_RISK}`
 Next action: `{DEPENDENCY_KNOWLEDGE_NEXT_ACTION}`
 
 Module: `workspace-modes`
-State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+State: `{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `.ai/project/workspace-modes/catalog.json`
 Required files:
 
@@ -380,7 +382,7 @@ Residual risk: `{WORKSPACE_MODES_RESIDUAL_RISK}`
 Next action: `{WORKSPACE_MODES_NEXT_ACTION}`
 
 Module: `diagrams`
-State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+State: `{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `{TARGET_DIAGRAM_MODULE_OWNER_OR_FILE}`
 Required files:
 
@@ -402,7 +404,7 @@ Residual risk: `{DIAGRAM_MODULE_RESIDUAL_RISK}`
 Next action: `{DIAGRAM_MODULE_NEXT_ACTION}`
 
 Module: `assistant-runtime-capabilities`
-State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+State: `{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `.ai/assistant/assistant-capabilities.json`
 Required files:
 
@@ -416,7 +418,7 @@ Residual risk: `{ASSISTANT_RUNTIME_CAPABILITIES_RESIDUAL_RISK}`
 Next action: `{ASSISTANT_RUNTIME_CAPABILITIES_NEXT_ACTION}`
 
 Module: `ai-infrastructure`
-State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+State: `{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `{TARGET_AI_INFRASTRUCTURE_MODULE_OWNER_OR_FILE}`
 Required files:
 
@@ -441,7 +443,7 @@ Residual risk: `{AI_INFRASTRUCTURE_MODULE_RESIDUAL_RISK}`
 Next action: `{AI_INFRASTRUCTURE_MODULE_NEXT_ACTION}`
 
 Module: `multi-assistant-bridges`
-State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+State: `{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `.ai/assistant/bridge-capability-matrix.md`
 Required files:
 
@@ -458,7 +460,7 @@ Residual risk: `{MULTI_ASSISTANT_BRIDGES_RESIDUAL_RISK}`
 Next action: `{MULTI_ASSISTANT_BRIDGES_NEXT_ACTION}`
 
 Module: `installed-operations`
-State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+State: `{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `.ai/assistant/operation-catalog.json`
 Required files:
 
@@ -480,7 +482,7 @@ Residual risk: `{INSTALLED_OPERATIONS_RESIDUAL_RISK}`
 Next action: `{INSTALLED_OPERATIONS_NEXT_ACTION}`
 
 Module: `large-task-orchestration`
-State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+State: `{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `.ai/assistant/flows/large-task-orchestration.flow.md`
 Required files:
 
@@ -496,7 +498,7 @@ Residual risk: `{LARGE_TASK_ORCHESTRATION_RESIDUAL_RISK}`
 Next action: `{LARGE_TASK_ORCHESTRATION_NEXT_ACTION}`
 
 Module: `subagent-delegation`
-State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+State: `{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `.ai/assistant/delegation-policy.json`
 Required files:
 
@@ -525,7 +527,7 @@ Residual risk: `{SUBAGENT_DELEGATION_RESIDUAL_RISK}`
 Next action: `{SUBAGENT_DELEGATION_NEXT_ACTION}`
 
 Module: `change-packages`
-State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+State: `{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `.ai/assistant/change-packages/index.json`
 Required files:
 
@@ -545,7 +547,7 @@ Residual risk: `{CHANGE_PACKAGES_RESIDUAL_RISK}`
 Next action: `{CHANGE_PACKAGES_NEXT_ACTION}`
 
 Module: `team-collaboration`
-State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+State: `{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `.ai/project/team-policy.json`
 Required files:
 
@@ -578,7 +580,7 @@ Residual risk: `{TEAM_COLLABORATION_RESIDUAL_RISK}`
 Next action: `{TEAM_COLLABORATION_NEXT_ACTION}`
 
 Module: `durable-approvals`
-State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+State: `{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `.ai/assistant/approvals/approval-template.md`
 Required files:
 
@@ -592,7 +594,7 @@ Residual risk: `{DURABLE_APPROVALS_RESIDUAL_RISK}`
 Next action: `{DURABLE_APPROVALS_NEXT_ACTION}`
 
 Module: `migration-diff`
-State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+State: `{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `.ai/assistant/templates/migration-note.md`
 Required files:
 
@@ -606,7 +608,7 @@ Residual risk: `{MIGRATION_DIFF_RESIDUAL_RISK}`
 Next action: `{MIGRATION_DIFF_NEXT_ACTION}`
 
 Module: `effectiveness-metrics`
-State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+State: `{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `.ai/assistant/templates/effectiveness-report.md`
 Required files:
 
@@ -621,7 +623,7 @@ Residual risk: `{EFFECTIVENESS_METRICS_RESIDUAL_RISK}`
 Next action: `{EFFECTIVENESS_METRICS_NEXT_ACTION}`
 
 Module: `debug-mode`
-State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+State: `{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `.ai/project/debug/README.md`
 Dependencies: `effectiveness-metrics`, `installed-operations`
 Required files:
@@ -643,7 +645,7 @@ Residual risk: `{DEBUG_MODE_RESIDUAL_RISK}`
 Next action: `{DEBUG_MODE_NEXT_ACTION}`
 
 Module: `support-generation`
-State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+State: `{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `.ai/project/support-generation/registry.json`
 Required files:
 
@@ -659,7 +661,7 @@ Residual risk: `{SUPPORT_GENERATION_RESIDUAL_RISK}`
 Next action: `{SUPPORT_GENERATION_NEXT_ACTION}`
 
 Module: `scaffolding`
-State: `{ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
+State: `{STAGED_ENABLED_DEFERRED_DISABLED_NOT_APPLICABLE_OR_BLOCKED}`
 Owner or file: `{TARGET_SCAFFOLDING_EVIDENCE_OR_NONE}`
 Required files:
 

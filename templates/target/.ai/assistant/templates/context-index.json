@@ -962,8 +962,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 268,
-      "content_digest": "sha256:48f6fabbbf59c42de265bb932b2e175d0b53565af0b7195b3df432158e217a26"
+      "estimated_words": 298,
+      "content_digest": "sha256:f35bb081bd314829a29433f06a2b993eb750ef30678d78d4a4607b2923f916ed"
     },
     {
       "id": "assistant.content.templates-task-decomposition-md",
@@ -988,8 +988,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-DECOMPOSITION-001"
       ],
-      "estimated_words": 208,
-      "content_digest": "sha256:72857eda9260ad76f71c6849cc00e26ef58be7d85abf7e1d77f6a155f3d45eba"
+      "estimated_words": 222,
+      "content_digest": "sha256:66b03ef100929e68f214d8549c3cba9eec047765ab2256070133a8b347f5fb74"
     },
     {
       "id": "assistant.content.templates-team-checkpoint-md",
@@ -1235,8 +1235,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-DELEGATION-001"
       ],
-      "estimated_words": 141,
-      "content_digest": "sha256:c80f25e369068b5747970cc62aefd74ddb68fd3e7bc125c81f62c2127770ed9f"
+      "estimated_words": 198,
+      "content_digest": "sha256:a36ed052995aa6024a623cb1de946111ddb8ad6e59c7a8717852d48b9e6c9032"
     },
     {
       "id": "assistant.content.templates-worker-result-md",
@@ -1262,8 +1262,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-DELEGATION-001"
       ],
-      "estimated_words": 102,
-      "content_digest": "sha256:64cb063a02941d8059ca3b486b80f005be67e03986ebeb5655bdb804b16bf59c"
+      "estimated_words": 119,
+      "content_digest": "sha256:ded4f0b1de695109f01a2b231f4235bab4d3b47d9802f2132f2947d29e195a76"
     },
     {
       "id": "assistant.content.templates-workspace-mode-preflight-md",

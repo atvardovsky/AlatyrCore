@@ -40,6 +40,8 @@ Selected task-scale overlay: `delegated-execution`
    disjoint from concurrent writes and semantic ownership.
 4. Skip delegation when preparation, coordination, or review is likely to cost
    more than primary execution.
+   Treat the minimum independent-packet threshold as an activation gate, not a
+   requested worker count.
 5. Keep semantic, architecture, security, migration, approval, external-
    effect, and final-convergence work with the primary assistant.
 6. Read the selected surface `surface_state`. Proceed only when the state is
@@ -77,6 +79,12 @@ Selected task-scale overlay: `delegated-execution`
    acceptance, validation, capability, and authorization are resolved.
 5. Keep `L6` and `L7` work primary-only. Split evidence collection into
    separate `L1` subtasks when useful.
+6. Apply the target tree limits for depth, total delegates, children per
+   parent, aggregate context, retries, and parallel work. The primary owns all
+   dispatch. Workers may propose child packets but cannot launch them.
+7. Assign one unique coverage key per packet and stop at evidence saturation.
+   Reject duplicate or overlapping coverage unless the primary records a
+   bounded reconciliation reason.
 
 ## Packet And Dispatch
 
@@ -88,6 +96,8 @@ Selected task-scale overlay: `delegated-execution`
    independent sidecars or workstreams that materially reduce wall-clock time.
 4. Use parallel dispatch only for disjoint write scopes. Stop a packet when
    risk, ambiguity, permissions, dependencies, or scope expand.
+   Also stop at the depth, worker, context, or retry limit and record the
+   normalized stop reason.
 5. Provider-native worker definitions are thin target bindings. Generate or
    update them only for a verified supported surface and record their paths in
    that surface's capability record.
@@ -112,6 +122,8 @@ Selected task-scale overlay: `delegated-execution`
 7. Retry only target-declared transient or locally repairable failures. Reject
    scope violations, return contradictions to the primary, and revalidate
    stale results against current repository state.
+8. Review child proposals as new primary-owned dispatch decisions. A worker
+   result cannot expand the tree by itself.
 
 ## Final Evidence
 
@@ -125,6 +137,7 @@ Report:
 - context, actions, tools, write scope, and isolation
 - delegate validation and primary review result
 - fallback, rejected output, rework, and residual risk
+- tree depth and budget use, coverage keys, child proposals, and stop reasons
 - measured latency or cost only when comparable evidence was captured
 
 ## Rejection Criteria
