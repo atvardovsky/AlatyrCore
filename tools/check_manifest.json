@@ -2567,10 +2567,11 @@
         "README.md",
         "framework/**",
         "installer/**",
-        "templates/target/**",
-        "tools/check_bridge_templates.py",
-        "tools/check_framework_consistency.py"
-      ],
+      "templates/target/**",
+      "tools/check_bridge_templates.py",
+      "tools/check_framework_consistency.py",
+      "tools/framework_consistency/**"
+    ],
       "always_for_changed": true,
       "depends_on": [
         "framework-metadata",
@@ -2587,10 +2588,11 @@
         "installer/**",
         "templates/target/**"
       ],
-      "implementation_paths": [
-        "tools/check_bridge_templates.py",
-        "tools/check_framework_consistency.py"
-      ],
+    "implementation_paths": [
+      "tools/check_bridge_templates.py",
+      "tools/check_framework_consistency.py",
+      "tools/framework_consistency/**"
+    ],
       "resource_class": "heavy",
       "timeout_seconds": 300
     },
