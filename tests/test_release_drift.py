@@ -17,6 +17,7 @@ from check_release_drift import (  # noqa: E402
     nearest_release_baseline,
     nearest_tagged_baseline,
     prior_changelog_versions,
+    unreleased_section_is_empty,
     validate_committed_report,
 )
 from check_versioning import (  # noqa: E402
@@ -26,6 +27,18 @@ from check_versioning import (  # noqa: E402
 
 
 class ReleaseBaselineTests(unittest.TestCase):
+    def test_release_checkpoint_requires_empty_unreleased_section(self) -> None:
+        self.assertTrue(
+            unreleased_section_is_empty(
+                "# Changelog\n\n## Unreleased\n\n- No unreleased changes.\n\n## 1.0.0\n"
+            )
+        )
+        self.assertFalse(
+            unreleased_section_is_empty(
+                "# Changelog\n\n## Unreleased\n\n- Pending change.\n\n## 1.0.0\n"
+            )
+        )
+
     def test_committed_report_requires_completed_source_validation(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

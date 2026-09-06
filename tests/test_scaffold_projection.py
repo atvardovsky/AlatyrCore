@@ -222,6 +222,32 @@ class ScaffoldProjectionTests(unittest.TestCase):
                 )
             )
 
+    def test_write_preflight_does_not_leave_partial_scaffold(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+            (target / "AGENTS.md").write_text("target-owned\n", encoding="utf-8")
+
+            actions, blocked = plan(
+                SimpleNamespace(
+                    target=target,
+                    write=True,
+                    overwrite_existing=False,
+                    profile="kernel",
+                    projection_purpose="target",
+                    framework_pack="matched",
+                    enable_module=[],
+                    assistant_surface=[],
+                )
+            )
+
+            self.assertEqual(actions, [])
+            self.assertTrue(blocked)
+            self.assertFalse((target / ".ai").exists())
+            self.assertEqual(
+                (target / "AGENTS.md").read_text(encoding="utf-8"),
+                "target-owned\n",
+            )
+
     def test_missing_profile_defaults_to_kernel(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             target = Path(directory)

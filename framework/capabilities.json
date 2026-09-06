@@ -241,12 +241,14 @@
     "multi-assistant-bridges": {
       "module_kind": "assistant-infrastructure",
       "min_framework_pack": "core",
-      "requires": ["assistant-runtime-capabilities"],
+      "requires": ["assistant-runtime-capabilities", "installed-operations"],
       "rule_ids": ["ALATYR-BRIDGE-001"],
       "framework_files": ["bridge-capability-matrix.md"],
       "target_files": [
+        "AI_ASSISTANTS.md",
         ".ai/assistant/bridge-capability-matrix.md",
-        ".ai/assistant/assistant-capabilities.json"
+        ".ai/assistant/assistant-capabilities.json",
+        ".ai/assistant/gates/checklist.md"
       ],
       "check_ids": ["assistant-surface-conformance", "bridge-capability-matrix"]
     },
@@ -264,6 +266,8 @@
         ".ai/assistant/flows/operation-routing.flow.md",
         ".ai/assistant/flows/adapter-health.flow.md",
         ".ai/assistant/templates/pre-change-preview.md",
+        ".ai/assistant/templates/post-install-message.md",
+        ".ai/assistant/templates/post-update-message.md",
         ".ai/assistant/policies/action-authorization.json"
       ],
       "check_ids": ["action-authorization", "operation-catalog", "operation-index", "operation-help"]

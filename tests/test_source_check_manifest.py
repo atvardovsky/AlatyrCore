@@ -23,6 +23,52 @@ from local_python_import_graph import LocalPythonImportGraph  # noqa: E402
 
 
 class SourceCheckManifestTests(unittest.TestCase):
+    def test_load_manifest_rejects_non_object_root(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            manifest = Path(directory) / "manifest.json"
+            manifest.write_text("[]\n", encoding="utf-8")
+
+            with self.assertRaisesRegex(ValueError, "must contain a JSON object"):
+                load_manifest(manifest, root=Path(directory))
+
+    def test_load_manifest_rejects_invalid_excluded_profiles(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            tools = root / "tools"
+            tools.mkdir()
+            (tools / "example.py").write_text("print('ok')\n", encoding="utf-8")
+            manifest = tools / "check_manifest.json"
+            manifest.write_text(
+                """
+{
+  "schema_version": 2,
+  "manifest_kind": "alatyr-source-checks",
+  "defaults": {
+    "profiles": ["full"],
+    "platforms": ["all"],
+    "write_scope": "none",
+    "depends_on": [],
+    "timeout_seconds": 30,
+    "resource_class": "standard"
+  },
+  "checks": [
+    {
+      "id": "example",
+      "command": ["tools/example.py"],
+      "excluded_profiles": ["unsupported"],
+      "contract_inputs": ["tools/check_manifest.json"],
+      "implementation_paths": ["tools/example.py"],
+      "trigger_paths": ["tools/check_manifest.json", "tools/example.py"]
+    }
+  ]
+}
+""".strip(),
+                encoding="utf-8",
+            )
+
+            with self.assertRaisesRegex(ValueError, "excluded_profiles"):
+                load_manifest(manifest, root=root)
+
     def test_reverse_dependency_closure_reaches_transitive_importers(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -43,6 +89,23 @@ class SourceCheckManifestTests(unittest.TestCase):
                 impacted,
                 {leaf.resolve(), middle.resolve(), top.resolve()},
             )
+
+    def test_transitive_dependency_closure_is_cached_per_root(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            tools = root / "tools"
+            tools.mkdir()
+            leaf = tools / "leaf.py"
+            top = tools / "top.py"
+            leaf.write_text("VALUE = 1\n", encoding="utf-8")
+            top.write_text("import leaf\n", encoding="utf-8")
+            graph = LocalPythonImportGraph(root)
+
+            self.assertEqual(graph.transitive_dependencies(top), {leaf.resolve()})
+            scan_count = len(graph._scans)
+            self.assertEqual(graph.transitive_dependencies(top), {leaf.resolve()})
+            self.assertEqual(len(graph._scans), scan_count)
+            self.assertEqual(len(graph._transitive_dependencies), 1)
 
     def test_transitive_dependency_closure_reaches_shared_path_contract(self) -> None:
         dependencies = transitive_local_tool_dependencies(
@@ -185,6 +248,7 @@ class SourceCheckManifestTests(unittest.TestCase):
 
         self.assertEqual(checks[0]["id"], "example")
         self.assertEqual(checks[0]["always_for_changed"], False)
+        self.assertEqual(checks[0]["excluded_profiles"], [])
         self.assertEqual(checks[0]["resource_class"], "standard")
 
     def test_valid_manifest_path_rejects_escaping_paths(self) -> None:

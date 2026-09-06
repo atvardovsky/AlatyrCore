@@ -983,14 +983,15 @@ engineering evidence and project-knowledge delivery are needed, `standard` for
 common lifecycle/product operations, and `full` for the same target surface
 with the complete portable framework pack. Optional modules and
 assistant-native bridge files remain opt-in. Source conformance checks use
-`--projection-purpose conformance` to materialize every template inside an
-isolated fixture; target scaffolding uses the default `target` purpose. Use
+the internal conformance projection API to materialize every template inside
+an isolated fixture; the target scaffolder CLI rejects writable conformance
+projection and uses the default `target` purpose. Use
 repeatable
 `--assistant-surface <id-or-alias>` selections only for clients the target
 actually uses; no native bridge or `.agents/skills/README.md` placeholder is
-scaffolded by default. Native bridge selection currently requires
-`--profile full` because those compact bridges route to the complete assistant
-support layer. By default,
+scaffolded by default. Native bridge selection adds its dependency-closed
+assistant capability and installed-operation support without promoting the
+target to a broader support profile. By default,
 `--framework-pack matched` selects the
 `kernel`, `core`, `standard`, or `complete` portable pack that matches the
 support profile. Selective packs project their rule registry, ownership map, and file

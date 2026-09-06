@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import dataclass
+from functools import lru_cache
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -68,11 +69,22 @@ class ResolvedComposition:
     source_digests: tuple[tuple[str, str], ...]
 
 
+@lru_cache(maxsize=None)
 def _object(path: Path) -> dict[str, Any]:
     value = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(value, dict):
         raise ValueError(f"{path} must contain a JSON object")
     return value
+
+
+@lru_cache(maxsize=1)
+def assistant_surface_records() -> tuple[dict[str, Any], ...]:
+    records = _object(ASSISTANT_SURFACES).get("surfaces")
+    if not isinstance(records, list) or not records or not all(
+        isinstance(record, dict) for record in records
+    ):
+        raise ValueError("assistant surface registry must define object records")
+    return tuple(records)
 
 
 def _inheritance_chain(
@@ -103,6 +115,7 @@ def _inheritance_chain(
     return tuple(chain)
 
 
+@lru_cache(maxsize=None)
 def _profile_paths(
     profile: str, projection_purpose: str
 ) -> tuple[tuple[str, ...], tuple[str, ...]]:
@@ -135,10 +148,7 @@ def _profile_paths(
 def _assistant_selection(
     requested: Iterable[str], selected_paths: set[str], *, preserve_unselected: bool
 ) -> tuple[tuple[str, ...], tuple[tuple[str, str], ...], tuple[str, ...], set[str]]:
-    data = _object(ASSISTANT_SURFACES)
-    records = data.get("surfaces")
-    if not isinstance(records, list) or not records:
-        raise ValueError("assistant surface registry must define surfaces")
+    records = assistant_surface_records()
     aliases: dict[str, str] = {}
     paths_by_surface: dict[str, set[str]] = {}
     all_native: set[str] = set()
@@ -211,6 +221,7 @@ def _resolved_pack(profile: str, requested: str, capabilities: tuple[str, ...]) 
     return requested
 
 
+@lru_cache(maxsize=None)
 def resolve_composition(request: CompositionRequest) -> ResolvedComposition:
     if request.projection_purpose not in {"target", "conformance"}:
         raise ValueError(f"unknown projection purpose: {request.projection_purpose}")
@@ -218,7 +229,10 @@ def resolve_composition(request: CompositionRequest) -> ResolvedComposition:
         request.support_profile, request.projection_purpose
     )
     modules = load_modules()
-    enabled = tuple(sorted(dependency_closure(request.requested_capabilities, modules)))
+    requested_capabilities = set(request.requested_capabilities)
+    if request.requested_assistant_surfaces:
+        requested_capabilities.add("multi-assistant-bridges")
+    enabled = tuple(sorted(dependency_closure(requested_capabilities, modules)))
     capability_paths = tuple(
         sorted(
             {

@@ -10,6 +10,7 @@ import json
 import locale
 import os
 import platform
+import string
 import subprocess
 import sys
 import time
@@ -107,6 +108,7 @@ class CompletedSourceCheckRun:
     report_path: Path | None
     cache: SourceCheckCache | None
     cache_events: list[str]
+    process_started: float
 
 
 def _cpu_quota_count() -> int | None:
@@ -243,6 +245,23 @@ def supports_platform(check: dict[str, Any], platform: str) -> bool:
     return "all" in check["platforms"] or platform in check["platforms"]
 
 
+def supports_profile(check: dict[str, Any], profile: str) -> bool:
+    """Return whether a check participates in a requested profile composition."""
+
+    if excludes_profile(check, profile):
+        return False
+    profiles = check["profiles"]
+    if profile == "release":
+        return "full" in profiles or "release" in profiles
+    return profile in profiles
+
+
+def excludes_profile(check: dict[str, Any], profile: str) -> bool:
+    """Return whether manifest metadata vetoes inherited profile selection."""
+
+    return profile in check.get("excluded_profiles", [])
+
+
 def _selected_check(
     check: dict[str, Any],
     *,
@@ -292,7 +311,7 @@ def select_check_plan(
         selected_ids = {
             check["id"]
             for check in checks
-            if "full" in check["profiles"] or "release" in check["profiles"]
+            if supports_profile(check, profile)
             if supports_platform(check, selected_platform)
         }
         for check_id in selected_ids:
@@ -303,6 +322,7 @@ def select_check_plan(
             check
             for check in checks
             if "full" in check["profiles"]
+            and not excludes_profile(check, profile)
             and supports_platform(check, selected_platform)
         ]
         escalation_reasons: list[str] = []
@@ -351,7 +371,8 @@ def select_check_plan(
         selected_ids = {
             check["id"]
             for check in checks
-            if profile in check["profiles"] and supports_platform(check, selected_platform)
+            if supports_profile(check, profile)
+            and supports_platform(check, selected_platform)
         }
         for check_id in selected_ids:
             note(check_id, f"profile:{profile}")
@@ -363,6 +384,7 @@ def select_check_plan(
             check
             for check in checks
             if "full" in check["profiles"]
+            and not excludes_profile(check, profile)
             and supports_platform(check, selected_platform)
         ]
         unmatched = [
@@ -385,6 +407,11 @@ def select_check_plan(
 
     def add_dependencies(check_id: str) -> None:
         for dependency in by_id[check_id]["depends_on"]:
+            if excludes_profile(by_id[dependency], profile):
+                raise ValueError(
+                    f"{check_id} depends on {dependency}, which is excluded from "
+                    f"profile {profile}"
+                )
             if not supports_platform(by_id[dependency], selected_platform):
                 raise ValueError(
                     f"{check_id} depends on {dependency}, which does not support "
@@ -560,13 +587,48 @@ def build_run_identity(
 def resolved_command(check: dict[str, Any], baseline: str | None) -> list[str]:
     command: list[str] = []
     for value in check["command"]:
-        if value == "{baseline}":
-            if not baseline:
-                raise ValueError(f"{check['id']} requires --from-ref")
-            command.append(baseline)
-        else:
-            command.append(value)
+        try:
+            fields = [
+                field
+                for _literal, field, _format_spec, _conversion in (
+                    string.Formatter().parse(value)
+                )
+                if field is not None
+            ]
+        except ValueError as exc:
+            raise ValueError(
+                f"{check['id']} has invalid command placeholder syntax: {value}"
+            ) from exc
+        unsupported = sorted(set(fields) - {"baseline"})
+        if unsupported:
+            raise ValueError(
+                f"{check['id']} has unresolved command placeholders: {unsupported}"
+            )
+        if "baseline" in fields and not baseline:
+            raise ValueError(f"{check['id']} requires --from-ref")
+        command.append(value.format(baseline=baseline))
     return [sys.executable, *command]
+
+
+def record_post_execution_verification(
+    telemetry: dict[str, dict[str, Any]],
+    *,
+    process_started: float,
+    verification_started: float,
+    verification_finished: float,
+) -> None:
+    """Record the measured final snapshot and write-scope verification boundary."""
+
+    telemetry.setdefault("_summary", {}).update(
+        {
+            "post_execution_verification_seconds": round(
+                max(0.0, verification_finished - verification_started), 6
+            ),
+            "elapsed_before_reporting_seconds": round(
+                max(0.0, verification_finished - process_started), 6
+            ),
+        }
+    )
 
 
 def _captured_text(value: str | bytes | None) -> str:
@@ -1457,6 +1519,7 @@ def finalize_run(run: CompletedSourceCheckRun) -> int:
         if result[0] != 0:
             failures.append(check["id"])
 
+    verification_started = time.monotonic()
     try:
         final_snapshot = source_snapshot(ROOT)
         final_source_changes = snapshot_changes(run.before, final_snapshot)
@@ -1489,6 +1552,12 @@ def finalize_run(run: CompletedSourceCheckRun) -> int:
         for change in source_changes:
             print(f"- {change}", file=sys.stderr)
         failures.append("source-write-scope")
+    record_post_execution_verification(
+        run.telemetry,
+        process_started=run.process_started,
+        verification_started=verification_started,
+        verification_finished=time.monotonic(),
+    )
 
     generated_report: dict[str, Any] | None = None
     if run.report_path is not None or run.cache is not None:
@@ -1808,7 +1877,6 @@ def main() -> int:
         )
         execution_finished = time.monotonic()
         source_changes: list[str] = []
-        verification_finished = execution_finished
         telemetry.setdefault("_summary", {}).update(
             {
                 "setup_seconds": round(
@@ -1820,12 +1888,6 @@ def main() -> int:
                 ),
                 "fingerprint_seconds": round(fingerprint_seconds, 6),
                 "execution_seconds": round(execution_finished - execution_started, 6),
-                "post_execution_verification_seconds": round(
-                    verification_finished - execution_finished, 6
-                ),
-                "elapsed_before_reporting_seconds": round(
-                    verification_finished - process_started, 6
-                ),
                 "jobs_mode": jobs_mode,
                 "resolved_jobs": jobs,
             }
@@ -1856,6 +1918,7 @@ def main() -> int:
             report_path=report_path,
             cache=cache,
             cache_events=cache_events,
+            process_started=process_started,
         )
     )
 

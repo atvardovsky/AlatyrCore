@@ -18,30 +18,33 @@ from projection_graph import (  # noqa: E402
     target_projection_nodes,
     validate_projection_graph,
 )
-from scaffold_target_structure import (  # noqa: E402
-    project_assistant_bridges,
-    resolve_assistant_surfaces,
-    resolve_profile_paths,
-    resolved_framework_pack,
-)
-
-
 class CompositionModelTests(unittest.TestCase):
-    def test_shadow_resolution_matches_legacy_profiles(self) -> None:
-        for profile in ("kernel", "core", "standard"):
-            with self.subTest(profile=profile):
-                resolved = resolve_composition(CompositionRequest(profile))
-                legacy_paths = project_assistant_bridges(
-                    resolve_profile_paths(profile, set()), set()
-                )
-                self.assertEqual(
-                    set(resolved.selected_target_paths),
-                    {path.as_posix() for path in legacy_paths},
-                )
-                self.assertEqual(
-                    resolved.framework_pack,
-                    resolved_framework_pack(profile, "matched", set()),
-                )
+    def test_profile_resolution_is_monotonic_and_pack_matched(self) -> None:
+        resolved = {
+            profile: resolve_composition(CompositionRequest(profile))
+            for profile in ("kernel", "core", "standard", "full")
+        }
+        self.assertLess(
+            set(resolved["kernel"].selected_target_paths),
+            set(resolved["core"].selected_target_paths),
+        )
+        self.assertLess(
+            set(resolved["core"].selected_target_paths),
+            set(resolved["standard"].selected_target_paths),
+        )
+        self.assertEqual(
+            set(resolved["standard"].selected_target_paths),
+            set(resolved["full"].selected_target_paths),
+        )
+        self.assertEqual(
+            {profile: value.framework_pack for profile, value in resolved.items()},
+            {
+                "kernel": "kernel",
+                "core": "core",
+                "standard": "standard",
+                "full": "complete",
+            },
+        )
 
     def test_full_separates_target_and_conformance_materialization(self) -> None:
         target = resolve_composition(CompositionRequest("full"))
@@ -70,24 +73,19 @@ class CompositionModelTests(unittest.TestCase):
             set(target.enabled_capabilities) <= set(target.installed_capabilities)
         )
 
-    def test_shadow_resolution_preserves_capability_and_alias_facts(self) -> None:
+    def test_resolution_preserves_capability_and_alias_facts(self) -> None:
         request = CompositionRequest(
             "standard",
             requested_capabilities=("extensions",),
             requested_assistant_surfaces=("openai-codex",),
         )
         resolved = resolve_composition(request)
-        legacy_surfaces = resolve_assistant_surfaces(["openai-codex"])
-        legacy_paths = project_assistant_bridges(
-            resolve_profile_paths("standard", set(resolved.enabled_capabilities)),
-            legacy_surfaces,
-        )
         self.assertIn(("openai-codex", "codex"), resolved.alias_resolutions)
-        self.assertEqual(set(resolved.assistant_surfaces), legacy_surfaces)
-        self.assertEqual(
-            set(resolved.selected_target_paths),
-            {path.as_posix() for path in legacy_paths},
-        )
+        self.assertEqual(set(resolved.assistant_surfaces), {"codex"})
+        self.assertIn("AI_ASSISTANTS.md", resolved.selected_target_paths)
+        self.assertNotIn("CLAUDE.md", resolved.selected_target_paths)
+        self.assertIn("multi-assistant-bridges", resolved.enabled_capabilities)
+        self.assertIn("installed-operations", resolved.enabled_capabilities)
 
     def test_projection_graph_orders_operation_outputs(self) -> None:
         self.assertEqual(
@@ -110,6 +108,43 @@ class CompositionModelTests(unittest.TestCase):
         )
         with self.assertRaisesRegex(ValueError, "multiple owners"):
             validate_projection_graph((first, duplicate))
+
+    def test_projection_graph_rejects_dangling_and_undeclared_inputs(self) -> None:
+        dangling = ProjectionNode(
+            "dangling",
+            "owner",
+            "phase",
+            (),
+            (ProjectionInput("projection-output", "missing.json"),),
+            (ProjectionOutput("result.json", "derived", "replace", "none", False),),
+            "generator",
+            ("check",),
+        )
+        with self.assertRaisesRegex(ValueError, "unknown output"):
+            validate_projection_graph((dangling,))
+
+        source = ProjectionNode(
+            "source",
+            "owner",
+            "phase",
+            (),
+            (),
+            (ProjectionOutput("source.json", "derived", "replace", "none", False),),
+            "generator",
+            ("check",),
+        )
+        consumer = ProjectionNode(
+            "consumer",
+            "owner",
+            "phase",
+            (),
+            (ProjectionInput("projection-output", "source.json"),),
+            (ProjectionOutput("result.json", "derived", "replace", "none", False),),
+            "generator",
+            ("check",),
+        )
+        with self.assertRaisesRegex(ValueError, "without declaring dependency"):
+            validate_projection_graph((source, consumer))
 
     def test_target_projection_graph_assigns_every_output_once(self) -> None:
         paths = (

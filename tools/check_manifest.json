@@ -8,6 +8,7 @@
     "platforms": [
       "all"
     ],
+    "excluded_profiles": [],
     "write_scope": "none",
     "depends_on": [],
     "timeout_seconds": 120,
@@ -2605,6 +2606,9 @@
       "profiles": [
         "change",
         "full"
+      ],
+      "excluded_profiles": [
+        "release"
       ],
       "contract_inputs": [
         "ADAPTER_SCHEMA_VERSION",

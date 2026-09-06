@@ -15,15 +15,23 @@ from pathlib import Path
 from typing import Any, Iterable
 
 from capability_catalog import dependency_closure, load_modules, minimum_pack
-from composition_model import CompositionRequest, ResolvedComposition, resolve_composition
+from composition_model import (
+    CompositionRequest,
+    ResolvedComposition,
+    assistant_surface_records,
+    resolve_composition,
+)
 from path_spec import PathDialect, PathSpec
-from framework_packaging import projected_framework_contents, resolve_framework_files
+from framework_packaging import (
+    pack_names,
+    projected_framework_contents,
+    resolve_framework_files,
+)
 from scaffold_target_structure import (
     FRAMEWORK_ROOT,
     TEMPLATE_ROOT,
     build_target_context_catalogs,
     build_projection_context,
-    load_assistant_surfaces,
     projected_template_content,
 )
 from render_context_catalogs import INDEX_NAME
@@ -198,7 +206,7 @@ def framework_pairs(paths: Iterable[str]) -> list[tuple[str, Path]]:
 
 
 def assistant_surface_summary() -> dict[str, Any]:
-    surfaces = load_assistant_surfaces()
+    surfaces = assistant_surface_records()
     bridge_paths = sorted(
         {
             path
@@ -525,7 +533,7 @@ def build_installed_report(target: Path) -> dict[str, Any]:
     policy = load_support_policy(target)
     bridge_paths = {
         path
-        for surface in load_assistant_surfaces()
+        for surface in assistant_surface_records()
         for path in surface.get("bridge_paths", [])
         if isinstance(path, str)
     }
@@ -663,7 +671,7 @@ def main() -> int:
     )
     parser.add_argument(
         "--framework-pack",
-        choices=["matched", "core", "standard", "complete"],
+        choices=["matched", *pack_names()],
         default="matched",
     )
     parser.add_argument(

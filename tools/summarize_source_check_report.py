@@ -4,11 +4,15 @@
 from __future__ import annotations
 
 import argparse
-import json
 import os
 import sys
 from pathlib import Path
 from typing import Any
+
+from compare_source_check_reports import load_report
+
+
+SUPPORTED_CHECK_STATUSES = {"blocked", "failed", "passed", "reused-pass"}
 
 
 def _duration(value: object) -> str:
@@ -48,11 +52,34 @@ def selected_blocked_checks(checks: list[dict[str, Any]]) -> list[dict[str, Any]
     return [check for check in checks if check.get("status") == "blocked"]
 
 
-def render_summary(report: dict[str, Any], *, source_label: str) -> str:
+def validated_checks(report: dict[str, Any]) -> list[dict[str, Any]]:
+    """Return strictly validated check entries for summary rendering."""
+
     checks = report.get("checks")
     if not isinstance(checks, list):
-        checks = []
-    typed_checks = [check for check in checks if isinstance(check, dict)]
+        raise ValueError("source-check report checks must be a list")
+    validated: list[dict[str, Any]] = []
+    seen_ids: set[str] = set()
+    for index, check in enumerate(checks):
+        if not isinstance(check, dict):
+            raise ValueError(f"source-check report checks[{index}] must be an object")
+        check_id = check.get("id")
+        if not isinstance(check_id, str) or not check_id or check_id in seen_ids:
+            raise ValueError(
+                f"source-check report checks[{index}] has invalid or duplicate id"
+            )
+        status = check.get("status")
+        if status not in SUPPORTED_CHECK_STATUSES:
+            raise ValueError(
+                f"source-check report check {check_id} has unsupported status: {status}"
+            )
+        seen_ids.add(check_id)
+        validated.append(check)
+    return validated
+
+
+def render_summary(report: dict[str, Any], *, source_label: str) -> str:
+    typed_checks = validated_checks(report)
     counts = status_counts(typed_checks)
     timing = report.get("timing") if isinstance(report.get("timing"), dict) else {}
     source = report.get("source") if isinstance(report.get("source"), dict) else {}
@@ -151,7 +178,7 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    if not args.report.is_file():
+    if not args.report.exists():
         if not args.allow_missing:
             print(f"FAIL: source-check report is missing: {args.report}", file=sys.stderr)
             return 1
@@ -163,17 +190,18 @@ def main() -> int:
             github_step_summary=args.github_step_summary,
         )
         return 0
+    if not args.report.is_file():
+        print(f"FAIL: source-check report is not a file: {args.report}", file=sys.stderr)
+        return 1
 
     try:
-        report = json.loads(args.report.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError) as exc:
+        report = load_report(args.report)
+        rendered = render_summary(report, source_label=args.report.as_posix())
+    except (OSError, ValueError) as exc:
         print(f"FAIL: cannot read source-check report: {exc}", file=sys.stderr)
         return 1
-    if not isinstance(report, dict):
-        print("FAIL: source-check report must be a JSON object", file=sys.stderr)
-        return 1
     emit(
-        render_summary(report, source_label=args.report.as_posix()),
+        rendered,
         github_step_summary=args.github_step_summary,
     )
     return 0

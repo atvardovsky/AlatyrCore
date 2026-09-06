@@ -273,6 +273,18 @@ def prior_changelog_versions(current_version: str) -> list[str]:
     return versions[current_index + 1 :]
 
 
+def unreleased_section_is_empty(changelog: str) -> bool:
+    match = re.search(
+        r"^## Unreleased\s*$\n(?P<body>.*?)(?=^##\s|\Z)",
+        changelog,
+        flags=re.MULTILINE | re.DOTALL,
+    )
+    if match is None:
+        return False
+    body = [line.strip() for line in match.group("body").splitlines() if line.strip()]
+    return body == ["- No unreleased changes."]
+
+
 def nearest_tagged_baseline(current_version: str) -> tuple[str, list[str]]:
     prior_versions = prior_changelog_versions(current_version)
     for index, version in enumerate(prior_versions):
@@ -349,6 +361,11 @@ def release_checkpoint(version: str) -> ReleaseBaseline | None:
             raise RuntimeError(
                 f"release checkpoint {path.relative_to(ROOT)} {field} differs from source_commit"
             )
+    if not unreleased_section_is_empty(read_at(commit, "CHANGELOG.md")):
+        raise RuntimeError(
+            f"release checkpoint {path.relative_to(ROOT)} source_commit has "
+            "non-empty Unreleased changes"
+        )
     report_path = ROOT / data["migration_report"]
     if not report_path.is_file():
         raise RuntimeError(

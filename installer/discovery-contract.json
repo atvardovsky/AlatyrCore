@@ -10,6 +10,8 @@
   ],
   "usage": {
     "default": "Use the smallest category set needed for the selected support profile and enabled modules.",
+    "metadata_first": "Inspect root instructions, metadata, names, paths, manifests, and repository structure before reading candidate file contents.",
+    "content_loading": "Load content only for selected categories or when a missing fact, conflict, named boundary, or required validation evidence justifies expansion.",
     "missing_fact": "Record unresolved target facts as missing, blocked, deferred, disabled, or not applicable; do not invent them.",
     "detail_owner": "Detailed findings belong in the target installation plan and target adapter files, not in this source contract."
   },
@@ -35,7 +37,7 @@
       {
         "id": "full",
         "tier": "complete-support",
-        "use_when": "The target needs the complete template surface, selected native assistant bridges, or complete optional-module expansion justified by reviewed target evidence."
+        "use_when": "The target needs complete portable framework support plus explicitly selected assistant surfaces or optional modules justified by reviewed target evidence."
       }
     ]
   },

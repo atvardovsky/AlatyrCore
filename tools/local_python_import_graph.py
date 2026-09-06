@@ -21,6 +21,7 @@ class LocalPythonImportGraph:
         self.modules = self._module_paths()
         self._path_modules = {path: name for name, path in self.modules.items()}
         self._scans: dict[Path, ImportScan] = {}
+        self._transitive_dependencies: dict[Path, frozenset[Path]] = {}
         self._reverse_dependencies: dict[Path, set[Path]] | None = None
 
     def _module_paths(self) -> dict[str, Path]:
@@ -115,8 +116,12 @@ class LocalPythonImportGraph:
         return result
 
     def transitive_dependencies(self, path: Path) -> set[Path]:
+        resolved_path = path.resolve()
+        cached = self._transitive_dependencies.get(resolved_path)
+        if cached is not None:
+            return set(cached)
         closure: set[Path] = set()
-        pending = [path.resolve()]
+        pending = [resolved_path]
         visited: set[Path] = set()
         while pending:
             current = pending.pop()
@@ -124,11 +129,12 @@ class LocalPythonImportGraph:
                 continue
             visited.add(current)
             for dependency in self.scan(current).dependencies:
-                if dependency == path.resolve() or dependency in closure:
+                if dependency == resolved_path or dependency in closure:
                     continue
                 closure.add(dependency)
                 pending.append(dependency)
-        return closure
+        self._transitive_dependencies[resolved_path] = frozenset(closure)
+        return set(closure)
 
     def reverse_dependents(self, changed: set[Path]) -> set[Path]:
         impacted = {path.resolve() for path in changed}

@@ -8,7 +8,10 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from installer_stage_model import load_installer_stage_plan
+from installer_stage_model import (
+    load_installer_stage_plan,
+    validate_required_context_budgets,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -20,6 +23,15 @@ PROSE_SURFACES = [
     ROOT / "installer" / "assistant-installation.flow.md",
     ROOT / "installer" / "readiness-checklist.md",
     ROOT / "installer" / "installation-plan-template.md",
+]
+EXPECTED_STAGES = [
+    "discovery",
+    "scope-selection",
+    "plan-and-approval",
+    "adaptation",
+    "validation",
+    "acceptance-recording",
+    "handoff",
 ]
 
 
@@ -37,6 +49,9 @@ def main() -> int:
         capabilities = load(CAPABILITIES)
         router = load(ROUTER)
         stage_plan = load_installer_stage_plan(ROUTER)
+        budget_usage = validate_required_context_budgets(
+            stage_plan, source_root=ROOT
+        )
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
@@ -45,6 +60,14 @@ def main() -> int:
         failures.append("discovery contract schema_version must be 1")
     if contract.get("contract_kind") != "alatyr-installation-discovery-contract":
         failures.append("discovery contract kind is invalid")
+    usage = contract.get("usage")
+    if not isinstance(usage, dict):
+        failures.append("discovery contract usage must contain an object")
+    else:
+        if "metadata" not in usage.get("metadata_first", ""):
+            failures.append("discovery contract must require metadata-first inspection")
+        if "Load content only" not in usage.get("content_loading", ""):
+            failures.append("discovery contract must make content loading conditional")
 
     stages = router.get("stages")
     if not isinstance(stages, dict):
@@ -72,15 +95,43 @@ def main() -> int:
         "depends_on", []
     ):
         failures.append("installer scope-selection stage must depend on discovery")
-    if [stage.stage_id for stage in stage_plan.stages] != router.get("routing_order"):
+    if router.get("routing_order") != EXPECTED_STAGES:
+        failures.append("installer context router stage order is invalid")
+    if [stage.stage_id for stage in stage_plan.stages] != EXPECTED_STAGES:
         failures.append("installer stage read model differs from routing_order")
     for stage in stage_plan.stages:
         if not stage.required_outputs or not stage.completion_checks:
-            failures.append(f"installer stage {stage.stage_id} lacks output or completion contracts")
-        if stage.authorization_ceiling == "modify" and stage.stage_id != "adaptation":
+            failures.append(
+                f"installer stage {stage.stage_id} lacks output or completion contracts"
+            )
+        if stage.authorization_ceiling == "modify" and stage.stage_id not in {
+            "adaptation",
+            "acceptance-recording",
+        }:
             failures.append(
                 f"installer stage {stage.stage_id} unexpectedly permits modification"
             )
+    stage_by_id = {stage.stage_id: stage for stage in stage_plan.stages}
+    acceptance = stage_by_id.get("acceptance-recording")
+    handoff = stage_by_id.get("handoff")
+    if acceptance is None or acceptance.authorization_ceiling != "modify":
+        failures.append("installer acceptance-recording stage must permit modification")
+    if acceptance is not None and acceptance.depends_on != ("validation",):
+        failures.append("installer acceptance-recording must depend on validation")
+    if handoff is None or handoff.authorization_ceiling != "inspect":
+        failures.append("installer handoff stage must remain inspect-only")
+    if handoff is not None and handoff.depends_on != ("acceptance-recording",):
+        failures.append("installer handoff must depend on acceptance-recording")
+
+    checkpoint_contract = router.get("checkpoint_contract")
+    if (
+        not isinstance(checkpoint_contract, dict)
+        or checkpoint_contract.get("id")
+        != "alatyr-installer-stage-checkpoint-v3"
+        or "every required output and evidence ID"
+        not in checkpoint_contract.get("coverage", "")
+    ):
+        failures.append("installer checkpoint contract is incomplete")
 
     profile_selection = contract.get("profile_selection")
     expected_profiles = ["kernel", "core", "standard", "full"]
@@ -182,6 +233,20 @@ def main() -> int:
             failures.append(
                 f"{path.relative_to(ROOT)} must mention the kernel support profile"
             )
+    flow_text = (ROOT / "installer/assistant-installation.flow.md").read_text(
+        encoding="utf-8"
+    )
+    for required_text in [
+        "## Metadata-First Target Discovery",
+        "The following list is a discovery inventory, not a required reading list.",
+        "explicit `acceptance-recording` stage",
+        "inspect-only `handoff` stage",
+    ]:
+        if required_text not in flow_text:
+            failures.append(
+                "installer flow misses required stage/discovery wording: "
+                + required_text
+            )
 
     if failures:
         for failure in failures:
@@ -189,7 +254,12 @@ def main() -> int:
         return 1
     print(
         "OK: installer discovery contract covers "
-        f"{len(modules)} modules and {len(category_ids)} base categories"
+        f"{len(modules)} modules and {len(category_ids)} base categories; "
+        "required-context headroom "
+        + ", ".join(
+            f"{usage.stage_id}={usage.headroom_ratio:.0%}"
+            for usage in budget_usage
+        )
     )
     return 0
 

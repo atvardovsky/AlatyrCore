@@ -51,6 +51,7 @@ EXPECTED_INSTALL_STAGES = [
     "plan-and-approval",
     "adaptation",
     "validation",
+    "acceptance-recording",
     "handoff",
 ]
 EXPECTED_SMALL_TASK_PROFILES = {"docs-local", "source-tooling"}

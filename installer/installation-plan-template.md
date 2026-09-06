@@ -521,6 +521,11 @@ metadata.
 - Migration assessment path or manual baseline comparison:
 - Checked-out target branch and revision:
 - Adapter validation phase (`migration-staging` or `acceptance`):
+- Acceptance-recording authorization and state-record-only write scope:
+- Installation-state and transition output bindings:
+- Inspect-only handoff evidence bindings:
+- Reusable checkpoint stage, cumulative output/evidence ID digests, and
+  verification result, or reason checkpoint reuse is disabled:
 - Active placeholder resolution plan for required and enabled-capability
   surfaces:
 - Manifest/module-profile synchronization plan:

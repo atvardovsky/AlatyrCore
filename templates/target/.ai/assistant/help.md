@@ -7,9 +7,15 @@ local command in `{TARGET_VALIDATION_OR_LOCAL_COMMANDS}`.
 These aliases are chat/request shortcuts, not shell commands.
 
 First-use packet: `.ai/assistant/entry-packet.json`.
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/help-reference.md"]} -->
 Full operation reference: `.ai/assistant/help-reference.md`.
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/operation-index.json"]} -->
 Compact operation index: `.ai/assistant/operation-index.json`.
+<!-- /alatyr:scaffold-fragment -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/operation-catalog.json"]} -->
 Canonical operation catalog: `.ai/assistant/operation-catalog.json`.
+<!-- /alatyr:scaffold-fragment -->
 
 Send `Alatyr` by itself for compact adapter state and up to three relevant
 actions. Send `Alatyr status` for compact read-only adapter health. Send
@@ -40,8 +46,10 @@ Default routing:
   ambiguity, conflict, or adapter repair requires human-readable detail.
 - Use `.ai/assistant/module-profile.md` only when module state is missing from
   the packet, disputed, or under repair.
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/operation-index.json",".ai/assistant/operation-catalog.json"]} -->
 - Load `.ai/assistant/operation-index.json` for an exact operation ID or alias.
   Load the full catalog only for bare `Alatyr`, ambiguity, or operation repair.
+<!-- /alatyr:scaffold-fragment -->
 - For support changes, start with support-state delta evidence. Load only
   changed support owners, selected relationship shards, and affected target
   source owners; hashes locate change and do not prove semantics.
@@ -52,18 +60,24 @@ Default routing:
 
 Operation: `help`
 Use when: the user asks what Alatyr can do or the request is unclear.
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/flows/operation-routing.flow.md"]} -->
 Flow: `.ai/assistant/flows/operation-routing.flow.md`
+<!-- /alatyr:scaffold-fragment -->
 Minimum input: goal or suspected task area.
 
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/flows/adapter-health.flow.md"]} -->
 Operation: `adapter-health`
 Use when: the user asks for Alatyr status, doctor, or current adapter health.
 Flow: `.ai/assistant/flows/adapter-health.flow.md`
 Minimum input: optional health scope. Allowed actions are `read-only`.
+<!-- /alatyr:scaffold-fragment -->
 
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/flows/blueprint-driven-change.flow.md"]} -->
 Operation: `product-change`
 Use when: accepted behavior, architecture, data, runtime, or a public contract may change.
 Flow: `.ai/assistant/flows/blueprint-driven-change.flow.md`
 Minimum input: change intent, non-goals, and approval constraints.
+<!-- /alatyr:scaffold-fragment -->
 
 Common shortcuts:
 
@@ -76,8 +90,10 @@ Common shortcuts:
 - `propose comment style`, `document code`, `Alatyr test first`
 - `alatyr-ai-inventory`, `alatyr-suggest-ai`, `alatyr-adaptation`
 
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/help-reference.md"]} -->
 Detailed operations and aliases are in
 `.ai/assistant/help-reference.md`.
+<!-- /alatyr:scaffold-fragment -->
 
 ## Minimal Request Shape
 

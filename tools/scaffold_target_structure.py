@@ -44,12 +44,8 @@ from agent_entry_packet import (
 )
 from bootstrap_index import build_bootstrap_index, render as render_bootstrap_index
 from capability_catalog import (
-    PACK_ORDER,
-    dependency_closure,
     load_modules,
-    minimum_pack,
     shared_surface_merge_requirement,
-    target_files as capability_target_files,
 )
 from framework_packaging import (
     pack_names,
@@ -58,7 +54,11 @@ from framework_packaging import (
     resolve_framework_files,
 )
 from context_catalog import load_codebook
-from composition_model import CompositionRequest, resolve_composition
+from composition_model import (
+    CompositionRequest,
+    ResolvedComposition,
+    resolve_composition,
+)
 from projection_graph import (
     MARKDOWN_PROJECTION_PATHS,
     target_projection_nodes,
@@ -74,8 +74,6 @@ ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE_ROOT = ROOT / "templates" / "target"
 FRAMEWORK_ROOT = ROOT / "framework"
 PROFILE_MANIFEST = ROOT / "tools" / "scaffold_profiles.json"
-ASSISTANT_SURFACES = ROOT / "conformance" / "runs" / "assistant-surfaces.json"
-NEUTRAL_ASSISTANT_ENTRY_PATHS = {Path("AGENTS.md"), Path("AI_ASSISTANTS.md")}
 PROJECTED_MARKDOWN_TARGET_PATHS = {Path(path) for path in MARKDOWN_PROJECTION_PATHS}
 
 
@@ -91,165 +89,6 @@ def profile_names() -> list[str]:
     if not isinstance(profiles, dict):
         raise ValueError("scaffold profile manifest must define profiles")
     return list(profiles)
-
-
-def load_assistant_surfaces() -> list[dict[str, Any]]:
-    data = json.loads(ASSISTANT_SURFACES.read_text(encoding="utf-8"))
-    surfaces = data.get("surfaces") if isinstance(data, dict) else None
-    if not isinstance(surfaces, list) or not surfaces:
-        raise ValueError("assistant surface registry must define surfaces")
-    if not all(isinstance(surface, dict) for surface in surfaces):
-        raise ValueError("assistant surface registry entries must be objects")
-    return surfaces
-
-
-def resolve_assistant_surfaces(requested: list[str] | None) -> set[str]:
-    aliases: dict[str, str] = {}
-    canonical_ids: set[str] = set()
-    for surface in load_assistant_surfaces():
-        surface_id = surface.get("id")
-        surface_aliases = surface.get("aliases", [])
-        if not isinstance(surface_id, str) or not surface_id:
-            raise ValueError("assistant surface registry contains an invalid id")
-        if not isinstance(surface_aliases, list) or not all(
-            isinstance(alias, str) and alias for alias in surface_aliases
-        ):
-            raise ValueError(f"assistant surface {surface_id} has invalid aliases")
-        canonical_ids.add(surface_id)
-        for value in [surface_id, *surface_aliases]:
-            previous = aliases.get(value)
-            if previous is not None and previous != surface_id:
-                raise ValueError(f"duplicate assistant surface name: {value}")
-            aliases[value] = surface_id
-
-    selected: set[str] = set()
-    for value in requested or []:
-        surface_id = aliases.get(value)
-        if surface_id is None:
-            allowed = ", ".join(sorted(canonical_ids))
-            raise ValueError(
-                f"unknown assistant surface: {value}; expected one of {allowed}"
-            )
-        selected.add(surface_id)
-    return selected
-
-
-def project_assistant_bridges(
-    paths: set[Path], selected_surfaces: set[str]
-) -> set[Path]:
-    """Keep native bridge files only for explicitly selected assistant clients."""
-
-    native_paths: set[Path] = set()
-    selected_native_paths: set[Path] = set()
-    selected_neutral_paths: set[Path] = set()
-    for surface in load_assistant_surfaces():
-        surface_id = surface.get("id")
-        bridge_paths = surface.get("bridge_paths")
-        if not isinstance(surface_id, str) or not isinstance(bridge_paths, list) or not all(
-            isinstance(path, str) and path for path in bridge_paths
-        ):
-            raise ValueError("assistant surface registry contains invalid bridge paths")
-        support_paths = surface.get("optional_support_paths", [])
-        if not isinstance(support_paths, list) or not all(
-            isinstance(path, str) and path for path in support_paths
-        ):
-            raise ValueError("assistant surface registry contains invalid support paths")
-        surface_paths = {Path(path) for path in [*bridge_paths, *support_paths]}
-        surface_native_paths = surface_paths - NEUTRAL_ASSISTANT_ENTRY_PATHS
-        native_paths.update(surface_native_paths)
-        if surface_id in selected_surfaces:
-            selected_native_paths.update(surface_native_paths)
-            selected_neutral_paths.update(surface_paths & NEUTRAL_ASSISTANT_ENTRY_PATHS)
-
-    unavailable = {
-        path for path in selected_native_paths if not (TEMPLATE_ROOT / path).is_file()
-    }
-    if unavailable:
-        unavailable_text = ", ".join(path.as_posix() for path in sorted(unavailable))
-        raise ValueError(
-            "selected assistant bridge templates are unavailable: "
-            f"{unavailable_text}"
-        )
-    projected = (paths - native_paths) | selected_native_paths | selected_neutral_paths
-    capability_index = Path(".ai/assistant/assistant-capabilities.json")
-    if capability_index in projected:
-        records = {"generic", *selected_surfaces}
-        projected.update(
-            Path(f".ai/assistant/assistant-capabilities/{surface_id}.json")
-            for surface_id in records
-        )
-    return projected
-
-
-def resolve_profile_paths(
-    profile: str, enabled_modules: set[str] | None = None
-) -> set[Path]:
-    manifest = load_profile_manifest()
-    profiles = manifest.get("profiles")
-    if not isinstance(profiles, dict) or profile not in profiles:
-        raise ValueError(f"unknown scaffold profile: {profile}")
-
-    resolving: set[str] = set()
-
-    def resolve(name: str) -> set[Path]:
-        if name in resolving:
-            raise ValueError(f"cyclic scaffold profile inheritance: {name}")
-        entry = profiles.get(name)
-        if not isinstance(entry, dict):
-            raise ValueError(f"invalid scaffold profile: {name}")
-        resolving.add(name)
-        paths: set[Path] = set()
-        parent = entry.get("extends")
-        if parent is not None:
-            if not isinstance(parent, str) or parent not in profiles:
-                raise ValueError(f"invalid parent for scaffold profile: {name}")
-            paths.update(resolve(parent))
-        items = entry.get("template_files", [])
-        if not isinstance(items, list) or not all(isinstance(item, str) for item in items):
-            raise ValueError(f"invalid template_files for scaffold profile: {name}")
-        paths.update(Path(item) for item in items)
-        if entry.get("include_remaining_template_files") is True:
-            paths.update(
-                path.relative_to(TEMPLATE_ROOT)
-                for path in TEMPLATE_ROOT.rglob("*")
-                if path.is_file()
-            )
-        resolving.remove(name)
-        return paths
-
-    paths = resolve(profile)
-    paths.update(capability_target_files(enabled_modules or set()))
-    return paths
-
-
-def iter_template_files(
-    profile: str = "full", enabled_modules: set[str] | None = None
-) -> list[Path]:
-    return sorted(
-        TEMPLATE_ROOT / relpath
-        for relpath in resolve_profile_paths(profile, enabled_modules)
-    )
-
-
-def resolved_framework_pack(
-    profile: str, requested: str, enabled_modules: set[str] | None = None
-) -> str:
-    profile_pack = {
-        "kernel": "kernel",
-        "core": "core",
-        "standard": "standard",
-        "full": "complete",
-    }[profile]
-    module_pack = minimum_pack(enabled_modules or set())
-    required = max([profile_pack, module_pack], key=PACK_ORDER.__getitem__)
-    if requested == "matched":
-        return required
-    if PACK_ORDER[requested] < PACK_ORDER[required]:
-        raise ValueError(
-            f"framework pack {requested} is too small for support profile {profile} "
-            f"and enabled capabilities {sorted(enabled_modules or set())}"
-        )
-    return requested
 
 
 def iter_framework_files(pack: str = "complete") -> list[Path]:
@@ -277,6 +116,13 @@ class ProjectionContext:
     context_catalogs: dict[Path, str]
     selected_paths: SelectedPathIndex
     generated_by: dict[str, Any] | None
+
+
+@dataclass(frozen=True)
+class ScaffoldRun:
+    composition: ResolvedComposition
+    actions: tuple[str, ...]
+    blocked: tuple[str, ...]
 
 
 def build_projection_context(
@@ -447,6 +293,7 @@ def projected_template_content(
                     tool_name="scaffold_target_structure.py",
                     manifest_text=manifest_text,
                 ),
+                available_paths={path.as_posix() for path in selected_paths.exact},
             )
         )
     if rel == Path(".ai/assistant/bootstrap-index.json"):
@@ -527,7 +374,7 @@ def projected_template_content(
     return None
 
 
-def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
+def run_scaffold(args: argparse.Namespace) -> ScaffoldRun:
     target = args.target.resolve()
     profile = getattr(args, "profile", "kernel")
     requested_pack = getattr(args, "framework_pack", "matched")
@@ -536,8 +383,6 @@ def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
         getattr(args, "assistant_surface", []) or []
     )
     projection_purpose = getattr(args, "projection_purpose", "target")
-    if requested_assistant_surfaces:
-        requested_modules.add("multi-assistant-bridges")
     composition = resolve_composition(
         CompositionRequest(
             support_profile=profile,
@@ -558,6 +403,14 @@ def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
     selected = selected_templates | {
         Path(".ai") / "framework" / name for name in framework_files
     }
+    projection_nodes = target_projection_nodes(path.as_posix() for path in selected)
+    nodes_by_id = {node.node_id: node for node in projection_nodes}
+    projection_order = validate_projection_graph(projection_nodes)
+    ordered_projection_paths = [
+        Path(output.path)
+        for node_id in projection_order
+        for output in nodes_by_id[node_id].outputs
+    ]
     projected_manifest_text = project_manifest(
         (TEMPLATE_ROOT / ".ai/alatyr.yaml").read_text(encoding="utf-8"),
         profile,
@@ -574,7 +427,9 @@ def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
         selected, enabled_modules, generated_by=projection_provenance
     )
     projected_target_contents: dict[Path, str] = {}
-    for rel in selected_templates:
+    for rel in ordered_projection_paths:
+        if rel not in selected_templates:
+            continue
         if rel.name == INDEX_NAME:
             continue
         content = projected_template_content(
@@ -602,13 +457,40 @@ def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
 
     if not target.exists():
         blocked.append(f"target does not exist: {target}")
-        return actions, blocked
+        return ScaffoldRun(composition, tuple(actions), tuple(blocked))
     if not target.is_dir():
         blocked.append(f"target is not a directory: {target}")
-        return actions, blocked
+        return ScaffoldRun(composition, tuple(actions), tuple(blocked))
 
     support_state_rel = Path(STATE_PATH)
-    for rel in sorted(selected_templates):
+    if args.write:
+        for rel in ordered_projection_paths:
+            if rel not in selected_templates:
+                continue
+            dst = target / rel
+            if not dst.exists():
+                continue
+            merge_strategy = shared_surface_merge_requirement(rel)
+            if merge_strategy is not None:
+                blocked.append(
+                    "shared surface requires adapter-aware merge "
+                    f"({merge_strategy}); preserved existing file: {dst}"
+                )
+            elif not args.overwrite_existing:
+                blocked.append(f"exists, would not overwrite: {dst}")
+        for rel in ordered_projection_paths:
+            if not rel.as_posix().startswith(".ai/framework/"):
+                continue
+            src = FRAMEWORK_ROOT / rel.relative_to(Path(".ai/framework"))
+            dst = target / ".ai" / "framework" / src.relative_to(FRAMEWORK_ROOT)
+            if dst.exists() and not args.overwrite_existing:
+                blocked.append(f"exists, would not overwrite: {dst}")
+        if blocked:
+            return ScaffoldRun(composition, tuple(), tuple(blocked))
+
+    for rel in ordered_projection_paths:
+        if rel not in selected_templates:
+            continue
         if rel == support_state_rel:
             continue
         src = TEMPLATE_ROOT / rel
@@ -623,7 +505,7 @@ def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
         if dst.exists() and not args.overwrite_existing:
             blocked.append(f"exists, would not overwrite: {dst}")
             continue
-        copy_file(
+        changed = copy_file(
             src,
             dst,
             write=args.write,
@@ -636,20 +518,24 @@ def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
                 target,
             ),
         )
-        actions.append(
-            f"template: {portable_relative_path(rel).as_posix()} -> {dst}"
-        )
+        if changed:
+            actions.append(
+                f"template: {portable_relative_path(rel).as_posix()} -> {dst}"
+            )
 
-    for src in iter_framework_files(framework_pack):
-        framework_rel = src.relative_to(FRAMEWORK_ROOT)
+    for rel in ordered_projection_paths:
+        if not rel.as_posix().startswith(".ai/framework/"):
+            continue
+        framework_rel = rel.relative_to(Path(".ai/framework"))
+        src = FRAMEWORK_ROOT / framework_rel
         key = framework_rel.as_posix()
         rel = Path(".ai") / "framework" / framework_rel
         dst = target / rel
         if dst.exists() and not args.overwrite_existing:
             blocked.append(f"exists, would not overwrite: {dst}")
             continue
-        copy_file(src, dst, write=args.write, content=framework_contents[key])
-        actions.append(f"framework: {key} -> {dst}")
+        if copy_file(src, dst, write=args.write, content=framework_contents[key]):
+            actions.append(f"framework: {key} -> {dst}")
 
     if support_state_rel in selected_templates:
         dst = target / support_state_rel
@@ -662,15 +548,25 @@ def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
                 except SupportStateError as exc:
                     blocked.append(f"support state generation failed: {exc}")
                 else:
-                    copy_file(
+                    changed = copy_file(
                         TEMPLATE_ROOT / support_state_rel,
                         dst,
                         write=True,
                         content=render_state(current),
                     )
-            actions.append(f"generated: {STATE_PATH} -> {dst}")
+                    if changed:
+                        actions.append(f"generated: {STATE_PATH} -> {dst}")
+            else:
+                actions.append(f"generated: {STATE_PATH} -> {dst}")
 
-    return actions, blocked
+    return ScaffoldRun(composition, tuple(actions), tuple(blocked))
+
+
+def plan(args: argparse.Namespace) -> tuple[list[str], list[str]]:
+    """Compatibility facade for callers that consume action and blocker lists."""
+
+    result = run_scaffold(args)
+    return list(result.actions), list(result.blocked)
 
 
 def main() -> int:
@@ -721,8 +617,8 @@ def main() -> int:
         default=[],
         help=(
             "Add native bridge files for one canonical or aliased assistant "
-            "surface. Repeat for multiple clients. Native bridges are omitted "
-            "by default and currently require --profile full."
+            "surface and its dependency-closed support. Repeat for multiple "
+            "clients. Native bridges are omitted by default."
         ),
     )
     parser.add_argument(
@@ -738,7 +634,7 @@ def main() -> int:
             "Target adapter support profile. kernel installs minimal adapter "
             "surfaces, core adds durable evidence and project knowledge, "
             "standard adds common lifecycle/product operations, and full "
-            "preserves the historical all-template behavior."
+            "uses standard target support with the complete framework pack."
         ),
     )
     parser.add_argument(
@@ -762,17 +658,19 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    try:
-        actions, blocked = plan(args)
-        composition = resolve_composition(
-            CompositionRequest(
-                support_profile=args.profile,
-                framework_pack_request=args.framework_pack,
-                requested_capabilities=tuple(sorted(set(args.enable_module))),
-                requested_assistant_surfaces=tuple(args.assistant_surface),
-                projection_purpose=args.projection_purpose,
-            )
+    if args.write and args.projection_purpose == "conformance":
+        print(
+            "FAIL: conformance projection is source-fixture-only and cannot be "
+            "written through the target scaffolder CLI",
+            file=sys.stderr,
         )
+        return 1
+
+    try:
+        result = run_scaffold(args)
+        actions = list(result.actions)
+        blocked = list(result.blocked)
+        composition = result.composition
         enabled_modules = set(composition.enabled_capabilities)
         selected_assistant_surfaces = set(composition.assistant_surfaces)
         framework_pack = composition.framework_pack
@@ -817,7 +715,7 @@ def main() -> int:
             file=sys.stderr,
         )
 
-    return 1 if blocked and not actions else 0
+    return 1 if blocked else 0
 
 
 if __name__ == "__main__":

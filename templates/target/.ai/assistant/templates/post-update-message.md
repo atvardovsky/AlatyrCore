@@ -212,8 +212,10 @@ revision.
 Known adapter gaps or migrations:
 `{KNOWN_GAPS_OR_MIGRATIONS}`
 
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/templates/migration-note.md"]} -->
 Migration note:
 `.ai/assistant/templates/migration-note.md` or `{MIGRATION_NOTE_RESULT}`
+<!-- /alatyr:scaffold-fragment -->
 
 Delivery status: `{SENT_SKIPPED_OR_BLOCKED}`
 Delivery mechanism: `{CHAT_SURFACE_OR_UNAVAILABLE}`

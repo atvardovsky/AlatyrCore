@@ -586,15 +586,24 @@ def main() -> int:
     if not isinstance(bridge_templates, list) or not bridge_templates:
         failures.append("bridge template manifest has no templates")
         bridge_templates = []
+    delegation_bridge_references = 0
     for entry in bridge_templates:
         path_value = entry.get("path") if isinstance(entry, dict) else None
+        lines = entry.get("lines") if isinstance(entry, dict) else None
         if not isinstance(path_value, str):
             failures.append("bridge template manifest contains an invalid path")
             continue
-        require_text(
-            ROOT / path_value,
-            [".ai/assistant/prompts/worker-orchestration.md"],
-            failures,
+        if not isinstance(lines, list):
+            failures.append(f"bridge template {path_value} has no line contract")
+            continue
+        rendered = "\n".join(line for line in lines if isinstance(line, str))
+        if "When delegation is selected" in rendered or "Delegate only" in rendered:
+            delegation_bridge_references += 1
+            require_text(ROOT / path_value, ["selected capability record"], failures)
+    if delegation_bridge_references != len(bridge_templates):
+        failures.append(
+            "every bridge template must route selected delegation through its "
+            "installed capability record"
         )
 
     for path in [

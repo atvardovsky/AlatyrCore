@@ -89,8 +89,9 @@ cannot establish this baseline reliably.
 
 A checkpoint is valid only while its `source_commit` is reachable and remains
 an ancestor of the reviewed source tree, its version files match that commit,
-and its migration report contains the same destination versions and contract
-digest. Prefer a real release tag whenever one exists; the resolver always
+its `Unreleased` section is empty, and its migration report contains the same
+destination versions and contract digest. A later development commit with the
+same version is not a release checkpoint. Prefer a real release tag whenever one exists; the resolver always
 selects the nearest prior version and gives its tag precedence over a
 checkpoint for that version.
 

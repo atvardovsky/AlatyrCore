@@ -41,9 +41,11 @@ Entry points:
 - `.ai/assistant/context-profiles.md`
 - `.ai/assistant/module-profile.md`
 - `.ai/project/source-of-truth-registry.md`
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/project/engineering-evidence/index.json",".ai/project/knowledge/index.json",".ai/assistant/context/project-knowledge-routing.json"]} -->
 - `.ai/project/engineering-evidence/index.json` and its target storage policy
 - `.ai/project/knowledge/index.json`, reviewed promotions, compact route shards,
   and `.ai/assistant/context/project-knowledge-routing.json`
+<!-- /alatyr:scaffold-fragment -->
 <!-- alatyr:scaffold-fragment {"requires_paths":[".ai/project/debug/index.json"]} -->
 - `.ai/project/debug/index.json` and its non-canonical storage/privacy policy
   when optional Debug Mode is enabled

@@ -12,7 +12,6 @@ from scaffold_target_structure import (
     PROJECTED_MARKDOWN_TARGET_PATHS,
     PROFILE_MANIFEST,
     TEMPLATE_ROOT,
-    build_target_context_catalogs,
     profile_names,
 )
 from composition_model import CompositionRequest, resolve_composition
@@ -23,6 +22,7 @@ from scaffold_projection import (
     path_available,
     project_assistant_capability_index,
     project_markdown_fragments,
+    selected_path_index,
 )
 
 
@@ -103,32 +103,52 @@ def resolved(
 
 def target_paths(composition) -> set[Path]:
     return {Path(path) for path in composition.selected_target_paths}
-MARKDOWN_PATH_CLAIM_RE = re.compile(r"`(?P<path>\.ai/[A-Za-z0-9_./-]+)`")
+MARKDOWN_PATH_CLAIM_RE = re.compile(
+    r"`(?P<path>(?:\.ai/[A-Za-z0-9_./-]+|AGENTS\.md|AI_ASSISTANTS\.md))`"
+)
+
+
+def projected_context_index_paths(selected: set[Path]) -> set[Path]:
+    indexes: set[Path] = set()
+    for prefix in (Path(".ai/project"), Path(".ai/assistant")):
+        for path in selected:
+            if prefix not in path.parents:
+                continue
+            directory = path.parent
+            while directory == prefix or prefix in directory.parents:
+                indexes.add(directory / "context-index.json")
+                if directory == prefix:
+                    break
+                directory = directory.parent
+    return indexes
 
 
 def check_projected_markdown_claims(
     profile: str,
     selected_templates: set[Path],
     framework_pack: str,
+    generated_indexes: set[Path] | None = None,
 ) -> list[str]:
     """Return unsupported concrete path claims in projected Markdown."""
 
-    generated_indexes = set(build_target_context_catalogs(selected_templates))
+    if generated_indexes is None:
+        generated_indexes = projected_context_index_paths(selected_templates)
     selected = selected_templates | generated_indexes | {
         Path(".ai/framework") / path
         for path in resolve_framework_files(framework_pack)
     }
+    selected_index = selected_path_index(selected)
     failures: list[str] = []
     for relpath in sorted(PROJECTED_MARKDOWN_TARGET_PATHS & selected_templates):
         rendered = project_markdown_fragments(
             (TEMPLATE_ROOT / relpath).read_text(encoding="utf-8"),
-            selected,
+            selected_index,
         )
         if "alatyr:scaffold-fragment" in rendered:
             failures.append(f"{profile} {relpath} retained scaffold fragment markers")
         for match in MARKDOWN_PATH_CLAIM_RE.finditer(rendered):
             claim = match.group("path")
-            if not path_available(claim, selected):
+            if not path_available(claim, selected_index):
                 failures.append(
                     f"{profile} {relpath} claims absent scaffold path: {claim}"
                 )
@@ -215,6 +235,40 @@ def main() -> int:
             failures.append(
                 "explicit Claude selection must overlay its native bridge"
             )
+        assistant_surface_data = json.loads(
+            (
+                Path(__file__).resolve().parents[1]
+                / "conformance/runs/assistant-surfaces.json"
+            ).read_text(encoding="utf-8")
+        )
+        for profile in EXPECTED_PROFILES:
+            bridge_base = resolved(profile, {"multi-assistant-bridges"})
+            bridge_indexes = projected_context_index_paths(target_paths(bridge_base))
+            for surface in assistant_surface_data.get("surfaces", []):
+                surface_id = surface.get("id")
+                if not isinstance(surface_id, str):
+                    continue
+                composition = resolved(
+                    profile, assistant_surfaces=(surface_id,)
+                )
+                selected_templates = target_paths(composition)
+                missing_bridges = sorted(
+                    Path(path)
+                    for path in surface.get("bridge_paths", [])
+                    if Path(path) not in selected_templates
+                )
+                if missing_bridges:
+                    failures.append(
+                        f"{profile}+{surface_id} misses selected bridges: {missing_bridges}"
+                    )
+                failures.extend(
+                    check_projected_markdown_claims(
+                        f"{profile}+{surface_id}",
+                        selected_templates,
+                        composition.framework_pack,
+                        bridge_indexes,
+                    )
+                )
         matched_packs = {
             profile: resolved(profile).framework_pack
             for profile in EXPECTED_PROFILES

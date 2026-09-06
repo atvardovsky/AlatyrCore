@@ -129,7 +129,8 @@ maintain them:
   adaptation records, wrappers, permissions, output contracts, and provenance.
 - `multi-assistant-bridges`: bridge capability matrix and assistant-specific
   wrappers for explicitly selected assistants. It depends on
-  `assistant-runtime-capabilities`.
+  `assistant-runtime-capabilities` and `installed-operations` so every selected
+  bridge has a closed operation and help route.
 - `installed-operations`: post-install operation requests, machine-readable
   catalog, single entry, automatic routing, read-only health, risk-gated
   preview, adapter recheck, help, and chat-message templates.

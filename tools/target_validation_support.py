@@ -4,9 +4,13 @@
 from __future__ import annotations
 
 import hashlib
+import json
+import os
 import re
+import stat
 import subprocess
 from dataclasses import dataclass
+from enum import Enum
 from pathlib import Path
 from typing import Any, Tuple
 
@@ -37,6 +41,27 @@ UNAVAILABLE_HASH_MARKERS = {
     "not recorded",
     "none",
 }
+
+
+class GitEvidenceState(str, Enum):
+    """Availability and stability of Git evidence observed during one run."""
+
+    STABLE = "stable"
+    MUTATED = "mutated"
+    UNAVAILABLE = "unavailable"
+
+
+@dataclass(frozen=True)
+class GitChangeSet:
+    """One immutable, canonical view of changes against a resolved Git base."""
+
+    requested_ref: str
+    selected_revision: str
+    base_revision: str
+    head_revision: str
+    changed_files: tuple[str, ...]
+    canonical_payload: str
+    content_sha256: str
 
 
 @dataclass(frozen=True)
@@ -213,61 +238,55 @@ def normalize_hash_field(value: str) -> str:
     return ""
 
 
-def git_changed_files(target: Path, diff_ref: str) -> list[str] | None:
-    changed: set[str] = set()
-    base_result: list[str] | None = None
-    for comparison in [f"{diff_ref}...HEAD", diff_ref]:
-        base_result = git_name_status_paths(target, comparison)
-        if base_result is not None:
-            changed.update(base_result)
-            break
-    if base_result is None:
+def _git_bytes(target: Path, *arguments: str) -> bytes | None:
+    try:
+        result = subprocess.run(
+            ["git", *arguments],
+            cwd=target,
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+        )
+    except OSError:
         return None
+    return result.stdout if result.returncode == 0 else None
 
-    for arguments in [[], ["--cached"]]:
-        worktree_result = git_name_status_paths(target, *arguments)
-        if worktree_result is None:
-            return None
-        changed.update(worktree_result)
 
-    untracked = subprocess.run(
-        ["git", "ls-files", "--others", "--exclude-standard", "-z", "--", "."],
-        cwd=target,
-        check=False,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.DEVNULL,
+def _git_merge_base(target: Path, left: str, right: str) -> str | None:
+    output = _git_bytes(target, "merge-base", left, right)
+    if output is None:
+        return None
+    revision = output.decode("ascii", errors="replace").strip()
+    return revision or None
+
+
+def _name_status_paths(target: Path, *comparison: str) -> list[str] | None:
+    output = _git_bytes(
+        target,
+        "diff",
+        "--relative",
+        "--name-status",
+        "-z",
+        "--find-renames=50%",
+        *comparison,
+        "--",
+        ".",
     )
-    if untracked.returncode != 0:
+    if output is None:
         return None
-    changed.update(decode_git_path(value) for value in untracked.stdout.split(b"\0") if value)
-    return sorted(changed)
+    return decode_name_status_paths(output)
 
 
-def git_name_status_paths(target: Path, *comparison: str) -> list[str] | None:
-    result = subprocess.run(
-        [
-            "git",
-            "diff",
-            "--relative",
-            "--name-status",
-            "-z",
-            "--find-renames",
-            *comparison,
-        ],
-        cwd=target,
-        check=False,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.DEVNULL,
-    )
-    if result.returncode != 0:
-        return None
-    parts = result.stdout.split(b"\0")
+def decode_name_status_paths(output: bytes) -> list[str] | None:
+    """Decode old and new paths from a NUL-delimited Git name-status stream."""
+
+    parts = output.split(b"\0")
     paths: list[str] = []
     index = 0
     while index < len(parts) and parts[index]:
-        status = parts[index].decode("ascii", errors="replace")
+        status_value = parts[index].decode("ascii", errors="replace")
         index += 1
-        path_count = 2 if status[:1] in {"R", "C"} else 1
+        path_count = 2 if status_value[:1] in {"R", "C"} else 1
         if index + path_count > len(parts):
             return None
         for value in parts[index : index + path_count]:
@@ -275,6 +294,141 @@ def git_name_status_paths(target: Path, *comparison: str) -> list[str] | None:
                 paths.append(decode_git_path(value))
         index += path_count
     return paths
+
+
+def _untracked_paths(target: Path) -> list[str] | None:
+    output = _git_bytes(
+        target, "ls-files", "--others", "--exclude-standard", "-z", "--", "."
+    )
+    if output is None:
+        return None
+    return sorted(
+        decode_git_path(value) for value in output.split(b"\0") if value
+    )
+
+
+def _untracked_payload(target: Path, path: str) -> dict[str, Any] | None:
+    candidate = target / Path(path)
+    try:
+        metadata = candidate.lstat()
+        if stat.S_ISLNK(metadata.st_mode):
+            content = os.readlink(candidate).encode("utf-8", errors="surrogateescape")
+            kind = "symlink"
+            executable = False
+        elif stat.S_ISREG(metadata.st_mode):
+            content = candidate.read_bytes()
+            kind = "file"
+            executable = bool(metadata.st_mode & 0o111)
+        else:
+            return None
+    except (OSError, UnicodeError):
+        return None
+    return {
+        "content_sha256": hashlib.sha256(content).hexdigest(),
+        "executable": executable,
+        "kind": kind,
+        "path": path,
+    }
+
+
+def resolve_git_change_set(
+    target: Path,
+    diff_ref: str,
+    *,
+    head_revision: str | None = None,
+    selected_revision: str | None = None,
+) -> GitChangeSet | None:
+    """Resolve one canonical committed/index/worktree change set.
+
+    The selected ref and HEAD are reduced to an immutable merge base once. The
+    path scope and digest are then derived from the same committed, staged,
+    unstaged, and untracked layers, so approval scope cannot disagree with the
+    content identity on diverged histories.
+    """
+
+    resolved_selected = selected_revision or git_resolve_ref(target, diff_ref)
+    resolved_head = head_revision or git_head_revision(target)
+    if resolved_selected is None or resolved_head is None:
+        return None
+    base_revision = _git_merge_base(target, resolved_selected, resolved_head)
+    if base_revision is None:
+        return None
+
+    layer_arguments = (
+        ("committed", (base_revision, resolved_head)),
+        ("staged", ("--cached", resolved_head)),
+        ("unstaged", ()),
+    )
+    changed: set[str] = set()
+    layers: list[dict[str, str]] = []
+    for layer_id, arguments in layer_arguments:
+        paths = _name_status_paths(target, *arguments)
+        patch = _git_bytes(
+            target,
+            "diff",
+            "--binary",
+            "--full-index",
+            "--no-ext-diff",
+            "--no-textconv",
+            "--no-renames",
+            "--diff-algorithm=myers",
+            *arguments,
+            "--",
+            ".",
+        )
+        if paths is None or patch is None:
+            return None
+        changed.update(paths)
+        layers.append(
+            {
+                "id": layer_id,
+                "patch_sha256": hashlib.sha256(patch).hexdigest(),
+            }
+        )
+
+    untracked_paths = _untracked_paths(target)
+    if untracked_paths is None:
+        return None
+    untracked: list[dict[str, Any]] = []
+    for path in untracked_paths:
+        item = _untracked_payload(target, path)
+        if item is None:
+            return None
+        changed.add(path)
+        untracked.append(item)
+
+    changed_files = tuple(sorted(changed))
+    payload = json.dumps(
+        {
+            "base_revision": base_revision,
+            "changed_files": changed_files,
+            "head_revision": resolved_head,
+            "layers": layers,
+            "schema_version": 1,
+            "untracked": untracked,
+        },
+        ensure_ascii=True,
+        separators=(",", ":"),
+        sort_keys=True,
+    ) + "\n"
+    return GitChangeSet(
+        requested_ref=diff_ref,
+        selected_revision=resolved_selected,
+        base_revision=base_revision,
+        head_revision=resolved_head,
+        changed_files=changed_files,
+        canonical_payload=payload,
+        content_sha256=hashlib.sha256(payload.encode("utf-8")).hexdigest(),
+    )
+
+
+def git_changed_files(target: Path, diff_ref: str) -> list[str] | None:
+    change_set = resolve_git_change_set(target, diff_ref)
+    return list(change_set.changed_files) if change_set is not None else None
+
+
+def git_name_status_paths(target: Path, *comparison: str) -> list[str] | None:
+    return _name_status_paths(target, *comparison)
 
 
 def git_range_changed_files(target: Path, before: str, after: str) -> list[str] | None:
@@ -291,22 +445,8 @@ def decode_git_path(value: bytes) -> str:
 
 
 def git_diff_patch(target: Path, diff_ref: str) -> str | None:
-    commands = [
-        ["git", "diff", "--binary", diff_ref],
-        ["git", "diff", "--binary", f"{diff_ref}...HEAD"],
-    ]
-    for command in commands:
-        result = subprocess.run(
-            command,
-            cwd=target,
-            check=False,
-            text=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.DEVNULL,
-        )
-        if result.returncode == 0:
-            return result.stdout
-    return None
+    change_set = resolve_git_change_set(target, diff_ref)
+    return change_set.canonical_payload if change_set is not None else None
 
 
 def is_protected_surface(path: str) -> bool:
@@ -530,6 +670,13 @@ class GitEvidenceView:
         self.initial_head = git_head_revision(self.target) if target_is_directory else None
         self.initial_branch = git_branch_name(self.target) if target_is_directory else None
         self.initial_status = self._status_snapshot() if target_is_directory else None
+        self.initial_state = (
+            GitEvidenceState.STABLE
+            if self.initial_head is not None
+            and self.initial_branch is not None
+            and self.initial_status is not None
+            else GitEvidenceState.UNAVAILABLE
+        )
 
     def _status_snapshot(self) -> bytes | None:
         try:
@@ -568,11 +715,23 @@ class GitEvidenceView:
     def resolve_ref(self, ref: str) -> str | None:
         return self.resolve_object(ref, "commit")
 
-    def changed_files(self, diff_ref: str) -> list[str] | None:
+    def change_set(self, diff_ref: str) -> GitChangeSet | None:
+        selected_revision = self.resolve_ref(diff_ref)
+        if selected_revision is None:
+            return None
         return self._cached(
-            ("changed-files", diff_ref),
-            lambda: git_changed_files(self.target, diff_ref),
+            ("change-set", diff_ref, selected_revision, self.initial_head),
+            lambda: resolve_git_change_set(
+                self.target,
+                diff_ref,
+                head_revision=self.initial_head,
+                selected_revision=selected_revision,
+            ),
         )
+
+    def changed_files(self, diff_ref: str) -> list[str] | None:
+        change_set = self.change_set(diff_ref)
+        return list(change_set.changed_files) if change_set is not None else None
 
     def range_changed_files(self, before: str, after: str) -> list[str] | None:
         return self._cached(
@@ -581,10 +740,8 @@ class GitEvidenceView:
         )
 
     def diff_patch(self, diff_ref: str) -> str | None:
-        return self._cached(
-            ("diff-patch", diff_ref),
-            lambda: git_diff_patch(self.target, diff_ref),
-        )
+        change_set = self.change_set(diff_ref)
+        return change_set.canonical_payload if change_set is not None else None
 
     def is_ancestor(self, base: str, result: str) -> bool | None:
         return self._cached(
@@ -606,22 +763,35 @@ class GitEvidenceView:
             return approved_revision == selected_revision
         return approved == selected
 
+    def stability(self) -> GitEvidenceState:
+        """Return stable, mutated, or unavailable Git evidence state."""
+
+        if self.initial_state is GitEvidenceState.UNAVAILABLE:
+            return GitEvidenceState.UNAVAILABLE
+        current_head = git_head_revision(self.target)
+        current_branch = git_branch_name(self.target)
+        current_status = self._status_snapshot()
+        if current_head is None or current_branch is None or current_status is None:
+            return GitEvidenceState.MUTATED
+        if (
+            self.initial_head != current_head
+            or self.initial_branch != current_branch
+            or self.initial_status != current_status
+        ):
+            return GitEvidenceState.MUTATED
+        return GitEvidenceState.STABLE
+
     def finalize(self) -> bool:
-        """Return true only when HEAD, branch, and worktree state stayed stable."""
+        """Compatibility facade returning true only for stable Git evidence."""
 
-        if not self.target.is_dir():
-            return False
-        return (
-            self.initial_head == git_head_revision(self.target)
-            and self.initial_branch == git_branch_name(self.target)
-            and self.initial_status == self._status_snapshot()
-        )
+        return self.stability() is GitEvidenceState.STABLE
 
-    def telemetry(self) -> dict[str, int]:
+    def telemetry(self) -> dict[str, int | str]:
         return {
             "query_misses": self.query_misses,
             "cache_hits": self.cache_hits,
             "cached_queries": len(self._cache),
+            "stability": self.stability().value,
         }
 
 

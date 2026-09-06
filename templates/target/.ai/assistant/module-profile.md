@@ -448,6 +448,8 @@ Required files:
 - `.ai/assistant/bridge-capability-matrix.md`
 - `.ai/assistant/assistant-capabilities.json`
 - `.ai/assistant/assistant-capabilities/{SUPPORTED_ASSISTANT}.json`
+- `.ai/assistant/gates/checklist.md`
+- `AI_ASSISTANTS.md`
 
 Reason: `{REASON}`
 Validation or review: `{VALIDATION_OR_REVIEW}`
@@ -467,6 +469,8 @@ Required files:
 - `.ai/assistant/flows/operation-routing.flow.md`
 - `.ai/assistant/flows/adapter-health.flow.md`
 - `.ai/assistant/templates/pre-change-preview.md`
+- `.ai/assistant/templates/post-install-message.md`
+- `.ai/assistant/templates/post-update-message.md`
 - `.ai/assistant/policies/action-authorization.json`
 
 Reason: `{REASON}`

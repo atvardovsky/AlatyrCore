@@ -172,6 +172,7 @@ def build_agent_entry_packet(
     operation_index_text: str | None = None,
     operation_catalog_text: str | None = None,
     generated_by: dict[str, Any] | None = None,
+    available_paths: set[str] | None = None,
 ) -> dict[str, Any]:
     """Return a deterministic compact routing packet from target sources."""
 
@@ -343,7 +344,11 @@ def build_agent_entry_packet(
             "review_after_code_change": True,
             "missing_state": "repair-with-current-modify-authorization",
         },
-        "lazy_human_fallbacks": LAZY_HEAVY_SURFACES,
+        "lazy_human_fallbacks": [
+            path
+            for path in LAZY_HEAVY_SURFACES
+            if available_paths is None or path in available_paths
+        ],
         "reasoning_boundary": {
             "logical_integrity": "required",
             "invariant_derivation": "required",
@@ -378,6 +383,11 @@ def build_from_target(target: Path) -> dict[str, Any]:
             target,
             tool_name="render_target_entry_packet.py",
         ),
+        available_paths={
+            path.relative_to(target).as_posix()
+            for path in target.rglob("*")
+            if path.is_file()
+        },
     )
 
 

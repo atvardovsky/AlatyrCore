@@ -9,7 +9,8 @@ from types import SimpleNamespace
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
-from scaffold_target_structure import plan, resolve_assistant_surfaces  # noqa: E402
+from composition_model import CompositionRequest, resolve_composition  # noqa: E402
+from scaffold_target_structure import plan  # noqa: E402
 from scaffold_projection import path_available, portable_relative_path  # noqa: E402
 
 
@@ -97,7 +98,12 @@ class ScaffoldAssistantSurfaceTests(unittest.TestCase):
 
     def test_unknown_surface_is_rejected(self) -> None:
         with self.assertRaisesRegex(ValueError, "unknown assistant surface"):
-            resolve_assistant_surfaces(["not-a-real-client"])
+            resolve_composition(
+                CompositionRequest(
+                    "kernel",
+                    requested_assistant_surfaces=("not-a-real-client",),
+                )
+            )
 
 
 if __name__ == "__main__":

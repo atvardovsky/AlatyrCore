@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import math
 from dataclasses import dataclass
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -60,6 +61,8 @@ def load_manifest(
 ) -> list[dict[str, Any]]:
     manifest = manifest_path or root / "tools" / "check_manifest.json"
     data = json.loads(manifest.read_text(encoding="utf-8"))
+    if not isinstance(data, dict):
+        raise ValueError("source check manifest must contain a JSON object")
     if data.get("schema_version") != 2 or data.get("manifest_kind") != (
         "alatyr-source-checks"
     ):
@@ -78,6 +81,7 @@ def load_manifest(
         check_id = check.get("id")
         command = check.get("command")
         profiles = check.get("profiles")
+        excluded_profiles = check.get("excluded_profiles", [])
         platforms = check.get("platforms")
         if "owned_paths" in check:
             raise ValueError(f"{check_id}.owned_paths is obsolete; use contract_inputs")
@@ -112,6 +116,12 @@ def load_manifest(
             or not set(profiles) <= ALLOWED_PROFILES
         ):
             raise ValueError(f"{check_id}.profiles is invalid")
+        if (
+            not isinstance(excluded_profiles, list)
+            or len(excluded_profiles) != len(set(excluded_profiles))
+            or not set(excluded_profiles) <= ALLOWED_PROFILES
+        ):
+            raise ValueError(f"{check_id}.excluded_profiles is invalid")
         micro_trigger_paths = validate_optional_path_list(
             check_id, "micro_trigger_paths", check.get("micro_trigger_paths")
         )
@@ -192,6 +202,7 @@ def load_manifest(
         check["implementation_paths"] = implementation_paths
         check["trigger_paths"] = trigger_paths
         check["micro_trigger_paths"] = micro_trigger_paths
+        check["excluded_profiles"] = excluded_profiles
         check["always_for_changed"] = check.get("always_for_changed", False)
         normalized.append(check)
 
@@ -303,13 +314,14 @@ def direct_local_tool_dependencies(script: str) -> set[str]:
     return dependencies
 
 
-def transitive_local_tool_dependencies(script: str) -> set[str]:
+@lru_cache(maxsize=None)
+def transitive_local_tool_dependencies(script: str) -> frozenset[str]:
     """Return the complete statically discoverable local import closure."""
 
-    return {
+    return frozenset(
         path.relative_to(ROOT).as_posix()
         for path in LOCAL_IMPORT_GRAPH.transitive_dependencies(ROOT / script)
-    }
+    )
 
 
 def declaration_matches_source(

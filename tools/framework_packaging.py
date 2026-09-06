@@ -29,6 +29,7 @@ PROJECTED_FILES = {
     "rule-registry.md",
 }
 
+@lru_cache(maxsize=None)
 def load_object(path: Path) -> dict[str, Any]:
     data = json.loads(path.read_text(encoding="utf-8"))
     if not isinstance(data, dict):
@@ -134,6 +135,7 @@ def resolve_framework_files(pack: str) -> set[str]:
     return set(_resolved_framework_file_names(pack))
 
 
+@lru_cache(maxsize=None)
 def project_registry(pack: str) -> dict[str, Any]:
     selected_files = resolve_framework_files(pack)
     data = load_object(REGISTRY)

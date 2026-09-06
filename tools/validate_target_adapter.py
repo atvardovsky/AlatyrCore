@@ -32,6 +32,7 @@ from agent_entry_packet import (
 )
 from bootstrap_index import BOOTSTRAP_PATH, build_from_target
 from target_validation_support import (
+    GitEvidenceState,
     GitEvidenceView,
     ManifestData,
     PathKey,
@@ -726,6 +727,8 @@ class AcceptedDeviation:
 # deviation or severity override. Silent success would make baseline checks
 # unsuitable for CI and framework-update gates.
 BLOCKING_WARNING_CODES = {
+    "APPROVAL_PATCH_HASH_UNAVAILABLE",
+    "DIFF_SCOPE_UNAVAILABLE",
     "FRAMEWORK_FILE_DRIFT",
     "FRAMEWORK_FILE_EXTRA",
     "FRAMEWORK_FILE_MISSING",
@@ -983,11 +986,28 @@ class Validator:
                     "target input changed during validation; discard these findings and rerun",
                     self.rel(mutation.path),
                 )
-            if not self.git.finalize():
+            git_state = self.git.stability()
+            if git_state is GitEvidenceState.MUTATED:
                 self.error(
                     "TARGET_GIT_STATE_MUTATED",
                     "Git HEAD, branch, or worktree state changed during validation; "
                     "discard these findings and rerun",
+                )
+            elif (
+                git_state is GitEvidenceState.UNAVAILABLE
+                and (self.diff_ref or self.validation_scope == "changed")
+                and not any(
+                    finding.code
+                    in {
+                        "CHANGED_VALIDATION_DIFF_UNAVAILABLE",
+                        "DIFF_SCOPE_UNAVAILABLE",
+                    }
+                    for finding in self.findings
+                )
+            ):
+                self.warn(
+                    "DIFF_SCOPE_UNAVAILABLE",
+                    "Git evidence is required for the selected diff scope but is unavailable",
                 )
             self.info(
                 "EVIDENCE_SCOPE_CURRENT_STATE",
@@ -4397,25 +4417,25 @@ class Validator:
                     relpath,
                 )
                 continue
-            patch_text = self.git.diff_patch(self.diff_ref)
-            if patch_text is None:
+            change_set = self.git.change_set(self.diff_ref)
+            if change_set is None:
                 self.warn(
                     "APPROVAL_PATCH_HASH_UNAVAILABLE",
-                    f"could not compute git patch against {self.diff_ref}",
+                    f"could not compute canonical Git change set against {self.diff_ref}",
                     relpath,
                 )
                 continue
-            actual_hash = hashlib.sha256(patch_text.encode("utf-8")).hexdigest()
+            actual_hash = change_set.content_sha256
             if actual_hash.lower() != patch_hash:
                 self.warn(
                     "APPROVAL_PATCH_HASH_MISMATCH",
-                    "current diff hash does not match approved Patch hash",
+                    "current canonical change-set hash does not match approved Patch hash",
                     relpath,
                 )
             else:
                 self.info(
                     "APPROVAL_PATCH_HASH_MATCH",
-                    "current diff hash matches approved Patch hash",
+                    "current canonical change-set hash matches approved Patch hash",
                     relpath,
                 )
 
@@ -5699,6 +5719,16 @@ def load_validator_config(
             )
         )
         return AdapterValidatorConfig(source=path), findings
+    except (OSError, UnicodeError) as exc:
+        findings.append(
+            Finding(
+                "error",
+                "VALIDATOR_CONFIG_READ_ERROR",
+                f"cannot read validator config: {exc}",
+                str(path),
+            )
+        )
+        return AdapterValidatorConfig(source=path), findings
 
     if not isinstance(data, dict):
         findings.append(
@@ -5716,12 +5746,14 @@ def load_validator_config(
     if schema_version not in (None, 1):
         findings.append(
             Finding(
-                "warning",
+                "error",
                 "VALIDATOR_CONFIG_SCHEMA_VERSION",
-                f"unsupported validator config schema_version: {schema_version}",
+                f"unsupported validator config schema_version: {schema_version}; "
+                "configuration was not applied",
                 str(path),
             )
         )
+        return config, findings
 
     config.allow_local_path_patterns = string_list_config(
         data, "allow_local_path_patterns", path, findings
@@ -5769,23 +5801,34 @@ def load_validator_config(
         pass
     elif isinstance(deviations, list):
         for item in deviations:
-            if not isinstance(item, dict) or not isinstance(item.get("code"), str):
+            code = item.get("code") if isinstance(item, dict) else None
+            reason = item.get("reason") if isinstance(item, dict) else None
+            item_path = item.get("path") if isinstance(item, dict) else None
+            if (
+                not isinstance(code, str)
+                or not code.strip()
+                or not isinstance(reason, str)
+                or not reason.strip()
+                or (
+                    item_path is not None
+                    and (not isinstance(item_path, str) or not item_path.strip())
+                )
+            ):
                 findings.append(
                     Finding(
-                        "warning",
+                        "error",
                         "VALIDATOR_CONFIG_ACCEPTED_DEVIATION",
-                        "accepted_deviations entries must be objects with code",
+                        "accepted_deviations entries must contain non-empty code and reason strings; "
+                        "path must be a non-empty string when provided",
                         str(path),
                     )
                 )
                 continue
-            item_path = item.get("path")
-            reason = item.get("reason", "")
             parsed_deviations.append(
                 AcceptedDeviation(
-                    code=item["code"],
-                    path=item_path if isinstance(item_path, str) else None,
-                    reason=reason if isinstance(reason, str) else "",
+                    code=code.strip(),
+                    path=item_path.strip() if isinstance(item_path, str) else None,
+                    reason=reason.strip(),
                 )
             )
     else:

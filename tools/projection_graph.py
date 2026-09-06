@@ -37,14 +37,22 @@ class ProjectionNode:
     deterministic: bool = True
 
 
-FORBIDDEN_SELF_INDEX_OUTPUTS = {
-    ".ai/assistant/bootstrap-index.json",
-    ".ai/framework/file-inventory.json",
-}
-
 MARKDOWN_PROJECTION_PATHS = {
+    ".agents/skills/README.md",
     ".ai/README.md",
     "AI_ASSISTANTS.md",
+    "CLAUDE.md",
+    "GEMINI.md",
+    ".cursor/rules/alatyr-core.mdc",
+    ".cursorrules",
+    ".devin/rules/alatyr-core.md",
+    ".github/copilot-instructions.md",
+    ".github/prompts/gate-review.prompt.md",
+    ".roo/rules/alatyr-core.md",
+    ".rules",
+    ".windsurf/rules/alatyr-core.md",
+    ".windsurfrules",
+    ".ai/assistant/help.md",
     ".ai/assistant/templates/post-install-message.md",
     ".ai/assistant/templates/post-update-message.md",
 }
@@ -141,6 +149,9 @@ def target_projection_nodes(paths: Iterable[str]) -> tuple[ProjectionNode, ...]:
             ".ai/alatyr.yaml",
             ".ai/assistant/context-router.json",
             ".ai/assistant/gates/index.json",
+            ".ai/assistant/policies/action-authorization.json",
+            ".ai/assistant/task-decomposition.json",
+            ".ai/project/support-policy.json",
             ".ai/assistant/operation-catalog.json",
             ".ai/assistant/operation-index.json",
         ),
@@ -153,21 +164,21 @@ def target_projection_nodes(paths: Iterable[str]) -> tuple[ProjectionNode, ...]:
     nodes: list[ProjectionNode] = []
     for path in selected:
         generator_id = projection_generator_id(path)
-        dependencies = tuple(
-            node_ids[dependency]
+        selected_dependency_paths = tuple(
+            dependency
             for dependency in dependency_paths.get(path, ())
             if dependency in node_ids
         )
         if path == ".ai/support-state.json":
-            dependencies = tuple(
-                node_ids[candidate]
-                for candidate in selected
-                if candidate != path
+            selected_dependency_paths = tuple(
+                candidate for candidate in selected if candidate != path
             )
+        dependencies = tuple(
+            node_ids[dependency] for dependency in selected_dependency_paths
+        )
         projection_inputs = tuple(
             ProjectionInput("projection-output", dependency)
-            for dependency in dependency_paths.get(path, ())
-            if dependency in node_ids
+            for dependency in selected_dependency_paths
         )
         source_kind = (
             "framework-file" if path.startswith(".ai/framework/") else "template-file"
@@ -237,6 +248,22 @@ def validate_projection_graph(nodes: Iterable[ProjectionNode]) -> tuple[str, ...
                 )
             output_owners[output.path] = node.node_id
 
+    for node in by_id.values():
+        dependency_ids = set(node.dependencies)
+        dependency_inputs = {
+            item.value for item in node.inputs if item.kind == "projection-output"
+        }
+        for input_path in dependency_inputs:
+            owner = output_owners.get(input_path)
+            if owner is None:
+                raise ValueError(
+                    f"projection node {node.node_id} consumes unknown output: {input_path}"
+                )
+            if owner not in dependency_ids:
+                raise ValueError(
+                    f"projection node {node.node_id} consumes {input_path} without "
+                    f"declaring dependency {owner}"
+                )
     temporary: set[str] = set()
     permanent: set[str] = set()
     ordered: list[str] = []
@@ -256,8 +283,6 @@ def validate_projection_graph(nodes: Iterable[ProjectionNode]) -> tuple[str, ...
         }
         if output_paths & input_paths:
             raise ValueError(f"projection node {node_id} consumes its own output")
-        if output_paths & FORBIDDEN_SELF_INDEX_OUTPUTS and output_paths & input_paths:
-            raise ValueError(f"projection node {node_id} creates a forbidden self index")
         for dependency in node.dependencies:
             visit(dependency)
         temporary.remove(node_id)

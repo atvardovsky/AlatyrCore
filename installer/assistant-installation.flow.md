@@ -27,14 +27,19 @@ Use this flow when:
 Treat root `AGENTS.md` as preloaded. Read `installer/context-router.json` and
 the source version files, then choose the current installation stage. The
 router owns stage order, required and conditional context, stage dependencies,
-required evidence and outputs, completion checks, context budgets,
-authorization ceilings, and prohibited actions. A stage checkpoint is an
-optimization only and must be discarded when its target revision, composition,
-outputs, or validation evidence changes. Both discovery and scope selection
-require `installer/discovery-contract.json`; that contract owns the discovery
-categories and support-profile selection matrix. Inspect the target and record
-category-based discovery evidence before selecting a support profile or
-loading later stage-specific sources.
+stable evidence/output/check IDs, context budgets, authorization ceilings, and
+prohibited actions. Its required-context budget reserves at least 20 percent
+for target evidence and bounded expansion. A stage checkpoint is an
+optimization only. Create or reuse one only through the checkpoint identity
+and verification API in `tools/installer_stage_model.py`; it must bind every
+required output and evidence ID through the completed stage with canonical
+SHA-256 values. Any source input, target revision, composition, output, or
+evidence mismatch denies reuse. A checkpoint never supplies authorization,
+approval, or semantic evidence. Both discovery and scope selection require
+`installer/discovery-contract.json`; that contract owns the discovery
+categories and support-profile selection matrix. Inspect target metadata and
+record category-based evidence before selecting a support profile or loading
+later stage-specific sources.
 
 For a new installation or upgrade, compare
 `framework/file-inventory.json`, file hashes, and rule registries first. Read
@@ -60,6 +65,7 @@ in the owning framework documents and use these IDs for installation routing:
 - `ALATYR-SOURCE-001`
 - `ALATYR-RISK-001`
 - `ALATYR-APPROVAL-001`
+- `ALATYR-AUTHORIZATION-001`
 - `ALATYR-SAFETY-001`
 - `ALATYR-SAFETY-002`
 - `ALATYR-DECOMPOSITION-001`
@@ -77,9 +83,16 @@ in the owning framework documents and use these IDs for installation routing:
 - `ALATYR-LIFECYCLE-001`
 - `ALATYR-EVIDENCE-001`
 
-## Required Target Context
+## Metadata-First Target Discovery
 
-Read in the target repository:
+The following list is a discovery inventory, not a required reading list.
+Inspect root instructions, names, paths, manifests, and other low-cost metadata
+first. Select the smallest discovery categories required by the requested
+profile and modules. Load file contents only when a selected category, missing
+fact, conflict, or named boundary requires evidence. Record unresolved facts
+without broadening discovery by default.
+
+Candidate inventory categories include:
 
 - existing AI instructions and bridge files
 - existing CODEOWNERS or equivalent file-owner metadata
@@ -543,14 +556,22 @@ accepted or ready. Before reporting installation or update completion:
 5. Run strict `acceptance` validation on the checked-out target branch and
    record that branch and exact revision. Repeat this final step separately on
    any other branch whose adapter state is to be accepted.
-6. Update the manifest installation state and its machine-readable transition
-   record together. Require a continuous previous-state chain, the current
-   operation and revision, current-scope authorization evidence, approval
-   evidence when applicable, and the strict validation result. A failed or
-   unavailable strict check cannot produce `accepted`.
+6. End the inspect-only validation stage. Do not mutate installation state as
+   part of validation.
+7. Enter the explicit `acceptance-recording` stage only with current-scope
+   `modify` authorization for the state records. Update the manifest
+   installation state and its machine-readable transition record together.
+   Require a continuous previous-state chain, the current operation and
+   revision, current-scope authorization evidence, approval evidence when
+   applicable, and the strict validation result. This stage may modify only
+   installation-state records; it does not inherit broader adaptation scope.
+   A failed or unavailable strict check cannot produce `accepted`.
    When upgrading a pre-transition-record adapter, initialize the record at
    `staged` with `legacy-migration-baseline` and an explicit unavailable prior-
    history explanation instead of reconstructing unobserved events.
+8. Enter the inspect-only `handoff` stage after acceptance recording. Read the
+   resulting state and current output/validation bindings, then produce the
+   post-install or post-update message without changing repository state.
 
 ## Final Evidence
 

@@ -24,11 +24,13 @@ from check_all import (  # noqa: E402
     historical_duration_estimates,
     load_manifest,
     print_check_result,
+    record_post_execution_verification,
     render_report,
     render_timed_report,
     resolve_report_path,
     resolve_changed_from,
     resolve_job_count,
+    resolved_command,
     run_check,
     reusable_results,
     selection_report,
@@ -518,6 +520,66 @@ class CheckGraphTests(unittest.TestCase):
         ).selected
 
         self.assertIn("release-drift-change", {item["id"] for item in selected})
+
+    def test_live_release_profile_selects_only_release_drift_variant(self) -> None:
+        selected = select_check_plan(
+            load_manifest(), "release", None, platform="linux"
+        ).selected
+        selected_ids = {item["id"] for item in selected}
+
+        self.assertIn("release-drift-release", selected_ids)
+        self.assertNotIn("release-drift-change", selected_ids)
+
+    def test_profile_exclusion_is_generic_and_applies_to_dependencies(self) -> None:
+        excluded = {
+            **check("excluded"),
+            "profiles": ["full"],
+            "excluded_profiles": ["release"],
+            "platforms": ["all"],
+        }
+        dependent = {
+            **check("dependent", "excluded"),
+            "profiles": ["release"],
+            "excluded_profiles": [],
+            "platforms": ["all"],
+        }
+
+        with self.assertRaisesRegex(ValueError, "excluded from profile release"):
+            select_check_plan([excluded, dependent], "release", None, platform="linux")
+
+    def test_command_planning_rejects_unresolved_placeholders(self) -> None:
+        item = {**check("placeholder"), "command": ["tools/example.py", "{other}"]}
+
+        with self.assertRaisesRegex(ValueError, "unresolved command placeholders"):
+            resolved_command(item, "main")
+
+    def test_command_planning_resolves_baseline_and_preserves_cli_shape(self) -> None:
+        item = {
+            **check("baseline"),
+            "command": ["tools/example.py", "--from-ref", "{baseline}"],
+        }
+
+        self.assertEqual(
+            resolved_command(item, "origin/main"),
+            [sys.executable, "tools/example.py", "--from-ref", "origin/main"],
+        )
+
+    def test_post_execution_verification_records_measured_duration(self) -> None:
+        telemetry: dict[str, dict[str, Any]] = {"_summary": {"execution_seconds": 2.0}}
+
+        record_post_execution_verification(
+            telemetry,
+            process_started=10.0,
+            verification_started=14.0,
+            verification_finished=14.75,
+        )
+
+        self.assertEqual(
+            telemetry["_summary"]["post_execution_verification_seconds"], 0.75
+        )
+        self.assertEqual(
+            telemetry["_summary"]["elapsed_before_reporting_seconds"], 4.75
+        )
 
     def test_dependency_runs_only_after_successful_prerequisite(self) -> None:
         completed: list[str] = []
