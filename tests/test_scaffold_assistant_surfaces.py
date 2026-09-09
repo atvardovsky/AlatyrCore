@@ -58,6 +58,7 @@ class ScaffoldAssistantSurfaceTests(unittest.TestCase):
         self.assertIn("AI_ASSISTANTS.md", paths)
         self.assertNotIn(".rules", paths)
         self.assertNotIn("CLAUDE.md", paths)
+        self.assertNotIn("GIGACODE.md", paths)
         self.assertNotIn(".roo/rules/alatyr-core.md", paths)
 
     def test_alias_selects_only_the_matching_native_bridge(self) -> None:
@@ -79,6 +80,36 @@ class ScaffoldAssistantSurfaceTests(unittest.TestCase):
         self.assertIn("CLAUDE.md", paths)
         self.assertIn(".roo/rules/alatyr-core.md", paths)
         self.assertNotIn(".rules", paths)
+
+    def test_sourcecraft_uses_existing_agents_bridge(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            actions, _blocked = plan(scaffold_args(Path(directory), "sourcecraft"))
+
+        paths = action_paths(actions)
+        self.assertIn("AGENTS.md", paths)
+        self.assertIn(".ai/assistant/assistant-capabilities/sourcecraft.json", paths)
+        self.assertNotIn("GIGACODE.md", paths)
+
+    def test_gigacode_selects_native_bridge_and_root_agents(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            actions, _blocked = plan(scaffold_args(Path(directory), "gigacode"))
+
+        paths = action_paths(actions)
+        self.assertIn("AGENTS.md", paths)
+        self.assertIn("GIGACODE.md", paths)
+        self.assertIn(".ai/assistant/assistant-capabilities/gigacode.json", paths)
+
+    def test_openai_alias_selects_codex_surface(self) -> None:
+        resolved = resolve_composition(
+            CompositionRequest(
+                "standard",
+                requested_assistant_surfaces=("openai", "chatgpt-codex"),
+            )
+        )
+
+        self.assertEqual(("codex",), resolved.assistant_surfaces)
+        self.assertIn(("openai", "codex"), resolved.alias_resolutions)
+        self.assertIn(("chatgpt-codex", "codex"), resolved.alias_resolutions)
 
     def test_explicit_surface_expands_a_partial_profile(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

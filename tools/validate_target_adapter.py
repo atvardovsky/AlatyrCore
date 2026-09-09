@@ -302,6 +302,7 @@ BRIDGE_FILES = [
     "AI_ASSISTANTS.md",
     "CLAUDE.md",
     "GEMINI.md",
+    "GIGACODE.md",
     ".github/copilot-instructions.md",
     ".cursorrules",
     ".cursor/rules/alatyr-core.mdc",

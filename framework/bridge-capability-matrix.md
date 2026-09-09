@@ -184,8 +184,10 @@ for the assistant surfaces tracked by the source conformance surface list:
 - kiro
 - zed-agent
 - opencode
+- sourcecraft
 - claude
 - gemini
+- gigacode
 - github-copilot
 - cursor
 - devin-cascade
@@ -201,14 +203,22 @@ instructions. Keep runtime capabilities unknown until an exact-client run
 records instruction precedence, configuration/toggle state, permissions,
 skills, delegation, diagram presentation, and post-install/update delivery.
 
-Use root `AGENTS.md` for Junie, Cline, Kiro, and OpenCode unless target evidence
-requires a reviewed native adaptation. Preserve `.junie/AGENTS.md`, Junie
-custom-guideline settings, Cline rule directories/toggles, Kiro steering and
-custom-agent resources, and OpenCode V1/V2 differences during inspection. Use
-the generated `.rules` thin bridge for Zed Agent because it is the first
-compatible project instruction path. Keep `.roo/rules/alatyr-core.md` only as
-a legacy bridge; Roo Code was archived and shut down on 2026-05-15, so do not
-claim maintained or current runtime support.
+Use root `AGENTS.md` for Junie, Cline, Kiro, OpenCode, and Yandex SourceCraft
+unless target evidence requires a reviewed native adaptation. Preserve
+`.junie/AGENTS.md`, Junie custom-guideline settings, Cline rule
+directories/toggles, Kiro steering and custom-agent resources, OpenCode V1/V2
+differences, and SourceCraft CLI versus standalone OpenCode differences during
+inspection. Use `GIGACODE.md` as GigaCode's native thin bridge while preserving
+root `AGENTS.md` compatibility and any `.gigacode/` project-local memory or
+agent definitions. Use the generated `.rules` thin bridge for Zed Agent because
+it is the first compatible project instruction path. Keep
+`.roo/rules/alatyr-core.md` only as a legacy bridge; Roo Code was archived and
+shut down on 2026-05-15, so do not claim maintained or current runtime support.
+
+RUFP is tracked only as an investigated candidate until public evidence shows
+a stable repository instruction-loading contract. Use the generic manual route
+for RUFP-like clients rather than admitting a named surface from product
+marketing alone.
 
 ## Conformance Expectations
 

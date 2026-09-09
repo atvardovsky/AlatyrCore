@@ -70,6 +70,7 @@ STANDARD_REQUIRED = {
 FULL_ONLY_BRIDGES = {
     Path("CLAUDE.md"),
     Path("GEMINI.md"),
+    Path("GIGACODE.md"),
     Path(".github/copilot-instructions.md"),
     Path(".github/prompts/gate-review.prompt.md"),
     Path(".agents/skills/README.md"),

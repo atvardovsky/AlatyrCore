@@ -17,10 +17,14 @@ Target repositories may add bridge files for:
   resources inspected
 - Zed Agent through the generated first-match `.rules` bridge
 - OpenCode through `AGENTS.md`, with the exact V1 or V2 loading contract bound
+- Yandex SourceCraft through `AGENTS.md`, with SourceCraft CLI, Code
+  Assistant, IDE, Zed, and standalone OpenCode behavior recorded separately
 - Roo Code only as legacy compatibility through
   `.roo/rules/alatyr-core.md`; the product is archived and shut down
 - Claude through `CLAUDE.md` or native project skill folders
 - Gemini through `GEMINI.md`
+- GigaCode through `GIGACODE.md` plus root `AGENTS.md`, with `.gigacode/`
+  memory, agents, extensions, and local files inspected for conflicts
 - GitHub Copilot through `.github/copilot-instructions.md`,
   `.github/instructions`, and `.github/prompts`
 - Cursor through `.cursor/rules`, `.cursor/skills`, or `.cursorrules`
@@ -28,6 +32,11 @@ Target repositories may add bridge files for:
 - Windsurf legacy surfaces through `.windsurf/rules` or `.windsurfrules`
 
 The target repository decides which bridge files are needed.
+
+RUFP is an investigated candidate, not a named supported surface. Public RUFP
+material currently shows a coding agent with diff review and command approval,
+but not a stable repository instruction-loading path. Use the generic manual
+route until target or vendor evidence proves a loadable instruction surface.
 
 Source conformance runs use the machine-readable surface list at
 `conformance/runs/assistant-surfaces.json`. The source admission audit records

@@ -63,6 +63,24 @@ class AssistantSurfaceAuditTests(unittest.TestCase):
             any("both loading contracts" in failure for failure in self.validate(audits=audits))
         )
 
+    def test_sourcecraft_cli_opencode_route_is_required(self) -> None:
+        audits = copy.deepcopy(self.audits)
+        next(item for item in audits["audits"] if item["id"] == "sourcecraft")[
+            "runtime_variants"
+        ] = ["web-code-assistant"]
+        self.assertTrue(
+            any("CLI OpenCode route" in failure for failure in self.validate(audits=audits))
+        )
+
+    def test_gigacode_native_bridge_is_required(self) -> None:
+        audits = copy.deepcopy(self.audits)
+        next(item for item in audits["audits"] if item["id"] == "gigacode")[
+            "selected_bridge_paths"
+        ] = ["AGENTS.md"]
+        self.assertTrue(
+            any("native GIGACODE.md bridge" in failure for failure in self.validate(audits=audits))
+        )
+
     def test_client_permissions_cannot_grant_alatyr_authorization(self) -> None:
         record = load(
             "templates/target/.ai/assistant/assistant-capabilities/junie.json"

@@ -1,0 +1,17 @@
+# GigaCode Instructions
+
+This file is a GigaCode bridge, not the source of truth.
+Ensure `AGENTS.md` is loaded once; if it was not preloaded by the host, read it now.
+Then read `.ai/assistant/bootstrap-index.json`. Load `AI_ASSISTANTS.md` or `.ai/assistant/entry-packet.json` only for compatibility, recovery, audit, or routing conflict.
+If the derived index is missing or stale, repair it from its named canonical sources.
+Select the smallest profile before reading the matching task flow.
+
+For an exact operation ID or alias, including diagram, team, or AI aliases, read
+`.ai/assistant/operation-index.json`; for bare `Alatyr`, ambiguity, or repair, read
+`.ai/assistant/operation-catalog.json`, `.ai/assistant/help.md`, and `.ai/assistant/flows/operation-routing.flow.md`.
+When delegation is selected, use `.ai/assistant/task-decomposition.json`, installed
+delegation surfaces, and the selected capability record; do not infer native
+worker support.
+
+GigaCode may also load AGENTS.md and local or user memory; record exact-session
+precedence before claiming support.

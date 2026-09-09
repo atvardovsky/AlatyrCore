@@ -193,10 +193,10 @@ explicit full acceptance audit. For framework updates, read the generated
 ## Assistant Bridges
 
 AlatyrCore has static bridge contracts for generic, AGENTS-aware, Codex,
-JetBrains Junie, Cline, Kiro, Zed Agent, OpenCode, Claude, Gemini, GitHub
-Copilot, Cursor, Devin/Cascade, Windsurf, and legacy Roo Code surfaces. The
-target decides which clients are selected and records runtime evidence before
-claiming that a client loaded or followed Alatyr.
+JetBrains Junie, Cline, Kiro, Zed Agent, OpenCode, Yandex SourceCraft, Claude,
+Gemini, GigaCode, GitHub Copilot, Cursor, Devin/Cascade, Windsurf, and legacy
+Roo Code surfaces. The target decides which clients are selected and records
+runtime evidence before claiming that a client loaded or followed Alatyr.
 
 Every bridge should point back to the same generated bootstrap index and its
 canonical recovery sources, project contour, operation index, help, flows, and

@@ -206,6 +206,30 @@
       "content_digest": "sha256:a8ac967d87b2175b0cef1f9ef27dda2076f7fdd74d8494433430848abb9b0d8e"
     },
     {
+      "id": "assistant.content.assistant-capabilities-gigacode-json",
+      "kind": "content",
+      "path": "assistant-capabilities/gigacode.json",
+      "summary": "Gigacode",
+      "selectors": {
+        "path_terms": [
+          "assistant",
+          "capabilities",
+          "gigacode"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 304,
+      "content_digest": "sha256:ff02625d9fd0df5712e4e264a7a0a8bc88e3bcf37c2c3dd0cb8f9383b859f699"
+    },
+    {
       "id": "assistant.content.assistant-capabilities-github-copilot-json",
       "kind": "content",
       "path": "assistant-capabilities/github-copilot.json",
@@ -326,6 +350,30 @@
       ],
       "estimated_words": 304,
       "content_digest": "sha256:d13ccc2b9c7d42d3dade2e70dd77df49259948bd5f8b6b1298720d9efa70b3d4"
+    },
+    {
+      "id": "assistant.content.assistant-capabilities-sourcecraft-json",
+      "kind": "content",
+      "path": "assistant-capabilities/sourcecraft.json",
+      "summary": "Sourcecraft",
+      "selectors": {
+        "path_terms": [
+          "assistant",
+          "capabilities",
+          "sourcecraft"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001"
+      ],
+      "estimated_words": 304,
+      "content_digest": "sha256:312a76c69a63d0a726eed41888995f84a46bad868a6c66cb0bc5dde6f2250e43"
     },
     {
       "id": "assistant.content.assistant-capabilities-windsurf-json",

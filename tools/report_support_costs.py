@@ -51,12 +51,14 @@ BRIDGE_ROOTS = {
     ".github",
     ".roo",
     ".windsurf",
+    ".gigacode",
 }
 ROOT_ENTRYPOINTS = {
     "AGENTS.md",
     "AI_ASSISTANTS.md",
     "CLAUDE.md",
     "GEMINI.md",
+    "GIGACODE.md",
     ".cursorrules",
     ".rules",
     ".windsurfrules",

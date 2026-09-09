@@ -44,16 +44,18 @@
       "kiro",
       "zed-agent",
       "opencode",
+      "sourcecraft",
       "claude",
       "gemini",
+      "gigacode",
       "github-copilot",
       "cursor",
       "devin-cascade",
       "windsurf"
     ]
   },
-  "current_contract_digest": "a6464c88840c07637b38698e89d5cd56069d0d25902e672956e1d157cbe4be86",
-  "current_framework_version": "0.1.0-alpha.60",
+  "current_contract_digest": "8861fba892b39108d3cd5a443821cbaf237967ce54032dadc01bf1fa6a31bc16",
+  "current_framework_version": "0.1.0-alpha.61",
   "effectiveness": {
     "broad_cost_or_quality_claim_supported": false,
     "captured_benchmarks": [

@@ -25,6 +25,7 @@ BRIDGE_FILES = [
     "templates/target/AI_ASSISTANTS.md",
     "templates/target/CLAUDE.md",
     "templates/target/GEMINI.md",
+    "templates/target/GIGACODE.md",
     "templates/target/.cursor/rules/alatyr-core.mdc",
     "templates/target/.cursorrules",
     "templates/target/.devin/rules/alatyr-core.md",

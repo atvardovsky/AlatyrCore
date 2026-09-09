@@ -21,8 +21,10 @@
     "kiro": ".ai/assistant/assistant-capabilities/kiro.json",
     "zed-agent": ".ai/assistant/assistant-capabilities/zed-agent.json",
     "opencode": ".ai/assistant/assistant-capabilities/opencode.json",
+    "sourcecraft": ".ai/assistant/assistant-capabilities/sourcecraft.json",
     "claude": ".ai/assistant/assistant-capabilities/claude.json",
     "gemini": ".ai/assistant/assistant-capabilities/gemini.json",
+    "gigacode": ".ai/assistant/assistant-capabilities/gigacode.json",
     "github-copilot": ".ai/assistant/assistant-capabilities/github-copilot.json",
     "cursor": ".ai/assistant/assistant-capabilities/cursor.json",
     "devin-cascade": ".ai/assistant/assistant-capabilities/devin-cascade.json",
@@ -58,11 +60,18 @@
     "opencode": [
       "AGENTS.md"
     ],
+    "sourcecraft": [
+      "AGENTS.md"
+    ],
     "claude": [
       "CLAUDE.md"
     ],
     "gemini": [
       "GEMINI.md"
+    ],
+    "gigacode": [
+      "GIGACODE.md",
+      "AGENTS.md"
     ],
     "github-copilot": [
       ".github/copilot-instructions.md",

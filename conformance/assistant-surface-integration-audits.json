@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "audit_kind": "alatyr-assistant-surface-integration-admission",
-  "reviewed_at": "2026-08-25",
+  "reviewed_at": "2026-09-09",
   "scope": "Source-level bridge and contract evidence only. These audits do not prove that a vendor client loaded or followed Alatyr instructions.",
   "required_controls": [
     "bootstrap-routing",
@@ -34,6 +34,21 @@
     "record delegation backend, isolation, model, and result evidence or keep delegation unverified",
     "show the portable ASCII diagram fallback and record any richer presentation evidence",
     "record post-install or post-update delivery as sent, skipped, or blocked"
+  ],
+  "candidate_surfaces": [
+    {
+      "id": "rufp",
+      "label": "RUFP",
+      "status": "research-only-not-admitted",
+      "reason": "Public product material confirms a coding agent with diff review and command approval, but no stable repository instruction-loading contract was found.",
+      "required_evidence_before_admission": [
+        "documented project instruction file or repository settings path",
+        "documented instruction loading or manual import behavior",
+        "documented project skill, prompt, tool, worker, or permission surfaces when claimed",
+        "official source URL for every admitted path"
+      ],
+      "public_sources": ["https://rufp.ru/"]
+    }
   ],
   "audits": [
     {
@@ -77,6 +92,40 @@
       "residual_limits": ["CLI, IDE, desktop, cloud, and remote clients require separate current evidence."]
     },
     {
+      "id": "sourcecraft",
+      "surface_id": "sourcecraft",
+      "status": "static-contract-ready-runtime-unverified",
+      "selected_bridge_paths": ["AGENTS.md"],
+      "documented_instruction_paths": ["AGENTS.md", "OpenCode instruction loading through SourceCraft CLI"],
+      "loading_behavior": "Bind the exact SourceCraft runtime before interpreting loading. SourceCraft CLI launches OpenCode with SourceCraft configuration, tools, authentication, and repository/platform access, so use root AGENTS.md as the Alatyr bridge and record SourceCraft-specific permission and platform evidence separately from plain OpenCode.",
+      "runtime_variants": ["cli-opencode", "web-code-assistant", "ide-plugin"],
+      "precedence_risks": [
+        "SourceCraft CLI can add SourceCraft tools, commands, modes, environment variables, and platform instructions on top of OpenCode behavior.",
+        "SourceCraft and standalone OpenCode installations can have different configuration and permission evidence."
+      ],
+      "compatibility_paths_to_inspect": ["AGENTS.md", ".opencode/agents/", ".opencode/skills/", ".agents/skills/", "opencode.json", "opencode.jsonc", "SourceCraft CLI configuration"],
+      "official_sources": [
+        "https://sourcecraft.dev/portal/docs/en/sourcecraft/operations/cli-quickstart",
+        "https://sourcecraft.dev/portal/docs/en/cli-ref/src-code"
+      ],
+      "control_dispositions": {
+        "bootstrap-routing": "bridge-static",
+        "operation-routing": "bridge-static",
+        "current-scope-authorization": "bridge-static",
+        "tool-permission-separation": "runtime-verification-required",
+        "skills-and-prompts": "canonical-routing-static-native-loading-unverified",
+        "subagent-delegation": "runtime-verification-required",
+        "diagram-presentation": "ascii-fallback-static-rich-output-unverified",
+        "post-install-update-delivery": "runtime-verification-required",
+        "runtime-evidence": "required-before-supported-runtime-claim"
+      },
+      "runtime_execution_claimed": false,
+      "residual_limits": [
+        "SourceCraft support does not inherit runtime evidence from standalone OpenCode.",
+        "Code Assistant web, IDE, CLI, and Zed routes require separate target evidence."
+      ]
+    },
+    {
       "id": "claude",
       "surface_id": "claude",
       "status": "static-contract-ready-runtime-unverified",
@@ -101,6 +150,40 @@
       "official_sources": ["https://github.com/google-gemini/gemini-cli/blob/main/docs/reference/configuration.md", "https://github.com/google-gemini/gemini-cli/blob/main/docs/core/subagents.md"],
       "runtime_execution_claimed": false,
       "residual_limits": ["Gemini CLI and other Gemini surfaces do not inherit capability evidence from one another."]
+    },
+    {
+      "id": "gigacode",
+      "surface_id": "gigacode",
+      "status": "static-contract-ready-runtime-unverified",
+      "selected_bridge_paths": ["GIGACODE.md", "AGENTS.md"],
+      "documented_instruction_paths": ["GIGACODE.md", "AGENTS.md", "~/.gigacode/GIGACODE.md", ".gigacode/GIGACODE.local.md", ".gigacode/agents/"],
+      "loading_behavior": "Use GIGACODE.md as the native thin bridge to root AGENTS.md and the compact Alatyr bootstrap. Inspect root, local, user, nested, and AGENTS.md memory sources plus .gigacode agents before accepting effective precedence.",
+      "precedence_risks": [
+        "GigaCode can load multiple GIGACODE.md sources and AGENTS.md together, so conflicts must be recorded instead of assuming one canonical order.",
+        ".gigacode/GIGACODE.local.md is project-local personal memory and should normally remain untracked."
+      ],
+      "compatibility_paths_to_inspect": ["GIGACODE.md", "AGENTS.md", "~/.gigacode/GIGACODE.md", ".gigacode/GIGACODE.local.md", ".gigacode/agents/", ".gigacode/extensions/", "gigacode-extension.json"],
+      "official_sources": [
+        "https://gitverse.ru/docs/ai/ai-assistant-gigacode/basic-terms/gigacode",
+        "https://gitverse.ru/docs/ai/ai-assistant-gigacode/gigacode-cli/memory",
+        "https://gitverse.ru/docs/ai/ai-assistant-gigacode/gigacode-cli/subagents"
+      ],
+      "control_dispositions": {
+        "bootstrap-routing": "bridge-static",
+        "operation-routing": "bridge-static",
+        "current-scope-authorization": "bridge-static",
+        "tool-permission-separation": "runtime-verification-required",
+        "skills-and-prompts": "canonical-routing-static-native-loading-unverified",
+        "subagent-delegation": "runtime-verification-required",
+        "diagram-presentation": "ascii-fallback-static-rich-output-unverified",
+        "post-install-update-delivery": "runtime-verification-required",
+        "runtime-evidence": "required-before-supported-runtime-claim"
+      },
+      "runtime_execution_claimed": false,
+      "residual_limits": [
+        "Project, user, local, extension, and AGENTS.md memory can conflict and require exact-session evidence.",
+        "Subagent model, approval mode, tool restriction, and extension behavior require exact-client evidence."
+      ]
     },
     {
       "id": "github-copilot",

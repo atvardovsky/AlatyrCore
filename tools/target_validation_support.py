@@ -465,6 +465,7 @@ def is_protected_surface(path: str) -> bool:
         ".kiro/",
         ".zed/",
         ".opencode/",
+        ".gigacode/",
         ".agents/",
     ]
     protected_files = {
@@ -472,6 +473,7 @@ def is_protected_surface(path: str) -> bool:
         "AI_ASSISTANTS.md",
         "CLAUDE.md",
         "GEMINI.md",
+        "GIGACODE.md",
         "CODEOWNERS",
         ".cursorrules",
         ".windsurfrules",

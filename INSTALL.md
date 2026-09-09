@@ -338,8 +338,9 @@ In a typical target repository:
    entries outside routine bootstrap.
 8. Add bridge files only for assistants the target uses. Inspect native and
    compatibility instruction paths before choosing a bridge. Preserve target
-   Junie/Cline/Kiro/OpenCode configuration, use `.rules` for Zed Agent's
-   first-match route, and treat Roo Code only as archived legacy compatibility.
+   Junie/Cline/Kiro/OpenCode/SourceCraft configuration, use `GIGACODE.md` for
+   GigaCode, use `.rules` for Zed Agent's first-match route, and treat Roo Code
+   only as archived legacy compatibility.
 9. Add installed-operation, operation-help, automatic operation-routing,
    read-only adapter-health, risk-gated pre-change preview,
    diagram-discussion flow, ASCII layout template, and presentation template

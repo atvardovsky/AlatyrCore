@@ -101,8 +101,8 @@ Framework core must not own:
 - `.ai/project`: target product/project facts.
 - `.ai/assistant`: target repository AI adapter that applies Alatyr Core to
   the target project.
-- `.agents`, `.claude`, `.cursor`, `.github`, and bridge files: adapter or
-  assistant-specific wrappers around framework/project instructions.
+- `.agents`, `.claude`, `.cursor`, `.github`, `.gigacode`, and bridge files:
+  adapter or assistant-specific wrappers around framework/project instructions.
 
 ## Repository Adapter
 

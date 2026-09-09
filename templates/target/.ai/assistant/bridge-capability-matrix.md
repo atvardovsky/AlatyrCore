@@ -369,6 +369,43 @@ Routes AI infrastructure items: `{OPENCODE_ROUTES_AI_INFRASTRUCTURE_ITEMS}`
 Known limitations: `{OPENCODE_KNOWN_LIMITATIONS_OR_NONE}`
 Conformance check: `{OPENCODE_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
 
+### Assistant Surface: `sourcecraft`
+
+Assistant: `Yandex SourceCraft`
+Surface id: `sourcecraft`
+Capability state: {SOURCECRAFT_CAPABILITY_STATE}
+Bridge paths:
+
+- `AGENTS.md`
+
+Auto-load behavior: `{SOURCECRAFT_AUTO_LOAD_BEHAVIOR}`
+Instruction priority: `{SOURCECRAFT_INSTRUCTION_PRIORITY_OR_UNKNOWN}`
+Supported rule/prompt/skill surfaces: `{SOURCECRAFT_SUPPORTED_SURFACES}`
+Tool permission model: `{SOURCECRAFT_TOOL_PERMISSION_MODEL_OR_UNKNOWN}`
+Routes operation help: `{SOURCECRAFT_ROUTES_OPERATION_HELP}`
+Routes single `Alatyr` entry: `{SOURCECRAFT_ROUTES_ALATYR_ENTRY}`
+Routes adapter health: `{SOURCECRAFT_ROUTES_ADAPTER_HEALTH}`
+Routes pre-change preview: `{SOURCECRAFT_ROUTES_PRE_CHANGE_PREVIEW}`
+Routes action authorization: `{SOURCECRAFT_ROUTES_ACTION_AUTHORIZATION}`
+Routes enabled team operations: `{SOURCECRAFT_ROUTES_TEAM_OPERATIONS}`
+Routes code-documentation aliases: `{SOURCECRAFT_ROUTES_CODE_DOCUMENTATION}`
+Routes project-vocabulary aliases: `{SOURCECRAFT_ROUTES_PROJECT_VOCABULARY}`
+Routes test-first aliases: `{SOURCECRAFT_ROUTES_TEST_FIRST}`
+Routes extension aliases: `{SOURCECRAFT_ROUTES_EXTENSIONS}`
+Context caching: `{TARGET_SURFACE_CONTEXT_CACHE_SUPPORT_AND_CLIENT_EXPOSURE}`
+Context caching capability record: `.ai/assistant/assistant-capabilities/sourcecraft.json`
+Routes subagent delegation: `{SOURCECRAFT_ROUTES_SUBAGENT_DELEGATION}`
+Subagent delegation capability record: `.ai/assistant/assistant-capabilities/sourcecraft.json`
+Diagram capability record: `.ai/assistant/assistant-capabilities/sourcecraft.json`
+Routes `alatyr-ai-inventory`: `{SOURCECRAFT_ROUTES_AI_INVENTORY}`
+Routes `alatyr-suggest-ai`: `{SOURCECRAFT_ROUTES_AI_RECOMMENDATION}`
+Routes `alatyr-improve-ai`: `{SOURCECRAFT_ROUTES_AI_IMPROVEMENT}`
+Routes `alatyr-adaptation`: `{SOURCECRAFT_ROUTES_ADAPTATION}`
+Routes `alatyr-add-ai`: `{SOURCECRAFT_ROUTES_ADD_AI}`
+Routes AI infrastructure items: `{SOURCECRAFT_ROUTES_AI_INFRASTRUCTURE_ITEMS}`
+Known limitations: `{SOURCECRAFT_KNOWN_LIMITATIONS_OR_NONE}`
+Conformance check: `{SOURCECRAFT_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
+
 ### Assistant Surface: `claude`
 
 Assistant: `Claude`
@@ -442,6 +479,44 @@ Routes `alatyr-add-ai`: `{GEMINI_ROUTES_ADD_AI}`
 Routes AI infrastructure items: `{GEMINI_ROUTES_AI_INFRASTRUCTURE_ITEMS}`
 Known limitations: `{GEMINI_KNOWN_LIMITATIONS_OR_NONE}`
 Conformance check: `{GEMINI_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
+
+### Assistant Surface: `gigacode`
+
+Assistant: `GigaCode`
+Surface id: `gigacode`
+Capability state: {GIGACODE_CAPABILITY_STATE}
+Bridge paths:
+
+- `GIGACODE.md`
+- `AGENTS.md`
+
+Auto-load behavior: `{GIGACODE_AUTO_LOAD_BEHAVIOR}`
+Instruction priority: `{GIGACODE_INSTRUCTION_PRIORITY_OR_UNKNOWN}`
+Supported rule/prompt/skill surfaces: `{GIGACODE_SUPPORTED_SURFACES}`
+Tool permission model: `{GIGACODE_TOOL_PERMISSION_MODEL_OR_UNKNOWN}`
+Routes operation help: `{GIGACODE_ROUTES_OPERATION_HELP}`
+Routes single `Alatyr` entry: `{GIGACODE_ROUTES_ALATYR_ENTRY}`
+Routes adapter health: `{GIGACODE_ROUTES_ADAPTER_HEALTH}`
+Routes pre-change preview: `{GIGACODE_ROUTES_PRE_CHANGE_PREVIEW}`
+Routes action authorization: `{GIGACODE_ROUTES_ACTION_AUTHORIZATION}`
+Routes enabled team operations: `{GIGACODE_ROUTES_TEAM_OPERATIONS}`
+Routes code-documentation aliases: `{GIGACODE_ROUTES_CODE_DOCUMENTATION}`
+Routes project-vocabulary aliases: `{GIGACODE_ROUTES_PROJECT_VOCABULARY}`
+Routes test-first aliases: `{GIGACODE_ROUTES_TEST_FIRST}`
+Routes extension aliases: `{GIGACODE_ROUTES_EXTENSIONS}`
+Context caching: `{TARGET_SURFACE_CONTEXT_CACHE_SUPPORT_AND_CLIENT_EXPOSURE}`
+Context caching capability record: `.ai/assistant/assistant-capabilities/gigacode.json`
+Routes subagent delegation: `{GIGACODE_ROUTES_SUBAGENT_DELEGATION}`
+Subagent delegation capability record: `.ai/assistant/assistant-capabilities/gigacode.json`
+Diagram capability record: `.ai/assistant/assistant-capabilities/gigacode.json`
+Routes `alatyr-ai-inventory`: `{GIGACODE_ROUTES_AI_INVENTORY}`
+Routes `alatyr-suggest-ai`: `{GIGACODE_ROUTES_AI_RECOMMENDATION}`
+Routes `alatyr-improve-ai`: `{GIGACODE_ROUTES_AI_IMPROVEMENT}`
+Routes `alatyr-adaptation`: `{GIGACODE_ROUTES_ADAPTATION}`
+Routes `alatyr-add-ai`: `{GIGACODE_ROUTES_ADD_AI}`
+Routes AI infrastructure items: `{GIGACODE_ROUTES_AI_INFRASTRUCTURE_ITEMS}`
+Known limitations: `{GIGACODE_KNOWN_LIMITATIONS_OR_NONE}`
+Conformance check: `{GIGACODE_CONFORMANCE_CHECK_OR_MANUAL_REVIEW}`
 
 ### Assistant Surface: `github-copilot`
 

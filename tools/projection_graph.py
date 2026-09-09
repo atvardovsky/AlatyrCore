@@ -43,6 +43,7 @@ MARKDOWN_PROJECTION_PATHS = {
     "AI_ASSISTANTS.md",
     "CLAUDE.md",
     "GEMINI.md",
+    "GIGACODE.md",
     ".cursor/rules/alatyr-core.mdc",
     ".cursorrules",
     ".devin/rules/alatyr-core.md",

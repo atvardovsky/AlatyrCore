@@ -23,7 +23,7 @@
     {
       "id": "codex",
       "label": "Codex",
-      "aliases": ["openai-codex"],
+      "aliases": ["openai", "openai-codex", "chatgpt-codex"],
       "bridge_paths": ["AGENTS.md", "AI_ASSISTANTS.md"],
       "admission_audit": "codex",
       "product_lifecycle": "active",
@@ -84,6 +84,15 @@
       "support_status": "named-static-admission-runtime-unverified"
     },
     {
+      "id": "sourcecraft",
+      "label": "Yandex SourceCraft",
+      "aliases": ["yandex-sourcecraft", "sourcecraft-code-assistant"],
+      "bridge_paths": ["AGENTS.md"],
+      "admission_audit": "sourcecraft",
+      "product_lifecycle": "active",
+      "support_status": "named-static-admission-runtime-unverified"
+    },
+    {
       "id": "claude",
       "label": "Claude",
       "aliases": ["anthropic-claude"],
@@ -98,6 +107,15 @@
       "aliases": ["google-gemini"],
       "bridge_paths": ["GEMINI.md"],
       "admission_audit": "gemini",
+      "product_lifecycle": "active",
+      "support_status": "named-static-admission-runtime-unverified"
+    },
+    {
+      "id": "gigacode",
+      "label": "GigaCode",
+      "aliases": ["gitverse-gigacode", "gigacode-cli"],
+      "bridge_paths": ["GIGACODE.md", "AGENTS.md"],
+      "admission_audit": "gigacode",
       "product_lifecycle": "active",
       "support_status": "named-static-admission-runtime-unverified"
     },

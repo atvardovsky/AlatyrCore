@@ -75,6 +75,8 @@ OFFICIAL_HOSTS = {
     "kiro": {"kiro.dev"},
     "zed-agent": {"zed.dev"},
     "opencode": {"opencode.ai"},
+    "sourcecraft": {"sourcecraft.dev"},
+    "gigacode": {"gitverse.ru"},
 }
 ENTRY_HEADING = re.compile(r"^### Assistant Surface: `([^`]+)`\s*$", re.MULTILINE)
 
@@ -231,6 +233,21 @@ def validate_contracts(
             variant_loading = audit.get("variant_loading")
             if not isinstance(variant_loading, dict) or set(variant_loading) != {"v1", "v2"}:
                 failures.append("opencode audit must record both loading contracts")
+        if audit_id == "sourcecraft":
+            variants = audit.get("runtime_variants")
+            if not isinstance(variants, list) or "cli-opencode" not in variants:
+                failures.append("sourcecraft audit must distinguish the CLI OpenCode route")
+            if "OpenCode" not in audit.get("loading_behavior", ""):
+                failures.append("sourcecraft audit must bind its OpenCode-backed loading behavior")
+        if audit_id == "gigacode":
+            documented = audit.get("documented_instruction_paths", [])
+            compatibility = audit.get("compatibility_paths_to_inspect", [])
+            if "GIGACODE.md" not in documented:
+                failures.append("gigacode audit must include native GIGACODE.md loading")
+            if ".gigacode/agents/" not in compatibility:
+                failures.append("gigacode audit must include project subagent path inspection")
+            if "GIGACODE.md" not in bridge_paths:
+                failures.append("gigacode audit must select the native GIGACODE.md bridge")
 
         allowed_hosts = OFFICIAL_HOSTS.get(audit_id, set())
         for source in audit.get("official_sources", []):

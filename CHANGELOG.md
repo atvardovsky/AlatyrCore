@@ -4,6 +4,17 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.61 - 2026-09-09
+
+- Added static admission contracts for Yandex SourceCraft and GigaCode
+  assistant surfaces, including SourceCraft/OpenCode runtime separation,
+  GigaCode bridge ownership, capability templates, scaffold selection, and
+  conformance checks.
+- Added RUFP as an investigated candidate surface without named support until
+  public repository-instruction loading evidence is available.
+- Increased the adapter schema version to `51` and target template version to
+  `56` for assistant-surface and bridge-template contract changes.
+
 ## 0.1.0-alpha.60 - 2026-09-09
 
 - Hardened scaffold projection so installed manifests prune unstaged
