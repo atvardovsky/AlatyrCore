@@ -373,8 +373,10 @@ In a typical target repository:
    durable evidence decision/reference checks, and repository-binding lineage
    when selected with its dependency closure,
    and
-   post-install/update chat-message templates when the target wants
-   post-install operation requests or AI infrastructure adaptation.
+   Always deliver the post-install or post-update chat handoff as operation
+   output. Add reusable post-install/update chat-message templates only when
+   the target wants post-install operation requests or AI infrastructure
+   adaptation.
    Add the AI infrastructure router, recommendation flow/report, and
    adaptation-record template when the target needs routed item selection,
    evidence-based suggestions, or imported-item provenance evidence. Add the
@@ -429,11 +431,12 @@ Mode activation/status/finalization/comparison. Include Allowed actions
 when the request should be limited to `read-only`, `docs-only`,
 `adapter-only`, `code-and-tests`, or `full-with-approval`.
 
-The post-install message must tell the next assistant to load the compact
+The post-install chat handoff must tell the next assistant to load the compact
 bootstrap, use its resolved semantic preload, and navigate the recursive
-contour indexes rather than loading support directories. The post-update
-message must additionally name rebuilt index/codebook surfaces and unresolved
-fallbacks or stale entries.
+contour indexes rather than loading support directories. The reusable
+post-install template is optional; the operation handoff is not. The
+post-update chat handoff must additionally name rebuilt index/codebook surfaces
+and unresolved fallbacks or stale entries.
 
 If the programmer asks for help, commands, or an unclear Alatyr action, the
 assistant should show the installed operation menu from the target adapter

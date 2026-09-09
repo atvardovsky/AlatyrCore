@@ -292,6 +292,14 @@ def main() -> int:
         failures.append("inspect-extension must be a stable read-only tool command")
     if intent.get("operation_candidates") != ["extension-management"]:
         failures.append("extension intent must route extension-management")
+    if intent.get("required_module") != "core-profile":
+        failures.append("extension intent must allow inspection from core-profile")
+    if intent.get("activation_target_module") != "extensions":
+        failures.append("extension intent must name extensions as activation target")
+    if intent.get("execution_required_module") != "extensions":
+        failures.append("extension intent must gate execution on extensions")
+    if "read-only" not in str(intent.get("disabled_module_behavior", "")):
+        failures.append("extension intent must describe disabled-module read-only behavior")
     overlay = router.get("intent_overlays", {}).get("extension-request")
     if not isinstance(overlay, dict) or overlay.get("operation_candidates") != [
         "extension-management"

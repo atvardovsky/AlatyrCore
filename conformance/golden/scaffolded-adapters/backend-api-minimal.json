@@ -4,7 +4,7 @@
   "snapshot_kind": "scaffolded-adapter",
   "conformance_scope": "Source scaffold output snapshot; not an assistant installation test and not a completed target adapter.",
   "claims_installation_complete": false,
-  "action_count": 88,
+  "action_count": 89,
   "blocked_count": 0,
   "created_paths": [
     ".ai/.gitignore",
@@ -85,6 +85,7 @@
     ".ai/framework/semantics/core.json",
     ".ai/framework/semantics/index.json",
     ".ai/framework/semantics/infrastructure.json",
+    ".ai/framework/semantics/support.json",
     ".ai/framework/source-of-truth-registry.md",
     ".ai/framework/support-information.md",
     ".ai/framework/task-decomposition.md",

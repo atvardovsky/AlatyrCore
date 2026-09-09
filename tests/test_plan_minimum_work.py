@@ -104,6 +104,7 @@ class MinimumWorkPlanTests(unittest.TestCase):
         task_worker_packets: list[dict[str, object]] | None = None,
         worker_workstream_ids: list[str] | None = None,
         worker_session_id: str | None = None,
+        reuse_report_path: Path | None = None,
         now: datetime = NOW,
     ) -> dict[str, object]:
         item = check()
@@ -133,12 +134,21 @@ class MinimumWorkPlanTests(unittest.TestCase):
             ))
             stack.enter_context(patch("plan_minimum_work.source_identity", return_value={"manifest_sha256": "m"}))
             stack.enter_context(patch("plan_minimum_work.environment_report", return_value={"platform": "linux", "python": "p"}))
+            stack.enter_context(
+                patch(
+                    "plan_minimum_work.load_reuse_report",
+                    return_value={
+                        "schema_version": 3,
+                        "report_kind": "alatyr-source-check-run",
+                    },
+                )
+            )
             plan = build_plan(
                 requested_profile=requested_profile,
                 source_profile=source_profile,
                 changed_from=None,
                 from_ref=None,
-                reuse_report_path=None,
+                reuse_report_path=reuse_report_path,
                 runtime_capability=runtime_capability,
                 delegation_decision=delegation_decision,
                 delegation_skip_reason=delegation_skip_reason,
@@ -509,6 +519,58 @@ class MinimumWorkPlanTests(unittest.TestCase):
             render_summary(plan),
         )
 
+    def test_release_recommendations_do_not_reuse_cached_reports(self) -> None:
+        selection = SelectionResult(
+            selected=[check()],
+            fell_back_to_full=False,
+            changed_paths=[],
+            unmatched_changed_paths=[],
+            platform="linux",
+            selection_details={"docs": {"reasons": ["full-profile"]}},
+            effective_profile="full",
+        )
+
+        plan = self.build_test_plan(
+            selection=selection,
+            expected_validation_profile="full",
+            source_profile="release-versioning",
+            reuse_report_path=Path("tmp/previous-source-checks.json"),
+        )
+
+        primary = plan["check_plan"]["command"]
+        release = plan["check_plan"]["additional_commands"][0]
+        self.assertNotIn("--reuse-report", primary)
+        self.assertNotIn("--reuse-report", release)
+        self.assertIsNone(plan["reuse"]["reuse_report"])
+        self.assertEqual(release[release.index("--profile") + 1], "release")
+
+    def test_requested_release_profile_does_not_reuse_supplemental_full_command(self) -> None:
+        selection = SelectionResult(
+            selected=[check()],
+            fell_back_to_full=False,
+            changed_paths=[],
+            unmatched_changed_paths=[],
+            platform="linux",
+            selection_details={"docs": {"reasons": ["release-profile"]}},
+            effective_profile="release",
+        )
+
+        plan = self.build_test_plan(
+            selection=selection,
+            expected_validation_profile="release",
+            requested_profile="release",
+            source_profile="release-versioning",
+            reuse_report_path=Path("tmp/previous-source-checks.json"),
+        )
+
+        primary = plan["check_plan"]["command"]
+        supplemental = plan["check_plan"]["additional_commands"][0]
+        self.assertEqual(primary[primary.index("--profile") + 1], "release")
+        self.assertEqual(supplemental[supplemental.index("--profile") + 1], "full")
+        self.assertNotIn("--reuse-report", primary)
+        self.assertNotIn("--reuse-report", supplemental)
+        self.assertIsNone(plan["reuse"]["reuse_report"])
+
     def test_windows_summary_uses_platform_command_rendering(self) -> None:
         selection = SelectionResult(
             selected=[check()],
@@ -781,6 +843,29 @@ class MinimumWorkPlanTests(unittest.TestCase):
         ]
         packets[1]["semantic_scope"] = packets[0]["semantic_scope"]
         with self.assertRaisesRegex(ValueError, "semantic scopes must be unique"):
+            self.build_test_plan(
+                selection=selection,
+                expected_validation_profile="full",
+                source_profile="ai-infrastructure-bridge",
+                task_worker_packets=packets,
+            )
+
+    def test_large_task_rejects_duplicate_coverage_packets(self) -> None:
+        selection = SelectionResult(
+            selected=[check()],
+            fell_back_to_full=False,
+            changed_paths=[],
+            unmatched_changed_paths=[],
+            platform="linux",
+            selection_details={"docs": {"reasons": ["full-profile"]}},
+            effective_profile="full",
+        )
+        packets = [
+            worker_packet("router", "tools/source_context_router.json"),
+            worker_packet("policy", "tools/source_worker_policy.json"),
+        ]
+        packets[1]["coverage_key"] = packets[0]["coverage_key"]
+        with self.assertRaisesRegex(ValueError, "coverage keys must be unique"):
             self.build_test_plan(
                 selection=selection,
                 expected_validation_profile="full",

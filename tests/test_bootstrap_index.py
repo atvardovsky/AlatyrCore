@@ -79,6 +79,49 @@ known_gaps: []
         self.assertIsInstance(integrity["rule_selector"], dict)
         self.assertRegex(integrity["bootstrap_digest"], r"^sha256:[0-9a-f]{64}$")
 
+    def test_semantic_preload_includes_compact_rule_owner(self) -> None:
+        manifest = """\
+schema_version: 12
+framework:
+  version: 0.1.0-alpha.13
+  template_version: 13
+  pack: core
+installation:
+  support_profile: core
+modules:
+  enabled: []
+known_gaps: []
+"""
+        router = json.dumps(
+            {
+                "routing_order": ["docs-local"],
+                "profile_index": {},
+                "semantic_codebook": {
+                    "preload_terms": ["alatyr:logical-integrity@1"],
+                },
+                "context_budgets": {"on_exceed": "record expansion"},
+            }
+        )
+
+        result = build_bootstrap_index(
+            manifest,
+            "# Project map\n",
+            router,
+            semantic_terms={
+                "alatyr:logical-integrity@1": {
+                    "version": 1,
+                    "definition": "Review semantic facts against owners.",
+                    "owner_rule_id": "ALATYR-INTEGRITY-001",
+                    "canonical_owner": "logical-integrity.md",
+                }
+            },
+        )
+
+        self.assertEqual(
+            result["semantic_preload"]["terms"][0]["owner_rule_id"],
+            "ALATYR-INTEGRITY-001",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

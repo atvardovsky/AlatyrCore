@@ -127,6 +127,7 @@ modules:
             packet["routing_sources"]["installed_profile_routes"],
             ".ai/assistant/bootstrap-index.json",
         )
+        self.assertEqual(packet["budget_summary"]["bootstrap_max_words"], 1800)
         self.assertEqual(
             packet["operation_routing"]["index"],
             ".ai/assistant/operation-index.json",
@@ -134,16 +135,20 @@ modules:
         self.assertNotIn("profile_routes", packet)
         self.assertNotIn("allowed_action_modes", packet["authorization"])
         self.assertIn(
-            "tools/alatyr.py support-delta",
-            packet["support_delta_first"]["support_delta_tool"],
+            "target-discovered commands",
+            packet["support_delta_first"]["tool_contract"],
         )
-        self.assertIn(
-            "tools/alatyr.py approval-check",
-            packet["support_delta_first"]["approval_scope_check_tool"],
+        self.assertNotIn(
+            "tools/alatyr.py",
+            json.dumps(packet["support_delta_first"], sort_keys=True),
         )
-        self.assertIn(
-            "--approval-record <target-approval-json>",
-            packet["support_delta_first"]["approval_scope_check_tool"],
+        self.assertEqual(
+            packet["support_delta_first"]["support_delta_capability"],
+            "target-support-delta",
+        )
+        self.assertEqual(
+            packet["support_delta_first"]["approval_scope_check_capability"],
+            "target-approval-scope-check",
         )
         decomposition = packet["task_decomposition"]
         self.assertEqual(

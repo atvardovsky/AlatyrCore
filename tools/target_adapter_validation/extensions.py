@@ -12,6 +12,46 @@ from target_adapter_validation.capability import (
 )
 
 
+def _check_extension_routing(context: CapabilityValidationContext) -> None:
+    catalog = context.load_json_object(
+        context.target_path(".ai/assistant/operation-catalog.json"),
+        "OPERATION_CATALOG",
+    )
+    operations = catalog.get("operations") if isinstance(catalog, dict) else None
+    operation = next(
+        (
+            item for item in operations or []
+            if isinstance(item, dict) and item.get("id") == "extension-management"
+        ),
+        None,
+    )
+    if not isinstance(operation, dict) or operation.get("required_module") != "core-profile":
+        context.error("EXTENSION_OPERATION_UNROUTED", "extension-management must remain available through core-profile", ".ai/assistant/operation-catalog.json")
+    router = context.load_json_object(
+        context.target_path(".ai/assistant/context-router.json"), "ROUTER"
+    )
+    overlays = router.get("intent_overlays") if isinstance(router, dict) else None
+    route = overlays.get("extension-request") if isinstance(overlays, dict) else None
+    if not isinstance(route, dict):
+        context.error(
+            "EXTENSION_INTENT_UNROUTED",
+            "extension intent must route extension-management",
+            ".ai/assistant/context-router.json",
+        )
+        return
+    if (
+        route.get("required_module") != "core-profile"
+        or route.get("activation_target_module") != "extensions"
+        or route.get("execution_required_module") != "extensions"
+        or "read-only" not in str(route.get("disabled_module_behavior", ""))
+    ):
+        context.error(
+            "EXTENSION_INTENT_MODULE_BOUNDARY",
+            "extension intent must expose core inspection but gate lifecycle execution on extensions",
+            ".ai/assistant/context-router.json",
+        )
+
+
 def validate_extensions(
     context: CapabilityValidationContext,
     manifest: ManifestData | None,
@@ -363,20 +403,7 @@ def validate_extensions(
     for extension_id in sorted(set(lock_by_id) - set(catalog_by_id)):
         context.error("EXTENSION_CATALOG_MISSING", f"lock extension {extension_id} has no catalog entry", catalog_relpath)
 
-    catalog = context.load_json_object(
-        context.target_path(".ai/assistant/operation-catalog.json"),
-        "OPERATION_CATALOG",
-    )
-    operations = catalog.get("operations") if isinstance(catalog, dict) else None
-    operation = next(
-        (
-            item for item in operations or []
-            if isinstance(item, dict) and item.get("id") == "extension-management"
-        ),
-        None,
-    )
-    if not isinstance(operation, dict) or operation.get("required_module") != "core-profile":
-        context.error("EXTENSION_OPERATION_UNROUTED", "extension-management must remain available through core-profile", ".ai/assistant/operation-catalog.json")
+    _check_extension_routing(context)
 
     context.info(
         "EXTENSION_EVIDENCE_LIMIT",

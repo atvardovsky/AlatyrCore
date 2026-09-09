@@ -277,7 +277,8 @@ def build_agent_entry_packet(
         "budget_summary": {
             "policy": ".ai/assistant/context-router.json#context_budgets",
             "bootstrap_max_words": _object(context_budgets.get("bootstrap")).get(
-                "hard_max_words"
+                "hard_max_words",
+                _object(context_budgets.get("bootstrap")).get("max_words"),
             ),
             "profile_max_words": _object(
                 context_budgets.get("profile_default")
@@ -326,19 +327,12 @@ def build_agent_entry_packet(
         "support_delta_first": {
             "policy": SOURCE_PATHS["support_policy"].as_posix(),
             "state": ".ai/support-state.json",
-            "support_diff_tool": "tools/alatyr.py support-diff --target <target-repo>",
-            "support_delta_tool": (
-                "tools/alatyr.py support-delta --target <target-repo> "
-                "--diff-ref <base-ref>"
-            ),
-            "impact_plan_tool": (
-                "tools/alatyr.py impact --target <target-repo> "
-                "--diff-ref <base-ref>"
-            ),
-            "approval_scope_check_tool": (
-                "tools/alatyr.py approval-check --target <target-repo> "
-                "--diff-ref <base-ref> --approval-record <target-approval-json>"
-            ),
+            "tool_contract": "use target-discovered commands only; AlatyrCore source helpers are not portable target commands",
+            "support_diff_capability": "target-support-diff",
+            "support_delta_capability": "target-support-delta",
+            "impact_plan_capability": "target-impact-plan",
+            "approval_scope_check_capability": "target-approval-scope-check",
+            "missing_target_tool_behavior": "manual-review-with-residual-risk",
             "routing_order": ["support-delta", "impact", "selected-owners"],
             "semantic_correctness_proven": False,
             "review_after_code_change": True,

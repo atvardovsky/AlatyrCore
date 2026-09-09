@@ -2265,13 +2265,26 @@ class Validator:
                 relpath,
             )
         delta = actual.get("support_delta_first")
-        if not isinstance(delta, dict) or "tools/alatyr.py support-delta" not in json.dumps(
-            delta,
-            sort_keys=True,
+        serialized_delta = json.dumps(delta, sort_keys=True) if isinstance(delta, dict) else ""
+        if (
+            not isinstance(delta, dict)
+            or delta.get("state") != ".ai/support-state.json"
+            or "target-discovered commands" not in str(delta.get("tool_contract", ""))
+            or "tools/alatyr.py" in serialized_delta
+            or not all(
+                isinstance(delta.get(field), str) and delta[field]
+                for field in [
+                    "support_diff_capability",
+                    "support_delta_capability",
+                    "impact_plan_capability",
+                    "approval_scope_check_capability",
+                    "missing_target_tool_behavior",
+                ]
+            )
         ):
             self.warn(
                 "ENTRY_PACKET_SUPPORT_DELTA",
-                "entry packet should route support review through delta-first evidence",
+                "entry packet should route support review through target-discovered delta-first capabilities",
                 relpath,
             )
         lazy = actual.get("lazy_human_fallbacks")

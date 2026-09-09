@@ -321,6 +321,18 @@ def main() -> int:
         audit = profiles.get("repository-audit", {})
         if audit.get("check_profile") != "full":
             failures.append("repository-audit must route through the full check profile")
+        framework_rule = profiles.get("framework-rule", {})
+        framework_rule_context = framework_rule.get("required_context")
+        required_framework_rule_context = [
+            "framework/context-index.json",
+            "framework/rule-registry.json",
+            "framework/rule-ownership.md",
+            "framework/semantics/index.json",
+        ]
+        if framework_rule_context != required_framework_rule_context:
+            failures.append(
+                "framework-rule source profile must load canonical ownership and semantic indexes"
+            )
         source_tooling = profiles.get("source-tooling", {})
         if "by trigger_paths" not in source_tooling.get("check_selection", ""):
             failures.append("source-tooling must document trigger_paths selection")

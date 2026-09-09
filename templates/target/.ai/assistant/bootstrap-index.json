@@ -21,7 +21,7 @@
       "assistant": ".ai/assistant/context-index.json"
     },
     "max_depth": 8,
-    "on_failure": "stop compact interpretation, load the named canonical owner when safe, and report index drift; never load the complete contour by default"
+    "on_failure": "load named canonical owner; report index drift; no complete contour fallback"
   },
   "semantic_preload": {
     "index": ".ai/framework/semantics/index.json",
@@ -31,40 +31,46 @@
         "id": "alatyr:current-scope-authorization@1",
         "version": 1,
         "definition": "Inspect, modify, commit, publish, and live-external actions are separate authorization phases for the current logical task. A completed, redirected, ambiguous, discussion-only, or analysis-only request does not authorize a later state-changing phase.",
+        "owner_rule_id": "ALATYR-AUTHORIZATION-001",
         "canonical_owner": ".ai/framework/action-authorization.md"
       },
       {
         "id": "alatyr:canonical-owner@1",
         "version": 1,
         "definition": "Use the target-registered canonical owner for a fact type, preserve its conflict resolver and synchronization direction, and treat routing records, summaries, evidence, frequency, and recency as non-authoritative unless that owner says otherwise.",
+        "owner_rule_id": "ALATYR-SOURCE-001",
         "canonical_owner": ".ai/framework/source-of-truth-registry.md"
       },
       {
         "id": "alatyr:risk-by-fact@1",
         "version": 1,
         "definition": "Classify risk from changed facts, affected boundaries, reversibility, external effects, and target policy rather than from file count or apparent patch size; expand to the applicable owner, approval, safety, and validation evidence before acting.",
+        "owner_rule_id": "ALATYR-RISK-001",
         "canonical_owner": ".ai/framework/change-risk-model.md"
       },
       {
         "id": "alatyr:protected-change@1",
         "version": 1,
         "definition": "A change that crosses a target-recorded protected category requires a current scoped approval whose semantic and path surfaces cover the actual change; changing the plan or scope invalidates approval as defined by the target policy.",
+        "owner_rule_id": "ALATYR-APPROVAL-001",
         "canonical_owner": ".ai/framework/approval-records.md"
       },
       {
         "id": "alatyr:logical-integrity@1",
         "version": 1,
         "definition": "Name changed semantic facts, re-derive their invariants, identify canonical owners and directly dependent surfaces, reconcile related findings as one repair set, validate the result, and report unresolved relationships and residual risk.",
+        "owner_rule_id": "ALATYR-INTEGRITY-001",
         "canonical_owner": ".ai/framework/logical-integrity.md"
       },
       {
         "id": "alatyr:bounded-context-expansion@1",
         "version": 1,
         "definition": "Start from the smallest matching profile and selected index branch. Expand only for an applicable owner, safety or approval boundary, named dependency, changed-fact relationship, conflict, failed validation, or explicit broader audit, and record why the expansion occurred.",
+        "owner_rule_id": "ALATYR-CONTEXT-001",
         "canonical_owner": ".ai/framework/context-profiles.md"
       }
     ],
-    "fallback": "load the referenced canonical owner and do not infer a missing stale conflicting cyclic or unsupported compact term"
+    "fallback": "load referenced canonical owner; report missing stale conflicting cyclic or unsupported term"
   },
   "rule_selector": ".ai/framework/rule-registry.json",
   "context_packet": {
@@ -132,15 +138,18 @@
     },
     "large-or-resumable": {
       "selector": "large-or-resumable",
-      "descriptor": ".ai/assistant/context/task-scales/large-or-resumable.json"
+      "descriptor": ".ai/assistant/context/task-scales/large-or-resumable.json",
+      "required_module": "large-task-orchestration"
     },
     "delegated-execution": {
       "selector": "delegated-execution",
-      "descriptor": ".ai/assistant/context/task-scales/delegated-execution.json"
+      "descriptor": ".ai/assistant/context/task-scales/delegated-execution.json",
+      "required_module": "subagent-delegation"
     },
     "change-package": {
       "selector": "change-package",
-      "descriptor": ".ai/assistant/context/task-scales/change-package.json"
+      "descriptor": ".ai/assistant/context/task-scales/change-package.json",
+      "required_module": "change-packages"
     },
     "engineering-evidence": {
       "selector": "engineering-evidence",
@@ -148,11 +157,13 @@
     },
     "debug-mode": {
       "selector": "debug-mode",
-      "descriptor": ".ai/assistant/context/task-scales/debug-mode.json"
+      "descriptor": ".ai/assistant/context/task-scales/debug-mode.json",
+      "required_module": "debug-mode"
     },
     "team-active": {
       "selector": "team-active",
-      "descriptor": ".ai/assistant/team/context-overlay.json"
+      "descriptor": ".ai/assistant/team/context-overlay.json",
+      "required_module": "team-collaboration"
     }
   },
   "task_classification": {
@@ -178,5 +189,5 @@
   "known_gaps": [
     "{KNOWN_GAP}"
   ],
-  "expansion_policy": "load required safety and owner evidence, record expansion reason, measured context, and intentionally omitted context"
+  "expansion_policy": "load required safety and owner evidence; record expansion reason, measured context, and omissions"
 }

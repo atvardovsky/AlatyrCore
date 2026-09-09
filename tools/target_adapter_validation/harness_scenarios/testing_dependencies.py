@@ -43,7 +43,11 @@ def run(target: Path, failures: list[str]) -> None:
                     "operation_candidates": [
                         "test-first-configuration",
                         "test-first-change",
-                    ]
+                    ],
+                    "required_module": "core-profile",
+                    "activation_target_module": "test-first-development",
+                    "execution_required_module": "test-first-development",
+                    "disabled_module_behavior": "configuration and recommendation only",
                 }
             }
         },

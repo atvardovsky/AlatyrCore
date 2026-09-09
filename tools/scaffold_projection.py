@@ -36,6 +36,29 @@ MARKDOWN_FRAGMENT_INLINE_RE = re.compile(
 )
 MARKDOWN_FRAGMENT_KEYS = {"requires_paths", "requires_modules"}
 
+MODULE_BOUND_MANIFEST_SECTIONS = {
+    "ai_infrastructure": frozenset({"ai-infrastructure"}),
+    "extensions": frozenset({"extensions"}),
+    "dependency_knowledge": frozenset({"dependency-knowledge"}),
+    "workspace_modes": frozenset({"workspace-modes"}),
+    "team_collaboration": frozenset({"team-collaboration"}),
+    "bridges": frozenset(
+        {
+            "assistant-runtime-capabilities",
+            "ai-infrastructure",
+            "diagrams",
+            "multi-assistant-bridges",
+            "subagent-delegation",
+        }
+    ),
+    "change_packages": frozenset({"change-packages"}),
+    "debug_mode": frozenset({"debug-mode"}),
+    "code_documentation": frozenset({"code-documentation"}),
+    "project_vocabulary": frozenset({"project-vocabulary"}),
+    "test_first_development": frozenset({"test-first-development"}),
+    "policies": frozenset({"ai-infrastructure", "extensions"}),
+}
+
 
 def portable_relative_path(value: str | PurePath) -> PurePosixPath:
     """Normalize repository-relative contract paths independently of the host OS."""
@@ -174,8 +197,10 @@ def project_manifest(
 
     rendered: list[str] = []
     module_items = sorted(enabled_modules or set())
+    selected_index = selected_path_index(selected)
     source_lines = text.splitlines()
     disabled_sections: set[str] = set()
+    top_sections: set[str] = set()
     current_section: str | None = None
     section_contracts: set[str] = set()
     section_paths: dict[str, list[str]] = {}
@@ -183,6 +208,7 @@ def project_manifest(
         top_level = re.match(r"^([A-Za-z0-9_-]+):\s*$", source_line)
         if top_level:
             current_section = top_level.group(1)
+            top_sections.add(current_section)
         if current_section is None:
             continue
         if re.match(r"^\s+contract_version:\s+", source_line):
@@ -192,7 +218,10 @@ def project_manifest(
             section_paths.setdefault(current_section, []).append(path_match.group("path"))
     for section in section_contracts:
         paths = section_paths.get(section, [])
-        if paths and not any(path_available(path, selected) for path in paths):
+        if paths and not any(path_available(path, selected_index) for path in paths):
+            disabled_sections.add(section)
+    for section, module_ids in MODULE_BOUND_MANIFEST_SECTIONS.items():
+        if section in top_sections and not module_ids.intersection(module_items):
             disabled_sections.add(section)
     current_top_level: str | None = None
     for line in source_lines:
@@ -219,17 +248,39 @@ def project_manifest(
         if "{CORE_STANDARD_OR_COMPLETE}" in line:
             line = line.replace("{CORE_STANDARD_OR_COMPLETE}", framework_pack)
         match = TARGET_PATH_RE.match(line)
-        if match and not path_available(match.group("path"), selected):
+        if match and not path_available(match.group("path"), selected_index):
             continue
         if line == "approvals:" and not directory_available(
-            ".ai/assistant/approvals", selected
+            ".ai/assistant/approvals", selected_index
         ):
             continue
         if line.strip() in {'- "{SELECTED_MODULE}"', '- "{STAGED_MODULE}"'}:
             rendered.extend(f'    - "{module_id}"' for module_id in module_items)
         else:
             rendered.append(line)
+    rendered = _prune_empty_top_level_sections(rendered)
     return "\n".join(rendered) + "\n"
+
+
+def _prune_empty_top_level_sections(lines: list[str]) -> list[str]:
+    """Remove YAML mapping headers whose projected child lines are empty."""
+
+    pruned: list[str] = []
+    index = 0
+    while index < len(lines):
+        line = lines[index]
+        if not re.match(r"^[A-Za-z0-9_-]+:\s*$", line):
+            pruned.append(line)
+            index += 1
+            continue
+        block = [line]
+        index += 1
+        while index < len(lines) and not re.match(r"^[A-Za-z0-9_-]+:\s*$", lines[index]):
+            block.append(lines[index])
+            index += 1
+        if any(child.strip() for child in block[1:]):
+            pruned.extend(block)
+    return pruned
 
 
 OPERATION_ROUTING_PARAGRAPH = """Route IDs/aliases through `.ai/assistant/operation-index.json`; otherwise use
@@ -490,9 +541,15 @@ def _context_contract_available(contract: Any, selected: SelectedPaths) -> bool:
     references = contract.get("required_context", [])
     if not isinstance(references, list):
         return False
+    concrete_references = [
+        reference for reference in references if isinstance(reference, str)
+    ]
+    descriptor = contract.get("descriptor")
+    if isinstance(descriptor, str) and descriptor:
+        concrete_references.append(descriptor)
     return all(
-        not isinstance(reference, str) or path_available(reference, selected)
-        for reference in references
+        path_available(reference, selected)
+        for reference in concrete_references
     )
 
 

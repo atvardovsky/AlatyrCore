@@ -13,9 +13,9 @@
     "target_manifest_digest": "sha256:9638c007103df85d9e1b0bd66cf35c2dec3ad3a41bb7d555758eaabdb204284b",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.59",
-    "adapter_schema_version": "49",
-    "template_version": "54"
+    "framework_version": "0.1.0-alpha.60",
+    "adapter_schema_version": "50",
+    "template_version": "55"
   },
   "derived_from": {
     "manifest": {
@@ -24,7 +24,7 @@
     },
     "context_router": {
       "path": ".ai/assistant/context-router.json",
-      "sha256": "a9380310cfe36f1a1b568ba661ecbcc53f9538324e1fc1489412b78eeba96721"
+      "sha256": "76e467639bb16dfb76dec0b7ff6fb6f6264b606214ce7602a75a6bcbdc8cdc5e"
     },
     "gate_index": {
       "path": ".ai/assistant/gates/index.json",
@@ -89,7 +89,7 @@
   },
   "budget_summary": {
     "policy": ".ai/assistant/context-router.json#context_budgets",
-    "bootstrap_max_words": null,
+    "bootstrap_max_words": 900,
     "profile_max_words": 8000
   },
   "routing_sources": {
@@ -150,10 +150,12 @@
   "support_delta_first": {
     "policy": ".ai/project/support-policy.json",
     "state": ".ai/support-state.json",
-    "support_diff_tool": "tools/alatyr.py support-diff --target <target-repo>",
-    "support_delta_tool": "tools/alatyr.py support-delta --target <target-repo> --diff-ref <base-ref>",
-    "impact_plan_tool": "tools/alatyr.py impact --target <target-repo> --diff-ref <base-ref>",
-    "approval_scope_check_tool": "tools/alatyr.py approval-check --target <target-repo> --diff-ref <base-ref> --approval-record <target-approval-json>",
+    "tool_contract": "use target-discovered commands only; AlatyrCore source helpers are not portable target commands",
+    "support_diff_capability": "target-support-diff",
+    "support_delta_capability": "target-support-delta",
+    "impact_plan_capability": "target-impact-plan",
+    "approval_scope_check_capability": "target-approval-scope-check",
+    "missing_target_tool_behavior": "manual-review-with-residual-risk",
     "routing_order": [
       "support-delta",
       "impact",

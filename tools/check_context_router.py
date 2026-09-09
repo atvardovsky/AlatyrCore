@@ -184,6 +184,26 @@ def check_conditional_context(
     return paths
 
 
+def check_activation_boundary(
+    data: dict[str, Any],
+    label: str,
+    *,
+    required_module: str,
+    activation_module: str,
+    execution_module: str,
+    disabled_text: str,
+    failures: list[str],
+) -> None:
+    if data.get("required_module") != required_module:
+        failures.append(f"{label} must permit {required_module}")
+    if data.get("activation_target_module") != activation_module:
+        failures.append(f"{label} must name {activation_module} as activation target")
+    if data.get("execution_required_module") != execution_module:
+        failures.append(f"{label} must gate execution on {execution_module}")
+    if disabled_text not in str(data.get("disabled_module_behavior", "")):
+        failures.append(f"{label} must describe disabled-module {disabled_text} behavior")
+
+
 def check_context_packet(router: dict[str, Any], failures: list[str]) -> None:
     packet = router.get("context_packet")
     if not isinstance(packet, dict):
@@ -836,8 +856,15 @@ def main() -> int:
             failures,
             {"required_context"},
         )
-        if test_first.get("required_module") != "core-profile":
-            failures.append("test-first intent must permit core-profile configuration")
+        check_activation_boundary(
+            test_first,
+            "test-first intent",
+            required_module="core-profile",
+            activation_module="test-first-development",
+            execution_module="test-first-development",
+            disabled_text="configuration",
+            failures=failures,
+        )
         if test_first.get("operation_candidates") != [
             "test-first-configuration",
             "test-first-change",
@@ -868,8 +895,15 @@ def main() -> int:
             failures,
             {"required_context"},
         )
-        if extension.get("required_module") != "core-profile":
-            failures.append("extension intent must permit core-profile inspection")
+        check_activation_boundary(
+            extension,
+            "extension intent",
+            required_module="core-profile",
+            activation_module="extensions",
+            execution_module="extensions",
+            disabled_text="read-only",
+            failures=failures,
+        )
         if extension.get("operation_candidates") != ["extension-management"]:
             failures.append("extension intent must route extension-management")
         extension_conditional_context = check_conditional_context(
@@ -1111,10 +1145,13 @@ def main() -> int:
         failures,
         {"required_context"},
     )
-    if not isinstance(large_task.get("budget_behavior"), str):
+    budget_behavior = large_task.get("budget_behavior")
+    if not isinstance(budget_behavior, str):
         failures.append("large task overlay needs budget_behavior")
-    elif "only new or changed owners" not in large_task["budget_behavior"]:
+    elif "only new or changed owners" not in budget_behavior:
         failures.append("large task overlay must keep guidance reloads delta-only")
+    if not isinstance(large_entry, dict) or large_entry.get("required_module") != "large-task-orchestration":
+        failures.append("large task overlay route must require large-task-orchestration")
     revalidation = large_task.get("semantic_guidance_revalidation")
     if not isinstance(revalidation, dict):
         failures.append("large task overlay needs semantic_guidance_revalidation")
@@ -1185,6 +1222,8 @@ def main() -> int:
     )
     if not isinstance(delegated.get("budget_behavior"), str):
         failures.append("delegated execution overlay needs budget_behavior")
+    if not isinstance(delegated_entry, dict) or delegated_entry.get("required_module") != "subagent-delegation":
+        failures.append("delegated execution route must require subagent-delegation")
     package_entry = scale_index.get("change-package")
     change_package = descriptor(
         package_entry.get("descriptor") if isinstance(package_entry, dict) else None,
@@ -1201,6 +1240,8 @@ def main() -> int:
     )
     if not isinstance(change_package.get("budget_behavior"), str):
         failures.append("change package overlay needs budget_behavior")
+    if not isinstance(package_entry, dict) or package_entry.get("required_module") != "change-packages":
+        failures.append("change package route must require change-packages")
     change_package_conditional_context = check_conditional_context(
         change_package, "task_scale_overlays.change-package", failures
     )
@@ -1241,6 +1282,8 @@ def main() -> int:
     )
     if not isinstance(debug_mode.get("budget_behavior"), str):
         failures.append("Debug Mode overlay needs budget_behavior")
+    if not isinstance(debug_entry, dict) or debug_entry.get("required_module") != "debug-mode":
+        failures.append("Debug Mode route must require debug-mode")
     debug_mode_conditional_context = check_conditional_context(
         debug_mode,
         "task_scale_overlays.debug-mode",
@@ -1251,6 +1294,8 @@ def main() -> int:
         ".ai/assistant/team/context-overlay.json"
     ):
         failures.append("team-active must point to its lazy descriptor")
+    elif team_entry.get("required_module") != "team-collaboration":
+        failures.append("team-active route must require team-collaboration")
 
     area_overlays = router.get("area_overlays")
     if not isinstance(area_overlays, dict) or not area_overlays:
@@ -1318,66 +1363,25 @@ def main() -> int:
             for value in contract.get(field, [])
             if isinstance(value, str) and value.startswith(".ai/framework/")
         )
-    routed_framework_paths.update(
-        value
-        for value in diagram_conditional_context
-        if value.startswith(".ai/framework/")
-    )
-    routed_framework_paths.update(
-        value
-        for value in change_package_conditional_context
-        if value.startswith(".ai/framework/")
-    )
-    routed_framework_paths.update(
-        value
-        for value in engineering_evidence_conditional_context
-        if value.startswith(".ai/framework/")
-    )
-    routed_framework_paths.update(
-        value
-        for value in debug_mode_conditional_context
-        if value.startswith(".ai/framework/")
-    )
-    routed_framework_paths.update(
-        value
-        for value in project_knowledge_conditional_context
-        if value.startswith(".ai/framework/")
-    )
-    routed_framework_paths.update(
-        value
-        for value in architecture_conditional_context
-        if value.startswith(".ai/framework/")
-    )
-    routed_framework_paths.update(
-        value
-        for value in code_documentation_conditional_context
-        if value.startswith(".ai/framework/")
-    )
-    routed_framework_paths.update(
-        value
-        for value in vocabulary_conditional_context
-        if value.startswith(".ai/framework/")
-    )
-    routed_framework_paths.update(
-        value
-        for value in test_first_conditional_context
-        if value.startswith(".ai/framework/")
-    )
-    routed_framework_paths.update(
-        value
-        for value in extension_conditional_context
-        if value.startswith(".ai/framework/")
-    )
-    routed_framework_paths.update(
-        value
-        for value in dependency_knowledge_conditional_context
-        if value.startswith(".ai/framework/")
-    )
-    routed_framework_paths.update(
-        value
-        for value in workspace_mode_conditional_context
-        if value.startswith(".ai/framework/")
-    )
+    for conditional_context in [
+        diagram_conditional_context,
+        change_package_conditional_context,
+        engineering_evidence_conditional_context,
+        debug_mode_conditional_context,
+        project_knowledge_conditional_context,
+        architecture_conditional_context,
+        code_documentation_conditional_context,
+        vocabulary_conditional_context,
+        test_first_conditional_context,
+        extension_conditional_context,
+        dependency_knowledge_conditional_context,
+        workspace_mode_conditional_context,
+    ]:
+        routed_framework_paths.update(
+            value
+            for value in conditional_context
+            if value.startswith(".ai/framework/")
+        )
     try:
         ai_router = load_json(TARGET / ".ai/assistant/ai-infrastructure-router.json")
         for route in ai_router.get("routes", {}).values():

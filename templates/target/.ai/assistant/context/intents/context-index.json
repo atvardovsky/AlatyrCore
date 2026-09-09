@@ -148,8 +148,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-SAFETY-002"
       ],
-      "estimated_words": 195,
-      "content_digest": "sha256:21de422bbd4f19aef79cd57d940fba8421a1ac59c2b52ee94a1bd81e1f030946"
+      "estimated_words": 206,
+      "content_digest": "sha256:2190bdb52cf24ec3504625ddd33165d310e14a35802cef67e5fba45658039d81"
     },
     {
       "id": "assistant.content.context-intents-test-first-request-json",
@@ -173,8 +173,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 217,
-      "content_digest": "sha256:f6cad4e9f518150e0338802d645fd68f8d2366a515fe5088e2e5e134218c33e9"
+      "estimated_words": 226,
+      "content_digest": "sha256:5512b3ed1d4ca9a0c44c679ca491e0dc7a6dd066eda0782fe9e9ac4e5ee1496e"
     },
     {
       "id": "assistant.content.context-intents-vocabulary-request-json",

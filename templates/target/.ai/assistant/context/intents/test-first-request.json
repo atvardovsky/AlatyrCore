@@ -9,6 +9,9 @@
   ],
   "operation_candidates": ["test-first-configuration", "test-first-change"],
   "required_module": "core-profile",
+  "activation_target_module": "test-first-development",
+  "execution_required_module": "test-first-development",
+  "disabled_module_behavior": "configuration and recommendation only",
   "required_context": [
     ".ai/framework/testing-guidance.md",
     ".ai/framework/test-first-development.md"

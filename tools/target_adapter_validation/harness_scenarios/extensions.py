@@ -133,6 +133,20 @@ def run(target: Path, failures: list[str]) -> None:
             ]
         },
     )
+    write_json(
+        target / ".ai/assistant/context-router.json",
+        {
+            "intent_overlays": {
+                "extension-request": {
+                    "required_module": "core-profile",
+                    "activation_target_module": "extensions",
+                    "execution_required_module": "extensions",
+                    "disabled_module_behavior": "read-only inspection and lifecycle planning only",
+                    "operation_candidates": ["extension-management"],
+                }
+            }
+        },
+    )
     installed_extension = validator(target)
     installed_extension.check_extensions(None)
     extension_errors = [

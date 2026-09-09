@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1218
+Catalog entries: 1221
 
 ## Families
 
@@ -37,7 +37,7 @@ Catalog entries: 1218
 - `ENGINEERING`: 41 codes.
 - `ENTRY`: 9 codes.
 - `EVIDENCE`: 1 codes.
-- `EXTENSION`: 65 codes.
+- `EXTENSION`: 67 codes.
 - `FRAMEWORK`: 16 codes.
 - `GATE`: 1 codes.
 - `INSTALLATION`: 3 codes.
@@ -59,7 +59,7 @@ Catalog entries: 1218
 - `SUPPORT`: 11 codes.
 - `TARGET`: 8 codes.
 - `TASK`: 23 codes.
-- `TDD`: 44 codes.
+- `TDD`: 45 codes.
 - `TEAM`: 98 codes.
 - `UNRESOLVED`: 1 codes.
 - `VOCABULARY`: 46 codes.
@@ -1328,6 +1328,10 @@ Catalog entries: 1218
   Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_INTEGRATION_SURFACES`
   Level: error. Source: `tools/target_adapter_validation/extensions.py`.
+- `EXTENSION_INTENT_MODULE_BOUNDARY`
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
+- `EXTENSION_INTENT_UNROUTED`
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_ITEM_INDEX_DRIFT`
   Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_ITEM_UNLOCKED`
@@ -2065,6 +2069,8 @@ Catalog entries: 1218
 - `TDD_EXCEPTION_UNRESOLVED`
   Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_EXECUTION_UNROUTED`
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
+- `TDD_INTENT_MODULE_BOUNDARY`
   Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_INTENT_UNROUTED`
   Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.

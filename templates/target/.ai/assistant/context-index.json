@@ -85,7 +85,7 @@
         "ALATYR-INTEGRITY-001"
       ],
       "estimated_words": 329,
-      "content_digest": "sha256:00e92cb69bb9a48e4eb2ba67ac39ff1c25936f60326262e3951193b1907c655d"
+      "content_digest": "sha256:0f578ee1cd2bb343182cdbffd0f5ea59920353f9eadda82c02b5b786ce16e091"
     },
     {
       "id": "assistant.content.bridge-capability-matrix-md",
@@ -178,8 +178,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1520,
-      "content_digest": "sha256:a9380310cfe36f1a1b568ba661ecbcc53f9538324e1fc1489412b78eeba96721"
+      "estimated_words": 1532,
+      "content_digest": "sha256:76e467639bb16dfb76dec0b7ff6fb6f6264b606214ce7602a75a6bcbdc8cdc5e"
     },
     {
       "id": "assistant.content.contour-md",
@@ -249,8 +249,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 290,
-      "content_digest": "sha256:5ab778a609283f269fc21dbb51e67c1de1c977e831960ecd19e35fd659f365c4"
+      "estimated_words": 285,
+      "content_digest": "sha256:3c52a7aeb2da750c8378a3a253e034223ed20764c3d67b316519fe600838e4ea"
     },
     {
       "id": "assistant.content.help-md",
@@ -532,7 +532,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 279,
-      "content_digest": "sha256:810404acda5260e67b8d53070d937bb8a3829d940150905c9ce9489528b65dbb"
+      "content_digest": "sha256:09b1d436f985498b0aa8c8d708c3ed688ad081d3f09b3c71ac3ceba3794e2b6f"
     },
     {
       "id": "assistant.section.extensions",

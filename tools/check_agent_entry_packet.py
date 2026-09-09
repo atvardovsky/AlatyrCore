@@ -194,13 +194,20 @@ def check_packet(
     if not isinstance(delta, dict):
         failures.append("entry packet must include support_delta_first")
     else:
+        if delta.get("state") != ".ai/support-state.json":
+            failures.append("entry packet support delta route must name support-state")
+        if "tools/alatyr.py" in json.dumps(delta, sort_keys=True):
+            failures.append("entry packet must not expose source helper commands as target commands")
+        if "target-discovered commands" not in str(delta.get("tool_contract", "")):
+            failures.append("entry packet support delta route must require target-discovered commands")
         for required in [
-            "tools/alatyr.py support-delta",
-            "tools/alatyr.py impact",
-            "tools/alatyr.py approval-check",
-            ".ai/support-state.json",
+            "support_diff_capability",
+            "support_delta_capability",
+            "impact_plan_capability",
+            "approval_scope_check_capability",
+            "missing_target_tool_behavior",
         ]:
-            if required not in json.dumps(delta, sort_keys=True):
+            if not isinstance(delta.get(required), str) or not delta[required]:
                 failures.append(f"entry packet support delta route missing {required}")
         if delta.get("semantic_correctness_proven") is not False:
             failures.append("entry packet support delta route must keep semantic boundary")

@@ -54,6 +54,9 @@ def _route_projection(entries: Any) -> dict[str, dict[str, Any]]:
         for source, target in [
             ("descriptor", "descriptor"),
             ("required_module", "required_module"),
+            ("activation_target_module", "activation_target_module"),
+            ("execution_required_module", "execution_required_module"),
+            ("disabled_module_behavior", "disabled_module_behavior"),
             ("operation_candidates", "operations"),
         ]:
             value = entry.get(source)
@@ -166,6 +169,7 @@ def build_bootstrap_index(
                     "id": term_id,
                     "version": term.get("version"),
                     "definition": term.get("definition"),
+                    "owner_rule_id": term.get("owner_rule_id"),
                     "canonical_owner": f".ai/framework/{term.get('canonical_owner')}",
                 }
                 for term_id in ordered_semantic_ids

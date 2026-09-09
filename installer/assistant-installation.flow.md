@@ -384,8 +384,9 @@ Classify every proposed target file:
     `.ai/assistant/templates/adapter-output-contracts.md`, source-access
     policy, prompt-injection policy, human and machine-readable approval-record
     templates, migration-note
-    template, blueprint-creation, adapter-recheck, and post-install/update
-    chat-message templates when the target wants
+    template, blueprint-creation, and adapter-recheck. Always deliver the
+    post-install or post-update chat handoff as operation output; add reusable
+    post-install/update chat-message templates only when the target wants
     post-install operation requests or AI infrastructure adaptation.
     Add the large-task flow and operation-packet template when the target needs
     cross-boundary, multi-workstream, budget-exceeding, or resumable work, and
@@ -497,9 +498,11 @@ Classify every proposed target file:
     files that exist in the current tree.
 24. Report final evidence, including the project-knowledge route receipt and
     promotion decisions or the explicit reason no promotion was needed.
-25. Send the appropriate post-install or post-update assistant chat message
-    using the target template when installed. Name the single `Alatyr` entry,
-    read-only health aliases, automatic routing, and risk-gated preview.
+25. Send the appropriate post-install or post-update assistant chat handoff.
+    Use the target message template when installed; otherwise compose the same
+    required handoff from installed bootstrap, operation, module, and context
+    evidence. Name the single `Alatyr` entry, read-only health aliases,
+    automatic routing, and risk-gated preview.
     Name team/current-actor aliases, attribution limits, and module state when
     team collaboration is enabled.
     Name selected assistant surfaces and whether instruction auto-load,

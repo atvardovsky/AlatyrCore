@@ -4,6 +4,23 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.60 - 2026-09-09
+
+- Hardened scaffold projection so installed manifests prune unstaged
+  module-bound sections instead of carrying optional placeholders into lean
+  adapter profiles.
+- Bound intent and task-scale route overlays to installed descriptors, added
+  module activation/execution metadata for optional route requests, and
+  regenerated compact bootstrap/context indexes with semantic owner rule IDs.
+- Tightened source and target validation around support-delta entry packets,
+  release-profile cached-report reuse, installed-router path containment, and
+  source context routing.
+- Clarified that post-install and post-update chat handoffs are required
+  operation evidence while reusable handoff templates remain optional target
+  surfaces.
+- Increased the adapter schema version to `50` and target template version to
+  `55` for context-router and projected adapter-surface contract changes.
+
 ## 0.1.0-alpha.59 - 2026-09-08
 
 - Added a machine-checkable delegation execution-tree contract that binds

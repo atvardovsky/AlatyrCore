@@ -28,7 +28,7 @@
       "max_portable_words": 5600,
       "reserved_target_words": 2400
     },
-    "on_exceed": "load required safety and owner evidence, record expansion reason, measured context, and intentionally omitted context"
+    "on_exceed": "load required safety and owner evidence; record expansion reason, measured context, and omissions"
   },
   "context_receipt": {
     "required_for": [
@@ -77,7 +77,7 @@
       "fact path symbol contract and dependency selectors",
       "risk conflict and failed-validation expansion"
     ],
-    "on_failure": "stop compact interpretation, load the named canonical owner when safe, and report index drift; never load the complete contour by default"
+    "on_failure": "load named canonical owner; report index drift; no complete contour fallback"
   },
   "semantic_codebook": {
     "schema_version": 2,
@@ -93,7 +93,7 @@
       "alatyr:bounded-context-expansion@1"
     ],
     "conditional_loading": "load only terms explicitly referenced by selected context items, then resolve their acyclic dependency closure once; legacy schema version 1 indexes retain shard-selector compatibility during migration",
-    "fallback": "load the referenced canonical owner and do not infer a missing stale conflicting cyclic or unsupported compact term"
+    "fallback": "load referenced canonical owner; report missing stale conflicting cyclic or unsupported term"
   },
   "context_packet": {
     "schema_version": 3,
@@ -302,7 +302,10 @@
       ],
       "descriptor": ".ai/assistant/context/intents/test-first-request.json",
       "operation_candidates": ["test-first-configuration", "test-first-change"],
-      "required_module": "core-profile"
+      "required_module": "core-profile",
+      "activation_target_module": "test-first-development",
+      "execution_required_module": "test-first-development",
+      "disabled_module_behavior": "configuration and recommendation only"
     },
     "extension-request": {
       "use_when": [
@@ -311,7 +314,10 @@
       ],
       "descriptor": ".ai/assistant/context/intents/extension-request.json",
       "operation_candidates": ["extension-management"],
-      "required_module": "core-profile"
+      "required_module": "core-profile",
+      "activation_target_module": "extensions",
+      "execution_required_module": "extensions",
+      "disabled_module_behavior": "read-only inspection and lifecycle planning only"
     },
     "dependency-knowledge-request": {
       "use_when": [
@@ -360,11 +366,13 @@
         "profile context budget exceeded",
         "separate approval or validation checkpoints"
       ],
-      "descriptor": ".ai/assistant/context/task-scales/large-or-resumable.json"
+      "descriptor": ".ai/assistant/context/task-scales/large-or-resumable.json",
+      "required_module": "large-task-orchestration"
     },
     "delegated-execution": {
       "use_when": ["delegation"],
-      "descriptor": ".ai/assistant/context/task-scales/delegated-execution.json"
+      "descriptor": ".ai/assistant/context/task-scales/delegated-execution.json",
+      "required_module": "subagent-delegation"
     },
     "change-package": {
       "use_when": [
@@ -373,7 +381,8 @@
         "architecture segment capability migration or public contract package",
         "audit pilot or publishable before-to-after provenance"
       ],
-      "descriptor": ".ai/assistant/context/task-scales/change-package.json"
+      "descriptor": ".ai/assistant/context/task-scales/change-package.json",
+      "required_module": "change-packages"
     },
     "engineering-evidence": {
       "use_when": [
@@ -386,13 +395,15 @@
         "explicit current-task or current-session Debug Mode activation",
         "status checkpoint finalization disablement or comparison for selected debug evidence"
       ],
-      "descriptor": ".ai/assistant/context/task-scales/debug-mode.json"
+      "descriptor": ".ai/assistant/context/task-scales/debug-mode.json",
+      "required_module": "debug-mode"
     },
     "team-active": {
       "use_when": [
         "team request active write operation or possible work overlap"
       ],
-      "descriptor": ".ai/assistant/team/context-overlay.json"
+      "descriptor": ".ai/assistant/team/context-overlay.json",
+      "required_module": "team-collaboration"
     }
   },
   "area_overlays": {

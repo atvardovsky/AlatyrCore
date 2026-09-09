@@ -136,7 +136,7 @@
     },
     {
       "id": "EXTENSION",
-      "code_count": 65
+      "code_count": 67
     },
     {
       "id": "FRAMEWORK",
@@ -224,7 +224,7 @@
     },
     {
       "id": "TDD",
-      "code_count": 44
+      "code_count": 45
     },
     {
       "id": "TEAM",
@@ -5921,6 +5921,24 @@
       ]
     },
     {
+      "code": "EXTENSION_INTENT_MODULE_BOUNDARY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/extensions.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_INTENT_UNROUTED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/extensions.py"
+      ]
+    },
+    {
       "code": "EXTENSION_ITEM_INDEX_DRIFT",
       "levels": [
         "error"
@@ -9235,6 +9253,15 @@
     },
     {
       "code": "TDD_EXECUTION_UNROUTED",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/test_first_development.py"
+      ]
+    },
+    {
+      "code": "TDD_INTENT_MODULE_BOUNDARY",
       "levels": [
         "error"
       ],

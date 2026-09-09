@@ -5,7 +5,7 @@
   "preloaded_context": ["AGENTS.md"],
   "bootstrap_context": [
     "tools/source_context_router.json",
-    "framework/semantics/core.json"
+    "framework/semantics/index.json"
   ],
   "recursive_context": {
     "schema_version": 1,
@@ -106,7 +106,12 @@
       "checks": ["markdown-links", "framework-consistency"]
     },
     "framework-rule": {
-      "required_context": ["framework/context-index.json"],
+      "required_context": [
+        "framework/context-index.json",
+        "framework/rule-registry.json",
+        "framework/rule-ownership.md",
+        "framework/semantics/index.json"
+      ],
       "conditional_context": [
         "canonical owner selected by rule ID",
         "owner dependency selected from alatyr_doc metadata",

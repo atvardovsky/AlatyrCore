@@ -414,8 +414,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 331,
-      "content_digest": "sha256:5e0ac188c902ba8cb6514c94e7067f8097e74b47adcb0d1e5d39e35950c7922c"
+      "estimated_words": 154,
+      "content_digest": "sha256:59e76c81702fb2e9ab0ddefbbdf517e37db899fb28231bf03ee5c426fba1413f"
     },
     {
       "id": "framework.core.semantics-collaboration-json",
@@ -461,8 +461,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 252,
-      "content_digest": "sha256:bcbeb4726a276338a485a4e66ac4b28aebd5857e045da620ebcb978b198a72ef"
+      "estimated_words": 286,
+      "content_digest": "sha256:dc389cc7754a07cf4aa83754081a7d26ca5720e7d683c7d1e55150e4654e80a5"
     },
     {
       "id": "framework.core.semantics-infrastructure-json",
@@ -495,6 +495,22 @@
       "owner_refs": [],
       "estimated_words": 150,
       "content_digest": "sha256:df16defad839350502cefea040b689189cb7cf3481e7c8ac0948759249b3a783"
+    },
+    {
+      "id": "framework.core.semantics-support-json",
+      "kind": "content",
+      "path": "semantics/support.json",
+      "summary": "Support",
+      "selectors": {
+        "path_terms": [
+          "semantics",
+          "support"
+        ]
+      },
+      "semantic_refs": [],
+      "owner_refs": [],
+      "estimated_words": 204,
+      "content_digest": "sha256:35e6b387bdca18dfef6db542e2970d0f69b344d2ac0ea3e6e21a15ac7d94720f"
     },
     {
       "id": "framework.core.source-of-truth-registry-md",

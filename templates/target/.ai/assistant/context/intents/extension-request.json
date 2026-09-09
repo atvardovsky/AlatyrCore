@@ -8,6 +8,9 @@
   ],
   "operation_candidates": ["extension-management"],
   "required_module": "core-profile",
+  "activation_target_module": "extensions",
+  "execution_required_module": "extensions",
+  "disabled_module_behavior": "read-only inspection and lifecycle planning only",
   "required_context": [
     ".ai/framework/extensions.md",
     ".ai/framework/prompt-injection.md",

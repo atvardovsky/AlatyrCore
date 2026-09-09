@@ -152,6 +152,60 @@ class ScaffoldProjectionTests(unittest.TestCase):
         self.assertNotIn("debug_mode:", rendered)
         self.assertIn("engineering_evidence:\n  contract_version: 2", rendered)
 
+    def test_manifest_prunes_module_bound_placeholder_sections(self) -> None:
+        source = (
+            "framework:\n  version: x\n"
+            "ai_infrastructure:\n"
+            "  router: .ai/assistant/ai-infrastructure-router.json\n"
+            "team_collaboration:\n"
+            "  policy: .ai/project/team-policy.json\n"
+            "  coordination_backend: \"{REPOSITORY_EXTERNAL_TRACKER_BOTH_OR_OTHER}\"\n"
+            "bridges:\n"
+            "  capabilities: .ai/assistant/assistant-capabilities.json\n"
+            "maturity:\n"
+            "  profile: .ai/assistant/maturity-profile.md\n"
+        )
+
+        rendered = project_manifest(
+            source,
+            "kernel",
+            "kernel",
+            {
+                Path(".ai/alatyr.yaml"),
+                Path(".ai/assistant/maturity-profile.md"),
+            },
+            enabled_modules=set(),
+        )
+
+        self.assertNotIn("ai_infrastructure:", rendered)
+        self.assertNotIn("team_collaboration:", rendered)
+        self.assertNotIn("coordination_backend:", rendered)
+        self.assertNotIn("bridges:", rendered)
+        self.assertIn("maturity:\n  profile: .ai/assistant/maturity-profile.md", rendered)
+
+    def test_manifest_keeps_module_bound_section_when_surface_is_installed(self) -> None:
+        source = (
+            "framework:\n  version: x\n"
+            "ai_infrastructure:\n"
+            "  router: .ai/assistant/ai-infrastructure-router.json\n"
+            "  recommendation: .ai/assistant/templates/ai-infrastructure-recommendation.md\n"
+        )
+
+        rendered = project_manifest(
+            source,
+            "core",
+            "core",
+            {
+                Path(".ai/alatyr.yaml"),
+                Path(".ai/assistant/ai-infrastructure-router.json"),
+            },
+            enabled_modules={"ai-infrastructure"},
+        )
+
+        self.assertIn("ai_infrastructure:", rendered)
+        self.assertIn("router: .ai/assistant/ai-infrastructure-router.json", rendered)
+        self.assertNotIn("recommendation:", rendered)
+
     def test_manifest_projection_forces_non_accepted_scaffold_state(self) -> None:
         source = (
             "installation:\n"
@@ -186,6 +240,41 @@ class ScaffoldProjectionTests(unittest.TestCase):
 
         self.assertEqual(list(projected["profile_index"]), ["docs-local"])
         self.assertEqual(projected["routing_order"], ["docs-local"])
+
+    def test_router_omits_intent_overlay_without_installed_descriptor(self) -> None:
+        router = {
+            "intent_overlays": {
+                "code-documentation": {
+                    "descriptor": ".ai/assistant/context/intents/code-documentation.json",
+                    "operation_candidates": ["documentation-sync"],
+                }
+            }
+        }
+
+        projected = project_router(router, set(), {"documentation-sync"})
+
+        self.assertEqual(projected["intent_overlays"], {})
+
+    def test_router_keeps_intent_overlay_with_installed_descriptor(self) -> None:
+        router = {
+            "intent_overlays": {
+                "code-documentation": {
+                    "descriptor": ".ai/assistant/context/intents/code-documentation.json",
+                    "operation_candidates": ["documentation-sync"],
+                }
+            }
+        }
+
+        projected = project_router(
+            router,
+            {Path(".ai/assistant/context/intents/code-documentation.json")},
+            {"documentation-sync"},
+        )
+
+        self.assertEqual(
+            list(projected["intent_overlays"]),
+            ["code-documentation"],
+        )
 
     def test_selected_modules_are_projected_as_staged(self) -> None:
         source = (
@@ -321,6 +410,41 @@ class ScaffoldProjectionTests(unittest.TestCase):
                 integrity["derived_from"]["project_map"]["sha256"],
                 hashlib.sha256(readme.encode("utf-8")).hexdigest(),
             )
+
+    def test_standard_scaffold_manifest_omits_unstaged_optional_modules(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            target = Path(directory)
+
+            _actions, blocked = plan(
+                SimpleNamespace(
+                    target=target,
+                    write=True,
+                    overwrite_existing=False,
+                    profile="standard",
+                    framework_pack="matched",
+                    enable_module=[],
+                    assistant_surface=[],
+                )
+            )
+
+            self.assertFalse(blocked)
+            manifest = (target / ".ai/alatyr.yaml").read_text(encoding="utf-8")
+            for section in [
+                "ai_infrastructure",
+                "extensions",
+                "team_collaboration",
+                "bridges",
+                "change_packages",
+                "debug_mode",
+                "code_documentation",
+                "project_vocabulary",
+                "test_first_development",
+                "policies",
+            ]:
+                self.assertNotIn(f"{section}:", manifest)
+            self.assertIn("operations:", manifest)
+            self.assertIn("engineering_evidence:", manifest)
+            self.assertIn("project_knowledge:", manifest)
 
     def test_partial_profile_capability_module_installs_closed_generic_index(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

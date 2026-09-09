@@ -11,6 +11,51 @@ from target_adapter_validation.capability import (
 )
 
 
+def _operation_by_id(context: CapabilityValidationContext) -> dict[str, dict[str, Any]]:
+    catalog = context.load_json_object(
+        context.target_path(".ai/assistant/operation-catalog.json"),
+        "OPERATION_CATALOG",
+    )
+    operations = catalog.get("operations") if isinstance(catalog, dict) else None
+    return {
+        item.get("id"): item
+        for item in operations or []
+        if isinstance(item, dict) and isinstance(item.get("id"), str)
+    }
+
+
+def _check_test_first_routing(context: CapabilityValidationContext) -> None:
+    by_id = _operation_by_id(context)
+    configuration = by_id.get("test-first-configuration")
+    execution = by_id.get("test-first-change")
+    if not isinstance(configuration, dict) or configuration.get("required_module") != "core-profile":
+        context.error("TDD_CONFIGURATION_UNROUTED", "test-first configuration must remain available through core-profile", ".ai/assistant/operation-catalog.json")
+    if not isinstance(execution, dict) or execution.get("required_module") != "test-first-development":
+        context.error("TDD_EXECUTION_UNROUTED", "test-first execution must require the enabled module", ".ai/assistant/operation-catalog.json")
+
+    router = context.load_json_object(
+        context.target_path(".ai/assistant/context-router.json"), "ROUTER"
+    )
+    overlays = router.get("intent_overlays") if isinstance(router, dict) else None
+    route = overlays.get("test-first-request") if isinstance(overlays, dict) else None
+    if not isinstance(route, dict) or route.get("operation_candidates") != [
+        "test-first-configuration", "test-first-change"
+    ]:
+        context.error("TDD_INTENT_UNROUTED", "test-first intent must route configuration and execution", ".ai/assistant/context-router.json")
+        return
+    if (
+        route.get("required_module") != "core-profile"
+        or route.get("activation_target_module") != "test-first-development"
+        or route.get("execution_required_module") != "test-first-development"
+        or "configuration" not in str(route.get("disabled_module_behavior", ""))
+    ):
+        context.error(
+            "TDD_INTENT_MODULE_BOUNDARY",
+            "test-first intent must expose core configuration but gate execution on test-first-development",
+            ".ai/assistant/context-router.json",
+        )
+
+
 def validate_test_first_development(
     context: CapabilityValidationContext,
     manifest: ManifestData | None,
@@ -308,31 +353,7 @@ def validate_test_first_development(
             if not resolved(isolation.get(field)):
                 context.error("TDD_ISOLATION_UNRESOLVED", f"isolation.{field} must be resolved", policy_relpath)
 
-    catalog = context.load_json_object(
-        context.target_path(".ai/assistant/operation-catalog.json"), "OPERATION_CATALOG"
-    )
-    operations = catalog.get("operations") if isinstance(catalog, dict) else None
-    by_id = {
-        item.get("id"): item
-        for item in operations or []
-        if isinstance(item, dict) and isinstance(item.get("id"), str)
-    }
-    configuration = by_id.get("test-first-configuration")
-    execution = by_id.get("test-first-change")
-    if not isinstance(configuration, dict) or configuration.get("required_module") != "core-profile":
-        context.error("TDD_CONFIGURATION_UNROUTED", "test-first configuration must remain available through core-profile", ".ai/assistant/operation-catalog.json")
-    if not isinstance(execution, dict) or execution.get("required_module") != "test-first-development":
-        context.error("TDD_EXECUTION_UNROUTED", "test-first execution must require the enabled module", ".ai/assistant/operation-catalog.json")
-
-    router = context.load_json_object(
-        context.target_path(".ai/assistant/context-router.json"), "ROUTER"
-    )
-    overlays = router.get("intent_overlays") if isinstance(router, dict) else None
-    route = overlays.get("test-first-request") if isinstance(overlays, dict) else None
-    if not isinstance(route, dict) or route.get("operation_candidates") != [
-        "test-first-configuration", "test-first-change"
-    ]:
-        context.error("TDD_INTENT_UNROUTED", "test-first intent must route configuration and execution", ".ai/assistant/context-router.json")
+    _check_test_first_routing(context)
 
     context.info(
         "TDD_EVIDENCE_LIMIT",

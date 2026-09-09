@@ -109,7 +109,7 @@ def _recommended_command(
         command_baseline = changed_from
     if command_baseline:
         command.extend(["--from-ref", command_baseline])
-    if reuse_report:
+    if reuse_report and effective_profile != "release":
         command.extend(["--reuse-report", str(reuse_report)])
     command.extend(
         ["--report", f"tmp/source-check-plan-result-{effective_profile}.json"]
@@ -119,6 +119,14 @@ def _recommended_command(
 
 def _matches_any(path: str, patterns: list[str]) -> bool:
     return matches_any(path, patterns, dialect=PathDialect.PORTABLE_FNMATCH_V1)
+
+
+def _require_unique_values(
+    packets: list[dict[str, Any]], field: str, label: str
+) -> None:
+    values = [packet[field] for packet in packets]
+    if len(values) != len(set(values)):
+        raise ValueError(f"task worker packet {label} must be unique")
 
 
 def _task_classification(
@@ -381,16 +389,12 @@ def _decomposition(
             validate_worker_packet(packet, packet_contract, root=ROOT)
             for packet in (task_worker_packets or [])
         ]
+        _require_unique_values(workstreams, "workstream_id", "workstream IDs")
+        _require_unique_values(workstreams, "coverage_key", "coverage keys")
+        _require_unique_values(workstreams, "independence_key", "independence keys")
+        _require_unique_values(workstreams, "semantic_scope", "semantic scopes")
         budget = delegation_budget(policy, workstreams)
         workstream_ids = [packet["workstream_id"] for packet in workstreams]
-        independence_keys = [packet["independence_key"] for packet in workstreams]
-        semantic_scopes = [packet["semantic_scope"] for packet in workstreams]
-        if len(workstream_ids) != len(set(workstream_ids)):
-            raise ValueError("task worker packet workstream IDs must be unique")
-        if len(independence_keys) != len(set(independence_keys)):
-            raise ValueError("task worker packet independence keys must be unique")
-        if len(semantic_scopes) != len(set(semantic_scopes)):
-            raise ValueError("task worker packet semantic scopes must be unique")
         return {
             "required": True,
             "strategy": (
@@ -595,6 +599,10 @@ def build_plan(
         requested_profile,
         source_profile,
     )
+    validation_profiles = [selected_profile, *additional_profiles]
+    effective_reuse_report_path = (
+        None if "release" in validation_profiles else reuse_report_path
+    )
     resolved_changed_from = resolve_changed_from(selected_profile, changed_from)
     plan = select_check_plan(
         checks,
@@ -615,7 +623,11 @@ def build_plan(
     input_fingerprints = {
         check["id"]: check_input_fingerprint(check, snapshot) for check in selected
     }
-    previous_report = load_reuse_report(reuse_report_path) if reuse_report_path else None
+    previous_report = (
+        load_reuse_report(effective_reuse_report_path)
+        if effective_reuse_report_path
+        else None
+    )
     current_source = source_identity()
     current_environment = environment_report()
     reuse = reuse_decisions(
@@ -701,21 +713,25 @@ def build_plan(
                 effective_profile=plan.effective_profile,
                 changed_from=resolved_changed_from,
                 from_ref=from_ref,
-                reuse_report=reuse_report_path,
+                reuse_report=effective_reuse_report_path,
             ),
             "additional_commands": [
                 _recommended_command(
                     effective_profile=profile,
                     changed_from=resolved_changed_from,
                     from_ref=from_ref,
-                    reuse_report=reuse_report_path,
+                    reuse_report=effective_reuse_report_path,
                 )
                 for profile in additional_profiles
             ],
         },
         "validation_profiles": [plan.effective_profile, *additional_profiles],
         "reuse": {
-            "reuse_report": str(reuse_report_path) if reuse_report_path else None,
+            "reuse_report": (
+                str(effective_reuse_report_path)
+                if effective_reuse_report_path
+                else None
+            ),
             "reusable_check_ids": reusable_ids,
             "reusable_check_count": len(reusable_ids),
             "decisions": reuse,

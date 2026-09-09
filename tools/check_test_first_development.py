@@ -185,6 +185,12 @@ def main() -> int:
 
     if intent.get("required_module") != "core-profile":
         failures.append("test-first intent must allow configuration from core-profile")
+    if intent.get("activation_target_module") != "test-first-development":
+        failures.append("test-first intent must name test-first-development as activation target")
+    if intent.get("execution_required_module") != "test-first-development":
+        failures.append("test-first intent must gate execution on test-first-development")
+    if "configuration" not in str(intent.get("disabled_module_behavior", "")):
+        failures.append("test-first intent must describe disabled-module configuration behavior")
     expected_candidates = ["test-first-configuration", "test-first-change"]
     if intent.get("operation_candidates") != expected_candidates:
         failures.append("test-first intent operation candidates are invalid")

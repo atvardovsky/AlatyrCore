@@ -31,19 +31,13 @@
       },
       "term_ids": [
         "alatyr:changed-fact-not-file@1",
-        "alatyr:coherent-change-package@1",
-        "alatyr:support-state-is-a-locator@1",
-        "alatyr:relationship-candidate-is-not-authority@1",
-        "alatyr:bounded-impact-closure@1"
+        "alatyr:coherent-change-package@1"
       ],
       "canonical_owner_digests": {
         "alatyr:changed-fact-not-file@1": "sha256:2d9660b8dc0e989de6d1c8d8ebe9e0c51dfc84b0dd0d5bdb419c02ebce637555",
-        "alatyr:coherent-change-package@1": "sha256:cb9cd1037d27cf67f609db309e230b8d871d65fefbf763b9f97a021e4523a1fd",
-        "alatyr:support-state-is-a-locator@1": "sha256:ab068544649a46b302832536821be38356cf4d0d8cccdd5ef1fe7999f8d24182",
-        "alatyr:relationship-candidate-is-not-authority@1": "sha256:ab068544649a46b302832536821be38356cf4d0d8cccdd5ef1fe7999f8d24182",
-        "alatyr:bounded-impact-closure@1": "sha256:ab068544649a46b302832536821be38356cf4d0d8cccdd5ef1fe7999f8d24182"
+        "alatyr:coherent-change-package@1": "sha256:cb9cd1037d27cf67f609db309e230b8d871d65fefbf763b9f97a021e4523a1fd"
       },
-      "content_digest": "sha256:5e0ac188c902ba8cb6514c94e7067f8097e74b47adcb0d1e5d39e35950c7922c"
+      "content_digest": "sha256:59e76c81702fb2e9ab0ddefbbdf517e37db899fb28231bf03ee5c426fba1413f"
     },
     {
       "id": "collaboration",
@@ -157,6 +151,37 @@
         "alatyr:observed-is-not-accepted@1": "sha256:47b4849783a12149d80ae900bf268edc123112fd41d0392035c36a2688cb17f6"
       },
       "content_digest": "sha256:df16defad839350502cefea040b689189cb7cf3481e7c8ac0948759249b3a783"
+    },
+    {
+      "id": "support",
+      "path": "support.json",
+      "preload": false,
+      "selectors": {
+        "task_profiles": [
+          "code-local",
+          "business-change",
+          "architecture-change",
+          "data-change",
+          "security-sensitive"
+        ],
+        "operations": [
+          "support-generation",
+          "support-delta",
+          "support-impact",
+          "adapter-recheck"
+        ]
+      },
+      "term_ids": [
+        "alatyr:support-state-is-a-locator@1",
+        "alatyr:relationship-candidate-is-not-authority@1",
+        "alatyr:bounded-impact-closure@1"
+      ],
+      "canonical_owner_digests": {
+        "alatyr:support-state-is-a-locator@1": "sha256:ab068544649a46b302832536821be38356cf4d0d8cccdd5ef1fe7999f8d24182",
+        "alatyr:relationship-candidate-is-not-authority@1": "sha256:ab068544649a46b302832536821be38356cf4d0d8cccdd5ef1fe7999f8d24182",
+        "alatyr:bounded-impact-closure@1": "sha256:ab068544649a46b302832536821be38356cf4d0d8cccdd5ef1fe7999f8d24182"
+      },
+      "content_digest": "sha256:35e6b387bdca18dfef6db542e2970d0f69b344d2ac0ea3e6e21a15ac7d94720f"
     }
   ]
 }

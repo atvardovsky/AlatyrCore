@@ -33,13 +33,19 @@ def source_path(reference: str) -> Path | None:
 
 
 def installed_path(target: Path, reference: str) -> Path | None:
-    if "{" in reference:
+    if not reference or "{" in reference:
         return None
-    if reference.startswith(".ai/") or reference in {"AGENTS.md", "AI_ASSISTANTS.md"}:
-        return target / reference
-    if reference.startswith(("/", "\\")) or re.match(r"^[A-Za-z]:[\\/]", reference):
+    if "\\" in reference:
         return None
-    return target / reference
+    if reference.startswith(("/", "\\")) or re.match(r"^[A-Za-z]:", reference):
+        return None
+    resolved_target = target.resolve()
+    candidate = (resolved_target / reference).resolve()
+    try:
+        candidate.relative_to(resolved_target)
+    except ValueError:
+        return None
+    return candidate
 
 
 def _measure_text(path: Path) -> str:
@@ -799,7 +805,9 @@ def build_report() -> dict[str, Any]:
 
 def build_installed_report(target: Path) -> dict[str, Any]:
     target = target.resolve()
-    router_path = target / ".ai" / "assistant" / "context-router.json"
+    router_path = installed_path(target, ".ai/assistant/context-router.json")
+    if router_path is None or not router_path.is_file():
+        raise ValueError("installed context router is missing or outside target root")
     router = json.loads(router_path.read_text(encoding="utf-8"))
     if not isinstance(router, dict):
         raise ValueError("installed context router must contain an object")
