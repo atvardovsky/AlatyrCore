@@ -280,8 +280,9 @@ Collect target-specific facts before writing project docs:
   suggestion-only, or unsupported per-surface dispatch backend, exact
   client/runtime, external dispatcher item, native definition format/paths,
   role/model binding, disjoint-write/tool/background/nested behavior,
-  retry/conflict fallback, privacy, validation, and primary convergence when
-  needed
+  execution-tree ledger, aggregate worker/context/retry budgets, semantic
+  overlap decisions, cancellation stop reasons, retry/conflict fallback,
+  privacy, validation, and primary convergence when needed
 - change-package activation, compact index, semantic and path approval scope,
   companion decisions, implementation corrections, provenance quality,
   retention/redaction, and validator expectations when needed
@@ -485,8 +486,9 @@ Final evidence must say:
   suggestion-only/unsupported dispatch, external dispatcher item where used,
   target-owned role catalog/prompts, deterministic task readiness, normalized
   results, bounded role/model bindings, verified native definition paths,
-  packet limits, disjoint writes, retry/conflict fallback, privacy, validation,
-  and primary convergence
+  packet limits, disjoint writes, execution-tree ledger, aggregate budget,
+  semantic-overlap decisions, cancellation stop reasons, retry/conflict
+  fallback, privacy, validation, and primary convergence
 - change packages are enabled or skipped from target evidence; enabled
   adapters define activation, owner, empty initial index, semantic/path scope,
   companion decisions, correction handling, provenance grades, record
@@ -543,8 +545,9 @@ Final evidence must say:
 - large-task flow and operation-packet template added or skipped
 - subagent delegation policy, role catalog/prompts, orchestration prompt,
   delegated-execution overlay, flow, native-binding authoring, execution plan,
-  packet, normalized result, native definition bindings, and per-surface
-  capability fields added or skipped
+  execution-tree ledger, packet, normalized result, native definition bindings,
+  aggregate budget, semantic-overlap, cancellation, and per-surface capability
+  fields added or skipped
 - change-package index, lazy overlay, flow, machine record, redacted report,
   and retention/redaction policy added, migrated, skipped, or blocked
 - team policy and operating model, local ignore rule, active-work index,

@@ -87,7 +87,7 @@
     "multi-assistant-bridges": ["existing-ai-surfaces"],
     "project-vocabulary": ["project-sources-of-truth", "context-routing"],
     "scaffolding": ["repository-identity", "context-routing"],
-    "subagent-delegation": ["existing-ai-surfaces", "risk-authorization-validation"],
+    "subagent-delegation": ["existing-ai-surfaces", "risk-authorization-validation", "context-routing"],
     "support-generation": ["support-state"],
     "team-collaboration": ["repository-identity", "risk-authorization-validation", "support-state"],
     "test-first-development": ["repository-identity", "project-sources-of-truth", "risk-authorization-validation"],

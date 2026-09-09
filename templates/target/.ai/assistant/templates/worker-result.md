@@ -6,6 +6,7 @@ Packet ID: `{PACKET_ID}`
 Parent packet ID: `{PARENT_PACKET_ID_OR_NONE}`
 Depth: `{NON_NEGATIVE_INTEGER}`
 Coverage key: `{BOUNDED_COVERAGE_KEY}`
+Semantic scope: `{SEMANTIC_SCOPE_OR_NOT_APPLICABLE}`
 Parent operation ID: `{OPERATION_ID}`
 Status: `{SUCCEEDED_FAILED_BLOCKED_CANCELLED_OR_SCOPE_VIOLATION}`
 Base revision observed: `{BASE_REVISION}`
@@ -26,12 +27,18 @@ Acceptance criteria: `{PASS_FAIL_OR_BLOCKED_BY_CRITERION}`
 
 Scope violation: `{NONE_OR_DETAILS}`
 Architecture or semantic deviation: `{NONE_OR_DETAILS}`
+Changed fact IDs: `{CHANGED_FACT_IDS_OR_NONE}`
+Canonical owner refs: `{CANONICAL_OWNER_REFS}`
+Surface refs: `{PATH_OR_SUPPORT_SURFACE_REFS}`
+Relationship refs: `{RELATIONSHIP_REFS_OR_NONE}`
+Overlap decision: `{DISJOINT_PRIMARY_RECONCILED_OVERLAP_REJECTED_OVERLAP_OR_NOT_APPLICABLE}`
 Unexpected repository state: `{NONE_OR_DETAILS}`
 Authorization or approval concern: `{NONE_OR_DETAILS}`
 Unresolved findings: `{NONE_OR_DETAILS}`
 Suggested follow-up: `{NONE_OR_PRIMARY_OWNED_ACTION}`
 Proposed child packets: `{NONE_OR_BOUNDED_PROPOSALS_FOR_PRIMARY_REVIEW}`
 Stop reason ID: `{TARGET_STOP_REASON_ID}`
+Execution tree node: `{NODE_ID_AND_UPDATED_STATUS_OR_NOT_CAPTURED_WITH_REASON}`
 Residual risk: `{RESIDUAL_RISK}`
 
 This result is evidence for primary review. It is not approval, integration,

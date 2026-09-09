@@ -1,5 +1,5 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "policy_kind": "alatyr-source-worker-policy",
   "scope": "source-repository",
   "provider_neutral": true,
@@ -10,8 +10,9 @@
     "dispatch_owner": "primary-assistant",
     "worker_child_behavior": "propose-only",
     "default_max_depth": 1,
-    "hard_max_depth": 2,
+    "hard_max_depth": 1,
     "max_total_delegates": 8,
+    "max_parallel_delegates": 2,
     "max_children_per_parent": 4,
     "max_context_words_total": 24000,
     "max_retries_total": 2,
@@ -31,7 +32,50 @@
       "overlapping-scope",
       "primary-critical-path",
       "capability-unavailable",
-      "user-restricted"
+      "user-restricted",
+      "cancelled-by-primary"
+    ]
+  },
+  "execution_tree_contract": {
+    "schema_version": 1,
+    "tree_kind": "alatyr-delegation-execution-tree",
+    "template_path": "templates/target/.ai/assistant/templates/delegation-execution-tree.json",
+    "required_budget_fields": [
+      "max_total_delegates",
+      "max_parallel_delegates",
+      "max_children_per_parent",
+      "max_context_words_total",
+      "max_retries_total",
+      "used_total_delegates",
+      "used_parallel_delegates",
+      "used_context_words",
+      "used_retries"
+    ],
+    "required_node_fields": [
+      "node_id",
+      "parent_node_id",
+      "packet_id",
+      "result_id",
+      "depth",
+      "status",
+      "role_id",
+      "assistant_surface",
+      "dispatch_backend",
+      "implementation_level",
+      "coverage_key",
+      "semantic_scope",
+      "changed_fact_ids",
+      "canonical_owner_refs",
+      "surface_refs",
+      "relationship_refs",
+      "allowed_actions",
+      "write_scope",
+      "context_words",
+      "attempt",
+      "result_status",
+      "stop_reason_id",
+      "child_proposals",
+      "overlap_decision"
     ]
   },
   "runtime_capability_contract": {
@@ -138,7 +182,7 @@
     }
   },
   "worker_packet_contract": {
-    "schema_version": 2,
+    "schema_version": 3,
     "packet_kinds": ["source-read-only-workstream"],
     "required_fields": [
       "schema_version",
@@ -158,6 +202,12 @@
       "write_scope",
       "independent",
       "independence_key",
+      "semantic_scope",
+      "changed_fact_ids",
+      "canonical_owner_refs",
+      "surface_refs",
+      "relationship_refs",
+      "overlap_decision",
       "expected_evidence"
     ],
     "allowed_actions": [
@@ -174,6 +224,21 @@
       "mode": "read-only",
       "independent": true,
       "independence_key": "portable-framework-rules",
+      "semantic_scope": "portable-framework-rules",
+      "changed_fact_ids": [],
+      "canonical_owner_refs": [
+        "framework/rule-registry.json",
+        "framework/rule-ownership.md"
+      ],
+      "surface_refs": [
+        "framework/**",
+        "framework/catalog/**"
+      ],
+      "relationship_refs": [
+        "framework/context-index.json",
+        "framework/semantics/index.json"
+      ],
+      "overlap_decision": "disjoint",
       "required_context": [
         "framework/context-index.json",
         "framework/rule-registry.json",
@@ -196,6 +261,21 @@
       "mode": "read-only",
       "independent": true,
       "independence_key": "installation-and-target-projections",
+      "semantic_scope": "installation-and-target-projections",
+      "changed_fact_ids": [],
+      "canonical_owner_refs": [
+        "INSTALL.md",
+        "installer/assistant-installation.flow.md"
+      ],
+      "surface_refs": [
+        "installer/**",
+        "templates/target/**"
+      ],
+      "relationship_refs": [
+        "framework/capabilities.json",
+        "tools/scaffold_profiles.json"
+      ],
+      "overlap_decision": "disjoint",
       "required_context": [
         "INSTALL.md",
         "installer/context-router.json",
@@ -218,6 +298,22 @@
       "mode": "read-only",
       "independent": true,
       "independence_key": "source-tools-and-validation",
+      "semantic_scope": "source-tools-and-validation",
+      "changed_fact_ids": [],
+      "canonical_owner_refs": [
+        "tools/check_manifest.json",
+        "docs/source-architecture.md"
+      ],
+      "surface_refs": [
+        "tools/**",
+        "tests/**",
+        "docs/source-architecture.md"
+      ],
+      "relationship_refs": [
+        "tools/source_context_router.json",
+        "tools/source_worker_policy.json"
+      ],
+      "overlap_decision": "disjoint",
       "required_context": [
         "tools/check_manifest.json",
         "tools/README.md",
@@ -239,6 +335,27 @@
       "mode": "read-only",
       "independent": true,
       "independence_key": "public-and-release-evidence",
+      "semantic_scope": "public-and-release-evidence",
+      "changed_fact_ids": [],
+      "canonical_owner_refs": [
+        "README.md",
+        "CHANGELOG.md",
+        "docs/release-process.md"
+      ],
+      "surface_refs": [
+        "README.md",
+        "CHANGELOG.md",
+        "docs/human/**",
+        "docs/releases/**",
+        "VERSION",
+        "ADAPTER_SCHEMA_VERSION",
+        "TEMPLATE_VERSION"
+      ],
+      "relationship_refs": [
+        "docs/release-process.md",
+        "tools/check_versioning.py"
+      ],
+      "overlap_decision": "disjoint",
       "required_context": [
         "README.md",
         "VERSION",

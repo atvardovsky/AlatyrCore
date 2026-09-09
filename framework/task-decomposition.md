@@ -196,8 +196,9 @@ For material work, final evidence should include:
 - task IDs, implementation levels, and executor decisions
 - dependencies and readiness/blocker state
 - context selected and intentionally omitted for each task
-- worker packet and result IDs when delegation was used
-- delegation-tree depth, coverage, budget use, child proposals, and stop reason
+- worker packet/result IDs and execution-tree ledger when delegation was used
+- delegation-tree depth, semantic coverage, overlap decisions, budget use,
+  child proposals, cancellation, and stop reasons
 - validation and acceptance evidence per task
 - primary convergence result and residual risk
 

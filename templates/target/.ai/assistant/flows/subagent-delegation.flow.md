@@ -21,6 +21,8 @@ Selected task-scale overlay: `delegated-execution`
 - Packet template: `.ai/assistant/templates/subagent-task-packet.md`
 - Execution-plan template:
   `.ai/assistant/templates/worker-execution-plan.md`
+- Execution-tree ledger template:
+  `.ai/assistant/templates/delegation-execution-tree.json`
 - Result template: `.ai/assistant/templates/worker-result.md`
 - Parent operation or large-task packet: `{PARENT_OPERATION_OR_PACKET}`
 - Target validation: `{TARGET_VALIDATION}`
@@ -69,8 +71,9 @@ Selected task-scale overlay: `delegated-execution`
 
 ## Task Graph And Readiness
 
-1. Create or update
-   `.ai/assistant/templates/worker-execution-plan.md` before dispatch.
+1. Instantiate `.ai/assistant/templates/worker-execution-plan.md` into a
+   target-approved operation evidence path or inline completion evidence before
+   dispatch. Do not write live execution state into the reusable template.
 2. Use `PLANNED`, `BLOCKED`, `READY`, `RUNNING`, `REVIEW_REQUIRED`, `DONE`,
    `FAILED`, or `CANCELLED`. Only the primary assistant marks readiness.
 3. Reject dependency cycles and concurrent overlapping writes. Keep shared
@@ -88,8 +91,9 @@ Selected task-scale overlay: `delegated-execution`
 
 ## Packet And Dispatch
 
-1. Create one packet per delegate from
-   `.ai/assistant/templates/subagent-task-packet.md`.
+1. Create one packet per delegate by instantiating
+   `.ai/assistant/templates/subagent-task-packet.md` into a target-approved
+   operation evidence path or inline completion evidence.
 2. Include only required context and name excluded context, files, actions,
    tools, dependencies, acceptance criteria, validation, and return format.
 3. Keep the primary agent on the immediate critical path. Dispatch only
@@ -104,10 +108,11 @@ Selected task-scale overlay: `delegated-execution`
 
 ## Result Review And Convergence
 
-1. Normalize the return through
-   `.ai/assistant/templates/worker-result.md`; record actual surface, role,
-   model or unverified status, base revision, files touched, tools used,
-   validation, findings, boundary evidence, and residual risk.
+1. Normalize the return by instantiating
+   `.ai/assistant/templates/worker-result.md` into per-operation result
+   evidence; record actual surface, role, model or unverified status, base
+   revision, files touched, tools used, validation, findings, boundary
+   evidence, and residual risk.
 2. Reject output outside packet scope or output that changed a prohibited
    fact, action, permission, or surface.
 3. Review the result against current repository state; do not assume the

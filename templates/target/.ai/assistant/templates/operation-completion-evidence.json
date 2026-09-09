@@ -55,6 +55,23 @@
     ],
     "primary_convergence": "{PASSED_FAILED_BLOCKED_OR_NOT_APPLICABLE}",
     "delegation_used": "{YES_NO}",
+    "delegation_execution_tree": {
+      "ledger_path_or_inline": "{DELEGATION_EXECUTION_TREE_PATH_INLINE_OR_NOT_USED}",
+      "packet_ids": [
+        "{PACKET_ID_OR_NONE}"
+      ],
+      "result_ids": [
+        "{RESULT_ID_OR_NONE}"
+      ],
+      "aggregate_budget_use": "{DELEGATE_PARALLEL_CHILD_CONTEXT_RETRY_USAGE_OR_NOT_USED}",
+      "semantic_overlap_review": "{DISJOINT_PRIMARY_RECONCILED_REJECTED_OR_NOT_USED}",
+      "stop_or_cancel_reasons": [
+        "{STOP_REASON_ID_OR_NONE}"
+      ],
+      "delegated_validation": "{PASSED_FAILED_BLOCKED_SKIPPED_OR_NOT_USED}",
+      "primary_review": "{PASSED_FAILED_BLOCKED_OR_NOT_USED}",
+      "primary_convergence_result": "{PASSED_FAILED_BLOCKED_OR_NOT_USED}"
+    },
     "residual_risk": "{NONE_OR_RESIDUAL_RISK}"
   },
   "changed_facts": [

@@ -4,6 +4,18 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.59 - 2026-09-08
+
+- Added a machine-checkable delegation execution-tree contract that binds
+  recursive worker proposals, aggregate budgets, semantic coverage, overlap
+  decisions, cancellation, stop reasons, validation, and primary convergence.
+- Upgraded source and target delegation policy contracts so workers may propose
+  child packets, while the primary assistant remains the only dispatcher and
+  convergence owner.
+- Extended target adapter validation, source worker tests, delegated-execution
+  templates, installer guidance, operation evidence, and conformance cases for
+  the execution-tree ledger and bounded recursive delegation.
+
 ## 0.1.0-alpha.58 - 2026-09-06
 
 - Reduced routine assistant context by separating compact bootstrap routing

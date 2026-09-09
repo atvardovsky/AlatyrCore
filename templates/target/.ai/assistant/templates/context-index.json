@@ -59,8 +59,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1429,
-      "content_digest": "sha256:de40cb6028a12f93226ab16e425c4d714ba3bf2039a9001d32bfbc72ec049201"
+      "estimated_words": 1434,
+      "content_digest": "sha256:84a5288bc1ea79c760b0271bac1098a6bf7e41bb2617a604aca34ac724f938ba"
     },
     {
       "id": "assistant.content.templates-ai-infrastructure-adaptation-record-md",
@@ -464,6 +464,34 @@
       "content_digest": "sha256:3ce3fde5fef45b14321b217d79e985844bb6858ba3ffd025952a3f8f1b2c7b85"
     },
     {
+      "id": "assistant.content.templates-delegation-execution-tree-json",
+      "kind": "content",
+      "path": "templates/delegation-execution-tree.json",
+      "summary": "Delegation Execution Tree",
+      "selectors": {
+        "path_terms": [
+          "templates",
+          "delegation",
+          "execution",
+          "tree"
+        ],
+        "rule_ids": [
+          "ALATYR-CONTEXT-001",
+          "ALATYR-DELEGATION-001"
+        ]
+      },
+      "semantic_refs": [
+        "alatyr:bounded-context-expansion@1",
+        "alatyr:bounded-delegation@1"
+      ],
+      "owner_refs": [
+        "ALATYR-CONTEXT-001",
+        "ALATYR-DELEGATION-001"
+      ],
+      "estimated_words": 131,
+      "content_digest": "sha256:7b98c713db48bafd4e56548d6fb7356b79a5b38cdd7660a02aeb2094c48db52e"
+    },
+    {
       "id": "assistant.content.templates-dependency-knowledge-sync-report-md",
       "kind": "content",
       "path": "templates/dependency-knowledge-sync-report.md",
@@ -750,8 +778,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 197,
-      "content_digest": "sha256:b8cabf05ed0084e3e34aeebec261c35c29026abfeb2938567766dfa22ad4a701"
+      "estimated_words": 224,
+      "content_digest": "sha256:6c6ac73580524aa09e7eeef857638e701889d9e4c6a3ac5f2be4a041a7ac095c"
     },
     {
       "id": "assistant.content.templates-operation-request-md",
@@ -799,8 +827,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1654,
-      "content_digest": "sha256:2c3e0101073ef77e4de506802c25625cce770ed878392e74c118f4d9acc95ce2"
+      "estimated_words": 1683,
+      "content_digest": "sha256:bfb63507da4b73578a80f18989a32deb3ece3a5b295f43a46cac36f2c3f1968d"
     },
     {
       "id": "assistant.content.templates-post-update-message-md",
@@ -824,8 +852,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1375,
-      "content_digest": "sha256:ee10cd97aa0760eb3836958013c4e5511b6180350667fb4ae178266f38156746"
+      "estimated_words": 1383,
+      "content_digest": "sha256:da95d49d6f866492583834f01b115cf44eeb60a144ccb4991d1cff136f887495"
     },
     {
       "id": "assistant.content.templates-pre-change-preview-md",
@@ -962,8 +990,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 298,
-      "content_digest": "sha256:f35bb081bd314829a29433f06a2b993eb750ef30678d78d4a4607b2923f916ed"
+      "estimated_words": 297,
+      "content_digest": "sha256:170051448ebfca049b2563367ea0b2e469a812f24573aab521b42e25ec3c65a8"
     },
     {
       "id": "assistant.content.templates-task-decomposition-md",
@@ -1235,8 +1263,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-DELEGATION-001"
       ],
-      "estimated_words": 198,
-      "content_digest": "sha256:a36ed052995aa6024a623cb1de946111ddb8ad6e59c7a8717852d48b9e6c9032"
+      "estimated_words": 241,
+      "content_digest": "sha256:55e3afba4c0c38741bca5e018acc3a74a2ac96b9876c0e6703d4c2511578101e"
     },
     {
       "id": "assistant.content.templates-worker-result-md",
@@ -1262,8 +1290,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-DELEGATION-001"
       ],
-      "estimated_words": 119,
-      "content_digest": "sha256:ded4f0b1de695109f01a2b231f4235bab4d3b47d9802f2132f2947d29e195a76"
+      "estimated_words": 143,
+      "content_digest": "sha256:aae36059bdbeed1249c98bbabc7614c0af05bf5f63ee30f6d79dfb3fc3c3911a"
     },
     {
       "id": "assistant.content.templates-workspace-mode-preflight-md",

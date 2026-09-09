@@ -450,7 +450,7 @@ class CheckGraphTests(unittest.TestCase):
         self.assertFalse(fell_back)
         self.assertEqual([entry["id"] for entry in selected], ["implementation"])
 
-    def test_change_and_full_profiles_use_changed_from_as_default_baseline(self) -> None:
+    def test_changed_path_profiles_use_changed_from_as_default_baseline(self) -> None:
         self.assertEqual(
             effective_baseline("change", "HEAD~1", None),
             "HEAD~1",
@@ -463,7 +463,14 @@ class CheckGraphTests(unittest.TestCase):
             effective_baseline("full", "origin/main", None),
             "origin/main",
         )
-        self.assertIsNone(effective_baseline("fast", "HEAD~1", None))
+        self.assertEqual(
+            effective_baseline("fast", "HEAD~1", None),
+            "HEAD~1",
+        )
+        self.assertEqual(
+            effective_baseline("micro", "HEAD~1", None),
+            "HEAD~1",
+        )
 
     def test_fast_and_full_profiles_resolve_default_changed_from(self) -> None:
         from unittest.mock import patch

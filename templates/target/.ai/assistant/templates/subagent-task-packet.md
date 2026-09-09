@@ -6,6 +6,8 @@ Depth: `{NON_NEGATIVE_INTEGER}`
 Remaining worker budget: `{NON_NEGATIVE_INTEGER}`
 Coverage key: `{UNIQUE_BOUNDED_COVERAGE_KEY}`
 Child proposal policy: `propose-only`
+Execution tree ledger: `{TARGET_APPROVED_OPERATION_LEDGER_PATH_OR_INLINE_EVIDENCE}`
+Ledger template: `.ai/assistant/templates/delegation-execution-tree.json`
 Task ID: `{TASK_ID}`
 Execution plan ID: `{PLAN_ID}`
 Parent operation ID: `{OPERATION_ID}`
@@ -21,21 +23,20 @@ Expected output: `{PATCH_EVIDENCE_FINDINGS_OR_OTHER}`
 Implementation level: `{L1_L2_L3_L4_OR_L5}`
 Task decomposition plan: `{TASK_DECOMPOSITION_PLAN_ID_OR_PATH}`
 Changed fact IDs: `{CHANGED_FACT_IDS_OR_NONE}`
+Semantic scope: `{SEMANTIC_SCOPE_OR_NOT_APPLICABLE}`
 Semantic fact owner: `{PRIMARY_OWNED_OWNER_OR_NONE}`
+Canonical owner refs: `{CANONICAL_OWNER_REFS}`
+Surface refs: `{PATH_OR_SUPPORT_SURFACE_REFS}`
+Relationship refs: `{RELATIONSHIP_REFS_OR_NONE}`
+Overlap decision: `{DISJOINT_PRIMARY_RECONCILED_OVERLAP_REJECTED_OVERLAP_OR_NOT_APPLICABLE}`
 Local acceptance criteria: `{OBJECTIVE_ACCEPTANCE_CRITERIA}`
 Dependency state: `{READY_DEPENDENCIES_OR_BLOCKER}`
 Base revision: `{BASE_REVISION}`
 
 ## Context Boundary
 
-Required context:
-
-- `{REQUIRED_CONTEXT_PATH_AND_REASON}`
-
-Excluded context:
-
-- `{EXCLUDED_CONTEXT_OR_NOT_NEEDED}`
-
+Required context: `{REQUIRED_CONTEXT_PATHS_AND_REASONS}`
+Excluded context: `{EXCLUDED_CONTEXT_OR_NOT_NEEDED}`
 Context budget: `{TARGET_PACKET_CONTEXT_BUDGET}`
 Tree context budget remaining: `{TARGET_TREE_CONTEXT_BUDGET_REMAINING}`
 
@@ -44,25 +45,11 @@ Tree context budget remaining: `{TARGET_TREE_CONTEXT_BUDGET_REMAINING}`
 Allowed actions: `{READ_ONLY_DOCS_ONLY_ADAPTER_ONLY_OR_CODE_AND_TESTS}`
 Current logical scope: `{PARENT_CURRENT_LOGICAL_SCOPE}`
 Inherited action phases: `{PARENT_AUTHORIZED_PHASES}`
-Prohibited phase escalation: `commit, publish, and live-external unless already authorized for the parent and rechecked by the primary`
-Allowed files or surfaces:
-
-- `{ALLOWED_PATH_OR_SURFACE}`
-
-Allowed tools:
-
-- `{ALLOWED_TOOL_OR_NONE}`
-
-Prohibited actions:
-
-- approval or project decision authority
-- permission, network, destructive, production, spend, migration, or external
-  actions unless the packet explicitly references valid target approval
-- files, facts, tools, or surfaces outside this packet
-- `{TARGET_ADDITIONAL_PROHIBITED_ACTION}`
-
-Concurrent packets and write-isolation decision:
-`{PACKET_IDS_AND_DISJOINT_SCOPE_EVIDENCE_OR_READ_ONLY}`
+Prohibited phase escalation: `commit, publish, live-external unless parent-authorized and primary-rechecked`
+Allowed files or surfaces: `{ALLOWED_PATHS_OR_SURFACES}`
+Allowed tools: `{ALLOWED_TOOLS_OR_NONE}`
+Prohibited actions: approval/project decisions; permission, network, destructive, production, spend, migration, external, out-of-packet files/facts/tools/surfaces; `{TARGET_ADDITIONAL_PROHIBITED_ACTION}`
+Concurrent packets and write-isolation decision: `{PACKET_IDS_AND_DISJOINT_SCOPE_EVIDENCE_OR_READ_ONLY}`
 
 ## Delegation Selection
 
@@ -78,13 +65,8 @@ Fallback: `{CONTINUE_PRIMARY_USE_STRONGER_VERIFIED_MODEL_OR_STOP}`
 
 ## Validation And Return
 
-Delegate validation:
-
-- `{TARGET_FOCUSED_VALIDATION_OR_MANUAL_REVIEW}`
-
-Return format:
-
-- `.ai/assistant/templates/worker-result.md`
+Delegate validation: `{TARGET_FOCUSED_VALIDATION_OR_MANUAL_REVIEW}`
+Return format: `.ai/assistant/templates/worker-result.md`
 
 ## Returned Result
 
@@ -99,6 +81,7 @@ Unexpected scope or conflicts: `{DETAILS_OR_NONE}`
 Residual risk: `{RESIDUAL_RISK}`
 Stop reason ID: `{TARGET_STOP_REASON_ID}`
 Proposed child packets: `{BOUNDED_CHILD_PACKET_PROPOSALS_OR_NONE}`
+Child proposal handling: `primary-review-only; delegates must not dispatch descendants`
 
 ## Primary Review
 
@@ -108,3 +91,4 @@ Repeated or combined validation: `{RESULT_OR_NOT_RUN_WITH_REASON}`
 Changed-fact and approval reconciliation: `{RESULT_OR_NOT_APPLICABLE}`
 Final disposition: `{INTEGRATED_REWORKED_DISCARDED_OR_BLOCKED}`
 Measured latency or cost evidence: `{MEASUREMENT_OR_NOT_CAPTURED}`
+Execution tree update: `{UPDATED_VALIDATED_CANCELLED_OR_NOT_CAPTURED_WITH_REASON}`

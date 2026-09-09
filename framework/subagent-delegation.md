@@ -35,8 +35,8 @@ wrapper, or a suggestion-only handoff. When none is supported, the primary
 assistant continues locally.
 
 An enabled target owns a portable worker layer made of a delegation policy,
-role catalog, orchestration prompt, task graph, bounded packet, normalized
-result, and primary convergence record. Provider-native agents, managed
+role catalog, orchestration prompt, task graph, execution-tree ledger, bounded
+packet, normalized result, and primary convergence record. Provider-native agents, managed
 workers, external dispatchers, and suggestion-only handoffs are thin execution
 bindings to that layer. They do not become policy or project-knowledge owners.
 
@@ -111,6 +111,15 @@ authorize, or recursively create workers itself. The primary rechecks the
 proposal against current scope, dependencies, coverage, capability, and the
 remaining tree budget before deciding whether to dispatch it.
 
+The execution-tree ledger is the required synchronization surface for enabled
+recursive delegation. It binds current-scope authorization, base revision,
+policy and capability evidence, aggregate worker budget, parent-child edges,
+packet and result IDs, semantic scope, changed fact IDs, canonical owners,
+surface references, relationship references, overlap decisions, child
+proposals, stop reasons, cancellation, and primary convergence evidence. A
+valid packet or result is not sufficient when the tree violates budget,
+coverage, semantic-overlap, authorization, or convergence rules.
+
 Use depth `0` for the primary plan and depth `1` for ordinary workers. The
 portable default maximum worker depth is `1`; a target may permit depth `2`
 only through an explicit policy value not above the portable hard maximum of
@@ -129,8 +138,8 @@ Every completed, blocked, rejected, or undispatched branch records one
 normalized stop reason: scope covered, evidence sufficient, coordination cost
 exceeds benefit, maximum depth reached, worker/context/retry budget reached,
 semantic decision required, overlapping scope, primary critical path,
-capability unavailable, or user restricted. Missing stop evidence is a failed
-delegation record, not permission to continue.
+capability unavailable, user restricted, or cancelled by the primary assistant.
+Missing stop evidence is a failed delegation record, not permission to continue.
 
 ## Worker Role Catalog
 
@@ -220,7 +229,8 @@ Every dispatched task uses a bounded target packet that records:
 - packet, parent-packet, operation, workstream, and parent-assistant identifiers
 - depth, remaining worker and context budget, and a unique coverage key
 - goal, non-goals, expected output, and local acceptance criteria
-- changed facts or explicit confirmation that no semantic fact is owned
+- semantic scope, changed facts, canonical owner references, surface
+  references, relationship references, and overlap decision
 - required and excluded context
 - allowed actions, tools, files, surfaces, and prohibited actions
 - selected assistant surface, role, model binding, and capability evidence
@@ -239,8 +249,10 @@ It records task and packet identity, observed base revision, status, actual
 surface/role/model or unverified status, touched surfaces, commands/tools,
 validation, acceptance criteria, scope violations, semantic or architecture
 deviations, unexpected repository state, authorization concerns, unresolved
-findings, follow-up, residual risk, depth, coverage key, child proposals, and a
-normalized stop reason.
+findings, follow-up, residual risk, depth, coverage key, semantic scope,
+changed fact IDs, canonical owner references, surface references, relationship
+references, overlap decision, execution-tree node status, child proposals, and
+a normalized stop reason.
 
 Provider-native prose is not accepted directly as completion evidence. The
 primary assistant must normalize it first. A missing identity, stale baseline,
@@ -271,12 +283,18 @@ no coordination uncertainty.
 After a delegate returns, the primary assistant must:
 
 1. Verify packet identity, actual model/capability evidence when available,
-   touched surfaces, commands run, and unresolved findings.
+   execution-tree node status, touched surfaces, commands run, and unresolved
+   findings.
 2. Reject out-of-scope, unsupported, unvalidated, or conflicting output.
 3. Review the patch or evidence against current repository state.
-4. Run or repeat target validation required by combined risk.
-5. Reconcile changed facts, approvals, companion surfaces, and workstreams.
-6. Report delegated and locally completed work without overstating model,
+4. Update the execution-tree ledger with accepted, rejected, cancelled, or
+   undispatched branches and their stop reasons.
+5. Run or repeat target validation required by combined risk.
+6. Reconcile changed facts, approvals, companion surfaces, and workstreams.
+7. Record primary convergence over delegated outputs, semantic-overlap
+   decisions, aggregate budget use, validation, residual risk, and rejected
+   child proposals.
+8. Report delegated and locally completed work without overstating model,
    quality, latency, or cost evidence.
 
 A delegate result is evidence for primary review, not operation completion.

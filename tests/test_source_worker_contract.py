@@ -15,6 +15,7 @@ sys.path.insert(0, str(ROOT / "tools"))
 from source_worker_contract import (  # noqa: E402
     SourceWorkerContractError,
     validate_decision_evidence,
+    validate_delegation_execution_tree,
     validate_runtime_capability,
     validate_source_worker_policy,
     validate_worker_packet,
@@ -53,7 +54,7 @@ def capability_fixture() -> dict[str, object]:
 
 def packet_fixture() -> dict[str, object]:
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "packet_kind": "source-read-only-workstream",
         "parent_packet_id": None,
         "depth": 1,
@@ -70,7 +71,132 @@ def packet_fixture() -> dict[str, object]:
         "write_scope": "none",
         "independent": True,
         "independence_key": "source-worker-contract",
+        "semantic_scope": "source-worker-contract",
+        "changed_fact_ids": [],
+        "canonical_owner_refs": ["tools/source_worker_contract.py"],
+        "surface_refs": ["tools/source_worker_contract.py"],
+        "relationship_refs": [],
+        "overlap_decision": "disjoint",
         "expected_evidence": "Path-specific findings",
+    }
+
+
+def execution_node(
+    node_id: str,
+    *,
+    parent_node_id: str | None,
+    depth: int,
+    status: str,
+    coverage_key: str,
+    semantic_scope: str,
+    context_words: int = 0,
+    stop_reason_id: str | None = None,
+) -> dict[str, object]:
+    return {
+        "node_id": node_id,
+        "parent_node_id": parent_node_id,
+        "packet_id": None if depth == 0 else f"packet-{node_id}",
+        "result_id": None if status in {"PLANNED", "READY", "RUNNING"} else f"result-{node_id}",
+        "depth": depth,
+        "status": status,
+        "role_id": "primary" if depth == 0 else "read-only-auditor",
+        "assistant_surface": "primary" if depth == 0 else "test-surface",
+        "dispatch_backend": "primary" if depth == 0 else "native-worker",
+        "implementation_level": "L1",
+        "coverage_key": coverage_key,
+        "semantic_scope": semantic_scope,
+        "changed_fact_ids": [],
+        "canonical_owner_refs": ["tools/source_worker_contract.py"],
+        "surface_refs": ["tools/source_worker_contract.py"],
+        "relationship_refs": [],
+        "allowed_actions": ["inspect"],
+        "write_scope": "none",
+        "context_words": context_words,
+        "attempt": 0,
+        "result_status": None if status in {"PLANNED", "READY", "RUNNING"} else "succeeded",
+        "stop_reason_id": stop_reason_id,
+        "child_proposals": [],
+        "overlap_decision": "not-applicable" if depth == 0 else "disjoint",
+    }
+
+
+def execution_tree_fixture() -> dict[str, object]:
+    return {
+        "schema_version": 1,
+        "tree_kind": "alatyr-delegation-execution-tree",
+        "operation_id": "op-1",
+        "base_revision": "base-revision",
+        "current_user_authorization": {
+            "scope": "read-only audit",
+            "authorized_phases": ["inspect"],
+        },
+        "task_profile": "repository-audit",
+        "policy_revision": "policy-sha",
+        "capability_evidence": "capability-record",
+        "aggregate_budget": {
+            "max_total_delegates": 8,
+            "max_parallel_delegates": 2,
+            "max_children_per_parent": 4,
+            "max_context_words_total": 24000,
+            "max_retries_total": 2,
+            "used_total_delegates": 2,
+            "used_parallel_delegates": 2,
+            "used_context_words": 30,
+            "used_retries": 0,
+        },
+        "root_node_id": "root",
+        "nodes": [
+            execution_node(
+                "root",
+                parent_node_id=None,
+                depth=0,
+                status="DONE",
+                coverage_key="root",
+                semantic_scope="primary-convergence",
+                stop_reason_id="evidence-sufficient",
+            ),
+            execution_node(
+                "worker-1",
+                parent_node_id="root",
+                depth=1,
+                status="DONE",
+                coverage_key="coverage-1",
+                semantic_scope="scope-1",
+                context_words=10,
+                stop_reason_id="scope-covered",
+            ),
+            execution_node(
+                "worker-2",
+                parent_node_id="root",
+                depth=1,
+                status="DONE",
+                coverage_key="coverage-2",
+                semantic_scope="scope-2",
+                context_words=20,
+                stop_reason_id="scope-covered",
+            ),
+        ],
+        "edges": [
+            {
+                "parent_node_id": "root",
+                "child_node_id": "worker-1",
+                "edge_kind": "primary-approved-dispatch",
+            },
+            {
+                "parent_node_id": "root",
+                "child_node_id": "worker-2",
+                "edge_kind": "primary-approved-dispatch",
+            },
+        ],
+        "primary_convergence": {
+            "status": "completed",
+            "reviewed_result_ids": ["result-root", "result-worker-1", "result-worker-2"],
+            "rejected_result_ids": [],
+            "combined_validation": "passed",
+            "logical_integrity_review": "passed",
+            "residual_risk": "none",
+            "final_stop_reason_id": "evidence-sufficient",
+        },
     }
 
 
@@ -224,6 +350,9 @@ class WorkerPacketTests(unittest.TestCase):
             "extra field": {"tools": ["shell"]},
             "recursive depth": {"depth": 2},
             "autonomous child": {"child_proposal_policy": "dispatch"},
+            "missing semantic scope": {"semantic_scope": ""},
+            "missing canonical owner": {"canonical_owner_refs": []},
+            "invalid overlap decision": {"overlap_decision": "assume-disjoint"},
         }
         for label, updates in cases.items():
             with self.subTest(label=label):
@@ -235,16 +364,21 @@ class WorkerPacketTests(unittest.TestCase):
     def test_tree_policy_limits_and_stop_reasons_fail_closed(self) -> None:
         cases = {
             "autonomous dispatch": ("tree_policy", "worker_child_behavior", "dispatch"),
-            "excess depth": ("tree_policy", "hard_max_depth", 3),
+            "recursive source depth": ("tree_policy", "hard_max_depth", 2),
             "zero worker budget": ("tree_policy", "max_total_delegates", 0),
+            "zero parallel budget": ("tree_policy", "max_parallel_delegates", 0),
+            "worker budget below activation": ("tree_policy", "max_total_delegates", 1),
+            "parallel budget below activation": ("tree_policy", "max_parallel_delegates", 1),
+            "child budget below activation": ("tree_policy", "max_children_per_parent", 1),
+            "parallel exceeds total": ("tree_policy", "max_parallel_delegates", 9),
             "missing stop reason": ("stop_policy", "stop_reason_ids", ["scope-covered"]),
         }
         for label, (section, field, value) in cases.items():
             with self.subTest(label=label):
                 policy = policy_fixture()
                 policy[section][field] = value
-                with self.assertRaises(SourceWorkerContractError):
-                    validate_source_worker_policy(policy, root=ROOT)
+            with self.assertRaises(SourceWorkerContractError):
+                validate_source_worker_policy(policy, root=ROOT)
 
     def test_packet_context_cannot_escape_through_a_symlink(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -265,6 +399,117 @@ class WorkerPacketTests(unittest.TestCase):
                     policy_fixture()["worker_packet_contract"],
                     root=root,
                 )
+
+
+class DelegationExecutionTreeTests(unittest.TestCase):
+    def validate(self, tree: dict[str, object]) -> dict[str, object]:
+        return validate_delegation_execution_tree(tree, policy_fixture())
+
+    def test_execution_tree_records_cumulative_budget_and_convergence(self) -> None:
+        tree = execution_tree_fixture()
+        self.assertEqual(self.validate(tree), tree)
+
+    def test_execution_tree_rejects_budget_and_topology_drift(self) -> None:
+        cases = {
+            "worker write action": lambda item: item["nodes"][1].update(
+                {"allowed_actions": ["inspect", "modify"]}
+            ),
+            "worker write scope": lambda item: item["nodes"][1].update(
+                {"write_scope": "tools/**"}
+            ),
+            "worker role drift": lambda item: item["nodes"][1].update(
+                {"role_id": "implementer"}
+            ),
+            "missing packet": lambda item: item["nodes"][1].update(
+                {"packet_id": None}
+            ),
+            "terminal missing result": lambda item: item["nodes"][1].update(
+                {"result_id": None}
+            ),
+            "terminal wrong result status": lambda item: item["nodes"][1].update(
+                {"result_status": "failed"}
+            ),
+            "non-terminal result claim": lambda item: item["nodes"][1].update(
+                {
+                    "status": "RUNNING",
+                    "result_id": "result-worker-1",
+                    "result_status": "succeeded",
+                    "stop_reason_id": "scope-covered",
+                }
+            ),
+            "duplicate coverage": lambda item: item["nodes"][2].update(
+                {"coverage_key": "coverage-1"}
+            ),
+            "semantic overlap": lambda item: item["nodes"][2].update(
+                {"semantic_scope": "scope-1"}
+            ),
+            "missing stop reason": lambda item: item["nodes"][1].update(
+                {"stop_reason_id": None}
+            ),
+            "wrong aggregate context": lambda item: item["aggregate_budget"].update(
+                {"used_context_words": 31}
+            ),
+            "too many delegates": lambda item: item["aggregate_budget"].update(
+                {"used_total_delegates": 9}
+            ),
+            "wrong parallel usage": lambda item: item["aggregate_budget"].update(
+                {"used_parallel_delegates": 1}
+            ),
+            "parallel cap exceeds policy": lambda item: item[
+                "aggregate_budget"
+            ].update({"max_parallel_delegates": 3}),
+            "missing parent": lambda item: item["nodes"][1].update(
+                {"parent_node_id": "missing"}
+            ),
+            "edge mismatch": lambda item: item["edges"][0].update(
+                {"parent_node_id": "worker-2"}
+            ),
+            "missing edge": lambda item: item["edges"].pop(),
+            "duplicate edge": lambda item: item["edges"].append(
+                copy.deepcopy(item["edges"][0])
+            ),
+            "invalid final stop": lambda item: item["primary_convergence"].update(
+                {"final_stop_reason_id": "not-a-stop"}
+            ),
+            "unreviewed terminal result": lambda item: item[
+                "primary_convergence"
+            ].update({"reviewed_result_ids": ["result-root", "result-worker-1"]}),
+            "unknown reviewed result": lambda item: item[
+                "primary_convergence"
+            ].update(
+                {
+                    "reviewed_result_ids": [
+                        "result-root",
+                        "result-worker-1",
+                        "result-worker-2",
+                        "result-missing",
+                    ]
+                }
+            ),
+            "unknown rejected result": lambda item: item[
+                "primary_convergence"
+            ].update({"rejected_result_ids": ["result-missing"]}),
+            "rejected result not reviewed": lambda item: item[
+                "primary_convergence"
+            ].update(
+                {
+                    "reviewed_result_ids": ["result-root", "result-worker-1"],
+                    "rejected_result_ids": ["result-worker-2"],
+                }
+            ),
+        }
+        for label, mutate in cases.items():
+            with self.subTest(label=label):
+                tree = copy.deepcopy(execution_tree_fixture())
+                mutate(tree)
+                with self.assertRaises(SourceWorkerContractError):
+                    self.validate(tree)
+
+    def test_execution_tree_allows_primary_reconciled_semantic_overlap(self) -> None:
+        tree = copy.deepcopy(execution_tree_fixture())
+        tree["nodes"][2]["semantic_scope"] = "scope-1"
+        tree["nodes"][2]["overlap_decision"] = "primary-reconciled-overlap"
+        self.validate(tree)
 
 
 class DecisionEvidenceTests(unittest.TestCase):

@@ -95,6 +95,61 @@ def run(target: Path, failures: list[str]) -> None:
             + ", ".join(sorted(external_errors))
         )
 
+    policy_path = delegation_target / ".ai/assistant/delegation-policy.json"
+    policy = json.loads(policy_path.read_text(encoding="utf-8"))
+    policy["max_parallel_delegates"] = 3
+    policy["tree_policy"]["max_total_delegates"] = 2
+    policy["tree_policy"]["max_children_per_parent"] = 1
+    write_json(policy_path, policy)
+    cap_conflict = validator(delegation_target)
+    cap_conflict.check_subagent_delegation(external_manifest)
+    if "DELEGATION_POLICY_CAP_CONFLICT" not in {
+        finding.code for finding in cap_conflict.findings
+    }:
+        failures.append("delegation policy must reject cap relationship conflicts")
+    policy_path.write_bytes(
+        (ROOT / "templates/target/.ai/assistant/delegation-policy.json").read_bytes()
+    )
+
+    packet_path = delegation_target / ".ai/assistant/templates/subagent-task-packet.md"
+    packet_text = packet_path.read_text(encoding="utf-8")
+    packet_path.write_text(
+        packet_text.replace("Overlap decision:", "Removed overlap decision:"),
+        encoding="utf-8",
+    )
+    missing_overlap = validator(delegation_target)
+    missing_overlap.check_subagent_delegation(external_manifest)
+    if "DELEGATION_PACKET_TEMPLATE" not in {
+        finding.code for finding in missing_overlap.findings
+    }:
+        failures.append("delegation packet template must require overlap evidence")
+    packet_path.write_bytes(
+        (
+            ROOT
+            / "templates/target/.ai/assistant/templates/subagent-task-packet.md"
+        ).read_bytes()
+    )
+
+    tree_path = (
+        delegation_target
+        / ".ai/assistant/templates/delegation-execution-tree.json"
+    )
+    tree_template = json.loads(tree_path.read_text(encoding="utf-8"))
+    tree_template["nodes"][0].pop("semantic_scope")
+    write_json(tree_path, tree_template)
+    missing_tree_scope = validator(delegation_target)
+    missing_tree_scope.check_subagent_delegation(external_manifest)
+    if "DELEGATION_EXECUTION_TREE_NODE" not in {
+        finding.code for finding in missing_tree_scope.findings
+    }:
+        failures.append("delegation execution tree must require semantic scope")
+    tree_path.write_bytes(
+        (
+            ROOT
+            / "templates/target/.ai/assistant/templates/delegation-execution-tree.json"
+        ).read_bytes()
+    )
+
     generic_delegation["external_dispatcher"] = "missing.dispatcher"
     write_json(generic_capability_path, generic_capability)
     missing_dispatcher = validator(delegation_target)

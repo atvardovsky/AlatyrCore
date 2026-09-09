@@ -8,6 +8,8 @@ Current logical scope: `{CURRENT_LOGICAL_SCOPE}`
 Authorized action phases: `{CURRENT_AUTHORIZED_PHASES}`
 Delegation policy revision: `{POLICY_REVISION_OR_HASH}`
 Task decomposition policy revision: `{TASK_DECOMPOSITION_POLICY_REVISION_OR_HASH}`
+Execution tree ledger: `{TARGET_APPROVED_OPERATION_LEDGER_PATH_OR_INLINE_EVIDENCE}`
+Ledger template: `.ai/assistant/templates/delegation-execution-tree.json`
 
 ## Delegation Tree Budget
 
@@ -15,10 +17,14 @@ Dispatch owner: `primary-assistant`
 Worker child behavior: `propose-only`
 Maximum depth: `{TARGET_MAX_DEPTH_NOT_ABOVE_HARD_LIMIT}`
 Maximum total delegates: `{TARGET_MAX_TOTAL_DELEGATES}`
+Maximum parallel delegates: `{TARGET_MAX_PARALLEL_DELEGATES}`
 Maximum children per parent: `{TARGET_MAX_CHILDREN_PER_PARENT}`
 Maximum total context words: `{TARGET_MAX_CONTEXT_WORDS_TOTAL}`
 Maximum retries: `{TARGET_MAX_RETRIES_TOTAL}`
-Used delegates/context/retries: `{CURRENT_BUDGET_USAGE}`
+Used total delegates: `{CURRENT_USED_TOTAL_DELEGATES}`
+Used parallel delegates: `{CURRENT_USED_PARALLEL_DELEGATES}`
+Used context words: `{CURRENT_USED_CONTEXT_WORDS}`
+Used retries: `{CURRENT_USED_RETRIES}`
 
 ## Task Graph
 
@@ -29,11 +35,14 @@ Task ID: `{TASK_ID}`
 Parent task or packet ID: `{PARENT_ID_OR_NONE}`
 Depth: `{NON_NEGATIVE_INTEGER}`
 Coverage key: `{UNIQUE_BOUNDED_COVERAGE_KEY}`
+Semantic scope: `{SEMANTIC_SCOPE_OR_NOT_APPLICABLE}`
 Status: `{TASK_STATUS}`
 Goal: `{ONE_BOUNDED_GOAL}`
 Implementation level: `{L1_L2_L3_L4_OR_L5_FOR_WORKER_ELIGIBLE_TASKS}`
 Dependencies: `{TASK_IDS_OR_NONE}`
 Changed facts: `{FACT_IDS_OR_NONE}`
+Canonical owners: `{CANONICAL_OWNER_REFS}`
+Relationship refs: `{RELATIONSHIP_REFS_OR_NONE}`
 Expected write scope: `{DISJOINT_PATHS_SURFACES_OR_NONE}`
 Role: `{ENABLED_ROLE_ID_OR_PRIMARY}`
 Executor decision: `{PRIMARY_WORKER_SUGGESTION_ONLY_OR_BLOCKED}`
@@ -50,9 +59,11 @@ Blocker or readiness evidence: `{EVIDENCE}`
 Dependency cycles: `{NONE_OR_DETAILS}`
 Overlapping write scopes: `{NONE_OR_REJECTED_TASKS}`
 Shared semantic owners: `{NONE_OR_PRIMARY_CONVERGENCE_TASK}`
+Semantic overlap decisions: `{DISJOINT_PRIMARY_RECONCILED_OVERLAP_REJECTED_OVERLAP_OR_NOT_APPLICABLE}`
 Stale baseline handling: `{REVALIDATION_DECISION}`
 Duplicate coverage keys: `{NONE_OR_REJECTED_TASKS}`
 Tree budget result: `{WITHIN_LIMITS_OR_STOP_REASON_ID}`
+Cancelled branches: `{NONE_OR_PACKET_IDS_WITH_CANCELLED_BY_PRIMARY_STOP_REASON}`
 
 ## Primary Convergence
 
@@ -62,3 +73,4 @@ Combined validation: `{RESULT_OR_NOT_RUN_WITH_REASON}`
 Logical integrity and approval reconciliation: `{RESULT}`
 Residual risk: `{RESIDUAL_RISK}`
 Tree stop reason: `{TARGET_STOP_REASON_ID}`
+Execution tree status: `{UPDATED_VALIDATED_OR_NOT_CAPTURED_WITH_REASON}`

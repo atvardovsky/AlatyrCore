@@ -219,15 +219,17 @@ When the target enables `subagent-delegation`, the primary assistant may keep
 its immediate critical-path action and dispatch independent, locally
 verifiable sidecars through the target delegation policy. Load only the
 worker orchestration prompt, role catalog, delegated-execution overlay,
-task/packet/result contracts, and selected assistant-capability record. The
-primary assistant retains task readiness, project decisions, approval, result
-review, integration, logical integrity, and final validation.
+task/packet/result contracts, execution-tree ledger template, and selected
+assistant-capability record. The primary assistant retains task readiness,
+project decisions, approval, result review, integration, logical integrity, and
+final validation.
 
 Delegation is a primary-owned bounded tree. Workers may propose child packets,
-but they do not dispatch them autonomously. The primary enforces depth, total
-worker, child, retry, context, and disjoint-coverage limits and stops when the
-required acceptance evidence is complete or coordination no longer pays for
-itself.
+but they do not dispatch them autonomously. The primary maintains the execution
+tree ledger, enforces depth, total worker, child, retry, aggregate-context, and
+disjoint-coverage limits, records semantic-overlap decisions, and stops or
+cancels branches when required acceptance evidence is complete or coordination
+no longer pays for itself.
 
 This strategy applies equally to every surface in the canonical conformance
 registry. `Subagent` is a portable role: the selected surface may use native
@@ -239,6 +241,12 @@ confirms project definition support. Keep each definition as a thin binding to
 the project-owned role and orchestration contracts, and record its format and
 path in that surface's capability record. Unsupported clients use suggestion-
 only or sequential-primary fallback.
+
+Completion evidence must include the execution-tree ledger or an equivalent
+inline record, packet/result IDs, aggregate budget use, stop and cancellation
+reasons, delegated validation, primary review, semantic-overlap reconciliation,
+and primary convergence. A provider-native worker summary is input evidence, not
+operation completion.
 
 Do not assume a model can be selected because its name is known. Use a target-
 verified role/model binding and current client evidence, then fall back to

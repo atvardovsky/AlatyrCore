@@ -85,7 +85,7 @@
         "ALATYR-INTEGRITY-001"
       ],
       "estimated_words": 329,
-      "content_digest": "sha256:30e5d7edb9455d796edd024ddb43aee1e50bfeff2c89412ec28b549f35a8534c"
+      "content_digest": "sha256:00e92cb69bb9a48e4eb2ba67ac39ff1c25936f60326262e3951193b1907c655d"
     },
     {
       "id": "assistant.content.bridge-capability-matrix-md",
@@ -226,8 +226,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-DELEGATION-001"
       ],
-      "estimated_words": 212,
-      "content_digest": "sha256:1d37527ba83993a717a8ca2f56d143b6e9083e51e9869ce302a380cd728138f2"
+      "estimated_words": 213,
+      "content_digest": "sha256:095f17c33925c9d1c5a276e93d234e95ab3fbedacd30e3751d4c7de3128038f1"
     },
     {
       "id": "assistant.content.entry-packet-json",
@@ -250,7 +250,7 @@
         "ALATYR-CONTEXT-001"
       ],
       "estimated_words": 290,
-      "content_digest": "sha256:930216b5fb8bf8910e1698acf83c01c1492b9ebd132f503691b08b12e2f7e91c"
+      "content_digest": "sha256:5ab778a609283f269fc21dbb51e67c1de1c977e831960ecd19e35fd659f365c4"
     },
     {
       "id": "assistant.content.help-md",
@@ -363,8 +363,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1569,
-      "content_digest": "sha256:5df2dd2fb3d168ff5be50cb437ab5a921cc85ce5c7425de24b66203fc89577cd"
+      "estimated_words": 1571,
+      "content_digest": "sha256:d736411a3893d7450bc740964833b0e02f91ef65e3fcc32926d7c249b1d9595e"
     },
     {
       "id": "assistant.content.operation-catalog-json",
@@ -456,8 +456,8 @@
         "ALATYR-CONTEXT-001",
         "ALATYR-DECOMPOSITION-001"
       ],
-      "estimated_words": 625,
-      "content_digest": "sha256:519cfc041c0d90012371652586b0ba356dfa91afac144d87bd0f44a39c1288e7"
+      "estimated_words": 528,
+      "content_digest": "sha256:7704d00daf8edd463dcebe144f5033533f18a152af2096459262cbfcb2435b5c"
     },
     {
       "id": "assistant.section.approvals",
@@ -532,7 +532,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 279,
-      "content_digest": "sha256:b9ab0aa925eb7a97320b0714ca41b8eceea2e2856d55d074e0f41e65a75cac6f"
+      "content_digest": "sha256:810404acda5260e67b8d53070d937bb8a3829d940150905c9ce9489528b65dbb"
     },
     {
       "id": "assistant.section.extensions",
@@ -562,7 +562,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 1312,
-      "content_digest": "sha256:38b27c91e64a7cd369ec8bfdabe5502342b69d0fdef374a92a0f414e3bc08656"
+      "content_digest": "sha256:78480e0d25467f61ae05747619912bb9060ce5e9e8de4624feb40b33f017661c"
     },
     {
       "id": "assistant.section.gates",
@@ -607,7 +607,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 89,
-      "content_digest": "sha256:c1c45039140e5b652379e345ce1277d74744f38e40c5df1dafdd38e2b699fec4"
+      "content_digest": "sha256:65105b88b7709298de8f4de89f4e084503e0cb7b57a2d79b9544b9b266a864cf"
     },
     {
       "id": "assistant.section.skills",
@@ -651,8 +651,8 @@
       },
       "semantic_refs": [],
       "owner_refs": [],
-      "estimated_words": 1988,
-      "content_digest": "sha256:f6bb8c9c3396df4e4b5764966917e7ec239f8763ba0c60362df0dabd5b75e32c"
+      "estimated_words": 2029,
+      "content_digest": "sha256:f58f1d0b2afab7ff8e2fe5a5c20ab6edbc071ea9ef3ca6d480a3c24d9711b4fc"
     },
     {
       "id": "assistant.section.workers",

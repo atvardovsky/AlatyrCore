@@ -150,10 +150,10 @@ Constraints:
 - Rule references: ALATYR-CONTEXT-001, ALATYR-SOURCE-001,
   ALATYR-RISK-001, ALATYR-APPROVAL-001, ALATYR-AUTHORIZATION-001, ALATYR-SAFETY-001,
   ALATYR-SAFETY-002, ALATYR-INTEGRITY-001, ALATYR-CHANGE-001,
-  ALATYR-DECOMPOSITION-001, ALATYR-TDD-001, ALATYR-EXTENSION-001,
-  ALATYR-DEPENDENCY-001, ALATYR-MODE-001, ALATYR-ADAPTER-001,
-  ALATYR-MODULE-001, ALATYR-OPERATION-001, ALATYR-DIAGRAM-001,
-  ALATYR-TEAM-001, ALATYR-EVIDENCE-001.
+  ALATYR-DECOMPOSITION-001, ALATYR-DELEGATION-001, ALATYR-TDD-001,
+  ALATYR-EXTENSION-001, ALATYR-DEPENDENCY-001, ALATYR-MODE-001,
+  ALATYR-ADAPTER-001, ALATYR-MODULE-001, ALATYR-OPERATION-001,
+  ALATYR-DIAGRAM-001, ALATYR-TEAM-001, ALATYR-EVIDENCE-001.
 - Treat the target `AGENTS.md` as preloaded, then read only
   `.ai/assistant/bootstrap-index.json`. Use its resolved core semantic terms,
   choose the smallest profile/areas, and follow only matching entries from the
@@ -177,6 +177,12 @@ Constraints:
   delegation. Assign one implementation level, bounded context, dependency
   state, validation, allowed files or surfaces, and executor decision per
   subtask. Small local work may use one-node decomposition evidence.
+- For enabled subagent delegation, load the policy, delegated-execution
+  overlay, subagent delegation flow, role catalog/prompts, execution-tree
+  ledger, packet/result templates, and selected capability record. Workers may
+  propose child packets only. Enforce depth, total, parallel, context, retry,
+  cancellation, semantic-overlap reconciliation, and primary-convergence
+  evidence before integrating any result.
 - For enabled team collaboration, read the compact active-work index before
   state-changing operations. Expand `team-active` only for an explicit team
   request, task/branch match, possible logical overlap, or unresolved index,

@@ -161,14 +161,15 @@ Operation help:
   inspect it, `Alatyr team status` for coordination evidence, and the specific
   team aliases for task, conflict, handoff, decision, review, or merge work.
 <!-- /alatyr:scaffold-fragment -->
-<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/delegation-policy.json"]} -->
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/delegation-policy.json",".ai/assistant/flows/subagent-delegation.flow.md",".ai/assistant/workers/role-catalog.json",".ai/assistant/prompts/worker-orchestration.md",".ai/assistant/templates/worker-execution-plan.md",".ai/assistant/templates/delegation-execution-tree.json",".ai/assistant/templates/subagent-task-packet.md",".ai/assistant/templates/worker-result.md"]} -->
 - When subagent delegation is enabled, preserve the target policy, role
-  catalog/prompts, execution plans, packet/result evidence, privacy, and
-  retry/conflict rules. Recheck each surface's exact client/runtime, native
-  definition format and paths, invocation mode, tools, isolation, background/
-  nested behavior, role/model bindings, and freshness. Remove or migrate stale
-  thin native bindings only from target evidence; never infer support from the
-  updated framework templates.
+  catalog/prompts, execution plans, execution-tree ledger, packet/result
+  evidence, privacy, and retry/conflict rules. Recheck each surface's exact
+  client/runtime, native definition format and paths, invocation mode, tools,
+  isolation, background/nested behavior, role/model bindings, aggregate
+  budgets, semantic-overlap decisions, cancellation stop reasons, and
+  freshness. Remove or migrate stale thin native bindings only from target
+  evidence; never infer support from the updated framework templates.
 <!-- /alatyr:scaffold-fragment -->
 <!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/ai-infrastructure-router.json"]} -->
 - Recheck AI infrastructure router entries and adaptation records when skills, prompts, gates, tools, or bridge contracts changed.

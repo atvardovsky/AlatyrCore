@@ -22,6 +22,7 @@ REQUIRED_PATHS = (
     ".ai/assistant/templates/subagent-task-packet.md",
     ".ai/assistant/templates/native-worker-binding.md",
     ".ai/assistant/templates/worker-execution-plan.md",
+    ".ai/assistant/templates/delegation-execution-tree.json",
     ".ai/assistant/templates/worker-result.md",
     ".ai/assistant/workers/role-catalog.json",
     ".ai/assistant/workers/roles/explorer.md",
@@ -40,6 +41,10 @@ ROLE_CATALOG_RELPATH = ".ai/assistant/workers/role-catalog.json"
 CAPABILITY_INDEX_RELPATH = ".ai/assistant/assistant-capabilities.json"
 AI_ROUTER_RELPATH = ".ai/assistant/ai-infrastructure-router.json"
 OVERLAY_RELPATH = ".ai/assistant/context/task-scales/delegated-execution.json"
+EXECUTION_PLAN_RELPATH = ".ai/assistant/templates/worker-execution-plan.md"
+EXECUTION_TREE_RELPATH = ".ai/assistant/templates/delegation-execution-tree.json"
+PACKET_TEMPLATE_RELPATH = ".ai/assistant/templates/subagent-task-packet.md"
+RESULT_TEMPLATE_RELPATH = ".ai/assistant/templates/worker-result.md"
 
 CAPABILITY_FIELDS = {
     "route",
@@ -127,6 +132,7 @@ REQUIRED_STOP_REASONS = {
     "primary-critical-path",
     "capability-unavailable",
     "user-restricted",
+    "cancelled-by-primary",
 }
 EXPECTED_RESULT_POLICY = {
     "accept_out_of_scope_changes": False,
@@ -147,6 +153,7 @@ REQUIRED_WORKER_CONTEXT = {
     ".ai/assistant/workers/role-catalog.json",
     ".ai/assistant/prompts/worker-orchestration.md",
     ".ai/assistant/templates/worker-execution-plan.md",
+    ".ai/assistant/templates/delegation-execution-tree.json",
     ".ai/assistant/templates/subagent-task-packet.md",
     ".ai/assistant/templates/worker-result.md",
 }
@@ -180,6 +187,7 @@ def validate_subagent_delegation(validator: Any, manifest: Any) -> None:
         concrete_enabled_roles,
     )
     _validate_overlay(self)
+    _validate_delegation_templates(self)
 
 
 SUBAGENT_DELEGATION_MODULE = FunctionCapabilityModule(
@@ -213,10 +221,10 @@ def _validate_policy(self: Any, policy: dict[str, Any]) -> list[str]:
 
 
 def _validate_policy_identity(self: Any, policy: dict[str, Any]) -> None:
-    if policy.get("schema_version") != 3:
+    if policy.get("schema_version") != 4:
         self.error(
             "DELEGATION_POLICY_SCHEMA",
-            "delegation policy schema_version must be 3",
+            "delegation policy schema_version must be 4",
             POLICY_RELPATH,
         )
     if policy.get("policy_kind") != "target-subagent-delegation-policy":
@@ -258,6 +266,12 @@ def _validate_policy_identity(self: Any, policy: dict[str, Any]) -> None:
         self.error(
             "DELEGATION_PARALLEL_LIMIT",
             "max_parallel_delegates must be a positive integer",
+            POLICY_RELPATH,
+        )
+    elif isinstance(parallel, int) and parallel > 8:
+        self.error(
+            "DELEGATION_PARALLEL_LIMIT",
+            "max_parallel_delegates must not exceed portable maximum 8",
             POLICY_RELPATH,
         )
     if policy.get("role_catalog") != ROLE_CATALOG_RELPATH:
@@ -314,6 +328,7 @@ def _validate_tree_and_stop_policy(self: Any, policy: dict[str, Any]) -> None:
                     f"tree_policy.{field} must be an integer >= {minimum}",
                     POLICY_RELPATH,
                 )
+        _validate_tree_limit_caps(self, policy, tree)
 
     stop = policy.get("stop_policy")
     if (
@@ -326,6 +341,52 @@ def _validate_tree_and_stop_policy(self: Any, policy: dict[str, Any]) -> None:
         self.error(
             "DELEGATION_STOP_POLICY",
             "enabled delegation requires the canonical evidence-saturation and stop-reason contract",
+            POLICY_RELPATH,
+        )
+
+
+def _validate_tree_limit_caps(
+    self: Any, policy: dict[str, Any], tree: dict[str, Any]
+) -> None:
+    maximums = {
+        "max_total_delegates": 8,
+        "max_children_per_parent": 4,
+        "max_context_words_total": 24000,
+        "max_retries_total": 2,
+    }
+    for field, maximum in maximums.items():
+        value = tree.get(field)
+        if isinstance(value, int) and not isinstance(value, bool) and value > maximum:
+            self.error(
+                "DELEGATION_TREE_LIMIT_CAP",
+                f"tree_policy.{field} must not exceed portable maximum {maximum}",
+                POLICY_RELPATH,
+            )
+    total = tree.get("max_total_delegates")
+    children = tree.get("max_children_per_parent")
+    parallel = policy.get("max_parallel_delegates")
+    if (
+        isinstance(total, int)
+        and not isinstance(total, bool)
+        and isinstance(children, int)
+        and not isinstance(children, bool)
+        and children > total
+    ):
+        self.error(
+            "DELEGATION_POLICY_CAP_CONFLICT",
+            "max_children_per_parent must not exceed max_total_delegates",
+            POLICY_RELPATH,
+        )
+    if (
+        isinstance(total, int)
+        and not isinstance(total, bool)
+        and isinstance(parallel, int)
+        and not isinstance(parallel, bool)
+        and parallel > total
+    ):
+        self.error(
+            "DELEGATION_POLICY_CAP_CONFLICT",
+            "max_parallel_delegates must not exceed max_total_delegates",
             POLICY_RELPATH,
         )
 
@@ -373,6 +434,21 @@ def _validate_retry_policy(self: Any, policy: dict[str, Any]) -> None:
             "retry policy must forbid scope expansion",
             POLICY_RELPATH,
         )
+    tree = policy.get("tree_policy")
+    if isinstance(tree, dict):
+        total_retries = tree.get("max_retries_total")
+        if (
+            isinstance(attempts, int)
+            and not isinstance(attempts, bool)
+            and isinstance(total_retries, int)
+            and not isinstance(total_retries, bool)
+            and attempts > total_retries
+        ):
+            self.error(
+                "DELEGATION_POLICY_CAP_CONFLICT",
+                "max_attempts_per_task must not exceed max_retries_total",
+                POLICY_RELPATH,
+            )
 
 
 def _validate_conflict_policy(self: Any, policy: dict[str, Any]) -> None:
@@ -975,4 +1051,172 @@ def _validate_overlay(self: Any) -> None:
             "DELEGATION_OVERLAY_CONTEXT",
             "delegated execution overlay does not load the portable worker contracts",
             OVERLAY_RELPATH,
+        )
+
+
+def _validate_delegation_templates(self: Any) -> None:
+    _require_template_text(
+        self,
+        EXECUTION_PLAN_RELPATH,
+        "DELEGATION_EXECUTION_PLAN_TEMPLATE",
+        [
+            "Execution tree ledger:",
+            "## Delegation Tree Budget",
+            "Maximum total delegates:",
+            "Maximum children per parent:",
+            "Maximum total context words:",
+            "Maximum retries:",
+            "Semantic scope:",
+            "Canonical owners:",
+            "Relationship refs:",
+            "Semantic overlap decisions:",
+            "Cancelled branches:",
+            "## Primary Convergence",
+            "Execution tree status:",
+        ],
+    )
+    _require_template_text(
+        self,
+        PACKET_TEMPLATE_RELPATH,
+        "DELEGATION_PACKET_TEMPLATE",
+        [
+            "Execution tree ledger:",
+            "Child proposal policy: `propose-only`",
+            "Semantic scope:",
+            "Canonical owner refs:",
+            "Surface refs:",
+            "Relationship refs:",
+            "Overlap decision:",
+            "Stop reason ID:",
+            "Child proposal handling:",
+            "## Primary Review",
+            "Execution tree update:",
+        ],
+    )
+    _require_template_text(
+        self,
+        RESULT_TEMPLATE_RELPATH,
+        "DELEGATION_RESULT_TEMPLATE",
+        [
+            "Status: `{SUCCEEDED_FAILED_BLOCKED_CANCELLED_OR_SCOPE_VIOLATION}`",
+            "Semantic scope:",
+            "Changed fact IDs:",
+            "Canonical owner refs:",
+            "Surface refs:",
+            "Relationship refs:",
+            "Overlap decision:",
+            "Stop reason ID:",
+            "Execution tree node:",
+            "This result is evidence for primary review.",
+        ],
+    )
+    tree = self.load_json_object(
+        self.target_path(EXECUTION_TREE_RELPATH), "DELEGATION_EXECUTION_TREE_TEMPLATE"
+    )
+    if tree is None:
+        return
+    required = {
+        "schema_version",
+        "tree_kind",
+        "operation_id",
+        "base_revision",
+        "current_user_authorization",
+        "task_profile",
+        "policy_revision",
+        "capability_evidence",
+        "aggregate_budget",
+        "root_node_id",
+        "nodes",
+        "edges",
+        "primary_convergence",
+    }
+    if set(tree) != required or tree.get("tree_kind") != "alatyr-delegation-execution-tree":
+        self.error(
+            "DELEGATION_EXECUTION_TREE_TEMPLATE",
+            "delegation execution tree template identity or fields are invalid",
+            EXECUTION_TREE_RELPATH,
+        )
+    budget = tree.get("aggregate_budget")
+    required_budget = {
+        "max_total_delegates",
+        "max_parallel_delegates",
+        "max_children_per_parent",
+        "max_context_words_total",
+        "max_retries_total",
+        "used_total_delegates",
+        "used_parallel_delegates",
+        "used_context_words",
+        "used_retries",
+    }
+    if not isinstance(budget, dict) or set(budget) != required_budget:
+        self.error(
+            "DELEGATION_EXECUTION_TREE_BUDGET",
+            "delegation execution tree template lacks aggregate budget evidence",
+            EXECUTION_TREE_RELPATH,
+        )
+    nodes = tree.get("nodes")
+    node = nodes[0] if isinstance(nodes, list) and nodes and isinstance(nodes[0], dict) else None
+    required_node = {
+        "node_id",
+        "parent_node_id",
+        "packet_id",
+        "result_id",
+        "depth",
+        "status",
+        "role_id",
+        "assistant_surface",
+        "dispatch_backend",
+        "implementation_level",
+        "coverage_key",
+        "semantic_scope",
+        "changed_fact_ids",
+        "canonical_owner_refs",
+        "surface_refs",
+        "relationship_refs",
+        "allowed_actions",
+        "write_scope",
+        "context_words",
+        "attempt",
+        "result_status",
+        "stop_reason_id",
+        "child_proposals",
+        "overlap_decision",
+    }
+    if node is None or set(node) != required_node:
+        self.error(
+            "DELEGATION_EXECUTION_TREE_NODE",
+            "delegation execution tree template lacks node-level scope evidence",
+            EXECUTION_TREE_RELPATH,
+        )
+    convergence = tree.get("primary_convergence")
+    required_convergence = {
+        "status",
+        "reviewed_result_ids",
+        "rejected_result_ids",
+        "combined_validation",
+        "logical_integrity_review",
+        "residual_risk",
+        "final_stop_reason_id",
+    }
+    if not isinstance(convergence, dict) or set(convergence) != required_convergence:
+        self.error(
+            "DELEGATION_PRIMARY_CONVERGENCE_TEMPLATE",
+            "delegation execution tree template lacks primary convergence evidence",
+            EXECUTION_TREE_RELPATH,
+        )
+
+
+def _require_template_text(
+    self: Any,
+    relpath: str,
+    code: str,
+    required: list[str],
+) -> None:
+    text = self.read_text(self.target_path(relpath))
+    missing = [item for item in required if item not in text]
+    if missing:
+        self.error(
+            code,
+            f"delegation template is missing required evidence fields: {missing}",
+            relpath,
         )

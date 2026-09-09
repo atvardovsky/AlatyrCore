@@ -29,6 +29,7 @@ ROLE_CATALOG = ASSISTANT / "workers" / "role-catalog.json"
 ROLE_DIR = ASSISTANT / "workers" / "roles"
 ORCHESTRATION = ASSISTANT / "prompts" / "worker-orchestration.md"
 EXECUTION_PLAN = ASSISTANT / "templates" / "worker-execution-plan.md"
+EXECUTION_TREE = ASSISTANT / "templates" / "delegation-execution-tree.json"
 NATIVE_BINDING = ASSISTANT / "templates" / "native-worker-binding.md"
 PACKET = ASSISTANT / "templates" / "subagent-task-packet.md"
 RESULT = ASSISTANT / "templates" / "worker-result.md"
@@ -141,6 +142,7 @@ EXPECTED_DELEGATED_CONTEXT = {
     ".ai/assistant/workers/role-catalog.json",
     ".ai/assistant/prompts/worker-orchestration.md",
     ".ai/assistant/templates/worker-execution-plan.md",
+    ".ai/assistant/templates/delegation-execution-tree.json",
     ".ai/assistant/templates/subagent-task-packet.md",
     ".ai/assistant/templates/worker-result.md",
     ".ai/assistant/assistant-capabilities.json",
@@ -172,6 +174,10 @@ def placeholder(value: object) -> bool:
 def require_placeholder(owner: str, value: object, failures: list[str]) -> None:
     if not placeholder(value):
         failures.append(f"{owner} must remain placeholder-based")
+
+
+def resolved_int(value: object) -> int | None:
+    return value if isinstance(value, int) and not isinstance(value, bool) else None
 
 
 def validate_role_catalog(catalog: dict[str, Any], failures: list[str]) -> None:
@@ -273,9 +279,7 @@ def policy_schema_failures(policy: object, schema: object) -> list[str]:
     return [f"delegation policy schema: {error.message}" for error in errors]
 
 
-def main() -> int:
-    failures: list[str] = []
-
+def validate_static_contract_text(failures: list[str]) -> None:
     require_text(
         FRAMEWORK,
         [
@@ -305,7 +309,9 @@ def main() -> int:
             "## Result Review And Convergence",
             ".ai/assistant/task-decomposition.json",
             ".ai/assistant/prompts/worker-orchestration.md",
+            ".ai/assistant/templates/delegation-execution-tree.json",
             ".ai/assistant/templates/worker-result.md",
+            "Do not write live execution state into the reusable template.",
         ],
         failures,
     )
@@ -313,8 +319,11 @@ def main() -> int:
         ORCHESTRATION,
         [
             "primary assistant remains responsible",
+            "normal authoritative route",
+            "load the full flow only",
             "task decomposition",
             "worker-execution-plan.md",
+            "target-approved operation evidence path or inline completion evidence",
             "capability record",
             "Normalize every return",
             "suggestion-only or sequential-primary fallback",
@@ -333,8 +342,35 @@ def main() -> int:
             "Expected write scope:",
             "## Delegation Tree Budget",
             "Maximum total delegates:",
+            "Maximum parallel delegates:",
+            "Used parallel delegates:",
+            "Execution tree ledger:",
+            "Ledger template:",
             "## Conflict Review",
             "## Primary Convergence",
+            "Semantic scope:",
+            "Semantic overlap decisions:",
+            "Cancelled branches:",
+        ],
+        failures,
+    )
+    require_text(
+        EXECUTION_TREE,
+        [
+            '"tree_kind": "alatyr-delegation-execution-tree"',
+            '"current_user_authorization"',
+            '"aggregate_budget"',
+            '"max_total_delegates"',
+            '"max_parallel_delegates"',
+            '"max_children_per_parent"',
+            '"used_context_words"',
+            '"semantic_scope"',
+            '"changed_fact_ids"',
+            '"canonical_owner_refs"',
+            '"relationship_refs"',
+            '"overlap_decision"',
+            '"primary_convergence"',
+            '"final_stop_reason_id"',
         ],
         failures,
     )
@@ -349,6 +385,11 @@ def main() -> int:
             "Task ID:",
             "Execution plan ID:",
             "Base revision:",
+            "Semantic scope:",
+            "Canonical owner refs:",
+            "Surface refs:",
+            "Relationship refs:",
+            "Overlap decision:",
             "Allowed actions:",
             "Implementation level:",
             "Task decomposition plan:",
@@ -357,6 +398,8 @@ def main() -> int:
             "Capability evidence:",
             ".ai/assistant/templates/worker-result.md",
             "## Primary Review",
+            "Child proposal handling:",
+            "Execution tree update:",
         ],
         failures,
     )
@@ -367,14 +410,21 @@ def main() -> int:
             "Parent packet ID:",
             "Depth:",
             "Coverage key:",
+            "Semantic scope:",
             "Stop reason ID:",
             "Task ID:",
             "Base revision observed:",
             "Actual assistant surface:",
             "Scope violation:",
             "Architecture or semantic deviation:",
+            "Changed fact IDs:",
+            "Canonical owner refs:",
+            "Surface refs:",
+            "Relationship refs:",
+            "Overlap decision:",
             "Authorization or approval concern:",
             "evidence for primary review",
+            "Execution tree node:",
         ],
         failures,
     )
@@ -391,6 +441,11 @@ def main() -> int:
         failures,
     )
 
+
+def main() -> int:
+    failures: list[str] = []
+    validate_static_contract_text(failures)
+
     portable_paths = [
         FRAMEWORK,
         DECOMPOSITION_FRAMEWORK,
@@ -400,6 +455,7 @@ def main() -> int:
         ROLE_CATALOG,
         ORCHESTRATION,
         EXECUTION_PLAN,
+        EXECUTION_TREE,
         NATIVE_BINDING,
         PACKET,
         RESULT,
@@ -439,8 +495,8 @@ def main() -> int:
     missing_policy = sorted(POLICY_FIELDS - set(policy))
     if missing_policy:
         failures.append(f"delegation policy missing fields {missing_policy}")
-    if policy.get("schema_version") != 3:
-        failures.append("delegation policy schema_version must be 3")
+    if policy.get("schema_version") != 4:
+        failures.append("delegation policy schema_version must be 4")
     if policy.get("policy_kind") != "target-subagent-delegation-policy":
         failures.append("delegation policy kind is incorrect")
     if capability_index.get("schema_version") != CAPABILITY_INDEX_SCHEMA_VERSION:
@@ -464,6 +520,26 @@ def main() -> int:
         tree_policy.get(key) != value for key, value in expected_tree.items()
     ):
         failures.append("delegation policy tree ownership and hard limits are invalid")
+    if isinstance(tree_policy, dict):
+        total = resolved_int(tree_policy.get("max_total_delegates"))
+        children = resolved_int(tree_policy.get("max_children_per_parent"))
+        context = resolved_int(tree_policy.get("max_context_words_total"))
+        retries = resolved_int(tree_policy.get("max_retries_total"))
+        parallel = resolved_int(policy.get("max_parallel_delegates"))
+        if total is not None and total > 8:
+            failures.append("delegation policy total delegates exceed portable maximum")
+        if children is not None and children > 4:
+            failures.append("delegation policy children per parent exceed portable maximum")
+        if context is not None and context > 24000:
+            failures.append("delegation policy context budget exceeds portable maximum")
+        if retries is not None and retries > 2:
+            failures.append("delegation policy retry budget exceeds portable maximum")
+        if parallel is not None and parallel > 8:
+            failures.append("delegation policy parallel delegates exceed portable maximum")
+        if total is not None and children is not None and children > total:
+            failures.append("delegation policy children exceed total delegates")
+        if total is not None and parallel is not None and parallel > total:
+            failures.append("delegation policy parallel delegates exceed total delegates")
     stop_policy = policy.get("stop_policy")
     required_stop_reasons = {
         "scope-covered",
@@ -477,6 +553,7 @@ def main() -> int:
         "primary-critical-path",
         "capability-unavailable",
         "user-restricted",
+        "cancelled-by-primary",
     }
     if (
         not isinstance(stop_policy, dict)
@@ -509,6 +586,11 @@ def main() -> int:
         or retry.get("retry_only_when_scope_unchanged") is not True
     ):
         failures.append("delegation policy must prevent scope-expanding retries")
+    elif isinstance(tree_policy, dict):
+        attempts = resolved_int(retry.get("max_attempts_per_task"))
+        retries = resolved_int(tree_policy.get("max_retries_total"))
+        if attempts is not None and retries is not None and attempts > retries:
+            failures.append("delegation retry attempts exceed total retry budget")
     conflict = policy.get("conflict_policy")
     expected_conflicts = {
         "overlapping_writes": "reject-concurrent-dispatch",
@@ -633,6 +715,10 @@ def main() -> int:
         "unresolved-architecture-decision": "primary-only",
         "scope-violating-result": "reject-result",
         "unsupported-surface": "sequential-primary-fallback",
+        "semantic-owner-overlap": "reject",
+        "aggregate-budget-conflict": "reject",
+        "cancelled-branch": "cancelled-by-primary",
+        "missing-primary-convergence": "reject-result",
     }
     actual_cases = {
         case.get("id"): case.get("expected_outcome")
@@ -681,7 +767,7 @@ def main() -> int:
         return 1
     print(
         "OK: checked portable worker policy, six roles, task/result contracts, "
-        f"five conformance cases, and {len(surface_ids)} capability records"
+        f"{len(expected_cases)} conformance cases, and {len(surface_ids)} capability records"
     )
     return 0
 

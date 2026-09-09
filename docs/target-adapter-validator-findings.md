@@ -10,7 +10,7 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1212
+Catalog entries: 1218
 
 ## Families
 
@@ -28,7 +28,7 @@ Catalog entries: 1212
 - `CONSISTENCY`: 37 codes.
 - `CONTEXT`: 10 codes.
 - `DEBUG`: 130 codes.
-- `DELEGATION`: 66 codes.
+- `DELEGATION`: 72 codes.
 - `DEPENDENCY`: 55 codes.
 - `DEVELOPMENT`: 15 codes.
 - `DIAGRAM`: 32 codes.
@@ -816,6 +816,12 @@ Catalog entries: 1212
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ENABLED_ROLE_UNKNOWN`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_EXECUTION_TREE_BUDGET`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_EXECUTION_TREE_NODE`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_EXECUTION_TREE_TEMPLATE`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_EXPLICIT_MODEL_MISSING`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_EXTERNAL_DISPATCHER`
@@ -838,11 +844,15 @@ Catalog entries: 1212
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_PARALLEL_LIMIT`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_POLICY_CAP_CONFLICT`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_POLICY_KIND`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_POLICY_SCHEMA`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_POLICY_STATE`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_PRIMARY_CONVERGENCE_TEMPLATE`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_REQUIRED_FILE_MISSING`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
@@ -901,6 +911,8 @@ Catalog entries: 1212
 - `DELEGATION_STOP_POLICY`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_TREE_LIMIT`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_TREE_LIMIT_CAP`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_TREE_POLICY`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.

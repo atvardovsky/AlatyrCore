@@ -48,6 +48,7 @@ DELEGATION_FIXTURE_PATHS = (
     ".ai/assistant/templates/subagent-task-packet.md",
     ".ai/assistant/templates/native-worker-binding.md",
     ".ai/assistant/templates/worker-execution-plan.md",
+    ".ai/assistant/templates/delegation-execution-tree.json",
     ".ai/assistant/templates/worker-result.md",
     ".ai/assistant/workers/role-catalog.json",
     ".ai/assistant/workers/roles/explorer.md",

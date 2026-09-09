@@ -713,7 +713,7 @@ def effective_baseline(
 
     if from_ref:
         return from_ref
-    if profile in {"change", "full"}:
+    if profile in {"change", "fast", "micro", "full"}:
         return changed_from
     return None
 
@@ -1669,7 +1669,8 @@ def argument_parser() -> argparse.ArgumentParser:
         help=(
             "Select checks from changed paths for focused profiles. For fast, "
             "defaults to origin/main when available, otherwise HEAD. For the "
-            "change profile, this also acts as --from-ref when --from-ref is omitted."
+            "fast, micro, change, and full profiles, this also acts as --from-ref "
+            "when --from-ref is omitted."
         ),
     )
     parser.add_argument(

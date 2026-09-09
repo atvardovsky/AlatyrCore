@@ -69,6 +69,7 @@ in the owning framework documents and use these IDs for installation routing:
 - `ALATYR-SAFETY-001`
 - `ALATYR-SAFETY-002`
 - `ALATYR-DECOMPOSITION-001`
+- `ALATYR-DELEGATION-001`
 - `ALATYR-ADAPTER-001`
 - `ALATYR-MODULE-001`
 - `ALATYR-OPERATION-001`
@@ -391,14 +392,17 @@ Classify every proposed target file:
     record the target packet storage policy.
     Add the target delegation policy, role catalog/prompts, orchestration
     prompt, delegated-execution overlay, delegation flow, native-binding
-    authoring, execution-plan, packet, and normalized-result templates only
-    when subagent delegation is enabled. Record
+    authoring, execution-plan, delegation execution-tree, packet, and
+    normalized-result templates only when subagent delegation is enabled. Record
     each surface's native, external, suggestion-only, or unsupported dispatch
     backend; any external dispatcher AI-infrastructure item; exact
     client/runtime, explicit/automatic dispatch, project worker-definition
     format and paths, model override, parallelism, background/nested behavior,
     actual-model evidence, verified role bindings, write/tool boundaries,
-    retry/conflict fallback, privacy, validation, and primary convergence.
+    aggregate worker/context/retry budgets, semantic overlap decisions,
+    cancellation stop reasons, retry/conflict fallback, privacy, validation,
+    and primary convergence. Treat worker child packets as proposals for the
+    primary assistant only; workers must not dispatch descendants.
     Generate provider-native definitions only after support is verified and
     keep them as thin target bindings to portable worker contracts.
     For every selected surface, separately record model provider/model,
@@ -631,10 +635,11 @@ Report:
 - large-task orchestration flow, operation packet, and target storage policy
   added or skipped
 - subagent delegation policy, role catalog/prompts, orchestration prompt,
-  overlay, flow, native-binding authoring, execution plan, packet, normalized
-  result, per-surface
+  overlay, flow, native-binding authoring, execution plan, execution-tree
+  ledger, packet, normalized result, per-surface
   capability evidence, native definition paths, role/model bindings,
-  retry/conflict fallback, and validation added or skipped
+  aggregate budget, semantic-overlap, cancellation, retry/conflict fallback,
+  validation, and primary-convergence evidence added or skipped
 - change-package index, lazy overlay, flow, schema, redacted report, retention
   policy, and validator support added, migrated, skipped, or blocked
 - durable engineering-evidence owner, policy, compact index, lazy overlay,

@@ -13,13 +13,13 @@
     "privacy_and_retention", "validation", "review_triggers"
   ],
   "properties": {
-    "schema_version": {"const": 3},
+    "schema_version": {"const": 4},
     "policy_kind": {"const": "target-subagent-delegation-policy"},
     "state": {"type": "string", "minLength": 1},
     "owner": {"type": "string", "minLength": 1},
     "decision_mode": {"type": "string", "minLength": 1},
     "default_preference": {"type": "string", "minLength": 1},
-    "max_parallel_delegates": {"$ref": "#/definitions/nonzeroLimit"},
+    "max_parallel_delegates": {"$ref": "#/definitions/delegateLimit"},
     "tree_policy": {
       "type": "object",
       "additionalProperties": false,
@@ -34,10 +34,10 @@
         "worker_child_behavior": {"const": "propose-only"},
         "default_max_depth": {"const": 1},
         "hard_max_depth": {"const": 2},
-        "max_total_delegates": {"$ref": "#/definitions/nonzeroLimit"},
-        "max_children_per_parent": {"$ref": "#/definitions/nonzeroLimit"},
-        "max_context_words_total": {"$ref": "#/definitions/nonzeroLimit"},
-        "max_retries_total": {"$ref": "#/definitions/nonnegativeLimit"},
+        "max_total_delegates": {"$ref": "#/definitions/delegateLimit"},
+        "max_children_per_parent": {"$ref": "#/definitions/childLimit"},
+        "max_context_words_total": {"$ref": "#/definitions/contextLimit"},
+        "max_retries_total": {"$ref": "#/definitions/retryLimit"},
         "require_disjoint_coverage_keys": {"const": true}
       }
     },
@@ -74,6 +74,30 @@
     "nonzeroLimit": {
       "anyOf": [
         {"type": "integer", "minimum": 1},
+        {"$ref": "#/definitions/placeholder"}
+      ]
+    },
+    "delegateLimit": {
+      "anyOf": [
+        {"type": "integer", "minimum": 1, "maximum": 8},
+        {"$ref": "#/definitions/placeholder"}
+      ]
+    },
+    "childLimit": {
+      "anyOf": [
+        {"type": "integer", "minimum": 1, "maximum": 4},
+        {"$ref": "#/definitions/placeholder"}
+      ]
+    },
+    "contextLimit": {
+      "anyOf": [
+        {"type": "integer", "minimum": 1, "maximum": 24000},
+        {"$ref": "#/definitions/placeholder"}
+      ]
+    },
+    "retryLimit": {
+      "anyOf": [
+        {"type": "integer", "minimum": 0, "maximum": 2},
         {"$ref": "#/definitions/placeholder"}
       ]
     },

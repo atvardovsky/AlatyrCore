@@ -100,7 +100,7 @@
     },
     {
       "id": "DELEGATION",
-      "code_count": 66
+      "code_count": 72
     },
     {
       "id": "DEPENDENCY",
@@ -3617,6 +3617,33 @@
       ]
     },
     {
+      "code": "DELEGATION_EXECUTION_TREE_BUDGET",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_EXECUTION_TREE_NODE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_EXECUTION_TREE_TEMPLATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
       "code": "DELEGATION_EXPLICIT_MODEL_MISSING",
       "levels": [
         "error"
@@ -3716,6 +3743,15 @@
       ]
     },
     {
+      "code": "DELEGATION_POLICY_CAP_CONFLICT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
       "code": "DELEGATION_POLICY_KIND",
       "levels": [
         "error"
@@ -3735,6 +3771,15 @@
     },
     {
       "code": "DELEGATION_POLICY_STATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_PRIMARY_CONVERGENCE_TEMPLATE",
       "levels": [
         "error"
       ],
@@ -3996,6 +4041,15 @@
     },
     {
       "code": "DELEGATION_TREE_LIMIT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_TREE_LIMIT_CAP",
       "levels": [
         "error"
       ],

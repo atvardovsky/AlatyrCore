@@ -81,8 +81,8 @@ Entry points:
   bounded routing normally when caching is unsupported or unknown. Do not
   treat cached input as removed from the model context window.
 <!-- /alatyr:scaffold-fragment -->
-<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/delegation-policy.json",".ai/assistant/workers/role-catalog.json",".ai/assistant/prompts/worker-orchestration.md"]} -->
-- `.ai/assistant/delegation-policy.json`, `.ai/assistant/workers/role-catalog.json`, and `.ai/assistant/prompts/worker-orchestration.md` when subagent delegation is enabled
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/delegation-policy.json",".ai/assistant/flows/subagent-delegation.flow.md",".ai/assistant/workers/role-catalog.json",".ai/assistant/prompts/worker-orchestration.md",".ai/assistant/templates/worker-execution-plan.md",".ai/assistant/templates/delegation-execution-tree.json",".ai/assistant/templates/subagent-task-packet.md",".ai/assistant/templates/worker-result.md"]} -->
+- `.ai/assistant/delegation-policy.json`, `.ai/assistant/flows/subagent-delegation.flow.md`, worker roles/prompts, execution-plan, execution-tree ledger, packet, and result templates when the complete subagent delegation module is enabled
 <!-- /alatyr:scaffold-fragment -->
 <!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/ai-infrastructure-router.json"]} -->
 - `.ai/assistant/ai-infrastructure-router.json` when AI infrastructure is enabled
@@ -185,11 +185,14 @@ Available next actions:
 <!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/flows/large-task-orchestration.flow.md"]} -->
 - `large-task`: coordinate cross-boundary or resumable work with bounded workstreams, checkpoints, and final convergence.
 <!-- /alatyr:scaffold-fragment -->
-<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/delegation-policy.json"]} -->
-- `subagent-delegation`: when enabled, let the primary assistant propose or
-  dispatch bounded worker tasks through project-owned roles and the selected
-  current assistant capability. Unsupported clients continue sequentially;
-  native worker support and model choice are never inferred.
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/delegation-policy.json",".ai/assistant/flows/subagent-delegation.flow.md",".ai/assistant/workers/role-catalog.json",".ai/assistant/prompts/worker-orchestration.md",".ai/assistant/templates/worker-execution-plan.md",".ai/assistant/templates/delegation-execution-tree.json",".ai/assistant/templates/subagent-task-packet.md",".ai/assistant/templates/worker-result.md"]} -->
+- `delegated-execution` overlay: when enabled, lets task decomposition or
+  large-task work propose or dispatch bounded worker tasks through project-
+  owned roles and the selected current assistant capability. Unsupported
+  clients continue sequentially; native worker support and model choice are
+  never inferred. The primary assistant owns child-packet approval,
+  execution-tree budget evidence, semantic-overlap reconciliation, validation,
+  and final convergence.
 <!-- /alatyr:scaffold-fragment -->
 <!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/change-packages/index.json"]} -->
 - Change packages activate automatically for coherent material outcomes,

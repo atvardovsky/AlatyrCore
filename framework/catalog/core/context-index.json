@@ -462,7 +462,7 @@
       "semantic_refs": [],
       "owner_refs": [],
       "estimated_words": 252,
-      "content_digest": "sha256:eeafc7eb930a94dfce51734730e82032d7144bc38d97c5539e59b32c265d5ea5"
+      "content_digest": "sha256:bcbeb4726a276338a485a4e66ac4b28aebd5857e045da620ebcb978b198a72ef"
     },
     {
       "id": "framework.core.semantics-infrastructure-json",

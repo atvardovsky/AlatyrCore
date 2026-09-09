@@ -240,12 +240,95 @@ def _requested_validation_profiles(
     return requested_profile, remaining
 
 
+def _packet_context_words(packet: dict[str, Any]) -> int:
+    words = 0
+    for relpath in packet.get("bounded_context", []):
+        if not isinstance(relpath, str):
+            continue
+        path = ROOT / relpath
+        try:
+            words += len(path.read_text(encoding="utf-8").split())
+        except OSError:
+            continue
+    return words
+
+
+def _budgeted_workstreams(
+    policy: dict[str, Any], workstreams: list[dict[str, Any]]
+) -> tuple[list[dict[str, Any]], list[dict[str, str]]]:
+    tree_policy = policy["tree_policy"]
+    selected: list[dict[str, Any]] = []
+    omitted: list[dict[str, str]] = []
+    context_words = 0
+    for packet in workstreams:
+        packet_words = _packet_context_words(packet)
+        if len(selected) >= tree_policy["max_total_delegates"]:
+            omitted.append(
+                {
+                    "workstream_id": packet["workstream_id"],
+                    "reason": "total delegate budget reached",
+                }
+            )
+            continue
+        if len(selected) >= tree_policy["max_parallel_delegates"]:
+            omitted.append(
+                {
+                    "workstream_id": packet["workstream_id"],
+                    "reason": "parallel delegate budget reached",
+                }
+            )
+            continue
+        if len(selected) >= tree_policy["max_children_per_parent"]:
+            omitted.append(
+                {
+                    "workstream_id": packet["workstream_id"],
+                    "reason": "root child budget reached",
+                }
+            )
+            continue
+        if context_words + packet_words > tree_policy["max_context_words_total"]:
+            omitted.append(
+                {
+                    "workstream_id": packet["workstream_id"],
+                    "reason": "aggregate context budget reached",
+                }
+            )
+            continue
+        selected.append(packet)
+        context_words += packet_words
+    return selected, omitted
+
+
 def _decomposition(
     source_profile: str,
     task_class: str,
     *,
     task_worker_packets: list[dict[str, Any]] | None,
 ) -> dict[str, Any]:
+    def delegation_budget(
+        policy: dict[str, Any], workstreams: list[dict[str, Any]]
+    ) -> dict[str, Any]:
+        tree_policy = policy["tree_policy"]
+        if len(workstreams) > tree_policy["max_total_delegates"]:
+            raise ValueError("worker packets exceed total delegate budget")
+        if len(workstreams) > tree_policy["max_parallel_delegates"]:
+            raise ValueError("worker packets exceed parallel delegate budget")
+        if len(workstreams) > tree_policy["max_children_per_parent"]:
+            raise ValueError("worker packets exceed child budget for the root")
+        context_words = sum(_packet_context_words(packet) for packet in workstreams)
+        if context_words > tree_policy["max_context_words_total"]:
+            raise ValueError("worker packets exceed aggregate context budget")
+        return {
+            "max_total_delegates": tree_policy["max_total_delegates"],
+            "max_parallel_delegates": tree_policy["max_parallel_delegates"],
+            "max_children_per_parent": tree_policy["max_children_per_parent"],
+            "max_context_words_total": tree_policy["max_context_words_total"],
+            "max_retries_total": tree_policy["max_retries_total"],
+            "candidate_delegate_count": len(workstreams),
+            "candidate_context_words": context_words,
+            "candidate_retries": 0,
+        }
+
     if source_profile == "repository-audit":
         router = _load_source_router()
         profile = router["profiles"][source_profile]
@@ -258,16 +341,32 @@ def _decomposition(
         policy = _load_source_worker_policy()
         if task_worker_packets:
             raise ValueError("repository-audit uses policy workstreams, not task packets")
-        workstreams = [make_builtin_packet(policy, item) for item in candidate_ids]
+        all_workstreams = [make_builtin_packet(policy, item) for item in candidate_ids]
+        workstreams, omitted = _budgeted_workstreams(policy, all_workstreams)
+        budget = delegation_budget(policy, workstreams)
+        workstream_ids = [packet["workstream_id"] for packet in workstreams]
+        identification_required = (
+            len(workstreams) < policy["activation"]["minimum_independent_packets"]
+        )
         return {
             "required": True,
-            "strategy": "bounded-independent-read-only-review",
+            "strategy": (
+                "workstream-identification-required"
+                if identification_required
+                else "bounded-independent-read-only-review"
+            ),
             "candidate_workstreams": workstreams,
-            "independent_worker_candidates": candidate_ids,
+            "discovered_worker_candidates": candidate_ids,
+            "omitted_worker_candidates": omitted,
+            "aggregate_budget": budget,
+            "independent_worker_candidates": workstream_ids,
             "decision_contract": policy["decision_evidence"],
-            "workstream_identification_required": False,
+            "workstream_identification_required": identification_required,
             "primary_critical_path": [
                 "run authoritative source validation",
+                "identify additional bounded independent workstreams"
+                if identification_required
+                else "dispatch or record skipped independent workstreams",
                 "resolve conflicting findings",
                 "perform final consistency synthesis",
             ],
@@ -282,12 +381,16 @@ def _decomposition(
             validate_worker_packet(packet, packet_contract, root=ROOT)
             for packet in (task_worker_packets or [])
         ]
+        budget = delegation_budget(policy, workstreams)
         workstream_ids = [packet["workstream_id"] for packet in workstreams]
         independence_keys = [packet["independence_key"] for packet in workstreams]
+        semantic_scopes = [packet["semantic_scope"] for packet in workstreams]
         if len(workstream_ids) != len(set(workstream_ids)):
             raise ValueError("task worker packet workstream IDs must be unique")
         if len(independence_keys) != len(set(independence_keys)):
             raise ValueError("task worker packet independence keys must be unique")
+        if len(semantic_scopes) != len(set(semantic_scopes)):
+            raise ValueError("task worker packet semantic scopes must be unique")
         return {
             "required": True,
             "strategy": (
@@ -296,6 +399,9 @@ def _decomposition(
                 else "workstream-identification-required"
             ),
             "candidate_workstreams": workstreams,
+            "discovered_worker_candidates": workstream_ids,
+            "omitted_worker_candidates": [],
+            "aggregate_budget": budget,
             "independent_worker_candidates": workstream_ids,
             "decision_contract": policy["decision_evidence"],
             "workstream_identification_required": len(workstreams)
@@ -310,6 +416,9 @@ def _decomposition(
         "required": False,
         "strategy": "primary-assistant",
         "candidate_workstreams": [],
+        "discovered_worker_candidates": [],
+        "omitted_worker_candidates": [],
+        "aggregate_budget": None,
         "independent_worker_candidates": [],
         "workstream_identification_required": False,
         "primary_critical_path": ["plan and validate the selected source task"],

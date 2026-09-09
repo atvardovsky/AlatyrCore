@@ -15,6 +15,7 @@
     ".ai/assistant/workers/role-catalog.json",
     ".ai/assistant/prompts/worker-orchestration.md",
     ".ai/assistant/templates/worker-execution-plan.md",
+    ".ai/assistant/templates/delegation-execution-tree.json",
     ".ai/assistant/templates/subagent-task-packet.md",
     ".ai/assistant/templates/worker-result.md",
     ".ai/assistant/assistant-capabilities.json"
@@ -26,11 +27,11 @@
     "changed-fact owner approval or target validation must be reconciled",
     "risk scope permissions or dependencies expand"
   ],
-  "budget_behavior": "keep packets bounded; fall back to primary execution when delegation overhead or context exceeds target policy",
+  "budget_behavior": "keep packets bounded; fall back when overhead or context exceeds policy",
   "final_evidence": [
-    "parent task decomposition plan and worker-eligible implementation levels",
-    "delegation decision and packets",
+    "parent decomposition plan and worker-eligible levels",
+    "delegation decision packets and ledger",
     "requested and actual model or unverified status",
-    "scope capability validation fallback and primary convergence"
+    "scope capability validation fallback and convergence"
   ]
 }

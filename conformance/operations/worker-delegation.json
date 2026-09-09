@@ -37,6 +37,34 @@
       "preconditions": ["native and approved external dispatch are unavailable"],
       "expected_role": "primary",
       "expected_outcome": "sequential-primary-fallback"
+    },
+    {
+      "id": "semantic-owner-overlap",
+      "input": "Two workers claim the same semantic scope or changed fact.",
+      "preconditions": ["overlap is not primary-reconciled before dispatch"],
+      "expected_role": "primary",
+      "expected_outcome": "reject"
+    },
+    {
+      "id": "aggregate-budget-conflict",
+      "input": "A delegation tree exceeds total delegate, child, context, retry, or parallel limits.",
+      "preconditions": ["policy caps are resolved for the target"],
+      "expected_role": "primary",
+      "expected_outcome": "reject"
+    },
+    {
+      "id": "cancelled-branch",
+      "input": "A worker branch becomes stale after scope, authorization, or base revision changes.",
+      "preconditions": ["primary records cancellation and stop reason"],
+      "expected_role": "primary",
+      "expected_outcome": "cancelled-by-primary"
+    },
+    {
+      "id": "missing-primary-convergence",
+      "input": "Worker results are returned without a primary review and convergence record.",
+      "preconditions": ["delegate-local success exists"],
+      "expected_role": "primary",
+      "expected_outcome": "reject-result"
     }
   ]
 }

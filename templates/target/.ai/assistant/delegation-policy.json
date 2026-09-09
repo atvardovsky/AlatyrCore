@@ -1,5 +1,5 @@
 {
-  "schema_version": 3,
+  "schema_version": 4,
   "policy_kind": "target-subagent-delegation-policy",
   "state": "{ENABLED_SUGGEST_ONLY_DISABLED_OR_BLOCKED}",
   "owner": "{TARGET_DELEGATION_POLICY_OWNER}",
@@ -31,7 +31,8 @@
       "overlapping-scope",
       "primary-critical-path",
       "capability-unavailable",
-      "user-restricted"
+      "user-restricted",
+      "cancelled-by-primary"
     ]
   },
   "decomposition_policy": ".ai/assistant/task-decomposition.json",

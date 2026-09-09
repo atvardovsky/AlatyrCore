@@ -11,17 +11,17 @@
     "source_worktree_state": "clean",
     "source_dirty_paths": [],
     "target_manifest": ".ai/alatyr.yaml",
-    "target_manifest_digest": "sha256:a1bd95b493a9d1df9cb4eb86c661613c857c7cdb358e8e0d18020f0487d12c63",
+    "target_manifest_digest": "sha256:9638c007103df85d9e1b0bd66cf35c2dec3ad3a41bb7d555758eaabdb204284b",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.58",
-    "adapter_schema_version": "48",
-    "template_version": "53"
+    "framework_version": "0.1.0-alpha.59",
+    "adapter_schema_version": "49",
+    "template_version": "54"
   },
   "derived_from": {
     "manifest": {
       "path": ".ai/alatyr.yaml",
-      "sha256": "a1bd95b493a9d1df9cb4eb86c661613c857c7cdb358e8e0d18020f0487d12c63"
+      "sha256": "9638c007103df85d9e1b0bd66cf35c2dec3ad3a41bb7d555758eaabdb204284b"
     },
     "project_map": {
       "path": ".ai/README.md",
@@ -33,7 +33,7 @@
     },
     "semantic_codebook": {
       "path": ".ai/framework/semantics/index.json",
-      "sha256": "eeafc7eb930a94dfce51734730e82032d7144bc38d97c5539e59b32c265d5ea5"
+      "sha256": "bcbeb4726a276338a485a4e66ac4b28aebd5857e045da620ebcb978b198a72ef"
     },
     "rule_registry": {
       "path": ".ai/framework/rule-registry.json",

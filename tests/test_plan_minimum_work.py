@@ -61,7 +61,7 @@ def capability_record(max_parallelism: int = 2) -> dict[str, object]:
 
 def worker_packet(workstream_id: str, context: str) -> dict[str, object]:
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "packet_kind": "source-read-only-workstream",
         "parent_packet_id": None,
         "depth": 1,
@@ -78,6 +78,12 @@ def worker_packet(workstream_id: str, context: str) -> dict[str, object]:
         "write_scope": "none",
         "independent": True,
         "independence_key": f"area-{workstream_id}",
+        "semantic_scope": f"area-{workstream_id}",
+        "changed_fact_ids": [],
+        "canonical_owner_refs": [context],
+        "surface_refs": [context],
+        "relationship_refs": [],
+        "overlap_decision": "disjoint",
         "expected_evidence": "Path-specific findings",
     }
 
@@ -215,6 +221,14 @@ class MinimumWorkPlanTests(unittest.TestCase):
             len(plan["decomposition"]["candidate_workstreams"]),
             2,
         )
+        self.assertEqual(
+            plan["decomposition"]["aggregate_budget"]["max_total_delegates"],
+            8,
+        )
+        self.assertGreater(
+            plan["decomposition"]["aggregate_budget"]["candidate_context_words"],
+            0,
+        )
         policy = json.loads(
             (ROOT / "tools" / "source_worker_policy.json").read_text(
                 encoding="utf-8"
@@ -228,6 +242,42 @@ class MinimumWorkPlanTests(unittest.TestCase):
             )
             self.assertEqual(workstream["allowed_actions"], ["inspect"])
             self.assertEqual(workstream["write_scope"], "none")
+
+    def test_repository_audit_budgeted_below_two_packets_requires_identification(
+        self,
+    ) -> None:
+        selection = SelectionResult(
+            selected=[check()],
+            fell_back_to_full=False,
+            changed_paths=[],
+            unmatched_changed_paths=[],
+            platform="linux",
+            selection_details={"docs": {"reasons": ["full-profile"]}},
+            effective_profile="full",
+        )
+
+        with patch("plan_minimum_work._packet_context_words", return_value=12001):
+            plan = self.build_test_plan(
+                selection=selection,
+                expected_validation_profile="full",
+                source_profile="repository-audit",
+            )
+
+        decomposition = plan["decomposition"]
+        self.assertEqual(decomposition["strategy"], "workstream-identification-required")
+        self.assertTrue(decomposition["workstream_identification_required"])
+        self.assertLess(
+            len(decomposition["candidate_workstreams"]),
+            2,
+        )
+        self.assertIn(
+            "identify additional bounded independent workstreams",
+            decomposition["primary_critical_path"],
+        )
+        self.assertEqual(
+            plan["delegation_assessment"]["decision"],
+            "workstream-identification-required",
+        )
 
     def test_auto_plan_without_changed_paths_is_not_a_small_task(self) -> None:
         selection = SelectionResult(
@@ -708,6 +758,29 @@ class MinimumWorkPlanTests(unittest.TestCase):
         ]
         packets[1]["independence_key"] = packets[0]["independence_key"]
         with self.assertRaisesRegex(ValueError, "independence keys must be unique"):
+            self.build_test_plan(
+                selection=selection,
+                expected_validation_profile="full",
+                source_profile="ai-infrastructure-bridge",
+                task_worker_packets=packets,
+            )
+
+    def test_large_task_rejects_semantically_overlapping_packets(self) -> None:
+        selection = SelectionResult(
+            selected=[check()],
+            fell_back_to_full=False,
+            changed_paths=[],
+            unmatched_changed_paths=[],
+            platform="linux",
+            selection_details={"docs": {"reasons": ["full-profile"]}},
+            effective_profile="full",
+        )
+        packets = [
+            worker_packet("router", "tools/source_context_router.json"),
+            worker_packet("policy", "tools/source_worker_policy.json"),
+        ]
+        packets[1]["semantic_scope"] = packets[0]["semantic_scope"]
+        with self.assertRaisesRegex(ValueError, "semantic scopes must be unique"):
             self.build_test_plan(
                 selection=selection,
                 expected_validation_profile="full",

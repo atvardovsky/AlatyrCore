@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "tree_kind": "alatyr-delegation-execution-tree",
+  "operation_id": "{OPERATION_ID}",
+  "base_revision": "{BASE_REVISION}",
+  "current_user_authorization": {
+    "scope": "{CURRENT_USER_AUTHORIZATION_SCOPE}",
+    "allowed_actions": ["{READ_ONLY_DOCS_ONLY_ADAPTER_ONLY_CODE_AND_TESTS_OR_FULL_WITH_APPROVAL}"],
+    "authorized_phases": ["{INSPECT_MODIFY_COMMIT_PUBLISH_OR_LIVE_EXTERNAL_PHASES}"],
+    "approval_record": "{APPROVAL_RECORD_OR_NONE}"
+  },
+  "task_profile": "{TASK_PROFILE}",
+  "policy_revision": "{DELEGATION_POLICY_REVISION_OR_HASH}",
+  "capability_evidence": "{CAPABILITY_EVIDENCE_RECORD_OR_UNVERIFIED}",
+  "aggregate_budget": {
+    "max_total_delegates": "{TARGET_MAX_TOTAL_DELEGATES_NOT_ABOVE_8}",
+    "max_parallel_delegates": "{TARGET_MAX_PARALLEL_DELEGATES_NOT_ABOVE_8}",
+    "max_children_per_parent": "{TARGET_MAX_CHILDREN_PER_PARENT_NOT_ABOVE_4}",
+    "max_context_words_total": "{TARGET_MAX_CONTEXT_WORDS_TOTAL_NOT_ABOVE_24000}",
+    "max_retries_total": "{TARGET_MAX_RETRIES_TOTAL_NOT_ABOVE_2}",
+    "used_total_delegates": "{CURRENT_USED_TOTAL_DELEGATES}",
+    "used_parallel_delegates": "{CURRENT_USED_PARALLEL_DELEGATES}",
+    "used_context_words": "{CURRENT_USED_CONTEXT_WORDS}",
+    "used_retries": "{CURRENT_USED_RETRIES}"
+  },
+  "root_node_id": "{ROOT_NODE_ID}",
+  "nodes": [
+    {
+      "node_id": "{NODE_ID}",
+      "parent_node_id": "{PARENT_NODE_ID_OR_NULL}",
+      "packet_id": "{PACKET_ID_OR_NULL}",
+      "result_id": "{RESULT_ID_OR_NULL}",
+      "depth": "{DEPTH_NOT_ABOVE_TARGET_HARD_LIMIT}",
+      "status": "{PLANNED_BLOCKED_READY_RUNNING_REVIEW_REQUIRED_DONE_FAILED_CANCELLED_OR_REJECTED}",
+      "role_id": "{PRIMARY_OR_ENABLED_WORKER_ROLE_ID}",
+      "assistant_surface": "{ASSISTANT_SURFACE_OR_PRIMARY}",
+      "dispatch_backend": "{PRIMARY_NATIVE_EXTERNAL_SUGGESTION_ONLY_OR_UNSUPPORTED}",
+      "implementation_level": "{L0_L1_L2_L3_L4_L5_L6_OR_L7}",
+      "coverage_key": "{UNIQUE_BOUNDED_COVERAGE_KEY}",
+      "semantic_scope": "{SEMANTIC_SCOPE_OR_NOT_APPLICABLE}",
+      "changed_fact_ids": ["{CHANGED_FACT_ID_OR_NONE}"],
+      "canonical_owner_refs": ["{CANONICAL_OWNER_REF}"],
+      "surface_refs": ["{PATH_OR_SUPPORT_SURFACE_REF}"],
+      "relationship_refs": ["{RELATIONSHIP_REF_OR_NONE}"],
+      "allowed_actions": ["{READ_ONLY_DOCS_ONLY_ADAPTER_ONLY_OR_CODE_AND_TESTS}"],
+      "write_scope": "{NONE_OR_BOUNDED_WRITE_SCOPE}",
+      "context_words": "{CONTEXT_WORD_COUNT}",
+      "attempt": "{ZERO_FOR_FIRST_ATTEMPT_OR_RETRY_COUNT}",
+      "result_status": "{RESULT_STATUS_OR_NULL}",
+      "stop_reason_id": "{STOP_REASON_ID_OR_NULL}",
+      "child_proposals": ["{PRIMARY_REVIEWED_CHILD_PACKET_PROPOSAL_OR_NONE}"],
+      "overlap_decision": "{DISJOINT_PRIMARY_RECONCILED_OVERLAP_REJECTED_OVERLAP_OR_NOT_APPLICABLE}"
+    }
+  ],
+  "edges": [
+    {
+      "parent_node_id": "{PARENT_NODE_ID}",
+      "child_node_id": "{CHILD_NODE_ID}",
+      "edge_kind": "primary-approved-dispatch"
+    }
+  ],
+  "primary_convergence": {
+    "status": "{PENDING_COMPLETED_BLOCKED_OR_CANCELLED}",
+    "reviewed_result_ids": ["{REVIEWED_RESULT_ID_OR_NONE}"],
+    "rejected_result_ids": ["{REJECTED_RESULT_ID_OR_NONE}"],
+    "combined_validation": "{COMBINED_VALIDATION_RESULT_OR_NOT_RUN_WITH_REASON}",
+    "logical_integrity_review": "{PRIMARY_LOGICAL_INTEGRITY_RESULT}",
+    "residual_risk": "{RESIDUAL_RISK}",
+    "final_stop_reason_id": "{FINAL_STOP_REASON_ID_OR_NULL}"
+  }
+}

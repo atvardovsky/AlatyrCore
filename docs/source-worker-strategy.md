@@ -30,12 +30,13 @@ preparation, review, and integration cost. Keep eligible work local only with
 a policy reason ID and concrete task evidence.
 
 The two-packet minimum is an activation threshold, not a preferred fan-out.
-The primary assistant owns the complete tree and every dispatch. Source workers
-are depth-1 read-only auditors; they may propose narrower follow-up packets but
-cannot launch them. Apply the policy limits for parallel workers, total
-workers, children, aggregate context, and retries. Stop at evidence saturation
-or at the first depth, budget, overlap, capability, authority, or cost boundary
-and record the corresponding normalized stop-reason ID.
+The primary assistant owns the complete execution tree, ledger, and every
+dispatch. Source workers are depth-1 read-only auditors; they may propose
+narrower follow-up packets but cannot launch them. Apply the policy limits for
+parallel workers, total workers, children, aggregate context, and retries. Stop
+at evidence saturation or at the first depth, budget, overlap, capability,
+authority, cancellation, or cost boundary and record the corresponding
+normalized stop-reason ID.
 
 For an explicit `repository-audit`, delegation evaluation is deterministic:
 
@@ -45,6 +46,8 @@ For an explicit `repository-audit`, delegation evaluation is deterministic:
    `tools/source_worker_policy.json`.
 3. Verify whether the active runtime can launch and receive workers now.
 4. Select at least two independent read-only workstreams with bounded context.
+   If all reusable candidates would exceed the aggregate context cap, select the
+   largest valid subset and record omitted candidate IDs with budget reasons.
 5. Dispatch eligible packets, or record why each eligible packet stayed local.
 6. Keep authoritative checks, conflict resolution, final synthesis, and final
    validation with the primary assistant.
@@ -77,15 +80,27 @@ aware verification and expiry timestamps, and is rejected when stale,
 future-dated, expired, overlong, or bound to another session. Those inputs
 create reviewable preflight evidence; they do not probe a client, launch
 workers, claim past dispatch, or prove that a worker result was delivered.
+Completion is not accepted from preflight evidence. It is validated through the
+execution-tree ledger and primary convergence record.
 
-Every packet must carry its parent, depth, remaining worker budget, unique
-coverage key, workstream ID, role, objective, bounded and
+Every packet must carry schema version 3, its parent, depth, remaining worker
+budget, unique coverage key, workstream ID, role, objective, bounded and
 conditional context, non-goals, `inspect`-only action mode, no-write scope,
-independence evidence, and expected evidence. Task-specific packets are passed
-with repeatable `--worker-packet` arguments. Their bounded paths must be
-repository-relative, exist inside the repository, and not escape through a
-symlink. Workers may expand only through the packet's conditional context or
-return a child proposal for primary review. They never dispatch descendants.
+semantic scope, changed fact IDs, canonical owner references, surface
+references, relationship references, overlap decision, independence evidence,
+and expected evidence. Task-specific packets are passed with repeatable
+`--worker-packet` arguments. Their bounded paths must be repository-relative,
+exist inside the repository, and not escape through a symlink. Workers may
+expand only through the packet's conditional context or return a child proposal
+for primary review. They never dispatch descendants.
+
+When delegation runs, maintain an execution-tree ledger compatible with the
+source policy: schema version 1, `alatyr-delegation-execution-tree` kind,
+current authorization, base revision, policy revision, capability evidence,
+aggregate budget use, node and edge topology, semantic overlap decisions, stop
+and cancellation reasons, delegated validation, primary review, and primary
+convergence. Treat a missing or inconsistent ledger as an integration failure,
+even when individual worker packets look valid.
 
 ## Model Routing
 

@@ -4,98 +4,98 @@
   "owner": "{TARGET_TASK_DECOMPOSITION_OWNER}",
   "portable_rule": ".ai/framework/task-decomposition.md",
   "plan_template": ".ai/assistant/templates/task-decomposition.md",
-  "default_behavior": "decompose every non-trivial request; use one local task for small work when one task profile and focused validation are sufficient",
-  "small_task_behavior": "one local task with compact small-task evidence; load the full decomposition policy only when an expansion trigger fires",
+  "default_behavior": "decompose non-trivial work; use one local task for small focused work",
+  "small_task_behavior": "one compact local task unless an expansion trigger fires",
   "decomposition_order": [
-    "classify current user authorization allowed actions task profile task scale changed facts project areas and risk",
-    "split by changed fact canonical owner contract area dependency validation need and support-surface synchronization",
+    "classify authorization actions profile scale facts areas and risk",
+    "split by changed fact owner contract area dependency validation and support sync",
     "assign exactly one implementation level to each task",
     "record dependencies and reject cycles",
     "select primary worker suggestion-only or blocked executor",
-    "attach bounded context non-goals allowed files validation and acceptance criteria",
+    "attach bounded context non-goals scope validation and acceptance",
     "execute only ready tasks",
-    "primary assistant reconciles results changed facts approvals validation documentation diagrams support information and residual risk"
+    "primary reconciles facts approvals validation docs diagrams support and risk"
   ],
   "levels": [
     {
       "id": "L0",
       "name": "discussion-only",
-      "use_when": ["question clarification brainstorming tradeoff discussion"],
+      "use_when": ["question clarification brainstorming tradeoff"],
       "allowed_actions": ["read-only"],
       "default_executor": "primary",
       "worker_roles": [],
       "delegation": "not-allowed",
-      "quality_gate": "no repository or external-state changes"
+      "quality_gate": "no state changes"
     },
     {
       "id": "L1",
       "name": "read-only-analysis",
-      "use_when": ["inspection evidence collection issue review status recommendations"],
+      "use_when": ["inspection evidence issue review status recommendations"],
       "allowed_actions": ["read-only"],
       "default_executor": "primary",
       "worker_roles": ["explorer", "reviewer"],
       "delegation": "allowed-when-capability-evidence-current",
-      "quality_gate": "report evidence uncertainty and no file changes"
+      "quality_gate": "report evidence uncertainty and no edits"
     },
     {
       "id": "L2",
       "name": "documentation-or-support-update",
-      "use_when": ["bounded docs adapter prompts gates diagrams or generated-reference sync for already owned facts"],
+      "use_when": ["bounded docs adapter prompts gates diagrams or generated-reference sync"],
       "allowed_actions": ["docs-only", "adapter-only"],
       "default_executor": "primary",
       "worker_roles": ["documentation-worker", "fast-focused-worker"],
       "delegation": "allowed-for-bounded-derived-surfaces",
-      "quality_gate": "no invented facts and canonical owner reconciliation required"
+      "quality_gate": "no invented facts; reconcile owners"
     },
     {
       "id": "L3",
       "name": "tests-or-validation",
-      "use_when": ["test checker fixture validation execution or failure evidence"],
+      "use_when": ["test checker fixture validation or failure evidence"],
       "allowed_actions": ["read-only", "code-and-tests"],
       "default_executor": "primary",
       "worker_roles": ["test-runner", "reviewer", "fast-focused-worker"],
       "delegation": "allowed-when-acceptance-is-objective",
-      "quality_gate": "do not change expectations to hide defects or weaken the selected contract"
+      "quality_gate": "do not hide defects or weaken contracts"
     },
     {
       "id": "L4",
       "name": "bounded-implementation",
-      "use_when": ["settled design bounded code change known owner objective validation"],
+      "use_when": ["settled design bounded code known owner objective validation"],
       "allowed_actions": ["code-and-tests"],
       "default_executor": "primary",
       "worker_roles": ["implementer", "fast-focused-worker"],
       "delegation": "allowed-for-disjoint-local-scope",
-      "quality_gate": "validate locally and update required companion surfaces"
+      "quality_gate": "validate and sync companions"
     },
     {
       "id": "L5",
       "name": "coherent-change-package",
-      "use_when": ["code tests docs diagrams support information approvals or multiple surfaces must move together"],
+      "use_when": ["code tests docs diagrams support approvals or multiple surfaces"],
       "allowed_actions": ["docs-only", "adapter-only", "code-and-tests", "full-with-approval"],
       "default_executor": "primary",
       "worker_roles": ["documentation-worker", "test-runner", "reviewer"],
       "delegation": "sidecars-only-primary-converges",
-      "quality_gate": "global logical integrity review over the combined repair set"
+      "quality_gate": "global integrity review over combined repair"
     },
     {
       "id": "L6",
       "name": "architecture-or-business-decision",
-      "use_when": ["accepted behavior architecture data ownership source-of-truth public contract or security decision"],
+      "use_when": ["accepted behavior architecture ownership source-of-truth contract security"],
       "allowed_actions": ["read-only", "full-with-approval"],
       "default_executor": "primary",
       "worker_roles": [],
       "delegation": "not-allowed-decompose-evidence-collection-as-L1",
-      "quality_gate": "accepted facts require target decision owner and approval before implementation"
+      "quality_gate": "accepted facts require owner and approval before implementation"
     },
     {
       "id": "L7",
       "name": "protected-external-or-publication-action",
-      "use_when": ["commit push deploy destructive live external credential permission spend production dependency migration or release"],
+      "use_when": ["commit push deploy destructive live external credential permission spend migration release"],
       "allowed_actions": ["full-with-approval"],
       "default_executor": "primary",
       "worker_roles": [],
       "delegation": "not-allowed",
-      "quality_gate": "recheck newest user authorization and scoped approval immediately before action"
+      "quality_gate": "recheck newest authorization and scoped approval"
     }
   ],
   "executor_selection": {
@@ -104,12 +104,12 @@
     "worker_role_catalog": ".ai/assistant/workers/role-catalog.json",
     "worker_orchestration_prompt": ".ai/assistant/prompts/worker-orchestration.md",
     "selection_order": [
-      "primary for semantic decision approval conflict final convergence and protected actions",
-      "verified worker only for bounded ready subtasks whose level and role allow it",
+      "primary for semantic decision approval conflict convergence and protected actions",
+      "verified worker for bounded ready subtasks allowed by level and role",
       "suggestion-only when capability exists conceptually but execution is unavailable or not trusted",
-      "blocked when required owner authorization approval validation or context is missing"
+      "blocked when owner authorization approval validation or context is missing"
     ],
-    "fallback": "continue with primary execution or ask the user when capability authorization approval or validation is unresolved"
+    "fallback": "continue primary or ask when capability authorization approval or validation is unresolved"
   },
   "quality_gates": {
     "one_level_per_task": true,
@@ -126,19 +126,19 @@
     "escalation_loads_only_triggering_context": true
   },
   "final_evidence": [
-    "decomposition plan ID and policy revision",
-    "task IDs implementation levels dependencies and executor decisions",
-    "context selected and intentionally omitted per task",
+    "plan ID and policy revision",
+    "task IDs levels dependencies and executor decisions",
+    "context selected and omitted per task",
     "worker packet and result IDs when delegation was used",
     "delegation tree depth coverage budget child proposals and stop reasons",
-    "validation acceptance and primary convergence result",
-    "escalations residual risk and cost or latency measurement only when captured"
+    "validation acceptance and convergence",
+    "escalations residual risk and measured cost or latency"
   ],
   "review_triggers": [
-    "task routing caused repeated context overuse",
-    "delegated work caused rework validation failure or scope drift",
-    "project areas owners validation commands or support relationships changed",
-    "assistant capability or model availability changed",
+    "task routing caused context overuse",
+    "delegated work caused rework validation failure or drift",
+    "areas owners validation or support relationships changed",
+    "assistant capability or model changed",
     "{TARGET_TASK_DECOMPOSITION_REVIEW_TRIGGER}"
   ]
 }

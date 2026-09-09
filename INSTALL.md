@@ -44,6 +44,8 @@ semantic owner.
 - Installed operation control surface: `ALATYR-OPERATION-001`
 - Required task decomposition and implementation levels:
   `ALATYR-DECOMPOSITION-001`
+- Optional subagent delegation and worker execution evidence:
+  `ALATYR-DELEGATION-001`
 - Project Development Model guidance intake, promotion, and bounded delivery:
   `ALATYR-KNOWLEDGE-001`
 - Optional architecture knowledge and pattern discussion:
@@ -470,10 +472,14 @@ critical-path action and dispatch bounded independent sidecars under the target
 policy. Installation must record per-surface capability freshness, role/model
 bindings, exact client/runtime, explicit/automatic dispatch, project worker-
 definition format and paths, write and tool limits, background/nested behavior,
-retry/conflict fallback, privacy, validation, and primary convergence. Create
-provider-native worker definitions only for a verified supported target
-surface. Keep them as thin bindings to the target-owned policy, role prompt,
-packet, result, and validation. An unavailable requested model falls back; it
+execution-tree ledger, aggregate worker/context/retry budgets, semantic
+overlap decisions, cancellation stop reasons, retry/conflict fallback, privacy,
+validation, and primary convergence. Workers may propose child packets only;
+the primary assistant owns every dispatch and rechecks current authorization
+before integration, commit, publication, or live effects. Create provider-
+native worker definitions only for a verified supported target surface. Keep
+them as thin bindings to the target-owned policy, role prompt, packet, result,
+execution tree, and validation. An unavailable requested model falls back; it
 is never silently reported as used.
 
 When the target enables diagrams, `Alatyr diagram`, `show as a diagram`, and
