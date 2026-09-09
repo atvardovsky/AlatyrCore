@@ -23,6 +23,26 @@ guide compatible assistants.
 **One project. Shared rules, recorded intent, and reviewed knowledge. Many human
 and AI executors.**
 
+**For humans:** use AlatyrCore when you want a project to preserve
+architectural intent, explain itself to developers, and guide AI-assisted
+changes without locking that knowledge inside one assistant.
+
+## Try Asking The Project
+
+Developers can discuss the project with a compatible agent before changing it.
+Typical questions include:
+
+- Why is this module designed this way?
+- What owns this business rule?
+- Is this behavior observed, proposed, or accepted?
+- What files or project-knowledge surfaces may need to change with this
+  behavior?
+- What validation is required before this change is safe?
+
+The agent still has to inspect the routed sources and report uncertainty.
+AlatyrCore gives the discussion a project-owned memory and source-of-truth
+map; it does not make unsupported answers authoritative.
+
 ## What AlatyrCore Is
 
 AlatyrCore is not another coding agent. It is a repository-owned framework and
