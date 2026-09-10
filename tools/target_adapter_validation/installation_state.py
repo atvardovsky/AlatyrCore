@@ -33,7 +33,7 @@ def validate_installation_state(
         )
         return
     path = context.target_path(relpath)
-    if not path.is_file():
+    if not context.is_target_file(path):
         context.error(
             "INSTALLATION_STATE_RECORD_MISSING",
             "installation.state_record does not exist",

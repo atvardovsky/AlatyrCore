@@ -624,6 +624,17 @@ class ContextCatalogTests(unittest.TestCase):
                 semantic_terms=terms,
                 max_words=13,
             )
+        with self.assertRaisesRegex(
+            ContextCatalogError, "require path, when, and status"
+        ):
+            build_context_packet(
+                profile="code-local",
+                operation="review",
+                selected_items=[item],
+                semantic_terms=terms,
+                max_words=20,
+                conditional_dependencies=[{"path": "rule.md"}],
+            )
 
     def test_packet_cache_prefix_is_order_independent_and_surface_specific(self) -> None:
         terms = {

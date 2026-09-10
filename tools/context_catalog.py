@@ -550,6 +550,7 @@ def build_context_packet(
     task_classification: str = "standard-task",
     expansion_triggers: Iterable[str] = (),
     omitted_item_ids: Iterable[str] = (),
+    conditional_dependencies: Iterable[dict[str, str]] = (),
 ) -> dict[str, Any]:
     """Build a deterministic packet projection from selected catalog items."""
 
@@ -601,6 +602,34 @@ def build_context_packet(
             }
         ),
     }
+    normalized_conditional_dependencies: list[dict[str, str]] = []
+    conditional_identities: set[tuple[str, str]] = set()
+    for dependency in conditional_dependencies:
+        if not isinstance(dependency, dict) or any(
+            not isinstance(dependency.get(field), str) or not dependency[field]
+            for field in ("path", "when", "status")
+        ):
+            raise ContextCatalogError(
+                "conditional context dependencies require path, when, and status"
+            )
+        if dependency["status"] not in {"selected", "omitted"}:
+            raise ContextCatalogError(
+                "conditional context dependency status must be selected or omitted"
+            )
+        identity = (dependency["path"], dependency["when"])
+        if identity in conditional_identities:
+            raise ContextCatalogError(
+                "conditional context dependencies must be unique by path and condition"
+            )
+        conditional_identities.add(identity)
+        normalized_conditional_dependencies.append(
+            {field: dependency[field] for field in ("path", "when", "status")}
+        )
+    normalized_conditional_dependencies.sort(
+        key=lambda dependency: (
+            dependency["path"], dependency["when"], dependency["status"]
+        )
+    )
     stable_canonical = json.dumps(
         semantic_payload, ensure_ascii=True, separators=(",", ":"), sort_keys=True
     )
@@ -610,6 +639,7 @@ def build_context_packet(
             "operation": operation,
             "selected_items": selected_payload,
             "required_obligations": required_obligations,
+            "conditional_dependencies": normalized_conditional_dependencies,
         },
         ensure_ascii=True,
         separators=(",", ":"),
@@ -652,6 +682,7 @@ def build_context_packet(
         "routing": {
             "selection_basis": "exact catalog selectors and declared owner dependencies",
             "omitted_item_ids": sorted(set(omitted_item_ids)),
+            "conditional_dependencies": normalized_conditional_dependencies,
             "expansion_triggers": sorted(set(expansion_triggers)),
             "unresolved_selector_behavior": "load the canonical owner and report the routing gap",
         },

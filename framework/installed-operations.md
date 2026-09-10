@@ -486,7 +486,7 @@ After installation or framework upgrade, an assistant should recheck:
 
 - `.ai/alatyr.yaml`, framework version, adapter schema version, template
   version, and target adapter references
-- required core profile and optional module states
+- selected kernel, core, standard, or full support profile and optional module states
 - context profiles and their framework/project/assistant references
 - source-of-truth registry, task-specific maturity profile, bridge capability
   matrix, migration notes, and effectiveness reports

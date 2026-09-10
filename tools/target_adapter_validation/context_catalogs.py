@@ -30,6 +30,7 @@ class FindingSink(Protocol):
     target: Path
 
     def target_path(self, relpath: str) -> Path: ...
+    def is_target_file(self, path: str | Path) -> bool: ...
     def load_json_object(
         self, path: Path, code_prefix: str
     ) -> dict[str, Any] | None: ...
@@ -71,6 +72,46 @@ def _validate_packet_obligations(
         )
 
 
+def _validate_semantic_preload(
+    sink: FindingSink,
+    router: dict[str, Any],
+    terms: dict[str, dict[str, Any]],
+) -> None:
+    semantic = router.get("semantic_codebook")
+    preload = semantic.get("preload_terms") if isinstance(semantic, dict) else None
+    preload = preload if isinstance(preload, list) else []
+    bootstrap = sink.load_json_object(
+        sink.target_path(".ai/assistant/bootstrap-index.json"),
+        "CONTEXT_CATALOG_BOOTSTRAP",
+    )
+    embedded = (
+        bootstrap.get("semantic_preload", {}).get("terms", [])
+        if isinstance(bootstrap, dict)
+        else []
+    )
+    embedded_ids = [term.get("id") for term in embedded if isinstance(term, dict)]
+    if embedded_ids != preload:
+        sink.error(
+            "CONTEXT_SEMANTIC_PRELOAD_DRIFT",
+            "bootstrap semantic preload differs from the router term order",
+            ".ai/assistant/bootstrap-index.json",
+        )
+    for embedded_term in embedded:
+        if not isinstance(embedded_term, dict):
+            continue
+        term_id = embedded_term.get("id")
+        expected = terms.get(term_id)
+        if expected is None or any(
+            embedded_term.get(field) != expected.get(field)
+            for field in ["version", "definition"]
+        ):
+            sink.error(
+                "CONTEXT_SEMANTIC_PRELOAD_DRIFT",
+                f"bootstrap semantic term differs from installed codebook: {term_id}",
+                ".ai/assistant/bootstrap-index.json",
+            )
+
+
 def validate_context_catalog_contract(sink: FindingSink, manifest: Any) -> None:
     resolutions = {}
     indexed_paths: set[str] = set()
@@ -78,7 +119,7 @@ def validate_context_catalog_contract(sink: FindingSink, manifest: Any) -> None:
     for contour, relpath in CATALOG_ROOTS.items():
         root = sink.target_path(f".ai/{contour}")
         index = sink.target_path(relpath)
-        if not index.is_file():
+        if not sink.is_target_file(index):
             sink.error(
                 "CONTEXT_CATALOG_MISSING",
                 f"{contour} recursive context index is missing",
@@ -135,7 +176,7 @@ def validate_context_catalog_contract(sink: FindingSink, manifest: Any) -> None:
         ):
             continue
         path = sink.target_path(relpath)
-        if path.is_file() and relpath not in indexed_paths:
+        if sink.is_target_file(path) and relpath not in indexed_paths:
             sink.error(
                 "CONTEXT_CATALOG_REFERENCE_UNINDEXED",
                 f"live adapter reference is absent from recursive indexes: {relpath}",
@@ -163,48 +204,14 @@ def validate_context_catalog_contract(sink: FindingSink, manifest: Any) -> None:
             if isinstance(owner, str)
             else None
         )
-        if owner_path is None or not owner_path.is_file():
+        if owner_path is None or not sink.is_target_file(owner_path):
             sink.error(
                 "CONTEXT_SEMANTIC_OWNER_MISSING",
                 f"semantic term {term_id} has no installed canonical owner",
                 CODEBOOK,
             )
 
-    semantic = router.get("semantic_codebook")
-    preload = semantic.get("preload_terms") if isinstance(semantic, dict) else None
-    preload = preload if isinstance(preload, list) else []
-    bootstrap = sink.load_json_object(
-        sink.target_path(".ai/assistant/bootstrap-index.json"),
-        "CONTEXT_CATALOG_BOOTSTRAP",
-    )
-    embedded = (
-        bootstrap.get("semantic_preload", {}).get("terms", [])
-        if isinstance(bootstrap, dict)
-        else []
-    )
-    embedded_ids = [
-        term.get("id") for term in embedded if isinstance(term, dict)
-    ]
-    if embedded_ids != preload:
-        sink.error(
-            "CONTEXT_SEMANTIC_PRELOAD_DRIFT",
-            "bootstrap semantic preload differs from the router term order",
-            ".ai/assistant/bootstrap-index.json",
-        )
-    for embedded_term in embedded:
-        if not isinstance(embedded_term, dict):
-            continue
-        term_id = embedded_term.get("id")
-        expected = terms.get(term_id)
-        if expected is None or any(
-            embedded_term.get(field) != expected.get(field)
-            for field in ["version", "definition"]
-        ):
-            sink.error(
-                "CONTEXT_SEMANTIC_PRELOAD_DRIFT",
-                f"bootstrap semantic term differs from installed codebook: {term_id}",
-                ".ai/assistant/bootstrap-index.json",
-            )
+    _validate_semantic_preload(sink, router, terms)
 
     packet = sink.load_json_object(
         sink.target_path(PACKET_TEMPLATE), "CONTEXT_PACKET_TEMPLATE"
@@ -243,12 +250,19 @@ def validate_context_catalog_contract(sink: FindingSink, manifest: Any) -> None:
         if not isinstance(routing, dict) or set(routing) != {
             "selection_basis",
             "omitted_item_ids",
+            "conditional_dependencies",
             "expansion_triggers",
             "unresolved_selector_behavior",
         }:
             sink.error(
                 "CONTEXT_PACKET_TEMPLATE_INVALID",
                 "context packet routing evidence is incomplete",
+                PACKET_TEMPLATE,
+            )
+        elif not isinstance(routing.get("conditional_dependencies"), list):
+            sink.error(
+                "CONTEXT_PACKET_TEMPLATE_INVALID",
+                "context packet conditional dependency evidence is incomplete",
                 PACKET_TEMPLATE,
             )
         elif "canonical owner" not in str(routing.get("unresolved_selector_behavior")):

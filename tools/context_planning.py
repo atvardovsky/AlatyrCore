@@ -718,6 +718,56 @@ def _verify_selected_content(
         ) from exc
 
 
+def _conditional_dependency_evidence(
+    descriptor: dict[str, Any],
+    catalogs: _Catalogs,
+    selected: Iterable[CatalogItem],
+) -> list[dict[str, str]]:
+    """Record lazy profile dependencies without treating triggers as satisfied."""
+
+    conditional = descriptor.get("conditional_context", [])
+    if not isinstance(conditional, list):
+        raise ContextPlanningError(
+            "CONTEXT_PROFILE_INVALID",
+            "profile conditional_context must be a list",
+            upgrade_required=True,
+        )
+    selected_paths = {item.path for item in selected}
+    evidence: list[dict[str, str]] = []
+    for index, dependency in enumerate(conditional):
+        if not isinstance(dependency, dict):
+            raise ContextPlanningError(
+                "CONTEXT_PROFILE_INVALID",
+                f"profile conditional_context[{index}] must be an object",
+                upgrade_required=True,
+            )
+        path = dependency.get("path")
+        when = dependency.get("when")
+        if not isinstance(path, str) or not isinstance(when, str) or not when.strip():
+            raise ContextPlanningError(
+                "CONTEXT_PROFILE_INVALID",
+                f"profile conditional_context[{index}] requires path and when",
+                upgrade_required=True,
+            )
+        normalized = _normalize_relative(path, "conditional context path")
+        if normalized not in catalogs.by_path:
+            raise ContextPlanningError(
+                "CONDITIONAL_CONTEXT_UNINDEXED",
+                f"conditional context is absent from recursive catalogs: {normalized}",
+                upgrade_required=True,
+                details={"path": normalized, "condition": when.strip()},
+                actions=("regenerate context indexes after repairing the profile",),
+            )
+        evidence.append(
+            {
+                "path": normalized,
+                "when": when.strip(),
+                "status": "selected" if normalized in selected_paths else "omitted",
+            }
+        )
+    return evidence
+
+
 def _resolve_surface(
     target: Path, router: dict[str, Any], requested: str | None
 ) -> tuple[str, dict[str, str]]:
@@ -988,6 +1038,9 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
     normalized_reasons = {
         item_id: sorted(values) for item_id, values in sorted(reasons.items())
     }
+    conditional_dependencies = _conditional_dependency_evidence(
+        descriptor, catalogs, selected.values()
+    )
     try:
         content_packet = build_context_packet(
             profile=request.profile,
@@ -1000,6 +1053,7 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
             expansion_triggers=(
                 "changed paths or facts selected bounded consistency relationships",
             ) if impact["used"] else (),
+            conditional_dependencies=conditional_dependencies,
         )
     except ContextCatalogError as exc:
         if "exceeds budget" in str(exc):
@@ -1057,6 +1111,7 @@ def _ready_plan(request: ContextPlanRequest) -> dict[str, Any]:
                 1 for item_id in selected if item_id in catalogs.by_id
             ),
             "policy": "unselected catalog branches remain unloaded",
+            "conditional_dependencies": conditional_dependencies,
         },
         "reasoning_boundary": (
             "deterministic routing selects context candidates; it does not prove "

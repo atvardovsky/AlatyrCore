@@ -117,12 +117,25 @@ class ReleaseBaselineTests(unittest.TestCase):
         self.assertIn(baseline.version, prior_versions)
         self.assertEqual(intervening, prior_versions[: prior_versions.index(baseline.version)])
 
-    def test_current_chain_uses_alpha_61_checkpoint(self) -> None:
+    def test_current_chain_uses_latest_checkpoint(self) -> None:
         version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
-        if version == "0.1.0-alpha.61":
-            self.skipTest("alpha.62 version transition has not been applied yet")
+        if version == "0.1.0-alpha.62":
+            self.skipTest("alpha.63 version transition has not been applied yet")
         baseline, _intervening = nearest_release_baseline(version)
-        self.assertEqual(baseline.label, "release-checkpoint:0.1.0-alpha.61")
+        self.assertEqual(baseline.label, "release-checkpoint:0.1.0-alpha.62")
+
+    def test_unverified_historical_checkpoints_are_not_accepted(self) -> None:
+        self.assertIsNone(release_checkpoint("0.1.0-alpha.34"))
+        self.assertIsNone(release_checkpoint("0.1.0-alpha.47"))
+
+    def test_alpha_50_checkpoint_uses_its_validated_release_commit(self) -> None:
+        checkpoint = release_checkpoint("0.1.0-alpha.50")
+
+        self.assertIsNotNone(checkpoint)
+        self.assertEqual(
+            checkpoint.ref,
+            "edcbfa631d99216fe76287e0975c2222a4ba4e18",
+        )
 
     def test_schema_2_checkpoint_rejects_modified_report(self) -> None:
         with patch("check_release_drift.file_sha256", return_value="0" * 64):

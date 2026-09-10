@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import sys
 import tempfile
 import unittest
@@ -400,6 +401,15 @@ class ScaffoldProjectionTests(unittest.TestCase):
             self.assertIn(".ai/assistant/bootstrap-index.json", paths)
             self.assertNotIn(".ai/assistant/operation-catalog.json", paths)
             self.assertNotIn(".agents/skills/README.md", paths)
+            help_text = (target / ".ai/assistant/help.md").read_text(encoding="utf-8")
+            self.assertNotIn("Alatyr status", help_text)
+            self.assertNotIn("Alatyr doctor", help_text)
+            self.assertNotIn("Common shortcuts:", help_text)
+            for referenced in re.findall(r"`(\.ai/[^`]+)`", help_text):
+                self.assertTrue(
+                    (target / referenced).exists(),
+                    f"kernel help advertises missing surface {referenced}",
+                )
             readme = (target / ".ai/README.md").read_text(encoding="utf-8")
             integrity = json.loads(
                 (target / ".ai/assistant/bootstrap-integrity.json").read_text(

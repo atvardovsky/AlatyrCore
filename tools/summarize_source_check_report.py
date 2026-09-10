@@ -84,6 +84,10 @@ def render_summary(report: dict[str, Any], *, source_label: str) -> str:
     timing = report.get("timing") if isinstance(report.get("timing"), dict) else {}
     source = report.get("source") if isinstance(report.get("source"), dict) else {}
     selection = report.get("selection") if isinstance(report.get("selection"), dict) else {}
+    reuse = report.get("reuse_contract") if isinstance(report.get("reuse_contract"), dict) else {}
+    acceptance = report.get("acceptance_evidence") if isinstance(report.get("acceptance_evidence"), dict) else {}
+    write_scope = report.get("source_write_scope") if isinstance(report.get("source_write_scope"), dict) else {}
+    successful = reuse.get("successful") is True
 
     lines = [
         "### Alatyr Source Checks",
@@ -92,6 +96,9 @@ def render_summary(report: dict[str, Any], *, source_label: str) -> str:
         f"- Profile: `{report.get('profile', 'unknown')}`",
         f"- Source commit: `{source.get('source_commit') or 'unknown'}`",
         f"- Source tree dirty: `{source.get('source_tree_dirty')}`",
+        f"- Overall result: `{'passed' if successful else 'failed'}`",
+        f"- Acceptance evidence eligible: `{acceptance.get('eligible') is True}`",
+        f"- Source write scope preserved: `{write_scope.get('preserved') is True}`",
         f"- Wall time: {_duration(timing.get('wall_seconds'))}",
         f"- Selected checks: `{len(typed_checks)}`",
     ]

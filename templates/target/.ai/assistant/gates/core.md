@@ -5,6 +5,9 @@ Canonical owners: `ALATYR-CONTEXT-001`, `ALATYR-SOURCE-001`,
 only for ambiguity, adapter repair, or a boundary named by another gate.
 
 - Select the smallest profiles, overlays, and areas covering the request.
+- Record every applicable risk class and one ordered severity: `low`,
+  `moderate`, `high`, or `protected`. A protected framework or target trigger
+  cannot be downgraded.
 - Name the target source of truth and allowed actions before editing.
 - Do not let routing grant approval or broaden the requested scope.
 - Before `modify`, `commit`, `publish`, or `live-external`, verify that the

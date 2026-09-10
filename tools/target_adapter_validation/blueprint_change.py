@@ -35,7 +35,7 @@ def validate_blueprint_change(
         return
 
     for relpath in REQUIRED_PATHS:
-        if not context.target_path(relpath).is_file():
+        if not context.is_target_file(relpath):
             context.error(
                 "BLUEPRINT_CHANGE_REQUIRED_FILE_MISSING",
                 "enabled blueprint-change capability is missing a required contract",

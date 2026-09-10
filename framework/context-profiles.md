@@ -60,9 +60,18 @@ subfolders without imposing a universal physical depth, but routine traversal
 must stop at the router's configured depth and context budgets.
 
 The generated bootstrap is the preloaded entry point and must not be indexed
-as assistant content: it digests the assistant catalog, so indexing it would
-create a circular digest dependency. Rebuild project and assistant catalogs
-before rebuilding bootstrap whenever installed target files change.
+as assistant content. Rebuild generated surfaces in this canonical order:
+
+1. support relationships and other source-owned indexes;
+2. bootstrap index;
+3. bootstrap integrity sidecar;
+4. recursive project and assistant context catalogs;
+5. support state.
+
+The recursive assistant catalog excludes the bootstrap index and includes the
+integrity sidecar, so changing this order can create stale digests or a circular
+dependency. Support state is generated last because it records the final
+installed projection.
 
 The generated `framework/file-inventory.json` is packaging and upgrade
 evidence, not recursively routed framework content. It hashes
@@ -293,6 +302,12 @@ item IDs and digests, resolved semantic term IDs and versions, packet digest,
 dictionary fallback or expansion events, and intentionally omitted branches.
 This evidence proves packet identity and routing behavior, not model
 comprehension.
+
+Recursive catalog selectors such as `path_terms` and semantic-shard selectors
+are discovery metadata. They do not independently authorize or load a catalog
+branch. Record every selected profile's conditional context path and load
+condition as `selected` or `omitted`; an omitted dependency remains a live
+expansion obligation when its named condition becomes true.
 
 When selected project guidance can affect changed facts, approval, validation,
 or a material decision, extend that receipt with `semantic_guidance` schema 1.

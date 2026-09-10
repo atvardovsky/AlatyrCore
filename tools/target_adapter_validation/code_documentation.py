@@ -78,7 +78,7 @@ def validate_code_documentation(
     ]
     missing = False
     for relpath in required_paths:
-        if not context.target_path(relpath).is_file():
+        if not context.is_target_file(relpath):
             missing = True
             context.error(
                 "CODEDOC_REQUIRED_FILE_MISSING",

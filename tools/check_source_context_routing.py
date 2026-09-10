@@ -55,6 +55,11 @@ EXPECTED_INSTALL_STAGES = [
     "handoff",
 ]
 EXPECTED_SMALL_TASK_PROFILES = {"docs-local", "source-tooling"}
+SOURCE_PROFILE_BUDGET_FIELDS = {
+    "max_required_files",
+    "max_required_words",
+    "max_initial_words",
+}
 REQUIRED_SMALL_TASK_BOUNDARIES = {
     "AGENTS.md",
     "AI_ASSISTANTS.md",
@@ -259,6 +264,40 @@ def validate_source_worker_policy(
             )
 
 
+def validate_source_profile_budget(
+    profile_id: str,
+    profile: dict[str, Any],
+    source_bootstrap: list[str],
+    failures: list[str],
+) -> None:
+    required = profile.get("required_context")
+    budget = profile.get("context_budget")
+    if not isinstance(required, list) or not all(
+        isinstance(path, str) and path for path in required
+    ):
+        failures.append(f"source profile {profile_id} has invalid required context")
+        return
+    if not isinstance(budget, dict) or set(budget) != SOURCE_PROFILE_BUDGET_FIELDS:
+        failures.append(f"source profile {profile_id} has invalid context budget")
+        return
+    if not all(
+        isinstance(budget[field], int)
+        and not isinstance(budget[field], bool)
+        and budget[field] >= 0
+        for field in SOURCE_PROFILE_BUDGET_FIELDS
+    ):
+        failures.append(f"source profile {profile_id} context budget must use integers")
+        return
+    required_words = word_count(required)
+    initial_words = word_count([*source_bootstrap, *required])
+    if len(required) > budget["max_required_files"]:
+        failures.append(f"source profile {profile_id} exceeds required-file budget")
+    if required_words > budget["max_required_words"]:
+        failures.append(f"source profile {profile_id} exceeds required-word budget")
+    if initial_words > budget["max_initial_words"]:
+        failures.append(f"source profile {profile_id} exceeds initial-word budget")
+
+
 def main() -> int:
     failures: list[str] = []
     try:
@@ -271,6 +310,10 @@ def main() -> int:
 
     if source.get("schema_version") != 1 or source.get("router_kind") != "alatyr-source-context-router":
         failures.append("source context router schema or kind is invalid")
+    source_bootstrap = [
+        *source.get("preloaded_context", []),
+        *source.get("bootstrap_context", []),
+    ]
     profiles = source.get("profiles")
     if not isinstance(profiles, dict) or set(profiles) != EXPECTED_SOURCE_PROFILES:
         failures.append("source context router profile set is incomplete")
@@ -279,6 +322,9 @@ def main() -> int:
         manifest_by_id = {check["id"]: check for check in manifest}
         manifest_ids = set(manifest_by_id)
         for profile_id, profile in profiles.items():
+            validate_source_profile_budget(
+                profile_id, profile, source_bootstrap, failures
+            )
             checks = profile.get("checks")
             if not isinstance(checks, list) or not checks:
                 failures.append(f"source profile {profile_id} has no check IDs")
@@ -325,13 +371,11 @@ def main() -> int:
         framework_rule_context = framework_rule.get("required_context")
         required_framework_rule_context = [
             "framework/context-index.json",
-            "framework/rule-registry.json",
-            "framework/rule-ownership.md",
             "framework/semantics/index.json",
         ]
         if framework_rule_context != required_framework_rule_context:
             failures.append(
-                "framework-rule source profile must load canonical ownership and semantic indexes"
+                "framework-rule source profile must load compact routing and semantic indexes"
             )
         source_tooling = profiles.get("source-tooling", {})
         if "by trigger_paths" not in source_tooling.get("check_selection", ""):
@@ -384,10 +428,15 @@ def main() -> int:
         if worker_overlay.get("fallback") != "continue with the primary assistant":
             failures.append("source worker overlay fallback is invalid")
     validate_source_worker_policy(source, failures)
-    source_bootstrap = [
-        *source.get("preloaded_context", []),
-        *source.get("bootstrap_context", []),
-    ]
+    dependency_loading = source.get("rule_dependency_loading")
+    if not isinstance(dependency_loading, dict) or (
+        dependency_loading.get("default") != "conditional-reference"
+        or "not automatic" not in str(dependency_loading.get("meaning", ""))
+        or "selected and omitted" not in str(
+            dependency_loading.get("packet_evidence", "")
+        )
+    ):
+        failures.append("source rule dependency loading contract is invalid")
     source_limit = source.get("budgets", {}).get("bootstrap_max_words")
     source_words = word_count(source_bootstrap)
     source_headroom = source.get("budgets", {}).get("minimum_headroom_words")
@@ -421,6 +470,8 @@ def main() -> int:
         not isinstance(semantic, dict)
         or semantic.get("schema_version") != 2
         or semantic.get("index") != "framework/semantics/index.json"
+        or semantic.get("load_mode")
+        != "lazy-before-first-compact-semantic-reference"
         or semantic.get("preload_terms") != expected_preload
     ):
         failures.append("source semantic codebook routing contract is invalid")

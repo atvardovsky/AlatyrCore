@@ -34,7 +34,7 @@ Each installed framework should identify:
   points, and supported bridge files when the target repository supports file
   ownership metadata
 - supported assistants
-- required core profile and optional module states
+- selected kernel, core, standard, or full support profile and optional module states
 - known deviations from the source framework
 - unresolved adapter gaps
 - support-information policy and current support-state digest
@@ -126,7 +126,7 @@ Before upgrading framework files in a target project:
    permissions. New or changed clients remain runtime-unverified until target
    evidence exists; client permissions never grant Alatyr authorization.
 8. Identify new approval, testing, security, diagram, or validation guidance.
-9. Compare required core profile, installed framework pack, and optional module
+9. Compare the selected support profile, installed framework pack, and optional module
    states. Expand the pack before enabling a module whose portable owner is not
    installed; do not replace target facts while changing the pack.
    Resolve every shared capability surface from all enabled producers, apply

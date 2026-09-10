@@ -801,7 +801,7 @@ def validate_router_manifest_schema(
     schema_version: Any,
 ) -> None:
     manifest_path = validator.target_path(".ai/alatyr.yaml")
-    if manifest is None and manifest_path.is_file():
+    if manifest is None and validator.is_target_file(manifest_path):
         manifest = parse_manifest(validator.context.text_source(manifest_path))
     if manifest is None:
         return
@@ -960,9 +960,9 @@ class Validator:
             )
 
         def operation_catalog() -> None:
-            if support_profile in {"standard", "full"} or self.target_path(
+            if support_profile in {"standard", "full"} or self.is_target_file(
                 ".ai/assistant/operation-catalog.json"
-            ).is_file():
+            ):
                 self.check_operation_catalog()
 
         def capabilities() -> None:
@@ -974,15 +974,15 @@ class Validator:
             self.check_checker_claims(checker_files, checker_commands)
 
         def engineering_evidence() -> None:
-            if support_profile != "kernel" or self.target_path(
+            if support_profile != "kernel" or self.is_target_file(
                 ".ai/project/engineering-evidence/index.json"
-            ).is_file():
+            ):
                 self.check_engineering_evidence(manifest)
 
         def project_knowledge() -> None:
-            if support_profile != "kernel" or self.target_path(
+            if support_profile != "kernel" or self.is_target_file(
                 ".ai/project/knowledge/index.json"
-            ).is_file():
+            ):
                 self.check_project_knowledge(manifest)
 
         def finalize_inputs() -> None:
@@ -1133,7 +1133,7 @@ class Validator:
         self, manifest: ManifestData | None
     ) -> None:
         index_relpath = ".ai/assistant/assistant-capabilities.json"
-        if not self.target_path(index_relpath).is_file():
+        if not self.is_target_file(index_relpath):
             return
         index = self.load_json_object(
             self.target_path(index_relpath), "ASSISTANT_CAPABILITY_INDEX"
@@ -1394,7 +1394,7 @@ class Validator:
                         observed = str(loading.get("auto_load_observed", "")).casefold()
                         if (
                             not is_concrete_capability_value(entry)
-                            or not self.target_path(str(entry)).is_file()
+                            or not self.is_target_file(str(entry))
                         ):
                             self.error(
                                 "ASSISTANT_SELECTED_ENTRY_MISSING",
@@ -1538,6 +1538,21 @@ class Validator:
             return self.target / ".ai" / ".invalid-target-path" / digest
         return candidate
 
+    def is_target_file(self, relpath: str | Path) -> bool:
+        """Observe a target-relative path before testing file presence."""
+
+        return self.context.is_target_file(relpath)
+
+    def is_target_dir(self, relpath: str | Path) -> bool:
+        """Observe a target-relative path before testing directory presence."""
+
+        return self.context.is_target_dir(relpath)
+
+    def target_exists(self, relpath: str | Path) -> bool:
+        """Observe a target-relative path before testing existence."""
+
+        return self.context.target_exists(relpath)
+
     def selected_target_paths(self, paths: list[Path], option: str) -> list[Path]:
         selected: list[Path] = []
         for path in paths:
@@ -1592,7 +1607,7 @@ class Validator:
     ) -> bool:
         module_relpath = ".ai/assistant/module-profile.md"
         module_path = self.target_path(module_relpath)
-        if not module_path.is_file():
+        if not self.is_target_file(module_path):
             return False
         declarations = self._parsed_module_profile().get(module_id, [])
         state = declarations[0] if declarations else ModuleProfileState(module_id, False, None)
@@ -1614,7 +1629,7 @@ class Validator:
         module_path = self.target_path(".ai/assistant/module-profile.md")
         self._module_profile_cache = (
             parse_module_profile(self.read_text(module_path))
-            if module_path.is_file()
+            if self.is_target_file(module_path)
             else {}
         )
         return self._module_profile_cache
@@ -1702,7 +1717,7 @@ class Validator:
             )
 
         profile_path = self.target_path(".ai/assistant/module-profile.md")
-        if not profile_path.is_file():
+        if not self.is_target_file(profile_path):
             return enabled
         for module_id, declarations in self._parsed_module_profile().items():
             if declarations and declarations[0].validation_enabled:
@@ -1711,7 +1726,7 @@ class Validator:
 
     def module_profile_states(self) -> dict[str, list[str]]:
         profile_path = self.target_path(".ai/assistant/module-profile.md")
-        if not profile_path.is_file():
+        if not self.is_target_file(profile_path):
             return {}
         return {
             module_id: [declaration.state or "missing" for declaration in declarations]
@@ -1827,17 +1842,17 @@ class Validator:
 
     def check_required_files(self, support_profile: str) -> None:
         for relpath in required_files_for_support_profile(support_profile):
-            if not self.target_path(relpath).exists():
+            if not self.target_exists(relpath):
                 self.error("REQUIRED_FILE_MISSING", "required adapter file is missing", relpath)
 
         framework_dir = self.target_path(".ai/framework")
-        if not framework_dir.is_dir():
+        if not self.is_target_dir(framework_dir):
             self.error(
                 "FRAMEWORK_DIR_MISSING",
                 "installed adapter has no .ai/framework directory",
                 ".ai/framework",
             )
-        elif not self.target_path(".ai/framework/rule-registry.json").is_file():
+        elif not self.is_target_file(".ai/framework/rule-registry.json"):
             self.error(
                 "RULE_REGISTRY_MISSING",
                 "installed framework copy has no rule-registry.json",
@@ -1846,7 +1861,7 @@ class Validator:
 
     def check_manifest(self) -> ManifestData | None:
         path = self.target_path(".ai/alatyr.yaml")
-        if not path.is_file():
+        if not self.is_target_file(path):
             return None
 
         manifest_source = self.context.text_source(path)
@@ -2019,7 +2034,7 @@ class Validator:
                     f".ai/alatyr.yaml:{scalar.line}",
                 )
                 continue
-            if not self.target_path(value).exists():
+            if not self.target_exists(value):
                 self.error(
                     "MANIFEST_PATH_MISSING",
                     f"{dotted(key)} points to missing path {value}",
@@ -2142,14 +2157,14 @@ class Validator:
                 )
             for filename in contract.get("framework_files", []):
                 relpath = f".ai/framework/{filename}"
-                if not self.target_path(relpath).is_file():
+                if not self.is_target_file(relpath):
                     self.error(
                         "CAPABILITY_FRAMEWORK_FILE_MISSING",
                         f"module {module_id} requires installed framework file {filename}",
                         relpath,
                     )
             for relpath in contract.get("target_files", []):
-                if not self.target_path(relpath).is_file():
+                if not self.is_target_file(relpath):
                     self.error(
                         "CAPABILITY_TARGET_FILE_MISSING",
                         f"module {module_id} requires target adapter file {relpath}",
@@ -2159,7 +2174,7 @@ class Validator:
     def check_bootstrap_index(self) -> None:
         relpath = BOOTSTRAP_PATH.as_posix()
         path = self.target_path(relpath)
-        if not path.is_file():
+        if not self.is_target_file(path):
             self.error(
                 "BOOTSTRAP_INDEX_MISSING",
                 "compact bootstrap index is missing",
@@ -2220,7 +2235,7 @@ class Validator:
     def check_agent_entry_packet(self) -> None:
         relpath = PACKET_PATH.as_posix()
         path = self.target_path(relpath)
-        if not path.is_file():
+        if not self.is_target_file(path):
             self.error(
                 "ENTRY_PACKET_MISSING",
                 "compact agent entry packet is missing",
@@ -2291,7 +2306,7 @@ class Validator:
         lazy = actual.get("lazy_human_fallbacks")
         help_reference = ".ai/assistant/help-reference.md"
         if (
-            self.target_path(help_reference).is_file()
+            self.is_target_file(help_reference)
             and (not isinstance(lazy, list) or help_reference not in lazy)
         ):
             self.warn(
@@ -2312,7 +2327,7 @@ class Validator:
     ) -> None:
         router_path = self.target_path(".ai/assistant/context-router.json")
         profiles_path = self.target_path(".ai/assistant/context-profiles.md")
-        if not router_path.is_file():
+        if not self.is_target_file(router_path):
             return
 
         router, router_error = self.context.read_json(router_path)
@@ -2433,9 +2448,9 @@ class Validator:
                     "target-migration-routing",
                     "migration_routing",
                 )
-            if not isinstance(migration, dict) and self.target_path(
+            if not isinstance(migration, dict) and self.is_target_file(
                 ".ai/assistant/context/migration-routing.json"
-            ).is_file():
+            ):
                 self.error(
                     "ROUTER_MIGRATION_MISSING",
                     "schema 2 through 11 router must define migration-first routing",
@@ -2564,9 +2579,9 @@ class Validator:
 
         if schema_version in {7, 8, 9, 10, 11}:
             knowledge_entry = router.get("project_knowledge_routing")
-            if not isinstance(knowledge_entry, dict) and self.target_path(
+            if not isinstance(knowledge_entry, dict) and self.is_target_file(
                 ".ai/assistant/context/project-knowledge-routing.json"
-            ).is_file():
+            ):
                 self.error(
                     "ROUTER_PROJECT_KNOWLEDGE_MISSING",
                     "schema 7 through 11 requires project_knowledge_routing",
@@ -2708,7 +2723,7 @@ class Validator:
                     ".ai/assistant/context-router.json",
                 )
 
-        if profiles_path.is_file():
+        if self.is_target_file(profiles_path):
             markdown_profiles = set(
                 re.findall(
                     r"^## Profile: `([^`]+)`",
@@ -2975,7 +2990,7 @@ class Validator:
     def check_action_authorization_contract(self) -> None:
         relpath = ".ai/assistant/policies/action-authorization.json"
         path = self.target_path(relpath)
-        if not path.is_file():
+        if not self.is_target_file(path):
             self.error(
                 "AUTHORIZATION_POLICY_MISSING",
                 "current-scope action authorization policy is missing",
@@ -3135,7 +3150,7 @@ class Validator:
         }
         for surface, snippets in required_surfaces.items():
             surface_path = self.target_path(surface)
-            if not surface_path.is_file():
+            if not self.is_target_file(surface_path):
                 self.error(
                     "AUTHORIZATION_SURFACE_MISSING",
                     "required action authorization surface is missing",
@@ -3154,7 +3169,7 @@ class Validator:
     def check_operation_catalog(self) -> None:
         relpath = ".ai/assistant/operation-catalog.json"
         path = self.target_path(relpath)
-        if not path.is_file():
+        if not self.is_target_file(path):
             self.error(
                 "OPERATION_CATALOG_MISSING",
                 "machine-readable operation catalog is missing",
@@ -3563,7 +3578,7 @@ class Validator:
             }
             for relpath in sorted(shared_surfaces | module_surfaces):
                 path = self.target_path(relpath)
-                if not path.is_file() or path.suffix.lower() not in {
+                if not self.is_target_file(path) or path.suffix.lower() not in {
                     ".md",
                     ".flow",
                     ".txt",
@@ -3608,7 +3623,7 @@ class Validator:
         validate_team_collaboration(self.capability_validation_context(), manifest)
 
     def load_json_object(self, path: Path, code_prefix: str) -> dict[str, Any] | None:
-        if not path.is_file():
+        if not self.is_target_file(path):
             return None
         data, error = self.context.read_json(path)
         if error is not None:
@@ -3627,10 +3642,10 @@ class Validator:
         if is_placeholder(value) or value in {"none", "not-applicable", "not applicable"}:
             return
         if value.startswith(".ai/framework/"):
-            if not self.target_path(value).is_file():
+            if not self.is_target_file(value):
                 self.warn("ROUTED_PATH_MISSING", f"{label} points to missing {value}", source)
             return
-        if value.startswith(".ai/") and not self.target_path(value).exists():
+        if value.startswith(".ai/") and not self.target_exists(value):
             self.warn("ROUTED_PATH_MISSING", f"{label} points to missing {value}", source)
 
     def check_allowed_actions(self, values: list[str], source: str, label: str) -> None:
@@ -3648,7 +3663,7 @@ class Validator:
         if is_placeholder(value):
             return
         if value == ".ai/framework":
-            if not self.target_path(".ai/framework").is_dir():
+            if not self.is_target_dir(".ai/framework"):
                 self.error(
                     "ROUTER_PATH_MISSING",
                     f"profiles.{profile}.{field} points to missing {value}",
@@ -3656,7 +3671,7 @@ class Validator:
                 )
             return
         if value.startswith(".ai/") or value in {"AGENTS.md", "AI_ASSISTANTS.md"}:
-            if not self.target_path(value).exists():
+            if not self.target_exists(value):
                 self.warn(
                     "ROUTER_PATH_MISSING",
                     f"profiles.{profile}.{field} points to missing {value}",
@@ -3710,7 +3725,7 @@ class Validator:
         files_to_check = ["AGENTS.md", *BRIDGE_FILES]
         for relpath in files_to_check:
             path = self.target_path(relpath)
-            if not path.is_file():
+            if not self.is_target_file(path):
                 continue
             text = self.read_text(path)
             if ".ai/assistant/bootstrap-index.json" not in text:
@@ -3734,7 +3749,7 @@ class Validator:
                 )
 
         gates = self.target_path(".ai/assistant/gates/checklist.md")
-        if gates.is_file() and ".ai/assistant/gates/index.json" not in self.read_text(gates):
+        if self.is_target_file(gates) and ".ai/assistant/gates/index.json" not in self.read_text(gates):
             self.error(
                 "GATE_CONTEXT_ROUTER_MISSING",
                 "complete gate checklist does not route through gates/index.json",
@@ -3742,7 +3757,7 @@ class Validator:
             )
 
         routing = self.target_path(".ai/assistant/flows/operation-routing.flow.md")
-        if routing.is_file():
+        if self.is_target_file(routing):
             text = self.read_text(routing)
             if "Load bootstrap context only" not in text:
                 self.warn(
@@ -3790,7 +3805,7 @@ class Validator:
             for scalar in manifest.scalars.values():
                 if isinstance(scalar.value, str) and scalar.value.startswith(".ai/"):
                     path = self.target_path(scalar.value)
-                    if path.is_file():
+                    if self.is_target_file(path):
                         relpaths.add(scalar.value)
         return [
             self.target_path(relpath)
@@ -3905,7 +3920,7 @@ class Validator:
             else "PLACEHOLDER_UNRESOLVED"
         )
         for path in paths:
-            if not path.is_file():
+            if not self.is_target_file(path):
                 continue
             text = self.read_text(path)
             for line_number, line in enumerate(text.splitlines(), start=1):
@@ -3952,13 +3967,13 @@ class Validator:
         roots = [self.target_path(".ai")]
         files = [self.target_path(relpath) for relpath in ["AGENTS.md", *BRIDGE_FILES]]
         for root in roots:
-            if not root.is_dir():
+            if not self.is_target_dir(root):
                 continue
             for path in root.rglob("*"):
-                if path.is_file() and not should_skip_path(path):
+                if self.is_target_file(path) and not should_skip_path(path):
                     files.append(path)
         self._scan_text_files_cache = tuple(
-            sorted({path for path in files if path.is_file()})
+            sorted({path for path in files if self.is_target_file(path)})
         )
         return list(self._scan_text_files_cache)
 
@@ -3969,10 +3984,10 @@ class Validator:
         checker_files: list[Path] = []
         for relroot in ["scripts", "tools", "bin", ".github/workflows"]:
             root = self.target_path(relroot)
-            if not root.exists():
+            if not self.target_exists(root):
                 continue
             for path in root.rglob("*"):
-                if not path.is_file():
+                if not self.is_target_file(path):
                     continue
                 name = path.name.lower()
                 rel = self.rel(path).lower()
@@ -3986,12 +4001,12 @@ class Validator:
             "tools/validate_target_adapter.py",
         ]:
             path = self.target_path(relpath)
-            if path.is_file():
+            if self.is_target_file(path):
                 checker_files.append(path)
 
         checker_commands: list[str] = []
         package_json = self.target_path("package.json")
-        if package_json.is_file():
+        if self.is_target_file(package_json):
             package, package_error = self.context.read_json(package_json)
             if package_error is not None:
                 package = {}
@@ -4204,7 +4219,7 @@ class Validator:
                         str(record),
                     )
                     continue
-                if not record.is_file():
+                if not self.is_target_file(record):
                     finding = self.error if self.enforce_approval_scope else self.warn
                     finding(
                         "APPROVAL_RECORD_MISSING",
@@ -4515,7 +4530,7 @@ class Validator:
                     )
                 else:
                     plan_path = self.target_path(plan_file)
-                    if not plan_path.is_file():
+                    if not self.is_target_file(plan_path):
                         self.warn(
                             "APPROVAL_PLAN_FILE_MISSING",
                             f"approved plan file is missing: {plan_file}",
@@ -4664,7 +4679,7 @@ class Validator:
                     current_snapshot_valid = False
                     continue
                 selected_file = self.target_path(str(selected_path))
-                if not selected_file.is_file():
+                if not self.is_target_file(selected_file):
                     finding = self.warn if historical_binding else self.error
                     finding(
                         f"{code_prefix}_SNAPSHOT_HISTORICAL" if historical_binding else f"{code_prefix}_SNAPSHOT_PATH",
@@ -4719,7 +4734,7 @@ class Validator:
         code_prefix: str,
     ) -> None:
         readme_path = self.target_path(readme_relpath)
-        if not readme_path.is_file():
+        if not self.is_target_file(readme_path):
             self.error(f"{code_prefix}_README_MISSING", "policy README is missing", readme_relpath)
             return
         text = self.read_text(readme_path)
@@ -4766,7 +4781,7 @@ class Validator:
     def check_change_package_index(self) -> None:
         relpath = ".ai/assistant/change-packages/index.json"
         path = self.target_path(relpath)
-        if not path.exists():
+        if not self.target_exists(path):
             return
         data, data_error = self.context.read_json(path)
         if data_error is not None:
@@ -4829,7 +4844,7 @@ class Validator:
                 seen.add(package_id)
             record = entry.get("record")
             if isinstance(record, str) and not is_placeholder(record):
-                if not is_target_relative_path(record) or not self.target_path(record).is_file():
+                if not is_target_relative_path(record) or not self.is_target_file(record):
                     self.error(
                         "PACKAGE_INDEX_RECORD_PATH",
                         f"records[{index}].record does not resolve inside target: {record}",
@@ -4848,7 +4863,7 @@ class Validator:
                     str(package),
                 )
                 continue
-            if not package.is_file():
+            if not self.is_target_file(package):
                 self.change_package_finding(
                     "PACKAGE_MISSING",
                     "selected change package does not exist",
@@ -4924,7 +4939,7 @@ class Validator:
                 )
                 return None
             path = self.target_path(relpath)
-            if not path.is_file():
+            if not self.is_target_file(path):
                 finding = self.warn if historical else self.change_package_finding
                 finding(
                     "PACKAGE_SNAPSHOT_HISTORICAL" if historical else "PACKAGE_SNAPSHOT_FILE",
@@ -4963,7 +4978,7 @@ class Validator:
 
         index_path = self.target_path(".ai/assistant/change-packages/index.json")
         indexed_records: set[str] = set()
-        if index_path.is_file():
+        if self.is_target_file(index_path):
             index_data, index_error = self.context.read_json(index_path)
             if index_error is not None:
                 index_data = {}
@@ -4983,7 +4998,7 @@ class Validator:
         engineering_index_path = self.target_path(
             ".ai/project/engineering-evidence/index.json"
         )
-        if engineering_index_path.is_file():
+        if self.is_target_file(engineering_index_path):
             engineering_index, engineering_error = self.context.read_json(
                 engineering_index_path
             )
@@ -5193,7 +5208,7 @@ class Validator:
                     )
                 else:
                     plan_path = self.target_path(plan_file)
-                    if not plan_path.is_file():
+                    if not self.is_target_file(plan_path):
                         self.change_package_finding(
                             "PACKAGE_PLAN_MISSING", f"plan file does not exist: {plan_file}", source
                         )
@@ -5564,7 +5579,7 @@ class Validator:
                 f"framework source directory missing: {source_framework}",
             )
             return
-        if not target_framework.is_dir():
+        if not self.is_target_dir(target_framework):
             return
 
         if manifest is None:
@@ -5678,7 +5693,7 @@ class Validator:
             target_names = {
                 path.relative_to(target_framework).as_posix()
                 for path in target_framework.rglob("*")
-                if path.is_file() and path.suffix in {".md", ".json"}
+                if self.is_target_file(path) and path.suffix in {".md", ".json"}
             }
             for name in sorted(expected_names - target_names):
                 self.framework_drift_detected = True
@@ -5696,7 +5711,7 @@ class Validator:
                 )
             for name, entry in sorted(expected.items()):
                 target_path = target_framework / name
-                if not target_path.is_file():
+                if not self.is_target_file(target_path):
                     continue
                 actual_digest = self.context.content_digest(target_path)
                 source_digest = source_expected_hashes.get(name)
@@ -5737,7 +5752,7 @@ class Validator:
         target_files = {
             path.relative_to(target_framework).as_posix(): path
             for path in target_framework.rglob("*")
-            if path.is_file() and path.suffix in {".md", ".json"}
+            if self.is_target_file(path) and path.suffix in {".md", ".json"}
         }
         for name in sorted(set(source_files) - set(target_files)):
             self.framework_drift_detected = True
@@ -6048,7 +6063,7 @@ def target_installation_state(
 
     context = context or ValidationContext(target)
     manifest_path = target / ".ai" / "alatyr.yaml"
-    if not manifest_path.is_file():
+    if not context.is_target_file(manifest_path):
         return "unverified"
     if manifest is None:
         try:

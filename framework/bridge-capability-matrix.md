@@ -225,8 +225,10 @@ marketing alone.
 Each bridge should:
 
 - preserve the compact bootstrap directly: load `AGENTS.md` exactly once
-  (host-preloaded when supported), then load the manifest, compact project map,
-  and context router
+  (host-preloaded when supported), then load only
+  `.ai/assistant/bootstrap-index.json` and resolve its semantic preload; keep
+  the manifest, compact project map, context router, and integrity sidecar for
+  recovery, audit, or routing-conflict work
 - point to the canonical root entry point
 - point to the compact operation index, canonical catalog, compact help, and
   operation routing

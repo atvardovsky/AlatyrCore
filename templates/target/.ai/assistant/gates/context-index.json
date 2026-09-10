@@ -104,8 +104,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 167,
-      "content_digest": "sha256:98e72208b952c3f5f9e932bec46de04cdc7545c6fc569c4c7aae658e16f1ad11"
+      "estimated_words": 191,
+      "content_digest": "sha256:bd8bbfb9622f3b24b2796047320465a53809a967b0345876d541e563b1581676"
     },
     {
       "id": "assistant.content.gates-debug-mode-md",

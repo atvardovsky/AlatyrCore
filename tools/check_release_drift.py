@@ -340,6 +340,24 @@ def release_checkpoint(
         raise RuntimeError(f"invalid release checkpoint {path.relative_to(ROOT)}: {exc}") from exc
     if not isinstance(data, dict):
         raise RuntimeError(f"release checkpoint {path.relative_to(ROOT)} must be an object")
+    if data.get("baseline_kind") == "historical-unverified-checkpoint":
+        expected = {
+            "framework_version": version,
+            "original_baseline_kind": "source-release-checkpoint",
+            "publication_status": "historical-unverified",
+        }
+        for field, value in expected.items():
+            if data.get(field) != value:
+                raise RuntimeError(
+                    f"historical checkpoint {path.relative_to(ROOT)} requires "
+                    f"{field}={value!r}"
+                )
+        reason = data.get("quarantine_reason")
+        if not isinstance(reason, str) or len(reason.strip()) < 40:
+            raise RuntimeError(
+                f"historical checkpoint {path.relative_to(ROOT)} needs a specific quarantine reason"
+            )
+        return None
     schema_version = data.get("schema_version")
     if schema_version not in {1, 2}:
         raise RuntimeError(
@@ -472,6 +490,15 @@ def release_checkpoint(
     )
 
 
+def audit_release_checkpoints() -> None:
+    """Validate every retained checkpoint or explicit historical quarantine."""
+
+    for path in sorted(RELEASE_BASELINE_DIR.glob("*.json")):
+        if not re.fullmatch(r"\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?\.json", path.name):
+            continue
+        release_checkpoint(path.stem)
+
+
 def _nearest_release_baseline(
     current_version: str, seen: set[str]
 ) -> tuple[ReleaseBaseline, list[str]]:
@@ -548,6 +575,8 @@ def main() -> int:
     schema_changed = False
     templates_changed = False
     try:
+        if args.mode == "release":
+            audit_release_checkpoints()
         baseline = resolve_baseline(args.mode, args.from_ref)
         paths = changed_paths(baseline.ref)
         framework_changed = any(

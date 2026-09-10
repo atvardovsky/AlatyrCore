@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 from target_adapter_validation.files import missing_target_files  # noqa: E402
+from target_adapter_validation.context import ValidationContext  # noqa: E402
 from target_adapter_validation.manifest_paths import (  # noqa: E402
     manifest_path_mismatches,
 )
@@ -23,6 +24,9 @@ class Host:
 
     def target_path(self, relpath: str) -> Path:
         return self.root / relpath
+
+    def is_target_file(self, relpath: str) -> bool:
+        return self.target_path(relpath).is_file()
 
 
 @dataclass(frozen=True)
@@ -103,6 +107,80 @@ class TargetAdapterHelperContractTests(unittest.TestCase):
 
         self.assertEqual(violations, [])
 
+    def test_target_validators_route_file_presence_through_coherent_view(self) -> None:
+        paths = [ROOT / "tools/validate_target_adapter.py"]
+        paths.extend(sorted((ROOT / "tools/target_adapter_validation").glob("*.py")))
+        violations: list[str] = []
+        source_owned_presence = {
+            ("validate_target_adapter.py", "run", "self.target", "exists"),
+            ("validate_target_adapter.py", "run", "self.target", "is_dir"),
+            (
+                "validate_target_adapter.py",
+                "check_framework_baseline",
+                "source_framework",
+                "is_dir",
+            ),
+            (
+                "validate_target_adapter.py",
+                "check_framework_baseline",
+                "path",
+                "is_file",
+            ),
+            (
+                "validate_target_adapter.py",
+                "check_migration_diff_evidence",
+                "self.migration_diff",
+                "is_file",
+            ),
+            (
+                "validate_target_adapter.py",
+                "load_validator_config",
+                "path",
+                "is_file",
+            ),
+            (
+                "framework_baseline.py",
+                "source_pack_projection",
+                "path",
+                "is_file",
+            ),
+        }
+
+        class PresenceVisitor(ast.NodeVisitor):
+            def __init__(self, path: Path, source: str) -> None:
+                self.path = path
+                self.source = source
+                self.functions: list[str] = []
+
+            def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
+                self.functions.append(node.name)
+                self.generic_visit(node)
+                self.functions.pop()
+
+            def visit_Call(self, node: ast.Call) -> None:
+                function = node.func
+                if isinstance(function, ast.Attribute) and function.attr in {
+                    "is_file",
+                    "is_dir",
+                    "exists",
+                }:
+                    receiver = ast.get_source_segment(self.source, function.value) or ""
+                    owner = self.functions[-1] if self.functions else "<module>"
+                    allowed = (self.path.name, owner, receiver, function.attr)
+                    context_implementation = self.path.name == "context.py"
+                    if not context_implementation and allowed not in source_owned_presence:
+                        violations.append(
+                            f"{self.path.relative_to(ROOT).as_posix()}:{node.lineno}: "
+                            f"{owner}:{receiver}.{function.attr}"
+                        )
+                self.generic_visit(node)
+
+        for path in paths:
+            source = path.read_text(encoding="utf-8")
+            PresenceVisitor(path, source).visit(ast.parse(source, filename=str(path)))
+
+        self.assertEqual(violations, [])
+
     def test_missing_target_files_reports_only_absent_files(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -119,6 +197,18 @@ class TargetAdapterHelperContractTests(unittest.TestCase):
                 ),
                 [".ai/assistant/missing.md"],
             )
+
+    def test_missing_target_files_uses_coherent_repository_observation(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            required = root / "required.txt"
+            required.write_text("present\n", encoding="utf-8")
+            context = ValidationContext(root)
+
+            self.assertEqual(missing_target_files(context, ["required.txt"]), [])
+            required.unlink()
+
+            self.assertEqual(len(context.finalize()), 1)
 
     def test_manifest_path_mismatches_returns_missing_and_wrong_scalars(self) -> None:
         manifest = Manifest(

@@ -97,9 +97,12 @@ Enforcement: required.
 Rule ID: `ALATYR-RISK-001`
 Source owner: `framework/change-risk-model.md`
 Installed owner: `.ai/framework/change-risk-model.md`
-Commitment: Classify changed facts, not only changed files, before choosing
-approval, validation, documentation, diagram, observable external failure
-distinctions, test-first recommendation, and evidence scope.
+Commitment: Classify changed facts, not only changed files, across every
+applicable risk category; assign the separate ordered severity low, moderate,
+high, or protected; never downgrade a framework-protected trigger; and use
+severity plus categories before choosing approval, validation, documentation,
+diagram, observable external failure distinctions, test-first recommendation,
+and evidence scope.
 Applies to: all changes.
 Enforcement: required.
 
@@ -151,13 +154,15 @@ Rule ID: `ALATYR-INTEGRITY-001`
 Source owner: `framework/logical-integrity.md`
 Installed owner: `.ai/framework/logical-integrity.md`
 Commitment: Name changed facts, re-derive testable invariants, reconcile
-related review items, identify owners and repair sets, validate, decide
-proportional durable engineering-evidence capture, and report residual risk,
-using support-state changes plus bounded accepted relationships or manual
-impact closure without treating hashes or inferred relationships as semantic
-proof, global multi-workstream convergence, active package scope, selected
-code-documentation profile and generator reconciliation, changed project term
-IDs and data links, and activated test-first evidence as applicable.
+related review items, identify owners and repair sets, validate, make a
+proportional final-evidence decision, apply durable Engineering Evidence policy
+only when that support is active, and report unavailable or skipped capture
+plus residual risk otherwise, using support-state changes plus bounded accepted
+relationships or manual impact closure without treating hashes or inferred
+relationships as semantic proof, global multi-workstream convergence, active
+package scope, selected code-documentation profile and generator
+reconciliation, changed project term IDs and data links, and activated
+test-first evidence as applicable.
 Applies to: semantic fact changes, drift reviews.
 Enforcement: required.
 
@@ -399,18 +404,21 @@ Enforcement: required.
 Rule ID: `ALATYR-MODULE-001`
 Source owner: `framework/module-profile.md`
 Installed owner: `.ai/framework/module-profile.md`
-Commitment: Establish the required core profile, including current-scope action
-authorization, proportional durable engineering evidence, and current support
-policy/state, before optional modules; separate directly selected capabilities,
-dependency-closed staged structure, and target-validated enabled state so
-scaffolding never implies activation; select a compatible framework pack;
-preserve existing target-owned shared surfaces for their declared adapter-aware
-merge strategy, retain shared output while producers or preservation policy
-require it, and record create/retain/merge/remove outcomes; rebuild optional
-relationship and generation indexes before support state; and enforce
-optional-module dependency, operation, rule, required-file,
-deterministic-check, manifest/profile state agreement, and module-gated
-validator closure before claiming a target module is enabled.
+Commitment: Establish the required kernel support profile before optional
+modules; add core, standard, or full behavior explicitly and map those support
+profiles to kernel, core, standard, or complete framework packs without
+treating pack breadth as activation; include current-scope action
+authorization, proportional final evidence, and current support policy/state in
+the kernel; separate directly selected capabilities, dependency-closed staged
+structure, and target-validated enabled state so scaffolding never implies
+activation; preserve existing target-owned shared surfaces for their declared
+adapter-aware merge strategy, retain shared output while producers or
+preservation policy require it, and record create/retain/merge/remove outcomes;
+rebuild optional relationship and generation indexes before bootstrap,
+recursive catalogs, and final support state; and enforce optional-module
+dependency, operation, rule, required-file, deterministic-check,
+manifest/profile state agreement, and module-gated validator closure before
+claiming a target module is enabled.
 Applies to: installation, framework update, adapter maturity, framework
 upgrades.
 Enforcement: required.

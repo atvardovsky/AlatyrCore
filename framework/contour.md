@@ -15,7 +15,7 @@ Framework core owns:
 - rule identifier and registry pattern
 - project/framework/adapter ownership separation
 - adapter owner, review cadence, and file-owner map pattern
-- required core profile and optional module profile pattern
+- required kernel, core, standard, and full support-profile pattern
 - optional scaffolding boundary
 - context discovery, missing-context, and source-of-truth decision pattern
 - source-of-truth registry pattern

@@ -326,7 +326,7 @@ class ConsistencyMapModule:
                         f"{label}.canonical_owner must be target-relative",
                         relpath,
                     )
-                elif not context.target_path(owner).exists():
+                elif not context.target_exists(owner):
                     context.warn(
                         "CONSISTENCY_MAP_OWNER_MISSING",
                         f"{label}.canonical_owner is missing: {owner}",
@@ -408,7 +408,7 @@ class ConsistencyMapModule:
 
         registry_relpath = ".ai/project/source-of-truth-registry.md"
         registry_path = context.target_path(registry_relpath)
-        if not registry_path.is_file():
+        if not context.is_target_file(registry_path):
             context.error(
                 "CONSISTENCY_MAP_REGISTRY_MISSING",
                 "enabled consistency map requires the human source-of-truth registry",

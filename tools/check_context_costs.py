@@ -95,6 +95,20 @@ def main() -> int:
             failures.append(f"task-scale overlay {name} exceeds the reserved target word budget")
         if overlay["missing_paths"]:
             failures.append(f"task-scale overlay {name} contains missing paths")
+    pairwise = report["pairwise_compositions"]
+    expected_pairs = len(report["profiles"]) * (
+        len(report["intent_overlays"]) + len(report["task_scale_overlays"])
+    )
+    if pairwise["evaluated_pairs"] != expected_pairs:
+        failures.append("pairwise context composition coverage is incomplete")
+    if pairwise["compact_pairs"] + pairwise["expansion_receipt_pairs"] != expected_pairs:
+        failures.append("pairwise context composition budget states are incomplete")
+    if pairwise["missing_path_pairs"]:
+        failures.append("pairwise context compositions contain missing paths")
+    if pairwise["unexpected_unresolved_reference_pairs"]:
+        failures.append("pairwise context compositions contain unresolved references")
+    if pairwise["max_words"] > max_total_words:
+        failures.append("a pairwise context composition exceeds the hard word budget")
     small_task = report["task_scale_overlays"].get("small-task")
     if not isinstance(small_task, dict):
         failures.append("small-task route is missing from task-scale overlays")

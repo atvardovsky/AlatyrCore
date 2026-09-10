@@ -42,12 +42,25 @@ Classify each changed fact, not only each changed file:
   assistant-native format, MCP/tool permission, output format, provenance, or
   third-party assistant infrastructure.
 
-One change may belong to multiple classes. Use the highest-risk applicable
-class for approval and evidence.
+One change may belong to multiple classes. Classes are categories, not an
+ordered severity scale. Record every applicable class, then assign one ordered
+risk severity:
+
+- `low`: local, reversible work with no accepted semantic contract change.
+- `moderate`: bounded semantic or tooling change with known owners and focused
+  validation.
+- `high`: cross-boundary, difficult-to-reverse, or materially uncertain work
+  that needs broader evidence and explicit risk reasoning.
+- `protected`: any framework or target approval trigger applies; modification
+  requires current-scope approval for the protected surfaces.
+
+Use severity plus all applicable classes to select approval and evidence.
+Framework-protected triggers always imply `protected`; a target may escalate
+severity but must not downgrade a framework-protected change.
 
 ## Required Reasoning By Risk
 
-For each risk class, decide:
+For each risk class and the selected severity, decide:
 
 - source of truth
 - affected contracts

@@ -192,9 +192,14 @@ class MinimumWorkPlanTests(unittest.TestCase):
         self.assertEqual(plan["task_class"], "small-task")
         self.assertEqual(plan["effective_profile"], "fast")
         self.assertEqual(plan["check_plan"]["selected_check_ids"], ["docs"])
-        self.assertIn(
-            "docs/framework-maintenance.md",
-            plan["context_packet"]["required_context"],
+        self.assertEqual(plan["context_packet"]["required_context"], [])
+        self.assertEqual(
+            plan["context_packet"]["context_budget"]["planned_required_words"],
+            0,
+        )
+        self.assertLessEqual(
+            plan["context_packet"]["context_budget"]["planned_initial_words"],
+            plan["context_packet"]["context_budget"]["max_initial_words"],
         )
         self.assertEqual(
             plan["context_packet"]["selectors"]["changed_paths"],

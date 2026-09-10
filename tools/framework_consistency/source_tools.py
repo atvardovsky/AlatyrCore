@@ -200,6 +200,46 @@ def check_rule_registry_contract(context: CheckContext) -> list[str]:
                 f"{missing_owner_rule_id}"
             )
 
+    module_profile = " ".join(
+        context.read_text("framework/module-profile.md").split()
+    )
+    for required_text in [
+        "four ordered support profiles",
+        "`kernel`: the minimum safe adapter contract",
+        "`core`: kernel plus durable engineering evidence",
+        "`standard`: core plus common blueprint",
+        "`full`: standard plus the complete portable framework pack",
+        "`full` support profile maps to the `complete` framework pack",
+        "A broader pack does not activate a broader support profile",
+    ]:
+        if required_text not in module_profile:
+            failures.append(f"framework/module-profile.md missing {required_text}")
+
+    risk_model = " ".join(
+        context.read_text("framework/change-risk-model.md").split()
+    )
+    for required_text in [
+        "Classes are categories, not an ordered severity scale.",
+        "`low`:",
+        "`moderate`:",
+        "`high`:",
+        "`protected`:",
+        "must not downgrade a framework-protected change",
+    ]:
+        if required_text not in risk_model:
+            failures.append(f"framework/change-risk-model.md missing {required_text}")
+
+    context_profiles = " ".join(
+        context.read_text("framework/context-profiles.md").split()
+    )
+    for required_text in [
+        "Recursive catalog selectors such as `path_terms`",
+        "do not independently authorize or load a catalog branch",
+        "conditional context path and load condition as `selected` or `omitted`",
+    ]:
+        if required_text not in context_profiles:
+            failures.append(f"framework/context-profiles.md missing {required_text}")
+
     return failures
 
 
@@ -401,6 +441,43 @@ def check_core_source_tools(context: CheckContext) -> list[str]:
 
 def check_context_source_tools(context: CheckContext) -> list[str]:
     failures: list[str] = []
+    context_profiles = context.read_text("framework/context-profiles.md")
+    context_router = context.read_text("framework/context-router.md")
+    bridge_matrix = context.read_text("framework/bridge-capability-matrix.md")
+    ordered_artifacts = [
+        "bootstrap index",
+        "bootstrap integrity sidecar",
+        "recursive project and assistant context catalogs",
+        "support state",
+    ]
+    for relpath, text, anchor in [
+        (
+            "framework/context-profiles.md",
+            context_profiles,
+            "Rebuild generated surfaces in this canonical order:",
+        ),
+        (
+            "framework/context-router.md",
+            context_router,
+            "rebuild in canonical order:",
+        ),
+    ]:
+        section = (
+            " ".join(text[text.find(anchor) :].split()) if anchor in text else ""
+        )
+        positions = [section.find(marker) for marker in ordered_artifacts]
+        if any(position < 0 for position in positions) or positions != sorted(positions):
+            failures.append(f"{relpath} has inconsistent generated-artifact order")
+    for required_bootstrap_text in [
+        "load only",
+        ".ai/assistant/bootstrap-index.json",
+        "recovery, audit, or routing-conflict",
+    ]:
+        if required_bootstrap_text not in bridge_matrix:
+            failures.append(
+                "framework/bridge-capability-matrix.md missing compact bootstrap "
+                f"contract: {required_bootstrap_text}"
+            )
     for relpath in [
         "tools/README.md",
         "docs/framework-maintenance.md",

@@ -103,7 +103,7 @@ def validate_task_decomposition(validator: Any, manifest: Any) -> None:
             ".ai/assistant/task-decomposition.json",
         ],
     )
-    if self.target_path(OPERATION_COMPLETION_RELPATH).is_file():
+    if self.is_target_file(OPERATION_COMPLETION_RELPATH):
         completion = self.load_json_object(
             self.target_path(OPERATION_COMPLETION_RELPATH),
             "OPERATION_COMPLETION_EVIDENCE",
@@ -127,7 +127,7 @@ def validate_task_decomposition(validator: Any, manifest: Any) -> None:
         required=False,
     )
 
-    if self.target_path(DELEGATION_POLICY_RELPATH).is_file():
+    if self.is_target_file(DELEGATION_POLICY_RELPATH):
         _validate_delegation_composition(self)
 
 
@@ -369,7 +369,7 @@ def _require_template_text(
     required: bool = True,
 ) -> None:
     path = self.target_path(relpath)
-    if not path.is_file():
+    if not self.is_target_file(path):
         if required:
             self.error(
                 "TASK_DECOMPOSITION_REQUIRED_FILE_MISSING",

@@ -49,6 +49,30 @@ class SourceUnitTestSelectionTests(unittest.TestCase):
                 focused_test_paths(["tools/new_tool.py"], root=root)
             )
 
+    def test_central_json_contract_selects_its_mapped_tests(self) -> None:
+        selected = focused_test_paths(
+            ["tools/source_context_router.json"], root=ROOT
+        )
+
+        self.assertEqual(
+            selected,
+            [
+                ROOT / "tests/test_plan_minimum_work.py",
+                ROOT / "tests/test_task_classification_contract.py",
+            ],
+        )
+
+    def test_unknown_tool_json_falls_back_to_full_suite(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "tools").mkdir()
+            (root / "tests").mkdir()
+            (root / "tools/new_contract.json").write_text("{}\n", encoding="utf-8")
+
+            self.assertIsNone(
+                focused_test_paths(["tools/new_contract.json"], root=root)
+            )
+
     def test_tool_change_selects_importing_tests(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

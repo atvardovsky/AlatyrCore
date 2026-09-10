@@ -423,7 +423,7 @@
       "command": [
         "tools/check_debug_mode.py"
       ],
-      "duration_hint_seconds": 6,
+      "duration_hint_seconds": 15,
       "profiles": [
         "fast",
         "full"
@@ -683,7 +683,8 @@
         "tools/render_assistant_capability_index.py"
       ],
       "contract_inputs": [
-        "docs/assistant-compatibility.md",
+        "conformance/runs/assistant-surfaces.json",
+        "templates/target/.ai/assistant/assistant-capabilities/*.json",
         "templates/target/.ai/assistant/assistant-capabilities.json"
       ],
       "implementation_paths": [
@@ -691,7 +692,8 @@
         "tools/target_adapter_validation/**"
       ],
       "trigger_paths": [
-        "docs/assistant-compatibility.md",
+        "conformance/runs/assistant-surfaces.json",
+        "templates/target/.ai/assistant/assistant-capabilities/*.json",
         "templates/target/.ai/assistant/assistant-capabilities.json",
         "tools/render_assistant_capability_index.py",
         "tools/target_adapter_validation/**"
@@ -1253,7 +1255,7 @@
       "command": [
         "tools/check_cross_platform_tools.py"
       ],
-      "duration_hint_seconds": 5,
+      "duration_hint_seconds": 22,
       "profiles": [
         "full",
         "platform"
@@ -1987,7 +1989,7 @@
       "command": [
         "tools/check_target_adapter_validator.py"
       ],
-      "duration_hint_seconds": 3,
+      "duration_hint_seconds": 11,
       "trigger_paths": [
         "templates/target/**",
         "templates/target/.ai/alatyr.yaml",
@@ -2103,10 +2105,14 @@
       "command": [
         "tools/check_bridge_templates.py"
       ],
+      "depends_on": [
+        "render-bridge-templates"
+      ],
       "contract_inputs": [
         "templates/target/.cursor*/**",
         "templates/target/.github/**",
         "templates/target/AI_ASSISTANTS.md",
+        "templates/target/.ai/assistant/bridge-capability-matrix.md",
         "tools/bridge_template_manifest.json"
       ],
       "implementation_paths": [
@@ -2117,6 +2123,7 @@
         "templates/target/.cursor*/**",
         "templates/target/.github/**",
         "templates/target/AI_ASSISTANTS.md",
+        "templates/target/.ai/assistant/bridge-capability-matrix.md",
         "tools/bridge_template_manifest.json",
         "tools/check_bridge_templates.py",
         "tools/render_bridge_templates.py"
@@ -2127,12 +2134,10 @@
       "command": [
         "tools/render_bridge_templates.py"
       ],
-      "depends_on": [
-        "bridge-templates"
-      ],
       "contract_inputs": [
         "templates/target/.cursor*/**",
-        "templates/target/AI_ASSISTANTS.md"
+        "templates/target/AI_ASSISTANTS.md",
+        "tools/bridge_template_manifest.json"
       ],
       "implementation_paths": [
         "tools/render_bridge_templates.py"
@@ -2140,6 +2145,7 @@
       "trigger_paths": [
         "templates/target/.cursor*/**",
         "templates/target/AI_ASSISTANTS.md",
+        "tools/bridge_template_manifest.json",
         "tools/render_bridge_templates.py"
       ]
     },
@@ -2300,7 +2306,7 @@
       ],
       "resource_class": "heavy",
       "child_capacity_max": 4,
-      "duration_hint_seconds": 7,
+      "duration_hint_seconds": 56,
       "timeout_seconds": 300,
       "depends_on": [
         "scaffold-profiles",
@@ -2336,7 +2342,7 @@
       ],
       "resource_class": "heavy",
       "child_capacity_max": 4,
-      "duration_hint_seconds": 18,
+      "duration_hint_seconds": 38,
       "timeout_seconds": 420,
       "profiles": [
         "full"
@@ -2702,7 +2708,7 @@
       ],
       "resource_class": "heavy",
       "child_capacity_max": 4,
-      "duration_hint_seconds": 15,
+      "duration_hint_seconds": 59,
       "timeout_seconds": 300
     },
     {

@@ -338,7 +338,7 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
     engineering_evidence_entries: dict[str, list[dict[str, Any]]] = {}
     engineering_index_relpath = ".ai/project/engineering-evidence/index.json"
     engineering_index_path = self.target_path(engineering_index_relpath)
-    if engineering_index_path.is_file():
+    if self.is_target_file(engineering_index_path):
         engineering_index, engineering_index_error = self.context.read_json(
             engineering_index_path
         )
@@ -361,7 +361,7 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
     project_knowledge_index_path = self.target_path(
         ".ai/project/knowledge/index.json"
     )
-    if project_knowledge_index_path.is_file():
+    if self.is_target_file(project_knowledge_index_path):
         project_knowledge_index, knowledge_index_error = self.context.read_json(
             project_knowledge_index_path
         )
@@ -393,7 +393,7 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
     registry_relpath = ".ai/project/source-of-truth-registry.md"
     registry_path = self.target_path(registry_relpath)
     registry_entries_by_fact_type: dict[str, list[RegistryFactEntry]] = {}
-    if registry_path.is_file():
+    if self.is_target_file(registry_path):
         for registry_entry in parse_registry_fact_entries(
             self.read_text(registry_path)
         ):
@@ -1530,7 +1530,7 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
                     )
                 if disposition == "existing-canonical-owner" and not any(
                     is_target_relative_path(reference)
-                    and self.target_path(reference).is_file()
+                    and self.is_target_file(reference)
                     for reference in references
                 ):
                     self.error(
@@ -1776,7 +1776,7 @@ def validate_debug_mode(self: DomainValidationHost, manifest: ManifestData | Non
                             f"{canonical_source!r} is not registered as an owner for fact type {fact_type!r}",
                             record_ref,
                         )
-                    if not is_target_relative_path(canonical_source) or not self.target_path(canonical_source).is_file():
+                    if not is_target_relative_path(canonical_source) or not self.is_target_file(canonical_source):
                         self.error(
                             "DEBUG_MODE_PRESERVATION_SOURCE",
                             f"canonical preservation source must be an existing target file: {canonical_source}",

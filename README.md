@@ -43,6 +43,28 @@ The agent still has to inspect the routed sources and report uncertainty.
 AlatyrCore gives the discussion a project-owned memory and source-of-truth
 map; it does not make unsupported answers authoritative.
 
+## Start Here
+
+Choose the path that matches what you are doing:
+
+- **Understand the idea:** read
+  [What is AlatyrCore?](docs/human/what-is-alatyr.md).
+- **Evaluate the workflow:** follow the
+  [documentation walkthrough](docs/human/quick-demo.md) and review the
+  [current limitations](#current-maturity-and-limitations).
+- **Install it in a project:** give this repository and the target repository
+  to a capable AI coding assistant, then use the
+  [installation request template](installer/assistant-request-template.md).
+- **Guide an AI assistant:** start at
+  [AI_ASSISTANTS.md](AI_ASSISTANTS.md).
+- **Contribute to AlatyrCore:** read [AGENTS.md](AGENTS.md) and the
+  [framework maintenance guide](docs/framework-maintenance.md).
+
+Installation is assistant-driven because the adapter must be derived from the
+target repository, not copied as generic project facts. The assistant inspects
+the target, prepares an installation plan, preserves existing instructions,
+and asks for approval before protected changes.
+
 ## What AlatyrCore Is
 
 AlatyrCore is not another coding agent. It is a repository-owned framework and
@@ -205,7 +227,7 @@ records. Structural checks can detect contract drift, but they cannot guarantee
 semantic correctness or that every assistant client loaded and followed the
 same instructions.
 
-## See It In Action
+## Illustrative Conversations
 
 The following conversations are illustrative. Angle-bracketed sources describe
 target-project evidence; they are not paths or facts from this repository.
@@ -312,28 +334,6 @@ releases. The project sources behind an Alatyr route can additionally identify
 where that rule is owned, which branches and versions it covers, why it exists,
 which exceptions require approval, what validation demonstrates compliance,
 and whether its owner has changed since the rule was reviewed.
-
-## Start Here
-
-Choose the path that matches what you are doing:
-
-- **Understand the idea:** read
-  [What is AlatyrCore?](docs/human/what-is-alatyr.md).
-- **Evaluate the workflow:** follow the
-  [quick demonstration](docs/human/quick-demo.md) and review the
-  [current limitations](#current-maturity-and-limitations).
-- **Install it in a project:** give this repository and the target repository
-  to a capable AI coding assistant, then use the
-  [installation request template](installer/assistant-request-template.md).
-- **Guide an AI assistant:** start at
-  [AI_ASSISTANTS.md](AI_ASSISTANTS.md).
-- **Contribute to AlatyrCore:** read [AGENTS.md](AGENTS.md) and the
-  [framework maintenance guide](docs/framework-maintenance.md).
-
-Installation is assistant-driven because the adapter must be derived from the
-target repository, not copied as generic project facts. The assistant inspects
-the target, prepares an installation plan, preserves existing instructions,
-and asks for approval before protected changes.
 
 ## Who It Is For
 
@@ -518,11 +518,6 @@ copying every optional target surface. Scaffolded optional capabilities remain
 `staged` until target facts are resolved and their capability checks pass;
 selection does not silently activate them.
 
-To our knowledge, AlatyrCore is among the first publicly documented AI
-engineering frameworks whose primary installation model is repository-aware
-adaptation performed by an AI assistant rather than blind application of a
-universal installer.
-
 ## After Installation
 
 Developers continue using their supported assistant in natural language:
@@ -579,7 +574,7 @@ window. See the [bridge capability matrix](framework/bridge-capability-matrix.md
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.62`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.63`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural

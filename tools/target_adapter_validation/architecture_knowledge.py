@@ -59,7 +59,7 @@ def validate_architecture_knowledge(
     ]
     missing_required = False
     for relpath in required_paths:
-        if not context.target_path(relpath).is_file():
+        if not context.is_target_file(relpath):
             missing_required = True
             context.error(
                 "ARCHITECTURE_REQUIRED_FILE_MISSING",

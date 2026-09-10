@@ -24,6 +24,8 @@ class FindingSink(Protocol):
 
     def target_path(self, relpath: str) -> Path: ...
 
+    def is_target_file(self, path: str | Path) -> bool: ...
+
     def read_text(self, path: Path) -> str: ...
 
 
@@ -119,7 +121,7 @@ def validate_installed_costs(
                 )
                 continue
             path = sink.target_path(reference)
-            if not path.is_file():
+            if not sink.is_target_file(path):
                 sink.warn(
                     "ROUTER_CONTEXT_PATH_MISSING",
                     f"{label} cannot measure missing context {reference}",
@@ -221,7 +223,7 @@ def validate_installed_costs(
     consistency_contract: dict[str, Any] = {}
     if isinstance(consistency_reference, str) and consistency_reference:
         consistency_path = sink.target_path(consistency_reference)
-        if consistency_path.is_file():
+        if sink.is_target_file(consistency_path):
             try:
                 loaded = json.loads(sink.read_text(consistency_path))
             except json.JSONDecodeError:

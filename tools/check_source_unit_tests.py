@@ -27,6 +27,22 @@ CRITICAL_UNIT_SELECTION_PATHS = {
     "tools/source_state.py",
 }
 
+CENTRAL_DATA_TESTS = {
+    "tools/check_manifest.json": (
+        "tests/test_check_manifest_contract.py",
+        "tests/test_source_check_manifest.py",
+        "tests/test_check_all.py",
+    ),
+    "tools/source_context_router.json": (
+        "tests/test_plan_minimum_work.py",
+        "tests/test_task_classification_contract.py",
+    ),
+    "tools/source_worker_policy.json": (
+        "tests/test_source_worker_contract.py",
+        "tests/test_plan_minimum_work.py",
+    ),
+}
+
 DEFAULT_SHARD_MULTIPLIER = 4
 MIN_SHARD_MULTIPLIER = 2
 MAX_SHARD_MULTIPLIER = 4
@@ -92,6 +108,13 @@ def focused_test_paths(changed_paths: list[str], *, root: Path = ROOT) -> list[P
         if relpath in CRITICAL_UNIT_SELECTION_PATHS:
             requires_full = True
             continue
+        if relpath in CENTRAL_DATA_TESTS:
+            mapped = [root / test for test in CENTRAL_DATA_TESTS[relpath]]
+            if all(test.is_file() for test in mapped):
+                selected.update(mapped)
+            else:
+                requires_full = True
+            continue
         if relpath.startswith("tests/"):
             if path.name.startswith("test_") and path.suffix == ".py":
                 test_path = root / path
@@ -112,6 +135,11 @@ def focused_test_paths(changed_paths: list[str], *, root: Path = ROOT) -> list[P
             direct_test = root / "tests" / f"test_{direct_name}.py"
             if direct_test.is_file():
                 selected.add(direct_test)
+            continue
+        if relpath.startswith("tools/") and path.suffix == ".json":
+            # Central tool data is executable policy. Unknown contracts fail
+            # closed to the full suite instead of silently selecting no tests.
+            requires_full = True
             continue
         if relpath.endswith(".py"):
             requires_full = True

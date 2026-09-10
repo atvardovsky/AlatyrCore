@@ -32,7 +32,7 @@ def validate_dependency_knowledge(
     ]
     missing = False
     for relpath in required_paths:
-        if not context.target_path(relpath).is_file():
+        if not context.is_target_file(relpath):
             missing = True
             context.error(
                 "DEPENDENCY_KNOWLEDGE_REQUIRED_FILE_MISSING",
@@ -111,7 +111,7 @@ def validate_dependency_knowledge(
                 value = source.get(field)
                 if resolved(value) and not is_target_relative_path(value):
                     context.error("DEPENDENCY_KNOWLEDGE_SOURCE_PATH", f"package_sources[{index}].{field} must be target-relative", policy_relpath)
-                elif resolved(value) and not context.target_path(value).is_file():
+                elif resolved(value) and not context.is_target_file(value):
                     context.error("DEPENDENCY_KNOWLEDGE_SOURCE_MISSING", f"package_sources[{index}].{field} does not exist", policy_relpath)
     discovery = policy.get("discovery")
     expected_discovery = {

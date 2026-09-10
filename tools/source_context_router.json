@@ -4,8 +4,7 @@
   "canonical_rule": "ALATYR-CONTEXT-001",
   "preloaded_context": ["AGENTS.md"],
   "bootstrap_context": [
-    "tools/source_context_router.json",
-    "framework/semantics/index.json"
+    "tools/source_context_router.json"
   ],
   "recursive_context": {
     "schema_version": 1,
@@ -16,6 +15,7 @@
   "semantic_codebook": {
     "schema_version": 2,
     "index": "framework/semantics/index.json",
+    "load_mode": "lazy-before-first-compact-semantic-reference",
     "preload_terms": [
       "alatyr:current-scope-authorization@1",
       "alatyr:canonical-owner@1",
@@ -30,6 +30,13 @@
     "bootstrap_max_words": 2100,
     "minimum_headroom_words": 100,
     "on_exceed": "stop and repair or report routing drift"
+  },
+  "rule_dependency_loading": {
+    "default": "conditional-reference",
+    "meaning": "alatyr_doc depends_on identifies a reasoning prerequisite, not automatic whole-document preload",
+    "select_when": "the chosen rule decision depends on the prerequisite, evidence conflicts, or a named boundary is crossed",
+    "packet_evidence": "record selected and omitted dependency rule IDs with reasons",
+    "fail_closed": "load the selected dependency owner when applicability cannot be decided from compact metadata"
   },
   "task_classification": {
     "schema_version": 1,
@@ -100,51 +107,74 @@
   },
   "profiles": {
     "docs-local": {
-      "required_context": ["docs/framework-maintenance.md"],
-      "conditional_context": ["edited file", "directly linked neighbor"],
+      "required_context": [],
+      "conditional_context": [
+        "edited file",
+        "directly linked neighbor",
+        "selected docs/framework-maintenance.md section when acceptance or lifecycle routing is ambiguous"
+      ],
+      "context_budget": {
+        "max_required_files": 0,
+        "max_required_words": 0,
+        "max_initial_words": 2200
+      },
       "check_profile": "fast",
       "checks": ["markdown-links", "framework-consistency"]
     },
     "framework-rule": {
       "required_context": [
         "framework/context-index.json",
-        "framework/rule-registry.json",
-        "framework/rule-ownership.md",
         "framework/semantics/index.json"
       ],
       "conditional_context": [
+        "selected framework/rule-registry.json entry by exact rule ID",
         "canonical owner selected by rule ID",
-        "owner dependency selected from alatyr_doc metadata",
+        "dependency owner selected under rule_dependency_loading",
         "affected installer or target template surface"
       ],
+      "context_budget": {
+        "max_required_files": 2,
+        "max_required_words": 700,
+        "max_initial_words": 2900
+      },
       "check_profile": "fast",
       "checks": ["framework-metadata", "rule-ownership", "framework-consistency"]
     },
     "installer-template": {
       "required_context": [
-        "installer/context-router.json",
-        "INSTALL.md",
-        "installer/assistant-installation.flow.md"
+        "installer/context-router.json"
       ],
       "conditional_context": [
+        "selected installer stage required_context",
+        "INSTALL.md section selected for public installation behavior",
+        "installer/assistant-installation.flow.md section selected for execution behavior",
         "affected readiness or plan section",
         "selected target template",
         "owning framework rule"
       ],
+      "context_budget": {
+        "max_required_files": 1,
+        "max_required_words": 900,
+        "max_initial_words": 3000
+      },
       "check_profile": "fast",
       "checks": ["source-context-routing", "scaffold-profiles", "framework-consistency"]
     },
     "source-tooling": {
-      "required_context": [
-        "tools/check_manifest.json",
-        "docs/source-architecture.md"
-      ],
+      "required_context": [],
       "conditional_context": [
         "tool being changed",
         "contract validated by the tool",
+        "selected tools/check_manifest.json entry by exact check ID",
+        "selected docs/source-architecture.md section for affected component",
         "selected tools/README.md section for CLI usage",
         "docs/framework-maintenance.md for ambiguous acceptance or lifecycle routing"
       ],
+      "context_budget": {
+        "max_required_files": 0,
+        "max_required_words": 0,
+        "max_initial_words": 2200
+      },
       "check_profile": "fast",
       "check_selection": "select fast changed-path checks by trigger_paths",
       "checks": ["check-manifest", "support-costs", "source-unit-tests", "framework-consistency"]
@@ -154,32 +184,43 @@
         "VERSION",
         "ADAPTER_SCHEMA_VERSION",
         "TEMPLATE_VERSION",
-        "docs/release-process.md",
-        "framework/lifecycle.md",
-        "framework/migration-diff.md"
+        "docs/release-process.md"
       ],
       "conditional_context": [
+        "framework/lifecycle.md section selected by release phase",
+        "framework/migration-diff.md when a migration or compatibility boundary applies",
         "CHANGELOG.md Unreleased and latest version sections",
         "release migration report",
         "changed rule owners and templates"
       ],
+      "context_budget": {
+        "max_required_files": 4,
+        "max_required_words": 1200,
+        "max_initial_words": 3400
+      },
       "check_profile": "full",
       "additional_check_profiles": ["release"],
       "checks": ["versioning", "release-drift-release", "migration-diff-report"]
     },
     "ai-infrastructure-bridge": {
       "required_context": [
-        "AI_ASSISTANTS.md",
-        "docs/assistant-compatibility.md",
-        "framework/bridge-capability-matrix.md",
-        "framework/ai-infrastructure-routing.md"
+        "conformance/runs/assistant-surfaces.json",
+        "templates/target/.ai/assistant/assistant-capabilities.json"
       ],
       "conditional_context": [
+        "selected AI_ASSISTANTS.md section for source entry behavior",
+        "selected assistant compatibility or bridge capability record",
+        "framework/ai-infrastructure-routing.md for item routing changes",
         "selected skill prompt gate tool MCP bridge or wrapper",
         "assistant surface admission audit and capability schema when support changes",
         "import policy when an external source is involved",
         "operation help when routing changes"
       ],
+      "context_budget": {
+        "max_required_files": 2,
+        "max_required_words": 600,
+        "max_initial_words": 2800
+      },
       "check_profile": "full",
       "checks": [
         "assistant-surface-conformance",
@@ -190,18 +231,23 @@
     },
     "repository-audit": {
       "required_context": [
-        "tools/check_manifest.json",
-        "docs/framework-maintenance.md",
-        "docs/source-architecture.md",
         "docs/source-worker-strategy.md",
         "tools/source_worker_policy.json"
       ],
       "conditional_context": [
+        "selected tools/check_manifest.json entries by audit workstream or failed check ID",
+        "selected docs/framework-maintenance.md acceptance section",
+        "selected docs/source-architecture.md component section",
         "bounded context listed by each selected audit workstream",
         "canonical owners selected by failed check IDs",
         "affected installer or target template surfaces",
         "release context only when release checks fail"
       ],
+      "context_budget": {
+        "max_required_files": 2,
+        "max_required_words": 1900,
+        "max_initial_words": 4000
+      },
       "check_profile": "full",
       "decomposition": {
         "required": true,

@@ -18,7 +18,7 @@ def validate_development_evidence(
     scalar = manifest.scalars.get(key) if manifest else None
     relpath = scalar.value if scalar else ".ai/project/development-evidence.json"
     path = context.target_path(relpath)
-    if not path.is_file():
+    if not context.is_target_file(path):
         context.warn(
             "DEVELOPMENT_EVIDENCE_MISSING",
             "target has no compact development evidence index; recurring request "

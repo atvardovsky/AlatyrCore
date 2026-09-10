@@ -14,9 +14,9 @@
     "target_manifest_digest": "sha256:9638c007103df85d9e1b0bd66cf35c2dec3ad3a41bb7d555758eaabdb204284b",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.60",
-    "adapter_schema_version": "50",
-    "template_version": "55"
+    "framework_version": "0.1.0-alpha.63",
+    "adapter_schema_version": "52",
+    "template_version": "58"
   },
   "derived_from": {
     "manifest": {
@@ -33,15 +33,15 @@
     },
     "semantic_codebook": {
       "path": ".ai/framework/semantics/index.json",
-      "sha256": "dc389cc7754a07cf4aa83754081a7d26ca5720e7d683c7d1e55150e4654e80a5"
+      "sha256": "49f3541b045c22096bcd64f90da046c9ff678c6e77004c04547ff4c6c27ca1bd"
     },
     "rule_registry": {
       "path": ".ai/framework/rule-registry.json",
-      "sha256": "72d54f0efb43fd0c3db5212a2e9b0c40e62224d32abc9d7988ea4c019bfe5671"
+      "sha256": "2087a63470798462dcff6e6bb6d2324c1476efee15a44d4fe8a2f43906936ab5"
     }
   },
   "rule_selector": {
-    "registry_sha256": "72d54f0efb43fd0c3db5212a2e9b0c40e62224d32abc9d7988ea4c019bfe5671",
+    "registry_sha256": "2087a63470798462dcff6e6bb6d2324c1476efee15a44d4fe8a2f43906936ab5",
     "categories": {
       "CONTEXT": {
         "owner": ".ai/framework/context-profiles.md",

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 from target_adapter_validation.capability import (
@@ -13,6 +14,12 @@ from target_validation_support import (
     is_placeholder,
     is_unresolved_value,
 )
+
+
+def _any_target_path_exists(
+    context: CapabilityValidationContext, paths: tuple[Path, ...]
+) -> bool:
+    return any(context.target_exists(path) for path in paths)
 
 
 def validate_team_collaboration(
@@ -79,23 +86,23 @@ def validate_team_collaboration(
     tasks_path = context.target_path(tasks_relpath)
     local_identity_path = context.target_path(local_identity_relpath)
 
-    if not policy_path.exists() and not model_path.exists() and not registry_path.exists():
+    if not _any_target_path_exists(context, (policy_path, model_path, registry_path)):
         return
-    if not policy_path.is_file():
+    if not context.is_target_file(policy_path):
         context.error(
             "TEAM_POLICY_MISSING",
             "team collaboration exists without its structured target policy",
             policy_relpath,
         )
         return
-    if not model_path.is_file():
+    if not context.is_target_file(model_path):
         context.error(
             "TEAM_OPERATING_MODEL_MISSING",
             "team work registry exists without its target-owned operating model",
             model_relpath,
         )
         return
-    if not registry_path.is_file():
+    if not context.is_target_file(registry_path):
         context.error(
             "TEAM_REGISTRY_MISSING",
             "team operating model exists without its machine-readable work registry",
@@ -117,7 +124,7 @@ def validate_team_collaboration(
             "team collaboration requires a backend capability contract",
         ),
     ]:
-        if not path.is_file():
+        if not context.is_target_file(path):
             context.error(code, message, relpath)
             return
 
@@ -399,7 +406,7 @@ def validate_team_collaboration(
         if isinstance(legacy_tasks, list):
             tasks = legacy_tasks
             task_sources = [registry_relpath] * len(tasks)
-    elif tasks_path.is_dir():
+    elif context.is_target_dir(tasks_path):
         for task_path in sorted(tasks_path.glob("*.json")):
             task_record = context.load_json_object(task_path, "TEAM_TASK")
             if task_record is not None:
@@ -1013,7 +1020,7 @@ def validate_team_collaboration(
                 index_relpath,
             )
 
-    if local_identity_path.is_file():
+    if context.is_target_file(local_identity_path):
         local_identity = context.load_json_object(
             local_identity_path,
             "TEAM_LOCAL_IDENTITY",
@@ -1064,7 +1071,7 @@ def validate_team_collaboration(
                     local_identity_relpath,
                 )
         ignore_path = context.target_path(".ai/.gitignore")
-        if not ignore_path.is_file() or "local/" not in context.read_text(ignore_path):
+        if not context.is_target_file(ignore_path) or "local/" not in context.read_text(ignore_path):
             context.error(
                 "TEAM_LOCAL_IDENTITY_NOT_IGNORED",
                 ".ai/local must be ignored before storing local identity",

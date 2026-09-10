@@ -55,6 +55,13 @@
   },
   "routing": {
     "selection_basis": "exact catalog selectors and declared owner dependencies",
+    "conditional_dependencies": [
+      {
+        "path": "{CONDITIONAL_CONTEXT_PATH}",
+        "when": "{EXPLICIT_LOAD_CONDITION}",
+        "status": "{SELECTED_OR_OMITTED}"
+      }
+    ],
     "omitted_item_ids": [
       "{OMITTED_CONTEXT_ITEM_ID_OR_NONE}"
     ],

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import math
 import json
 import re
@@ -257,6 +258,95 @@ def descriptor(entry: Any) -> tuple[str | None, dict[str, Any]]:
     return reference, data if isinstance(data, dict) else {}
 
 
+def pairwise_composition_summary(
+    profiles: dict[str, tuple[str | None, dict[str, Any]]],
+    overlays: dict[str, dict[str, tuple[str | None, dict[str, Any]]]],
+    budget: dict[str, Any],
+) -> dict[str, Any]:
+    """Measure every profile/overlay pair without bloating the golden report."""
+
+    rows: list[dict[str, Any]] = []
+    limits = {
+        "declared_files": budget.get("max_files"),
+        "words": budget.get("max_total_words"),
+        "portable_words": budget.get("max_portable_words"),
+        "target_words": budget.get("reserved_target_words"),
+    }
+    for profile_id, (profile_ref, profile) in sorted(profiles.items()):
+        profile_paths = [
+            value
+            for value in [profile_ref, *profile.get("required_context", [])]
+            if value
+        ]
+        for overlay_kind, entries in sorted(overlays.items()):
+            for overlay_id, (overlay_ref, overlay) in sorted(entries.items()):
+                overlay_paths = [
+                    value
+                    for value in [overlay_ref, *overlay.get("required_context", [])]
+                    if value
+                ]
+                measured = measure([*profile_paths, *overlay_paths])
+                compact = all(
+                    isinstance(limit, int) and measured[field] <= limit
+                    for field, limit in limits.items()
+                )
+                rows.append(
+                    {
+                        "profile": profile_id,
+                        "overlay_kind": overlay_kind,
+                        "overlay": overlay_id,
+                        "budget_state": (
+                            "compact" if compact else "expansion-receipt-required"
+                        ),
+                        "declared_files": measured["declared_files"],
+                        "words": measured["words"],
+                        "portable_words": measured["portable_words"],
+                        "target_words": measured["target_words"],
+                        "missing_paths": measured["missing_paths"],
+                        "unresolved_references": measured["unresolved_references"],
+                    }
+                )
+    encoded = json.dumps(rows, separators=(",", ":"), sort_keys=True).encode("utf-8")
+    return {
+        "evaluated_pairs": len(rows),
+        "compact_pairs": sum(row["budget_state"] == "compact" for row in rows),
+        "expansion_receipt_pairs": sum(
+            row["budget_state"] == "expansion-receipt-required" for row in rows
+        ),
+        "missing_path_pairs": [
+            f"{row['profile']}+{row['overlay_kind']}:{row['overlay']}"
+            for row in rows
+            if row["missing_paths"]
+        ],
+        "template_placeholder_pairs": [
+            f"{row['profile']}+{row['overlay_kind']}:{row['overlay']}"
+            for row in rows
+            if row["unresolved_references"]
+        ],
+        "unexpected_unresolved_reference_pairs": [
+            f"{row['profile']}+{row['overlay_kind']}:{row['overlay']}"
+            for row in rows
+            if any("{" not in value for value in row["unresolved_references"])
+        ],
+        "max_declared_files": max(row["declared_files"] for row in rows),
+        "max_words": max(row["words"] for row in rows),
+        "composition_digest": "sha256:" + hashlib.sha256(encoded).hexdigest(),
+    }
+
+
+def pairwise_router_summary(
+    profile_contracts: dict[str, tuple[str | None, dict[str, Any]]],
+    intent_contracts: dict[str, tuple[str | None, dict[str, Any]]],
+    task_scale_contracts: dict[str, tuple[str | None, dict[str, Any]]],
+    router: dict[str, Any],
+) -> dict[str, Any]:
+    return pairwise_composition_summary(
+        profile_contracts,
+        {"intent": intent_contracts, "task-scale": task_scale_contracts},
+        router.get("context_budgets", {}).get("profile_default", {}),
+    )
+
+
 def build_report() -> dict[str, Any]:
     router = json.loads(ROUTER.read_text(encoding="utf-8"))
     bootstrap_refs = [
@@ -333,6 +423,8 @@ def build_report() -> dict[str, Any]:
                 if value
             ]
         )
+
+    pairwise_compositions = pairwise_router_summary(profile_contracts, intent_contracts, task_scale_contracts, router)
 
     consistency_reference, consistency_contract = descriptor(
         router.get("consistency_routing", {})
@@ -706,6 +798,7 @@ def build_report() -> dict[str, Any]:
         "profiles": profiles,
         "intent_overlays": intent_overlays,
         "task_scale_overlays": task_scale_overlays,
+        "pairwise_compositions": pairwise_compositions,
         "consistency_routing": consistency_routing,
         "routing_primitives": routing_primitive_costs(),
         "task_overlay_compositions": {

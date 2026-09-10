@@ -1,11 +1,13 @@
 {
   "schema_version": 1,
-  "baseline_kind": "source-release-checkpoint",
+  "baseline_kind": "historical-unverified-checkpoint",
+  "original_baseline_kind": "source-release-checkpoint",
+  "quarantine_reason": "No completed release validation is recorded for a clean alpha.34 source revision; this record must not be used as an accepted baseline.",
   "framework_version": "0.1.0-alpha.34",
   "adapter_schema_version": "32",
   "template_version": "32",
   "source_commit": "81a3b5481142dd1de79f354879298a42571e37bb",
   "contract_sha256": "2ed8a90a204d191780d535377aca7bafc87b610361268a6aad27b1f744bb4bc8",
   "migration_report": "docs/releases/0.1.0-alpha.34-migration.md",
-  "publication_status": "untagged-release-checkpoint"
+  "publication_status": "historical-unverified"
 }

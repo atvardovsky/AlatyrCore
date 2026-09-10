@@ -19,6 +19,8 @@ installed Alatyr Core adapter.
 - Prior authorization invalidated: `{YES_NO_AND_REASON}`
 - Known context: `{KNOWN_CONTEXT}`
 - Review comments or defect reports to reconcile: `{REVIEW_ITEMS_OR_NONE}`
+- Risk classes: `{ALL_APPLICABLE_RISK_CLASSES}`
+- Risk severity: `{LOW_MODERATE_HIGH_OR_PROTECTED}`
 - Task scale: `{NORMAL_OR_LARGE_OR_RESUMABLE}`
 - Task decomposition preference:
   `{AUTO_ONE_TASK_MULTI_TASK_REQUIRE_PLAN_OR_NONE}`

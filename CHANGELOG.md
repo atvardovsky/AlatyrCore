@@ -4,6 +4,29 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.63 - 2026-09-10
+
+- Defined ordered `kernel`, `core`, `standard`, and `full` support profiles,
+  separated risk classes from ordered severity, and made kernel final evidence
+  proportional without silently requiring optional Engineering Evidence.
+- Reduced source bootstrap and profile preloads, added complete pairwise
+  profile-overlay cost validation, and preserved lazy conditional dependencies
+  as selected-or-omitted context-packet evidence.
+- Made target validation observe branch-controlling target paths through one
+  coherent repository view so concurrent target mutations cannot silently
+  produce mixed-state acceptance evidence.
+- Hardened source execution with process-tree timeout termination, fail-closed
+  unit-test routing for unknown central JSON inputs, truthful failed-report
+  summaries, and single-owner bridge freshness validation.
+- Corrected generated-artifact ordering, bridge bootstrap guidance, Debug Mode
+  and Engineering Evidence schema guidance, source-check dependencies, and
+  stale historical release checkpoints.
+- Moved the README start path into the opening, described examples as
+  illustrative rather than runnable, and removed a time-sensitive novelty
+  claim.
+- Increased adapter schema version to `52` and target template version to `58`
+  for context-packet, help, gate, and request-template contract changes.
+
 ## 0.1.0-alpha.62 - 2026-09-10
 
 - Repaired the untagged release evidence chain through `0.1.0-alpha.61` and

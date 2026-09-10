@@ -202,10 +202,13 @@ class TargetRepositoryView:
         )
 
     def _remember(self, status: TargetFileStatus, digest: str | None = None) -> None:
-        self._observed.setdefault(
-            status.path,
-            _ObservedTarget(status=status, digest=digest),
-        )
+        observed = self._observed.get(status.path)
+        if observed is None:
+            self._observed[status.path] = _ObservedTarget(
+                status=status, digest=digest
+            )
+        elif observed.digest is None and digest is not None:
+            self._observed[status.path] = replace(observed, digest=digest)
 
     def status(self, path: Path) -> TargetFileStatus:
         """Capture typed path state without caching path authorization."""
@@ -215,6 +218,21 @@ class TargetRepositoryView:
             raise TargetPathEscapeError(status.error or "target path escapes target")
         self._remember(status)
         return status
+
+    def is_target_file(self, path: str | Path) -> bool:
+        """Return file presence while adding the path to the coherent view."""
+
+        return self.status(Path(path)).is_file
+
+    def is_target_dir(self, path: str | Path) -> bool:
+        """Return directory presence while adding the path to the coherent view."""
+
+        return self.status(Path(path)).state == TargetFileState.DIRECTORY
+
+    def target_exists(self, path: str | Path) -> bool:
+        """Return path presence while adding the path to the coherent view."""
+
+        return self.status(Path(path)).exists
 
     def read_bytes_result(self, path: Path) -> ValidationRead[bytes]:
         """Read target bytes once while rechecking containment on every access."""

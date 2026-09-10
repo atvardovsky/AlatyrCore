@@ -430,8 +430,8 @@ Classify every proposed target file:
     fidelity, durable Engineering Evidence decision and exact reference
     resolution, reciprocal evidence lineage, phase versus full-task completion,
     candidate disposition closure, repository-binding state/lineage, external projection, active-
-    versus-finalized comparison, and validator policy. Use schema version 5 for
-    new records and preserve schema versions 1 through 4 as migration-limited
+    versus-finalized comparison, and validator policy. Use schema version 6 for
+    new records and preserve schema versions 1 through 5 as migration-limited
     evidence without reinterpreting legacy `alatyr` attribution.
     Enabling the module does not activate observation for a task.
     When the target uses multiple AI infrastructure items, add

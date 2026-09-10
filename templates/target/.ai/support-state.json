@@ -13,13 +13,13 @@
     "target_manifest_digest": "sha256:9638c007103df85d9e1b0bd66cf35c2dec3ad3a41bb7d555758eaabdb204284b",
     "target_worktree_state": "clean",
     "target_dirty_paths": [],
-    "framework_version": "0.1.0-alpha.62",
-    "adapter_schema_version": "51",
-    "template_version": "57"
+    "framework_version": "0.1.0-alpha.63",
+    "adapter_schema_version": "52",
+    "template_version": "58"
   },
   "policy": ".ai/project/support-policy.json",
   "policy_digest": "sha256:df4deae31521bcb7f2e9c74e4e5fc3ed5fea5da5fd5c38303531c1da5b69057b",
-  "source_revision": "1c108168a2eeb97fef430b44337ed1a7c84f715a",
+  "source_revision": "331847a7df51e0eea83ade6fc6b511dbee521fad",
   "groups": [
     {
       "id": "adapter-root",
@@ -29,7 +29,7 @@
     {
       "id": "assistant",
       "file_count": 215,
-      "digest": "sha256:d85559a9a8491e427036175728b7068da75ecbfb5b9f127d132b0d9e4d68ada6"
+      "digest": "sha256:883a9ccf695eb5174193056548023c413825c8883c5525ec46d43f4fdf84dd82"
     },
     {
       "id": "entrypoints",
@@ -39,7 +39,7 @@
     {
       "id": "project",
       "file_count": 64,
-      "digest": "sha256:47b5c467ca696f7c2d1d0e99855d4dbf18345fb1b551cf9afd84599cf86329dc"
+      "digest": "sha256:01d4a84b97b601915e0f2a94e9300e3639ceb0c4824eb23071d77743d225e651"
     }
   ],
   "files": [
@@ -301,7 +301,7 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:b3eb9273eb420be0fabe28590eeb27749f519a5e8ebe1faa802342a4b25539c9",
+      "digest": "sha256:5b9626a95dfba6c23350bb73253b712f39bbd9e9724a661d5e224ca8c379dcda",
       "canonical_size": 6307
     },
     {
@@ -364,7 +364,7 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:378299f158c16564dd851140dddd05638d3f1bbc64906af667b79e887500802e",
+      "digest": "sha256:a60b0d5548e52ac3142006553b11eaaeae6a2bdcbe2ca75a2939ddb3b1e33e4f",
       "canonical_size": 18437
     },
     {
@@ -1030,7 +1030,7 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:9ae3ed9a2b79736a431ae2bb087a5e31be582504bcc269f9ab5d597e692fb897",
+      "digest": "sha256:b90787efb1157c615ec88467f4535892edf761597c763866df81fa46333a0e94",
       "canonical_size": 13487
     },
     {
@@ -1048,8 +1048,8 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:98e72208b952c3f5f9e932bec46de04cdc7545c6fc569c4c7aae658e16f1ad11",
-      "canonical_size": 1271
+      "digest": "sha256:bd8bbfb9622f3b24b2796047320465a53809a967b0345876d541e563b1581676",
+      "canonical_size": 1443
     },
     {
       "path": ".ai/assistant/gates/debug-mode.md",
@@ -1201,8 +1201,8 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:ddc8b1534d68c9e568db9c818861c03f28565c5b673b3ad494b9c6a13d93f3ae",
-      "canonical_size": 5952
+      "digest": "sha256:bf7f9e55c0961307dc547d3a32aa2a1419ba35f71210685837a6ba97555bcc4e",
+      "canonical_size": 6346
     },
     {
       "path": ".ai/assistant/installation-state.json",
@@ -1588,7 +1588,7 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:f58f1d0b2afab7ff8e2fe5a5c20ab6edbc071ea9ef3ca6d480a3c24d9711b4fc",
+      "digest": "sha256:16dadaa62d9222c7f16b57d677792d34ddcf1e239048634efabb08a118acaf5a",
       "canonical_size": 37868
     },
     {
@@ -1597,8 +1597,8 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:dd1d6f82511b9ae2f62c3728a546872cf2a100b7453b8f88f6c10ad81f63da7b",
-      "canonical_size": 4619
+      "digest": "sha256:9c9f780d87eb21fa5e578d6b9ad1c43dffb81b47dc56dc976251985e8bee0cd5",
+      "canonical_size": 4809
     },
     {
       "path": ".ai/assistant/templates/contract-artifact-review.md",
@@ -1750,8 +1750,8 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "assistant",
-      "digest": "sha256:4e235e2710ae1a7eb6d8ab780c9e96aa210edb756d28436b87b03e054ab20f76",
-      "canonical_size": 14589
+      "digest": "sha256:00368176d04f009e45217bd0807ff652a78bf346d26b02196b2aee6fdd56b679",
+      "canonical_size": 14689
     },
     {
       "path": ".ai/assistant/templates/post-install-message.md",
@@ -2092,7 +2092,7 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "project",
-      "digest": "sha256:18738356c5a7153df9e1a01e110903f14984580f77928a37fb83ae98f78d8b5b",
+      "digest": "sha256:9946333c48f1f159056761e9720a984b0f082fe4dcb0b09bd89c38c129baf087",
       "canonical_size": 9787
     },
     {
@@ -2281,7 +2281,7 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "project",
-      "digest": "sha256:db6c7b76e50cfccc673bc9cf5e5db86ae70f7875c2dc86217acfebb7bf347d8f",
+      "digest": "sha256:8de0f58f5e93e2447ba125818b71a35cd8bea2d215da7e5114ac000637bcd56c",
       "canonical_size": 2187
     },
     {
@@ -2299,8 +2299,8 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "project",
-      "digest": "sha256:9f5c3611414e5ae80c2ca85a09ccea95482c355d64b197719686e956fedf0634",
-      "canonical_size": 741
+      "digest": "sha256:25b93363471636e589474dd06aeaff48771bfcb05f97b5b1f9a4d15c02e33c3c",
+      "canonical_size": 740
     },
     {
       "path": ".ai/project/engineering-evidence/records/context-index.json",
@@ -2308,7 +2308,7 @@
       "classification": "exact-contract",
       "classification_id": "adapter-support",
       "group": "project",
-      "digest": "sha256:198609be5822ca050c2edae72625c2fe695de4136c5910f2a27c726dc5154a50",
+      "digest": "sha256:0432a3c0c75ca476c9cd89dfbb39cc47c0614452fdd5a01c4d6fdf380d032121",
       "canonical_size": 1152
     },
     {
@@ -2708,5 +2708,5 @@
       "canonical_size": 948
     }
   ],
-  "root_digest": "sha256:e67ffaa5b2da12b0802e487f103cc219252c364a9673f68ab22857634e5caba7"
+  "root_digest": "sha256:193ff0786f61d66ca12c480a8b4ee8f143344233df0d3b2ecbfbaa1201220b05"
 }

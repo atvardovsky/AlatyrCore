@@ -81,10 +81,10 @@ Use this sequence when a fact may have changed:
 9. Choose the smallest coherent repair set that preserves those invariants.
 10. Apply required companion updates or explain why none are needed.
 11. Run target validation that exists, or record manual/unresolved checks.
-12. Apply the durable engineering-evidence capture decision. For a material
-    task, preserve compact invariant, root-cause, solution, regression, and
-    repository-binding evidence when reusable knowledge would otherwise be
-    lost; otherwise state a fact-specific skip or block reason.
+12. Make a proportional final-evidence capture decision. When durable
+    Engineering Evidence support is active, apply its full capture policy. If
+    it is unavailable, record compact final evidence plus an unavailable,
+    skipped, or blocked reason without claiming that a durable record exists.
 13. Report final evidence and residual risk.
 
 When test-first development is activated, the repair set must include the
@@ -171,7 +171,8 @@ Change intent: <requested or inferred change>
 Changed facts: <concrete facts>
 Re-derived invariants: <testable scope, identity, ownership, lifecycle, and dependency statements>
 Review-item reconciliation: <clusters, shared contracts, and combined repair decision>
-Risk class: <framework and adapter risk>
+Risk classes: <all applicable framework and adapter categories>
+Risk severity: <low, moderate, high, or protected>
 Source of truth: <owning file or missing adapter fact>
 Conflicts found: <what disagreed, if anything>
 Repair set: <files or artifacts updated>

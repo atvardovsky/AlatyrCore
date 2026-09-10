@@ -100,7 +100,7 @@ def validate_project_vocabulary(
     ]
     missing = False
     for relpath in required_paths:
-        if not context.target_path(relpath).is_file():
+        if not context.is_target_file(relpath):
             missing = True
             context.error(
                 "VOCABULARY_REQUIRED_FILE_MISSING",

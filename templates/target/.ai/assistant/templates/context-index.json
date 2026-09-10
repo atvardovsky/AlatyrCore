@@ -361,8 +361,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 247,
-      "content_digest": "sha256:dd1d6f82511b9ae2f62c3728a546872cf2a100b7453b8f88f6c10ad81f63da7b"
+      "estimated_words": 258,
+      "content_digest": "sha256:9c9f780d87eb21fa5e578d6b9ad1c43dffb81b47dc56dc976251985e8bee0cd5"
     },
     {
       "id": "assistant.content.templates-contract-artifact-review-md",
@@ -802,8 +802,8 @@
       "owner_refs": [
         "ALATYR-CONTEXT-001"
       ],
-      "estimated_words": 1494,
-      "content_digest": "sha256:4e235e2710ae1a7eb6d8ab780c9e96aa210edb756d28436b87b03e054ab20f76"
+      "estimated_words": 1502,
+      "content_digest": "sha256:00368176d04f009e45217bd0807ff652a78bf346d26b02196b2aee6fdd56b679"
     },
     {
       "id": "assistant.content.templates-post-install-message-md",

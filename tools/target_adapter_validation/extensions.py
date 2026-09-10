@@ -77,7 +77,7 @@ def validate_extensions(
     ]
     missing = False
     for relpath in required_paths:
-        if not context.target_path(relpath).is_file():
+        if not context.is_target_file(relpath):
             missing = True
             context.error(
                 "EXTENSION_REQUIRED_FILE_MISSING",
@@ -153,7 +153,7 @@ def validate_extensions(
         context.error("EXTENSION_TARGET_BASELINE", "target baseline template version must be a positive integer", lock_relpath)
     if not isinstance(baseline_registry, str) or not is_target_relative_path(baseline_registry):
         context.error("EXTENSION_TARGET_BASELINE", "target baseline rule registry must be target-relative", lock_relpath)
-    elif not context.target_path(baseline_registry).is_file():
+    elif not context.is_target_file(baseline_registry):
         context.error("EXTENSION_TARGET_BASELINE", "target baseline rule registry is missing", baseline_registry)
     if manifest is not None:
         expected_baseline = {
@@ -256,14 +256,14 @@ def validate_extensions(
             value = entry.get(field)
             if not isinstance(value, str) or not value.startswith(namespace):
                 context.error("EXTENSION_NAMESPACE", f"extension {extension_id}.{field} must remain under {namespace}", lock_relpath)
-            elif not context.target_path(value).is_file():
+            elif not context.is_target_file(value):
                 context.error("EXTENSION_LOCK_PATH_MISSING", f"extension {extension_id}.{field} is missing", value)
 
         approval_record = entry.get("approval_record")
         if isinstance(approval_record, str):
             if not is_target_relative_path(approval_record):
                 context.error("EXTENSION_APPROVAL_PATH", f"extension {extension_id} approval record must be target-relative", lock_relpath)
-            elif not context.target_path(approval_record).is_file():
+            elif not context.is_target_file(approval_record):
                 context.error("EXTENSION_APPROVAL_MISSING", f"extension {extension_id} approval record is missing", approval_record)
 
         installed_files = entry.get("installed_files")
@@ -291,7 +291,7 @@ def validate_extensions(
             path = context.target_path(relpath)
             if path.is_symlink():
                 context.error("EXTENSION_FILE_SYMLINK", "installed extension files must not be symlinks", relpath)
-            elif not path.is_file():
+            elif not context.is_target_file(path):
                 context.error("EXTENSION_FILE_MISSING", "locked installed extension file is missing", relpath)
             elif context.content_digest(path) != expected_hash:
                 context.error("EXTENSION_FILE_DRIFT", "installed extension file differs from its lock hash", relpath)

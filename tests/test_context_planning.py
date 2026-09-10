@@ -87,6 +87,7 @@ class TargetFixture:
         write_text(self.framework / "context.md", "bounded context policy\n")
         write_text(self.framework / "context-profiles.md", "canonical context owner\n")
         write_text(self.project / "billing.md", "billing adapter knowledge\n")
+        write_text(self.project / "optional.md", "optional project guidance\n")
         write_text(self.project / "source-of-truth-registry.md", "billing facts registry\n")
         write_text(self.assistant / "flows/product-change.flow.md", "product change flow\n")
         write_text(self.root / "docs/billing.md", "SECRET-BILLING-OWNER accepted billing rule\n")
@@ -104,7 +105,12 @@ class TargetFixture:
                     ".ai/framework/context.md",
                     ".ai/project/billing.md",
                 ],
-                "conditional_context": [],
+                "conditional_context": [
+                    {
+                        "path": ".ai/project/optional.md",
+                        "when": "an optional project boundary is crossed",
+                    }
+                ],
                 "expand_when": ["relationship changes"],
                 "approval_gates": [],
                 "validation": ["python -m unittest"],
@@ -370,6 +376,12 @@ class TargetFixture:
                 ),
                 catalog_entry(
                     self.project,
+                    "project.optional",
+                    "optional.md",
+                    semantic_refs=term,
+                ),
+                catalog_entry(
+                    self.project,
                     "project.consistency-map",
                     "consistency-map.json",
                     semantic_refs=term,
@@ -464,6 +476,16 @@ class ContextPlanningTests(unittest.TestCase):
         }
         self.assertIn("docs/billing.md", paths)
         self.assertIn("src/payment/retry.py", paths)
+        self.assertEqual(
+            first["context_packet"]["routing"]["conditional_dependencies"],
+            [
+                {
+                    "path": ".ai/project/optional.md",
+                    "when": "an optional project boundary is crossed",
+                    "status": "omitted",
+                }
+            ],
+        )
         projection = dict(first["context_packet"])
         projection_digest = projection.pop("projection_digest")
         expected_projection_digest = "sha256:" + hashlib.sha256(
@@ -521,6 +543,27 @@ class ContextPlanningTests(unittest.TestCase):
         self.assertEqual(result["status"], "unavailable")
         self.assertTrue(result["upgrade_required"])
         self.assertEqual(result["errors"][0]["code"], "CONTEXT_CATALOG_STALE")
+
+    def test_unindexed_conditional_context_requires_adapter_repair(self) -> None:
+        profile = self.fixture.assistant / "context/profiles/code-local.json"
+        value = json.loads(profile.read_text(encoding="utf-8"))
+        value["conditional_context"] = [
+            {
+                "path": ".ai/project/unindexed.md",
+                "when": "an unindexed boundary is crossed",
+            }
+        ]
+        write_json(profile, value)
+        write_text(self.fixture.project / "unindexed.md", "unindexed guidance\n")
+        self.fixture.refresh_catalogs()
+
+        result = plan_target_context(self.request())
+
+        self.assertEqual(result["status"], "unavailable")
+        self.assertTrue(result["upgrade_required"])
+        self.assertEqual(
+            result["errors"][0]["code"], "CONDITIONAL_CONTEXT_UNINDEXED"
+        )
 
     def test_selected_profile_placeholder_returns_upgrade_evidence(self) -> None:
         profile = self.fixture.assistant / "context/profiles/code-local.json"

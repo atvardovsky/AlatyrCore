@@ -71,6 +71,17 @@ def _load_source_profile_context(
     if not isinstance(profile, dict):
         raise ValueError(f"unknown source profile: {source_profile}")
     required = [*router.get("preloaded_context", []), *router.get("bootstrap_context", []), *profile.get("required_context", [])]
+    required_context = profile.get("required_context", [])
+    required_words = sum(
+        len((ROOT / path).read_text(encoding="utf-8").split())
+        for path in required_context
+        if (ROOT / path).is_file()
+    )
+    initial_words = sum(
+        len((ROOT / path).read_text(encoding="utf-8").split())
+        for path in dict.fromkeys(required)
+        if (ROOT / path).is_file()
+    )
     selectors = {
         "changed_paths": sorted(changed_paths or []),
         "check_ids": sorted((selection_details or {}).keys()),
@@ -79,7 +90,7 @@ def _load_source_profile_context(
         "source_profile": source_profile,
         "preloaded_context": router.get("preloaded_context", []),
         "bootstrap_context": router.get("bootstrap_context", []),
-        "required_context": profile.get("required_context", []),
+        "required_context": required_context,
         "conditional_context": profile.get("conditional_context", []),
         "selected_items": [
             {"path": path, "reason": ["source-profile:" + source_profile]}
@@ -91,6 +102,12 @@ def _load_source_profile_context(
         "expansion_triggers": router.get("task_classification", {}).get(
             "expansion_triggers", []
         ),
+        "context_budget": {
+            **profile.get("context_budget", {}),
+            "planned_required_files": len(required_context),
+            "planned_required_words": required_words,
+            "planned_initial_words": initial_words,
+        },
     }
 
 

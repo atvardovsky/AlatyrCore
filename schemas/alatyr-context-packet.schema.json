@@ -31,6 +31,20 @@
         "selection_basis": {"type": "string", "minLength": 1},
         "omitted_item_ids": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
         "expansion_triggers": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+        "conditional_dependencies": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "when", "status"],
+            "properties": {
+              "path": {"type": "string", "minLength": 1},
+              "when": {"type": "string", "minLength": 1},
+              "status": {"enum": ["selected", "omitted"]}
+            }
+          }
+        },
         "unresolved_selector_behavior": {"type": "string", "minLength": 1}
       }
     },

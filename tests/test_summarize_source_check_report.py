@@ -43,6 +43,9 @@ class SourceCheckReportSummaryTests(unittest.TestCase):
                 "fell_back_to_full": True,
                 "unmatched_changed_paths": ["new/path.md"],
             },
+            "reuse_contract": {"successful": False},
+            "acceptance_evidence": {"eligible": False},
+            "source_write_scope": {"preserved": False},
             "checks": [
                 {"id": "ok", "status": "passed"},
                 {
@@ -59,6 +62,9 @@ class SourceCheckReportSummaryTests(unittest.TestCase):
         rendered = render_summary(report, source_label="tmp/report.json")
 
         self.assertIn("Profile: `platform`", rendered)
+        self.assertIn("Overall result: `failed`", rendered)
+        self.assertIn("Acceptance evidence eligible: `False`", rendered)
+        self.assertIn("Source write scope preserved: `False`", rendered)
         self.assertIn("Status counts: blocked=1, failed=2, passed=1", rendered)
         self.assertIn("Focused selection fell back to the full profile", rendered)
         self.assertIn("`bad` exit=1", rendered)

@@ -21,6 +21,7 @@ def check_target_operation_surfaces(context: CheckContext) -> list[str]:
         "Full operation reference: `.ai/assistant/help-reference.md`",
         "These aliases are chat/request shortcuts, not shell commands.",
         "Default routing:",
+        'requires_paths":[".ai/assistant/flows/adapter-health.flow.md"]',
     ]:
         if required_help_text not in help_template:
             failures.append(
@@ -313,6 +314,36 @@ def check_target_governance_surfaces(context: CheckContext) -> list[str]:
 def check_target_runtime_policies(context: CheckContext) -> list[str]:
     failures: list[str] = []
     gates = context.read_text("templates/target/.ai/assistant/gates/checklist.md")
+    core_gate = context.read_text("templates/target/.ai/assistant/gates/core.md")
+    for required_risk_text in [
+        "every applicable risk class",
+        "`low`,",
+        "`moderate`,",
+        "`high`,",
+        "`protected`",
+        "cannot be downgraded",
+    ]:
+        if required_risk_text not in core_gate:
+            failures.append(
+                "templates/target/.ai/assistant/gates/core.md missing risk "
+                f"severity contract: {required_risk_text}"
+            )
+
+    install_flow = context.read_text("installer/assistant-installation.flow.md")
+    if "Use schema version 6 for" not in install_flow or (
+        "preserve schema versions 1 through 5" not in install_flow
+    ):
+        failures.append("installer Debug record guidance must require schema version 6")
+    evidence_records = context.read_text(
+        "templates/target/.ai/project/engineering-evidence/records/README.md"
+    )
+    evidence_records = " ".join(evidence_records.split())
+    if "schema version 3" not in evidence_records or (
+        "schema versions 1 and 2" not in evidence_records
+    ):
+        failures.append(
+            "Engineering Evidence record guidance must require schema version 3"
+        )
     if "Module profile checked" not in gates:
         failures.append(
             "templates/target/.ai/assistant/gates/checklist.md missing module "
@@ -490,5 +521,3 @@ def check_bridges_and_git_visibility(context: CheckContext) -> list[str]:
             failures.append(f"{relpath} is hidden by .gitignore")
 
     return failures
-
-

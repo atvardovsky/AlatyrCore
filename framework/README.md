@@ -19,7 +19,7 @@ sync, logical integrity review, and final evidence.
 - rule identifiers and canonical rule registry
 - project-adapter contract
 - adapter ownership and review-cadence expectations
-- required core profile and optional module profile
+- required kernel, core, standard, and full support profiles plus optional modules
 - optional scaffolding boundaries
 - context-discovery and source-of-truth decision rules
 - machine-readable context router guidance for cheaper task startup

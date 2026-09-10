@@ -34,7 +34,7 @@
         "alatyr:coherent-change-package@1"
       ],
       "canonical_owner_digests": {
-        "alatyr:changed-fact-not-file@1": "sha256:2d9660b8dc0e989de6d1c8d8ebe9e0c51dfc84b0dd0d5bdb419c02ebce637555",
+        "alatyr:changed-fact-not-file@1": "sha256:79b27ecba6056a960c4fa09293476b2e146a2cfe93134d7e21e79ce001b564cb",
         "alatyr:coherent-change-package@1": "sha256:cb9cd1037d27cf67f609db309e230b8d871d65fefbf763b9f97a021e4523a1fd"
       },
       "content_digest": "sha256:59e76c81702fb2e9ab0ddefbbdf517e37db899fb28231bf03ee5c426fba1413f"
@@ -92,10 +92,10 @@
       "canonical_owner_digests": {
         "alatyr:current-scope-authorization@1": "sha256:2b4383460725aea574a7c0c271b81bf51c0e6888249513df8f4a706411108160",
         "alatyr:canonical-owner@1": "sha256:4ed11289dd267551eafa9fea08edf04a4c06689c3780348a05c8dbe97917e1db",
-        "alatyr:risk-by-fact@1": "sha256:5291465239946e3916f0c7da4c74d5e67db5977f813d7097e930c515dec4c145",
+        "alatyr:risk-by-fact@1": "sha256:f72a84e252abedc5d1797a7034556a2713cb1a8fb3ec8b609fbb6e0e573cd1db",
         "alatyr:protected-change@1": "sha256:45b9d377710693fa0711015ebfb4f4f17bc768fe2af71c6be6946181a7300427",
-        "alatyr:logical-integrity@1": "sha256:2d9660b8dc0e989de6d1c8d8ebe9e0c51dfc84b0dd0d5bdb419c02ebce637555",
-        "alatyr:bounded-context-expansion@1": "sha256:7125b68f8c3792dcba0e09036884f0c0c0b387644b708ac221dfdfa678233940"
+        "alatyr:logical-integrity@1": "sha256:79b27ecba6056a960c4fa09293476b2e146a2cfe93134d7e21e79ce001b564cb",
+        "alatyr:bounded-context-expansion@1": "sha256:8897651dbacd154c267b4cd89e9ebb7e9b22d2f160c94fce2778094c50cce772"
       },
       "content_digest": "sha256:c483c0badb5db983d135a2ae84913da1c6c17293b36d49179b367c76581ac3c3"
     },

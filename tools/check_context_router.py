@@ -246,6 +246,7 @@ def check_context_packet(router: dict[str, Any], failures: list[str]) -> None:
     if not isinstance(routing, dict) or set(routing) != {
         "selection_basis",
         "omitted_item_ids",
+        "conditional_dependencies",
         "expansion_triggers",
         "unresolved_selector_behavior",
     }:

@@ -725,7 +725,7 @@ def _validate_worker_definition_path(
         )
     elif (
         delegation.get("project_worker_definitions") == "supported"
-        and not self.target_path(definition_path).is_file()
+        and not self.is_target_file(definition_path)
     ):
         self.error(
             "DELEGATION_WORKER_DEFINITION_MISSING",
@@ -858,7 +858,7 @@ def _validate_role_prompt(self: Any, index: int, role: dict[str, Any]) -> None:
     if (
         prompt_path.is_absolute()
         or ".." in prompt_path.parts
-        or not self.target_path(prompt).is_file()
+        or not self.is_target_file(prompt)
     ):
         self.error(
             "DELEGATION_ROLE_PROMPT",

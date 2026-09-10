@@ -123,7 +123,7 @@ def _target_path_list(
         if not is_resolved_string(entry) or not is_target_relative_path(entry):
             self.error(code, f"{label} must contain target-relative resolved paths", source)
             continue
-        if require_exists and not self.target_path(entry).exists():
+        if require_exists and not self.target_exists(entry):
             self.error(code, f"{label} points to missing target evidence {entry}", source)
             continue
         result.append(entry)
@@ -350,7 +350,7 @@ def _validate_root_conditional_context(
                 f"conditional_context[{index}] requires target-relative path and condition",
                 root_relpath,
             )
-        elif root_state == "enabled" and not self.target_path(entry["path"]).exists():
+        elif root_state == "enabled" and not self.target_exists(entry["path"]):
             self.error(
                 "WORKSPACE_MODE_ROOT_CONTEXT",
                 f"conditional_context[{index}] points to missing target context",
@@ -436,7 +436,7 @@ def _validate_catalog_mode_entry(
         validation_state.seen_paths.add(path)
     descriptor = self.load_json_object(self.target_path(expected_path), "WORKSPACE_MODE")
     readme_path = f".ai/project/workspace-modes/modes/{mode_id}/README.md"
-    if not self.target_path(readme_path).is_file():
+    if not self.is_target_file(readme_path):
         self.error(
             "WORKSPACE_MODE_README_MISSING",
             "actual mode directory requires README.md",
@@ -528,7 +528,7 @@ def _validate_mode_scope(
             expected_path,
         )
         return
-    if state == "accepted" and not self.target_path(scope["root"]).exists():
+    if state == "accepted" and not self.target_exists(scope["root"]):
         self.error(
             "WORKSPACE_MODE_SCOPE",
             f"accepted workspace_scope.root points to missing target scope {scope['root']}",
@@ -721,9 +721,9 @@ def _validate_mode_conditional_context(
                 f"conditional context {conditional_index} is invalid",
                 expected_path,
             )
-        elif state == "accepted" and not self.target_path(
+        elif state == "accepted" and not self.target_exists(
             conditional_entry["path"]
-        ).exists():
+        ):
             self.error(
                 "WORKSPACE_MODE_CONTEXT",
                 f"conditional context {conditional_index} points to missing target context",

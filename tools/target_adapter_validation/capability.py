@@ -57,6 +57,15 @@ class CapabilityValidationContext:
     def status(self, path: Path) -> TargetFileStatus:
         return self.filesystem.status(path)
 
+    def is_target_file(self, path: str | Path) -> bool:
+        return self.filesystem.is_target_file(path)
+
+    def is_target_dir(self, path: str | Path) -> bool:
+        return self.filesystem.is_target_dir(path)
+
+    def target_exists(self, path: str | Path) -> bool:
+        return self.filesystem.target_exists(path)
+
     def rel(self, path: Path) -> str:
         return self.relative_target_path(path)
 

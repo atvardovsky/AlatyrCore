@@ -10,6 +10,7 @@ import json
 import locale
 import os
 import platform
+import signal
 import string
 import subprocess
 import sys
@@ -639,6 +640,57 @@ def _captured_text(value: str | bytes | None) -> str:
     return value
 
 
+def _timeout_text(
+    partial: str | bytes | None, completed: str | bytes | None
+) -> str:
+    """Preserve timeout output without duplicating data returned twice."""
+
+    partial_text = _captured_text(partial)
+    completed_text = _captured_text(completed)
+    if not completed_text:
+        return partial_text
+    if not partial_text or completed_text.startswith(partial_text):
+        return completed_text
+    return partial_text + completed_text
+
+
+def _process_group_options() -> dict[str, Any]:
+    """Start each checker in a group that can be terminated as one tree."""
+
+    if os.name == "nt":
+        return {
+            "creationflags": getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0)
+        }
+    return {"start_new_session": True}
+
+
+def _terminate_process_tree(process: subprocess.Popen[str]) -> None:
+    """Best-effort cross-platform termination for a timed-out checker tree."""
+
+    if process.poll() is not None:
+        return
+    if os.name == "nt":
+        subprocess.run(
+            ["taskkill", "/PID", str(process.pid), "/T", "/F"],
+            check=False,
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+        if process.poll() is None:
+            process.kill()
+        return
+
+    try:
+        os.killpg(process.pid, signal.SIGTERM)
+        process.wait(timeout=0.5)
+    except (ProcessLookupError, subprocess.TimeoutExpired):
+        try:
+            os.killpg(process.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+
+
 def run_check(check: dict[str, Any], baseline: str | None) -> RunnerResult:
     command = resolved_command(check, baseline)
     environment = os.environ.copy()
@@ -659,17 +711,20 @@ def run_check(check: dict[str, Any], baseline: str | None) -> RunnerResult:
         max(1, int(check.get("_child_capacity", 1)))
     )
     environment["ALATYR_CHECK_VERBOSE"] = "1" if check.get("_verbose") else "0"
+    process = subprocess.Popen(
+        command,
+        cwd=ROOT,
+        env=environment,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        **_process_group_options(),
+    )
     try:
-        result = subprocess.run(
-            command,
-            cwd=ROOT,
-            env=environment,
-            check=False,
-            capture_output=True,
-            text=True,
-            timeout=check["timeout_seconds"],
-        )
+        stdout, stderr = process.communicate(timeout=check["timeout_seconds"])
     except subprocess.TimeoutExpired as exc:
+        _terminate_process_tree(process)
+        stdout, stderr = process.communicate()
         timeout_message = (
             f"timed out after {check['timeout_seconds']} seconds "
             f"(resource_class={check['resource_class']})\n"
@@ -677,13 +732,13 @@ def run_check(check: dict[str, Any], baseline: str | None) -> RunnerResult:
         return RunnerResult(
             (
                 TIMEOUT_EXIT_CODE,
-                _captured_text(exc.stdout),
-                _captured_text(exc.stderr) + timeout_message,
+                _timeout_text(exc.stdout, stdout),
+                _timeout_text(exc.stderr, stderr) + timeout_message,
                 command,
             ),
             timed_out=True,
         )
-    return RunnerResult((result.returncode, result.stdout, result.stderr, command))
+    return RunnerResult((process.returncode, stdout, stderr, command))
 
 
 def reusable_results(

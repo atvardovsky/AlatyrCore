@@ -245,7 +245,7 @@ surfaces can describe the same project fact.
 
 Include `.ai/project/engineering-evidence/README.md`, its compact `index.json`,
 the lazy task-scale overlay, capture flow, gate, and machine record template in
-the required core profile. Start the index empty unless bounded historical
+the `core` support profile. Start the index empty unless bounded historical
 records were explicitly validated. Keep these support records outside external
 contribution patches unless the target project accepts them.
 

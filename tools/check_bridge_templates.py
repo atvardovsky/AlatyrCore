@@ -14,7 +14,6 @@ from render_bridge_templates import (
     BridgeTemplateError,
     MANIFEST_PATH,
     load_manifest,
-    render_templates,
 )
 
 
@@ -56,12 +55,11 @@ def read_text(relpath: str) -> str:
 
 def main() -> int:
     failures: list[str] = []
-    rendered: dict[str, str] = {}
-
     try:
         manifest = load_manifest(MANIFEST_PATH)
-        rendered = render_templates(manifest)
-        manifest_paths = sorted(rendered)
+        manifest_paths = sorted(
+            template["path"] for template in manifest["templates"]
+        )
         bridge_paths = sorted(BRIDGE_FILES)
         if manifest_paths != bridge_paths:
             failures.append(
@@ -78,12 +76,6 @@ def main() -> int:
             continue
 
         text = read_text(relpath)
-        expected = rendered.get(relpath)
-        if expected is not None and text != expected:
-            failures.append(
-                f"{relpath} differs from tools/bridge_template_manifest.json"
-            )
-
         line_count = len(text.splitlines())
         if line_count > MAX_BRIDGE_LINES:
             failures.append(

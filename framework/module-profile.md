@@ -14,10 +14,23 @@ alatyr_doc:
 Module profiles keep Alatyr Core from treating every capability as mandatory
 for every target repository.
 
-The framework has a minimal `kernel` support profile, a richer `core` support
-profile, and optional modules. A target adapter records which modules are
-selected, staged, enabled, deferred, disabled, or not applicable from target
-evidence.
+The framework has four ordered support profiles. A target adapter records one
+profile and which optional modules are selected, staged, enabled, deferred,
+disabled, or not applicable from target evidence.
+
+- `kernel`: the minimum safe adapter contract for bounded, low-cost use.
+- `core`: kernel plus durable engineering evidence and project-knowledge
+  handling.
+- `standard`: core plus common blueprint, lifecycle, recheck, and operation
+  surfaces.
+- `full`: standard plus the complete portable framework pack; optional
+  capabilities still require explicit target selection and validation.
+
+Support profiles describe target behavior. Framework packs describe portable
+files installed to support that behavior: `kernel`, `core`, and `standard`
+profiles map to packs with the same name, while the `full` support profile maps
+to the `complete` framework pack. A broader pack does not activate a broader
+support profile or optional module by itself.
 
 The installed `capabilities.json` catalog is the machine-readable owner for
 optional-module dependencies, minimum framework packs, required target files,
@@ -266,10 +279,11 @@ During installation or update:
 4. Select and record the `kernel`, `core`, `standard`, or `full` support
    profile, then create only the target templates needed for staged, enabled,
    or required modules. Keep staged modules inactive until adaptation passes.
-5. Select a compatible `kernel`, `core`, `standard`, or `complete` framework pack. The
-   pack controls installed portable files, while context routing controls what
-   is loaded for a task. A smaller pack must never be used to claim support for
-   a broader profile or enabled module.
+5. Select the compatible framework pack: `kernel`, `core`, or `standard` for
+   the matching support profile, and `complete` for `full`. The pack controls
+   installed portable files, while context routing controls what is loaded for
+   a task. A smaller pack must never be used to claim support for a broader
+   profile or enabled module.
 6. Leave deferred, disabled, not-applicable, or blocked modules in evidence
    with the reason and next safe action.
 7. Resolve shared surfaces from the complete enabled-module set. Apply the

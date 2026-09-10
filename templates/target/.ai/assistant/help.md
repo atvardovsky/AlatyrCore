@@ -18,9 +18,12 @@ Canonical operation catalog: `.ai/assistant/operation-catalog.json`.
 <!-- /alatyr:scaffold-fragment -->
 
 Send `Alatyr` by itself for compact adapter state and up to three relevant
-actions. Send `Alatyr status` for compact read-only adapter health. Send
-`Alatyr doctor` for read-only adapter health with prioritized repair routes.
-A clear ordinary task is routed automatically; an operation ID is not required.
+actions. A clear ordinary task is routed automatically; an operation ID is not
+required.
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/flows/adapter-health.flow.md"]} -->
+Send `Alatyr status` for compact read-only adapter health. Send `Alatyr doctor`
+for read-only adapter health with prioritized repair routes.
+<!-- /alatyr:scaffold-fragment -->
 
 Default routing:
 
@@ -35,8 +38,10 @@ Default routing:
   decisions. Small local work may stay as one compact task.
 - If the request is `Alatyr` alone, do not edit files. Report fresh or
   unchecked health evidence and show at most three available actions.
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/flows/adapter-health.flow.md"]} -->
 - If the request asks for status or doctor, route to `adapter-health` and keep
   allowed actions `read-only`.
+<!-- /alatyr:scaffold-fragment -->
 - If the request only returns to an issue, backlog item, report, or discussion,
   or asks for status, analysis, a plan, or what comes next, keep the operation
   read-only. Do not reuse implementation, commit, or push authorization from a
@@ -80,6 +85,7 @@ Flow: `.ai/assistant/flows/blueprint-driven-change.flow.md`
 Minimum input: change intent, non-goals, and approval constraints.
 <!-- /alatyr:scaffold-fragment -->
 
+<!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/help-reference.md"]} -->
 Common shortcuts:
 
 - `Alatyr architecture` (`architecture-assistance`)
@@ -90,6 +96,7 @@ Common shortcuts:
 - `Alatyr evidence`, `Alatyr knowledge`, `Alatyr debug status`
 - `propose comment style`, `document code`, `Alatyr test first`
 - `alatyr-ai-inventory`, `alatyr-suggest-ai`, `alatyr-adaptation`
+<!-- /alatyr:scaffold-fragment -->
 
 <!-- alatyr:scaffold-fragment {"requires_paths":[".ai/assistant/help-reference.md"]} -->
 Detailed operations and aliases are in

@@ -914,20 +914,37 @@ class CheckGraphTests(unittest.TestCase):
         self.assertEqual(report["acceptance_evidence"]["reused_check_ids"], ["cached"])
 
     def test_process_timeout_is_a_typed_runner_failure(self) -> None:
-        from unittest.mock import patch
-        import subprocess
-
         item = check("timed-process")
-        with patch(
-            "check_all.subprocess.run",
-            side_effect=subprocess.TimeoutExpired(["python", "check"], 30, output="partial"),
-        ):
-            result = run_check(item, None)
+        item["command"] = ["-c", "print('partial', flush=True); import time; time.sleep(10)"]
+        item["timeout_seconds"] = 0.5
+        result = run_check(item, None)
 
         self.assertTrue(result.timed_out)
         self.assertEqual(result.result[0], 124)
-        self.assertEqual(result.result[1], "partial")
-        self.assertIn("timed out after 30 seconds", result.result[2])
+        self.assertEqual(result.result[1], "partial\n")
+        self.assertIn("timed out after 0.5 seconds", result.result[2])
+
+    def test_process_timeout_terminates_descendants(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            marker = Path(directory) / "child-finished"
+            child = (
+                "import pathlib,time; time.sleep(0.5); "
+                f"pathlib.Path({str(marker)!r}).write_text('late')"
+            )
+            parent = (
+                "import subprocess,sys,time; "
+                f"subprocess.Popen([sys.executable, '-c', {child!r}]); "
+                "time.sleep(10)"
+            )
+            item = check("timed-tree")
+            item["command"] = ["-c", parent]
+            item["timeout_seconds"] = 0.1
+
+            result = run_check(item, None)
+            time.sleep(0.7)
+
+            self.assertTrue(result.timed_out)
+            self.assertFalse(marker.exists())
 
     def test_source_snapshot_detects_changes_to_already_dirty_files(self) -> None:
         import subprocess
