@@ -579,7 +579,7 @@ window. See the [bridge capability matrix](framework/bridge-capability-matrix.md
 
 ## Current Maturity And Limitations
 
-The source [VERSION](VERSION) currently records `0.1.0-alpha.61`. Implemented
+The source [VERSION](VERSION) currently records `0.1.0-alpha.62`. Implemented
 repository assets include portable framework contracts, target templates,
 assistant-driven installation guidance, source consistency checks, conformance
 fixtures, optional scaffolding, and an optional installed-adapter structural

@@ -1508,12 +1508,17 @@ evidence shape. It is not a portable framework requirement for target
 projects.
 
 `check_release_drift.py` compares framework, shipped schema, and target-template
-changes with the latest reachable release tag. It requires the corresponding
-source version files to advance, runs the migration reporter against the
-materialized tag baseline, and verifies the committed report's exact baseline,
-three versions, and contract-tree SHA-256 values. Use `--from-ref` for an
-explicit baseline or `--report-output` to write generated evidence for review.
-The check requires Git tags to be available in CI.
+changes with the latest reachable release tag or reviewed source checkpoint.
+It requires the corresponding source version files to advance, runs the
+migration reporter against the materialized baseline, and verifies the
+committed report's exact baseline, three versions, completed validation, and
+contract-tree SHA-256 values. Schema-2 checkpoints also bind the previous
+baseline and migration-report digest. Use `--from-ref` for an explicit baseline
+or `--report-output` to write generated evidence for review.
+
+`record_release_checkpoint.py` prepares schema-2 checkpoint evidence from an
+existing reviewed release commit. It is read-only unless `--write` is supplied,
+does not create tags, and refuses incomplete or mismatched migration reports.
 
 The default `check_all.py --profile full` route also runs change-mode release
 drift against `origin/main`, or `HEAD` when that remote ref is unavailable.
@@ -1525,12 +1530,14 @@ Linux or macOS:
 
 ```sh
 python3 tools/check_release_migration_template.py
+python3 tools/record_release_checkpoint.py --version <VERSION> --source-commit <COMMIT>
 ```
 
 Windows PowerShell or Command Prompt:
 
 ```powershell
 py -3 .\tools\check_release_migration_template.py
+py -3 .\tools\record_release_checkpoint.py --version <VERSION> --source-commit <COMMIT>
 ```
 
 ## Migration Diff Report

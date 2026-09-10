@@ -90,6 +90,13 @@ class SupportStateTests(unittest.TestCase):
         after["generated_by"]["source_dirty_paths"] = ["tools/support_state.py"]
         self.assertTrue(state_is_current(before, after))
 
+    def test_stable_generation_provenance_is_part_of_freshness(self) -> None:
+        target = self.make_target()
+        before = build_support_state(target)
+        after = json.loads(render_state(before))
+        after["generated_by"]["template_version"] = "different-template"
+        self.assertFalse(state_is_current(before, after))
+
     def test_state_records_generation_provenance(self) -> None:
         target = self.make_target()
         state = build_support_state(target)

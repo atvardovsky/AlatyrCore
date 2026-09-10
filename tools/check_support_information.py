@@ -13,7 +13,13 @@ from pathlib import Path
 import jsonschema
 
 from framework_packaging import resolve_framework_files
-from support_state import build_support_state, validate_policy
+from support_state import (
+    SupportStateError,
+    build_support_state,
+    state_differences,
+    state_is_current,
+    validate_policy,
+)
 from target_tool_compat import source_template_provenance_errors
 
 
@@ -54,7 +60,27 @@ def main() -> int:
                 expected_tool="snapshot_target_support.py",
             )
         )
-    except (OSError, ValueError, AssertionError, jsonschema.SchemaError, jsonschema.ValidationError) as exc:
+        current_support_state = build_support_state(TARGET, policy)
+        if not state_is_current(support_state, current_support_state):
+            differences = state_differences(support_state, current_support_state)
+            summary = ", ".join(
+                f"{difference.change} {difference.path}"
+                for difference in differences[:10]
+            )
+            if len(differences) > 10:
+                summary += f", and {len(differences) - 10} more"
+            failures.append(
+                "templates/target support state is stale"
+                + (f": {summary}" if summary else ": stable provenance changed")
+            )
+    except (
+        OSError,
+        ValueError,
+        AssertionError,
+        SupportStateError,
+        jsonschema.SchemaError,
+        jsonschema.ValidationError,
+    ) as exc:
         failures.append(f"support schema or policy contract is invalid: {exc}")
 
     required_paths = [

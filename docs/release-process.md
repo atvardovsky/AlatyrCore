@@ -90,10 +90,14 @@ cannot establish this baseline reliably.
 A checkpoint is valid only while its `source_commit` is reachable and remains
 an ancestor of the reviewed source tree, its version files match that commit,
 its `Unreleased` section is empty, and its migration report contains the same
-destination versions and contract digest. A later development commit with the
-same version is not a release checkpoint. Prefer a real release tag whenever one exists; the resolver always
-selects the nearest prior version and gives its tag precedence over a
-checkpoint for that version.
+destination versions and contract digest. New schema-2 checkpoints also bind
+the nearest reviewed prior baseline and the migration report SHA-256. Release
+validation follows that chain and rejects incomplete validation evidence,
+modified reports, malformed source labels, and checkpoint cycles. Schema-1
+records remain readable as historical compatibility evidence. A later
+development commit with the same version is not a release checkpoint. Prefer a
+real release tag whenever one exists; the resolver always selects the nearest
+prior version and gives its tag precedence over a checkpoint for that version.
 
 Store the reviewed report for a tagged version at
 `docs/releases/<VERSION>-migration.md`. The report must name the compared
@@ -118,7 +122,9 @@ Before tagging a source release:
 - add `docs/releases/<VERSION>-migration.md`
 - after the release commit exists, add or verify
   `docs/releases/baselines/<VERSION>.json` when no real release tag will be
-  published; never use a checkpoint to claim publication
+  published; prepare schema-2 records with
+  `tools/record_release_checkpoint.py --version <VERSION> --source-commit
+  <COMMIT> --write` and never use a checkpoint to claim publication
 - update `framework/rule-registry.json` when rule IDs, summaries, owners, or
   enforcement levels change, then run
   `tools/render_rule_registry_docs.py` to refresh the Markdown registry and
@@ -137,6 +143,10 @@ Before tagging a source release:
   assertion
 - confirm the triggering release tag is exactly `v<VERSION>`
 - review `git diff --check`
+
+Normal pull-request and main-branch CI runs strict release-drift validation
+when any of the three version files changes. Commits without a version
+transition retain the cheaper full/change validation path.
 
 ## Tagging
 

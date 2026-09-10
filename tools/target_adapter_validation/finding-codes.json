@@ -44,7 +44,7 @@
   "families": [
     {
       "id": "AI",
-      "code_count": 16
+      "code_count": 18
     },
     {
       "id": "APPROVAL",
@@ -52,15 +52,15 @@
     },
     {
       "id": "ARCHITECTURE",
-      "code_count": 33
+      "code_count": 35
     },
     {
       "id": "ASSISTANT",
-      "code_count": 29
+      "code_count": 35
     },
     {
       "id": "AUTHORIZATION",
-      "code_count": 16
+      "code_count": 18
     },
     {
       "id": "BACKUP",
@@ -68,7 +68,7 @@
     },
     {
       "id": "BLUEPRINT",
-      "code_count": 5
+      "code_count": 7
     },
     {
       "id": "BOOTSTRAP",
@@ -76,7 +76,7 @@
     },
     {
       "id": "CAPABILITY",
-      "code_count": 8
+      "code_count": 10
     },
     {
       "id": "CHANGED",
@@ -84,31 +84,31 @@
     },
     {
       "id": "CODEDOC",
-      "code_count": 33
-    },
-    {
-      "id": "CONSISTENCY",
       "code_count": 37
     },
     {
+      "id": "CONSISTENCY",
+      "code_count": 43
+    },
+    {
       "id": "CONTEXT",
-      "code_count": 10
+      "code_count": 22
     },
     {
       "id": "DEBUG",
-      "code_count": 130
+      "code_count": 140
     },
     {
       "id": "DELEGATION",
-      "code_count": 72
+      "code_count": 86
     },
     {
       "id": "DEPENDENCY",
-      "code_count": 55
+      "code_count": 63
     },
     {
       "id": "DEVELOPMENT",
-      "code_count": 15
+      "code_count": 17
     },
     {
       "id": "DIAGRAM",
@@ -124,7 +124,7 @@
     },
     {
       "id": "ENGINEERING",
-      "code_count": 41
+      "code_count": 49
     },
     {
       "id": "ENTRY",
@@ -136,11 +136,11 @@
     },
     {
       "id": "EXTENSION",
-      "code_count": 67
+      "code_count": 75
     },
     {
       "id": "FRAMEWORK",
-      "code_count": 16
+      "code_count": 18
     },
     {
       "id": "GATE",
@@ -148,7 +148,7 @@
     },
     {
       "id": "INSTALLATION",
-      "code_count": 3
+      "code_count": 5
     },
     {
       "id": "LOCAL",
@@ -168,7 +168,7 @@
     },
     {
       "id": "OPERATION",
-      "code_count": 29
+      "code_count": 35
     },
     {
       "id": "PACKAGE",
@@ -184,7 +184,7 @@
     },
     {
       "id": "PROJECT",
-      "code_count": 52
+      "code_count": 54
     },
     {
       "id": "REQUIRED",
@@ -212,7 +212,7 @@
     },
     {
       "id": "SUPPORT",
-      "code_count": 11
+      "code_count": 19
     },
     {
       "id": "TARGET",
@@ -220,15 +220,15 @@
     },
     {
       "id": "TASK",
-      "code_count": 23
+      "code_count": 25
     },
     {
       "id": "TDD",
-      "code_count": 45
+      "code_count": 47
     },
     {
       "id": "TEAM",
-      "code_count": 98
+      "code_count": 112
     },
     {
       "id": "UNRESOLVED",
@@ -236,15 +236,15 @@
     },
     {
       "id": "VOCABULARY",
-      "code_count": 46
+      "code_count": 52
+    },
+    {
+      "id": "WORKER",
+      "code_count": 2
     },
     {
       "id": "WORKSPACE",
-      "code_count": 40
-    },
-    {
-      "id": "{prefix}",
-      "code_count": 1
+      "code_count": 46
     }
   ],
   "finding_codes": [
@@ -255,6 +255,24 @@
       ],
       "sources": [
         "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "AI_ROUTER_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/ai_infrastructure.py"
+      ]
+    },
+    {
+      "code": "AI_ROUTER_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/ai_infrastructure.py"
       ]
     },
     {
@@ -728,6 +746,24 @@
       ]
     },
     {
+      "code": "ARCHITECTURE_CATALOG_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/architecture_knowledge.py"
+      ]
+    },
+    {
+      "code": "ARCHITECTURE_CATALOG_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/architecture_knowledge.py"
+      ]
+    },
+    {
       "code": "ARCHITECTURE_CATALOG_KIND",
       "levels": [
         "error"
@@ -980,6 +1016,24 @@
       ]
     },
     {
+      "code": "ASSISTANT_CAPABILITIES_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/diagrams.py"
+      ]
+    },
+    {
+      "code": "ASSISTANT_CAPABILITIES_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/diagrams.py"
+      ]
+    },
+    {
       "code": "ASSISTANT_CAPABILITY_FIELDS",
       "levels": [
         "error"
@@ -999,6 +1053,24 @@
     },
     {
       "code": "ASSISTANT_CAPABILITY_INDEX_ENTRY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ASSISTANT_CAPABILITY_INDEX_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ASSISTANT_CAPABILITY_INDEX_INVALID_SHAPE",
       "levels": [
         "error"
       ],
@@ -1232,6 +1304,26 @@
       ]
     },
     {
+      "code": "ASSISTANT_SURFACE_CAPABILITIES_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/diagrams.py",
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "ASSISTANT_SURFACE_CAPABILITIES_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/diagrams.py",
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "AUTHORIZATION_BOUNDARY_CONFLATED",
       "levels": [
         "error"
@@ -1296,6 +1388,24 @@
     },
     {
       "code": "AUTHORIZATION_POLICY_EFFECTS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "AUTHORIZATION_POLICY_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "AUTHORIZATION_POLICY_INVALID_SHAPE",
       "levels": [
         "error"
       ],
@@ -1386,6 +1496,24 @@
     },
     {
       "code": "BLUEPRINT_CHANGE_OPERATION_CATALOG",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/blueprint_change.py"
+      ]
+    },
+    {
+      "code": "BLUEPRINT_CHANGE_OPERATION_CATALOG_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/blueprint_change.py"
+      ]
+    },
+    {
+      "code": "BLUEPRINT_CHANGE_OPERATION_CATALOG_INVALID_SHAPE",
       "levels": [
         "error"
       ],
@@ -1520,6 +1648,24 @@
       ]
     },
     {
+      "code": "CAPABILITY_CATALOG_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CAPABILITY_CATALOG_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "CAPABILITY_CATALOG_MISSING",
       "levels": [
         "error"
@@ -1638,6 +1784,24 @@
     },
     {
       "code": "CODEDOC_CATALOG_INDEX",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/code_documentation.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_CATALOG_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/code_documentation.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_CATALOG_INVALID_SHAPE",
       "levels": [
         "error"
       ],
@@ -1791,6 +1955,24 @@
     },
     {
       "code": "CODEDOC_PROFILES_EMPTY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/code_documentation.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_PROFILES_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/code_documentation.py"
+      ]
+    },
+    {
+      "code": "CODEDOC_PROFILES_INVALID_SHAPE",
       "levels": [
         "error"
       ],
@@ -1962,6 +2144,24 @@
     },
     {
       "code": "CONSISTENCY_MAP_IMPACT_POLICY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/consistency_map.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_MAP_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/consistency_map.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_MAP_INVALID_SHAPE",
       "levels": [
         "error"
       ],
@@ -2222,12 +2422,66 @@
       ]
     },
     {
+      "code": "CONSISTENCY_RELATIONSHIP_CANDIDATES_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/consistency_map.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_RELATIONSHIP_CANDIDATES_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/consistency_map.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_REVERSE_INDEX_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/consistency_map.py"
+      ]
+    },
+    {
+      "code": "CONSISTENCY_REVERSE_INDEX_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/consistency_map.py"
+      ]
+    },
+    {
       "code": "CONSISTENCY_REVERSE_INDEX_STALE",
       "levels": [
         "configured"
       ],
       "sources": [
         "tools/target_adapter_validation/consistency_map.py"
+      ]
+    },
+    {
+      "code": "CONTEXT_CATALOG_BOOTSTRAP_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/context_catalogs.py"
+      ]
+    },
+    {
+      "code": "CONTEXT_CATALOG_BOOTSTRAP_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/context_catalogs.py"
       ]
     },
     {
@@ -2285,12 +2539,102 @@
       ]
     },
     {
+      "code": "CONTEXT_CATALOG_ROUTER_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/context_catalogs.py"
+      ]
+    },
+    {
+      "code": "CONTEXT_CATALOG_ROUTER_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/context_catalogs.py"
+      ]
+    },
+    {
+      "code": "CONTEXT_DESCRIPTOR_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONTEXT_DESCRIPTOR_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONTEXT_OVERLAY_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "CONTEXT_OVERLAY_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "CONTEXT_PACKET_TEMPLATE_INVALID",
       "levels": [
         "error"
       ],
       "sources": [
         "tools/target_adapter_validation/context_catalogs.py"
+      ]
+    },
+    {
+      "code": "CONTEXT_PACKET_TEMPLATE_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/context_catalogs.py"
+      ]
+    },
+    {
+      "code": "CONTEXT_PACKET_TEMPLATE_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/context_catalogs.py"
+      ]
+    },
+    {
+      "code": "CONTEXT_ROUTER_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "CONTEXT_ROUTER_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
       ]
     },
     {
@@ -2556,6 +2900,24 @@
     },
     {
       "code": "DEBUG_MODE_ENGINEERING_EVIDENCE_EVENT_ID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/debug_mode.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_ENGINEERING_EVIDENCE_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/debug_mode.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_ENGINEERING_EVIDENCE_INVALID_SHAPE",
       "levels": [
         "error"
       ],
@@ -2835,6 +3197,24 @@
     },
     {
       "code": "DEBUG_MODE_INDEX_ID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/debug_mode.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_INDEX_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/debug_mode.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_INDEX_INVALID_SHAPE",
       "levels": [
         "error"
       ],
@@ -3230,6 +3610,24 @@
       ]
     },
     {
+      "code": "DEBUG_MODE_PROJECT_KNOWLEDGE_PROMOTION_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/debug_mode.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_PROJECT_KNOWLEDGE_PROMOTION_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/debug_mode.py"
+      ]
+    },
+    {
       "code": "DEBUG_MODE_PROVISIONAL_BINDING_AFTER_COMMIT",
       "levels": [
         "error"
@@ -3258,6 +3656,24 @@
     },
     {
       "code": "DEBUG_MODE_RECORD_DUPLICATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/debug_mode.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_RECORD_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/debug_mode.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_RECORD_INVALID_SHAPE",
       "levels": [
         "error"
       ],
@@ -3410,6 +3826,24 @@
       ]
     },
     {
+      "code": "DEBUG_MODE_TEMPLATE_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/debug_mode.py"
+      ]
+    },
+    {
+      "code": "DEBUG_MODE_TEMPLATE_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/debug_mode.py"
+      ]
+    },
+    {
       "code": "DEBUG_MODE_TEMPLATE_VERSION",
       "levels": [
         "error"
@@ -3491,7 +3925,43 @@
       ]
     },
     {
+      "code": "DELEGATION_AI_ROUTER_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_AI_ROUTER_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
       "code": "DELEGATION_CAPABILITY_FIELDS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_CAPABILITY_INDEX_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_CAPABILITY_INDEX_INVALID_SHAPE",
       "levels": [
         "error"
       ],
@@ -3644,6 +4114,24 @@
       ]
     },
     {
+      "code": "DELEGATION_EXECUTION_TREE_TEMPLATE_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_EXECUTION_TREE_TEMPLATE_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
       "code": "DELEGATION_EXPLICIT_MODEL_MISSING",
       "levels": [
         "error"
@@ -3734,6 +4222,24 @@
       ]
     },
     {
+      "code": "DELEGATION_OVERLAY_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_OVERLAY_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
       "code": "DELEGATION_PARALLEL_LIMIT",
       "levels": [
         "error"
@@ -3749,6 +4255,26 @@
       ],
       "sources": [
         "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_POLICY_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py",
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_POLICY_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py",
+        "tools/target_adapter_validation/task_decomposition.py"
       ]
     },
     {
@@ -3923,6 +4449,24 @@
       ]
     },
     {
+      "code": "DELEGATION_ROLE_CATALOG_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_ROLE_CATALOG_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
       "code": "DELEGATION_ROLE_CATALOG_PATH",
       "levels": [
         "error"
@@ -4032,6 +4576,24 @@
     },
     {
       "code": "DELEGATION_STOP_POLICY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_SURFACE_CAPABILITY_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/subagent_delegation.py"
+      ]
+    },
+    {
+      "code": "DELEGATION_SURFACE_CAPABILITY_INVALID_SHAPE",
       "levels": [
         "error"
       ],
@@ -4157,6 +4719,24 @@
       ]
     },
     {
+      "code": "DEPENDENCY_KNOWLEDGE_CATALOG_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/dependency_knowledge.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_CATALOG_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/dependency_knowledge.py"
+      ]
+    },
+    {
       "code": "DEPENDENCY_KNOWLEDGE_CATALOG_MISSING",
       "levels": [
         "error"
@@ -4176,6 +4756,24 @@
     },
     {
       "code": "DEPENDENCY_KNOWLEDGE_DEVIATIONS",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/dependency_knowledge.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_DEVIATIONS_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/dependency_knowledge.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_DEVIATIONS_INVALID_SHAPE",
       "levels": [
         "error"
       ],
@@ -4436,6 +5034,24 @@
       ]
     },
     {
+      "code": "DEPENDENCY_KNOWLEDGE_LOCK_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/dependency_knowledge.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_LOCK_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/dependency_knowledge.py"
+      ]
+    },
+    {
       "code": "DEPENDENCY_KNOWLEDGE_LOCK_MISSING",
       "levels": [
         "error"
@@ -4509,6 +5125,24 @@
     },
     {
       "code": "DEPENDENCY_KNOWLEDGE_PACKAGE_RECORD",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/dependency_knowledge.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_POLICY_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/dependency_knowledge.py"
+      ]
+    },
+    {
+      "code": "DEPENDENCY_KNOWLEDGE_POLICY_INVALID_SHAPE",
       "levels": [
         "error"
       ],
@@ -4635,6 +5269,24 @@
     },
     {
       "code": "DEVELOPMENT_EVIDENCE_CONTENT_POLICY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/development_evidence.py"
+      ]
+    },
+    {
+      "code": "DEVELOPMENT_EVIDENCE_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/development_evidence.py"
+      ]
+    },
+    {
+      "code": "DEVELOPMENT_EVIDENCE_INVALID_SHAPE",
       "levels": [
         "error"
       ],
@@ -5138,6 +5790,24 @@
       ]
     },
     {
+      "code": "ENGINEERING_EVIDENCE_DEBUG_RECORD_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/engineering_evidence.py"
+      ]
+    },
+    {
+      "code": "ENGINEERING_EVIDENCE_DEBUG_RECORD_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/engineering_evidence.py"
+      ]
+    },
+    {
       "code": "ENGINEERING_EVIDENCE_DEBUG_REFERENCE",
       "levels": [
         "error"
@@ -5211,6 +5881,24 @@
     },
     {
       "code": "ENGINEERING_EVIDENCE_INDEX_ID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/engineering_evidence.py"
+      ]
+    },
+    {
+      "code": "ENGINEERING_EVIDENCE_INDEX_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/engineering_evidence.py"
+      ]
+    },
+    {
+      "code": "ENGINEERING_EVIDENCE_INDEX_INVALID_SHAPE",
       "levels": [
         "error"
       ],
@@ -5372,6 +6060,24 @@
       ]
     },
     {
+      "code": "ENGINEERING_EVIDENCE_RECORD_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/engineering_evidence.py"
+      ]
+    },
+    {
+      "code": "ENGINEERING_EVIDENCE_RECORD_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/engineering_evidence.py"
+      ]
+    },
+    {
       "code": "ENGINEERING_EVIDENCE_RECORD_LIST",
       "levels": [
         "error"
@@ -5445,6 +6151,24 @@
     },
     {
       "code": "ENGINEERING_EVIDENCE_TEMPLATE_DEBUG_LINK",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/engineering_evidence.py"
+      ]
+    },
+    {
+      "code": "ENGINEERING_EVIDENCE_TEMPLATE_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/engineering_evidence.py"
+      ]
+    },
+    {
+      "code": "ENGINEERING_EVIDENCE_TEMPLATE_INVALID_SHAPE",
       "levels": [
         "error"
       ],
@@ -5570,6 +6294,24 @@
       ]
     },
     {
+      "code": "EXTENSION_BINDINGS_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/extensions.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_BINDINGS_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/extensions.py"
+      ]
+    },
+    {
       "code": "EXTENSION_BINDING_CONTRACT",
       "levels": [
         "error"
@@ -5652,6 +6394,24 @@
     },
     {
       "code": "EXTENSION_CATALOG_ENTRY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/extensions.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_CATALOG_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/extensions.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_CATALOG_INVALID_SHAPE",
       "levels": [
         "error"
       ],
@@ -5903,6 +6663,24 @@
       ]
     },
     {
+      "code": "EXTENSION_INSTALLED_MANIFEST_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/extensions.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_INSTALLED_MANIFEST_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/extensions.py"
+      ]
+    },
+    {
       "code": "EXTENSION_INSTALLED_MANIFEST_KIND",
       "levels": [
         "error"
@@ -5985,6 +6763,24 @@
     },
     {
       "code": "EXTENSION_LOCK_ENTRY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/extensions.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_LOCK_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/extensions.py"
+      ]
+    },
+    {
+      "code": "EXTENSION_LOCK_INVALID_SHAPE",
       "levels": [
         "error"
       ],
@@ -6200,6 +6996,24 @@
       ]
     },
     {
+      "code": "FRAMEWORK_INVENTORY_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "FRAMEWORK_INVENTORY_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "FRAMEWORK_PACK_INVENTORY_CONTENT_DRIFT",
       "levels": [
         "warning"
@@ -6305,6 +7119,24 @@
       ],
       "sources": [
         "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "INSTALLATION_STATE_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/installation_state.py"
+      ]
+    },
+    {
+      "code": "INSTALLATION_STATE_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/installation_state.py"
       ]
     },
     {
@@ -6695,6 +7527,38 @@
       ]
     },
     {
+      "code": "OPERATION_CATALOG_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/architecture_knowledge.py",
+        "tools/target_adapter_validation/dependency_knowledge.py",
+        "tools/target_adapter_validation/diagrams.py",
+        "tools/target_adapter_validation/extensions.py",
+        "tools/target_adapter_validation/project_vocabulary.py",
+        "tools/target_adapter_validation/test_first_development.py",
+        "tools/target_adapter_validation/workspace_modes.py",
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_CATALOG_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/architecture_knowledge.py",
+        "tools/target_adapter_validation/dependency_knowledge.py",
+        "tools/target_adapter_validation/diagrams.py",
+        "tools/target_adapter_validation/extensions.py",
+        "tools/target_adapter_validation/project_vocabulary.py",
+        "tools/target_adapter_validation/test_first_development.py",
+        "tools/target_adapter_validation/workspace_modes.py",
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
       "code": "OPERATION_CATALOG_IN_BOOTSTRAP",
       "levels": [
         "warning"
@@ -6794,6 +7658,24 @@
       ]
     },
     {
+      "code": "OPERATION_COMPLETION_EVIDENCE_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "OPERATION_COMPLETION_EVIDENCE_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
       "code": "OPERATION_INDEX_ALIAS_DRIFT",
       "levels": [
         "error"
@@ -6813,6 +7695,24 @@
     },
     {
       "code": "OPERATION_INDEX_CONTRACT_DRIFT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_INDEX_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/validate_target_adapter.py"
+      ]
+    },
+    {
+      "code": "OPERATION_INDEX_INVALID_SHAPE",
       "levels": [
         "error"
       ],
@@ -7802,6 +8702,24 @@
       ]
     },
     {
+      "code": "PROJECT_KNOWLEDGE_INDEX_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/project_knowledge.py"
+      ]
+    },
+    {
+      "code": "PROJECT_KNOWLEDGE_INDEX_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/project_knowledge.py"
+      ]
+    },
+    {
       "code": "PROJECT_KNOWLEDGE_INDEX_MISSING",
       "levels": [
         "error"
@@ -8347,6 +9265,15 @@
         "error"
       ],
       "sources": [
+        "tools/target_adapter_validation/architecture_knowledge.py",
+        "tools/target_adapter_validation/code_documentation.py",
+        "tools/target_adapter_validation/dependency_knowledge.py",
+        "tools/target_adapter_validation/diagrams.py",
+        "tools/target_adapter_validation/extensions.py",
+        "tools/target_adapter_validation/project_vocabulary.py",
+        "tools/target_adapter_validation/team_collaboration.py",
+        "tools/target_adapter_validation/test_first_development.py",
+        "tools/target_adapter_validation/workspace_modes.py",
         "tools/validate_target_adapter.py"
       ]
     },
@@ -8356,6 +9283,15 @@
         "error"
       ],
       "sources": [
+        "tools/target_adapter_validation/architecture_knowledge.py",
+        "tools/target_adapter_validation/code_documentation.py",
+        "tools/target_adapter_validation/dependency_knowledge.py",
+        "tools/target_adapter_validation/diagrams.py",
+        "tools/target_adapter_validation/extensions.py",
+        "tools/target_adapter_validation/project_vocabulary.py",
+        "tools/target_adapter_validation/team_collaboration.py",
+        "tools/target_adapter_validation/test_first_development.py",
+        "tools/target_adapter_validation/workspace_modes.py",
         "tools/validate_target_adapter.py"
       ]
     },
@@ -8793,6 +9729,24 @@
       ]
     },
     {
+      "code": "SUPPORT_GENERATION_INDEX_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/support_generation.py"
+      ]
+    },
+    {
+      "code": "SUPPORT_GENERATION_INDEX_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/support_generation.py"
+      ]
+    },
+    {
       "code": "SUPPORT_GENERATION_INDEX_STALE",
       "levels": [
         "error"
@@ -8811,6 +9765,24 @@
       ]
     },
     {
+      "code": "SUPPORT_GENERATION_REGISTRY_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/support_generation.py"
+      ]
+    },
+    {
+      "code": "SUPPORT_GENERATION_REGISTRY_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/support_generation.py"
+      ]
+    },
+    {
       "code": "SUPPORT_GENERATION_UNRESOLVED",
       "levels": [
         "configured"
@@ -8821,6 +9793,24 @@
     },
     {
       "code": "SUPPORT_POLICY_INVALID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/support_state.py"
+      ]
+    },
+    {
+      "code": "SUPPORT_POLICY_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/support_state.py"
+      ]
+    },
+    {
+      "code": "SUPPORT_POLICY_INVALID_SHAPE",
       "levels": [
         "error"
       ],
@@ -8850,6 +9840,24 @@
       "code": "SUPPORT_STATE_CURRENT",
       "levels": [
         "info"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/support_state.py"
+      ]
+    },
+    {
+      "code": "SUPPORT_STATE_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/support_state.py"
+      ]
+    },
+    {
+      "code": "SUPPORT_STATE_INVALID_SHAPE",
+      "levels": [
+        "error"
       ],
       "sources": [
         "tools/target_adapter_validation/support_state.py"
@@ -9028,6 +10036,24 @@
     },
     {
       "code": "TASK_DECOMPOSITION_PLAN_TEMPLATE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "TASK_DECOMPOSITION_POLICY_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "TASK_DECOMPOSITION_POLICY_INVALID_SHAPE",
       "levels": [
         "error"
       ],
@@ -9342,6 +10368,24 @@
       ]
     },
     {
+      "code": "TDD_POLICY_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/test_first_development.py"
+      ]
+    },
+    {
+      "code": "TDD_POLICY_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/test_first_development.py"
+      ]
+    },
+    {
       "code": "TDD_POLICY_KIND",
       "levels": [
         "error"
@@ -9621,6 +10665,24 @@
       ]
     },
     {
+      "code": "TEAM_ACTIVE_INDEX_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/team_collaboration.py"
+      ]
+    },
+    {
+      "code": "TEAM_ACTIVE_INDEX_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/team_collaboration.py"
+      ]
+    },
+    {
       "code": "TEAM_ACTIVE_INDEX_KIND",
       "levels": [
         "error"
@@ -9774,6 +10836,24 @@
       ]
     },
     {
+      "code": "TEAM_BACKEND_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/team_collaboration.py"
+      ]
+    },
+    {
+      "code": "TEAM_BACKEND_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/team_collaboration.py"
+      ]
+    },
+    {
       "code": "TEAM_BACKEND_KIND",
       "levels": [
         "error"
@@ -9847,6 +10927,24 @@
     },
     {
       "code": "TEAM_CONTEXT_OVERLAY_ID",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/team_collaboration.py"
+      ]
+    },
+    {
+      "code": "TEAM_CONTEXT_OVERLAY_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/team_collaboration.py"
+      ]
+    },
+    {
+      "code": "TEAM_CONTEXT_OVERLAY_INVALID_SHAPE",
       "levels": [
         "error"
       ],
@@ -9946,6 +11044,24 @@
     },
     {
       "code": "TEAM_LOCAL_IDENTITY_INACTIVE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/team_collaboration.py"
+      ]
+    },
+    {
+      "code": "TEAM_LOCAL_IDENTITY_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/team_collaboration.py"
+      ]
+    },
+    {
+      "code": "TEAM_LOCAL_IDENTITY_INVALID_SHAPE",
       "levels": [
         "error"
       ],
@@ -10152,6 +11268,24 @@
       ]
     },
     {
+      "code": "TEAM_POLICY_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/team_collaboration.py"
+      ]
+    },
+    {
+      "code": "TEAM_POLICY_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/team_collaboration.py"
+      ]
+    },
+    {
       "code": "TEAM_POLICY_KIND",
       "levels": [
         "error"
@@ -10198,6 +11332,24 @@
     },
     {
       "code": "TEAM_PRIORITY_UNKNOWN",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/team_collaboration.py"
+      ]
+    },
+    {
+      "code": "TEAM_REGISTRY_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/team_collaboration.py"
+      ]
+    },
+    {
+      "code": "TEAM_REGISTRY_INVALID_SHAPE",
       "levels": [
         "error"
       ],
@@ -10333,6 +11485,24 @@
     },
     {
       "code": "TEAM_TASK_FIELD",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/team_collaboration.py"
+      ]
+    },
+    {
+      "code": "TEAM_TASK_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/team_collaboration.py"
+      ]
+    },
+    {
+      "code": "TEAM_TASK_INVALID_SHAPE",
       "levels": [
         "error"
       ],
@@ -10521,6 +11691,24 @@
       ]
     },
     {
+      "code": "VOCABULARY_CATALOG_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/project_vocabulary.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_CATALOG_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/project_vocabulary.py"
+      ]
+    },
+    {
       "code": "VOCABULARY_CATALOG_KIND",
       "levels": [
         "error"
@@ -10596,6 +11784,24 @@
       "code": "VOCABULARY_EVIDENCE_LIMIT",
       "levels": [
         "info"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/project_vocabulary.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_LINKS_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/project_vocabulary.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_LINKS_INVALID_SHAPE",
+      "levels": [
+        "error"
       ],
       "sources": [
         "tools/target_adapter_validation/project_vocabulary.py"
@@ -10800,6 +12006,24 @@
       ]
     },
     {
+      "code": "VOCABULARY_TERMS_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/project_vocabulary.py"
+      ]
+    },
+    {
+      "code": "VOCABULARY_TERMS_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/project_vocabulary.py"
+      ]
+    },
+    {
       "code": "VOCABULARY_TERM_FIELDS",
       "levels": [
         "error"
@@ -10872,6 +12096,24 @@
       ]
     },
     {
+      "code": "WORKER_ROLE_CATALOG_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
+      "code": "WORKER_ROLE_CATALOG_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/task_decomposition.py"
+      ]
+    },
+    {
       "code": "WORKSPACE_MODE_ACTIVE_ROOT",
       "levels": [
         "error"
@@ -10891,6 +12133,24 @@
     },
     {
       "code": "WORKSPACE_MODE_CATALOG_ENTRY",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/workspace_modes.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_CATALOG_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/workspace_modes.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_CATALOG_INVALID_SHAPE",
       "levels": [
         "error"
       ],
@@ -11043,6 +12303,24 @@
       ]
     },
     {
+      "code": "WORKSPACE_MODE_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/workspace_modes.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_INVALID_SHAPE",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/workspace_modes.py"
+      ]
+    },
+    {
       "code": "WORKSPACE_MODE_MANIFEST_PATH",
       "levels": [
         "error"
@@ -11116,6 +12394,24 @@
     },
     {
       "code": "WORKSPACE_MODE_ROOT_CONTEXT",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/workspace_modes.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_ROOT_CONTEXT_INVALID_JSON",
+      "levels": [
+        "error"
+      ],
+      "sources": [
+        "tools/target_adapter_validation/workspace_modes.py"
+      ]
+    },
+    {
+      "code": "WORKSPACE_MODE_ROOT_CONTEXT_INVALID_SHAPE",
       "levels": [
         "error"
       ],
@@ -11229,15 +12525,6 @@
       ],
       "sources": [
         "tools/target_adapter_validation/workspace_modes.py"
-      ]
-    },
-    {
-      "code": "{prefix}_INVALID_JSON",
-      "levels": [
-        "error"
-      ],
-      "sources": [
-        "tools/validate_target_adapter.py"
       ]
     }
   ]

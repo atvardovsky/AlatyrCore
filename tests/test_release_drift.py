@@ -17,9 +17,11 @@ from check_release_drift import (  # noqa: E402
     nearest_release_baseline,
     nearest_tagged_baseline,
     prior_changelog_versions,
+    release_checkpoint,
     unreleased_section_is_empty,
     validate_committed_report,
 )
+from record_release_checkpoint import checkpoint_record  # noqa: E402
 from check_versioning import (  # noqa: E402
     validate_current_release_binding,
     validate_release_tag,
@@ -114,6 +116,72 @@ class ReleaseBaselineTests(unittest.TestCase):
         self.assertEqual(baseline.kind, "checkpoint")
         self.assertIn(baseline.version, prior_versions)
         self.assertEqual(intervening, prior_versions[: prior_versions.index(baseline.version)])
+
+    def test_current_chain_uses_alpha_61_checkpoint(self) -> None:
+        version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+        if version == "0.1.0-alpha.61":
+            self.skipTest("alpha.62 version transition has not been applied yet")
+        baseline, _intervening = nearest_release_baseline(version)
+        self.assertEqual(baseline.label, "release-checkpoint:0.1.0-alpha.61")
+
+    def test_schema_2_checkpoint_rejects_modified_report(self) -> None:
+        with patch("check_release_drift.file_sha256", return_value="0" * 64):
+            with self.assertRaisesRegex(RuntimeError, "migration report digest differs"):
+                release_checkpoint("0.1.0-alpha.61")
+
+    def test_checkpoint_recorder_reproduces_alpha_61_identity(self) -> None:
+        record = checkpoint_record("0.1.0-alpha.61", "489e329")
+        self.assertEqual(record["schema_version"], 2)
+        self.assertEqual(
+            record["previous_baseline"], "release-checkpoint:0.1.0-alpha.60"
+        )
+        self.assertEqual(
+            record["contract_sha256"],
+            "a8109d28f8ef719a2ed53b1b2ddd841bab6472f3c14bb31551feb42697827c9a",
+        )
+
+    def test_committed_report_rejects_malformed_source_label(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            report = root / "docs/releases/2.0.0-migration.md"
+            report.parent.mkdir(parents=True)
+            report.write_text(
+                "\n".join(
+                    [
+                        "From manifest: `baseline:framework/rule-registry.json:framework/rule-registry.json`",
+                        "To manifest: `source-tree:framework/rule-registry.json`",
+                        "From framework version: `1.0.0`",
+                        "To framework version: `2.0.0`",
+                        "From adapter schema version: `1`",
+                        "To adapter schema version: `1`",
+                        "From template version: `1`",
+                        "To template version: `2`",
+                        "From contract SHA-256: `from-digest`",
+                        "To contract SHA-256: `to-digest`",
+                        "Source validation: `passed`",
+                        "Source validation commands:",
+                        "- `python3 tools/check_all.py --profile full`",
+                        "Source validation result: `all checks passed`",
+                        "Source validation revision: `fixture-tree`",
+                        "Source validation completed at: `2026-09-04T12:00:00+00:00`",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            with patch("check_release_drift.ROOT", root):
+                failures = validate_committed_report(
+                    baseline="baseline",
+                    from_version="1.0.0",
+                    to_version="2.0.0",
+                    from_adapter="1",
+                    to_adapter="1",
+                    from_template="1",
+                    to_template="2",
+                    from_digest="from-digest",
+                    to_digest="to-digest",
+                )
+            self.assertTrue(any("missing release binding" in item for item in failures))
 
     def test_uses_nearest_real_tag_and_preserves_intervening_report_chain(self) -> None:
         version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()

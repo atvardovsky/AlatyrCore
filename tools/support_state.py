@@ -398,8 +398,29 @@ def state_differences(before: dict[str, Any], after: dict[str, Any]) -> list[Sup
 
 
 def state_is_current(recorded: dict[str, Any], current: dict[str, Any]) -> bool:
+    stable_provenance_fields = (
+        "schema_version",
+        "provenance_kind",
+        "tool",
+        "target_manifest",
+        "target_manifest_digest",
+        "framework_version",
+        "adapter_schema_version",
+        "template_version",
+    )
+    recorded_provenance = recorded.get("generated_by")
+    current_provenance = current.get("generated_by")
+    provenance_current = isinstance(recorded_provenance, dict) and isinstance(
+        current_provenance, dict
+    )
+    if provenance_current:
+        provenance_current = all(
+            recorded_provenance.get(field) == current_provenance.get(field)
+            for field in stable_provenance_fields
+        )
     return (
-        recorded.get("digest_contract") == current.get("digest_contract")
+        provenance_current
+        and recorded.get("digest_contract") == current.get("digest_contract")
         and recorded.get("policy_digest") == current.get("policy_digest")
         and recorded.get("root_digest") == current.get("root_digest")
         and recorded.get("groups") == current.get("groups")

@@ -59,6 +59,16 @@ jobs:
       - name: Check pushed contract drift
         if: github.event_name == 'push' && matrix.python-version == '3.13' && github.event.before != '0000000000000000000000000000000000000000'
         run: python tools/check_release_drift.py --mode change --from-ref ${{ github.event.before }}
+      - name: Check release evidence for version transitions
+        if: matrix.python-version == '3.13' && (github.event_name == 'pull_request' || (github.event_name == 'push' && github.event.before != '0000000000000000000000000000000000000000'))
+        env:
+          ALATYR_BASE_SHA: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if git diff --quiet "$ALATYR_BASE_SHA" HEAD -- VERSION ADAPTER_SCHEMA_VERSION TEMPLATE_VERSION; then
+            echo "No version transition; strict release evidence is not required."
+          else
+            python tools/check_release_drift.py --mode release
+          fi
 
   portable-source-checks:
     name: Portable source checks (${{ matrix.os }})

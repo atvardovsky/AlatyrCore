@@ -10,66 +10,70 @@ Regenerate both catalog surfaces with:
 python3 tools/render_target_validator_findings.py
 ```
 
-Catalog entries: 1221
+Catalog entries: 1360
 
 ## Families
 
-- `AI`: 16 codes.
+- `AI`: 18 codes.
 - `APPROVAL`: 31 codes.
-- `ARCHITECTURE`: 33 codes.
-- `ASSISTANT`: 29 codes.
-- `AUTHORIZATION`: 16 codes.
+- `ARCHITECTURE`: 35 codes.
+- `ASSISTANT`: 35 codes.
+- `AUTHORIZATION`: 18 codes.
 - `BACKUP`: 1 codes.
-- `BLUEPRINT`: 5 codes.
+- `BLUEPRINT`: 7 codes.
 - `BOOTSTRAP`: 9 codes.
-- `CAPABILITY`: 8 codes.
+- `CAPABILITY`: 10 codes.
 - `CHANGED`: 2 codes.
-- `CODEDOC`: 33 codes.
-- `CONSISTENCY`: 37 codes.
-- `CONTEXT`: 10 codes.
-- `DEBUG`: 130 codes.
-- `DELEGATION`: 72 codes.
-- `DEPENDENCY`: 55 codes.
-- `DEVELOPMENT`: 15 codes.
+- `CODEDOC`: 37 codes.
+- `CONSISTENCY`: 43 codes.
+- `CONTEXT`: 22 codes.
+- `DEBUG`: 140 codes.
+- `DELEGATION`: 86 codes.
+- `DEPENDENCY`: 63 codes.
+- `DEVELOPMENT`: 17 codes.
 - `DIAGRAM`: 32 codes.
 - `DIFF`: 3 codes.
 - `ENABLED`: 1 codes.
-- `ENGINEERING`: 41 codes.
+- `ENGINEERING`: 49 codes.
 - `ENTRY`: 9 codes.
 - `EVIDENCE`: 1 codes.
-- `EXTENSION`: 67 codes.
-- `FRAMEWORK`: 16 codes.
+- `EXTENSION`: 75 codes.
+- `FRAMEWORK`: 18 codes.
 - `GATE`: 1 codes.
-- `INSTALLATION`: 3 codes.
+- `INSTALLATION`: 5 codes.
 - `LOCAL`: 1 codes.
 - `MANIFEST`: 12 codes.
 - `MIGRATION`: 8 codes.
 - `MODULE`: 11 codes.
-- `OPERATION`: 29 codes.
+- `OPERATION`: 35 codes.
 - `PACKAGE`: 78 codes.
 - `PLACEHOLDERS`: 1 codes.
 - `PROFILE`: 2 codes.
-- `PROJECT`: 52 codes.
+- `PROJECT`: 54 codes.
 - `REQUIRED`: 1 codes.
 - `ROUTED`: 1 codes.
 - `ROUTER`: 71 codes.
 - `ROUTING`: 2 codes.
 - `RULE`: 1 codes.
 - `STALE`: 2 codes.
-- `SUPPORT`: 11 codes.
+- `SUPPORT`: 19 codes.
 - `TARGET`: 8 codes.
-- `TASK`: 23 codes.
-- `TDD`: 45 codes.
-- `TEAM`: 98 codes.
+- `TASK`: 25 codes.
+- `TDD`: 47 codes.
+- `TEAM`: 112 codes.
 - `UNRESOLVED`: 1 codes.
-- `VOCABULARY`: 46 codes.
-- `WORKSPACE`: 40 codes.
-- `{prefix}`: 1 codes.
+- `VOCABULARY`: 52 codes.
+- `WORKER`: 2 codes.
+- `WORKSPACE`: 46 codes.
 
 ## Codes
 
 - `AI_ROUTER_ALLOWED_ACTION`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `AI_ROUTER_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/ai_infrastructure.py`.
+- `AI_ROUTER_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/ai_infrastructure.py`.
 - `AI_ROUTER_ITEMS`
   Level: error. Source: `tools/target_adapter_validation/ai_infrastructure.py`.
 - `AI_ROUTER_ITEM_DUPLICATE`
@@ -174,6 +178,10 @@ Catalog entries: 1221
   Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_CATALOG_INDEX`
   Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
+- `ARCHITECTURE_CATALOG_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
+- `ARCHITECTURE_CATALOG_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_CATALOG_KIND`
   Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ARCHITECTURE_CATALOG_LIST`
@@ -230,11 +238,19 @@ Catalog entries: 1221
   Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`.
 - `ASSISTANT_AUTO_LOAD_UNPROVEN`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_CAPABILITIES_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
+- `ASSISTANT_CAPABILITIES_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`.
 - `ASSISTANT_CAPABILITY_FIELDS`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ASSISTANT_CAPABILITY_ID`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ASSISTANT_CAPABILITY_INDEX_ENTRY`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_CAPABILITY_INDEX_INVALID_JSON`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_CAPABILITY_INDEX_INVALID_SHAPE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ASSISTANT_CAPABILITY_INDEX_SCHEMA`
   Level: error. Source: `tools/validate_target_adapter.py`.
@@ -286,6 +302,10 @@ Catalog entries: 1221
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ASSISTANT_SELECTED_UNSUPPORTED`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `ASSISTANT_SURFACE_CAPABILITIES_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`, `tools/validate_target_adapter.py`.
+- `ASSISTANT_SURFACE_CAPABILITIES_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/diagrams.py`, `tools/validate_target_adapter.py`.
 - `AUTHORIZATION_BOUNDARY_CONFLATED`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `AUTHORIZATION_CATALOG_EVIDENCE`
@@ -301,6 +321,10 @@ Catalog entries: 1221
 - `AUTHORIZATION_PHASE_GATE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `AUTHORIZATION_POLICY_EFFECTS`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `AUTHORIZATION_POLICY_INVALID_JSON`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `AUTHORIZATION_POLICY_INVALID_SHAPE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `AUTHORIZATION_POLICY_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
@@ -321,6 +345,10 @@ Catalog entries: 1221
 - `BACKUP_OWNER_UNRESOLVED`
   Level: configured. Source: `tools/validate_target_adapter.py`.
 - `BLUEPRINT_CHANGE_OPERATION_CATALOG`
+  Level: error. Source: `tools/target_adapter_validation/blueprint_change.py`.
+- `BLUEPRINT_CHANGE_OPERATION_CATALOG_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/blueprint_change.py`.
+- `BLUEPRINT_CHANGE_OPERATION_CATALOG_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/blueprint_change.py`.
 - `BLUEPRINT_CHANGE_OPERATION_FLOW`
   Level: error. Source: `tools/target_adapter_validation/blueprint_change.py`.
@@ -350,6 +378,10 @@ Catalog entries: 1221
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `CAPABILITY_CATALOG_INVALID`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `CAPABILITY_CATALOG_INVALID_JSON`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `CAPABILITY_CATALOG_INVALID_SHAPE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `CAPABILITY_CATALOG_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `CAPABILITY_DEPENDENCY_MISSING`
@@ -377,6 +409,10 @@ Catalog entries: 1221
 - `CODEDOC_AREA_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_CATALOG_INDEX`
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
+- `CODEDOC_CATALOG_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
+- `CODEDOC_CATALOG_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_CATALOG_KIND`
   Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
@@ -411,6 +447,10 @@ Catalog entries: 1221
 - `CODEDOC_OUTPUT_POLICY`
   Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_PROFILES_EMPTY`
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
+- `CODEDOC_PROFILES_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
+- `CODEDOC_PROFILES_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
 - `CODEDOC_PROFILE_FIELDS`
   Level: error. Source: `tools/target_adapter_validation/code_documentation.py`.
@@ -449,6 +489,10 @@ Catalog entries: 1221
 - `CONSISTENCY_MAP_GRAPH`
   Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_IMPACT_POLICY`
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
+- `CONSISTENCY_MAP_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
+- `CONSISTENCY_MAP_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_MAP_KIND`
   Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
@@ -506,8 +550,20 @@ Catalog entries: 1221
   Level: configured. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_RELATIONSHIP_CANDIDATES`
   Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
+- `CONSISTENCY_RELATIONSHIP_CANDIDATES_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
+- `CONSISTENCY_RELATIONSHIP_CANDIDATES_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
+- `CONSISTENCY_REVERSE_INDEX_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
+- `CONSISTENCY_REVERSE_INDEX_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/consistency_map.py`.
 - `CONSISTENCY_REVERSE_INDEX_STALE`
   Level: configured. Source: `tools/target_adapter_validation/consistency_map.py`.
+- `CONTEXT_CATALOG_BOOTSTRAP_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/context_catalogs.py`.
+- `CONTEXT_CATALOG_BOOTSTRAP_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/context_catalogs.py`.
 - `CONTEXT_CATALOG_CURRENT`
   Level: info. Source: `tools/target_adapter_validation/context_catalogs.py`.
 - `CONTEXT_CATALOG_EVIDENCE_LIMIT`
@@ -520,8 +576,28 @@ Catalog entries: 1221
   Level: error. Source: `tools/target_adapter_validation/context_catalogs.py`.
 - `CONTEXT_CATALOG_ROUTER`
   Level: error. Source: `tools/target_adapter_validation/context_catalogs.py`.
+- `CONTEXT_CATALOG_ROUTER_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/context_catalogs.py`.
+- `CONTEXT_CATALOG_ROUTER_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/context_catalogs.py`.
+- `CONTEXT_DESCRIPTOR_INVALID_JSON`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `CONTEXT_DESCRIPTOR_INVALID_SHAPE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `CONTEXT_OVERLAY_INVALID_JSON`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `CONTEXT_OVERLAY_INVALID_SHAPE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `CONTEXT_PACKET_TEMPLATE_INVALID`
   Level: error. Source: `tools/target_adapter_validation/context_catalogs.py`.
+- `CONTEXT_PACKET_TEMPLATE_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/context_catalogs.py`.
+- `CONTEXT_PACKET_TEMPLATE_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/context_catalogs.py`.
+- `CONTEXT_ROUTER_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `CONTEXT_ROUTER_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
 - `CONTEXT_SEMANTIC_CODEBOOK_INVALID`
   Level: error. Source: `tools/target_adapter_validation/context_catalogs.py`.
 - `CONTEXT_SEMANTIC_OWNER_MISSING`
@@ -581,6 +657,10 @@ Catalog entries: 1221
 - `DEBUG_MODE_DIRECTION_REPLACEMENT_MISSING`
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_ENGINEERING_EVIDENCE_EVENT_ID`
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
+- `DEBUG_MODE_ENGINEERING_EVIDENCE_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
+- `DEBUG_MODE_ENGINEERING_EVIDENCE_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_ENGINEERING_EVIDENCE_LINEAGE`
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
@@ -643,6 +723,10 @@ Catalog entries: 1221
 - `DEBUG_MODE_INDEX_FIELD`
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_INDEX_ID`
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
+- `DEBUG_MODE_INDEX_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
+- `DEBUG_MODE_INDEX_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_INDEX_KIND`
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
@@ -730,6 +814,10 @@ Catalog entries: 1221
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_PROHIBITED_CONTENT_FIELD`
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
+- `DEBUG_MODE_PROJECT_KNOWLEDGE_PROMOTION_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
+- `DEBUG_MODE_PROJECT_KNOWLEDGE_PROMOTION_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_PROVISIONAL_BINDING_AFTER_COMMIT`
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_PUBLICATION_SCOPE`
@@ -737,6 +825,10 @@ Catalog entries: 1221
 - `DEBUG_MODE_PUBLISHED_BUT_UNFINALIZED`
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_RECORD_DUPLICATE`
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
+- `DEBUG_MODE_RECORD_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
+- `DEBUG_MODE_RECORD_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_RECORD_LOCATION`
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
@@ -770,6 +862,10 @@ Catalog entries: 1221
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_TEMPLATE_EVIDENCE_DECISION`
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
+- `DEBUG_MODE_TEMPLATE_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
+- `DEBUG_MODE_TEMPLATE_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_TEMPLATE_VERSION`
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_TIMING`
@@ -788,7 +884,15 @@ Catalog entries: 1221
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
 - `DEBUG_MODE_VALIDATION_EVIDENCE_CLASS`
   Level: error. Source: `tools/target_adapter_validation/debug_mode.py`.
+- `DELEGATION_AI_ROUTER_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_AI_ROUTER_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_CAPABILITY_FIELDS`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_CAPABILITY_INDEX_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_CAPABILITY_INDEX_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_CAPABILITY_MISSING`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
@@ -822,6 +926,10 @@ Catalog entries: 1221
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_EXECUTION_TREE_TEMPLATE`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_EXECUTION_TREE_TEMPLATE_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_EXECUTION_TREE_TEMPLATE_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_EXPLICIT_MODEL_MISSING`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_EXTERNAL_DISPATCHER`
@@ -842,10 +950,18 @@ Catalog entries: 1221
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_OVERLAY_CONTRACT`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_OVERLAY_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_OVERLAY_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_PARALLEL_LIMIT`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_POLICY_CAP_CONFLICT`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_POLICY_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`, `tools/target_adapter_validation/task_decomposition.py`.
+- `DELEGATION_POLICY_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`, `tools/target_adapter_validation/task_decomposition.py`.
 - `DELEGATION_POLICY_KIND`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_POLICY_SCHEMA`
@@ -884,6 +1000,10 @@ Catalog entries: 1221
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ROLE_CATALOG_DECOMPOSITION_POLICY`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_ROLE_CATALOG_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_ROLE_CATALOG_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ROLE_CATALOG_PATH`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_ROLE_CATALOG_SCHEMA`
@@ -909,6 +1029,10 @@ Catalog entries: 1221
 - `DELEGATION_SHARED_WRITE_ISOLATION`
   Level: warning. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_STOP_POLICY`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_SURFACE_CAPABILITY_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
+- `DELEGATION_SURFACE_CAPABILITY_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
 - `DELEGATION_TREE_LIMIT`
   Level: error. Source: `tools/target_adapter_validation/subagent_delegation.py`.
@@ -936,11 +1060,19 @@ Catalog entries: 1221
   Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_AUTHORITY`
   Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
+- `DEPENDENCY_KNOWLEDGE_CATALOG_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
+- `DEPENDENCY_KNOWLEDGE_CATALOG_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_CATALOG_MISSING`
   Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_CATALOG_SCHEMA`
   Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_DEVIATIONS`
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
+- `DEPENDENCY_KNOWLEDGE_DEVIATIONS_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
+- `DEPENDENCY_KNOWLEDGE_DEVIATIONS_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_DEVIATION_DUPLICATE`
   Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
@@ -998,6 +1130,10 @@ Catalog entries: 1221
   Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_LOCK_EXPORT`
   Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
+- `DEPENDENCY_KNOWLEDGE_LOCK_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
+- `DEPENDENCY_KNOWLEDGE_LOCK_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_LOCK_MISSING`
   Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_LOCK_SCHEMA`
@@ -1015,6 +1151,10 @@ Catalog entries: 1221
 - `DEPENDENCY_KNOWLEDGE_PACKAGES`
   Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_PACKAGE_RECORD`
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
+- `DEPENDENCY_KNOWLEDGE_POLICY_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
+- `DEPENDENCY_KNOWLEDGE_POLICY_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEPENDENCY_KNOWLEDGE_POLICY_OWNER`
   Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
@@ -1043,6 +1183,10 @@ Catalog entries: 1221
 - `DEPENDENCY_KNOWLEDGE_TRUST_STATE`
   Level: error. Source: `tools/target_adapter_validation/dependency_knowledge.py`.
 - `DEVELOPMENT_EVIDENCE_CONTENT_POLICY`
+  Level: error. Source: `tools/target_adapter_validation/development_evidence.py`.
+- `DEVELOPMENT_EVIDENCE_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/development_evidence.py`.
+- `DEVELOPMENT_EVIDENCE_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/development_evidence.py`.
 - `DEVELOPMENT_EVIDENCE_KIND`
   Level: error. Source: `tools/target_adapter_validation/development_evidence.py`.
@@ -1154,6 +1298,10 @@ Catalog entries: 1221
   Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_DEBUG_RECIPROCITY`
   Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
+- `ENGINEERING_EVIDENCE_DEBUG_RECORD_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
+- `ENGINEERING_EVIDENCE_DEBUG_RECORD_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_DEBUG_REFERENCE`
   Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_EXTERNAL_RECORD_UNCHECKED`
@@ -1171,6 +1319,10 @@ Catalog entries: 1221
 - `ENGINEERING_EVIDENCE_INDEX_FIELD`
   Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_INDEX_ID`
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
+- `ENGINEERING_EVIDENCE_INDEX_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
+- `ENGINEERING_EVIDENCE_INDEX_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_INDEX_KIND`
   Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
@@ -1206,6 +1358,10 @@ Catalog entries: 1221
   Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_RECORD_DUPLICATE`
   Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
+- `ENGINEERING_EVIDENCE_RECORD_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
+- `ENGINEERING_EVIDENCE_RECORD_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_RECORD_LIST`
   Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_RECORD_LOCATION`
@@ -1223,6 +1379,10 @@ Catalog entries: 1221
 - `ENGINEERING_EVIDENCE_TEMPLATE_BINDING`
   Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_TEMPLATE_DEBUG_LINK`
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
+- `ENGINEERING_EVIDENCE_TEMPLATE_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
+- `ENGINEERING_EVIDENCE_TEMPLATE_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
 - `ENGINEERING_EVIDENCE_TEMPLATE_VERSION`
   Level: error. Source: `tools/target_adapter_validation/engineering_evidence.py`.
@@ -1250,6 +1410,10 @@ Catalog entries: 1221
   Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_APPROVAL_PATH`
   Level: error. Source: `tools/target_adapter_validation/extensions.py`.
+- `EXTENSION_BINDINGS_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
+- `EXTENSION_BINDINGS_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_BINDING_CONTRACT`
   Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_BINDING_ENTRIES`
@@ -1269,6 +1433,10 @@ Catalog entries: 1221
 - `EXTENSION_CATALOG_ENTRIES`
   Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_CATALOG_ENTRY`
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
+- `EXTENSION_CATALOG_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
+- `EXTENSION_CATALOG_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_CATALOG_KIND`
   Level: error. Source: `tools/target_adapter_validation/extensions.py`.
@@ -1324,6 +1492,10 @@ Catalog entries: 1221
   Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_INSTALLED_MANIFEST_IDENTITY`
   Level: error. Source: `tools/target_adapter_validation/extensions.py`.
+- `EXTENSION_INSTALLED_MANIFEST_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
+- `EXTENSION_INSTALLED_MANIFEST_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_INSTALLED_MANIFEST_KIND`
   Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_INTEGRATION_SURFACES`
@@ -1343,6 +1515,10 @@ Catalog entries: 1221
 - `EXTENSION_LOCK_ENTRIES`
   Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_LOCK_ENTRY`
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
+- `EXTENSION_LOCK_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/extensions.py`.
+- `EXTENSION_LOCK_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/extensions.py`.
 - `EXTENSION_LOCK_KIND`
   Level: error. Source: `tools/target_adapter_validation/extensions.py`.
@@ -1390,6 +1566,10 @@ Catalog entries: 1221
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `FRAMEWORK_FILE_MISSING`
   Level: warning. Source: `tools/validate_target_adapter.py`.
+- `FRAMEWORK_INVENTORY_INVALID_JSON`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `FRAMEWORK_INVENTORY_INVALID_SHAPE`
+  Level: error. Source: `tools/validate_target_adapter.py`.
 - `FRAMEWORK_PACK_INVENTORY_CONTENT_DRIFT`
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `FRAMEWORK_PACK_INVENTORY_DIGEST_DRIFT`
@@ -1414,6 +1594,10 @@ Catalog entries: 1221
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `GATE_CONTEXT_ROUTER_MISSING`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `INSTALLATION_STATE_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/installation_state.py`.
+- `INSTALLATION_STATE_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/installation_state.py`.
 - `INSTALLATION_STATE_RECORD_MISSING`
   Level: error. Source: `tools/target_adapter_validation/installation_state.py`.
 - `INSTALLATION_STATE_RECORD_PATH`
@@ -1500,6 +1684,10 @@ Catalog entries: 1221
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `OPERATION_CATALOG_FIELD`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `OPERATION_CATALOG_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`, `tools/target_adapter_validation/dependency_knowledge.py`, `tools/target_adapter_validation/diagrams.py`, `tools/target_adapter_validation/extensions.py`, `tools/target_adapter_validation/project_vocabulary.py`, `tools/target_adapter_validation/test_first_development.py`, `tools/target_adapter_validation/workspace_modes.py`, `tools/validate_target_adapter.py`.
+- `OPERATION_CATALOG_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`, `tools/target_adapter_validation/dependency_knowledge.py`, `tools/target_adapter_validation/diagrams.py`, `tools/target_adapter_validation/extensions.py`, `tools/target_adapter_validation/project_vocabulary.py`, `tools/target_adapter_validation/test_first_development.py`, `tools/target_adapter_validation/workspace_modes.py`, `tools/validate_target_adapter.py`.
 - `OPERATION_CATALOG_IN_BOOTSTRAP`
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `OPERATION_CATALOG_ITEM`
@@ -1522,11 +1710,19 @@ Catalog entries: 1221
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `OPERATION_CATALOG_SCHEMA`
   Level: error. Source: `tools/validate_target_adapter.py`.
+- `OPERATION_COMPLETION_EVIDENCE_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `OPERATION_COMPLETION_EVIDENCE_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
 - `OPERATION_INDEX_ALIAS_DRIFT`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `OPERATION_INDEX_CATALOG`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `OPERATION_INDEX_CONTRACT_DRIFT`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `OPERATION_INDEX_INVALID_JSON`
+  Level: error. Source: `tools/validate_target_adapter.py`.
+- `OPERATION_INDEX_INVALID_SHAPE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `OPERATION_INDEX_KIND`
   Level: error. Source: `tools/validate_target_adapter.py`.
@@ -1746,6 +1942,10 @@ Catalog entries: 1221
   Level: error. Source: `tools/project_knowledge.py`.
 - `PROJECT_KNOWLEDGE_ID_DUPLICATE`
   Level: error. Source: `tools/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_INDEX_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/project_knowledge.py`.
+- `PROJECT_KNOWLEDGE_INDEX_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/project_knowledge.py`.
 - `PROJECT_KNOWLEDGE_INDEX_MISSING`
   Level: error. Source: `tools/project_knowledge.py`.
 - `PROJECT_KNOWLEDGE_INDEX_PATH`
@@ -1867,9 +2067,9 @@ Catalog entries: 1221
 - `ROUTER_HUMAN_REFERENCE`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ROUTER_INVALID_JSON`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`, `tools/target_adapter_validation/code_documentation.py`, `tools/target_adapter_validation/dependency_knowledge.py`, `tools/target_adapter_validation/diagrams.py`, `tools/target_adapter_validation/extensions.py`, `tools/target_adapter_validation/project_vocabulary.py`, `tools/target_adapter_validation/team_collaboration.py`, `tools/target_adapter_validation/test_first_development.py`, `tools/target_adapter_validation/workspace_modes.py`, `tools/validate_target_adapter.py`.
 - `ROUTER_INVALID_SHAPE`
-  Level: error. Source: `tools/validate_target_adapter.py`.
+  Level: error. Source: `tools/target_adapter_validation/architecture_knowledge.py`, `tools/target_adapter_validation/code_documentation.py`, `tools/target_adapter_validation/dependency_knowledge.py`, `tools/target_adapter_validation/diagrams.py`, `tools/target_adapter_validation/extensions.py`, `tools/target_adapter_validation/project_vocabulary.py`, `tools/target_adapter_validation/team_collaboration.py`, `tools/target_adapter_validation/test_first_development.py`, `tools/target_adapter_validation/workspace_modes.py`, `tools/validate_target_adapter.py`.
 - `ROUTER_KIND`
   Level: error. Source: `tools/validate_target_adapter.py`.
 - `ROUTER_MANIFEST_SCHEMA_DRIFT`
@@ -1966,13 +2166,25 @@ Catalog entries: 1221
   Level: configured. Source: `tools/validate_target_adapter.py`.
 - `SUPPORT_GENERATION_CURRENT`
   Level: info. Source: `tools/target_adapter_validation/support_generation.py`.
+- `SUPPORT_GENERATION_INDEX_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/support_generation.py`.
+- `SUPPORT_GENERATION_INDEX_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/support_generation.py`.
 - `SUPPORT_GENERATION_INDEX_STALE`
   Level: error. Source: `tools/target_adapter_validation/support_generation.py`.
 - `SUPPORT_GENERATION_INVALID`
   Level: error. Source: `tools/target_adapter_validation/support_generation.py`.
+- `SUPPORT_GENERATION_REGISTRY_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/support_generation.py`.
+- `SUPPORT_GENERATION_REGISTRY_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/support_generation.py`.
 - `SUPPORT_GENERATION_UNRESOLVED`
   Level: configured. Source: `tools/target_adapter_validation/support_generation.py`.
 - `SUPPORT_POLICY_INVALID`
+  Level: error. Source: `tools/target_adapter_validation/support_state.py`.
+- `SUPPORT_POLICY_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/support_state.py`.
+- `SUPPORT_POLICY_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/support_state.py`.
 - `SUPPORT_STATE_BUILD`
   Level: error. Source: `tools/target_adapter_validation/support_state.py`.
@@ -1980,6 +2192,10 @@ Catalog entries: 1221
   Level: error. Source: `tools/target_adapter_validation/support_state.py`.
 - `SUPPORT_STATE_CURRENT`
   Level: info. Source: `tools/target_adapter_validation/support_state.py`.
+- `SUPPORT_STATE_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/support_state.py`.
+- `SUPPORT_STATE_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/support_state.py`.
 - `SUPPORT_STATE_PROVENANCE`
   Level: error. Source: `tools/target_adapter_validation/support_state.py`.
 - `SUPPORT_STATE_STALE`
@@ -2019,6 +2235,10 @@ Catalog entries: 1221
 - `TASK_DECOMPOSITION_LEVEL_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
 - `TASK_DECOMPOSITION_PLAN_TEMPLATE`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `TASK_DECOMPOSITION_POLICY_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `TASK_DECOMPOSITION_POLICY_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
 - `TASK_DECOMPOSITION_POLICY_KIND`
   Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
@@ -2088,6 +2308,10 @@ Catalog entries: 1221
   Level: warning. Source: `tools/validate_target_adapter.py`.
 - `TDD_MODULE_UNDECLARED`
   Level: warning. Source: `tools/validate_target_adapter.py`.
+- `TDD_POLICY_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
+- `TDD_POLICY_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_POLICY_KIND`
   Level: error. Source: `tools/target_adapter_validation/test_first_development.py`.
 - `TDD_POLICY_LIST_EMPTY`
@@ -2150,6 +2374,10 @@ Catalog entries: 1221
   Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_ACTIVE_INDEX_INCOMPLETE`
   Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
+- `TEAM_ACTIVE_INDEX_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
+- `TEAM_ACTIVE_INDEX_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_ACTIVE_INDEX_KIND`
   Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_ACTIVE_INDEX_LIST`
@@ -2184,6 +2412,10 @@ Catalog entries: 1221
   Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_BACKEND_FIELD`
   Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
+- `TEAM_BACKEND_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
+- `TEAM_BACKEND_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_BACKEND_KIND`
   Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_BACKEND_SCHEMA`
@@ -2201,6 +2433,10 @@ Catalog entries: 1221
 - `TEAM_CONTEXT_OVERLAY_DESCRIPTOR`
   Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_CONTEXT_OVERLAY_ID`
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
+- `TEAM_CONTEXT_OVERLAY_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
+- `TEAM_CONTEXT_OVERLAY_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_CONTEXT_OVERLAY_KIND`
   Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
@@ -2223,6 +2459,10 @@ Catalog entries: 1221
 - `TEAM_IDENTITY_POLICY`
   Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_LOCAL_IDENTITY_INACTIVE`
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
+- `TEAM_LOCAL_IDENTITY_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
+- `TEAM_LOCAL_IDENTITY_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_LOCAL_IDENTITY_KIND`
   Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
@@ -2268,6 +2508,10 @@ Catalog entries: 1221
   Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_OVERLAP_STATE`
   Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
+- `TEAM_POLICY_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
+- `TEAM_POLICY_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_POLICY_KIND`
   Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_POLICY_MISSING`
@@ -2279,6 +2523,10 @@ Catalog entries: 1221
 - `TEAM_PRIORITY_AUTHORITY`
   Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_PRIORITY_UNKNOWN`
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
+- `TEAM_REGISTRY_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
+- `TEAM_REGISTRY_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_REGISTRY_KIND`
   Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
@@ -2309,6 +2557,10 @@ Catalog entries: 1221
 - `TEAM_TASK_EXPECTED_REVISION`
   Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_TASK_FIELD`
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
+- `TEAM_TASK_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
+- `TEAM_TASK_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
 - `TEAM_TASK_KIND`
   Level: error. Source: `tools/target_adapter_validation/team_collaboration.py`.
@@ -2350,6 +2602,10 @@ Catalog entries: 1221
   Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_CATALOG_ID_DUPLICATE`
   Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
+- `VOCABULARY_CATALOG_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
+- `VOCABULARY_CATALOG_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_CATALOG_KIND`
   Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_CATALOG_PATH`
@@ -2368,6 +2624,10 @@ Catalog entries: 1221
   Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_EVIDENCE_LIMIT`
   Level: info. Source: `tools/target_adapter_validation/project_vocabulary.py`.
+- `VOCABULARY_LINKS_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
+- `VOCABULARY_LINKS_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_LINKS_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_LINK_FIELDS`
@@ -2412,6 +2672,10 @@ Catalog entries: 1221
   Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_TERMS_EMPTY`
   Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
+- `VOCABULARY_TERMS_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
+- `VOCABULARY_TERMS_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_TERM_FIELDS`
   Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_TERM_ID_DUPLICATE`
@@ -2428,11 +2692,19 @@ Catalog entries: 1221
   Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
 - `VOCABULARY_TERM_UNINDEXED`
   Level: error. Source: `tools/target_adapter_validation/project_vocabulary.py`.
+- `WORKER_ROLE_CATALOG_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
+- `WORKER_ROLE_CATALOG_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/task_decomposition.py`.
 - `WORKSPACE_MODE_ACTIVE_ROOT`
   Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_AUTO_ACCEPT`
   Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_CATALOG_ENTRY`
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
+- `WORKSPACE_MODE_CATALOG_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
+- `WORKSPACE_MODE_CATALOG_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_CATALOG_OWNER`
   Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
@@ -2466,6 +2738,10 @@ Catalog entries: 1221
   Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_INTENT_UNROUTED`
   Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
+- `WORKSPACE_MODE_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
+- `WORKSPACE_MODE_INVALID_SHAPE`
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_MANIFEST_PATH`
   Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_NESTED_ADAPTER`
@@ -2483,6 +2759,10 @@ Catalog entries: 1221
 - `WORKSPACE_MODE_REQUIRED_FILE_MISSING`
   Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_ROOT_CONTEXT`
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
+- `WORKSPACE_MODE_ROOT_CONTEXT_INVALID_JSON`
+  Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
+- `WORKSPACE_MODE_ROOT_CONTEXT_INVALID_SHAPE`
   Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_ROOT_DISABLED_CONTENT`
   Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
@@ -2508,8 +2788,6 @@ Catalog entries: 1221
   Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
 - `WORKSPACE_MODE_WORKSPACE`
   Level: error. Source: `tools/target_adapter_validation/workspace_modes.py`.
-- `{prefix}_INVALID_JSON`
-  Level: error. Source: `tools/validate_target_adapter.py`.
 
 The machine-readable catalog is
 `tools/target_adapter_validation/finding-codes.json`.

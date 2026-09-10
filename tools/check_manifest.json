@@ -1830,6 +1830,10 @@
         "schemas/alatyr-consistency-map*.json",
         "schemas/alatyr-relationship-candidates.schema.json",
         "schemas/alatyr-support-*.json",
+        "ADAPTER_SCHEMA_VERSION",
+        "TEMPLATE_VERSION",
+        "VERSION",
+        "templates/target/**",
         "templates/target/.ai/project/support-policy.json",
         "templates/target/.ai/support-state.json",
         "templates/target/.ai/project/consistency/**",
@@ -1863,6 +1867,10 @@
         "schemas/alatyr-consistency-map*.json",
         "schemas/alatyr-relationship-candidates.schema.json",
         "schemas/alatyr-support-*.json",
+        "ADAPTER_SCHEMA_VERSION",
+        "TEMPLATE_VERSION",
+        "VERSION",
+        "templates/target/**",
         "templates/target/.ai/project/support-policy.json",
         "templates/target/.ai/support-state.json",
         "templates/target/.ai/project/consistency/**",
@@ -2768,6 +2776,7 @@
       ],
       "implementation_paths": [
         "tools/check_release_drift.py",
+        "tools/record_release_checkpoint.py",
         "tools/report_migration_diff.py"
       ],
       "trigger_paths": [
@@ -2778,6 +2787,7 @@
         "schemas/**",
         "templates/target/**",
         "tools/check_release_drift.py",
+        "tools/record_release_checkpoint.py",
         "tools/report_migration_diff.py"
       ]
     },
@@ -2808,6 +2818,7 @@
       ],
       "implementation_paths": [
         "tools/check_release_drift.py",
+        "tools/record_release_checkpoint.py",
         "tools/report_migration_diff.py"
       ],
       "trigger_paths": [
@@ -2820,6 +2831,7 @@
         "schemas/**",
         "templates/target/**",
         "tools/check_release_drift.py",
+        "tools/record_release_checkpoint.py",
         "tools/report_migration_diff.py"
       ]
     }

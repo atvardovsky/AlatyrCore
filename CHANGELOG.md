@@ -4,6 +4,23 @@
 
 - No unreleased changes.
 
+## 0.1.0-alpha.62 - 2026-09-10
+
+- Repaired the untagged release evidence chain through `0.1.0-alpha.61` and
+  added schema-2 checkpoints that bind their prior baseline and migration
+  report digest.
+- Made version transitions run strict release-evidence validation in normal
+  pull-request and main-branch CI while retaining the cheaper path for changes
+  that do not alter version contracts.
+- Corrected the generated target-validator catalog so helper-derived runtime
+  findings use concrete stable identifiers and dynamic prefixes fail closed.
+- Enforced target support-state content and stable-provenance freshness, then
+  refreshed the source target snapshot after all managed support changes.
+- Added the human-facing README project-discussion examples that followed the
+  previous source checkpoint.
+- Kept adapter schema version `51` and increased target template version to
+  `57` for the corrected support-state artifact.
+
 ## 0.1.0-alpha.61 - 2026-09-09
 
 - Added static admission contracts for Yandex SourceCraft and GigaCode

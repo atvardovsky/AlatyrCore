@@ -29,16 +29,27 @@ def source_paths() -> list[Path]:
 def literal_code(node: ast.AST) -> str | None:
     if isinstance(node, ast.Constant) and isinstance(node.value, str):
         return node.value if CODE_PATTERN.fullmatch(node.value) else None
-    if isinstance(node, ast.JoinedStr):
-        parts: list[str] = []
-        for value in node.values:
-            if isinstance(value, ast.Constant) and isinstance(value.value, str):
-                parts.append(value.value)
-            elif isinstance(value, ast.FormattedValue):
-                parts.append("{prefix}")
-        candidate = "".join(parts)
-        return candidate if candidate.endswith("_INVALID_JSON") else None
     return None
+
+
+def json_object_loader_prefix(node: ast.Call, relpath: str) -> str | None:
+    if not isinstance(node.func, ast.Attribute) or node.func.attr != "load_json_object":
+        return None
+    prefix_node: ast.AST | None = node.args[1] if len(node.args) > 1 else None
+    if prefix_node is None:
+        for keyword in node.keywords:
+            if keyword.arg == "code_prefix":
+                prefix_node = keyword.value
+                break
+    if not (
+        isinstance(prefix_node, ast.Constant)
+        and isinstance(prefix_node.value, str)
+        and CODE_PATTERN.fullmatch(prefix_node.value)
+    ):
+        raise ValueError(
+            f"{relpath}:{node.lineno} load_json_object requires a literal finding-code prefix"
+        )
+    return prefix_node.value
 
 
 def collect() -> dict[str, Any]:
@@ -49,6 +60,15 @@ def collect() -> dict[str, Any]:
         for node in ast.walk(tree):
             if not isinstance(node, ast.Call) or not node.args:
                 continue
+            loader_prefix = json_object_loader_prefix(node, relpath)
+            if loader_prefix is not None:
+                for suffix in ("INVALID_JSON", "INVALID_SHAPE"):
+                    code = f"{loader_prefix}_{suffix}"
+                    entry = entries.setdefault(
+                        code, {"levels": set(), "sources": set()}
+                    )
+                    entry["levels"].add("error")
+                    entry["sources"].add(relpath)
             finding_constructor = (
                 isinstance(node.func, ast.Name) and node.func.id == "KnowledgeFinding"
             )
@@ -150,7 +170,11 @@ def main() -> int:
     parser.add_argument("--check", action="store_true", help="fail when outputs are stale")
     args = parser.parse_args()
 
-    catalog = collect()
+    try:
+        catalog = collect()
+    except (OSError, SyntaxError, ValueError) as exc:
+        print(f"FAIL: cannot derive target-validator findings: {exc}", file=sys.stderr)
+        return 1
     rendered_json = json.dumps(catalog, indent=2) + "\n"
     rendered_markdown = render_markdown(catalog)
     outputs = [(JSON_OUTPUT, rendered_json), (MARKDOWN_OUTPUT, rendered_markdown)]

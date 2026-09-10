@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import io
 import json
 import re
@@ -162,6 +163,23 @@ def contract_digest(root: Path) -> str:
     )
 
 
+def contract_digest_at(ref: str) -> str:
+    with tempfile.TemporaryDirectory(prefix="alatyr-release-contract-") as directory:
+        root = Path(directory)
+        materialize(ref, "framework", root)
+        materialize(ref, "schemas", root)
+        materialize(ref, "templates/target", root)
+        for filename in CONTRACT_VERSION_FILES:
+            (root / filename).write_text(
+                read_at(ref, filename) + "\n", encoding="utf-8"
+            )
+        return contract_digest(root)
+
+
+def file_sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
 def validate_committed_report(
     *,
     baseline: str,
@@ -310,7 +328,9 @@ def nearest_tagged_baseline(current_version: str) -> tuple[str, list[str]]:
     )
 
 
-def release_checkpoint(version: str) -> ReleaseBaseline | None:
+def release_checkpoint(
+    version: str, *, seen: set[str] | None = None
+) -> ReleaseBaseline | None:
     path = RELEASE_BASELINE_DIR / f"{version}.json"
     if not path.is_file():
         return None
@@ -320,8 +340,12 @@ def release_checkpoint(version: str) -> ReleaseBaseline | None:
         raise RuntimeError(f"invalid release checkpoint {path.relative_to(ROOT)}: {exc}") from exc
     if not isinstance(data, dict):
         raise RuntimeError(f"release checkpoint {path.relative_to(ROOT)} must be an object")
+    schema_version = data.get("schema_version")
+    if schema_version not in {1, 2}:
+        raise RuntimeError(
+            f"release checkpoint {path.relative_to(ROOT)} requires schema_version 1 or 2"
+        )
     required = {
-        "schema_version": 1,
         "baseline_kind": "source-release-checkpoint",
         "framework_version": version,
         "publication_status": "untagged-release-checkpoint",
@@ -384,6 +408,61 @@ def release_checkpoint(version: str) -> ReleaseBaseline | None:
             f"release checkpoint {path.relative_to(ROOT)} migration report lacks "
             + ", ".join(missing)
         )
+    if schema_version == 2:
+        previous_label = data.get("previous_baseline")
+        report_digest = data.get("migration_report_sha256")
+        if not isinstance(previous_label, str) or not previous_label:
+            raise RuntimeError(
+                f"release checkpoint {path.relative_to(ROOT)} requires previous_baseline"
+            )
+        if not isinstance(report_digest, str) or not re.fullmatch(
+            r"[0-9a-f]{64}", report_digest
+        ):
+            raise RuntimeError(
+                f"release checkpoint {path.relative_to(ROOT)} has invalid migration_report_sha256"
+            )
+        if file_sha256(report_path) != report_digest:
+            raise RuntimeError(
+                f"release checkpoint {path.relative_to(ROOT)} migration report digest differs"
+            )
+
+        chain = set(seen or set())
+        if version in chain:
+            raise RuntimeError(f"release checkpoint cycle detected at {version}")
+        chain.add(version)
+        previous, intervening = _nearest_release_baseline(version, chain)
+        if previous.label != previous_label:
+            raise RuntimeError(
+                f"release checkpoint {path.relative_to(ROOT)} previous_baseline must be "
+                f"{previous.label}, got {previous_label}"
+            )
+        missing_reports = [
+            item
+            for item in intervening
+            if not (ROOT / "docs" / "releases" / f"{item}-migration.md").is_file()
+        ]
+        if missing_reports:
+            raise RuntimeError(
+                f"release checkpoint {path.relative_to(ROOT)} lacks intervening migration "
+                "reports: " + ", ".join(missing_reports)
+            )
+        previous_digest = previous.expected_digest or contract_digest_at(previous.ref)
+        report_failures = validate_committed_report(
+            baseline=previous.label,
+            from_version=read_at(previous.ref, "VERSION"),
+            to_version=version,
+            from_adapter=read_at(previous.ref, "ADAPTER_SCHEMA_VERSION"),
+            to_adapter=adapter,
+            from_template=read_at(previous.ref, "TEMPLATE_VERSION"),
+            to_template=template,
+            from_digest=previous_digest,
+            to_digest=digest,
+        )
+        if report_failures:
+            raise RuntimeError(
+                f"release checkpoint {path.relative_to(ROOT)} has invalid migration report: "
+                + "; ".join(report_failures)
+            )
     return ReleaseBaseline(
         ref=commit,
         label=f"release-checkpoint:{version}",
@@ -393,7 +472,9 @@ def release_checkpoint(version: str) -> ReleaseBaseline | None:
     )
 
 
-def nearest_release_baseline(current_version: str) -> tuple[ReleaseBaseline, list[str]]:
+def _nearest_release_baseline(
+    current_version: str, seen: set[str]
+) -> tuple[ReleaseBaseline, list[str]]:
     prior_versions = prior_changelog_versions(current_version)
     for index, version in enumerate(prior_versions):
         tag = f"v{version}"
@@ -401,7 +482,7 @@ def nearest_release_baseline(current_version: str) -> tuple[ReleaseBaseline, lis
         if result.returncode == 0:
             baseline = ReleaseBaseline(tag, tag, version, "tag")
         else:
-            baseline = release_checkpoint(version)
+            baseline = release_checkpoint(version, seen=seen)
             if baseline is None:
                 continue
         intervening = prior_versions[:index]
@@ -420,6 +501,10 @@ def nearest_release_baseline(current_version: str) -> tuple[ReleaseBaseline, lis
         "release mode requires a reachable prior release tag or reviewed source "
         "release checkpoint; fetch history or repair the release baseline"
     )
+
+
+def nearest_release_baseline(current_version: str) -> tuple[ReleaseBaseline, list[str]]:
+    return _nearest_release_baseline(current_version, set())
 
 
 def resolve_baseline(mode: str, from_ref: str | None) -> ReleaseBaseline:
