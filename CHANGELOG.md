@@ -2,7 +2,9 @@
 
 ## Unreleased
 
-- No unreleased changes.
+- Corrected the cross-platform upgrade-assessment immutability check to ignore
+  read-only Git metadata refreshes while still detecting and reporting changed
+  target repository files.
 
 ## 0.1.0-alpha.65 - 2026-09-13
 

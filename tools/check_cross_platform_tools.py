@@ -80,11 +80,21 @@ def run(*arguments: str) -> subprocess.CompletedProcess[str]:
 
 
 def tree_hashes(root: Path) -> dict[str, str]:
-    return {
-        path.relative_to(root).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
-        for path in sorted(root.rglob("*"))
-        if path.is_file()
-    }
+    hashes: dict[str, str] = {}
+    for path in sorted(root.rglob("*")):
+        relative = path.relative_to(root)
+        if not path.is_file() or ".git" in relative.parts:
+            continue
+        hashes[relative.as_posix()] = hashlib.sha256(path.read_bytes()).hexdigest()
+    return hashes
+
+
+def changed_tree_paths(before: dict[str, str], after: dict[str, str]) -> list[str]:
+    return sorted(
+        path
+        for path in before.keys() | after.keys()
+        if before.get(path) != after.get(path)
+    )
 
 
 def main() -> int:
@@ -320,7 +330,10 @@ def main() -> int:
             )
         after = tree_hashes(target)
         if before != after:
-            failures.append("upgrade assessment modified target repository files")
+            changed = ", ".join(changed_tree_paths(before, after))
+            failures.append(
+                "upgrade assessment modified target repository files: " + changed
+            )
         for filename in [
             "migration-report.md",
             "upgrade-impact.json",
