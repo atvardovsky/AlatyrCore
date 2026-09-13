@@ -12,6 +12,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 ARTIFACT_ROOT_ENV = "ALATYR_CONFORMANCE_ARTIFACT_ROOT"
+ARTIFACT_REQUIRED_ENV = "ALATYR_CONFORMANCE_ARTIFACT_REQUIRED"
 METADATA = ".alatyr-conformance-artifact.json"
 SOURCE_PATHS = (
     ROOT / "VERSION",
@@ -67,6 +68,10 @@ def artifact_root() -> Path | None:
     if not path.is_absolute():
         return None
     return path
+
+
+def artifact_required() -> bool:
+    return os.environ.get(ARTIFACT_REQUIRED_ENV) == "1"
 
 
 def publish_support_profile(profile: str, source: Path) -> bool:

@@ -717,6 +717,8 @@ def run_check(check: dict[str, Any], baseline: str | None) -> RunnerResult:
     artifact_root = check.get("_run_artifact_root")
     if isinstance(artifact_root, str) and artifact_root:
         environment["ALATYR_CONFORMANCE_ARTIFACT_ROOT"] = artifact_root
+    if check.get("_run_artifact_required") is True:
+        environment["ALATYR_CONFORMANCE_ARTIFACT_REQUIRED"] = "1"
     process = subprocess.Popen(
         command,
         cwd=ROOT,
@@ -1962,6 +1964,9 @@ def main() -> int:
         try:
             for check in selected:
                 check["_run_artifact_root"] = str(artifact_root)
+                check["_run_artifact_required"] = (
+                    "conformance-scaffold" in check.get("depends_on", [])
+                )
             results, blocked = execute_checks(
                 selected,
                 baseline,

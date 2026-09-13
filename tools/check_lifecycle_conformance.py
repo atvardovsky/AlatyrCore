@@ -23,7 +23,7 @@ from bootstrap_index import (
     build_bundle_from_target,
     render,
 )
-from conformance_artifacts import artifact_root, materialize_support_profile
+from conformance_artifacts import artifact_required, materialize_support_profile
 from context_planning import ContextPlanRequest, plan_target_context
 from agent_entry_packet import (
     PACKET_PATH,
@@ -490,7 +490,7 @@ def exercise_profile(
 
     reused_actions = materialize_support_profile(support_profile, repo)
     if reused_actions is None:
-        if artifact_root() is not None:
+        if artifact_required():
             failures.append(
                 f"{support_profile} required run-local scaffold artifact is unavailable"
             )

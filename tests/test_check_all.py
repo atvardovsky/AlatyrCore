@@ -971,6 +971,23 @@ class CheckGraphTests(unittest.TestCase):
         self.assertEqual(result.result[1], "partial\n")
         self.assertIn("timed out after 0.5 seconds", result.result[2])
 
+    def test_runner_exports_artifact_requirement_only_when_selected(self) -> None:
+        item = check("artifact-environment")
+        item["command"] = [
+            "-c",
+            "import os; print(os.environ.get('ALATYR_CONFORMANCE_ARTIFACT_REQUIRED', '0'))",
+        ]
+        item["_run_artifact_root"] = "/tmp/alatyr-artifacts"
+
+        optional = run_check(item, None)
+        item["_run_artifact_required"] = True
+        required = run_check(item, None)
+
+        self.assertEqual(optional.result[0], 0)
+        self.assertEqual(optional.result[1], "0\n")
+        self.assertEqual(required.result[0], 0)
+        self.assertEqual(required.result[1], "1\n")
+
     def test_process_timeout_terminates_descendants(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             marker = Path(directory) / "child-finished"

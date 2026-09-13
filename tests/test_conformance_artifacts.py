@@ -12,14 +12,33 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 
 from conformance_artifacts import (  # noqa: E402
+    ARTIFACT_REQUIRED_ENV,
     ARTIFACT_ROOT_ENV,
     METADATA,
+    artifact_required,
     materialize_support_profile,
     publish_support_profile,
 )
 
 
 class ConformanceArtifactTests(unittest.TestCase):
+    def test_requirement_signal_is_independent_from_artifact_location(self) -> None:
+        with patch.dict(
+            os.environ,
+            {ARTIFACT_ROOT_ENV: "/tmp/example"},
+            clear=True,
+        ):
+            self.assertFalse(artifact_required())
+        with patch.dict(
+            os.environ,
+            {
+                ARTIFACT_ROOT_ENV: "/tmp/example",
+                ARTIFACT_REQUIRED_ENV: "1",
+            },
+            clear=True,
+        ):
+            self.assertTrue(artifact_required())
+
     def test_round_trip_copies_only_valid_run_local_content(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

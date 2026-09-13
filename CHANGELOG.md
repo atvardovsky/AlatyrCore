@@ -2,7 +2,9 @@
 
 ## Unreleased
 
-- No unreleased changes.
+- Corrected platform lifecycle smoke runs so run-local scaffold artifacts are
+  mandatory only when the selected dependency graph includes their producer;
+  full and release profiles retain fail-closed artifact reuse.
 
 ## 0.1.0-alpha.64 - 2026-09-13
 
